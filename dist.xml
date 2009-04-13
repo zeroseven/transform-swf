@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+<project name="dist" default="dist" basedir=".">
+
+    <description>Developer targets
+
+        This build file is used create distirbutions of the Transform framework.
+        It contains the following major targets:
+
+        dist       creates a distribution of the Transform framework.
+
+    </description>
+
+    <import file="build.xml"/>
+
+    <property name="version" value="3.0.0"/>
+
+    <property name="dist.dir" location="dist"/>
+
+	<property name="release.name" value="${package.name}-java-${version}"/>
+    <property name="release.dir" value="${dist.dir}/${release.name}"/>
+
+    <target name="dist" depends="build" description="Create a distribution">
+
+        <delete dir="${release.dir}" failonerror="false"/>
+
+        <mkdir dir="${release.dir}"/>
+
+        <copy todir="${release.dir}/src" overwrite="true">
+            <fileset dir="${src.dir}">
+                <include name="${package.dir}/*.java" />
+                <include name="${package.dir}/util/*.java" />
+            </fileset>
+        </copy>
+
+        <copy todir="${release.dir}" overwrite="true">
+            <fileset dir="doc">
+                <include name="*.txt" />
+            </fileset>
+        </copy>
+
+        <copy todir="${release.dir}/doc" overwrite="true">
+            <fileset dir="doc">
+                <exclude name="css/**" />
+                <exclude name="*.txt" />
+            </fileset>
+        </copy>
+    	
+    	<antcall target="datasheets"/>
+
+        <copy todir="${release.dir}" overwrite="true">
+            <fileset dir=".">
+                <include name="build.xml" />
+                <include name="${package.name}.jar" />
+             </fileset>
+        </copy>
+
+        <tar destfile="${dist.dir}/${release.name}.tar.gz"
+             basedir="${release.dir}"
+             compression="gzip"
+        />
+
+        <zip destfile="${dist.dir}/${release.name}.zip">
+        	<fileset dir="${release.dir}">
+    			<include name="${release.name}/**"/>
+    		</fileset>
+        </zip>
+
+    </target>
+	
+	<target name="datasheets">
+		
+	    <mkdir dir="${release.dir}/doc/datasheets"/>
+
+	    <javadoc destdir="${release.dir}/doc/datasheets" stylesheetfile="doc/css/datasheet.css" access="public">
+	        <packageset dir="${src.dir}" defaultexcludes="yes">
+	            <include name="${package.dir}/**" />
+	        </packageset>
+	        <link href="http://java.sun.com/javase/6/docs/api/"/>
+	    </javadoc>
+
+	</target>
+
+</project>
