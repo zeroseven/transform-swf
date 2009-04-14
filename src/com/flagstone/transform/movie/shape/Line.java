@@ -62,10 +62,30 @@ public final class Line implements ShapeRecord
 	private transient boolean general;
 	private transient int size;
 
-	protected Line()
+	protected Line(final SWFDecoder coder) throws CoderException
 	{
-		xCoord = 0;
-		yCoord = 0;
+		coder.adjustPointer(2); // shape and edge
+
+		size = coder.readBits(4, false) + 2;
+
+		if (coder.readBits(1, false) == 0)
+		{
+			if (coder.readBits(1, false) == 0)
+			{
+				xCoord = coder.readBits(size, true);
+				yCoord = 0;
+			} 
+			else
+			{
+				xCoord = 0;
+				yCoord = coder.readBits(size, true);
+			}
+		} 
+		else
+		{
+			xCoord = coder.readBits(size, true);
+			yCoord = coder.readBits(size, true);
+		}
 	}
 
 	/**
@@ -194,32 +214,6 @@ public final class Line implements ShapeRecord
 		{
 			coder.writeBits(vertical ? 1 : 0, 1);
 			coder.writeBits(vertical ? yCoord : xCoord, size);
-		}
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException
-	{
-		coder.adjustPointer(2); // shape and edge
-
-		size = coder.readBits(4, false) + 2;
-
-		if (coder.readBits(1, false) == 0)
-		{
-			if (coder.readBits(1, false) == 0)
-			{
-				xCoord = coder.readBits(size, true);
-				yCoord = 0;
-			} 
-			else
-			{
-				xCoord = 0;
-				yCoord = coder.readBits(size, true);
-			}
-		} 
-		else
-		{
-			xCoord = coder.readBits(size, true);
-			yCoord = coder.readBits(size, true);
 		}
 	}
 }

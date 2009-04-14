@@ -98,17 +98,70 @@ public final class SoundStreamHead2 implements MovieTag
 	 */
 	private int reserved = 0;
 
-	public SoundStreamHead2()
+	public SoundStreamHead2(final SWFDecoder coder) throws CoderException
 	{
-		format = SoundFormat.PCM;
-		playRate = 5512;
-		playChannels = 1;
-		playSampleSize = 1;
-		streamRate = 5512;
-		streamChannels = 1;
-		streamSampleSize = 1;
-		streamSampleCount = 0;
-		latency = 0;
+		start = coder.getPointer();
+		length = coder.readWord(2, false) & 0x3F;
+		
+		if (length == 0x3F) {
+			length = coder.readWord(4, false);
+		}
+		end = coder.getPointer() + (length << 3);
+
+		reserved = coder.readBits(4, false);
+		switch (coder.readBits(2, false))
+		{
+			case 0:
+				playRate = 5512;
+				break;
+			case 1:
+				playRate = 11025;
+				break;
+			case 2:
+				playRate = 22050;
+				break;
+			case 3:
+				playRate = 44100;
+				break;
+			default:
+				playRate = 0;
+				break;
+		}
+		playSampleSize = coder.readBits(1, false) + 1;
+		playChannels = coder.readBits(1, false) + 1;
+
+		format = SoundFormat.fromInt(coder.readBits(4, false));
+
+		switch (coder.readBits(2, false))
+		{
+			case 0:
+				streamRate = 5512;
+				break;
+			case 1:
+				streamRate = 11025;
+				break;
+			case 2:
+				streamRate = 22050;
+				break;
+			case 3:
+				streamRate = 44100;
+				break;
+			default:
+				streamRate = 0;
+				break;
+		}
+		streamSampleSize = coder.readBits(1, false) + 1;
+		streamChannels = coder.readBits(1, false) + 1;
+		streamSampleCount = coder.readWord(2, false);
+
+		if (length == 6 && format == SoundFormat.MP3) {
+			latency = coder.readWord(2, true);
+		}
+
+		if (coder.getPointer() != end) {
+			throw new CoderException(getClass().getName(), start >> 3, length,
+					(coder.getPointer() - end) >> 3);
+		}
 	}
 
 	/**
@@ -454,72 +507,6 @@ public final class SoundStreamHead2 implements MovieTag
 
 		if (format == SoundFormat.MP3 && latency > 0) {
 			coder.writeWord(latency, 2);
-		}
-
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException
-	{
-		start = coder.getPointer();
-		length = coder.readWord(2, false) & 0x3F;
-		
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
-		end = coder.getPointer() + (length << 3);
-
-		reserved = coder.readBits(4, false);
-		switch (coder.readBits(2, false))
-		{
-			case 0:
-				playRate = 5512;
-				break;
-			case 1:
-				playRate = 11025;
-				break;
-			case 2:
-				playRate = 22050;
-				break;
-			case 3:
-				playRate = 44100;
-				break;
-			default:
-				playRate = 0;
-				break;
-		}
-		playSampleSize = coder.readBits(1, false) + 1;
-		playChannels = coder.readBits(1, false) + 1;
-
-		format = SoundFormat.fromInt(coder.readBits(4, false));
-
-		switch (coder.readBits(2, false))
-		{
-			case 0:
-				streamRate = 5512;
-				break;
-			case 1:
-				streamRate = 11025;
-				break;
-			case 2:
-				streamRate = 22050;
-				break;
-			case 3:
-				streamRate = 44100;
-				break;
-			default:
-				streamRate = 0;
-				break;
-		}
-		streamSampleSize = coder.readBits(1, false) + 1;
-		streamChannels = coder.readBits(1, false) + 1;
-		streamSampleCount = coder.readWord(2, false);
-
-		if (length == 6 && format == SoundFormat.MP3) {
-			latency = coder.readWord(2, true);
 		}
 
 		if (coder.getPointer() != end) {

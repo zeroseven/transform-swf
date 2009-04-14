@@ -69,12 +69,10 @@ public final class LineStyle implements Codeable, Copyable<LineStyle>
 	protected int width;
 	protected Color color;
 
-	public LineStyle()
+	public LineStyle(final SWFDecoder coder) throws CoderException
 	{
-		super();
-		
-		width = 20;
-		color = new Color(0,0,0,0);
+		width = coder.readWord(2, false);
+		color = new Color(coder);
 	}
 
 	/**
@@ -87,15 +85,13 @@ public final class LineStyle implements Codeable, Copyable<LineStyle>
 	 */
 	public LineStyle(int aWidth, Color aColor)
 	{
-		super();
-		
 		setWidth(aWidth);
 		setColor(aColor);
 	}
 	
 	public LineStyle(LineStyle object) {
 		width = object.width;
-		color = object.color.copy();
+		color = object.color;
 	}
 
 	/**
@@ -157,7 +153,7 @@ public final class LineStyle implements Codeable, Copyable<LineStyle>
 	{
 		int length = 2;
 
-		length += color.prepareToEncode(coder);
+		length += coder.getContext().isTransparent() ? 4:3;
 
 		return length;
 	}
@@ -166,11 +162,5 @@ public final class LineStyle implements Codeable, Copyable<LineStyle>
 	{
 		coder.writeWord(width, 2);
 		color.encode(coder);
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException
-	{
-		width = coder.readWord(2, false);
-		color.decode(coder);
 	}
 }

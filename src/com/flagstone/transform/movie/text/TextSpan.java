@@ -99,15 +99,37 @@ public final class TextSpan implements Codeable
 	private transient boolean hasX;
 	private transient boolean hasY;
 	
-	protected TextSpan()
+	protected TextSpan(final SWFDecoder coder) throws CoderException
 	{
-		identifier = 1;
-		color = new Color(0,0,0,0);
-		offsetX = 0;
-		offsetY = 0;
-		height = 0;
-		characters = new ArrayList<GlyphIndex>();
+		/* type */coder.readBits(1, false);
+		/* reserved */coder.readBits(3, false);
+
+		hasFont = coder.readBits(1, false) != 0;
+		hasColor = coder.readBits(1, false) != 0;
+		hasY = coder.readBits(1, false) != 0;
+		hasX = coder.readBits(1, false) != 0;
+
+		identifier = hasFont ? coder.readWord(2, false) : Movie.VALUE_NOT_SET;
+
+		if (hasColor) {
+			color = new Color(coder);
+		}
+
+		offsetX = hasX ? coder.readWord(2, true) : Movie.VALUE_NOT_SET;
+		offsetY = hasY ? coder.readWord(2, true) : Movie.VALUE_NOT_SET;
+		height = hasFont ? coder.readWord(2, false) : Movie.VALUE_NOT_SET;
+
+		int charCount = coder.readByte();
+
+		characters = new ArrayList<GlyphIndex>(charCount);
+
+		for (int i = 0; i < charCount; i++) {
+			characters.add(new GlyphIndex(coder));
+		}
+
+		coder.alignToByte();
 	}
+
 
 	/**
 	 * Creates a Text object, specifying the colour and position of the
@@ -150,7 +172,7 @@ public final class TextSpan implements Codeable
 	public TextSpan(TextSpan object)
 	{
 		identifier = object.identifier;
-		color = object.color.copy();
+		color = object.color;
 		offsetX = object.offsetX;
 		offsetY = object.offsetY;
 		height = object.height;
@@ -340,7 +362,7 @@ public final class TextSpan implements Codeable
 		if (hasStyle)
 		{
 			length += (hasFont) ? 2 : 0;
-			length += (hasColor) ? color.prepareToEncode(coder) : 0;
+			length += (hasColor) ? (coder.getContext().isTransparent() ? 4:3) : 0;
 			length += (hasY) ? 2 : 0;
 			length += (hasX) ? 2 : 0;
 			length += (hasFont) ? 2 : 0;
@@ -398,46 +420,6 @@ public final class TextSpan implements Codeable
 
 		for (GlyphIndex index : characters) {
 			index.encode(coder);
-		}
-
-		coder.alignToByte();
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException
-	{
-		/* type */coder.readBits(1, false);
-		/* reserved */coder.readBits(3, false);
-
-		hasFont = coder.readBits(1, false) != 0;
-		hasColor = coder.readBits(1, false) != 0;
-		hasY = coder.readBits(1, false) != 0;
-		hasX = coder.readBits(1, false) != 0;
-
-		identifier = hasFont ? coder.readWord(2, false) : Movie.VALUE_NOT_SET;
-
-		if (hasColor) 
-		{
-			color = new Color();
-			color.decode(coder);
-		}
-		else 
-		{
-			color = null; // NOPMD
-		}
-
-		offsetX = hasX ? coder.readWord(2, true) : Movie.VALUE_NOT_SET;
-		offsetY = hasY ? coder.readWord(2, true) : Movie.VALUE_NOT_SET;
-		height = hasFont ? coder.readWord(2, false) : Movie.VALUE_NOT_SET;
-
-		int charCount = coder.readByte();
-
-		GlyphIndex character;
-		
-		for (int i = 0; i < charCount; i++) {
-			character = new GlyphIndex(0,0);
-			character.decode(coder);
-			
-			characters.add(character);
 		}
 
 		coder.alignToByte();

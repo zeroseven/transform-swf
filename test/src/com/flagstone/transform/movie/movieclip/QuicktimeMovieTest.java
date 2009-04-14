@@ -62,8 +62,7 @@ public final class QuicktimeMovieTest {
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForPathWithNull() {
-		fixture = new QuicktimeMovie();
-		fixture.setPath(null);
+		fixture = new QuicktimeMovie((String)null);
 	}
 	
 	@Test
@@ -86,25 +85,12 @@ public final class QuicktimeMovieTest {
 		assertTrue(encoder.eof());
 		assertArrayEquals(encoded, encoder.getData());
 	}
-	
-	@Test
-	public void encodeDefault() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(empty.length);		
-		
-		fixture = new QuicktimeMovie();
-		assertEquals(empty.length, fixture.prepareToEncode(encoder));
-		fixture.encode(encoder);
-		
-		assertTrue(encoder.eof());
-		assertArrayEquals(empty, encoder.getData());
-	}
-	
+
 	@Test
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		
-		fixture = new QuicktimeMovie();
-		fixture.decode(decoder);
+		fixture = new QuicktimeMovie(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(path, fixture.getPath());
@@ -114,8 +100,7 @@ public final class QuicktimeMovieTest {
 	public void decodeExtended() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(extended);
 		
-		fixture = new QuicktimeMovie();
-		fixture.decode(decoder);
+		fixture = new QuicktimeMovie(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(path, fixture.getPath());

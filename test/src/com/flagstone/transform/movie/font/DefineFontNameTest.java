@@ -70,31 +70,27 @@ public final class DefineFontNameTest {
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForIdentifierWithLowerBound() {
-		fixture = new DefineFontName();
-		fixture.setIdentifier(0);
+		fixture = new DefineFontName(0, name, copyright);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForIdentifierWithUpperBound() {
-		fixture = new DefineFontName();
-		fixture.setIdentifier(65536);
+		fixture = new DefineFontName(65536, name, copyright);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForNameWithNull() {
-		fixture = new DefineFontName();
-		fixture.setName(null);
+		fixture = new DefineFontName(identifier, name, copyright);
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForCopyrightWithNull() {
-		fixture = new DefineFontName();
-		fixture.setCopyright(null);
+		fixture = new DefineFontName(identifier, name, null);
 	}
 	
 	@Test
 	public void checkCopy() {
-		fixture = new DefineFontName();
+		fixture = new DefineFontName(identifier, name, copyright);
 		DefineFontName copy = fixture.copy();
 
 		assertNotSame(fixture, copy);
@@ -117,18 +113,6 @@ public final class DefineFontNameTest {
 	}
 	
 	@Test
-	public void encodeDefault() throws CoderException {		
-		SWFEncoder encoder = new SWFEncoder(empty.length);		
-		
-		fixture = new DefineFontName();
-		assertEquals(empty.length, fixture.prepareToEncode(encoder));
-		fixture.encode(encoder);
-		
-		assertTrue(encoder.eof());
-		assertArrayEquals(empty, encoder.getData());
-	}
-	
-	@Test
 	public void encodeExtended() throws CoderException {
 
 		SWFEncoder encoder = new SWFEncoder(114);
@@ -147,8 +131,7 @@ public final class DefineFontNameTest {
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		
-		fixture = new DefineFontName();
-		fixture.decode(decoder);
+		fixture = new DefineFontName(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(identifier, fixture.getIdentifier());
@@ -160,8 +143,7 @@ public final class DefineFontNameTest {
 	public void decodeExtended() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(extended);
 		
-		fixture = new DefineFontName();
-		fixture.decode(decoder);
+		fixture = new DefineFontName(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(identifier, fixture.getIdentifier());

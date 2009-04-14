@@ -74,12 +74,69 @@ public final class DefineText2 implements DefineTag
 	private transient int advanceBits;
 	private int identifier;
 
-	public DefineText2()
+	public DefineText2(final SWFDecoder coder) throws CoderException
 	{
-		bounds = new Bounds();
-		transform = new CoordTransform();
+		start = coder.getPointer();
+		length = coder.readWord(2, false) & 0x3F;
+		
+		if (length == 0x3F) {
+			length = coder.readWord(4, false);
+		}
+		end = coder.getPointer() + (length << 3);
+
+		identifier = coder.readWord(2, true);
+		bounds = new Bounds(coder);
+
+		// This code is used to get round a bug in Flash - sometimes 16,
+		// 8-bit zeroes are written out before the transform. The root
+		// cause in Flash is unknown but seems to be related to the
+		// bounds not being set - all values are zero.
+
+		int start = coder.getPointer();
+		int count = 0;
+		
+		for (int i=0; i<16; i++)
+		{
+			if (coder.readWord(1, false) == 0) {
+				count += 1;
+			}
+		}
+
+		coder.setPointer(start);
+
+		if (count == 16) {
+			coder.adjustPointer(128);
+		}
+
+		// Back to reading the rest of the tag
+
+		transform = new CoordTransform(coder);
+
+		glyphBits = coder.readByte();
+		advanceBits = coder.readByte();
+
+		coder.getContext().setTransparent(true);
+		coder.getContext().setGlyphSize(glyphBits);
+		coder.getContext().setAdvanceSize(advanceBits);
+
 		objects = new ArrayList<TextSpan>();
+
+		while (coder.readBits(8, false) != 0) 
+		{
+			coder.adjustPointer(-8);
+			objects.add(new TextSpan(coder));
+		}
+
+		coder.getContext().setTransparent(false);
+		coder.getContext().setGlyphSize(0);
+		coder.getContext().setAdvanceSize(0);
+
+		if (coder.getPointer() != end) {
+			throw new CoderException(getClass().getName(), start >> 3, length,
+					(coder.getPointer() - end) >> 3);
+		}
 	}
+
 
 	/**
 	 * Creates a DefineText2 object with the specified bounding rectangle,
@@ -298,72 +355,6 @@ public final class DefineText2 implements DefineTag
 		}
 
 		coder.writeWord(0, 1);
-
-		coder.getContext().setTransparent(false);
-		coder.getContext().setGlyphSize(0);
-		coder.getContext().setAdvanceSize(0);
-
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException
-	{
-		start = coder.getPointer();
-		length = coder.readWord(2, false) & 0x3F;
-		
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
-		end = coder.getPointer() + (length << 3);
-
-		identifier = coder.readWord(2, true);
-		bounds.decode(coder);
-
-		// This code is used to get round a bug in Flash - sometimes 16,
-		// 8-bit zeroes are written out before the transform. The root
-		// cause in Flash is unknown but seems to be related to the
-		// bounds not being set - all values are zero.
-
-		int start = coder.getPointer();
-		int count = 0;
-		
-		for (int i=0; i<16; i++)
-		{
-			if (coder.readWord(1, false) == 0) {
-				count += 1;
-			}
-		}
-
-		coder.setPointer(start);
-
-		if (count == 16) {
-			coder.adjustPointer(128);
-		}
-
-		// Back to reading the rest of the tag
-
-		transform.decode(coder);
-
-		glyphBits = coder.readByte();
-		advanceBits = coder.readByte();
-
-		coder.getContext().setTransparent(true);
-		coder.getContext().setGlyphSize(glyphBits);
-		coder.getContext().setAdvanceSize(advanceBits);
-
-		TextSpan span;
-
-		while (coder.readBits(8, false) != 0) 
-		{
-			span = new TextSpan(1, 0, new Color(), 0, 0, new ArrayList<GlyphIndex>());
-			coder.adjustPointer(-8);
-			span.decode(coder);
-			
-			objects.add(span);
-		}
 
 		coder.getContext().setTransparent(false);
 		coder.getContext().setGlyphSize(0);

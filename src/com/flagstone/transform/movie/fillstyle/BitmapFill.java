@@ -97,9 +97,10 @@ public final class BitmapFill implements FillStyle {
 	private int identifier;
 	private CoordTransform transform;
 
-	public BitmapFill(final int type) {
-		this.type = type;
-		transform = new CoordTransform();
+	public BitmapFill(final SWFDecoder coder) throws CoderException {
+		type = coder.readByte();
+		identifier = coder.readWord(2, false);
+		transform = new CoordTransform(coder);
 	}
 
 	/**
@@ -195,11 +196,5 @@ public final class BitmapFill implements FillStyle {
 		coder.writeByte(type);
 		coder.writeWord(identifier, 2);
 		transform.encode(coder);
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException {
-		coder.adjustPointer(8);
-		identifier = coder.readWord(2, false);
-		transform.decode(coder);
 	}
 }

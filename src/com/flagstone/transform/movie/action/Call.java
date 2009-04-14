@@ -72,8 +72,4 @@ public final class Call implements Action
 		coder.writeByte(0);
 		coder.writeByte(0);
 	}
-
-	public void decode(final SWFDecoder coder) throws CoderException {
-		coder.adjustPointer(24);
-	}
 }

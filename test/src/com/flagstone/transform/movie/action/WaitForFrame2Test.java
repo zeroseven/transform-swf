@@ -58,14 +58,12 @@ public final class WaitForFrame2Test {
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForActionCountWithLowerBound() {
-		fixture = new WaitForFrame2();
-		fixture.setActionCount(-1);
+		fixture = new WaitForFrame2(-1);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForActionCountWithUpperBound() {
-		fixture = new WaitForFrame2();
-		fixture.setActionCount(256);
+		fixture = new WaitForFrame2(256);
 	}
 	
 	@Test
@@ -93,8 +91,7 @@ public final class WaitForFrame2Test {
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		
-		fixture = new WaitForFrame2();
-		fixture.decode(decoder);
+		fixture = new WaitForFrame2(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(count, fixture.getActionCount());

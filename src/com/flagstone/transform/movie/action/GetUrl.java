@@ -98,11 +98,14 @@ public final class GetUrl implements Action
 	
 	private transient int length;
 
-	public GetUrl()
+	public GetUrl(final SWFDecoder coder) throws CoderException
 	{
-		url = "";
-		target = "";
+		coder.readByte();
+		length = coder.readWord(2, false);
+		url = coder.readString();
+		target = coder.readString();
 	}
+
 
 	/**
 	 * Creates a GetUrl with the specified url and target frame.
@@ -214,13 +217,5 @@ public final class GetUrl implements Action
 		coder.writeWord(length, 2);
 		coder.writeString(url);
 		coder.writeString(target);
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException
-	{
-		coder.readByte();
-		length = coder.readWord(2, false);
-		url = coder.readString();
-		target = coder.readString();
 	}
 }

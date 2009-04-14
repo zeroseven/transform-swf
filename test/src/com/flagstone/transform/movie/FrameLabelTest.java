@@ -61,8 +61,7 @@ public final class FrameLabelTest {
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForLabelWithNull() {
-		fixture = new FrameLabel();
-		fixture.setLabel(null);
+		fixture = new FrameLabel((String)null);
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
@@ -93,23 +92,10 @@ public final class FrameLabelTest {
 	}
 	
 	@Test
-	public void encodeDefault() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(empty.length);		
-		
-		fixture = new FrameLabel();
-		assertEquals(empty.length, fixture.prepareToEncode(encoder));
-		fixture.encode(encoder);
-		
-		assertTrue(encoder.eof());
-		assertArrayEquals(empty, encoder.getData());
-	}
-	
-	@Test
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		
-		fixture = new FrameLabel();
-		fixture.decode(decoder);
+		fixture = new FrameLabel(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(label, fixture.getLabel());
@@ -120,8 +106,7 @@ public final class FrameLabelTest {
 	public void decodeExtended() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(extended);
 		
-		fixture = new FrameLabel();
-		fixture.decode(decoder);
+		fixture = new FrameLabel(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(label, fixture.getLabel());

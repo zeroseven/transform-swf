@@ -214,9 +214,11 @@ public final class GetUrl2 implements Action
 
 	private Request request;
 
-	public GetUrl2()
+	public GetUrl2(final SWFDecoder coder) throws CoderException
 	{
-		request = Request.MOVIE_TO_LEVEL;
+		coder.readByte();
+		coder.readWord(2, false);
+		request = Request.fromInt(coder.readByte());
 	}
 
 	/**
@@ -275,12 +277,5 @@ public final class GetUrl2 implements Action
 		coder.writeByte(Types.GET_URL_2);
 		coder.writeWord(1, 2);
 		coder.writeWord(request.value, 1);
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException
-	{
-		coder.readByte();
-		coder.readWord(2, false);
-		request = Request.fromInt(coder.readByte());
 	}
 }

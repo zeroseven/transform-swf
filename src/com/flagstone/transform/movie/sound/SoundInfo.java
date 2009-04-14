@@ -110,14 +110,36 @@ public final class SoundInfo implements Codeable
 	protected int loopCount;
 	protected List<Envelope> envelopes;
 
-	public SoundInfo()
+	public SoundInfo(final SWFDecoder coder) throws CoderException
 	{
-		identifier = 1;
-		mode = Mode.START;
-		loopCount = 0;
-		inPoint = 0;
-		outPoint = 0;
+		identifier = coder.readWord(2, false);
+		mode = Mode.fromInt(coder.readBits(4, false));
+		boolean hasEnvelopes = coder.readBits(1, false) != 0;
+		boolean hasLoopCount = coder.readBits(1, false) != 0;
+		boolean hasOutPoint = coder.readBits(1, false) != 0;
+		boolean hasInPoint = coder.readBits(1, false) != 0;
+
+		if (hasInPoint) {
+			inPoint = coder.readWord(4, false);
+		}
+
+		if (hasOutPoint) {
+			outPoint = coder.readWord(4, false);
+		}
+
+		if (hasLoopCount) {
+			loopCount = coder.readWord(2, false);
+		}
+
 		envelopes = new ArrayList<Envelope>();
+		if (hasEnvelopes)
+		{
+			int envelopeCount = coder.readByte();
+			
+			for (int i = 0; i < envelopeCount; i++) {
+				envelopes.add(new Envelope(coder));
+			}
+		}
 	}
 
 	/**
@@ -357,41 +379,6 @@ public final class SoundInfo implements Codeable
 
 			for (int i=0; i<envelopes.size(); i++) {
 				envelopes.get(i).encode(coder);
-			}
-		}
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException
-	{
-		identifier = coder.readWord(2, false);
-		mode = Mode.fromInt(coder.readBits(4, false));
-		boolean hasEnvelopes = coder.readBits(1, false) != 0;
-		boolean hasLoopCount = coder.readBits(1, false) != 0;
-		boolean hasOutPoint = coder.readBits(1, false) != 0;
-		boolean hasInPoint = coder.readBits(1, false) != 0;
-
-		if (hasInPoint) {
-			inPoint = coder.readWord(4, false);
-		}
-
-		if (hasOutPoint) {
-			outPoint = coder.readWord(4, false);
-		}
-
-		if (hasLoopCount) {
-			loopCount = coder.readWord(2, false);
-		}
-
-		if (hasEnvelopes)
-		{
-			int envelopeCount = coder.readByte();
-			
-			Envelope env;
-
-			for (int i = 0; i < envelopeCount; i++) {
-				env = new Envelope(0,0,0);
-				env.decode(coder);
-				envelopes.add(env);
 			}
 		}
 	}

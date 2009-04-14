@@ -71,10 +71,10 @@ public final class Envelope implements Codeable {
 	protected int left;
 	protected int right;
 
-	protected Envelope() {
-		mark = 0;
-		left = 0;
-		right = 0;
+	public Envelope(final SWFDecoder coder) throws CoderException {
+		mark = coder.readWord(4, false);
+		left = coder.readWord(2, false);
+		right = coder.readWord(2, false);
 	}
 
 	/**
@@ -180,11 +180,5 @@ public final class Envelope implements Codeable {
 		coder.writeWord(mark, 4);
 		coder.writeWord(left, 2);
 		coder.writeWord(right, 2);
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException {
-		mark = coder.readWord(4, false);
-		left = coder.readWord(2, false);
-		right = coder.readWord(2, false);
 	}
 }

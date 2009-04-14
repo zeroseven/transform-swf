@@ -68,15 +68,4 @@ public final class CallTest {
 		assertTrue(encoder.eof());
 		assertArrayEquals(encoded, encoder.getData());
 	}
-
-	@Test
-	public void decode() throws CoderException {
-
-		SWFDecoder decoder = new SWFDecoder(encoded);
-		
-		fixture = Call.getInstance();
-		fixture.decode(decoder);
-		
-		assertTrue(decoder.eof());
-	}
 }

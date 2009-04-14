@@ -51,9 +51,35 @@ public final class ScenesAndLabels implements MovieTag {
 	private transient int end;
 	private transient int length;
 
-	public ScenesAndLabels() {
+	public ScenesAndLabels(final SWFDecoder coder) throws CoderException {
+		
+		start = coder.getPointer();
+
+		length = coder.readWord(2, false) & 0x3F;
+
+		if (length == 0x3F) {
+			length = coder.readWord(4, false);
+		}
+		end = coder.getPointer() + (length << 3);
+
+		int count = coder.readVariableU32();
+
 		scenes = new LinkedHashMap<Integer, String>();
 		labels = new LinkedHashMap<Integer, String>();
+		for (int i=0; i < count; i++) {
+			scenes.put(coder.readVariableU32(), coder.readString());
+		}
+		
+		count = coder.readVariableU32();
+
+		for (int i=0; i < count; i++) {
+			labels.put(coder.readVariableU32(), coder.readString());
+		}
+
+		if (coder.getPointer() != end) {
+			throw new CoderException(getClass().getName(), start >> 3, length,
+					(coder.getPointer() - end) >> 3);
+		}
 	}
 
 	public ScenesAndLabels(Map<Integer, String> scenes, Map<Integer, String>labels) {
@@ -158,35 +184,6 @@ public final class ScenesAndLabels implements MovieTag {
 		for (Integer identifier : labels.keySet()) {
 			coder.writeVariableU32(identifier.intValue());
 			coder.writeString(labels.get(identifier));
-		}
-
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException {
-		
-		start = coder.getPointer();
-
-		length = coder.readWord(2, false) & 0x3F;
-
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
-		end = coder.getPointer() + (length << 3);
-
-		int count = coder.readVariableU32();
-
-		for (int i=0; i < count; i++) {
-			scenes.put(coder.readVariableU32(), coder.readString());
-		}
-		
-		count = coder.readVariableU32();
-
-		for (int i=0; i < count; i++) {
-			labels.put(coder.readVariableU32(), coder.readString());
 		}
 
 		if (coder.getPointer() != end) {

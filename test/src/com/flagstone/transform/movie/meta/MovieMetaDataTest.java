@@ -62,8 +62,7 @@ public final class MovieMetaDataTest {
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForMetaDataWithNull() {
-		fixture = new MovieMetaData();
-		fixture.setMetaData(null);
+		fixture = new MovieMetaData((String)null);
 	}
 	
 	@Test
@@ -88,23 +87,10 @@ public final class MovieMetaDataTest {
 	}
 	
 	@Test
-	public void encodeDefault() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(empty.length);		
-		
-		fixture = new MovieMetaData();
-		assertEquals(empty.length, fixture.prepareToEncode(encoder));
-		fixture.encode(encoder);
-		
-		assertTrue(encoder.eof());
-		assertArrayEquals(empty, encoder.getData());
-	}
-	
-	@Test
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		
-		fixture = new MovieMetaData();
-		fixture.decode(decoder);
+		fixture = new MovieMetaData(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(metaData, fixture.getMetaData());
@@ -114,8 +100,7 @@ public final class MovieMetaDataTest {
 	public void decodeExtended() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(extended);
 		
-		fixture = new MovieMetaData();
-		fixture.decode(decoder);
+		fixture = new MovieMetaData(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(metaData, fixture.getMetaData());

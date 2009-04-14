@@ -69,16 +69,22 @@ public final class LineStyle2 implements Codeable, Copyable<LineStyle2> {
 	private transient boolean hasFillStyle;
 	private transient boolean hasMiter;
 
-	public LineStyle2() {
-		super();
-
-		width = 20;
-		color = new Color();
+	public LineStyle2(final SWFDecoder coder) throws CoderException {
 		
-		scaledVertically = true;
-		scaledVertically = true;
-		lineClosed = true;
+		width = coder.readWord(2, false);
+		unpack(coder.readB16());
+		
+		if (hasMiter) {
+			coder.readWord(2, false);
+		}
+		
+		if (hasFillStyle) {
+			fillStyle = coder.fillStyleOfType(coder);
+		} else {
+			color = new Color(coder);
+		}
 	}
+
 
 	public LineStyle2(final int width, final Color color) {
 		super();
@@ -104,7 +110,7 @@ public final class LineStyle2 implements Codeable, Copyable<LineStyle2> {
 	
 	public LineStyle2(LineStyle2 object) {
 		width = object.width;
-		color = object.color.copy();
+		color = object.color;
 		
 		if (fillStyle != null) {
 			object.fillStyle = fillStyle.copy();
@@ -263,7 +269,7 @@ public final class LineStyle2 implements Codeable, Copyable<LineStyle2> {
 		if (hasFillStyle) {
 			length += fillStyle.prepareToEncode(coder);
 		} else {
-			length += color.prepareToEncode(coder);
+			length += 4;
 		}
 		
 		if (scaledHorizontally || scaledVertically) {
@@ -285,23 +291,6 @@ public final class LineStyle2 implements Codeable, Copyable<LineStyle2> {
 			fillStyle.encode(coder);
 		} else {
 			color.encode(coder);
-		}
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException {
-		
-		width = coder.readWord(2, false);
-		unpack(coder.readB16());
-		
-		if (hasMiter) {
-			coder.readWord(2, false);
-		}
-		
-		if (hasFillStyle) {
-			fillStyle = coder.fillStyleOfType(coder.scanByte());
-			fillStyle.decode(coder);
-		} else {
-			color.decode(coder);
 		}
 	}
 

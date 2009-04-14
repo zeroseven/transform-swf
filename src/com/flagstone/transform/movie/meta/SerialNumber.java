@@ -48,9 +48,16 @@ public final class SerialNumber implements MovieTag
 	
 	private transient int length;
 
-	public SerialNumber()
+	public SerialNumber(final SWFDecoder coder) throws CoderException
 	{
-		number = "";
+		length = coder.readWord(2, false) & 0x3F;
+		
+		if (length == 0x3F) {
+			length = coder.readWord(4, false);
+		}
+
+		number = coder.readString(length - 1, coder.getEncoding());
+		coder.readByte();
 	}
 
 	/**
@@ -120,17 +127,5 @@ public final class SerialNumber implements MovieTag
 		}
 		
 		coder.writeString(number);
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException
-	{
-		length = coder.readWord(2, false) & 0x3F;
-		
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
-
-		number = coder.readString(length - 1, coder.getEncoding());
-		coder.readByte();
 	}
 }

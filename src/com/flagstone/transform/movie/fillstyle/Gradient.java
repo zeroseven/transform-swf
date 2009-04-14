@@ -69,10 +69,10 @@ public final class Gradient implements Codeable
 	protected int ratio;
 	protected Color color;
 
-	protected Gradient()
+	public Gradient(final SWFDecoder coder) throws CoderException
 	{
-		ratio = 0;
-		color = new Color(0,0,0,0);
+		ratio = coder.readByte();
+		color = new Color(coder);
 	}
 
 	/**
@@ -91,7 +91,7 @@ public final class Gradient implements Codeable
 	
 	public Gradient(Gradient object) {
 		ratio = object.ratio;
-		color = object.color.copy();
+		color = object.color;
 	}
 
 	/**
@@ -168,11 +168,5 @@ public final class Gradient implements Codeable
 	{
 		coder.writeByte(ratio);
 		color.encode(coder);
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException
-	{
-		ratio = coder.readByte();
-		color.decode(coder);
 	}
 }

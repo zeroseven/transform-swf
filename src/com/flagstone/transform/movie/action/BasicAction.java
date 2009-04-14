@@ -151,10 +151,6 @@ public enum BasicAction implements Action
 		return 1;
 	}
 
-	public void decode(final SWFDecoder coder) throws CoderException {
-		coder.adjustPointer(8);
-	}
-
 	public void encode(final SWFEncoder coder) throws CoderException {
 		coder.writeByte(type);
 		

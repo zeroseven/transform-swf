@@ -59,12 +59,19 @@ public final class MorphGradientFill implements FillStyle {
 	
 	private transient int count;
 
-	public MorphGradientFill(final int type) {
-		this.type = type;
-		startTransform = new CoordTransform();
-		endTransform = new CoordTransform();
-		gradients = new ArrayList<MorphGradient>();
+	public MorphGradientFill(final SWFDecoder coder) throws CoderException {
+	    type = coder.readByte();
+		startTransform = new CoordTransform(coder);
+		endTransform = new CoordTransform(coder);
+		count = coder.readByte();
+
+		gradients = new ArrayList<MorphGradient>(count);
+
+		for (int i=0; i<count; i++) {
+			gradients.add(new MorphGradient(coder));
+		}
 	}
+
 
 	/**
 	 * Creates a MorphGradientFill object specifying the type of fill, starting
@@ -194,7 +201,6 @@ public final class MorphGradientFill implements FillStyle {
 		return String.format(FORMAT, startTransform, endTransform, gradients);
 	}
 
-	@Override
 	public int prepareToEncode(final SWFEncoder coder) {
 		Iterator<MorphGradient> iter;
 		
@@ -210,7 +216,6 @@ public final class MorphGradientFill implements FillStyle {
 		return length;
 	}
 
-	@Override
 	public void encode(final SWFEncoder coder) throws CoderException {
 		Iterator<MorphGradient> iter;
 		
@@ -222,22 +227,6 @@ public final class MorphGradientFill implements FillStyle {
 
 		for (iter = gradients.iterator(); iter.hasNext();) {
 			iter.next().encode(coder);
-		}
-	}
-
-	@Override
-	public void decode(final SWFDecoder coder) throws CoderException {
-		MorphGradient gradient;
-
-		coder.adjustPointer(8);
-		startTransform.decode(coder);
-		endTransform.decode(coder);
-		count = coder.readByte();
-
-		for (int i=0; i<count; i++) {
-			gradient = new MorphGradient(); //NOPMD
-			gradient.decode(coder);
-			gradients.add(gradient);
 		}
 	}
 }

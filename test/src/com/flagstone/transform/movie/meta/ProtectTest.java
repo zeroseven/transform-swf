@@ -62,8 +62,7 @@ public final class ProtectTest {
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForPasswordWithNull() {
-		fixture = new Protect();
-		fixture.setPassword(null);
+		fixture = new Protect((String)null);
 	}
 	
 	@Test
@@ -88,23 +87,10 @@ public final class ProtectTest {
 	}
 	
 	@Test
-	public void encodeDefault() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(empty.length);		
-		
-		fixture = new Protect();
-		assertEquals(empty.length, fixture.prepareToEncode(encoder));
-		fixture.encode(encoder);
-		
-		assertTrue(encoder.eof());
-		assertArrayEquals(empty, encoder.getData());
-	}
-	
-	@Test
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		
-		fixture = new Protect();
-		fixture.decode(decoder);
+		fixture = new Protect(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(password, fixture.getPassword());
@@ -114,8 +100,7 @@ public final class ProtectTest {
 	public void decodeExtended() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(extended);
 		
-		fixture = new Protect();
-		fixture.decode(decoder);
+		fixture = new Protect(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(password, fixture.getPassword());

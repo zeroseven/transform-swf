@@ -77,10 +77,14 @@ public final class Bounds implements Codeable {
 
 	private transient int size;
 
-	/**
-	 * Creates an uninitialised Bounds object .
-	 */
-	public Bounds() {
+	public Bounds(final SWFDecoder coder) throws CoderException {
+		coder.alignToByte();
+		size = coder.readBits(5, false);
+		minX = coder.readBits(size, true);
+		maxX = coder.readBits(size, true);
+		minY = coder.readBits(size, true);
+		maxY = coder.readBits(size, true);
+		coder.alignToByte();
 	}
 
 	/**
@@ -190,16 +194,6 @@ public final class Bounds implements Codeable {
 		coder.writeBits(maxX, size);
 		coder.writeBits(minY, size);
 		coder.writeBits(maxY, size);
-		coder.alignToByte();
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException {
-		coder.alignToByte();
-		size = coder.readBits(5, false);
-		minX = coder.readBits(size, true);
-		maxX = coder.readBits(size, true);
-		minY = coder.readBits(size, true);
-		maxY = coder.readBits(size, true);
 		coder.alignToByte();
 	}
 }

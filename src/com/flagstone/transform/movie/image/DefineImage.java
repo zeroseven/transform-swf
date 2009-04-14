@@ -96,14 +96,51 @@ public final class DefineImage implements ImageTag
 	private transient int length;
 	private transient boolean extendLength;
 
-	public DefineImage()
+	public DefineImage(final SWFDecoder coder) throws CoderException
 	{
-		extendLength = true;
-		width = 0;
-		height = 0;
-		pixelSize = 8;
-		tableSize = 0;
-		data = new byte[0];
+		start = coder.getPointer();
+		length = coder.readWord(2, false) & 0x3F;
+		
+		if (length == 0x3F) {
+			length = coder.readWord(4, false);
+		}
+		end = coder.getPointer() + (length << 3);
+
+		identifier = coder.readWord(2, false);
+
+		switch (coder.readByte())
+		{
+			case 3:
+				pixelSize = 8;
+				break;
+			case 4:
+				pixelSize = 16;
+				break;
+			case 5:
+				pixelSize = 24;
+				break;
+			default:
+				pixelSize = 0;
+				break;
+		}
+
+		width = coder.readWord(2, false);
+		height = coder.readWord(2, false);
+
+		if (pixelSize == 8)
+		{
+			tableSize = coder.readByte() + 1;
+			data = coder.readBytes(new byte[length - 8]);
+		} 
+		else
+		{
+			data = coder.readBytes(new byte[length - 7]);
+		}
+
+		if (coder.getPointer() != end) {
+			throw new CoderException(getClass().getName(), start >> 3, length,
+					(coder.getPointer() - end) >> 3);
+		}
 	}
 
 	/**
@@ -365,53 +402,6 @@ public final class DefineImage implements ImageTag
 		}
 
 		coder.writeBytes(data);
-
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException
-	{
-		start = coder.getPointer();
-		length = coder.readWord(2, false) & 0x3F;
-		
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
-		end = coder.getPointer() + (length << 3);
-
-		identifier = coder.readWord(2, false);
-
-		switch (coder.readByte())
-		{
-			case 3:
-				pixelSize = 8;
-				break;
-			case 4:
-				pixelSize = 16;
-				break;
-			case 5:
-				pixelSize = 24;
-				break;
-			default:
-				pixelSize = 0;
-				break;
-		}
-
-		width = coder.readWord(2, false);
-		height = coder.readWord(2, false);
-
-		if (pixelSize == 8)
-		{
-			tableSize = coder.readByte() + 1;
-			data = coder.readBytes(new byte[length - 8]);
-		} 
-		else
-		{
-			data = coder.readBytes(new byte[length - 7]);
-		}
 
 		if (coder.getPointer() != end) {
 			throw new CoderException(getClass().getName(), start >> 3, length,

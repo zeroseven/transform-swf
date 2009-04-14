@@ -71,43 +71,37 @@ public final class PlaceTest {
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForDepthWithLowerBound() {
-		fixture = new Place();
-		fixture.setIdentifier(0);
+		fixture = new Place(0, layer, transform);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForDepthWithUpperBound() {
-		fixture = new Place();
-		fixture.setIdentifier(65536);
+		fixture = new Place(65536, layer, transform);
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForTimeoutWithLowerBound() {
-		fixture = new Place();
-		fixture.setLayer(0);
+		fixture = new Place(identifier, 0, transform);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForTimeoutWithUpperBound() {
-		fixture = new Place();
-		fixture.setLayer(65536);
+		fixture = new Place(identifier, 65536, transform);
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForCoordTransformWithNull() {
-		fixture = new Place();
-		fixture.setTransform(null);
+		fixture = new Place(identifier, layer, null);
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForColorTransformWithNull() {
-		fixture = new Place();
-		fixture.setColorTransform(null);
+		fixture = new Place(identifier, layer, transform, null);
 	}
 
 	@Test
 	public void checkCopy() {
-		fixture = new Place();
+		fixture = new Place(identifier, layer, transform, colorTransform);
 		Place copy = fixture.copy();
 
 		assertNotSame(fixture, copy);
@@ -143,23 +137,10 @@ public final class PlaceTest {
 	}
 	
 	@Test
-	public void encodeDefault() throws CoderException {		
-		SWFEncoder encoder = new SWFEncoder(empty.length);		
-		
-		fixture = new Place();
-		assertEquals(empty.length, fixture.prepareToEncode(encoder));
-		fixture.encode(encoder);
-		
-		assertTrue(encoder.eof());
-		assertArrayEquals(empty, encoder.getData());
-	}
-	
-	@Test
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(coord);
 		
-		fixture = new Place();
-		fixture.decode(decoder);
+		fixture = new Place(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(identifier, fixture.getIdentifier());
@@ -172,8 +153,7 @@ public final class PlaceTest {
 	public void decodeExtended() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(extended);
 		
-		fixture = new Place();
-		fixture.decode(decoder);
+		fixture = new Place(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(identifier, fixture.getIdentifier());
@@ -186,8 +166,7 @@ public final class PlaceTest {
 	public void decodeCoordAndColorTransforms() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(coordAndColor);
 		
-		fixture = new Place();
-		fixture.decode(decoder);
+		fixture = new Place(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(identifier, fixture.getIdentifier());

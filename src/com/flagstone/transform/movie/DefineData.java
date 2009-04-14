@@ -60,11 +60,24 @@ public final class DefineData implements DefineTag {
 	private transient int end;
 	private transient int length;
 
-	/**
-	 * Creates a DefineData object with no data.
-	 */
-	public DefineData() {
-		data = new byte[0];
+	public DefineData(final SWFDecoder coder) throws CoderException {
+
+		start = coder.getPointer();
+		length = coder.readWord(2, false) & 0x3F;
+
+		if (length == 0x3F) {
+			length = coder.readWord(4, false);
+		}
+		end = coder.getPointer() + (length << 3);
+
+		identifier = coder.readWord(2, false);
+		coder.adjustPointer(32);
+		data = coder.readBytes(new byte[length - 6]);
+
+		if (coder.getPointer() != end) {
+			throw new CoderException(getClass().getName(), start >> 3, length,
+					(coder.getPointer() - end) >> 3);
+		}
 	}
 
 	/**
@@ -153,26 +166,6 @@ public final class DefineData implements DefineTag {
 		coder.writeWord(identifier, 2);
 		coder.writeWord(0, 4);
 		coder.writeBytes(data);
-
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException {
-
-		start = coder.getPointer();
-		length = coder.readWord(2, false) & 0x3F;
-
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
-		end = coder.getPointer() + (length << 3);
-
-		identifier = coder.readWord(2, false);
-		coder.adjustPointer(32);
-		data = coder.readBytes(new byte[length - 6]);
 
 		if (coder.getPointer() != end) {
 			throw new CoderException(getClass().getName(), start >> 3, length,

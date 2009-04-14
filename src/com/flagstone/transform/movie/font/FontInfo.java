@@ -85,16 +85,51 @@ public final class FontInfo implements MovieTag
 	private transient int length;
 	private transient boolean wideCodes = false;
 
-	public FontInfo()
+	public FontInfo(final SWFDecoder coder) throws CoderException
 	{
-		identifier = 1;
-		name = "";
-		italic = false;
-		bold = false;
-		small = false;
-		encoding = TextFormat.UNICODE;
 		codes = new ArrayList<Integer>();
+
+		start = coder.getPointer();
+		length = coder.readWord(2, false) & 0x3F;
+		
+		if (length == 0x3F) {
+			length = coder.readWord(4, false);
+		}
+		end = coder.getPointer() + (length << 3);
+
+		identifier = coder.readWord(2, false);
+		int nameLength = coder.readByte();
+		name = coder.readString(nameLength, coder.getEncoding());
+
+		if (name.length() > 0)
+		{
+			while (name.charAt(name.length() - 1) == 0)
+			{
+				name = name.substring(0, name.length() - 1);
+			}
+		}
+
+		/* reserved */coder.readBits(2, false);
+		small = coder.readBits(1, false) != 0;
+		encoding = TextFormat.fromInt(coder.readBits(2, false));
+		italic = coder.readBits(1, false) != 0;
+		bold = coder.readBits(1, false) != 0;
+		wideCodes = coder.readBits(1, false) != 0;
+
+		int bytesRead = 3 + nameLength + 1;
+
+		while (bytesRead < length)
+		{
+			codes.add(coder.readWord(wideCodes ? 2 : 1, false));
+			bytesRead += (wideCodes) ? 2 : 1;
+		}
+
+		if (coder.getPointer() != end) {
+			throw new CoderException(getClass().getName(), start >> 3, length,
+					(coder.getPointer() - end) >> 3);
+		}
 	}
+
 
 	/**
 	 * Constructs a basic FontInfo object specifying only the name and style of 
@@ -362,51 +397,6 @@ public final class FontInfo implements MovieTag
 
 		for (Integer code : codes) {
 			coder.writeWord(code.intValue(), wideCodes ? 2 : 1);
-		}
-
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException
-	{
-		codes = new ArrayList<Integer>();
-
-		start = coder.getPointer();
-		length = coder.readWord(2, false) & 0x3F;
-		
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
-		end = coder.getPointer() + (length << 3);
-
-		identifier = coder.readWord(2, false);
-		int nameLength = coder.readByte();
-		name = coder.readString(nameLength, coder.getEncoding());
-
-		if (name.length() > 0)
-		{
-			while (name.charAt(name.length() - 1) == 0)
-			{
-				name = name.substring(0, name.length() - 1);
-			}
-		}
-
-		/* reserved */coder.readBits(2, false);
-		small = coder.readBits(1, false) != 0;
-		encoding = TextFormat.fromInt(coder.readBits(2, false));
-		italic = coder.readBits(1, false) != 0;
-		bold = coder.readBits(1, false) != 0;
-		wideCodes = coder.readBits(1, false) != 0;
-
-		int bytesRead = 3 + nameLength + 1;
-
-		while (bytesRead < length)
-		{
-			codes.add(coder.readWord(wideCodes ? 2 : 1, false));
-			bytesRead += (wideCodes) ? 2 : 1;
 		}
 
 		if (coder.getPointer() != end) {

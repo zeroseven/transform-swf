@@ -48,8 +48,14 @@ public final class FocalGradientFill implements FillStyle {
 	
 	private transient int count;
 
-	protected FocalGradientFill() {
-		gradients = new ArrayList<Gradient>();
+	public FocalGradientFill(final SWFDecoder coder) throws CoderException {
+		coder.adjustPointer(8);
+		count = coder.readByte();
+		gradients = new ArrayList<Gradient>(count);
+
+		for (int i=0; i<count; i++) {
+			gradients.add(new Gradient(coder));
+		}
 	}
 
 	public FocalGradientFill(FocalGradientFill object) {
@@ -132,7 +138,6 @@ public final class FocalGradientFill implements FillStyle {
 		return "";
 	}
 
-	@Override
 	public int prepareToEncode(final SWFEncoder coder) {
 		Iterator<Gradient> iter;
 				
@@ -146,7 +151,6 @@ public final class FocalGradientFill implements FillStyle {
 		return length;
 	}
 
-	@Override
 	public void encode(final SWFEncoder coder) throws CoderException {
 		Iterator<Gradient> iter;
 		
@@ -154,20 +158,6 @@ public final class FocalGradientFill implements FillStyle {
 
 		for (iter = gradients.iterator(); iter.hasNext();) {
 			iter.next().encode(coder);
-		}
-	}
-
-	@Override
-	public void decode(final SWFDecoder coder) throws CoderException {
-		Gradient gradient;
-		
-		coder.adjustPointer(8);
-		count = coder.readByte();
-
-		for (int i=0; i<count; i++) {
-			gradient = new Gradient(); //NOPMD
-			gradient.decode(coder);
-			gradients.add(gradient);
 		}
 	}
 }

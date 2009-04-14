@@ -58,14 +58,12 @@ public final class JumpTest {
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForOffsetWithLowerBound() {
-		fixture = new Jump();
-		fixture.setOffset(-32769);
+		fixture = new Jump(-32769);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForOffsetWithUpperBound() {
-		fixture = new Jump();
-		fixture.setOffset(32768);
+		fixture = new Jump(32768);
 	}
 	
 	@Test
@@ -93,8 +91,7 @@ public final class JumpTest {
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		
-		fixture = new Jump();
-		fixture.decode(decoder);
+		fixture = new Jump(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(offset, fixture.getOffset());

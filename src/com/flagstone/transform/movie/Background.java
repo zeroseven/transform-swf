@@ -60,12 +60,11 @@ public final class Background implements MovieTag {
 
 	private Color color;
 
-	/**
-	 * Creates an uninitialised background object - the background colour will
-	 * be set to black.
-	 */
-	public Background() {
-		color = new Color();
+	public Background(final SWFDecoder coder) throws CoderException {
+		if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
+			coder.readWord(4, false);
+		}
+		color = new Color(coder);
 	}
 
 	/**
@@ -85,7 +84,7 @@ public final class Background implements MovieTag {
 	 *            a Background object.
 	 */
 	public Background(final Background object) {
-		color = object.color.copy();
+		color = object.color;
 	}
 
 	/**
@@ -124,12 +123,5 @@ public final class Background implements MovieTag {
 	public void encode(final SWFEncoder coder) throws CoderException {
 		coder.writeWord((Types.SET_BACKGROUND_COLOR << 6) | 3, 2);
 		color.encode(coder);
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException {
-		if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
-			coder.readWord(4, false);
-		}
-		color.decode(coder);
 	}
 }

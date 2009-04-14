@@ -71,7 +71,7 @@ public final class WithTest {
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAddNullNull() {
-		fixture = new With();
+		fixture = new With(list);
 		fixture.add(null);
 	}
 
@@ -100,8 +100,7 @@ public final class WithTest {
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		
-		fixture = new With();
-		fixture.decode(decoder);
+		fixture = new With(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(list, fixture.getActions());

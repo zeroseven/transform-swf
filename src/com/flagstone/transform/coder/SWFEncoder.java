@@ -29,6 +29,8 @@
  */
 package com.flagstone.transform.coder;
 
+import com.flagstone.transform.movie.datatype.Color;
+
 /**
  * SWFEncoder extends LittleEndianEncoder by adding a context used to pass
  * information between classes during encoding.

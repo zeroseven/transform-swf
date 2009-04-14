@@ -103,8 +103,7 @@ public final class MovieObjectTest {
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		
-		fixture = new MovieObject(type);
-		fixture.decode(decoder);
+		fixture = new MovieObject(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(type, fixture.getType());
@@ -115,8 +114,7 @@ public final class MovieObjectTest {
 	public void decodeExtended() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(extended);
 		
-		fixture = new MovieObject(type);
-		fixture.decode(decoder);
+		fixture = new MovieObject(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(type, fixture.getType());

@@ -107,8 +107,71 @@ public final class Push implements Action {
 
 	private transient int length;
 
-	public Push() {
+	public Push(final SWFDecoder coder) throws CoderException {
+		
+		coder.readByte();
+		length = coder.readWord(2, false);
 		values = new ArrayList<Object>();
+
+		int valuesLength = length;
+
+		while (valuesLength > 0) {
+			int dataType = coder.readWord(1, false);
+
+			switch (dataType) {
+			case 0:
+				int start = coder.getPointer();
+				int strlen = 0;
+
+				while (coder.readWord(1, false) != 0) {
+					strlen += 1;
+				}
+
+				coder.setPointer(start);
+				values.add(coder.readString(strlen));
+				coder.adjustPointer(8);
+				valuesLength -= strlen + 2;
+				break;
+			case 1: // Pre version 5 property
+				values.add(Property.fromInt(coder.readWord(4, false)));
+				valuesLength -= 5;
+				break;
+			case 2:
+				values.add(Null.getInstance());
+				valuesLength -= 1;
+				break;
+			case 3:
+				values.add(Void.getInstance());
+				valuesLength -= 1;
+				break;
+			case 4:
+				values.add(new RegisterIndex(coder.readByte()));
+				valuesLength -= 2;
+				break;
+			case 5:
+				values.add(coder.readByte() != 0);
+				valuesLength -= 2;
+				break;
+			case 6:
+				values.add(coder.readDouble());
+				valuesLength -= 9;
+				break;
+			case 7:
+				values.add(coder.readWord(4, false));
+				valuesLength -= 5;
+				break;
+			case 8:
+				values.add(new TableIndex(coder.readWord(1, false)));
+				valuesLength -= 2;
+				break;
+			case 9:
+				values.add(new TableIndex(coder.readWord(2, false)));
+				valuesLength -= 3;
+				break;
+			default:
+				break;
+			}
+		}
 	}
 
 	/**
@@ -349,72 +412,6 @@ public final class Push implements Action {
 			} else if (anObject instanceof RegisterIndex) {
 				coder.writeWord(4, 1);
 				coder.writeWord(((RegisterIndex) anObject).getIndex(), 1);
-			}
-		}
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException {
-		
-		coder.readByte();
-		length = coder.readWord(2, false);
-
-		int valuesLength = length;
-
-		while (valuesLength > 0) {
-			int dataType = coder.readWord(1, false);
-
-			switch (dataType) {
-			case 0:
-				int start = coder.getPointer();
-				int strlen = 0;
-
-				while (coder.readWord(1, false) != 0) {
-					strlen += 1;
-				}
-
-				coder.setPointer(start);
-				values.add(coder.readString(strlen));
-				coder.adjustPointer(8);
-				valuesLength -= strlen + 2;
-				break;
-			case 1: // Pre version 5 property
-				values.add(Property.fromInt(coder.readWord(4, false)));
-				valuesLength -= 5;
-				break;
-			case 2:
-				values.add(Null.getInstance());
-				valuesLength -= 1;
-				break;
-			case 3:
-				values.add(Void.getInstance());
-				valuesLength -= 1;
-				break;
-			case 4:
-				values.add(new RegisterIndex(coder.readByte()));
-				valuesLength -= 2;
-				break;
-			case 5:
-				values.add(coder.readByte() != 0);
-				valuesLength -= 2;
-				break;
-			case 6:
-				values.add(coder.readDouble());
-				valuesLength -= 9;
-				break;
-			case 7:
-				values.add(coder.readWord(4, false));
-				valuesLength -= 5;
-				break;
-			case 8:
-				values.add(new TableIndex(coder.readWord(1, false)));
-				valuesLength -= 2;
-				break;
-			case 9:
-				values.add(new TableIndex(coder.readWord(2, false)));
-				valuesLength -= 3;
-				break;
-			default:
-				break;
 			}
 		}
 	}

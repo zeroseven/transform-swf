@@ -67,15 +67,4 @@ public final class BasicActionTest {
 		assertTrue(encoder.eof());
 		assertArrayEquals(encoded, encoder.getData());
 	}
-
-	@Test
-	public void decode() throws CoderException {
-
-		SWFDecoder decoder = new SWFDecoder(encoded);
-		
-		fixture = BasicAction.fromInt(Types.NEXT_FRAME);
-		fixture.decode(decoder);
-		
-		assertTrue(decoder.eof());
-	}
 }

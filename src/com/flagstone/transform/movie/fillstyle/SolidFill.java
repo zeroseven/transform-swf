@@ -54,8 +54,9 @@ public final class SolidFill implements FillStyle {
 
 	private Color color;
 
-	public SolidFill() {
-		color = new Color();
+	public SolidFill(final SWFDecoder coder) throws CoderException {
+		coder.adjustPointer(8);
+		color = new Color(coder);
 	}
 
 	/**
@@ -70,7 +71,7 @@ public final class SolidFill implements FillStyle {
 	}
 	
 	public SolidFill(SolidFill object) {
-		color = object.color.copy();
+		color = object.color;
 	}
 
 	/**
@@ -103,20 +104,12 @@ public final class SolidFill implements FillStyle {
 		return String.format(FORMAT, color.toString());
 	}
 
-	@Override
 	public int prepareToEncode(final SWFEncoder coder) {
 		return 1 + color.prepareToEncode(coder);
 	}
 
-	@Override
 	public void encode(final SWFEncoder coder) throws CoderException {
 		coder.writeByte(FillStyle.SOLID);
 		color.encode(coder);
-	}
-
-	@Override
-	public void decode(final SWFDecoder coder) throws CoderException {
-		coder.adjustPointer(8);
-		color.decode(coder);
 	}
 }

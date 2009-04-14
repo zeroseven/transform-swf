@@ -55,21 +55,14 @@ public final class ActionData implements Action {
 	private byte[] data;
 
 	/**
-	 * Creates an uninitialised ActionData object.
-	 */
-	public ActionData() {
-		data = new byte[0];
-	}
-
-	/**
 	 * Creates an ActionData object initialised to hold a series of encoded
 	 * actions.
 	 * 
 	 * @param size
 	 *            the number of bytes to reserve for encoded actions.
 	 */
-	public ActionData(int size) {
-		setData(size);
+	public ActionData(final int size, final SWFDecoder coder) throws CoderException {
+		data = coder.readBytes(new byte[size]);
 	}
 
 	/**
@@ -142,9 +135,5 @@ public final class ActionData implements Action {
 
 	public void encode(final SWFEncoder coder) throws CoderException {
 		coder.writeBytes(data);
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException {
-		coder.readBytes(data);
 	}
 }

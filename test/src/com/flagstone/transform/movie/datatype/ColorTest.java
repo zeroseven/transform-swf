@@ -40,270 +40,143 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-@SuppressWarnings( { "PMD.TooManyMethods",
+@SuppressWarnings( { 
     "PMD.LocalVariableCouldBeFinal",
 	"PMD.JUnitAssertionsShouldIncludeMessage" })
 public final class ColorTest {
+	
+	private transient final int red = 1;
+	private transient final int green = 2;
+	private transient final int blue = 3;
+	private transient final int alpha = 4;
+
 	private transient Color fixture;
+
+	private transient byte[] opaque = new byte[] {1,2,3};
+	private transient byte[] transparent = new byte[] {1,2,3,4};
 
 	private transient SWFEncoder encoder;
 	private transient SWFDecoder decoder;
-	private transient byte[] data;
-
-	@Before
-	public void setUp() {
-		fixture = new Color();
-		encoder = new SWFEncoder(0);
-		decoder = new SWFDecoder(new byte[] {});
-	}
-
-	@Test
-	public void checkValueOfString() {
-		fixture = Color.valueOf("01020408");
-
-		assertEquals(1, fixture.getRed());
-		assertEquals(2, fixture.getGreen());
-		assertEquals(4, fixture.getBlue());
-		assertEquals(8, fixture.getAlpha());
-	}
-
-	@Test
-	public void checkValueOfInteger() {
-		fixture = Color.valueOf(0x01020408);
-
-		assertEquals(1, fixture.getRed());
-		assertEquals(2, fixture.getGreen());
-		assertEquals(4, fixture.getBlue());
-		assertEquals(8, fixture.getAlpha());
-	}
-
-	@Test
-	public void checkConstructorSetsOpaqueAttributes() {
-		fixture = new Color(1, 2, 4);
-
-		assertEquals(1, fixture.getRed());
-		assertEquals(2, fixture.getGreen());
-		assertEquals(4, fixture.getBlue());
-		assertEquals(255, fixture.getAlpha());
-	}
-
-	@Test
-	public void checkConstructorSetsTransparentAttributes() {
-		fixture = new Color(1, 2, 4, 8);
-
-		assertEquals(1, fixture.getRed());
-		assertEquals(2, fixture.getGreen());
-		assertEquals(4, fixture.getBlue());
-		assertEquals(8, fixture.getAlpha());
-	}
-
-	@Test
-	public void checkConstructorCreatesCopy() {
-		fixture = new Color(1, 2, 4, 8);
-		Color copy = new Color(fixture);
-		
-		assertEquals(1, copy.getRed());
-		assertEquals(2, copy.getGreen());
-		assertEquals(4, copy.getBlue());
-		assertEquals(8, copy.getAlpha());
-	}
-
-	@Test
-	public void checkAccessorsForRedChannel() {
-		fixture.setRed(1);
-
-		assertEquals(1, fixture.getRed());
-		assertEquals(0, fixture.getGreen());
-		assertEquals(0, fixture.getBlue());
-		assertEquals(255, fixture.getAlpha());
-	}
-
-	@Test
-	public void checkAccessorsForGreenChannel() {
-		fixture.setGreen(1);
-
-		assertEquals(0, fixture.getRed());
-		assertEquals(1, fixture.getGreen());
-		assertEquals(0, fixture.getBlue());
-		assertEquals(255, fixture.getAlpha());
-	}
-
-	@Test
-	public void checkAccessorsForBlueChannel() {
-		fixture.setBlue(1);
-
-		assertEquals(0, fixture.getRed());
-		assertEquals(0, fixture.getGreen());
-		assertEquals(1, fixture.getBlue());
-		assertEquals(255, fixture.getAlpha());
-	}
-
-	@Test
-	public void checkAccessorsForAlphaChannel() {
-		fixture.setAlpha(1);
-
-		assertEquals(0, fixture.getRed());
-		assertEquals(0, fixture.getGreen());
-		assertEquals(0, fixture.getBlue());
-		assertEquals(1, fixture.getAlpha());
-	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void checkRedBelowRangeThrowsException() {
-		fixture.setRed(-1);
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void checkGreenBelowRangeThrowsException() {
-		fixture.setGreen(-1);
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void checkBlueBelowRangeThrowsException() {
-		fixture.setBlue(-1);
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAlphaBelowRangeThrowsException() {
-		fixture.setAlpha(-1);
+		fixture = new Color(-1, 2, 3);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void checkRedAboveRangeThrowsException() {
-		fixture.setRed(256);
+		fixture = new Color(256, 2, 3);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void checkGreenBelowRangeThrowsException() {
+		fixture = new Color(1, -1, 3);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void checkGreenAboveRangeThrowsException() {
-		fixture.setGreen(256);
+		fixture = new Color(1, 256, 3);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void checkBlueBelowRangeThrowsException() {
+		fixture = new Color(1, 2, -1);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void checkBlueAboveRangeThrowsException() {
-		fixture.setBlue(256);
+		fixture = new Color(1, 2, 256);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void checkAlphaBelowRangeThrowsException() {
+		fixture = new Color(1, 2, 3, -1);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void checkAlphaAboveRangeThrowsException() {
-		fixture.setAlpha(256);
+		fixture = new Color(1, 2, 3, 256);
 	}
 
 	@Test
-	public void getColourAsRGB() {
-		fixture = new Color(1, 2, 4);
-
-		assertEquals(0x010204, fixture.getRGB());
+	public void checkNullIsnotEqual() {
+		assertFalse(new Color(red, green, blue, alpha).equals(null));
 	}
 
 	@Test
-	public void setColourFromRGB() {
-		fixture.setRGB(0x010204);
-
-		assertEquals(1, fixture.getRed());
-		assertEquals(2, fixture.getGreen());
-		assertEquals(4, fixture.getBlue());
+	public void checkObjectIsNotEqual() {
+		assertFalse(new Color(red, green, blue, alpha).equals(new Object()));
 	}
 
 	@Test
-	public void getColourAsRGBA() {
-		fixture = new Color(1, 2, 4, 8);
-
-		assertEquals(0x01020408, fixture.getRGBA());
+	public void checkSameIsEqual() {
+		fixture = new Color(red, green, blue, alpha);
+		assertTrue(fixture.equals(fixture));
 	}
 
 	@Test
-	public void setColourFromRGBA() {
-		fixture.setRGBA(0x01020408);
-
-		assertEquals(1, fixture.getRed());
-		assertEquals(2, fixture.getGreen());
-		assertEquals(4, fixture.getBlue());
-		assertEquals(8, fixture.getAlpha());
+	public void checkIsNotEqual() {
+		fixture = new Color(red, green, blue, alpha);
+		assertFalse(fixture.equals(new Color(4,3,2,1)));
 	}
 
 	@Test
-	public void checkCopyIsEqual() {
-		fixture = new Color(1, 2, 4, 8);
-		Color copy = fixture.copy();
-		
-		assertEquals(fixture.getRed(), copy.getRed());
-		assertEquals(fixture.getGreen(), copy.getGreen());
-		assertEquals(fixture.getBlue(), copy.getBlue());
-		assertEquals(fixture.getAlpha(), copy.getAlpha());
-	}
-
-	@Test
-	public void checkCopyIsNotSame() {
-		fixture = new Color(1, 2, 4, 8);
-		assertNotSame(fixture, fixture.copy());
-	}
-	
-	@Test
-	public void checkToStringCompletesFormat() {
-		assertFalse(fixture.toString().contains("%"));
+	public void checkOtherIsEqual() {
+		assertTrue(new Color(red, green, blue, alpha).equals(new Color(red, green, blue, alpha)));
 	}
 
 	@Test
 	public void encodeOpaqueColour() throws CoderException {
-		data = new byte[] { 1, 2, 4 };
-		encoder.setData(data.length);
+		encoder = new SWFEncoder(opaque.length);
+		fixture = new Color(red, green, blue);
 
-		fixture.setRed(data[0]);
-		fixture.setGreen(data[1]);
-		fixture.setBlue(data[2]);
-
-		assertEquals(3, fixture.prepareToEncode(encoder));
+		assertEquals(opaque.length, fixture.prepareToEncode(encoder));
 		fixture.encode(encoder);
 
-		assertEquals(24, encoder.getPointer());
-		assertArrayEquals(data, encoder.getData());
+		assertTrue(encoder.eof());
+		assertArrayEquals(opaque, encoder.getData());
 	}
 
 	@Test
 	public void encodeTransparentColour() throws CoderException {
-		data = new byte[] { 1, 2, 4, 8 };
-		encoder.setData(data.length);
+		encoder = new SWFEncoder(transparent.length);
 		encoder.getContext().setTransparent(true);
+		
+		fixture = new Color(red, green, blue, alpha);
 
-		fixture.setRed(data[0]);
-		fixture.setGreen(data[1]);
-		fixture.setBlue(data[2]);
-		fixture.setAlpha(data[3]);
-
-		assertEquals(4, fixture.prepareToEncode(encoder));
+		assertEquals(transparent.length, fixture.prepareToEncode(encoder));
 		fixture.encode(encoder);
 
-		assertEquals(32, encoder.getPointer());
-		assertArrayEquals(data, encoder.getData());
+		assertTrue(encoder.eof());
+		assertArrayEquals(transparent, encoder.getData());
 	}
 
 	@Test
 	public void decodeOpaqueColour() throws CoderException {
-		data = new byte[] { 1, 2, 4 };
-		decoder.setData(data);
+		decoder = new SWFDecoder(opaque);
 
-		fixture.decode(decoder);
+		fixture = new Color(decoder);
 
-		assertEquals(24, decoder.getPointer());
-		assertEquals(1, fixture.getRed());
-		assertEquals(2, fixture.getGreen());
-		assertEquals(4, fixture.getBlue());
+		assertTrue(decoder.eof());
+		assertEquals(red, fixture.getRed());
+		assertEquals(green, fixture.getGreen());
+		assertEquals(blue, fixture.getBlue());
 		assertEquals(255, fixture.getAlpha());
 	}
 
 	@Test
 	public void decodeTransparentColour() throws CoderException {
-		data = new byte[] { 1, 2, 4, 8 };
-		decoder.setData(data);
+		decoder = new SWFDecoder(transparent);
 		decoder.getContext().setTransparent(true);
 
-		fixture.decode(decoder);
+		fixture = new Color(decoder);
 
-		assertEquals(32, decoder.getPointer());
-		assertEquals(1, fixture.getRed());
-		assertEquals(2, fixture.getGreen());
-		assertEquals(4, fixture.getBlue());
-		assertEquals(8, fixture.getAlpha());
+		assertTrue(decoder.eof());
+		assertEquals(red, fixture.getRed());
+		assertEquals(green, fixture.getGreen());
+		assertEquals(blue, fixture.getBlue());
+		assertEquals(alpha, fixture.getAlpha());
 	}
 }

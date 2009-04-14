@@ -116,15 +116,46 @@ public final class ColorTransform implements Codeable, Copyable<ColorTransform> 
 	private transient boolean hasAdd;
 	private transient boolean hasAlpha;
 
-	/**
-	 * Creates a unity colour transform which will not change the colour of the
-	 * object it is applied to.
-	 */
-	public ColorTransform() {
-		multiplyRed = 256;
-		multiplyGreen = 256;
-		multiplyBlue = 256;
-		multiplyAlpha = 256;
+	public ColorTransform(final SWFDecoder coder) throws CoderException {
+
+		coder.alignToByte();
+
+		hasAdd = coder.readBits(1, false) != 0;
+		hasMultiply = coder.readBits(1, false) != 0;
+		hasAlpha = coder.getContext().isTransparent();
+		size = coder.readBits(4, false);
+
+		if (hasMultiply) {
+			multiplyRed = coder.readBits(size, true);
+			multiplyGreen = coder.readBits(size, true);
+			multiplyBlue = coder.readBits(size, true);
+
+			if (hasAlpha) {
+				multiplyAlpha = coder.readBits(size, true);
+			}
+		} else {
+			multiplyRed = 256;
+			multiplyGreen = 256;
+			multiplyBlue = 256;
+			multiplyAlpha = 256;
+		}
+
+		if (hasAdd) {
+			addRed = coder.readBits(size, true);
+			addGreen = coder.readBits(size, true);
+			addBlue = coder.readBits(size, true);
+
+			if (hasAlpha) {
+				addAlpha = coder.readBits(size, true);
+			}
+		} else {
+			addRed = 0;
+			addGreen = 0;
+			addBlue = 0;
+			addAlpha = 0;
+		}
+
+		coder.alignToByte();
 	}
 
 	/**
@@ -453,48 +484,6 @@ public final class ColorTransform implements Codeable, Copyable<ColorTransform> 
 			if (hasAlpha) {
 				coder.writeBits(addAlpha, size);
 			}
-		}
-
-		coder.alignToByte();
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException {
-
-		coder.alignToByte();
-
-		hasAdd = coder.readBits(1, false) != 0;
-		hasMultiply = coder.readBits(1, false) != 0;
-		hasAlpha = coder.getContext().isTransparent();
-		size = coder.readBits(4, false);
-
-		if (hasMultiply) {
-			multiplyRed = coder.readBits(size, true);
-			multiplyGreen = coder.readBits(size, true);
-			multiplyBlue = coder.readBits(size, true);
-
-			if (hasAlpha) {
-				multiplyAlpha = coder.readBits(size, true);
-			}
-		} else {
-			multiplyRed = 256;
-			multiplyGreen = 256;
-			multiplyBlue = 256;
-			multiplyAlpha = 256;
-		}
-
-		if (hasAdd) {
-			addRed = coder.readBits(size, true);
-			addGreen = coder.readBits(size, true);
-			addBlue = coder.readBits(size, true);
-
-			if (hasAlpha) {
-				addAlpha = coder.readBits(size, true);
-			}
-		} else {
-			addRed = 0;
-			addGreen = 0;
-			addBlue = 0;
-			addAlpha = 0;
 		}
 
 		coder.alignToByte();

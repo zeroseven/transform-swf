@@ -56,9 +56,24 @@ public final class Export implements MovieTag
 	
 	private transient int length;
 
-	public Export()
+	public Export(final SWFDecoder coder) throws CoderException
 	{
+		length = coder.readWord(2, false) & 0x3F;
+		
+		if (length == 0x3F) {
+			length = coder.readWord(4, false);
+		}
+
+		int count = coder.readWord(2, false);
 		objects = new LinkedHashMap<Integer,String>();
+
+		for (int i = 0; i < count; i++)
+		{
+			int identifier = coder.readWord(2, false);
+			String var = coder.readString();
+
+			add(identifier, var);
+		}
 	}
 
 	/**

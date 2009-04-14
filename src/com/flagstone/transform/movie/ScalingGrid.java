@@ -43,8 +43,14 @@ public final class ScalingGrid implements DefineTag {
 
 	private transient int length;
 
-	public ScalingGrid() {
-		bounds = new Bounds();
+	public ScalingGrid(final SWFDecoder coder) throws CoderException {
+
+		if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
+			coder.readWord(4, false);
+		}
+
+		identifier = coder.readWord(2, false);
+		bounds = new Bounds(coder);
 	}
 
 	public ScalingGrid(final int identifier, final Bounds bounds) {
@@ -104,15 +110,5 @@ public final class ScalingGrid implements DefineTag {
 		coder.writeWord((Types.DEFINE_SCALING_GRID << 6) | length, 2);
 		coder.writeWord(identifier, 2);
 		bounds.encode(coder);
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException {
-
-		if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
-			coder.readWord(4, false);
-		}
-
-		identifier = coder.readWord(2, false);
-		bounds.decode(coder);
 	}
 }

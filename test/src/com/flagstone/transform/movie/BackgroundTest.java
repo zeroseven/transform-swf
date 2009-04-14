@@ -60,8 +60,7 @@ public final class BackgroundTest {
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForColorWithNull() {
-		fixture = new Background();
-		fixture.setColor(null);
+		fixture = new Background((Color)null);
 	}
 	
 	@Test
@@ -86,23 +85,10 @@ public final class BackgroundTest {
 	}
 	
 	@Test
-	public void encodeDefault() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(empty.length);		
-		
-		fixture = new Background();
-		assertEquals(empty.length, fixture.prepareToEncode(encoder));
-		fixture.encode(encoder);
-		
-		assertTrue(encoder.eof());
-		assertArrayEquals(empty, encoder.getData());
-	}
-	
-	@Test
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		
-		fixture = new Background();
-		fixture.decode(decoder);
+		fixture = new Background(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(color.toString(), fixture.getColor().toString());
@@ -112,8 +98,7 @@ public final class BackgroundTest {
 	public void decodeExtended() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(extended);
 		
-		fixture = new Background();
-		fixture.decode(decoder);
+		fixture = new Background(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(color.toString(), fixture.getColor().toString());

@@ -65,10 +65,26 @@ public final class Import implements MovieTag
 	
 	private transient int length;
 
-	public Import()
+	public Import(final SWFDecoder coder) throws CoderException
 	{
-		url = "";
+		length = coder.readWord(2, false) & 0x3F;
+		
+		if (length == 0x3F) {
+			length = coder.readWord(4, false);
+		}
+
+		url = coder.readString();
+
+		int count = coder.readWord(2, false);
 		objects = new LinkedHashMap<Integer,String>();
+
+		for (int i = 0; i < count; i++)
+		{
+			int identifier = coder.readWord(2, false);
+			String name = coder.readString();
+
+			add(identifier, name);
+		}
 	}
 
 	/**
@@ -227,27 +243,6 @@ public final class Import implements MovieTag
 
 			coder.writeWord(identifier.intValue(), 2);
 			coder.writeString(name);
-		}
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException
-	{
-		length = coder.readWord(2, false) & 0x3F;
-		
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
-
-		url = coder.readString();
-
-		int count = coder.readWord(2, false);
-
-		for (int i = 0; i < count; i++)
-		{
-			int identifier = coder.readWord(2, false);
-			String name = coder.readString();
-
-			add(identifier, name);
 		}
 	}
 }

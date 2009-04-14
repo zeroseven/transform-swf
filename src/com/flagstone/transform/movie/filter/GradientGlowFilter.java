@@ -6,6 +6,10 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 public final class GradientGlowFilter implements Filter {
 
+	public GradientGlowFilter(final SWFDecoder coder) throws CoderException {
+		
+	}
+	
 	public GradientGlowFilter(GradientGlowFilter object) {
 		
 	}
@@ -14,19 +18,12 @@ public final class GradientGlowFilter implements Filter {
 		return new GradientGlowFilter(this);
 	}
 
-	@Override
 	public int prepareToEncode(final SWFEncoder coder)
 	{
 		return 0;
 	}
 
-	@Override
 	public void encode(final SWFEncoder coder) throws CoderException
-	{
-	}
-
-	@Override
-	public void decode(final SWFDecoder coder) throws CoderException
 	{
 	}
 }

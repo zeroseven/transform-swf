@@ -54,9 +54,16 @@ public final class EnableDebugger implements MovieTag
 	
 	private transient int length;
 
-	public EnableDebugger()
+	public EnableDebugger(final SWFDecoder coder) throws CoderException
 	{
-		password = "";
+		length = coder.readWord(2, false) & 0x3F;
+		
+		if (length == 0x3F) {
+			length = coder.readWord(4, false);
+		}
+
+		coder.readWord(2, false);
+		password = coder.readString();
 	}
 
 	/**
@@ -129,17 +136,5 @@ public final class EnableDebugger implements MovieTag
 		
 		coder.writeWord(0, 2);
 		coder.writeString(password);
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException
-	{
-		length = coder.readWord(2, false) & 0x3F;
-		
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
-
-		coder.readWord(2, false);
-		password = coder.readString();
 	}
 }

@@ -50,9 +50,10 @@ public final class MorphSolidFill implements FillStyle {
 	private Color startColor;
 	private Color endColor;
 
-	public MorphSolidFill() {
-		startColor = new Color(0, 0, 0, 0);
-		endColor = new Color(0, 0, 0, 0);
+	public MorphSolidFill(final SWFDecoder coder) throws CoderException {
+		coder.adjustPointer(8);
+		startColor = new Color(coder);
+		endColor = new Color(coder);
 	}
 
 	/**
@@ -70,8 +71,8 @@ public final class MorphSolidFill implements FillStyle {
 	}
 	
 	public MorphSolidFill(MorphSolidFill object) {
-		startColor = object.startColor.copy();
-		endColor = object.endColor.copy();
+		startColor = object.startColor;
+		endColor = object.endColor;
 	}
 
 	/**
@@ -124,23 +125,14 @@ public final class MorphSolidFill implements FillStyle {
 		return String.format(FORMAT, startColor, endColor);
 	}
 
-	@Override
 	public int prepareToEncode(final SWFEncoder coder) {
 		return 1 + startColor.prepareToEncode(coder)
 				+ endColor.prepareToEncode(coder);
 	}
 
-	@Override
 	public void encode(final SWFEncoder coder) throws CoderException {
 		coder.writeByte(SOLID);
 		startColor.encode(coder);
 		endColor.encode(coder);
-	}
-
-	@Override
-	public void decode(final SWFDecoder coder) throws CoderException {
-		coder.adjustPointer(8);
-		startColor.decode(coder);
-		endColor.decode(coder);
 	}
 }

@@ -63,25 +63,22 @@ public final class DefineDataTest {
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForIdentifierWithLowerBound() {
-		fixture = new DefineData();
-		fixture.setIdentifier(0);
+		fixture = new DefineData(0, data);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForIdentifierWithUpperBound() {
-		fixture = new DefineData();
-		fixture.setIdentifier(65536);
+		fixture = new DefineData(65536, data);
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForDataWithNull() {
-		fixture = new DefineData();
-		fixture.setData(null);
+		fixture = new DefineData(1, null);
 	}
 	
 	@Test
 	public void checkCopy() {
-		fixture = new DefineData();
+		fixture = new DefineData(identifier, data);
 		DefineData copy = fixture.copy();
 
 		assertNotSame(fixture, copy);
@@ -106,7 +103,7 @@ public final class DefineDataTest {
 	public void encodeDefault() throws CoderException {		
 		SWFEncoder encoder = new SWFEncoder(empty.length);		
 		
-		fixture = new DefineData();
+		fixture = new DefineData(identifier, data);
 		assertEquals(empty.length, fixture.prepareToEncode(encoder));
 		fixture.encode(encoder);
 		
@@ -130,8 +127,7 @@ public final class DefineDataTest {
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		
-		fixture = new DefineData();
-		fixture.decode(decoder);
+		fixture = new DefineData(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(identifier, fixture.getIdentifier());
@@ -142,8 +138,7 @@ public final class DefineDataTest {
 	public void decodeExtended() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(extended);
 		
-		fixture = new DefineData();
-		fixture.decode(decoder);
+		fixture = new DefineData(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(identifier, fixture.getIdentifier());

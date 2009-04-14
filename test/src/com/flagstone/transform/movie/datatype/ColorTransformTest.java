@@ -55,29 +55,6 @@ public final class ColorTransformTest
 	private transient SWFDecoder decoder;
 	private transient byte[] data;
     
-    @Before
-    public void setUp()
-    {
-        fixture = new ColorTransform();
-		encoder = new SWFEncoder(0);
-		decoder = new SWFDecoder(new byte[]{});
-    }
-    
-    @Test
-    public void checkConstructorForUnityTransform()
-    {
-    	fixture = new ColorTransform();
-    	
-    	assertEquals(0, fixture.getAddRed());
-    	assertEquals(0, fixture.getAddGreen());
-    	assertEquals(0, fixture.getAddBlue());
-    	assertEquals(0, fixture.getAddAlpha());
-    	assertEquals(1.0f, fixture.getMultiplyRed());
-    	assertEquals(1.0f, fixture.getMultiplyGreen());
-    	assertEquals(1.0f, fixture.getMultiplyBlue());
-    	assertEquals(1.0f, fixture.getMultiplyAlpha());
-    }
-    
     @Test
     public void checkConstructorForAddTransform()
     {
@@ -107,14 +84,7 @@ public final class ColorTransformTest
     	assertEquals(4.0f, fixture.getMultiplyBlue());
     	assertEquals(5.0f, fixture.getMultiplyAlpha());
     }
-    
-    @Test
-    public void checkConstructorIsUnityTransform()
-    {
-    	fixture = new ColorTransform(); 	
-    	assertTrue(fixture.isUnityTransform());
-    }
-    
+     
     @Test
     public void checkConstructorCreatesCopy()
     {
@@ -424,8 +394,8 @@ public final class ColorTransformTest
     	data = new byte[] { 108, -128, 32, 6, 0};   	
     	decoder.setData(data);
      	
-    	fixture.decode(decoder);
-    	
+       	fixture = new ColorTransform(decoder);
+            	
     	assertEquals(40, decoder.getPointer());
      	assertEquals(1.0f, fixture.getMultiplyRed());
     	assertEquals(2.0f, fixture.getMultiplyGreen());
@@ -440,7 +410,7 @@ public final class ColorTransformTest
     	decoder.setData(data);
      	decoder.getContext().setTransparent(true);
      	
-    	fixture.decode(decoder);
+    	fixture = new ColorTransform(decoder);
     	
     	assertEquals(56, decoder.getPointer());
     	assertEquals(1.0f, fixture.getMultiplyRed());
@@ -455,8 +425,8 @@ public final class ColorTransformTest
     	data = new byte[] { -116, -90};   	
     	decoder.setData(data);
      	
-    	fixture.decode(decoder);
-    	
+       	fixture = new ColorTransform(decoder);
+            	
     	assertEquals(16, decoder.getPointer());
     	assertEquals(1, fixture.getAddRed());
     	assertEquals(2, fixture.getAddGreen());
@@ -471,8 +441,8 @@ public final class ColorTransformTest
     	decoder.setData(data);
     	decoder.getContext().setTransparent(true);
     	
-    	fixture.decode(decoder);
-    	
+       	fixture = new ColorTransform(decoder);
+            	
     	assertEquals(24, decoder.getPointer());
     	assertEquals(1, fixture.getAddRed());
     	assertEquals(2, fixture.getAddGreen());
@@ -486,8 +456,8 @@ public final class ColorTransformTest
     	data = new byte[] { -20, -128, 32, 6, 0, 0, 64, 16, 3};   	
     	decoder.setData(data);
 
-    	fixture.decode(decoder);
-
+       	fixture = new ColorTransform(decoder);
+        
     	assertEquals(72, decoder.getPointer());
     	assertEquals(1, fixture.getAddRed());
     	assertEquals(2, fixture.getAddGreen());
@@ -506,8 +476,8 @@ public final class ColorTransformTest
     	decoder.setData(data);
     	decoder.getContext().setTransparent(true);
      	
-    	fixture.decode(decoder);
-
+       	fixture = new ColorTransform(decoder);
+        
     	assertEquals(104, decoder.getPointer());
     	assertEquals(1, fixture.getAddRed());
     	assertEquals(2, fixture.getAddGreen());

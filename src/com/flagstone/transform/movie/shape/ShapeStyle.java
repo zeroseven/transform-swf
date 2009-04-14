@@ -99,18 +99,77 @@ public final class ShapeStyle implements ShapeRecord
 	private transient boolean hasFill;
 	private transient boolean hasMove;
 
-	public ShapeStyle()
+	public ShapeStyle(final SWFDecoder coder) throws CoderException
 	{
-		super();
+		int start = coder.getPointer();
+		
+		int numberOfFillBits = coder.getContext().getFillSize();
+		int numberOfLineBits = coder.getContext().getLineSize();
 
-		moveX = Movie.VALUE_NOT_SET;
-		moveY = Movie.VALUE_NOT_SET;
-		lineStyle = Movie.VALUE_NOT_SET;
-		fillStyle = Movie.VALUE_NOT_SET;
-		altFillStyle = Movie.VALUE_NOT_SET;
+		/* shapeType */coder.readBits(1, false);
+		hasStyles = coder.readBits(1, false) != 0;
+		hasLine = coder.readBits(1, false) != 0;
+		hasAlt = coder.readBits(1, false) != 0;
+		hasFill = coder.readBits(1, false) != 0;
+		hasMove = coder.readBits(1, false) != 0;
+
+		if (hasMove)
+		{
+			int moveFieldSize = coder.readBits(5, false);
+			moveX = coder.readBits(moveFieldSize, true);
+			moveY = coder.readBits(moveFieldSize, true);
+		}
 		fillStyles = new ArrayList<FillStyle>();
 		lineStyles = new ArrayList<LineStyle>();
+
+		fillStyle = hasFill ? coder.readBits(numberOfFillBits, false) : Movie.VALUE_NOT_SET;
+		altFillStyle = hasAlt ? coder.readBits(numberOfFillBits, false) : Movie.VALUE_NOT_SET;
+		lineStyle = hasLine ? coder.readBits(numberOfLineBits, false) : Movie.VALUE_NOT_SET;
+
+		if (hasStyles)
+		{
+			coder.alignToByte();
+
+			int fillStyleCount = coder.readByte();
+
+			if (coder.getContext().isArrayExtended() && fillStyleCount == 0xFF) {
+				fillStyleCount = coder.readWord(2, false);
+			}
+
+			FillStyle fill;
+			int type;
+
+			for (int i = 0; i < fillStyleCount; i++) {
+				type = coder.scanByte();
+				fill = coder.fillStyleOfType(coder);
+
+				if (fill == null) {
+					throw new CoderException(String.valueOf(type), start >>> 3, 0, 0, Strings.UNSUPPORTED_FILL_STYLE);
+				}
+
+				fillStyles.add(fill);
+			}
+
+			int lineStyleCount = coder.readByte();
+
+			if (coder.getContext().isArrayExtended() && lineStyleCount == 0xFF) {
+				lineStyleCount = coder.readWord(2, false);
+			}
+
+			LineStyle style;
+
+			for (int i = 0; i < lineStyleCount; i++) {
+				lineStyles.add(new LineStyle(coder));
+			}
+
+			numberOfFillBits = coder.readBits(4, false);
+			numberOfLineBits = coder.readBits(4, false);
+
+			coder.getContext().setFillSize(numberOfFillBits);
+			coder.getContext().setLineSize(numberOfLineBits);
+		}
 	}
+
 
 	/**
 	 * Creates a ShapeStyle object, selecting the line and fill styles.
@@ -576,78 +635,6 @@ public final class ShapeStyle implements ShapeRecord
 			coder.writeBits(numberOfLineBits, 4);
 
 			// Update the stream with the new numbers of line and fill bits
-			coder.getContext().setFillSize(numberOfFillBits);
-			coder.getContext().setLineSize(numberOfLineBits);
-		}
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException
-	{
-		int start = coder.getPointer();
-		
-		int numberOfFillBits = coder.getContext().getFillSize();
-		int numberOfLineBits = coder.getContext().getLineSize();
-
-		/* shapeType */coder.readBits(1, false);
-		hasStyles = coder.readBits(1, false) != 0;
-		hasLine = coder.readBits(1, false) != 0;
-		hasAlt = coder.readBits(1, false) != 0;
-		hasFill = coder.readBits(1, false) != 0;
-		hasMove = coder.readBits(1, false) != 0;
-
-		if (hasMove)
-		{
-			int moveFieldSize = coder.readBits(5, false);
-			moveX = coder.readBits(moveFieldSize, true);
-			moveY = coder.readBits(moveFieldSize, true);
-		}
-
-		fillStyle = hasFill ? coder.readBits(numberOfFillBits, false) : Movie.VALUE_NOT_SET;
-		altFillStyle = hasAlt ? coder.readBits(numberOfFillBits, false) : Movie.VALUE_NOT_SET;
-		lineStyle = hasLine ? coder.readBits(numberOfLineBits, false) : Movie.VALUE_NOT_SET;
-
-		if (hasStyles)
-		{
-			coder.alignToByte();
-
-			int fillStyleCount = coder.readByte();
-
-			if (coder.getContext().isArrayExtended() && fillStyleCount == 0xFF) {
-				fillStyleCount = coder.readWord(2, false);
-			}
-
-			FillStyle fill;
-			int type;
-
-			for (int i = 0; i < fillStyleCount; i++) {
-				type = coder.scanByte();
-				fill = coder.fillStyleOfType(type);
-
-				if (fill == null) {
-					throw new CoderException(String.valueOf(type), start >>> 3, 0, 0, Strings.UNSUPPORTED_FILL_STYLE);
-				}
-
-				fill.decode(coder);
-				fillStyles.add(fill);
-			}
-
-			int lineStyleCount = coder.readByte();
-
-			if (coder.getContext().isArrayExtended() && lineStyleCount == 0xFF) {
-				lineStyleCount = coder.readWord(2, false);
-			}
-
-			LineStyle style;
-
-			for (int i = 0; i < lineStyleCount; i++) {
-				style = new LineStyle();
-				style.decode(coder);
-				lineStyles.add(style);
-			}
-
-			numberOfFillBits = coder.readBits(4, false);
-			numberOfLineBits = coder.readBits(4, false);
-
 			coder.getContext().setFillSize(numberOfFillBits);
 			coder.getContext().setLineSize(numberOfLineBits);
 		}

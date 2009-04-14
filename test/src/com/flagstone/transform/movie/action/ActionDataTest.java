@@ -55,14 +55,7 @@ public final class ActionDataTest {
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForDataWithNull() {
-		fixture = new ActionData();
-		fixture.setData(null);
-	}
-
-	@Test(expected=IllegalArgumentException.class)
-	public void checkSettingDataSizeWithNegativeValue() {
-		fixture = new ActionData();
-		fixture.setData(-1);
+		fixture = new ActionData((byte[])null);
 	}
 
 	@Test
@@ -84,27 +77,13 @@ public final class ActionDataTest {
 		assertTrue(encoder.eof());
 		assertArrayEquals(encoded, encoder.getData());
 	}
-	
-	@Test
-	public void encodeDefault() throws CoderException {
-
-		SWFEncoder encoder = new SWFEncoder(empty.length);
-		
-		fixture = new ActionData();
-		assertEquals(empty.length, fixture.prepareToEncode(encoder));		
-		fixture.encode(encoder);
-		
-		assertTrue(encoder.eof());
-		assertArrayEquals(empty, encoder.getData());
-	}
 
 	@Test
 	public void decode() throws CoderException {
 
 		SWFDecoder decoder = new SWFDecoder(data);
 		
-		fixture = new ActionData(data.length);
-		fixture.decode(decoder);
+		fixture = new ActionData(data.length, decoder);
 		
 		assertTrue(decoder.eof());
 		assertArrayEquals(data, fixture.getData());

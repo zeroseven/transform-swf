@@ -49,11 +49,26 @@ public final class DefineFontName implements DefineTag
 	private transient int end;
 	private transient int length;
 
-	public DefineFontName()
+	public DefineFontName(final SWFDecoder coder) throws CoderException
 	{
-		name = "";
-		copyright = "";
+		start = coder.getPointer();
+		length = coder.readWord(2, false) & 0x3F;
+		
+		if (length == 0x3F) {
+			length = coder.readWord(4, false);
+		}
+		end = coder.getPointer() + (length << 3);
+
+		identifier = coder.readWord(2, false);
+		name = coder.readString();
+		copyright = coder.readString();
+
+		if (coder.getPointer() != end) {
+			throw new CoderException(getClass().getName(), start >> 3, length,
+					(coder.getPointer() - end) >> 3);
+		}
 	}
+
 
 	public DefineFontName(int uid, String name, String copyright)
 	{
@@ -150,26 +165,6 @@ public final class DefineFontName implements DefineTag
 		coder.writeWord(identifier, 2);
 		coder.writeString(name);
 		coder.writeString(copyright);
-
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException
-	{
-		start = coder.getPointer();
-		length = coder.readWord(2, false) & 0x3F;
-		
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
-		end = coder.getPointer() + (length << 3);
-
-		identifier = coder.readWord(2, false);
-		name = coder.readString();
-		copyright = coder.readString();
 
 		if (coder.getPointer() != end) {
 			throw new CoderException(getClass().getName(), start >> 3, length,

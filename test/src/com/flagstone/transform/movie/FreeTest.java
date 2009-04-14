@@ -61,19 +61,17 @@ public final class FreeTest {
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForIdentifierWithLowerBound() {
-		fixture = new Free();
-		fixture.setIdentifier(0);
+		fixture = new Free(0);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForIdentifierWithUpperBound() {
-		fixture = new Free();
-		fixture.setIdentifier(65536);
+		fixture = new Free(65536);
 	}
 	
 	@Test
 	public void checkCopy() {
-		fixture = new Free();
+		fixture = new Free(identifier);
 		Free copy = fixture.copy();
 
 		assertNotSame(fixture, copy);
@@ -94,23 +92,10 @@ public final class FreeTest {
 	}
 	
 	@Test
-	public void encodeDefault() throws CoderException {		
-		SWFEncoder encoder = new SWFEncoder(empty.length);		
-		
-		fixture = new Free();
-		assertEquals(empty.length, fixture.prepareToEncode(encoder));
-		fixture.encode(encoder);
-		
-		assertTrue(encoder.eof());
-		assertArrayEquals(empty, encoder.getData());
-	}
-	
-	@Test
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		
-		fixture = new Free();
-		fixture.decode(decoder);
+		fixture = new Free(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(identifier, fixture.getIdentifier());
@@ -120,8 +105,7 @@ public final class FreeTest {
 	public void decodeExtended() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(extended);
 		
-		fixture = new Free();
-		fixture.decode(decoder);
+		fixture = new Free(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(identifier, fixture.getIdentifier());

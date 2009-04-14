@@ -67,6 +67,29 @@ public final class Table implements Action
 	private transient int length;
 	private transient int tableSize;
 
+
+	public Table(final SWFDecoder coder) throws CoderException
+	{
+		coder.readByte();
+		length = coder.readWord(2, false);
+		tableSize = coder.readWord(2, false);
+
+		if (tableSize > 0)
+		{
+			for (int i = 0; i < tableSize; i++) {
+				values.add(coder.readString());
+			}
+		} 
+		else
+		{
+			/*
+			 * Reset the length as Macromedia is using the length of a table to
+			 * hide code following an empty table.
+			 */
+			length = 2;
+		}
+	}
+
 	public Table()
 	{
 		values = new ArrayList<String>();
@@ -160,28 +183,6 @@ public final class Table implements Action
 
 		for (String str : values) {
 			coder.writeString(str);
-		}
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException
-	{
-		coder.readByte();
-		length = coder.readWord(2, false);
-		tableSize = coder.readWord(2, false);
-
-		if (tableSize > 0)
-		{
-			for (int i = 0; i < tableSize; i++) {
-				values.add(coder.readString());
-			}
-		} 
-		else
-		{
-			/*
-			 * Reset the length as Macromedia is using the length of a table to
-			 * hide code following an empty table.
-			 */
-			length = 2;
 		}
 	}
 }

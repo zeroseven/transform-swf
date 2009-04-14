@@ -58,14 +58,12 @@ public final class GotoFrameTest {
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForIdentifierWithLowerBound() {
-		fixture = new GotoFrame();
-		fixture.setFrameNumber(0);
+		fixture = new GotoFrame(0);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForIdentifierWithUpperBound() {
-		fixture = new GotoFrame();
-		fixture.setFrameNumber(65536);
+		fixture = new GotoFrame(65536);
 	}
 	
 	@Test
@@ -93,8 +91,7 @@ public final class GotoFrameTest {
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		
-		fixture = new GotoFrame();
-		fixture.decode(decoder);
+		fixture = new GotoFrame(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(number, fixture.getFrameNumber());

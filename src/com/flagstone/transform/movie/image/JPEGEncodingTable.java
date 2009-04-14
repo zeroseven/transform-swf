@@ -63,9 +63,22 @@ public final class JPEGEncodingTable implements MovieTag
 	private transient int end;
 	private transient int length;
 
-	public JPEGEncodingTable()
+	public JPEGEncodingTable(final SWFDecoder coder) throws CoderException
 	{
-		table = new byte[0];
+		start = coder.getPointer();
+		length = coder.readWord(2, false) & 0x3F;
+		
+		if (length == 0x3F) {
+			length = coder.readWord(4, false);
+		}
+		end = coder.getPointer() + (length << 3);
+
+		table = coder.readBytes(new byte[length]);
+
+		if (coder.getPointer() != end) {
+			throw new CoderException(getClass().getName(), start >> 3, length,
+					(coder.getPointer() - end) >> 3);
+		}
 	}
 
 	/**
@@ -149,24 +162,6 @@ public final class JPEGEncodingTable implements MovieTag
 		end = coder.getPointer() + (length << 3);
 		
 		coder.writeBytes(table);
-
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException
-	{
-		start = coder.getPointer();
-		length = coder.readWord(2, false) & 0x3F;
-		
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
-		end = coder.getPointer() + (length << 3);
-
-		table = coder.readBytes(new byte[length]);
 
 		if (coder.getPointer() != end) {
 			throw new CoderException(getClass().getName(), start >> 3, length,

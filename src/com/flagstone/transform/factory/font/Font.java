@@ -1707,7 +1707,7 @@ public final class Font
         int destIndex = 0;
 
         do {
-            transform = new CoordTransform();
+            transform = CoordTransform.translate(0,0);
             
             flags = coder.readWord(2, false);
             sourceGlyph = coder.readWord(2, false);

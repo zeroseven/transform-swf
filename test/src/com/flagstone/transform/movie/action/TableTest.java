@@ -102,8 +102,7 @@ public final class TableTest {
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		
-		fixture = new Table();
-		fixture.decode(decoder);
+		fixture = new Table(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(list, fixture.getValues());

@@ -86,23 +86,10 @@ public final class FileAttributesTest {
 	}
 	
 	@Test
-	public void encodeDefault() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(empty.length);		
-		
-		fixture = new FileAttributes();
-		assertEquals(empty.length, fixture.prepareToEncode(encoder));
-		fixture.encode(encoder);
-		
-		assertTrue(encoder.eof());
-		assertArrayEquals(empty, encoder.getData());
-	}
-	
-	@Test
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		
-		fixture = new FileAttributes();
-		fixture.decode(decoder);
+		fixture = new FileAttributes(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(hasMetaData, fixture.hasMetaData());
@@ -114,8 +101,7 @@ public final class FileAttributesTest {
 	public void decodeExtended() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(extended);
 		
-		fixture = new FileAttributes();
-		fixture.decode(decoder);
+		fixture = new FileAttributes(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(hasMetaData, fixture.hasMetaData());

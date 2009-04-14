@@ -79,13 +79,50 @@ public final class DefineVideo implements DefineTag {
 	private transient int end;
 	private transient int length;
 
-	public DefineVideo() {
-		frameCount = 0;
-		width = 0;
-		height = 0;
-		deblocking = Deblocking.OFF;
-		smoothing = false;
-		codec = VideoFormat.H263;
+	public DefineVideo(final SWFDecoder coder) throws CoderException {
+
+		start = coder.getPointer();
+		length = coder.readWord(2, false) & 0x3F;
+
+		if (length == 0x3F) {
+			length = coder.readWord(4, false);
+		}
+		end = coder.getPointer() + (length << 3);
+
+		identifier = coder.readWord(2, true);
+		frameCount = coder.readWord(2, false);
+		width = coder.readWord(2, false);
+		height = coder.readWord(2, false);
+
+		coder.readBits(5, false);
+
+		switch(coder.readBits(2, false))
+		{
+		case 0: 
+			deblocking = Deblocking.VIDEO;
+			break;
+		case 1: 
+			deblocking = Deblocking.OFF;
+			break;
+		case 2: 
+			deblocking = Deblocking.ON;
+			break;
+		}
+		smoothing = coder.readBits(1, false) == 1;
+
+		switch (coder.readByte()) {
+		case 2:
+			codec = VideoFormat.H263;
+			break;
+		case 3:
+			codec = VideoFormat.SCREEN;
+			break;
+		}
+
+		if (coder.getPointer() != end) {
+			throw new CoderException(getClass().getName(), start >> 3, length,
+					(coder.getPointer() - end) >> 3);
+		}
 	}
 
 	/**
@@ -324,52 +361,6 @@ public final class DefineVideo implements DefineTag {
 			break;
 		case SCREEN:
 			coder.writeByte(3);
-			break;
-		}
-
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException {
-
-		start = coder.getPointer();
-		length = coder.readWord(2, false) & 0x3F;
-
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
-		end = coder.getPointer() + (length << 3);
-
-		identifier = coder.readWord(2, true);
-		frameCount = coder.readWord(2, false);
-		width = coder.readWord(2, false);
-		height = coder.readWord(2, false);
-
-		coder.readBits(5, false);
-
-		switch(coder.readBits(2, false))
-		{
-		case 0: 
-			deblocking = Deblocking.VIDEO;
-			break;
-		case 1: 
-			deblocking = Deblocking.OFF;
-			break;
-		case 2: 
-			deblocking = Deblocking.ON;
-			break;
-		}
-		smoothing = coder.readBits(1, false) == 1;
-
-		switch (coder.readByte()) {
-		case 2:
-			codec = VideoFormat.H263;
-			break;
-		case 3:
-			codec = VideoFormat.SCREEN;
 			break;
 		}
 

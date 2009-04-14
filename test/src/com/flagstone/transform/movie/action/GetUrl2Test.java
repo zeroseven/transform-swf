@@ -80,8 +80,7 @@ public final class GetUrl2Test {
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		
-		fixture = new GetUrl2();
-		fixture.decode(decoder);
+		fixture = new GetUrl2(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(request, fixture.getRequest());

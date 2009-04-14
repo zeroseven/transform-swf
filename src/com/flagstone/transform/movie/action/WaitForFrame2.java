@@ -60,9 +60,11 @@ public final class WaitForFrame2 implements Action
 	
 	private int actionCount;
 
-	public WaitForFrame2()
+	public WaitForFrame2(final SWFDecoder coder) throws CoderException
 	{
-		actionCount = 0;
+		coder.readByte();
+		coder.readWord(2, false);
+		actionCount = coder.readByte();
 	}
 
 	/**
@@ -127,12 +129,5 @@ public final class WaitForFrame2 implements Action
 		coder.writeByte(Types.WAIT_FOR_FRAME_2);
 		coder.writeWord(1, 2);
 		coder.writeWord(actionCount, 1);
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException
-	{
-		coder.readByte();
-		coder.readWord(2, false);
-		actionCount = coder.readByte();
 	}
 }

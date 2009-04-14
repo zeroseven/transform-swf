@@ -58,14 +58,12 @@ public final class MorphLineStyle implements Codeable
 	protected Color startColor;
 	protected Color endColor;
 
-	protected MorphLineStyle()
+	public MorphLineStyle(final SWFDecoder coder) throws CoderException
 	{
-		super();
-		
-		startWidth = 20;
-		endWidth = 20;
-		startColor = new Color(0,0,0,0);
-		endColor = new Color(0,0,0,0);
+		startWidth = coder.readWord(2, false);
+		endWidth = coder.readWord(2, false);
+		startColor= new Color(coder);
+		endColor= new Color(coder);
 	}
 
 	/**
@@ -94,8 +92,8 @@ public final class MorphLineStyle implements Codeable
 	public MorphLineStyle(MorphLineStyle object) {
 		startWidth = object.startWidth;
 		endWidth = object.endWidth;
-		startColor = object.startColor.copy();
-		endColor = object.endColor.copy();
+		startColor = object.startColor;
+		endColor = object.endColor;
 	}
 
 	/**
@@ -199,12 +197,7 @@ public final class MorphLineStyle implements Codeable
 
 	public int prepareToEncode(final SWFEncoder coder)
 	{
-		int length = 4;
-
-		length += startColor.prepareToEncode(coder);
-		length += endColor.prepareToEncode(coder);
-
-		return length;
+		return 12;
 	}
 
 	public void encode(final SWFEncoder coder) throws CoderException
@@ -213,13 +206,5 @@ public final class MorphLineStyle implements Codeable
 		coder.writeWord(endWidth, 2);
 		startColor.encode(coder);
 		endColor.encode(coder);
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException
-	{
-		startWidth = coder.readWord(2, false);
-		endWidth = coder.readWord(2, false);
-		startColor.decode(coder);
-		endColor.decode(coder);
 	}
 }

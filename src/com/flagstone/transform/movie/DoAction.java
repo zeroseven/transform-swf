@@ -70,6 +70,34 @@ public final class DoAction implements MovieTag {
 	private transient int end;
 	private transient int length;
 
+
+	public DoAction(final SWFDecoder coder) throws CoderException {
+
+		start = coder.getPointer();
+		length = coder.readWord(2, false) & 0x3F;
+
+		if (length == 0x3F) {
+			length = coder.readWord(4, false);
+		}
+
+		end = coder.getPointer() + (length << 3);
+
+		actions = new ArrayList<Action>();
+
+		if (coder.getContext().isDecodeActions()) {
+
+			while (coder.getPointer() < end) {
+				actions.add(coder.actionOfType(coder));
+			}
+		} else {
+			actions.add(new ActionData(length, coder));
+		}
+
+		if (coder.getPointer() != end) {
+			throw new CoderException(getClass().getName(), start >> 3, length,
+					(coder.getPointer() - end) >> 3);
+		}
+	}
 	/**
 	 * Creates a new DoAction class with an empty array.
 	 */
@@ -182,39 +210,6 @@ public final class DoAction implements MovieTag {
 		
 		if (actions.isEmpty()) {
 			coder.writeByte(0);
-		}
-
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException {
-
-		start = coder.getPointer();
-		length = coder.readWord(2, false) & 0x3F;
-
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
-
-		end = coder.getPointer() + (length << 3);
-
-		actions.clear();
-		Action action;
-
-		if (coder.getContext().isDecodeActions()) {
-
-			while (coder.getPointer() < end) {
-				action = coder.actionOfType(coder.scanByte());
-				action.decode(coder);
-				actions.add(action);
-			}
-		} else {
-			action = new ActionData(length);
-			action.decode(coder);
-			actions.add(action);
 		}
 
 		if (coder.getPointer() != end) {

@@ -75,20 +75,17 @@ public final class InitializeMovieClipTest {
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForIdentifierWithLowerBound() {
-		fixture = new InitializeMovieClip();
-		fixture.setIdentifier(0);
+		fixture = new InitializeMovieClip(0, list);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForIdentifierWithUpperBound() {
-		fixture = new InitializeMovieClip();
-		fixture.setIdentifier(65536);
+		fixture = new InitializeMovieClip(65536, list);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAddNullNull() {
-		fixture = new InitializeMovieClip();
-		fixture.add(null);
+		fixture = new InitializeMovieClip(identifier, null);
 	}
 
 	@Test
@@ -118,8 +115,7 @@ public final class InitializeMovieClipTest {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		decoder.getContext().setDecodeActions(true);
 		
-		fixture = new InitializeMovieClip();
-		fixture.decode(decoder);
+		fixture = new InitializeMovieClip(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(identifier, fixture.getIdentifier());
@@ -131,8 +127,7 @@ public final class InitializeMovieClipTest {
 		SWFDecoder decoder = new SWFDecoder(extended);
 		decoder.getContext().setDecodeActions(true);
 
-		fixture = new InitializeMovieClip();
-		fixture.decode(decoder);
+		fixture = new InitializeMovieClip(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(identifier, fixture.getIdentifier());

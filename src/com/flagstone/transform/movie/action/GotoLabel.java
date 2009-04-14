@@ -53,9 +53,11 @@ public final class GotoLabel implements Action
 
 	private transient int length;
 	
-	public GotoLabel()
+	public GotoLabel(final SWFDecoder coder) throws CoderException
 	{
-		label = "";
+		coder.readByte();
+		length = coder.readWord(2, false);
+		label = coder.readString();
 	}
 
 	/**
@@ -119,12 +121,5 @@ public final class GotoLabel implements Action
 		coder.writeByte(Types.GOTO_LABEL);
 		coder.writeWord(length, 2);
 		coder.writeString(label);
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException
-	{
-		coder.readByte();
-		length = coder.readWord(2, false);
-		label = coder.readString();
 	}
 }

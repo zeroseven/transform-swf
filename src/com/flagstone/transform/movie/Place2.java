@@ -217,14 +217,86 @@ public final class Place2 implements MovieTag
 		events = new ArrayList<MovieClipEventHandler>(events);
 	}
 
-	public Place2()
+	public Place2(final SWFDecoder coder) throws CoderException
 	{
-		placeType = Mode.NEW;
-		identifier = 1;
-		layer = 1;
-		ratio = 0;
-		clippingDepth = 0;
+		start = coder.getPointer();
+		coder.getContext().setTransparent(true);
+		
+		length = coder.readWord(2, false) & 0x3F;
+		
+		if (length == 0x3F) {
+			length = coder.readWord(4, false);
+		}
+		
+		end = coder.getPointer() + (length << 3);
+
+		boolean hasEvents = coder.readBits(1, false) != 0;
+		boolean hasDepth = coder.readBits(1, false) != 0;
+		boolean hasName = coder.readBits(1, false) != 0;
+		boolean hasRatio = coder.readBits(1, false) != 0;
+		boolean hasColorTransform = coder.readBits(1, false) != 0;
+		boolean hasTransform = coder.readBits(1, false) != 0;
+		
+		switch(coder.readBits(2, false)) {
+		case 1:
+			placeType = Mode.MODIFY;
+			break;
+		case 2:
+			placeType = Mode.NEW;
+			break;
+		case 3:
+			placeType = Mode.REPLACE;
+			break;
+		}
+
+		layer = coder.readWord(2, false);
 		events = new ArrayList<MovieClipEventHandler>();
+
+		if (placeType == Mode.NEW || placeType == Mode.REPLACE) {
+			identifier = coder.readWord(2, false);
+		}
+
+		if (hasTransform) {
+			transform = new CoordTransform(coder);
+		}
+
+		if (hasColorTransform) {
+			colorTransform = new ColorTransform(coder);
+		}
+
+		if (hasRatio) {
+			ratio = coder.readWord(2, false);
+		}
+
+		if (hasName) {
+			name = coder.readString();
+		}
+
+		if (hasDepth) {
+			clippingDepth = coder.readWord(2, false);
+		}
+
+		if (hasEvents)
+		{
+			int eventSize = coder.getContext().getVersion() > 5 ? 4 : 2;
+
+			coder.readWord(2, false);
+			coder.readWord(eventSize, false);
+			
+			MovieClipEventHandler event;
+
+			while (coder.readWord(eventSize, false) != 0) {
+				coder.adjustPointer(-(eventSize<<3));
+				events.add(new MovieClipEventHandler(coder));
+			}
+
+		}
+		coder.getContext().setTransparent(false);
+
+		if (coder.getPointer() != end) {
+			throw new CoderException(getClass().getName(), start >> 3, length,
+					(coder.getPointer() - end) >> 3);
+		}
 	}
 
     /**
@@ -691,90 +763,6 @@ public final class Place2 implements MovieTag
 			coder.writeWord(0, eventSize);
 		}
 
-		coder.getContext().setTransparent(false);
-
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException
-	{
-		start = coder.getPointer();
-		coder.getContext().setTransparent(true);
-		
-		length = coder.readWord(2, false) & 0x3F;
-		
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
-		
-		end = coder.getPointer() + (length << 3);
-
-		boolean hasEvents = coder.readBits(1, false) != 0;
-		boolean hasDepth = coder.readBits(1, false) != 0;
-		boolean hasName = coder.readBits(1, false) != 0;
-		boolean hasRatio = coder.readBits(1, false) != 0;
-		boolean hasColorTransform = coder.readBits(1, false) != 0;
-		boolean hasTransform = coder.readBits(1, false) != 0;
-		
-		switch(coder.readBits(2, false)) {
-		case 1:
-			placeType = Mode.MODIFY;
-			break;
-		case 2:
-			placeType = Mode.NEW;
-			break;
-		case 3:
-			placeType = Mode.REPLACE;
-			break;
-		}
-
-		layer = coder.readWord(2, false);
-
-		if (placeType == Mode.NEW || placeType == Mode.REPLACE) {
-			identifier = coder.readWord(2, false);
-		}
-
-		if (hasTransform) {
-			transform.decode(coder);
-		}
-
-		if (hasColorTransform) {
-			colorTransform.decode(coder);
-		}
-
-		if (hasRatio) {
-			ratio = coder.readWord(2, false);
-		}
-
-		if (hasName) {
-			name = coder.readString();
-		}
-
-		if (hasDepth) {
-			clippingDepth = coder.readWord(2, false);
-		}
-
-		if (hasEvents)
-		{
-			int eventSize = coder.getContext().getVersion() > 5 ? 4 : 2;
-
-			coder.readWord(2, false);
-			coder.readWord(eventSize, false);
-			
-			MovieClipEventHandler event;
-
-			while (coder.readWord(eventSize, false) != 0) {
-				coder.adjustPointer(-(eventSize<<3));
-				event = new MovieClipEventHandler();
-				event.decode(coder);
-				
-				events.add(event);
-			}
-
-		}
 		coder.getContext().setTransparent(false);
 
 		if (coder.getPointer() != end) {

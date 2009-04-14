@@ -62,7 +62,14 @@ public final class Remove implements MovieTag {
 	private int identifier;
 	private int layer;
 
-	public Remove() {
+	public Remove(final SWFDecoder coder) throws CoderException {
+
+		if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
+			coder.readWord(4, false);
+		}
+
+		identifier = coder.readWord(2, false);
+		layer = coder.readWord(2, false);
 	}
 
 	/**
@@ -145,15 +152,5 @@ public final class Remove implements MovieTag {
 		coder.writeWord((Types.REMOVE << 6) | 4, 2);
 		coder.writeWord(identifier, 2);
 		coder.writeWord(layer, 2);
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException {
-
-		if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
-			coder.readWord(4, false);
-		}
-
-		identifier = coder.readWord(2, false);
-		layer = coder.readWord(2, false);
 	}
 }

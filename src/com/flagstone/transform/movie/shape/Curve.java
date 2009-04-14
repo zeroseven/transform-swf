@@ -64,13 +64,15 @@ public final class Curve implements ShapeRecord
 	
 	private transient int size;
 
-	protected Curve()
+	public Curve(final SWFDecoder coder) throws CoderException
 	{
-		super();
-		controlX = 50;
-		controlY = 50;
-		anchorX = 100;
-		anchorY = 100;
+		// skip over shapeType and edgeType
+		coder.adjustPointer(2);
+		size = coder.readBits(4, false) + 2;
+		controlX = coder.readBits(size, true);
+		controlY = coder.readBits(size, true);
+		anchorX = coder.readBits(size, true);
+		anchorY = coder.readBits(size, true);
 	}
 
 	/**
@@ -294,16 +296,5 @@ public final class Curve implements ShapeRecord
 		coder.writeBits(controlY, size);
 		coder.writeBits(anchorX, size);
 		coder.writeBits(anchorY, size);
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException
-	{
-		// skip over shapeType and edgeType
-		coder.adjustPointer(2);
-		size = coder.readBits(4, false) + 2;
-		controlX = coder.readBits(size, true);
-		controlY = coder.readBits(size, true);
-		anchorX = coder.readBits(size, true);
-		anchorY = coder.readBits(size, true);
 	}
 }

@@ -44,10 +44,13 @@ public final class Free implements MovieTag {
 
 	private int identifier;
 
-	/**
-	 * Creates an uninitialised Free object.
-	 */
-	public Free() {
+	public Free(final SWFDecoder coder) throws CoderException {
+
+		if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
+			coder.readWord(4, false);
+		}
+
+		identifier = coder.readWord(2, false);
 	}
 
 	/**
@@ -108,14 +111,5 @@ public final class Free implements MovieTag {
 	public void encode(final SWFEncoder coder) throws CoderException {
 		coder.writeWord((Types.FREE << 6) | 2, 2);
 		coder.writeWord(identifier, 2);
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException {
-
-		if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
-			coder.readWord(4, false);
-		}
-
-		identifier = coder.readWord(2, false);
 	}
 }

@@ -82,10 +82,56 @@ public final class DefineButton2 implements DefineTag
 	private transient int end;
 	private transient int length;
 	
-	public DefineButton2()
+	public DefineButton2(final SWFDecoder coder) throws CoderException
 	{
+		coder.getContext().setType(Types.DEFINE_BUTTON_2);
+		coder.getContext().setTransparent(true);
+
+		start = coder.getPointer();
+		length = coder.readWord(2, false) & 0x3F;
+		
+		if (length == 0x3F) {
+			length = coder.readWord(4, false);
+		}
+		end = coder.getPointer() + (length << 3);
+
+		identifier = coder.readWord(2, false);
+		menu = coder.readByte() != 0;
 		shapes = new ArrayList<ButtonShape>();
-		events = new ArrayList<ButtonEventHandler>();
+		
+		int offsetToNext = coder.readWord(2, false);
+		
+		while (coder.readByte() != 0) {
+			coder.adjustPointer(-8);
+			shapes.add(new ButtonShape(coder));
+		}
+
+		if (offsetToNext != 0)
+		{
+			events = new ArrayList<ButtonEventHandler>();
+			ButtonEventHandler event;
+			
+			do
+			{
+				offsetToNext = coder.readWord(2, false);
+
+				if (offsetToNext == 0) {
+					event = new ButtonEventHandler((end - coder.getPointer()) >>> 3, coder);
+				} else {
+					event = new ButtonEventHandler(offsetToNext, coder);
+				}
+				events.add(event);
+
+			} while (offsetToNext != 0);
+		}
+		
+		coder.getContext().setType(0);
+		coder.getContext().setTransparent(false);
+
+		if (coder.getPointer() != end) {
+			throw new CoderException(getClass().getName(), start >> 3, length,
+					(coder.getPointer() - end) >> 3);
+		}
 	}
 
 	/**
@@ -309,61 +355,6 @@ public final class DefineButton2 implements DefineTag
 		coder.writeWord(0, 2);
 		coder.setPointer(currentCursor);
 
-		coder.getContext().setType(0);
-		coder.getContext().setTransparent(false);
-
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException
-	{
-		coder.getContext().setType(Types.DEFINE_BUTTON_2);
-		coder.getContext().setTransparent(true);
-
-		start = coder.getPointer();
-		length = coder.readWord(2, false) & 0x3F;
-		
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
-		end = coder.getPointer() + (length << 3);
-
-		identifier = coder.readWord(2, false);
-		menu = coder.readByte() != 0;
-		
-		int offsetToNext = coder.readWord(2, false);
-		
-		ButtonShape shape;
-
-		while (coder.readByte() != 0) {
-			coder.adjustPointer(-8);
-			shape = new ButtonShape();
-			shape.decode(coder);
-			shapes.add(shape);
-		}
-
-		if (offsetToNext != 0)
-		{
-			ButtonEventHandler event;
-			
-			do
-			{
-				offsetToNext = coder.readWord(2, false);
-
-				if (offsetToNext == 0) {
-					event = new ButtonEventHandler((end - coder.getPointer()) >>> 3);
-				} else {
-					event = new ButtonEventHandler(offsetToNext);
-				}
-				event.decode(coder);
-				events.add(event);
-
-			} while (offsetToNext != 0);
-		}
-		
 		coder.getContext().setType(0);
 		coder.getContext().setTransparent(false);
 

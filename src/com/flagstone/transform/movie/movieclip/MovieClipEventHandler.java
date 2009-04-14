@@ -123,9 +123,31 @@ public final class MovieClipEventHandler implements Codeable
 
 	protected transient int offset;
 
-	public MovieClipEventHandler()
+	public MovieClipEventHandler(final SWFDecoder coder) throws CoderException
 	{
+		int eventSize = (coder.getContext().getVersion() > 5) ? 4 : 2;
+
+		event = coder.readWord(eventSize, false);
+		offset = coder.readWord(4, false);
+
+		if ((event & MovieClipEvent.KEY_PRESS.getValue()) != 0)
+		{
+			keyCode = coder.readByte();
+			offset -= 1;
+		}
+
 		actions = new ArrayList<Action>();
+
+		if (coder.getContext().isDecodeActions()) {
+			int len = offset;
+
+			while (len > 0) {
+				actions.add(coder.actionOfType(coder));
+			}
+		} 
+		else {
+			actions.add(new ActionData(offset, coder));
+		}
 	}
 
 	/**
@@ -298,46 +320,6 @@ public final class MovieClipEventHandler implements Codeable
 
 		for (Action action : actions) {
 			action.encode(coder);
-		}
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException
-	{
-		int eventSize = (coder.getContext().getVersion() > 5) ? 4 : 2;
-
-		event = coder.readWord(eventSize, false);
-		offset = coder.readWord(4, false);
-
-		if ((event & MovieClipEvent.KEY_PRESS.getValue()) != 0)
-		{
-			keyCode = coder.readByte();
-			offset -= 1;
-		}
-
-		actions = new ArrayList<Action>();
-
-		if (coder.getContext().isDecodeActions()) {
-			Action action;
-			int type;
-			int len = offset;
-
-			while (len > 0) {
-				type = coder.scanByte();
-				action = coder.actionOfType(type);
-				if (type > 128) {
-					action.decode(coder);
-				} else {
-					coder.readByte();
-				}
-				actions.add(action);
-			}
-		} 
-		else {
-			byte[] data = new byte[offset];
-			coder.readBytes(data);
-			ActionData action = new ActionData();
-			action.setData(data);
-			actions.add(action);
 		}
 	}
 }

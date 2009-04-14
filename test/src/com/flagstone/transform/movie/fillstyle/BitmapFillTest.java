@@ -62,20 +62,17 @@ public final class BitmapFillTest {
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForIdentifierWithLowerBound() {
-		fixture = new BitmapFill(type);
-		fixture.setIdentifier(0);
+		fixture = new BitmapFill(type, 0, transform);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForIdentifierWithUpperBound() {
-		fixture = new BitmapFill(type);
-		fixture.setIdentifier(65536);
+		fixture = new BitmapFill(type, 65536, transform);
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForDataWithNull() {
-		fixture = new BitmapFill(type);
-		fixture.setTransform(null);
+		fixture = new BitmapFill(type, 1, null);
 	}
 
 	@Test
@@ -98,27 +95,13 @@ public final class BitmapFillTest {
 		assertTrue(encoder.eof());
 		assertArrayEquals(encoded, encoder.getData());
 	}
-	
-	@Test
-	public void encodeDefault() throws CoderException {
-
-		SWFEncoder encoder = new SWFEncoder(empty.length);
-		
-		fixture = new BitmapFill(type);
-		assertEquals(empty.length, fixture.prepareToEncode(encoder));		
-		fixture.encode(encoder);
-		
-		assertTrue(encoder.eof());
-		assertArrayEquals(empty, encoder.getData());
-	}
 
 	@Test
 	public void decode() throws CoderException {
 
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		
-		fixture = new BitmapFill(type);
-		fixture.decode(decoder);
+		fixture = new BitmapFill(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(identifier, fixture.getIdentifier());

@@ -58,14 +58,12 @@ public final class RegisterCopyTest {
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForRegisterNumberWithLowerBound() {
-		fixture = new RegisterCopy();
-		fixture.setRegisterNumber(-1);
+		fixture = new RegisterCopy(-1);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForRegisterNumberWithUpperBound() {
-		fixture = new RegisterCopy();
-		fixture.setRegisterNumber(256);
+		fixture = new RegisterCopy(256);
 	}
 	
 	@Test
@@ -93,8 +91,7 @@ public final class RegisterCopyTest {
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		
-		fixture = new RegisterCopy();
-		fixture.decode(decoder);
+		fixture = new RegisterCopy(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(number, fixture.getRegisterNumber());

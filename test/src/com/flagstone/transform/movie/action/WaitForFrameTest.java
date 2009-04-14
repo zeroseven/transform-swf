@@ -59,26 +59,22 @@ public final class WaitForFrameTest {
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForFrameNumberWithLowerBound() {
-		fixture = new WaitForFrame();
-		fixture.setFrameNumber(0);
+		fixture = new WaitForFrame(0, count);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForFrameNumberWithUpperBound() {
-		fixture = new WaitForFrame();
-		fixture.setFrameNumber(65536);
+		fixture = new WaitForFrame(65536, count);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForActionCountWithLowerBound() {
-		fixture = new WaitForFrame();
-		fixture.setActionCount(-1);
+		fixture = new WaitForFrame(frame, -1);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForActionCountWithUpperBound() {
-		fixture = new WaitForFrame();
-		fixture.setActionCount(256);
+		fixture = new WaitForFrame(frame, 256);
 	}
 	
 	@Test
@@ -106,8 +102,7 @@ public final class WaitForFrameTest {
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		
-		fixture = new WaitForFrame();
-		fixture.decode(decoder);
+		fixture = new WaitForFrame(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(frame, fixture.getFrameNumber());

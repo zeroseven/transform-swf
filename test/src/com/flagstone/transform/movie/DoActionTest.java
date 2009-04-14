@@ -139,8 +139,7 @@ public final class DoActionTest {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		decoder.getContext().setDecodeActions(true);
 		
-		fixture = new DoAction();
-		fixture.decode(decoder);
+		fixture = new DoAction(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(actions, fixture.getActions());
@@ -151,8 +150,7 @@ public final class DoActionTest {
 		SWFDecoder decoder = new SWFDecoder(extended);
 		decoder.getContext().setDecodeActions(true);
 		
-		fixture = new DoAction();
-		fixture.decode(decoder);
+		fixture = new DoAction(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(actions, fixture.getActions());
@@ -163,8 +161,7 @@ public final class DoActionTest {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		decoder.getContext().setDecodeActions(false);
 
-		fixture = new DoAction();
-		fixture.decode(decoder);
+		fixture = new DoAction(decoder);
 		
 		assertEquals(1, fixture.getActions().size());
 		assertTrue(fixture.getActions().get(0) instanceof ActionData);

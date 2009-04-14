@@ -114,9 +114,7 @@ public final class CoordTransform implements Codeable, Copyable<CoordTransform> 
 	 * @return a CoordTransform containing the translation.
 	 */
 	public static CoordTransform translate(final int xCoord, final int yCoord) {
-		CoordTransform transform = new CoordTransform();
-		transform.setTranslate(xCoord, yCoord);
-		return transform;
+		return new CoordTransform(1.0f, 1.0f, 0.0f, 0.0f, xCoord, yCoord);
 	}
 
 	/**
@@ -129,9 +127,7 @@ public final class CoordTransform implements Codeable, Copyable<CoordTransform> 
 	 * @return a CoordTransform containing the scaling transform.
 	 */
 	public static CoordTransform scale(final float xScale, final float yScale) {
-		CoordTransform transform = new CoordTransform();
-		transform.setScale(xScale, yScale);
-		return transform;
+		return new CoordTransform(xScale, yScale, 0.0f, 0.0f, 0, 0);
 	}
 
 	/**
@@ -144,9 +140,7 @@ public final class CoordTransform implements Codeable, Copyable<CoordTransform> 
 	 * @return a CoordTransform containing the shearing transform.
 	 */
 	public static CoordTransform shear(final float xShear, final float yShear) {
-		CoordTransform transform = new CoordTransform();
-		transform.setShear(xShear, yShear);
-		return transform;
+		return new CoordTransform(1.0f, 1.0f, xShear, yShear, 0, 0);
 	}
 
 	/**
@@ -162,10 +156,7 @@ public final class CoordTransform implements Codeable, Copyable<CoordTransform> 
 		float cos = (float) Math.cos(radians);
 		float sin = (float) Math.sin(radians);
 
-		CoordTransform transform = new CoordTransform();
-		transform.setScale(cos, cos);
-		transform.setShear(sin, -sin);
-		return transform;
+		return new CoordTransform(cos, cos, sin, -sin, 0, 0);
 	}
 
 	private int scaleX;
@@ -186,9 +177,44 @@ public final class CoordTransform implements Codeable, Copyable<CoordTransform> 
 	 * Creates a unity coordinate transform - one that will not change the
 	 * location or appearance when it is applied to an object.
 	 */
-	public CoordTransform() {
-		scaleX = 65536;
-		scaleY = 65536;
+	public CoordTransform(final SWFDecoder coder) throws CoderException {
+		
+		coder.alignToByte();
+
+		hasScale = coder.readBits(1, false) != 0;
+
+		if (hasScale) {
+			scaleSize = coder.readBits(5, false);
+			scaleX = coder.readBits(scaleSize, true);
+			scaleY = coder.readBits(scaleSize, true);
+		} else {
+			scaleX = 65535;
+			scaleY = 65535;
+		}
+
+		hasShear = coder.readBits(1, false) != 0;
+
+		if (hasShear) {
+			shearSize = coder.readBits(5, false);
+			shearX = coder.readBits(shearSize, true);
+			shearY = coder.readBits(shearSize, true);
+		}
+
+		transSize = coder.readBits(5, false);
+		translateX = coder.readBits(transSize, true);
+		translateY = coder.readBits(transSize, true);
+
+		coder.alignToByte();
+	}
+
+
+	public CoordTransform(final float scaleX, final float scaleY, final float shearX, final float shearY, final int translateX, final int translateY) {
+		this.scaleX = (int) (scaleX * 65536);
+		this.scaleY = (int) (scaleY * 65536);
+		this.shearX = (int) (shearX * 65536);
+		this.shearY = (int) (shearY * 65536);
+		this.translateX = translateX;
+		this.translateY = translateY;
 	}
 
 	/**
@@ -402,8 +428,7 @@ public final class CoordTransform implements Codeable, Copyable<CoordTransform> 
 	}
 
 	public int prepareToEncode(final SWFEncoder coder) {
-		int numberOfBits = 14; // include extra 7 bits for ensuring byte
-		// alignment
+		int numberOfBits = 14; // include extra 7 bits for byte alignment
 
 		hasScale = scaleX != 65536 || scaleY != 65536;
 		hasShear = shearX != 0 || shearY != 0;
@@ -452,32 +477,6 @@ public final class CoordTransform implements Codeable, Copyable<CoordTransform> 
 		coder.writeBits(transSize, 5);
 		coder.writeBits(translateX, transSize);
 		coder.writeBits(translateY, transSize);
-
-		coder.alignToByte();
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException {
-		coder.alignToByte();
-
-		hasScale = coder.readBits(1, false) != 0;
-
-		if (hasScale) {
-			scaleSize = coder.readBits(5, false);
-			scaleX = coder.readBits(scaleSize, true);
-			scaleY = coder.readBits(scaleSize, true);
-		}
-
-		hasShear = coder.readBits(1, false) != 0;
-
-		if (hasShear) {
-			shearSize = coder.readBits(5, false);
-			shearX = coder.readBits(shearSize, true);
-			shearY = coder.readBits(shearSize, true);
-		}
-
-		transSize = coder.readBits(5, false);
-		translateX = coder.readBits(transSize, true);
-		translateY = coder.readBits(transSize, true);
 
 		coder.alignToByte();
 	}

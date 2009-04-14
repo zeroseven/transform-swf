@@ -78,25 +78,25 @@ public final class ExportTest {
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForIdentifierWithLowerBound() {
-		fixture = new Export();
+		fixture = new Export(table);
 		fixture.add(0, "A");
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForIdentifierWithUpperBound() {
-		fixture = new Export();
+		fixture = new Export(table);
 		fixture.add(65536, "A");
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForNameWithNull() {
-		fixture = new Export();
+		fixture = new Export(table);
 		fixture.add(1, null);
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForNameWithEmpty() {
-		fixture = new Export();
+		fixture = new Export(table);
 		fixture.add(1, null);
 	}
 
@@ -122,23 +122,10 @@ public final class ExportTest {
 	}
 	
 	@Test
-	public void encodeDefault() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(empty.length);		
-		
-		fixture = new Export();
-		assertEquals(empty.length, fixture.prepareToEncode(encoder));
-		fixture.encode(encoder);
-		
-		assertTrue(encoder.eof());
-		assertArrayEquals(empty, encoder.getData());
-	}
-	
-	@Test
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		
-		fixture = new Export();
-		fixture.decode(decoder);
+		fixture = new Export(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(table, fixture.getObjects());
@@ -148,8 +135,7 @@ public final class ExportTest {
 	public void decodeExtended() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(extended);
 		
-		fixture = new Export();
-		fixture.decode(decoder);
+		fixture = new Export(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(table, fixture.getObjects());

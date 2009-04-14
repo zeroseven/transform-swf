@@ -83,37 +83,35 @@ public final class Import2Test {
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForUrlWithNull() {
-		fixture = new Import2();
-		fixture.setUrl(null);
+		fixture = new Import2(null, table);
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForUrlWithEmpty() {
-		fixture = new Import2();
-		fixture.setUrl("");
+		fixture = new Import2("", table);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForIdentifierWithLowerBound() {
-		fixture = new Import2();
+		fixture = new Import2(url, table);
 		fixture.add(0, "A");
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForIdentifierWithUpperBound() {
-		fixture = new Import2();
+		fixture = new Import2(url, table);
 		fixture.add(65536, "A");
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForNameWithNull() {
-		fixture = new Import2();
+		fixture = new Import2(url, table);
 		fixture.add(1, null);
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForNameWithEmpty() {
-		fixture = new Import2();
+		fixture = new Import2(url, table);
 		fixture.add(1, "");
 	}
 
@@ -140,23 +138,10 @@ public final class Import2Test {
 	}
 	
 	@Test
-	public void encodeDefault() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(empty.length);		
-		
-		fixture = new Import2();
-		assertEquals(empty.length, fixture.prepareToEncode(encoder));
-		fixture.encode(encoder);
-		
-		assertTrue(encoder.eof());
-		assertArrayEquals(empty, encoder.getData());
-	}
-	
-	@Test
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		
-		fixture = new Import2();
-		fixture.decode(decoder);
+		fixture = new Import2(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(table, fixture.getObjects());
@@ -166,8 +151,7 @@ public final class Import2Test {
 	public void decodeExtended() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(extended);
 		
-		fixture = new Import2();
-		fixture.decode(decoder);
+		fixture = new Import2(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(table, fixture.getObjects());

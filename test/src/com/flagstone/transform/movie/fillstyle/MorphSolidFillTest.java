@@ -59,14 +59,12 @@ public final class MorphSolidFillTest {
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForStartColorWithNull() {
-		fixture = new MorphSolidFill();
-		fixture.setStartColor(null);
+		fixture = new MorphSolidFill(null, endColor);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForEndColorWithNull() {
-		fixture = new MorphSolidFill();
-		fixture.setEndColor(null);
+		fixture = new MorphSolidFill(startColor, null);
 	}
 	
 	@Test
@@ -95,8 +93,7 @@ public final class MorphSolidFillTest {
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		
-		fixture = new MorphSolidFill();
-		fixture.decode(decoder);
+		fixture = new MorphSolidFill(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(startColor.getRed(), fixture.getStartColor().getRed());

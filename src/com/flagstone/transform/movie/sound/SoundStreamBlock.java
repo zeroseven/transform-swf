@@ -63,9 +63,22 @@ public final class SoundStreamBlock implements MovieTag
 	private transient int end;
 	private transient int length;
 
-	public SoundStreamBlock()
+	public SoundStreamBlock(final SWFDecoder coder) throws CoderException
 	{
-		soundData = new byte[0];
+		start = coder.getPointer();
+		length = coder.readWord(2, false) & 0x3F;
+		
+		if (length == 0x3F) {
+			length = coder.readWord(4, false);
+		}
+		end = coder.getPointer() + (length << 3);
+
+		soundData = coder.readBytes(new byte[length]);
+
+		if (coder.getPointer() != end) {
+			throw new CoderException(getClass().getName(), start >> 3, length,
+					(coder.getPointer() - end) >> 3);
+		}
 	}
 
 	/**
@@ -141,24 +154,6 @@ public final class SoundStreamBlock implements MovieTag
 		end = coder.getPointer() + (length << 3);
 	
 		coder.writeBytes(soundData);
-
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException
-	{
-		start = coder.getPointer();
-		length = coder.readWord(2, false) & 0x3F;
-		
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
-		end = coder.getPointer() + (length << 3);
-
-		soundData = coder.readBytes(new byte[length]);
 
 		if (coder.getPointer() != end) {
 			throw new CoderException(getClass().getName(), start >> 3, length,

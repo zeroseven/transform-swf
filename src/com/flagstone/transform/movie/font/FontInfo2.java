@@ -82,9 +82,50 @@ public final class FontInfo2 implements MovieTag
 	private transient int end;
 	private transient int length;
 
-	public FontInfo2()
+	public FontInfo2(final SWFDecoder coder) throws CoderException
 	{
+		start = coder.getPointer();
+		length = coder.readWord(2, false) & 0x3F;
+		
+		if (length == 0x3F) {
+			length = coder.readWord(4, false);
+		}
+		end = coder.getPointer() + (length << 3);
 		codes = new ArrayList<Integer>();
+
+		identifier = coder.readWord(2, false);
+		int nameLength = coder.readByte();
+		name = coder.readString(nameLength, coder.getEncoding());
+
+		if (name.length() > 0)
+		{
+			while (name.charAt(name.length() - 1) == 0)
+			{
+				name = name.substring(0, name.length() - 1);
+			}
+		}
+
+		/* reserved */coder.readBits(2, false);
+		small = coder.readBits(1, false) != 0;
+		encoding = TextFormat.fromInt(coder.readBits(2, false));
+		italic = coder.readBits(1, false) != 0;
+		bold = coder.readBits(1, false) != 0;
+		/* containsWideCodes */coder.readBits(1, false);
+
+		int bytesRead = 4 + nameLength + 1;
+
+		language = coder.readByte();
+
+		while (bytesRead < length)
+		{
+			codes.add(coder.readWord(2, false));
+			bytesRead += 2;
+		}
+
+		if (coder.getPointer() != end) {
+			throw new CoderException(getClass().getName(), start >> 3, length,
+					(coder.getPointer() - end) >> 3);
+		}
 	}
 
 	/**
@@ -373,51 +414,6 @@ public final class FontInfo2 implements MovieTag
 
 		for (Integer code : codes) {
 			coder.writeWord(code.intValue(), 2);
-		}
-
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException
-	{
-		start = coder.getPointer();
-		length = coder.readWord(2, false) & 0x3F;
-		
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
-		end = coder.getPointer() + (length << 3);
-
-		identifier = coder.readWord(2, false);
-		int nameLength = coder.readByte();
-		name = coder.readString(nameLength, coder.getEncoding());
-
-		if (name.length() > 0)
-		{
-			while (name.charAt(name.length() - 1) == 0)
-			{
-				name = name.substring(0, name.length() - 1);
-			}
-		}
-
-		/* reserved */coder.readBits(2, false);
-		small = coder.readBits(1, false) != 0;
-		encoding = TextFormat.fromInt(coder.readBits(2, false));
-		italic = coder.readBits(1, false) != 0;
-		bold = coder.readBits(1, false) != 0;
-		/* containsWideCodes */coder.readBits(1, false);
-
-		int bytesRead = 4 + nameLength + 1;
-
-		language = coder.readByte();
-
-		while (bytesRead < length)
-		{
-			codes.add(coder.readWord(2, false));
-			bytesRead += 2;
 		}
 
 		if (coder.getPointer() != end) {

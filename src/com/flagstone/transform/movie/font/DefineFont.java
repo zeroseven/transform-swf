@@ -70,9 +70,43 @@ public final class DefineFont implements DefineTag
 	private transient int end;
 	private transient int length;
 
-	public DefineFont()
+	public DefineFont(final SWFDecoder coder) throws CoderException
 	{
+		start = coder.getPointer();
+		length = coder.readWord(2, false) & 0x3F;
+		
+		if (length == 0x3F) {
+			length = coder.readWord(4, false);
+		}
+		end = coder.getPointer() + (length << 3);
+		
+		identifier = coder.readWord(2, false);
 		shapes = new ArrayList<Shape>();
+
+		int offsetStart = coder.getPointer();
+		int shapeCount = coder.readWord(2, false) / 2;
+
+		coder.setPointer(offsetStart);
+
+		int[] offset = new int[shapeCount + 1]; // NOPMD
+
+		for (int i = 0; i < shapeCount; i++) {
+			offset[i] = coder.readWord(2, false); // NOPMD
+		}
+
+		offset[shapeCount] = length - 2; // NOPMD
+		
+		for (int i = 0; i < shapeCount; i++)
+		{
+			coder.setPointer(offsetStart + (offset[i] << 3));
+
+			shapes.add(new Shape(coder));
+		}
+
+		if (coder.getPointer() != end) {
+			throw new CoderException(getClass().getName(), start >> 3, length,
+					(coder.getPointer() - end) >> 3);
+		}
 	}
 
 	/**
@@ -224,48 +258,6 @@ public final class DefineFont implements DefineTag
 
 		coder.getContext().setFillSize(0);
 		coder.getContext().setLineSize(0);
-
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException
-	{
-		start = coder.getPointer();
-		length = coder.readWord(2, false) & 0x3F;
-		
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
-		end = coder.getPointer() + (length << 3);
-		
-		identifier = coder.readWord(2, false);
-
-		int offsetStart = coder.getPointer();
-		int shapeCount = coder.readWord(2, false) / 2;
-
-		coder.setPointer(offsetStart);
-
-		int[] offset = new int[shapeCount + 1]; // NOPMD
-
-		for (int i = 0; i < shapeCount; i++) {
-			offset[i] = coder.readWord(2, false); // NOPMD
-		}
-
-		offset[shapeCount] = length - 2; // NOPMD
-		
-		Shape shape; 
-
-		for (int i = 0; i < shapeCount; i++)
-		{
-			coder.setPointer(offsetStart + (offset[i] << 3));
-
-			shape = new Shape();
-			shape.decode(coder);
-			shapes.add(shape);
-		}
 
 		if (coder.getPointer() != end) {
 			throw new CoderException(getClass().getName(), start >> 3, length,

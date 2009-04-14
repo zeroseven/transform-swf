@@ -96,49 +96,49 @@ public final class ScenesAndLabelsTest {
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForSceneIdentifierWithLowerBound() {
-		fixture = new ScenesAndLabels();
+		fixture = new ScenesAndLabels(scenes, labels);
 		fixture.addScene(-1, "A");
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForSceneIdentifierWithUpperBound() {
-		fixture = new ScenesAndLabels();
+		fixture = new ScenesAndLabels(scenes, labels);
 		fixture.addScene(65536, "A");
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForSceneNameWithNull() {
-		fixture = new ScenesAndLabels();
+		fixture = new ScenesAndLabels(scenes, labels);
 		fixture.addScene(1, null);
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForSceneNameWithEmpty() {
-		fixture = new ScenesAndLabels();
+		fixture = new ScenesAndLabels(scenes, labels);
 		fixture.addScene(1, "");
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForLabelIdentifierWithLowerBound() {
-		fixture = new ScenesAndLabels();
+		fixture = new ScenesAndLabels(scenes, labels);
 		fixture.addLabel(-1, "A");
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForLabelIdentifierWithUpperBound() {
-		fixture = new ScenesAndLabels();
+		fixture = new ScenesAndLabels(scenes, labels);
 		fixture.addLabel(65536, "A");
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForLabelNameWithNull() {
-		fixture = new ScenesAndLabels();
+		fixture = new ScenesAndLabels(scenes, labels);
 		fixture.addLabel(1, null);
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForLabelNameWithEmpty() {
-		fixture = new ScenesAndLabels();
+		fixture = new ScenesAndLabels(scenes, labels);
 		fixture.addLabel(1, "");
 	}
 
@@ -165,23 +165,10 @@ public final class ScenesAndLabelsTest {
 	}
 	
 	@Test
-	public void encodeDefault() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(empty.length);		
-		
-		fixture = new ScenesAndLabels();
-		assertEquals(empty.length, fixture.prepareToEncode(encoder));
-		fixture.encode(encoder);
-		
-		assertTrue(encoder.eof());
-		assertArrayEquals(empty, encoder.getData());
-	}
-	
-	@Test
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		
-		fixture = new ScenesAndLabels();
-		fixture.decode(decoder);
+		fixture = new ScenesAndLabels(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(scenes, fixture.getScenes());
@@ -192,8 +179,7 @@ public final class ScenesAndLabelsTest {
 	public void decodeExtended() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(extended);
 		
-		fixture = new ScenesAndLabels();
-		fixture.decode(decoder);
+		fixture = new ScenesAndLabels(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(scenes, fixture.getScenes());

@@ -45,7 +45,7 @@ public final class GlyphAlignment implements Codeable
 	
 	private List<AlignmentZone>alignments;
 	
-	protected GlyphAlignment()
+	protected GlyphAlignment(final SWFDecoder coder) throws CoderException
 	{
 	}
 
@@ -100,10 +100,6 @@ public final class GlyphAlignment implements Codeable
 	}
 
 	public void encode(final SWFEncoder coder) throws CoderException
-	{
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException
 	{
 	}
 }

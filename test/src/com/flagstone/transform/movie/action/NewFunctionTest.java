@@ -83,19 +83,19 @@ public final class NewFunctionTest {
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAddNullArgument() {
-		fixture = new NewFunction();
+		fixture = new NewFunction(args, actions);
 		fixture.add((String)null);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAddEmptyArgument() {
-		fixture = new NewFunction();
+		fixture = new NewFunction(args, actions);
 		fixture.add("");
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAddNullAction() {
-		fixture = new NewFunction();
+		fixture = new NewFunction(args, actions);
 		fixture.add((Action)null);
 	}
 
@@ -121,23 +121,10 @@ public final class NewFunctionTest {
 	}
 	
 	@Test
-	public void encodeDefault() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(empty.length);		
-		
-		fixture = new NewFunction();
-		assertEquals(empty.length, fixture.prepareToEncode(encoder));
-		fixture.encode(encoder);
-		
-		assertTrue(encoder.eof());
-		assertArrayEquals(empty, encoder.getData());
-	}
-	
-	@Test
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		
-		fixture = new NewFunction();
-		fixture.decode(decoder);
+		fixture = new NewFunction(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(name, fixture.getName());

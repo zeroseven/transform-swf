@@ -76,20 +76,17 @@ public final class DefineMovieClipTest {
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForIdentifierWithLowerBound() {
-		fixture = new DefineMovieClip();
-		fixture.setIdentifier(0);
+		fixture = new DefineMovieClip(0, list);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForIdentifierWithUpperBound() {
-		fixture = new DefineMovieClip();
-		fixture.setIdentifier(65536);
+		fixture = new DefineMovieClip(65536, list);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAddNullTag() {
-		fixture = new DefineMovieClip();
-		fixture.add(null);
+		fixture = new DefineMovieClip(identifier, null);
 	}
 
 	@Test
@@ -118,9 +115,8 @@ public final class DefineMovieClipTest {
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		
-		fixture = new DefineMovieClip();
-		fixture.decode(decoder);
-		
+		fixture = new DefineMovieClip(decoder);
+
 		assertTrue(decoder.eof());
 		assertEquals(identifier, fixture.getIdentifier());
 		assertEquals(list, fixture.getObjects());
@@ -130,8 +126,7 @@ public final class DefineMovieClipTest {
 	public void decodeExtended() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(extended);
 
-		fixture = new DefineMovieClip();
-		fixture.decode(decoder);
+		fixture = new DefineMovieClip(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(identifier, fixture.getIdentifier());

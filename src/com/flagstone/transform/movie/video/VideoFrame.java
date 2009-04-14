@@ -62,11 +62,17 @@ public final class VideoFrame implements MovieTag
 	
 	private transient int length;
 
-	public VideoFrame()
+	public VideoFrame(final SWFDecoder coder) throws CoderException
 	{
-		identifier = 1;
-		frameNumber = 1;
-		data = new byte[0];
+		length = coder.readWord(2, false) & 0x3F;
+		
+		if (length == 0x3F) {
+			length = coder.readWord(4, false);
+		}
+
+		identifier = coder.readWord(2, false);
+		frameNumber = coder.readWord(2, false);
+		data = coder.readBytes(new byte[length-4]);
 	}
 
 	/**
@@ -201,18 +207,5 @@ public final class VideoFrame implements MovieTag
 		coder.writeWord(identifier, 2);
 		coder.writeWord(frameNumber, 2);
 		coder.writeBytes(data);
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException
-	{
-		length = coder.readWord(2, false) & 0x3F;
-		
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
-
-		identifier = coder.readWord(2, false);
-		frameNumber = coder.readWord(2, false);
-		data = coder.readBytes(new byte[length-4]);
 	}
 }

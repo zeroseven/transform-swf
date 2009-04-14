@@ -70,12 +70,4 @@ public interface Codeable {
 	 *            an SWFEncoder object.
 	 */
 	void encode(final SWFEncoder coder) throws CoderException;
-
-	/**
-	 * Decode an object from the Flash binary format.
-	 * 
-	 * @param coder
-	 *            an SWFDecoder object.
-	 */
-	void decode(final SWFDecoder coder) throws CoderException;
 }

@@ -54,13 +54,6 @@ public final class CoordTransformTest {
 	private transient SWFDecoder decoder;
 	private transient byte[] data;
 
-	@Before
-	public void setUp() {
-		fixture = new CoordTransform();
-		encoder = new SWFEncoder(0);
-		decoder = new SWFDecoder(new byte[] {});
-	}
-
 	@Test
 	public void checkProduct() {
 		float[][] left = new float[][] { { 1.0f, 1.0f, 1.0f },
@@ -274,7 +267,7 @@ public final class CoordTransformTest {
 		data = new byte[] { 6, 80 };
 		decoder.setData(data);
 
-		fixture.decode(decoder);
+		fixture = new CoordTransform(decoder);
 
 		assertEquals(16, decoder.getPointer());
 		assertEquals(xCoord, fixture.getMatrix()[0][2]);
@@ -289,7 +282,7 @@ public final class CoordTransformTest {
 		data = new byte[] { -52, -128, 0, 32, 0, 0, 64 };
 		decoder.setData(data);
 
-		fixture.decode(decoder);
+		fixture = new CoordTransform(decoder);
 
 		assertEquals(56, decoder.getPointer());
 		assertEquals(scaleX, fixture.getMatrix()[0][0]);
@@ -304,7 +297,7 @@ public final class CoordTransformTest {
 		data = new byte[] { 102, 64, 0, 16, 0, 0, 64 };
 		decoder.setData(data);
 
-		fixture.decode(decoder);
+		fixture = new CoordTransform(decoder);
 
 		assertEquals(56, decoder.getPointer());
 		assertEquals(shearX, fixture.getMatrix()[1][0]);
@@ -319,7 +312,7 @@ public final class CoordTransformTest {
 		data = new byte[] { -52, -128, 0, 32, 0, 13, 12, 0, 1, 0, 0, 2, 0 };
 		decoder.setData(data);
 
-		fixture.decode(decoder);
+		fixture = new CoordTransform(decoder);
 
 		assertEquals(104, decoder.getPointer());
 		compare(matrix, fixture.getMatrix());

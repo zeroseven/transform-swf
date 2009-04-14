@@ -58,8 +58,7 @@ public final class SolidFillTest {
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForColorWithNull() {
-		fixture = new SolidFill();
-		fixture.setColor(null);
+		fixture = new SolidFill((Color)null);
 	}
 	
 	@Test
@@ -88,8 +87,7 @@ public final class SolidFillTest {
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		
-		fixture = new SolidFill();
-		fixture.decode(decoder);
+		fixture = new SolidFill(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(color.getRed(), fixture.getColor().getRed());

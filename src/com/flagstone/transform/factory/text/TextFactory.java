@@ -160,7 +160,7 @@ public final class TextFactory
      */
     public static DefineText2 defineText(int uid, String text, DefineFont2 font, int size, Color color)
     {
-        CoordTransform transform = new CoordTransform();
+        CoordTransform transform = new CoordTransform(1.0f, 1.0f, 0.0f, 0.0f, 0, 0);
         ArrayList<TextSpan> spans = new ArrayList<TextSpan>();
 
         spans.add(defineSpan(text, font, size, color));
@@ -187,7 +187,7 @@ public final class TextFactory
      */
     public static DefineText2 defineTextBlock(int uid, List<String> lines, DefineFont2 font, int size, Color color, int lineSpacing)
     {
-        CoordTransform transform = new CoordTransform();
+        CoordTransform transform = new CoordTransform(1.0f, 1.0f, 0.0f, 0.0f, 0, 0);
         float scale = size/1024.0f;
         
         int xMin = 0;

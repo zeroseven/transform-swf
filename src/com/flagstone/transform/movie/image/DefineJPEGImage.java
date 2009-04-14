@@ -72,11 +72,22 @@ public final class DefineJPEGImage implements ImageTag
 	protected transient int height;
 
 	
-	public DefineJPEGImage()
+	public DefineJPEGImage(final SWFDecoder coder) throws CoderException
 	{
-		image = new byte[0];
-		width = 0;
-		height = 0;
+		start = coder.getPointer();
+		length = coder.readWord(2, false) & 0x3F;
+		
+		if (length == 0x3F) {
+			length = coder.readWord(4, false);
+		}
+		end = coder.getPointer() + (length << 3);
+		identifier = coder.readWord(2, false);
+		image = coder.readBytes(new byte[length - 2]);
+
+		if (coder.getPointer() != end) {
+			throw new CoderException(getClass().getName(), start >> 3, length,
+					(coder.getPointer() - end) >> 3);
+		}
 	}
 
 	/**
@@ -189,24 +200,6 @@ public final class DefineJPEGImage implements ImageTag
 		
 		coder.writeWord(identifier, 2);
 		coder.writeBytes(image);
-
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException
-	{
-		start = coder.getPointer();
-		length = coder.readWord(2, false) & 0x3F;
-		
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
-		end = coder.getPointer() + (length << 3);
-		identifier = coder.readWord(2, false);
-		image = coder.readBytes(new byte[length - 2]);
 
 		if (coder.getPointer() != end) {
 			throw new CoderException(getClass().getName(), start >> 3, length,

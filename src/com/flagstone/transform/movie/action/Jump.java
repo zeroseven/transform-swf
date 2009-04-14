@@ -64,9 +64,11 @@ public final class Jump implements Action
 
 	protected int offset;
 
-	public Jump()
+	public Jump(final SWFDecoder coder) throws CoderException
 	{
-		offset = 0;
+		coder.readByte();
+		coder.readWord(2, false);
+		offset = coder.readWord(2, true);
 	}
 
 	/**
@@ -128,12 +130,5 @@ public final class Jump implements Action
 		coder.writeByte(Types.JUMP);
 		coder.writeWord(2, 2);
 		coder.writeWord(offset, 2);
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException
-	{
-		coder.readByte();
-		coder.readWord(2, false);
-		offset = coder.readWord(2, true);
 	}
 }

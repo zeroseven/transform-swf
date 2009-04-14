@@ -36,6 +36,7 @@ import com.flagstone.transform.factory.movie.MovieFactory;
 import com.flagstone.transform.factory.movie.SWFFactory;
 import com.flagstone.transform.movie.MovieTag;
 import com.flagstone.transform.movie.action.Action;
+import com.flagstone.transform.movie.datatype.Color;
 import com.flagstone.transform.movie.fillstyle.FillStyle;
 
 /**
@@ -99,19 +100,19 @@ public final class SWFDecoder extends LittleEndianDecoder {
 	    movieFactory = factory;
     }
 	
-	public FillStyle fillStyleOfType(int type) {
-		return fillStyleFactory.getObjectOfType(type);
+	public FillStyle fillStyleOfType(SWFDecoder coder) throws CoderException {
+		return fillStyleFactory.getObject(coder);
 	}
 	
-	public FillStyle morphFillStyleOfType(int type) {
-		return morphStyleFactory.getObjectOfType(type);
+	public FillStyle morphFillStyleOfType(SWFDecoder coder) throws CoderException {
+		return morphStyleFactory.getObject(coder);
 	}
 	
-	public Action actionOfType(int type) {
-		return actionFactory.getObjectOfType(type);
+	public Action actionOfType(SWFDecoder coder) throws CoderException {
+		return actionFactory.getObject(coder);
 	}
 	
-	public MovieTag movieOfType(int type) {
-		return movieFactory.getObjectOfType(type);
+	public MovieTag movieOfType(SWFDecoder coder) throws CoderException {
+		return movieFactory.getObject(coder);
 	}
 }

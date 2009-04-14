@@ -69,12 +69,67 @@ public final class DefineShape4 implements DefineTag
 	private transient int lineBits;
 	private transient boolean scaling;
 
-	protected DefineShape4()
+	protected DefineShape4(final SWFDecoder coder) throws CoderException
 	{
-		shapeBounds = new Bounds();
+		start = coder.getPointer();
+		length = coder.readWord(2, false) & 0x3F;
+		
+		if (length == 0x3F) {
+			length = coder.readWord(4, false);
+		}
+		end = coder.getPointer() + (length << 3);
+
+		identifier = coder.readWord(2, false);
+		coder.getContext().setTransparent(true);
+
+		shapeBounds = new Bounds(coder);
+		edgeBounds = new Bounds(coder);
+		
+		coder.readByte(); // scaling hints
+
+		int fillStyleCount = coder.readByte();
+
+		if (fillStyleCount == 0xFF) {
+			fillStyleCount = coder.readWord(2, false);
+		}
 		fillStyles = new ArrayList<FillStyle>();
 		lineStyles = new ArrayList<LineStyle2>();
-		shape = new Shape();
+
+		FillStyle fill;
+		int type;
+
+		for (int i = 0; i < fillStyleCount; i++) {
+			type = coder.scanByte();
+			fill = coder.fillStyleOfType(coder);
+
+			if (fill == null) {
+				throw new CoderException(String.valueOf(type), start >>> 3, 0, 0, Strings.UNSUPPORTED_FILL_STYLE);
+			}
+
+			fillStyles.add(fill);
+		}
+
+		int lineStyleCount = coder.readByte();
+
+		if (lineStyleCount == 0xFF) {
+			lineStyleCount = coder.readWord(2, false);
+		}
+
+		for (int i = 0; i < lineStyleCount; i++) {
+			lineStyles.add(new LineStyle2(coder));
+		}
+
+		coder.getContext().setArrayExtended(true);
+
+		shape = new Shape(coder);
+
+		coder.getContext().setTransparent(false);
+		coder.getContext().setArrayExtended(false);
+
+		if (coder.getPointer() != end) {
+			throw new CoderException(getClass().getName(), start >> 3, length,
+					(coder.getPointer() - end) >> 3);
+		}
 	}
 
 	/**
@@ -412,72 +467,6 @@ public final class DefineShape4 implements DefineTag
 		coder.getContext().setFillSize(0);
 		coder.getContext().setLineSize(0);
 		coder.getContext().setTransparent(false);
-
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException
-	{
-		start = coder.getPointer();
-		length = coder.readWord(2, false) & 0x3F;
-		
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
-		end = coder.getPointer() + (length << 3);
-
-		identifier = coder.readWord(2, false);
-		coder.getContext().setTransparent(true);
-
-		shapeBounds.decode(coder);
-		edgeBounds.decode(coder);
-		
-		coder.readByte(); // scaling hints
-
-		int fillStyleCount = coder.readByte();
-
-		if (fillStyleCount == 0xFF) {
-			fillStyleCount = coder.readWord(2, false);
-		}
-
-		FillStyle fill;
-		int type;
-
-		for (int i = 0; i < fillStyleCount; i++) {
-			type = coder.scanByte();
-			fill = coder.fillStyleOfType(type);
-
-			if (fill == null) {
-				throw new CoderException(String.valueOf(type), start >>> 3, 0, 0, Strings.UNSUPPORTED_FILL_STYLE);
-			}
-
-			fill.decode(coder);
-			fillStyles.add(fill);
-		}
-
-		int lineStyleCount = coder.readByte();
-
-		if (lineStyleCount == 0xFF) {
-			lineStyleCount = coder.readWord(2, false);
-		}
-
-		LineStyle2 style;
-
-		for (int i = 0; i < lineStyleCount; i++) {
-			style = new LineStyle2();
-			style.decode(coder);
-			lineStyles.add(style);
-		}
-
-		coder.getContext().setArrayExtended(true);
-
-		shape.decode(coder);
-
-		coder.getContext().setTransparent(false);
-		coder.getContext().setArrayExtended(false);
 
 		if (coder.getPointer() != end) {
 			throw new CoderException(getClass().getName(), start >> 3, length,

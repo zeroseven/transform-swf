@@ -59,20 +59,17 @@ public final class LineStyleTest {
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForWidthWithLowerBound() {
-		fixture = new LineStyle();
-		fixture.setWidth(-1);
+		fixture = new LineStyle(-1, color);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForWidthWithUpperBound() {
-		fixture = new LineStyle();
-		fixture.setWidth(65536);
+		fixture = new LineStyle(65535, color);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForColorWithNull() {
-		fixture = new LineStyle();
-		fixture.setColor(null);
+		fixture = new LineStyle(1, null);
 	}
 	
 	@Test
@@ -101,8 +98,7 @@ public final class LineStyleTest {
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		
-		fixture = new LineStyle();
-		fixture.decode(decoder);
+		fixture = new LineStyle(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(width, fixture.getWidth());

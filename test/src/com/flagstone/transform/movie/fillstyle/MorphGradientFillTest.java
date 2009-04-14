@@ -77,7 +77,7 @@ public final class MorphGradientFillTest {
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAddNullGradient() {
-		fixture = new MorphGradientFill(type);
+		fixture = new MorphGradientFill(type, start, end, list);
 		fixture.add(null);
 	}
 
@@ -108,8 +108,7 @@ public final class MorphGradientFillTest {
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		
-		fixture = new MorphGradientFill(type);
-		fixture.decode(decoder);
+		fixture = new MorphGradientFill(decoder);
 		
 		assertTrue(decoder.eof());
 		//TODO compare fields

@@ -67,12 +67,12 @@ public final class MorphGradient implements Codeable
 	protected Color startColor;
 	protected Color endColor;
 
-	protected MorphGradient()
+	public MorphGradient(final SWFDecoder coder) throws CoderException
 	{
-		startRatio = 0;
-		endRatio = 0;
-		startColor = new Color(0,0,0,0);
-		endColor = new Color(0,0,0,0);
+		startRatio = coder.readByte();
+		startColor = new Color(coder);
+		endRatio = coder.readByte();
+		endColor = new Color(coder);
 	}
 
 	/**
@@ -101,8 +101,8 @@ public final class MorphGradient implements Codeable
 	public MorphGradient(MorphGradient object) {
 		startRatio = object.startRatio;
 		endRatio = object.endRatio;
-		startColor = object.startColor.copy();
-		endColor = object.endColor.copy();
+		startColor = object.startColor;
+		endColor = object.endColor;
 	}
 
 	/**
@@ -225,13 +225,5 @@ public final class MorphGradient implements Codeable
 		startColor.encode(coder);
 		coder.writeWord(endRatio, 1);
 		endColor.encode(coder);
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException
-	{
-		startRatio = coder.readByte();
-		startColor.decode(coder);
-		endRatio = coder.readByte();
-		endColor.decode(coder);
 	}
 }

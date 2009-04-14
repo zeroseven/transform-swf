@@ -81,13 +81,47 @@ public final class DefineSound implements DefineTag {
 	private transient int end;
 	private transient int length;
 
-	public DefineSound() {
-		format = SoundFormat.PCM;
-		rate = 5512;
-		channelCount = 1;
-		sampleSize = 1;
-		sampleCount = 0;
-		data = new byte[0];
+	public DefineSound(final SWFDecoder coder) throws CoderException {
+
+		start = coder.getPointer();
+		length = coder.readWord(2, false) & 0x3F;
+
+		if (length == 0x3F) {
+			length = coder.readWord(4, false);
+		}
+		end = coder.getPointer() + (length << 3);
+
+		identifier = coder.readWord(2, false);
+		format = SoundFormat.fromInt(coder.readBits(4, false));
+
+		switch (coder.readBits(2, false)) {
+		case 0:
+			rate = 5512;
+			break;
+		case 1:
+			rate = 11025;
+			break;
+		case 2:
+			rate = 22050;
+			break;
+		case 3:
+			rate = 44100;
+			break;
+		default:
+			rate = 0;
+			break;
+		}
+
+		sampleSize = coder.readBits(1, false) + 1;
+		channelCount = coder.readBits(1, false) + 1;
+		sampleCount = coder.readWord(4, false);
+
+		data = coder.readBytes(new byte[length - 7]);
+
+		if (coder.getPointer() != end) {
+			throw new CoderException(getClass().getName(), start >> 3, length,
+					(coder.getPointer() - end) >> 3);
+		}
 	}
 
 	/**
@@ -326,49 +360,6 @@ public final class DefineSound implements DefineTag {
 		coder.writeWord(sampleCount, 4);
 
 		coder.writeBytes(data);
-
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException {
-
-		start = coder.getPointer();
-		length = coder.readWord(2, false) & 0x3F;
-
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
-		end = coder.getPointer() + (length << 3);
-
-		identifier = coder.readWord(2, false);
-		format = SoundFormat.fromInt(coder.readBits(4, false));
-
-		switch (coder.readBits(2, false)) {
-		case 0:
-			rate = 5512;
-			break;
-		case 1:
-			rate = 11025;
-			break;
-		case 2:
-			rate = 22050;
-			break;
-		case 3:
-			rate = 44100;
-			break;
-		default:
-			rate = 0;
-			break;
-		}
-
-		sampleSize = coder.readBits(1, false) + 1;
-		channelCount = coder.readBits(1, false) + 1;
-		sampleCount = coder.readWord(4, false);
-
-		data = coder.readBytes(new byte[length - 7]);
 
 		if (coder.getPointer() != end) {
 			throw new CoderException(getClass().getName(), start >> 3, length,

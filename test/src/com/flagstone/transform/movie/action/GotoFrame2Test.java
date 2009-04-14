@@ -65,14 +65,12 @@ public final class GotoFrame2Test {
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForIdentifierWithLowerBound() {
-		fixture = new GotoFrame2();
-		fixture.setFrameOffset(-1);
+		fixture = new GotoFrame2(-1, play);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForIdentifierWithUpperBound() {
-		fixture = new GotoFrame2();
-		fixture.setFrameOffset(65536);
+		fixture = new GotoFrame2(65536, play);
 	}
 	
 	@Test
@@ -124,8 +122,7 @@ public final class GotoFrame2Test {
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		
-		fixture = new GotoFrame2();
-		fixture.decode(decoder);
+		fixture = new GotoFrame2(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(offset, fixture.getFrameOffset());
@@ -136,8 +133,7 @@ public final class GotoFrame2Test {
 	public void decodeWithNoOffset() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(noOffset);
 		
-		fixture = new GotoFrame2();
-		fixture.decode(decoder);
+		fixture = new GotoFrame2(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(0, fixture.getFrameOffset());
@@ -148,8 +144,7 @@ public final class GotoFrame2Test {
 	public void decodeWithPlaySetToFalse() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(stop);
 		
-		fixture = new GotoFrame2();
-		fixture.decode(decoder);
+		fixture = new GotoFrame2(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(0, fixture.getFrameOffset());

@@ -61,9 +61,35 @@ public final class ButtonSound implements MovieTag
 	private transient int end;
 	private transient int length;
 
-	public ButtonSound()
+	public ButtonSound(final SWFDecoder coder) throws CoderException
 	{
-		identifier = 1;
+		start = coder.getPointer();
+		length = coder.readWord(2, false) & 0x3F;
+		
+		if (length == 0x3F) {
+			length = coder.readWord(4, false);
+		}
+		end = coder.getPointer() + (length << 3);
+
+		identifier = coder.readWord(2, false);
+
+		for (int i=0; i<4; i++)
+		{
+			if (coder.readWord(2, false) > 0) 
+			{
+				coder.adjustPointer(-16);
+				sound[i] = new SoundInfo(coder);
+			}
+
+			if (coder.getPointer() == end) {
+				break;
+			}
+		}
+
+		if (coder.getPointer() != end) {
+			throw new CoderException(getClass().getName(), start >> 3, length,
+					(coder.getPointer() - end) >> 3);
+		}
 	}
 
 	/**
@@ -231,38 +257,6 @@ public final class ButtonSound implements MovieTag
 			}
 			else {
 				sound[i].encode(coder);
-			}
-		}
-
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException
-	{
-		start = coder.getPointer();
-		length = coder.readWord(2, false) & 0x3F;
-		
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
-		end = coder.getPointer() + (length << 3);
-
-		identifier = coder.readWord(2, false);
-
-		for (int i=0; i<4; i++)
-		{
-			if (coder.readWord(2, false) > 0) 
-			{
-				coder.adjustPointer(-16);
-				sound[i] = new SoundInfo();
-				sound[i].decode(coder);
-			}
-
-			if (coder.getPointer() == end) {
-				break;
 			}
 		}
 

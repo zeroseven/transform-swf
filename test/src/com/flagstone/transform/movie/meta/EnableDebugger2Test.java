@@ -63,14 +63,12 @@ public final class EnableDebugger2Test {
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForPasswordWithNull() {
-		fixture = new EnableDebugger2();
-		fixture.setPassword(null);
+		fixture = new EnableDebugger2((String)null);
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForPasswordWithEmpty() {
-		fixture = new EnableDebugger2();
-		fixture.setPassword("");
+		fixture = new EnableDebugger2("");
 	}
 	
 	@Test
@@ -93,25 +91,12 @@ public final class EnableDebugger2Test {
 		assertTrue(encoder.eof());
 		assertArrayEquals(encoded, encoder.getData());
 	}
-	
-	@Test
-	public void encodeDefault() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(empty.length);		
-		
-		fixture = new EnableDebugger2();
-		assertEquals(empty.length, fixture.prepareToEncode(encoder));
-		fixture.encode(encoder);
-		
-		assertTrue(encoder.eof());
-		assertArrayEquals(empty, encoder.getData());
-	}
-	
+
 	@Test
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		
-		fixture = new EnableDebugger2();
-		fixture.decode(decoder);
+		fixture = new EnableDebugger2(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(password, fixture.getPassword());
@@ -121,8 +106,7 @@ public final class EnableDebugger2Test {
 	public void decodeExtended() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(extended);
 		
-		fixture = new EnableDebugger2();
-		fixture.decode(decoder);
+		fixture = new EnableDebugger2(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(password, fixture.getPassword());

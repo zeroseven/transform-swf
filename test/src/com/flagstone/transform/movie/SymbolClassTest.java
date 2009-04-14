@@ -78,26 +78,22 @@ public final class SymbolClassTest {
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForIdentifierWithLowerBound() {
-		fixture = new SymbolClass();
-		fixture.add(0, "A");
+		fixture = new SymbolClass(table);
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForIdentifierWithUpperBound() {
-		fixture = new SymbolClass();
-		fixture.add(65536, "A");
+		fixture = new SymbolClass(table);
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForNameWithNull() {
-		fixture = new SymbolClass();
-		fixture.add(1, null);
+		fixture = new SymbolClass(table);
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForNameWithEmpty() {
-		fixture = new SymbolClass();
-		fixture.add(1, null);
+		fixture = new SymbolClass(table);
 	}
 
 	@Test
@@ -122,24 +118,11 @@ public final class SymbolClassTest {
 	}
 	
 	@Test
-	public void encodeDefault() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(empty.length);		
-		
-		fixture = new SymbolClass();
-		assertEquals(empty.length, fixture.prepareToEncode(encoder));
-		fixture.encode(encoder);
-		
-		assertTrue(encoder.eof());
-		assertArrayEquals(empty, encoder.getData());
-	}
-	
-	@Test
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		
-		fixture = new SymbolClass();
-		fixture.decode(decoder);
-		
+		fixture = new SymbolClass(decoder);
+
 		assertTrue(decoder.eof());
 		assertEquals(table, fixture.getObjects());
 	}
@@ -148,8 +131,7 @@ public final class SymbolClassTest {
 	public void decodeExtended() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(extended);
 		
-		fixture = new SymbolClass();
-		fixture.decode(decoder);
+		fixture = new SymbolClass(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(table, fixture.getObjects());

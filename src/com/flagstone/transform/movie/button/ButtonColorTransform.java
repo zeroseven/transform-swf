@@ -65,10 +65,25 @@ public final class ButtonColorTransform implements MovieTag {
 	private transient int end;
 	private transient int length;
 
-	public ButtonColorTransform() {
-		identifier = 0;
-		colorTransform = new ColorTransform();
+	public ButtonColorTransform(final SWFDecoder coder) throws CoderException {
+
+		start = coder.getPointer();
+		length = coder.readWord(2, false) & 0x3F;
+
+		if (length == 0x3F) {
+			length = coder.readWord(4, false);
+		}
+		end = coder.getPointer() + (length << 3);
+
+		identifier = coder.readWord(2, false);
+		colorTransform = new ColorTransform(coder);
+
+		if (coder.getPointer() != end) {
+			throw new CoderException(getClass().getName(), start >> 3, length,
+					(coder.getPointer() - end) >> 3);
+		}
 	}
+
 
 	/**
 	 * Creates a ButtonColorTransform object with a colour transform for the
@@ -160,25 +175,6 @@ public final class ButtonColorTransform implements MovieTag {
 
 		coder.writeWord(identifier, 2);
 		colorTransform.encode(coder);
-
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException {
-
-		start = coder.getPointer();
-		length = coder.readWord(2, false) & 0x3F;
-
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
-		end = coder.getPointer() + (length << 3);
-
-		identifier = coder.readWord(2, false);
-		colorTransform.decode(coder);
 
 		if (coder.getPointer() != end) {
 			throw new CoderException(getClass().getName(), start >> 3, length,

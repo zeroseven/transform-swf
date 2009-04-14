@@ -1,5 +1,7 @@
 package com.flagstone.transform.factory.movie;
 
+import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.movie.fillstyle.BitmapFill;
 import com.flagstone.transform.movie.fillstyle.FillStyle;
 import com.flagstone.transform.movie.fillstyle.GradientFill;
@@ -12,31 +14,31 @@ import com.flagstone.transform.movie.fillstyle.SolidFill;
 @SuppressWarnings("PMD")
 public final class FillStyleFactory implements SWFFactory<FillStyle> {
 
-	public FillStyle getObjectOfType(final int type) {
+	public FillStyle getObject(final SWFDecoder coder) throws CoderException {
 
 		FillStyle style;
 
-		switch (type) {
+		switch (coder.scanByte()) {
 		case FillStyle.SOLID:
-			style = new SolidFill();
+			style = new SolidFill(coder);
 			break;
 		case FillStyle.LINEAR:
-			style = new GradientFill(FillStyle.LINEAR);
+			style = new GradientFill(coder);
 			break;
 		case FillStyle.RADIAL:
-			style = new GradientFill(FillStyle.RADIAL);
+			style = new GradientFill(coder);
 			break;
 		case FillStyle.TILED:
-			style = new BitmapFill(FillStyle.TILED);
+			style = new BitmapFill(coder);
 			break;
 		case FillStyle.CLIPPED:
-			style = new BitmapFill(FillStyle.CLIPPED);
+			style = new BitmapFill(coder);
 			break;
 		case FillStyle.UNSMOOTHED_TILED:
-			style = new BitmapFill(FillStyle.UNSMOOTHED_TILED);
+			style = new BitmapFill(coder);
 			break;
 		case FillStyle.UNSMOOTHED_CLIPPED:
-			style = new BitmapFill(FillStyle.UNSMOOTHED_CLIPPED);
+			style = new BitmapFill(coder);
 			break;
 		default:
 			style = null; // NOPMD

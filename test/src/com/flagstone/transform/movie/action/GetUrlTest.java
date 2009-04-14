@@ -96,8 +96,7 @@ public final class GetUrlTest {
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		
-		fixture = new GetUrl();
-		fixture.decode(decoder);
+		fixture = new GetUrl(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(url, fixture.getUrl());

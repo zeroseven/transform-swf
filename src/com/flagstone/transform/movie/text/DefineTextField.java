@@ -447,7 +447,7 @@ public final class DefineTextField implements DefineTag
 		fontIdentifier = object.fontIdentifier;
 		fontClass = object.fontClass;
 		fontHeight = object.fontHeight;
-		color = object.color.copy();
+		color = object.color;
 		maxLength = object.maxLength;
 		alignment = object.alignment;
 		leftMargin = object.leftMargin;
@@ -458,17 +458,79 @@ public final class DefineTextField implements DefineTag
 		initialText = object.initialText;
 	}
 
-	public DefineTextField()
+	public DefineTextField(final SWFDecoder coder) throws CoderException
 	{
-		bounds = new Bounds();
-		color = new Color(0,0,0,0);
-		leftMargin = Movie.VALUE_NOT_SET;
-		rightMargin = Movie.VALUE_NOT_SET;
-		indent = Movie.VALUE_NOT_SET;
-		leading = Movie.VALUE_NOT_SET;
-		variableName = "";
-		initialText = "";
+		start = coder.getPointer();
+		length = coder.readWord(2, false) & 0x3F;
+		
+		if (length == 0x3F) {
+			length = coder.readWord(4, false);
+		}
+		end = coder.getPointer() + (length << 3);
+
+		identifier = coder.readWord(2, true);
+		coder.getContext().setTransparent(true);
+
+		bounds = new Bounds(coder);
+
+		boolean containsText = coder.readBits(1, false) != 0;
+		wordWrapped = coder.readBits(1, false) != 0;
+		multiline = coder.readBits(1, false) != 0;
+		password = coder.readBits(1, false) != 0;
+		readOnly = coder.readBits(1, false) != 0;
+		boolean containsColor = coder.readBits(1, false) != 0;
+		boolean containsMaxLength = coder.readBits(1, false) != 0;
+		boolean containsFont = coder.readBits(1, false) != 0;
+		boolean containsClass = coder.readBits(1, false) != 0;
+		autoSize = coder.readBits(1, false) != 0;
+		boolean containsLayout = coder.readBits(1, false) != 0;
+		selectable = coder.readBits(1, false) != 0;
+		bordered = coder.readBits(1, false) != 0;
+		reserved2 = coder.readBits(1, false) != 0;
+		html = coder.readBits(1, false) != 0;
+		useGlyphs = coder.readBits(1, false) != 0;
+
+		if (containsFont)
+		{
+			fontIdentifier = coder.readWord(2, false);
+			
+			if (containsClass) {
+				fontClass = coder.readString();
+			}
+			fontHeight = coder.readWord(2, false);
+		}
+
+		if (containsColor) {
+			color= new Color(coder);
+		}
+
+		if (containsMaxLength) {
+			maxLength = coder.readWord(2, false);
+		}
+
+		if (containsLayout)
+		{
+			alignment = Align.fromInt(coder.readByte());
+			leftMargin = coder.readWord(2, false);
+			rightMargin = coder.readWord(2, false);
+			indent = coder.readWord(2, false);
+			leading = coder.readWord(2, true);
+		}
+
+		variableName = coder.readString();
+
+		if (containsText) {
+			initialText = coder.readString();
+		}
+
+		coder.getContext().setTransparent(false);
+
+		if (coder.getPointer() != end) {
+			throw new CoderException(getClass().getName(), start >> 3, length,
+					(coder.getPointer() - end) >> 3);
+		}
 	}
+
 
 	/**
 	 * Creates a DefineTextField object with the specified identifier and
@@ -514,7 +576,7 @@ public final class DefineTextField implements DefineTag
 		fontIdentifier = object.fontIdentifier;
 		fontClass = object.fontClass;
 		fontHeight = object.fontHeight;
-		color = object.color.copy();
+		color = object.color;
 		maxLength = object.maxLength;
 		alignment = object.alignment;
 		leftMargin = object.leftMargin;
@@ -1065,7 +1127,7 @@ public final class DefineTextField implements DefineTag
 		length += 2;
 		length += (fontIdentifier == 0) ? 0 : 4;
 		length += fontClass == null ? 0 : coder.strlen(fontClass) + 2;
-		length += color.prepareToEncode(coder);
+		length += 4;
 		length += (maxLength > 0) ? 2 : 0;
 		length += (containsLayout()) ? 9 : 0;
 		length += coder.strlen(variableName);
@@ -1139,79 +1201,6 @@ public final class DefineTextField implements DefineTag
 		{
 			coder.writeString(initialText);
 		}
-		coder.getContext().setTransparent(false);
-
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException
-	{
-		start = coder.getPointer();
-		length = coder.readWord(2, false) & 0x3F;
-		
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
-		end = coder.getPointer() + (length << 3);
-
-		identifier = coder.readWord(2, true);
-		coder.getContext().setTransparent(true);
-
-		bounds.decode(coder);
-
-		boolean containsText = coder.readBits(1, false) != 0;
-		wordWrapped = coder.readBits(1, false) != 0;
-		multiline = coder.readBits(1, false) != 0;
-		password = coder.readBits(1, false) != 0;
-		readOnly = coder.readBits(1, false) != 0;
-		boolean containsColor = coder.readBits(1, false) != 0;
-		boolean containsMaxLength = coder.readBits(1, false) != 0;
-		boolean containsFont = coder.readBits(1, false) != 0;
-		boolean containsClass = coder.readBits(1, false) != 0;
-		autoSize = coder.readBits(1, false) != 0;
-		boolean containsLayout = coder.readBits(1, false) != 0;
-		selectable = coder.readBits(1, false) != 0;
-		bordered = coder.readBits(1, false) != 0;
-		reserved2 = coder.readBits(1, false) != 0;
-		html = coder.readBits(1, false) != 0;
-		useGlyphs = coder.readBits(1, false) != 0;
-
-		if (containsFont)
-		{
-			fontIdentifier = coder.readWord(2, false);
-			
-			if (containsClass) {
-				fontClass = coder.readString();
-			}
-			fontHeight = coder.readWord(2, false);
-		}
-
-		if (containsColor) {
-			color.decode(coder);
-		}
-
-		if (containsMaxLength) {
-			maxLength = coder.readWord(2, false);
-		}
-
-		if (containsLayout)
-		{
-			alignment = Align.fromInt(coder.readByte());
-			leftMargin = coder.readWord(2, false);
-			rightMargin = coder.readWord(2, false);
-			indent = coder.readWord(2, false);
-			leading = coder.readWord(2, true);
-		}
-
-		variableName = coder.readString();
-
-		if (containsText) {
-			initialText = coder.readString();
-		}
-
 		coder.getContext().setTransparent(false);
 
 		if (coder.getPointer() != end) {

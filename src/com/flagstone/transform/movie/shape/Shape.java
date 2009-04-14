@@ -69,6 +69,87 @@ public final class Shape implements Codeable
 		this.length = length;
 	}
 
+	public Shape(final SWFDecoder coder) throws CoderException
+	{
+		objects = new ArrayList<ShapeRecord>();
+
+		if (coder.getContext().isDecodeShapes())
+		{
+			coder.getContext().setFillSize(coder.readBits(4, false));
+			coder.getContext().setLineSize(coder.readBits(4, false));
+
+			int type;
+			ShapeRecord shape;
+
+			do {
+				type = coder.readBits(6, false);
+
+				if (type != 0) {
+
+					coder.adjustPointer(-6);
+
+					if ((type & 0x20) > 0) {
+						if ((type & 0x10) > 0) {
+							shape = new Line(coder); // NOPMD
+						} else {
+							shape = new Curve(coder); // NOPMD
+						}
+					} else {
+						shape = new ShapeStyle(coder); // NOPMD
+					}
+					objects.add(shape);
+				}
+			} while (type != 0);
+
+			coder.alignToByte();
+		} 
+		else
+		{
+			objects.add(new ShapeData(length, coder));
+		}
+	}
+
+	public Shape(int length, final SWFDecoder coder) throws CoderException
+	{
+		this.length = length;
+		objects = new ArrayList<ShapeRecord>();
+
+		if (coder.getContext().isDecodeShapes())
+		{
+			coder.getContext().setFillSize(coder.readBits(4, false));
+			coder.getContext().setLineSize(coder.readBits(4, false));
+
+			int type;
+			ShapeRecord shape;
+
+			do {
+				type = coder.readBits(6, false);
+
+				if (type != 0) {
+
+					coder.adjustPointer(-6);
+
+					if ((type & 0x20) > 0) {
+						if ((type & 0x10) > 0) {
+							shape = new Line(coder); // NOPMD
+						} else {
+							shape = new Curve(coder); // NOPMD
+						}
+					} else {
+						shape = new ShapeStyle(coder); // NOPMD
+					}
+					objects.add(shape);
+				}
+			} while (type != 0);
+
+			coder.alignToByte();
+		} 
+		else
+		{
+			objects.add(new ShapeData(length, coder));
+		}
+	}
+
 	public Shape()
 	{
 		objects = new ArrayList<ShapeRecord>();
@@ -172,50 +253,5 @@ public final class Shape implements Codeable
 
 		coder.writeBits(0, 6); // End of shape
 		coder.alignToByte();
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException
-	{
-		objects = new ArrayList<ShapeRecord>();
-
-		if (coder.getContext().isDecodeShapes())
-		{
-			coder.getContext().setFillSize(coder.readBits(4, false));
-			coder.getContext().setLineSize(coder.readBits(4, false));
-
-			int type;
-			ShapeRecord shape;
-
-			do {
-				type = coder.readBits(6, false);
-
-				if (type != 0) {
-
-					coder.adjustPointer(-6);
-
-					if ((type & 0x20) > 0) {
-						if ((type & 0x10) > 0) {
-							shape = new Line(); // NOPMD
-						} else {
-							shape = new Curve(); // NOPMD
-						}
-					} else {
-						shape = new ShapeStyle(); // NOPMD
-					}
-					shape.decode(coder);
-					objects.add(shape);
-				}
-			} while (type != 0);
-
-			coder.alignToByte();
-		} 
-		else
-		{
-			ShapeData record = new ShapeData();
-			byte[] data = new byte[length];
-			coder.readBytes(data);
-			record.setData(data);
-			objects.add(record);
-		}
 	}
 }

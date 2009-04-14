@@ -62,31 +62,27 @@ public final class LimitScriptTest {
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForDepthWithLowerBound() {
-		fixture = new LimitScript();
-		fixture.setDepth(-1);
+		fixture = new LimitScript(-1, timeout);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForDepthWithUpperBound() {
-		fixture = new LimitScript();
-		fixture.setDepth(65536);
+		fixture = new LimitScript(65536, timeout);
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForTimeoutWithLowerBound() {
-		fixture = new LimitScript();
-		fixture.setTimeout(-1);
+		fixture = new LimitScript(depth, -1);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForTimeoutWithUpperBound() {
-		fixture = new LimitScript();
-		fixture.setTimeout(65536);
+		fixture = new LimitScript(depth, 65536);
 	}
 	
 	@Test
 	public void checkCopy() {
-		fixture = new LimitScript();
+		fixture = new LimitScript(depth, timeout);
 		LimitScript copy = fixture.copy();
 
 		assertNotSame(fixture, copy);
@@ -108,23 +104,10 @@ public final class LimitScriptTest {
 	}
 	
 	@Test
-	public void encodeDefault() throws CoderException {		
-		SWFEncoder encoder = new SWFEncoder(empty.length);		
-		
-		fixture = new LimitScript();
-		assertEquals(empty.length, fixture.prepareToEncode(encoder));
-		fixture.encode(encoder);
-		
-		assertTrue(encoder.eof());
-		assertArrayEquals(empty, encoder.getData());
-	}
-	
-	@Test
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		
-		fixture = new LimitScript();
-		fixture.decode(decoder);
+		fixture = new LimitScript(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(depth, fixture.getDepth());
@@ -135,8 +118,7 @@ public final class LimitScriptTest {
 	public void decodeExtended() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(extended);
 		
-		fixture = new LimitScript();
-		fixture.decode(decoder);
+		fixture = new LimitScript(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(depth, fixture.getDepth());

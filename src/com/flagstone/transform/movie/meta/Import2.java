@@ -76,9 +76,25 @@ public final class Import2 implements MovieTag {
 
 	private transient int length;
 
-	public Import2() {
-		url = "";
+	public Import2(final SWFDecoder coder) throws CoderException {
+		
+		objects.clear();
+
+		length = coder.readWord(2, false) & 0x3F;
+
+		if (length == 0x3F) {
+			length = coder.readWord(4, false);
+		}
+
+		url = coder.readString();	
+		coder.adjustPointer(16);
+
+		int count = coder.readWord(2, false);
 		objects = new LinkedHashMap<Integer, String>();
+
+		for (int i=0; i<count; i++) {
+			objects.put(coder.readWord(2, false), coder.readString());
+		}
 	}
 
 	/**
@@ -223,26 +239,6 @@ public final class Import2 implements MovieTag {
 		for (Integer identifier : objects.keySet()) {
 			coder.writeWord(identifier.intValue(), 2);
 			coder.writeString(objects.get(identifier));
-		}
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException {
-		
-		objects.clear();
-
-		length = coder.readWord(2, false) & 0x3F;
-
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
-
-		url = coder.readString();	
-		coder.adjustPointer(16);
-
-		int count = coder.readWord(2, false);
-
-		for (int i=0; i<count; i++) {
-			objects.put(coder.readWord(2, false), coder.readString());
 		}
 	}
 }

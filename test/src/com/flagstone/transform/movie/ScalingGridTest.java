@@ -62,20 +62,18 @@ public final class ScalingGridTest {
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForIdentifierWithLowerBound() {
-		fixture = new ScalingGrid();
-		fixture.setIdentifier(0);
+		fixture = new ScalingGrid(0, bounds);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForIdentifierWithUpperBound() {
-		fixture = new ScalingGrid();
+		fixture = new ScalingGrid(65536, bounds);
 		fixture.setIdentifier(65536);
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForDataWithNull() {
-		fixture = new ScalingGrid();
-		fixture.setBounds(null);
+		fixture = new ScalingGrid(identifier, null);
 	}
 
 	@Test
@@ -98,27 +96,13 @@ public final class ScalingGridTest {
 		assertTrue(encoder.eof());
 		assertArrayEquals(encoded, encoder.getData());
 	}
-	
-	@Test
-	public void encodeDefault() throws CoderException {
-
-		SWFEncoder encoder = new SWFEncoder(empty.length);
-		
-		fixture = new ScalingGrid();
-		assertEquals(empty.length, fixture.prepareToEncode(encoder));		
-		fixture.encode(encoder);
-		
-		assertTrue(encoder.eof());
-		assertArrayEquals(empty, encoder.getData());
-	}
 
 	@Test
 	public void decode() throws CoderException {
 
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		
-		fixture = new ScalingGrid();
-		fixture.decode(decoder);
+		fixture = new ScalingGrid(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(identifier, fixture.getIdentifier());

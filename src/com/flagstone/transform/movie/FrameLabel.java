@@ -67,11 +67,28 @@ public final class FrameLabel implements MovieTag {
 
 	private transient int length;
 
-	/**
-	 * Creates an uninitialised FrameLabel object.
-	 */
-	public FrameLabel() {
-		label = "";
+	public FrameLabel(final SWFDecoder coder) throws CoderException {
+
+		length = coder.readWord(2, false) & 0x3F;
+
+		if (length == 0x3F) {
+			length = coder.readWord(4, false);
+		}
+
+		int start = coder.getPointer();
+		int strlen = 0;
+
+		while (coder.readWord(1, false) != 0) {
+			strlen += 1;
+		}
+
+		coder.setPointer(start);
+		label = coder.readString(strlen++, coder.getEncoding());
+		coder.adjustPointer(8);
+
+		if (strlen < length) {
+			anchor = coder.readByte() != 0;
+		}
 	}
 
 	/**
@@ -184,30 +201,6 @@ public final class FrameLabel implements MovieTag {
 
 		if (anchor) {
 			coder.writeWord(1, 1);
-		}
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException {
-
-		length = coder.readWord(2, false) & 0x3F;
-
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
-
-		int start = coder.getPointer();
-		int strlen = 0;
-
-		while (coder.readWord(1, false) != 0) {
-			strlen += 1;
-		}
-
-		coder.setPointer(start);
-		label = coder.readString(strlen++, coder.getEncoding());
-		coder.adjustPointer(8);
-
-		if (strlen < length) {
-			anchor = coder.readByte() != 0;
 		}
 	}
 }

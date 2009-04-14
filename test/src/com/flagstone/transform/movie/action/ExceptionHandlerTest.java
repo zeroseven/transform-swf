@@ -88,19 +88,19 @@ public final class ExceptionHandlerTest {
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAddNullActionToTryBlock() {
-		fixture = new ExceptionHandler();
+		fixture = new ExceptionHandler(variable, tryActions, catchActions, finalActions);
 		fixture.addToTry(null);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAddNullActionToCatchBlock() {
-		fixture = new ExceptionHandler();
+		fixture = new ExceptionHandler(variable, tryActions, catchActions, finalActions);
 		fixture.addToCatch(null);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAddNullActionToFinallyBlock() {
-		fixture = new ExceptionHandler();
+		fixture = new ExceptionHandler(variable, tryActions, catchActions, finalActions);
 		fixture.addToFinally(null);
 	}
 
@@ -128,23 +128,10 @@ public final class ExceptionHandlerTest {
 	}
 	
 	@Test
-	public void encodeDefault() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(empty.length);		
-		
-		fixture = new ExceptionHandler();
-		assertEquals(empty.length, fixture.prepareToEncode(encoder));
-		fixture.encode(encoder);
-		
-		assertTrue(encoder.eof());
-		assertArrayEquals(empty, encoder.getData());
-	}
-	
-	@Test
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		
-		fixture = new ExceptionHandler();
-		fixture.decode(decoder);
+		fixture = new ExceptionHandler(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(variable, fixture.getVariable());

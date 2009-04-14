@@ -58,14 +58,12 @@ public final class IfTest {
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForOffsetWithLowerBound() {
-		fixture = new If();
-		fixture.setOffset(-32769);
+		fixture = new If(-32769);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForOffsetWithUpperBound() {
-		fixture = new If();
-		fixture.setOffset(32768);
+		fixture = new If(32768);
 	}
 	
 	@Test
@@ -93,8 +91,7 @@ public final class IfTest {
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		
-		fixture = new If();
-		fixture.decode(decoder);
+		fixture = new If(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(offset, fixture.getOffset());

@@ -63,26 +63,22 @@ public final class MorphBitmapFillTest {
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForIdentifierWithLowerBound() {
-		fixture = new MorphBitmapFill(type);
-		fixture.setIdentifier(0);
+		fixture = new MorphBitmapFill(type, 0, start, end);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForIdentifierWithUpperBound() {
-		fixture = new MorphBitmapFill(type);
-		fixture.setIdentifier(65536);
+		fixture = new MorphBitmapFill(type, 65536, start, end);
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForStartTransformWithNull() {
-		fixture = new MorphBitmapFill(type);
-		fixture.setStartTransform(null);
+		fixture = new MorphBitmapFill(type, 1, null, end);
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForEndTransformWithNull() {
-		fixture = new MorphBitmapFill(type);
-		fixture.setStartTransform(null);
+		fixture = new MorphBitmapFill(type, 1, start, null);
 	}
 
 	@Test
@@ -106,27 +102,13 @@ public final class MorphBitmapFillTest {
 		assertTrue(encoder.eof());
 		assertArrayEquals(encoded, encoder.getData());
 	}
-	
-	@Test
-	public void encodeDefault() throws CoderException {
-
-		SWFEncoder encoder = new SWFEncoder(empty.length);
-		
-		fixture = new MorphBitmapFill(type);
-		assertEquals(empty.length, fixture.prepareToEncode(encoder));		
-		fixture.encode(encoder);
-		
-		assertTrue(encoder.eof());
-		assertArrayEquals(empty, encoder.getData());
-	}
 
 	@Test
 	public void decode() throws CoderException {
 
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		
-		fixture = new MorphBitmapFill(type);
-		fixture.decode(decoder);
+		fixture = new MorphBitmapFill(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(identifier, fixture.getIdentifier());

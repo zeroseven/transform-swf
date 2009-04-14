@@ -62,26 +62,22 @@ public final class DoABCTest {
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForNameWithNull() {
-		fixture = new DoABC();
-		fixture.setName(null);
+		fixture = new DoABC(null, defer, data);
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForNameWithEmpty() {
-		fixture = new DoABC();
-		fixture.setName("");
+		fixture = new DoABC("", defer, data);
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForDataWithNull() {
-		fixture = new DoABC();
-		fixture.setData(null);
+		fixture = new DoABC(name, defer, null);
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForDataWithEmpty() {
-		fixture = new DoABC();
-		fixture.setData(new byte[0]);
+		fixture = new DoABC(name, defer, new byte[0]);
 	}
 	
 	@Test
@@ -135,8 +131,7 @@ public final class DoABCTest {
 	public void checkDecode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		
-		fixture = new DoABC();
-		fixture.decode(decoder);
+		fixture = new DoABC(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(name, fixture.getName());
@@ -148,8 +143,7 @@ public final class DoABCTest {
 	public void checkDecodeExtended() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(extended);
 		
-		DoABC fixture = new DoABC();
-		fixture.decode(decoder);
+		fixture = new DoABC(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(name, fixture.getName());

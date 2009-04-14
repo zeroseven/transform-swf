@@ -132,7 +132,7 @@ public final class Movie implements Cloneable
 		
 		signature = Movie.SWF_VERSION > 5 ? "CWS" : "FWS";
 		version = Movie.SWF_VERSION;
-		frameSize = new Bounds();
+		frameSize = new Bounds(0,0,0,0);
 		objects = new ArrayList<MovieTag>();
 	}
 	
@@ -601,8 +601,7 @@ public final class Movie implements Cloneable
 		version = coder.readByte();
 		length = coder.readWord(4, false);
 
-		frameSize = new Bounds();
-		frameSize.decode(coder);
+		frameSize = new Bounds(coder);
 
 		frameRate = coder.readWord(2, true)/256.0f;
 		frameCount = coder.readWord(2, false);
@@ -619,8 +618,7 @@ public final class Movie implements Cloneable
 			type = coder.scanUnsignedShort() >>> 6;
 			
 			if (type != 0) {
-				object = movieFactory.getObjectOfType(type);
-				object.decode(coder);
+				object = movieFactory.getObject(coder);
 				objects.add(object);
 				
 				if (object instanceof DefineTag) {

@@ -61,32 +61,28 @@ public final class RemoveTest {
 			0x04, 0x00, 0x00, 0x00, 0x01, 0x00, 0x02, 0x00};
 
 	@Test(expected=IllegalArgumentException.class)
-	public void checkAccessorForDepthWithLowerBound() {
-		fixture = new Remove();
-		fixture.setIdentifier(0);
+	public void checkAccessorForIdentifierWithLowerBound() {
+		fixture = new Remove(0, layer);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
-	public void checkAccessorForDepthWithUpperBound() {
-		fixture = new Remove();
-		fixture.setIdentifier(65536);
+	public void checkAccessorForIdentifierWithUpperBound() {
+		fixture = new Remove(65536, layer);
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
-	public void checkAccessorForTimeoutWithLowerBound() {
-		fixture = new Remove();
-		fixture.setLayer(0);
+	public void checkAccessorForLayerWithLowerBound() {
+		fixture = new Remove(identifier, 0);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
-	public void checkAccessorForTimeoutWithUpperBound() {
-		fixture = new Remove();
-		fixture.setLayer(65536);
+	public void checkAccessorForLayerWithUpperBound() {
+		fixture = new Remove(identifier, 65536);
 	}
 	
 	@Test
 	public void checkCopy() {
-		fixture = new Remove();
+		fixture = new Remove(identifier, layer);
 		Remove copy = fixture.copy();
 
 		assertNotSame(fixture, copy);
@@ -108,23 +104,10 @@ public final class RemoveTest {
 	}
 	
 	@Test
-	public void encodeDefault() throws CoderException {		
-		SWFEncoder encoder = new SWFEncoder(empty.length);		
-		
-		fixture = new Remove();
-		assertEquals(empty.length, fixture.prepareToEncode(encoder));
-		fixture.encode(encoder);
-		
-		assertTrue(encoder.eof());
-		assertArrayEquals(empty, encoder.getData());
-	}
-	
-	@Test
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		
-		fixture = new Remove();
-		fixture.decode(decoder);
+		fixture = new Remove(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(identifier, fixture.getIdentifier());
@@ -135,8 +118,7 @@ public final class RemoveTest {
 	public void decodeExtended() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(extended);
 		
-		fixture = new Remove();
-		fixture.decode(decoder);
+		fixture = new Remove(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(identifier, fixture.getIdentifier());

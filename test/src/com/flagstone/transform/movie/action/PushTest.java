@@ -92,7 +92,7 @@ public final class PushTest {
 
 	@Test
 	public void checkCopy() {
-		fixture = new Push();
+		fixture = new Push(values);
 		Push copy = fixture.copy();
 
 		assertNotSame(fixture.getValues(), copy.getValues());
@@ -112,23 +112,10 @@ public final class PushTest {
 	}
 	
 	@Test
-	public void encodeDefault() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(empty.length);		
-		
-		fixture = new Push();
-		assertEquals(empty.length, fixture.prepareToEncode(encoder));
-		fixture.encode(encoder);
-		
-		assertTrue(encoder.eof());
-		assertArrayEquals(empty, encoder.getData());
-	}
-	
-	@Test
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		
-		fixture = new Push();
-		fixture.decode(decoder);
+		fixture = new Push(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(values, fixture.getValues());

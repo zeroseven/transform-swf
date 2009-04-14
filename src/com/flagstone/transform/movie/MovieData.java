@@ -52,12 +52,8 @@ public final class MovieData implements MovieTag {
 
 	private byte[] data;
 	
-	public MovieData() {
-		data = new byte[0];
-	}
-
-	public MovieData(final int size) {
-		setData(size);
+	public MovieData(final int size, final SWFDecoder coder) {
+		data = coder.readBytes(new byte[size]);
 	}
 
 	public MovieData(final byte[] bytes) {
@@ -112,18 +108,11 @@ public final class MovieData implements MovieTag {
 		return String.format(FORMAT, data.length);
 	}
 
-	@Override
 	public int prepareToEncode(final SWFEncoder coder) {
 		return data.length;
 	}
 
-	@Override
 	public void encode(final SWFEncoder coder) throws CoderException {
 		coder.writeBytes(data);
-	}
-
-	@Override
-	public void decode(final SWFDecoder coder) throws CoderException {
-		coder.readBytes(data);
 	}
 }

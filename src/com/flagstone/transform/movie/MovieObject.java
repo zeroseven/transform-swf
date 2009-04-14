@@ -55,9 +55,16 @@ public final class MovieObject implements MovieTag {
 
 	private transient int length;
 
-	public MovieObject(int type) {
-		this.type = type;
-		data = new byte[0];
+	public MovieObject(final SWFDecoder coder) throws CoderException {
+		
+		type = coder.scanUnsignedShort() >>> 6;
+		length = coder.readWord(2, false) & 0x3F;
+
+		if (length == 0x3F) {
+			length = coder.readWord(4, false);
+		}
+
+		data = coder.readBytes(new byte[length]);
 	}
 
 	public MovieObject(int type, byte[] bytes) {
@@ -118,17 +125,5 @@ public final class MovieObject implements MovieTag {
 		}
 
 		coder.writeBytes(data);
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException {
-		
-		type = coder.scanUnsignedShort() >>> 6;
-		length = coder.readWord(2, false) & 0x3F;
-
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
-
-		data = coder.readBytes(new byte[length]);
 	}
 }

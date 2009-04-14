@@ -90,7 +90,7 @@ public final class ActionObjectTest {
 	public void encodeBasic() throws CoderException {		
 		SWFEncoder encoder = new SWFEncoder(basic.length);		
 		
-		fixture = new ActionObject(1);
+		fixture = new ActionObject(type, new byte[0]);
 		assertEquals(basic.length, fixture.prepareToEncode(encoder));
 		fixture.encode(encoder);
 		
@@ -114,8 +114,7 @@ public final class ActionObjectTest {
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		
-		fixture = new ActionObject(type);
-		fixture.decode(decoder);
+		fixture = new ActionObject(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(type, fixture.getType());
@@ -126,8 +125,7 @@ public final class ActionObjectTest {
 	public void decodeBasic() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(basic);
 		
-		fixture = new ActionObject(1);
-		fixture.decode(decoder);
+		fixture = new ActionObject(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(1, fixture.getType());
@@ -138,8 +136,7 @@ public final class ActionObjectTest {
 	public void decodeEmpty() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(empty);
 		
-		fixture = new ActionObject(type);
-		fixture.decode(decoder);
+		fixture = new ActionObject(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(type, fixture.getType());

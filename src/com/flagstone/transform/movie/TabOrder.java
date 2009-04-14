@@ -52,7 +52,14 @@ public final class TabOrder implements MovieTag {
 	private int layer;
 	private int index;
 
-	public TabOrder() {
+	public TabOrder(final SWFDecoder coder) throws CoderException {
+
+		if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
+			coder.readWord(4, false);
+		}
+
+		layer = coder.readWord(2, false);
+		index = coder.readWord(2, false);
 	}
 
 	/**
@@ -136,15 +143,5 @@ public final class TabOrder implements MovieTag {
 		coder.writeWord((Types.TAB_ORDER << 6) | 4, 2);
 		coder.writeWord(layer, 2);
 		coder.writeWord(index, 2);
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException {
-
-		if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
-			coder.readWord(4, false);
-		}
-
-		layer = coder.readWord(2, false);
-		index = coder.readWord(2, false);
 	}
 }

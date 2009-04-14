@@ -42,7 +42,8 @@ public final class ShapeData implements ShapeRecord
 
 	private byte[] data;
 	
-	public ShapeData() {
+	public ShapeData(final int size, final SWFDecoder coder) throws CoderException {
+		data = coder.readBytes(new byte[size]);
 	}
 
 	public ShapeData(ShapeData object) {
@@ -92,11 +93,5 @@ public final class ShapeData implements ShapeRecord
 	public void encode(final SWFEncoder coder) throws CoderException
 	{
 		coder.writeBytes(data);
-	}
-
-	@Override
-	public void decode(final SWFDecoder coder) throws CoderException
-	{
-		coder.readBytes(data);
 	}
 }

@@ -58,8 +58,13 @@ public final class Kerning implements Codeable
 	protected int rightGlyph;
 	protected int adjustment;
 
-	public Kerning()
+	public Kerning(final SWFDecoder coder) throws CoderException
 	{
+		int numberOfBytes = (coder.getContext().isWideCodes()) ? 2 : 1;
+
+		leftGlyph = coder.readWord(numberOfBytes, false);
+		rightGlyph = coder.readWord(numberOfBytes, false);
+		adjustment = coder.readWord(2, true);
 	}
 
 	/**
@@ -164,14 +169,5 @@ public final class Kerning implements Codeable
 		coder.writeWord(leftGlyph, numberOfBytes);
 		coder.writeWord(rightGlyph, numberOfBytes);
 		coder.writeWord(adjustment, 2);
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException
-	{
-		int numberOfBytes = (coder.getContext().isWideCodes()) ? 2 : 1;
-
-		leftGlyph = coder.readWord(numberOfBytes, false);
-		rightGlyph = coder.readWord(numberOfBytes, false);
-		adjustment = coder.readWord(2, true);
 	}
 }

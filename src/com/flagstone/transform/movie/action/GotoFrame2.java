@@ -75,10 +75,17 @@ public final class GotoFrame2 implements Action
 	
 	private transient int length;
 
-	public GotoFrame2()
+	public GotoFrame2(final SWFDecoder coder) throws CoderException
 	{
-		play = true;
-		frameOffset = 0;
+		coder.readByte();
+		length = coder.readWord(2, false);
+		coder.readBits(6, false);
+		boolean containsOffset = coder.readBits(1, false) != 0;
+		play = coder.readBits(1, false) != 0;
+
+		if (containsOffset) {
+			frameOffset = coder.readWord(2, false);
+		}
 	}
 
 	/**
@@ -198,18 +205,5 @@ public final class GotoFrame2 implements Action
 			coder.writeWord(frameOffset, 2);
 		}
 		// End Flash 5
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException
-	{
-		coder.readByte();
-		length = coder.readWord(2, false);
-		coder.readBits(6, false);
-		boolean containsOffset = coder.readBits(1, false) != 0;
-		play = coder.readBits(1, false) != 0;
-
-		if (containsOffset) {
-			frameOffset = coder.readWord(2, false);
-		}
 	}
 }

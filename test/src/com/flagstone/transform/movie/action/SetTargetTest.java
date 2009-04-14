@@ -58,8 +58,7 @@ public final class SetTargetTest {
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForTargetWithNull() {
-		fixture = new SetTarget();
-		fixture.setTarget(null);
+		fixture = new SetTarget((String)null);
 	}
 	
 	@Test
@@ -86,8 +85,7 @@ public final class SetTargetTest {
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		
-		fixture = new SetTarget();
-		fixture.decode(decoder);
+		fixture = new SetTarget(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(target, fixture.getTarget());

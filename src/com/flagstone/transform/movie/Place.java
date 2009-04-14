@@ -71,10 +71,30 @@ public final class Place implements MovieTag
 	private transient int end;
 	private transient int length;
 
-	public Place()
+	public Place(final SWFDecoder coder) throws CoderException
 	{
-		transform = new CoordTransform();
-		colorTransform = new ColorTransform();
+		start = coder.getPointer();
+		length = coder.readWord(2, false) & 0x3F;
+		
+		if (length == 0x3F) {
+			length = coder.readWord(4, false);
+		}
+		
+		end = coder.getPointer() + (length << 3);
+
+		identifier = coder.readWord(2, false);
+		layer = coder.readWord(2, false);
+		transform = new CoordTransform(coder);
+
+		if (coder.getPointer() < end) {
+			colorTransform = new ColorTransform(coder);
+			colorTransform = new ColorTransform(coder);
+		}
+
+		if (coder.getPointer() != end) {
+			throw new CoderException(getClass().getName(), start >> 3, length,
+					(coder.getPointer() - end) >> 3);
+		}
 	}
 
 	/**
@@ -98,7 +118,6 @@ public final class Place implements MovieTag
 		setIdentifier(uid);
 		setLayer(aLayer);
 		setTransform(CoordTransform.translate(xLocation, yLocation));
-		colorTransform = new ColorTransform();
 	}
 
 	/**
@@ -120,7 +139,6 @@ public final class Place implements MovieTag
 		setIdentifier(uid);
 		setLayer(aLayer);
 		setTransform(aTransform);
-		colorTransform = new ColorTransform();
 	}
 
 	/**
@@ -288,32 +306,6 @@ public final class Place implements MovieTag
 
 		if (!colorTransform.isUnityTransform()) {
 			colorTransform.encode(coder);
-		}
-
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException
-	{
-		start = coder.getPointer();
-		length = coder.readWord(2, false) & 0x3F;
-		
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
-		
-		end = coder.getPointer() + (length << 3);
-
-		identifier = coder.readWord(2, false);
-		layer = coder.readWord(2, false);
-		transform.decode(coder);
-
-		if (coder.getPointer() < end) {
-			colorTransform = new ColorTransform();
-			colorTransform.decode(coder);
 		}
 
 		if (coder.getPointer() != end) {

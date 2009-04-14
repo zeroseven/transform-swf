@@ -58,8 +58,7 @@ public final class GotoLabelTest {
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForLabelWithNull() {
-		fixture = new GotoLabel();
-		fixture.setLabel(null);
+		fixture = new GotoLabel((String)null);
 	}
 	
 	@Test
@@ -86,8 +85,7 @@ public final class GotoLabelTest {
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		
-		fixture = new GotoLabel();
-		fixture.decode(decoder);
+		fixture = new GotoLabel(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(label, fixture.getLabel());

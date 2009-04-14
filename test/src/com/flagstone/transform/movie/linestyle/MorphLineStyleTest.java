@@ -62,38 +62,32 @@ public final class MorphLineStyleTest {
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForStartWidthWithLowerBound() {
-		fixture = new MorphLineStyle();
-		fixture.setStartWidth(-1);
+		fixture = new MorphLineStyle(-1, endWidth, startColor, endColor);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForStartWidthWithUpperBound() {
-		fixture = new MorphLineStyle();
-		fixture.setStartWidth(65536);
+		fixture = new MorphLineStyle(65536, endWidth, startColor, endColor);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForEndWidthWithLowerBound() {
-		fixture = new MorphLineStyle();
-		fixture.setEndWidth(-1);
+		fixture = new MorphLineStyle(startWidth, -1, startColor, endColor);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForEndWidthWithUpperBound() {
-		fixture = new MorphLineStyle();
-		fixture.setEndWidth(65536);
+		fixture = new MorphLineStyle(startWidth, 65536, startColor, endColor);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForStartColorWithNull() {
-		fixture = new MorphLineStyle();
-		fixture.setStartColor(null);
+		fixture = new MorphLineStyle(startWidth, endWidth, null, endColor);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForEndColorWithNull() {
-		fixture = new MorphLineStyle();
-		fixture.setEndColor(null);
+		fixture = new MorphLineStyle(startWidth, endWidth, startColor, null);
 	}
 	
 	@Test
@@ -123,8 +117,7 @@ public final class MorphLineStyleTest {
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		
-		fixture = new MorphLineStyle();
-		fixture.decode(decoder);
+		fixture = new MorphLineStyle(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(startWidth, fixture.getStartWidth());

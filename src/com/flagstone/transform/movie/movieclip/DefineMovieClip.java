@@ -77,9 +77,36 @@ public final class DefineMovieClip implements DefineTag
 	private transient int end;
 	private transient int length;
 
-	public DefineMovieClip()
+	public DefineMovieClip(final SWFDecoder coder) throws CoderException
 	{
+		start = coder.getPointer();
+		length = coder.readWord(2, false) & 0x3F;
+		
+		if (length == 0x3F) {
+			length = coder.readWord(4, false);
+		}
+		end = coder.getPointer() + (length << 3);
+
+		identifier = coder.readWord(2, false);
+		frameCount = coder.readWord(2, false);
 		objects = new ArrayList<MovieTag>();
+		
+		int type;
+		
+		do {
+			type = coder.scanUnsignedShort() >>> 6;
+		
+			if (type != 0){
+				objects.add(coder.movieOfType(coder));
+			}
+		} while (type != 0);
+
+		coder.adjustPointer(16);
+
+		if (coder.getPointer() != end) {
+			throw new CoderException(getClass().getName(), start >> 3, length,
+					(coder.getPointer() - end) >> 3);
+		}
 	}
 
 	/**
@@ -203,40 +230,6 @@ public final class DefineMovieClip implements DefineTag
 		}
 
 		coder.writeWord(0, 2);
-
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException
-	{
-		start = coder.getPointer();
-		length = coder.readWord(2, false) & 0x3F;
-		
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
-		end = coder.getPointer() + (length << 3);
-
-		identifier = coder.readWord(2, false);
-		frameCount = coder.readWord(2, false);
-		
-		MovieTag object;
-		int type;
-		
-		do {
-			type = coder.scanUnsignedShort() >>> 6;
-		
-			if (type != 0){
-				object = coder.movieOfType(type);
-				object.decode(coder);
-				objects.add(object);
-			}
-		} while (type != 0);
-
-		coder.adjustPointer(16);
 
 		if (coder.getPointer() != end) {
 			throw new CoderException(getClass().getName(), start >> 3, length,

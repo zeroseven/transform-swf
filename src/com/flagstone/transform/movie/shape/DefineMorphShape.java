@@ -99,14 +99,77 @@ public final class DefineMorphShape implements DefineTag
 	private transient int fillBits;
 	private transient int lineBits;
 
-	public DefineMorphShape()
+	public DefineMorphShape(final SWFDecoder coder) throws CoderException
 	{
-		startBounds = new Bounds();
-		endBounds = new Bounds();
+		int start = coder.getPointer();
+		
+		start = coder.getPointer();
+		length = coder.readWord(2, false) & 0x3F;
+		
+		if (length == 0x3F) {
+			length = coder.readWord(4, false);
+		}
+		end = coder.getPointer() + (length << 3);
+
+		coder.getContext().setTransparent(true);
+		coder.getContext().setArrayExtended(true);
+
+		identifier = coder.readWord(2, false);
+
+		startBounds = new Bounds(coder);
+		endBounds = new Bounds(coder);
 		fillStyles = new ArrayList<FillStyle>();
 		lineStyles = new ArrayList<MorphLineStyle>();
-		startShape = new Shape();
-		endShape = new Shape();
+
+		int offset = coder.readWord(4, false); // NOPMD
+		int first = coder.getPointer(); // NOPMD
+
+		int fillStyleCount = coder.readByte();
+
+		if (coder.getContext().isArrayExtended() && fillStyleCount == 0xFF) {
+			fillStyleCount = coder.readWord(2, false);
+		}
+		
+		FillStyle fillStyle;
+		int type;
+
+		for (int i = 0; i < fillStyleCount; i++) {
+			type = coder.scanByte();
+			fillStyle = coder.morphFillStyleOfType(coder);
+
+			if (fillStyle == null) {
+				throw new CoderException(String.valueOf(type), start >>> 3, 0, 0, Strings.UNSUPPORTED_FILL_STYLE);
+			}
+
+			fillStyles.add(fillStyle);
+		}
+
+		int lineStyleCount = coder.readByte();
+
+		if (coder.getContext().isArrayExtended() && lineStyleCount == 0xFF) {
+			lineStyleCount = coder.readWord(2, false);
+		}
+
+		for (int i = 0; i < lineStyleCount; i++) {
+			lineStyles.add(new MorphLineStyle(coder));
+		}
+
+		if (coder.getContext().isDecodeShapes()) {
+			startShape = new Shape(coder);
+			endShape = new Shape(coder);
+		}
+		else {
+			startShape = new Shape(offset - ((coder.getPointer()-first) >> 3), coder);			
+			endShape = new Shape(length - ((coder.getPointer()-start) >> 3), coder);
+		}
+
+		coder.getContext().setTransparent(false);
+		coder.getContext().setArrayExtended(false);
+
+		if (coder.getPointer() != end) {
+			throw new CoderException(getClass().getName(), start >> 3, length,
+					(coder.getPointer() - end) >> 3);
+		}
 	}
 
 	/**
@@ -480,85 +543,6 @@ public final class DefineMorphShape implements DefineTag
 
 		coder.getContext().setArrayExtended(false);
 		coder.getContext().setTransparent(false);
-
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException
-	{
-		int start = coder.getPointer();
-		
-		start = coder.getPointer();
-		length = coder.readWord(2, false) & 0x3F;
-		
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
-		end = coder.getPointer() + (length << 3);
-
-		coder.getContext().setTransparent(true);
-		coder.getContext().setArrayExtended(true);
-
-		identifier = coder.readWord(2, false);
-
-		startBounds.decode(coder);
-		endBounds.decode(coder);
-
-		int offset = coder.readWord(4, false); // NOPMD
-		int first = coder.getPointer(); // NOPMD
-
-		int fillStyleCount = coder.readByte();
-
-		if (coder.getContext().isArrayExtended() && fillStyleCount == 0xFF) {
-			fillStyleCount = coder.readWord(2, false);
-		}
-		
-		FillStyle fillStyle;
-		int type;
-
-		for (int i = 0; i < fillStyleCount; i++) {
-			type = coder.scanByte();
-			fillStyle = coder.morphFillStyleOfType(type);
-
-			if (fillStyle == null) {
-				throw new CoderException(String.valueOf(type), start >>> 3, 0, 0, Strings.UNSUPPORTED_FILL_STYLE);
-			}
-
-			fillStyle.decode(coder);
-			fillStyles.add(fillStyle);
-		}
-
-		int lineStyleCount = coder.readByte();
-
-		if (coder.getContext().isArrayExtended() && lineStyleCount == 0xFF) {
-			lineStyleCount = coder.readWord(2, false);
-		}
-
-		MorphLineStyle style; 
-		
-		for (int i = 0; i < lineStyleCount; i++) {
-			style = new MorphLineStyle(0, 0, new Color(), new Color());
-			style.decode(coder);	
-			lineStyles.add(style);
-		}
-
-		if (coder.getContext().isDecodeShapes()) {
-			startShape.decode(coder);
-			endShape.decode(coder);
-		}
-		else {
-			startShape = new Shape(offset - ((coder.getPointer()-first) >> 3));
-			startShape.decode(coder);
-			
-			endShape = new Shape(length - ((coder.getPointer()-start) >> 3));
-			endShape.decode(coder);
-		}
-
-		coder.getContext().setTransparent(false);
-		coder.getContext().setArrayExtended(false);
 
 		if (coder.getPointer() != end) {
 			throw new CoderException(getClass().getName(), start >> 3, length,

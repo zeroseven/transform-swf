@@ -58,10 +58,10 @@ public final class GlyphIndex implements Codeable
 	protected int glyphIndex;
 	protected int advance;
 
-	protected GlyphIndex()
+	protected GlyphIndex(final SWFDecoder coder) throws CoderException
 	{
-		glyphIndex = 1;
-		advance = 100;
+		glyphIndex = coder.readBits(coder.getContext().getGlyphSize(), false);
+		advance = coder.readBits(coder.getContext().getAdvanceSize(), true);
 	}
 
 	/**
@@ -159,11 +159,5 @@ public final class GlyphIndex implements Codeable
 	{
 		coder.writeBits(glyphIndex, coder.getContext().getGlyphSize());
 		coder.writeBits(advance, coder.getContext().getAdvanceSize());
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException
-	{
-		glyphIndex = coder.readBits(coder.getContext().getGlyphSize(), false);
-		advance = coder.readBits(coder.getContext().getAdvanceSize(), true);
 	}
 }

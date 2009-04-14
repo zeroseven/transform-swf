@@ -69,8 +69,27 @@ public final class Protect implements MovieTag
 	 * Creates a Protect object - use for files with Flash version 2 and 
 	 * above. 
 	 */
-	public Protect() {
-		password = "";
+	public Protect(final SWFDecoder coder) throws CoderException
+	{
+		length = coder.readWord(2, false) & 0x3F;
+		
+		if (length == 0x3F) {
+			length = coder.readWord(4, false);
+		}
+
+		/*
+		 * Force a read of the entire password field, including any zero bytes
+		 * that are encountered.
+		 */
+		if (length > 0)
+		{
+			coder.readWord(2, false);
+			password = coder.readString(length - 2, coder.getEncoding());
+
+			while (password.charAt(password.length() - 1) == 0) {
+				password = password.substring(0, password.length() - 1);
+			}
+		}
 	}
 
 	/** 
@@ -145,29 +164,6 @@ public final class Protect implements MovieTag
 		{
 			coder.writeWord(0, 2);
 			coder.writeString(password);
-		}
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException
-	{
-		length = coder.readWord(2, false) & 0x3F;
-		
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
-
-		/*
-		 * Force a read of the entire password field, including any zero bytes
-		 * that are encountered.
-		 */
-		if (length > 0)
-		{
-			coder.readWord(2, false);
-			password = coder.readString(length - 2, coder.getEncoding());
-
-			while (password.charAt(password.length() - 1) == 0) {
-				password = password.substring(0, password.length() - 1);
-			}
 		}
 	}
 }

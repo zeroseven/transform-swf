@@ -44,7 +44,18 @@ public final class FileAttributes implements MovieTag {
 	private int hasActionscript;
 	private int useNetwork;
 
-	public FileAttributes() {
+	public FileAttributes(final SWFDecoder coder) throws CoderException {
+		
+		if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
+			coder.readWord(4, false);
+		}
+		int value = coder.readByte();
+		
+		hasMetaData = value & 16;
+		hasActionscript = value & 8;
+		useNetwork = value & 1;
+		
+		coder.adjustPointer(24);
 	}
 
 	public FileAttributes(boolean metadata, boolean actionscript, boolean network) {
@@ -101,19 +112,5 @@ public final class FileAttributes implements MovieTag {
 		coder.writeWord((Types.FILE_ATTRIBUTES << 6) | 4, 2);
 		coder.writeByte(hasMetaData | hasActionscript | useNetwork);
 		coder.writeWord(0, 3);
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException {
-		
-		if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
-			coder.readWord(4, false);
-		}
-		int value = coder.readByte();
-		
-		hasMetaData = value & 16;
-		hasActionscript = value & 8;
-		useNetwork = value & 1;
-		
-		coder.adjustPointer(24);
 	}
 }

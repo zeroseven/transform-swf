@@ -66,9 +66,11 @@ public final class RegisterCopy implements Action
 	
 	protected int registerNumber;
 
-	public RegisterCopy()
+	public RegisterCopy(final SWFDecoder coder) throws CoderException
 	{
-		registerNumber = 0;
+		coder.readByte();
+		coder.readWord(2, false);
+		registerNumber = coder.readByte();
 	}
 
 	/**

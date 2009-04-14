@@ -55,10 +55,13 @@ public final class GotoFrame implements Action
 	
 	protected int frameNumber;
 
-	public GotoFrame()
+	public GotoFrame(final SWFDecoder coder) throws CoderException
 	{
-		frameNumber = 1;
+		coder.readByte();
+		coder.readWord(2, false);
+		frameNumber = coder.readWord(2, false);
 	}
+
 	/**
 	 * Creates a GotoFrame with the specified frame number. 
 	 * 
@@ -116,12 +119,5 @@ public final class GotoFrame implements Action
 		coder.writeByte(Types.GOTO_FRAME);
 		coder.writeWord(2, 2);
 		coder.writeWord(frameNumber, 2);
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException
-	{
-		coder.readByte();
-		coder.readWord(2, false);
-		frameNumber = coder.readWord(2, false);
 	}
 }

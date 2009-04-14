@@ -72,7 +72,7 @@ public final class GradientFillTest {
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAddNullGradient() {
-		fixture = new GradientFill(type);
+		fixture = new GradientFill(type, transform, list);
 		fixture.add(null);
 	}
 
@@ -102,8 +102,7 @@ public final class GradientFillTest {
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		
-		fixture = new GradientFill(type);
-		fixture.decode(decoder);
+		fixture = new GradientFill(decoder);
 		
 		assertTrue(decoder.eof());
 		//TODO compare fields

@@ -88,35 +88,18 @@ public final class ButtonShape implements Codeable
 	private List<Filter> filters;
 	private Blend blendMode;
 
-	protected ButtonShape()
+	protected ButtonShape(final SWFDecoder coder) throws CoderException
 	{
-		transform = new CoordTransform();
-		colorTransform = new ColorTransform();
-	}
+		coder.readBits(4, false);
 
-	/**
-	 * Creates a ButtonShape object without a coordinate or colour transform
-	 * that will be applied to the shape drawn for the button states. The
-	 * transforms default to unity transforms which do not change the location
-	 * of colour of the shape for the button.
-	 * 
-	 * @param states
-	 *            the state of the button when the shape is drawn. The compound
-	 *            state code must be in the range 1..15. 
-	 * @param uid
-	 *            the unique identifier of an DefineShape, DefineShape2 or
-	 *            DefineShape3 object. Must be in the range 1..65535.
-	 * @param aLayer
-	 *            the layer in the display list on which the shape is drawn. 
-	 *            Must be in the range 1..65535.
-	 */
-	public ButtonShape(Set<Button.State> states, int uid, int aLayer)
-	{
-		setState(states);
-		setIdentifier(uid);
-		setLayer(aLayer);
-		transform = new CoordTransform();
-		colorTransform = new ColorTransform();
+		state = coder.readBits(4, false);
+		identifier = coder.readWord(2, false);
+		layer = coder.readWord(2, false);
+		transform = new CoordTransform(coder);
+
+		if (coder.getContext().getType() == Types.DEFINE_BUTTON_2) {
+			colorTransform = new ColorTransform(coder);
+		}
 	}
 
 	/**
@@ -142,7 +125,6 @@ public final class ButtonShape implements Codeable
 		setIdentifier(uid);
 		setLayer(aLayer);
 		setTransform(aTransform);
-		colorTransform = new ColorTransform();
 	}
 
 	/**
@@ -373,20 +355,6 @@ public final class ButtonShape implements Codeable
 
 		if (coder.getContext().getType() == Types.DEFINE_BUTTON_2) {
 			colorTransform.encode(coder);
-		}
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException
-	{
-		coder.readBits(4, false);
-
-		state = coder.readBits(4, false);
-		identifier = coder.readWord(2, false);
-		layer = coder.readWord(2, false);
-		transform.decode(coder);
-
-		if (coder.getContext().getType() == Types.DEFINE_BUTTON_2) {
-			colorTransform.decode(coder);
 		}
 	}
 }

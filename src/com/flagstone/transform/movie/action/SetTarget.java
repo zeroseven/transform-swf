@@ -53,9 +53,11 @@ public final class SetTarget implements Action
 	
 	private transient int length;
 
-	public SetTarget()
+	public SetTarget(final SWFDecoder coder) throws CoderException
 	{
-		target = "clip";
+		coder.readByte();
+		length = coder.readWord(2, false);
+		target = coder.readString();
 	}
 
 	/**
@@ -118,12 +120,5 @@ public final class SetTarget implements Action
 		coder.writeByte(Types.SET_TARGET);
 		coder.writeWord(length, 2);
 		coder.writeString(target);
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException
-	{
-		coder.readByte();
-		length = coder.readWord(2, false);
-		target = coder.readString();
 	}
 }

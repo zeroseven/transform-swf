@@ -48,8 +48,16 @@ public final class MovieMetaData implements MovieTag {
 
 	private transient int length;
 
-	public MovieMetaData() {
-		metadata = "";
+	public MovieMetaData(final SWFDecoder coder) throws CoderException {
+		
+		length = coder.readWord(2, false) & 0x3F;
+
+		if (length == 0x3F) {
+			length = coder.readWord(4, false);
+		}
+
+		metadata = coder.readString(length-1, coder.getEncoding());
+		coder.readByte();
 	}
 
 	/**
@@ -111,17 +119,5 @@ public final class MovieMetaData implements MovieTag {
 		}
 
 		coder.writeString(metadata);
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException {
-		
-		length = coder.readWord(2, false) & 0x3F;
-
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
-
-		metadata = coder.readString(length-1, coder.getEncoding());
-		coder.readByte();
 	}
 }

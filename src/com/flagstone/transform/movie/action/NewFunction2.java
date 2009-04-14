@@ -179,12 +179,37 @@ public final class NewFunction2 implements Action
 	private transient int length;
 	private transient int actionsLength;
 
-	public NewFunction2()
+	public NewFunction2(final SWFDecoder coder) throws CoderException
 	{
-		name = "";
-		registerCount = 0;
-		arguments = new LinkedHashMap<String,Integer>();
+		coder.readByte();
+		length = coder.readWord(2, false);
+
+		name = coder.readString();
+		int argumentCount = coder.readWord(2, false);
+		registerCount = coder.readByte();
+		optimizations = coder.readBits(16, false);
+
+		int index;
+		
+		arguments = new LinkedHashMap<String,Integer>(argumentCount);
 		actions = new ArrayList<Action>();
+
+		for (int i = 0; i < argumentCount; i++) 
+		{
+			index = coder.readByte();
+			arguments.put(coder.readString(), index);
+		}
+
+		actionsLength = coder.readWord(2, false);
+		length += actionsLength;
+		
+		int end = coder.getPointer() + (actionsLength << 3);
+		
+		actions = new ArrayList<Action>();
+
+		while (coder.getPointer() < end) {
+			actions.add(coder.actionOfType(coder));
+		}
 	}
 
 	/**
@@ -451,39 +476,6 @@ public final class NewFunction2 implements Action
 		
 		if (actions.isEmpty()) {
 			coder.writeByte(0);
-		}
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException
-	{
-		coder.readByte();
-		length = coder.readWord(2, false);
-
-		name = coder.readString();
-		int argumentCount = coder.readWord(2, false);
-		registerCount = coder.readByte();
-		optimizations = coder.readBits(16, false);
-
-		int index;
-		
-		for (int i = 0; i < argumentCount; i++) 
-		{
-			index = coder.readByte();
-			arguments.put(coder.readString(), index);
-		}
-
-		actionsLength = coder.readWord(2, false);
-		length += actionsLength;
-		
-		int end = coder.getPointer() + (actionsLength << 3);
-		
-		actions = new ArrayList<Action>();
-		Action action;
-
-		while (coder.getPointer() < end) {
-			action = coder.actionOfType(coder.scanByte());
-			action.decode(coder);
-			actions.add(action);
 		}
 	}
 }

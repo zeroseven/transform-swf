@@ -21,14 +21,24 @@ public final class BevelFilter implements Filter {
 	private Mode mode;
 	private int passes;
 
-	public BevelFilter() {
-		shadow = new Color();
-		highlight = new Color();
+	public BevelFilter(final SWFDecoder coder) throws CoderException
+	{
+		coder.adjustPointer(8);
+		shadow = new Color(coder);
+		highlight = new Color(coder);
+		blurX = coder.readWord(4, true);
+		blurY = coder.readWord(4, true);
+		angle = coder.readWord(4, true);
+		distance = coder.readWord(4, true);
+		strength = coder.readWord(2, true);
+		unpack(coder.readByte());
 	}
 	
+
+	
 	public BevelFilter(BevelFilter object) {
-		shadow = object.shadow.copy();
-		highlight = object.highlight.copy();
+		shadow = object.shadow;
+		highlight = object.highlight;
 		blurX = object.blurX;
 		blurY = object.blurY;
 		angle = object.angle;
@@ -60,19 +70,6 @@ public final class BevelFilter implements Filter {
 		coder.writeByte(pack());
 	}
 
-	public void decode(final SWFDecoder coder) throws CoderException
-	{
-		coder.adjustPointer(8);
-		shadow.decode(coder);
-		highlight.decode(coder);
-		blurX = coder.readWord(4, true);
-		blurY = coder.readWord(4, true);
-		angle = coder.readWord(4, true);
-		distance = coder.readWord(4, true);
-		strength = coder.readWord(2, true);
-		unpack(coder.readByte());
-	}
-	
 	private int pack() {
 		int value = passes;
 		

@@ -79,10 +79,34 @@ public final class FontAlignment implements MovieTag
 	private transient int end;
 	private transient int length;
 
-	protected FontAlignment()
+	protected FontAlignment(final SWFDecoder coder) throws CoderException
 	{
-		identifier = 1;
 		zones = new ArrayList<AlignmentZone>();
+
+		start = coder.getPointer();
+		length = coder.readWord(2, false) & 0x3F;
+		
+		if (length == 0x3F) {
+			length = coder.readWord(4, false);
+		}
+		end = coder.getPointer() + (length << 3);
+
+		identifier = coder.readWord(2, false);
+
+		int bytesRead = 3;
+		AlignmentZone record;
+		
+		while (bytesRead < length)
+		{
+			record = new AlignmentZone();
+			record.decode(coder);
+			zones.add(record);
+		}
+
+		if (coder.getPointer() != end) {
+			throw new CoderException(getClass().getName(), start >> 3, length,
+					(coder.getPointer() - end) >> 3);
+		}
 	}
 
 	/**
@@ -213,36 +237,6 @@ public final class FontAlignment implements MovieTag
 
 		for (AlignmentZone zone : zones) {
 			zone.encode(coder);
-		}
-
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException
-	{
-		zones = new ArrayList<AlignmentZone>();
-
-		start = coder.getPointer();
-		length = coder.readWord(2, false) & 0x3F;
-		
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
-		end = coder.getPointer() + (length << 3);
-
-		identifier = coder.readWord(2, false);
-
-		int bytesRead = 3;
-		AlignmentZone record;
-		
-		while (bytesRead < length)
-		{
-			record = new AlignmentZone();
-			record.decode(coder);
-			zones.add(record);
 		}
 
 		if (coder.getPointer() != end) {

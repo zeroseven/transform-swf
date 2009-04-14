@@ -69,18 +69,23 @@ public final class MorphLineStyle2 implements Codeable,
 	private transient boolean hasFillStyle;
 	private transient boolean hasMiter;
 
-	public MorphLineStyle2() {
-		super();
+	public MorphLineStyle2(final SWFDecoder coder) throws CoderException {
+		startWidth = coder.readWord(2, false);
+		endWidth = coder.readWord(2, false);
+		unpack(coder.readB16());
 
-		startWidth = 20;
-		endWidth = 20;
-		startColor = new Color();
-		endColor = new Color();
+		if (hasMiter) {
+			coder.readWord(2, false);
+		}
 
-		scaledVertically = true;
-		scaledVertically = true;
-		lineClosed = true;
+		if (hasFillStyle) {
+			fillStyle = coder.morphFillStyleOfType(coder);
+		} else {
+			startColor= new Color(coder);
+			endColor= new Color(coder);
+		}
 	}
+
 
 	public MorphLineStyle2(int startWidth, int endWidth, Color startColor,
 			Color endColor) {
@@ -100,8 +105,8 @@ public final class MorphLineStyle2 implements Codeable,
 		startWidth = object.startWidth;
 		endWidth = object.endWidth;
 
-		startColor = object.startColor.copy();
-		endColor = object.endColor.copy();
+		startColor = object.startColor;
+		endColor = object.endColor;
 
 		if (fillStyle != null) {
 			object.fillStyle = fillStyle.copy();
@@ -302,8 +307,8 @@ public final class MorphLineStyle2 implements Codeable,
 		if (hasFillStyle) {
 			length += fillStyle.prepareToEncode(coder);
 		} else {
-			length += startColor.prepareToEncode(coder);
-			length += endColor.prepareToEncode(coder);
+			length += 4;
+			length += 4;
 		}
 
 		if (scaledHorizontally || scaledVertically) {
@@ -327,25 +332,6 @@ public final class MorphLineStyle2 implements Codeable,
 		} else {
 			startColor.encode(coder);
 			endColor.encode(coder);
-		}
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException {
-
-		startWidth = coder.readWord(2, false);
-		endWidth = coder.readWord(2, false);
-		unpack(coder.readB16());
-
-		if (hasMiter) {
-			coder.readWord(2, false);
-		}
-
-		if (hasFillStyle) {
-			fillStyle = coder.morphFillStyleOfType(coder.scanByte());
-			fillStyle.decode(coder);
-		} else {
-			startColor.decode(coder);
-			endColor.decode(coder);
 		}
 	}
 

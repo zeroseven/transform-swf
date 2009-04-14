@@ -47,8 +47,14 @@ public final class ActionObject implements Action
 	
 	private transient int length;
 	
-	public ActionObject(int type) {
-		this.type = type;
+	public ActionObject(final SWFDecoder coder) throws CoderException
+	{
+		type = coder.readByte();
+		
+		if (type > 127) {
+			length = coder.readWord(2, false);
+			data = coder.readBytes(new byte[length]);			
+		}
 	}
 
 	public ActionObject(int type, byte[] bytes) {
@@ -103,7 +109,6 @@ public final class ActionObject implements Action
 		return String.format(FORMAT, type, (data != null ? String.valueOf(data.length) : data));
 	}
 
-	@Override
 	public int prepareToEncode(final SWFEncoder coder)
 	{
 		length = 0;
@@ -114,7 +119,6 @@ public final class ActionObject implements Action
 		return ((type > 127) ? 3:1)+ length;
 	}
 
-	@Override
 	public void encode(final SWFEncoder coder) throws CoderException
 	{
 		coder.writeByte(type);
@@ -122,17 +126,6 @@ public final class ActionObject implements Action
 		if (data != null) {
 			coder.writeWord(data.length, 2);
 			coder.writeBytes(data);		
-		}
-	}
-
-	@Override
-	public void decode(final SWFDecoder coder) throws CoderException
-	{
-		type = coder.readByte();
-		
-		if (type > 127) {
-			length = coder.readWord(2, false);
-			data = coder.readBytes(new byte[length]);			
 		}
 	}
 }

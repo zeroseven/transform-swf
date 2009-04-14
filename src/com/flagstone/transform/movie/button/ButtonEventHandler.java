@@ -213,10 +213,29 @@ public final class ButtonEventHandler implements Codeable
 
 	protected transient int length = 0;
 
-	protected ButtonEventHandler(int size) {
-		length = size;
+	protected ButtonEventHandler(int size, final SWFDecoder coder) throws CoderException
+	{
+		event = coder.readWord(2, false);
+		length -= 2;
+
 		actions = new ArrayList<Action>();
+
+		if (coder.getContext().isDecodeActions()) {
+			
+			int end = coder.getPointer() + (length << 3);
+
+			while (coder.getPointer() < end) {
+				actions.add(coder.actionOfType(coder));
+			}
+		} 
+		else 
+		{
+			if (length != 0) {
+				actions.add(new ActionData(length, coder));
+			}
+		}
 	}
+
 
 	protected ButtonEventHandler()
 	{
@@ -347,43 +366,6 @@ public final class ButtonEventHandler implements Codeable
 
 		for (Action action : actions) {
 			action.encode(coder);
-		}
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException
-	{
-		event = coder.readWord(2, false);
-		length -= 2;
-
-		if (coder.getContext().isDecodeActions()) {
-			
-			int end = coder.getPointer() + (length << 3);
-
-			Action action;
-			int type;
-			
-			while (coder.getPointer() < end) {
-				
-				type = coder.scanByte();
-				action = coder.actionOfType(type);
-				
-				if (type > 128) {
-					action.decode(coder);
-				} else {
-					coder.readByte();
-				}
-				actions.add(action);
-			}
-		} 
-		else 
-		{
-			if (length != 0) {
-				byte[] data = new byte[length];
-				coder.readBytes(data);
-				ActionData action = new ActionData();
-				action.setData(data);
-				actions.add(action);
-			}
 		}
 	}
 }

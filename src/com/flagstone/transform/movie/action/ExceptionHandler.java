@@ -79,14 +79,61 @@ public final class ExceptionHandler implements Action
 	private transient int catchLength;
 	private transient int finalLength;
 
-	public ExceptionHandler()
+	public ExceptionHandler(final SWFDecoder coder) throws CoderException
 	{
-		variable = "";
-		register = 0;
+		coder.readByte();
+		length = coder.readWord(2, false);
+		
+		coder.readBits(5, false);
+		boolean containsVariable = coder.readBits(1, false) == 1;
+		boolean containsFinal = coder.readBits(1, false) == 1;
+		boolean containsCatch = coder.readBits(1, false) == 1;
+
+		tryLength = coder.readWord(2, false);
+		catchLength = coder.readWord(2, false);
+		finalLength = coder.readWord(2, false);
+
+		if (length == 8)
+		{
+			length += tryLength;
+			length += catchLength;
+			length += finalLength;
+		}
+
+		if (containsVariable) {
+			variable = coder.readString();
+			register = 0;
+		} 
+		else {
+			register = coder.readByte();
+			variable = "";
+		}
+
 		tryActions = new ArrayList<Action>();
 		catchActions = new ArrayList<Action>();
 		finalActions = new ArrayList<Action>();
+		
+		int end = coder.getPointer() + (tryLength << 3);
+		
+		while (coder.getPointer() < end) {			
+			tryActions.add(coder.actionOfType(coder));
+		}
+
+		if (containsCatch) {
+			end = coder.getPointer() + (catchLength << 3);
+			while (coder.getPointer() < end) {			
+				catchActions.add(coder.actionOfType(coder));
+			}
+		}
+
+		if (containsFinal) {
+			end = coder.getPointer() + (finalLength << 3);
+			while (coder.getPointer() < end) {			
+				finalActions.add(coder.actionOfType(coder));
+			}
+		}
 	}
+
 
 	/**
 	 * Creates a new exception handler with the thrown object assigned to a
@@ -444,68 +491,6 @@ public final class ExceptionHandler implements Action
 		
 		while (iAction.hasNext()) {
 			iAction.next().encode(coder);
-		}
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException
-	{
-		coder.readByte();
-		length = coder.readWord(2, false);
-		
-		coder.readBits(5, false);
-		boolean containsVariable = coder.readBits(1, false) == 1;
-		boolean containsFinal = coder.readBits(1, false) == 1;
-		boolean containsCatch = coder.readBits(1, false) == 1;
-
-		tryLength = coder.readWord(2, false);
-		catchLength = coder.readWord(2, false);
-		finalLength = coder.readWord(2, false);
-
-		if (length == 8)
-		{
-			length += tryLength;
-			length += catchLength;
-			length += finalLength;
-		}
-
-		if (containsVariable) {
-			variable = coder.readString();
-			register = 0;
-		} 
-		else {
-			register = coder.readByte();
-			variable = "";
-		}
-
-		tryActions.clear();
-		catchActions.clear();
-		finalActions.clear();
-		
-		int end = coder.getPointer() + (tryLength << 3);
-		Action action;
-		
-		while (coder.getPointer() < end) {			
-			action = coder.actionOfType(coder.scanByte());
-			action.decode(coder);
-			tryActions.add(action);
-		}
-
-		if (containsCatch) {
-			end = coder.getPointer() + (catchLength << 3);
-			while (coder.getPointer() < end) {			
-				action = coder.actionOfType(coder.scanByte());
-				action.decode(coder);
-				catchActions.add(action);
-			}
-		}
-
-		if (containsFinal) {
-			end = coder.getPointer() + (finalLength << 3);
-			while (coder.getPointer() < end) {			
-				action = coder.actionOfType(coder.scanByte());
-				action.decode(coder);
-				finalActions.add(action);
-			}
 		}
 	}
 }

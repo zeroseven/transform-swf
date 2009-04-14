@@ -59,20 +59,17 @@ public final class GradientTest {
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForRatioWithLowerBound() {
-		fixture = new Gradient();
-		fixture.setRatio(-1);
+		fixture = new Gradient(-1, color);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForRatioWithUpperBound() {
-		fixture = new Gradient();
-		fixture.setRatio(256);
+		fixture = new Gradient(256, color);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForColorWithNull() {
-		fixture = new Gradient();
-		fixture.setColor(null);
+		fixture = new Gradient(1, null);
 	}
 	
 	@Test
@@ -101,8 +98,7 @@ public final class GradientTest {
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		
-		fixture = new Gradient();
-		fixture.decode(decoder);
+		fixture = new Gradient(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(ratio, fixture.getRatio());

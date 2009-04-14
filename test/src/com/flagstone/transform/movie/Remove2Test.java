@@ -61,19 +61,17 @@ public final class Remove2Test {
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForTimeoutWithLowerBound() {
-		fixture = new Remove2();
-		fixture.setLayer(0);
+		fixture = new Remove2(0);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForTimeoutWithUpperBound() {
-		fixture = new Remove2();
-		fixture.setLayer(65536);
+		fixture = new Remove2(65536);
 	}
 	
 	@Test
 	public void checkCopy() {
-		fixture = new Remove2();
+		fixture = new Remove2(layer);
 		Remove2 copy = fixture.copy();
 
 		assertNotSame(fixture, copy);
@@ -94,23 +92,10 @@ public final class Remove2Test {
 	}
 	
 	@Test
-	public void encodeDefault() throws CoderException {		
-		SWFEncoder encoder = new SWFEncoder(empty.length);		
-		
-		fixture = new Remove2();
-		assertEquals(empty.length, fixture.prepareToEncode(encoder));
-		fixture.encode(encoder);
-		
-		assertTrue(encoder.eof());
-		assertArrayEquals(empty, encoder.getData());
-	}
-	
-	@Test
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		
-		fixture = new Remove2();
-		fixture.decode(decoder);
+		fixture = new Remove2(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(layer, fixture.getLayer());
@@ -120,8 +105,7 @@ public final class Remove2Test {
 	public void decodeExtended() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(extended);
 		
-		fixture = new Remove2();
-		fixture.decode(decoder);
+		fixture = new Remove2(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(layer, fixture.getLayer());

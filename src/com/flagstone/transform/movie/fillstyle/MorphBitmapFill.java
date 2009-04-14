@@ -89,10 +89,11 @@ public final class MorphBitmapFill implements FillStyle {
 	private CoordTransform startTransform;
 	private CoordTransform endTransform;
 
-	public MorphBitmapFill(final int type) {
-		this.type = type;
-		startTransform = new CoordTransform();
-		endTransform = new CoordTransform();
+	public MorphBitmapFill(final SWFDecoder coder) throws CoderException {
+		type = coder.readByte();
+		identifier = coder.readWord(2, false);
+		startTransform = new CoordTransform(coder);
+		endTransform = new CoordTransform(coder);
 	}
 
 	/**
@@ -204,24 +205,14 @@ public final class MorphBitmapFill implements FillStyle {
 		return String.format(FORMAT, identifier, startTransform, endTransform);
 	}
 
-	@Override
 	public int prepareToEncode(final SWFEncoder coder) {
 		return 3 + startTransform.prepareToEncode(coder) + endTransform.prepareToEncode(coder);
 	}
 
-	@Override
 	public void encode(final SWFEncoder coder) throws CoderException {
 		coder.writeByte(type);
 		coder.writeWord(identifier, 2);
 		startTransform.encode(coder);
 		endTransform.encode(coder);
-	}
-
-	@Override
-	public void decode(final SWFDecoder coder) throws CoderException {
-		coder.adjustPointer(8);
-		identifier = coder.readWord(2, false);
-		startTransform.decode(coder);
-		endTransform.decode(coder);
 	}
 }

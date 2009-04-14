@@ -62,31 +62,27 @@ public final class TabOrderTest {
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForLayerWithLowerBound() {
-		fixture = new TabOrder();
-		fixture.setLayer(0);
+		fixture = new TabOrder(0, index);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForLayerWithUpperBound() {
-		fixture = new TabOrder();
-		fixture.setLayer(65536);
+		fixture = new TabOrder(65536, index);
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForIndexWithLowerBound() {
-		fixture = new TabOrder();
-		fixture.setIndex(-1);
+		fixture = new TabOrder(layer, -1);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForIndexWithUpperBound() {
-		fixture = new TabOrder();
-		fixture.setIndex(65536);
+		fixture = new TabOrder(layer, 65536);
 	}
 	
 	@Test
 	public void checkCopy() {
-		fixture = new TabOrder();
+		fixture = new TabOrder(layer, index);
 		TabOrder copy = fixture.copy();
 
 		assertNotSame(fixture, copy);
@@ -108,23 +104,10 @@ public final class TabOrderTest {
 	}
 	
 	@Test
-	public void encodeDefault() throws CoderException {		
-		SWFEncoder encoder = new SWFEncoder(empty.length);		
-		
-		fixture = new TabOrder();
-		assertEquals(empty.length, fixture.prepareToEncode(encoder));
-		fixture.encode(encoder);
-		
-		assertTrue(encoder.eof());
-		assertArrayEquals(empty, encoder.getData());
-	}
-	
-	@Test
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		
-		fixture = new TabOrder();
-		fixture.decode(decoder);
+		fixture = new TabOrder(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(layer, fixture.getLayer());
@@ -135,8 +118,7 @@ public final class TabOrderTest {
 	public void decodeExtended() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(extended);
 		
-		fixture = new TabOrder();
-		fixture.decode(decoder);
+		fixture = new TabOrder(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(layer, fixture.getLayer());

@@ -29,6 +29,7 @@
  */
 package com.flagstone.transform.movie.datatype;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
@@ -41,93 +42,82 @@ import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-@SuppressWarnings( { "PMD.TooManyMethods",
+@SuppressWarnings( { 
     "PMD.LocalVariableCouldBeFinal",
 	"PMD.JUnitAssertionsShouldIncludeMessage" })
 public final class BoundsTest {
 
+	private transient final int xmin = 1;
+	private transient final int ymin = 2;
+	private transient final int xmax = 3;
+	private transient final int ymax = 4;
+	
 	private transient Bounds fixture;
 
 	private transient SWFEncoder encoder;
 	private transient SWFDecoder decoder;
-	private transient byte[] data;
+	
+	private transient final byte[] encoded = new byte[] { 32, -103, 32 };
 
-	@Before
-	public void setUp() {
-		fixture = new Bounds();
-		encoder = new SWFEncoder(0);
-		decoder = new SWFDecoder(new byte[] {});
+	@Test
+	public void checkWidth() {
+		assertEquals(3, new Bounds(1,2,4,8).getWidth());
 	}
 
 	@Test
-	public void checkConstructor() {
-		fixture = new Bounds(1, 2, 3, 4);
-		assertEquals(1, fixture.getMinX());
-		assertEquals(2, fixture.getMinY());
-		assertEquals(3, fixture.getMaxX());
-		assertEquals(4, fixture.getMaxY());
+	public void checkHeigth() {
+		assertEquals(6, new Bounds(1,2,4,8).getHeight());
 	}
 
 	@Test
-	public void checkToStringCompletesFormat() {
-		assertFalse(fixture.toString().contains("%"));
+	public void checkNullIsnotEqual() {
+		assertFalse(new Bounds(1,2,3,4).equals(null));
 	}
 
 	@Test
-	public void encodeWithBoundsEmpty() throws CoderException {
+	public void checkObjectIsNotEqual() {
+		assertFalse(new Bounds(1,2,3,4).equals(new Object()));
+	}
 
-		data = new byte[] { 8, 0 };
-		encoder.setData(data.length);
+	@Test
+	public void checkSameIsEqual() {
+		fixture = new Bounds(1,2,3,4);
+		assertTrue(fixture.equals(fixture));
+	}
 
-		assertEquals(2, fixture.prepareToEncode(encoder));
-		fixture.encode(encoder);
+	@Test
+	public void checkIsNotEqual() {
+		fixture = new Bounds(1,2,3,4);
+		assertFalse(fixture.equals(new Bounds(4,3,2,1)));
+	}
 
-		assertEquals(16, encoder.getPointer());
-		assertArrayEquals(data, encoder.getData());
+	@Test
+	public void checkOtherIsEqual() {
+		assertTrue(new Bounds(1,2,3,4).equals(new Bounds(1,2,3,4)));
 	}
 
 	@Test
 	public void encodeWithBoundsSet() throws CoderException {
-
-		data = new byte[] { 32, -103, 32 };
-		encoder.setData(data.length);
-
-		fixture = new Bounds(1, 2, 3, 4);
+		encoder = new SWFEncoder(encoded.length);
+		fixture = new Bounds(xmin, ymin, xmax, ymax);
 
 		assertEquals(3, fixture.prepareToEncode(encoder));
 		fixture.encode(encoder);
 
 		assertEquals(24, encoder.getPointer());
-		assertArrayEquals(data, encoder.getData());
-	}
-
-	@Test
-	public void decodeWithBoundsEmpty() throws CoderException {
-
-		data = new byte[] { 8, 0 };
-		decoder.setData(data);
-
-		fixture.decode(decoder);
-
-		assertEquals(16, decoder.getPointer());
-		assertEquals(0, fixture.getMinX());
-		assertEquals(0, fixture.getMinY());
-		assertEquals(0, fixture.getMaxX());
-		assertEquals(0, fixture.getMaxY());
+		assertArrayEquals(encoded, encoder.getData());
 	}
 
 	@Test
 	public void decodeWithBoundsSet() throws CoderException {
+		decoder = new SWFDecoder(encoded);
 
-		data = new byte[] { 32, -103, 32 };
-		decoder.setData(data);
+		fixture = new Bounds(decoder);
 
-		fixture.decode(decoder);
-
-		assertEquals(24, decoder.getPointer());
-		assertEquals(1, fixture.getMinX());
-		assertEquals(2, fixture.getMinY());
-		assertEquals(3, fixture.getMaxX());
-		assertEquals(4, fixture.getMaxY());
+		assertTrue(decoder.eof());
+		assertEquals(xmin, fixture.getMinX());
+		assertEquals(ymin, fixture.getMinY());
+		assertEquals(xmax, fixture.getMaxX());
+		assertEquals(ymax, fixture.getMaxY());
 	}
 }

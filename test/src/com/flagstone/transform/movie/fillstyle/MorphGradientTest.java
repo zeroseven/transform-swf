@@ -61,20 +61,17 @@ public final class MorphGradientTest {
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForRatioWithLowerBound() {
-		fixture = new MorphGradient();
-		fixture.setStartRatio(-1);
+		fixture = new MorphGradient(-1, endRatio, startColor, endColor);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForRatioWithUpperBound() {
-		fixture = new MorphGradient();
-		fixture.setStartRatio(256);
+		fixture = new MorphGradient(256, endRatio, startColor, endColor);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForColorWithNull() {
-		fixture = new MorphGradient();
-		fixture.setStartColor(null);
+		fixture = new MorphGradient(startRatio, endRatio, null, endColor);
 	}
 	
 	@Test
@@ -103,8 +100,7 @@ public final class MorphGradientTest {
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		
-		fixture = new MorphGradient();
-		fixture.decode(decoder);
+		fixture = new MorphGradient(decoder);
 		
 		assertTrue(decoder.eof());
 		assertEquals(startRatio, fixture.getStartRatio());

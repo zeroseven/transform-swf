@@ -90,11 +90,17 @@ public final class GradientFill implements FillStyle {
 	
 	private transient int count;
 
-	public GradientFill(final int type) {
-		this.type = type;
-		transform = new CoordTransform();
-		gradients = new ArrayList<Gradient>();
+	public GradientFill(final SWFDecoder coder) throws CoderException {
+		type = coder.readByte();
+		transform = new CoordTransform(coder);
+		count = coder.readByte();
+		gradients = new ArrayList<Gradient>(count);
+		
+		for (int i=0; i<count; i++) {
+			gradients.add(new Gradient(coder));
+		}
 	}
+
 
 	/**
 	 * Creates a GradientFill object specifying the type, coordinate transform
@@ -198,7 +204,6 @@ public final class GradientFill implements FillStyle {
 		return String.format(FORMAT, transform, gradients);
 	}
 
-	@Override
 	public int prepareToEncode(final SWFEncoder coder) {
 		Iterator<Gradient> iter;
 				
@@ -212,7 +217,6 @@ public final class GradientFill implements FillStyle {
 		return length;
 	}
 
-	@Override
 	public void encode(final SWFEncoder coder) throws CoderException {
 		Iterator<Gradient> iter;
 		
@@ -222,21 +226,6 @@ public final class GradientFill implements FillStyle {
 
 		for (iter = gradients.iterator(); iter.hasNext();) {
 			iter.next().encode(coder);
-		}
-	}
-
-	@Override
-	public void decode(final SWFDecoder coder) throws CoderException {
-		Gradient gradient;
-		
-		coder.adjustPointer(8);
-		transform.decode(coder);
-		count = coder.readByte();
-
-		for (int i=0; i<count; i++) {
-			gradient = new Gradient(); //NOPMD
-			gradient.decode(coder);
-			gradients.add(gradient);
 		}
 	}
 }

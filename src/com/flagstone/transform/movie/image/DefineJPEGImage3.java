@@ -64,12 +64,26 @@ public final class DefineJPEGImage3 implements ImageTag
 	protected byte[] alpha;
 	private int identifier;
 
-	public DefineJPEGImage3()
+	public DefineJPEGImage3(final SWFDecoder coder) throws CoderException
 	{
-		image = new byte[0];
-		alpha = new byte[0];
-		width = 0;
-		height = 0;
+		start = coder.getPointer();
+		length = coder.readWord(2, false) & 0x3F;
+		
+		if (length == 0x3F) {
+			length = coder.readWord(4, false);
+		}
+		end = coder.getPointer() + (length << 3);
+		identifier = coder.readWord(2, false);
+
+		int offset = coder.readWord(4, false);
+
+		image = coder.readBytes(new byte[offset]);
+		alpha = coder.readBytes(new byte[length - offset - 6]);
+
+		if (coder.getPointer() != end) {
+			throw new CoderException(getClass().getName(), start >> 3, length,
+					(coder.getPointer() - end) >> 3);
+		}
 	}
 
 	/**
@@ -206,28 +220,6 @@ public final class DefineJPEGImage3 implements ImageTag
 		coder.writeWord(image.length, 4);
 		coder.writeBytes(image);
 		coder.writeBytes(alpha);
-
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException
-	{
-		start = coder.getPointer();
-		length = coder.readWord(2, false) & 0x3F;
-		
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
-		end = coder.getPointer() + (length << 3);
-		identifier = coder.readWord(2, false);
-
-		int offset = coder.readWord(4, false);
-
-		image = coder.readBytes(new byte[offset]);
-		alpha = coder.readBytes(new byte[length - offset - 6]);
 
 		if (coder.getPointer() != end) {
 			throw new CoderException(getClass().getName(), start >> 3, length,

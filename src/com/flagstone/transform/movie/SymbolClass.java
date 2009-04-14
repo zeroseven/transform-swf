@@ -57,8 +57,27 @@ public final class SymbolClass implements MovieTag {
 	private transient int end;
 	private transient int length;
 
-	public SymbolClass() {
-		objects = new LinkedHashMap<Integer, String>();
+	public SymbolClass(final SWFDecoder coder) throws CoderException {
+		
+		start = coder.getPointer();
+		length = coder.readWord(2, false) & 0x3F;
+
+		if (length == 0x3F) {
+			length = coder.readWord(4, false);
+		}
+		end = coder.getPointer() + (length << 3);
+
+		int count = coder.readWord(2, false);
+		objects = new LinkedHashMap<Integer, String>(count);
+
+		for (int i=0; i < count; i++) {
+			objects.put(coder.readWord(2, false), coder.readString());
+		}
+
+		if (coder.getPointer() != end) {
+			throw new CoderException(getClass().getName(), start >> 3, length,
+					(coder.getPointer() - end) >> 3);
+		}
 	}
 
 	/**
@@ -170,28 +189,6 @@ public final class SymbolClass implements MovieTag {
 		for (Integer identifier : objects.keySet()) {
 			coder.writeWord(identifier.intValue(), 2);
 			coder.writeString(objects.get(identifier));
-		}
-
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException {
-		
-		start = coder.getPointer();
-		length = coder.readWord(2, false) & 0x3F;
-
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
-		end = coder.getPointer() + (length << 3);
-
-		int count = coder.readWord(2, false);
-
-		for (int i=0; i < count; i++) {
-			objects.put(coder.readWord(2, false), coder.readString());
 		}
 
 		if (coder.getPointer() != end) {

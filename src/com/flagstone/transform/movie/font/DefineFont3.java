@@ -90,15 +90,120 @@ public final class DefineFont3 implements DefineTag
 	private transient boolean wideOffsets;
 	private transient boolean wideCodes;
 
-	protected DefineFont3()
+	protected DefineFont3(final SWFDecoder coder) throws CoderException
 	{
-		name = "";
-		encoding = TextFormat.UNICODE;
+		start = coder.getPointer();
+		length = coder.readWord(2, false) & 0x3F;
+		
+		if (length == 0x3F) {
+			length = coder.readWord(4, false);
+		}
+		end = coder.getPointer() + (length << 3);
+
+		identifier = coder.readWord(2, false);
 		shapes = new ArrayList<Shape>();
 		codes = new ArrayList<Integer>();
 		advances = new ArrayList<Integer>();
 		bounds = new ArrayList<Bounds>();
 		kernings = new ArrayList<Kerning>();
+
+		boolean containsLayout = coder.readBits(1, false) != 0;
+		int format = coder.readBits(3, false);
+
+		encoding = TextFormat.UNICODE;
+
+		if (format == 1) {
+			encoding = TextFormat.ANSI;
+		}
+		// Flash 7
+		else if (format == 2) {
+			small = true;
+		}
+		// End Flash 7
+		else if (format == 4) {
+			encoding = TextFormat.SJIS;
+		}
+
+		wideOffsets = coder.readBits(1, false) != 0;
+		wideCodes = coder.readBits(1, false) != 0;
+
+		coder.getContext().setWideCodes(wideCodes);
+
+		italic = coder.readBits(1, false) != 0;
+		bold = coder.readBits(1, false) != 0;
+		language = coder.readBits(8, false);
+		int nameLength = coder.readByte();
+		name = coder.readString(nameLength, coder.getEncoding());
+
+		if (name.length() > 0)
+		{
+			while (name.charAt(name.length() - 1) == 0) {
+				name = name.substring(0, name.length() - 1);
+			}
+		}
+
+		int glyphCount = coder.readWord(2, false);
+		int offsetStart = coder.getPointer(); // NOPMD
+		int[] offset = new int[glyphCount + 1]; // NOPMD
+
+		for (int i = 0; i < glyphCount; i++) {
+			offset[i] = coder.readWord((wideOffsets) ? 4 : 2, false); // NOPMD
+		}
+
+		offset[glyphCount] = coder.readWord((wideOffsets) ? 4 : 2, false); // NOPMD
+
+		Shape shape;
+		
+		for (int i = 0; i < glyphCount; i++)
+		{
+			coder.setPointer(offsetStart + (offset[i] << 3));
+
+			if (coder.getContext().isDecodeGlyphs()) 
+			{
+				shapes.add(new Shape(coder));
+			}
+			else {
+				shapes.add(new Shape(offset[i + 1] - offset[i], coder));
+			}
+		}
+
+		for (int i = 0; i < glyphCount; i++) {
+			codes.add(coder.readWord((wideCodes) ? 2 : 1, false));
+		}
+
+		if (containsLayout)
+		{
+			ascent = coder.readWord(2, true);
+			descent = coder.readWord(2, true);
+			leading = coder.readWord(2, true);
+
+			for (int i = 0; i < glyphCount; i++) {
+				advances.add(coder.readWord(2, true));
+			}
+
+			Bounds box;
+			
+			for (int i=0; i<glyphCount; i++) 
+			{
+				bounds.add(new Bounds(coder));
+			}
+
+			int kerningCount = coder.readWord(2, false);
+
+			Kerning kern;
+	
+			for (int i=0; i<kerningCount; i++) 
+			{
+				kernings.add(new Kerning(coder));
+			}
+		}
+
+		coder.getContext().setWideCodes(false);
+
+		if (coder.getPointer() != end) {
+			throw new CoderException(getClass().getName(), start >> 3, length,
+					(coder.getPointer() - end) >> 3);
+		}
 	}
 
 	/**
@@ -800,125 +905,6 @@ public final class DefineFont3 implements DefineTag
 
 		coder.getContext().setFillSize(0);
 		coder.getContext().setLineSize(0);
-		coder.getContext().setWideCodes(false);
-
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException
-	{
-		start = coder.getPointer();
-		length = coder.readWord(2, false) & 0x3F;
-		
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
-		end = coder.getPointer() + (length << 3);
-
-		identifier = coder.readWord(2, false);
-
-		boolean containsLayout = coder.readBits(1, false) != 0;
-		int format = coder.readBits(3, false);
-
-		encoding = TextFormat.UNICODE;
-
-		if (format == 1) {
-			encoding = TextFormat.ANSI;
-		}
-		// Flash 7
-		else if (format == 2) {
-			small = true;
-		}
-		// End Flash 7
-		else if (format == 4) {
-			encoding = TextFormat.SJIS;
-		}
-
-		wideOffsets = coder.readBits(1, false) != 0;
-		wideCodes = coder.readBits(1, false) != 0;
-
-		coder.getContext().setWideCodes(wideCodes);
-
-		italic = coder.readBits(1, false) != 0;
-		bold = coder.readBits(1, false) != 0;
-		language = coder.readBits(8, false);
-		int nameLength = coder.readByte();
-		name = coder.readString(nameLength, coder.getEncoding());
-
-		if (name.length() > 0)
-		{
-			while (name.charAt(name.length() - 1) == 0) {
-				name = name.substring(0, name.length() - 1);
-			}
-		}
-
-		int glyphCount = coder.readWord(2, false);
-		int offsetStart = coder.getPointer(); // NOPMD
-		int[] offset = new int[glyphCount + 1]; // NOPMD
-
-		for (int i = 0; i < glyphCount; i++) {
-			offset[i] = coder.readWord((wideOffsets) ? 4 : 2, false); // NOPMD
-		}
-
-		offset[glyphCount] = coder.readWord((wideOffsets) ? 4 : 2, false); // NOPMD
-
-		Shape shape;
-		
-		for (int i = 0; i < glyphCount; i++)
-		{
-			coder.setPointer(offsetStart + (offset[i] << 3));
-
-			if (coder.getContext().isDecodeGlyphs()) 
-			{
-				shape = new Shape(new ArrayList<ShapeRecord>());
-				shape.decode(coder);
-				shapes.add(shape);
-			}
-			else {
-				shape = new Shape(offset[i + 1] - offset[i]);
-				shape.decode(coder);
-				shapes.add(shape);
-			}
-		}
-
-		for (int i = 0; i < glyphCount; i++) {
-			codes.add(coder.readWord((wideCodes) ? 2 : 1, false));
-		}
-
-		if (containsLayout)
-		{
-			ascent = coder.readWord(2, true);
-			descent = coder.readWord(2, true);
-			leading = coder.readWord(2, true);
-
-			for (int i = 0; i < glyphCount; i++) {
-				advances.add(coder.readWord(2, true));
-			}
-
-			Bounds box;
-			
-			for (int i=0; i<glyphCount; i++) 
-			{
-				box = new Bounds(0, 0, 0, 0);
-				box.decode(coder);				
-				bounds.add(box);
-			}
-
-			int kerningCount = coder.readWord(2, false);
-
-			Kerning kern;
-	
-			for (int i=0; i<kerningCount; i++) 
-			{
-				kern = new Kerning(0, 0, 0);
-				kern.decode(coder);				
-				kernings.add(kern);
-			}
-		}
-
 		coder.getContext().setWideCodes(false);
 
 		if (coder.getPointer() != end) {

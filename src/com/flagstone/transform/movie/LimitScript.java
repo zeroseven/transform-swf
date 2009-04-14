@@ -54,7 +54,14 @@ public final class LimitScript implements MovieTag {
 	private int depth;
 	private int timeout;
 
-	public LimitScript() {
+	public LimitScript(final SWFDecoder coder) throws CoderException {
+
+		if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
+			coder.readWord(4, false);
+		}
+
+		depth = coder.readWord(2, false);
+		timeout = coder.readWord(2, false);
 	}
 
 	/**
@@ -146,15 +153,5 @@ public final class LimitScript implements MovieTag {
 		coder.writeWord((Types.LIMIT_SCRIPT << 6) | 4, 2);
 		coder.writeWord(depth, 2);
 		coder.writeWord(timeout, 2);
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException {
-
-		if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
-			coder.readWord(4, false);
-		}
-
-		depth = coder.readWord(2, false);
-		timeout = coder.readWord(2, false);
 	}
 }

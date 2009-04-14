@@ -62,11 +62,21 @@ public final class With implements Action
 
 	private transient int length;
 
-	public With()
+	public With(final SWFDecoder coder) throws CoderException
 	{
+		coder.readByte();
+		coder.readWord(2, false);
+		length = coder.readWord(2, false);
+
+		int end = coder.getPointer() + (length << 3);
+
 		actions = new ArrayList<Action>();
+
+		while (coder.getPointer() < end) {
+			actions.add(coder.actionOfType(coder));
+		}
 	}
-	
+
 	/**
 	 * Creates a With object with an array of actions.
 	 * 
@@ -155,24 +165,6 @@ public final class With implements Action
 		
 		while (iAction.hasNext()) {
 			iAction.next().encode(coder);
-		}
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException
-	{
-		coder.readByte();
-		coder.readWord(2, false);
-		length = coder.readWord(2, false);
-
-		int end = coder.getPointer() + (length << 3);
-
-		actions.clear();
-		Action action;
-		
-		while (coder.getPointer() < end) {
-			action = coder.actionOfType(coder.scanByte());
-			action.decode(coder);
-			actions.add(action);
 		}
 	}
 }

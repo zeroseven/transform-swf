@@ -68,11 +68,47 @@ public final class DefineButton implements DefineTag
 	private transient int end;
 	private transient int length;
 
-	public DefineButton()
+	public DefineButton(final SWFDecoder coder) throws CoderException
 	{
+		start = coder.getPointer();
+		length = coder.readWord(2, false) & 0x3F;
+		
+		if (length == 0x3F) {
+			length = coder.readWord(4, false);
+		}
+		end = coder.getPointer() + (length << 3);
+
+		int start = coder.getPointer() - 16;
+
 		shapes = new ArrayList<ButtonShape>();
+		ButtonShape shape;
+		
+		while (coder.readByte() != 0) 
+		{
+			coder.adjustPointer(-8);
+			shapes.add(new ButtonShape(coder));
+		}
+
+		int actionsLength = length - ((coder.getPointer() - start) >>> 3);
+
 		actions = new ArrayList<Action>();
+
+		if (coder.getContext().isDecodeActions()) {
+			int len = length;
+			while (len > 0) {
+				actions.add(coder.actionOfType(coder));
+			}
+		} 
+		else {
+			actions.add(new ActionData(actionsLength, coder));
+		}
+
+		if (coder.getPointer() != end) {
+			throw new CoderException(getClass().getName(), start >> 3, length,
+					(coder.getPointer() - end) >> 3);
+		}
 	}
+
 
 	/**
 	 * Creates a DefineButton object with the identifier, button shapes
@@ -242,64 +278,6 @@ public final class DefineButton implements DefineTag
 		
 		while (iAction.hasNext()) {
 			iAction.next().encode(coder);
-		}
-
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
-
-	public void decode(final SWFDecoder coder) throws CoderException
-	{
-		start = coder.getPointer();
-		length = coder.readWord(2, false) & 0x3F;
-		
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
-		end = coder.getPointer() + (length << 3);
-
-		int start = coder.getPointer() - 16;
-
-		ButtonShape shape;
-		
-		while (coder.readByte() != 0) 
-		{
-			coder.adjustPointer(-8);
-			shape = new ButtonShape();
-			shape.decode(coder);
-			
-			shapes.add(shape);
-		}
-
-		int actionsLength = length - ((coder.getPointer() - start) >>> 3);
-
-		actions = new ArrayList<Action>();
-
-		if (coder.getContext().isDecodeActions()) {
-			Action action;
-			int type;
-			int len = length;
-
-			while (len > 0) {
-				type = coder.scanByte();
-				action = coder.actionOfType(type);
-				if (type > 128) {
-					action.decode(coder);
-				} else {
-					coder.readByte();
-				}
-				actions.add(action);
-			}
-		} 
-		else
-		{
-			byte[] data = new byte[actionsLength];
-			coder.readBytes(data);
-			ActionData action = new ActionData();
-			action.setData(data);
-			actions.add(action);
 		}
 
 		if (coder.getPointer() != end) {
