@@ -42,7 +42,6 @@ import static org.junit.Assert.assertArrayEquals;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.movie.datatype.Color;
 
 @SuppressWarnings( { 
 	"PMD.LocalVariableCouldBeFinal",
@@ -79,21 +78,25 @@ public final class SymbolClassTest {
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForIdentifierWithLowerBound() {
 		fixture = new SymbolClass(table);
+		fixture.add(0, "A");
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForIdentifierWithUpperBound() {
 		fixture = new SymbolClass(table);
+		fixture.add(65536, "A");
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForNameWithNull() {
 		fixture = new SymbolClass(table);
+		fixture.add(1, null);
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForNameWithEmpty() {
 		fixture = new SymbolClass(table);
+		fixture.add(1, "");
 	}
 
 	@Test

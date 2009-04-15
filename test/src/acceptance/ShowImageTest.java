@@ -11,7 +11,6 @@ import com.flagstone.transform.factory.image.ImageFactory;
 import com.flagstone.transform.movie.Background;
 import com.flagstone.transform.movie.ImageTag;
 import com.flagstone.transform.movie.Movie;
-import com.flagstone.transform.movie.MovieTag;
 import com.flagstone.transform.movie.Place2;
 import com.flagstone.transform.movie.ShowFrame;
 import com.flagstone.transform.movie.datatype.ColorTable;
@@ -96,8 +95,8 @@ public final class ShowImageTest
     {
         Movie movie = new Movie();
 
-        int xOrigin = ((ImageTag)image).getWidth()/2;
-        int yOrigin = ((ImageTag)image).getHeight()/2;
+        int xOrigin = (image).getWidth()/2;
+        int yOrigin = (image).getHeight()/2;
 
         LineStyle borderStyle = new LineStyle(20, ColorTable.black());
 

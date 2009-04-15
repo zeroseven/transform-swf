@@ -239,6 +239,7 @@ public class Encoder extends Coder {
 	public void writeString(final String str, final String charset) {
 		try {
 			writeBytes(str.getBytes(charset)); 
+			data[index++] = 0;
 		} catch (java.io.UnsupportedEncodingException e) {
 			throw new AssertionError(e);
 		}

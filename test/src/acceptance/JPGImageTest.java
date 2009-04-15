@@ -7,21 +7,7 @@ import java.io.FilenameFilter;
 import java.util.zip.DataFormatException;
 
 
-import com.flagstone.transform.factory.image.ImageFactory;
-import com.flagstone.transform.movie.Background;
-import com.flagstone.transform.movie.ImageTag;
-import com.flagstone.transform.movie.Movie;
-import com.flagstone.transform.movie.MovieTag;
-import com.flagstone.transform.movie.Place2;
-import com.flagstone.transform.movie.ShowFrame;
-import com.flagstone.transform.movie.datatype.ColorTable;
-import com.flagstone.transform.movie.linestyle.LineStyle;
-import com.flagstone.transform.movie.shape.DefineShape3;
-
-import static org.junit.Assert.fail;
-
 import org.junit.Test;
-import org.junit.Ignore;
 
 public final class JPGImageTest extends ImageTest
 {

@@ -41,7 +41,6 @@ import com.flagstone.transform.movie.DefineTag;
 import com.flagstone.transform.movie.Strings;
 import com.flagstone.transform.movie.Types;
 import com.flagstone.transform.movie.datatype.Bounds;
-import com.flagstone.transform.movie.datatype.Color;
 import com.flagstone.transform.movie.fillstyle.FillStyle;
 import com.flagstone.transform.movie.linestyle.MorphLineStyle;
 

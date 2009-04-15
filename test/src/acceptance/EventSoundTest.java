@@ -3,14 +3,10 @@ package acceptance;
 import static org.junit.Assert.fail;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.zip.DataFormatException;
-
-import org.junit.Test;
-
 
 import com.flagstone.transform.factory.sound.SoundFactory;
 import com.flagstone.transform.movie.Background;

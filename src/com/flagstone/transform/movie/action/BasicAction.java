@@ -34,7 +34,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Types;
 

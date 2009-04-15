@@ -73,6 +73,7 @@ public final class Table implements Action
 		coder.readByte();
 		length = coder.readWord(2, false);
 		tableSize = coder.readWord(2, false);
+		values = new ArrayList<String>(tableSize);
 
 		if (tableSize > 0)
 		{
@@ -121,6 +122,9 @@ public final class Table implements Action
 	 */
 	public void add(String aString)
 	{
+		if (aString == null) {
+			throw new IllegalArgumentException(Strings.STRING_CANNOT_BE_NULL);
+		}
 		values.add(aString);
 	}
 

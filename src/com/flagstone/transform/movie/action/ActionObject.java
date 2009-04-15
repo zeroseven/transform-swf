@@ -57,6 +57,10 @@ public final class ActionObject implements Action
 		}
 	}
 
+	public ActionObject(int type) {
+		this.type = type;
+	}
+
 	public ActionObject(int type, byte[] bytes) {
 		this.type = type;
 		setData(bytes);
@@ -113,7 +117,7 @@ public final class ActionObject implements Action
 	{
 		length = 0;
 		
-		if (data != null) {
+		if (data != null && data.length > 0) {
 			length += data.length;
 		}
 		return ((type > 127) ? 3:1)+ length;
@@ -123,7 +127,7 @@ public final class ActionObject implements Action
 	{
 		coder.writeByte(type);
 		
-		if (data != null) {
+		if (type > 127) {
 			coder.writeWord(data.length, 2);
 			coder.writeBytes(data);		
 		}

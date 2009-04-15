@@ -35,7 +35,6 @@ import com.flagstone.transform.coder.Encoder;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Codeable;
-import com.flagstone.transform.movie.Copyable;
 
 /**
  * <p>

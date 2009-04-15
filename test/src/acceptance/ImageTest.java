@@ -41,8 +41,8 @@ public class ImageTest
     {
         Movie movie = new Movie();
 
-        int xOrigin = ((ImageTag)image).getWidth()/2;
-        int yOrigin = ((ImageTag)image).getHeight()/2;
+        int xOrigin = (image).getWidth()/2;
+        int yOrigin = (image).getHeight()/2;
 
         DefineShape3 shape = ImageFactory.defineEnclosingShape(movie.newIdentifier(), image, -xOrigin, -yOrigin, null);
 

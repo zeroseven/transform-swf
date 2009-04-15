@@ -356,10 +356,9 @@ public final class Layer
 		
 		if (place == null)
 		{
-			place = new Place2();
-			place.setLayer(layerNumber);
-			place.setColorTransform(transform);
-			displayList.add(place);
+			Place2.Builder builder = new Place2.Builder();
+			builder.layer(layerNumber).colorTransform(transform);
+			displayList.add(builder.build());
 		} else
 		{
 			place.setColorTransform(transform);
@@ -377,10 +376,9 @@ public final class Layer
 	{
 		if (place == null)
 		{
-			place = new Place2();
-			place.setLayer(layerNumber);
-			place.setClippingDepth(depth);
-			displayList.add(place);
+			Place2.Builder builder = new Place2.Builder();
+			builder.layer(layerNumber).clippingDepth(depth);
+			displayList.add(builder.build());
 		} else
 		{
 			place.setClippingDepth(depth);
@@ -398,10 +396,9 @@ public final class Layer
 	{
 		if (place == null)
 		{
-			place = new Place2();
-			place.setLayer(layerNumber);
-			place.setRatio((int)(ratio*65535.0f));
-			displayList.add(place);
+			Place2.Builder builder = new Place2.Builder();
+			builder.layer(layerNumber).ratio((int)(ratio*65535.0f));
+			displayList.add(builder.build());
 		} else
 		{
 			place.setRatio((int)(ratio*65535.0f));
@@ -418,10 +415,9 @@ public final class Layer
 	{
 		if (place == null)
 		{
-			place = new Place2();
-			place.setLayer(layerNumber);
-			place.setName(name);
-			displayList.add(place);
+			Place2.Builder builder = new Place2.Builder();
+			builder.layer(layerNumber).name(name);
+			displayList.add(builder.build());
 		} else
 		{
 			place.setName(name);
@@ -451,10 +447,9 @@ public final class Layer
 
 		if (place == null)
 		{
-			place = new Place2();
-			place.setLayer(layerNumber);
-			place.setPlaceType(Place2.Mode.REPLACE);
-			displayList.add(place);
+			Place2.Builder builder = new Place2.Builder();
+			builder.layer(layerNumber).mode(Place2.Mode.REPLACE);
+			displayList.add(builder.build());
 		} else
 		{
 			place.setIdentifier(uid);
@@ -472,10 +467,9 @@ public final class Layer
 	{
 		if (place == null)
 		{
-			place = new Place2();
-			place.setLayer(layerNumber);
-			place.setColorTransform(color);
-			displayList.add(place);
+			Place2.Builder builder = new Place2.Builder();
+			builder.layer(layerNumber).colorTransform(color);
+			displayList.add(builder.build());
 		} else
 		{
 			place.setColorTransform(color);
@@ -497,10 +491,9 @@ public final class Layer
 	{
 		if (place == null)
 		{
-			place = new Place2();
-			place.setLayer(layerNumber);
-			place.setTransform(coord);
-			displayList.add(place);
+			Place2.Builder builder = new Place2.Builder();
+			builder.layer(layerNumber).transform(coord);
+			displayList.add(builder.build());
 		} else
 		{
 			place.setTransform(coord);

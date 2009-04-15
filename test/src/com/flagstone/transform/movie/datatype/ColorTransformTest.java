@@ -29,7 +29,6 @@
  */
 package com.flagstone.transform.movie.datatype;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import com.flagstone.transform.coder.CoderException;
@@ -38,7 +37,6 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
 
@@ -54,252 +52,12 @@ public final class ColorTransformTest
 	private transient SWFEncoder encoder;
 	private transient SWFDecoder decoder;
 	private transient byte[] data;
-    
-    @Test
-    public void checkConstructorForAddTransform()
-    {
-    	fixture = new ColorTransform(1,2,3,4);
-    	
-    	assertEquals(1, fixture.getAddRed());
-    	assertEquals(2, fixture.getAddGreen());
-    	assertEquals(3, fixture.getAddBlue());
-    	assertEquals(4, fixture.getAddAlpha());
-    	assertEquals(1.0f, fixture.getMultiplyRed());
-    	assertEquals(1.0f, fixture.getMultiplyGreen());
-    	assertEquals(1.0f, fixture.getMultiplyBlue());
-    	assertEquals(1.0f, fixture.getMultiplyAlpha());
-    }
-    
-    @Test
-    public void checkConstructorForMultiplyTransform()
-    {
-    	fixture = new ColorTransform(2.0f, 3.0f, 4.0f, 5.0f);
-    	
-    	assertEquals(0, fixture.getAddRed());
-    	assertEquals(0, fixture.getAddGreen());
-    	assertEquals(0, fixture.getAddBlue());
-    	assertEquals(0, fixture.getAddAlpha());
-    	assertEquals(2.0f, fixture.getMultiplyRed());
-    	assertEquals(3.0f, fixture.getMultiplyGreen());
-    	assertEquals(4.0f, fixture.getMultiplyBlue());
-    	assertEquals(5.0f, fixture.getMultiplyAlpha());
-    }
-     
-    @Test
-    public void checkConstructorCreatesCopy()
-    {
-    	fixture = new ColorTransform(2.0f, 3.0f, 4.0f, 5.0f);
-    	fixture.setAddTerms(6, 7, 8, 9);
-    	ColorTransform copy = new ColorTransform(fixture);
-    	
-    	assertEquals(fixture.getAddRed(), copy.getAddRed());
-    	assertEquals(fixture.getAddGreen(), copy.getAddGreen());
-    	assertEquals(fixture.getAddBlue(), copy.getAddBlue());
-    	assertEquals(fixture.getAddAlpha(), copy.getAddAlpha());
-    	assertEquals(fixture.getMultiplyRed(), copy.getMultiplyRed());
-    	assertEquals(fixture.getMultiplyGreen(), copy.getMultiplyGreen());
-    	assertEquals(fixture.getMultiplyBlue(), copy.getMultiplyBlue());
-    	assertEquals(fixture.getMultiplyAlpha(), copy.getMultiplyAlpha());
-    }
 
-    @Test
-    public void checkAccessorsForAddRed()
-    {
-    	fixture.setAddRed(1);
-    	
-    	assertEquals(1, fixture.getAddRed());
-    	assertEquals(0, fixture.getAddGreen());
-    	assertEquals(0, fixture.getAddBlue());
-    	assertEquals(0, fixture.getAddAlpha());
-    	assertEquals(1.0f, fixture.getMultiplyRed());
-    	assertEquals(1.0f, fixture.getMultiplyGreen());
-    	assertEquals(1.0f, fixture.getMultiplyBlue());
-    	assertEquals(1.0f, fixture.getMultiplyAlpha());
-    }
-    
-    @Test
-    public void checkAccessorsForAddGreen()
-    {
-    	fixture.setAddGreen(1);
-    	
-    	assertEquals(0, fixture.getAddRed());
-    	assertEquals(1, fixture.getAddGreen());
-    	assertEquals(0, fixture.getAddBlue());
-    	assertEquals(0, fixture.getAddAlpha());
-    	assertEquals(1.0f, fixture.getMultiplyRed());
-    	assertEquals(1.0f, fixture.getMultiplyGreen());
-    	assertEquals(1.0f, fixture.getMultiplyBlue());
-    	assertEquals(1.0f, fixture.getMultiplyAlpha());
-    }
-    
-    @Test
-    public void checkAccessorsForAddBlue()
-    {
-    	fixture.setAddBlue(1);
-    	
-    	assertEquals(0, fixture.getAddRed());
-    	assertEquals(0, fixture.getAddGreen());
-    	assertEquals(1, fixture.getAddBlue());
-    	assertEquals(0, fixture.getAddAlpha());
-    	assertEquals(1.0f, fixture.getMultiplyRed());
-    	assertEquals(1.0f, fixture.getMultiplyGreen());
-    	assertEquals(1.0f, fixture.getMultiplyBlue());
-    	assertEquals(1.0f, fixture.getMultiplyAlpha());
-    }
-    
-    @Test
-    public void checkAccessorsForAddAlpha()
-    {
-    	fixture.setAddAlpha(1);
-    	
-    	assertEquals(0, fixture.getAddRed());
-    	assertEquals(0, fixture.getAddGreen());
-    	assertEquals(0, fixture.getAddBlue());
-    	assertEquals(1, fixture.getAddAlpha());
-    	assertEquals(1.0f, fixture.getMultiplyRed());
-    	assertEquals(1.0f, fixture.getMultiplyGreen());
-    	assertEquals(1.0f, fixture.getMultiplyBlue());
-    	assertEquals(1.0f, fixture.getMultiplyAlpha());
-    }
-    
-    @Test
-    public void checkAccessorsForAdd()
-    {
-    	fixture.setAddTerms(1,2,3,4);
-    	
-    	assertEquals(1, fixture.getAddRed());
-    	assertEquals(2, fixture.getAddGreen());
-    	assertEquals(3, fixture.getAddBlue());
-    	assertEquals(4, fixture.getAddAlpha());
-    	assertEquals(1.0f, fixture.getMultiplyRed());
-    	assertEquals(1.0f, fixture.getMultiplyGreen());
-    	assertEquals(1.0f, fixture.getMultiplyBlue());
-    	assertEquals(1.0f, fixture.getMultiplyAlpha());
-    }
-    
-    @Test
-    public void checkAccessorsForMultiplyRed()
-    {
-    	fixture.setMultiplyRed(2.0f);
-    	
-    	assertEquals(0, fixture.getAddRed());
-    	assertEquals(0, fixture.getAddGreen());
-    	assertEquals(0, fixture.getAddBlue());
-    	assertEquals(0, fixture.getAddAlpha());
-    	assertEquals(2.0f, fixture.getMultiplyRed());
-    	assertEquals(1.0f, fixture.getMultiplyGreen());
-    	assertEquals(1.0f, fixture.getMultiplyBlue());
-    	assertEquals(1.0f, fixture.getMultiplyAlpha());
-    }
-    
-    @Test
-    public void checkAccessorsForMultiplyGreen()
-    {
-    	fixture.setMultiplyGreen(2.0f);
-    	
-    	assertEquals(0, fixture.getAddRed());
-    	assertEquals(0, fixture.getAddGreen());
-    	assertEquals(0, fixture.getAddBlue());
-    	assertEquals(0, fixture.getAddAlpha());
-    	assertEquals(1.0f, fixture.getMultiplyRed());
-    	assertEquals(2.0f, fixture.getMultiplyGreen());
-    	assertEquals(1.0f, fixture.getMultiplyBlue());
-    	assertEquals(1.0f, fixture.getMultiplyAlpha());
-    }
-    
-    @Test
-    public void checkAccessorsForMultiplyBlue()
-    {
-    	fixture.setMultiplyBlue(2.0f);
-    	
-    	assertEquals(0, fixture.getAddRed());
-    	assertEquals(0, fixture.getAddGreen());
-    	assertEquals(0, fixture.getAddBlue());
-    	assertEquals(0, fixture.getAddAlpha());
-    	assertEquals(1.0f, fixture.getMultiplyRed());
-    	assertEquals(1.0f, fixture.getMultiplyGreen());
-    	assertEquals(2.0f, fixture.getMultiplyBlue());
-    	assertEquals(1.0f, fixture.getMultiplyAlpha());
-    }
-    
-    @Test
-    public void checkAccessorsForMultiplyAlpha()
-    {
-    	fixture.setMultiplyAlpha(2.0f);
-    	
-    	assertEquals(0, fixture.getAddRed());
-    	assertEquals(0, fixture.getAddGreen());
-    	assertEquals(0, fixture.getAddBlue());
-    	assertEquals(0, fixture.getAddAlpha());
-    	assertEquals(1.0f, fixture.getMultiplyRed());
-    	assertEquals(1.0f, fixture.getMultiplyGreen());
-    	assertEquals(1.0f, fixture.getMultiplyBlue());
-    	assertEquals(2.0f, fixture.getMultiplyAlpha());
-    }
-    
-    @Test
-    public void checkAccessorsForMultiply()
-    {
-    	fixture.setMultiplyTerms(2.0f,3.0f,4.0f,5.0f);
-    	
-    	assertEquals(0, fixture.getAddRed());
-    	assertEquals(0, fixture.getAddGreen());
-    	assertEquals(0, fixture.getAddBlue());
-    	assertEquals(0, fixture.getAddAlpha());
-    	assertEquals(2.0f, fixture.getMultiplyRed());
-    	assertEquals(3.0f, fixture.getMultiplyGreen());
-    	assertEquals(4.0f, fixture.getMultiplyBlue());
-    	assertEquals(5.0f, fixture.getMultiplyAlpha());
-    }
-        
-    @Test
-    public void checkCopiesAreEqual()
-    {
-    	fixture = new ColorTransform(1.0f, 2.0f, 3.0f, 4.0f);
-    	fixture.setAddTerms(5, 6, 7, 8);
-    	ColorTransform copy = new ColorTransform(fixture);
-    	
-    	assertEquals(fixture.getAddRed(), copy.getAddRed());
-    	assertEquals(fixture.getAddGreen(), copy.getAddGreen());
-    	assertEquals(fixture.getAddBlue(), copy.getAddBlue());
-    	assertEquals(fixture.getAddAlpha(), copy.getAddAlpha());
-    	assertEquals(fixture.getMultiplyRed(), copy.getMultiplyRed());
-    	assertEquals(fixture.getMultiplyGreen(), copy.getMultiplyGreen());
-    	assertEquals(fixture.getMultiplyBlue(), copy.getMultiplyBlue());
-    	assertEquals(fixture.getMultiplyAlpha(), copy.getMultiplyAlpha());
-    }
-    
-    @Test
-    public void checkCopiesAreNotSame()
-    {
-    	fixture = new ColorTransform(1, 2, 3, 4);
-    	
-    	assertNotSame(fixture, fixture.copy());
-    }
-	
-	@Test
-	public void checkToStringCompletesFormat() {
-		assertFalse(fixture.toString().contains("%"));
-	}
- 
-    @Test
-    public void encodeUnityTransform() throws CoderException
-    {
-    	data = new byte[] { 4 };   	
-    	encoder.setData(data.length);
-     	
-    	assertEquals(1, fixture.prepareToEncode(encoder));
-    	fixture.encode(encoder);
-    	
-    	assertEquals(8, encoder.getPointer());
-    	assertArrayEquals(data, encoder.getData());
-    }
-    
     @Test
     public void encodeMultiplyWithoutAlpha() throws CoderException
     {
     	data = new byte[] { 108, -128, 32, 6, 0};   	
-    	encoder.setData(data.length);
+    	encoder = new SWFEncoder(data.length);
      	
     	fixture = new ColorTransform(1.0f,2.0f,3.0f,4.0f);
     	
@@ -314,7 +72,7 @@ public final class ColorTransformTest
     public void encodeMultiplyWithAlpha() throws CoderException
     {
     	data = new byte[] { 112, 64, 8, 0, -64, 16, 0};   	
-    	encoder.setData(data.length);
+    	encoder = new SWFEncoder(data.length);
     	encoder.getContext().setTransparent(true);
     	
     	fixture = new ColorTransform(1.0f,2.0f,3.0f,4.0f);
@@ -329,7 +87,7 @@ public final class ColorTransformTest
     public void encodeAddWithoutAlpha() throws CoderException
     {
     	data = new byte[] { -116, -90};   	
-    	encoder.setData(data.length);
+    	encoder = new SWFEncoder(data.length);
      	
     	fixture = new ColorTransform(1,2,3,4);
     	
@@ -344,7 +102,7 @@ public final class ColorTransformTest
     public void encodeAddWithAlpha() throws CoderException
     {
     	data = new byte[] { -112, 72, -48};   	
-    	encoder.setData(data.length);
+    	encoder = new SWFEncoder(data.length);
     	encoder.getContext().setTransparent(true);
     	
     	fixture = new ColorTransform(1,2,3,4);
@@ -359,7 +117,7 @@ public final class ColorTransformTest
     public void encodeWithoutAlpha() throws CoderException
     {
     	data = new byte[] { -20, -128, 32, 6, 0, 0, 64, 16, 3};   	
-    	encoder.setData(data.length);
+    	encoder = new SWFEncoder(data.length);
      	
     	fixture = new ColorTransform(1.0f,2.0f,3.0f,4.0f);
     	fixture.setAddTerms(1,2,3,4);
@@ -375,7 +133,7 @@ public final class ColorTransformTest
     public void encodeWithAlpha() throws CoderException
     {
     	data = new byte[] { -16, 64, 8, 0, -64, 16, 0, 0, 64, 8, 0, -64, 16};   	
-    	encoder.setData(data.length);
+    	encoder = new SWFEncoder(data.length);
     	encoder.getContext().setTransparent(true);
     	
     	fixture = new ColorTransform(1.0f,2.0f,3.0f,4.0f);
@@ -392,7 +150,7 @@ public final class ColorTransformTest
     public void decodeMultiplyWithoutAlpha() throws CoderException
     {
     	data = new byte[] { 108, -128, 32, 6, 0};   	
-    	decoder.setData(data);
+    	decoder = new SWFDecoder(data);
      	
        	fixture = new ColorTransform(decoder);
             	
@@ -407,7 +165,7 @@ public final class ColorTransformTest
     public void decodeMultiplyWithAlpha() throws CoderException
     {
     	data = new byte[] { 112, 64, 8, 0, -64, 16, 0};   	
-    	decoder.setData(data);
+    	decoder = new SWFDecoder(data);
      	decoder.getContext().setTransparent(true);
      	
     	fixture = new ColorTransform(decoder);
@@ -423,7 +181,7 @@ public final class ColorTransformTest
     public void decodeAddWithoutAlpha() throws CoderException
     {
     	data = new byte[] { -116, -90};   	
-    	decoder.setData(data);
+    	decoder = new SWFDecoder(data);
      	
        	fixture = new ColorTransform(decoder);
             	
@@ -438,7 +196,7 @@ public final class ColorTransformTest
     public void decodeAddWithAlpha() throws CoderException
     {
     	data = new byte[] { -112, 72, -48};   	
-    	decoder.setData(data);
+    	decoder = new SWFDecoder(data);
     	decoder.getContext().setTransparent(true);
     	
        	fixture = new ColorTransform(decoder);
@@ -454,7 +212,7 @@ public final class ColorTransformTest
     public void decodeWithoutAlpha() throws CoderException
     {
     	data = new byte[] { -20, -128, 32, 6, 0, 0, 64, 16, 3};   	
-    	decoder.setData(data);
+    	decoder = new SWFDecoder(data);
 
        	fixture = new ColorTransform(decoder);
         
@@ -473,7 +231,7 @@ public final class ColorTransformTest
     public void decodeWithAlpha() throws CoderException
     {
     	data = new byte[] { -16, 64, 8, 0, -64, 16, 0, 0, 64, 8, 0, -64, 16};   	
-    	decoder.setData(data);
+    	decoder = new SWFDecoder(data);
     	decoder.getContext().setTransparent(true);
      	
        	fixture = new ColorTransform(decoder);

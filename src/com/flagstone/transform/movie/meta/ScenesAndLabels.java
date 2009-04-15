@@ -34,6 +34,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.LittleEndianEncoder;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.MovieTag;
@@ -145,16 +146,16 @@ public final class ScenesAndLabels implements MovieTag {
 
 	public int prepareToEncode(final SWFEncoder coder) {
 		
-		length = SWFEncoder.sizeVariableU32(scenes.size());
+		length = LittleEndianEncoder.sizeVariableU32(scenes.size());
 		
 		for (Integer offset : scenes.keySet()) {
-			length += SWFEncoder.sizeVariableU32(offset) + coder.strlen(scenes.get(offset));
+			length += LittleEndianEncoder.sizeVariableU32(offset) + coder.strlen(scenes.get(offset));
 		}
 
-		length += SWFEncoder.sizeVariableU32(labels.size());
+		length += LittleEndianEncoder.sizeVariableU32(labels.size());
 
 		for (Integer offset : labels.keySet()) {
-			length += SWFEncoder.sizeVariableU32(offset) + coder.strlen(labels.get(offset));
+			length += LittleEndianEncoder.sizeVariableU32(offset) + coder.strlen(labels.get(offset));
 		}
 
 		return (length > 62 ? 6:2) + length;

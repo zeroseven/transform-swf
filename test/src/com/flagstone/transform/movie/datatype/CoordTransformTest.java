@@ -31,7 +31,6 @@ package com.flagstone.transform.movie.datatype;
 
 import java.util.Arrays;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import com.flagstone.transform.coder.CoderException;
@@ -101,14 +100,6 @@ public final class CoordTransformTest {
 	}
 
 	@Test
-	public void checkDefaultConstructor() {
-		float[][] expected = new float[][] { { 1.0f, 0.0f, 0.0f },
-				{ 0.0f, 1.0f, 0.0f }, { 0.0f, 0.0f, 1.0f } };
-
-		compare(expected, fixture.getMatrix());
-	}
-
-	@Test
 	public void checkConstructorSetsOnlyTranslation() {
 		int xCoord = 100;
 		int yCoord = 200;
@@ -122,16 +113,11 @@ public final class CoordTransformTest {
 	}
 
 	@Test
-	public void checkDefaultConstructorIsUnityTransform() {
-		assertTrue(fixture.isUnityTransform());
-	}
-
-	@Test
 	public void checkConstructorCreatesCopy() {
 		float[][] expected = new float[][] { { 1.0f, 2.0f, 3.0f },
 				{ 4.0f, 5.0f, 6.0f }, { 0.0f, 0.0f, 1.0f } };
 
-		fixture.setMatrix(expected);
+		fixture = new CoordTransform(expected);
 		
 		compare(expected, new CoordTransform(fixture).getMatrix());
 	}
@@ -141,39 +127,9 @@ public final class CoordTransformTest {
 		float[][] expected = new float[][] { { 1.0f, 0.0f, 0.0f },
 				{ 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 1.0f } };
 
-		fixture.setMatrix(expected);
+		fixture = new CoordTransform(expected);
 
 		assertFalse(fixture.isUnityTransform());
-	}
-
-	@Test
-	public void checkSetScale() {
-		float[][] expected = new float[][] { { 2.0f, 0.0f, 0.0f },
-				{ 0.0f, 3.0f, 0.0f }, { 0.0f, 0.0f, 1.0f } };
-
-		fixture.setScale(2.0f, 3.0f);
-
-		compare(expected, fixture.getMatrix());
-	}
-
-	@Test
-	public void checkSetShear() {
-		float[][] expected = new float[][] { { 1.0f, 3.0f, 0.0f },
-				{ 2.0f, 1.0f, 0.0f }, { 0.0f, 0.0f, 1.0f } };
-
-		fixture.setShear(2.0f, 3.0f);
-
-		compare(expected, fixture.getMatrix());
-	}
-
-	@Test
-	public void checkSetTranslation() {
-		float[][] expected = new float[][] { { 1.0f, 0.0f, 1.0f },
-				{ 0.0f, 1.0f, 2.0f }, { 0.0f, 0.0f, 1.0f } };
-
-		fixture.setTranslate(1, 2);
-
-		compare(expected, fixture.getMatrix());
 	}
 
 	@Test
@@ -181,14 +137,9 @@ public final class CoordTransformTest {
 		float[][] expected = new float[][] { { 1.0f, 2.0f, 3.0f },
 				{ 4.0f, 5.0f, 6.0f }, { 0.0f, 0.0f, 1.0f } };
 
-		fixture.setMatrix(expected);
+		fixture = new CoordTransform(expected);
 
 		compare(expected, new CoordTransform(fixture).getMatrix());
-	}
-	
-	@Test
-	public void checkToStringCompletesFormat() {
-		assertFalse(fixture.toString().contains("%"));
 	}
 
 	@Test
@@ -196,10 +147,10 @@ public final class CoordTransformTest {
 		int xCoord = 1;
 		int yCoord = 2;
 
-		fixture.setTranslate(xCoord, yCoord);
+		fixture = CoordTransform.translate(xCoord, yCoord);
 
 		data = new byte[] { 6, 80 };
-		encoder.setData(data.length);
+		SWFEncoder encoder = new SWFEncoder(data.length);
 
 		assertEquals(2, fixture.prepareToEncode(encoder));
 		fixture.encode(encoder);
@@ -213,10 +164,10 @@ public final class CoordTransformTest {
 		float scaleX = 1.0f;
 		float scaleY = 2.0f;
 
-		fixture.setScale(scaleX, scaleY);
+		fixture = CoordTransform.scale(scaleX, scaleY);
 
 		data = new byte[] { -52, -128, 0, 32, 0, 0, 64 };
-		encoder.setData(data.length);
+		SWFEncoder encoder = new SWFEncoder(data.length);
 
 		assertEquals(7, fixture.prepareToEncode(encoder));
 		fixture.encode(encoder);
@@ -230,10 +181,10 @@ public final class CoordTransformTest {
 		float shearX = 1.0f;
 		float shearY = 2.0f;
 
-		fixture.setShear(shearX, shearY);
+		fixture = CoordTransform.shear(shearX, shearY);
 
 		data = new byte[] { 102, 64, 0, 16, 0, 0, 64 };
-		encoder.setData(data.length);
+		SWFEncoder encoder = new SWFEncoder(data.length);
 
 		assertEquals(7, fixture.prepareToEncode(encoder));
 		fixture.encode(encoder);
@@ -247,10 +198,10 @@ public final class CoordTransformTest {
 		float[][] matrix = new float[][] { { 1.0f, 4.0f, 0.0f },
 				{ 3.0f, 2.0f, 0.0f }, { 0.0f, 0.0f, 1.0f } };
 
-		fixture.setMatrix(matrix);
+		fixture = new CoordTransform(matrix);
 
 		data = new byte[] { -52, -128, 0, 32, 0, 13, 12, 0, 1, 0, 0, 2, 0 };
-		encoder.setData(data.length);
+		SWFEncoder encoder = new SWFEncoder(data.length);
 
 		assertEquals(13, fixture.prepareToEncode(encoder));
 		fixture.encode(encoder);
@@ -265,7 +216,7 @@ public final class CoordTransformTest {
 		int yCoord = 2;
 
 		data = new byte[] { 6, 80 };
-		decoder.setData(data);
+		SWFDecoder decoder = new SWFDecoder(data);
 
 		fixture = new CoordTransform(decoder);
 
@@ -280,7 +231,7 @@ public final class CoordTransformTest {
 		float scaleY = 2.0f;
 
 		data = new byte[] { -52, -128, 0, 32, 0, 0, 64 };
-		decoder.setData(data);
+		SWFDecoder decoder = new SWFDecoder(data);
 
 		fixture = new CoordTransform(decoder);
 
@@ -295,7 +246,7 @@ public final class CoordTransformTest {
 		float shearY = 2.0f;
 
 		data = new byte[] { 102, 64, 0, 16, 0, 0, 64 };
-		decoder.setData(data);
+		SWFDecoder decoder = new SWFDecoder(data);
 
 		fixture = new CoordTransform(decoder);
 
@@ -310,7 +261,7 @@ public final class CoordTransformTest {
 				{ 3.0f, 2.0f, 0.0f }, { 0.0f, 0.0f, 1.0f } };
 
 		data = new byte[] { -52, -128, 0, 32, 0, 13, 12, 0, 1, 0, 0, 2, 0 };
-		decoder.setData(data);
+		SWFDecoder decoder = new SWFDecoder(data);
 
 		fixture = new CoordTransform(decoder);
 

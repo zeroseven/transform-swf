@@ -207,14 +207,14 @@ public final class CoordTransform implements Codeable, Copyable<CoordTransform> 
 		coder.alignToByte();
 	}
 
+	public CoordTransform(final float[][] matrix) {
+		setMatrix(matrix);
+	}
 
-	public CoordTransform(final float scaleX, final float scaleY, final float shearX, final float shearY, final int translateX, final int translateY) {
-		this.scaleX = (int) (scaleX * 65536);
-		this.scaleY = (int) (scaleY * 65536);
-		this.shearX = (int) (shearX * 65536);
-		this.shearY = (int) (shearY * 65536);
-		this.translateX = translateX;
-		this.translateY = translateY;
+	public CoordTransform(final float scaleX, final float scaleY, final float shearX, final float shearY, final int xCoord, final int yCoord) {
+		setScale(scaleX, scaleY);
+		setShear(shearX, shearY);
+		setTranslate(xCoord, yCoord);
 	}
 
 	/**

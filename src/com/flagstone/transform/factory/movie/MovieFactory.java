@@ -77,9 +77,10 @@ public final class MovieFactory implements SWFFactory<MovieTag> {
 
 		MovieTag obj;
 
-		switch (coder.scanByte()) {
+		switch (coder.scanUnsignedShort() >>> 6) {
 		case Types.SHOW_FRAME:
 			obj = ShowFrame.getInstance();
+			coder.adjustPointer(16);
 			break;
 		case Types.DEFINE_SHAPE:
 			obj = new DefineShape(coder);
@@ -185,6 +186,7 @@ public final class MovieFactory implements SWFFactory<MovieTag> {
 			break;
 		case Types.PATHS_ARE_POSTSCRIPT:
 			obj = PathsArePostscript.getInstance();
+			coder.adjustPointer(16);
 			break;
 		case Types.DEFINE_TEXT_FIELD:
 			obj = new DefineTextField(coder);

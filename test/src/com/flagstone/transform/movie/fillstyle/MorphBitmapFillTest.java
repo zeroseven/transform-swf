@@ -46,7 +46,7 @@ import static org.junit.Assert.assertArrayEquals;
 	"PMD.JUnitAssertionsShouldIncludeMessage" })
 public final class MorphBitmapFillTest {
 	
-	private transient final int type = MorphBitmapFill.CLIPPED;
+	private transient final int type = FillStyle.CLIPPED;
 	private transient final int identifier = 1;
 	private transient final CoordTransform start = 
 		CoordTransform.translate(1,2);

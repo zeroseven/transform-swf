@@ -78,8 +78,6 @@ public final class Import2 implements MovieTag {
 
 	public Import2(final SWFDecoder coder) throws CoderException {
 		
-		objects.clear();
-
 		length = coder.readWord(2, false) & 0x3F;
 
 		if (length == 0x3F) {

@@ -159,7 +159,7 @@ public final class With implements Action
 	{
 		coder.writeWord(Types.WITH, 1);
 		coder.writeWord(2, 2);
-		coder.writeWord(length, 2);
+		coder.writeWord(length-2, 2);
 
 		Iterator<Action> iAction = actions.iterator();
 		

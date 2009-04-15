@@ -129,10 +129,7 @@ public final class ColorTransform implements Codeable, Copyable<ColorTransform> 
 			multiplyRed = coder.readBits(size, true);
 			multiplyGreen = coder.readBits(size, true);
 			multiplyBlue = coder.readBits(size, true);
-
-			if (hasAlpha) {
-				multiplyAlpha = coder.readBits(size, true);
-			}
+			multiplyAlpha = hasAlpha ? coder.readBits(size, true) : 256;
 		} else {
 			multiplyRed = 256;
 			multiplyGreen = 256;
@@ -148,11 +145,6 @@ public final class ColorTransform implements Codeable, Copyable<ColorTransform> 
 			if (hasAlpha) {
 				addAlpha = coder.readBits(size, true);
 			}
-		} else {
-			addRed = 0;
-			addGreen = 0;
-			addBlue = 0;
-			addAlpha = 0;
 		}
 
 		coder.alignToByte();

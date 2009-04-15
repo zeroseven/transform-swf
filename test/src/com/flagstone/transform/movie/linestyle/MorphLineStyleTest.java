@@ -31,6 +31,7 @@ package com.flagstone.transform.movie.linestyle;
 
 import org.junit.Test;
 
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertEquals;
@@ -39,8 +40,6 @@ import static org.junit.Assert.assertArrayEquals;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.movie.DefineData;
-import com.flagstone.transform.movie.Types;
 import com.flagstone.transform.movie.datatype.Color;
 
 @SuppressWarnings( { 
@@ -50,15 +49,15 @@ import com.flagstone.transform.movie.datatype.Color;
 public final class MorphLineStyleTest {
 	
 	private transient final int startWidth = 1;
-	private transient final Color startColor = new Color(2,3,4);
-	private transient final int endWidth = 5;
-	private transient final Color endColor = new Color(6,7,8);
+	private transient final Color startColor = new Color(2,3,4,5);
+	private transient final int endWidth = 6;
+	private transient final Color endColor = new Color(7,8,9,10);
 	
 	private transient MorphLineStyle fixture;
 	
 	private transient final byte[] encoded = new byte[] { 
-			0x01, 0x00, 0x05, 0x00, 
-			0x02, 0x03, 0x04, 0x06, 0x07, 0x08 };
+			0x01, 0x00, 0x06, 0x00, 
+			0x02, 0x03, 0x04, 0x05, 0x07, 0x08, 0x09, 0x0A };
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForStartWidthWithLowerBound() {
@@ -96,14 +95,15 @@ public final class MorphLineStyleTest {
 		MorphLineStyle copy = fixture.copy();
 
 		assertNotSame(fixture, copy);
-		assertNotSame(fixture.getStartColor(), copy.getStartColor());
-		assertNotSame(fixture.getEndColor(), copy.getEndColor());
+		assertSame(fixture.getStartColor(), copy.getStartColor());
+		assertSame(fixture.getEndColor(), copy.getEndColor());
 		assertEquals(fixture.toString(), copy.toString());
 	}
 	
 	@Test
 	public void encode() throws CoderException {		
 		SWFEncoder encoder = new SWFEncoder(encoded.length);		
+		encoder.getContext().setTransparent(true);
 		
 		fixture = new MorphLineStyle(startWidth, endWidth, startColor, endColor);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder));
@@ -116,6 +116,7 @@ public final class MorphLineStyleTest {
 	@Test
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
+		decoder.getContext().setTransparent(true);
 		
 		fixture = new MorphLineStyle(decoder);
 		

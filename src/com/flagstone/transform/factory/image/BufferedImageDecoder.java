@@ -30,7 +30,6 @@ import com.flagstone.transform.movie.ImageTag;
 import com.flagstone.transform.movie.Strings;
 import com.flagstone.transform.movie.image.DefineImage;
 import com.flagstone.transform.movie.image.DefineImage2;
-import com.flagstone.transform.movie.image.DefineJPEGImage2;
 
 /**
  * BufferedImageDecoder decodes BufferedImages so they can be used in a Flash file.

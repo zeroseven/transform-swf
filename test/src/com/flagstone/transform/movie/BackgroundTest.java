@@ -31,6 +31,7 @@ package com.flagstone.transform.movie;
 
 import org.junit.Test;
 
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertEquals;
@@ -68,7 +69,7 @@ public final class BackgroundTest {
 		fixture = new Background(color);
 		Background copy = fixture.copy();
 
-		assertNotSame(fixture.getColor(), copy.getColor());
+		assertSame(fixture.getColor(), copy.getColor());
 		assertEquals(fixture.toString(), copy.toString());
 	}
 	

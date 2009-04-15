@@ -36,7 +36,6 @@ import java.util.List;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.movie.Place2.Builder;
 import com.flagstone.transform.movie.Place2.Mode;
 import com.flagstone.transform.movie.datatype.ColorTransform;
 import com.flagstone.transform.movie.datatype.CoordTransform;

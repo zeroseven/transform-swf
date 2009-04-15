@@ -34,7 +34,6 @@ import org.junit.Test;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.movie.datatype.Bounds;
 import com.flagstone.transform.movie.datatype.CoordTransform;
 
 import static org.junit.Assert.assertTrue;
@@ -47,7 +46,7 @@ import static org.junit.Assert.assertArrayEquals;
 	"PMD.JUnitAssertionsShouldIncludeMessage" })
 public final class BitmapFillTest {
 	
-	private transient final int type = BitmapFill.CLIPPED;
+	private transient final int type = FillStyle.CLIPPED;
 	private transient final int identifier = 1;
 	private transient final CoordTransform transform = 
 		CoordTransform.translate(1,2);

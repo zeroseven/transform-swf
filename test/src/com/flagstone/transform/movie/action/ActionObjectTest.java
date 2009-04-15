@@ -39,7 +39,6 @@ import static org.junit.Assert.assertArrayEquals;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.movie.action.ActionData;
 
 @SuppressWarnings( { 
 	"PMD.LocalVariableCouldBeFinal",
@@ -90,7 +89,7 @@ public final class ActionObjectTest {
 	public void encodeBasic() throws CoderException {		
 		SWFEncoder encoder = new SWFEncoder(basic.length);		
 		
-		fixture = new ActionObject(type, new byte[0]);
+		fixture = new ActionObject(1);
 		assertEquals(basic.length, fixture.prepareToEncode(encoder));
 		fixture.encode(encoder);
 		

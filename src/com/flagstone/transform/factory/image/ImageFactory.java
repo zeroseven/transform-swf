@@ -259,8 +259,8 @@ public final class ImageFactory
      */
     public static DefineShape3 defineEnclosingShape(int identifier, ImageTag image, int xOrigin, int yOrigin, LineStyle borderStyle)
     {
-    	int width = ((ImageTag)image).getWidth();
-    	int height = ((ImageTag)image).getHeight();
+    	int width = (image).getWidth();
+    	int height = (image).getHeight();
         int lineWidth = 0;
                 
         if (borderStyle != null) {

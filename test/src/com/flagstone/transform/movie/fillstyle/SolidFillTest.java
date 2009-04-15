@@ -31,6 +31,7 @@ package com.flagstone.transform.movie.fillstyle;
 
 import org.junit.Test;
 
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertEquals;
@@ -39,8 +40,6 @@ import static org.junit.Assert.assertArrayEquals;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.movie.DefineData;
-import com.flagstone.transform.movie.Types;
 import com.flagstone.transform.movie.datatype.Color;
 
 @SuppressWarnings( { 
@@ -67,7 +66,7 @@ public final class SolidFillTest {
 		SolidFill copy = fixture.copy();
 
 		assertNotSame(fixture, copy);
-		assertNotSame(fixture.getColor(), copy.getColor());
+		assertSame(fixture.getColor(), copy.getColor());
 		assertEquals(fixture.toString(), copy.toString());
 	}
 	

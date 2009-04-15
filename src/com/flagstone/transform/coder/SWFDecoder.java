@@ -36,7 +36,6 @@ import com.flagstone.transform.factory.movie.MovieFactory;
 import com.flagstone.transform.factory.movie.SWFFactory;
 import com.flagstone.transform.movie.MovieTag;
 import com.flagstone.transform.movie.action.Action;
-import com.flagstone.transform.movie.datatype.Color;
 import com.flagstone.transform.movie.fillstyle.FillStyle;
 
 /**

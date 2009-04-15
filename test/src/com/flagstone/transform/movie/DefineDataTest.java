@@ -39,7 +39,6 @@ import static org.junit.Assert.assertArrayEquals;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.movie.action.ActionData;
 
 @SuppressWarnings( { 
 	"PMD.LocalVariableCouldBeFinal",
@@ -97,18 +96,6 @@ public final class DefineDataTest {
 		
 		assertTrue(encoder.eof());
 		assertArrayEquals(encoded, encoder.getData());
-	}
-	
-	@Test
-	public void encodeDefault() throws CoderException {		
-		SWFEncoder encoder = new SWFEncoder(empty.length);		
-		
-		fixture = new DefineData(identifier, data);
-		assertEquals(empty.length, fixture.prepareToEncode(encoder));
-		fixture.encode(encoder);
-		
-		assertTrue(encoder.eof());
-		assertArrayEquals(empty, encoder.getData());
 	}
 	
 	@Test

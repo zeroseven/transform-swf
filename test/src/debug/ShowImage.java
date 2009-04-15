@@ -5,7 +5,6 @@ import com.flagstone.transform.factory.image.ImageFactory;
 import com.flagstone.transform.movie.Background;
 import com.flagstone.transform.movie.ImageTag;
 import com.flagstone.transform.movie.Movie;
-import com.flagstone.transform.movie.MovieTag;
 import com.flagstone.transform.movie.Place2;
 import com.flagstone.transform.movie.ShowFrame;
 import com.flagstone.transform.movie.datatype.Bounds;
@@ -27,8 +26,8 @@ public final class ShowImage
         	movie = new Movie();
         	ImageTag image = ImageFactory.defineImage(movie.newIdentifier(), sourceFile);
 
-            int imageWidth = ((ImageTag)image).getWidth();
-            int imageHeight = ((ImageTag)image).getHeight();
+            int imageWidth = (image).getWidth();
+            int imageHeight = (image).getHeight();
             int screenWidth = imageWidth*20;
             int screenHeight = imageHeight*20;
 

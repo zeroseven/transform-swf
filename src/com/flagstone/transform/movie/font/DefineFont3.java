@@ -42,7 +42,6 @@ import com.flagstone.transform.movie.Strings;
 import com.flagstone.transform.movie.Types;
 import com.flagstone.transform.movie.datatype.Bounds;
 import com.flagstone.transform.movie.shape.Shape;
-import com.flagstone.transform.movie.shape.ShapeRecord;
 import com.flagstone.transform.movie.text.TextFormat;
 
 /**

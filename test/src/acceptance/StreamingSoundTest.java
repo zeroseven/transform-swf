@@ -1,7 +1,6 @@
 package acceptance;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 
 import java.util.Iterator;
@@ -16,8 +15,6 @@ import com.flagstone.transform.movie.MovieTag;
 import com.flagstone.transform.movie.ShowFrame;
 import com.flagstone.transform.movie.datatype.Bounds;
 import com.flagstone.transform.movie.datatype.ColorTable;
-
-import org.junit.Test;
 
 import static org.junit.Assert.fail;
 

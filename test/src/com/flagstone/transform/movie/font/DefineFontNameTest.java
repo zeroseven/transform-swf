@@ -41,53 +41,48 @@ import static org.junit.Assert.assertArrayEquals;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.movie.action.ActionData;
 
-@SuppressWarnings( { 
-	"PMD.LocalVariableCouldBeFinal",
-	"PMD.JUnitAssertionsShouldIncludeMessage" 
-})
+@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
+		"PMD.JUnitAssertionsShouldIncludeMessage" })
 public final class DefineFontNameTest {
-	
+
 	private transient final int identifier = 1;
 	private transient final String name = "font";
 	private transient final String copyright = "copyright";
-	
+
 	private transient DefineFontName fixture;
-	
-	private transient final byte[] empty = new byte[] { (byte)0x04, 0x16, 
-			0x00, 0x00, 0x00, 0x00};
 
-	private transient final byte[] encoded = new byte[] { (byte)0x11, 0x16, 
-			0x01, 0x00, 0x66, 0x6F, 0x6E, 0x74, 0x00, 
-			0x63, 0x6F, 0x70, 0x79, 0x72, 0x69, 0x67, 0x68, 0x74, 0x00};
-	
-	private transient final byte[] extended = new byte[] { (byte)0x3F, 0x16, 
-			0x11, 0x00, 0x00, 0x00, 0x01, 0x00, 
-			0x66, 0x6F, 0x6E, 0x74, 0x00, 
-			0x63, 0x6F, 0x70, 0x79, 0x72, 0x69, 0x67, 0x68, 0x74, 0x00
-			};
+	private transient final byte[] empty = new byte[] { (byte) 0x04, 0x16,
+			0x00, 0x00, 0x00, 0x00 };
 
-	@Test(expected=IllegalArgumentException.class)
+	private transient final byte[] encoded = new byte[] { (byte) 0x11, 0x16,
+			0x01, 0x00, 0x66, 0x6F, 0x6E, 0x74, 0x00, 0x63, 0x6F, 0x70, 0x79,
+			0x72, 0x69, 0x67, 0x68, 0x74, 0x00 };
+
+	private transient final byte[] extended = new byte[] { (byte) 0x3F, 0x16,
+			0x11, 0x00, 0x00, 0x00, 0x01, 0x00, 0x66, 0x6F, 0x6E, 0x74, 0x00,
+			0x63, 0x6F, 0x70, 0x79, 0x72, 0x69, 0x67, 0x68, 0x74, 0x00 };
+
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForIdentifierWithLowerBound() {
 		fixture = new DefineFontName(0, name, copyright);
 	}
 
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForIdentifierWithUpperBound() {
 		fixture = new DefineFontName(65536, name, copyright);
 	}
 
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForNameWithNull() {
-		fixture = new DefineFontName(identifier, name, copyright);
+		fixture = new DefineFontName(identifier, null, copyright);
 	}
-	
-	@Test(expected=IllegalArgumentException.class)
+
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForCopyrightWithNull() {
 		fixture = new DefineFontName(identifier, name, null);
 	}
-	
+
 	@Test
 	public void checkCopy() {
 		fixture = new DefineFontName(identifier, name, copyright);
@@ -99,52 +94,52 @@ public final class DefineFontNameTest {
 		assertEquals(fixture.getCopyright(), copy.getCopyright());
 		assertEquals(fixture.toString(), copy.toString());
 	}
-	
+
 	@Test
-	public void encode() throws CoderException {		
-		SWFEncoder encoder = new SWFEncoder(encoded.length);		
-		
+	public void encode() throws CoderException {
+		SWFEncoder encoder = new SWFEncoder(encoded.length);
+
 		fixture = new DefineFontName(identifier, name, copyright);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder));
 		fixture.encode(encoder);
-		
+
 		assertTrue(encoder.eof());
 		assertArrayEquals(encoded, encoder.getData());
 	}
-	
+
 	@Test
 	public void encodeExtended() throws CoderException {
 
 		SWFEncoder encoder = new SWFEncoder(114);
-		
+
 		char[] chars = new char[100];
 		Arrays.fill(chars, 'a');
-		
+
 		fixture = new DefineFontName(identifier, name, new String(chars));
-		assertEquals(114, fixture.prepareToEncode(encoder));		
+		assertEquals(114, fixture.prepareToEncode(encoder));
 		fixture.encode(encoder);
-		
+
 		assertTrue(encoder.eof());
 	}
-	
+
 	@Test
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
-		
+
 		fixture = new DefineFontName(decoder);
-		
+
 		assertTrue(decoder.eof());
 		assertEquals(identifier, fixture.getIdentifier());
 		assertEquals(name, fixture.getName());
 		assertEquals(copyright, fixture.getCopyright());
 	}
-	
+
 	@Test
 	public void decodeExtended() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(extended);
-		
+
 		fixture = new DefineFontName(decoder);
-		
+
 		assertTrue(decoder.eof());
 		assertEquals(identifier, fixture.getIdentifier());
 		assertEquals(name, fixture.getName());

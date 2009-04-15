@@ -31,6 +31,7 @@ package com.flagstone.transform.movie.linestyle;
 
 import org.junit.Test;
 
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertEquals;
@@ -39,8 +40,6 @@ import static org.junit.Assert.assertArrayEquals;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.movie.DefineData;
-import com.flagstone.transform.movie.Types;
 import com.flagstone.transform.movie.datatype.Color;
 
 @SuppressWarnings( { 
@@ -64,7 +63,7 @@ public final class LineStyleTest {
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForWidthWithUpperBound() {
-		fixture = new LineStyle(65535, color);
+		fixture = new LineStyle(65536, color);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
@@ -78,7 +77,7 @@ public final class LineStyleTest {
 		LineStyle copy = fixture.copy();
 
 		assertNotSame(fixture, copy);
-		assertNotSame(fixture.getColor(), copy.getColor());
+		assertSame(fixture.getColor(), copy.getColor());
 		assertEquals(fixture.toString(), copy.toString());
 	}
 	

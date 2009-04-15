@@ -31,7 +31,6 @@
 package com.flagstone.transform.movie.action;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import com.flagstone.transform.coder.CoderException;

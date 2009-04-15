@@ -88,7 +88,6 @@ public final class Place implements MovieTag
 
 		if (coder.getPointer() < end) {
 			colorTransform = new ColorTransform(coder);
-			colorTransform = new ColorTransform(coder);
 		}
 
 		if (coder.getPointer() != end) {
@@ -289,7 +288,7 @@ public final class Place implements MovieTag
 	{
 		length = 4;
 		length += transform.prepareToEncode(coder);
-		length += (colorTransform.isUnityTransform()) ? 0 : colorTransform.prepareToEncode(coder);
+		length += colorTransform == null ? 0 : colorTransform.prepareToEncode(coder);
 
 		return 2 + length;
 	}
@@ -304,7 +303,7 @@ public final class Place implements MovieTag
 		coder.writeWord(layer, 2);
 		transform.encode(coder);
 
-		if (!colorTransform.isUnityTransform()) {
+		if (colorTransform != null) {
 			colorTransform.encode(coder);
 		}
 

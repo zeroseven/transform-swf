@@ -31,7 +31,6 @@
 package com.flagstone.transform.factory.image;
 
 import java.util.LinkedHashMap;
-import java.util.Locale;
 import java.util.Map;
 
 /**

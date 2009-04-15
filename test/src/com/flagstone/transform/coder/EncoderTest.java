@@ -204,22 +204,22 @@ public final class EncoderTest {
 
 	@Test
 	public void writeString() {
-		fixture.setData(new byte[3]);
+		fixture.setData(new byte[4]);
 		fixture.setEncoding("UTF-8");
 
 		fixture.writeString("123");
 
-		assertEquals(24, fixture.getPointer());
-		assertArrayEquals(new byte[] { 0x31, 0x32, 0x33 }, fixture.data);
+		assertEquals(32, fixture.getPointer());
+		assertArrayEquals(new byte[] { 0x31, 0x32, 0x33, 0x00 }, fixture.data);
 	}
 
 	@Test
 	public void writeStringWithCharacterSet() {
-		fixture.setData(new byte[3]);
+		fixture.setData(new byte[4]);
 
 		fixture.writeString("123", "UTF-8");
 
-		assertEquals(24, fixture.getPointer());
-		assertArrayEquals(new byte[] { 0x31, 0x32, 0x33 }, fixture.data);
+		assertEquals(32, fixture.getPointer());
+		assertArrayEquals(new byte[] { 0x31, 0x32, 0x33, 0x00 }, fixture.data);
 	}
 }

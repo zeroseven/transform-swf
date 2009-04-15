@@ -38,7 +38,6 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.action.Action;
 import com.flagstone.transform.movie.action.ActionData;
-import com.flagstone.transform.movie.action.BasicAction;
 
 /**
  * DoAction is used to add a set of actions to a frame in a movie. The actions

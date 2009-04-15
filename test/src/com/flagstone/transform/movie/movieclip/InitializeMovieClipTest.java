@@ -30,10 +30,7 @@
 package com.flagstone.transform.movie.movieclip;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
@@ -47,9 +44,6 @@ import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Types;
 import com.flagstone.transform.movie.action.Action;
 import com.flagstone.transform.movie.action.BasicAction;
-import com.flagstone.transform.movie.datatype.Color;
-import com.flagstone.transform.movie.font.DefineFontName;
-import com.flagstone.transform.movie.meta.Export;
 
 @SuppressWarnings( { 
 	"PMD.LocalVariableCouldBeFinal",

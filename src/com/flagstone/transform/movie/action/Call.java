@@ -31,7 +31,6 @@
 package com.flagstone.transform.movie.action;
 
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Types;
 
