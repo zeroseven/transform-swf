@@ -238,11 +238,12 @@ public final class Push implements Action {
 	 * @throws IllegalArgumentException
 	 *             is the argument is null.
 	 */
-	public final void add(Null value) {
+	public final Push add(Null value) {
 		if (value == null) {
 			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
 		}
 		values.add(value);
+		return this;
 	}
 
 	/**
@@ -255,11 +256,12 @@ public final class Push implements Action {
 	 * @throws IllegalArgumentException
 	 *             is the argument is null.
 	 */
-	public final void add(Void value) {
+	public final Push add(Void value) {
 		if (value == null) {
 			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
 		}
 		values.add(value);
+		return this;
 	}
 
 	/**
@@ -268,11 +270,12 @@ public final class Push implements Action {
 	 * @param value
 	 *            a String. Must not be null.
 	 */
-	public final void add(String value) {
+	public final Push add(String value) {
 		if (value == null) {
 			throw new IllegalArgumentException(Strings.STRING_CANNOT_BE_NULL);
 		}
 		values.add(value);
+		return this;
 	}
 
 	/**
