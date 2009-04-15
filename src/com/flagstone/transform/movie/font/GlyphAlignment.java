@@ -36,9 +36,9 @@ import java.util.List;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.movie.Codeable;
+import com.flagstone.transform.movie.Encodeable;
 
-public final class GlyphAlignment implements Codeable
+public final class GlyphAlignment implements Encodeable
 {
 	private boolean alignX;
 	private boolean alignY;

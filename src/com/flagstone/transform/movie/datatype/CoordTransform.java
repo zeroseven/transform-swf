@@ -34,7 +34,7 @@ import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Encoder;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.movie.Codeable;
+import com.flagstone.transform.movie.Encodeable;
 import com.flagstone.transform.movie.Copyable;
 
 /**
@@ -64,7 +64,7 @@ import com.flagstone.transform.movie.Copyable;
  * 
  */
 @SuppressWarnings( { "PMD.TooManyMethods", "PMD.LocalVariableCouldBeFinal" })
-public final class CoordTransform implements Codeable, Copyable<CoordTransform> {
+public final class CoordTransform implements Encodeable, Copyable<CoordTransform> {
 
 	private static final String FORMAT = "CoordTransform: { scaleX=%f; scaleY=%f; shearX=%f; shearY=%f; transX=%d; transY=%d }";
 

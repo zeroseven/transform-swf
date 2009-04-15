@@ -33,7 +33,7 @@ package com.flagstone.transform.movie.text;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.movie.Codeable;
+import com.flagstone.transform.movie.Encodeable;
 import com.flagstone.transform.movie.Strings;
 
 /**
@@ -51,7 +51,7 @@ import com.flagstone.transform.movie.Strings;
  * @see DefineText2
  * @see com.flagstone.transform.factory.text.TextFactory
  */
-public final class GlyphIndex implements Codeable
+public final class GlyphIndex implements Encodeable
 {
 	private static final String FORMAT = "GlyphIndex: { glyphIndex=%d; advance=%d }";
 		

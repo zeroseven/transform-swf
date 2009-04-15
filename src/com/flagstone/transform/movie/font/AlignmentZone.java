@@ -33,9 +33,9 @@ package com.flagstone.transform.movie.font;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.movie.Codeable;
+import com.flagstone.transform.movie.Encodeable;
 
-public final class AlignmentZone implements Codeable
+public final class AlignmentZone implements Encodeable
 {
 	private float coordinate;
 	private float range;

@@ -34,7 +34,7 @@ import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Encoder;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.movie.Codeable;
+import com.flagstone.transform.movie.Encodeable;
 
 /**
  * <p>
@@ -65,7 +65,7 @@ import com.flagstone.transform.movie.Codeable;
  * it then only the pixels inside of the bounding box will be repainted.
  * </p>
  */
-public final class Bounds implements Codeable {
+public final class Bounds implements Encodeable {
 
 	private static final String FORMAT = "Bounds: { minX=%d; minY=%d; maxX=%d; maxY=%d }";
 

@@ -33,7 +33,7 @@ package com.flagstone.transform.movie.linestyle;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.movie.Codeable;
+import com.flagstone.transform.movie.Encodeable;
 import com.flagstone.transform.movie.Copyable;
 import com.flagstone.transform.movie.Strings;
 import com.flagstone.transform.movie.datatype.Color;
@@ -44,7 +44,7 @@ import com.flagstone.transform.movie.fillstyle.FillStyle;
 	"PMD.LongVariable",
 	"PMD.TooManyMethods"
 })
-public final class LineStyle2 implements Codeable, Copyable<LineStyle2> {
+public final class LineStyle2 implements Encodeable, Copyable<LineStyle2> {
 
 	public static final String FORMAT = "LineStyle2: { width=%d; color=%s;"
 		+ " fillStyle=%s; startCap=%s; endCap=%s; joinStyle=%s;"

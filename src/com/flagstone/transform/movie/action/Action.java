@@ -30,12 +30,12 @@
 
 package com.flagstone.transform.movie.action;
 
-import com.flagstone.transform.movie.Codeable;
+import com.flagstone.transform.movie.Encodeable;
 import com.flagstone.transform.movie.Copyable;
 
 /**
  * The Action interface is used to identify all the different types of actions
  * that can be added to a movie.
  */
-public interface Action extends Codeable, Copyable<Action> {
+public interface Action extends Encodeable, Copyable<Action> {
 }

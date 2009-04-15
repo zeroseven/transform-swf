@@ -30,10 +30,10 @@
 
 package com.flagstone.transform.movie.filter;
 
-import com.flagstone.transform.movie.Codeable;
+import com.flagstone.transform.movie.Encodeable;
 import com.flagstone.transform.movie.Copyable;
 
-public interface Filter extends Codeable, Copyable<Filter> {
+public interface Filter extends Encodeable, Copyable<Filter> {
 	int DROP_SHADOW = 0;
 	int BLUR = 1;
 	int GLOW = 2;

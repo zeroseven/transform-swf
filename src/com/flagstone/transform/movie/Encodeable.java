@@ -35,23 +35,17 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 /**
  * <p>
- * The Codeable interfaces defines the set of methods that all Transform classes 
- * must implement in order to be encoded and decoded from Flash (SWF) files.
+ * The Codeable interfaces defines the set of methods that all Transform classes
+ * must implement in order to be encoded to a Flash (SWF) file.
  * </p>
  */
-public interface Codeable {
+public interface Encodeable {
 	/**
-	 * Prepare an object for encoding, returning the expected size of an object 
-	 * when it is encoded.
+	 * Prepare an object for encoding, returning the expected size of an object
+	 * when it is encoded. This method also used to initialise variables, such 
+	 * as offsets and flags that will be used when the object is encoded.
 	 * 
-	 * This method is called on all objects to be encoded before they are
-	 * encoded. In addition to calculating the size of buffer to be allocated
-	 * this method also used to initialise variables, such as offsets and flags
-	 * that will be used when the object is encoded. This allows the encoding
-	 * process to take place in a single pass and avoids having to re-allocate
-	 * memory.
-	 * 
-	 * Generally the method returns the size in bytes, however when called on 
+	 * Generally the method returns the size in bytes, however when called on
 	 * objects that use bit fields such as shapes the methods will return the
 	 * size in bits.
 	 * 

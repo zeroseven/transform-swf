@@ -30,8 +30,8 @@
 
 package com.flagstone.transform.movie.shape;
 
-import com.flagstone.transform.movie.Codeable;
+import com.flagstone.transform.movie.Encodeable;
 import com.flagstone.transform.movie.Copyable;
 
-public interface ShapeRecord extends Codeable, Copyable<ShapeRecord> {
+public interface ShapeRecord extends Encodeable, Copyable<ShapeRecord> {
 }

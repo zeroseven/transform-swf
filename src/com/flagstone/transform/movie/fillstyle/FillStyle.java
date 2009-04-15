@@ -30,14 +30,14 @@
 
 package com.flagstone.transform.movie.fillstyle;
 
-import com.flagstone.transform.movie.Codeable;
+import com.flagstone.transform.movie.Encodeable;
 import com.flagstone.transform.movie.Copyable;
 
 /**
  * The FillStyle interface identifies the fill styles that can be added to a 
  * shape.
  */
-public interface FillStyle extends Codeable, Copyable<FillStyle> {
+public interface FillStyle extends Encodeable, Copyable<FillStyle> {
 	/** The type for creating a solid fill style. */
 	int SOLID = 0;
 	/** The type for creating a linear gradient fill style. */

@@ -34,7 +34,7 @@ import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Encoder;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.movie.Codeable;
+import com.flagstone.transform.movie.Encodeable;
 import com.flagstone.transform.movie.Copyable;
 
 /**
@@ -96,7 +96,7 @@ import com.flagstone.transform.movie.Copyable;
  * 
  */
 @SuppressWarnings("PMD.TooManyMethods")
-public final class ColorTransform implements Codeable, Copyable<ColorTransform> {
+public final class ColorTransform implements Encodeable, Copyable<ColorTransform> {
 
 	private static final String FORMAT = 
 		"ColorTransform: { multiply=[%f, %f, %f, %f]; add=[%d, %d, %d, %d] }";
