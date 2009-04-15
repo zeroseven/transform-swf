@@ -143,11 +143,12 @@ public final class GradientFill implements FillStyle {
 	 * @param aGradient
 	 *            an Gradient object. Must not be null.
 	 */
-	public void add(final Gradient aGradient) {
+	public GradientFill add(final Gradient aGradient) {
 		if (aGradient == null) {
 			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
 		}
 		gradients.add(aGradient);
+		return this;
 	}
 
 	/**

@@ -200,12 +200,13 @@ public final class DefineShape implements DefineTag
 	 * @param style
 	 *            and LineStyle object. Must not be null.
 	 */
-	public void add(LineStyle style)
+	public DefineShape add(LineStyle style)
 	{
 		if (style == null) {
 			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
 		}
 		lineStyles.add(style);
+		return this;
 	}
 
 	/**
@@ -214,12 +215,13 @@ public final class DefineShape implements DefineTag
 	 * @param style
 	 *            and FillStyle object. Must not be null.
 	 */
-	public void add(FillStyle style)
+	public DefineShape add(FillStyle style)
 	{
 		if (style == null) {
 			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
 		}
 		fillStyles.add(style);
+		return this;
 	}
 
 	/**

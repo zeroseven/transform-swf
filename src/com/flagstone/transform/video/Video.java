@@ -127,12 +127,13 @@ public final class Video implements Cloneable
 	 * @param anObject
 	 *            the object to be added to the coder. Must not be null.
 	 */
-	public void add(VideoTag anObject)
+	public Video add(VideoTag anObject)
 	{
 		if (anObject == null) {
 			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
 		}
 		objects.add(anObject);
+		return this;
 	}
 
 	/**
@@ -142,12 +143,13 @@ public final class Video implements Cloneable
 	 *            an array of VideoTags that will be added to the video in
 	 *            the order they are in the array. Must not be null.
 	 */
-	public void add(List<VideoTag> array)
+	public Video add(List<VideoTag> array)
 	{
 		if (array == null) {
 			throw new IllegalArgumentException(Strings.ARRAY_CANNOT_BE_NULL);
 		}
 		objects.addAll(array);
+		return this;
 	}
 
 	/**

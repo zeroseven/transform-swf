@@ -306,9 +306,10 @@ public final class TextSpan implements Encodeable
 	 * @param aCharacter
 	 *            an Character object. Must not be null.
 	 */
-	public void add(GlyphIndex aCharacter)
+	public TextSpan add(GlyphIndex aCharacter)
 	{
 		characters.add(aCharacter);
+		return this;
 	}
 
 	/**

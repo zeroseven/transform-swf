@@ -206,12 +206,13 @@ public final class DefineText implements DefineTag
 	 * @param obj
 	 *            an TextSpan object. Must not be null.
 	 */
-	public void add(TextSpan obj)
+	public DefineText add(TextSpan obj)
 	{
 		if (obj == null) {
 			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
 		}
 		objects.add(obj);
+		return this;
 	}
 
 	/**

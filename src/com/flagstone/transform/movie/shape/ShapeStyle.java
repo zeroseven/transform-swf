@@ -267,12 +267,13 @@ public final class ShapeStyle implements ShapeRecord
 	 * @param style
 	 *            and LineStyle object. Must not be null.
 	 */
-	public void add(LineStyle style)
+	public ShapeStyle add(LineStyle style)
 	{
 		if (style == null) {
 			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
 		}
 		lineStyles.add(style);
+		return this;
 	}
 
 	/**
@@ -281,12 +282,13 @@ public final class ShapeStyle implements ShapeRecord
 	 * @param style
 	 *            and FillStyle object. Must not be null.
 	 */
-	public void add(FillStyle style)
+	public ShapeStyle add(FillStyle style)
 	{
 		if (style == null) {
 			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
 		}
 		fillStyles.add(style);
+		return this;
 	}
 
 	/**

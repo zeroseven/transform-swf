@@ -156,12 +156,13 @@ public final class NewFunction implements Action
 	 *            the name of an argument passed to the NewFunction object.
 	 *            Must not be null or an empty string.
 	 */
-	public void add(String anArgument)
+	public NewFunction add(String anArgument)
 	{
 		if (anArgument == null || anArgument.length() == 0) {
 			throw new IllegalArgumentException(Strings.STRING_NOT_SET);
 		}
 		arguments.add(anArgument);
+		return this;
 	}
 
 	/**
@@ -171,12 +172,13 @@ public final class NewFunction implements Action
 	 *            an object belonging to a class derived from Action.
 	 *            Must not be null.
 	 */
-	public void add(Action anAction)
+	public NewFunction add(Action anAction)
 	{
 		if (anAction == null) {
 			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
 		}
 		actions.add(anAction);
+		return this;
 	}
 
 	/**

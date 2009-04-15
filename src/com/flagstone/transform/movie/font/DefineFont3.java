@@ -276,12 +276,13 @@ public final class DefineFont3 implements DefineTag
 	 * @param obj
 	 *            a shape. Must not be null.
 	 */
-	public void addGlyph(Shape obj)
+	public DefineFont3 addGlyph(Shape obj)
 	{
 		if (obj == null) {
 			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
 		}
 		shapes.add(obj);
+		return this;
 	}
 
 	/**
@@ -296,12 +297,13 @@ public final class DefineFont3 implements DefineTag
 	 * @param aCode
 	 *            the code for a glyph. Must be in the range 0..65535.
 	 */
-	public void addCode(int aCode)
+	public DefineFont3 addCode(int aCode)
 	{
 		if (aCode < 0 || aCode > 65535) {
 			throw new IllegalArgumentException(Strings.CHARACTER_CODE_OUT_OF_RANGE);
 		}
 		codes.add(aCode);
+		return this;
 	}
 	
 	/**
@@ -314,10 +316,11 @@ public final class DefineFont3 implements DefineTag
 	 *            the shape that represents the glyph displayed for the
 	 *            character code.
 	 */
-	public void addCodeForGlyph(int code, Shape obj)
+	public DefineFont3 addCodeForGlyph(int code, Shape obj)
 	{
 		addCode(code);
 		addGlyph(obj);
+		return this;
 	}
 
 	/**
@@ -328,12 +331,13 @@ public final class DefineFont3 implements DefineTag
 	 * @param anAdvance
 	 *            an advance for a glyph. Must be in the range -32768..32767.
 	 */
-	public void addAdvance(int anAdvance)
+	public DefineFont3 addAdvance(int anAdvance)
 	{
 		if (anAdvance < -32768 || anAdvance > 32767) {
 			throw new IllegalArgumentException(Strings.SIGNED_VALUE_OUT_OF_RANGE);
 		}
 		advances.add(anAdvance);
+		return this;
 	}
 
 	/**
@@ -346,12 +350,13 @@ public final class DefineFont3 implements DefineTag
 	 *            
 	 * @throws IllegalArgumentException if the bounds object is null.
 	 */
-	public void add(Bounds obj)
+	public DefineFont3 add(Bounds obj)
 	{
 		if (obj == null) {
 			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
 		}
 		bounds.add(obj);
+		return this;
 	}
 
 	/**
@@ -362,12 +367,13 @@ public final class DefineFont3 implements DefineTag
 	 *            
 	 * @throws IllegalArgumentException if the kerning is null.
 	 */
-	public void add(Kerning anObject)
+	public DefineFont3 add(Kerning anObject)
 	{
 		if (anObject == null) {
 			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
 		}
 		kernings.add(anObject);
+		return this;
 	}
 
 	/**

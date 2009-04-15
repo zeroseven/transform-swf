@@ -182,9 +182,13 @@ public final class Shape implements Encodeable
 	 * @param anObject
 	 *            an instance of ShapeStyle, Line or Curve. Must not be null.
 	 */
-	public void add(ShapeRecord anObject)
+	public Shape add(ShapeRecord anObject)
 	{
+		if (anObject == null) {
+			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+		}
 		objects.add(anObject);
+		return this;
 	}
 
 	/**

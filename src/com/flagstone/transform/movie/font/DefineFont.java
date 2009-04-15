@@ -153,12 +153,13 @@ public final class DefineFont implements DefineTag
 	 * @param obj
 	 *            a shape which must not be null.
 	 */
-	public void add(Shape obj)
+	public DefineFont add(Shape obj)
 	{
 		if (obj == null) {
 			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
 		}
 		shapes.add(obj);
+		return this;
 	}
 
 	/**

@@ -260,9 +260,10 @@ public final class DefineMorphShape2 implements DefineTag
 	 * @param aLineStyle
 	 *            and LineStyle object. Must not be null.
 	 */
-	public void add(MorphLineStyle2 aLineStyle)
+	public DefineMorphShape2 add(MorphLineStyle2 aLineStyle)
 	{
 		lineStyles.add(aLineStyle);
+		return this;
 	}
 
 	/**
@@ -271,9 +272,10 @@ public final class DefineMorphShape2 implements DefineTag
 	 * @param aFillStyle
 	 *            an FillStyle object. Must not be null.
 	 */
-	public void add(FillStyle aFillStyle)
+	public DefineMorphShape2 add(FillStyle aFillStyle)
 	{
 		fillStyles.add(aFillStyle);
+		return this;
 	}
 
 	/**

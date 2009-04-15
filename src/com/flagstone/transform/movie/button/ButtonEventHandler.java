@@ -273,12 +273,13 @@ public final class ButtonEventHandler implements Encodeable
 	 * @param anAction
 	 *            an object derived from the base class Action. Must not be null.
 	 */
-	public void add(Action anAction) throws CoderException
+	public ButtonEventHandler add(Action anAction) throws CoderException
 	{
 		if (anAction == null) {
 			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
 		}
 		actions.add(anAction);
+		return this;
 	}
 
 	/**

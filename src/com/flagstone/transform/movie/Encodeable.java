@@ -35,8 +35,8 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 /**
  * <p>
- * The Codeable interfaces defines the set of methods that all Transform classes
- * must implement in order to be encoded to a Flash (SWF) file.
+ * The Encodeable interface defines the set of methods that all classes must
+ * implement so they can be encoded to a Flash (SWF) file.
  * </p>
  */
 public interface Encodeable {

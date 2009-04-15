@@ -205,12 +205,13 @@ public final class MovieClipEventHandler implements Encodeable
 	 * @param anAction
 	 *            an action object. Must not be null.
 	 */
-	public void add(Action anAction) throws CoderException
+	public MovieClipEventHandler add(Action anAction) throws CoderException
 	{
 		if (anAction == null) {
 			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
 		}
 		actions.add(anAction);
+		return this;
 	}
 
 	/**

@@ -101,8 +101,9 @@ public final class FocalGradientFill implements FillStyle {
 	 * @param aGradient
 	 *            an Gradient object. Must not be null.
 	 */
-	public void add(final Gradient aGradient) {
+	public FocalGradientFill add(final Gradient aGradient) {
 		gradients.add(aGradient);
+		return this;
 	}
 
 	/**

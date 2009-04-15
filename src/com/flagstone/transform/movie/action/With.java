@@ -104,12 +104,13 @@ public final class With implements Action
 	 *            an object belonging to a class derived from Action.
 	 *            Must not be null.
 	 */
-	public void add(Action anAction)
+	public With add(Action anAction)
 	{
 		if (anAction == null) {
 			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
 		}
 		actions.add(anAction);
+		return this;
 	}
 
 	/**

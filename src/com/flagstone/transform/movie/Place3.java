@@ -670,12 +670,13 @@ public final class Place3 implements MovieTag
 	 *            
 	 * throws NullPointerException of the clip event object is null
 	 */
-	public void add(MovieClipEventHandler aClipEvent) throws CoderException
+	public Place3 add(MovieClipEventHandler aClipEvent) throws CoderException
 	{
 		if (aClipEvent == null) {
 			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
 		}
 		events.add(aClipEvent);
+		return this;
 	}
 
 	/**
@@ -707,12 +708,13 @@ public final class Place3 implements MovieTag
 		events = anArray;
 	}
 
-	public void add(Filter filter)
+	public Place3 add(Filter filter)
 	{
 		if (filter == null) {
 			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
 		}
 		filters.add(filter);
+		return this;
 	}
 
 	public List<Filter> getFilters()

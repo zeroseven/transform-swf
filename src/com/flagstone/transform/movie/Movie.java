@@ -472,12 +472,13 @@ public final class Movie implements Cloneable
 	 * @param anObject
 	 *            the object to be added to the movie. Must not be null.
 	 */
-	public void add(MovieTag anObject)
+	public Movie add(MovieTag anObject)
 	{
 		if (anObject == null) {
 			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
 		}
 		objects.add(anObject);
+		return this;
 	}
 
 	/**
@@ -486,12 +487,13 @@ public final class Movie implements Cloneable
 	 * @param array
 	 *            an array of MovieTags. Must not be null.
 	 */
-	public void add(List<MovieTag> array)
+	public Movie add(List<MovieTag> array)
 	{
 		if (array == null) {
 			throw new IllegalArgumentException(Strings.ARRAY_CANNOT_BE_NULL);
 		}
 		objects.addAll(array);
+		return this;
 	}
 
 	/**

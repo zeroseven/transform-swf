@@ -420,12 +420,13 @@ public final class Place2 implements MovieTag
 	 *            
 	 * throws NullPointerException of the clip event object is null
 	 */
-	public void add(MovieClipEventHandler aClipEvent) throws CoderException
+	public Place2 add(MovieClipEventHandler aClipEvent) throws CoderException
 	{
 		if (aClipEvent == null) {
 			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
 		}
 		events.add(aClipEvent);
+		return this;
 	}
 
 	/**

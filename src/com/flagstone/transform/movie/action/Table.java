@@ -120,12 +120,13 @@ public final class Table implements Action
 	 *            a String that will be added to the end of the table. Must not
 	 *            be null.
 	 */
-	public void add(String aString)
+	public Table add(String aString)
 	{
 		if (aString == null) {
 			throw new IllegalArgumentException(Strings.STRING_CANNOT_BE_NULL);
 		}
 		values.add(aString);
+		return this;
 	}
 
 	/**

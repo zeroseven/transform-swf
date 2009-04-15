@@ -150,12 +150,13 @@ public final class DefineMovieClip implements DefineTag
 	 * @param obj
 	 *            a Movie object. Must not be null
 	 */
-	public void add(MovieTag obj)
+	public DefineMovieClip add(MovieTag obj)
 	{
 		if (obj == null) {
 			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
 		}
 		objects.add(obj);
+		return this;
 	}
 
 	/**

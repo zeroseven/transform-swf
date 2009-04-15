@@ -288,12 +288,13 @@ public final class ButtonShape implements Encodeable
 		colorTransform = aTransform;
 	}
 
-	public void add(Filter filter)
+	public ButtonShape add(Filter filter)
 	{
 		if (filter == null) {
 			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
 		}
 		filters.add(filter);
+		return this;
 	}
 
 	public List<Filter> getFilters()

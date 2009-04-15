@@ -97,9 +97,10 @@ public final class ScreenPacket implements Cloneable
 	 * 
 	 * @param block an ImageBlock. Must not be null.
 	 */
-	public void add(ImageBlock block)
+	public ScreenPacket add(ImageBlock block)
 	{
 		imageBlocks.add(block);
+		return this;
 	}
 
 	/**

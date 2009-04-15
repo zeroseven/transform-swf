@@ -262,9 +262,10 @@ public final class Layer
 	 * @param definition
 	 *            an object defining an image, shape, text, sound or video.
 	 */
-	public void add(MovieTag definition)
+	public Layer add(MovieTag definition)
 	{
 		displayList.add(definition);
+		return this;
 	}
 
 	/**

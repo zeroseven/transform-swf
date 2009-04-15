@@ -186,9 +186,10 @@ public final class SoundInfo implements Encodeable
 	 * @param anEnvelope
 	 *            an Envelope object. Must not be null.
 	 */
-	public void add(Envelope anEnvelope)
+	public SoundInfo add(Envelope anEnvelope)
 	{
 		envelopes.add(anEnvelope);
+		return this;
 	}
 
 	/**

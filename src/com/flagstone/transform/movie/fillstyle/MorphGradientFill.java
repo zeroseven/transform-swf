@@ -116,11 +116,12 @@ public final class MorphGradientFill implements FillStyle {
 	 * @param aGradient
 	 *            an MorphGradient object. Must not be null.
 	 */
-	public void add(final MorphGradient aGradient) {
+	public MorphGradientFill add(final MorphGradient aGradient) {
 		if (aGradient == null) {
 			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
 		}
 		gradients.add(aGradient);
+		return this;
 	}
 
 	/**

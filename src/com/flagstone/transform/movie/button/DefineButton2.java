@@ -186,12 +186,13 @@ public final class DefineButton2 implements DefineTag
 	 * @param obj
 	 *            a button shape object. Must not be null.
 	 */
-	public void add(ButtonShape obj)
+	public DefineButton2 add(ButtonShape obj)
 	{
 		if (obj == null) {
 			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
 		}
 		shapes.add(obj);
+		return this;
 	}
 
 	/**
@@ -200,12 +201,13 @@ public final class DefineButton2 implements DefineTag
 	 * @param obj
 	 *            a button event. Must not be null.
 	 */
-	public void add(ButtonEventHandler obj) throws CoderException
+	public DefineButton2 add(ButtonEventHandler obj) throws CoderException
 	{
 		if (obj == null) {
 			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
 		}		
 		events.add(obj);
+		return this;
 	}
 
 	/**
