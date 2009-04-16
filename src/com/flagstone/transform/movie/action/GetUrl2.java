@@ -34,6 +34,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Types;
@@ -214,7 +215,7 @@ public final class GetUrl2 implements Action
 
 	private Request request;
 
-	public GetUrl2(final SWFDecoder coder) throws CoderException
+	public GetUrl2(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		coder.readByte();
 		coder.readWord(2, false);
@@ -267,12 +268,12 @@ public final class GetUrl2 implements Action
 		return String.format(FORMAT, request);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder)
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
 		return 4;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		coder.writeByte(Types.GET_URL_2);
 		coder.writeWord(1, 2);

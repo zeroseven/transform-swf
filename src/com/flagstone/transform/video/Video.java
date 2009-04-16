@@ -40,6 +40,7 @@ import java.util.zip.DataFormatException;
 
 import com.flagstone.transform.coder.FLVDecoder;
 import com.flagstone.transform.coder.FLVEncoder;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.movie.Strings;
 
 /**
@@ -299,6 +300,7 @@ public final class Video implements Cloneable
 	public byte[] encode() throws IOException
 	{
 		FLVEncoder coder = new FLVEncoder(0);
+
 		coder.version = version;
 
 		int fileLength = prepareToEncode(coder);

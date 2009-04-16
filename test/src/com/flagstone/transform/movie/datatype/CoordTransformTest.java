@@ -34,6 +34,7 @@ import java.util.Arrays;
 import org.junit.Test;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -50,7 +51,8 @@ public final class CoordTransformTest {
 	private transient CoordTransform fixture;
 
 	private transient SWFEncoder encoder;
-	private transient SWFDecoder decoder;
+	private transient SWFDecoder decoder; 
+	private transient SWFContext context;
 	private transient byte[] data;
 
 	@Test
@@ -152,8 +154,8 @@ public final class CoordTransformTest {
 		data = new byte[] { 6, 80 };
 		SWFEncoder encoder = new SWFEncoder(data.length);
 
-		assertEquals(2, fixture.prepareToEncode(encoder));
-		fixture.encode(encoder);
+		assertEquals(2, fixture.prepareToEncode(encoder, context));
+		fixture.encode(encoder, context);
 
 		assertEquals(16, encoder.getPointer());
 		assertArrayEquals(data, encoder.getData());
@@ -169,8 +171,8 @@ public final class CoordTransformTest {
 		data = new byte[] { -52, -128, 0, 32, 0, 0, 64 };
 		SWFEncoder encoder = new SWFEncoder(data.length);
 
-		assertEquals(7, fixture.prepareToEncode(encoder));
-		fixture.encode(encoder);
+		assertEquals(7, fixture.prepareToEncode(encoder, context));
+		fixture.encode(encoder, context);
 
 		assertEquals(56, encoder.getPointer());
 		assertArrayEquals(data, encoder.getData());
@@ -186,8 +188,8 @@ public final class CoordTransformTest {
 		data = new byte[] { 102, 64, 0, 16, 0, 0, 64 };
 		SWFEncoder encoder = new SWFEncoder(data.length);
 
-		assertEquals(7, fixture.prepareToEncode(encoder));
-		fixture.encode(encoder);
+		assertEquals(7, fixture.prepareToEncode(encoder, context));
+		fixture.encode(encoder, context);
 
 		assertEquals(56, encoder.getPointer());
 		assertArrayEquals(data, encoder.getData());
@@ -203,8 +205,8 @@ public final class CoordTransformTest {
 		data = new byte[] { -52, -128, 0, 32, 0, 13, 12, 0, 1, 0, 0, 2, 0 };
 		SWFEncoder encoder = new SWFEncoder(data.length);
 
-		assertEquals(13, fixture.prepareToEncode(encoder));
-		fixture.encode(encoder);
+		assertEquals(13, fixture.prepareToEncode(encoder, context));
+		fixture.encode(encoder, context);
 
 		assertEquals(104, encoder.getPointer());
 		assertArrayEquals(data, encoder.getData());
@@ -218,7 +220,7 @@ public final class CoordTransformTest {
 		data = new byte[] { 6, 80 };
 		SWFDecoder decoder = new SWFDecoder(data);
 
-		fixture = new CoordTransform(decoder);
+		fixture = new CoordTransform(decoder, context);
 
 		assertEquals(16, decoder.getPointer());
 		assertEquals(xCoord, fixture.getMatrix()[0][2]);
@@ -233,7 +235,7 @@ public final class CoordTransformTest {
 		data = new byte[] { -52, -128, 0, 32, 0, 0, 64 };
 		SWFDecoder decoder = new SWFDecoder(data);
 
-		fixture = new CoordTransform(decoder);
+		fixture = new CoordTransform(decoder, context);
 
 		assertEquals(56, decoder.getPointer());
 		assertEquals(scaleX, fixture.getMatrix()[0][0]);
@@ -248,7 +250,7 @@ public final class CoordTransformTest {
 		data = new byte[] { 102, 64, 0, 16, 0, 0, 64 };
 		SWFDecoder decoder = new SWFDecoder(data);
 
-		fixture = new CoordTransform(decoder);
+		fixture = new CoordTransform(decoder, context);
 
 		assertEquals(56, decoder.getPointer());
 		assertEquals(shearX, fixture.getMatrix()[1][0]);
@@ -263,7 +265,7 @@ public final class CoordTransformTest {
 		data = new byte[] { -52, -128, 0, 32, 0, 13, 12, 0, 1, 0, 0, 2, 0 };
 		SWFDecoder decoder = new SWFDecoder(data);
 
-		fixture = new CoordTransform(decoder);
+		fixture = new CoordTransform(decoder, context);
 
 		assertEquals(104, decoder.getPointer());
 		compare(matrix, fixture.getMatrix());

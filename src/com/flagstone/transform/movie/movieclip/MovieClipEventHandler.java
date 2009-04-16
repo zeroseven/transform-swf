@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Encodeable;
@@ -123,9 +124,9 @@ public final class MovieClipEventHandler implements Encodeable
 
 	protected transient int offset;
 
-	public MovieClipEventHandler(final SWFDecoder coder) throws CoderException
+	public MovieClipEventHandler(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
-		int eventSize = (coder.getContext().getVersion() > 5) ? 4 : 2;
+		int eventSize = (context.getVersion() > 5) ? 4 : 2;
 
 		event = coder.readWord(eventSize, false);
 		offset = coder.readWord(4, false);
@@ -138,15 +139,15 @@ public final class MovieClipEventHandler implements Encodeable
 
 		actions = new ArrayList<Action>();
 
-		if (coder.getContext().isDecodeActions()) {
+		if (context.isDecodeActions()) {
 			int len = offset;
 
 			while (len > 0) {
-				actions.add(coder.actionOfType(coder));
+				actions.add(context.actionOfType(coder, context));
 			}
 		} 
 		else {
-			actions.add(new ActionData(offset, coder));
+			actions.add(new ActionData(offset, coder, context));
 		}
 	}
 
@@ -293,14 +294,14 @@ public final class MovieClipEventHandler implements Encodeable
 		return String.format(FORMAT, event, keyCode, actions);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder)
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
-		int length = 4 + ((coder.getContext().getVersion() > 5) ? 4 : 2);
+		int length = 4 + ((context.getVersion() > 5) ? 4 : 2);
 
 		offset = (event & MovieClipEvent.KEY_PRESS.getValue()) == 0 ? 0 : 1;
 
 		for (Action action : actions) {
-			offset += action.prepareToEncode(coder);
+			offset += action.prepareToEncode(coder, context);
 		}
 		
 		length += offset;
@@ -308,9 +309,9 @@ public final class MovieClipEventHandler implements Encodeable
 		return length;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
-		int eventSize = (coder.getContext().getVersion() > 5) ? 4 : 2;
+		int eventSize = (context.getVersion() > 5) ? 4 : 2;
 
 		coder.writeWord(event, eventSize);
 		coder.writeWord(offset, 4);
@@ -320,7 +321,7 @@ public final class MovieClipEventHandler implements Encodeable
 		}
 
 		for (Action action : actions) {
-			action.encode(coder);
+			action.encode(coder, context);
 		}
 	}
 }

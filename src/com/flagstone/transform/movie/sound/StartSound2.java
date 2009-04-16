@@ -31,6 +31,7 @@
 package com.flagstone.transform.movie.sound;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.MovieTag;
@@ -60,7 +61,7 @@ public final class StartSound2 implements MovieTag
 	private transient int end;
 	private transient int length;
 
-	public StartSound2(final SWFDecoder coder) throws CoderException
+	public StartSound2(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
@@ -71,7 +72,7 @@ public final class StartSound2 implements MovieTag
 		end = coder.getPointer() + (length << 3);
 
 		soundClass = coder.readString();
-		sound = new SoundInfo(coder);
+		sound = new SoundInfo(coder, context);
 
 		if (coder.getPointer() != end) {
 			throw new CoderException(getClass().getName(), start >> 3, length,
@@ -142,13 +143,13 @@ public final class StartSound2 implements MovieTag
 		return String.format(FORMAT, sound);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder)
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
-		length = soundClass.length() + sound.prepareToEncode(coder);
+		length = soundClass.length() + sound.prepareToEncode(coder, context);
 		return (length > 62 ? 6:2) + length;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();
 
@@ -161,7 +162,7 @@ public final class StartSound2 implements MovieTag
 		end = coder.getPointer() + (length << 3);
 
 		coder.writeString(soundClass);
-		sound.encode(coder);
+		sound.encode(coder, context);
 
 		if (coder.getPointer() != end) {
 			throw new CoderException(getClass().getName(), start >> 3, length,

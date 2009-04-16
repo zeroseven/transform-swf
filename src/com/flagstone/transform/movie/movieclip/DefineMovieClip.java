@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.DefineTag;
@@ -76,7 +77,7 @@ public final class DefineMovieClip implements DefineTag
 	private transient int end;
 	private transient int length;
 
-	public DefineMovieClip(final SWFDecoder coder) throws CoderException
+	public DefineMovieClip(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
@@ -96,7 +97,7 @@ public final class DefineMovieClip implements DefineTag
 			type = coder.scanUnsignedShort() >>> 6;
 		
 			if (type != 0){
-				objects.add(coder.movieOfType(coder));
+				objects.add(context.movieOfType(coder, context));
 			}
 		} while (type != 0);
 
@@ -195,13 +196,13 @@ public final class DefineMovieClip implements DefineTag
 		return String.format(FORMAT, identifier, objects);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder){
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context){
 		
 		frameCount = 0;
 		length = 6;
 		
 		for (MovieTag object : objects) {
-			length += object.prepareToEncode(coder);
+			length += object.prepareToEncode(coder, context);
 
 			if (object instanceof ShowFrame) {
 				frameCount += 1;
@@ -210,7 +211,7 @@ public final class DefineMovieClip implements DefineTag
 		return (length > 62 ? 6:2) + length;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();
 
@@ -226,7 +227,7 @@ public final class DefineMovieClip implements DefineTag
 		coder.writeWord(frameCount, 2);
 
 		for (MovieTag object : objects) {
-			object.encode(coder);
+			object.encode(coder, context);
 		}
 
 		coder.writeWord(0, 2);

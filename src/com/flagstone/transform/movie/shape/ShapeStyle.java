@@ -35,6 +35,7 @@ import java.util.List;
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Encoder;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Movie;
@@ -99,12 +100,12 @@ public final class ShapeStyle implements ShapeRecord
 	private transient boolean hasFill;
 	private transient boolean hasMove;
 
-	public ShapeStyle(final SWFDecoder coder) throws CoderException
+	public ShapeStyle(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		int start = coder.getPointer();
 		
-		int numberOfFillBits = coder.getContext().getFillSize();
-		int numberOfLineBits = coder.getContext().getLineSize();
+		int numberOfFillBits = context.getFillSize();
+		int numberOfLineBits = context.getLineSize();
 
 		/* shapeType */coder.readBits(1, false);
 		hasStyles = coder.readBits(1, false) != 0;
@@ -132,7 +133,7 @@ public final class ShapeStyle implements ShapeRecord
 
 			int fillStyleCount = coder.readByte();
 
-			if (coder.getContext().isArrayExtended() && fillStyleCount == 0xFF) {
+			if (context.isArrayExtended() && fillStyleCount == 0xFF) {
 				fillStyleCount = coder.readWord(2, false);
 			}
 
@@ -141,7 +142,7 @@ public final class ShapeStyle implements ShapeRecord
 
 			for (int i = 0; i < fillStyleCount; i++) {
 				type = coder.scanByte();
-				fill = coder.fillStyleOfType(coder);
+				fill = context.fillStyleOfType(coder, context);
 
 				if (fill == null) {
 					throw new CoderException(String.valueOf(type), start >>> 3, 0, 0, Strings.UNSUPPORTED_FILL_STYLE);
@@ -152,21 +153,21 @@ public final class ShapeStyle implements ShapeRecord
 
 			int lineStyleCount = coder.readByte();
 
-			if (coder.getContext().isArrayExtended() && lineStyleCount == 0xFF) {
+			if (context.isArrayExtended() && lineStyleCount == 0xFF) {
 				lineStyleCount = coder.readWord(2, false);
 			}
 
 			LineStyle style;
 
 			for (int i = 0; i < lineStyleCount; i++) {
-				lineStyles.add(new LineStyle(coder));
+				lineStyles.add(new LineStyle(coder, context));
 			}
 
 			numberOfFillBits = coder.readBits(4, false);
 			numberOfLineBits = coder.readBits(4, false);
 
-			coder.getContext().setFillSize(numberOfFillBits);
-			coder.getContext().setLineSize(numberOfLineBits);
+			context.setFillSize(numberOfFillBits);
+			context.setLineSize(numberOfLineBits);
 		}
 	}
 
@@ -491,7 +492,7 @@ public final class ShapeStyle implements ShapeRecord
 		return String.format(FORMAT, moveX, moveY, fillStyle, altFillStyle, lineStyle, fillStyles, lineStyles);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder)
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
 		hasLine = lineStyle != Movie.VALUE_NOT_SET;
 		hasFill = fillStyle != Movie.VALUE_NOT_SET;
@@ -507,55 +508,55 @@ public final class ShapeStyle implements ShapeRecord
 			numberOfBits += 5 + _moveFieldSize * 2;
 		}
 
-		numberOfBits += hasFill ? coder.getContext().getFillSize() : 0;
-		numberOfBits += hasAlt ? coder.getContext().getFillSize() : 0;
-		numberOfBits += (hasLine) ? coder.getContext().getLineSize() : 0;
+		numberOfBits += hasFill ? context.getFillSize() : 0;
+		numberOfBits += hasAlt ? context.getFillSize() : 0;
+		numberOfBits += (hasLine) ? context.getLineSize() : 0;
 
-		coder.getContext().setShapeSize(coder.getContext().getShapeSize()+numberOfBits);
+		context.setShapeSize(context.getShapeSize()+numberOfBits);
 
 		if (hasStyles)
 		{
 			int numberOfFillBits = Encoder.unsignedSize(fillStyles.size());
 			int numberOfLineBits = Encoder.unsignedSize(lineStyles.size());
 
-			if (numberOfFillBits == 0 && coder.getContext().isPostscript()) {
+			if (numberOfFillBits == 0 && context.isPostscript()) {
 				numberOfFillBits = 1;
 			}
 
-			if (numberOfLineBits == 0 && coder.getContext().isPostscript()) {
+			if (numberOfLineBits == 0 && context.isPostscript()) {
 				numberOfLineBits = 1;
 			}
 
-			boolean countExtended = coder.getContext().isArrayExtended();
+			boolean countExtended = context.isArrayExtended();
 
 			int numberOfStyleBits = 0;
-			int flushBits = coder.getContext().getShapeSize();
+			int flushBits = context.getShapeSize();
 
 			numberOfStyleBits += (flushBits % 8 > 0) ? 8 - (flushBits % 8) : 0;
 			numberOfStyleBits += (countExtended && fillStyles.size() >= 255) ? 24 : 8;
 
 			for (FillStyle style : fillStyles) {
-				numberOfStyleBits += style.prepareToEncode(coder) * 8;
+				numberOfStyleBits += style.prepareToEncode(coder, context) * 8;
 			}
 
 			numberOfStyleBits += (countExtended && lineStyles.size() >= 255) ? 24 : 8;
 
 			for (LineStyle style : lineStyles) {
-				numberOfStyleBits += style.prepareToEncode(coder) * 8;
+				numberOfStyleBits += style.prepareToEncode(coder, context) * 8;
 			}
 
 			numberOfStyleBits += 8;
 
-			coder.getContext().setFillSize(numberOfFillBits);
-			coder.getContext().setLineSize(numberOfLineBits);
-			coder.getContext().setShapeSize(coder.getContext().getShapeSize() + numberOfStyleBits);
+			context.setFillSize(numberOfFillBits);
+			context.setLineSize(numberOfLineBits);
+			context.setShapeSize(context.getShapeSize() + numberOfStyleBits);
 
 			numberOfBits += numberOfStyleBits;
 		}
 		return numberOfBits;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		coder.writeBits(0, 1);
 		coder.writeBits(hasStyles ? 1 : 0, 1);
@@ -574,20 +575,20 @@ public final class ShapeStyle implements ShapeRecord
 		}
 
 		if (hasFill) {
-			coder.writeBits(fillStyle, coder.getContext().getFillSize());
+			coder.writeBits(fillStyle, context.getFillSize());
 		}
 
 		if (hasAlt) {
-			coder.writeBits(altFillStyle, coder.getContext().getFillSize());
+			coder.writeBits(altFillStyle, context.getFillSize());
 		}
 
 		if (hasLine) {
-			coder.writeBits(lineStyle, coder.getContext().getLineSize());
+			coder.writeBits(lineStyle, context.getLineSize());
 		}
 
 		if (hasStyles)
 		{
-			boolean countExtended = coder.getContext().isArrayExtended();
+			boolean countExtended = context.isArrayExtended();
 
 			coder.alignToByte();
 
@@ -602,7 +603,7 @@ public final class ShapeStyle implements ShapeRecord
 			}
 
 			for (FillStyle style : fillStyles) {
-				style.encode(coder);
+				style.encode(coder, context);
 			}
 
 			if (countExtended && lineStyles.size() >= 255)
@@ -616,13 +617,13 @@ public final class ShapeStyle implements ShapeRecord
 			}
 
 			for (LineStyle style : lineStyles) {
-				style.encode(coder);
+				style.encode(coder, context);
 			}
 
 			int numberOfFillBits = Encoder.unsignedSize(fillStyles.size());
 			int numberOfLineBits = Encoder.unsignedSize(lineStyles.size());
 
-			if (coder.getContext().isPostscript()) 
+			if (context.isPostscript()) 
 			{
 				if (numberOfFillBits == 0) {
 					numberOfFillBits = 1;
@@ -637,8 +638,8 @@ public final class ShapeStyle implements ShapeRecord
 			coder.writeBits(numberOfLineBits, 4);
 
 			// Update the stream with the new numbers of line and fill bits
-			coder.getContext().setFillSize(numberOfFillBits);
-			coder.getContext().setLineSize(numberOfLineBits);
+			context.setFillSize(numberOfFillBits);
+			context.setLineSize(numberOfLineBits);
 		}
 	}
 }

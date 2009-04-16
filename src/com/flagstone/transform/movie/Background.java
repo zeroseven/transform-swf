@@ -31,6 +31,7 @@
 package com.flagstone.transform.movie;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.datatype.Color;
@@ -60,11 +61,11 @@ public final class Background implements MovieTag {
 
 	private Color color;
 
-	public Background(final SWFDecoder coder) throws CoderException {
+	public Background(final SWFDecoder coder, final SWFContext context) throws CoderException {
 		if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
 			coder.readWord(4, false);
 		}
-		color = new Color(coder);
+		color = new Color(coder, context);
 	}
 
 	/**
@@ -116,12 +117,12 @@ public final class Background implements MovieTag {
 		return String.format(FORMAT, color.toString());
 	}
 	
-	public int prepareToEncode(final SWFEncoder coder) {
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context) {
 		return 5;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException {
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException {
 		coder.writeWord((Types.SET_BACKGROUND_COLOR << 6) | 3, 2);
-		color.encode(coder);
+		color.encode(coder, context);
 	}
 }

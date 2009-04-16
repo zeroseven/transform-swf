@@ -35,6 +35,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Strings;
@@ -62,7 +63,7 @@ public final class With implements Action
 
 	private transient int length;
 
-	public With(final SWFDecoder coder) throws CoderException
+	public With(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		coder.readByte();
 		coder.readWord(2, false);
@@ -73,7 +74,7 @@ public final class With implements Action
 		actions = new ArrayList<Action>();
 
 		while (coder.getPointer() < end) {
-			actions.add(coder.actionOfType(coder));
+			actions.add(context.actionOfType(coder, context));
 		}
 	}
 
@@ -143,20 +144,20 @@ public final class With implements Action
 		return String.format(FORMAT, actions);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder)
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
 		length = 2;
 
 		Iterator<Action> iAction = actions.iterator();
 		
 		while (iAction.hasNext()) {
-			length += iAction.next().prepareToEncode(coder);
+			length += iAction.next().prepareToEncode(coder, context);
 		}
 
 		return 3 + length;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		coder.writeWord(Types.WITH, 1);
 		coder.writeWord(2, 2);
@@ -165,7 +166,7 @@ public final class With implements Action
 		Iterator<Action> iAction = actions.iterator();
 		
 		while (iAction.hasNext()) {
-			iAction.next().encode(coder);
+			iAction.next().encode(coder, context);
 		}
 	}
 }

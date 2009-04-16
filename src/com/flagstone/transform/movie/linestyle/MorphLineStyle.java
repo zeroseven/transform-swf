@@ -31,6 +31,7 @@
 package com.flagstone.transform.movie.linestyle;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Encodeable;
@@ -58,12 +59,12 @@ public final class MorphLineStyle implements Encodeable
 	protected Color startColor;
 	protected Color endColor;
 
-	public MorphLineStyle(final SWFDecoder coder) throws CoderException
+	public MorphLineStyle(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		startWidth = coder.readWord(2, false);
 		endWidth = coder.readWord(2, false);
-		startColor= new Color(coder);
-		endColor= new Color(coder);
+		startColor= new Color(coder, context);
+		endColor= new Color(coder, context);
 	}
 
 	/**
@@ -195,16 +196,16 @@ public final class MorphLineStyle implements Encodeable
 		return String.format(FORMAT, startWidth, endWidth, startColor, endColor);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder)
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
 		return 12;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		coder.writeWord(startWidth, 2);
 		coder.writeWord(endWidth, 2);
-		startColor.encode(coder);
-		endColor.encode(coder);
+		startColor.encode(coder, context);
+		endColor.encode(coder, context);
 	}
 }

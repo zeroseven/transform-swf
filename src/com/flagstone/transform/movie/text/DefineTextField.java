@@ -34,6 +34,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.DefineTag;
@@ -458,7 +459,7 @@ public final class DefineTextField implements DefineTag
 		initialText = object.initialText;
 	}
 
-	public DefineTextField(final SWFDecoder coder) throws CoderException
+	public DefineTextField(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
@@ -469,9 +470,9 @@ public final class DefineTextField implements DefineTag
 		end = coder.getPointer() + (length << 3);
 
 		identifier = coder.readWord(2, true);
-		coder.getContext().setTransparent(true);
+		context.setTransparent(true);
 
-		bounds = new Bounds(coder);
+		bounds = new Bounds(coder, context);
 
 		boolean containsText = coder.readBits(1, false) != 0;
 		wordWrapped = coder.readBits(1, false) != 0;
@@ -501,7 +502,7 @@ public final class DefineTextField implements DefineTag
 		}
 
 		if (containsColor) {
-			color= new Color(coder);
+			color= new Color(coder, context);
 		}
 
 		if (containsMaxLength) {
@@ -523,7 +524,7 @@ public final class DefineTextField implements DefineTag
 			initialText = coder.readString();
 		}
 
-		coder.getContext().setTransparent(false);
+		context.setTransparent(false);
 
 		if (coder.getPointer() != end) {
 			throw new CoderException(getClass().getName(), start >> 3, length,
@@ -1119,11 +1120,11 @@ public final class DefineTextField implements DefineTag
 		return String.format("", identifier, bounds, wordWrapped, multiline);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder)
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
-		coder.getContext().setTransparent(true);
+		context.setTransparent(true);
 
-		length = 2 + bounds.prepareToEncode(coder);
+		length = 2 + bounds.prepareToEncode(coder, context);
 		length += 2;
 		length += (fontIdentifier == 0) ? 0 : 4;
 		length += fontClass == null ? 0 : coder.strlen(fontClass) + 2;
@@ -1133,12 +1134,12 @@ public final class DefineTextField implements DefineTag
 		length += coder.strlen(variableName);
 		length += (initialText.length() > 0) ? coder.strlen(initialText) : 0;
 
-		coder.getContext().setTransparent(false);
+		context.setTransparent(false);
 
 		return (length > 62 ? 6:2) + length;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();
 
@@ -1151,9 +1152,9 @@ public final class DefineTextField implements DefineTag
 		end = coder.getPointer() + (length << 3);
 
 		coder.writeWord(identifier, 2);
-		coder.getContext().setTransparent(true);
+		context.setTransparent(true);
 
-		bounds.encode(coder);
+		bounds.encode(coder, context);
 		coder.writeBits(initialText.length() > 0 ? 1 : 0, 1);
 		coder.writeBits(wordWrapped ? 1 : 0, 1);
 		coder.writeBits(multiline ? 1 : 0, 1);
@@ -1180,7 +1181,7 @@ public final class DefineTextField implements DefineTag
 			coder.writeWord(fontHeight, 2);
 		}
 
-		color.encode(coder);
+		color.encode(coder, context);
 
 		if (maxLength > 0) {
 			coder.writeWord(maxLength, 2);
@@ -1201,7 +1202,7 @@ public final class DefineTextField implements DefineTag
 		{
 			coder.writeString(initialText);
 		}
-		coder.getContext().setTransparent(false);
+		context.setTransparent(false);
 
 		if (coder.getPointer() != end) {
 			throw new CoderException(getClass().getName(), start >> 3, length,

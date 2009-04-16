@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Place2.Mode;
@@ -239,11 +240,11 @@ public final class Place3 implements MovieTag
 		events = new ArrayList<MovieClipEventHandler>(builder.events);
 	}
 
-	public Place3(final SWFDecoder coder) throws CoderException
+	public Place3(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();
 		
-		coder.getContext().setTransparent(true);
+		context.setTransparent(true);
 		length = coder.readWord(2, false) & 0x3F;
 		
 		if (length == 0x3F) {
@@ -277,11 +278,11 @@ public final class Place3 implements MovieTag
 		}
 
 		if (hasTransform) {
-			transform = new CoordTransform(coder);
+			transform = new CoordTransform(coder, context);
 		}
 
 		if (hasColorTransform) {
-			colorTransform = new ColorTransform(coder);
+			colorTransform = new ColorTransform(coder, context);
 		}
 
 		if (hasRatio) {
@@ -298,7 +299,7 @@ public final class Place3 implements MovieTag
 
 		if (hasEvents)
 		{
-			int eventSize = coder.getContext().getVersion() > 5 ? 4 : 2;
+			int eventSize = context.getVersion() > 5 ? 4 : 2;
 			events = new ArrayList<MovieClipEventHandler>(eventSize);
 
 			coder.readWord(2, false);
@@ -306,11 +307,11 @@ public final class Place3 implements MovieTag
 			
 			while (coder.readWord(eventSize, false) != 0) {
 				coder.adjustPointer(-(eventSize<<3));
-				events.add(new MovieClipEventHandler(coder));
+				events.add(new MovieClipEventHandler(coder, context));
 			}
 
 		}
-		coder.getContext().setTransparent(false);
+		context.setTransparent(false);
 
 		if (coder.getPointer() != end) {
 			throw new CoderException(getClass().getName(), start >> 3, length,
@@ -748,37 +749,37 @@ public final class Place3 implements MovieTag
 				colorTransform, ratio, clippingDepth, name, events);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder)
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
-		coder.getContext().setTransparent(true);
+		context.setTransparent(true);
 
 		length = 3;
 		length += (placeType == Place2.Mode.NEW || placeType == Place2.Mode.REPLACE) ? 2 : 0;
-		length += transform == null ? 0 : transform.prepareToEncode(coder);
-		length += colorTransform == null ? 0 : colorTransform.prepareToEncode(coder);
+		length += transform == null ? 0 : transform.prepareToEncode(coder, context);
+		length += colorTransform == null ? 0 : colorTransform.prepareToEncode(coder, context);
 		length += ratio == Movie.VALUE_NOT_SET ? 0 : 2;
 		length += (clippingDepth > 0) ? 2 : 0;
 		length += name != null ? coder.strlen(name) : 0;
 
 		if (!events.isEmpty())
 		{
-			int eventSize = coder.getContext().getVersion() > 5 ? 4 : 2;
+			int eventSize = context.getVersion() > 5 ? 4 : 2;
 
 			length += 2 + eventSize;
 
 			for (MovieClipEventHandler handler : events) {
-				length += handler.prepareToEncode(coder);
+				length += handler.prepareToEncode(coder, context);
 			}
 
 			length += eventSize;
 		}
 
-		coder.getContext().setTransparent(false);
+		context.setTransparent(false);
 
 		return (length > 62 ? 6 : 2) + length;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();
 		
@@ -790,7 +791,7 @@ public final class Place3 implements MovieTag
 		}
 		end = coder.getPointer() + (length << 3);
 		
-		coder.getContext().setTransparent(true);
+		context.setTransparent(true);
 		coder.writeBits(events.isEmpty() ? 0 : 1, 1);
 		coder.writeBits(clippingDepth > 0 ? 1 : 0, 1);
 		coder.writeBits(name != null ? 1 : 0, 1);
@@ -812,10 +813,10 @@ public final class Place3 implements MovieTag
 			coder.writeWord(identifier, 2);
 		}
 		if (transform != null) {
-			transform.encode(coder);
+			transform.encode(coder, context);
 		}
 		if (colorTransform != null) {
-			colorTransform.encode(coder);
+			colorTransform.encode(coder, context);
 		}
 		if (ratio != Movie.VALUE_NOT_SET) {
 			coder.writeWord(ratio, 2);
@@ -831,7 +832,7 @@ public final class Place3 implements MovieTag
 
 		if (!events.isEmpty())
 		{
-			int eventSize = coder.getContext().getVersion() > 5 ? 4 : 2;
+			int eventSize = context.getVersion() > 5 ? 4 : 2;
 			int eventMask = 0;
 
 			coder.writeWord(0, 2);
@@ -843,12 +844,12 @@ public final class Place3 implements MovieTag
 			coder.writeWord(eventMask, eventSize);
 
 			for (MovieClipEventHandler handler : events) {
-				handler.encode(coder);
+				handler.encode(coder, context);
 			}
 
 			coder.writeWord(0, eventSize);
 		}
-		coder.getContext().setTransparent(false);
+		context.setTransparent(false);
 
 		if (coder.getPointer() != end) {
 			throw new CoderException(getClass().getName(), start >> 3, length,

@@ -39,6 +39,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -98,10 +99,11 @@ public final class DefineFontNameTest {
 	@Test
 	public void encode() throws CoderException {
 		SWFEncoder encoder = new SWFEncoder(encoded.length);
+		SWFContext context = new SWFContext();
 
 		fixture = new DefineFontName(identifier, name, copyright);
-		assertEquals(encoded.length, fixture.prepareToEncode(encoder));
-		fixture.encode(encoder);
+		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
+		fixture.encode(encoder, context);
 
 		assertTrue(encoder.eof());
 		assertArrayEquals(encoded, encoder.getData());
@@ -111,13 +113,14 @@ public final class DefineFontNameTest {
 	public void encodeExtended() throws CoderException {
 
 		SWFEncoder encoder = new SWFEncoder(114);
+		SWFContext context = new SWFContext();
 
 		char[] chars = new char[100];
 		Arrays.fill(chars, 'a');
 
 		fixture = new DefineFontName(identifier, name, new String(chars));
-		assertEquals(114, fixture.prepareToEncode(encoder));
-		fixture.encode(encoder);
+		assertEquals(114, fixture.prepareToEncode(encoder, context));
+		fixture.encode(encoder, context);
 
 		assertTrue(encoder.eof());
 	}
@@ -125,8 +128,9 @@ public final class DefineFontNameTest {
 	@Test
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
+		SWFContext context = new SWFContext();
 
-		fixture = new DefineFontName(decoder);
+		fixture = new DefineFontName(decoder, context);
 
 		assertTrue(decoder.eof());
 		assertEquals(identifier, fixture.getIdentifier());
@@ -137,8 +141,9 @@ public final class DefineFontNameTest {
 	@Test
 	public void decodeExtended() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(extended);
+		SWFContext context = new SWFContext();
 
-		fixture = new DefineFontName(decoder);
+		fixture = new DefineFontName(decoder, context);
 
 		assertTrue(decoder.eof());
 		assertEquals(identifier, fixture.getIdentifier());

@@ -1,6 +1,7 @@
 package com.flagstone.transform.movie.filter;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.datatype.Color;
@@ -21,11 +22,11 @@ public final class BevelFilter implements Filter {
 	private Mode mode;
 	private int passes;
 
-	public BevelFilter(final SWFDecoder coder) throws CoderException
+	public BevelFilter(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		coder.adjustPointer(8);
-		shadow = new Color(coder);
-		highlight = new Color(coder);
+		shadow = new Color(coder, context);
+		highlight = new Color(coder, context);
 		blurX = coder.readWord(4, true);
 		blurY = coder.readWord(4, true);
 		angle = coder.readWord(4, true);
@@ -52,16 +53,16 @@ public final class BevelFilter implements Filter {
 		return new BevelFilter(this);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder)
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
 		return 27;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		coder.writeByte(BEVEL);
-		shadow.encode(coder);
-		highlight.encode(coder);
+		shadow.encode(coder, context);
+		highlight.encode(coder, context);
 		coder.writeWord(blurX, 4);
 		coder.writeWord(blurY, 4);
 		coder.writeWord(angle, 4);

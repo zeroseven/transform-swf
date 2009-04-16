@@ -35,6 +35,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Strings;
@@ -79,7 +80,7 @@ public final class ExceptionHandler implements Action
 	private transient int catchLength;
 	private transient int finalLength;
 
-	public ExceptionHandler(final SWFDecoder coder) throws CoderException
+	public ExceptionHandler(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		coder.readByte();
 		length = coder.readWord(2, false);
@@ -116,20 +117,20 @@ public final class ExceptionHandler implements Action
 		int end = coder.getPointer() + (tryLength << 3);
 		
 		while (coder.getPointer() < end) {			
-			tryActions.add(coder.actionOfType(coder));
+			tryActions.add(context.actionOfType(coder, context));
 		}
 
 		if (containsCatch) {
 			end = coder.getPointer() + (catchLength << 3);
 			while (coder.getPointer() < end) {			
-				catchActions.add(coder.actionOfType(coder));
+				catchActions.add(context.actionOfType(coder, context));
 			}
 		}
 
 		if (containsFinal) {
 			end = coder.getPointer() + (finalLength << 3);
 			while (coder.getPointer() < end) {			
-				finalActions.add(coder.actionOfType(coder));
+				finalActions.add(context.actionOfType(coder, context));
 			}
 		}
 	}
@@ -418,7 +419,7 @@ public final class ExceptionHandler implements Action
 		return String.format(FORMAT, variable, register, tryActions, catchActions, finalActions);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder)
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
 		length = 7;
 		length += (variable.length() > 0) ? coder.strlen(variable) : 1;
@@ -427,21 +428,21 @@ public final class ExceptionHandler implements Action
 		tryLength = tryActions.isEmpty() ? 1 : 0;
 		
 		while (iAction.hasNext()) {
-			tryLength += iAction.next().prepareToEncode(coder);
+			tryLength += iAction.next().prepareToEncode(coder, context);
 		}
 
 		iAction = catchActions.iterator();
 		catchLength = 0;
 		
 		while (iAction.hasNext()) {
-			catchLength += iAction.next().prepareToEncode(coder);
+			catchLength += iAction.next().prepareToEncode(coder, context);
 		}
 		
 		iAction = finalActions.iterator();
 		finalLength = 0;
 		
 		while (iAction.hasNext()) {
-			finalLength += iAction.next().prepareToEncode(coder);
+			finalLength += iAction.next().prepareToEncode(coder, context);
 		}
 
 		length += tryLength;
@@ -451,7 +452,7 @@ public final class ExceptionHandler implements Action
 		return 3 + length;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		coder.writeByte(Types.EXCEPTION_HANDLER);
 		coder.writeWord(length, 2);
@@ -474,7 +475,7 @@ public final class ExceptionHandler implements Action
 		Iterator<Action> iAction = tryActions.iterator();
 		
 		while (iAction.hasNext()) {
-			iAction.next().encode(coder);
+			iAction.next().encode(coder, context);
 		}
 		
 		if (tryActions.isEmpty()) {
@@ -484,13 +485,13 @@ public final class ExceptionHandler implements Action
 		iAction = catchActions.iterator();
 		
 		while (iAction.hasNext()) {
-			iAction.next().encode(coder);
+			iAction.next().encode(coder, context);
 		}
 		
 		iAction = finalActions.iterator();
 		
 		while (iAction.hasNext()) {
-			iAction.next().encode(coder);
+			iAction.next().encode(coder, context);
 		}
 	}
 }

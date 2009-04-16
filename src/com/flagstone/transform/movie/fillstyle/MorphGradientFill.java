@@ -35,6 +35,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Strings;
@@ -59,16 +60,16 @@ public final class MorphGradientFill implements FillStyle {
 	
 	private transient int count;
 
-	public MorphGradientFill(final SWFDecoder coder) throws CoderException {
+	public MorphGradientFill(final SWFDecoder coder, final SWFContext context) throws CoderException {
 	    type = coder.readByte();
-		startTransform = new CoordTransform(coder);
-		endTransform = new CoordTransform(coder);
+		startTransform = new CoordTransform(coder, context);
+		endTransform = new CoordTransform(coder, context);
 		count = coder.readByte();
 
 		gradients = new ArrayList<MorphGradient>(count);
 
 		for (int i=0; i<count; i++) {
-			gradients.add(new MorphGradient(coder));
+			gradients.add(new MorphGradient(coder, context));
 		}
 	}
 
@@ -202,32 +203,32 @@ public final class MorphGradientFill implements FillStyle {
 		return String.format(FORMAT, startTransform, endTransform, gradients);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder) {
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context) {
 		Iterator<MorphGradient> iter;
 		
-		int length = 2 + startTransform.prepareToEncode(coder)
-				+ endTransform.prepareToEncode(coder);
+		int length = 2 + startTransform.prepareToEncode(coder, context)
+				+ endTransform.prepareToEncode(coder, context);
 		
 		count = gradients.size();
 		
 		for (iter = gradients.iterator(); iter.hasNext();) {
-			length += iter.next().prepareToEncode(coder);
+			length += iter.next().prepareToEncode(coder, context);
 		}
 
 		return length;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException {
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException {
 		Iterator<MorphGradient> iter;
 		
 		coder.writeByte(type);
-		startTransform.encode(coder);
-		endTransform.encode(coder);
+		startTransform.encode(coder, context);
+		endTransform.encode(coder, context);
 
 		coder.writeByte(count);
 
 		for (iter = gradients.iterator(); iter.hasNext();) {
-			iter.next().encode(coder);
+			iter.next().encode(coder, context);
 		}
 	}
 }

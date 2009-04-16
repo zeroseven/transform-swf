@@ -35,6 +35,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.DefineTag;
@@ -70,7 +71,7 @@ public final class DefineFont implements DefineTag
 	private transient int end;
 	private transient int length;
 
-	public DefineFont(final SWFDecoder coder) throws CoderException
+	public DefineFont(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
@@ -100,7 +101,7 @@ public final class DefineFont implements DefineTag
 		{
 			coder.setPointer(offsetStart + (offset[i] << 3));
 
-			shapes.add(new Shape(coder));
+			shapes.add(new Shape(coder, context));
 		}
 
 		if (coder.getPointer() != end) {
@@ -199,26 +200,26 @@ public final class DefineFont implements DefineTag
 		return String.format(FORMAT, identifier, shapes);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder)
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
 		length = 2;
 		
-		coder.getContext().setFillSize(1);
-		coder.getContext().setLineSize(coder.getContext().isPostscript() ? 1 : 0);
+		context.setFillSize(1);
+		context.setLineSize(context.isPostscript() ? 1 : 0);
 
 		length += shapes.size() * 2;
 
 		for (Shape shape : shapes) {
-			length += shape.prepareToEncode(coder);
+			length += shape.prepareToEncode(coder, context);
 		}
 
-		coder.getContext().setFillSize(0);
-		coder.getContext().setLineSize(0);
+		context.setFillSize(0);
+		context.setLineSize(0);
 
 		return (length > 62 ? 6:2) + length;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();
 		
@@ -231,8 +232,8 @@ public final class DefineFont implements DefineTag
 		end = coder.getPointer() + (length << 3);
 		coder.writeWord(identifier, 2);
 		
-		coder.getContext().setFillSize(1);
-		coder.getContext().setLineSize(coder.getContext().isPostscript() ? 1 : 0);
+		context.setFillSize(1);
+		context.setLineSize(context.isPostscript() ? 1 : 0);
 
 		int currentLocation;
 		int offset;
@@ -254,11 +255,11 @@ public final class DefineFont implements DefineTag
 			coder.writeWord(offset, 2);
 			coder.setPointer(currentLocation);
 
-			i.next().encode(coder);
+			i.next().encode(coder, context);
 		}
 
-		coder.getContext().setFillSize(0);
-		coder.getContext().setLineSize(0);
+		context.setFillSize(0);
+		context.setLineSize(0);
 
 		if (coder.getPointer() != end) {
 			throw new CoderException(getClass().getName(), start >> 3, length,

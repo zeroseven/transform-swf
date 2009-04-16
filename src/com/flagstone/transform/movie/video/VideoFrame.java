@@ -33,6 +33,7 @@ package com.flagstone.transform.movie.video;
 import java.util.Arrays;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.MovieTag;
@@ -62,7 +63,7 @@ public final class VideoFrame implements MovieTag
 	
 	private transient int length;
 
-	public VideoFrame(final SWFDecoder coder) throws CoderException
+	public VideoFrame(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		length = coder.readWord(2, false) & 0x3F;
 		
@@ -188,14 +189,14 @@ public final class VideoFrame implements MovieTag
 		return String.format(FORMAT, identifier, frameNumber, data.length);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder)
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
 		length = 4 + data.length;
 
 		return (length > 62 ? 6:2) + length;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		if (length >= 63) {
 			coder.writeWord((Types.VIDEO_FRAME << 6) | 0x3F, 2);

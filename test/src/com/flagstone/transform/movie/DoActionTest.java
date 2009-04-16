@@ -41,6 +41,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.action.Action;
@@ -95,10 +96,11 @@ public final class DoActionTest {
 	@Test
 	public void encode() throws CoderException {		
 		SWFEncoder encoder = new SWFEncoder(encoded.length);	
-		
+		SWFContext context = new SWFContext();
+
 		fixture = new DoAction(actions);
-		assertEquals(4, fixture.prepareToEncode(encoder));
-		fixture.encode(encoder);
+		assertEquals(4, fixture.prepareToEncode(encoder, context));
+		fixture.encode(encoder, context);
 		
 		assertTrue(encoder.eof());
 		assertArrayEquals(encoded, encoder.getData());
@@ -107,10 +109,11 @@ public final class DoActionTest {
 	@Test
 	public void encodeDefault() throws CoderException {		
 		SWFEncoder encoder = new SWFEncoder(empty.length);	
-		
+		SWFContext context = new SWFContext();
+
 		fixture = new DoAction();
-		assertEquals(empty.length, fixture.prepareToEncode(encoder));
-		fixture.encode(encoder);
+		assertEquals(empty.length, fixture.prepareToEncode(encoder, context));
+		fixture.encode(encoder, context);
 		
 		assertTrue(encoder.eof());
 		assertArrayEquals(empty, encoder.getData());
@@ -119,7 +122,8 @@ public final class DoActionTest {
 	@Test
 	public void encodeExtended() throws CoderException {		
 		SWFEncoder encoder = new SWFEncoder(106);	
-		
+		SWFContext context = new SWFContext();
+
 		fixture = new DoAction();
 		
 		for (int i=0; i<99; i++) {
@@ -128,8 +132,8 @@ public final class DoActionTest {
 		
 		fixture.add(BasicAction.END);
 		
-		assertEquals(106, fixture.prepareToEncode(encoder));
-		fixture.encode(encoder);
+		assertEquals(106, fixture.prepareToEncode(encoder, context));
+		fixture.encode(encoder, context);
 		
 		assertTrue(encoder.eof());
 	}
@@ -137,9 +141,11 @@ public final class DoActionTest {
 	@Test
 	public void checkDecode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
-		decoder.getContext().setDecodeActions(true);
+		SWFContext context = new SWFContext();
+
+		context.setDecodeActions(true);
 		
-		fixture = new DoAction(decoder);
+		fixture = new DoAction(decoder, context);
 		
 		assertTrue(decoder.eof());
 		assertEquals(actions, fixture.getActions());
@@ -148,9 +154,11 @@ public final class DoActionTest {
 	@Test
 	public void checkDecodeExtended() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(extended);
-		decoder.getContext().setDecodeActions(true);
+		SWFContext context = new SWFContext();
+
+		context.setDecodeActions(true);
 		
-		fixture = new DoAction(decoder);
+		fixture = new DoAction(decoder, context);
 		
 		assertTrue(decoder.eof());
 		assertEquals(actions, fixture.getActions());
@@ -159,9 +167,11 @@ public final class DoActionTest {
 	@Test
 	public void checkDecodeContainsActionData() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
-		decoder.getContext().setDecodeActions(false);
+		SWFContext context = new SWFContext();
 
-		fixture = new DoAction(decoder);
+		context.setDecodeActions(false);
+
+		fixture = new DoAction(decoder, context);
 		
 		assertEquals(1, fixture.getActions().size());
 		assertTrue(fixture.getActions().get(0) instanceof ActionData);

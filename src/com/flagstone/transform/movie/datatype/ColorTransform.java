@@ -32,6 +32,7 @@ package com.flagstone.transform.movie.datatype;
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Encoder;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Encodeable;
@@ -116,13 +117,13 @@ public final class ColorTransform implements Encodeable, Copyable<ColorTransform
 	private transient boolean hasAdd;
 	private transient boolean hasAlpha;
 
-	public ColorTransform(final SWFDecoder coder) throws CoderException {
+	public ColorTransform(final SWFDecoder coder, final SWFContext context) throws CoderException {
 
 		coder.alignToByte();
 
 		hasAdd = coder.readBits(1, false) != 0;
 		hasMultiply = coder.readBits(1, false) != 0;
-		hasAlpha = coder.getContext().isTransparent();
+		hasAlpha = context.isTransparent();
 		size = coder.readBits(4, false);
 
 		if (hasMultiply) {
@@ -429,14 +430,14 @@ public final class ColorTransform implements Encodeable, Copyable<ColorTransform
 				multiplyAlpha / 256.0f, addRed, addGreen, addBlue, addAlpha);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder) {
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context) {
 
 		int numberOfBits = 13; // include extra 7 bits for byte alignment
 
-		hasMultiply = containsMultiplyTerms(coder);
-		hasAdd = containsAddTerms(coder);
-		hasAlpha = coder.getContext().isTransparent();
-		size = fieldSize(coder);
+		hasMultiply = containsMultiplyTerms(context);
+		hasAdd = containsAddTerms(context);
+		hasAlpha = context.isTransparent();
+		size = fieldSize(context);
 
 		if (hasMultiply) {
 			numberOfBits += size * (hasAlpha ? 4 : 3);
@@ -450,7 +451,7 @@ public final class ColorTransform implements Encodeable, Copyable<ColorTransform
 	}
 
 	@SuppressWarnings("PMD.NPathComplexity")
-	public void encode(final SWFEncoder coder) throws CoderException {
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException {
 
 		coder.alignToByte();
 
@@ -481,22 +482,22 @@ public final class ColorTransform implements Encodeable, Copyable<ColorTransform
 		coder.alignToByte();
 	}
 
-	private boolean containsAddTerms(final SWFEncoder coder) {
+	private boolean containsAddTerms(final SWFContext context) {
 		return (addRed != 0) || (addGreen != 0) || (addBlue != 0)
-				|| (coder.getContext().isTransparent() && addAlpha != 0);
+				|| (context.isTransparent() && addAlpha != 0);
 	}
 
-	private boolean containsMultiplyTerms(final SWFEncoder coder) {
+	private boolean containsMultiplyTerms(final SWFContext context) {
 		return multiplyRed != 256 || multiplyGreen != 256
 				|| multiplyBlue != 256
-				|| (coder.getContext().isTransparent() && multiplyAlpha != 256);
+				|| (context.isTransparent() && multiplyAlpha != 256);
 	}
 
-	private int addFieldSize(final SWFEncoder coder) {
+	private int addFieldSize(final SWFContext context) {
 
 		int size;
 
-		if (coder.getContext().isTransparent()) {
+		if (context.isTransparent()) {
 			size = Encoder.maxSize(addRed, addGreen, addBlue, addAlpha);
 		} else {
 			size = Encoder.maxSize(addRed, addGreen, addBlue);
@@ -504,11 +505,11 @@ public final class ColorTransform implements Encodeable, Copyable<ColorTransform
 		return size;
 	}
 
-	private int multiplyFieldSize(final SWFEncoder coder) {
+	private int multiplyFieldSize(final SWFContext context) {
 
 		int size;
 
-		if (coder.getContext().isTransparent()) {
+		if (context.isTransparent()) {
 			size = Encoder.maxSize(multiplyRed, multiplyGreen, multiplyBlue,
 					multiplyAlpha);
 		} else {
@@ -518,16 +519,16 @@ public final class ColorTransform implements Encodeable, Copyable<ColorTransform
 		return size;
 	}
 
-	private int fieldSize(final SWFEncoder coder) {
+	private int fieldSize(final SWFContext context) {
 		int numberOfBits;
 
 		if (hasAdd && !hasMultiply) {
-			numberOfBits = addFieldSize(coder);
+			numberOfBits = addFieldSize(context);
 		} else if (!hasAdd && hasMultiply) {
-			numberOfBits = multiplyFieldSize(coder);
+			numberOfBits = multiplyFieldSize(context);
 		} else if (hasAdd && hasMultiply) {
-			numberOfBits = Math.max(addFieldSize(coder),
-					multiplyFieldSize(coder));
+			numberOfBits = Math.max(addFieldSize(context),
+					multiplyFieldSize(context));
 		} else {
 			numberOfBits = 1;
 		}

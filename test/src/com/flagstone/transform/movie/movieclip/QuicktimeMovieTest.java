@@ -36,6 +36,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -75,10 +76,11 @@ public final class QuicktimeMovieTest {
 	@Test
 	public void encode() throws CoderException {
 		SWFEncoder encoder = new SWFEncoder(encoded.length);		
-		
+		SWFContext context = new SWFContext();
+	
 		fixture = new QuicktimeMovie(path);
-		assertEquals(encoded.length, fixture.prepareToEncode(encoder));
-		fixture.encode(encoder);
+		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
+		fixture.encode(encoder, context);
 		
 		assertTrue(encoder.eof());
 		assertArrayEquals(encoded, encoder.getData());
@@ -87,8 +89,9 @@ public final class QuicktimeMovieTest {
 	@Test
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
-		
-		fixture = new QuicktimeMovie(decoder);
+		SWFContext context = new SWFContext();
+
+		fixture = new QuicktimeMovie(decoder, context);
 		
 		assertTrue(decoder.eof());
 		assertEquals(path, fixture.getPath());
@@ -97,8 +100,9 @@ public final class QuicktimeMovieTest {
 	@Test
 	public void decodeExtended() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(extended);
-		
-		fixture = new QuicktimeMovie(decoder);
+		SWFContext context = new SWFContext();
+
+		fixture = new QuicktimeMovie(decoder, context);
 		
 		assertTrue(decoder.eof());
 		assertEquals(path, fixture.getPath());

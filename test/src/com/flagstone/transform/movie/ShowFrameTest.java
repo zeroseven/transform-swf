@@ -37,6 +37,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -65,10 +66,11 @@ public final class ShowFrameTest {
 	@Test
 	public void encode() throws CoderException {		
 		SWFEncoder encoder = new SWFEncoder(encoded.length);		
-		
+		SWFContext context = new SWFContext();
+
 		fixture = ShowFrame.getInstance();
-		assertEquals(encoded.length, fixture.prepareToEncode(encoder));
-		fixture.encode(encoder);
+		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
+		fixture.encode(encoder, context);
 		
 		assertTrue(encoder.eof());
 		assertArrayEquals(encoded, encoder.getData());
@@ -77,9 +79,10 @@ public final class ShowFrameTest {
 	@Test
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
-		
+		SWFContext context = new SWFContext();
+
 		fixture = ShowFrame.getInstance();
-		fixture.decode(decoder);
+		fixture.decode(decoder, context);
 		
 		assertTrue(decoder.eof());
 	}
@@ -87,9 +90,10 @@ public final class ShowFrameTest {
 	@Test
 	public void decodeExtended() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(extended);
-		
+		SWFContext context = new SWFContext();
+
 		fixture = ShowFrame.getInstance();
-		fixture.decode(decoder);
+		fixture.decode(decoder, context);
 		
 		assertTrue(decoder.eof());
 	}

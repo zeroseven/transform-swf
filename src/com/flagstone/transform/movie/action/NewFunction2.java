@@ -39,6 +39,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Strings;
@@ -179,7 +180,7 @@ public final class NewFunction2 implements Action
 	private transient int length;
 	private transient int actionsLength;
 
-	public NewFunction2(final SWFDecoder coder) throws CoderException
+	public NewFunction2(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		coder.readByte();
 		length = coder.readWord(2, false);
@@ -208,7 +209,7 @@ public final class NewFunction2 implements Action
 		actions = new ArrayList<Action>();
 
 		while (coder.getPointer() < end) {
-			actions.add(coder.actionOfType(coder));
+			actions.add(context.actionOfType(coder, context));
 		}
 	}
 
@@ -431,7 +432,7 @@ public final class NewFunction2 implements Action
 				arguments, actions);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder)
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
 		length = 5 + coder.strlen(name);
 
@@ -445,7 +446,7 @@ public final class NewFunction2 implements Action
 		actionsLength = actions.isEmpty() ? 1:0;
 		
 		while (iAction.hasNext()) {
-			actionsLength += iAction.next().prepareToEncode(coder);
+			actionsLength += iAction.next().prepareToEncode(coder, context);
 		}
 		
 		length += actionsLength;
@@ -453,7 +454,7 @@ public final class NewFunction2 implements Action
 		return 3 + length;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		coder.writeWord(Types.NEW_FUNCTION_2, 1);
 		coder.writeWord(length - actionsLength, 2);
@@ -473,7 +474,7 @@ public final class NewFunction2 implements Action
 		Iterator<Action> iAction = actions.iterator();
 		
 		while (iAction.hasNext()) {
-			iAction.next().encode(coder);
+			iAction.next().encode(coder, context);
 		}
 		
 		if (actions.isEmpty()) {

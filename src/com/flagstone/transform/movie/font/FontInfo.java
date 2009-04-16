@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.MovieTag;
@@ -85,7 +86,7 @@ public final class FontInfo implements MovieTag
 	private transient int length;
 	private transient boolean wideCodes = false;
 
-	public FontInfo(final SWFDecoder coder) throws CoderException
+	public FontInfo(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		codes = new ArrayList<Integer>();
 
@@ -353,7 +354,7 @@ public final class FontInfo implements MovieTag
 		return String.format(FORMAT, identifier, encoding, small, italic, bold, name, codes);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder)
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
 		length = 3;
 		length += coder.strlen(name);
@@ -372,7 +373,7 @@ public final class FontInfo implements MovieTag
 		return (length > 62 ? 6:2) + length;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();
 

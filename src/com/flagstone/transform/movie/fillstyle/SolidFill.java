@@ -31,6 +31,7 @@
 package com.flagstone.transform.movie.fillstyle;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Strings;
@@ -54,9 +55,9 @@ public final class SolidFill implements FillStyle {
 
 	private Color color;
 
-	public SolidFill(final SWFDecoder coder) throws CoderException {
+	public SolidFill(final SWFDecoder coder, final SWFContext context) throws CoderException {
 		coder.adjustPointer(8);
-		color = new Color(coder);
+		color = new Color(coder, context);
 	}
 
 	/**
@@ -104,12 +105,12 @@ public final class SolidFill implements FillStyle {
 		return String.format(FORMAT, color.toString());
 	}
 
-	public int prepareToEncode(final SWFEncoder coder) {
-		return 1 + color.prepareToEncode(coder);
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context) {
+		return 1 + color.prepareToEncode(coder, context);
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException {
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException {
 		coder.writeByte(FillStyle.SOLID);
-		color.encode(coder);
+		color.encode(coder, context);
 	}
 }

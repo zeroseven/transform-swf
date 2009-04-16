@@ -31,6 +31,7 @@
 package com.flagstone.transform.movie.button;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.MovieTag;
@@ -61,7 +62,7 @@ public final class ButtonSound implements MovieTag
 	private transient int end;
 	private transient int length;
 
-	public ButtonSound(final SWFDecoder coder) throws CoderException
+	public ButtonSound(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
@@ -78,7 +79,7 @@ public final class ButtonSound implements MovieTag
 			if (coder.readWord(2, false) > 0) 
 			{
 				coder.adjustPointer(-16);
-				sound[i] = new SoundInfo(coder);
+				sound[i] = new SoundInfo(coder, context);
 			}
 
 			if (coder.getPointer() == end) {
@@ -220,7 +221,7 @@ public final class ButtonSound implements MovieTag
 		return String.format(FORMAT, identifier, sound[0], sound[1], sound[2], sound[3]);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder)
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
 		length = 2;
 
@@ -230,13 +231,13 @@ public final class ButtonSound implements MovieTag
 				length += 2;
 			}
 			else {
-				length += sound[i].prepareToEncode(coder);
+				length += sound[i].prepareToEncode(coder, context);
 			}
 		}
 		return (length > 62 ? 6:2) + length;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();
 
@@ -256,7 +257,7 @@ public final class ButtonSound implements MovieTag
 				coder.writeWord(0, 2);
 			}
 			else {
-				sound[i].encode(coder);
+				sound[i].encode(coder, context);
 			}
 		}
 

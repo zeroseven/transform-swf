@@ -3,13 +3,26 @@ package com.flagstone.transform.coder;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 
+import com.flagstone.transform.factory.movie.ActionFactory;
+import com.flagstone.transform.factory.movie.FillStyleFactory;
+import com.flagstone.transform.factory.movie.MorphFillStyleFactory;
+import com.flagstone.transform.factory.movie.MovieFactory;
+import com.flagstone.transform.factory.movie.SWFFactory;
+import com.flagstone.transform.movie.MovieTag;
 import com.flagstone.transform.movie.Strings;
+import com.flagstone.transform.movie.action.Action;
+import com.flagstone.transform.movie.fillstyle.FillStyle;
 
 /**
  * Contexts are used to pass information between objects when they are being
  * encoded or decoded.
  */
 public final class SWFContext {
+
+	private SWFFactory<FillStyle> fillStyleFactory;
+	private SWFFactory<FillStyle> morphStyleFactory;
+	private SWFFactory<Action> actionFactory;
+	private SWFFactory<MovieTag> movieFactory;
 
 	private int version;
 	private String encoding;
@@ -30,6 +43,45 @@ public final class SWFContext {
 	private int advanceSize;
 	private int glyphSize;
 	private int shapeSize;
+
+	public SWFContext() {
+		fillStyleFactory = new FillStyleFactory();
+		morphStyleFactory = new MorphFillStyleFactory();
+		actionFactory = new ActionFactory();
+		movieFactory = new MovieFactory();
+	}
+
+	public void setFillStyleFactory(SWFFactory<FillStyle> factory) {
+	    fillStyleFactory = factory;
+    }
+	
+	public void setMorphFillStyleFactory(SWFFactory<FillStyle> factory) {
+	    morphStyleFactory = factory;
+    }
+	
+	public void setActionFactory(SWFFactory<Action> factory) {
+	    actionFactory = factory;
+    }
+	
+	public void setMovieFactory(SWFFactory<MovieTag> factory) {
+	    movieFactory = factory;
+    }
+	
+	public FillStyle fillStyleOfType(final SWFDecoder coder, final SWFContext context) throws CoderException {
+		return fillStyleFactory.getObject(coder, context);
+	}
+	
+	public FillStyle morphFillStyleOfType(final SWFDecoder coder, final SWFContext context) throws CoderException {
+		return morphStyleFactory.getObject(coder, context);
+	}
+	
+	public Action actionOfType(final SWFDecoder coder, final SWFContext context) throws CoderException {
+		return actionFactory.getObject(coder, context);
+	}
+	
+	public MovieTag movieOfType(final SWFDecoder coder, final SWFContext context) throws CoderException {
+		return movieFactory.getObject(coder, context);
+	}
 
 	/**
 	 * Sets the version of Flash that an object is being encoded or decoded for.

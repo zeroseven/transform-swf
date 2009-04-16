@@ -31,6 +31,7 @@
 package com.flagstone.transform.movie;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.datatype.ColorTransform;
@@ -71,7 +72,7 @@ public final class Place implements MovieTag
 	private transient int end;
 	private transient int length;
 
-	public Place(final SWFDecoder coder) throws CoderException
+	public Place(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
@@ -84,10 +85,10 @@ public final class Place implements MovieTag
 
 		identifier = coder.readWord(2, false);
 		layer = coder.readWord(2, false);
-		transform = new CoordTransform(coder);
+		transform = new CoordTransform(coder, context);
 
 		if (coder.getPointer() < end) {
-			colorTransform = new ColorTransform(coder);
+			colorTransform = new ColorTransform(coder, context);
 		}
 
 		if (coder.getPointer() != end) {
@@ -284,16 +285,16 @@ public final class Place implements MovieTag
 		return String.format(FORMAT, identifier, layer, transform, colorTransform);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder)
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
 		length = 4;
-		length += transform.prepareToEncode(coder);
-		length += colorTransform == null ? 0 : colorTransform.prepareToEncode(coder);
+		length += transform.prepareToEncode(coder, context);
+		length += colorTransform == null ? 0 : colorTransform.prepareToEncode(coder, context);
 
 		return 2 + length;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();
 		coder.writeWord((Types.PLACE << 6) | length, 2);
@@ -301,10 +302,10 @@ public final class Place implements MovieTag
 
 		coder.writeWord(identifier, 2);
 		coder.writeWord(layer, 2);
-		transform.encode(coder);
+		transform.encode(coder, context);
 
 		if (colorTransform != null) {
-			colorTransform.encode(coder);
+			colorTransform.encode(coder, context);
 		}
 
 		if (coder.getPointer() != end) {

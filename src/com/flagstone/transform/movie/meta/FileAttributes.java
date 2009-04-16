@@ -31,6 +31,7 @@
 package com.flagstone.transform.movie.meta;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.MovieTag;
@@ -44,7 +45,7 @@ public final class FileAttributes implements MovieTag {
 	private int hasActionscript;
 	private int useNetwork;
 
-	public FileAttributes(final SWFDecoder coder) throws CoderException {
+	public FileAttributes(final SWFDecoder coder, final SWFContext context) throws CoderException {
 		
 		if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
 			coder.readWord(4, false);
@@ -104,11 +105,11 @@ public final class FileAttributes implements MovieTag {
 				hasActionscript >> 2, useNetwork);
 	}
 	
-	public int prepareToEncode(final SWFEncoder coder) {
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context) {
 		return 6;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException {
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException {
 		coder.writeWord((Types.FILE_ATTRIBUTES << 6) | 4, 2);
 		coder.writeByte(hasMetaData | hasActionscript | useNetwork);
 		coder.writeWord(0, 3);

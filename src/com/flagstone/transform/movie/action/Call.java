@@ -31,6 +31,7 @@
 package com.flagstone.transform.movie.action;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Types;
 
@@ -62,11 +63,11 @@ public final class Call implements Action
 		return this;
 	}
 
-	public int prepareToEncode(final SWFEncoder coder) {
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context) {
 		return 3;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException {
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException {
 		coder.writeByte(Types.CALL);
 		coder.writeByte(0);
 		coder.writeByte(0);

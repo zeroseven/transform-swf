@@ -37,6 +37,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Types;
@@ -84,10 +85,11 @@ public final class GotoFrame2Test {
 	@Test
 	public void encode() throws CoderException {		
 		SWFEncoder encoder = new SWFEncoder(encoded.length);		
-		
+		SWFContext context = new SWFContext();
+
 		fixture = new GotoFrame2(offset, play);
-		assertEquals(encoded.length, fixture.prepareToEncode(encoder));
-		fixture.encode(encoder);
+		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
+		fixture.encode(encoder, context);
 		
 		assertTrue(encoder.eof());
 		assertArrayEquals(encoded, encoder.getData());
@@ -96,10 +98,11 @@ public final class GotoFrame2Test {
 	@Test
 	public void encodeWithNoOffset() throws CoderException {		
 		SWFEncoder encoder = new SWFEncoder(noOffset.length);		
-		
+		SWFContext context = new SWFContext();
+
 		fixture = new GotoFrame2(0, play);
-		assertEquals(noOffset.length, fixture.prepareToEncode(encoder));
-		fixture.encode(encoder);
+		assertEquals(noOffset.length, fixture.prepareToEncode(encoder, context));
+		fixture.encode(encoder, context);
 		
 		assertTrue(encoder.eof());
 		assertArrayEquals(noOffset, encoder.getData());
@@ -108,10 +111,11 @@ public final class GotoFrame2Test {
 	@Test
 	public void encodeWithPlaySetToFalse() throws CoderException {		
 		SWFEncoder encoder = new SWFEncoder(stop.length);		
-		
+		SWFContext context = new SWFContext();
+
 		fixture = new GotoFrame2(0, false);
-		assertEquals(stop.length, fixture.prepareToEncode(encoder));
-		fixture.encode(encoder);
+		assertEquals(stop.length, fixture.prepareToEncode(encoder, context));
+		fixture.encode(encoder, context);
 		
 		assertTrue(encoder.eof());
 		assertArrayEquals(stop, encoder.getData());
@@ -120,8 +124,9 @@ public final class GotoFrame2Test {
 	@Test
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
-		
-		fixture = new GotoFrame2(decoder);
+		SWFContext context = new SWFContext();
+
+		fixture = new GotoFrame2(decoder, context);
 		
 		assertTrue(decoder.eof());
 		assertEquals(offset, fixture.getFrameOffset());
@@ -131,8 +136,9 @@ public final class GotoFrame2Test {
 	@Test
 	public void decodeWithNoOffset() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(noOffset);
-		
-		fixture = new GotoFrame2(decoder);
+		SWFContext context = new SWFContext();
+
+		fixture = new GotoFrame2(decoder, context);
 		
 		assertTrue(decoder.eof());
 		assertEquals(0, fixture.getFrameOffset());
@@ -142,8 +148,9 @@ public final class GotoFrame2Test {
 	@Test
 	public void decodeWithPlaySetToFalse() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(stop);
-		
-		fixture = new GotoFrame2(decoder);
+		SWFContext context = new SWFContext();
+
+		fixture = new GotoFrame2(decoder, context);
 		
 		assertTrue(decoder.eof());
 		assertEquals(0, fixture.getFrameOffset());

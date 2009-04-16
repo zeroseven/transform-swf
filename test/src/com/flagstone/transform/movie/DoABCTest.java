@@ -37,6 +37,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -95,10 +96,11 @@ public final class DoABCTest {
 	@Test
 	public void encode() throws CoderException {		
 		SWFEncoder encoder = new SWFEncoder(encoded.length);	
-		
+		SWFContext context = new SWFContext();
+
 		fixture = new DoABC(name, defer, data);
-		assertEquals(encoded.length, fixture.prepareToEncode(encoder));
-		fixture.encode(encoder);
+		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
+		fixture.encode(encoder, context);
 		
 		assertTrue(encoder.eof());
 		assertArrayEquals(encoded, encoder.getData());
@@ -107,10 +109,11 @@ public final class DoABCTest {
 	@Test
 	public void encodeDefault() throws CoderException {		
 		SWFEncoder encoder = new SWFEncoder(encoded.length);	
-		
+		SWFContext context = new SWFContext();
+
 		fixture = new DoABC(name, defer, data);
-		assertEquals(encoded.length, fixture.prepareToEncode(encoder));
-		fixture.encode(encoder);
+		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
+		fixture.encode(encoder, context);
 		
 		assertTrue(encoder.eof());
 		assertArrayEquals(encoded, encoder.getData());
@@ -119,10 +122,11 @@ public final class DoABCTest {
 	@Test
 	public void encodeExtended() throws CoderException {		
 		SWFEncoder encoder = new SWFEncoder(117);	
-		
+		SWFContext context = new SWFContext();
+
 		fixture = new DoABC(name, defer, new byte[100]);
-		assertEquals(117, fixture.prepareToEncode(encoder));
-		fixture.encode(encoder);
+		assertEquals(117, fixture.prepareToEncode(encoder, context));
+		fixture.encode(encoder, context);
 		
 		assertTrue(encoder.eof());
 	}
@@ -130,8 +134,9 @@ public final class DoABCTest {
 	@Test
 	public void checkDecode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
-		
-		fixture = new DoABC(decoder);
+		SWFContext context = new SWFContext();
+
+		fixture = new DoABC(decoder, context);
 		
 		assertTrue(decoder.eof());
 		assertEquals(name, fixture.getName());
@@ -142,8 +147,9 @@ public final class DoABCTest {
 	@Test
 	public void checkDecodeExtended() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(extended);
-		
-		fixture = new DoABC(decoder);
+		SWFContext context = new SWFContext();
+
+		fixture = new DoABC(decoder, context);
 		
 		assertTrue(decoder.eof());
 		assertEquals(name, fixture.getName());

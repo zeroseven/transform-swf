@@ -31,6 +31,7 @@
 package com.flagstone.transform.movie.fillstyle;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Encodeable;
@@ -67,12 +68,12 @@ public final class MorphGradient implements Encodeable
 	protected Color startColor;
 	protected Color endColor;
 
-	public MorphGradient(final SWFDecoder coder) throws CoderException
+	public MorphGradient(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		startRatio = coder.readByte();
-		startColor = new Color(coder);
+		startColor = new Color(coder, context);
 		endRatio = coder.readByte();
-		endColor = new Color(coder);
+		endColor = new Color(coder, context);
 	}
 
 	/**
@@ -209,21 +210,21 @@ public final class MorphGradient implements Encodeable
 		return String.format(FORMAT, startRatio, endRatio, startColor, endColor);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder)
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
 		int length = 2;
 
-		length += startColor.prepareToEncode(coder);
-		length += endColor.prepareToEncode(coder);
+		length += startColor.prepareToEncode(coder, context);
+		length += endColor.prepareToEncode(coder, context);
 
 		return length;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		coder.writeWord(startRatio, 1);
-		startColor.encode(coder);
+		startColor.encode(coder, context);
 		coder.writeWord(endRatio, 1);
-		endColor.encode(coder);
+		endColor.encode(coder, context);
 	}
 }

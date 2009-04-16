@@ -35,6 +35,7 @@ import java.util.List;
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Encoder;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.DefineTag;
@@ -98,7 +99,7 @@ public final class DefineMorphShape implements DefineTag
 	private transient int fillBits;
 	private transient int lineBits;
 
-	public DefineMorphShape(final SWFDecoder coder) throws CoderException
+	public DefineMorphShape(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		int start = coder.getPointer();
 		
@@ -110,13 +111,13 @@ public final class DefineMorphShape implements DefineTag
 		}
 		end = coder.getPointer() + (length << 3);
 
-		coder.getContext().setTransparent(true);
-		coder.getContext().setArrayExtended(true);
+		context.setTransparent(true);
+		context.setArrayExtended(true);
 
 		identifier = coder.readWord(2, false);
 
-		startBounds = new Bounds(coder);
-		endBounds = new Bounds(coder);
+		startBounds = new Bounds(coder, context);
+		endBounds = new Bounds(coder, context);
 		fillStyles = new ArrayList<FillStyle>();
 		lineStyles = new ArrayList<MorphLineStyle>();
 
@@ -125,7 +126,7 @@ public final class DefineMorphShape implements DefineTag
 
 		int fillStyleCount = coder.readByte();
 
-		if (coder.getContext().isArrayExtended() && fillStyleCount == 0xFF) {
+		if (context.isArrayExtended() && fillStyleCount == 0xFF) {
 			fillStyleCount = coder.readWord(2, false);
 		}
 		
@@ -134,7 +135,7 @@ public final class DefineMorphShape implements DefineTag
 
 		for (int i = 0; i < fillStyleCount; i++) {
 			type = coder.scanByte();
-			fillStyle = coder.morphFillStyleOfType(coder);
+			fillStyle = context.morphFillStyleOfType(coder, context);
 
 			if (fillStyle == null) {
 				throw new CoderException(String.valueOf(type), start >>> 3, 0, 0, Strings.UNSUPPORTED_FILL_STYLE);
@@ -145,25 +146,25 @@ public final class DefineMorphShape implements DefineTag
 
 		int lineStyleCount = coder.readByte();
 
-		if (coder.getContext().isArrayExtended() && lineStyleCount == 0xFF) {
+		if (context.isArrayExtended() && lineStyleCount == 0xFF) {
 			lineStyleCount = coder.readWord(2, false);
 		}
 
 		for (int i = 0; i < lineStyleCount; i++) {
-			lineStyles.add(new MorphLineStyle(coder));
+			lineStyles.add(new MorphLineStyle(coder, context));
 		}
 
-		if (coder.getContext().isDecodeShapes()) {
-			startShape = new Shape(coder);
-			endShape = new Shape(coder);
+		if (context.isDecodeShapes()) {
+			startShape = new Shape(coder, context);
+			endShape = new Shape(coder, context);
 		}
 		else {
-			startShape = new Shape(offset - ((coder.getPointer()-first) >> 3), coder);			
-			endShape = new Shape(length - ((coder.getPointer()-start) >> 3), coder);
+			startShape = new Shape(offset - ((coder.getPointer()-first) >> 3), coder, context);			
+			endShape = new Shape(length - ((coder.getPointer()-start) >> 3), coder, context);
 		}
 
-		coder.getContext().setTransparent(false);
-		coder.getContext().setArrayExtended(false);
+		context.setTransparent(false);
+		context.setArrayExtended(false);
 
 		if (coder.getPointer() != end) {
 			throw new CoderException(getClass().getName(), start >> 3, length,
@@ -422,12 +423,12 @@ public final class DefineMorphShape implements DefineTag
 				fillStyles, lineStyles, startShape, endShape);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder)
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
 		fillBits = Encoder.unsignedSize(fillStyles.size());
 		lineBits = Encoder.unsignedSize(lineStyles.size());
 
-		if (coder.getContext().isPostscript()) 
+		if (context.isPostscript()) 
 		{
 			if (fillBits == 0) {
 				fillBits = 1;
@@ -438,43 +439,43 @@ public final class DefineMorphShape implements DefineTag
 			}
 		}
 
-		coder.getContext().setTransparent(true);
+		context.setTransparent(true);
 
-		length = 2 + startBounds.prepareToEncode(coder);
-		length += endBounds.prepareToEncode(coder);
+		length = 2 + startBounds.prepareToEncode(coder, context);
+		length += endBounds.prepareToEncode(coder, context);
 		length += 4;
 
 		length += (fillStyles.size() >= 255) ? 3 : 1;
 
 		for (FillStyle style : fillStyles) {
-			length += style.prepareToEncode(coder);
+			length += style.prepareToEncode(coder, context);
 		}
 
 		length += (lineStyles.size() >= 255) ? 3 : 1;
 
 		for (MorphLineStyle style : lineStyles) {
-			length += style.prepareToEncode(coder);
+			length += style.prepareToEncode(coder, context);
 		}
 
-		coder.getContext().setArrayExtended(true);
-		coder.getContext().setFillSize(fillBits);
-		coder.getContext().setLineSize(lineBits);
+		context.setArrayExtended(true);
+		context.setFillSize(fillBits);
+		context.setLineSize(lineBits);
 
-		length += startShape.prepareToEncode(coder);
+		length += startShape.prepareToEncode(coder, context);
 
 		// Number of Fill and Line bits is zero for end shape.
-		coder.getContext().setFillSize(0);
-		coder.getContext().setLineSize(0);
+		context.setFillSize(0);
+		context.setLineSize(0);
 
-		length += endShape.prepareToEncode(coder);
+		length += endShape.prepareToEncode(coder, context);
 
-		coder.getContext().setArrayExtended(false);
-		coder.getContext().setTransparent(false);
+		context.setArrayExtended(false);
+		context.setTransparent(false);
 
 		return (length > 62 ? 6:2) + length;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();
 		
@@ -487,10 +488,10 @@ public final class DefineMorphShape implements DefineTag
 		end = coder.getPointer() + (length << 3);
 		
 		coder.writeWord(identifier, 2);
-		coder.getContext().setTransparent(true);
+		context.setTransparent(true);
 
-		startBounds.encode(coder);
-		endBounds.encode(coder);
+		startBounds.encode(coder, context);
+		endBounds.encode(coder, context);
 
 		int offsetStart = coder.getPointer();
 		coder.writeWord(0, 4);
@@ -505,7 +506,7 @@ public final class DefineMorphShape implements DefineTag
 		}
 
 		for (FillStyle style : fillStyles) {
-			style.encode(coder);
+			style.encode(coder, context);
 		}
 
 		if (lineStyles.size() >= 255)
@@ -519,14 +520,14 @@ public final class DefineMorphShape implements DefineTag
 		}
 
 		for (MorphLineStyle style : lineStyles) {
-			 style.encode(coder);
+			 style.encode(coder, context);
 		}
 
-		coder.getContext().setArrayExtended(true);
-		coder.getContext().setFillSize(fillBits);
-		coder.getContext().setLineSize(lineBits);
+		context.setArrayExtended(true);
+		context.setFillSize(fillBits);
+		context.setLineSize(lineBits);
 
-		startShape.encode(coder);
+		startShape.encode(coder, context);
 
 		int offsetEnd = (coder.getPointer() - offsetStart) >> 3;
 		int currentCursor = coder.getPointer();
@@ -537,13 +538,13 @@ public final class DefineMorphShape implements DefineTag
 
 		// Number of Fill and Line bits is zero for end shape.
 
-		coder.getContext().setFillSize(0);
-		coder.getContext().setLineSize(0);
+		context.setFillSize(0);
+		context.setLineSize(0);
 
-		endShape.encode(coder);
+		endShape.encode(coder, context);
 
-		coder.getContext().setArrayExtended(false);
-		coder.getContext().setTransparent(false);
+		context.setArrayExtended(false);
+		context.setTransparent(false);
 
 		if (coder.getPointer() != end) {
 			throw new CoderException(getClass().getName(), start >> 3, length,

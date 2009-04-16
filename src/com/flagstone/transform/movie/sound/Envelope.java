@@ -31,6 +31,7 @@
 package com.flagstone.transform.movie.sound;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Encodeable;
@@ -71,7 +72,7 @@ public final class Envelope implements Encodeable {
 	protected int left;
 	protected int right;
 
-	public Envelope(final SWFDecoder coder) throws CoderException {
+	public Envelope(final SWFDecoder coder, final SWFContext context) throws CoderException {
 		mark = coder.readWord(4, false);
 		left = coder.readWord(2, false);
 		right = coder.readWord(2, false);
@@ -172,11 +173,11 @@ public final class Envelope implements Encodeable {
 		return String.format(FORMAT, mark, left, right);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder) {
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context) {
 		return 8;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException {
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException {
 		coder.writeWord(mark, 4);
 		coder.writeWord(left, 2);
 		coder.writeWord(right, 2);

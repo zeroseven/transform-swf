@@ -31,6 +31,7 @@
 package com.flagstone.transform.movie.fillstyle;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Strings;
@@ -89,11 +90,11 @@ public final class MorphBitmapFill implements FillStyle {
 	private CoordTransform startTransform;
 	private CoordTransform endTransform;
 
-	public MorphBitmapFill(final SWFDecoder coder) throws CoderException {
+	public MorphBitmapFill(final SWFDecoder coder, final SWFContext context) throws CoderException {
 		type = coder.readByte();
 		identifier = coder.readWord(2, false);
-		startTransform = new CoordTransform(coder);
-		endTransform = new CoordTransform(coder);
+		startTransform = new CoordTransform(coder, context);
+		endTransform = new CoordTransform(coder, context);
 	}
 
 	/**
@@ -205,14 +206,14 @@ public final class MorphBitmapFill implements FillStyle {
 		return String.format(FORMAT, identifier, startTransform, endTransform);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder) {
-		return 3 + startTransform.prepareToEncode(coder) + endTransform.prepareToEncode(coder);
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context) {
+		return 3 + startTransform.prepareToEncode(coder, context) + endTransform.prepareToEncode(coder, context);
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException {
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException {
 		coder.writeByte(type);
 		coder.writeWord(identifier, 2);
-		startTransform.encode(coder);
-		endTransform.encode(coder);
+		startTransform.encode(coder, context);
+		endTransform.encode(coder, context);
 	}
 }

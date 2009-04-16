@@ -31,6 +31,7 @@
 package com.flagstone.transform.movie.text;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Encodeable;
@@ -58,10 +59,10 @@ public final class GlyphIndex implements Encodeable
 	protected int glyphIndex;
 	protected int advance;
 
-	protected GlyphIndex(final SWFDecoder coder) throws CoderException
+	protected GlyphIndex(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
-		glyphIndex = coder.readBits(coder.getContext().getGlyphSize(), false);
-		advance = coder.readBits(coder.getContext().getAdvanceSize(), true);
+		glyphIndex = coder.readBits(context.getGlyphSize(), false);
+		advance = coder.readBits(context.getAdvanceSize(), true);
 	}
 
 	/**
@@ -150,14 +151,14 @@ public final class GlyphIndex implements Encodeable
 		return String.format(FORMAT, glyphIndex, advance);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder)
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
-		return coder.getContext().getGlyphSize() + coder.getContext().getAdvanceSize();
+		return context.getGlyphSize() + context.getAdvanceSize();
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
-		coder.writeBits(glyphIndex, coder.getContext().getGlyphSize());
-		coder.writeBits(advance, coder.getContext().getAdvanceSize());
+		coder.writeBits(glyphIndex, context.getGlyphSize());
+		coder.writeBits(advance, context.getAdvanceSize());
 	}
 }

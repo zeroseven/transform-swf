@@ -31,6 +31,7 @@
 package com.flagstone.transform.movie.linestyle;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Encodeable;
@@ -69,7 +70,7 @@ public final class MorphLineStyle2 implements Encodeable,
 	private transient boolean hasFillStyle;
 	private transient boolean hasMiter;
 
-	public MorphLineStyle2(final SWFDecoder coder) throws CoderException {
+	public MorphLineStyle2(final SWFDecoder coder, final SWFContext context) throws CoderException {
 		startWidth = coder.readWord(2, false);
 		endWidth = coder.readWord(2, false);
 		unpack(coder.readB16());
@@ -79,10 +80,10 @@ public final class MorphLineStyle2 implements Encodeable,
 		}
 
 		if (hasFillStyle) {
-			fillStyle = coder.morphFillStyleOfType(coder);
+			fillStyle = context.morphFillStyleOfType(coder, context);
 		} else {
-			startColor= new Color(coder);
-			endColor= new Color(coder);
+			startColor= new Color(coder, context);
+			endColor= new Color(coder, context);
 		}
 	}
 
@@ -293,7 +294,7 @@ public final class MorphLineStyle2 implements Encodeable,
 				miterLimit);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder) {
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context) {
 
 		hasFillStyle = fillStyle != null;
 		hasMiter = joinStyle == LineJoinStyle.MITER;
@@ -305,20 +306,20 @@ public final class MorphLineStyle2 implements Encodeable,
 		}
 
 		if (hasFillStyle) {
-			length += fillStyle.prepareToEncode(coder);
+			length += fillStyle.prepareToEncode(coder, context);
 		} else {
 			length += 4;
 			length += 4;
 		}
 
 		if (scaledHorizontally || scaledVertically) {
-			coder.getContext().setScalingStroke(true);
+			context.setScalingStroke(true);
 		}
 
 		return length;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException {
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException {
 		coder.writeWord(startWidth, 2);
 		coder.writeWord(endWidth, 2);
 		coder.writeB16(pack());
@@ -328,10 +329,10 @@ public final class MorphLineStyle2 implements Encodeable,
 		}
 
 		if (hasFillStyle) {
-			fillStyle.encode(coder);
+			fillStyle.encode(coder, context);
 		} else {
-			startColor.encode(coder);
-			endColor.encode(coder);
+			startColor.encode(coder, context);
+			endColor.encode(coder, context);
 		}
 	}
 

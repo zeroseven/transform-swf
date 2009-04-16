@@ -32,6 +32,7 @@ package com.flagstone.transform.movie.shape;
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Encoder;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Strings;
@@ -64,7 +65,7 @@ public final class Curve implements ShapeRecord
 	
 	private transient int size;
 
-	public Curve(final SWFDecoder coder) throws CoderException
+	public Curve(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		// skip over shapeType and edgeType
 		coder.adjustPointer(2);
@@ -275,7 +276,7 @@ public final class Curve implements ShapeRecord
 		return String.format(FORMAT, controlX, controlY, anchorX, anchorY);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder)
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
 		int numberOfBits = 6;
 
@@ -283,12 +284,12 @@ public final class Curve implements ShapeRecord
 
 		numberOfBits += size << 2;
 
-		coder.getContext().setShapeSize(coder.getContext().getShapeSize()+numberOfBits);
+		context.setShapeSize(context.getShapeSize()+numberOfBits);
 
 		return numberOfBits;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		coder.writeBits(2, 2); // shapeType, edgeType
 		coder.writeBits(size-2, 4);

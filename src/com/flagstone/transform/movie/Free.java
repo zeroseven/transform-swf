@@ -31,6 +31,7 @@
 package com.flagstone.transform.movie;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -44,7 +45,7 @@ public final class Free implements MovieTag {
 
 	private int identifier;
 
-	public Free(final SWFDecoder coder) throws CoderException {
+	public Free(final SWFDecoder coder, final SWFContext context) throws CoderException {
 
 		if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
 			coder.readWord(4, false);
@@ -104,11 +105,11 @@ public final class Free implements MovieTag {
 		return String.format(FORMAT, identifier);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder) {
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context) {
 		return 4;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException {
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException {
 		coder.writeWord((Types.FREE << 6) | 2, 2);
 		coder.writeWord(identifier, 2);
 	}

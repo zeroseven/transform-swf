@@ -32,6 +32,7 @@ package com.flagstone.transform.movie.datatype;
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Encoder;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Encodeable;
@@ -76,7 +77,7 @@ public final class Bounds implements Encodeable {
 
 	private transient int size;
 
-	public Bounds(final SWFDecoder coder) throws CoderException {
+	public Bounds(final SWFDecoder coder, final SWFContext context) throws CoderException {
 		coder.alignToByte();
 		size = coder.readBits(5, false);
 		minX = coder.readBits(size, true);
@@ -180,13 +181,13 @@ public final class Bounds implements Encodeable {
 		return (((minX*31)+minY)*31 + maxX)*31 + maxY;
 	}
 	
-	public int prepareToEncode(final SWFEncoder coder) {
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context) {
 		size = Encoder.maxSize(minX, minY, maxX, maxY);
 		// add extra 7 bit so result is byte aligned.
 		return ((5 + (size << 2)) + 7) >> 3;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException {
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException {
 		coder.alignToByte();
 		coder.writeBits(size, 5);
 		coder.writeBits(minX, size);

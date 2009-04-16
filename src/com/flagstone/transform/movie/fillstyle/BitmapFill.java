@@ -31,6 +31,7 @@
 package com.flagstone.transform.movie.fillstyle;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Strings;
@@ -97,10 +98,10 @@ public final class BitmapFill implements FillStyle {
 	private int identifier;
 	private CoordTransform transform;
 
-	public BitmapFill(final SWFDecoder coder) throws CoderException {
+	public BitmapFill(final SWFDecoder coder, final SWFContext context) throws CoderException {
 		type = coder.readByte();
 		identifier = coder.readWord(2, false);
-		transform = new CoordTransform(coder);
+		transform = new CoordTransform(coder, context);
 	}
 
 	/**
@@ -188,13 +189,13 @@ public final class BitmapFill implements FillStyle {
 		return String.format(FORMAT, identifier, transform);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder) {
-		return 3 + transform.prepareToEncode(coder);
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context) {
+		return 3 + transform.prepareToEncode(coder, context);
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException {
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException {
 		coder.writeByte(type);
 		coder.writeWord(identifier, 2);
-		transform.encode(coder);
+		transform.encode(coder, context);
 	}
 }

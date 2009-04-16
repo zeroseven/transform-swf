@@ -36,6 +36,7 @@ import static org.junit.Assert.assertArrayEquals;
 import org.junit.Test;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -52,7 +53,8 @@ public final class BoundsTest {
 	private transient Bounds fixture;
 
 	private transient SWFEncoder encoder;
-	private transient SWFDecoder decoder;
+	private transient SWFDecoder decoder; 
+	private transient SWFContext context;
 	
 	private transient final byte[] encoded = new byte[] { 32, -103, 32 };
 
@@ -98,8 +100,8 @@ public final class BoundsTest {
 		encoder = new SWFEncoder(encoded.length);
 		fixture = new Bounds(xmin, ymin, xmax, ymax);
 
-		assertEquals(3, fixture.prepareToEncode(encoder));
-		fixture.encode(encoder);
+		assertEquals(3, fixture.prepareToEncode(encoder, context));
+		fixture.encode(encoder, context);
 
 		assertEquals(24, encoder.getPointer());
 		assertArrayEquals(encoded, encoder.getData());
@@ -109,7 +111,7 @@ public final class BoundsTest {
 	public void decodeWithBoundsSet() throws CoderException {
 		decoder = new SWFDecoder(encoded);
 
-		fixture = new Bounds(decoder);
+		fixture = new Bounds(decoder, context);
 
 		assertTrue(decoder.eof());
 		assertEquals(xmin, fixture.getMinX());

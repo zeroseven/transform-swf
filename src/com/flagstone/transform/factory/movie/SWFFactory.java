@@ -1,6 +1,7 @@
 package com.flagstone.transform.factory.movie;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 
 /**
@@ -8,5 +9,5 @@ import com.flagstone.transform.coder.SWFDecoder;
  */
 public interface SWFFactory<T> {
 
-	T getObject(final SWFDecoder coder) throws CoderException;
+	T getObject(final SWFDecoder coder, final SWFContext context) throws CoderException;
 }

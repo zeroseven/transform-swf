@@ -37,6 +37,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -77,10 +78,11 @@ public final class MovieObjectTest {
 	@Test
 	public void encode() throws CoderException {		
 		SWFEncoder encoder = new SWFEncoder(encoded.length);		
-		
+		SWFContext context = new SWFContext();
+
 		fixture = new MovieObject(type, data);
-		assertEquals(encoded.length, fixture.prepareToEncode(encoder));
-		fixture.encode(encoder);
+		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
+		fixture.encode(encoder, context);
 		
 		assertTrue(encoder.eof());
 		assertArrayEquals(encoded, encoder.getData());
@@ -90,10 +92,11 @@ public final class MovieObjectTest {
 	public void encodeExtended() throws CoderException {
 
 		SWFEncoder encoder = new SWFEncoder(106);
-		
+		SWFContext context = new SWFContext();
+
 		fixture = new MovieObject(type, new byte[100]);
-		assertEquals(106, fixture.prepareToEncode(encoder));		
-		fixture.encode(encoder);
+		assertEquals(106, fixture.prepareToEncode(encoder, context));		
+		fixture.encode(encoder, context);
 		
 		assertTrue(encoder.eof());
 	}
@@ -101,8 +104,9 @@ public final class MovieObjectTest {
 	@Test
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
-		
-		fixture = new MovieObject(decoder);
+		SWFContext context = new SWFContext();
+
+		fixture = new MovieObject(decoder, context);
 		
 		assertTrue(decoder.eof());
 		assertEquals(type, fixture.getType());
@@ -112,8 +116,9 @@ public final class MovieObjectTest {
 	@Test
 	public void decodeExtended() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(extended);
-		
-		fixture = new MovieObject(decoder);
+		SWFContext context = new SWFContext();
+
+		fixture = new MovieObject(decoder, context);
 		
 		assertTrue(decoder.eof());
 		assertEquals(type, fixture.getType());

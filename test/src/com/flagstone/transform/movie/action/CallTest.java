@@ -32,6 +32,7 @@ package com.flagstone.transform.movie.action;
 import org.junit.Test;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFEncoder;
 
 import static org.junit.Assert.assertTrue;
@@ -59,10 +60,11 @@ public final class CallTest {
 	public void encode() throws CoderException {
 
 		SWFEncoder encoder = new SWFEncoder(encoded.length);
-		
+		SWFContext context = new SWFContext();
+
 		fixture = Call.getInstance();
-		assertEquals(encoded.length, fixture.prepareToEncode(encoder));		
-		fixture.encode(encoder);
+		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));		
+		fixture.encode(encoder, context);
 		
 		assertTrue(encoder.eof());
 		assertArrayEquals(encoded, encoder.getData());

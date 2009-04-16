@@ -31,6 +31,7 @@
 package com.flagstone.transform.movie.linestyle;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Encodeable;
@@ -69,10 +70,10 @@ public final class LineStyle implements Encodeable, Copyable<LineStyle>
 	protected int width;
 	protected Color color;
 
-	public LineStyle(final SWFDecoder coder) throws CoderException
+	public LineStyle(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		width = coder.readWord(2, false);
-		color = new Color(coder);
+		color = new Color(coder, context);
 	}
 
 	/**
@@ -149,18 +150,18 @@ public final class LineStyle implements Encodeable, Copyable<LineStyle>
 		return String.format(FORMAT, width, color);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder)
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
 		int length = 2;
 
-		length += coder.getContext().isTransparent() ? 4:3;
+		length += context.isTransparent() ? 4:3;
 
 		return length;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		coder.writeWord(width, 2);
-		color.encode(coder);
+		color.encode(coder, context);
 	}
 }

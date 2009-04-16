@@ -35,6 +35,7 @@ import java.util.List;
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Encoder;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Encodeable;
@@ -99,7 +100,7 @@ public final class TextSpan implements Encodeable
 	private transient boolean hasX;
 	private transient boolean hasY;
 	
-	protected TextSpan(final SWFDecoder coder) throws CoderException
+	protected TextSpan(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		/* type */coder.readBits(1, false);
 		/* reserved */coder.readBits(3, false);
@@ -112,7 +113,7 @@ public final class TextSpan implements Encodeable
 		identifier = hasFont ? coder.readWord(2, false) : Movie.VALUE_NOT_SET;
 
 		if (hasColor) {
-			color = new Color(coder);
+			color = new Color(coder, context);
 		}
 
 		offsetX = hasX ? coder.readWord(2, true) : Movie.VALUE_NOT_SET;
@@ -124,7 +125,7 @@ public final class TextSpan implements Encodeable
 		characters = new ArrayList<GlyphIndex>(charCount);
 
 		for (int i = 0; i < charCount; i++) {
-			characters.add(new GlyphIndex(coder));
+			characters.add(new GlyphIndex(coder, context));
 		}
 
 		coder.alignToByte();
@@ -350,7 +351,7 @@ public final class TextSpan implements Encodeable
 		return String.format(FORMAT, identifier, color, offsetX, offsetY, height, characters);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder)
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
 		hasFont = identifier != Movie.VALUE_NOT_SET && height != Movie.VALUE_NOT_SET;
 		hasColor = color != null;
@@ -363,7 +364,7 @@ public final class TextSpan implements Encodeable
 		if (hasStyle)
 		{
 			length += (hasFont) ? 2 : 0;
-			length += (hasColor) ? (coder.getContext().isTransparent() ? 4:3) : 0;
+			length += (hasColor) ? (context.isTransparent() ? 4:3) : 0;
 			length += (hasY) ? 2 : 0;
 			length += (hasX) ? 2 : 0;
 			length += (hasFont) ? 2 : 0;
@@ -373,8 +374,8 @@ public final class TextSpan implements Encodeable
 
 		if (!characters.isEmpty())
 		{
-			int glyphSize = coder.getContext().getGlyphSize();
-			int advanceSize = coder.getContext().getAdvanceSize();
+			int glyphSize = context.getGlyphSize();
+			int advanceSize = context.getAdvanceSize();
 
 			int numberOfBits = (glyphSize + advanceSize) * characters.size();
 			numberOfBits += (numberOfBits % 8 > 0) ? 8 - (numberOfBits % 8) : 0;
@@ -384,7 +385,7 @@ public final class TextSpan implements Encodeable
 		return length;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		coder.writeBits(1, 1);
 		coder.writeBits(0, 3);
@@ -401,7 +402,7 @@ public final class TextSpan implements Encodeable
 			}
 
 			if (hasColor) {
-				color.encode(coder);
+				color.encode(coder, context);
 			}
 
 			if (hasX) {
@@ -420,7 +421,7 @@ public final class TextSpan implements Encodeable
 		coder.writeWord(characters.size(), 1);
 
 		for (GlyphIndex index : characters) {
-			index.encode(coder);
+			index.encode(coder, context);
 		}
 
 		coder.alignToByte();

@@ -33,6 +33,7 @@ package com.flagstone.transform.movie;
 import java.util.Arrays;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -60,7 +61,7 @@ public final class DefineData implements DefineTag {
 	private transient int end;
 	private transient int length;
 
-	public DefineData(final SWFDecoder coder) throws CoderException {
+	public DefineData(final SWFDecoder coder, final SWFContext context) throws CoderException {
 
 		start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
@@ -146,12 +147,12 @@ public final class DefineData implements DefineTag {
 		return String.format(FORMAT, identifier, data.length);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder) {
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context) {
 		length = 6 + data.length;
 		return (length > 62 ? 6 : 2) + length;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException {
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException {
 
 		start = coder.getPointer();
 

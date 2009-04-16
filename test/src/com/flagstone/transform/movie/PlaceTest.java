@@ -37,6 +37,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.datatype.ColorTransform;
@@ -115,10 +116,11 @@ public final class PlaceTest {
 	@Test
 	public void encodeCoordTransform() throws CoderException {		
 		SWFEncoder encoder = new SWFEncoder(coord.length);		
-		
+		SWFContext context = new SWFContext();
+
 		fixture = new Place(identifier, layer, transform);
-		assertEquals(coord.length, fixture.prepareToEncode(encoder));
-		fixture.encode(encoder);
+		assertEquals(coord.length, fixture.prepareToEncode(encoder, context));
+		fixture.encode(encoder, context);
 		
 		assertTrue(encoder.eof());
 		assertArrayEquals(coord, encoder.getData());
@@ -127,10 +129,11 @@ public final class PlaceTest {
 	@Test
 	public void encodeCoordAndColorTransforms() throws CoderException {		
 		SWFEncoder encoder = new SWFEncoder(coordAndColor.length);		
-		
+		SWFContext context = new SWFContext();
+
 		fixture = new Place(identifier, layer, transform, colorTransform);
-		assertEquals(coordAndColor.length, fixture.prepareToEncode(encoder));
-		fixture.encode(encoder);
+		assertEquals(coordAndColor.length, fixture.prepareToEncode(encoder, context));
+		fixture.encode(encoder, context);
 		
 		assertTrue(encoder.eof());
 		assertArrayEquals(coordAndColor, encoder.getData());
@@ -139,8 +142,9 @@ public final class PlaceTest {
 	@Test
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(coord);
-		
-		fixture = new Place(decoder);
+		SWFContext context = new SWFContext();
+
+		fixture = new Place(decoder, context);
 		
 		assertTrue(decoder.eof());
 		assertEquals(identifier, fixture.getIdentifier());
@@ -152,8 +156,9 @@ public final class PlaceTest {
 	@Test
 	public void decodeExtended() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(extended);
-		
-		fixture = new Place(decoder);
+		SWFContext context = new SWFContext();
+
+		fixture = new Place(decoder, context);
 		
 		assertTrue(decoder.eof());
 		assertEquals(identifier, fixture.getIdentifier());
@@ -165,8 +170,9 @@ public final class PlaceTest {
 	@Test
 	public void decodeCoordAndColorTransforms() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(coordAndColor);
-		
-		fixture = new Place(decoder);
+		SWFContext context = new SWFContext();
+
+		fixture = new Place(decoder, context);
 		
 		assertTrue(decoder.eof());
 		assertEquals(identifier, fixture.getIdentifier());

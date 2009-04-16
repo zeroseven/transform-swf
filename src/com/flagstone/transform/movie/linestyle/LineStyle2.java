@@ -31,6 +31,7 @@
 package com.flagstone.transform.movie.linestyle;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Encodeable;
@@ -69,7 +70,7 @@ public final class LineStyle2 implements Encodeable, Copyable<LineStyle2> {
 	private transient boolean hasFillStyle;
 	private transient boolean hasMiter;
 
-	public LineStyle2(final SWFDecoder coder) throws CoderException {
+	public LineStyle2(final SWFDecoder coder, final SWFContext context) throws CoderException {
 		
 		width = coder.readWord(2, false);
 		unpack(coder.readB16());
@@ -79,9 +80,9 @@ public final class LineStyle2 implements Encodeable, Copyable<LineStyle2> {
 		}
 		
 		if (hasFillStyle) {
-			fillStyle = coder.fillStyleOfType(coder);
+			fillStyle = context.fillStyleOfType(coder, context);
 		} else {
-			color = new Color(coder);
+			color = new Color(coder, context);
 		}
 	}
 
@@ -255,7 +256,7 @@ public final class LineStyle2 implements Encodeable, Copyable<LineStyle2> {
 				pixelAligned, lineClosed, miterLimit);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder) {
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context) {
 
 		hasFillStyle = fillStyle != null;
 		hasMiter = joinStyle == LineJoinStyle.MITER;
@@ -267,19 +268,19 @@ public final class LineStyle2 implements Encodeable, Copyable<LineStyle2> {
 		}
 		
 		if (hasFillStyle) {
-			length += fillStyle.prepareToEncode(coder);
+			length += fillStyle.prepareToEncode(coder, context);
 		} else {
 			length += 4;
 		}
 		
 		if (scaledHorizontally || scaledVertically) {
-			coder.getContext().setScalingStroke(true);
+			context.setScalingStroke(true);
 		}
 
 		return length;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException {
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException {
 		coder.writeWord(width, 2);
 		coder.writeB16(pack());
 		
@@ -288,9 +289,9 @@ public final class LineStyle2 implements Encodeable, Copyable<LineStyle2> {
 		}
 		
 		if (hasFillStyle) {
-			fillStyle.encode(coder);
+			fillStyle.encode(coder, context);
 		} else {
-			color.encode(coder);
+			color.encode(coder, context);
 		}
 	}
 

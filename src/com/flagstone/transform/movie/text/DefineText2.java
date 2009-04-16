@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.DefineTag;
@@ -73,7 +74,7 @@ public final class DefineText2 implements DefineTag
 	private transient int advanceBits;
 	private int identifier;
 
-	public DefineText2(final SWFDecoder coder) throws CoderException
+	public DefineText2(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
@@ -84,7 +85,7 @@ public final class DefineText2 implements DefineTag
 		end = coder.getPointer() + (length << 3);
 
 		identifier = coder.readWord(2, true);
-		bounds = new Bounds(coder);
+		bounds = new Bounds(coder, context);
 
 		// This code is used to get round a bug in Flash - sometimes 16,
 		// 8-bit zeroes are written out before the transform. The root
@@ -109,26 +110,26 @@ public final class DefineText2 implements DefineTag
 
 		// Back to reading the rest of the tag
 
-		transform = new CoordTransform(coder);
+		transform = new CoordTransform(coder, context);
 
 		glyphBits = coder.readByte();
 		advanceBits = coder.readByte();
 
-		coder.getContext().setTransparent(true);
-		coder.getContext().setGlyphSize(glyphBits);
-		coder.getContext().setAdvanceSize(advanceBits);
+		context.setTransparent(true);
+		context.setGlyphSize(glyphBits);
+		context.setAdvanceSize(advanceBits);
 
 		objects = new ArrayList<TextSpan>();
 
 		while (coder.readBits(8, false) != 0) 
 		{
 			coder.adjustPointer(-8);
-			objects.add(new TextSpan(coder));
+			objects.add(new TextSpan(coder, context));
 		}
 
-		coder.getContext().setTransparent(false);
-		coder.getContext().setGlyphSize(0);
-		coder.getContext().setAdvanceSize(0);
+		context.setTransparent(false);
+		context.setGlyphSize(0);
+		context.setAdvanceSize(0);
 
 		if (coder.getPointer() != end) {
 			throw new CoderException(getClass().getName(), start >> 3, length,
@@ -301,33 +302,33 @@ public final class DefineText2 implements DefineTag
 		return String.format(FORMAT, identifier, bounds, transform, objects);
 	}
 	
-	public int prepareToEncode(final SWFEncoder coder)
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
 		glyphBits = calculateSizeForGlyphs();
 		advanceBits = calculateSizeForAdvances();
 
-		coder.getContext().setTransparent(true);
-		coder.getContext().setGlyphSize(glyphBits);
-		coder.getContext().setAdvanceSize(advanceBits);
+		context.setTransparent(true);
+		context.setGlyphSize(glyphBits);
+		context.setAdvanceSize(advanceBits);
 
-		length = 2 + bounds.prepareToEncode(coder);
-		length += transform.prepareToEncode(coder);
+		length = 2 + bounds.prepareToEncode(coder, context);
+		length += transform.prepareToEncode(coder, context);
 		length += 2;
 
 		for (TextSpan span : objects) {
-			length += span.prepareToEncode(coder);
+			length += span.prepareToEncode(coder, context);
 		}
 
 		length += 1;
 
-		coder.getContext().setTransparent(false);
-		coder.getContext().setGlyphSize(0);
-		coder.getContext().setAdvanceSize(0);
+		context.setTransparent(false);
+		context.setGlyphSize(0);
+		context.setAdvanceSize(0);
 
 		return (length > 62 ? 6:2) + length;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();
 
@@ -340,25 +341,25 @@ public final class DefineText2 implements DefineTag
 		end = coder.getPointer() + (length << 3);
 
 		coder.writeWord(identifier, 2);
-		coder.getContext().setTransparent(true);
-		coder.getContext().setGlyphSize(glyphBits);
-		coder.getContext().setAdvanceSize(advanceBits);
+		context.setTransparent(true);
+		context.setGlyphSize(glyphBits);
+		context.setAdvanceSize(advanceBits);
 
-		bounds.encode(coder);
-		transform.encode(coder);
+		bounds.encode(coder, context);
+		transform.encode(coder, context);
 
 		coder.writeWord(glyphBits, 1);
 		coder.writeWord(advanceBits, 1);
 
 		for (TextSpan span : objects) {
-			span.encode(coder);
+			span.encode(coder, context);
 		}
 
 		coder.writeWord(0, 1);
 
-		coder.getContext().setTransparent(false);
-		coder.getContext().setGlyphSize(0);
-		coder.getContext().setAdvanceSize(0);
+		context.setTransparent(false);
+		context.setGlyphSize(0);
+		context.setAdvanceSize(0);
 
 		if (coder.getPointer() != end) {
 			throw new CoderException(getClass().getName(), start >> 3, length,

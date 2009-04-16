@@ -32,6 +32,7 @@ package com.flagstone.transform.movie.datatype;
 import org.junit.Test;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -56,7 +57,8 @@ public final class ColorTest {
 	private transient byte[] transparent = new byte[] {1,2,3,4};
 
 	private transient SWFEncoder encoder;
-	private transient SWFDecoder decoder;
+	private transient SWFDecoder decoder; 
+	private transient SWFContext context;
 
 	@Test(expected = IllegalArgumentException.class)
 	public void checkRedBelowRangeThrowsException() {
@@ -128,10 +130,13 @@ public final class ColorTest {
 	@Test
 	public void encodeOpaqueColour() throws CoderException {
 		encoder = new SWFEncoder(opaque.length);
+		context = new SWFContext();
+		context.setTransparent(false);
+		
 		fixture = new Color(red, green, blue);
 
-		assertEquals(opaque.length, fixture.prepareToEncode(encoder));
-		fixture.encode(encoder);
+		assertEquals(opaque.length, fixture.prepareToEncode(encoder, context));
+		fixture.encode(encoder, context);
 
 		assertTrue(encoder.eof());
 		assertArrayEquals(opaque, encoder.getData());
@@ -140,12 +145,13 @@ public final class ColorTest {
 	@Test
 	public void encodeTransparentColour() throws CoderException {
 		encoder = new SWFEncoder(transparent.length);
-		encoder.getContext().setTransparent(true);
+		context = new SWFContext();
+		context.setTransparent(true);
 		
 		fixture = new Color(red, green, blue, alpha);
 
-		assertEquals(transparent.length, fixture.prepareToEncode(encoder));
-		fixture.encode(encoder);
+		assertEquals(transparent.length, fixture.prepareToEncode(encoder, context));
+		fixture.encode(encoder, context);
 
 		assertTrue(encoder.eof());
 		assertArrayEquals(transparent, encoder.getData());
@@ -154,8 +160,10 @@ public final class ColorTest {
 	@Test
 	public void decodeOpaqueColour() throws CoderException {
 		decoder = new SWFDecoder(opaque);
+		context = new SWFContext();
+		context.setTransparent(false);
 
-		fixture = new Color(decoder);
+		fixture = new Color(decoder, context);
 
 		assertTrue(decoder.eof());
 		assertEquals(red, fixture.getRed());
@@ -167,9 +175,10 @@ public final class ColorTest {
 	@Test
 	public void decodeTransparentColour() throws CoderException {
 		decoder = new SWFDecoder(transparent);
-		decoder.getContext().setTransparent(true);
+		context = new SWFContext();
+		context.setTransparent(true);
 
-		fixture = new Color(decoder);
+		fixture = new Color(decoder, context);
 
 		assertTrue(decoder.eof());
 		assertEquals(red, fixture.getRed());

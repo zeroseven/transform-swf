@@ -35,6 +35,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Strings;
@@ -48,13 +49,13 @@ public final class FocalGradientFill implements FillStyle {
 	
 	private transient int count;
 
-	public FocalGradientFill(final SWFDecoder coder) throws CoderException {
+	public FocalGradientFill(final SWFDecoder coder, final SWFContext context) throws CoderException {
 		coder.adjustPointer(8);
 		count = coder.readByte();
 		gradients = new ArrayList<Gradient>(count);
 
 		for (int i=0; i<count; i++) {
-			gradients.add(new Gradient(coder));
+			gradients.add(new Gradient(coder, context));
 		}
 	}
 
@@ -139,26 +140,26 @@ public final class FocalGradientFill implements FillStyle {
 		return "";
 	}
 
-	public int prepareToEncode(final SWFEncoder coder) {
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context) {
 		Iterator<Gradient> iter;
 				
 		int length = 2;
 		count = gradients.size();
 
 		for (iter = gradients.iterator(); iter.hasNext();) {
-			length += iter.next().prepareToEncode(coder);
+			length += iter.next().prepareToEncode(coder, context);
 		}
 
 		return length;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException {
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException {
 		Iterator<Gradient> iter;
 		
 		coder.writeWord(count, 1);
 
 		for (iter = gradients.iterator(); iter.hasNext();) {
-			iter.next().encode(coder);
+			iter.next().encode(coder, context);
 		}
 	}
 }

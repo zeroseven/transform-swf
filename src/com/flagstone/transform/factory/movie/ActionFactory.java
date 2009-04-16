@@ -1,6 +1,7 @@
 package com.flagstone.transform.factory.movie;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.movie.Types;
 import com.flagstone.transform.movie.action.Action;
@@ -32,7 +33,7 @@ import com.flagstone.transform.movie.action.With;
 @SuppressWarnings("PMD")
 public final class ActionFactory implements SWFFactory<Action> {
 
-	public Action getObject(final SWFDecoder coder) throws CoderException {
+	public Action getObject(final SWFDecoder coder, final SWFContext context) throws CoderException {
 
 		Action action;
 		
@@ -43,62 +44,62 @@ public final class ActionFactory implements SWFFactory<Action> {
 		} else {
 			switch (type) {
 			case Types.GET_URL:
-				action = new GetUrl(coder);
+				action = new GetUrl(coder, context);
 				break;
 			case Types.GOTO_FRAME:
-				action = new GotoFrame(coder);
+				action = new GotoFrame(coder, context);
 				break;
 			case Types.GOTO_LABEL:
-				action = new GotoLabel(coder);
+				action = new GotoLabel(coder, context);
 				break;
 			case Types.SET_TARGET:
-				action = new SetTarget(coder);
+				action = new SetTarget(coder, context);
 				break;
 			case Types.WAIT_FOR_FRAME:
-				action = new WaitForFrame(coder);
+				action = new WaitForFrame(coder, context);
 				break;
 			case Types.CALL:
 				action = Call.getInstance();
 				coder.adjustPointer(24);
 				break;
 			case Types.PUSH:
-				action = new Push(coder);
+				action = new Push(coder, context);
 				break;
 			case Types.WAIT_FOR_FRAME_2:
-				action = new WaitForFrame2(coder);
+				action = new WaitForFrame2(coder, context);
 				break;
 			case Types.JUMP:
-				action = new Jump(coder);
+				action = new Jump(coder, context);
 				break;
 			case Types.IF:
-				action = new If(coder);
+				action = new If(coder, context);
 				break;
 			case Types.GET_URL_2:
-				action = new GetUrl2(coder);
+				action = new GetUrl2(coder, context);
 				break;
 			case Types.GOTO_FRAME_2:
-				action = new GotoFrame2(coder);
+				action = new GotoFrame2(coder, context);
 				break;
 			case Types.TABLE:
-				action = new Table(coder);
+				action = new Table(coder, context);
 				break;
 			case Types.REGISTER_COPY:
-				action = new RegisterCopy(coder);
+				action = new RegisterCopy(coder, context);
 				break;
 			case Types.NEW_FUNCTION:
-				action = new NewFunction(coder);
+				action = new NewFunction(coder, context);
 				break;
 			case Types.WITH:
-				action = new With(coder);
+				action = new With(coder, context);
 				break;
 			case Types.EXCEPTION_HANDLER:
-				action = new ExceptionHandler(coder);
+				action = new ExceptionHandler(coder, context);
 				break;
 			case Types.NEW_FUNCTION_2:
-				action = new NewFunction2(coder);
+				action = new NewFunction2(coder, context);
 				break;
 			default:
-				action = new ActionObject(coder);
+				action = new ActionObject(coder, context);
 				break;
 			}
 		}

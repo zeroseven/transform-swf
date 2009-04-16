@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Strings;
@@ -68,7 +69,7 @@ public final class Table implements Action
 	private transient int tableSize;
 
 
-	public Table(final SWFDecoder coder) throws CoderException
+	public Table(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		coder.readByte();
 		length = coder.readWord(2, false);
@@ -167,7 +168,7 @@ public final class Table implements Action
 		return String.format(FORMAT, values);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder)
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
 		length = 2;
 
@@ -180,7 +181,7 @@ public final class Table implements Action
 		return 3 + length;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		coder.writeByte(Types.TABLE);
 		coder.writeWord(length, 2);

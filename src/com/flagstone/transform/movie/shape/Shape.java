@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Encodeable;
@@ -69,14 +70,14 @@ public final class Shape implements Encodeable
 		this.length = length;
 	}
 
-	public Shape(final SWFDecoder coder) throws CoderException
+	public Shape(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		objects = new ArrayList<ShapeRecord>();
 
-		if (coder.getContext().isDecodeShapes())
+		if (context.isDecodeShapes())
 		{
-			coder.getContext().setFillSize(coder.readBits(4, false));
-			coder.getContext().setLineSize(coder.readBits(4, false));
+			context.setFillSize(coder.readBits(4, false));
+			context.setLineSize(coder.readBits(4, false));
 
 			int type;
 			ShapeRecord shape;
@@ -90,12 +91,12 @@ public final class Shape implements Encodeable
 
 					if ((type & 0x20) > 0) {
 						if ((type & 0x10) > 0) {
-							shape = new Line(coder); // NOPMD
+							shape = new Line(coder, context); // NOPMD
 						} else {
-							shape = new Curve(coder); // NOPMD
+							shape = new Curve(coder, context); // NOPMD
 						}
 					} else {
-						shape = new ShapeStyle(coder); // NOPMD
+						shape = new ShapeStyle(coder, context); // NOPMD
 					}
 					objects.add(shape);
 				}
@@ -105,19 +106,19 @@ public final class Shape implements Encodeable
 		} 
 		else
 		{
-			objects.add(new ShapeData(length, coder));
+			objects.add(new ShapeData(length, coder, context));
 		}
 	}
 
-	public Shape(int length, final SWFDecoder coder) throws CoderException
+	public Shape(int length, final SWFDecoder coder, SWFContext context) throws CoderException
 	{
 		this.length = length;
 		objects = new ArrayList<ShapeRecord>();
 
-		if (coder.getContext().isDecodeShapes())
+		if (context.isDecodeShapes())
 		{
-			coder.getContext().setFillSize(coder.readBits(4, false));
-			coder.getContext().setLineSize(coder.readBits(4, false));
+			context.setFillSize(coder.readBits(4, false));
+			context.setLineSize(coder.readBits(4, false));
 
 			int type;
 			ShapeRecord shape;
@@ -131,12 +132,12 @@ public final class Shape implements Encodeable
 
 					if ((type & 0x20) > 0) {
 						if ((type & 0x10) > 0) {
-							shape = new Line(coder); // NOPMD
+							shape = new Line(coder, context); // NOPMD
 						} else {
-							shape = new Curve(coder); // NOPMD
+							shape = new Curve(coder, context); // NOPMD
 						}
 					} else {
-						shape = new ShapeStyle(coder); // NOPMD
+						shape = new ShapeStyle(coder, context); // NOPMD
 					}
 					objects.add(shape);
 				}
@@ -146,7 +147,7 @@ public final class Shape implements Encodeable
 		} 
 		else
 		{
-			objects.add(new ShapeData(length, coder));
+			objects.add(new ShapeData(length, coder, context));
 		}
 	}
 
@@ -227,16 +228,16 @@ public final class Shape implements Encodeable
 		return String.format(FORMAT, objects);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder)
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
 		int numberOfBits = 0;
 
-		coder.getContext().setShapeSize(numberOfBits);
+		context.setShapeSize(numberOfBits);
 
 		numberOfBits += 8;
 
 		for (ShapeRecord record : objects) {
-			numberOfBits += record.prepareToEncode(coder);
+			numberOfBits += record.prepareToEncode(coder, context);
 		}
 
 		numberOfBits += 6; // Add size of end of shape
@@ -246,13 +247,13 @@ public final class Shape implements Encodeable
 		return numberOfBits >> 3;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
-		coder.writeBits(coder.getContext().getFillSize(), 4);
-		coder.writeBits(coder.getContext().getLineSize(), 4);
+		coder.writeBits(context.getFillSize(), 4);
+		coder.writeBits(context.getLineSize(), 4);
 
 		for (ShapeRecord record : objects) {
-			record.encode(coder);
+			record.encode(coder, context);
 		}
 
 		coder.writeBits(0, 6); // End of shape

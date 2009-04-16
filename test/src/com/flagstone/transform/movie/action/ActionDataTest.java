@@ -32,6 +32,7 @@ package com.flagstone.transform.movie.action;
 import org.junit.Test;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import static org.junit.Assert.assertTrue;
@@ -67,10 +68,11 @@ public final class ActionDataTest {
 	public void encode() throws CoderException {
 
 		SWFEncoder encoder = new SWFEncoder(encoded.length);
+		SWFContext context = new SWFContext();
 		
 		fixture = new ActionData(data);
-		assertEquals(encoded.length, fixture.prepareToEncode(encoder));		
-		fixture.encode(encoder);
+		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));		
+		fixture.encode(encoder, context);
 		
 		assertTrue(encoder.eof());
 		assertArrayEquals(encoded, encoder.getData());
@@ -80,8 +82,9 @@ public final class ActionDataTest {
 	public void decode() throws CoderException {
 
 		SWFDecoder decoder = new SWFDecoder(data);
+		SWFContext context = new SWFContext();
 		
-		fixture = new ActionData(data.length, decoder);
+		fixture = new ActionData(data.length, decoder, context);
 		
 		assertTrue(decoder.eof());
 		assertArrayEquals(data, fixture.getData());

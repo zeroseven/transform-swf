@@ -35,6 +35,7 @@ import java.util.List;
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Encoder;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.DefineTag;
@@ -67,7 +68,7 @@ public final class DefineShape3 implements DefineTag
 	private transient int lineBits;
 	private int identifier;
 
-	public DefineShape3(final SWFDecoder coder) throws CoderException
+	public DefineShape3(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
@@ -78,9 +79,9 @@ public final class DefineShape3 implements DefineTag
 		end = coder.getPointer() + (length << 3);
 
 		identifier = coder.readWord(2, false);
-		coder.getContext().setTransparent(true);
+		context.setTransparent(true);
 
-		bounds = new Bounds(coder);
+		bounds = new Bounds(coder, context);
 
 		int fillStyleCount = coder.readByte();
 
@@ -96,7 +97,7 @@ public final class DefineShape3 implements DefineTag
 
 		for (int i = 0; i < fillStyleCount; i++) {
 			type = coder.scanByte();
-			fill = coder.fillStyleOfType(coder);
+			fill = context.fillStyleOfType(coder, context);
 
 			if (fill == null) {
 				throw new CoderException(String.valueOf(type), start >>> 3, 0, 0, Strings.UNSUPPORTED_FILL_STYLE);
@@ -114,15 +115,15 @@ public final class DefineShape3 implements DefineTag
 		LineStyle style;
 
 		for (int i = 0; i < lineStyleCount; i++) {
-			lineStyles.add(new LineStyle(coder));
+			lineStyles.add(new LineStyle(coder, context));
 		}
 
-		coder.getContext().setArrayExtended(true);
+		context.setArrayExtended(true);
 
-		shape = new Shape(coder);
+		shape = new Shape(coder, context);
 
-		coder.getContext().setTransparent(false);
-		coder.getContext().setArrayExtended(false);
+		context.setTransparent(false);
+		context.setArrayExtended(false);
 
 		if (coder.getPointer() != end) {
 			throw new CoderException(getClass().getName(), start >> 3, length,
@@ -331,12 +332,12 @@ public final class DefineShape3 implements DefineTag
 		return String.format(FORMAT, identifier, bounds, fillStyles, lineStyles, shape);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder)
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
 		fillBits = Encoder.unsignedSize(fillStyles.size());
 		lineBits = Encoder.unsignedSize(lineStyles.size());
 
-		if (coder.getContext().isPostscript()) 
+		if (context.isPostscript()) 
 		{
 			if (fillBits == 0) {
 				fillBits = 1;
@@ -347,37 +348,37 @@ public final class DefineShape3 implements DefineTag
 			}
 		}
 
-		coder.getContext().setTransparent(true);
+		context.setTransparent(true);
 
-		length = 2 + bounds.prepareToEncode(coder);
+		length = 2 + bounds.prepareToEncode(coder, context);
 
 		length += (fillStyles.size() >= 255) ? 3 : 1;
 
 		for (FillStyle style : fillStyles) {
-			length += style.prepareToEncode(coder);
+			length += style.prepareToEncode(coder, context);
 		}
 
 		length += (lineStyles.size() >= 255) ? 3 : 1;
 
 		for (LineStyle style : lineStyles) {
-			length += style.prepareToEncode(coder);
+			length += style.prepareToEncode(coder, context);
 		}
 
-		coder.getContext().setArrayExtended(true);
-		coder.getContext().setFillSize(fillBits);
-		coder.getContext().setLineSize(lineBits);
+		context.setArrayExtended(true);
+		context.setFillSize(fillBits);
+		context.setLineSize(lineBits);
 
-		length += shape.prepareToEncode(coder);
+		length += shape.prepareToEncode(coder, context);
 
-		coder.getContext().setArrayExtended(false);
-		coder.getContext().setFillSize(0);
-		coder.getContext().setLineSize(0);
-		coder.getContext().setTransparent(false);
+		context.setArrayExtended(false);
+		context.setFillSize(0);
+		context.setLineSize(0);
+		context.setTransparent(false);
 
 		return (length > 62 ? 6:2) + length;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();
 
@@ -390,9 +391,9 @@ public final class DefineShape3 implements DefineTag
 		end = coder.getPointer() + (length << 3);
 
 		coder.writeWord(identifier, 2);
-		coder.getContext().setTransparent(true);
+		context.setTransparent(true);
 
-		bounds.encode(coder);
+		bounds.encode(coder, context);
 
 		if (fillStyles.size() >= 255)
 		{
@@ -405,7 +406,7 @@ public final class DefineShape3 implements DefineTag
 		}
 
 		for (FillStyle style : fillStyles) {
-			style.encode(coder);
+			style.encode(coder, context);
 		}
 
 		if (lineStyles.size() >= 255)
@@ -419,19 +420,19 @@ public final class DefineShape3 implements DefineTag
 		}
 
 		for (LineStyle style : lineStyles) {
-			style.encode(coder);
+			style.encode(coder, context);
 		}
 
-		coder.getContext().setArrayExtended(true);
-		coder.getContext().setFillSize(fillBits);
-		coder.getContext().setLineSize(lineBits);
+		context.setArrayExtended(true);
+		context.setFillSize(fillBits);
+		context.setLineSize(lineBits);
 
-		shape.encode(coder);
+		shape.encode(coder, context);
 
-		coder.getContext().setArrayExtended(false);
-		coder.getContext().setFillSize(0);
-		coder.getContext().setLineSize(0);
-		coder.getContext().setTransparent(false);
+		context.setArrayExtended(false);
+		context.setFillSize(0);
+		context.setLineSize(0);
+		context.setTransparent(false);
 
 		if (coder.getPointer() != end) {
 			throw new CoderException(getClass().getName(), start >> 3, length,

@@ -32,6 +32,7 @@ package com.flagstone.transform.movie.fillstyle;
 import org.junit.Test;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.datatype.CoordTransform;
@@ -94,10 +95,11 @@ public final class MorphBitmapFillTest {
 	public void encode() throws CoderException {
 
 		SWFEncoder encoder = new SWFEncoder(encoded.length);
-		
+		SWFContext context = new SWFContext();
+
 		fixture = new MorphBitmapFill(type, identifier, start, end);
-		assertEquals(encoded.length, fixture.prepareToEncode(encoder));		
-		fixture.encode(encoder);
+		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));		
+		fixture.encode(encoder, context);
 		
 		assertTrue(encoder.eof());
 		assertArrayEquals(encoded, encoder.getData());
@@ -107,8 +109,9 @@ public final class MorphBitmapFillTest {
 	public void decode() throws CoderException {
 
 		SWFDecoder decoder = new SWFDecoder(encoded);
-		
-		fixture = new MorphBitmapFill(decoder);
+		SWFContext context = new SWFContext();
+
+		fixture = new MorphBitmapFill(decoder, context);
 		
 		assertTrue(decoder.eof());
 		assertEquals(identifier, fixture.getIdentifier());

@@ -35,6 +35,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.DefineTag;
@@ -68,7 +69,7 @@ public final class DefineButton implements DefineTag
 	private transient int end;
 	private transient int length;
 
-	public DefineButton(final SWFDecoder coder) throws CoderException
+	public DefineButton(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
@@ -86,21 +87,21 @@ public final class DefineButton implements DefineTag
 		while (coder.readByte() != 0) 
 		{
 			coder.adjustPointer(-8);
-			shapes.add(new ButtonShape(coder));
+			shapes.add(new ButtonShape(coder, context));
 		}
 
 		int actionsLength = length - ((coder.getPointer() - start) >>> 3);
 
 		actions = new ArrayList<Action>();
 
-		if (coder.getContext().isDecodeActions()) {
+		if (context.isDecodeActions()) {
 			int len = length;
 			while (len > 0) {
-				actions.add(coder.actionOfType(coder));
+				actions.add(context.actionOfType(coder, context));
 			}
 		} 
 		else {
-			actions.add(new ActionData(actionsLength, coder));
+			actions.add(new ActionData(actionsLength, coder, context));
 		}
 
 		if (coder.getPointer() != end) {
@@ -240,24 +241,24 @@ public final class DefineButton implements DefineTag
 		return String.format(FORMAT, identifier, shapes, actions);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder)
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
 		length = 2;
 		
 		for (ButtonShape shape : shapes) {
-			length += shape.prepareToEncode(coder);
+			length += shape.prepareToEncode(coder, context);
 		}
 
 		length += 1;
 		
 		for (Action action : actions) {
-			length += action.prepareToEncode(coder);
+			length += action.prepareToEncode(coder, context);
 		}
 
 		return (length > 62 ? 6:2) + length;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();
 
@@ -271,7 +272,7 @@ public final class DefineButton implements DefineTag
 		coder.writeWord(identifier, 2);
 		
 		for (ButtonShape shape : shapes) {
-			shape.encode(coder);
+			shape.encode(coder, context);
 		}
 
 		coder.writeWord(0, 1);
@@ -279,7 +280,7 @@ public final class DefineButton implements DefineTag
 		Iterator<Action> iAction = actions.iterator();
 		
 		while (iAction.hasNext()) {
-			iAction.next().encode(coder);
+			iAction.next().encode(coder, context);
 		}
 
 		if (coder.getPointer() != end) {

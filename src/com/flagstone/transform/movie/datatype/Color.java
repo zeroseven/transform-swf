@@ -31,6 +31,7 @@
 package com.flagstone.transform.movie.datatype;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Encodeable;
@@ -63,11 +64,11 @@ public final class Color implements Encodeable {
 	private final int blue;
 	private final int alpha;
 
-	public Color(final SWFDecoder coder) throws CoderException {
+	public Color(final SWFDecoder coder, final SWFContext context) throws CoderException {
 		red = coder.readByte();
 		green = coder.readByte();
 		blue = coder.readByte();
-		alpha = (coder.getContext().isTransparent()) ? coder.readByte() : 255;
+		alpha = (context.isTransparent()) ? coder.readByte() : 255;
 	}
 
 	/**
@@ -172,16 +173,16 @@ public final class Color implements Encodeable {
 		return (((red*31)+green)*31 + blue)*31 + alpha;
 	}
 
-	public int prepareToEncode(final SWFEncoder coder) {
-		return (coder.getContext().isTransparent()) ? 4 : 3;
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context) {
+		return (context.isTransparent()) ? 4 : 3;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException {
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException {
 		coder.writeByte(red);
 		coder.writeByte(green);
 		coder.writeByte(blue);
 
-		if (coder.getContext().isTransparent()) {
+		if (context.isTransparent()) {
 			coder.writeByte(alpha);
 		}
 	}

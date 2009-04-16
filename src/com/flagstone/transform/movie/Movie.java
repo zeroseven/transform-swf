@@ -582,6 +582,7 @@ public final class Movie implements Cloneable
 		}
 
 		SWFDecoder coder;
+		SWFContext context = new SWFContext();
 
 		if (bytes[0] == 0x43) {
 			coder = new SWFDecoder(unzip(bytes));
@@ -592,26 +593,25 @@ public final class Movie implements Cloneable
 		
 		objects.clear();
 
-		coder.setFillStyleFactory(fillStyleFactory);
-		coder.setMorphFillStyleFactory(morphStyleFactory);
-		coder.setActionFactory(actionFactory);
-		coder.setMovieFactory(movieFactory);
-		coder.setContext(new SWFContext());
-		coder.setEncoding(encoding);
+		context.setFillStyleFactory(fillStyleFactory);
+		context.setMorphFillStyleFactory(morphStyleFactory);
+		context.setActionFactory(actionFactory);
+		context.setMovieFactory(movieFactory);
+		context.setEncoding(encoding);
 		
 		signature = coder.readString(3, "UTF-8");
 		version = coder.readByte();
 		length = coder.readWord(4, false);
 
-		frameSize = new Bounds(coder);
+		frameSize = new Bounds(coder, context);
 
 		frameRate = coder.readWord(2, true)/256.0f;
 		frameCount = coder.readWord(2, false);
 
-		coder.getContext().setVersion(version);
-		coder.getContext().setDecodeActions(decodeActions);
-		coder.getContext().setDecodeShapes(decodeShapes);
-		coder.getContext().setDecodeGlyphs(decodeGlyphs);
+		context.setVersion(version);
+		context.setDecodeActions(decodeActions);
+		context.setDecodeShapes(decodeShapes);
+		context.setDecodeGlyphs(decodeGlyphs);
 
 		MovieTag object;
 		int type;
@@ -620,7 +620,7 @@ public final class Movie implements Cloneable
 			type = coder.scanUnsignedShort() >>> 6;
 			
 			if (type != 0) {
-				object = movieFactory.getObject(coder);
+				object = movieFactory.getObject(coder, context);
 				objects.add(object);
 				
 				if (object instanceof DefineTag) {
@@ -700,10 +700,12 @@ public final class Movie implements Cloneable
 	public byte[] encode() throws CoderException, IOException, DataFormatException
 	{
 		SWFEncoder coder = new SWFEncoder(0);
+		SWFContext context = new SWFContext();
+		
 		coder.setEncoding(encoding);	
-		coder.getContext().setVersion(version);
+		context.setVersion(version);
 
-		prepareToEncode(coder);
+		prepareToEncode(coder, context);
 
 		coder.setData(length);
 
@@ -711,12 +713,12 @@ public final class Movie implements Cloneable
 		coder.adjustPointer(-8);
 		coder.writeWord(version, 1);
 		coder.writeWord(length, 4);
-		frameSize.encode(coder);
+		frameSize.encode(coder, context);
 		coder.writeWord((int)(frameRate*256), 2);
 		coder.writeWord(frameCount, 2);
 		
 		for (MovieTag tag : objects) {
-			tag.encode(coder);
+			tag.encode(coder, context);
 		}
 		coder.writeWord(0, 2);
 
@@ -747,15 +749,15 @@ public final class Movie implements Cloneable
 		return String.format(FORMAT, signature, version, frameSize, frameRate, objects);
 	}
 
-	private int prepareToEncode(SWFEncoder coder)
+	private int prepareToEncode(SWFEncoder coder, SWFContext context)
 	{
 		frameCount = 0;
 
 		length = 14; // Includes End
-		length += frameSize.prepareToEncode(coder);
+		length += frameSize.prepareToEncode(coder, context);
 
 		for (MovieTag tag : objects) {
-			length += tag.prepareToEncode(coder);
+			length += tag.prepareToEncode(coder, context);
 			if (tag instanceof ShowFrame) {
 				frameCount += 1;
 			}

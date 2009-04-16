@@ -38,6 +38,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.datatype.Color;
@@ -103,11 +104,12 @@ public final class MorphLineStyleTest {
 	@Test
 	public void encode() throws CoderException {		
 		SWFEncoder encoder = new SWFEncoder(encoded.length);		
-		encoder.getContext().setTransparent(true);
+		SWFContext context = new SWFContext();
+		context.setTransparent(true);
 		
 		fixture = new MorphLineStyle(startWidth, endWidth, startColor, endColor);
-		assertEquals(encoded.length, fixture.prepareToEncode(encoder));
-		fixture.encode(encoder);
+		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
+		fixture.encode(encoder, context);
 		
 		assertTrue(encoder.eof());
 		assertArrayEquals(encoded, encoder.getData());
@@ -116,9 +118,10 @@ public final class MorphLineStyleTest {
 	@Test
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
-		decoder.getContext().setTransparent(true);
+		SWFContext context = new SWFContext();
+		context.setTransparent(true);
 		
-		fixture = new MorphLineStyle(decoder);
+		fixture = new MorphLineStyle(decoder, context);
 		
 		assertTrue(decoder.eof());
 		assertEquals(startWidth, fixture.getStartWidth());

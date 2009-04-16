@@ -33,6 +33,7 @@ package com.flagstone.transform.movie.image;
 import java.util.Arrays;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.ImageTag;
@@ -81,7 +82,7 @@ public final class DefineImage2 implements ImageTag
 	private transient int length;
 	private transient boolean extendLength;
 	
-	public DefineImage2(final SWFDecoder coder) throws CoderException
+	public DefineImage2(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
@@ -328,7 +329,7 @@ public final class DefineImage2 implements ImageTag
 		return String.format(FORMAT, identifier, width, height, pixelSize, tableSize, data.length);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder)
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
 		length = 7;
 		length += (pixelSize == 8) ? 1 : 0;
@@ -337,7 +338,7 @@ public final class DefineImage2 implements ImageTag
 		return (length > 62 ? 6:2) + length;
 	}
 	
-	public void encode(final SWFEncoder coder) throws CoderException
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();
 

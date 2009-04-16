@@ -31,6 +31,7 @@
 package com.flagstone.transform.movie.action;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Strings;
@@ -66,7 +67,7 @@ public final class RegisterCopy implements Action
 	
 	protected int registerNumber;
 
-	public RegisterCopy(final SWFDecoder coder) throws CoderException
+	public RegisterCopy(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		coder.readByte();
 		coder.readWord(2, false);
@@ -124,19 +125,19 @@ public final class RegisterCopy implements Action
 		return String.format(FORMAT, registerNumber);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder)
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
 		return 4;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		coder.writeByte(Types.REGISTER_COPY);
 		coder.writeWord(2, 2);
 		coder.writeWord(registerNumber, 1);
 	}
 
-	public void decode(final SWFDecoder coder) throws CoderException
+	public void decode(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		coder.readByte();
 		coder.readWord(2, false);

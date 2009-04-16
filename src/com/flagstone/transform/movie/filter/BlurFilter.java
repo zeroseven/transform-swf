@@ -1,6 +1,7 @@
 package com.flagstone.transform.movie.filter;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -14,13 +15,13 @@ public final class BlurFilter implements Filter {
 		return new BlurFilter(this);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder) {
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context) {
 		return 0;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException {
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException {
 	}
 
-	public void decode(final SWFDecoder coder) throws CoderException {
+	public void decode(final SWFDecoder coder, final SWFContext context) throws CoderException {
 	}
 }

@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.action.Action;
@@ -70,7 +71,7 @@ public final class DoAction implements MovieTag {
 	private transient int length;
 
 
-	public DoAction(final SWFDecoder coder) throws CoderException {
+	public DoAction(final SWFDecoder coder, final SWFContext context) throws CoderException {
 
 		start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
@@ -83,13 +84,13 @@ public final class DoAction implements MovieTag {
 
 		actions = new ArrayList<Action>();
 
-		if (coder.getContext().isDecodeActions()) {
+		if (context.isDecodeActions()) {
 
 			while (coder.getPointer() < end) {
-				actions.add(coder.actionOfType(coder));
+				actions.add(context.actionOfType(coder, context));
 			}
 		} else {
-			actions.add(new ActionData(length, coder));
+			actions.add(new ActionData(length, coder, context));
 		}
 
 		if (coder.getPointer() != end) {
@@ -178,11 +179,11 @@ public final class DoAction implements MovieTag {
 		return String.format(FORMAT, actions.toString());
 	}
 
-	public int prepareToEncode(final SWFEncoder coder) {
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context) {
 		length = 0;
 
 		for (Action action : actions) {
-			length += action.prepareToEncode(coder);
+			length += action.prepareToEncode(coder, context);
 		}
 		
 		if (actions.isEmpty()) {
@@ -192,7 +193,7 @@ public final class DoAction implements MovieTag {
 		return (length > 62 ? 6 : 2) + length;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException {
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException {
 
 		start = coder.getPointer();
 
@@ -205,7 +206,7 @@ public final class DoAction implements MovieTag {
 		end = coder.getPointer() + (length << 3);
 
 		for (Action action : actions) {
-			action.encode(coder);
+			action.encode(coder, context);
 		}
 		
 		if (actions.isEmpty()) {

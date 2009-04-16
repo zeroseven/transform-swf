@@ -31,6 +31,7 @@
 package com.flagstone.transform.movie.fillstyle;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Encodeable;
@@ -69,10 +70,10 @@ public final class Gradient implements Encodeable
 	protected int ratio;
 	protected Color color;
 
-	public Gradient(final SWFDecoder coder) throws CoderException
+	public Gradient(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		ratio = coder.readByte();
-		color = new Color(coder);
+		color = new Color(coder, context);
 	}
 
 	/**
@@ -155,18 +156,18 @@ public final class Gradient implements Encodeable
 		return String.format(FORMAT, ratio, color);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder)
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
 		int length = 1;
 
-		length += color.prepareToEncode(coder);
+		length += color.prepareToEncode(coder, context);
 
 		return length;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		coder.writeByte(ratio);
-		color.encode(coder);
+		color.encode(coder, context);
 	}
 }

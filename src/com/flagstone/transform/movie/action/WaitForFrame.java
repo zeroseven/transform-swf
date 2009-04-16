@@ -31,6 +31,7 @@
 package com.flagstone.transform.movie.action;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Strings;
@@ -61,7 +62,7 @@ public final class WaitForFrame implements Action
 	private int frameNumber;
 	private int actionCount;
 
-	public WaitForFrame(final SWFDecoder coder) throws CoderException
+	public WaitForFrame(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		coder.readByte();
 		coder.readWord(2, false);
@@ -150,12 +151,12 @@ public final class WaitForFrame implements Action
 		return String.format(FORMAT, frameNumber, actionCount);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder)
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
 		return 6;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		coder.writeByte(Types.WAIT_FOR_FRAME);
 		coder.writeWord(3, 2);

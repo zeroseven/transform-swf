@@ -35,6 +35,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.DoAction;
@@ -73,7 +74,7 @@ public final class InitializeMovieClip implements MovieTag
 	private transient int end;
 	private transient int length;
 
-	public InitializeMovieClip(final SWFDecoder coder) throws CoderException
+	public InitializeMovieClip(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
@@ -86,13 +87,13 @@ public final class InitializeMovieClip implements MovieTag
 		identifier = coder.readWord(2, false);
 		actions = new ArrayList<Action>();
 
-		if (coder.getContext().isDecodeActions()) {
+		if (context.isDecodeActions()) {
 			
 			while (coder.getPointer() < end) {
-				actions.add(coder.actionOfType(coder));
+				actions.add(context.actionOfType(coder, context));
 			}
 		} else {
-			actions.add(new ActionData(length-2, coder));
+			actions.add(new ActionData(length-2, coder, context));
 		}
 
 		if (coder.getPointer() != end) {
@@ -202,20 +203,20 @@ public final class InitializeMovieClip implements MovieTag
 		return String.format(FORMAT, identifier, actions);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder)
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
 		length = 2;
 
 		Iterator<Action> iAction = actions.iterator();
 		
 		while (iAction.hasNext()) {
-			length += iAction.next().prepareToEncode(coder);
+			length += iAction.next().prepareToEncode(coder, context);
 		}
 
 		return (length > 62 ? 6:2) + length;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();
 
@@ -230,7 +231,7 @@ public final class InitializeMovieClip implements MovieTag
 		coder.writeWord(identifier, 2);
 
 		for (Action action : actions) {
-			action.encode(coder);
+			action.encode(coder, context);
 		}
 
 		if (coder.getPointer() != end) {

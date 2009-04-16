@@ -34,6 +34,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.MovieTag;
@@ -56,7 +57,7 @@ public final class Export implements MovieTag
 	
 	private transient int length;
 
-	public Export(final SWFDecoder coder) throws CoderException
+	public Export(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		length = coder.readWord(2, false) & 0x3F;
 		
@@ -169,7 +170,7 @@ public final class Export implements MovieTag
 		return String.format(FORMAT, objects);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder)
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
 		length = 2;
 
@@ -183,7 +184,7 @@ public final class Export implements MovieTag
 		return (length > 62 ? 6:2) + length;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		if (length > 62) {
 			coder.writeWord((Types.EXPORT << 6) | 0x3F, 2);
@@ -203,7 +204,7 @@ public final class Export implements MovieTag
 		}
 	}
 
-	public void decode(final SWFDecoder coder) throws CoderException
+	public void decode(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		length = coder.readWord(2, false) & 0x3F;
 		

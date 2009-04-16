@@ -32,6 +32,7 @@ package com.flagstone.transform.movie.shape;
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Encoder;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Strings;
@@ -62,7 +63,7 @@ public final class Line implements ShapeRecord
 	private transient boolean general;
 	private transient int size;
 
-	protected Line(final SWFDecoder coder) throws CoderException
+	protected Line(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		coder.adjustPointer(2); // shape and edge
 
@@ -180,7 +181,7 @@ public final class Line implements ShapeRecord
 		return String.format(FORMAT, xCoord, yCoord);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder)
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
 		vertical = xCoord == 0;
 		general = xCoord != 0 && yCoord != 0;
@@ -195,12 +196,12 @@ public final class Line implements ShapeRecord
 			numberOfBits += 1 + size;
 		}
 
-		coder.getContext().setShapeSize(coder.getContext().getShapeSize()+numberOfBits);
+		context.setShapeSize(context.getShapeSize()+numberOfBits);
 		
 		return numberOfBits;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		coder.writeBits(3, 2);
 		coder.writeBits(size - 2, 4);

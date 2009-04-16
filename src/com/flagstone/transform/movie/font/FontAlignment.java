@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.MovieTag;
@@ -79,7 +80,7 @@ public final class FontAlignment implements MovieTag
 	private transient int end;
 	private transient int length;
 
-	protected FontAlignment(final SWFDecoder coder) throws CoderException
+	protected FontAlignment(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		zones = new ArrayList<AlignmentZone>();
 
@@ -99,7 +100,7 @@ public final class FontAlignment implements MovieTag
 		while (bytesRead < length)
 		{
 			record = new AlignmentZone();
-			record.decode(coder);
+			record.decode(coder, context);
 			zones.add(record);
 		}
 
@@ -211,7 +212,7 @@ public final class FontAlignment implements MovieTag
 		return "";
 	}
 
-	public int prepareToEncode(final SWFEncoder coder)
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
 		length = 4;
 
@@ -221,7 +222,7 @@ public final class FontAlignment implements MovieTag
 		return (length > 62 ? 6:2) + length;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();
 
@@ -236,7 +237,7 @@ public final class FontAlignment implements MovieTag
 		coder.writeWord(identifier, 2);
 
 		for (AlignmentZone zone : zones) {
-			zone.encode(coder);
+			zone.encode(coder, context);
 		}
 
 		if (coder.getPointer() != end) {

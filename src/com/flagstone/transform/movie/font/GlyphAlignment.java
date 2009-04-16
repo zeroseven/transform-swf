@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Encodeable;
@@ -45,7 +46,7 @@ public final class GlyphAlignment implements Encodeable
 	
 	private List<AlignmentZone>alignments;
 	
-	protected GlyphAlignment(final SWFDecoder coder) throws CoderException
+	protected GlyphAlignment(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 	}
 
@@ -94,12 +95,12 @@ public final class GlyphAlignment implements Encodeable
 		return "";
 	}
 	
-	public int prepareToEncode(final SWFEncoder coder)
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
 		return 0;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 	}
 }

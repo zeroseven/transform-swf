@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Encodeable;
@@ -110,7 +111,7 @@ public final class SoundInfo implements Encodeable
 	protected int loopCount;
 	protected List<Envelope> envelopes;
 
-	public SoundInfo(final SWFDecoder coder) throws CoderException
+	public SoundInfo(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		identifier = coder.readWord(2, false);
 		mode = Mode.fromInt(coder.readBits(4, false));
@@ -137,7 +138,7 @@ public final class SoundInfo implements Encodeable
 			int envelopeCount = coder.readByte();
 			
 			for (int i = 0; i < envelopeCount; i++) {
-				envelopes.add(new Envelope(coder));
+				envelopes.add(new Envelope(coder, context));
 			}
 		}
 	}
@@ -341,7 +342,7 @@ public final class SoundInfo implements Encodeable
 		return String.format(FORMAT, identifier, mode, inPoint, outPoint, loopCount, envelopes);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder)
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
 		int length = 3;
 
@@ -356,7 +357,7 @@ public final class SoundInfo implements Encodeable
 		return length;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		coder.writeWord(identifier, 2);
 		coder.writeBits(mode.getValue(), 4);
@@ -379,7 +380,7 @@ public final class SoundInfo implements Encodeable
 			coder.writeWord(envelopes.size(), 1);
 
 			for (int i=0; i<envelopes.size(); i++) {
-				envelopes.get(i).encode(coder);
+				envelopes.get(i).encode(coder, context);
 			}
 		}
 	}

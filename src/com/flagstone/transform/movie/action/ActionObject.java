@@ -33,6 +33,7 @@ package com.flagstone.transform.movie.action;
 import java.util.Arrays;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Strings;
@@ -47,7 +48,7 @@ public final class ActionObject implements Action
 	
 	private transient int length;
 	
-	public ActionObject(final SWFDecoder coder) throws CoderException
+	public ActionObject(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		type = coder.readByte();
 		
@@ -113,7 +114,7 @@ public final class ActionObject implements Action
 		return String.format(FORMAT, type, (data != null ? String.valueOf(data.length) : data));
 	}
 
-	public int prepareToEncode(final SWFEncoder coder)
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
 		length = 0;
 		
@@ -123,7 +124,7 @@ public final class ActionObject implements Action
 		return ((type > 127) ? 3:1)+ length;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		coder.writeByte(type);
 		

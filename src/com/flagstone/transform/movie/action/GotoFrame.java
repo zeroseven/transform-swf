@@ -31,6 +31,7 @@
 package com.flagstone.transform.movie.action;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Strings;
@@ -55,7 +56,7 @@ public final class GotoFrame implements Action
 	
 	protected int frameNumber;
 
-	public GotoFrame(final SWFDecoder coder) throws CoderException
+	public GotoFrame(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		coder.readByte();
 		coder.readWord(2, false);
@@ -109,12 +110,12 @@ public final class GotoFrame implements Action
 		return String.format(FORMAT, frameNumber);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder)
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
 		return 5;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		coder.writeByte(Types.GOTO_FRAME);
 		coder.writeWord(2, 2);

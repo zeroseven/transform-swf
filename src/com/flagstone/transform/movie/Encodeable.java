@@ -31,6 +31,7 @@
 package com.flagstone.transform.movie;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFEncoder;
 
 /**
@@ -54,7 +55,7 @@ public interface Encodeable {
 	 * 
 	 * @return the size of the object when it is encoded.
 	 */
-	int prepareToEncode(final SWFEncoder coder);
+	int prepareToEncode(final SWFEncoder coder, final SWFContext context);
 
 	/**
 	 * Encode an object to the Flash binary format.
@@ -62,5 +63,5 @@ public interface Encodeable {
 	 * @param coder
 	 *            an SWFEncoder object.
 	 */
-	void encode(final SWFEncoder coder) throws CoderException;
+	void encode(final SWFEncoder coder, final SWFContext context) throws CoderException;
 }

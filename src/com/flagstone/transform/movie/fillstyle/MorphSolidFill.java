@@ -31,6 +31,7 @@
 package com.flagstone.transform.movie.fillstyle;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Strings;
@@ -50,10 +51,10 @@ public final class MorphSolidFill implements FillStyle {
 	private Color startColor;
 	private Color endColor;
 
-	public MorphSolidFill(final SWFDecoder coder) throws CoderException {
+	public MorphSolidFill(final SWFDecoder coder, final SWFContext context) throws CoderException {
 		coder.adjustPointer(8);
-		startColor = new Color(coder);
-		endColor = new Color(coder);
+		startColor = new Color(coder, context);
+		endColor = new Color(coder, context);
 	}
 
 	/**
@@ -125,14 +126,14 @@ public final class MorphSolidFill implements FillStyle {
 		return String.format(FORMAT, startColor, endColor);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder) {
-		return 1 + startColor.prepareToEncode(coder)
-				+ endColor.prepareToEncode(coder);
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context) {
+		return 1 + startColor.prepareToEncode(coder, context)
+				+ endColor.prepareToEncode(coder, context);
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException {
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException {
 		coder.writeByte(SOLID);
-		startColor.encode(coder);
-		endColor.encode(coder);
+		startColor.encode(coder, context);
+		endColor.encode(coder, context);
 	}
 }

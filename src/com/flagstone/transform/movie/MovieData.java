@@ -33,6 +33,7 @@ package com.flagstone.transform.movie;
 import java.util.Arrays;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -52,7 +53,7 @@ public final class MovieData implements MovieTag {
 
 	private byte[] data;
 	
-	public MovieData(final int size, final SWFDecoder coder) {
+	public MovieData(final int size, final SWFDecoder coder, SWFContext context) {
 		data = coder.readBytes(new byte[size]);
 	}
 
@@ -108,11 +109,11 @@ public final class MovieData implements MovieTag {
 		return String.format(FORMAT, data.length);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder) {
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context) {
 		return data.length;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException {
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException {
 		coder.writeBytes(data);
 	}
 }

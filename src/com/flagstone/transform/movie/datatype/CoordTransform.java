@@ -32,6 +32,7 @@ package com.flagstone.transform.movie.datatype;
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Encoder;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Encodeable;
@@ -177,7 +178,7 @@ public final class CoordTransform implements Encodeable, Copyable<CoordTransform
 	 * Creates a unity coordinate transform - one that will not change the
 	 * location or appearance when it is applied to an object.
 	 */
-	public CoordTransform(final SWFDecoder coder) throws CoderException {
+	public CoordTransform(final SWFDecoder coder, final SWFContext context) throws CoderException {
 		
 		coder.alignToByte();
 
@@ -427,7 +428,7 @@ public final class CoordTransform implements Encodeable, Copyable<CoordTransform
 				shearX / 65536.0f, shearY / 65536.0f, translateX, translateY);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder) {
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context) {
 		int numberOfBits = 14; // include extra 7 bits for byte alignment
 
 		hasScale = scaleX != 65536 || scaleY != 65536;
@@ -455,7 +456,7 @@ public final class CoordTransform implements Encodeable, Copyable<CoordTransform
 		return numberOfBits >> 3;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException {
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException {
 		coder.alignToByte();
 
 		coder.writeBits(hasScale ? 1 : 0, 1);

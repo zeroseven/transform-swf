@@ -32,6 +32,7 @@ package com.flagstone.transform.movie.action;
 import org.junit.Test;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Types;
 
@@ -59,9 +60,10 @@ public final class BasicActionTest {
 	public void encode() throws CoderException {
 
 		SWFEncoder encoder = new SWFEncoder(encoded.length);
-		
-		assertEquals(encoded.length, fixture.prepareToEncode(encoder));		
-		fixture.encode(encoder);
+		SWFContext context = new SWFContext();
+
+		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));		
+		fixture.encode(encoder, context);
 		
 		assertTrue(encoder.eof());
 		assertArrayEquals(encoded, encoder.getData());

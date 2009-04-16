@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Strings;
@@ -66,7 +67,7 @@ public final class NewFunction implements Action
 	private transient int length;
 	private transient int actionsLength;
 
-	public NewFunction(final SWFDecoder coder) throws CoderException
+	public NewFunction(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		arguments = new ArrayList<String>();
 		actions = new ArrayList<Action>();
@@ -93,7 +94,7 @@ public final class NewFunction implements Action
 		int end = coder.getPointer() + (actionsLength << 3);
 
 		while (coder.getPointer() < end) {			
-			actions.add(coder.actionOfType(coder));
+			actions.add(context.actionOfType(coder, context));
 		}
 	}
 
@@ -261,7 +262,7 @@ public final class NewFunction implements Action
 		return String.format(FORMAT, name, arguments, actions);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder)
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
 		length = 2 + coder.strlen(name);
 
@@ -273,7 +274,7 @@ public final class NewFunction implements Action
 		actionsLength = 0;
 		
 		for (Action action : actions) {
-			actionsLength += action.prepareToEncode(coder);
+			actionsLength += action.prepareToEncode(coder, context);
 		}
 		
 		if (actions.isEmpty()) {
@@ -285,7 +286,7 @@ public final class NewFunction implements Action
 		return 3 + length;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		coder.writeWord(Types.NEW_FUNCTION, 1);
 		coder.writeWord(length - actionsLength, 2);
@@ -301,7 +302,7 @@ public final class NewFunction implements Action
 		coder.writeWord(actionsLength, 2);
 
 		for (Action action : actions) {
-			action.encode(coder);
+			action.encode(coder, context);
 		}
 		
 		if (actions.isEmpty()) {

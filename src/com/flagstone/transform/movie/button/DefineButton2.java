@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.DefineTag;
@@ -82,10 +83,10 @@ public final class DefineButton2 implements DefineTag
 	private transient int end;
 	private transient int length;
 	
-	public DefineButton2(final SWFDecoder coder) throws CoderException
+	public DefineButton2(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
-		coder.getContext().setType(Types.DEFINE_BUTTON_2);
-		coder.getContext().setTransparent(true);
+		context.setType(Types.DEFINE_BUTTON_2);
+		context.setTransparent(true);
 
 		start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
@@ -103,7 +104,7 @@ public final class DefineButton2 implements DefineTag
 		
 		while (coder.readByte() != 0) {
 			coder.adjustPointer(-8);
-			shapes.add(new ButtonShape(coder));
+			shapes.add(new ButtonShape(coder, context));
 		}
 
 		if (offsetToNext != 0)
@@ -116,17 +117,17 @@ public final class DefineButton2 implements DefineTag
 				offsetToNext = coder.readWord(2, false);
 
 				if (offsetToNext == 0) {
-					event = new ButtonEventHandler((end - coder.getPointer()) >>> 3, coder);
+					event = new ButtonEventHandler((end - coder.getPointer()) >>> 3, coder, context);
 				} else {
-					event = new ButtonEventHandler(offsetToNext, coder);
+					event = new ButtonEventHandler(offsetToNext, coder, context);
 				}
 				events.add(event);
 
 			} while (offsetToNext != 0);
 		}
 		
-		coder.getContext().setType(0);
-		coder.getContext().setTransparent(false);
+		context.setType(0);
+		context.setTransparent(false);
 
 		if (coder.getPointer() != end) {
 			throw new CoderException(getClass().getName(), start >> 3, length,
@@ -288,31 +289,31 @@ public final class DefineButton2 implements DefineTag
 		return String.format(FORMAT, identifier, shapes, events);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder)
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
-		coder.getContext().setType(Types.DEFINE_BUTTON_2);
-		coder.getContext().setTransparent(true);
+		context.setType(Types.DEFINE_BUTTON_2);
+		context.setTransparent(true);
 
 		length = 6;
 
 		for (ButtonShape shape : shapes) {
-			length += shape.prepareToEncode(coder);
+			length += shape.prepareToEncode(coder, context);
 		}
 		
 		for (ButtonEventHandler handler : events) {
-			length += 2 + handler.prepareToEncode(coder);
+			length += 2 + handler.prepareToEncode(coder, context);
 		}
 
-		coder.getContext().setType(0);
-		coder.getContext().setTransparent(false);
+		context.setType(0);
+		context.setTransparent(false);
 
 		return (length > 62 ? 6:2) + length;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
-		coder.getContext().setType(Types.DEFINE_BUTTON_2);
-		coder.getContext().setTransparent(true);
+		context.setType(Types.DEFINE_BUTTON_2);
+		context.setTransparent(true);
 		
 		start = coder.getPointer();
 
@@ -331,7 +332,7 @@ public final class DefineButton2 implements DefineTag
 		coder.writeWord(0, 2);
 
 		for (ButtonShape shape : shapes) {
-			shape.encode(coder);
+			shape.encode(coder, context);
 		}
 
 		coder.writeWord(0, 1);
@@ -348,7 +349,7 @@ public final class DefineButton2 implements DefineTag
 		{
 			offsetStart = coder.getPointer();
 			coder.writeWord(handler.length + 2, 2);
-			handler.encode(coder);
+			handler.encode(coder, context);
 		}		
 		
 		// Write offset of zero for last Action Condition
@@ -357,8 +358,8 @@ public final class DefineButton2 implements DefineTag
 		coder.writeWord(0, 2);
 		coder.setPointer(currentCursor);
 
-		coder.getContext().setType(0);
-		coder.getContext().setTransparent(false);
+		context.setType(0);
+		context.setTransparent(false);
 
 		if (coder.getPointer() != end) {
 			throw new CoderException(getClass().getName(), start >> 3, length,

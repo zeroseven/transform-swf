@@ -31,6 +31,7 @@
 package com.flagstone.transform.movie.meta;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.MovieTag;
@@ -72,18 +73,18 @@ public final class PathsArePostscript implements MovieTag
 		return this;
 	}
 
-	public int prepareToEncode(final SWFEncoder coder)
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
-		coder.getContext().setPostscript(true);
+		context.setPostscript(true);
 		return 2;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		coder.writeWord((Types.PATHS_ARE_POSTSCRIPT << 6) | 0, 2);
 	}
 
-	public void decode(final SWFDecoder coder) throws CoderException
+	public void decode(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		int length = coder.readWord(2, false) & 0x3F;
 		

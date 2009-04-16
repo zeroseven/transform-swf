@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Encodeable;
@@ -87,17 +88,17 @@ public final class ButtonShape implements Encodeable
 	private List<Filter> filters;
 	private Blend blendMode;
 
-	protected ButtonShape(final SWFDecoder coder) throws CoderException
+	protected ButtonShape(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		coder.readBits(4, false);
 
 		state = coder.readBits(4, false);
 		identifier = coder.readWord(2, false);
 		layer = coder.readWord(2, false);
-		transform = new CoordTransform(coder);
+		transform = new CoordTransform(coder, context);
 
-		if (coder.getContext().getType() == Types.DEFINE_BUTTON_2) {
-			colorTransform = new ColorTransform(coder);
+		if (context.getType() == Types.DEFINE_BUTTON_2) {
+			colorTransform = new ColorTransform(coder, context);
 		}
 	}
 
@@ -334,27 +335,27 @@ public final class ButtonShape implements Encodeable
 		return String.format(FORMAT, state, identifier, layer, transform, colorTransform);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder)
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
-		int length = 5 + transform.prepareToEncode(coder);
+		int length = 5 + transform.prepareToEncode(coder, context);
 
-		if (coder.getContext().getType() == Types.DEFINE_BUTTON_2) {
-			length += colorTransform.prepareToEncode(coder);
+		if (context.getType() == Types.DEFINE_BUTTON_2) {
+			length += colorTransform.prepareToEncode(coder, context);
 		}
 
 		return length;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		coder.writeBits(0, 4);
 		coder.writeBits(state, 4);
 		coder.writeWord(identifier, 2);
 		coder.writeWord(layer, 2);
-		transform.encode(coder);
+		transform.encode(coder, context);
 
-		if (coder.getContext().getType() == Types.DEFINE_BUTTON_2) {
-			colorTransform.encode(coder);
+		if (context.getType() == Types.DEFINE_BUTTON_2) {
+			colorTransform.encode(coder, context);
 		}
 	}
 }

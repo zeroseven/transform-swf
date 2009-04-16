@@ -33,6 +33,7 @@ package com.flagstone.transform.movie;
 import java.util.Arrays;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -55,7 +56,7 @@ public final class MovieObject implements MovieTag {
 
 	private transient int length;
 
-	public MovieObject(final SWFDecoder coder) throws CoderException {
+	public MovieObject(final SWFDecoder coder, final SWFContext context) throws CoderException {
 		
 		type = coder.scanUnsignedShort() >>> 6;
 		length = coder.readWord(2, false) & 0x3F;
@@ -111,12 +112,12 @@ public final class MovieObject implements MovieTag {
 		return String.format(FORMAT, type, data.length);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder) {
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context) {
 		length = data.length;
 		return (length > 62 ? 6 : 2) + length;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException {
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException {
 		if (length > 62) {
 			coder.writeWord((type << 6) | 0x3F, 2);
 			coder.writeWord(length, 4);

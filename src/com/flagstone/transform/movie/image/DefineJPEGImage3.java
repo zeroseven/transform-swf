@@ -34,6 +34,7 @@ import java.util.Arrays;
 
 import com.flagstone.transform.coder.BigEndianDecoder;
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.ImageTag;
@@ -64,7 +65,7 @@ public final class DefineJPEGImage3 implements ImageTag
 	protected byte[] alpha;
 	private int identifier;
 
-	public DefineJPEGImage3(final SWFDecoder coder) throws CoderException
+	public DefineJPEGImage3(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
@@ -195,7 +196,7 @@ public final class DefineJPEGImage3 implements ImageTag
 		return String.format(FORMAT, identifier, image.length, alpha.length);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder)
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
 		length = 6;
 		length += image.length;
@@ -204,7 +205,7 @@ public final class DefineJPEGImage3 implements ImageTag
 		return (length > 62 ? 6:2) + length;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();
 

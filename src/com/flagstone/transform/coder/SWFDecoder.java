@@ -29,28 +29,12 @@
  */
 package com.flagstone.transform.coder;
 
-import com.flagstone.transform.factory.movie.ActionFactory;
-import com.flagstone.transform.factory.movie.FillStyleFactory;
-import com.flagstone.transform.factory.movie.MorphFillStyleFactory;
-import com.flagstone.transform.factory.movie.MovieFactory;
-import com.flagstone.transform.factory.movie.SWFFactory;
-import com.flagstone.transform.movie.MovieTag;
-import com.flagstone.transform.movie.action.Action;
-import com.flagstone.transform.movie.fillstyle.FillStyle;
-
 /**
  * SWFDecoder extends LittleEndianDecoder by adding a context used to pass 
  * information between classes during decoding and a factory class for 
  * generating instances of objects.
  */
 public final class SWFDecoder extends LittleEndianDecoder {
-
-	private SWFFactory<FillStyle> fillStyleFactory;
-	private SWFFactory<FillStyle> morphStyleFactory;
-	private SWFFactory<Action> actionFactory;
-	private SWFFactory<MovieTag> movieFactory;
-
-	private SWFContext context;
 
 	/**
 	 * Creates a SWFDecoder object initialised with the data to be decoded.
@@ -60,58 +44,5 @@ public final class SWFDecoder extends LittleEndianDecoder {
 	 */
 	public SWFDecoder(final byte[] data) {
 		super(data);
-		
-		fillStyleFactory = new FillStyleFactory();
-		morphStyleFactory = new MorphFillStyleFactory();
-		actionFactory = new ActionFactory();
-		movieFactory = new MovieFactory();
-		
-		context = new SWFContext();
-	}
-
-	/**
-	 * Set the Context object used to share information between objects.
-	 */
-	public void setContext(final SWFContext context) {
-		this.context = context;
-	}
-
-	/**
-	 * Returns the Context object used by this decoder.
-	 */
-	public SWFContext getContext() {
-		return context;
-	}
-
-	public void setFillStyleFactory(SWFFactory<FillStyle> factory) {
-	    fillStyleFactory = factory;
-    }
-	
-	public void setMorphFillStyleFactory(SWFFactory<FillStyle> factory) {
-	    morphStyleFactory = factory;
-    }
-	
-	public void setActionFactory(SWFFactory<Action> factory) {
-	    actionFactory = factory;
-    }
-	
-	public void setMovieFactory(SWFFactory<MovieTag> factory) {
-	    movieFactory = factory;
-    }
-	
-	public FillStyle fillStyleOfType(SWFDecoder coder) throws CoderException {
-		return fillStyleFactory.getObject(coder);
-	}
-	
-	public FillStyle morphFillStyleOfType(SWFDecoder coder) throws CoderException {
-		return morphStyleFactory.getObject(coder);
-	}
-	
-	public Action actionOfType(SWFDecoder coder) throws CoderException {
-		return actionFactory.getObject(coder);
-	}
-	
-	public MovieTag movieOfType(SWFDecoder coder) throws CoderException {
-		return movieFactory.getObject(coder);
 	}
 }

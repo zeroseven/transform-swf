@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Encodeable;
@@ -213,25 +214,25 @@ public final class ButtonEventHandler implements Encodeable
 
 	protected transient int length = 0;
 
-	protected ButtonEventHandler(int size, final SWFDecoder coder) throws CoderException
+	protected ButtonEventHandler(int size, final SWFDecoder coder, SWFContext context) throws CoderException
 	{
 		event = coder.readWord(2, false);
 		length -= 2;
 
 		actions = new ArrayList<Action>();
 
-		if (coder.getContext().isDecodeActions()) {
+		if (context.isDecodeActions()) {
 			
 			int end = coder.getPointer() + (length << 3);
 
 			while (coder.getPointer() < end) {
-				actions.add(coder.actionOfType(coder));
+				actions.add(context.actionOfType(coder, context));
 			}
 		} 
 		else 
 		{
 			if (length != 0) {
-				actions.add(new ActionData(length, coder));
+				actions.add(new ActionData(length, coder, context));
 			}
 		}
 	}
@@ -350,23 +351,23 @@ public final class ButtonEventHandler implements Encodeable
 		return String.format(FORMAT, event, actions);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder)
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
 		length = 2;
 
 		for (Action action : actions) {
-			length += action.prepareToEncode(coder);
+			length += action.prepareToEncode(coder, context);
 		}
 		
 		return length;
 	}
 
-	public void encode(final SWFEncoder coder) throws CoderException
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		coder.writeWord(event, 2);
 
 		for (Action action : actions) {
-			action.encode(coder);
+			action.encode(coder, context);
 		}
 	}
 }

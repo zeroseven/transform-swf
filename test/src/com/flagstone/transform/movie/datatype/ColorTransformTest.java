@@ -32,6 +32,7 @@ package com.flagstone.transform.movie.datatype;
 import org.junit.Test;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -50,7 +51,9 @@ public final class ColorTransformTest
     private transient ColorTransform fixture;
     
 	private transient SWFEncoder encoder;
-	private transient SWFDecoder decoder;
+	private transient SWFDecoder decoder; 
+	private transient SWFContext context;
+	
 	private transient byte[] data;
 
     @Test
@@ -58,11 +61,12 @@ public final class ColorTransformTest
     {
     	data = new byte[] { 108, -128, 32, 6, 0};   	
     	encoder = new SWFEncoder(data.length);
+    	context = new SWFContext();
      	
     	fixture = new ColorTransform(1.0f,2.0f,3.0f,4.0f);
     	
-    	assertEquals(5, fixture.prepareToEncode(encoder));
-    	fixture.encode(encoder);
+    	assertEquals(5, fixture.prepareToEncode(encoder, context));
+    	fixture.encode(encoder, context);
     	
     	assertEquals(40, encoder.getPointer());
     	assertArrayEquals(data, encoder.getData());
@@ -73,11 +77,12 @@ public final class ColorTransformTest
     {
     	data = new byte[] { 112, 64, 8, 0, -64, 16, 0};   	
     	encoder = new SWFEncoder(data.length);
-    	encoder.getContext().setTransparent(true);
+       	context = new SWFContext();
+    	context.setTransparent(true);
     	
     	fixture = new ColorTransform(1.0f,2.0f,3.0f,4.0f);
-    	assertEquals(7, fixture.prepareToEncode(encoder));
-    	fixture.encode(encoder);
+    	assertEquals(7, fixture.prepareToEncode(encoder, context));
+    	fixture.encode(encoder, context);
     	
     	assertEquals(56, encoder.getPointer());
     	assertArrayEquals(data, encoder.getData());
@@ -88,11 +93,12 @@ public final class ColorTransformTest
     {
     	data = new byte[] { -116, -90};   	
     	encoder = new SWFEncoder(data.length);
+       	context = new SWFContext();
      	
     	fixture = new ColorTransform(1,2,3,4);
     	
-    	assertEquals(2, fixture.prepareToEncode(encoder));
-    	fixture.encode(encoder);
+    	assertEquals(2, fixture.prepareToEncode(encoder, context));
+    	fixture.encode(encoder, context);
     	
     	assertEquals(16, encoder.getPointer());
     	assertArrayEquals(data, encoder.getData());
@@ -103,11 +109,12 @@ public final class ColorTransformTest
     {
     	data = new byte[] { -112, 72, -48};   	
     	encoder = new SWFEncoder(data.length);
-    	encoder.getContext().setTransparent(true);
+       	context = new SWFContext();
+    	context.setTransparent(true);
     	
     	fixture = new ColorTransform(1,2,3,4);
-    	assertEquals(3, fixture.prepareToEncode(encoder));
-    	fixture.encode(encoder);
+    	assertEquals(3, fixture.prepareToEncode(encoder, context));
+    	fixture.encode(encoder, context);
     	
     	assertEquals(24, encoder.getPointer());
     	assertArrayEquals(data, encoder.getData());
@@ -118,12 +125,13 @@ public final class ColorTransformTest
     {
     	data = new byte[] { -20, -128, 32, 6, 0, 0, 64, 16, 3};   	
     	encoder = new SWFEncoder(data.length);
-     	
+       	context = new SWFContext();
+    	
     	fixture = new ColorTransform(1.0f,2.0f,3.0f,4.0f);
     	fixture.setAddTerms(1,2,3,4);
     	
-    	assertEquals(9, fixture.prepareToEncode(encoder));
-    	fixture.encode(encoder);
+    	assertEquals(9, fixture.prepareToEncode(encoder, context));
+    	fixture.encode(encoder, context);
     	
     	assertEquals(72, encoder.getPointer());
     	assertArrayEquals(data, encoder.getData());
@@ -134,13 +142,14 @@ public final class ColorTransformTest
     {
     	data = new byte[] { -16, 64, 8, 0, -64, 16, 0, 0, 64, 8, 0, -64, 16};   	
     	encoder = new SWFEncoder(data.length);
-    	encoder.getContext().setTransparent(true);
+       	context = new SWFContext();
+       	context.setTransparent(true);
     	
     	fixture = new ColorTransform(1.0f,2.0f,3.0f,4.0f);
     	fixture.setAddTerms(1,2,3,4);
 
-    	assertEquals(13, fixture.prepareToEncode(encoder));
-    	fixture.encode(encoder);
+    	assertEquals(13, fixture.prepareToEncode(encoder, context));
+    	fixture.encode(encoder, context);
     	
     	assertEquals(104, encoder.getPointer());
     	assertArrayEquals(data, encoder.getData());
@@ -151,8 +160,9 @@ public final class ColorTransformTest
     {
     	data = new byte[] { 108, -128, 32, 6, 0};   	
     	decoder = new SWFDecoder(data);
+       	context = new SWFContext();
      	
-       	fixture = new ColorTransform(decoder);
+       	fixture = new ColorTransform(decoder, context);
             	
     	assertEquals(40, decoder.getPointer());
      	assertEquals(1.0f, fixture.getMultiplyRed());
@@ -166,9 +176,10 @@ public final class ColorTransformTest
     {
     	data = new byte[] { 112, 64, 8, 0, -64, 16, 0};   	
     	decoder = new SWFDecoder(data);
-     	decoder.getContext().setTransparent(true);
+       	context = new SWFContext();
+     	context.setTransparent(true);
      	
-    	fixture = new ColorTransform(decoder);
+    	fixture = new ColorTransform(decoder, context);
     	
     	assertEquals(56, decoder.getPointer());
     	assertEquals(1.0f, fixture.getMultiplyRed());
@@ -182,8 +193,9 @@ public final class ColorTransformTest
     {
     	data = new byte[] { -116, -90};   	
     	decoder = new SWFDecoder(data);
+       	context = new SWFContext();
      	
-       	fixture = new ColorTransform(decoder);
+       	fixture = new ColorTransform(decoder, context);
             	
     	assertEquals(16, decoder.getPointer());
     	assertEquals(1, fixture.getAddRed());
@@ -197,9 +209,10 @@ public final class ColorTransformTest
     {
     	data = new byte[] { -112, 72, -48};   	
     	decoder = new SWFDecoder(data);
-    	decoder.getContext().setTransparent(true);
+       	context = new SWFContext();
+    	context.setTransparent(true);
     	
-       	fixture = new ColorTransform(decoder);
+       	fixture = new ColorTransform(decoder, context);
             	
     	assertEquals(24, decoder.getPointer());
     	assertEquals(1, fixture.getAddRed());
@@ -213,8 +226,9 @@ public final class ColorTransformTest
     {
     	data = new byte[] { -20, -128, 32, 6, 0, 0, 64, 16, 3};   	
     	decoder = new SWFDecoder(data);
+       	context = new SWFContext();
 
-       	fixture = new ColorTransform(decoder);
+       	fixture = new ColorTransform(decoder, context);
         
     	assertEquals(72, decoder.getPointer());
     	assertEquals(1, fixture.getAddRed());
@@ -232,9 +246,10 @@ public final class ColorTransformTest
     {
     	data = new byte[] { -16, 64, 8, 0, -64, 16, 0, 0, 64, 8, 0, -64, 16};   	
     	decoder = new SWFDecoder(data);
-    	decoder.getContext().setTransparent(true);
+       	context = new SWFContext();
+    	context.setTransparent(true);
      	
-       	fixture = new ColorTransform(decoder);
+       	fixture = new ColorTransform(decoder, context);
         
     	assertEquals(104, decoder.getPointer());
     	assertEquals(1, fixture.getAddRed());
