@@ -6,6 +6,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
 	BitmapFillTest.class,
+	FocalGradientFillTest.class,
 	GradientTest.class,
 	GradientFillTest.class,
 	MorphBitmapFillTest.class,

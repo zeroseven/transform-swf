@@ -7,6 +7,8 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
 	LineStyleTest.class,
 	MorphLineStyleTest.class,
+	LineStyle2Test.class,
+	MorphLineStyle2Test.class,
         })
 public final class AllLineStyleTests {
 }
