@@ -90,7 +90,7 @@ public final class DefineShape implements DefineTag
 		end = coder.getPointer() + (length << 3);
 
 		identifier = coder.readWord(2, false);
-		bounds = new Bounds(coder, context);
+		bounds = new Bounds(coder);
 		
 		fillStyles = new ArrayList<FillStyle>();
 		lineStyles = new ArrayList<LineStyle>();

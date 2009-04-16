@@ -36,6 +36,8 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Encodeable;
 import com.flagstone.transform.movie.Strings;
+import com.flagstone.transform.movie.fillstyle.Gradient;
+import com.flagstone.transform.movie.font.Kerning;
 
 /**
  * Envelope is used to define an envelope which controls how a particular sound
@@ -68,9 +70,9 @@ public final class Envelope implements Encodeable {
 	
 	private static final String FORMAT = "Envelope: { mark=%d; left=%d; right=%d; }";
 	
-	protected int mark;
-	protected int left;
-	protected int right;
+	private final transient int mark;
+	private final transient int left;
+	private final transient int right;
 
 	public Envelope(final SWFDecoder coder, final SWFContext context) throws CoderException {
 		mark = coder.readWord(4, false);
@@ -90,15 +92,19 @@ public final class Envelope implements Encodeable {
 	 *            the level for the right sound channel, in the range 0..65535.
 	 */
 	public Envelope(int markValue, int leftValue, int rightValue) {
-		setMark(markValue);
-		setLeft(leftValue);
-		setRight(rightValue);
-	}
 
-	public Envelope(Envelope object) {
-		mark = object.mark;
-		left = object.left;
-		right = object.right;
+		mark = markValue;
+		
+		if (leftValue < 0 || leftValue > 65535) {
+			throw new IllegalArgumentException(Strings.UNSIGNED_VALUE_OUT_OF_RANGE);
+		}
+		left = leftValue;
+		
+		if (rightValue < 0 || rightValue > 65535) {
+			throw new IllegalArgumentException(
+					Strings.UNSIGNED_VALUE_OUT_OF_RANGE);
+		}
+		right = rightValue;
 	}
 
 	/**
@@ -123,54 +129,32 @@ public final class Envelope implements Encodeable {
 		return right;
 	}
 
-	/**
-	 * Sets the sample number in the 44.1KHz playback data stream where the
-	 * levels for the channels is applied.
-	 * 
-	 * @param aNumber
-	 *            the mark value.
-	 */
-	public void setMark(int aNumber) {
-		mark = aNumber;
-	}
-
-	/**
-	 * Sets the level for the left sound channel.
-	 * 
-	 * @param level
-	 *            the level for the left sound channel. Must be in the range
-	 *            0..65535.
-	 */
-	public void setLeft(int level) {
-		if (level < 0 || level > 65535) {
-			throw new IllegalArgumentException(
-					Strings.UNSIGNED_VALUE_OUT_OF_RANGE);
-		}
-		left = level;
-	}
-
-	/**
-	 * Sets the level for the right sound channel.
-	 * 
-	 * @param level
-	 *            the level for the right sound channel. Must be in the range
-	 *            0..65535.
-	 */
-	public void setRight(int level) {
-		if (level < 0 || level > 65535) {
-			throw new IllegalArgumentException(
-					Strings.UNSIGNED_VALUE_OUT_OF_RANGE);
-		}
-		right = level;
-	}
-
-	public Envelope copy() {
-		return new Envelope(this);
-	}
-
 	@Override
 	public String toString() {
 		return String.format(FORMAT, mark, left, right);
+	}
+	
+	@Override
+	public boolean equals(final Object object) {
+		boolean result;
+		Envelope env;
+		
+		if (object == null) {
+			result = false;
+		} else if (object == this) {
+			result = true;
+		} else if (object instanceof Kerning) {
+			env = (Envelope)object;
+			result = mark == env.mark && left == env.left && right == env.right;
+		} else {
+			result = false;
+		}
+		return result;
+	}
+	
+	@Override
+	public int hashCode() {
+		return ((mark*31) + left)* 31 + right;
 	}
 
 	public int prepareToEncode(final SWFEncoder coder, final SWFContext context) {

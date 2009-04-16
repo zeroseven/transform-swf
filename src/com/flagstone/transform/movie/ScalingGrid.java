@@ -51,7 +51,7 @@ public final class ScalingGrid implements DefineTag {
 		}
 
 		identifier = coder.readWord(2, false);
-		bounds = new Bounds(coder, context);
+		bounds = new Bounds(coder);
 	}
 
 	public ScalingGrid(final int identifier, final Bounds bounds) {

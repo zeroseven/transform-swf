@@ -55,16 +55,17 @@ public final class Kerning implements Encodeable
 {
 	private static final String FORMAT = "Kerning: { leftIndex=%d; rightIndex=%d; adjustment=%d } ";
 	
-	private int leftGlyph;
-	protected int rightGlyph;
-	protected int adjustment;
+	private final transient int leftGlyph;
+	private final transient int rightGlyph;
+	private final transient int adjustment;
+	
+	private transient int size;
 
 	public Kerning(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
-		int numberOfBytes = (context.isWideCodes()) ? 2 : 1;
-
-		leftGlyph = coder.readWord(numberOfBytes, false);
-		rightGlyph = coder.readWord(numberOfBytes, false);
+		size = (context.isWideCodes()) ? 2 : 1;
+		leftGlyph = coder.readWord(size, false);
+		rightGlyph = coder.readWord(size, false);
 		adjustment = coder.readWord(2, true);
 	}
 
@@ -133,13 +134,14 @@ public final class Kerning implements Encodeable
 	@Override
 	public boolean equals(Object object) {
 		boolean result;
+		Kerning kerning;
 		
 		if (object == null) {
 			result = false;
 		} else if (object == this) {
 			result = true;
 		} else if (object instanceof Kerning) {
-			Kerning kerning = (Kerning)object;
+			kerning = (Kerning)object;
 			result = leftGlyph == kerning.leftGlyph &&
 				rightGlyph == kerning.rightGlyph &&
 				adjustment == kerning.adjustment;
@@ -156,19 +158,14 @@ public final class Kerning implements Encodeable
 
 	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
-		int length = (context.isWideCodes()) ? 4 : 2;
-
-		length += 2;
-
-		return length;
+		size = context.isWideCodes() ? 2 : 1;
+		return (size << 2) + 2;
 	}
 
 	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
-		int numberOfBytes = (context.isWideCodes()) ? 2 : 1;
-
-		coder.writeWord(leftGlyph, numberOfBytes);
-		coder.writeWord(rightGlyph, numberOfBytes);
+		coder.writeWord(leftGlyph, size);
+		coder.writeWord(rightGlyph, size);
 		coder.writeWord(adjustment, 2);
 	}
 }

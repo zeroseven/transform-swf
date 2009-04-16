@@ -70,14 +70,14 @@ public final class Bounds implements Encodeable {
 
 	private static final String FORMAT = "Bounds: { minX=%d; minY=%d; maxX=%d; maxY=%d }";
 
-	private int minX;
-	private int minY;
-	private int maxX;
-	private int maxY;
+	private final transient int minX;
+	private final transient int minY;
+	private final transient int maxX;
+	private final transient int maxY;
 
 	private transient int size;
 
-	public Bounds(final SWFDecoder coder, final SWFContext context) throws CoderException {
+	public Bounds(final SWFDecoder coder) throws CoderException {
 		coder.alignToByte();
 		size = coder.readBits(5, false);
 		minX = coder.readBits(size, true);
@@ -159,15 +159,16 @@ public final class Bounds implements Encodeable {
 	}
 	
 	@Override
-	public boolean equals(Object object) {
+	public boolean equals(final Object object) {
 		boolean result;
+		Bounds bounds;
 		
 		if (object == null) {
 			result = false;
 		} else if (object == this) {
 			result = true;
 		} else if (object instanceof Bounds) {
-			Bounds bounds = (Bounds)object;
+			bounds = (Bounds)object;
 			result = minX == bounds.minX && minY == bounds.minY &&
 				maxX == bounds.maxX && maxY == bounds.maxY;
 		} else {

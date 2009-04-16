@@ -177,11 +177,7 @@ public final class TextSpan implements Encodeable
 		offsetX = object.offsetX;
 		offsetY = object.offsetY;
 		height = object.height;
-		characters = new ArrayList<GlyphIndex>(object.characters.size());
-		
-		for (GlyphIndex index : object.characters) {
-			characters.add(index.copy());
-		}
+		characters = new ArrayList<GlyphIndex>(object.characters);
 	}
 
 	/**

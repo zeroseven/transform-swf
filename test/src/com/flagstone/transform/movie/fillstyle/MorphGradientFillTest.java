@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.junit.Test;
 
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertEquals;
@@ -83,8 +84,8 @@ public final class MorphGradientFillTest {
 		fixture = new MorphGradientFill(type, start, end, list);
 		MorphGradientFill copy = fixture.copy();
 
-		assertNotSame(fixture.getStartTransform(), copy.getStartTransform());
-		assertNotSame(fixture.getEndTransform(), copy.getEndTransform());
+		assertSame(fixture.getStartTransform(), copy.getStartTransform());
+		assertSame(fixture.getEndTransform(), copy.getEndTransform());
 		assertNotSame(fixture.getGradients(), copy.getGradients());
 		assertEquals(fixture.toString(), copy.toString());
 	}

@@ -63,11 +63,7 @@ public final class FocalGradientFill implements FillStyle {
 		spread = object.spread;
 		interpolation = object.interpolation;
 		focalPoint = object.focalPoint;
-		gradients = new ArrayList<Gradient>(object.gradients.size());
-		
-		for (Gradient gradient : object.gradients) {
-			gradients.add(gradient.copy());
-		}
+		gradients = new ArrayList<Gradient>(object.gradients);
 	}
 
 	public int getSpread() {

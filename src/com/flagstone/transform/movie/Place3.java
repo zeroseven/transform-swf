@@ -278,7 +278,7 @@ public final class Place3 implements MovieTag
 		}
 
 		if (hasTransform) {
-			transform = new CoordTransform(coder, context);
+			transform = new CoordTransform(coder);
 		}
 
 		if (hasColorTransform) {
@@ -416,10 +416,10 @@ public final class Place3 implements MovieTag
 		className = object.className;
 		identifier = object.identifier;
 		if (object.transform != null) {
-			transform = object.transform.copy();
+			transform = object.transform;
 		}
 		if (object.colorTransform != null) {
-			colorTransform = object.colorTransform.copy();
+			colorTransform = object.colorTransform;
 		}
 		ratio = object.ratio;
 		clippingDepth = object.clippingDepth;

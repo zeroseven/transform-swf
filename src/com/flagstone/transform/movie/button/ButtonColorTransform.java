@@ -103,7 +103,7 @@ public final class ButtonColorTransform implements MovieTag {
 
 	public ButtonColorTransform(ButtonColorTransform object) {
 		identifier = object.identifier;
-		colorTransform = object.colorTransform.copy();
+		colorTransform = object.colorTransform;
 	}
 
 	/**

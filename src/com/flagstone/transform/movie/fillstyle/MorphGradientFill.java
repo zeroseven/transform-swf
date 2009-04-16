@@ -62,8 +62,8 @@ public final class MorphGradientFill implements FillStyle {
 
 	public MorphGradientFill(final SWFDecoder coder, final SWFContext context) throws CoderException {
 	    type = coder.readByte();
-		startTransform = new CoordTransform(coder, context);
-		endTransform = new CoordTransform(coder, context);
+		startTransform = new CoordTransform(coder);
+		endTransform = new CoordTransform(coder);
 		count = coder.readByte();
 
 		gradients = new ArrayList<MorphGradient>(count);
@@ -101,8 +101,8 @@ public final class MorphGradientFill implements FillStyle {
 	
 	public MorphGradientFill(MorphGradientFill object) {
 		type = object.type;
-		startTransform = object.startTransform.copy();
-		endTransform = object.endTransform.copy();
+		startTransform = object.startTransform;
+		endTransform = object.endTransform;
 		
 		gradients = new ArrayList<MorphGradient>(object.gradients.size());
 		

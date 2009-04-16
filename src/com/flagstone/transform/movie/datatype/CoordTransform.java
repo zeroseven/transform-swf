@@ -36,7 +36,6 @@ import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Encodeable;
-import com.flagstone.transform.movie.Copyable;
 
 /**
  * <p>
@@ -65,7 +64,7 @@ import com.flagstone.transform.movie.Copyable;
  * 
  */
 @SuppressWarnings( { "PMD.TooManyMethods", "PMD.LocalVariableCouldBeFinal" })
-public final class CoordTransform implements Encodeable, Copyable<CoordTransform> {
+public final class CoordTransform implements Encodeable {
 
 	private static final String FORMAT = "CoordTransform: { scaleX=%f; scaleY=%f; shearX=%f; shearY=%f; transX=%d; transY=%d }";
 
@@ -160,12 +159,12 @@ public final class CoordTransform implements Encodeable, Copyable<CoordTransform
 		return new CoordTransform(cos, cos, sin, -sin, 0, 0);
 	}
 
-	private int scaleX;
-	private int scaleY;
-	private int shearX;
-	private int shearY;
-	private int translateX;
-	private int translateY;
+	private final transient int scaleX;
+	private final transient int scaleY;
+	private final transient int shearX;
+	private final transient int shearY;
+	private final transient int translateX;
+	private final transient int translateY;
 
 	private transient int scaleSize;
 	private transient int shearSize;
@@ -178,7 +177,7 @@ public final class CoordTransform implements Encodeable, Copyable<CoordTransform
 	 * Creates a unity coordinate transform - one that will not change the
 	 * location or appearance when it is applied to an object.
 	 */
-	public CoordTransform(final SWFDecoder coder, final SWFContext context) throws CoderException {
+	public CoordTransform(final SWFDecoder coder) throws CoderException {
 		
 		coder.alignToByte();
 
@@ -189,8 +188,8 @@ public final class CoordTransform implements Encodeable, Copyable<CoordTransform
 			scaleX = coder.readBits(scaleSize, true);
 			scaleY = coder.readBits(scaleSize, true);
 		} else {
-			scaleX = 65535;
-			scaleY = 65535;
+			scaleX = 65536;
+			scaleY = 65536;
 		}
 
 		hasShear = coder.readBits(1, false) != 0;
@@ -199,6 +198,9 @@ public final class CoordTransform implements Encodeable, Copyable<CoordTransform
 			shearSize = coder.readBits(5, false);
 			shearX = coder.readBits(shearSize, true);
 			shearY = coder.readBits(shearSize, true);
+		} else {
+			shearX = 0;
+			shearY = 0;
 		}
 
 		transSize = coder.readBits(5, false);
@@ -209,13 +211,21 @@ public final class CoordTransform implements Encodeable, Copyable<CoordTransform
 	}
 
 	public CoordTransform(final float[][] matrix) {
-		setMatrix(matrix);
+		scaleX = (int) (matrix[0][0] * 65536.0f);
+		scaleY = (int) (matrix[1][1] * 65536.0f);
+		shearX = (int) (matrix[1][0] * 65536.0f);
+		shearY = (int) (matrix[0][1] * 65536.0f);
+		translateX = (int) matrix[0][2];
+		translateY = (int) matrix[1][2];
 	}
 
 	public CoordTransform(final float scaleX, final float scaleY, final float shearX, final float shearY, final int xCoord, final int yCoord) {
-		setScale(scaleX, scaleY);
-		setShear(shearX, shearY);
-		setTranslate(xCoord, yCoord);
+		this.scaleX = (int) (scaleX * 65536.0f);
+		this.scaleY = (int) (scaleY * 65536.0f);
+		this.shearX = (int) (shearX * 65536.0f);
+		this.shearY = (int) (shearY * 65536.0f);
+		translateX = xCoord;
+		translateY = yCoord;
 	}
 
 	/**
@@ -241,46 +251,10 @@ public final class CoordTransform implements Encodeable, Copyable<CoordTransform
 	}
 
 	/**
-	 * Sets the scaling factor along the x-axis.
-	 * 
-	 * @param scale
-	 *            the scaling factor in the x direction.
-	 */
-	public void setScaleX(final float scale) {
-		scaleX = (int) (scale * 65536);
-	}
-
-	/**
 	 * Returns the scaling factor along the y-axis.
 	 */
 	public float getScaleY() {
 		return scaleY / 65536.0f;
-	}
-
-	/**
-	 * Sets the scaling factor along the y-axis.
-	 * 
-	 * @param scale
-	 *            the scaling factor in the y direction.
-	 */
-	public void setScaleY(final float scale) {
-		scaleY = (int) (scale * 65536);
-	}
-
-	/**
-	 * Sets the scaling factor for the transform.
-	 * 
-	 * This method sets the individual values used in the transform directly. It
-	 * does not perform any compositing.
-	 * 
-	 * @param xScale
-	 *            the scale to the applied to the object along the x-axis.
-	 * @param yScale
-	 *            the scale to the applied to the object along the x-axis.
-	 */
-	public void setScale(final float xScale, final float yScale) {
-		scaleX = (int) (xScale * 65536.0);
-		scaleY = (int) (yScale * 65536.0);
 	}
 
 	/**
@@ -291,46 +265,10 @@ public final class CoordTransform implements Encodeable, Copyable<CoordTransform
 	}
 
 	/**
-	 * Sets the shearing factor along the x-axis.
-	 * 
-	 * @param shear
-	 *            the shearing factor in the x direction.
-	 */
-	public void setShearX(final float shear) {
-		shearX = (int) (shear * 65536);
-	}
-
-	/**
 	 * Returns the shearing factor along the y-axis.
 	 */
 	public float getShearY() {
 		return shearY / 65536.0f;
-	}
-
-	/**
-	 * Sets the shearing factor along the y-axis.
-	 * 
-	 * @param shear
-	 *            the shearing factor in the y direction.
-	 */
-	public void setShearY(final float shear) {
-		shearY = (int) (shear * 65536);
-	}
-
-	/**
-	 * Sets the shearing factor for the transform.
-	 * 
-	 * This method sets the individual values used in the transform directly. It
-	 * does not perform any compositing.
-	 * 
-	 * @param xShear
-	 *            the shear to the applied to the object along the x-axis.
-	 * @param yShear
-	 *            the shear to the applied to the object along the x-axis.
-	 */
-	public void setShear(final float xShear, final float yShear) {
-		shearX = (int) (xShear * 65536.0);
-		shearY = (int) (yShear * 65536.0);
 	}
 
 	/**
@@ -341,46 +279,10 @@ public final class CoordTransform implements Encodeable, Copyable<CoordTransform
 	}
 
 	/**
-	 * Sets the translation along the x-axis.
-	 * 
-	 * @param coord
-	 *            the translation in the x direction.
-	 */
-	public void setTranslateX(final int coord) {
-		translateX = coord;
-	}
-
-	/**
 	 * Returns the translation along the y-axis.
 	 */
 	public int getTranslateY() {
 		return translateY;
-	}
-
-	/**
-	 * Sets the translation along the y-axis.
-	 * 
-	 * @param coord
-	 *            the translation in the y direction.
-	 */
-	public void setTranslateY(final int coord) {
-		translateY = coord;
-	}
-
-	/**
-	 * Sets the translation for the transform.
-	 * 
-	 * This method sets the individual values used in the transform directly. It
-	 * does not perform any compositing.
-	 * 
-	 * @param xCoord
-	 *            the translation along the x-axis.
-	 * @param yCoord
-	 *            the translation along the x-axis.
-	 */
-	public void setTranslate(final int xCoord, final int yCoord) {
-		translateX = xCoord;
-		translateY = yCoord;
 	}
 
 	/**
@@ -394,22 +296,6 @@ public final class CoordTransform implements Encodeable, Copyable<CoordTransform
 	}
 
 	/**
-	 * Sets the transform values from a 3x3 matrix.
-	 * 
-	 * @param matrix
-	 *            a 3x3 array of floats containing the values defining the
-	 *            transform.
-	 */
-	public void setMatrix(final float[][] matrix) {
-		scaleX = (int) (matrix[0][0] * 65536.0f);
-		scaleY = (int) (matrix[1][1] * 65536.0f);
-		shearX = (int) (matrix[1][0] * 65536.0f);
-		shearY = (int) (matrix[0][1] * 65536.0f);
-		translateX = (int) matrix[0][2];
-		translateY = (int) matrix[1][2];
-	}
-
-	/**
 	 * Returns true if the transform will leave the position, size and rotation
 	 * of the object unchanged.
 	 */
@@ -418,14 +304,38 @@ public final class CoordTransform implements Encodeable, Copyable<CoordTransform
 				&& translateX == 0 && translateY == 0;
 	}
 
-	public CoordTransform copy() {
-		return new CoordTransform(this);
-	}
-
 	@Override
 	public String toString() {
 		return String.format(FORMAT, scaleX / 65536.0f, scaleY / 65536.0f,
 				shearX / 65536.0f, shearY / 65536.0f, translateX, translateY);
+	}
+	
+	@Override
+	public boolean equals(final Object object) {
+		boolean result;
+		CoordTransform transform;
+		
+		if (object == null) {
+			result = false;
+		} else if (object == this) {
+			result = true;
+		} else if (object instanceof CoordTransform) {
+			transform = (CoordTransform)object;
+			result = scaleX == transform.scaleX && 
+				scaleY == transform.scaleY &&
+				shearX == transform.shearX && 
+				shearY == transform.shearY &&
+				translateX == transform.translateX && 
+				translateY == transform.translateY;
+		} else {
+			result = false;
+		}
+		return result;
+	}
+	
+	@Override
+	public int hashCode() {
+		return ((((scaleX*31 + scaleY)*31 + shearX)*31 + shearY)*31 + translateX)*31 + translateY;
 	}
 
 	public int prepareToEncode(final SWFEncoder coder, final SWFContext context) {

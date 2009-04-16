@@ -1707,8 +1707,6 @@ public final class Font
         int destIndex = 0;
 
         do {
-            transform = CoordTransform.translate(0,0);
-            
             flags = coder.readWord(2, false);
             sourceGlyph = coder.readWord(2, false);
             
@@ -1749,13 +1747,11 @@ public final class Font
                 
                 //xCoordinates[destIndex] = glyphTable[sourceGlyph].xCoordinates[sourceIndex];
                 //yCoordinates[destIndex] = glyphTable[sourceGlyph].yCoordinates[sourceIndex];
-                transform.setTranslate(0,0);
             }
             else if ((flags & ARGS_ARE_WORDS) == 0 && (flags & ARGS_ARE_XY) > 0)
             {
                 xOffset = (coder.readByte() << 24) >> 24;
                 yOffset = (coder.readByte() << 24) >> 24;
-                transform.setTranslate(xOffset, yOffset);
             }
             else if ((flags & ARGS_ARE_WORDS) > 0 && (flags & ARGS_ARE_XY) == 0)
             {
@@ -1764,26 +1760,24 @@ public final class Font
                 
                 //xCoordinates[destIndex] = glyphTable[sourceGlyph].xCoordinates[sourceIndex];
                 //yCoordinates[destIndex] = glyphTable[sourceGlyph].yCoordinates[sourceIndex];
-                transform.setTranslate(0, 0);
             }
             else
             {
                 xOffset = coder.readWord(2, true);
                 yOffset = coder.readWord(2, true);
-                transform.setTranslate(xOffset, yOffset);
             }
             
             
             if ((flags & HAVE_SCALE) > 0) 
             {
                 float scaleXY = coder.readBits(16, true)/16384.0f;
-                transform.setScale(scaleXY, scaleXY);
+                transform = new CoordTransform(scaleXY, scaleXY, 0, 0, xOffset, yOffset);
             }
             else if ((flags & HAVE_XYSCALE) > 0)
             {
                 float scaleX = coder.readBits(16, true)/16384.0f;
                 float scaleY = coder.readBits(16, true)/16384.0f;
-                transform.setScale(scaleX, scaleY);
+                transform = new CoordTransform(scaleX, scaleY, 0, 0, xOffset, yOffset);
             }
             else if ((flags & HAVE_2X2) > 0) 
             {
@@ -1792,13 +1786,7 @@ public final class Font
                 float scale10 = coder.readBits(16, true)/16384.0f;
                 float scaleY = coder.readBits(16, true)/16384.0f;
                 
-                float[][] matrix = new float[][] { 
-                    {scaleX, scale01, 0.0f}, 
-                    {scale10, scaleY, 0.0f}, 
-                    {0.0f, 0.0f, 1.0f}
-                };
-
-                transform.setMatrix(CoordTransform.product(transform.getMatrix(), matrix));
+                transform = new CoordTransform(scaleX, scaleY, scale01, scale10, xOffset, yOffset);
             }
             
             float[][] matrix = transform.getMatrix();

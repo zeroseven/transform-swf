@@ -93,7 +93,7 @@ public final class GradientFill implements FillStyle {
 
 	public GradientFill(final SWFDecoder coder, final SWFContext context) throws CoderException {
 		type = coder.readByte();
-		transform = new CoordTransform(coder, context);
+		transform = new CoordTransform(coder);
 		count = coder.readByte();
 		gradients = new ArrayList<Gradient>(count);
 		
@@ -128,12 +128,8 @@ public final class GradientFill implements FillStyle {
 
 	public GradientFill(GradientFill object) {
 		type = object.type;
-		transform = object.transform.copy();
-		gradients = new ArrayList<Gradient>(object.gradients.size());
-	
-		for (Gradient gradient : object.gradients) {
-			gradients.add(gradient.copy());
-		}
+		transform = object.transform;
+		gradients = new ArrayList<Gradient>(object.gradients);
 	}
 
 	/**

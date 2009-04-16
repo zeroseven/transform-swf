@@ -603,7 +603,7 @@ public final class Movie implements Cloneable
 		version = coder.readByte();
 		length = coder.readWord(4, false);
 
-		frameSize = new Bounds(coder, context);
+		frameSize = new Bounds(coder);
 
 		frameRate = coder.readWord(2, true)/256.0f;
 		frameCount = coder.readWord(2, false);

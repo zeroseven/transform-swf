@@ -36,6 +36,7 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Encodeable;
 import com.flagstone.transform.movie.Strings;
+import com.flagstone.transform.movie.datatype.Bounds;
 
 /**
  * <p>Character is used to display a text character in a span of text. Each 
@@ -56,8 +57,8 @@ public final class GlyphIndex implements Encodeable
 {
 	private static final String FORMAT = "GlyphIndex: { glyphIndex=%d; advance=%d }";
 		
-	protected int glyphIndex;
-	protected int advance;
+	private final transient int glyphIndex;
+	private final transient int advance;
 
 	protected GlyphIndex(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
@@ -80,13 +81,12 @@ public final class GlyphIndex implements Encodeable
 	 */
 	public GlyphIndex(int anIndex, int anAdvance)
 	{
-		setGlyphIndex(anIndex);
-		setAdvance(anAdvance);
-	}
-	
-	public GlyphIndex(GlyphIndex object) {
-		glyphIndex = object.glyphIndex;
-		advance = object.advance;
+		if (anIndex < 0) {
+			throw new IllegalArgumentException(Strings.NUMBER_CANNOT_BE_NEGATIVE);
+		}
+		glyphIndex = anIndex;
+
+		advance = anAdvance;
 	}
 
 	/**
@@ -107,48 +107,33 @@ public final class GlyphIndex implements Encodeable
 		return advance;
 	}
 
-	/**
-	 * Sets the index of the glyph, contained in the array of Shape object
-	 * contained in a font definition object, that represents the character to
-	 * be displayed.
-	 * 
-	 * @param anIndex
-	 *            the index of the glyph that represents the character to be
-	 *            displayed.
-	 */
-	public void setGlyphIndex(int anIndex)
-	{
-		if (anIndex < 0) {
-			throw new IllegalArgumentException(Strings.NUMBER_CANNOT_BE_NEGATIVE);
-		}
-		glyphIndex = anIndex;
-	}
-
-	/**
-	 * Sets the advance from the glyph representing this character to the next 
-	 * glyph.
-	 * 
-	 * @param aNumber
-	 *            the relative position in twips from the origin of the glyph
-	 *            representing this character to the next glyph.
-	 */
-	public void setAdvance(int aNumber)
-	{
-		advance = aNumber;
-	}
-
-	/**
-	 * Creates and returns a deep copy of the this object.
-	 */
-	public GlyphIndex copy()
-	{
-		return new GlyphIndex(this);
-	}
-
 	@Override
 	public String toString()
 	{
 		return String.format(FORMAT, glyphIndex, advance);
+	}
+	
+	@Override
+	public boolean equals(final Object object) {
+		boolean result;
+		GlyphIndex index;
+		
+		if (object == null) {
+			result = false;
+		} else if (object == this) {
+			result = true;
+		} else if (object instanceof Bounds) {
+			index = (GlyphIndex)object;
+			result = glyphIndex == index.glyphIndex && advance == index.advance;
+		} else {
+			result = false;
+		}
+		return result;
+	}
+	
+	@Override
+	public int hashCode() {
+		return (glyphIndex*31)+advance;
 	}
 
 	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)

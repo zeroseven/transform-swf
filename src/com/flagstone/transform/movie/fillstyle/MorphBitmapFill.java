@@ -93,8 +93,8 @@ public final class MorphBitmapFill implements FillStyle {
 	public MorphBitmapFill(final SWFDecoder coder, final SWFContext context) throws CoderException {
 		type = coder.readByte();
 		identifier = coder.readWord(2, false);
-		startTransform = new CoordTransform(coder, context);
-		endTransform = new CoordTransform(coder, context);
+		startTransform = new CoordTransform(coder);
+		endTransform = new CoordTransform(coder);
 	}
 
 	/**
@@ -127,8 +127,8 @@ public final class MorphBitmapFill implements FillStyle {
 	public MorphBitmapFill(MorphBitmapFill object) {
 		type = object.type;
 		identifier = object.identifier;
-		startTransform = object.startTransform.copy();
-		endTransform = object.endTransform.copy();
+		startTransform = object.startTransform;
+		endTransform = object.endTransform;
 	}
 
 	/**

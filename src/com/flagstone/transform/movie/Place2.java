@@ -258,7 +258,7 @@ public final class Place2 implements MovieTag
 		}
 
 		if (hasTransform) {
-			transform = new CoordTransform(coder, context);
+			transform = new CoordTransform(coder);
 		}
 
 		if (hasColorTransform) {
@@ -396,10 +396,10 @@ public final class Place2 implements MovieTag
 		identifier = object.identifier;
 		
 		if (object.transform != null) {
-			transform = object.transform.copy();
+			transform = object.transform;
 		}
 		if (object.colorTransform != null) {
-			colorTransform = object.colorTransform.copy();
+			colorTransform = object.colorTransform;
 		}
 		ratio = object.ratio;
 		clippingDepth = object.clippingDepth;

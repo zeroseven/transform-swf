@@ -116,10 +116,10 @@ public final class DefineMorphShape2 implements DefineTag
 		context.setTransparent(true);
 		context.setArrayExtended(true);
 
-		startShapeBounds = new Bounds(coder, context);
-		endShapeBounds = new Bounds(coder, context);
-		startEdgeBounds = new Bounds(coder, context);
-		endEdgeBounds = new Bounds(coder, context);
+		startShapeBounds = new Bounds(coder);
+		endShapeBounds = new Bounds(coder);
+		startEdgeBounds = new Bounds(coder);
+		endEdgeBounds = new Bounds(coder);
 
 		fillStyles = new ArrayList<FillStyle>();
 		lineStyles = new ArrayList<MorphLineStyle2>();

@@ -127,8 +127,7 @@ public final class ColorTransformTest
     	encoder = new SWFEncoder(data.length);
        	context = new SWFContext();
     	
-    	fixture = new ColorTransform(1.0f,2.0f,3.0f,4.0f);
-    	fixture.setAddTerms(1,2,3,4);
+    	fixture = new ColorTransform(1,2,3,4,1.0f,2.0f,3.0f,4.0f);
     	
     	assertEquals(9, fixture.prepareToEncode(encoder, context));
     	fixture.encode(encoder, context);
@@ -145,8 +144,7 @@ public final class ColorTransformTest
        	context = new SWFContext();
        	context.setTransparent(true);
     	
-    	fixture = new ColorTransform(1.0f,2.0f,3.0f,4.0f);
-    	fixture.setAddTerms(1,2,3,4);
+    	fixture = new ColorTransform(1,2,3,4,1.0f,2.0f,3.0f,4.0f);
 
     	assertEquals(13, fixture.prepareToEncode(encoder, context));
     	fixture.encode(encoder, context);

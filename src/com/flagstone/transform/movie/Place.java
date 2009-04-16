@@ -85,7 +85,7 @@ public final class Place implements MovieTag
 
 		identifier = coder.readWord(2, false);
 		layer = coder.readWord(2, false);
-		transform = new CoordTransform(coder, context);
+		transform = new CoordTransform(coder);
 
 		if (coder.getPointer() < end) {
 			colorTransform = new ColorTransform(coder, context);
@@ -171,8 +171,8 @@ public final class Place implements MovieTag
 	public Place(Place object) {
 		identifier = object.identifier;
 		layer = object.layer;
-		transform = object.transform.copy();
-		colorTransform = object.colorTransform.copy();
+		transform = object.transform;
+		colorTransform = object.colorTransform;
 	}
 
 	/**

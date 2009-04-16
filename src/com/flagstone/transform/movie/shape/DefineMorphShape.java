@@ -116,8 +116,8 @@ public final class DefineMorphShape implements DefineTag
 
 		identifier = coder.readWord(2, false);
 
-		startBounds = new Bounds(coder, context);
-		endBounds = new Bounds(coder, context);
+		startBounds = new Bounds(coder);
+		endBounds = new Bounds(coder);
 		fillStyles = new ArrayList<FillStyle>();
 		lineStyles = new ArrayList<MorphLineStyle>();
 

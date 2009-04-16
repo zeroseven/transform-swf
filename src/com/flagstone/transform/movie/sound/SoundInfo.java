@@ -172,13 +172,8 @@ public final class SoundInfo implements Encodeable
 		mode = object.mode;
 		loopCount = object.loopCount;
 		inPoint = object.inPoint;
-		outPoint = object.outPoint;
-		
-		envelopes = new ArrayList<Envelope>(object.envelopes.size());
-		
-		for (Envelope envelope : object.envelopes) {
-			envelopes.add(envelope.copy());
-		}
+		outPoint = object.outPoint;	
+		envelopes = new ArrayList<Envelope>(object.envelopes);
 	}
 
 	/**

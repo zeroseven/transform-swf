@@ -37,6 +37,7 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.datatype.CoordTransform;
 
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertEquals;
@@ -86,8 +87,8 @@ public final class MorphBitmapFillTest {
 	public void checkCopy() {
 		fixture = new MorphBitmapFill(type, identifier, start, end);
 		assertEquals(fixture.getIdentifier(), fixture.copy().getIdentifier());
-		assertNotSame(fixture.getStartTransform(), fixture.copy().getStartTransform());
-		assertNotSame(fixture.getEndTransform(), fixture.copy().getEndTransform());
+		assertSame(fixture.getStartTransform(), fixture.copy().getStartTransform());
+		assertSame(fixture.getEndTransform(), fixture.copy().getEndTransform());
 		assertEquals(fixture.toString(), fixture.toString());
 	}
 	

@@ -36,7 +36,6 @@ import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Encodeable;
-import com.flagstone.transform.movie.Copyable;
 
 /**
  * <p>
@@ -97,20 +96,20 @@ import com.flagstone.transform.movie.Copyable;
  * 
  */
 @SuppressWarnings("PMD.TooManyMethods")
-public final class ColorTransform implements Encodeable, Copyable<ColorTransform> {
+public final class ColorTransform implements Encodeable {
 
 	private static final String FORMAT = 
 		"ColorTransform: { multiply=[%f, %f, %f, %f]; add=[%d, %d, %d, %d] }";
 
-	private int multiplyRed;
-	private int multiplyGreen;
-	private int multiplyBlue;
-	private int multiplyAlpha;
+	private final transient int multiplyRed;
+	private final transient int multiplyGreen;
+	private final transient int multiplyBlue;
+	private final transient int multiplyAlpha;
 
-	private int addRed;
-	private int addGreen;
-	private int addBlue;
-	private int addAlpha;
+	private final transient int addRed;
+	private final transient int addGreen;
+	private final transient int addBlue;
+	private final transient int addAlpha;
 
 	private transient int size;
 	private transient boolean hasMultiply;
@@ -142,10 +141,12 @@ public final class ColorTransform implements Encodeable, Copyable<ColorTransform
 			addRed = coder.readBits(size, true);
 			addGreen = coder.readBits(size, true);
 			addBlue = coder.readBits(size, true);
-
-			if (hasAlpha) {
-				addAlpha = coder.readBits(size, true);
-			}
+			addAlpha = hasAlpha ? coder.readBits(size, true) : 0;
+		} else {
+			addRed = 0;
+			addGreen = 0;
+			addBlue = 0;
+			addAlpha = 0;
 		}
 
 		coder.alignToByte();
@@ -199,6 +200,21 @@ public final class ColorTransform implements Encodeable, Copyable<ColorTransform
 		addGreen = 0;
 		addBlue = 0;
 		addAlpha = 0;
+	}
+
+	public ColorTransform(final int addRed, final int addGreen,
+			final int addBlue, final int addAlpha,
+			final float mulRed, final float mulGreen,
+			final float mulBlue, final float mulAlpha) {
+		multiplyRed = (int) (mulRed * 256);
+		multiplyGreen = (int) (mulGreen * 256);
+		multiplyBlue = (int) (mulBlue * 256);
+		multiplyAlpha = (int) (mulAlpha * 256);
+
+		this.addRed = addRed;
+		this.addGreen = addGreen;
+		this.addBlue = addBlue;
+		this.addAlpha = addAlpha;
 	}
 
 	/**
@@ -287,147 +303,40 @@ public final class ColorTransform implements Encodeable, Copyable<ColorTransform
 		return addAlpha;
 	}
 
-	/**
-	 * Sets the value for the multiplyTerm which will be applied to the red
-	 * colour channel.
-	 * 
-	 * @param aNumber
-	 *            the value to be multiplied with the red colour channel's
-	 *            value.
-	 */
-	public void setMultiplyRed(final float aNumber) {
-		multiplyRed = (int) (aNumber * 256);
-	}
-
-	/**
-	 * Sets the value for the multiplyTerm which will be applied to the green
-	 * colour channel.
-	 * 
-	 * @param aNumber
-	 *            the value to be multiplied with the green colour channel's
-	 *            value.
-	 */
-	public void setMultiplyGreen(final float aNumber) {
-		multiplyGreen = (int) (aNumber * 256);
-	}
-
-	/**
-	 * Sets the value for the multiplyTerm which will be applied to the blue
-	 * colour channel.
-	 * 
-	 * @param aNumber
-	 *            the value to be multiplied with the blue colour channel's
-	 *            value.
-	 */
-	public void setMultiplyBlue(final float aNumber) {
-		multiplyBlue = (int) (aNumber * 256);
-	}
-
-	/**
-	 * Sets the value for the multiplyTerm which will be applied to the alpha
-	 * colour channel.
-	 * 
-	 * @param aNumber
-	 *            the value to be multiplied with the alpha colour channel's
-	 *            value.
-	 */
-	public void setMultiplyAlpha(final float aNumber) {
-		multiplyAlpha = (int) (aNumber * 256);
-	}
-
-	/**
-	 * Sets the values for the multiply terms for each of the colour channels
-	 * 
-	 * @param mulRed
-	 *            value to multiply the red colour channel by.
-	 * @param mulGreen
-	 *            value to multiply the green colour channel by.
-	 * @param mulBlue
-	 *            value to multiply the blue colour channel by.
-	 * @param mulAlpha
-	 *            value to multiply the alpha colour channel by.
-	 */
-	public void setMultiplyTerms(final float mulRed, final float mulGreen,
-			final float mulBlue, final float mulAlpha) {
-		multiplyRed = (int) (mulRed * 256);
-		multiplyGreen = (int) (mulGreen * 256);
-		multiplyBlue = (int) (mulBlue * 256);
-		multiplyAlpha = (int) (mulAlpha * 256);
-	}
-
-	/**
-	 * Sets the value for the addTerm which will be applied to the red colour
-	 * channel.
-	 * 
-	 * @param aNumber
-	 *            the value to be added to the red colour channel's value.
-	 */
-	public void setAddRed(final int aNumber) {
-		addRed = aNumber;
-	}
-
-	/**
-	 * Sets the value for the addTerm which will be applied to the green colour
-	 * channel.
-	 * 
-	 * @param aNumber
-	 *            the value to be added to the green colour channel's value.
-	 */
-	public void setAddGreen(final int aNumber) {
-		addGreen = aNumber;
-	}
-
-	/**
-	 * Sets the value for the addTerm which will be applied to the blue colour
-	 * channel.
-	 * 
-	 * @param aNumber
-	 *            the value to be added to the blue colour channel's value.
-	 */
-	public void setAddBlue(final int aNumber) {
-		addBlue = aNumber;
-	}
-
-	/**
-	 * Sets the value for the addTerm which will be applied to the alpha colour
-	 * channel.
-	 * 
-	 * @param aNumber
-	 *            the value to be added to the alpha colour channel's value.
-	 */
-	public void setAddAlpha(final int aNumber) {
-		addAlpha = aNumber;
-	}
-
-	/**
-	 * Sets the values for the add terms for each of the colour channels.
-	 * 
-	 * @param addRed
-	 *            value to add to the red colour channel.
-	 * @param addGreen
-	 *            value to add to the green colour channel.
-	 * @param addBlue
-	 *            value to add to the blue colour channel.
-	 * @param addAlpha
-	 *            value to add to the alpha colour channel.
-	 */
-	public void setAddTerms(final int addRed, final int addGreen,
-			final int addBlue, final int addAlpha) {
-		this.addRed = addRed;
-		this.addGreen = addGreen;
-		this.addBlue = addBlue;
-		this.addAlpha = addAlpha;
-	}
-
-	public ColorTransform copy() {
-		return new ColorTransform(this);
-	}
-
 	@Override
 	public String toString() {
 		return String.format(FORMAT, multiplyRed / 256.0f,
 				multiplyGreen / 256.0f, multiplyBlue / 256.0f,
 				multiplyAlpha / 256.0f, addRed, addGreen, addBlue, addAlpha);
+	}
+	
+	@Override
+	public boolean equals(final Object object) {
+		boolean result;
+		ColorTransform transform;
+		
+		if (object == null) {
+			result = false;
+		} else if (object == this) {
+			result = true;
+		} else if (object instanceof ColorTransform) {
+			transform = (ColorTransform)object;
+			result = addRed == transform.addRed && addGreen == transform.addGreen &&
+				addBlue == transform.addBlue && addAlpha == transform.addAlpha &&
+				multiplyRed == transform.multiplyRed && 
+				multiplyGreen == transform.multiplyGreen && 
+				multiplyBlue == transform.multiplyBlue &&
+				multiplyAlpha == transform.multiplyAlpha;
+		} else {
+			result = false;
+		}
+		return result;
+	}
+	
+	@Override
+	public int hashCode() {
+		return ((((((addRed*31 + addGreen)*31 + addBlue)*31 + addAlpha)*31 + 
+				multiplyRed)* 31 + multiplyGreen)* 31 + multiplyBlue)* 31 + multiplyAlpha;
 	}
 
 	public int prepareToEncode(final SWFEncoder coder, final SWFContext context) {

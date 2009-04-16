@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.junit.Test;
 
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertEquals;
@@ -78,7 +79,7 @@ public final class GradientFillTest {
 		fixture = new GradientFill(type, transform, list);
 		GradientFill copy = fixture.copy();
 
-		assertNotSame(fixture.getTransform(), copy.getTransform());
+		assertSame(fixture.getTransform(), copy.getTransform());
 		assertNotSame(fixture.getGradients(), copy.getGradients());
 		assertEquals(fixture.toString(), copy.toString());
 	}

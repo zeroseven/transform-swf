@@ -95,7 +95,7 @@ public final class ButtonShape implements Encodeable
 		state = coder.readBits(4, false);
 		identifier = coder.readWord(2, false);
 		layer = coder.readWord(2, false);
-		transform = new CoordTransform(coder, context);
+		transform = new CoordTransform(coder);
 
 		if (context.getType() == Types.DEFINE_BUTTON_2) {
 			colorTransform = new ColorTransform(coder, context);
@@ -164,8 +164,8 @@ public final class ButtonShape implements Encodeable
 		state = object.state;
 		identifier = object.identifier;
 		layer = object.layer;
-		transform = object.transform.copy();
-		colorTransform = object.colorTransform.copy();
+		transform = object.transform;
+		colorTransform = object.colorTransform;
 	}
 
 	public Set<Button.State> getState()

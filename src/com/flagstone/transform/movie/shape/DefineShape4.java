@@ -83,8 +83,8 @@ public final class DefineShape4 implements DefineTag
 		identifier = coder.readWord(2, false);
 		context.setTransparent(true);
 
-		shapeBounds = new Bounds(coder, context);
-		edgeBounds = new Bounds(coder, context);
+		shapeBounds = new Bounds(coder);
+		edgeBounds = new Bounds(coder);
 		
 		coder.readByte(); // scaling hints
 

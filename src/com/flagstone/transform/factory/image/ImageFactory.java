@@ -281,8 +281,7 @@ public final class ImageFactory
         shape.add(new Line(0, -height*20));
         
         DefineShape3 definition = new DefineShape3(identifier, bounds, new ArrayList<FillStyle>(), new ArrayList<LineStyle>(), shape);
-        CoordTransform transform = CoordTransform.translate(-xOrigin*20, -yOrigin*20);
-        transform.setScale(20.0f, 20.0f);
+        CoordTransform transform = new CoordTransform(20.0f, 20.0f, 0, 0, -xOrigin*20, -yOrigin*20);
     
         if (borderStyle != null) {
             definition.add(borderStyle);

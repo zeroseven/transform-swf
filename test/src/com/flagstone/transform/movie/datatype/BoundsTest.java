@@ -111,7 +111,7 @@ public final class BoundsTest {
 	public void decodeWithBoundsSet() throws CoderException {
 		decoder = new SWFDecoder(encoded);
 
-		fixture = new Bounds(decoder, context);
+		fixture = new Bounds(decoder);
 
 		assertTrue(decoder.eof());
 		assertEquals(xmin, fixture.getMinX());

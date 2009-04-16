@@ -81,7 +81,7 @@ public final class DefineShape3 implements DefineTag
 		identifier = coder.readWord(2, false);
 		context.setTransparent(true);
 
-		bounds = new Bounds(coder, context);
+		bounds = new Bounds(coder);
 
 		int fillStyleCount = coder.readByte();
 

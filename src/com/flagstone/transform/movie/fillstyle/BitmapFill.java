@@ -101,7 +101,7 @@ public final class BitmapFill implements FillStyle {
 	public BitmapFill(final SWFDecoder coder, final SWFContext context) throws CoderException {
 		type = coder.readByte();
 		identifier = coder.readWord(2, false);
-		transform = new CoordTransform(coder, context);
+		transform = new CoordTransform(coder);
 	}
 
 	/**
@@ -130,7 +130,7 @@ public final class BitmapFill implements FillStyle {
 	public BitmapFill(BitmapFill object) {
 		this.type = object.type;
 		identifier = object.identifier;
-		transform = object.transform.copy();
+		transform = object.transform;
 	}
 
 	/**

@@ -186,7 +186,7 @@ public final class DefineFont2 implements DefineTag
 			
 			for (int i=0; i<glyphCount; i++) 
 			{
-				bounds.add(new Bounds(coder, context));
+				bounds.add(new Bounds(coder));
 			}
 
 			int kerningCount = coder.readWord(2, false);

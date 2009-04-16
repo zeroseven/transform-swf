@@ -37,6 +37,7 @@ import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Encodeable;
 import com.flagstone.transform.movie.Strings;
 import com.flagstone.transform.movie.datatype.Color;
+import com.flagstone.transform.movie.font.Kerning;
 
 /**
  * Gradient defines a control point that is used to specify how a gradient
@@ -67,8 +68,8 @@ public final class Gradient implements Encodeable
 {
 	private static final String FORMAT = "Gradient: { ratio=%d; color=%s }";
 	
-	protected int ratio;
-	protected Color color;
+	private final transient int ratio;
+	private final transient Color color;
 
 	public Gradient(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
@@ -84,17 +85,19 @@ public final class Gradient implements Encodeable
 	 * @param aColor
 	 *            the color at the control point. Must not be null.
 	 */
-	public Gradient(int aRatio, Color aColor)
+	public Gradient(final int aRatio, final Color aColor)
 	{
-		setRatio(aRatio);
-		setColor(aColor);
+		if (aRatio < 0 || aRatio > 255) {
+			throw new IllegalArgumentException(Strings.RATIO_OUT_OF_RANGE);
+		}
+		ratio = aRatio;
+		
+		if (aColor == null) {
+			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+		}
+		color = aColor;
 	}
 	
-	public Gradient(Gradient object) {
-		ratio = object.ratio;
-		color = object.color;
-	}
-
 	/**
 	 * Returns the ratio that defines the relative point across the gradient
 	 * square.
@@ -113,47 +116,33 @@ public final class Gradient implements Encodeable
 		return color;
 	}
 
-	/**
-	 * Sets the ratio that defines the control point across the gradient square.
-	 * 
-	 * @param aNumber
-	 *            the ratio along the gradient square in the range 0..255.
-	 */
-	public void setRatio(int aNumber)
-	{
-		if (aNumber < 0 || aNumber > 255) {
-			throw new IllegalArgumentException(Strings.RATIO_OUT_OF_RANGE);
-		}
-		ratio = aNumber;
-	}
-
-	/**
-	 * Sets the colour that is displayed at the control point across the
-	 * gradient square.
-	 * 
-	 * @param aColor
-	 *            the color at the control point. Must not be null.
-	 */
-	public void setColor(Color aColor)
-	{
-		if (aColor == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
-		}
-		color = aColor;
-	}
-
-	/**
-	 * Creates and returns a deep copy of this object.
-	 */
-	public Gradient copy()
-	{
-		return new Gradient(this);
-	}
-
 	@Override
 	public String toString()
 	{
 		return String.format(FORMAT, ratio, color);
+	}
+	
+	@Override
+	public boolean equals(final Object object) {
+		boolean result;
+		Gradient gradient;
+		
+		if (object == null) {
+			result = false;
+		} else if (object == this) {
+			result = true;
+		} else if (object instanceof Kerning) {
+			gradient = (Gradient)object;
+			result = ratio == gradient.ratio && color.equals(gradient.color);
+		} else {
+			result = false;
+		}
+		return result;
+	}
+	
+	@Override
+	public int hashCode() {
+		return (ratio*31) + color.hashCode();
 	}
 
 	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)

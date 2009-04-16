@@ -353,7 +353,6 @@ public final class Layer
 	public void color(int red, int green, int blue, int alpha)
 	{
 		ColorTransform transform = new ColorTransform(red, green, blue, alpha);
-		transform.setMultiplyTerms(0.0f, 0.0f, 0.0f, 0.0f);
 		
 		if (place == null)
 		{

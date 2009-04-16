@@ -88,7 +88,7 @@ public final class DefineText implements DefineTag
 		end = coder.getPointer() + (length << 3);
 
 		identifier = coder.readWord(2, true);
-		bounds = new Bounds(coder, context);
+		bounds = new Bounds(coder);
 
 		// This code is used to get round a bug in Flash - sometimes 16,
 		// 8-bit zeroes are written out before the transform. The root
@@ -113,7 +113,7 @@ public final class DefineText implements DefineTag
 
 		// Back to reading the rest of the tag
 
-		transform = new CoordTransform(coder, context);
+		transform = new CoordTransform(coder);
 
 		glyphBits = coder.readByte();
 		advanceBits = coder.readByte();
@@ -167,7 +167,7 @@ public final class DefineText implements DefineTag
 	{
 		identifier = object.identifier;
 		bounds = object.bounds;
-		transform = object.transform.copy();
+		transform = object.transform;
 		objects = new ArrayList<TextSpan>(object.objects.size());
 		for (TextSpan span : object.objects) {
 			objects.add(span.copy());

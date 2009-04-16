@@ -31,6 +31,7 @@ package com.flagstone.transform.movie;
 
 import org.junit.Test;
 
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertEquals;
@@ -108,8 +109,8 @@ public final class PlaceTest {
 		assertNotSame(fixture, copy);
 		assertEquals(fixture.getIdentifier(), copy.getIdentifier());
 		assertEquals(fixture.getLayer(), copy.getLayer());
-		assertNotSame(fixture.getTransform(), copy.getTransform());
-		assertNotSame(fixture.getColorTransform(), copy.getColorTransform());
+		assertSame(fixture.getTransform(), copy.getTransform());
+		assertSame(fixture.getColorTransform(), copy.getColorTransform());
 		assertEquals(fixture.toString(), copy.toString());
 	}
 	

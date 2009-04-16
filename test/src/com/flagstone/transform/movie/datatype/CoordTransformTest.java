@@ -220,7 +220,7 @@ public final class CoordTransformTest {
 		data = new byte[] { 6, 80 };
 		SWFDecoder decoder = new SWFDecoder(data);
 
-		fixture = new CoordTransform(decoder, context);
+		fixture = new CoordTransform(decoder);
 
 		assertEquals(16, decoder.getPointer());
 		assertEquals(xCoord, fixture.getMatrix()[0][2]);
@@ -235,7 +235,7 @@ public final class CoordTransformTest {
 		data = new byte[] { -52, -128, 0, 32, 0, 0, 64 };
 		SWFDecoder decoder = new SWFDecoder(data);
 
-		fixture = new CoordTransform(decoder, context);
+		fixture = new CoordTransform(decoder);
 
 		assertEquals(56, decoder.getPointer());
 		assertEquals(scaleX, fixture.getMatrix()[0][0]);
@@ -250,7 +250,7 @@ public final class CoordTransformTest {
 		data = new byte[] { 102, 64, 0, 16, 0, 0, 64 };
 		SWFDecoder decoder = new SWFDecoder(data);
 
-		fixture = new CoordTransform(decoder, context);
+		fixture = new CoordTransform(decoder);
 
 		assertEquals(56, decoder.getPointer());
 		assertEquals(shearX, fixture.getMatrix()[1][0]);
@@ -265,7 +265,7 @@ public final class CoordTransformTest {
 		data = new byte[] { -52, -128, 0, 32, 0, 13, 12, 0, 1, 0, 0, 2, 0 };
 		SWFDecoder decoder = new SWFDecoder(data);
 
-		fixture = new CoordTransform(decoder, context);
+		fixture = new CoordTransform(decoder);
 
 		assertEquals(104, decoder.getPointer());
 		compare(matrix, fixture.getMatrix());

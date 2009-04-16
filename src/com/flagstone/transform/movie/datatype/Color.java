@@ -59,10 +59,10 @@ public final class Color implements Encodeable {
 
 	private static final String FORMAT = "Color: { red=%d; green=%d; blue=%d; alpha=%d }";
 	
-	private final int red;
-	private final int green;
-	private final int blue;
-	private final int alpha;
+	private final transient int red;
+	private final transient int green;
+	private final transient int blue;
+	private final transient int alpha;
 
 	public Color(final SWFDecoder coder, final SWFContext context) throws CoderException {
 		red = coder.readByte();

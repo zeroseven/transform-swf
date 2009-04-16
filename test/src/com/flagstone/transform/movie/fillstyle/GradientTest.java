@@ -73,16 +73,6 @@ public final class GradientTest {
 	}
 	
 	@Test
-	public void checkCopy() {
-		fixture = new Gradient(ratio, color);
-		Gradient copy = fixture.copy();
-
-		assertNotSame(fixture, copy);
-		assertSame(fixture.getColor(), copy.getColor());
-		assertEquals(fixture.toString(), copy.toString());
-	}
-	
-	@Test
 	public void encode() throws CoderException {		
 		SWFEncoder encoder = new SWFEncoder(encoded.length);		
 		SWFContext context = new SWFContext();

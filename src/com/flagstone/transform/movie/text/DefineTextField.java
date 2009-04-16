@@ -472,7 +472,7 @@ public final class DefineTextField implements DefineTag
 		identifier = coder.readWord(2, true);
 		context.setTransparent(true);
 
-		bounds = new Bounds(coder, context);
+		bounds = new Bounds(coder);
 
 		boolean containsText = coder.readBits(1, false) != 0;
 		wordWrapped = coder.readBits(1, false) != 0;
