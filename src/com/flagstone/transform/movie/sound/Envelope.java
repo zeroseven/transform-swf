@@ -41,12 +41,143 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Encodeable;
 import com.flagstone.transform.movie.Strings;
+import com.flagstone.transform.movie.font.Kerning;
 
 /**
  */
 public final class Envelope implements Encodeable
 {
-	private List<SoundLevel> envelopes;
+	/**
+	 * Envelope is used to define an envelope which controls how a particular sound
+	 * is played over time.
+	 * 
+	 * <p>
+	 * Each Envelope object contains a sample number in the audio <b>when it is
+	 * played</b> where the envelope will be applied along with the sound levels for
+	 * the left and right channels.
+	 * </p>
+	 * 
+	 * <p>
+	 * The Flash Player plays sounds at a fixed rate of 44.1KHz, therefore sounds
+	 * sampled at a lower frequency are interpolated with each sample repeated to
+	 * generated the 44.1Khz playback rate. For example each sample in a sound
+	 * sampled at 22KHz is played twice to generated the 44.1Khz playback rate.
+	 * </p>
+	 * 
+	 * <p>
+	 * The envelope defines the sample number (and hence the time) in the playback
+	 * data stream where the level information applies and <b>not</b> the sample
+	 * number in the original sound data. For example to set the level 0.1 seconds
+	 * into a sound that plays for 1 second the value for the mark attribute in the
+	 * envelope object would be 44100 * 0.1/1.0 = 4410.
+	 * </p>
+	 * 
+	 * @see SoundInfo
+	 */
+	public static class Level implements Encodeable {
+		
+		private static final String FORMAT = "Envelope: { mark=%d; left=%d; right=%d; }";
+		
+		private final transient int mark;
+		private final transient int left;
+		private final transient int right;
+
+		public Level(final SWFDecoder coder, final SWFContext context) throws CoderException {
+			mark = coder.readWord(4, false);
+			left = coder.readWord(2, false);
+			right = coder.readWord(2, false);
+		}
+
+		/**
+		 * Creates a envelope specifying the mark, left and right sound levels.
+		 * 
+		 * @param markValue
+		 *            the sample number in the 44.1KHz playback data stream where
+		 *            the levels for the channels is applied.
+		 * @param leftValue
+		 *            the level for the left sound channel, in the range 0..65535.
+		 * @param rightValue
+		 *            the level for the right sound channel, in the range 0..65535.
+		 */
+		public Level(int markValue, int leftValue, int rightValue) {
+
+			mark = markValue;
+			
+			if (leftValue < 0 || leftValue > 65535) {
+				throw new IllegalArgumentException(Strings.UNSIGNED_VALUE_OUT_OF_RANGE);
+			}
+			left = leftValue;
+			
+			if (rightValue < 0 || rightValue > 65535) {
+				throw new IllegalArgumentException(
+						Strings.UNSIGNED_VALUE_OUT_OF_RANGE);
+			}
+			right = rightValue;
+		}
+
+		/**
+		 * Returns the sample number in the 44.1KHz playback data stream where the
+		 * level information is applied.
+		 */
+		public int getMark() {
+			return mark;
+		}
+
+		/**
+		 * Returns the level of the sound played in the left channel.
+		 */
+		public int getLeft() {
+			return left;
+		}
+
+		/**
+		 * Returns the level of the sound played in the right channel.
+		 */
+		public int getRight() {
+			return right;
+		}
+
+		@Override
+		public String toString() {
+			return String.format(FORMAT, mark, left, right);
+		}
+		
+		@Override
+		public boolean equals(final Object object) {
+			boolean result;
+			Level level;
+			
+			if (object == null) {
+				result = false;
+			} else if (object == this) {
+				result = true;
+			} else if (object instanceof Level) {
+				level = (Level)object;
+				result = mark == level.mark && left == level.left && 
+					right == level.right;
+			} else {
+				result = false;
+			}
+			return result;
+		}
+		
+		@Override
+		public int hashCode() {
+			return ((mark*31) + left)* 31 + right;
+		}
+
+		public int prepareToEncode(final SWFEncoder coder, final SWFContext context) {
+			return 8;
+		}
+
+		public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException {
+			coder.writeWord(mark, 4);
+			coder.writeWord(left, 2);
+			coder.writeWord(right, 2);
+		}
+	}
+
+	private List<Level> levels;
 	
 	private transient int count;
 
@@ -54,16 +185,16 @@ public final class Envelope implements Encodeable
 	{
 		count = coder.readByte();
 		
-		envelopes = new ArrayList<SoundLevel>(count);
+		levels = new ArrayList<Level>(count);
 		
 		for (int i = 0; i < count; i++) {
-			envelopes.add(new SoundLevel(coder, context));
+			levels.add(new Level(coder, context));
 		}
 	}
 
 	public Envelope(Envelope object)
 	{
-		envelopes = new ArrayList<SoundLevel>(object.envelopes);
+		levels = new ArrayList<Level>(object.levels);
 	}
 
 	/**
@@ -72,21 +203,21 @@ public final class Envelope implements Encodeable
 	 * @param level
 	 *            a SoundLevel object. Must not be null.
 	 */
-	public Envelope add(SoundLevel level)
+	public Envelope add(Level level)
 	{
 		if (level == null) {
 			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
 		}
-		envelopes.add(level);
+		levels.add(level);
 		return this;
 	}
 
 	/**
 	 * Returns the array of SoundLevels that control the volume of the sound.
 	 */
-	public List<SoundLevel> getEnvelopes()
+	public List<Level> getEnvelopes()
 	{
-		return envelopes;
+		return levels;
 	}
 
 	/**
@@ -97,12 +228,12 @@ public final class Envelope implements Encodeable
 	 * @param anArray
 	 *            an array of Envelope objects. Must not be null.
 	 */
-	public void setEnvelopes(List<SoundLevel> anArray)
+	public void setLevels(List<Level> anArray)
 	{
 		if (anArray == null) {
 			throw new IllegalArgumentException(Strings.ARRAY_CANNOT_BE_NULL);
 		}
-		envelopes = anArray;
+		levels = anArray;
 	}
 
 	/**
@@ -116,12 +247,12 @@ public final class Envelope implements Encodeable
 	@Override
 	public String toString()
 	{
-		return envelopes.toString();
+		return levels.toString();
 	}
 
 	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
-		count = envelopes.size();		
+		count = levels.size();		
 		return 1 + (count << 3);
 	}
 
@@ -129,7 +260,7 @@ public final class Envelope implements Encodeable
 	{
 		coder.writeByte(count);
 
-		for (SoundLevel level : envelopes) {
+		for (Level level : levels) {
 			level.encode(coder, context);
 		}
 	}

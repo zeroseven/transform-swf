@@ -15,7 +15,6 @@ import com.flagstone.transform.movie.ShowFrame;
 import com.flagstone.transform.movie.datatype.Bounds;
 import com.flagstone.transform.movie.datatype.ColorTable;
 import com.flagstone.transform.movie.sound.DefineSound;
-import com.flagstone.transform.movie.sound.SoundLevel;
 import com.flagstone.transform.movie.sound.SoundInfo;
 import com.flagstone.transform.movie.sound.StartSound;
 

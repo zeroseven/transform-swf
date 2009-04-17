@@ -51,7 +51,7 @@ import com.flagstone.transform.movie.datatype.CoordTransform;
 })
 public final class EnvelopeTest {
 	
-	private transient SoundLevel fixture;
+	private transient Envelope fixture;
 	
 	private transient final byte[] encoded = new byte[] { 0x06, 0x01, 
 			0x01, 0x00, 0x02, 0x00, 0x06, 0x50};
@@ -76,7 +76,7 @@ public final class EnvelopeTest {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		SWFContext context = new SWFContext();
 
-		fixture = new SoundLevel(decoder, context);
+		fixture = new Envelope(decoder, context);
 		
 		assertTrue(decoder.eof());
 	}
@@ -86,7 +86,7 @@ public final class EnvelopeTest {
 		SWFDecoder decoder = new SWFDecoder(extended);
 		SWFContext context = new SWFContext();
 
-		fixture = new SoundLevel(decoder, context);
+		fixture = new Envelope(decoder, context);
 		
 		assertTrue(decoder.eof());
 	}
