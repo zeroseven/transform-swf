@@ -1,5 +1,5 @@
 /*
- * Envelope.java
+ * SoundInfo.java
  * Transform
  * 
  * Copyright (c) 2001-2008 Flagstone Software Ltd. All rights reserved.
@@ -30,140 +30,107 @@
 
 package com.flagstone.transform.movie.sound;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Encodeable;
 import com.flagstone.transform.movie.Strings;
-import com.flagstone.transform.movie.fillstyle.Gradient;
-import com.flagstone.transform.movie.font.Kerning;
 
 /**
- * Envelope is used to define an envelope which controls how a particular sound
- * is played over time.
- * 
- * <p>
- * Each Envelope object contains a sample number in the audio <b>when it is
- * played</b> where the envelope will be applied along with the sound levels for
- * the left and right channels.
- * </p>
- * 
- * <p>
- * The Flash Player plays sounds at a fixed rate of 44.1KHz, therefore sounds
- * sampled at a lower frequency are interpolated with each sample repeated to
- * generated the 44.1Khz playback rate. For example each sample in a sound
- * sampled at 22KHz is played twice to generated the 44.1Khz playback rate.
- * </p>
- * 
- * <p>
- * The envelope defines the sample number (and hence the time) in the playback
- * data stream where the level information applies and <b>not</b> the sample
- * number in the original sound data. For example to set the level 0.1 seconds
- * into a sound that plays for 1 second the value for the mark attribute in the
- * envelope object would be 44100 * 0.1/1.0 = 4410.
- * </p>
- * 
- * @see SoundInfo
  */
-public final class Envelope implements Encodeable {
+public final class Envelope implements Encodeable
+{
+	private List<SoundLevel> envelopes;
 	
-	private static final String FORMAT = "Envelope: { mark=%d; left=%d; right=%d; }";
-	
-	private final transient int mark;
-	private final transient int left;
-	private final transient int right;
+	private transient int count;
 
-	public Envelope(final SWFDecoder coder, final SWFContext context) throws CoderException {
-		mark = coder.readWord(4, false);
-		left = coder.readWord(2, false);
-		right = coder.readWord(2, false);
+	public Envelope(final SWFDecoder coder, final SWFContext context) throws CoderException
+	{
+		count = coder.readByte();
+		
+		envelopes = new ArrayList<SoundLevel>(count);
+		
+		for (int i = 0; i < count; i++) {
+			envelopes.add(new SoundLevel(coder, context));
+		}
+	}
+
+	public Envelope(Envelope object)
+	{
+		envelopes = new ArrayList<SoundLevel>(object.envelopes);
 	}
 
 	/**
-	 * Creates a envelope specifying the mark, left and right sound levels.
+	 * Add a Envelope object to the array of envelope objects.
 	 * 
-	 * @param markValue
-	 *            the sample number in the 44.1KHz playback data stream where
-	 *            the levels for the channels is applied.
-	 * @param leftValue
-	 *            the level for the left sound channel, in the range 0..65535.
-	 * @param rightValue
-	 *            the level for the right sound channel, in the range 0..65535.
+	 * @param level
+	 *            a SoundLevel object. Must not be null.
 	 */
-	public Envelope(int markValue, int leftValue, int rightValue) {
-
-		mark = markValue;
-		
-		if (leftValue < 0 || leftValue > 65535) {
-			throw new IllegalArgumentException(Strings.UNSIGNED_VALUE_OUT_OF_RANGE);
+	public Envelope add(SoundLevel level)
+	{
+		if (level == null) {
+			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
 		}
-		left = leftValue;
-		
-		if (rightValue < 0 || rightValue > 65535) {
-			throw new IllegalArgumentException(
-					Strings.UNSIGNED_VALUE_OUT_OF_RANGE);
-		}
-		right = rightValue;
+		envelopes.add(level);
+		return this;
 	}
 
 	/**
-	 * Returns the sample number in the 44.1KHz playback data stream where the
-	 * level information is applied.
+	 * Returns the array of SoundLevels that control the volume of the sound.
 	 */
-	public int getMark() {
-		return mark;
+	public List<SoundLevel> getEnvelopes()
+	{
+		return envelopes;
 	}
 
 	/**
-	 * Returns the level of the sound played in the left channel.
+	 * Sets the array of SoundLevel objects that define the levels at which a
+	 * sound is played over the duration of the sound. May be set to null if no
+	 * envelope is defined.
+	 * 
+	 * @param anArray
+	 *            an array of Envelope objects. Must not be null.
 	 */
-	public int getLeft() {
-		return left;
-	}
-
-	/**
-	 * Returns the level of the sound played in the right channel.
-	 */
-	public int getRight() {
-		return right;
-	}
-
-	@Override
-	public String toString() {
-		return String.format(FORMAT, mark, left, right);
-	}
-	
-	@Override
-	public boolean equals(final Object object) {
-		boolean result;
-		Envelope env;
-		
-		if (object == null) {
-			result = false;
-		} else if (object == this) {
-			result = true;
-		} else if (object instanceof Kerning) {
-			env = (Envelope)object;
-			result = mark == env.mark && left == env.left && right == env.right;
-		} else {
-			result = false;
+	public void setEnvelopes(List<SoundLevel> anArray)
+	{
+		if (anArray == null) {
+			throw new IllegalArgumentException(Strings.ARRAY_CANNOT_BE_NULL);
 		}
-		return result;
+		envelopes = anArray;
 	}
-	
+
+	/**
+	 * Creates and returns a deep copy of this object.
+	 */
+	public Envelope copy()
+	{
+		return new Envelope(this);
+	}
+
 	@Override
-	public int hashCode() {
-		return ((mark*31) + left)* 31 + right;
+	public String toString()
+	{
+		return envelopes.toString();
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final SWFContext context) {
-		return 8;
+	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
+	{
+		count = envelopes.size();		
+		return 1 + (count << 3);
 	}
 
-	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException {
-		coder.writeWord(mark, 4);
-		coder.writeWord(left, 2);
-		coder.writeWord(right, 2);
+	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
+	{
+		coder.writeByte(count);
+
+		for (SoundLevel level : envelopes) {
+			level.encode(coder, context);
+		}
 	}
 }

@@ -109,13 +109,13 @@ public final class SoundInfo implements Encodeable
 	private int inPoint;
 	private int outPoint;
 	private int loopCount;
-	private List<Envelope> envelopes;
+	private Envelope envelope;
 
 	public SoundInfo(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		identifier = coder.readWord(2, false);
 		mode = Mode.fromInt(coder.readBits(4, false));
-		boolean hasEnvelopes = coder.readBits(1, false) != 0;
+		boolean hasEnvelope = coder.readBits(1, false) != 0;
 		boolean hasLoopCount = coder.readBits(1, false) != 0;
 		boolean hasOutPoint = coder.readBits(1, false) != 0;
 		boolean hasInPoint = coder.readBits(1, false) != 0;
@@ -132,14 +132,9 @@ public final class SoundInfo implements Encodeable
 			loopCount = coder.readWord(2, false);
 		}
 
-		envelopes = new ArrayList<Envelope>();
-		if (hasEnvelopes)
+		if (hasEnvelope)
 		{
-			int envelopeCount = coder.readByte();
-			
-			for (int i = 0; i < envelopeCount; i++) {
-				envelopes.add(new Envelope(coder, context));
-			}
+			envelope = new Envelope(coder, context);
 		}
 	}
 
@@ -158,12 +153,12 @@ public final class SoundInfo implements Encodeable
 	 *            the number of times the sound is repeated. May be set to zero
 	 *            if the sound will not be repeated.
 	 */
-	public SoundInfo(int uid, Mode aMode, int aCount, List<Envelope> array)
+	public SoundInfo(int uid, Mode aMode, int aCount, Envelope envelope)
 	{
 		setIdentifier(uid);
 		setMode(aMode);
 		setLoopCount(aCount);
-		setEnvelopes(array);
+		setEnvelope(envelope);
 	}
 
 	public SoundInfo(SoundInfo object)
@@ -173,19 +168,7 @@ public final class SoundInfo implements Encodeable
 		loopCount = object.loopCount;
 		inPoint = object.inPoint;
 		outPoint = object.outPoint;	
-		envelopes = new ArrayList<Envelope>(object.envelopes);
-	}
-
-	/**
-	 * Add a Envelope object to the array of envelope objects.
-	 * 
-	 * @param anEnvelope
-	 *            an Envelope object. Must not be null.
-	 */
-	public SoundInfo add(Envelope anEnvelope)
-	{
-		envelopes.add(anEnvelope);
-		return this;
+		envelope = envelope.copy();
 	}
 
 	/**
@@ -232,12 +215,11 @@ public final class SoundInfo implements Encodeable
 	}
 
 	/**
-	 * Returns the array of Envelope objects that control the levels the sound is
-	 * played.
+	 * Returns the Envelope that control the levels the sound is played.
 	 */
-	public List<Envelope> getEnvelopes()
+	public Envelope getEnvelope()
 	{
-		return envelopes;
+		return envelope;
 	}
 
 	/**
@@ -308,19 +290,16 @@ public final class SoundInfo implements Encodeable
 	}
 
 	/**
-	 * Sets the array of Envelope objects that define the levels at which a
+	 * Sets the Envelope that define the levels at which a
 	 * sound is played over the duration of the sound. May be set to null if no
 	 * envelope is defined.
 	 * 
 	 * @param anArray
-	 *            an array of Envelope objects. Must not be null.
+	 *            an array of Envelope objects.
 	 */
-	public void setEnvelopes(List<Envelope> anArray)
+	public void setEnvelope(Envelope envelope)
 	{
-		if (anArray == null) {
-			throw new IllegalArgumentException(Strings.ARRAY_CANNOT_BE_NULL);
-		}
-		envelopes = anArray;
+		this.envelope = envelope;
 	}
 
 	/**
@@ -334,7 +313,7 @@ public final class SoundInfo implements Encodeable
 	@Override
 	public String toString()
 	{
-		return String.format(FORMAT, identifier, mode, inPoint, outPoint, loopCount, envelopes);
+		return String.format(FORMAT, identifier, mode, inPoint, outPoint, loopCount, envelope);
 	}
 
 	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
@@ -345,8 +324,8 @@ public final class SoundInfo implements Encodeable
 		length += (outPoint == 0) ? 0 : 4;
 		length += (loopCount == 0) ? 0 : 2;
 		
-		if (!envelopes.isEmpty()) {
-			length += 1 + envelopes.size() * 8;
+		if (envelope != null) {
+			length += envelope.prepareToEncode(coder, context);
 		}
 
 		return length;
@@ -356,7 +335,7 @@ public final class SoundInfo implements Encodeable
 	{
 		coder.writeWord(identifier, 2);
 		coder.writeBits(mode.getValue(), 4);
-		coder.writeBits(envelopes.isEmpty() ? 0 : 1, 1);
+		coder.writeBits(envelope != null ? 0 : 1, 1);
 		coder.writeBits(loopCount == 0 ? 0 : 1, 1);
 		coder.writeBits(outPoint == 0 ? 0 : 1, 1);
 		coder.writeBits(inPoint == 0 ? 0 : 1, 1);
@@ -370,13 +349,8 @@ public final class SoundInfo implements Encodeable
 		if (loopCount != 0) {
 			coder.writeWord(loopCount, 2);
 		}
-		if (!envelopes.isEmpty())
-		{
-			coder.writeWord(envelopes.size(), 1);
-
-			for (int i=0; i<envelopes.size(); i++) {
-				envelopes.get(i).encode(coder, context);
-			}
+		if (envelope != null) {
+			envelope.encode(coder, context);
 		}
 	}
 }
