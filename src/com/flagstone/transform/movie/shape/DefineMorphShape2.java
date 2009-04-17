@@ -84,16 +84,16 @@ public final class DefineMorphShape2 implements DefineTag
 	private static final String FORMAT = "DefineMorphShape2: { identifier=%d; startShapeBounds=%s; endShapeBounds=%s; startEdgeBounds=%s; endEdgeBounds=%s; fillStyles=%s; lineStyles=%s; startShape=%s; endShape=%s }";
 
 	private int identifier;
-	protected Bounds startShapeBounds;
-	protected Bounds endShapeBounds;
-	protected Bounds startEdgeBounds;
-	protected Bounds endEdgeBounds;
+	private Bounds startShapeBounds;
+	private Bounds endShapeBounds;
+	private Bounds startEdgeBounds;
+	private Bounds endEdgeBounds;
 
-	protected List<FillStyle> fillStyles;
-	protected List<MorphLineStyle2> lineStyles;
+	private List<FillStyle> fillStyles;
+	private List<MorphLineStyle2> lineStyles;
 
-	protected Shape startShape;
-	protected Shape endShape;
+	private Shape startShape;
+	private Shape endShape;
 	
 	private transient int start;
 	private transient int end;
@@ -102,7 +102,7 @@ public final class DefineMorphShape2 implements DefineTag
 	private transient int lineBits;
 	private transient boolean scaling;
 
-	protected DefineMorphShape2(final SWFDecoder coder, final SWFContext context) throws CoderException
+	public DefineMorphShape2(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;

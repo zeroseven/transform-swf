@@ -41,7 +41,7 @@ public final class AlignmentZone implements Encodeable
 	private float coordinate;
 	private float range;
 
-	protected AlignmentZone()
+	public AlignmentZone(SWFDecoder coder, SWFContext context)
 	{
 	}
 

@@ -62,8 +62,8 @@ public final class DefineButton implements DefineTag
 	
 	private int identifier;
 	
-	protected List<ButtonShape> shapes;
-	protected List<Action> actions;
+	private List<ButtonShape> shapes;
+	private List<Action> actions;
 	
 	private transient int start;
 	private transient int end;

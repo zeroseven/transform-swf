@@ -61,8 +61,8 @@ public final class Import implements MovieTag
 {
 	private static final String FORMAT = "Import: { url=%s; objects=%s }";
 	
-	protected String url;
-	protected Map<Integer,String> objects;
+	private String url;
+	private Map<Integer,String> objects;
 	
 	private transient int length;
 

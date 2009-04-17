@@ -50,7 +50,7 @@ public final class GotoLabel implements Action
 {
 	private static final String FORMAT = "GotoLabel: { label=%s }";
 	
-	protected String label;
+	private String label;
 
 	private transient int length;
 	

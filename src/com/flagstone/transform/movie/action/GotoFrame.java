@@ -54,7 +54,7 @@ public final class GotoFrame implements Action
 {
 	private static final String FORMAT = "GotoFrame: { frameNumber=%d }";
 	
-	protected int frameNumber;
+	private int frameNumber;
 
 	public GotoFrame(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{

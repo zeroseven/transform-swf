@@ -57,7 +57,7 @@ public final class Shape implements Encodeable
 {
 	private static final String FORMAT = "Shape: { records=%s }";
 	
-	protected List<ShapeRecord> objects;
+	private List<ShapeRecord> objects;
 	
 	private transient int length;
 

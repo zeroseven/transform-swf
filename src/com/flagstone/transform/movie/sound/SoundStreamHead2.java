@@ -76,15 +76,15 @@ public final class SoundStreamHead2 implements MovieTag
 	"streamRate=%d; streamChannels=%d; streamSampleSize=%d; " +
 	"streamSampleCount=%d; latency=%d}";
 
-	protected SoundFormat format;
-	protected int playRate;
-	protected int playChannels;
-	protected int playSampleSize;
-	protected int streamRate;
-	protected int streamChannels;
-	protected int streamSampleSize;
-	protected int streamSampleCount;
-	protected int latency;
+	private SoundFormat format;
+	private int playRate;
+	private int playChannels;
+	private int playSampleSize;
+	private int streamRate;
+	private int streamChannels;
+	private int streamSampleSize;
+	private int streamSampleCount;
+	private int latency;
 	
 	private transient int start;
 	private transient int end;

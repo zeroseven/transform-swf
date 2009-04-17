@@ -55,8 +55,8 @@ public final class ButtonSound implements MovieTag
 {
 	private static final String FORMAT = "ButtonSound: { identifier=%d; sound[0]=%s; sound[1]=%s; sound[2]=%s; sound[3]=%s }";
 	
-	protected int identifier;
-	protected SoundInfo[] sound = new SoundInfo[] {null, null, null, null};
+	private int identifier;
+	private SoundInfo[] sound = new SoundInfo[] {null, null, null, null};
 	
 	private transient int start;
 	private transient int end;

@@ -54,7 +54,7 @@ public final class StartSound implements MovieTag
 {
 	private static final String FORMAT = "StartSound: { sound=%s }";
 	
-	protected SoundInfo sound;
+	private SoundInfo sound;
 	
 	private transient int start;
 	private transient int end;

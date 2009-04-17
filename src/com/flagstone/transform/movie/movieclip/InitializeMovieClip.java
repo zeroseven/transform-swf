@@ -67,8 +67,8 @@ public final class InitializeMovieClip implements MovieTag
 {
 	private static final String FORMAT = "Initialize: { identifier=%d; actions=%s }";
 	
-	protected int identifier;
-	protected List<Action> actions;
+	private int identifier;
+	private List<Action> actions;
 	
 	private transient int start;
 	private transient int end;

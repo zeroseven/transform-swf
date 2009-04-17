@@ -170,12 +170,12 @@ public final class NewFunction2 implements Action
 		}
 	}
 
-	protected String name;
-	protected int registerCount;
-	protected int optimizations;
+	private String name;
+	private int registerCount;
+	private int optimizations;
 
-	protected Map<String,Integer> arguments;
-	protected List<Action> actions;
+	private Map<String,Integer> arguments;
+	private List<Action> actions;
 
 	private transient int length;
 	private transient int actionsLength;

@@ -69,20 +69,20 @@ public final class DefineFont2 implements DefineTag
 		"codes=%s; ascent=%d; descent=%d; leading=%d; advances=%s; bounds=%s; kernings=%s }";
 	
 	private int identifier;
-	protected TextFormat encoding;
-	protected boolean small;
-	protected boolean italic;
-	protected boolean bold;
-	protected int language;
-	protected String name;
-	protected List<Shape> shapes;
-	protected List<Integer> codes;
-	protected int ascent;
-	protected int descent;
-	protected int leading;
-	protected List<Integer> advances;
-	protected List<Bounds> bounds;
-	protected List<Kerning> kernings;
+	private TextFormat encoding;
+	private boolean small;
+	private boolean italic;
+	private boolean bold;
+	private int language;
+	private String name;
+	private List<Shape> shapes;
+	private List<Integer> codes;
+	private int ascent;
+	private int descent;
+	private int leading;
+	private List<Integer> advances;
+	private List<Bounds> bounds;
+	private List<Kerning> kernings;
 	
 	private transient int start;
 	private transient int end;

@@ -58,7 +58,7 @@ import com.flagstone.transform.movie.Types;
 public final class JPEGEncodingTable implements MovieTag
 {
 	private static final String FORMAT = "JPEGEncodingTable: { encodingTable=%d }";
-	protected byte[] table;
+	private byte[] table;
 	
 	private transient int start;
 	private transient int end;

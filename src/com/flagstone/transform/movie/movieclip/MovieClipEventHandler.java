@@ -118,11 +118,11 @@ public final class MovieClipEventHandler implements Encodeable
 {	
 	private static final String FORMAT = "MovieClipEventHandler: { event=%d; keyCode=%s; actions=%s }";
 	
-	protected int event;
-	protected int keyCode;
-	protected List<Action> actions;
+	private int event;
+	private int keyCode;
+	private List<Action> actions;
 
-	protected transient int offset;
+	private transient int offset;
 
 	public MovieClipEventHandler(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{

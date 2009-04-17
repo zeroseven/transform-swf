@@ -53,7 +53,7 @@ public final class Export implements MovieTag
 {
 	private static final String FORMAT = "Export: { objects=%s }";
 	
-	protected Map<Integer,String> objects;
+	private Map<Integer,String> objects;
 	
 	private transient int length;
 

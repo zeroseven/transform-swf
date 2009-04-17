@@ -86,13 +86,13 @@ public final class TextSpan implements Encodeable
 {
 	private static final String FORMAT = "TextSpan: { identifier=%d; color=%s; offsetX=%d; offsetY=%d; height=%d; characters=%s }";
 	
-	protected int identifier;
-	protected Color color;
-	protected int offsetX;
-	protected int offsetY;
-	protected int height;
+	private int identifier;
+	private Color color;
+	private int offsetX;
+	private int offsetY;
+	private int height;
 
-	protected List<GlyphIndex> characters;
+	private List<GlyphIndex> characters;
 	
 	private transient boolean hasStyle;
 	private transient boolean hasFont;
@@ -100,7 +100,7 @@ public final class TextSpan implements Encodeable
 	private transient boolean hasX;
 	private transient boolean hasY;
 	
-	protected TextSpan(final SWFDecoder coder, final SWFContext context) throws CoderException
+	public TextSpan(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		/* type */coder.readBits(1, false);
 		/* reserved */coder.readBits(3, false);

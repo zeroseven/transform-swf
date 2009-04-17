@@ -65,7 +65,7 @@ public final class DefineFont implements DefineTag
 	private static final String FORMAT = "DefineFont: { identifier=%d; shapes=%s }";
 		
 	private int identifier;
-	protected List<Shape> shapes;
+	private List<Shape> shapes;
 	
 	private transient int start;
 	private transient int end;

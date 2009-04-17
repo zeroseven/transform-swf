@@ -67,8 +67,8 @@ public final class LineStyle implements Encodeable, Copyable<LineStyle>
 {
 	private static final String FORMAT = "LineStyle : { width=%d; color=%s }";
 	
-	protected int width;
-	protected Color color;
+	private int width;
+	private Color color;
 
 	public LineStyle(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{

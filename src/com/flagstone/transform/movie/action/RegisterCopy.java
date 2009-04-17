@@ -65,7 +65,7 @@ public final class RegisterCopy implements Action
 {
 	private static final String FORMAT = "RegisterCopy: { registerNumber=%d }";
 	
-	protected int registerNumber;
+	private int registerNumber;
 
 	public RegisterCopy(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{

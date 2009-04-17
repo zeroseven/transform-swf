@@ -56,14 +56,14 @@ public final class Line implements ShapeRecord
 {
 	private static final String FORMAT = "Line: (%d, %d);";
 	
-	protected int xCoord;
-	protected int yCoord;
+	private int xCoord;
+	private int yCoord;
 	
 	private transient boolean vertical;
 	private transient boolean general;
 	private transient int size;
 
-	protected Line(final SWFDecoder coder, final SWFContext context) throws CoderException
+	public Line(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		coder.adjustPointer(2); // shape and edge
 

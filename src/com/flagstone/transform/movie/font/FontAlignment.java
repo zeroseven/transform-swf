@@ -72,15 +72,15 @@ public final class FontAlignment implements MovieTag
 {
 	public enum StrokeWidth { THIN, MEDIUM, THICK };
 	
-	protected int identifier;
+	private int identifier;
 	private StrokeWidth strokeWidth; 
-	protected List<AlignmentZone> zones;
+	private List<AlignmentZone> zones;
 	
 	private transient int start;
 	private transient int end;
 	private transient int length;
 
-	protected FontAlignment(final SWFDecoder coder, final SWFContext context) throws CoderException
+	public FontAlignment(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		zones = new ArrayList<AlignmentZone>();
 
@@ -95,13 +95,10 @@ public final class FontAlignment implements MovieTag
 		identifier = coder.readWord(2, false);
 
 		int bytesRead = 3;
-		AlignmentZone record;
 		
 		while (bytesRead < length)
 		{
-			record = new AlignmentZone();
-			record.decode(coder, context);
-			zones.add(record);
+			zones.add(new AlignmentZone(coder, context));
 		}
 
 		if (coder.getPointer() != end) {

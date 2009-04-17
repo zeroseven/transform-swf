@@ -53,13 +53,13 @@ public final class DefineJPEGImage2 implements ImageTag
 	private static final String FORMAT = "DefineJPEGImage2: { identifier=%d; image=%d; }";
 
 	private int identifier;
-	protected byte[] image;
+	private byte[] image;
 	
 	private transient int start;
 	private transient int end;
-	protected transient int length;
-	protected transient int width;
-	protected transient int height;
+	private transient int length;
+	private transient int width;
+	private transient int height;
 
 
 	public DefineJPEGImage2(final SWFDecoder coder, final SWFContext context) throws CoderException

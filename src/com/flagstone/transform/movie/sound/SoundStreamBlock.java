@@ -58,7 +58,7 @@ public final class SoundStreamBlock implements MovieTag
 {
 	private static final String FORMAT = "SoundStreamBlock: { soundData=%d }";
 	
-	protected byte[] soundData;
+	private byte[] soundData;
 	
 	private transient int start;
 	private transient int end;

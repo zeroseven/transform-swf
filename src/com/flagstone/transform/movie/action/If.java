@@ -70,7 +70,7 @@ public final class If implements Action
 {
 	private static final String FORMAT = "If: { offset=%d }";
 	
-	protected int offset;
+	private int offset;
 
 	public If(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{

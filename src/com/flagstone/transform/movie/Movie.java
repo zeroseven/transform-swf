@@ -90,25 +90,25 @@ public final class Movie implements Cloneable
 	 */
 	public static final String DEFAULT_ENCODING = "UTF-8";
 
-	protected boolean decodeActions = true;
-	protected boolean decodeShapes = true;
-	protected boolean decodeGlyphs = true;
+	private boolean decodeActions = true;
+	private boolean decodeShapes = true;
+	private boolean decodeGlyphs = true;
 	
-	protected SWFFactory<FillStyle> fillStyleFactory;
-	protected SWFFactory<FillStyle> morphStyleFactory;
-	protected SWFFactory<Action> actionFactory;
-	protected SWFFactory<MovieTag> movieFactory;
+	private SWFFactory<FillStyle> fillStyleFactory;
+	private SWFFactory<FillStyle> morphStyleFactory;
+	private SWFFactory<Action> actionFactory;
+	private SWFFactory<MovieTag> movieFactory;
 
-	protected int identifier = 0;
-	protected String encoding = Movie.DEFAULT_ENCODING;
+	private int identifier = 0;
+	private String encoding = Movie.DEFAULT_ENCODING;
 	
-	protected String signature;
-	protected int version;
-	protected Bounds frameSize;
-	protected int length;
-	protected float frameRate;
-	protected int frameCount;
-	protected List<MovieTag> objects;
+	private String signature;
+	private int version;
+	private Bounds frameSize;
+	private int length;
+	private float frameRate;
+	private int frameCount;
+	private List<MovieTag> objects;
 	/**
 	 * VALUE_NOT_SET is used to signify that a field has not yet assigned a
 	 * value. This is used to identify optional fields when an object is 

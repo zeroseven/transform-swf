@@ -70,7 +70,7 @@ public final class DefineShape4 implements DefineTag
 	private transient int lineBits;
 	private transient boolean scaling;
 
-	protected DefineShape4(final SWFDecoder coder, final SWFContext context) throws CoderException
+	public DefineShape4(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;

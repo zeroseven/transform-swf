@@ -18,11 +18,11 @@ import com.flagstone.transform.movie.video.DefineVideo;
  */
 public final class ImageBlock implements Cloneable
 {
-	protected int width;
-	protected int height;
-	protected byte[] block;
+	private int width;
+	private int height;
+	private byte[] block;
 
-	protected ImageBlock()
+	private ImageBlock()
 	{
 		width = 0;
 		height = 0;

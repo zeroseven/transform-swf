@@ -63,10 +63,10 @@ public final class MorphGradient implements Encodeable
 {
 	private static final String FORMAT = "MorphGradient: { startRatio=%d; endRatio=%d; startColor=%s; endColor=%s }";
 	
-	protected int startRatio;
-	protected int endRatio;
-	protected Color startColor;
-	protected Color endColor;
+	private int startRatio;
+	private int endRatio;
+	private Color startColor;
+	private Color endColor;
 
 	public MorphGradient(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{

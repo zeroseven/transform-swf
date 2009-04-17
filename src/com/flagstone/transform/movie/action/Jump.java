@@ -63,7 +63,7 @@ public final class Jump implements Action
 {
 	private static final String FORMAT = "Jump: { offset=%d }";
 
-	protected int offset;
+	private int offset;
 
 	public Jump(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{

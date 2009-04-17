@@ -69,11 +69,11 @@ public final class ExceptionHandler implements Action
 {
 	private static final String FORMAT = "ExceptionHandler: { variable=%s; register=%d try=%s; catch=%s; final=%s }";
 
-	protected int register;
-	protected String variable;
-	protected List<Action> tryActions;
-	protected List<Action> catchActions;
-	protected List<Action> finalActions;
+	private int register;
+	private String variable;
+	private List<Action> tryActions;
+	private List<Action> catchActions;
+	private List<Action> finalActions;
 	
 	private transient int length;
 	private transient int tryLength;

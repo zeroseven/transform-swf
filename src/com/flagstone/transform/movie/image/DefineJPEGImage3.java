@@ -57,12 +57,12 @@ public final class DefineJPEGImage3 implements ImageTag
 
 	private transient int start;
 	private transient int end;
-	protected transient int length;
-	protected transient int width;
-	protected transient int height;
+	private transient int length;
+	private transient int width;
+	private transient int height;
 	
-	protected byte[] image;
-	protected byte[] alpha;
+	private byte[] image;
+	private byte[] alpha;
 	private int identifier;
 
 	public DefineJPEGImage3(final SWFDecoder coder, final SWFContext context) throws CoderException

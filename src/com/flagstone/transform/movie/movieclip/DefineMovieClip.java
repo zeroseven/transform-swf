@@ -67,7 +67,7 @@ public final class DefineMovieClip implements DefineTag
 {
 	private static final String FORMAT = "DefineMovieClip: { identifier=%d; objects=%s }";
 			
-	protected List<MovieTag> objects;
+	private List<MovieTag> objects;
 	
 	private transient int frameCount;
 

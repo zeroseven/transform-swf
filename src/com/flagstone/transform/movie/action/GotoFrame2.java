@@ -71,8 +71,8 @@ public final class GotoFrame2 implements Action
 {
 	private static final String FORMAT = "Gotoframe2: { playFrame=%s; frameOffset=%d }";
 
-	protected boolean play;
-	protected int frameOffset;
+	private boolean play;
+	private int frameOffset;
 	
 	private transient int length;
 

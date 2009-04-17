@@ -60,7 +60,7 @@ public final class GlyphIndex implements Encodeable
 	private final transient int glyphIndex;
 	private final transient int advance;
 
-	protected GlyphIndex(final SWFDecoder coder, final SWFContext context) throws CoderException
+	public GlyphIndex(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		glyphIndex = coder.readBits(context.getGlyphSize(), false);
 		advance = coder.readBits(context.getAdvanceSize(), true);

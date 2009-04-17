@@ -57,9 +57,9 @@ public final class VideoFrame implements MovieTag
 {
 	private static final String FORMAT = "VideoFrame: { identifier=%d; frameNumber=%d; data=%d }";
 	
-	protected int identifier;
-	protected int frameNumber;
-	protected byte[] data;
+	private int identifier;
+	private int frameNumber;
+	private byte[] data;
 	
 	private transient int length;
 

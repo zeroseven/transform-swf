@@ -50,10 +50,10 @@ public final class MorphLineStyle2 implements Encodeable,
 			+ " scaledHorizontally=%d; scaledVertically=%d;"
 			+ " pixelAligned=%s; lineClosed=%d; miterLimit=%d }";
 
-	protected int startWidth;
-	protected int endWidth;
-	protected Color startColor;
-	protected Color endColor;
+	private int startWidth;
+	private int endWidth;
+	private Color startColor;
+	private Color endColor;
 
 	private int startCap;
 	private int endCap;
@@ -337,7 +337,7 @@ public final class MorphLineStyle2 implements Encodeable,
 	}
 
 	@SuppressWarnings( { "PMD.CyclomaticComplexity", "PMD.NPathComplexity" })
-	protected int pack() {
+	private int pack() {
 
 		int value = 0;
 
@@ -384,7 +384,7 @@ public final class MorphLineStyle2 implements Encodeable,
 	}
 
 	@SuppressWarnings("PMD.CyclomaticComplexity")
-	protected void unpack(final int value) {
+	private void unpack(final int value) {
 
 		if ((value & 0x00004000) > 0) {
 			startCap = LineCapStyle.NONE;

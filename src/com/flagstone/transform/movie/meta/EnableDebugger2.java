@@ -56,7 +56,7 @@ public final class EnableDebugger2 implements MovieTag
 {
 	private static final String FORMAT = "EnableDebugger2: { password=%s }";
 
-	protected String password;
+	private String password;
 	
 	private transient int length;
 

@@ -63,9 +63,9 @@ public final class DefineText2 implements DefineTag
 {
 	private static final String FORMAT = "DefineText2: { identifier=%d; bounds=%s; transform=%s; objects=%s }";
 
-	protected Bounds bounds;
-	protected CoordTransform transform;
-	protected List<TextSpan> objects;
+	private Bounds bounds;
+	private CoordTransform transform;
+	private List<TextSpan> objects;
 	
 	private transient int start;
 	private transient int end;

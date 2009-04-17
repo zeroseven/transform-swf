@@ -86,13 +86,13 @@ public final class ShapeStyle implements ShapeRecord
 {
 	private static final String FORMAT = "ShapeStyle: { move=(%d, %d); fill=%d; alt=%d; line=%d; fillStyles=%s; lineStyles=%s }";
 	
-	protected int moveX;
-	protected int moveY;
-	protected int fillStyle;
-	protected int altFillStyle;
-	protected int lineStyle;
-	protected List<FillStyle> fillStyles;
-	protected List<LineStyle> lineStyles;
+	private int moveX;
+	private int moveY;
+	private int fillStyle;
+	private int altFillStyle;
+	private int lineStyle;
+	private List<FillStyle> fillStyles;
+	private List<LineStyle> lineStyles;
 	
 	private transient boolean hasStyles;
 	private transient boolean hasLine;

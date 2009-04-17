@@ -85,11 +85,11 @@ public final class DefineImage implements ImageTag
 {
 	private static final String FORMAT = "DefineImage: { identifier=%d; pixelSize=%d; width=%d; height=%d; tableSize=%d; compressedData=%d }";
 	
-	protected int width;
-	protected int height;
-	protected int pixelSize;
-	protected int tableSize;
-	protected byte[] data;
+	private int width;
+	private int height;
+	private int pixelSize;
+	private int tableSize;
+	private byte[] data;
 	private int identifier;
 	
 	private transient int start;
@@ -197,7 +197,7 @@ public final class DefineImage implements ImageTag
 		setData(data);
 	}
 	
-	protected DefineImage(DefineImage object)
+	private DefineImage(DefineImage object)
 	{
 		extendLength = object.extendLength;
 		width = object.width;

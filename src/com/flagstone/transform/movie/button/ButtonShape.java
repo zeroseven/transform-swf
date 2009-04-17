@@ -88,7 +88,7 @@ public final class ButtonShape implements Encodeable
 	private List<Filter> filters;
 	private Blend blendMode;
 
-	protected ButtonShape(final SWFDecoder coder, final SWFContext context) throws CoderException
+	public ButtonShape(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		coder.readBits(4, false);
 

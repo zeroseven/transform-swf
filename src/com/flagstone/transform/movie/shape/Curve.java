@@ -58,10 +58,10 @@ public final class Curve implements ShapeRecord
 {
 	private static final String FORMAT = "Curve: control=(%d,%d), anchor=(%d,%d);";
 
-	protected int controlX;
-	protected int controlY;
-	protected int anchorX;
-	protected int anchorY;
+	private int controlX;
+	private int controlY;
+	private int anchorX;
+	private int anchorY;
 	
 	private transient int size;
 

@@ -69,12 +69,12 @@ public final class DefineVideo implements DefineTag {
 	}
 	
 	private int identifier;
-	protected int frameCount;
-	protected int width;
-	protected int height;
-	protected Deblocking deblocking;
-	protected boolean smoothing;
-	protected VideoFormat codec;
+	private int frameCount;
+	private int width;
+	private int height;
+	private Deblocking deblocking;
+	private boolean smoothing;
+	private VideoFormat codec;
 
 	private transient int start;
 	private transient int end;

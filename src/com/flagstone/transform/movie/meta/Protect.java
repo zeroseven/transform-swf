@@ -62,7 +62,7 @@ public final class Protect implements MovieTag
 {
 	private static final String FORMAT = "Protect: { password=%s }";
 	
-	protected String password;
+	private String password;
 	
 	private transient int length;
 

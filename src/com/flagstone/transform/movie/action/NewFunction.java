@@ -60,9 +60,9 @@ public final class NewFunction implements Action
 {
 	private static final String FORMAT = "NewFunction: { name=%s; arguments=%s; actions=%s }";
 		
-	protected String name;
-	protected List<String> arguments;
-	protected List<Action> actions;
+	private String name;
+	private List<String> arguments;
+	private List<Action> actions;
 
 	private transient int length;
 	private transient int actionsLength;

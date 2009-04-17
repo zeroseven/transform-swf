@@ -40,11 +40,11 @@ import com.flagstone.transform.movie.Types;
 
 public final class TextSettings implements MovieTag
 {
-	protected int identifier;
+	private int identifier;
 
 	private transient int length;
 
-	protected TextSettings()
+	private TextSettings()
 	{
 	}
 

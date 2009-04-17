@@ -50,7 +50,7 @@ public final class SetTarget implements Action
 {
 	private static final String FORMAT = "SetTarget: { target=%s }";
 	
-	protected String target;
+	private String target;
 	
 	private transient int length;
 

@@ -104,12 +104,12 @@ public final class SoundInfo implements Encodeable
 		}
 	}
 
-	protected int identifier;
-	protected Mode mode;
-	protected int inPoint;
-	protected int outPoint;
-	protected int loopCount;
-	protected List<Envelope> envelopes;
+	private int identifier;
+	private Mode mode;
+	private int inPoint;
+	private int outPoint;
+	private int loopCount;
+	private List<Envelope> envelopes;
 
 	public SoundInfo(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{

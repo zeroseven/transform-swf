@@ -45,7 +45,7 @@ public final class SerialNumber implements MovieTag
 {
 	private static final String FORMAT = "SerialNumber: { serialNumber=%s }";
 	
-	protected String number;
+	private String number;
 	
 	private transient int length;
 

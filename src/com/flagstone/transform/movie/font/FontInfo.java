@@ -73,13 +73,13 @@ public final class FontInfo implements MovieTag
 {
 	private static final String FORMAT="FontInfo: { identifier=%d; encoding=%s; small=%s; italic=%s; bold=%s; name=%s; codes=%s }";
 	
-	protected int identifier;
-	protected String name;
-	protected TextFormat encoding;
-	protected boolean small;
-	protected boolean italic;
-	protected boolean bold;
-	protected List<Integer> codes;
+	private int identifier;
+	private String name;
+	private TextFormat encoding;
+	private boolean small;
+	private boolean italic;
+	private boolean bold;
+	private List<Integer> codes;
 
 	private transient int start;
 	private transient int end;

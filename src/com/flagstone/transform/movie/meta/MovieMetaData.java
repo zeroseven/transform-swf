@@ -45,7 +45,7 @@ public final class MovieMetaData implements MovieTag {
 
 	private static final String FORMAT = "MetaData: { %s }";
 
-	protected String metadata;
+	private String metadata;
 
 	private transient int length;
 

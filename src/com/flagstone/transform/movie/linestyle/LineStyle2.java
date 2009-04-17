@@ -299,7 +299,7 @@ public final class LineStyle2 implements Encodeable, Copyable<LineStyle2> {
 		"PMD.CyclomaticComplexity",
 		"PMD.NPathComplexity"
 	})
-	protected int pack() {
+	private int pack() {
 
 		int value = 0;
 
@@ -346,7 +346,7 @@ public final class LineStyle2 implements Encodeable, Copyable<LineStyle2> {
 	}
 	
 	@SuppressWarnings("PMD.CyclomaticComplexity")
-	protected void unpack(final int value) {
+	private void unpack(final int value) {
 		
 		if ((value & 0x00004000) > 0) {
 			startCap = LineCapStyle.NONE;

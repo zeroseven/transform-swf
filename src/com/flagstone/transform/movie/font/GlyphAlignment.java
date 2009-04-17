@@ -46,7 +46,7 @@ public final class GlyphAlignment implements Encodeable
 	
 	private List<AlignmentZone>alignments;
 	
-	protected GlyphAlignment(final SWFDecoder coder, final SWFContext context) throws CoderException
+	private GlyphAlignment(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 	}
 

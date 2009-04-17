@@ -45,7 +45,7 @@ public final class QuicktimeMovie implements MovieTag
 {
 	private static final String FORMAT = "QuicktimeMovie: { name=%s }";
 	
-	protected String path;
+	private String path;
 	
 	private transient int start;
 	private transient int end;

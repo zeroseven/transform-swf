@@ -84,14 +84,14 @@ public final class DefineMorphShape implements DefineTag
 	private static final String FORMAT = "DefineMorphShape: { identifier=%d; startBounds=%s; endBounds=%s; fillStyles=%s; lineStyles=%s; startShape=%s; endShape=%s }";
 	
 	private int identifier;
-	protected Bounds startBounds;
-	protected Bounds endBounds;
+	private Bounds startBounds;
+	private Bounds endBounds;
 
-	protected List<FillStyle> fillStyles;
-	protected List<MorphLineStyle> lineStyles;
+	private List<FillStyle> fillStyles;
+	private List<MorphLineStyle> lineStyles;
 
-	protected Shape startShape;
-	protected Shape endShape;
+	private Shape startShape;
+	private Shape endShape;
 	
 	private transient int start;
 	private transient int end;

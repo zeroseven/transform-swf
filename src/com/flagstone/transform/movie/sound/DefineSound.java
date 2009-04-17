@@ -70,12 +70,12 @@ public final class DefineSound implements DefineTag {
 
 	private static final String FORMAT = "DefineSound: { identifier=%d; format=%s; rate=%d; channelCount=%d; sampleSize=%d sampleCount=%d }";
 
-	protected SoundFormat format;
-	protected int rate;
-	protected int channelCount;
-	protected int sampleSize;
-	protected int sampleCount;
-	protected byte[] data;
+	private SoundFormat format;
+	private int rate;
+	private int channelCount;
+	private int sampleSize;
+	private int sampleCount;
+	private byte[] data;
 	private int identifier;
 
 	private transient int start;
@@ -161,7 +161,7 @@ public final class DefineSound implements DefineTag {
 		setData(bytes);
 	}
 
-	protected DefineSound(DefineSound object) {
+	private DefineSound(DefineSound object) {
 		format = object.format;
 		rate = object.rate;
 		channelCount = object.channelCount;

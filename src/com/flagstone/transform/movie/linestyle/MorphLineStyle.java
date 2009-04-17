@@ -54,10 +54,10 @@ public final class MorphLineStyle implements Encodeable
 {
 	private static final String FORMAT = "MorphSolidLine: { startWidth=%d; endWidth=%d; startColor=%s; endColor=%s }";
 	
-	protected int startWidth;
-	protected int endWidth;
-	protected Color startColor;
-	protected Color endColor;
+	private int startWidth;
+	private int endWidth;
+	private Color startColor;
+	private Color endColor;
 
 	public MorphLineStyle(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{

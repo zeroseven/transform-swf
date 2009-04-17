@@ -75,9 +75,9 @@ public final class DefineButton2 implements DefineTag
 	private static final String FORMAT = "DefineButton2: { identifier=%d; buttonRecords=%s; handlers=%s }";
 
 	private int identifier;
-	protected boolean menu;
-	protected List<ButtonShape> shapes;
-	protected List<ButtonEventHandler> events;
+	private boolean menu;
+	private List<ButtonShape> shapes;
+	private List<ButtonEventHandler> events;
 
 	private transient int start;
 	private transient int end;

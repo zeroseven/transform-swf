@@ -209,12 +209,12 @@ public final class ButtonEventHandler implements Encodeable
 		return character << 9;
 	}
 
-	protected int event;
-	protected List<Action> actions;
+	private int event;
+	private List<Action> actions;
 
-	protected transient int length = 0;
+	protected transient int length = 0; //TODO DefineText2 uses this field
 
-	protected ButtonEventHandler(int size, final SWFDecoder coder, SWFContext context) throws CoderException
+	public ButtonEventHandler(int size, final SWFDecoder coder, SWFContext context) throws CoderException
 	{
 		event = coder.readWord(2, false);
 		length -= 2;
@@ -238,7 +238,7 @@ public final class ButtonEventHandler implements Encodeable
 	}
 
 
-	protected ButtonEventHandler()
+	private ButtonEventHandler()
 	{
 		actions = new ArrayList<Action>();
 	}

@@ -69,10 +69,10 @@ public final class DefineShape2 implements DefineTag
 	private static final String FORMAT = "DefineShape2: { identifier=%d; bounds=%s; fillStyles=%s; lineStyles=%s; shape=%s }";
 
 	private int identifier;
-	protected Bounds bounds;
-	protected List<FillStyle> fillStyles;
-	protected List<LineStyle> lineStyles;
-	protected Shape shape;
+	private Bounds bounds;
+	private List<FillStyle> fillStyles;
+	private List<LineStyle> lineStyles;
+	private Shape shape;
 	
 	private transient int start;
 	private transient int end;
