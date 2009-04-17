@@ -14,7 +14,7 @@ import com.flagstone.transform.movie.ShowFrame;
 import com.flagstone.transform.movie.datatype.Bounds;
 import com.flagstone.transform.movie.datatype.ColorTable;
 import com.flagstone.transform.movie.sound.DefineSound;
-import com.flagstone.transform.movie.sound.Envelope;
+import com.flagstone.transform.movie.sound.SoundLevel;
 import com.flagstone.transform.movie.sound.SoundInfo;
 import com.flagstone.transform.movie.sound.StartSound;
 
@@ -56,7 +56,7 @@ public final class PlayEventSound
              */
 
             movie.add(sound);
-            movie.add(new StartSound(new SoundInfo(soundId, SoundInfo.Mode.START, 1, new ArrayList<Envelope>())));
+            movie.add(new StartSound(new SoundInfo(soundId, SoundInfo.Mode.START, 1, null)));
 
             /*
              * Add frames to give the sound time to play.

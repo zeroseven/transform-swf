@@ -15,7 +15,7 @@ import com.flagstone.transform.movie.ShowFrame;
 import com.flagstone.transform.movie.datatype.Bounds;
 import com.flagstone.transform.movie.datatype.ColorTable;
 import com.flagstone.transform.movie.sound.DefineSound;
-import com.flagstone.transform.movie.sound.Envelope;
+import com.flagstone.transform.movie.sound.SoundLevel;
 import com.flagstone.transform.movie.sound.SoundInfo;
 import com.flagstone.transform.movie.sound.StartSound;
 
@@ -54,7 +54,7 @@ public class EventSoundTest
         int numberOfFrames = (int) (duration * framesPerSecond);
 
         movie.add(sound);
-        movie.add(new StartSound(new SoundInfo(sound.getIdentifier(), SoundInfo.Mode.START, 0, new ArrayList<Envelope>())));
+        movie.add(new StartSound(new SoundInfo(sound.getIdentifier(), SoundInfo.Mode.START, 0, null)));
 
         for (int j=0; j<numberOfFrames; j++) {
             movie.add(ShowFrame.getInstance());
