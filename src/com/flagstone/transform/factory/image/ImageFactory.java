@@ -271,7 +271,7 @@ public final class ImageFactory
             (width-xOrigin)*20+lineWidth, (height-yOrigin)*20+lineWidth);
 
         Shape shape = new Shape(new ArrayList<ShapeRecord>());
-        ShapeStyle style = new ShapeStyle((borderStyle == null) ? 0 : 1, 1, Movie.VALUE_NOT_SET); 
+        ShapeStyle style = new ShapeStyle((borderStyle == null) ? 0 : 1, 1, null); 
         style.setMove(-xOrigin*20, -yOrigin*20);
     
         shape.add(style);

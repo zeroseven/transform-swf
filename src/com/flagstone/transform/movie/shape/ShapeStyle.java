@@ -86,11 +86,11 @@ public final class ShapeStyle implements ShapeRecord
 {
 	private static final String FORMAT = "ShapeStyle: { move=(%d, %d); fill=%d; alt=%d; line=%d; fillStyles=%s; lineStyles=%s }";
 	
-	private int moveX;
-	private int moveY;
-	private int fillStyle;
-	private int altFillStyle;
-	private int lineStyle;
+	private Integer moveX;
+	private Integer moveY;
+	private Integer fillStyle;
+	private Integer altFillStyle;
+	private Integer lineStyle;
 	private List<FillStyle> fillStyles;
 	private List<LineStyle> lineStyles;
 	
@@ -123,9 +123,9 @@ public final class ShapeStyle implements ShapeRecord
 		fillStyles = new ArrayList<FillStyle>();
 		lineStyles = new ArrayList<LineStyle>();
 
-		fillStyle = hasFill ? coder.readBits(numberOfFillBits, false) : Movie.VALUE_NOT_SET;
-		altFillStyle = hasAlt ? coder.readBits(numberOfFillBits, false) : Movie.VALUE_NOT_SET;
-		lineStyle = hasLine ? coder.readBits(numberOfLineBits, false) : Movie.VALUE_NOT_SET;
+		fillStyle = hasFill ? coder.readBits(numberOfFillBits, false) : null;
+		altFillStyle = hasAlt ? coder.readBits(numberOfFillBits, false) : null;
+		lineStyle = hasLine ? coder.readBits(numberOfLineBits, false) : null;
 
 		if (hasStyles)
 		{
@@ -185,12 +185,8 @@ public final class ShapeStyle implements ShapeRecord
 	 *            selects the alternate fill style at altIndex in the
 	 *            fill styles array of the parent Shape object.
 	 */
-	public ShapeStyle(int lineIndex, int fillIndex, int altIndex)
+	public ShapeStyle(Integer lineIndex, Integer fillIndex, Integer altIndex)
 	{
-		super();
-
-		moveX = Movie.VALUE_NOT_SET;
-		moveY = Movie.VALUE_NOT_SET;
 		setLineStyle(lineIndex);
 		setFillStyle(fillIndex);
 		setAltFillStyle(altIndex);
@@ -206,15 +202,9 @@ public final class ShapeStyle implements ShapeRecord
 	 * @param relativeY
 	 *            move the current point by relativeY in the y direction.
 	 */
-	public ShapeStyle(int relativeX, int relativeY)
+	public ShapeStyle(Integer relativeX, Integer relativeY)
 	{
-		super();
-
-		setMoveX(relativeX);
-		setMoveY(relativeY);
-		lineStyle = Movie.VALUE_NOT_SET;
-		fillStyle = Movie.VALUE_NOT_SET;
-		altFillStyle = Movie.VALUE_NOT_SET;
+		setMove(relativeX, relativeY);
 		fillStyles = new ArrayList<FillStyle>();
 		lineStyles = new ArrayList<LineStyle>();
 	}
@@ -230,13 +220,6 @@ public final class ShapeStyle implements ShapeRecord
 	 */
 	public ShapeStyle(List<LineStyle> lines, List<FillStyle> fills)
 	{
-		super();
-
-		moveX = Movie.VALUE_NOT_SET;
-		moveY = Movie.VALUE_NOT_SET;
-		lineStyle = Movie.VALUE_NOT_SET;
-		fillStyle = Movie.VALUE_NOT_SET;
-		altFillStyle = Movie.VALUE_NOT_SET;
 		setLineStyles(lines);
 		setFillStyles(fills);
 	}
@@ -293,47 +276,47 @@ public final class ShapeStyle implements ShapeRecord
 	}
 
 	/**
-	 * Returns the x-coordinate of any relative move or VALUE_NOT_SET if no move 
+	 * Returns the x-coordinate of any relative move or null if no move 
 	 * is specified. 
 	 */
-	public int getMoveX()
+	public Integer getMoveX()
 	{
 		return moveX;
 	}
 
 	/**
-	 * Returns the y-coordinate of any relative move  or VALUE_NOT_SET if no move 
+	 * Returns the y-coordinate of any relative move  or null if no move 
 	 * is specified. 
 	 */
-	public int getMoveY()
+	public Integer getMoveY()
 	{
 		return moveY;
 	}
 
 	/**
 	 * Returns the index of the line style that will be applied to any line drawn.
-	 * Returns VALUE_NOT_SET if no line style is defined.
+	 * Returns null if no line style is defined.
 	 */
-	public int getLineStyle()
+	public Integer getLineStyle()
 	{
 		return lineStyle;
 	}
 
 	/**
 	 * Returns the index of the fill style that will be applied to any area filled.
-	 * Returns VALUE_NOT_SET if no fill style is defined.
+	 * Returns null if no fill style is defined.
 	 */
-	public int getFillStyle()
+	public Integer getFillStyle()
 	{
 		return fillStyle;
 	}
 
 	/**
 	 * Returns the index of the fill style that will be applied to any overlapping
-	 * area filled. Returns VALUE_NOT_SET if no alternate fill style is 
+	 * area filled. Returns null if no alternate fill style is 
 	 * defined.
 	 */
-	public int getAltFillStyle()
+	public Integer getAltFillStyle()
 	{
 		return altFillStyle;
 	}
@@ -355,95 +338,69 @@ public final class ShapeStyle implements ShapeRecord
 	}
 
 	/**
-	 * Sets the x-coordinate of any relative move. If the value is set to 
-	 * Constants.VALUE_NOT_SET then it will not be encoded.
+	 * Sets the coordinates of any relative move.
 	 * 
-	 * @param coord
+	 * @param xCoord
 	 *            move the current point by aNumber in the x direction. Must be 
 	 *            in the range -65535..65535.
-	 */
-	public void setMoveX(int coord)
-	{
-		if (coord < -65535 || coord > 65535) {
-			throw new IllegalArgumentException(Strings.COORDINATES_OUT_OF_RANGE);
-		}
-		moveX = coord;
-	}
-
-	/**
-	 * Sets the y-coordinate of any relative move. If the value is set to 
-	 * Constants.VALUE_NOT_SET then it  will not be encoded.
 	 * 
-	 * @param coord
+	 * @param xCoord
 	 *            move the current point by aNumber in the y direction. Must be 
 	 *            in the range -65535..65535.
 	 */
-	public void setMoveY(int coord)
+	public void setMove(Integer xCoord, Integer yCoord)
 	{
-		if (coord < -65535 || coord > 65535) {
+		if ((xCoord == null && yCoord != null) || (xCoord != null && yCoord == null)) {
+			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+		}
+		if (xCoord != null && (xCoord < -65535 || xCoord > 65535)) {
 			throw new IllegalArgumentException(Strings.COORDINATES_OUT_OF_RANGE);
 		}
-		moveY = coord;
-	}
-
-	/**
-	 * Sets the drawing point. May be set to Constants.VALUE_NOT_SET the object
-	 * should be encoded with no move information.
-	 * 
-	 * @param xCoord
-	 *            the x-coordinate of the drawing point. Must be 
-	 *            in the range -65535..65535.
-	 * @param yCoord
-	 *            the y-coordinate of the drawing point. Must be 
-	 *            in the range -65535..65535.
-	 */
-	public void setMove(int xCoord, int yCoord)
-	{
-		setMoveX(xCoord);
-		setMoveY(yCoord);
+		if (yCoord != null && (yCoord < -65535 || yCoord > 65535)) {
+			throw new IllegalArgumentException(Strings.COORDINATES_OUT_OF_RANGE);
+		}
+		moveX = xCoord;
+		moveY = yCoord;
 	}
 
 	/**
 	 * Sets the index of the fill style that will be applied to any area filled.
-	 * May be set to zero if no style is selected or Constants.VALUE_NOT_SET if 
-	 * the line style remains unchanged from a previous value (if any) and should 
-	 * not be encoded.
+	 * May be set to zero if no style is selected or null if the line style 
+	 * remains unchanged.
 	 * 
 	 * @param anIndex
 	 *            selects the fill style at anIndex in the fill styles array of
 	 *            the parent Shape object.
 	 */
-	public void setFillStyle(int anIndex)
+	public void setFillStyle(Integer anIndex)
 	{
 		fillStyle = anIndex;
 	}
 
 	/**
 	 * Sets the index of the fill style that will be applied to any overlapping
-	 * area filled. May be set to zero if no style is selected or 
-	 * Constants.VALUE_NOT_SET if the line style remains unchanged from a previous 
-	 * value (if any) and should not be encoded.
+	 * area filled. May be set to zero if no style is selected or null if the ~
+	 * line style remains unchanged.
 	 * 
 	 * @param anIndex
 	 *            selects the alternate fill style at anIndex in the fill styles
 	 *            array of the parent Shape object.
 	 */
-	public void setAltFillStyle(int anIndex)
+	public void setAltFillStyle(Integer anIndex)
 	{
 		altFillStyle = anIndex;
 	}
 
 	/**
 	 * Sets the index of the line style that will be applied to any line drawn.
-	 * May be set to zero if no style is selected or Constants.VALUE_NOT_SET if 
-	 * the line style remains unchanged from a previous value (if any) and should 
-	 * not be encoded.
+	 * May be set to zero if no style is selected or null if the line style 
+	 * remains unchanged.
 	 * 
 	 * @param anIndex
 	 *            selects the line style at anIndex in the line styles array of
 	 *            the parent Shape object.
 	 */
-	public void setLineStyle(int anIndex)
+	public void setLineStyle(Integer anIndex)
 	{
 		lineStyle = anIndex;
 	}
@@ -494,10 +451,10 @@ public final class ShapeStyle implements ShapeRecord
 
 	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
-		hasLine = lineStyle != Movie.VALUE_NOT_SET;
-		hasFill = fillStyle != Movie.VALUE_NOT_SET;
-		hasAlt = altFillStyle != Movie.VALUE_NOT_SET;
-		hasMove =  moveX != Movie.VALUE_NOT_SET && moveY != Movie.VALUE_NOT_SET;
+		hasLine = lineStyle != null;
+		hasFill = fillStyle != null;
+		hasAlt = altFillStyle != null;
+		hasMove =  moveX != null && moveY != null;
 		hasStyles = !lineStyles.isEmpty() || !fillStyles.isEmpty();
 		
 		int numberOfBits = 6;

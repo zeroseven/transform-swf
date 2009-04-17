@@ -273,10 +273,10 @@ public final class DefineTextField implements DefineTag
 		private Color color;
 		private int maxLength;
 		private Align alignment;
-		private int leftMargin;
-		private int rightMargin;
-		private int indent;
-		private int leading;
+		private Integer leftMargin;
+		private Integer rightMargin;
+		private Integer indent;
+		private Integer leading;
 		private String variableName;
 		private String initialText;
 
@@ -365,22 +365,22 @@ public final class DefineTextField implements DefineTag
 			return this;
 		}
 		
-		Builder leftMargin(int margin) {
+		Builder leftMargin(Integer margin) {
 			this.leftMargin = margin;
 			return this;
 		}
 		
-		Builder rightMargin(int margin) {
+		Builder rightMargin(Integer margin) {
 			this.rightMargin = margin;
 			return this;
 		}
 		
-		Builder indent(int indent) {
+		Builder indent(Integer indent) {
 			this.indent = indent;
 			return this;
 		}
 		
-		Builder leading(int leading) {
+		Builder leading(Integer leading) {
 			this.leading = leading;
 			return this;
 		}
@@ -419,10 +419,10 @@ public final class DefineTextField implements DefineTag
 	private Color color;
 	private int maxLength;
 	private Align alignment;
-	private int leftMargin;
-	private int rightMargin;
-	private int indent;
-	private int leading;
+	private Integer leftMargin;
+	private Integer rightMargin;
+	private Integer indent;
+	private Integer leading;
 	private String variableName;
 	private String initialText;
 
@@ -552,10 +552,6 @@ public final class DefineTextField implements DefineTag
 		setIdentifier(uid);
 		setBounds(aBounds);
 		color = new Color(0,0,0,0);
-		leftMargin = Movie.VALUE_NOT_SET;
-		rightMargin = Movie.VALUE_NOT_SET;
-		indent = Movie.VALUE_NOT_SET;
-		leading = Movie.VALUE_NOT_SET;
 		variableName = name;
 		initialText = value;
 	}
@@ -1004,9 +1000,9 @@ public final class DefineTextField implements DefineTag
 	 * @param aNumber
 	 *            the width of the left margin. Must be in the range 0..65535.
 	 */
-	public void setLeftMargin(int aNumber)
+	public void setLeftMargin(Integer aNumber)
 	{
-		if (aNumber < 0 || aNumber > 65535) {
+		if (aNumber != null && (aNumber < 0 || aNumber > 65535)) {
 			throw new IllegalArgumentException(Strings.UNSIGNED_VALUE_OUT_OF_RANGE);
 		}
 		leftMargin = aNumber;
@@ -1018,9 +1014,9 @@ public final class DefineTextField implements DefineTag
 	 * @param aNumber
 	 *            the width of the right margin. Must be in the range 0..65535.
 	 */
-	public void setRightMargin(int aNumber)
+	public void setRightMargin(Integer aNumber)
 	{
-		if (aNumber < 0 || aNumber > 65535) {
+		if (aNumber != null && (aNumber < 0 || aNumber > 65535)) {
 			throw new IllegalArgumentException(Strings.UNSIGNED_VALUE_OUT_OF_RANGE);
 		}
 		rightMargin = aNumber;
@@ -1032,9 +1028,9 @@ public final class DefineTextField implements DefineTag
 	 * @param aNumber
 	 *            the indentation for the first line. Must be in the range 0..65535.
 	 */
-	public void setIndent(int aNumber)
+	public void setIndent(Integer aNumber)
 	{
-		if (aNumber < 0 || aNumber > 65535) {
+		if (aNumber != null && (aNumber < 0 || aNumber > 65535)) {
 			throw new IllegalArgumentException(Strings.UNSIGNED_VALUE_OUT_OF_RANGE);
 		}
 		indent = aNumber;
@@ -1046,9 +1042,9 @@ public final class DefineTextField implements DefineTag
 	 * @param aNumber
 	 *            the value for the leading. Must be in the range -32768..32767.
 	 */
-	public void setLeading(int aNumber)
+	public void setLeading(Integer aNumber)
 	{
-		if (aNumber < -32768 || aNumber > 32767) {
+		if (aNumber != null && (aNumber < -32768 || aNumber > 32767)) {
 			throw new IllegalArgumentException(Strings.SIGNED_VALUE_OUT_OF_RANGE);
 		}
 		leading = aNumber;
@@ -1189,11 +1185,11 @@ public final class DefineTextField implements DefineTag
 
 		if (containsLayout())
 		{
-			coder.writeWord((alignment == null) ? 0 : alignment.getValue(), 1);
-			coder.writeWord((leftMargin == Movie.VALUE_NOT_SET) ? 0 : leftMargin, 2);
-			coder.writeWord((rightMargin == Movie.VALUE_NOT_SET) ? 0 : rightMargin, 2);
-			coder.writeWord((indent == Movie.VALUE_NOT_SET) ? 0 : indent, 2);
-			coder.writeWord((leading == Movie.VALUE_NOT_SET) ? 0 : leading, 2);
+			coder.writeWord(alignment == null ? 0 : alignment.getValue(), 1);
+			coder.writeWord(leftMargin == null ? 0 : leftMargin, 2);
+			coder.writeWord(rightMargin == null ? 0 : rightMargin, 2);
+			coder.writeWord(indent == null ? 0 : indent, 2);
+			coder.writeWord(leading == null ? 0 : leading, 2);
 		}
 
 		coder.writeString(variableName);
@@ -1213,9 +1209,9 @@ public final class DefineTextField implements DefineTag
 	private boolean containsLayout()
 	{
 		return alignment != null || 
-			leftMargin != Movie.VALUE_NOT_SET || 
-			rightMargin != Movie.VALUE_NOT_SET || 
-			indent != Movie.VALUE_NOT_SET || 
-			leading != Movie.VALUE_NOT_SET;
+			leftMargin != null || 
+			rightMargin != null || 
+			indent != null || 
+			leading != null;
 	}
 }

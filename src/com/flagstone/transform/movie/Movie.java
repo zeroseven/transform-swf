@@ -109,12 +109,6 @@ public final class Movie implements Cloneable
 	private float frameRate;
 	private int frameCount;
 	private List<MovieTag> objects;
-	/**
-	 * VALUE_NOT_SET is used to signify that a field has not yet assigned a
-	 * value. This is used to identify optional fields when an object is 
-	 * encoded, reducing the size of the file. 
-	 */
-	public static final int VALUE_NOT_SET = Integer.MIN_VALUE;
 
 	/**
 	 * Creates a Movie object with no objects. The Flash version defaults

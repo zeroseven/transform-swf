@@ -86,11 +86,11 @@ public final class TextSpan implements Encodeable
 {
 	private static final String FORMAT = "TextSpan: { identifier=%d; color=%s; offsetX=%d; offsetY=%d; height=%d; characters=%s }";
 	
-	private int identifier;
 	private Color color;
-	private int offsetX;
-	private int offsetY;
-	private int height;
+	private Integer offsetX;
+	private Integer offsetY;
+	private Integer identifier;
+	private Integer height;
 
 	private List<GlyphIndex> characters;
 	
@@ -110,15 +110,15 @@ public final class TextSpan implements Encodeable
 		hasY = coder.readBits(1, false) != 0;
 		hasX = coder.readBits(1, false) != 0;
 
-		identifier = hasFont ? coder.readWord(2, false) : Movie.VALUE_NOT_SET;
+		identifier = hasFont ? coder.readWord(2, false) : null;
 
 		if (hasColor) {
 			color = new Color(coder, context);
 		}
 
-		offsetX = hasX ? coder.readWord(2, true) : Movie.VALUE_NOT_SET;
-		offsetY = hasY ? coder.readWord(2, true) : Movie.VALUE_NOT_SET;
-		height = hasFont ? coder.readWord(2, false) : Movie.VALUE_NOT_SET;
+		offsetX = hasX ? coder.readWord(2, true) : null;
+		offsetY = hasY ? coder.readWord(2, true) : null;
+		height = hasFont ? coder.readWord(2, false) : null;
 
 		int charCount = coder.readByte();
 
@@ -143,7 +143,7 @@ public final class TextSpan implements Encodeable
 	 *            the height of the text in the chosen font. Must be in the 
 	 *            range 1..65535.
 	 * @param aColor
-	 *            the colour of the text. Must not be null.
+	 *            the colour of the text.
 	 * @param xOffset
 	 *            the location of the text relative to the left edge of the
 	 *            bounding rectangle enclosing the text.
@@ -159,14 +159,14 @@ public final class TextSpan implements Encodeable
 	 * @throws IllegalArgumentException if the font height is outside the range 0..65535.
 	 * @throws IllegalArgumentException if the character array is null.
 	 */
-	public TextSpan(int uid, int aHeight, Color aColor, int xOffset, int yOffset,
+	public TextSpan(Integer uid, Integer aHeight, Color aColor, Integer xOffset, Integer yOffset,
 					List<GlyphIndex> anArray)
 	{
 		setIdentifier(uid);
+		setHeight(aHeight);
 		setColor(aColor);
 		setOffsetX(xOffset);
 		setOffsetY(yOffset);
-		setHeight(aHeight);
 		setCharacters(anArray);
 	}
 
@@ -183,7 +183,7 @@ public final class TextSpan implements Encodeable
 	/**
 	 * Returns the identifier of the font in which the text will be displayed.
 	 */
-	public int getIdentifier()
+	public Integer getIdentifier()
 	{
 		return identifier;
 	}
@@ -200,7 +200,7 @@ public final class TextSpan implements Encodeable
 	 * Returns the location of the start of the text relative to the left edge of
 	 * the bounding rectangle in twips.
 	 */
-	public int getOffsetX()
+	public Integer getOffsetX()
 	{
 		return offsetX;
 	}
@@ -209,7 +209,7 @@ public final class TextSpan implements Encodeable
 	 * Returns the location of the start of the text relative to the bottom edge of
 	 * the bounding rectangle in twips.
 	 */
-	public int getOffsetY()
+	public Integer getOffsetY()
 	{
 		return offsetY;
 	}
@@ -217,7 +217,7 @@ public final class TextSpan implements Encodeable
 	/**
 	 * Returns the height of the text.
 	 */
-	public int getHeight()
+	public Integer getHeight()
 	{
 		return height;
 	}
@@ -229,9 +229,9 @@ public final class TextSpan implements Encodeable
 	 *            the identifier of the font that the text will be rendered in.
 	 *            Must be in the range 1..65535.
 	 */
-	public void setIdentifier(int uid)
+	public void setIdentifier(Integer uid)
 	{
-		if (uid < 1 || uid > 65535) {
+		if (uid != null && (uid < 1 || uid > 65535)) {
 			throw new IllegalArgumentException(Strings.IDENTIFIER_OUT_OF_RANGE);
 		}
 		identifier = uid;
@@ -241,7 +241,7 @@ public final class TextSpan implements Encodeable
 	 * Sets the colour of the font in which the text will be displayed.
 	 * 
 	 * @param aColor
-	 *            the colour of the text. Must not be null.
+	 *            the colour of the text.
 	 */
 	public void setColor(Color aColor)
 	{
@@ -255,11 +255,11 @@ public final class TextSpan implements Encodeable
 	 * @param offset
 	 *            the location of the text relative to the left edge of the
 	 *            bounding rectangle enclosing the text. Must be in the range
-	 *            -32768..32767.
+	 *            -32768..32767 or null if no offset is specified.
 	 */
-	public void setOffsetX(int offset)
+	public void setOffsetX(Integer offset)
 	{
-		if (offset != Movie.VALUE_NOT_SET && (offset < -32768 || offset > 32767)) {
+		if (offset != null && (offset < -32768 || offset > 32767)) {
 			throw new IllegalArgumentException(Strings.SIGNED_VALUE_OUT_OF_RANGE);
 		}
 		offsetX = offset;
@@ -272,11 +272,11 @@ public final class TextSpan implements Encodeable
 	 * @param offset
 	 *            the location of the text relative to the bottom edge of the
 	 *            bounding rectangle enclosing the text. Must be in the range
-	 *            -32768..32767.
+	 *            -32768..32767 or null if no offset is specified.
 	 */
-	public void setOffsetY(int offset)
+	public void setOffsetY(Integer offset)
 	{
-		if (offset != Movie.VALUE_NOT_SET && (offset < -32768 || offset > 32767)) {
+		if (offset != null && (offset < -32768 || offset > 32767)) {
 			throw new IllegalArgumentException(Strings.SIGNED_VALUE_OUT_OF_RANGE);
 		}
 		offsetY = offset;
@@ -289,7 +289,7 @@ public final class TextSpan implements Encodeable
 	 *            the height of the text in the chosen font. Must be in the 
 	 *            range 0..65535.
 	 */
-	public void setHeight(int aHeight)
+	public void setHeight(Integer aHeight)
 	{
 		if (aHeight < 0 || aHeight > 65535) {
 			throw new IllegalArgumentException(Strings.UNSIGNED_VALUE_OUT_OF_RANGE);
@@ -349,10 +349,10 @@ public final class TextSpan implements Encodeable
 
 	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
-		hasFont = identifier != Movie.VALUE_NOT_SET && height != Movie.VALUE_NOT_SET;
+		hasFont = identifier != null && height != null;
 		hasColor = color != null;
-		hasX = offsetX != Movie.VALUE_NOT_SET;
-		hasY = offsetY != Movie.VALUE_NOT_SET;		
+		hasX = offsetX != null;
+		hasY = offsetY != null;		
 		hasStyle = hasFont || hasColor || hasX || hasY;
 
 		int length = 1;

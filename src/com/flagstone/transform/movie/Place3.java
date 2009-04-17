@@ -136,7 +136,7 @@ public final class Place3 implements MovieTag
 		private int identifier;
 		private CoordTransform transform;
 		private ColorTransform colorTransform;
-		private int ratio;
+		private Integer ratio;
 		private int clippingDepth;
 		private String name;
 		private List<Filter> filters;
@@ -173,7 +173,7 @@ public final class Place3 implements MovieTag
 			return this;
 		}
 		
-		public Builder ratio(int ratio) {
+		public Builder ratio(Integer ratio) {
 			this.ratio = ratio; 
 			return this;
 		}
@@ -214,7 +214,7 @@ public final class Place3 implements MovieTag
 	private int identifier;
 	private CoordTransform transform;
 	private ColorTransform colorTransform;
-	private int ratio;
+	private Integer ratio;
 	private String name;
 	private int clippingDepth;
 	private List<Filter> filters;
@@ -343,7 +343,6 @@ public final class Place3 implements MovieTag
        placeType = Place2.Mode.NEW;
        setIdentifier(uid);
        setLayer(aLayer);
-       ratio = Movie.VALUE_NOT_SET;
        setTransform(transform);
        events = new ArrayList<MovieClipEventHandler>();
    }
@@ -362,7 +361,6 @@ public final class Place3 implements MovieTag
 	{
 	    placeType = Place2.Mode.MODIFY;
 	    setLayer(aLayer);
-	    ratio = Movie.VALUE_NOT_SET;
 	    setTransform(transform);
 	    events = new ArrayList<MovieClipEventHandler>();
     }
@@ -385,7 +383,6 @@ public final class Place3 implements MovieTag
 		placeType = Place2.Mode.NEW;
 		setIdentifier(uid);
 		setLayer(aLayer);
-	    ratio = Movie.VALUE_NOT_SET;
 		setTransform(CoordTransform.translate(xCoord, yCoord));
 	    events = new ArrayList<MovieClipEventHandler>();
 	}
@@ -405,7 +402,6 @@ public final class Place3 implements MovieTag
 	{
 		placeType = Place2.Mode.MODIFY;
 		setLayer(aLayer);
-	    ratio = Movie.VALUE_NOT_SET;
 		setTransform(CoordTransform.translate(xCoord, yCoord));
 	    events = new ArrayList<MovieClipEventHandler>();
 	}
@@ -558,24 +554,23 @@ public final class Place3 implements MovieTag
 	 * Returns the morph ratio, in the range 0..65535 that defines the progress
 	 * in the morphing process performed by the Flash Player from the defined
 	 * start and end shapes. A value of 0 indicates the start of the process and
-	 * 65535 the end.
+	 * 65535 the end. Returns null if no ratio was specified.
 	 */
-	public int getRatio()
+	public Integer getRatio()
 	{
 		return ratio;
 	}
 
 	/**
 	 * Sets point of the morphing process for a morph shape in the range 0..65535.
-	 * May be set to Constants.VALUE_NOT_SET if the shape being placed is not 
-	 * being morphed.
+	 * May be set to null if the shape being placed is not being morphed.
 	 * 
 	 * @param aNumber
 	 *            the progress in the morphing process. 
 	 */
-	public void setRatio(int aNumber)
+	public void setRatio(Integer aNumber)
 	{
-		if (aNumber < 0 || aNumber > 65535) {
+		if (aNumber != null && (aNumber < 0 || aNumber > 65535)) {
 			throw new IllegalArgumentException("Morphing ratio must be in the range 0..65535.");
 		}
 		ratio = aNumber;
@@ -757,7 +752,7 @@ public final class Place3 implements MovieTag
 		length += (placeType == Place2.Mode.NEW || placeType == Place2.Mode.REPLACE) ? 2 : 0;
 		length += transform == null ? 0 : transform.prepareToEncode(coder, context);
 		length += colorTransform == null ? 0 : colorTransform.prepareToEncode(coder, context);
-		length += ratio == Movie.VALUE_NOT_SET ? 0 : 2;
+		length += ratio == null ? 0 : 2;
 		length += (clippingDepth > 0) ? 2 : 0;
 		length += name != null ? coder.strlen(name) : 0;
 
@@ -795,7 +790,7 @@ public final class Place3 implements MovieTag
 		coder.writeBits(events.isEmpty() ? 0 : 1, 1);
 		coder.writeBits(clippingDepth > 0 ? 1 : 0, 1);
 		coder.writeBits(name != null ? 1 : 0, 1);
-		coder.writeBits(ratio == Movie.VALUE_NOT_SET ? 0 : 1, 1);
+		coder.writeBits(ratio == null ? 0 : 1, 1);
 		coder.writeBits(colorTransform == null ? 0 : 1, 1);
 		coder.writeBits(transform == null ? 0 : 1, 1);
 
@@ -818,7 +813,7 @@ public final class Place3 implements MovieTag
 		if (colorTransform != null) {
 			colorTransform.encode(coder, context);
 		}
-		if (ratio != Movie.VALUE_NOT_SET) {
+		if (ratio != null) {
 			coder.writeWord(ratio, 2);
 		}
 		if (name != null)

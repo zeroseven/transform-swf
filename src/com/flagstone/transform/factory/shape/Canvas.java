@@ -224,7 +224,7 @@ public final class Canvas
 	    	lineStyles.add(style.copy());
     	}
     	lineWidth = style.getWidth();
-        objects.add(new ShapeStyle(index+1, Movie.VALUE_NOT_SET, Movie.VALUE_NOT_SET));
+        objects.add(new ShapeStyle(index+1, null, null));
     }
     
     
@@ -245,7 +245,7 @@ public final class Canvas
     		index = fillStyles.size();		
 			fillStyles.add(style.copy());
     	}
-        objects.add(new ShapeStyle(Movie.VALUE_NOT_SET, index+1, Movie.VALUE_NOT_SET));
+        objects.add(new ShapeStyle(null, index+1, null));
     }
     
     
@@ -266,7 +266,7 @@ public final class Canvas
     		index = fillStyles.size();
 			fillStyles.add(style.copy());
     	}
-        objects.add(new ShapeStyle(Movie.VALUE_NOT_SET, Movie.VALUE_NOT_SET, index+1));
+        objects.add(new ShapeStyle(null, null, index+1));
     }
     
     /**
