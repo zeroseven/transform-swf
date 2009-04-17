@@ -31,7 +31,10 @@
 package com.flagstone.transform.movie.movieclip;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.SWFContext;
@@ -42,6 +45,7 @@ import com.flagstone.transform.movie.Place2;
 import com.flagstone.transform.movie.Strings;
 import com.flagstone.transform.movie.action.Action;
 import com.flagstone.transform.movie.action.ActionData;
+import com.flagstone.transform.movie.button.ButtonEvent;
 import com.flagstone.transform.movie.button.ButtonEventHandler;
 
 
@@ -161,7 +165,7 @@ public final class MovieClipEventHandler implements Encodeable
 	 *            the array of actions that will be executed when the specified
 	 *            event occurs.
 	 */
-	public MovieClipEventHandler(int eventCode, List<Action> anArray)
+	public MovieClipEventHandler(Set<MovieClipEvent> eventCode, List<Action> anArray)
 	{
 		setEvent(eventCode);
 		setActions(anArray);
@@ -182,7 +186,7 @@ public final class MovieClipEventHandler implements Encodeable
 	 *            
 	 * @throws IllegalArgumentException if the array is null.
 	 */
-	public MovieClipEventHandler(int eventCode, int keyCode, List<Action> anArray)
+	public MovieClipEventHandler(Set<MovieClipEvent> eventCode, int keyCode, List<Action> anArray)
 	{
 		setEvent(eventCode);
 		setKeyCode(keyCode);
@@ -215,23 +219,23 @@ public final class MovieClipEventHandler implements Encodeable
 		return this;
 	}
 
-	/**
-	 * Sets the event code that this ClipEvent defines actions for.
-	 * 
-	 * @param aNumber
-	 *            the code representing one or more events.
-	 */
-	public void setEvent(int aNumber)
+	public void setEvent(Set<MovieClipEvent>set)
 	{
-		event = aNumber;
+		for (MovieClipEvent event : set) {
+			this.event |= event.getValue();
+		}
 	}
 
-	/**
-	 * Returns the event code that this ClipEvent defines actions for.
-	 */
-	public int getEvent()
+	public Set<MovieClipEvent> getEvent()
 	{
-		return event;
+		Set<MovieClipEvent>set = EnumSet.allOf(MovieClipEvent.class);
+		
+		for (Iterator<MovieClipEvent>iter = set.iterator(); iter.hasNext();) {
+			if ((event & iter.next().getValue()) == 0) {
+				iter.remove();
+			}
+		}
+		return set;
 	}
 
 	/**

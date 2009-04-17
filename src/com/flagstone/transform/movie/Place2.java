@@ -39,6 +39,7 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.datatype.ColorTransform;
 import com.flagstone.transform.movie.datatype.CoordTransform;
+import com.flagstone.transform.movie.movieclip.MovieClipEvent;
 import com.flagstone.transform.movie.movieclip.MovieClipEventHandler;
 
 
@@ -748,7 +749,9 @@ public final class Place2 implements MovieTag
 			coder.writeWord(0, 2);
 
 			for (MovieClipEventHandler handler : events) {
-				eventMask |= handler.getEvent();
+				for (MovieClipEvent event : handler.getEvent()) {
+					eventMask |= event.getValue();					
+				}
 			}
 
 			coder.writeWord(eventMask, eventSize);

@@ -41,6 +41,7 @@ import com.flagstone.transform.movie.Place2.Mode;
 import com.flagstone.transform.movie.datatype.ColorTransform;
 import com.flagstone.transform.movie.datatype.CoordTransform;
 import com.flagstone.transform.movie.filter.Filter;
+import com.flagstone.transform.movie.movieclip.MovieClipEvent;
 import com.flagstone.transform.movie.movieclip.MovieClipEventHandler;
 
 
@@ -833,7 +834,9 @@ public final class Place3 implements MovieTag
 			coder.writeWord(0, 2);
 
 			for (MovieClipEventHandler handler : events) {
-				eventMask |= handler.getEvent();
+				for (MovieClipEvent event : handler.getEvent()) {
+					eventMask |= event.getValue();					
+				}
 			}
 
 			coder.writeWord(eventMask, eventSize);
