@@ -243,7 +243,7 @@ public final class ImageInfo {
 		 "image/iff", "image/ras", "image/x-portable-bitmap", "image/x-portable-graymap", "image/x-portable-pixmap", 
 		 "image/psd"};
 
-	private ImageFormat imageFormat;
+	private ImageEncoding imageFormat;
 	private int width;
 	private int height;
 	private int bitsPerPixel;
@@ -353,7 +353,7 @@ public final class ImageInfo {
 			setPhysicalHeightDpi(y);
 		}
 		format = FORMAT_BMP;
-		imageFormat = ImageFormat.BMP;
+		imageFormat = ImageEncoding.BMP;
 		return true;
 	}
 
@@ -369,7 +369,7 @@ public final class ImageInfo {
 			return false;
 		}
 		format = FORMAT_GIF;
-		imageFormat = ImageFormat.GIF;
+		imageFormat = ImageEncoding.GIF;
 		width = getShortLittleEndian(a, 4);
 		height = getShortLittleEndian(a, 6);
 		int flags = a[8] & 0xff;
@@ -509,7 +509,7 @@ public final class ImageInfo {
 					return false;
 				}
 				format = FORMAT_IFF;
-				imageFormat = ImageFormat.IFF;
+				imageFormat = ImageEncoding.IFF;
 				width = getShortBigEndian(a, 0);
 				height = getShortBigEndian(a, 2);
 				bitsPerPixel = a[8] & 0xff;
@@ -574,7 +574,7 @@ public final class ImageInfo {
 					return false;
 				}
 				format = FORMAT_JPEG;
-				imageFormat = ImageFormat.JPEG;
+				imageFormat = ImageEncoding.JPEG;
 				bitsPerPixel = (data[0] & 0xff) * (data[5] & 0xff);
 				progressive = marker == 0xffc2 || marker == 0xffc6 ||
 					marker == 0xffca || marker == 0xffce;
@@ -622,7 +622,7 @@ public final class ImageInfo {
 		setPhysicalWidthDpi(getShortLittleEndian(a, 10));
 		setPhysicalHeightDpi(getShortLittleEndian(a, 10));
 		format = FORMAT_PCX;
-		imageFormat = ImageFormat.PCX;
+		imageFormat = ImageEncoding.PCX;
 		return true;
 	}
 
@@ -636,7 +636,7 @@ public final class ImageInfo {
 			return false;
 		}
 		format = FORMAT_PNG;
-		imageFormat = ImageFormat.PNG;
+		imageFormat = ImageEncoding.PNG;
 		width = getIntBigEndian(a, 14);
 		height = getIntBigEndian(a, 18);
 		bitsPerPixel = a[22] & 0xff;
@@ -732,7 +732,7 @@ public final class ImageInfo {
 			return false;
 		}
 		format = FORMAT_PSD;
-		imageFormat = ImageFormat.PSD;
+		imageFormat = ImageEncoding.PSD;
 		width = getIntBigEndian(a, 16);
 		height = getIntBigEndian(a, 12);
 		int channels = getShortBigEndian(a, 10);
@@ -751,7 +751,7 @@ public final class ImageInfo {
 			return false;
 		}
 		format = FORMAT_RAS;
-		imageFormat = ImageFormat.RAS;
+		imageFormat = ImageEncoding.RAS;
 		width = getIntBigEndian(a, 2);
 		height = getIntBigEndian(a, 6);
 		bitsPerPixel = getIntBigEndian(a, 10);
@@ -816,7 +816,7 @@ public final class ImageInfo {
 		return format;
 	}
 	
-	public ImageFormat getImageFormat() {
+	public ImageEncoding getImageFormat() {
 		return imageFormat;
 	}
 

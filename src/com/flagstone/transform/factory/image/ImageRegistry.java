@@ -37,29 +37,29 @@ import java.util.Map;
  */
 public final class ImageRegistry
 {
-	private static Map<ImageFormat, ImageProvider> providers = new LinkedHashMap<ImageFormat, ImageProvider>();
+	private static Map<ImageEncoding, ImageProvider> providers = new LinkedHashMap<ImageEncoding, ImageProvider>();
 
 	static {
-		for (ImageFormat format : ImageFormat.values()) {
-			registerProvider(format, format.getProvider());
+		for (ImageEncoding encoding : ImageEncoding.values()) {
+			registerProvider(encoding, encoding.getProvider());
 		}
 	}
 	/**
 	 * Register an ImageDecoder to handle images in the specified format. The 
 	 * image formats currently supported are defined in the {@link ImageInfo} class.
 	 * 
-	 * @param format the string identifying the image format. 
+	 * @param encoding the string identifying the image format. 
 	 * @param decoder any class that implements the ImageDecoder interface.
 	 */
-	public static void registerProvider(ImageFormat format, ImageProvider decoder)
+	public static void registerProvider(ImageEncoding encoding, ImageProvider decoder)
 	{
-		providers.put(format, decoder);
+		providers.put(encoding, decoder);
 	}
 	
-	public static ImageDecoder getImageProvider(ImageFormat format) {
+	public static ImageDecoder getImageProvider(ImageEncoding encoding) {
 		
-    	if (providers.containsKey(format)) {
-    		return providers.get(format).newDecoder();
+    	if (providers.containsKey(encoding)) {
+    		return providers.get(encoding).newDecoder();
     	} else {
     		throw new IllegalArgumentException();
     	}

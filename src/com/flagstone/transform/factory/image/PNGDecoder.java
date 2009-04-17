@@ -131,7 +131,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder
     private int[] attributes = new int[16];
     private byte[] chunkData = new byte[0];
     
-    private ImageEncoding format;
+    private ImageFormat format;
     private int width;
     private int height;
     private byte[] table;
@@ -277,23 +277,23 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder
         switch (attributes[COLOUR_TYPE])
         {
             case GREYSCALE: 
-            	format = (attributes[TRANSPARENT_GREY] == -1) ? ImageEncoding.RGB8 : ImageEncoding.RGBA; 
+            	format = (attributes[TRANSPARENT_GREY] == -1) ? ImageFormat.RGB8 : ImageFormat.RGBA; 
             	attributes[COLOUR_COMPONENTS] = 1; 
             	break;
             case TRUE_COLOUR: 
-            	format = (attributes[TRANSPARENT_RED] == -1) ? ImageEncoding.RGB8 : 
-            		ImageEncoding.RGBA; attributes[COLOUR_COMPONENTS] = 3; 
+            	format = (attributes[TRANSPARENT_RED] == -1) ? ImageFormat.RGB8 : 
+            		ImageFormat.RGBA; attributes[COLOUR_COMPONENTS] = 3; 
             	break;
             case INDEXED_COLOUR: 
-            	format = ImageEncoding.IDX8; 
+            	format = ImageFormat.IDX8; 
             	attributes[COLOUR_COMPONENTS] = 1; 
             	break;
             case ALPHA_GREYSCALE: 
-            	format = ImageEncoding.RGBA; 
+            	format = ImageFormat.RGBA; 
             	attributes[COLOUR_COMPONENTS] = 2; 
             	break;
             case ALPHA_TRUECOLOUR: 
-            	format = ImageEncoding.RGBA; 
+            	format = ImageFormat.RGBA; 
             	attributes[COLOUR_COMPONENTS] = 4; 
             	break;
             default: 
@@ -340,7 +340,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder
                 attributes[TRANSPARENT_BLUE] = coder.readWord(2, false);
                 break;
             case INDEXED_COLOUR:
-                format = ImageEncoding.IDXA;
+                format = ImageFormat.IDXA;
                 for (int i=0; i<length; i++, index+=4) 
                 {
                     table[index+3] = (byte)coder.readByte();
@@ -378,15 +378,15 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder
 
     private void decodeImage() throws DataFormatException
     {
-        if (format == ImageEncoding.RGB8 && attributes[BIT_DEPTH] <= 5) {
-            format = ImageEncoding.RGB5;
+        if (format == ImageFormat.RGB8 && attributes[BIT_DEPTH] <= 5) {
+            format = ImageFormat.RGB5;
         }
 
-        if (format == ImageEncoding.RGB5 || format == ImageEncoding.RGB8 || format == ImageEncoding.RGBA) {
+        if (format == ImageFormat.RGB5 || format == ImageFormat.RGB8 || format == ImageFormat.RGBA) {
             image = new byte[height*width*4];
         }
             
-        if (format == ImageEncoding.IDX8 || format == ImageEncoding.IDXA) {
+        if (format == ImageFormat.IDX8 || format == ImageFormat.IDXA) {
             image = new byte[height*width];
         }
             

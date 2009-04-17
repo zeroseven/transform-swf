@@ -32,7 +32,7 @@ import com.flagstone.transform.movie.font.FontInfo2;
 import com.flagstone.transform.movie.font.Kerning;
 import com.flagstone.transform.movie.shape.Shape;
 import com.flagstone.transform.movie.shape.ShapeRecord;
-import com.flagstone.transform.movie.text.TextFormat;
+import com.flagstone.transform.movie.font.CharacterEncoding;
 
 /**
  * <p>Font is used to add embedded fonts to a movie.</p> 
@@ -190,7 +190,7 @@ public final class Font
     protected boolean bold;
     protected boolean italic;
 
-    protected TextFormat encoding;
+    protected CharacterEncoding encoding;
 
     protected float ascent;
     protected float descent;
@@ -228,8 +228,8 @@ public final class Font
 
     	encoding = info.getEncoding();   	
     	
-    	if (encoding == TextFormat.ANSI) {
-    		encoding = TextFormat.UNICODE;
+    	if (encoding == CharacterEncoding.ANSI) {
+    		encoding = CharacterEncoding.UCS2;
     	}
 
     	//TODO ascent = info.getAscent();
@@ -305,8 +305,8 @@ public final class Font
 
     	encoding = info.getEncoding();   	
     	
-    	if (encoding == TextFormat.ANSI) {
-    		encoding = TextFormat.UNICODE;
+    	if (encoding == CharacterEncoding.ANSI) {
+    		encoding = CharacterEncoding.UCS2;
     	}
 
     	//TODO ascent = info.getAscent();
@@ -383,8 +383,8 @@ public final class Font
 
     	encoding = font.getEncoding();   	
     	
-    	if (encoding == TextFormat.ANSI) {
-    		encoding = TextFormat.UNICODE;
+    	if (encoding == CharacterEncoding.ANSI) {
+    		encoding = CharacterEncoding.UCS2;
     	}
 
     	ascent = font.getAscent();
@@ -459,7 +459,7 @@ public final class Font
         java.awt.Font font = aFont.deriveFont(1.0f);
 
         name = font.getName();
-        encoding = TextFormat.UNICODE;
+        encoding = CharacterEncoding.UCS2;
 
         Rectangle2D transform = transformToEMSquare(font, fontContext);
 
@@ -744,9 +744,9 @@ public final class Font
 
 	/**
 	 * Returns the encoding scheme used for the character codes, either 
-	 * Constants.UNICODE, Constants.ANSI or Constants.SJIS.
+	 * UCS2, ANSI or SJIS.
 	 */
-    public TextFormat getEncoding()
+    public CharacterEncoding getEncoding()
 	{
 		return encoding;
 	}
@@ -1321,27 +1321,27 @@ public final class Font
             
             if (platformId == 0) // Unicode
             {
-                encoding = TextFormat.UNICODE;
+                encoding = CharacterEncoding.UCS2;
             }
             else if (platformId == 1) // Macintosh
             {
             	if (encodingId == 1) {
-            		encoding = TextFormat.SJIS;	
+            		encoding = CharacterEncoding.SJIS;	
             	}
             	else {
-            		encoding = TextFormat.ANSI;
+            		encoding = CharacterEncoding.ANSI;
             	}
             }
             else if (platformId == 3) // Microsoft
             {
             	if (encodingId == 1) {
-            		encoding = TextFormat.UNICODE;
+            		encoding = CharacterEncoding.UCS2;
             	}
             	else if (encodingId == 2) {
-            		encoding = TextFormat.SJIS;
+            		encoding = CharacterEncoding.SJIS;
             	}
             	else {
-            		encoding = TextFormat.ANSI;
+            		encoding = CharacterEncoding.ANSI;
             	}
             }
 
@@ -1426,7 +1426,7 @@ public final class Font
             }
             coder.setPointer(current);
         }
-        encoding = TextFormat.SJIS;
+        encoding = CharacterEncoding.SJIS;
     }
     
     private void decodeGlyphs(BigEndianDecoder coder, int glyfOffset) throws CoderException

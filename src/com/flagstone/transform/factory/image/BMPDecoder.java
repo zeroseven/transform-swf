@@ -62,7 +62,7 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder
     protected final static int BI_RLE4 = 2;
     protected final static int BI_BITFIELDS = 3;
     
-    private ImageEncoding format;
+    private ImageFormat format;
     private int width;
     private int height;
     private byte[] table;
@@ -222,17 +222,17 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder
         
         switch (bitsPerPixel)
         {
-            case 1: format = ImageEncoding.IDX8; bitDepth = 1; break;
-            case 2: format = ImageEncoding.IDX8; bitDepth = 2; break;
-            case 4: format = ImageEncoding.IDX8; bitDepth = 4; break;
-            case 8: format = ImageEncoding.IDX8; bitDepth = 8; break;
-            case 16: format = ImageEncoding.RGB5; bitDepth = 5; break;
-            case 24: format = ImageEncoding.RGB8; bitDepth = 8; break;
-            case 32: format = ImageEncoding.RGBA; bitDepth = 8; break;
+            case 1: format = ImageFormat.IDX8; bitDepth = 1; break;
+            case 2: format = ImageFormat.IDX8; bitDepth = 2; break;
+            case 4: format = ImageFormat.IDX8; bitDepth = 4; break;
+            case 8: format = ImageFormat.IDX8; bitDepth = 8; break;
+            case 16: format = ImageFormat.RGB5; bitDepth = 5; break;
+            case 24: format = ImageFormat.RGB8; bitDepth = 8; break;
+            case 32: format = ImageFormat.RGBA; bitDepth = 8; break;
             default: throw new DataFormatException(Strings.UNSUPPORTED_FILE_FORMAT);
         }
         
-        if (format == ImageEncoding.IDX8) 
+        if (format == ImageFormat.IDX8) 
         {
             coloursUsed = 1 << bitsPerPixel;
             table = new byte[coloursUsed*4];

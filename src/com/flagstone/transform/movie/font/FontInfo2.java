@@ -40,7 +40,6 @@ import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.MovieTag;
 import com.flagstone.transform.movie.Strings;
 import com.flagstone.transform.movie.Types;
-import com.flagstone.transform.movie.text.TextFormat;
 
 /**
  * FontInfo2 is an updated version of FontInfo with support for spoken languages
@@ -73,7 +72,7 @@ public final class FontInfo2 implements MovieTag
 	private int identifier;
 	private String name;
 	private boolean small;
-	private TextFormat encoding;
+	private CharacterEncoding encoding;
 	private boolean italic;
 	private boolean bold;
 	private int language;
@@ -108,7 +107,7 @@ public final class FontInfo2 implements MovieTag
 
 		/* reserved */coder.readBits(2, false);
 		small = coder.readBits(1, false) != 0;
-		encoding = TextFormat.fromInt(coder.readBits(2, false));
+		encoding = CharacterEncoding.fromInt(coder.readBits(2, false));
 		italic = coder.readBits(1, false) != 0;
 		bold = coder.readBits(1, false) != 0;
 		/* containsWideCodes */coder.readBits(1, false);
@@ -150,7 +149,7 @@ public final class FontInfo2 implements MovieTag
 		setItalic(italic);
 		setBold(bold);
 		small = false;
-		encoding = TextFormat.UNICODE;
+		encoding = CharacterEncoding.UCS2;
 		codes = new ArrayList<Integer>();
 	}
 	
@@ -188,7 +187,7 @@ public final class FontInfo2 implements MovieTag
 	 * Returns the encoding scheme used for characters rendered in the font, either
 	 * Constants.ASCII, Constants.SJIS or Constants.Unicode.
 	 */
-	public TextFormat getEncoding()
+	public CharacterEncoding getEncoding()
 	{
 		return encoding;
 	}
@@ -284,10 +283,10 @@ public final class FontInfo2 implements MovieTag
 	 * Sets the font character encoding.
 	 * 
 	 * @param anEncoding
-	 *            the encoding used to identify characters, either Constants.ASCII,
-	 *            Constants.SJIS or Constants.UNICODE.
+	 *            the encoding used to identify characters, either ASCII,
+	 *            SJIS or UNICODE.
 	 */
-	public void setEncoding(TextFormat anEncoding)
+	public void setEncoding(CharacterEncoding anEncoding)
 	{
 		encoding = anEncoding;
 	}

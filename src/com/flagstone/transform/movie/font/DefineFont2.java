@@ -43,7 +43,6 @@ import com.flagstone.transform.movie.Strings;
 import com.flagstone.transform.movie.Types;
 import com.flagstone.transform.movie.datatype.Bounds;
 import com.flagstone.transform.movie.shape.Shape;
-import com.flagstone.transform.movie.text.TextFormat;
 
 /**
  * <p>DefineFont2 defines the shapes and layout of the glyphs used in a font. It 
@@ -69,7 +68,7 @@ public final class DefineFont2 implements DefineTag
 		"codes=%s; ascent=%d; descent=%d; leading=%d; advances=%s; bounds=%s; kernings=%s }";
 	
 	private int identifier;
-	private TextFormat encoding;
+	private CharacterEncoding encoding;
 	private boolean small;
 	private boolean italic;
 	private boolean bold;
@@ -111,10 +110,10 @@ public final class DefineFont2 implements DefineTag
 		boolean containsLayout = coder.readBits(1, false) != 0;
 		int format = coder.readBits(3, false);
 
-		encoding = TextFormat.UNICODE;
+		encoding = CharacterEncoding.UCS2;
 
 		if (format == 1) {
-			encoding = TextFormat.ANSI;
+			encoding = CharacterEncoding.ANSI;
 		}
 		// Flash 7
 		else if (format == 2) {
@@ -122,7 +121,7 @@ public final class DefineFont2 implements DefineTag
 		}
 		// End Flash 7
 		else if (format == 4) {
-			encoding = TextFormat.SJIS;
+			encoding = CharacterEncoding.SJIS;
 		}
 
 		wideOffsets = coder.readBits(1, false) != 0;
@@ -384,7 +383,7 @@ public final class DefineFont2 implements DefineTag
 	 * 
 	 * @return the encoding used to represent characters rendered in the font.
 	 */
-	public TextFormat getEncoding()
+	public CharacterEncoding getEncoding()
 	{
 		return encoding;
 	}
@@ -570,9 +569,9 @@ public final class DefineFont2 implements DefineTag
 	 * 
 	 * @param aType
 	 *            the encoding scheme used to denote characters, either
-	 *            Text.ASCII, Text.SJIS or Text.Unicode.
+	 *            ASCII, SJIS or UCS2.
 	 */
-	public void setEncoding(TextFormat aType)
+	public void setEncoding(CharacterEncoding aType)
 	{
 		encoding = aType;
 	}
@@ -768,7 +767,7 @@ public final class DefineFont2 implements DefineTag
 
 	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
-		wideCodes = context.getVersion() > 5 || encoding != TextFormat.ANSI;
+		wideCodes = context.getVersion() > 5 || encoding != CharacterEncoding.ANSI;
 
 		context.setFillSize(1);
 		context.setLineSize(context.isPostscript() ? 1 : 0);
@@ -814,13 +813,13 @@ public final class DefineFont2 implements DefineTag
 	{
 		int format;
 
-		if (encoding == TextFormat.ANSI) {
+		if (encoding == CharacterEncoding.ANSI) {
 			format = 1;
 		}
 		else if (small) {
 			format = 2;
 		}
-		else if (encoding == TextFormat.SJIS) {
+		else if (encoding == CharacterEncoding.SJIS) {
 			format = 4;
 		}
 		else {

@@ -28,12 +28,12 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.flagstone.transform.movie.text;
+package com.flagstone.transform.movie.font;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public enum TextFormat {
+public enum CharacterEncoding {
 	/**
 	 * Defines that the characters in a font are encoded using SJIS standard for
 	 * representing Kanji characters.
@@ -46,24 +46,24 @@ public enum TextFormat {
 	/** 
 	 * Defines that the characters in a font are encoded using Unicode (UTF-8). 
 	 */
-	UNICODE(0);
+	UCS2(0);
 
-	private static final Map<Integer,TextFormat>table 
-		= new LinkedHashMap<Integer,TextFormat>();
+	private static final Map<Integer,CharacterEncoding>table 
+		= new LinkedHashMap<Integer,CharacterEncoding>();
 
 	static {
-		for (TextFormat encoding : values()) {
+		for (CharacterEncoding encoding : values()) {
 			table.put(encoding.value, encoding);
 		}
 	}
 	
-	public static TextFormat fromInt(int type) {
+	public static CharacterEncoding fromInt(int type) {
 		return table.get(type);
 	}
 
 	private final int value;
 
-	private TextFormat(int value) {
+	private CharacterEncoding(int value) {
 		this.value = value;
 	}
 	

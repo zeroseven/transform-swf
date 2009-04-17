@@ -36,7 +36,7 @@ import com.flagstone.transform.movie.image.DefineImage2;
  */
 public final class BufferedImageDecoder implements ImageProvider, ImageDecoder
 {
-    private ImageEncoding format;
+    private ImageFormat format;
     private int width;
     private int height;
     private byte[] table;
@@ -181,7 +181,7 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder
     {
     	BufferedImage bufferedImage = null;
     	
-    	ImageEncoding format;
+    	ImageFormat format;
     	int width = 0;
     	int height = 0;
     	
@@ -203,7 +203,7 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder
 
 	    if (tableLength > 0)
 	    {
-			format = ImageEncoding.IDX8;
+			format = ImageFormat.IDX8;
 			width = image.getWidth();
 			height = image.getHeight();
 			colourTable = new byte[tableLength*4];
@@ -230,7 +230,7 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder
 	    }
 	    else
 	    {
-			format = ImageEncoding.RGB8;
+			format = ImageFormat.RGB8;
 			width = image.getWidth();
 			height = image.getHeight();
 			colorImage = new byte[height*width*4];
@@ -367,7 +367,7 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder
     {
     	BufferedImage bufferedImage = null;
     	
-    	ImageEncoding format;
+    	ImageFormat format;
     	int width = 0;
     	int height = 0;
     	
@@ -389,7 +389,7 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder
 
 	    if (tableLength > 0)
 	    {
-    		format = ImageEncoding.IDXA;
+    		format = ImageFormat.IDXA;
     		width = image.getWidth();
     		height = image.getHeight();
     		colourTable = new byte[tableLength*4];
@@ -416,7 +416,7 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder
 	    }
 	    else
 	    {
-			format = ImageEncoding.RGBA;
+			format = ImageFormat.RGBA;
 			width = image.getWidth();
 			height = image.getHeight();
 			colorImage = new byte[height*width*4];
@@ -573,7 +573,7 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder
 			switch (obj.getType())
 			{
 				case BufferedImage.TYPE_INT_ARGB:
-					format = ImageEncoding.RGBA;
+					format = ImageFormat.RGBA;
 					image = new byte[height*width*4];
 					index = 0;
 
@@ -591,7 +591,7 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder
 					}
 					break;
 				case BufferedImage.TYPE_INT_ARGB_PRE:
-					format = ImageEncoding.RGBA;
+					format = ImageFormat.RGBA;
 				    image = new byte[height*width*4];
 					index = 0;
 
@@ -609,7 +609,7 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder
 					}
 					break;
 				case BufferedImage.TYPE_INT_BGR:
-					format = ImageEncoding.RGB8;
+					format = ImageFormat.RGB8;
 					image = new byte[height*width*4];
 					index = 0;
 
@@ -627,7 +627,7 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder
 					}
 					break;
 				case BufferedImage.TYPE_INT_RGB:
-					format = ImageEncoding.RGB8;
+					format = ImageFormat.RGB8;
 					image = new byte[height*width*4];
 					index = 0;
 
@@ -656,7 +656,7 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder
 			switch (obj.getType())
 			{
 				case BufferedImage.TYPE_3BYTE_BGR:
-					format = ImageEncoding.RGB8;
+					format = ImageFormat.RGB8;
 					image = new byte[height*width*4];
 					index = 0;
 
@@ -676,7 +676,7 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder
 				case BufferedImage.TYPE_CUSTOM:
 					if (width * height * 3 == pixels.length)
 					{
-						format = ImageEncoding.RGBA;
+						format = ImageFormat.RGBA;
 						image = new byte[height*width*4];
 						index = 0;
 						
@@ -695,7 +695,7 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder
 					}
 					if (width * height * 4 == pixels.length)
 					{
-						format = ImageEncoding.RGBA;
+						format = ImageFormat.RGBA;
 						image = new byte[height*width*4];
 						index = 0;
 						for (int y = 0; y < height; y++)
@@ -713,7 +713,7 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder
 					}
 					break;
 				case BufferedImage.TYPE_4BYTE_ABGR:
-					format = ImageEncoding.RGBA;
+					format = ImageFormat.RGBA;
 					image = new byte[height*width*4];
 					index = 0;
 					
@@ -731,7 +731,7 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder
 					}
 					break;
 				case BufferedImage.TYPE_4BYTE_ABGR_PRE:
-					format = ImageEncoding.RGBA;
+					format = ImageFormat.RGBA;
 					image = new byte[height*width*4];
 					index = 0;
 
@@ -749,7 +749,7 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder
 					}
 					break;
 				case BufferedImage.TYPE_BYTE_BINARY:
-					format = ImageEncoding.IDX8;
+					format = ImageFormat.IDX8;
 					image = new byte[height*width];
 					int depth = obj.getColorModel().getPixelSize();
 					ColorModel model = (obj.getColorModel());
@@ -796,7 +796,7 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder
 					}
 					break;
 				case BufferedImage.TYPE_BYTE_GRAY:
-					format = ImageEncoding.RGB8;
+					format = ImageFormat.RGB8;
 					image = new byte[height*width*4];
 					index = 0;
 
@@ -814,7 +814,7 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder
 					}
 					break;
 				case BufferedImage.TYPE_BYTE_INDEXED:
-					format = ImageEncoding.IDX8;
+					format = ImageFormat.IDX8;
 					image = new byte[height*width];
 					depth = obj.getColorModel().getPixelSize();
 					model = (obj.getColorModel());
@@ -866,7 +866,7 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder
 				case BufferedImage.TYPE_USHORT_565_RGB:
 					throw new DataFormatException(Strings.UNSUPPORTED_IMAGE_FORMAT);
 				case BufferedImage.TYPE_USHORT_GRAY:
-					format = ImageEncoding.RGB8;
+					format = ImageFormat.RGB8;
 					image = new byte[height*width*4];
 					index = 0;
 

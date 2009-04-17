@@ -40,7 +40,6 @@ import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.MovieTag;
 import com.flagstone.transform.movie.Strings;
 import com.flagstone.transform.movie.Types;
-import com.flagstone.transform.movie.text.TextFormat;
 
 /**
  * FontInfo defines the name and face of a font and maps the codes for a given
@@ -75,7 +74,7 @@ public final class FontInfo implements MovieTag
 	
 	private int identifier;
 	private String name;
-	private TextFormat encoding;
+	private CharacterEncoding encoding;
 	private boolean small;
 	private boolean italic;
 	private boolean bold;
@@ -112,7 +111,7 @@ public final class FontInfo implements MovieTag
 
 		/* reserved */coder.readBits(2, false);
 		small = coder.readBits(1, false) != 0;
-		encoding = TextFormat.fromInt(coder.readBits(2, false));
+		encoding = CharacterEncoding.fromInt(coder.readBits(2, false));
 		italic = coder.readBits(1, false) != 0;
 		bold = coder.readBits(1, false) != 0;
 		wideCodes = coder.readBits(1, false) != 0;
@@ -153,7 +152,7 @@ public final class FontInfo implements MovieTag
 		setItalic(italic);
 		setBold(bold);
 		small = false;
-		encoding = TextFormat.UNICODE;
+		encoding = CharacterEncoding.UCS2;
 		codes = new ArrayList<Integer>();
 	}
 
@@ -187,9 +186,9 @@ public final class FontInfo implements MovieTag
 
 	/**
 	 * Returns the encoding scheme used for characters rendered in the font, either
-	 * ASCII, SJIS or UNICODE.
+	 * ASCII, SJIS or UCS2.
 	 */
-	public TextFormat getEncoding()
+	public CharacterEncoding getEncoding()
 	{
 		return encoding;
 	}
@@ -275,10 +274,10 @@ public final class FontInfo implements MovieTag
 	 * Sets the font character encoding.
 	 * 
 	 * @param anEncoding
-	 *            the encoding used to identify characters, either Constants.ASCII,
-	 *            Constants.SJIS or Constants.Unicode.
+	 *            the encoding used to identify characters, either ASCII,
+	 *            SJIS or UCS2.
 	 */
-	public void setEncoding(TextFormat anEncoding)
+	public void setEncoding(CharacterEncoding anEncoding)
 	{
 		encoding = anEncoding;
 	}
