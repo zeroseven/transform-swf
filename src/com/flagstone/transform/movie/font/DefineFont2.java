@@ -274,44 +274,6 @@ public final class DefineFont2 implements DefineTag
 		}
 		identifier = uid;
 	}
-
-	/**
-	 * Add a shape to the array of shapes that represent the glyphs for the font.
-	 * 
-	 * @param obj
-	 *            a shape. Must not be null.
-	 */
-	//TODO(api) Remove ? addCodeForGlyph does same task
-	public DefineFont2 addGlyph(Shape obj)
-	{
-		if (obj == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
-		}
-		shapes.add(obj);
-		return this;
-	}
-
-	/**
-	 * Add a code to the array of character codes.
-	 * 
-	 * There is a one-to-one mapping of the entries in the character codes array 
-	 * with the glyphs array so the index position of a character code is used
-	 * to identify the corresponding glyph  that will be displayed.
-	 * 
-	 * The character codes should be added to the font in ascending order.
-	 * 
-	 * @param aCode
-	 *            the code for a glyph. Must be in the range 0..65535.
-	 */
-	//TODO(api) Remove ? addCodeForGlyph does same task
-	public DefineFont2 addCode(int aCode)
-	{
-		if (aCode < 0 || aCode > 65535) {
-			throw new IllegalArgumentException(Strings.CHARACTER_CODE_OUT_OF_RANGE);
-		}
-		codes.add(aCode);
-		return this;
-	}
 	
 	/**
 	 * Add a character code and the corresponding glyph that will be displayed.
@@ -323,10 +285,18 @@ public final class DefineFont2 implements DefineTag
 	 *            the shape that represents the glyph displayed for the
 	 *            character code.
 	 */
-	public DefineFont2 addCodeForGlyph(int code, Shape obj)
+	public DefineFont2 addGlyph(int code, Shape obj)
 	{
-		addCode(code);
-		addGlyph(obj);
+		if (code < 0 || code > 65535) {
+			throw new IllegalArgumentException(Strings.CHARACTER_CODE_OUT_OF_RANGE);
+		}
+		codes.add(code);
+
+		if (obj == null) {
+			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+		}
+		shapes.add(obj);
+		
 		return this;
 	}
 
