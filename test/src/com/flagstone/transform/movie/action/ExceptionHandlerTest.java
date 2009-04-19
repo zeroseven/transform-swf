@@ -42,7 +42,6 @@ import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.movie.Types;
 
 @SuppressWarnings( { 
 	"PMD.LocalVariableCouldBeFinal",
@@ -64,7 +63,7 @@ public final class ExceptionHandlerTest {
 		finalActions.add(BasicAction.END);
 	}
 	
-	private transient final int type = Types.EXCEPTION_HANDLER;
+	private transient final int type = ActionTypes.EXCEPTION_HANDLER;
 	private transient ExceptionHandler fixture;
 	
 	// Actions forming a function body are not part of the definition so the 
@@ -73,14 +72,14 @@ public final class ExceptionHandlerTest {
 	private transient final byte[] empty = new byte[] { (byte)type, 0x09, 0x00, 
 			0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00,
 			0x00,
-		    Types.END };
+		    ActionTypes.END };
 
 	private transient final byte[] encoded = new byte[] { (byte)type, 0x11, 0x00, 
 			0x07, 0x02, 0x00, 0x02, 0x00, 0x02, 0x00,
 			0x76, 0x61, 0x72, 0x00,
-			Types.ADD, Types.END,
-			Types.SUBTRACT, Types.END,
-			Types.MULTIPLY, Types.END,
+			ActionTypes.ADD, ActionTypes.END,
+			ActionTypes.SUBTRACT, ActionTypes.END,
+			ActionTypes.MULTIPLY, ActionTypes.END,
 			};
 
 	@Test(expected=IllegalArgumentException.class)

@@ -42,7 +42,7 @@ import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.movie.Types;
+
 
 @SuppressWarnings( { 
 	"PMD.LocalVariableCouldBeFinal",
@@ -57,13 +57,13 @@ public final class WithTest {
 		list.add(BasicAction.END);
 	}
 	
-	private transient final int type = Types.WITH;
+	private transient final int type = ActionTypes.WITH;
 	private transient With fixture;
 		
 	private transient final byte[] encoded = new byte[] { (byte)type, 0x02, 0x00, 
 			0x02, 0x00,
-			Types.ADD, 
-			Types.END
+			ActionTypes.ADD, 
+			ActionTypes.END
 			};
 
 	@Test(expected=IllegalArgumentException.class)

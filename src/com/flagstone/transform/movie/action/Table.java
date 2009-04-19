@@ -38,7 +38,7 @@ import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Strings;
-import com.flagstone.transform.movie.Types;
+
 
 //TODO(doc) Review
 /**
@@ -183,7 +183,7 @@ public final class Table implements Action
 
 	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
-		coder.writeByte(Types.TABLE);
+		coder.writeByte(ActionTypes.TABLE);
 		coder.writeWord(length, 2);
 		coder.writeWord(values.size(), 2);
 

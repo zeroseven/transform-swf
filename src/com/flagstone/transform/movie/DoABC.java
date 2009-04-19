@@ -192,10 +192,10 @@ public final class DoABC implements MovieTag {
 		start = coder.getPointer();
 
 		if (length > 62) {
-			coder.writeWord((Types.DO_ABC << 6) | 0x3F, 2);
+			coder.writeWord((MovieTypes.DO_ABC << 6) | 0x3F, 2);
 			coder.writeWord(length, 4);
 		} else {
-			coder.writeWord((Types.DO_ABC << 6) | length, 2);
+			coder.writeWord((MovieTypes.DO_ABC << 6) | length, 2);
 		}
 		end = coder.getPointer() + (length << 3);
 

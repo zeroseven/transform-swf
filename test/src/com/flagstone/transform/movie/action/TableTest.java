@@ -42,7 +42,7 @@ import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.movie.Types;
+
 
 @SuppressWarnings( { 
 	"PMD.LocalVariableCouldBeFinal",
@@ -58,7 +58,7 @@ public final class TableTest {
 		list.add("C");
 	}
 	
-	private transient final int type = Types.TABLE;
+	private transient final int type = ActionTypes.TABLE;
 	private transient Table fixture;
 		
 	private transient final byte[] encoded = new byte[] { (byte)type, 0x08, 0x00, 

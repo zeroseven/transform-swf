@@ -40,7 +40,7 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.MovieTag;
 import com.flagstone.transform.movie.Strings;
-import com.flagstone.transform.movie.Types;
+import com.flagstone.transform.movie.MovieTypes;
 
 //TODO(doc) Description and methods
 public final class ScenesAndLabels implements MovieTag {
@@ -168,10 +168,10 @@ public final class ScenesAndLabels implements MovieTag {
 		start = coder.getPointer();
 
 		if (length > 62) {
-			coder.writeWord((Types.SCENES_AND_LABELS << 6) | 0x3F, 2);
+			coder.writeWord((MovieTypes.SCENES_AND_LABELS << 6) | 0x3F, 2);
 			coder.writeWord(length, 4);
 		} else {
-			coder.writeWord((Types.SCENES_AND_LABELS << 6) | length, 2);
+			coder.writeWord((MovieTypes.SCENES_AND_LABELS << 6) | length, 2);
 		}
 		end = coder.getPointer() + (length << 3);
 

@@ -151,7 +151,7 @@ public final class LimitScript implements MovieTag {
 	}
 
 	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException {
-		coder.writeWord((Types.LIMIT_SCRIPT << 6) | 4, 2);
+		coder.writeWord((MovieTypes.LIMIT_SCRIPT << 6) | 4, 2);
 		coder.writeWord(depth, 2);
 		coder.writeWord(timeout, 2);
 	}

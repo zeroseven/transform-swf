@@ -21,7 +21,7 @@ import com.flagstone.transform.movie.ScalingGrid;
 import com.flagstone.transform.movie.ShowFrame;
 import com.flagstone.transform.movie.SymbolClass;
 import com.flagstone.transform.movie.TabOrder;
-import com.flagstone.transform.movie.Types;
+import com.flagstone.transform.movie.MovieTypes;
 import com.flagstone.transform.movie.button.ButtonColorTransform;
 import com.flagstone.transform.movie.button.ButtonSound;
 import com.flagstone.transform.movie.button.DefineButton;
@@ -79,186 +79,186 @@ public final class MovieFactory implements SWFFactory<MovieTag> {
 		MovieTag obj;
 
 		switch (coder.scanUnsignedShort() >>> 6) {
-		case Types.SHOW_FRAME:
+		case MovieTypes.SHOW_FRAME:
 			obj = ShowFrame.getInstance();
 			coder.adjustPointer(16);
 			break;
-		case Types.DEFINE_SHAPE:
+		case MovieTypes.DEFINE_SHAPE:
 			obj = new DefineShape(coder, context);
 			break;
-		case Types.PLACE:
+		case MovieTypes.PLACE:
 			obj = new Place(coder, context);
 			break;
-		case Types.REMOVE:
+		case MovieTypes.REMOVE:
 			obj = new Remove(coder, context);
 			break;
-		case Types.DEFINE_JPEG_IMAGE:
+		case MovieTypes.DEFINE_JPEG_IMAGE:
 			obj = new DefineJPEGImage(coder, context);
 			break;
-		case Types.DEFINE_BUTTON:
+		case MovieTypes.DEFINE_BUTTON:
 			obj = new DefineButton(coder, context);
 			break;
-		case Types.JPEG_TABLES:
+		case MovieTypes.JPEG_TABLES:
 			obj = new JPEGEncodingTable(coder, context);
 			break;
-		case Types.SET_BACKGROUND_COLOR:
+		case MovieTypes.SET_BACKGROUND_COLOR:
 			obj = new Background(coder, context);
 			break;
-		case Types.DEFINE_FONT:
+		case MovieTypes.DEFINE_FONT:
 			obj = new DefineFont(coder, context);
 			break;
-		case Types.DEFINE_TEXT:
+		case MovieTypes.DEFINE_TEXT:
 			obj = new DefineText(coder, context);
 			break;
-		case Types.DO_ACTION:
+		case MovieTypes.DO_ACTION:
 			obj = new DoAction(coder, context);
 			break;
-		case Types.FONT_INFO:
+		case MovieTypes.FONT_INFO:
 			obj = new FontInfo(coder, context);
 			break;
-		case Types.DEFINE_SOUND:
+		case MovieTypes.DEFINE_SOUND:
 			obj = new DefineSound(coder, context);
 			break;
-		case Types.START_SOUND:
+		case MovieTypes.START_SOUND:
 			obj = new StartSound(coder, context);
 			break;
-		case Types.SOUND_STREAM_HEAD:
+		case MovieTypes.SOUND_STREAM_HEAD:
 			obj = new SoundStreamHead(coder, context);
 			break;
-		case Types.SOUND_STREAM_BLOCK:
+		case MovieTypes.SOUND_STREAM_BLOCK:
 			obj = new SoundStreamBlock(coder, context);
 			break;
-		case Types.BUTTON_SOUND:
+		case MovieTypes.BUTTON_SOUND:
 			obj = new ButtonSound(coder, context);
 			break;
-		case Types.DEFINE_IMAGE:
+		case MovieTypes.DEFINE_IMAGE:
 			obj = new DefineImage(coder, context);
 			break;
-		case Types.DEFINE_JPEG_IMAGE_2:
+		case MovieTypes.DEFINE_JPEG_IMAGE_2:
 			obj = new DefineJPEGImage2(coder, context);
 			break;
-		case Types.DEFINE_SHAPE_2:
+		case MovieTypes.DEFINE_SHAPE_2:
 			obj = new DefineShape2(coder, context);
 			break;
-		case Types.BUTTON_COLOR_TRANSFORM:
+		case MovieTypes.BUTTON_COLOR_TRANSFORM:
 			obj = new ButtonColorTransform(coder, context);
 			break;
-		case Types.PROTECT:
+		case MovieTypes.PROTECT:
 			obj = new Protect(coder, context);
 			break;
-		case Types.FREE:
+		case MovieTypes.FREE:
 			obj = new Free(coder, context);
 			break;
-		case Types.PLACE_2:
+		case MovieTypes.PLACE_2:
 			obj = new Place2(coder, context);
 			break;
-		case Types.REMOVE_2:
+		case MovieTypes.REMOVE_2:
 			obj = new Remove2(coder, context);
 			break;
-		case Types.DEFINE_SHAPE_3:
+		case MovieTypes.DEFINE_SHAPE_3:
 			obj = new DefineShape3(coder, context);
 			break;
-		case Types.DEFINE_TEXT_2:
+		case MovieTypes.DEFINE_TEXT_2:
 			obj = new DefineText2(coder, context);
 			break;
-		case Types.DEFINE_BUTTON_2:
+		case MovieTypes.DEFINE_BUTTON_2:
 			obj = new DefineButton2(coder, context);
 			break;
-		case Types.DEFINE_JPEG_IMAGE_3:
+		case MovieTypes.DEFINE_JPEG_IMAGE_3:
 			obj = new DefineJPEGImage3(coder, context);
 			break;
-		case Types.DEFINE_IMAGE_2:
+		case MovieTypes.DEFINE_IMAGE_2:
 			obj = new DefineImage2(coder, context);
 			break;
-		case Types.DEFINE_MOVIE_CLIP:
+		case MovieTypes.DEFINE_MOVIE_CLIP:
 			obj = new DefineMovieClip(coder, context);
 			break;
-		case Types.FRAME_LABEL:
+		case MovieTypes.FRAME_LABEL:
 			obj = new FrameLabel(coder, context);
 			break;
-		case Types.SOUND_STREAM_HEAD_2:
+		case MovieTypes.SOUND_STREAM_HEAD_2:
 			obj = new SoundStreamHead2(coder, context);
 			break;
-		case Types.DEFINE_MORPH_SHAPE:
+		case MovieTypes.DEFINE_MORPH_SHAPE:
 			obj = new DefineMorphShape(coder, context);
 			break;
-		case Types.DEFINE_FONT_2:
+		case MovieTypes.DEFINE_FONT_2:
 			obj = new DefineFont2(coder, context);
 			break;
-		case Types.PATHS_ARE_POSTSCRIPT:
+		case MovieTypes.PATHS_ARE_POSTSCRIPT:
 			obj = PathsArePostscript.getInstance();
 			coder.adjustPointer(16);
 			break;
-		case Types.DEFINE_TEXT_FIELD:
+		case MovieTypes.DEFINE_TEXT_FIELD:
 			obj = new DefineTextField(coder, context);
 			break;
-		case Types.QUICKTIME_MOVIE:
+		case MovieTypes.QUICKTIME_MOVIE:
 			obj = new QuicktimeMovie(coder, context);
 			break;
-		case Types.SERIAL_NUMBER:
+		case MovieTypes.SERIAL_NUMBER:
 			obj = new SerialNumber(coder, context);
 			break;
-		case Types.ENABLE_DEBUGGER:
+		case MovieTypes.ENABLE_DEBUGGER:
 			obj = new EnableDebugger(coder, context);
 			break;
-		case Types.EXPORT:
+		case MovieTypes.EXPORT:
 			obj = new Export(coder, context);
 			break;
-		case Types.IMPORT:
+		case MovieTypes.IMPORT:
 			obj = new Import(coder, context);
 			break;
-		case Types.INITIALIZE:
+		case MovieTypes.INITIALIZE:
 			obj = new InitializeMovieClip(coder, context);
 			break;
-		case Types.DEFINE_VIDEO:
+		case MovieTypes.DEFINE_VIDEO:
 			obj = new DefineVideo(coder, context);
 			break;
-		case Types.VIDEO_FRAME:
+		case MovieTypes.VIDEO_FRAME:
 			obj = new VideoFrame(coder, context);
 			break;
-		case Types.FONT_INFO_2:
+		case MovieTypes.FONT_INFO_2:
 			obj = new FontInfo2(coder, context);
 			break;
-		case Types.ENABLE_DEBUGGER_2:
+		case MovieTypes.ENABLE_DEBUGGER_2:
 			obj = new EnableDebugger2(coder, context);
 			break;
-		case Types.LIMIT_SCRIPT:
+		case MovieTypes.LIMIT_SCRIPT:
 			obj = new LimitScript(coder, context);
 			break;
-		case Types.TAB_ORDER:
+		case MovieTypes.TAB_ORDER:
 			obj = new TabOrder(coder, context);
 			break;
-		case Types.FILE_ATTRIBUTES:
+		case MovieTypes.FILE_ATTRIBUTES:
 			obj = new FileAttributes(coder, context);
 			break;
-		case Types.PLACE_3:
+		case MovieTypes.PLACE_3:
 			obj = new Place3(coder, context);
 			break;
-		case Types.IMPORT_2:
+		case MovieTypes.IMPORT_2:
 			obj = new Import2(coder, context);
 			break;
-		case Types.SYMBOL:
+		case MovieTypes.SYMBOL:
 			obj = new SymbolClass(coder, context);
 			break;
-		case Types.METADATA:
+		case MovieTypes.METADATA:
 			obj = new MovieMetaData(coder, context);
 			break;
-		case Types.DEFINE_SCALING_GRID:
+		case MovieTypes.DEFINE_SCALING_GRID:
 			obj = new ScalingGrid(coder, context);
 			break;
-		case Types.SCENES_AND_LABELS:
+		case MovieTypes.SCENES_AND_LABELS:
 			obj = new ScenesAndLabels(coder, context);
 			break;
-		case Types.DO_ABC:
+		case MovieTypes.DO_ABC:
 			obj = new DoABC(coder, context);
 			break;
-		case Types.DEFINE_BINARY_DATA:
+		case MovieTypes.DEFINE_BINARY_DATA:
 			obj = new DefineData(coder, context);
 			break;
-		case Types.DEFINE_FONT_NAME:
+		case MovieTypes.DEFINE_FONT_NAME:
 			obj = new DefineFontName(coder, context);
 			break;
-		case Types.START_SOUND_2:
+		case MovieTypes.START_SOUND_2:
 			obj = new StartSound2(coder, context);
 			break;
 		default:

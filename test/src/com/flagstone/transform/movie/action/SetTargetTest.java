@@ -39,7 +39,7 @@ import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.movie.Types;
+
 
 @SuppressWarnings( { 
 	"PMD.LocalVariableCouldBeFinal",
@@ -47,7 +47,7 @@ import com.flagstone.transform.movie.Types;
 })
 public final class SetTargetTest {
 	
-	private transient final int type = Types.SET_TARGET;
+	private transient final int type = ActionTypes.SET_TARGET;
 	private transient final String target = "ABC123";
 	
 	private transient SetTarget fixture;

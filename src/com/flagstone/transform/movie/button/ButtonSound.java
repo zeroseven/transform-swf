@@ -36,7 +36,7 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.MovieTag;
 import com.flagstone.transform.movie.Strings;
-import com.flagstone.transform.movie.Types;
+import com.flagstone.transform.movie.MovieTypes;
 import com.flagstone.transform.movie.sound.SoundInfo;
 
 //TODO(doc) Review
@@ -246,10 +246,10 @@ public final class ButtonSound implements MovieTag
 		start = coder.getPointer();
 
 		if (length > 62) {
-			coder.writeWord((Types.BUTTON_SOUND << 6) | 0x3F, 2);
+			coder.writeWord((MovieTypes.BUTTON_SOUND << 6) | 0x3F, 2);
 			coder.writeWord(length, 4);
 		} else {
-			coder.writeWord((Types.BUTTON_SOUND << 6) | length, 2);
+			coder.writeWord((MovieTypes.BUTTON_SOUND << 6) | length, 2);
 		}
 		end = coder.getPointer() + (length << 3);
 	

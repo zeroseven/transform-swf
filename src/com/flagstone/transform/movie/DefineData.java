@@ -158,10 +158,10 @@ public final class DefineData implements DefineTag {
 		start = coder.getPointer();
 
 		if (length > 62) {
-			coder.writeWord((Types.DEFINE_BINARY_DATA << 6) | 0x3F, 2);
+			coder.writeWord((MovieTypes.DEFINE_BINARY_DATA << 6) | 0x3F, 2);
 			coder.writeWord(length, 4);
 		} else {
-			coder.writeWord((Types.DEFINE_BINARY_DATA << 6) | length, 2);
+			coder.writeWord((MovieTypes.DEFINE_BINARY_DATA << 6) | length, 2);
 		}
 		end = coder.getPointer() + (length << 3);
 

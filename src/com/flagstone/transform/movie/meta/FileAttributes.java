@@ -35,7 +35,7 @@ import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.MovieTag;
-import com.flagstone.transform.movie.Types;
+import com.flagstone.transform.movie.MovieTypes;
 
 //TODO(doc) Description and methods
 public final class FileAttributes implements MovieTag {
@@ -111,7 +111,7 @@ public final class FileAttributes implements MovieTag {
 	}
 
 	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException {
-		coder.writeWord((Types.FILE_ATTRIBUTES << 6) | 4, 2);
+		coder.writeWord((MovieTypes.FILE_ATTRIBUTES << 6) | 4, 2);
 		coder.writeByte(hasMetaData | hasActionscript | useNetwork);
 		coder.writeWord(0, 3);
 	}

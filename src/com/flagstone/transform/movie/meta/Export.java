@@ -39,7 +39,7 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.MovieTag;
 import com.flagstone.transform.movie.Strings;
-import com.flagstone.transform.movie.Types;
+import com.flagstone.transform.movie.MovieTypes;
 
 /**
  * Export is used to export one or more shapes and other objects so they can be 
@@ -189,10 +189,10 @@ public final class Export implements MovieTag
 	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		if (length > 62) {
-			coder.writeWord((Types.EXPORT << 6) | 0x3F, 2);
+			coder.writeWord((MovieTypes.EXPORT << 6) | 0x3F, 2);
 			coder.writeWord(length, 4);
 		} else {
-			coder.writeWord((Types.EXPORT << 6) | length, 2);
+			coder.writeWord((MovieTypes.EXPORT << 6) | length, 2);
 		}
 		
 		coder.writeWord(objects.size(), 2);

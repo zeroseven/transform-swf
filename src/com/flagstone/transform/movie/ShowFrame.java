@@ -95,7 +95,7 @@ public final class ShowFrame implements MovieTag {
 	}
 
 	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException {
-		coder.writeWord((Types.SHOW_FRAME << 6) | 0, 2);
+		coder.writeWord((MovieTypes.SHOW_FRAME << 6) | 0, 2);
 	}
 
 	public void decode(final SWFDecoder coder, final SWFContext context) throws CoderException {

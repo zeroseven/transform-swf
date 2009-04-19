@@ -44,6 +44,7 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.datatype.ColorTransform;
 import com.flagstone.transform.movie.datatype.CoordTransform;
+import com.flagstone.transform.movie.video.ImageBlock;
 
 @SuppressWarnings( { 
 	"PMD.LocalVariableCouldBeFinal",

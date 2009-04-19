@@ -33,7 +33,6 @@ package com.flagstone.transform.movie.action;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.movie.Types;
 
 /**
  * <p>Call is used to execute the actions previously assigned to a given frame
@@ -68,7 +67,7 @@ public final class Call implements Action
 	}
 
 	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException {
-		coder.writeByte(Types.CALL);
+		coder.writeByte(ActionTypes.CALL);
 		coder.writeByte(0);
 		coder.writeByte(0);
 	}

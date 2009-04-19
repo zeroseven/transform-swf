@@ -38,7 +38,7 @@ import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Strings;
-import com.flagstone.transform.movie.Types;
+
 
 //TODO(doc) Review
 /**
@@ -386,7 +386,7 @@ public final class Push implements Action {
 
 	//TODO(code) throw a Coder exception if an unexpected object is found
 	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException {
-		coder.writeByte(Types.PUSH);
+		coder.writeByte(ActionTypes.PUSH);
 		coder.writeWord(length, 2);
 
 		for (Object anObject : values) {

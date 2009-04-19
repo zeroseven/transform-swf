@@ -37,7 +37,6 @@ import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.movie.Types;
 
 //TODO(doc) Review
 /**
@@ -281,7 +280,7 @@ public final class GetUrl2 implements Action
 
 	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
-		coder.writeByte(Types.GET_URL_2);
+		coder.writeByte(ActionTypes.GET_URL_2);
 		coder.writeWord(1, 2);
 		coder.writeWord(request.value, 1);
 	}

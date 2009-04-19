@@ -40,7 +40,7 @@ import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.movie.Types;
+
 
 @SuppressWarnings( { 
 	"PMD.LocalVariableCouldBeFinal",
@@ -48,7 +48,7 @@ import com.flagstone.transform.movie.Types;
 })
 public final class GetUrl2Test {
 	
-	private transient final int type = Types.GET_URL_2;
+	private transient final int type = ActionTypes.GET_URL_2;
 	private transient final GetUrl2.Request request = GetUrl2.Request.MOVIE_TO_LEVEL;
 	
 	private transient GetUrl2 fixture;

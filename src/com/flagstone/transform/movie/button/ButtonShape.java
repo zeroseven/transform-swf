@@ -41,7 +41,7 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Encodeable;
 import com.flagstone.transform.movie.Strings;
-import com.flagstone.transform.movie.Types;
+import com.flagstone.transform.movie.MovieTypes;
 import com.flagstone.transform.movie.datatype.Blend;
 import com.flagstone.transform.movie.datatype.ColorTransform;
 import com.flagstone.transform.movie.datatype.CoordTransform;
@@ -100,7 +100,7 @@ public final class ButtonShape implements Encodeable
 		layer = coder.readWord(2, false);
 		transform = new CoordTransform(coder);
 
-		if (context.getType() == Types.DEFINE_BUTTON_2) {
+		if (context.getType() == MovieTypes.DEFINE_BUTTON_2) {
 			colorTransform = new ColorTransform(coder, context);
 		}
 	}
@@ -351,7 +351,7 @@ public final class ButtonShape implements Encodeable
 	{
 		int length = 5 + transform.prepareToEncode(coder, context);
 
-		if (context.getType() == Types.DEFINE_BUTTON_2) {
+		if (context.getType() == MovieTypes.DEFINE_BUTTON_2) {
 			length += colorTransform.prepareToEncode(coder, context);
 		}
 
@@ -368,7 +368,7 @@ public final class ButtonShape implements Encodeable
 		coder.writeWord(layer, 2);
 		transform.encode(coder, context);
 
-		if (context.getType() == Types.DEFINE_BUTTON_2) {
+		if (context.getType() == MovieTypes.DEFINE_BUTTON_2) {
 			colorTransform.encode(coder, context);
 		}
 	}

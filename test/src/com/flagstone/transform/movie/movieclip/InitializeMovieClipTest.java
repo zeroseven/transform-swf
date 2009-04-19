@@ -42,8 +42,8 @@ import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.movie.Types;
 import com.flagstone.transform.movie.action.Action;
+import com.flagstone.transform.movie.action.ActionTypes;
 import com.flagstone.transform.movie.action.BasicAction;
 
 @SuppressWarnings( { 
@@ -63,10 +63,10 @@ public final class InitializeMovieClipTest {
 	private transient InitializeMovieClip fixture;
 		
 	private transient final byte[] encoded = new byte[] { (byte)0xC4, 0x0E,
-			0x01, 0x00, Types.ADD, Types.END };
+			0x01, 0x00, ActionTypes.ADD, ActionTypes.END };
 
 	private transient final byte[] extended = new byte[] { (byte)0xFF, 0x0E,
-			0x04, 0x00, 0x00, 0x00, 0x01, 0x00, Types.ADD, Types.END };
+			0x04, 0x00, 0x00, 0x00, 0x01, 0x00, ActionTypes.ADD, ActionTypes.END };
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForIdentifierWithLowerBound() {

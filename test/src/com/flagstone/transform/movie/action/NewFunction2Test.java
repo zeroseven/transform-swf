@@ -45,7 +45,7 @@ import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.movie.Types;
+
 
 @SuppressWarnings( { 
 	"PMD.LocalVariableCouldBeFinal",
@@ -65,7 +65,7 @@ public final class NewFunction2Test {
 		actions.add(BasicAction.END);
 	}
 	
-	private transient final int type = Types.NEW_FUNCTION_2;
+	private transient final int type = ActionTypes.NEW_FUNCTION_2;
 	private transient NewFunction2 fixture;
 	
 	// Actions forming a function body are not part of the definition so the 
@@ -74,14 +74,14 @@ public final class NewFunction2Test {
 	private transient final byte[] empty = new byte[] { (byte)type, 0x08, 0x00, 
 			0x00, 
 			0x00, 0x00, 0x00, 0x00, 0x00,
-			0x01, 0x00, Types.END };
+			0x01, 0x00, ActionTypes.END };
 
 	private transient final byte[] encoded = new byte[] { (byte)type, 0x16, 0x00, 
 			0x66, 0x75, 0x6E, 0x63, 0x74, 0x69, 0x6F, 0x6E, 0x00, 
 			0x02, 0x00, 0x00, 0x00, 0x00,
 			0x01, 0x61, 0x00, 
 			0x02, 0x62, 0x00,
-			0x02, 0x00, Types.ADD, Types.END };
+			0x02, 0x00, ActionTypes.ADD, ActionTypes.END };
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAddNullArgument() {

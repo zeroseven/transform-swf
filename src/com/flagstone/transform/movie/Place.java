@@ -301,7 +301,7 @@ public final class Place implements MovieTag
 	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();
-		coder.writeWord((Types.PLACE << 6) | length, 2);
+		coder.writeWord((MovieTypes.PLACE << 6) | length, 2);
 		end = coder.getPointer() + (length << 3); //TODO(optimise) end = start +16
 
 		coder.writeWord(identifier, 2);

@@ -40,7 +40,7 @@ import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.movie.Types;
+
 
 @SuppressWarnings( { 
 	"PMD.LocalVariableCouldBeFinal",
@@ -48,7 +48,7 @@ import com.flagstone.transform.movie.Types;
 })
 public final class GotoFrameTest {
 	
-	private transient final int type = Types.GOTO_FRAME;
+	private transient final int type = ActionTypes.GOTO_FRAME;
 	private transient final int number = 1;
 	
 	private transient GotoFrame fixture;

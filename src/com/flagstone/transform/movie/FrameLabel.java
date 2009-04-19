@@ -194,10 +194,10 @@ public final class FrameLabel implements MovieTag {
 	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException {
 
 		if (length > 62) {
-			coder.writeWord((Types.FRAME_LABEL << 6) | 0x3F, 2);
+			coder.writeWord((MovieTypes.FRAME_LABEL << 6) | 0x3F, 2);
 			coder.writeWord(length, 4);
 		} else {
-			coder.writeWord((Types.FRAME_LABEL << 6) | length, 2);
+			coder.writeWord((MovieTypes.FRAME_LABEL << 6) | length, 2);
 		}
 
 		coder.writeString(label);

@@ -39,7 +39,6 @@ import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Strings;
-import com.flagstone.transform.movie.Types;
 
 //TODO(doc) Review
 /**
@@ -460,7 +459,7 @@ public final class ExceptionHandler implements Action
 	//TODO(optimise)
 	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
-		coder.writeByte(Types.EXCEPTION_HANDLER);
+		coder.writeByte(ActionTypes.EXCEPTION_HANDLER);
 		coder.writeWord(length, 2);
 		coder.writeBits(0, 5);
 		coder.writeBits(variable.length() > 0 ? 1 : 0, 1);

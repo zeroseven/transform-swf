@@ -111,7 +111,7 @@ public final class Free implements MovieTag {
 	}
 
 	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException {
-		coder.writeWord((Types.FREE << 6) | 2, 2);
+		coder.writeWord((MovieTypes.FREE << 6) | 2, 2);
 		coder.writeWord(identifier, 2);
 	}
 }

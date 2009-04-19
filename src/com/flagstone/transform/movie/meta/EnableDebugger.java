@@ -36,7 +36,7 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.MovieTag;
 import com.flagstone.transform.movie.Strings;
-import com.flagstone.transform.movie.Types;
+import com.flagstone.transform.movie.MovieTypes;
 
 /**
  * Enables a movie to be debugged when played using the Flash authoring tool,
@@ -131,10 +131,10 @@ public final class EnableDebugger implements MovieTag
 	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		if (length > 62) {
-			coder.writeWord((Types.ENABLE_DEBUGGER << 6) | 0x3F, 2);
+			coder.writeWord((MovieTypes.ENABLE_DEBUGGER << 6) | 0x3F, 2);
 			coder.writeWord(length, 4);
 		} else {
-			coder.writeWord((Types.ENABLE_DEBUGGER << 6) | length, 2);
+			coder.writeWord((MovieTypes.ENABLE_DEBUGGER << 6) | length, 2);
 		}
 		
 		coder.writeWord(0, 2);

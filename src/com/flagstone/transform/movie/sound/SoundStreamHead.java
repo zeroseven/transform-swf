@@ -36,7 +36,7 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.MovieTag;
 import com.flagstone.transform.movie.Strings;
-import com.flagstone.transform.movie.Types;
+import com.flagstone.transform.movie.MovieTypes;
 import com.flagstone.transform.video.SoundFormat;
 
 /**
@@ -442,10 +442,10 @@ public final class SoundStreamHead implements MovieTag
 		start = coder.getPointer();
 
 		if (length >= 63) {
-			coder.writeWord((Types.SOUND_STREAM_HEAD << 6) | 0x3F, 2);
+			coder.writeWord((MovieTypes.SOUND_STREAM_HEAD << 6) | 0x3F, 2);
 			coder.writeWord(length, 4);
 		} else {
-			coder.writeWord((Types.SOUND_STREAM_HEAD << 6) | length, 2);
+			coder.writeWord((MovieTypes.SOUND_STREAM_HEAD << 6) | length, 2);
 		}
 		end = coder.getPointer() + (length << 3);
 		

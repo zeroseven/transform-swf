@@ -124,7 +124,7 @@ public final class Background implements MovieTag {
 	}
 
 	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException {
-		coder.writeWord((Types.SET_BACKGROUND_COLOR << 6) | 3, 2);
+		coder.writeWord((MovieTypes.SET_BACKGROUND_COLOR << 6) | 3, 2);
 		color.encode(coder, context);
 	}
 }

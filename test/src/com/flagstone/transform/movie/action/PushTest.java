@@ -42,7 +42,7 @@ import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.movie.Types;
+
 
 @SuppressWarnings( { 
 	"PMD.LocalVariableCouldBeFinal",
@@ -65,7 +65,7 @@ public final class PushTest {
 		values.add(new TableIndex(256));
 	}
 
-	private transient final int type = Types.PUSH;
+	private transient final int type = ActionTypes.PUSH;
 	private transient Push fixture;
 	
 	// Values forming a function body are not part of the definition so the 

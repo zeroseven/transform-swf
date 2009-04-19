@@ -39,7 +39,7 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.MovieTag;
 import com.flagstone.transform.movie.Strings;
-import com.flagstone.transform.movie.Types;
+import com.flagstone.transform.movie.MovieTypes;
 
 //TODO(doc) Review
 
@@ -399,10 +399,10 @@ public final class FontInfo2 implements MovieTag
 		start = coder.getPointer();
 
 		if (length >= 63) {
-			coder.writeWord((Types.FONT_INFO_2 << 6) | 0x3F, 2);
+			coder.writeWord((MovieTypes.FONT_INFO_2 << 6) | 0x3F, 2);
 			coder.writeWord(length, 4);
 		} else {
-			coder.writeWord((Types.FONT_INFO_2 << 6) | length, 2);
+			coder.writeWord((MovieTypes.FONT_INFO_2 << 6) | length, 2);
 		}
 		end = coder.getPointer() + (length << 3);
 

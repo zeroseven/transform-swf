@@ -43,7 +43,7 @@ import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Strings;
-import com.flagstone.transform.movie.Types;
+
 
 //TODO(doc) Review
 /**
@@ -462,7 +462,7 @@ public final class NewFunction2 implements Action
 	//TODO(optimise)
 	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
-		coder.writeWord(Types.NEW_FUNCTION_2, 1);
+		coder.writeWord(ActionTypes.NEW_FUNCTION_2, 1);
 		coder.writeWord(length - actionsLength, 2);
 
 		coder.writeString(name);

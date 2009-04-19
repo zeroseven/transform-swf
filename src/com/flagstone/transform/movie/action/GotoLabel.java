@@ -36,7 +36,7 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.FrameLabel;
 import com.flagstone.transform.movie.Strings;
-import com.flagstone.transform.movie.Types;
+
 
 
 /**
@@ -121,7 +121,7 @@ public final class GotoLabel implements Action
 
 	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
-		coder.writeByte(Types.GOTO_LABEL);
+		coder.writeByte(ActionTypes.GOTO_LABEL);
 		coder.writeWord(length, 2);
 		coder.writeString(label);
 	}

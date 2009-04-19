@@ -36,7 +36,7 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.MovieTag;
 import com.flagstone.transform.movie.Strings;
-import com.flagstone.transform.movie.Types;
+import com.flagstone.transform.movie.MovieTypes;
 
 /**
  * The QuicktimeMovie defines the path to an Quicktime movie to be played.
@@ -132,10 +132,10 @@ public final class QuicktimeMovie implements MovieTag
 		start = coder.getPointer();
 
 		if (length > 62) {
-			coder.writeWord((Types.QUICKTIME_MOVIE << 6) | 0x3F, 2);
+			coder.writeWord((MovieTypes.QUICKTIME_MOVIE << 6) | 0x3F, 2);
 			coder.writeWord(length, 4);
 		} else {
-			coder.writeWord((Types.QUICKTIME_MOVIE << 6) | length, 2);
+			coder.writeWord((MovieTypes.QUICKTIME_MOVIE << 6) | length, 2);
 		}
 		end = coder.getPointer() + (length << 3);
 

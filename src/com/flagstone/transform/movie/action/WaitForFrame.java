@@ -35,7 +35,7 @@ import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Strings;
-import com.flagstone.transform.movie.Types;
+
 
 //TODO(doc) Review
 /**
@@ -160,7 +160,7 @@ public final class WaitForFrame implements Action
 
 	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
-		coder.writeByte(Types.WAIT_FOR_FRAME);
+		coder.writeByte(ActionTypes.WAIT_FOR_FRAME);
 		coder.writeWord(3, 2);
 		coder.writeWord(frameNumber, 2);
 		coder.writeWord(actionCount, 1);

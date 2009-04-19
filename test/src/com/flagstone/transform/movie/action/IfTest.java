@@ -40,7 +40,7 @@ import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.movie.Types;
+
 
 @SuppressWarnings( { 
 	"PMD.LocalVariableCouldBeFinal",
@@ -48,7 +48,7 @@ import com.flagstone.transform.movie.Types;
 })
 public final class IfTest {
 	
-	private transient final int type = Types.IF;
+	private transient final int type = ActionTypes.IF;
 	private transient final int offset = 1;
 	
 	private transient If fixture;

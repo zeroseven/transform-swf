@@ -40,7 +40,7 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.DefineTag;
 import com.flagstone.transform.movie.Strings;
-import com.flagstone.transform.movie.Types;
+import com.flagstone.transform.movie.MovieTypes;
 import com.flagstone.transform.movie.datatype.Bounds;
 import com.flagstone.transform.movie.shape.Shape;
 
@@ -834,10 +834,10 @@ public final class DefineFont2 implements DefineTag
 		start = coder.getPointer();
 
 		if (length >= 63) {
-			coder.writeWord((Types.DEFINE_FONT_2 << 6) | 0x3F, 2);
+			coder.writeWord((MovieTypes.DEFINE_FONT_2 << 6) | 0x3F, 2);
 			coder.writeWord(length, 4);
 		} else {
-			coder.writeWord((Types.DEFINE_FONT_2 << 6) | length, 2);
+			coder.writeWord((MovieTypes.DEFINE_FONT_2 << 6) | length, 2);
 		}
 		end = coder.getPointer() + (length << 3);
 		

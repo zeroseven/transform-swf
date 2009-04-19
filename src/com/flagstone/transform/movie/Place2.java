@@ -707,10 +707,10 @@ public final class Place2 implements MovieTag
 		start = coder.getPointer();
 		
 		if (length >= 63) {
-			coder.writeWord((Types.PLACE_2 << 6) | 0x3F, 2);
+			coder.writeWord((MovieTypes.PLACE_2 << 6) | 0x3F, 2);
 			coder.writeWord(length, 4);
 		} else {
-			coder.writeWord((Types.PLACE_2 << 6) | length, 2);
+			coder.writeWord((MovieTypes.PLACE_2 << 6) | length, 2);
 		}
 		end = coder.getPointer() + (length << 3);
 		

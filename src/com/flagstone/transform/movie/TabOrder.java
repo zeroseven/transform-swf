@@ -143,7 +143,7 @@ public final class TabOrder implements MovieTag {
 	}
 
 	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException {
-		coder.writeWord((Types.TAB_ORDER << 6) | 4, 2);
+		coder.writeWord((MovieTypes.TAB_ORDER << 6) | 4, 2);
 		coder.writeWord(layer, 2);
 		coder.writeWord(index, 2);
 	}

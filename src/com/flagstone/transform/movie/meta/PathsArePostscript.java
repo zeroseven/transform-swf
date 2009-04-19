@@ -35,7 +35,7 @@ import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.MovieTag;
-import com.flagstone.transform.movie.Types;
+import com.flagstone.transform.movie.MovieTypes;
 
 /**
  * The PathsArePostscript class is used to notify the Flash Player that the
@@ -82,7 +82,7 @@ public final class PathsArePostscript implements MovieTag
 
 	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
-		coder.writeWord((Types.PATHS_ARE_POSTSCRIPT << 6) | 0, 2);
+		coder.writeWord((MovieTypes.PATHS_ARE_POSTSCRIPT << 6) | 0, 2);
 	}
 
 	public void decode(final SWFDecoder coder, final SWFContext context) throws CoderException

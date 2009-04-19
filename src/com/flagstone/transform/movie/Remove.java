@@ -152,7 +152,7 @@ public final class Remove implements MovieTag {
 	}
 
 	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException {
-		coder.writeWord((Types.REMOVE << 6) | 4, 2);
+		coder.writeWord((MovieTypes.REMOVE << 6) | 4, 2);
 		coder.writeWord(identifier, 2);
 		coder.writeWord(layer, 2);
 	}

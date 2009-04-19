@@ -179,10 +179,10 @@ public final class SymbolClass implements MovieTag {
 		start = coder.getPointer();
 		
 		if (length > 62) {
-			coder.writeWord((Types.SYMBOL << 6) | 0x3F, 2);
+			coder.writeWord((MovieTypes.SYMBOL << 6) | 0x3F, 2);
 			coder.writeWord(length, 4);
 		} else {
-			coder.writeWord((Types.SYMBOL << 6) | length, 2);
+			coder.writeWord((MovieTypes.SYMBOL << 6) | length, 2);
 		}
 		end = coder.getPointer() + (length << 3);
 

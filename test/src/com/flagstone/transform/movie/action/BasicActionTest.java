@@ -34,7 +34,7 @@ import org.junit.Test;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.movie.Types;
+
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertSame;
@@ -48,7 +48,7 @@ public final class BasicActionTest {
 	
 	private transient BasicAction fixture = BasicAction.NEXT_FRAME;
 
-	private transient final byte[] encoded = new byte[] { Types.NEXT_FRAME };
+	private transient final byte[] encoded = new byte[] { ActionTypes.NEXT_FRAME };
 	
 	@Test
 	public void checkCopy() {

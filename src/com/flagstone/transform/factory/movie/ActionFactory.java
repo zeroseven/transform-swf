@@ -3,7 +3,7 @@ package com.flagstone.transform.factory.movie;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
-import com.flagstone.transform.movie.Types;
+import com.flagstone.transform.movie.action.ActionTypes;
 import com.flagstone.transform.movie.action.Action;
 import com.flagstone.transform.movie.action.ActionObject;
 import com.flagstone.transform.movie.action.BasicAction;
@@ -43,59 +43,59 @@ public final class ActionFactory implements SWFFactory<Action> {
 			action = BasicAction.fromInt(coder.readByte());
 		} else {
 			switch (type) {
-			case Types.GET_URL:
+			case ActionTypes.GET_URL:
 				action = new GetUrl(coder, context);
 				break;
-			case Types.GOTO_FRAME:
+			case ActionTypes.GOTO_FRAME:
 				action = new GotoFrame(coder, context);
 				break;
-			case Types.GOTO_LABEL:
+			case ActionTypes.GOTO_LABEL:
 				action = new GotoLabel(coder, context);
 				break;
-			case Types.SET_TARGET:
+			case ActionTypes.SET_TARGET:
 				action = new SetTarget(coder, context);
 				break;
-			case Types.WAIT_FOR_FRAME:
+			case ActionTypes.WAIT_FOR_FRAME:
 				action = new WaitForFrame(coder, context);
 				break;
-			case Types.CALL:
+			case ActionTypes.CALL:
 				action = Call.getInstance();
 				coder.adjustPointer(24);
 				break;
-			case Types.PUSH:
+			case ActionTypes.PUSH:
 				action = new Push(coder, context);
 				break;
-			case Types.WAIT_FOR_FRAME_2:
+			case ActionTypes.WAIT_FOR_FRAME_2:
 				action = new WaitForFrame2(coder, context);
 				break;
-			case Types.JUMP:
+			case ActionTypes.JUMP:
 				action = new Jump(coder, context);
 				break;
-			case Types.IF:
+			case ActionTypes.IF:
 				action = new If(coder, context);
 				break;
-			case Types.GET_URL_2:
+			case ActionTypes.GET_URL_2:
 				action = new GetUrl2(coder, context);
 				break;
-			case Types.GOTO_FRAME_2:
+			case ActionTypes.GOTO_FRAME_2:
 				action = new GotoFrame2(coder, context);
 				break;
-			case Types.TABLE:
+			case ActionTypes.TABLE:
 				action = new Table(coder, context);
 				break;
-			case Types.REGISTER_COPY:
+			case ActionTypes.REGISTER_COPY:
 				action = new RegisterCopy(coder, context);
 				break;
-			case Types.NEW_FUNCTION:
+			case ActionTypes.NEW_FUNCTION:
 				action = new NewFunction(coder, context);
 				break;
-			case Types.WITH:
+			case ActionTypes.WITH:
 				action = new With(coder, context);
 				break;
-			case Types.EXCEPTION_HANDLER:
+			case ActionTypes.EXCEPTION_HANDLER:
 				action = new ExceptionHandler(coder, context);
 				break;
-			case Types.NEW_FUNCTION_2:
+			case ActionTypes.NEW_FUNCTION_2:
 				action = new NewFunction2(coder, context);
 				break;
 			default:

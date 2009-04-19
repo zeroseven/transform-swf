@@ -36,7 +36,7 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.MovieTag;
 import com.flagstone.transform.movie.Strings;
-import com.flagstone.transform.movie.Types;
+import com.flagstone.transform.movie.MovieTypes;
 
 //TODO(doc) Review
 /**
@@ -161,7 +161,7 @@ public final class Protect implements MovieTag
 
 	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
-		coder.writeWord((Types.PROTECT << 6) | length, 2);
+		coder.writeWord((MovieTypes.PROTECT << 6) | length, 2);
 		
 		if (password.length() > 0)
 		{

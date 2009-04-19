@@ -35,7 +35,6 @@ import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Strings;
-import com.flagstone.transform.movie.Types;
 
 //TODO(doc) Review
 /**
@@ -197,7 +196,7 @@ public final class GotoFrame2 implements Action
 
 	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
-		coder.writeByte(Types.GOTO_FRAME_2);
+		coder.writeByte(ActionTypes.GOTO_FRAME_2);
 		coder.writeWord(length, 2);
 		coder.writeBits(0, 6);
 		coder.writeBits(frameOffset == 0 ? 0 : 1, 1);

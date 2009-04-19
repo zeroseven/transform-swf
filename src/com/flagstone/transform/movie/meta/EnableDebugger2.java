@@ -36,7 +36,7 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.MovieTag;
 import com.flagstone.transform.movie.Strings;
-import com.flagstone.transform.movie.Types;
+import com.flagstone.transform.movie.MovieTypes;
 
 /**
  * EnableDebugger2 is an updated version or the EnableDebugger instruction 
@@ -136,10 +136,10 @@ public final class EnableDebugger2 implements MovieTag
 	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		if (length > 62) {
-			coder.writeWord((Types.ENABLE_DEBUGGER_2 << 6) | 0x3F, 2);
+			coder.writeWord((MovieTypes.ENABLE_DEBUGGER_2 << 6) | 0x3F, 2);
 			coder.writeWord(length, 4);
 		} else {
-			coder.writeWord((Types.ENABLE_DEBUGGER_2 << 6) | length, 2);
+			coder.writeWord((MovieTypes.ENABLE_DEBUGGER_2 << 6) | length, 2);
 		}
 		
 		coder.writeWord(0, 2);
