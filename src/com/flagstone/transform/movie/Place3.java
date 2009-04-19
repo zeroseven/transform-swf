@@ -139,7 +139,7 @@ public final class Place3 implements MovieTag
 		private CoordTransform transform;
 		private ColorTransform colorTransform;
 		private Integer ratio;
-		private int clippingDepth;
+		private int depth;
 		private String name;
 		private List<Filter> filters;
 		private int blendMode;
@@ -182,7 +182,7 @@ public final class Place3 implements MovieTag
 		}
 		
 		public Builder clippingDepth(int depth) {
-			this.clippingDepth = depth; 
+			this.depth = depth; 
 			return this;
 		}
 
@@ -237,7 +237,7 @@ public final class Place3 implements MovieTag
 		transform = builder.transform;
 		colorTransform = builder.colorTransform;
 		ratio = builder.ratio;
-		clippingDepth = builder.clippingDepth;
+		clippingDepth = builder.depth;
 		name = builder.name;
 		blendMode = builder.blendMode;
 		filters = new ArrayList<Filter>(builder.filters);
@@ -587,7 +587,7 @@ public final class Place3 implements MovieTag
 	 * Returns the number of layers that will be clipped by the object placed on
 	 * the layer specified in this object.
 	 */
-	public int getClippingDepth()
+	public int getDepth()
 	{
 		return clippingDepth;
 	}
@@ -599,7 +599,7 @@ public final class Place3 implements MovieTag
 	 * @param aNumber
 	 *            the number of layers clipped.
 	 */
-	public void setClippingDepth(int aNumber)
+	public void setDepth(int aNumber)
 	{
 		if (aNumber < 1 || aNumber > 65535) {
 			throw new IllegalArgumentException(Strings.IDENTIFIER_OUT_OF_RANGE);

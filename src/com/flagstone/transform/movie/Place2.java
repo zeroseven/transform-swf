@@ -176,8 +176,7 @@ public final class Place2 implements MovieTag
 			return this;
 		}
 		
-		//TODO(api) shorten name to depth
-		public Builder clippingDepth(int depth) {
+		public Builder depth(int depth) {
 			this.clippingDepth = depth; 
 			return this;
 		}
@@ -528,7 +527,7 @@ public final class Place2 implements MovieTag
 	 * Returns the number of layers that will be clipped by the object placed on
 	 * the layer specified in this object.
 	 */
-	public int getClippingDepth()
+	public int getDepth()
 	{
 		return clippingDepth;
 	}
@@ -634,7 +633,7 @@ public final class Place2 implements MovieTag
 	 * @param aNumber
 	 *            the number of layers clipped.
 	 */
-	public void setClippingDepth(int aNumber)
+	public void setDepth(int aNumber)
 	{
 		if (aNumber < 1 || aNumber > 65535) {
 			throw new IllegalArgumentException(Strings.IDENTIFIER_OUT_OF_RANGE);

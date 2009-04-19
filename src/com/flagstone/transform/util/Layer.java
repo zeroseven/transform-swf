@@ -377,11 +377,11 @@ public final class Layer
 		if (place == null)
 		{
 			Place2.Builder builder = new Place2.Builder();
-			builder.layer(layerNumber).clippingDepth(depth);
+			builder.layer(layerNumber).depth(depth);
 			displayList.add(builder.build());
 		} else
 		{
-			place.setClippingDepth(depth);
+			place.setDepth(depth);
 		}
 	}
 

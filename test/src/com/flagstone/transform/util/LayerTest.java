@@ -231,7 +231,7 @@ public final class LayerTest
 		
 		layer.clip(depth);
 
-	    assertEquals(((Place2)layer.getObjects().get(1)).getClippingDepth(), depth);
+	    assertEquals(((Place2)layer.getObjects().get(1)).getDepth(), depth);
 	}
 	
 	@Test
