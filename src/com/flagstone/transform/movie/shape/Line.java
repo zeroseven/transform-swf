@@ -105,10 +105,7 @@ public final class Line implements ShapeRecord
 	 */
 	public Line(int xCoord, int yCoord)
 	{
-		super();
-		
-		setX(xCoord);
-		setY(yCoord);
+		setPoint(xCoord, yCoord);
 	}
 	
 	//TODO(doc)
@@ -134,34 +131,6 @@ public final class Line implements ShapeRecord
 	}
 
 	/**
-	 * Sets the relative x-coordinate.
-	 * 
-	 * @param coord
-	 *            the x-coordinate of the end point. Must be in the range -65536..65535.
-	 */
-	public void setX(int coord)
-	{
-		if (coord < -65536 || coord > 65535) {
-			throw new IllegalArgumentException(Strings.COORDINATES_OUT_OF_RANGE);
-		}
-		xCoord = coord;
-	}
-
-	/**
-	 * Sets the relative y-coordinate.
-	 * 
-	 * @param coord
-	 *            the y-coordinate of the end point. Must be in the range -65536..65535.
-	 */
-	public void setY(int coord)
-	{
-		if (coord < -65536 || coord > 65535) {
-			throw new IllegalArgumentException(Strings.COORDINATES_OUT_OF_RANGE);
-		}
-		yCoord = coord;
-	}
-
-	/**
 	 * Sets the relative x and y coordinates.
 	 * 
 	 * @param xCoord
@@ -171,8 +140,15 @@ public final class Line implements ShapeRecord
 	 */
 	public void setPoint(int xCoord, int yCoord)
 	{
-		setX(xCoord);
-		setY(yCoord);
+		if (xCoord < -65536 || xCoord > 65535) {
+			throw new IllegalArgumentException(Strings.COORDINATES_OUT_OF_RANGE);
+		}
+		this.xCoord = xCoord;
+		
+		if (yCoord < -65536 || yCoord > 65535) {
+			throw new IllegalArgumentException(Strings.COORDINATES_OUT_OF_RANGE);
+		}
+		this.yCoord = yCoord;
 	}
 
 	public Line copy()

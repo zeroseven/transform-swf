@@ -100,11 +100,7 @@ public final class Curve implements ShapeRecord
 	 */
 	public Curve(int controlX, int controlY, int anchorX, int anchorY)
 	{
-		super();
-		setControlX(controlX);
-		setControlY(controlY);
-		setAnchorX(anchorX);
-		setAnchorY(anchorY);
+		setPoints(controlX, controlY, anchorX, anchorY);
 	}
 	
 	//TODO(doc)
@@ -150,102 +146,6 @@ public final class Curve implements ShapeRecord
 	}
 
 	/**
-	 * Sets the x-coordinate of the control point relative to the current
-	 * drawing point.
-	 * 
-	 * @param coord
-	 *            the x-coordinate of the control point. Must be in the range 
-	 *            -65535..65535.
-	 */
-	public void setControlX(int coord)
-	{
-		if (coord < -65535 || coord > 65535) {
-			throw new IllegalArgumentException(Strings.COORDINATES_OUT_OF_RANGE);
-		}
-		controlX = coord;
-	}
-
-	/**
-	 * Sets the y-coordinate of the control point relative to the current
-	 * drawing point.
-	 * 
-	 * @param coord
-	 *            the y-coordinate of the control point. Must be in the range 
-	 *            -65535..65535.
-	 */
-	public void setControlY(int coord)
-	{
-		if (coord < -65535 || coord > 65535) {
-			throw new IllegalArgumentException(Strings.COORDINATES_OUT_OF_RANGE);
-		}
-		controlY = coord;
-	}
-
-	/**
-	 * Sets the x-coordinate of the anchor point relative to the control point.
-	 * 
-	 * @param coord
-	 *            the x-coordinate of the anchor point. Must be in the range 
-	 *            -65535..65535.
-	 */
-	public void setAnchorX(int coord)
-	{
-		if (coord < -65535 || coord > 65535) {
-			throw new IllegalArgumentException(Strings.COORDINATES_OUT_OF_RANGE);
-		}
-		anchorX = coord;
-	}
-
-	/**
-	 * Sets the y-coordinate of the anchor point relative to the control point.
-	 * 
-	 * @param coord
-	 *            the y-coordinate of the anchor point. Must be in the range 
-	 *            -65535..65535.
-	 */
-	public void setAnchorY(int coord)
-	{
-		if (coord < -65535 || coord > 65535) {
-			throw new IllegalArgumentException(Strings.COORDINATES_OUT_OF_RANGE);
-		}
-		anchorY = coord;
-	}
-
-	/**
-	 * Sets the x and y coordinates of control point, relative to the current
-	 * drawing point.
-	 * 
-	 * @param xCoord
-	 *            the x-coordinate of the control point. Must be in the range 
-	 *            -65535..65535.
-	 * @param yCoord
-	 *            the y-coordinate of the control point. Must be in the range 
-	 *            -65535..65535.
-	 */
-	public void setControl(int xCoord, int yCoord)
-	{
-		setControlX(xCoord);
-		setControlY(yCoord);
-	}
-
-	/**
-	 * Sets the x and y coordinates of anchor point relative to the control
-	 * point.
-	 * 
-	 * @param xCoord
-	 *            the x-coordinate of the anchor point. Must be in the range 
-	 *            -65535..65535.
-	 * @param yCoord
-	 *            the y-coordinate of the anchor point. Must be in the range 
-	 *            -65535..65535.
-	 */
-	public void setAnchor(int xCoord, int yCoord)
-	{
-		setAnchorX(xCoord);
-		setAnchorY(yCoord);
-	}
-
-	/**
 	 * Sets the x and y coordinates of the control and anchor points. Values must 
 	 * be in the range -65535..65535.
 	 * 
@@ -260,10 +160,25 @@ public final class Curve implements ShapeRecord
 	 */
 	public void setPoints(int controlX, int controlY, int anchorX, int anchorY)
 	{
-		setControlX(controlX);
-		setControlY(controlY);
-		setAnchorX(anchorX);
-		setAnchorY(anchorY);
+		if (controlX < -65535 || controlX > 65535) {
+			throw new IllegalArgumentException(Strings.COORDINATES_OUT_OF_RANGE);
+		}
+		this.controlX = controlX;
+
+		if (controlY < -65535 || controlY > 65535) {
+			throw new IllegalArgumentException(Strings.COORDINATES_OUT_OF_RANGE);
+		}
+		this.controlY = controlY;
+
+		if (anchorX < -65535 || anchorX > 65535) {
+			throw new IllegalArgumentException(Strings.COORDINATES_OUT_OF_RANGE);
+		}
+		this.anchorX = anchorX;
+		
+		if (anchorY < -65535 || anchorY > 65535) {
+			throw new IllegalArgumentException(Strings.COORDINATES_OUT_OF_RANGE);
+		}
+		this.anchorY = anchorY;
 	}
 
 	public Curve copy() {
