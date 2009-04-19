@@ -34,7 +34,7 @@ import java.util.List;
 
 import com.flagstone.transform.coder.LittleEndianDecoder;
 import com.flagstone.transform.coder.LittleEndianEncoder;
-import com.flagstone.transform.movie.image.ImageBlock;
+import com.flagstone.transform.movie.video.ImageBlock;
 
 /**
  * The ScreenVideoPacket class is used to encode or decode a frame of video

@@ -52,13 +52,13 @@ import com.flagstone.transform.movie.datatype.Bounds;
 import com.flagstone.transform.movie.datatype.CoordTransform;
 import com.flagstone.transform.movie.fillstyle.BitmapFill;
 import com.flagstone.transform.movie.fillstyle.FillStyle;
-import com.flagstone.transform.movie.image.ImageBlock;
 import com.flagstone.transform.movie.linestyle.LineStyle;
 import com.flagstone.transform.movie.shape.DefineShape3;
 import com.flagstone.transform.movie.shape.Line;
 import com.flagstone.transform.movie.shape.Shape;
 import com.flagstone.transform.movie.shape.ShapeRecord;
 import com.flagstone.transform.movie.shape.ShapeStyle;
+import com.flagstone.transform.movie.video.ImageBlock;
 
 /**
  * <p>Image is used to generate an image definition object from an image stored

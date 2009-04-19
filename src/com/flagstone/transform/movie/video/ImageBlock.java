@@ -1,8 +1,8 @@
-package com.flagstone.transform.movie.image;
+package com.flagstone.transform.movie.video;
 
 import java.util.Arrays;
 
-import com.flagstone.transform.movie.video.DefineVideo;
+import com.flagstone.transform.movie.Copyable;
 
 /**
  * ImageBlock is used to sub-divide an image into a set of blocks so they can 
@@ -16,12 +16,11 @@ import com.flagstone.transform.movie.video.DefineVideo;
  * 
  * @see DefineVideo
  */
-//TODO(api) Move to video package ?
-public final class ImageBlock implements Cloneable
+public final class ImageBlock implements Copyable<ImageBlock>
 {
-	private int width;
-	private int height;
-	private byte[] block;
+	private final int width;
+	private final int height;
+	private final byte[] block;
 
 	/**
 	 * Create a new image block with the specified width and height and image
@@ -37,6 +36,7 @@ public final class ImageBlock implements Cloneable
 	 */
 	public ImageBlock(int width, int height, byte[] data)
 	{
+		//TODO(code) Add checks
 		this.width = width;
 		this.height = height;
 		block = data;
@@ -60,16 +60,6 @@ public final class ImageBlock implements Cloneable
 	}
 	
 	/**
-	 * Set the width of the block.
-	 * 
-	 * @param size the width of the block in pixels.
-	 */
-	public void setWidth(int size)
-	{
-		width = size;
-	}
-
-	/**
 	 * Return the height of the block. although the block size is specified in
 	 * parent ScreenVideoPacket object the actual block size used may vary if
 	 * the tiled array of blocks overlaps the edge of the image.
@@ -80,31 +70,11 @@ public final class ImageBlock implements Cloneable
 	}
 	
 	/**
-	 * Set the height of the block.
-	 * 
-	 * @param size the height of the block in pixels.
-	 */
-	public void setHeight(int size)
-	{
-		height = size;
-	}
-
-	/**
 	 * Returns the zipped image data for the block.
 	 */
 	public byte[] getBlock()
 	{
 		return block;
-	}
-	
-	/**
-	 * Set the zipped image block
-	 * 
-	 * @param data the zipped image block.
-	 */
-	public void setBlock(byte[] data)
-	{
-		block = data;
 	}
 
 	/**
