@@ -37,6 +37,7 @@ import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.datatype.ColorTransform;
 import com.flagstone.transform.movie.datatype.CoordTransform;
 
+//TODO(doc) Review
 /**
  * PlaceObject is used to add an object (shape, button, etc.) to the Flash
  * Player's display list.
@@ -58,10 +59,11 @@ import com.flagstone.transform.movie.datatype.CoordTransform;
  * @see Remove
  * @see Remove2
  */
+//TODO(api) Add protected method for PlaceBuilder
 public final class Place implements MovieTag
 {
-	private static final String FORMAT = "Place: { layer=%d; " +
-	"identifier=%d; transform=%s; colorTransform=%s; }";
+	//TODO(code) Consider replacing with StringBuilder for optional fields
+	private static final String FORMAT = "Place: { layer=%d; identifier=%d; transform=%s; colorTransform=%s; }";
 
 	private int identifier;
 	private int layer;
@@ -72,6 +74,7 @@ public final class Place implements MovieTag
 	private transient int end;
 	private transient int length;
 
+	//TODO(doc)
 	public Place(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();
@@ -113,6 +116,7 @@ public final class Place implements MovieTag
 	 * @param yLocation
 	 *            the y-coordinate where the object will be drawn.
 	 */
+	//TODO(api) consider removing
 	public Place(int uid, int aLayer, int xLocation, int yLocation)
 	{
 		setIdentifier(uid);
@@ -156,7 +160,7 @@ public final class Place implements MovieTag
 	 *            and location of the object when it is drawn. Must not be null.
 	 * @param aColorTransform
 	 *            an ColorTransform object that defines the colour of the
-	 *            object when it is drawn. Must not be null.
+	 *            object when it is drawn.
 	 */
 	public Place(int uid, int aLayer,
 							CoordTransform aTransform, 
@@ -168,6 +172,7 @@ public final class Place implements MovieTag
 		setColorTransform(aColorTransform);
 	}
 	
+	//TODO(doc)
 	public Place(Place object) {
 		identifier = object.identifier;
 		layer = object.layer;
@@ -176,7 +181,7 @@ public final class Place implements MovieTag
 	}
 
 	/**
-	 * Returns the identifier of the object.
+	 * Returns the identifier of the object to add to the display list.
 	 */
 	public int getIdentifier()
 	{
@@ -202,7 +207,7 @@ public final class Place implements MovieTag
 
 	/**
 	 * Returns the colour transform that defines any colour effects applied when
-	 * the object is displayed.
+	 * the object is displayed. May be null if no transform is defined.
 	 */
 	public ColorTransform getColorTransform()
 	{
@@ -210,7 +215,7 @@ public final class Place implements MovieTag
 	}
 
 	/**
-	 * Sets the identifier of the object.
+	 * Sets the identifier of the object that will be added to the display list.
 	 * 
 	 * @param uid
 	 *            the unique identifier for the object to the placed on the
@@ -261,19 +266,17 @@ public final class Place implements MovieTag
 	 * 
 	 * @param aColorTransform
 	 *            an ColorTransform object that defines the colour of the
-	 *            object when it is drawn. Must not be null.
+	 *            object when it is drawn. May be set to null.
 	 */
 	public void setColorTransform(ColorTransform aColorTransform)
 	{
-		if (aColorTransform == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
-		}
 		colorTransform = aColorTransform;
 	}
 
 	/**
 	 * Creates and returns a deep copy of this object.
 	 */
+	//TODO(doc) remove
 	public Place copy()
 	{
 		return new Place(this);
@@ -289,6 +292,7 @@ public final class Place implements MovieTag
 	{
 		length = 4;
 		length += transform.prepareToEncode(coder, context);
+		//TODO(optimise) replace with if statement ?
 		length += colorTransform == null ? 0 : colorTransform.prepareToEncode(coder, context);
 
 		return 2 + length;
@@ -298,7 +302,7 @@ public final class Place implements MovieTag
 	{
 		start = coder.getPointer();
 		coder.writeWord((Types.PLACE << 6) | length, 2);
-		end = coder.getPointer() + (length << 3);
+		end = coder.getPointer() + (length << 3); //TODO(optimise) end = start +16
 
 		coder.writeWord(identifier, 2);
 		coder.writeWord(layer, 2);

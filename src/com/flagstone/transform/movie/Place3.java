@@ -44,7 +44,7 @@ import com.flagstone.transform.movie.filter.Filter;
 import com.flagstone.transform.movie.movieclip.MovieClipEvent;
 import com.flagstone.transform.movie.movieclip.MovieClipEventHandler;
 
-
+//TODO(doc) Review description and methods
 /**
  * PlaceObject2 is used to add and manipulate objects (shape, button, etc.) on
  * the Flash Player's display list.
@@ -129,6 +129,7 @@ public final class Place3 implements MovieTag
 			"identifier=%d; transform=%d; colorTransform=%d; ratio=%d; " +
 			"clippingDepth=%d; name=%d; clipEvents=%s}";
 	
+	//TODO(api) Refactor into a separate PlaceBuilder.
 	public static class Builder {
 		
 		private Mode mode;
@@ -144,6 +145,7 @@ public final class Place3 implements MovieTag
 		private int blendMode;
 		private List<MovieClipEventHandler> events;
 		
+		//TODO(api) replace mode with add() modify() replace() ?
 		public Builder mode(Mode mode) {
 			this.mode = mode; 
 			return this;
@@ -226,6 +228,7 @@ public final class Place3 implements MovieTag
 	private transient int end;
 	private transient int length;
 
+	//TODO(code) change to protected.
 	private Place3(Builder builder) {
 		placeType = builder.mode;
 		layer = builder.layer;
@@ -241,6 +244,8 @@ public final class Place3 implements MovieTag
 		events = new ArrayList<MovieClipEventHandler>(builder.events);
 	}
 
+	//TODO(doc)
+	//TODO(optimise)
 	public Place3(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();
@@ -407,6 +412,7 @@ public final class Place3 implements MovieTag
 	    events = new ArrayList<MovieClipEventHandler>();
 	}
 
+	//TODO(doc)
 	public Place3(Place3 object) {
 		placeType = object.placeType;
 		layer = object.layer;
@@ -650,6 +656,7 @@ public final class Place3 implements MovieTag
 		return blendMode;
 	}
 
+	// TODO Change to an EnumSet
 	public void setBlendMode(int aNumber)
 	{
 		if (aNumber < 0 || aNumber > 255) {
@@ -705,6 +712,7 @@ public final class Place3 implements MovieTag
 		events = anArray;
 	}
 
+	//TODO(doc)
 	public Place3 add(Filter filter)
 	{
 		if (filter == null) {
@@ -714,11 +722,13 @@ public final class Place3 implements MovieTag
 		return this;
 	}
 
+	//TODO(doc)
 	public List<Filter> getFilters()
 	{
 		return filters;
 	}
 
+	//TODO(doc)
 	public void setFilters(List<Filter> array)
 	{
 		if (array == null) {
@@ -727,17 +737,11 @@ public final class Place3 implements MovieTag
 		filters = array;
 	}
 
-	/**
-	 * Creates and returns a deep copy of this object.
-	 */
 	public Place3 copy() 
 	{
 		return new Place3(this);
 	}
 
-	/**
-	 * Returns a short description of this action.
-	 */
 	@Override
 	public String toString()
 	{
@@ -745,6 +749,7 @@ public final class Place3 implements MovieTag
 				colorTransform, ratio, clippingDepth, name, events);
 	}
 
+	//TODO(optimise)
 	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
 		context.setTransparent(true);
@@ -775,6 +780,7 @@ public final class Place3 implements MovieTag
 		return (length > 62 ? 6 : 2) + length;
 	}
 
+	//TODO(optimise)
 	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();

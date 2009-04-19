@@ -40,6 +40,7 @@ import com.flagstone.transform.movie.Types;
 import com.flagstone.transform.video.VideoFormat;
 import com.flagstone.transform.video.VideoFrame;
 
+//TODO(doc) Review
 /**
  * The DefineVideo class is used to define a video stream within a Flash file.
  * 
@@ -59,6 +60,8 @@ import com.flagstone.transform.video.VideoFrame;
  * 
  * @see VideoFrame
  */
+//TODO(optimise) Add pack/unpack methods
+//TODO(code) consider keeping Deblocking as an int and hand enum in accessors.
 public final class DefineVideo implements DefineTag {
 	
 	private static final String FORMAT = "DefineVideo: { identifier=%d; frameCount=%d; " +
@@ -80,6 +83,7 @@ public final class DefineVideo implements DefineTag {
 	private transient int end;
 	private transient int length;
 
+	//TODO(doc)
 	public DefineVideo(final SWFDecoder coder, final SWFContext context) throws CoderException {
 
 		start = coder.getPointer();
@@ -162,6 +166,7 @@ public final class DefineVideo implements DefineTag {
 		setCodec(codec);
 	}
 
+	//TODO(doc)
 	public DefineVideo(DefineVideo object) {
 		identifier = object.identifier;
 		frameCount = object.frameCount;

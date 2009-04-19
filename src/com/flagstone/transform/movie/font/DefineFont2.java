@@ -44,6 +44,7 @@ import com.flagstone.transform.movie.Types;
 import com.flagstone.transform.movie.datatype.Bounds;
 import com.flagstone.transform.movie.shape.Shape;
 
+//TODO(doc) Review
 /**
  * <p>DefineFont2 defines the shapes and layout of the glyphs used in a font. It 
  * extends the functionality provided by DefineFont and FontInfo by:</p>
@@ -63,6 +64,7 @@ import com.flagstone.transform.movie.shape.Shape;
 @SuppressWarnings("PMD.TooManyMethods")
 public final class DefineFont2 implements DefineTag
 {
+	//TODO(code) Replace with StringBuilder for optional attributes ?
 	private static final String FORMAT = "DefineFont2: { identifier=%d; encoding=%s; "+
 		"small=%s; italic=%s; bold=%s; language=%s; name=%s; shapes=%s; " +
 		"codes=%s; ascent=%d; descent=%d; leading=%d; advances=%s; bounds=%s; kernings=%s }";
@@ -89,6 +91,8 @@ public final class DefineFont2 implements DefineTag
 	private transient boolean wideOffsets;
 	private transient boolean wideCodes;
 
+	//TODO(doc)
+	//TODO(optimise)
 	public DefineFont2(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();
@@ -143,14 +147,14 @@ public final class DefineFont2 implements DefineTag
 		}
 
 		int glyphCount = coder.readWord(2, false);
-		int offsetStart = coder.getPointer(); // NOPMD
-		int[] offset = new int[glyphCount + 1]; // NOPMD
+		int offsetStart = coder.getPointer(); //TODO(code) fix
+		int[] offset = new int[glyphCount + 1]; //TODO(code) fix
 
 		for (int i = 0; i < glyphCount; i++) {
-			offset[i] = coder.readWord((wideOffsets) ? 4 : 2, false); // NOPMD
+			offset[i] = coder.readWord((wideOffsets) ? 4 : 2, false); //TODO(code) fix
 		}
 
-		offset[glyphCount] = coder.readWord((wideOffsets) ? 4 : 2, false); // NOPMD
+		offset[glyphCount] = coder.readWord((wideOffsets) ? 4 : 2, false); //TODO(code) fix
 
 		Shape shape;
 		
@@ -238,7 +242,7 @@ public final class DefineFont2 implements DefineTag
 		kernings = new ArrayList<Kerning>();
 	}
 
-
+	//TODO(doc)
 	public DefineFont2(DefineFont2 object) {
 		identifier = object.identifier;
 		encoding = object.encoding;
@@ -277,6 +281,7 @@ public final class DefineFont2 implements DefineTag
 	 * @param obj
 	 *            a shape. Must not be null.
 	 */
+	//TODO(api) Remove ? addCodeForGlyph does same task
 	public DefineFont2 addGlyph(Shape obj)
 	{
 		if (obj == null) {
@@ -298,6 +303,7 @@ public final class DefineFont2 implements DefineTag
 	 * @param aCode
 	 *            the code for a glyph. Must be in the range 0..65535.
 	 */
+	//TODO(api) Remove ? addCodeForGlyph does same task
 	public DefineFont2 addCode(int aCode)
 	{
 		if (aCode < 0 || aCode > 65535) {
@@ -749,9 +755,6 @@ public final class DefineFont2 implements DefineTag
 		kernings = anArray;
 	}
 
-	/**
-	 * Creates and returns a deep copy of this object.
-	 */
 	public DefineFont2 copy() 
 	{
 		return new DefineFont2(this);
@@ -765,6 +768,7 @@ public final class DefineFont2 implements DefineTag
 				advances, bounds, kernings);
 	}
 
+	//TODO(optimise)
 	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
 		wideCodes = context.getVersion() > 5 || encoding != CharacterEncoding.ANSI;
@@ -809,6 +813,7 @@ public final class DefineFont2 implements DefineTag
 		return (length > 62 ? 6:2) + length;
 	}
 
+	//TODO(optimise)
 	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		int format;

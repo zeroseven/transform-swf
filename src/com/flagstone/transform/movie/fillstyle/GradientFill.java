@@ -81,6 +81,9 @@ import com.flagstone.transform.movie.datatype.CoordTransform;
  * 
  * @see Gradient
  */
+//TODO(api) Add argument for linear/radial gradients
+//TODO(api) Add support for spread and interpolation
+//TODO(optimise) Add pack/unpack methods
 public final class GradientFill implements FillStyle {
 
 	private static final String FORMAT = "GradientFill: { transform=%s; gradients=%s }";
@@ -126,6 +129,7 @@ public final class GradientFill implements FillStyle {
 		setGradients(anArray);
 	}
 
+	//TODO(doc)
 	public GradientFill(GradientFill object) {
 		type = object.type;
 		transform = object.transform;
@@ -141,6 +145,7 @@ public final class GradientFill implements FillStyle {
 	 *            an Gradient object. Must not be null.
 	 */
 	public GradientFill add(final Gradient aGradient) {
+		//TODO(code) add check that array size does not exceed 15
 		if (aGradient == null) {
 			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
 		}
@@ -187,6 +192,7 @@ public final class GradientFill implements FillStyle {
 	 *            an array of Gradient objects. Must not be null.
 	 */
 	public void setGradients(final List<Gradient> anArray) {
+		//TODO Add check to ensure array size <= 15
 		if (anArray == null) {
 			throw new IllegalArgumentException(Strings.ARRAY_CANNOT_BE_NULL);
 		}
@@ -203,6 +209,7 @@ public final class GradientFill implements FillStyle {
 	}
 
 	public int prepareToEncode(final SWFEncoder coder, final SWFContext context) {
+		//TODO(optimise) Calculate size of gradient array directly.
 		Iterator<Gradient> iter;
 				
 		int length = 2 + transform.prepareToEncode(coder, context);
@@ -216,6 +223,7 @@ public final class GradientFill implements FillStyle {
 	}
 
 	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException {
+		//TODO(optimise) replace iterator with foreach loop
 		Iterator<Gradient> iter;
 		
 		coder.writeByte(type);

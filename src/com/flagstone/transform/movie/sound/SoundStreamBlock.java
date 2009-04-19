@@ -64,6 +64,7 @@ public final class SoundStreamBlock implements MovieTag
 	private transient int end;
 	private transient int length;
 
+	//TODO(doc)
 	public SoundStreamBlock(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();
@@ -94,6 +95,7 @@ public final class SoundStreamBlock implements MovieTag
 		setSoundData(bytes);
 	}
 
+	//TODO(doc)
 	public SoundStreamBlock(SoundStreamBlock object)
 	{
 		soundData = Arrays.copyOf(object.soundData, object.soundData.length);
@@ -122,9 +124,6 @@ public final class SoundStreamBlock implements MovieTag
 		soundData = bytes;
 	}
 
-	/**
-	 * Creates and returns a deep copy of this object.
-	 */
 	public SoundStreamBlock copy() 
 	{
 		return new SoundStreamBlock(this);

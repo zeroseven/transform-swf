@@ -39,7 +39,7 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Types;
 
-
+//TODO(doc) Review
 /**
  * The GetUrl2 action is used to either load a web page or movie clip or load
  * or submit variable values to/from a server.
@@ -163,6 +163,7 @@ public final class GetUrl2 implements Action
 {
 	private static final String FORMAT = "GetUrl2: { requestType=%s }";
 	
+	//TODO(doc)
 	public enum Request {
 		/** Load a movie without submitting the movie variables. */
 		MOVIE_TO_LEVEL(0),
@@ -198,6 +199,7 @@ public final class GetUrl2 implements Action
 			}
 		}
 		
+		//TODO(doc)
 		public static Request fromInt(int type) {
 			return table.get(type);
 		}
@@ -208,6 +210,7 @@ public final class GetUrl2 implements Action
 			this.value = value;
 		}
 		
+		//TODO(doc)
 		public int getValue() {
 			return value;
 		}
@@ -215,6 +218,7 @@ public final class GetUrl2 implements Action
 
 	private Request request;
 
+	//TODO(doc)
 	public GetUrl2(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		coder.readByte();
@@ -234,6 +238,7 @@ public final class GetUrl2 implements Action
 		setRequest(request);
 	}
 
+	//TODO(doc)
 	public GetUrl2(GetUrl2 object) {
 		request = object.request;
 	}
@@ -246,6 +251,7 @@ public final class GetUrl2 implements Action
 		return request;
 	}
 	
+	//TODO(doc) Update
 	/**
 	 * Sets the request type.
 	 * 

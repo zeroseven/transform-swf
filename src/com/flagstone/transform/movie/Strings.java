@@ -3,6 +3,7 @@ package com.flagstone.transform.movie;
 /**
  * The Strings class contains all the strings used in the Transform framework.
  */ 
+//TODO(optimise) check all values are used.
 public final class Strings
 {
 	public static final String ACTION_TYPE_OUT_OF_RANGE = "The type for a Action must be in the range 0..127";
@@ -18,8 +19,9 @@ public final class Strings
 	public static final String GLYPH_INDEX_OUT_OF_RANGE = "The index for the glyph must be in the range 0..65535.";
 	public static final String SIGNED_VALUE_OUT_OF_RANGE = "The value must be in the range -32768..32767.";
 	public static final String UNSIGNED_VALUE_OUT_OF_RANGE = "The value must be in the range 0..65535.";
-	public static final String DATA_CANNOT_BE_NULL = "Data cannot be null";
-	public static final String DATA_CANNOT_BE_EMPTY = "Data cannot be empty";
+	public static final String DATA_CANNOT_BE_NULL = "Data cannot be null.";
+	public static final String DATA_CANNOT_BE_EMPTY = "Data cannot be empty.";
+	public static final String DATA_NOT_SET = "Data cannot be null or empty.";
 	public static final String ENCODED_ACTIONS_MUST_END = "Encoded actions must end with an END action.";
 	public static final String OBJECT_CANNOT_BE_NULL = "Object cannot be null.";
 	public static final String STRING_CANNOT_BE_NULL = "String cannot be null.";

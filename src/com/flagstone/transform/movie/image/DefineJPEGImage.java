@@ -41,6 +41,7 @@ import com.flagstone.transform.movie.ImageTag;
 import com.flagstone.transform.movie.Strings;
 import com.flagstone.transform.movie.Types;
 
+//TODO(doc) Review
 /**
  * DefineJPEGImage is used to define a JPEG encoded image.
  * 
@@ -72,7 +73,7 @@ public final class DefineJPEGImage implements ImageTag
 	private transient int width;
 	private transient int height;
 
-	
+	//TODO(doc)
 	public DefineJPEGImage(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();
@@ -84,7 +85,7 @@ public final class DefineJPEGImage implements ImageTag
 		end = coder.getPointer() + (length << 3);
 		identifier = coder.readWord(2, false);
 		image = coder.readBytes(new byte[length - 2]);
-
+		//TODO(code) width and height are not set.
 		if (coder.getPointer() != end) {
 			throw new CoderException(getClass().getName(), start >> 3, length,
 					(coder.getPointer() - end) >> 3);
@@ -106,6 +107,7 @@ public final class DefineJPEGImage implements ImageTag
 		setImage(bytes);
 	}
 	
+	//TODO(doc)
 	public DefineJPEGImage(DefineJPEGImage object) {
 		identifier = object.identifier;
 		width = object.width;
@@ -157,6 +159,7 @@ public final class DefineJPEGImage implements ImageTag
 	 * @param bytes
 	 *            an array of bytes containing the image data. Must not be null.
 	 */
+	//TODO(code) Add check for zero length as well
 	public void setImage(byte[] bytes)
 	{
 		if (bytes == null) {
@@ -166,9 +169,6 @@ public final class DefineJPEGImage implements ImageTag
 		decodeInfo();
 	}
 
-	/**
-	 * Creates and returns a deep copy of this object.
-	 */
 	public DefineJPEGImage copy() 
 	{
 		return new DefineJPEGImage(this);

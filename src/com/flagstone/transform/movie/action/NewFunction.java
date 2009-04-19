@@ -41,6 +41,7 @@ import com.flagstone.transform.movie.Strings;
 import com.flagstone.transform.movie.Types;
 
 
+//TODO(doc) Review
 /**
  * The NewFunction action is used to create a user-defined function.
  * 
@@ -67,6 +68,7 @@ public final class NewFunction implements Action
 	private transient int length;
 	private transient int actionsLength;
 
+	//TODO(doc)
 	public NewFunction(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		arguments = new ArrayList<String>();
@@ -139,6 +141,7 @@ public final class NewFunction implements Action
 		setActions(actionArray);
 	}
 	
+	//TODO(doc)
 	public NewFunction(NewFunction object) {
 		name = object.name;
 		
@@ -266,6 +269,7 @@ public final class NewFunction implements Action
 	{
 		length = 2 + coder.strlen(name);
 
+		//TODO(code) replace with foreach loop
 		for (int i=0; i<arguments.size(); i++) {
 			length += coder.strlen(arguments.get(i));
 		}
@@ -277,24 +281,28 @@ public final class NewFunction implements Action
 			actionsLength += action.prepareToEncode(coder, context);
 		}
 		
+		//TODO(doc) fix
 		if (actions.isEmpty()) {
 			actionsLength = 1;
 		}
 
 		length += actionsLength;
 
+		//TODO(optimise) return 3 + length + actionslength
 		return 3 + length;
 	}
 
 	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		coder.writeWord(Types.NEW_FUNCTION, 1);
+		//TODO(optimise) just write length, see above
 		coder.writeWord(length - actionsLength, 2);
 
 		coder.writeString(name);
 
 		coder.writeWord(arguments.size(), 2);
 
+		//TODO(code) replace with foreach loop
 		for (int i=0; i<arguments.size(); i++) {
 			coder.writeString(arguments.get(i));
 		}
@@ -305,6 +313,7 @@ public final class NewFunction implements Action
 			action.encode(coder, context);
 		}
 		
+		//TODO(doc) fix
 		if (actions.isEmpty()) {
 			coder.writeByte(0);
 		}

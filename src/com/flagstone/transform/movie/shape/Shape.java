@@ -61,6 +61,8 @@ public final class Shape implements Encodeable
 	
 	private transient int length;
 
+	//TODO(doc)
+	//TODO(code) Check this method is still needed
 	public Shape(int length)
 	{
 		/*
@@ -70,6 +72,7 @@ public final class Shape implements Encodeable
 		this.length = length;
 	}
 
+	//TODO(doc)
 	public Shape(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		objects = new ArrayList<ShapeRecord>();
@@ -91,12 +94,12 @@ public final class Shape implements Encodeable
 
 					if ((type & 0x20) > 0) {
 						if ((type & 0x10) > 0) {
-							shape = new Line(coder, context); // NOPMD
+							shape = new Line(coder, context); //TODO(code) fix
 						} else {
-							shape = new Curve(coder, context); // NOPMD
+							shape = new Curve(coder, context); //TODO(code) fix
 						}
 					} else {
-						shape = new ShapeStyle(coder, context); // NOPMD
+						shape = new ShapeStyle(coder, context); //TODO(code) fix
 					}
 					objects.add(shape);
 				}
@@ -110,6 +113,7 @@ public final class Shape implements Encodeable
 		}
 	}
 
+	//TODO(doc)
 	public Shape(int length, final SWFDecoder coder, SWFContext context) throws CoderException
 	{
 		this.length = length;
@@ -132,12 +136,12 @@ public final class Shape implements Encodeable
 
 					if ((type & 0x20) > 0) {
 						if ((type & 0x10) > 0) {
-							shape = new Line(coder, context); // NOPMD
+							shape = new Line(coder, context); //TODO(code) fix
 						} else {
-							shape = new Curve(coder, context); // NOPMD
+							shape = new Curve(coder, context); //TODO(code) fix
 						}
 					} else {
-						shape = new ShapeStyle(coder, context); // NOPMD
+						shape = new ShapeStyle(coder, context); //TODO(code) fix
 					}
 					objects.add(shape);
 				}
@@ -151,6 +155,7 @@ public final class Shape implements Encodeable
 		}
 	}
 
+	//TODO(doc)
 	public Shape()
 	{
 		objects = new ArrayList<ShapeRecord>();
@@ -168,6 +173,7 @@ public final class Shape implements Encodeable
 		setObjects(anArray);
 	}
 
+	//TODO(doc)
 	public Shape(Shape object)
 	{
 		objects = new ArrayList<ShapeRecord>(object.objects.size());
@@ -214,9 +220,6 @@ public final class Shape implements Encodeable
 		objects = anArray;
 	}
 
-	/**
-	 * Creates and returns a deep copy of this object.
-	 */
 	public Shape copy()
 	{
 		return new Shape(this);

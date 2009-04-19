@@ -43,6 +43,7 @@ import com.flagstone.transform.movie.Movie;
 import com.flagstone.transform.movie.Strings;
 import com.flagstone.transform.movie.datatype.Color;
 
+//TODO(doc) Review
 /**
  * TextSpan is used to display a group of characters with a selected font and colour.
  * TextSpan objects are used in {@link DefineText} and {@link DefineText2} to display 
@@ -100,6 +101,7 @@ public final class TextSpan implements Encodeable
 	private transient boolean hasX;
 	private transient boolean hasY;
 	
+	//TODO(doc)
 	public TextSpan(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		/* type */coder.readBits(1, false);
@@ -170,6 +172,7 @@ public final class TextSpan implements Encodeable
 		setCharacters(anArray);
 	}
 
+	//TODO(doc)
 	public TextSpan(TextSpan object)
 	{
 		identifier = object.identifier;
@@ -333,9 +336,6 @@ public final class TextSpan implements Encodeable
 		characters = anArray;
 	}
 
-	/**
-	 * Creates and returns a deep copy of this object.
-	 */
 	public TextSpan copy()
 	{
 		return new TextSpan(this);
@@ -347,6 +347,7 @@ public final class TextSpan implements Encodeable
 		return String.format(FORMAT, identifier, color, offsetX, offsetY, height, characters);
 	}
 
+	//TODO(optimise)
 	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
 		hasFont = identifier != null && height != null;
@@ -381,6 +382,7 @@ public final class TextSpan implements Encodeable
 		return length;
 	}
 
+	//TODO(optimise)
 	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		coder.writeBits(1, 1);
@@ -425,7 +427,7 @@ public final class TextSpan implements Encodeable
 
 	protected int glyphBits()
 	{
-		int numberOfBits = 0; // NOPMD
+		int numberOfBits = 0; //TODO(code) fix
 
 		for (GlyphIndex index : characters) {
 			numberOfBits = Math.max(numberOfBits, Encoder.unsignedSize(index.getGlyphIndex()));
@@ -436,7 +438,7 @@ public final class TextSpan implements Encodeable
 
 	protected int advanceBits()
 	{
-		int numberOfBits = 0; // NOPMD
+		int numberOfBits = 0; //TODO(code) fix
 
 		for (GlyphIndex index : characters) {
 			numberOfBits = Math.max(numberOfBits, Encoder.size(index.getAdvance()));

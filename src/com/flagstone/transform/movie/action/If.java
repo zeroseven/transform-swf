@@ -37,7 +37,7 @@ import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Strings;
 import com.flagstone.transform.movie.Types;
 
-
+//TODO(doc) Review
 /**
  * The If action is used to perform a conditional branch to control the
  * actions executed by the Flash Player.
@@ -72,6 +72,7 @@ public final class If implements Action
 	
 	private int offset;
 
+	//TODO(doc)
 	public If(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		coder.readByte();
@@ -92,6 +93,7 @@ public final class If implements Action
 		setOffset(anOffset);
 	}
 	
+	//TODO(doc)
 	public If(If object) {
 		offset = object.offset;
 	}

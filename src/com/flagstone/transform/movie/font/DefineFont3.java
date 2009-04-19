@@ -44,6 +44,8 @@ import com.flagstone.transform.movie.Types;
 import com.flagstone.transform.movie.datatype.Bounds;
 import com.flagstone.transform.movie.shape.Shape;
 
+//TODO(code) Implement with updated doc and same changes as DefineFont2
+
 /**
  * <p>DefineFont2 defines the shapes and layout of the glyphs used in a font. It 
  * extends the functionality provided by DefineFont and FontInfo by:</p>
@@ -142,14 +144,14 @@ public final class DefineFont3 implements DefineTag
 		}
 
 		int glyphCount = coder.readWord(2, false);
-		int offsetStart = coder.getPointer(); // NOPMD
-		int[] offset = new int[glyphCount + 1]; // NOPMD
+		int offsetStart = coder.getPointer(); //TODO(code) fix
+		int[] offset = new int[glyphCount + 1]; //TODO(code) fix
 
 		for (int i = 0; i < glyphCount; i++) {
-			offset[i] = coder.readWord((wideOffsets) ? 4 : 2, false); // NOPMD
+			offset[i] = coder.readWord((wideOffsets) ? 4 : 2, false); //TODO(code) fix
 		}
 
-		offset[glyphCount] = coder.readWord((wideOffsets) ? 4 : 2, false); // NOPMD
+		offset[glyphCount] = coder.readWord((wideOffsets) ? 4 : 2, false); //TODO(code) fix
 
 		Shape shape;
 		

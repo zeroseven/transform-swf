@@ -40,6 +40,7 @@ import com.flagstone.transform.movie.ImageTag;
 import com.flagstone.transform.movie.Strings;
 import com.flagstone.transform.movie.Types;
 
+//TODO(doc) Review
 /**
  * DefineImage2 is used to define a transparent image compressed using the
  * lossless zlib compression algorithm.
@@ -82,6 +83,7 @@ public final class DefineImage2 implements ImageTag
 	private transient int length;
 	private transient boolean extendLength;
 	
+	//TODO(doc)
 	public DefineImage2(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();
@@ -181,7 +183,8 @@ public final class DefineImage2 implements ImageTag
 		setData(data);
 	}
 	
-	private DefineImage2(DefineImage2 object)
+	//TODO(doc)
+	public DefineImage2(DefineImage2 object)
 	{
 		extendLength = object.extendLength;
 		width = object.width;
@@ -315,9 +318,6 @@ public final class DefineImage2 implements ImageTag
 		data = bytes;
 	}
 
-	/**
-	 * Creates and returns a deep copy of this object.
-	 */
 	public DefineImage2 copy() 
 	{
 		return new DefineImage2(this);

@@ -40,6 +40,7 @@ import com.flagstone.transform.movie.MovieTag;
 import com.flagstone.transform.movie.Strings;
 import com.flagstone.transform.movie.Types;
 
+//TODO(doc) Review
 
 /**
  * VideoFrame contains the video data displayed in a single frame of a Flash
@@ -63,6 +64,7 @@ public final class VideoFrame implements MovieTag
 	
 	private transient int length;
 
+	//TODO(doc)
 	public VideoFrame(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		length = coder.readWord(2, false) & 0x3F;
@@ -97,6 +99,7 @@ public final class VideoFrame implements MovieTag
 		setData(data);
 	}
 
+	//TODO(doc)
 	public VideoFrame(VideoFrame object)
 	{
 		identifier = object.identifier;
@@ -175,9 +178,6 @@ public final class VideoFrame implements MovieTag
 		this.data = data;
 	}
 
-	/**
-	 * Creates and returns a deep copy of this object.
-	 */
 	public VideoFrame copy() 
 	{
 		return new VideoFrame(this);

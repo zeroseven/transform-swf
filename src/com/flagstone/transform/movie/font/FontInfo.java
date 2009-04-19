@@ -41,6 +41,7 @@ import com.flagstone.transform.movie.MovieTag;
 import com.flagstone.transform.movie.Strings;
 import com.flagstone.transform.movie.Types;
 
+//TODO(doc) Review
 /**
  * FontInfo defines the name and face of a font and maps the codes for a given
  * character set to the glyphs that are drawn to represent each character.
@@ -85,6 +86,8 @@ public final class FontInfo implements MovieTag
 	private transient int length;
 	private transient boolean wideCodes = false;
 
+	//TODO(doc)
+	//TODO(optimise)
 	public FontInfo(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		codes = new ArrayList<Integer>();
@@ -156,6 +159,7 @@ public final class FontInfo implements MovieTag
 		codes = new ArrayList<Integer>();
 	}
 
+	//TODO(doc)
 	public FontInfo(FontInfo object)
 	{
 		identifier = object.identifier;
@@ -339,9 +343,6 @@ public final class FontInfo implements MovieTag
 		codes = anArray;
 	}
 
-	/**
-	 * Creates and returns a deep copy of this object.
-	 */
 	public FontInfo copy() 
 	{
 		return new FontInfo(this);
@@ -353,6 +354,7 @@ public final class FontInfo implements MovieTag
 		return String.format(FORMAT, identifier, encoding, small, italic, bold, name, codes);
 	}
 
+	//TODO(optimise)
 	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
 		length = 3;
@@ -372,6 +374,7 @@ public final class FontInfo implements MovieTag
 		return (length > 62 ? 6:2) + length;
 	}
 
+	//TODO(optimise)
 	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();

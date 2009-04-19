@@ -51,6 +51,7 @@ public final class QuicktimeMovie implements MovieTag
 	private transient int end;
 	private transient int length;
 	
+	//TODO(doc)
 	public QuicktimeMovie(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();
@@ -80,6 +81,7 @@ public final class QuicktimeMovie implements MovieTag
 		setPath(aString);
 	}
 
+	//TODO(doc)
 	public QuicktimeMovie(QuicktimeMovie object)
 	{
 		path = object.path;

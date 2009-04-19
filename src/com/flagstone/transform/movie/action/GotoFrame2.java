@@ -37,7 +37,7 @@ import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Strings;
 import com.flagstone.transform.movie.Types;
 
-
+//TODO(doc) Review
 /**
  * The GotoFrame2 action instructs the player to go to the named or numbered
  * frame in the current movie's main time-line. It extends the functionality
@@ -76,6 +76,7 @@ public final class GotoFrame2 implements Action
 	
 	private transient int length;
 
+	//TODO(doc)
 	public GotoFrame2(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		coder.readByte();
@@ -122,6 +123,7 @@ public final class GotoFrame2 implements Action
 		setFrameOffset(offset);
 	}
 	
+	//TODO(doc)
 	public GotoFrame2(GotoFrame2 object) {
 		play = object.play;
 		frameOffset = object.frameOffset;

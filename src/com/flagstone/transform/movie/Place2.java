@@ -42,7 +42,7 @@ import com.flagstone.transform.movie.datatype.CoordTransform;
 import com.flagstone.transform.movie.movieclip.MovieClipEvent;
 import com.flagstone.transform.movie.movieclip.MovieClipEventHandler;
 
-
+//TOD0(doc) Review
 /**
  * PlaceObject2 is used to add and manipulate objects (shape, button, etc.) on
  * the Flash Player's display list.
@@ -121,16 +121,19 @@ import com.flagstone.transform.movie.movieclip.MovieClipEventHandler;
  * 
  * @see com.flagstone.transform.util.Layer
  */
+//TODO(api) Change clippingDepth type from int to Integer
 public final class Place2 implements MovieTag
 {
-	private static final String FORMAT = "PlaceObject2: { place=%s; layer=%d; " +
-	"identifier=%d; transform=%s; colorTransform=%s; ratio=%d; ~" +
+	//TODO(code) Consider replacing with StringBuilder for optional fields
+	private static final String FORMAT = "PlaceObject2: { mode=%s; layer=%d; " +
+	"identifier=%d; transform=%s; colorTransform=%s; ratio=%d; " +
 	"clippingDepth=%d; name=%s; clipEvents=%s}";
 
 	public enum Mode {
 		MODIFY, NEW, REPLACE
 	}
 	
+	//TODO(api) Will be replaced by the PlaceBuilder refactored from Place3
 	public static class Builder {
 		
 		private Mode mode;
@@ -173,6 +176,7 @@ public final class Place2 implements MovieTag
 			return this;
 		}
 		
+		//TODO(api) shorten name to depth
 		public Builder clippingDepth(int depth) {
 			this.clippingDepth = depth; 
 			return this;
@@ -207,6 +211,7 @@ public final class Place2 implements MovieTag
 	private transient int end;
 	private transient int length;
 
+	//TODO(code) change to protected.
 	private Place2(Builder builder) {
 		placeType = builder.mode;
 		layer = builder.layer;
@@ -219,6 +224,8 @@ public final class Place2 implements MovieTag
 		events = new ArrayList<MovieClipEventHandler>(events);
 	}
 
+	//TODO(doc)
+	//TODO(optimise)
 	public Place2(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();
@@ -232,6 +239,7 @@ public final class Place2 implements MovieTag
 		
 		end = coder.getPointer() + (length << 3);
 
+		//TODO(optimise) change to transient fields ?
 		boolean hasEvents = coder.readBits(1, false) != 0;
 		boolean hasDepth = coder.readBits(1, false) != 0;
 		boolean hasName = coder.readBits(1, false) != 0;
@@ -249,6 +257,7 @@ public final class Place2 implements MovieTag
 		case 3:
 			placeType = Mode.REPLACE;
 			break;
+			//TODO(code) case 0 should throw exception
 		}
 
 		layer = coder.readWord(2, false);
@@ -359,6 +368,7 @@ public final class Place2 implements MovieTag
 	 * @param yCoord
 	 *            the y-coordinate where the object will be displayed.
 	 */
+	//TODO(api) remove ?
 	public Place2(int uid, int aLayer, int xCoord, int yCoord)
 	{
 		placeType = Mode.NEW;
@@ -379,6 +389,7 @@ public final class Place2 implements MovieTag
 	 * @param yCoord
 	 *            the y-coordinate where the object will be displayed.
 	 */
+	//TODO(api) remove ?
 	public Place2(int aLayer, int xCoord, int yCoord)
 	{
 		placeType = Mode.MODIFY;
@@ -387,6 +398,8 @@ public final class Place2 implements MovieTag
 	    events = new ArrayList<MovieClipEventHandler>();
 	}
 	
+	//TODO(doc)
+	//TODO(optimise) immutable objects
 	public Place2(Place2 object) {
 		placeType = object.placeType;
 		layer = object.layer;
@@ -409,9 +422,9 @@ public final class Place2 implements MovieTag
 		}
 	}
 
+	//TODO(doc) review
 	/**
-	 * Adds a clip event to the array of clip events. If the object already
-	 * contains a set of encoded clip event objects they will be deleted.
+	 * Adds a clip event to the array of clip events.
 	 * 
 	 * @param aClipEvent
 	 *            a clip event object.
@@ -657,6 +670,7 @@ public final class Place2 implements MovieTag
 				colorTransform, ratio, clippingDepth, name, events);
 	}
 
+	//TODO(optimise)
 	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
 		context.setTransparent(true);
@@ -687,6 +701,7 @@ public final class Place2 implements MovieTag
 		return (length > 62 ? 6 : 2) + length;
 	}
 
+	//TODO(optimise)
 	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();

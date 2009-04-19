@@ -56,6 +56,8 @@ import com.flagstone.transform.movie.datatype.Bounds;
 import com.flagstone.transform.movie.fillstyle.FillStyle;
 
 /**
+ * //TODO(doc) Review
+ * //TODO(code) Refactor
  * Movie is a container class for the objects that represents the data
  * structures in a Flash file.
  * 
@@ -149,6 +151,10 @@ public final class Movie implements Cloneable
 		}
 	}
 	
+	/* 
+	 * TODO(code) replace the factory set methods by setting a default SWFContext
+	 * for the Movie class or set a SWFContext for each movie object.
+	 */
 	public void setFillStyleFactory(SWFFactory<FillStyle> factory) {
 	    fillStyleFactory = factory;
     }
@@ -531,7 +537,7 @@ public final class Movie implements Cloneable
 	 */
 	public void decodeFromFile(File file) throws FileNotFoundException, DataFormatException, IOException
 	{
-		FileInputStream stream = null; // NOPMD
+		FileInputStream stream = null; //TODO(code) fix
 		byte[] data = new byte[(int) file.length()];
 
 		try {

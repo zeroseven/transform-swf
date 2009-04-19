@@ -38,7 +38,7 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Strings;
 
-
+//TODO(doc)
 public final class ActionObject implements Action
 {
 	private static final String FORMAT = "ActionObject: { type=%d; data[%s] }";
@@ -90,6 +90,7 @@ public final class ActionObject implements Action
 	 * @param bytes
 	 *            the encoded data for the action. May be zero length but not null.
 	 */
+	//TODO(api) Remove ?
 	public void setData(byte[] bytes)
 	{
 		if (bytes == null) {
@@ -98,6 +99,7 @@ public final class ActionObject implements Action
 		data = bytes;
 	}
 	
+	//TODO(api) Remove ?
 	public void setData(int size) {
 	    data = new byte[size];
 	}

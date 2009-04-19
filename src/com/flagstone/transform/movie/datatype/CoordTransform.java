@@ -63,6 +63,8 @@ import com.flagstone.transform.movie.Encodeable;
  * </p>
  * 
  */
+//TODO(doc) Review
+//TODO(pmd) Remove warning suppressors and re-check
 @SuppressWarnings( { "PMD.TooManyMethods", "PMD.LocalVariableCouldBeFinal" })
 public final class CoordTransform implements Encodeable {
 

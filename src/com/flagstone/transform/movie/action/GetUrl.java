@@ -37,6 +37,7 @@ import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Strings;
 import com.flagstone.transform.movie.Types;
 
+//TODO(doc) Review
 /**
  * GetUrl is used to display a web page or load a movie clip into the Flash
  * Player.
@@ -99,6 +100,7 @@ public final class GetUrl implements Action
 	
 	private transient int length;
 
+	//TODO(doc)
 	public GetUrl(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		coder.readByte();
@@ -106,7 +108,6 @@ public final class GetUrl implements Action
 		url = coder.readString();
 		target = coder.readString();
 	}
-
 
 	/**
 	 * Creates a GetUrl with the specified url and target frame.
@@ -137,6 +138,7 @@ public final class GetUrl implements Action
 		target = "";
 	}
 
+	//TODO(optimise)
 	public GetUrl(GetUrl object)
 	{
 		url = object.url;

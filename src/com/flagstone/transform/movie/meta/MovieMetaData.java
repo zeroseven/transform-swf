@@ -41,6 +41,7 @@ import com.flagstone.transform.movie.Types;
 /**
  * MetaData is used to add a user-defined information into a Flash file.
  */
+//TODO(doc)
 public final class MovieMetaData implements MovieTag {
 
 	private static final String FORMAT = "MetaData: { %s }";

@@ -49,6 +49,7 @@ public final class SerialNumber implements MovieTag
 	
 	private transient int length;
 
+	//TODO(doc)
 	public SerialNumber(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		length = coder.readWord(2, false) & 0x3F;
@@ -73,6 +74,7 @@ public final class SerialNumber implements MovieTag
 		setNumber(aString);
 	}
 
+	//TODO(doc)
 	public SerialNumber(SerialNumber object)
 	{
 		number = object.number;

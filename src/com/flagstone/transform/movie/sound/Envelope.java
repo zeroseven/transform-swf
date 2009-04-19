@@ -45,6 +45,7 @@ import com.flagstone.transform.movie.font.Kerning;
 
 /**
  */
+//TODO(doc)
 public final class Envelope implements Encodeable
 {
 	/**
@@ -181,6 +182,7 @@ public final class Envelope implements Encodeable
 	
 	private transient int count;
 
+	//TODO(doc)
 	public Envelope(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		count = coder.readByte();
@@ -192,6 +194,7 @@ public final class Envelope implements Encodeable
 		}
 	}
 
+	//TODO(doc)
 	public Envelope(Envelope object)
 	{
 		levels = new ArrayList<Level>(object.levels);
@@ -215,6 +218,7 @@ public final class Envelope implements Encodeable
 	/**
 	 * Returns the array of SoundLevels that control the volume of the sound.
 	 */
+	//TODO(api) Rename
 	public List<Level> getEnvelopes()
 	{
 		return levels;

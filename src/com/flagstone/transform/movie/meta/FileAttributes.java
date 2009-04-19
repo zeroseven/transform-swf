@@ -37,6 +37,7 @@ import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.MovieTag;
 import com.flagstone.transform.movie.Types;
 
+//TODO(doc) Description and methods
 public final class FileAttributes implements MovieTag {
 
 	private static final String FORMAT = "FileAttributes: { metadata=%d; actionscript3=%d; userNetwork=%d }";

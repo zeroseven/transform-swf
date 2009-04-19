@@ -66,6 +66,7 @@ import com.flagstone.transform.movie.Encodeable;
  * it then only the pixels inside of the bounding box will be repainted.
  * </p>
  */
+//TODO(doc) Check comments for all methods 
 public final class Bounds implements Encodeable {
 
 	private static final String FORMAT = "Bounds: { minX=%d; minY=%d; maxX=%d; maxY=%d }";
@@ -78,7 +79,7 @@ public final class Bounds implements Encodeable {
 	private transient int size;
 
 	public Bounds(final SWFDecoder coder) throws CoderException {
-		coder.alignToByte();
+		coder.alignToByte(); //TODO(optimise) See if this can be removed
 		size = coder.readBits(5, false);
 		minX = coder.readBits(size, true);
 		maxX = coder.readBits(size, true);
@@ -185,11 +186,11 @@ public final class Bounds implements Encodeable {
 	public int prepareToEncode(final SWFEncoder coder, final SWFContext context) {
 		size = Encoder.maxSize(minX, minY, maxX, maxY);
 		// add extra 7 bit so result is byte aligned.
-		return ((5 + (size << 2)) + 7) >> 3;
+		return ((5 + (size << 2)) + 7) >> 3; //TODO(optimise) 5+7 = 12
 	}
 
 	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException {
-		coder.alignToByte();
+		coder.alignToByte(); //TODO(optimise) See if this can be removed
 		coder.writeBits(size, 5);
 		coder.writeBits(minX, size);
 		coder.writeBits(maxX, size);

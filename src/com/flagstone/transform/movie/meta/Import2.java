@@ -41,6 +41,7 @@ import com.flagstone.transform.movie.MovieTag;
 import com.flagstone.transform.movie.Strings;
 import com.flagstone.transform.movie.Types;
 
+//TODO(doc) Review
 /**
  * Import2 is used to import shapes and other objects from another Flash file
  * referenced by a URL.
@@ -77,6 +78,7 @@ public final class Import2 implements MovieTag {
 
 	private transient int length;
 
+	//TODO(doc)
 	public Import2(final SWFDecoder coder, final SWFContext context) throws CoderException {
 		
 		length = coder.readWord(2, false) & 0x3F;
@@ -132,6 +134,7 @@ public final class Import2 implements MovieTag {
 		add(uid, aString);
 	}
 	
+	//TODO(doc)
 	public Import2(Import2 object) {
 		url = object.url;
 		objects = new LinkedHashMap<Integer,String>(object.objects);

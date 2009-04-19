@@ -43,6 +43,7 @@ import com.flagstone.transform.movie.Strings;
 import com.flagstone.transform.movie.fillstyle.FillStyle;
 import com.flagstone.transform.movie.linestyle.LineStyle;
 
+//TODO(doc) Review
 /**
  * ShapeStyle is used to change the drawing environment when a shape is drawn.
  * Three operations can be performed:
@@ -82,6 +83,7 @@ import com.flagstone.transform.movie.linestyle.LineStyle;
  * to VALUE_NOT_SET.</p>
  * 
  */
+//TODO(api) simplify methods or add Builder
 public final class ShapeStyle implements ShapeRecord
 {
 	private static final String FORMAT = "ShapeStyle: { move=(%d, %d); fill=%d; alt=%d; line=%d; fillStyles=%s; lineStyles=%s }";
@@ -100,6 +102,8 @@ public final class ShapeStyle implements ShapeRecord
 	private transient boolean hasFill;
 	private transient boolean hasMove;
 
+	//TODO(doc)
+	//TODO(optimise)
 	public ShapeStyle(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		int start = coder.getPointer();

@@ -50,6 +50,7 @@ import com.flagstone.transform.movie.Types;
  * used to provide better rendering of the glyphs.</P>
  * 
  */
+//TODO(doc)
 public final class PathsArePostscript implements MovieTag
 {
 	private static final PathsArePostscript instance = new PathsArePostscript();

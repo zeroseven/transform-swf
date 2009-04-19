@@ -35,6 +35,7 @@ import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
+//TODO(doc) Review
 /**
  * ShowFrame is used to instruct the Flash Player to display a single frame in a
  * movie or movie clip.
@@ -79,6 +80,7 @@ public final class ShowFrame implements MovieTag {
 	private ShowFrame() {
 	}
 
+	//TODO(doc)
 	public ShowFrame copy() {
 		return this;
 	}

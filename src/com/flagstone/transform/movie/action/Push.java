@@ -40,6 +40,7 @@ import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Strings;
 import com.flagstone.transform.movie.Types;
 
+//TODO(doc) Review
 /**
  * Push is used to push values on the Flash Player's internal stack.
  * 
@@ -100,6 +101,7 @@ import com.flagstone.transform.movie.Types;
  * @see Push.Void
  * 
  */
+//TODO(api) Will Java autoboxing work with a single add() method.
 public final class Push implements Action {
 	
 	private static final String FORMAT = "Push: { values=%s }";
@@ -108,6 +110,7 @@ public final class Push implements Action {
 
 	private transient int length;
 
+	//TODO(doc)
 	public Push(final SWFDecoder coder, final SWFContext context) throws CoderException {
 		
 		coder.readByte();
@@ -189,6 +192,7 @@ public final class Push implements Action {
 		setValues(anArray);
 	}
 
+	//TODO(doc)
 	public Push(Push object) {
 		values = new ArrayList<Object>(object.values);
 	}
@@ -380,6 +384,7 @@ public final class Push implements Action {
 		return length + 3;
 	}
 
+	//TODO(code) throw a Coder exception if an unexpected object is found
 	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException {
 		coder.writeByte(Types.PUSH);
 		coder.writeWord(length, 2);

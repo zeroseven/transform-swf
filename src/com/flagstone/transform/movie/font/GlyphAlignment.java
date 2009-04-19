@@ -39,6 +39,8 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Encodeable;
 
+//TODO(code) Implement
+//TODO(doc)
 public final class GlyphAlignment implements Encodeable
 {
 	private boolean alignX;

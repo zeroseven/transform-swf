@@ -41,6 +41,7 @@ import com.flagstone.transform.movie.MovieTag;
 import com.flagstone.transform.movie.Strings;
 import com.flagstone.transform.movie.Types;
 
+//TODO(doc)
 /**
  * FontInfo defines the name and face of a font and maps the codes for a given
  * character set to the glyphs that are drawn to represent each character.
@@ -212,7 +213,7 @@ public final class FontAlignment implements MovieTag
 	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
 		length = 4;
-
+		//TODO(code) Implement
 		for (AlignmentZone zone : zones) {
 		}
 
@@ -222,7 +223,7 @@ public final class FontAlignment implements MovieTag
 	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();
-
+		//TODO(code) use correct type.
 		if (length >= 63) {
 			coder.writeWord((Types.FONT_INFO << 6) | 0x3F, 2);
 			coder.writeWord(length, 4);

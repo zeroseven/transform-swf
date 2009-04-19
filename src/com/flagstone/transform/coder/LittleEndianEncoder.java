@@ -175,7 +175,7 @@ public class LittleEndianEncoder extends Encoder {
 	 *            the value to be written.
 	 */
 	public void writeDouble(final double value) {
-		long longValue = Double.doubleToLongBits(value); // NOPMD
+		long longValue = Double.doubleToLongBits(value); //TODO(code) fix
 
 		writeWord((int) (longValue >>> 32), 4);
 		writeWord((int) longValue, 4);

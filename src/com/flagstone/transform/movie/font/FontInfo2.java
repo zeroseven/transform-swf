@@ -41,6 +41,8 @@ import com.flagstone.transform.movie.MovieTag;
 import com.flagstone.transform.movie.Strings;
 import com.flagstone.transform.movie.Types;
 
+//TODO(doc) Review
+
 /**
  * FontInfo2 is an updated version of FontInfo with support for spoken languages
  * for improving line breaks when displaying text.
@@ -82,6 +84,8 @@ public final class FontInfo2 implements MovieTag
 	private transient int end;
 	private transient int length;
 
+	//TODO(doc)
+	//TODO(optimise)
 	public FontInfo2(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();
@@ -153,6 +157,7 @@ public final class FontInfo2 implements MovieTag
 		codes = new ArrayList<Integer>();
 	}
 	
+	//TODO(doc)
 	public FontInfo2(FontInfo2 object)
 	{
 		identifier = object.identifier;
@@ -388,6 +393,7 @@ public final class FontInfo2 implements MovieTag
 		return (length > 62 ? 6:2) + length;
 	}
 
+	//TODO(optimsie)
 	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();

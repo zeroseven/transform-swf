@@ -59,6 +59,7 @@ public final class MorphLineStyle implements Encodeable
 	private Color startColor;
 	private Color endColor;
 
+	//TODO(doc)
 	public MorphLineStyle(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		startWidth = coder.readWord(2, false);
@@ -90,6 +91,7 @@ public final class MorphLineStyle implements Encodeable
 		setEndColor(endColor);
 	}
 	
+	//TODO(doc)
 	public MorphLineStyle(MorphLineStyle object) {
 		startWidth = object.startWidth;
 		endWidth = object.endWidth;

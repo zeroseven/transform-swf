@@ -30,6 +30,7 @@
 package com.flagstone.transform.coder;
 
 /**
+ * //TODO(code) Remove context, it is now passed as a separate object
  * SWFEncoder extends LittleEndianEncoder by adding a context used to pass
  * information between classes during encoding.
  */

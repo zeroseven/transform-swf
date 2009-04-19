@@ -43,6 +43,7 @@ import com.flagstone.transform.movie.ShowFrame;
 import com.flagstone.transform.movie.Strings;
 import com.flagstone.transform.movie.Types;
 
+//TODO(doc) Review
 /**
  * DefineMovieClip defines a movie clip that animates shapes within a movie. It 
  * contains an array of movie objects that define the placement of shapes,
@@ -77,6 +78,8 @@ public final class DefineMovieClip implements DefineTag
 	private transient int end;
 	private transient int length;
 
+	//TODO(doc)
+	//TODO(optimise)
 	public DefineMovieClip(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();
@@ -125,6 +128,7 @@ public final class DefineMovieClip implements DefineTag
 		setObjects(anArray);
 	}
 	
+	//TODO(doc)
 	public DefineMovieClip(DefineMovieClip object) {
 		identifier = object.identifier;
 		objects = new ArrayList<MovieTag>(object.objects.size());

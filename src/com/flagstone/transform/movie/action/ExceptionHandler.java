@@ -41,7 +41,7 @@ import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Strings;
 import com.flagstone.transform.movie.Types;
 
-
+//TODO(doc) Review
 /**
  * The ExceptionHandler class is used to specify try..catch blocks so
  * exceptions can be thrown and handled when executing a series of actions.
@@ -80,6 +80,8 @@ public final class ExceptionHandler implements Action
 	private transient int catchLength;
 	private transient int finalLength;
 
+	//TODO(doc)
+	//TODO(optimise)
 	public ExceptionHandler(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		coder.readByte();
@@ -134,7 +136,6 @@ public final class ExceptionHandler implements Action
 			}
 		}
 	}
-
 
 	/**
 	 * Creates a new exception handler with the thrown object assigned to a
@@ -227,6 +228,7 @@ public final class ExceptionHandler implements Action
 	 * @param anAction
 	 *            an action. Must not be null.
 	 */
+	//TODO(code) return this
 	public void addToTry(Action anAction)
 	{
 		if (anAction == null) {
@@ -246,6 +248,7 @@ public final class ExceptionHandler implements Action
 	 * @param anAction
 	 *            an action. Must not be null.
 	 */
+	//TODO(code) return this
 	public void addToCatch(Action anAction)
 	{
 		if (anAction == null) {
@@ -265,6 +268,7 @@ public final class ExceptionHandler implements Action
 	 * @param anAction
 	 *            an action. Must not be null.
 	 */
+	//TODO(code) return this
 	public void addToFinally(Action anAction)
 	{
 		if (anAction == null) {
@@ -337,7 +341,7 @@ public final class ExceptionHandler implements Action
 			throw new IllegalArgumentException(Strings.REGISTER_OUT_OF_RANGE);
 		}
 		register = index;
-		variable = null; // NOPMD
+		variable = null; //TODO(code) fix
 	}
 
 	/**
@@ -356,6 +360,7 @@ public final class ExceptionHandler implements Action
 	 * @param array
 	 *            the array of actions for the try block. Must not be null.
 	 */
+	//TODO(code) Add test for null
 	public void setTryActions(List<Action> array)
 	{
 		tryActions = array;
@@ -378,6 +383,7 @@ public final class ExceptionHandler implements Action
 	 *            the array of actions for the catch block. May be empty if 
 	 *            no catch block is defined but must not be null.
 	 */
+	//TODO(code) Add test for null
 	public void setCatchActions(List<Action> array)
 	{
 		catchActions = array;
@@ -400,14 +406,12 @@ public final class ExceptionHandler implements Action
 	 *            the array of actions for the final block. May be empty if 
 	 *            no finally block is defined but must not be null.
 	 */
+	//TODO(code) Add test for null
 	public void setFinalActions(List<Action> array)
 	{
 		finalActions = array;
 	}
 
-	/**
-	 * Creates and returns a deep copy of this object.
-	 */
 	public ExceptionHandler copy() 
 	{
 		return new ExceptionHandler(this);
@@ -419,6 +423,7 @@ public final class ExceptionHandler implements Action
 		return String.format(FORMAT, variable, register, tryActions, catchActions, finalActions);
 	}
 
+	//TODO(optimise)
 	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
 		length = 7;
@@ -452,6 +457,7 @@ public final class ExceptionHandler implements Action
 		return 3 + length;
 	}
 
+	//TODO(optimise)
 	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		coder.writeByte(Types.EXCEPTION_HANDLER);

@@ -275,11 +275,11 @@ public final class ScreenPacket implements Cloneable
 		blockHeight = (coder.readBits(4, false) + 1) * 16;
 		imageHeight = coder.readBits(12, false);
 
-		int columns = imageWidth / blockWidth + ((imageWidth % blockWidth > 0) ? 1 : 0); // NOPMD
-		int rows = imageHeight / blockHeight + ((imageHeight % blockHeight > 0) ? 1 : 0); // NOPMD
+		int columns = imageWidth / blockWidth + ((imageWidth % blockWidth > 0) ? 1 : 0); //TODO(code) fix
+		int rows = imageHeight / blockHeight + ((imageHeight % blockHeight > 0) ? 1 : 0); //TODO(code) fix
 
-		int height = imageHeight; // NOPMD
-		int width = imageWidth; // NOPMD
+		int height = imageHeight; //TODO(code) fix
+		int width = imageWidth; //TODO(code) fix
 
 		imageBlocks.clear();
 		ImageBlock block;

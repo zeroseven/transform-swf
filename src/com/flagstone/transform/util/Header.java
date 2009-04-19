@@ -54,6 +54,7 @@ import com.flagstone.transform.movie.Strings;
  * axes. (minX, minY) is often (0,0) but may contain any positive or negative
  * values.</p>
  */
+//TODO(api) Replace by adding suitable code to Movie
 public final class Header
 {
 	private String signature;

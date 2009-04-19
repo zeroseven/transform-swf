@@ -37,7 +37,7 @@ import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Strings;
 import com.flagstone.transform.movie.Types;
 
-
+//TODO(doc) Review
 /**
  * SetTarget selects a movie clip to allow its time-line to be controlled. The 
  * action performs a "context switch". All following actions such as GotoFrame, 
@@ -54,6 +54,7 @@ public final class SetTarget implements Action
 	
 	private transient int length;
 
+	//TODO(doc)
 	public SetTarget(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		coder.readByte();
@@ -73,6 +74,7 @@ public final class SetTarget implements Action
 		setTarget(aString);
 	}
 	
+	//TODO(doc)
 	public SetTarget(SetTarget object) {
 		target = object.target;
 	}

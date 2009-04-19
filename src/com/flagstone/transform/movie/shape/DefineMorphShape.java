@@ -45,6 +45,7 @@ import com.flagstone.transform.movie.datatype.Bounds;
 import com.flagstone.transform.movie.fillstyle.FillStyle;
 import com.flagstone.transform.movie.linestyle.MorphLineStyle;
 
+//TODO(doc) Review
 /**
  * DefineMorphShape defines a shape that will morph from one form into
  * another.
@@ -99,6 +100,8 @@ public final class DefineMorphShape implements DefineTag
 	private transient int fillBits;
 	private transient int lineBits;
 
+	//TODO(doc)
+	//TODO(optimise)
 	public DefineMorphShape(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		int start = coder.getPointer();
@@ -121,8 +124,8 @@ public final class DefineMorphShape implements DefineTag
 		fillStyles = new ArrayList<FillStyle>();
 		lineStyles = new ArrayList<MorphLineStyle>();
 
-		int offset = coder.readWord(4, false); // NOPMD
-		int first = coder.getPointer(); // NOPMD
+		int offset = coder.readWord(4, false); //TODO(code) fix
+		int first = coder.getPointer(); //TODO(code) fix
 
 		int fillStyleCount = coder.readByte();
 
@@ -204,6 +207,7 @@ public final class DefineMorphShape implements DefineTag
 		setEndShape(endShape);
 	}
 	
+	//TODO(doc)
 	public DefineMorphShape(DefineMorphShape object)
 	{
 		identifier = object.identifier;
@@ -408,9 +412,6 @@ public final class DefineMorphShape implements DefineTag
 		endShape = aShape;
 	}
 
-	/**
-	 * Creates and returns a deep copy of this object.
-	 */
 	public DefineMorphShape copy() 
 	{
 		return new DefineMorphShape(this);
@@ -423,6 +424,7 @@ public final class DefineMorphShape implements DefineTag
 				fillStyles, lineStyles, startShape, endShape);
 	}
 
+	//TODO(optimise)
 	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
 		fillBits = Encoder.unsignedSize(fillStyles.size());
@@ -475,6 +477,7 @@ public final class DefineMorphShape implements DefineTag
 		return (length > 62 ? 6:2) + length;
 	}
 
+	//TODO(optimise)
 	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();

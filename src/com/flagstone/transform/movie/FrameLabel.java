@@ -37,6 +37,7 @@ import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.action.GetUrl;
 import com.flagstone.transform.movie.action.GetUrl2;
 
+//TODO(doc) Review
 /**
  * FrameLabel defines a name for the current frame in a movie or movie clip.
  * 
@@ -76,6 +77,7 @@ public final class FrameLabel implements MovieTag {
 			length = coder.readWord(4, false);
 		}
 
+		//TODO(optimise) can this be replaced by checking whether the second last byte is zero.
 		int start = coder.getPointer();
 		int strlen = 0;
 
@@ -117,7 +119,7 @@ public final class FrameLabel implements MovieTag {
 	 */
 	public FrameLabel(final String aString, final boolean isAnchor) {
 		setLabel(aString);
-		setAnchor(isAnchor);
+		setAnchor(isAnchor); //TODO(optimise) no need to call method
 	}
 
 	/**

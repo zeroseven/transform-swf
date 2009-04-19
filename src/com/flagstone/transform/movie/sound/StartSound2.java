@@ -38,6 +38,7 @@ import com.flagstone.transform.movie.MovieTag;
 import com.flagstone.transform.movie.Strings;
 import com.flagstone.transform.movie.Types;
 
+//TODO(doc) 
 /**
  * StartSound2 instructs the player to start or stop playing a sound defined
  * using the DefineSound class.
@@ -61,6 +62,7 @@ public final class StartSound2 implements MovieTag
 	private transient int end;
 	private transient int length;
 
+	//TODO(doc) 
 	public StartSound2(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();
@@ -92,12 +94,14 @@ public final class StartSound2 implements MovieTag
 		setSound(aSound);
 	}
 	
+	//TODO(doc) 
 	public StartSound2(StartSound2 object)
 	{
 		soundClass = object.soundClass;
 		sound = object.sound.copy();
 	}
 
+	//TODO(doc) 
 	public String getSoundClass() {
 		return soundClass;
 	}
@@ -110,6 +114,7 @@ public final class StartSound2 implements MovieTag
 		return sound;
 	}
 	
+	//TODO(doc) 
 	public void setSoundClass(String className) {
 		soundClass = className;
 	}
@@ -129,9 +134,6 @@ public final class StartSound2 implements MovieTag
 		sound = aSound;
 	}
 
-	/**
-	 * Creates and returns a deep copy of this object.
-	 */
 	public StartSound2 copy() 
 	{
 		return new StartSound2(this);

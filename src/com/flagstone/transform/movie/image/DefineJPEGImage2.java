@@ -61,7 +61,7 @@ public final class DefineJPEGImage2 implements ImageTag
 	private transient int width;
 	private transient int height;
 
-
+	//TODO(doc)
 	public DefineJPEGImage2(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();
@@ -74,7 +74,8 @@ public final class DefineJPEGImage2 implements ImageTag
 		
 		identifier = coder.readWord(2, false);
 		image = coder.readBytes(new byte[length-2]);
-		
+		//TODO(code) width and height are not set.
+	
 		if (coder.getPointer() != end) {
 			throw new CoderException(getClass().getName(), start >> 3, length,
 					(coder.getPointer() - end) >> 3);
@@ -97,6 +98,7 @@ public final class DefineJPEGImage2 implements ImageTag
 		setImage(image);
 	}
 	
+	//TODO(doc)
 	public DefineJPEGImage2(DefineJPEGImage2 object) {
 		identifier = object.identifier;
 		width = object.width;
@@ -196,6 +198,7 @@ public final class DefineJPEGImage2 implements ImageTag
 		}
 	}
 
+	//TODO(code) Share with other JPEG image classes or optimise and integrate.
 	private void decodeInfo()
 	{
 		BigEndianDecoder coder = new BigEndianDecoder(image);

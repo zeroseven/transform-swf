@@ -70,6 +70,7 @@ public final class DefineShape4 implements DefineTag
 	private transient int lineBits;
 	private transient boolean scaling;
 
+	//TODO(doc)
 	public DefineShape4(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();
@@ -159,6 +160,7 @@ public final class DefineShape4 implements DefineTag
 		setShape(aShape);
 	}
 	
+	//TODO(doc)
 	public DefineShape4(DefineShape4 object)
 	{
 		identifier = object.identifier;
@@ -300,7 +302,6 @@ public final class DefineShape4 implements DefineTag
 		return shape;
 	}
 
-
 	/**
 	 * Sets the array fill styles that will be used to draw the shape.
 	 * 
@@ -344,9 +345,6 @@ public final class DefineShape4 implements DefineTag
 		shape = aShape;
 	}
 
-	/**
-	 * Creates and returns a deep copy of this object.
-	 */
 	public DefineShape4 copy() 
 	{
 		return new DefineShape4(this);

@@ -47,6 +47,7 @@ import com.flagstone.transform.movie.datatype.ColorTransform;
 import com.flagstone.transform.movie.datatype.CoordTransform;
 import com.flagstone.transform.movie.filter.Filter;
 
+//TODO(doc) Review
 /**
  * <p>ButtonShape identifies the shape that is drawn when a button is in a 
  * particular state. Shapes can be drawn for each of three button states, Over,
@@ -88,6 +89,8 @@ public final class ButtonShape implements Encodeable
 	private List<Filter> filters;
 	private Blend blendMode;
 
+	//TODO(doc)
+	//TODO(code) implement fully
 	public ButtonShape(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		coder.readBits(4, false);
@@ -160,6 +163,7 @@ public final class ButtonShape implements Encodeable
 		setColorTransform(aColorTransform);
 	}
 	
+	//TODO(doc)
 	public ButtonShape(ButtonShape object) {
 		state = object.state;
 		identifier = object.identifier;
@@ -168,6 +172,7 @@ public final class ButtonShape implements Encodeable
 		colorTransform = object.colorTransform;
 	}
 
+	//TODO(doc)
 	public Set<Button.State> getState()
 	{
 		Set<Button.State>set = EnumSet.allOf(Button.State.class);
@@ -180,6 +185,7 @@ public final class ButtonShape implements Encodeable
 		return set;
 	}
 
+	//TODO(doc)
 	public void setState(Set<Button.State>states)
 	{
 		for (Button.State state : states) {
@@ -229,7 +235,7 @@ public final class ButtonShape implements Encodeable
 	 */
 	public void setLayer(int aNumber)
 	{
-		if (aNumber < 0 || aNumber > 65535) {
+		if (aNumber < 1 || aNumber > 65535) {
 			throw new IllegalArgumentException(Strings.LAYER_OUT_OF_RANGE);
 		}
 		layer = aNumber;
@@ -289,6 +295,7 @@ public final class ButtonShape implements Encodeable
 		colorTransform = aTransform;
 	}
 
+	//TODO(doc)
 	public ButtonShape add(Filter filter)
 	{
 		if (filter == null) {
@@ -298,11 +305,13 @@ public final class ButtonShape implements Encodeable
 		return this;
 	}
 
+	//TODO(doc)
 	public List<Filter> getFilters()
 	{
 		return filters;
 	}
 
+	//TODO(doc)
 	public void setFilters(List<Filter> array)
 	{
 		if (array == null) {
@@ -311,11 +320,13 @@ public final class ButtonShape implements Encodeable
 		filters = array;
 	}
 
+	//TODO(doc)
 	public Blend getBlendMode()
 	{
 		return blendMode;
 	}
 
+	//TODO(doc)
 	public void setBlendMode(Blend blend)
 	{
 		blendMode = blend;
@@ -335,6 +346,7 @@ public final class ButtonShape implements Encodeable
 		return String.format(FORMAT, state, identifier, layer, transform, colorTransform);
 	}
 
+	//TODO(code) implement fully
 	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
 		int length = 5 + transform.prepareToEncode(coder, context);
@@ -346,6 +358,8 @@ public final class ButtonShape implements Encodeable
 		return length;
 	}
 
+	//TODO(code) implement fully
+	//TODO(code) Add test so blend and filters are only added in flash 8+
 	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		coder.writeBits(0, 4);

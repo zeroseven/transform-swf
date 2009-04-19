@@ -39,6 +39,7 @@ import com.flagstone.transform.movie.Strings;
 import com.flagstone.transform.movie.datatype.Color;
 import com.flagstone.transform.movie.font.Kerning;
 
+//TODO(doc) Review
 /**
  * Gradient defines a control point that is used to specify how a gradient
  * colour is displayed.
@@ -147,6 +148,7 @@ public final class Gradient implements Encodeable
 
 	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
+		//TODO(optimise) calculate color length directly
 		int length = 1;
 
 		length += color.prepareToEncode(coder, context);

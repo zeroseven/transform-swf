@@ -68,34 +68,38 @@ public final class MovieObject implements MovieTag {
 		data = coder.readBytes(new byte[length]);
 	}
 
+	//TODO(doc)
 	public MovieObject(int type, byte[] bytes) {
 		this.type = type;
 		setData(bytes);
 	}
 
+	//TODO(doc)
 	public MovieObject(MovieObject object) {
 		type = object.type;
 		data = Arrays.copyOf(object.data, object.data.length);
 	}
 	
+	//TODO(doc)
 	public int getType() {
 		return type;
 	}
 
 	/**
-	 * Returns the encoded data for the action.
+	 * Returns the encoded data for the movie tag object.
 	 */
 	public byte[] getData() {
 		return data;
 	}
 
 	/**
-	 * Sets the encoded data for the action.
+	 * Sets the encoded data for the movie tag object.
 	 * 
 	 * @param bytes
-	 *            the encoded data for the action. May be zero length but not
+	 *            the encoded data for the object. May be zero length but not
 	 *            null.
 	 */
+	//TODO(api) Remove ?
 	public void setData(byte[] bytes) {
 		if (bytes == null) {
 			throw new IllegalArgumentException(Strings.DATA_CANNOT_BE_NULL);

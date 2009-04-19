@@ -37,6 +37,7 @@ import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Encodeable;
 import com.flagstone.transform.movie.Strings;
 
+//TODO(doc) Review
 /**
  * Kerning is used to fine-tune the spacing between specific pairs 
  * of characters to make them visually more appealing.</p>
@@ -53,7 +54,7 @@ import com.flagstone.transform.movie.Strings;
  */
 public final class Kerning implements Encodeable
 {
-	private static final String FORMAT = "Kerning: { leftIndex=%d; rightIndex=%d; adjustment=%d } ";
+	private static final String FORMAT = "Kerning: { leftGlyph=%d; rightGlyph=%d; adjustment=%d } ";
 	
 	private final transient int leftGlyph;
 	private final transient int rightGlyph;

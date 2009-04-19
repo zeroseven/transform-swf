@@ -38,6 +38,7 @@ import com.flagstone.transform.movie.Strings;
 import com.flagstone.transform.movie.datatype.Color;
 import com.flagstone.transform.movie.shape.DefineMorphShape;
 
+//TODO(doc) Review
 /**
  * MorphSolidFill defines the solid colours that are used to fill a shape at the
  * start and end of the morphing process.
@@ -51,6 +52,7 @@ public final class MorphSolidFill implements FillStyle {
 	private Color startColor;
 	private Color endColor;
 
+	//TODO(doc)
 	public MorphSolidFill(final SWFDecoder coder, final SWFContext context) throws CoderException {
 		coder.adjustPointer(8);
 		startColor = new Color(coder, context);
@@ -71,6 +73,7 @@ public final class MorphSolidFill implements FillStyle {
 		setEndColor(end);
 	}
 	
+	//TODO(doc)
 	public MorphSolidFill(MorphSolidFill object) {
 		startColor = object.startColor;
 		endColor = object.endColor;
@@ -116,7 +119,6 @@ public final class MorphSolidFill implements FillStyle {
 		endColor = aColor;
 	}
 
-	@Override
 	public MorphSolidFill copy() {
 		return new MorphSolidFill(this);
 	}
@@ -127,6 +129,7 @@ public final class MorphSolidFill implements FillStyle {
 	}
 
 	public int prepareToEncode(final SWFEncoder coder, final SWFContext context) {
+		//TODO(optimise) calculate size of colors directly
 		return 1 + startColor.prepareToEncode(coder, context)
 				+ endColor.prepareToEncode(coder, context);
 	}

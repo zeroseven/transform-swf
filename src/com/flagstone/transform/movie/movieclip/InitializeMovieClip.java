@@ -45,7 +45,7 @@ import com.flagstone.transform.movie.Types;
 import com.flagstone.transform.movie.action.Action;
 import com.flagstone.transform.movie.action.ActionData;
 
-
+//TODO(doc) Review
 /**
  * Initialize is used to specify a sequence of actions that are executed to
  * initialise a movie clip before it is displayed.
@@ -74,6 +74,7 @@ public final class InitializeMovieClip implements MovieTag
 	private transient int end;
 	private transient int length;
 
+	//TODO(doc)
 	public InitializeMovieClip(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();
@@ -118,6 +119,7 @@ public final class InitializeMovieClip implements MovieTag
 		setActions(anArray);
 	}
 	
+	//TODO(doc)
 	public InitializeMovieClip(InitializeMovieClip object) {
 		identifier = object.identifier;
 		
@@ -207,6 +209,7 @@ public final class InitializeMovieClip implements MovieTag
 	{
 		length = 2;
 
+		//TODO(optimise) replace with foreach loop
 		Iterator<Action> iAction = actions.iterator();
 		
 		while (iAction.hasNext()) {

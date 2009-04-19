@@ -40,6 +40,8 @@ import com.flagstone.transform.movie.ImageTag;
 import com.flagstone.transform.movie.Strings;
 import com.flagstone.transform.movie.Types;
 
+//TODO(doc) Review
+
 /**
  * DefineImage is used to define an image compressed using the lossless zlib
  * compression algorithm.
@@ -97,6 +99,7 @@ public final class DefineImage implements ImageTag
 	private transient int length;
 	private transient boolean extendLength;
 
+	//TODO(doc)
 	public DefineImage(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();
@@ -197,7 +200,8 @@ public final class DefineImage implements ImageTag
 		setData(data);
 	}
 	
-	private DefineImage(DefineImage object)
+	//TODO(doc)
+	public DefineImage(DefineImage object)
 	{
 		extendLength = object.extendLength;
 		width = object.width;

@@ -37,7 +37,7 @@ import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Strings;
 import com.flagstone.transform.movie.Types;
 
-
+//TODO(doc) Review
 /**
  * The Jump action performs an unconditional branch to control the actions
  * executed by the Flash Player.
@@ -65,6 +65,7 @@ public final class Jump implements Action
 
 	private int offset;
 
+	//TODO(doc)
 	public Jump(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		coder.readByte();
@@ -84,6 +85,7 @@ public final class Jump implements Action
 		setOffset(anOffset);
 	}
 	
+	//TODO(doc)
 	public Jump(Jump object) {
 		offset = object.offset;
 	}

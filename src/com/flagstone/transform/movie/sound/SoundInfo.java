@@ -42,6 +42,7 @@ import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Encodeable;
 import com.flagstone.transform.movie.Strings;
 
+//TODO(doc) Review
 /**
  * SoundInfo identifies a sound (previously defined using The
  * DefineSound class) and controls how it is played.
@@ -67,10 +68,12 @@ import com.flagstone.transform.movie.Strings;
  * 
  * @see DefineSound
  */
+//TODO(api) Should LoopCount be an Integer?
 public final class SoundInfo implements Encodeable
 {
 	private static final String FORMAT = "SoundInfo: { identifier=%d; mode=%s; inPoint=%d; outPoint=%d; loopCount=%d; envelopes=%s; }";
 	
+	//TODO(doc)
 	public enum Mode {
 		/** Start playing the sound. */
 		START(0),
@@ -111,6 +114,7 @@ public final class SoundInfo implements Encodeable
 	private int loopCount;
 	private Envelope envelope;
 
+	//TODO(doc)
 	public SoundInfo(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		identifier = coder.readWord(2, false);
@@ -161,6 +165,7 @@ public final class SoundInfo implements Encodeable
 		setEnvelope(envelope);
 	}
 
+	//TODO(doc)
 	public SoundInfo(SoundInfo object)
 	{
 		identifier = object.identifier;
@@ -302,9 +307,6 @@ public final class SoundInfo implements Encodeable
 		this.envelope = envelope;
 	}
 
-	/**
-	 * Creates and returns a deep copy of this object.
-	 */
 	public SoundInfo copy()
 	{
 		return new SoundInfo(this);

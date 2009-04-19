@@ -40,6 +40,7 @@ import com.flagstone.transform.movie.shape.DefineShape;
 import com.flagstone.transform.movie.shape.DefineShape2;
 import com.flagstone.transform.movie.shape.DefineShape3;
 
+//TODO(doc) Review
 /**
  * <p>
  * BitmapFill is used to display an image inside a shape. An image cannot be
@@ -90,14 +91,16 @@ import com.flagstone.transform.movie.shape.DefineShape3;
  * @see DefineShape2
  * @see DefineShape3
  */
+//TODO(api) Add attributes for smoothed and tiled
 public final class BitmapFill implements FillStyle {
 
 	private static final String FORMAT = "BitmapFill: { identifier=%d; transform=%s }";
 
-	private int type;
+	private int type; 
 	private int identifier;
 	private CoordTransform transform;
 
+	//TODO(doc)
 	public BitmapFill(final SWFDecoder coder, final SWFContext context) throws CoderException {
 		type = coder.readByte();
 		identifier = coder.readWord(2, false);
@@ -120,15 +123,15 @@ public final class BitmapFill implements FillStyle {
 	 *            a CoordTransform object that typically changes the size and
 	 *            location and position of the image inside the parent shape.
 	 */
-	public BitmapFill(final int type, final int uid,
-			final CoordTransform transform) {
+	public BitmapFill(final int type, final int uid, final CoordTransform transform) {
 		this.type = type;
 		setIdentifier(uid);
 		setTransform(transform);
 	}
 	
+	//TODO(doc)
 	public BitmapFill(BitmapFill object) {
-		this.type = object.type;
+		type = object.type;
 		identifier = object.identifier;
 		transform = object.transform;
 	}

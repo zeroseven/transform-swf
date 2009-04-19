@@ -30,6 +30,8 @@
 
 package com.flagstone.transform.movie.linestyle;
 
+//TODO(doc)
+//TODO(api) Change to an enum
 public interface LineCapStyle {
 	int ROUND = 0;
 	int NONE = 1;

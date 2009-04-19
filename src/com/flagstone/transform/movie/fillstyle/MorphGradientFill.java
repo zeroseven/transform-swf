@@ -41,6 +41,7 @@ import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Strings;
 import com.flagstone.transform.movie.datatype.CoordTransform;
 
+//TODO(doc) Review
 /**
  * MorphGradientFill defines how a colour gradient changes across an area filled
  * in a shape as it is morphed. {@link GradientFill} has a description of colour 
@@ -49,6 +50,7 @@ import com.flagstone.transform.movie.datatype.CoordTransform;
  * @see MorphGradient
  * @see GradientFill
  */
+//TODO(api) Add attributes for linear/radial gradients
 public final class MorphGradientFill implements FillStyle {
 
 	private static final String FORMAT = "MorphGradientFill: { start=%s; end=%s; gradients=%s }";
@@ -60,6 +62,7 @@ public final class MorphGradientFill implements FillStyle {
 	
 	private transient int count;
 
+	//TODO(doc)
 	public MorphGradientFill(final SWFDecoder coder, final SWFContext context) throws CoderException {
 	    type = coder.readByte();
 		startTransform = new CoordTransform(coder);
@@ -99,6 +102,7 @@ public final class MorphGradientFill implements FillStyle {
 		setGradients(gradients);
 	}
 	
+	//TODO(doc)
 	public MorphGradientFill(MorphGradientFill object) {
 		type = object.type;
 		startTransform = object.startTransform;
@@ -121,6 +125,7 @@ public final class MorphGradientFill implements FillStyle {
 		if (aGradient == null) {
 			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
 		}
+		//TODO(code) Add check for array size
 		gradients.add(aGradient);
 		return this;
 	}
@@ -190,6 +195,7 @@ public final class MorphGradientFill implements FillStyle {
 		if (anArray == null) {
 			throw new IllegalArgumentException(Strings.ARRAY_CANNOT_BE_NULL);
 		}
+		//TODO(code) Add check for array size
 		gradients = anArray;
 	}
 
@@ -209,6 +215,7 @@ public final class MorphGradientFill implements FillStyle {
 		int length = 2 + startTransform.prepareToEncode(coder, context)
 				+ endTransform.prepareToEncode(coder, context);
 		
+		//TODO(optimise) calculate gradient array size directly.
 		count = gradients.size();
 		
 		for (iter = gradients.iterator(); iter.hasNext();) {
@@ -219,6 +226,7 @@ public final class MorphGradientFill implements FillStyle {
 	}
 
 	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException {
+		//TODO(optimise) Replace with foreach loop
 		Iterator<MorphGradient> iter;
 		
 		coder.writeByte(type);

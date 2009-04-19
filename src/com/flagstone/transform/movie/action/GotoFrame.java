@@ -38,6 +38,7 @@ import com.flagstone.transform.movie.Strings;
 import com.flagstone.transform.movie.Types;
 
 
+//TODO(doc) Review
 /**
  * The GotoFrame action instructs the player to move to the specified frame
  * number in the current movie's main time-line.
@@ -56,6 +57,7 @@ public final class GotoFrame implements Action
 	
 	private int frameNumber;
 
+	//TODO(doc)
 	public GotoFrame(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		coder.readByte();
@@ -74,6 +76,7 @@ public final class GotoFrame implements Action
 		setFrameNumber(aNumber);
 	}
 	
+	//TODO(doc)
 	public GotoFrame(GotoFrame object) {
 		frameNumber = object.frameNumber;
 	}

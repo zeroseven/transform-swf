@@ -45,7 +45,7 @@ import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Strings;
 import com.flagstone.transform.movie.Types;
 
-
+//TODO(doc) Review
 /**
  * The NewFunction2 action is used to create a user-defined function with 
  * optimisations to improve performance.
@@ -121,10 +121,12 @@ import com.flagstone.transform.movie.Types;
  * 
  * @see NewFunction
  */
+//TODO(api) replace constructors with factory methods for functions and methods.
 public final class NewFunction2 implements Action
 {
 	private static final String FORMAT = "NewFunction2: { name=%s; registerCount=%d; optimizations=%s; arguments=%s; actions=%s }";
 
+	//TODO(doc)
 	public enum Optimization {
 		/** Create and initialised the predefined variable, <em>super</em>. */
 		CREATE_SUPER(4),
@@ -164,6 +166,7 @@ public final class NewFunction2 implements Action
 			this.value = value;
 		}
 		
+		//TODO(doc)
 		public int getValue()
 		{
 			return value;
@@ -173,13 +176,14 @@ public final class NewFunction2 implements Action
 	private String name;
 	private int registerCount;
 	private int optimizations;
-
 	private Map<String,Integer> arguments;
 	private List<Action> actions;
 
 	private transient int length;
 	private transient int actionsLength;
 
+	//TODO(doc)
+	//TODO(optimise)
 	public NewFunction2(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		coder.readByte();
@@ -255,6 +259,7 @@ public final class NewFunction2 implements Action
 		setActions(actions);
 	}
 	
+	//TODO(doc)
 	public NewFunction2(NewFunction2 object)
 	{
 		name = object.name;
@@ -348,6 +353,7 @@ public final class NewFunction2 implements Action
 		registerCount = count;
 	}
 
+	//TODO(doc)
 	public Set<Optimization> getOptimizations()
 	{
 		Set<Optimization>set = EnumSet.allOf(Optimization.class);
@@ -360,6 +366,7 @@ public final class NewFunction2 implements Action
 		return set;
 	}
 
+	//TODO(doc)
 	public void setOptimizations(Set<Optimization> optimizations)
 	{
 		for (Optimization opt : optimizations) {
@@ -417,9 +424,6 @@ public final class NewFunction2 implements Action
 		actions = anArray;
 	}
 
-	/**
-	 * Creates and returns a deep copy of this object.
-	 */
 	public NewFunction2 copy() 
 	{
 		return new NewFunction2(this);
@@ -432,6 +436,7 @@ public final class NewFunction2 implements Action
 				arguments, actions);
 	}
 
+	//TODO(optimise)
 	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
 		length = 5 + coder.strlen(name);
@@ -454,6 +459,7 @@ public final class NewFunction2 implements Action
 		return 3 + length;
 	}
 
+	//TODO(optimise)
 	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		coder.writeWord(Types.NEW_FUNCTION_2, 1);

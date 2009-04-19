@@ -64,6 +64,7 @@ public final class JPEGEncodingTable implements MovieTag
 	private transient int end;
 	private transient int length;
 
+	//TODO(doc)
 	public JPEGEncodingTable(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();
@@ -94,6 +95,7 @@ public final class JPEGEncodingTable implements MovieTag
 		setTable(bytes);
 	}
 	
+	//TODO(doc)
 	public JPEGEncodingTable(JPEGEncodingTable object) {
 		table = Arrays.copyOf(object.table, object.table.length);
 	}
@@ -126,17 +128,11 @@ public final class JPEGEncodingTable implements MovieTag
 		table = bytes;
 	}
 
-	/**
-	 * Creates and returns a deep copy of this object.
-	 */
 	public JPEGEncodingTable copy() 
 	{
 		return new JPEGEncodingTable(this);
 	}
 
-	/**
-	 * Returns a short description of this action.
-	 */
 	@Override
 	public String toString()
 	{

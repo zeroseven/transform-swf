@@ -36,7 +36,9 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.datatype.Bounds;
 
+//TODO(doc)
 public final class ScalingGrid implements DefineTag {
+
 	private static final String FORMAT = "ScalingGrid: { identifier=%d; bounds=%s; }";
 
 	private int identifier;
@@ -44,6 +46,7 @@ public final class ScalingGrid implements DefineTag {
 
 	private transient int length;
 
+	//TODO(doc)
 	public ScalingGrid(final SWFDecoder coder, final SWFContext context) throws CoderException {
 
 		if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
@@ -79,12 +82,6 @@ public final class ScalingGrid implements DefineTag {
 		return bounds;
 	}
 
-	/**
-	 * Sets the bounding rectangle that encloses the shape.
-	 * 
-	 * @param aBounds
-	 *            set the bounding rectangle for the shape. Must not be null.
-	 */
 	public void setBounds(Bounds aBounds) {
 		if (aBounds == null) {
 			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);

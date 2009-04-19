@@ -36,6 +36,7 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.datatype.Color;
 
+//TODO(doc) Review
 /**
  * Background sets the background colour displayed in every frame in the movie.
  * 
@@ -61,6 +62,7 @@ public final class Background implements MovieTag {
 
 	private Color color;
 
+	//TODO(doc)
 	public Background(final SWFDecoder coder, final SWFContext context) throws CoderException {
 		if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
 			coder.readWord(4, false);

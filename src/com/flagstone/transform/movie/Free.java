@@ -45,6 +45,7 @@ public final class Free implements MovieTag {
 
 	private int identifier;
 
+	//TODo(doc)
 	public Free(final SWFDecoder coder, final SWFContext context) throws CoderException {
 
 		if ((coder.readWord(2, false) & 0x3F) == 0x3F) {

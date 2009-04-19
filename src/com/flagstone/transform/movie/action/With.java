@@ -41,7 +41,7 @@ import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Strings;
 import com.flagstone.transform.movie.Types;
 
-
+//TODO(doc) Review
 /**
  * With is a stack-based action and supports the <em>with</em> statement from 
  * the ActionScript language.
@@ -63,6 +63,7 @@ public final class With implements Action
 
 	private transient int length;
 
+	//TODO(doc)
 	public With(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		coder.readByte();
@@ -89,6 +90,7 @@ public final class With implements Action
 		setActions(anArray);
 	}
 	
+	//TODO(doc)
 	public With(With object)
 	{
 		actions = new ArrayList<Action>(object.actions.size());
@@ -144,6 +146,7 @@ public final class With implements Action
 		return String.format(FORMAT, actions);
 	}
 
+	//TODO(optimise) Replace iterator with foreach loop
 	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
 		length = 2;
@@ -157,6 +160,7 @@ public final class With implements Action
 		return 3 + length;
 	}
 
+	//TODO(optimise) Replace iterator with foreach loop
 	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		coder.writeWord(Types.WITH, 1);

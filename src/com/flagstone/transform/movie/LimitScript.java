@@ -46,7 +46,6 @@ import com.flagstone.transform.coder.SWFEncoder;
  * mechanism for people viewing a movie to regain control of the Flash Player
  * should a script fail.
  * </p>
- * 
  */
 public final class LimitScript implements MovieTag {
 	
@@ -55,6 +54,7 @@ public final class LimitScript implements MovieTag {
 	private int depth;
 	private int timeout;
 
+	//TODO(doc)
 	public LimitScript(final SWFDecoder coder, final SWFContext context) throws CoderException {
 
 		if ((coder.readWord(2, false) & 0x3F) == 0x3F) {

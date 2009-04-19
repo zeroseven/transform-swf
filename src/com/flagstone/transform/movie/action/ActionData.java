@@ -62,6 +62,7 @@ public final class ActionData implements Action {
 	 * @param size
 	 *            the number of bytes to reserve for encoded actions.
 	 */
+	//TODO(api) This method can be deleted, the block of actions can be read the parent class.
 	public ActionData(final int size, final SWFDecoder coder, SWFContext context) throws CoderException {
 		data = coder.readBytes(new byte[size]);
 	}
@@ -100,6 +101,7 @@ public final class ActionData implements Action {
 	 *            the encoded data for the action. May be zero length but not
 	 *            null.
 	 */
+	//TODO(api) Remove ?
 	public void setData(byte[] bytes) {
 		if (bytes == null) {
 			throw new IllegalArgumentException(Strings.DATA_CANNOT_BE_NULL);
@@ -114,6 +116,7 @@ public final class ActionData implements Action {
 	 *            the number of bytes to reserve for storing encoded actions.
 	 *            Must not be negative.
 	 */
+	//TODO(api) Remove ?
 	public void setData(int size) {
 		if (size < 0) {
 			throw new IllegalArgumentException(Strings.NUMBER_CANNOT_BE_NEGATIVE);

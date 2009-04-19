@@ -1,5 +1,6 @@
 package com.flagstone.transform.movie.button;
 
+//TODO(api) Rename to ButtonState
 public final class Button {
 
 	public enum State {

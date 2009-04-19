@@ -62,7 +62,8 @@ public final class Remove implements MovieTag {
 	
 	private int identifier;
 	private int layer;
-
+	
+	//TODO(doc)
 	public Remove(final SWFDecoder coder, final SWFContext context) throws CoderException {
 
 		if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
@@ -89,6 +90,7 @@ public final class Remove implements MovieTag {
 		setLayer(layer);
 	}
 
+	//TODO(doc)
 	public Remove(Remove object) {
 		identifier = object.identifier;
 		layer = object.layer;

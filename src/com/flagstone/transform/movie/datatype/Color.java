@@ -44,6 +44,7 @@ import com.flagstone.transform.movie.Strings;
  * </p>
  * 
  * <p>
+ * //TODO(doc) This paragraph is too wordy. Mention SWFContext
  * Whether a colour contains transparency information is determined by the
  * context created by the object that contains the colour. For example colours
  * within the DefineShape and DefineShape2 objects do not contain alpha channel
@@ -55,6 +56,8 @@ import com.flagstone.transform.movie.Strings;
  * be included.
  * </p>
  */
+//TODO(doc) Check comments for all methods
+//TODO(api) Add a method to generate colours using (int rgb, int alpha)
 public final class Color implements Encodeable {
 
 	private static final String FORMAT = "Color: { red=%d; green=%d; blue=%d; alpha=%d }";

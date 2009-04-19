@@ -60,6 +60,7 @@ public final class EnableDebugger2 implements MovieTag
 	
 	private transient int length;
 
+	//TODO(doc)
 	public EnableDebugger2(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		length = coder.readWord(2, false) & 0x3F;
@@ -84,6 +85,7 @@ public final class EnableDebugger2 implements MovieTag
 		setPassword(password);
 	}
 	
+	//TODO(doc)
 	public EnableDebugger2(EnableDebugger2 object) {
 		password = object.password;
 	}

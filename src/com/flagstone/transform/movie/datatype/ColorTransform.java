@@ -89,13 +89,15 @@ import com.flagstone.transform.movie.Encodeable;
  * Not all objects containing a colour transform use the add or multiply terms
  * defined for the alpha channel. The colour objects defined in an DefineButton,
  * ButtonColorTransform or PlaceObject object do not use the alpha channel while
- * DefineButton2 and PlaceObject2 do. The "parent" object is stored in a Context
- * when objects are encoded or decoded allowing the alpha terms to be
- * selectively encoded or decoded.
+ * DefineButton2 and PlaceObject2 do. Whether the parent object uses the alpha 
+ * channel is stored in a SWFContext which is passed when the transform is 
+ * encoded or decoded.
  * </p>
  * 
  */
-@SuppressWarnings("PMD.TooManyMethods")
+//TODO(optimise) Can hasAdd or hasMultiply be set in constructors.
+//TODO(optimise) Is there a more efficient way of calculating field size.
+//TODO(doc) review.
 public final class ColorTransform implements Encodeable {
 
 	private static final String FORMAT = 
@@ -118,7 +120,7 @@ public final class ColorTransform implements Encodeable {
 
 	public ColorTransform(final SWFDecoder coder, final SWFContext context) throws CoderException {
 
-		coder.alignToByte();
+		coder.alignToByte(); //TODO(optimise) Can this be removed. 
 
 		hasAdd = coder.readBits(1, false) != 0;
 		hasMultiply = coder.readBits(1, false) != 0;
@@ -206,15 +208,16 @@ public final class ColorTransform implements Encodeable {
 			final int addBlue, final int addAlpha,
 			final float mulRed, final float mulGreen,
 			final float mulBlue, final float mulAlpha) {
-		multiplyRed = (int) (mulRed * 256);
-		multiplyGreen = (int) (mulGreen * 256);
-		multiplyBlue = (int) (mulBlue * 256);
-		multiplyAlpha = (int) (mulAlpha * 256);
 
 		this.addRed = addRed;
 		this.addGreen = addGreen;
 		this.addBlue = addBlue;
 		this.addAlpha = addAlpha;
+
+		multiplyRed = (int) (mulRed * 256);
+		multiplyGreen = (int) (mulGreen * 256);
+		multiplyBlue = (int) (mulBlue * 256);
+		multiplyAlpha = (int) (mulAlpha * 256);
 	}
 
 	/**
@@ -240,6 +243,7 @@ public final class ColorTransform implements Encodeable {
 	 * Returns true if the colour of an object will be unchanged by the
 	 * transform.
 	 */
+	//TODO(api) Remove ?
 	public boolean isUnityTransform() {
 		return (multiplyRed == 256) && (multiplyGreen == 256)
 				&& (multiplyBlue == 256) && (multiplyAlpha == 256)
@@ -321,8 +325,10 @@ public final class ColorTransform implements Encodeable {
 			result = true;
 		} else if (object instanceof ColorTransform) {
 			transform = (ColorTransform)object;
-			result = addRed == transform.addRed && addGreen == transform.addGreen &&
-				addBlue == transform.addBlue && addAlpha == transform.addAlpha &&
+			result = addRed == transform.addRed && 
+				addGreen == transform.addGreen &&
+				addBlue == transform.addBlue && 
+				addAlpha == transform.addAlpha &&
 				multiplyRed == transform.multiplyRed && 
 				multiplyGreen == transform.multiplyGreen && 
 				multiplyBlue == transform.multiplyBlue &&
@@ -362,7 +368,7 @@ public final class ColorTransform implements Encodeable {
 	@SuppressWarnings("PMD.NPathComplexity")
 	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException {
 
-		coder.alignToByte();
+		coder.alignToByte(); //TODO(optimise) Can this be removed. 
 
 		coder.writeBits(hasAdd ? 1 : 0, 1);
 		coder.writeBits(hasMultiply ? 1 : 0, 1);

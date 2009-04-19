@@ -53,6 +53,7 @@ public final class TabOrder implements MovieTag {
 	private int layer;
 	private int index;
 
+	//TODO(doc)
 	public TabOrder(final SWFDecoder coder, final SWFContext context) throws CoderException {
 
 		if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
@@ -79,6 +80,7 @@ public final class TabOrder implements MovieTag {
 		setIndex(index);
 	}
 
+	//TODO(doc)
 	public TabOrder(TabOrder object) {
 		layer = object.layer;
 		index = object.index;

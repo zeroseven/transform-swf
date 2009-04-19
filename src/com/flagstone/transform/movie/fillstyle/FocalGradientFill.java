@@ -1,5 +1,5 @@
 /*
- * GradientFill.java
+ * FocalGradientFill.java
  * Transform
  * 
  * Copyright (c) 2001-2008 Flagstone Software Ltd. All rights reserved.
@@ -40,6 +40,10 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Strings;
 
+//TODO(doc) Add documentation
+//TODO(api) Add type (with accessor for linear or gradient)
+//TODO(code) Implement
+//TODO(optimise) Add pack/unpack methods
 public final class FocalGradientFill implements FillStyle {
 
 	private int spread;
@@ -71,6 +75,7 @@ public final class FocalGradientFill implements FillStyle {
 	}
 
 	public void setSpread(int spread) {
+		//TODO value checking required ?
 		this.spread = spread;
 	}
 
@@ -79,6 +84,7 @@ public final class FocalGradientFill implements FillStyle {
 	}
 
 	public void setInterpolation(int interpolation) {
+		//TODO value checking required ?
 		this.interpolation = interpolation;
 	}
 
@@ -87,6 +93,7 @@ public final class FocalGradientFill implements FillStyle {
 	}
 
 	public void setFocalPoint(int focalPoint) {
+		//TODO value checking required ?
 		this.focalPoint = focalPoint;
 	}
 
@@ -99,6 +106,8 @@ public final class FocalGradientFill implements FillStyle {
 	 *            an Gradient object. Must not be null.
 	 */
 	public FocalGradientFill add(final Gradient aGradient) {
+		//TODO value checking required ?
+		//TODO Check whether count will exceed 15.
 		gradients.add(aGradient);
 		return this;
 	}
@@ -120,6 +129,7 @@ public final class FocalGradientFill implements FillStyle {
 	 *            an array of Gradient objects. Must not be null.
 	 */
 	public void setGradients(final List<Gradient> anArray) {
+		//TODO Check whether array size is > 15
 		if (anArray == null) {
 			throw new IllegalArgumentException(Strings.ARRAY_CANNOT_BE_NULL);
 		}
@@ -132,11 +142,13 @@ public final class FocalGradientFill implements FillStyle {
 	}
 
 	@Override
+	//TODO add format string
 	public String toString() {
 		return "";
 	}
 
 	public int prepareToEncode(final SWFEncoder coder, final SWFContext context) {
+		//TODO(optimise) Calculate size of gradient array directly.
 		Iterator<Gradient> iter;
 				
 		int length = 2;
@@ -150,6 +162,7 @@ public final class FocalGradientFill implements FillStyle {
 	}
 
 	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException {
+		//TODO Replace iterator with foreach loop
 		Iterator<Gradient> iter;
 		
 		coder.writeWord(count, 1);

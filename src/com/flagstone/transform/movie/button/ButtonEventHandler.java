@@ -45,7 +45,7 @@ import com.flagstone.transform.movie.Strings;
 import com.flagstone.transform.movie.action.Action;
 import com.flagstone.transform.movie.action.ActionData;
 
-
+//TODO(doc) Review
 /**
  * ButtonEvent is used to define the actions that a (menu or push) button will 
  * execute in response to a particular event. A button responds to:</p>
@@ -214,6 +214,7 @@ public final class ButtonEventHandler implements Encodeable
 
 	protected transient int length = 0; //TODO DefineText2 uses this field
 
+	//TODO(doc)
 	public ButtonEventHandler(int size, final SWFDecoder coder, SWFContext context) throws CoderException
 	{
 		event = coder.readWord(2, false);
@@ -237,12 +238,6 @@ public final class ButtonEventHandler implements Encodeable
 		}
 	}
 
-
-	private ButtonEventHandler()
-	{
-		actions = new ArrayList<Action>();
-	}
-
 	/**
 	 * Creates an ButtonEvent object that defines the array of actions that
 	 * will be executed when a particular event occurs.
@@ -259,6 +254,7 @@ public final class ButtonEventHandler implements Encodeable
 		setActions(anArray);
 	}
 	
+	//TODO(doc)
 	public ButtonEventHandler(ButtonEventHandler object) {
 		event = object.event;
 		actions = new ArrayList<Action>();

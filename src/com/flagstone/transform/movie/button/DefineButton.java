@@ -44,7 +44,7 @@ import com.flagstone.transform.movie.Types;
 import com.flagstone.transform.movie.action.Action;
 import com.flagstone.transform.movie.action.ActionData;
 
-
+//TODO(doc) Review
 /**
  * DefineButton defines the appearance of a button and the actions performed
  * when the button is clicked.
@@ -69,6 +69,8 @@ public final class DefineButton implements DefineTag
 	private transient int end;
 	private transient int length;
 
+	//TODO(doc) 
+	//TODO(optimise) 
 	public DefineButton(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();
@@ -128,6 +130,7 @@ public final class DefineButton implements DefineTag
 		setActions(actions);
 	}
 	
+	//TODO(doc) 
 	public DefineButton(DefineButton object) {
 		identifier = object.identifier;
 		shapes = new ArrayList<ButtonShape>(object.shapes.size());
@@ -227,9 +230,6 @@ public final class DefineButton implements DefineTag
 		actions = anArray;
 	}
 
-	/**
-	 * Creates and returns a deep copy of this object.
-	 */
 	public DefineButton copy()
 	{
 		return new DefineButton(this);

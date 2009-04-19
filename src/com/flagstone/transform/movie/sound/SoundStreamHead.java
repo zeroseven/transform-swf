@@ -69,6 +69,8 @@ import com.flagstone.transform.video.SoundFormat;
  *  @see SoundStreamBlock
  *  @see SoundStreamHead2
  */
+//TODO(api) Add an enum for sound rate or do translation in accessor?
+
 public final class SoundStreamHead implements MovieTag
 {
 	private static final String FORMAT = "SoundStreamHead: { format=%s; " +
@@ -90,6 +92,7 @@ public final class SoundStreamHead implements MovieTag
 	private transient int end;
 	private transient int length;
 
+	//TODO(doc)
 	public SoundStreamHead(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();
@@ -194,6 +197,7 @@ public final class SoundStreamHead implements MovieTag
 		setStreamSampleCount(streamingCount);
 	}
 
+	//TODO(doc)
 	public SoundStreamHead(SoundStreamHead object)
 	{
 		format = object.format;

@@ -16,18 +16,12 @@ import com.flagstone.transform.movie.video.DefineVideo;
  * 
  * @see DefineVideo
  */
+//TODO(api) Move to video package ?
 public final class ImageBlock implements Cloneable
 {
 	private int width;
 	private int height;
 	private byte[] block;
-
-	private ImageBlock()
-	{
-		width = 0;
-		height = 0;
-		block = new byte[0];
-	}
 
 	/**
 	 * Create a new image block with the specified width and height and image
@@ -48,6 +42,7 @@ public final class ImageBlock implements Cloneable
 		block = data;
 	}
 	
+	//TODO(doc)
 	public ImageBlock(ImageBlock object) {
 		width = object.width;
 		height = object.height;
@@ -127,9 +122,6 @@ public final class ImageBlock implements Cloneable
 		return width == 0 || height == 0 || block == null || block.length == 0;
 	}
 
-	/**
-	 * Creates and returns a deep copy of this object.
-	 */
 	public ImageBlock copy()
 	{
 		return new ImageBlock(this);

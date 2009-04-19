@@ -85,7 +85,7 @@ public final class MovieMemoryTest
 			throws FileNotFoundException, IOException {
 		byte[] data = new byte[(int) file.length()];
 
-		FileInputStream stream = null; // NOPMD
+		FileInputStream stream = null; //TODO(code) fix
 
 		try {
 			stream = new FileInputStream(file);

@@ -39,6 +39,7 @@ import com.flagstone.transform.movie.Strings;
 import com.flagstone.transform.movie.Types;
 import com.flagstone.transform.movie.sound.SoundInfo;
 
+//TODO(doc) Review
 /**
  * <p>ButtonSound defines the sounds that are played when an event occurs in a
  * button. Sounds are only played for the RollOver, RollOut, Press and Release
@@ -56,12 +57,14 @@ public final class ButtonSound implements MovieTag
 	private static final String FORMAT = "ButtonSound: { identifier=%d; sound[0]=%s; sound[1]=%s; sound[2]=%s; sound[3]=%s }";
 	
 	private int identifier;
+	//TODO(code) could replace with a table
 	private SoundInfo[] sound = new SoundInfo[] {null, null, null, null};
 	
 	private transient int start;
 	private transient int end;
 	private transient int length;
 
+	//TODO(doc) 
 	public ButtonSound(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();
@@ -114,6 +117,7 @@ public final class ButtonSound implements MovieTag
 		setSoundForEvent(eventCode, aSound);
 	}
 	
+	//TODO(doc) 
 	public ButtonSound(ButtonSound object) {
 		
 		identifier = object.identifier;

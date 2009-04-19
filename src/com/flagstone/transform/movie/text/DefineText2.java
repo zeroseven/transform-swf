@@ -43,6 +43,7 @@ import com.flagstone.transform.movie.Types;
 import com.flagstone.transform.movie.datatype.Bounds;
 import com.flagstone.transform.movie.datatype.CoordTransform;
 
+//TODO(doc) Review
 /**
  * DefineText2 defines one or more lines of transparent text.
  * 
@@ -74,6 +75,8 @@ public final class DefineText2 implements DefineTag
 	private transient int advanceBits;
 	private int identifier;
 
+	//TODO(doc)
+	//TODO(optimise)
 	public DefineText2(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();
@@ -162,6 +165,7 @@ public final class DefineText2 implements DefineTag
 		setObjects(spans);
 	}
 	
+	//TODO(doc)
 	public DefineText2(DefineText2 object)
 	{
 		identifier = object.identifier;
@@ -328,6 +332,7 @@ public final class DefineText2 implements DefineTag
 		return (length > 62 ? 6:2) + length;
 	}
 
+	//TODO(optimise)
 	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();

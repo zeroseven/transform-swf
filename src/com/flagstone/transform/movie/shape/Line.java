@@ -38,6 +38,7 @@ import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Strings;
 import com.flagstone.transform.movie.linestyle.LineStyle;
 
+//TODO(doc) Review
 /**
  * Line defines a straight line. The line is drawn from the current drawing
  * point to the end point specified in the Line object which is specified
@@ -63,6 +64,9 @@ public final class Line implements ShapeRecord
 	private transient boolean general;
 	private transient int size;
 
+	//TODO(doc)
+	//TODO(optimise)
+	//TODO(api) Reduce number of set methods
 	public Line(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		coder.adjustPointer(2); // shape and edge
@@ -107,6 +111,7 @@ public final class Line implements ShapeRecord
 		setY(yCoord);
 	}
 	
+	//TODO(doc)
 	public Line(Line object) {
 		xCoord = object.xCoord;
 		yCoord = object.yCoord;

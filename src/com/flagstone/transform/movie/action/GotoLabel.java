@@ -54,6 +54,7 @@ public final class GotoLabel implements Action
 
 	private transient int length;
 	
+	//TODO(doc)
 	public GotoLabel(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		coder.readByte();
@@ -73,6 +74,7 @@ public final class GotoLabel implements Action
 		setLabel(aString);
 	}
 	
+	//TODO(doc)
 	public GotoLabel(GotoLabel object) {
 		label = object.label;
 	}

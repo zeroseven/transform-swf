@@ -33,6 +33,7 @@ package com.flagstone.transform.movie.font;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+//TODO(doc)
 public enum CharacterEncoding {
 	/**
 	 * Defines that the characters in a font are encoded using SJIS standard for

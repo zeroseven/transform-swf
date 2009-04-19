@@ -38,6 +38,7 @@ import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
+//TODO(doc) Review
 /**
  * Symbol is used to SYMBOL one or more shapes and other objects so they can be
  * used in another Flash file.
@@ -152,7 +153,7 @@ public final class SymbolClass implements MovieTag {
 		objects = aTable;
 	}
 
-	@Override
+	//TODO(doc)
 	public SymbolClass copy() {
 		return new SymbolClass(this);
 	}

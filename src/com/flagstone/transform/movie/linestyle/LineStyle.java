@@ -40,6 +40,7 @@ import com.flagstone.transform.movie.Strings;
 import com.flagstone.transform.movie.datatype.Color;
 import com.flagstone.transform.movie.shape.Line;
 
+//TODO(doc) Review
 /**
  * LineStyle defines the width and colour of a line that is used when drawing
  * the outline of a shape.
@@ -70,6 +71,7 @@ public final class LineStyle implements Encodeable, Copyable<LineStyle>
 	private int width;
 	private Color color;
 
+	//TODO(doc)
 	public LineStyle(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		width = coder.readWord(2, false);
@@ -90,6 +92,7 @@ public final class LineStyle implements Encodeable, Copyable<LineStyle>
 		setColor(aColor);
 	}
 	
+	//TODO(doc)
 	public LineStyle(LineStyle object) {
 		width = object.width;
 		color = object.color;
@@ -150,6 +153,7 @@ public final class LineStyle implements Encodeable, Copyable<LineStyle>
 		return String.format(FORMAT, width, color);
 	}
 
+	//TODO(optimise)
 	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
 		int length = 2;

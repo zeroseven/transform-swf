@@ -50,7 +50,7 @@ public class FLVDecoder extends BigEndianDecoder
 				obj.decode(this);
 				break;
 			default:
-				obj = null; // NOPMD
+				obj = null; //TODO(code) fix
 				break;
 		}
 	

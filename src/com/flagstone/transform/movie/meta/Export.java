@@ -57,6 +57,7 @@ public final class Export implements MovieTag
 	
 	private transient int length;
 
+	//TODO(doc)
 	public Export(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		length = coder.readWord(2, false) & 0x3F;
@@ -107,6 +108,7 @@ public final class Export implements MovieTag
 		add(uid, aString);
 	}
 	
+	//TODO(doc)
 	public Export(Export object) {
 		objects = new LinkedHashMap<Integer,String>(object.objects.size());
 		objects.putAll(object.objects);

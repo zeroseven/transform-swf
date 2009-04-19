@@ -307,16 +307,16 @@ public final class Video implements Cloneable
 
 		coder = new FLVEncoder(fileLength);
 
-		boolean containsAudio = false; // NOPMD
-		boolean containsVideo = false; // NOPMD
+		boolean containsAudio = false; //TODO(code) fix
+		boolean containsVideo = false; //TODO(code) fix
 		
 		for (VideoTag object : objects)
 		{
 			if (object instanceof AudioData) {
-				containsAudio = true; // NOPMD
+				containsAudio = true; //TODO(code) fix
 			}
 			else if (object instanceof VideoData) {
-				containsVideo = true; // NOPMD
+				containsVideo = true; //TODO(code) fix
 			}
 		}
 

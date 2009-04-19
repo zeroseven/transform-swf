@@ -43,6 +43,7 @@ import com.flagstone.transform.movie.Strings;
 import com.flagstone.transform.movie.Types;
 import com.flagstone.transform.movie.shape.Shape;
 
+//TODO(doc) Review
 /**
  * DefineFont defines the glyphs that are drawn when text characters are
  * rendered in a particular font.
@@ -71,6 +72,8 @@ public final class DefineFont implements DefineTag
 	private transient int end;
 	private transient int length;
 
+	//TODO(optimise)
+	//TODO(doc)
 	public DefineFont(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();
@@ -89,13 +92,13 @@ public final class DefineFont implements DefineTag
 
 		coder.setPointer(offsetStart);
 
-		int[] offset = new int[shapeCount + 1]; // NOPMD
+		int[] offset = new int[shapeCount + 1]; //TODO(code) fix
 
 		for (int i = 0; i < shapeCount; i++) {
-			offset[i] = coder.readWord(2, false); // NOPMD
+			offset[i] = coder.readWord(2, false); //TODO(code) fix
 		}
 
-		offset[shapeCount] = length - 2; // NOPMD
+		offset[shapeCount] = length - 2; //TODO(code) fix
 		
 		for (int i = 0; i < shapeCount; i++)
 		{
@@ -127,6 +130,7 @@ public final class DefineFont implements DefineTag
 		setShapes(anArray);
 	}
 	
+	//TODO(doc)
 	public DefineFont(DefineFont object)
 	{
 		identifier = object.identifier;
@@ -135,7 +139,6 @@ public final class DefineFont implements DefineTag
 			shapes.add(shape.copy());
 		}
 	}
-
 
 	public int getIdentifier() {
 		return identifier;
@@ -186,9 +189,6 @@ public final class DefineFont implements DefineTag
 		shapes = anArray;
 	}
 
-	/**
-	 * Creates and returns a deep copy of this object.
-	 */
 	public DefineFont copy() 
 	{
 		return new DefineFont(this);
@@ -200,6 +200,7 @@ public final class DefineFont implements DefineTag
 		return String.format(FORMAT, identifier, shapes);
 	}
 
+	//TODO(optimise)
 	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
 		length = 2;
@@ -219,6 +220,7 @@ public final class DefineFont implements DefineTag
 		return (length > 62 ? 6:2) + length;
 	}
 
+	//TODO(optimise)
 	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();
@@ -244,7 +246,7 @@ public final class DefineFont implements DefineTag
 			coder.writeWord(0, 2);
 		}
 
-		int tableEntry = tableStart; // NOPMD
+		int tableEntry = tableStart; //TODO(code) fix
 
 		for (Iterator<Shape> i = shapes.iterator(); i.hasNext(); tableEntry += 16)
 		{

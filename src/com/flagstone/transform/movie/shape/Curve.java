@@ -54,6 +54,7 @@ import com.flagstone.transform.movie.Strings;
  * 
  * @see com.flagstone.transform.factory.shape.Canvas
  */
+//TODO(api) reduce number of set methods.
 public final class Curve implements ShapeRecord
 {
 	private static final String FORMAT = "Curve: control=(%d,%d), anchor=(%d,%d);";
@@ -65,6 +66,7 @@ public final class Curve implements ShapeRecord
 	
 	private transient int size;
 
+	//TODO(doc)
 	public Curve(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		// skip over shapeType and edgeType
@@ -105,6 +107,7 @@ public final class Curve implements ShapeRecord
 		setAnchorY(anchorY);
 	}
 	
+	//TODO(doc)
 	public Curve(Curve object) {
 		controlX = object.controlX;
 		controlY = object.controlY;
@@ -263,9 +266,6 @@ public final class Curve implements ShapeRecord
 		setAnchorY(anchorY);
 	}
 
-	/**
-	 * Creates and returns a copy of this object.
-	 */
 	public Curve copy() {
 		return new Curve(this);
 	}

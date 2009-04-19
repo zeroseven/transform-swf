@@ -3,6 +3,7 @@ package com.flagstone.transform.movie.movieclip;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+//TODO(doc)
 public enum MovieClipEvent {
 	/** Code for a load event. */
 	LOAD(1),

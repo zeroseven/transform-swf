@@ -41,6 +41,7 @@ import com.flagstone.transform.movie.Strings;
 import com.flagstone.transform.movie.Types;
 import com.flagstone.transform.video.SoundFormat;
 
+//TODO(doc) Review
 /**
  * DefineSound is used to define a sound that will be played when a given event
  * occurs.
@@ -82,6 +83,7 @@ public final class DefineSound implements DefineTag {
 	private transient int end;
 	private transient int length;
 
+	//TODO(doc)
 	public DefineSound(final SWFDecoder coder, final SWFContext context) throws CoderException {
 
 		start = coder.getPointer();
@@ -161,7 +163,8 @@ public final class DefineSound implements DefineTag {
 		setData(bytes);
 	}
 
-	private DefineSound(DefineSound object) {
+	//TODO(doc)
+	public DefineSound(DefineSound object) {
 		format = object.format;
 		rate = object.rate;
 		channelCount = object.channelCount;
@@ -306,9 +309,6 @@ public final class DefineSound implements DefineTag {
 		data = bytes;
 	}
 
-	/**
-	 * Creates and returns a deep copy of this object.
-	 */
 	public DefineSound copy() {
 		return new DefineSound(this);
 	}

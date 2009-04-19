@@ -38,6 +38,7 @@ import com.flagstone.transform.movie.MovieTag;
 import com.flagstone.transform.movie.Strings;
 import com.flagstone.transform.movie.Types;
 
+//TODO(doc) Review
 /**
  * Protect marks a file as not-readable, preventing the file from being loaded
  * into an editor.
@@ -105,6 +106,7 @@ public final class Protect implements MovieTag
 		setPassword(password);
 	}
 
+	//TODO(doc)
 	public Protect(Protect object)
 	{
 		password = object.password;

@@ -37,6 +37,7 @@ package com.flagstone.transform.movie;
 @SuppressWarnings({
 	"PMD.LongVariable"
 })
+//TODO(api) Refactor into MovieType and ActionType
 public interface Types {
 	/** The type used to create ShowFrame objects. */
 	int SHOW_FRAME = 1;
@@ -289,7 +290,7 @@ public interface Types {
 	/** The type for creating a Less stack-based action. */
 	int LESS = 72;
 	/** The type for creating an Equals stack-based action. */
-	int EQUALS = 73; // NOPMD
+	int EQUALS = 73; //TODO(code) fix
 	/** The type for creating a ToNumber stack-based action. */
 	int TO_NUMBER = 74;
 	/** The type for creating a ToString stack-based action. */
@@ -363,7 +364,7 @@ public interface Types {
 	/** The type for creating a GetUrl2 action. */
 	int GET_URL_2 = 154;
 	/** The type for creating an If action. */
-	int IF = 157; // NOPMD
+	int IF = 157; //TODO(code) fix
 	/** The type for creating a Call action. */
 	int CALL = 158;
 	/** The type for creating a GotoFrame2 action. */

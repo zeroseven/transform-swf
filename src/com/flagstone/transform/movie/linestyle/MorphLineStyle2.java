@@ -40,8 +40,7 @@ import com.flagstone.transform.movie.Strings;
 import com.flagstone.transform.movie.datatype.Color;
 import com.flagstone.transform.movie.fillstyle.FillStyle;
 
-@SuppressWarnings( { "PMD.CyclomaticComplexity", "PMD.LongVariable",
-		"PMD.TooManyMethods" })
+//TODO(doc) Description and document methods
 public final class MorphLineStyle2 implements Encodeable,
 		Copyable<MorphLineStyle2> {
 

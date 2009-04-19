@@ -38,6 +38,7 @@ import com.flagstone.transform.movie.Strings;
 import com.flagstone.transform.movie.datatype.CoordTransform;
 import com.flagstone.transform.movie.shape.DefineMorphShape;
 
+//TODO(doc) Review
 /**
  * MorphBitmapFill uses a bitmap image to fill an area of a morphing shape. Four
  * types of bitmap fill are supported:
@@ -81,6 +82,7 @@ import com.flagstone.transform.movie.shape.DefineMorphShape;
  * 
  * @see DefineMorphShape
  */
+//TODO(api) add arguments for tiled/clipped smoothed/unsmoothed
 public final class MorphBitmapFill implements FillStyle {
 
 	private static final String FORMAT = "MorphBitmapFill: { identifier=%d; start=%s; end=%s }";
@@ -90,6 +92,7 @@ public final class MorphBitmapFill implements FillStyle {
 	private CoordTransform startTransform;
 	private CoordTransform endTransform;
 
+	//TODO(doc)
 	public MorphBitmapFill(final SWFDecoder coder, final SWFContext context) throws CoderException {
 		type = coder.readByte();
 		identifier = coder.readWord(2, false);
@@ -124,6 +127,7 @@ public final class MorphBitmapFill implements FillStyle {
 		setEndTransform(end);
 	}
 	
+	//TODO(doc)
 	public MorphBitmapFill(MorphBitmapFill object) {
 		type = object.type;
 		identifier = object.identifier;

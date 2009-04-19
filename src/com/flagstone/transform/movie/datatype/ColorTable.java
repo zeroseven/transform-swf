@@ -31,6 +31,7 @@
 package com.flagstone.transform.movie.datatype;
 
 /**
+ * //TODO(code) Refactor. Can this be replaced by an enum and color registry.
  * <p>
  * ColorTable is a convenience class which contains a set of factory methods to
  * generate Color objects for each of the colours defined in the Netscape Colour

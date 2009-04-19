@@ -41,6 +41,7 @@ import com.flagstone.transform.movie.DefineTag;
 import com.flagstone.transform.movie.Strings;
 import com.flagstone.transform.movie.Types;
 
+//TODO(doc) Review
 /**
  * DefineButton2 defines the appearance and actions of push and menu buttons.
  * 
@@ -83,6 +84,8 @@ public final class DefineButton2 implements DefineTag
 	private transient int end;
 	private transient int length;
 	
+	//TODO(doc) 
+	//TODO(optimise) 
 	public DefineButton2(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		context.setType(Types.DEFINE_BUTTON_2);
@@ -157,6 +160,7 @@ public final class DefineButton2 implements DefineTag
 		setEvents(events);
 	}
 	
+	//TODO(doc) 
 	public DefineButton2(DefineButton2 object) {
 		identifier = object.identifier;
 		menu = object.menu;
@@ -275,9 +279,6 @@ public final class DefineButton2 implements DefineTag
 		events = anArray;
 	}
 	
-	/**
-	 * Creates and returns a deep copy of this object.
-	 */
 	public DefineButton2 copy()
 	{
 		return new DefineButton2(this);

@@ -42,7 +42,7 @@ public final class MorphFillStyleFactory implements SWFFactory<FillStyle> {
 			style = new MorphBitmapFill(coder, context);
 			break;
 		default:
-			style = null; // NOPMD
+			style = null; //TODO(code) fix
 			break;
 		}
 		return style;

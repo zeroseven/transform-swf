@@ -42,7 +42,7 @@ public final class FillStyleFactory implements SWFFactory<FillStyle> {
 			style = new BitmapFill(coder, context);
 			break;
 		default:
-			style = null; // NOPMD
+			style = null; //TODO(code) fix
 			break;
 		}
 		return style;

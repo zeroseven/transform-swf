@@ -65,6 +65,7 @@ public final class DefineJPEGImage3 implements ImageTag
 	private byte[] alpha;
 	private int identifier;
 
+	//TODO(doc)
 	public DefineJPEGImage3(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();
@@ -80,6 +81,7 @@ public final class DefineJPEGImage3 implements ImageTag
 
 		image = coder.readBytes(new byte[offset]);
 		alpha = coder.readBytes(new byte[length - offset - 6]);
+		//TODO(code) width and height are not set.
 
 		if (coder.getPointer() != end) {
 			throw new CoderException(getClass().getName(), start >> 3, length,
@@ -107,6 +109,7 @@ public final class DefineJPEGImage3 implements ImageTag
 		setCompressedAlpha(alpha);
 	}
 	
+	//TODO(doc)
 	public DefineJPEGImage3(DefineJPEGImage3 object) {
 		identifier = object.identifier;
 		width = object.width;
@@ -182,9 +185,6 @@ public final class DefineJPEGImage3 implements ImageTag
 		alpha = bytes;
 	}
 
-	/**
-	 * Creates and returns a deep copy of this object.
-	 */
 	public DefineJPEGImage3 copy() 
 	{
 		return new DefineJPEGImage3(this);
@@ -228,6 +228,7 @@ public final class DefineJPEGImage3 implements ImageTag
 		}
 	}
 
+	//TODO(code) Share with other JPEG image classes or optimise and integrate.
 	private void decodeInfo()
 	{
 		BigEndianDecoder coder = new BigEndianDecoder(image);

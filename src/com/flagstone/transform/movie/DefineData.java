@@ -45,7 +45,7 @@ import com.flagstone.transform.coder.SWFEncoder;
  * are loaded into the Flash Player. The table in a SymbolClass object maps
  * class names to object definitions in the movie. If the class is a sub-class
  * of ByteArray then the data in the DefineData object will be used to 
- * initialize the class.
+ * initialize the class referenced by the unique identifier.
  * 
  * @see SymbolClass
  * </p>
@@ -61,6 +61,7 @@ public final class DefineData implements DefineTag {
 	private transient int end;
 	private transient int length;
 
+	//TODO(doc)
 	public DefineData(final SWFDecoder coder, final SWFContext context) throws CoderException {
 
 		start = coder.getPointer();

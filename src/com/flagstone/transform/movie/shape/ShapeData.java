@@ -37,6 +37,7 @@ import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
+//TODO(doc)
 public final class ShapeData implements ShapeRecord
 {
 	private static final String FORMAT = "ShapeData: { data[%d] }";

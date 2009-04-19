@@ -40,11 +40,7 @@ import com.flagstone.transform.movie.Strings;
 import com.flagstone.transform.movie.datatype.Color;
 import com.flagstone.transform.movie.fillstyle.FillStyle;
 
-@SuppressWarnings({
-	"PMD.CyclomaticComplexity",
-	"PMD.LongVariable",
-	"PMD.TooManyMethods"
-})
+//TODO(doc) add description and comments for methods.
 public final class LineStyle2 implements Encodeable, Copyable<LineStyle2> {
 
 	public static final String FORMAT = "LineStyle2: { width=%d; color=%s;"
@@ -85,7 +81,6 @@ public final class LineStyle2 implements Encodeable, Copyable<LineStyle2> {
 			color = new Color(coder, context);
 		}
 	}
-
 
 	public LineStyle2(final int width, final Color color) {
 		super();

@@ -53,6 +53,17 @@ import com.flagstone.transform.movie.action.ActionData;
  * </p>
  * 
  * <p>
+ * The last action in the array must be BasicAction.END otherwise an exception
+ * will be thrown indicating that the object was incorrectly encoded.
+ * </p>
+ * 
+ * <p>
+ * When decoding a movie, if the decode actions flag is set to false then the 
+ * actions will be decoded as a single ActionData object containing the encoded
+ * actions.
+ * </p>
+ * 
+ * <p>
  * DoAction can only be used in movies that contain Actionscript 1.x or
  * Actionscript 2.x code. For Actionscript 3.0 use the DoABC class.
  * </p>
@@ -70,7 +81,7 @@ public final class DoAction implements MovieTag {
 	private transient int end;
 	private transient int length;
 
-
+	//TODO(doc)
 	public DoAction(final SWFDecoder coder, final SWFContext context) throws CoderException {
 
 		start = coder.getPointer();
@@ -90,6 +101,7 @@ public final class DoAction implements MovieTag {
 				actions.add(context.actionOfType(coder, context));
 			}
 		} else {
+			//TODO(optimise) just pass in the array of bytes.
 			actions.add(new ActionData(length, coder, context));
 		}
 
@@ -98,6 +110,7 @@ public final class DoAction implements MovieTag {
 					(coder.getPointer() - end) >> 3);
 		}
 	}
+	
 	/**
 	 * Creates a new DoAction class with an empty array.
 	 */
@@ -186,7 +199,7 @@ public final class DoAction implements MovieTag {
 			length += action.prepareToEncode(coder, context);
 		}
 		
-		if (actions.isEmpty()) {
+		if (actions.isEmpty()) { //TODO(code) remove
 			length++;
 		}
 
@@ -209,7 +222,8 @@ public final class DoAction implements MovieTag {
 			action.encode(coder, context);
 		}
 		
-		if (actions.isEmpty()) {
+		//TODO(code) replace with a check for and END action
+		if (actions.isEmpty()) { 
 			coder.writeByte(0);
 		}
 

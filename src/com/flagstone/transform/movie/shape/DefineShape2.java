@@ -45,6 +45,7 @@ import com.flagstone.transform.movie.datatype.Bounds;
 import com.flagstone.transform.movie.fillstyle.FillStyle;
 import com.flagstone.transform.movie.linestyle.LineStyle;
 
+//TODO(doc) Review
 /**
  * DefineShape2 defines a shape to be displayed with an extended set of fill
  * styles. It extends the functionality of the DefineShape class by allowing 
@@ -80,6 +81,7 @@ public final class DefineShape2 implements DefineTag
 	private transient int fillBits;
 	private transient int lineBits;
 
+	//TODO(doc)
 	public DefineShape2(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();
@@ -137,7 +139,6 @@ public final class DefineShape2 implements DefineTag
 		}
 	}
 
-
 	/**
 	 * Creates a DefineShape2 object.
 	 * 
@@ -164,6 +165,7 @@ public final class DefineShape2 implements DefineTag
 		setShape(aShape);
 	}
 	
+	//TODO(doc)
 	public DefineShape2(DefineShape2 object)
 	{
 		identifier = object.identifier;
@@ -325,9 +327,6 @@ public final class DefineShape2 implements DefineTag
 		shape = aShape;
 	}
 
-	/**
-	 * Creates and returns a deep copy of this object.
-	 */
 	public DefineShape2 copy() 
 	{
 		return new DefineShape2(this);

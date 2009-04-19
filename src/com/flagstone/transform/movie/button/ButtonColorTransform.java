@@ -39,6 +39,7 @@ import com.flagstone.transform.movie.Strings;
 import com.flagstone.transform.movie.Types;
 import com.flagstone.transform.movie.datatype.ColorTransform;
 
+//TODO(doc) Review
 /**
  * <p>
  * ButtonColorTransform defines the colour transform that is applied to each
@@ -66,6 +67,7 @@ public final class ButtonColorTransform implements MovieTag {
 	private transient int end;
 	private transient int length;
 
+	//TODO(doc)
 	public ButtonColorTransform(final SWFDecoder coder, final SWFContext context) throws CoderException {
 
 		start = coder.getPointer();
@@ -85,7 +87,6 @@ public final class ButtonColorTransform implements MovieTag {
 		}
 	}
 
-
 	/**
 	 * Creates a ButtonColorTransform object with a colour transform for the
 	 * specified button.
@@ -101,6 +102,7 @@ public final class ButtonColorTransform implements MovieTag {
 		setColorTransform(transform);
 	}
 
+	//TODO(doc)
 	public ButtonColorTransform(ButtonColorTransform object) {
 		identifier = object.identifier;
 		colorTransform = object.colorTransform;

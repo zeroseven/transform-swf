@@ -37,7 +37,7 @@ import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Strings;
 import com.flagstone.transform.movie.Types;
 
-
+//TODO(doc) Review
 /**
  * RegisterCopy is used to copy the item at the top of the stack to one of the
  * Flash Player's internal registers.
@@ -67,6 +67,7 @@ public final class RegisterCopy implements Action
 	
 	private int registerNumber;
 
+	//TODO(doc)
 	public RegisterCopy(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		coder.readByte();
@@ -86,6 +87,7 @@ public final class RegisterCopy implements Action
 		setRegisterNumber(anIndex);
 	}
 
+	//TODO(doc)
 	public RegisterCopy(RegisterCopy object) {
 		registerNumber = object.registerNumber;
 	}

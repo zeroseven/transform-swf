@@ -1,5 +1,5 @@
 /*
- * BasicTypes.java
+ * BasicAction.java
  * Transform
  * 
  * Copyright (c) 2009 Flagstone Software Ltd. All rights reserved.
@@ -38,7 +38,7 @@ import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Types;
 
-
+//TODO(doc)
 public enum BasicAction implements Action
 {
 	END(Types.END),

@@ -33,5 +33,6 @@ package com.flagstone.transform.movie.shape;
 import com.flagstone.transform.movie.Encodeable;
 import com.flagstone.transform.movie.Copyable;
 
+//TODO(doc)
 public interface ShapeRecord extends Encodeable, Copyable<ShapeRecord> {
 }

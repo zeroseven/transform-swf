@@ -38,15 +38,13 @@ import com.flagstone.transform.movie.MovieTag;
 import com.flagstone.transform.movie.Strings;
 import com.flagstone.transform.movie.Types;
 
+//TODO(doc)
+//TODO(code) Implement
 public final class TextSettings implements MovieTag
 {
 	private int identifier;
 
 	private transient int length;
-
-	private TextSettings()
-	{
-	}
 
 	public TextSettings(int uid, String name, boolean bold, boolean italic)
 	{

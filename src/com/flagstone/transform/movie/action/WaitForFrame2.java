@@ -36,7 +36,7 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Types;
 
-
+//TODO(doc) Review
 /**
  * The WaitForFrame2 action instructs the player to wait until the specified
  * frame number or named frame has been loaded.
@@ -61,6 +61,7 @@ public final class WaitForFrame2 implements Action
 	
 	private int actionCount;
 
+	//TODO(doc)
 	public WaitForFrame2(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		coder.readByte();
@@ -81,6 +82,7 @@ public final class WaitForFrame2 implements Action
 		setActionCount(aNumber);
 	}
 
+	//TODO(doc)
 	public WaitForFrame2(WaitForFrame2 object) {
 		actionCount = object.actionCount;
 	}

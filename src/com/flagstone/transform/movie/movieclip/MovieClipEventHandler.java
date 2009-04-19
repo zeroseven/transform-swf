@@ -48,7 +48,7 @@ import com.flagstone.transform.movie.action.ActionData;
 import com.flagstone.transform.movie.button.ButtonEvent;
 import com.flagstone.transform.movie.button.ButtonEventHandler;
 
-
+//TODO(doc) Review
 /**
  * <p>ClipEvent is used to define the actions that a movie clip will execute in
  * response to a particular event. ClipEvent objects are added to an 
@@ -128,6 +128,7 @@ public final class MovieClipEventHandler implements Encodeable
 
 	private transient int offset;
 
+	//TODO(doc)
 	public MovieClipEventHandler(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		int eventSize = (context.getVersion() > 5) ? 4 : 2;
@@ -193,6 +194,7 @@ public final class MovieClipEventHandler implements Encodeable
 		setActions(anArray);
 	}
 	
+	//TODO(doc)
 	public MovieClipEventHandler(MovieClipEventHandler object) {
 		event = object.event;
 		keyCode = object.keyCode;
@@ -219,6 +221,7 @@ public final class MovieClipEventHandler implements Encodeable
 		return this;
 	}
 
+	//TODO(doc)
 	public void setEvent(Set<MovieClipEvent>set)
 	{
 		for (MovieClipEvent event : set) {
@@ -226,6 +229,7 @@ public final class MovieClipEventHandler implements Encodeable
 		}
 	}
 
+	//TODO(doc)
 	public Set<MovieClipEvent> getEvent()
 	{
 		Set<MovieClipEvent>set = EnumSet.allOf(MovieClipEvent.class);
@@ -285,9 +289,6 @@ public final class MovieClipEventHandler implements Encodeable
 		return actions;
 	}
 
-	/**
-	 * Creates and returns a deep copy of this object. 
-	 */
 	public MovieClipEventHandler copy()
 	{
 		return new MovieClipEventHandler(this);	}

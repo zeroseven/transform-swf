@@ -43,6 +43,7 @@ import com.flagstone.transform.movie.Types;
 import com.flagstone.transform.movie.datatype.Bounds;
 import com.flagstone.transform.movie.datatype.CoordTransform;
 
+//TODO(doc) Review
 /**
  * DefineText defines one or more lines of text.
  * 
@@ -77,6 +78,8 @@ public final class DefineText implements DefineTag
 	private transient int glyphBits;
 	private transient int advanceBits;
 	
+	//TODO(doc)
+	//TODO(optimise)
 	public DefineText(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();
@@ -163,6 +166,7 @@ public final class DefineText implements DefineTag
 		setObjects(array);
 	}
 	
+	//TODO(doc)
 	public DefineText(DefineText object)
 	{
 		identifier = object.identifier;
@@ -287,9 +291,6 @@ public final class DefineText implements DefineTag
 		objects = array;
 	}
 
-	/**
-	 * Creates and returns a deep copy of this object.
-	 */
 	public DefineText copy() 
 	{
 		return new DefineText(this);
@@ -325,6 +326,7 @@ public final class DefineText implements DefineTag
 		return (length > 62 ? 6:2) + length;
 	}
 
+	//TODO(optimise)
 	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();

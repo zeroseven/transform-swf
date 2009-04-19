@@ -3,6 +3,7 @@ package com.flagstone.transform.movie.button;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+//TODO(doc) Review
 public enum ButtonEvent {
 	/**
 	 * Code for the button event that occurs when the mouse cursor moves over the
@@ -111,7 +112,7 @@ public enum ButtonEvent {
 	 * Code for the button event that occurs when the up arrow key is pressed on
 	 * the keyboard.
 	 */
-	UP(7168), // NOPMD
+	UP(7168), //TODO(code) fix
 
 	/**
 	 * Code for the button event that occurs when the down arrow key is pressed

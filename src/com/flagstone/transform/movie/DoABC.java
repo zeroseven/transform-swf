@@ -57,6 +57,7 @@ public final class DoABC implements MovieTag {
 	private transient int end;
 	private transient int length;
 
+	//TODO(doc)
 	public DoABC(final SWFDecoder coder, final SWFContext context) throws CoderException {
 
 		start = coder.getPointer();
@@ -67,7 +68,7 @@ public final class DoABC implements MovieTag {
 		}
 		end = coder.getPointer() + (length << 3);
 
-		deferred = coder.readBits(32, false);
+		deferred = coder.readBits(32, false); //TODO(optimise) replace with readWord()
 		name = coder.readString();
 		data = coder.readBytes(new byte[(end-coder.getPointer()) >>> 3]);
 
@@ -162,6 +163,7 @@ public final class DoABC implements MovieTag {
 	 */
 	@SuppressWarnings("PMD.ArrayIsStoredDirectly")
 	public void setData(final byte[] bytes) {
+		//TODO(optimise) replace with single test and new string DATA_NOT_SET
 		if (bytes == null) {
 			throw new IllegalArgumentException(Strings.DATA_CANNOT_BE_NULL);
 		} else if (bytes.length == 0) {
@@ -197,7 +199,7 @@ public final class DoABC implements MovieTag {
 		}
 		end = coder.getPointer() + (length << 3);
 
-		coder.writeBits(deferred, 32);
+		coder.writeBits(deferred, 32); //TODO(optimise) replace with readWord()
 		coder.writeString(name);
 		coder.writeBytes(data);
 

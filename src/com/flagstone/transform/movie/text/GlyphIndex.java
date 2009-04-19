@@ -38,6 +38,7 @@ import com.flagstone.transform.movie.Encodeable;
 import com.flagstone.transform.movie.Strings;
 import com.flagstone.transform.movie.datatype.Bounds;
 
+//TODO(doc) Review
 /**
  * <p>Character is used to display a text character in a span of text. Each 
  * Character specifies the glyph to be displayed (rather than the character 
@@ -60,6 +61,7 @@ public final class GlyphIndex implements Encodeable
 	private final transient int glyphIndex;
 	private final transient int advance;
 
+	//TODO(doc)
 	public GlyphIndex(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		glyphIndex = coder.readBits(context.getGlyphSize(), false);

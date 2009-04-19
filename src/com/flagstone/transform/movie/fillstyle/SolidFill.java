@@ -40,6 +40,7 @@ import com.flagstone.transform.movie.shape.DefineShape;
 import com.flagstone.transform.movie.shape.DefineShape2;
 import com.flagstone.transform.movie.shape.DefineShape3;
 
+//TODO(doc) Review
 /**
  * SolidFill defines a solid colour that is used to fill an enclosed area in a
  * shape. Shapes can be filled with transparent colours but only if the fill 
@@ -55,6 +56,7 @@ public final class SolidFill implements FillStyle {
 
 	private Color color;
 
+	//TODO(doc)
 	public SolidFill(final SWFDecoder coder, final SWFContext context) throws CoderException {
 		coder.adjustPointer(8);
 		color = new Color(coder, context);
@@ -71,6 +73,7 @@ public final class SolidFill implements FillStyle {
 		setColor(aColor);
 	}
 	
+	//TODO(doc)
 	public SolidFill(SolidFill object) {
 		color = object.color;
 	}
@@ -106,6 +109,7 @@ public final class SolidFill implements FillStyle {
 	}
 
 	public int prepareToEncode(final SWFEncoder coder, final SWFContext context) {
+		//TODO(optimise) calculate size of color directly.
 		return 1 + color.prepareToEncode(coder, context);
 	}
 

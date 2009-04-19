@@ -39,6 +39,7 @@ import com.flagstone.transform.movie.Strings;
 import com.flagstone.transform.movie.Types;
 import com.flagstone.transform.video.SoundFormat;
 
+//TODO(doc) Review
 /**
  * SoundStreamHead2 defines the format of a streaming sound, identifying the
  * encoding scheme, the rate at which the sound will be played and the size of
@@ -69,6 +70,7 @@ import com.flagstone.transform.video.SoundFormat;
  *  @see SoundStreamBlock
  *  @see SoundStreamHead
  */
+//TODO(api) Add an enum for sound rate or do translation in accessor?
 public final class SoundStreamHead2 implements MovieTag
 {
 	private static final String FORMAT = "SoundStreamHead: { format=%s; " +
@@ -208,6 +210,7 @@ public final class SoundStreamHead2 implements MovieTag
 		setStreamSampleCount(streamingCount);
 	}
 
+	//TODO(doc) 
 	public SoundStreamHead2(SoundStreamHead2 object)
 	{
 		format = object.format;
@@ -238,6 +241,7 @@ public final class SoundStreamHead2 implements MovieTag
 	 *            DefineSound.NATIVE_PCM, DefineSound.ADPCM, DefineSound.MP3, 
 	 *            DefineSound.PCM or DefineSound.NELLYMOSER.
 	 */
+	//TODO(doc) Review
 	public void setFormat(SoundFormat encoding)
 	{
 		format = encoding;

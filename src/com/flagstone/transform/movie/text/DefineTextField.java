@@ -44,6 +44,8 @@ import com.flagstone.transform.movie.Types;
 import com.flagstone.transform.movie.datatype.Bounds;
 import com.flagstone.transform.movie.datatype.Color;
 
+//TODO(doc) Review
+//TODO(api) Optimise to reduce number of methods.
 /**
  * DefineTextField defines an editable text field.
  * 
@@ -218,6 +220,7 @@ import com.flagstone.transform.movie.datatype.Color;
 @SuppressWarnings("PMD.TooManyMethods")
 public final class DefineTextField implements DefineTag
 {
+	//TODO(doc)
 	public enum Align {
 		/** Defines that the text displayed in a text field is left aligned. */
 		LEFT(0),
@@ -459,6 +462,8 @@ public final class DefineTextField implements DefineTag
 		initialText = object.initialText;
 	}
 
+	//TODO(doc)
+	//TODO(optimise)
 	public DefineTextField(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();

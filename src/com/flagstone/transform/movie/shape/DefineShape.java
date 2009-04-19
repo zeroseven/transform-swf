@@ -79,6 +79,7 @@ public final class DefineShape implements DefineTag
 	private transient int fillBits;
 	private transient int lineBits;
 
+	//TODO(doc)
 	public DefineShape(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		start = coder.getPointer();
@@ -126,7 +127,6 @@ public final class DefineShape implements DefineTag
 		}
 	}
 
-
 	/**
 	 * Creates a DefineShape object.
 	 * 
@@ -153,6 +153,7 @@ public final class DefineShape implements DefineTag
 		setShape(aShape);
 	}
 	
+	//TODO(doc)
 	public DefineShape(DefineShape object)
 	{
 		identifier = object.identifier;
@@ -314,9 +315,6 @@ public final class DefineShape implements DefineTag
 		shape = aShape;
 	}
 
-	/**
-	 * Creates and returns a deep copy of this object.
-	 */
 	public DefineShape copy() 
 	{
 		return new DefineShape(this);

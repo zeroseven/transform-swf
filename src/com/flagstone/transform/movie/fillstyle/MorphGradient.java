@@ -38,6 +38,7 @@ import com.flagstone.transform.movie.Encodeable;
 import com.flagstone.transform.movie.Strings;
 import com.flagstone.transform.movie.datatype.Color;
 
+//TODO(doc) Review
 /**
  * MorphGradient defines the control points that is used to specify how a
  * gradient fill is displayed at the start and end of the shape morphing
@@ -59,6 +60,7 @@ import com.flagstone.transform.movie.datatype.Color;
  * @see GradientFill
  * @see MorphGradientFill
  */
+//TODO(api) Replace fields with start and end Gradients
 public final class MorphGradient implements Encodeable
 {
 	private static final String FORMAT = "MorphGradient: { startRatio=%d; endRatio=%d; startColor=%s; endColor=%s }";

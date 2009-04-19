@@ -40,6 +40,7 @@ import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Strings;
 import com.flagstone.transform.movie.Types;
 
+//TODO(doc) Review
 /**
  * Table is used to create a table of string literals that can be referenced
  * by an index rather than using the literal value when executing a sequence of
@@ -68,7 +69,7 @@ public final class Table implements Action
 	private transient int length;
 	private transient int tableSize;
 
-
+	//TODO(doc)
 	public Table(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		coder.readByte();
@@ -92,6 +93,7 @@ public final class Table implements Action
 		}
 	}
 
+	//TODO(doc)
 	public Table()
 	{
 		values = new ArrayList<String>();
@@ -109,6 +111,7 @@ public final class Table implements Action
 		setValues(anArray);
 	}
 
+	//TODO(doc)
 	public Table(Table object)
 	{
 		values = new ArrayList<String>(object.values);
@@ -154,9 +157,6 @@ public final class Table implements Action
 		values = anArray;
 	}
 
-	/**
-	 * Creates and returns a deep copy of this object.
-	 */
 	public Table copy() 
 	{
 		return new Table(this);
