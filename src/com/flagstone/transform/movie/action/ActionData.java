@@ -53,28 +53,19 @@ public final class ActionData implements Action {
 
 	private static final String FORMAT = "ActionData: { data[%d] }";
 
-	private byte[] data;
-
-	/**
-	 * Creates an ActionData object initialised to hold a series of encoded
-	 * actions.
-	 * 
-	 * @param size
-	 *            the number of bytes to reserve for encoded actions.
-	 */
-	//TODO(api) This method can be deleted, the block of actions can be read the parent class.
-	public ActionData(final int size, final SWFDecoder coder, SWFContext context) throws CoderException {
-		data = coder.readBytes(new byte[size]);
-	}
+	private final byte[] data;
 
 	/**
 	 * Creates an ActionData object initialised with a set of encoded actions.
 	 * 
 	 * @param bytes
-	 *            the array of encoded actions.
+	 *            the array of encoded actions. Must not be null or empty.
 	 */
 	public ActionData(byte[] bytes) {
-		setData(bytes);
+		if (bytes == null || bytes.length == 0) {
+			throw new IllegalArgumentException(Strings.DATA_NOT_SET);
+		}
+		data = bytes;
 	}
 
 	/**
@@ -92,36 +83,6 @@ public final class ActionData implements Action {
 	 */
 	public byte[] getData() {
 		return data;
-	}
-
-	/**
-	 * Sets the encoded actions.
-	 * 
-	 * @param bytes
-	 *            the encoded data for the action. May be zero length but not
-	 *            null.
-	 */
-	//TODO(api) Remove ?
-	public void setData(byte[] bytes) {
-		if (bytes == null) {
-			throw new IllegalArgumentException(Strings.DATA_CANNOT_BE_NULL);
-		}
-		data = bytes;
-	}
-
-	/**
-	 * Sets the size of the buffer to reserve for encoded actions.
-	 * 
-	 * @param size
-	 *            the number of bytes to reserve for storing encoded actions.
-	 *            Must not be negative.
-	 */
-	//TODO(api) Remove ?
-	public void setData(int size) {
-		if (size < 0) {
-			throw new IllegalArgumentException(Strings.NUMBER_CANNOT_BE_NEGATIVE);
-		}
-		data = new byte[size];
 	}
 
 	public ActionData copy() {

@@ -152,7 +152,7 @@ public final class MovieClipEventHandler implements Encodeable
 			}
 		} 
 		else {
-			actions.add(new ActionData(offset, coder, context));
+			actions.add(new ActionData(coder.readBytes(new byte[offset])));
 		}
 	}
 

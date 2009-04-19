@@ -43,28 +43,32 @@ public final class ActionObject implements Action
 {
 	private static final String FORMAT = "ActionObject: { type=%d; data[%s] }";
 
-	private int type;
-	private byte[] data;
-	
-	private transient int length;
+	private final int type;
+	private final byte[] data;
 	
 	public ActionObject(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		type = coder.readByte();
 		
 		if (type > 127) {
-			length = coder.readWord(2, false);
-			data = coder.readBytes(new byte[length]);			
+			data = coder.readBytes(new byte[coder.readWord(2, false)]);			
+		} else {
+			data = null;
 		}
 	}
 
 	public ActionObject(int type) {
 		this.type = type;
+		data = null;
 	}
 
 	public ActionObject(int type, byte[] bytes) {
 		this.type = type;
-		setData(bytes);
+		
+		if (bytes == null) {
+			throw new IllegalArgumentException(Strings.DATA_CANNOT_BE_NULL);
+		}
+		data = bytes;
 	}
 
 	public ActionObject(ActionObject object) {
@@ -84,26 +88,6 @@ public final class ActionObject implements Action
 		return data;
 	}
 
-	/**
-	 * Sets the encoded data for the action.
-	 * 
-	 * @param bytes
-	 *            the encoded data for the action. May be zero length but not null.
-	 */
-	//TODO(api) Remove ?
-	public void setData(byte[] bytes)
-	{
-		if (bytes == null) {
-			throw new IllegalArgumentException(Strings.DATA_CANNOT_BE_NULL);
-		}
-		data = bytes;
-	}
-	
-	//TODO(api) Remove ?
-	public void setData(int size) {
-	    data = new byte[size];
-	}
-
 	@Override
 	public ActionObject copy() 
 	{
@@ -118,12 +102,7 @@ public final class ActionObject implements Action
 
 	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
-		length = 0;
-		
-		if (data != null && data.length > 0) {
-			length += data.length;
-		}
-		return ((type > 127) ? 3:1)+ length;
+		return ((type > 127) ? 3:1)+ data.length;
 	}
 
 	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException

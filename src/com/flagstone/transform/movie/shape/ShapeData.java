@@ -36,16 +36,20 @@ import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.movie.Strings;
 
 //TODO(doc)
 public final class ShapeData implements ShapeRecord
 {
 	private static final String FORMAT = "ShapeData: { data[%d] }";
 
-	private byte[] data;
+	private final byte[] data;
 	
-	public ShapeData(final int size, final SWFDecoder coder, SWFContext context) throws CoderException {
-		data = coder.readBytes(new byte[size]);
+	public ShapeData(final byte[] bytes) {
+		if (bytes == null) { 
+			throw new IllegalArgumentException(Strings.DATA_CANNOT_BE_NULL);
+		}
+		data = bytes;
 	}
 
 	public ShapeData(ShapeData object) {
@@ -58,22 +62,6 @@ public final class ShapeData implements ShapeRecord
 	public byte[] getData()
 	{
 		return data;
-	}
-
-	/**
-	 * Sets the encoded data for the action.
-	 * 
-	 * @param bytes
-	 *            the encoded data for the action. May be zero length but not null.
-	 */
-	public void setData(byte[] bytes)
-	{
-		data = new byte[bytes.length];
-		System.arraycopy(bytes, 0, data, 0, bytes.length);
-	}
-	
-	public void setData(int size) {
-	    data = new byte[size];
 	}
 
 	public ShapeData copy() 

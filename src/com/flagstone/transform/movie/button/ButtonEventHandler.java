@@ -233,7 +233,7 @@ public final class ButtonEventHandler implements Encodeable
 		else 
 		{
 			if (length != 0) {
-				actions.add(new ActionData(length, coder, context));
+				actions.add(new ActionData(coder.readBytes(new byte[length])));
 			}
 		}
 	}

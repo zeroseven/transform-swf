@@ -103,7 +103,7 @@ public final class DefineButton implements DefineTag
 			}
 		} 
 		else {
-			actions.add(new ActionData(actionsLength, coder, context));
+			actions.add(new ActionData(coder.readBytes(new byte[actionsLength])));
 		}
 
 		if (coder.getPointer() != end) {

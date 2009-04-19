@@ -94,7 +94,7 @@ public final class InitializeMovieClip implements MovieTag
 				actions.add(context.actionOfType(coder, context));
 			}
 		} else {
-			actions.add(new ActionData(length-2, coder, context));
+			actions.add(new ActionData(coder.readBytes(new byte[length-2])));
 		}
 
 		if (coder.getPointer() != end) {

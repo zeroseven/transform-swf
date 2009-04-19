@@ -51,8 +51,8 @@ public final class MovieObject implements MovieTag {
 	
 	private static final String FORMAT = "MovieObject: { type=%d; data=byte[%d] {...} }";
 	
-	private int type;
-	private byte[] data;
+	private final int type;
+	private final byte[] data;
 
 	private transient int length;
 
@@ -71,7 +71,11 @@ public final class MovieObject implements MovieTag {
 	//TODO(doc)
 	public MovieObject(int type, byte[] bytes) {
 		this.type = type;
-		setData(bytes);
+
+		if (bytes == null) {
+			throw new IllegalArgumentException(Strings.DATA_CANNOT_BE_NULL);
+		}
+		data = bytes;
 	}
 
 	//TODO(doc)
@@ -90,21 +94,6 @@ public final class MovieObject implements MovieTag {
 	 */
 	public byte[] getData() {
 		return data;
-	}
-
-	/**
-	 * Sets the encoded data for the movie tag object.
-	 * 
-	 * @param bytes
-	 *            the encoded data for the object. May be zero length but not
-	 *            null.
-	 */
-	//TODO(api) Remove ?
-	public void setData(byte[] bytes) {
-		if (bytes == null) {
-			throw new IllegalArgumentException(Strings.DATA_CANNOT_BE_NULL);
-		}
-		data = bytes;
 	}
 
 	public MovieObject copy() {

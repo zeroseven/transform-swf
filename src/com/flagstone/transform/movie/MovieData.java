@@ -51,16 +51,14 @@ public final class MovieData implements MovieTag {
 	
 	private static final String FORMAT = "MovieData: { data[%d] }";
 
-	private byte[] data;
+	private final byte[] data;
 	
-	//TODO(optimise) remove
-	public MovieData(final int size, final SWFDecoder coder, SWFContext context) {
-		data = coder.readBytes(new byte[size]);
-	}
-
 	//TODO(doc)
 	public MovieData(final byte[] bytes) {
-		setData(bytes);
+		if (bytes == null || bytes.length == 0) {
+			throw new IllegalArgumentException(Strings.DATA_NOT_SET);
+		}
+		data = bytes;
 	}
 
 	//TODO(doc)
@@ -73,35 +71,6 @@ public final class MovieData implements MovieTag {
 	 */
 	public byte[] getData() {
 		return data;
-	}
-
-	/**
-	 * Sets the encoded MovieTag objects.
-	 * 
-	 * @param bytes
-	 *            the encoded MovieTag objects. Must not be zero length or null.
-	 */
-	//TODO(api) Remove ?
-	public void setData(final byte[] bytes) {
-		if (bytes == null || bytes.length == 0) {
-			throw new IllegalArgumentException(Strings.DATA_NOT_SET);
-		}
-		data = bytes;
-	}
-
-	/**
-	 * Sets the size of the buffer to reserve for encoded movie tags.
-	 * 
-	 * @param size
-	 *            the number of bytes to reserve for storing encoded movie tags.
-	 *            Must not be negative.
-	 */
-	//TODO(api) remove ?
-	public void setData(int size) {
-		if (size < 0) {
-			throw new IllegalArgumentException(Strings.NUMBER_CANNOT_BE_NEGATIVE);
-		}
-		data = new byte[size];
 	}
 
 	public MovieData copy() {

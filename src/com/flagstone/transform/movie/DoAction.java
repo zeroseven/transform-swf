@@ -101,8 +101,7 @@ public final class DoAction implements MovieTag {
 				actions.add(context.actionOfType(coder, context));
 			}
 		} else {
-			//TODO(optimise) just pass in the array of bytes.
-			actions.add(new ActionData(length, coder, context));
+			actions.add(new ActionData(coder.readBytes(new byte[length])));
 		}
 
 		if (coder.getPointer() != end) {

@@ -109,7 +109,7 @@ public final class Shape implements Encodeable
 		} 
 		else
 		{
-			objects.add(new ShapeData(length, coder, context));
+			objects.add(new ShapeData(coder.readBytes(new byte[length])));
 		}
 	}
 
@@ -151,7 +151,7 @@ public final class Shape implements Encodeable
 		} 
 		else
 		{
-			objects.add(new ShapeData(length, coder, context));
+			objects.add(new ShapeData(coder.readBytes(new byte[length])));
 		}
 	}
 

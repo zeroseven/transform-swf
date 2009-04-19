@@ -83,9 +83,8 @@ public final class MovieDataTest {
 	public void decode() throws CoderException {
 
 		SWFDecoder decoder = new SWFDecoder(data);
-		SWFContext context = new SWFContext();
 	
-		fixture = new MovieData(data.length, decoder, context);
+		fixture = new MovieData(decoder.readBytes(new byte[data.length]));
 		
 		assertTrue(decoder.eof());
 		assertArrayEquals(data, fixture.getData());
