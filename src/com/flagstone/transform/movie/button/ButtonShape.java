@@ -122,7 +122,7 @@ public final class ButtonShape implements Encodeable
 	 *            a coordinate transform that changes the appearance of the
 	 *            shape when it is drawn.
 	 */
-	public ButtonShape(Set<Button.State> states, int uid, int aLayer, CoordTransform aTransform)
+	public ButtonShape(Set<ButtonState> states, int uid, int aLayer, CoordTransform aTransform)
 	{
 		setState(states);
 		setIdentifier(uid);
@@ -154,7 +154,7 @@ public final class ButtonShape implements Encodeable
 	 *            an ColorTransform object that changes the colour of the
 	 *            shape when it is drawn. Must not be null.
 	 */
-	public ButtonShape(Set<Button.State>states, int uid, int aLayer, CoordTransform aTransform, ColorTransform aColorTransform)
+	public ButtonShape(Set<ButtonState>states, int uid, int aLayer, CoordTransform aTransform, ColorTransform aColorTransform)
 	{
 		setState(states);
 		setIdentifier(uid);
@@ -173,11 +173,11 @@ public final class ButtonShape implements Encodeable
 	}
 
 	//TODO(doc)
-	public Set<Button.State> getState()
+	public Set<ButtonState> getState()
 	{
-		Set<Button.State>set = EnumSet.allOf(Button.State.class);
+		Set<ButtonState>set = EnumSet.allOf(ButtonState.class);
 		
-		for (Iterator<Button.State>iter = set.iterator(); iter.hasNext();) {
+		for (Iterator<ButtonState>iter = set.iterator(); iter.hasNext();) {
 			if ((state & iter.next().getValue()) == 0) {
 				iter.remove();
 			}
@@ -186,9 +186,9 @@ public final class ButtonShape implements Encodeable
 	}
 
 	//TODO(doc)
-	public void setState(Set<Button.State>states)
+	public void setState(Set<ButtonState>states)
 	{
-		for (Button.State state : states) {
+		for (ButtonState state : states) {
 			this.state |= state.getValue();
 		}
 	}
