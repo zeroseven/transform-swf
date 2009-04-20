@@ -30,16 +30,33 @@
 
 package com.flagstone.transform.factory.sound;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.RandomAccessFile;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.zip.DataFormatException;
 
 import com.flagstone.transform.coder.LittleEndianDecoder;
+import com.flagstone.transform.factory.image.ImageInfo;
+import com.flagstone.transform.movie.MovieTag;
 import com.flagstone.transform.movie.Strings;
+import com.flagstone.transform.movie.sound.DefineSound;
+import com.flagstone.transform.movie.sound.SoundStreamBlock;
+import com.flagstone.transform.movie.sound.SoundStreamHead2;
 import com.flagstone.transform.video.SoundFormat;
 
 /**
  * Decoder for WAV sounds so they can be added to a flash file.
  */
-public final class WAVDecoder extends SoundDecoder
+public final class WAVDecoder implements SoundProvider, SoundDecoder
 {
     protected static final int[] riffSignature = { 82, 73, 70, 70 };
     protected static final int[] wavSignature = { 87, 65, 86, 69 };
@@ -47,12 +64,145 @@ public final class WAVDecoder extends SoundDecoder
     protected static final int FMT = 0x20746d66;
     protected static final int DATA = 0x61746164;
     
-	@Override
-	public SoundDecoder copy() {
-		return new WAVDecoder();
-	}
+    private SoundFormat format;
+    private int numberOfChannels;
+    private int samplesPerChannel;
+    private int sampleRate;
+    private int sampleSize;
+    private byte[] sound = null;
 
-	@Override
+    public SoundDecoder newDecoder() {
+    	return new WAVDecoder();
+    }
+    
+    public void read(String path) throws FileNotFoundException, IOException, DataFormatException
+    {
+    	read(new File(path));
+    }
+    
+    public void read(File file) throws FileNotFoundException, IOException, DataFormatException
+    {
+		decode(loadFile(file));
+    }
+
+    public void read(URL url) throws FileNotFoundException, IOException, DataFormatException
+    {
+	    URLConnection connection = url.openConnection();
+
+	    int fileSize = connection.getContentLength();
+            
+	    if (fileSize<0) {
+              throw new FileNotFoundException(url.getFile());
+	    }
+	    
+	    byte[] bytes = new byte[fileSize];
+
+	    InputStream stream = url.openStream();
+	    BufferedInputStream buffer = new BufferedInputStream(stream);
+
+	    buffer.read(bytes);
+	    buffer.close();
+
+		decode(bytes);
+    }
+
+	/**
+	 * Create a definition for an event sound using the sound in the specified file.
+	 * 
+	 * @param identifier the unique identifier that will be used to refer to the 
+	 * sound in the Flash file.
+	 * 
+	 * @param file the File containing the abstract path to the sound.
+	 * 
+	 * @return a sound definition that can be added to a Movie.
+	 * 
+	 * @throws FileNotFoundException if the file cannot be found or opened.
+	 * 
+	 * @throws IOException if there is an error reading the file.
+	 * 
+	 * @throws DataFormatException if there is a problem decoding the image, 
+	 * either it is in an unsupported format or an error occurred while decoding
+	 * the image.
+	 */
+    public DefineSound defineSound(int identifier)
+    {
+        return new DefineSound(identifier, format, sampleRate, numberOfChannels, sampleSize, samplesPerChannel, sound);
+    }
+
+    private byte[] loadFile(final File file) throws FileNotFoundException, IOException {
+		byte[] data = new byte[(int) file.length()];
+
+		FileInputStream stream = null; //TODO(code) fix
+
+		try {
+			stream = new FileInputStream(file);
+			int bytesRead = stream.read(data);
+
+			if (bytesRead != data.length) {
+				throw new IOException(file.getAbsolutePath());
+			}
+		} finally {
+			if (stream != null) {
+				stream.close();
+			}
+		}
+		return data;
+	}
+    /** 
+     * Generates all the objects required to generate a streaming sound from 
+     * a URL reference. 
+     * 
+     * @param frameRate the rate at which the movie is played. Sound are streamed
+     * with one block of sound data per frame.
+     * 
+ 	 * @param url the Uniform Resource Locator referencing the file containing
+ 	 * the sound.
+     * 
+     * @return an array where the first object is the SoundStreamHead2 object 
+     * that defines the streaming sound, followed by SoundStreamBlock objects 
+     * containing the sound samples that will be played in each frame.
+	 * 
+	 * @throws FileNotFoundException if the file cannot be found or opened.
+	 * 
+	 * @throws IOException if there is an error reading the file.
+	 * 
+	 * @throws DataFormatException if there is a problem decoding the sound, 
+	 * either it is in an unsupported format or an error occurred while decoding
+	 * the sound data.
+     */
+    public List<MovieTag> streamSound(int frameRate)
+    {
+     	ArrayList<MovieTag>array = new ArrayList<MovieTag>();
+  
+        int firstSample = 0;
+        int firstSampleOffset = 0;
+        int bytesPerBlock = 0;
+        int bytesRemaining = 0;
+        int numberOfBytes = 0;
+   	    byte[] bytes = null;
+	    
+    	int samplesPerBlock = sampleRate/frameRate;
+	 	int numberOfBlocks = samplesPerChannel/samplesPerBlock;
+
+	    array.add(new SoundStreamHead2(format, sampleRate, numberOfChannels, sampleSize, sampleRate, numberOfChannels, sampleSize, samplesPerBlock));
+
+	    for (int i=0; i<numberOfBlocks; i++)
+	    {
+            firstSample = i*samplesPerBlock;
+            firstSampleOffset = firstSample * sampleSize * numberOfChannels;
+            bytesPerBlock = samplesPerBlock * sampleSize * numberOfChannels;
+            bytesRemaining = sound.length - firstSampleOffset;
+            
+            numberOfBytes = (bytesRemaining < bytesPerBlock) ? bytesRemaining : bytesPerBlock;
+        
+            bytes = new byte[numberOfBytes];
+            System.arraycopy(sound, firstSampleOffset, bytes, 0, numberOfBytes);
+            
+            array.add(new SoundStreamBlock(bytes));
+	    }
+    	return array;
+     }
+
 	protected void decode(byte[] data) throws DataFormatException
     {
     	LittleEndianDecoder coder = new LittleEndianDecoder(data);
