@@ -10,7 +10,6 @@ import java.util.zip.DataFormatException;
 
 import com.flagstone.transform.factory.font.Font;
 import com.flagstone.transform.factory.shape.Canvas;
-import com.flagstone.transform.factory.text.TextFactory;
 import com.flagstone.transform.movie.Background;
 import com.flagstone.transform.movie.Movie;
 import com.flagstone.transform.movie.Place2;
@@ -41,7 +40,7 @@ public final class DefineTextTest
         }	
 
         font = new Font();
-        font.decode(new java.awt.Font("Arial", java.awt.Font.PLAIN, 12));
+        //TODO font.decode(new java.awt.Font("Arial", java.awt.Font.PLAIN, 12));
 	}
 	
 	@Test
@@ -72,7 +71,7 @@ public final class DefineTextTest
         movie.add(new Background(ColorTable.lightblue()));
         movie.add(definition);
 
-        DefineText2 text = TextFactory.defineText(movie.newIdentifier(), alphabet, definition, fontSize, ColorTable.black());
+        DefineText2 text = null; //TODO TextTable.defineText(movie.newIdentifier(), alphabet, definition, fontSize, ColorTable.black());
 
         int textWidth = text.getBounds().getWidth();
         int textHeight = text.getBounds().getHeight();
@@ -128,11 +127,11 @@ public final class DefineTextTest
 
         for (int i=0; i<alphabet.length(); i++)
         {
-            DefineText2 text = TextFactory.defineText(movie.newIdentifier(), alphabet.substring(i,i+1), definition, fontSize, ColorTable.black());
+            DefineText2 text = null; //TODO TextFactory.defineText(movie.newIdentifier(), alphabet.substring(i,i+1), definition, fontSize, ColorTable.black());
 
             int textWidth = text.getBounds().getWidth();
             int textHeight = text.getBounds().getHeight();
-            int advance = TextFactory.boundsForText(alphabet.substring(i,i+1), definition, fontSize).getWidth() + 40;
+            int advance = 0; //TODO TextFactory.boundsForText(alphabet.substring(i,i+1), definition, fontSize).getWidth() + 40;
 
             int shapeId = movie.newIdentifier();
 

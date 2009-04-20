@@ -8,8 +8,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.zip.DataFormatException;
 
-
-import com.flagstone.transform.factory.sound.SoundFactory;
 import com.flagstone.transform.movie.Background;
 import com.flagstone.transform.movie.Movie;
 import com.flagstone.transform.movie.MovieTag;
@@ -71,8 +69,8 @@ public final class PlayStreamingSoundTest
         {
         	sourceFile = new File(sourceDir, file);
         	destFile = new File(destDir, file.substring(0, file.lastIndexOf('.')) + ".swf");
-            stream = SoundFactory.streamSound((int)framesPerSecond, sourceFile);
-        	playSound(stream, destFile);
+        	//TODO stream = SoundFactory.streamSound((int)framesPerSecond, sourceFile);
+        	//TODO playSound(stream, destFile);
         }
     }
     

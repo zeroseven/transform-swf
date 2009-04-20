@@ -7,7 +7,6 @@ import java.util.ArrayList;
 
 import java.util.zip.DataFormatException;
 
-import com.flagstone.transform.factory.sound.SoundFactory;
 import com.flagstone.transform.movie.Background;
 import com.flagstone.transform.movie.Movie;
 import com.flagstone.transform.movie.ShowFrame;
@@ -31,7 +30,7 @@ public final class PlayEventSound
     		}
     		
     		Movie movie = new Movie();
-    		DefineSound sound = SoundFactory.defineSound(movie.newIdentifier(), sourceFile);
+    		DefineSound sound = null; //TODO SoundFactory.defineSound(movie.newIdentifier(), sourceFile);
     		
             float framesPerSecond = 12.0f;
 

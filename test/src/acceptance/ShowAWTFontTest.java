@@ -68,7 +68,7 @@ public final class ShowAWTFontTest
 	    	try
 	    	{
 	        	font = new Font();
-	        	font.decode(fonts[i]);
+	        	//TODOfont.decode(fonts[i]);
 		    	destFile = new File(destDir, fonts[i].getFontName() + ".swf");
 	            definition = font.defineFont(1, set);
 	            showFont(definition, destFile);

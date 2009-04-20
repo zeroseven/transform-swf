@@ -8,7 +8,6 @@ import java.util.zip.DataFormatException;
 import java.util.Iterator;
 import java.util.List;
 
-import com.flagstone.transform.factory.sound.SoundFactory;
 import com.flagstone.transform.movie.Background;
 import com.flagstone.transform.movie.Movie;
 import com.flagstone.transform.movie.MovieTag;
@@ -32,7 +31,7 @@ public final class PlayStreamingSound
             float framesPerSecond = 12.0f;
 
     		Movie movie = new Movie();
-    		List<MovieTag>sound = SoundFactory.streamSound((int)framesPerSecond, sourceFile);
+    		List<MovieTag>sound = null; //TODO SoundFactory.streamSound((int)framesPerSecond, sourceFile);
 
             movie.setFrameSize(new Bounds(0, 0, 8000, 4000));
             movie.setFrameRate(framesPerSecond);

@@ -89,7 +89,7 @@ public final class ShowTrueTypeFontTest
         	sourceFile = new File(sourceDir, file);
         	destFile = new File(destDir, file.substring(0, file.lastIndexOf('.')) + ".swf");
         	font = new Font();
-        	font.decode(sourceFile);
+        	//TODOfont.decode(sourceFile);
             definition = font.defineFont(10, set);
             showFont(definition, destFile);
         }
