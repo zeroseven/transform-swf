@@ -54,7 +54,7 @@ public final class SolidFillTest {
 	private transient SolidFill fixture;
 	
 	private transient final byte[] encoded = new byte[] { 
-			FillStyle.SOLID, 0x01, 0x02, 0x03 };
+			0x00, 0x01, 0x02, 0x03 };
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForColorWithNull() {

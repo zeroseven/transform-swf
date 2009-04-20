@@ -101,7 +101,6 @@ import com.flagstone.transform.movie.Strings;
  * @see Push.Void
  * 
  */
-//TODO(api) Will Java autoboxing work with a single add() method.
 public final class Push implements Action {
 	
 	private static final String FORMAT = "Push: { values=%s }";
@@ -109,7 +108,7 @@ public final class Push implements Action {
 	private List<Object> values;
 
 	private transient int length;
-
+	
 	//TODO(doc)
 	public Push(final SWFDecoder coder, final SWFContext context) throws CoderException {
 		
@@ -178,6 +177,10 @@ public final class Push implements Action {
 		}
 	}
 
+	public Push() {
+		values = new ArrayList<Object>();
+	}
+
 	/**
 	 * Creates a Push action that will push the values in the array onto the
 	 * stack.
@@ -197,120 +200,7 @@ public final class Push implements Action {
 		values = new ArrayList<Object>(object.values);
 	}
 
-	/**
-	 * Adds a boolean value to the array of values that will be pushed onto the
-	 * stack.
-	 * 
-	 * @param value
-	 *            a boolean value.
-	 */
-	public final Push add(boolean value) {
-		values.add(value);
-		return this;
-	}
-
-	/**
-	 * Adds an integer value to the array of values that will be pushed onto the
-	 * stack.
-	 * 
-	 * @param value
-	 *            an integer (int) value.
-	 */
-	public final Push add(int value) {
-		values.add(value);
-		return this;
-	}
-
-	/**
-	 * Adds a double value to the array of values that will be pushed onto the
-	 * stack.
-	 * 
-	 * @param value
-	 *            a double-precision floating-point value.
-	 */
-	public final Push add(double value) {
-		values.add(new Double(value));
-		return this;
-	}
-
-	/**
-	 * Adds a null value to the array of values that will be pushed onto the
-	 * stack.
-	 * 
-	 * @param value
-	 *            a lightweight Null object.
-	 * 
-	 * @throws IllegalArgumentException
-	 *             is the argument is null.
-	 */
-	public final Push add(Null value) {
-		if (value == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
-		}
-		values.add(value);
-		return this;
-	}
-
-	/**
-	 * Adds a void value to the array of values that will be pushed onto the
-	 * stack.
-	 * 
-	 * @param value
-	 *            a lightweight Void object.
-	 * 
-	 * @throws IllegalArgumentException
-	 *             is the argument is null.
-	 */
-	public final Push add(Void value) {
-		if (value == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
-		}
-		values.add(value);
-		return this;
-	}
-
-	/**
-	 * Adds a String to the array of values that will be pushed onto the stack.
-	 * 
-	 * @param value
-	 *            a String. Must not be null.
-	 */
-	public final Push add(String value) {
-		if (value == null) {
-			throw new IllegalArgumentException(Strings.STRING_CANNOT_BE_NULL);
-		}
-		values.add(value);
-		return this;
-	}
-
-	/**
-	 * Adds an TableIndex to the array of values that will be pushed onto the
-	 * stack.
-	 * 
-	 * @param value
-	 *            a TableIndex referencing an entry in a table of literals. Must
-	 *            not be null.
-	 */
-	public final Push add(TableIndex value) {
-		if (value == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
-		}
-		values.add(value);
-		return this;
-	}
-
-	/**
-	 * Adds an RegisterIndex to the array of values that will be pushed onto the
-	 * stack.
-	 * 
-	 * @param value
-	 *            a RegisterIndex referencing one of the Flash Player's internal
-	 *            registers. Must not be null.
-	 */
-	public final Push add(RegisterIndex value) {
-		if (value == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
-		}
+	public final Push add(Object value) {
 		values.add(value);
 		return this;
 	}
@@ -421,6 +311,8 @@ public final class Push implements Action {
 			} else if (anObject instanceof RegisterIndex) {
 				coder.writeWord(4, 1);
 				coder.writeWord(((RegisterIndex) anObject).getIndex(), 1);
+			} else {
+				throw new AssertionError();
 			}
 		}
 	}

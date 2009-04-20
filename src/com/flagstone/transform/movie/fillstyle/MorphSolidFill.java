@@ -135,7 +135,7 @@ public final class MorphSolidFill implements FillStyle {
 	}
 
 	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException {
-		coder.writeByte(SOLID);
+		coder.writeByte(0);
 		startColor.encode(coder, context);
 		endColor.encode(coder, context);
 	}

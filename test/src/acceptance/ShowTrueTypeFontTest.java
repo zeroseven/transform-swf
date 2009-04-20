@@ -99,9 +99,10 @@ public final class ShowTrueTypeFontTest
     {
         Movie movie = new Movie();
 
-        DefineTextField text = new DefineTextField(movie.newIdentifier(), new Bounds(0, 0, width, height), 
-        				"var", alphabet);
-        
+        DefineTextField text = new DefineTextField(movie.newIdentifier());
+        text.setBounds(new Bounds(0, 0, width, height));
+        text.setVariableName("var");
+        text.setInitialText(alphabet);
         text.setUseFontGlyphs(true);
         text.setFontIdentifier(font.getIdentifier());
         text.setFontHeight(fontSize);
@@ -112,7 +113,7 @@ public final class ShowTrueTypeFontTest
         movie.add(new Background(ColorTable.lightblue()));
         movie.add(font);
         movie.add(text);
-        movie.add(new Place2(text.getIdentifier(), 1, margin , margin));
+        movie.add(Place2.show(text.getIdentifier(), 1, margin , margin));
         movie.add(ShowFrame.getInstance());
         movie.encodeToFile(file.getPath());
     }

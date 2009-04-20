@@ -249,8 +249,9 @@ public final class TextFactory
      */
     public static DefineTextField defineTextField(int uid, String text, DefineFont2 font, int size, Color color)
     {
-    	DefineTextField field = new DefineTextField(uid, boundsForText(text, font, size), "", text);
-
+    	DefineTextField field = new DefineTextField(uid);
+    	field.setBounds(boundsForText(text, font, size));
+    	field.setInitialText(text);
     	field.setUseFontGlyphs(true);
         field.setFontIdentifier(font.getIdentifier());
         field.setFontHeight(size);

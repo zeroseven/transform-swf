@@ -240,18 +240,6 @@ public final class ColorTransform implements Encodeable {
 	}
 
 	/**
-	 * Returns true if the colour of an object will be unchanged by the
-	 * transform.
-	 */
-	//TODO(api) Remove ?
-	public boolean isUnityTransform() {
-		return (multiplyRed == 256) && (multiplyGreen == 256)
-				&& (multiplyBlue == 256) && (multiplyAlpha == 256)
-				&& (addRed == 0) && (addGreen == 0) && (addBlue == 0)
-				&& (addAlpha == 0);
-	}
-
-	/**
 	 * Returns the value of the multiply term for the red channel.
 	 */
 	public float getMultiplyRed() {

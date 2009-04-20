@@ -205,28 +205,82 @@ public final class MorphLineStyle2 implements Encodeable,
 		endColor = aColor;
 	}
 
-	public int getStartCap() {
-		return startCap;
+	public LineCapStyle getStartCap() {
+		LineCapStyle style;
+		if (startCap == 1) {
+			style = LineCapStyle.NONE;
+		} else if (startCap == 2) {
+			style = LineCapStyle.SQUARE;
+		} else {
+			style = LineCapStyle.ROUND;
+		}
+		return style;
 	}
 
-	public void setStartCap(final int capStyle) {
-		startCap = capStyle;
+	public void setStartCap(final LineCapStyle capStyle) {
+		switch (capStyle) {
+		case NONE:
+			startCap = 1;
+			break;
+		case SQUARE:
+			startCap = 2;
+			break;
+		default:
+			startCap = 0;
+			break;
+		}
 	}
 
-	public int getEndCap() {
-		return endCap;
+	public LineCapStyle getEndCap() {
+		LineCapStyle style;
+		if (endCap == 1) {
+			style = LineCapStyle.NONE;
+		} else if (endCap == 2) {
+			style = LineCapStyle.SQUARE;
+		} else {
+			style = LineCapStyle.ROUND;
+		}
+		return style;
 	}
 
-	public void setEndCap(final int capStyle) {
-		endCap = capStyle;
+	public void setEndCap(final LineCapStyle capStyle) {
+		switch (capStyle) {
+		case NONE:
+			endCap = 1;
+			break;
+		case SQUARE:
+			endCap = 2;
+			break;
+		default:
+			endCap = 0;
+			break;
+		}
 	}
 
-	public int getJoinStyle() {
-		return joinStyle;
+	public LineJoinStyle getJoinStyle() {
+		LineJoinStyle style;
+		if (endCap == 1) {
+			style = LineJoinStyle.BEVEL;
+		} else if (endCap == 2) {
+			style = LineJoinStyle.MITER;
+		} else {
+			style = LineJoinStyle.ROUND;
+		}
+		return style;
 	}
 
-	public void setJoinStyle(final int joinStyle) {
-		this.joinStyle = joinStyle;
+	public void setJoinStyle(final LineJoinStyle style) {
+		switch (style) {
+		case BEVEL:
+			joinStyle = 1;
+			break;
+		case MITER:
+			joinStyle = 2;
+			break;
+		default:
+			joinStyle = 0;
+			break;
+		}
 	}
 
 	public boolean isScaledHorizontally() {
@@ -296,7 +350,7 @@ public final class MorphLineStyle2 implements Encodeable,
 	public int prepareToEncode(final SWFEncoder coder, final SWFContext context) {
 
 		hasFillStyle = fillStyle != null;
-		hasMiter = joinStyle == LineJoinStyle.MITER;
+		hasMiter = joinStyle == 2;
 
 		int length = 6;
 
@@ -341,10 +395,10 @@ public final class MorphLineStyle2 implements Encodeable,
 		int value = 0;
 
 		switch (startCap) {
-		case LineCapStyle.NONE:
+		case 1:
 			value |= 0x00004000;
 			break;
-		case LineCapStyle.SQUARE:
+		case 2:
 			value |= 0x00008000;
 			break;
 		default:
@@ -352,10 +406,10 @@ public final class MorphLineStyle2 implements Encodeable,
 		}
 
 		switch (joinStyle) {
-		case LineJoinStyle.BEVEL:
+		case 1:
 			value |= 0x00001000;
 			break;
-		case LineJoinStyle.MITER:
+		case 2:
 			value |= 0x00002000;
 			break;
 		default:
@@ -367,17 +421,7 @@ public final class MorphLineStyle2 implements Encodeable,
 		value |= scaledVertically ? 0 : 0x00000200;
 		value |= pixelAligned ? 0x00000100 : 0;
 		value |= lineClosed ? 0 : 0x00000004;
-
-		switch (endCap) {
-		case LineCapStyle.NONE:
-			value |= 0x00000001;
-			break;
-		case LineCapStyle.SQUARE:
-			value |= 0x00000002;
-			break;
-		default:
-			break;
-		}
+		value |= endCap;
 
 		return value;
 	}
@@ -386,21 +430,21 @@ public final class MorphLineStyle2 implements Encodeable,
 	private void unpack(final int value) {
 
 		if ((value & 0x00004000) > 0) {
-			startCap = LineCapStyle.NONE;
+			startCap = 1;
 		} else if ((value & 0x00008000) > 0) {
-			startCap = LineCapStyle.SQUARE;
+			startCap = 2;
 		} else {
-			startCap = LineCapStyle.ROUND;
+			startCap = 0;
 		}
 
 		if ((value & 0x00001000) > 0) {
-			joinStyle = LineJoinStyle.BEVEL;
+			joinStyle = 1;
 			hasMiter = false;
 		} else if ((value & 0x00002000) > 0) {
-			joinStyle = LineJoinStyle.MITER;
+			joinStyle = 2;
 			hasMiter = true;
 		} else {
-			joinStyle = LineJoinStyle.ROUND;
+			joinStyle = 0;
 			hasMiter = false;
 		}
 
@@ -409,13 +453,6 @@ public final class MorphLineStyle2 implements Encodeable,
 		scaledVertically = (value & 0x00000200) == 0;
 		pixelAligned = (value & 0x00000100) != 0;
 		lineClosed = (value & 0x00000004) == 0;
-
-		if ((value & 0x00000001) > 0) {
-			endCap = LineCapStyle.NONE;
-		} else if ((value & 0x00000002) > 0) {
-			endCap = LineCapStyle.SQUARE;
-		} else {
-			endCap = LineCapStyle.ROUND;
-		}
+		endCap = value & 0x00000003;
 	}
 }

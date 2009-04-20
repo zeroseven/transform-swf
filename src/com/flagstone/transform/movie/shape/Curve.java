@@ -54,7 +54,6 @@ import com.flagstone.transform.movie.Strings;
  * 
  * @see com.flagstone.transform.factory.shape.Canvas
  */
-//TODO(api) reduce number of set methods.
 public final class Curve implements ShapeRecord
 {
 	private static final String FORMAT = "Curve: control=(%d,%d), anchor=(%d,%d);";

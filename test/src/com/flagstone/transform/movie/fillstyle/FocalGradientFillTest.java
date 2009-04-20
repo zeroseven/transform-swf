@@ -54,7 +54,7 @@ import com.flagstone.transform.movie.datatype.CoordTransform;
 })
 public final class FocalGradientFillTest {
 	
-	private transient final int type = FillStyle.LINEAR;
+	private transient final boolean radial = false;
 	private transient final CoordTransform transform = 
 		CoordTransform.translate(1,2);
 	private static final List<Gradient> list = new ArrayList<Gradient>();

@@ -102,7 +102,7 @@ public final class ActionObject implements Action
 
 	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
-		return ((type > 127) ? 3:1)+ data.length;
+		return ((type > 127) ? 3:1) + ((data == null) ? 0 : data.length);
 	}
 
 	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException

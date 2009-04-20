@@ -72,35 +72,30 @@ public final class PlaceTest {
 			0x06, 0x00, 0x00, 0x00, 0x01, 0x00, 0x02, 0x00, 0x06, 0x50};
 
 	@Test(expected=IllegalArgumentException.class)
-	public void checkAccessorForDepthWithLowerBound() {
-		fixture = new Place(0, layer, transform);
+	public void checkAccessorForIdentifierWithLowerBound() {
+		fixture = new Place().setIdentifier(0);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
-	public void checkAccessorForDepthWithUpperBound() {
-		fixture = new Place(65536, layer, transform);
+	public void checkAccessorForIdentifierWithUpperBound() {
+		fixture = new Place().setIdentifier(65536);
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
-	public void checkAccessorForTimeoutWithLowerBound() {
-		fixture = new Place(identifier, 0, transform);
+	public void checkAccessorForLayerWithLowerBound() {
+		fixture = new Place().setLayer(0);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
-	public void checkAccessorForTimeoutWithUpperBound() {
-		fixture = new Place(identifier, 65536, transform);
+	public void checkAccessorForLayerWithUpperBound() {
+		fixture = new Place().setLayer(65536);
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForCoordTransformWithNull() {
-		fixture = new Place(identifier, layer, null);
+		fixture = new Place().setTransform(null);
 	}
 	
-	@Test(expected=IllegalArgumentException.class)
-	public void checkAccessorForColorTransformWithNull() {
-		fixture = new Place(identifier, layer, transform, null);
-	}
-
 	@Test
 	public void checkCopy() {
 		fixture = new Place(identifier, layer, transform, colorTransform);
@@ -119,7 +114,7 @@ public final class PlaceTest {
 		SWFEncoder encoder = new SWFEncoder(coord.length);		
 		SWFContext context = new SWFContext();
 
-		fixture = new Place(identifier, layer, transform);
+		fixture = new Place().setIdentifier(identifier).setLayer(layer).setTransform(transform);
 		assertEquals(coord.length, fixture.prepareToEncode(encoder, context));
 		fixture.encode(encoder, context);
 		

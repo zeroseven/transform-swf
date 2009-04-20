@@ -37,26 +37,5 @@ import com.flagstone.transform.movie.Copyable;
  * The FillStyle interface identifies the fill styles that can be added to a 
  * shape.
  */
-//TODO(api) Replace types with boolean flags
 public interface FillStyle extends Encodeable, Copyable<FillStyle> {
-	/** The type for creating a solid fill style. */
-	int SOLID = 0;
-	/** The type for creating a linear gradient fill style. */
-	int LINEAR = 16;
-	/** The type for creating for a radial gradient fill style. */
-	int RADIAL = 18;
-	/** The type for creating a tiled bitmap fill style. */
-	int TILED = 64;
-	/** The type for creating a clipped bitmap fill style. */
-	int CLIPPED = 65;
-	/**
-	 * The type for creating an unsmoothed tiled bitmap fill style - added in
-	 * Flash 7 to improve performance compared with TILED fill styles.
-	 */
-	int UNSMOOTHED_TILED = 66; //TODO(code) fix
-	/**
-	 * The type for creating an unsmoothed clipped bitmap fill style - added in
-	 * Flash 7 to improve performance compared with CLIPPED fill styles.
-	 */
-	int UNSMOOTHED_CLIPPED = 67; //TODO(code) fix
 }

@@ -83,10 +83,10 @@ public final class DefineTextTest
         path.rect(text.getBounds().getMinX(), text.getBounds().getMinY(),  textWidth, textHeight);
 
         movie.add(path.defineShape(shapeId));
-        movie.add(new Place2(shapeId, layer++, x+textWidth/2, y+textHeight/2));
+        movie.add(Place2.show(shapeId, layer++, x+textWidth/2, y+textHeight/2));
 
         movie.add(text);
-        movie.add(new Place2(text.getIdentifier(), layer++, x, y));
+        movie.add(Place2.show(text.getIdentifier(), layer++, x, y));
         movie.add(ShowFrame.getInstance());
 
         movie.setFrameSize(new Bounds(0, 0, textWidth+2*margin, textHeight+2*margin));
@@ -141,10 +141,10 @@ public final class DefineTextTest
             path.rect(text.getBounds().getMinX(), text.getBounds().getMinY(), textWidth, textHeight);
 
             movie.add(path.defineShape(shapeId));
-            movie.add(new Place2(shapeId, layer++, x+textWidth/2, y+textHeight/2));
+            movie.add(Place2.show(shapeId, layer++, x+textWidth/2, y+textHeight/2));
 
             movie.add(text);
-            movie.add(new Place2(text.getIdentifier(), layer++, x, y));
+            movie.add(Place2.show(text.getIdentifier(), layer++, x, y));
 
             if (i % charsPerLine == charsPerLine-1)
             {

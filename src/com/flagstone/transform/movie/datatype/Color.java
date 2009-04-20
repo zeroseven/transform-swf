@@ -57,7 +57,6 @@ import com.flagstone.transform.movie.Strings;
  * </p>
  */
 //TODO(doc) Check comments for all methods
-//TODO(api) Add a method to generate colours using (int rgb, int alpha)
 public final class Color implements Encodeable {
 
 	private static final String FORMAT = "Color: { red=%d; green=%d; blue=%d; alpha=%d }";

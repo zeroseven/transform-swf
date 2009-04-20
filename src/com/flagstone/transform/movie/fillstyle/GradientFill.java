@@ -32,13 +32,16 @@ package com.flagstone.transform.movie.fillstyle;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Strings;
+import com.flagstone.transform.movie.button.ButtonEvent;
 import com.flagstone.transform.movie.datatype.CoordTransform;
 
 /**
@@ -81,14 +84,68 @@ import com.flagstone.transform.movie.datatype.CoordTransform;
  * 
  * @see Gradient
  */
-//TODO(api) Add argument for linear/radial gradients
-//TODO(api) Add support for spread and interpolation
 //TODO(optimise) Add pack/unpack methods
 public final class GradientFill implements FillStyle {
+
+	public enum Spread {
+		PAD(0), REFLECT(0x40), REPEAT(0xC0);
+		
+		private static final Map<Integer,Spread>table 
+			= new LinkedHashMap<Integer,Spread>();
+
+		static {
+			for (Spread type : values()) {
+				table.put(type.value, type);
+			}
+		}
+		
+		public static Spread fromInt(int type) {
+			return table.get(type);
+		}
+
+		private int value;
+		
+		private Spread(int value) {
+			this.value = value;
+		}
+		
+		public int getValue() {
+			return value;
+		}
+	}
+	
+	public enum Interpolation {
+		NORMAL(0), LINEAR(0x10);
+		
+		private static final Map<Integer,Interpolation>table 
+			= new LinkedHashMap<Integer,Interpolation>();
+
+		static {
+			for (Interpolation type : values()) {
+				table.put(type.value, type);
+			}
+		}
+		
+		public static Interpolation fromInt(int type) {
+			return table.get(type);
+		}
+
+		private int value;
+		
+		private Interpolation(int value) {
+			this.value = value;
+		}
+		
+		public int getValue() {
+			return value;
+		}
+	}
 
 	private static final String FORMAT = "GradientFill: { transform=%s; gradients=%s }";
 
 	private int type;
+	private int spread;
+	private int interpolation;
 	private CoordTransform transform;
 	private List<Gradient> gradients;
 	
@@ -98,13 +155,15 @@ public final class GradientFill implements FillStyle {
 		type = coder.readByte();
 		transform = new CoordTransform(coder);
 		count = coder.readByte();
+		spread = count & 0x00C0;
+		interpolation = count & 0x0030;
+		count = count & 0x00FF;
 		gradients = new ArrayList<Gradient>(count);
 		
 		for (int i=0; i<count; i++) {
 			gradients.add(new Gradient(coder, context));
 		}
 	}
-
 
 	/**
 	 * Creates a GradientFill object specifying the type, coordinate transform
@@ -122,9 +181,9 @@ public final class GradientFill implements FillStyle {
 	 *            to 8 Gradients. For Flash 8 onwards this number was increased
 	 *            to 15. Must not be null.
 	 */
-	public GradientFill(final int type, final CoordTransform aTransform,
+	public GradientFill(boolean radial, final CoordTransform aTransform,
 			final List<Gradient> anArray) {
-		this.type = type;
+		setRadial(radial);
 		setTransform(aTransform);
 		setGradients(anArray);
 	}
@@ -135,22 +194,33 @@ public final class GradientFill implements FillStyle {
 		transform = object.transform;
 		gradients = new ArrayList<Gradient>(object.gradients);
 	}
-
-	/**
-	 * Add a Gradient object to the array of gradient objects. For Flash 7 and
-	 * earlier versions there can be up to 8 Gradients. For Flash 8 onwards this
-	 * number was increased to 15.
-	 * 
-	 * @param aGradient
-	 *            an Gradient object. Must not be null.
-	 */
-	public GradientFill add(final Gradient aGradient) {
-		//TODO(code) add check that array size does not exceed 15
-		if (aGradient == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+	
+	public boolean isRadial() {
+		return (type & 0x02) != 0;
+	}
+	
+	public void setRadial(boolean radial) {
+		if (radial) {
+			type = 0x12;
+		} else {
+			type = 0x10;
 		}
-		gradients.add(aGradient);
-		return this;
+	}
+	
+	public Spread getSpread() {
+		return Spread.fromInt(spread);
+	}
+	
+	public void setSpread(Spread spread) {
+		this.spread = spread.getValue();
+	}
+	
+	public Interpolation getInterpolation() {
+		return Interpolation.fromInt(interpolation);
+	}
+	
+	public void setInterpolation(Interpolation interpolation) {
+		this.interpolation = interpolation.getValue();
 	}
 
 	/**
@@ -199,6 +269,23 @@ public final class GradientFill implements FillStyle {
 		gradients = anArray;
 	}
 
+	/**
+	 * Add a Gradient object to the array of gradient objects. For Flash 7 and
+	 * earlier versions there can be up to 8 Gradients. For Flash 8 onwards this
+	 * number was increased to 15.
+	 * 
+	 * @param aGradient
+	 *            an Gradient object. Must not be null.
+	 */
+	public GradientFill add(final Gradient aGradient) {
+		//TODO(code) add check that array size does not exceed 15
+		if (aGradient == null) {
+			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+		}
+		gradients.add(aGradient);
+		return this;
+	}
+
 	public GradientFill copy() {
 		return new GradientFill(this);
 	}
@@ -228,7 +315,7 @@ public final class GradientFill implements FillStyle {
 		
 		coder.writeByte(type);
 		transform.encode(coder, context);
-		coder.writeWord(count, 1);
+		coder.writeWord(count | spread | interpolation, 1);
 
 		for (iter = gradients.iterator(); iter.hasNext();) {
 			iter.next().encode(coder, context);

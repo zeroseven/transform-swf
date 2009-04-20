@@ -40,7 +40,7 @@ public final class ShowImage
             movie.add(new Background(ColorTable.lightblue()));
             movie.add(image);
             movie.add(ImageFactory.defineEnclosingShape(shapeId, image, imageWidth/2, imageHeight/2, null));
-            movie.add(new Place2(shapeId, 1, 0, 0));
+            movie.add(Place2.show(shapeId, 1, 0, 0));
             movie.add(ShowFrame.getInstance());
 
             movie.encodeToFile(destFile);

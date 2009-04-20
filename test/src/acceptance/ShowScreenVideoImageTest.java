@@ -100,7 +100,7 @@ public final class ShowScreenVideoImageTest
 
         ScreenPacket packet = new ScreenPacket(true, screenWidth, screenHeight, blockWidth, blockHeight, prev);
         
-    	movie.add(new Place2(identifier, 1, 0,0));
+    	movie.add(Place2.show(identifier, 1, 0,0));
         movie.add(new VideoFrame(identifier, 0, packet.encode()));
         movie.add(ShowFrame.getInstance());
   
@@ -136,7 +136,7 @@ public final class ShowScreenVideoImageTest
     		}
             
         	packet = new ScreenPacket(false, screenWidth, screenHeight, blockWidth, blockHeight, delta);
-            place = new Place2(1, 0, 0);
+            place = Place2.move(1, 0, 0);
             place.setRatio(i);
             
         	movie.add(place);

@@ -32,20 +32,79 @@ package com.flagstone.transform.movie.fillstyle;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movie.Strings;
+import com.flagstone.transform.movie.datatype.CoordTransform;
+import com.flagstone.transform.movie.fillstyle.GradientFill.Interpolation;
+import com.flagstone.transform.movie.fillstyle.GradientFill.Spread;
 
 //TODO(doc) Add documentation
-//TODO(api) Add type (with accessor for linear or gradient)
 //TODO(code) Implement
 //TODO(optimise) Add pack/unpack methods
 public final class FocalGradientFill implements FillStyle {
 
+	public enum Spread {
+		PAD(0), REFLECT(0x40), REPEAT(0xC0);
+		
+		private static final Map<Integer,Spread>table 
+			= new LinkedHashMap<Integer,Spread>();
+
+		static {
+			for (Spread type : values()) {
+				table.put(type.value, type);
+			}
+		}
+		
+		public static Spread fromInt(int type) {
+			return table.get(type);
+		}
+
+		private int value;
+		
+		private Spread(int value) {
+			this.value = value;
+		}
+		
+		public int getValue() {
+			return value;
+		}
+	}
+	
+	public enum Interpolation {
+		NORMAL(0), LINEAR(0x10);
+		
+		private static final Map<Integer,Interpolation>table 
+			= new LinkedHashMap<Integer,Interpolation>();
+
+		static {
+			for (Interpolation type : values()) {
+				table.put(type.value, type);
+			}
+		}
+		
+		public static Interpolation fromInt(int type) {
+			return table.get(type);
+		}
+
+		private int value;
+		
+		private Interpolation(int value) {
+			this.value = value;
+		}
+		
+		public int getValue() {
+			return value;
+		}
+	}
+
+	private int type;
 	private int spread;
 	private int interpolation;
 	private int focalPoint;
@@ -54,7 +113,7 @@ public final class FocalGradientFill implements FillStyle {
 	private transient int count;
 
 	public FocalGradientFill(final SWFDecoder coder, final SWFContext context) throws CoderException {
-		coder.adjustPointer(8);
+		type = coder.readByte();
 		count = coder.readByte();
 		gradients = new ArrayList<Gradient>(count);
 
@@ -63,38 +122,45 @@ public final class FocalGradientFill implements FillStyle {
 		}
 	}
 
+	public FocalGradientFill(Spread spread, Interpolation interpolation, float point, final List<Gradient> anArray) {
+		type = 0x13;
+		setSpread(spread);
+		setInterpolation(interpolation);
+		setGradients(anArray);
+		setFocalPoint(point);
+	}
+
 	public FocalGradientFill(FocalGradientFill object) {
+		type = object.type;
 		spread = object.spread;
 		interpolation = object.interpolation;
 		focalPoint = object.focalPoint;
 		gradients = new ArrayList<Gradient>(object.gradients);
 	}
-
-	public int getSpread() {
-		return spread;
+	
+	public Spread getSpread() {
+		return Spread.fromInt(spread);
+	}
+	
+	public void setSpread(Spread spread) {
+		this.spread = spread.getValue();
+	}
+	
+	public Interpolation getInterpolation() {
+		return Interpolation.fromInt(interpolation);
+	}
+	
+	public void setInterpolation(Interpolation interpolation) {
+		this.interpolation = interpolation.getValue();
 	}
 
-	public void setSpread(int spread) {
+	public float getFocalPoint() {
+		return focalPoint/256.0f;
+	}
+
+	public void setFocalPoint(float point) {
 		//TODO value checking required ?
-		this.spread = spread;
-	}
-
-	public int getInterpolation() {
-		return interpolation;
-	}
-
-	public void setInterpolation(int interpolation) {
-		//TODO value checking required ?
-		this.interpolation = interpolation;
-	}
-
-	public int getFocalPoint() {
-		return focalPoint;
-	}
-
-	public void setFocalPoint(int focalPoint) {
-		//TODO value checking required ?
-		this.focalPoint = focalPoint;
+		this.focalPoint = (int)(point*256);
 	}
 
 	/**
@@ -165,7 +231,8 @@ public final class FocalGradientFill implements FillStyle {
 		//TODO Replace iterator with foreach loop
 		Iterator<Gradient> iter;
 		
-		coder.writeWord(count, 1);
+		coder.writeByte(type);
+		coder.writeWord(count | spread | interpolation, 1);
 
 		for (iter = gradients.iterator(); iter.hasNext();) {
 			iter.next().encode(coder, context);

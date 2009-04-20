@@ -31,9 +31,6 @@
 package com.flagstone.transform.movie.linestyle;
 
 //TODO(doc)
-//TODO(api) Change to an enum
-public interface LineJoinStyle {
-	int ROUND = 0;
-	int BEVEL = 1;
-	int MITER = 2;
+public enum LineJoinStyle {
+	ROUND, BEVEL, MITER;
 }

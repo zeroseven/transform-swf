@@ -52,7 +52,7 @@ import com.flagstone.transform.movie.datatype.CoordTransform;
 })
 public final class GradientFillTest {
 	
-	private transient final int type = FillStyle.LINEAR;
+	private transient final boolean radial = false;
 	private transient final CoordTransform transform = 
 		CoordTransform.translate(1,2);
 	private static final List<Gradient> list = new ArrayList<Gradient>();
@@ -64,19 +64,19 @@ public final class GradientFillTest {
 	
 	private transient GradientFill fixture;
 		
-	private transient final byte[] encoded = new byte[] { type, 0x06, 0x50, 0x02,
+	private transient final byte[] encoded = new byte[] { 0x10, 0x06, 0x50, 0x02,
 			0x01, 0x02, 0x03, 0x04,
 			0x05, 0x06, 0x07, 0x08 };
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAddNullGradient() {
-		fixture = new GradientFill(type, transform, list);
+		fixture = new GradientFill(radial, transform, list);
 		fixture.add(null);
 	}
 
 	@Test
 	public void checkCopy() {
-		fixture = new GradientFill(type, transform, list);
+		fixture = new GradientFill(radial, transform, list);
 		GradientFill copy = fixture.copy();
 
 		assertSame(fixture.getTransform(), copy.getTransform());
@@ -89,7 +89,7 @@ public final class GradientFillTest {
 		SWFEncoder encoder = new SWFEncoder(encoded.length);		
 		SWFContext context = new SWFContext();
 
-		fixture = new GradientFill(type, transform, list);
+		fixture = new GradientFill(radial, transform, list);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
 		fixture.encode(encoder, context);
 		

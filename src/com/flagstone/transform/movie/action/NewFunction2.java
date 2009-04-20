@@ -121,7 +121,6 @@ import com.flagstone.transform.movie.Strings;
  * 
  * @see NewFunction
  */
-//TODO(api) replace constructors with factory methods for functions and methods.
 public final class NewFunction2 implements Action
 {
 	private static final String FORMAT = "NewFunction2: { name=%s; registerCount=%d; optimizations=%s; arguments=%s; actions=%s }";
@@ -225,7 +224,8 @@ public final class NewFunction2 implements Action
 	 * first.
 	 * 
 	 * @param name
-	 *            the name of the function.
+	 *            the name of the function. Can be an empty string if the function
+	 *            is anonymous.
 	 * @param arguments
 	 *            an array of RegisterVariable objects listing the names of the 
 	 *            arguments and the registers they are assigned to.
@@ -236,25 +236,6 @@ public final class NewFunction2 implements Action
 	public NewFunction2(String name, Map<String,Integer> arguments, List<Action> actions)
 	{
 		setName(name);
-		setArguments(arguments);
-		setActions(actions);
-	}
-
-	/**
-	 * Creates a anonymous NewFunction with the specified argument names
-	 * and actions to be executed. Use this constructor when defining functions
-	 * that will be assigned to object variables and used as methods.
-	 * 
-	 * @param arguments
-	 *            an array of RegisterVariable objects listing the names of the 
-	 *            arguments and the registers they are assigned to.
-	 * @param actions
-	 *            the array of actions that define the operation performed by
-	 *            the function.
-	 */
-	public NewFunction2(Map<String,Integer> arguments, List<Action> actions)
-	{
-		name = "";
 		setArguments(arguments);
 		setActions(actions);
 	}

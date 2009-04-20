@@ -56,7 +56,7 @@ public final class LayerTest
 	@Before
 	public void setUp()
 	{
-		obj = new DefineTextField(1, new Bounds(0,0,0,0), "", "");	
+		obj = new DefineTextField(1).setBounds(new Bounds(0,0,0,0));	
 
 		layer = new Layer(1);
 		layer.add(obj);		
@@ -95,14 +95,14 @@ public final class LayerTest
 		layers.add(three);
 		
 		Movie movie = new Movie();
-		movie.add(new Place2(1, 1, 1, 1));
-		movie.add(new Place2(2, 2, 2, 2));
-		movie.add(new Place2(3, 3, 3, 3));
+		movie.add(Place2.show(1, 1, 1, 1));
+		movie.add(Place2.show(2, 2, 2, 2));
+		movie.add(Place2.show(3, 3, 3, 3));
 		movie.add(ShowFrame.getInstance());
-		movie.add(new Place2(2, 3, 3));
-		movie.add(new Place2(3, 4, 4));
+		movie.add(Place2.move(2, 3, 3));
+		movie.add(Place2.move(3, 4, 4));
 		movie.add(ShowFrame.getInstance());
-		movie.add(new Place2(3, 5, 5));
+		movie.add(Place2.move(3, 5, 5));
 		movie.add(ShowFrame.getInstance());
 				
 		assertEquals(Layer.merge(layers), movie.getObjects());
@@ -196,7 +196,7 @@ public final class LayerTest
 		layer.move(-x,-y);
 		layer.move(x,y);
 	    
-	    assertEquals(layer.getObjects().get(1), new Place2(obj.getIdentifier(), layer.getLayer(), x, y));
+	    assertEquals(layer.getObjects().get(1), Place2.show(obj.getIdentifier(), layer.getLayer(), x, y));
 	}
 	
 	@Test

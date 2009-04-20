@@ -48,37 +48,38 @@ import static org.junit.Assert.assertArrayEquals;
 	"PMD.JUnitAssertionsShouldIncludeMessage" })
 public final class BitmapFillTest {
 	
-	private transient final int type = FillStyle.CLIPPED;
+	private transient final boolean tiled = false;
+	private transient final boolean smoothed = false;
 	private transient final int identifier = 1;
 	private transient final CoordTransform transform = 
 		CoordTransform.translate(1,2);
 
 	private transient BitmapFill fixture;
 
-	private transient final byte[] empty = new byte[] { type,
+	private transient final byte[] empty = new byte[] { 0x43,
 			0x00, 0x00, 0x00 };
 	
-	private transient final byte[] encoded = new byte[] { type,
+	private transient final byte[] encoded = new byte[] { 0x43,
 			0x01, 0x00, 0x06, 0x50 };
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForIdentifierWithLowerBound() {
-		fixture = new BitmapFill(type, 0, transform);
+		fixture = new BitmapFill(tiled, smoothed, 0, transform);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForIdentifierWithUpperBound() {
-		fixture = new BitmapFill(type, 65536, transform);
+		fixture = new BitmapFill(tiled, smoothed, 65536, transform);
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForDataWithNull() {
-		fixture = new BitmapFill(type, 1, null);
+		fixture = new BitmapFill(tiled, smoothed, 1, null);
 	}
 
 	@Test
 	public void checkCopy() {
-		fixture = new BitmapFill(type, identifier, transform);
+		fixture = new BitmapFill(tiled, smoothed, identifier, transform);
 		assertEquals(fixture.getIdentifier(), fixture.copy().getIdentifier());
 		assertSame(fixture.getTransform(), fixture.copy().getTransform());
 		assertEquals(fixture.toString(), fixture.toString());
@@ -90,7 +91,7 @@ public final class BitmapFillTest {
 		SWFEncoder encoder = new SWFEncoder(encoded.length);
 		SWFContext context = new SWFContext();
 
-		fixture = new BitmapFill(type, identifier, transform);
+		fixture = new BitmapFill(tiled, smoothed, identifier, transform);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));		
 		fixture.encode(encoder, context);
 		

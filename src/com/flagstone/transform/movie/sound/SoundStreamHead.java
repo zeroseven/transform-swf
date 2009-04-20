@@ -69,8 +69,6 @@ import com.flagstone.transform.video.SoundFormat;
  *  @see SoundStreamBlock
  *  @see SoundStreamHead2
  */
-//TODO(api) Add an enum for sound rate or do translation in accessor?
-
 public final class SoundStreamHead implements MovieTag
 {
 	private static final String FORMAT = "SoundStreamHead: { format=%s; " +

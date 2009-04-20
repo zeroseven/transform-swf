@@ -20,25 +20,25 @@ public final class MorphFillStyleFactory implements SWFFactory<FillStyle> {
 		FillStyle style;
 
 		switch (coder.scanByte()) {
-		case FillStyle.SOLID:
+		case 0:
 			style = new MorphSolidFill(coder, context);
 			break;
-		case FillStyle.LINEAR:
+		case 16:
 			style = new MorphGradientFill(coder, context);
 			break;
-		case FillStyle.RADIAL:
+		case 18:
 			style = new MorphGradientFill(coder, context);
 			break;
-		case FillStyle.TILED:
+		case 0x40:
 			style = new MorphBitmapFill(coder, context);
 			break;
-		case FillStyle.CLIPPED:
+		case 0x41:
 			style = new MorphBitmapFill(coder, context);
 			break;
-		case FillStyle.UNSMOOTHED_TILED:
+		case 0x42:
 			style = new MorphBitmapFill(coder, context);
 			break;
-		case FillStyle.UNSMOOTHED_CLIPPED:
+		case 0x43:
 			style = new MorphBitmapFill(coder, context);
 			break;
 		default:

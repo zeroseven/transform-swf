@@ -271,7 +271,7 @@ public final class ImageFactory
             (width-xOrigin)*20+lineWidth, (height-yOrigin)*20+lineWidth);
 
         Shape shape = new Shape(new ArrayList<ShapeRecord>());
-        ShapeStyle style = new ShapeStyle((borderStyle == null) ? 0 : 1, 1, null); 
+        ShapeStyle style = new ShapeStyle().setLineStyle(borderStyle == null ? 0 : 1).setFillStyle(1); 
         style.setMove(-xOrigin*20, -yOrigin*20);
     
         shape.add(style);
@@ -287,7 +287,7 @@ public final class ImageFactory
             definition.add(borderStyle);
         }
         
-        definition.add(new BitmapFill(FillStyle.CLIPPED, image.getIdentifier(), transform));
+        definition.add(new BitmapFill(false, false, image.getIdentifier(), transform));
 
         return definition;
     }

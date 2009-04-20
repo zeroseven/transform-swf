@@ -83,7 +83,6 @@ import com.flagstone.transform.movie.linestyle.LineStyle;
  * to VALUE_NOT_SET.</p>
  * 
  */
-//TODO(api) simplify methods or add Builder
 public final class ShapeStyle implements ShapeRecord
 {
 	private static final String FORMAT = "ShapeStyle: { move=(%d, %d); fill=%d; alt=%d; line=%d; fillStyles=%s; lineStyles=%s }";
@@ -177,55 +176,12 @@ public final class ShapeStyle implements ShapeRecord
 
 
 	/**
-	 * Creates a ShapeStyle object, selecting the line and fill styles.
-	 * 
-	 * @param lineIndex
-	 *            selects the line style at lineIndex in the line styles
-	 *            array of the parent Shape object.
-	 * @param fillIndex
-	 *            selects the fill style at fillIndex in the fill styles
-	 *            array of the parent Shape object.
-	 * @param altIndex
-	 *            selects the alternate fill style at altIndex in the
-	 *            fill styles array of the parent Shape object.
+	 * Creates an uninitialised ShapeStyle object.
 	 */
-	public ShapeStyle(Integer lineIndex, Integer fillIndex, Integer altIndex)
+	public ShapeStyle()
 	{
-		setLineStyle(lineIndex);
-		setFillStyle(fillIndex);
-		setAltFillStyle(altIndex);
 		fillStyles = new ArrayList<FillStyle>();
 		lineStyles = new ArrayList<LineStyle>();
-	}
-
-	/**
-	 * Creates a ShapeStyle object, selecting the relative drawing point.
-	 * 
-	 * @param relativeX
-	 *            move the current point by relativeX in the x direction.
-	 * @param relativeY
-	 *            move the current point by relativeY in the y direction.
-	 */
-	public ShapeStyle(Integer relativeX, Integer relativeY)
-	{
-		setMove(relativeX, relativeY);
-		fillStyles = new ArrayList<FillStyle>();
-		lineStyles = new ArrayList<LineStyle>();
-	}
-
-	/**
-	 * Creates a ShapeStyle object, specifying the new set of line and
-	 * fill styles for the parent shape.
-	 * 
-	 * @param lines
-	 *            an array of LineStyle objects. Must not be null.
-	 * @param fills
-	 *            an array of fill style objects. Must not be null.
-	 */
-	public ShapeStyle(List<LineStyle> lines, List<FillStyle> fills)
-	{
-		setLineStyles(lines);
-		setFillStyles(fills);
 	}
 
 	public ShapeStyle(ShapeStyle object)
@@ -352,7 +308,7 @@ public final class ShapeStyle implements ShapeRecord
 	 *            move the current point by aNumber in the y direction. Must be 
 	 *            in the range -65535..65535.
 	 */
-	public void setMove(Integer xCoord, Integer yCoord)
+	public ShapeStyle setMove(Integer xCoord, Integer yCoord)
 	{
 		if ((xCoord == null && yCoord != null) || (xCoord != null && yCoord == null)) {
 			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
@@ -365,6 +321,7 @@ public final class ShapeStyle implements ShapeRecord
 		}
 		moveX = xCoord;
 		moveY = yCoord;
+		return this;
 	}
 
 	/**
@@ -376,9 +333,10 @@ public final class ShapeStyle implements ShapeRecord
 	 *            selects the fill style at anIndex in the fill styles array of
 	 *            the parent Shape object.
 	 */
-	public void setFillStyle(Integer anIndex)
+	public ShapeStyle setFillStyle(Integer anIndex)
 	{
 		fillStyle = anIndex;
+		return this;
 	}
 
 	/**
@@ -390,9 +348,10 @@ public final class ShapeStyle implements ShapeRecord
 	 *            selects the alternate fill style at anIndex in the fill styles
 	 *            array of the parent Shape object.
 	 */
-	public void setAltFillStyle(Integer anIndex)
+	public ShapeStyle setAltFillStyle(Integer anIndex)
 	{
 		altFillStyle = anIndex;
+		return this;
 	}
 
 	/**
@@ -404,9 +363,10 @@ public final class ShapeStyle implements ShapeRecord
 	 *            selects the line style at anIndex in the line styles array of
 	 *            the parent Shape object.
 	 */
-	public void setLineStyle(Integer anIndex)
+	public ShapeStyle setLineStyle(Integer anIndex)
 	{
 		lineStyle = anIndex;
+		return this;
 	}
 
 	/**
@@ -416,12 +376,13 @@ public final class ShapeStyle implements ShapeRecord
 	 * @param anArray
 	 *            an array of LineStyle objects. Must not be null.
 	 */
-	public void setLineStyles(List<LineStyle> anArray)
+	public ShapeStyle setLineStyles(List<LineStyle> anArray)
 	{
 		if (anArray == null) {
 			throw new IllegalArgumentException(Strings.ARRAY_CANNOT_BE_NULL);
 		}
 		lineStyles = anArray;
+		return this;
 	}
 
 	/**
@@ -431,12 +392,13 @@ public final class ShapeStyle implements ShapeRecord
 	 * @param anArray
 	 *            an array of fill style objects. Must not be null.
 	 */
-	public void setFillStyles(List<FillStyle> anArray)
+	public ShapeStyle setFillStyles(List<FillStyle> anArray)
 	{
 		if (anArray == null) {
 			throw new IllegalArgumentException(Strings.ARRAY_CANNOT_BE_NULL);
 		}
 		fillStyles = anArray;
+		return this;
 	}
 
 	/**

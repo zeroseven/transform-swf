@@ -68,7 +68,6 @@ import com.flagstone.transform.movie.Strings;
  * 
  * @see DefineSound
  */
-//TODO(api) Should LoopCount be an Integer?
 public final class SoundInfo implements Encodeable
 {
 	private static final String FORMAT = "SoundInfo: { identifier=%d; mode=%s; inPoint=%d; outPoint=%d; loopCount=%d; envelopes=%s; }";
@@ -109,9 +108,9 @@ public final class SoundInfo implements Encodeable
 
 	private int identifier;
 	private Mode mode;
-	private int inPoint;
-	private int outPoint;
-	private int loopCount;
+	private Integer inPoint;
+	private Integer outPoint;
+	private Integer loopCount;
 	private Envelope envelope;
 
 	//TODO(doc)
@@ -198,7 +197,7 @@ public final class SoundInfo implements Encodeable
 	 * Returns the sample number at which the sound reaches full volume when 
 	 * fading in.
 	 */
-	public int getInPoint()
+	public Integer getInPoint()
 	{
 		return inPoint;
 	}
@@ -206,7 +205,7 @@ public final class SoundInfo implements Encodeable
 	/**
 	 * Returns the sample number at which the sound starts to fade.
 	 */
-	public int getOutPoint()
+	public Integer getOutPoint()
 	{
 		return outPoint;
 	}
@@ -214,7 +213,7 @@ public final class SoundInfo implements Encodeable
 	/**
 	 * Returns the number of times the sound will be repeated.
 	 */
-	public int getLoopCount()
+	public Integer getLoopCount()
 	{
 		return loopCount;
 	}
@@ -262,9 +261,9 @@ public final class SoundInfo implements Encodeable
 	 * @param aNumber
 	 *            the sample number which the sound fades in to.
 	 */
-	public void setInPoint(int aNumber)
+	public void setInPoint(Integer aNumber)
 	{
-		if (aNumber < 0 || aNumber > 65535) {
+		if (aNumber != null && (aNumber < 0 || aNumber > 65535)) {
 			throw new IllegalArgumentException(Strings.UNSIGNED_VALUE_OUT_OF_RANGE);
 		}
 		inPoint = aNumber;
@@ -277,8 +276,11 @@ public final class SoundInfo implements Encodeable
 	 * @param aNumber
 	 *            the sample number at which the sound starts to fade.
 	 */
-	public void setOutPoint(int aNumber)
+	public void setOutPoint(Integer aNumber)
 	{
+		if (aNumber != null && (aNumber < 0 || aNumber > 65535)) {
+			throw new IllegalArgumentException(Strings.UNSIGNED_VALUE_OUT_OF_RANGE);
+		}
 		outPoint = aNumber;
 	}
 
@@ -289,8 +291,11 @@ public final class SoundInfo implements Encodeable
 	 * @param aNumber
 	 *            the number of times the sound is repeated.
 	 */
-	public void setLoopCount(int aNumber)
+	public void setLoopCount(Integer aNumber)
 	{
+		if (aNumber != null && (aNumber < 0 || aNumber > 65535)) {
+			throw new IllegalArgumentException(Strings.UNSIGNED_VALUE_OUT_OF_RANGE);
+		}
 		loopCount = aNumber;
 	}
 

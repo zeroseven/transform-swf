@@ -48,7 +48,8 @@ import static org.junit.Assert.assertArrayEquals;
 	"PMD.JUnitAssertionsShouldIncludeMessage" })
 public final class MorphBitmapFillTest {
 	
-	private transient final int type = FillStyle.CLIPPED;
+	private transient final boolean tiled = false;
+	private transient final boolean smoothed = false;
 	private transient final int identifier = 1;
 	private transient final CoordTransform start = 
 		CoordTransform.translate(1,2);
@@ -57,35 +58,35 @@ public final class MorphBitmapFillTest {
 
 	private transient MorphBitmapFill fixture;
 
-	private transient final byte[] empty = new byte[] { type,
+	private transient final byte[] empty = new byte[] { 0x43,
 			0x00, 0x00, 0x00, 0x00 };
 	
-	private transient final byte[] encoded = new byte[] { type,
+	private transient final byte[] encoded = new byte[] { 0x43,
 			0x01, 0x00, 0x06, 0x50, 0x06, 0x50 };
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForIdentifierWithLowerBound() {
-		fixture = new MorphBitmapFill(type, 0, start, end);
+		fixture = new MorphBitmapFill(tiled, smoothed, 0, start, end);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForIdentifierWithUpperBound() {
-		fixture = new MorphBitmapFill(type, 65536, start, end);
+		fixture = new MorphBitmapFill(tiled, smoothed, 65536, start, end);
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForStartTransformWithNull() {
-		fixture = new MorphBitmapFill(type, 1, null, end);
+		fixture = new MorphBitmapFill(tiled, smoothed, 1, null, end);
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForEndTransformWithNull() {
-		fixture = new MorphBitmapFill(type, 1, start, null);
+		fixture = new MorphBitmapFill(tiled, smoothed, 1, start, null);
 	}
 
 	@Test
 	public void checkCopy() {
-		fixture = new MorphBitmapFill(type, identifier, start, end);
+		fixture = new MorphBitmapFill(tiled, smoothed, identifier, start, end);
 		assertEquals(fixture.getIdentifier(), fixture.copy().getIdentifier());
 		assertSame(fixture.getStartTransform(), fixture.copy().getStartTransform());
 		assertSame(fixture.getEndTransform(), fixture.copy().getEndTransform());
@@ -98,7 +99,7 @@ public final class MorphBitmapFillTest {
 		SWFEncoder encoder = new SWFEncoder(encoded.length);
 		SWFContext context = new SWFContext();
 
-		fixture = new MorphBitmapFill(type, identifier, start, end);
+		fixture = new MorphBitmapFill(tiled, smoothed, identifier, start, end);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));		
 		fixture.encode(encoder, context);
 		

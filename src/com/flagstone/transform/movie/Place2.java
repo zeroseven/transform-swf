@@ -121,7 +121,6 @@ import com.flagstone.transform.movie.movieclip.MovieClipEventHandler;
  * 
  * @see com.flagstone.transform.util.Layer
  */
-//TODO(api) Change clippingDepth type from int to Integer
 public final class Place2 implements MovieTag
 {
 	//TODO(code) Consider replacing with StringBuilder for optional fields
@@ -133,95 +132,60 @@ public final class Place2 implements MovieTag
 		MODIFY, NEW, REPLACE
 	}
 	
-	//TODO(api) Will be replaced by the PlaceBuilder refactored from Place3
-	public static class Builder {
-		
-		private Mode mode;
-		private int layer;
-		private int identifier;
-		private CoordTransform transform;
-		private ColorTransform colorTransform;
-		private Integer ratio;
-		private int clippingDepth;
-		private String name;
-		private List<MovieClipEventHandler> events;
-		
-		public Builder mode(Mode mode) {
-			this.mode = mode; 
-			return this;
-		}
+	public static Place2 show(int identifier, int layer, int xCoord, int yCoord) {
+		Place2 object = new Place2();
+		object.placeType = Place2.Mode.NEW;
+		object.setIdentifier(identifier);
+		object.setLayer(layer);
+		object.transform = CoordTransform.translate(xCoord, yCoord);
+		return object;
+	}
 
-		public Builder layer(int layer) {
-			this.layer = layer; 
-			return this;
-		}
+	public static Place2 modify(int layer) {
+		Place2 object = new Place2();
+		object.placeType = Place2.Mode.MODIFY;
+		object.setLayer(layer);
+		return object;
+	}
 
-		public Builder identifier(int identifier) {
-			this.identifier = identifier; 
-			return this;
-		}
-		
-		public Builder transform(CoordTransform transform) {
-			this.transform = transform; 
-			return this;
-		}
-		
-		public Builder colorTransform(ColorTransform colorTransform) {
-			this.colorTransform = colorTransform; 
-			return this;
-		}
-		
-		public Builder ratio(Integer ratio) {
-			this.ratio = ratio; 
-			return this;
-		}
-		
-		public Builder depth(int depth) {
-			this.clippingDepth = depth; 
-			return this;
-		}
-
-		public Builder name(String name) {
-			this.name = name; 
-			return this;
-		}
-
-		public Builder handler(MovieClipEventHandler handler) {
-			events.add(handler); 
-			return this;
-		}
-
-		public Place2 build() {
-			return new Place2(this);
-		}
-	} 
+	public static Place2 move(int layer, int xCoord, int yCoord) {
+		Place2 object = new Place2();
+		object.placeType = Place2.Mode.MODIFY;
+		object.setLayer(layer);
+		object.transform = CoordTransform.translate(xCoord, yCoord);
+		return object;
+	}
 	
+	public static Place2 replace(int identifier, int layer) {
+		Place2 object = new Place2();
+		object.placeType = Place2.Mode.REPLACE;
+		object.setIdentifier(identifier);
+		object.setLayer(layer);
+		return object;
+	}
+	
+	public static Place2 replace(int identifier, int layer, int xCoord, int yCoord) {
+		Place2 object = new Place2();
+		object.placeType = Place2.Mode.REPLACE;
+		object.setIdentifier(identifier);
+		object.setLayer(layer);
+		object.transform = CoordTransform.translate(xCoord, yCoord);
+		return object;
+	}
+
 	private Mode placeType;
 	private int layer;
 	private int identifier;
 	private CoordTransform transform;
 	private ColorTransform colorTransform;
 	private Integer ratio;
-	private int clippingDepth;
+	private Integer depth;
 	private String name;
 	private List<MovieClipEventHandler> events;
 	
 	private transient int start;
 	private transient int end;
 	private transient int length;
-
-	//TODO(code) change to protected.
-	private Place2(Builder builder) {
-		placeType = builder.mode;
-		layer = builder.layer;
-		identifier = builder.identifier;
-		transform = builder.transform;
-		colorTransform = builder.colorTransform;
-		ratio = builder.ratio;
-		clippingDepth = builder.clippingDepth;
-		name = builder.name;
-		events = new ArrayList<MovieClipEventHandler>(events);
-	}
 
 	//TODO(doc)
 	//TODO(optimise)
@@ -283,7 +247,7 @@ public final class Place2 implements MovieTag
 		}
 
 		if (hasDepth) {
-			clippingDepth = coder.readWord(2, false);
+			depth = coder.readWord(2, false);
 		}
 
 		if (hasEvents)
@@ -309,93 +273,12 @@ public final class Place2 implements MovieTag
 		}
 	}
 
-    /**
-	 * Creates a PlaceObject2 object to place a new object on the display
-	 * list with the object identifier, layer number, coordinate transform and 
-	 * colour transform.
-	 * 
-	 * This method may also be used to replace an existing object with a new 
-	 * one by changing the place type to Replace.
-	 * 
-	 * @param uid
-	 *            the identifier of a new object to be displayed. This value is
-	 *            ignored if the placement type is Modify. Must be in the 
-	 *            range 1..65535.
-	 * @param aLayer
-	 *            the layer number on which an object is being displayed.
-	 * @param transform
-	 *            an CoordTransform object that will be applied to the object
-	 *            displayed in the display list at layer, aLayer.
+	/**
+	 * Creates an uninitialised Place2 object.
 	 */
-	public Place2(int uid, int aLayer, CoordTransform transform)
-   {
-       placeType = Mode.NEW;
-       setIdentifier(uid);
-       setLayer(aLayer);
-        setTransform(transform);
-       events = new ArrayList<MovieClipEventHandler>();
-   }
-
-    /**
-	 * Creates a PlaceObject2 object to update an existing object with the
-	 * specified coordinate transform and colour transform. 
-	 * 
-	 * @param aLayer
-	 *            the layer number on which an object is being displayed.
-	 * @param transform
-	 *            an CoordTransform object that will be applied to the object
-	 *            displayed in the display list at layer, aLayer.
-	 */
-	public Place2(int aLayer, CoordTransform transform)
-	{
-	    placeType = Mode.MODIFY;
-	    setLayer(aLayer);
-	    setTransform(transform);
-	    events = new ArrayList<MovieClipEventHandler>();
+	public Place2()
+    {
     }
-
-	/**
-	 * Creates a PlaceObject2 object to place a new object on the display
-	 * list at the coordinates on the screen.
-	 * 
-	 * @param uid
-	 *            the identifier of a new object to be displayed.
-	 * @param aLayer
-	 *            the layer number on which an object is being displayed.
-	 * @param xCoord
-	 *            the x-coordinate where the object will be displayed.
-	 * @param yCoord
-	 *            the y-coordinate where the object will be displayed.
-	 */
-	//TODO(api) remove ?
-	public Place2(int uid, int aLayer, int xCoord, int yCoord)
-	{
-		placeType = Mode.NEW;
-		setIdentifier(uid);
-		setLayer(aLayer);
-		setTransform(CoordTransform.translate(xCoord, yCoord));
-	    events = new ArrayList<MovieClipEventHandler>();
-	}
-	
-	/**
-	 * Creates a PlaceObject2 object that changes the location of the
-	 * object in the display list at layer, aLayer to the coordinates (x,y).
-	 * 
-	 * @param aLayer
-	 *            the layer number on which the object is being displayed.
-	 * @param xCoord
-	 *            the x-coordinate where the object will be displayed.
-	 * @param yCoord
-	 *            the y-coordinate where the object will be displayed.
-	 */
-	//TODO(api) remove ?
-	public Place2(int aLayer, int xCoord, int yCoord)
-	{
-		placeType = Mode.MODIFY;
-		setLayer(aLayer);
-		setTransform(CoordTransform.translate(xCoord, yCoord));
-	    events = new ArrayList<MovieClipEventHandler>();
-	}
 	
 	//TODO(doc)
 	//TODO(optimise) immutable objects
@@ -411,7 +294,7 @@ public final class Place2 implements MovieTag
 			colorTransform = object.colorTransform;
 		}
 		ratio = object.ratio;
-		clippingDepth = object.clippingDepth;
+		depth = object.depth;
 		name = object.name;
 		
 		events = new ArrayList<MovieClipEventHandler>(object.events.size());
@@ -527,9 +410,9 @@ public final class Place2 implements MovieTag
 	 * Returns the number of layers that will be clipped by the object placed on
 	 * the layer specified in this object.
 	 */
-	public int getDepth()
+	public Integer getDepth()
 	{
-		return clippingDepth;
+		return depth;
 	}
 
 	/**
@@ -548,9 +431,10 @@ public final class Place2 implements MovieTag
 	 *            the type of operation to be performed, either New, Modify or
 	 *            Replace.
 	 */
-	public void setPlaceType(Mode aType)
+	public Place2 setMode(Mode aType)
 	{
 		placeType = aType;
+		return this;
 	}
 
 	/**
@@ -560,12 +444,13 @@ public final class Place2 implements MovieTag
 	 *            the layer number on which the object is being displayed. 
 	 *            Must be in the range 1..65535.
 	 */
-	public void setLayer(int aLayer)
+	public Place2 setLayer(int aLayer)
 	{
 		if (aLayer < 1 || aLayer > 65535) {
 			throw new IllegalArgumentException(Strings.LAYER_OUT_OF_RANGE);
 		}
 		layer = aLayer;
+		return this;
 	}
 
 	/**
@@ -575,12 +460,13 @@ public final class Place2 implements MovieTag
 	 *            the identifier of a new object to be displayed. Must be in the 
 	 *            range 1..65535.
 	 */
-	public void setIdentifier(int uid)
+	public Place2 setIdentifier(int uid)
 	{
 		if (uid < 1 || uid > 65535) {
 			throw new IllegalArgumentException(Strings.IDENTIFIER_OUT_OF_RANGE);
 		}
 		identifier = uid;
+		return this;
 	}
 
 	/**
@@ -592,11 +478,25 @@ public final class Place2 implements MovieTag
 	 *            an CoordTransform object that will be applied to the object
 	 *            displayed.
 	 */
-	public void setTransform(CoordTransform aTransform)
+	public Place2 setTransform(CoordTransform aTransform)
 	{
 		transform = aTransform;
+		return this;
 	}
 
+	/**
+	 * Sets the location where the object will be displayed.
+	 * 
+	 * @param xCoord the x-coordinate of the object's origin.
+	 * @param yCoord the x-coordinate of the object's origin.
+	 * @return this object.
+	 */
+	public Place2 setLocation(int xCoord, int yCoord)
+	{
+		transform = CoordTransform.translate(xCoord, yCoord);
+		return this;
+	}
+	
 	/**
 	 * Sets the colour transform that defines the colour effects applied to the
 	 * object. The argument may be null if the color of the object is not being
@@ -606,9 +506,10 @@ public final class Place2 implements MovieTag
 	 *            an ColorTransform object that will be applied to the object
 	 *            displayed.
 	 */
-	public void setColorTransform(ColorTransform aTransform)
+	public Place2 setColorTransform(ColorTransform aTransform)
 	{
 		colorTransform = aTransform;
+		return this;
 	}
 
 	/**
@@ -618,12 +519,13 @@ public final class Place2 implements MovieTag
 	 * @param aNumber
 	 *            the progress in the morphing process. 
 	 */
-	public void setRatio(Integer aNumber)
+	public Place2 setRatio(Integer aNumber)
 	{
 		if (aNumber != null && (aNumber < 0 || aNumber > 65535)) {
 			throw new IllegalArgumentException("Morphing ratio must be in the range 0..65535.");
 		}
 		ratio = aNumber;
+		return this;
 	}
 
 	/**
@@ -633,12 +535,13 @@ public final class Place2 implements MovieTag
 	 * @param aNumber
 	 *            the number of layers clipped.
 	 */
-	public void setDepth(int aNumber)
+	public Place2 setDepth(Integer aNumber)
 	{
-		if (aNumber < 1 || aNumber > 65535) {
+		if (aNumber != null && (aNumber < 1 || aNumber > 65535)) {
 			throw new IllegalArgumentException(Strings.IDENTIFIER_OUT_OF_RANGE);
 		}
-		clippingDepth = aNumber;
+		depth = aNumber;
+		return this;
 	}
 
 	/**
@@ -649,11 +552,12 @@ public final class Place2 implements MovieTag
 	 * @param aString
 	 *            the name assigned to the object.
 	 */
-	public void setName(String aString)
+	public Place2 setName(String aString)
 	{
 		name = aString;
+		return this;
 	}
-
+	
 	/**
 	 * Creates and returns a deep copy of this object.
 	 */
@@ -666,7 +570,7 @@ public final class Place2 implements MovieTag
 	public String toString()
 	{
 		return String.format(FORMAT, placeType, layer, identifier, transform, 
-				colorTransform, ratio, clippingDepth, name, events);
+				colorTransform, ratio, depth, name, events);
 	}
 
 	//TODO(optimise)
@@ -679,7 +583,7 @@ public final class Place2 implements MovieTag
 		length += transform == null ? 0 : transform.prepareToEncode(coder, context);
 		length += colorTransform == null ? 0 : colorTransform.prepareToEncode(coder, context);
 		length += ratio == null ? 0 : 2;
-		length += (clippingDepth > 0) ? 2 : 0;
+		length += depth != null ? 2 : 0;
 		length += name != null ? coder.strlen(name) : 0;
 
 		if (!events.isEmpty())
@@ -715,7 +619,7 @@ public final class Place2 implements MovieTag
 		
 		context.setTransparent(true);
 		coder.writeBits(events.isEmpty() ? 0 : 1, 1);
-		coder.writeBits(clippingDepth > 0 ? 1 : 0, 1);
+		coder.writeBits(depth != null ? 1 : 0, 1);
 		coder.writeBits(name != null ? 1 : 0, 1);
 		coder.writeBits(ratio == null ? 0 : 1, 1);
 		coder.writeBits(colorTransform == null ? 0 : 1, 1);
@@ -751,8 +655,8 @@ public final class Place2 implements MovieTag
 			coder.writeString(name);
 		}
 
-		if (clippingDepth > 0) {
-			coder.writeWord(clippingDepth, 2);
+		if (depth != null) {
+			coder.writeWord(depth, 2);
 		}
 
 		if (!events.isEmpty())

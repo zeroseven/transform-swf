@@ -58,9 +58,9 @@ public final class PushTest {
 		values.add(Null.getInstance());
 		values.add(Void.getInstance());
 		values.add(new RegisterIndex(1));
-		values.add(new Boolean(true));
-		values.add(new Double(1));
-		values.add(new Integer(1));
+		values.add(true);
+		values.add(1.0);
+		values.add(1);
 		values.add(new TableIndex(1));
 		values.add(new TableIndex(256));
 	}

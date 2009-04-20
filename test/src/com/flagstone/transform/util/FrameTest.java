@@ -91,7 +91,7 @@ public final class FrameTest
 	@Test
 	public void frameWithCommand() throws CoderException
 	{
-		Place2 command = new Place2(1, 1, 0, 0);
+		Place2 command = Place2.show(1, 1, 0, 0);
 		
 		movie.add(command);
 		movie.add(ShowFrame.getInstance());
@@ -117,7 +117,7 @@ public final class FrameTest
 	@Test
 	public void frameWithDefinition() throws CoderException
 	{
-		DefineTextField field = new DefineTextField(1, new Bounds(0,0,100,100), "", "");
+		DefineTextField field = new DefineTextField(1).setBounds(new Bounds(0,0,100,100));
 		
 		movie.add(field);
 		movie.add(ShowFrame.getInstance());
@@ -177,8 +177,8 @@ public final class FrameTest
 	{
 		Frame frame = new Frame();
 		frame.setLabel("label");
-		frame.addDefinition(new DefineTextField(1, new Bounds(0,0,100,100), "", ""));
-		frame.addCommand(new Place2(1, 1, 0, 0));
+		frame.addDefinition(new DefineTextField(1).setBounds(new Bounds(0,0,100,100)));
+		frame.addCommand(Place2.show(1, 1, 0, 0));
 		frame.addToMovie(movie);
 		
 		List<Frame> frames = Frame.framesFromMovie(movie);

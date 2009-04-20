@@ -107,7 +107,7 @@ public final class ShowImageTest
         movie.add(new Background(ColorTable.lightblue()));
         movie.add(image);
         movie.add(shape);
-        movie.add(new Place2(shape.getIdentifier(), 1, 0, 0));
+        movie.add(Place2.show(shape.getIdentifier(), 1, 0, 0));
         movie.add(ShowFrame.getInstance());
         movie.encodeToFile(file.getPath());
     }

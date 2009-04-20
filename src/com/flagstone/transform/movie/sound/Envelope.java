@@ -218,8 +218,7 @@ public final class Envelope implements Encodeable
 	/**
 	 * Returns the array of SoundLevels that control the volume of the sound.
 	 */
-	//TODO(api) Rename
-	public List<Level> getEnvelopes()
+	public List<Level> getLevels()
 	{
 		return levels;
 	}
@@ -240,9 +239,6 @@ public final class Envelope implements Encodeable
 		levels = anArray;
 	}
 
-	/**
-	 * Creates and returns a deep copy of this object.
-	 */
 	public Envelope copy()
 	{
 		return new Envelope(this);

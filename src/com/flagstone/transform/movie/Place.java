@@ -59,7 +59,6 @@ import com.flagstone.transform.movie.datatype.CoordTransform;
  * @see Remove
  * @see Remove2
  */
-//TODO(api) Add protected method for PlaceBuilder
 public final class Place implements MovieTag
 {
 	//TODO(code) Consider replacing with StringBuilder for optional fields
@@ -101,50 +100,12 @@ public final class Place implements MovieTag
 	}
 
 	/**
-	 * Creates a PlaceObject object that places an object with the
-	 * identifier into the display list layer at the specified coordinates
-	 * (x,y).
-	 * 
-	 * @param uid
-	 *            the unique identifier for the object to the placed on the
-	 *            display list. Must be in the range 1..65535.
-	 * @param aLayer
-	 *            the layer in the display list where the object will be placed.
-	 *            Must be in the range 1..65535.
-	 * @param xLocation
-	 *            the x-coordinate where the object will be drawn.
-	 * @param yLocation
-	 *            the y-coordinate where the object will be drawn.
+	 * Creates an uninitialised Place object.
 	 */
-	//TODO(api) consider removing
-	public Place(int uid, int aLayer, int xLocation, int yLocation)
+	public Place()
 	{
-		setIdentifier(uid);
-		setLayer(aLayer);
-		setTransform(CoordTransform.translate(xLocation, yLocation));
 	}
-
-	/**
-	 * Creates a PlaceObject object that places the object with the
-	 * identifier at the specified layer with the coordinate transform.
-	 * 
-	 * @param uid
-	 *            the unique identifier for the object to the placed on the
-	 *            display list. Must be in the range 1..65535.
-	 * @param aLayer
-	 *            the layer in the display list where the object will be placed.
-	 *            Must be in the range 1..65535.
-	 * @param aTransform
-	 *            an CoordTransform object that defines the orientation, size
-	 *            and location of the object when it is drawn. Must not be null.
-	 */
-	public Place(int uid, int aLayer, CoordTransform aTransform)
-	{
-		setIdentifier(uid);
-		setLayer(aLayer);
-		setTransform(aTransform);
-	}
-
+	
 	/**
 	 * Creates a PlaceObject object that places the the object with the
 	 * identifier at the specified layer, coordinate transform and colour
@@ -171,7 +132,7 @@ public final class Place implements MovieTag
 		setTransform(aTransform);
 		setColorTransform(aColorTransform);
 	}
-	
+
 	//TODO(doc)
 	public Place(Place object) {
 		identifier = object.identifier;
@@ -221,12 +182,13 @@ public final class Place implements MovieTag
 	 *            the unique identifier for the object to the placed on the
 	 *            display list. Must be in the range 1..65535.
 	 */
-	public void setIdentifier(int uid)
+	public Place setIdentifier(int uid)
 	{
 		if (uid < 1 || uid > 65535) {
 			throw new IllegalArgumentException(Strings.IDENTIFIER_OUT_OF_RANGE);
 		}
 		identifier = uid;
+		return this;
 	}
 
 	/**
@@ -236,12 +198,13 @@ public final class Place implements MovieTag
 	 *            the layer in the display list where the object will be placed.
 	 *            Must be in the range 1..65535.
 	 */
-	public void setLayer(int aNumber)
+	public Place setLayer(int aNumber)
 	{
 		if (aNumber < 1 || aNumber > 65535) {
 			throw new IllegalArgumentException(Strings.LAYER_OUT_OF_RANGE);
 		}
 		layer = aNumber;
+		return this;
 	}
 
 	/**
@@ -252,12 +215,26 @@ public final class Place implements MovieTag
 	 *            an CoordTransform object that defines the orientation, size
 	 *            and location of the object when it is drawn. Must not be null.
 	 */
-	public void setTransform(CoordTransform aTransform)
+	public Place setTransform(CoordTransform aTransform)
 	{
 		if (aTransform == null) {
 			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
 		}
 		transform = aTransform;
+		return this;
+	}
+
+	/**
+	 * Sets the location where the object will be displayed.
+	 * 
+	 * @param xCoord the x-coordinate of the object's origin.
+	 * @param yCoord the x-coordinate of the object's origin.
+	 * @return this object.
+	 */
+	public Place setLocation(int xCoord, int yCoord)
+	{
+		transform = CoordTransform.translate(xCoord, yCoord);
+		return this;
 	}
 
 	/**
@@ -268,9 +245,10 @@ public final class Place implements MovieTag
 	 *            an ColorTransform object that defines the colour of the
 	 *            object when it is drawn. May be set to null.
 	 */
-	public void setColorTransform(ColorTransform aColorTransform)
+	public Place setColorTransform(ColorTransform aColorTransform)
 	{
 		colorTransform = aColorTransform;
+		return this;
 	}
 
 	/**

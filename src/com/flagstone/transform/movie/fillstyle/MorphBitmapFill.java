@@ -82,7 +82,6 @@ import com.flagstone.transform.movie.shape.DefineMorphShape;
  * 
  * @see DefineMorphShape
  */
-//TODO(api) add arguments for tiled/clipped smoothed/unsmoothed
 public final class MorphBitmapFill implements FillStyle {
 
 	private static final String FORMAT = "MorphBitmapFill: { identifier=%d; start=%s; end=%s }";
@@ -119,9 +118,11 @@ public final class MorphBitmapFill implements FillStyle {
 	 *            the coordinate transform defining the appearance of the image
 	 *            at the end of the morphing process.
 	 */
-	public MorphBitmapFill(final int type, final int uid,
+	public MorphBitmapFill(final boolean tiled, final boolean smoothed, final int uid,
 			final CoordTransform start, final CoordTransform end) {
-		this.type = type;
+		type = 0x40;
+		setTiled(tiled);
+		setSmoothed(smoothed);
 		setIdentifier(uid);
 		setStartTransform(start);
 		setEndTransform(end);
@@ -133,6 +134,30 @@ public final class MorphBitmapFill implements FillStyle {
 		identifier = object.identifier;
 		startTransform = object.startTransform;
 		endTransform = object.endTransform;
+	}
+	
+	public boolean isTiled() {
+		return (type & 0x01) != 0;
+	}
+	
+	public void setTiled(boolean tiled) {
+		if (tiled) {
+			type &= 0x00FE;
+		} else {
+			type |= 0x0001;
+		}
+	}
+
+	public boolean isSmoothed() {
+		return (type & 0x02) != 0;
+	}
+	
+	public void setSmoothed(boolean smoothed) {
+		if (smoothed) {
+			type &= 0x00FD;
+		} else {
+			type |= 0x0002;
+		}
 	}
 
 	/**

@@ -73,28 +73,28 @@ public final class Place2Test {
 			0x06, 0x00, 0x00, 0x00, 0x01, 0x00, 0x02, 0x00, 0x06, 0x50};
 
 	@Test(expected=IllegalArgumentException.class)
-	public void checkAccessorForDepthWithLowerBound() {
-		fixture = new Place2(0, layer, transform);
+	public void checkAccessorForIdentifierWithLowerBound() {
+		fixture = new Place2().setIdentifier(0);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
-	public void checkAccessorForDepthWithUpperBound() {
-		fixture = new Place2(65536, layer, transform);
+	public void checkAccessorForIdentifierWithUpperBound() {
+		fixture = new Place2().setIdentifier(65536);
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
-	public void checkAccessorForTimeoutWithLowerBound() {
-		fixture = new Place2(identifier, 0, transform);
+	public void checkAccessorForLayerWithLowerBound() {
+		fixture = new Place2().setLayer(0);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
-	public void checkAccessorForTimeoutWithUpperBound() {
-		fixture = new Place2(identifier, 65536, transform);
+	public void checkAccessorForLayerWithUpperBound() {
+		fixture = new Place2().setLayer(65536);
 	}
 	
 	@Test(expected=IllegalArgumentException.class) @Ignore
 	public void checkAccessorForColorTransformWithNull() {
-		//TODO fixture = new Place2(identifier, layer, transform, null);
+		fixture = new Place2().setColorTransform(null);
 	}
 
 	@Test @Ignore
@@ -115,7 +115,7 @@ public final class Place2Test {
 		SWFEncoder encoder = new SWFEncoder(coord.length);		
 		SWFContext context = new SWFContext();
 
-		fixture = new Place2(identifier, layer, transform);
+		fixture = new Place2().setMode(Place2.Mode.NEW).setIdentifier(identifier).setLayer(layer).setTransform(transform);
 		assertEquals(coord.length, fixture.prepareToEncode(encoder, context));
 		fixture.encode(encoder, context);
 		

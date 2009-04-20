@@ -84,8 +84,10 @@ public final class ShowAWTFontTest
     {
         Movie movie = new Movie();
 
-        DefineTextField text = new DefineTextField(font.getIdentifier()+1, new Bounds(0, 0, width, height), 
-        				"var", alphabet);
+        DefineTextField text = new DefineTextField(font.getIdentifier()+1);
+        text.setBounds(new Bounds(0, 0, width, height));
+        text.setVariableName("var");
+        text.setInitialText(alphabet);
         
         text.setUseFontGlyphs(true);
         text.setFontIdentifier(font.getIdentifier());
@@ -97,7 +99,7 @@ public final class ShowAWTFontTest
         movie.add(new Background(ColorTable.lightblue()));
         movie.add(font);
         movie.add(text);
-        movie.add(new Place2(text.getIdentifier(), 1, margin , margin));
+        movie.add(Place2.show(text.getIdentifier(), 1, margin , margin));
         movie.add(ShowFrame.getInstance());
         movie.encodeToFile(file.getPath());
     }

@@ -50,7 +50,6 @@ import com.flagstone.transform.movie.datatype.CoordTransform;
  * @see MorphGradient
  * @see GradientFill
  */
-//TODO(api) Add attributes for linear/radial gradients
 public final class MorphGradientFill implements FillStyle {
 
 	private static final String FORMAT = "MorphGradientFill: { start=%s; end=%s; gradients=%s }";
@@ -94,9 +93,9 @@ public final class MorphGradientFill implements FillStyle {
 	 *            an array of MorphGradient objects defining the control points
 	 *            for the gradient.
 	 */
-	public MorphGradientFill(final int type, final CoordTransform start,
+	public MorphGradientFill(boolean radial, final CoordTransform start,
 			final CoordTransform end, final List<MorphGradient> gradients) {
-		this.type = type;
+		setRadial(radial);
 		setStartTransform(start);
 		setEndTransform(end);
 		setGradients(gradients);
@@ -128,6 +127,19 @@ public final class MorphGradientFill implements FillStyle {
 		//TODO(code) Add check for array size
 		gradients.add(aGradient);
 		return this;
+	}
+
+	
+	public boolean isRadial() {
+		return (type & 0x02) != 0;
+	}
+	
+	public void setRadial(boolean radial) {
+		if (radial) {
+			type = 0x12;
+		} else {
+			type = 0x10;
+		}
 	}
 
 	/**

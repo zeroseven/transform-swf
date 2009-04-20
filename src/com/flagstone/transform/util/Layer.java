@@ -284,7 +284,7 @@ public final class Layer
 	public void select(int uid)
 	{
 		identifier = uid;
-		place = new Place2(uid, layerNumber, 0, 0);
+		place = Place2.show(uid, layerNumber, 0, 0);
 		displayList.add(place);
 	}
 
@@ -313,7 +313,7 @@ public final class Layer
 	{
 		if (place == null)
 		{
-			place = new Place2(layerNumber, xCoord, yCoord);
+			place = Place2.move(layerNumber, xCoord, yCoord);
 			displayList.add(place);
 		} else
 		{
@@ -356,9 +356,7 @@ public final class Layer
 		
 		if (place == null)
 		{
-			Place2.Builder builder = new Place2.Builder();
-			builder.layer(layerNumber).colorTransform(transform);
-			displayList.add(builder.build());
+			displayList.add(Place2.modify(layerNumber).setColorTransform(transform));
 		} else
 		{
 			place.setColorTransform(transform);
@@ -376,9 +374,7 @@ public final class Layer
 	{
 		if (place == null)
 		{
-			Place2.Builder builder = new Place2.Builder();
-			builder.layer(layerNumber).depth(depth);
-			displayList.add(builder.build());
+			displayList.add(Place2.modify(layerNumber).setDepth(depth));
 		} else
 		{
 			place.setDepth(depth);
@@ -396,9 +392,7 @@ public final class Layer
 	{
 		if (place == null)
 		{
-			Place2.Builder builder = new Place2.Builder();
-			builder.layer(layerNumber).ratio((int)(ratio*65535.0f));
-			displayList.add(builder.build());
+			displayList.add(Place2.modify(layerNumber).setRatio((int)(ratio*65535.0f)));
 		} else
 		{
 			place.setRatio((int)(ratio*65535.0f));
@@ -415,9 +409,7 @@ public final class Layer
 	{
 		if (place == null)
 		{
-			Place2.Builder builder = new Place2.Builder();
-			builder.layer(layerNumber).name(name);
-			displayList.add(builder.build());
+			displayList.add(Place2.modify(layerNumber).setName(name));
 		} else
 		{
 			place.setName(name);
@@ -447,13 +439,11 @@ public final class Layer
 
 		if (place == null)
 		{
-			Place2.Builder builder = new Place2.Builder();
-			builder.layer(layerNumber).mode(Place2.Mode.REPLACE);
-			displayList.add(builder.build());
+			displayList.add(Place2.replace(uid, layerNumber));
 		} else
 		{
 			place.setIdentifier(uid);
-			place.setPlaceType(Place2.Mode.REPLACE);
+			place.setMode(Place2.Mode.REPLACE);
 		}
 	}
 
@@ -467,9 +457,7 @@ public final class Layer
 	{
 		if (place == null)
 		{
-			Place2.Builder builder = new Place2.Builder();
-			builder.layer(layerNumber).colorTransform(color);
-			displayList.add(builder.build());
+			displayList.add(Place2.modify(layerNumber).setColorTransform(color));
 		} else
 		{
 			place.setColorTransform(color);
@@ -491,9 +479,7 @@ public final class Layer
 	{
 		if (place == null)
 		{
-			Place2.Builder builder = new Place2.Builder();
-			builder.layer(layerNumber).transform(coord);
-			displayList.add(builder.build());
+			displayList.add(Place2.modify(layerNumber).setTransform(coord));
 		} else
 		{
 			place.setTransform(coord);

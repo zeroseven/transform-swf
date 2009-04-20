@@ -66,7 +66,6 @@ public final class Line implements ShapeRecord
 
 	//TODO(doc)
 	//TODO(optimise)
-	//TODO(api) Reduce number of set methods
 	public Line(final SWFDecoder coder, final SWFContext context) throws CoderException
 	{
 		coder.adjustPointer(2); // shape and edge

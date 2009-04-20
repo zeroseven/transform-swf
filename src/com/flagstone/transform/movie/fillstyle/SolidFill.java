@@ -114,7 +114,7 @@ public final class SolidFill implements FillStyle {
 	}
 
 	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException {
-		coder.writeByte(FillStyle.SOLID);
+		coder.writeByte(0);
 		color.encode(coder, context);
 	}
 }

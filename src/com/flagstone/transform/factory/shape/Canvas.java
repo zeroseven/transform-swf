@@ -224,7 +224,7 @@ public final class Canvas
 	    	lineStyles.add(style.copy());
     	}
     	lineWidth = style.getWidth();
-        objects.add(new ShapeStyle(index+1, null, null));
+        objects.add(new ShapeStyle().setLineStyle(index+1));
     }
     
     
@@ -245,7 +245,7 @@ public final class Canvas
     		index = fillStyles.size();		
 			fillStyles.add(style.copy());
     	}
-        objects.add(new ShapeStyle(null, index+1, null));
+        objects.add(new ShapeStyle().setFillStyle(index+1));
     }
     
     
@@ -266,7 +266,7 @@ public final class Canvas
     		index = fillStyles.size();
 			fillStyles.add(style.copy());
     	}
-        objects.add(new ShapeStyle(null, null, index+1));
+        objects.add(new ShapeStyle().setAltFillStyle(index+1));
     }
     
     /**
@@ -344,7 +344,7 @@ public final class Canvas
         int pointX = arePixels ? xCoord * 20 : xCoord;
         int pointY = arePixels ? yCoord * 20 : yCoord;
         
-        objects.add(new ShapeStyle(pointX, pointY));
+        objects.add(new ShapeStyle().setMove(pointX, pointY));
 
         setControl((currentX+pointX)/2, (currentY+pointY)/2);
         setCurrent(pointX, pointY);
@@ -356,7 +356,7 @@ public final class Canvas
         int pointX = arePixels ? xCoord * 20 : xCoord;
         int pointY = arePixels ? yCoord * 20 : yCoord;
         
-        ShapeStyle style = new ShapeStyle(pointX, pointY); 
+        ShapeStyle style = new ShapeStyle().setMove(pointX, pointY); 
 
         if (objects.isEmpty()){
         	style.setFillStyle(1);
@@ -380,7 +380,7 @@ public final class Canvas
         int pointX = arePixels ? xCoord * 20 : xCoord;
         int pointY = arePixels ? yCoord * 20 : yCoord;
         
-        objects.add(new ShapeStyle(pointX+currentX, pointY+currentY)); 
+        objects.add(new ShapeStyle().setMove(pointX+currentX, pointY+currentY)); 
 
         setControl(currentX+pointX/2, currentY+pointY/2);
         setCurrent(currentX+pointX, currentY+pointY);

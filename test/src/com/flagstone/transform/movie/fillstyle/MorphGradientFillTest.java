@@ -52,7 +52,7 @@ import com.flagstone.transform.movie.datatype.CoordTransform;
 })
 public final class MorphGradientFillTest {
 	
-	private transient final int type = FillStyle.LINEAR;
+	private transient final boolean radial = false;
 	private transient final CoordTransform start = 
 		CoordTransform.translate(1,2);
 	private transient final CoordTransform end = 
@@ -60,13 +60,13 @@ public final class MorphGradientFillTest {
 	private static final List<MorphGradient> list = new ArrayList<MorphGradient>();
 	
 	static {
-		list.add(new MorphGradient(1, 5, new Color(2,3,4), new Color(6,7,8)));
-		list.add(new MorphGradient(9, 13, new Color(10,11,12), new Color(14,15,16)));
+		list.add(new MorphGradient(new Gradient(1, new Color(2,3,4)), new Gradient(5, new Color(6,7,8))));
+		list.add(new MorphGradient(new Gradient(9, new Color(10,11,12)), new Gradient(13, new Color(14,15,16))));
 	}
 	
 	private transient MorphGradientFill fixture;
 		
-	private transient final byte[] encoded = new byte[] { type, 
+	private transient final byte[] encoded = new byte[] { 0x10, 
 			0x06, 0x50, 0x06, 0x50, 
 			0x02,
 			0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
@@ -75,13 +75,13 @@ public final class MorphGradientFillTest {
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAddNullGradient() {
-		fixture = new MorphGradientFill(type, start, end, list);
+		fixture = new MorphGradientFill(radial, start, end, list);
 		fixture.add(null);
 	}
 
 	@Test
 	public void checkCopy() {
-		fixture = new MorphGradientFill(type, start, end, list);
+		fixture = new MorphGradientFill(radial, start, end, list);
 		MorphGradientFill copy = fixture.copy();
 
 		assertSame(fixture.getStartTransform(), copy.getStartTransform());
@@ -95,7 +95,7 @@ public final class MorphGradientFillTest {
 		SWFEncoder encoder = new SWFEncoder(encoded.length);		
 		SWFContext context = new SWFContext();
 
-		fixture = new MorphGradientFill(type, start, end, list);
+		fixture = new MorphGradientFill(radial, start, end, list);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
 		fixture.encode(encoder, context);
 		

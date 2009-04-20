@@ -91,7 +91,6 @@ import com.flagstone.transform.movie.shape.DefineShape3;
  * @see DefineShape2
  * @see DefineShape3
  */
-//TODO(api) Add attributes for smoothed and tiled
 public final class BitmapFill implements FillStyle {
 
 	private static final String FORMAT = "BitmapFill: { identifier=%d; transform=%s }";
@@ -112,10 +111,11 @@ public final class BitmapFill implements FillStyle {
 	 * for the image and the coordinate transform used to set the scale and
 	 * registration of the image.
 	 * 
-	 * @param type
-	 *            the type of bitmap fill, must be one of the constants defined
-	 *            in the FillStyle class, either TILED, CLIPPED,
-	 *            UNSMOOTHED_TILED or UNSMOOTHED_CLIPPED.
+	 * @param tiled
+	 *            whether the image will be repeated if it smaller than the area
+	 *            to be filled.
+	 * @param smoothed
+	 *            whether the image will be smoothed to improve display quality.
 	 * @param uid
 	 *            the unique identifier of the object containing the image to be
 	 *            displayed. Must be in the range 1..65535.
@@ -123,8 +123,10 @@ public final class BitmapFill implements FillStyle {
 	 *            a CoordTransform object that typically changes the size and
 	 *            location and position of the image inside the parent shape.
 	 */
-	public BitmapFill(final int type, final int uid, final CoordTransform transform) {
-		this.type = type;
+	public BitmapFill(final boolean tiled, final boolean smoothed, final int uid, final CoordTransform transform) {
+		type = 0x40;
+		setTiled(tiled);
+		setSmoothed(smoothed);
 		setIdentifier(uid);
 		setTransform(transform);
 	}
@@ -134,6 +136,30 @@ public final class BitmapFill implements FillStyle {
 		type = object.type;
 		identifier = object.identifier;
 		transform = object.transform;
+	}
+	
+	public boolean isTiled() {
+		return (type & 0x01) != 0;
+	}
+	
+	public void setTiled(boolean tiled) {
+		if (tiled) {
+			type &= 0x00FE;
+		} else {
+			type |= 0x0001;
+		}
+	}
+
+	public boolean isSmoothed() {
+		return (type & 0x02) != 0;
+	}
+	
+	public void setSmoothed(boolean smoothed) {
+		if (smoothed) {
+			type &= 0x00FD;
+		} else {
+			type |= 0x0002;
+		}
 	}
 
 	/**
