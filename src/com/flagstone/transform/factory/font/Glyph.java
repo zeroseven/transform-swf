@@ -9,50 +9,50 @@ import com.flagstone.transform.movie.shape.Shape;
  */
 public final class Glyph
 {
-	protected static final int EM_SQUARE = 1024;
+	private static final int EM_SQUARE = 1024;
 
-	protected Shape shape;
-	protected Bounds bounds;
-	protected int advance;
+	private Shape shape;
+	private Bounds bounds;
+	private int advance;
 
-	protected Glyph(Shape shape, Bounds bounds, int advance)
+	public Glyph(Shape shape, Bounds bounds, int advance)
 	{
 		this.shape = shape;
 		this.bounds = bounds;
 		this.advance = advance;
 	}
 
-	protected Glyph(Shape shape)
+	public Glyph(Shape shape)
 	{
 		this.shape = shape;
 	}
 
-	protected Shape getShape()
+	public Shape getShape()
 	{
 		return shape;
 	}
 
-	protected void setShape(Shape shape)
+	public void setShape(Shape shape)
 	{
 		this.shape = shape;
 	}
 
-	protected Bounds getBounds()
+	public Bounds getBounds()
 	{
 		return bounds;
 	}
 
-	protected void setBounds(Bounds bounds)
+	public void setBounds(Bounds bounds)
 	{
 		this.bounds = bounds;
 	}
 
-	protected int getAdvance()
+	public int getAdvance()
 	{
 		return advance;
 	}
 
-	protected void setAdvance(int advance)
+	public void setAdvance(int advance)
 	{
 		this.advance = advance;
 	}
