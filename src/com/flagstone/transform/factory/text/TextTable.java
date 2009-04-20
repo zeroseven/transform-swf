@@ -32,27 +32,43 @@ package com.flagstone.transform.factory.text;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
-import com.flagstone.transform.factory.font.Font;
 import com.flagstone.transform.movie.datatype.Bounds;
 import com.flagstone.transform.movie.datatype.Color;
-import com.flagstone.transform.movie.datatype.ColorTable;
 import com.flagstone.transform.movie.datatype.CoordTransform;
 import com.flagstone.transform.movie.font.DefineFont2;
 import com.flagstone.transform.movie.text.DefineText2;
-import com.flagstone.transform.movie.text.DefineTextField;
 import com.flagstone.transform.movie.text.GlyphIndex;
 import com.flagstone.transform.movie.text.TextSpan;
 
-/**
- * Text is used to define static and dynamic text fields that can be added to 
- * a Flash file.
- *
- * @see Font
- */
-public final class TextFactory
+public final class TextTable
 {
+	private int size;
+	private int ascent;
+	private int descent;
+	private int identifier;
+	
+	private Map<Character, GlyphIndex>characters;
+	
+	public TextTable(DefineFont2 font, int size)
+	{
+		characters = new LinkedHashMap<Character, GlyphIndex>();
+		
+        List<Integer>codes = font.getCodes();
+        List<Integer>advances = font.getAdvances();
+       
+        float scale = size/1024.0f;       
+        int count = codes.size();
+ 
+        for (int i=0; i<count; i++)
+        {
+        	characters.put((char)codes.get(i).intValue(), new GlyphIndex(i, (int)(advances.get(i)*scale)));    			   
+        }
+	}
+	
 	/**
 	 * Create a bound box that encloses the line of text when rendered using 
 	 * the specified font and size.
@@ -65,25 +81,11 @@ public final class TextFactory
 	 *
 	 * @return the bounding box that completely encloses the text.
 	 */
-    public static Bounds boundsForText(String text, DefineFont2 font, int size)
+    public Bounds boundsForText(String text)
     {
-        List<Integer>codes = font.getCodes();
-        List<Integer>advances = font.getAdvances();
-       
-        float scale = size/1024.0f;
-        int advance = 0;
+    	Bounds bounds = null;
 
-        for (int i=0; i<text.length(); i++)
-        {
-    	    for (int j=0; j<codes.size(); j++)
-    	    {
-    		    if (text.charAt(i) == codes.get(j)) 
-    		    {
-    	            advance += (int)(advances.get(j)*scale);    			   
-    		    }
-    	    }
-        }
-        return new Bounds(0, -(int)(font.getAscent()/scale), advance, (int)(font.getDescent()/scale));
+    	return bounds;
     }
 
     /**
@@ -97,24 +99,10 @@ public final class TextFactory
      *
      * @return a TextSpan object that can be added to a DefineText or DefineText2 object.
      */
-    public static List<GlyphIndex> charactersForText(String text, DefineFont2 font, int size)
+    public List<GlyphIndex> charactersForText(String text)
     {
         List<GlyphIndex>characters = new ArrayList<GlyphIndex>(text.length());
-        List<Integer>codes = font.getCodes();
-        List<Integer>advances = font.getAdvances();
-       
-        float scale = size/1024.0f;
-
-        for (int i=0; i<text.length(); i++)
-        {
-    	    for (int j=0; j<codes.size(); j++)
-    	    {
-    		    if (text.charAt(i) == codes.get(j)) 
-    		    {
-    	            characters.add(new GlyphIndex(j, (int)(advances.get(j)*scale)));    			   
-    		    }
-    	    }
-        }
+        
         return characters;
     }
 
@@ -131,14 +119,14 @@ public final class TextFactory
      * 
      * @return a TextSpan object that can be added to a DefineText or DefineText2 object.
      */
-	public static TextSpan defineSpan(String text, DefineFont2 font, int size, Color color)
+	public TextSpan defineSpan(String text, Color color)
     {
         float scale = size/1024.0f;
         
         int xCoord = 0;
-        int yCoord = (int)(font.getAscent()/scale);
+        int yCoord = (int)(ascent/scale);
 
-        return new TextSpan(font.getIdentifier(), size, color, xCoord, yCoord, charactersForText(text, font, size));
+        return new TextSpan(identifier, size, color, xCoord, yCoord, charactersForText(text));
     }
 
     /**
@@ -158,14 +146,14 @@ public final class TextFactory
      * 
      * @return a DefineText2 object that can be added to a Flash file.
      */
-    public static DefineText2 defineText(int uid, String text, DefineFont2 font, int size, Color color)
+    public DefineText2 defineText(int uid, String text, Color color)
     {
         CoordTransform transform = new CoordTransform(1.0f, 1.0f, 0.0f, 0.0f, 0, 0);
         ArrayList<TextSpan> spans = new ArrayList<TextSpan>();
 
-        spans.add(defineSpan(text, font, size, color));
+        spans.add(defineSpan(text, color));
 
-        return new DefineText2(uid, boundsForText(text, font, size), transform, spans);
+        return new DefineText2(uid, boundsForText(text), transform, spans);
     }
 
     /**
@@ -185,7 +173,7 @@ public final class TextFactory
      * 
      * @return a DefineText2 object that can be added to a Flash file.
      */
-    public static DefineText2 defineTextBlock(int uid, List<String> lines, DefineFont2 font, int size, Color color, int lineSpacing)
+    public DefineText2 defineTextBlock(int uid, List<String>lines, Color color, int lineSpacing)
     {
         CoordTransform transform = new CoordTransform(1.0f, 1.0f, 0.0f, 0.0f, 0, 0);
         float scale = size/1024.0f;
@@ -196,7 +184,7 @@ public final class TextFactory
         int yMax = 0;
         
         int xOffset = 0;
-        int yOffset = (int)(font.getAscent()/scale);
+        int yOffset = (int)(ascent/scale);
         
         ArrayList<TextSpan> spans = new ArrayList<TextSpan>();
         String text;
@@ -207,9 +195,9 @@ public final class TextFactory
         {
             text = i.next();
 
-            spans.add(new TextSpan(font.getIdentifier(), size, color, xOffset, yOffset, charactersForText(text, font, size)));
+            spans.add(new TextSpan(identifier, size, color, xOffset, yOffset, charactersForText(text)));
 
-            Bounds bounds = boundsForText(text, font, size);
+            Bounds bounds = boundsForText(text);
             
             if (lineNumber==0) {
                 yMin = bounds.getMinY();
@@ -229,36 +217,4 @@ public final class TextFactory
 
         return new DefineText2(uid, new Bounds(xMin, yMin, xMax, yMax), transform, spans);
     }
-    
-    /**
-     * Create a definition for a dynamic text field that displays a string in
-     * the specified font.
-     * 
-     * @param uid the unique identifier that will be used to reference the text
-     * field in a flash file.
-     * 
-     * @param text the string to be displayed.
-     * 
-     * @param font the font used to display the text.
-     * 
-     * @param size the size of the font in twips.
-     * 
-     * @param color the colour used to display the text.
-     * 
-     * @return a DefineTextField object that can be added to a Flash file.
-     */
-    public static DefineTextField defineTextField(int uid, String text, DefineFont2 font, int size, Color color)
-    {
-    	DefineTextField field = new DefineTextField(uid);
-    	field.setBounds(boundsForText(text, font, size));
-    	field.setInitialText(text);
-    	field.setUseFontGlyphs(true);
-        field.setFontIdentifier(font.getIdentifier());
-        field.setFontHeight(size);
-        field.setColor(ColorTable.black());
- 
-        return field;
-    }
-
-
 }
