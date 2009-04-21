@@ -738,8 +738,7 @@ public final class DefineTextField implements DefineTag
 	 * 
 	 * @param anIdentifier
 	 *            the identifier for the font that the text will be rendered in.
-	 *            
-	 * @throws IllegalArgumentException if the identifier for the font is not in the range 1..65535.
+	 *            Must be in the range 1..65535.
 	 */
 	public DefineTextField setFontIdentifier(int anIdentifier)
 	{
@@ -761,9 +760,7 @@ public final class DefineTextField implements DefineTag
 	 * Sets the height of the characters.
 	 * 
 	 * @param aNumber
-	 *            the height of the font.
-	 *            
-	 * @throws IllegalArgumentException if the height font is not in the range 0..65535.
+	 *            the height of the font. Must be in the range 0..65535.
 	 */
 	public DefineTextField setFontHeight(int aNumber)
 	{

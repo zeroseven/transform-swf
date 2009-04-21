@@ -163,9 +163,7 @@ public final class Frame
 	 * Adds the action object to the frame.
 	 * 
 	 * @param anObject
-	 *            the action object to be added to the frame.
-	 *            
-	 * @throws IllegalArgumentException if the action is null.
+	 *            the action object to be added to the frame. Must not be null.
 	 */
 	public void addAction(Action anObject)
 	{
@@ -181,9 +179,7 @@ public final class Frame
 	 * movie.
 	 * 
 	 * @param anObject
-	 *            a sub-class of Definition.
-	 *            
-	 * @throws IllegalArgumentException if the definition is null.
+	 *            a sub-class of Definition. Must not be null.
 	 */
 	public void addDefinition(MovieTag anObject)
 	{
@@ -198,9 +194,7 @@ public final class Frame
 	 * Adds the display list command to the frame.
 	 * 
 	 * @param anObject
-	 *            an MovieTag the manipulates the display list.
-	 *            
-	 * @throws IllegalArgumentException if the movie object is null.
+	 *            an MovieTag the manipulates the display list. Must not be null.
 	 */
 	public void addCommand(MovieTag anObject)
 	{

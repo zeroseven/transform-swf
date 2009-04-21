@@ -135,12 +135,7 @@ public final class DefineImage2 implements ImageTag
 	 *            the number of entries in the colour table in the compressed
 	 *            data. Each entry is 32 bits. Must be in the range 1..256.
 	 * @param data
-	 *            the zlib compressed colour table and image data.
-	 *            
-	 * @throws IllegalArgumentException if the identifier is outside the range of 1..65535.
-	 * @throws IllegalArgumentException if the width or height are outside the range of 0..65535.
-	 * @throws IllegalArgumentException if the size of the table is outside the range 1..256.
-	 * @throws IllegalArgumentException if the compressed colour table and image is null.
+	 *            the zlib compressed colour table and image data. Must not be null.
 	 */
 	public DefineImage2(int uid, int width, int height, int tableSize, byte[] data)
 	{
@@ -166,11 +161,7 @@ public final class DefineImage2 implements ImageTag
 	 * @param height
 	 *            the height of the image. Must be in the range 0..65535.
 	 * @param data
-	 *            the zlib compressed image data.
-	 *            
-	 * @throws IllegalArgumentException if the identifier is outside the range of 1..65535.
-	 * @throws IllegalArgumentException if the width or height are outside the range of 0..65535.
-	 * @throws IllegalArgumentException if the compressed image is null.
+	 *            the zlib compressed image data. Must not be null.
 	 */
 	public DefineImage2(int uid, int width, int height, byte[] data)
 	{

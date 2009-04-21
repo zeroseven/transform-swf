@@ -252,7 +252,8 @@ public final class Movie implements Cloneable
 	 *            string identifying the format for strings. Any string
 	 *            recognised by the Java environment may be used, "ASCII",
 	 *            "SJIS" and UTF-8" will be the three most commonly used.
-	 * @throws Unsupported>
+	 *            
+	 * @throws UnsupportedEncodingException if the encoding scheme is not valid.
 	 */
 	public void setEncoding(String scheme) throws UnsupportedEncodingException
 	{
@@ -355,9 +356,8 @@ public final class Movie implements Cloneable
 	 * signature is "FWS" then the data will not be compressed.
 	 * 
 	 * @param aString
-	 *            the signature used for the encoded Flash file.
-	 *            
-	 * @throws IllegalArgumentException if the string is not "FWS" or "CWS".
+	 *            the signature used for the encoded Flash file. Must be either
+	 *            "FWS" or "CWS".
 	 */
 	public void setSignature(String aString)
 	{

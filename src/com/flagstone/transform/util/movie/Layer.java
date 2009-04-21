@@ -504,9 +504,7 @@ public final class Layer
 	 * frames.
 	 * 
 	 * @param count
-	 *            the number of frames to be displayed.
-	 * @throws IllegalArgumentException
-	 *             is the number of frames is less than 1.
+	 *            the number of frames to be displayed. Must be a positive number.
 	 */
 	public void show(int count)
 	{

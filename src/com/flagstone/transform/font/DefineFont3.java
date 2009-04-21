@@ -321,8 +321,6 @@ public final class DefineFont3 implements DefineTag
 	 * 
 	 * @param obj
 	 *            an Bounds. Must not be null.
-	 *            
-	 * @throws IllegalArgumentException if the bounds object is null.
 	 */
 	public DefineFont3 add(Bounds obj)
 	{
@@ -337,9 +335,7 @@ public final class DefineFont3 implements DefineTag
 	 * Add a kerning object to the array of kernings for pairs of glyphs.
 	 * 
 	 * @param anObject
-	 *            an Kerning.
-	 *            
-	 * @throws IllegalArgumentException if the kerning is null.
+	 *            an Kerning. Must not be null.
 	 */
 	public DefineFont3 add(Kerning anObject)
 	{
@@ -578,8 +574,7 @@ public final class DefineFont3 implements DefineTag
 	 * 
 	 * @param aString
 	 *            the name assigned to the font, identifying the font family.
-	 *            
-	 * @throws IllegalArgumentException if the name is null.
+	 *             Must not be null.
 	 */
 	public void setName(String aString)
 	{
@@ -595,9 +590,7 @@ public final class DefineFont3 implements DefineTag
 	 * 
 	 * @param anArray
 	 *            an array of Shape objects that define the glyphs for the
-	 *            font.
-	 *            
-	 * @throws IllegalArgumentException if the array is null.
+	 *            font. Must not be null.
 	 */
 	public void setShapes(List<Shape> anArray)
 	{
@@ -612,9 +605,7 @@ public final class DefineFont3 implements DefineTag
 	 * 
 	 * @param anArray
 	 *            sets the code table that maps a particular glyph to a
-	 *            character code.
-	 *            
-	 * @throws IllegalArgumentException if the array is null.
+	 *            character code. Must not be null.
 	 */
 	public void setCodes(List<Integer> anArray)
 	{
@@ -628,9 +619,7 @@ public final class DefineFont3 implements DefineTag
 	 * Sets the ascent for the font in twips.
 	 * 
 	 * @param aNumber
-	 *            the ascent for the font.
-	 *            
-	 * @throws IllegalArgumentException if the ascent is not in the range -32768..32767.
+	 *            the ascent for the font in the range -32768..32767.
 	 */
 	public void setAscent(int aNumber)
 	{
@@ -644,9 +633,7 @@ public final class DefineFont3 implements DefineTag
 	 * Sets the descent for the font in twips.
 	 * 
 	 * @param aNumber
-	 *            the descent for the font.
-	 *            
-	 * @throws IllegalArgumentException if the descent is not in the range -32768..32767.
+	 *            the descent for the font in the range -32768..32767.
 	 */
 	public void setDescent(int aNumber)
 	{
@@ -660,9 +647,7 @@ public final class DefineFont3 implements DefineTag
 	 * Sets the leading for the font in twips.
 	 * 
 	 * @param aNumber
-	 *            the descent for the font.
-	 *            
-	 * @throws IllegalArgumentException if the descent is not in the range -32768..32767.
+	 *            the descent for the font in the range -32768..32767.
 	 */
 	public void setLeading(int aNumber)
 	{
@@ -677,8 +662,7 @@ public final class DefineFont3 implements DefineTag
 	 * 
 	 * @param anArray
 	 *            of Integer objects that define the spacing between glyphs.
-	 *            
-	 * @throws IllegalArgumentException if the array is null.
+	 *             Must not be null.
 	 */
 	public void setAdvances(List<Integer> anArray)
 	{
@@ -693,9 +677,7 @@ public final class DefineFont3 implements DefineTag
 	 * 
 	 * @param anArray
 	 *            an array of Bounds objects that define the bounding
-	 *            rectangles that enclose each glyph in the font.
-	 *            
-	 * @throws IllegalArgumentException if the array is null.
+	 *            rectangles that enclose each glyph in the font. Must not be null.
 	 */
 	public void setBounds(List<Bounds> anArray)
 	{
@@ -710,9 +692,7 @@ public final class DefineFont3 implements DefineTag
 	 * 
 	 * @param anArray
 	 *            an array of Kerning objects that define an adjustment
-	 *            applied to the spacing between pairs of glyphs.
-	 *            
-	 * @throws IllegalArgumentException if the array is null.
+	 *            applied to the spacing between pairs of glyphs. Must not be null.
 	 */
 	public void setKernings(List<Kerning> anArray)
 	{

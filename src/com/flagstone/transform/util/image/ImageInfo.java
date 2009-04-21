@@ -795,7 +795,6 @@ public final class ImageInfo {
 	/**
 	 * Returns the index'th comment retrieved from the file.
 	 * @param index int index of comment to return
-	 * @throws IllegalArgumentException if index is smaller than 0 or larger than or equal
 	 * to the number of comments retrieved
 	 * @see #getNumberOfComments
 	 */

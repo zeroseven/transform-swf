@@ -153,13 +153,7 @@ public final class TextSpan implements Encodeable
 	 *            the location of the text relative to the bottom edge of the
 	 *            bounding rectangle enclosing the text.
 	 * @param anArray
-	 *            an array of Character objects.
-	 *            
-	 * @throws IllegalArgumentException if the font identifier is outside the range 1..65535.
-	 * @throws IllegalArgumentException if the x and y offsets are outside the 
-	 * range -32768..32767.
-	 * @throws IllegalArgumentException if the font height is outside the range 0..65535.
-	 * @throws IllegalArgumentException if the character array is null.
+	 *            an array of Character objects. Must not be null.
 	 */
 	public TextSpan(Integer uid, Integer aHeight, Color aColor, Integer xOffset, Integer yOffset,
 					List<GlyphIndex> anArray)

@@ -79,23 +79,20 @@ public final class Curve implements ShapeRecord
 
 	/**
 	 * Creates a Curve object specifying the anchor and control point
-	 * coordinates. Values are in twips and must be in the range -65535..65535.
+	 * coordinates.
 	 * 
 	 * @param controlX
 	 *            the x-coordinate of the control point, specified relative to
-	 *            the current drawing point.
+	 *            the current drawing point. Must be in the range -65535..65535.
 	 * @param controlY
 	 *            the y-coordinate of the control point, specified relative to
-	 *            the current drawing point.
+	 *            the current drawing point.Must be in the range -65535..65535.
 	 * @param anchorX
 	 *            the x-coordinate of the anchor point, specified relative to
-	 *            the control point.
+	 *            the control point.Must be in the range -65535..65535.
 	 * @param anchorY
 	 *            the y-coordinate of the anchor point, specified relative to
-	 *            the control point.
-	 *            
-	 * @throws IllegalArgumentException if any of the coordinates are not in 
-	 * the range -65535..65535.
+	 *            the control point.Must be in the range -65535..65535.
 	 */
 	public Curve(int controlX, int controlY, int anchorX, int anchorY)
 	{

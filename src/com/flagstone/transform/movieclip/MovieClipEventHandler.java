@@ -183,9 +183,7 @@ public final class MovieClipEventHandler implements Encodeable
 	 *            the ASCII code for the key pressed on the keyboard.
 	 * @param anArray
 	 *            the array of actions that will be executed when the specified
-	 *            event occurs.
-	 *            
-	 * @throws IllegalArgumentException if the array is null.
+	 *            event occurs. Must not be null.
 	 */
 	public MovieClipEventHandler(Set<MovieClipEvent> eventCode, int keyCode, List<Action> anArray)
 	{
@@ -269,9 +267,7 @@ public final class MovieClipEventHandler implements Encodeable
 	 * 
 	 * @param array
 	 *            the array of actions that will be executed when the specified
-	 *            event occurs.
-	 *            
-	 * @throws IllegalArgumentException if the array is null.
+	 *            event occurs. Must not be null.
 	 */
 	public void setActions(List<Action> array)
 	{

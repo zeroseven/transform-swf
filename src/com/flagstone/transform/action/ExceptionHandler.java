@@ -297,10 +297,7 @@ public final class ExceptionHandler implements Action
 	 * 
 	 * @param name
 	 *            the name of the variable. May be an empty string if the 
-	 *            exception object will be signed to a register.
-	 *            
-	 * @throws IllegalArgumentException if the name is null.
-	 * @throws IllegalArgumentException if the name is empty.
+	 *            exception object will be signed to a register, but not null.
 	 */
 	public void setVariable(String name)
 	{
@@ -329,10 +326,9 @@ public final class ExceptionHandler implements Action
 	 * Sets the index of the register that the exception object is assigned to.
 	 * 
 	 * @param index
-	 *            the number of the register. May be 0 if the exception object
-	 *            will be assigned to a local variable.
-	 *            
-	 * @throws IllegalArgumentexception is the register number is not in the range 0..255
+	 *            the number of the register in the range 0..255. If the index 
+	 *            is 0 then the exception object will be assigned to a local 
+	 *            variable.
 	 */
 	public void setRegister(int index)
 	{

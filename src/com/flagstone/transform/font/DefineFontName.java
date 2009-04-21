@@ -111,8 +111,7 @@ public final class DefineFontName implements DefineTag
 	 * 
 	 * @param aString
 	 *            the name assigned to the font, identifying the font family.
-	 *            
-	 * @throws IllegalArgumentException if the name is null.
+	 *            Must not be null.
 	 */
 	public void setName(String aString)
 	{
