@@ -29,10 +29,10 @@
  */
 package com.flagstone.transform.video;
 
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 
-import com.flagstone.transform.coder.FLVDecoder;
-import com.flagstone.transform.coder.FLVEncoder;
+import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.movie.Strings;
 
 /**
@@ -47,13 +47,31 @@ public final class VideoMetaData implements VideoTag
 {
 	private static final String FORMAT = "VideoMetaData: { data=%d }";
 	
-	protected transient int length;
-	protected int timestamp;
-	protected byte[] data;
+	private int timestamp;
+	private byte[] data;
+	
+	private transient int start;
+	private transient int length;
+	private transient int end;
 
-	public VideoMetaData()
+	public VideoMetaData(ByteBuffer coder) throws CoderException
 	{
-		data = new byte[0];
+		start = coder.position();
+
+		coder.get();
+		length = coder.getInt() >>> 8;
+		coder.position(coder.position()-1);
+		end = coder.position() + (length << 3);
+		timestamp = coder.getInt() >>> 8;
+		coder.position(coder.position()-1);
+		coder.getInt(); // reserved
+		data = new byte[length];
+		coder.get(data);
+
+		if (coder.position() != end) {
+			throw new CoderException(getClass().getName(), start >> 3, length,
+					(coder.position() - end) >> 3);
+		}
 	}
 
 	/**
@@ -140,28 +158,29 @@ public final class VideoMetaData implements VideoTag
 		return String.format(FORMAT, data.length);
 	}
 
-	public int prepareToEncode(FLVEncoder coder)
+	public int prepareToEncode()
 	{
 		length = 11 + data.length;
 
 		return length;
 	}
 
-	public void encode(FLVEncoder coder)
+	public void encode(ByteBuffer coder) throws CoderException
 	{
-		coder.writeWord(META_DATA, 1);
-		coder.writeWord(length-11, 3);
-		coder.writeWord(timestamp, 3);
-		coder.writeWord(0, 4);
-		coder.writeBytes(data);
-	}
+		start = coder.position();
 
-	public void decode(FLVDecoder coder)
-	{
-		coder.readWord(1, false);
-		length = coder.readWord(3, false);
-		timestamp = coder.readWord(3, false);
-		coder.readWord(4, false); // reserved
-		data = coder.readBytes(new byte[length]);
+		coder.put((byte)VideoTypes.META_DATA);
+		coder.putInt(length-11);
+		coder.position(coder.position()-1);
+		end = coder.position() + (length << 3);
+		coder.putInt(timestamp);
+		coder.position(coder.position()-1);
+		coder.putInt(0);
+		coder.put(data);
+
+		if (coder.position() != end) {
+			throw new CoderException(getClass().getName(), start >> 3, length,
+					(coder.position() - end) >> 3);
+		}
 	}
 }

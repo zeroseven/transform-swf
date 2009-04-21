@@ -30,9 +30,9 @@
 
 package com.flagstone.transform.video;
 
-import com.flagstone.transform.coder.FLVDecoder;
-import com.flagstone.transform.coder.FLVEncoder;
+import java.nio.ByteBuffer;
 
+import com.flagstone.transform.coder.CoderException;
 
 /**
  * <p>The Codeable interfaces defines the set of methods that all classes must 
@@ -56,7 +56,7 @@ public interface Codeable
 	 * 
 	 * @return the length in bytes of the object when it is encoded.
 	 */
-	int prepareToEncode(FLVEncoder coder);
+	int prepareToEncode();
 
 	/**
 	 * Encode an object to the binary format used in Flash files.
@@ -67,16 +67,5 @@ public interface Codeable
 	 * @param context an Context that allows information to be passed between 
 	 * objects to control how they are encoded.
 	 */
-	void encode(FLVEncoder coder);
-
-	/**
-	 * Decode an object from the binary format used in Flash files. 
-	 * 
-	 * @param coder a Decoder object that is used to decode the object from its
-	 * binary form.
-	 * 
-	 * @param context an Context that allows information to be passed between 
-	 * objects to control how they are decoded.
-	 */
-	void decode(FLVDecoder coder);
+	void encode(ByteBuffer coder) throws CoderException;
 }

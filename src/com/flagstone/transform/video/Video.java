@@ -34,13 +34,12 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.DataFormatException;
 
-import com.flagstone.transform.coder.FLVDecoder;
-import com.flagstone.transform.coder.FLVEncoder;
-import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.movie.Strings;
 
 /**
@@ -50,7 +49,6 @@ import com.flagstone.transform.movie.Strings;
  * and accessing the objects that represent the different data structures used
  * for audio and video data.
  */
-@SuppressWarnings("PMD.TooManyMethods")
 public final class Video implements Cloneable
 {
 	private static final String FORMAT = "Video: { signature=%s; version=%d; objects=%s ";
@@ -219,28 +217,45 @@ public final class Video implements Cloneable
 	public void decodeFromData(byte[] bytes) throws IOException, DataFormatException
 					
 	{
-		FLVDecoder coder = new FLVDecoder(bytes);
+		ByteBuffer coder = ByteBuffer.wrap(bytes).order(ByteOrder.BIG_ENDIAN);
 
 		isFlashVideo(bytes);
 
-		signature = coder.readString(3, "UTF8");
-		version = coder.readByte();
-		coder.readBits(5, false);
-		coder.readBits(1, false); // contains audio
-		coder.readBits(1, false);
-		coder.readBits(1, false); // contains videos
+		byte[] data = new byte[3];
+		coder.get(data);
 		
-		coder.readWord(4, false); // header length always 9
-		coder.readWord(4, false); // previous length
+		signature = new String(data, "UTF8");
+		version = coder.get();
+		coder.get(); // audio & video flags		
+		coder.getInt(); // header length always 9
+		coder.getInt(); // previous length
 
 		objects = new ArrayList<VideoTag>();
 		
+		int type;
+		
 		do
 		{
-			objects.add(coder.decodeVideoTag());
-			coder.readWord(4, false); // previous length
+			type = coder.get();
+			coder.position(coder.position()-1);
+			
+			switch (type)
+			{
+				case VideoTypes.AUDIO_DATA:
+					objects.add(new AudioData(coder));
+					break;
+				case VideoTypes.VIDEO_DATA:
+					objects.add(new VideoData(coder));
+					break;
+				case VideoTypes.META_DATA:
+					objects.add(new VideoMetaData(coder));
+					break;
+				default:
+					break;//TODO(code) fix
+			}
+			coder.getInt(); // previous length
 
-		} while (!coder.eof());
+		} while (coder.position() < coder.limit());
 	}
 
 	/**
@@ -299,40 +314,32 @@ public final class Video implements Cloneable
 	 */
 	public byte[] encode() throws IOException
 	{
-		FLVEncoder coder = new FLVEncoder(0);
+		int fileLength = prepareToEncode();
 
-		coder.version = version;
-
-		int fileLength = prepareToEncode(coder);
-
-		coder = new FLVEncoder(fileLength);
-
-		boolean containsAudio = false; //TODO(code) fix
-		boolean containsVideo = false; //TODO(code) fix
+		ByteBuffer coder = ByteBuffer.allocate(fileLength);
 		
+		int flags = 0;
+
 		for (VideoTag object : objects)
 		{
 			if (object instanceof AudioData) {
-				containsAudio = true; //TODO(code) fix
+				flags |= 4;
 			}
 			else if (object instanceof VideoData) {
-				containsVideo = true; //TODO(code) fix
+				flags |= 1;
 			}
 		}
 
-		coder.writeString(signature, "UTF8");
-		coder.writeWord(version, 1);
-		coder.writeBits(0, 5);
-		coder.writeBits(containsAudio ? 1 : 0, 1);
-		coder.writeBits(0, 1);
-		coder.writeBits(containsVideo ? 1 : 0, 1);
-		coder.writeWord(9, 4);
-		coder.writeWord(0, 4);
+		coder.put(signature.getBytes("UTF8"));
+		coder.put((byte)version);
+		coder.put((byte)flags);
+		coder.putInt(9);
+		coder.putInt(0);
 
 		for (VideoTag object : objects) {
 			object.encode(coder);
 		}
-		return coder.getData();
+		return coder.array();
 	}
 
 	/**
@@ -349,12 +356,12 @@ public final class Video implements Cloneable
 		return String.format(FORMAT, signature, version, objects);
 	}
 
-	private int prepareToEncode(FLVEncoder coder)
+	private int prepareToEncode()
 	{
 		int length = 13;
 
 		for (VideoTag object : objects) {
-			length += 4 + object.prepareToEncode(coder);
+			length += 4 + object.prepareToEncode();
 		}
 		return length;
 	}

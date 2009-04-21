@@ -29,10 +29,10 @@
  */
 package com.flagstone.transform.video;
 
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 
-import com.flagstone.transform.coder.FLVDecoder;
-import com.flagstone.transform.coder.FLVEncoder;
+import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.movie.Strings;
 
 /**
@@ -58,13 +58,37 @@ public final class AudioData implements VideoTag
 	private static final String FORMAT =  "AudioData: { timestamp=%d; format=%d; rate=%d; channelCount=%d; " +
 			"sampleSize=%d; data=%d }";
 	
-	protected transient int length;
-	protected int timestamp;
-	protected SoundFormat format;
-	protected int rate;
-	protected int channelCount;
-	protected int sampleSize;
-	protected byte[] data;
+	private int timestamp;
+	private SoundFormat format;
+	private int rate;
+	private int channelCount;
+	private int sampleSize;
+	private byte[] data;
+	
+	private transient int start;
+	private transient int length;
+	private transient int end;
+	
+	public AudioData(ByteBuffer coder) throws CoderException
+	{
+		start = coder.position();
+
+		coder.get();
+		length = coder.getInt() >>> 8;
+		coder.position(coder.position()-1);
+		end = coder.position() + (length << 3);
+		timestamp = coder.getInt() >>> 8;
+		coder.position(coder.position()-1);
+		coder.getInt(); // reserved
+		unpack(coder.get());
+		data = new byte[length-1];
+		coder.get(data);
+
+		if (coder.position() != end) {
+			throw new CoderException(getClass().getName(), start >> 3, length,
+					(coder.position() - end) >> 3);
+		}
+	}
 
 	public AudioData()
 	{
@@ -281,71 +305,83 @@ public final class AudioData implements VideoTag
 		return String.format(FORMAT, timestamp, format, rate, channelCount, sampleSize, data.length);
 	}
 	
-	public int prepareToEncode(FLVEncoder coder)
+	public int prepareToEncode()
 	{
 		length = 12 + data.length;
 
 		return length;
 	}
 	
-	public void encode(FLVEncoder coder)
+	public void encode(ByteBuffer coder) throws CoderException
 	{
-		coder.writeWord(VIDEO_DATA, 1);
-		coder.writeWord(length-11, 3);
-		coder.writeWord(timestamp, 3);
-		coder.writeWord(0, 4);
-		coder.writeBits(format.getValue(), 4);
+		start = coder.position();
 
+		coder.put((byte)VideoTypes.VIDEO_DATA);
+		coder.putInt(length-11);
+		coder.position(coder.position()-1);
+		end = coder.position() + (length << 3);
+		coder.putInt(timestamp);
+		coder.position(coder.position()-1);
+		coder.putInt(0);
+		coder.put(pack());
+		coder.put(data);
+
+		if (coder.position() != end) {
+			throw new CoderException(getClass().getName(), start >> 3, length,
+					(coder.position() - end) >> 3);
+		}
+	}
+	
+	private byte pack()
+	{
+		byte value = (byte)(format.getValue() << 4);
+		
 		switch (rate)
 		{
 			case 5512:
-				coder.writeBits(0, 2);
 				break;
 			case 11025:
-				coder.writeBits(1, 2);
+				value |= 4;
 				break;
 			case 22050:
-				coder.writeBits(2, 2);
+				value |= 8;
 				break;
 			case 44100:
-				coder.writeBits(3, 2);
+				value |= 12;
 				break;
 			default:
 				break;
 		}
-		coder.writeBits(sampleSize-1, 1);
-		coder.writeBits(channelCount-1, 1);
-		coder.writeBytes(data);
+		value |= sampleSize == 2 ? 2 : 0;
+		value |= channelCount == 2 ? 1 : 0;
+		
+		return 
+		value;
 	}
 	
-	public void decode(FLVDecoder coder)
+	private void unpack(int value)
 	{
-		coder.readWord(1, false);
-		length = coder.readWord(3, false);
-		timestamp = coder.readWord(3, false);
-		coder.readWord(4, false); // reserved
-		format = SoundFormat.fromInt(coder.readBits(4, false));
-
-		switch (coder.readBits(2, false))
+		format = SoundFormat.fromInt((value >> 4) & 0x0F);
+		
+		switch (value & 0x0C)
 		{
 			case 0:
 				rate = 5512;
 				break;
-			case 1:
+			case 4:
 				rate = 11025;
 				break;
-			case 2:
+			case 8:
 				rate = 22050;
 				break;
-			case 3:
+			case 12:
 				rate = 44100;
 				break;
 			default:
 				break;
 		}
-
-		sampleSize = coder.readBits(1, false) + 1;
-		channelCount = coder.readBits(1, false) + 1;
-		data = coder.readBytes(new byte[length-1]);
+		sampleSize = (value & 0x02) != 0 ? 2:1;
+		channelCount = (value & 0x01) != 0 ? 2:1;
 	}
+
 }

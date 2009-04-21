@@ -50,6 +50,50 @@ public final class ScreenPacket implements Cloneable
 	protected int imageHeight;
 	protected List<ImageBlock> imageBlocks;
 
+	public ScreenPacket(byte[] data)
+	{
+		LittleEndianDecoder coder = new LittleEndianDecoder(data);
+
+		keyFrame = coder.readBits(4, false) == 1;
+		coder.readBits(4, false); // codec = screen_video
+
+		blockWidth = (coder.readBits(4, false) + 1) * 16;
+		imageWidth = coder.readBits(12, false);
+		blockHeight = (coder.readBits(4, false) + 1) * 16;
+		imageHeight = coder.readBits(12, false);
+
+		int columns = imageWidth / blockWidth + ((imageWidth % blockWidth > 0) ? 1 : 0); //TODO(code) fix
+		int rows = imageHeight / blockHeight + ((imageHeight % blockHeight > 0) ? 1 : 0); //TODO(code) fix
+
+		int height = imageHeight; //TODO(code) fix
+		int width = imageWidth; //TODO(code) fix
+
+		imageBlocks.clear();
+		ImageBlock block;
+
+		for (int i = 0; i < rows; i++, height -= blockHeight)
+		{
+			for (int j = 0; j < columns; j++, width -= blockWidth)
+			{
+				int length = coder.readBits(16, false);
+
+				if (length == 0)
+				{
+					block = new ImageBlock(0, 0, null);
+				} 
+				else
+				{
+					int dataHeight = (height < blockHeight) ? height : blockHeight;
+					int dataWidth = (width < blockWidth) ? width : blockWidth;
+
+					block = new ImageBlock(dataHeight, dataWidth, coder.readBytes(new byte[length]));
+				}
+
+				imageBlocks.add(block);
+			}
+		}
+	}
+
 	protected ScreenPacket()
 	{
 		imageBlocks = new ArrayList<ImageBlock>();
@@ -261,49 +305,5 @@ public final class ScreenPacket implements Cloneable
 		}
 
 		return coder.getData();
-	}
-
-	public void decode(byte[] data)
-	{
-		LittleEndianDecoder coder = new LittleEndianDecoder(data);
-
-		keyFrame = coder.readBits(4, false) == 1;
-		coder.readBits(4, false); // codec = screen_video
-
-		blockWidth = (coder.readBits(4, false) + 1) * 16;
-		imageWidth = coder.readBits(12, false);
-		blockHeight = (coder.readBits(4, false) + 1) * 16;
-		imageHeight = coder.readBits(12, false);
-
-		int columns = imageWidth / blockWidth + ((imageWidth % blockWidth > 0) ? 1 : 0); //TODO(code) fix
-		int rows = imageHeight / blockHeight + ((imageHeight % blockHeight > 0) ? 1 : 0); //TODO(code) fix
-
-		int height = imageHeight; //TODO(code) fix
-		int width = imageWidth; //TODO(code) fix
-
-		imageBlocks.clear();
-		ImageBlock block;
-
-		for (int i = 0; i < rows; i++, height -= blockHeight)
-		{
-			for (int j = 0; j < columns; j++, width -= blockWidth)
-			{
-				int length = coder.readBits(16, false);
-
-				if (length == 0)
-				{
-					block = new ImageBlock(0, 0, null);
-				} 
-				else
-				{
-					int dataHeight = (height < blockHeight) ? height : blockHeight;
-					int dataWidth = (width < blockWidth) ? width : blockWidth;
-
-					block = new ImageBlock(dataHeight, dataWidth, coder.readBytes(new byte[length]));
-				}
-
-				imageBlocks.add(block);
-			}
-		}
 	}
 }

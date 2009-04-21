@@ -29,10 +29,10 @@
  */
 package com.flagstone.transform.video;
 
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 
-import com.flagstone.transform.coder.FLVDecoder;
-import com.flagstone.transform.coder.FLVEncoder;
+import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.movie.Strings;
 
 /**
@@ -48,19 +48,37 @@ public final class VideoData implements VideoTag
 {
 	private static final String FORMAT = "VideoData: { codec=%s; frameType=%s; data =%d }";
 	
-	protected transient int length;
-	protected int timestamp;
-	protected VideoFormat format;
-	protected VideoFrame frameType;
-	protected byte[] data;
+	private int timestamp;
+	private VideoFormat format;
+	private VideoFrame frameType;
+	private byte[] data;
+	
+	private transient int start;
+	private transient int length;
+	private transient int end;
 
-	public VideoData()
+	public VideoData(ByteBuffer coder) throws CoderException
 	{
-		format = VideoFormat.H263;
-		frameType = VideoFrame.KEY;
-		data = new byte[0];
-	}
+		start = coder.position();
 
+		coder.get();
+		length = coder.getInt() >>> 8;
+		coder.position(coder.position()-1);
+		end = coder.position() + (length << 3);
+		timestamp = coder.getInt() >>> 8;
+		coder.position(coder.position()-1);
+		coder.getInt(); // reserved
+		unpack(coder.get());
+		
+		data = new byte[length-1];
+		coder.get(data);
+
+		if (coder.position() != end) {
+			throw new CoderException(getClass().getName(), start >> 3, length,
+					(coder.position() - end) >> 3);
+		}
+	}
+	
 	/**
 	 * Constructs a new VideoData object specifying the time which the video
 	 * should be displayed, the video data and the format used to encode it and
@@ -215,35 +233,35 @@ public final class VideoData implements VideoTag
 		return String.format(FORMAT, format, frameType, data.length);
 	}
 
-	public int prepareToEncode(FLVEncoder coder)
+	public int prepareToEncode()
 	{
 		length = 12 + data.length;
 
 		return length;
 	}
 
-	public void encode(FLVEncoder coder)
+	public void encode(ByteBuffer coder) throws CoderException
 	{
-		coder.writeWord(VIDEO_DATA, 1);
-		coder.writeWord(length-11, 3);
-		coder.writeWord(timestamp, 3);
-		coder.writeWord(0, 4);
-		coder.writeByte(pack());
-		coder.writeBytes(data);
-	}
+		start = coder.position();
 
-	public void decode(FLVDecoder coder)
-	{
-		coder.readWord(1, false);
-		length = coder.readWord(3, false);
-		timestamp = coder.readWord(3, false);
-		coder.readWord(4, false); // reserved
-		unpack(coder.readByte());
-		data = coder.readBytes(new byte[length-1]);
+		coder.put((byte)VideoTypes.META_DATA);
+		coder.putInt(length-11);
+		coder.position(coder.position()-1);
+		end = coder.position() + (length << 3);
+		coder.putInt(timestamp);
+		coder.position(coder.position()-1);
+		coder.putInt(0);
+		coder.put(pack());
+		coder.put(data);
+
+		if (coder.position() != end) {
+			throw new CoderException(getClass().getName(), start >> 3, length,
+					(coder.position() - end) >> 3);
+		}
 	}
 	
-	private int pack() {
-		int value = 0;
+	private byte pack() {
+		byte value = 0;
 		
 		switch (format) {
 		case H263:
