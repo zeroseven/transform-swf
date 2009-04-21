@@ -29,7 +29,7 @@
  */
 package debug;
 
-import com.flagstone.transform.movie.Movie;
+import com.flagstone.transform.Movie;
 
 /**
  * DecodeMovie verifies that Flash file can be decoded into a Movie.

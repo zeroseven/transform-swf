@@ -34,7 +34,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.Arrays;
 
-import com.flagstone.transform.movie.Strings;
+import com.flagstone.transform.Strings;
 
 /**
  * <p>

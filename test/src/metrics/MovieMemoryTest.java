@@ -6,7 +6,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import com.flagstone.transform.movie.Movie;
+import com.flagstone.transform.Movie;
 
 public final class MovieMemoryTest
 {

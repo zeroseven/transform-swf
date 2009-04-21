@@ -15,7 +15,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.flagstone.transform.movie.Movie;
+import com.flagstone.transform.Movie;
 
 public final class MovieTimingTest
 {

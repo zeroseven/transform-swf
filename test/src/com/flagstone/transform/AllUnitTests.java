@@ -3,23 +3,18 @@ package com.flagstone.transform;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+import com.flagstone.transform.action.AllActionTests;
+import com.flagstone.transform.button.AllButtonTests;
 import com.flagstone.transform.coder.AllCoderTests;
-import com.flagstone.transform.movie.AllMovieTests;
-import com.flagstone.transform.movie.action.AllActionTests;
-import com.flagstone.transform.movie.button.AllButtonTests;
-import com.flagstone.transform.movie.datatype.AllDataTypeTests;
-import com.flagstone.transform.movie.fillstyle.AllFillStyleTests;
-import com.flagstone.transform.movie.filter.AllFilterTests;
-import com.flagstone.transform.movie.font.AllFontTests;
-import com.flagstone.transform.movie.image.AllImageTests;
-import com.flagstone.transform.movie.linestyle.AllLineStyleTests;
-import com.flagstone.transform.movie.meta.AllMetaTests;
-import com.flagstone.transform.movie.movieclip.AllMovieClipTests;
+import com.flagstone.transform.fillstyle.AllFillStyleTests;
+import com.flagstone.transform.filter.AllFilterTests;
+import com.flagstone.transform.font.AllFontTests;
+import com.flagstone.transform.image.AllImageTests;
+import com.flagstone.transform.linestyle.AllLineStyleTests;
 import com.flagstone.transform.movie.shape.AllShapeTests;
 import com.flagstone.transform.movie.sound.AllSoundTests;
 import com.flagstone.transform.movie.text.AllTextTests;
-import com.flagstone.transform.movie.video.AllVideoTests;
-import com.flagstone.transform.video.AllFlashVideoTests;
+import com.flagstone.transform.movieclip.AllMovieClipTests;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({

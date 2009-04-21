@@ -8,12 +8,12 @@ import java.util.zip.DataFormatException;
 import java.util.Iterator;
 import java.util.List;
 
-import com.flagstone.transform.movie.Background;
-import com.flagstone.transform.movie.Movie;
-import com.flagstone.transform.movie.MovieTag;
-import com.flagstone.transform.movie.ShowFrame;
-import com.flagstone.transform.movie.datatype.Bounds;
-import com.flagstone.transform.movie.datatype.ColorTable;
+import com.flagstone.transform.Background;
+import com.flagstone.transform.Bounds;
+import com.flagstone.transform.ColorTable;
+import com.flagstone.transform.Movie;
+import com.flagstone.transform.MovieTag;
+import com.flagstone.transform.ShowFrame;
 
 public final class PlayStreamingSound
 {

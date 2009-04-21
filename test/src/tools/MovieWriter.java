@@ -5,8 +5,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
 
-import com.flagstone.transform.movie.Movie;
-import com.flagstone.transform.movie.MovieTag;
+import com.flagstone.transform.Movie;
+import com.flagstone.transform.MovieTag;
 
 public class MovieWriter {
 

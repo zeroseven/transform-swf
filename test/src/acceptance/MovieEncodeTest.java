@@ -11,7 +11,7 @@ import tools.MovieWriter;
 
 import static org.junit.Assert.*;
 
-import com.flagstone.transform.movie.Movie;
+import com.flagstone.transform.Movie;
 
 public final class MovieEncodeTest
 {	

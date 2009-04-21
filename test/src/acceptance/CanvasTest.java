@@ -3,15 +3,15 @@ package acceptance;
 import java.io.File;
 
 
-import com.flagstone.transform.factory.shape.Canvas;
-import com.flagstone.transform.movie.Background;
-import com.flagstone.transform.movie.Movie;
-import com.flagstone.transform.movie.Place2;
-import com.flagstone.transform.movie.ShowFrame;
-import com.flagstone.transform.movie.datatype.ColorTable;
-import com.flagstone.transform.movie.fillstyle.SolidFill;
-import com.flagstone.transform.movie.linestyle.LineStyle;
-import com.flagstone.transform.movie.shape.DefineShape2;
+import com.flagstone.transform.Background;
+import com.flagstone.transform.ColorTable;
+import com.flagstone.transform.Movie;
+import com.flagstone.transform.Place2;
+import com.flagstone.transform.ShowFrame;
+import com.flagstone.transform.fillstyle.SolidFill;
+import com.flagstone.transform.linestyle.LineStyle;
+import com.flagstone.transform.shape.DefineShape2;
+import com.flagstone.transform.util.shape.Canvas;
 
 import static org.junit.Assert.fail;
 

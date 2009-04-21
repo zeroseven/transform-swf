@@ -30,7 +30,7 @@
 
 package com.flagstone.transform.coder;
 
-import com.flagstone.transform.movie.Strings;
+import com.flagstone.transform.Strings;
 
 /**
  * Decoder provides a set of method for decoding data that is not byte-ordered,

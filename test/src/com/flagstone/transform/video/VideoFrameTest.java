@@ -38,12 +38,13 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 
+import com.flagstone.transform.ColorTransform;
+import com.flagstone.transform.CoordTransform;
+import com.flagstone.transform.VideoFrameType;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.SWFContext;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.movie.datatype.ColorTransform;
-import com.flagstone.transform.movie.datatype.CoordTransform;
 
 @SuppressWarnings( { 
 	"PMD.LocalVariableCouldBeFinal",
@@ -51,7 +52,7 @@ import com.flagstone.transform.movie.datatype.CoordTransform;
 })
 public final class VideoFrameTest {
 	
-	private transient VideoFrame fixture;
+	private transient VideoFrameType fixture;
 	
 	private transient final byte[] encoded = new byte[] { 0x06, 0x01, 
 			0x01, 0x00, 0x02, 0x00, 0x06, 0x50};

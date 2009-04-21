@@ -32,7 +32,7 @@ package acceptance;
 import java.io.File;
 import java.io.FilenameFilter;
 
-import com.flagstone.transform.video.Video;
+import com.flagstone.transform.Video;
 
 import org.junit.BeforeClass;
 import org.junit.Test;

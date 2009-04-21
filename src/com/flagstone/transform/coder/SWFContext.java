@@ -3,15 +3,10 @@ package com.flagstone.transform.coder;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 
-import com.flagstone.transform.factory.movie.ActionFactory;
-import com.flagstone.transform.factory.movie.FillStyleFactory;
-import com.flagstone.transform.factory.movie.MorphFillStyleFactory;
-import com.flagstone.transform.factory.movie.MovieFactory;
-import com.flagstone.transform.factory.movie.SWFFactory;
-import com.flagstone.transform.movie.MovieTag;
-import com.flagstone.transform.movie.Strings;
-import com.flagstone.transform.movie.action.Action;
-import com.flagstone.transform.movie.fillstyle.FillStyle;
+import com.flagstone.transform.MovieTag;
+import com.flagstone.transform.Strings;
+import com.flagstone.transform.action.Action;
+import com.flagstone.transform.fillstyle.FillStyle;
 
 /**
  * Contexts are used to pass information between objects when they are being

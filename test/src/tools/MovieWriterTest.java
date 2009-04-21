@@ -32,7 +32,7 @@ package tools;
 import java.io.File;
 import java.io.FilenameFilter;
 
-import com.flagstone.transform.movie.Movie;
+import com.flagstone.transform.Movie;
 
 import org.junit.BeforeClass;
 import org.junit.Test;

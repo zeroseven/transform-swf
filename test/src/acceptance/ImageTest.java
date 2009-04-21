@@ -6,14 +6,14 @@ import java.io.IOException;
 
 import java.util.zip.DataFormatException;
 
-import com.flagstone.transform.factory.image.ImageFactory;
-import com.flagstone.transform.movie.Background;
-import com.flagstone.transform.movie.ImageTag;
-import com.flagstone.transform.movie.Movie;
-import com.flagstone.transform.movie.Place2;
-import com.flagstone.transform.movie.ShowFrame;
-import com.flagstone.transform.movie.datatype.ColorTable;
-import com.flagstone.transform.movie.shape.DefineShape3;
+import com.flagstone.transform.Background;
+import com.flagstone.transform.ColorTable;
+import com.flagstone.transform.ImageTag;
+import com.flagstone.transform.Movie;
+import com.flagstone.transform.Place2;
+import com.flagstone.transform.ShowFrame;
+import com.flagstone.transform.shape.DefineShape3;
+import com.flagstone.transform.util.image.ImageFactory;
 
 public class ImageTest
 {	

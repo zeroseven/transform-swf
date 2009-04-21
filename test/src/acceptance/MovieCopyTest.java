@@ -8,7 +8,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.fail;
 
-import com.flagstone.transform.movie.Movie;
+import com.flagstone.transform.Movie;
 
 public final class MovieCopyTest
 {	

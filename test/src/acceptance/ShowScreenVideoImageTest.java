@@ -12,25 +12,26 @@ import java.util.zip.DataFormatException;
 import org.junit.Test;
 
 
-import com.flagstone.transform.factory.image.ImageDecoder;
-import com.flagstone.transform.factory.image.ImageFactory;
-import com.flagstone.transform.factory.image.ImageInfo;
-import com.flagstone.transform.factory.image.ImageRegistry;
-import com.flagstone.transform.movie.Background;
-import com.flagstone.transform.movie.ImageTag;
-import com.flagstone.transform.movie.Movie;
-import com.flagstone.transform.movie.MovieTag;
-import com.flagstone.transform.movie.Place2;
-import com.flagstone.transform.movie.ShowFrame;
-import com.flagstone.transform.movie.Strings;
-import com.flagstone.transform.movie.datatype.Bounds;
-import com.flagstone.transform.movie.datatype.ColorTable;
-import com.flagstone.transform.movie.video.DefineVideo;
-import com.flagstone.transform.movie.video.ImageBlock;
-import com.flagstone.transform.movie.video.VideoFrame;
-import com.flagstone.transform.movie.video.DefineVideo.Deblocking;
+import com.flagstone.transform.Background;
+import com.flagstone.transform.Bounds;
+import com.flagstone.transform.ColorTable;
+import com.flagstone.transform.DefineVideo;
+import com.flagstone.transform.ImageTag;
+import com.flagstone.transform.Movie;
+import com.flagstone.transform.MovieTag;
+import com.flagstone.transform.Place2;
+import com.flagstone.transform.ShowFrame;
+import com.flagstone.transform.Strings;
+import com.flagstone.transform.VideoFormat;
+import com.flagstone.transform.VideoFrame;
+import com.flagstone.transform.VideoFrameType;
+import com.flagstone.transform.DefineVideo.Deblocking;
+import com.flagstone.transform.util.image.ImageDecoder;
+import com.flagstone.transform.util.image.ImageFactory;
+import com.flagstone.transform.util.image.ImageInfo;
+import com.flagstone.transform.util.image.ImageRegistry;
+import com.flagstone.transform.video.ImageBlock;
 import com.flagstone.transform.video.ScreenPacket;
-import com.flagstone.transform.video.VideoFormat;
 
 public final class ShowScreenVideoImageTest
 {
