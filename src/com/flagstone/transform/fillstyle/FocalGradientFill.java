@@ -31,7 +31,6 @@
 package com.flagstone.transform.fillstyle;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -215,27 +214,22 @@ public final class FocalGradientFill implements FillStyle {
 
 	public int prepareToEncode(final SWFEncoder coder, final SWFContext context) {
 		//TODO(optimise) Calculate size of gradient array directly.
-		Iterator<Gradient> iter;
-				
 		int length = 2;
 		count = gradients.size();
 
-		for (iter = gradients.iterator(); iter.hasNext();) {
-			length += iter.next().prepareToEncode(coder, context);
+		for (Gradient gradient : gradients) {
+			length += gradient.prepareToEncode(coder, context);
 		}
 
 		return length;
 	}
 
 	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException {
-		//TODO Replace iterator with foreach loop
-		Iterator<Gradient> iter;
-		
 		coder.writeByte(type);
 		coder.writeWord(count | spread | interpolation, 1);
 
-		for (iter = gradients.iterator(); iter.hasNext();) {
-			iter.next().encode(coder, context);
+		for (Gradient gradient : gradients) {
+			gradient.encode(coder, context);
 		}
 	}
 }

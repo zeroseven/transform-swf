@@ -31,7 +31,6 @@
 package com.flagstone.transform.action;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import com.flagstone.transform.Strings;
@@ -424,25 +423,20 @@ public final class ExceptionHandler implements Action
 		length = 7;
 		length += (variable.length() > 0) ? coder.strlen(variable) : 1;
 
-		Iterator<Action> iAction = tryActions.iterator();
 		tryLength = tryActions.isEmpty() ? 1 : 0;
-		
-		while (iAction.hasNext()) {
-			tryLength += iAction.next().prepareToEncode(coder, context);
-		}
-
-		iAction = catchActions.iterator();
 		catchLength = 0;
-		
-		while (iAction.hasNext()) {
-			catchLength += iAction.next().prepareToEncode(coder, context);
-		}
-		
-		iAction = finalActions.iterator();
 		finalLength = 0;
 		
-		while (iAction.hasNext()) {
-			finalLength += iAction.next().prepareToEncode(coder, context);
+		for (Action action : tryActions) {
+			tryLength += action.prepareToEncode(coder, context);
+		}
+
+		for (Action action : catchActions) {
+			catchLength += action.prepareToEncode(coder, context);
+		}
+		
+		for (Action action : finalActions) {
+			finalLength += action.prepareToEncode(coder, context);
 		}
 
 		length += tryLength;
@@ -473,26 +467,20 @@ public final class ExceptionHandler implements Action
 			coder.writeWord(register, 1);
 		}
 		
-		Iterator<Action> iAction = tryActions.iterator();
-		
-		while (iAction.hasNext()) {
-			iAction.next().encode(coder, context);
+		for (Action action : tryActions) {
+			action.encode(coder, context);
 		}
 		
 		if (tryActions.isEmpty()) {
 			coder.writeByte(0);
 		}
 		
-		iAction = catchActions.iterator();
-		
-		while (iAction.hasNext()) {
-			iAction.next().encode(coder, context);
+		for (Action action : catchActions) {
+			action.encode(coder, context);
 		}
 		
-		iAction = finalActions.iterator();
-		
-		while (iAction.hasNext()) {
-			iAction.next().encode(coder, context);
+		for (Action action : finalActions) {
+			action.encode(coder, context);
 		}
 	}
 }

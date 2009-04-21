@@ -31,7 +31,6 @@
 package com.flagstone.transform.button;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import com.flagstone.transform.DefineTag;
@@ -277,10 +276,8 @@ public final class DefineButton implements DefineTag
 
 		coder.writeWord(0, 1);
 
-		Iterator<Action> iAction = actions.iterator();
-		
-		while (iAction.hasNext()) {
-			iAction.next().encode(coder, context);
+		for (Action action : actions) {
+			action.encode(coder, context);
 		}
 
 		if (coder.getPointer() != end) {

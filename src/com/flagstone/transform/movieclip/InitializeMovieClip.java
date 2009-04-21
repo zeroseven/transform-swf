@@ -31,7 +31,6 @@
 package com.flagstone.transform.movieclip;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import com.flagstone.transform.DoAction;
@@ -209,11 +208,8 @@ public final class InitializeMovieClip implements MovieTag
 	{
 		length = 2;
 
-		//TODO(optimise) replace with foreach loop
-		Iterator<Action> iAction = actions.iterator();
-		
-		while (iAction.hasNext()) {
-			length += iAction.next().prepareToEncode(coder, context);
+		for (Action action : actions) {
+			length += action.prepareToEncode(coder, context);
 		}
 
 		return (length > 62 ? 6:2) + length;

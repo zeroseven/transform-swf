@@ -31,7 +31,6 @@
 package com.flagstone.transform.action;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import com.flagstone.transform.Strings;
@@ -146,31 +145,25 @@ public final class With implements Action
 		return String.format(FORMAT, actions);
 	}
 
-	//TODO(optimise) Replace iterator with foreach loop
 	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
 	{
 		length = 2;
 
-		Iterator<Action> iAction = actions.iterator();
-		
-		while (iAction.hasNext()) {
-			length += iAction.next().prepareToEncode(coder, context);
+		for (Action action : actions) {
+			length += action.prepareToEncode(coder, context);
 		}
 
 		return 3 + length;
 	}
 
-	//TODO(optimise) Replace iterator with foreach loop
 	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
 	{
 		coder.writeWord(ActionTypes.WITH, 1);
 		coder.writeWord(2, 2);
 		coder.writeWord(length-2, 2);
 
-		Iterator<Action> iAction = actions.iterator();
-		
-		while (iAction.hasNext()) {
-			iAction.next().encode(coder, context);
+		for (Action action : actions) {
+			action.encode(coder, context);
 		}
 	}
 }

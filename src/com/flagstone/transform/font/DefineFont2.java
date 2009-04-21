@@ -31,7 +31,6 @@
 package com.flagstone.transform.font;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import com.flagstone.transform.Bounds;
@@ -822,7 +821,7 @@ public final class DefineFont2 implements DefineTag
 			coder.writeWord(0, entrySize);
 		}
 
-		for (Iterator<Shape> i = shapes.iterator(); i.hasNext(); tableEntry += entrySize << 3)
+		for (Shape shape : shapes)
 		{
 			currentLocation = coder.getPointer();
 			offset = (coder.getPointer() - tableStart) >> 3;
@@ -831,7 +830,8 @@ public final class DefineFont2 implements DefineTag
 			coder.writeWord(offset, entrySize);
 			coder.setPointer(currentLocation);
 
-			i.next().encode(coder, context);
+			shape.encode(coder, context);
+			tableEntry += entrySize << 3;
 		}
 
 		currentLocation = coder.getPointer();

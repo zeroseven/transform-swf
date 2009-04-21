@@ -31,7 +31,6 @@
 package com.flagstone.transform.fillstyle;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import com.flagstone.transform.CoordTransform;
@@ -222,33 +221,28 @@ public final class MorphGradientFill implements FillStyle {
 	}
 
 	public int prepareToEncode(final SWFEncoder coder, final SWFContext context) {
-		Iterator<MorphGradient> iter;
-		
 		int length = 2 + startTransform.prepareToEncode(coder, context)
 				+ endTransform.prepareToEncode(coder, context);
 		
 		//TODO(optimise) calculate gradient array size directly.
 		count = gradients.size();
 		
-		for (iter = gradients.iterator(); iter.hasNext();) {
-			length += iter.next().prepareToEncode(coder, context);
+		for (MorphGradient gradient : gradients) {
+			length += gradient.prepareToEncode(coder, context);
 		}
 
 		return length;
 	}
 
 	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException {
-		//TODO(optimise) Replace with foreach loop
-		Iterator<MorphGradient> iter;
-		
 		coder.writeByte(type);
 		startTransform.encode(coder, context);
 		endTransform.encode(coder, context);
 
 		coder.writeByte(count);
 
-		for (iter = gradients.iterator(); iter.hasNext();) {
-			iter.next().encode(coder, context);
+		for (MorphGradient gradient : gradients) {
+			gradient.encode(coder, context);
 		}
 	}
 }

@@ -428,11 +428,10 @@ public final class NewFunction2 implements Action
 
 		length += 2;
 
-		Iterator<Action> iAction = actions.iterator();
 		actionsLength = actions.isEmpty() ? 1:0;
 		
-		while (iAction.hasNext()) {
-			actionsLength += iAction.next().prepareToEncode(coder, context);
+		for (Action action : actions) {
+			actionsLength += action.prepareToEncode(coder, context);
 		}
 		
 		length += actionsLength;
@@ -458,10 +457,8 @@ public final class NewFunction2 implements Action
 
 		coder.writeWord(actionsLength, 2);
 
-		Iterator<Action> iAction = actions.iterator();
-		
-		while (iAction.hasNext()) {
-			iAction.next().encode(coder, context);
+		for (Action action : actions) {
+			action.encode(coder, context);
 		}
 		
 		if (actions.isEmpty()) {
