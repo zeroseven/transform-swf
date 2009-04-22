@@ -12,6 +12,7 @@ import com.flagstone.transform.ImageTag;
 import com.flagstone.transform.Movie;
 import com.flagstone.transform.Place2;
 import com.flagstone.transform.ShowFrame;
+import com.flagstone.transform.WebPalette;
 import com.flagstone.transform.shape.DefineShape3;
 import com.flagstone.transform.util.image.ImageFactory;
 
@@ -48,7 +49,7 @@ public class ImageTest
 
         movie.setFrameRate(1.0f);
         movie.setFrameSize(shape.getBounds());
-        movie.add(new Background(ColorTable.lightblue()));
+        movie.add(new Background(WebPalette.LIGHT_BLUE.color()));
         movie.add(image);
         movie.add(shape);
         movie.add(Place2.show(shape.getIdentifier(), 1, 0, 0));

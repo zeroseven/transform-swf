@@ -13,6 +13,7 @@ import com.flagstone.transform.ColorTable;
 import com.flagstone.transform.Movie;
 import com.flagstone.transform.MovieTag;
 import com.flagstone.transform.ShowFrame;
+import com.flagstone.transform.WebPalette;
 
 import static org.junit.Assert.fail;
 
@@ -45,7 +46,7 @@ public class StreamingSoundTest
 
         movie.setFrameSize(new Bounds(0, 0, 8000, 4000));
         movie.setFrameRate(framesPerSecond);
-        movie.add(new Background(ColorTable.lightblue()));
+        movie.add(new Background(WebPalette.LIGHT_BLUE.color()));
 
         movie.add(stream.remove(0));
 

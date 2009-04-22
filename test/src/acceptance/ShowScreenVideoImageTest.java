@@ -25,6 +25,7 @@ import com.flagstone.transform.Strings;
 import com.flagstone.transform.VideoFormat;
 import com.flagstone.transform.VideoFrame;
 import com.flagstone.transform.VideoFrameType;
+import com.flagstone.transform.WebPalette;
 import com.flagstone.transform.DefineVideo.Deblocking;
 import com.flagstone.transform.util.image.ImageDecoder;
 import com.flagstone.transform.util.image.ImageFactory;
@@ -89,7 +90,7 @@ public final class ShowScreenVideoImageTest
 	    
 	    movie.setFrameSize(new Bounds(0,0,screenWidth*20,screenHeight*20));
 	    movie.setFrameRate(4.0f);
-	    movie.add(new Background(ColorTable.aliceblue()));
+	    movie.add(new Background(WebPalette.ALICE_BLUE.color()));
 	                          
         movie.add(new DefineVideo(identifier, numberOfFrames, screenWidth, screenHeight, deblocking, smoothing, codec));     
         

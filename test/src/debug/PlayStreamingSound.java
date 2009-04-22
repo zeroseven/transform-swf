@@ -14,6 +14,7 @@ import com.flagstone.transform.ColorTable;
 import com.flagstone.transform.Movie;
 import com.flagstone.transform.MovieTag;
 import com.flagstone.transform.ShowFrame;
+import com.flagstone.transform.WebPalette;
 
 public final class PlayStreamingSound
 {
@@ -36,7 +37,7 @@ public final class PlayStreamingSound
             movie.setFrameSize(new Bounds(0, 0, 8000, 4000));
             movie.setFrameRate(framesPerSecond);
 
-            movie.add(new Background(ColorTable.lightblue()));
+            movie.add(new Background(WebPalette.LIGHT_BLUE.color()));
             movie.add(sound.remove(0));
 
             for (Iterator<MovieTag>i=sound.iterator(); i.hasNext();)

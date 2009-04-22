@@ -19,6 +19,7 @@ import com.flagstone.transform.ColorTable;
 import com.flagstone.transform.Movie;
 import com.flagstone.transform.Place2;
 import com.flagstone.transform.ShowFrame;
+import com.flagstone.transform.WebPalette;
 import com.flagstone.transform.font.DefineFont2;
 import com.flagstone.transform.text.DefineTextField;
 import com.flagstone.transform.util.font.Font;
@@ -106,11 +107,11 @@ public final class ShowTrueTypeFontTest
         text.setUseFontGlyphs(true);
         text.setFontIdentifier(font.getIdentifier());
         text.setFontHeight(fontSize);
-        text.setColor(ColorTable.black());
+        text.setColor(WebPalette.BLACK.color());
         
         movie.setFrameSize(new Bounds(0, 0, screenWidth, screenHeight));
         movie.setFrameRate(1.0f);
-        movie.add(new Background(ColorTable.lightblue()));
+        movie.add(new Background(WebPalette.LIGHT_BLUE.color()));
         movie.add(font);
         movie.add(text);
         movie.add(Place2.show(text.getIdentifier(), 1, margin , margin));

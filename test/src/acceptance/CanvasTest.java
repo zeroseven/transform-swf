@@ -8,6 +8,7 @@ import com.flagstone.transform.ColorTable;
 import com.flagstone.transform.Movie;
 import com.flagstone.transform.Place2;
 import com.flagstone.transform.ShowFrame;
+import com.flagstone.transform.WebPalette;
 import com.flagstone.transform.fillstyle.SolidFill;
 import com.flagstone.transform.linestyle.LineStyle;
 import com.flagstone.transform.shape.DefineShape2;
@@ -46,8 +47,8 @@ public final class CanvasTest
 	public void setup()
 	{
 		path.clear();
-        path.setLineStyle(new LineStyle(20, ColorTable.black()));
-        path.setFillStyle(new SolidFill(ColorTable.red()));
+        path.setLineStyle(new LineStyle(20, WebPalette.BLACK.color()));
+        path.setFillStyle(new SolidFill(WebPalette.RED.color()));
 	}
 	
 	@Test
@@ -113,7 +114,7 @@ public final class CanvasTest
 	        Movie movie = new Movie();
 	        movie.setFrameRate(1.0f);
 	        movie.setFrameSize(shape.getBounds());
-	        movie.add(new Background(ColorTable.lightblue()));
+	        movie.add(new Background(WebPalette.LIGHT_BLUE.color()));
 
 	        movie.add(shape);
 	        movie.add(Place2.show(shape.getIdentifier(), 1, 0, 0));

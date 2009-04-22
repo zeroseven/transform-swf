@@ -14,6 +14,7 @@ import com.flagstone.transform.ColorTable;
 import com.flagstone.transform.Movie;
 import com.flagstone.transform.Place2;
 import com.flagstone.transform.ShowFrame;
+import com.flagstone.transform.WebPalette;
 import com.flagstone.transform.font.DefineFont2;
 import com.flagstone.transform.linestyle.LineStyle;
 import com.flagstone.transform.text.DefineText2;
@@ -68,7 +69,7 @@ public final class DefineTextTest
         DefineFont2 definition = font.defineFont(fontId, set);
 
         movie.setFrameRate(1.0f);
-        movie.add(new Background(ColorTable.lightblue()));
+        movie.add(new Background(WebPalette.LIGHT_BLUE.color()));
         movie.add(definition);
 
         DefineText2 text = null; //TODO TextTable.defineText(movie.newIdentifier(), alphabet, definition, fontSize, ColorTable.black());
@@ -78,7 +79,7 @@ public final class DefineTextTest
         int shapeId = movie.newIdentifier();
 
         path.clear();
-        path.setLineStyle(new LineStyle(1, ColorTable.darkblue()));
+        path.setLineStyle(new LineStyle(1, WebPalette.DARK_BLUE.color()));
         path.rect(text.getBounds().getMinX(), text.getBounds().getMinY(),  textWidth, textHeight);
 
         movie.add(path.defineShape(shapeId));
@@ -122,7 +123,7 @@ public final class DefineTextTest
 
         movie.setFrameSize(new Bounds(0, 0, 0, 0));
         movie.setFrameRate(1.0f);
-        movie.add(new Background(ColorTable.lightblue()));
+        movie.add(new Background(WebPalette.LIGHT_BLUE.color()));
         movie.add(definition);
 
         for (int i=0; i<alphabet.length(); i++)
@@ -136,7 +137,7 @@ public final class DefineTextTest
             int shapeId = movie.newIdentifier();
 
             path.clear();
-            path.setLineStyle(new LineStyle(1, ColorTable.darkblue()));
+            path.setLineStyle(new LineStyle(1, WebPalette.DARK_BLUE.color()));
             path.rect(text.getBounds().getMinX(), text.getBounds().getMinY(), textWidth, textHeight);
 
             movie.add(path.defineShape(shapeId));

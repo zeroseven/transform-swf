@@ -12,6 +12,7 @@ import com.flagstone.transform.Bounds;
 import com.flagstone.transform.ColorTable;
 import com.flagstone.transform.Movie;
 import com.flagstone.transform.ShowFrame;
+import com.flagstone.transform.WebPalette;
 import com.flagstone.transform.sound.DefineSound;
 import com.flagstone.transform.sound.SoundInfo;
 import com.flagstone.transform.sound.StartSound;
@@ -37,7 +38,7 @@ public final class PlayEventSound
             movie.setFrameSize(new Bounds(0, 0, 8000, 4000));
             movie.setFrameRate(framesPerSecond);
 
-            movie.add(new Background(ColorTable.lightblue()));
+            movie.add(new Background(WebPalette.LIGHT_BLUE.color()));
 
             int soundId = movie.newIdentifier();
 

@@ -71,6 +71,20 @@ public final class Color implements Encodeable {
 		alpha = (context.isTransparent()) ? coder.readByte() : 255;
 	}
 
+	public Color(final int rgb) {
+		red = (rgb >>> 16) & 0x00FF;
+		green = (rgb >>> 8) & 0x00FF;
+		blue = rgb & 0x00FF;
+		alpha = 255;
+	}
+
+	public Color(final int rgb, int alpha) {
+		red = (rgb >>> 16) & 0x00FF;
+		green = (rgb >>> 8) & 0x00FF;
+		blue = rgb & 0x00FF;
+		this.alpha = alpha;
+	}
+
 	/**
 	 * Creates a Color object containing red, green and blue channels. The alpha
 	 * channel defaults to the value 255 - defining an opaque colour.

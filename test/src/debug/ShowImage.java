@@ -7,6 +7,7 @@ import com.flagstone.transform.ImageTag;
 import com.flagstone.transform.Movie;
 import com.flagstone.transform.Place2;
 import com.flagstone.transform.ShowFrame;
+import com.flagstone.transform.WebPalette;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.util.image.ImageFactory;
 
@@ -37,7 +38,7 @@ public final class ShowImage
             movie.setSignature("FWS");
             movie.setFrameSize(new Bounds(-screenWidth/2, -screenHeight/2, screenWidth/2, screenHeight/2));
 
-            movie.add(new Background(ColorTable.lightblue()));
+            movie.add(new Background(WebPalette.LIGHT_BLUE.color()));
             movie.add(image);
             movie.add(ImageFactory.defineEnclosingShape(shapeId, image, imageWidth/2, imageHeight/2, null));
             movie.add(Place2.show(shapeId, 1, 0, 0));

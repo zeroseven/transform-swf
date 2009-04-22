@@ -13,6 +13,7 @@ import com.flagstone.transform.ImageTag;
 import com.flagstone.transform.Movie;
 import com.flagstone.transform.Place2;
 import com.flagstone.transform.ShowFrame;
+import com.flagstone.transform.WebPalette;
 import com.flagstone.transform.linestyle.LineStyle;
 import com.flagstone.transform.shape.DefineShape3;
 import com.flagstone.transform.util.image.ImageFactory;
@@ -98,13 +99,13 @@ public final class ShowImageTest
         int xOrigin = (image).getWidth()/2;
         int yOrigin = (image).getHeight()/2;
 
-        LineStyle borderStyle = new LineStyle(20, ColorTable.black());
+        LineStyle borderStyle = new LineStyle(20, WebPalette.BLACK.color());
 
         DefineShape3 shape = ImageFactory.defineEnclosingShape(movie.newIdentifier(), image, -xOrigin, -yOrigin, borderStyle);
 
         movie.setFrameRate(1.0f);
         movie.setFrameSize(shape.getBounds());
-        movie.add(new Background(ColorTable.lightblue()));
+        movie.add(new Background(WebPalette.LIGHT_BLUE.color()));
         movie.add(image);
         movie.add(shape);
         movie.add(Place2.show(shape.getIdentifier(), 1, 0, 0));
