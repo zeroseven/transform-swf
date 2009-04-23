@@ -44,14 +44,14 @@ import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
 import com.flagstone.transform.coder.Action;
-import com.flagstone.transform.coder.ActionFactory;
+import com.flagstone.transform.coder.ActionDecoder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.DecoderRegistry;
 import com.flagstone.transform.coder.DefineTag;
 import com.flagstone.transform.coder.FillStyle;
-import com.flagstone.transform.coder.FillStyleFactory;
-import com.flagstone.transform.coder.MorphFillStyleFactory;
-import com.flagstone.transform.coder.MovieFactory;
+import com.flagstone.transform.coder.FillStyleDecoder;
+import com.flagstone.transform.coder.MorphFillStyleDecoder;
+import com.flagstone.transform.coder.MovieDecoder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -554,10 +554,10 @@ public final class Movie implements Cloneable
 		Context context = new Context();
 		
 		DecoderRegistry registry = new DecoderRegistry();
-		registry.setFillStyleDecoder(new FillStyleFactory());
-		registry.setMorphFillStyleDecoder(new MorphFillStyleFactory());
-		registry.setActionDecoder(new ActionFactory());
-		registry.setMovieDecoder(new MovieFactory());
+		registry.setFillStyleDecoder(new FillStyleDecoder());
+		registry.setMorphFillStyleDecoder(new MorphFillStyleDecoder());
+		registry.setActionDecoder(new ActionDecoder());
+		registry.setMovieDecoder(new MovieDecoder());
 		
 		context.setRegistry(registry);
 

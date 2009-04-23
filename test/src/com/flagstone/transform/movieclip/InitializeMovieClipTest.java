@@ -40,7 +40,7 @@ import static org.junit.Assert.assertArrayEquals;
 
 import com.flagstone.transform.action.BasicAction;
 import com.flagstone.transform.coder.Action;
-import com.flagstone.transform.coder.ActionFactory;
+import com.flagstone.transform.coder.ActionDecoder;
 import com.flagstone.transform.coder.ActionTypes;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
@@ -114,7 +114,7 @@ public final class InitializeMovieClipTest {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		Context context = new Context();
 		DecoderRegistry registry = new DecoderRegistry();
-		registry.setActionDecoder(new ActionFactory());
+		registry.setActionDecoder(new ActionDecoder());
 		context.setRegistry(registry);
 
 		context.getVariables().put(Context.DECODE_ACTIONS, 1);
@@ -132,7 +132,7 @@ public final class InitializeMovieClipTest {
 		Context context = new Context();
 		context.getVariables().put(Context.DECODE_ACTIONS, 1);
 		DecoderRegistry registry = new DecoderRegistry();
-		registry.setActionDecoder(new ActionFactory());
+		registry.setActionDecoder(new ActionDecoder());
 		context.setRegistry(registry);
 
 		fixture = new InitializeMovieClip(decoder, context);

@@ -6,7 +6,7 @@ import com.flagstone.transform.AudioData;
 import com.flagstone.transform.VideoData;
 import com.flagstone.transform.VideoMetaData;
 
-public final class VideoFactory implements FLVFactory<VideoTag> {
+public final class VideoDecoder implements FLVFactory<VideoTag> {
 
 	public VideoTag getObject(final FLVDecoder coder) throws CoderException {
 

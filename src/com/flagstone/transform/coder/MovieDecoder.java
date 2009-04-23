@@ -68,7 +68,7 @@ import com.flagstone.transform.text.DefineTextField;
  * instances of Transform classes.
  */
 @SuppressWarnings("PMD")
-public final class MovieFactory implements SWFFactory<MovieTag> {
+public final class MovieDecoder implements SWFFactory<MovieTag> {
 
 	public MovieTag getObject(final SWFDecoder coder, final Context context) throws CoderException {
 

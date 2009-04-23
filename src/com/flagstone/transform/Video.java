@@ -40,15 +40,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.DataFormatException;
 
-import com.flagstone.transform.coder.ActionFactory;
+import com.flagstone.transform.coder.ActionDecoder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.DecoderRegistry;
 import com.flagstone.transform.coder.FLVDecoder;
 import com.flagstone.transform.coder.FLVEncoder;
-import com.flagstone.transform.coder.FillStyleFactory;
-import com.flagstone.transform.coder.MorphFillStyleFactory;
-import com.flagstone.transform.coder.MovieFactory;
-import com.flagstone.transform.coder.VideoFactory;
+import com.flagstone.transform.coder.FillStyleDecoder;
+import com.flagstone.transform.coder.MorphFillStyleDecoder;
+import com.flagstone.transform.coder.MovieDecoder;
+import com.flagstone.transform.coder.VideoDecoder;
 import com.flagstone.transform.coder.VideoTag;
 import com.flagstone.transform.coder.VideoTypes;
 
@@ -241,7 +241,7 @@ public final class Video implements Cloneable
 
 		objects = new ArrayList<VideoTag>();
 			
-		VideoFactory decoder = new VideoFactory();
+		VideoDecoder decoder = new VideoDecoder();
 
 		do
 		{

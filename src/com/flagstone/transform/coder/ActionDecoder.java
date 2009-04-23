@@ -26,7 +26,7 @@ import com.flagstone.transform.action.With;
  * instances of Transform classes.
  */
 @SuppressWarnings("PMD")
-public final class ActionFactory implements SWFFactory<Action> {
+public final class ActionDecoder implements SWFFactory<Action> {
 
 	public Action getObject(final SWFDecoder coder, final Context context) throws CoderException {
 

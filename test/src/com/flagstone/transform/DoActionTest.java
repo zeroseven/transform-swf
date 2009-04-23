@@ -44,7 +44,7 @@ import com.flagstone.transform.DoAction;
 import com.flagstone.transform.action.ActionData;
 import com.flagstone.transform.action.BasicAction;
 import com.flagstone.transform.coder.Action;
-import com.flagstone.transform.coder.ActionFactory;
+import com.flagstone.transform.coder.ActionDecoder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.DecoderRegistry;
@@ -146,7 +146,7 @@ public final class DoActionTest {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		Context context = new Context();
 		DecoderRegistry registry = new DecoderRegistry();
-		registry.setActionDecoder(new ActionFactory());
+		registry.setActionDecoder(new ActionDecoder());
 		context.setRegistry(registry);
 
 		context.getVariables().put(Context.DECODE_ACTIONS, 1);
@@ -162,7 +162,7 @@ public final class DoActionTest {
 		SWFDecoder decoder = new SWFDecoder(extended);
 		Context context = new Context();
 		DecoderRegistry registry = new DecoderRegistry();
-		registry.setActionDecoder(new ActionFactory());
+		registry.setActionDecoder(new ActionDecoder());
 		context.setRegistry(registry);
 
 		context.getVariables().put(Context.DECODE_ACTIONS, 1);

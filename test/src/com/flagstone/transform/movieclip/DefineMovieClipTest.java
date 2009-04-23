@@ -39,11 +39,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 
 import com.flagstone.transform.ShowFrame;
-import com.flagstone.transform.coder.ActionFactory;
+import com.flagstone.transform.coder.ActionDecoder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.DecoderRegistry;
-import com.flagstone.transform.coder.MovieFactory;
+import com.flagstone.transform.coder.MovieDecoder;
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -113,7 +113,7 @@ public final class DefineMovieClipTest {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		Context context = new Context();
 		DecoderRegistry registry = new DecoderRegistry();
-		registry.setMovieDecoder(new MovieFactory());
+		registry.setMovieDecoder(new MovieDecoder());
 		context.setRegistry(registry);
 
 		fixture = new DefineMovieClip(decoder, context);
@@ -128,7 +128,7 @@ public final class DefineMovieClipTest {
 		SWFDecoder decoder = new SWFDecoder(extended);
 		Context context = new Context();
 		DecoderRegistry registry = new DecoderRegistry();
-		registry.setMovieDecoder(new MovieFactory());
+		registry.setMovieDecoder(new MovieDecoder());
 		context.setRegistry(registry);
 
 		fixture = new DefineMovieClip(decoder, context);
