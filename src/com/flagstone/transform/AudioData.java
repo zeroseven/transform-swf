@@ -33,6 +33,8 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.VideoTag;
+import com.flagstone.transform.coder.VideoTypes;
 
 /**
  * <p>AudioData is used to specify the audio track in Flash video files, defining

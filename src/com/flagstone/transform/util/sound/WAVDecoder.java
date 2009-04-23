@@ -44,10 +44,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.DataFormatException;
 
-import com.flagstone.transform.MovieTag;
 import com.flagstone.transform.SoundFormat;
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.LittleEndianDecoder;
+import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.sound.DefineSound;
 import com.flagstone.transform.sound.SoundStreamBlock;
 import com.flagstone.transform.sound.SoundStreamHead2;

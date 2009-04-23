@@ -38,13 +38,13 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 
-import com.flagstone.transform.MovieTag;
 import com.flagstone.transform.ShowFrame;
 import com.flagstone.transform.coder.ActionFactory;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.DecoderRegistry;
 import com.flagstone.transform.coder.MovieFactory;
+import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movieclip.DefineMovieClip;

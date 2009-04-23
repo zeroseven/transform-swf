@@ -30,8 +30,8 @@
 
 package com.flagstone.transform.filter;
 
-import com.flagstone.transform.Copyable;
-import com.flagstone.transform.Encodeable;
+import com.flagstone.transform.coder.Copyable;
+import com.flagstone.transform.coder.Encodeable;
 
 public interface Filter extends Encodeable, Copyable<Filter> {
 	int DROP_SHADOW = 0;

@@ -43,9 +43,9 @@ import java.net.URLConnection;
 import java.util.Arrays;
 import java.util.zip.DataFormatException;
 
-import com.flagstone.transform.ImageTag;
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.BigEndianDecoder;
+import com.flagstone.transform.coder.ImageTag;
 import com.flagstone.transform.image.DefineJPEGImage2;
 
 /**

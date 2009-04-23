@@ -39,10 +39,10 @@ import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Encoder;
 import com.flagstone.transform.coder.Context;
+import com.flagstone.transform.coder.FillStyle;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.coder.SWFFactory;
-import com.flagstone.transform.fillstyle.FillStyle;
 import com.flagstone.transform.linestyle.LineStyle;
 
 //TODO(doc) Review

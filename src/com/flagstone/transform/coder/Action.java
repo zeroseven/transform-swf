@@ -1,5 +1,5 @@
 /*
- * FillStyle.java
+ * Action.java
  * Transform
  * 
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
@@ -28,14 +28,13 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.flagstone.transform.fillstyle;
+package com.flagstone.transform.coder;
 
-import com.flagstone.transform.Copyable;
-import com.flagstone.transform.Encodeable;
+
 
 /**
- * The FillStyle interface identifies the fill styles that can be added to a 
- * shape.
+ * The Action interface is used to identify all the different types of actions
+ * that can be added to a movie.
  */
-public interface FillStyle extends Encodeable, Copyable<FillStyle> {
+public interface Action extends Encodeable, Copyable<Action> {
 }

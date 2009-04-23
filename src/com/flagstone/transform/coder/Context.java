@@ -1,11 +1,7 @@
 package com.flagstone.transform.coder;
 
-import java.nio.charset.Charset;
-import java.nio.charset.UnsupportedCharsetException;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
-import com.flagstone.transform.Strings;
 
 /**
  * Contexts are used to pass information between objects when they are being
@@ -29,40 +25,11 @@ public final class Context {
 	public final static int GLYPH_SIZE = 14;
 	public final static int SHAPE_SIZE = 15;
 
-	private String encoding;
 	private DecoderRegistry registry;
 	private Map<Integer,Integer>variables;
 	
 	public Context() {
 		variables = new LinkedHashMap<Integer,Integer>();
-	}
-	
-	/**
-	 * Returns character encoding scheme used when encoding or decoding strings.
-	 */
-	public String getEncoding() {
-		return encoding;
-	}
-
-	/**
-	 * Sets the character encoding scheme used when encoding or decoding
-	 * strings.
-	 * 
-	 * If the character set encoding is not supported by the Java environment
-	 * then an UnsupportedCharsetException will be thrown. If the character 
-	 * set cannot be identified then an IllegalCharsetNameException will be 
-	 * thrown.
-	 * 
-	 * @param charSet
-	 *            the name of the character set used to encode strings.   
-	 */
-	public void setEncoding(final String charSet) 
-	{
-		if (!Charset.isSupported(charSet)) {
-			throw new UnsupportedCharsetException(
-					String.format(Strings.UNSUPPORTED_ENCODING, charSet));
-		}
-		encoding = charSet;
 	}
 	
 	public DecoderRegistry getRegistry() {

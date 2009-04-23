@@ -12,9 +12,9 @@ import com.flagstone.transform.Background;
 import com.flagstone.transform.Bounds;
 import com.flagstone.transform.ColorTable;
 import com.flagstone.transform.Movie;
-import com.flagstone.transform.MovieTag;
 import com.flagstone.transform.ShowFrame;
 import com.flagstone.transform.WebPalette;
+import com.flagstone.transform.coder.MovieTag;
 
 import org.junit.Test;
 

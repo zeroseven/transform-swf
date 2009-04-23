@@ -45,9 +45,9 @@ import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
-import com.flagstone.transform.ImageTag;
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.BigEndianDecoder;
+import com.flagstone.transform.coder.ImageTag;
 import com.flagstone.transform.image.DefineImage;
 import com.flagstone.transform.image.DefineImage2;
 

@@ -36,8 +36,8 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 
-import com.flagstone.transform.action.ActionTypes;
 import com.flagstone.transform.action.GetUrl;
+import com.flagstone.transform.coder.ActionTypes;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;

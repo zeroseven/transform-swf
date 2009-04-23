@@ -33,6 +33,8 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.VideoTag;
+import com.flagstone.transform.coder.VideoTypes;
 
 /**
  * The VideoMetaData class is used to store information on how the video

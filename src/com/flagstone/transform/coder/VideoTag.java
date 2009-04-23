@@ -1,8 +1,8 @@
 /*
- * DefineTag.java
+ * VideoObject.java
  * Transform
- * 
- * Copyright (c) 2009 Flagstone Software Ltd. All rights reserved.
+ *
+ * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
  * are permitted provided that the following conditions are met:
@@ -27,24 +27,24 @@
  * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package com.flagstone.transform.coder;
 
-package com.flagstone.transform;
+
+
+
 
 /**
- * The DefineTag interface is used to identify object that are used to add
- * definitions for shapes, images, sounds ,etc. to a Flash file.
+ * The VideoObject is the root class for objects that represent each of the
+ * tagged data structures that make up the Flash Video file format 
+ * specification.
+ * 
+ * <p>Each of the major data structures defined in the Flash Video (flv) file 
+ * format specification starts with a header that contains the type identifying 
+ * the data structure followed by the number of bytes that the body of the 
+ * encoded data structure occupies in the file. A timestamp at which the audio
+ * or video data will be played is also included. The VideoObject manages the 
+ * encoding and decoding of this header information.</p>
  */
-public interface DefineTag extends MovieTag {	
-	/**
-	 * Returns the unique identifier assigned to this object.
-	 */
-	int getIdentifier();
-	/**
-	 * Sets the unique identifier for an object within a given Movie.
-	 * 
-	 * @param uid
-	 *            a unique identifier for the object. Must be in the range
-	 *            1..65535.
-	 */
-	void setIdentifier(final int uid);
+public interface VideoTag extends Codeable, Copyable<VideoTag>
+{
 }

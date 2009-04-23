@@ -1,8 +1,8 @@
 /*
- * Copyable.java
+ * MovieTag.java
  * Transform
  * 
- * Copyright (c) 2009 Flagstone Software Ltd. All rights reserved.
+ * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
  * are permitted provided that the following conditions are met:
@@ -28,16 +28,14 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.flagstone.transform;
+package com.flagstone.transform.coder;
+
+
+
 
 /**
- * The Copyable interface is used to identify classes whose instances can create
- * copies of themselves.
- * 
- * @param <T>
- *            The class to create copies for.
+ * The MovieTag interface is used to identify all the objects that can be added
+ * to a Movie.
  */
-public interface Copyable<T> {
-	/** Returns a complete copy of this object. */
-	T copy();
+public interface MovieTag extends Encodeable, Copyable<MovieTag> {
 }

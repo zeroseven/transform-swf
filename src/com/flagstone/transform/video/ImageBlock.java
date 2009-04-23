@@ -2,8 +2,8 @@ package com.flagstone.transform.video;
 
 import java.util.Arrays;
 
-import com.flagstone.transform.Copyable;
 import com.flagstone.transform.DefineVideo;
+import com.flagstone.transform.coder.Copyable;
 
 /**
  * ImageBlock is used to sub-divide an image into a set of blocks so they can 

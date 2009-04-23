@@ -7,7 +7,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.zip.DataFormatException;
 
-import com.flagstone.transform.MovieTag;
+import com.flagstone.transform.coder.MovieTag;
 
 /**
  * SoundDecoder is an interface that classes used to decode different sound

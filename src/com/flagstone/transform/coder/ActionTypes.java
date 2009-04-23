@@ -28,7 +28,7 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.flagstone.transform.action;
+package com.flagstone.transform.coder;
 
 /**
  * The ActionTypes interface defines constants for all the different types of 

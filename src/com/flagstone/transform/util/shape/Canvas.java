@@ -35,7 +35,7 @@ import java.util.List;
 
 import com.flagstone.transform.Bounds;
 import com.flagstone.transform.Movie;
-import com.flagstone.transform.fillstyle.FillStyle;
+import com.flagstone.transform.coder.FillStyle;
 import com.flagstone.transform.linestyle.LineStyle;
 import com.flagstone.transform.shape.Curve;
 import com.flagstone.transform.shape.DefineShape2;

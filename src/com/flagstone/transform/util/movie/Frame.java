@@ -33,15 +33,15 @@ package com.flagstone.transform.util.movie;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.flagstone.transform.DefineTag;
 import com.flagstone.transform.DoAction;
 import com.flagstone.transform.FrameLabel;
 import com.flagstone.transform.Movie;
-import com.flagstone.transform.MovieTag;
 import com.flagstone.transform.ShowFrame;
 import com.flagstone.transform.Strings;
-import com.flagstone.transform.action.Action;
+import com.flagstone.transform.coder.Action;
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.DefineTag;
+import com.flagstone.transform.coder.MovieTag;
 
 /**
  * <p>The Frame class is used to provide a higher level view of a movie. Rather

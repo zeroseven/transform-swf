@@ -31,8 +31,8 @@ package com.flagstone.transform.action;
 
 import org.junit.Test;
 
-import com.flagstone.transform.action.ActionTypes;
 import com.flagstone.transform.action.BasicAction;
+import com.flagstone.transform.coder.ActionTypes;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFEncoder;

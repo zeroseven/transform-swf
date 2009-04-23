@@ -16,8 +16,6 @@ import com.flagstone.transform.Import2;
 import com.flagstone.transform.LimitScript;
 import com.flagstone.transform.MovieMetaData;
 import com.flagstone.transform.MovieObject;
-import com.flagstone.transform.MovieTag;
-import com.flagstone.transform.MovieTypes;
 import com.flagstone.transform.Place;
 import com.flagstone.transform.Place2;
 import com.flagstone.transform.Place3;

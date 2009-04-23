@@ -31,10 +31,10 @@
 package com.flagstone.transform.linestyle;
 
 import com.flagstone.transform.Color;
-import com.flagstone.transform.Encodeable;
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
+import com.flagstone.transform.coder.Encodeable;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.shape.DefineMorphShape;

@@ -43,18 +43,20 @@ import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
-import com.flagstone.transform.action.Action;
+import com.flagstone.transform.coder.Action;
 import com.flagstone.transform.coder.ActionFactory;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.DecoderRegistry;
+import com.flagstone.transform.coder.DefineTag;
+import com.flagstone.transform.coder.FillStyle;
 import com.flagstone.transform.coder.FillStyleFactory;
 import com.flagstone.transform.coder.MorphFillStyleFactory;
 import com.flagstone.transform.coder.MovieFactory;
 import com.flagstone.transform.coder.Context;
+import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.coder.SWFFactory;
-import com.flagstone.transform.fillstyle.FillStyle;
 
 /**
  * //TODO(doc) Review
@@ -567,7 +569,7 @@ public final class Movie implements Cloneable
 		
 		objects.clear();
 
-		context.setEncoding(encoding);
+		coder.setEncoding(encoding);
 		
 		signature = coder.readString(3, "UTF-8");
 		version = coder.readByte();

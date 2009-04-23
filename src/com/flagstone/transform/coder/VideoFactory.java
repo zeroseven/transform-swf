@@ -5,8 +5,6 @@ import java.nio.ByteBuffer;
 import com.flagstone.transform.AudioData;
 import com.flagstone.transform.VideoData;
 import com.flagstone.transform.VideoMetaData;
-import com.flagstone.transform.VideoTag;
-import com.flagstone.transform.VideoTypes;
 
 public final class VideoFactory implements FLVFactory<VideoTag> {
 

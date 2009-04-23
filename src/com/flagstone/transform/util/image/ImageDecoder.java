@@ -36,7 +36,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.zip.DataFormatException;
 
-import com.flagstone.transform.ImageTag;
+import com.flagstone.transform.coder.ImageTag;
 
 public interface ImageDecoder
 {

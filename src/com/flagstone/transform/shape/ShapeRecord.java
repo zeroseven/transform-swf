@@ -30,8 +30,8 @@
 
 package com.flagstone.transform.shape;
 
-import com.flagstone.transform.Copyable;
-import com.flagstone.transform.Encodeable;
+import com.flagstone.transform.coder.Copyable;
+import com.flagstone.transform.coder.Encodeable;
 
 //TODO(doc)
 public interface ShapeRecord extends Encodeable, Copyable<ShapeRecord> {

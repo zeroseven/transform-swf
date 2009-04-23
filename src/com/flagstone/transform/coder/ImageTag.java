@@ -1,8 +1,8 @@
 /*
- * Codeable.java
+ * ImageTag.java
  * Transform
  * 
- * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
+ * Copyright (c) 2009 Flagstone Software Ltd. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
  * are permitted provided that the following conditions are met:
@@ -28,44 +28,20 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.flagstone.transform;
+package com.flagstone.transform.coder;
 
-import java.nio.ByteBuffer;
-
-import com.flagstone.transform.coder.CoderException;
 
 /**
- * <p>The Codeable interfaces defines the set of methods that all classes must 
- * implement in order to be encoded and decoded from Flash Video (FLV) files.</p>
+ * The ImageTag interface is implemented by all classes that define images in
+ * a movie.
  */
-public interface Codeable
-{   
+public interface ImageTag extends DefineTag {
 	/**
-	 * Prepare an object for encoding, returning the length in bytes of an 
-	 * object when it is encoded. 
-	 * 
-	 * This method on all objects to be encoded is called before they are 
-	 * encoded. In addition to calculating the size of buffer to be allocated
-	 * this method also used to initialise variables, such as offsets and flags 
-	 * that will be used when the object is encoded. This allows the encoding 
-	 * process to take place in a single pass and avoids having to re-allocate
-	 * memory.
-	 * 
-	 * @param context an Context that allows information to be passed between 
-	 * objects to control how they are initialised for encoding.
-	 * 
-	 * @return the length in bytes of the object when it is encoded.
+	 * Returns the width of an image in pixels.
 	 */
-	int prepareToEncode();
-
+	int getWidth();
 	/**
-	 * Encode an object to the binary format used in Flash files.
-	 * 
-	 * @param coder an Encoder object that is used to encode the object to its
-	 * binary form.
-	 * 
-	 * @param context an Context that allows information to be passed between 
-	 * objects to control how they are encoded.
+	 * Returns the height of an image in pixels.
 	 */
-	void encode(ByteBuffer coder) throws CoderException;
+    int getHeight();
 }

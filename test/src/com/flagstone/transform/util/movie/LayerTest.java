@@ -36,11 +36,11 @@ import com.flagstone.transform.Bounds;
 import com.flagstone.transform.ColorTransform;
 import com.flagstone.transform.CoordTransform;
 import com.flagstone.transform.Movie;
-import com.flagstone.transform.MovieTag;
 import com.flagstone.transform.Place2;
 import com.flagstone.transform.Placement;
 import com.flagstone.transform.Remove2;
 import com.flagstone.transform.ShowFrame;
+import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.text.DefineTextField;
 import com.flagstone.transform.util.movie.Layer;
 

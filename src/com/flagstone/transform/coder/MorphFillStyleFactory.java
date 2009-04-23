@@ -1,6 +1,5 @@
 package com.flagstone.transform.coder;
 
-import com.flagstone.transform.fillstyle.FillStyle;
 import com.flagstone.transform.fillstyle.MorphBitmapFill;
 import com.flagstone.transform.fillstyle.MorphGradientFill;
 import com.flagstone.transform.fillstyle.MorphSolidFill;

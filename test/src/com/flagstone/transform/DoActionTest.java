@@ -41,9 +41,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 
 import com.flagstone.transform.DoAction;
-import com.flagstone.transform.action.Action;
 import com.flagstone.transform.action.ActionData;
 import com.flagstone.transform.action.BasicAction;
+import com.flagstone.transform.coder.Action;
 import com.flagstone.transform.coder.ActionFactory;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;

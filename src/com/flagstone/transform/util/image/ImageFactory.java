@@ -47,11 +47,11 @@ import java.util.zip.Deflater;
 
 import com.flagstone.transform.Bounds;
 import com.flagstone.transform.CoordTransform;
-import com.flagstone.transform.ImageTag;
 import com.flagstone.transform.Movie;
 import com.flagstone.transform.Strings;
+import com.flagstone.transform.coder.FillStyle;
+import com.flagstone.transform.coder.ImageTag;
 import com.flagstone.transform.fillstyle.BitmapFill;
-import com.flagstone.transform.fillstyle.FillStyle;
 import com.flagstone.transform.linestyle.LineStyle;
 import com.flagstone.transform.shape.DefineShape3;
 import com.flagstone.transform.shape.Line;

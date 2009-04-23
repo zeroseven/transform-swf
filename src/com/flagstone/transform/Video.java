@@ -40,6 +40,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.DataFormatException;
 
+import com.flagstone.transform.coder.VideoTag;
+import com.flagstone.transform.coder.VideoTypes;
+
 
 
 /**

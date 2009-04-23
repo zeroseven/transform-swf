@@ -28,7 +28,7 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.flagstone.transform;
+package com.flagstone.transform.coder;
 
 /**
  * The MovieTypes interface defines constants for all the different types of 

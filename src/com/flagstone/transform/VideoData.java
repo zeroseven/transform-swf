@@ -33,6 +33,8 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.VideoTag;
+import com.flagstone.transform.coder.VideoTypes;
 
 /**
  * The VideoData class is used to store the data for a single frame in a Flash

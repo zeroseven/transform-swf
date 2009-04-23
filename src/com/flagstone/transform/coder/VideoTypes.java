@@ -1,7 +1,7 @@
 /*
- * MovieTag.java
+ * VideoObject.java
  * Transform
- * 
+ *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -27,14 +27,20 @@
  * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package com.flagstone.transform.coder;
 
-package com.flagstone.transform;
-
-
-
-/**
- * The MovieTag interface is used to identify all the objects that can be added
- * to a Movie.
- */
-public interface MovieTag extends Encodeable, Copyable<MovieTag> {
+public interface VideoTypes
+{
+	/** 
+	 * The type for creating objects containing the audio track for a video.
+	 */
+	int AUDIO_DATA = 8;
+	/** 
+	 * The type for creating objects containing the video.
+	 */
+	int VIDEO_DATA = 9;
+	/** 
+	 * The type for creating objects containing the meta-data describing a video.
+	 */
+	int META_DATA = 18;
 }

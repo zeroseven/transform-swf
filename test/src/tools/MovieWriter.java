@@ -6,7 +6,7 @@ import java.io.PrintWriter;
 import java.io.Writer;
 
 import com.flagstone.transform.Movie;
-import com.flagstone.transform.MovieTag;
+import com.flagstone.transform.coder.MovieTag;
 
 public class MovieWriter {
 

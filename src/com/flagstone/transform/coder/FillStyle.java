@@ -1,7 +1,7 @@
 /*
- * VideoObject.java
+ * FillStyle.java
  * Transform
- *
+ * 
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -27,20 +27,13 @@
  * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.flagstone.transform;
 
-public interface VideoTypes
-{
-	/** 
-	 * The type for creating objects containing the audio track for a video.
-	 */
-	int AUDIO_DATA = 8;
-	/** 
-	 * The type for creating objects containing the video.
-	 */
-	int VIDEO_DATA = 9;
-	/** 
-	 * The type for creating objects containing the meta-data describing a video.
-	 */
-	int META_DATA = 18;
+package com.flagstone.transform.coder;
+
+
+/**
+ * The FillStyle interface identifies the fill styles that can be added to a 
+ * shape.
+ */
+public interface FillStyle extends Encodeable, Copyable<FillStyle> {
 }

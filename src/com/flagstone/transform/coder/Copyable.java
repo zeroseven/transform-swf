@@ -1,8 +1,8 @@
 /*
- * Action.java
+ * Copyable.java
  * Transform
  * 
- * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
+ * Copyright (c) 2009 Flagstone Software Ltd. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
  * are permitted provided that the following conditions are met:
@@ -28,15 +28,16 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.flagstone.transform.action;
-
-import com.flagstone.transform.Copyable;
-import com.flagstone.transform.Encodeable;
-
+package com.flagstone.transform.coder;
 
 /**
- * The Action interface is used to identify all the different types of actions
- * that can be added to a movie.
+ * The Copyable interface is used to identify classes whose instances can create
+ * copies of themselves.
+ * 
+ * @param <T>
+ *            The class to create copies for.
  */
-public interface Action extends Encodeable, Copyable<Action> {
+public interface Copyable<T> {
+	/** Returns a complete copy of this object. */
+	T copy();
 }

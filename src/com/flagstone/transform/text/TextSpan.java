@@ -35,10 +35,10 @@ import java.util.List;
 import java.util.Map;
 
 import com.flagstone.transform.Color;
-import com.flagstone.transform.Encodeable;
 import com.flagstone.transform.Movie;
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.Encodeable;
 import com.flagstone.transform.coder.Encoder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;

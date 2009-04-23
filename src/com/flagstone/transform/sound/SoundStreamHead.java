@@ -30,12 +30,12 @@
 
 package com.flagstone.transform.sound;
 
-import com.flagstone.transform.MovieTag;
-import com.flagstone.transform.MovieTypes;
 import com.flagstone.transform.SoundFormat;
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
+import com.flagstone.transform.coder.MovieTag;
+import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
