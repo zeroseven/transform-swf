@@ -33,7 +33,7 @@ import org.junit.Test;
 
 import com.flagstone.transform.MovieData;
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -70,7 +70,7 @@ public final class MovieDataTest {
 	public void encode() throws CoderException {
 
 		SWFEncoder encoder = new SWFEncoder(encoded.length);
-		SWFContext context = new SWFContext();
+		Context context = new Context();
 		
 		fixture = new MovieData(data);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));		

@@ -33,7 +33,7 @@ package com.flagstone.transform.fillstyle;
 import com.flagstone.transform.CoordTransform;
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.shape.DefineMorphShape;
@@ -92,7 +92,7 @@ public final class MorphBitmapFill implements FillStyle {
 	private CoordTransform endTransform;
 
 	//TODO(doc)
-	public MorphBitmapFill(final SWFDecoder coder, final SWFContext context) throws CoderException {
+	public MorphBitmapFill(final SWFDecoder coder, final Context context) throws CoderException {
 		type = coder.readByte();
 		identifier = coder.readWord(2, false);
 		startTransform = new CoordTransform(coder);
@@ -235,11 +235,11 @@ public final class MorphBitmapFill implements FillStyle {
 		return String.format(FORMAT, identifier, startTransform, endTransform);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final SWFContext context) {
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		return 3 + startTransform.prepareToEncode(coder, context) + endTransform.prepareToEncode(coder, context);
 	}
 
-	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException {
+	public void encode(final SWFEncoder coder, final Context context) throws CoderException {
 		coder.writeByte(type);
 		coder.writeWord(identifier, 2);
 		startTransform.encode(coder, context);

@@ -32,11 +32,12 @@ package com.flagstone.transform.shape;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.flagstone.transform.Encodeable;
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.font.DefineFont;
@@ -73,14 +74,15 @@ public final class Shape implements Encodeable
 	}
 
 	//TODO(doc)
-	public Shape(final SWFDecoder coder, final SWFContext context) throws CoderException
+	public Shape(final SWFDecoder coder, final Context context) throws CoderException
 	{
 		objects = new ArrayList<ShapeRecord>();
 
-		if (context.isDecodeShapes())
+		Map<Integer,Integer>vars = context.getVariables();
+		if (vars.containsKey(Context.DECODE_SHAPES))
 		{
-			context.setFillSize(coder.readBits(4, false));
-			context.setLineSize(coder.readBits(4, false));
+			vars.put(Context.FILL_SIZE, coder.readBits(4, false));
+			vars.put(Context.LINE_SIZE,coder.readBits(4, false));
 
 			int type;
 			ShapeRecord shape;
@@ -114,15 +116,16 @@ public final class Shape implements Encodeable
 	}
 
 	//TODO(doc)
-	public Shape(int length, final SWFDecoder coder, SWFContext context) throws CoderException
+	public Shape(int length, final SWFDecoder coder, Context context) throws CoderException
 	{
 		this.length = length;
 		objects = new ArrayList<ShapeRecord>();
 
-		if (context.isDecodeShapes())
+		Map<Integer,Integer>vars = context.getVariables();
+		if (vars.containsKey(Context.DECODE_SHAPES))
 		{
-			context.setFillSize(coder.readBits(4, false));
-			context.setLineSize(coder.readBits(4, false));
+			vars.put(Context.FILL_SIZE, coder.readBits(4, false));
+			vars.put(Context.LINE_SIZE,coder.readBits(4, false));
 
 			int type;
 			ShapeRecord shape;
@@ -231,11 +234,11 @@ public final class Shape implements Encodeable
 		return String.format(FORMAT, objects);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
+	public int prepareToEncode(final SWFEncoder coder, final Context context)
 	{
 		int numberOfBits = 0;
 
-		context.setShapeSize(numberOfBits);
+		context.getVariables().put(Context.SHAPE_SIZE, numberOfBits);
 
 		numberOfBits += 8;
 
@@ -250,10 +253,11 @@ public final class Shape implements Encodeable
 		return numberOfBits >> 3;
 	}
 
-	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
+	public void encode(final SWFEncoder coder, final Context context) throws CoderException
 	{
-		coder.writeBits(context.getFillSize(), 4);
-		coder.writeBits(context.getLineSize(), 4);
+		Map<Integer,Integer> vars = context.getVariables();
+		coder.writeBits(vars.get(Context.FILL_SIZE), 4);
+		coder.writeBits(vars.get(Context.LINE_SIZE), 4);
 
 		for (ShapeRecord record : objects) {
 			record.encode(coder, context);

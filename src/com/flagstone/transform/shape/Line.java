@@ -30,10 +30,12 @@
 
 package com.flagstone.transform.shape;
 
+import java.util.Map;
+
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Encoder;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.linestyle.LineStyle;
@@ -66,7 +68,7 @@ public final class Line implements ShapeRecord
 
 	//TODO(doc)
 	//TODO(optimise)
-	public Line(final SWFDecoder coder, final SWFContext context) throws CoderException
+	public Line(final SWFDecoder coder, final Context context) throws CoderException
 	{
 		coder.adjustPointer(2); // shape and edge
 
@@ -161,7 +163,7 @@ public final class Line implements ShapeRecord
 		return String.format(FORMAT, xCoord, yCoord);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
+	public int prepareToEncode(final SWFEncoder coder, final Context context)
 	{
 		vertical = xCoord == 0;
 		general = xCoord != 0 && yCoord != 0;
@@ -176,12 +178,13 @@ public final class Line implements ShapeRecord
 			numberOfBits += 1 + size;
 		}
 
-		context.setShapeSize(context.getShapeSize()+numberOfBits);
+		Map<Integer,Integer> vars = context.getVariables();
+		vars.put(Context.SHAPE_SIZE, vars.get(Context.SHAPE_SIZE)+numberOfBits);
 		
 		return numberOfBits;
 	}
 
-	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
+	public void encode(final SWFEncoder coder, final Context context) throws CoderException
 	{
 		coder.writeBits(3, 2);
 		coder.writeBits(size - 2, 4);

@@ -40,7 +40,7 @@ import static org.junit.Assert.assertArrayEquals;
 
 import com.flagstone.transform.Color;
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.linestyle.MorphLineStyle2;
@@ -76,8 +76,8 @@ public final class MorphLineStyle2Test {
 	@Test @Ignore
 	public void encode() throws CoderException {		
 		SWFEncoder encoder = new SWFEncoder(encoded.length);		
-		SWFContext context = new SWFContext();
-		context.setTransparent(true);
+		Context context = new Context();
+		context.getVariables().put(Context.TRANSPARENT, 1);
 		
 		fixture = new MorphLineStyle2(startWidth, endWidth, startColor, endColor);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
@@ -90,8 +90,8 @@ public final class MorphLineStyle2Test {
 	@Test @Ignore
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
-		SWFContext context = new SWFContext();
-		context.setTransparent(true);
+		Context context = new Context();
+		context.getVariables().put(Context.TRANSPARENT, 1);
 		
 		fixture = new MorphLineStyle2(decoder, context);
 		

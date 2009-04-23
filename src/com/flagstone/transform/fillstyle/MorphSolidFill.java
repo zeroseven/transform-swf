@@ -33,7 +33,7 @@ package com.flagstone.transform.fillstyle;
 import com.flagstone.transform.Color;
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.shape.DefineMorphShape;
@@ -53,7 +53,7 @@ public final class MorphSolidFill implements FillStyle {
 	private Color endColor;
 
 	//TODO(doc)
-	public MorphSolidFill(final SWFDecoder coder, final SWFContext context) throws CoderException {
+	public MorphSolidFill(final SWFDecoder coder, final Context context) throws CoderException {
 		coder.adjustPointer(8);
 		startColor = new Color(coder, context);
 		endColor = new Color(coder, context);
@@ -128,13 +128,13 @@ public final class MorphSolidFill implements FillStyle {
 		return String.format(FORMAT, startColor, endColor);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final SWFContext context) {
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		//TODO(optimise) calculate size of colors directly
 		return 1 + startColor.prepareToEncode(coder, context)
 				+ endColor.prepareToEncode(coder, context);
 	}
 
-	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException {
+	public void encode(final SWFEncoder coder, final Context context) throws CoderException {
 		coder.writeByte(0);
 		startColor.encode(coder, context);
 		endColor.encode(coder, context);

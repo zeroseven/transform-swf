@@ -32,7 +32,7 @@ package com.flagstone.transform.font;
 
 import com.flagstone.transform.Encodeable;
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -42,7 +42,7 @@ public final class AlignmentZone implements Encodeable
 	private float coordinate;
 	private float range;
 
-	public AlignmentZone(SWFDecoder coder, SWFContext context)
+	public AlignmentZone(SWFDecoder coder, Context context)
 	{
 	}
 
@@ -90,16 +90,16 @@ public final class AlignmentZone implements Encodeable
 		return (Float.floatToIntBits(coordinate)*31) + Float.floatToIntBits(range);
 	}
 	
-	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
+	public int prepareToEncode(final SWFEncoder coder, final Context context)
 	{
 		return 0;
 	}
 
-	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
+	public void encode(final SWFEncoder coder, final Context context) throws CoderException
 	{
 	}
 
-	public void decode(final SWFDecoder coder, final SWFContext context) throws CoderException
+	public void decode(final SWFDecoder coder, final Context context) throws CoderException
 	{
 	}
 }

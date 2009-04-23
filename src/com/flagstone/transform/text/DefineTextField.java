@@ -40,7 +40,7 @@ import com.flagstone.transform.Movie;
 import com.flagstone.transform.MovieTypes;
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -287,7 +287,7 @@ public final class DefineTextField implements DefineTag
 
 	//TODO(doc)
 	//TODO(optimise)
-	public DefineTextField(final SWFDecoder coder, final SWFContext context) throws CoderException
+	public DefineTextField(final SWFDecoder coder, final Context context) throws CoderException
 	{
 		start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
@@ -298,7 +298,8 @@ public final class DefineTextField implements DefineTag
 		end = coder.getPointer() + (length << 3);
 
 		identifier = coder.readWord(2, true);
-		context.setTransparent(true);
+		Map<Integer,Integer>vars = context.getVariables();
+		vars.put(Context.TRANSPARENT, 1);
 
 		bounds = new Bounds(coder);
 
@@ -352,7 +353,7 @@ public final class DefineTextField implements DefineTag
 			initialText = coder.readString();
 		}
 
-		context.setTransparent(false);
+		vars.remove(Context.TRANSPARENT);
 
 		if (coder.getPointer() != end) {
 			throw new CoderException(getClass().getName(), start >> 3, length,
@@ -948,9 +949,10 @@ public final class DefineTextField implements DefineTag
 		return String.format("", identifier, bounds, wordWrapped, multiline);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
+	public int prepareToEncode(final SWFEncoder coder, final Context context)
 	{
-		context.setTransparent(true);
+		Map<Integer,Integer>vars = context.getVariables();
+		vars.put(Context.TRANSPARENT, 1);
 
 		length = 2 + bounds.prepareToEncode(coder, context);
 		length += 2;
@@ -962,12 +964,12 @@ public final class DefineTextField implements DefineTag
 		length += coder.strlen(variableName);
 		length += (initialText.length() > 0) ? coder.strlen(initialText) : 0;
 
-		context.setTransparent(false);
+		vars.remove(Context.TRANSPARENT);
 
 		return (length > 62 ? 6:2) + length;
 	}
 
-	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
+	public void encode(final SWFEncoder coder, final Context context) throws CoderException
 	{
 		start = coder.getPointer();
 
@@ -980,7 +982,8 @@ public final class DefineTextField implements DefineTag
 		end = coder.getPointer() + (length << 3);
 
 		coder.writeWord(identifier, 2);
-		context.setTransparent(true);
+		Map<Integer,Integer>vars = context.getVariables();
+		vars.put(Context.TRANSPARENT, 1);
 
 		bounds.encode(coder, context);
 		coder.writeBits(initialText.length() > 0 ? 1 : 0, 1);
@@ -1030,7 +1033,7 @@ public final class DefineTextField implements DefineTag
 		{
 			coder.writeString(initialText);
 		}
-		context.setTransparent(false);
+		vars.remove(Context.TRANSPARENT);
 
 		if (coder.getPointer() != end) {
 			throw new CoderException(getClass().getName(), start >> 3, length,

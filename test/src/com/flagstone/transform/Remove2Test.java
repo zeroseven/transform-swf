@@ -38,7 +38,7 @@ import static org.junit.Assert.assertArrayEquals;
 
 import com.flagstone.transform.Remove2;
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -84,7 +84,7 @@ public final class Remove2Test {
 	@Test
 	public void encode() throws CoderException {		
 		SWFEncoder encoder = new SWFEncoder(encoded.length);		
-		SWFContext context = new SWFContext();
+		Context context = new Context();
 
 		fixture = new Remove2(layer);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
@@ -97,7 +97,7 @@ public final class Remove2Test {
 	@Test
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
-		SWFContext context = new SWFContext();
+		Context context = new Context();
 
 		fixture = new Remove2(decoder, context);
 		
@@ -108,7 +108,7 @@ public final class Remove2Test {
 	@Test
 	public void decodeExtended() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(extended);
-		SWFContext context = new SWFContext();
+		Context context = new Context();
 
 		fixture = new Remove2(decoder, context);
 		

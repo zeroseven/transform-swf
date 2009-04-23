@@ -32,7 +32,7 @@ package com.flagstone.transform.action;
 
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -68,7 +68,7 @@ public final class RegisterCopy implements Action
 	private int registerNumber;
 
 	//TODO(doc)
-	public RegisterCopy(final SWFDecoder coder, final SWFContext context) throws CoderException
+	public RegisterCopy(final SWFDecoder coder, final Context context) throws CoderException
 	{
 		coder.readByte();
 		coder.readWord(2, false);
@@ -127,19 +127,19 @@ public final class RegisterCopy implements Action
 		return String.format(FORMAT, registerNumber);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
+	public int prepareToEncode(final SWFEncoder coder, final Context context)
 	{
 		return 4;
 	}
 
-	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
+	public void encode(final SWFEncoder coder, final Context context) throws CoderException
 	{
 		coder.writeByte(ActionTypes.REGISTER_COPY);
 		coder.writeWord(2, 2);
 		coder.writeWord(registerNumber, 1);
 	}
 
-	public void decode(final SWFDecoder coder, final SWFContext context) throws CoderException
+	public void decode(final SWFDecoder coder, final Context context) throws CoderException
 	{
 		coder.readByte();
 		coder.readWord(2, false);

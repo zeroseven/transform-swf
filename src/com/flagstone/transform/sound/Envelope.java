@@ -38,7 +38,7 @@ import java.util.Map;
 import com.flagstone.transform.Encodeable;
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.font.Kerning;
@@ -83,7 +83,7 @@ public final class Envelope implements Encodeable
 		private final transient int left;
 		private final transient int right;
 
-		public Level(final SWFDecoder coder, final SWFContext context) throws CoderException {
+		public Level(final SWFDecoder coder, final Context context) throws CoderException {
 			mark = coder.readWord(4, false);
 			left = coder.readWord(2, false);
 			right = coder.readWord(2, false);
@@ -167,11 +167,11 @@ public final class Envelope implements Encodeable
 			return ((mark*31) + left)* 31 + right;
 		}
 
-		public int prepareToEncode(final SWFEncoder coder, final SWFContext context) {
+		public int prepareToEncode(final SWFEncoder coder, final Context context) {
 			return 8;
 		}
 
-		public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException {
+		public void encode(final SWFEncoder coder, final Context context) throws CoderException {
 			coder.writeWord(mark, 4);
 			coder.writeWord(left, 2);
 			coder.writeWord(right, 2);
@@ -183,7 +183,7 @@ public final class Envelope implements Encodeable
 	private transient int count;
 
 	//TODO(doc)
-	public Envelope(final SWFDecoder coder, final SWFContext context) throws CoderException
+	public Envelope(final SWFDecoder coder, final Context context) throws CoderException
 	{
 		count = coder.readByte();
 		
@@ -250,13 +250,13 @@ public final class Envelope implements Encodeable
 		return levels.toString();
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
+	public int prepareToEncode(final SWFEncoder coder, final Context context)
 	{
 		count = levels.size();		
 		return 1 + (count << 3);
 	}
 
-	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
+	public void encode(final SWFEncoder coder, final Context context) throws CoderException
 	{
 		coder.writeByte(count);
 

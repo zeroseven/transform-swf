@@ -32,6 +32,7 @@ package com.flagstone.transform.text;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.flagstone.transform.Color;
 import com.flagstone.transform.Encodeable;
@@ -39,7 +40,7 @@ import com.flagstone.transform.Movie;
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Encoder;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -102,7 +103,7 @@ public final class TextSpan implements Encodeable
 	private transient boolean hasY;
 	
 	//TODO(doc)
-	public TextSpan(final SWFDecoder coder, final SWFContext context) throws CoderException
+	public TextSpan(final SWFDecoder coder, final Context context) throws CoderException
 	{
 		/* type */coder.readBits(1, false);
 		/* reserved */coder.readBits(3, false);
@@ -342,7 +343,7 @@ public final class TextSpan implements Encodeable
 	}
 
 	//TODO(optimise)
-	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
+	public int prepareToEncode(final SWFEncoder coder, final Context context)
 	{
 		hasFont = identifier != null && height != null;
 		hasColor = color != null;
@@ -351,11 +352,12 @@ public final class TextSpan implements Encodeable
 		hasStyle = hasFont || hasColor || hasX || hasY;
 
 		int length = 1;
+		Map<Integer,Integer> vars = context.getVariables();
 
 		if (hasStyle)
 		{
 			length += (hasFont) ? 2 : 0;
-			length += (hasColor) ? (context.isTransparent() ? 4:3) : 0;
+			length += (hasColor) ? (vars.containsKey(Context.TRANSPARENT) ? 4:3) : 0;
 			length += (hasY) ? 2 : 0;
 			length += (hasX) ? 2 : 0;
 			length += (hasFont) ? 2 : 0;
@@ -365,8 +367,8 @@ public final class TextSpan implements Encodeable
 
 		if (!characters.isEmpty())
 		{
-			int glyphSize = context.getGlyphSize();
-			int advanceSize = context.getAdvanceSize();
+			int glyphSize = vars.get(Context.GLYPH_SIZE);
+			int advanceSize = vars.get(Context.ADVANCE_SIZE);
 
 			int numberOfBits = (glyphSize + advanceSize) * characters.size();
 			numberOfBits += (numberOfBits % 8 > 0) ? 8 - (numberOfBits % 8) : 0;
@@ -377,7 +379,7 @@ public final class TextSpan implements Encodeable
 	}
 
 	//TODO(optimise)
-	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
+	public void encode(final SWFEncoder coder, final Context context) throws CoderException
 	{
 		coder.writeBits(1, 1);
 		coder.writeBits(0, 3);

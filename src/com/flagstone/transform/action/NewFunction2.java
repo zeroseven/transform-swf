@@ -40,9 +40,10 @@ import java.util.Set;
 
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.coder.SWFFactory;
 
 
 //TODO(doc) Review
@@ -183,7 +184,7 @@ public final class NewFunction2 implements Action
 
 	//TODO(doc)
 	//TODO(optimise)
-	public NewFunction2(final SWFDecoder coder, final SWFContext context) throws CoderException
+	public NewFunction2(final SWFDecoder coder, final Context context) throws CoderException
 	{
 		coder.readByte();
 		length = coder.readWord(2, false);
@@ -208,11 +209,12 @@ public final class NewFunction2 implements Action
 		length += actionsLength;
 		
 		int end = coder.getPointer() + (actionsLength << 3);
+		SWFFactory<Action>decoder = context.getRegistry().getActionDecoder();
 		
 		actions = new ArrayList<Action>();
 
 		while (coder.getPointer() < end) {
-			actions.add(context.actionOfType(coder, context));
+			actions.add(decoder.getObject(coder, context));
 		}
 	}
 
@@ -418,7 +420,7 @@ public final class NewFunction2 implements Action
 	}
 
 	//TODO(optimise)
-	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
+	public int prepareToEncode(final SWFEncoder coder, final Context context)
 	{
 		length = 5 + coder.strlen(name);
 
@@ -440,7 +442,7 @@ public final class NewFunction2 implements Action
 	}
 
 	//TODO(optimise)
-	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
+	public void encode(final SWFEncoder coder, final Context context) throws CoderException
 	{
 		coder.writeWord(ActionTypes.NEW_FUNCTION_2, 1);
 		coder.writeWord(length - actionsLength, 2);

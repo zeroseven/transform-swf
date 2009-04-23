@@ -34,7 +34,7 @@ import java.util.Arrays;
 
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -46,7 +46,7 @@ public final class ActionObject implements Action
 	private final int type;
 	private final byte[] data;
 	
-	public ActionObject(final SWFDecoder coder, final SWFContext context) throws CoderException
+	public ActionObject(final SWFDecoder coder, final Context context) throws CoderException
 	{
 		type = coder.readByte();
 		
@@ -100,12 +100,12 @@ public final class ActionObject implements Action
 		return String.format(FORMAT, type, (data != null ? String.valueOf(data.length) : data));
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
+	public int prepareToEncode(final SWFEncoder coder, final Context context)
 	{
 		return ((type > 127) ? 3:1) + ((data == null) ? 0 : data.length);
 	}
 
-	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
+	public void encode(final SWFEncoder coder, final Context context) throws CoderException
 	{
 		coder.writeByte(type);
 		

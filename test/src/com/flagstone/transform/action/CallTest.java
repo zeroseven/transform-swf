@@ -33,7 +33,7 @@ import org.junit.Test;
 
 import com.flagstone.transform.action.Call;
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFEncoder;
 
 import static org.junit.Assert.assertTrue;
@@ -61,7 +61,7 @@ public final class CallTest {
 	public void encode() throws CoderException {
 
 		SWFEncoder encoder = new SWFEncoder(encoded.length);
-		SWFContext context = new SWFContext();
+		Context context = new Context();
 
 		fixture = Call.getInstance();
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));		

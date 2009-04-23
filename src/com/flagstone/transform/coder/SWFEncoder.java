@@ -30,13 +30,10 @@
 package com.flagstone.transform.coder;
 
 /**
- * //TODO(code) Remove context, it is now passed as a separate object
  * SWFEncoder extends LittleEndianEncoder by adding a context used to pass
  * information between classes during encoding.
  */
 public final class SWFEncoder extends LittleEndianEncoder {
-
-	private SWFContext context;
 
 	/**
 	 * Creates an SWFEncoder with the buffer used to encode data set to the
@@ -47,26 +44,5 @@ public final class SWFEncoder extends LittleEndianEncoder {
 	 */
 	public SWFEncoder(final int size) {
 		super(size);
-		context = new SWFContext();
-	}
-
-	/**
-	 * Set the Context used to pass information between objects during encoding.
-	 * 
-	 * @param context
-	 *            the Context object.
-	 */
-	public void setContext(final SWFContext context) {
-		this.context = context;
-	}
-
-	/**
-	 * Returns the Context object used to pass information between objects
-	 * during encoding.
-	 * 
-	 * @return the Context object.
-	 */
-	public SWFContext getContext() {
-		return context;
 	}
 }

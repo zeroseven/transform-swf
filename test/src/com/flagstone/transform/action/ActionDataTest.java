@@ -33,7 +33,7 @@ import org.junit.Test;
 
 import com.flagstone.transform.action.ActionData;
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import static org.junit.Assert.assertTrue;
@@ -69,7 +69,7 @@ public final class ActionDataTest {
 	public void encode() throws CoderException {
 
 		SWFEncoder encoder = new SWFEncoder(encoded.length);
-		SWFContext context = new SWFContext();
+		Context context = new Context();
 		
 		fixture = new ActionData(data);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));		

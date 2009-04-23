@@ -32,7 +32,7 @@ package com.flagstone.transform;
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Encoder;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -339,7 +339,7 @@ public final class CoordTransform implements Encodeable {
 		return ((((scaleX*31 + scaleY)*31 + shearX)*31 + shearY)*31 + translateX)*31 + translateY;
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final SWFContext context) {
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		int numberOfBits = 14; // include extra 7 bits for byte alignment
 
 		hasScale = scaleX != 65536 || scaleY != 65536;
@@ -367,7 +367,7 @@ public final class CoordTransform implements Encodeable {
 		return numberOfBits >> 3;
 	}
 
-	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException {
+	public void encode(final SWFEncoder coder, final Context context) throws CoderException {
 		coder.alignToByte();
 
 		coder.writeBits(hasScale ? 1 : 0, 1);

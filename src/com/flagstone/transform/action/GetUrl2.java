@@ -34,7 +34,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -218,7 +218,7 @@ public final class GetUrl2 implements Action
 	private Request request;
 
 	//TODO(doc)
-	public GetUrl2(final SWFDecoder coder, final SWFContext context) throws CoderException
+	public GetUrl2(final SWFDecoder coder, final Context context) throws CoderException
 	{
 		coder.readByte();
 		coder.readWord(2, false);
@@ -273,12 +273,12 @@ public final class GetUrl2 implements Action
 		return String.format(FORMAT, request);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
+	public int prepareToEncode(final SWFEncoder coder, final Context context)
 	{
 		return 4;
 	}
 
-	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
+	public void encode(final SWFEncoder coder, final Context context) throws CoderException
 	{
 		coder.writeByte(ActionTypes.GET_URL_2);
 		coder.writeWord(1, 2);

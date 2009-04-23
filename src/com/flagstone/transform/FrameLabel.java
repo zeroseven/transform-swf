@@ -33,7 +33,7 @@ package com.flagstone.transform;
 import com.flagstone.transform.action.GetUrl;
 import com.flagstone.transform.action.GetUrl2;
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -69,7 +69,7 @@ public final class FrameLabel implements MovieTag {
 
 	private transient int length;
 
-	public FrameLabel(final SWFDecoder coder, final SWFContext context) throws CoderException {
+	public FrameLabel(final SWFDecoder coder, final Context context) throws CoderException {
 
 		length = coder.readWord(2, false) & 0x3F;
 
@@ -183,7 +183,7 @@ public final class FrameLabel implements MovieTag {
 		return String.format(FORMAT, label, String.valueOf(anchor));
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final SWFContext context) {
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 
 		length = coder.strlen(label);
 		length += anchor ? 1 : 0;
@@ -191,7 +191,7 @@ public final class FrameLabel implements MovieTag {
 		return (length > 62 ? 6 : 2) + length;
 	}
 
-	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException {
+	public void encode(final SWFEncoder coder, final Context context) throws CoderException {
 
 		if (length > 62) {
 			coder.writeWord((MovieTypes.FRAME_LABEL << 6) | 0x3F, 2);

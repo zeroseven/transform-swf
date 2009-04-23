@@ -35,7 +35,7 @@ import java.util.List;
 
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -110,7 +110,7 @@ public final class Push implements Action {
 	private transient int length;
 	
 	//TODO(doc)
-	public Push(final SWFDecoder coder, final SWFContext context) throws CoderException {
+	public Push(final SWFDecoder coder, final Context context) throws CoderException {
 		
 		coder.readByte();
 		length = coder.readWord(2, false);
@@ -241,7 +241,7 @@ public final class Push implements Action {
 		return String.format(FORMAT, values);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final SWFContext context) {
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		
 		length = 0;
 
@@ -275,7 +275,7 @@ public final class Push implements Action {
 	}
 
 	//TODO(code) throw a Coder exception if an unexpected object is found
-	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException {
+	public void encode(final SWFEncoder coder, final Context context) throws CoderException {
 		coder.writeByte(ActionTypes.PUSH);
 		coder.writeWord(length, 2);
 
@@ -288,8 +288,7 @@ public final class Push implements Action {
 				coder.writeWord(((Integer) anObject).intValue(), 4);
 			} else if (anObject instanceof Property) {
 				coder.writeWord(1, 1);
-				coder.writeWord(((Property) anObject).getValue(coder
-						.getContext().getVersion()), 4);
+				coder.writeWord(((Property) anObject).getValue(context.getVariables().get(Context.VERSION)), 4);
 			} else if (anObject instanceof Double) {
 				coder.writeWord(6, 1);
 				coder.writeDouble(((Double) anObject).doubleValue());

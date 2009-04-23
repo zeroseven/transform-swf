@@ -30,7 +30,7 @@ import com.flagstone.transform.action.With;
 @SuppressWarnings("PMD")
 public final class ActionFactory implements SWFFactory<Action> {
 
-	public Action getObject(final SWFDecoder coder, final SWFContext context) throws CoderException {
+	public Action getObject(final SWFDecoder coder, final Context context) throws CoderException {
 
 		Action action;
 		

@@ -30,11 +30,13 @@
 
 package com.flagstone.transform.text;
 
+import java.util.Map;
+
 import com.flagstone.transform.Bounds;
 import com.flagstone.transform.Encodeable;
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -62,10 +64,11 @@ public final class GlyphIndex implements Encodeable
 	private final transient int advance;
 
 	//TODO(doc)
-	public GlyphIndex(final SWFDecoder coder, final SWFContext context) throws CoderException
+	public GlyphIndex(final SWFDecoder coder, final Context context) throws CoderException
 	{
-		glyphIndex = coder.readBits(context.getGlyphSize(), false);
-		advance = coder.readBits(context.getAdvanceSize(), true);
+		Map<Integer,Integer> vars = context.getVariables();
+		glyphIndex = coder.readBits(vars.get(Context.GLYPH_SIZE), false);
+		advance = coder.readBits(vars.get(Context.ADVANCE_SIZE), true);
 	}
 
 	/**
@@ -138,14 +141,16 @@ public final class GlyphIndex implements Encodeable
 		return (glyphIndex*31)+advance;
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
+	public int prepareToEncode(final SWFEncoder coder, final Context context)
 	{
-		return context.getGlyphSize() + context.getAdvanceSize();
+		Map<Integer,Integer> vars = context.getVariables();
+		return vars.get(Context.GLYPH_SIZE) + vars.get(Context.ADVANCE_SIZE);
 	}
 
-	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
+	public void encode(final SWFEncoder coder, final Context context) throws CoderException
 	{
-		coder.writeBits(glyphIndex, context.getGlyphSize());
-		coder.writeBits(advance, context.getAdvanceSize());
+		Map<Integer,Integer> vars = context.getVariables();
+		coder.writeBits(glyphIndex, vars.get(Context.GLYPH_SIZE));
+		coder.writeBits(advance, vars.get(Context.ADVANCE_SIZE));
 	}
 }

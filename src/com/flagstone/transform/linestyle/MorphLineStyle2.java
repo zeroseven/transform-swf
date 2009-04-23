@@ -35,9 +35,10 @@ import com.flagstone.transform.Copyable;
 import com.flagstone.transform.Encodeable;
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.coder.SWFFactory;
 import com.flagstone.transform.fillstyle.FillStyle;
 
 //TODO(doc) Description and document methods
@@ -69,7 +70,7 @@ public final class MorphLineStyle2 implements Encodeable,
 	private transient boolean hasFillStyle;
 	private transient boolean hasMiter;
 
-	public MorphLineStyle2(final SWFDecoder coder, final SWFContext context) throws CoderException {
+	public MorphLineStyle2(final SWFDecoder coder, final Context context) throws CoderException {
 		startWidth = coder.readWord(2, false);
 		endWidth = coder.readWord(2, false);
 		unpack(coder.readB16());
@@ -79,7 +80,8 @@ public final class MorphLineStyle2 implements Encodeable,
 		}
 
 		if (hasFillStyle) {
-			fillStyle = context.morphFillStyleOfType(coder, context);
+			SWFFactory<FillStyle>decoder = context.getRegistry().getMorphFillStyleDecoder();
+			fillStyle = decoder.getObject(coder, context);
 		} else {
 			startColor= new Color(coder, context);
 			endColor= new Color(coder, context);
@@ -347,7 +349,7 @@ public final class MorphLineStyle2 implements Encodeable,
 				miterLimit);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final SWFContext context) {
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 
 		hasFillStyle = fillStyle != null;
 		hasMiter = joinStyle == 2;
@@ -366,13 +368,13 @@ public final class MorphLineStyle2 implements Encodeable,
 		}
 
 		if (scaledHorizontally || scaledVertically) {
-			context.setScalingStroke(true);
+			context.getVariables().put(Context.SCALING_STROKE, 1);
 		}
 
 		return length;
 	}
 
-	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException {
+	public void encode(final SWFEncoder coder, final Context context) throws CoderException {
 		coder.writeWord(startWidth, 2);
 		coder.writeWord(endWidth, 2);
 		coder.writeB16(pack());

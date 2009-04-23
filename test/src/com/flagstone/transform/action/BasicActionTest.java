@@ -34,7 +34,7 @@ import org.junit.Test;
 import com.flagstone.transform.action.ActionTypes;
 import com.flagstone.transform.action.BasicAction;
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFEncoder;
 
 
@@ -62,7 +62,7 @@ public final class BasicActionTest {
 	public void encode() throws CoderException {
 
 		SWFEncoder encoder = new SWFEncoder(encoded.length);
-		SWFContext context = new SWFContext();
+		Context context = new Context();
 
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));		
 		fixture.encode(encoder, context);

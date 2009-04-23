@@ -31,7 +31,7 @@
 package com.flagstone.transform;
 
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -46,7 +46,7 @@ public final class ScalingGrid implements DefineTag {
 	private transient int length;
 
 	//TODO(doc)
-	public ScalingGrid(final SWFDecoder coder, final SWFContext context) throws CoderException {
+	public ScalingGrid(final SWFDecoder coder, final Context context) throws CoderException {
 
 		if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
 			coder.readWord(4, false);
@@ -97,12 +97,12 @@ public final class ScalingGrid implements DefineTag {
 		return String.format(FORMAT, identifier, bounds.toString());
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final SWFContext context) {
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		length = 2 + bounds.prepareToEncode(coder, context);
 		return 2 + length;
 	}
 
-	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException {
+	public void encode(final SWFEncoder coder, final Context context) throws CoderException {
 		
 		coder.writeWord((MovieTypes.DEFINE_SCALING_GRID << 6) | length, 2);
 		coder.writeWord(identifier, 2);

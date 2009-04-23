@@ -32,7 +32,7 @@ package com.flagstone.transform;
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Encoder;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -182,13 +182,13 @@ public final class Bounds implements Encodeable {
 		return (((minX*31)+minY)*31 + maxX)*31 + maxY;
 	}
 	
-	public int prepareToEncode(final SWFEncoder coder, final SWFContext context) {
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		size = Encoder.maxSize(minX, minY, maxX, maxY);
 		// add extra 7 bit so result is byte aligned.
 		return ((5 + (size << 2)) + 7) >> 3; //TODO(optimise) 5+7 = 12
 	}
 
-	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException {
+	public void encode(final SWFEncoder coder, final Context context) throws CoderException {
 		coder.alignToByte(); //TODO(optimise) See if this can be removed
 		coder.writeBits(size, 5);
 		coder.writeBits(minX, size);

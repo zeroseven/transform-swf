@@ -40,9 +40,10 @@ import com.flagstone.transform.Strings;
 import com.flagstone.transform.action.Action;
 import com.flagstone.transform.action.ActionData;
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.coder.SWFFactory;
 
 //TODO(doc) Review
 /**
@@ -74,7 +75,7 @@ public final class InitializeMovieClip implements MovieTag
 	private transient int length;
 
 	//TODO(doc)
-	public InitializeMovieClip(final SWFDecoder coder, final SWFContext context) throws CoderException
+	public InitializeMovieClip(final SWFDecoder coder, final Context context) throws CoderException
 	{
 		start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
@@ -87,10 +88,10 @@ public final class InitializeMovieClip implements MovieTag
 		identifier = coder.readWord(2, false);
 		actions = new ArrayList<Action>();
 
-		if (context.isDecodeActions()) {
-			
+		if (context.getVariables().containsKey(Context.DECODE_ACTIONS)) {
+			SWFFactory<Action>decoder = context.getRegistry().getActionDecoder();		
 			while (coder.getPointer() < end) {
-				actions.add(context.actionOfType(coder, context));
+				actions.add(decoder.getObject(coder, context));
 			}
 		} else {
 			actions.add(new ActionData(coder.readBytes(new byte[length-2])));
@@ -204,7 +205,7 @@ public final class InitializeMovieClip implements MovieTag
 		return String.format(FORMAT, identifier, actions);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
+	public int prepareToEncode(final SWFEncoder coder, final Context context)
 	{
 		length = 2;
 
@@ -215,7 +216,7 @@ public final class InitializeMovieClip implements MovieTag
 		return (length > 62 ? 6:2) + length;
 	}
 
-	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
+	public void encode(final SWFEncoder coder, final Context context) throws CoderException
 	{
 		start = coder.getPointer();
 

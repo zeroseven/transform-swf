@@ -32,9 +32,10 @@ package com.flagstone.transform;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movieclip.MovieClipEvent;
@@ -183,10 +184,11 @@ public final class Place2 implements MovieTag
 
 	//TODO(doc)
 	//TODO(optimise)
-	public Place2(final SWFDecoder coder, final SWFContext context) throws CoderException
+	public Place2(final SWFDecoder coder, final Context context) throws CoderException
 	{
 		start = coder.getPointer();
-		context.setTransparent(true);
+		Map<Integer,Integer>vars = context.getVariables();
+		vars.put(Context.TRANSPARENT, 1);
 		
 		length = coder.readWord(2, false) & 0x3F;
 		
@@ -246,7 +248,7 @@ public final class Place2 implements MovieTag
 
 		if (hasEvents)
 		{
-			int eventSize = context.getVersion() > 5 ? 4 : 2;
+			int eventSize = Context.VERSION > 5 ? 4 : 2;
 
 			coder.readWord(2, false);
 			coder.readWord(eventSize, false);
@@ -259,7 +261,7 @@ public final class Place2 implements MovieTag
 			}
 
 		}
-		context.setTransparent(false);
+		vars.remove(Context.TRANSPARENT);
 
 		if (coder.getPointer() != end) {
 			throw new CoderException(getClass().getName(), start >> 3, length,
@@ -568,9 +570,10 @@ public final class Place2 implements MovieTag
 	}
 
 	//TODO(optimise)
-	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
+	public int prepareToEncode(final SWFEncoder coder, final Context context)
 	{
-		context.setTransparent(true);
+		Map<Integer,Integer>vars = context.getVariables();
+		vars.put(Context.TRANSPARENT, 1);
 
 		length = 3;
 		length += (placeType.equals(Placement.NEW) || placeType.equals(Placement.REPLACE)) ? 2 : 0;
@@ -582,7 +585,7 @@ public final class Place2 implements MovieTag
 
 		if (!events.isEmpty())
 		{
-			int eventSize = context.getVersion() > 5 ? 4 : 2;
+			int eventSize = Context.VERSION > 5 ? 4 : 2;
 
 			length += 2 + eventSize;
 
@@ -593,14 +596,15 @@ public final class Place2 implements MovieTag
 			length += eventSize;
 		}
 
-		context.setTransparent(false);
+		vars.remove(Context.TRANSPARENT);
 
 		return (length > 62 ? 6 : 2) + length;
 	}
 
 	//TODO(optimise)
-	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
+	public void encode(final SWFEncoder coder, final Context context) throws CoderException
 	{
+		Map<Integer,Integer>vars = context.getVariables();
 		start = coder.getPointer();
 		
 		if (length >= 63) {
@@ -611,7 +615,7 @@ public final class Place2 implements MovieTag
 		}
 		end = coder.getPointer() + (length << 3);
 		
-		context.setTransparent(true);
+		vars.put(Context.TRANSPARENT, 1);
 		coder.writeBits(events.isEmpty() ? 0 : 1, 1);
 		coder.writeBits(depth != null ? 1 : 0, 1);
 		coder.writeBits(name != null ? 1 : 0, 1);
@@ -655,7 +659,7 @@ public final class Place2 implements MovieTag
 
 		if (!events.isEmpty())
 		{
-			int eventSize = context.getVersion() > 5 ? 4 : 2;
+			int eventSize = Context.VERSION > 5 ? 4 : 2;
 			int eventMask = 0;
 
 			coder.writeWord(0, 2);
@@ -675,7 +679,7 @@ public final class Place2 implements MovieTag
 			coder.writeWord(0, eventSize);
 		}
 
-		context.setTransparent(false);
+		vars.remove(Context.TRANSPARENT);
 
 		if (coder.getPointer() != end) {
 			throw new CoderException(getClass().getName(), start >> 3, length,

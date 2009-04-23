@@ -40,8 +40,11 @@ import static org.junit.Assert.assertArrayEquals;
 
 import com.flagstone.transform.MovieTag;
 import com.flagstone.transform.ShowFrame;
+import com.flagstone.transform.coder.ActionFactory;
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
+import com.flagstone.transform.coder.DecoderRegistry;
+import com.flagstone.transform.coder.MovieFactory;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.movieclip.DefineMovieClip;
@@ -95,7 +98,7 @@ public final class DefineMovieClipTest {
 	@Test
 	public void encode() throws CoderException {
 		SWFEncoder encoder = new SWFEncoder(encoded.length);		
-		SWFContext context = new SWFContext();
+		Context context = new Context();
 
 		fixture = new DefineMovieClip(identifier, list);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
@@ -108,7 +111,10 @@ public final class DefineMovieClipTest {
 	@Test
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
-		SWFContext context = new SWFContext();
+		Context context = new Context();
+		DecoderRegistry registry = new DecoderRegistry();
+		registry.setMovieDecoder(new MovieFactory());
+		context.setRegistry(registry);
 
 		fixture = new DefineMovieClip(decoder, context);
 
@@ -120,7 +126,10 @@ public final class DefineMovieClipTest {
 	@Test
 	public void decodeExtended() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(extended);
-		SWFContext context = new SWFContext();
+		Context context = new Context();
+		DecoderRegistry registry = new DecoderRegistry();
+		registry.setMovieDecoder(new MovieFactory());
+		context.setRegistry(registry);
 
 		fixture = new DefineMovieClip(decoder, context);
 		

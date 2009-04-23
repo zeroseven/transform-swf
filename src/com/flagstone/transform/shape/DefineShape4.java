@@ -32,6 +32,7 @@ package com.flagstone.transform.shape;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.flagstone.transform.Bounds;
 import com.flagstone.transform.DefineTag;
@@ -39,9 +40,10 @@ import com.flagstone.transform.MovieTypes;
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Encoder;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.coder.SWFFactory;
 import com.flagstone.transform.fillstyle.FillStyle;
 import com.flagstone.transform.linestyle.LineStyle2;
 
@@ -71,7 +73,7 @@ public final class DefineShape4 implements DefineTag
 	private transient boolean scaling;
 
 	//TODO(doc)
-	public DefineShape4(final SWFDecoder coder, final SWFContext context) throws CoderException
+	public DefineShape4(final SWFDecoder coder, final Context context) throws CoderException
 	{
 		start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
@@ -82,7 +84,8 @@ public final class DefineShape4 implements DefineTag
 		end = coder.getPointer() + (length << 3);
 
 		identifier = coder.readWord(2, false);
-		context.setTransparent(true);
+		Map<Integer,Integer>vars = context.getVariables();
+		vars.put(Context.TRANSPARENT, 1);
 
 		shapeBounds = new Bounds(coder);
 		edgeBounds = new Bounds(coder);
@@ -97,12 +100,13 @@ public final class DefineShape4 implements DefineTag
 		fillStyles = new ArrayList<FillStyle>();
 		lineStyles = new ArrayList<LineStyle2>();
 
+		SWFFactory<FillStyle>decoder = context.getRegistry().getFillStyleDecoder();
 		FillStyle fill;
 		int type;
 
 		for (int i = 0; i < fillStyleCount; i++) {
 			type = coder.scanByte();
-			fill = context.fillStyleOfType(coder, context);
+			fill = decoder.getObject(coder, context);
 
 			if (fill == null) {
 				throw new CoderException(String.valueOf(type), start >>> 3, 0, 0, Strings.UNSUPPORTED_FILL_STYLE);
@@ -121,12 +125,12 @@ public final class DefineShape4 implements DefineTag
 			lineStyles.add(new LineStyle2(coder, context));
 		}
 
-		context.setArrayExtended(true);
+		vars.put(Context.ARRAY_EXTENDED, 1);
 
 		shape = new Shape(coder, context);
 
-		context.setTransparent(false);
-		context.setArrayExtended(false);
+		vars.remove(Context.TRANSPARENT);
+		vars.remove(Context.ARRAY_EXTENDED);
 
 		if (coder.getPointer() != end) {
 			throw new CoderException(getClass().getName(), start >> 3, length,
@@ -356,12 +360,13 @@ public final class DefineShape4 implements DefineTag
 		return String.format(FORMAT, identifier, shapeBounds, edgeBounds, fillStyles, lineStyles, shape);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
+	public int prepareToEncode(final SWFEncoder coder, final Context context)
 	{
 		fillBits = Encoder.unsignedSize(fillStyles.size());
 		lineBits = Encoder.unsignedSize(lineStyles.size());
 
-		if (context.isPostscript()) 
+		Map<Integer,Integer>vars = context.getVariables();
+		if (vars.containsKey(Context.POSTSCRIPT)) 
 		{
 			if (fillBits == 0) {
 				fillBits = 1;
@@ -372,7 +377,7 @@ public final class DefineShape4 implements DefineTag
 			}
 		}
 
-		context.setTransparent(true);
+		vars.put(Context.TRANSPARENT, 1);
 
 		length = 3;
 		length += shapeBounds.prepareToEncode(coder, context);
@@ -384,7 +389,7 @@ public final class DefineShape4 implements DefineTag
 			length += style.prepareToEncode(coder, context);
 		}
 
-		context.setScalingStroke(false);
+		vars.remove(Context.SCALING_STROKE);
 		
 		length += (lineStyles.size() >= 255) ? 3 : 1;
 
@@ -392,26 +397,27 @@ public final class DefineShape4 implements DefineTag
 			length += style.prepareToEncode(coder, context);
 		}
 
-		scaling = context.isScalingStoke();
+		scaling = vars.containsKey(Context.SCALING_STROKE);
 		
-		context.setArrayExtended(true);
-		context.setFillSize(fillBits);
-		context.setLineSize(lineBits);
+		vars.put(Context.ARRAY_EXTENDED, 1);
+		vars.put(Context.FILL_SIZE, fillBits);
+		vars.put(Context.LINE_SIZE,lineBits);
 
 		length += shape.prepareToEncode(coder, context);
 
-		context.setArrayExtended(false);
-		context.setFillSize(0);
-		context.setLineSize(0);
-		context.setTransparent(false);
-		context.setScalingStroke(false);
+		vars.remove(Context.ARRAY_EXTENDED);
+		vars.put(Context.FILL_SIZE, 0);
+		vars.put(Context.LINE_SIZE,0);
+		vars.remove(Context.TRANSPARENT);
+		vars.remove(Context.SCALING_STROKE);
 
 		return (length > 62 ? 6:2) + length;
 	}
 
-	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
+	public void encode(final SWFEncoder coder, final Context context) throws CoderException
 	{
-		context.setTransparent(true);
+		Map<Integer,Integer>vars = context.getVariables();
+		vars.put(Context.TRANSPARENT, 1);
 
 		start = coder.getPointer();
 
@@ -458,16 +464,16 @@ public final class DefineShape4 implements DefineTag
 			style.encode(coder, context);
 		}
 
-		context.setArrayExtended(true);
-		context.setFillSize(fillBits);
-		context.setLineSize(lineBits);
+		vars.put(Context.ARRAY_EXTENDED, 1);
+		vars.put(Context.FILL_SIZE, fillBits);
+		vars.put(Context.LINE_SIZE,lineBits);
 
 		shape.encode(coder, context);
 
-		context.setArrayExtended(false);
-		context.setFillSize(0);
-		context.setLineSize(0);
-		context.setTransparent(false);
+		vars.remove(Context.ARRAY_EXTENDED);
+		vars.put(Context.FILL_SIZE, 0);
+		vars.put(Context.LINE_SIZE,0);
+		vars.remove(Context.TRANSPARENT);
 
 		if (coder.getPointer() != end) {
 			throw new CoderException(getClass().getName(), start >> 3, length,

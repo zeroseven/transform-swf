@@ -38,7 +38,7 @@ import java.util.Map;
 import com.flagstone.transform.CoordTransform;
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.fillstyle.GradientFill.Interpolation;
@@ -111,7 +111,7 @@ public final class FocalGradientFill implements FillStyle {
 	
 	private transient int count;
 
-	public FocalGradientFill(final SWFDecoder coder, final SWFContext context) throws CoderException {
+	public FocalGradientFill(final SWFDecoder coder, final Context context) throws CoderException {
 		type = coder.readByte();
 		count = coder.readByte();
 		gradients = new ArrayList<Gradient>(count);
@@ -212,7 +212,7 @@ public final class FocalGradientFill implements FillStyle {
 		return "";
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final SWFContext context) {
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		//TODO(optimise) Calculate size of gradient array directly.
 		int length = 2;
 		count = gradients.size();
@@ -224,7 +224,7 @@ public final class FocalGradientFill implements FillStyle {
 		return length;
 	}
 
-	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException {
+	public void encode(final SWFEncoder coder, final Context context) throws CoderException {
 		coder.writeByte(type);
 		coder.writeWord(count | spread | interpolation, 1);
 

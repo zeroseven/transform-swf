@@ -32,7 +32,7 @@ package com.flagstone.transform;
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Encoder;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -117,13 +117,13 @@ public final class ColorTransform implements Encodeable {
 	private transient boolean hasAdd;
 	private transient boolean hasAlpha;
 
-	public ColorTransform(final SWFDecoder coder, final SWFContext context) throws CoderException {
+	public ColorTransform(final SWFDecoder coder, final Context context) throws CoderException {
 
 		coder.alignToByte(); //TODO(optimise) Can this be removed. 
 
 		hasAdd = coder.readBits(1, false) != 0;
 		hasMultiply = coder.readBits(1, false) != 0;
-		hasAlpha = context.isTransparent();
+		hasAlpha = context.getVariables().containsKey(Context.TRANSPARENT);
 		size = coder.readBits(4, false);
 
 		if (hasMultiply) {
@@ -332,13 +332,13 @@ public final class ColorTransform implements Encodeable {
 				multiplyRed)* 31 + multiplyGreen)* 31 + multiplyBlue)* 31 + multiplyAlpha;
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final SWFContext context) {
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 
 		int numberOfBits = 13; // include extra 7 bits for byte alignment
 
 		hasMultiply = containsMultiplyTerms(context);
 		hasAdd = containsAddTerms(context);
-		hasAlpha = context.isTransparent();
+		hasAlpha = context.getVariables().containsKey(Context.TRANSPARENT);
 		size = fieldSize(context);
 
 		if (hasMultiply) {
@@ -353,7 +353,7 @@ public final class ColorTransform implements Encodeable {
 	}
 
 	@SuppressWarnings("PMD.NPathComplexity")
-	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException {
+	public void encode(final SWFEncoder coder, final Context context) throws CoderException {
 
 		coder.alignToByte(); //TODO(optimise) Can this be removed. 
 
@@ -384,22 +384,22 @@ public final class ColorTransform implements Encodeable {
 		coder.alignToByte();
 	}
 
-	private boolean containsAddTerms(final SWFContext context) {
+	private boolean containsAddTerms(final Context context) {
 		return (addRed != 0) || (addGreen != 0) || (addBlue != 0)
-				|| (context.isTransparent() && addAlpha != 0);
+				|| (context.getVariables().containsKey(Context.TRANSPARENT) && addAlpha != 0);
 	}
 
-	private boolean containsMultiplyTerms(final SWFContext context) {
+	private boolean containsMultiplyTerms(final Context context) {
 		return multiplyRed != 256 || multiplyGreen != 256
 				|| multiplyBlue != 256
-				|| (context.isTransparent() && multiplyAlpha != 256);
+				|| (context.getVariables().containsKey(Context.TRANSPARENT) && multiplyAlpha != 256);
 	}
 
-	private int addFieldSize(final SWFContext context) {
+	private int addFieldSize(final Context context) {
 
 		int size;
 
-		if (context.isTransparent()) {
+		if (context.getVariables().containsKey(Context.TRANSPARENT)) {
 			size = Encoder.maxSize(addRed, addGreen, addBlue, addAlpha);
 		} else {
 			size = Encoder.maxSize(addRed, addGreen, addBlue);
@@ -407,11 +407,11 @@ public final class ColorTransform implements Encodeable {
 		return size;
 	}
 
-	private int multiplyFieldSize(final SWFContext context) {
+	private int multiplyFieldSize(final Context context) {
 
 		int size;
 
-		if (context.isTransparent()) {
+		if (context.getVariables().containsKey(Context.TRANSPARENT)) {
 			size = Encoder.maxSize(multiplyRed, multiplyGreen, multiplyBlue,
 					multiplyAlpha);
 		} else {
@@ -421,7 +421,7 @@ public final class ColorTransform implements Encodeable {
 		return size;
 	}
 
-	private int fieldSize(final SWFContext context) {
+	private int fieldSize(final Context context) {
 		int numberOfBits;
 
 		if (hasAdd && !hasMultiply) {

@@ -32,12 +32,13 @@ package com.flagstone.transform.button;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.flagstone.transform.DefineTag;
 import com.flagstone.transform.MovieTypes;
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -86,10 +87,11 @@ public final class DefineButton2 implements DefineTag
 	
 	//TODO(doc) 
 	//TODO(optimise) 
-	public DefineButton2(final SWFDecoder coder, final SWFContext context) throws CoderException
+	public DefineButton2(final SWFDecoder coder, final Context context) throws CoderException
 	{
-		context.setType(MovieTypes.DEFINE_BUTTON_2);
-		context.setTransparent(true);
+		Map<Integer,Integer> vars = context.getVariables();
+		vars.put(Context.TYPE, MovieTypes.DEFINE_BUTTON_2);
+		vars.put(Context.TRANSPARENT, 1);
 
 		start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
@@ -129,8 +131,8 @@ public final class DefineButton2 implements DefineTag
 			} while (offsetToNext != 0);
 		}
 		
-		context.setType(0);
-		context.setTransparent(false);
+		vars.remove(Context.TYPE);
+		vars.remove(Context.TRANSPARENT);
 
 		if (coder.getPointer() != end) {
 			throw new CoderException(getClass().getName(), start >> 3, length,
@@ -290,10 +292,11 @@ public final class DefineButton2 implements DefineTag
 		return String.format(FORMAT, identifier, shapes, events);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
+	public int prepareToEncode(final SWFEncoder coder, final Context context)
 	{
-		context.setType(MovieTypes.DEFINE_BUTTON_2);
-		context.setTransparent(true);
+		Map<Integer,Integer>vars = context.getVariables();
+		vars.put(Context.TYPE, MovieTypes.DEFINE_BUTTON_2);
+		vars.put(Context.TRANSPARENT, 1);
 
 		length = 6;
 
@@ -305,16 +308,17 @@ public final class DefineButton2 implements DefineTag
 			length += 2 + handler.prepareToEncode(coder, context);
 		}
 
-		context.setType(0);
-		context.setTransparent(false);
+		vars.remove(Context.TYPE);
+		vars.remove(Context.TRANSPARENT);
 
 		return (length > 62 ? 6:2) + length;
 	}
 
-	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
+	public void encode(final SWFEncoder coder, final Context context) throws CoderException
 	{
-		context.setType(MovieTypes.DEFINE_BUTTON_2);
-		context.setTransparent(true);
+		Map<Integer,Integer>vars = context.getVariables();
+		vars.put(Context.TYPE, MovieTypes.DEFINE_BUTTON_2);
+		vars.put(Context.TRANSPARENT, 1);
 		
 		start = coder.getPointer();
 
@@ -359,8 +363,8 @@ public final class DefineButton2 implements DefineTag
 		coder.writeWord(0, 2);
 		coder.setPointer(currentCursor);
 
-		context.setType(0);
-		context.setTransparent(false);
+		vars.remove(Context.TYPE);
+		vars.remove(Context.TRANSPARENT);
 
 		if (coder.getPointer() != end) {
 			throw new CoderException(getClass().getName(), start >> 3, length,

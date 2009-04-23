@@ -38,7 +38,7 @@ import static org.junit.Assert.assertArrayEquals;
 
 import com.flagstone.transform.action.ActionObject;
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -78,7 +78,7 @@ public final class ActionObjectTest {
 	@Test
 	public void encode() throws CoderException {		
 		SWFEncoder encoder = new SWFEncoder(encoded.length);		
-		SWFContext context = new SWFContext();
+		Context context = new Context();
 	
 		fixture = new ActionObject(type, data);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
@@ -91,7 +91,7 @@ public final class ActionObjectTest {
 	@Test
 	public void encodeBasic() throws CoderException {		
 		SWFEncoder encoder = new SWFEncoder(basic.length);		
-		SWFContext context = new SWFContext();
+		Context context = new Context();
 
 		fixture = new ActionObject(1);
 		assertEquals(basic.length, fixture.prepareToEncode(encoder, context));
@@ -104,7 +104,7 @@ public final class ActionObjectTest {
 	@Test
 	public void encodeEmpty() throws CoderException {		
 		SWFEncoder encoder = new SWFEncoder(empty.length);		
-		SWFContext context = new SWFContext();
+		Context context = new Context();
 
 		fixture = new ActionObject(type, new byte[0]);
 		assertEquals(empty.length, fixture.prepareToEncode(encoder, context));
@@ -117,7 +117,7 @@ public final class ActionObjectTest {
 	@Test
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
-		SWFContext context = new SWFContext();
+		Context context = new Context();
 
 		fixture = new ActionObject(decoder, context);
 		
@@ -129,7 +129,7 @@ public final class ActionObjectTest {
 	@Test
 	public void decodeBasic() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(basic);
-		SWFContext context = new SWFContext();
+		Context context = new Context();
 
 		fixture = new ActionObject(decoder, context);
 		
@@ -141,7 +141,7 @@ public final class ActionObjectTest {
 	@Test
 	public void decodeEmpty() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(empty);
-		SWFContext context = new SWFContext();
+		Context context = new Context();
 
 		fixture = new ActionObject(decoder, context);
 		

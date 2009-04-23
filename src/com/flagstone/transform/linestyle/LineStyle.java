@@ -35,7 +35,7 @@ import com.flagstone.transform.Copyable;
 import com.flagstone.transform.Encodeable;
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.shape.Line;
@@ -72,7 +72,7 @@ public final class LineStyle implements Encodeable, Copyable<LineStyle>
 	private Color color;
 
 	//TODO(doc)
-	public LineStyle(final SWFDecoder coder, final SWFContext context) throws CoderException
+	public LineStyle(final SWFDecoder coder, final Context context) throws CoderException
 	{
 		width = coder.readWord(2, false);
 		color = new Color(coder, context);
@@ -154,16 +154,16 @@ public final class LineStyle implements Encodeable, Copyable<LineStyle>
 	}
 
 	//TODO(optimise)
-	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
+	public int prepareToEncode(final SWFEncoder coder, final Context context)
 	{
 		int length = 2;
 
-		length += context.isTransparent() ? 4:3;
+		length += context.getVariables().containsKey(Context.TRANSPARENT) ? 4:3;
 
 		return length;
 	}
 
-	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
+	public void encode(final SWFEncoder coder, final Context context) throws CoderException
 	{
 		coder.writeWord(width, 2);
 		color.encode(coder, context);

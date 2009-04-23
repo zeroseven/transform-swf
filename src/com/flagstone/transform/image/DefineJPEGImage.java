@@ -37,7 +37,7 @@ import com.flagstone.transform.MovieTypes;
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.BigEndianDecoder;
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -74,7 +74,7 @@ public final class DefineJPEGImage implements ImageTag
 	private transient int height;
 
 	//TODO(doc)
-	public DefineJPEGImage(final SWFDecoder coder, final SWFContext context) throws CoderException
+	public DefineJPEGImage(final SWFDecoder coder, final Context context) throws CoderException
 	{
 		start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
@@ -180,14 +180,14 @@ public final class DefineJPEGImage implements ImageTag
 		return String.format(FORMAT, identifier, image.length);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
+	public int prepareToEncode(final SWFEncoder coder, final Context context)
 	{
 		length = 2 + image.length;
 
 		return (length > 62 ? 6:2) + length;
 	}
 
-	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
+	public void encode(final SWFEncoder coder, final Context context) throws CoderException
 	{
 		start = coder.getPointer();
 

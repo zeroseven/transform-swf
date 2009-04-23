@@ -37,7 +37,7 @@ import com.flagstone.transform.MovieTag;
 import com.flagstone.transform.MovieTypes;
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -88,7 +88,7 @@ public final class FontInfo implements MovieTag
 
 	//TODO(doc)
 	//TODO(optimise)
-	public FontInfo(final SWFDecoder coder, final SWFContext context) throws CoderException
+	public FontInfo(final SWFDecoder coder, final Context context) throws CoderException
 	{
 		codes = new ArrayList<Integer>();
 
@@ -355,7 +355,7 @@ public final class FontInfo implements MovieTag
 	}
 
 	//TODO(optimise)
-	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
+	public int prepareToEncode(final SWFEncoder coder, final Context context)
 	{
 		length = 3;
 		length += coder.strlen(name);
@@ -375,7 +375,7 @@ public final class FontInfo implements MovieTag
 	}
 
 	//TODO(optimise)
-	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
+	public void encode(final SWFEncoder coder, final Context context) throws CoderException
 	{
 		start = coder.getPointer();
 

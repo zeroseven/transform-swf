@@ -12,7 +12,7 @@ import com.flagstone.transform.fillstyle.SolidFill;
 @SuppressWarnings("PMD")
 public final class FillStyleFactory implements SWFFactory<FillStyle> {
 
-	public FillStyle getObject(final SWFDecoder coder, final SWFContext context) throws CoderException {
+	public FillStyle getObject(final SWFDecoder coder, final Context context) throws CoderException {
 
 		FillStyle style;
 

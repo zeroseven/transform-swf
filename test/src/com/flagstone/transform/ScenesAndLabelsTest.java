@@ -41,7 +41,7 @@ import static org.junit.Assert.assertArrayEquals;
 
 import com.flagstone.transform.ScenesAndLabels;
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -156,7 +156,7 @@ public final class ScenesAndLabelsTest {
 	@Test
 	public void encode() throws CoderException {
 		SWFEncoder encoder = new SWFEncoder(encoded.length);		
-		SWFContext context = new SWFContext();
+		Context context = new Context();
 
 		fixture = new ScenesAndLabels(scenes, labels);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
@@ -169,7 +169,7 @@ public final class ScenesAndLabelsTest {
 	@Test
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
-		SWFContext context = new SWFContext();
+		Context context = new Context();
 
 		fixture = new ScenesAndLabels(decoder, context);
 		
@@ -181,7 +181,7 @@ public final class ScenesAndLabelsTest {
 	@Test
 	public void decodeExtended() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(extended);
-		SWFContext context = new SWFContext();
+		Context context = new Context();
 
 		fixture = new ScenesAndLabels(decoder, context);
 		

@@ -41,7 +41,7 @@ import static org.junit.Assert.assertArrayEquals;
 import com.flagstone.transform.ColorTransform;
 import com.flagstone.transform.CoordTransform;
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.text.DefineText2;
@@ -63,7 +63,7 @@ public final class DefineText2Test {
 	@Test @Ignore
 	public void encodeCoordTransform() throws CoderException {		
 		SWFEncoder encoder = new SWFEncoder(encoded.length);		
-		SWFContext context = new SWFContext();
+		Context context = new Context();
 
 		//fixture = new DefineText2(identifier, layer, transform);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
@@ -75,7 +75,7 @@ public final class DefineText2Test {
 	@Test @Ignore
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
-		SWFContext context = new SWFContext();
+		Context context = new Context();
 
 		fixture = new DefineText2(decoder, context);
 		
@@ -85,7 +85,7 @@ public final class DefineText2Test {
 	@Test @Ignore
 	public void decodeExtended() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(extended);
-		SWFContext context = new SWFContext();
+		Context context = new Context();
 
 		fixture = new DefineText2(decoder, context);
 		

@@ -41,9 +41,10 @@ import com.flagstone.transform.Strings;
 import com.flagstone.transform.action.Action;
 import com.flagstone.transform.action.ActionData;
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.coder.SWFFactory;
 
 //TODO(doc) Review
 /**
@@ -215,19 +216,20 @@ public final class ButtonEventHandler implements Encodeable
 	protected transient int length = 0; //TODO DefineText2 uses this field
 
 	//TODO(doc)
-	public ButtonEventHandler(int size, final SWFDecoder coder, SWFContext context) throws CoderException
+	public ButtonEventHandler(int size, final SWFDecoder coder, Context context) throws CoderException
 	{
 		event = coder.readWord(2, false);
 		length -= 2;
 
 		actions = new ArrayList<Action>();
 
-		if (context.isDecodeActions()) {
+		if (context.getVariables().containsKey(Context.DECODE_ACTIONS)) {
 			
+			SWFFactory<Action>decoder = context.getRegistry().getActionDecoder();
 			int end = coder.getPointer() + (length << 3);
 
 			while (coder.getPointer() < end) {
-				actions.add(context.actionOfType(coder, context));
+				actions.add(decoder.getObject(coder, context));
 			}
 		} 
 		else 
@@ -347,7 +349,7 @@ public final class ButtonEventHandler implements Encodeable
 		return String.format(FORMAT, event, actions);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
+	public int prepareToEncode(final SWFEncoder coder, final Context context)
 	{
 		length = 2;
 
@@ -358,7 +360,7 @@ public final class ButtonEventHandler implements Encodeable
 		return length;
 	}
 
-	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
+	public void encode(final SWFEncoder coder, final Context context) throws CoderException
 	{
 		coder.writeWord(event, 2);
 

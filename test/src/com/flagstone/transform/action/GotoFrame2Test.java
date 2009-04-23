@@ -39,7 +39,7 @@ import static org.junit.Assert.assertArrayEquals;
 import com.flagstone.transform.action.ActionTypes;
 import com.flagstone.transform.action.GotoFrame2;
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -87,7 +87,7 @@ public final class GotoFrame2Test {
 	@Test
 	public void encode() throws CoderException {		
 		SWFEncoder encoder = new SWFEncoder(encoded.length);		
-		SWFContext context = new SWFContext();
+		Context context = new Context();
 
 		fixture = new GotoFrame2(offset, play);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
@@ -100,7 +100,7 @@ public final class GotoFrame2Test {
 	@Test
 	public void encodeWithNoOffset() throws CoderException {		
 		SWFEncoder encoder = new SWFEncoder(noOffset.length);		
-		SWFContext context = new SWFContext();
+		Context context = new Context();
 
 		fixture = new GotoFrame2(0, play);
 		assertEquals(noOffset.length, fixture.prepareToEncode(encoder, context));
@@ -113,7 +113,7 @@ public final class GotoFrame2Test {
 	@Test
 	public void encodeWithPlaySetToFalse() throws CoderException {		
 		SWFEncoder encoder = new SWFEncoder(stop.length);		
-		SWFContext context = new SWFContext();
+		Context context = new Context();
 
 		fixture = new GotoFrame2(0, false);
 		assertEquals(stop.length, fixture.prepareToEncode(encoder, context));
@@ -126,7 +126,7 @@ public final class GotoFrame2Test {
 	@Test
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
-		SWFContext context = new SWFContext();
+		Context context = new Context();
 
 		fixture = new GotoFrame2(decoder, context);
 		
@@ -138,7 +138,7 @@ public final class GotoFrame2Test {
 	@Test
 	public void decodeWithNoOffset() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(noOffset);
-		SWFContext context = new SWFContext();
+		Context context = new Context();
 
 		fixture = new GotoFrame2(decoder, context);
 		
@@ -150,7 +150,7 @@ public final class GotoFrame2Test {
 	@Test
 	public void decodeWithPlaySetToFalse() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(stop);
-		SWFContext context = new SWFContext();
+		Context context = new Context();
 
 		fixture = new GotoFrame2(decoder, context);
 		

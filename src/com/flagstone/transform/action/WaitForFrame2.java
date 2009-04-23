@@ -31,7 +31,7 @@
 package com.flagstone.transform.action;
 
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -62,7 +62,7 @@ public final class WaitForFrame2 implements Action
 	private int actionCount;
 
 	//TODO(doc)
-	public WaitForFrame2(final SWFDecoder coder, final SWFContext context) throws CoderException
+	public WaitForFrame2(final SWFDecoder coder, final Context context) throws CoderException
 	{
 		coder.readByte();
 		coder.readWord(2, false);
@@ -122,12 +122,12 @@ public final class WaitForFrame2 implements Action
 		return String.format(FORMAT, actionCount);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
+	public int prepareToEncode(final SWFEncoder coder, final Context context)
 	{
 		return 4;
 	}
 
-	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
+	public void encode(final SWFEncoder coder, final Context context) throws CoderException
 	{
 		coder.writeByte(ActionTypes.WAIT_FOR_FRAME_2);
 		coder.writeWord(1, 2);

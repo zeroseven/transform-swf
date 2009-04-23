@@ -34,7 +34,7 @@ import com.flagstone.transform.Color;
 import com.flagstone.transform.Encodeable;
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -67,7 +67,7 @@ public final class MorphGradient implements Encodeable
 	private Gradient start;
 	private Gradient end;
 	
-	public MorphGradient(final SWFDecoder coder, final SWFContext context) throws CoderException
+	public MorphGradient(final SWFDecoder coder, final Context context) throws CoderException
 	{
 		start = new Gradient(coder, context);
 		end = new Gradient(coder, context);
@@ -152,7 +152,7 @@ public final class MorphGradient implements Encodeable
 		return String.format(FORMAT, start.toString(), end.toString());
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
+	public int prepareToEncode(final SWFEncoder coder, final Context context)
 	{
 		int length = 0;
 
@@ -162,7 +162,7 @@ public final class MorphGradient implements Encodeable
 		return length;
 	}
 
-	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
+	public void encode(final SWFEncoder coder, final Context context) throws CoderException
 	{
 		start.encode(coder, context);
 		end.encode(coder, context);

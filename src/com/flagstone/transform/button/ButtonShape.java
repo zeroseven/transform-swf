@@ -42,7 +42,7 @@ import com.flagstone.transform.Encodeable;
 import com.flagstone.transform.MovieTypes;
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.filter.Filter;
@@ -91,7 +91,7 @@ public final class ButtonShape implements Encodeable
 
 	//TODO(doc)
 	//TODO(code) implement fully
-	public ButtonShape(final SWFDecoder coder, final SWFContext context) throws CoderException
+	public ButtonShape(final SWFDecoder coder, final Context context) throws CoderException
 	{
 		coder.readBits(4, false);
 
@@ -100,7 +100,7 @@ public final class ButtonShape implements Encodeable
 		layer = coder.readWord(2, false);
 		transform = new CoordTransform(coder);
 
-		if (context.getType() == MovieTypes.DEFINE_BUTTON_2) {
+		if (context.getVariables().get(Context.TYPE) == MovieTypes.DEFINE_BUTTON_2) {
 			colorTransform = new ColorTransform(coder, context);
 		}
 	}
@@ -347,11 +347,11 @@ public final class ButtonShape implements Encodeable
 	}
 
 	//TODO(code) implement fully
-	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
+	public int prepareToEncode(final SWFEncoder coder, final Context context)
 	{
 		int length = 5 + transform.prepareToEncode(coder, context);
 
-		if (context.getType() == MovieTypes.DEFINE_BUTTON_2) {
+		if (context.getVariables().get(Context.TYPE) == MovieTypes.DEFINE_BUTTON_2) {
 			length += colorTransform.prepareToEncode(coder, context);
 		}
 
@@ -360,7 +360,7 @@ public final class ButtonShape implements Encodeable
 
 	//TODO(code) implement fully
 	//TODO(code) Add test so blend and filters are only added in flash 8+
-	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
+	public void encode(final SWFEncoder coder, final Context context) throws CoderException
 	{
 		coder.writeBits(0, 4);
 		coder.writeBits(state, 4);
@@ -368,7 +368,7 @@ public final class ButtonShape implements Encodeable
 		coder.writeWord(layer, 2);
 		transform.encode(coder, context);
 
-		if (context.getType() == MovieTypes.DEFINE_BUTTON_2) {
+		if (context.getVariables().get(Context.TYPE) == MovieTypes.DEFINE_BUTTON_2) {
 			colorTransform.encode(coder, context);
 		}
 	}

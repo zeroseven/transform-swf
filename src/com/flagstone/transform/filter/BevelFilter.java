@@ -2,7 +2,7 @@ package com.flagstone.transform.filter;
 
 import com.flagstone.transform.Color;
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -22,7 +22,7 @@ public final class BevelFilter implements Filter {
 	private Mode mode;
 	private int passes;
 
-	public BevelFilter(final SWFDecoder coder, final SWFContext context) throws CoderException
+	public BevelFilter(final SWFDecoder coder, final Context context) throws CoderException
 	{
 		coder.adjustPointer(8);
 		shadow = new Color(coder, context);
@@ -53,12 +53,12 @@ public final class BevelFilter implements Filter {
 		return new BevelFilter(this);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
+	public int prepareToEncode(final SWFEncoder coder, final Context context)
 	{
 		return 27;
 	}
 
-	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
+	public void encode(final SWFEncoder coder, final Context context) throws CoderException
 	{
 		coder.writeByte(BEVEL);
 		shadow.encode(coder, context);

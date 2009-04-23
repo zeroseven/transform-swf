@@ -39,9 +39,11 @@ import com.flagstone.transform.MovieTypes;
 import com.flagstone.transform.ShowFrame;
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.coder.SWFFactory;
+import com.flagstone.transform.fillstyle.FillStyle;
 
 //TODO(doc) Review
 /**
@@ -80,7 +82,7 @@ public final class DefineMovieClip implements DefineTag
 
 	//TODO(doc)
 	//TODO(optimise)
-	public DefineMovieClip(final SWFDecoder coder, final SWFContext context) throws CoderException
+	public DefineMovieClip(final SWFDecoder coder, final Context context) throws CoderException
 	{
 		start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
@@ -95,12 +97,13 @@ public final class DefineMovieClip implements DefineTag
 		objects = new ArrayList<MovieTag>();
 		
 		int type;
+		SWFFactory<MovieTag>decoder = context.getRegistry().getMovieDecoder();
 		
 		do {
 			type = coder.scanUnsignedShort() >>> 6;
 		
 			if (type != 0){
-				objects.add(context.movieOfType(coder, context));
+				objects.add(decoder.getObject(coder, context));
 			}
 		} while (type != 0);
 
@@ -200,7 +203,7 @@ public final class DefineMovieClip implements DefineTag
 		return String.format(FORMAT, identifier, objects);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final SWFContext context){
+	public int prepareToEncode(final SWFEncoder coder, final Context context){
 		
 		frameCount = 0;
 		length = 6;
@@ -215,7 +218,7 @@ public final class DefineMovieClip implements DefineTag
 		return (length > 62 ? 6:2) + length;
 	}
 
-	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
+	public void encode(final SWFEncoder coder, final Context context) throws CoderException
 	{
 		start = coder.getPointer();
 

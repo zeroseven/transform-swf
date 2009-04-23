@@ -37,7 +37,7 @@ import org.junit.Test;
 
 import com.flagstone.transform.Bounds;
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -55,7 +55,7 @@ public final class BoundsTest {
 
 	private transient SWFEncoder encoder;
 	private transient SWFDecoder decoder; 
-	private transient SWFContext context;
+	private transient Context context;
 	
 	private transient final byte[] encoded = new byte[] { 32, -103, 32 };
 

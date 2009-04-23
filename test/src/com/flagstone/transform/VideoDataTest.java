@@ -42,7 +42,7 @@ import com.flagstone.transform.ColorTransform;
 import com.flagstone.transform.CoordTransform;
 import com.flagstone.transform.VideoData;
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 

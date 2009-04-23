@@ -44,9 +44,10 @@ import com.flagstone.transform.action.ActionData;
 import com.flagstone.transform.button.ButtonEvent;
 import com.flagstone.transform.button.ButtonEventHandler;
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.coder.SWFFactory;
 
 //TODO(doc) Review
 /**
@@ -129,9 +130,9 @@ public final class MovieClipEventHandler implements Encodeable
 	private transient int offset;
 
 	//TODO(doc)
-	public MovieClipEventHandler(final SWFDecoder coder, final SWFContext context) throws CoderException
+	public MovieClipEventHandler(final SWFDecoder coder, final Context context) throws CoderException
 	{
-		int eventSize = (context.getVersion() > 5) ? 4 : 2;
+		int eventSize = (Context.VERSION > 5) ? 4 : 2;
 
 		event = coder.readWord(eventSize, false);
 		offset = coder.readWord(4, false);
@@ -144,11 +145,12 @@ public final class MovieClipEventHandler implements Encodeable
 
 		actions = new ArrayList<Action>();
 
-		if (context.isDecodeActions()) {
+		if (context.getVariables().containsKey(Context.DECODE_ACTIONS)) {
 			int len = offset;
+			SWFFactory<Action>decoder = context.getRegistry().getActionDecoder();
 
 			while (len > 0) {
-				actions.add(context.actionOfType(coder, context));
+				actions.add(decoder.getObject(coder, context));
 			}
 		} 
 		else {
@@ -295,9 +297,9 @@ public final class MovieClipEventHandler implements Encodeable
 		return String.format(FORMAT, event, keyCode, actions);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
+	public int prepareToEncode(final SWFEncoder coder, final Context context)
 	{
-		int length = 4 + ((context.getVersion() > 5) ? 4 : 2);
+		int length = 4 + ((Context.VERSION > 5) ? 4 : 2);
 
 		offset = (event & MovieClipEvent.KEY_PRESS.getValue()) == 0 ? 0 : 1;
 
@@ -310,9 +312,9 @@ public final class MovieClipEventHandler implements Encodeable
 		return length;
 	}
 
-	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
+	public void encode(final SWFEncoder coder, final Context context) throws CoderException
 	{
-		int eventSize = (context.getVersion() > 5) ? 4 : 2;
+		int eventSize = (Context.VERSION > 5) ? 4 : 2;
 
 		coder.writeWord(event, eventSize);
 		coder.writeWord(offset, 4);

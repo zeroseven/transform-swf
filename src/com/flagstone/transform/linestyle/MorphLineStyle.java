@@ -34,7 +34,7 @@ import com.flagstone.transform.Color;
 import com.flagstone.transform.Encodeable;
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.shape.DefineMorphShape;
@@ -60,7 +60,7 @@ public final class MorphLineStyle implements Encodeable
 	private Color endColor;
 
 	//TODO(doc)
-	public MorphLineStyle(final SWFDecoder coder, final SWFContext context) throws CoderException
+	public MorphLineStyle(final SWFDecoder coder, final Context context) throws CoderException
 	{
 		startWidth = coder.readWord(2, false);
 		endWidth = coder.readWord(2, false);
@@ -198,12 +198,12 @@ public final class MorphLineStyle implements Encodeable
 		return String.format(FORMAT, startWidth, endWidth, startColor, endColor);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
+	public int prepareToEncode(final SWFEncoder coder, final Context context)
 	{
 		return 12;
 	}
 
-	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
+	public void encode(final SWFEncoder coder, final Context context) throws CoderException
 	{
 		coder.writeWord(startWidth, 2);
 		coder.writeWord(endWidth, 2);

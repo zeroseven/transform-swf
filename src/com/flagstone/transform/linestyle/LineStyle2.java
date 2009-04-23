@@ -35,9 +35,10 @@ import com.flagstone.transform.Copyable;
 import com.flagstone.transform.Encodeable;
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.coder.SWFFactory;
 import com.flagstone.transform.fillstyle.FillStyle;
 
 //TODO(doc) add description and comments for methods.
@@ -66,7 +67,7 @@ public final class LineStyle2 implements Encodeable, Copyable<LineStyle2> {
 	private transient boolean hasFillStyle;
 	private transient boolean hasMiter;
 
-	public LineStyle2(final SWFDecoder coder, final SWFContext context) throws CoderException {
+	public LineStyle2(final SWFDecoder coder, final Context context) throws CoderException {
 		
 		width = coder.readWord(2, false);
 		unpack(coder.readB16());
@@ -76,7 +77,8 @@ public final class LineStyle2 implements Encodeable, Copyable<LineStyle2> {
 		}
 		
 		if (hasFillStyle) {
-			fillStyle = context.fillStyleOfType(coder, context);
+			SWFFactory<FillStyle>decoder = context.getRegistry().getFillStyleDecoder();
+			fillStyle = decoder.getObject(coder, context);
 		} else {
 			color = new Color(coder, context);
 		}
@@ -305,7 +307,7 @@ public final class LineStyle2 implements Encodeable, Copyable<LineStyle2> {
 				pixelAligned, lineClosed, miterLimit);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final SWFContext context) {
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 
 		hasFillStyle = fillStyle != null;
 		hasMiter = joinStyle == 2;
@@ -323,13 +325,13 @@ public final class LineStyle2 implements Encodeable, Copyable<LineStyle2> {
 		}
 		
 		if (scaledHorizontally || scaledVertically) {
-			context.setScalingStroke(true);
+			context.getVariables().put(Context.SCALING_STROKE, 1);
 		}
 
 		return length;
 	}
 
-	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException {
+	public void encode(final SWFEncoder coder, final Context context) throws CoderException {
 		coder.writeWord(width, 2);
 		coder.writeB16(pack());
 		

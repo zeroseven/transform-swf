@@ -32,6 +32,7 @@ package com.flagstone.transform.text;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.flagstone.transform.Bounds;
 import com.flagstone.transform.CoordTransform;
@@ -39,7 +40,7 @@ import com.flagstone.transform.DefineTag;
 import com.flagstone.transform.MovieTypes;
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -80,7 +81,7 @@ public final class DefineText implements DefineTag
 	
 	//TODO(doc)
 	//TODO(optimise)
-	public DefineText(final SWFDecoder coder, final SWFContext context) throws CoderException
+	public DefineText(final SWFDecoder coder, final Context context) throws CoderException
 	{
 		start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
@@ -121,8 +122,9 @@ public final class DefineText implements DefineTag
 		glyphBits = coder.readByte();
 		advanceBits = coder.readByte();
 
-		context.setGlyphSize(glyphBits);
-		context.setAdvanceSize(advanceBits);
+		Map<Integer,Integer>vars = context.getVariables();
+		vars.put(Context.GLYPH_SIZE, glyphBits);
+		vars.put(Context.ADVANCE_SIZE, advanceBits);
 
 		objects = new ArrayList<TextSpan>();
 
@@ -132,8 +134,8 @@ public final class DefineText implements DefineTag
 			objects.add(new TextSpan(coder, context));
 		}
 
-		context.setGlyphSize(0);
-		context.setAdvanceSize(0);
+		vars.put(Context.GLYPH_SIZE, 0);
+		vars.put(Context.ADVANCE_SIZE, 0);
 
 		if (coder.getPointer() != end) {
 			throw new CoderException(getClass().getName(), start >> 3, length,
@@ -302,13 +304,14 @@ public final class DefineText implements DefineTag
 		return String.format(FORMAT, identifier, bounds, transform, objects);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
+	public int prepareToEncode(final SWFEncoder coder, final Context context)
 	{
 		glyphBits = calculateSizeForGlyphs();
 		advanceBits = calculateSizeForAdvances();
 
-		context.setGlyphSize(glyphBits);
-		context.setAdvanceSize(advanceBits);
+		Map<Integer,Integer>vars = context.getVariables();
+		vars.put(Context.GLYPH_SIZE, glyphBits);
+		vars.put(Context.ADVANCE_SIZE, advanceBits);
 
 		length = 2 + bounds.prepareToEncode(coder, context);
 		length += transform.prepareToEncode(coder, context);
@@ -320,14 +323,14 @@ public final class DefineText implements DefineTag
 		
 		length += 1;
 
-		context.setGlyphSize(0);
-		context.setAdvanceSize(0);
+		vars.put(Context.GLYPH_SIZE, 0);
+		vars.put(Context.ADVANCE_SIZE, 0);
 
 		return (length > 62 ? 6:2) + length;
 	}
 
 	//TODO(optimise)
-	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
+	public void encode(final SWFEncoder coder, final Context context) throws CoderException
 	{
 		start = coder.getPointer();
 
@@ -341,8 +344,9 @@ public final class DefineText implements DefineTag
 	
 		coder.writeWord(identifier, 2);
 		
-		context.setGlyphSize(glyphBits);
-		context.setAdvanceSize(advanceBits);
+		Map<Integer,Integer>vars = context.getVariables();
+		vars.put(Context.GLYPH_SIZE, glyphBits);
+		vars.put(Context.ADVANCE_SIZE, advanceBits);
 
 		bounds.encode(coder, context);
 		transform.encode(coder, context);
@@ -356,8 +360,8 @@ public final class DefineText implements DefineTag
 
 		coder.writeWord(0, 1);
 
-		context.setGlyphSize(0);
-		context.setAdvanceSize(0);
+		vars.put(Context.GLYPH_SIZE, 0);
+		vars.put(Context.ADVANCE_SIZE, 0);
 
 		if (coder.getPointer() != end) {
 			throw new CoderException(getClass().getName(), start >> 3, length,

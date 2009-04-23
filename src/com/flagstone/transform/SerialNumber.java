@@ -31,7 +31,7 @@
 package com.flagstone.transform;
 
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -47,7 +47,7 @@ public final class SerialNumber implements MovieTag
 	private transient int length;
 
 	//TODO(doc)
-	public SerialNumber(final SWFDecoder coder, final SWFContext context) throws CoderException
+	public SerialNumber(final SWFDecoder coder, final Context context) throws CoderException
 	{
 		length = coder.readWord(2, false) & 0x3F;
 		
@@ -111,13 +111,13 @@ public final class SerialNumber implements MovieTag
 		return String.format(FORMAT, number);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
+	public int prepareToEncode(final SWFEncoder coder, final Context context)
 	{
 		length = coder.strlen(number);
 		return (length > 62 ? 6:2) + length;
 	}
 
-	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
+	public void encode(final SWFEncoder coder, final Context context) throws CoderException
 	{
 		if (length > 62) {
 			coder.writeWord((MovieTypes.SERIAL_NUMBER << 6) | 0x3F, 2);

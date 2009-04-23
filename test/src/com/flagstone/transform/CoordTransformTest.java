@@ -35,7 +35,7 @@ import org.junit.Test;
 
 import com.flagstone.transform.CoordTransform;
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -53,7 +53,7 @@ public final class CoordTransformTest {
 
 	private transient SWFEncoder encoder;
 	private transient SWFDecoder decoder; 
-	private transient SWFContext context;
+	private transient Context context;
 	private transient byte[] data;
 
 	@Test

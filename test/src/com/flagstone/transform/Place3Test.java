@@ -43,7 +43,7 @@ import com.flagstone.transform.CoordTransform;
 import com.flagstone.transform.Place2;
 import com.flagstone.transform.Place3;
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -115,7 +115,7 @@ public final class Place3Test {
 	@Test @Ignore
 	public void encodeCoordTransform() throws CoderException {		
 		SWFEncoder encoder = new SWFEncoder(coord.length);		
-		SWFContext context = new SWFContext();
+		Context context = new Context();
 
 		fixture = new Place3().setPlacement(Placement.NEW).setIdentifier(identifier).setLayer(layer).setTransform(transform);
 		assertEquals(coord.length, fixture.prepareToEncode(encoder, context));
@@ -128,7 +128,7 @@ public final class Place3Test {
 	@Test @Ignore
 	public void encodeCoordAndColorTransforms() throws CoderException {		
 		SWFEncoder encoder = new SWFEncoder(coordAndColor.length);		
-		SWFContext context = new SWFContext();
+		Context context = new Context();
 
 		//fixture = new Place3(identifier, layer, transform, colorTransform);
 		assertEquals(coordAndColor.length, fixture.prepareToEncode(encoder, context));
@@ -141,7 +141,7 @@ public final class Place3Test {
 	@Test @Ignore
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(coord);
-		SWFContext context = new SWFContext();
+		Context context = new Context();
 
 		fixture = new Place3(decoder, context);
 		
@@ -155,7 +155,7 @@ public final class Place3Test {
 	@Test @Ignore
 	public void decodeExtended() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(extended);
-		SWFContext context = new SWFContext();
+		Context context = new Context();
 
 		fixture = new Place3(decoder, context);
 		
@@ -169,7 +169,7 @@ public final class Place3Test {
 	@Test @Ignore
 	public void decodeCoordAndColorTransforms() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(coordAndColor);
-		SWFContext context = new SWFContext();
+		Context context = new Context();
 
 		fixture = new Place3(decoder, context);
 		

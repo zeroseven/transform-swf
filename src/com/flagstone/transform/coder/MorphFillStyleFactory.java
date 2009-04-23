@@ -12,7 +12,7 @@ import com.flagstone.transform.fillstyle.MorphSolidFill;
 @SuppressWarnings("PMD")
 public final class MorphFillStyleFactory implements SWFFactory<FillStyle> {
 
-	public FillStyle getObject(final SWFDecoder coder, final SWFContext context) throws CoderException {
+	public FillStyle getObject(final SWFDecoder coder, final Context context) throws CoderException {
 
 		FillStyle style;
 

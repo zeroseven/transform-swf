@@ -32,7 +32,7 @@ package com.flagstone.transform.action;
 
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -76,7 +76,7 @@ public final class GotoFrame2 implements Action
 	private transient int length;
 
 	//TODO(doc)
-	public GotoFrame2(final SWFDecoder coder, final SWFContext context) throws CoderException
+	public GotoFrame2(final SWFDecoder coder, final Context context) throws CoderException
 	{
 		coder.readByte();
 		length = coder.readWord(2, false);
@@ -187,14 +187,14 @@ public final class GotoFrame2 implements Action
 		return String.format(FORMAT, String.valueOf(play), frameOffset);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
+	public int prepareToEncode(final SWFEncoder coder, final Context context)
 	{
 		length = 1 + ((frameOffset > 0) ? 2 : 0);
 
 		return 3 + length;
 	}
 
-	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
+	public void encode(final SWFEncoder coder, final Context context) throws CoderException
 	{
 		coder.writeByte(ActionTypes.GOTO_FRAME_2);
 		coder.writeWord(length, 2);

@@ -42,8 +42,10 @@ import com.flagstone.transform.action.Action;
 import com.flagstone.transform.action.ActionTypes;
 import com.flagstone.transform.action.BasicAction;
 import com.flagstone.transform.action.NewFunction;
+import com.flagstone.transform.coder.ActionFactory;
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
+import com.flagstone.transform.coder.DecoderRegistry;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -112,7 +114,7 @@ public final class NewFunctionTest {
 	@Test
 	public void encode() throws CoderException {
 		SWFEncoder encoder = new SWFEncoder(encoded.length);		
-		SWFContext context = new SWFContext();
+		Context context = new Context();
 	
 		fixture = new NewFunction(name, args, actions);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
@@ -125,7 +127,10 @@ public final class NewFunctionTest {
 	@Test
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
-		SWFContext context = new SWFContext();
+		Context context = new Context();
+		DecoderRegistry registry = new DecoderRegistry();
+		registry.setActionDecoder(new ActionFactory());
+		context.setRegistry(registry);
 
 		fixture = new NewFunction(decoder, context);
 		

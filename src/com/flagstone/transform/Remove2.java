@@ -31,7 +31,7 @@
 package com.flagstone.transform;
 
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -48,7 +48,7 @@ public final class Remove2 implements MovieTag {
 	private int layer;
 
 	//TODO(doc)
-	public Remove2(final SWFDecoder coder, final SWFContext context) throws CoderException {
+	public Remove2(final SWFDecoder coder, final Context context) throws CoderException {
 
 		if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
 			coder.readWord(4, false);
@@ -108,11 +108,11 @@ public final class Remove2 implements MovieTag {
 		return String.format(FORMAT, layer);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final SWFContext context) {
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		return 4;
 	}
 
-	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException {
+	public void encode(final SWFEncoder coder, final Context context) throws CoderException {
 		coder.writeWord((MovieTypes.REMOVE_2 << 6) | 2, 2);
 		coder.writeWord(layer, 2);
 	}

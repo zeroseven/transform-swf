@@ -42,7 +42,7 @@ import com.flagstone.transform.ColorTransform;
 import com.flagstone.transform.CoordTransform;
 import com.flagstone.transform.Movie;
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -65,7 +65,7 @@ public final class MovieTest {
 	@Test @Ignore
 	public void encode() throws CoderException {		
 		SWFEncoder encoder = new SWFEncoder(encoded.length);		
-		SWFContext context = new SWFContext();
+		Context context = new Context();
 
 		fixture = new Movie();
 	}
@@ -73,7 +73,7 @@ public final class MovieTest {
 	@Test @Ignore
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
-		SWFContext context = new SWFContext();
+		Context context = new Context();
 
 		fixture = new Movie();
 		

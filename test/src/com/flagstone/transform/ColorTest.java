@@ -33,7 +33,7 @@ import org.junit.Test;
 
 import com.flagstone.transform.Color;
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -59,7 +59,7 @@ public final class ColorTest {
 
 	private transient SWFEncoder encoder;
 	private transient SWFDecoder decoder; 
-	private transient SWFContext context;
+	private transient Context context;
 
 	@Test(expected = IllegalArgumentException.class)
 	public void checkRedBelowRangeThrowsException() {
@@ -131,8 +131,7 @@ public final class ColorTest {
 	@Test
 	public void encodeOpaqueColour() throws CoderException {
 		encoder = new SWFEncoder(opaque.length);
-		context = new SWFContext();
-		context.setTransparent(false);
+		context = new Context();
 		
 		fixture = new Color(red, green, blue);
 
@@ -146,8 +145,8 @@ public final class ColorTest {
 	@Test
 	public void encodeTransparentColour() throws CoderException {
 		encoder = new SWFEncoder(transparent.length);
-		context = new SWFContext();
-		context.setTransparent(true);
+		context = new Context();
+		context.getVariables().put(Context.TRANSPARENT, 1);
 		
 		fixture = new Color(red, green, blue, alpha);
 
@@ -161,8 +160,7 @@ public final class ColorTest {
 	@Test
 	public void decodeOpaqueColour() throws CoderException {
 		decoder = new SWFDecoder(opaque);
-		context = new SWFContext();
-		context.setTransparent(false);
+		context = new Context();
 
 		fixture = new Color(decoder, context);
 
@@ -176,8 +174,8 @@ public final class ColorTest {
 	@Test
 	public void decodeTransparentColour() throws CoderException {
 		decoder = new SWFDecoder(transparent);
-		context = new SWFContext();
-		context.setTransparent(true);
+		context = new Context();
+		context.getVariables().put(Context.TRANSPARENT, 0);
 
 		fixture = new Color(decoder, context);
 

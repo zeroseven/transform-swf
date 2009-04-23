@@ -36,7 +36,7 @@ import com.flagstone.transform.MovieTag;
 import com.flagstone.transform.MovieTypes;
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -65,7 +65,7 @@ public final class JPEGEncodingTable implements MovieTag
 	private transient int length;
 
 	//TODO(doc)
-	public JPEGEncodingTable(final SWFDecoder coder, final SWFContext context) throws CoderException
+	public JPEGEncodingTable(final SWFDecoder coder, final Context context) throws CoderException
 	{
 		start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
@@ -139,14 +139,14 @@ public final class JPEGEncodingTable implements MovieTag
 		return String.format(FORMAT, table.length);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
+	public int prepareToEncode(final SWFEncoder coder, final Context context)
 	{
 		length = table.length;
 
 		return (length > 62 ? 6:2) + length;
 	}
 
-	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
+	public void encode(final SWFEncoder coder, final Context context) throws CoderException
 	{
 		start = coder.getPointer();
 

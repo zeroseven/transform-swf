@@ -72,7 +72,7 @@ import com.flagstone.transform.text.DefineTextField;
 @SuppressWarnings("PMD")
 public final class MovieFactory implements SWFFactory<MovieTag> {
 
-	public MovieTag getObject(final SWFDecoder coder, final SWFContext context) throws CoderException {
+	public MovieTag getObject(final SWFDecoder coder, final Context context) throws CoderException {
 
 		MovieTag obj;
 

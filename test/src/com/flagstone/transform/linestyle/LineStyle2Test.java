@@ -40,7 +40,7 @@ import static org.junit.Assert.assertArrayEquals;
 
 import com.flagstone.transform.Color;
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.linestyle.LineStyle2;
@@ -72,7 +72,7 @@ public final class LineStyle2Test {
 	@Test @Ignore
 	public void encode() throws CoderException {		
 		SWFEncoder encoder = new SWFEncoder(encoded.length);		
-		SWFContext context = new SWFContext();
+		Context context = new Context();
 
 		fixture = new LineStyle2(width, color);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
@@ -85,7 +85,7 @@ public final class LineStyle2Test {
 	@Test @Ignore
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
-		SWFContext context = new SWFContext();
+		Context context = new Context();
 
 		fixture = new LineStyle2(decoder, context);
 		

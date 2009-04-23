@@ -34,7 +34,7 @@ import org.junit.Test;
 import com.flagstone.transform.Bounds;
 import com.flagstone.transform.ScalingGrid;
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -91,7 +91,7 @@ public final class ScalingGridTest {
 	public void encode() throws CoderException {
 
 		SWFEncoder encoder = new SWFEncoder(encoded.length);
-		SWFContext context = new SWFContext();
+		Context context = new Context();
 
 		fixture = new ScalingGrid(identifier, bounds);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));		
@@ -105,7 +105,7 @@ public final class ScalingGridTest {
 	public void decode() throws CoderException {
 
 		SWFDecoder decoder = new SWFDecoder(encoded);
-		SWFContext context = new SWFContext();
+		Context context = new Context();
 
 		fixture = new ScalingGrid(decoder, context);
 		

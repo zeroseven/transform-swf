@@ -1,7 +1,7 @@
 /*
- * Call.java
- * Transform
- * 
+ *  ImageConstructor.java
+ *  Transform Utilities
+ *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -28,47 +28,60 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.flagstone.transform.action;
+package com.flagstone.transform.coder;
 
-import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.MovieTag;
+import com.flagstone.transform.VideoTag;
+import com.flagstone.transform.action.Action;
+import com.flagstone.transform.fillstyle.FillStyle;
 
 /**
- * <p>Call is used to execute the actions previously assigned to a given frame
- * with an DoAction object. Call is a stack-based action, the value for the 
- * <i>frame name</i> or <i>frame number</i> is retrieved from the top of the 
- * stack when it is executed.</p>
  */
-public final class Call implements Action
+public final class DecoderRegistry
 {
-	private static final Call instance = new Call();
+	private SWFFactory<FillStyle> fillStyleDecoder;
+	private SWFFactory<FillStyle> morphStyleDecoder;
+	private SWFFactory<Action> actionDecoder;
+	private SWFFactory<MovieTag> movieDecoder;
+	private FLVFactory<VideoTag> videoDecoder;
 
-	/**
-	 * Returns a shared instance of Call object which can be reused in one or 
-	 * more movies.
-	 */
-	public static Call getInstance()
-	{
-		return instance;
+	public SWFFactory<FillStyle> getFillStyleDecoder() {
+		return fillStyleDecoder;
 	}
+	
+	public void setFillStyleDecoder(SWFFactory<FillStyle> factory) {
+	    fillStyleDecoder = factory;
+    }
 
-	private Call()
-	{
+	public SWFFactory<FillStyle> getMorphFillStyleDecoder() {
+		return morphStyleDecoder;
 	}
+	
+	public void setMorphFillStyleDecoder(SWFFactory<FillStyle> factory) {
+	    morphStyleDecoder = factory;
+    }
 
-	public Call copy() 
-	{
-		return this;
+	public SWFFactory<Action> getActionDecoder() {
+		return actionDecoder;
 	}
+	
+	public void setActionDecoder(SWFFactory<Action> factory) {
+	    actionDecoder = factory;
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		return 3;
+	public SWFFactory<MovieTag> getMovieDecoder() {
+		return movieDecoder;
 	}
+	
+	public void setMovieDecoder(SWFFactory<MovieTag> factory) {
+	    movieDecoder = factory;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException {
-		coder.writeByte(ActionTypes.CALL);
-		coder.writeByte(0);
-		coder.writeByte(0);
+	public FLVFactory<VideoTag> getVideoDecoder() {
+		return videoDecoder;
 	}
+	
+	public void setVideoDecoder(FLVFactory<VideoTag> factory) {
+	    videoDecoder = factory;
+    }
 }

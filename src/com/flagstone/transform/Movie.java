@@ -38,6 +38,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
@@ -45,10 +46,11 @@ import java.util.zip.Inflater;
 import com.flagstone.transform.action.Action;
 import com.flagstone.transform.coder.ActionFactory;
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.DecoderRegistry;
 import com.flagstone.transform.coder.FillStyleFactory;
 import com.flagstone.transform.coder.MorphFillStyleFactory;
 import com.flagstone.transform.coder.MovieFactory;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.coder.SWFFactory;
@@ -95,11 +97,6 @@ public final class Movie implements Cloneable
 	private boolean decodeShapes = true;
 	private boolean decodeGlyphs = true;
 	
-	private SWFFactory<FillStyle> fillStyleFactory;
-	private SWFFactory<FillStyle> morphStyleFactory;
-	private SWFFactory<Action> actionFactory;
-	private SWFFactory<MovieTag> movieFactory;
-
 	private int identifier = 0;
 	private String encoding = Movie.DEFAULT_ENCODING;
 	
@@ -120,11 +117,6 @@ public final class Movie implements Cloneable
 	 */
 	public Movie()
 	{
-		fillStyleFactory = new FillStyleFactory();
-		morphStyleFactory = new MorphFillStyleFactory();
-		actionFactory = new ActionFactory();
-		movieFactory = new MovieFactory();
-		
 		signature = Movie.SWF_VERSION > 5 ? "CWS" : "FWS";
 		version = Movie.SWF_VERSION;
 		frameSize = new Bounds(0,0,0,0);
@@ -132,11 +124,6 @@ public final class Movie implements Cloneable
 	}
 	
 	public Movie(Movie object) {
-
-		fillStyleFactory = object.fillStyleFactory;
-		morphStyleFactory = object.morphStyleFactory;
-		actionFactory = object.actionFactory;
-		movieFactory = object.movieFactory;
 
 		signature = object.signature;
 		version = object.version;
@@ -150,26 +137,6 @@ public final class Movie implements Cloneable
 		}
 	}
 	
-	/* 
-	 * TODO(code) replace the factory set methods by setting a default SWFContext
-	 * for the Movie class or set a SWFContext for each movie object.
-	 */
-	public void setFillStyleFactory(SWFFactory<FillStyle> factory) {
-	    fillStyleFactory = factory;
-    }
-	
-	public void setMorphFillStyleFactory(SWFFactory<FillStyle> factory) {
-	    morphStyleFactory = factory;
-    }
-	
-	public void setActionFactory(SWFFactory<Action> factory) {
-	    actionFactory = factory;
-    }
-	
-	public void setMovieFactory(SWFFactory<MovieTag> factory) {
-	    movieFactory = factory;
-    }
-
 	/**
 	 * Returns a unique identifier for an object derived from the Definition
 	 * class. In order to reference objects that define items such as shapes,
@@ -581,7 +548,15 @@ public final class Movie implements Cloneable
 		}
 
 		SWFDecoder coder;
-		SWFContext context = new SWFContext();
+		Context context = new Context();
+		
+		DecoderRegistry registry = new DecoderRegistry();
+		registry.setFillStyleDecoder(new FillStyleFactory());
+		registry.setMorphFillStyleDecoder(new MorphFillStyleFactory());
+		registry.setActionDecoder(new ActionFactory());
+		registry.setMovieDecoder(new MovieFactory());
+		
+		context.setRegistry(registry);
 
 		if (bytes[0] == 0x43) {
 			coder = new SWFDecoder(unzip(bytes));
@@ -592,10 +567,6 @@ public final class Movie implements Cloneable
 		
 		objects.clear();
 
-		context.setFillStyleFactory(fillStyleFactory);
-		context.setMorphFillStyleFactory(morphStyleFactory);
-		context.setActionFactory(actionFactory);
-		context.setMovieFactory(movieFactory);
 		context.setEncoding(encoding);
 		
 		signature = coder.readString(3, "UTF-8");
@@ -607,11 +578,20 @@ public final class Movie implements Cloneable
 		frameRate = coder.readWord(2, true)/256.0f;
 		frameCount = coder.readWord(2, false);
 
-		context.setVersion(version);
-		context.setDecodeActions(decodeActions);
-		context.setDecodeShapes(decodeShapes);
-		context.setDecodeGlyphs(decodeGlyphs);
+		Map<Integer,Integer>vars = context.getVariables();
+		
+		vars.put(Context.VERSION, version);
+		if (decodeActions) {
+			vars.put(Context.DECODE_ACTIONS, 1);
+		}
+		if (decodeShapes) {
+			vars.put(Context.DECODE_SHAPES, 1);
+		}
+		if (decodeGlyphs) {
+			vars.put(Context.DECODE_GLYPHS, 1);
+		}
 
+		SWFFactory<MovieTag> decoder = registry.getMovieDecoder();
 		MovieTag object;
 		int type;
 		
@@ -619,7 +599,7 @@ public final class Movie implements Cloneable
 			type = coder.scanUnsignedShort() >>> 6;
 			
 			if (type != 0) {
-				object = movieFactory.getObject(coder, context);
+				object = decoder.getObject(coder, context);
 				objects.add(object);
 				
 				if (object instanceof DefineTag) {
@@ -699,10 +679,10 @@ public final class Movie implements Cloneable
 	public byte[] encode() throws CoderException, IOException, DataFormatException
 	{
 		SWFEncoder coder = new SWFEncoder(0);
-		SWFContext context = new SWFContext();
+		Context context = new Context();
 		
 		coder.setEncoding(encoding);	
-		context.setVersion(version);
+		context.getVariables().put(Context.VERSION, version);
 
 		prepareToEncode(coder, context);
 
@@ -748,7 +728,7 @@ public final class Movie implements Cloneable
 		return String.format(FORMAT, signature, version, frameSize, frameRate, objects);
 	}
 
-	private int prepareToEncode(SWFEncoder coder, SWFContext context)
+	private int prepareToEncode(SWFEncoder coder, Context context)
 	{
 		frameCount = 0;
 

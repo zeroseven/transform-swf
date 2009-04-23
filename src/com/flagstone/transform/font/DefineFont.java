@@ -32,12 +32,13 @@ package com.flagstone.transform.font;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.flagstone.transform.DefineTag;
 import com.flagstone.transform.MovieTypes;
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.shape.Shape;
@@ -73,7 +74,7 @@ public final class DefineFont implements DefineTag
 
 	//TODO(optimise)
 	//TODO(doc)
-	public DefineFont(final SWFDecoder coder, final SWFContext context) throws CoderException
+	public DefineFont(final SWFDecoder coder, final Context context) throws CoderException
 	{
 		start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
@@ -200,12 +201,13 @@ public final class DefineFont implements DefineTag
 	}
 
 	//TODO(optimise)
-	public int prepareToEncode(final SWFEncoder coder, final SWFContext context)
+	public int prepareToEncode(final SWFEncoder coder, final Context context)
 	{
 		length = 2;
 		
-		context.setFillSize(1);
-		context.setLineSize(context.isPostscript() ? 1 : 0);
+		Map<Integer,Integer>vars = context.getVariables();
+		vars.put(Context.FILL_SIZE, 1);
+		vars.put(Context.LINE_SIZE,vars.containsKey(Context.POSTSCRIPT) ? 1 : 0);
 
 		length += shapes.size() * 2;
 
@@ -213,14 +215,14 @@ public final class DefineFont implements DefineTag
 			length += shape.prepareToEncode(coder, context);
 		}
 
-		context.setFillSize(0);
-		context.setLineSize(0);
+		vars.put(Context.FILL_SIZE, 0);
+		vars.put(Context.LINE_SIZE,0);
 
 		return (length > 62 ? 6:2) + length;
 	}
 
 	//TODO(optimise)
-	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException
+	public void encode(final SWFEncoder coder, final Context context) throws CoderException
 	{
 		start = coder.getPointer();
 		
@@ -233,8 +235,9 @@ public final class DefineFont implements DefineTag
 		end = coder.getPointer() + (length << 3);
 		coder.writeWord(identifier, 2);
 		
-		context.setFillSize(1);
-		context.setLineSize(context.isPostscript() ? 1 : 0);
+		Map<Integer,Integer>vars = context.getVariables();
+		vars.put(Context.FILL_SIZE, 1);
+		vars.put(Context.LINE_SIZE,vars.containsKey(Context.POSTSCRIPT) ? 1 : 0);
 
 		int currentLocation;
 		int offset;
@@ -260,8 +263,8 @@ public final class DefineFont implements DefineTag
 			tableEntry += 16;
 		}
 
-		context.setFillSize(0);
-		context.setLineSize(0);
+		vars.put(Context.FILL_SIZE, 0);
+		vars.put(Context.LINE_SIZE,0);
 
 		if (coder.getPointer() != end) {
 			throw new CoderException(getClass().getName(), start >> 3, length,

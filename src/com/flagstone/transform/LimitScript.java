@@ -31,7 +31,7 @@
 package com.flagstone.transform;
 
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFContext;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -55,7 +55,7 @@ public final class LimitScript implements MovieTag {
 	private int timeout;
 
 	//TODO(doc)
-	public LimitScript(final SWFDecoder coder, final SWFContext context) throws CoderException {
+	public LimitScript(final SWFDecoder coder, final Context context) throws CoderException {
 
 		if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
 			coder.readWord(4, false);
@@ -146,11 +146,11 @@ public final class LimitScript implements MovieTag {
 		return String.format(FORMAT, depth, timeout);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final SWFContext context) {
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		return 6;
 	}
 
-	public void encode(final SWFEncoder coder, final SWFContext context) throws CoderException {
+	public void encode(final SWFEncoder coder, final Context context) throws CoderException {
 		coder.writeWord((MovieTypes.LIMIT_SCRIPT << 6) | 4, 2);
 		coder.writeWord(depth, 2);
 		coder.writeWord(timeout, 2);
