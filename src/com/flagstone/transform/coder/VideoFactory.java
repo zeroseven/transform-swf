@@ -8,14 +8,11 @@ import com.flagstone.transform.VideoMetaData;
 
 public final class VideoFactory implements FLVFactory<VideoTag> {
 
-	public VideoTag getObject(final ByteBuffer coder) throws CoderException {
+	public VideoTag getObject(final FLVDecoder coder) throws CoderException {
 
 		VideoTag object;
 
-		int type = coder.get();
-		coder.position(coder.position()-1);
-		
-		switch (type)
+		switch (coder.scanByte())
 		{
 			case VideoTypes.AUDIO_DATA:
 				object = new AudioData(coder);
@@ -29,7 +26,7 @@ public final class VideoFactory implements FLVFactory<VideoTag> {
 			default:
 				throw new AssertionError();
 		}
-		coder.getInt(); // previous length
+		coder.readWord(4, false); // previous length
 		return object;
 	}
 }

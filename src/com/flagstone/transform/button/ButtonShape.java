@@ -38,7 +38,7 @@ import java.util.Set;
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.Encodeable;
+import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -77,7 +77,7 @@ import com.flagstone.transform.filter.Filter;
  * @see DefineButton2
  */
 @SuppressWarnings("PMD.TooManyMethods")
-public final class ButtonShape implements Encodeable
+public final class ButtonShape implements SWFEncodeable
 {
 	private static final String FORMAT = "ButtonShape: { state=%d; identifier=%d; layer=%d; transform=%s; colorTransform=%s }";
 		

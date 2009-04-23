@@ -31,7 +31,7 @@
 package com.flagstone.transform.datatype;
 
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.Encodeable;
+import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.Encoder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -98,7 +98,7 @@ import com.flagstone.transform.coder.SWFEncoder;
 //TODO(optimise) Can hasAdd or hasMultiply be set in constructors.
 //TODO(optimise) Is there a more efficient way of calculating field size.
 //TODO(doc) review.
-public final class ColorTransform implements Encodeable {
+public final class ColorTransform implements SWFEncodeable {
 
 	private static final String FORMAT = 
 		"ColorTransform: { multiply=[%f, %f, %f, %f]; add=[%d, %d, %d, %d] }";

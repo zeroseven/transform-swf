@@ -1,5 +1,5 @@
 /*
- * LittleEndianEncoderTest.java
+ * SWFDecoderTest.java
  * Transform
  *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
@@ -32,158 +32,151 @@ package com.flagstone.transform.coder;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.flagstone.transform.coder.LittleEndianEncoder;
+import com.flagstone.transform.coder.SWFDecoder;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
-@SuppressWarnings( { 
-	"PMD.JUnitAssertionsShouldIncludeMessage" 
-})
-public final class LittleEndianEncoderTest {
-	private transient LittleEndianEncoder fixture;
+@SuppressWarnings( { "PMD.JUnitAssertionsShouldIncludeMessage" })
+public final class SWFDecoderTest {
+	private transient SWFDecoder fixture;
 
 	private transient byte[] data;
 
 	@Before
 	public void setUp() {
-		fixture = new LittleEndianEncoder(0);
-	}
-
-
-	@Test
-	public void sizeVariableU32InOneByte() {
-		assertEquals(1, LittleEndianEncoder.sizeVariableU32(127));
+		fixture = new SWFDecoder(new byte[0]);
 	}
 
 	@Test
-	public void sizeVariableU32InTwoBytes() {
-		assertEquals(2, LittleEndianEncoder.sizeVariableU32(255));
+	public void readUnsignedShort() {
+		data = new byte[] { -1, -1 };
+		fixture.setData(data);
+		
+		assertEquals(65535, fixture.scanUnsignedShort());
+		assertEquals(0, fixture.getPointer());
 	}
 
 	@Test
-	public void sizeVariableU32InThreeBytes() {
-		assertEquals(3, LittleEndianEncoder.sizeVariableU32(65535));
-	}
-
-	@Test
-	public void sizeVariableU32InFourBytes() {
-		assertEquals(4, LittleEndianEncoder.sizeVariableU32(16777215));
-	}
-
-	@Test
-	public void sizeVariableU32InFiveBytes() {
-		assertEquals(5, LittleEndianEncoder.sizeVariableU32(2147483647));
-	}
-
-	@Test
-	public void writeWordUnsigned() {
+	public void readWordUnsigned() {
 		data = new byte[] { 4, 3, 2, 1 };
 
-		fixture.data = new byte[data.length];
-		fixture.writeWord(0x01020304, data.length);
+		fixture.setData(data);
 
-		assertArrayEquals(data, fixture.data);
+		assertEquals(0x01020304, fixture.readWord(data.length, false));
 		assertEquals(data.length << 3, fixture.getPointer());
 	}
 
 	@Test
-	public void writeWordSigned() {
+	public void readWordSigned() {
 		data = new byte[] { 4, 3, -128, -1 };
 
-		fixture.data = new byte[data.length];
-		fixture.writeWord(0xFF800304, data.length);
+		fixture.setData(data);
 
-		assertArrayEquals(data, fixture.data);
+		assertEquals(0xFF800304, fixture.readWord(data.length, true));
 		assertEquals(data.length << 3, fixture.getPointer());
 	}
 
 	@Test
-	public void writeVariableU32InOneByte() {
+	public void readWordWithSignExtension() {
+		data = new byte[] { 4, 3, -128 };
+
+		fixture.setData(data);
+
+		assertEquals(0xFF800304, fixture.readWord(data.length, true));
+		assertEquals(data.length << 3, fixture.getPointer());
+	}
+
+	@Test
+	public void readVariableU32InOneByte() {
 		data = new byte[] { 127 };
+		fixture.data = data;
 
-		fixture.data = new byte[data.length];
-		fixture.writeVariableU32(127);
-
-		assertArrayEquals(data, fixture.data);
+		assertEquals(127, fixture.readVariableU32());
 		assertEquals(data.length << 3, fixture.getPointer());
 	}
 
 	@Test
-	public void writeVariableU32InTwoBytes() {
+	public void readVariableU32InTwoBytes() {
 		data = new byte[] { -1, 1 };
+		fixture.data = data;
 
-		fixture.data = new byte[data.length];
-		fixture.writeVariableU32(255);
-
-		assertArrayEquals(data, fixture.data);
+		assertEquals(255, fixture.readVariableU32());
 		assertEquals(data.length << 3, fixture.getPointer());
 	}
 
 	@Test
-	public void writeVariableU32InThreeBytes() {
+	public void readVariableU32InThreeBytes() {
 		data = new byte[] { -1, -1, 3 };
+		fixture.data = data;
 
-		fixture.data = new byte[data.length];
-		fixture.writeVariableU32(65535);
-
-		assertArrayEquals(data, fixture.data);
+		assertEquals(65535, fixture.readVariableU32());
 		assertEquals(data.length << 3, fixture.getPointer());
 	}
 
 	@Test
-	public void writeVariableU32InFourBytes() {
+	public void readVariableU32InFourBytes() {
 		data = new byte[] { -1, -1, -1, 7 };
+		fixture.data = data;
 
-		fixture.data = new byte[data.length];
-		fixture.writeVariableU32(16777215);
-
-		assertArrayEquals(data, fixture.data);
+		assertEquals(16777215, fixture.readVariableU32());
 		assertEquals(data.length << 3, fixture.getPointer());
 	}
 
 	@Test
-	public void writeVariableU32InFiveBytes() {
+	public void readVariableU32InFiveBytes() {
 		data = new byte[] { -1, -1, -1, -1, 7 };
+		fixture.data = data;
 
-		fixture.data = new byte[data.length];
-		fixture.writeVariableU32(2147483647);
-
-		assertArrayEquals(data, fixture.data);
+		assertEquals(2147483647, fixture.readVariableU32());
 		assertEquals(data.length << 3, fixture.getPointer());
 	}
 	
 	@Test
-	public void writeHalf() {
+	public void readHalf() {
 		data = new byte[] { 0x00, (byte)0xC0 };
+		fixture.setData(data);
 
-		fixture.data = new byte[data.length];
-		fixture.writeHalf(-2);
-
-		assertArrayEquals(data, fixture.data);
-		assertEquals(data.length << 3, fixture.getPointer());
+		assertEquals(-2.0, fixture.readHalf());
+		assertEquals(16, fixture.getPointer());
 	}
 	
 	@Test
-	public void writeFloat() {
+	public void readFloat() {
 		data = new byte[] { 0x00, 0x00, 0x00, (byte)0xC0 };
+		fixture.setData(data);
 
-		fixture.data = new byte[data.length];
-		fixture.writeFloat(-2);
-
-		assertArrayEquals(data, fixture.data);
-		assertEquals(data.length << 3, fixture.getPointer());
+		assertEquals(-2.0, fixture.readFloat());
+		assertEquals(32, fixture.getPointer());
 	}
-		
+
 	@Test
-	public void writeDouble() {
+	public void readDouble() {
 		data = new byte[] { 0x00, 0x00, (byte) 0xF0, 0x3F, 0x00, 0x00, 0x00,
 				0x00 };
+		fixture.setData(data);
 
-		fixture.data = new byte[data.length];
-		fixture.writeDouble(1.0);
+		assertEquals(1.0, fixture.readDouble());
+		assertEquals(64, fixture.getPointer());
+	}
 
-		assertArrayEquals(data, fixture.data);
-		assertEquals(data.length << 3, fixture.getPointer());
+	@Test
+	public void findWordWithSuccess() {
+		data = new byte[] { 0x30, 0x30, 0x31 };
+		fixture.setData(data);
+
+		assertTrue(fixture.findWord(0x3130, 2, 1));
+		assertEquals(8, fixture.getPointer());
+	}
+
+	@Test
+	public void findWordWithoutSuccess() {
+		data = new byte[] { 0x30, 0x30, 0x31 };
+		fixture.setData(data);
+		fixture.setPointer(8);
+
+		assertFalse(fixture.findWord(0x41, 1, 1));
+		assertEquals(8, fixture.getPointer());
 	}
 }

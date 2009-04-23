@@ -35,7 +35,7 @@ import java.util.Map;
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.Encodeable;
+import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.Bounds;
@@ -56,7 +56,7 @@ import com.flagstone.transform.datatype.Bounds;
  * @see DefineText2
  * @see com.flagstone.transform.factory.text.TextFactory
  */
-public final class GlyphIndex implements Encodeable
+public final class GlyphIndex implements SWFEncodeable
 {
 	private static final String FORMAT = "GlyphIndex: { glyphIndex=%d; advance=%d }";
 		

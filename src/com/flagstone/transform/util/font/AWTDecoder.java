@@ -26,7 +26,6 @@ import java.util.zip.DataFormatException;
 
 import com.flagstone.transform.Movie;
 import com.flagstone.transform.Strings;
-import com.flagstone.transform.coder.BigEndianDecoder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.DefineTag;
 import com.flagstone.transform.coder.MovieTag;

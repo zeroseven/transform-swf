@@ -31,8 +31,8 @@
 package com.flagstone.transform.shape;
 
 import com.flagstone.transform.coder.Copyable;
-import com.flagstone.transform.coder.Encodeable;
+import com.flagstone.transform.coder.SWFEncodeable;
 
 //TODO(doc)
-public interface ShapeRecord extends Encodeable, Copyable<ShapeRecord> {
+public interface ShapeRecord extends SWFEncodeable, Copyable<ShapeRecord> {
 }

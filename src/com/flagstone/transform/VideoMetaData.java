@@ -33,6 +33,8 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.FLVDecoder;
+import com.flagstone.transform.coder.FLVEncoder;
 import com.flagstone.transform.coder.VideoTag;
 import com.flagstone.transform.coder.VideoTypes;
 
@@ -55,23 +57,19 @@ public final class VideoMetaData implements VideoTag
 	private transient int length;
 	private transient int end;
 
-	public VideoMetaData(ByteBuffer coder) throws CoderException
+	public VideoMetaData(FLVDecoder coder) throws CoderException
 	{
-		start = coder.position();
+		start = coder.getPointer();
+		coder.readWord(1, false);
+		length = coder.readWord(3, false);
+		end = coder.getPointer() + (length << 3);
+		timestamp = coder.readWord(3, false);
+		coder.readWord(4, false); // reserved
+		data = coder.readBytes(new byte[length]);
 
-		coder.get();
-		length = coder.getInt() >>> 8;
-		coder.position(coder.position()-1);
-		end = coder.position() + (length << 3);
-		timestamp = coder.getInt() >>> 8;
-		coder.position(coder.position()-1);
-		coder.getInt(); // reserved
-		data = new byte[length];
-		coder.get(data);
-
-		if (coder.position() != end) {
+		if (coder.getPointer() != end) {
 			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.position() - end) >> 3);
+					(coder.getPointer() - end) >> 3);
 		}
 	}
 
@@ -166,22 +164,20 @@ public final class VideoMetaData implements VideoTag
 		return length;
 	}
 
-	public void encode(ByteBuffer coder) throws CoderException
+	public void encode(FLVEncoder coder) throws CoderException
 	{
-		start = coder.position();
+		start = coder.getPointer();
 
-		coder.put((byte)VideoTypes.META_DATA);
-		coder.putInt(length-11);
-		coder.position(coder.position()-1);
-		end = coder.position() + (length << 3);
-		coder.putInt(timestamp);
-		coder.position(coder.position()-1);
-		coder.putInt(0);
-		coder.put(data);
+		coder.writeWord(VideoTypes.VIDEO_DATA, 1);
+		coder.writeWord(length-11, 3);
+		end = coder.getPointer() + (length << 3);
+		coder.writeWord(timestamp, 3);
+		coder.writeWord(0, 4);
+		coder.writeBytes(data);
 
-		if (coder.position() != end) {
+		if (coder.getPointer() != end) {
 			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.position() - end) >> 3);
+					(coder.getPointer() - end) >> 3);
 		}
 	}
 }

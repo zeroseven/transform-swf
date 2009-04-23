@@ -31,7 +31,7 @@
 package com.flagstone.transform.datatype;
 
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.Encodeable;
+import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.Encoder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -67,7 +67,7 @@ import com.flagstone.transform.coder.SWFEncoder;
  * </p>
  */
 //TODO(doc) Check comments for all methods 
-public final class Bounds implements Encodeable {
+public final class Bounds implements SWFEncodeable {
 
 	private static final String FORMAT = "Bounds: { minX=%d; minY=%d; maxX=%d; maxY=%d }";
 

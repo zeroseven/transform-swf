@@ -31,7 +31,7 @@
 package com.flagstone.transform.datatype;
 
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.Encodeable;
+import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.Encoder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -66,7 +66,7 @@ import com.flagstone.transform.coder.SWFEncoder;
 //TODO(doc) Review
 //TODO(pmd) Remove warning suppressors and re-check
 @SuppressWarnings( { "PMD.TooManyMethods", "PMD.LocalVariableCouldBeFinal" })
-public final class CoordTransform implements Encodeable {
+public final class CoordTransform implements SWFEncodeable {
 
 	private static final String FORMAT = "CoordTransform: { scaleX=%f; scaleY=%f; shearX=%f; shearY=%f; transX=%d; transY=%d }";
 

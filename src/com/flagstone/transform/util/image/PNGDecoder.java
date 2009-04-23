@@ -46,7 +46,7 @@ import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
 import com.flagstone.transform.Strings;
-import com.flagstone.transform.coder.BigEndianDecoder;
+import com.flagstone.transform.coder.FLVDecoder;
 import com.flagstone.transform.coder.ImageTag;
 import com.flagstone.transform.image.DefineImage;
 import com.flagstone.transform.image.DefineImage2;
@@ -220,7 +220,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder
 
     protected void decode(byte[] bytes) throws DataFormatException
     {
-        BigEndianDecoder coder = new BigEndianDecoder(bytes);
+        FLVDecoder coder = new FLVDecoder(bytes);
 
         int length = 0;
         int chunkType = 0;
@@ -262,7 +262,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder
         decodeImage();
     }
 
-    private void decodeIHDR(BigEndianDecoder coder) throws DataFormatException
+    private void decodeIHDR(FLVDecoder coder) throws DataFormatException
     {
         width = coder.readWord(4, false);
         height = coder.readWord(4, false);
@@ -301,7 +301,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder
         }  
     }
 
-    private void decodePLTE(BigEndianDecoder coder, int length)
+    private void decodePLTE(FLVDecoder coder, int length)
     {
         if (attributes[COLOUR_TYPE] == 3)
         {
@@ -325,7 +325,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder
         coder.readWord(4, false); // crc
     }
 
-    private void decodeTRNS(BigEndianDecoder coder, int length)
+    private void decodeTRNS(FLVDecoder coder, int length)
     {
     	int index = 0;
     	
@@ -358,7 +358,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder
         coder.readWord(4, false); // crc
     }
 
-    private void decodeIDAT(BigEndianDecoder coder, int length)
+    private void decodeIDAT(FLVDecoder coder, int length)
     {
         int currentLength = chunkData.length;
         int newLength = currentLength + length;
@@ -485,7 +485,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder
         
                 System.arraycopy(current, 0, previous, 0, scanLength);
                         
-                BigEndianDecoder coder = new BigEndianDecoder(current);
+                FLVDecoder coder = new FLVDecoder(current);
                 
                 for (col=colStart; col<width; col+=colInc)
                 {
@@ -538,7 +538,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder
         return c;
     }
 
-    private void decodeGreyscale(BigEndianDecoder coder, int row, int col) throws DataFormatException
+    private void decodeGreyscale(FLVDecoder coder, int row, int col) throws DataFormatException
     {
         int pixel = 0;
         byte colour = 0;
@@ -559,7 +559,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder
         image[row*width+col+3] = (byte)attributes[TRANSPARENT_GREY];
     }
     
-    private void decodeTrueColour(BigEndianDecoder coder, int row, int col) throws DataFormatException
+    private void decodeTrueColour(FLVDecoder coder, int row, int col) throws DataFormatException
     {
         int pixel = 0;
         byte colour = 0;
@@ -583,7 +583,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder
         image[row*width+col+3] = (byte)attributes[TRANSPARENT_RED];
     }
     
-    private void decodeIndexedColour(BigEndianDecoder coder, int row, int col) throws DataFormatException
+    private void decodeIndexedColour(FLVDecoder coder, int row, int col) throws DataFormatException
     {
         int index = 0;
         
@@ -599,7 +599,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder
         image[row*width+col] = (byte)index;
     }
     
-    private void decodeAlphaGreyscale(BigEndianDecoder coder, int row, int col) throws DataFormatException
+    private void decodeAlphaGreyscale(FLVDecoder coder, int row, int col) throws DataFormatException
     {
         int pixel = 0;
         byte colour = 0;
@@ -621,7 +621,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder
         image[row*width+col+3] = (byte) alpha;
     }
     
-    private void decodeAlphaTrueColour(BigEndianDecoder coder, int row, int col) throws DataFormatException
+    private void decodeAlphaTrueColour(FLVDecoder coder, int row, int col) throws DataFormatException
     {
         int pixel = 0;
         byte colour = 0;

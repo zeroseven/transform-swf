@@ -1,5 +1,5 @@
 /*
- * LittleEndianDecoderTest.java
+ * FLVDecoderTest.java
  * Transform
  *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
@@ -32,36 +32,35 @@ package com.flagstone.transform.coder;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.flagstone.transform.coder.LittleEndianDecoder;
+import com.flagstone.transform.coder.FLVDecoder;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 
 @SuppressWarnings( { "PMD.JUnitAssertionsShouldIncludeMessage" })
-public final class LittleEndianDecoderTest {
-	private transient LittleEndianDecoder fixture;
+public final class FLVDecoderTest {
+	private transient FLVDecoder fixture;
 
 	private transient byte[] data;
 
 	@Before
 	public void setUp() {
-		fixture = new LittleEndianDecoder(new byte[0]);
+		fixture = new FLVDecoder(new byte[0]);
 	}
 
 	@Test
 	public void readUnsignedShort() {
 		data = new byte[] { -1, -1 };
 		fixture.setData(data);
-		
+
 		assertEquals(65535, fixture.scanUnsignedShort());
 		assertEquals(0, fixture.getPointer());
 	}
 
 	@Test
 	public void readWordUnsigned() {
-		data = new byte[] { 4, 3, 2, 1 };
-
+		data = new byte[] { 1, 2, 3, 4 };
 		fixture.setData(data);
 
 		assertEquals(0x01020304, fixture.readWord(data.length, false));
@@ -70,8 +69,7 @@ public final class LittleEndianDecoderTest {
 
 	@Test
 	public void readWordSigned() {
-		data = new byte[] { 4, 3, -128, -1 };
-
+		data = new byte[] { -1, -128, 3, 4 };
 		fixture.setData(data);
 
 		assertEquals(0xFF800304, fixture.readWord(data.length, true));
@@ -80,8 +78,7 @@ public final class LittleEndianDecoderTest {
 
 	@Test
 	public void readWordWithSignExtension() {
-		data = new byte[] { 4, 3, -128 };
-
+		data = new byte[] { -128, 3, 4 };
 		fixture.setData(data);
 
 		assertEquals(0xFF800304, fixture.readWord(data.length, true));
@@ -89,71 +86,8 @@ public final class LittleEndianDecoderTest {
 	}
 
 	@Test
-	public void readVariableU32InOneByte() {
-		data = new byte[] { 127 };
-		fixture.data = data;
-
-		assertEquals(127, fixture.readVariableU32());
-		assertEquals(data.length << 3, fixture.getPointer());
-	}
-
-	@Test
-	public void readVariableU32InTwoBytes() {
-		data = new byte[] { -1, 1 };
-		fixture.data = data;
-
-		assertEquals(255, fixture.readVariableU32());
-		assertEquals(data.length << 3, fixture.getPointer());
-	}
-
-	@Test
-	public void readVariableU32InThreeBytes() {
-		data = new byte[] { -1, -1, 3 };
-		fixture.data = data;
-
-		assertEquals(65535, fixture.readVariableU32());
-		assertEquals(data.length << 3, fixture.getPointer());
-	}
-
-	@Test
-	public void readVariableU32InFourBytes() {
-		data = new byte[] { -1, -1, -1, 7 };
-		fixture.data = data;
-
-		assertEquals(16777215, fixture.readVariableU32());
-		assertEquals(data.length << 3, fixture.getPointer());
-	}
-
-	@Test
-	public void readVariableU32InFiveBytes() {
-		data = new byte[] { -1, -1, -1, -1, 7 };
-		fixture.data = data;
-
-		assertEquals(2147483647, fixture.readVariableU32());
-		assertEquals(data.length << 3, fixture.getPointer());
-	}
-	
-	@Test
-	public void readHalf() {
-		data = new byte[] { 0x00, (byte)0xC0 };
-		fixture.setData(data);
-
-		assertEquals(-2.0, fixture.readHalf());
-		assertEquals(16, fixture.getPointer());
-	}
-	
-	@Test
-	public void readFloat() {
-		data = new byte[] { 0x00, 0x00, 0x00, (byte)0xC0 };
-		fixture.setData(data);
-
-		assertEquals(-2.0, fixture.readFloat());
-		assertEquals(32, fixture.getPointer());
-	}
-
-	@Test
 	public void readDouble() {
-		data = new byte[] { 0x00, 0x00, (byte) 0xF0, 0x3F, 0x00, 0x00, 0x00,
+		data = new byte[] { 0x3F, (byte) 0xF0, 0x00, 0x00, 0x00, 0x00, 0x00,
 				0x00 };
 		fixture.setData(data);
 
@@ -166,7 +100,7 @@ public final class LittleEndianDecoderTest {
 		data = new byte[] { 0x30, 0x30, 0x31 };
 		fixture.setData(data);
 
-		assertTrue(fixture.findWord(0x3130, 2, 1));
+		assertTrue(fixture.findWord(0x3031, 2, 1));
 		assertEquals(8, fixture.getPointer());
 	}
 

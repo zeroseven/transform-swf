@@ -37,7 +37,7 @@ import java.util.Map;
 import com.flagstone.transform.Movie;
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.Encodeable;
+import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.Encoder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -84,7 +84,7 @@ import com.flagstone.transform.datatype.Color;
  * @see com.flagstone.transform.factory.text.TextFactory
  * @see com.flagstone.transform.util.font.Font
  */
-public final class TextSpan implements Encodeable
+public final class TextSpan implements SWFEncodeable
 {
 	private static final String FORMAT = "TextSpan: { identifier=%d; color=%s; offsetX=%d; offsetY=%d; height=%d; characters=%s }";
 	

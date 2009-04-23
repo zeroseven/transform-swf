@@ -30,41 +30,35 @@
 
 package com.flagstone.transform.coder;
 
-import java.nio.ByteBuffer;
-
 
 /**
- * <p>The Codeable interfaces defines the set of methods that all classes must 
- * implement in order to be encoded and decoded from Flash Video (FLV) files.</p>
+ * <p>
+ * The Encodeable interface defines the set of methods that all classes must
+ * implement so they can be encoded to a Flash (SWF) file.
+ * </p>
  */
-public interface Codeable
-{   
+public interface SWFEncodeable {
 	/**
-	 * Prepare an object for encoding, returning the length in bytes of an 
-	 * object when it is encoded. 
+	 * Prepare an object for encoding, returning the expected size of an object
+	 * when it is encoded. This method also used to initialise variables, such 
+	 * as offsets and flags that will be used when the object is encoded.
 	 * 
-	 * This method on all objects to be encoded is called before they are 
-	 * encoded. In addition to calculating the size of buffer to be allocated
-	 * this method also used to initialise variables, such as offsets and flags 
-	 * that will be used when the object is encoded. This allows the encoding 
-	 * process to take place in a single pass and avoids having to re-allocate
-	 * memory.
+	 * Generally the method returns the size in bytes, however when called on
+	 * objects that use bit fields such as shapes the methods will return the
+	 * size in bits.
 	 * 
-	 * @param context an Context that allows information to be passed between 
-	 * objects to control how they are initialised for encoding.
+	 * @param coder
+	 *            an SWFEncoder object.
 	 * 
-	 * @return the length in bytes of the object when it is encoded.
+	 * @return the size of the object when it is encoded.
 	 */
-	int prepareToEncode();
+	int prepareToEncode(final SWFEncoder coder, final Context context);
 
 	/**
-	 * Encode an object to the binary format used in Flash files.
+	 * Encode an object to the Flash binary format.
 	 * 
-	 * @param coder an Encoder object that is used to encode the object to its
-	 * binary form.
-	 * 
-	 * @param context an Context that allows information to be passed between 
-	 * objects to control how they are encoded.
+	 * @param coder
+	 *            an SWFEncoder object.
 	 */
-	void encode(ByteBuffer coder) throws CoderException;
+	void encode(final SWFEncoder coder, final Context context) throws CoderException;
 }

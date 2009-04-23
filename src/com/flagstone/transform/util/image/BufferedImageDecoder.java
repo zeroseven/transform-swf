@@ -27,7 +27,7 @@ import javax.imageio.ImageIO;
 
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.ImageTag;
-import com.flagstone.transform.coder.LittleEndianDecoder;
+import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.image.DefineImage;
 import com.flagstone.transform.image.DefineImage2;
 
@@ -779,7 +779,7 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder
 					}
 
 					index = 0;
-					LittleEndianDecoder coder = new LittleEndianDecoder(pixels);
+					SWFDecoder coder = new SWFDecoder(pixels);
 
 					for (int y = 0; y < height; y++)
 					{

@@ -40,6 +40,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.DataFormatException;
 
+import com.flagstone.transform.coder.ActionFactory;
+import com.flagstone.transform.coder.Context;
+import com.flagstone.transform.coder.DecoderRegistry;
+import com.flagstone.transform.coder.FLVDecoder;
+import com.flagstone.transform.coder.FLVEncoder;
+import com.flagstone.transform.coder.FillStyleFactory;
+import com.flagstone.transform.coder.MorphFillStyleFactory;
+import com.flagstone.transform.coder.MovieFactory;
+import com.flagstone.transform.coder.VideoFactory;
 import com.flagstone.transform.coder.VideoTag;
 import com.flagstone.transform.coder.VideoTypes;
 
@@ -220,45 +229,26 @@ public final class Video implements Cloneable
 	public void decodeFromData(byte[] bytes) throws IOException, DataFormatException
 					
 	{
-		ByteBuffer coder = ByteBuffer.wrap(bytes).order(ByteOrder.BIG_ENDIAN);
+		FLVDecoder coder = new FLVDecoder(bytes);
 
 		isFlashVideo(bytes);
 
-		byte[] data = new byte[3];
-		coder.get(data);
-		
-		signature = new String(data, "UTF8");
-		version = coder.get();
-		coder.get(); // audio & video flags		
-		coder.getInt(); // header length always 9
-		coder.getInt(); // previous length
+		signature = coder.readString(3);
+		version = coder.readByte();
+		coder.readByte(); // audio & video flags		
+		coder.readWord(4, false); // header length always 9
+		coder.readWord(4, false); // previous length
 
 		objects = new ArrayList<VideoTag>();
-		
-		int type;
-		
+			
+		VideoFactory decoder = new VideoFactory();
+
 		do
 		{
-			type = coder.get();
-			coder.position(coder.position()-1);
-			
-			switch (type)
-			{
-				case VideoTypes.AUDIO_DATA:
-					objects.add(new AudioData(coder));
-					break;
-				case VideoTypes.VIDEO_DATA:
-					objects.add(new VideoData(coder));
-					break;
-				case VideoTypes.META_DATA:
-					objects.add(new VideoMetaData(coder));
-					break;
-				default:
-					break;//TODO(code) fix
-			}
-			coder.getInt(); // previous length
+			objects.add(decoder.getObject(coder));
+			coder.readWord(4, false); // previous length
 
-		} while (coder.position() < coder.limit());
+		} while (!coder.eof());
 	}
 
 	/**
@@ -319,7 +309,7 @@ public final class Video implements Cloneable
 	{
 		int fileLength = prepareToEncode();
 
-		ByteBuffer coder = ByteBuffer.allocate(fileLength);
+		FLVEncoder coder = new FLVEncoder(fileLength);
 		
 		int flags = 0;
 
@@ -333,16 +323,16 @@ public final class Video implements Cloneable
 			}
 		}
 
-		coder.put(signature.getBytes("UTF8"));
-		coder.put((byte)version);
-		coder.put((byte)flags);
-		coder.putInt(9);
-		coder.putInt(0);
+		coder.writeBytes(signature.getBytes("UTF8"));
+		coder.writeByte((byte)version);
+		coder.writeByte((byte)flags);
+		coder.writeWord(9, 4);
+		coder.writeWord(0, 4);
 
 		for (VideoTag object : objects) {
 			object.encode(coder);
 		}
-		return coder.array();
+		return coder.getData();
 	}
 
 	/**

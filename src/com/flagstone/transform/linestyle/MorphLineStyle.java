@@ -33,7 +33,7 @@ package com.flagstone.transform.linestyle;
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.Encodeable;
+import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.Color;
@@ -50,7 +50,7 @@ import com.flagstone.transform.shape.DefineMorphShape;
  * 
  * @see DefineMorphShape
  */
-public final class MorphLineStyle implements Encodeable
+public final class MorphLineStyle implements SWFEncodeable
 {
 	private static final String FORMAT = "MorphSolidLine: { startWidth=%d; endWidth=%d; startColor=%s; endColor=%s }";
 	

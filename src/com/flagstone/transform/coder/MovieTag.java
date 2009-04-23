@@ -37,5 +37,5 @@ package com.flagstone.transform.coder;
  * The MovieTag interface is used to identify all the objects that can be added
  * to a Movie.
  */
-public interface MovieTag extends Encodeable, Copyable<MovieTag> {
+public interface MovieTag extends SWFEncodeable, Copyable<MovieTag> {
 }

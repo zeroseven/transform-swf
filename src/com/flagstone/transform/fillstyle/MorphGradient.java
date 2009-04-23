@@ -33,7 +33,7 @@ package com.flagstone.transform.fillstyle;
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.Encodeable;
+import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.Color;
@@ -60,7 +60,7 @@ import com.flagstone.transform.datatype.Color;
  * @see GradientFill
  * @see MorphGradientFill
  */
-public final class MorphGradient implements Encodeable
+public final class MorphGradient implements SWFEncodeable
 {
 	private static final String FORMAT = "MorphGradient: { start=%s; end=%s }";
 	

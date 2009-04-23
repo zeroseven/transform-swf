@@ -1,5 +1,5 @@
 /*
- * BigEndianEncoderTest.java
+ * FLVEncoderTest.java
  * Transform
  *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
@@ -32,7 +32,7 @@ package com.flagstone.transform.coder;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.flagstone.transform.coder.BigEndianEncoder;
+import com.flagstone.transform.coder.FLVEncoder;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
@@ -41,14 +41,14 @@ import static org.junit.Assert.assertArrayEquals;
 	"PMD.TooManyMethods",
 	"PMD.JUnitAssertionsShouldIncludeMessage" 
 })
-public final class BigEndianEncoderTest {
-	private transient BigEndianEncoder fixture;
+public final class FLVEncoderTest {
+	private transient FLVEncoder fixture;
 
 	private transient byte[] data;
 
 	@Before
 	public void setUp() {
-		fixture = new BigEndianEncoder(0);
+		fixture = new FLVEncoder(0);
 	}
 
 	@Test

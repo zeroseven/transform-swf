@@ -35,13 +35,13 @@ import java.util.List;
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.Encodeable;
+import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
 //TODO(code) Implement
 //TODO(doc)
-public final class GlyphAlignment implements Encodeable
+public final class GlyphAlignment implements SWFEncodeable
 {
 	private boolean alignX;
 	private boolean alignY;

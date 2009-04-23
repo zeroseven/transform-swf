@@ -33,7 +33,7 @@ package com.flagstone.transform.datatype;
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.Encodeable;
+import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -57,7 +57,7 @@ import com.flagstone.transform.coder.SWFEncoder;
  * </p>
  */
 //TODO(doc) Check comments for all methods
-public final class Color implements Encodeable {
+public final class Color implements SWFEncodeable {
 
 	private static final String FORMAT = "Color: { red=%d; green=%d; blue=%d; alpha=%d }";
 	

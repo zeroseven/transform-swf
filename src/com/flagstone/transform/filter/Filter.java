@@ -31,9 +31,9 @@
 package com.flagstone.transform.filter;
 
 import com.flagstone.transform.coder.Copyable;
-import com.flagstone.transform.coder.Encodeable;
+import com.flagstone.transform.coder.SWFEncodeable;
 
-public interface Filter extends Encodeable, Copyable<Filter> {
+public interface Filter extends SWFEncodeable, Copyable<Filter> {
 	int DROP_SHADOW = 0;
 	int BLUR = 1;
 	int GLOW = 2;

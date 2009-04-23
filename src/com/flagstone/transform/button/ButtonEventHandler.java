@@ -41,7 +41,7 @@ import com.flagstone.transform.action.ActionData;
 import com.flagstone.transform.coder.Action;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.Encodeable;
+import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.coder.SWFFactory;
@@ -193,7 +193,7 @@ import com.flagstone.transform.coder.SWFFactory;
  * 
  * @see DefineButton2
  */
-public final class ButtonEventHandler implements Encodeable
+public final class ButtonEventHandler implements SWFEncodeable
 {
 	private static final String FORMAT = "ButtonEventHandler: { event=%s; actions=%s }";
 	

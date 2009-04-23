@@ -5,13 +5,13 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-	BigEndianDecoderTest.class,
-	BigEndianEncoderTest.class,
+	FLVDecoderTest.class,
+	FLVEncoderTest.class,
 	CoderTest.class,
 	DecoderTest.class,
 	EncoderTest.class,
-	LittleEndianDecoderTest.class,
-	LittleEndianEncoderTest.class,
+	SWFDecoderTest.class,
+	SWFEncoderTest.class,
         })
 public final class AllCoderTests
 {

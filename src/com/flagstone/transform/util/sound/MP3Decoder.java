@@ -45,8 +45,8 @@ import java.util.List;
 import java.util.zip.DataFormatException;
 
 import com.flagstone.transform.Strings;
-import com.flagstone.transform.coder.BigEndianDecoder;
-import com.flagstone.transform.coder.LittleEndianDecoder;
+import com.flagstone.transform.coder.FLVDecoder;
+import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.datatype.SoundFormat;
 import com.flagstone.transform.sound.DefineSound;
@@ -191,7 +191,7 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder
         int sampleCount = 0;
         int seek = 0;
         
-        LittleEndianDecoder coder = new LittleEndianDecoder(sound);
+        SWFDecoder coder = new SWFDecoder(sound);
         
         coder.findBits(0x7FF, 11, 8);
         
@@ -263,7 +263,7 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder
      	return array;
     }
 
-    private int frameSize(LittleEndianDecoder coder)
+    private int frameSize(SWFDecoder coder)
     {
         int frameSize = 4;
         
@@ -306,7 +306,7 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder
 
 	protected void decode(byte[] data) throws DataFormatException
     {
-    	BigEndianDecoder coder = new BigEndianDecoder(data);
+    	FLVDecoder coder = new FLVDecoder(data);
         
         int numberOfFrames = 0;
         int frameStart = 0;
@@ -436,7 +436,7 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder
         }
     }
     
-	private int frameSize(BigEndianDecoder coder)
+	private int frameSize(FLVDecoder coder)
     {
         int frameSize = 4;
         

@@ -25,7 +25,7 @@ import java.util.zip.DataFormatException;
 
 import com.flagstone.transform.Movie;
 import com.flagstone.transform.Strings;
-import com.flagstone.transform.coder.BigEndianDecoder;
+import com.flagstone.transform.coder.FLVDecoder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.DefineTag;
 import com.flagstone.transform.coder.MovieTag;
@@ -193,7 +193,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder
   
     private void decode(byte[] bytes) throws CoderException
     {
-        BigEndianDecoder coder = new BigEndianDecoder(bytes);
+        FLVDecoder coder = new FLVDecoder(bytes);
         
         /* float version = */ coder.readBits(32, true);
 
@@ -312,7 +312,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder
         }
     }
 
-    private void decodeHEAD(BigEndianDecoder coder)
+    private void decodeHEAD(FLVDecoder coder)
     {
         byte[] date = new byte[8];
     
@@ -354,7 +354,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder
         coder.readWord(2, true); // glyph data format
     }
     
-    private void decodeHHEA(BigEndianDecoder coder)
+    private void decodeHHEA(FLVDecoder coder)
     {
         coder.readBits(32, true); // table version, fixed 16
     
@@ -380,7 +380,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder
         metrics = coder.readWord(2, false);    
     }
 
-    private void decodeOS2(BigEndianDecoder coder)
+    private void decodeOS2(FLVDecoder coder)
     {
         byte[] panose = new byte[10];
         int[] unicodeRange = new int[4];
@@ -449,7 +449,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder
         }
     }
 
-    private void decodeNAME(BigEndianDecoder coder)
+    private void decodeNAME(FLVDecoder coder)
     {
     	int stringTableBase = coder.getPointer() >>> 3;
     	
@@ -510,7 +510,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder
         }
     }
 
-    private void decodeMAXP(BigEndianDecoder coder)
+    private void decodeMAXP(FLVDecoder coder)
     {
         float version = coder.readBits(32, true)/65536.0f;
         glyphCount = coder.readWord(2, false);
@@ -533,7 +533,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder
         }
     }
  
-    private void decodeHMTX(BigEndianDecoder coder)
+    private void decodeHMTX(FLVDecoder coder)
     {
         int index = 0;
         
@@ -555,7 +555,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder
         }
     }
     
-    private void decodeCMAP(BigEndianDecoder coder)
+    private void decodeCMAP(FLVDecoder coder)
     {
         int tableStart = coder.getPointer();
         
@@ -698,7 +698,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder
         encoding = CharacterEncoding.SJIS;
     }
     
-    private void decodeGlyphs(BigEndianDecoder coder, int glyfOffset) throws CoderException
+    private void decodeGlyphs(FLVDecoder coder, int glyfOffset) throws CoderException
     {
         int numberOfContours = 0;
         int glyphStart = 0;
@@ -763,7 +763,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder
         coder.setPointer(end);
     }
 
-    private void decodeSimpleGlyph(BigEndianDecoder coder, int glyphIndex, int numberOfContours)
+    private void decodeSimpleGlyph(FLVDecoder coder, int glyphIndex, int numberOfContours)
     {
         int xMin = coder.readWord(2, true) / scale;
         int yMin = coder.readWord(2, true) / scale;
@@ -947,7 +947,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder
         //glyphTable[glyphIndex].endPoints = endPtsOfContours;
     }
  
-    private void decodeCompositeGlyph(BigEndianDecoder coder, int glyphIndex) throws CoderException
+    private void decodeCompositeGlyph(FLVDecoder coder, int glyphIndex) throws CoderException
     {
         Shape shape = new Shape(new ArrayList<ShapeRecord>());
         CoordTransform transform = null;

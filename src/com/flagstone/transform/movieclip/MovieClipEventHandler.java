@@ -44,7 +44,7 @@ import com.flagstone.transform.button.ButtonEventHandler;
 import com.flagstone.transform.coder.Action;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.Encodeable;
+import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.coder.SWFFactory;
@@ -119,7 +119,7 @@ import com.flagstone.transform.coder.SWFFactory;
  * 
  * @see Place2
  */
-public final class MovieClipEventHandler implements Encodeable
+public final class MovieClipEventHandler implements SWFEncodeable
 {	
 	private static final String FORMAT = "MovieClipEventHandler: { event=%d; keyCode=%s; actions=%s }";
 	

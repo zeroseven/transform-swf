@@ -32,8 +32,8 @@ package com.flagstone.transform.video;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.flagstone.transform.coder.LittleEndianDecoder;
-import com.flagstone.transform.coder.LittleEndianEncoder;
+import com.flagstone.transform.coder.SWFDecoder;
+import com.flagstone.transform.coder.SWFEncoder;
 
 /**
  * The ScreenVideoPacket class is used to encode or decode a frame of video
@@ -51,7 +51,7 @@ public final class ScreenPacket implements Cloneable
 
 	public ScreenPacket(byte[] data)
 	{
-		LittleEndianDecoder coder = new LittleEndianDecoder(data);
+		SWFDecoder coder = new SWFDecoder(data);
 
 		keyFrame = coder.readBits(4, false) == 1;
 		coder.readBits(4, false); // codec = screen_video
@@ -277,7 +277,7 @@ public final class ScreenPacket implements Cloneable
 
 	public byte[] encode()
 	{
-		LittleEndianEncoder coder = new LittleEndianEncoder(length());
+		SWFEncoder coder = new SWFEncoder(length());
 
 		coder.writeBits(keyFrame ? 1 : 2, 4);
 		coder.writeBits(3, 4);

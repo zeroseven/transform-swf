@@ -34,7 +34,7 @@ import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.Copyable;
-import com.flagstone.transform.coder.Encodeable;
+import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.FillStyle;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -42,7 +42,7 @@ import com.flagstone.transform.coder.SWFFactory;
 import com.flagstone.transform.datatype.Color;
 
 //TODO(doc) add description and comments for methods.
-public final class LineStyle2 implements Encodeable, Copyable<LineStyle2> {
+public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
 
 	public static final String FORMAT = "LineStyle2: { width=%d; color=%s;"
 		+ " fillStyle=%s; startCap=%s; endCap=%s; joinStyle=%s;"

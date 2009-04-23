@@ -46,7 +46,7 @@ import java.util.zip.Deflater;
 
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.ImageTag;
-import com.flagstone.transform.coder.LittleEndianDecoder;
+import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.image.DefineImage;
 import com.flagstone.transform.image.DefineImage2;
 
@@ -168,7 +168,7 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder
     
 	protected void decode(byte[] bytes) throws DataFormatException
     {
-        LittleEndianDecoder coder = new LittleEndianDecoder(bytes);
+        SWFDecoder coder = new SWFDecoder(bytes);
         
         for (int i=0; i<2; i++)
         {
@@ -287,7 +287,7 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder
         }
     }
 
-    private void decodeIDX8(LittleEndianDecoder coder)
+    private void decodeIDX8(SWFDecoder coder)
     {
         int bitsRead;
         int index = 0;
@@ -308,7 +308,7 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder
         }
     }
 
-    private void decodeRLE4(LittleEndianDecoder coder)
+    private void decodeRLE4(SWFDecoder coder)
     {
         int row = height-1;
         int col = 0;
@@ -371,7 +371,7 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder
         }
     }
     
-    private void decodeRLE8(LittleEndianDecoder coder)
+    private void decodeRLE8(SWFDecoder coder)
     {
         int row = height-1;
         int col = 0;
@@ -429,7 +429,7 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder
         }
     }
     
-    private void decodeRGB5(LittleEndianDecoder coder)
+    private void decodeRGB5(SWFDecoder coder)
     {
         int bitsRead = 0;
         int index = 0;
@@ -490,7 +490,7 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder
         
     }
 
-    private void decodeRGB8(LittleEndianDecoder coder)
+    private void decodeRGB8(SWFDecoder coder)
     {
         int bitsRead;
         int index = 0;
@@ -515,7 +515,7 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder
         }
     }
 
-    private void decodeRGBA(LittleEndianDecoder coder)
+    private void decodeRGBA(SWFDecoder coder)
     {
         int index = 0;
         

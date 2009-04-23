@@ -45,7 +45,7 @@ import java.util.List;
 import java.util.zip.DataFormatException;
 
 import com.flagstone.transform.Strings;
-import com.flagstone.transform.coder.LittleEndianDecoder;
+import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.datatype.SoundFormat;
 import com.flagstone.transform.sound.DefineSound;
@@ -205,7 +205,7 @@ public final class WAVDecoder implements SoundProvider, SoundDecoder
 
 	protected void decode(byte[] data) throws DataFormatException
     {
-    	LittleEndianDecoder coder = new LittleEndianDecoder(data);
+    	SWFDecoder coder = new SWFDecoder(data);
         
         for (int i=0; i<4; i++)
         {
@@ -252,7 +252,7 @@ public final class WAVDecoder implements SoundProvider, SoundDecoder
         } while (moreChunks);
     }
 
-    private void decodeFMT(LittleEndianDecoder coder) throws DataFormatException
+    private void decodeFMT(SWFDecoder coder) throws DataFormatException
     {
         format = SoundFormat.PCM;
         
@@ -267,7 +267,7 @@ public final class WAVDecoder implements SoundProvider, SoundDecoder
         sampleSize = coder.readWord(2, false) / 8;
     }
     
-    private void decodeDATA(LittleEndianDecoder coder, int length)
+    private void decodeDATA(SWFDecoder coder, int length)
     {
         samplesPerChannel = length / (sampleSize*numberOfChannels);
 
