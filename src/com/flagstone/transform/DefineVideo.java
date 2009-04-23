@@ -36,6 +36,8 @@ import com.flagstone.transform.coder.DefineTag;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.datatype.VideoFormat;
+import com.flagstone.transform.datatype.VideoFrameType;
 
 //TODO(doc) Review
 /**

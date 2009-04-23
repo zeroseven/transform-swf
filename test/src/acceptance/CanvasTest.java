@@ -4,11 +4,11 @@ import java.io.File;
 
 
 import com.flagstone.transform.Background;
-import com.flagstone.transform.ColorTable;
 import com.flagstone.transform.Movie;
 import com.flagstone.transform.Place2;
 import com.flagstone.transform.ShowFrame;
-import com.flagstone.transform.WebPalette;
+import com.flagstone.transform.datatype.ColorTable;
+import com.flagstone.transform.datatype.WebPalette;
 import com.flagstone.transform.fillstyle.SolidFill;
 import com.flagstone.transform.linestyle.LineStyle;
 import com.flagstone.transform.shape.DefineShape2;

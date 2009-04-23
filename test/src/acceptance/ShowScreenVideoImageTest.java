@@ -13,20 +13,20 @@ import org.junit.Test;
 
 
 import com.flagstone.transform.Background;
-import com.flagstone.transform.Bounds;
-import com.flagstone.transform.ColorTable;
 import com.flagstone.transform.DefineVideo;
 import com.flagstone.transform.Movie;
 import com.flagstone.transform.Place2;
 import com.flagstone.transform.ShowFrame;
 import com.flagstone.transform.Strings;
-import com.flagstone.transform.VideoFormat;
 import com.flagstone.transform.VideoFrame;
-import com.flagstone.transform.VideoFrameType;
-import com.flagstone.transform.WebPalette;
 import com.flagstone.transform.DefineVideo.Deblocking;
 import com.flagstone.transform.coder.ImageTag;
 import com.flagstone.transform.coder.MovieTag;
+import com.flagstone.transform.datatype.Bounds;
+import com.flagstone.transform.datatype.ColorTable;
+import com.flagstone.transform.datatype.VideoFormat;
+import com.flagstone.transform.datatype.VideoFrameType;
+import com.flagstone.transform.datatype.WebPalette;
 import com.flagstone.transform.util.image.ImageDecoder;
 import com.flagstone.transform.util.image.ImageFactory;
 import com.flagstone.transform.util.image.ImageInfo;

@@ -28,7 +28,7 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.flagstone.transform;
+package com.flagstone.transform.datatype;
 
 /**
  * Blend modes let you control how the colours and transparency of successive

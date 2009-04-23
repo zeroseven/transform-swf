@@ -38,11 +38,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 
 import com.flagstone.transform.Background;
-import com.flagstone.transform.Color;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.datatype.Color;
 
 @SuppressWarnings( { 
 	"PMD.LocalVariableCouldBeFinal",

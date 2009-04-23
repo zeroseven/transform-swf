@@ -35,6 +35,7 @@ import java.util.Arrays;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.VideoTag;
 import com.flagstone.transform.coder.VideoTypes;
+import com.flagstone.transform.datatype.SoundFormat;
 
 /**
  * <p>AudioData is used to specify the audio track in Flash video files, defining

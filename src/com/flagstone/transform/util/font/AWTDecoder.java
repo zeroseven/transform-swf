@@ -24,14 +24,14 @@ import java.util.List;
 import java.util.Set;
 import java.util.zip.DataFormatException;
 
-import com.flagstone.transform.Bounds;
-import com.flagstone.transform.CoordTransform;
 import com.flagstone.transform.Movie;
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.BigEndianDecoder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.DefineTag;
 import com.flagstone.transform.coder.MovieTag;
+import com.flagstone.transform.datatype.Bounds;
+import com.flagstone.transform.datatype.CoordTransform;
 import com.flagstone.transform.font.CharacterEncoding;
 import com.flagstone.transform.font.DefineFont;
 import com.flagstone.transform.font.DefineFont2;

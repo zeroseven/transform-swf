@@ -31,12 +31,12 @@ package com.flagstone.transform;
 
 import org.junit.Test;
 
-import com.flagstone.transform.Bounds;
 import com.flagstone.transform.ScalingGrid;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.datatype.Bounds;
 
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;

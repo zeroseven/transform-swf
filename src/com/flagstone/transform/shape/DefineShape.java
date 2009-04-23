@@ -34,7 +34,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.flagstone.transform.Bounds;
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.DefineTag;
@@ -45,6 +44,7 @@ import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.coder.SWFFactory;
+import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.linestyle.LineStyle;
 
 /**

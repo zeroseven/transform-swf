@@ -32,7 +32,6 @@ package com.flagstone.transform.util.movie;
 import java.util.List;
 import java.util.ArrayList;
 
-import com.flagstone.transform.Bounds;
 import com.flagstone.transform.DoAction;
 import com.flagstone.transform.FrameLabel;
 import com.flagstone.transform.Movie;
@@ -42,6 +41,7 @@ import com.flagstone.transform.action.GotoFrame2;
 import com.flagstone.transform.action.Push;
 import com.flagstone.transform.coder.Action;
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.text.DefineTextField;
 import com.flagstone.transform.util.movie.Frame;
 

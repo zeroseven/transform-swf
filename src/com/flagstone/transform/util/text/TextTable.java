@@ -36,9 +36,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.flagstone.transform.Bounds;
-import com.flagstone.transform.Color;
-import com.flagstone.transform.CoordTransform;
+import com.flagstone.transform.datatype.Bounds;
+import com.flagstone.transform.datatype.Color;
+import com.flagstone.transform.datatype.CoordTransform;
 import com.flagstone.transform.font.DefineFont2;
 import com.flagstone.transform.text.DefineText2;
 import com.flagstone.transform.text.GlyphIndex;

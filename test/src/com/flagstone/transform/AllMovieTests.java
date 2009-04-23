@@ -7,6 +7,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
 	BackgroundTest.class,
 	DefineDataTest.class,
+	DefineVideoTest.class,
 	DoABCTest.class,
 	DoActionTest.class,
 	FrameLabelTest.class,
@@ -23,7 +24,18 @@ import org.junit.runners.Suite;
 	ScalingGridTest.class,
 	ShowFrameTest.class,
 	SymbolClassTest.class,
-	TabOrderTest.class
+	TabOrderTest.class,
+	EnableDebuggerTest.class,
+	EnableDebugger2Test.class,
+	ExportTest.class,
+	FileAttributesTest.class,
+	ImportTest.class,
+	Import2Test.class,
+	MovieMetaDataTest.class,
+	PathsArePostscriptTest.class,
+	ProtectTest.class,
+	ScenesAndLabelsTest.class,
+	SerialNumberTest.class
         })
 public final class AllMovieTests {
 }

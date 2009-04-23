@@ -28,7 +28,7 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.flagstone.transform;
+package com.flagstone.transform.datatype;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

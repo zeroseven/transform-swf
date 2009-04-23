@@ -57,6 +57,7 @@ import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.coder.SWFFactory;
+import com.flagstone.transform.datatype.Bounds;
 
 /**
  * //TODO(doc) Review

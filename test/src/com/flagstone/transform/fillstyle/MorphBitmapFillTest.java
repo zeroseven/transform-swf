@@ -31,11 +31,11 @@ package com.flagstone.transform.fillstyle;
 
 import org.junit.Test;
 
-import com.flagstone.transform.CoordTransform;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.datatype.CoordTransform;
 import com.flagstone.transform.fillstyle.MorphBitmapFill;
 
 import static org.junit.Assert.assertSame;

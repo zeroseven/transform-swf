@@ -1,6 +1,6 @@
 package com.flagstone.transform.util.font;
 
-import com.flagstone.transform.Bounds;
+import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.shape.Shape;
 
 /**

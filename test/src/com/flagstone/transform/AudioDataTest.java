@@ -39,12 +39,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 
 import com.flagstone.transform.AudioData;
-import com.flagstone.transform.ColorTransform;
-import com.flagstone.transform.CoordTransform;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.datatype.ColorTransform;
+import com.flagstone.transform.datatype.CoordTransform;
 
 @SuppressWarnings( { 
 	"PMD.LocalVariableCouldBeFinal",

@@ -28,7 +28,7 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.flagstone.transform;
+package com.flagstone.transform.datatype;
 
 /**
  * //TODO(code) Refactor. Can this be replaced by an enum and color registry.

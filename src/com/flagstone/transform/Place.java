@@ -36,6 +36,8 @@ import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.datatype.ColorTransform;
+import com.flagstone.transform.datatype.CoordTransform;
 
 //TODO(doc) Review
 /**

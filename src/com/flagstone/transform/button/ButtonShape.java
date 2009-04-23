@@ -35,9 +35,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import com.flagstone.transform.Blend;
-import com.flagstone.transform.ColorTransform;
-import com.flagstone.transform.CoordTransform;
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
@@ -45,6 +42,9 @@ import com.flagstone.transform.coder.Encodeable;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.datatype.Blend;
+import com.flagstone.transform.datatype.ColorTransform;
+import com.flagstone.transform.datatype.CoordTransform;
 import com.flagstone.transform.filter.Filter;
 
 //TODO(doc) Review

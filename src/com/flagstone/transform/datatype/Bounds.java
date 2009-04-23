@@ -28,7 +28,7 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.flagstone.transform;
+package com.flagstone.transform.datatype;
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Encodeable;

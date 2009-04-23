@@ -30,7 +30,6 @@
 
 package com.flagstone.transform.linestyle;
 
-import com.flagstone.transform.Color;
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
@@ -40,6 +39,7 @@ import com.flagstone.transform.coder.FillStyle;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.coder.SWFFactory;
+import com.flagstone.transform.datatype.Color;
 
 //TODO(doc) Description and document methods
 public final class MorphLineStyle2 implements Encodeable,
