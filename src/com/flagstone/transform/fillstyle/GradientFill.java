@@ -261,9 +261,11 @@ public final class GradientFill implements FillStyle {
 	 *            an array of Gradient objects. Must not be null.
 	 */
 	public void setGradients(final List<Gradient> anArray) {
-		//TODO Add check to ensure array size <= 15
 		if (anArray == null) {
 			throw new IllegalArgumentException(Strings.ARRAY_CANNOT_BE_NULL);
+		}
+		if (anArray.size() > 15) {
+			throw new IllegalArgumentException(Strings.GRADIENT_COUNT_EXCEEDED);
 		}
 		gradients = anArray;
 	}
@@ -277,9 +279,11 @@ public final class GradientFill implements FillStyle {
 	 *            an Gradient object. Must not be null.
 	 */
 	public GradientFill add(final Gradient aGradient) {
-		//TODO(code) add check that array size does not exceed 15
 		if (aGradient == null) {
 			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+		}
+		if (gradients.size() == 15) {
+			throw new IllegalArgumentException(Strings.GRADIENT_COUNT_EXCEEDED);
 		}
 		gradients.add(aGradient);
 		return this;
@@ -295,15 +299,9 @@ public final class GradientFill implements FillStyle {
 	}
 
 	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		//TODO(optimise) Calculate size of gradient array directly.
-		int length = 2 + transform.prepareToEncode(coder, context);
 		count = gradients.size();
-
-		for (Gradient gradient : gradients) {
-			length += gradient.prepareToEncode(coder, context);
-		}
-
-		return length;
+		return 2 + transform.prepareToEncode(coder, context) + (count * 
+			(context.getVariables().containsKey(Context.TRANSPARENT) ? 5:4));
 	}
 
 	public void encode(final SWFEncoder coder, final Context context) throws CoderException {

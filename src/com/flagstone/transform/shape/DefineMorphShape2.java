@@ -130,8 +130,8 @@ public final class DefineMorphShape2 implements DefineTag
 		lineStyles = new ArrayList<MorphLineStyle2>();
 		coder.readByte();
 		
-		int offset = coder.readWord(4, false); //TODO(code) fix
-		int first = coder.getPointer(); //TODO(code) fix
+		int offset = coder.readWord(4, false);
+		int first = coder.getPointer();
 
 		int fillStyleCount = coder.readByte();
 

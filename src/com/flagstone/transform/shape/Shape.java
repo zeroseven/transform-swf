@@ -63,17 +63,6 @@ public final class Shape implements SWFEncodeable
 	private transient int length;
 
 	//TODO(doc)
-	//TODO(code) Check this method is still needed
-	public Shape(int length)
-	{
-		/*
-		 * This test is used to overcome a bug in SWFTool's pdf2swf where empty
-		 * glyphs are only encoded using 1 byte - should be 2.
-		 */
-		this.length = length;
-	}
-
-	//TODO(doc)
 	public Shape(final SWFDecoder coder, final Context context) throws CoderException
 	{
 		objects = new ArrayList<ShapeRecord>();
@@ -96,12 +85,12 @@ public final class Shape implements SWFEncodeable
 
 					if ((type & 0x20) > 0) {
 						if ((type & 0x10) > 0) {
-							shape = new Line(coder, context); //TODO(code) fix
+							shape = new Line(coder, context);
 						} else {
-							shape = new Curve(coder, context); //TODO(code) fix
+							shape = new Curve(coder, context);
 						}
 					} else {
-						shape = new ShapeStyle(coder, context); //TODO(code) fix
+						shape = new ShapeStyle(coder, context);
 					}
 					objects.add(shape);
 				}
@@ -139,12 +128,12 @@ public final class Shape implements SWFEncodeable
 
 					if ((type & 0x20) > 0) {
 						if ((type & 0x10) > 0) {
-							shape = new Line(coder, context); //TODO(code) fix
+							shape = new Line(coder, context);
 						} else {
-							shape = new Curve(coder, context); //TODO(code) fix
+							shape = new Curve(coder, context);
 						}
 					} else {
-						shape = new ShapeStyle(coder, context); //TODO(code) fix
+						shape = new ShapeStyle(coder, context);
 					}
 					objects.add(shape);
 				}

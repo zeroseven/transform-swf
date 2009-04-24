@@ -110,19 +110,6 @@ public final class DoActionTest {
 	}
 	
 	@Test
-	public void encodeDefault() throws CoderException {		
-		SWFEncoder encoder = new SWFEncoder(empty.length);	
-		Context context = new Context();
-
-		fixture = new DoAction();
-		assertEquals(empty.length, fixture.prepareToEncode(encoder, context));
-		fixture.encode(encoder, context);
-		
-		assertTrue(encoder.eof());
-		assertArrayEquals(empty, encoder.getData());
-	}
-	
-	@Test
 	public void encodeExtended() throws CoderException {		
 		SWFEncoder encoder = new SWFEncoder(106);	
 		Context context = new Context();

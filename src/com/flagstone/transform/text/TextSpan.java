@@ -423,7 +423,7 @@ public final class TextSpan implements SWFEncodeable
 
 	protected int glyphBits()
 	{
-		int numberOfBits = 0; //TODO(code) fix
+		int numberOfBits = 0;
 
 		for (GlyphIndex index : characters) {
 			numberOfBits = Math.max(numberOfBits, Encoder.unsignedSize(index.getGlyphIndex()));
@@ -434,7 +434,7 @@ public final class TextSpan implements SWFEncodeable
 
 	protected int advanceBits()
 	{
-		int numberOfBits = 0; //TODO(code) fix
+		int numberOfBits = 0;
 
 		for (GlyphIndex index : characters) {
 			numberOfBits = Math.max(numberOfBits, Encoder.size(index.getAdvance()));

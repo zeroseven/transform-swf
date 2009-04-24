@@ -85,7 +85,9 @@ public final class DefineJPEGImage implements ImageTag
 		end = coder.getPointer() + (length << 3);
 		identifier = coder.readWord(2, false);
 		image = coder.readBytes(new byte[length - 2]);
-		//TODO(code) width and height are not set.
+		
+		decodeInfo();
+
 		if (coder.getPointer() != end) {
 			throw new CoderException(getClass().getName(), start >> 3, length,
 					(coder.getPointer() - end) >> 3);
@@ -157,13 +159,13 @@ public final class DefineJPEGImage implements ImageTag
 	 * specify a separate table using a JPEGEncodingTable object.
 	 * 
 	 * @param bytes
-	 *            an array of bytes containing the image data. Must not be null.
+	 *            an array of bytes containing the image data. Must not be null
+	 *            or empty.
 	 */
-	//TODO(code) Add check for zero length as well
 	public void setImage(byte[] bytes)
 	{
-		if (bytes == null) {
-			throw new IllegalArgumentException(Strings.DATA_CANNOT_BE_NULL);
+		if (bytes == null || bytes.length == 0) {
+			throw new IllegalArgumentException(Strings.DATA_NOT_SET);
 		}
 		image = bytes;
 		decodeInfo();

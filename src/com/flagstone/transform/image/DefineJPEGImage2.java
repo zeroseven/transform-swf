@@ -74,7 +74,8 @@ public final class DefineJPEGImage2 implements ImageTag
 		
 		identifier = coder.readWord(2, false);
 		image = coder.readBytes(new byte[length-2]);
-		//TODO(code) width and height are not set.
+		
+		decodeInfo();
 	
 		if (coder.getPointer() != end) {
 			throw new CoderException(getClass().getName(), start >> 3, length,
@@ -198,7 +199,6 @@ public final class DefineJPEGImage2 implements ImageTag
 		}
 	}
 
-	//TODO(code) Share with other JPEG image classes or optimise and integrate.
 	private void decodeInfo()
 	{
 		FLVDecoder coder = new FLVDecoder(image);

@@ -47,8 +47,7 @@ public final class Call implements Action
 	private static final Call instance = new Call();
 
 	/**
-	 * Returns a shared instance of Call object which can be reused in one or 
-	 * more movies.
+	 * Returns a shared instance of the Call action.
 	 */
 	public static Call getInstance()
 	{

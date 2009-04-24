@@ -92,13 +92,13 @@ public final class DefineFont implements DefineTag
 
 		coder.setPointer(offsetStart);
 
-		int[] offset = new int[shapeCount + 1]; //TODO(code) fix
+		int[] offset = new int[shapeCount + 1];
 
 		for (int i = 0; i < shapeCount; i++) {
-			offset[i] = coder.readWord(2, false); //TODO(code) fix
+			offset[i] = coder.readWord(2, false);
 		}
 
-		offset[shapeCount] = length - 2; //TODO(code) fix
+		offset[shapeCount] = length - 2;
 		
 		for (int i = 0; i < shapeCount; i++)
 		{
@@ -248,7 +248,7 @@ public final class DefineFont implements DefineTag
 			coder.writeWord(0, 2);
 		}
 
-		int tableEntry = tableStart; //TODO(code) fix
+		int tableEntry = tableStart;
 
 		for (Shape shape : shapes)
 		{

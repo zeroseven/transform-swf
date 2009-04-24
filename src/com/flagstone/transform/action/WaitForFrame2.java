@@ -133,6 +133,6 @@ public final class WaitForFrame2 implements Action
 	{
 		coder.writeByte(ActionTypes.WAIT_FOR_FRAME_2);
 		coder.writeWord(1, 2);
-		coder.writeWord(actionCount, 1);
+		coder.writeByte(actionCount);
 	}
 }

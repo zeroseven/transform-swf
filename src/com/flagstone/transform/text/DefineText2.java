@@ -357,8 +357,8 @@ public final class DefineText2 implements DefineTag
 		bounds.encode(coder, context);
 		transform.encode(coder, context);
 
-		coder.writeWord(glyphBits, 1);
-		coder.writeWord(advanceBits, 1);
+		coder.writeByte(glyphBits);
+		coder.writeByte(advanceBits);
 
 		for (TextSpan span : objects) {
 			span.encode(coder, context);

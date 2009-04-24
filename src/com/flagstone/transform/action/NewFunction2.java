@@ -451,7 +451,7 @@ public final class NewFunction2 implements Action
 
 		coder.writeString(name);
 		coder.writeWord(arguments.size(), 2);
-		coder.writeWord(registerCount, 1);
+		coder.writeByte(registerCount);
 		coder.writeBits(optimizations, 16);
 
 		for (String arg : arguments.keySet()) {

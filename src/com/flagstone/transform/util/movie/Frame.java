@@ -113,7 +113,7 @@ public final class Frame
 	{
 		ArrayList<Frame> frames = new ArrayList<Frame>();
 
-		Frame currentFrame = new Frame(); //TODO(code) fix
+		Frame currentFrame = new Frame();
 
 		for (MovieTag currentObject : aMovie.getObjects())
 		{
@@ -132,7 +132,7 @@ public final class Frame
 			else if (currentObject instanceof ShowFrame)
 			{
 				frames.add(currentFrame);
-				currentFrame = new Frame(); //TODO(code) fix
+				currentFrame = new Frame();
 			} 
 			else
 			{

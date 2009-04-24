@@ -857,7 +857,7 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder
 			}
 		} else if (buffer.getDataType() == DataBuffer.TYPE_USHORT)
 		{
-			short[] pixels = ((DataBufferUShort) buffer).getData(); //TODO(code) fix
+			short[] pixels = ((DataBufferUShort) buffer).getData();
 
 			switch (obj.getType())
 			{

@@ -138,7 +138,7 @@ public final class RegisterCopy implements Action
 	{
 		coder.writeByte(ActionTypes.REGISTER_COPY);
 		coder.writeWord(2, 2);
-		coder.writeWord(registerNumber, 1);
+		coder.writeByte(registerNumber);
 	}
 
 	public void decode(final SWFDecoder coder, final Context context) throws CoderException

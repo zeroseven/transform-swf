@@ -50,13 +50,13 @@ import com.flagstone.transform.fillstyle.MorphSolidFill;
 })
 public final class MorphSolidFillTest {
 	
-	private transient final Color startColor = new Color(1,2,3);
-	private transient final Color endColor = new Color(4,5,6);
+	private transient final Color startColor = new Color(1,2,3,4);
+	private transient final Color endColor = new Color(5,6,7,8);
 	
 	private transient MorphSolidFill fixture;
 	
 	private transient final byte[] encoded = new byte[] { 
-			0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06 };
+			0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
 
 	@Test(expected=IllegalArgumentException.class)
 	public void checkAccessorForStartColorWithNull() {
@@ -82,7 +82,8 @@ public final class MorphSolidFillTest {
 	public void encode() throws CoderException {		
 		SWFEncoder encoder = new SWFEncoder(encoded.length);		
 		Context context = new Context();
-		
+		context.getVariables().put(Context.TRANSPARENT, 1);
+
 		fixture = new MorphSolidFill(startColor, endColor);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
 		fixture.encode(encoder, context);
@@ -95,7 +96,8 @@ public final class MorphSolidFillTest {
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		Context context = new Context();
-	
+		context.getVariables().put(Context.TRANSPARENT, 1);
+
 		fixture = new MorphSolidFill(decoder, context);
 		
 		assertTrue(decoder.eof());

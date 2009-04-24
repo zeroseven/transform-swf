@@ -109,6 +109,7 @@ public final class Push implements Action {
 
 	private List<Object> values;
 
+	private transient int start;
 	private transient int length;
 	
 	//TODO(doc)
@@ -121,7 +122,7 @@ public final class Push implements Action {
 		int valuesLength = length;
 
 		while (valuesLength > 0) {
-			int dataType = coder.readWord(1, false);
+			int dataType = coder.readByte();
 
 			switch (dataType) {
 			case 0:
@@ -276,8 +277,8 @@ public final class Push implements Action {
 		return length + 3;
 	}
 
-	//TODO(code) throw a Coder exception if an unexpected object is found
 	public void encode(final SWFEncoder coder, final Context context) throws CoderException {
+		
 		coder.writeByte(ActionTypes.PUSH);
 		coder.writeWord(length, 2);
 
@@ -313,7 +314,7 @@ public final class Push implements Action {
 				coder.writeWord(4, 1);
 				coder.writeWord(((RegisterIndex) anObject).getIndex(), 1);
 			} else {
-				throw new AssertionError();
+				throw new CoderException(getClass().getName(), 0, 0, 0, Strings.UNSUPPORTED_OBJECT);
 			}
 		}
 	}

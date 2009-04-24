@@ -44,15 +44,15 @@ import com.flagstone.transform.coder.SWFEncoder;
 /**
  * DefineJPEGImage3 is used to define a transparent JPEG encoded image.
  * 
- * <p>It extends the DefineJPEGImage2 class by including a separate zlib
- * compressed table of alpha channel values. This allows the transparency of
- * existing JPEG encoded images to be changed without re-encoding the original
- * image.</p>
+ * <p>
+ * It extends the DefineJPEGImage2 class by including a separate zlib compressed
+ * table of alpha channel values. This allows the transparency of existing JPEG
+ * encoded images to be changed without re-encoding the original image.
+ * </p>
  * 
  * @see DefineJPEGImage3
  */
-public final class DefineJPEGImage3 implements ImageTag 
-{
+public final class DefineJPEGImage3 implements ImageTag {
 	private static final String FORMAT = "DefineJPEGImage3: { identifier=%d; image=%d; alpha=%d }";
 
 	private transient int start;
@@ -60,17 +60,17 @@ public final class DefineJPEGImage3 implements ImageTag
 	private transient int length;
 	private transient int width;
 	private transient int height;
-	
+
 	private byte[] image;
 	private byte[] alpha;
 	private int identifier;
 
-	//TODO(doc)
-	public DefineJPEGImage3(final SWFDecoder coder, final Context context) throws CoderException
-	{
+	// TODO(doc)
+	public DefineJPEGImage3(final SWFDecoder coder, final Context context)
+			throws CoderException {
 		start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
-		
+
 		if (length == 0x3F) {
 			length = coder.readWord(4, false);
 		}
@@ -81,7 +81,8 @@ public final class DefineJPEGImage3 implements ImageTag
 
 		image = coder.readBytes(new byte[offset]);
 		alpha = coder.readBytes(new byte[length - offset - 6]);
-		//TODO(code) width and height are not set.
+
+		decodeInfo();
 
 		if (coder.getPointer() != end) {
 			throw new CoderException(getClass().getName(), start >> 3, length,
@@ -90,11 +91,11 @@ public final class DefineJPEGImage3 implements ImageTag
 	}
 
 	/**
-	 * Creates a DefineJPEGImage3 object with the specified image data,
-	 * and alpha channel data.
+	 * Creates a DefineJPEGImage3 object with the specified image data, and
+	 * alpha channel data.
 	 * 
 	 * @param uid
-	 *            the unique identifier for this object. Must be in the range 
+	 *            the unique identifier for this object. Must be in the range
 	 *            1..65535.
 	 * @param image
 	 *            the JPEG encoded image data. Must not be null.
@@ -102,14 +103,13 @@ public final class DefineJPEGImage3 implements ImageTag
 	 *            byte array containing the zlib compressed alpha channel data.
 	 *            Must not be null.
 	 */
-	public DefineJPEGImage3(int uid, byte[] image, byte[] alpha)
-	{
+	public DefineJPEGImage3(int uid, byte[] image, byte[] alpha) {
 		setIdentifier(uid);
 		setImage(image);
 		setCompressedAlpha(alpha);
 	}
-	
-	//TODO(doc)
+
+	// TODO(doc)
 	public DefineJPEGImage3(DefineJPEGImage3 object) {
 		identifier = object.identifier;
 		width = object.width;
@@ -117,7 +117,7 @@ public final class DefineJPEGImage3 implements ImageTag
 		image = Arrays.copyOf(object.image, object.image.length);
 		alpha = Arrays.copyOf(object.alpha, object.alpha.length);
 	}
-	
+
 	public int getIdentifier() {
 		return identifier;
 	}
@@ -132,32 +132,28 @@ public final class DefineJPEGImage3 implements ImageTag
 	/**
 	 * Returns the width of the image in pixels.
 	 */
-	public int getWidth()
-	{
+	public int getWidth() {
 		return width;
 	}
 
 	/**
 	 * Returns the height of the image in pixels.
 	 */
-	public int getHeight()
-	{
+	public int getHeight() {
 		return height;
 	}
 
 	/**
 	 * Returns the image data.
 	 */
-	public byte[] getImage()
-	{
+	public byte[] getImage() {
 		return image;
 	}
 
 	/**
 	 * Returns the alpha channel data.
 	 */
-	public byte[] getCompressedAlpha()
-	{
+	public byte[] getCompressedAlpha() {
 		return alpha;
 	}
 
@@ -165,10 +161,10 @@ public final class DefineJPEGImage3 implements ImageTag
 	 * Sets the image data.
 	 * 
 	 * @param bytes
-	 *            an array of bytes containing the image table. Must not be null.
+	 *            an array of bytes containing the image table. Must not be
+	 *            null.
 	 */
-	public void setImage(byte[] bytes)
-	{
+	public void setImage(byte[] bytes) {
 		image = bytes;
 		decodeInfo();
 	}
@@ -177,36 +173,32 @@ public final class DefineJPEGImage3 implements ImageTag
 	 * Sets the alpha channel data with the zlib compressed data.
 	 * 
 	 * @param bytes
-	 *            array of bytes containing zlib encoded alpha channel. Must not 
+	 *            array of bytes containing zlib encoded alpha channel. Must not
 	 *            be null.
 	 */
-	public void setCompressedAlpha(byte[] bytes)
-	{
+	public void setCompressedAlpha(byte[] bytes) {
 		alpha = bytes;
 	}
 
-	public DefineJPEGImage3 copy() 
-	{
+	public DefineJPEGImage3 copy() {
 		return new DefineJPEGImage3(this);
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return String.format(FORMAT, identifier, image.length, alpha.length);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context)
-	{
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		length = 6;
 		length += image.length;
 		length += alpha.length;
 
-		return (length > 62 ? 6:2) + length;
+		return (length > 62 ? 6 : 2) + length;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException
-	{
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		start = coder.getPointer();
 
 		if (length >= 63) {
@@ -216,7 +208,7 @@ public final class DefineJPEGImage3 implements ImageTag
 			coder.writeWord((MovieTypes.DEFINE_JPEG_IMAGE_3 << 6) | length, 2);
 		}
 		end = coder.getPointer() + (length << 3);
-		
+
 		coder.writeWord(identifier, 2);
 		coder.writeWord(image.length, 4);
 		coder.writeBytes(image);
@@ -228,34 +220,28 @@ public final class DefineJPEGImage3 implements ImageTag
 		}
 	}
 
-	//TODO(code) Share with other JPEG image classes or optimise and integrate.
-	private void decodeInfo()
-	{
+	private void decodeInfo() {
 		FLVDecoder coder = new FLVDecoder(image);
 
-		if (coder.readWord(2, false) == 0xffd8) 
-		{
+		if (coder.readWord(2, false) == 0xffd8) {
 			int marker;
-			
+
 			do {
 				marker = coder.readWord(2, false);
-				
-				if ((marker & 0xff00) == 0xff00)
-				{
-					if (marker >= 0xffc0 && marker <= 0xffcf && marker != 0xffc4
-									&& marker != 0xffc8)
-					{
+
+				if ((marker & 0xff00) == 0xff00) {
+					if (marker >= 0xffc0 && marker <= 0xffcf
+							&& marker != 0xffc4 && marker != 0xffc8) {
 						coder.adjustPointer(24);
 						height = coder.readWord(2, false);
 						width = coder.readWord(2, false);
 						break;
-					} 
-					else
-					{
-						coder.adjustPointer((coder.readWord(2, false) - 2) << 3);
+					} else {
+						coder
+								.adjustPointer((coder.readWord(2, false) - 2) << 3);
 					}
 				}
-				
+
 			} while ((marker & 0xff00) == 0xff00);
 		}
 	}

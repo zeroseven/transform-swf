@@ -66,7 +66,6 @@ import com.flagstone.transform.coder.SWFEncoder;
  * it then only the pixels inside of the bounding box will be repainted.
  * </p>
  */
-//TODO(doc) Check comments for all methods 
 public final class Bounds implements SWFEncodeable {
 
 	private static final String FORMAT = "Bounds: { minX=%d; minY=%d; maxX=%d; maxY=%d }";
@@ -78,8 +77,17 @@ public final class Bounds implements SWFEncodeable {
 
 	private transient int size;
 
+	/**
+	 * Creates and initialises a Bounds using values encoded in the Flash binary 
+	 * format.
+	 * 
+	 * @param coder
+	 *            an SWFDecoder object that contains the encoded Flash data.
+	 * 
+	 * @throws CoderException
+	 *             if an error occurs while decoding the data.
+	 */
 	public Bounds(final SWFDecoder coder) throws CoderException {
-		coder.alignToByte(); //TODO(optimise) See if this can be removed
 		size = coder.readBits(5, false);
 		minX = coder.readBits(size, true);
 		maxX = coder.readBits(size, true);
@@ -185,12 +193,11 @@ public final class Bounds implements SWFEncodeable {
 	
 	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		size = Encoder.maxSize(minX, minY, maxX, maxY);
-		// add extra 7 bit so result is byte aligned.
-		return ((5 + (size << 2)) + 7) >> 3; //TODO(optimise) 5+7 = 12
+		// add extra 7 bits so result is byte aligned.
+		return ((12 + (size << 2))) >> 3;
 	}
 
 	public void encode(final SWFEncoder coder, final Context context) throws CoderException {
-		coder.alignToByte(); //TODO(optimise) See if this can be removed
 		coder.writeBits(size, 5);
 		coder.writeBits(minX, size);
 		coder.writeBits(maxX, size);

@@ -165,6 +165,6 @@ public final class WaitForFrame implements Action
 		coder.writeByte(ActionTypes.WAIT_FOR_FRAME);
 		coder.writeWord(3, 2);
 		coder.writeWord(frameNumber, 2);
-		coder.writeWord(actionCount, 1);
+		coder.writeByte(actionCount);
 	}
 }

@@ -132,7 +132,7 @@ public final class WAVDecoder implements SoundProvider, SoundDecoder
     private byte[] loadFile(final File file) throws FileNotFoundException, IOException {
 		byte[] data = new byte[(int) file.length()];
 
-		FileInputStream stream = null; //TODO(code) fix
+		FileInputStream stream = null;
 
 		try {
 			stream = new FileInputStream(file);

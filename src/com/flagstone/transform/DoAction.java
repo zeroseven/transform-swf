@@ -202,10 +202,6 @@ public final class DoAction implements MovieTag {
 			length += action.prepareToEncode(coder, context);
 		}
 		
-		if (actions.isEmpty()) { //TODO(code) remove
-			length++;
-		}
-
 		return (length > 62 ? 6 : 2) + length;
 	}
 
@@ -225,11 +221,6 @@ public final class DoAction implements MovieTag {
 			action.encode(coder, context);
 		}
 		
-		//TODO(code) replace with a check for and END action
-		if (actions.isEmpty()) { 
-			coder.writeByte(0);
-		}
-
 		if (coder.getPointer() != end) {
 			throw new CoderException(getClass().getName(), start >> 3, length,
 					(coder.getPointer() - end) >> 3);

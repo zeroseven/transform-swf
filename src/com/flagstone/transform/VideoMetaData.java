@@ -60,7 +60,7 @@ public final class VideoMetaData implements VideoTag
 	public VideoMetaData(FLVDecoder coder) throws CoderException
 	{
 		start = coder.getPointer();
-		coder.readWord(1, false);
+		coder.readByte();
 		length = coder.readWord(3, false);
 		end = coder.getPointer() + (length << 3);
 		timestamp = coder.readWord(3, false);

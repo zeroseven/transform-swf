@@ -42,32 +42,27 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.coder.SWFFactory;
 
-//TODO(doc) Review
 /**
- * The ExceptionHandler class is used to specify try..catch blocks so
- * exceptions can be thrown and handled when executing a series of actions.
+ * The ExceptionHandler class is used to represent try..catch blocks in
+ * Actionscript so exceptions can be thrown and handled when executing a series
+ * of actions.
  * 
-* <p>The thrown object can be assigned to either one of the Flash Player's 256
+ * <p>
+ * The thrown object can be assigned to either one of the Flash Player's 256
  * internal registers or to a variable in memory. If a register number is set
- * the variable name is set to the empty string. Similarly if a variable name is 
- * set then the register number is set to zero.</p>
+ * the variable name is set to the empty string. Similarly if a variable name is
+ * set then the register number is set to zero.
+ * </p>
  * 
- * <p>The ExceptionHandler class contains three arrays of actions supporting the
- * standard syntax for an exception with try, catch and finally blocks. An
- * exception is thrown by a Throw action which pops a value off the stack and
- * assigns it to either a named variable or one of the Flash Player's internal
- * registered so it can be processed by the actions in the catch block.</p>
- * 
- * <p>Exceptions may be nested to any level if a thrown exception is not handled 
- * by the immediate catch block it is propagated to the next handler in the
- * exception hierarchy and so on until it is caught.</p>
- * 
- * <p>Both the catch and finally blocks are optional when defining an exception,
- * the corresponding arguments in constructors and methods may be set
- * to empty arrays.</p>
+ * <p>
+ * The ExceptionHandler class contains three arrays of actions supporting the
+ * standard syntax for an exception with try, catch and finally blocks. Both the
+ * catch and finally blocks are optional when defining an exception, the
+ * corresponding arguments in constructors and methods may be set to empty
+ * arrays.
+ * </p>
  */
-public final class ExceptionHandler implements Action
-{
+public final class ExceptionHandler implements Action {
 	private static final String FORMAT = "ExceptionHandler: { variable=%s; register=%d try=%s; catch=%s; final=%s }";
 
 	private int register;
@@ -75,19 +70,19 @@ public final class ExceptionHandler implements Action
 	private List<Action> tryActions;
 	private List<Action> catchActions;
 	private List<Action> finalActions;
-	
+
 	private transient int length;
 	private transient int tryLength;
 	private transient int catchLength;
 	private transient int finalLength;
 
-	//TODO(doc)
-	//TODO(optimise)
-	public ExceptionHandler(final SWFDecoder coder, final Context context) throws CoderException
-	{
+	// TODO(doc)
+	// TODO(optimise)
+	public ExceptionHandler(final SWFDecoder coder, final Context context)
+			throws CoderException {
 		coder.readByte();
 		length = coder.readWord(2, false);
-		
+
 		coder.readBits(5, false);
 		boolean containsVariable = coder.readBits(1, false) == 1;
 		boolean containsFinal = coder.readBits(1, false) == 1;
@@ -97,8 +92,7 @@ public final class ExceptionHandler implements Action
 		catchLength = coder.readWord(2, false);
 		finalLength = coder.readWord(2, false);
 
-		if (length == 8)
-		{
+		if (length == 8) {
 			length += tryLength;
 			length += catchLength;
 			length += finalLength;
@@ -106,34 +100,31 @@ public final class ExceptionHandler implements Action
 
 		if (containsVariable) {
 			variable = coder.readString();
-			register = 0;
-		} 
-		else {
+		} else {
 			register = coder.readByte();
-			variable = "";
 		}
 
 		tryActions = new ArrayList<Action>();
 		catchActions = new ArrayList<Action>();
 		finalActions = new ArrayList<Action>();
-		
+
 		int end = coder.getPointer() + (tryLength << 3);
-		SWFFactory<Action>decoder = context.getRegistry().getActionDecoder();
-		
-		while (coder.getPointer() < end) {			
+		SWFFactory<Action> decoder = context.getRegistry().getActionDecoder();
+
+		while (coder.getPointer() < end) {
 			tryActions.add(decoder.getObject(coder, context));
 		}
 
 		if (containsCatch) {
 			end = coder.getPointer() + (catchLength << 3);
-			while (coder.getPointer() < end) {			
+			while (coder.getPointer() < end) {
 				catchActions.add(decoder.getObject(coder, context));
 			}
 		}
 
 		if (containsFinal) {
 			end = coder.getPointer() + (finalLength << 3);
-			while (coder.getPointer() < end) {			
+			while (coder.getPointer() < end) {
 				finalActions.add(decoder.getObject(coder, context));
 			}
 		}
@@ -151,19 +142,17 @@ public final class ExceptionHandler implements Action
 	 *            exception. Must not be null.
 	 * @param catchArray
 	 *            actions that will be executed in the catch block of the
-	 *            exception, if one is defined. This may be an empty array if no 
-	 *            catch block is required - the exception will be handled by 
+	 *            exception, if one is defined. This may be an empty array if no
+	 *            catch block is required - the exception will be handled by
 	 *            another catch block higher in the exception tree.
 	 * @param finallyArray
 	 *            actions that will be executed in the finally block of the
-	 *            exception, if one is defined. This may be an empty array if no 
+	 *            exception, if one is defined. This may be an empty array if no
 	 *            finally block is required.
 	 */
 
 	public ExceptionHandler(String name, List<Action> tryArray,
-								List<Action> catchArray,
-								List<Action> finallyArray)
-	{
+			List<Action> catchArray, List<Action> finallyArray) {
 		setVariable(name);
 		setTryActions(tryArray);
 		setCatchActions(catchArray);
@@ -182,43 +171,40 @@ public final class ExceptionHandler implements Action
 	 *            exception. Must not be null.
 	 * @param catchArray
 	 *            actions that will be executed in the catch block of the
-	 *            exception, if one is defined. This may be an empty array if no 
-	 *            catch block is required - the exception will be handled by 
+	 *            exception, if one is defined. This may be an empty array if no
+	 *            catch block is required - the exception will be handled by
 	 *            another catch block higher in the exception tree.
 	 * @param finallyArray
 	 *            actions that will be executed in the finally block of the
-	 *            exception, if one is defined. This may be an empty array is no 
+	 *            exception, if one is defined. This may be an empty array is no
 	 *            finally block is required.
 	 */
 	public ExceptionHandler(int index, List<Action> tryArray,
-								List<Action> catchArray,
-								List<Action> finallyArray)
-	{
-		variable = "";
+			List<Action> catchArray, List<Action> finallyArray) {
 		setRegister(index);
 		setTryActions(tryArray);
 		setCatchActions(catchArray);
 		setFinalActions(finallyArray);
 	}
-	
+
 	public ExceptionHandler(ExceptionHandler object) {
 		variable = object.variable;
 		register = object.register;
-		
+
 		tryActions = new ArrayList<Action>(object.tryActions.size());
-		
+
 		for (Action action : object.tryActions) {
 			tryActions.add(action.copy());
 		}
-		
+
 		catchActions = new ArrayList<Action>(object.catchActions.size());
-		
+
 		for (Action action : object.catchActions) {
 			catchActions.add(action.copy());
 		}
 
 		finalActions = new ArrayList<Action>(object.finalActions.size());
-		
+
 		for (Action action : object.finalActions) {
 			finalActions.add(action.copy());
 		}
@@ -230,18 +216,17 @@ public final class ExceptionHandler implements Action
 	 * @param anAction
 	 *            an action. Must not be null.
 	 */
-	//TODO(code) return this
-	public void addToTry(Action anAction)
-	{
+	public ExceptionHandler addToTry(Action anAction) {
 		if (anAction == null) {
 			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
 		}
-		
+
 		if (tryActions == null) {
 			tryActions = new ArrayList<Action>();
 		}
 
 		tryActions.add(anAction);
+		return this;
 	}
 
 	/**
@@ -250,18 +235,17 @@ public final class ExceptionHandler implements Action
 	 * @param anAction
 	 *            an action. Must not be null.
 	 */
-	//TODO(code) return this
-	public void addToCatch(Action anAction)
-	{
+	public ExceptionHandler addToCatch(Action anAction) {
 		if (anAction == null) {
 			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
 		}
-		
+
 		if (catchActions == null) {
 			catchActions = new ArrayList<Action>();
 		}
 
 		catchActions.add(anAction);
+		return this;
 	}
 
 	/**
@@ -270,28 +254,27 @@ public final class ExceptionHandler implements Action
 	 * @param anAction
 	 *            an action. Must not be null.
 	 */
-	//TODO(code) return this
-	public void addToFinally(Action anAction)
-	{
+	public ExceptionHandler addToFinally(Action anAction) {
 		if (anAction == null) {
 			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
 		}
-		
+
 		if (catchActions == null) {
 			finalActions = new ArrayList<Action>();
 		}
 
 		finalActions.add(anAction);
+		return this;
 	}
 
 	/**
-	 * Returns the name of the variable which the exception object is assigned to.
+	 * Returns the name of the variable which the exception object is assigned
+	 * to.
 	 * 
-	 * @return the name of the function. Returns an empty string if the exception 
-	 * object will be assigned to a register.
+	 * @return the name of the function. Returns null if the exception object
+	 *         will be assigned to a register.
 	 */
-	public String getVariable()
-	{
+	public String getVariable() {
 		return variable;
 	}
 
@@ -299,14 +282,11 @@ public final class ExceptionHandler implements Action
 	 * Sets the name of the variable that the exception object is assigned to.
 	 * 
 	 * @param name
-	 *            the name of the variable. May be an empty string if the 
-	 *            exception object will be signed to a register, but not null.
+	 *            the name of the variable. May be null if the exception object
+	 *            will be signed to a register, but not null.
 	 */
-	public void setVariable(String name)
-	{
-		if (name == null) {
-			throw new IllegalArgumentException(Strings.STRING_CANNOT_BE_NULL);
-		}
+	public void setVariable(String name) {
+
 		if (name.length() == 0) {
 			throw new IllegalArgumentException(Strings.STRING_CANNOT_BE_EMPTY);
 		}
@@ -315,13 +295,13 @@ public final class ExceptionHandler implements Action
 	}
 
 	/**
-	 * Returns the index of the register that the exception object is assigned to.
+	 * Returns the index of the register that the exception object is assigned
+	 * to.
 	 * 
 	 * @return the number of register. Returns 0 if the exception object will be
 	 *         assigned to a local variable.
 	 */
-	public int getRegister()
-	{
+	public int getRegister() {
 		return register;
 	}
 
@@ -329,17 +309,16 @@ public final class ExceptionHandler implements Action
 	 * Sets the index of the register that the exception object is assigned to.
 	 * 
 	 * @param index
-	 *            the number of the register in the range 0..255. If the index 
-	 *            is 0 then the exception object will be assigned to a local 
+	 *            the number of the register in the range 0..255. If the index
+	 *            is 0 then the exception object will be assigned to a local
 	 *            variable.
 	 */
-	public void setRegister(int index)
-	{
+	public void setRegister(int index) {
 		if (index < 0 || index > 255) {
 			throw new IllegalArgumentException(Strings.REGISTER_OUT_OF_RANGE);
 		}
 		register = index;
-		variable = null; //TODO(code) fix
+		variable = null;
 	}
 
 	/**
@@ -347,8 +326,7 @@ public final class ExceptionHandler implements Action
 	 * 
 	 * @return the array of actions for the try block.
 	 */
-	public List<Action> getTryActions()
-	{
+	public List<Action> getTryActions() {
 		return tryActions;
 	}
 
@@ -358,9 +336,10 @@ public final class ExceptionHandler implements Action
 	 * @param array
 	 *            the array of actions for the try block. Must not be null.
 	 */
-	//TODO(code) Add test for null
-	public void setTryActions(List<Action> array)
-	{
+	public void setTryActions(List<Action> array) {
+		if (array == null) {
+			throw new IllegalArgumentException(Strings.ARRAY_CANNOT_BE_NULL);
+		}
 		tryActions = array;
 	}
 
@@ -369,8 +348,7 @@ public final class ExceptionHandler implements Action
 	 * 
 	 * @return the array of actions for the catch block.
 	 */
-	public List<Action> getCatchActions()
-	{
+	public List<Action> getCatchActions() {
 		return catchActions;
 	}
 
@@ -378,12 +356,13 @@ public final class ExceptionHandler implements Action
 	 * Sets the array of actions executed in the catch block.
 	 * 
 	 * @param array
-	 *            the array of actions for the catch block. May be empty if 
-	 *            no catch block is defined but must not be null.
+	 *            the array of actions for the catch block. May be empty if no
+	 *            catch block is defined but must not be null.
 	 */
-	//TODO(code) Add test for null
-	public void setCatchActions(List<Action> array)
-	{
+	public void setCatchActions(List<Action> array) {
+		if (array == null) {
+			throw new IllegalArgumentException(Strings.ARRAY_CANNOT_BE_NULL);
+		}
 		catchActions = array;
 	}
 
@@ -392,8 +371,7 @@ public final class ExceptionHandler implements Action
 	 * 
 	 * @return the array of actions for the finally block.
 	 */
-	public List<Action> getFinalActions()
-	{
+	public List<Action> getFinalActions() {
 		return finalActions;
 	}
 
@@ -401,36 +379,35 @@ public final class ExceptionHandler implements Action
 	 * Sets the array of actions executed in the final block.
 	 * 
 	 * @param array
-	 *            the array of actions for the final block. May be empty if 
-	 *            no finally block is defined but must not be null.
+	 *            the array of actions for the final block. May be empty if no
+	 *            finally block is defined but must not be null.
 	 */
-	//TODO(code) Add test for null
-	public void setFinalActions(List<Action> array)
-	{
+	public void setFinalActions(List<Action> array) {
+		if (array == null) {
+			throw new IllegalArgumentException(Strings.ARRAY_CANNOT_BE_NULL);
+		}
 		finalActions = array;
 	}
 
-	public ExceptionHandler copy() 
-	{
+	public ExceptionHandler copy() {
 		return new ExceptionHandler(this);
 	}
 
 	@Override
-	public String toString()
-	{
-		return String.format(FORMAT, variable, register, tryActions, catchActions, finalActions);
+	public String toString() {
+		return String.format(FORMAT, variable, register, tryActions,
+				catchActions, finalActions);
 	}
 
-	//TODO(optimise)
-	public int prepareToEncode(final SWFEncoder coder, final Context context)
-	{
+	// TODO(optimise)
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		length = 7;
-		length += (variable.length() > 0) ? coder.strlen(variable) : 1;
+		length += (variable != null) ? coder.strlen(variable) : 1;
 
 		tryLength = tryActions.isEmpty() ? 1 : 0;
 		catchLength = 0;
 		finalLength = 0;
-		
+
 		for (Action action : tryActions) {
 			tryLength += action.prepareToEncode(coder, context);
 		}
@@ -438,7 +415,7 @@ public final class ExceptionHandler implements Action
 		for (Action action : catchActions) {
 			catchLength += action.prepareToEncode(coder, context);
 		}
-		
+
 		for (Action action : finalActions) {
 			finalLength += action.prepareToEncode(coder, context);
 		}
@@ -450,13 +427,13 @@ public final class ExceptionHandler implements Action
 		return 3 + length;
 	}
 
-	//TODO(optimise)
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException
-	{
+	// TODO(optimise)
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		coder.writeByte(ActionTypes.EXCEPTION_HANDLER);
 		coder.writeWord(length, 2);
 		coder.writeBits(0, 5);
-		coder.writeBits(variable.length() > 0 ? 1 : 0, 1);
+		coder.writeBits(variable != null ? 1 : 0, 1);
 		coder.writeBits(finalLength > 0 ? 1 : 0, 1);
 		coder.writeBits(catchLength > 0 ? 1 : 0, 1);
 
@@ -466,23 +443,22 @@ public final class ExceptionHandler implements Action
 
 		if (variable.length() > 0) {
 			coder.writeString(variable);
+		} else {
+			coder.writeByte(register);
 		}
-		else {
-			coder.writeWord(register, 1);
-		}
-		
+
 		for (Action action : tryActions) {
 			action.encode(coder, context);
 		}
-		
+
 		if (tryActions.isEmpty()) {
 			coder.writeByte(0);
 		}
-		
+
 		for (Action action : catchActions) {
 			action.encode(coder, context);
 		}
-		
+
 		for (Action action : finalActions) {
 			action.encode(coder, context);
 		}

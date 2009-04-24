@@ -23,6 +23,7 @@ public final class Strings
 	public static final String DATA_CANNOT_BE_EMPTY = "Data cannot be empty.";
 	public static final String DATA_NOT_SET = "Data cannot be null or empty.";
 	public static final String ENCODED_ACTIONS_MUST_END = "Encoded actions must end with an END action.";
+	public static final String GRADIENT_COUNT_EXCEEDED = "The array cannot contain more than 15 gradients.";
 	public static final String OBJECT_CANNOT_BE_NULL = "Object cannot be null.";
 	public static final String STRING_CANNOT_BE_NULL = "String cannot be null.";
 	public static final String STRING_CANNOT_BE_EMPTY = "String cannot be empty.";
@@ -45,6 +46,7 @@ public final class Strings
 	public static final String CODER_POINTER_OUT_OF_BOUNDS = "The pointer must be set to a valid buffer index.";
 	public static final String TIMESTAMP_OUT_OF_RANGE = "The timestamp must be in the range 0..16777215.";
 	public static final String INVALID_BUTTON_TYPE = "The type for a button must be either MENU or PUSH.";
+	public static final String UNSUPPORTED_OBJECT = "The object is not supported.";
 	
 	private Strings()
 	{

@@ -320,7 +320,7 @@ public final class MovieClipEventHandler implements SWFEncodeable
 		coder.writeWord(offset, 4);
 
 		if ((event & MovieClipEvent.KEY_PRESS.getValue()) != 0) {
-			coder.writeWord(keyCode, 1);
+			coder.writeByte(keyCode);
 		}
 
 		for (Action action : actions) {

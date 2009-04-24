@@ -187,7 +187,7 @@ public final class Layer
 
 				if (idx[i] == array.size())
 				{
-					array = null;  //TODO(code) fix
+					array = null;
 				}
 			}
 			objects.add(ShowFrame.getInstance());
@@ -423,7 +423,7 @@ public final class Layer
 	public void remove()
 	{
 		if (place != null) {
-			place = null; //TODO(code) fix
+			place = null;
 		}
 
 		displayList.add(new Remove2(layerNumber));
@@ -514,7 +514,7 @@ public final class Layer
 		}
 
 		if (place != null) {
-			place = null; //TODO(code) fix
+			place = null;
 		}
 
 		for (int i = 0; i < count; i++)

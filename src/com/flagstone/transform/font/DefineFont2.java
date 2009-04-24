@@ -151,14 +151,14 @@ public final class DefineFont2 implements DefineTag
 		}
 
 		int glyphCount = coder.readWord(2, false);
-		int offsetStart = coder.getPointer(); //TODO(code) fix
-		int[] offset = new int[glyphCount + 1]; //TODO(code) fix
+		int offsetStart = coder.getPointer();
+		int[] offset = new int[glyphCount + 1];
 
 		for (int i = 0; i < glyphCount; i++) {
-			offset[i] = coder.readWord((wideOffsets) ? 4 : 2, false); //TODO(code) fix
+			offset[i] = coder.readWord((wideOffsets) ? 4 : 2, false);
 		}
 
-		offset[glyphCount] = coder.readWord((wideOffsets) ? 4 : 2, false); //TODO(code) fix
+		offset[glyphCount] = coder.readWord((wideOffsets) ? 4 : 2, false);
 
 		Shape shape;
 		

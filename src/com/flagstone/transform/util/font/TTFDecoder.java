@@ -1154,7 +1154,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder
 			throws FileNotFoundException, IOException {
 		byte[] data = new byte[(int) file.length()];
 
-		FileInputStream stream = null; //TODO(code) fix
+		FileInputStream stream = null;
 
 		try {
 			stream = new FileInputStream(file);

@@ -506,7 +506,7 @@ public final class Movie implements Cloneable
 	 */
 	public void decodeFromFile(File file) throws FileNotFoundException, DataFormatException, IOException
 	{
-		FileInputStream stream = null; //TODO(code) fix
+		FileInputStream stream = null;
 		byte[] data = new byte[(int) file.length()];
 
 		try {
@@ -693,7 +693,7 @@ public final class Movie implements Cloneable
 
 		coder.writeString(signature);
 		coder.adjustPointer(-8);
-		coder.writeWord(version, 1);
+		coder.writeByte(version);
 		coder.writeWord(length, 4);
 		frameSize.encode(coder, context);
 		coder.writeWord((int)(frameRate*256), 2);

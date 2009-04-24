@@ -130,9 +130,7 @@ public final class MorphSolidFill implements FillStyle {
 	}
 
 	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		//TODO(optimise) calculate size of colors directly
-		return 1 + startColor.prepareToEncode(coder, context)
-				+ endColor.prepareToEncode(coder, context);
+		return 9;
 	}
 
 	public void encode(final SWFEncoder coder, final Context context) throws CoderException {

@@ -223,12 +223,12 @@ public final class FontAlignment implements MovieTag
 	public void encode(final SWFEncoder coder, final Context context) throws CoderException
 	{
 		start = coder.getPointer();
-		//TODO(code) use correct type.
+
 		if (length >= 63) {
-			coder.writeWord((MovieTypes.FONT_INFO << 6) | 0x3F, 2);
+			coder.writeWord((MovieTypes.FONT_ALIGNMENT << 6) | 0x3F, 2);
 			coder.writeWord(length, 4);
 		} else {
-			coder.writeWord((MovieTypes.FONT_INFO << 6) | length, 2);
+			coder.writeWord((MovieTypes.FONT_ALIGNMENT << 6) | length, 2);
 		}
 		end = coder.getPointer() + (length << 3);
 		

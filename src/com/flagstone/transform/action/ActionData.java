@@ -36,7 +36,6 @@ import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.Action;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
 /**
@@ -44,10 +43,10 @@ import com.flagstone.transform.coder.SWFEncoder;
  * encoded for writing to a Flash file.
  * 
  * <p>
- * You can use this class to either selectively decode the actions in a movie,
- * so actions that are not of interest can be left encoded or to selectively
- * encode actions that will not change when generating Flash files from a
- * template.
+ * You can use this class to reduce the time it takes to decode and encode a
+ * movie. You can selectively decode the actions in a movie,so actions that are
+ * not of interest can be left encoded or selectively encode actions that will
+ * not change when generating files using a movie as a template.
  * </p>
  */
 public final class ActionData implements Action {
@@ -99,7 +98,8 @@ public final class ActionData implements Action {
 		return data.length;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException {
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		coder.writeBytes(data);
 	}
 }

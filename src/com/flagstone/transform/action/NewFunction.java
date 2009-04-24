@@ -273,9 +273,8 @@ public final class NewFunction implements Action
 	{
 		length = 2 + coder.strlen(name);
 
-		//TODO(code) replace with foreach loop
-		for (int i=0; i<arguments.size(); i++) {
-			length += coder.strlen(arguments.get(i));
+		for (String argument : arguments) {
+			length += coder.strlen(argument);
 		}
 
 		length += 2;
@@ -285,41 +284,26 @@ public final class NewFunction implements Action
 			actionsLength += action.prepareToEncode(coder, context);
 		}
 		
-		//TODO(doc) fix
-		if (actions.isEmpty()) {
-			actionsLength = 1;
-		}
-
-		length += actionsLength;
-
-		//TODO(optimise) return 3 + length + actionslength
-		return 3 + length;
+		return 3 + length + actionsLength;
 	}
 
 	public void encode(final SWFEncoder coder, final Context context) throws CoderException
 	{
 		coder.writeWord(ActionTypes.NEW_FUNCTION, 1);
-		//TODO(optimise) just write length, see above
-		coder.writeWord(length - actionsLength, 2);
+		coder.writeWord(length, 2);
 
 		coder.writeString(name);
 
 		coder.writeWord(arguments.size(), 2);
 
-		//TODO(code) replace with foreach loop
-		for (int i=0; i<arguments.size(); i++) {
-			coder.writeString(arguments.get(i));
+		for (String argument : arguments) {
+			coder.writeString(argument);
 		}
 
 		coder.writeWord(actionsLength, 2);
 
 		for (Action action : actions) {
 			action.encode(coder, context);
-		}
-		
-		//TODO(doc) fix
-		if (actions.isEmpty()) {
-			coder.writeByte(0);
 		}
 	}
 }

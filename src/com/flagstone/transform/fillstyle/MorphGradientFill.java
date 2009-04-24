@@ -124,7 +124,9 @@ public final class MorphGradientFill implements FillStyle {
 		if (aGradient == null) {
 			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
 		}
-		//TODO(code) Add check for array size
+		if (gradients.size() == 15) {
+			throw new IllegalArgumentException(Strings.GRADIENT_COUNT_EXCEEDED);
+		}
 		gradients.add(aGradient);
 		return this;
 	}
@@ -207,7 +209,9 @@ public final class MorphGradientFill implements FillStyle {
 		if (anArray == null) {
 			throw new IllegalArgumentException(Strings.ARRAY_CANNOT_BE_NULL);
 		}
-		//TODO(code) Add check for array size
+		if (anArray.size() > 15) {
+			throw new IllegalArgumentException(Strings.GRADIENT_COUNT_EXCEEDED);
+		}
 		gradients = anArray;
 	}
 
@@ -222,24 +226,16 @@ public final class MorphGradientFill implements FillStyle {
 	}
 
 	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		int length = 2 + startTransform.prepareToEncode(coder, context)
-				+ endTransform.prepareToEncode(coder, context);
-		
-		//TODO(optimise) calculate gradient array size directly.
 		count = gradients.size();
-		
-		for (MorphGradient gradient : gradients) {
-			length += gradient.prepareToEncode(coder, context);
-		}
-
-		return length;
+		return 2 + startTransform.prepareToEncode(coder, context) + 
+			endTransform.prepareToEncode(coder, context) +
+			(count * 10);
 	}
 
 	public void encode(final SWFEncoder coder, final Context context) throws CoderException {
 		coder.writeByte(type);
 		startTransform.encode(coder, context);
 		endTransform.encode(coder, context);
-
 		coder.writeByte(count);
 
 		for (MorphGradient gradient : gradients) {

@@ -112,7 +112,7 @@ public enum ButtonEvent {
 	 * Code for the button event that occurs when the up arrow key is pressed on
 	 * the keyboard.
 	 */
-	UP(7168), //TODO(code) fix
+	UP(7168),
 
 	/**
 	 * Code for the button event that occurs when the down arrow key is pressed

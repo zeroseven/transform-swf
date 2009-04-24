@@ -37,7 +37,7 @@ public class FLVEncoder extends Encoder
 	 *            the value to be written.
 	 */
 	public void writeDouble(final double value) {
-		long longValue = Double.doubleToLongBits(value); //TODO(code) fix
+		long longValue = Double.doubleToLongBits(value);
 
 		writeWord((int) (longValue >>> 32), 4);
 		writeWord((int) longValue, 4);

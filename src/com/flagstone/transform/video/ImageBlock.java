@@ -37,7 +37,6 @@ public final class ImageBlock implements Copyable<ImageBlock>
 	 */
 	public ImageBlock(int width, int height, byte[] data)
 	{
-		//TODO(code) Add checks
 		this.width = width;
 		this.height = height;
 		block = data;

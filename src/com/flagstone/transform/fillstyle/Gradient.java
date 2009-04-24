@@ -148,12 +148,7 @@ public final class Gradient implements SWFEncodeable
 
 	public int prepareToEncode(final SWFEncoder coder, final Context context)
 	{
-		//TODO(optimise) calculate color length directly
-		int length = 1;
-
-		length += color.prepareToEncode(coder, context);
-
-		return length;
+		return 1 + color.prepareToEncode(coder, context);
 	}
 
 	public void encode(final SWFEncoder coder, final Context context) throws CoderException

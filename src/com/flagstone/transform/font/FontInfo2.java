@@ -416,7 +416,7 @@ public final class FontInfo2 implements MovieTag
 		coder.writeBits(italic ? 1 : 0, 1);
 		coder.writeBits(bold ? 1 : 0, 1);
 		coder.writeBits(1, 1);
-		coder.writeWord(language, 1);
+		coder.writeByte(language);
 
 		for (Integer code : codes) {
 			coder.writeWord(code.intValue(), 2);

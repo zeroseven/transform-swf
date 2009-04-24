@@ -109,7 +109,7 @@ public final class MovieTimingTest
 			IOException {
 		byte[] data = new byte[(int) file.length()];
 
-		FileInputStream stream = null; //TODO(code) fix
+		FileInputStream stream = null;
 
 		try {
 			stream = new FileInputStream(file);

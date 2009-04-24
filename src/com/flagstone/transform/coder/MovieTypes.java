@@ -139,6 +139,8 @@ public interface MovieTypes {
 	int PLACE_3 = 70;
 	/** The type used to create Import2 objects. */
 	int IMPORT_2 = 71;
+	/** The type used to identify FontAlignment objects. */
+	int FONT_ALIGNMENT = 73;
 	/** The type used to create DefineFont3 objects. */
 	int DEFINE_FONT_3 = 75;
 	/** The type used to create Symbol objects. */

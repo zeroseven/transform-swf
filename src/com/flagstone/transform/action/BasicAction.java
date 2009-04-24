@@ -39,7 +39,10 @@ import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFEncoder;
 
-//TODO(doc)
+/**
+ * BasicAction represents all the actions that can be encoded using a single
+ * byte-code.
+ */
 public enum BasicAction implements Action
 {
 	END(ActionTypes.END),
@@ -134,6 +137,11 @@ public enum BasicAction implements Action
 		}
 	}
 	
+	/**
+	 * Returns the BasicAction for a given type.
+	 * 
+	 * @param type the type that identifies the action when it is encoded.
+	 */
 	public static BasicAction fromInt(int type) {
 		return table.get(type);
 	}

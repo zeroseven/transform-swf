@@ -63,8 +63,8 @@ public final class MorphGradientFillTest {
 	private static final List<MorphGradient> list = new ArrayList<MorphGradient>();
 	
 	static {
-		list.add(new MorphGradient(new Gradient(1, new Color(2,3,4)), new Gradient(5, new Color(6,7,8))));
-		list.add(new MorphGradient(new Gradient(9, new Color(10,11,12)), new Gradient(13, new Color(14,15,16))));
+		list.add(new MorphGradient(new Gradient(1, new Color(2,3,4,5)), new Gradient(6, new Color(7,8,9,10))));
+		list.add(new MorphGradient(new Gradient(11, new Color(12,13,14,15)), new Gradient(16, new Color(17,18,19,20))));
 	}
 	
 	private transient MorphGradientFill fixture;
@@ -72,8 +72,8 @@ public final class MorphGradientFillTest {
 	private transient final byte[] encoded = new byte[] { 0x10, 
 			0x06, 0x50, 0x06, 0x50, 
 			0x02,
-			0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
-			0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10 
+			0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A,
+			0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10, 0x11, 0x12, 0x13, 0x14 
 			};
 
 	@Test(expected=IllegalArgumentException.class)
@@ -97,6 +97,7 @@ public final class MorphGradientFillTest {
 	public void encode() throws CoderException {
 		SWFEncoder encoder = new SWFEncoder(encoded.length);		
 		Context context = new Context();
+		context.getVariables().put(Context.TRANSPARENT, 1);
 
 		fixture = new MorphGradientFill(radial, start, end, list);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
@@ -110,6 +111,7 @@ public final class MorphGradientFillTest {
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		Context context = new Context();
+		context.getVariables().put(Context.TRANSPARENT, 1);
 
 		fixture = new MorphGradientFill(decoder, context);
 		
