@@ -31,6 +31,6 @@
 package com.flagstone.transform.linestyle;
 
 //TODO(doc)
-public enum LineJoinStyle {
-	ROUND, BEVEL, MITER;
+public enum CapStyle {
+	ROUND,NONE,SQUARE;
 }

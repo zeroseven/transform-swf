@@ -166,19 +166,19 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
 		color = aColor;
 	}
 
-	public LineCapStyle getStartCap() {
-		LineCapStyle style;
+	public CapStyle getStartCap() {
+		CapStyle style;
 		if (startCap == 1) {
-			style = LineCapStyle.NONE;
+			style = CapStyle.NONE;
 		} else if (startCap == 2) {
-			style = LineCapStyle.SQUARE;
+			style = CapStyle.SQUARE;
 		} else {
-			style = LineCapStyle.ROUND;
+			style = CapStyle.ROUND;
 		}
 		return style;
 	}
 
-	public void setStartCap(final LineCapStyle capStyle) {
+	public void setStartCap(final CapStyle capStyle) {
 		switch (capStyle) {
 		case NONE:
 			startCap = 1;
@@ -192,19 +192,19 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
 		}
 	}
 
-	public LineCapStyle getEndCap() {
-		LineCapStyle style;
+	public CapStyle getEndCap() {
+		CapStyle style;
 		if (endCap == 1) {
-			style = LineCapStyle.NONE;
+			style = CapStyle.NONE;
 		} else if (endCap == 2) {
-			style = LineCapStyle.SQUARE;
+			style = CapStyle.SQUARE;
 		} else {
-			style = LineCapStyle.ROUND;
+			style = CapStyle.ROUND;
 		}
 		return style;
 	}
 
-	public void setEndCap(final LineCapStyle capStyle) {
+	public void setEndCap(final CapStyle capStyle) {
 		switch (capStyle) {
 		case NONE:
 			endCap = 1;
@@ -218,19 +218,19 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
 		}
 	}
 
-	public LineJoinStyle getJoinStyle() {
-		LineJoinStyle style;
+	public JoinStyle getJoinStyle() {
+		JoinStyle style;
 		if (endCap == 1) {
-			style = LineJoinStyle.BEVEL;
+			style = JoinStyle.BEVEL;
 		} else if (endCap == 2) {
-			style = LineJoinStyle.MITER;
+			style = JoinStyle.MITER;
 		} else {
-			style = LineJoinStyle.ROUND;
+			style = JoinStyle.ROUND;
 		}
 		return style;
 	}
 
-	public void setJoinStyle(final LineJoinStyle style) {
+	public void setJoinStyle(final JoinStyle style) {
 		switch (style) {
 		case BEVEL:
 			joinStyle = 1;
