@@ -1,5 +1,5 @@
 /*
- * ZonePair.java
+ * AlignmentZone.java
  * Transform
  * 
  * Copyright (c) 2009 Flagstone Software Ltd. All rights reserved.
@@ -36,18 +36,23 @@ import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-//TODO(code) Implement
 public final class AlignmentZone implements SWFEncodeable
 {
+	private static final String FORMAT = "AlignmentZone: { coordinate=%f; range=%f }";
+	
 	private float coordinate;
 	private float range;
 
 	public AlignmentZone(SWFDecoder coder, Context context)
 	{
+		coordinate = coder.readHalf();
+		range = coder.readHalf();
 	}
 
 	public AlignmentZone(float coordinate, float range)
 	{
+		this.coordinate = coordinate;
+		this.range = range;
 	}
 
 	public float getCoordinate()
@@ -63,7 +68,7 @@ public final class AlignmentZone implements SWFEncodeable
 	@Override
 	public String toString()
 	{
-		return "";
+		return String.format(FORMAT,coordinate, range);
 	}
 	
 	@Override
@@ -92,14 +97,12 @@ public final class AlignmentZone implements SWFEncodeable
 	
 	public int prepareToEncode(final SWFEncoder coder, final Context context)
 	{
-		return 0;
+		return 4;
 	}
 
 	public void encode(final SWFEncoder coder, final Context context) throws CoderException
 	{
-	}
-
-	public void decode(final SWFDecoder coder, final Context context) throws CoderException
-	{
+		coder.writeHalf(coordinate);
+		coder.writeHalf(range);
 	}
 }

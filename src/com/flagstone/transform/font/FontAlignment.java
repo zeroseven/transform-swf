@@ -1,8 +1,8 @@
 /*
- * FontInfo.java
+ * FontAlignment.java
  * Transform
  * 
- * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
+ * Copyright (c) 2009 Flagstone Software Ltd. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
  * are permitted provided that the following conditions are met:
@@ -42,64 +42,38 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
 //TODO(doc)
-/**
- * FontInfo defines the name and face of a font and maps the codes for a given
- * character set to the glyphs that are drawn to represent each character.
- * 
- * <p>Three different encoding schemes are supported for the character codes.
- * The ANSI character set is used for Latin languages, SJIS is used for Japanese
- * language characters and Unicode is used for any character set. Since Flash 5
- * Unicode is the preferred encoding scheme.</p>
- * 
- * <p>The index of each entry in the codes array matches the index in the
- * corresponding glyph in the shapes array of an DefineFont object, allowing a
- * given character code to be mapped to a given glyph. </p>
- * 
- * <p>FontInfo also allows the font associated with a Flash file to be mapped to 
- * a font installed on the device where the Flash Player displaying the file is 
- * hosted. The use of a font from a device is not automatic but is determined by 
- * the HTML tag option <i>deviceFont</i> which is passed to the Flash Player when
- * it is first started. If a device does not support a given font then the
- * glyphs in the DefineFont class are used to render the characters.</p>
- * 
- * <p>An important distinction between the host device to specify the font and
- * using the glyphs in an DefineFont object is that the device is not anti-aliased 
- * and the rendering is dependent on the host device. The glyphs in an DefineFont 
- * object are anti-aliased and are guaranteed to look identical on every device 
- * the text is displayed.</p>
- */
-@SuppressWarnings("PMD.TooManyMethods")
-public final class FontAlignment implements MovieTag
-{
-	public enum StrokeWidth { THIN, MEDIUM, THICK };
-	
+public final class FontAlignment implements MovieTag {
+	public enum StrokeWidth {
+		THIN, MEDIUM, THICK
+	};
+
+	private static final String FORMAT = "FontAlignment: { identifier=%d; strokeWidth=%s; zones=%s }";
+
 	private int identifier;
-	private StrokeWidth strokeWidth; 
-	private List<AlignmentZone> zones;
-	
+	private int hints;
+	private List<GlyphAlignment> zones;
+
 	private transient int start;
 	private transient int end;
 	private transient int length;
 
-	public FontAlignment(final SWFDecoder coder, final Context context) throws CoderException
-	{
-		zones = new ArrayList<AlignmentZone>();
-
+	public FontAlignment(final SWFDecoder coder, final Context context)
+			throws CoderException {
 		start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
-		
+
 		if (length == 0x3F) {
 			length = coder.readWord(4, false);
 		}
 		end = coder.getPointer() + (length << 3);
 
 		identifier = coder.readWord(2, false);
+		hints = coder.readByte();
 
-		int bytesRead = 3;
-		
-		while (bytesRead < length)
-		{
-			zones.add(new AlignmentZone(coder, context));
+		zones = new ArrayList<GlyphAlignment>();
+
+		while (coder.getPointer() < end) {
+			zones.add(new GlyphAlignment(coder, context));
 		}
 
 		if (coder.getPointer() != end) {
@@ -108,120 +82,110 @@ public final class FontAlignment implements MovieTag
 		}
 	}
 
-	/**
-	 * Constructs a basic FontInfo object specifying only the name and style of 
-	 * the font.
-	 * 
-	 * @param uid
-	 *            the unique identifier of the DefineFont that contains the
-	 *            glyphs for the font.
-	 * @param name
-	 *            the name assigned to the font, identifying the font family.
-	 * @param bold
-	 *            indicates whether the font weight is bold (true) or normal (false).
-	 * @param italic
-	 *            indicates whether the font style is italic (true) or plain (false).
- 	 */
-	public FontAlignment(int uid, String name, boolean bold, boolean italic)
-	{
+	public FontAlignment(int uid, StrokeWidth stroke, List<GlyphAlignment>list) {
 		setIdentifier(uid);
-		zones = new ArrayList<AlignmentZone>();
+		setStrokeWidth(stroke);
+		setAlignmentZones(list);
 	}
-	
+
 	public FontAlignment(FontAlignment object) {
 		identifier = object.identifier;
-		strokeWidth = object.strokeWidth;	
-		zones = new ArrayList<AlignmentZone>(object.zones);
+		hints = object.hints;
+		zones = new ArrayList<GlyphAlignment>(object.zones);
 	}
 
 	/**
-	 * Returns the unique identifier of the font definition that this font 
+	 * Returns the unique identifier of the font definition that the alignment
 	 * information is for.
 	 */
-	public int getIdentifier()
-	{
+	public int getIdentifier() {
 		return identifier;
 	}
 
 	/**
-	 * Returns the array of character codes.
-	 */
-	public List<AlignmentZone> getZones()
-	{
-		return zones;
-	}
-
-	/**
-	 * Sets the identifier of the font that this font information is for.
+	 * Sets the identifier of the font that this alignment information is for.
 	 * 
 	 * @param uid
 	 *            the unique identifier of the DefineFont that contains the
 	 *            glyphs for the font. Must be in the range 1..65535.
- 	 */
-	public void setIdentifier(int uid)
-	{
+	 */
+	public void setIdentifier(int uid) {
 		if (uid < 1 || uid > 65535) {
 			throw new IllegalArgumentException(Strings.IDENTIFIER_OUT_OF_RANGE);
 		}
 		identifier = uid;
 	}
 
-	/**
-	 * Add a code to the array of codes. The index position of a character code
-	 * in the array identifies the index of the corresponding glyph in the
-	 * DefineFont object.
-	 * 
-	 * @param aCode
-	 *            a code for a glyph. Must be in the range 0..65535.
-	 */
-	public void addZone(AlignmentZone zone)
-	{
-		zones.add(zone);
+	public StrokeWidth getStrokeWidth() {
+		StrokeWidth stroke;
+		switch (hints) {
+		case 0x40:
+			stroke = StrokeWidth.MEDIUM;
+			break;
+		case 0x80:
+			stroke = StrokeWidth.THICK;
+			break;
+		default:
+			stroke = StrokeWidth.THIN;
+			break;
+		}
+		return stroke;
 	}
 
-	/**
-	 * Sets the array of character codes. The index position of a character code
-	 * in the array identifies the index of the corresponding glyph in the
-	 * DefineFont object.
-	 * 
-	 * @param anArray
-	 *            the array mapping glyphs to particular character codes. Must 
-	 *            not be null.
-	 */
-	public void setZones(List<AlignmentZone> array)
-	{
+	public void setStrokeWidth(StrokeWidth stroke) {
+		switch (stroke) {
+		case MEDIUM:
+			hints = 0x80;
+			break;
+		case THICK:
+			hints = 0x40;
+			break;
+		default:
+			hints = 0x00;
+			break;
+		}
+	}
+
+	public List<GlyphAlignment> getAlignmentZones() {
+		return zones;
+	}
+
+	public void setAlignmentZones(List<GlyphAlignment> array) {
 		if (array == null) {
 			throw new IllegalArgumentException(Strings.ARRAY_CANNOT_BE_NULL);
 		}
 		zones = array;
 	}
 
-	/**
-	 * Creates and returns a deep copy of this object.
-	 */
-	public FontAlignment copy() 
-	{
+	public FontAlignment addZone(GlyphAlignment zone) {
+		if (zone == null) {
+			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+		}
+		zones.add(zone);
+		return this;
+	}
+
+	public FontAlignment copy() {
 		return new FontAlignment(this);
 	}
 
 	@Override
-	public String toString()
-	{
-		return "";
+	public String toString() {
+		return String.format(FORMAT, identifier, getStrokeWidth(), zones);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context)
-	{
-		length = 4;
-		//TODO(code) Implement
-		for (AlignmentZone zone : zones) {
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
+		length = 3;
+
+		for (GlyphAlignment zone : zones) {
+			length += zone.prepareToEncode(coder, context);
 		}
 
-		return (length > 62 ? 6:2) + length;
+		return (length > 62 ? 6 : 2) + length;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException
-	{
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		start = coder.getPointer();
 
 		if (length >= 63) {
@@ -231,10 +195,11 @@ public final class FontAlignment implements MovieTag
 			coder.writeWord((MovieTypes.FONT_ALIGNMENT << 6) | length, 2);
 		}
 		end = coder.getPointer() + (length << 3);
-		
-		coder.writeWord(identifier, 2);
 
-		for (AlignmentZone zone : zones) {
+		coder.writeWord(identifier, 2);
+		coder.writeByte(hints);
+
+		for (GlyphAlignment zone : zones) {
 			zone.encode(coder, context);
 		}
 
