@@ -38,88 +38,266 @@ import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-//TODO(doc)
-//TODO(code) Implement
-public final class TextSettings implements MovieTag
-{
-	private int identifier;
-
-	private transient int length;
-
-	public TextSettings(int uid, String name, boolean bold, boolean italic)
-	{
-		setIdentifier(uid);
+/**
+ * TextSettings allows you to control how individual text fields are rendered.
+ * 
+ * <p>
+ * There are four parameters that control how the text is rendered:
+ * </p>
+ * <ol>
+ * <li>Advanced Rendering - whether the text is rendered using the advanced
+ * anti-aliasing engine added in Flash 8.</li>
+ * <li>Grid Alignment - how letters are aligned with respect to the pixel grid
+ * used in LCD monitors.</li>
+ * <li>Thickness - a parameter used to control the thickness of the line when
+ * anti-aliasing is used.</li>
+ * <li>Sharpness - a parameter used to control the sharpness of the line when
+ * anti-aliasing is used.</li>
+ * </ol>
+ * <p>
+ * The thickness and sharpness control the how the text is rendered:
+ * 
+ * <pre>
+ *    outsideCutoff = (0.5 * sharpness - thickness) * fontSize
+ *    insideCutoff = (-0.5 * sharpness - thickness) * fontSize
+ * </pre>
+ * 
+ * Note that Adobe reports the results can be poor when the text is scaled by a
+ * significant amount and so the default values of 0.0 should be used for the
+ * thickness and sharpness values.
+ * </p>
+ */
+public final class TextSettings implements MovieTag {
+	/**
+	 * Grid specifies how letters are aligned with respect to the pixel grid on
+	 * a screen.
+	 */
+	public enum Grid {
+		/** Do not use grid fitting. */
+		NONE,
+		/** Align letters on pixel boundaries. */
+		PIXEL,
+		/** Align letters on 1/3 pixel boundaries. */
+		SUBPIXEL
 	}
-	
-	public TextSettings(TextSettings object) {
-		identifier = object.identifier;
+
+	private static final String FORMAT = "TextSettings: { identifier=%d, useAdvanced=%s, grid=%s, thickness=%f, sharpness=%f }";
+
+	private int identifier;
+	private int rendering;
+	private int thickness;
+	private int sharpness;
+
+	/**
+	 * Creates and initialises an TextSettings using values encoded in the Flash
+	 * binary format.
+	 * 
+	 * @param coder
+	 *            an SWFDecoder object that contains the encoded Flash data.
+	 * 
+	 * @param context
+	 *            a Context object used to pass information between objects on
+	 *            how the information the data should be decoded.
+	 * 
+	 * @throws CoderException
+	 *             if an error occurs while decoding the data.
+	 */
+	public TextSettings(final SWFDecoder coder, final Context context)
+			throws CoderException {
+		if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
+			coder.readWord(4, false);
+		}
+
+		identifier = coder.readWord(2, false);
+		rendering = coder.readByte();
+		thickness = coder.readWord(4, false);
+		sharpness = coder.readWord(4, false);
+		coder.readByte();
 	}
 
 	/**
-	 * Returns the unique identifier of the font definition that this font 
-	 * information is for.
+	 * Creates a TextSettings object with the specified values.
+	 * 
+	 * @param uid
+	 *            the unique identifier of an existing text field.
+	 * @param advanced
+	 *            whether the advanced rendering engine will be used to display
+	 *            the text.
+	 * @param grid
+	 *            how letters are aligned with respect to the pixel grid.
+	 * @param thickness
+	 *            the thickness used when anti-aliasing the text.
+	 * @param sharpness
+	 *            the sharpness used when anti-aliasing the text.
 	 */
-	public int getIdentifier()
-	{
+	public TextSettings(int uid, boolean advanced, Grid grid, float thickness,
+			float sharpness) {
+		setIdentifier(uid);
+		useAdvanced(advanced);
+		setGrid(grid);
+		setThickness(thickness);
+		setSharpness(sharpness);
+	}
+
+	/**
+	 * Creates an TextSettings object and initialised it by copying the values
+	 * from an existing one.
+	 * 
+	 * @param object
+	 *            a TextSettings object.
+	 */
+	public TextSettings(TextSettings object) {
+		identifier = object.identifier;
+		rendering = object.rendering;
+		thickness = object.thickness;
+		sharpness = object.sharpness;
+	}
+
+	/**
+	 * Returns the unique identifier of the text definition that this object
+	 * applies to.
+	 */
+	public int getIdentifier() {
 		return identifier;
 	}
 
 	/**
-	 * Sets the identifier of the font that this font information is for.
+	 * Sets the identifier of the text definition that this object applies to.
 	 * 
 	 * @param uid
-	 *            the unique identifier of the DefineFont that contains the
-	 *            glyphs for the font. Must be in the range 1..65535.
- 	 */
-	public void setIdentifier(int uid)
-	{
+	 *            the unique identifier of an DefineText, DefineText2 or
+	 *            DefineTextField object. Must be in the range 1..65535.
+	 */
+	public void setIdentifier(int uid) {
 		if (uid < 1 || uid > 65535) {
 			throw new IllegalArgumentException(Strings.IDENTIFIER_OUT_OF_RANGE);
 		}
 		identifier = uid;
 	}
 
-	public TextSettings copy() 
-	{
-		return new TextSettings(this);
+	/**
+	 * Returns true if the advanced text rendering engine, introduced in Flash 8
+	 * will be used.
+	 */
+	public boolean useAdvanced() {
+		return (rendering & 0x40) != 0;
 	}
 
 	/**
-	 * Returns a short description of this action.
+	 * Sets whether the advanced text rendering engine (true) or standard engine
+	 * (false) will be used to render the text.
 	 */
+	public void useAdvanced(boolean flag) {
+		rendering |= 0x40;
+	}
+
+	/**
+	 * Returns the alignment of letters with respect to the pixel grid.
+	 * 
+	 * @return the alignment, either NONE, PIXEL or SUBPIXEL.
+	 */
+	public Grid getGrid() {
+		Grid alignment;
+
+		switch (rendering & 0x38) {
+		case 8:
+			alignment = Grid.PIXEL;
+			break;
+		case 16:
+			alignment = Grid.SUBPIXEL;
+			break;
+		default:
+			alignment = Grid.NONE;
+			break;
+		}
+		return alignment;
+	}
+
+	/**
+	 * Selects how the text letters will be aligned with respect to the pixel
+	 * grid used in LCD screens.
+	 * 
+	 * @param alignment
+	 *            the alignment with respect to the pixel grid, either NONE,
+	 *            PIXEL or SUBPIXEL.
+	 */
+	public void setGrid(Grid alignment) {
+
+		rendering &= 0xC0;
+
+		switch (alignment) {
+		case PIXEL:
+			rendering |= 0x40;
+			break;
+		case SUBPIXEL:
+			rendering |= 0x40;
+			break;
+		default:
+			break;
+		}
+	}
+
+	/**
+	 * Returns the value used to control the thickness of a line when rendered.
+	 * May be set to 0.0 if the default anti-aliasing value will be used.
+	 */
+	public float getThickness() {
+		return thickness / 65536.0f;
+	}
+
+	/**
+	 * Sets the value used to control the thickness of a line when rendered. May
+	 * be set to 0.0 if the default anti-aliasing value will be used.
+	 * 
+	 * @param thickness
+	 *            the value of the thickness parameter used by the rendering
+	 *            engine.
+	 */
+	public void setThickness(float thickness) {
+		this.thickness = (int) (thickness * 65536);
+	}
+
+	/**
+	 * Returns the value used to control the sharpness of a line when rendered.
+	 * May be set to 0.0 if the default anti-aliasing value will be used.
+	 */
+	public float getSharpness() {
+		return sharpness / 65536.0f;
+	}
+
+	/**
+	 * Sets the value used to control the sharpness of a line when rendered. May
+	 * be set to 0.0 if the default anti-aliasing value will be used.
+	 * 
+	 * @param sharpness
+	 *            the value of the sharpness parameter used by the rendering
+	 *            engine.
+	 */
+	public void setSharpness(float sharpness) {
+		this.sharpness = (int) (sharpness * 65536);
+	}
+
+	public TextSettings copy() {
+		return new TextSettings(this);
+	}
+
 	@Override
-	public String toString()
-	{
-		return "";
+	public String toString() {
+		return String.format(FORMAT, identifier, String.valueOf(useAdvanced()),
+				getGrid(), thickness / 65536.0f, sharpness / 65536.0f);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context)
-	{
-		length = 4;
-
-		return length;
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
+		return 14;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException
-	{
-		if (length >= 63) {
-			coder.writeWord((MovieTypes.FONT_INFO << 6) | 0x3F, 2);
-			coder.writeWord(length, 4);
-		} else {
-			coder.writeWord((MovieTypes.FONT_INFO << 6) | length, 2);
-		}
-		
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
+		coder.writeWord((MovieTypes.TEXT_SETTINGS << 6) | 12, 2);
 		coder.writeWord(identifier, 2);
-	}
-
-	public void decode(final SWFDecoder coder, final Context context) throws CoderException
-	{
-		length = coder.readWord(2, false) & 0x3F;
-		
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
-
-		identifier = coder.readWord(2, false);
+		coder.writeByte(rendering);
+		coder.writeWord(thickness, 4);
+		coder.writeWord(sharpness, 4);
+		coder.writeByte(0);
 	}
 }
