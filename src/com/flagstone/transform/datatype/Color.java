@@ -44,33 +44,32 @@ import com.flagstone.transform.coder.SWFEncoder;
  * </p>
  * 
  * <p>
- * //TODO(doc) This paragraph is too wordy. Mention SWFContext
  * Whether a colour contains transparency information is determined by the
- * context created by the object that contains the colour. For example colours
- * within the DefineShape and DefineShape2 objects do not contain alpha channel
- * information while those in an DefineShape3 object do. To simplify the use of
- * the colours only a single class is provided. The alpha channel can be ignored
- * if not required within the object the colour is defined for. When objects
- * containing colour are encoded or decoded the the colour objects are notified
- * that the encoder or decoder whether the alpha channel information should also
- * be included.
- * </p>
+ * object that contains the colour. For example colours in a DefineShape or
+ * DefineShape2 objects do not uses the alpha channel while those in an
+ * DefineShape3 object do. The Context object, passed to each Color object,
+ * when it is encoded or decoded signals whether the alpha channel should be 
+ * included.
+ * </p> 
  */
-//TODO(doc) Check comments for all methods
+// TODO(doc) Check comments for all methods
 public final class Color implements SWFEncodeable {
 
 	private static final String FORMAT = "Color: { red=%d; green=%d; blue=%d; alpha=%d }";
-	
+
 	private final transient int red;
 	private final transient int green;
 	private final transient int blue;
 	private final transient int alpha;
 
-	public Color(final SWFDecoder coder, final Context context) throws CoderException {
+	public Color(final SWFDecoder coder, final Context context)
+			throws CoderException {
 		red = coder.readByte();
 		green = coder.readByte();
 		blue = coder.readByte();
-		alpha = (context.getVariables().containsKey(Context.TRANSPARENT)) ? coder.readByte() : 255;
+		alpha = (context.getVariables().containsKey(Context.TRANSPARENT)) ? coder
+				.readByte()
+				: 255;
 	}
 
 	public Color(final int rgb) {
@@ -124,14 +123,14 @@ public final class Color implements SWFEncodeable {
 		this.blue = checkLevel(blue);
 		this.alpha = checkLevel(alpha);
 	}
-	
+
 	private int checkLevel(final int level) {
 		if (level < 0 || level > 255) {
 			throw new IllegalArgumentException(Strings.COLOR_OUT_OF_RANGE);
 		}
 		return level;
 	}
-	
+
 	/**
 	 * Returns the value for the red colour channel.
 	 */
@@ -164,36 +163,38 @@ public final class Color implements SWFEncodeable {
 	public String toString() {
 		return String.format(FORMAT, red, green, blue, alpha);
 	}
-	
+
 	@Override
 	public boolean equals(final Object object) {
 		boolean result;
 		Color color;
-		
+
 		if (object == null) {
 			result = false;
 		} else if (object == this) {
 			result = true;
 		} else if (object instanceof Color) {
-			color = (Color)object;
-			result = red == color.red && green == color.green &&
-				blue == color.blue && alpha == color.alpha;
+			color = (Color) object;
+			result = red == color.red && green == color.green
+					&& blue == color.blue && alpha == color.alpha;
 		} else {
 			result = false;
 		}
 		return result;
 	}
-	
+
 	@Override
 	public int hashCode() {
-		return (((red*31)+green)*31 + blue)*31 + alpha;
+		return (((red * 31) + green) * 31 + blue) * 31 + alpha;
 	}
 
 	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		return (context.getVariables().containsKey(Context.TRANSPARENT)) ? 4 : 3;
+		return (context.getVariables().containsKey(Context.TRANSPARENT)) ? 4
+				: 3;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException {
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		coder.writeByte(red);
 		coder.writeByte(green);
 		coder.writeByte(blue);
