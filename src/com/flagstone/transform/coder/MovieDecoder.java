@@ -37,6 +37,7 @@ import com.flagstone.transform.datatype.VideoFrameType;
 import com.flagstone.transform.font.DefineFont;
 import com.flagstone.transform.font.DefineFont2;
 import com.flagstone.transform.font.DefineFontName;
+import com.flagstone.transform.font.FontAlignment;
 import com.flagstone.transform.font.FontInfo;
 import com.flagstone.transform.font.FontInfo2;
 import com.flagstone.transform.image.DefineImage;
@@ -62,6 +63,7 @@ import com.flagstone.transform.sound.StartSound2;
 import com.flagstone.transform.text.DefineText;
 import com.flagstone.transform.text.DefineText2;
 import com.flagstone.transform.text.DefineTextField;
+import com.flagstone.transform.text.TextSettings;
 
 /**
  * Factory is the default implementation of an SWFFactory which used to create 
@@ -232,6 +234,12 @@ public final class MovieDecoder implements SWFFactory<MovieTag> {
 			break;
 		case MovieTypes.IMPORT_2:
 			obj = new Import2(coder, context);
+			break;
+		case MovieTypes.FONT_ALIGNMENT:
+			obj = new FontAlignment(coder, context);
+			break;
+		case MovieTypes.TEXT_SETTINGS:
+			obj = new TextSettings(coder, context);
 			break;
 		case MovieTypes.SYMBOL:
 			obj = new SymbolClass(coder, context);
