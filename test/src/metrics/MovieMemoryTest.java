@@ -1,4 +1,5 @@
 package metrics;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -45,11 +46,13 @@ public final class MovieMemoryTest
 	   
 			Movie movie = null;
 			byte[] bytes = null;
+			ByteArrayInputStream stream;
 			
 	        for (String file : files)  
 	        {
 	            source = new File(sourceDir, file);
 	            bytes = loadFile(source);
+	            stream = new ByteArrayInputStream(bytes);
 	
 	            before = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 	            after = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
@@ -62,7 +65,7 @@ public final class MovieMemoryTest
 	            
 	            before = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 	            movie = new Movie();
-	            movie.decodeFromData(bytes);
+	            movie.decodeFromStream(stream);
 	              
 	            System.gc(); System.gc(); System.gc(); System.gc();
 	            System.gc(); System.gc(); System.gc(); System.gc();

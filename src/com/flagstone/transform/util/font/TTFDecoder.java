@@ -148,10 +148,6 @@ public final class TTFDecoder implements FontProvider, FontDecoder
     	return new TTFDecoder();
     }
    
-    public void read(String path) throws FileNotFoundException, IOException, DataFormatException {
-    	decode(loadFile(new File(path)));
-    }
-    
     public void read(File file) throws FileNotFoundException, IOException, DataFormatException {
     	decode(loadFile(file));
     }
@@ -159,30 +155,21 @@ public final class TTFDecoder implements FontProvider, FontDecoder
     public void read(URL url) throws FileNotFoundException, IOException, DataFormatException
     {
 	    URLConnection connection = url.openConnection();
-
-	    int fileSize = connection.getContentLength();
-            
-	    if (fileSize<0) {
-              throw new FileNotFoundException(url.getFile());
+	    int contentLength = connection.getContentLength();
+	    	
+	    if (contentLength < 0) {
+        	throw new FileNotFoundException(url.getFile());
 	    }
 	    
-	    byte[] bytes = new byte[fileSize];
+	    InputStream stream = connection.getInputStream();
 
-	    InputStream stream = url.openStream();
-	    BufferedInputStream buffer = new BufferedInputStream(stream);
-
-	    buffer.read(bytes);
-	    buffer.close();
-
-    	ImageInfo info = new ImageInfo();
-    	info.setInput(new ByteArrayInputStream(bytes));
-    	info.setDetermineImageNumber(true);
-    	
-    	if (!info.check())  {
-    		throw new DataFormatException(Strings.UNSUPPORTED_FILE_FORMAT);
+	    try {
+	    	byte[] bytes = new byte[contentLength];
+		    stream.read(bytes);
+	    	decode(bytes);
+    	} finally {
+    		stream.close();
     	}
-    	
-		decode(bytes);
     }
 
     public Font[] getFonts() {

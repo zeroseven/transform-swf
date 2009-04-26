@@ -25,17 +25,17 @@ public final class ShowImage
         try
         {
         	movie = new Movie();
-        	ImageTag image = ImageFactory.defineImage(movie.newIdentifier(), sourceFile);
+        	ImageTag image = ImageFactory.defineImage(movie.identifier(), sourceFile);
 
             int imageWidth = (image).getWidth();
             int imageHeight = (image).getHeight();
             int screenWidth = imageWidth*20;
             int screenHeight = imageHeight*20;
 
-            int shapeId = movie.newIdentifier();
+            int shapeId = movie.identifier();
 
             movie.setFrameRate(1.0f);
-            movie.setSignature("FWS");
+            movie.setSignature(Movie.Signature.FWS);
             movie.setFrameSize(new Bounds(-screenWidth/2, -screenHeight/2, screenWidth/2, screenHeight/2));
 
             movie.add(new Background(WebPalette.LIGHT_BLUE.color()));
@@ -44,7 +44,7 @@ public final class ShowImage
             movie.add(Place2.show(shapeId, 1, 0, 0));
             movie.add(ShowFrame.getInstance());
 
-            movie.encodeToFile(destFile);
+            movie.encodeToFile(new File(destFile));
         }
         catch (DataFormatException e)
         {

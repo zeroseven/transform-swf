@@ -102,6 +102,6 @@ public final class ShowAWTFontTest
         movie.add(text);
         movie.add(Place2.show(text.getIdentifier(), 1, margin , margin));
         movie.add(ShowFrame.getInstance());
-        movie.encodeToFile(file.getPath());
+        movie.encodeToFile(file);
     }
 }

@@ -223,19 +223,18 @@ public final class ButtonEventHandler implements SWFEncodeable
 
 		actions = new ArrayList<Action>();
 
-		if (context.getVariables().containsKey(Context.DECODE_ACTIONS)) {
-			
-			SWFFactory<Action>decoder = context.getRegistry().getActionDecoder();
+		SWFFactory<Action>decoder = context.getRegistry().getActionDecoder();
+
+		if (decoder == null) {			
+			if (length != 0) {
+				actions.add(new ActionData(coder.readBytes(new byte[length])));
+			}
+		} 
+		else {
 			int end = coder.getPointer() + (length << 3);
 
 			while (coder.getPointer() < end) {
 				actions.add(decoder.getObject(coder, context));
-			}
-		} 
-		else 
-		{
-			if (length != 0) {
-				actions.add(new ActionData(coder.readBytes(new byte[length])));
 			}
 		}
 	}

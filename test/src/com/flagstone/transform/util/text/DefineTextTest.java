@@ -65,7 +65,7 @@ public final class DefineTextTest
         Movie movie = new Movie();
         Canvas path = new Canvas(false);
 
-        int fontId = movie.newIdentifier();
+        int fontId = movie.identifier();
         DefineFont2 definition = font.defineFont(fontId, set);
 
         movie.setFrameRate(1.0f);
@@ -76,7 +76,7 @@ public final class DefineTextTest
 
         int textWidth = text.getBounds().getWidth();
         int textHeight = text.getBounds().getHeight();
-        int shapeId = movie.newIdentifier();
+        int shapeId = movie.identifier();
 
         path.clear();
         path.setLineStyle(new LineStyle(1, WebPalette.DARK_BLUE.color()));
@@ -117,7 +117,7 @@ public final class DefineTextTest
         int x = margin;
         int y = margin;
 
-        int fontId = movie.newIdentifier();
+        int fontId = movie.identifier();
         DefineFont2 definition = font.defineFont(fontId, set);
         Canvas path = new Canvas(false);
 
@@ -134,7 +134,7 @@ public final class DefineTextTest
             int textHeight = text.getBounds().getHeight();
             int advance = 0; //TODO TextFactory.boundsForText(alphabet.substring(i,i+1), definition, fontSize).getWidth() + 40;
 
-            int shapeId = movie.newIdentifier();
+            int shapeId = movie.identifier();
 
             path.clear();
             path.setLineStyle(new LineStyle(1, WebPalette.DARK_BLUE.color()));
@@ -161,6 +161,6 @@ public final class DefineTextTest
         movie.setFrameSize(new Bounds(0, 0, maxWidth, y+margin));
 
         movie.add(ShowFrame.getInstance());
-        movie.encodeToFile(destFile.getPath());
+        movie.encodeToFile(destFile);
 	}
 }

@@ -94,6 +94,6 @@ public final class PlayEventSoundTest
             movie.add(ShowFrame.getInstance());
         }
 
-        movie.encodeToFile(file.getPath());
+        movie.encodeToFile(file);
     }
 }

@@ -27,6 +27,10 @@ import com.flagstone.transform.action.With;
  */
 @SuppressWarnings("PMD")
 public final class ActionDecoder implements SWFFactory<Action> {
+	
+	public SWFFactory<Action> copy() {
+		return new ActionDecoder();
+	}
 
 	public Action getObject(final SWFDecoder coder, final Context context) throws CoderException {
 

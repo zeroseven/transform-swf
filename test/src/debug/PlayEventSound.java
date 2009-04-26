@@ -40,7 +40,7 @@ public final class PlayEventSound
 
             movie.add(new Background(WebPalette.LIGHT_BLUE.color()));
 
-            int soundId = movie.newIdentifier();
+            int soundId = movie.identifier();
 
             /*
              * Calculate the time it takes to play the sound and the number of frames this
@@ -64,7 +64,7 @@ public final class PlayEventSound
                 movie.add(ShowFrame.getInstance());
             }
 
-            movie.encodeToFile(destFile.getPath());
+            movie.encodeToFile(destFile);
     	}
         catch (DataFormatException e)
         {

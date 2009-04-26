@@ -88,13 +88,14 @@ public final class InitializeMovieClip implements MovieTag
 		identifier = coder.readWord(2, false);
 		actions = new ArrayList<Action>();
 
-		if (context.getVariables().containsKey(Context.DECODE_ACTIONS)) {
-			SWFFactory<Action>decoder = context.getRegistry().getActionDecoder();		
+		SWFFactory<Action>decoder = context.getRegistry().getActionDecoder();		
+
+		if (decoder == null) {
+			actions.add(new ActionData(coder.readBytes(new byte[length-2])));
+		} else {
 			while (coder.getPointer() < end) {
 				actions.add(decoder.getObject(coder, context));
 			}
-		} else {
-			actions.add(new ActionData(coder.readBytes(new byte[length-2])));
 		}
 
 		if (coder.getPointer() != end) {

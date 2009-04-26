@@ -46,7 +46,7 @@ public final class PlayStreamingSound
                 movie.add(ShowFrame.getInstance());
             }
 
-            movie.encodeToFile(destFile.getPath());
+            movie.encodeToFile(destFile);
     	}
         catch (DataFormatException e)
         {

@@ -86,7 +86,7 @@ public final class ShowScreenVideoImageTest
 	    screenHeight = ((ImageTag)image).getHeight();
 	    
 	    movie = new Movie();
-	    identifier = movie.newIdentifier();
+	    identifier = movie.identifier();
 	    
 	    movie.setFrameSize(new Bounds(0,0,screenWidth*20,screenHeight*20));
 	    movie.setFrameRate(4.0f);
@@ -147,6 +147,6 @@ public final class ShowScreenVideoImageTest
     	}
             
 	    destFile = new File(destDir, sourceDir.getName()+".swf");
-	    movie.encodeToFile(destFile.getAbsolutePath());
+	    movie.encodeToFile(destFile);
     }
 }

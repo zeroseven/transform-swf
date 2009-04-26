@@ -4,6 +4,7 @@ import static org.junit.Assert.fail;
 
 import java.util.zip.DataFormatException;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FilenameFilter;
@@ -81,9 +82,7 @@ public final class MovieTimingTest
 	            System.gc();
 	            
 	            decode(sourceFile);
-	            lazyDecode(sourceFile);
 	            encode(sourceFile);
-	            lazyEncode(sourceFile);
 	            copy(sourceFile);	
 	        }
 		}
@@ -94,9 +93,9 @@ public final class MovieTimingTest
 		byte[] bytes = loadFile(source);
 
         double before = System.currentTimeMillis();
-
+ 
         for (int i=0; i<iterations; i++) {
-            new Movie().decodeFromData(bytes);
+            new Movie().decodeFromStream(new ByteArrayInputStream(bytes));
         }
         
         double duration = (System.currentTimeMillis()-before)/iterations;
@@ -126,29 +125,7 @@ public final class MovieTimingTest
 		return data;
 	}
 
-	 
-    private void lazyDecode(File source) throws FileNotFoundException, IOException, DataFormatException
-    {
-		Movie movie = new Movie();
-        movie.setDecodeActions(false);
-        movie.setDecodeShapes(false);
-        movie.setDecodeGlyphs(false);
-
-        byte[] bytes = loadFile(source);
-
-        double  before = System.currentTimeMillis();
-
-        for (int i=0; i<iterations; i++) {
-            new Movie().decodeFromData(bytes);
-        }
-        
-        double duration = (System.currentTimeMillis()-before)/iterations;
-
-		writer.append(',');
-		writer.print(duration);
-    }
-	 
-    private void encode(File source) throws FileNotFoundException, IOException, DataFormatException
+	private void encode(File source) throws FileNotFoundException, IOException, DataFormatException
     {
 		Movie movie = new Movie();
         movie.decodeFromFile(source);
@@ -165,29 +142,6 @@ public final class MovieTimingTest
 
 		writer.append(',');
 		writer.print(duration);
-    }
-
-    private void lazyEncode(File source) throws FileNotFoundException, IOException, DataFormatException
-    {
-		Movie movie = new Movie();
-        movie.setDecodeActions(false);
-        movie.setDecodeShapes(false);
-        movie.setDecodeGlyphs(false);
-        movie.decodeFromFile(source);
-
-        System.gc();
-
-        double before = System.currentTimeMillis();
-
-        for (int i=0; i<iterations; i++) {
-            movie.encode();
-        }
-        
-        double duration = (System.currentTimeMillis()-before)/iterations;
-
-		writer.append(',');
-		writer.print(duration);
-		writer.append('\n');
     }
      
     public static void copy(File source) throws FileNotFoundException, IOException, DataFormatException

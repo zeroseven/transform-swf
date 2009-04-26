@@ -56,6 +56,6 @@ public class StreamingSoundTest
             movie.add(ShowFrame.getInstance());
         }
 
-        movie.encodeToFile(file.getPath());
+        movie.encodeToFile(file);
     }
 }

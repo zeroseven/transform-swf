@@ -30,17 +30,55 @@
 
 package com.flagstone.transform.coder;
 
+import com.flagstone.transform.shape.ShapeRecord;
 
 /**
  */
 public final class DecoderRegistry
 {
+	private static DecoderRegistry defaultRegistry;
+	
+	static {
+		defaultRegistry = new DecoderRegistry();
+		defaultRegistry.setFillStyleDecoder(new FillStyleDecoder());
+		defaultRegistry.setMorphFillStyleDecoder(new MorphFillStyleDecoder());
+		defaultRegistry.setShapeDecoder(new ShapeDecoder());
+		defaultRegistry.setActionDecoder(new ActionDecoder());
+		defaultRegistry.setMovieDecoder(new MovieDecoder());
+		defaultRegistry.setVideoDecoder(new VideoDecoder());
+	}
+	
+	public static DecoderRegistry getDefault() {
+		return new DecoderRegistry(defaultRegistry);
+	}
+	
+	public static void setDefault(DecoderRegistry registry) {
+		defaultRegistry = new DecoderRegistry(registry);
+	}
+	
 	private SWFFactory<FillStyle> fillStyleDecoder;
 	private SWFFactory<FillStyle> morphStyleDecoder;
+	private SWFFactory<ShapeRecord> shapeDecoder;
 	private SWFFactory<Action> actionDecoder;
 	private SWFFactory<MovieTag> movieDecoder;
 	private FLVFactory<VideoTag> videoDecoder;
+	
+	public DecoderRegistry() {	
+	}
 
+	public DecoderRegistry(DecoderRegistry registry) {
+		fillStyleDecoder = registry.fillStyleDecoder.copy();
+		morphStyleDecoder = registry.morphStyleDecoder.copy();
+		shapeDecoder = registry.shapeDecoder.copy();
+		actionDecoder = registry.actionDecoder.copy();
+		movieDecoder = registry.movieDecoder.copy();
+		videoDecoder = registry.videoDecoder.copy();
+	}
+	
+	public DecoderRegistry copy() {
+		return new DecoderRegistry(this);
+	}
+	
 	public SWFFactory<FillStyle> getFillStyleDecoder() {
 		return fillStyleDecoder;
 	}
@@ -56,6 +94,14 @@ public final class DecoderRegistry
 	public void setMorphFillStyleDecoder(SWFFactory<FillStyle> factory) {
 	    morphStyleDecoder = factory;
     }
+
+	public SWFFactory<ShapeRecord> getShapeDecoder() {
+		return shapeDecoder;
+	}
+	
+	public void setShapeDecoder(SWFFactory<ShapeRecord> factory) {
+	    shapeDecoder = factory;
+	}
 
 	public SWFFactory<Action> getActionDecoder() {
 		return actionDecoder;

@@ -164,13 +164,16 @@ public final class DefineMorphShape2 implements DefineTag
 			lineStyles.add(new MorphLineStyle2(coder, context));
 		}
 
-		if (vars.containsKey(Context.DECODE_SHAPES)) {
-			startShape = new Shape(coder, context);
-			endShape = new Shape(coder, context);
+		if (context.getRegistry().getShapeDecoder() == null) {
+			startShape = new Shape();
+			startShape.add(new ShapeData(new byte[offset - ((coder.getPointer()-first) >> 3)]));
+			
+			endShape = new Shape();
+			endShape.add(new ShapeData(new byte[length - ((coder.getPointer()-start) >> 3)]));
 		}
 		else {
-			startShape = new Shape(offset - ((coder.getPointer()-first) >> 3), coder, context);			
-			endShape = new Shape(length - ((coder.getPointer()-start) >> 3), coder, context);
+			startShape = new Shape(coder, context);
+			endShape = new Shape(coder, context);
 		}
 
 		vars.remove(Context.TRANSPARENT);

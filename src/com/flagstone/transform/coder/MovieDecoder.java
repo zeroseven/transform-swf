@@ -72,6 +72,10 @@ import com.flagstone.transform.text.TextSettings;
 @SuppressWarnings("PMD")
 public final class MovieDecoder implements SWFFactory<MovieTag> {
 
+	public SWFFactory<MovieTag> copy() {
+		return new MovieDecoder();
+	}
+
 	public MovieTag getObject(final SWFDecoder coder, final Context context) throws CoderException {
 
 		MovieTag obj;

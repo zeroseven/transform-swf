@@ -59,7 +59,7 @@ public final class FrameTest
 	public void setUp()
 	{
 		movie = new Movie();
-		movie.setSignature("FWS");
+		movie.setSignature(Movie.Signature.FWS);
 		movie.setFrameSize(new Bounds(0,0,100,100));
 		movie.setFrameRate(1.0f);
 	}

@@ -45,7 +45,7 @@ public class ImageTest
         int xOrigin = (image).getWidth()/2;
         int yOrigin = (image).getHeight()/2;
 
-        DefineShape3 shape = ImageFactory.defineEnclosingShape(movie.newIdentifier(), image, -xOrigin, -yOrigin, null);
+        DefineShape3 shape = ImageFactory.defineEnclosingShape(movie.identifier(), image, -xOrigin, -yOrigin, null);
 
         movie.setFrameRate(1.0f);
         movie.setFrameSize(shape.getBounds());
@@ -54,6 +54,6 @@ public class ImageTest
         movie.add(shape);
         movie.add(Place2.show(shape.getIdentifier(), 1, 0, 0));
         movie.add(ShowFrame.getInstance());
-        movie.encodeToFile(file.getPath());
+        movie.encodeToFile(file);
     }
 }

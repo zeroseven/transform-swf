@@ -101,7 +101,7 @@ public final class ShowImageTest
 
         LineStyle borderStyle = new LineStyle(20, WebPalette.BLACK.color());
 
-        DefineShape3 shape = ImageFactory.defineEnclosingShape(movie.newIdentifier(), image, -xOrigin, -yOrigin, borderStyle);
+        DefineShape3 shape = ImageFactory.defineEnclosingShape(movie.identifier(), image, -xOrigin, -yOrigin, borderStyle);
 
         movie.setFrameRate(1.0f);
         movie.setFrameSize(shape.getBounds());
@@ -110,6 +110,6 @@ public final class ShowImageTest
         movie.add(shape);
         movie.add(Place2.show(shape.getIdentifier(), 1, 0, 0));
         movie.add(ShowFrame.getInstance());
-        movie.encodeToFile(file.getPath());
+        movie.encodeToFile(file);
     }
 }

@@ -136,8 +136,6 @@ public final class DoActionTest {
 		registry.setActionDecoder(new ActionDecoder());
 		context.setRegistry(registry);
 
-		context.getVariables().put(Context.DECODE_ACTIONS, 1);
-		
 		fixture = new DoAction(decoder, context);
 		
 		assertTrue(decoder.eof());
@@ -152,8 +150,6 @@ public final class DoActionTest {
 		registry.setActionDecoder(new ActionDecoder());
 		context.setRegistry(registry);
 
-		context.getVariables().put(Context.DECODE_ACTIONS, 1);
-		
 		fixture = new DoAction(decoder, context);
 		
 		assertTrue(decoder.eof());

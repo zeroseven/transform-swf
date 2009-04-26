@@ -42,17 +42,6 @@ public interface FontDecoder
      * Initialise this object with the font information decoded from a TrueType 
      * or OpenType font stored in a file.
      * 
-     * @param path the path to the file containing the font.
-     * 
-     * @throws FileNotFoundException is the file cannot be found or opened.
-     * @throws IOException if there is an error reading the file.
-     * @throws DataFormatException if the there is an error decoding the font.
-     */
-    public void read(String path) throws FileNotFoundException, IOException, DataFormatException;
-    /**
-     * Initialise this object with the font information decoded from a TrueType 
-     * or OpenType font stored in a file.
-     * 
      * @param file the File containing the abstract path to the file containing the font.
      * 
      * @throws FileNotFoundException is the file cannot be found or opened.

@@ -145,16 +145,17 @@ public final class MovieClipEventHandler implements SWFEncodeable
 
 		actions = new ArrayList<Action>();
 
-		if (context.getVariables().containsKey(Context.DECODE_ACTIONS)) {
+		SWFFactory<Action>decoder = context.getRegistry().getActionDecoder();
+
+		if (decoder == null) {
+			actions.add(new ActionData(coder.readBytes(new byte[offset])));
+		} 
+		else {
 			int len = offset;
-			SWFFactory<Action>decoder = context.getRegistry().getActionDecoder();
 
 			while (len > 0) {
 				actions.add(decoder.getObject(coder, context));
 			}
-		} 
-		else {
-			actions.add(new ActionData(coder.readBytes(new byte[offset])));
 		}
 	}
 

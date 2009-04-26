@@ -42,6 +42,7 @@ import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.shape.Shape;
+import com.flagstone.transform.shape.ShapeData;
 
 //TODO(doc) Review
 /**
@@ -100,11 +101,15 @@ public final class DefineFont implements DefineTag
 
 		offset[shapeCount] = length - 2;
 		
+		Shape shape;
+		
 		for (int i = 0; i < shapeCount; i++)
 		{
 			coder.setPointer(offsetStart + (offset[i] << 3));
 
-			shapes.add(new Shape(coder, context));
+			shape = new Shape();
+			shape.add(new ShapeData(coder.readBytes(new byte[offset[i + 1] - offset[i]])));
+			shapes.add(shape);
 		}
 
 		if (coder.getPointer() != end) {

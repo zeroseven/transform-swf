@@ -41,8 +41,12 @@ import com.flagstone.transform.coder.DefineTag;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.coder.SWFFactory;
+import com.flagstone.transform.coder.ShapeDecoder;
 import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.shape.Shape;
+import com.flagstone.transform.shape.ShapeData;
+import com.flagstone.transform.shape.ShapeRecord;
 
 //TODO(doc) Review
 /**
@@ -166,13 +170,9 @@ public final class DefineFont2 implements DefineTag
 		{
 			coder.setPointer(offsetStart + (offset[i] << 3));
 
-			if (vars.containsKey(Context.DECODE_GLYPHS)) 
-			{
-				shapes.add(new Shape(coder, context));
-			}
-			else {
-				shapes.add(new Shape(offset[i + 1] - offset[i], coder, context));
-			}
+			shape = new Shape();
+			shape.add(new ShapeData(coder.readBytes(new byte[offset[i + 1] - offset[i]])));
+			shapes.add(shape);
 		}
 
 		for (int i = 0; i < glyphCount; i++) {

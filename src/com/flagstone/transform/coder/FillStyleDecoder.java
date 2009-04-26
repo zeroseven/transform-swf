@@ -11,6 +11,10 @@ import com.flagstone.transform.fillstyle.SolidFill;
  */
 public final class FillStyleDecoder implements SWFFactory<FillStyle> {
 
+	public SWFFactory<FillStyle> copy() {
+		return new FillStyleDecoder();
+	}
+
 	public FillStyle getObject(final SWFDecoder coder, final Context context) throws CoderException {
 
 		FillStyle style;

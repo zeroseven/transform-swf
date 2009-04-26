@@ -1,12 +1,14 @@
 package com.flagstone.transform.coder;
 
-import java.nio.ByteBuffer;
-
 import com.flagstone.transform.AudioData;
 import com.flagstone.transform.VideoData;
 import com.flagstone.transform.VideoMetaData;
 
 public final class VideoDecoder implements FLVFactory<VideoTag> {
+
+	public FLVFactory<VideoTag> copy() {
+		return new VideoDecoder();
+	}
 
 	public VideoTag getObject(final FLVDecoder coder) throws CoderException {
 

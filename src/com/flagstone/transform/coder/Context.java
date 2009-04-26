@@ -13,9 +13,6 @@ public final class Context {
 	public final static int TYPE = 2;
 	public final static int TRANSPARENT = 3;
 	public final static int WIDE_CODES = 4;
-	public final static int DECODE_ACTIONS = 5;
-	public final static int DECODE_SHAPES = 6;
-	public final static int DECODE_GLYPHS = 7;
 	public final static int ARRAY_EXTENDED = 8;
 	public final static int POSTSCRIPT = 9;
 	public final static int SCALING_STROKE = 10;

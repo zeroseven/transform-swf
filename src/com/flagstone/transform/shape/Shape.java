@@ -60,91 +60,39 @@ public final class Shape implements SWFEncodeable
 	
 	private List<ShapeRecord> objects;
 	
-	private transient int length;
-
 	//TODO(doc)
 	public Shape(final SWFDecoder coder, final Context context) throws CoderException
 	{
 		objects = new ArrayList<ShapeRecord>();
 
 		Map<Integer,Integer>vars = context.getVariables();
-		if (vars.containsKey(Context.DECODE_SHAPES))
-		{
-			vars.put(Context.FILL_SIZE, coder.readBits(4, false));
-			vars.put(Context.LINE_SIZE,coder.readBits(4, false));
+		vars.put(Context.FILL_SIZE, coder.readBits(4, false));
+		vars.put(Context.LINE_SIZE,coder.readBits(4, false));
 
-			int type;
-			ShapeRecord shape;
+		int type;
+		ShapeRecord shape;
 
-			do {
-				type = coder.readBits(6, false);
+		do {
+			type = coder.readBits(6, false);
 
-				if (type != 0) {
+			if (type != 0) {
 
-					coder.adjustPointer(-6);
+				coder.adjustPointer(-6);
 
-					if ((type & 0x20) > 0) {
-						if ((type & 0x10) > 0) {
-							shape = new Line(coder, context);
-						} else {
-							shape = new Curve(coder, context);
-						}
+				if ((type & 0x20) > 0) {
+					if ((type & 0x10) > 0) {
+						shape = new Line(coder, context);
 					} else {
-						shape = new ShapeStyle(coder, context);
+						shape = new Curve(coder, context);
 					}
-					objects.add(shape);
+				} else {
+					shape = new ShapeStyle(coder, context);
 				}
-			} while (type != 0);
+				objects.add(shape);
+			}
+		} while (type != 0);
 
-			coder.alignToByte();
-		} 
-		else
-		{
-			objects.add(new ShapeData(coder.readBytes(new byte[length])));
-		}
-	}
-
-	//TODO(doc)
-	public Shape(int length, final SWFDecoder coder, Context context) throws CoderException
-	{
-		this.length = length;
-		objects = new ArrayList<ShapeRecord>();
-
-		Map<Integer,Integer>vars = context.getVariables();
-		if (vars.containsKey(Context.DECODE_SHAPES))
-		{
-			vars.put(Context.FILL_SIZE, coder.readBits(4, false));
-			vars.put(Context.LINE_SIZE,coder.readBits(4, false));
-
-			int type;
-			ShapeRecord shape;
-
-			do {
-				type = coder.readBits(6, false);
-
-				if (type != 0) {
-
-					coder.adjustPointer(-6);
-
-					if ((type & 0x20) > 0) {
-						if ((type & 0x10) > 0) {
-							shape = new Line(coder, context);
-						} else {
-							shape = new Curve(coder, context);
-						}
-					} else {
-						shape = new ShapeStyle(coder, context);
-					}
-					objects.add(shape);
-				}
-			} while (type != 0);
-
-			coder.alignToByte();
-		} 
-		else
-		{
-			objects.add(new ShapeData(coder.readBytes(new byte[length])));
-		}
+		coder.alignToByte();
 	}
 
 	//TODO(doc)

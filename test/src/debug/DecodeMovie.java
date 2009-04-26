@@ -29,6 +29,8 @@
  */
 package debug;
 
+import java.io.File;
+
 import com.flagstone.transform.Movie;
 
 /**
@@ -39,7 +41,7 @@ public final class DecodeMovie {
 		String sourceFile = args[0];
 
 		try {
-			new Movie().decodeFromFile(sourceFile);
+			new Movie().decodeFromFile(new File(sourceFile));
 		} catch (Throwable t) {
 			t.printStackTrace();
 		}

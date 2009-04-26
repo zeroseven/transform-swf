@@ -107,53 +107,42 @@ public final class SWFDecoder implements FontProvider, FontDecoder
     	return new TTFDecoder();
     }
    
-    public void read(String path) throws FileNotFoundException, IOException, DataFormatException {
-    	decode(loadFile(new File(path)));
-    }
-    
     public void read(File file) throws FileNotFoundException, IOException, DataFormatException {
-    	decode(loadFile(file));
+    	FileInputStream stream = new FileInputStream(file);
+     	try {
+    		decode(stream);
+    	} finally {
+    		stream.close();
+    	}
     }
       
     public void read(URL url) throws FileNotFoundException, IOException, DataFormatException
     {
 	    URLConnection connection = url.openConnection();
 
-	    int fileSize = connection.getContentLength();
-            
-	    if (fileSize<0) {
-              throw new FileNotFoundException(url.getFile());
+	    if (connection.getContentLength() < 0) {
+        	throw new FileNotFoundException(url.getFile());
 	    }
 	    
-	    byte[] bytes = new byte[fileSize];
+	    InputStream stream = connection.getInputStream();
 
-	    InputStream stream = url.openStream();
-	    BufferedInputStream buffer = new BufferedInputStream(stream);
-
-	    buffer.read(bytes);
-	    buffer.close();
-
-    	ImageInfo info = new ImageInfo();
-    	info.setInput(new ByteArrayInputStream(bytes));
-    	info.setDetermineImageNumber(true);
-    	
-    	if (!info.check())  {
-    		throw new DataFormatException(Strings.UNSUPPORTED_FILE_FORMAT);
+	    try {
+    		decode(stream);
+    	} finally {
+    		stream.close();
     	}
-    	
-		decode(bytes);
     }
-
+    
     public Font[] getFonts() {
     	Font[] fonts = null; 
     	
     	return fonts;
     }
 
-    private void decode(byte[] bytes) throws FileNotFoundException, CoderException, IOException, DataFormatException
+    private void decode(InputStream stream) throws FileNotFoundException, CoderException, IOException, DataFormatException
 	{
 		Movie movie = new Movie();
-		movie.decodeFromData(bytes);
+		movie.decodeFromStream(stream);
 		
 		List<Font>list = new ArrayList<Font>();
 		

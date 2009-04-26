@@ -100,7 +100,7 @@ public final class ShowTrueTypeFontTest
     {
         Movie movie = new Movie();
 
-        DefineTextField text = new DefineTextField(movie.newIdentifier());
+        DefineTextField text = new DefineTextField(movie.identifier());
         text.setBounds(new Bounds(0, 0, width, height));
         text.setVariableName("var");
         text.setInitialText(alphabet);
@@ -116,6 +116,6 @@ public final class ShowTrueTypeFontTest
         movie.add(text);
         movie.add(Place2.show(text.getIdentifier(), 1, margin , margin));
         movie.add(ShowFrame.getInstance());
-        movie.encodeToFile(file.getPath());
+        movie.encodeToFile(file);
     }
 }

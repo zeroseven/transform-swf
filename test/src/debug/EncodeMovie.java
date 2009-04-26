@@ -1,5 +1,6 @@
 package debug;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.zip.DataFormatException;
 
@@ -17,8 +18,8 @@ public final class EncodeMovie
         try
         {
             movie = new Movie();
-            movie.decodeFromFile(sourceFile);
-            movie.encodeToFile(destFile);
+            movie.decodeFromFile(new File(sourceFile));
+            movie.encodeToFile(new File(destFile));
         }
         catch (DataFormatException e)
         {

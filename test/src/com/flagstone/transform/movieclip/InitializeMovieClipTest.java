@@ -117,8 +117,6 @@ public final class InitializeMovieClipTest {
 		registry.setActionDecoder(new ActionDecoder());
 		context.setRegistry(registry);
 
-		context.getVariables().put(Context.DECODE_ACTIONS, 1);
-		
 		fixture = new InitializeMovieClip(decoder, context);
 		
 		assertTrue(decoder.eof());
@@ -130,7 +128,6 @@ public final class InitializeMovieClipTest {
 	public void decodeExtended() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(extended);
 		Context context = new Context();
-		context.getVariables().put(Context.DECODE_ACTIONS, 1);
 		DecoderRegistry registry = new DecoderRegistry();
 		registry.setActionDecoder(new ActionDecoder());
 		context.setRegistry(registry);
