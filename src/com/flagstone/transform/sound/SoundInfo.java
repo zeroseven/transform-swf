@@ -30,9 +30,7 @@
 
 package com.flagstone.transform.sound;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.flagstone.transform.Strings;
@@ -44,20 +42,25 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 //TODO(doc) Review
 /**
- * SoundInfo identifies a sound (previously defined using The
- * DefineSound class) and controls how it is played.
+ * SoundInfo identifies a sound (previously defined using The DefineSound class)
+ * and controls how it is played.
  * 
- * <p>SoundInfo defines how the sound fades in and out, whether it is repeated as
+ * <p>
+ * SoundInfo defines how the sound fades in and out, whether it is repeated as
  * well as specifying an envelope that provides a finer degree of control over
- * the levels at which the sound is played.</p>
+ * the levels at which the sound is played.
+ * </p>
  * 
- * <p>The in and out point specify the sample number which marks the point in 
- * time at which the sound stops increasing or starts decreasing in volume 
+ * <p>
+ * The in and out point specify the sample number which marks the point in time
+ * at which the sound stops increasing or starts decreasing in volume
  * respectively. Sounds are played by the Flash player at 44.1KHz so the sample
  * number also indicates the time when the total number of samples in the sound
- * is taken into account.</p>
+ * is taken into account.
+ * </p>
  * 
- * <p>Not all the attributes are required to play a sound. Only the identifier and
+ * <p>
+ * Not all the attributes are required to play a sound. Only the identifier and
  * the mode is required. The other attributes are optional and may be added as a
  * greater degree of control is required. The inPoint and outPoint attributes
  * may be set to zero if the sound does not fade in or out respectively. The
@@ -68,40 +71,37 @@ import com.flagstone.transform.coder.SWFEncoder;
  * 
  * @see DefineSound
  */
-public final class SoundInfo implements SWFEncodeable
-{
+public final class SoundInfo implements SWFEncodeable {
 	private static final String FORMAT = "SoundInfo: { identifier=%d; mode=%s; inPoint=%d; outPoint=%d; loopCount=%d; envelopes=%s; }";
-	
-	//TODO(doc)
+
+	// TODO(doc)
 	public enum Mode {
 		/** Start playing the sound. */
 		START(0),
-		/**  Start playing the sound or continues if it is already playing. */
+		/** Start playing the sound or continues if it is already playing. */
 		CONTINUE(1),
 		/** Stop playing the sound. */
 		STOP(2);
 
-		private static final Map<Integer,Mode>table 
-			= new LinkedHashMap<Integer,Mode>();
+		private static final Map<Integer, Mode> TABLE = new LinkedHashMap<Integer, Mode>();
 
 		static {
 			for (Mode encoding : values()) {
-				table.put(encoding.value, encoding);
+				TABLE.put(encoding.value, encoding);
 			}
 		}
-		
-		public static Mode fromInt(int type) {
-			return table.get(type);
+
+		public static Mode fromInt(final int type) {
+			return TABLE.get(type);
 		}
 
 		private final int value;
 
-		private Mode(int value) {
+		private Mode(final int value) {
 			this.value = value;
 		}
-		
-		public int getValue()
-		{
+
+		public int getValue() {
 			return value;
 		}
 	}
@@ -113,15 +113,15 @@ public final class SoundInfo implements SWFEncodeable
 	private Integer loopCount;
 	private Envelope envelope;
 
-	//TODO(doc)
-	public SoundInfo(final SWFDecoder coder, final Context context) throws CoderException
-	{
+	// TODO(doc)
+	public SoundInfo(final SWFDecoder coder)
+			throws CoderException {
 		identifier = coder.readWord(2, false);
 		mode = Mode.fromInt(coder.readBits(4, false));
-		boolean hasEnvelope = coder.readBits(1, false) != 0;
-		boolean hasLoopCount = coder.readBits(1, false) != 0;
-		boolean hasOutPoint = coder.readBits(1, false) != 0;
-		boolean hasInPoint = coder.readBits(1, false) != 0;
+		final boolean hasEnvelope = coder.readBits(1, false) != 0;
+		final boolean hasLoopCount = coder.readBits(1, false) != 0;
+		final boolean hasOutPoint = coder.readBits(1, false) != 0;
+		final boolean hasInPoint = coder.readBits(1, false) != 0;
 
 		if (hasInPoint) {
 			inPoint = coder.readWord(4, false);
@@ -135,94 +135,86 @@ public final class SoundInfo implements SWFEncodeable
 			loopCount = coder.readWord(2, false);
 		}
 
-		if (hasEnvelope)
-		{
-			envelope = new Envelope(coder, context);
+		if (hasEnvelope) {
+			envelope = new Envelope(coder);
 		}
 	}
 
 	/**
-	 * Creates ad Sound object specifying how the sound is played and the
-	 * number of times the sound is repeated.
+	 * Creates ad Sound object specifying how the sound is played and the number
+	 * of times the sound is repeated.
 	 * 
 	 * @param uid
 	 *            the unique identifier of the object that contains the sound
 	 *            data.
 	 * @param aMode
 	 *            how the sound is synchronised when the frames are displayed:
-	 *            Play - do not play the sound if it is already playing and Stop -
-	 *            stop playing the sound.
+	 *            Play - do not play the sound if it is already playing and Stop
+	 *            - stop playing the sound.
 	 * @param aCount
 	 *            the number of times the sound is repeated. May be set to zero
 	 *            if the sound will not be repeated.
 	 */
-	public SoundInfo(int uid, Mode aMode, int aCount, Envelope envelope)
-	{
+	public SoundInfo(final int uid, final Mode aMode, final int aCount,
+			final Envelope envelope) {
 		setIdentifier(uid);
 		setMode(aMode);
 		setLoopCount(aCount);
 		setEnvelope(envelope);
 	}
 
-	//TODO(doc)
-	public SoundInfo(SoundInfo object)
-	{
+	// TODO(doc)
+	public SoundInfo(final SoundInfo object) {
 		identifier = object.identifier;
 		mode = object.mode;
 		loopCount = object.loopCount;
 		inPoint = object.inPoint;
-		outPoint = object.outPoint;	
+		outPoint = object.outPoint;
 		envelope = envelope.copy();
 	}
 
 	/**
 	 * Returns the identifier of the sound to the played.
 	 */
-	public int getIdentifier()
-	{
+	public int getIdentifier() {
 		return identifier;
 	}
 
 	/**
-	 * Returns the synchronisation mode: START - start playing the sound, 
-	 * CONTINUE - do not play the sound if it is already playing and STOP - stop 
+	 * Returns the synchronisation mode: START - start playing the sound,
+	 * CONTINUE - do not play the sound if it is already playing and STOP - stop
 	 * playing the sound.
 	 */
-	public Mode getMode()
-	{
+	public Mode getMode() {
 		return mode;
 	}
 
 	/**
-	 * Returns the sample number at which the sound reaches full volume when 
+	 * Returns the sample number at which the sound reaches full volume when
 	 * fading in.
 	 */
-	public Integer getInPoint()
-	{
+	public Integer getInPoint() {
 		return inPoint;
 	}
 
 	/**
 	 * Returns the sample number at which the sound starts to fade.
 	 */
-	public Integer getOutPoint()
-	{
+	public Integer getOutPoint() {
 		return outPoint;
 	}
 
 	/**
 	 * Returns the number of times the sound will be repeated.
 	 */
-	public Integer getLoopCount()
-	{
+	public Integer getLoopCount() {
 		return loopCount;
 	}
 
 	/**
 	 * Returns the Envelope that control the levels the sound is played.
 	 */
-	public Envelope getEnvelope()
-	{
+	public Envelope getEnvelope() {
 		return envelope;
 	}
 
@@ -230,13 +222,12 @@ public final class SoundInfo implements SWFEncodeable
 	 * Sets the identifier of the sound to the played.
 	 * 
 	 * @param uid
-	 *            the identifier for the sound to be played. Must be in the 
+	 *            the identifier for the sound to be played. Must be in the
 	 *            range 1..65535.
 	 */
-	public void setIdentifier(int uid)
-	{
+	public void setIdentifier(final int uid) {
 		if (uid < 0 || uid > 65535) {
-			throw new IllegalArgumentException(Strings.IDENTIFIER_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
 		}
 		identifier = uid;
 	}
@@ -249,8 +240,7 @@ public final class SoundInfo implements SWFEncodeable
 	 * @param aMode
 	 *            how the sound is played.
 	 */
-	public void setMode(Mode mode)
-	{
+	public void setMode(final Mode mode) {
 		this.mode = mode;
 	}
 
@@ -261,10 +251,9 @@ public final class SoundInfo implements SWFEncodeable
 	 * @param aNumber
 	 *            the sample number which the sound fades in to.
 	 */
-	public void setInPoint(Integer aNumber)
-	{
+	public void setInPoint(final Integer aNumber) {
 		if (aNumber != null && (aNumber < 0 || aNumber > 65535)) {
-			throw new IllegalArgumentException(Strings.UNSIGNED_VALUE_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
 		}
 		inPoint = aNumber;
 	}
@@ -276,10 +265,9 @@ public final class SoundInfo implements SWFEncodeable
 	 * @param aNumber
 	 *            the sample number at which the sound starts to fade.
 	 */
-	public void setOutPoint(Integer aNumber)
-	{
+	public void setOutPoint(final Integer aNumber) {
 		if (aNumber != null && (aNumber < 0 || aNumber > 65535)) {
-			throw new IllegalArgumentException(Strings.UNSIGNED_VALUE_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
 		}
 		outPoint = aNumber;
 	}
@@ -291,46 +279,41 @@ public final class SoundInfo implements SWFEncodeable
 	 * @param aNumber
 	 *            the number of times the sound is repeated.
 	 */
-	public void setLoopCount(Integer aNumber)
-	{
+	public void setLoopCount(final Integer aNumber) {
 		if (aNumber != null && (aNumber < 0 || aNumber > 65535)) {
-			throw new IllegalArgumentException(Strings.UNSIGNED_VALUE_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
 		}
 		loopCount = aNumber;
 	}
 
 	/**
-	 * Sets the Envelope that define the levels at which a
-	 * sound is played over the duration of the sound. May be set to null if no
-	 * envelope is defined.
+	 * Sets the Envelope that define the levels at which a sound is played over
+	 * the duration of the sound. May be set to null if no envelope is defined.
 	 * 
 	 * @param anArray
 	 *            an array of Envelope objects.
 	 */
-	public void setEnvelope(Envelope envelope)
-	{
+	public void setEnvelope(final Envelope envelope) {
 		this.envelope = envelope;
 	}
 
-	public SoundInfo copy()
-	{
+	public SoundInfo copy() {
 		return new SoundInfo(this);
 	}
 
 	@Override
-	public String toString()
-	{
-		return String.format(FORMAT, identifier, mode, inPoint, outPoint, loopCount, envelope);
+	public String toString() {
+		return String.format(FORMAT, identifier, mode, inPoint, outPoint,
+				loopCount, envelope);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context)
-	{
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		int length = 3;
 
 		length += (inPoint == 0) ? 0 : 4;
 		length += (outPoint == 0) ? 0 : 4;
 		length += (loopCount == 0) ? 0 : 2;
-		
+
 		if (envelope != null) {
 			length += envelope.prepareToEncode(coder, context);
 		}
@@ -338,11 +321,11 @@ public final class SoundInfo implements SWFEncodeable
 		return length;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException
-	{
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		coder.writeWord(identifier, 2);
 		coder.writeBits(mode.getValue(), 4);
-		coder.writeBits(envelope != null ? 0 : 1, 1);
+		coder.writeBits(envelope == null ? 1 : 0, 1);
 		coder.writeBits(loopCount == 0 ? 0 : 1, 1);
 		coder.writeBits(outPoint == 0 ? 0 : 1, 1);
 		coder.writeBits(inPoint == 0 ? 0 : 1, 1);

@@ -10,42 +10,42 @@ import com.flagstone.transform.coder.MovieTag;
 
 public class MovieWriter {
 
-	public void write(Movie movie, File file) throws IOException {
-		PrintWriter writer = new PrintWriter(file);
+	public void write(final Movie movie, final File file) throws IOException {
+		final PrintWriter writer = new PrintWriter(file);
 		write(movie, writer);
 		writer.close();
 	}
-	
-	public void write(Movie movie, Writer writer) throws IOException {
-		
+
+	public void write(final Movie movie, final Writer writer) throws IOException {
+
 		String str;
-		
+
 		int indent = 0;
 		boolean start = false;
-		
+
 		for (MovieTag tag : movie.getObjects()) {
-			
+
 			str = tag.toString();
-			
+
 			for (char c : str.toCharArray()) {
-				
+
 				if (c == '{') {
 					writer.append(c).append('\n');
 					indent++;
-					for (int i=0; i<indent; i++) {
+					for (int i = 0; i < indent; i++) {
 						writer.append('\t');
 					}
 					start = true;
 				} else if (c == '}') {
 					indent--;
 					writer.append('\n');
-					for (int i=0; i<indent; i++) {
+					for (int i = 0; i < indent; i++) {
 						writer.append('\t');
 					}
 					writer.append(c);
 				} else if (c == ';') {
 					writer.append(c).append('\n');
-					for (int i=0; i<indent; i++) {
+					for (int i = 0; i < indent; i++) {
 						writer.append('\t');
 					}
 					start = true;

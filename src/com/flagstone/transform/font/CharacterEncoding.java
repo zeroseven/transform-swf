@@ -41,35 +41,34 @@ public enum CharacterEncoding {
 	 */
 	SJIS(2),
 	/**
-	 * Defines that the characters in a font are encoded using ANSI (ASCII) standard.
+	 * Defines that the characters in a font are encoded using ANSI (ASCII)
+	 * standard.
 	 */
 	ANSI(1),
-	/** 
-	 * Defines that the characters in a font are encoded using Unicode (UTF-8). 
+	/**
+	 * Defines that the characters in a font are encoded using Unicode (UTF-8).
 	 */
 	UCS2(0);
 
-	private static final Map<Integer,CharacterEncoding>table 
-		= new LinkedHashMap<Integer,CharacterEncoding>();
+	private static final Map<Integer, CharacterEncoding> TABLE = new LinkedHashMap<Integer, CharacterEncoding>();
 
 	static {
 		for (CharacterEncoding encoding : values()) {
-			table.put(encoding.value, encoding);
+			TABLE.put(encoding.value, encoding);
 		}
 	}
-	
-	public static CharacterEncoding fromInt(int type) {
-		return table.get(type);
+
+	public static CharacterEncoding fromInt(final int type) {
+		return TABLE.get(type);
 	}
 
 	private final int value;
 
-	private CharacterEncoding(int value) {
+	private CharacterEncoding(final int value) {
 		this.value = value;
 	}
-	
-	public int getValue()
-	{
+
+	public int getValue() {
 		return value;
 	}
 }

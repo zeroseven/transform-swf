@@ -39,23 +39,22 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
 //TODO(doc)
-public final class DefineFontName implements DefineTag
-{
+public final class DefineFontName implements DefineTag {
 	private static final String FORMAT = "DefineFontName: { identifier=%d; name=%s; copyright=%s }";
 
 	private int identifier;
 	private String name;
 	private String copyright;
-	
+
 	private transient int start;
 	private transient int end;
 	private transient int length;
 
-	public DefineFontName(final SWFDecoder coder, final Context context) throws CoderException
-	{
+	public DefineFontName(final SWFDecoder coder)
+			throws CoderException {
 		start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
-		
+
 		if (length == 0x3F) {
 			length = coder.readWord(4, false);
 		}
@@ -71,27 +70,26 @@ public final class DefineFontName implements DefineTag
 		}
 	}
 
-
-	public DefineFontName(int uid, String name, String copyright)
-	{
+	public DefineFontName(final int uid, final String name,
+			final String copyright) {
 		setIdentifier(uid);
 		setName(name);
 		setCopyright(copyright);
 	}
 
-	public DefineFontName(DefineFontName object) {
+	public DefineFontName(final DefineFontName object) {
 		identifier = object.identifier;
 		name = object.name;
 		copyright = object.copyright;
 	}
-	
+
 	public int getIdentifier() {
 		return identifier;
 	}
 
 	public void setIdentifier(final int uid) {
 		if (uid < 1 || uid > 65535) {
-			throw new IllegalArgumentException(Strings.IDENTIFIER_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
 		}
 		identifier = uid;
 	}
@@ -101,8 +99,7 @@ public final class DefineFontName implements DefineTag
 	 * 
 	 * @return the name of the font.
 	 */
-	public String getName()
-	{
+	public String getName() {
 		return name;
 	}
 
@@ -113,46 +110,40 @@ public final class DefineFontName implements DefineTag
 	 *            the name assigned to the font, identifying the font family.
 	 *            Must not be null.
 	 */
-	public void setName(String aString)
-	{
+	public void setName(final String aString) {
 		if (aString == null) {
-			throw new IllegalArgumentException(Strings.STRING_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.STRING_IS_NULL);
 		}
 		name = aString;
 	}
 
-	public String getCopyright()
-	{
+	public String getCopyright() {
 		return copyright;
 	}
 
-	public void setCopyright(String aString)
-	{
+	public void setCopyright(final String aString) {
 		if (aString == null) {
-			throw new IllegalArgumentException(Strings.STRING_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.STRING_IS_NULL);
 		}
 		copyright = aString;
 	}
 
-	public DefineFontName copy() 
-	{
+	public DefineFontName copy() {
 		return new DefineFontName(this);
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return String.format(FORMAT, identifier, name, copyright);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context)
-	{
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		length = 2 + coder.strlen(name) + coder.strlen(copyright);
-		return (length > 62 ? 6:2) + length;
+		return (length > 62 ? 6 : 2) + length;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException
-	{
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		start = coder.getPointer();
 
 		if (length > 62) {
@@ -162,7 +153,7 @@ public final class DefineFontName implements DefineTag
 			coder.writeWord((MovieTypes.DEFINE_FONT_NAME << 6) | length, 2);
 		}
 		end = coder.getPointer() + (length << 3);
-		
+
 		coder.writeWord(identifier, 2);
 		coder.writeString(name);
 		coder.writeString(copyright);

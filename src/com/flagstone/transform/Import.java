@@ -45,73 +45,71 @@ import com.flagstone.transform.coder.SWFEncoder;
  * Import is used to import shapes and other objects from another Flash file
  * referenced by a URL.
  * 
- * <p>To provide a degree of security the Flash Player will only import files that
+ * <p>
+ * To provide a degree of security the Flash Player will only import files that
  * originate from the same domain as the file that it is currently playing. For
- * example if the Flash file being shown was loaded from www.mydomain.com/flash.swf 
- * then the file contains the exported objects must reside somewhere at 
- * www.mydomain.com. This prevents a malicious Flash file from loading files from 
- * an unknown third party.</p>
- *  
- * <p>Since the identifier for an object is only unique within a given Flash file,
- * imported objects are referenced by a name assigned when the object is exported.</p>
+ * example if the Flash file being shown was loaded from
+ * www.mydomain.com/flash.swf then the file contains the exported objects must
+ * reside somewhere at www.mydomain.com. This prevents a malicious Flash file
+ * from loading files from an unknown third party.
+ * </p>
+ * 
+ * <p>
+ * Since the identifier for an object is only unique within a given Flash file,
+ * imported objects are referenced by a name assigned when the object is
+ * exported.
+ * </p>
  * 
  * @see Export
  */
-public final class Import implements MovieTag
-{
+public final class Import implements MovieTag {
 	private static final String FORMAT = "Import: { url=%s; objects=%s }";
-	
+
 	private String url;
-	private Map<Integer,String> objects;
-	
+	private Map<Integer, String> objects;
+
 	private transient int length;
 
-	//TODO(doc)
-	public Import(final SWFDecoder coder, final Context context) throws CoderException
-	{
+	// TODO(doc)
+	public Import(final SWFDecoder coder) throws CoderException {
 		length = coder.readWord(2, false) & 0x3F;
-		
+
 		if (length == 0x3F) {
 			length = coder.readWord(4, false);
 		}
 
 		url = coder.readString();
 
-		int count = coder.readWord(2, false);
-		objects = new LinkedHashMap<Integer,String>();
+		final int count = coder.readWord(2, false);
+		objects = new LinkedHashMap<Integer, String>(count);
 
-		for (int i = 0; i < count; i++)
-		{
-			int identifier = coder.readWord(2, false);
-			String name = coder.readString();
-
-			add(identifier, name);
+		for (int i = 0; i < count; i++) {
+			add(coder.readWord(2, false), coder.readString());
 		}
 	}
 
 	/**
-	 * Creates a Import object that imports an object from the specified
-	 * file.
+	 * Creates a Import object that imports an object from the specified file.
 	 * 
 	 * @param aUrl
 	 *            the URL referencing the file to be imported.
-	 *
-	 * @param map the table to add the identifier-name pairs of the objects 
-	 * that will be imported.
+	 * 
+	 * @param map
+	 *            the table to add the identifier-name pairs of the objects that
+	 *            will be imported.
 	 */
-	public Import(String aUrl, Map<Integer,String> map)
-	{
+	public Import(final String aUrl, final Map<Integer, String> map) {
 		setUrl(aUrl);
 		objects = map;
 	}
 
 	/**
-	 * Creates a Import object that imports an object from the specified
-	 * file. The exported object is referenced by a name assigned to it when it
-	 * was exported. The newly imported object must be assigned an identifier
-	 * that is unique within the movie the object is imported into. Limited
-	 * security is provided by requiring that the URL must be in the same domain
-	 * or sub-domain as the URL of the movie which contains this object.
+	 * Creates a Import object that imports an object from the specified file.
+	 * The exported object is referenced by a name assigned to it when it was
+	 * exported. The newly imported object must be assigned an identifier that
+	 * is unique within the movie the object is imported into. Limited security
+	 * is provided by requiring that the URL must be in the same domain or
+	 * sub-domain as the URL of the movie which contains this object.
 	 * 
 	 * @param aUrl
 	 *            the URL referencing the file to be imported.
@@ -120,33 +118,31 @@ public final class Import implements MovieTag
 	 * @param aString
 	 *            the name of the exported object to allow it to be referenced.
 	 */
-	public Import(String aUrl, int uid, String aString)
-	{
+	public Import(final String aUrl, final int uid, final String aString) {
 		setUrl(aUrl);
-		objects = new LinkedHashMap<Integer,String>();
+		objects = new LinkedHashMap<Integer, String>();
 		add(uid, aString);
 	}
-	
-	//TODO(doc)
-	public Import(Import object) {
+
+	// TODO(doc)
+	public Import(final Import object) {
 		url = object.url;
-		objects = new LinkedHashMap<Integer,String>(object.objects);
+		objects = new LinkedHashMap<Integer, String>(object.objects);
 	}
 
 	/**
 	 * Adds the identifier and name to the list of objects to be imported.
 	 * 
 	 * @param uid
-	 *            the identifier of the object to be imported. Must be in the 
+	 *            the identifier of the object to be imported. Must be in the
 	 *            range 1..65535.
 	 * @param aString
 	 *            the name of the imported object to allow it to be referenced.
-	 *            Must not be null or an empty string. 
+	 *            Must not be null or an empty string.
 	 */
-	public final void add(int uid, String aString)
-	{
+	public void add(final int uid, final String aString) {
 		if (uid < 1 || uid > 65535) {
-			throw new IllegalArgumentException(Strings.IDENTIFIER_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
 		}
 		if (aString == null || aString.length() == 0) {
 			throw new IllegalArgumentException(Strings.STRING_NOT_SET);
@@ -159,16 +155,14 @@ public final class Import implements MovieTag
 	 * security is provided by requiring that the URL must be in the same domain
 	 * or sub-domain as the URL of the movie which contains this object.
 	 */
-	public String getUrl()
-	{
+	public String getUrl() {
 		return url;
 	}
 
 	/**
 	 * Returns the table of objects to be imported.
 	 */
-	public Map<Integer,String> getObjects()
-	{
+	public Map<Integer, String> getObjects() {
 		return objects;
 	}
 
@@ -181,8 +175,7 @@ public final class Import implements MovieTag
 	 *            a URL relative to the URL of the file containing the Import
 	 *            object. Must not be null or an empty string.
 	 */
-	public void setUrl(String aString)
-	{
+	public void setUrl(final String aString) {
 		if (aString == null || aString.length() == 0) {
 			throw new IllegalArgumentException(Strings.STRING_NOT_SET);
 		}
@@ -195,57 +188,48 @@ public final class Import implements MovieTag
 	 * @param aTable
 	 *            the table of objects being imported. Must not be null.
 	 */
-	public void setObjects(Map<Integer,String> aTable)
-	{
+	public void setObjects(final Map<Integer, String> aTable) {
 		objects = aTable;
 	}
 
 	/**
 	 * Creates and returns a deep copy of this object.
 	 */
-	public Import copy() 
-	{
+	public Import copy() {
 		return new Import(this);
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return String.format(FORMAT, url, objects);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context)
-	{
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		length = 2 + coder.strlen(url);
 
 		for (Integer identifier : objects.keySet()) {
-			String name = (objects.get(identifier));
-
-			length += 2;
-			length += coder.strlen(name);
+			length += 2 + coder.strlen(objects.get(identifier));
 		}
 
-		return (length > 62 ? 6:2) + length;
+		return (length > 62 ? 6 : 2) + length;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException
-	{
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		if (length > 62) {
 			coder.writeWord((MovieTypes.IMPORT << 6) | 0x3F, 2);
 			coder.writeWord(length, 4);
 		} else {
 			coder.writeWord((MovieTypes.IMPORT << 6) | length, 2);
 		}
-		
+
 		coder.writeString(url);
 
 		coder.writeWord(objects.size(), 2);
 
 		for (Integer identifier : objects.keySet()) {
-			String name = (objects.get(identifier));
-
 			coder.writeWord(identifier.intValue(), 2);
-			coder.writeString(name);
+			coder.writeString(objects.get(identifier));
 		}
 	}
 }

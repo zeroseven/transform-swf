@@ -43,33 +43,36 @@ import com.flagstone.transform.coder.SWFEncoder;
 /**
  * JPEGEncodingTable defines the Huffman encoding table for JPEG images.
  * 
- * <p>The encoding table is shared between all images defined using the
- * DefineJPEGImage class so there should only be one JPEGEncodingTable
- * object defined in a movie.</p>
+ * <p>
+ * The encoding table is shared between all images defined using the
+ * DefineJPEGImage class so there should only be one JPEGEncodingTable object
+ * defined in a movie.
+ * </p>
  * 
- * <p>The JPEGEncodingTable class is not essential to define JPEG encoded images
- * in a movie using the DefineJPEGImage class. You can still display an image 
- * if it contains the encoding table. There is no need to separate it and add it
- * to a JPEGEncodingTable object, particularly since different images contain 
- * different encoding tables.</p>
- *
+ * <p>
+ * The JPEGEncodingTable class is not essential to define JPEG encoded images in
+ * a movie using the DefineJPEGImage class. You can still display an image if it
+ * contains the encoding table. There is no need to separate it and add it to a
+ * JPEGEncodingTable object, particularly since different images contain
+ * different encoding tables.
+ * </p>
+ * 
  * @see DefineJPEGImage
  */
-public final class JPEGEncodingTable implements MovieTag
-{
+public final class JPEGEncodingTable implements MovieTag {
 	private static final String FORMAT = "JPEGEncodingTable: { encodingTable=%d }";
 	private byte[] table;
-	
+
 	private transient int start;
 	private transient int end;
 	private transient int length;
 
-	//TODO(doc)
-	public JPEGEncodingTable(final SWFDecoder coder, final Context context) throws CoderException
-	{
+	// TODO(doc)
+	public JPEGEncodingTable(final SWFDecoder coder)
+			throws CoderException {
 		start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
-		
+
 		if (length == 0x3F) {
 			length = coder.readWord(4, false);
 		}
@@ -88,66 +91,60 @@ public final class JPEGEncodingTable implements MovieTag
 	 * 
 	 * @param bytes
 	 *            an array of bytes contains the data for the encoding table.
-	 *             Must not be null.
+	 *            Must not be null.
 	 */
-	public JPEGEncodingTable(byte[] bytes)
-	{
+	public JPEGEncodingTable(final byte[] bytes) {
 		setTable(bytes);
 	}
-	
-	//TODO(doc)
-	public JPEGEncodingTable(JPEGEncodingTable object) {
+
+	// TODO(doc)
+	public JPEGEncodingTable(final JPEGEncodingTable object) {
 		table = Arrays.copyOf(object.table, object.table.length);
 	}
 
 	/**
 	 * Returns the encoding table.
 	 */
-	public byte[] getTable()
-	{
+	public byte[] getTable() {
 		return table;
 	}
 
 	/**
-	 * Sets the encoding table. 
+	 * Sets the encoding table.
 	 * 
 	 * @param bytes
 	 *            an array of bytes contains the data for the encoding table.
 	 *            Must not be null or zero length.
 	 */
-	public void setTable(byte[] bytes)
-	{
+	public void setTable(final byte[] bytes) {
 		if (bytes == null) {
-			throw new IllegalArgumentException(Strings.DATA_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.DATA_IS_NULL);
 		}
-			
+
 		if (bytes.length == 0) {
-			throw new IllegalArgumentException(Strings.DATA_CANNOT_BE_EMPTY);
+			throw new IllegalArgumentException(Strings.DATA_IS_EMPTY);
 		}
 
 		table = bytes;
 	}
 
-	public JPEGEncodingTable copy() 
-	{
+	public JPEGEncodingTable copy() {
 		return new JPEGEncodingTable(this);
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return String.format(FORMAT, table.length);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context)
-	{
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		length = table.length;
 
-		return (length > 62 ? 6:2) + length;
+		return (length > 62 ? 6 : 2) + length;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException
-	{
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		start = coder.getPointer();
 
 		if (length >= 63) {
@@ -157,7 +154,7 @@ public final class JPEGEncodingTable implements MovieTag
 			coder.writeWord((MovieTypes.JPEG_TABLES << 6) | length, 2);
 		}
 		end = coder.getPointer() + (length << 3);
-		
+
 		coder.writeBytes(table);
 
 		if (coder.getPointer() != end) {

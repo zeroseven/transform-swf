@@ -47,8 +47,8 @@ public final class Free implements MovieTag {
 
 	private int identifier;
 
-	//TODo(doc)
-	public Free(final SWFDecoder coder, final Context context) throws CoderException {
+	// TODo(doc)
+	public Free(final SWFDecoder coder) throws CoderException {
 
 		if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
 			coder.readWord(4, false);
@@ -64,7 +64,7 @@ public final class Free implements MovieTag {
 	 *            the unique identifier of the object to be deleted. Must be in
 	 *            the range 1..65535.
 	 */
-	public Free(int uid) {
+	public Free(final int uid) {
 		setIdentifier(uid);
 	}
 
@@ -74,7 +74,7 @@ public final class Free implements MovieTag {
 	 * @param object
 	 *            a Free object used to initialise this one.
 	 */
-	public Free(Free object) {
+	public Free(final Free object) {
 		identifier = object.identifier;
 	}
 
@@ -92,9 +92,9 @@ public final class Free implements MovieTag {
 	 *            the identifier of the object to be deleted. Must be in the
 	 *            range 1..65535.
 	 */
-	public void setIdentifier(int uid) {
+	public void setIdentifier(final int uid) {
 		if (uid < 1 || uid > 65535) {
-			throw new IllegalArgumentException(Strings.IDENTIFIER_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
 		}
 		identifier = uid;
 	}
@@ -112,7 +112,8 @@ public final class Free implements MovieTag {
 		return 4;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException {
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		coder.writeWord((MovieTypes.FREE << 6) | 2, 2);
 		coder.writeWord(identifier, 2);
 	}

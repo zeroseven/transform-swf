@@ -89,19 +89,18 @@ import com.flagstone.transform.coder.SWFEncoder;
  * Not all objects containing a colour transform use the add or multiply terms
  * defined for the alpha channel. The colour objects defined in an DefineButton,
  * ButtonColorTransform or PlaceObject object do not use the alpha channel while
- * DefineButton2 and PlaceObject2 do. Whether the parent object uses the alpha 
- * channel is stored in a SWFContext which is passed when the transform is 
+ * DefineButton2 and PlaceObject2 do. Whether the parent object uses the alpha
+ * channel is stored in a SWFContext which is passed when the transform is
  * encoded or decoded.
  * </p>
  * 
  */
-//TODO(optimise) Can hasAdd or hasMultiply be set in constructors.
-//TODO(optimise) Is there a more efficient way of calculating field size.
-//TODO(doc) review.
+// TODO(optimise) Can hasAdd or hasMultiply be set in constructors.
+// TODO(optimise) Is there a more efficient way of calculating field size.
+// TODO(doc) review.
 public final class ColorTransform implements SWFEncodeable {
 
-	private static final String FORMAT = 
-		"ColorTransform: { multiply=[%f, %f, %f, %f]; add=[%d, %d, %d, %d] }";
+	private static final String FORMAT = "ColorTransform: { multiply=[%f, %f, %f, %f]; add=[%d, %d, %d, %d] }";
 
 	private final transient int multiplyRed;
 	private final transient int multiplyGreen;
@@ -118,9 +117,10 @@ public final class ColorTransform implements SWFEncodeable {
 	private transient boolean hasAdd;
 	private transient boolean hasAlpha;
 
-	public ColorTransform(final SWFDecoder coder, final Context context) throws CoderException {
+	public ColorTransform(final SWFDecoder coder, final Context context)
+			throws CoderException {
 
-		coder.alignToByte(); //TODO(optimise) Can this be removed. 
+		coder.alignToByte(); // TODO(optimise) Can this be removed.
 
 		hasAdd = coder.readBits(1, false) != 0;
 		hasMultiply = coder.readBits(1, false) != 0;
@@ -205,9 +205,8 @@ public final class ColorTransform implements SWFEncodeable {
 	}
 
 	public ColorTransform(final int addRed, final int addGreen,
-			final int addBlue, final int addAlpha,
-			final float mulRed, final float mulGreen,
-			final float mulBlue, final float mulAlpha) {
+			final int addBlue, final int addAlpha, final float mulRed,
+			final float mulGreen, final float mulBlue, final float mulAlpha) {
 
 		this.addRed = addRed;
 		this.addGreen = addGreen;
@@ -301,36 +300,36 @@ public final class ColorTransform implements SWFEncodeable {
 				multiplyGreen / 256.0f, multiplyBlue / 256.0f,
 				multiplyAlpha / 256.0f, addRed, addGreen, addBlue, addAlpha);
 	}
-	
+
 	@Override
 	public boolean equals(final Object object) {
 		boolean result;
 		ColorTransform transform;
-		
+
 		if (object == null) {
 			result = false;
 		} else if (object == this) {
 			result = true;
 		} else if (object instanceof ColorTransform) {
-			transform = (ColorTransform)object;
-			result = addRed == transform.addRed && 
-				addGreen == transform.addGreen &&
-				addBlue == transform.addBlue && 
-				addAlpha == transform.addAlpha &&
-				multiplyRed == transform.multiplyRed && 
-				multiplyGreen == transform.multiplyGreen && 
-				multiplyBlue == transform.multiplyBlue &&
-				multiplyAlpha == transform.multiplyAlpha;
+			transform = (ColorTransform) object;
+			result = addRed == transform.addRed
+					&& addGreen == transform.addGreen
+					&& addBlue == transform.addBlue
+					&& addAlpha == transform.addAlpha
+					&& multiplyRed == transform.multiplyRed
+					&& multiplyGreen == transform.multiplyGreen
+					&& multiplyBlue == transform.multiplyBlue
+					&& multiplyAlpha == transform.multiplyAlpha;
 		} else {
 			result = false;
 		}
 		return result;
 	}
-	
+
 	@Override
 	public int hashCode() {
-		return ((((((addRed*31 + addGreen)*31 + addBlue)*31 + addAlpha)*31 + 
-				multiplyRed)* 31 + multiplyGreen)* 31 + multiplyBlue)* 31 + multiplyAlpha;
+		return ((((((addRed * 31 + addGreen) * 31 + addBlue) * 31 + addAlpha) * 31 + multiplyRed) * 31 + multiplyGreen) * 31 + multiplyBlue)
+				* 31 + multiplyAlpha;
 	}
 
 	public int prepareToEncode(final SWFEncoder coder, final Context context) {
@@ -354,9 +353,10 @@ public final class ColorTransform implements SWFEncodeable {
 	}
 
 	@SuppressWarnings("PMD.NPathComplexity")
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException {
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 
-		coder.alignToByte(); //TODO(optimise) Can this be removed. 
+		coder.alignToByte(); // TODO(optimise) Can this be removed.
 
 		coder.writeBits(hasAdd ? 1 : 0, 1);
 		coder.writeBits(hasMultiply ? 1 : 0, 1);
@@ -386,12 +386,15 @@ public final class ColorTransform implements SWFEncodeable {
 	}
 
 	private boolean containsAddTerms(final Context context) {
-		return (addRed != 0) || (addGreen != 0) || (addBlue != 0)
+		return (addRed != 0)
+				|| (addGreen != 0)
+				|| (addBlue != 0)
 				|| (context.getVariables().containsKey(Context.TRANSPARENT) && addAlpha != 0);
 	}
 
 	private boolean containsMultiplyTerms(final Context context) {
-		return multiplyRed != 256 || multiplyGreen != 256
+		return multiplyRed != 256
+				|| multiplyGreen != 256
 				|| multiplyBlue != 256
 				|| (context.getVariables().containsKey(Context.TRANSPARENT) && multiplyAlpha != 256);
 	}

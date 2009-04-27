@@ -38,35 +38,35 @@ import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-
 //TODO(doc) Review
 /**
  * The WaitForFrame action instructs the player to wait until the specified
  * frame number has been loaded.
  * 
- * <p>If the frame has been loaded then the actions in the following <i>n</i>
+ * <p>
+ * If the frame has been loaded then the actions in the following <i>n</i>
  * actions are executed. This action is most often used to execute a short
  * animation loop that plays until the main part of a movie has been loaded.
  * </p>
  * 
- * <p>This method of waiting until a frame has been loaded is considered obsolete.
+ * <p>
+ * This method of waiting until a frame has been loaded is considered obsolete.
  * Determining the number of frames loaded using the FramesLoaded property of
  * the Flash player in combination with an If action is now the preferred
- * mechanism.</p>
+ * mechanism.
+ * </p>
  * 
  * @see Push
  * @see If
  */
-public final class WaitForFrame implements Action
-{
+public final class WaitForFrame implements Action {
 	private static final String FORMAT = "WaitForFrame: { frameNumber=%d; actionCount=%d }";
 
 	private int frameNumber;
 	private int actionCount;
 
-	//TODO(doc)
-	public WaitForFrame(final SWFDecoder coder, final Context context) throws CoderException
-	{
+	// TODO(doc)
+	public WaitForFrame(final SWFDecoder coder) throws CoderException {
 		coder.readByte();
 		coder.readWord(2, false);
 		frameNumber = coder.readWord(2, false);
@@ -74,24 +74,23 @@ public final class WaitForFrame implements Action
 	}
 
 	/**
-	 * Creates a WaitForFrame object with the specified frame number and
-	 * the number of actions that will be executed when the frame is loaded.
+	 * Creates a WaitForFrame object with the specified frame number and the
+	 * number of actions that will be executed when the frame is loaded.
 	 * 
 	 * @param aFrameNumber
-	 *            the number of the frame to wait for. Must be in the range 
+	 *            the number of the frame to wait for. Must be in the range
 	 *            1..65535.
 	 * @param anActionCount
-	 *            the number (not bytes) of actions to execute. Must be in the range 
-	 *            0..255.
+	 *            the number (not bytes) of actions to execute. Must be in the
+	 *            range 0..255.
 	 */
-	public WaitForFrame(int aFrameNumber, int anActionCount)
-	{
+	public WaitForFrame(final int aFrameNumber, final int anActionCount) {
 		setFrameNumber(aFrameNumber);
 		setActionCount(anActionCount);
 	}
-	
-	//TODO(doc)
-	public WaitForFrame(WaitForFrame object) {
+
+	// TODO(doc)
+	public WaitForFrame(final WaitForFrame object) {
 		frameNumber = object.frameNumber;
 		actionCount = object.actionCount;
 	}
@@ -99,17 +98,15 @@ public final class WaitForFrame implements Action
 	/**
 	 * Returns the frame number.
 	 */
-	public int getFrameNumber()
-	{
+	public int getFrameNumber() {
 		return frameNumber;
 	}
 
 	/**
-	 * Returns the number of actions that will be executed when the specified frame
-	 * is loaded.
+	 * Returns the number of actions that will be executed when the specified
+	 * frame is loaded.
 	 */
-	public int getActionCount()
-	{
+	public int getActionCount() {
 		return actionCount;
 	}
 
@@ -117,13 +114,12 @@ public final class WaitForFrame implements Action
 	 * Sets the frame number.
 	 * 
 	 * @param aNumber
-	 *            the number of the frame to wait for. Must be in the range 
+	 *            the number of the frame to wait for. Must be in the range
 	 *            1..65535.
 	 */
-	public void setFrameNumber(int aNumber)
-	{
+	public void setFrameNumber(final int aNumber) {
 		if (aNumber < 1 || aNumber > 65535) {
-			throw new IllegalArgumentException(Strings.FRAME_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.FRAME_RANGE);
 		}
 		frameNumber = aNumber;
 	}
@@ -134,13 +130,12 @@ public final class WaitForFrame implements Action
 	 * the number of bytes in memory they occupy.
 	 * 
 	 * @param aNumber
-	 *            the number of actions to execute. Must be in the range 
-	 *            0..255.
+	 *            the number of actions to execute. Must be in the range 0..255.
 	 */
-	public void setActionCount(int aNumber)
-	{
+	public void setActionCount(final int aNumber) {
 		if (aNumber < 0 || aNumber > 255) {
-			throw new IllegalArgumentException("Number of actions must be in the range 0..255.");
+			throw new IllegalArgumentException(
+					"Number of actions must be in the range 0..255.");
 		}
 		actionCount = aNumber;
 	}
@@ -150,18 +145,16 @@ public final class WaitForFrame implements Action
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return String.format(FORMAT, frameNumber, actionCount);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context)
-	{
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		return 6;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException
-	{
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		coder.writeByte(ActionTypes.WAIT_FOR_FRAME);
 		coder.writeWord(3, 2);
 		coder.writeWord(frameNumber, 2);

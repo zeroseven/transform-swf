@@ -47,48 +47,42 @@ import com.flagstone.transform.linestyle.LineStyle;
  * relative to the current drawing point. Once the line is drawn, the end of the
  * line is now the current drawing point.
  * 
- * <p>Lines are drawn with rounded corners and line ends. Different join and line
+ * <p>
+ * Lines are drawn with rounded corners and line ends. Different join and line
  * end styles can be created by drawing line segments as a sequence of filled
  * shapes. With 1 twip equal to 1/20th of a pixel this technique can easily be
- * used to draw the narrowest of visible lines. In flash 8, SolidLine2 line style
- * was added that supports a range of different mitering options.</p>
+ * used to draw the narrowest of visible lines. In flash 8, SolidLine2 line
+ * style was added that supports a range of different mitering options.
+ * </p>
  * 
  * @see LineStyle
  */
-public final class Line implements ShapeRecord
-{
+public final class Line implements ShapeRecord {
 	private static final String FORMAT = "Line: (%d, %d);";
-	
-	private int xCoord;
-	private int yCoord;
-	
+
+	private transient int xCoord;
+	private transient int yCoord;
+
 	private transient boolean vertical;
 	private transient boolean general;
 	private transient int size;
 
-	//TODO(doc)
-	//TODO(optimise)
-	public Line(final SWFDecoder coder, final Context context) throws CoderException
-	{
+	// TODO(doc)
+	// TODO(optimise)
+	public Line(final SWFDecoder coder) throws CoderException {
 		coder.adjustPointer(2); // shape and edge
 
 		size = coder.readBits(4, false) + 2;
 
-		if (coder.readBits(1, false) == 0)
-		{
-			if (coder.readBits(1, false) == 0)
-			{
+		if (coder.readBits(1, false) == 0) {
+			if (coder.readBits(1, false) == 0) {
 				xCoord = coder.readBits(size, true);
 				yCoord = 0;
-			} 
-			else
-			{
+			} else {
 				xCoord = 0;
 				yCoord = coder.readBits(size, true);
 			}
-		} 
-		else
-		{
+		} else {
 			xCoord = coder.readBits(size, true);
 			yCoord = coder.readBits(size, true);
 		}
@@ -104,13 +98,12 @@ public final class Line implements ShapeRecord
 	 *            the y-coordinate of the end point, specified relative to the
 	 *            current drawing point. Must be in the range -65536..65535.
 	 */
-	public Line(int xCoord, int yCoord)
-	{
+	public Line(final int xCoord, final int yCoord) {
 		setPoint(xCoord, yCoord);
 	}
-	
-	//TODO(doc)
-	public Line(Line object) {
+
+	// TODO(doc)
+	public Line(final Line object) {
 		xCoord = object.xCoord;
 		yCoord = object.yCoord;
 	}
@@ -118,16 +111,14 @@ public final class Line implements ShapeRecord
 	/**
 	 * Returns the relative x-coordinate.
 	 */
-	public int getX()
-	{
+	public int getX() {
 		return xCoord;
 	}
 
 	/**
 	 * Returns the relative y-coordinate.
 	 */
-	public int getY()
-	{
+	public int getY() {
 		return yCoord;
 	}
 
@@ -135,36 +126,34 @@ public final class Line implements ShapeRecord
 	 * Sets the relative x and y coordinates.
 	 * 
 	 * @param xCoord
-	 *            the x-coordinate of the end point. Must be in the range -65536..65535.
+	 *            the x-coordinate of the end point. Must be in the range
+	 *            -65536..65535.
 	 * @param yCoord
-	 *            the y-coordinate of the end point. Must be in the range -65536..65535.
+	 *            the y-coordinate of the end point. Must be in the range
+	 *            -65536..65535.
 	 */
-	public void setPoint(int xCoord, int yCoord)
-	{
+	public void setPoint(final int xCoord, final int yCoord) {
 		if (xCoord < -65536 || xCoord > 65535) {
-			throw new IllegalArgumentException(Strings.COORDINATES_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.COORDINATES_RANGE);
 		}
 		this.xCoord = xCoord;
-		
+
 		if (yCoord < -65536 || yCoord > 65535) {
-			throw new IllegalArgumentException(Strings.COORDINATES_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.COORDINATES_RANGE);
 		}
 		this.yCoord = yCoord;
 	}
 
-	public Line copy()
-	{
+	public Line copy() {
 		return new Line(this);
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return String.format(FORMAT, xCoord, yCoord);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context)
-	{
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		vertical = xCoord == 0;
 		general = xCoord != 0 && yCoord != 0;
 		size = Encoder.maxSize(xCoord, yCoord, 1);
@@ -173,29 +162,27 @@ public final class Line implements ShapeRecord
 
 		if (general) {
 			numberOfBits += size << 1;
-		}
-		else {
+		} else {
 			numberOfBits += 1 + size;
 		}
 
-		Map<Integer,Integer> vars = context.getVariables();
-		vars.put(Context.SHAPE_SIZE, vars.get(Context.SHAPE_SIZE)+numberOfBits);
-		
+		final Map<Integer, Integer> vars = context.getVariables();
+		vars.put(Context.SHAPE_SIZE, vars.get(Context.SHAPE_SIZE)
+				+ numberOfBits);
+
 		return numberOfBits;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException
-	{
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		coder.writeBits(3, 2);
 		coder.writeBits(size - 2, 4);
 		coder.writeBits(general ? 1 : 0, 1);
 
-		if (general)
-		{
+		if (general) {
 			coder.writeBits(xCoord, size);
 			coder.writeBits(yCoord, size);
-		} else
-		{
+		} else {
 			coder.writeBits(vertical ? 1 : 0, 1);
 			coder.writeBits(vertical ? yCoord : xCoord, size);
 		}

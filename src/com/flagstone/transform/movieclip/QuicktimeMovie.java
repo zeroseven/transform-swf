@@ -41,22 +41,20 @@ import com.flagstone.transform.coder.SWFEncoder;
 /**
  * The QuicktimeMovie defines the path to an Quicktime movie to be played.
  */
-public final class QuicktimeMovie implements MovieTag
-{
+public final class QuicktimeMovie implements MovieTag {
 	private static final String FORMAT = "QuicktimeMovie: { name=%s }";
-	
+
 	private String path;
-	
+
 	private transient int start;
 	private transient int end;
 	private transient int length;
-	
-	//TODO(doc)
-	public QuicktimeMovie(final SWFDecoder coder, final Context context) throws CoderException
-	{
+
+	// TODO(doc)
+	public QuicktimeMovie(final SWFDecoder coder) throws CoderException {
 		start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
-		
+
 		if (length == 0x3F) {
 			length = coder.readWord(4, false);
 		}
@@ -76,22 +74,19 @@ public final class QuicktimeMovie implements MovieTag
 	 * @param aString
 	 *            the file or URL where the file is located. Must not be null.
 	 */
-	public QuicktimeMovie(String aString)
-	{
+	public QuicktimeMovie(final String aString) {
 		setPath(aString);
 	}
 
-	//TODO(doc)
-	public QuicktimeMovie(QuicktimeMovie object)
-	{
+	// TODO(doc)
+	public QuicktimeMovie(final QuicktimeMovie object) {
 		path = object.path;
 	}
 
 	/**
 	 * Returns the reference to the file containing the movie.
 	 */
-	public String getPath()
-	{
+	public String getPath() {
 		return path;
 	}
 
@@ -101,34 +96,30 @@ public final class QuicktimeMovie implements MovieTag
 	 * @param aString
 	 *            the file or URL where the file is located. Must not be null.
 	 */
-	public void setPath(String aString)
-	{
+	public void setPath(final String aString) {
 		if (aString == null) {
-			throw new IllegalArgumentException(Strings.STRING_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.STRING_IS_NULL);
 		}
 		path = aString;
 	}
 
-	public QuicktimeMovie copy()
-	{
+	public QuicktimeMovie copy() {
 		return new QuicktimeMovie(this);
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return String.format(FORMAT, path);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context)
-	{
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		length = coder.strlen(path);
-		
-		return (length > 62 ? 6:2) + length;
+
+		return (length > 62 ? 6 : 2) + length;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException
-	{
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		start = coder.getPointer();
 
 		if (length > 62) {

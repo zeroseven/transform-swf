@@ -43,28 +43,26 @@ import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.Color;
-import com.flagstone.transform.linestyle.MorphLineStyle2;
 
-@SuppressWarnings( { 
-	"PMD.LocalVariableCouldBeFinal",
-	"PMD.JUnitAssertionsShouldIncludeMessage" 
-})
+@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
+		"PMD.JUnitAssertionsShouldIncludeMessage" })
 public final class MorphLineStyle2Test {
-	
-	private transient final int startWidth = 1;
-	private transient final Color startColor = new Color(2,3,4,5);
-	private transient final int endWidth = 6;
-	private transient final Color endColor = new Color(7,8,9,10);
-	
-	private transient MorphLineStyle2 fixture;
-	
-	private transient final byte[] encoded = new byte[] { 
-			0x01, 0x00, 0x06, 0x00, 
-			0x02, 0x03, 0x04, 0x05, 0x07, 0x08, 0x09, 0x0A };
 
-	@Test @Ignore
+	private transient final int startWidth = 1;
+	private transient final Color startColor = new Color(2, 3, 4, 5);
+	private transient final int endWidth = 6;
+	private transient final Color endColor = new Color(7, 8, 9, 10);
+
+	private transient MorphLineStyle2 fixture;
+
+	private transient final byte[] encoded = new byte[] { 0x01, 0x00, 0x06,
+			0x00, 0x02, 0x03, 0x04, 0x05, 0x07, 0x08, 0x09, 0x0A };
+
+	@Test
+	@Ignore
 	public void checkCopy() {
-		fixture = new MorphLineStyle2(startWidth, endWidth, startColor, endColor);
+		fixture = new MorphLineStyle2(startWidth, endWidth, startColor,
+				endColor);
 		MorphLineStyle2 copy = fixture.copy();
 
 		assertNotSame(fixture, copy);
@@ -72,29 +70,32 @@ public final class MorphLineStyle2Test {
 		assertSame(fixture.getEndColor(), copy.getEndColor());
 		assertEquals(fixture.toString(), copy.toString());
 	}
-	
-	@Test @Ignore
-	public void encode() throws CoderException {		
-		SWFEncoder encoder = new SWFEncoder(encoded.length);		
+
+	@Test
+	@Ignore
+	public void encode() throws CoderException {
+		SWFEncoder encoder = new SWFEncoder(encoded.length);
 		Context context = new Context();
 		context.getVariables().put(Context.TRANSPARENT, 1);
-		
-		fixture = new MorphLineStyle2(startWidth, endWidth, startColor, endColor);
+
+		fixture = new MorphLineStyle2(startWidth, endWidth, startColor,
+				endColor);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
 		fixture.encode(encoder, context);
-		
+
 		assertTrue(encoder.eof());
 		assertArrayEquals(encoded, encoder.getData());
 	}
 
-	@Test @Ignore
+	@Test
+	@Ignore
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		Context context = new Context();
 		context.getVariables().put(Context.TRANSPARENT, 1);
-		
+
 		fixture = new MorphLineStyle2(decoder, context);
-		
+
 		assertTrue(decoder.eof());
 		assertEquals(startWidth, fixture.getStartWidth());
 		assertEquals(endWidth, fixture.getEndWidth());

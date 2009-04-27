@@ -41,17 +41,16 @@ import com.flagstone.transform.coder.DefineTag;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.coder.SWFFactory;
-import com.flagstone.transform.coder.ShapeDecoder;
 import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.shape.Shape;
 import com.flagstone.transform.shape.ShapeData;
-import com.flagstone.transform.shape.ShapeRecord;
 
 //TODO(doc) Review
 /**
- * <p>DefineFont2 defines the shapes and layout of the glyphs used in a font. It 
- * extends the functionality provided by DefineFont and FontInfo by:</p>
+ * <p>
+ * DefineFont2 defines the shapes and layout of the glyphs used in a font. It
+ * extends the functionality provided by DefineFont and FontInfo by:
+ * </p>
  * 
  * <ul>
  * <li>allowing more than 65535 glyphs in a particular font.</li>
@@ -66,13 +65,12 @@ import com.flagstone.transform.shape.ShapeRecord;
  * @see DefineFont
  */
 @SuppressWarnings("PMD.TooManyMethods")
-public final class DefineFont2 implements DefineTag
-{
-	//TODO(code) Replace with StringBuilder for optional attributes ?
-	private static final String FORMAT = "DefineFont2: { identifier=%d; encoding=%s; "+
-		"small=%s; italic=%s; bold=%s; language=%s; name=%s; shapes=%s; " +
-		"codes=%s; ascent=%d; descent=%d; leading=%d; advances=%s; bounds=%s; kernings=%s }";
-	
+public final class DefineFont2 implements DefineTag {
+	// TODO(code) Replace with StringBuilder for optional attributes ?
+	private static final String FORMAT = "DefineFont2: { identifier=%d; encoding=%s; "
+			+ "small=%s; italic=%s; bold=%s; language=%s; name=%s; shapes=%s; "
+			+ "codes=%s; ascent=%d; descent=%d; leading=%d; advances=%s; bounds=%s; kernings=%s }";
+
 	private int identifier;
 	private CharacterEncoding encoding;
 	private boolean small;
@@ -88,25 +86,25 @@ public final class DefineFont2 implements DefineTag
 	private List<Integer> advances;
 	private List<Bounds> bounds;
 	private List<Kerning> kernings;
-	
+
 	private transient int start;
 	private transient int end;
 	private transient int length;
 	private transient boolean wideOffsets;
 	private transient boolean wideCodes;
 
-	//TODO(doc)
-	//TODO(optimise)
-	public DefineFont2(final SWFDecoder coder, final Context context) throws CoderException
-	{
+	// TODO(doc)
+	// TODO(optimise)
+	public DefineFont2(final SWFDecoder coder, final Context context)
+			throws CoderException {
 		start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
-		
+
 		if (length == 0x3F) {
 			length = coder.readWord(4, false);
 		}
 		end = coder.getPointer() + (length << 3);
-		
+
 		identifier = coder.readWord(2, false);
 
 		shapes = new ArrayList<Shape>();
@@ -115,8 +113,8 @@ public final class DefineFont2 implements DefineTag
 		bounds = new ArrayList<Bounds>();
 		kernings = new ArrayList<Kerning>();
 
-		boolean containsLayout = coder.readBits(1, false) != 0;
-		int format = coder.readBits(3, false);
+		final boolean containsLayout = coder.readBits(1, false) != 0;
+		final int format = coder.readBits(3, false);
 
 		encoding = CharacterEncoding.UCS2;
 
@@ -135,27 +133,26 @@ public final class DefineFont2 implements DefineTag
 		wideOffsets = coder.readBits(1, false) != 0;
 		wideCodes = coder.readBits(1, false) != 0;
 
-		Map<Integer,Integer>vars = context.getVariables();
+		final Map<Integer, Integer> vars = context.getVariables();
 
 		if (wideCodes) {
-			vars.put(Context.WIDE_CODES, 1);			
+			vars.put(Context.WIDE_CODES, 1);
 		}
 
 		italic = coder.readBits(1, false) != 0;
 		bold = coder.readBits(1, false) != 0;
 		language = coder.readBits(8, false);
-		int nameLength = coder.readByte();
+		final int nameLength = coder.readByte();
 		name = coder.readString(nameLength, coder.getEncoding());
 
-		if (name.length() > 0)
-		{
+		if (name.length() > 0) {
 			while (name.charAt(name.length() - 1) == 0) {
 				name = name.substring(0, name.length() - 1);
 			}
 		}
 
-		int glyphCount = coder.readWord(2, false);
-		int offsetStart = coder.getPointer();
+		final int glyphCount = coder.readWord(2, false);
+		final int offsetStart = coder.getPointer();
 		int[] offset = new int[glyphCount + 1];
 
 		for (int i = 0; i < glyphCount; i++) {
@@ -165,13 +162,13 @@ public final class DefineFont2 implements DefineTag
 		offset[glyphCount] = coder.readWord((wideOffsets) ? 4 : 2, false);
 
 		Shape shape;
-		
-		for (int i = 0; i < glyphCount; i++)
-		{
+
+		for (int i = 0; i < glyphCount; i++) {
 			coder.setPointer(offsetStart + (offset[i] << 3));
 
 			shape = new Shape();
-			shape.add(new ShapeData(coder.readBytes(new byte[offset[i + 1] - offset[i]])));
+			shape.add(new ShapeData(coder.readBytes(new byte[offset[i + 1]
+					- offset[i]])));
 			shapes.add(shape);
 		}
 
@@ -179,8 +176,7 @@ public final class DefineFont2 implements DefineTag
 			codes.add(coder.readWord((wideCodes) ? 2 : 1, false));
 		}
 
-		if (containsLayout)
-		{
+		if (containsLayout) {
 			ascent = coder.readWord(2, true);
 			descent = coder.readWord(2, true);
 			leading = coder.readWord(2, true);
@@ -189,19 +185,13 @@ public final class DefineFont2 implements DefineTag
 				advances.add(coder.readWord(2, true));
 			}
 
-			Bounds box;
-			
-			for (int i=0; i<glyphCount; i++) 
-			{
+			for (int i = 0; i < glyphCount; i++) {
 				bounds.add(new Bounds(coder));
 			}
 
-			int kerningCount = coder.readWord(2, false);
+			final int kerningCount = coder.readWord(2, false);
 
-			Kerning kern;
-	
-			for (int i=0; i<kerningCount; i++) 
-			{
+			for (int i = 0; i < kerningCount; i++) {
 				kernings.add(new Kerning(coder, context));
 			}
 		}
@@ -220,8 +210,8 @@ public final class DefineFont2 implements DefineTag
 	 * If none of the remaining attributes are set the Flash Player will load
 	 * the font from the system on which it is running or substitute a suitable
 	 * font if the specified font cannot be found. This is particularly useful
-	 * when defining fonts that will be used to display text in
-	 * DefineTextField objects.
+	 * when defining fonts that will be used to display text in DefineTextField
+	 * objects.
 	 * 
 	 * The font will be defined to use Unicode encoding. The flags which define
 	 * the font's face will be set to false. The arrays of glyphs which define
@@ -234,11 +224,10 @@ public final class DefineFont2 implements DefineTag
 	 * @param name
 	 *            the name of the font.
 	 */
-	public DefineFont2(int uid, String name)
-	{
+	public DefineFont2(final int uid, final String name) {
 		setIdentifier(uid);
 		setName(name);
-		
+
 		shapes = new ArrayList<Shape>();
 		codes = new ArrayList<Integer>();
 		advances = new ArrayList<Integer>();
@@ -246,8 +235,8 @@ public final class DefineFont2 implements DefineTag
 		kernings = new ArrayList<Kerning>();
 	}
 
-	//TODO(doc)
-	public DefineFont2(DefineFont2 object) {
+	// TODO(doc)
+	public DefineFont2(final DefineFont2 object) {
 		identifier = object.identifier;
 		encoding = object.encoding;
 		small = object.small;
@@ -267,18 +256,18 @@ public final class DefineFont2 implements DefineTag
 		bounds = new ArrayList<Bounds>(object.bounds);
 		kernings = new ArrayList<Kerning>(object.kernings);
 	}
-	
+
 	public int getIdentifier() {
 		return identifier;
 	}
 
 	public void setIdentifier(final int uid) {
 		if (uid < 0 || uid > 65535) {
-			throw new IllegalArgumentException(Strings.IDENTIFIER_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
 		}
 		identifier = uid;
 	}
-	
+
 	/**
 	 * Add a character code and the corresponding glyph that will be displayed.
 	 * Character codes should be added to the font in ascending order.
@@ -289,50 +278,47 @@ public final class DefineFont2 implements DefineTag
 	 *            the shape that represents the glyph displayed for the
 	 *            character code.
 	 */
-	public DefineFont2 addGlyph(int code, Shape obj)
-	{
+	public DefineFont2 addGlyph(final int code, final Shape obj) {
 		if (code < 0 || code > 65535) {
-			throw new IllegalArgumentException(Strings.CHARACTER_CODE_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.CHAR_CODE_RANGE);
 		}
 		codes.add(code);
 
 		if (obj == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
 		}
 		shapes.add(obj);
-		
+
 		return this;
 	}
 
 	/**
-	 * Add an advance to the array of advances. The index position of the 
-	 * entry in the advance array is also used to identify the corresponding
-	 * glyph and vice-versa.
+	 * Add an advance to the array of advances. The index position of the entry
+	 * in the advance array is also used to identify the corresponding glyph and
+	 * vice-versa.
 	 * 
 	 * @param anAdvance
 	 *            an advance for a glyph. Must be in the range -32768..32767.
 	 */
-	public DefineFont2 addAdvance(int anAdvance)
-	{
+	public DefineFont2 addAdvance(final int anAdvance) {
 		if (anAdvance < -32768 || anAdvance > 32767) {
-			throw new IllegalArgumentException(Strings.SIGNED_VALUE_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.SIGNED_RANGE);
 		}
 		advances.add(anAdvance);
 		return this;
 	}
 
 	/**
-	 * Add a bounds object to the array of bounds for each glyph. The index 
-	 * position of the entry in the bounds array is also used to identify the 
+	 * Add a bounds object to the array of bounds for each glyph. The index
+	 * position of the entry in the bounds array is also used to identify the
 	 * corresponding glyph and vice-versa.
 	 * 
 	 * @param obj
 	 *            an Bounds. Must not be null.
 	 */
-	public DefineFont2 add(Bounds obj)
-	{
+	public DefineFont2 add(final Bounds obj) {
 		if (obj == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
 		}
 		bounds.add(obj);
 		return this;
@@ -344,10 +330,9 @@ public final class DefineFont2 implements DefineTag
 	 * @param anObject
 	 *            an Kerning. Must not be null.
 	 */
-	public DefineFont2 add(Kerning anObject)
-	{
+	public DefineFont2 add(final Kerning anObject) {
 		if (anObject == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
 		}
 		kernings.add(anObject);
 		return this;
@@ -359,8 +344,7 @@ public final class DefineFont2 implements DefineTag
 	 * 
 	 * @return the encoding used to represent characters rendered in the font.
 	 */
-	public CharacterEncoding getEncoding()
-	{
+	public CharacterEncoding getEncoding() {
 		return encoding;
 	}
 
@@ -371,8 +355,7 @@ public final class DefineFont2 implements DefineTag
 	 * @return a boolean indicating whether the font will be aligned on pixel
 	 *         boundaries.
 	 */
-	public boolean isSmall()
-	{
+	public boolean isSmall() {
 		return small;
 	}
 
@@ -383,8 +366,7 @@ public final class DefineFont2 implements DefineTag
 	 *            a boolean flag indicating the font will be aligned on pixel
 	 *            boundaries.
 	 */
-	public void setSmall(boolean aBool)
-	{
+	public void setSmall(final boolean aBool) {
 		small = aBool;
 	}
 
@@ -395,8 +377,7 @@ public final class DefineFont2 implements DefineTag
 	 * 
 	 * @return a boolean indicating whether the font is rendered in italics.
 	 */
-	public boolean isItalic()
-	{
+	public boolean isItalic() {
 		return italic;
 	}
 
@@ -405,8 +386,7 @@ public final class DefineFont2 implements DefineTag
 	 * 
 	 * @return a boolean indicating whether the font is rendered in a bold face.
 	 */
-	public boolean isBold()
-	{
+	public boolean isBold() {
 		return bold;
 	}
 
@@ -420,8 +400,7 @@ public final class DefineFont2 implements DefineTag
 	 *         into text rendered using the font. Returns 0 if the object was
 	 *         decoded from a movie contains Flash 5 or less.
 	 */
-	public int getLanguage()
-	{
+	public int getLanguage() {
 		return language;
 	}
 
@@ -433,12 +412,11 @@ public final class DefineFont2 implements DefineTag
 	 * Flash 5 movie.
 	 * 
 	 * @param code
-	 *            the code identifying the spoken language either
-	 *            Text.Japanese, Text.Korean, Text.Latin,
-	 *            Text.SimplifiedChinese or Text.TraditionalChinese.
+	 *            the code identifying the spoken language either Text.Japanese,
+	 *            Text.Korean, Text.Latin, Text.SimplifiedChinese or
+	 *            Text.TraditionalChinese.
 	 */
-	public void setLanguage(int code)
-	{
+	public void setLanguage(final int code) {
 		language = code;
 	}
 
@@ -449,18 +427,17 @@ public final class DefineFont2 implements DefineTag
 	 * 
 	 * @return the name of the font.
 	 */
-	public String getName()
-	{
+	public String getName() {
 		return name;
 	}
 
 	/**
-	 * Returns the array of shapes used to define the outlines of each font glyph.
+	 * Returns the array of shapes used to define the outlines of each font
+	 * glyph.
 	 * 
 	 * @return an array of Shape objects
 	 */
-	public List<Shape> getShapes()
-	{
+	public List<Shape> getShapes() {
 		return shapes;
 	}
 
@@ -472,8 +449,7 @@ public final class DefineFont2 implements DefineTag
 	 * @return an array of Integer objects that contain the character codes for
 	 *         each glyph in the font.
 	 */
-	public List<Integer> getCodes()
-	{
+	public List<Integer> getCodes() {
 		return codes;
 	}
 
@@ -482,8 +458,7 @@ public final class DefineFont2 implements DefineTag
 	 * 
 	 * @return the ascent for the font.
 	 */
-	public int getAscent()
-	{
+	public int getAscent() {
 		return ascent;
 	}
 
@@ -492,8 +467,7 @@ public final class DefineFont2 implements DefineTag
 	 * 
 	 * @return the descent for the font.
 	 */
-	public int getDescent()
-	{
+	public int getDescent() {
 		return descent;
 	}
 
@@ -502,8 +476,7 @@ public final class DefineFont2 implements DefineTag
 	 * 
 	 * @return the leading for the font.
 	 */
-	public int getLeading()
-	{
+	public int getLeading() {
 		return leading;
 	}
 
@@ -513,30 +486,28 @@ public final class DefineFont2 implements DefineTag
 	 * @return an array of Integer objects that contain the advance for each
 	 *         glyph in the font.
 	 */
-	public List<Integer> getAdvances()
-	{
+	public List<Integer> getAdvances() {
 		return advances;
 	}
 
 	/**
-	 * Returns the array of bounding rectangles defined for each glyph in the font.
+	 * Returns the array of bounding rectangles defined for each glyph in the
+	 * font.
 	 * 
 	 * @return an array of Bounds objects.
 	 */
-	public List<Bounds> getBounds()
-	{
+	public List<Bounds> getBounds() {
 		return bounds;
 	}
 
 	/**
-	 * Returns the array of kerning records that define the spacing between glyph
-	 * pairs.
+	 * Returns the array of kerning records that define the spacing between
+	 * glyph pairs.
 	 * 
 	 * @return an array of Kerning objects that define the spacing adjustment
 	 *         between pairs of glyphs.
 	 */
-	public List<Kerning> getKernings()
-	{
+	public List<Kerning> getKernings() {
 		return kernings;
 	}
 
@@ -544,11 +515,10 @@ public final class DefineFont2 implements DefineTag
 	 * Sets the encoding for the font character codes.
 	 * 
 	 * @param aType
-	 *            the encoding scheme used to denote characters, either
-	 *            ASCII, SJIS or UCS2.
+	 *            the encoding scheme used to denote characters, either ASCII,
+	 *            SJIS or UCS2.
 	 */
-	public void setEncoding(CharacterEncoding aType)
-	{
+	public void setEncoding(final CharacterEncoding aType) {
 		encoding = aType;
 	}
 
@@ -559,8 +529,7 @@ public final class DefineFont2 implements DefineTag
 	 *            a boolean flag indicating whether the font will be rendered in
 	 *            italics
 	 */
-	public void setItalic(boolean aBool)
-	{
+	public void setItalic(final boolean aBool) {
 		italic = aBool;
 	}
 
@@ -571,8 +540,7 @@ public final class DefineFont2 implements DefineTag
 	 *            a boolean flag indicating whether the font will be rendered in
 	 *            bold face.
 	 */
-	public void setBold(boolean aBool)
-	{
+	public void setBold(final boolean aBool) {
 		bold = aBool;
 	}
 
@@ -583,10 +551,9 @@ public final class DefineFont2 implements DefineTag
 	 *            the name assigned to the font, identifying the font family.
 	 *            Must not be null.
 	 */
-	public void setName(String aString)
-	{
+	public void setName(final String aString) {
 		if (aString == null) {
-			throw new IllegalArgumentException(Strings.STRING_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.STRING_IS_NULL);
 		}
 		name = aString;
 	}
@@ -596,13 +563,12 @@ public final class DefineFont2 implements DefineTag
 	 * used from the font.
 	 * 
 	 * @param anArray
-	 *            an array of Shape objects that define the glyphs for the
-	 *            font. Must not be null.
+	 *            an array of Shape objects that define the glyphs for the font.
+	 *            Must not be null.
 	 */
-	public void setShapes(List<Shape> anArray)
-	{
+	public void setShapes(final List<Shape> anArray) {
 		if (anArray == null) {
-			throw new IllegalArgumentException(Strings.ARRAY_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
 		}
 		shapes = anArray;
 	}
@@ -614,10 +580,9 @@ public final class DefineFont2 implements DefineTag
 	 *            sets the code table that maps a particular glyph to a
 	 *            character code. Must not be null.
 	 */
-	public void setCodes(List<Integer> anArray)
-	{
+	public void setCodes(final List<Integer> anArray) {
 		if (anArray == null) {
-			throw new IllegalArgumentException(Strings.ARRAY_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
 		}
 		codes = anArray;
 	}
@@ -628,11 +593,10 @@ public final class DefineFont2 implements DefineTag
 	 * @param aNumber
 	 *            the ascent for the font in the range -32768..32767.
 	 */
-	public void setAscent(int aNumber)
-	{
+	public void setAscent(final int aNumber) {
 		if (aNumber < -32768 || aNumber > 32767) {
-			throw new IllegalArgumentException(Strings.SIGNED_VALUE_OUT_OF_RANGE);
-		}	
+			throw new IllegalArgumentException(Strings.SIGNED_RANGE);
+		}
 		ascent = aNumber;
 	}
 
@@ -642,10 +606,9 @@ public final class DefineFont2 implements DefineTag
 	 * @param aNumber
 	 *            the descent for the font in the range -32768..32767.
 	 */
-	public void setDescent(int aNumber)
-	{
+	public void setDescent(final int aNumber) {
 		if (aNumber < -32768 || aNumber > 32767) {
-			throw new IllegalArgumentException(Strings.SIGNED_VALUE_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.SIGNED_RANGE);
 		}
 		descent = aNumber;
 	}
@@ -656,10 +619,9 @@ public final class DefineFont2 implements DefineTag
 	 * @param aNumber
 	 *            the descent for the font in the range -32768..32767.
 	 */
-	public void setLeading(int aNumber)
-	{
+	public void setLeading(final int aNumber) {
 		if (aNumber < -32768 || aNumber > 32767) {
-			throw new IllegalArgumentException(Strings.SIGNED_VALUE_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.SIGNED_RANGE);
 		}
 		leading = aNumber;
 	}
@@ -671,10 +633,9 @@ public final class DefineFont2 implements DefineTag
 	 *            of Integer objects that define the spacing between glyphs.
 	 *            Must not be null.
 	 */
-	public void setAdvances(List<Integer> anArray)
-	{
+	public void setAdvances(final List<Integer> anArray) {
 		if (anArray == null) {
-			throw new IllegalArgumentException(Strings.ARRAY_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
 		}
 		advances = anArray;
 	}
@@ -683,14 +644,12 @@ public final class DefineFont2 implements DefineTag
 	 * Sets the array of bounding rectangles for each glyph in the font.
 	 * 
 	 * @param anArray
-	 *            an array of Bounds objects that define the bounding
-	 *            rectangles that enclose each glyph in the font. Must not 
-	 *            be null.
+	 *            an array of Bounds objects that define the bounding rectangles
+	 *            that enclose each glyph in the font. Must not be null.
 	 */
-	public void setBounds(List<Bounds> anArray)
-	{
+	public void setBounds(final List<Bounds> anArray) {
 		if (anArray == null) {
-			throw new IllegalArgumentException(Strings.ARRAY_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
 		}
 		bounds = anArray;
 	}
@@ -699,99 +658,91 @@ public final class DefineFont2 implements DefineTag
 	 * Sets the array of kerning records for pairs of glyphs in the font.
 	 * 
 	 * @param anArray
-	 *            an array of Kerning objects that define an adjustment
-	 *            applied to the spacing between pairs of glyphs. Must not be 
-	 *            null.
+	 *            an array of Kerning objects that define an adjustment applied
+	 *            to the spacing between pairs of glyphs. Must not be null.
 	 */
-	public void setKernings(List<Kerning> anArray)
-	{
+	public void setKernings(final List<Kerning> anArray) {
 		if (anArray == null) {
-			throw new IllegalArgumentException(Strings.ARRAY_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
 		}
 		kernings = anArray;
 	}
 
-	public DefineFont2 copy() 
-	{
+	public DefineFont2 copy() {
 		return new DefineFont2(this);
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return String.format(FORMAT, identifier, encoding, small, italic, bold,
 				language, name, shapes, codes, ascent, descent, leading,
 				advances, bounds, kernings);
 	}
 
-	//TODO(optimise)
-	public int prepareToEncode(final SWFEncoder coder, final Context context)
-	{
+	// TODO(optimise)
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		wideCodes = Context.VERSION > 5 || encoding != CharacterEncoding.ANSI;
 
-		Map<Integer,Integer>vars = context.getVariables();
+		final Map<Integer, Integer> vars = context.getVariables();
 		vars.put(Context.FILL_SIZE, 1);
-		vars.put(Context.LINE_SIZE,vars.containsKey(Context.POSTSCRIPT) ? 1 : 0);
+		vars.put(Context.LINE_SIZE, vars.containsKey(Context.POSTSCRIPT) ? 1
+				: 0);
 
 		if (wideCodes) {
-			vars.put(Context.WIDE_CODES, 1);			
+			vars.put(Context.WIDE_CODES, 1);
 		}
-		
+
 		int glyphLength = 0;
-			
+
 		for (Shape shape : shapes) {
 			glyphLength += shape.prepareToEncode(coder, context);
 		}
 
- 		wideOffsets =  (shapes.size()*2 + glyphLength) > 65535;
-		
+		wideOffsets = (shapes.size() * 2 + glyphLength) > 65535;
+
 		length = 5;
-		length += coder.strlen(name)-1;
+		length += coder.strlen(name) - 1;
 		length += 2;
 		length += shapes.size() * (wideOffsets ? 4 : 2);
 		length += wideOffsets ? 4 : 2;
 		length += glyphLength;
 		length += shapes.size() * (wideCodes ? 2 : 1);
 
-		if (containsLayoutInfo())
-		{
+		if (containsLayoutInfo()) {
 			length += 6;
-			length += advances.size()*2;
+			length += advances.size() * 2;
 
 			for (Bounds bound : bounds) {
 				length += bound.prepareToEncode(coder, context);
 			}
 
 			length += 2;
-			length += kernings.size()*(wideCodes ? 6 : 4);
+			length += kernings.size() * (wideCodes ? 6 : 4);
 		}
 
 		vars.put(Context.FILL_SIZE, 0);
-		vars.put(Context.LINE_SIZE,0);
+		vars.put(Context.LINE_SIZE, 0);
 		vars.remove(Context.WIDE_CODES);
 
-		return (length > 62 ? 6:2) + length;
+		return (length > 62 ? 6 : 2) + length;
 	}
 
-	//TODO(optimise)
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException
-	{
+	// TODO(optimise)
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		int format;
-		Map<Integer,Integer>vars = context.getVariables();
+		final Map<Integer, Integer> vars = context.getVariables();
 
 		if (encoding == CharacterEncoding.ANSI) {
 			format = 1;
-		}
-		else if (small) {
+		} else if (small) {
 			format = 2;
-		}
-		else if (encoding == CharacterEncoding.SJIS) {
+		} else if (encoding == CharacterEncoding.SJIS) {
 			format = 4;
-		}
-		else {
+		} else {
 			format = 0;
 		}
-			
+
 		start = coder.getPointer();
 
 		if (length >= 63) {
@@ -801,23 +752,24 @@ public final class DefineFont2 implements DefineTag
 			coder.writeWord((MovieTypes.DEFINE_FONT_2 << 6) | length, 2);
 		}
 		end = coder.getPointer() + (length << 3);
-		
+
 		coder.writeWord(identifier, 2);
 		vars.put(Context.FILL_SIZE, 1);
-		vars.put(Context.LINE_SIZE,vars.containsKey(Context.POSTSCRIPT) ? 1 : 0);
+		vars.put(Context.LINE_SIZE, vars.containsKey(Context.POSTSCRIPT) ? 1
+				: 0);
 
 		if (wideCodes) {
-			vars.put(Context.WIDE_CODES, 1);			
+			vars.put(Context.WIDE_CODES, 1);
 		}
 
 		coder.writeBits(containsLayoutInfo() ? 1 : 0, 1);
 		coder.writeBits(format, 3);
 		coder.writeBits(wideOffsets ? 1 : 0, 1);
-		coder.writeBits(wideCodes ? 1:0, 1);
+		coder.writeBits(wideCodes ? 1 : 0, 1);
 		coder.writeBits(italic ? 1 : 0, 1);
 		coder.writeBits(bold ? 1 : 0, 1);
 		coder.writeWord(Context.VERSION > 5 ? language : 0, 1);
-		coder.writeWord(coder.strlen(name)-1, 1);
+		coder.writeWord(coder.strlen(name) - 1, 1);
 
 		coder.writeString(name);
 		coder.adjustPointer(-8);
@@ -826,16 +778,15 @@ public final class DefineFont2 implements DefineTag
 		int currentLocation;
 		int offset;
 
-		int tableStart = coder.getPointer();
+		final int tableStart = coder.getPointer();
 		int tableEntry = tableStart;
-		int entrySize = wideOffsets ? 4 : 2;
+		final int entrySize = wideOffsets ? 4 : 2;
 
 		for (int i = 0; i <= shapes.size(); i++) {
 			coder.writeWord(0, entrySize);
 		}
 
-		for (Shape shape : shapes)
-		{
+		for (Shape shape : shapes) {
 			currentLocation = coder.getPointer();
 			offset = (coder.getPointer() - tableStart) >> 3;
 
@@ -858,14 +809,13 @@ public final class DefineFont2 implements DefineTag
 			coder.writeWord(code.intValue(), wideCodes ? 2 : 1);
 		}
 
-		if (containsLayoutInfo())
-		{
+		if (containsLayoutInfo()) {
 			coder.writeWord(ascent, 2);
 			coder.writeWord(descent, 2);
 			coder.writeWord(leading, 2);
 
 			for (Integer advance : advances) {
-				coder.writeWord( advance.intValue(), 2);
+				coder.writeWord(advance.intValue(), 2);
 			}
 
 			for (Bounds bound : bounds) {
@@ -880,7 +830,7 @@ public final class DefineFont2 implements DefineTag
 		}
 
 		vars.put(Context.FILL_SIZE, 0);
-		vars.put(Context.LINE_SIZE,0);
+		vars.put(Context.LINE_SIZE, 0);
 		vars.remove(Context.WIDE_CODES);
 
 		if (coder.getPointer() != end) {
@@ -889,14 +839,10 @@ public final class DefineFont2 implements DefineTag
 		}
 	}
 
-	private boolean containsLayoutInfo()
-	{
-		boolean layout = ascent != 0 ||
-			descent != 0 || 
-			leading != 0 || 
-			!advances.isEmpty() || 
-			!bounds.isEmpty() || 
-			!kernings.isEmpty();
+	private boolean containsLayoutInfo() {
+		final boolean layout = ascent != 0 || descent != 0 || leading != 0
+				|| !advances.isEmpty() || !bounds.isEmpty()
+				|| !kernings.isEmpty();
 
 		return layout;
 	}

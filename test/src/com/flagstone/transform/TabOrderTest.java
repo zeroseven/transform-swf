@@ -36,52 +36,46 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 
-import com.flagstone.transform.TabOrder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-@SuppressWarnings( { 
-	"PMD.LocalVariableCouldBeFinal",
-	"PMD.JUnitAssertionsShouldIncludeMessage" 
-})
+@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
+		"PMD.JUnitAssertionsShouldIncludeMessage" })
 public final class TabOrderTest {
-	
+
 	private transient final int layer = 1;
 	private transient final int index = 2;
-	
+
 	private transient TabOrder fixture;
-	
-	private transient final byte[] empty = new byte[] { (byte)0x84, 0x10, 
-			0x00, 0x00, 0x00, 0x00};
 
-	private transient final byte[] encoded = new byte[] { (byte)0x84, 0x10, 
-			0x01, 0x00, 0x02, 0x00};
-	
-	private transient final byte[] extended = new byte[] { (byte)0xBF, 0x10, 
-			0x04, 0x00, 0x00, 0x00, 0x01, 0x00, 0x02, 0x00};
+	private transient final byte[] encoded = new byte[] { (byte) 0x84, 0x10,
+			0x01, 0x00, 0x02, 0x00 };
 
-	@Test(expected=IllegalArgumentException.class)
+	private transient final byte[] extended = new byte[] { (byte) 0xBF, 0x10,
+			0x04, 0x00, 0x00, 0x00, 0x01, 0x00, 0x02, 0x00 };
+
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForLayerWithLowerBound() {
 		fixture = new TabOrder(0, index);
 	}
 
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForLayerWithUpperBound() {
 		fixture = new TabOrder(65536, index);
 	}
-	
-	@Test(expected=IllegalArgumentException.class)
+
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForIndexWithLowerBound() {
 		fixture = new TabOrder(layer, -1);
 	}
 
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForIndexWithUpperBound() {
 		fixture = new TabOrder(layer, 65536);
 	}
-	
+
 	@Test
 	public void checkCopy() {
 		fixture = new TabOrder(layer, index);
@@ -92,39 +86,37 @@ public final class TabOrderTest {
 		assertEquals(fixture.getIndex(), copy.getIndex());
 		assertEquals(fixture.toString(), copy.toString());
 	}
-	
+
 	@Test
-	public void encode() throws CoderException {		
-		SWFEncoder encoder = new SWFEncoder(encoded.length);		
+	public void encode() throws CoderException {
+		SWFEncoder encoder = new SWFEncoder(encoded.length);
 		Context context = new Context();
 
 		fixture = new TabOrder(layer, index);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
 		fixture.encode(encoder, context);
-		
+
 		assertTrue(encoder.eof());
 		assertArrayEquals(encoded, encoder.getData());
 	}
-	
+
 	@Test
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
-		Context context = new Context();
 
-		fixture = new TabOrder(decoder, context);
-		
+		fixture = new TabOrder(decoder);
+
 		assertTrue(decoder.eof());
 		assertEquals(layer, fixture.getLayer());
 		assertEquals(index, fixture.getIndex());
 	}
-	
+
 	@Test
 	public void decodeExtended() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(extended);
-		Context context = new Context();
 
-		fixture = new TabOrder(decoder, context);
-		
+		fixture = new TabOrder(decoder);
+
 		assertTrue(decoder.eof());
 		assertEquals(layer, fixture.getLayer());
 		assertEquals(index, fixture.getIndex());

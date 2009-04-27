@@ -83,10 +83,10 @@ public final class TextSettings implements MovieTag {
 
 	private static final String FORMAT = "TextSettings: { identifier=%d, useAdvanced=%s, grid=%s, thickness=%f, sharpness=%f }";
 
-	private int identifier;
-	private int rendering;
-	private int thickness;
-	private int sharpness;
+	private transient int identifier;
+	private transient int rendering;
+	private transient int thickness;
+	private transient int sharpness;
 
 	/**
 	 * Creates and initialises an TextSettings using values encoded in the Flash
@@ -102,8 +102,7 @@ public final class TextSettings implements MovieTag {
 	 * @throws CoderException
 	 *             if an error occurs while decoding the data.
 	 */
-	public TextSettings(final SWFDecoder coder, final Context context)
-			throws CoderException {
+	public TextSettings(final SWFDecoder coder) throws CoderException {
 		if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
 			coder.readWord(4, false);
 		}
@@ -130,8 +129,8 @@ public final class TextSettings implements MovieTag {
 	 * @param sharpness
 	 *            the sharpness used when anti-aliasing the text.
 	 */
-	public TextSettings(int uid, boolean advanced, Grid grid, float thickness,
-			float sharpness) {
+	public TextSettings(final int uid, final boolean advanced, final Grid grid,
+			final float thickness, final float sharpness) {
 		setIdentifier(uid);
 		useAdvanced(advanced);
 		setGrid(grid);
@@ -146,7 +145,7 @@ public final class TextSettings implements MovieTag {
 	 * @param object
 	 *            a TextSettings object.
 	 */
-	public TextSettings(TextSettings object) {
+	public TextSettings(final TextSettings object) {
 		identifier = object.identifier;
 		rendering = object.rendering;
 		thickness = object.thickness;
@@ -168,9 +167,9 @@ public final class TextSettings implements MovieTag {
 	 *            the unique identifier of an DefineText, DefineText2 or
 	 *            DefineTextField object. Must be in the range 1..65535.
 	 */
-	public void setIdentifier(int uid) {
+	public void setIdentifier(final int uid) {
 		if (uid < 1 || uid > 65535) {
-			throw new IllegalArgumentException(Strings.IDENTIFIER_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
 		}
 		identifier = uid;
 	}
@@ -187,7 +186,7 @@ public final class TextSettings implements MovieTag {
 	 * Sets whether the advanced text rendering engine (true) or standard engine
 	 * (false) will be used to render the text.
 	 */
-	public void useAdvanced(boolean flag) {
+	public void useAdvanced(final boolean flag) {
 		rendering |= 0x40;
 	}
 
@@ -221,7 +220,7 @@ public final class TextSettings implements MovieTag {
 	 *            the alignment with respect to the pixel grid, either NONE,
 	 *            PIXEL or SUBPIXEL.
 	 */
-	public void setGrid(Grid alignment) {
+	public void setGrid(final Grid alignment) {
 
 		rendering &= 0xC0;
 
@@ -253,7 +252,7 @@ public final class TextSettings implements MovieTag {
 	 *            the value of the thickness parameter used by the rendering
 	 *            engine.
 	 */
-	public void setThickness(float thickness) {
+	public void setThickness(final float thickness) {
 		this.thickness = (int) (thickness * 65536);
 	}
 
@@ -273,7 +272,7 @@ public final class TextSettings implements MovieTag {
 	 *            the value of the sharpness parameter used by the rendering
 	 *            engine.
 	 */
-	public void setSharpness(float sharpness) {
+	public void setSharpness(final float sharpness) {
 		this.sharpness = (int) (sharpness * 65536);
 	}
 

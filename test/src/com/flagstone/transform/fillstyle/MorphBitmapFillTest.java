@@ -36,51 +36,44 @@ import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.CoordTransform;
-import com.flagstone.transform.fillstyle.MorphBitmapFill;
 
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 
-@SuppressWarnings( {
-	"PMD.LocalVariableCouldBeFinal",
-	"PMD.JUnitAssertionsShouldIncludeMessage" })
+@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
+		"PMD.JUnitAssertionsShouldIncludeMessage" })
 public final class MorphBitmapFillTest {
-	
+
 	private transient final boolean tiled = false;
 	private transient final boolean smoothed = false;
 	private transient final int identifier = 1;
-	private transient final CoordTransform start = 
-		CoordTransform.translate(1,2);
-	private transient final CoordTransform end = 
-		CoordTransform.translate(1,2);
+	private transient final CoordTransform start = CoordTransform.translate(1,
+			2);
+	private transient final CoordTransform end = CoordTransform.translate(1, 2);
 
 	private transient MorphBitmapFill fixture;
 
-	private transient final byte[] empty = new byte[] { 0x43,
-			0x00, 0x00, 0x00, 0x00 };
-	
-	private transient final byte[] encoded = new byte[] { 0x43,
-			0x01, 0x00, 0x06, 0x50, 0x06, 0x50 };
-	
-	@Test(expected=IllegalArgumentException.class)
+	private transient final byte[] encoded = new byte[] { 0x43, 0x01, 0x00,
+			0x06, 0x50, 0x06, 0x50 };
+
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForIdentifierWithLowerBound() {
 		fixture = new MorphBitmapFill(tiled, smoothed, 0, start, end);
 	}
 
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForIdentifierWithUpperBound() {
 		fixture = new MorphBitmapFill(tiled, smoothed, 65536, start, end);
 	}
-	
-	@Test(expected=IllegalArgumentException.class)
+
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForStartTransformWithNull() {
 		fixture = new MorphBitmapFill(tiled, smoothed, 1, null, end);
 	}
-	
-	@Test(expected=IllegalArgumentException.class)
+
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForEndTransformWithNull() {
 		fixture = new MorphBitmapFill(tiled, smoothed, 1, start, null);
 	}
@@ -89,11 +82,12 @@ public final class MorphBitmapFillTest {
 	public void checkCopy() {
 		fixture = new MorphBitmapFill(tiled, smoothed, identifier, start, end);
 		assertEquals(fixture.getIdentifier(), fixture.copy().getIdentifier());
-		assertSame(fixture.getStartTransform(), fixture.copy().getStartTransform());
+		assertSame(fixture.getStartTransform(), fixture.copy()
+				.getStartTransform());
 		assertSame(fixture.getEndTransform(), fixture.copy().getEndTransform());
 		assertEquals(fixture.toString(), fixture.toString());
 	}
-	
+
 	@Test
 	public void encode() throws CoderException {
 
@@ -101,9 +95,9 @@ public final class MorphBitmapFillTest {
 		Context context = new Context();
 
 		fixture = new MorphBitmapFill(tiled, smoothed, identifier, start, end);
-		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));		
+		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
 		fixture.encode(encoder, context);
-		
+
 		assertTrue(encoder.eof());
 		assertArrayEquals(encoded, encoder.getData());
 	}
@@ -112,15 +106,18 @@ public final class MorphBitmapFillTest {
 	public void decode() throws CoderException {
 
 		SWFDecoder decoder = new SWFDecoder(encoded);
-		Context context = new Context();
 
-		fixture = new MorphBitmapFill(decoder, context);
-		
+		fixture = new MorphBitmapFill(decoder);
+
 		assertTrue(decoder.eof());
 		assertEquals(identifier, fixture.getIdentifier());
-		assertEquals(start.getTranslateX(), fixture.getStartTransform().getTranslateX());
-		assertEquals(start.getTranslateY(), fixture.getStartTransform().getTranslateY());
-		assertEquals(end.getTranslateX(), fixture.getEndTransform().getTranslateX());
-		assertEquals(end.getTranslateY(), fixture.getEndTransform().getTranslateY());
+		assertEquals(start.getTranslateX(), fixture.getStartTransform()
+				.getTranslateX());
+		assertEquals(start.getTranslateY(), fixture.getStartTransform()
+				.getTranslateY());
+		assertEquals(end.getTranslateX(), fixture.getEndTransform()
+				.getTranslateX());
+		assertEquals(end.getTranslateY(), fixture.getEndTransform()
+				.getTranslateY());
 	}
 }

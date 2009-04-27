@@ -41,39 +41,35 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
 /**
- * Export is used to export one or more shapes and other objects so they can be 
+ * Export is used to export one or more shapes and other objects so they can be
  * used in another Flash file.
  * 
- * <p>Since the identifier for an object is only unique within a given Flash file,
+ * <p>
+ * Since the identifier for an object is only unique within a given Flash file,
  * each object exported must be given a name so it can referenced when it is
- * imported.</p>
+ * imported.
+ * </p>
  */
-public final class Export implements MovieTag
-{
+public final class Export implements MovieTag {
 	private static final String FORMAT = "Export: { objects=%s }";
-	
-	private Map<Integer,String> objects;
-	
+
+	private Map<Integer, String> objects;
+
 	private transient int length;
 
-	//TODO(doc)
-	public Export(final SWFDecoder coder, final Context context) throws CoderException
-	{
+	// TODO(doc)
+	public Export(final SWFDecoder coder) throws CoderException {
 		length = coder.readWord(2, false) & 0x3F;
-		
+
 		if (length == 0x3F) {
 			length = coder.readWord(4, false);
 		}
 
-		int count = coder.readWord(2, false);
-		objects = new LinkedHashMap<Integer,String>();
+		final int count = coder.readWord(2, false);
+		objects = new LinkedHashMap<Integer, String>();
 
-		for (int i = 0; i < count; i++)
-		{
-			int identifier = coder.readWord(2, false);
-			String var = coder.readString();
-
-			add(identifier, var);
+		for (int i = 0; i < count; i++) {
+			add(coder.readWord(2, false), coder.readString());
 		}
 	}
 
@@ -81,11 +77,10 @@ public final class Export implements MovieTag
 	 * Creates an Export object with an empty array.
 	 * 
 	 * @param map
-	 *            the table containing identifier/name pairs for the objects 
+	 *            the table containing identifier/name pairs for the objects
 	 *            that will be exported from the movie.
 	 */
-	public Export(Map<Integer,String> map)
-	{
+	public Export(final Map<Integer, String> map) {
 		objects = map;
 	}
 
@@ -95,21 +90,20 @@ public final class Export implements MovieTag
 	 * it to be referenced in files importing the object.
 	 * 
 	 * @param uid
-	 *            the identifier of the object to be exported. Must be in the 
+	 *            the identifier of the object to be exported. Must be in the
 	 *            range 1..65535.
 	 * @param aString
 	 *            the name of the exported object to allow it to be referenced.
 	 *            Must not be an empty string or null.
 	 */
-	public Export(int uid, String aString)
-	{
-		objects = new LinkedHashMap<Integer,String>();
+	public Export(final int uid, final String aString) {
+		objects = new LinkedHashMap<Integer, String>();
 		add(uid, aString);
 	}
-	
-	//TODO(doc)
-	public Export(Export object) {
-		objects = new LinkedHashMap<Integer,String>(object.objects.size());
+
+	// TODO(doc)
+	public Export(final Export object) {
+		objects = new LinkedHashMap<Integer, String>(object.objects.size());
 		objects.putAll(object.objects);
 	}
 
@@ -122,23 +116,21 @@ public final class Export implements MovieTag
 	 *            the name of the exported object to allow it to be referenced.
 	 *            The name must not be null or an empty string.
 	 */
-	public final void add(int uid, String aString)
-	{
+	public void add(final int uid, final String aString) {
 		if (uid < 1 || uid > 65535) {
-			throw new IllegalArgumentException(Strings.IDENTIFIER_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
 		}
 		if (aString == null || aString.length() == 0) {
 			throw new IllegalArgumentException(Strings.STRING_NOT_SET);
 		}
-			
+
 		objects.put(uid, aString);
 	}
 
 	/**
 	 * Returns the table of objects to be exported.
 	 */
-	public Map<Integer,String> getObjects()
-	{
+	public Map<Integer, String> getObjects() {
 		return objects;
 	}
 
@@ -148,79 +140,48 @@ public final class Export implements MovieTag
 	 * @param aTable
 	 *            the table of objects being imported. Must not be null.
 	 */
-	public void setObjects(Map<Integer,String> aTable)
-	{
+	public void setObjects(final Map<Integer, String> aTable) {
 		if (aTable == null) {
-			throw new IllegalArgumentException(Strings.TABLE_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.TABLE_IS_NULL);
 		}
 		objects = aTable;
 	}
 
-
 	/**
 	 * Creates and returns a deep copy of this object.
 	 */
-	public Export copy() 
-	{
+	public Export copy() {
 		return new Export(this);
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return String.format(FORMAT, objects);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context)
-	{
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		length = 2;
 
-		for (Integer identifier : objects.keySet())
-		{
-			String var = (objects.get(identifier));
-
-			length += 2;
-			length += coder.strlen(var);
+		for (Integer identifier : objects.keySet()) {
+			length += 2 + coder.strlen(objects.get(identifier));
 		}
-		return (length > 62 ? 6:2) + length;
+		return (length > 62 ? 6 : 2) + length;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException
-	{
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		if (length > 62) {
 			coder.writeWord((MovieTypes.EXPORT << 6) | 0x3F, 2);
 			coder.writeWord(length, 4);
 		} else {
 			coder.writeWord((MovieTypes.EXPORT << 6) | length, 2);
 		}
-		
+
 		coder.writeWord(objects.size(), 2);
 
-		for (Integer identifier : objects.keySet())
-		{
-			String var = (objects.get(identifier));
-
+		for (Integer identifier : objects.keySet()) {
 			coder.writeWord(identifier.intValue(), 2);
-			coder.writeString(var);
-		}
-	}
-
-	public void decode(final SWFDecoder coder, final Context context) throws CoderException
-	{
-		length = coder.readWord(2, false) & 0x3F;
-		
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
-
-		int count = coder.readWord(2, false);
-
-		for (int i = 0; i < count; i++)
-		{
-			int identifier = coder.readWord(2, false);
-			String var = coder.readString();
-
-			add(identifier, var);
+			coder.writeString(objects.get(identifier));
 		}
 	}
 }

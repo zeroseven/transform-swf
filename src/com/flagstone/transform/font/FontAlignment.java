@@ -50,7 +50,7 @@ public final class FontAlignment implements MovieTag {
 	private static final String FORMAT = "FontAlignment: { identifier=%d; strokeWidth=%s; zones=%s }";
 
 	private int identifier;
-	private int hints;
+	private transient int hints;
 	private List<GlyphAlignment> zones;
 
 	private transient int start;
@@ -73,7 +73,7 @@ public final class FontAlignment implements MovieTag {
 		zones = new ArrayList<GlyphAlignment>();
 
 		while (coder.getPointer() < end) {
-			zones.add(new GlyphAlignment(coder, context));
+			zones.add(new GlyphAlignment(coder));
 		}
 
 		if (coder.getPointer() != end) {
@@ -82,13 +82,14 @@ public final class FontAlignment implements MovieTag {
 		}
 	}
 
-	public FontAlignment(int uid, StrokeWidth stroke, List<GlyphAlignment>list) {
+	public FontAlignment(final int uid, final StrokeWidth stroke,
+			final List<GlyphAlignment> list) {
 		setIdentifier(uid);
 		setStrokeWidth(stroke);
-		setAlignmentZones(list);
+		setZones(list);
 	}
 
-	public FontAlignment(FontAlignment object) {
+	public FontAlignment(final FontAlignment object) {
 		identifier = object.identifier;
 		hints = object.hints;
 		zones = new ArrayList<GlyphAlignment>(object.zones);
@@ -109,9 +110,9 @@ public final class FontAlignment implements MovieTag {
 	 *            the unique identifier of the DefineFont that contains the
 	 *            glyphs for the font. Must be in the range 1..65535.
 	 */
-	public void setIdentifier(int uid) {
+	public void setIdentifier(final int uid) {
 		if (uid < 1 || uid > 65535) {
-			throw new IllegalArgumentException(Strings.IDENTIFIER_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
 		}
 		identifier = uid;
 	}
@@ -132,7 +133,7 @@ public final class FontAlignment implements MovieTag {
 		return stroke;
 	}
 
-	public void setStrokeWidth(StrokeWidth stroke) {
+	public void setStrokeWidth(final StrokeWidth stroke) {
 		switch (stroke) {
 		case MEDIUM:
 			hints = 0x80;
@@ -146,20 +147,20 @@ public final class FontAlignment implements MovieTag {
 		}
 	}
 
-	public List<GlyphAlignment> getAlignmentZones() {
+	public List<GlyphAlignment> getZones() {
 		return zones;
 	}
 
-	public void setAlignmentZones(List<GlyphAlignment> array) {
+	public void setZones(final List<GlyphAlignment> array) {
 		if (array == null) {
-			throw new IllegalArgumentException(Strings.ARRAY_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
 		}
 		zones = array;
 	}
 
-	public FontAlignment addZone(GlyphAlignment zone) {
+	public FontAlignment addZone(final GlyphAlignment zone) {
 		if (zone == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
 		}
 		zones.add(zone);
 		return this;

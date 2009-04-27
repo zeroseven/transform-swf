@@ -44,40 +44,49 @@ import com.flagstone.transform.coder.DefineTag;
 import com.flagstone.transform.coder.MovieTag;
 
 /**
- * <p>The Frame class is used to provide a higher level view of a movie. Rather
+ * <p>
+ * The Frame class is used to provide a higher level view of a movie. Rather
  * than viewing movies as a sequence of individual objects each representing a
  * given data structure in the encoded Flash file, objects can be grouped
  * together in frames which presents a more logical view of a movie and makes
- * movie manipulation and search for specific objects easier to handle.</p>
+ * movie manipulation and search for specific objects easier to handle.
+ * </p>
  * 
- * <p>Each Frame object has the following attributes:<br/>
+ * <p>
+ * Each Frame object has the following attributes:<br/>
  * 
- * <em>number</em> - The position in the movie when the frame will be displayed.<br/>
+ * <em>number</em> - The position in the movie when the frame will be displayed.
+ * <br/>
  * 
- * <em>label</em> - An optional name assigned to a frame. The GotoFrame2 object can be
- * used to move to a named frame when playing a movie or movie clip.<br/>
+ * <em>label</em> - An optional name assigned to a frame. The GotoFrame2 object
+ * can be used to move to a named frame when playing a movie or movie clip.<br/>
  * 
- * <em>definitions</em> - An array containing objects that define items for display in a
- * movie. Definitions are sub-classes of the Definition class and define
- * shapes, fonts, images and sounds that are displayed or played by the Flash
- * Player.<br/>
+ * <em>definitions</em> - An array containing objects that define items for
+ * display in a movie. Definitions are sub-classes of the Definition class and
+ * define shapes, fonts, images and sounds that are displayed or played by the
+ * Flash Player.<br/>
  * 
- * <em>commands</em> - An array containing objects that define commands that affect the
- * display list or the Flash Player directly.<br/>
+ * <em>commands</em> - An array containing objects that define commands that
+ * affect the display list or the Flash Player directly.<br/>
  * 
- * <em>actions</em> - An array that define actions that are executed when a frame is
- * displayed.</p>
+ * <em>actions</em> - An array that define actions that are executed when a
+ * frame is displayed.
+ * </p>
  * 
- * <p>Frame objects simplify the handling of movies. DoAction, FrameLabel and
+ * <p>
+ * Frame objects simplify the handling of movies. DoAction, FrameLabel and
  * ShowFrame classes can now "hidden" from view. They are generated
- * automatically by the Frame object when it is added to an Movie object.</p>
+ * automatically by the Frame object when it is added to an Movie object.
+ * </p>
  * 
- * <p>The framesFromMovie(Movie aMovie) method allows an existing movie to be
+ * <p>
+ * The framesFromMovie(Movie aMovie) method allows an existing movie to be
  * viewed as an array of Frame objects. Objects from the movie are copied into
  * each frame so changes made to the attributes of each object are reflected in
  * the movie. The frame objects are not synchronised with the movie, so any
  * objects added to a frame are not added to the Movie. The easiest way to do
- * this is to remove the existing objects from the movie and add all the frames.</p>
+ * this is to remove the existing objects from the movie and add all the frames.
+ * </p>
  * 
  * <pre>
  * ArrayList frames = Frame.framesFromMovie(aMovie); 
@@ -89,16 +98,16 @@ import com.flagstone.transform.coder.MovieTag;
  *     ((Frame)i.next()).addToMovie(aMovie);
  * }
  *</pre>
- *
- * <p>When the contents of an Frame object is added to a movie if a label defined
+ * 
+ * <p>
+ * When the contents of an Frame object is added to a movie if a label defined
  * then an FrameLabel object will be added. Similarly if actions are defined
- * then an DoAction object will be added. An ShowFrame object which
- * instructs the Flash Player to update the display list with all the changes is
- * added.</p>
+ * then an DoAction object will be added. An ShowFrame object which instructs
+ * the Flash Player to update the display list with all the changes is added.
+ * </p>
  * 
  */
-public final class Frame
-{
+public final class Frame {
 	/**
 	 * Create a frame based view of a movie. Objects from the movie are grouped
 	 * into Frame objects. Objects from the movie are added to the frame so any
@@ -109,33 +118,23 @@ public final class Frame
 	 *            an Movie object.
 	 * @return an array of Frame objects.
 	 */
-	public static List<Frame> framesFromMovie(Movie aMovie) throws CoderException
-	{
-		ArrayList<Frame> frames = new ArrayList<Frame>();
+	public static List<Frame> framesFromMovie(final Movie aMovie)
+			throws CoderException {
+		final ArrayList<Frame> frames = new ArrayList<Frame>();
 
 		Frame currentFrame = new Frame();
 
-		for (MovieTag currentObject : aMovie.getObjects())
-		{
-			if (currentObject instanceof DoAction)
-			{
+		for (MovieTag currentObject : aMovie.getObjects()) {
+			if (currentObject instanceof DoAction) {
 				currentFrame.actions = ((DoAction) currentObject).getActions();
-			} 
-			else if (currentObject instanceof FrameLabel)
-			{
+			} else if (currentObject instanceof FrameLabel) {
 				currentFrame.label = ((FrameLabel) currentObject).getLabel();
-			} 
-			else if (currentObject instanceof DefineTag)
-			{
+			} else if (currentObject instanceof DefineTag) {
 				currentFrame.addDefinition(currentObject);
-			} 
-			else if (currentObject instanceof ShowFrame)
-			{
+			} else if (currentObject instanceof ShowFrame) {
 				frames.add(currentFrame);
 				currentFrame = new Frame();
-			} 
-			else
-			{
+			} else {
 				currentFrame.addCommand(currentObject);
 			}
 		}
@@ -148,11 +147,10 @@ public final class Frame
 	private List<Action> actions;
 
 	/**
-	 * Creates a empty frame with no label defined and the definitions,
-	 * commands and actions arrays empty.
+	 * Creates a empty frame with no label defined and the definitions, commands
+	 * and actions arrays empty.
 	 */
-	public Frame()
-	{
+	public Frame() {
 		label = "";
 		definitions = new ArrayList<MovieTag>();
 		commands = new ArrayList<MovieTag>();
@@ -165,12 +163,11 @@ public final class Frame
 	 * @param anObject
 	 *            the action object to be added to the frame. Must not be null.
 	 */
-	public void addAction(Action anObject)
-	{
+	public void addAction(final Action anObject) {
 		if (anObject == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
 		}
-		
+
 		actions.add(anObject);
 	}
 
@@ -181,10 +178,9 @@ public final class Frame
 	 * @param anObject
 	 *            a sub-class of Definition. Must not be null.
 	 */
-	public void addDefinition(MovieTag anObject)
-	{
+	public void addDefinition(final MovieTag anObject) {
 		if (anObject == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
 		}
 
 		definitions.add(anObject);
@@ -194,14 +190,14 @@ public final class Frame
 	 * Adds the display list command to the frame.
 	 * 
 	 * @param anObject
-	 *            an MovieTag the manipulates the display list. Must not be null.
+	 *            an MovieTag the manipulates the display list. Must not be
+	 *            null.
 	 */
-	public void addCommand(MovieTag anObject)
-	{
+	public void addCommand(final MovieTag anObject) {
 		if (anObject == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
 		}
-		
+
 		commands.add(anObject);
 	}
 
@@ -210,8 +206,7 @@ public final class Frame
 	 * 
 	 * @return the label. The string will be empty if no label is defined.
 	 */
-	public String getLabel()
-	{
+	public String getLabel() {
 		return label;
 	}
 
@@ -220,8 +215,7 @@ public final class Frame
 	 * 
 	 * @return the array of definitions.
 	 */
-	public List<MovieTag> getDefinitions()
-	{
+	public List<MovieTag> getDefinitions() {
 		return definitions;
 	}
 
@@ -230,19 +224,17 @@ public final class Frame
 	 * 
 	 * @return the array of commands objects.
 	 */
-	public List<MovieTag> getCommands()
-	{
+	public List<MovieTag> getCommands() {
 		return commands;
 	}
 
 	/**
-	 * Returns the array of action objects that will be execute when the frame is
-	 * displayed.
+	 * Returns the array of action objects that will be execute when the frame
+	 * is displayed.
 	 * 
 	 * @return the array of actions defined for the frame.
 	 */
-	public List<Action> getActions()
-	{
+	public List<Action> getActions() {
 		return actions;
 	}
 
@@ -252,8 +244,7 @@ public final class Frame
 	 * @param aString
 	 *            the label.
 	 */
-	public void setLabel(String aString)
-	{
+	public void setLabel(final String aString) {
 		label = aString;
 	}
 
@@ -263,10 +254,9 @@ public final class Frame
 	 * @param anArray
 	 *            the array of actions. Must not be null.
 	 */
-	public void setDefinitions(List<MovieTag> anArray)
-	{
+	public void setDefinitions(final List<MovieTag> anArray) {
 		if (anArray == null) {
-			throw new IllegalArgumentException(Strings.ARRAY_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
 		}
 		definitions = anArray;
 	}
@@ -278,10 +268,9 @@ public final class Frame
 	 * @param anArray
 	 *            the array of command objects. Must not be null.
 	 */
-	public void setCommands(List<MovieTag> anArray)
-	{
+	public void setCommands(final List<MovieTag> anArray) {
 		if (anArray == null) {
-			throw new IllegalArgumentException(Strings.ARRAY_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
 		}
 		commands = anArray;
 	}
@@ -292,10 +281,9 @@ public final class Frame
 	 * @param anArray
 	 *            the array of actions. Must not be null.
 	 */
-	public void setActions(List<Action> anArray)
-	{
+	public void setActions(final List<Action> anArray) {
 		if (anArray == null) {
-			throw new IllegalArgumentException(Strings.ARRAY_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
 		}
 		actions = anArray;
 	}
@@ -303,17 +291,15 @@ public final class Frame
 	/**
 	 * Add the objects in the frame to the movie. The contents of the
 	 * definitions and commands arrays are added to the movie. If a label is
-	 * assigned to the frame then an FrameLabel object is added to the movie.
-	 * If actions are defined then an DoAction object is added containing the
+	 * assigned to the frame then an FrameLabel object is added to the movie. If
+	 * actions are defined then an DoAction object is added containing the
 	 * actions defined in the frame.
 	 * 
 	 * @param aMovie
 	 *            an Movie object. Must not be null.
 	 */
-	public void addToMovie(Movie aMovie)
-	{
-		if (!definitions.isEmpty())
-		{
+	public void addToMovie(final Movie aMovie) {
+		if (!definitions.isEmpty()) {
 			for (MovieTag object : definitions) {
 				aMovie.add(object);
 			}

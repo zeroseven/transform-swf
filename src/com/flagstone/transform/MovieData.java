@@ -35,7 +35,6 @@ import java.util.Arrays;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTag;
-import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
 /**
@@ -49,12 +48,12 @@ import com.flagstone.transform.coder.SWFEncoder;
  * </p>
  */
 public final class MovieData implements MovieTag {
-	
+
 	private static final String FORMAT = "MovieData: { data[%d] }";
 
-	private final byte[] data;
-	
-	//TODO(doc)
+	private final transient byte[] data;
+
+	// TODO(doc)
 	public MovieData(final byte[] bytes) {
 		if (bytes == null || bytes.length == 0) {
 			throw new IllegalArgumentException(Strings.DATA_NOT_SET);
@@ -62,7 +61,7 @@ public final class MovieData implements MovieTag {
 		data = bytes;
 	}
 
-	//TODO(doc)
+	// TODO(doc)
 	public MovieData(final MovieData object) {
 		data = Arrays.copyOf(object.data, object.data.length);
 	}
@@ -87,7 +86,8 @@ public final class MovieData implements MovieTag {
 		return data.length;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException {
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		coder.writeBytes(data);
 	}
 }

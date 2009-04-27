@@ -19,23 +19,12 @@ import com.flagstone.transform.movieclip.AllMovieClipTests;
 import com.flagstone.transform.video.AllVideoDataTests;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({
-	AllMovieTests.class,
-	AllActionTests.class,
-	AllButtonTests.class,
-	AllCoderTests.class,
-	AllDataTypeTests.class,
-	AllFillStyleTests.class,
-	AllFilterTests.class,
-	AllFontTests.class,
-	AllImageTests.class,
-	AllLineStyleTests.class,
-	AllMovieClipTests.class,
-	AllShapeTests.class,
-	AllSoundTests.class,
-	AllTextTests.class,
-	AllVideoTests.class,
-	AllVideoDataTests.class,
-        })
+@Suite.SuiteClasses( { AllMovieTests.class, AllActionTests.class,
+		AllButtonTests.class, AllCoderTests.class, AllDataTypeTests.class,
+		AllFillStyleTests.class, AllFilterTests.class, AllFontTests.class,
+		AllImageTests.class, AllLineStyleTests.class, AllMovieClipTests.class,
+		AllShapeTests.class, AllSoundTests.class, AllTextTests.class,
+		AllVideoTests.class, AllVideoDataTests.class, })
+@SuppressWarnings("PMD.AtLeastOneConstructor")
 public final class AllUnitTests {
 }

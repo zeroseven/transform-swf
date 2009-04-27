@@ -57,9 +57,9 @@ import com.flagstone.transform.datatype.ColorTransform;
  * @see DefineButton2
  */
 public final class ButtonColorTransform implements MovieTag {
-	
+
 	private static final String FORMAT = "ButtonColorTransform: { identifier=%d; colorTransform=%s }";
-	
+
 	private int identifier;
 	private ColorTransform colorTransform;
 
@@ -67,8 +67,9 @@ public final class ButtonColorTransform implements MovieTag {
 	private transient int end;
 	private transient int length;
 
-	//TODO(doc)
-	public ButtonColorTransform(final SWFDecoder coder, final Context context) throws CoderException {
+	// TODO(doc)
+	public ButtonColorTransform(final SWFDecoder coder, final Context context)
+			throws CoderException {
 
 		start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
@@ -97,13 +98,13 @@ public final class ButtonColorTransform implements MovieTag {
 	 * @param transform
 	 *            an ColorTransform object that will be applied to the button.
 	 */
-	public ButtonColorTransform(int uid, ColorTransform transform) {
+	public ButtonColorTransform(final int uid, final ColorTransform transform) {
 		setIdentifier(uid);
 		setColorTransform(transform);
 	}
 
-	//TODO(doc)
-	public ButtonColorTransform(ButtonColorTransform object) {
+	// TODO(doc)
+	public ButtonColorTransform(final ButtonColorTransform object) {
 		identifier = object.identifier;
 		colorTransform = object.colorTransform;
 	}
@@ -129,9 +130,9 @@ public final class ButtonColorTransform implements MovieTag {
 	 *            the unique identifier of the button that the colour transform
 	 *            will be applied to. Must be in the range 1..65535.
 	 */
-	public void setIdentifier(int uid) {
+	public void setIdentifier(final int uid) {
 		if (uid < 1 || uid > 65535) {
-			throw new IllegalArgumentException(Strings.IDENTIFIER_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
 		}
 		identifier = uid;
 	}
@@ -142,9 +143,9 @@ public final class ButtonColorTransform implements MovieTag {
 	 * @param transform
 	 *            the colour transform object. Must not be null.
 	 */
-	public void setColorTransform(ColorTransform transform) {
+	public void setColorTransform(final ColorTransform transform) {
 		if (transform == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
 		}
 		colorTransform = transform;
 	}
@@ -161,10 +162,11 @@ public final class ButtonColorTransform implements MovieTag {
 	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		length = 4 + colorTransform.prepareToEncode(coder, context);
 
-		return (length > 62 ? 6:2) + length;
+		return (length > 62 ? 6 : 2) + length;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException {
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 
 		start = coder.getPointer();
 
@@ -172,7 +174,8 @@ public final class ButtonColorTransform implements MovieTag {
 			coder.writeWord((MovieTypes.BUTTON_COLOR_TRANSFORM << 6) | 0x3F, 2);
 			coder.writeWord(length, 4);
 		} else {
-			coder.writeWord((MovieTypes.BUTTON_COLOR_TRANSFORM << 6) | length, 2);
+			coder.writeWord((MovieTypes.BUTTON_COLOR_TRANSFORM << 6) | length,
+					2);
 		}
 		end = coder.getPointer() + (length << 3);
 

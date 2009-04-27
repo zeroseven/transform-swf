@@ -47,41 +47,39 @@ import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.DecoderRegistry;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.movieclip.InitializeMovieClip;
 
-@SuppressWarnings( { 
-	"PMD.LocalVariableCouldBeFinal",
-	"PMD.JUnitAssertionsShouldIncludeMessage" 
-})
+@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
+		"PMD.JUnitAssertionsShouldIncludeMessage" })
 public final class InitializeMovieClipTest {
-	
-	private static final int identifier = 1;
-	private static final List<Action> list = new ArrayList<Action>();
-	
+
+	private static int identifier = 1;
+	private static List<Action> list = new ArrayList<Action>();
+
 	static {
 		list.add(BasicAction.ADD);
 		list.add(BasicAction.END);
 	}
-	
+
 	private transient InitializeMovieClip fixture;
-		
-	private transient final byte[] encoded = new byte[] { (byte)0xC4, 0x0E,
+
+	private transient final byte[] encoded = new byte[] { (byte) 0xC4, 0x0E,
 			0x01, 0x00, ActionTypes.ADD, ActionTypes.END };
 
-	private transient final byte[] extended = new byte[] { (byte)0xFF, 0x0E,
-			0x04, 0x00, 0x00, 0x00, 0x01, 0x00, ActionTypes.ADD, ActionTypes.END };
+	private transient final byte[] extended = new byte[] { (byte) 0xFF, 0x0E,
+			0x04, 0x00, 0x00, 0x00, 0x01, 0x00, ActionTypes.ADD,
+			ActionTypes.END };
 
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForIdentifierWithLowerBound() {
 		fixture = new InitializeMovieClip(0, list);
 	}
 
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForIdentifierWithUpperBound() {
 		fixture = new InitializeMovieClip(65536, list);
 	}
 
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAddNullNull() {
 		fixture = new InitializeMovieClip(identifier, null);
 	}
@@ -95,20 +93,20 @@ public final class InitializeMovieClipTest {
 		assertNotSame(fixture.getActions(), copy.getActions());
 		assertEquals(fixture.toString(), copy.toString());
 	}
-	
+
 	@Test
 	public void encode() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(encoded.length);		
+		SWFEncoder encoder = new SWFEncoder(encoded.length);
 		Context context = new Context();
 
 		fixture = new InitializeMovieClip(identifier, list);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
 		fixture.encode(encoder, context);
-		
+
 		assertTrue(encoder.eof());
 		assertArrayEquals(encoded, encoder.getData());
 	}
-	
+
 	@Test
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
@@ -118,12 +116,12 @@ public final class InitializeMovieClipTest {
 		context.setRegistry(registry);
 
 		fixture = new InitializeMovieClip(decoder, context);
-		
+
 		assertTrue(decoder.eof());
 		assertEquals(identifier, fixture.getIdentifier());
 		assertEquals(list, fixture.getActions());
 	}
-	
+
 	@Test
 	public void decodeExtended() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(extended);
@@ -133,7 +131,7 @@ public final class InitializeMovieClipTest {
 		context.setRegistry(registry);
 
 		fixture = new InitializeMovieClip(decoder, context);
-		
+
 		assertTrue(decoder.eof());
 		assertEquals(identifier, fixture.getIdentifier());
 		assertEquals(list, fixture.getActions());

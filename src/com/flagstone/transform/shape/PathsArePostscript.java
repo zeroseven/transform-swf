@@ -34,7 +34,6 @@ import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.MovieTypes;
-import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
 /**
@@ -42,55 +41,44 @@ import com.flagstone.transform.coder.SWFEncoder;
  * glyphs encoded in a font definition were derived from a PostScript-based font
  * definition.
  * 
- * <p>The PathsArePostscript is not documented in the current Macromedia Flash
+ * <p>
+ * The PathsArePostscript is not documented in the current Macromedia Flash
  * (SWF) File Format Specification. IT was referenced in earlier editions but
  * its exact function was not known. It is thought that is used to signal to the
  * Flash Player that the paths describing the outlines of the glyphs in a font
  * were derived from a font defined using Postscript. The information can be
- * used to provide better rendering of the glyphs.</P>
+ * used to provide better rendering of the glyphs.
+ * </P>
  * 
  */
-//TODO(doc)
-public final class PathsArePostscript implements MovieTag
-{
-	private static final PathsArePostscript instance = new PathsArePostscript();
+// TODO(doc)
+public final class PathsArePostscript implements MovieTag {
+	
+	private static final PathsArePostscript INSTANCE = new PathsArePostscript();
 
 	/**
 	 * Returns a singleton.
 	 * 
 	 * @return an object that can safely be shared among objects.
 	 */
-	public static PathsArePostscript getInstance()
-	{
-		return instance;
+	public static PathsArePostscript getInstance() {
+		return INSTANCE;
 	}
 
-	private PathsArePostscript()
-	{
+	private PathsArePostscript() {
 	}
 
-	public PathsArePostscript copy()
-	{
+	public PathsArePostscript copy() {
 		return this;
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context)
-	{
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		context.getVariables().put(Context.POSTSCRIPT, 1);
 		return 2;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException
-	{
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		coder.writeWord((MovieTypes.PATHS_ARE_POSTSCRIPT << 6) | 0, 2);
-	}
-
-	public void decode(final SWFDecoder coder, final Context context) throws CoderException
-	{
-		int length = coder.readWord(2, false) & 0x3F;
-		
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
 	}
 }

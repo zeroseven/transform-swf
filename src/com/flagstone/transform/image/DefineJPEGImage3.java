@@ -66,7 +66,7 @@ public final class DefineJPEGImage3 implements ImageTag {
 	private int identifier;
 
 	// TODO(doc)
-	public DefineJPEGImage3(final SWFDecoder coder, final Context context)
+	public DefineJPEGImage3(final SWFDecoder coder)
 			throws CoderException {
 		start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
@@ -77,7 +77,7 @@ public final class DefineJPEGImage3 implements ImageTag {
 		end = coder.getPointer() + (length << 3);
 		identifier = coder.readWord(2, false);
 
-		int offset = coder.readWord(4, false);
+		final int offset = coder.readWord(4, false);
 
 		image = coder.readBytes(new byte[offset]);
 		alpha = coder.readBytes(new byte[length - offset - 6]);
@@ -103,14 +103,15 @@ public final class DefineJPEGImage3 implements ImageTag {
 	 *            byte array containing the zlib compressed alpha channel data.
 	 *            Must not be null.
 	 */
-	public DefineJPEGImage3(int uid, byte[] image, byte[] alpha) {
+	public DefineJPEGImage3(final int uid, final byte[] image,
+			final byte[] alpha) {
 		setIdentifier(uid);
 		setImage(image);
-		setCompressedAlpha(alpha);
+		setAlpha(alpha);
 	}
 
 	// TODO(doc)
-	public DefineJPEGImage3(DefineJPEGImage3 object) {
+	public DefineJPEGImage3(final DefineJPEGImage3 object) {
 		identifier = object.identifier;
 		width = object.width;
 		height = object.height;
@@ -124,7 +125,7 @@ public final class DefineJPEGImage3 implements ImageTag {
 
 	public void setIdentifier(final int uid) {
 		if (uid < 0 || uid > 65535) {
-			throw new IllegalArgumentException(Strings.IDENTIFIER_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
 		}
 		identifier = uid;
 	}
@@ -153,7 +154,7 @@ public final class DefineJPEGImage3 implements ImageTag {
 	/**
 	 * Returns the alpha channel data.
 	 */
-	public byte[] getCompressedAlpha() {
+	public byte[] getAlpha() {
 		return alpha;
 	}
 
@@ -164,7 +165,7 @@ public final class DefineJPEGImage3 implements ImageTag {
 	 *            an array of bytes containing the image table. Must not be
 	 *            null.
 	 */
-	public void setImage(byte[] bytes) {
+	public void setImage(final byte[] bytes) {
 		image = bytes;
 		decodeInfo();
 	}
@@ -176,7 +177,7 @@ public final class DefineJPEGImage3 implements ImageTag {
 	 *            array of bytes containing zlib encoded alpha channel. Must not
 	 *            be null.
 	 */
-	public void setCompressedAlpha(byte[] bytes) {
+	public void setAlpha(final byte[] bytes) {
 		alpha = bytes;
 	}
 
@@ -221,7 +222,7 @@ public final class DefineJPEGImage3 implements ImageTag {
 	}
 
 	private void decodeInfo() {
-		FLVDecoder coder = new FLVDecoder(image);
+		final FLVDecoder coder = new FLVDecoder(image);
 
 		if (coder.readWord(2, false) == 0xffd8) {
 			int marker;

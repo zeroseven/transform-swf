@@ -36,38 +36,34 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 
-import com.flagstone.transform.action.WaitForFrame2;
 import com.flagstone.transform.coder.ActionTypes;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-
-@SuppressWarnings( { 
-	"PMD.LocalVariableCouldBeFinal",
-	"PMD.JUnitAssertionsShouldIncludeMessage" 
-})
+@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
+		"PMD.JUnitAssertionsShouldIncludeMessage" })
 public final class WaitForFrame2Test {
-	
+
 	private transient final int type = ActionTypes.WAIT_FOR_FRAME_2;
 	private transient final int count = 2;
-	
-	private transient WaitForFrame2 fixture;
-	
-	private transient final byte[] encoded = new byte[] { (byte)type, 0x01, 0x00, 
-			0x02};
 
-	@Test(expected=IllegalArgumentException.class)
+	private transient WaitForFrame2 fixture;
+
+	private transient final byte[] encoded = new byte[] { (byte) type, 0x01,
+			0x00, 0x02 };
+
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForActionCountWithLowerBound() {
 		fixture = new WaitForFrame2(-1);
 	}
 
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForActionCountWithUpperBound() {
 		fixture = new WaitForFrame2(256);
 	}
-	
+
 	@Test
 	public void checkCopy() {
 		fixture = new WaitForFrame2(count);
@@ -76,16 +72,16 @@ public final class WaitForFrame2Test {
 		assertNotSame(fixture, copy);
 		assertEquals(fixture.toString(), copy.toString());
 	}
-	
+
 	@Test
-	public void encode() throws CoderException {		
-		SWFEncoder encoder = new SWFEncoder(encoded.length);		
+	public void encode() throws CoderException {
+		SWFEncoder encoder = new SWFEncoder(encoded.length);
 		Context context = new Context();
-	
+
 		fixture = new WaitForFrame2(count);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
 		fixture.encode(encoder, context);
-		
+
 		assertTrue(encoder.eof());
 		assertArrayEquals(encoded, encoder.getData());
 	}
@@ -93,10 +89,9 @@ public final class WaitForFrame2Test {
 	@Test
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
-		Context context = new Context();
 
-		fixture = new WaitForFrame2(decoder, context);
-		
+		fixture = new WaitForFrame2(decoder);
+
 		assertTrue(decoder.eof());
 		assertEquals(count, fixture.getActionCount());
 	}

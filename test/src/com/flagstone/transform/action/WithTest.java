@@ -31,6 +31,8 @@ package com.flagstone.transform.action;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
@@ -38,8 +40,6 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 
-import com.flagstone.transform.action.BasicAction;
-import com.flagstone.transform.action.With;
 import com.flagstone.transform.coder.Action;
 import com.flagstone.transform.coder.ActionDecoder;
 import com.flagstone.transform.coder.ActionTypes;
@@ -49,30 +49,26 @@ import com.flagstone.transform.coder.DecoderRegistry;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-
-@SuppressWarnings( { 
-	"PMD.LocalVariableCouldBeFinal",
-	"PMD.JUnitAssertionsShouldIncludeMessage" 
-})
+@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
+		"PMD.JUnitAssertionsShouldIncludeMessage" })
 public final class WithTest {
-	
-	private static final List<Action> list = new ArrayList<Action>();
-	
-	static {
+
+	private static List<Action> list;
+
+	@BeforeClass
+	public static void initialize() {
+		list = new ArrayList<Action>();
 		list.add(BasicAction.ADD);
 		list.add(BasicAction.END);
 	}
-	
+
 	private transient final int type = ActionTypes.WITH;
 	private transient With fixture;
-		
-	private transient final byte[] encoded = new byte[] { (byte)type, 0x02, 0x00, 
-			0x02, 0x00,
-			ActionTypes.ADD, 
-			ActionTypes.END
-			};
 
-	@Test(expected=IllegalArgumentException.class)
+	private transient final byte[] encoded = new byte[] { (byte) type, 0x02,
+			0x00, 0x02, 0x00, ActionTypes.ADD, ActionTypes.END };
+
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAddNullNull() {
 		fixture = new With(list);
 		fixture.add(null);
@@ -86,20 +82,20 @@ public final class WithTest {
 		assertNotSame(fixture.getActions(), copy.getActions());
 		assertEquals(fixture.toString(), copy.toString());
 	}
-	
+
 	@Test
 	public void encode() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(encoded.length);		
+		SWFEncoder encoder = new SWFEncoder(encoded.length);
 		Context context = new Context();
 
 		fixture = new With(list);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
 		fixture.encode(encoder, context);
-		
+
 		assertTrue(encoder.eof());
 		assertArrayEquals(encoded, encoder.getData());
 	}
-	
+
 	@Test
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
@@ -109,7 +105,7 @@ public final class WithTest {
 		context.setRegistry(registry);
 
 		fixture = new With(decoder, context);
-		
+
 		assertTrue(decoder.eof());
 		assertEquals(list, fixture.getActions());
 	}

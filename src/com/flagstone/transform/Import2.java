@@ -61,7 +61,7 @@ import com.flagstone.transform.coder.SWFEncoder;
  * </p>
  * 
  * <p>
- * Import2 was added in Flash 8. It currently has the same functionality as 
+ * Import2 was added in Flash 8. It currently has the same functionality as
  * Import.
  * </p>
  * 
@@ -69,7 +69,7 @@ import com.flagstone.transform.coder.SWFEncoder;
  * @see Import
  */
 public final class Import2 implements MovieTag {
-	
+
 	private static final String FORMAT = "Import2: { url=%s; objects=%s }";
 
 	private String url;
@@ -77,22 +77,22 @@ public final class Import2 implements MovieTag {
 
 	private transient int length;
 
-	//TODO(doc)
-	public Import2(final SWFDecoder coder, final Context context) throws CoderException {
-		
+	// TODO(doc)
+	public Import2(final SWFDecoder coder) throws CoderException {
+
 		length = coder.readWord(2, false) & 0x3F;
 
 		if (length == 0x3F) {
 			length = coder.readWord(4, false);
 		}
 
-		url = coder.readString();	
+		url = coder.readString();
 		coder.adjustPointer(16);
 
-		int count = coder.readWord(2, false);
+		final int count = coder.readWord(2, false);
 		objects = new LinkedHashMap<Integer, String>();
 
-		for (int i=0; i<count; i++) {
+		for (int i = 0; i < count; i++) {
 			objects.put(coder.readWord(2, false), coder.readString());
 		}
 	}
@@ -107,7 +107,7 @@ public final class Import2 implements MovieTag {
 	 *            the table to add the identifier-name pairs of the objects that
 	 *            will be imported.
 	 */
-	public Import2(String aUrl, Map<Integer, String> map) {
+	public Import2(final String aUrl, final Map<Integer, String> map) {
 		setUrl(aUrl);
 		objects = map;
 	}
@@ -127,16 +127,16 @@ public final class Import2 implements MovieTag {
 	 * @param aString
 	 *            the name of the exported object to allow it to be referenced.
 	 */
-	public Import2(String aUrl, int uid, String aString) {
+	public Import2(final String aUrl, final int uid, final String aString) {
 		setUrl(aUrl);
 		objects = new LinkedHashMap<Integer, String>();
 		add(uid, aString);
 	}
-	
-	//TODO(doc)
-	public Import2(Import2 object) {
+
+	// TODO(doc)
+	public Import2(final Import2 object) {
 		url = object.url;
-		objects = new LinkedHashMap<Integer,String>(object.objects);
+		objects = new LinkedHashMap<Integer, String>(object.objects);
 	}
 
 	/**
@@ -149,9 +149,9 @@ public final class Import2 implements MovieTag {
 	 *            the name of the imported object to allow it to be referenced.
 	 *            Must not be null or an empty string.
 	 */
-	public final void add(int uid, String aString) {
+	public void add(final int uid, final String aString) {
 		if (uid < 1 || uid > 65535) {
-			throw new IllegalArgumentException(Strings.IDENTIFIER_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
 		}
 		if (aString == null || aString.length() == 0) {
 			throw new IllegalArgumentException(Strings.STRING_NOT_SET);
@@ -184,7 +184,7 @@ public final class Import2 implements MovieTag {
 	 *            a URL relative to the URL of the file containing the Import
 	 *            object. Must not be null or an empty string.
 	 */
-	public void setUrl(String aString) {
+	public void setUrl(final String aString) {
 		if (aString == null || aString.length() == 0) {
 			throw new IllegalArgumentException(Strings.STRING_NOT_SET);
 		}
@@ -197,7 +197,7 @@ public final class Import2 implements MovieTag {
 	 * @param aTable
 	 *            the table of objects being imported. Must not be null.
 	 */
-	public void setObjects(Map<Integer, String> aTable) {
+	public void setObjects(final Map<Integer, String> aTable) {
 		objects = aTable;
 	}
 
@@ -211,7 +211,7 @@ public final class Import2 implements MovieTag {
 	}
 
 	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		
+
 		length = 4 + coder.strlen(url);
 
 		for (String name : objects.values()) {
@@ -221,8 +221,9 @@ public final class Import2 implements MovieTag {
 		return (length > 62 ? 6 : 2) + length;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException {
-		
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
+
 		if (length > 62) {
 			coder.writeWord((MovieTypes.IMPORT_2 << 6) | 0x3F, 2);
 			coder.writeWord(length, 4);

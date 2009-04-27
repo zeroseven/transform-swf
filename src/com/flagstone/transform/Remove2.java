@@ -44,13 +44,13 @@ import com.flagstone.transform.coder.SWFEncoder;
  * @see Remove
  */
 public final class Remove2 implements MovieTag {
-	
+
 	private static final String FORMAT = "Remove2: { layer=%d }";
 
 	private int layer;
 
-	//TODO(doc)
-	public Remove2(final SWFDecoder coder, final Context context) throws CoderException {
+	// TODO(doc)
+	public Remove2(final SWFDecoder coder) throws CoderException {
 
 		if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
 			coder.readWord(4, false);
@@ -67,12 +67,12 @@ public final class Remove2 implements MovieTag {
 	 *            the layer number on which the object is displayed. Must be in
 	 *            the range 1.65535.
 	 */
-	public Remove2(int layer) {
+	public Remove2(final int layer) {
 		setLayer(layer);
 	}
 
-	//TODO(doc)
-	public Remove2(Remove2 object) {
+	// TODO(doc)
+	public Remove2(final Remove2 object) {
 		layer = object.layer;
 	}
 
@@ -91,9 +91,9 @@ public final class Remove2 implements MovieTag {
 	 *            the layer number on which the object is displayed. Must be in
 	 *            the range 1.65535.
 	 */
-	public void setLayer(int aLayer) {
+	public void setLayer(final int aLayer) {
 		if (aLayer < 1 || aLayer > 65535) {
-			throw new IllegalArgumentException(Strings.LAYER_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.LAYER_RANGE);
 		}
 		layer = aLayer;
 	}
@@ -114,7 +114,8 @@ public final class Remove2 implements MovieTag {
 		return 4;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException {
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		coder.writeWord((MovieTypes.REMOVE_2 << 6) | 2, 2);
 		coder.writeWord(layer, 2);
 	}

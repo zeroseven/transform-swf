@@ -41,7 +41,6 @@ import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-
 //TODO(doc) Review
 /**
  * Push is used to push values on the Flash Player's internal stack.
@@ -104,17 +103,16 @@ import com.flagstone.transform.coder.SWFEncoder;
  * 
  */
 public final class Push implements Action {
-	
+
 	private static final String FORMAT = "Push: { values=%s }";
 
 	private List<Object> values;
 
-	private transient int start;
 	private transient int length;
-	
-	//TODO(doc)
-	public Push(final SWFDecoder coder, final Context context) throws CoderException {
-		
+
+	// TODO(doc)
+	public Push(final SWFDecoder coder) throws CoderException {
+
 		coder.readByte();
 		length = coder.readWord(2, false);
 		values = new ArrayList<Object>();
@@ -122,11 +120,11 @@ public final class Push implements Action {
 		int valuesLength = length;
 
 		while (valuesLength > 0) {
-			int dataType = coder.readByte();
+			final int dataType = coder.readByte();
 
 			switch (dataType) {
 			case 0:
-				int start = coder.getPointer();
+				final int start = coder.getPointer();
 				int strlen = 0;
 
 				while (coder.readWord(1, false) != 0) {
@@ -194,16 +192,16 @@ public final class Push implements Action {
 	 *            Integer, Double, String, RegisterIndex or TableIndex. Must not
 	 *            be null.
 	 */
-	public Push(List<Object> anArray) {
+	public Push(final List<Object> anArray) {
 		setValues(anArray);
 	}
 
-	//TODO(doc)
-	public Push(Push object) {
+	// TODO(doc)
+	public Push(final Push object) {
 		values = new ArrayList<Object>(object.values);
 	}
 
-	public final Push add(Object value) {
+	public Push add(final Object value) {
 		values.add(value);
 		return this;
 	}
@@ -225,9 +223,9 @@ public final class Push implements Action {
 	 *            Integer, Double, String, Null, Void, RegisterIndex or
 	 *            TableIndex. Must not be null.
 	 */
-	public void setValues(List<Object> anArray) {
+	public void setValues(final List<Object> anArray) {
 		if (anArray == null) {
-			throw new IllegalArgumentException(Strings.ARRAY_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
 		}
 		values = anArray;
 	}
@@ -245,7 +243,7 @@ public final class Push implements Action {
 	}
 
 	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		
+
 		length = 0;
 
 		for (Object anObject : values) {
@@ -277,8 +275,9 @@ public final class Push implements Action {
 		return length + 3;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException {
-		
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
+
 		coder.writeByte(ActionTypes.PUSH);
 		coder.writeWord(length, 2);
 
@@ -291,7 +290,8 @@ public final class Push implements Action {
 				coder.writeWord(((Integer) anObject).intValue(), 4);
 			} else if (anObject instanceof Property) {
 				coder.writeWord(1, 1);
-				coder.writeWord(((Property) anObject).getValue(context.getVariables().get(Context.VERSION)), 4);
+				coder.writeWord(((Property) anObject).getValue(context
+						.getVariables().get(Context.VERSION)), 4);
 			} else if (anObject instanceof Double) {
 				coder.writeWord(6, 1);
 				coder.writeDouble(((Double) anObject).doubleValue());
@@ -314,7 +314,8 @@ public final class Push implements Action {
 				coder.writeWord(4, 1);
 				coder.writeWord(((RegisterIndex) anObject).getIndex(), 1);
 			} else {
-				throw new CoderException(getClass().getName(), 0, 0, 0, Strings.UNSUPPORTED_OBJECT);
+				throw new CoderException(getClass().getName(), 0, 0, 0,
+						Strings.INVALID_OBJECT);
 			}
 		}
 	}

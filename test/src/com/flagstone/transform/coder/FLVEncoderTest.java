@@ -32,15 +32,11 @@ package com.flagstone.transform.coder;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.flagstone.transform.coder.FLVEncoder;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 
-@SuppressWarnings( { 
-	"PMD.TooManyMethods",
-	"PMD.JUnitAssertionsShouldIncludeMessage" 
-})
+@SuppressWarnings( { "PMD.TooManyMethods",
+		"PMD.JUnitAssertionsShouldIncludeMessage" })
 public final class FLVEncoderTest {
 	private transient FLVEncoder fixture;
 

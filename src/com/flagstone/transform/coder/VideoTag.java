@@ -31,16 +31,17 @@ package com.flagstone.transform.coder;
 
 /**
  * The VideoObject is the root class for objects that represent each of the
- * tagged data structures that make up the Flash Video file format 
+ * tagged data structures that make up the Flash Video file format
  * specification.
  * 
- * <p>Each of the major data structures defined in the Flash Video (flv) file 
- * format specification starts with a header that contains the type identifying 
- * the data structure followed by the number of bytes that the body of the 
+ * <p>
+ * Each of the major data structures defined in the Flash Video (flv) file
+ * format specification starts with a header that contains the type identifying
+ * the data structure followed by the number of bytes that the body of the
  * encoded data structure occupies in the file. A timestamp at which the audio
- * or video data will be played is also included. The VideoObject manages the 
- * encoding and decoding of this header information.</p>
+ * or video data will be played is also included. The VideoObject manages the
+ * encoding and decoding of this header information.
+ * </p>
  */
-public interface VideoTag extends FLVEncodeable, Copyable<VideoTag>
-{
+public interface VideoTag extends FLVEncodeable, Copyable<VideoTag> {
 }

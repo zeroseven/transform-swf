@@ -46,33 +46,40 @@ import com.flagstone.transform.coder.SWFEncoder;
  * FontInfo defines the name and face of a font and maps the codes for a given
  * character set to the glyphs that are drawn to represent each character.
  * 
- * <p>Three different encoding schemes are supported for the character codes.
- * The ANSI character set is used for Latin languages, SJIS is used for Japanese
+ * <p>
+ * Three different encoding schemes are supported for the character codes. The
+ * ANSI character set is used for Latin languages, SJIS is used for Japanese
  * language characters and Unicode is used for any character set. Since Flash 5
- * Unicode is the preferred encoding scheme.</p>
+ * Unicode is the preferred encoding scheme.
+ * </p>
  * 
- * <p>The index of each entry in the codes array matches the index in the
+ * <p>
+ * The index of each entry in the codes array matches the index in the
  * corresponding glyph in the shapes array of an DefineFont object, allowing a
- * given character code to be mapped to a given glyph. </p>
+ * given character code to be mapped to a given glyph.
+ * </p>
  * 
- * <p>FontInfo also allows the font associated with a Flash file to be mapped to 
- * a font installed on the device where the Flash Player displaying the file is 
- * hosted. The use of a font from a device is not automatic but is determined by 
- * the HTML tag option <i>deviceFont</i> which is passed to the Flash Player when
- * it is first started. If a device does not support a given font then the
- * glyphs in the DefineFont class are used to render the characters.</p>
+ * <p>
+ * FontInfo also allows the font associated with a Flash file to be mapped to a
+ * font installed on the device where the Flash Player displaying the file is
+ * hosted. The use of a font from a device is not automatic but is determined by
+ * the HTML tag option <i>deviceFont</i> which is passed to the Flash Player
+ * when it is first started. If a device does not support a given font then the
+ * glyphs in the DefineFont class are used to render the characters.
+ * </p>
  * 
- * <p>An important distinction between the host device to specify the font and
- * using the glyphs in an DefineFont object is that the device is not anti-aliased 
- * and the rendering is dependent on the host device. The glyphs in an DefineFont 
- * object are anti-aliased and are guaranteed to look identical on every device 
- * the text is displayed.</p>
+ * <p>
+ * An important distinction between the host device to specify the font and
+ * using the glyphs in an DefineFont object is that the device is not
+ * anti-aliased and the rendering is dependent on the host device. The glyphs in
+ * an DefineFont object are anti-aliased and are guaranteed to look identical on
+ * every device the text is displayed.
+ * </p>
  */
 @SuppressWarnings("PMD.TooManyMethods")
-public final class FontInfo implements MovieTag
-{
-	private static final String FORMAT="FontInfo: { identifier=%d; encoding=%s; small=%s; italic=%s; bold=%s; name=%s; codes=%s }";
-	
+public final class FontInfo implements MovieTag {
+	private static final String FORMAT = "FontInfo: { identifier=%d; encoding=%s; small=%s; italic=%s; bold=%s; name=%s; codes=%s }";
+
 	private int identifier;
 	private String name;
 	private CharacterEncoding encoding;
@@ -86,28 +93,26 @@ public final class FontInfo implements MovieTag
 	private transient int length;
 	private transient boolean wideCodes = false;
 
-	//TODO(doc)
-	//TODO(optimise)
-	public FontInfo(final SWFDecoder coder, final Context context) throws CoderException
-	{
+	// TODO(doc)
+	// TODO(optimise)
+	public FontInfo(final SWFDecoder coder)
+			throws CoderException {
 		codes = new ArrayList<Integer>();
 
 		start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
-		
+
 		if (length == 0x3F) {
 			length = coder.readWord(4, false);
 		}
 		end = coder.getPointer() + (length << 3);
 
 		identifier = coder.readWord(2, false);
-		int nameLength = coder.readByte();
+		final int nameLength = coder.readByte();
 		name = coder.readString(nameLength, coder.getEncoding());
 
-		if (name.length() > 0)
-		{
-			while (name.charAt(name.length() - 1) == 0)
-			{
+		if (name.length() > 0) {
+			while (name.charAt(name.length() - 1) == 0) {
 				name = name.substring(0, name.length() - 1);
 			}
 		}
@@ -121,8 +126,7 @@ public final class FontInfo implements MovieTag
 
 		int bytesRead = 3 + nameLength + 1;
 
-		while (bytesRead < length)
-		{
+		while (bytesRead < length) {
 			codes.add(coder.readWord(wideCodes ? 2 : 1, false));
 			bytesRead += (wideCodes) ? 2 : 1;
 		}
@@ -133,9 +137,8 @@ public final class FontInfo implements MovieTag
 		}
 	}
 
-
 	/**
-	 * Constructs a basic FontInfo object specifying only the name and style of 
+	 * Constructs a basic FontInfo object specifying only the name and style of
 	 * the font.
 	 * 
 	 * @param uid
@@ -144,12 +147,14 @@ public final class FontInfo implements MovieTag
 	 * @param name
 	 *            the name assigned to the font, identifying the font family.
 	 * @param bold
-	 *            indicates whether the font weight is bold (true) or normal (false).
+	 *            indicates whether the font weight is bold (true) or normal
+	 *            (false).
 	 * @param italic
-	 *            indicates whether the font style is italic (true) or plain (false).
- 	 */
-	public FontInfo(int uid, String name, boolean bold, boolean italic)
-	{
+	 *            indicates whether the font style is italic (true) or plain
+	 *            (false).
+	 */
+	public FontInfo(final int uid, final String name, final boolean bold,
+			final boolean italic) {
 		setIdentifier(uid);
 		setName(name);
 		setItalic(italic);
@@ -159,9 +164,8 @@ public final class FontInfo implements MovieTag
 		codes = new ArrayList<Integer>();
 	}
 
-	//TODO(doc)
-	public FontInfo(FontInfo object)
-	{
+	// TODO(doc)
+	public FontInfo(final FontInfo object) {
 		identifier = object.identifier;
 		name = object.name;
 		italic = object.italic;
@@ -172,28 +176,25 @@ public final class FontInfo implements MovieTag
 	}
 
 	/**
-	 * Returns the unique identifier of the font definition that this font 
+	 * Returns the unique identifier of the font definition that this font
 	 * information is for.
 	 */
-	public int getIdentifier()
-	{
+	public int getIdentifier() {
 		return identifier;
 	}
 
 	/**
 	 * Returns the name of the font family.
 	 */
-	public String getName()
-	{
+	public String getName() {
 		return name;
 	}
 
 	/**
-	 * Returns the encoding scheme used for characters rendered in the font, either
-	 * ASCII, SJIS or UCS2.
+	 * Returns the encoding scheme used for characters rendered in the font,
+	 * either ASCII, SJIS or UCS2.
 	 */
-	public CharacterEncoding getEncoding()
-	{
+	public CharacterEncoding getEncoding() {
 		return encoding;
 	}
 
@@ -201,44 +202,39 @@ public final class FontInfo implements MovieTag
 	 * Does the font have a small point size. This is used only with a Unicode
 	 * font encoding.
 	 */
-	public boolean isSmall()
-	{
+	public boolean isSmall() {
 		return small;
 	}
 
 	/**
-	 * Sets the font is small. Used only with Unicode fonts ot provide better 
+	 * Sets the font is small. Used only with Unicode fonts ot provide better
 	 * appearance when the point size is small.
 	 * 
 	 * @param aBool
 	 *            true if the font will be aligned on pixel boundaries.
 	 */
-	public void setSmall(boolean aBool)
-	{
+	public void setSmall(final boolean aBool) {
 		small = aBool;
 	}
 
 	/**
 	 * Is the font style italics.
 	 */
-	public boolean isItalic()
-	{
+	public boolean isItalic() {
 		return italic;
 	}
 
 	/**
 	 * Is the font weight bold.
 	 */
-	public boolean isBold()
-	{
+	public boolean isBold() {
 		return bold;
 	}
 
 	/**
 	 * Returns the array of character codes.
 	 */
-	public List<Integer> getCodes()
-	{
+	public List<Integer> getCodes() {
 		return codes;
 	}
 
@@ -248,28 +244,26 @@ public final class FontInfo implements MovieTag
 	 * @param uid
 	 *            the unique identifier of the DefineFont that contains the
 	 *            glyphs for the font. Must be in the range 1..65535.
- 	 */
-	public void setIdentifier(int uid)
-	{
+	 */
+	public void setIdentifier(final int uid) {
 		if (uid < 1 || uid > 65535) {
-			throw new IllegalArgumentException(Strings.IDENTIFIER_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
 		}
 		identifier = uid;
 	}
 
 	/**
 	 * Sets the name of the font. The name be omitted (set to an empty string)
-	 * if the font is embedded in the Flash file, i.e. the corresponding 
+	 * if the font is embedded in the Flash file, i.e. the corresponding
 	 * DefineFont object has all the glyph information.
 	 * 
 	 * @param aString
 	 *            the name assigned to the font, identifying the font family.
 	 *            Must not be null.
- 	 */
-	public void setName(String aString)
-	{
+	 */
+	public void setName(final String aString) {
 		if (aString == null) {
-			throw new IllegalArgumentException(Strings.STRING_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.STRING_IS_NULL);
 		}
 		name = aString;
 	}
@@ -278,11 +272,10 @@ public final class FontInfo implements MovieTag
 	 * Sets the font character encoding.
 	 * 
 	 * @param anEncoding
-	 *            the encoding used to identify characters, either ASCII,
-	 *            SJIS or UCS2.
+	 *            the encoding used to identify characters, either ASCII, SJIS
+	 *            or UCS2.
 	 */
-	public void setEncoding(CharacterEncoding anEncoding)
-	{
+	public void setEncoding(final CharacterEncoding anEncoding) {
 		encoding = anEncoding;
 	}
 
@@ -293,8 +286,7 @@ public final class FontInfo implements MovieTag
 	 *            a boolean flag indicating whether the font will be rendered in
 	 *            italics.
 	 */
-	public void setItalic(boolean aBool)
-	{
+	public void setItalic(final boolean aBool) {
 		italic = aBool;
 	}
 
@@ -305,8 +297,7 @@ public final class FontInfo implements MovieTag
 	 *            a boolean flag indicating whether the font will be rendered in
 	 *            bold face.
 	 */
-	public void setBold(boolean aBool)
-	{
+	public void setBold(final boolean aBool) {
 		bold = aBool;
 	}
 
@@ -318,10 +309,9 @@ public final class FontInfo implements MovieTag
 	 * @param aCode
 	 *            a code for a glyph. Must be in the range 0..65535.
 	 */
-	public void addCode(int aCode)
-	{
+	public void addCode(final int aCode) {
 		if (aCode < 0 || aCode > 65535) {
-			throw new IllegalArgumentException(Strings.CHARACTER_CODE_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.CHAR_CODE_RANGE);
 		}
 		codes.add(aCode);
 	}
@@ -332,38 +322,34 @@ public final class FontInfo implements MovieTag
 	 * DefineFont object.
 	 * 
 	 * @param anArray
-	 *            the array mapping glyphs to particular character codes. Must 
+	 *            the array mapping glyphs to particular character codes. Must
 	 *            not be null.
 	 */
-	public void setCodes(List<Integer> anArray)
-	{
+	public void setCodes(final List<Integer> anArray) {
 		if (anArray == null) {
-			throw new IllegalArgumentException(Strings.ARRAY_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
 		}
 		codes = anArray;
 	}
 
-	public FontInfo copy() 
-	{
+	public FontInfo copy() {
 		return new FontInfo(this);
 	}
 
 	@Override
-	public String toString()
-	{
-		return String.format(FORMAT, identifier, encoding, small, italic, bold, name, codes);
+	public String toString() {
+		return String.format(FORMAT, identifier, encoding, small, italic, bold,
+				name, codes);
 	}
 
-	//TODO(optimise)
-	public int prepareToEncode(final SWFEncoder coder, final Context context)
-	{
+	// TODO(optimise)
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		length = 3;
 		length += coder.strlen(name);
 
 		wideCodes = false;
 
-		for (Integer code : codes)
-		{
+		for (Integer code : codes) {
 			if (code.intValue() > 255) {
 				wideCodes = true;
 			}
@@ -371,12 +357,12 @@ public final class FontInfo implements MovieTag
 
 		length += codes.size() * (wideCodes ? 2 : 1);
 
-		return (length > 62 ? 6:2) + length;
+		return (length > 62 ? 6 : 2) + length;
 	}
 
-	//TODO(optimise)
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException
-	{
+	// TODO(optimise)
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		start = coder.getPointer();
 
 		if (length >= 63) {
@@ -388,7 +374,7 @@ public final class FontInfo implements MovieTag
 		end = coder.getPointer() + (length << 3);
 
 		coder.writeWord(identifier, 2);
-		coder.writeWord(coder.strlen(name)-1, 1);
+		coder.writeWord(coder.strlen(name) - 1, 1);
 		coder.writeString(name);
 		coder.adjustPointer(-8);
 		coder.writeBits(0, 2);

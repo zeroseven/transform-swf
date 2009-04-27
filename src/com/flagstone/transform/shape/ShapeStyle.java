@@ -34,7 +34,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.flagstone.transform.Movie;
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Encoder;
@@ -56,39 +55,47 @@ import com.flagstone.transform.linestyle.LineStyle;
  * <li>Define a new set of line and fill styles.</li>
  * </ul>
  * 
- * <p>An ShapeStyle object can specify one or more of the operations rather than
+ * <p>
+ * An ShapeStyle object can specify one or more of the operations rather than
  * specifying them in separate ShapeStyle objects - compacting the size of the
  * binary data when the object is encoded. Conversely if an operation is not
- * defined then the values may be omitted.</p>
- * 
- * <p>Line and Fill styles are selected by the index position, starting at 1, of
- * the style in an array of styles. An index of zero means that no style is
- * used. Using the constant VALUE_NOT_SET means that the current
- * style is unchanged. Two types of fill style are supported: fillStyle is used
- * where a shape does not contain overlapping areas and altFillStyle is used
- * where areas overlap. This differs from graphics environments that only
- * support one fill style as the overlapping area would form a hole in the shape
- * and not be filled.</p>
- * 
- * <p>A new drawing point is specified using the absolute x and y coordinates. If
- * an ShapeStyle object is the first in a shape then the current drawing point
- * is the origin of the shape (0,0). As with the line and fill styles if no
- * drawing point is set then the x and y coordinates may be set to VALUE_NOT_SET.
+ * defined then the values may be omitted.
  * </p>
  * 
- * <p>Finally the line or fill style arrays may left empty if no new styles are 
+ * <p>
+ * Line and Fill styles are selected by the index position, starting at 1, of
+ * the style in an array of styles. An index of zero means that no style is
+ * used. Using the constant VALUE_NOT_SET means that the current style is
+ * unchanged. Two types of fill style are supported: fillStyle is used where a
+ * shape does not contain overlapping areas and altFillStyle is used where areas
+ * overlap. This differs from graphics environments that only support one fill
+ * style as the overlapping area would form a hole in the shape and not be
+ * filled.
+ * </p>
+ * 
+ * <p>
+ * A new drawing point is specified using the absolute x and y coordinates. If
+ * an ShapeStyle object is the first in a shape then the current drawing point
+ * is the origin of the shape (0,0). As with the line and fill styles if no
+ * drawing point is set then the x and y coordinates may be set to
+ * VALUE_NOT_SET.
+ * </p>
+ * 
+ * <p>
+ * Finally the line or fill style arrays may left empty if no new styles are
  * being specified.
  * </p>
  * 
- * <p>Note that the values for the moveX and moveY attributes and the line and 
- * fill styles arrays are defined in pairs and are optional only if both are set 
- * to VALUE_NOT_SET.</p>
+ * <p>
+ * Note that the values for the moveX and moveY attributes and the line and fill
+ * styles arrays are defined in pairs and are optional only if both are set to
+ * VALUE_NOT_SET.
+ * </p>
  * 
  */
-public final class ShapeStyle implements ShapeRecord
-{
+public final class ShapeStyle implements ShapeRecord {
 	private static final String FORMAT = "ShapeStyle: { move=(%d, %d); fill=%d; alt=%d; line=%d; fillStyles=%s; lineStyles=%s }";
-	
+
 	private Integer moveX;
 	private Integer moveY;
 	private Integer fillStyle;
@@ -96,20 +103,20 @@ public final class ShapeStyle implements ShapeRecord
 	private Integer lineStyle;
 	private List<FillStyle> fillStyles;
 	private List<LineStyle> lineStyles;
-	
+
 	private transient boolean hasStyles;
 	private transient boolean hasLine;
 	private transient boolean hasAlt;
 	private transient boolean hasFill;
 	private transient boolean hasMove;
 
-	//TODO(doc)
-	//TODO(optimise)
-	public ShapeStyle(final SWFDecoder coder, final Context context) throws CoderException
-	{
-		int start = coder.getPointer();
-		
-		Map<Integer,Integer> vars = context.getVariables();
+	// TODO(doc)
+	// TODO(optimise)
+	public ShapeStyle(final SWFDecoder coder, final Context context)
+			throws CoderException {
+		final int start = coder.getPointer();
+
+		final Map<Integer, Integer> vars = context.getVariables();
 		int numberOfFillBits = vars.get(Context.FILL_SIZE);
 		int numberOfLineBits = vars.get(Context.LINE_SIZE);
 
@@ -120,30 +127,37 @@ public final class ShapeStyle implements ShapeRecord
 		hasFill = coder.readBits(1, false) != 0;
 		hasMove = coder.readBits(1, false) != 0;
 
-		if (hasMove)
-		{
-			int moveFieldSize = coder.readBits(5, false);
+		if (hasMove) {
+			final int moveFieldSize = coder.readBits(5, false);
 			moveX = coder.readBits(moveFieldSize, true);
 			moveY = coder.readBits(moveFieldSize, true);
 		}
 		fillStyles = new ArrayList<FillStyle>();
 		lineStyles = new ArrayList<LineStyle>();
 
-		fillStyle = hasFill ? coder.readBits(numberOfFillBits, false) : null;
-		altFillStyle = hasAlt ? coder.readBits(numberOfFillBits, false) : null;
-		lineStyle = hasLine ? coder.readBits(numberOfLineBits, false) : null;
-
-		if (hasStyles)
-		{
+		if (hasFill) {
+			fillStyle = coder.readBits(numberOfFillBits, false);
+		}
+		if (hasAlt) {
+			altFillStyle = coder.readBits(numberOfFillBits, false);
+		}
+		if (hasLine) {
+			lineStyle = coder.readBits(numberOfLineBits, false);
+		}
+		
+		if (hasStyles) {
 			coder.alignToByte();
 
 			int fillStyleCount = coder.readByte();
 
-			if (vars.containsKey(Context.ARRAY_EXTENDED) && fillStyleCount == 0xFF) {
+			if (vars.containsKey(Context.ARRAY_EXTENDED)
+					&& fillStyleCount == 0xFF) {
 				fillStyleCount = coder.readWord(2, false);
 			}
 
-			SWFFactory<FillStyle>decoder = context.getRegistry().getFillStyleDecoder();
+			final SWFFactory<FillStyle> decoder = context.getRegistry()
+					.getFillStyleDecoder();
+			
 			FillStyle fill;
 			int type;
 
@@ -152,7 +166,8 @@ public final class ShapeStyle implements ShapeRecord
 				fill = decoder.getObject(coder, context);
 
 				if (fill == null) {
-					throw new CoderException(String.valueOf(type), start >>> 3, 0, 0, Strings.UNSUPPORTED_FILL_STYLE);
+					throw new CoderException(String.valueOf(type), start >>> 3,
+							0, 0, Strings.INVALID_FILLSTYLE);
 				}
 
 				fillStyles.add(fill);
@@ -160,11 +175,10 @@ public final class ShapeStyle implements ShapeRecord
 
 			int lineStyleCount = coder.readByte();
 
-			if (vars.containsKey(Context.ARRAY_EXTENDED) && lineStyleCount == 0xFF) {
+			if (vars.containsKey(Context.ARRAY_EXTENDED)
+					&& lineStyleCount == 0xFF) {
 				lineStyleCount = coder.readWord(2, false);
 			}
-
-			LineStyle style;
 
 			for (int i = 0; i < lineStyleCount; i++) {
 				lineStyles.add(new LineStyle(coder, context));
@@ -174,22 +188,19 @@ public final class ShapeStyle implements ShapeRecord
 			numberOfLineBits = coder.readBits(4, false);
 
 			vars.put(Context.FILL_SIZE, numberOfFillBits);
-			vars.put(Context.LINE_SIZE,numberOfLineBits);
+			vars.put(Context.LINE_SIZE, numberOfLineBits);
 		}
 	}
-
 
 	/**
 	 * Creates an uninitialised ShapeStyle object.
 	 */
-	public ShapeStyle()
-	{
+	public ShapeStyle() {
 		fillStyles = new ArrayList<FillStyle>();
 		lineStyles = new ArrayList<LineStyle>();
 	}
 
-	public ShapeStyle(ShapeStyle object)
-	{
+	public ShapeStyle(final ShapeStyle object) {
 		moveX = object.moveX;
 		moveY = object.moveY;
 		lineStyle = object.lineStyle;
@@ -197,13 +208,13 @@ public final class ShapeStyle implements ShapeRecord
 		altFillStyle = object.altFillStyle;
 
 		lineStyles = new ArrayList<LineStyle>(object.lineStyles.size());
-		
+
 		for (LineStyle style : object.lineStyles) {
 			lineStyles.add(style.copy());
 		}
 
 		fillStyles = new ArrayList<FillStyle>(object.fillStyles.size());
-		
+
 		for (FillStyle style : object.fillStyles) {
 			fillStyles.add(style.copy());
 		}
@@ -215,10 +226,9 @@ public final class ShapeStyle implements ShapeRecord
 	 * @param style
 	 *            and LineStyle object. Must not be null.
 	 */
-	public ShapeStyle add(LineStyle style)
-	{
+	public ShapeStyle add(final LineStyle style) {
 		if (style == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
 		}
 		lineStyles.add(style);
 		return this;
@@ -230,74 +240,66 @@ public final class ShapeStyle implements ShapeRecord
 	 * @param style
 	 *            and FillStyle object. Must not be null.
 	 */
-	public ShapeStyle add(FillStyle style)
-	{
+	public ShapeStyle add(final FillStyle style) {
 		if (style == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
 		}
 		fillStyles.add(style);
 		return this;
 	}
 
 	/**
-	 * Returns the x-coordinate of any relative move or null if no move 
-	 * is specified. 
+	 * Returns the x-coordinate of any relative move or null if no move is
+	 * specified.
 	 */
-	public Integer getMoveX()
-	{
+	public Integer getMoveX() {
 		return moveX;
 	}
 
 	/**
-	 * Returns the y-coordinate of any relative move  or null if no move 
-	 * is specified. 
+	 * Returns the y-coordinate of any relative move or null if no move is
+	 * specified.
 	 */
-	public Integer getMoveY()
-	{
+	public Integer getMoveY() {
 		return moveY;
 	}
 
 	/**
-	 * Returns the index of the line style that will be applied to any line drawn.
-	 * Returns null if no line style is defined.
+	 * Returns the index of the line style that will be applied to any line
+	 * drawn. Returns null if no line style is defined.
 	 */
-	public Integer getLineStyle()
-	{
+	public Integer getLineStyle() {
 		return lineStyle;
 	}
 
 	/**
-	 * Returns the index of the fill style that will be applied to any area filled.
-	 * Returns null if no fill style is defined.
+	 * Returns the index of the fill style that will be applied to any area
+	 * filled. Returns null if no fill style is defined.
 	 */
-	public Integer getFillStyle()
-	{
+	public Integer getFillStyle() {
 		return fillStyle;
 	}
 
 	/**
-	 * Returns the index of the fill style that will be applied to any overlapping
-	 * area filled. Returns null if no alternate fill style is 
+	 * Returns the index of the fill style that will be applied to any
+	 * overlapping area filled. Returns null if no alternate fill style is
 	 * defined.
 	 */
-	public Integer getAltFillStyle()
-	{
+	public Integer getAltFillStyle() {
 		return altFillStyle;
 	}
 
 	/**
 	 * Returns the array of new line styles.
 	 */
-	public List<LineStyle> getLineStyles()
-	{
+	public List<LineStyle> getLineStyles() {
 		return lineStyles;
 	}
 
 	/**
 	 * Returns the array of new fill styles.
 	 */
-	public List<FillStyle> getFillStyles()
-	{
+	public List<FillStyle> getFillStyles() {
 		return fillStyles;
 	}
 
@@ -305,23 +307,23 @@ public final class ShapeStyle implements ShapeRecord
 	 * Sets the coordinates of any relative move.
 	 * 
 	 * @param xCoord
-	 *            move the current point by aNumber in the x direction. Must be 
+	 *            move the current point by aNumber in the x direction. Must be
 	 *            in the range -65535..65535.
 	 * 
 	 * @param xCoord
-	 *            move the current point by aNumber in the y direction. Must be 
+	 *            move the current point by aNumber in the y direction. Must be
 	 *            in the range -65535..65535.
 	 */
-	public ShapeStyle setMove(Integer xCoord, Integer yCoord)
-	{
-		if ((xCoord == null && yCoord != null) || (xCoord != null && yCoord == null)) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+	public ShapeStyle setMove(final Integer xCoord, final Integer yCoord) {
+		if ((xCoord == null && yCoord != null)
+				|| (xCoord != null && yCoord == null)) {
+			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
 		}
 		if (xCoord != null && (xCoord < -65535 || xCoord > 65535)) {
-			throw new IllegalArgumentException(Strings.COORDINATES_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.COORDINATES_RANGE);
 		}
 		if (yCoord != null && (yCoord < -65535 || yCoord > 65535)) {
-			throw new IllegalArgumentException(Strings.COORDINATES_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.COORDINATES_RANGE);
 		}
 		moveX = xCoord;
 		moveY = yCoord;
@@ -330,15 +332,14 @@ public final class ShapeStyle implements ShapeRecord
 
 	/**
 	 * Sets the index of the fill style that will be applied to any area filled.
-	 * May be set to zero if no style is selected or null if the line style 
+	 * May be set to zero if no style is selected or null if the line style
 	 * remains unchanged.
 	 * 
 	 * @param anIndex
 	 *            selects the fill style at anIndex in the fill styles array of
 	 *            the parent Shape object.
 	 */
-	public ShapeStyle setFillStyle(Integer anIndex)
-	{
+	public ShapeStyle setFillStyle(final Integer anIndex) {
 		fillStyle = anIndex;
 		return this;
 	}
@@ -352,23 +353,21 @@ public final class ShapeStyle implements ShapeRecord
 	 *            selects the alternate fill style at anIndex in the fill styles
 	 *            array of the parent Shape object.
 	 */
-	public ShapeStyle setAltFillStyle(Integer anIndex)
-	{
+	public ShapeStyle setAltFillStyle(final Integer anIndex) {
 		altFillStyle = anIndex;
 		return this;
 	}
 
 	/**
 	 * Sets the index of the line style that will be applied to any line drawn.
-	 * May be set to zero if no style is selected or null if the line style 
+	 * May be set to zero if no style is selected or null if the line style
 	 * remains unchanged.
 	 * 
 	 * @param anIndex
 	 *            selects the line style at anIndex in the line styles array of
 	 *            the parent Shape object.
 	 */
-	public ShapeStyle setLineStyle(Integer anIndex)
-	{
+	public ShapeStyle setLineStyle(final Integer anIndex) {
 		lineStyle = anIndex;
 		return this;
 	}
@@ -380,10 +379,9 @@ public final class ShapeStyle implements ShapeRecord
 	 * @param anArray
 	 *            an array of LineStyle objects. Must not be null.
 	 */
-	public ShapeStyle setLineStyles(List<LineStyle> anArray)
-	{
+	public ShapeStyle setLineStyles(final List<LineStyle> anArray) {
 		if (anArray == null) {
-			throw new IllegalArgumentException(Strings.ARRAY_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
 		}
 		lineStyles = anArray;
 		return this;
@@ -396,10 +394,9 @@ public final class ShapeStyle implements ShapeRecord
 	 * @param anArray
 	 *            an array of fill style objects. Must not be null.
 	 */
-	public ShapeStyle setFillStyles(List<FillStyle> anArray)
-	{
+	public ShapeStyle setFillStyles(final List<FillStyle> anArray) {
 		if (anArray == null) {
-			throw new IllegalArgumentException(Strings.ARRAY_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
 		}
 		fillStyles = anArray;
 		return this;
@@ -408,42 +405,40 @@ public final class ShapeStyle implements ShapeRecord
 	/**
 	 * Creates and returns a deep copy of this object.
 	 */
-	public ShapeStyle copy()
-	{
+	public ShapeStyle copy() {
 		return new ShapeStyle(this);
 	}
 
 	@Override
-	public String toString()
-	{
-		return String.format(FORMAT, moveX, moveY, fillStyle, altFillStyle, lineStyle, fillStyles, lineStyles);
+	public String toString() {
+		return String.format(FORMAT, moveX, moveY, fillStyle, altFillStyle,
+				lineStyle, fillStyles, lineStyles);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context)
-	{
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		hasLine = lineStyle != null;
 		hasFill = fillStyle != null;
 		hasAlt = altFillStyle != null;
-		hasMove =  moveX != null && moveY != null;
+		hasMove = moveX != null && moveY != null;
 		hasStyles = !lineStyles.isEmpty() || !fillStyles.isEmpty();
-		
+
 		int numberOfBits = 6;
 
-		if (hasMove)
-		{
-			int _moveFieldSize = Math.max(Encoder.size(moveX), Encoder.size(moveY));
+		if (hasMove) {
+			final int _moveFieldSize = Math.max(Encoder.size(moveX), Encoder
+					.size(moveY));
 			numberOfBits += 5 + _moveFieldSize * 2;
 		}
 
-		Map<Integer,Integer> vars = context.getVariables();
+		final Map<Integer, Integer> vars = context.getVariables();
 		numberOfBits += hasFill ? vars.get(Context.FILL_SIZE) : 0;
 		numberOfBits += hasAlt ? vars.get(Context.FILL_SIZE) : 0;
 		numberOfBits += (hasLine) ? vars.get(Context.LINE_SIZE) : 0;
 
-		vars.put(Context.SHAPE_SIZE, vars.get(Context.SHAPE_SIZE)+numberOfBits);
+		vars.put(Context.SHAPE_SIZE, vars.get(Context.SHAPE_SIZE)
+				+ numberOfBits);
 
-		if (hasStyles)
-		{
+		if (hasStyles) {
 			int numberOfFillBits = Encoder.unsignedSize(fillStyles.size());
 			int numberOfLineBits = Encoder.unsignedSize(lineStyles.size());
 
@@ -455,19 +450,21 @@ public final class ShapeStyle implements ShapeRecord
 				numberOfLineBits = 1;
 			}
 
-			boolean countExtended = vars.containsKey(Context.ARRAY_EXTENDED);
+			final boolean countExtended = vars.containsKey(Context.ARRAY_EXTENDED);
 
 			int numberOfStyleBits = 0;
-			int flushBits = vars.get(Context.SHAPE_SIZE);
+			final int flushBits = vars.get(Context.SHAPE_SIZE);
 
 			numberOfStyleBits += (flushBits % 8 > 0) ? 8 - (flushBits % 8) : 0;
-			numberOfStyleBits += (countExtended && fillStyles.size() >= 255) ? 24 : 8;
+			numberOfStyleBits += (countExtended && fillStyles.size() >= 255) ? 24
+					: 8;
 
 			for (FillStyle style : fillStyles) {
 				numberOfStyleBits += style.prepareToEncode(coder, context) * 8;
 			}
 
-			numberOfStyleBits += (countExtended && lineStyles.size() >= 255) ? 24 : 8;
+			numberOfStyleBits += (countExtended && lineStyles.size() >= 255) ? 24
+					: 8;
 
 			for (LineStyle style : lineStyles) {
 				numberOfStyleBits += style.prepareToEncode(coder, context) * 8;
@@ -476,16 +473,17 @@ public final class ShapeStyle implements ShapeRecord
 			numberOfStyleBits += 8;
 
 			vars.put(Context.FILL_SIZE, numberOfFillBits);
-			vars.put(Context.LINE_SIZE,numberOfLineBits);
-			vars.put(Context.SHAPE_SIZE, vars.get(Context.SHAPE_SIZE) + numberOfStyleBits);
+			vars.put(Context.LINE_SIZE, numberOfLineBits);
+			vars.put(Context.SHAPE_SIZE, vars.get(Context.SHAPE_SIZE)
+					+ numberOfStyleBits);
 
 			numberOfBits += numberOfStyleBits;
 		}
 		return numberOfBits;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException
-	{
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		coder.writeBits(0, 1);
 		coder.writeBits(hasStyles ? 1 : 0, 1);
 		coder.writeBits(hasLine ? 1 : 0, 1);
@@ -493,11 +491,11 @@ public final class ShapeStyle implements ShapeRecord
 		coder.writeBits(hasFill ? 1 : 0, 1);
 		coder.writeBits(hasMove ? 1 : 0, 1);
 
-		Map<Integer,Integer> vars = context.getVariables();
+		final Map<Integer, Integer> vars = context.getVariables();
 
-		if (hasMove)
-		{
-			int _moveFieldSize = Math.max(Encoder.size(moveX), Encoder.size(moveY));
+		if (hasMove) {
+			final int _moveFieldSize = Math.max(Encoder.size(moveX), Encoder
+					.size(moveY));
 
 			coder.writeBits(_moveFieldSize, 5);
 			coder.writeBits(moveX, _moveFieldSize);
@@ -516,19 +514,15 @@ public final class ShapeStyle implements ShapeRecord
 			coder.writeBits(lineStyle, vars.get(Context.LINE_SIZE));
 		}
 
-		if (hasStyles)
-		{
-			boolean countExtended = vars.containsKey(Context.ARRAY_EXTENDED);
+		if (hasStyles) {
+			final boolean countExtended = vars.containsKey(Context.ARRAY_EXTENDED);
 
 			coder.alignToByte();
 
-			if (countExtended && fillStyles.size() >= 255)
-			{
+			if (countExtended && fillStyles.size() >= 255) {
 				coder.writeBits(0xFF, 8);
 				coder.writeBits(fillStyles.size(), 16);
-			} 
-			else
-			{
+			} else {
 				coder.writeBits(fillStyles.size(), 8);
 			}
 
@@ -536,13 +530,10 @@ public final class ShapeStyle implements ShapeRecord
 				style.encode(coder, context);
 			}
 
-			if (countExtended && lineStyles.size() >= 255)
-			{
+			if (countExtended && lineStyles.size() >= 255) {
 				coder.writeBits(0xFF, 8);
 				coder.writeBits(lineStyles.size(), 16);
-			} 
-			else
-			{
+			} else {
 				coder.writeBits(lineStyles.size(), 8);
 			}
 
@@ -553,8 +544,7 @@ public final class ShapeStyle implements ShapeRecord
 			int numberOfFillBits = Encoder.unsignedSize(fillStyles.size());
 			int numberOfLineBits = Encoder.unsignedSize(lineStyles.size());
 
-			if (vars.containsKey(Context.POSTSCRIPT)) 
-			{
+			if (vars.containsKey(Context.POSTSCRIPT)) {
 				if (numberOfFillBits == 0) {
 					numberOfFillBits = 1;
 				}
@@ -569,7 +559,7 @@ public final class ShapeStyle implements ShapeRecord
 
 			// Update the stream with the new numbers of line and fill bits
 			vars.put(Context.FILL_SIZE, numberOfFillBits);
-			vars.put(Context.LINE_SIZE,numberOfLineBits);
+			vars.put(Context.LINE_SIZE, numberOfLineBits);
 		}
 	}
 }

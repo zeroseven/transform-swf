@@ -37,7 +37,6 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 
-import com.flagstone.transform.Place;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -45,58 +44,53 @@ import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.ColorTransform;
 import com.flagstone.transform.datatype.CoordTransform;
 
-@SuppressWarnings( { 
-	"PMD.LocalVariableCouldBeFinal",
-	"PMD.JUnitAssertionsShouldIncludeMessage" 
-})
+@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
+		"PMD.JUnitAssertionsShouldIncludeMessage" })
 public final class PlaceTest {
-	
+
 	private transient final int identifier = 1;
 	private transient final int layer = 2;
-	private transient final CoordTransform transform = 
-		CoordTransform.translate(1,2);
-	private transient final ColorTransform colorTransform = 
-		new ColorTransform(1,2,3,4);
-	
+	private transient final CoordTransform transform = CoordTransform
+			.translate(1, 2);
+	private transient final ColorTransform colorTransform = new ColorTransform(
+			1, 2, 3, 4);
+
 	private transient Place fixture;
-	
-	private transient final byte[] empty = new byte[] { 0x05, 0x01, 0x00, 0x00,
-			0x00, 0x00, 0x00};
 
-	private transient final byte[] coord = new byte[] { 0x06, 0x01, 
-			0x01, 0x00, 0x02, 0x00, 0x06, 0x50};
-	
-	private transient final byte[] coordAndColor = new byte[] { 0x08, 0x01, 
-			0x01, 0x00, 0x02, 0x00, 0x06, 0x50, (byte)0x8C, (byte)0xA6};
-	
-	private transient final byte[] extended = new byte[] { 0x7F, 0x01, 
-			0x06, 0x00, 0x00, 0x00, 0x01, 0x00, 0x02, 0x00, 0x06, 0x50};
+	private transient final byte[] coord = new byte[] { 0x06, 0x01, 0x01, 0x00,
+			0x02, 0x00, 0x06, 0x50 };
 
-	@Test(expected=IllegalArgumentException.class)
+	private transient final byte[] coordAndColor = new byte[] { 0x08, 0x01,
+			0x01, 0x00, 0x02, 0x00, 0x06, 0x50, (byte) 0x8C, (byte) 0xA6 };
+
+	private transient final byte[] extended = new byte[] { 0x7F, 0x01, 0x06,
+			0x00, 0x00, 0x00, 0x01, 0x00, 0x02, 0x00, 0x06, 0x50 };
+
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForIdentifierWithLowerBound() {
 		fixture = new Place().setIdentifier(0);
 	}
 
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForIdentifierWithUpperBound() {
 		fixture = new Place().setIdentifier(65536);
 	}
-	
-	@Test(expected=IllegalArgumentException.class)
+
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForLayerWithLowerBound() {
 		fixture = new Place().setLayer(0);
 	}
 
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForLayerWithUpperBound() {
 		fixture = new Place().setLayer(65536);
 	}
-	
-	@Test(expected=IllegalArgumentException.class)
+
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForCoordTransformWithNull() {
 		fixture = new Place().setTransform(null);
 	}
-	
+
 	@Test
 	public void checkCopy() {
 		fixture = new Place(identifier, layer, transform, colorTransform);
@@ -109,75 +103,86 @@ public final class PlaceTest {
 		assertSame(fixture.getColorTransform(), copy.getColorTransform());
 		assertEquals(fixture.toString(), copy.toString());
 	}
-	
+
 	@Test
-	public void encodeCoordTransform() throws CoderException {		
-		SWFEncoder encoder = new SWFEncoder(coord.length);		
+	public void encodeCoordTransform() throws CoderException {
+		SWFEncoder encoder = new SWFEncoder(coord.length);
 		Context context = new Context();
 
-		fixture = new Place().setIdentifier(identifier).setLayer(layer).setTransform(transform);
+		fixture = new Place().setIdentifier(identifier).setLayer(layer)
+				.setTransform(transform);
 		assertEquals(coord.length, fixture.prepareToEncode(encoder, context));
 		fixture.encode(encoder, context);
-		
+
 		assertTrue(encoder.eof());
 		assertArrayEquals(coord, encoder.getData());
 	}
-	
+
 	@Test
-	public void encodeCoordAndColorTransforms() throws CoderException {		
-		SWFEncoder encoder = new SWFEncoder(coordAndColor.length);		
+	public void encodeCoordAndColorTransforms() throws CoderException {
+		SWFEncoder encoder = new SWFEncoder(coordAndColor.length);
 		Context context = new Context();
 
 		fixture = new Place(identifier, layer, transform, colorTransform);
-		assertEquals(coordAndColor.length, fixture.prepareToEncode(encoder, context));
+		assertEquals(coordAndColor.length, fixture.prepareToEncode(encoder,
+				context));
 		fixture.encode(encoder, context);
-		
+
 		assertTrue(encoder.eof());
 		assertArrayEquals(coordAndColor, encoder.getData());
 	}
-	
+
 	@Test
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(coord);
 		Context context = new Context();
 
 		fixture = new Place(decoder, context);
-		
+
 		assertTrue(decoder.eof());
 		assertEquals(identifier, fixture.getIdentifier());
 		assertEquals(layer, fixture.getLayer());
-		assertEquals(transform.getTranslateX(), fixture.getTransform().getTranslateX());
-		assertEquals(transform.getTranslateY(), fixture.getTransform().getTranslateY());
+		assertEquals(transform.getTranslateX(), fixture.getTransform()
+				.getTranslateX());
+		assertEquals(transform.getTranslateY(), fixture.getTransform()
+				.getTranslateY());
 	}
-	
+
 	@Test
 	public void decodeExtended() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(extended);
 		Context context = new Context();
 
 		fixture = new Place(decoder, context);
-		
+
 		assertTrue(decoder.eof());
 		assertEquals(identifier, fixture.getIdentifier());
 		assertEquals(layer, fixture.getLayer());
-		assertEquals(transform.getTranslateX(), fixture.getTransform().getTranslateX());
-		assertEquals(transform.getTranslateY(), fixture.getTransform().getTranslateY());
+		assertEquals(transform.getTranslateX(), fixture.getTransform()
+				.getTranslateX());
+		assertEquals(transform.getTranslateY(), fixture.getTransform()
+				.getTranslateY());
 	}
-	
+
 	@Test
 	public void decodeCoordAndColorTransforms() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(coordAndColor);
 		Context context = new Context();
 
 		fixture = new Place(decoder, context);
-		
+
 		assertTrue(decoder.eof());
 		assertEquals(identifier, fixture.getIdentifier());
 		assertEquals(layer, fixture.getLayer());
-		assertEquals(transform.getTranslateX(), fixture.getTransform().getTranslateX());
-		assertEquals(transform.getTranslateY(), fixture.getTransform().getTranslateY());
-		assertEquals(colorTransform.getAddRed(), fixture.getColorTransform().getAddRed());
-		assertEquals(colorTransform.getAddGreen(), fixture.getColorTransform().getAddGreen());
-		assertEquals(colorTransform.getAddBlue(), fixture.getColorTransform().getAddBlue());
+		assertEquals(transform.getTranslateX(), fixture.getTransform()
+				.getTranslateX());
+		assertEquals(transform.getTranslateY(), fixture.getTransform()
+				.getTranslateY());
+		assertEquals(colorTransform.getAddRed(), fixture.getColorTransform()
+				.getAddRed());
+		assertEquals(colorTransform.getAddGreen(), fixture.getColorTransform()
+				.getAddGreen());
+		assertEquals(colorTransform.getAddBlue(), fixture.getColorTransform()
+				.getAddBlue());
 	}
 }

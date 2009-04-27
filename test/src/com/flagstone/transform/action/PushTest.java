@@ -31,6 +31,8 @@ package com.flagstone.transform.action;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
@@ -38,28 +40,21 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 
-import com.flagstone.transform.action.Null;
-import com.flagstone.transform.action.Property;
-import com.flagstone.transform.action.Push;
-import com.flagstone.transform.action.RegisterIndex;
-import com.flagstone.transform.action.TableIndex;
-import com.flagstone.transform.action.Void;
 import com.flagstone.transform.coder.ActionTypes;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-
-@SuppressWarnings( { 
-	"PMD.LocalVariableCouldBeFinal",
-	"PMD.JUnitAssertionsShouldIncludeMessage" 
-})
+@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
+		"PMD.JUnitAssertionsShouldIncludeMessage" })
 public final class PushTest {
-		
-	private transient static final List<Object> values = new ArrayList<Object>();
-	
-	static {
+
+	private transient static List<Object> values;
+
+	@BeforeClass
+	public static void initialize() {
+		values = new ArrayList<Object>();
 		values.add("a");
 		values.add(Property.ALPHA);
 		values.add(Null.getInstance());
@@ -74,24 +69,12 @@ public final class PushTest {
 
 	private transient final int type = ActionTypes.PUSH;
 	private transient Push fixture;
-	
-	// Values forming a function body are not part of the definition so the 
-	// length must be adjusted accordingly.
-		
-	private transient final byte[] empty = new byte[] { (byte)type, 0x00, 0x00 };
 
-	private transient final byte[] encoded = new byte[] { (byte)type, 0x21, 0x00, 
-			 0x00, 0x61, 0x00,
-			 0x01, 0x00, 0x00, (byte)0xC0, 0x40,
-			 0x02,
-			 0x03,
-			 0x04, 0x01,
-			 0x05, 0x01,
-			 0x06, 0x00, 0x00, (byte)0xF0, 0x3F, 0x00, 0x00, 0x00, 0x00,
-			 0x07, 0x01, 0x00, 0x00, 0x00,
-			 0x08, 0x01,
-			 0x09, 0x00, 0x01,
-			 };
+	private transient final byte[] encoded = new byte[] { (byte) type, 0x21,
+			0x00, 0x00, 0x61, 0x00, 0x01, 0x00, 0x00, (byte) 0xC0, 0x40, 0x02,
+			0x03, 0x04, 0x01, 0x05, 0x01, 0x06, 0x00, 0x00, (byte) 0xF0, 0x3F,
+			0x00, 0x00, 0x00, 0x00, 0x07, 0x01, 0x00, 0x00, 0x00, 0x08, 0x01,
+			0x09, 0x00, 0x01, };
 
 	@Test
 	public void checkCopy() {
@@ -101,29 +84,29 @@ public final class PushTest {
 		assertNotSame(fixture.getValues(), copy.getValues());
 		assertEquals(fixture.toString(), copy.toString());
 	}
-	
+
 	@Test
 	public void encode() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(encoded.length);		
+		SWFEncoder encoder = new SWFEncoder(encoded.length);
 		Context context = new Context();
 		context.getVariables().put(Context.VERSION, 4);
 
 		fixture = new Push(values);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
 		fixture.encode(encoder, context);
-		
+
 		assertTrue(encoder.eof());
 		assertArrayEquals(encoded, encoder.getData());
 	}
-	
+
 	@Test
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		Context context = new Context();
 		context.getVariables().put(Context.VERSION, 4);
 
-		fixture = new Push(decoder, context);
-		
+		fixture = new Push(decoder);
+
 		assertTrue(decoder.eof());
 		assertEquals(values, fixture.getValues());
 	}

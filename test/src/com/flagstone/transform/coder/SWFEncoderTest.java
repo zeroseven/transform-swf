@@ -32,14 +32,11 @@ package com.flagstone.transform.coder;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.flagstone.transform.coder.SWFEncoder;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 
-@SuppressWarnings( { 
-	"PMD.JUnitAssertionsShouldIncludeMessage" 
-})
+@SuppressWarnings( { "PMD.JUnitAssertionsShouldIncludeMessage" })
 public final class SWFEncoderTest {
 	private transient SWFEncoder fixture;
 
@@ -49,7 +46,6 @@ public final class SWFEncoderTest {
 	public void setUp() {
 		fixture = new SWFEncoder(0);
 	}
-
 
 	@Test
 	public void sizeVariableU32InOneByte() {
@@ -152,10 +148,10 @@ public final class SWFEncoderTest {
 		assertArrayEquals(data, fixture.data);
 		assertEquals(data.length << 3, fixture.getPointer());
 	}
-	
+
 	@Test
 	public void writeHalf() {
-		data = new byte[] { 0x00, (byte)0xC0 };
+		data = new byte[] { 0x00, (byte) 0xC0 };
 
 		fixture.data = new byte[data.length];
 		fixture.writeHalf(-2);
@@ -163,10 +159,10 @@ public final class SWFEncoderTest {
 		assertArrayEquals(data, fixture.data);
 		assertEquals(data.length << 3, fixture.getPointer());
 	}
-	
+
 	@Test
 	public void writeFloat() {
-		data = new byte[] { 0x00, 0x00, 0x00, (byte)0xC0 };
+		data = new byte[] { 0x00, 0x00, 0x00, (byte) 0xC0 };
 
 		fixture.data = new byte[data.length];
 		fixture.writeFloat(-2);
@@ -174,7 +170,7 @@ public final class SWFEncoderTest {
 		assertArrayEquals(data, fixture.data);
 		assertEquals(data.length << 3, fixture.getPointer());
 	}
-		
+
 	@Test
 	public void writeDouble() {
 		data = new byte[] { 0x00, 0x00, (byte) 0xF0, 0x3F, 0x00, 0x00, 0x00,

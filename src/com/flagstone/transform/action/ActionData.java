@@ -53,7 +53,7 @@ public final class ActionData implements Action {
 
 	private static final String FORMAT = "ActionData: { data[%d] }";
 
-	private final byte[] data;
+	private transient final byte[] data;
 
 	/**
 	 * Creates an ActionData object initialised with a set of encoded actions.
@@ -61,7 +61,7 @@ public final class ActionData implements Action {
 	 * @param bytes
 	 *            the array of encoded actions. Must not be null or empty.
 	 */
-	public ActionData(byte[] bytes) {
+	public ActionData(final byte[] bytes) {
 		if (bytes == null || bytes.length == 0) {
 			throw new IllegalArgumentException(Strings.DATA_NOT_SET);
 		}
@@ -74,7 +74,7 @@ public final class ActionData implements Action {
 	 * @param object
 	 *            the ActionData object used to initialise this one.
 	 */
-	public ActionData(ActionData object) {
+	public ActionData(final ActionData object) {
 		data = Arrays.copyOf(object.data, object.data.length);
 	}
 

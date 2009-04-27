@@ -47,11 +47,11 @@ import com.flagstone.transform.coder.SWFEncoder;
 public final class ActionObject implements Action {
 	private static final String FORMAT = "ActionObject: { type=%d; data[%s] }";
 
-	private final int type;
-	private final byte[] data;
+	private final transient int type;
+	private final transient byte[] data;
 
 	/**
-	 * Creates and initialises an ActionObject using values encoded in the Flash 
+	 * Creates and initialises an ActionObject using values encoded in the Flash
 	 * binary format.
 	 * 
 	 * @param coder
@@ -64,8 +64,7 @@ public final class ActionObject implements Action {
 	 * @throws CoderException
 	 *             if an error occurs while decoding the data.
 	 */
-	public ActionObject(final SWFDecoder coder, final Context context)
-			throws CoderException {
+	public ActionObject(final SWFDecoder coder) throws CoderException {
 		type = coder.readByte();
 
 		if (type > 127) {
@@ -81,7 +80,7 @@ public final class ActionObject implements Action {
 	 * @param type
 	 *            the value identifying the action when it is encoded.
 	 */
-	public ActionObject(int type) {
+	public ActionObject(final int type) {
 		this.type = type;
 		data = null;
 	}
@@ -95,11 +94,11 @@ public final class ActionObject implements Action {
 	 * @param bytes
 	 *            the body of the action when it is encoded in the Flash format.
 	 */
-	public ActionObject(int type, byte[] bytes) {
+	public ActionObject(final int type, final byte[] bytes) {
 		this.type = type;
 
 		if (bytes == null) {
-			throw new IllegalArgumentException(Strings.DATA_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.DATA_IS_NULL);
 		}
 		data = bytes;
 	}
@@ -110,7 +109,7 @@ public final class ActionObject implements Action {
 	 * @param object
 	 *            an ActionObject.
 	 */
-	public ActionObject(ActionObject object) {
+	public ActionObject(final ActionObject object) {
 		type = object.type;
 		data = Arrays.copyOf(object.data, object.data.length);
 	}
@@ -136,8 +135,8 @@ public final class ActionObject implements Action {
 
 	@Override
 	public String toString() {
-		return String.format(FORMAT, type, (data != null ? String
-				.valueOf(data.length) : data));
+		return String.format(FORMAT, type, (data == null ? data : String
+				.valueOf(data.length)));
 	}
 
 	public int prepareToEncode(final SWFEncoder coder, final Context context) {

@@ -39,61 +39,60 @@ import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.datatype.Bounds;
 
-@SuppressWarnings( { 
-    "PMD.LocalVariableCouldBeFinal",
-	"PMD.JUnitAssertionsShouldIncludeMessage" })
+@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
+		"PMD.JUnitAssertionsShouldIncludeMessage" })
 public final class BoundsTest {
 
 	private transient final int xmin = 1;
 	private transient final int ymin = 2;
 	private transient final int xmax = 3;
 	private transient final int ymax = 4;
-	
+
 	private transient Bounds fixture;
 
 	private transient SWFEncoder encoder;
-	private transient SWFDecoder decoder; 
+	private transient SWFDecoder decoder;
 	private transient Context context;
-	
+
 	private transient final byte[] encoded = new byte[] { 32, -103, 32 };
 
 	@Test
 	public void checkWidth() {
-		assertEquals(3, new Bounds(1,2,4,8).getWidth());
+		assertEquals(3, new Bounds(1, 2, 4, 8).getWidth());
 	}
 
 	@Test
 	public void checkHeigth() {
-		assertEquals(6, new Bounds(1,2,4,8).getHeight());
+		assertEquals(6, new Bounds(1, 2, 4, 8).getHeight());
 	}
 
 	@Test
+	@SuppressWarnings("PMD.EqualsNull")
 	public void checkNullIsnotEqual() {
-		assertFalse(new Bounds(1,2,3,4).equals(null));
+		assertFalse(new Bounds(1, 2, 3, 4).equals(null));
 	}
 
 	@Test
 	public void checkObjectIsNotEqual() {
-		assertFalse(new Bounds(1,2,3,4).equals(new Object()));
+		assertFalse(new Bounds(1, 2, 3, 4).equals(new Object()));
 	}
 
 	@Test
 	public void checkSameIsEqual() {
-		fixture = new Bounds(1,2,3,4);
-		assertTrue(fixture.equals(fixture));
+		fixture = new Bounds(1, 2, 3, 4);
+		assertEquals(fixture, fixture);
 	}
 
 	@Test
 	public void checkIsNotEqual() {
-		fixture = new Bounds(1,2,3,4);
-		assertFalse(fixture.equals(new Bounds(4,3,2,1)));
+		fixture = new Bounds(1, 2, 3, 4);
+		assertFalse(fixture.equals(new Bounds(4, 3, 2, 1)));
 	}
 
 	@Test
 	public void checkOtherIsEqual() {
-		assertTrue(new Bounds(1,2,3,4).equals(new Bounds(1,2,3,4)));
+		assertTrue(new Bounds(1, 2, 3, 4).equals(new Bounds(1, 2, 3, 4)));
 	}
 
 	@Test

@@ -59,8 +59,8 @@ public final class DoABC implements MovieTag {
 	private transient int end;
 	private transient int length;
 
-	//TODO(doc)
-	public DoABC(final SWFDecoder coder, final Context context) throws CoderException {
+	// TODO(doc)
+	public DoABC(final SWFDecoder coder) throws CoderException {
 
 		start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
@@ -70,9 +70,10 @@ public final class DoABC implements MovieTag {
 		}
 		end = coder.getPointer() + (length << 3);
 
-		deferred = coder.readBits(32, false); //TODO(optimise) replace with readWord()
+		deferred = coder.readBits(32, false); // TODO(optimise) replace with
+												// readWord()
 		name = coder.readString();
-		data = coder.readBytes(new byte[(end-coder.getPointer()) >>> 3]);
+		data = coder.readBytes(new byte[(end - coder.getPointer()) >>> 3]);
 
 		if (coder.getPointer() != end) {
 			throw new CoderException(getClass().getName(), start >> 3, length,
@@ -82,7 +83,7 @@ public final class DoABC implements MovieTag {
 
 	/**
 	 * Creates a DoABC object with the name and compiled Actionscript 3.0
-	 * byte-codes. 
+	 * byte-codes.
 	 * 
 	 * @param name
 	 *            the name used to identify the script.
@@ -165,11 +166,11 @@ public final class DoABC implements MovieTag {
 	 */
 	@SuppressWarnings("PMD.ArrayIsStoredDirectly")
 	public void setData(final byte[] bytes) {
-		//TODO(optimise) replace with single test and new string DATA_NOT_SET
+		// TODO(optimise) replace with single test and new string DATA_NOT_SET
 		if (bytes == null) {
-			throw new IllegalArgumentException(Strings.DATA_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.DATA_IS_NULL);
 		} else if (bytes.length == 0) {
-			throw new IllegalArgumentException(Strings.DATA_CANNOT_BE_EMPTY);
+			throw new IllegalArgumentException(Strings.DATA_IS_EMPTY);
 		}
 		data = bytes;
 	}
@@ -189,7 +190,8 @@ public final class DoABC implements MovieTag {
 		return (length > 62 ? 6 : 2) + length;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException {
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 
 		start = coder.getPointer();
 
@@ -201,7 +203,7 @@ public final class DoABC implements MovieTag {
 		}
 		end = coder.getPointer() + (length << 3);
 
-		coder.writeBits(deferred, 32); //TODO(optimise) replace with readWord()
+		coder.writeBits(deferred, 32); // TODO(optimise) replace with readWord()
 		coder.writeString(name);
 		coder.writeBytes(data);
 

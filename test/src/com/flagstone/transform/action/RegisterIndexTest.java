@@ -31,8 +31,6 @@ package com.flagstone.transform.action;
 
 import org.junit.Test;
 
-import com.flagstone.transform.action.RegisterIndex;
-
 import static org.junit.Assert.assertEquals;
 
 @SuppressWarnings( { "PMD.LocalVariableCouldBeFinal" })
@@ -46,7 +44,7 @@ public final class RegisterIndexTest {
 		fixture = new RegisterIndex(index);
 		assertEquals(index, fixture.getIndex());
 	}
-	
+
 	@Test(expected = IllegalArgumentException.class)
 	public void checkNegativeIndexThrowsException() {
 		fixture = new RegisterIndex(-1);

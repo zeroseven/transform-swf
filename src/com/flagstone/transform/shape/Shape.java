@@ -43,10 +43,11 @@ import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.font.DefineFont;
 
 /**
- * Shape is a container class for the shape objects (Line, Curve and ShapeStyle 
+ * Shape is a container class for the shape objects (Line, Curve and ShapeStyle
  * objects) that describe how a particular shape is drawn.
  * 
- * <p>Shapes are used in shape and font definitions. The Shape class is used to
+ * <p>
+ * Shapes are used in shape and font definitions. The Shape class is used to
  * simplify the design of these classes and provides no added functionality
  * other than acting as a container class.
  * </p>
@@ -54,20 +55,19 @@ import com.flagstone.transform.font.DefineFont;
  * @see DefineShape
  * @see DefineFont
  */
-public final class Shape implements SWFEncodeable
-{
+public final class Shape implements SWFEncodeable {
 	private static final String FORMAT = "Shape: { records=%s }";
-	
+
 	private List<ShapeRecord> objects;
-	
-	//TODO(doc)
-	public Shape(final SWFDecoder coder, final Context context) throws CoderException
-	{
+
+	// TODO(doc)
+	public Shape(final SWFDecoder coder, final Context context)
+			throws CoderException {
 		objects = new ArrayList<ShapeRecord>();
 
-		Map<Integer,Integer>vars = context.getVariables();
+		final Map<Integer, Integer> vars = context.getVariables();
 		vars.put(Context.FILL_SIZE, coder.readBits(4, false));
-		vars.put(Context.LINE_SIZE,coder.readBits(4, false));
+		vars.put(Context.LINE_SIZE, coder.readBits(4, false));
 
 		int type;
 		ShapeRecord shape;
@@ -81,9 +81,9 @@ public final class Shape implements SWFEncodeable
 
 				if ((type & 0x20) > 0) {
 					if ((type & 0x10) > 0) {
-						shape = new Line(coder, context);
+						shape = new Line(coder);
 					} else {
-						shape = new Curve(coder, context);
+						shape = new Curve(coder);
 					}
 				} else {
 					shape = new ShapeStyle(coder, context);
@@ -95,44 +95,40 @@ public final class Shape implements SWFEncodeable
 		coder.alignToByte();
 	}
 
-	//TODO(doc)
-	public Shape()
-	{
+	// TODO(doc)
+	public Shape() {
 		objects = new ArrayList<ShapeRecord>();
 	}
 
 	/**
-	 * Creates a Shape object, specifying the Objects that describe how
-	 * the shape is drawn.
+	 * Creates a Shape object, specifying the Objects that describe how the
+	 * shape is drawn.
 	 * 
 	 * @param anArray
 	 *            the array of shape records. Must not be null.
 	 */
-	public Shape(List<ShapeRecord> anArray)
-	{
+	public Shape(final List<ShapeRecord> anArray) {
 		setObjects(anArray);
 	}
 
-	//TODO(doc)
-	public Shape(Shape object)
-	{
+	// TODO(doc)
+	public Shape(final Shape object) {
 		objects = new ArrayList<ShapeRecord>(object.objects.size());
-		
+
 		for (ShapeRecord record : object.objects) {
 			objects.add(record.copy());
 		}
 	}
-	
+
 	/**
 	 * Adds the object to the array of shape records.
 	 * 
 	 * @param anObject
 	 *            an instance of ShapeStyle, Line or Curve. Must not be null.
 	 */
-	public Shape add(ShapeRecord anObject)
-	{
+	public Shape add(final ShapeRecord anObject) {
 		if (anObject == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
 		}
 		objects.add(anObject);
 		return this;
@@ -141,8 +137,7 @@ public final class Shape implements SWFEncodeable
 	/**
 	 * Returns the array of shape records that define the shape.
 	 */
-	public List<ShapeRecord> getObjects()
-	{
+	public List<ShapeRecord> getObjects() {
 		return objects;
 	}
 
@@ -152,27 +147,23 @@ public final class Shape implements SWFEncodeable
 	 * @param anArray
 	 *            the array of shape records. Must not be null.
 	 */
-	public void setObjects(List<ShapeRecord> anArray)
-	{
+	public void setObjects(final List<ShapeRecord> anArray) {
 		if (anArray == null) {
-			throw new IllegalArgumentException(Strings.ARRAY_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
 		}
 		objects = anArray;
 	}
 
-	public Shape copy()
-	{
+	public Shape copy() {
 		return new Shape(this);
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return String.format(FORMAT, objects);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context)
-	{
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		int numberOfBits = 0;
 
 		context.getVariables().put(Context.SHAPE_SIZE, numberOfBits);
@@ -190,9 +181,9 @@ public final class Shape implements SWFEncodeable
 		return numberOfBits >> 3;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException
-	{
-		Map<Integer,Integer> vars = context.getVariables();
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
+		final Map<Integer, Integer> vars = context.getVariables();
 		coder.writeBits(vars.get(Context.FILL_SIZE), 4);
 		coder.writeBits(vars.get(Context.LINE_SIZE), 4);
 

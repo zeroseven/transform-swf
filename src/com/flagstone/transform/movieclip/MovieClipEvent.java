@@ -62,27 +62,25 @@ public enum MovieClipEvent {
 	/** Code for a construct event. */
 	CONSTRUCT(262144);
 
-	private static final Map<Integer,MovieClipEvent>table 
-		= new LinkedHashMap<Integer,MovieClipEvent>();
+	private static final Map<Integer, MovieClipEvent> TABLE = new LinkedHashMap<Integer, MovieClipEvent>();
 
 	static {
 		for (MovieClipEvent event : values()) {
-			table.put(event.value, event);
+			TABLE.put(event.value, event);
 		}
 	}
-	
-	public static MovieClipEvent fromInt(int type) {
-		return table.get(type);
+
+	public static MovieClipEvent fromInt(final int type) {
+		return TABLE.get(type);
 	}
 
 	private final int value;
 
-	private MovieClipEvent(int value) {
+	private MovieClipEvent(final int value) {
 		this.value = value;
 	}
-	
-	public int getValue()
-	{
+
+	public int getValue() {
 		return value;
 	}
 }

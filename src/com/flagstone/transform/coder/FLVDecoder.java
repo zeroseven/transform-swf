@@ -1,9 +1,7 @@
 package com.flagstone.transform.coder;
 
-public class FLVDecoder extends Decoder 
-{
-	public FLVDecoder(byte[] data)
-	{
+public class FLVDecoder extends Decoder {
+	public FLVDecoder(final byte[] data) {
 		super(data);
 	}
 
@@ -11,7 +9,7 @@ public class FLVDecoder extends Decoder
 	 * Read an unsigned short integer without changing the internal pointer.
 	 */
 	public int scanUnsignedShort() {
-		return ((data[index] & 0x00FF) << 8) + (data[index+1] & 0x00FF);
+		return ((data[index] & 0x00FF) << 8) + (data[index + 1] & 0x00FF);
 	}
 
 	/**
@@ -75,7 +73,7 @@ public class FLVDecoder extends Decoder
 			final int step) {
 
 		boolean found;
-		int mark = getPointer();
+		final int mark = getPointer();
 
 		while (index + numberOfBytes <= data.length) {
 

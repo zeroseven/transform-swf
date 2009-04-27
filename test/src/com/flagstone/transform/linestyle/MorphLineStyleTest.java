@@ -42,55 +42,51 @@ import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.Color;
-import com.flagstone.transform.linestyle.MorphLineStyle;
 
-@SuppressWarnings( { 
-	"PMD.LocalVariableCouldBeFinal",
-	"PMD.JUnitAssertionsShouldIncludeMessage" 
-})
+@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
+		"PMD.JUnitAssertionsShouldIncludeMessage" })
 public final class MorphLineStyleTest {
-	
-	private transient final int startWidth = 1;
-	private transient final Color startColor = new Color(2,3,4,5);
-	private transient final int endWidth = 6;
-	private transient final Color endColor = new Color(7,8,9,10);
-	
-	private transient MorphLineStyle fixture;
-	
-	private transient final byte[] encoded = new byte[] { 
-			0x01, 0x00, 0x06, 0x00, 
-			0x02, 0x03, 0x04, 0x05, 0x07, 0x08, 0x09, 0x0A };
 
-	@Test(expected=IllegalArgumentException.class)
+	private transient final int startWidth = 1;
+	private transient final Color startColor = new Color(2, 3, 4, 5);
+	private transient final int endWidth = 6;
+	private transient final Color endColor = new Color(7, 8, 9, 10);
+
+	private transient MorphLineStyle fixture;
+
+	private transient final byte[] encoded = new byte[] { 0x01, 0x00, 0x06,
+			0x00, 0x02, 0x03, 0x04, 0x05, 0x07, 0x08, 0x09, 0x0A };
+
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForStartWidthWithLowerBound() {
 		fixture = new MorphLineStyle(-1, endWidth, startColor, endColor);
 	}
 
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForStartWidthWithUpperBound() {
 		fixture = new MorphLineStyle(65536, endWidth, startColor, endColor);
 	}
 
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForEndWidthWithLowerBound() {
 		fixture = new MorphLineStyle(startWidth, -1, startColor, endColor);
 	}
 
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForEndWidthWithUpperBound() {
 		fixture = new MorphLineStyle(startWidth, 65536, startColor, endColor);
 	}
 
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForStartColorWithNull() {
 		fixture = new MorphLineStyle(startWidth, endWidth, null, endColor);
 	}
 
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForEndColorWithNull() {
 		fixture = new MorphLineStyle(startWidth, endWidth, startColor, null);
 	}
-	
+
 	@Test
 	public void checkCopy() {
 		fixture = new MorphLineStyle(startWidth, endWidth, startColor, endColor);
@@ -101,17 +97,17 @@ public final class MorphLineStyleTest {
 		assertSame(fixture.getEndColor(), copy.getEndColor());
 		assertEquals(fixture.toString(), copy.toString());
 	}
-	
+
 	@Test
-	public void encode() throws CoderException {		
-		SWFEncoder encoder = new SWFEncoder(encoded.length);		
+	public void encode() throws CoderException {
+		SWFEncoder encoder = new SWFEncoder(encoded.length);
 		Context context = new Context();
 		context.getVariables().put(Context.TRANSPARENT, 1);
-		
+
 		fixture = new MorphLineStyle(startWidth, endWidth, startColor, endColor);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
 		fixture.encode(encoder, context);
-		
+
 		assertTrue(encoder.eof());
 		assertArrayEquals(encoded, encoder.getData());
 	}
@@ -121,9 +117,9 @@ public final class MorphLineStyleTest {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		Context context = new Context();
 		context.getVariables().put(Context.TRANSPARENT, 1);
-		
+
 		fixture = new MorphLineStyle(decoder, context);
-		
+
 		assertTrue(decoder.eof());
 		assertEquals(startWidth, fixture.getStartWidth());
 		assertEquals(endWidth, fixture.getEndWidth());

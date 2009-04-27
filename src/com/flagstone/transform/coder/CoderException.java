@@ -13,12 +13,11 @@ import java.io.IOException;
  * </p>
  */
 public final class CoderException extends IOException {
-	
+
 	private static final long serialVersionUID = 1;
-	
-	private static final String FORMAT =
-		"CoderException: { name=%s; location=%d; length=%d; delta=%d; message=%s }";
-	
+
+	private static final String FORMAT = "CoderException: { name=%s; location=%d; length=%d; delta=%d; message=%s }";
+
 	public static final String UNDERFLOW = "Underflow";
 	public static final String OVERFLOW = "Overflow";
 
@@ -42,16 +41,16 @@ public final class CoderException extends IOException {
 	 *            exception occurs.
 	 * 
 	 * @param length
-	 *            the number of bytes that were expected to be encoded or 
+	 *            the number of bytes that were expected to be encoded or
 	 *            decoded.
 	 * 
 	 * @param delta
-	 *            the difference between the expected number of bytes and the 
+	 *            the difference between the expected number of bytes and the
 	 *            actual number encoded or decoded.
 	 * 
 	 * @param message
-	 *            a message indicating type of object that caused the error and 
-	 *            and whether the difference was more (overflow) or less 
+	 *            a message indicating type of object that caused the error and
+	 *            and whether the difference was more (overflow) or less
 	 *            (underflow) than expected.
 	 */
 	public CoderException(final String name, final int start, final int length,
@@ -78,11 +77,11 @@ public final class CoderException extends IOException {
 	 *            exception occurs.
 	 * 
 	 * @param length
-	 *            the number of bytes that were expected to be encoded or 
+	 *            the number of bytes that were expected to be encoded or
 	 *            decoded.
 	 * 
 	 * @param delta
-	 *            the difference between the expected number of bytes and the 
+	 *            the difference between the expected number of bytes and the
 	 *            actual number encoded or decoded.
 	 */
 	public CoderException(final String name, final int start, final int length,

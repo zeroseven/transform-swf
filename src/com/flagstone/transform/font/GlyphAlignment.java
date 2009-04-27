@@ -41,36 +41,32 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 //TODO(code) Implement
 //TODO(doc)
-public final class GlyphAlignment implements SWFEncodeable
-{
+public final class GlyphAlignment implements SWFEncodeable {
 	private static final String FORMAT = "GlyphAlignment: { alignments=%s; alignX=%s; alignY=%s }";
-	
-	private List<AlignmentZone>alignments;
-	private int masks;
-	
-	private transient int count;
-	
-	public GlyphAlignment(final SWFDecoder coder, final Context context) throws CoderException
-	{
-		count = coder.readByte();
-		
+
+	private List<AlignmentZone> alignments;
+	private transient int masks;
+
+	public GlyphAlignment(final SWFDecoder coder)
+			throws CoderException {
+		final int count = coder.readByte();
+
 		alignments = new ArrayList<AlignmentZone>(count);
-		
-		for (int i=0; i<count; i++) {
-			alignments.add(new AlignmentZone(coder, context));
+
+		for (int i = 0; i < count; i++) {
+			alignments.add(new AlignmentZone(coder));
 		}
 		masks = coder.readByte();
 	}
 
-	public GlyphAlignment(List<AlignmentZone> list, boolean xAlign, boolean yAlign)
-	{
+	public GlyphAlignment(final List<AlignmentZone> list, final boolean xAlign,
+			final boolean yAlign) {
 		setAlignments(list);
 		setAlignmentX(xAlign);
 		setAlignmentY(yAlign);
 	}
 
-	public GlyphAlignment(GlyphAlignment object)
-	{
+	public GlyphAlignment(final GlyphAlignment object) {
 		alignments = new ArrayList<AlignmentZone>(object.alignments);
 		masks = object.masks;
 	}
@@ -79,7 +75,7 @@ public final class GlyphAlignment implements SWFEncodeable
 		return (masks & 0x01) != 0;
 	}
 
-	public void setAlignmentX(boolean hasAlign) {
+	public void setAlignmentX(final boolean hasAlign) {
 		masks &= 0xFE;
 		if (hasAlign) {
 			masks |= 1;
@@ -90,7 +86,7 @@ public final class GlyphAlignment implements SWFEncodeable
 		return (masks & 0x02) != 0;
 	}
 
-	public void setAlignmentY(boolean hasAlign) {
+	public void setAlignmentY(final boolean hasAlign) {
 		masks &= 0xFD;
 		if (hasAlign) {
 			masks |= 2;
@@ -101,33 +97,30 @@ public final class GlyphAlignment implements SWFEncodeable
 		return alignments;
 	}
 
-	public void setAlignments(List<AlignmentZone> aligments) {
+	public void setAlignments(final List<AlignmentZone> aligments) {
 		this.alignments = aligments;
 	}
 
-	public GlyphAlignment copy()
-	{
+	public GlyphAlignment copy() {
 		return new GlyphAlignment(this);
 	}
 
 	@Override
-	public String toString()
-	{
-		return String.format(FORMAT, alignments, String.valueOf(alignmentX()), 
+	public String toString() {
+		return String.format(FORMAT, alignments, String.valueOf(alignmentX()),
 				String.valueOf(alignmentY()));
 	}
-	
-	public int prepareToEncode(final SWFEncoder coder, final Context context)
-	{
+
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		return 10;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException
-	{
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		coder.writeByte(2);
-		
+
 		for (AlignmentZone zone : alignments) {
-			zone.encode(coder, context);	
+			zone.encode(coder, context);
 		}
 		coder.writeByte(masks);
 	}

@@ -38,15 +38,21 @@ import java.util.zip.DataFormatException;
 
 import com.flagstone.transform.coder.ImageTag;
 
-public interface ImageDecoder
-{
-    public void read(String path) throws FileNotFoundException, IOException, DataFormatException;
-    public void read(File file) throws FileNotFoundException, IOException, DataFormatException;
-    public void read(URL url) throws FileNotFoundException, IOException, DataFormatException;
-    
-    public int getWidth();
-    public int getHeight();
-    public byte[] getImage();
-    
-    public ImageTag defineImage(int identifier);
+public interface ImageDecoder {
+	void read(String path) throws FileNotFoundException, IOException,
+			DataFormatException;
+
+	void read(File file) throws FileNotFoundException, IOException,
+			DataFormatException;
+
+	void read(URL url) throws FileNotFoundException, IOException,
+			DataFormatException;
+
+	int getWidth();
+
+	int getHeight();
+
+	byte[] getImage();
+
+	ImageTag defineImage(int identifier);
 }

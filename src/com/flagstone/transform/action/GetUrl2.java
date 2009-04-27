@@ -42,58 +42,77 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 //TODO(doc) Review
 /**
- * The GetUrl2 action is used to either load a web page or movie clip or load
- * or submit variable values to/from a server.
+ * The GetUrl2 action is used to either load a web page or movie clip or load or
+ * submit variable values to/from a server.
  * 
- * <p>It extends the functionality provided by the GetUrl action by allowing the
+ * <p>
+ * It extends the functionality provided by the GetUrl action by allowing the
  * variables defined in a movie to be submitted as form values to a server.
  * Variables defined in a movie can also be initialised by loading a file
- * containing variable name / value assignments.</p>
+ * containing variable name / value assignments.
+ * </p>
  * 
- * <p>GetUrl2 gets the URL and the target from the Flash Player stack. The 
- * <i>url</i> is the first argument popped from the  stack and is a fully 
- * qualified uniform resource location where the movie clip or web page will be 
- * retrieved from. The second argument <i>target</i> - is either the name of a 
- * specific movie clip, e.g. _root.movieClip or the name of a level in the main 
+ * <p>
+ * GetUrl2 gets the URL and the target from the Flash Player stack. The
+ * <i>url</i> is the first argument popped from the stack and is a fully
+ * qualified uniform resource location where the movie clip or web page will be
+ * retrieved from. The second argument <i>target</i> - is either the name of a
+ * specific movie clip, e.g. _root.movieClip or the name of a level in the main
  * movie into which a movie clip has been loaded, e.g. _level1.
  * </p>
  * 
- * <p>The <i>target</i> can either be the name of the frame
- * can be one of the following reserved words:</p>
+ * <p>
+ * The <i>target</i> can either be the name of the frame can be one of the
+ * following reserved words:
+ * </p>
  * 
  * <table class="datasheet">
  * <tr>
- * <td valign="top"><code>"name"</code></td><td>opens the new page in the frame with the name
- * defined in the HTML &lt;frame&gt; tag.</td></tr>
+ * <td valign="top"><code>"name"</code></td>
+ * <td>opens the new page in the frame with the name defined in the HTML
+ * &lt;frame&gt; tag.</td>
+ * </tr>
  * <tr>
- * <td valign="top"><code>_blank</code></td><td>opens the new page in a new window.</td></tr>
+ * <td valign="top"><code>_blank</code></td>
+ * <td>opens the new page in a new window.</td>
+ * </tr>
  * <tr>
- * <td valign="top"><code>_self</code></td><td>opens the new page in the current window.</td></tr>
+ * <td valign="top"><code>_self</code></td>
+ * <td>opens the new page in the current window.</td>
+ * </tr>
  * <tr>
- * <td valign="top"><code>_top</code></td><td>opens the new page in the top level frame of the
- * current window.</td></tr>
+ * <td valign="top"><code>_top</code></td>
+ * <td>opens the new page in the top level frame of the current window.</td>
+ * </tr>
  * <tr>
- * <td valign="top"><code>_parent</code></td><td>opens the new page in the parent frame of the
- * frame where the Flash Player id displayed.</td></tr>
+ * <td valign="top"><code>_parent</code></td>
+ * <td>opens the new page in the parent frame of the frame where the Flash
+ * Player id displayed.</td>
+ * </tr>
  * <tr>
- * <td valign="top"><code>""</code></td><td>(blank string) opens the new page in the current frame
- * or window.</td></tr>
+ * <td valign="top"><code>""</code></td>
+ * <td>(blank string) opens the new page in the current frame or window.</td>
+ * </tr>
  * </table>
  * 
- * <p>Levels are virtual layers (analogous to the layers in
- * the Display List). Higher levels are displayed in front of lower levels. The
- * background of each level is transparent allowing movie clips on lower levels
- * to be visible in areas not filled by the movie clip on a given level. The
- * main movie is loaded into level 0. Movie clips are loaded into any level
- * above this (1, 2, 124, etc.). If a movie clip is loaded into a level that
- * already contains a movie clip then the existing clip is replaced by the new
- * one. The level follows the general form: "_level<i>n</i>" loads a movie
- * clip into the current movie at level <i>n</i>.</p>
+ * <p>
+ * Levels are virtual layers (analogous to the layers in the Display List).
+ * Higher levels are displayed in front of lower levels. The background of each
+ * level is transparent allowing movie clips on lower levels to be visible in
+ * areas not filled by the movie clip on a given level. The main movie is loaded
+ * into level 0. Movie clips are loaded into any level above this (1, 2, 124,
+ * etc.). If a movie clip is loaded into a level that already contains a movie
+ * clip then the existing clip is replaced by the new one. The level follows the
+ * general form: "_level<i>n</i>" loads a movie clip into the current movie at
+ * level <i>n</i>.
+ * </p>
  * 
- * <p>The type of request being submitted to the server is defined by the  
- * requestType attribute rather than being retrieved from the stack. The following
- * request types are supported:</p>
- *
+ * <p>
+ * The type of request being submitted to the server is defined by the
+ * requestType attribute rather than being retrieved from the stack. The
+ * following request types are supported:
+ * </p>
+ * 
  * <table class="datasheet">
  * <tr>
  * <td valign="top">MovieToLevel</td>
@@ -154,17 +173,18 @@ import com.flagstone.transform.coder.SWFEncoder;
  * </tr>
  * </table>
  * 
- * <p>When variables are submitted they are encoded using standard x-www-urlencoded
- * encoding.</p>
+ * <p>
+ * When variables are submitted they are encoded using standard x-www-urlencoded
+ * encoding.
+ * </p>
  * 
  * @see GetUrl
  */
-@SuppressWarnings("PMD.LongVariable") 
-public final class GetUrl2 implements Action
-{
+@SuppressWarnings("PMD.LongVariable")
+public final class GetUrl2 implements Action {
 	private static final String FORMAT = "GetUrl2: { requestType=%s }";
-	
-	//TODO(doc)
+
+	// TODO(doc)
 	public enum Request {
 		/** Load a movie without submitting the movie variables. */
 		MOVIE_TO_LEVEL(0),
@@ -174,9 +194,15 @@ public final class GetUrl2 implements Action
 		MOVIE_TO_LEVEL_WITH_POST(2),
 		/** Load a movie or web page without submitting the movie variables. */
 		MOVIE_TO_TARGET(64),
-		/** Load a movie or web page submitting the movie variables using HTTP GET. */
+		/**
+		 * Load a movie or web page submitting the movie variables using HTTP
+		 * GET.
+		 */
 		MOVIE_TO_TARGET_WITH_GET(65),
-		/** Load a movie or web page submitting the movie variables using HTTP POST. */
+		/**
+		 * Load a movie or web page submitting the movie variables using HTTP
+		 * POST.
+		 */
 		MOVIE_TO_TARGET_WITH_POST(66),
 		/** Load variables without submitting the movie variables. */
 		VARIABLES_TO_LEVEL(128),
@@ -190,28 +216,27 @@ public final class GetUrl2 implements Action
 		VARIABLES_TO_TARGET_WITH_GET(193),
 		/** Load variables submitting the movie variables using HTTP POST. */
 		VARIABLES_TO_TARGET_WITH_POST(194);
-		
-		private static final Map<Integer,Request>table 
-			= new LinkedHashMap<Integer,Request>();
-	
+
+		private static final Map<Integer, Request> TABLE = new LinkedHashMap<Integer, Request>();
+
 		static {
 			for (Request request : values()) {
-				table.put(request.value, request);
+				TABLE.put(request.value, request);
 			}
 		}
-		
-		//TODO(doc)
-		public static Request fromInt(int type) {
-			return table.get(type);
+
+		// TODO(doc)
+		public static Request fromInt(final int type) {
+			return TABLE.get(type);
 		}
 
 		private final int value;
-		
-		private Request(int value) {
+
+		private Request(final int value) {
 			this.value = value;
 		}
-		
-		//TODO(doc)
+
+		// TODO(doc)
 		public int getValue() {
 			return value;
 		}
@@ -219,9 +244,8 @@ public final class GetUrl2 implements Action
 
 	private Request request;
 
-	//TODO(doc)
-	public GetUrl2(final SWFDecoder coder, final Context context) throws CoderException
-	{
+	// TODO(doc)
+	public GetUrl2(final SWFDecoder coder) throws CoderException {
 		coder.readByte();
 		coder.readWord(2, false);
 		request = Request.fromInt(coder.readByte());
@@ -234,25 +258,23 @@ public final class GetUrl2 implements Action
 	 *            the type of request to be performed. Must be one of the
 	 *            constants defined in this class.
 	 */
-	public GetUrl2(Request request)
-	{
+	public GetUrl2(final Request request) {
 		setRequest(request);
 	}
 
-	//TODO(doc)
-	public GetUrl2(GetUrl2 object) {
+	// TODO(doc)
+	public GetUrl2(final GetUrl2 object) {
 		request = object.request;
 	}
 
 	/**
 	 * Returns the request type.
 	 */
-	public Request getRequest()
-	{
+	public Request getRequest() {
 		return request;
 	}
-	
-	//TODO(doc) Update
+
+	// TODO(doc) Update
 	/**
 	 * Sets the request type.
 	 * 
@@ -260,8 +282,7 @@ public final class GetUrl2 implements Action
 	 *            the type of request to be performed. Must be one of the
 	 *            constants defined in this class.
 	 */
-	public void setRequest(Request request)
-	{
+	public void setRequest(final Request request) {
 		this.request = request;
 	}
 
@@ -270,18 +291,16 @@ public final class GetUrl2 implements Action
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return String.format(FORMAT, request);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context)
-	{
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		return 4;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException
-	{
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		coder.writeByte(ActionTypes.GET_URL_2);
 		coder.writeWord(1, 2);
 		coder.writeWord(request.value, 1);

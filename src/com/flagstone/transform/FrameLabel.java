@@ -47,16 +47,16 @@ import com.flagstone.transform.coder.SWFEncoder;
  * The name can be referenced from other objects such as GotoFrame2 to simplify
  * the creation of scripts to control movies by using a predefined name rather
  * than the frame number. The label assigned to a particular frame should be
- * unique. A frame cannot be referenced within a movie before the Player has 
- * loaded and displayed the frame that contains the corresponding FrameLabel 
+ * unique. A frame cannot be referenced within a movie before the Player has
+ * loaded and displayed the frame that contains the corresponding FrameLabel
  * object.
  * </p>
  * 
  * <p>
- * If a frame is defined as an anchor it may also be referenced
- * externally when specifying the movie to play using a URL - similar to the way
- * names links are used in HTML. When the Flash Player loads a movie it will
- * begin playing at the frame specified in the URL.
+ * If a frame is defined as an anchor it may also be referenced externally when
+ * specifying the movie to play using a URL - similar to the way names links are
+ * used in HTML. When the Flash Player loads a movie it will begin playing at
+ * the frame specified in the URL.
  * </p>
  * 
  * @see GetUrl
@@ -71,27 +71,18 @@ public final class FrameLabel implements MovieTag {
 
 	private transient int length;
 
-	public FrameLabel(final SWFDecoder coder, final Context context) throws CoderException {
+	public FrameLabel(final SWFDecoder coder) throws CoderException {
 
 		length = coder.readWord(2, false) & 0x3F;
 
 		if (length == 0x3F) {
 			length = coder.readWord(4, false);
 		}
+		final int end = coder.getPointer() + (length << 3);
 
-		//TODO(optimise) can this be replaced by checking whether the second last byte is zero.
-		int start = coder.getPointer();
-		int strlen = 0;
+		label = coder.readString();
 
-		while (coder.readWord(1, false) != 0) {
-			strlen += 1;
-		}
-
-		coder.setPointer(start);
-		label = coder.readString(strlen++, coder.getEncoding());
-		coder.adjustPointer(8);
-
-		if (strlen < length) {
+		if (coder.getPointer() < end) {
 			anchor = coder.readByte() != 0;
 		}
 	}
@@ -121,7 +112,7 @@ public final class FrameLabel implements MovieTag {
 	 */
 	public FrameLabel(final String aString, final boolean isAnchor) {
 		setLabel(aString);
-		setAnchor(isAnchor); //TODO(optimise) no need to call method
+		setAnchor(isAnchor); // TODO(optimise) no need to call method
 	}
 
 	/**
@@ -193,7 +184,8 @@ public final class FrameLabel implements MovieTag {
 		return (length > 62 ? 6 : 2) + length;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException {
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 
 		if (length > 62) {
 			coder.writeWord((MovieTypes.FRAME_LABEL << 6) | 0x3F, 2);

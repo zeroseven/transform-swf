@@ -40,19 +40,17 @@ import com.flagstone.transform.coder.SWFEncoder;
 /**
  * SerialNumber is used to add a user-defined serial number into a Flash file.
  */
-public final class SerialNumber implements MovieTag
-{
+public final class SerialNumber implements MovieTag {
 	private static final String FORMAT = "SerialNumber: { serialNumber=%s }";
-	
+
 	private String number;
-	
+
 	private transient int length;
 
-	//TODO(doc)
-	public SerialNumber(final SWFDecoder coder, final Context context) throws CoderException
-	{
+	// TODO(doc)
+	public SerialNumber(final SWFDecoder coder) throws CoderException {
 		length = coder.readWord(2, false) & 0x3F;
-		
+
 		if (length == 0x3F) {
 			length = coder.readWord(4, false);
 		}
@@ -65,25 +63,22 @@ public final class SerialNumber implements MovieTag
 	 * Creates a SerialNumber action with the specified string.
 	 * 
 	 * @param aString
-	 *            an arbitrary string containing the serial number. Must not be 
+	 *            an arbitrary string containing the serial number. Must not be
 	 *            null.
 	 */
-	public SerialNumber(String aString)
-	{
+	public SerialNumber(final String aString) {
 		setNumber(aString);
 	}
 
-	//TODO(doc)
-	public SerialNumber(SerialNumber object)
-	{
+	// TODO(doc)
+	public SerialNumber(final SerialNumber object) {
 		number = object.number;
 	}
-	
+
 	/**
 	 * Returns the serial number.
 	 */
-	public String getNumber()
-	{
+	public String getNumber() {
 		return number;
 	}
 
@@ -94,40 +89,36 @@ public final class SerialNumber implements MovieTag
 	 *            an arbitrary string containing the serial number. Must not be
 	 *            null.
 	 */
-	public void setNumber(String aString)
-	{
+	public void setNumber(final String aString) {
 		if (aString == null) {
-			throw new IllegalArgumentException(Strings.STRING_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.STRING_IS_NULL);
 		}
 		number = aString;
 	}
 
-	public SerialNumber copy()
-	{
+	public SerialNumber copy() {
 		return new SerialNumber(this);
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return String.format(FORMAT, number);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context)
-	{
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		length = coder.strlen(number);
-		return (length > 62 ? 6:2) + length;
+		return (length > 62 ? 6 : 2) + length;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException
-	{
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		if (length > 62) {
 			coder.writeWord((MovieTypes.SERIAL_NUMBER << 6) | 0x3F, 2);
 			coder.writeWord(length, 4);
 		} else {
 			coder.writeWord((MovieTypes.SERIAL_NUMBER << 6) | length, 2);
 		}
-		
+
 		coder.writeString(number);
 	}
 }

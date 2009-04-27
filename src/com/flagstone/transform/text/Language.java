@@ -39,30 +39,33 @@ public enum Language {
 	/** The spoken language for traditional Chinese fonts. */
 	TRADITIONAL_CHINESE(5),
 	/** The spoken language for simplified Chinese fonts. */
-	SIMPLIFIED_CHINESE (4),
+	SIMPLIFIED_CHINESE(4),
 	/** The spoken language for Japanese fonts. */
 	KOREAN(3),
 	/** The spoken language for Korean fonts. */
 	JAPANESE(2),
 	/** The spoken language for Latin fonts. */
 	LATIN(1);
-	
-	private static final Map<Integer,Language>table 
-		= new LinkedHashMap<Integer,Language>();
-	
+
+	private static final Map<Integer, Language> TABLE = new LinkedHashMap<Integer, Language>();
+
 	static {
 		for (Language language : values()) {
-			table.put(language.value, language);
+			TABLE.put(language.value, language);
 		}
 	}
-	
-	public static Language fromInt(int type) {
-		return table.get(type);
+
+	public static Language fromInt(final int type) {
+		return TABLE.get(type);
 	}
 
 	private int value;
-	
-	private Language(int value) {
+
+	private Language(final int value) {
 		this.value = value;
+	}
+
+	public int getValue() {
+		return value;
 	}
 }

@@ -53,8 +53,9 @@ public final class MorphSolidFill implements FillStyle {
 	private Color startColor;
 	private Color endColor;
 
-	//TODO(doc)
-	public MorphSolidFill(final SWFDecoder coder, final Context context) throws CoderException {
+	// TODO(doc)
+	public MorphSolidFill(final SWFDecoder coder, final Context context)
+			throws CoderException {
 		coder.adjustPointer(8);
 		startColor = new Color(coder, context);
 		endColor = new Color(coder, context);
@@ -73,9 +74,9 @@ public final class MorphSolidFill implements FillStyle {
 		setStartColor(start);
 		setEndColor(end);
 	}
-	
-	//TODO(doc)
-	public MorphSolidFill(MorphSolidFill object) {
+
+	// TODO(doc)
+	public MorphSolidFill(final MorphSolidFill object) {
 		startColor = object.startColor;
 		endColor = object.endColor;
 	}
@@ -102,7 +103,7 @@ public final class MorphSolidFill implements FillStyle {
 	 */
 	public void setStartColor(final Color aColor) {
 		if (aColor == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
 		}
 		startColor = aColor;
 	}
@@ -115,7 +116,7 @@ public final class MorphSolidFill implements FillStyle {
 	 */
 	public void setEndColor(final Color aColor) {
 		if (aColor == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
 		}
 		endColor = aColor;
 	}
@@ -133,7 +134,8 @@ public final class MorphSolidFill implements FillStyle {
 		return 9;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException {
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		coder.writeByte(0);
 		startColor.encode(coder, context);
 		endColor.encode(coder, context);

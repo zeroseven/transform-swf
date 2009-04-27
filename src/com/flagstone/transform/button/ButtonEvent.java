@@ -6,8 +6,8 @@ import java.util.Map;
 //TODO(doc) Review
 public enum ButtonEvent {
 	/**
-	 * Code for the button event that occurs when the mouse cursor moves over the
-	 * active area of a button.
+	 * Code for the button event that occurs when the mouse cursor moves over
+	 * the active area of a button.
 	 */
 	ROLL_OVER(1),
 
@@ -24,20 +24,21 @@ public enum ButtonEvent {
 	PRESS(4),
 
 	/**
-	 * Code for the button event that occurs when the mouse button is clicked and
-	 * released while the mouse cursor is over the active area of the button.
+	 * Code for the button event that occurs when the mouse button is clicked
+	 * and released while the mouse cursor is over the active area of the
+	 * button.
 	 */
 	RELEASE(8),
 
 	/**
-	 * Code for the button event that occurs when the mouse button is clicked and
-	 * the mouse cursor is dragged out of the active area of the button.
+	 * Code for the button event that occurs when the mouse button is clicked
+	 * and the mouse cursor is dragged out of the active area of the button.
 	 */
 	DRAG_OUT(16),
 
 	/**
-	 * Code for the button event that occurs when the mouse button is clicked and
-	 * the mouse cursor is dragged into the active area of the button.
+	 * Code for the button event that occurs when the mouse button is clicked
+	 * and the mouse cursor is dragged into the active area of the button.
 	 */
 	DRAG_OVER(32),
 
@@ -49,14 +50,14 @@ public enum ButtonEvent {
 	RELEASE_OUT(64),
 
 	/**
-	 * Code for the button event that occurs when the mouse button is clicked and
-	 * the mouse cursor is dragged into the active area of the menu item.
+	 * Code for the button event that occurs when the mouse button is clicked
+	 * and the mouse cursor is dragged into the active area of the menu item.
 	 */
 	MENU_DRAG_OVER(128),
 
 	/**
-	 * Code for the button event that occurs when the mouse button is clicked and
-	 * the mouse cursor is dragged out of the active area of the menu item.
+	 * Code for the button event that occurs when the mouse button is clicked
+	 * and the mouse cursor is dragged out of the active area of the menu item.
 	 */
 	MENU_DRAG_OUT(256),
 
@@ -97,14 +98,14 @@ public enum ButtonEvent {
 	DELETE(3072),
 
 	/**
-	 * Code for the button event that occurs when the backspace key is pressed on
-	 * the keyboard.
+	 * Code for the button event that occurs when the backspace key is pressed
+	 * on the keyboard.
 	 */
 	BACKSPACE(4096),
 
 	/**
-	 * Code for the button event that occurs when the enter key is pressed on the
-	 * keyboard.
+	 * Code for the button event that occurs when the enter key is pressed on
+	 * the keyboard.
 	 */
 	ENTER(6656),
 
@@ -127,8 +128,8 @@ public enum ButtonEvent {
 	PAGE_UP(8192),
 
 	/**
-	 * Code for the button event that occurs when the page down key is pressed on
-	 * the keyboard.
+	 * Code for the button event that occurs when the page down key is pressed
+	 * on the keyboard.
 	 */
 	PAGE_DOWN(8704),
 
@@ -145,33 +146,30 @@ public enum ButtonEvent {
 	ESCAPE(9728),
 
 	/**
-	 * Code for the button event that occurs when the space bar is pressed on the
-	 * keyboard.
+	 * Code for the button event that occurs when the space bar is pressed on
+	 * the keyboard.
 	 */
 	SPACE(16384);
 
-	private static final Map<Integer,ButtonEvent>table 
-		= new LinkedHashMap<Integer,ButtonEvent>();
+	private static final Map<Integer, ButtonEvent> TABLE = new LinkedHashMap<Integer, ButtonEvent>();
 
 	static {
 		for (ButtonEvent type : values()) {
-			table.put(type.value, type);
+			TABLE.put(type.value, type);
 		}
 	}
-	
-	public static ButtonEvent fromInt(int type) {
-		return table.get(type);
+
+	public static ButtonEvent fromInt(final int type) {
+		return TABLE.get(type);
 	}
 
 	private final int value;
 
-	private ButtonEvent(int value) {
+	private ButtonEvent(final int value) {
 		this.value = value;
 	}
-	
-	public int getValue()
-	{
+
+	public int getValue() {
 		return value;
 	}
 }
-

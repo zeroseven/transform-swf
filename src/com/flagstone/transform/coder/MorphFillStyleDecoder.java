@@ -6,7 +6,7 @@ import com.flagstone.transform.fillstyle.MorphGradientFill;
 import com.flagstone.transform.fillstyle.MorphSolidFill;
 
 /**
- * Factory is the default implementation of an SWFFactory which used to create 
+ * Factory is the default implementation of an SWFFactory which used to create
  * instances of Transform classes.
  */
 public final class MorphFillStyleDecoder implements SWFFactory<FillStyle> {
@@ -15,7 +15,8 @@ public final class MorphFillStyleDecoder implements SWFFactory<FillStyle> {
 		return new MorphFillStyleDecoder();
 	}
 
-	public FillStyle getObject(final SWFDecoder coder, final Context context) throws CoderException {
+	public FillStyle getObject(final SWFDecoder coder, final Context context)
+			throws CoderException {
 
 		FillStyle style;
 
@@ -30,20 +31,20 @@ public final class MorphFillStyleDecoder implements SWFFactory<FillStyle> {
 			style = new MorphGradientFill(coder, context);
 			break;
 		case 0x40:
-			style = new MorphBitmapFill(coder, context);
+			style = new MorphBitmapFill(coder);
 			break;
 		case 0x41:
-			style = new MorphBitmapFill(coder, context);
+			style = new MorphBitmapFill(coder);
 			break;
 		case 0x42:
-			style = new MorphBitmapFill(coder, context);
+			style = new MorphBitmapFill(coder);
 			break;
 		case 0x43:
-			style = new MorphBitmapFill(coder, context);
+			style = new MorphBitmapFill(coder);
 			break;
 		default:
 			throw new CoderException(getClass().getName(), coder.getPointer(),
-					0, 0, Strings.UNSUPPORTED_FILL_STYLE);
+					0, 0, Strings.INVALID_FILLSTYLE);
 		}
 		return style;
 	}

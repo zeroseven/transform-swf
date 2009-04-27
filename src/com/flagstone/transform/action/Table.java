@@ -41,52 +41,50 @@ import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-
 //TODO(doc) Review
 /**
- * Table is used to create a table of string literals that can be referenced
- * by an index rather than using the literal value when executing a sequence of
+ * Table is used to create a table of string literals that can be referenced by
+ * an index rather than using the literal value when executing a sequence of
  * actions.
  * 
- * <p>Variables and built-in functions are specified by their name and the Table
+ * <p>
+ * Variables and built-in functions are specified by their name and the Table
  * class contains a table of the respective strings. References to a variable or
  * function can then use its index in the table rather than the name resulting
  * in a more compact representation when the actions are encoded into binary
- * form.</p>
+ * form.
+ * </p>
  * 
- * <p>The table in the Table class can support up to 65536 different variables.
- * As a result using the Variable class to reference the variables in the
- * example above uses two bytes rather than the five required to represent the
- * name directly (including the null character terminating the string).</p>
+ * <p>
+ * The table in the Table class can support up to 65536 different variables. As
+ * a result using the Variable class to reference the variables in the example
+ * above uses two bytes rather than the five required to represent the name
+ * directly (including the null character terminating the string).
+ * </p>
  * 
  * @see TableIndex
  * @see Push
  */
-public final class Table implements Action
-{
+public final class Table implements Action {
 	private static final String FORMAT = "Table: { values=%s }";
-	
+
 	private List<String> values;
-	
+
 	private transient int length;
 	private transient int tableSize;
 
-	//TODO(doc)
-	public Table(final SWFDecoder coder, final Context context) throws CoderException
-	{
+	// TODO(doc)
+	public Table(final SWFDecoder coder) throws CoderException {
 		coder.readByte();
 		length = coder.readWord(2, false);
 		tableSize = coder.readWord(2, false);
 		values = new ArrayList<String>(tableSize);
 
-		if (tableSize > 0)
-		{
+		if (tableSize > 0) {
 			for (int i = 0; i < tableSize; i++) {
 				values.add(coder.readString());
 			}
-		} 
-		else
-		{
+		} else {
 			/*
 			 * Reset the length as Macromedia is using the length of a table to
 			 * hide code following an empty table.
@@ -95,9 +93,8 @@ public final class Table implements Action
 		}
 	}
 
-	//TODO(doc)
-	public Table()
-	{
+	// TODO(doc)
+	public Table() {
 		values = new ArrayList<String>();
 	}
 
@@ -107,15 +104,13 @@ public final class Table implements Action
 	 * @param anArray
 	 *            of Strings that will be added to the table. Must not be null.
 	 */
-	public Table(List<String> anArray)
-	{
+	public Table(final List<String> anArray) {
 		values = new ArrayList<String>();
 		setValues(anArray);
 	}
 
-	//TODO(doc)
-	public Table(Table object)
-	{
+	// TODO(doc)
+	public Table(final Table object) {
 		values = new ArrayList<String>(object.values);
 	}
 
@@ -126,10 +121,9 @@ public final class Table implements Action
 	 *            a String that will be added to the end of the table. Must not
 	 *            be null.
 	 */
-	public Table add(String aString)
-	{
+	public Table add(final String aString) {
 		if (aString == null) {
-			throw new IllegalArgumentException(Strings.STRING_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.STRING_IS_NULL);
 		}
 		values.add(aString);
 		return this;
@@ -138,8 +132,7 @@ public final class Table implements Action
 	/**
 	 * Returns the array of Strings stored in the variable table.
 	 */
-	public List<String> getValues()
-	{
+	public List<String> getValues() {
 		return values;
 	}
 
@@ -147,44 +140,40 @@ public final class Table implements Action
 	 * Sets the array of Strings stored in the literal table.
 	 * 
 	 * @param anArray
-	 *            an array of Strings that will replaces the existing literal 
+	 *            an array of Strings that will replaces the existing literal
 	 *            table. Must not be null.
 	 */
-	public void setValues(List<String> anArray)
-	{
+	public void setValues(final List<String> anArray) {
 		if (anArray == null) {
-			throw new IllegalArgumentException(Strings.ARRAY_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
 		}
-		
+
 		values = anArray;
 	}
 
-	public Table copy() 
-	{
+	public Table copy() {
 		return new Table(this);
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return String.format(FORMAT, values);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context)
-	{
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		length = 2;
 
 		for (String str : values) {
 			length += coder.strlen(str);
 		}
-		
+
 		tableSize = values.size();
 
 		return 3 + length;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException
-	{
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		coder.writeByte(ActionTypes.TABLE);
 		coder.writeWord(length, 2);
 		coder.writeWord(values.size(), 2);

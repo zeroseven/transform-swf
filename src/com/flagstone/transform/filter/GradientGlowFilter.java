@@ -7,24 +7,27 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 public final class GradientGlowFilter implements Filter {
 
-	public GradientGlowFilter(final SWFDecoder coder, final Context context) throws CoderException {
-		
+	public GradientGlowFilter(final SWFDecoder coder, final Context context)
+			throws CoderException {
+		//TODO Implement
+
 	}
-	
-	public GradientGlowFilter(GradientGlowFilter object) {
-		
+
+	public GradientGlowFilter(final GradientGlowFilter object) {
+		//TODO Implement
 	}
-	
+
 	public GradientGlowFilter copy() {
 		return new GradientGlowFilter(this);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context)
-	{
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
+		//TODO Implement
 		return 0;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException
-	{
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
+		//TODO Implement
 	}
 }

@@ -39,26 +39,22 @@ import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-
-
 /**
- * The GotoLabel action instructs the player to move to the frame in the
- * current movie with the specified label - previously assigned using a FrameLabel
+ * The GotoLabel action instructs the player to move to the frame in the current
+ * movie with the specified label - previously assigned using a FrameLabel
  * object.
- *
+ * 
  * @see FrameLabel
  */
-public final class GotoLabel implements Action
-{
+public final class GotoLabel implements Action {
 	private static final String FORMAT = "GotoLabel: { label=%s }";
-	
+
 	private String label;
 
 	private transient int length;
-	
-	//TODO(doc)
-	public GotoLabel(final SWFDecoder coder, final Context context) throws CoderException
-	{
+
+	// TODO(doc)
+	public GotoLabel(final SWFDecoder coder) throws CoderException {
 		coder.readByte();
 		length = coder.readWord(2, false);
 		label = coder.readString();
@@ -71,21 +67,19 @@ public final class GotoLabel implements Action
 	 *            the label assigned a particular frame in the movie. Must not
 	 *            be null or an empty string.
 	 */
-	public GotoLabel(String aString)
-	{
+	public GotoLabel(final String aString) {
 		setLabel(aString);
 	}
-	
-	//TODO(doc)
-	public GotoLabel(GotoLabel object) {
+
+	// TODO(doc)
+	public GotoLabel(final GotoLabel object) {
 		label = object.label;
 	}
 
 	/**
 	 * Returns the frame label.
 	 */
-	public String getLabel()
-	{
+	public String getLabel() {
 		return label;
 	}
 
@@ -96,8 +90,7 @@ public final class GotoLabel implements Action
 	 *            the label assigned a particular frame in the movie. Must not
 	 *            be null or an empty string.
 	 */
-	public void setLabel(String aString)
-	{
+	public void setLabel(final String aString) {
 		if (aString == null) {
 			throw new IllegalArgumentException(Strings.STRING_NOT_SET);
 		}
@@ -109,20 +102,18 @@ public final class GotoLabel implements Action
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return String.format(FORMAT, label);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context)
-	{
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		length = coder.strlen(label);
 
 		return 3 + length;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException
-	{
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		coder.writeByte(ActionTypes.GOTO_LABEL);
 		coder.writeWord(length, 2);
 		coder.writeString(label);

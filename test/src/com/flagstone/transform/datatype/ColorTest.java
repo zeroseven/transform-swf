@@ -35,18 +35,16 @@ import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.datatype.Color;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-@SuppressWarnings( { 
-    "PMD.LocalVariableCouldBeFinal",
-	"PMD.JUnitAssertionsShouldIncludeMessage" })
+@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
+		"PMD.JUnitAssertionsShouldIncludeMessage" })
 public final class ColorTest {
-	
+
 	private transient final int red = 1;
 	private transient final int green = 2;
 	private transient final int blue = 3;
@@ -54,11 +52,11 @@ public final class ColorTest {
 
 	private transient Color fixture;
 
-	private transient byte[] opaque = new byte[] {1,2,3};
-	private transient byte[] transparent = new byte[] {1,2,3,4};
+	private transient byte[] opaque = new byte[] { 1, 2, 3 };
+	private transient byte[] transparent = new byte[] { 1, 2, 3, 4 };
 
 	private transient SWFEncoder encoder;
-	private transient SWFDecoder decoder; 
+	private transient SWFDecoder decoder;
 	private transient Context context;
 
 	@Test(expected = IllegalArgumentException.class)
@@ -102,6 +100,7 @@ public final class ColorTest {
 	}
 
 	@Test
+	@SuppressWarnings("PMD.EqualsNull")
 	public void checkNullIsnotEqual() {
 		assertFalse(new Color(red, green, blue, alpha).equals(null));
 	}
@@ -114,25 +113,26 @@ public final class ColorTest {
 	@Test
 	public void checkSameIsEqual() {
 		fixture = new Color(red, green, blue, alpha);
-		assertTrue(fixture.equals(fixture));
+		assertEquals(fixture, fixture);
 	}
 
 	@Test
 	public void checkIsNotEqual() {
 		fixture = new Color(red, green, blue, alpha);
-		assertFalse(fixture.equals(new Color(4,3,2,1)));
+		assertFalse(fixture.equals(new Color(4, 3, 2, 1)));
 	}
 
 	@Test
 	public void checkOtherIsEqual() {
-		assertTrue(new Color(red, green, blue, alpha).equals(new Color(red, green, blue, alpha)));
+		assertTrue(new Color(red, green, blue, alpha).equals(new Color(red,
+				green, blue, alpha)));
 	}
 
 	@Test
 	public void encodeOpaqueColour() throws CoderException {
 		encoder = new SWFEncoder(opaque.length);
 		context = new Context();
-		
+
 		fixture = new Color(red, green, blue);
 
 		assertEquals(opaque.length, fixture.prepareToEncode(encoder, context));
@@ -147,10 +147,11 @@ public final class ColorTest {
 		encoder = new SWFEncoder(transparent.length);
 		context = new Context();
 		context.getVariables().put(Context.TRANSPARENT, 1);
-		
+
 		fixture = new Color(red, green, blue, alpha);
 
-		assertEquals(transparent.length, fixture.prepareToEncode(encoder, context));
+		assertEquals(transparent.length, fixture.prepareToEncode(encoder,
+				context));
 		fixture.encode(encoder, context);
 
 		assertTrue(encoder.eof());

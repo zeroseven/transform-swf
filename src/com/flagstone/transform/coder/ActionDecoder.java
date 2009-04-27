@@ -22,68 +22,69 @@ import com.flagstone.transform.action.WaitForFrame2;
 import com.flagstone.transform.action.With;
 
 /**
- * Factory is the default implementation of an SWFFactory which used to create 
+ * Factory is the default implementation of an SWFFactory which used to create
  * instances of Transform classes.
  */
 @SuppressWarnings("PMD")
 public final class ActionDecoder implements SWFFactory<Action> {
-	
+
 	public SWFFactory<Action> copy() {
 		return new ActionDecoder();
 	}
 
-	public Action getObject(final SWFDecoder coder, final Context context) throws CoderException {
+	public Action getObject(final SWFDecoder coder, final Context context)
+			throws CoderException {
 
 		Action action;
-		
+
 		int type = coder.scanByte();
-		
+
 		if (type < 128) {
 			action = BasicAction.fromInt(coder.readByte());
 		} else {
 			switch (type) {
 			case ActionTypes.GET_URL:
-				action = new GetUrl(coder, context);
+				action = new GetUrl(coder);
 				break;
 			case ActionTypes.GOTO_FRAME:
-				action = new GotoFrame(coder, context);
+				action = new GotoFrame(coder);
 				break;
 			case ActionTypes.GOTO_LABEL:
-				action = new GotoLabel(coder, context);
+				action = new GotoLabel(coder);
 				break;
 			case ActionTypes.SET_TARGET:
-				action = new SetTarget(coder, context);
+				action = new SetTarget(coder);
 				break;
 			case ActionTypes.WAIT_FOR_FRAME:
-				action = new WaitForFrame(coder, context);
+				action = new WaitForFrame(coder);
 				break;
 			case ActionTypes.CALL:
 				action = Call.getInstance();
 				coder.adjustPointer(24);
 				break;
 			case ActionTypes.PUSH:
-				action = new Push(coder, context);
+				action = new Push(coder);
 				break;
 			case ActionTypes.WAIT_FOR_FRAME_2:
-				action = new WaitForFrame2(coder, context);
+				action = new WaitForFrame2(coder);
 				break;
 			case ActionTypes.JUMP:
-				action = new Jump(coder, context);
+				action = new Jump(coder);
 				break;
 			case ActionTypes.IF:
-				action = new If(coder, context);
+				action = new If(coder);
 				break;
 			case ActionTypes.GET_URL_2:
-				action = new GetUrl2(coder, context);
+				action = new GetUrl2(coder);
 				break;
 			case ActionTypes.GOTO_FRAME_2:
-				action = new GotoFrame2(coder, context);
+				action = new GotoFrame2(coder);
 				break;
 			case ActionTypes.TABLE:
-				action = new Table(coder, context);
+				action = new Table(coder);
 				break;
 			case ActionTypes.REGISTER_COPY:
-				action = new RegisterCopy(coder, context);
+				action = new RegisterCopy(coder);
 				break;
 			case ActionTypes.NEW_FUNCTION:
 				action = new NewFunction(coder, context);
@@ -98,7 +99,7 @@ public final class ActionDecoder implements SWFFactory<Action> {
 				action = new NewFunction2(coder, context);
 				break;
 			default:
-				action = new ActionObject(coder, context);
+				action = new ActionObject(coder);
 				break;
 			}
 		}

@@ -123,26 +123,28 @@ public enum Property {
 	 */
 	YMOUSE(21);
 
-	private static final Map<Integer, Property> table = new LinkedHashMap<Integer, Property>();
+	private static final Map<Integer, Property> TABLE;
 
 	static {
+		TABLE = new LinkedHashMap<Integer, Property>();
+
 		for (Property property : values()) {
-			table.put(property.value, property);
-			table.put(Float.floatToIntBits(property.value), property);
+			TABLE.put(property.value, property);
+			TABLE.put(Float.floatToIntBits(property.value), property);
 		}
 	}
 
-	public static Property fromInt(int type) {
-		return table.get(type);
+	public static Property fromInt(final int type) {
+		return TABLE.get(type);
 	}
 
 	private final int value;
 
-	private Property(int value) {
+	private Property(final int value) {
 		this.value = value;
 	}
 
-	public int getValue(int version) {
+	public int getValue(final int version) {
 		return version < 5 ? Float.floatToIntBits(value) : value;
 	}
 }

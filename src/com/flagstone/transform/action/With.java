@@ -42,10 +42,9 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.coder.SWFFactory;
 
-
 //TODO(doc) Review
 /**
- * With is a stack-based action and supports the <em>with</em> statement from 
+ * With is a stack-based action and supports the <em>with</em> statement from
  * the ActionScript language.
  * 
  * <pre>
@@ -54,26 +53,28 @@ import com.flagstone.transform.coder.SWFFactory;
  * }
  * </pre>
  * 
- * <p>The action temporarily selects the movie clip allowing the following
- * stream of actions to control the movie clip's time-line.</p>
+ * <p>
+ * The action temporarily selects the movie clip allowing the following stream
+ * of actions to control the movie clip's time-line.
+ * </p>
  */
-public final class With implements Action
-{
+public final class With implements Action {
 	private static final String FORMAT = "With: { actions=%s }";
-	
+
 	private List<Action> actions;
 
 	private transient int length;
 
-	//TODO(doc)
-	public With(final SWFDecoder coder, final Context context) throws CoderException
-	{
+	// TODO(doc)
+	public With(final SWFDecoder coder, final Context context)
+			throws CoderException {
+		final SWFFactory<Action> decoder = context.getRegistry()
+				.getActionDecoder();
+
 		coder.readByte();
 		coder.readWord(2, false);
 		length = coder.readWord(2, false);
-
-		int end = coder.getPointer() + (length << 3);
-		SWFFactory<Action>decoder = context.getRegistry().getActionDecoder();
+		final int end = coder.getPointer() + (length << 3);
 
 		actions = new ArrayList<Action>();
 
@@ -88,16 +89,14 @@ public final class With implements Action
 	 * @param anArray
 	 *            the array of action objects. Must not be null.
 	 */
-	public With(List<Action> anArray)
-	{
+	public With(final List<Action> anArray) {
 		setActions(anArray);
 	}
-	
-	//TODO(doc)
-	public With(With object)
-	{
+
+	// TODO(doc)
+	public With(final With object) {
 		actions = new ArrayList<Action>(object.actions.size());
-		
+
 		for (Action action : object.actions) {
 			actions.add(action.copy());
 		}
@@ -107,13 +106,12 @@ public final class With implements Action
 	 * Adds the action object to the array of actions.
 	 * 
 	 * @param anAction
-	 *            an object belonging to a class derived from Action.
-	 *            Must not be null.
+	 *            an object belonging to a class derived from Action. Must not
+	 *            be null.
 	 */
-	public With add(Action anAction)
-	{
+	public With add(final Action anAction) {
 		if (anAction == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
 		}
 		actions.add(anAction);
 		return this;
@@ -122,8 +120,7 @@ public final class With implements Action
 	/**
 	 * Get the array of actions that are executed for the movie clip target.
 	 */
-	public List<Action> getActions()
-	{
+	public List<Action> getActions() {
 		return actions;
 	}
 
@@ -133,24 +130,20 @@ public final class With implements Action
 	 * @param anArray
 	 *            the array of action objects. Must not be null.
 	 */
-	public void setActions(List<Action> anArray)
-	{
+	public void setActions(final List<Action> anArray) {
 		actions = anArray;
 	}
 
-	public With copy() 
-	{
+	public With copy() {
 		return new With(this);
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return String.format(FORMAT, actions);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context)
-	{
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		length = 2;
 
 		for (Action action : actions) {
@@ -160,11 +153,11 @@ public final class With implements Action
 		return 3 + length;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException
-	{
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		coder.writeWord(ActionTypes.WITH, 1);
 		coder.writeWord(2, 2);
-		coder.writeWord(length-2, 2);
+		coder.writeWord(length - 2, 2);
 
 		for (Action action : actions) {
 			action.encode(coder, context);

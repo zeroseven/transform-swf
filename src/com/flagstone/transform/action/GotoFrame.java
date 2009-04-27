@@ -43,62 +43,59 @@ import com.flagstone.transform.coder.SWFEncoder;
  * The GotoFrame action instructs the player to move to the specified frame
  * number in the current movie's main time-line.
  * 
- * <p>GotoFrame is only used to control the main time-line of a movie.
- * Controlling how an individual movie clip is played is handled by a different
- * mechanism. From Flash 5 onward movie clips are defined as objects and the
- * ExecuteMethod action is used to execute the gotoAndPlay() or gotoAndStop()
- * which start and stop playing a movie clip.</p>
+ * <p>
+ * GotoFrame is only used to control the main time-line of a movie. Controlling
+ * how an individual movie clip is played is handled by a different mechanism.
+ * From Flash 5 onward movie clips are defined as objects and the ExecuteMethod
+ * action is used to execute the gotoAndPlay() or gotoAndStop() which start and
+ * stop playing a movie clip.
+ * </p>
  * 
  * @see GotoFrame2
  */
-public final class GotoFrame implements Action
-{
+public final class GotoFrame implements Action {
 	private static final String FORMAT = "GotoFrame: { frameNumber=%d }";
-	
+
 	private int frameNumber;
 
-	//TODO(doc)
-	public GotoFrame(final SWFDecoder coder, final Context context) throws CoderException
-	{
+	// TODO(doc)
+	public GotoFrame(final SWFDecoder coder) throws CoderException {
 		coder.readByte();
 		coder.readWord(2, false);
 		frameNumber = coder.readWord(2, false);
 	}
 
 	/**
-	 * Creates a GotoFrame with the specified frame number. 
+	 * Creates a GotoFrame with the specified frame number.
 	 * 
 	 * @param aNumber
 	 *            the number of the frame. Must be in the range 1..65535.
 	 */
-	public GotoFrame(int aNumber)
-	{
+	public GotoFrame(final int aNumber) {
 		setFrameNumber(aNumber);
 	}
-	
-	//TODO(doc)
-	public GotoFrame(GotoFrame object) {
+
+	// TODO(doc)
+	public GotoFrame(final GotoFrame object) {
 		frameNumber = object.frameNumber;
 	}
 
 	/**
 	 * Returns the number of the frame to move the main time-line to.
 	 */
-	public int getFrameNumber()
-	{
+	public int getFrameNumber() {
 		return frameNumber;
 	}
 
 	/**
-	 * Sets the number of the frame to move the main time-line to. 
+	 * Sets the number of the frame to move the main time-line to.
 	 * 
 	 * @param aNumber
 	 *            the frame number. Must be in the range 1..65535.
 	 */
-	public void setFrameNumber(int aNumber)
-	{
+	public void setFrameNumber(final int aNumber) {
 		if (aNumber < 1 || aNumber > 65535) {
-			throw new IllegalArgumentException(Strings.UNSIGNED_VALUE_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
 		}
 		frameNumber = aNumber;
 	}
@@ -108,18 +105,16 @@ public final class GotoFrame implements Action
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return String.format(FORMAT, frameNumber);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context)
-	{
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		return 5;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException
-	{
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		coder.writeByte(ActionTypes.GOTO_FRAME);
 		coder.writeWord(2, 2);
 		coder.writeWord(frameNumber, 2);

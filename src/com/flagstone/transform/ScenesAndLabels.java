@@ -42,7 +42,7 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 //TODO(doc) Description and methods
 public final class ScenesAndLabels implements MovieTag {
-	
+
 	private static final String FORMAT = "ScenesAndLabels: { scenes=%s; labels=%s }";
 
 	private Map<Integer, String> scenes;
@@ -52,8 +52,8 @@ public final class ScenesAndLabels implements MovieTag {
 	private transient int end;
 	private transient int length;
 
-	public ScenesAndLabels(final SWFDecoder coder, final Context context) throws CoderException {
-		
+	public ScenesAndLabels(final SWFDecoder coder) throws CoderException {
+
 		start = coder.getPointer();
 
 		length = coder.readWord(2, false) & 0x3F;
@@ -67,13 +67,13 @@ public final class ScenesAndLabels implements MovieTag {
 
 		scenes = new LinkedHashMap<Integer, String>();
 		labels = new LinkedHashMap<Integer, String>();
-		for (int i=0; i < count; i++) {
+		for (int i = 0; i < count; i++) {
 			scenes.put(coder.readVariableU32(), coder.readString());
 		}
-		
+
 		count = coder.readVariableU32();
 
-		for (int i=0; i < count; i++) {
+		for (int i = 0; i < count; i++) {
 			labels.put(coder.readVariableU32(), coder.readString());
 		}
 
@@ -83,19 +83,20 @@ public final class ScenesAndLabels implements MovieTag {
 		}
 	}
 
-	public ScenesAndLabels(Map<Integer, String> scenes, Map<Integer, String>labels) {
+	public ScenesAndLabels(final Map<Integer, String> scenes,
+			final Map<Integer, String> labels) {
 		this.scenes = scenes;
 		this.labels = labels;
 	}
 
-	public ScenesAndLabels(ScenesAndLabels object) {
+	public ScenesAndLabels(final ScenesAndLabels object) {
 		scenes = new LinkedHashMap<Integer, String>(object.scenes);
 		labels = new LinkedHashMap<Integer, String>(object.labels);
 	}
 
-	public final void addScene(int offset, String name) {
+	public void addScene(final int offset, final String name) {
 		if (offset < 0 || offset > 65535) {
-			throw new IllegalArgumentException(Strings.FRAME_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.FRAME_RANGE);
 		}
 		if (name == null || name.length() == 0) {
 			throw new IllegalArgumentException(Strings.STRING_NOT_SET);
@@ -107,16 +108,16 @@ public final class ScenesAndLabels implements MovieTag {
 		return scenes;
 	}
 
-	public void setScenes(Map<Integer, String> map) {
+	public void setScenes(final Map<Integer, String> map) {
 		if (map == null) {
-			throw new IllegalArgumentException(Strings.TABLE_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.TABLE_IS_NULL);
 		}
 		scenes = map;
 	}
 
-	public final void addLabel(int offset, String name) {
+	public void addLabel(final int offset, final String name) {
 		if (offset < 0 || offset > 65535) {
-			throw new IllegalArgumentException(Strings.FRAME_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.FRAME_RANGE);
 		}
 		if (name == null || name.length() == 0) {
 			throw new IllegalArgumentException(Strings.STRING_NOT_SET);
@@ -128,9 +129,9 @@ public final class ScenesAndLabels implements MovieTag {
 		return labels;
 	}
 
-	public void setLabels(Map<Integer, String> map) {
+	public void setLabels(final Map<Integer, String> map) {
 		if (map == null) {
-			throw new IllegalArgumentException(Strings.TABLE_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.TABLE_IS_NULL);
 		}
 		labels = map;
 	}
@@ -145,24 +146,27 @@ public final class ScenesAndLabels implements MovieTag {
 	}
 
 	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		
+
 		length = SWFEncoder.sizeVariableU32(scenes.size());
-		
+
 		for (Integer offset : scenes.keySet()) {
-			length += SWFEncoder.sizeVariableU32(offset) + coder.strlen(scenes.get(offset));
+			length += SWFEncoder.sizeVariableU32(offset)
+					+ coder.strlen(scenes.get(offset));
 		}
 
 		length += SWFEncoder.sizeVariableU32(labels.size());
 
 		for (Integer offset : labels.keySet()) {
-			length += SWFEncoder.sizeVariableU32(offset) + coder.strlen(labels.get(offset));
+			length += SWFEncoder.sizeVariableU32(offset)
+					+ coder.strlen(labels.get(offset));
 		}
 
-		return (length > 62 ? 6:2) + length;
+		return (length > 62 ? 6 : 2) + length;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException {
-		
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
+
 		start = coder.getPointer();
 
 		if (length > 62) {
@@ -179,7 +183,7 @@ public final class ScenesAndLabels implements MovieTag {
 			coder.writeVariableU32(identifier.intValue());
 			coder.writeString(scenes.get(identifier));
 		}
-		
+
 		coder.writeVariableU32(labels.size());
 
 		for (Integer identifier : labels.keySet()) {

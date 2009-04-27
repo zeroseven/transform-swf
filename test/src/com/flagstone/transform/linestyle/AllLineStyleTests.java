@@ -4,11 +4,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({
-	LineStyleTest.class,
-	MorphLineStyleTest.class,
-	LineStyle2Test.class,
-	MorphLineStyle2Test.class,
-        })
+@Suite.SuiteClasses( { LineStyleTest.class, MorphLineStyleTest.class,
+		LineStyle2Test.class, MorphLineStyle2Test.class, })
+@SuppressWarnings("PMD.AtLeastOneConstructor")
 public final class AllLineStyleTests {
 }

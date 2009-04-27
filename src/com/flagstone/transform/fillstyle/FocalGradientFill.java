@@ -41,9 +41,6 @@ import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.FillStyle;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.datatype.CoordTransform;
-import com.flagstone.transform.fillstyle.GradientFill.Interpolation;
-import com.flagstone.transform.fillstyle.GradientFill.Spread;
 
 //TODO(doc) Add documentation
 //TODO(code) Implement
@@ -52,77 +49,78 @@ public final class FocalGradientFill implements FillStyle {
 
 	public enum Spread {
 		PAD(0), REFLECT(0x40), REPEAT(0xC0);
-		
-		private static final Map<Integer,Spread>table 
-			= new LinkedHashMap<Integer,Spread>();
+
+		private static final Map<Integer, Spread> TABLE = new LinkedHashMap<Integer, Spread>();
 
 		static {
 			for (Spread type : values()) {
-				table.put(type.value, type);
+				TABLE.put(type.value, type);
 			}
 		}
-		
-		public static Spread fromInt(int type) {
-			return table.get(type);
+
+		public static Spread fromInt(final int type) {
+			return TABLE.get(type);
 		}
 
 		private int value;
-		
-		private Spread(int value) {
+
+		private Spread(final int value) {
 			this.value = value;
 		}
-		
+
 		public int getValue() {
 			return value;
 		}
 	}
-	
+
 	public enum Interpolation {
 		NORMAL(0), LINEAR(0x10);
-		
-		private static final Map<Integer,Interpolation>table 
-			= new LinkedHashMap<Integer,Interpolation>();
+
+		private static final Map<Integer, Interpolation> TABLE = new LinkedHashMap<Integer, Interpolation>();
 
 		static {
 			for (Interpolation type : values()) {
-				table.put(type.value, type);
+				TABLE.put(type.value, type);
 			}
 		}
-		
-		public static Interpolation fromInt(int type) {
-			return table.get(type);
+
+		public static Interpolation fromInt(final int type) {
+			return TABLE.get(type);
 		}
 
 		private int value;
-		
-		private Interpolation(int value) {
+
+		private Interpolation(final int value) {
 			this.value = value;
 		}
-		
+
 		public int getValue() {
 			return value;
 		}
 	}
 
-	private int type;
+	private transient int type;
 	private int spread;
 	private int interpolation;
 	private int focalPoint;
 	private List<Gradient> gradients;
-	
+
 	private transient int count;
 
-	public FocalGradientFill(final SWFDecoder coder, final Context context) throws CoderException {
+	public FocalGradientFill(final SWFDecoder coder, final Context context)
+			throws CoderException {
 		type = coder.readByte();
 		count = coder.readByte();
 		gradients = new ArrayList<Gradient>(count);
 
-		for (int i=0; i<count; i++) {
+		for (int i = 0; i < count; i++) {
 			gradients.add(new Gradient(coder, context));
 		}
 	}
 
-	public FocalGradientFill(Spread spread, Interpolation interpolation, float point, final List<Gradient> anArray) {
+	public FocalGradientFill(final Spread spread,
+			final Interpolation interpolation, final float point,
+			final List<Gradient> anArray) {
 		type = 0x13;
 		setSpread(spread);
 		setInterpolation(interpolation);
@@ -130,37 +128,37 @@ public final class FocalGradientFill implements FillStyle {
 		setFocalPoint(point);
 	}
 
-	public FocalGradientFill(FocalGradientFill object) {
+	public FocalGradientFill(final FocalGradientFill object) {
 		type = object.type;
 		spread = object.spread;
 		interpolation = object.interpolation;
 		focalPoint = object.focalPoint;
 		gradients = new ArrayList<Gradient>(object.gradients);
 	}
-	
+
 	public Spread getSpread() {
 		return Spread.fromInt(spread);
 	}
-	
-	public void setSpread(Spread spread) {
+
+	public void setSpread(final Spread spread) {
 		this.spread = spread.getValue();
 	}
-	
+
 	public Interpolation getInterpolation() {
 		return Interpolation.fromInt(interpolation);
 	}
-	
-	public void setInterpolation(Interpolation interpolation) {
+
+	public void setInterpolation(final Interpolation interpolation) {
 		this.interpolation = interpolation.getValue();
 	}
 
 	public float getFocalPoint() {
-		return focalPoint/256.0f;
+		return focalPoint / 256.0f;
 	}
 
-	public void setFocalPoint(float point) {
-		//TODO value checking required ?
-		this.focalPoint = (int)(point*256);
+	public void setFocalPoint(final float point) {
+		// TODO value checking required ?
+		this.focalPoint = (int) (point * 256);
 	}
 
 	/**
@@ -172,8 +170,8 @@ public final class FocalGradientFill implements FillStyle {
 	 *            an Gradient object. Must not be null.
 	 */
 	public FocalGradientFill add(final Gradient aGradient) {
-		//TODO value checking required ?
-		//TODO Check whether count will exceed 15.
+		// TODO value checking required ?
+		// TODO Check whether count will exceed 15.
 		gradients.add(aGradient);
 		return this;
 	}
@@ -195,9 +193,9 @@ public final class FocalGradientFill implements FillStyle {
 	 *            an array of Gradient objects. Must not be null.
 	 */
 	public void setGradients(final List<Gradient> anArray) {
-		//TODO Check whether array size is > 15
+		// TODO Check whether array size is > 15
 		if (anArray == null) {
-			throw new IllegalArgumentException(Strings.ARRAY_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
 		}
 		gradients = anArray;
 	}
@@ -208,13 +206,13 @@ public final class FocalGradientFill implements FillStyle {
 	}
 
 	@Override
-	//TODO add format string
+	// TODO add format string
 	public String toString() {
 		return "";
 	}
 
 	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		//TODO(optimise) Calculate size of gradient array directly.
+		// TODO(optimise) Calculate size of gradient array directly.
 		int length = 2;
 		count = gradients.size();
 
@@ -225,7 +223,8 @@ public final class FocalGradientFill implements FillStyle {
 		return length;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException {
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		coder.writeByte(type);
 		coder.writeWord(count | spread | interpolation, 1);
 

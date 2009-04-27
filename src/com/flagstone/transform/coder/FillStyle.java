@@ -30,9 +30,8 @@
 
 package com.flagstone.transform.coder;
 
-
 /**
- * The FillStyle interface identifies the fill styles that can be added to a 
+ * The FillStyle interface identifies the fill styles that can be added to a
  * shape.
  */
 public interface FillStyle extends SWFEncodeable, Copyable<FillStyle> {

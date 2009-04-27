@@ -41,24 +41,24 @@ import com.flagstone.transform.coder.SWFEncoder;
  * Enables a movie to be debugged when played using the Flash authoring tool,
  * allowing the variables defined in the arrays of actions specified in object
  * to be inspected. Note that the Flash Player does not support debugging.
-
- * <p>In order to use the debugger a password must be supplied. When encrypted
+ * 
+ * <p>
+ * In order to use the debugger a password must be supplied. When encrypted
  * using the MD5 algorithm it must match the value stored in the password
- * attribute.</p>
+ * attribute.
+ * </p>
  */
-public final class EnableDebugger implements MovieTag
-{
+public final class EnableDebugger implements MovieTag {
 	private static final String FORMAT = "EnableDebugger: { password=%s }";
-	
+
 	private String password;
-	
+
 	private transient int length;
 
-	//TODO(doc)
-	public EnableDebugger(final SWFDecoder coder, final Context context) throws CoderException
-	{
+	// TODO(doc)
+	public EnableDebugger(final SWFDecoder coder) throws CoderException {
 		length = coder.readWord(2, false) & 0x3F;
-		
+
 		if (length == 0x3F) {
 			length = coder.readWord(4, false);
 		}
@@ -74,21 +74,19 @@ public final class EnableDebugger implements MovieTag
 	 *            the string defining the password. Must not be an empty string
 	 *            or null.
 	 */
-	public EnableDebugger(String password)
-	{
+	public EnableDebugger(final String password) {
 		setPassword(password);
 	}
-	
-	//TODO(doc)
-	public EnableDebugger(EnableDebugger object) {
+
+	// TODO(doc)
+	public EnableDebugger(final EnableDebugger object) {
 		password = object.password;
 	}
 
 	/**
 	 * Returns the MD5 encrypted password.
 	 */
-	public String getPassword()
-	{
+	public String getPassword() {
 		return password;
 	}
 
@@ -99,43 +97,40 @@ public final class EnableDebugger implements MovieTag
 	 *            the string defining the password. Must not be an empty string
 	 *            or null.
 	 */
-	public void setPassword(String aString)
-	{
+	public void setPassword(final String aString) {
 		if (aString == null) {
-			throw new IllegalArgumentException(Strings.STRING_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.STRING_IS_NULL);
 		}
 		if (aString.length() == 0) {
-			throw new IllegalArgumentException(Strings.STRING_CANNOT_BE_EMPTY);
+			throw new IllegalArgumentException(Strings.STRING_IS_EMPTY);
 		}
 		password = aString;
 	}
 
 	public EnableDebugger copy() {
-		return new EnableDebugger(this);	
+		return new EnableDebugger(this);
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return String.format(FORMAT, password);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context)
-	{
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		length = 2 + coder.strlen(password);
 
-		return (length > 62 ? 6:2) + length;
+		return (length > 62 ? 6 : 2) + length;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException
-	{
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		if (length > 62) {
 			coder.writeWord((MovieTypes.ENABLE_DEBUGGER << 6) | 0x3F, 2);
 			coder.writeWord(length, 4);
 		} else {
 			coder.writeWord((MovieTypes.ENABLE_DEBUGGER << 6) | length, 2);
 		}
-		
+
 		coder.writeWord(0, 2);
 		coder.writeString(password);
 	}

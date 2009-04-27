@@ -49,14 +49,14 @@ import com.flagstone.transform.coder.SWFEncoder;
  * </p>
  */
 public final class TabOrder implements MovieTag {
-	
+
 	private static final String FORMAT = "TabOrder: { layer=%d; index=%d }";
 
 	private int layer;
 	private int index;
 
-	//TODO(doc)
-	public TabOrder(final SWFDecoder coder, final Context context) throws CoderException {
+	// TODO(doc)
+	public TabOrder(final SWFDecoder coder) throws CoderException {
 
 		if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
 			coder.readWord(4, false);
@@ -77,13 +77,13 @@ public final class TabOrder implements MovieTag {
 	 *            the index of the object in the tabbing order. Must be in the
 	 *            range 0..65535.
 	 */
-	public TabOrder(int layer, int index) {
+	public TabOrder(final int layer, final int index) {
 		setLayer(layer);
 		setIndex(index);
 	}
 
-	//TODO(doc)
-	public TabOrder(TabOrder object) {
+	// TODO(doc)
+	public TabOrder(final TabOrder object) {
 		layer = object.layer;
 		index = object.index;
 	}
@@ -103,9 +103,9 @@ public final class TabOrder implements MovieTag {
 	 * @param layer
 	 *            the layer number. Must be in the range 1..65535.
 	 */
-	public void setLayer(int layer) {
+	public void setLayer(final int layer) {
 		if (layer < 1 || layer > 65535) {
-			throw new IllegalArgumentException(Strings.LAYER_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.LAYER_RANGE);
 		}
 		this.layer = layer;
 	}
@@ -123,10 +123,9 @@ public final class TabOrder implements MovieTag {
 	 * @param index
 	 *            the index in the tabbing order. Must be in the range 0..65535.
 	 */
-	public void setIndex(int index) {
+	public void setIndex(final int index) {
 		if (index < 0 || index > 65535) {
-			throw new IllegalArgumentException(
-					Strings.UNSIGNED_VALUE_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
 		}
 		this.index = index;
 	}
@@ -144,7 +143,8 @@ public final class TabOrder implements MovieTag {
 		return 6;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException {
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		coder.writeWord((MovieTypes.TAB_ORDER << 6) | 4, 2);
 		coder.writeWord(layer, 2);
 		coder.writeWord(index, 2);

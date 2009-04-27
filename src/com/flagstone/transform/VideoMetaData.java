@@ -29,7 +29,6 @@
  */
 package com.flagstone.transform;
 
-import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 import com.flagstone.transform.coder.CoderException;
@@ -39,26 +38,26 @@ import com.flagstone.transform.coder.VideoTag;
 import com.flagstone.transform.coder.VideoTypes;
 
 /**
- * The VideoMetaData class is used to store information on how the video
- * stream should be displayed.
+ * The VideoMetaData class is used to store information on how the video stream
+ * should be displayed.
  * 
- * <p>Although meta-data can be found in all flash Video files there is no
+ * <p>
+ * Although meta-data can be found in all flash Video files there is no
  * documentation published by Adobe that describes the data structure. As a
- * result the information is decoded as a simple block of binary data.</p>
+ * result the information is decoded as a simple block of binary data.
+ * </p>
  */
-public final class VideoMetaData implements VideoTag
-{
+public final class VideoMetaData implements VideoTag {
 	private static final String FORMAT = "VideoMetaData: { data=%d }";
-	
+
 	private int timestamp;
 	private byte[] data;
-	
+
 	private transient int start;
 	private transient int length;
 	private transient int end;
 
-	public VideoMetaData(FLVDecoder coder) throws CoderException
-	{
+	public VideoMetaData(final FLVDecoder coder) throws CoderException {
 		start = coder.getPointer();
 		coder.readByte();
 		length = coder.readWord(3, false);
@@ -80,24 +79,21 @@ public final class VideoMetaData implements VideoTag
 	 *            an array of bytes containing the encoded meta-data. Must not
 	 *            be null.
 	 */
-	public VideoMetaData(int timestamp, byte[] data)
-	{
+	public VideoMetaData(final int timestamp, final byte[] data) {
 		setTimestamp(timestamp);
 		setData(data);
 	}
 
-	public VideoMetaData(VideoMetaData object)
-	{
+	public VideoMetaData(final VideoMetaData object) {
 		timestamp = object.timestamp;
 		data = Arrays.copyOf(object.data, object.data.length);
 	}
 
 	/**
-	 * Returns the timestamp, in milliseconds, relative to the start of the file,
-	 * when the audio or video will be played.
+	 * Returns the timestamp, in milliseconds, relative to the start of the
+	 * file, when the audio or video will be played.
 	 */
-	public int getTimestamp()
-	{
+	public int getTimestamp() {
 		return timestamp;
 	}
 
@@ -105,22 +101,22 @@ public final class VideoMetaData implements VideoTag
 	 * Sets the timestamp, in milliseconds, relative to the start of the file,
 	 * when the audio or video will be played.
 	 * 
-	 * @param time the time in milliseconds relative to the start of the file.
-	 * Must be in the range 0..16,777,215.
+	 * @param time
+	 *            the time in milliseconds relative to the start of the file.
+	 *            Must be in the range 0..16,777,215.
 	 */
-	public void setTimestamp(int time)
-	{
+	public void setTimestamp(final int time) {
 		if (time < 0 || time > 16777215) {
-			throw new IllegalArgumentException(Strings.TIMESTAMP_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.TIMESTAMP_RANGE);
 		}
 		timestamp = time;
 	}
+
 	/**
 	 * Get the encoded meta data that describes how the video stream should be
 	 * played.
 	 */
-	public byte[] getData()
-	{
+	public byte[] getData() {
 		return data;
 	}
 
@@ -132,10 +128,9 @@ public final class VideoMetaData implements VideoTag
 	 *            an array of bytes containing the encoded meta-data. Must not
 	 *            be null.
 	 */
-	public void setData(byte[] data)
-	{
+	public void setData(final byte[] data) {
 		if (data == null) {
-			throw new IllegalArgumentException(Strings.DATA_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.DATA_IS_NULL);
 		}
 		this.data = data;
 	}
@@ -143,8 +138,7 @@ public final class VideoMetaData implements VideoTag
 	/**
 	 * Creates and returns a deep copy of this object.
 	 */
-	public VideoMetaData copy() 
-	{
+	public VideoMetaData copy() {
 		return new VideoMetaData(this);
 	}
 
@@ -152,24 +146,21 @@ public final class VideoMetaData implements VideoTag
 	 * Returns a short description of this action.
 	 */
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return String.format(FORMAT, data.length);
 	}
 
-	public int prepareToEncode()
-	{
+	public int prepareToEncode() {
 		length = 11 + data.length;
 
 		return length;
 	}
 
-	public void encode(FLVEncoder coder) throws CoderException
-	{
+	public void encode(final FLVEncoder coder) throws CoderException {
 		start = coder.getPointer();
 
 		coder.writeWord(VideoTypes.VIDEO_DATA, 1);
-		coder.writeWord(length-11, 3);
+		coder.writeWord(length - 11, 3);
 		end = coder.getPointer() + (length << 3);
 		coder.writeWord(timestamp, 3);
 		coder.writeWord(0, 4);

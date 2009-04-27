@@ -36,7 +36,6 @@ import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.datatype.Color;
 
 //TODO(doc) Review
 /**
@@ -44,31 +43,34 @@ import com.flagstone.transform.datatype.Color;
  * gradient fill is displayed at the start and end of the shape morphing
  * process.
  * 
- * <p>The ratio is a number between 0 and 255 - that specifies the relative location 
- * in the square. For Linear Gradient Fills a ratio of zero is mapped to the left 
- * side of the gradient square and 255 is mapped to the right side of the square. 
- * For Radial Gradient Fills a ratio of zero is mapped to the centre of the 
- * gradient square and 255 is mapped to the edge of the largest circle that fits 
- * inside the gradient square. The color is the colour to be displayed at the
- * point identified by the ratio.</p>
+ * <p>
+ * The ratio is a number between 0 and 255 - that specifies the relative
+ * location in the square. For Linear Gradient Fills a ratio of zero is mapped
+ * to the left side of the gradient square and 255 is mapped to the right side
+ * of the square. For Radial Gradient Fills a ratio of zero is mapped to the
+ * centre of the gradient square and 255 is mapped to the edge of the largest
+ * circle that fits inside the gradient square. The color is the colour to be
+ * displayed at the point identified by the ratio.
+ * </p>
  * 
- * <p>The MorphGradient defines ratios and colours for the start and end of the
- * morphing process, the Flash Player performs the interpolation between the 
- * two values as the shape is morphed.</p>
-
+ * <p>
+ * The MorphGradient defines ratios and colours for the start and end of the
+ * morphing process, the Flash Player performs the interpolation between the two
+ * values as the shape is morphed.
+ * </p>
+ * 
  * @see Gradient
  * @see GradientFill
  * @see MorphGradientFill
  */
-public final class MorphGradient implements SWFEncodeable
-{
+public final class MorphGradient implements SWFEncodeable {
 	private static final String FORMAT = "MorphGradient: { start=%s; end=%s }";
-	
+
 	private Gradient start;
 	private Gradient end;
-	
-	public MorphGradient(final SWFDecoder coder, final Context context) throws CoderException
-	{
+
+	public MorphGradient(final SWFDecoder coder, final Context context)
+			throws CoderException {
 		start = new Gradient(coder, context);
 		end = new Gradient(coder, context);
 	}
@@ -82,32 +84,29 @@ public final class MorphGradient implements SWFEncodeable
 	 * @param end
 	 *            the Gradient containing the final ratio and colour.
 	 */
-	public MorphGradient(Gradient start, Gradient end)
-	{
+	public MorphGradient(final Gradient start, final Gradient end) {
 		setStart(start);
 		setEnd(end);
 	}
-	
-	public MorphGradient(MorphGradient object) {
+
+	public MorphGradient(final MorphGradient object) {
 		start = object.start;
 		end = object.end;
 	}
 
 	/**
-	 * Returns the gradient containing the ratio and colour at the start of the 
+	 * Returns the gradient containing the ratio and colour at the start of the
 	 * morphing process.
 	 */
-	public Gradient getStart()
-	{
+	public Gradient getStart() {
 		return start;
 	}
 
 	/**
-	 * Returns the gradient containing the ratio and colour at the end of the 
+	 * Returns the gradient containing the ratio and colour at the end of the
 	 * morphing process.
 	 */
-	public Gradient getEnd()
-	{
+	public Gradient getEnd() {
 		return end;
 	}
 
@@ -118,10 +117,9 @@ public final class MorphGradient implements SWFEncodeable
 	 *            the Gradient containing the ratio and colour at the start of
 	 *            the morphing process.
 	 */
-	public void setStart(Gradient gradient)
-	{
+	public void setStart(final Gradient gradient) {
 		if (gradient == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
 		}
 		start = gradient;
 	}
@@ -130,30 +128,26 @@ public final class MorphGradient implements SWFEncodeable
 	 * Sets the gradient at the end of the morphing process.
 	 * 
 	 * @param gradent
-	 *            the Gradient containing the ratio and colour at the end of
-	 *            the morphing process.
+	 *            the Gradient containing the ratio and colour at the end of the
+	 *            morphing process.
 	 */
-	public void setEnd(Gradient gradient)
-	{
+	public void setEnd(final Gradient gradient) {
 		if (gradient == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
 		}
 		end = gradient;
 	}
 
-	public MorphGradient copy()
-	{
+	public MorphGradient copy() {
 		return new MorphGradient(this);
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return String.format(FORMAT, start.toString(), end.toString());
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context)
-	{
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		int length = 0;
 
 		length += start.prepareToEncode(coder, context);
@@ -162,8 +156,8 @@ public final class MorphGradient implements SWFEncodeable
 		return length;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException
-	{
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		start.encode(coder, context);
 		end.encode(coder, context);
 	}

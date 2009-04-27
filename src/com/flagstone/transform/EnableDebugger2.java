@@ -38,32 +38,34 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
 /**
- * EnableDebugger2 is an updated version or the EnableDebugger instruction 
- * which enables a movie to be debugged.
+ * EnableDebugger2 is an updated version or the EnableDebugger instruction which
+ * enables a movie to be debugged.
  * 
- * <p>In order to use the debugger a password must be supplied. When encrypted
+ * <p>
+ * In order to use the debugger a password must be supplied. When encrypted
  * using the MD5 algorithm it must match the value stored in the password
- * attribute.</p>
+ * attribute.
+ * </p>
  * 
- * <p>The EnableDebugger2 2 data structure was introduced in Flash 6. It replaced 
- * EnableDebugger in Flash 5 with a different format to support internal changes 
- * in the Flash Player. The functionality was not changed.</p>
+ * <p>
+ * The EnableDebugger2 2 data structure was introduced in Flash 6. It replaced
+ * EnableDebugger in Flash 5 with a different format to support internal changes
+ * in the Flash Player. The functionality was not changed.
+ * </p>
  * 
  * @see EnableDebugger
  */
-public final class EnableDebugger2 implements MovieTag
-{
+public final class EnableDebugger2 implements MovieTag {
 	private static final String FORMAT = "EnableDebugger2: { password=%s }";
 
 	private String password;
-	
+
 	private transient int length;
 
-	//TODO(doc)
-	public EnableDebugger2(final SWFDecoder coder, final Context context) throws CoderException
-	{
+	// TODO(doc)
+	public EnableDebugger2(final SWFDecoder coder) throws CoderException {
 		length = coder.readWord(2, false) & 0x3F;
-		
+
 		if (length == 0x3F) {
 			length = coder.readWord(4, false);
 		}
@@ -76,24 +78,22 @@ public final class EnableDebugger2 implements MovieTag
 	 * Creates a EnableDebugger2 object with an MD5 encrypted password.
 	 * 
 	 * @param password
-	 *            the string defining the password. The string must not be 
-	 *            empty or null.
+	 *            the string defining the password. The string must not be empty
+	 *            or null.
 	 */
-	public EnableDebugger2(String password)
-	{
+	public EnableDebugger2(final String password) {
 		setPassword(password);
 	}
-	
-	//TODO(doc)
-	public EnableDebugger2(EnableDebugger2 object) {
+
+	// TODO(doc)
+	public EnableDebugger2(final EnableDebugger2 object) {
 		password = object.password;
 	}
 
 	/**
 	 * Returns the MD5 encrypted password.
 	 */
-	public String getPassword()
-	{
+	public String getPassword() {
 		return password;
 	}
 
@@ -104,43 +104,40 @@ public final class EnableDebugger2 implements MovieTag
 	 *            the string defining the password. Must not be an empty string
 	 *            or null.
 	 */
-	public void setPassword(String aString)
-	{
+	public void setPassword(final String aString) {
 		if (aString == null) {
-			throw new IllegalArgumentException(Strings.STRING_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.STRING_IS_NULL);
 		}
 		if (aString.length() == 0) {
-			throw new IllegalArgumentException(Strings.STRING_CANNOT_BE_EMPTY);
+			throw new IllegalArgumentException(Strings.STRING_IS_EMPTY);
 		}
 		password = aString;
 	}
 
 	public EnableDebugger2 copy() {
-		return new EnableDebugger2(this);	
+		return new EnableDebugger2(this);
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return String.format(FORMAT, password);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context)
-	{
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		length = 2 + coder.strlen(password);
 
-		return (length > 62 ? 6:2) + length;
+		return (length > 62 ? 6 : 2) + length;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException
-	{
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		if (length > 62) {
 			coder.writeWord((MovieTypes.ENABLE_DEBUGGER_2 << 6) | 0x3F, 2);
 			coder.writeWord(length, 4);
 		} else {
 			coder.writeWord((MovieTypes.ENABLE_DEBUGGER_2 << 6) | length, 2);
 		}
-		
+
 		coder.writeWord(0, 2);
 		coder.writeString(password);
 	}

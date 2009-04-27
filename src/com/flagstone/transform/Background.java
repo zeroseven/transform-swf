@@ -59,13 +59,14 @@ import com.flagstone.transform.datatype.Color;
  * @see Color
  */
 public final class Background implements MovieTag {
-	
+
 	private static final String FORMAT = "Background: { color=%s }";
 
 	private Color color;
 
-	//TODO(doc)
-	public Background(final SWFDecoder coder, final Context context) throws CoderException {
+	// TODO(doc)
+	public Background(final SWFDecoder coder, final Context context)
+			throws CoderException {
 		if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
 			coder.readWord(4, false);
 		}
@@ -107,7 +108,7 @@ public final class Background implements MovieTag {
 	 */
 	public void setColor(final Color color) {
 		if (color == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
 		}
 		this.color = color;
 	}
@@ -120,12 +121,13 @@ public final class Background implements MovieTag {
 	public String toString() {
 		return String.format(FORMAT, color.toString());
 	}
-	
+
 	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		return 5;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException {
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		coder.writeWord((MovieTypes.SET_BACKGROUND_COLOR << 6) | 3, 2);
 		color.encode(coder, context);
 	}

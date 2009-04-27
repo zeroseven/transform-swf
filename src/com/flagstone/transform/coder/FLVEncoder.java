@@ -1,17 +1,14 @@
 package com.flagstone.transform.coder;
 
-
-public class FLVEncoder extends Encoder 
-{
+public class FLVEncoder extends Encoder {
 	protected int type;
 	public int version;
 	protected String encoding;
 
-	public FLVEncoder(int size)
-	{
+	public FLVEncoder(final int size) {
 		super(size);
 	}
-	
+
 	/**
 	 * Write a word.
 	 * 
@@ -37,7 +34,7 @@ public class FLVEncoder extends Encoder
 	 *            the value to be written.
 	 */
 	public void writeDouble(final double value) {
-		long longValue = Double.doubleToLongBits(value);
+		final long longValue = Double.doubleToLongBits(value);
 
 		writeWord((int) (longValue >>> 32), 4);
 		writeWord((int) longValue, 4);

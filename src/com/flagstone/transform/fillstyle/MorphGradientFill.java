@@ -44,7 +44,7 @@ import com.flagstone.transform.datatype.CoordTransform;
 //TODO(doc) Review
 /**
  * MorphGradientFill defines how a colour gradient changes across an area filled
- * in a shape as it is morphed. {@link GradientFill} has a description of colour 
+ * in a shape as it is morphed. {@link GradientFill} has a description of colour
  * gradients.
  * 
  * @see MorphGradient
@@ -54,27 +54,27 @@ public final class MorphGradientFill implements FillStyle {
 
 	private static final String FORMAT = "MorphGradientFill: { start=%s; end=%s; gradients=%s }";
 
-	private int type;
+	private transient int type;
 	private CoordTransform startTransform;
 	private CoordTransform endTransform;
 	private List<MorphGradient> gradients;
-	
+
 	private transient int count;
 
-	//TODO(doc)
-	public MorphGradientFill(final SWFDecoder coder, final Context context) throws CoderException {
-	    type = coder.readByte();
+	// TODO(doc)
+	public MorphGradientFill(final SWFDecoder coder, final Context context)
+			throws CoderException {
+		type = coder.readByte();
 		startTransform = new CoordTransform(coder);
 		endTransform = new CoordTransform(coder);
 		count = coder.readByte();
 
 		gradients = new ArrayList<MorphGradient>(count);
 
-		for (int i=0; i<count; i++) {
+		for (int i = 0; i < count; i++) {
 			gradients.add(new MorphGradient(coder, context));
 		}
 	}
-
 
 	/**
 	 * Creates a MorphGradientFill object specifying the type of fill, starting
@@ -93,22 +93,22 @@ public final class MorphGradientFill implements FillStyle {
 	 *            an array of MorphGradient objects defining the control points
 	 *            for the gradient.
 	 */
-	public MorphGradientFill(boolean radial, final CoordTransform start,
+	public MorphGradientFill(final boolean radial, final CoordTransform start,
 			final CoordTransform end, final List<MorphGradient> gradients) {
 		setRadial(radial);
 		setStartTransform(start);
 		setEndTransform(end);
 		setGradients(gradients);
 	}
-	
-	//TODO(doc)
-	public MorphGradientFill(MorphGradientFill object) {
+
+	// TODO(doc)
+	public MorphGradientFill(final MorphGradientFill object) {
 		type = object.type;
 		startTransform = object.startTransform;
 		endTransform = object.endTransform;
-		
+
 		gradients = new ArrayList<MorphGradient>(object.gradients.size());
-		
+
 		for (MorphGradient gradient : object.gradients) {
 			gradients.add(gradient.copy());
 		}
@@ -122,21 +122,20 @@ public final class MorphGradientFill implements FillStyle {
 	 */
 	public MorphGradientFill add(final MorphGradient aGradient) {
 		if (aGradient == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
 		}
 		if (gradients.size() == 15) {
-			throw new IllegalArgumentException(Strings.GRADIENT_COUNT_EXCEEDED);
+			throw new IllegalArgumentException(Strings.MAX_GRADIENTS);
 		}
 		gradients.add(aGradient);
 		return this;
 	}
 
-	
 	public boolean isRadial() {
 		return (type & 0x02) != 0;
 	}
-	
-	public void setRadial(boolean radial) {
+
+	public void setRadial(final boolean radial) {
 		if (radial) {
 			type = 0x12;
 		} else {
@@ -177,7 +176,7 @@ public final class MorphGradientFill implements FillStyle {
 	 */
 	public void setStartTransform(final CoordTransform aTransform) {
 		if (aTransform == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
 		}
 		startTransform = aTransform;
 	}
@@ -191,7 +190,7 @@ public final class MorphGradientFill implements FillStyle {
 	 */
 	public void setEndTransform(final CoordTransform aTransform) {
 		if (aTransform == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
 		}
 		endTransform = aTransform;
 	}
@@ -207,10 +206,10 @@ public final class MorphGradientFill implements FillStyle {
 	 */
 	public void setGradients(final List<MorphGradient> anArray) {
 		if (anArray == null) {
-			throw new IllegalArgumentException(Strings.ARRAY_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
 		}
 		if (anArray.size() > 15) {
-			throw new IllegalArgumentException(Strings.GRADIENT_COUNT_EXCEEDED);
+			throw new IllegalArgumentException(Strings.MAX_GRADIENTS);
 		}
 		gradients = anArray;
 	}
@@ -227,12 +226,12 @@ public final class MorphGradientFill implements FillStyle {
 
 	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		count = gradients.size();
-		return 2 + startTransform.prepareToEncode(coder, context) + 
-			endTransform.prepareToEncode(coder, context) +
-			(count * 10);
+		return 2 + startTransform.prepareToEncode(coder, context)
+				+ endTransform.prepareToEncode(coder, context) + (count * 10);
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException {
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		coder.writeByte(type);
 		startTransform.encode(coder, context);
 		endTransform.encode(coder, context);

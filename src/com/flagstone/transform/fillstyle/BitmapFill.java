@@ -96,12 +96,13 @@ public final class BitmapFill implements FillStyle {
 
 	private static final String FORMAT = "BitmapFill: { identifier=%d; transform=%s }";
 
-	private int type; 
+	private transient int type;
 	private int identifier;
 	private CoordTransform transform;
 
-	//TODO(doc)
-	public BitmapFill(final SWFDecoder coder, final Context context) throws CoderException {
+	// TODO(doc)
+	public BitmapFill(final SWFDecoder coder)
+			throws CoderException {
 		type = coder.readByte();
 		identifier = coder.readWord(2, false);
 		transform = new CoordTransform(coder);
@@ -124,26 +125,27 @@ public final class BitmapFill implements FillStyle {
 	 *            a CoordTransform object that typically changes the size and
 	 *            location and position of the image inside the parent shape.
 	 */
-	public BitmapFill(final boolean tiled, final boolean smoothed, final int uid, final CoordTransform transform) {
+	public BitmapFill(final boolean tiled, final boolean smoothed,
+			final int uid, final CoordTransform transform) {
 		type = 0x40;
 		setTiled(tiled);
 		setSmoothed(smoothed);
 		setIdentifier(uid);
 		setTransform(transform);
 	}
-	
-	//TODO(doc)
-	public BitmapFill(BitmapFill object) {
+
+	// TODO(doc)
+	public BitmapFill(final BitmapFill object) {
 		type = object.type;
 		identifier = object.identifier;
 		transform = object.transform;
 	}
-	
+
 	public boolean isTiled() {
 		return (type & 0x01) != 0;
 	}
-	
-	public void setTiled(boolean tiled) {
+
+	public void setTiled(final boolean tiled) {
 		if (tiled) {
 			type &= 0x00FE;
 		} else {
@@ -154,8 +156,8 @@ public final class BitmapFill implements FillStyle {
 	public boolean isSmoothed() {
 		return (type & 0x02) != 0;
 	}
-	
-	public void setSmoothed(boolean smoothed) {
+
+	public void setSmoothed(final boolean smoothed) {
 		if (smoothed) {
 			type &= 0x00FD;
 		} else {
@@ -181,7 +183,7 @@ public final class BitmapFill implements FillStyle {
 	 */
 	public void setIdentifier(final int uid) {
 		if ((uid < 1) || (uid > 65535)) {
-			throw new IllegalArgumentException(Strings.IDENTIFIER_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
 		}
 		identifier = uid;
 	}
@@ -205,7 +207,7 @@ public final class BitmapFill implements FillStyle {
 	 */
 	public void setTransform(final CoordTransform aTransform) {
 		if (aTransform == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
 		}
 		transform = aTransform;
 	}
@@ -223,7 +225,8 @@ public final class BitmapFill implements FillStyle {
 		return 3 + transform.prepareToEncode(coder, context);
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException {
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		coder.writeByte(type);
 		coder.writeWord(identifier, 2);
 		transform.encode(coder, context);

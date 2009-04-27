@@ -47,10 +47,10 @@ import com.flagstone.transform.coder.SWFEncoder;
  * Whether a colour contains transparency information is determined by the
  * object that contains the colour. For example colours in a DefineShape or
  * DefineShape2 objects do not uses the alpha channel while those in an
- * DefineShape3 object do. The Context object, passed to each Color object,
- * when it is encoded or decoded signals whether the alpha channel should be 
+ * DefineShape3 object do. The Context object, passed to each Color object, when
+ * it is encoded or decoded signals whether the alpha channel should be
  * included.
- * </p> 
+ * </p>
  */
 // TODO(doc) Check comments for all methods
 public final class Color implements SWFEncodeable {
@@ -79,7 +79,7 @@ public final class Color implements SWFEncodeable {
 		alpha = 255;
 	}
 
-	public Color(final int rgb, int alpha) {
+	public Color(final int rgb, final int alpha) {
 		red = (rgb >>> 16) & 0x00FF;
 		green = (rgb >>> 8) & 0x00FF;
 		blue = rgb & 0x00FF;
@@ -126,7 +126,7 @@ public final class Color implements SWFEncodeable {
 
 	private int checkLevel(final int level) {
 		if (level < 0 || level > 255) {
-			throw new IllegalArgumentException(Strings.COLOR_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.COLOR_RANGE);
 		}
 		return level;
 	}

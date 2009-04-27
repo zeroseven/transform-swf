@@ -42,7 +42,6 @@ import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.font.DefineFontName;
 
 @SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
 		"PMD.JUnitAssertionsShouldIncludeMessage" })
@@ -53,9 +52,6 @@ public final class DefineFontNameTest {
 	private transient final String copyright = "copyright";
 
 	private transient DefineFontName fixture;
-
-	private transient final byte[] empty = new byte[] { (byte) 0x04, 0x16,
-			0x00, 0x00, 0x00, 0x00 };
 
 	private transient final byte[] encoded = new byte[] { (byte) 0x11, 0x16,
 			0x01, 0x00, 0x66, 0x6F, 0x6E, 0x74, 0x00, 0x63, 0x6F, 0x70, 0x79,
@@ -129,9 +125,8 @@ public final class DefineFontNameTest {
 	@Test
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
-		Context context = new Context();
 
-		fixture = new DefineFontName(decoder, context);
+		fixture = new DefineFontName(decoder);
 
 		assertTrue(decoder.eof());
 		assertEquals(identifier, fixture.getIdentifier());
@@ -142,9 +137,8 @@ public final class DefineFontNameTest {
 	@Test
 	public void decodeExtended() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(extended);
-		Context context = new Context();
 
-		fixture = new DefineFontName(decoder, context);
+		fixture = new DefineFontName(decoder);
 
 		assertTrue(decoder.eof());
 		assertEquals(identifier, fixture.getIdentifier());

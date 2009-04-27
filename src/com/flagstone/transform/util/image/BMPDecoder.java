@@ -53,569 +53,551 @@ import com.flagstone.transform.image.DefineImage2;
 /**
  * BMPDecoder decodes Bitmap images (BMP) so they can be used in a Flash file.
  */
-public final class BMPDecoder implements ImageProvider, ImageDecoder
-{
-    protected final static int[] bmpSignature = { 66, 77 };
+public final class BMPDecoder implements ImageProvider, ImageDecoder {
+	private final static int[] bmpSignature = { 66, 77 };
 
-    protected final static int BI_RGB = 0;
-    protected final static int BI_RLE8 = 1;
-    protected final static int BI_RLE4 = 2;
-    protected final static int BI_BITFIELDS = 3;
-    
-    private ImageFormat format;
-    private int width;
-    private int height;
-    private byte[] table;
-    private byte[] image;
+	private final static int BI_RGB = 0;
+	private final static int BI_RLE8 = 1;
+	private final static int BI_RLE4 = 2;
+	private final static int BI_BITFIELDS = 3;
 
-    private int bitDepth;
-    private int compressionMethod;
-    private int redMask;
-    private int greenMask;
-    private int blueMask;
-     
-    public void read(String path) throws FileNotFoundException, IOException, DataFormatException
-    {
-    	read(new File(path));
-    }
-    
-    public void read(File file) throws FileNotFoundException, IOException, DataFormatException
-    {
-    	ImageInfo info = new ImageInfo();
-    	info.setInput(new RandomAccessFile(file, "r"));
-    	info.setDetermineImageNumber(true);
-    	
-    	if (!info.check()) 
-    	{
-    		throw new DataFormatException(Strings.UNSUPPORTED_FILE_FORMAT);
-    	}
-    	
+	private transient ImageFormat format;
+	private transient int width;
+	private transient int height;
+	private transient byte[] table;
+	private transient byte[] image;
+
+	private transient int bitDepth;
+	private transient int compressionMethod;
+	private transient int redMask;
+	private transient int greenMask;
+	private transient int blueMask;
+
+	public void read(final String path) throws FileNotFoundException, IOException,
+			DataFormatException {
+		read(new File(path));
+	}
+
+	public void read(final File file) throws FileNotFoundException, IOException,
+			DataFormatException {
+		final ImageInfo info = new ImageInfo();
+		info.setInput(new RandomAccessFile(file, "r"));
+		info.setDetermineImageNumber(true);
+
+		if (!info.check()) {
+			throw new DataFormatException(Strings.INVALID_FORMAT);
+		}
+
 		decode(loadFile(file));
-    }
+	}
 
-    public void read(URL url) throws FileNotFoundException, IOException, DataFormatException
-    {
-	    URLConnection connection = url.openConnection();
+	public void read(final URL url) throws FileNotFoundException, IOException,
+			DataFormatException {
+		final URLConnection connection = url.openConnection();
 
-	    int fileSize = connection.getContentLength();
-            
-	    if (fileSize<0) {
-              throw new FileNotFoundException(url.getFile());
-	    }
-	    
-	    byte[] bytes = new byte[fileSize];
+		final int fileSize = connection.getContentLength();
 
-	    InputStream stream = url.openStream();
-	    BufferedInputStream buffer = new BufferedInputStream(stream);
+		if (fileSize < 0) {
+			throw new FileNotFoundException(url.getFile());
+		}
 
-	    buffer.read(bytes);
-	    buffer.close();
+		final byte[] bytes = new byte[fileSize];
 
-    	ImageInfo info = new ImageInfo();
-    	info.setInput(new ByteArrayInputStream(bytes));
-    	info.setDetermineImageNumber(true);
-    	
-    	if (!info.check())  {
-    		throw new DataFormatException(Strings.UNSUPPORTED_FILE_FORMAT);
-    	}
-    	
+		final InputStream stream = url.openStream();
+		final BufferedInputStream buffer = new BufferedInputStream(stream);
+
+		buffer.read(bytes);
+		buffer.close();
+
+		final ImageInfo info = new ImageInfo();
+		info.setInput(new ByteArrayInputStream(bytes));
+		info.setDetermineImageNumber(true);
+
+		if (!info.check()) {
+			throw new DataFormatException(Strings.INVALID_FORMAT);
+		}
+
 		decode(bytes);
-    }
+	}
 
-    public ImageTag defineImage(int identifier)
-    {
-    	ImageTag object = null;
-    	
-		switch (format)
-        {
-            case IDX8: 
-            	object = new DefineImage(identifier, width, height, table.length, zip(merge(adjustScan(width, height, image), table))); 
-            	break;
-            case IDXA: 
-            	object = new DefineImage2(identifier, width, height, table.length, zip(mergeAlpha(adjustScan(width, height, image), table))); 
-            	break;
-            case RGB5: 
-            	object = new DefineImage(identifier, width, height, zip(packColours(width, height, image)), 16); 
-            	break;
-            case RGB8: 
-            	orderAlpha(image);
-            	object = new DefineImage(identifier, width, height, zip(image), 24); 
-            	break;
-            case RGBA: 
-            	applyAlpha(image);
-            	object = new DefineImage2(identifier, width, height, zip(image)); 
-            	break;
-            default:
-            	break; //TODO fix this 
-        }
-    	return object;
-    }
+	public ImageTag defineImage(final int identifier) {
+		ImageTag object = null;
 
-    public ImageDecoder newDecoder() {
-    	return new BMPDecoder();
-    }
-    
-    public int getWidth() {
-    	return width;
-    }
-    public int getHeight() {
-    	return height;
-    }
-    
-    public byte[] getImage() {
-    	return Arrays.copyOf(image, image.length);
-    }
-    
-	protected void decode(byte[] bytes) throws DataFormatException
-    {
-        SWFDecoder coder = new SWFDecoder(bytes);
-        
-        for (int i=0; i<2; i++)
-        {
-            if (coder.readByte() != bmpSignature[i]) {
-                throw new DataFormatException(Strings.UNSUPPORTED_FILE_FORMAT);
-            }
-        }
+		switch (format) {
+		case IDX8:
+			object = new DefineImage(identifier, width, height, table.length,
+					zip(merge(adjustScan(width, height, image), table)));
+			break;
+		case IDXA:
+			object = new DefineImage2(identifier, width, height, table.length,
+					zip(mergeAlpha(adjustScan(width, height, image), table)));
+			break;
+		case RGB5:
+			object = new DefineImage(identifier, width, height,
+					zip(packColours(width, height, image)), 16);
+			break;
+		case RGB8:
+			orderAlpha(image);
+			object = new DefineImage(identifier, width, height, zip(image), 24);
+			break;
+		case RGBA:
+			applyAlpha(image);
+			object = new DefineImage2(identifier, width, height, zip(image));
+			break;
+		default:
+			break; // TODO fix this
+		}
+		return object;
+	}
 
-        coder.readWord(4, false); // fileSize
-        coder.readWord(4, false); // reserved
-        
-        int offset = coder.readWord(4, false);
-        int headerSize = coder.readWord(4, false);
-        
-        int bitsPerPixel;
-        int coloursUsed;
+	public ImageDecoder newDecoder() {
+		return new BMPDecoder();
+	}
 
-        switch (headerSize)
-        {
-            case 12:
-                width = coder.readWord(2, false);
-                height = coder.readWord(2, false);
-                coder.readWord(2, false); // bitPlanes
-                bitsPerPixel = coder.readWord(2, false);
-                coloursUsed = 0;
-                break;
-            case 40:
-                width = coder.readWord(4, false);
-                height = coder.readWord(4, false);
-                coder.readWord(2, false); // bitPlanes
-                bitsPerPixel = coder.readWord(2, false);
-                compressionMethod = coder.readWord(4, false);
-                coder.readWord(4, false); //imageSize
-                coder.readWord(4, false); // horizontalResolution
-                coder.readWord(4, false); // verticalResolution
-                coloursUsed = coder.readWord(4, false);
-                coder.readWord(4, false); // importantColours
-                break;
-            default:
-            	bitsPerPixel = 0;
-            	coloursUsed = 0;
-                break;
-        }
-        
-        if (compressionMethod == BI_BITFIELDS)
-        {
-            redMask = coder.readWord(4, false);
-            greenMask = coder.readWord(4, false);
-            blueMask = coder.readWord(4, false);
-        }
-        
-        switch (bitsPerPixel)
-        {
-            case 1: format = ImageFormat.IDX8; bitDepth = 1; break;
-            case 2: format = ImageFormat.IDX8; bitDepth = 2; break;
-            case 4: format = ImageFormat.IDX8; bitDepth = 4; break;
-            case 8: format = ImageFormat.IDX8; bitDepth = 8; break;
-            case 16: format = ImageFormat.RGB5; bitDepth = 5; break;
-            case 24: format = ImageFormat.RGB8; bitDepth = 8; break;
-            case 32: format = ImageFormat.RGBA; bitDepth = 8; break;
-            default: throw new DataFormatException(Strings.UNSUPPORTED_FILE_FORMAT);
-        }
-        
-        if (format == ImageFormat.IDX8) 
-        {
-            coloursUsed = 1 << bitsPerPixel;
-            table = new byte[coloursUsed*4];
-            image = new byte[height*width];
-            
-            int index = 0;
+	public int getWidth() {
+		return width;
+	}
 
-            if (headerSize == 12)
-            {
-                for (int i=0; i<coloursUsed; i++, index+=4) 
-                {
-                    table[index+3] = (byte)0xFF;
-                    table[index+2] = (byte)coder.readByte();
-                    table[index+1] = (byte)coder.readByte();
-                    table[index] = (byte)coder.readByte();
-                }
-            }
-            else
-            {
-                for (int i=0; i < coloursUsed; i++, index+=4)
-                {
-                    table[index] = (byte)coder.readByte();
-                    table[index+1] = (byte)coder.readByte();
-                    table[index+2] = (byte)coder.readByte();
-                    table[index+3] = (byte)(coder.readByte() | 0xFF);
-                }
-            }
-                
-            coder.setPointer(offset<<3);
+	public int getHeight() {
+		return height;
+	}
 
-            switch (compressionMethod)
-            {
-                case BI_RGB:  decodeIDX8(coder); break;
-                case BI_RLE8: decodeRLE8(coder); break;
-                case BI_RLE4: decodeRLE4(coder); break;
-                default: throw new DataFormatException(Strings.UNSUPPORTED_FILE_FORMAT);
-            }
-        }
-        else
-        {
-            image = new byte[height*width*4];
+	public byte[] getImage() {
+		return Arrays.copyOf(image, image.length);
+	}
 
-            coder.setPointer(offset<<3);
+	protected void decode(final byte[] bytes) throws DataFormatException {
+		final SWFDecoder coder = new SWFDecoder(bytes);
 
-            switch (format)
-            {
-                case RGB5: decodeRGB5(coder); break;
-                case RGB8: decodeRGB8(coder); break;
-                case RGBA: decodeRGBA(coder); break;
-                default: throw new DataFormatException(Strings.UNSUPPORTED_FILE_FORMAT);
-            }
-        }
-    }
+		for (int i = 0; i < 2; i++) {
+			if (coder.readByte() != bmpSignature[i]) {
+				throw new DataFormatException(Strings.INVALID_FORMAT);
+			}
+		}
 
-    private void decodeIDX8(SWFDecoder coder)
-    {
-        int bitsRead;
-        int index = 0;
-        
-        for (int row=height-1; row>0; row--)
-        {
-        	bitsRead=0;
-        	 
-            for (int col=0; col<width; col++)
-            {
-                image[index++] = (byte)coder.readBits(bitDepth, false);
-                bitsRead += bitDepth;
-            }
-            
-            if (bitsRead % 32 > 0) {
-                coder.adjustPointer(32 - (bitsRead % 32));
-            }
-        }
-    }
+		coder.readWord(4, false); // fileSize
+		coder.readWord(4, false); // reserved
 
-    private void decodeRLE4(SWFDecoder coder)
-    {
-        int row = height-1;
-        int col = 0;
-        int index = 0;
-        
-        boolean hasMore = true;
+		final int offset = coder.readWord(4, false);
+		final int headerSize = coder.readWord(4, false);
 
-        while (hasMore) 
-        {       
-            int count = coder.readByte();
-        
-            if (count == 0)
-            {
-                int code = coder.readByte();
-                
-                switch (code)
-                {
-                    case 0: 
-                        col = 0; 
-                        row--; 
-                        break;
-                    case 1: 
-                        hasMore = false; 
-                        break;
-                    case 2: 
-                        col += coder.readWord(2, false);
-                        row -= coder.readWord(2, false);
-                        for (int i=0; i<code; i+=2)
-                        {
-                            image[index++] = (byte) coder.readBits(4, false);
-                            image[index++] = (byte) coder.readBits(4, false);
-                        }
-                        
-                        if ((code & 2) == 2) {
-                        	coder.readByte();
-                        }
-                        break;
-                    default:
-                        for (int i=0; i<code; i+=2)
-                        {
-                            image[index++] = (byte) coder.readBits(4, false);
-                            image[index++] = (byte) coder.readBits(4, false);
-                        }
-                        
-                        if ((code & 2) == 2) {
-                        	coder.readByte();
-                        }
-                        break;
-                }
-            }
-            else
-            {
-                byte indexA = (byte)coder.readBits(4, false);
-                byte indexB = (byte)coder.readBits(4, false);
-                
-                for (int i=0; i<count && col < width; i++) { 
-                    image[index++] = (i % 2 > 0) ? indexB : indexA;
-                }
-            }
-        }
-    }
-    
-    private void decodeRLE8(SWFDecoder coder)
-    {
-        int row = height-1;
-        int col = 0;
-        int index = 0;
-        
-        boolean hasMore = true;
+		int bitsPerPixel;
+		int coloursUsed;
 
-        while (hasMore) 
-        {       
-            int count = coder.readByte();
-        
-            if (count == 0)
-            {
-                int code = coder.readByte();
-                
-                switch (code)
-                {
-                    case 0: 
-                        col = 0; 
-                        row--; 
-                        break;
-                    case 1: 
-                        hasMore = false; 
-                        break;
-                    case 2: 
-                        col += coder.readWord(2, false);
-                        row -= coder.readWord(2, false);
-                        for (int i=0; i<code; i++) {
-                            image[index++] = (byte) coder.readByte();
-                        }
-                        
-                        if ((code & 1) == 1) {
-                        	coder.readByte();
-                        }
-                        break;
-                    default:
-                        for (int i=0; i<code; i++) {
-                            image[index++] = (byte) coder.readByte();
-                        }
-                        
-                        if ((code & 1) == 1) {
-                        	coder.readByte();
-                        }
-                        break;
-                }
-            }
-            else
-            {
-                byte value = (byte)coder.readByte();
-                
-                for (int i=0; i<count; i++) { 
-                    image[index++] = value;
-                }
-            }
-        }
-    }
-    
-    private void decodeRGB5(SWFDecoder coder)
-    {
-        int bitsRead = 0;
-        int index = 0;
-        
-        if (compressionMethod == BI_RGB)
-        {
-            for (int row=height-1; row>0; row--)
-            {
-            	bitsRead=0;
-            	
-                for (int col=0; col<width; col++, index+=4)
-                {                
-                    int colour = coder.readWord(2, false) & 0xFFFF;
-                    
-                    image[index] = (byte)((colour & 0x7C00) >> 7);
-                    image[index+1] = (byte)((colour & 0x03E0) >> 2);
-                    image[index+2] = (byte)((colour & 0x001F) << 3);
-                    image[index+3] = (byte)0xFF;
+		switch (headerSize) {
+		case 12:
+			width = coder.readWord(2, false);
+			height = coder.readWord(2, false);
+			coder.readWord(2, false); // bitPlanes
+			bitsPerPixel = coder.readWord(2, false);
+			coloursUsed = 0;
+			break;
+		case 40:
+			width = coder.readWord(4, false);
+			height = coder.readWord(4, false);
+			coder.readWord(2, false); // bitPlanes
+			bitsPerPixel = coder.readWord(2, false);
+			compressionMethod = coder.readWord(4, false);
+			coder.readWord(4, false); // imageSize
+			coder.readWord(4, false); // horizontalResolution
+			coder.readWord(4, false); // verticalResolution
+			coloursUsed = coder.readWord(4, false);
+			coder.readWord(4, false); // importantColours
+			break;
+		default:
+			bitsPerPixel = 0;
+			coloursUsed = 0;
+			break;
+		}
 
-                    bitsRead += 16;
-                }
-                if (bitsRead % 32 > 0) {
-                    coder.adjustPointer(32 - (bitsRead % 32));
-                }
-            }
-        }
-        else
-        {
-            for (int row=height-1; row>0; row--)
-            {
-            	bitsRead=0;
-            	
-                for (int col=0; col<width; col++, index+=4)
-                {
-                    int colour = coder.readWord(2, false) & 0xFFFF;
-                    
-                    if (redMask == 0x7C00 && greenMask == 0x03E0 && blueMask == 0x001F)
-                    {
-                        image[index] = (byte)((colour & 0x7C00) >> 7);
-                        image[index+1] = (byte)((colour & 0x03E0) >> 2);
-                        image[index+2] = (byte)((colour & 0x001F) << 3);
-                        image[index+3] = (byte)0xFF;
-                    }
-                    else if (redMask == 0xF800 && greenMask == 0x07E0 && blueMask == 0x001F)
-                    {
-                        image[index] = (byte)((colour & 0xF800) >> 8);
-                        image[index+1] = (byte)((colour & 0x07E0) >> 3);
-                        image[index+2] = (byte)((colour & 0x001F) << 3);
-                        image[index+3] = (byte)0xFF;
-                    }
-                    bitsRead += 16;
-                }
-                if (bitsRead % 32 > 0) {
-                    coder.adjustPointer(32 - (bitsRead % 32));
-                }
-            }
-        }
-        
-    }
+		if (compressionMethod == BI_BITFIELDS) {
+			redMask = coder.readWord(4, false);
+			greenMask = coder.readWord(4, false);
+			blueMask = coder.readWord(4, false);
+		}
 
-    private void decodeRGB8(SWFDecoder coder)
-    {
-        int bitsRead;
-        int index = 0;
-        
-        for (int row=height-1; row>0; row--)
-        {
-        	bitsRead=0;
-        	
-            for (int col=0; col<width; col++, index+=4)
-            {
-                image[index] = (byte)coder.readBits(bitDepth, false);
-                image[index+1] = (byte)coder.readBits(bitDepth, false);
-                image[index+2] = (byte)coder.readBits(bitDepth, false);
-                image[index+3] = (byte)0xFF;
-                
-                bitsRead += 24;
-            }
-            
-            if (bitsRead % 32 > 0) {
-                coder.adjustPointer(32 - (bitsRead % 32));
-            }
-        }
-    }
+		switch (bitsPerPixel) {
+		case 1:
+			format = ImageFormat.IDX8;
+			bitDepth = 1;
+			break;
+		case 2:
+			format = ImageFormat.IDX8;
+			bitDepth = 2;
+			break;
+		case 4:
+			format = ImageFormat.IDX8;
+			bitDepth = 4;
+			break;
+		case 8:
+			format = ImageFormat.IDX8;
+			bitDepth = 8;
+			break;
+		case 16:
+			format = ImageFormat.RGB5;
+			bitDepth = 5;
+			break;
+		case 24:
+			format = ImageFormat.RGB8;
+			bitDepth = 8;
+			break;
+		case 32:
+			format = ImageFormat.RGBA;
+			bitDepth = 8;
+			break;
+		default:
+			throw new DataFormatException(Strings.INVALID_FORMAT);
+		}
 
-    private void decodeRGBA(SWFDecoder coder)
-    {
-        int index = 0;
-        
-        for (int row=height-1; row>0; row--)
-        {
-            for (int col=0; col<width; col++, index+=4)
-            {
-                image[index+2] = (byte)coder.readByte();
-                image[index+1] = (byte)coder.readByte();
-                image[index] = (byte)coder.readByte();
-                image[index+3] = (byte)coder.readByte();
-                image[index+3] = (byte)0xFF;
-            }
-        }
-    }
-    
-    private void orderAlpha(byte[] image)
-    {
-    	byte alpha;
-    	
-        for (int i=0; i<image.length; i+=4)
-        {
-        	alpha = image[i+3];
-        	
-        	image[i+3] = image[i+2];
-        	image[i+2] = image[i+1];
-        	image[i+1] = image[i];
-        	image[i] = alpha;
-        }
-    }
+		if (format == ImageFormat.IDX8) {
+			coloursUsed = 1 << bitsPerPixel;
+			table = new byte[coloursUsed * 4];
+			image = new byte[height * width];
 
-    private void applyAlpha(byte[] image)
-    {
-    	int alpha; 
-    	
-    	for (int i=0; i<image.length; i+=4)
-    	{
-            alpha = image[i+3] & 0xFF;                
+			int index = 0;
 
-            image[i] =   (byte)(((image[i]   & 0xFF) * alpha) / 255);
-            image[i+1] = (byte)(((image[i+1] & 0xFF) * alpha) / 255);
-            image[i+2] = (byte)(((image[i+2] & 0xFf) * alpha) / 255);
-    	}
-    }
-    
-    private byte[] merge(byte[] image, byte[] table)
-    {
-        byte[] merged = new byte[(table.length/4)*3+image.length];
-        int dst = 0;
-        
-        for (int i=0; i<table.length; i+=4)
-        {
-            merged[dst++] = table[i]; // R
-            merged[dst++] = table[i+1]; // G
-            merged[dst++] = table[i+2]; // B
-        }
-        
-        for (int i=0; i<image.length; i++) {
-            merged[dst++] = image[i];
-        }
+			if (headerSize == 12) {
+				for (int i = 0; i < coloursUsed; i++, index += 4) {
+					table[index + 3] = (byte) 0xFF;
+					table[index + 2] = (byte) coder.readByte();
+					table[index + 1] = (byte) coder.readByte();
+					table[index] = (byte) coder.readByte();
+				}
+			} else {
+				for (int i = 0; i < coloursUsed; i++, index += 4) {
+					table[index] = (byte) coder.readByte();
+					table[index + 1] = (byte) coder.readByte();
+					table[index + 2] = (byte) coder.readByte();
+					table[index + 3] = (byte) (coder.readByte() | 0xFF);
+				}
+			}
 
-        return merged;
-    }
-  
-    private byte[] mergeAlpha(byte[] image, byte[] table)
-    {
-        byte[] merged = new byte[table.length+image.length];
-        int dst = 0;
-        
-        for (int i=0; i<table.length; i++) {
-            merged[dst++] = table[i];
-        }
-        
-        for (int i=0; i<image.length; i++) {
-            merged[dst++] = image[i];
-        }
-        return merged;
-    }
+			coder.setPointer(offset << 3);
 
-    private byte[] zip(byte[] image)
-    {
-        Deflater deflater = new Deflater();
-        deflater.setInput(image);
-        deflater.finish();
-        
-        byte[] compressedData = new byte[image.length*2];
-        int bytesCompressed = deflater.deflate(compressedData);
-        byte[] newData = Arrays.copyOf(compressedData, bytesCompressed);
-            
-        return newData;
-    }
+			switch (compressionMethod) {
+			case BI_RGB:
+				decodeIDX8(coder);
+				break;
+			case BI_RLE8:
+				decodeRLE8(coder);
+				break;
+			case BI_RLE4:
+				decodeRLE4(coder);
+				break;
+			default:
+				throw new DataFormatException(Strings.INVALID_FORMAT);
+			}
+		} else {
+			image = new byte[height * width * 4];
 
-	private byte[] loadFile(final File file) throws FileNotFoundException, IOException {
-		byte[] data = new byte[(int) file.length()];
+			coder.setPointer(offset << 3);
+
+			switch (format) {
+			case RGB5:
+				decodeRGB5(coder);
+				break;
+			case RGB8:
+				decodeRGB8(coder);
+				break;
+			case RGBA:
+				decodeRGBA(coder);
+				break;
+			default:
+				throw new DataFormatException(Strings.INVALID_FORMAT);
+			}
+		}
+	}
+
+	private void decodeIDX8(final SWFDecoder coder) {
+		int bitsRead;
+		int index = 0;
+
+		for (int row = height - 1; row > 0; row--) {
+			bitsRead = 0;
+
+			for (int col = 0; col < width; col++) {
+				image[index++] = (byte) coder.readBits(bitDepth, false);
+				bitsRead += bitDepth;
+			}
+
+			if (bitsRead % 32 > 0) {
+				coder.adjustPointer(32 - (bitsRead % 32));
+			}
+		}
+	}
+
+	private void decodeRLE4(final SWFDecoder coder) {
+		int row = height - 1;
+		int col = 0;
+		int index = 0;
+
+		boolean hasMore = true;
+
+		while (hasMore) {
+			final int count = coder.readByte();
+
+			if (count == 0) {
+				final int code = coder.readByte();
+
+				switch (code) {
+				case 0:
+					col = 0;
+					row--;
+					break;
+				case 1:
+					hasMore = false;
+					break;
+				case 2:
+					col += coder.readWord(2, false);
+					row -= coder.readWord(2, false);
+					for (int i = 0; i < code; i += 2) {
+						image[index++] = (byte) coder.readBits(4, false);
+						image[index++] = (byte) coder.readBits(4, false);
+					}
+
+					if ((code & 2) == 2) {
+						coder.readByte();
+					}
+					break;
+				default:
+					for (int i = 0; i < code; i += 2) {
+						image[index++] = (byte) coder.readBits(4, false);
+						image[index++] = (byte) coder.readBits(4, false);
+					}
+
+					if ((code & 2) == 2) {
+						coder.readByte();
+					}
+					break;
+				}
+			} else {
+				final byte indexA = (byte) coder.readBits(4, false);
+				final byte indexB = (byte) coder.readBits(4, false);
+
+				for (int i = 0; i < count && col < width; i++) {
+					image[index++] = (i % 2 > 0) ? indexB : indexA;
+				}
+			}
+		}
+	}
+
+	private void decodeRLE8(final SWFDecoder coder) {
+		int row = height - 1;
+		int col = 0;
+		int index = 0;
+
+		boolean hasMore = true;
+
+		while (hasMore) {
+			final int count = coder.readByte();
+
+			if (count == 0) {
+				final int code = coder.readByte();
+
+				switch (code) {
+				case 0:
+					col = 0;
+					row--;
+					break;
+				case 1:
+					hasMore = false;
+					break;
+				case 2:
+					col += coder.readWord(2, false);
+					row -= coder.readWord(2, false);
+					for (int i = 0; i < code; i++) {
+						image[index++] = (byte) coder.readByte();
+					}
+
+					if ((code & 1) == 1) {
+						coder.readByte();
+					}
+					break;
+				default:
+					for (int i = 0; i < code; i++) {
+						image[index++] = (byte) coder.readByte();
+					}
+
+					if ((code & 1) == 1) {
+						coder.readByte();
+					}
+					break;
+				}
+			} else {
+				final byte value = (byte) coder.readByte();
+
+				for (int i = 0; i < count; i++) {
+					image[index++] = value;
+				}
+			}
+		}
+	}
+
+	private void decodeRGB5(final SWFDecoder coder) {
+		int bitsRead = 0;
+		int index = 0;
+
+		if (compressionMethod == BI_RGB) {
+			for (int row = height - 1; row > 0; row--) {
+				bitsRead = 0;
+
+				for (int col = 0; col < width; col++, index += 4) {
+					final int colour = coder.readWord(2, false) & 0xFFFF;
+
+					image[index] = (byte) ((colour & 0x7C00) >> 7);
+					image[index + 1] = (byte) ((colour & 0x03E0) >> 2);
+					image[index + 2] = (byte) ((colour & 0x001F) << 3);
+					image[index + 3] = (byte) 0xFF;
+
+					bitsRead += 16;
+				}
+				if (bitsRead % 32 > 0) {
+					coder.adjustPointer(32 - (bitsRead % 32));
+				}
+			}
+		} else {
+			for (int row = height - 1; row > 0; row--) {
+				bitsRead = 0;
+
+				for (int col = 0; col < width; col++, index += 4) {
+					final int colour = coder.readWord(2, false) & 0xFFFF;
+
+					if (redMask == 0x7C00 && greenMask == 0x03E0
+							&& blueMask == 0x001F) {
+						image[index] = (byte) ((colour & 0x7C00) >> 7);
+						image[index + 1] = (byte) ((colour & 0x03E0) >> 2);
+						image[index + 2] = (byte) ((colour & 0x001F) << 3);
+						image[index + 3] = (byte) 0xFF;
+					} else if (redMask == 0xF800 && greenMask == 0x07E0
+							&& blueMask == 0x001F) {
+						image[index] = (byte) ((colour & 0xF800) >> 8);
+						image[index + 1] = (byte) ((colour & 0x07E0) >> 3);
+						image[index + 2] = (byte) ((colour & 0x001F) << 3);
+						image[index + 3] = (byte) 0xFF;
+					}
+					bitsRead += 16;
+				}
+				if (bitsRead % 32 > 0) {
+					coder.adjustPointer(32 - (bitsRead % 32));
+				}
+			}
+		}
+
+	}
+
+	private void decodeRGB8(final SWFDecoder coder) {
+		int bitsRead;
+		int index = 0;
+
+		for (int row = height - 1; row > 0; row--) {
+			bitsRead = 0;
+
+			for (int col = 0; col < width; col++, index += 4) {
+				image[index] = (byte) coder.readBits(bitDepth, false);
+				image[index + 1] = (byte) coder.readBits(bitDepth, false);
+				image[index + 2] = (byte) coder.readBits(bitDepth, false);
+				image[index + 3] = (byte) 0xFF;
+
+				bitsRead += 24;
+			}
+
+			if (bitsRead % 32 > 0) {
+				coder.adjustPointer(32 - (bitsRead % 32));
+			}
+		}
+	}
+
+	private void decodeRGBA(final SWFDecoder coder) {
+		int index = 0;
+
+		for (int row = height - 1; row > 0; row--) {
+			for (int col = 0; col < width; col++, index += 4) {
+				image[index + 2] = (byte) coder.readByte();
+				image[index + 1] = (byte) coder.readByte();
+				image[index] = (byte) coder.readByte();
+				image[index + 3] = (byte) coder.readByte();
+				image[index + 3] = (byte) 0xFF;
+			}
+		}
+	}
+
+	private void orderAlpha(final byte[] image) {
+		byte alpha;
+
+		for (int i = 0; i < image.length; i += 4) {
+			alpha = image[i + 3];
+
+			image[i + 3] = image[i + 2];
+			image[i + 2] = image[i + 1];
+			image[i + 1] = image[i];
+			image[i] = alpha;
+		}
+	}
+
+	private void applyAlpha(final byte[] image) {
+		int alpha;
+
+		for (int i = 0; i < image.length; i += 4) {
+			alpha = image[i + 3] & 0xFF;
+
+			image[i] = (byte) (((image[i] & 0xFF) * alpha) / 255);
+			image[i + 1] = (byte) (((image[i + 1] & 0xFF) * alpha) / 255);
+			image[i + 2] = (byte) (((image[i + 2] & 0xFf) * alpha) / 255);
+		}
+	}
+
+	private byte[] merge(final byte[] image, final byte[] table) {
+		byte[] merged = new byte[(table.length / 4) * 3 + image.length];
+		int dst = 0;
+
+		for (int i = 0; i < table.length; i += 4) {
+			merged[dst++] = table[i]; // R
+			merged[dst++] = table[i + 1]; // G
+			merged[dst++] = table[i + 2]; // B
+		}
+
+		for (int i = 0; i < image.length; i++) {
+			merged[dst++] = image[i];
+		}
+
+		return merged;
+	}
+
+	private byte[] mergeAlpha(final byte[] image, final byte[] table) {
+		byte[] merged = new byte[table.length + image.length];
+		int dst = 0;
+
+		for (int i = 0; i < table.length; i++) {
+			merged[dst++] = table[i];
+		}
+
+		for (int i = 0; i < image.length; i++) {
+			merged[dst++] = image[i];
+		}
+		return merged;
+	}
+
+	private byte[] zip(final byte[] image) {
+		final Deflater deflater = new Deflater();
+		deflater.setInput(image);
+		deflater.finish();
+
+		final byte[] compressedData = new byte[image.length * 2];
+		final int bytesCompressed = deflater.deflate(compressedData);
+		final byte[] newData = Arrays.copyOf(compressedData, bytesCompressed);
+
+		return newData;
+	}
+
+	private byte[] loadFile(final File file) throws FileNotFoundException,
+			IOException {
+		final byte[] data = new byte[(int) file.length()];
 
 		FileInputStream stream = null;
 
 		try {
 			stream = new FileInputStream(file);
-			int bytesRead = stream.read(data);
+			final int bytesRead = stream.read(data);
 
 			if (bytesRead != data.length) {
 				throw new IOException(file.getAbsolutePath());
@@ -627,66 +609,59 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder
 		}
 		return data;
 	}
-    
-    private  byte[] adjustScan(int width, int height, byte[] image)
-    {
-        int src = 0;
-        int dst = 0;
-        int row;
-        int col;
-        
-        int scan = 0;
-        byte[] formattedImage = null;
-        
-        scan = (width + 3) & ~3;
-        formattedImage = new byte[scan*height];
-        
-        for (row=0; row<height; row++)
-        {
-            for (col=0; col<width; col++) {
-                formattedImage[dst++] = image[src++];
-            }
-            
-            while (col++ < scan) {
-                formattedImage[dst++] = 0;
-            }
-        }
 
-        return formattedImage;
-    }
-    
-    private byte[] packColours(int width, int height, byte[] image)
-    {
-        int src = 0;
-        int dst = 0;
-        int row;
-        int col;
-        
-        int scan = width + (width & 1);
-        byte[] formattedImage = new byte[scan*height*2];
-        
-        for (row=0; row<height; row++)
-        {
-            for (col=0; col<width; col++, src++)
-            {
-                int red = (image[src++] & 0xF8) << 7;
-                int green = (image[src++] & 0xF8) << 2;
-                int blue = (image[src++] & 0xF8) >> 3;
-                int colour = (red | green | blue) & 0x7FFF;
-                
-                formattedImage[dst++] = (byte) (colour >> 8);
-                formattedImage[dst++] = (byte) colour;
-            }
+	private byte[] adjustScan(final int width, final int height, final byte[] image) {
+		int src = 0;
+		int dst = 0;
+		int row;
+		int col;
 
-            while (col<scan)
-            {
-                formattedImage[dst++] = 0;
-                formattedImage[dst++] = 0;
-                col++;
-            }
-        }
-        return formattedImage;
-    }
-    
+		int scan = 0;
+		byte[] formattedImage = null;
+
+		scan = (width + 3) & ~3;
+		formattedImage = new byte[scan * height];
+
+		for (row = 0; row < height; row++) {
+			for (col = 0; col < width; col++) {
+				formattedImage[dst++] = image[src++];
+			}
+
+			while (col++ < scan) {
+				formattedImage[dst++] = 0;
+			}
+		}
+
+		return formattedImage;
+	}
+
+	private byte[] packColours(final int width, final int height, final byte[] image) {
+		int src = 0;
+		int dst = 0;
+		int row;
+		int col;
+
+		final int scan = width + (width & 1);
+		final byte[] formattedImage = new byte[scan * height * 2];
+
+		for (row = 0; row < height; row++) {
+			for (col = 0; col < width; col++, src++) {
+				final int red = (image[src++] & 0xF8) << 7;
+				final int green = (image[src++] & 0xF8) << 2;
+				final int blue = (image[src++] & 0xF8) >> 3;
+				final int colour = (red | green | blue) & 0x7FFF;
+
+				formattedImage[dst++] = (byte) (colour >> 8);
+				formattedImage[dst++] = (byte) colour;
+			}
+
+			while (col < scan) {
+				formattedImage[dst++] = 0;
+				formattedImage[dst++] = 0;
+				col++;
+			}
+		}
+		return formattedImage;
+	}
 
 }

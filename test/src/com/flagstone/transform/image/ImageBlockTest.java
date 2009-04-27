@@ -32,71 +32,65 @@ package com.flagstone.transform.image;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertArrayEquals;
-
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.datatype.ColorTransform;
-import com.flagstone.transform.datatype.CoordTransform;
 import com.flagstone.transform.video.ImageBlock;
 
-@SuppressWarnings( { 
-	"PMD.LocalVariableCouldBeFinal",
-	"PMD.JUnitAssertionsShouldIncludeMessage" 
-})
+@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
+		"PMD.JUnitAssertionsShouldIncludeMessage" })
 public final class ImageBlockTest {
-	
-	private transient ImageBlock fixture;
-	
-	private transient final byte[] encoded = new byte[] { 0x06, 0x01, 
-			0x01, 0x00, 0x02, 0x00, 0x06, 0x50};
-	
-	private transient final byte[] extended = new byte[] { 0x7F, 0x01, 
-			0x06, 0x00, 0x00, 0x00, 0x01, 0x00, 0x02, 0x00, 0x06, 0x50};
 
-	@Test @Ignore
+	private transient ImageBlock fixture;
+
+	private transient final byte[] encoded = new byte[] { 0x06, 0x01, 0x01,
+			0x00, 0x02, 0x00, 0x06, 0x50 };
+
+	private transient final byte[] extended = new byte[] { 0x7F, 0x01, 0x06,
+			0x00, 0x00, 0x00, 0x01, 0x00, 0x02, 0x00, 0x06, 0x50 };
+
+	@Test
+	@Ignore
 	public void checkCopy() {
-		//fixture = new ImageBlock(identifier, layer, transform, colorTransform);
+		// fixture = new ImageBlock(identifier, layer, transform,
+		// colorTransform);
 		ImageBlock copy = fixture.copy();
 
 		assertNotSame(fixture, copy);
 	}
-	
-	@Test @Ignore
-	public void encode() throws CoderException {		
-		SWFEncoder encoder = new SWFEncoder(encoded.length);		
-		Context context = new Context();
 
-		//fixture = new ImageBlock(identifier, layer, transform);
-		//assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
-		//fixture.encode(encoder, context);
-		
+	@Test
+	@Ignore
+	public void encode() throws CoderException {
+		SWFEncoder encoder = new SWFEncoder(encoded.length);
+
+		// fixture = new ImageBlock(identifier, layer, transform);
+		// assertEquals(encoded.length, fixture.prepareToEncode(encoder,
+		// context));
+		// fixture.encode(encoder, context);
+
 		assertTrue(encoder.eof());
 	}
 
-	@Test @Ignore
+	@Test
+	@Ignore
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
-		Context context = new Context();
 
-		//fixture = new ImageBlock(decoder, context);
-		
+		// fixture = new ImageBlock(decoder, context);
+
 		assertTrue(decoder.eof());
 	}
-	
-	@Test @Ignore
+
+	@Test
+	@Ignore
 	public void decodeExtended() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(extended);
-		Context context = new Context();
 
-		//fixture = new ImageBlock(decoder, context);
-		
+		// fixture = new ImageBlock(decoder, context);
+
 		assertTrue(decoder.eof());
 	}
 }

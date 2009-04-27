@@ -31,16 +31,12 @@ package com.flagstone.transform.action;
 
 import org.junit.Test;
 
-import com.flagstone.transform.action.TableIndex;
-
 import static org.junit.Assert.assertEquals;
 
-@SuppressWarnings( { 
-	"PMD.LocalVariableCouldBeFinal",
-	"PMD.JUnitAssertionsShouldIncludeMessage" 
-})
+@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
+		"PMD.JUnitAssertionsShouldIncludeMessage" })
 public final class TableIndexTest {
-	
+
 	private transient TableIndex fixture;
 
 	@Test
@@ -48,13 +44,13 @@ public final class TableIndexTest {
 		fixture = new TableIndex(10);
 		assertEquals(10, fixture.getIndex());
 	}
-	
-	@Test(expected=IllegalArgumentException.class)
+
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForIndexWithLowerBound() {
 		fixture = new TableIndex(-1);
 	}
 
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForIndexWithUpperBound() {
 		fixture = new TableIndex(65536);
 	}

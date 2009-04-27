@@ -34,7 +34,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.flagstone.transform.Movie;
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.SWFEncodeable;
@@ -46,48 +45,61 @@ import com.flagstone.transform.datatype.Color;
 
 //TODO(doc) Review
 /**
- * TextSpan is used to display a group of characters with a selected font and colour.
- * TextSpan objects are used in {@link DefineText} and {@link DefineText2} to display 
- * a line or block of text.
+ * TextSpan is used to display a group of characters with a selected font and
+ * colour. TextSpan objects are used in {@link DefineText} and
+ * {@link DefineText2} to display a line or block of text.
  * 
- * <p>TextSpan contains an array of Character objects which identify the glyphs that
- * will be displayed along with style information that sets the colour of the
- * text, the size of the font and the relative placement of the line within a
- * block of text.</p>
+ * <p>
+ * TextSpan contains an array of Character objects which identify the glyphs
+ * that will be displayed along with style information that sets the colour of
+ * the text, the size of the font and the relative placement of the line within
+ * a block of text.
+ * </p>
  * 
- * <p> Whether the alpha channel in the colour needs to be specified depends on the
- * class the Text is added to. The DefineText2 class supports transparent
- * text while DefineText class does not.</p>
+ * <p>
+ * Whether the alpha channel in the colour needs to be specified depends on the
+ * class the Text is added to. The DefineText2 class supports transparent text
+ * while DefineText class does not.
+ * </p>
  * 
- * <p>The x and y offsets are used to control how several TextSpan objects are laid
+ * <p>
+ * The x and y offsets are used to control how several TextSpan objects are laid
  * out to create a block of text. The y offset is specified relative to the
  * bottom edge of the bounding rectangle, which is actually closer to the top of
  * the screen as the direction of the y-axis is from the top to the bottom of
  * the screen. In this respect Flash is counter-intuitive. Lines with higher
- * offset values are displayed below lines with lower offsets.</p>
+ * offset values are displayed below lines with lower offsets.
+ * </p>
  * 
- * <p>The x and y offsets are also optional and may be set to the constant
- * VALUE_NOT_SET when more than one TextSpan object is created. If the y offset is 
- * not specified then a TextSpan object is displayed on the same line as the previous
- * TextSpan. If the x offset is not specified then the TextSpan is displayed after the
- * previous TextSpan. This makes it easy to lay text out on a single line.</p>
+ * <p>
+ * The x and y offsets are also optional and may be set to the constant
+ * VALUE_NOT_SET when more than one TextSpan object is created. If the y offset
+ * is not specified then a TextSpan object is displayed on the same line as the
+ * previous TextSpan. If the x offset is not specified then the TextSpan is
+ * displayed after the previous TextSpan. This makes it easy to lay text out on
+ * a single line.
+ * </p>
  * 
- * <p>Similarly the font and colour information is optional. The values from
- * a previous TextSpan object will be used if they are not set.</p>
+ * <p>
+ * Similarly the font and colour information is optional. The values from a
+ * previous TextSpan object will be used if they are not set.
+ * </p>
  * 
- * <p>The creation and layout of the glyphs to create the text is too onerous to
- * perform from scratch. It is easier and more convenient to use the 
- * {@link com.flagstone.transform.factory.text.TextFactory} class to create the TextSpan objects.</p>
+ * <p>
+ * The creation and layout of the glyphs to create the text is too onerous to
+ * perform from scratch. It is easier and more convenient to use the
+ * {@link com.flagstone.transform.factory.text.TextFactory} class to create the
+ * TextSpan objects.
+ * </p>
  * 
  * @see DefineText
  * @see DefineText2
  * @see com.flagstone.transform.factory.text.TextFactory
  * @see com.flagstone.transform.util.font.Font
  */
-public final class TextSpan implements SWFEncodeable
-{
+public final class TextSpan implements SWFEncodeable {
 	private static final String FORMAT = "TextSpan: { identifier=%d; color=%s; offsetX=%d; offsetY=%d; height=%d; characters=%s }";
-	
+
 	private Color color;
 	private Integer offsetX;
 	private Integer offsetY;
@@ -95,16 +107,16 @@ public final class TextSpan implements SWFEncodeable
 	private Integer height;
 
 	private List<GlyphIndex> characters;
-	
+
 	private transient boolean hasStyle;
 	private transient boolean hasFont;
 	private transient boolean hasColor;
 	private transient boolean hasX;
 	private transient boolean hasY;
-	
-	//TODO(doc)
-	public TextSpan(final SWFDecoder coder, final Context context) throws CoderException
-	{
+
+	// TODO(doc)
+	public TextSpan(final SWFDecoder coder, final Context context)
+			throws CoderException {
 		/* type */coder.readBits(1, false);
 		/* reserved */coder.readBits(3, false);
 
@@ -113,17 +125,23 @@ public final class TextSpan implements SWFEncodeable
 		hasY = coder.readBits(1, false) != 0;
 		hasX = coder.readBits(1, false) != 0;
 
-		identifier = hasFont ? coder.readWord(2, false) : null;
-
+		if (hasFont) {
+			identifier = coder.readWord(2, false);
+		}
 		if (hasColor) {
 			color = new Color(coder, context);
 		}
+		if (hasX) {
+			offsetX = coder.readWord(2, true);
+		}
+		if (hasY) {
+			offsetY = coder.readWord(2, true);
+		}
+		if (hasFont) {
+			height = coder.readWord(2, true);
+		}
 
-		offsetX = hasX ? coder.readWord(2, true) : null;
-		offsetY = hasY ? coder.readWord(2, true) : null;
-		height = hasFont ? coder.readWord(2, false) : null;
-
-		int charCount = coder.readByte();
+		final int charCount = coder.readByte();
 
 		characters = new ArrayList<GlyphIndex>(charCount);
 
@@ -134,7 +152,6 @@ public final class TextSpan implements SWFEncodeable
 		coder.alignToByte();
 	}
 
-
 	/**
 	 * Creates a Text object, specifying the colour and position of the
 	 * following Text.
@@ -143,7 +160,7 @@ public final class TextSpan implements SWFEncodeable
 	 *            the identifier of the font that the text will be rendered in.
 	 *            Must be in the range 1..65535.
 	 * @param aHeight
-	 *            the height of the text in the chosen font. Must be in the 
+	 *            the height of the text in the chosen font. Must be in the
 	 *            range 1..65535.
 	 * @param aColor
 	 *            the colour of the text.
@@ -156,9 +173,9 @@ public final class TextSpan implements SWFEncodeable
 	 * @param anArray
 	 *            an array of Character objects. Must not be null.
 	 */
-	public TextSpan(Integer uid, Integer aHeight, Color aColor, Integer xOffset, Integer yOffset,
-					List<GlyphIndex> anArray)
-	{
+	public TextSpan(final Integer uid, final Integer aHeight,
+			final Color aColor, final Integer xOffset, final Integer yOffset,
+			final List<GlyphIndex> anArray) {
 		setIdentifier(uid);
 		setHeight(aHeight);
 		setColor(aColor);
@@ -167,9 +184,8 @@ public final class TextSpan implements SWFEncodeable
 		setCharacters(anArray);
 	}
 
-	//TODO(doc)
-	public TextSpan(TextSpan object)
-	{
+	// TODO(doc)
+	public TextSpan(final TextSpan object) {
 		identifier = object.identifier;
 		color = object.color;
 		offsetX = object.offsetX;
@@ -181,42 +197,37 @@ public final class TextSpan implements SWFEncodeable
 	/**
 	 * Returns the identifier of the font in which the text will be displayed.
 	 */
-	public Integer getIdentifier()
-	{
+	public Integer getIdentifier() {
 		return identifier;
 	}
 
 	/**
 	 * Returns the colour of the font in which the text will be displayed.
 	 */
-	public Color getColor()
-	{
+	public Color getColor() {
 		return color;
 	}
 
 	/**
-	 * Returns the location of the start of the text relative to the left edge of
-	 * the bounding rectangle in twips.
+	 * Returns the location of the start of the text relative to the left edge
+	 * of the bounding rectangle in twips.
 	 */
-	public Integer getOffsetX()
-	{
+	public Integer getOffsetX() {
 		return offsetX;
 	}
 
 	/**
-	 * Returns the location of the start of the text relative to the bottom edge of
-	 * the bounding rectangle in twips.
+	 * Returns the location of the start of the text relative to the bottom edge
+	 * of the bounding rectangle in twips.
 	 */
-	public Integer getOffsetY()
-	{
+	public Integer getOffsetY() {
 		return offsetY;
 	}
 
 	/**
 	 * Returns the height of the text.
 	 */
-	public Integer getHeight()
-	{
+	public Integer getHeight() {
 		return height;
 	}
 
@@ -227,10 +238,9 @@ public final class TextSpan implements SWFEncodeable
 	 *            the identifier of the font that the text will be rendered in.
 	 *            Must be in the range 1..65535.
 	 */
-	public void setIdentifier(Integer uid)
-	{
+	public void setIdentifier(final Integer uid) {
 		if (uid != null && (uid < 1 || uid > 65535)) {
-			throw new IllegalArgumentException(Strings.IDENTIFIER_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
 		}
 		identifier = uid;
 	}
@@ -241,8 +251,7 @@ public final class TextSpan implements SWFEncodeable
 	 * @param aColor
 	 *            the colour of the text.
 	 */
-	public void setColor(Color aColor)
-	{
+	public void setColor(final Color aColor) {
 		color = aColor;
 	}
 
@@ -255,10 +264,9 @@ public final class TextSpan implements SWFEncodeable
 	 *            bounding rectangle enclosing the text. Must be in the range
 	 *            -32768..32767 or null if no offset is specified.
 	 */
-	public void setOffsetX(Integer offset)
-	{
+	public void setOffsetX(final Integer offset) {
 		if (offset != null && (offset < -32768 || offset > 32767)) {
-			throw new IllegalArgumentException(Strings.SIGNED_VALUE_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.SIGNED_RANGE);
 		}
 		offsetX = offset;
 	}
@@ -272,10 +280,9 @@ public final class TextSpan implements SWFEncodeable
 	 *            bounding rectangle enclosing the text. Must be in the range
 	 *            -32768..32767 or null if no offset is specified.
 	 */
-	public void setOffsetY(Integer offset)
-	{
+	public void setOffsetY(final Integer offset) {
 		if (offset != null && (offset < -32768 || offset > 32767)) {
-			throw new IllegalArgumentException(Strings.SIGNED_VALUE_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.SIGNED_RANGE);
 		}
 		offsetY = offset;
 	}
@@ -284,13 +291,12 @@ public final class TextSpan implements SWFEncodeable
 	 * Sets the height of the text in twips.
 	 * 
 	 * @param aHeight
-	 *            the height of the text in the chosen font. Must be in the 
+	 *            the height of the text in the chosen font. Must be in the
 	 *            range 0..65535.
 	 */
-	public void setHeight(Integer aHeight)
-	{
+	public void setHeight(final Integer aHeight) {
 		if (aHeight < 0 || aHeight > 65535) {
-			throw new IllegalArgumentException(Strings.UNSIGNED_VALUE_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
 		}
 		height = aHeight;
 	}
@@ -301,8 +307,7 @@ public final class TextSpan implements SWFEncodeable
 	 * @param aCharacter
 	 *            an Character object. Must not be null.
 	 */
-	public TextSpan add(GlyphIndex aCharacter)
-	{
+	public TextSpan add(final GlyphIndex aCharacter) {
 		characters.add(aCharacter);
 		return this;
 	}
@@ -312,8 +317,7 @@ public final class TextSpan implements SWFEncodeable
 	 * 
 	 * @return the array of Character objects.
 	 */
-	public List<GlyphIndex> getCharacters()
-	{
+	public List<GlyphIndex> getCharacters() {
 		return characters;
 	}
 
@@ -323,41 +327,38 @@ public final class TextSpan implements SWFEncodeable
 	 * @param anArray
 	 *            an array of Character objects. Must not be null.
 	 */
-	public void setCharacters(List<GlyphIndex> anArray)
-	{
+	public void setCharacters(final List<GlyphIndex> anArray) {
 		if (anArray == null) {
-			throw new IllegalArgumentException(Strings.ARRAY_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
 		}
 		characters = anArray;
 	}
 
-	public TextSpan copy()
-	{
+	public TextSpan copy() {
 		return new TextSpan(this);
 	}
 
 	@Override
-	public String toString()
-	{
-		return String.format(FORMAT, identifier, color, offsetX, offsetY, height, characters);
+	public String toString() {
+		return String.format(FORMAT, identifier, color, offsetX, offsetY,
+				height, characters);
 	}
 
-	//TODO(optimise)
-	public int prepareToEncode(final SWFEncoder coder, final Context context)
-	{
+	// TODO(optimise)
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		hasFont = identifier != null && height != null;
 		hasColor = color != null;
 		hasX = offsetX != null;
-		hasY = offsetY != null;		
+		hasY = offsetY != null;
 		hasStyle = hasFont || hasColor || hasX || hasY;
 
 		int length = 1;
-		Map<Integer,Integer> vars = context.getVariables();
+		final Map<Integer, Integer> vars = context.getVariables();
 
-		if (hasStyle)
-		{
+		if (hasStyle) {
 			length += (hasFont) ? 2 : 0;
-			length += (hasColor) ? (vars.containsKey(Context.TRANSPARENT) ? 4:3) : 0;
+			length += (hasColor) ? (vars.containsKey(Context.TRANSPARENT) ? 4
+					: 3) : 0;
 			length += (hasY) ? 2 : 0;
 			length += (hasX) ? 2 : 0;
 			length += (hasFont) ? 2 : 0;
@@ -365,10 +366,9 @@ public final class TextSpan implements SWFEncodeable
 
 		length += 1;
 
-		if (!characters.isEmpty())
-		{
-			int glyphSize = vars.get(Context.GLYPH_SIZE);
-			int advanceSize = vars.get(Context.ADVANCE_SIZE);
+		if (!characters.isEmpty()) {
+			final int glyphSize = vars.get(Context.GLYPH_SIZE);
+			final int advanceSize = vars.get(Context.ADVANCE_SIZE);
 
 			int numberOfBits = (glyphSize + advanceSize) * characters.size();
 			numberOfBits += (numberOfBits % 8 > 0) ? 8 - (numberOfBits % 8) : 0;
@@ -378,9 +378,9 @@ public final class TextSpan implements SWFEncodeable
 		return length;
 	}
 
-	//TODO(optimise)
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException
-	{
+	// TODO(optimise)
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		coder.writeBits(1, 1);
 		coder.writeBits(0, 3);
 
@@ -389,8 +389,7 @@ public final class TextSpan implements SWFEncodeable
 		coder.writeBits(hasY ? 1 : 0, 1);
 		coder.writeBits(hasX ? 1 : 0, 1);
 
-		if (hasStyle)
-		{
+		if (hasStyle) {
 			if (hasFont) {
 				coder.writeWord(identifier, 2);
 			}
@@ -421,23 +420,23 @@ public final class TextSpan implements SWFEncodeable
 		coder.alignToByte();
 	}
 
-	protected int glyphBits()
-	{
+	protected int glyphBits() {
 		int numberOfBits = 0;
 
 		for (GlyphIndex index : characters) {
-			numberOfBits = Math.max(numberOfBits, Encoder.unsignedSize(index.getGlyphIndex()));
+			numberOfBits = Math.max(numberOfBits, Encoder.unsignedSize(index
+					.getGlyphIndex()));
 		}
 
 		return numberOfBits;
 	}
 
-	protected int advanceBits()
-	{
+	protected int advanceBits() {
 		int numberOfBits = 0;
 
 		for (GlyphIndex index : characters) {
-			numberOfBits = Math.max(numberOfBits, Encoder.size(index.getAdvance()));
+			numberOfBits = Math.max(numberOfBits, Encoder.size(index
+					.getAdvance()));
 		}
 
 		return numberOfBits;

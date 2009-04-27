@@ -48,41 +48,43 @@ import com.flagstone.transform.datatype.CoordTransform;
 /**
  * DefineText2 defines one or more lines of transparent text.
  * 
- * <p>It extends the functionality provided by the DefineText class by encoding 
- * the alpha channel of the colour objects used to set the text color.</p>
+ * <p>
+ * It extends the functionality provided by the DefineText class by encoding the
+ * alpha channel of the colour objects used to set the text color.
+ * </p>
  * 
- * <p>DefineText2 class acts as a container for the text. The bounding rectangle 
- * and transform controls how the text is laid out. Each TextSpan object specifies 
- * an offset from the left and bottom edges of the bounding rectangle, allowing 
- * successive lines of text to be arranged as a block or paragraph. The 
- * coordinate transform can be used to control the size and orientation of the 
- * text when it is displayed.</p>
+ * <p>
+ * DefineText2 class acts as a container for the text. The bounding rectangle
+ * and transform controls how the text is laid out. Each TextSpan object
+ * specifies an offset from the left and bottom edges of the bounding rectangle,
+ * allowing successive lines of text to be arranged as a block or paragraph. The
+ * coordinate transform can be used to control the size and orientation of the
+ * text when it is displayed.
+ * </p>
  * 
  * @see TextSpan
  * @see DefineText
  */
-public final class DefineText2 implements DefineTag
-{
+public final class DefineText2 implements DefineTag {
 	private static final String FORMAT = "DefineText2: { identifier=%d; bounds=%s; transform=%s; objects=%s }";
 
 	private Bounds bounds;
 	private CoordTransform transform;
 	private List<TextSpan> objects;
-	
-	private transient int start;
+
 	private transient int end;
 	private transient int length;
 	private transient int glyphBits;
 	private transient int advanceBits;
 	private int identifier;
 
-	//TODO(doc)
-	//TODO(optimise)
-	public DefineText2(final SWFDecoder coder, final Context context) throws CoderException
-	{
-		start = coder.getPointer();
+	// TODO(doc)
+	// TODO(optimise)
+	public DefineText2(final SWFDecoder coder, final Context context)
+			throws CoderException {
+		final int start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
-		
+
 		if (length == 0x3F) {
 			length = coder.readWord(4, false);
 		}
@@ -96,17 +98,16 @@ public final class DefineText2 implements DefineTag
 		// cause in Flash is unknown but seems to be related to the
 		// bounds not being set - all values are zero.
 
-		int start = coder.getPointer();
+		final int mark = coder.getPointer();
 		int count = 0;
-		
-		for (int i=0; i<16; i++)
-		{
+
+		for (int i = 0; i < 16; i++) {
 			if (coder.readWord(1, false) == 0) {
 				count += 1;
 			}
 		}
 
-		coder.setPointer(start);
+		coder.setPointer(mark);
 
 		if (count == 16) {
 			coder.adjustPointer(128);
@@ -119,15 +120,14 @@ public final class DefineText2 implements DefineTag
 		glyphBits = coder.readByte();
 		advanceBits = coder.readByte();
 
-		Map<Integer,Integer>vars = context.getVariables();
+		final Map<Integer, Integer> vars = context.getVariables();
 		vars.put(Context.TRANSPARENT, 1);
 		vars.put(Context.GLYPH_SIZE, glyphBits);
 		vars.put(Context.ADVANCE_SIZE, advanceBits);
 
 		objects = new ArrayList<TextSpan>();
 
-		while (coder.readBits(8, false) != 0) 
-		{
+		while (coder.readBits(8, false) != 0) {
 			coder.adjustPointer(-8);
 			objects.add(new TextSpan(coder, context));
 		}
@@ -141,7 +141,6 @@ public final class DefineText2 implements DefineTag
 					(coder.getPointer() - end) >> 3);
 		}
 	}
-
 
 	/**
 	 * Creates a DefineText2 object with the specified bounding rectangle,
@@ -159,17 +158,16 @@ public final class DefineText2 implements DefineTag
 	 *            an array of TextSpan objects that define the text to be
 	 *            displayed. Must not be null.
 	 */
-	public DefineText2(int uid, Bounds bounds, CoordTransform transform, List<TextSpan> spans)
-	{
+	public DefineText2(final int uid, final Bounds bounds,
+			final CoordTransform transform, final List<TextSpan> spans) {
 		setIdentifier(uid);
 		setBounds(bounds);
 		setTransform(transform);
 		setObjects(spans);
 	}
-	
-	//TODO(doc)
-	public DefineText2(DefineText2 object)
-	{
+
+	// TODO(doc)
+	public DefineText2(final DefineText2 object) {
 		identifier = object.identifier;
 		bounds = object.bounds;
 		transform = object.transform;
@@ -185,7 +183,7 @@ public final class DefineText2 implements DefineTag
 
 	public void setIdentifier(final int uid) {
 		if (uid < 0 || uid > 65535) {
-			throw new IllegalArgumentException(Strings.IDENTIFIER_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
 		}
 		identifier = uid;
 	}
@@ -193,29 +191,26 @@ public final class DefineText2 implements DefineTag
 	/**
 	 * Returns the width of the text block in twips.
 	 */
-	public int getWidth() 
-	{
+	public int getWidth() {
 		return bounds.getWidth();
 	}
 
 	/**
 	 * Returns the height of the text block in twips.
 	 */
-	public int getHeight()
-	{
+	public int getHeight() {
 		return bounds.getHeight();
 	}
-	
+
 	/**
 	 * Add a TextSpan object to the array of text spans.
 	 * 
 	 * @param obj
 	 *            an TextSpan object. Must not be null.
 	 */
-	public DefineText2 add(TextSpan obj)
-	{
+	public DefineText2 add(final TextSpan obj) {
 		if (obj == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
 		}
 		objects.add(obj);
 		return this;
@@ -227,16 +222,14 @@ public final class DefineText2 implements DefineTag
 	 * 
 	 * @return the bounding rectangle of the text.
 	 */
-	public Bounds getBounds()
-	{
+	public Bounds getBounds() {
 		return bounds;
 	}
 
 	/**
 	 * Returns the coordinate transform that controls how the text is displayed.
 	 */
-	public CoordTransform getTransform()
-	{
+	public CoordTransform getTransform() {
 		return transform;
 	}
 
@@ -244,8 +237,7 @@ public final class DefineText2 implements DefineTag
 	 * Returns the array of text records that define the text to be displayed as
 	 * its attributes.
 	 */
-	public List<TextSpan> getObjects()
-	{
+	public List<TextSpan> getObjects() {
 		return objects;
 	}
 
@@ -255,10 +247,9 @@ public final class DefineText2 implements DefineTag
 	 * @param aBounds
 	 *            the bounding rectangle enclosing the text. Must not be null.
 	 */
-	public void setBounds(Bounds aBounds)
-	{
+	public void setBounds(final Bounds aBounds) {
 		if (aBounds == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
 		}
 		bounds = aBounds;
 	}
@@ -271,10 +262,9 @@ public final class DefineText2 implements DefineTag
 	 *            an CoordTransform to change the size and orientation of the
 	 *            text. Must not be null.
 	 */
-	public void setTransform(CoordTransform aTransform)
-	{
+	public void setTransform(final CoordTransform aTransform) {
 		if (aTransform == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
 		}
 		transform = aTransform;
 	}
@@ -286,10 +276,9 @@ public final class DefineText2 implements DefineTag
 	 *            an array of TextSpan objects that define the text to be
 	 *            displayed. Must not be null.
 	 */
-	public void setObjects(List<TextSpan> array)
-	{
+	public void setObjects(final List<TextSpan> array) {
 		if (array == null) {
-			throw new IllegalArgumentException(Strings.ARRAY_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
 		}
 		objects = array;
 	}
@@ -297,23 +286,20 @@ public final class DefineText2 implements DefineTag
 	/**
 	 * Creates and returns a deep copy of this object.
 	 */
-	public DefineText2 copy() 
-	{
+	public DefineText2 copy() {
 		return new DefineText2(this);
 	}
-	
+
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return String.format(FORMAT, identifier, bounds, transform, objects);
 	}
-	
-	public int prepareToEncode(final SWFEncoder coder, final Context context)
-	{
+
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		glyphBits = calculateSizeForGlyphs();
 		advanceBits = calculateSizeForAdvances();
 
-		Map<Integer,Integer>vars = context.getVariables();
+		final Map<Integer, Integer> vars = context.getVariables();
 		vars.put(Context.TRANSPARENT, 1);
 		vars.put(Context.GLYPH_SIZE, glyphBits);
 		vars.put(Context.ADVANCE_SIZE, advanceBits);
@@ -332,13 +318,13 @@ public final class DefineText2 implements DefineTag
 		vars.put(Context.GLYPH_SIZE, 0);
 		vars.put(Context.ADVANCE_SIZE, 0);
 
-		return (length > 62 ? 6:2) + length;
+		return (length > 62 ? 6 : 2) + length;
 	}
 
-	//TODO(optimise)
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException
-	{
-		start = coder.getPointer();
+	// TODO(optimise)
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
+		final int start = coder.getPointer();
 
 		if (length >= 63) {
 			coder.writeWord((MovieTypes.DEFINE_TEXT_2 << 6) | 0x3F, 2);
@@ -349,7 +335,7 @@ public final class DefineText2 implements DefineTag
 		end = coder.getPointer() + (length << 3);
 
 		coder.writeWord(identifier, 2);
-		Map<Integer,Integer>vars = context.getVariables();
+		final Map<Integer, Integer> vars = context.getVariables();
 		vars.put(Context.TRANSPARENT, 1);
 		vars.put(Context.GLYPH_SIZE, glyphBits);
 		vars.put(Context.ADVANCE_SIZE, advanceBits);
@@ -376,14 +362,13 @@ public final class DefineText2 implements DefineTag
 		}
 	}
 
-	private int calculateSizeForGlyphs()
-	{
+	private int calculateSizeForGlyphs() {
 		int total = 0;
 		int size;
 
 		for (TextSpan span : objects) {
 			size = span.glyphBits();
-			
+
 			if (size > total) {
 				total = size;
 			}
@@ -392,14 +377,13 @@ public final class DefineText2 implements DefineTag
 		return total;
 	}
 
-	private int calculateSizeForAdvances()
-	{
+	private int calculateSizeForAdvances() {
 		int total = 0;
 		int size;
 
 		for (TextSpan span : objects) {
 			size = span.advanceBits();
-			
+
 			if (size > total) {
 				total = size;
 			}

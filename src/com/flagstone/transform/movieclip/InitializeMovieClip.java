@@ -50,36 +50,38 @@ import com.flagstone.transform.coder.SWFFactory;
  * Initialize is used to specify a sequence of actions that are executed to
  * initialise a movie clip before it is displayed.
  * 
- * <p>Initialize implements the #initclip pragma defined in the ActionScript 
- * language.</p>
+ * <p>
+ * Initialize implements the #initclip pragma defined in the ActionScript
+ * language.
+ * </p>
  * 
- * <p>Unlike the DoAction class which specifies the actions that are executed
- * when a particular frame is displayed the actions contained in an Initialize
- * object are executed only once, regardless of where the object is included in
- * a movie. If a frame containing the Initialize object is played again the
+ * <p>
+ * Unlike the DoAction class which specifies the actions that are executed when
+ * a particular frame is displayed the actions contained in an Initialize object
+ * are executed only once, regardless of where the object is included in a
+ * movie. If a frame containing the Initialize object is played again the
  * actions are skipped. Also there can only be one Initialize object for each
  * movie clip defined in the movie.
  * </p>
-
+ * 
  * @see DoAction
  */
-public final class InitializeMovieClip implements MovieTag
-{
+public final class InitializeMovieClip implements MovieTag {
 	private static final String FORMAT = "Initialize: { identifier=%d; actions=%s }";
-	
+
 	private int identifier;
 	private List<Action> actions;
-	
+
 	private transient int start;
 	private transient int end;
 	private transient int length;
 
-	//TODO(doc)
-	public InitializeMovieClip(final SWFDecoder coder, final Context context) throws CoderException
-	{
+	// TODO(doc)
+	public InitializeMovieClip(final SWFDecoder coder, final Context context)
+			throws CoderException {
 		start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
-		
+
 		if (length == 0x3F) {
 			length = coder.readWord(4, false);
 		}
@@ -88,10 +90,11 @@ public final class InitializeMovieClip implements MovieTag
 		identifier = coder.readWord(2, false);
 		actions = new ArrayList<Action>();
 
-		SWFFactory<Action>decoder = context.getRegistry().getActionDecoder();		
+		final SWFFactory<Action> decoder = context.getRegistry()
+				.getActionDecoder();
 
 		if (decoder == null) {
-			actions.add(new ActionData(coder.readBytes(new byte[length-2])));
+			actions.add(new ActionData(coder.readBytes(new byte[length - 2])));
 		} else {
 			while (coder.getPointer() < end) {
 				actions.add(decoder.getObject(coder, context));
@@ -105,27 +108,26 @@ public final class InitializeMovieClip implements MovieTag
 	}
 
 	/**
-	 * Creates a Initialize object that will initialise the movie clip
-	 * with the specified identifier with the actions in the array.
+	 * Creates a Initialize object that will initialise the movie clip with the
+	 * specified identifier with the actions in the array.
 	 * 
 	 * @param uid
-	 *            the identifier of the movie clip to initialise. Must be in the 
+	 *            the identifier of the movie clip to initialise. Must be in the
 	 *            range 1..65535.
 	 * @param anArray
 	 *            the array of action objects. Must not be null.
 	 */
-	public InitializeMovieClip(int uid, List<Action> anArray)
-	{
+	public InitializeMovieClip(final int uid, final List<Action> anArray) {
 		setIdentifier(uid);
 		setActions(anArray);
 	}
-	
-	//TODO(doc)
-	public InitializeMovieClip(InitializeMovieClip object) {
+
+	// TODO(doc)
+	public InitializeMovieClip(final InitializeMovieClip object) {
 		identifier = object.identifier;
-		
+
 		actions = new ArrayList<Action>(object.actions.size());
-		
+
 		for (Action action : object.actions) {
 			actions.add(action.copy());
 		}
@@ -134,8 +136,7 @@ public final class InitializeMovieClip implements MovieTag
 	/**
 	 * Returns the identifier of the movie clip that will be initialised.
 	 */
-	public int getIdentifier()
-	{
+	public int getIdentifier() {
 		return identifier;
 	}
 
@@ -145,11 +146,10 @@ public final class InitializeMovieClip implements MovieTag
 	 * @param aNumber
 	 *            the identifier of the movie clip. The value must be in the
 	 *            range 1..65535.
- 	 */
-	public void setIdentifier(int aNumber)
-	{
+	 */
+	public void setIdentifier(final int aNumber) {
 		if (aNumber < 1 || aNumber > 65535) {
-			throw new IllegalArgumentException(Strings.IDENTIFIER_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
 		}
 		identifier = aNumber;
 	}
@@ -158,13 +158,12 @@ public final class InitializeMovieClip implements MovieTag
 	 * Adds the action object to the array of actions.
 	 * 
 	 * @param anAction
-	 *            an object belonging to a class derived from Action.
-	 *            Must not be null.
+	 *            an object belonging to a class derived from Action. Must not
+	 *            be null.
 	 */
-	public InitializeMovieClip add(Action anAction)
-	{
+	public InitializeMovieClip add(final Action anAction) {
 		if (anAction == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
 		}
 		actions.add(anAction);
 		return this;
@@ -173,8 +172,7 @@ public final class InitializeMovieClip implements MovieTag
 	/**
 	 * Get the array of actions that are used to initialise the movie clip.
 	 */
-	public List<Action> getActions()
-	{
+	public List<Action> getActions() {
 		return actions;
 	}
 
@@ -184,10 +182,9 @@ public final class InitializeMovieClip implements MovieTag
 	 * @param anArray
 	 *            the array of action objects. Must not be null.
 	 */
-	public void setActions(List<Action> anArray)
-	{
+	public void setActions(final List<Action> anArray) {
 		if (anArray == null) {
-			throw new IllegalArgumentException(Strings.ARRAY_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
 		}
 		actions = anArray;
 	}
@@ -195,30 +192,27 @@ public final class InitializeMovieClip implements MovieTag
 	/**
 	 * Creates and returns a deep copy of this object.
 	 */
-	public InitializeMovieClip copy() 
-	{
+	public InitializeMovieClip copy() {
 		return new InitializeMovieClip(this);
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return String.format(FORMAT, identifier, actions);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context)
-	{
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		length = 2;
 
 		for (Action action : actions) {
 			length += action.prepareToEncode(coder, context);
 		}
 
-		return (length > 62 ? 6:2) + length;
+		return (length > 62 ? 6 : 2) + length;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException
-	{
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		start = coder.getPointer();
 
 		if (length > 62) {

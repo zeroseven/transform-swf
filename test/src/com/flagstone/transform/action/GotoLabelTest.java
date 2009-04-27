@@ -35,33 +35,29 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 
-import com.flagstone.transform.action.GotoLabel;
 import com.flagstone.transform.coder.ActionTypes;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-
-@SuppressWarnings( { 
-	"PMD.LocalVariableCouldBeFinal",
-	"PMD.JUnitAssertionsShouldIncludeMessage" 
-})
+@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
+		"PMD.JUnitAssertionsShouldIncludeMessage" })
 public final class GotoLabelTest {
-	
+
 	private transient final int type = ActionTypes.GOTO_LABEL;
 	private transient final String label = "ABC123";
-	
+
 	private transient GotoLabel fixture;
-	
-	private transient final byte[] encoded = new byte[] { (byte)type, 0x07, 0x00, 
-			0x41, 0x42, 0x043, 0x31, 0x32, 0x33, 0x00};
-	
-	@Test(expected=IllegalArgumentException.class)
+
+	private transient final byte[] encoded = new byte[] { (byte) type, 0x07,
+			0x00, 0x41, 0x42, 0x043, 0x31, 0x32, 0x33, 0x00 };
+
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForLabelWithNull() {
-		fixture = new GotoLabel((String)null);
+		fixture = new GotoLabel((String) null);
 	}
-	
+
 	@Test
 	public void checkCopy() {
 		fixture = new GotoLabel(label);
@@ -69,27 +65,26 @@ public final class GotoLabelTest {
 
 		assertEquals(fixture.toString(), copy.toString());
 	}
-	
+
 	@Test
 	public void encode() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(encoded.length);		
+		SWFEncoder encoder = new SWFEncoder(encoded.length);
 		Context context = new Context();
 
 		fixture = new GotoLabel(label);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
 		fixture.encode(encoder, context);
-		
+
 		assertTrue(encoder.eof());
 		assertArrayEquals(encoded, encoder.getData());
 	}
-	
+
 	@Test
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
-		Context context = new Context();
 
-		fixture = new GotoLabel(decoder, context);
-		
+		fixture = new GotoLabel(decoder);
+
 		assertTrue(decoder.eof());
 		assertEquals(label, fixture.getLabel());
 	}

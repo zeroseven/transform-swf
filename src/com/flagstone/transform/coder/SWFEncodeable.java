@@ -30,7 +30,6 @@
 
 package com.flagstone.transform.coder;
 
-
 /**
  * <p>
  * The Encodeable interface defines the set of methods that all classes must
@@ -40,7 +39,7 @@ package com.flagstone.transform.coder;
 public interface SWFEncodeable {
 	/**
 	 * Prepare an object for encoding, returning the expected size of an object
-	 * when it is encoded. This method also used to initialise variables, such 
+	 * when it is encoded. This method also used to initialise variables, such
 	 * as offsets and flags that will be used when the object is encoded.
 	 * 
 	 * Generally the method returns the size in bytes, however when called on
@@ -60,5 +59,6 @@ public interface SWFEncodeable {
 	 * @param coder
 	 *            an SWFEncoder object.
 	 */
-	void encode(final SWFEncoder coder, final Context context) throws CoderException;
+	void encode(final SWFEncoder coder, final Context context)
+			throws CoderException;
 }

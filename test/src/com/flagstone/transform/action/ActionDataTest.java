@@ -31,7 +31,6 @@ package com.flagstone.transform.action;
 
 import org.junit.Test;
 
-import com.flagstone.transform.action.ActionData;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -41,21 +40,19 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 
-@SuppressWarnings( {
-	"PMD.LocalVariableCouldBeFinal",
-	"PMD.JUnitAssertionsShouldIncludeMessage" })
+@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
+		"PMD.JUnitAssertionsShouldIncludeMessage" })
 public final class ActionDataTest {
-	
+
 	private transient final byte[] data = new byte[] { 1, 2, 0 };
 
 	private transient ActionData fixture;
 
-	private transient final byte[] empty = new byte[] { };
 	private transient final byte[] encoded = new byte[] { 1, 2, 0 };
-	
-	@Test(expected=IllegalArgumentException.class)
+
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForDataWithNull() {
-		fixture = new ActionData((byte[])null);
+		fixture = new ActionData((byte[]) null);
 	}
 
 	@Test
@@ -64,17 +61,17 @@ public final class ActionDataTest {
 		assertNotSame(fixture.getData(), fixture.copy().getData());
 		assertEquals(fixture.toString(), fixture.toString());
 	}
-	
+
 	@Test
 	public void encode() throws CoderException {
 
 		SWFEncoder encoder = new SWFEncoder(encoded.length);
 		Context context = new Context();
-		
+
 		fixture = new ActionData(data);
-		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));		
+		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
 		fixture.encode(encoder, context);
-		
+
 		assertTrue(encoder.eof());
 		assertArrayEquals(encoded, encoder.getData());
 	}
@@ -83,9 +80,9 @@ public final class ActionDataTest {
 	public void decode() throws CoderException {
 
 		SWFDecoder decoder = new SWFDecoder(data);
-		
+
 		fixture = new ActionData(decoder.readBytes(new byte[data.length]));
-		
+
 		assertTrue(decoder.eof());
 		assertArrayEquals(data, fixture.getData());
 	}

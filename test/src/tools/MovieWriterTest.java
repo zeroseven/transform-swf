@@ -31,74 +31,61 @@ package tools;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
+import java.util.zip.DataFormatException;
 
 import com.flagstone.transform.Movie;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-
 import static org.junit.Assert.fail;
 
 /**
- * DecodeMovieTest is used to create Movies using all the Flash files in a given 
+ * DecodeMovieTest is used to create Movies using all the Flash files in a given
  * directory to verify that they can be decoded correctly.
  */
-public final class MovieWriterTest
-{
+public final class MovieWriterTest {
 	private static File srcDir;
 	private static File destDir;
 	private static FilenameFilter filter;
-		
+
 	@BeforeClass
-	public static void setup()
-	{
-		if (System.getProperty("test.suite") != null) {
+	public static void setUp() {
+		if (System.getProperty("test.suite") == null) {
+			srcDir = new File("test/data/swf/reference");
+		} else {
 			srcDir = new File(System.getProperty("test.suites"));
 		}
-		else {
-			srcDir = new File("test/data/swf/reference");
-		}
-		
-        filter = new FilenameFilter()
-        {
-            public boolean accept(File directory, String name) {
-                return name.endsWith(".swf");
-            }
-        };
 
-   		destDir = new File("test/results", "MovieWriterTest");		
+		filter = new FilenameFilter() {
+			public boolean accept(final File directory, final String name) {
+				return name.endsWith(".swf");
+			}
+		};
 
-		if (destDir.exists() == false && destDir.mkdirs() == false) {
+		destDir = new File("test/results", "MovieWriterTest");
+
+		if (!destDir.exists() && !destDir.mkdirs()) {
 			fail();
 		}
 	}
 
 	@Test
-    public void write()
-    {
-		File sourceFile = null;		
+	public void write() throws DataFormatException, IOException {
+		File sourceFile = null;
 		File destFile;
-		
-		Movie movie = new Movie();		
-        MovieWriter writer = new MovieWriter();
 
-        try
-        {
-			String[] files = srcDir.list(filter);
-				
-			for (String file : files) {
-				sourceFile = new File(srcDir, file);
-				destFile = new File(destDir, file.replaceFirst("\\.swf", ".txt"));
-			    movie.decodeFromFile(sourceFile);
-			    writer.write(movie, destFile);
-	        }
-        }
-		catch (Throwable t)
-		{
-			t.printStackTrace();
-			
-			fail(sourceFile.getPath());
+		final Movie movie = new Movie();
+		final MovieWriter writer = new MovieWriter();
+
+		final String[] files = srcDir.list(filter);
+
+		for (String file : files) {
+			sourceFile = new File(srcDir, file);
+			destFile = new File(destDir, file.replaceFirst("\\.swf", ".txt"));
+			movie.decodeFromFile(sourceFile);
+			writer.write(movie, destFile);
 		}
-    }
+	}
 }

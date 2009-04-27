@@ -31,13 +31,11 @@
 package com.flagstone.transform.util.sound;
 
 import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.RandomAccessFile;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -51,92 +49,97 @@ import com.flagstone.transform.datatype.SoundFormat;
 import com.flagstone.transform.sound.DefineSound;
 import com.flagstone.transform.sound.SoundStreamBlock;
 import com.flagstone.transform.sound.SoundStreamHead2;
-import com.flagstone.transform.util.image.ImageInfo;
 
 /**
  * Decoder for WAV sounds so they can be added to a flash file.
  */
-public final class WAVDecoder implements SoundProvider, SoundDecoder
-{
-    protected static final int[] riffSignature = { 82, 73, 70, 70 };
-    protected static final int[] wavSignature = { 87, 65, 86, 69 };
+public final class WAVDecoder implements SoundProvider, SoundDecoder {
+	private static final int[] riffSignature = { 82, 73, 70, 70 };
+	private static final int[] wavSignature = { 87, 65, 86, 69 };
 
-    protected static final int FMT = 0x20746d66;
-    protected static final int DATA = 0x61746164;
-    
-    private SoundFormat format;
-    private int numberOfChannels;
-    private int samplesPerChannel;
-    private int sampleRate;
-    private int sampleSize;
-    private byte[] sound = null;
+	private static final int FMT = 0x20746d66;
+	private static final int DATA = 0x61746164;
 
-    public SoundDecoder newDecoder() {
-    	return new WAVDecoder();
-    }
-    
-    public void read(String path) throws FileNotFoundException, IOException, DataFormatException
-    {
-    	read(new File(path));
-    }
-    
-    public void read(File file) throws FileNotFoundException, IOException, DataFormatException
-    {
+	private transient SoundFormat format;
+	private transient int numberOfChannels;
+	private transient int samplesPerChannel;
+	private transient int sampleRate;
+	private transient int sampleSize;
+	private transient byte[] sound = null;
+
+	public SoundDecoder newDecoder() {
+		return new WAVDecoder();
+	}
+
+	public void read(final String path) throws FileNotFoundException, IOException,
+			DataFormatException {
+		read(new File(path));
+	}
+
+	public void read(final File file) throws FileNotFoundException, IOException,
+			DataFormatException {
 		decode(loadFile(file));
-    }
+	}
 
-    public void read(URL url) throws FileNotFoundException, IOException, DataFormatException
-    {
-	    URLConnection connection = url.openConnection();
+	public void read(final URL url) throws FileNotFoundException, IOException,
+			DataFormatException {
+		final URLConnection connection = url.openConnection();
 
-	    int fileSize = connection.getContentLength();
-            
-	    if (fileSize<0) {
-              throw new FileNotFoundException(url.getFile());
-	    }
-	    
-	    byte[] bytes = new byte[fileSize];
+		final int fileSize = connection.getContentLength();
 
-	    InputStream stream = url.openStream();
-	    BufferedInputStream buffer = new BufferedInputStream(stream);
+		if (fileSize < 0) {
+			throw new FileNotFoundException(url.getFile());
+		}
 
-	    buffer.read(bytes);
-	    buffer.close();
+		final byte[] bytes = new byte[fileSize];
+
+		final InputStream stream = url.openStream();
+		final BufferedInputStream buffer = new BufferedInputStream(stream);
+
+		buffer.read(bytes);
+		buffer.close();
 
 		decode(bytes);
-    }
+	}
 
 	/**
-	 * Create a definition for an event sound using the sound in the specified file.
+	 * Create a definition for an event sound using the sound in the specified
+	 * file.
 	 * 
-	 * @param identifier the unique identifier that will be used to refer to the 
-	 * sound in the Flash file.
+	 * @param identifier
+	 *            the unique identifier that will be used to refer to the sound
+	 *            in the Flash file.
 	 * 
-	 * @param file the File containing the abstract path to the sound.
+	 * @param file
+	 *            the File containing the abstract path to the sound.
 	 * 
 	 * @return a sound definition that can be added to a Movie.
 	 * 
-	 * @throws FileNotFoundException if the file cannot be found or opened.
+	 * @throws FileNotFoundException
+	 *             if the file cannot be found or opened.
 	 * 
-	 * @throws IOException if there is an error reading the file.
+	 * @throws IOException
+	 *             if there is an error reading the file.
 	 * 
-	 * @throws DataFormatException if there is a problem decoding the image, 
-	 * either it is in an unsupported format or an error occurred while decoding
-	 * the image.
+	 * @throws DataFormatException
+	 *             if there is a problem decoding the image, either it is in an
+	 *             unsupported format or an error occurred while decoding the
+	 *             image.
 	 */
-    public DefineSound defineSound(int identifier)
-    {
-        return new DefineSound(identifier, format, sampleRate, numberOfChannels, sampleSize, samplesPerChannel, sound);
-    }
+	public DefineSound defineSound(final int identifier) {
+		return new DefineSound(identifier, format, sampleRate,
+				numberOfChannels, sampleSize, samplesPerChannel, sound);
+	}
 
-    private byte[] loadFile(final File file) throws FileNotFoundException, IOException {
-		byte[] data = new byte[(int) file.length()];
+	private byte[] loadFile(final File file) throws FileNotFoundException,
+			IOException {
+		final byte[] data = new byte[(int) file.length()];
 
 		FileInputStream stream = null;
 
 		try {
 			stream = new FileInputStream(file);
-			int bytesRead = stream.read(data);
+			final int bytesRead = stream.read(data);
 
 			if (bytesRead != data.length) {
 				throw new IOException(file.getAbsolutePath());
@@ -148,129 +151,129 @@ public final class WAVDecoder implements SoundProvider, SoundDecoder
 		}
 		return data;
 	}
-    /** 
-     * Generates all the objects required to generate a streaming sound from 
-     * a URL reference. 
-     * 
-     * @param frameRate the rate at which the movie is played. Sound are streamed
-     * with one block of sound data per frame.
-     * 
- 	 * @param url the Uniform Resource Locator referencing the file containing
- 	 * the sound.
-     * 
-     * @return an array where the first object is the SoundStreamHead2 object 
-     * that defines the streaming sound, followed by SoundStreamBlock objects 
-     * containing the sound samples that will be played in each frame.
+
+	/**
+	 * Generates all the objects required to generate a streaming sound from a
+	 * URL reference.
 	 * 
-	 * @throws FileNotFoundException if the file cannot be found or opened.
+	 * @param frameRate
+	 *            the rate at which the movie is played. Sound are streamed with
+	 *            one block of sound data per frame.
 	 * 
-	 * @throws IOException if there is an error reading the file.
+	 * @param url
+	 *            the Uniform Resource Locator referencing the file containing
+	 *            the sound.
 	 * 
-	 * @throws DataFormatException if there is a problem decoding the sound, 
-	 * either it is in an unsupported format or an error occurred while decoding
-	 * the sound data.
-     */
-    public List<MovieTag> streamSound(int frameRate)
-    {
-     	ArrayList<MovieTag>array = new ArrayList<MovieTag>();
-  
-        int firstSample = 0;
-        int firstSampleOffset = 0;
-        int bytesPerBlock = 0;
-        int bytesRemaining = 0;
-        int numberOfBytes = 0;
-   	    byte[] bytes = null;
-	    
-    	int samplesPerBlock = sampleRate/frameRate;
-	 	int numberOfBlocks = samplesPerChannel/samplesPerBlock;
+	 * @return an array where the first object is the SoundStreamHead2 object
+	 *         that defines the streaming sound, followed by SoundStreamBlock
+	 *         objects containing the sound samples that will be played in each
+	 *         frame.
+	 * 
+	 * @throws FileNotFoundException
+	 *             if the file cannot be found or opened.
+	 * 
+	 * @throws IOException
+	 *             if there is an error reading the file.
+	 * 
+	 * @throws DataFormatException
+	 *             if there is a problem decoding the sound, either it is in an
+	 *             unsupported format or an error occurred while decoding the
+	 *             sound data.
+	 */
+	public List<MovieTag> streamSound(final int frameRate) {
+		final ArrayList<MovieTag> array = new ArrayList<MovieTag>();
 
-	    array.add(new SoundStreamHead2(format, sampleRate, numberOfChannels, sampleSize, sampleRate, numberOfChannels, sampleSize, samplesPerBlock));
+		int firstSample = 0;
+		int firstSampleOffset = 0;
+		int bytesPerBlock = 0;
+		int bytesRemaining = 0;
+		int numberOfBytes = 0;
+		byte[] bytes = null;
 
-	    for (int i=0; i<numberOfBlocks; i++)
-	    {
-            firstSample = i*samplesPerBlock;
-            firstSampleOffset = firstSample * sampleSize * numberOfChannels;
-            bytesPerBlock = samplesPerBlock * sampleSize * numberOfChannels;
-            bytesRemaining = sound.length - firstSampleOffset;
-            
-            numberOfBytes = (bytesRemaining < bytesPerBlock) ? bytesRemaining : bytesPerBlock;
-        
-            bytes = new byte[numberOfBytes];
-            System.arraycopy(sound, firstSampleOffset, bytes, 0, numberOfBytes);
-            
-            array.add(new SoundStreamBlock(bytes));
-	    }
-    	return array;
-     }
+		final int samplesPerBlock = sampleRate / frameRate;
+		final int numberOfBlocks = samplesPerChannel / samplesPerBlock;
 
-	protected void decode(byte[] data) throws DataFormatException
-    {
-    	SWFDecoder coder = new SWFDecoder(data);
-        
-        for (int i=0; i<4; i++)
-        {
-            if (coder.readByte() != riffSignature[i]) {
-                throw new DataFormatException(Strings.UNSUPPORTED_FILE_FORMAT);
-            }
-        }
-        
-        coder.readWord(4, false);
-        
-        for (int i=0; i<4; i++)
-        {
-            if (coder.readByte() != wavSignature[i]) {
-                throw new DataFormatException(Strings.UNSUPPORTED_FILE_FORMAT);
-            }
-        }
-       
-        int chunkType;
-        int length;
-        boolean moreChunks;
+		array.add(new SoundStreamHead2(format, sampleRate, numberOfChannels,
+				sampleSize, sampleRate, numberOfChannels, sampleSize,
+				samplesPerBlock));
 
-        do {
-            chunkType = coder.readWord(4, false);
-            length = coder.readWord(4, false);
-            
-            int blockStart = coder.getPointer();
-            
-            switch (chunkType)
-            {
-                case FMT: 
-                	decodeFMT(coder); 
-                	break;
-                case DATA: 
-                	decodeDATA(coder, length); 
-                	break;
-                default: 
-                	coder.adjustPointer(length << 3); 
-                	break;
-            }
+		for (int i = 0; i < numberOfBlocks; i++) {
+			firstSample = i * samplesPerBlock;
+			firstSampleOffset = firstSample * sampleSize * numberOfChannels;
+			bytesPerBlock = samplesPerBlock * sampleSize * numberOfChannels;
+			bytesRemaining = sound.length - firstSampleOffset;
 
-            int nextBlock = blockStart + (length << 3);
-            coder.setPointer(nextBlock);
-            moreChunks = !coder.eof();
-        } while (moreChunks);
-    }
+			numberOfBytes = (bytesRemaining < bytesPerBlock) ? bytesRemaining
+					: bytesPerBlock;
 
-    private void decodeFMT(SWFDecoder coder) throws DataFormatException
-    {
-        format = SoundFormat.PCM;
-        
-        if (coder.readWord(2, false) != 1) {
-            throw new DataFormatException(Strings.UNSUPPORTED_FILE_FORMAT);
-        }
-        
-        numberOfChannels = coder.readWord(2, false);
-        sampleRate = coder.readWord(4, false);
-        coder.readWord(4, false); // total data length
-        coder.readWord(2, false); // total bytes per sample
-        sampleSize = coder.readWord(2, false) / 8;
-    }
-    
-    private void decodeDATA(SWFDecoder coder, int length)
-    {
-        samplesPerChannel = length / (sampleSize*numberOfChannels);
+			bytes = new byte[numberOfBytes];
+			System.arraycopy(sound, firstSampleOffset, bytes, 0, numberOfBytes);
 
-        sound = coder.readBytes(new byte[length]);
-    }
+			array.add(new SoundStreamBlock(bytes));
+		}
+		return array;
+	}
+
+	protected void decode(final byte[] data) throws DataFormatException {
+		final SWFDecoder coder = new SWFDecoder(data);
+
+		for (int i = 0; i < 4; i++) {
+			if (coder.readByte() != riffSignature[i]) {
+				throw new DataFormatException(Strings.INVALID_FORMAT);
+			}
+		}
+
+		coder.readWord(4, false);
+
+		for (int i = 0; i < 4; i++) {
+			if (coder.readByte() != wavSignature[i]) {
+				throw new DataFormatException(Strings.INVALID_FORMAT);
+			}
+		}
+
+		int chunkType;
+		int length;
+
+		do {
+			chunkType = coder.readWord(4, false);
+			length = coder.readWord(4, false);
+
+			final int blockStart = coder.getPointer();
+
+			switch (chunkType) {
+			case FMT:
+				decodeFMT(coder);
+				break;
+			case DATA:
+				decodeDATA(coder, length);
+				break;
+			default:
+				coder.adjustPointer(length << 3);
+				break;
+			}
+
+			final int nextBlock = blockStart + (length << 3);
+			coder.setPointer(nextBlock);
+		} while (!coder.eof());
+	}
+
+	private void decodeFMT(final SWFDecoder coder) throws DataFormatException {
+		format = SoundFormat.PCM;
+
+		if (coder.readWord(2, false) != 1) {
+			throw new DataFormatException(Strings.INVALID_FORMAT);
+		}
+
+		numberOfChannels = coder.readWord(2, false);
+		sampleRate = coder.readWord(4, false);
+		coder.readWord(4, false); // total data length
+		coder.readWord(2, false); // total bytes per sample
+		sampleSize = coder.readWord(2, false) / 8;
+	}
+
+	private void decodeDATA(final SWFDecoder coder, final int length) {
+		samplesPerChannel = length / (sampleSize * numberOfChannels);
+
+		sound = coder.readBytes(new byte[length]);
+	}
 }

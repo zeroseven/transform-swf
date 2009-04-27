@@ -42,37 +42,34 @@ import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.Color;
-import com.flagstone.transform.linestyle.LineStyle;
 
-@SuppressWarnings( { 
-	"PMD.LocalVariableCouldBeFinal",
-	"PMD.JUnitAssertionsShouldIncludeMessage" 
-})
+@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
+		"PMD.JUnitAssertionsShouldIncludeMessage" })
 public final class LineStyleTest {
-	
-	private transient final int width = 1;
-	private transient final Color color = new Color(2,3,4);
-	
-	private transient LineStyle fixture;
-	
-	private transient final byte[] encoded = new byte[] { 
-			0x01, 0x00, 0x02, 0x03, 0x04 };
 
-	@Test(expected=IllegalArgumentException.class)
+	private transient final int width = 1;
+	private transient final Color color = new Color(2, 3, 4);
+
+	private transient LineStyle fixture;
+
+	private transient final byte[] encoded = new byte[] { 0x01, 0x00, 0x02,
+			0x03, 0x04 };
+
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForWidthWithLowerBound() {
 		fixture = new LineStyle(-1, color);
 	}
 
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForWidthWithUpperBound() {
 		fixture = new LineStyle(65536, color);
 	}
 
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForColorWithNull() {
 		fixture = new LineStyle(1, null);
 	}
-	
+
 	@Test
 	public void checkCopy() {
 		fixture = new LineStyle(width, color);
@@ -82,16 +79,16 @@ public final class LineStyleTest {
 		assertSame(fixture.getColor(), copy.getColor());
 		assertEquals(fixture.toString(), copy.toString());
 	}
-	
+
 	@Test
-	public void encode() throws CoderException {		
-		SWFEncoder encoder = new SWFEncoder(encoded.length);		
+	public void encode() throws CoderException {
+		SWFEncoder encoder = new SWFEncoder(encoded.length);
 		Context context = new Context();
 
 		fixture = new LineStyle(width, color);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
 		fixture.encode(encoder, context);
-		
+
 		assertTrue(encoder.eof());
 		assertArrayEquals(encoded, encoder.getData());
 	}
@@ -102,7 +99,7 @@ public final class LineStyleTest {
 		Context context = new Context();
 
 		fixture = new LineStyle(decoder, context);
-		
+
 		assertTrue(decoder.eof());
 		assertEquals(width, fixture.getWidth());
 		assertEquals(color.getRed(), fixture.getColor().getRed());

@@ -42,32 +42,29 @@ import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.Color;
-import com.flagstone.transform.fillstyle.MorphSolidFill;
 
-@SuppressWarnings( { 
-	"PMD.LocalVariableCouldBeFinal",
-	"PMD.JUnitAssertionsShouldIncludeMessage" 
-})
+@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
+		"PMD.JUnitAssertionsShouldIncludeMessage" })
 public final class MorphSolidFillTest {
-	
-	private transient final Color startColor = new Color(1,2,3,4);
-	private transient final Color endColor = new Color(5,6,7,8);
-	
-	private transient MorphSolidFill fixture;
-	
-	private transient final byte[] encoded = new byte[] { 
-			0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
 
-	@Test(expected=IllegalArgumentException.class)
+	private transient final Color startColor = new Color(1, 2, 3, 4);
+	private transient final Color endColor = new Color(5, 6, 7, 8);
+
+	private transient MorphSolidFill fixture;
+
+	private transient final byte[] encoded = new byte[] { 0x00, 0x01, 0x02,
+			0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
+
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForStartColorWithNull() {
 		fixture = new MorphSolidFill(null, endColor);
 	}
 
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForEndColorWithNull() {
 		fixture = new MorphSolidFill(startColor, null);
 	}
-	
+
 	@Test
 	public void checkCopy() {
 		fixture = new MorphSolidFill(startColor, endColor);
@@ -77,17 +74,17 @@ public final class MorphSolidFillTest {
 		assertSame(fixture.getStartColor(), copy.getStartColor());
 		assertEquals(fixture.toString(), copy.toString());
 	}
-	
+
 	@Test
-	public void encode() throws CoderException {		
-		SWFEncoder encoder = new SWFEncoder(encoded.length);		
+	public void encode() throws CoderException {
+		SWFEncoder encoder = new SWFEncoder(encoded.length);
 		Context context = new Context();
 		context.getVariables().put(Context.TRANSPARENT, 1);
 
 		fixture = new MorphSolidFill(startColor, endColor);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
 		fixture.encode(encoder, context);
-		
+
 		assertTrue(encoder.eof());
 		assertArrayEquals(encoded, encoder.getData());
 	}
@@ -99,7 +96,7 @@ public final class MorphSolidFillTest {
 		context.getVariables().put(Context.TRANSPARENT, 1);
 
 		fixture = new MorphSolidFill(decoder, context);
-		
+
 		assertTrue(decoder.eof());
 		assertEquals(startColor.getRed(), fixture.getStartColor().getRed());
 		assertEquals(startColor.getGreen(), fixture.getStartColor().getGreen());

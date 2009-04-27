@@ -39,31 +39,34 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 //TODO(doc) Review
 /**
- * Kerning is used to fine-tune the spacing between specific pairs 
- * of characters to make them visually more appealing.</p>
+ * Kerning is used to fine-tune the spacing between specific pairs of characters
+ * to make them visually more appealing.</p>
  * 
- * <p>The glyphs are identified by an index into the glyph table for the font. 
- * The adjustment, in twips, is specified relative to the advance define for the 
- * left hand glyph.</p>
+ * <p>
+ * The glyphs are identified by an index into the glyph table for the font. The
+ * adjustment, in twips, is specified relative to the advance define for the
+ * left hand glyph.
+ * </p>
  * 
- * <p>Kerning objects are only used within DefineFont2 objects and provide more
+ * <p>
+ * Kerning objects are only used within DefineFont2 objects and provide more
  * precise control over the layout of a font's glyph than was possible using the
- * DefineFont and FontInfo objects.</p>
- *
+ * DefineFont and FontInfo objects.
+ * </p>
+ * 
  * @see DefineFont2
  */
-public final class Kerning implements SWFEncodeable
-{
+public final class Kerning implements SWFEncodeable {
 	private static final String FORMAT = "Kerning: { leftGlyph=%d; rightGlyph=%d; adjustment=%d } ";
-	
+
 	private final transient int leftGlyph;
 	private final transient int rightGlyph;
 	private final transient int adjustment;
-	
+
 	private transient int size;
 
-	public Kerning(final SWFDecoder coder, final Context context) throws CoderException
-	{
+	public Kerning(final SWFDecoder coder, final Context context)
+			throws CoderException {
 		size = context.getVariables().containsKey(Context.WIDE_CODES) ? 2 : 1;
 		leftGlyph = coder.readWord(size, false);
 		rightGlyph = coder.readWord(size, false);
@@ -71,8 +74,8 @@ public final class Kerning implements SWFEncodeable
 	}
 
 	/**
-	 * Creates a Kerning object specifying the glyph indexes and
-	 * adjustment. The value for the adjustment must be specified in twips.
+	 * Creates a Kerning object specifying the glyph indexes and adjustment. The
+	 * value for the adjustment must be specified in twips.
 	 * 
 	 * @param leftIndex
 	 *            the index in a code table for the glyph on the left side of
@@ -84,87 +87,81 @@ public final class Kerning implements SWFEncodeable
 	 *            the adjustment that will be added to the advance defined for
 	 *            the left glyph. Must be in the range -32768..32767.
 	 */
-	public Kerning(int leftIndex, int rightIndex, int adjust)
-	{
+	public Kerning(final int leftIndex, final int rightIndex, final int adjust) {
 		if (leftIndex < 0 || leftIndex > 65535) {
-			throw new IllegalArgumentException(Strings.GLYPH_INDEX_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.GLYPH_INDEX_RANGE);
 		}
-		leftGlyph = leftIndex; 
+		leftGlyph = leftIndex;
 
 		if (rightIndex < 0 || rightIndex > 65535) {
-			throw new IllegalArgumentException(Strings.GLYPH_INDEX_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.GLYPH_INDEX_RANGE);
 		}
-		rightGlyph = rightIndex; 
+		rightGlyph = rightIndex;
 
 		if (adjust < -32768 || adjust > 32767) {
-			throw new IllegalArgumentException(Strings.SIGNED_VALUE_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.SIGNED_RANGE);
 		}
 		adjustment = adjust;
 	}
-	
+
 	/**
 	 * Returns the index of the left glyph in the kerning pair.
 	 */
-	public int getLeftGlyph()
-	{
+	public int getLeftGlyph() {
 		return leftGlyph;
 	}
 
 	/**
 	 * Returns the index of the right glyph in the kerning pair.
 	 */
-	public int getRightGlyph()
-	{
+	public int getRightGlyph() {
 		return rightGlyph;
 	}
 
 	/**
 	 * Returns the adjustment, in twips, to the advance of the left glyph.
 	 */
-	public int getAdjustment()
-	{
+	public int getAdjustment() {
 		return adjustment;
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return String.format(FORMAT, leftGlyph, rightGlyph, adjustment);
 	}
-	
+
 	@Override
-	public boolean equals(Object object) {
+	public boolean equals(final Object object) {
 		boolean result;
 		Kerning kerning;
-		
+
 		if (object == null) {
 			result = false;
 		} else if (object == this) {
 			result = true;
 		} else if (object instanceof Kerning) {
-			kerning = (Kerning)object;
-			result = leftGlyph == kerning.leftGlyph &&
-				rightGlyph == kerning.rightGlyph &&
-				adjustment == kerning.adjustment;
+			kerning = (Kerning) object;
+			result = leftGlyph == kerning.leftGlyph
+					&& rightGlyph == kerning.rightGlyph
+					&& adjustment == kerning.adjustment;
 		} else {
 			result = false;
 		}
 		return result;
 	}
-	
+
 	@Override
 	public int hashCode() {
-		return ((leftGlyph*31) + rightGlyph)*31 + adjustment;
+		return ((leftGlyph * 31) + rightGlyph) * 31 + adjustment;
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context)
-	{
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		size = context.getVariables().containsKey(Context.WIDE_CODES) ? 2 : 1;
 		return (size << 2) + 2;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException
-	{
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		coder.writeWord(leftGlyph, size);
 		coder.writeWord(rightGlyph, size);
 		coder.writeWord(adjustment, 2);

@@ -78,7 +78,7 @@ public final class Bounds implements SWFEncodeable {
 	private transient int size;
 
 	/**
-	 * Creates and initialises a Bounds using values encoded in the Flash binary 
+	 * Creates and initialises a Bounds using values encoded in the Flash binary
 	 * format.
 	 * 
 	 * @param coder
@@ -166,38 +166,39 @@ public final class Bounds implements SWFEncodeable {
 	public String toString() {
 		return String.format(FORMAT, minX, minY, maxX, maxY);
 	}
-	
+
 	@Override
 	public boolean equals(final Object object) {
 		boolean result;
 		Bounds bounds;
-		
+
 		if (object == null) {
 			result = false;
 		} else if (object == this) {
 			result = true;
 		} else if (object instanceof Bounds) {
-			bounds = (Bounds)object;
-			result = minX == bounds.minX && minY == bounds.minY &&
-				maxX == bounds.maxX && maxY == bounds.maxY;
+			bounds = (Bounds) object;
+			result = minX == bounds.minX && minY == bounds.minY
+					&& maxX == bounds.maxX && maxY == bounds.maxY;
 		} else {
 			result = false;
 		}
 		return result;
 	}
-	
+
 	@Override
 	public int hashCode() {
-		return (((minX*31)+minY)*31 + maxX)*31 + maxY;
+		return (((minX * 31) + minY) * 31 + maxX) * 31 + maxY;
 	}
-	
+
 	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		size = Encoder.maxSize(minX, minY, maxX, maxY);
 		// add extra 7 bits so result is byte aligned.
 		return ((12 + (size << 2))) >> 3;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException {
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		coder.writeBits(size, 5);
 		coder.writeBits(minX, size);
 		coder.writeBits(maxX, size);

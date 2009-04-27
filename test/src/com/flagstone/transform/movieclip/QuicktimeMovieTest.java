@@ -39,32 +39,26 @@ import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.movieclip.QuicktimeMovie;
 
-@SuppressWarnings( { 
-	"PMD.LocalVariableCouldBeFinal",
-	"PMD.JUnitAssertionsShouldIncludeMessage" 
-})
+@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
+		"PMD.JUnitAssertionsShouldIncludeMessage" })
 public final class QuicktimeMovieTest {
-	
-	private transient final String path = "ABC123";
-	
-	private transient QuicktimeMovie fixture;
-	
-	private transient final byte[] empty = new byte[] { (byte)0x81, 0x09, 0x00};
-	
-	private transient final byte[] encoded = new byte[] { (byte)0x87, 0x09,
-			0x41, 0x42, 0x043, 0x31, 0x32, 0x33, 0x00};
-	
-	private transient final byte[] extended = new byte[] { (byte)0xBF, 0x09, 
-			0x07, 0x00, 0x00, 0x00, 
-			0x41, 0x42, 0x043, 0x31, 0x32, 0x33, 0x00};
 
-	@Test(expected=IllegalArgumentException.class)
+	private transient final String path = "ABC123";
+
+	private transient QuicktimeMovie fixture;
+
+	private transient final byte[] encoded = new byte[] { (byte) 0x87, 0x09,
+			0x41, 0x42, 0x043, 0x31, 0x32, 0x33, 0x00 };
+
+	private transient final byte[] extended = new byte[] { (byte) 0xBF, 0x09,
+			0x07, 0x00, 0x00, 0x00, 0x41, 0x42, 0x043, 0x31, 0x32, 0x33, 0x00 };
+
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForPathWithNull() {
-		fixture = new QuicktimeMovie((String)null);
+		fixture = new QuicktimeMovie((String) null);
 	}
-	
+
 	@Test
 	public void checkCopy() {
 		fixture = new QuicktimeMovie(path);
@@ -73,16 +67,16 @@ public final class QuicktimeMovieTest {
 		assertEquals(fixture.getPath(), copy.getPath());
 		assertEquals(fixture.toString(), copy.toString());
 	}
-	
+
 	@Test
 	public void encode() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(encoded.length);		
+		SWFEncoder encoder = new SWFEncoder(encoded.length);
 		Context context = new Context();
-	
+
 		fixture = new QuicktimeMovie(path);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
 		fixture.encode(encoder, context);
-		
+
 		assertTrue(encoder.eof());
 		assertArrayEquals(encoded, encoder.getData());
 	}
@@ -90,21 +84,19 @@ public final class QuicktimeMovieTest {
 	@Test
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
-		Context context = new Context();
 
-		fixture = new QuicktimeMovie(decoder, context);
-		
+		fixture = new QuicktimeMovie(decoder);
+
 		assertTrue(decoder.eof());
 		assertEquals(path, fixture.getPath());
 	}
-	
+
 	@Test
 	public void decodeExtended() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(extended);
-		Context context = new Context();
 
-		fixture = new QuicktimeMovie(decoder, context);
-		
+		fixture = new QuicktimeMovie(decoder);
+
 		assertTrue(decoder.eof());
 		assertEquals(path, fixture.getPath());
 	}

@@ -48,14 +48,13 @@ import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.linestyle.LineStyle2;
 
 /**
- * DefineShape3 defines a transparent shape to be displayed. It extends the 
- * DefineShape2 class by encoding the alpha channel in any Color objects included
- * in the line and fill styles.
+ * DefineShape3 defines a transparent shape to be displayed. It extends the
+ * DefineShape2 class by encoding the alpha channel in any Color objects
+ * included in the line and fill styles.
  * 
  * @see DefineShape2
  */
-public final class DefineShape4 implements DefineTag
-{
+public final class DefineShape4 implements DefineTag {
 	private static final String FORMAT = "DefineShape4: { identifier=%d; shapeBounds=%s; edgeBounds=%s; fillStyles=%s; lineStyles=%s; shape=%s }";
 
 	private int identifier;
@@ -64,7 +63,7 @@ public final class DefineShape4 implements DefineTag
 	private List<FillStyle> fillStyles;
 	private List<LineStyle2> lineStyles;
 	private Shape shape;
-	
+
 	private transient int start;
 	private transient int end;
 	private transient int length;
@@ -72,24 +71,24 @@ public final class DefineShape4 implements DefineTag
 	private transient int lineBits;
 	private transient boolean scaling;
 
-	//TODO(doc)
-	public DefineShape4(final SWFDecoder coder, final Context context) throws CoderException
-	{
+	// TODO(doc)
+	public DefineShape4(final SWFDecoder coder, final Context context)
+			throws CoderException {
 		start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
-		
+
 		if (length == 0x3F) {
 			length = coder.readWord(4, false);
 		}
 		end = coder.getPointer() + (length << 3);
 
 		identifier = coder.readWord(2, false);
-		Map<Integer,Integer>vars = context.getVariables();
+		final Map<Integer, Integer> vars = context.getVariables();
 		vars.put(Context.TRANSPARENT, 1);
 
 		shapeBounds = new Bounds(coder);
 		edgeBounds = new Bounds(coder);
-		
+
 		coder.readByte(); // scaling hints
 
 		int fillStyleCount = coder.readByte();
@@ -100,7 +99,8 @@ public final class DefineShape4 implements DefineTag
 		fillStyles = new ArrayList<FillStyle>();
 		lineStyles = new ArrayList<LineStyle2>();
 
-		SWFFactory<FillStyle>decoder = context.getRegistry().getFillStyleDecoder();
+		final SWFFactory<FillStyle> decoder = context.getRegistry()
+				.getFillStyleDecoder();
 		FillStyle fill;
 		int type;
 
@@ -109,7 +109,8 @@ public final class DefineShape4 implements DefineTag
 			fill = decoder.getObject(coder, context);
 
 			if (fill == null) {
-				throw new CoderException(String.valueOf(type), start >>> 3, 0, 0, Strings.UNSUPPORTED_FILL_STYLE);
+				throw new CoderException(String.valueOf(type), start >>> 3, 0,
+						0, Strings.INVALID_FILLSTYLE);
 			}
 
 			fillStyles.add(fill);
@@ -152,21 +153,18 @@ public final class DefineShape4 implements DefineTag
 	 * @param aShape
 	 *            the shape to be drawn. Must not be null.
 	 */
-	public DefineShape4(int uid, Bounds aBounds,
-							List<FillStyle> fillStyleArray,
-							List<LineStyle2> lineStyleArray,
-							Shape aShape)
-	{
+	public DefineShape4(final int uid, final Bounds aBounds,
+			final List<FillStyle> fillStyleArray,
+			final List<LineStyle2> lineStyleArray, final Shape aShape) {
 		setIdentifier(uid);
 		setShapeBounds(aBounds);
 		setFillStyles(fillStyleArray);
 		setLineStyles(lineStyleArray);
 		setShape(aShape);
 	}
-	
-	//TODO(doc)
-	public DefineShape4(DefineShape4 object)
-	{
+
+	// TODO(doc)
+	public DefineShape4(final DefineShape4 object) {
 		identifier = object.identifier;
 		shapeBounds = object.shapeBounds;
 		edgeBounds = object.edgeBounds;
@@ -187,7 +185,7 @@ public final class DefineShape4 implements DefineTag
 
 	public void setIdentifier(final int uid) {
 		if (uid < 0 || uid > 65535) {
-			throw new IllegalArgumentException(Strings.IDENTIFIER_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
 		}
 		identifier = uid;
 	}
@@ -195,21 +193,19 @@ public final class DefineShape4 implements DefineTag
 	/**
 	 * Returns the bounding rectangle for the shape.
 	 */
-	public Bounds getShapeBounds()
-	{
+	public Bounds getShapeBounds() {
 		return shapeBounds;
 	}
-	
+
 	/**
 	 * Sets the bounding rectangle that encloses the shape.
 	 * 
 	 * @param aBounds
 	 *            set the bounding rectangle for the shape. Must not be null.
 	 */
-	public void setShapeBounds(Bounds aBounds)
-	{
+	public void setShapeBounds(final Bounds aBounds) {
 		if (aBounds == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
 		}
 		shapeBounds = aBounds;
 	}
@@ -217,21 +213,19 @@ public final class DefineShape4 implements DefineTag
 	/**
 	 * Returns the bounding rectangle for the shape.
 	 */
-	public Bounds getEdgeBounds()
-	{
+	public Bounds getEdgeBounds() {
 		return edgeBounds;
 	}
-	
+
 	/**
 	 * Sets the bounding rectangle that encloses the shape.
 	 * 
 	 * @param aBounds
 	 *            set the bounding rectangle for the shape. Must not be null.
 	 */
-	public void setEdgeBounds(Bounds aBounds)
-	{
+	public void setEdgeBounds(final Bounds aBounds) {
 		if (aBounds == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
 		}
 		edgeBounds = aBounds;
 	}
@@ -239,29 +233,26 @@ public final class DefineShape4 implements DefineTag
 	/**
 	 * Returns the width of the shape in twips.
 	 */
-	public int getWidth() 
-	{
+	public int getWidth() {
 		return shapeBounds.getWidth();
 	}
 
 	/**
 	 * Returns the height of the shape in twips.
 	 */
-	public int getHeight()
-	{
+	public int getHeight() {
 		return shapeBounds.getHeight();
 	}
-	
+
 	/**
 	 * Add a LineStyle to the array of line styles.
 	 * 
 	 * @param style
 	 *            and LineStyle object. Must not be null.
 	 */
-	public DefineShape4 add(LineStyle2 style)
-	{
+	public DefineShape4 add(final LineStyle2 style) {
 		if (style == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
 		}
 		lineStyles.add(style);
 		return this;
@@ -273,10 +264,9 @@ public final class DefineShape4 implements DefineTag
 	 * @param style
 	 *            and FillStyle object. Must not be null.
 	 */
-	public DefineShape4 add(FillStyle style)
-	{
+	public DefineShape4 add(final FillStyle style) {
 		if (style == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
 		}
 		fillStyles.add(style);
 		return this;
@@ -285,24 +275,21 @@ public final class DefineShape4 implements DefineTag
 	/**
 	 * Returns the array fill styles.
 	 */
-	public List<FillStyle> getFillStyles()
-	{
+	public List<FillStyle> getFillStyles() {
 		return fillStyles;
 	}
 
 	/**
 	 * Returns the array line styles.
 	 */
-	public List<LineStyle2> getLineStyles()
-	{
+	public List<LineStyle2> getLineStyles() {
 		return lineStyles;
 	}
 
 	/**
 	 * Returns the shape.
 	 */
-	public Shape getShape()
-	{
+	public Shape getShape() {
 		return shape;
 	}
 
@@ -312,25 +299,23 @@ public final class DefineShape4 implements DefineTag
 	 * @param anArray
 	 *            set the fill styles for the shape. Must not be null.
 	 */
-	public void setFillStyles(List<FillStyle> anArray)
-	{
+	public void setFillStyles(final List<FillStyle> anArray) {
 		if (anArray == null) {
-			throw new IllegalArgumentException(Strings.ARRAY_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
 		}
 		fillStyles = anArray;
 	}
 
 	/**
-	 * Sets the array of styles that will be used to draw the outline of the 
+	 * Sets the array of styles that will be used to draw the outline of the
 	 * shape.
 	 * 
 	 * @param anArray
 	 *            set the line styles for the shape. Must not be null.
 	 */
-	public void setLineStyles(List<LineStyle2> anArray)
-	{
+	public void setLineStyles(final List<LineStyle2> anArray) {
 		if (anArray == null) {
-			throw new IllegalArgumentException(Strings.ARRAY_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
 		}
 		lineStyles = anArray;
 	}
@@ -341,33 +326,29 @@ public final class DefineShape4 implements DefineTag
 	 * @param aShape
 	 *            set the shape to be drawn. Must not be null.
 	 */
-	public void setShape(Shape aShape)
-	{
+	public void setShape(final Shape aShape) {
 		if (aShape == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
 		}
 		shape = aShape;
 	}
 
-	public DefineShape4 copy() 
-	{
+	public DefineShape4 copy() {
 		return new DefineShape4(this);
 	}
 
 	@Override
-	public String toString()
-	{
-		return String.format(FORMAT, identifier, shapeBounds, edgeBounds, fillStyles, lineStyles, shape);
+	public String toString() {
+		return String.format(FORMAT, identifier, shapeBounds, edgeBounds,
+				fillStyles, lineStyles, shape);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context)
-	{
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		fillBits = Encoder.unsignedSize(fillStyles.size());
 		lineBits = Encoder.unsignedSize(lineStyles.size());
 
-		Map<Integer,Integer>vars = context.getVariables();
-		if (vars.containsKey(Context.POSTSCRIPT)) 
-		{
+		final Map<Integer, Integer> vars = context.getVariables();
+		if (vars.containsKey(Context.POSTSCRIPT)) {
 			if (fillBits == 0) {
 				fillBits = 1;
 			}
@@ -390,7 +371,7 @@ public final class DefineShape4 implements DefineTag
 		}
 
 		vars.remove(Context.SCALING_STROKE);
-		
+
 		length += (lineStyles.size() >= 255) ? 3 : 1;
 
 		for (LineStyle2 style : lineStyles) {
@@ -398,25 +379,25 @@ public final class DefineShape4 implements DefineTag
 		}
 
 		scaling = vars.containsKey(Context.SCALING_STROKE);
-		
+
 		vars.put(Context.ARRAY_EXTENDED, 1);
 		vars.put(Context.FILL_SIZE, fillBits);
-		vars.put(Context.LINE_SIZE,lineBits);
+		vars.put(Context.LINE_SIZE, lineBits);
 
 		length += shape.prepareToEncode(coder, context);
 
 		vars.remove(Context.ARRAY_EXTENDED);
 		vars.put(Context.FILL_SIZE, 0);
-		vars.put(Context.LINE_SIZE,0);
+		vars.put(Context.LINE_SIZE, 0);
 		vars.remove(Context.TRANSPARENT);
 		vars.remove(Context.SCALING_STROKE);
 
-		return (length > 62 ? 6:2) + length;
+		return (length > 62 ? 6 : 2) + length;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException
-	{
-		Map<Integer,Integer>vars = context.getVariables();
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
+		final Map<Integer, Integer> vars = context.getVariables();
 		vars.put(Context.TRANSPARENT, 1);
 
 		start = coder.getPointer();
@@ -433,16 +414,13 @@ public final class DefineShape4 implements DefineTag
 
 		shapeBounds.encode(coder, context);
 		edgeBounds.encode(coder, context);
-		
-		coder.writeByte(scaling ? 1:2);
-		
-		if (fillStyles.size() >= 255)
-		{
+
+		coder.writeByte(scaling ? 1 : 2);
+
+		if (fillStyles.size() >= 255) {
 			coder.writeWord(0xFF, 1);
 			coder.writeWord(fillStyles.size(), 2);
-		} 
-		else
-		{
+		} else {
 			coder.writeWord(fillStyles.size(), 1);
 		}
 
@@ -450,13 +428,10 @@ public final class DefineShape4 implements DefineTag
 			style.encode(coder, context);
 		}
 
-		if (lineStyles.size() >= 255)
-		{
+		if (lineStyles.size() >= 255) {
 			coder.writeWord(0xFF, 1);
 			coder.writeWord(lineStyles.size(), 2);
-		} 
-		else
-		{
+		} else {
 			coder.writeWord(lineStyles.size(), 1);
 		}
 
@@ -466,13 +441,13 @@ public final class DefineShape4 implements DefineTag
 
 		vars.put(Context.ARRAY_EXTENDED, 1);
 		vars.put(Context.FILL_SIZE, fillBits);
-		vars.put(Context.LINE_SIZE,lineBits);
+		vars.put(Context.LINE_SIZE, lineBits);
 
 		shape.encode(coder, context);
 
 		vars.remove(Context.ARRAY_EXTENDED);
 		vars.put(Context.FILL_SIZE, 0);
-		vars.put(Context.LINE_SIZE,0);
+		vars.put(Context.LINE_SIZE, 0);
 		vars.remove(Context.TRANSPARENT);
 
 		if (coder.getPointer() != end) {

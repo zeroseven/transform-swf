@@ -32,51 +32,42 @@ package com.flagstone.transform;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertArrayEquals;
-
-import com.flagstone.transform.Movie;
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
-import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.datatype.ColorTransform;
-import com.flagstone.transform.datatype.CoordTransform;
 
-@SuppressWarnings( { 
-	"PMD.LocalVariableCouldBeFinal",
-	"PMD.JUnitAssertionsShouldIncludeMessage" 
-})
+@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
+		"PMD.JUnitAssertionsShouldIncludeMessage" })
 public final class MovieTest {
-		
+
 	private transient Movie fixture;
-	
-	private transient final byte[] encoded = new byte[] { };
-	
-	@Test @Ignore
+
+	private transient final byte[] encoded = new byte[] {};
+
+	@Test
+	@Ignore
 	public void checkCopy() {
-		//fixture = new Movie(identifier, layer, transform, colorTransform);
-		Movie copy = fixture.copy();
+		// fixture = new Movie(identifier, layer, transform, colorTransform);
+		//Movie copy = fixture.copy();
 	}
-	
-	@Test @Ignore
-	public void encode() throws CoderException {		
-		SWFEncoder encoder = new SWFEncoder(encoded.length);		
-		Context context = new Context();
+
+	@Test
+	@Ignore
+	public void encode() throws CoderException {
+		//SWFEncoder encoder = new SWFEncoder(encoded.length);
+		//Context context = new Context();
 
 		fixture = new Movie();
 	}
-	
-	@Test @Ignore
+
+	@Test
+	@Ignore
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
-		Context context = new Context();
+		//Context context = new Context();
 
 		fixture = new Movie();
-		
+
 		assertTrue(decoder.eof());
 	}
 }

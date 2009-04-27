@@ -43,38 +43,39 @@ import com.flagstone.transform.coder.SWFEncoder;
  * StartSound2 instructs the player to start or stop playing a sound defined
  * using the DefineSound class.
  * 
- * <p>StartSound contains a SoundInfo object that defines how the sound fades in 
- * and out, whether it is repeated as well as specifying an envelope that 
- * provides a finer degree of control over the levels at which the sound is 
- * played.</p>
+ * <p>
+ * StartSound contains a SoundInfo object that defines how the sound fades in
+ * and out, whether it is repeated as well as specifying an envelope that
+ * provides a finer degree of control over the levels at which the sound is
+ * played.
+ * </p>
  * 
  * @see DefineSound
  * @see SoundInfo
  */
-public final class StartSound2 implements MovieTag
-{
+public final class StartSound2 implements MovieTag {
 	private static final String FORMAT = "StartSound2: { sound=%s }";
 
 	private String soundClass;
 	private SoundInfo sound;
-	
+
 	private transient int start;
 	private transient int end;
 	private transient int length;
 
-	//TODO(doc) 
-	public StartSound2(final SWFDecoder coder, final Context context) throws CoderException
-	{
+	// TODO(doc)
+	public StartSound2(final SWFDecoder coder)
+			throws CoderException {
 		start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
-		
+
 		if (length == 0x3F) {
 			length = coder.readWord(4, false);
 		}
 		end = coder.getPointer() + (length << 3);
 
 		soundClass = coder.readString();
-		sound = new SoundInfo(coder, context);
+		sound = new SoundInfo(coder);
 
 		if (coder.getPointer() != end) {
 			throw new CoderException(getClass().getName(), start >> 3, length,
@@ -83,25 +84,23 @@ public final class StartSound2 implements MovieTag
 	}
 
 	/**
-	 * Creates a StartSound object with an Sound object that identifies
-	 * the sound and controls how it is played.
+	 * Creates a StartSound object with an Sound object that identifies the
+	 * sound and controls how it is played.
 	 * 
 	 * @param aSound
 	 *            the Sound object. Must not be null.
 	 */
-	public StartSound2(SoundInfo aSound)
-	{
+	public StartSound2(final SoundInfo aSound) {
 		setSound(aSound);
 	}
-	
-	//TODO(doc) 
-	public StartSound2(StartSound2 object)
-	{
+
+	// TODO(doc)
+	public StartSound2(final StartSound2 object) {
 		soundClass = object.soundClass;
 		sound = object.sound.copy();
 	}
 
-	//TODO(doc) 
+	// TODO(doc)
 	public String getSoundClass() {
 		return soundClass;
 	}
@@ -109,13 +108,12 @@ public final class StartSound2 implements MovieTag
 	/**
 	 * Returns the Sound object describing how the sound will be played.
 	 */
-	public SoundInfo getSound()
-	{
+	public SoundInfo getSound() {
 		return sound;
 	}
-	
-	//TODO(doc) 
-	public void setSoundClass(String className) {
+
+	// TODO(doc)
+	public void setSoundClass(final String className) {
 		soundClass = className;
 	}
 
@@ -123,36 +121,32 @@ public final class StartSound2 implements MovieTag
 	 * Sets the Sound object that describes how the sound will be played.
 	 * 
 	 * @param aSound
-	 *            the Sound object that controls how the sound is played.
-	 *            Must not be null.
+	 *            the Sound object that controls how the sound is played. Must
+	 *            not be null.
 	 */
-	public void setSound(SoundInfo aSound)
-	{
+	public void setSound(final SoundInfo aSound) {
 		if (aSound == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
 		}
 		sound = aSound;
 	}
 
-	public StartSound2 copy() 
-	{
+	public StartSound2 copy() {
 		return new StartSound2(this);
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return String.format(FORMAT, sound);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context)
-	{
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		length = soundClass.length() + sound.prepareToEncode(coder, context);
-		return (length > 62 ? 6:2) + length;
+		return (length > 62 ? 6 : 2) + length;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException
-	{
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		start = coder.getPointer();
 
 		if (length >= 63) {

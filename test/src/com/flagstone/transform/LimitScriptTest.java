@@ -36,52 +36,46 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 
-import com.flagstone.transform.LimitScript;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-@SuppressWarnings( { 
-	"PMD.LocalVariableCouldBeFinal",
-	"PMD.JUnitAssertionsShouldIncludeMessage" 
-})
+@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
+		"PMD.JUnitAssertionsShouldIncludeMessage" })
 public final class LimitScriptTest {
-	
+
 	private transient final int depth = 1;
 	private transient final int timeout = 30;
-	
+
 	private transient LimitScript fixture;
-	
-	private transient final byte[] empty = new byte[] { 0x44, 0x10, 0x00, 0x00,
-			0x00, 0x00};
 
-	private transient final byte[] encoded = new byte[] { 0x44, 0x10, 0x01, 0x00,
-			0x1E, 0x00};
-	
-	private transient final byte[] extended = new byte[] { 0x7F, 0x01, 
-			0x04, 0x00, 0x00, 0x00, 0x01, 0x00, 0x1E, 0x00};
+	private transient final byte[] encoded = new byte[] { 0x44, 0x10, 0x01,
+			0x00, 0x1E, 0x00 };
 
-	@Test(expected=IllegalArgumentException.class)
+	private transient final byte[] extended = new byte[] { 0x7F, 0x01, 0x04,
+			0x00, 0x00, 0x00, 0x01, 0x00, 0x1E, 0x00 };
+
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForDepthWithLowerBound() {
 		fixture = new LimitScript(-1, timeout);
 	}
 
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForDepthWithUpperBound() {
 		fixture = new LimitScript(65536, timeout);
 	}
-	
-	@Test(expected=IllegalArgumentException.class)
+
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForTimeoutWithLowerBound() {
 		fixture = new LimitScript(depth, -1);
 	}
 
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForTimeoutWithUpperBound() {
 		fixture = new LimitScript(depth, 65536);
 	}
-	
+
 	@Test
 	public void checkCopy() {
 		fixture = new LimitScript(depth, timeout);
@@ -92,39 +86,37 @@ public final class LimitScriptTest {
 		assertEquals(fixture.getTimeout(), copy.getTimeout());
 		assertEquals(fixture.toString(), copy.toString());
 	}
-	
+
 	@Test
-	public void encode() throws CoderException {		
-		SWFEncoder encoder = new SWFEncoder(encoded.length);		
+	public void encode() throws CoderException {
+		SWFEncoder encoder = new SWFEncoder(encoded.length);
 		Context context = new Context();
 
 		fixture = new LimitScript(depth, timeout);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
 		fixture.encode(encoder, context);
-		
+
 		assertTrue(encoder.eof());
 		assertArrayEquals(encoded, encoder.getData());
 	}
-	
+
 	@Test
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
-		Context context = new Context();
 
-		fixture = new LimitScript(decoder, context);
-		
+		fixture = new LimitScript(decoder);
+
 		assertTrue(decoder.eof());
 		assertEquals(depth, fixture.getDepth());
 		assertEquals(timeout, fixture.getTimeout());
 	}
-	
+
 	@Test
 	public void decodeExtended() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(extended);
-		Context context = new Context();
 
-		fixture = new LimitScript(decoder, context);
-		
+		fixture = new LimitScript(decoder);
+
 		assertTrue(decoder.eof());
 		assertEquals(depth, fixture.getDepth());
 		assertEquals(timeout, fixture.getTimeout());

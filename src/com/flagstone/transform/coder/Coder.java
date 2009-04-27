@@ -83,7 +83,7 @@ public class Coder {
 	public void setEncoding(final String charSet) {
 		if (!Charset.isSupported(charSet)) {
 			throw new UnsupportedCharsetException(String.format(
-					Strings.UNSUPPORTED_ENCODING, charSet));
+					Strings.INVALID_ENCODING, charSet));
 		}
 		encoding = charSet;
 	}

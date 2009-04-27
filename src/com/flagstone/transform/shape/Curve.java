@@ -38,36 +38,37 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
 /**
- * <p>Curve is used to define a curve. Curved lines are constructed using a
- * Quadratic Bezier curve. The curve is specified using two points, an off-curve 
- * control point, relative to the current point and an on-curve anchor point 
+ * <p>
+ * Curve is used to define a curve. Curved lines are constructed using a
+ * Quadratic Bezier curve. The curve is specified using two points, an off-curve
+ * control point, relative to the current point and an on-curve anchor point
  * which defines the end-point of the curve, and which is specified relative to
- * the anchor point.</p>
+ * the anchor point.
+ * </p>
  * 
  * <img src="doc-files/quadratic.gif">
  * 
- * <p>Flash does not directly support Cubic Bezier curves. Converting a Cubic
+ * <p>
+ * Flash does not directly support Cubic Bezier curves. Converting a Cubic
  * Bezier curve to a Quadratic curve is a non trivial process, however the
- * Canvas class contains a method to perform the conversion simplifying the 
+ * Canvas class contains a method to perform the conversion simplifying the
  * create of Shape outlines in Flash from other graphics formats.
  * </p>
  * 
  * @see com.flagstone.transform.util.shape.Canvas
  */
-public final class Curve implements ShapeRecord
-{
+public final class Curve implements ShapeRecord {
 	private static final String FORMAT = "Curve: control=(%d,%d), anchor=(%d,%d);";
 
-	private int controlX;
-	private int controlY;
-	private int anchorX;
-	private int anchorY;
-	
+	private transient int controlX;
+	private transient int controlY;
+	private transient int anchorX;
+	private transient int anchorY;
+
 	private transient int size;
 
-	//TODO(doc)
-	public Curve(final SWFDecoder coder, final Context context) throws CoderException
-	{
+	// TODO(doc)
+	public Curve(final SWFDecoder coder) throws CoderException {
 		// skip over shapeType and edgeType
 		coder.adjustPointer(2);
 		size = coder.readBits(4, false) + 2;
@@ -94,13 +95,13 @@ public final class Curve implements ShapeRecord
 	 *            the y-coordinate of the anchor point, specified relative to
 	 *            the control point.Must be in the range -65535..65535.
 	 */
-	public Curve(int controlX, int controlY, int anchorX, int anchorY)
-	{
+	public Curve(final int controlX, final int controlY, final int anchorX,
+			final int anchorY) {
 		setPoints(controlX, controlY, anchorX, anchorY);
 	}
-	
-	//TODO(doc)
-	public Curve(Curve object) {
+
+	// TODO(doc)
+	public Curve(final Curve object) {
 		controlX = object.controlX;
 		controlY = object.controlY;
 		anchorX = object.anchorX;
@@ -111,8 +112,7 @@ public final class Curve implements ShapeRecord
 	 * Returns the x-coordinate of the control point relative to the current
 	 * drawing point.
 	 */
-	public int getControlX()
-	{
+	public int getControlX() {
 		return controlX;
 	}
 
@@ -120,59 +120,58 @@ public final class Curve implements ShapeRecord
 	 * Returns the y-coordinate of the control point relative to the current
 	 * drawing point.
 	 */
-	public int getControlY()
-	{
+	public int getControlY() {
 		return controlY;
 	}
 
 	/**
-	 * Returns the x-coordinate of the anchor point relative to the control point.
+	 * Returns the x-coordinate of the anchor point relative to the control
+	 * point.
 	 */
-	public int getAnchorX()
-	{
+	public int getAnchorX() {
 		return anchorX;
 	}
 
 	/**
-	 * Returns the y-coordinate of the anchor point relative to the control point.
+	 * Returns the y-coordinate of the anchor point relative to the control
+	 * point.
 	 */
-	public int getAnchorY()
-	{
+	public int getAnchorY() {
 		return anchorY;
 	}
 
 	/**
-	 * Sets the x and y coordinates of the control and anchor points. Values must 
-	 * be in the range -65535..65535.
+	 * Sets the x and y coordinates of the control and anchor points. Values
+	 * must be in the range -65535..65535.
 	 * 
 	 * @param controlX
-	 *            the x-coordinate of the control point. 
+	 *            the x-coordinate of the control point.
 	 * @param controlY
-	 *            the y-coordinate of the control point. 
+	 *            the y-coordinate of the control point.
 	 * @param anchorX
 	 *            the x-coordinate of the anchor point.
 	 * @param anchorY
 	 *            the y-coordinate of the anchor point.
 	 */
-	public void setPoints(int controlX, int controlY, int anchorX, int anchorY)
-	{
+	public void setPoints(final int controlX, final int controlY,
+			final int anchorX, final int anchorY) {
 		if (controlX < -65535 || controlX > 65535) {
-			throw new IllegalArgumentException(Strings.COORDINATES_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.COORDINATES_RANGE);
 		}
 		this.controlX = controlX;
 
 		if (controlY < -65535 || controlY > 65535) {
-			throw new IllegalArgumentException(Strings.COORDINATES_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.COORDINATES_RANGE);
 		}
 		this.controlY = controlY;
 
 		if (anchorX < -65535 || anchorX > 65535) {
-			throw new IllegalArgumentException(Strings.COORDINATES_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.COORDINATES_RANGE);
 		}
 		this.anchorX = anchorX;
-		
+
 		if (anchorY < -65535 || anchorY > 65535) {
-			throw new IllegalArgumentException(Strings.COORDINATES_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.COORDINATES_RANGE);
 		}
 		this.anchorY = anchorY;
 	}
@@ -182,28 +181,27 @@ public final class Curve implements ShapeRecord
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return String.format(FORMAT, controlX, controlY, anchorX, anchorY);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context)
-	{
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		int numberOfBits = 6;
 
 		size = Encoder.maxSize(controlX, controlY, anchorX, anchorY, 1);
 
 		numberOfBits += size << 2;
 
-		context.getVariables().put(Context.SHAPE_SIZE, context.getVariables().get(Context.SHAPE_SIZE)+numberOfBits);
+		context.getVariables().put(Context.SHAPE_SIZE,
+				context.getVariables().get(Context.SHAPE_SIZE) + numberOfBits);
 
 		return numberOfBits;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException
-	{
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		coder.writeBits(2, 2); // shapeType, edgeType
-		coder.writeBits(size-2, 4);
+		coder.writeBits(size - 2, 4);
 		coder.writeBits(controlX, size);
 		coder.writeBits(controlY, size);
 		coder.writeBits(anchorX, size);

@@ -52,17 +52,17 @@ import com.flagstone.transform.coder.SWFEncoder;
  * </p>
  */
 public final class SymbolClass implements MovieTag {
-	
+
 	private static final String FORMAT = "SymbolClass: { objects=%s }";
-	
+
 	private Map<Integer, String> objects;
 
 	private transient int start;
 	private transient int end;
 	private transient int length;
 
-	public SymbolClass(final SWFDecoder coder, final Context context) throws CoderException {
-		
+	public SymbolClass(final SWFDecoder coder) throws CoderException {
+
 		start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
 
@@ -71,10 +71,10 @@ public final class SymbolClass implements MovieTag {
 		}
 		end = coder.getPointer() + (length << 3);
 
-		int count = coder.readWord(2, false);
+		final int count = coder.readWord(2, false);
 		objects = new LinkedHashMap<Integer, String>(count);
 
-		for (int i=0; i < count; i++) {
+		for (int i = 0; i < count; i++) {
 			objects.put(coder.readWord(2, false), coder.readString());
 		}
 
@@ -91,7 +91,7 @@ public final class SymbolClass implements MovieTag {
 	 *            the table containing identifier/name pairs for the objects
 	 *            that will be SYMBOLed from the movie.
 	 */
-	public SymbolClass(Map<Integer, String> map) {
+	public SymbolClass(final Map<Integer, String> map) {
 		objects = map;
 	}
 
@@ -107,12 +107,12 @@ public final class SymbolClass implements MovieTag {
 	 *            the name of the SYMBOLed object to allow it to be referenced.
 	 *            Must not be an empty string or null.
 	 */
-	public SymbolClass(int uid, String aString) {
+	public SymbolClass(final int uid, final String aString) {
 		objects = new LinkedHashMap<Integer, String>();
 		add(uid, aString);
 	}
-	
-	public SymbolClass(SymbolClass object) {
+
+	public SymbolClass(final SymbolClass object) {
 		objects = new LinkedHashMap<Integer, String>(object.objects);
 	}
 
@@ -125,9 +125,9 @@ public final class SymbolClass implements MovieTag {
 	 *            the name of the SYMBOLed object to allow it to be referenced.
 	 *            The name must not be null or an empty string.
 	 */
-	public final void add(int uid, String aString) {
+	public void add(final int uid, final String aString) {
 		if (uid < 1 || uid > 65535) {
-			throw new IllegalArgumentException(Strings.IDENTIFIER_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
 		}
 		if (aString == null || aString.length() == 0) {
 			throw new IllegalArgumentException(Strings.STRING_NOT_SET);
@@ -148,14 +148,14 @@ public final class SymbolClass implements MovieTag {
 	 * @param aTable
 	 *            the table of objects being imported. Must not be null.
 	 */
-	public void setObjects(Map<Integer, String> aTable) {
+	public void setObjects(final Map<Integer, String> aTable) {
 		if (aTable == null) {
-			throw new IllegalArgumentException(Strings.TABLE_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.TABLE_IS_NULL);
 		}
 		objects = aTable;
 	}
 
-	//TODO(doc)
+	// TODO(doc)
 	public SymbolClass copy() {
 		return new SymbolClass(this);
 	}
@@ -166,20 +166,21 @@ public final class SymbolClass implements MovieTag {
 	}
 
 	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		
+
 		length = 2;
 
 		for (String name : objects.values()) {
 			length += 2 + coder.strlen(name);
 		}
-		
-		return (length > 62 ? 6:2) + length;
+
+		return (length > 62 ? 6 : 2) + length;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException {
-		
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
+
 		start = coder.getPointer();
-		
+
 		if (length > 62) {
 			coder.writeWord((MovieTypes.SYMBOL << 6) | 0x3F, 2);
 			coder.writeWord(length, 4);

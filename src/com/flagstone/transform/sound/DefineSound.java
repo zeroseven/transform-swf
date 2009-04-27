@@ -83,8 +83,8 @@ public final class DefineSound implements DefineTag {
 	private transient int end;
 	private transient int length;
 
-	//TODO(doc)
-	public DefineSound(final SWFDecoder coder, final Context context) throws CoderException {
+	// TODO(doc)
+	public DefineSound(final SWFDecoder coder) throws CoderException {
 
 		start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
@@ -152,8 +152,9 @@ public final class DefineSound implements DefineTag {
 	 * @param bytes
 	 *            the sound data.
 	 */
-	public DefineSound(int uid, SoundFormat aFormat, int rate, int channels,
-			int sampleSize, int count, byte[] bytes) {
+	public DefineSound(final int uid, final SoundFormat aFormat,
+			final int rate, final int channels, final int sampleSize,
+			final int count, final byte[] bytes) {
 		setIdentifier(uid);
 		setFormat(aFormat);
 		setRate(rate);
@@ -163,8 +164,8 @@ public final class DefineSound implements DefineTag {
 		setData(bytes);
 	}
 
-	//TODO(doc)
-	public DefineSound(DefineSound object) {
+	// TODO(doc)
+	public DefineSound(final DefineSound object) {
 		format = object.format;
 		rate = object.rate;
 		channelCount = object.channelCount;
@@ -179,7 +180,7 @@ public final class DefineSound implements DefineTag {
 
 	public void setIdentifier(final int uid) {
 		if (uid < 0 || uid > 65535) {
-			throw new IllegalArgumentException(Strings.IDENTIFIER_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
 		}
 		identifier = uid;
 	}
@@ -236,7 +237,7 @@ public final class DefineSound implements DefineTag {
 	 * @param encoding
 	 *            the format for the sound.
 	 */
-	public void setFormat(SoundFormat encoding) {
+	public void setFormat(final SoundFormat encoding) {
 		format = encoding;
 	}
 
@@ -247,9 +248,9 @@ public final class DefineSound implements DefineTag {
 	 *            the rate at which the sounds is played in Hz. Must be one of:
 	 *            5512, 11025, 22050 or 44100.
 	 */
-	public void setRate(int rate) {
+	public void setRate(final int rate) {
 		if (rate != 5512 && rate != 11025 && rate != 22050 && rate != 44100) {
-			throw new IllegalArgumentException(Strings.SOUND_RATE_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.SOUND_RATE_RANGE);
 		}
 		this.rate = rate;
 	}
@@ -261,10 +262,9 @@ public final class DefineSound implements DefineTag {
 	 *            the number of channels in the sound, must be either 1 (Mono)
 	 *            or 2 (Stereo).
 	 */
-	public void setChannelCount(int channels) {
+	public void setChannelCount(final int channels) {
 		if (channels < 1 || channels > 2) {
-			throw new IllegalArgumentException(
-					Strings.CHANNEL_COUNT_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.CHANNEL_RANGE);
 		}
 		channelCount = channels;
 	}
@@ -275,9 +275,9 @@ public final class DefineSound implements DefineTag {
 	 * @param size
 	 *            the size of sound samples in bytes. Must be either 1 or 2.
 	 */
-	public void setSampleSize(int size) {
+	public void setSampleSize(final int size) {
 		if (size < 1 || size > 2) {
-			throw new IllegalArgumentException(Strings.SAMPLE_SIZE_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.SAMPLE_SIZE_RANGE);
 		}
 		sampleSize = size;
 	}
@@ -288,10 +288,9 @@ public final class DefineSound implements DefineTag {
 	 * @param count
 	 *            the number of samples for the sound.
 	 */
-	public void setSampleCount(int count) {
+	public void setSampleCount(final int count) {
 		if (count < 1) {
-			throw new IllegalArgumentException(
-					Strings.NUMBER_CANNOT_BE_NEGATIVE);
+			throw new IllegalArgumentException(Strings.NEGATIVE_NUMBER);
 		}
 		sampleCount = count;
 	}
@@ -302,9 +301,9 @@ public final class DefineSound implements DefineTag {
 	 * @param bytes
 	 *            the sound data. Must not be null.
 	 */
-	public void setData(byte[] bytes) {
+	public void setData(final byte[] bytes) {
 		if (bytes == null) {
-			throw new IllegalArgumentException(Strings.DATA_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.DATA_IS_NULL);
 		}
 		data = bytes;
 	}
@@ -315,17 +314,19 @@ public final class DefineSound implements DefineTag {
 
 	@Override
 	public String toString() {
-		return String.format(FORMAT, identifier, format, rate, channelCount, sampleSize, sampleCount);
+		return String.format(FORMAT, identifier, format, rate, channelCount,
+				sampleSize, sampleCount);
 	}
 
 	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		length = 7;
 		length += data.length;
 
-		return (length > 62 ? 6:2) + length;
+		return (length > 62 ? 6 : 2) + length;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException {
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 
 		start = coder.getPointer();
 

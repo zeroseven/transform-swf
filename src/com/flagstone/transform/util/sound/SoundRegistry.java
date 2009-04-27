@@ -35,8 +35,7 @@ import java.util.Map;
 
 /**
  */
-public final class SoundRegistry
-{
+public final class SoundRegistry {
 	private static Map<SoundEncoding, SoundProvider> providers = new LinkedHashMap<SoundEncoding, SoundProvider>();
 
 	static {
@@ -44,24 +43,32 @@ public final class SoundRegistry
 			registerProvider(encoding, encoding.getProvider());
 		}
 	}
+
 	/**
-	 * Register an SoundDecoder to handle images in the specified format. The 
-	 * image formats currently supported are defined in the {@link SoundInfo} class.
+	 * Register an SoundDecoder to handle images in the specified format. The
+	 * image formats currently supported are defined in the {@link SoundInfo}
+	 * class.
 	 * 
-	 * @param encoding the string identifying the image format. 
-	 * @param decoder any class that implements the SoundDecoder interface.
+	 * @param encoding
+	 *            the string identifying the image format.
+	 * @param decoder
+	 *            any class that implements the SoundDecoder interface.
 	 */
-	public static void registerProvider(SoundEncoding encoding, SoundProvider decoder)
-	{
+	public static void registerProvider(final SoundEncoding encoding,
+			final SoundProvider decoder) {
 		providers.put(encoding, decoder);
 	}
-	
-	public static SoundDecoder getSoundProvider(SoundEncoding encoding) {
-		
-    	if (providers.containsKey(encoding)) {
-    		return providers.get(encoding).newDecoder();
-    	} else {
-    		throw new IllegalArgumentException();
-    	}
+
+	public static SoundDecoder getSoundProvider(final SoundEncoding encoding) {
+
+		if (providers.containsKey(encoding)) {
+			return providers.get(encoding).newDecoder();
+		} else {
+			throw new IllegalArgumentException();
+		}
+	}
+
+	private SoundRegistry() {
+		// Registry is shared.
 	}
 }

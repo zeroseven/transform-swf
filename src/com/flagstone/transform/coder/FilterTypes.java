@@ -1,8 +1,8 @@
 /*
- * DefineTag.java
+ * VideoObject.java
  * Transform
- * 
- * Copyright (c) 2009 Flagstone Software Ltd. All rights reserved.
+ *
+ * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
  * are permitted provided that the following conditions are met:
@@ -27,25 +27,19 @@
  * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package com.flagstone.transform.coder;
 
-/**
- * The DefineTag interface is used to identify object that are used to add
- * definitions for shapes, images, sounds ,etc. to a Flash file.
- */
-public interface DefineTag extends MovieTag {
-	/**
-	 * Returns the unique identifier assigned to this object.
-	 */
-	int getIdentifier();
+public final class FilterTypes {
+	public static final int DROP_SHADOW = 0;
+	public static final int BLUR = 1;
+	public static final int GLOW = 2;
+	public static final int BEVEL = 3;
+	public static final int GRADIENT_GLOW = 4;
+	public static final int CONVOLUTION = 5;
+	public static final int COLOR_MATRIX = 6;
+	public static final int GRADIENT_BEVEL = 0;
 
-	/**
-	 * Sets the unique identifier for an object within a given Movie.
-	 * 
-	 * @param uid
-	 *            a unique identifier for the object. Must be in the range
-	 *            1..65535.
-	 */
-	void setIdentifier(final int uid);
+	private FilterTypes() {
+		// Class contains only constants
+	}
 }

@@ -48,8 +48,8 @@ public final class ScalingGrid implements DefineTag {
 
 	private transient int length;
 
-	//TODO(doc)
-	public ScalingGrid(final SWFDecoder coder, final Context context) throws CoderException {
+	// TODO(doc)
+	public ScalingGrid(final SWFDecoder coder) throws CoderException {
 
 		if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
 			coder.readWord(4, false);
@@ -64,7 +64,7 @@ public final class ScalingGrid implements DefineTag {
 		setBounds(bounds);
 	}
 
-	public ScalingGrid(ScalingGrid object) {
+	public ScalingGrid(final ScalingGrid object) {
 		identifier = object.identifier;
 		bounds = object.bounds;
 	}
@@ -75,7 +75,7 @@ public final class ScalingGrid implements DefineTag {
 
 	public void setIdentifier(final int uid) {
 		if (uid < 1 || uid > 65535) {
-			throw new IllegalArgumentException(Strings.IDENTIFIER_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
 		}
 		identifier = uid;
 	}
@@ -84,9 +84,9 @@ public final class ScalingGrid implements DefineTag {
 		return bounds;
 	}
 
-	public void setBounds(Bounds aBounds) {
+	public void setBounds(final Bounds aBounds) {
 		if (aBounds == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
 		}
 		bounds = aBounds;
 	}
@@ -105,8 +105,9 @@ public final class ScalingGrid implements DefineTag {
 		return 2 + length;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException {
-		
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
+
 		coder.writeWord((MovieTypes.DEFINE_SCALING_GRID << 6) | length, 2);
 		coder.writeWord(identifier, 2);
 		bounds.encode(coder, context);

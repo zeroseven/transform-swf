@@ -49,47 +49,49 @@ import com.flagstone.transform.shape.ShapeData;
  * DefineFont defines the glyphs that are drawn when text characters are
  * rendered in a particular font.
  * 
- * <p>A complete definition of a font is created using the DefineFont object for
- * the glyphs along with an FontInfo or FontInfo2 object which contains the name 
+ * <p>
+ * A complete definition of a font is created using the DefineFont object for
+ * the glyphs along with an FontInfo or FontInfo2 object which contains the name
  * of the font, whether the font face is bold or italics and a table that maps
  * character codes to the glyphs that is drawn to represent the character.
  * </p>
  * 
- * <p>When defining a font only the glyphs used from a particular font are
+ * <p>
+ * When defining a font only the glyphs used from a particular font are
  * included. Unused glyphs can be omitted greatly reducing the amount of
- * information that is encoded.</p>
+ * information that is encoded.
+ * </p>
  * 
  * @see FontInfo
  * @see FontInfo2
  */
-public final class DefineFont implements DefineTag
-{
+public final class DefineFont implements DefineTag {
 	private static final String FORMAT = "DefineFont: { identifier=%d; shapes=%s }";
-		
+
 	private int identifier;
 	private List<Shape> shapes;
-	
+
 	private transient int start;
 	private transient int end;
 	private transient int length;
 
-	//TODO(optimise)
-	//TODO(doc)
-	public DefineFont(final SWFDecoder coder, final Context context) throws CoderException
-	{
+	// TODO(optimise)
+	// TODO(doc)
+	public DefineFont(final SWFDecoder coder)
+			throws CoderException {
 		start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
-		
+
 		if (length == 0x3F) {
 			length = coder.readWord(4, false);
 		}
 		end = coder.getPointer() + (length << 3);
-		
+
 		identifier = coder.readWord(2, false);
 		shapes = new ArrayList<Shape>();
 
-		int offsetStart = coder.getPointer();
-		int shapeCount = coder.readWord(2, false) / 2;
+		final int offsetStart = coder.getPointer();
+		final int shapeCount = coder.readWord(2, false) / 2;
 
 		coder.setPointer(offsetStart);
 
@@ -100,15 +102,15 @@ public final class DefineFont implements DefineTag
 		}
 
 		offset[shapeCount] = length - 2;
-		
+
 		Shape shape;
-		
-		for (int i = 0; i < shapeCount; i++)
-		{
+
+		for (int i = 0; i < shapeCount; i++) {
 			coder.setPointer(offsetStart + (offset[i] << 3));
 
 			shape = new Shape();
-			shape.add(new ShapeData(coder.readBytes(new byte[offset[i + 1] - offset[i]])));
+			shape.add(new ShapeData(coder.readBytes(new byte[offset[i + 1]
+					- offset[i]])));
 			shapes.add(shape);
 		}
 
@@ -119,9 +121,8 @@ public final class DefineFont implements DefineTag
 	}
 
 	/**
-	 * Creates a DefineFont object setting the unique identifier for the
-	 * object and the array of glyphs used to render the characters used from
-	 * the font.
+	 * Creates a DefineFont object setting the unique identifier for the object
+	 * and the array of glyphs used to render the characters used from the font.
 	 * 
 	 * @param uid
 	 *            the unique identifier for this object.
@@ -129,15 +130,13 @@ public final class DefineFont implements DefineTag
 	 *            an array of Shape objects that define the outlines for each
 	 *            glyph in the font.
 	 */
-	public DefineFont(int uid, List<Shape> anArray)
-	{
+	public DefineFont(final int uid, final List<Shape> anArray) {
 		setIdentifier(uid);
 		setShapes(anArray);
 	}
-	
-	//TODO(doc)
-	public DefineFont(DefineFont object)
-	{
+
+	// TODO(doc)
+	public DefineFont(final DefineFont object) {
 		identifier = object.identifier;
 		shapes = new ArrayList<Shape>(object.shapes.size());
 		for (Shape shape : object.shapes) {
@@ -151,21 +150,21 @@ public final class DefineFont implements DefineTag
 
 	public void setIdentifier(final int uid) {
 		if (uid < 0 || uid > 65535) {
-			throw new IllegalArgumentException(Strings.IDENTIFIER_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
 		}
 		identifier = uid;
 	}
 
 	/**
-	 * Add a shape to the array of shapes that represent the glyphs for the font.
+	 * Add a shape to the array of shapes that represent the glyphs for the
+	 * font.
 	 * 
 	 * @param obj
 	 *            a shape which must not be null.
 	 */
-	public DefineFont add(Shape obj)
-	{
+	public DefineFont add(final Shape obj) {
 		if (obj == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
 		}
 		shapes.add(obj);
 		return this;
@@ -174,8 +173,7 @@ public final class DefineFont implements DefineTag
 	/**
 	 * Returns the array of shapes that define the outline for each glyph.
 	 */
-	public List<Shape> getShapes()
-	{
+	public List<Shape> getShapes() {
 		return shapes;
 	}
 
@@ -186,33 +184,30 @@ public final class DefineFont implements DefineTag
 	 *            an array of Shape objects that define the outlines for each
 	 *            glyph in the font. Must not be null.
 	 */
-	public void setShapes(List<Shape> anArray)
-	{
+	public void setShapes(final List<Shape> anArray) {
 		if (anArray == null) {
-			throw new IllegalArgumentException(Strings.ARRAY_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
 		}
 		shapes = anArray;
 	}
 
-	public DefineFont copy() 
-	{
+	public DefineFont copy() {
 		return new DefineFont(this);
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return String.format(FORMAT, identifier, shapes);
 	}
 
-	//TODO(optimise)
-	public int prepareToEncode(final SWFEncoder coder, final Context context)
-	{
+	// TODO(optimise)
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		length = 2;
-		
-		Map<Integer,Integer>vars = context.getVariables();
+
+		final Map<Integer, Integer> vars = context.getVariables();
 		vars.put(Context.FILL_SIZE, 1);
-		vars.put(Context.LINE_SIZE,vars.containsKey(Context.POSTSCRIPT) ? 1 : 0);
+		vars.put(Context.LINE_SIZE, vars.containsKey(Context.POSTSCRIPT) ? 1
+				: 0);
 
 		length += shapes.size() * 2;
 
@@ -221,16 +216,16 @@ public final class DefineFont implements DefineTag
 		}
 
 		vars.put(Context.FILL_SIZE, 0);
-		vars.put(Context.LINE_SIZE,0);
+		vars.put(Context.LINE_SIZE, 0);
 
-		return (length > 62 ? 6:2) + length;
+		return (length > 62 ? 6 : 2) + length;
 	}
 
-	//TODO(optimise)
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException
-	{
+	// TODO(optimise)
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		start = coder.getPointer();
-		
+
 		if (length >= 63) {
 			coder.writeWord((MovieTypes.DEFINE_FONT << 6) | 0x3F, 2);
 			coder.writeWord(length, 4);
@@ -239,15 +234,16 @@ public final class DefineFont implements DefineTag
 		}
 		end = coder.getPointer() + (length << 3);
 		coder.writeWord(identifier, 2);
-		
-		Map<Integer,Integer>vars = context.getVariables();
+
+		final Map<Integer, Integer> vars = context.getVariables();
 		vars.put(Context.FILL_SIZE, 1);
-		vars.put(Context.LINE_SIZE,vars.containsKey(Context.POSTSCRIPT) ? 1 : 0);
+		vars.put(Context.LINE_SIZE, vars.containsKey(Context.POSTSCRIPT) ? 1
+				: 0);
 
 		int currentLocation;
 		int offset;
 
-		int tableStart = coder.getPointer();
+		final int tableStart = coder.getPointer();
 
 		for (int i = 0; i < shapes.size(); i++) {
 			coder.writeWord(0, 2);
@@ -255,8 +251,7 @@ public final class DefineFont implements DefineTag
 
 		int tableEntry = tableStart;
 
-		for (Shape shape : shapes)
-		{
+		for (Shape shape : shapes) {
 			currentLocation = coder.getPointer();
 			offset = (coder.getPointer() - tableStart) >> 3;
 
@@ -269,7 +264,7 @@ public final class DefineFont implements DefineTag
 		}
 
 		vars.put(Context.FILL_SIZE, 0);
-		vars.put(Context.LINE_SIZE,0);
+		vars.put(Context.LINE_SIZE, 0);
 
 		if (coder.getPointer() != end) {
 			throw new CoderException(getClass().getName(), start >> 3, length,

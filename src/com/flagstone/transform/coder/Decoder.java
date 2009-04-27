@@ -69,7 +69,7 @@ public class Decoder extends Coder {
 		int value = 0;
 
 		if (numberOfBits > 0) {
-			
+
 			for (int i = 32; i > 0 && index < data.length; i -= 8, index++) {
 				value |= (data[index] & 0x000000FF) << (i - 8);
 			}
@@ -157,7 +157,7 @@ public class Decoder extends Coder {
 					numberOfBytes, charset);
 		} catch (java.io.UnsupportedEncodingException e) {
 			throw new IllegalArgumentException(String.format(
-					Strings.UNSUPPORTED_ENCODING, charset), e);
+					Strings.INVALID_ENCODING, charset), e);
 		}
 	}
 
@@ -202,7 +202,7 @@ public class Decoder extends Coder {
 	public boolean findBits(final int value, final int numberOfBits,
 			final int step) {
 		boolean found;
-		int mark = getPointer();
+		final int mark = getPointer();
 
 		while (getPointer() + numberOfBits <= end) {
 			if (readBits(numberOfBits, false) == value) {

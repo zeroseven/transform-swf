@@ -38,7 +38,6 @@ import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.DefineTag;
-import com.flagstone.transform.coder.FillStyle;
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -47,12 +46,13 @@ import com.flagstone.transform.coder.SWFFactory;
 
 //TODO(doc) Review
 /**
- * DefineMovieClip defines a movie clip that animates shapes within a movie. It 
+ * DefineMovieClip defines a movie clip that animates shapes within a movie. It
  * contains an array of movie objects that define the placement of shapes,
  * buttons, text and images and the order in which they are displayed through a
  * time-line that is separate from the parent movie.
  * 
- * <p>Although a movie clip contains the commands that instructs the Flash Player
+ * <p>
+ * Although a movie clip contains the commands that instructs the Flash Player
  * on how to animate the clip it cannot contain any new definitions of objects.
  * All definitions must be in the main movie. All objects referred to by the
  * movie clip must be also defined in the main movie before they can be used.
@@ -60,33 +60,31 @@ import com.flagstone.transform.coder.SWFFactory;
  * 
  * <p>
  * When using the DefineMovieClip object can only contain objects from the
- * following classes: ShowFrame, PlaceObject, PlaceObject2,
- * RemoveObject, RemoveObject2, DoAction, StartSound, FrameLabel,
- * SoundStreamHead, SoundStreamHead2 or SoundStreamBlock. Other objects
- * are not allowed.
+ * following classes: ShowFrame, PlaceObject, PlaceObject2, RemoveObject,
+ * RemoveObject2, DoAction, StartSound, FrameLabel, SoundStreamHead,
+ * SoundStreamHead2 or SoundStreamBlock. Other objects are not allowed.
  * </p>
  */
-public final class DefineMovieClip implements DefineTag
-{
+public final class DefineMovieClip implements DefineTag {
 	private static final String FORMAT = "DefineMovieClip: { identifier=%d; objects=%s }";
-			
+
 	private List<MovieTag> objects;
-	
+
 	private transient int frameCount;
 
 	private int identifier;
-	
+
 	private transient int start;
 	private transient int end;
 	private transient int length;
 
-	//TODO(doc)
-	//TODO(optimise)
-	public DefineMovieClip(final SWFDecoder coder, final Context context) throws CoderException
-	{
+	// TODO(doc)
+	// TODO(optimise)
+	public DefineMovieClip(final SWFDecoder coder, final Context context)
+			throws CoderException {
 		start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
-		
+
 		if (length == 0x3F) {
 			length = coder.readWord(4, false);
 		}
@@ -95,14 +93,15 @@ public final class DefineMovieClip implements DefineTag
 		identifier = coder.readWord(2, false);
 		frameCount = coder.readWord(2, false);
 		objects = new ArrayList<MovieTag>();
-		
+
 		int type;
-		SWFFactory<MovieTag>decoder = context.getRegistry().getMovieDecoder();
-		
+		final SWFFactory<MovieTag> decoder = context.getRegistry()
+				.getMovieDecoder();
+
 		do {
 			type = coder.scanUnsignedShort() >>> 6;
-		
-			if (type != 0){
+
+			if (type != 0) {
 				objects.add(decoder.getObject(coder, context));
 			}
 		} while (type != 0);
@@ -116,37 +115,36 @@ public final class DefineMovieClip implements DefineTag
 	}
 
 	/**
-	 * Creates a DefineMovieClip object with the unique identifier and
-	 * array of movie objects.
+	 * Creates a DefineMovieClip object with the unique identifier and array of
+	 * movie objects.
 	 * 
 	 * @param uid
-	 *            a unique identifier for the movie clip. Must be in the range 
+	 *            a unique identifier for the movie clip. Must be in the range
 	 *            1..65535,
 	 * @param anArray
 	 *            the array of movie objects. Must not be null.
 	 */
-	public DefineMovieClip(int uid, List<MovieTag> anArray)
-	{
+	public DefineMovieClip(final int uid, final List<MovieTag> anArray) {
 		setIdentifier(uid);
 		setObjects(anArray);
 	}
-	
-	//TODO(doc)
-	public DefineMovieClip(DefineMovieClip object) {
+
+	// TODO(doc)
+	public DefineMovieClip(final DefineMovieClip object) {
 		identifier = object.identifier;
 		objects = new ArrayList<MovieTag>(object.objects.size());
 		for (MovieTag tag : object.objects) {
 			objects.add(tag.copy());
 		}
 	}
-	
+
 	public int getIdentifier() {
 		return identifier;
 	}
 
 	public void setIdentifier(final int uid) {
 		if (uid < 1 || uid > 65535) {
-			throw new IllegalArgumentException(Strings.IDENTIFIER_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
 		}
 		identifier = uid;
 	}
@@ -158,10 +156,9 @@ public final class DefineMovieClip implements DefineTag
 	 * @param obj
 	 *            a Movie object. Must not be null
 	 */
-	public DefineMovieClip add(MovieTag obj)
-	{
+	public DefineMovieClip add(final MovieTag obj) {
 		if (obj == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
 		}
 		objects.add(obj);
 		return this;
@@ -170,8 +167,7 @@ public final class DefineMovieClip implements DefineTag
 	/**
 	 * Returns the array of movie objects.
 	 */
-	public List<MovieTag> getObjects()
-	{
+	public List<MovieTag> getObjects() {
 		return objects;
 	}
 
@@ -181,10 +177,9 @@ public final class DefineMovieClip implements DefineTag
 	 * @param anArray
 	 *            the array of movie objects. Must not be null.
 	 */
-	public void setObjects(List<MovieTag> anArray)
-	{
+	public void setObjects(final List<MovieTag> anArray) {
 		if (anArray == null) {
-			throw new IllegalArgumentException(Strings.ARRAY_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
 		}
 		objects = anArray;
 	}
@@ -192,22 +187,20 @@ public final class DefineMovieClip implements DefineTag
 	/**
 	 * Creates and returns a deep copy of this object.
 	 */
-	public DefineMovieClip copy() 
-	{
+	public DefineMovieClip copy() {
 		return new DefineMovieClip(this);
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return String.format(FORMAT, identifier, objects);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context){
-		
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
+
 		frameCount = 0;
 		length = 6;
-		
+
 		for (MovieTag object : objects) {
 			length += object.prepareToEncode(coder, context);
 
@@ -215,11 +208,11 @@ public final class DefineMovieClip implements DefineTag
 				frameCount += 1;
 			}
 		}
-		return (length > 62 ? 6:2) + length;
+		return (length > 62 ? 6 : 2) + length;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException
-	{
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		start = coder.getPointer();
 
 		if (length >= 63) {
@@ -229,7 +222,7 @@ public final class DefineMovieClip implements DefineTag
 			coder.writeWord((MovieTypes.DEFINE_MOVIE_CLIP << 6) | length, 2);
 		}
 		end = coder.getPointer() + (length << 3);
-		
+
 		coder.writeWord(identifier, 2);
 		coder.writeWord(frameCount, 2);
 

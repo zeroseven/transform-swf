@@ -31,7 +31,6 @@ package com.flagstone.transform;
 
 import org.junit.Test;
 
-import com.flagstone.transform.ScalingGrid;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -40,41 +39,36 @@ import com.flagstone.transform.datatype.Bounds;
 
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 
-@SuppressWarnings( {
-	"PMD.LocalVariableCouldBeFinal",
-	"PMD.JUnitAssertionsShouldIncludeMessage" })
+@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
+		"PMD.JUnitAssertionsShouldIncludeMessage" })
 public final class ScalingGridTest {
-	
+
 	private transient final int identifier = 1;
-	private transient final Bounds bounds = new Bounds(1,2,3,4);
+	private transient final Bounds bounds = new Bounds(1, 2, 3, 4);
 
 	private transient ScalingGrid fixture;
 
-	private transient final byte[] empty = new byte[] { (byte)0x84, 0x13,
-			0x00, 0x00, 0x08, 0x00};
-	
-	private transient final byte[] encoded = new byte[] { (byte)0x85, 0x13,
-			0x01, 0x00, 0x20, (byte)0x99, 0x20 };
-	
-	private transient final byte[] extended = new byte[] { (byte)0xBF, 0x13,
-			0x05, 0x00, 0x00, 0x00, 0x01, 0x00, 0x20, (byte)0x99, 0x20 };
+	private transient final byte[] encoded = new byte[] { (byte) 0x85, 0x13,
+			0x01, 0x00, 0x20, (byte) 0x99, 0x20 };
 
-	@Test(expected=IllegalArgumentException.class)
+	private transient final byte[] extended = new byte[] { (byte) 0xBF, 0x13,
+			0x05, 0x00, 0x00, 0x00, 0x01, 0x00, 0x20, (byte) 0x99, 0x20 };
+
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForIdentifierWithLowerBound() {
 		fixture = new ScalingGrid(0, bounds);
 	}
 
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForIdentifierWithUpperBound() {
 		fixture = new ScalingGrid(65536, bounds);
 		fixture.setIdentifier(65536);
 	}
-	
-	@Test(expected=IllegalArgumentException.class)
+
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForDataWithNull() {
 		fixture = new ScalingGrid(identifier, null);
 	}
@@ -86,7 +80,7 @@ public final class ScalingGridTest {
 		assertSame(fixture.getBounds(), fixture.copy().getBounds());
 		assertEquals(fixture.toString(), fixture.toString());
 	}
-	
+
 	@Test
 	public void encode() throws CoderException {
 
@@ -94,9 +88,9 @@ public final class ScalingGridTest {
 		Context context = new Context();
 
 		fixture = new ScalingGrid(identifier, bounds);
-		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));		
+		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
 		fixture.encode(encoder, context);
-		
+
 		assertTrue(encoder.eof());
 		assertArrayEquals(encoded, encoder.getData());
 	}
@@ -105,10 +99,9 @@ public final class ScalingGridTest {
 	public void decode() throws CoderException {
 
 		SWFDecoder decoder = new SWFDecoder(encoded);
-		Context context = new Context();
 
-		fixture = new ScalingGrid(decoder, context);
-		
+		fixture = new ScalingGrid(decoder);
+
 		assertTrue(decoder.eof());
 		assertEquals(identifier, fixture.getIdentifier());
 		assertEquals(bounds.getMinX(), fixture.getBounds().getMinX());

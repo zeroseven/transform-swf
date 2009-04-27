@@ -32,7 +32,6 @@ package com.flagstone.transform.coder;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.flagstone.transform.coder.Decoder;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
@@ -108,7 +107,7 @@ public final class DecoderTest {
 		assertEquals(0, fixture.readBits(0, true));
 		assertEquals(2, fixture.getPointer());
 	}
-	
+
 	@Test
 	public void readB16() {
 		fixture.setData(new byte[] { 1, 2 });

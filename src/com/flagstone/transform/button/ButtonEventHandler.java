@@ -48,7 +48,7 @@ import com.flagstone.transform.coder.SWFFactory;
 
 //TODO(doc) Review
 /**
- * ButtonEvent is used to define the actions that a (menu or push) button will 
+ * ButtonEvent is used to define the actions that a (menu or push) button will
  * execute in response to a particular event. A button responds to:</p>
  * 
  * <table class="datasheet">
@@ -62,30 +62,31 @@ import com.flagstone.transform.coder.SWFFactory;
  * </tr>
  * <tr>
  * <td valign="top">Press</td>
- * <td>the mouse button is clicked while the mouse cursor is over
- * the active area of the button.</td>
+ * <td>the mouse button is clicked while the mouse cursor is over the active
+ * area of the button.</td>
  * </tr>
  * <tr>
  * <td valign="top">Release</td>
- * <td>the mouse button is clicked and released while the mouse
- * cursor is over the active area of the button.</td>
+ * <td>the mouse button is clicked and released while the mouse cursor is over
+ * the active area of the button.</td>
  * </tr>
  * <tr>
  * <td valign="top">DragOut</td>
- * <td>the mouse button is clicked and the mouse cursor is dragged
- * out of the active area of the button.</td>
+ * <td>the mouse button is clicked and the mouse cursor is dragged out of the
+ * active area of the button.</td>
  * </tr>
  * <tr>
  * <td valign="top">DragOver</td>
- * <td>the mouse button is clicked, the mouse cursor is dragged
- * into the active area of the button and the mouse button is released.</td>
+ * <td>the mouse button is clicked, the mouse cursor is dragged into the active
+ * area of the button and the mouse button is released.</td>
  * </tr>
- * </td>
- * </tr>
+ * </td> </tr>
  * </table>
  * 
- * <p>When a button is configured as a menu item then three additional events 
- * can occur:</p>
+ * <p>
+ * When a button is configured as a menu item then three additional events can
+ * occur:
+ * </p>
  * 
  * <table class="datasheet">
  * <tr>
@@ -105,16 +106,20 @@ import com.flagstone.transform.coder.SWFFactory;
  * </tr>
  * </table>
  * 
- * <p>In addition to responding to mouse events, buttons also respond to keys 
- * being pressed on the keyboard. Keyboard events are defined by the character 
- * key being pressed, e.g. "t", "T", "$", etc. The event code for a key is 
- * generated using the <b>codeForKey</b> method:</p>
+ * <p>
+ * In addition to responding to mouse events, buttons also respond to keys being
+ * pressed on the keyboard. Keyboard events are defined by the character key
+ * being pressed, e.g. "t", "T", "$", etc. The event code for a key is generated
+ * using the <b>codeForKey</b> method:
+ * </p>
  * 
  * <pre>
  * int eventCode = ButtonEvent.codeForKey('J');
  * </pre>
  * 
- * <p>For control keys the codes are defined using the following set of constants:</p>
+ * <p>
+ * For control keys the codes are defined using the following set of constants:
+ * </p>
  * 
  * <table>
  * <tr>
@@ -179,59 +184,60 @@ import com.flagstone.transform.coder.SWFFactory;
  * </tr>
  * </table>
  * 
- * <p>A button can respond in the same way for multiple events by creating 
- * a compound event code created by performing a bit-wise Or of the individual 
- * codes:</p>
+ * <p>
+ * A button can respond in the same way for multiple events by creating a
+ * compound event code created by performing a bit-wise Or of the individual
+ * codes:
+ * </p>
  * 
  * <pre>
  * int eventCode = ButtonEvent.RollOver | ButtonEvent.Press;
  * int eventCode = ButtonEvent.Enter | ButtonEvent.PageUp;
  * </pre>
  * 
- * <p>While multiple mouse events can be defined for a button only one
- * keyboard event can be defined.</p>
+ * <p>
+ * While multiple mouse events can be defined for a button only one keyboard
+ * event can be defined.
+ * </p>
  * 
  * @see DefineButton2
  */
-public final class ButtonEventHandler implements SWFEncodeable
-{
+public final class ButtonEventHandler implements SWFEncodeable {
 	private static final String FORMAT = "ButtonEventHandler: { event=%s; actions=%s }";
-	
+
 	/**
-	 * Returns the code used to identify that a character has been typed on the 
+	 * Returns the code used to identify that a character has been typed on the
 	 * keyboard. This method should be used for characters that are not already
 	 * defined as a constant in this class.
 	 * 
 	 * @param character
 	 *            a keyboard character.
 	 */
-	public static int codeForKey(char character)
-	{
+	public static int codeForKey(final char character) {
 		return character << 9;
 	}
 
 	private int event;
 	private List<Action> actions;
 
-	protected transient int length = 0; //TODO DefineText2 uses this field
+	private transient int length = 0; // TODO DefineText2 uses this field
 
-	//TODO(doc)
-	public ButtonEventHandler(int size, final SWFDecoder coder, Context context) throws CoderException
-	{
+	// TODO(doc)
+	public ButtonEventHandler(final int size, final SWFDecoder coder, final Context context)
+			throws CoderException {
 		event = coder.readWord(2, false);
-		length -= 2;
+		length = size;
 
 		actions = new ArrayList<Action>();
 
-		SWFFactory<Action>decoder = context.getRegistry().getActionDecoder();
+		final SWFFactory<Action> decoder = context.getRegistry().getActionDecoder();
 
-		if (decoder == null) {			
+		if (decoder == null) {
 			if (length != 0) {
 				actions.add(new ActionData(coder.readBytes(new byte[length])));
 			}
-		} 
-		else {
-			int end = coder.getPointer() + (length << 3);
+		} else {
+			final int end = coder.getPointer() + (length << 3);
 
 			while (coder.getPointer() < end) {
 				actions.add(decoder.getObject(coder, context));
@@ -240,8 +246,8 @@ public final class ButtonEventHandler implements SWFEncodeable
 	}
 
 	/**
-	 * Creates an ButtonEvent object that defines the array of actions that
-	 * will be executed when a particular event occurs.
+	 * Creates an ButtonEvent object that defines the array of actions that will
+	 * be executed when a particular event occurs.
 	 * 
 	 * @param aNumber
 	 *            the event code. Must be in the range 1..65535.
@@ -249,17 +255,16 @@ public final class ButtonEventHandler implements SWFEncodeable
 	 *            the array of action objects that will be executed when the
 	 *            specified event(s) occur.
 	 */
-	public ButtonEventHandler(Set<ButtonEvent> aNumber, List<Action> anArray)
-	{
+	public ButtonEventHandler(final Set<ButtonEvent> aNumber, final List<Action> anArray) {
 		setEvent(aNumber);
 		setActions(anArray);
 	}
-	
-	//TODO(doc)
-	public ButtonEventHandler(ButtonEventHandler object) {
+
+	// TODO(doc)
+	public ButtonEventHandler(final ButtonEventHandler object) {
 		event = object.event;
 		actions = new ArrayList<Action>();
-		
+
 		for (Action action : actions) {
 			actions.add(action.copy());
 		}
@@ -269,25 +274,25 @@ public final class ButtonEventHandler implements SWFEncodeable
 	 * Add an action to the end of the actions array.
 	 * 
 	 * @param anAction
-	 *            an object derived from the base class Action. Must not be null.
+	 *            an object derived from the base class Action. Must not be
+	 *            null.
 	 */
-	public ButtonEventHandler add(Action anAction) throws CoderException
-	{
+	public ButtonEventHandler add(final Action anAction) throws CoderException {
 		if (anAction == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
 		}
 		actions.add(anAction);
 		return this;
 	}
 
 	/**
-	 * Returns the compound event code that this ButtonEvent defines actions for.
+	 * Returns the compound event code that this ButtonEvent defines actions
+	 * for.
 	 */
-	public Set<ButtonEvent> getEvent()
-	{
-		Set<ButtonEvent>set = EnumSet.allOf(ButtonEvent.class);
-		
-		for (Iterator<ButtonEvent>iter = set.iterator(); iter.hasNext();) {
+	public Set<ButtonEvent> getEvent() {
+		final Set<ButtonEvent> set = EnumSet.allOf(ButtonEvent.class);
+
+		for (final Iterator<ButtonEvent> iter = set.iterator(); iter.hasNext();) {
 			if ((event & iter.next().getValue()) == 0) {
 				iter.remove();
 			}
@@ -296,11 +301,10 @@ public final class ButtonEventHandler implements SWFEncodeable
 	}
 
 	/**
-	 * Returns the array of actions that are executed by the button in response to
-	 * specified event(s).
+	 * Returns the array of actions that are executed by the button in response
+	 * to specified event(s).
 	 */
-	public List<Action> getActions() throws CoderException
-	{
+	public List<Action> getActions() throws CoderException {
 		return actions;
 	}
 
@@ -310,8 +314,7 @@ public final class ButtonEventHandler implements SWFEncodeable
 	 * @param aNumber
 	 *            the event code. Must be in the range 1..65535.
 	 */
-	public void setEvent(Set<ButtonEvent>set)
-	{
+	public void setEvent(final Set<ButtonEvent> set) {
 		for (ButtonEvent event : set) {
 			this.event |= event.getValue();
 		}
@@ -323,13 +326,12 @@ public final class ButtonEventHandler implements SWFEncodeable
 	 * 
 	 * @param anArray
 	 *            the array of action objects that will be executed when the
-	 *            specified event(s) occur. The array may be empty but must not 
+	 *            specified event(s) occur. The array may be empty but must not
 	 *            be null.
 	 */
-	public void setActions(List<Action> anArray)
-	{
+	public void setActions(final List<Action> anArray) {
 		if (anArray == null) {
-			throw new IllegalArgumentException(Strings.ARRAY_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
 		}
 		actions = anArray;
 	}
@@ -337,30 +339,28 @@ public final class ButtonEventHandler implements SWFEncodeable
 	/**
 	 * Creates and returns a deep copy of this object.
 	 */
-	public ButtonEventHandler copy()
-	{
+	public ButtonEventHandler copy() {
 		return new ButtonEventHandler(this);
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return String.format(FORMAT, event, actions);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context)
-	{
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		length = 2;
 
 		for (Action action : actions) {
 			length += action.prepareToEncode(coder, context);
 		}
-		
+
 		return length;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException
-	{
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
+		coder.writeWord(length+2, 2);
 		coder.writeWord(event, 2);
 
 		for (Action action : actions) {

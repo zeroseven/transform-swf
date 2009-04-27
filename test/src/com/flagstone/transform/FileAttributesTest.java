@@ -35,31 +35,25 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 
-import com.flagstone.transform.FileAttributes;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-@SuppressWarnings( { 
-	"PMD.LocalVariableCouldBeFinal",
-	"PMD.JUnitAssertionsShouldIncludeMessage" 
-})
+@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
+		"PMD.JUnitAssertionsShouldIncludeMessage" })
 public final class FileAttributesTest {
-	
+
 	private transient final boolean hasMetaData = true;
 	private transient final boolean hasActionscript = true;
 	private transient final boolean useNetwork = true;
-	
+
 	private transient FileAttributes fixture;
-	
-	private transient final byte[] empty = new byte[] { 0x44, 0x11,
-			0x00, 0x00, 0x00, 0x00};
-	
-	private transient final byte[] encoded = new byte[] { 0x44, 0x11,
-			0x19, 0x00, 0x00, 0x00};
-	
-	private transient final byte[] extended = new byte[] { (byte)0x7F, 0x11, 
+
+	private transient final byte[] encoded = new byte[] { 0x44, 0x11, 0x19,
+			0x00, 0x00, 0x00 };
+
+	private transient final byte[] extended = new byte[] { (byte) 0x7F, 0x11,
 			0x04, 0x00, 0x00, 0x00, 0x19, 0x00, 0x00, 0x00 };
 
 	@Test
@@ -72,40 +66,38 @@ public final class FileAttributesTest {
 		assertEquals(fixture.useNetwork(), copy.useNetwork());
 		assertEquals(fixture.toString(), copy.toString());
 	}
-	
+
 	@Test
 	public void encode() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(encoded.length);		
+		SWFEncoder encoder = new SWFEncoder(encoded.length);
 		Context context = new Context();
 
 		fixture = new FileAttributes(hasMetaData, hasActionscript, useNetwork);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
 		fixture.encode(encoder, context);
-		
+
 		assertTrue(encoder.eof());
 		assertArrayEquals(encoded, encoder.getData());
 	}
-	
+
 	@Test
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
-		Context context = new Context();
 
-		fixture = new FileAttributes(decoder, context);
-		
+		fixture = new FileAttributes(decoder);
+
 		assertTrue(decoder.eof());
 		assertEquals(hasMetaData, fixture.hasMetaData());
 		assertEquals(hasActionscript, fixture.hasActionscript());
 		assertEquals(useNetwork, fixture.useNetwork());
 	}
-	
+
 	@Test
 	public void decodeExtended() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(extended);
-		Context context = new Context();
 
-		fixture = new FileAttributes(decoder, context);
-		
+		fixture = new FileAttributes(decoder);
+
 		assertTrue(decoder.eof());
 		assertEquals(hasMetaData, fixture.hasMetaData());
 		assertEquals(hasActionscript, fixture.hasActionscript());

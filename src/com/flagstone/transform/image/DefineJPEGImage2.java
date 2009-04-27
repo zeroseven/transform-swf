@@ -48,35 +48,34 @@ import com.flagstone.transform.coder.SWFEncoder;
  * @see DefineJPEGImage
  * @see DefineJPEGImage3
  */
-public final class DefineJPEGImage2 implements ImageTag
-{
+public final class DefineJPEGImage2 implements ImageTag {
 	private static final String FORMAT = "DefineJPEGImage2: { identifier=%d; image=%d; }";
 
 	private int identifier;
 	private byte[] image;
-	
+
 	private transient int start;
 	private transient int end;
 	private transient int length;
 	private transient int width;
 	private transient int height;
 
-	//TODO(doc)
-	public DefineJPEGImage2(final SWFDecoder coder, final Context context) throws CoderException
-	{
+	// TODO(doc)
+	public DefineJPEGImage2(final SWFDecoder coder)
+			throws CoderException {
 		start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
-		
+
 		if (length == 0x3F) {
 			length = coder.readWord(4, false);
 		}
 		end = coder.getPointer() + (length << 3);
-		
+
 		identifier = coder.readWord(2, false);
-		image = coder.readBytes(new byte[length-2]);
-		
+		image = coder.readBytes(new byte[length - 2]);
+
 		decodeInfo();
-	
+
 		if (coder.getPointer() != end) {
 			throw new CoderException(getClass().getName(), start >> 3, length,
 					(coder.getPointer() - end) >> 3);
@@ -84,36 +83,34 @@ public final class DefineJPEGImage2 implements ImageTag
 	}
 
 	/**
-	 * Creates a DefineJPEGImage2 object with the identifier and JPEG image
-	 * data
+	 * Creates a DefineJPEGImage2 object with the identifier and JPEG image data
 	 * 
 	 * @param uid
-	 *            the unique identifier for this object. Must be in the range 
+	 *            the unique identifier for this object. Must be in the range
 	 *            1..65535.
 	 * @param image
 	 *            the JPEG encoded image data. Must not be null.
 	 */
-	public DefineJPEGImage2(int uid, byte[] image)
-	{
+	public DefineJPEGImage2(final int uid, final byte[] image) {
 		setIdentifier(uid);
 		setImage(image);
 	}
-	
-	//TODO(doc)
-	public DefineJPEGImage2(DefineJPEGImage2 object) {
+
+	// TODO(doc)
+	public DefineJPEGImage2(final DefineJPEGImage2 object) {
 		identifier = object.identifier;
 		width = object.width;
 		height = object.height;
 		image = Arrays.copyOf(object.image, object.image.length);
 	}
-	
+
 	public int getIdentifier() {
 		return identifier;
 	}
 
 	public void setIdentifier(final int uid) {
 		if (uid < 0 || uid > 65535) {
-			throw new IllegalArgumentException(Strings.IDENTIFIER_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
 		}
 		identifier = uid;
 	}
@@ -121,24 +118,21 @@ public final class DefineJPEGImage2 implements ImageTag
 	/**
 	 * Returns the width of the image in pixels.
 	 */
-	public int getWidth()
-	{
+	public int getWidth() {
 		return width;
 	}
 
 	/**
 	 * Returns the height of the image in pixels.
 	 */
-	public int getHeight()
-	{
+	public int getHeight() {
 		return height;
 	}
 
 	/**
 	 * Returns the image data.
 	 */
-	public byte[] getImage()
-	{
+	public byte[] getImage() {
 		return image;
 	}
 
@@ -148,10 +142,9 @@ public final class DefineJPEGImage2 implements ImageTag
 	 * @param bytes
 	 *            an array of bytes containing the image data. Must not be null.
 	 */
-	public void setImage(byte[] bytes)
-	{
+	public void setImage(final byte[] bytes) {
 		if (bytes == null) {
-			throw new IllegalArgumentException(Strings.DATA_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.DATA_IS_NULL);
 		}
 		image = bytes;
 		decodeInfo();
@@ -160,26 +153,23 @@ public final class DefineJPEGImage2 implements ImageTag
 	/**
 	 * Creates and returns a deep copy of this object.
 	 */
-	public DefineJPEGImage2 copy() 
-	{
+	public DefineJPEGImage2 copy() {
 		return new DefineJPEGImage2(this);
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return String.format(FORMAT, identifier, image.length);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context)
-	{
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		length = 2 + image.length;
 
-		return (length > 62 ? 6:2) + length;
+		return (length > 62 ? 6 : 2) + length;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException
-	{
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		start = coder.getPointer();
 
 		if (length >= 63) {
@@ -189,7 +179,7 @@ public final class DefineJPEGImage2 implements ImageTag
 			coder.writeWord((MovieTypes.DEFINE_JPEG_IMAGE_2 << 6) | length, 2);
 		}
 		end = coder.getPointer() + (length << 3);
-		
+
 		coder.writeWord(identifier, 2);
 		coder.writeBytes(image);
 
@@ -199,33 +189,28 @@ public final class DefineJPEGImage2 implements ImageTag
 		}
 	}
 
-	private void decodeInfo()
-	{
-		FLVDecoder coder = new FLVDecoder(image);
+	private void decodeInfo() {
+		final FLVDecoder coder = new FLVDecoder(image);
 
-		if (coder.readWord(2, false) == 0xffd8) 
-		{
+		if (coder.readWord(2, false) == 0xffd8) {
 			int marker;
-			
+
 			do {
 				marker = coder.readWord(2, false);
-				
-				if ((marker & 0xff00) == 0xff00)
-				{
-					if (marker >= 0xffc0 && marker <= 0xffcf && marker != 0xffc4
-									&& marker != 0xffc8)
-					{
+
+				if ((marker & 0xff00) == 0xff00) {
+					if (marker >= 0xffc0 && marker <= 0xffcf
+							&& marker != 0xffc4 && marker != 0xffc8) {
 						coder.adjustPointer(24);
 						height = coder.readWord(2, false);
 						width = coder.readWord(2, false);
 						break;
-					} 
-					else
-					{
-						coder.adjustPointer((coder.readWord(2, false) - 2) << 3);
+					} else {
+						coder
+								.adjustPointer((coder.readWord(2, false) - 2) << 3);
 					}
 				}
-				
+
 			} while ((marker & 0xff00) == 0xff00);
 		}
 	}

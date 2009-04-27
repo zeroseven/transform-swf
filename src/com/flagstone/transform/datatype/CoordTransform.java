@@ -63,8 +63,8 @@ import com.flagstone.transform.coder.SWFEncoder;
  * </p>
  * 
  */
-//TODO(doc) Review
-//TODO(pmd) Remove warning suppressors and re-check
+// TODO(doc) Review
+// TODO(pmd) Remove warning suppressors and re-check
 @SuppressWarnings( { "PMD.TooManyMethods", "PMD.LocalVariableCouldBeFinal" })
 public final class CoordTransform implements SWFEncodeable {
 
@@ -180,7 +180,7 @@ public final class CoordTransform implements SWFEncodeable {
 	 * location or appearance when it is applied to an object.
 	 */
 	public CoordTransform(final SWFDecoder coder) throws CoderException {
-		
+
 		coder.alignToByte();
 
 		hasScale = coder.readBits(1, false) != 0;
@@ -221,7 +221,9 @@ public final class CoordTransform implements SWFEncodeable {
 		translateY = (int) matrix[1][2];
 	}
 
-	public CoordTransform(final float scaleX, final float scaleY, final float shearX, final float shearY, final int xCoord, final int yCoord) {
+	public CoordTransform(final float scaleX, final float scaleY,
+			final float shearX, final float shearY, final int xCoord,
+			final int yCoord) {
 		this.scaleX = (int) (scaleX * 65536.0f);
 		this.scaleY = (int) (scaleY * 65536.0f);
 		this.shearX = (int) (shearX * 65536.0f);
@@ -311,33 +313,32 @@ public final class CoordTransform implements SWFEncodeable {
 		return String.format(FORMAT, scaleX / 65536.0f, scaleY / 65536.0f,
 				shearX / 65536.0f, shearY / 65536.0f, translateX, translateY);
 	}
-	
+
 	@Override
 	public boolean equals(final Object object) {
 		boolean result;
 		CoordTransform transform;
-		
+
 		if (object == null) {
 			result = false;
 		} else if (object == this) {
 			result = true;
 		} else if (object instanceof CoordTransform) {
-			transform = (CoordTransform)object;
-			result = scaleX == transform.scaleX && 
-				scaleY == transform.scaleY &&
-				shearX == transform.shearX && 
-				shearY == transform.shearY &&
-				translateX == transform.translateX && 
-				translateY == transform.translateY;
+			transform = (CoordTransform) object;
+			result = scaleX == transform.scaleX && scaleY == transform.scaleY
+					&& shearX == transform.shearX && shearY == transform.shearY
+					&& translateX == transform.translateX
+					&& translateY == transform.translateY;
 		} else {
 			result = false;
 		}
 		return result;
 	}
-	
+
 	@Override
 	public int hashCode() {
-		return ((((scaleX*31 + scaleY)*31 + shearX)*31 + shearY)*31 + translateX)*31 + translateY;
+		return ((((scaleX * 31 + scaleY) * 31 + shearX) * 31 + shearY) * 31 + translateX)
+				* 31 + translateY;
 	}
 
 	public int prepareToEncode(final SWFEncoder coder, final Context context) {
@@ -368,7 +369,8 @@ public final class CoordTransform implements SWFEncodeable {
 		return numberOfBits >> 3;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException {
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		coder.alignToByte();
 
 		coder.writeBits(hasScale ? 1 : 0, 1);

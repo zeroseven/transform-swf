@@ -50,14 +50,14 @@ import com.flagstone.transform.coder.SWFEncoder;
  * </p>
  */
 public final class LimitScript implements MovieTag {
-	
+
 	private static final String FORMAT = "LimitScript: { depth=%d; timeout=%d }";
-	
+
 	private int depth;
 	private int timeout;
 
-	//TODO(doc)
-	public LimitScript(final SWFDecoder coder, final Context context) throws CoderException {
+	// TODO(doc)
+	public LimitScript(final SWFDecoder coder) throws CoderException {
 
 		if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
 			coder.readWord(4, false);
@@ -81,12 +81,12 @@ public final class LimitScript implements MovieTag {
 	 *            whether the script should be terminated. Must be in the range
 	 *            0..65535.
 	 */
-	public LimitScript(int depth, int timeout) {
+	public LimitScript(final int depth, final int timeout) {
 		setDepth(depth);
 		setTimeout(timeout);
 	}
 
-	public LimitScript(LimitScript object) {
+	public LimitScript(final LimitScript object) {
 		depth = object.depth;
 		timeout = object.timeout;
 	}
@@ -105,10 +105,9 @@ public final class LimitScript implements MovieTag {
 	 *            the maximum depth a sequence of actions can recurse to. Must
 	 *            be in the range 0..65535.
 	 */
-	public void setDepth(int depth) {
+	public void setDepth(final int depth) {
 		if (depth < 0 || depth > 65535) {
-			throw new IllegalArgumentException(
-					Strings.UNSIGNED_VALUE_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
 		}
 		this.depth = depth;
 	}
@@ -131,10 +130,9 @@ public final class LimitScript implements MovieTag {
 	 *            the time in seconds that a sequence of actions is allowed to
 	 *            execute. Must be in the range 0..65535.
 	 */
-	public void setTimeout(int time) {
+	public void setTimeout(final int time) {
 		if (time < 0 || time > 65535) {
-			throw new IllegalArgumentException(
-					Strings.UNSIGNED_VALUE_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
 		}
 		timeout = time;
 	}
@@ -152,7 +150,8 @@ public final class LimitScript implements MovieTag {
 		return 6;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException {
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		coder.writeWord((MovieTypes.LIMIT_SCRIPT << 6) | 4, 2);
 		coder.writeWord(depth, 2);
 		coder.writeWord(timeout, 2);

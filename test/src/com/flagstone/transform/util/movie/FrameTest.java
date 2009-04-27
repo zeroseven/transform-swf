@@ -43,7 +43,6 @@ import com.flagstone.transform.coder.Action;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.text.DefineTextField;
-import com.flagstone.transform.util.movie.Frame;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -51,152 +50,141 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 
-public final class FrameTest
-{
+public final class FrameTest {
 	private Movie movie;
-	
+
 	@Before
-	public void setUp()
-	{
+	public void setUp() {
 		movie = new Movie();
 		movie.setSignature(Movie.Signature.FWS);
-		movie.setFrameSize(new Bounds(0,0,100,100));
+		movie.setFrameSize(new Bounds(0, 0, 100, 100));
 		movie.setFrameRate(1.0f);
 	}
-	
+
 	@Test
-	public void frameLabel() throws CoderException
-	{
-		String label ="label";
-		
+	public void frameLabel() throws CoderException {
+		final String label = "label";
+
 		movie.add(new FrameLabel(label));
 		movie.add(ShowFrame.getInstance());
-		
-		List<Frame> frames = Frame.framesFromMovie(movie);
-		
+
+		final List<Frame> frames = Frame.framesFromMovie(movie);
+
 		assertEquals(frames.size(), 1);
 		assertEquals(frames.get(0).getLabel(), label);
 	}
-	
+
 	@Test
-	public void frameWithNoLabel() throws CoderException
-	{
+	public void frameWithNoLabel() throws CoderException {
 		movie.add(ShowFrame.getInstance());
-		
-		List<Frame> frames = Frame.framesFromMovie(movie);
-		
+
+		final List<Frame> frames = Frame.framesFromMovie(movie);
+
 		assertEquals(frames.size(), 1);
 		assertEquals(frames.get(0).getLabel(), null);
 	}
-	
+
 	@Test
-	public void frameWithCommand() throws CoderException
-	{
-		Place2 command = Place2.show(1, 1, 0, 0);
-		
+	public void frameWithCommand() throws CoderException {
+		final Place2 command = Place2.show(1, 1, 0, 0);
+
 		movie.add(command);
 		movie.add(ShowFrame.getInstance());
-		
-		List<Frame> frames = Frame.framesFromMovie(movie);
-		
+
+		final List<Frame> frames = Frame.framesFromMovie(movie);
+
 		assertEquals(frames.size(), 1);
 		assertEquals(frames.get(0).getCommands().size(), 1);
 		assertEquals(frames.get(0).getCommands().get(0), command);
 	}
-	
+
 	@Test
-	public void frameWithNoCommand() throws CoderException
-	{
+	public void frameWithNoCommand() throws CoderException {
 		movie.add(ShowFrame.getInstance());
-		
-		List<Frame> frames = Frame.framesFromMovie(movie);
-		
+
+		final List<Frame> frames = Frame.framesFromMovie(movie);
+
 		assertEquals(frames.size(), 1);
 		assertEquals(frames.get(0).getCommands().size(), 0);
 	}
-	
+
 	@Test
-	public void frameWithDefinition() throws CoderException
-	{
-		DefineTextField field = new DefineTextField(1).setBounds(new Bounds(0,0,100,100));
-		
+	public void frameWithDefinition() throws CoderException {
+		final DefineTextField field = new DefineTextField(1).setBounds(new Bounds(0,
+				0, 100, 100));
+
 		movie.add(field);
 		movie.add(ShowFrame.getInstance());
-		
-		List<Frame> frames = Frame.framesFromMovie(movie);
-		
+
+		final List<Frame> frames = Frame.framesFromMovie(movie);
+
 		assertEquals(frames.size(), 1);
 		assertEquals(frames.get(0).getDefinitions().size(), 1);
 		assertEquals(frames.get(0).getDefinitions().get(0), field);
 	}
-	
+
 	@Test
-	public void frameWithNoDefinition() throws CoderException
-	{
+	public void frameWithNoDefinition() throws CoderException {
 		movie.add(ShowFrame.getInstance());
-		
-		List<Frame> frames = Frame.framesFromMovie(movie);
-		
+
+		final List<Frame> frames = Frame.framesFromMovie(movie);
+
 		assertEquals(frames.size(), 1);
 		assertEquals(frames.get(0).getDefinitions().size(), 0);
 	}
-	
+
 	@Test
-	public void frameWithActions() throws CoderException
-	{
-		Push push = new Push(new ArrayList<Object>());
+	public void frameWithActions() throws CoderException {
+		final Push push = new Push(new ArrayList<Object>());
 		push.add("label");
-		
-		DoAction actions = new DoAction(new ArrayList<Action>());		
+
+		final DoAction actions = new DoAction(new ArrayList<Action>());
 		actions.add(push);
 		actions.add(new GotoFrame2(true));
-		
+
 		movie.add(actions);
 		movie.add(ShowFrame.getInstance());
-		
-		List<Frame> frames = Frame.framesFromMovie(movie);
-		
+
+		final List<Frame> frames = Frame.framesFromMovie(movie);
+
 		assertEquals(frames.size(), 1);
 		assertEquals(frames.get(0).getActions().size(), 2);
 		assertEquals(frames.get(0).getActions().get(0), push);
 		assertEquals(frames.get(0).getActions().get(1), new GotoFrame2(true));
 	}
-	
+
 	@Test
-	public void frameWithNoActions() throws CoderException
-	{
+	public void frameWithNoActions() throws CoderException {
 		movie.add(ShowFrame.getInstance());
-		
-		List<Frame> frames = Frame.framesFromMovie(movie);
-		
+
+		final List<Frame> frames = Frame.framesFromMovie(movie);
+
 		assertEquals(frames.size(), 1);
 		assertEquals(frames.get(0).getActions().size(), 0);
 	}
-	
+
 	@Test
-	public void addFrameToMovie() throws CoderException
-	{
-		Frame frame = new Frame();
+	public void addFrameToMovie() throws CoderException {
+		final Frame frame = new Frame();
 		frame.setLabel("label");
-		frame.addDefinition(new DefineTextField(1).setBounds(new Bounds(0,0,100,100)));
+		frame.addDefinition(new DefineTextField(1).setBounds(new Bounds(0, 0,
+				100, 100)));
 		frame.addCommand(Place2.show(1, 1, 0, 0));
 		frame.addToMovie(movie);
-		
-		List<Frame> frames = Frame.framesFromMovie(movie);
-		
+
+		final List<Frame> frames = Frame.framesFromMovie(movie);
+
 		assertNotSame(frame, frames.get(0));
 		assertEquals(frame, frames.get(0));
 	}
 
 	@Test
-	public void multipleFramesFromMovie() throws CoderException
-	{
+	public void multipleFramesFromMovie() throws CoderException {
 		movie.add(ShowFrame.getInstance());
 		movie.add(ShowFrame.getInstance());
 
-		List<Frame> frames = Frame.framesFromMovie(movie);
-		
+		final List<Frame> frames = Frame.framesFromMovie(movie);
+
 		assertEquals(frames.size(), 2);
 	}
 }
-

@@ -31,7 +31,6 @@ package com.flagstone.transform.action;
 
 import org.junit.Test;
 
-import com.flagstone.transform.action.Call;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -41,22 +40,22 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 
-@SuppressWarnings( {
-	"PMD.LocalVariableCouldBeFinal",
-	"PMD.JUnitAssertionsShouldIncludeMessage" })
+@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
+		"PMD.JUnitAssertionsShouldIncludeMessage" })
 public final class CallTest {
-	
+
 	private transient Call fixture;
 
-	private transient final byte[] encoded = new byte[] { (byte)0x9E, 0x00, 0x00 };
-	
+	private transient final byte[] encoded = new byte[] { (byte) 0x9E, 0x00,
+			0x00 };
+
 	@Test
 	public void checkCopy() {
 		fixture = Call.getInstance();
 		assertSame(fixture, fixture.copy());
 		assertEquals(fixture.toString(), fixture.toString());
 	}
-	
+
 	@Test
 	public void encode() throws CoderException {
 
@@ -64,9 +63,9 @@ public final class CallTest {
 		Context context = new Context();
 
 		fixture = Call.getInstance();
-		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));		
+		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
 		fixture.encode(encoder, context);
-		
+
 		assertTrue(encoder.eof());
 		assertArrayEquals(encoded, encoder.getData());
 	}

@@ -44,36 +44,41 @@ import com.flagstone.transform.font.Kerning;
  * Gradient defines a control point that is used to specify how a gradient
  * colour is displayed.
  * 
- * <p>Two or more control points are used to define how the colour changes across
- * the gradient square. Each control point specifies the ratio indicating the 
- * location of the control point across the gradient square and the colour to
- * be displayed at that point.</p>
+ * <p>
+ * Two or more control points are used to define how the colour changes across
+ * the gradient square. Each control point specifies the ratio indicating the
+ * location of the control point across the gradient square and the colour to be
+ * displayed at that point.
+ * </p>
  * </p>
  * 
- * <p>The ratio is a number between 0 and 255 - that specifies the relative location 
- * in the square. For Linear Gradient Fills a ratio of zero is mapped to the left 
- * side of the gradient square and 255 is mapped to the right side of the square. 
- * For Radial Gradient Fills a ratio of zero is mapped to the centre of the 
- * gradient square and 255 is mapped to the edge of the largest circle that fits 
- * inside the gradient square. A ratio is used rather than specifying coordinates 
- * within the gradient square as the coordinate space is transformed to fit the 
- * shape that the gradient is being displayed in.</p>
+ * <p>
+ * The ratio is a number between 0 and 255 - that specifies the relative
+ * location in the square. For Linear Gradient Fills a ratio of zero is mapped
+ * to the left side of the gradient square and 255 is mapped to the right side
+ * of the square. For Radial Gradient Fills a ratio of zero is mapped to the
+ * centre of the gradient square and 255 is mapped to the edge of the largest
+ * circle that fits inside the gradient square. A ratio is used rather than
+ * specifying coordinates within the gradient square as the coordinate space is
+ * transformed to fit the shape that the gradient is being displayed in.
+ * </p>
  * 
- * <p>Note that the object used to create the shape definition determines whether
+ * <p>
+ * Note that the object used to create the shape definition determines whether
  * the alpha channel is encoded in the gradient colours. Simply specifying the
- * level of transparency in the Color object is not sufficient.</p>
+ * level of transparency in the Color object is not sufficient.
+ * </p>
  * 
  * @see GradientFill
  */
-public final class Gradient implements SWFEncodeable
-{
+public final class Gradient implements SWFEncodeable {
 	private static final String FORMAT = "Gradient: { ratio=%d; color=%s }";
-	
+
 	private final transient int ratio;
 	private final transient Color color;
 
-	public Gradient(final SWFDecoder coder, final Context context) throws CoderException
-	{
+	public Gradient(final SWFDecoder coder, final Context context)
+			throws CoderException {
 		ratio = coder.readByte();
 		color = new Color(coder, context);
 	}
@@ -82,29 +87,28 @@ public final class Gradient implements SWFEncodeable
 	 * Creates a Gradient object with the specified ratio and color.
 	 * 
 	 * @param aRatio
-	 *            the ratio along the gradient square. Must be in the range 0..255.
+	 *            the ratio along the gradient square. Must be in the range
+	 *            0..255.
 	 * @param aColor
 	 *            the color at the control point. Must not be null.
 	 */
-	public Gradient(final int aRatio, final Color aColor)
-	{
+	public Gradient(final int aRatio, final Color aColor) {
 		if (aRatio < 0 || aRatio > 255) {
-			throw new IllegalArgumentException(Strings.RATIO_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.RATIO_RANGE);
 		}
 		ratio = aRatio;
-		
+
 		if (aColor == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
 		}
 		color = aColor;
 	}
-	
+
 	/**
 	 * Returns the ratio that defines the relative point across the gradient
 	 * square.
 	 */
-	public int getRatio()
-	{
+	public int getRatio() {
 		return ratio;
 	}
 
@@ -112,47 +116,44 @@ public final class Gradient implements SWFEncodeable
 	 * Returns the colour that is displayed at the control point across the
 	 * gradient square defined by the ratio.
 	 */
-	public Color getColor()
-	{
+	public Color getColor() {
 		return color;
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return String.format(FORMAT, ratio, color);
 	}
-	
+
 	@Override
 	public boolean equals(final Object object) {
 		boolean result;
 		Gradient gradient;
-		
+
 		if (object == null) {
 			result = false;
 		} else if (object == this) {
 			result = true;
 		} else if (object instanceof Kerning) {
-			gradient = (Gradient)object;
+			gradient = (Gradient) object;
 			result = ratio == gradient.ratio && color.equals(gradient.color);
 		} else {
 			result = false;
 		}
 		return result;
 	}
-	
+
 	@Override
 	public int hashCode() {
-		return (ratio*31) + color.hashCode();
+		return (ratio * 31) + color.hashCode();
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context)
-	{
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		return 1 + color.prepareToEncode(coder, context);
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException
-	{
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		coder.writeByte(ratio);
 		color.encode(coder, context);
 	}

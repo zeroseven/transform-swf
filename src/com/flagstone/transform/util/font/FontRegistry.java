@@ -35,8 +35,7 @@ import java.util.Map;
 
 /**
  */
-public final class FontRegistry
-{
+public final class FontRegistry {
 	private static Map<FontEncoding, FontProvider> providers = new LinkedHashMap<FontEncoding, FontProvider>();
 
 	static {
@@ -44,24 +43,32 @@ public final class FontRegistry
 			registerProvider(encoding, encoding.getProvider());
 		}
 	}
+
 	/**
-	 * Register an FontDecoder to handle images in the specified format. The 
-	 * image formats currently supported are defined in the {@link FontInfo} class.
+	 * Register an FontDecoder to handle images in the specified format. The
+	 * image formats currently supported are defined in the {@link FontInfo}
+	 * class.
 	 * 
-	 * @param encoding the string identifying the image format. 
-	 * @param decoder any class that implements the FontDecoder interface.
+	 * @param encoding
+	 *            the string identifying the image format.
+	 * @param decoder
+	 *            any class that implements the FontDecoder interface.
 	 */
-	public static void registerProvider(FontEncoding encoding, FontProvider decoder)
-	{
+	public static void registerProvider(final FontEncoding encoding,
+			final FontProvider decoder) {
 		providers.put(encoding, decoder);
 	}
-	
-	public static FontDecoder getFontProvider(FontEncoding encoding) {
-		
-    	if (providers.containsKey(encoding)) {
-    		return providers.get(encoding).newDecoder();
-    	} else {
-    		throw new IllegalArgumentException();
-    	}
+
+	public static FontDecoder getFontProvider(final FontEncoding encoding) {
+
+		if (providers.containsKey(encoding)) {
+			return providers.get(encoding).newDecoder();
+		} else {
+			throw new IllegalArgumentException();
+		}
+	}
+
+	private FontRegistry() {
+		// Registry is shared.
 	}
 }

@@ -36,57 +36,54 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 
-import com.flagstone.transform.DoABC;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-@SuppressWarnings( { 
-	"PMD.LocalVariableCouldBeFinal",
-	"PMD.JUnitAssertionsShouldIncludeMessage" 
-})
+@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
+		"PMD.JUnitAssertionsShouldIncludeMessage" })
 public final class DoABCTest {
-	
+
 	private transient final String name = "script";
 	private transient final boolean defer = true;
-	private transient final byte[] data = new byte[] {1,2,3,4};
-	
+	private transient final byte[] data = new byte[] { 1, 2, 3, 4 };
+
 	private transient DoABC fixture;
-	
-	private transient final byte[] encoded = new byte[] { (byte)0x8F, 0x14, 
-			0x00, 0x00, 0x00, 0x01, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x00, 
-			0x01, 0x02, 0x03, 0x04};
-	
-	private transient final byte[] extended = new byte[] { (byte)0xBF, 0x14, 
-			0x0F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x73, 0x63, 0x72, 
-			0x69, 0x70, 0x74, 0x00, 0x01, 0x02, 0x03, 0x04};
-	
-	@Test(expected=IllegalArgumentException.class)
+
+	private transient final byte[] encoded = new byte[] { (byte) 0x8F, 0x14,
+			0x00, 0x00, 0x00, 0x01, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x00,
+			0x01, 0x02, 0x03, 0x04 };
+
+	private transient final byte[] extended = new byte[] { (byte) 0xBF, 0x14,
+			0x0F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x73, 0x63, 0x72,
+			0x69, 0x70, 0x74, 0x00, 0x01, 0x02, 0x03, 0x04 };
+
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForNameWithNull() {
 		fixture = new DoABC(null, defer, data);
 	}
-	
-	@Test(expected=IllegalArgumentException.class)
+
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForNameWithEmpty() {
 		fixture = new DoABC("", defer, data);
 	}
-	
-	@Test(expected=IllegalArgumentException.class)
+
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForDataWithNull() {
 		fixture = new DoABC(name, defer, null);
 	}
-	
-	@Test(expected=IllegalArgumentException.class)
+
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForDataWithEmpty() {
 		fixture = new DoABC(name, defer, new byte[0]);
 	}
-	
+
 	@Test
 	public void checkCopy() {
 		fixture = new DoABC(name, false, data);
 		DoABC copy = fixture.copy();
-		
+
 		assertEquals(name, copy.getName());
 		assertEquals(false, copy.isDeferred());
 		assertNotSame(data, copy.getData());
@@ -95,63 +92,61 @@ public final class DoABCTest {
 	}
 
 	@Test
-	public void encode() throws CoderException {		
-		SWFEncoder encoder = new SWFEncoder(encoded.length);	
+	public void encode() throws CoderException {
+		SWFEncoder encoder = new SWFEncoder(encoded.length);
 		Context context = new Context();
 
 		fixture = new DoABC(name, defer, data);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
 		fixture.encode(encoder, context);
-		
+
 		assertTrue(encoder.eof());
 		assertArrayEquals(encoded, encoder.getData());
 	}
-	
+
 	@Test
-	public void encodeDefault() throws CoderException {		
-		SWFEncoder encoder = new SWFEncoder(encoded.length);	
+	public void encodeDefault() throws CoderException {
+		SWFEncoder encoder = new SWFEncoder(encoded.length);
 		Context context = new Context();
 
 		fixture = new DoABC(name, defer, data);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
 		fixture.encode(encoder, context);
-		
+
 		assertTrue(encoder.eof());
 		assertArrayEquals(encoded, encoder.getData());
 	}
-	
+
 	@Test
-	public void encodeExtended() throws CoderException {		
-		SWFEncoder encoder = new SWFEncoder(117);	
+	public void encodeExtended() throws CoderException {
+		SWFEncoder encoder = new SWFEncoder(117);
 		Context context = new Context();
 
 		fixture = new DoABC(name, defer, new byte[100]);
 		assertEquals(117, fixture.prepareToEncode(encoder, context));
 		fixture.encode(encoder, context);
-		
+
 		assertTrue(encoder.eof());
 	}
-	
+
 	@Test
 	public void checkDecode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
-		Context context = new Context();
 
-		fixture = new DoABC(decoder, context);
-		
+		fixture = new DoABC(decoder);
+
 		assertTrue(decoder.eof());
 		assertEquals(name, fixture.getName());
 		assertEquals(defer, fixture.isDeferred());
 		assertArrayEquals(data, fixture.getData());
 	}
-	
+
 	@Test
 	public void checkDecodeExtended() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(extended);
-		Context context = new Context();
 
-		fixture = new DoABC(decoder, context);
-		
+		fixture = new DoABC(decoder);
+
 		assertTrue(decoder.eof());
 		assertEquals(name, fixture.getName());
 		assertEquals(defer, fixture.isDeferred());

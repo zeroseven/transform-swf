@@ -70,7 +70,8 @@ public final class MorphLineStyle2 implements SWFEncodeable,
 	private transient boolean hasFillStyle;
 	private transient boolean hasMiter;
 
-	public MorphLineStyle2(final SWFDecoder coder, final Context context) throws CoderException {
+	public MorphLineStyle2(final SWFDecoder coder, final Context context)
+			throws CoderException {
 		startWidth = coder.readWord(2, false);
 		endWidth = coder.readWord(2, false);
 		unpack(coder.readB16());
@@ -80,17 +81,17 @@ public final class MorphLineStyle2 implements SWFEncodeable,
 		}
 
 		if (hasFillStyle) {
-			SWFFactory<FillStyle>decoder = context.getRegistry().getMorphFillStyleDecoder();
+			final SWFFactory<FillStyle> decoder = context.getRegistry()
+					.getMorphFillStyleDecoder();
 			fillStyle = decoder.getObject(coder, context);
 		} else {
-			startColor= new Color(coder, context);
-			endColor= new Color(coder, context);
+			startColor = new Color(coder, context);
+			endColor = new Color(coder, context);
 		}
 	}
 
-
-	public MorphLineStyle2(int startWidth, int endWidth, Color startColor,
-			Color endColor) {
+	public MorphLineStyle2(final int startWidth, final int endWidth,
+			final Color startColor, final Color endColor) {
 		super();
 
 		setStartWidth(startWidth);
@@ -103,7 +104,7 @@ public final class MorphLineStyle2 implements SWFEncodeable,
 		lineClosed = true;
 	}
 
-	public MorphLineStyle2(MorphLineStyle2 object) {
+	public MorphLineStyle2(final MorphLineStyle2 object) {
 		startWidth = object.startWidth;
 		endWidth = object.endWidth;
 
@@ -159,10 +160,9 @@ public final class MorphLineStyle2 implements SWFEncodeable,
 	 * @param aNumber
 	 *            the starting width of the line. Must be in the range 0..65535.
 	 */
-	public void setStartWidth(int aNumber) {
+	public void setStartWidth(final int aNumber) {
 		if (aNumber < 0 || aNumber > 65535) {
-			throw new IllegalArgumentException(
-					Strings.UNSIGNED_VALUE_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
 		}
 		startWidth = aNumber;
 	}
@@ -173,10 +173,9 @@ public final class MorphLineStyle2 implements SWFEncodeable,
 	 * @param aNumber
 	 *            the ending width of the line. Must be in the range 0..65535.
 	 */
-	public void setEndWidth(int aNumber) {
+	public void setEndWidth(final int aNumber) {
 		if (aNumber < 0 || aNumber > 65535) {
-			throw new IllegalArgumentException(
-					Strings.UNSIGNED_VALUE_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
 		}
 		endWidth = aNumber;
 	}
@@ -187,9 +186,9 @@ public final class MorphLineStyle2 implements SWFEncodeable,
 	 * @param aColor
 	 *            the starting colour of the line. Must not be null.
 	 */
-	public void setStartColor(Color aColor) {
+	public void setStartColor(final Color aColor) {
 		if (aColor == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
 		}
 		startColor = aColor;
 	}
@@ -200,9 +199,9 @@ public final class MorphLineStyle2 implements SWFEncodeable,
 	 * @param aColor
 	 *            the ending colour of the line. Must not be null.
 	 */
-	public void setEndColor(Color aColor) {
+	public void setEndColor(final Color aColor) {
 		if (aColor == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
 		}
 		endColor = aColor;
 	}
@@ -323,8 +322,7 @@ public final class MorphLineStyle2 implements SWFEncodeable,
 
 	public void setMiterLimit(final int limit) {
 		if (limit < 0 || limit > 65535) {
-			throw new IllegalArgumentException(
-					Strings.UNSIGNED_VALUE_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
 		}
 		miterLimit = limit;
 	}
@@ -374,7 +372,8 @@ public final class MorphLineStyle2 implements SWFEncodeable,
 		return length;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException {
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		coder.writeWord(startWidth, 2);
 		coder.writeWord(endWidth, 2);
 		coder.writeB16(pack());

@@ -30,8 +30,6 @@
 
 package com.flagstone.transform.coder;
 
-
-
 /**
  * The Action interface is used to identify all the different types of actions
  * that can be added to a movie.

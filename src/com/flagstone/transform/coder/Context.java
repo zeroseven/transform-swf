@@ -23,25 +23,25 @@ public final class Context {
 	public final static int SHAPE_SIZE = 15;
 
 	private DecoderRegistry registry;
-	private Map<Integer,Integer>variables;
-	
+	private Map<Integer, Integer> variables;
+
 	public Context() {
-		variables = new LinkedHashMap<Integer,Integer>();
+		variables = new LinkedHashMap<Integer, Integer>();
 	}
-	
+
 	public DecoderRegistry getRegistry() {
 		return registry;
 	}
-	
-	public void setRegistry(DecoderRegistry registry) {
+
+	public void setRegistry(final DecoderRegistry registry) {
 		this.registry = registry;
 	}
-	
-	public Map<Integer,Integer> getVariables() {
+
+	public Map<Integer, Integer> getVariables() {
 		return variables;
 	}
-	
-	public void setVariables(Map<Integer,Integer> map) {
+
+	public void setVariables(final Map<Integer, Integer> map) {
 		variables = map;
 	}
 }

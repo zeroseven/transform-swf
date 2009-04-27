@@ -37,29 +37,27 @@ import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFEncoder;
 
 /**
- * <p>Call is used to execute the actions previously assigned to a given frame
- * with an DoAction object. Call is a stack-based action, the value for the 
- * <i>frame name</i> or <i>frame number</i> is retrieved from the top of the 
- * stack when it is executed.</p>
+ * <p>
+ * Call is used to execute the actions previously assigned to a given frame with
+ * an DoAction object. Call is a stack-based action, the value for the <i>frame
+ * name</i> or <i>frame number</i> is retrieved from the top of the stack when
+ * it is executed.
+ * </p>
  */
-public final class Call implements Action
-{
-	private static final Call instance = new Call();
+public final class Call implements Action {
+	private static final Call INSTANCE = new Call();
 
 	/**
 	 * Returns a shared instance of the Call action.
 	 */
-	public static Call getInstance()
-	{
-		return instance;
+	public static Call getInstance() {
+		return INSTANCE;
 	}
 
-	private Call()
-	{
+	private Call() {
 	}
 
-	public Call copy() 
-	{
+	public Call copy() {
 		return this;
 	}
 
@@ -67,7 +65,8 @@ public final class Call implements Action
 		return 3;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException {
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		coder.writeByte(ActionTypes.CALL);
 		coder.writeByte(0);
 		coder.writeByte(0);

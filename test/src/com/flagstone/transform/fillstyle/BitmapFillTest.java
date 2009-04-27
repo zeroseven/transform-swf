@@ -36,44 +36,38 @@ import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.CoordTransform;
-import com.flagstone.transform.fillstyle.BitmapFill;
 
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 
-@SuppressWarnings( {
-	"PMD.LocalVariableCouldBeFinal",
-	"PMD.JUnitAssertionsShouldIncludeMessage" })
+@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
+		"PMD.JUnitAssertionsShouldIncludeMessage" })
 public final class BitmapFillTest {
-	
+
 	private transient final boolean tiled = false;
 	private transient final boolean smoothed = false;
 	private transient final int identifier = 1;
-	private transient final CoordTransform transform = 
-		CoordTransform.translate(1,2);
+	private transient final CoordTransform transform = CoordTransform
+			.translate(1, 2);
 
 	private transient BitmapFill fixture;
 
-	private transient final byte[] empty = new byte[] { 0x43,
-			0x00, 0x00, 0x00 };
-	
-	private transient final byte[] encoded = new byte[] { 0x43,
-			0x01, 0x00, 0x06, 0x50 };
-	
-	@Test(expected=IllegalArgumentException.class)
+	private transient final byte[] encoded = new byte[] { 0x43, 0x01, 0x00,
+			0x06, 0x50 };
+
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForIdentifierWithLowerBound() {
 		fixture = new BitmapFill(tiled, smoothed, 0, transform);
 	}
 
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForIdentifierWithUpperBound() {
 		fixture = new BitmapFill(tiled, smoothed, 65536, transform);
 	}
-	
-	@Test(expected=IllegalArgumentException.class)
+
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForDataWithNull() {
 		fixture = new BitmapFill(tiled, smoothed, 1, null);
 	}
@@ -85,7 +79,7 @@ public final class BitmapFillTest {
 		assertSame(fixture.getTransform(), fixture.copy().getTransform());
 		assertEquals(fixture.toString(), fixture.toString());
 	}
-	
+
 	@Test
 	public void encode() throws CoderException {
 
@@ -93,9 +87,9 @@ public final class BitmapFillTest {
 		Context context = new Context();
 
 		fixture = new BitmapFill(tiled, smoothed, identifier, transform);
-		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));		
+		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
 		fixture.encode(encoder, context);
-		
+
 		assertTrue(encoder.eof());
 		assertArrayEquals(encoded, encoder.getData());
 	}
@@ -104,13 +98,14 @@ public final class BitmapFillTest {
 	public void decode() throws CoderException {
 
 		SWFDecoder decoder = new SWFDecoder(encoded);
-		Context context = new Context();
 
-		fixture = new BitmapFill(decoder, context);
-		
+		fixture = new BitmapFill(decoder);
+
 		assertTrue(decoder.eof());
 		assertEquals(identifier, fixture.getIdentifier());
-		assertEquals(transform.getTranslateX(), fixture.getTransform().getTranslateX());
-		assertEquals(transform.getTranslateY(), fixture.getTransform().getTranslateY());
+		assertEquals(transform.getTranslateX(), fixture.getTransform()
+				.getTranslateX());
+		assertEquals(transform.getTranslateY(), fixture.getTransform()
+				.getTranslateY());
 	}
 }

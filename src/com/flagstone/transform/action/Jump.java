@@ -38,16 +38,18 @@ import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-
 //TODO(doc) Review
 /**
  * The Jump action performs an unconditional branch to control the actions
  * executed by the Flash Player.
  * 
- * <p>When executed the Jump action adds an offset to the instruction pointer and
- * execution of the stream of actions continues from that address.</p>
+ * <p>
+ * When executed the Jump action adds an offset to the instruction pointer and
+ * execution of the stream of actions continues from that address.
+ * </p>
  * 
- * <p>Although the Flash Player contains an instruction pointer it does not support
+ * <p>
+ * Although the Flash Player contains an instruction pointer it does not support
  * an explicit address space. The instruction pointer is used to reference
  * actions within the current stream of actions being executed whether they are
  * associated with a given frame, button or movie clip. The value contained in
@@ -55,62 +57,59 @@ import com.flagstone.transform.coder.SWFEncoder;
  * stream.
  * </p>
  * 
- * <p>The offset is a signed number allowing branches up to -32768 to 32767 bytes.
+ * <p>
+ * The offset is a signed number allowing branches up to -32768 to 32767 bytes.
  * The instruction pointer points to the next instruction so specifying an
- * offset of zero will have no effect on the sequence of instructions executed.</p>
+ * offset of zero will have no effect on the sequence of instructions executed.
+ * </p>
  * 
  * @see If
  */
-public final class Jump implements Action
-{
+public final class Jump implements Action {
 	private static final String FORMAT = "Jump: { offset=%d }";
 
 	private int offset;
 
-	//TODO(doc)
-	public Jump(final SWFDecoder coder, final Context context) throws CoderException
-	{
+	// TODO(doc)
+	public Jump(final SWFDecoder coder) throws CoderException {
 		coder.readByte();
 		coder.readWord(2, false);
 		offset = coder.readWord(2, true);
 	}
 
 	/**
-	 * Creates a Jump action with the specified offset. 
+	 * Creates a Jump action with the specified offset.
 	 * 
 	 * @param anOffset
-	 *            the number of bytes to add to the instruction pointer. The 
+	 *            the number of bytes to add to the instruction pointer. The
 	 *            offset must be in the range -32768..32767.
 	 */
-	public Jump(int anOffset)
-	{
+	public Jump(final int anOffset) {
 		setOffset(anOffset);
 	}
-	
-	//TODO(doc)
-	public Jump(Jump object) {
+
+	// TODO(doc)
+	public Jump(final Jump object) {
 		offset = object.offset;
 	}
 
 	/**
 	 * Returns the offset that will be added to the instruction pointer.
 	 */
-	public int getOffset()
-	{
+	public int getOffset() {
 		return offset;
 	}
 
 	/**
-	 * Sets the offset to add to the instruction pointer. 
+	 * Sets the offset to add to the instruction pointer.
 	 * 
 	 * @param anOffset
-	 *            the number of bytes to add to the instruction pointer. The 
+	 *            the number of bytes to add to the instruction pointer. The
 	 *            offset must be in the range -32768..32767.
 	 */
-	public void setOffset(int anOffset)
-	{
+	public void setOffset(final int anOffset) {
 		if (anOffset < -32768 || anOffset > 32767) {
-			throw new IllegalArgumentException(Strings.SIGNED_VALUE_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.SIGNED_RANGE);
 		}
 		offset = anOffset;
 	}
@@ -120,18 +119,16 @@ public final class Jump implements Action
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return String.format(FORMAT, offset);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context)
-	{
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		return 5;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException
-	{
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		coder.writeByte(ActionTypes.JUMP);
 		coder.writeWord(2, 2);
 		coder.writeWord(offset, 2);

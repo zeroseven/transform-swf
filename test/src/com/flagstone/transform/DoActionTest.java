@@ -40,7 +40,6 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 
-import com.flagstone.transform.DoAction;
 import com.flagstone.transform.action.ActionData;
 import com.flagstone.transform.action.BasicAction;
 import com.flagstone.transform.coder.Action;
@@ -51,23 +50,19 @@ import com.flagstone.transform.coder.DecoderRegistry;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-@SuppressWarnings( { 
-	"PMD.LocalVariableCouldBeFinal",
-	"PMD.JUnitAssertionsShouldIncludeMessage" })
+@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
+		"PMD.JUnitAssertionsShouldIncludeMessage" })
 public final class DoActionTest {
-	
+
 	private transient List<Action> actions;
 
 	private transient DoAction fixture;
-	
-	private transient final byte[] empty = new byte[] { (byte)0x01, 0x03,
-			0x00};
-	
-	private transient final byte[] encoded = new byte[] { (byte)0x02, 0x03,
-			0x04, 0x00};
-	
-	private transient final byte[] extended = new byte[] { (byte)0x3F, 0x03, 
-			0x02, 0x00, 0x00, 0x00, 0x04, 0x00};
+
+	private transient final byte[] encoded = new byte[] { (byte) 0x02, 0x03,
+			0x04, 0x00 };
+
+	private transient final byte[] extended = new byte[] { (byte) 0x3F, 0x03,
+			0x02, 0x00, 0x00, 0x00, 0x04, 0x00 };
 
 	@Before
 	public void setUp() {
@@ -75,14 +70,14 @@ public final class DoActionTest {
 		actions.add(BasicAction.NEXT_FRAME);
 		actions.add(BasicAction.END);
 	}
-	
-	@Test(expected=IllegalArgumentException.class)
+
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForActionsWithNull() {
 		fixture = new DoAction();
 		fixture.setActions(null);
 	}
 
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAddNullAction() {
 		fixture = new DoAction();
 		fixture.add(null);
@@ -95,39 +90,39 @@ public final class DoActionTest {
 		assertEquals(actions, fixture.copy().getActions());
 		assertEquals(fixture.toString(), fixture.copy().toString());
 	}
-	
+
 	@Test
-	public void encode() throws CoderException {		
-		SWFEncoder encoder = new SWFEncoder(encoded.length);	
+	public void encode() throws CoderException {
+		SWFEncoder encoder = new SWFEncoder(encoded.length);
 		Context context = new Context();
 
 		fixture = new DoAction(actions);
 		assertEquals(4, fixture.prepareToEncode(encoder, context));
 		fixture.encode(encoder, context);
-		
+
 		assertTrue(encoder.eof());
 		assertArrayEquals(encoded, encoder.getData());
 	}
-	
+
 	@Test
-	public void encodeExtended() throws CoderException {		
-		SWFEncoder encoder = new SWFEncoder(106);	
+	public void encodeExtended() throws CoderException {
+		SWFEncoder encoder = new SWFEncoder(106);
 		Context context = new Context();
 
 		fixture = new DoAction();
-		
-		for (int i=0; i<99; i++) {
+
+		for (int i = 0; i < 99; i++) {
 			fixture.add(BasicAction.ADD);
 		}
-		
+
 		fixture.add(BasicAction.END);
-		
+
 		assertEquals(106, fixture.prepareToEncode(encoder, context));
 		fixture.encode(encoder, context);
-		
+
 		assertTrue(encoder.eof());
 	}
-	
+
 	@Test
 	public void checkDecode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
@@ -137,11 +132,11 @@ public final class DoActionTest {
 		context.setRegistry(registry);
 
 		fixture = new DoAction(decoder, context);
-		
+
 		assertTrue(decoder.eof());
 		assertEquals(actions, fixture.getActions());
 	}
-	
+
 	@Test
 	public void checkDecodeExtended() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(extended);
@@ -151,18 +146,18 @@ public final class DoActionTest {
 		context.setRegistry(registry);
 
 		fixture = new DoAction(decoder, context);
-		
+
 		assertTrue(decoder.eof());
 		assertEquals(actions, fixture.getActions());
 	}
-	
+
 	@Test
 	public void checkDecodeContainsActionData() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		Context context = new Context();
 
 		fixture = new DoAction(decoder, context);
-		
+
 		assertEquals(1, fixture.getActions().size());
 		assertTrue(fixture.getActions().get(0) instanceof ActionData);
 	}

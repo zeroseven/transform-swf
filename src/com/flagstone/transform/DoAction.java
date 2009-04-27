@@ -61,7 +61,7 @@ import com.flagstone.transform.coder.SWFFactory;
  * </p>
  * 
  * <p>
- * When decoding a movie, if the decode actions flag is set to false then the 
+ * When decoding a movie, if the decode actions flag is set to false then the
  * actions will be decoded as a single ActionData object containing the encoded
  * actions.
  * </p>
@@ -84,8 +84,9 @@ public final class DoAction implements MovieTag {
 	private transient int end;
 	private transient int length;
 
-	//TODO(doc)
-	public DoAction(final SWFDecoder coder, final Context context) throws CoderException {
+	// TODO(doc)
+	public DoAction(final SWFDecoder coder, final Context context)
+			throws CoderException {
 
 		start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
@@ -98,7 +99,8 @@ public final class DoAction implements MovieTag {
 
 		actions = new ArrayList<Action>();
 
-		SWFFactory<Action>decoder = context.getRegistry().getActionDecoder();
+		final SWFFactory<Action> decoder = context.getRegistry()
+				.getActionDecoder();
 
 		if (decoder == null) {
 			actions.add(new ActionData(coder.readBytes(new byte[length])));
@@ -113,7 +115,7 @@ public final class DoAction implements MovieTag {
 					(coder.getPointer() - end) >> 3);
 		}
 	}
-	
+
 	/**
 	 * Creates a new DoAction class with an empty array.
 	 */
@@ -155,7 +157,7 @@ public final class DoAction implements MovieTag {
 	 */
 	public DoAction add(final Action anAction) {
 		if (anAction == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
 		}
 		actions.add(anAction);
 		return this;
@@ -181,7 +183,7 @@ public final class DoAction implements MovieTag {
 	 */
 	public void setActions(final List<Action> anArray) {
 		if (anArray == null) {
-			throw new IllegalArgumentException(Strings.ARRAY_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
 		}
 		actions = anArray;
 	}
@@ -201,11 +203,12 @@ public final class DoAction implements MovieTag {
 		for (Action action : actions) {
 			length += action.prepareToEncode(coder, context);
 		}
-		
+
 		return (length > 62 ? 6 : 2) + length;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException {
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 
 		start = coder.getPointer();
 
@@ -220,7 +223,7 @@ public final class DoAction implements MovieTag {
 		for (Action action : actions) {
 			action.encode(coder, context);
 		}
-		
+
 		if (coder.getPointer() != end) {
 			throw new CoderException(getClass().getName(), start >> 3, length,
 					(coder.getPointer() - end) >> 3);

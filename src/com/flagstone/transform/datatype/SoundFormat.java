@@ -73,25 +73,24 @@ public enum SoundFormat {
 	 */
 	NELLYMOSER(6);
 
-	private static final Map<Integer,SoundFormat>table 
-		= new LinkedHashMap<Integer,SoundFormat>();
+	private static final Map<Integer, SoundFormat> TABLE = new LinkedHashMap<Integer, SoundFormat>();
 
 	static {
 		for (SoundFormat format : values()) {
-			table.put(format.value, format);
+			TABLE.put(format.value, format);
 		}
 	}
-	
-	public static SoundFormat fromInt(int type) {
-		return table.get(type);
+
+	public static SoundFormat fromInt(final int type) {
+		return TABLE.get(type);
 	}
-	
+
 	private final int value;
-	
-	private SoundFormat(int value) {
+
+	private SoundFormat(final int value) {
 		this.value = value;
 	}
-	
+
 	public int getValue() {
 		return value;
 	}

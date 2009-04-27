@@ -37,7 +37,6 @@ import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.datatype.CoordTransform;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
@@ -46,13 +45,12 @@ import static org.junit.Assert.assertFalse;
 
 @SuppressWarnings( { "PMD.TooManyMethods",
 		"PMD.JUnitAssertionsShouldIncludeMessage",
-		"PMD.LocalVariableCouldBeFinal", 
-		"PMD.JUnitTestsShouldIncludeAssert" })
+		"PMD.LocalVariableCouldBeFinal", "PMD.JUnitTestsShouldIncludeAssert" })
 public final class CoordTransformTest {
 	private transient CoordTransform fixture;
 
 	private transient SWFEncoder encoder;
-	private transient SWFDecoder decoder; 
+	private transient SWFDecoder decoder;
 	private transient Context context;
 	private transient byte[] data;
 
@@ -121,7 +119,7 @@ public final class CoordTransformTest {
 				{ 4.0f, 5.0f, 6.0f }, { 0.0f, 0.0f, 1.0f } };
 
 		fixture = new CoordTransform(expected);
-		
+
 		compare(expected, new CoordTransform(fixture).getMatrix());
 	}
 

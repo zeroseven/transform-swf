@@ -43,18 +43,17 @@ import com.flagstone.transform.coder.SWFEncoder;
  * DefineData is used to embed binary data in a Flash file.
  * 
  * <p>
- * DefineData can also be used to initialize Actionscript3 classes when then 
- * are loaded into the Flash Player. The table in a SymbolClass object maps
- * class names to object definitions in the movie. If the class is a sub-class
- * of ByteArray then the data in the DefineData object will be used to 
- * initialize the class referenced by the unique identifier.
+ * DefineData can also be used to initialize Actionscript3 classes when then are
+ * loaded into the Flash Player. The table in a SymbolClass object maps class
+ * names to object definitions in the movie. If the class is a sub-class of
+ * ByteArray then the data in the DefineData object will be used to initialize
+ * the class referenced by the unique identifier.
  * 
- * @see SymbolClass
- * </p>
+ * @see SymbolClass </p>
  */
 public final class DefineData implements DefineTag {
 
-	private String FORMAT = "DefineData: { identifier=%d; data=byte[%d] {...} }";
+	private static final String FORMAT = "DefineData: { identifier=%d; data=byte[%d] {...} }";
 
 	private int identifier;
 	private byte[] data;
@@ -63,8 +62,8 @@ public final class DefineData implements DefineTag {
 	private transient int end;
 	private transient int length;
 
-	//TODO(doc)
-	public DefineData(final SWFDecoder coder, final Context context) throws CoderException {
+	// TODO(doc)
+	public DefineData(final SWFDecoder coder) throws CoderException {
 
 		start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
@@ -92,7 +91,7 @@ public final class DefineData implements DefineTag {
 	 * @param data
 	 *            the data to initialize the object.
 	 */
-	public DefineData(int uid, byte[] data) {
+	public DefineData(final int uid, final byte[] data) {
 		setIdentifier(uid);
 		setData(data);
 	}
@@ -104,7 +103,7 @@ public final class DefineData implements DefineTag {
 	 * @param object
 	 *            a DefineData object used to initialize this one.
 	 */
-	public DefineData(DefineData object) {
+	public DefineData(final DefineData object) {
 		identifier = object.identifier;
 		data = Arrays.copyOf(object.data, object.data.length);
 	}
@@ -115,7 +114,7 @@ public final class DefineData implements DefineTag {
 
 	public void setIdentifier(final int uid) {
 		if (uid < 1 || uid > 65535) {
-			throw new IllegalArgumentException(Strings.IDENTIFIER_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
 		}
 		identifier = uid;
 	}
@@ -134,9 +133,9 @@ public final class DefineData implements DefineTag {
 	 *            an array of bytes that contain the encoded binary data. Must
 	 *            not be null.
 	 */
-	public void setData(byte[] bytes) {
+	public void setData(final byte[] bytes) {
 		if (bytes == null) {
-			throw new IllegalArgumentException(Strings.DATA_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.DATA_IS_NULL);
 		}
 		data = bytes;
 	}
@@ -155,7 +154,8 @@ public final class DefineData implements DefineTag {
 		return (length > 62 ? 6 : 2) + length;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException {
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 
 		start = coder.getPointer();
 

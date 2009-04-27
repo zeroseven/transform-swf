@@ -34,22 +34,26 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public final class ColorTable {
-	
-	private static Map<Integer, Color> colors = new LinkedHashMap<Integer, Color>();
 
-	public static void clear() {
+	private final transient Map<Integer, Color> colors;
+
+	public ColorTable() {
+		colors = new LinkedHashMap<Integer, Color>();
+	}
+
+	public void clear() {
 		colors.clear();
 	}
 
-	public static void add(int rgb, Color color) {
+	public void add(final int rgb, final Color color) {
 		colors.put(rgb, color);
 	}
 
-	public static void remove(int rgb) {
+	public void remove(final int rgb) {
 		colors.remove(rgb);
 	}
 
-	public static Color get(int rgb) {
+	public Color get(final int rgb) {
 
 		if (colors.containsKey(rgb)) {
 			return colors.get(rgb);
@@ -58,7 +62,7 @@ public final class ColorTable {
 		}
 	}
 
-	public static Color get(int rgb, int alpha) {
+	public Color get(final int rgb, final int alpha) {
 
 		if (colors.containsKey(rgb)) {
 			return new Color(rgb, alpha);

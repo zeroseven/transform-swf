@@ -38,7 +38,7 @@ import java.io.UnsupportedEncodingException;
  */
 public class Encoder extends Coder {
 	/**
-	 * Calculates the minimum number of bits required to encoded an unsigned 
+	 * Calculates the minimum number of bits required to encoded an unsigned
 	 * integer in a bit field.
 	 * 
 	 * @param value
@@ -61,8 +61,8 @@ public class Encoder extends Coder {
 	}
 
 	/**
-	 * Calculates the minimum number of bits required to encoded a signed integer 
-	 * in a bit field.
+	 * Calculates the minimum number of bits required to encoded a signed
+	 * integer in a bit field.
 	 * 
 	 * @param value
 	 *            the signed value to be encoded.
@@ -83,7 +83,7 @@ public class Encoder extends Coder {
 	}
 
 	/**
-	 * Returns the minimum number of bits required to encode all the signed 
+	 * Returns the minimum number of bits required to encode all the signed
 	 * values in an array as a set of bit fields with the same size.
 	 * 
 	 * @param values
@@ -95,7 +95,7 @@ public class Encoder extends Coder {
 	public static int maxSize(final int... values) {
 
 		int max = 0;
-		int size;		
+		int size;
 
 		for (int i = 0; i < values.length; i++) {
 			size = size(values[i]);
@@ -124,50 +124,49 @@ public class Encoder extends Coder {
 	 * @param numberOfBits
 	 *            the (least significant) number of bits that will be written.
 	 */
-	@SuppressWarnings({
-		"PMD.AvoidFinalLocalVariable", 
-		"PMD.DataflowAnomalyAnalysis"
-	})
+	@SuppressWarnings( { "PMD.AvoidFinalLocalVariable",
+			"PMD.DataflowAnomalyAnalysis" })
 	public void writeBits(final int value, final int numberOfBits) {
-		
-		final int val = ((value << (32-numberOfBits)) >>> offset) | (data[index] << 24);		
-		int base = 32 - (((offset+numberOfBits+7)>>>3) << 3);
-		base = base < 0 ? 0 : base;
-		
-		int mark = getPointer();
 
-		for (int i = 24; i >= base; i-=8) {
+		final int val = ((value << (32 - numberOfBits)) >>> offset)
+				| (data[index] << 24);
+		int base = 32 - (((offset + numberOfBits + 7) >>> 3) << 3);
+		base = base < 0 ? 0 : base;
+
+		final int mark = getPointer();
+
+		for (int i = 24; i >= base; i -= 8) {
 			data[index++] = (byte) (val >>> i);
 		}
-		
-		if (offset+numberOfBits >= 32) {
-			data[index] = (byte)(value << (8-offset));
+
+		if (offset + numberOfBits >= 32) {
+			data[index] = (byte) (value << (8 - offset));
 		}
 
-		setPointer(mark+numberOfBits);
+		setPointer(mark + numberOfBits);
 	}
-	
+
 	/**
 	 * Write a 16-bit field.
 	 * 
-	 * The internal pointer must aligned on a byte boundary. The value is 
+	 * The internal pointer must aligned on a byte boundary. The value is
 	 * written as if it was a 16-bit integer with big-ending byte ordering.
 	 * 
 	 * @param value
-	 *            the value to be written - only the least significant 16-bits 
+	 *            the value to be written - only the least significant 16-bits
 	 *            will be written.
 	 */
-	public void writeB16(int value) {
-		data[index++] = (byte)(value >>> 8);
-		data[index++] = (byte)value;
+	public void writeB16(final int value) {
+		data[index++] = (byte) (value >>> 8);
+		data[index++] = (byte) value;
 	}
 
 	/**
 	 * Write a byte.
 	 * 
 	 * @param value
-	 *            the value to be written - only the least significant byte 
-	 *            will be written.
+	 *            the value to be written - only the least significant byte will
+	 *            be written.
 	 */
 	public void writeByte(final int value) {
 		data[index++] = (byte) value;
@@ -178,7 +177,7 @@ public class Encoder extends Coder {
 	 * 
 	 * @param bytes
 	 *            the array to be written.
-	 *            
+	 * 
 	 * @return the number of bytes written.
 	 */
 	public int writeBytes(final byte[] bytes) {
@@ -196,8 +195,8 @@ public class Encoder extends Coder {
 	 * @param charset
 	 *            the encoding scheme to be used for the string.
 	 * 
-	 * @return the number of bytes required to encode the string plus 1 for a 
-	 * terminating null character.
+	 * @return the number of bytes required to encode the string plus 1 for a
+	 *         terminating null character.
 	 */
 
 	public int strlen(final String string) {
@@ -207,7 +206,7 @@ public class Encoder extends Coder {
 			throw new AssertionError(e);
 		}
 	}
-	
+
 	/**
 	 * Write a string using the default character set defined in the encoder.
 	 * 
@@ -230,7 +229,7 @@ public class Encoder extends Coder {
 	 * 
 	 * @param str
 	 *            the string.
-	 *            
+	 * 
 	 * @param charset
 	 *            the name of the character set.
 	 * 
@@ -238,7 +237,7 @@ public class Encoder extends Coder {
 	 */
 	public void writeString(final String str, final String charset) {
 		try {
-			writeBytes(str.getBytes(charset)); 
+			writeBytes(str.getBytes(charset));
 			data[index++] = 0;
 		} catch (java.io.UnsupportedEncodingException e) {
 			throw new AssertionError(e);

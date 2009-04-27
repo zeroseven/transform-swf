@@ -32,15 +32,11 @@ package com.flagstone.transform.coder;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.flagstone.transform.coder.Encoder;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 
-@SuppressWarnings( { 
-	"PMD.TooManyMethods",
-	"PMD.JUnitAssertionsShouldIncludeMessage" 
-})
+@SuppressWarnings( { "PMD.TooManyMethods",
+		"PMD.JUnitAssertionsShouldIncludeMessage" })
 public final class EncoderTest {
 	private transient Encoder fixture;
 
@@ -83,12 +79,12 @@ public final class EncoderTest {
 	public void sizeForUnsignedInt() {
 		assertEquals(31, Encoder.unsignedSize(2147483647));
 	}
-	
+
 	@Test
 	public void sizeForString() {
 		assertEquals(4, fixture.strlen("abc"));
 	}
-	
+
 	@Test
 	public void sizeForStringWithUnicodeChar() {
 		assertEquals(6, fixture.strlen("ab€"));
@@ -168,7 +164,7 @@ public final class EncoderTest {
 	public void writeB16() {
 		fixture.setData(new byte[2]);
 		fixture.writeB16(0x0102);
-		
+
 		assertEquals(16, fixture.getPointer());
 		assertEquals(1, fixture.data[0]);
 		assertEquals(2, fixture.data[1]);

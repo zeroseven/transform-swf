@@ -87,13 +87,14 @@ public final class MorphBitmapFill implements FillStyle {
 
 	private static final String FORMAT = "MorphBitmapFill: { identifier=%d; start=%s; end=%s }";
 
-	private int type;
+	private transient int type;
 	private int identifier;
 	private CoordTransform startTransform;
 	private CoordTransform endTransform;
 
-	//TODO(doc)
-	public MorphBitmapFill(final SWFDecoder coder, final Context context) throws CoderException {
+	// TODO(doc)
+	public MorphBitmapFill(final SWFDecoder coder)
+			throws CoderException {
 		type = coder.readByte();
 		identifier = coder.readWord(2, false);
 		startTransform = new CoordTransform(coder);
@@ -119,8 +120,8 @@ public final class MorphBitmapFill implements FillStyle {
 	 *            the coordinate transform defining the appearance of the image
 	 *            at the end of the morphing process.
 	 */
-	public MorphBitmapFill(final boolean tiled, final boolean smoothed, final int uid,
-			final CoordTransform start, final CoordTransform end) {
+	public MorphBitmapFill(final boolean tiled, final boolean smoothed,
+			final int uid, final CoordTransform start, final CoordTransform end) {
 		type = 0x40;
 		setTiled(tiled);
 		setSmoothed(smoothed);
@@ -128,20 +129,20 @@ public final class MorphBitmapFill implements FillStyle {
 		setStartTransform(start);
 		setEndTransform(end);
 	}
-	
-	//TODO(doc)
-	public MorphBitmapFill(MorphBitmapFill object) {
+
+	// TODO(doc)
+	public MorphBitmapFill(final MorphBitmapFill object) {
 		type = object.type;
 		identifier = object.identifier;
 		startTransform = object.startTransform;
 		endTransform = object.endTransform;
 	}
-	
+
 	public boolean isTiled() {
 		return (type & 0x01) != 0;
 	}
-	
-	public void setTiled(boolean tiled) {
+
+	public void setTiled(final boolean tiled) {
 		if (tiled) {
 			type &= 0x00FE;
 		} else {
@@ -152,8 +153,8 @@ public final class MorphBitmapFill implements FillStyle {
 	public boolean isSmoothed() {
 		return (type & 0x02) != 0;
 	}
-	
-	public void setSmoothed(boolean smoothed) {
+
+	public void setSmoothed(final boolean smoothed) {
 		if (smoothed) {
 			type &= 0x00FD;
 		} else {
@@ -194,7 +195,7 @@ public final class MorphBitmapFill implements FillStyle {
 	 */
 	public void setIdentifier(final int uid) {
 		if ((uid < 1) || (uid > 65535)) {
-			throw new IllegalArgumentException(Strings.IDENTIFIER_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
 		}
 		identifier = uid;
 	}
@@ -208,7 +209,7 @@ public final class MorphBitmapFill implements FillStyle {
 	 */
 	public void setStartTransform(final CoordTransform aTransform) {
 		if (aTransform == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
 		}
 		startTransform = aTransform;
 	}
@@ -222,7 +223,7 @@ public final class MorphBitmapFill implements FillStyle {
 	 */
 	public void setEndTransform(final CoordTransform aTransform) {
 		if (aTransform == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
 		}
 		endTransform = aTransform;
 	}
@@ -237,10 +238,12 @@ public final class MorphBitmapFill implements FillStyle {
 	}
 
 	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		return 3 + startTransform.prepareToEncode(coder, context) + endTransform.prepareToEncode(coder, context);
+		return 3 + startTransform.prepareToEncode(coder, context)
+				+ endTransform.prepareToEncode(coder, context);
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException {
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		coder.writeByte(type);
 		coder.writeWord(identifier, 2);
 		startTransform.encode(coder, context);

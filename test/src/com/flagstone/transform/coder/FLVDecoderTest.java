@@ -32,8 +32,6 @@ package com.flagstone.transform.coder;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.flagstone.transform.coder.FLVDecoder;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;

@@ -34,24 +34,22 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import com.flagstone.transform.action.Property;
-
 import static org.junit.Assert.assertEquals;
 
-@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal"})
+@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal" })
 public final class PropertyTest {
-	
+
 	private static final String VALUE_MISMATCH = "Values do not match for %s";
 	private static final String NO_SUCH_PROPERTY = "Cannot look up property for %d";
-	
+
 	private transient int flashVersion;
-	
+
 	@Test
 	public void checkPropertyReturnsIntegerValue() {
-		
-		Map<Property, Integer>table = new LinkedHashMap<Property,Integer>();
+
+		Map<Property, Integer> table = new LinkedHashMap<Property, Integer>();
 		flashVersion = 5;
-		
+
 		table.put(Property.X, 0);
 		table.put(Property.Y, 1);
 		table.put(Property.XSCALE, 2);
@@ -74,18 +72,18 @@ public final class PropertyTest {
 		table.put(Property.QUALITY, 19);
 		table.put(Property.XMOUSE, 20);
 		table.put(Property.YMOUSE, 21);
-	
+
 		for (Property property : Property.values()) {
-			assertEquals(String.format(VALUE_MISMATCH, property),
-					table.get(property), property.getValue(flashVersion));
+			assertEquals(String.format(VALUE_MISMATCH, property), table
+					.get(property), property.getValue(flashVersion));
 		}
 	}
 
 	@Test
 	public void checkIntegerValueReturnsProperty() {
-		
-		Map<Integer, Property>table = new LinkedHashMap<Integer,Property>();
-		
+
+		Map<Integer, Property> table = new LinkedHashMap<Integer, Property>();
+
 		table.put(0, Property.X);
 		table.put(1, Property.Y);
 		table.put(2, Property.XSCALE);
@@ -108,19 +106,19 @@ public final class PropertyTest {
 		table.put(19, Property.QUALITY);
 		table.put(20, Property.XMOUSE);
 		table.put(21, Property.YMOUSE);
-	
+
 		for (Integer value : table.keySet()) {
-			assertEquals(String.format(NO_SUCH_PROPERTY, value),
-					Property.fromInt(value), table.get(value));
+			assertEquals(String.format(NO_SUCH_PROPERTY, value), Property
+					.fromInt(value), table.get(value));
 		}
 	}
 
 	@Test
 	public void checkPropertyReturnsFloatValue() {
-		
-		Map<Property, Integer>table = new LinkedHashMap<Property,Integer>();
+
+		Map<Property, Integer> table = new LinkedHashMap<Property, Integer>();
 		flashVersion = 3;
-		
+
 		table.put(Property.X, 0x00000000);
 		table.put(Property.Y, 0x3f800000);
 		table.put(Property.XSCALE, 0x40000000);
@@ -143,18 +141,18 @@ public final class PropertyTest {
 		table.put(Property.QUALITY, 0x41980000);
 		table.put(Property.XMOUSE, 0x41a00000);
 		table.put(Property.YMOUSE, 0x41a80000);
-		
+
 		for (Property property : Property.values()) {
-			assertEquals(String.format(VALUE_MISMATCH, property),
-					table.get(property), property.getValue(flashVersion));
+			assertEquals(String.format(VALUE_MISMATCH, property), table
+					.get(property), property.getValue(flashVersion));
 		}
 	}
-	
+
 	@Test
 	public void checkFloatValueReturnsProperty() {
-		
-		Map<Integer, Property>table = new LinkedHashMap<Integer, Property>();
-		
+
+		Map<Integer, Property> table = new LinkedHashMap<Integer, Property>();
+
 		table.put(0x00000000, Property.X);
 		table.put(0x3f800000, Property.Y);
 		table.put(0x40000000, Property.XSCALE);
@@ -177,10 +175,10 @@ public final class PropertyTest {
 		table.put(0x41980000, Property.QUALITY);
 		table.put(0x41a00000, Property.XMOUSE);
 		table.put(0x41a80000, Property.YMOUSE);
-		
+
 		for (Integer value : table.keySet()) {
-			assertEquals(String.format(NO_SUCH_PROPERTY, value),
-					Property.fromInt(value), table.get(value));
+			assertEquals(String.format(NO_SUCH_PROPERTY, value), Property
+					.fromInt(value), table.get(value));
 		}
 	}
 }

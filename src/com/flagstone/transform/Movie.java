@@ -30,9 +30,9 @@
 
 package com.flagstone.transform;
 
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,7 +43,6 @@ import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 import java.util.zip.InflaterInputStream;
 
-import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.DecoderRegistry;
 import com.flagstone.transform.coder.DefineTag;
 import com.flagstone.transform.coder.Context;
@@ -79,7 +78,7 @@ import com.flagstone.transform.datatype.Bounds;
  * </p>
  */
 public final class Movie {
-	
+
 	public enum Signature {
 		FWS, CWS
 	}
@@ -87,13 +86,13 @@ public final class Movie {
 	public enum Encoding {
 		ANSI, SJIS, UTF8
 	}
-	
+
 	private static final String FORMAT = "Movie: { signature=%s; version=%d; frameSize=%s; frameRate=%f; objects=%s }";
 
 	private DecoderRegistry registry;
 	private int identifier;
 	private Encoding encoding;
-	
+
 	private Signature signature;
 	private int version;
 	private Bounds frameSize;
@@ -110,7 +109,7 @@ public final class Movie {
 		objects = new ArrayList<MovieTag>();
 	}
 
-	public Movie(Movie object) {
+	public Movie(final Movie object) {
 
 		if (object.registry != null) {
 			registry = object.registry.copy();
@@ -137,7 +136,7 @@ public final class Movie {
 	 * 
 	 * @param registry
 	 */
-	public void setRegistry(DecoderRegistry registry) {
+	public void setRegistry(final DecoderRegistry registry) {
 		this.registry = registry;
 	}
 
@@ -148,7 +147,7 @@ public final class Movie {
 	 * @param aValue
 	 *            an initial value for the unique identifier.
 	 */
-	public void setIdentifier(int aValue) {
+	public void setIdentifier(final int aValue) {
 		identifier = aValue;
 	}
 
@@ -156,7 +155,7 @@ public final class Movie {
 	 * Sets the encoding scheme for strings encoded and decoded from Flash
 	 * files.
 	 */
-	public void setEncoding(Encoding enc) {
+	public void setEncoding(final Encoding enc) {
 		encoding = enc;
 	}
 
@@ -188,7 +187,7 @@ public final class Movie {
 	/**
 	 * Sets the signature for the Flash data when it is encoded.
 	 */
-	public void setSignature(Signature sig) {
+	public void setSignature(final Signature sig) {
 		signature = sig;
 	}
 
@@ -210,10 +209,9 @@ public final class Movie {
 	 * @param aNumber
 	 *            the version of the Flash file format that this movie utilises.
 	 */
-	public void setVersion(int aNumber) {
+	public void setVersion(final int aNumber) {
 		if (aNumber < 0) {
-			throw new IllegalArgumentException(
-					Strings.NUMBER_CANNOT_BE_NEGATIVE);
+			throw new IllegalArgumentException(Strings.NEGATIVE_NUMBER);
 		}
 		version = aNumber;
 	}
@@ -239,9 +237,9 @@ public final class Movie {
 	 *            the Bounds object that defines the frame size. Must not be
 	 *            null.
 	 */
-	public void setFrameSize(Bounds aBounds) {
+	public void setFrameSize(final Bounds aBounds) {
 		if (aBounds == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
 		}
 		frameSize = aBounds;
 	}
@@ -261,7 +259,7 @@ public final class Movie {
 	 * @param aNumber
 	 *            the number of frames per second that the movie is played.
 	 */
-	public void setFrameRate(float aNumber) {
+	public void setFrameRate(final float aNumber) {
 		frameRate = aNumber;
 	}
 
@@ -278,9 +276,9 @@ public final class Movie {
 	 * @param anArray
 	 *            the array of objects that describe a coder. Must not be null.
 	 */
-	public void setObjects(List<MovieTag> anArray) {
+	public void setObjects(final List<MovieTag> anArray) {
 		if (anArray == null) {
-			throw new IllegalArgumentException(Strings.ARRAY_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
 		}
 		objects = anArray;
 	}
@@ -291,9 +289,9 @@ public final class Movie {
 	 * @param anObject
 	 *            the object to be added to the movie. Must not be null.
 	 */
-	public Movie add(MovieTag anObject) {
+	public Movie add(final MovieTag anObject) {
 		if (anObject == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
 		}
 		objects.add(anObject);
 		return this;
@@ -316,8 +314,9 @@ public final class Movie {
 	 * @throws IOException
 	 *             - if an I/O error occurs while reading the file.
 	 */
-	public void decodeFromFile(File file) throws DataFormatException, IOException {
-		FileInputStream stream = new FileInputStream(file);
+	public void decodeFromFile(final File file) throws DataFormatException,
+			IOException {
+		final FileInputStream stream = new FileInputStream(file);
 
 		try {
 			decodeFromStream(stream);
@@ -341,22 +340,22 @@ public final class Movie {
 	 * @throws CoderException
 	 *             if an error occurs while decoding the file.
 	 */
-	public void decodeFromStream(InputStream stream) throws DataFormatException,
-				IOException {
+	public void decodeFromStream(final InputStream stream)
+			throws DataFormatException, IOException {
 
 		byte[] buffer = new byte[8];
 		int bytesRead = stream.read(buffer);
-		
+
 		if (buffer[1] != 0x57 || buffer[2] == 0x53) {
-			throw new DataFormatException(Strings.INVALID_FLASH_SIGNATURE);
+			throw new DataFormatException(Strings.NOT_SWF_SIGNATURE);
 		}
-		
+
 		if (buffer[0] == 0x43) {
 			signature = Signature.FWS;
 		} else if (buffer[0] == 0x46) {
 			signature = Signature.CWS;
 		} else {
-			throw new DataFormatException(Strings.INVALID_FLASH_SIGNATURE);
+			throw new DataFormatException(Strings.NOT_SWF_SIGNATURE);
 		}
 
 		version = buffer[3] & 0x00FF;
@@ -366,23 +365,27 @@ public final class Movie {
 		length |= (buffer[6] & 0x00FF) << 16;
 		length |= (buffer[7] & 0x00FF) << 24;
 
+		final InputStream streamIn;
+
 		if (signature == Signature.CWS) {
-			stream = new InflaterInputStream(stream);
+			streamIn = new InflaterInputStream(stream);
+		} else {
+			streamIn = new DataInputStream(stream);
 		}
-		
+
 		if (!signature.equals("FWS")) {
-			throw new DataFormatException(Strings.INVALID_FLASH_SIGNATURE);
+			throw new DataFormatException(Strings.NOT_SWF_SIGNATURE);
 		}
 
-		bytesRead += stream.read(buffer, 0, 2);
+		bytesRead += streamIn.read(buffer, 0, 2);
 
-		int size = 4 + ((12 + ((buffer[0] & 0xF8) >> 1)) >>> 3);
+		final int size = 4 + ((12 + ((buffer[0] & 0xF8) >> 1)) >>> 3);
 
 		buffer = Arrays.copyOf(buffer, size + 2);
-		bytesRead += stream.read(buffer, 2, size);
+		bytesRead += streamIn.read(buffer, 2, size);
 
-		SWFDecoder decoder = new SWFDecoder(buffer);
-		Context context = new Context();
+		final SWFDecoder decoder = new SWFDecoder(buffer);
+		final Context context = new Context();
 		context.getVariables().put(Context.VERSION, version);
 
 		if (registry == null) {
@@ -396,11 +399,11 @@ public final class Movie {
 		frameCount = decoder.readWord(2, false);
 
 		buffer = new byte[length - size - 10];
-		stream.read(buffer);
+		streamIn.read(buffer);
 		decoder.setData(buffer);
 		decoder.setEncoding(encoding.toString());
 
-		SWFFactory<MovieTag> factory = registry.getMovieDecoder();
+		final SWFFactory<MovieTag> factory = registry.getMovieDecoder();
 
 		if (factory == null) {
 			objects.add(new MovieData(decoder.getData()));
@@ -436,8 +439,8 @@ public final class Movie {
 	 * @throws DataFormatException
 	 *             if an error occurs when compressing the flash file.
 	 */
-	public void encodeToFile(File file) throws IOException, DataFormatException {
-		FileOutputStream stream = new FileOutputStream(file);
+	public void encodeToFile(final File file) throws IOException, DataFormatException {
+		final FileOutputStream stream = new FileOutputStream(file);
 
 		try {
 			stream.write(encode());
@@ -460,8 +463,8 @@ public final class Movie {
 	 *             if an error occurs when compressing the flash file.
 	 */
 	public byte[] encode() throws DataFormatException, IOException {
-		SWFEncoder coder = new SWFEncoder(0);
-		Context context = new Context();
+		final SWFEncoder coder = new SWFEncoder(0);
+		final Context context = new Context();
 
 		coder.setEncoding(encoding.toString());
 		context.getVariables().put(Context.VERSION, version);
@@ -506,7 +509,7 @@ public final class Movie {
 				objects);
 	}
 
-	private int prepareToEncode(SWFEncoder coder, Context context) {
+	private int prepareToEncode(final SWFEncoder coder, final Context context) {
 		frameCount = 0;
 
 		length = 14; // Includes End
@@ -522,15 +525,15 @@ public final class Movie {
 		return length;
 	}
 
-	private byte[] zip(byte[] bytes, int len) throws DataFormatException {
-		Deflater deflater = new Deflater();
-		byte[] data = new byte[len];
+	private byte[] zip(final byte[] bytes, final int len) throws DataFormatException {
+		final Deflater deflater = new Deflater();
+		final byte[] data = new byte[len];
 
 		deflater.setInput(bytes, 8, len - 8);
 		deflater.finish();
 
-		int bytesCompressed = deflater.deflate(data);
-		byte[] compressedData = new byte[8 + bytesCompressed];
+		final int bytesCompressed = deflater.deflate(data);
+		final byte[] compressedData = new byte[8 + bytesCompressed];
 
 		System.arraycopy(bytes, 0, compressedData, 0, 8);
 		System.arraycopy(data, 0, compressedData, 8, bytesCompressed);

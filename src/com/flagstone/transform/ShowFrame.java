@@ -65,10 +65,10 @@ import com.flagstone.transform.coder.SWFEncoder;
  * 
  */
 public final class ShowFrame implements MovieTag {
-	
+
 	private static final String FORMAT = "ShowFrame";
 
-	private static final ShowFrame instance = new ShowFrame();
+	private static final ShowFrame INSTANCE = new ShowFrame();
 
 	/**
 	 * Returns a shared ShowFrame object.
@@ -76,13 +76,13 @@ public final class ShowFrame implements MovieTag {
 	 * @return an object that can safely be shared among objects.
 	 */
 	public static ShowFrame getInstance() {
-		return instance;
+		return INSTANCE;
 	}
 
 	private ShowFrame() {
 	}
 
-	//TODO(doc)
+	// TODO(doc)
 	public ShowFrame copy() {
 		return this;
 	}
@@ -96,11 +96,13 @@ public final class ShowFrame implements MovieTag {
 		return 2;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException {
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		coder.writeWord((MovieTypes.SHOW_FRAME << 6) | 0, 2);
 	}
 
-	public void decode(final SWFDecoder coder, final Context context) throws CoderException {
+	public void decode(final SWFDecoder coder, final Context context)
+			throws CoderException {
 		if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
 			coder.readWord(4, false);
 		}

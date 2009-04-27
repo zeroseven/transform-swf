@@ -49,62 +49,61 @@ import com.flagstone.transform.coder.SWFFactory;
  * DefineButton defines the appearance of a button and the actions performed
  * when the button is clicked.
  * 
- * <p>DefineButton must contain at least one ButtonShape object. If more
- * than one button shape is defined for a given button state then each shape
- * will be displayed by the button. The order in which the shapes are displayed
- * is determined by the layer assigned to each ButtonShape object.</P>
+ * <p>
+ * DefineButton must contain at least one ButtonShape object. If more than one
+ * button shape is defined for a given button state then each shape will be
+ * displayed by the button. The order in which the shapes are displayed is
+ * determined by the layer assigned to each ButtonShape object.
+ * </P>
  * 
  * @see ButtonShape
  */
-public final class DefineButton implements DefineTag
-{
+public final class DefineButton implements DefineTag {
 	private static final String FORMAT = "DefineButton: { identifier=%d; buttonRecords=%s; actions=%s }";
-	
+
 	private int identifier;
-	
+
 	private List<ButtonShape> shapes;
 	private List<Action> actions;
-	
+
 	private transient int start;
 	private transient int end;
 	private transient int length;
 
-	//TODO(doc) 
-	//TODO(optimise) 
-	public DefineButton(final SWFDecoder coder, final Context context) throws CoderException
-	{
+	// TODO(doc)
+	// TODO(optimise)
+	public DefineButton(final SWFDecoder coder, final Context context)
+			throws CoderException {
 		start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
-		
+
 		if (length == 0x3F) {
 			length = coder.readWord(4, false);
 		}
 		end = coder.getPointer() + (length << 3);
 
-		int start = coder.getPointer() - 16;
+		final int mark = coder.getPointer() - 16;
 
 		shapes = new ArrayList<ButtonShape>();
-		ButtonShape shape;
-		
-		while (coder.readByte() != 0) 
-		{
+
+		while (coder.readByte() != 0) {
 			coder.adjustPointer(-8);
 			shapes.add(new ButtonShape(coder, context));
 		}
 
-		int actionsLength = length - ((coder.getPointer() - start) >>> 3);
+		final int actionsLength = length - ((coder.getPointer() - mark) >>> 3);
 
 		actions = new ArrayList<Action>();
 
-		SWFFactory<Action>decoder = context.getRegistry().getActionDecoder();
+		final SWFFactory<Action> decoder = context.getRegistry().getActionDecoder();
 
 		if (decoder == null) {
-			actions.add(new ActionData(coder.readBytes(new byte[actionsLength])));
-		} 
-		else {
-			int len = length;
-			while (len > 0) {
-				actions.add(decoder.getObject(coder,context));
+			actions
+					.add(new ActionData(coder
+							.readBytes(new byte[actionsLength])));
+		} else {
+			while (coder.getPointer() < end) {
+				actions.add(decoder.getObject(coder, context));
 			}
 		}
 
@@ -114,26 +113,26 @@ public final class DefineButton implements DefineTag
 		}
 	}
 
-
 	/**
-	 * Creates a DefineButton object with the identifier, button shapes
-	 * and actions.
+	 * Creates a DefineButton object with the identifier, button shapes and
+	 * actions.
 	 * 
 	 * @param uid
 	 *            the unique identifier for this button.
 	 * @param buttons
 	 *            an array of ButtonShapes that are used to draw the button.
 	 * @param actions
-	 *            and array of actions that are executed when the button is clicked.
+	 *            and array of actions that are executed when the button is
+	 *            clicked.
 	 */
-	public DefineButton(int uid, List<ButtonShape> buttons, List<Action> actions)
-	{
-		setButtonShapes(buttons);
+	public DefineButton(final int uid, final List<ButtonShape> buttons, final List<Action> actions) {
+		setIdentifier(uid);
+		setShapes(buttons);
 		setActions(actions);
 	}
-	
-	//TODO(doc) 
-	public DefineButton(DefineButton object) {
+
+	// TODO(doc)
+	public DefineButton(final DefineButton object) {
 		identifier = object.identifier;
 		shapes = new ArrayList<ButtonShape>(object.shapes.size());
 		for (ButtonShape shape : object.shapes) {
@@ -144,14 +143,14 @@ public final class DefineButton implements DefineTag
 			actions.add(action.copy());
 		}
 	}
-	
+
 	public int getIdentifier() {
 		return identifier;
 	}
 
 	public void setIdentifier(final int uid) {
 		if (uid < 0 || uid > 65535) {
-			throw new IllegalArgumentException(Strings.IDENTIFIER_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
 		}
 		identifier = uid;
 	}
@@ -162,10 +161,9 @@ public final class DefineButton implements DefineTag
 	 * @param obj
 	 *            an ButtonShape object. Must not be null.
 	 */
-	public DefineButton add(ButtonShape obj)
-	{
+	public DefineButton add(final ButtonShape obj) {
 		if (obj == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
 		}
 		shapes.add(obj);
 		return this;
@@ -177,10 +175,9 @@ public final class DefineButton implements DefineTag
 	 * @param obj
 	 *            an action object. Must not be null.
 	 */
-	public DefineButton add(Action obj) throws CoderException
-	{
+	public DefineButton add(final Action obj) throws CoderException {
 		if (obj == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
 		}
 		actions.add(obj);
 		return this;
@@ -189,8 +186,7 @@ public final class DefineButton implements DefineTag
 	/**
 	 * Returns the array of button shapes.
 	 */
-	public List<ButtonShape> getButtonShapes()
-	{
+	public List<ButtonShape> getShapes() {
 		return shapes;
 	}
 
@@ -198,8 +194,7 @@ public final class DefineButton implements DefineTag
 	 * Returns the array of actions that will be executed when the button is
 	 * clicked and released.
 	 */
-	public List<Action> getActions() throws CoderException
-	{
+	public List<Action> getActions() throws CoderException {
 		return actions;
 	}
 
@@ -209,10 +204,9 @@ public final class DefineButton implements DefineTag
 	 * @param anArray
 	 *            an array of Button objects. Must not be null.
 	 */
-	public void setButtonShapes(List<ButtonShape> anArray)
-	{
+	public void setShapes(final List<ButtonShape> anArray) {
 		if (anArray == null) {
-			throw new IllegalArgumentException(Strings.ARRAY_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
 		}
 		shapes = anArray;
 	}
@@ -224,44 +218,40 @@ public final class DefineButton implements DefineTag
 	 * @param anArray
 	 *            and array of action objects. Must not be null.
 	 */
-	public void setActions(List<Action> anArray)
-	{
+	public void setActions(final List<Action> anArray) {
 		if (anArray == null) {
-			throw new IllegalArgumentException(Strings.ARRAY_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
 		}
 		actions = anArray;
 	}
 
-	public DefineButton copy()
-	{
+	public DefineButton copy() {
 		return new DefineButton(this);
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return String.format(FORMAT, identifier, shapes, actions);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context)
-	{
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		length = 2;
-		
+
 		for (ButtonShape shape : shapes) {
 			length += shape.prepareToEncode(coder, context);
 		}
 
 		length += 1;
-		
+
 		for (Action action : actions) {
 			length += action.prepareToEncode(coder, context);
 		}
 
-		return (length > 62 ? 6:2) + length;
+		return (length > 62 ? 6 : 2) + length;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException
-	{
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		start = coder.getPointer();
 
 		if (length >= 63) {
@@ -272,7 +262,7 @@ public final class DefineButton implements DefineTag
 		}
 		end = coder.getPointer() + (length << 3);
 		coder.writeWord(identifier, 2);
-		
+
 		for (ButtonShape shape : shapes) {
 			shape.encode(coder, context);
 		}

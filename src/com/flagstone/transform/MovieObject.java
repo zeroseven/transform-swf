@@ -49,16 +49,16 @@ import com.flagstone.transform.coder.SWFEncoder;
  * </p>
  */
 public final class MovieObject implements MovieTag {
-	
+
 	private static final String FORMAT = "MovieObject: { type=%d; data=byte[%d] {...} }";
-	
-	private final int type;
-	private final byte[] data;
+
+	private final transient int type;
+	private final transient byte[] data;
 
 	private transient int length;
 
-	public MovieObject(final SWFDecoder coder, final Context context) throws CoderException {
-		
+	public MovieObject(final SWFDecoder coder) throws CoderException {
+
 		type = coder.scanUnsignedShort() >>> 6;
 		length = coder.readWord(2, false) & 0x3F;
 
@@ -69,23 +69,23 @@ public final class MovieObject implements MovieTag {
 		data = coder.readBytes(new byte[length]);
 	}
 
-	//TODO(doc)
-	public MovieObject(int type, byte[] bytes) {
+	// TODO(doc)
+	public MovieObject(final int type, final byte[] bytes) {
 		this.type = type;
 
 		if (bytes == null) {
-			throw new IllegalArgumentException(Strings.DATA_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.DATA_IS_NULL);
 		}
 		data = bytes;
 	}
 
-	//TODO(doc)
-	public MovieObject(MovieObject object) {
+	// TODO(doc)
+	public MovieObject(final MovieObject object) {
 		type = object.type;
 		data = Arrays.copyOf(object.data, object.data.length);
 	}
-	
-	//TODO(doc)
+
+	// TODO(doc)
 	public int getType() {
 		return type;
 	}
@@ -111,7 +111,8 @@ public final class MovieObject implements MovieTag {
 		return (length > 62 ? 6 : 2) + length;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException {
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		if (length > 62) {
 			coder.writeWord((type << 6) | 0x3F, 2);
 			coder.writeWord(length, 4);

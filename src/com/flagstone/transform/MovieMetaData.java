@@ -40,24 +40,24 @@ import com.flagstone.transform.coder.SWFEncoder;
 /**
  * MetaData is used to add a user-defined information into a Flash file.
  */
-//TODO(doc)
+// TODO(doc)
 public final class MovieMetaData implements MovieTag {
 
 	private static final String FORMAT = "MetaData: { %s }";
 
-	private String metadata;
+	private String metaData;
 
 	private transient int length;
 
-	public MovieMetaData(final SWFDecoder coder, final Context context) throws CoderException {
-		
+	public MovieMetaData(final SWFDecoder coder) throws CoderException {
+
 		length = coder.readWord(2, false) & 0x3F;
 
 		if (length == 0x3F) {
 			length = coder.readWord(4, false);
 		}
 
-		metadata = coder.readString(length-1, coder.getEncoding());
+		metaData = coder.readString(length - 1, coder.getEncoding());
 		coder.readByte();
 	}
 
@@ -68,30 +68,23 @@ public final class MovieMetaData implements MovieTag {
 	 *            an arbitrary string containing the serial number. Must not be
 	 *            null.
 	 */
-	public MovieMetaData(String aString) {
+	public MovieMetaData(final String aString) {
 		setMetaData(aString);
 	}
-	
-	public MovieMetaData(MovieMetaData object) {
-		metadata = object.metadata;
+
+	public MovieMetaData(final MovieMetaData object) {
+		metaData = object.metaData;
 	}
 
 	public String getMetaData() {
-		return metadata;
+		return metaData;
 	}
 
-	/**
-	 * Sets the serial number.
-	 * 
-	 * @param aString
-	 *            an arbitrary string containing the serial number. Must not be
-	 *            null.
-	 */
-	public void setMetaData(String aString) {
+	public void setMetaData(final String aString) {
 		if (aString == null) {
-			throw new IllegalArgumentException(Strings.STRING_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.STRING_IS_NULL);
 		}
-		metadata = aString;
+		metaData = aString;
 	}
 
 	public MovieMetaData copy() {
@@ -100,18 +93,18 @@ public final class MovieMetaData implements MovieTag {
 
 	@Override
 	public String toString() {
-		return String.format(FORMAT, metadata);
+		return String.format(FORMAT, metaData);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) 
-	{
-		length = coder.strlen(metadata);
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
+		length = coder.strlen(metaData);
 
-		return (length > 62 ? 6:2) + length;
+		return (length > 62 ? 6 : 2) + length;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException {
-		
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
+
 		if (length > 62) {
 			coder.writeWord((MovieTypes.METADATA << 6) | 0x3F, 2);
 			coder.writeWord(length, 4);
@@ -119,6 +112,6 @@ public final class MovieMetaData implements MovieTag {
 			coder.writeWord((MovieTypes.METADATA << 6) | length, 2);
 		}
 
-		coder.writeString(metadata);
+		coder.writeString(metaData);
 	}
 }

@@ -44,47 +44,50 @@ import com.flagstone.transform.datatype.CoordTransform;
  * PlaceObject is used to add an object (shape, button, etc.) to the Flash
  * Player's display list.
  * 
- * <p>When adding an object to the display list a coordinate transform can be 
- * applied to the object. This is principally used to specify the location of the
- * object when it is drawn on the screen however more complex coordinate
+ * <p>
+ * When adding an object to the display list a coordinate transform can be
+ * applied to the object. This is principally used to specify the location of
+ * the object when it is drawn on the screen however more complex coordinate
  * transforms can also be specified such as rotating or scaling the object
- * without changing the original definition.</p>
+ * without changing the original definition.
+ * </p>
  * 
- * <p>Similarly the color transform allows the color of the object to be changed
- * when it is displayed without changing the original definition. The PlaceObject 
- * class only supports opaque colours so although the ColorTransform supports 
- * transparent colours this information is ignored by the Flash Player. The colour 
- * transform is optional and may be set to null, reducing the size of the 
- * PlaceObject instruction when it is encoded.</p>
+ * <p>
+ * Similarly the color transform allows the color of the object to be changed
+ * when it is displayed without changing the original definition. The
+ * PlaceObject class only supports opaque colours so although the ColorTransform
+ * supports transparent colours this information is ignored by the Flash Player.
+ * The colour transform is optional and may be set to null, reducing the size of
+ * the PlaceObject instruction when it is encoded.
+ * </p>
  * 
  * @see Place2
  * @see Remove
  * @see Remove2
  */
-public final class Place implements MovieTag
-{
-	//TODO(code) Consider replacing with StringBuilder for optional fields
+public final class Place implements MovieTag {
+	// TODO(code) Consider replacing with StringBuilder for optional fields
 	private static final String FORMAT = "Place: { layer=%d; identifier=%d; transform=%s; colorTransform=%s; }";
 
 	private int identifier;
 	private int layer;
 	private CoordTransform transform;
 	private ColorTransform colorTransform;
-	
+
 	private transient int start;
 	private transient int end;
 	private transient int length;
 
-	//TODO(doc)
-	public Place(final SWFDecoder coder, final Context context) throws CoderException
-	{
+	// TODO(doc)
+	public Place(final SWFDecoder coder, final Context context)
+			throws CoderException {
 		start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
-		
+
 		if (length == 0x3F) {
 			length = coder.readWord(4, false);
 		}
-		
+
 		end = coder.getPointer() + (length << 3);
 
 		identifier = coder.readWord(2, false);
@@ -104,10 +107,10 @@ public final class Place implements MovieTag
 	/**
 	 * Creates an uninitialised Place object.
 	 */
-	public Place()
-	{
+	public Place() {
+		// Creates uninitialised object.
 	}
-	
+
 	/**
 	 * Creates a PlaceObject object that places the the object with the
 	 * identifier at the specified layer, coordinate transform and colour
@@ -122,21 +125,20 @@ public final class Place implements MovieTag
 	 *            an CoordTransform object that defines the orientation, size
 	 *            and location of the object when it is drawn. Must not be null.
 	 * @param aColorTransform
-	 *            an ColorTransform object that defines the colour of the
-	 *            object when it is drawn.
+	 *            an ColorTransform object that defines the colour of the object
+	 *            when it is drawn.
 	 */
-	public Place(int uid, int aLayer,
-							CoordTransform aTransform, 
-							ColorTransform aColorTransform)
-	{
+	public Place(final int uid, final int aLayer,
+			final CoordTransform aTransform,
+			final ColorTransform aColorTransform) {
 		setIdentifier(uid);
 		setLayer(aLayer);
 		setTransform(aTransform);
 		setColorTransform(aColorTransform);
 	}
 
-	//TODO(doc)
-	public Place(Place object) {
+	// TODO(doc)
+	public Place(final Place object) {
 		identifier = object.identifier;
 		layer = object.layer;
 		transform = object.transform;
@@ -146,16 +148,14 @@ public final class Place implements MovieTag
 	/**
 	 * Returns the identifier of the object to add to the display list.
 	 */
-	public int getIdentifier()
-	{
+	public int getIdentifier() {
 		return identifier;
 	}
 
 	/**
 	 * Returns the layer that defines the order in which objects are displayed.
 	 */
-	public int getLayer()
-	{
+	public int getLayer() {
 		return layer;
 	}
 
@@ -163,8 +163,7 @@ public final class Place implements MovieTag
 	 * Returns the transform that defines the position where the object is
 	 * displayed.
 	 */
-	public CoordTransform getTransform()
-	{
+	public CoordTransform getTransform() {
 		return transform;
 	}
 
@@ -172,8 +171,7 @@ public final class Place implements MovieTag
 	 * Returns the colour transform that defines any colour effects applied when
 	 * the object is displayed. May be null if no transform is defined.
 	 */
-	public ColorTransform getColorTransform()
-	{
+	public ColorTransform getColorTransform() {
 		return colorTransform;
 	}
 
@@ -184,10 +182,9 @@ public final class Place implements MovieTag
 	 *            the unique identifier for the object to the placed on the
 	 *            display list. Must be in the range 1..65535.
 	 */
-	public Place setIdentifier(int uid)
-	{
+	public Place setIdentifier(final int uid) {
 		if (uid < 1 || uid > 65535) {
-			throw new IllegalArgumentException(Strings.IDENTIFIER_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
 		}
 		identifier = uid;
 		return this;
@@ -200,10 +197,9 @@ public final class Place implements MovieTag
 	 *            the layer in the display list where the object will be placed.
 	 *            Must be in the range 1..65535.
 	 */
-	public Place setLayer(int aNumber)
-	{
+	public Place setLayer(final int aNumber) {
 		if (aNumber < 1 || aNumber > 65535) {
-			throw new IllegalArgumentException(Strings.LAYER_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.LAYER_RANGE);
 		}
 		layer = aNumber;
 		return this;
@@ -217,10 +213,9 @@ public final class Place implements MovieTag
 	 *            an CoordTransform object that defines the orientation, size
 	 *            and location of the object when it is drawn. Must not be null.
 	 */
-	public Place setTransform(CoordTransform aTransform)
-	{
+	public Place setTransform(final CoordTransform aTransform) {
 		if (aTransform == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
 		}
 		transform = aTransform;
 		return this;
@@ -229,12 +224,13 @@ public final class Place implements MovieTag
 	/**
 	 * Sets the location where the object will be displayed.
 	 * 
-	 * @param xCoord the x-coordinate of the object's origin.
-	 * @param yCoord the x-coordinate of the object's origin.
+	 * @param xCoord
+	 *            the x-coordinate of the object's origin.
+	 * @param yCoord
+	 *            the x-coordinate of the object's origin.
 	 * @return this object.
 	 */
-	public Place setLocation(int xCoord, int yCoord)
-	{
+	public Place setLocation(final int xCoord, final int yCoord) {
 		transform = CoordTransform.translate(xCoord, yCoord);
 		return this;
 	}
@@ -244,11 +240,10 @@ public final class Place implements MovieTag
 	 * the object is displayed.
 	 * 
 	 * @param aColorTransform
-	 *            an ColorTransform object that defines the colour of the
-	 *            object when it is drawn. May be set to null.
+	 *            an ColorTransform object that defines the colour of the object
+	 *            when it is drawn. May be set to null.
 	 */
-	public Place setColorTransform(ColorTransform aColorTransform)
-	{
+	public Place setColorTransform(final ColorTransform aColorTransform) {
 		colorTransform = aColorTransform;
 		return this;
 	}
@@ -256,33 +251,33 @@ public final class Place implements MovieTag
 	/**
 	 * Creates and returns a deep copy of this object.
 	 */
-	//TODO(doc) remove
-	public Place copy()
-	{
+	// TODO(doc) remove
+	public Place copy() {
 		return new Place(this);
 	}
 
 	@Override
-	public String toString()
-	{
-		return String.format(FORMAT, identifier, layer, transform, colorTransform);
+	public String toString() {
+		return String.format(FORMAT, identifier, layer, transform,
+				colorTransform);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context)
-	{
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		length = 4;
 		length += transform.prepareToEncode(coder, context);
-		//TODO(optimise) replace with if statement ?
-		length += colorTransform == null ? 0 : colorTransform.prepareToEncode(coder, context);
+		// TODO(optimise) replace with if statement ?
+		length += colorTransform == null ? 0 : colorTransform.prepareToEncode(
+				coder, context);
 
 		return 2 + length;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException
-	{
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		start = coder.getPointer();
 		coder.writeWord((MovieTypes.PLACE << 6) | length, 2);
-		end = coder.getPointer() + (length << 3); //TODO(optimise) end = start +16
+		end = coder.getPointer() + (length << 3); // TODO(optimise) end = start
+													// +16
 
 		coder.writeWord(identifier, 2);
 		coder.writeWord(layer, 2);

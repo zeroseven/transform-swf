@@ -44,7 +44,7 @@ import com.flagstone.transform.shape.DefineShape3;
 //TODO(doc) Review
 /**
  * SolidFill defines a solid colour that is used to fill an enclosed area in a
- * shape. Shapes can be filled with transparent colours but only if the fill 
+ * shape. Shapes can be filled with transparent colours but only if the fill
  * style is used in a {@link DefineShape3} object.
  * 
  * @see DefineShape
@@ -52,13 +52,14 @@ import com.flagstone.transform.shape.DefineShape3;
  * @see DefineShape3
  */
 public final class SolidFill implements FillStyle {
-	
+
 	private static final String FORMAT = "SolidFill: { color=%s }";
 
 	private Color color;
 
-	//TODO(doc)
-	public SolidFill(final SWFDecoder coder, final Context context) throws CoderException {
+	// TODO(doc)
+	public SolidFill(final SWFDecoder coder, final Context context)
+			throws CoderException {
 		coder.adjustPointer(8);
 		color = new Color(coder, context);
 	}
@@ -73,9 +74,9 @@ public final class SolidFill implements FillStyle {
 	public SolidFill(final Color aColor) {
 		setColor(aColor);
 	}
-	
-	//TODO(doc)
-	public SolidFill(SolidFill object) {
+
+	// TODO(doc)
+	public SolidFill(final SolidFill object) {
 		color = object.color;
 	}
 
@@ -95,7 +96,7 @@ public final class SolidFill implements FillStyle {
 	 */
 	public void setColor(final Color aColor) {
 		if (aColor == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
 		}
 		color = aColor;
 	}
@@ -110,11 +111,12 @@ public final class SolidFill implements FillStyle {
 	}
 
 	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		//TODO(optimise) calculate size of color directly.
+		// TODO(optimise) calculate size of color directly.
 		return 1 + color.prepareToEncode(coder, context);
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException {
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		coder.writeByte(0);
 		color.encode(coder, context);
 	}

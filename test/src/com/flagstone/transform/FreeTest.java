@@ -36,41 +36,35 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 
-import com.flagstone.transform.Free;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-@SuppressWarnings( { 
-	"PMD.LocalVariableCouldBeFinal",
-	"PMD.JUnitAssertionsShouldIncludeMessage" 
-})
+@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
+		"PMD.JUnitAssertionsShouldIncludeMessage" })
 public final class FreeTest {
-	
+
 	private transient final int identifier = 1;
-	
+
 	private transient Free fixture;
-	
-	private transient final byte[] empty = new byte[] { (byte)0xC2, 0x00, 0x00, 
-			0x00};
 
-	private transient final byte[] encoded = new byte[] { (byte)0xC2, 0x00, 0x01, 
-			0x00};
-	
-	private transient final byte[] extended = new byte[] { (byte)0xFF, 0x00, 0x02,
-			0x00, 0x00, 0x00, 0x01, 0x00};
+	private transient final byte[] encoded = new byte[] { (byte) 0xC2, 0x00,
+			0x01, 0x00 };
 
-	@Test(expected=IllegalArgumentException.class)
+	private transient final byte[] extended = new byte[] { (byte) 0xFF, 0x00,
+			0x02, 0x00, 0x00, 0x00, 0x01, 0x00 };
+
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForIdentifierWithLowerBound() {
 		fixture = new Free(0);
 	}
 
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForIdentifierWithUpperBound() {
 		fixture = new Free(65536);
 	}
-	
+
 	@Test
 	public void checkCopy() {
 		fixture = new Free(identifier);
@@ -80,38 +74,36 @@ public final class FreeTest {
 		assertEquals(fixture.getIdentifier(), copy.getIdentifier());
 		assertEquals(fixture.toString(), copy.toString());
 	}
-	
+
 	@Test
-	public void encode() throws CoderException {		
-		SWFEncoder encoder = new SWFEncoder(encoded.length);		
+	public void encode() throws CoderException {
+		SWFEncoder encoder = new SWFEncoder(encoded.length);
 		Context context = new Context();
 
 		fixture = new Free(identifier);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
 		fixture.encode(encoder, context);
-		
+
 		assertTrue(encoder.eof());
 		assertArrayEquals(encoded, encoder.getData());
 	}
-	
+
 	@Test
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
-		Context context = new Context();
 
-		fixture = new Free(decoder, context);
-		
+		fixture = new Free(decoder);
+
 		assertTrue(decoder.eof());
 		assertEquals(identifier, fixture.getIdentifier());
 	}
-	
+
 	@Test
 	public void decodeExtended() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(extended);
-		Context context = new Context();
 
-		fixture = new Free(decoder, context);
-		
+		fixture = new Free(decoder);
+
 		assertTrue(decoder.eof());
 		assertEquals(identifier, fixture.getIdentifier());
 	}

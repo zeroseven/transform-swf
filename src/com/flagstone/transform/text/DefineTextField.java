@@ -33,7 +33,6 @@ package com.flagstone.transform.text;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.flagstone.transform.Movie;
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
@@ -48,12 +47,16 @@ import com.flagstone.transform.datatype.Color;
 /**
  * DefineTextField defines an editable text field.
  * 
- * <p>The value entered into the text field is assigned to a specified variable
+ * <p>
+ * The value entered into the text field is assigned to a specified variable
  * allowing the creation of forms to accept values entered by a person viewing
- * the Flash file.</p>
+ * the Flash file.
+ * </p>
  * 
- * <p>The class contains a complex set of attributes which allows a high degree of
- * control over how a text field is displayed:</p>
+ * <p>
+ * The class contains a complex set of attributes which allows a high degree of
+ * control over how a text field is displayed:
+ * </p>
  * 
  * <table class="datasheet">
  * 
@@ -109,12 +112,14 @@ import com.flagstone.transform.datatype.Color;
  * <td>The maximum length of the text field. May be set to zero is not maximum
  * length is defined.</td>
  * </tr>
-
+ * 
  * </table>
  * 
- * <p>Additional layout information for the spacing of the text relative to the
+ * <p>
+ * Additional layout information for the spacing of the text relative to the
  * text field borders can also be specified through the following set of
- * attributes:</p>
+ * attributes:
+ * </p>
  * 
  * <table class="datasheet">
  * 
@@ -140,7 +145,8 @@ import com.flagstone.transform.datatype.Color;
  * </tr>
  * </table>
  * 
- * <p>The default values for the alignment is AlignLeft while the leftMargin,
+ * <p>
+ * The default values for the alignment is AlignLeft while the leftMargin,
  * rightMargin indent and leading attributes are set to the constant
  * Transform.VALUE_NOT_SET. If the attributes remain unchanged then the layout
  * information will not be encoded. If any of the values in this group are set
@@ -149,25 +155,22 @@ import com.flagstone.transform.datatype.Color;
  * </p>
  * 
  * <p>
- * <b>HTML Support</b><br/> Setting the HTML flag to true allows text marked
- * up with a limited set of HTML tags to be displayed in the text field. The
- * following tags are supported:
+ * <b>HTML Support</b><br/>
+ * Setting the HTML flag to true allows text marked up with a limited set of
+ * HTML tags to be displayed in the text field. The following tags are
+ * supported:
  * </p>
  * 
  * <table>
  * <tr>
  * <td>&lt;p&gt;&lt;/p&gt;</td>
  * <td>Delimits a paragraph. Only the align attribute is supported:<br>
- * <p [align = left | right | center ]>
- * </p>
- * </td>
+ * <p [align = left | right | center ]> </p></td>
  * </tr>
  * 
  * <tr>
  * <td valign="top" nowrap>&lt;br&gt;</td>
- * <td>Inserts a line break.>
- * </p>
- * </td>
+ * <td>Inserts a line break.> </p></td>
  * </tr>
  * 
  * <tr>
@@ -184,8 +187,8 @@ import com.flagstone.transform.datatype.Color;
  * <td valign="top" nowrap>&lt;font&gt;&lt;/font&gt;</td>
  * <td>Format enclosed text using the font. Three attributes are supported:
  * <ul>
- * <li>name - must match the name of a font defined using the DefineFont2
- * class.</li>
+ * <li>name - must match the name of a font defined using the DefineFont2 class.
+ * </li>
  * <li>size - the height of the font in twips.</li>
  * <li>color - the colour of the text in the hexadecimal format #RRGGBB.</li>
  * </ul>
@@ -217,9 +220,8 @@ import com.flagstone.transform.datatype.Color;
  * 
  */
 @SuppressWarnings("PMD.TooManyMethods")
-public final class DefineTextField implements DefineTag
-{
-	//TODO(doc)
+public final class DefineTextField implements DefineTag {
+	// TODO(doc)
 	public enum Align {
 		/** Defines that the text displayed in a text field is left aligned. */
 		LEFT(0),
@@ -230,30 +232,29 @@ public final class DefineTextField implements DefineTag
 		/** Defines that the text displayed in a text field is justified. */
 		JUSTIFY(3);
 
-		private static final Map<Integer,Align>table 
-			= new LinkedHashMap<Integer,Align>();
+		private static final Map<Integer, Align> TABLE = new LinkedHashMap<Integer, Align>();
 
 		static {
 			for (Align align : values()) {
-				table.put(align.value, align);
+				TABLE.put(align.value, align);
 			}
 		}
-		
-		public static Align fromInt(int type) {
-			return table.get(type);
+
+		public static Align fromInt(final int type) {
+			return TABLE.get(type);
 		}
-		
+
 		private final int value;
-		
-		private Align(int value) {
+
+		private Align(final int value) {
 			this.value = value;
 		}
-		
+
 		public int getValue() {
 			return value;
 		}
 	}
-	
+
 	private int identifier;
 	private Bounds bounds;
 	private boolean wordWrapped;
@@ -280,50 +281,48 @@ public final class DefineTextField implements DefineTag
 	private String variableName;
 	private String initialText;
 
-	
 	private transient int start;
 	private transient int end;
 	private transient int length;
 
-	//TODO(doc)
-	//TODO(optimise)
-	public DefineTextField(final SWFDecoder coder, final Context context) throws CoderException
-	{
+	// TODO(doc)
+	// TODO(optimise)
+	public DefineTextField(final SWFDecoder coder, final Context context)
+			throws CoderException {
 		start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
-		
+
 		if (length == 0x3F) {
 			length = coder.readWord(4, false);
 		}
 		end = coder.getPointer() + (length << 3);
 
 		identifier = coder.readWord(2, true);
-		Map<Integer,Integer>vars = context.getVariables();
+		final Map<Integer, Integer> vars = context.getVariables();
 		vars.put(Context.TRANSPARENT, 1);
 
 		bounds = new Bounds(coder);
 
-		boolean containsText = coder.readBits(1, false) != 0;
+		final boolean containsText = coder.readBits(1, false) != 0;
 		wordWrapped = coder.readBits(1, false) != 0;
 		multiline = coder.readBits(1, false) != 0;
 		password = coder.readBits(1, false) != 0;
 		readOnly = coder.readBits(1, false) != 0;
-		boolean containsColor = coder.readBits(1, false) != 0;
-		boolean containsMaxLength = coder.readBits(1, false) != 0;
-		boolean containsFont = coder.readBits(1, false) != 0;
-		boolean containsClass = coder.readBits(1, false) != 0;
+		final boolean containsColor = coder.readBits(1, false) != 0;
+		final boolean containsMaxLength = coder.readBits(1, false) != 0;
+		final boolean containsFont = coder.readBits(1, false) != 0;
+		final boolean containsClass = coder.readBits(1, false) != 0;
 		autoSize = coder.readBits(1, false) != 0;
-		boolean containsLayout = coder.readBits(1, false) != 0;
+		final boolean containsLayout = coder.readBits(1, false) != 0;
 		selectable = coder.readBits(1, false) != 0;
 		bordered = coder.readBits(1, false) != 0;
 		reserved2 = coder.readBits(1, false) != 0;
 		html = coder.readBits(1, false) != 0;
 		useGlyphs = coder.readBits(1, false) != 0;
 
-		if (containsFont)
-		{
+		if (containsFont) {
 			fontIdentifier = coder.readWord(2, false);
-			
+
 			if (containsClass) {
 				fontClass = coder.readString();
 			}
@@ -331,15 +330,14 @@ public final class DefineTextField implements DefineTag
 		}
 
 		if (containsColor) {
-			color= new Color(coder, context);
+			color = new Color(coder, context);
 		}
 
 		if (containsMaxLength) {
 			maxLength = coder.readWord(2, false);
 		}
 
-		if (containsLayout)
-		{
+		if (containsLayout) {
 			alignment = Align.fromInt(coder.readByte());
 			leftMargin = coder.readWord(2, false);
 			rightMargin = coder.readWord(2, false);
@@ -361,16 +359,14 @@ public final class DefineTextField implements DefineTag
 		}
 	}
 
-
 	/**
 	 * Creates an DefineTextField object with the specified identifier.
 	 */
-	public DefineTextField(int uid)
-	{
+	public DefineTextField(final int uid) {
 		setIdentifier(uid);
 	}
-	
-	public DefineTextField(DefineTextField object) {
+
+	public DefineTextField(final DefineTextField object) {
 		identifier = object.identifier;
 		bounds = object.bounds;
 		wordWrapped = object.wordWrapped;
@@ -397,14 +393,14 @@ public final class DefineTextField implements DefineTag
 		variableName = object.variableName;
 		initialText = object.initialText;
 	}
-	
+
 	public int getIdentifier() {
 		return identifier;
 	}
 
 	public void setIdentifier(final int uid) {
 		if (uid < 0 || uid > 65535) {
-			throw new IllegalArgumentException(Strings.IDENTIFIER_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
 		}
 		identifier = uid;
 	}
@@ -412,88 +408,77 @@ public final class DefineTextField implements DefineTag
 	/**
 	 * Returns the width of the text field in twips.
 	 */
-	public int getWidth() 
-	{
+	public int getWidth() {
 		return bounds.getWidth();
 	}
 
 	/**
 	 * Returns the width of the text field in twips.
 	 */
-	public int getHeight()
-	{
+	public int getHeight() {
 		return bounds.getHeight();
 	}
-	
+
 	/**
 	 * Returns the bounding rectangle that completely encloses the text field.
 	 */
-	public Bounds getBounds()
-	{
+	public Bounds getBounds() {
 		return bounds;
 	}
 
 	/**
 	 * Does the text field support word wrapping.
 	 */
-	public boolean isWordWrapped()
-	{
+	public boolean isWordWrapped() {
 		return wordWrapped;
 	}
 
 	/**
 	 * Does the text field support multiple lines of text.
 	 */
-	public boolean isMultiline()
-	{
+	public boolean isMultiline() {
 		return multiline;
 	}
 
 	/**
 	 * Does the text field protect passwords being entered.
 	 */
-	public boolean isPassword()
-	{
+	public boolean isPassword() {
 		return password;
 	}
 
 	/**
 	 * Is the text field read-only.
 	 */
-	public boolean isReadOnly()
-	{
+	public boolean isReadOnly() {
 		return readOnly;
 	}
 
 	/**
 	 * Is the text field selectable.
 	 */
-	public boolean isSelectable()
-	{
+	public boolean isSelectable() {
 		return selectable;
 	}
 
 	/**
 	 * Is the text field bordered.
 	 */
-	public boolean isBordered()
-	{
+	public boolean isBordered() {
 		return bordered;
 	}
 
 	/**
 	 * Does the text field contain HTML.
 	 */
-	public boolean isHTML()
-	{
+	public boolean isHTML() {
 		return html;
 	}
 
 	/**
 	 * Does the text field resize to fit the contents.
 	 */
-	public boolean isAutoSize()
-	{
+	public boolean isAutoSize() {
 		return autoSize;
 	}
 
@@ -504,8 +489,7 @@ public final class DefineTextField implements DefineTag
 	 * @param aFlag
 	 *            indicate whether the text field will resize automatically.
 	 */
-	public DefineTextField setAutoSize(boolean aFlag)
-	{
+	public DefineTextField setAutoSize(final boolean aFlag) {
 		autoSize = aFlag;
 		return this;
 	}
@@ -518,86 +502,75 @@ public final class DefineTextField implements DefineTag
 	 *         defined in the movie, false if the glyphs will be loaded from the
 	 *         platform on which the Flash Player is hosted.
 	 */
-	public boolean useFontGlyphs()
-	{
+	public boolean useFontGlyphs() {
 		return useGlyphs;
 	}
 
 	/**
 	 * Returns the identifier of the font used to display the characters.
 	 */
-	public int getFontIdentifier()
-	{
+	public int getFontIdentifier() {
 		return fontIdentifier;
 	}
 
-	public String getFontClass()
-	{
+	public String getFontClass() {
 		return fontClass;
 	}
 
 	/**
 	 * Returns the height of the characters.
 	 */
-	public int getFontHeight()
-	{
+	public int getFontHeight() {
 		return fontHeight;
 	}
 
 	/**
 	 * Returns the text color.
 	 */
-	public Color getColor()
-	{
+	public Color getColor() {
 		return color;
 	}
 
 	/**
 	 * Returns the maximum number of characters displayed in the field.
 	 */
-	public int getMaxLength()
-	{
+	public int getMaxLength() {
 		return maxLength;
 	}
 
 	/**
-	 * Returns the alignment of the text, either AlignLeft, AlignRight, AlignCenter
-	 * or AlignJustify.
+	 * Returns the alignment of the text, either AlignLeft, AlignRight,
+	 * AlignCenter or AlignJustify.
 	 */
-	public Align getAlignment()
-	{
+	public Align getAlignment() {
 		return alignment;
 	}
 
 	/**
 	 * Returns the left margin in twips.
 	 */
-	public int getLeftMargin()
-	{
+	public int getLeftMargin() {
 		return leftMargin;
 	}
 
 	/**
 	 * Returns the right margin in twips.
 	 */
-	public int getRightMargin()
-	{
+	public int getRightMargin() {
 		return rightMargin;
 	}
 
 	/**
 	 * Returns the indentation of the first line of text in twips.
 	 */
-	public int getIndent()
-	{
+	public int getIndent() {
 		return indent;
 	}
 
 	/**
 	 * Returns the leading in twips.
 	 */
-	public int getLeading()
-	{
+	public int getLeading() {
 		return leading;
 	}
 
@@ -605,16 +578,14 @@ public final class DefineTextField implements DefineTag
 	 * Returns the name of the variable the value in the text field will be
 	 * assigned to.
 	 */
-	public String getVariableName()
-	{
+	public String getVariableName() {
 		return variableName;
 	}
 
 	/**
 	 * Returns the default text displayed in the field.
 	 */
-	public String getInitialText()
-	{
+	public String getInitialText() {
 		return initialText;
 	}
 
@@ -625,10 +596,9 @@ public final class DefineTextField implements DefineTag
 	 *            the bounding rectangle enclosing the text field. Must not be
 	 *            null.
 	 */
-	public DefineTextField setBounds(Bounds aBounds)
-	{
+	public DefineTextField setBounds(final Bounds aBounds) {
 		if (aBounds == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
 		}
 		bounds = aBounds;
 		return this;
@@ -640,8 +610,7 @@ public final class DefineTextField implements DefineTag
 	 * @param aFlag
 	 *            set whether the text field is word wrapped.
 	 */
-	public DefineTextField setWordWrapped(boolean aFlag)
-	{
+	public DefineTextField setWordWrapped(final boolean aFlag) {
 		wordWrapped = aFlag;
 		return this;
 	}
@@ -652,8 +621,7 @@ public final class DefineTextField implements DefineTag
 	 * @param aFlag
 	 *            set whether the text field is multiline.
 	 */
-	public DefineTextField setMultiline(boolean aFlag)
-	{
+	public DefineTextField setMultiline(final boolean aFlag) {
 		multiline = aFlag;
 		return this;
 	}
@@ -664,8 +632,7 @@ public final class DefineTextField implements DefineTag
 	 * @param aFlag
 	 *            set whether the text field is password protected.
 	 */
-	public DefineTextField setPassword(boolean aFlag)
-	{
+	public DefineTextField setPassword(final boolean aFlag) {
 		password = aFlag;
 		return this;
 	}
@@ -676,8 +643,7 @@ public final class DefineTextField implements DefineTag
 	 * @param aFlag
 	 *            set whether the text field is read-only.
 	 */
-	public DefineTextField setReadOnly(boolean aFlag)
-	{
+	public DefineTextField setReadOnly(final boolean aFlag) {
 		readOnly = aFlag;
 		return this;
 	}
@@ -688,8 +654,7 @@ public final class DefineTextField implements DefineTag
 	 * @param aFlag
 	 *            set whether the text field is selectable.
 	 */
-	public DefineTextField setSelectable(boolean aFlag)
-	{
+	public DefineTextField setSelectable(final boolean aFlag) {
 		selectable = aFlag;
 		return this;
 	}
@@ -700,8 +665,7 @@ public final class DefineTextField implements DefineTag
 	 * @param aFlag
 	 *            set whether the text field is bordered.
 	 */
-	public DefineTextField setBordered(boolean aFlag)
-	{
+	public DefineTextField setBordered(final boolean aFlag) {
 		bordered = aFlag;
 		return this;
 	}
@@ -712,8 +676,7 @@ public final class DefineTextField implements DefineTag
 	 * @param aFlag
 	 *            set whether the text field contains HTML.
 	 */
-	public DefineTextField setHTML(boolean aFlag)
-	{
+	public DefineTextField setHTML(final boolean aFlag) {
 		html = aFlag;
 		return this;
 	}
@@ -728,8 +691,7 @@ public final class DefineTextField implements DefineTag
 	 *            font in the movie (true) or use a font loaded by the Flash
 	 *            Player (false).
 	 */
-	public DefineTextField setUseFontGlyphs(boolean aFlag)
-	{
+	public DefineTextField setUseFontGlyphs(final boolean aFlag) {
 		useGlyphs = aFlag;
 		return this;
 	}
@@ -741,17 +703,16 @@ public final class DefineTextField implements DefineTag
 	 *            the identifier for the font that the text will be rendered in.
 	 *            Must be in the range 1..65535.
 	 */
-	public DefineTextField setFontIdentifier(int anIdentifier)
-	{
+	public DefineTextField setFontIdentifier(final int anIdentifier) {
 		if (anIdentifier < 1 || anIdentifier > 65535) {
-			throw new IllegalArgumentException(Strings.IDENTIFIER_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
 		}
 		fontIdentifier = anIdentifier;
 		fontClass = null;
 		return this;
 	}
-	
-	public DefineTextField setFontClass(String fontClass) {
+
+	public DefineTextField setFontClass(final String fontClass) {
 		this.fontClass = fontClass;
 		fontIdentifier = 0;
 		return this;
@@ -763,10 +724,9 @@ public final class DefineTextField implements DefineTag
 	 * @param aNumber
 	 *            the height of the font. Must be in the range 0..65535.
 	 */
-	public DefineTextField setFontHeight(int aNumber)
-	{
+	public DefineTextField setFontHeight(final int aNumber) {
 		if (aNumber < 0 || aNumber > 65535) {
-			throw new IllegalArgumentException(Strings.UNSIGNED_VALUE_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
 		}
 		fontHeight = aNumber;
 		return this;
@@ -779,12 +739,10 @@ public final class DefineTextField implements DefineTag
 	 * @param aColor
 	 *            the colour object that defines the text colour.
 	 */
-	public DefineTextField setColor(Color aColor)
-	{
+	public DefineTextField setColor(final Color aColor) {
 		if (aColor == null) {
-			color = new Color(0,0,0);
-		}
-		else {
+			color = new Color(0, 0, 0);
+		} else {
 			color = aColor;
 		}
 		return this;
@@ -795,13 +753,12 @@ public final class DefineTextField implements DefineTag
 	 * maximum length is defined.
 	 * 
 	 * @param aNumber
-	 *            the maximum number of characters displayed in the field. Must be
-	 *            in the range 0..65535.
+	 *            the maximum number of characters displayed in the field. Must
+	 *            be in the range 0..65535.
 	 */
-	public DefineTextField setMaxLength(int aNumber)
-	{
+	public DefineTextField setMaxLength(final int aNumber) {
 		if (aNumber < 0 || aNumber > 65535) {
-			throw new IllegalArgumentException(Strings.UNSIGNED_VALUE_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
 		}
 		maxLength = aNumber;
 		return this;
@@ -815,8 +772,7 @@ public final class DefineTextField implements DefineTag
 	 *            the type of alignment. Must be either ALIGN_LEFT, ALIGN_RIGHT
 	 *            or ALIGN_JUSTIFY.
 	 */
-	public DefineTextField setAlignment(Align align)
-	{
+	public DefineTextField setAlignment(final Align align) {
 		alignment = align;
 		return this;
 	}
@@ -827,10 +783,9 @@ public final class DefineTextField implements DefineTag
 	 * @param aNumber
 	 *            the width of the left margin. Must be in the range 0..65535.
 	 */
-	public DefineTextField setLeftMargin(Integer aNumber)
-	{
+	public DefineTextField setLeftMargin(final Integer aNumber) {
 		if (aNumber != null && (aNumber < 0 || aNumber > 65535)) {
-			throw new IllegalArgumentException(Strings.UNSIGNED_VALUE_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
 		}
 		leftMargin = aNumber;
 		return this;
@@ -842,10 +797,9 @@ public final class DefineTextField implements DefineTag
 	 * @param aNumber
 	 *            the width of the right margin. Must be in the range 0..65535.
 	 */
-	public DefineTextField setRightMargin(Integer aNumber)
-	{
+	public DefineTextField setRightMargin(final Integer aNumber) {
 		if (aNumber != null && (aNumber < 0 || aNumber > 65535)) {
-			throw new IllegalArgumentException(Strings.UNSIGNED_VALUE_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
 		}
 		rightMargin = aNumber;
 		return this;
@@ -855,12 +809,12 @@ public final class DefineTextField implements DefineTag
 	 * Returns the indentation of the first line of text in twips.
 	 * 
 	 * @param aNumber
-	 *            the indentation for the first line. Must be in the range 0..65535.
+	 *            the indentation for the first line. Must be in the range
+	 *            0..65535.
 	 */
-	public DefineTextField setIndent(Integer aNumber)
-	{
+	public DefineTextField setIndent(final Integer aNumber) {
 		if (aNumber != null && (aNumber < 0 || aNumber > 65535)) {
-			throw new IllegalArgumentException(Strings.UNSIGNED_VALUE_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
 		}
 		indent = aNumber;
 		return this;
@@ -872,10 +826,9 @@ public final class DefineTextField implements DefineTag
 	 * @param aNumber
 	 *            the value for the leading. Must be in the range -32768..32767.
 	 */
-	public DefineTextField setLeading(Integer aNumber)
-	{
+	public DefineTextField setLeading(final Integer aNumber) {
 		if (aNumber != null && (aNumber < -32768 || aNumber > 32767)) {
-			throw new IllegalArgumentException(Strings.SIGNED_VALUE_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.SIGNED_RANGE);
 		}
 		leading = aNumber;
 		return this;
@@ -888,8 +841,7 @@ public final class DefineTextField implements DefineTag
 	 * @param aString
 	 *            the name of the variable.
 	 */
-	public DefineTextField setVariableName(String aString)
-	{
+	public DefineTextField setVariableName(final String aString) {
 		variableName = aString;
 		return this;
 	}
@@ -900,8 +852,7 @@ public final class DefineTextField implements DefineTag
 	 * @param aString
 	 *            the initial text displayed.
 	 */
-	public DefineTextField setInitialText(String aString)
-	{
+	public DefineTextField setInitialText(final String aString) {
 		initialText = aString;
 		return this;
 	}
@@ -909,8 +860,7 @@ public final class DefineTextField implements DefineTag
 	/**
 	 * Creates and returns a deep copy of this object.
 	 */
-	public DefineTextField copy() 
-	{
+	public DefineTextField copy() {
 		return new DefineTextField(this);
 	}
 
@@ -918,9 +868,8 @@ public final class DefineTextField implements DefineTag
 	 * Returns a short description of this action.
 	 */
 	@Override
-	public String toString()
-	{
-		StringBuilder builder = new StringBuilder();
+	public String toString() {
+		final StringBuilder builder = new StringBuilder();
 
 		builder.append("DefineTextField: { identifier = ").append(identifier);
 		builder.append("; bounds = ").append(bounds.toString());
@@ -933,7 +882,8 @@ public final class DefineTextField implements DefineTag
 		builder.append("; bordered = ").append(bordered);
 		builder.append("; HTML = ").append(html);
 		builder.append("; useFontGlyphs = ").append(useGlyphs);
-		builder.append("; fontIdentifier = ").append(fontIdentifier).append(";");
+		builder.append("; fontIdentifier = ").append(fontIdentifier)
+				.append(";");
 		builder.append("; fontHeight = ").append(fontHeight);
 		builder.append("; color = ").append(color.toString());
 		builder.append("; maxLength = ").append(maxLength);
@@ -949,9 +899,8 @@ public final class DefineTextField implements DefineTag
 		return String.format("", identifier, bounds, wordWrapped, multiline);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context)
-	{
-		Map<Integer,Integer>vars = context.getVariables();
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
+		final Map<Integer, Integer> vars = context.getVariables();
 		vars.put(Context.TRANSPARENT, 1);
 
 		length = 2 + bounds.prepareToEncode(coder, context);
@@ -966,11 +915,11 @@ public final class DefineTextField implements DefineTag
 
 		vars.remove(Context.TRANSPARENT);
 
-		return (length > 62 ? 6:2) + length;
+		return (length > 62 ? 6 : 2) + length;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException
-	{
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		start = coder.getPointer();
 
 		if (length >= 63) {
@@ -982,7 +931,7 @@ public final class DefineTextField implements DefineTag
 		end = coder.getPointer() + (length << 3);
 
 		coder.writeWord(identifier, 2);
-		Map<Integer,Integer>vars = context.getVariables();
+		final Map<Integer, Integer> vars = context.getVariables();
 		vars.put(Context.TRANSPARENT, 1);
 
 		bounds.encode(coder, context);
@@ -1003,8 +952,7 @@ public final class DefineTextField implements DefineTag
 		coder.writeBits(html ? 1 : 0, 1);
 		coder.writeBits(useGlyphs ? 1 : 0, 1);
 
-		if (fontIdentifier != 0)
-		{
+		if (fontIdentifier != 0) {
 			coder.writeWord(fontIdentifier, 2);
 			coder.writeWord(fontHeight, 2);
 		} else if (fontClass != null) {
@@ -1018,8 +966,7 @@ public final class DefineTextField implements DefineTag
 			coder.writeWord(maxLength, 2);
 		}
 
-		if (containsLayout())
-		{
+		if (containsLayout()) {
 			coder.writeWord(alignment == null ? 0 : alignment.getValue(), 1);
 			coder.writeWord(leftMargin == null ? 0 : leftMargin, 2);
 			coder.writeWord(rightMargin == null ? 0 : rightMargin, 2);
@@ -1029,8 +976,7 @@ public final class DefineTextField implements DefineTag
 
 		coder.writeString(variableName);
 
-		if (initialText.length() > 0)
-		{
+		if (initialText.length() > 0) {
 			coder.writeString(initialText);
 		}
 		vars.remove(Context.TRANSPARENT);
@@ -1041,12 +987,8 @@ public final class DefineTextField implements DefineTag
 		}
 	}
 
-	private boolean containsLayout()
-	{
-		return alignment != null || 
-			leftMargin != null || 
-			rightMargin != null || 
-			indent != null || 
-			leading != null;
+	private boolean containsLayout() {
+		return alignment != null || leftMargin != null || rightMargin != null
+				|| indent != null || leading != null;
 	}
 }

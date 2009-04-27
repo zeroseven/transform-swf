@@ -38,8 +38,6 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 
-import com.flagstone.transform.action.BasicAction;
-import com.flagstone.transform.action.NewFunction;
 import com.flagstone.transform.coder.Action;
 import com.flagstone.transform.coder.ActionDecoder;
 import com.flagstone.transform.coder.ActionTypes;
@@ -49,57 +47,46 @@ import com.flagstone.transform.coder.DecoderRegistry;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-
-@SuppressWarnings( { 
-	"PMD.LocalVariableCouldBeFinal",
-	"PMD.JUnitAssertionsShouldIncludeMessage" 
-})
+@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
+		"PMD.JUnitAssertionsShouldIncludeMessage" })
 public final class NewFunctionTest {
-	
-	private static final String name = "function";
-	private static final List<String> args = new ArrayList<String>();
-	private static final List<Action> actions = new ArrayList<Action>();
-	
+
+	private static String name = "function";
+	private static List<String> args = new ArrayList<String>();
+	private static List<Action> actions = new ArrayList<Action>();
+
 	static {
 		args.add("a");
 		args.add("b");
-		
+
 		actions.add(BasicAction.ADD);
 		actions.add(BasicAction.END);
 	}
-	
+
 	private transient final int type = ActionTypes.NEW_FUNCTION;
 	private transient NewFunction fixture;
-	
-	// Actions forming a function body are not part of the definition so the 
-	// length must be adjusted accordingly.
-		
-	private transient final byte[] empty = new byte[] { (byte)type, 0x05, 0x00, 
-			0x00, 
-			0x00, 0x00,
-			0x01, 0x00, ActionTypes.END };
 
-	private transient final byte[] encoded = new byte[] { (byte)type, 0x11, 0x00, 
-			0x66, 0x75, 0x6E, 0x63, 0x74, 0x69, 0x6F, 0x6E, 0x00, 
-			0x02, 0x00, 0x61, 0x00, 0x62, 0x00,
-			0x02, 0x00, ActionTypes.ADD, ActionTypes.END };
+	private transient final byte[] encoded = new byte[] { (byte) type, 0x11,
+			0x00, 0x66, 0x75, 0x6E, 0x63, 0x74, 0x69, 0x6F, 0x6E, 0x00, 0x02,
+			0x00, 0x61, 0x00, 0x62, 0x00, 0x02, 0x00, ActionTypes.ADD,
+			ActionTypes.END };
 
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAddNullArgument() {
 		fixture = new NewFunction(args, actions);
-		fixture.add((String)null);
+		fixture.add((String) null);
 	}
 
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAddEmptyArgument() {
 		fixture = new NewFunction(args, actions);
 		fixture.add("");
 	}
 
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAddNullAction() {
 		fixture = new NewFunction(args, actions);
-		fixture.add((Action)null);
+		fixture.add((Action) null);
 	}
 
 	@Test
@@ -110,20 +97,20 @@ public final class NewFunctionTest {
 		assertNotSame(fixture.getActions(), copy.getActions());
 		assertEquals(fixture.toString(), copy.toString());
 	}
-	
+
 	@Test
 	public void encode() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(encoded.length);		
+		SWFEncoder encoder = new SWFEncoder(encoded.length);
 		Context context = new Context();
-	
+
 		fixture = new NewFunction(name, args, actions);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
 		fixture.encode(encoder, context);
-		
+
 		assertTrue(encoder.eof());
 		assertArrayEquals(encoded, encoder.getData());
 	}
-	
+
 	@Test
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
@@ -133,7 +120,7 @@ public final class NewFunctionTest {
 		context.setRegistry(registry);
 
 		fixture = new NewFunction(decoder, context);
-		
+
 		assertTrue(decoder.eof());
 		assertEquals(name, fixture.getName());
 		assertEquals(args, fixture.getArguments());

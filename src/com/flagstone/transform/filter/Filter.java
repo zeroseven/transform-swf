@@ -34,12 +34,4 @@ import com.flagstone.transform.coder.Copyable;
 import com.flagstone.transform.coder.SWFEncodeable;
 
 public interface Filter extends SWFEncodeable, Copyable<Filter> {
-	int DROP_SHADOW = 0;
-	int BLUR = 1;
-	int GLOW = 2;
-	int BEVEL = 3;
-	int GRADIENT_GLOW = 4;
-	int CONVOLUTION = 5;
-	int COLOR_MATRIX = 6;
-	int GRADIENT_BEVEL = 0;
 }

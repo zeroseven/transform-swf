@@ -140,8 +140,7 @@ import com.flagstone.transform.datatype.Placement;
  * number are displayed in front of object placed on a lower layer number.
  * 
  */
-public final class Layer
-{
+public final class Layer {
 	/**
 	 * Merge layers together to create a single time-line. Each layer is assumed
 	 * to start at the same point in time. The process steps through each of the
@@ -154,46 +153,39 @@ public final class Layer
 	 * @return an array of all the objects contained in each layer. This array
 	 *         can then be added to the movie.
 	 */
-	public static List<MovieTag> merge(List<Layer> layers)
-	{
-		ArrayList<MovieTag> objects = new ArrayList<MovieTag>();
+	public static List<MovieTag> merge(final List<Layer> layers) {
+		final ArrayList<MovieTag> objects = new ArrayList<MovieTag>();
 
-		int[] idx = new int[layers.size()];
+		final int[] idx = new int[layers.size()];
 
 		for (int i = 0; i < idx.length; i++) {
 			idx[i] = 0;
 		}
 
-		while (true)
-		{
+		while (true) {
 			List<MovieTag> array = null;
 			MovieTag object;
 
-			for (int i = 0; i < idx.length; i++)
-			{
-				array = (layers.get(i)).getObjects();
+			for (int i = 0; i < idx.length; i++) {
+				array = layers.get(i).getObjects();
 
-				while (idx[i] < array.size())
-				{
+				while (idx[i] < array.size()) {
 					object = array.get(idx[i]++);
 
-					if (object instanceof ShowFrame)
-					{
+					if (object instanceof ShowFrame) {
 						break;
 					}
 
 					objects.add(object);
 				}
 
-				if (idx[i] == array.size())
-				{
+				if (idx[i] == array.size()) {
 					array = null;
 				}
 			}
 			objects.add(ShowFrame.getInstance());
 
-			if (array == null)
-			{
+			if (array == null) {
 				break;
 			}
 		}
@@ -214,8 +206,7 @@ public final class Layer
 	 * @param number
 	 *            the layer number on the display list.
 	 */
-	public Layer(int number)
-	{
+	public Layer(final int number) {
 		layerNumber = number;
 		identifier = 0;
 		displayList = new ArrayList<MovieTag>();
@@ -227,8 +218,7 @@ public final class Layer
 	 * 
 	 * @return the layer number.
 	 */
-	public int getLayer()
-	{
+	public int getLayer() {
 		return layerNumber;
 	}
 
@@ -239,8 +229,7 @@ public final class Layer
 	 * 
 	 * @return the unique identifier used to reference the object.
 	 */
-	public int getIdentifier()
-	{
+	public int getIdentifier() {
 		return identifier;
 	}
 
@@ -252,8 +241,7 @@ public final class Layer
 	 *         (shape, text, etc) to be displayed and the associated commands
 	 *         that update the position of the object on the screen.
 	 */
-	public List<MovieTag> getObjects()
-	{
+	public List<MovieTag> getObjects() {
 		return displayList;
 	}
 
@@ -263,8 +251,7 @@ public final class Layer
 	 * @param definition
 	 *            an object defining an image, shape, text, sound or video.
 	 */
-	public Layer add(MovieTag definition)
-	{
+	public Layer add(final MovieTag definition) {
 		displayList.add(definition);
 		return this;
 	}
@@ -279,11 +266,10 @@ public final class Layer
 	 * number can be used to identify which object to update.
 	 * 
 	 * @param uid
-	 *            an object definition, DefineShape, DefineImage, etc. that
-	 *            will be added to the display list.
+	 *            an object definition, DefineShape, DefineImage, etc. that will
+	 *            be added to the display list.
 	 */
-	public void select(int uid)
-	{
+	public void select(final int uid) {
 		identifier = uid;
 		place = Place2.show(uid, layerNumber, 0, 0);
 		displayList.add(place);
@@ -293,13 +279,12 @@ public final class Layer
 	 * Add an object to the later and select it to be added on the display list.
 	 * 
 	 * @param definition
-	 *            an object definition, DefineShape, DefineImage, etc. that
-	 *            will be added to the display list.
+	 *            an object definition, DefineShape, DefineImage, etc. that will
+	 *            be added to the display list.
 	 */
-	public void select(MovieTag definition)
-	{
+	public void select(final MovieTag definition) {
 		add(definition);
-		//TODO select(definition.getIdentifier());
+		// TODO select(definition.getIdentifier());
 	}
 
 	/**
@@ -310,14 +295,11 @@ public final class Layer
 	 * @param yCoord
 	 *            the y-coordinate, expressed in twips.
 	 */
-	public void move(int xCoord, int yCoord)
-	{
-		if (place == null)
-		{
+	public void move(final int xCoord, final int yCoord) {
+		if (place == null) {
 			place = Place2.move(layerNumber, xCoord, yCoord);
 			displayList.add(place);
-		} else
-		{
+		} else {
 			place.setTransform(CoordTransform.translate(xCoord, yCoord));
 		}
 	}
@@ -334,8 +316,7 @@ public final class Layer
 	 * @param blue
 	 *            the blue component of the colour.
 	 */
-	public void color(int red, int green, int blue)
-	{
+	public void color(final int red, final int green, final int blue) {
 		color(red, green, blue, 255);
 	}
 
@@ -351,15 +332,13 @@ public final class Layer
 	 * @param alpha
 	 *            the transparency component.
 	 */
-	public void color(int red, int green, int blue, int alpha)
-	{
-		ColorTransform transform = new ColorTransform(red, green, blue, alpha);
-		
-		if (place == null)
-		{
-			displayList.add(Place2.modify(layerNumber).setColorTransform(transform));
-		} else
-		{
+	public void color(final int red, final int green, final int blue, final int alpha) {
+		final ColorTransform transform = new ColorTransform(red, green, blue, alpha);
+
+		if (place == null) {
+			displayList.add(Place2.modify(layerNumber).setColorTransform(
+					transform));
+		} else {
 			place.setColorTransform(transform);
 		}
 	}
@@ -371,13 +350,10 @@ public final class Layer
 	 * @param depth
 	 *            the number of layers that will be clipped.
 	 */
-	public void clip(int depth)
-	{
-		if (place == null)
-		{
+	public void clip(final int depth) {
+		if (place == null) {
 			displayList.add(Place2.modify(layerNumber).setDepth(depth));
-		} else
-		{
+		} else {
 			place.setDepth(depth);
 		}
 	}
@@ -389,14 +365,12 @@ public final class Layer
 	 * @param ratio
 	 *            the ratio between the starting shape and the end shape.
 	 */
-	public void morph(float ratio)
-	{
-		if (place == null)
-		{
-			displayList.add(Place2.modify(layerNumber).setRatio((int)(ratio*65535.0f)));
-		} else
-		{
-			place.setRatio((int)(ratio*65535.0f));
+	public void morph(final float ratio) {
+		if (place == null) {
+			displayList.add(Place2.modify(layerNumber).setRatio(
+					(int) (ratio * 65535.0f)));
+		} else {
+			place.setRatio((int) (ratio * 65535.0f));
 		}
 	}
 
@@ -406,13 +380,10 @@ public final class Layer
 	 * @param name
 	 *            a string that can be used to reference the object.
 	 */
-	public void name(String name)
-	{
-		if (place == null)
-		{
+	public void name(final String name) {
+		if (place == null) {
 			displayList.add(Place2.modify(layerNumber).setName(name));
-		} else
-		{
+		} else {
 			place.setName(name);
 		}
 	}
@@ -420,8 +391,7 @@ public final class Layer
 	/**
 	 * Remove the object from the display list.
 	 */
-	public void remove()
-	{
+	public void remove() {
 		if (place != null) {
 			place = null;
 		}
@@ -432,17 +402,15 @@ public final class Layer
 	/**
 	 * Replace the object on the display list.
 	 * 
-	 * @param uid the unique identifier used to reference the object.
+	 * @param uid
+	 *            the unique identifier used to reference the object.
 	 */
-	public void replace(int uid)
-	{
+	public void replace(final int uid) {
 		identifier = uid;
 
-		if (place == null)
-		{
+		if (place == null) {
 			displayList.add(Place2.replace(uid, layerNumber));
-		} else
-		{
+		} else {
 			place.setIdentifier(uid);
 			place.setMode(Placement.REPLACE);
 		}
@@ -454,13 +422,11 @@ public final class Layer
 	 * @param color
 	 *            the color transform to apply to the shape.
 	 */
-	public void change(ColorTransform color)
-	{
-		if (place == null)
-		{
-			displayList.add(Place2.modify(layerNumber).setColorTransform(color));
-		} else
-		{
+	public void change(final ColorTransform color) {
+		if (place == null) {
+			displayList
+					.add(Place2.modify(layerNumber).setColorTransform(color));
+		} else {
 			place.setColorTransform(color);
 		}
 	}
@@ -476,13 +442,10 @@ public final class Layer
 	 * @param coord
 	 *            the coordinate transform to apply to the object.
 	 */
-	public void change(CoordTransform coord)
-	{
-		if (place == null)
-		{
+	public void change(final CoordTransform coord) {
+		if (place == null) {
 			displayList.add(Place2.modify(layerNumber).setTransform(coord));
-		} else
-		{
+		} else {
 			place.setTransform(coord);
 		}
 	}
@@ -493,8 +456,7 @@ public final class Layer
 	 * method for any of the other operations to take effect.
 	 * 
 	 */
-	public void show()
-	{
+	public void show() {
 		show(1);
 	}
 
@@ -504,12 +466,11 @@ public final class Layer
 	 * frames.
 	 * 
 	 * @param count
-	 *            the number of frames to be displayed. Must be a positive number.
+	 *            the number of frames to be displayed. Must be a positive
+	 *            number.
 	 */
-	public void show(int count)
-	{
-		if (count < 1)
-		{
+	public void show(final int count) {
+		if (count < 1) {
 			throw new IllegalArgumentException("Must show at least one frame");
 		}
 
@@ -517,8 +478,7 @@ public final class Layer
 			place = null;
 		}
 
-		for (int i = 0; i < count; i++)
-		{
+		for (int i = 0; i < count; i++) {
 			displayList.add(ShowFrame.getInstance());
 		}
 	}

@@ -36,22 +36,20 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
 /**
- * The ScreenVideoPacket class is used to encode or decode a frame of video
- * data using Macromedia's ScreenVideo format.
+ * The ScreenVideoPacket class is used to encode or decode a frame of video data
+ * using Macromedia's ScreenVideo format.
  * 
  */
-public final class ScreenPacket implements Cloneable
-{
-	protected boolean keyFrame;
-	protected int blockWidth;
-	protected int blockHeight;
-	protected int imageWidth;
-	protected int imageHeight;
-	protected List<ImageBlock> imageBlocks;
+public final class ScreenPacket implements Cloneable {
+	private boolean keyFrame;
+	private int blockWidth;
+	private int blockHeight;
+	private int imageWidth;
+	private int imageHeight;
+	private List<ImageBlock> imageBlocks;
 
-	public ScreenPacket(byte[] data)
-	{
-		SWFDecoder coder = new SWFDecoder(data);
+	public ScreenPacket(final byte[] data) {
+		final SWFDecoder coder = new SWFDecoder(data);
 
 		keyFrame = coder.readBits(4, false) == 1;
 		coder.readBits(4, false); // codec = screen_video
@@ -61,8 +59,10 @@ public final class ScreenPacket implements Cloneable
 		blockHeight = (coder.readBits(4, false) + 1) * 16;
 		imageHeight = coder.readBits(12, false);
 
-		int columns = imageWidth / blockWidth + ((imageWidth % blockWidth > 0) ? 1 : 0);
-		int rows = imageHeight / blockHeight + ((imageHeight % blockHeight > 0) ? 1 : 0);
+		final int columns = imageWidth / blockWidth
+				+ ((imageWidth % blockWidth > 0) ? 1 : 0);
+		final int rows = imageHeight / blockHeight
+				+ ((imageHeight % blockHeight > 0) ? 1 : 0);
 
 		int height = imageHeight;
 		int width = imageWidth;
@@ -70,22 +70,19 @@ public final class ScreenPacket implements Cloneable
 		imageBlocks.clear();
 		ImageBlock block;
 
-		for (int i = 0; i < rows; i++, height -= blockHeight)
-		{
-			for (int j = 0; j < columns; j++, width -= blockWidth)
-			{
-				int length = coder.readBits(16, false);
+		for (int i = 0; i < rows; i++, height -= blockHeight) {
+			for (int j = 0; j < columns; j++, width -= blockWidth) {
+				final int length = coder.readBits(16, false);
 
-				if (length == 0)
-				{
+				if (length == 0) {
 					block = new ImageBlock(0, 0, null);
-				} 
-				else
-				{
-					int dataHeight = (height < blockHeight) ? height : blockHeight;
-					int dataWidth = (width < blockWidth) ? width : blockWidth;
+				} else {
+					final int dataHeight = (height < blockHeight) ? height
+							: blockHeight;
+					final int dataWidth = (width < blockWidth) ? width : blockWidth;
 
-					block = new ImageBlock(dataHeight, dataWidth, coder.readBytes(new byte[length]));
+					block = new ImageBlock(dataHeight, dataWidth, coder
+							.readBytes(new byte[length]));
 				}
 
 				imageBlocks.add(block);
@@ -93,24 +90,28 @@ public final class ScreenPacket implements Cloneable
 		}
 	}
 
-	protected ScreenPacket()
-	{
+	protected ScreenPacket() {
 		imageBlocks = new ArrayList<ImageBlock>();
 	}
 
 	/**
 	 * Creates a ScreenVideoPacket.
 	 * 
-	 * @param key indicates whether the packet contains a key frame.
-	 * @param imageWidth the width of the frame.
-	 * @param imageHeight the height of the frame.
-	 * @param blockWidth the width of the blocks that make up the frame.
-	 * @param blockHeight the height of the blocks that make up the frame.
-	 * @param blocks the array of ImageBlocks that make up the frame.
+	 * @param key
+	 *            indicates whether the packet contains a key frame.
+	 * @param imageWidth
+	 *            the width of the frame.
+	 * @param imageHeight
+	 *            the height of the frame.
+	 * @param blockWidth
+	 *            the width of the blocks that make up the frame.
+	 * @param blockHeight
+	 *            the height of the blocks that make up the frame.
+	 * @param blocks
+	 *            the array of ImageBlocks that make up the frame.
 	 */
-	public ScreenPacket(boolean key, int imageWidth, int imageHeight, 
-	                         int blockWidth, int blockHeight, List<ImageBlock> blocks)
-	{
+	public ScreenPacket(final boolean key, final int imageWidth, final int imageHeight,
+			final int blockWidth, final int blockHeight, final List<ImageBlock> blocks) {
 		setKeyFrame(key);
 		setImageWidth(imageWidth);
 		setImageHeight(imageHeight);
@@ -118,30 +119,28 @@ public final class ScreenPacket implements Cloneable
 		setBlockHeight(blockHeight);
 		setImageBlocks(blocks);
 	}
-	
-	public ScreenPacket(ScreenPacket object)
-	{
+
+	public ScreenPacket(final ScreenPacket object) {
 		keyFrame = object.keyFrame;
 		blockWidth = object.blockWidth;
 		blockHeight = object.blockHeight;
 		imageWidth = object.imageWidth;
 		imageHeight = object.imageHeight;
-		
+
 		imageBlocks = new ArrayList<ImageBlock>(object.imageBlocks.size());
-		
+
 		for (ImageBlock block : object.imageBlocks) {
 			imageBlocks.add(block.copy());
 		}
 	}
 
-	
 	/**
 	 * Add an image block to the array that make up the frame.
 	 * 
-	 * @param block an ImageBlock. Must not be null.
+	 * @param block
+	 *            an ImageBlock. Must not be null.
 	 */
-	public ScreenPacket add(ImageBlock block)
-	{
+	public ScreenPacket add(final ImageBlock block) {
 		imageBlocks.add(block);
 		return this;
 	}
@@ -149,94 +148,87 @@ public final class ScreenPacket implements Cloneable
 	/**
 	 * Returns true if the packet contains a key frame
 	 */
-	public boolean isKeyFrame()
-	{
+	public boolean isKeyFrame() {
 		return keyFrame;
 	}
 
 	/**
 	 * Sets whether the frame is a key frame (true) or normal one (false).
 	 * 
-	 * @param key a boolean value indicating whether the frame is key (true) or
-	 * normal (false.
+	 * @param key
+	 *            a boolean value indicating whether the frame is key (true) or
+	 *            normal (false.
 	 */
-	public void setKeyFrame(boolean key)
-	{
+	public void setKeyFrame(final boolean key) {
 		keyFrame = key;
 	}
 
 	/**
 	 * Returns the width of the frame in pixels.
 	 */
-	public int getImageWidth()
-	{
+	public int getImageWidth() {
 		return imageWidth;
 	}
 
 	/**
 	 * Sets the width of the frame.
 	 * 
-	 * @param width the width of the frame in pixels.
+	 * @param width
+	 *            the width of the frame in pixels.
 	 */
-	public void setImageWidth(int width)
-	{
+	public void setImageWidth(final int width) {
 		imageWidth = width;
 	}
 
 	/**
 	 * Returns the height of the frame in pixels.
 	 */
-	public int getImageHeight()
-	{
+	public int getImageHeight() {
 		return imageHeight;
 	}
 
-	public void setImageHeight(int height)
-	{
+	public void setImageHeight(final int height) {
 		imageHeight = height;
 	}
 
 	/**
 	 * Returns the width of the blocks in pixels.
 	 */
-	public int getBlockWidth()
-	{
+	public int getBlockWidth() {
 		return blockWidth;
 	}
 
 	/**
 	 * Sets the width of the image blocks.
 	 * 
-	 * @param width the width of the blocks in pixels.
+	 * @param width
+	 *            the width of the blocks in pixels.
 	 */
-	public void setBlockWidth(int width)
-	{
+	public void setBlockWidth(final int width) {
 		blockWidth = width;
 	}
 
 	/**
 	 * Returns the height of the blocks in pixels.
 	 */
-	public int getBlockHeight()
-	{
+	public int getBlockHeight() {
 		return blockHeight;
 	}
 
 	/**
 	 * Sets the height of the image blocks.
 	 * 
-	 * @param height the height of the blocks in pixels.
+	 * @param height
+	 *            the height of the blocks in pixels.
 	 */
-	public void setBlockHeight(int height)
-	{
+	public void setBlockHeight(final int height) {
 		blockHeight = height;
 	}
 
 	/**
 	 * Returns the image blocks that have changed in this frame,
 	 */
-	public List<ImageBlock> getImageBlocks()
-	{
+	public List<ImageBlock> getImageBlocks() {
 		return imageBlocks;
 	}
 
@@ -244,28 +236,24 @@ public final class ScreenPacket implements Cloneable
 	 * Set the image blocks that have changed in this frame. If this is a key
 	 * frame then all image blocks are displayed.
 	 * 
-	 * @param blocks the array of image blocks. Must not be null.
+	 * @param blocks
+	 *            the array of image blocks. Must not be null.
 	 */
-	public void setImageBlocks(List<ImageBlock> blocks)
-	{
+	public void setImageBlocks(final List<ImageBlock> blocks) {
 		imageBlocks = new ArrayList<ImageBlock>(blocks);
 	}
 
 	/**
 	 * Creates and returns a deep copy of this object.
 	 */
-	public ScreenPacket copy()
-	{
+	public ScreenPacket copy() {
 		return new ScreenPacket(this);
 	}
 
-
-	private int length()
-	{
+	private int length() {
 		int length = 5;
 
-		for (ImageBlock block : imageBlocks)
-		{
+		for (ImageBlock block : imageBlocks) {
 			length += 2;
 
 			if (!block.isEmpty()) {
@@ -275,9 +263,8 @@ public final class ScreenPacket implements Cloneable
 		return length;
 	}
 
-	public byte[] encode()
-	{
-		SWFEncoder coder = new SWFEncoder(length());
+	public byte[] encode() {
+		final SWFEncoder coder = new SWFEncoder(length());
 
 		coder.writeBits(keyFrame ? 1 : 2, 4);
 		coder.writeBits(3, 4);
@@ -289,14 +276,10 @@ public final class ScreenPacket implements Cloneable
 
 		byte[] blockData;
 
-		for (ImageBlock block : imageBlocks)
-		{
-			if (block.isEmpty())
-			{
+		for (ImageBlock block : imageBlocks) {
+			if (block.isEmpty()) {
 				coder.writeWord(0, 2);
-			} 
-			else
-			{
+			} else {
 				blockData = block.getBlock();
 				coder.writeBits(blockData.length, 16);
 				coder.writeBytes(blockData);

@@ -7,23 +7,26 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 public final class GlowFilter implements Filter {
 
-	public GlowFilter(GlowFilter object) {
-		
+	public GlowFilter(final GlowFilter object) {
+		//TODO Implement
 	}
-	
-	public GlowFilter copy() {
-		return new GlowFilter(this);	}
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context)
-	{
+	public GlowFilter copy() {
+		return new GlowFilter(this);
+	}
+
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
+		//TODO Implement
 		return 0;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException
-	{
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
+		//TODO Implement
 	}
 
-	public void decode(final SWFDecoder coder, final Context context) throws CoderException
-	{
+	public void decode(final SWFDecoder coder, final Context context)
+			throws CoderException {
+		//TODO Implement
 	}
 }

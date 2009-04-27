@@ -41,35 +41,35 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
 /**
- * SoundStreamBlock contains the sound data being streamed to the Flash
- * Player.
+ * SoundStreamBlock contains the sound data being streamed to the Flash Player.
  * 
- * <p>Streaming sounds are played in tight synchronisation with one
+ * <p>
+ * Streaming sounds are played in tight synchronisation with one
  * SoundStreamBlock object defining the sound for each frame displayed in a
- * movie. When a streaming sound is played if the Flash Player cannot render the 
- * frames fast enough to maintain synchronisation with the sound being played 
- * then frames will be skipped. Normally the player will reduce the frame rate 
- * so every frame of a movie is played.</p>
+ * movie. When a streaming sound is played if the Flash Player cannot render the
+ * frames fast enough to maintain synchronisation with the sound being played
+ * then frames will be skipped. Normally the player will reduce the frame rate
+ * so every frame of a movie is played.
+ * </p>
  * 
  * @see SoundStreamHead
  * @see SoundStreamHead2
  */
-public final class SoundStreamBlock implements MovieTag
-{
+public final class SoundStreamBlock implements MovieTag {
 	private static final String FORMAT = "SoundStreamBlock: { soundData=%d }";
-	
+
 	private byte[] soundData;
-	
+
 	private transient int start;
 	private transient int end;
 	private transient int length;
 
-	//TODO(doc)
-	public SoundStreamBlock(final SWFDecoder coder, final Context context) throws CoderException
-	{
+	// TODO(doc)
+	public SoundStreamBlock(final SWFDecoder coder)
+			throws CoderException {
 		start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
-		
+
 		if (length == 0x3F) {
 			length = coder.readWord(4, false);
 		}
@@ -90,14 +90,12 @@ public final class SoundStreamBlock implements MovieTag
 	 * @param bytes
 	 *            an array of bytes containing the sound data. Must not be null.
 	 */
-	public SoundStreamBlock(byte[] bytes)
-	{
+	public SoundStreamBlock(final byte[] bytes) {
 		setSoundData(bytes);
 	}
 
-	//TODO(doc)
-	public SoundStreamBlock(SoundStreamBlock object)
-	{
+	// TODO(doc)
+	public SoundStreamBlock(final SoundStreamBlock object) {
 		soundData = Arrays.copyOf(object.soundData, object.soundData.length);
 	}
 
@@ -105,8 +103,7 @@ public final class SoundStreamBlock implements MovieTag
 	 * Returns the sound data in the format defined by a preceding
 	 * SoundStreamHead or SoundStreamHead2 object.
 	 */
-	public byte[] getSoundData()
-	{
+	public byte[] getSoundData() {
 		return soundData;
 	}
 
@@ -116,33 +113,29 @@ public final class SoundStreamBlock implements MovieTag
 	 * @param bytes
 	 *            an array of bytes containing the sound data. Must not be null.
 	 */
-	public void setSoundData(byte[] bytes)
-	{
+	public void setSoundData(final byte[] bytes) {
 		if (bytes == null) {
-			throw new IllegalArgumentException(Strings.DATA_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.DATA_IS_NULL);
 		}
 		soundData = bytes;
 	}
 
-	public SoundStreamBlock copy() 
-	{
+	public SoundStreamBlock copy() {
 		return new SoundStreamBlock(this);
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return String.format(FORMAT, soundData.length);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context)
-	{
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		length = soundData.length;
-		return (length > 62 ? 6:2) + length;
+		return (length > 62 ? 6 : 2) + length;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException
-	{
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		start = coder.getPointer();
 
 		if (length >= 63) {
@@ -152,7 +145,7 @@ public final class SoundStreamBlock implements MovieTag
 			coder.writeWord((MovieTypes.SOUND_STREAM_BLOCK << 6) | length, 2);
 		}
 		end = coder.getPointer() + (length << 3);
-	
+
 		coder.writeBytes(soundData);
 
 		if (coder.getPointer() != end) {

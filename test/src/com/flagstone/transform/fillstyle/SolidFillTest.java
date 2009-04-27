@@ -42,26 +42,23 @@ import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.Color;
-import com.flagstone.transform.fillstyle.SolidFill;
 
-@SuppressWarnings( { 
-	"PMD.LocalVariableCouldBeFinal",
-	"PMD.JUnitAssertionsShouldIncludeMessage" 
-})
+@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
+		"PMD.JUnitAssertionsShouldIncludeMessage" })
 public final class SolidFillTest {
-	
-	private transient final Color color = new Color(1,2,3);
-	
-	private transient SolidFill fixture;
-	
-	private transient final byte[] encoded = new byte[] { 
-			0x00, 0x01, 0x02, 0x03 };
 
-	@Test(expected=IllegalArgumentException.class)
+	private transient final Color color = new Color(1, 2, 3);
+
+	private transient SolidFill fixture;
+
+	private transient final byte[] encoded = new byte[] { 0x00, 0x01, 0x02,
+			0x03 };
+
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForColorWithNull() {
-		fixture = new SolidFill((Color)null);
+		fixture = new SolidFill((Color) null);
 	}
-	
+
 	@Test
 	public void checkCopy() {
 		fixture = new SolidFill(color);
@@ -71,16 +68,16 @@ public final class SolidFillTest {
 		assertSame(fixture.getColor(), copy.getColor());
 		assertEquals(fixture.toString(), copy.toString());
 	}
-	
+
 	@Test
-	public void encode() throws CoderException {		
-		SWFEncoder encoder = new SWFEncoder(encoded.length);		
+	public void encode() throws CoderException {
+		SWFEncoder encoder = new SWFEncoder(encoded.length);
 		Context context = new Context();
 
 		fixture = new SolidFill(color);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
 		fixture.encode(encoder, context);
-		
+
 		assertTrue(encoder.eof());
 		assertArrayEquals(encoded, encoder.getData());
 	}
@@ -91,7 +88,7 @@ public final class SolidFillTest {
 		Context context = new Context();
 
 		fixture = new SolidFill(decoder, context);
-		
+
 		assertTrue(decoder.eof());
 		assertEquals(color.getRed(), fixture.getColor().getRed());
 		assertEquals(color.getGreen(), fixture.getColor().getGreen());

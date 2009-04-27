@@ -59,14 +59,14 @@ import com.flagstone.transform.coder.SWFEncoder;
  * @see Place2
  */
 public final class Remove implements MovieTag {
-	
+
 	private static final String FORMAT = "Remove: { identifier=%d; layer=%d }";
-	
+
 	private int identifier;
 	private int layer;
-	
-	//TODO(doc)
-	public Remove(final SWFDecoder coder, final Context context) throws CoderException {
+
+	// TODO(doc)
+	public Remove(final SWFDecoder coder) throws CoderException {
 
 		if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
 			coder.readWord(4, false);
@@ -87,13 +87,13 @@ public final class Remove implements MovieTag {
 	 *            the layer in the display list where the object is being
 	 *            displayed. Must be in the range 1.65535.
 	 */
-	public Remove(int uid, int layer) {
+	public Remove(final int uid, final int layer) {
 		setIdentifier(uid);
 		setLayer(layer);
 	}
 
-	//TODO(doc)
-	public Remove(Remove object) {
+	// TODO(doc)
+	public Remove(final Remove object) {
 		identifier = object.identifier;
 		layer = object.layer;
 	}
@@ -119,9 +119,9 @@ public final class Remove implements MovieTag {
 	 *            the unique identifier for the object currently on the display
 	 *            list. Must be in the range 1.65535.
 	 */
-	public void setIdentifier(int uid) {
+	public void setIdentifier(final int uid) {
 		if (uid < 1 || uid > 65535) {
-			throw new IllegalArgumentException(Strings.IDENTIFIER_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
 		}
 		identifier = uid;
 	}
@@ -133,9 +133,9 @@ public final class Remove implements MovieTag {
 	 *            the layer in the display list where the object is being
 	 *            displayed. Must be in the range 1.65535.
 	 */
-	public void setLayer(int aLayer) {
+	public void setLayer(final int aLayer) {
 		if (aLayer < 1 || aLayer > 65535) {
-			throw new IllegalArgumentException(Strings.LAYER_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.LAYER_RANGE);
 		}
 		layer = aLayer;
 	}
@@ -153,7 +153,8 @@ public final class Remove implements MovieTag {
 		return 6;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException {
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		coder.writeWord((MovieTypes.REMOVE << 6) | 4, 2);
 		coder.writeWord(identifier, 2);
 		coder.writeWord(layer, 2);

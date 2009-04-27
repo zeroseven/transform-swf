@@ -32,37 +32,61 @@ package com.flagstone.transform.datatype;
 
 /**
  * Blend modes let you control how the colours and transparency of successive
- * layers are composited together when the Flash Player displays the objects
- * on the screen. The effect is to create highlights, shadows or to control
- * how an underlying object appears. 
+ * layers are composited together when the Flash Player displays the objects on
+ * the screen. The effect is to create highlights, shadows or to control how an
+ * underlying object appears.
  */
 public enum Blend {
-	/** Applies colour form the current layer normally with no blending with the underlying layers. */
+	/**
+	 * Applies colour form the current layer normally with no blending with the
+	 * underlying layers.
+	 */
 	NORMAL,
 	/** Sets the opacity of the current layer at 100% before blending. */
 	LAYER,
 	/** Multiplies layers together. This has the effect of darkening the layer. */
 	MULTIPLY,
-	/** Multiplies this inverse of the layer with the underlying layer, creating a bleaching effect. */
+	/**
+	 * Multiplies this inverse of the layer with the underlying layer, creating
+	 * a bleaching effect.
+	 */
 	SCREEN,
-	/** Displays colours from the underlying layer that are lighter than the current layer. */
+	/**
+	 * Displays colours from the underlying layer that are lighter than the
+	 * current layer.
+	 */
 	LIGHTEN,
-	/** Displays colours from the underlying layer that are darker than the current layer. */
+	/**
+	 * Displays colours from the underlying layer that are darker than the
+	 * current layer.
+	 */
 	DARKEN,
 	/** Add the colours of the layers together. */
 	ADD,
 	/** Subtract the current layer colour from the underlying layer. */
 	SUBTRACT,
-	/** Subtracts the largest colour value from the smallest, creating a colour negative effect. */
+	/**
+	 * Subtracts the largest colour value from the smallest, creating a colour
+	 * negative effect.
+	 */
 	DIFFERENCE,
 	/** Inverts the colours of the current layer. */
 	INVERT,
 	/** Applies the transparency of the current layer to the underlying layer. */
 	ALPHA,
-	/** Delete the colours from the underlying layer that match the colour on the current layer. */
+	/**
+	 * Delete the colours from the underlying layer that match the colour on the
+	 * current layer.
+	 */
 	ERASE,
-	/** Use the colour from the current layer to select colours from the underlying layer. */
+	/**
+	 * Use the colour from the current layer to select colours from the
+	 * underlying layer.
+	 */
 	OVERLAY,
-	/** Select colours from the underlying layer using the values on the current layer. */
+	/**
+	 * Select colours from the underlying layer using the values on the current
+	 * layer.
+	 */
 	HARDLIGHT;
 }

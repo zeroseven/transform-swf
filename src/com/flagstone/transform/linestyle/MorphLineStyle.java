@@ -40,37 +40,38 @@ import com.flagstone.transform.datatype.Color;
 import com.flagstone.transform.shape.DefineMorphShape;
 
 /**
- * MorphSolidLine defines the width and colour of a line drawn for a shape is 
- * it is morphed.
+ * MorphSolidLine defines the width and colour of a line drawn for a shape is it
+ * is morphed.
  * 
- * <p>MorphSolidLine specifies the width and colour of the line at the start and 
- * end of the morphing process. The transparency value for the colour should also 
- * be specified. The Flash Player performs the interpolation as the shape is 
- * morphed.</p>
+ * <p>
+ * MorphSolidLine specifies the width and colour of the line at the start and
+ * end of the morphing process. The transparency value for the colour should
+ * also be specified. The Flash Player performs the interpolation as the shape
+ * is morphed.
+ * </p>
  * 
  * @see DefineMorphShape
  */
-public final class MorphLineStyle implements SWFEncodeable
-{
+public final class MorphLineStyle implements SWFEncodeable {
 	private static final String FORMAT = "MorphSolidLine: { startWidth=%d; endWidth=%d; startColor=%s; endColor=%s }";
-	
+
 	private int startWidth;
 	private int endWidth;
 	private Color startColor;
 	private Color endColor;
 
-	//TODO(doc)
-	public MorphLineStyle(final SWFDecoder coder, final Context context) throws CoderException
-	{
+	// TODO(doc)
+	public MorphLineStyle(final SWFDecoder coder, final Context context)
+			throws CoderException {
 		startWidth = coder.readWord(2, false);
 		endWidth = coder.readWord(2, false);
-		startColor= new Color(coder, context);
-		endColor= new Color(coder, context);
+		startColor = new Color(coder, context);
+		endColor = new Color(coder, context);
 	}
 
 	/**
-	 * Creates a MorphLineStyle object specifying the starting and ending
-	 * widths and colours.
+	 * Creates a MorphLineStyle object specifying the starting and ending widths
+	 * and colours.
 	 * 
 	 * @param startWidth
 	 *            the width of the line at the start of the morphing process.
@@ -81,18 +82,18 @@ public final class MorphLineStyle implements SWFEncodeable
 	 * @param endColor
 	 *            the colour of the line at the end of the morphing process.
 	 */
-	public MorphLineStyle(int startWidth, int endWidth, Color startColor, Color endColor)
-	{
+	public MorphLineStyle(final int startWidth, final int endWidth,
+			final Color startColor, final Color endColor) {
 		super();
-		
+
 		setStartWidth(startWidth);
 		setEndWidth(endWidth);
 		setStartColor(startColor);
 		setEndColor(endColor);
 	}
-	
-	//TODO(doc)
-	public MorphLineStyle(MorphLineStyle object) {
+
+	// TODO(doc)
+	public MorphLineStyle(final MorphLineStyle object) {
 		startWidth = object.startWidth;
 		endWidth = object.endWidth;
 		startColor = object.startColor;
@@ -102,32 +103,28 @@ public final class MorphLineStyle implements SWFEncodeable
 	/**
 	 * Returns the width of the line at the start of the morphing process.
 	 */
-	public int getStartWidth()
-	{
+	public int getStartWidth() {
 		return startWidth;
 	}
 
 	/**
 	 * Returns the width of the line at the end of the morphing process.
 	 */
-	public int getEndWidth()
-	{
+	public int getEndWidth() {
 		return endWidth;
 	}
 
 	/**
 	 * Returns the colour of the line at the start of the morphing process.
 	 */
-	public Color getStartColor()
-	{
+	public Color getStartColor() {
 		return startColor;
 	}
 
 	/**
 	 * Returns the colour of the line at the end of the morphing process.
 	 */
-	public Color getEndColor()
-	{
+	public Color getEndColor() {
 		return endColor;
 	}
 
@@ -137,10 +134,9 @@ public final class MorphLineStyle implements SWFEncodeable
 	 * @param aNumber
 	 *            the starting width of the line. Must be in the range 0..65535.
 	 */
-	public void setStartWidth(int aNumber)
-	{
+	public void setStartWidth(final int aNumber) {
 		if (aNumber < 0 || aNumber > 65535) {
-			throw new IllegalArgumentException(Strings.UNSIGNED_VALUE_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
 		}
 		startWidth = aNumber;
 	}
@@ -151,10 +147,9 @@ public final class MorphLineStyle implements SWFEncodeable
 	 * @param aNumber
 	 *            the ending width of the line. Must be in the range 0..65535.
 	 */
-	public void setEndWidth(int aNumber)
-	{
+	public void setEndWidth(final int aNumber) {
 		if (aNumber < 0 || aNumber > 65535) {
-			throw new IllegalArgumentException(Strings.UNSIGNED_VALUE_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
 		}
 		endWidth = aNumber;
 	}
@@ -165,10 +160,9 @@ public final class MorphLineStyle implements SWFEncodeable
 	 * @param aColor
 	 *            the starting colour of the line. Must not be null.
 	 */
-	public void setStartColor(Color aColor)
-	{
+	public void setStartColor(final Color aColor) {
 		if (aColor == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
 		}
 		startColor = aColor;
 	}
@@ -179,32 +173,29 @@ public final class MorphLineStyle implements SWFEncodeable
 	 * @param aColor
 	 *            the ending colour of the line. Must not be null.
 	 */
-	public void setEndColor(Color aColor)
-	{
+	public void setEndColor(final Color aColor) {
 		if (aColor == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
 		}
 		endColor = aColor;
 	}
 
-	public MorphLineStyle copy() 
-	{
+	public MorphLineStyle copy() {
 		return new MorphLineStyle(this);
 	}
 
 	@Override
-	public String toString()
-	{
-		return String.format(FORMAT, startWidth, endWidth, startColor, endColor);
+	public String toString() {
+		return String
+				.format(FORMAT, startWidth, endWidth, startColor, endColor);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context)
-	{
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		return 12;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException
-	{
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		coder.writeWord(startWidth, 2);
 		coder.writeWord(endWidth, 2);
 		startColor.encode(coder, context);

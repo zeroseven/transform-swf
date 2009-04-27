@@ -33,7 +33,6 @@ import com.flagstone.transform.button.ButtonColorTransform;
 import com.flagstone.transform.button.ButtonSound;
 import com.flagstone.transform.button.DefineButton;
 import com.flagstone.transform.button.DefineButton2;
-import com.flagstone.transform.datatype.VideoFrameType;
 import com.flagstone.transform.font.DefineFont;
 import com.flagstone.transform.font.DefineFont2;
 import com.flagstone.transform.font.DefineFontName;
@@ -66,7 +65,7 @@ import com.flagstone.transform.text.DefineTextField;
 import com.flagstone.transform.text.TextSettings;
 
 /**
- * Factory is the default implementation of an SWFFactory which used to create 
+ * Factory is the default implementation of an SWFFactory which used to create
  * instances of Transform classes.
  */
 @SuppressWarnings("PMD")
@@ -76,7 +75,8 @@ public final class MovieDecoder implements SWFFactory<MovieTag> {
 		return new MovieDecoder();
 	}
 
-	public MovieTag getObject(final SWFDecoder coder, final Context context) throws CoderException {
+	public MovieTag getObject(final SWFDecoder coder, final Context context)
+			throws CoderException {
 
 		MovieTag obj;
 
@@ -92,22 +92,22 @@ public final class MovieDecoder implements SWFFactory<MovieTag> {
 			obj = new Place(coder, context);
 			break;
 		case MovieTypes.REMOVE:
-			obj = new Remove(coder, context);
+			obj = new Remove(coder);
 			break;
 		case MovieTypes.DEFINE_JPEG_IMAGE:
-			obj = new DefineJPEGImage(coder, context);
+			obj = new DefineJPEGImage(coder);
 			break;
 		case MovieTypes.DEFINE_BUTTON:
 			obj = new DefineButton(coder, context);
 			break;
 		case MovieTypes.JPEG_TABLES:
-			obj = new JPEGEncodingTable(coder, context);
+			obj = new JPEGEncodingTable(coder);
 			break;
 		case MovieTypes.SET_BACKGROUND_COLOR:
 			obj = new Background(coder, context);
 			break;
 		case MovieTypes.DEFINE_FONT:
-			obj = new DefineFont(coder, context);
+			obj = new DefineFont(coder);
 			break;
 		case MovieTypes.DEFINE_TEXT:
 			obj = new DefineText(coder, context);
@@ -116,28 +116,28 @@ public final class MovieDecoder implements SWFFactory<MovieTag> {
 			obj = new DoAction(coder, context);
 			break;
 		case MovieTypes.FONT_INFO:
-			obj = new FontInfo(coder, context);
+			obj = new FontInfo(coder);
 			break;
 		case MovieTypes.DEFINE_SOUND:
-			obj = new DefineSound(coder, context);
+			obj = new DefineSound(coder);
 			break;
 		case MovieTypes.START_SOUND:
-			obj = new StartSound(coder, context);
+			obj = new StartSound(coder);
 			break;
 		case MovieTypes.SOUND_STREAM_HEAD:
-			obj = new SoundStreamHead(coder, context);
+			obj = new SoundStreamHead(coder);
 			break;
 		case MovieTypes.SOUND_STREAM_BLOCK:
-			obj = new SoundStreamBlock(coder, context);
+			obj = new SoundStreamBlock(coder);
 			break;
 		case MovieTypes.BUTTON_SOUND:
-			obj = new ButtonSound(coder, context);
+			obj = new ButtonSound(coder);
 			break;
 		case MovieTypes.DEFINE_IMAGE:
-			obj = new DefineImage(coder, context);
+			obj = new DefineImage(coder);
 			break;
 		case MovieTypes.DEFINE_JPEG_IMAGE_2:
-			obj = new DefineJPEGImage2(coder, context);
+			obj = new DefineJPEGImage2(coder);
 			break;
 		case MovieTypes.DEFINE_SHAPE_2:
 			obj = new DefineShape2(coder, context);
@@ -146,16 +146,16 @@ public final class MovieDecoder implements SWFFactory<MovieTag> {
 			obj = new ButtonColorTransform(coder, context);
 			break;
 		case MovieTypes.PROTECT:
-			obj = new Protect(coder, context);
+			obj = new Protect(coder);
 			break;
 		case MovieTypes.FREE:
-			obj = new Free(coder, context);
+			obj = new Free(coder);
 			break;
 		case MovieTypes.PLACE_2:
 			obj = new Place2(coder, context);
 			break;
 		case MovieTypes.REMOVE_2:
-			obj = new Remove2(coder, context);
+			obj = new Remove2(coder);
 			break;
 		case MovieTypes.DEFINE_SHAPE_3:
 			obj = new DefineShape3(coder, context);
@@ -167,19 +167,19 @@ public final class MovieDecoder implements SWFFactory<MovieTag> {
 			obj = new DefineButton2(coder, context);
 			break;
 		case MovieTypes.DEFINE_JPEG_IMAGE_3:
-			obj = new DefineJPEGImage3(coder, context);
+			obj = new DefineJPEGImage3(coder);
 			break;
 		case MovieTypes.DEFINE_IMAGE_2:
-			obj = new DefineImage2(coder, context);
+			obj = new DefineImage2(coder);
 			break;
 		case MovieTypes.DEFINE_MOVIE_CLIP:
 			obj = new DefineMovieClip(coder, context);
 			break;
 		case MovieTypes.FRAME_LABEL:
-			obj = new FrameLabel(coder, context);
+			obj = new FrameLabel(coder);
 			break;
 		case MovieTypes.SOUND_STREAM_HEAD_2:
-			obj = new SoundStreamHead2(coder, context);
+			obj = new SoundStreamHead2(coder);
 			break;
 		case MovieTypes.DEFINE_MORPH_SHAPE:
 			obj = new DefineMorphShape(coder, context);
@@ -189,88 +189,90 @@ public final class MovieDecoder implements SWFFactory<MovieTag> {
 			break;
 		case MovieTypes.PATHS_ARE_POSTSCRIPT:
 			obj = PathsArePostscript.getInstance();
-			coder.adjustPointer(16);
+			if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
+				coder.readWord(4, false);
+			}
 			break;
 		case MovieTypes.DEFINE_TEXT_FIELD:
 			obj = new DefineTextField(coder, context);
 			break;
 		case MovieTypes.QUICKTIME_MOVIE:
-			obj = new QuicktimeMovie(coder, context);
+			obj = new QuicktimeMovie(coder);
 			break;
 		case MovieTypes.SERIAL_NUMBER:
-			obj = new SerialNumber(coder, context);
+			obj = new SerialNumber(coder);
 			break;
 		case MovieTypes.ENABLE_DEBUGGER:
-			obj = new EnableDebugger(coder, context);
+			obj = new EnableDebugger(coder);
 			break;
 		case MovieTypes.EXPORT:
-			obj = new Export(coder, context);
+			obj = new Export(coder);
 			break;
 		case MovieTypes.IMPORT:
-			obj = new Import(coder, context);
+			obj = new Import(coder);
 			break;
 		case MovieTypes.INITIALIZE:
 			obj = new InitializeMovieClip(coder, context);
 			break;
 		case MovieTypes.DEFINE_VIDEO:
-			obj = new DefineVideo(coder, context);
+			obj = new DefineVideo(coder);
 			break;
 		case MovieTypes.VIDEO_FRAME:
-			obj = new VideoFrame(coder, context);
+			obj = new VideoFrame(coder);
 			break;
 		case MovieTypes.FONT_INFO_2:
-			obj = new FontInfo2(coder, context);
+			obj = new FontInfo2(coder);
 			break;
 		case MovieTypes.ENABLE_DEBUGGER_2:
-			obj = new EnableDebugger2(coder, context);
+			obj = new EnableDebugger2(coder);
 			break;
 		case MovieTypes.LIMIT_SCRIPT:
-			obj = new LimitScript(coder, context);
+			obj = new LimitScript(coder);
 			break;
 		case MovieTypes.TAB_ORDER:
-			obj = new TabOrder(coder, context);
+			obj = new TabOrder(coder);
 			break;
 		case MovieTypes.FILE_ATTRIBUTES:
-			obj = new FileAttributes(coder, context);
+			obj = new FileAttributes(coder);
 			break;
 		case MovieTypes.PLACE_3:
 			obj = new Place3(coder, context);
 			break;
 		case MovieTypes.IMPORT_2:
-			obj = new Import2(coder, context);
+			obj = new Import2(coder);
 			break;
 		case MovieTypes.FONT_ALIGNMENT:
 			obj = new FontAlignment(coder, context);
 			break;
 		case MovieTypes.TEXT_SETTINGS:
-			obj = new TextSettings(coder, context);
+			obj = new TextSettings(coder);
 			break;
 		case MovieTypes.SYMBOL:
-			obj = new SymbolClass(coder, context);
+			obj = new SymbolClass(coder);
 			break;
 		case MovieTypes.METADATA:
-			obj = new MovieMetaData(coder, context);
+			obj = new MovieMetaData(coder);
 			break;
 		case MovieTypes.DEFINE_SCALING_GRID:
-			obj = new ScalingGrid(coder, context);
+			obj = new ScalingGrid(coder);
 			break;
 		case MovieTypes.SCENES_AND_LABELS:
-			obj = new ScenesAndLabels(coder, context);
+			obj = new ScenesAndLabels(coder);
 			break;
 		case MovieTypes.DO_ABC:
-			obj = new DoABC(coder, context);
+			obj = new DoABC(coder);
 			break;
 		case MovieTypes.DEFINE_BINARY_DATA:
-			obj = new DefineData(coder, context);
+			obj = new DefineData(coder);
 			break;
 		case MovieTypes.DEFINE_FONT_NAME:
-			obj = new DefineFontName(coder, context);
+			obj = new DefineFontName(coder);
 			break;
 		case MovieTypes.START_SOUND_2:
-			obj = new StartSound2(coder, context);
+			obj = new StartSound2(coder);
 			break;
 		default:
-			obj = new MovieObject(coder, context);
+			obj = new MovieObject(coder);
 			break;
 		}
 		return obj;

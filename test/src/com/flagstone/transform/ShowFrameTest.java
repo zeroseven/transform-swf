@@ -36,25 +36,22 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 
-import com.flagstone.transform.ShowFrame;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-@SuppressWarnings( { 
-	"PMD.LocalVariableCouldBeFinal",
-	"PMD.JUnitAssertionsShouldIncludeMessage" 
-})
+@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
+		"PMD.JUnitAssertionsShouldIncludeMessage" })
 public final class ShowFrameTest {
-	
+
 	private transient ShowFrame fixture;
-	
-	private transient final byte[] encoded = new byte[] { 0x40, 0x00};
-	
-	private transient final byte[] extended = new byte[] { 0x7F, 0x00, 
-			0x00, 0x00, 0x00, 0x00 };
-	
+
+	private transient final byte[] encoded = new byte[] { 0x40, 0x00 };
+
+	private transient final byte[] extended = new byte[] { 0x7F, 0x00, 0x00,
+			0x00, 0x00, 0x00 };
+
 	@Test
 	public void checkCopy() {
 		fixture = ShowFrame.getInstance();
@@ -63,20 +60,20 @@ public final class ShowFrameTest {
 		assertSame(fixture, fixture.copy());
 		assertEquals(fixture.toString(), copy.toString());
 	}
-	
+
 	@Test
-	public void encode() throws CoderException {		
-		SWFEncoder encoder = new SWFEncoder(encoded.length);		
+	public void encode() throws CoderException {
+		SWFEncoder encoder = new SWFEncoder(encoded.length);
 		Context context = new Context();
 
 		fixture = ShowFrame.getInstance();
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
 		fixture.encode(encoder, context);
-		
+
 		assertTrue(encoder.eof());
 		assertArrayEquals(encoded, encoder.getData());
 	}
-	
+
 	@Test
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
@@ -84,10 +81,10 @@ public final class ShowFrameTest {
 
 		fixture = ShowFrame.getInstance();
 		fixture.decode(decoder, context);
-		
+
 		assertTrue(decoder.eof());
 	}
-	
+
 	@Test
 	public void decodeExtended() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(extended);
@@ -95,7 +92,7 @@ public final class ShowFrameTest {
 
 		fixture = ShowFrame.getInstance();
 		fixture.decode(decoder, context);
-		
+
 		assertTrue(decoder.eof());
 	}
 }

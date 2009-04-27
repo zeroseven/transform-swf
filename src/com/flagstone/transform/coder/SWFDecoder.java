@@ -30,8 +30,8 @@
 package com.flagstone.transform.coder;
 
 /**
- * SWFDecoder extends LittleEndianDecoder by adding a context used to pass 
- * information between classes during decoding and a factory class for 
+ * SWFDecoder extends LittleEndianDecoder by adding a context used to pass
+ * information between classes during decoding and a factory class for
  * generating instances of objects.
  */
 public final class SWFDecoder extends Decoder {
@@ -45,7 +45,7 @@ public final class SWFDecoder extends Decoder {
 	public SWFDecoder(final byte[] data) {
 		super(data);
 	}
-	
+
 	/**
 	 * Read an unsigned short integer without changing the internal pointer.
 	 */
@@ -79,27 +79,30 @@ public final class SWFDecoder extends Decoder {
 
 		return value;
 	}
-	
+
 	/**
 	 * Read a 32-bit unsigned integer, encoded using a variable number of bytes.
 	 * 
 	 * @return the value read.
 	 */
 	public int readVariableU32() {
-		
+
 		int value = data[index++] & 0x000000FF;
-		
+
 		if ((value & 0x00000080) != 0) {
 			value = ((data[index++] & 0x000000FF) << 7) + (value & 0x0000007f);
 
 			if ((value & 0x00004000) != 0) {
-				value = ((data[index++] & 0x000000FF) << 14) + (value & 0x00003fff);
+				value = ((data[index++] & 0x000000FF) << 14)
+						+ (value & 0x00003fff);
 
 				if ((value & 0x00200000) != 0) {
-					value = ((data[index++] & 0x000000FF) << 21) + (value & 0x001fffff);
+					value = ((data[index++] & 0x000000FF) << 21)
+							+ (value & 0x001fffff);
 
 					if ((value & 0x10000000) != 0) {
-						value = ((data[index++] & 0x000000FF) << 28) + (value & 0x0fffffff);
+						value = ((data[index++] & 0x000000FF) << 28)
+								+ (value & 0x0fffffff);
 					}
 				}
 			}
@@ -113,13 +116,13 @@ public final class SWFDecoder extends Decoder {
 	 * @return the value.
 	 */
 	public float readHalf() {
-		int bits = readWord(2, false);
-		
-		int sign = (bits & 0x00008000) << 16;
-		int exp = (bits & 0x00007C00) << 16;
-		int val = (bits & 0x000003FF) << 13;
-			
-		return Float.intBitsToFloat(sign|exp|val);
+		final int bits = readWord(2, false);
+
+		final int sign = (bits & 0x00008000) << 16;
+		final int exp = (bits & 0x00007C00) << 16;
+		final int val = (bits & 0x000003FF) << 13;
+
+		return Float.intBitsToFloat(sign | exp | val);
 	}
 
 	/**
@@ -137,7 +140,7 @@ public final class SWFDecoder extends Decoder {
 	 * @return the value.
 	 */
 	public double readDouble() {
-		long longValue = (long) readWord(4, false) << 32;
+	    long longValue = (long) readWord(4, false) << 32;
 		longValue |= readWord(4, false) & 0x00000000FFFFFFFFL;
 
 		return Double.longBitsToDouble(longValue);
@@ -165,7 +168,7 @@ public final class SWFDecoder extends Decoder {
 			final int step) {
 		boolean found;
 
-		int mark = getPointer();
+		final int mark = getPointer();
 
 		while (index + numberOfBytes <= data.length) {
 

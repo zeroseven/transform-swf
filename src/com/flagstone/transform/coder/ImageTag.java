@@ -30,18 +30,18 @@
 
 package com.flagstone.transform.coder;
 
-
 /**
- * The ImageTag interface is implemented by all classes that define images in
- * a movie.
+ * The ImageTag interface is implemented by all classes that define images in a
+ * movie.
  */
 public interface ImageTag extends DefineTag {
 	/**
 	 * Returns the width of an image in pixels.
 	 */
 	int getWidth();
+
 	/**
 	 * Returns the height of an image in pixels.
 	 */
-    int getHeight();
+	int getHeight();
 }

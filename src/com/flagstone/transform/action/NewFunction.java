@@ -42,28 +42,31 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.coder.SWFFactory;
 
-
-
 //TODO(doc) Review
 /**
  * The NewFunction action is used to create a user-defined function.
  * 
- * <p>User-defined functions are also used to create methods for user-defined
+ * <p>
+ * User-defined functions are also used to create methods for user-defined
  * objects. The name of the function is omitted and the function definition is
- * assigned to a variable which allows it to be referenced at a later time. </p>
+ * assigned to a variable which allows it to be referenced at a later time.
+ * </p>
  * 
- * <p>In the actions which form the function body all the arguments passed to the
- * function can be referenced by the name supplied in the arguments array.</p>
+ * <p>
+ * In the actions which form the function body all the arguments passed to the
+ * function can be referenced by the name supplied in the arguments array.
+ * </p>
  * 
- * <p>All the action objects created are owned by the function. They will be deleted
- * when the function definition is deleted.</p>
+ * <p>
+ * All the action objects created are owned by the function. They will be
+ * deleted when the function definition is deleted.
+ * </p>
  * 
  * @see NewFunction2
  */
-public final class NewFunction implements Action
-{
+public final class NewFunction implements Action {
 	private static final String FORMAT = "NewFunction: { name=%s; arguments=%s; actions=%s }";
-		
+
 	private String name;
 	private List<String> arguments;
 	private List<Action> actions;
@@ -71,9 +74,9 @@ public final class NewFunction implements Action
 	private transient int length;
 	private transient int actionsLength;
 
-	//TODO(doc)
-	public NewFunction(final SWFDecoder coder, final Context context) throws CoderException
-	{
+	// TODO(doc)
+	public NewFunction(final SWFDecoder coder, final Context context)
+			throws CoderException {
 		arguments = new ArrayList<String>();
 		actions = new ArrayList<Action>();
 
@@ -81,13 +84,12 @@ public final class NewFunction implements Action
 		length = coder.readWord(2, false);
 		name = coder.readString();
 
-		int argumentCount = coder.readWord(2, false);
+		final int argumentCount = coder.readWord(2, false);
 
 		arguments = new ArrayList<String>(argumentCount);
 		actions = new ArrayList<Action>();
 
-		if (argumentCount > 0)
-		{
+		if (argumentCount > 0) {
 			for (int i = argumentCount; i > 0; i--) {
 				arguments.add(coder.readString());
 			}
@@ -95,21 +97,21 @@ public final class NewFunction implements Action
 
 		actionsLength = coder.readWord(2, false);
 		actions = new ArrayList<Action>();
-		
-		int end = coder.getPointer() + (actionsLength << 3);
-		SWFFactory<Action>decoder = context.getRegistry().getActionDecoder();
 
-		while (coder.getPointer() < end) {			
+		final int end = coder.getPointer() + (actionsLength << 3);
+		final SWFFactory<Action> decoder = context.getRegistry()
+				.getActionDecoder();
+
+		while (coder.getPointer() < end) {
 			actions.add(decoder.getObject(coder, context));
 		}
 	}
 
 	/**
-	 * Creates a NewFunction with the specified name, argument names and
-	 * actions to be executed. The order of the Strings in the argument array
-	 * indicate the order in which the values will be popped off the stack when
-	 * the function is executed. The fist argument is popped from the stack
-	 * first.
+	 * Creates a NewFunction with the specified name, argument names and actions
+	 * to be executed. The order of the Strings in the argument array indicate
+	 * the order in which the values will be popped off the stack when the
+	 * function is executed. The fist argument is popped from the stack first.
 	 * 
 	 * @param aString
 	 *            the name of the function. May not be null.
@@ -119,18 +121,17 @@ public final class NewFunction implements Action
 	 *            the array of actions that define the operation performed by
 	 *            the function.
 	 */
-	public NewFunction(String aString, List<String> argumentArray,
-							List<Action> actionArray)
-	{
+	public NewFunction(final String aString, final List<String> argumentArray,
+			final List<Action> actionArray) {
 		setName(aString);
 		setArguments(argumentArray);
 		setActions(actionArray);
 	}
 
 	/**
-	 * Creates a anonymous NewFunction with the specified argument names
-	 * and actions to be executed. Use this constructor when defining functions
-	 * that will be assigned to object variables and used as methods.
+	 * Creates a anonymous NewFunction with the specified argument names and
+	 * actions to be executed. Use this constructor when defining functions that
+	 * will be assigned to object variables and used as methods.
 	 * 
 	 * @param argumentArray
 	 *            an array of Strings listing the names of the arguments.
@@ -138,20 +139,20 @@ public final class NewFunction implements Action
 	 *            the array of actions that define the operation performed by
 	 *            the function.
 	 */
-	public NewFunction(List<String> argumentArray, List<Action> actionArray)
-	{
+	public NewFunction(final List<String> argumentArray,
+			final List<Action> actionArray) {
 		name = "";
 		setArguments(argumentArray);
 		setActions(actionArray);
 	}
-	
-	//TODO(doc)
-	public NewFunction(NewFunction object) {
+
+	// TODO(doc)
+	public NewFunction(final NewFunction object) {
 		name = object.name;
-		
+
 		arguments = new ArrayList<String>(object.arguments);
 		actions = new ArrayList<Action>(object.actions.size());
-		
+
 		for (Action action : object.actions) {
 			actions.add(action.copy());
 		}
@@ -161,11 +162,10 @@ public final class NewFunction implements Action
 	 * Adds the name of an argument to the array of argument names.
 	 * 
 	 * @param anArgument
-	 *            the name of an argument passed to the NewFunction object.
-	 *            Must not be null or an empty string.
+	 *            the name of an argument passed to the NewFunction object. Must
+	 *            not be null or an empty string.
 	 */
-	public NewFunction add(String anArgument)
-	{
+	public NewFunction add(final String anArgument) {
 		if (anArgument == null || anArgument.length() == 0) {
 			throw new IllegalArgumentException(Strings.STRING_NOT_SET);
 		}
@@ -177,13 +177,12 @@ public final class NewFunction implements Action
 	 * Adds the action object to the array of actions.
 	 * 
 	 * @param anAction
-	 *            an object belonging to a class derived from Action.
-	 *            Must not be null.
+	 *            an object belonging to a class derived from Action. Must not
+	 *            be null.
 	 */
-	public NewFunction add(Action anAction)
-	{
+	public NewFunction add(final Action anAction) {
 		if (anAction == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
 		}
 		actions.add(anAction);
 		return this;
@@ -192,38 +191,34 @@ public final class NewFunction implements Action
 	/**
 	 * Returns the name of the function.
 	 */
-	public String getName()
-	{
+	public String getName() {
 		return name;
 	}
 
 	/**
 	 * Returns the names of the function arguments.
 	 */
-	public List<String> getArguments()
-	{
+	public List<String> getArguments() {
 		return arguments;
 	}
 
 	/**
 	 * Returns the actions.
 	 */
-	public List<Action> getActions()
-	{
+	public List<Action> getActions() {
 		return actions;
 	}
 
 	/**
-	 * Sets the name of the function. The name may be an empty string when defining
-	 * methods.
+	 * Sets the name of the function. The name may be an empty string when
+	 * defining methods.
 	 * 
 	 * @param aString
 	 *            the name of the function. Must not be null.
 	 */
-	public void setName(String aString)
-	{
+	public void setName(final String aString) {
 		if (aString == null) {
-			throw new IllegalArgumentException(Strings.STRING_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.STRING_IS_NULL);
 		}
 		name = aString;
 	}
@@ -232,13 +227,12 @@ public final class NewFunction implements Action
 	 * Sets the names of the function arguments.
 	 * 
 	 * @param anArray
-	 *            an array of Strings listing the names of the arguments.
-	 *            Must not be null.
- 	 */
-	public void setArguments(List<String> anArray)
-	{
+	 *            an array of Strings listing the names of the arguments. Must
+	 *            not be null.
+	 */
+	public void setArguments(final List<String> anArray) {
 		if (anArray == null) {
-			throw new IllegalArgumentException(Strings.ARRAY_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
 		}
 		arguments = anArray;
 	}
@@ -250,27 +244,23 @@ public final class NewFunction implements Action
 	 *            the array of actions that define the operation performed by
 	 *            the function. Must not be null.
 	 */
-	public void setActions(List<Action> anArray)
-	{
+	public void setActions(final List<Action> anArray) {
 		if (anArray == null) {
-			throw new IllegalArgumentException(Strings.ARRAY_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
 		}
 		actions = anArray;
 	}
 
-	public NewFunction copy() 
-	{
+	public NewFunction copy() {
 		return new NewFunction(this);
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return String.format(FORMAT, name, arguments, actions);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context)
-	{
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		length = 2 + coder.strlen(name);
 
 		for (String argument : arguments) {
@@ -279,16 +269,16 @@ public final class NewFunction implements Action
 
 		length += 2;
 		actionsLength = 0;
-		
+
 		for (Action action : actions) {
 			actionsLength += action.prepareToEncode(coder, context);
 		}
-		
+
 		return 3 + length + actionsLength;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException
-	{
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		coder.writeWord(ActionTypes.NEW_FUNCTION, 1);
 		coder.writeWord(length, 2);
 

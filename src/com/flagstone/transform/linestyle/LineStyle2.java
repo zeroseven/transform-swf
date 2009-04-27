@@ -45,9 +45,9 @@ import com.flagstone.transform.datatype.Color;
 public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
 
 	public static final String FORMAT = "LineStyle2: { width=%d; color=%s;"
-		+ " fillStyle=%s; startCap=%s; endCap=%s; joinStyle=%s;"
-		+ " scaledHorizontally=%d; scaledVertically=%d;"
-		+ " pixelAligned=%s; lineClosed=%d; miterLimit=%d }";
+			+ " fillStyle=%s; startCap=%s; endCap=%s; joinStyle=%s;"
+			+ " scaledHorizontally=%d; scaledVertically=%d;"
+			+ " pixelAligned=%s; lineClosed=%d; miterLimit=%d }";
 
 	private int width;
 	private Color color;
@@ -63,21 +63,23 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
 	private boolean lineClosed;
 
 	private int miterLimit;
-	
+
 	private transient boolean hasFillStyle;
 	private transient boolean hasMiter;
 
-	public LineStyle2(final SWFDecoder coder, final Context context) throws CoderException {
-		
+	public LineStyle2(final SWFDecoder coder, final Context context)
+			throws CoderException {
+
 		width = coder.readWord(2, false);
 		unpack(coder.readB16());
-		
+
 		if (hasMiter) {
 			coder.readWord(2, false);
 		}
-		
+
 		if (hasFillStyle) {
-			SWFFactory<FillStyle>decoder = context.getRegistry().getFillStyleDecoder();
+			final SWFFactory<FillStyle> decoder = context.getRegistry()
+					.getFillStyleDecoder();
 			fillStyle = decoder.getObject(coder, context);
 		} else {
 			color = new Color(coder, context);
@@ -89,7 +91,7 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
 
 		setWidth(width);
 		setColor(color);
-		
+
 		scaledVertically = true;
 		scaledVertically = true;
 		lineClosed = true;
@@ -100,16 +102,16 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
 
 		setWidth(width);
 		setFillStyle(style);
-		
+
 		scaledVertically = true;
 		scaledVertically = true;
 		lineClosed = true;
 	}
-	
-	public LineStyle2(LineStyle2 object) {
+
+	public LineStyle2(final LineStyle2 object) {
 		width = object.width;
 		color = object.color;
-		
+
 		if (fillStyle != null) {
 			object.fillStyle = fillStyle.copy();
 		}
@@ -140,8 +142,7 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
 	 */
 	public void setWidth(final int width) {
 		if (width < 0 || width > 65535) {
-			throw new IllegalArgumentException(
-					Strings.UNSIGNED_VALUE_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
 		}
 		this.width = width;
 	}
@@ -161,7 +162,7 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
 	 */
 	public void setColor(final Color aColor) {
 		if (aColor == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
 		}
 		color = aColor;
 	}
@@ -282,8 +283,7 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
 
 	public void setMiterLimit(final int limit) {
 		if (limit < 0 || limit > 65535) {
-			throw new IllegalArgumentException(
-					Strings.UNSIGNED_VALUE_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
 		}
 		miterLimit = limit;
 	}
@@ -302,9 +302,9 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
 
 	@Override
 	public String toString() {
-		return String.format(FORMAT, width, color, fillStyle, 
-				startCap, endCap, joinStyle, scaledHorizontally, scaledVertically, 
-				pixelAligned, lineClosed, miterLimit);
+		return String.format(FORMAT, width, color, fillStyle, startCap, endCap,
+				joinStyle, scaledHorizontally, scaledVertically, pixelAligned,
+				lineClosed, miterLimit);
 	}
 
 	public int prepareToEncode(final SWFEncoder coder, final Context context) {
@@ -313,17 +313,17 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
 		hasMiter = joinStyle == 2;
 
 		int length = 4;
-		
+
 		if (hasMiter) {
 			length += 2;
 		}
-		
+
 		if (hasFillStyle) {
 			length += fillStyle.prepareToEncode(coder, context);
 		} else {
 			length += 4;
 		}
-		
+
 		if (scaledHorizontally || scaledVertically) {
 			context.getVariables().put(Context.SCALING_STROKE, 1);
 		}
@@ -331,14 +331,15 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
 		return length;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException {
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		coder.writeWord(width, 2);
 		coder.writeB16(pack());
-		
+
 		if (hasMiter) {
 			coder.writeWord(miterLimit, 2);
 		}
-		
+
 		if (hasFillStyle) {
 			fillStyle.encode(coder, context);
 		} else {
@@ -346,10 +347,7 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
 		}
 	}
 
-	@SuppressWarnings({
-		"PMD.CyclomaticComplexity",
-		"PMD.NPathComplexity"
-	})
+	@SuppressWarnings( { "PMD.CyclomaticComplexity", "PMD.NPathComplexity" })
 	private int pack() {
 
 		int value = 0;
@@ -375,20 +373,20 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
 		default:
 			break;
 		}
-		
-		value |= fillStyle == null ? 0: 0x00000800;
+
+		value |= fillStyle == null ? 0 : 0x00000800;
 		value |= scaledHorizontally ? 0 : 0x00000400;
 		value |= scaledVertically ? 0 : 0x00000200;
 		value |= pixelAligned ? 0x00000100 : 0;
-		value |= lineClosed ? 0 : 0x00000004; 
+		value |= lineClosed ? 0 : 0x00000004;
 		value |= endCap;
 
 		return value;
 	}
-	
+
 	@SuppressWarnings("PMD.CyclomaticComplexity")
 	private void unpack(final int value) {
-		
+
 		if ((value & 0x00004000) > 0) {
 			startCap = 1;
 		} else if ((value & 0x00008000) > 0) {
@@ -407,12 +405,12 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
 			joinStyle = 0;
 			hasMiter = false;
 		}
-			
+
 		hasFillStyle = (value & 0x00000800) != 0;
 		scaledHorizontally = (value & 0x00000400) == 0;
 		scaledVertically = (value & 0x00000200) == 0;
 		pixelAligned = (value & 0x00000100) != 0;
-		lineClosed = (value & 0x00000004) == 0;		
+		lineClosed = (value & 0x00000004) == 0;
 		endCap = value & 0x00000003;
 	}
 }

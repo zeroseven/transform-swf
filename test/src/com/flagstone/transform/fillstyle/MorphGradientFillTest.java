@@ -45,38 +45,31 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.Color;
 import com.flagstone.transform.datatype.CoordTransform;
-import com.flagstone.transform.fillstyle.Gradient;
-import com.flagstone.transform.fillstyle.MorphGradient;
-import com.flagstone.transform.fillstyle.MorphGradientFill;
 
-@SuppressWarnings( { 
-	"PMD.LocalVariableCouldBeFinal",
-	"PMD.JUnitAssertionsShouldIncludeMessage" 
-})
+@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
+		"PMD.JUnitAssertionsShouldIncludeMessage" })
 public final class MorphGradientFillTest {
-	
-	private transient final boolean radial = false;
-	private transient final CoordTransform start = 
-		CoordTransform.translate(1,2);
-	private transient final CoordTransform end = 
-		CoordTransform.translate(1,2);
-	private static final List<MorphGradient> list = new ArrayList<MorphGradient>();
-	
-	static {
-		list.add(new MorphGradient(new Gradient(1, new Color(2,3,4,5)), new Gradient(6, new Color(7,8,9,10))));
-		list.add(new MorphGradient(new Gradient(11, new Color(12,13,14,15)), new Gradient(16, new Color(17,18,19,20))));
-	}
-	
-	private transient MorphGradientFill fixture;
-		
-	private transient final byte[] encoded = new byte[] { 0x10, 
-			0x06, 0x50, 0x06, 0x50, 
-			0x02,
-			0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A,
-			0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10, 0x11, 0x12, 0x13, 0x14 
-			};
 
-	@Test(expected=IllegalArgumentException.class)
+	private transient boolean radial = false;
+	private transient CoordTransform start = CoordTransform.translate(1, 2);
+	private transient CoordTransform end = CoordTransform.translate(1, 2);
+	private static List<MorphGradient> list = new ArrayList<MorphGradient>();
+
+	static {
+		list.add(new MorphGradient(new Gradient(1, new Color(2, 3, 4, 5)),
+				new Gradient(6, new Color(7, 8, 9, 10))));
+		list.add(new MorphGradient(new Gradient(11, new Color(12, 13, 14, 15)),
+				new Gradient(16, new Color(17, 18, 19, 20))));
+	}
+
+	private transient MorphGradientFill fixture;
+
+	private transient final byte[] encoded = new byte[] { 0x10, 0x06, 0x50,
+			0x06, 0x50, 0x02, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
+			0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10, 0x11, 0x12, 0x13,
+			0x14 };
+
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAddNullGradient() {
 		fixture = new MorphGradientFill(radial, start, end, list);
 		fixture.add(null);
@@ -92,21 +85,21 @@ public final class MorphGradientFillTest {
 		assertNotSame(fixture.getGradients(), copy.getGradients());
 		assertEquals(fixture.toString(), copy.toString());
 	}
-	
+
 	@Test
 	public void encode() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(encoded.length);		
+		SWFEncoder encoder = new SWFEncoder(encoded.length);
 		Context context = new Context();
 		context.getVariables().put(Context.TRANSPARENT, 1);
 
 		fixture = new MorphGradientFill(radial, start, end, list);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
 		fixture.encode(encoder, context);
-		
+
 		assertTrue(encoder.eof());
 		assertArrayEquals(encoded, encoder.getData());
 	}
-	
+
 	@Test
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
@@ -114,8 +107,8 @@ public final class MorphGradientFillTest {
 		context.getVariables().put(Context.TRANSPARENT, 1);
 
 		fixture = new MorphGradientFill(decoder, context);
-		
+
 		assertTrue(decoder.eof());
-		//TODO compare fields
+		// TODO compare fields
 	}
 }

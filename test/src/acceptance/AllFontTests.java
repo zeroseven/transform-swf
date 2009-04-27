@@ -4,11 +4,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({
-	ShowAWTFontTest.class,
-	ShowTrueTypeFontTest.class
-        })
-public final class AllFontTests
-{
+@Suite.SuiteClasses( { ShowAWTFontTest.class, ShowTrueTypeFontTest.class })
+@SuppressWarnings("PMD.AtLeastOneConstructor")
+public final class AllFontTests {
 }
-

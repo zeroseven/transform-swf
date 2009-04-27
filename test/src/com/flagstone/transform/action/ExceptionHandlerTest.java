@@ -38,8 +38,6 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 
-import com.flagstone.transform.action.BasicAction;
-import com.flagstone.transform.action.ExceptionHandler;
 import com.flagstone.transform.coder.Action;
 import com.flagstone.transform.coder.ActionDecoder;
 import com.flagstone.transform.coder.ActionTypes;
@@ -49,18 +47,16 @@ import com.flagstone.transform.coder.DecoderRegistry;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-@SuppressWarnings( { 
-	"PMD.LocalVariableCouldBeFinal",
-	"PMD.JUnitAssertionsShouldIncludeMessage" 
-})
+@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
+		"PMD.JUnitAssertionsShouldIncludeMessage" })
 public final class ExceptionHandlerTest {
-	
-	private static final String variable = "var";
-	private static final List<Action> tryActions = new ArrayList<Action>();
-	private static final List<Action> catchActions = new ArrayList<Action>();
-	private static final List<Action> finalActions = new ArrayList<Action>();
-	
-	static {		
+
+	private static String variable = "var";
+	private static List<Action> tryActions = new ArrayList<Action>();
+	private static List<Action> catchActions = new ArrayList<Action>();
+	private static List<Action> finalActions = new ArrayList<Action>();
+
+	static {
 		tryActions.add(BasicAction.ADD);
 		tryActions.add(BasicAction.END);
 		catchActions.add(BasicAction.SUBTRACT);
@@ -68,47 +64,40 @@ public final class ExceptionHandlerTest {
 		finalActions.add(BasicAction.MULTIPLY);
 		finalActions.add(BasicAction.END);
 	}
-	
+
 	private transient final int type = ActionTypes.EXCEPTION_HANDLER;
 	private transient ExceptionHandler fixture;
-	
-	// Actions forming a function body are not part of the definition so the 
-	// length must be adjusted accordingly.
-		
-	private transient final byte[] empty = new byte[] { (byte)type, 0x09, 0x00, 
-			0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00,
-			0x00,
-		    ActionTypes.END };
 
-	private transient final byte[] encoded = new byte[] { (byte)type, 0x11, 0x00, 
-			0x07, 0x02, 0x00, 0x02, 0x00, 0x02, 0x00,
-			0x76, 0x61, 0x72, 0x00,
-			ActionTypes.ADD, ActionTypes.END,
-			ActionTypes.SUBTRACT, ActionTypes.END,
-			ActionTypes.MULTIPLY, ActionTypes.END,
-			};
+	private transient final byte[] encoded = new byte[] { (byte) type, 0x11,
+			0x00, 0x07, 0x02, 0x00, 0x02, 0x00, 0x02, 0x00, 0x76, 0x61, 0x72,
+			0x00, ActionTypes.ADD, ActionTypes.END, ActionTypes.SUBTRACT,
+			ActionTypes.END, ActionTypes.MULTIPLY, ActionTypes.END, };
 
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAddNullActionToTryBlock() {
-		fixture = new ExceptionHandler(variable, tryActions, catchActions, finalActions);
+		fixture = new ExceptionHandler(variable, tryActions, catchActions,
+				finalActions);
 		fixture.addToTry(null);
 	}
 
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAddNullActionToCatchBlock() {
-		fixture = new ExceptionHandler(variable, tryActions, catchActions, finalActions);
+		fixture = new ExceptionHandler(variable, tryActions, catchActions,
+				finalActions);
 		fixture.addToCatch(null);
 	}
 
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAddNullActionToFinallyBlock() {
-		fixture = new ExceptionHandler(variable, tryActions, catchActions, finalActions);
+		fixture = new ExceptionHandler(variable, tryActions, catchActions,
+				finalActions);
 		fixture.addToFinally(null);
 	}
 
 	@Test
 	public void checkCopy() {
-		fixture = new ExceptionHandler(variable, tryActions, catchActions, finalActions);
+		fixture = new ExceptionHandler(variable, tryActions, catchActions,
+				finalActions);
 		ExceptionHandler copy = fixture.copy();
 
 		assertNotSame(fixture.getTryActions(), copy.getTryActions());
@@ -116,20 +105,21 @@ public final class ExceptionHandlerTest {
 		assertNotSame(fixture.getFinalActions(), copy.getFinalActions());
 		assertEquals(fixture.toString(), copy.toString());
 	}
-	
+
 	@Test
 	public void encode() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(encoded.length);		
+		SWFEncoder encoder = new SWFEncoder(encoded.length);
 		Context context = new Context();
 
-		fixture = new ExceptionHandler(variable, tryActions, catchActions, finalActions);
+		fixture = new ExceptionHandler(variable, tryActions, catchActions,
+				finalActions);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
 		fixture.encode(encoder, context);
-		
+
 		assertTrue(encoder.eof());
 		assertArrayEquals(encoded, encoder.getData());
 	}
-	
+
 	@Test
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
@@ -139,7 +129,7 @@ public final class ExceptionHandlerTest {
 		context.setRegistry(registry);
 
 		fixture = new ExceptionHandler(decoder, context);
-		
+
 		assertTrue(decoder.eof());
 		assertEquals(variable, fixture.getVariable());
 		assertEquals(tryActions, fixture.getTryActions());

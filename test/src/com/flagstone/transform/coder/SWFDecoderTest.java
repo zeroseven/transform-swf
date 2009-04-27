@@ -32,8 +32,6 @@ package com.flagstone.transform.coder;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.flagstone.transform.coder.SWFDecoder;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
@@ -53,7 +51,7 @@ public final class SWFDecoderTest {
 	public void readUnsignedShort() {
 		data = new byte[] { -1, -1 };
 		fixture.setData(data);
-		
+
 		assertEquals(65535, fixture.scanUnsignedShort());
 		assertEquals(0, fixture.getPointer());
 	}
@@ -132,19 +130,19 @@ public final class SWFDecoderTest {
 		assertEquals(2147483647, fixture.readVariableU32());
 		assertEquals(data.length << 3, fixture.getPointer());
 	}
-	
+
 	@Test
 	public void readHalf() {
-		data = new byte[] { 0x00, (byte)0xC0 };
+		data = new byte[] { 0x00, (byte) 0xC0 };
 		fixture.setData(data);
 
 		assertEquals(-2.0, fixture.readHalf());
 		assertEquals(16, fixture.getPointer());
 	}
-	
+
 	@Test
 	public void readFloat() {
-		data = new byte[] { 0x00, 0x00, 0x00, (byte)0xC0 };
+		data = new byte[] { 0x00, 0x00, 0x00, (byte) 0xC0 };
 		fixture.setData(data);
 
 		assertEquals(-2.0, fixture.readFloat());

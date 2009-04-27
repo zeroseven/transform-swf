@@ -35,42 +35,36 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 
-import com.flagstone.transform.EnableDebugger2;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-@SuppressWarnings( { 
-	"PMD.LocalVariableCouldBeFinal",
-	"PMD.JUnitAssertionsShouldIncludeMessage" 
-})
+@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
+		"PMD.JUnitAssertionsShouldIncludeMessage" })
 public final class EnableDebugger2Test {
-	
-	private transient final String password = "ABC123";
-	
-	private transient EnableDebugger2 fixture;
-	
-	private transient final byte[] empty = new byte[] { 0x03, 0x10,
-			0x00, 0x00, 0x00 };
-	
-	private transient final byte[] encoded = new byte[] { 0x09, 0x10,
-			0x00, 0x00, 0x41, 0x42, 0x043, 0x31, 0x32, 0x33, 0x00};
-	
-	private transient final byte[] extended = new byte[] { 0x3F, 0x10, 
-			0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 
-			0x41, 0x42, 0x043, 0x31, 0x32, 0x33, 0x00};
 
-	@Test(expected=IllegalArgumentException.class)
+	private transient final String password = "ABC123";
+
+	private transient EnableDebugger2 fixture;
+
+	private transient final byte[] encoded = new byte[] { 0x09, 0x10, 0x00,
+			0x00, 0x41, 0x42, 0x043, 0x31, 0x32, 0x33, 0x00 };
+
+	private transient final byte[] extended = new byte[] { 0x3F, 0x10, 0x09,
+			0x00, 0x00, 0x00, 0x00, 0x00, 0x41, 0x42, 0x043, 0x31, 0x32, 0x33,
+			0x00 };
+
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForPasswordWithNull() {
-		fixture = new EnableDebugger2((String)null);
+		fixture = new EnableDebugger2((String) null);
 	}
-	
-	@Test(expected=IllegalArgumentException.class)
+
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForPasswordWithEmpty() {
 		fixture = new EnableDebugger2("");
 	}
-	
+
 	@Test
 	public void checkCopy() {
 		fixture = new EnableDebugger2(password);
@@ -79,16 +73,16 @@ public final class EnableDebugger2Test {
 		assertEquals(fixture.getPassword(), copy.getPassword());
 		assertEquals(fixture.toString(), copy.toString());
 	}
-	
+
 	@Test
 	public void encode() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(encoded.length);		
+		SWFEncoder encoder = new SWFEncoder(encoded.length);
 		Context context = new Context();
 
 		fixture = new EnableDebugger2(password);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
 		fixture.encode(encoder, context);
-		
+
 		assertTrue(encoder.eof());
 		assertArrayEquals(encoded, encoder.getData());
 	}
@@ -96,21 +90,19 @@ public final class EnableDebugger2Test {
 	@Test
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
-		Context context = new Context();
 
-		fixture = new EnableDebugger2(decoder, context);
-		
+		fixture = new EnableDebugger2(decoder);
+
 		assertTrue(decoder.eof());
 		assertEquals(password, fixture.getPassword());
 	}
-	
+
 	@Test
 	public void decodeExtended() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(extended);
-		Context context = new Context();
 
-		fixture = new EnableDebugger2(decoder, context);
-		
+		fixture = new EnableDebugger2(decoder);
+
 		assertTrue(decoder.eof());
 		assertEquals(password, fixture.getPassword());
 	}

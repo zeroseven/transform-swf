@@ -51,77 +51,76 @@ import com.flagstone.transform.image.DefineJPEGImage2;
 /**
  * JPGDecoder decodes JPEG images so they can be used in a Flash file.
  */
-public final class JPGDecoder implements ImageProvider, ImageDecoder
-{
-	private int width;
-	private int height;
-    private byte[] image;
+public final class JPGDecoder implements ImageProvider, ImageDecoder {
+	
+	private transient int width;
+	private transient int height;
+	private transient byte[] image;
 
-    public void read(String path) throws FileNotFoundException, IOException, DataFormatException
-    {
-    	read(new File(path));
-    }
-    
-    public void read(File file) throws FileNotFoundException, IOException, DataFormatException
-    {
-     	ImageInfo info = new ImageInfo();
-    	info.setInput(new RandomAccessFile(file, "r"));
-    	info.setDetermineImageNumber(true);
-    	
-    	if (!info.check()) 
-    	{
-    		throw new DataFormatException(Strings.UNSUPPORTED_FILE_FORMAT);
-    	}
-    	
+	public void read(final String path) throws FileNotFoundException, IOException,
+			DataFormatException {
+		read(new File(path));
+	}
+
+	public void read(final File file) throws FileNotFoundException, IOException,
+			DataFormatException {
+		final ImageInfo info = new ImageInfo();
+		info.setInput(new RandomAccessFile(file, "r"));
+		info.setDetermineImageNumber(true);
+
+		if (!info.check()) {
+			throw new DataFormatException(Strings.INVALID_FORMAT);
+		}
+
 		decode(loadFile(file));
-    }
+	}
 
-    public void read(URL url) throws FileNotFoundException, IOException, DataFormatException
-    {
-	    URLConnection connection = url.openConnection();
+	public void read(final URL url) throws FileNotFoundException, IOException,
+			DataFormatException {
+		final URLConnection connection = url.openConnection();
 
-	    int fileSize = connection.getContentLength();
-            
-	    if (fileSize<0) {
-              throw new FileNotFoundException(url.getFile());
-	    }
-	    
-	    byte[] bytes = new byte[fileSize];
+		final int fileSize = connection.getContentLength();
 
-	    InputStream stream = url.openStream();
-	    BufferedInputStream buffer = new BufferedInputStream(stream);
+		if (fileSize < 0) {
+			throw new FileNotFoundException(url.getFile());
+		}
 
-	    buffer.read(bytes);
-	    buffer.close();
+		final byte[] bytes = new byte[fileSize];
 
-    	ImageInfo info = new ImageInfo();
-    	info.setInput(new ByteArrayInputStream(bytes));
-    	info.setDetermineImageNumber(true);
-    	
-    	if (!info.check())  {
-    		throw new DataFormatException(Strings.UNSUPPORTED_FILE_FORMAT);
-    	}
-    	
+		final InputStream stream = url.openStream();
+		final BufferedInputStream buffer = new BufferedInputStream(stream);
+
+		buffer.read(bytes);
+		buffer.close();
+
+		final ImageInfo info = new ImageInfo();
+		info.setInput(new ByteArrayInputStream(bytes));
+		info.setDetermineImageNumber(true);
+
+		if (!info.check()) {
+			throw new DataFormatException(Strings.INVALID_FORMAT);
+		}
+
 		decode(bytes);
-    }
+	}
 
-    public ImageTag defineImage(int identifier)
-    {
-    	return new DefineJPEGImage2(identifier, image); 
-    }
+	public ImageTag defineImage(final int identifier) {
+		return new DefineJPEGImage2(identifier, image);
+	}
 
-    public ImageDecoder newDecoder() {
-    	return new JPGDecoder();
-    }
-    
-	private byte[] loadFile(final File file) throws FileNotFoundException, IOException {
-		byte[] data = new byte[(int) file.length()];
+	public ImageDecoder newDecoder() {
+		return new JPGDecoder();
+	}
+
+	private byte[] loadFile(final File file) throws FileNotFoundException,
+			IOException {
+		final byte[] data = new byte[(int) file.length()];
 
 		FileInputStream stream = null;
 
 		try {
 			stream = new FileInputStream(file);
-			int bytesRead = stream.read(data);
+			final int bytesRead = stream.read(data);
 
 			if (bytesRead != data.length) {
 				throw new IOException(file.getAbsolutePath());
@@ -133,63 +132,58 @@ public final class JPGDecoder implements ImageProvider, ImageDecoder
 		}
 		return data;
 	}
-    
-	protected void decode(byte[] data) throws DataFormatException
-    {
-        image = new byte[data.length];
-        
-        System.arraycopy(data, 0, image, 0, data.length);
 
-        if (!jpegInfo()) {
-            throw new DataFormatException(Strings.UNSUPPORTED_FILE_FORMAT);
-        }
-    	
-    }
-    public int getWidth() {
-    	return width;
-    }
-    public int getHeight() {
-    	return height;
-    }
-    
-    public byte[] getImage() {
-    	return Arrays.copyOf(image, image.length);
-    }
+	protected void decode(final byte[] data) throws DataFormatException {
+		image = new byte[data.length];
 
-	private boolean jpegInfo()
-	{
-		FLVDecoder coder = new FLVDecoder(image);
-		
+		System.arraycopy(data, 0, image, 0, data.length);
+
+		if (!jpegInfo()) {
+			throw new DataFormatException(Strings.INVALID_FORMAT);
+		}
+
+	}
+
+	public int getWidth() {
+		return width;
+	}
+
+	public int getHeight() {
+		return height;
+	}
+
+	public byte[] getImage() {
+		return Arrays.copyOf(image, image.length);
+	}
+
+	private boolean jpegInfo() {
+		final FLVDecoder coder = new FLVDecoder(image);
+
 		boolean result;
 
-		if (coder.readWord(2, false) == 0xffd8) 
-		{
+		if (coder.readWord(2, false) == 0xffd8) {
 			int marker;
-			
+
 			do {
 				marker = coder.readWord(2, false);
-				
-				if ((marker & 0xff00) == 0xff00)
-				{
-					if (marker >= 0xffc0 && marker <= 0xffcf && marker != 0xffc4
-									&& marker != 0xffc8)
-					{
+
+				if ((marker & 0xff00) == 0xff00) {
+					if (marker >= 0xffc0 && marker <= 0xffcf
+							&& marker != 0xffc4 && marker != 0xffc8) {
 						coder.adjustPointer(24);
 						coder.readWord(2, false);
 						coder.readWord(2, false);
 						break;
-					} 
-					else
-					{
-						coder.adjustPointer((coder.readWord(2, false) - 2) << 3);
+					} else {
+						coder
+								.adjustPointer((coder.readWord(2, false) - 2) << 3);
 					}
 				}
-				
+
 			} while ((marker & 0xff00) == 0xff00);
-			
+
 			result = true;
-		}
-		else {
+		} else {
 			result = false;
 		}
 		return result;

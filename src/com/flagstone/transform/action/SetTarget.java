@@ -38,54 +38,50 @@ import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-
 //TODO(doc) Review
 /**
- * SetTarget selects a movie clip to allow its time-line to be controlled. The 
- * action performs a "context switch". All following actions such as GotoFrame, 
+ * SetTarget selects a movie clip to allow its time-line to be controlled. The
+ * action performs a "context switch". All following actions such as GotoFrame,
  * Play, etc. will be applied to the specified object until another
  * <b>SetTarget</b> action is executed. Setting the target to be the empty
  * string ("") returns the target to the movie's main time-line.</p>
  * 
  */
-public final class SetTarget implements Action
-{
+public final class SetTarget implements Action {
 	private static final String FORMAT = "SetTarget: { target=%s }";
-	
+
 	private String target;
-	
+
 	private transient int length;
 
-	//TODO(doc)
-	public SetTarget(final SWFDecoder coder, final Context context) throws CoderException
-	{
+	// TODO(doc)
+	public SetTarget(final SWFDecoder coder) throws CoderException {
 		coder.readByte();
 		length = coder.readWord(2, false);
 		target = coder.readString();
 	}
 
 	/**
-	 * Creates a SetTarget action that changes the context to the
-	 * specified target.
+	 * Creates a SetTarget action that changes the context to the specified
+	 * target.
 	 * 
 	 * @param aString
-	 *            the name of a movie clip. Must not be null or zero length string.
+	 *            the name of a movie clip. Must not be null or zero length
+	 *            string.
 	 */
-	public SetTarget(String aString)
-	{
+	public SetTarget(final String aString) {
 		setTarget(aString);
 	}
-	
-	//TODO(doc)
-	public SetTarget(SetTarget object) {
+
+	// TODO(doc)
+	public SetTarget(final SetTarget object) {
 		target = object.target;
 	}
 
 	/**
 	 * Returns the name of the target movie clip.
 	 */
-	public String getTarget()
-	{
+	public String getTarget() {
 		return target;
 	}
 
@@ -93,10 +89,10 @@ public final class SetTarget implements Action
 	 * Sets the name of the target movie clip.
 	 * 
 	 * @param aString
-	 *            the name of a movie clip. Must not be null or zero length string.
+	 *            the name of a movie clip. Must not be null or zero length
+	 *            string.
 	 */
-	public void setTarget(String aString)
-	{
+	public void setTarget(final String aString) {
 		if (aString == null || aString.length() == 0) {
 			throw new IllegalArgumentException(Strings.STRING_NOT_SET);
 		}
@@ -108,20 +104,18 @@ public final class SetTarget implements Action
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return String.format(FORMAT, target);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context)
-	{
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		length = coder.strlen(target);
 
 		return 3 + length;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException
-	{
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		coder.writeByte(ActionTypes.SET_TARGET);
 		coder.writeWord(length, 2);
 		coder.writeString(target);

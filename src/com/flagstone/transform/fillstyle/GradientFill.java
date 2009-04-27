@@ -83,58 +83,56 @@ import com.flagstone.transform.datatype.CoordTransform;
  * 
  * @see Gradient
  */
-//TODO(optimise) Add pack/unpack methods
+// TODO(optimise) Add pack/unpack methods
 public final class GradientFill implements FillStyle {
 
 	public enum Spread {
 		PAD(0), REFLECT(0x40), REPEAT(0xC0);
-		
-		private static final Map<Integer,Spread>table 
-			= new LinkedHashMap<Integer,Spread>();
+
+		private static final Map<Integer, Spread> TABLE = new LinkedHashMap<Integer, Spread>();
 
 		static {
 			for (Spread type : values()) {
-				table.put(type.value, type);
+				TABLE.put(type.value, type);
 			}
 		}
-		
-		public static Spread fromInt(int type) {
-			return table.get(type);
+
+		public static Spread fromInt(final int type) {
+			return TABLE.get(type);
 		}
 
 		private int value;
-		
-		private Spread(int value) {
+
+		private Spread(final int value) {
 			this.value = value;
 		}
-		
+
 		public int getValue() {
 			return value;
 		}
 	}
-	
+
 	public enum Interpolation {
 		NORMAL(0), LINEAR(0x10);
-		
-		private static final Map<Integer,Interpolation>table 
-			= new LinkedHashMap<Integer,Interpolation>();
+
+		private static final Map<Integer, Interpolation> TABLE = new LinkedHashMap<Integer, Interpolation>();
 
 		static {
 			for (Interpolation type : values()) {
-				table.put(type.value, type);
+				TABLE.put(type.value, type);
 			}
 		}
-		
-		public static Interpolation fromInt(int type) {
-			return table.get(type);
+
+		public static Interpolation fromInt(final int type) {
+			return TABLE.get(type);
 		}
 
 		private int value;
-		
-		private Interpolation(int value) {
+
+		private Interpolation(final int value) {
 			this.value = value;
 		}
-		
+
 		public int getValue() {
 			return value;
 		}
@@ -142,15 +140,16 @@ public final class GradientFill implements FillStyle {
 
 	private static final String FORMAT = "GradientFill: { transform=%s; gradients=%s }";
 
-	private int type;
+	private transient int type;
 	private int spread;
 	private int interpolation;
 	private CoordTransform transform;
 	private List<Gradient> gradients;
-	
+
 	private transient int count;
 
-	public GradientFill(final SWFDecoder coder, final Context context) throws CoderException {
+	public GradientFill(final SWFDecoder coder, final Context context)
+			throws CoderException {
 		type = coder.readByte();
 		transform = new CoordTransform(coder);
 		count = coder.readByte();
@@ -158,8 +157,8 @@ public final class GradientFill implements FillStyle {
 		interpolation = count & 0x0030;
 		count = count & 0x00FF;
 		gradients = new ArrayList<Gradient>(count);
-		
-		for (int i=0; i<count; i++) {
+
+		for (int i = 0; i < count; i++) {
 			gradients.add(new Gradient(coder, context));
 		}
 	}
@@ -180,45 +179,45 @@ public final class GradientFill implements FillStyle {
 	 *            to 8 Gradients. For Flash 8 onwards this number was increased
 	 *            to 15. Must not be null.
 	 */
-	public GradientFill(boolean radial, final CoordTransform aTransform,
+	public GradientFill(final boolean radial, final CoordTransform aTransform,
 			final List<Gradient> anArray) {
 		setRadial(radial);
 		setTransform(aTransform);
 		setGradients(anArray);
 	}
 
-	//TODO(doc)
-	public GradientFill(GradientFill object) {
+	// TODO(doc)
+	public GradientFill(final GradientFill object) {
 		type = object.type;
 		transform = object.transform;
 		gradients = new ArrayList<Gradient>(object.gradients);
 	}
-	
+
 	public boolean isRadial() {
 		return (type & 0x02) != 0;
 	}
-	
-	public void setRadial(boolean radial) {
+
+	public void setRadial(final boolean radial) {
 		if (radial) {
 			type = 0x12;
 		} else {
 			type = 0x10;
 		}
 	}
-	
+
 	public Spread getSpread() {
 		return Spread.fromInt(spread);
 	}
-	
-	public void setSpread(Spread spread) {
+
+	public void setSpread(final Spread spread) {
 		this.spread = spread.getValue();
 	}
-	
+
 	public Interpolation getInterpolation() {
 		return Interpolation.fromInt(interpolation);
 	}
-	
-	public void setInterpolation(Interpolation interpolation) {
+
+	public void setInterpolation(final Interpolation interpolation) {
 		this.interpolation = interpolation.getValue();
 	}
 
@@ -247,7 +246,7 @@ public final class GradientFill implements FillStyle {
 	 */
 	public void setTransform(final CoordTransform aTransform) {
 		if (aTransform == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
 		}
 		transform = aTransform;
 	}
@@ -262,10 +261,10 @@ public final class GradientFill implements FillStyle {
 	 */
 	public void setGradients(final List<Gradient> anArray) {
 		if (anArray == null) {
-			throw new IllegalArgumentException(Strings.ARRAY_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
 		}
 		if (anArray.size() > 15) {
-			throw new IllegalArgumentException(Strings.GRADIENT_COUNT_EXCEEDED);
+			throw new IllegalArgumentException(Strings.MAX_GRADIENTS);
 		}
 		gradients = anArray;
 	}
@@ -280,10 +279,10 @@ public final class GradientFill implements FillStyle {
 	 */
 	public GradientFill add(final Gradient aGradient) {
 		if (aGradient == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
 		}
 		if (gradients.size() == 15) {
-			throw new IllegalArgumentException(Strings.GRADIENT_COUNT_EXCEEDED);
+			throw new IllegalArgumentException(Strings.MAX_GRADIENTS);
 		}
 		gradients.add(aGradient);
 		return this;
@@ -300,11 +299,14 @@ public final class GradientFill implements FillStyle {
 
 	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		count = gradients.size();
-		return 2 + transform.prepareToEncode(coder, context) + (count * 
-			(context.getVariables().containsKey(Context.TRANSPARENT) ? 5:4));
+		return 2
+				+ transform.prepareToEncode(coder, context)
+				+ (count * (context.getVariables().containsKey(
+						Context.TRANSPARENT) ? 5 : 4));
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException {
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		coder.writeByte(type);
 		transform.encode(coder, context);
 		coder.writeWord(count | spread | interpolation, 1);

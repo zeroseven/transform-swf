@@ -45,17 +45,16 @@ public final class SWFEncoder extends Encoder {
 	public SWFEncoder(final int size) {
 		super(size);
 	}
-	
+
 	/**
-	 * Calculate minimum number of bytes a 32-bit unsigned integer can be 
+	 * Calculate minimum number of bytes a 32-bit unsigned integer can be
 	 * encoded in.
 	 * 
 	 * @param value
 	 *            an integer containing the value to be written.
-	 * @return
-	 *            the number of bytes required to encode the integer.
+	 * @return the number of bytes required to encode the integer.
 	 */
-	public static int sizeVariableU32(int value) {
+	public static int sizeVariableU32(final int value) {
 
 		int val = value;
 		int size;
@@ -75,7 +74,7 @@ public final class SWFEncoder extends Encoder {
 					if (val > 127) {
 						size += 1;
 					}
-				} 
+				}
 			}
 		} else {
 			size = 1;
@@ -99,14 +98,13 @@ public final class SWFEncoder extends Encoder {
 		}
 	}
 
-
 	/**
 	 * Write a 32-bit unsigned integer, encoded in a variable number of bytes.
 	 * 
 	 * @param value
 	 *            an integer containing the value to be written.
 	 */
-	public void writeVariableU32(int value) {
+	public void writeVariableU32(final int value) {
 
 		int val = value;
 
@@ -148,12 +146,12 @@ public final class SWFEncoder extends Encoder {
 	 *            the value to be written.
 	 */
 	public void writeHalf(final float value) {
-		int intValue = Float.floatToIntBits(value);
-		
-		int sign = intValue >>> 16;
-		int exp = ((intValue >> 23) & 0x1F) << 10;
-		int val = ((intValue >> 13) & 0x3FF);
-			
+		final int intValue = Float.floatToIntBits(value);
+
+		final int sign = intValue >>> 16;
+		final int exp = ((intValue >> 23) & 0x1F) << 10;
+		final int val = ((intValue >> 13) & 0x3FF);
+
 		writeWord(sign | exp | val, 2);
 	}
 
@@ -174,7 +172,7 @@ public final class SWFEncoder extends Encoder {
 	 *            the value to be written.
 	 */
 	public void writeDouble(final double value) {
-		long longValue = Double.doubleToLongBits(value);
+		final long longValue = Double.doubleToLongBits(value);
 
 		writeWord((int) (longValue >>> 32), 4);
 		writeWord((int) longValue, 4);

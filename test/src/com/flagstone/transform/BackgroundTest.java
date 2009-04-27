@@ -33,39 +33,33 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 
-import com.flagstone.transform.Background;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.Color;
 
-@SuppressWarnings( { 
-	"PMD.LocalVariableCouldBeFinal",
-	"PMD.JUnitAssertionsShouldIncludeMessage" 
-})
+@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
+		"PMD.JUnitAssertionsShouldIncludeMessage" })
 public final class BackgroundTest {
-	
-	private transient final Color color = new Color(1,2,3);
-	
-	private transient Background fixture;
-	
-	private transient final byte[] empty = new byte[] { 
-			0x43, 0x02, 0x00, 0x00, 0x00};
-	private transient final byte[] encoded = new byte[] { 
-			0x43, 0x02, 0x01, 0x02, 0x03};
-	private transient final byte[] extended = new byte[] { 
-			0x7F, 0x02, 0x03, 0x00, 0x00, 0x00, 0x01, 0x02, 0x03};
 
-	@Test(expected=IllegalArgumentException.class)
+	private transient final Color color = new Color(1, 2, 3);
+
+	private transient Background fixture;
+
+	private transient final byte[] encoded = new byte[] { 0x43, 0x02, 0x01,
+			0x02, 0x03 };
+	private transient final byte[] extended = new byte[] { 0x7F, 0x02, 0x03,
+			0x00, 0x00, 0x00, 0x01, 0x02, 0x03 };
+
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForColorWithNull() {
-		fixture = new Background((Color)null);
+		fixture = new Background((Color) null);
 	}
-	
+
 	@Test
 	public void checkCopy() {
 		fixture = new Background(color);
@@ -74,38 +68,38 @@ public final class BackgroundTest {
 		assertSame(fixture.getColor(), copy.getColor());
 		assertEquals(fixture.toString(), copy.toString());
 	}
-	
+
 	@Test
 	public void encode() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(encoded.length);		
+		SWFEncoder encoder = new SWFEncoder(encoded.length);
 		Context context = new Context();
 
 		fixture = new Background(color);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
 		fixture.encode(encoder, context);
-		
+
 		assertTrue(encoder.eof());
 		assertArrayEquals(encoded, encoder.getData());
 	}
-	
+
 	@Test
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
 		Context context = new Context();
 
 		fixture = new Background(decoder, context);
-		
+
 		assertTrue(decoder.eof());
 		assertEquals(color.toString(), fixture.getColor().toString());
 	}
-	
+
 	@Test
 	public void decodeExtended() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(extended);
 		Context context = new Context();
 
 		fixture = new Background(decoder, context);
-		
+
 		assertTrue(decoder.eof());
 		assertEquals(color.toString(), fixture.getColor().toString());
 	}

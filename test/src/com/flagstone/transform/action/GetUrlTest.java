@@ -36,40 +36,37 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 
-import com.flagstone.transform.action.GetUrl;
 import com.flagstone.transform.coder.ActionTypes;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-
-@SuppressWarnings( { 
-	"PMD.LocalVariableCouldBeFinal",
-	"PMD.JUnitAssertionsShouldIncludeMessage" 
-})
+@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
+		"PMD.JUnitAssertionsShouldIncludeMessage" })
 public final class GetUrlTest {
-	
+
 	private transient final int type = ActionTypes.GET_URL;
 	private transient final String url = "url";
 	private transient final String target = "_blank";
-	
+
 	private transient GetUrl fixture;
-	
-	private transient final byte[] encoded = new byte[] { (byte)type, 0x0B, 0x00, 
-			0x75, 0x72, 0x6C, 0x00, 0x5F, 0x62, 0x6C, 0x61, 0x6E, 0x6B, 0x00};
-	
-	@Test(expected=IllegalArgumentException.class)
+
+	private transient final byte[] encoded = new byte[] { (byte) type, 0x0B,
+			0x00, 0x75, 0x72, 0x6C, 0x00, 0x5F, 0x62, 0x6C, 0x61, 0x6E, 0x6B,
+			0x00 };
+
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForUrlWithNull() {
 		fixture = new GetUrl(null, target);
 	}
-	
-	@Test(expected=IllegalArgumentException.class)
+
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForUrlWithEmpty() {
 		fixture = new GetUrl("", target);
 	}
-	
-	@Test(expected=IllegalArgumentException.class)
+
+	@Test(expected = IllegalArgumentException.class)
 	public void checkAccessorForTargetWithNull() {
 		fixture = new GetUrl(url, null);
 	}
@@ -82,16 +79,16 @@ public final class GetUrlTest {
 		assertNotSame(fixture, copy);
 		assertEquals(fixture.toString(), copy.toString());
 	}
-	
+
 	@Test
-	public void encode() throws CoderException {		
-		SWFEncoder encoder = new SWFEncoder(encoded.length);		
+	public void encode() throws CoderException {
+		SWFEncoder encoder = new SWFEncoder(encoded.length);
 		Context context = new Context();
 
 		fixture = new GetUrl(url, target);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
 		fixture.encode(encoder, context);
-		
+
 		assertTrue(encoder.eof());
 		assertArrayEquals(encoded, encoder.getData());
 	}
@@ -99,10 +96,9 @@ public final class GetUrlTest {
 	@Test
 	public void decode() throws CoderException {
 		SWFDecoder decoder = new SWFDecoder(encoded);
-		Context context = new Context();
 
-		fixture = new GetUrl(decoder, context);
-		
+		fixture = new GetUrl(decoder);
+
 		assertTrue(decoder.eof());
 		assertEquals(url, fixture.getUrl());
 		assertEquals(target, fixture.getTarget());

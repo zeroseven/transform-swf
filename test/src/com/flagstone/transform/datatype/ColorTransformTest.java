@@ -35,229 +35,210 @@ import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.datatype.ColorTransform;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotSame;
 
-@SuppressWarnings({
-	"PMD.TooManyMethods", 
-    "PMD.LocalVariableCouldBeFinal",
-	"PMD.JUnitAssertionsShouldIncludeMessage"
-})
-public final class ColorTransformTest
-{
-    private transient ColorTransform fixture;
-    
+@SuppressWarnings( { "PMD.TooManyMethods", "PMD.LocalVariableCouldBeFinal",
+		"PMD.JUnitAssertionsShouldIncludeMessage" })
+public final class ColorTransformTest {
+	private transient ColorTransform fixture;
+
 	private transient SWFEncoder encoder;
-	private transient SWFDecoder decoder; 
+	private transient SWFDecoder decoder;
 	private transient Context context;
-	
+
 	private transient byte[] data;
 
-    @Test
-    public void encodeMultiplyWithoutAlpha() throws CoderException
-    {
-    	data = new byte[] { 108, -128, 32, 6, 0};   	
-    	encoder = new SWFEncoder(data.length);
-    	context = new Context();
-     	
-    	fixture = new ColorTransform(1.0f,2.0f,3.0f,4.0f);
-    	
-    	assertEquals(5, fixture.prepareToEncode(encoder, context));
-    	fixture.encode(encoder, context);
-    	
-    	assertEquals(40, encoder.getPointer());
-    	assertArrayEquals(data, encoder.getData());
-    }
-    
-    @Test
-    public void encodeMultiplyWithAlpha() throws CoderException
-    {
-    	data = new byte[] { 112, 64, 8, 0, -64, 16, 0};   	
-    	encoder = new SWFEncoder(data.length);
-       	context = new Context();
-       	context.getVariables().put(Context.TRANSPARENT, 1);
-    	
-    	fixture = new ColorTransform(1.0f,2.0f,3.0f,4.0f);
-    	assertEquals(7, fixture.prepareToEncode(encoder, context));
-    	fixture.encode(encoder, context);
-    	
-    	assertEquals(56, encoder.getPointer());
-    	assertArrayEquals(data, encoder.getData());
-    }
-    
-    @Test
-    public void encodeAddWithoutAlpha() throws CoderException
-    {
-    	data = new byte[] { -116, -90};   	
-    	encoder = new SWFEncoder(data.length);
-       	context = new Context();
-     	
-    	fixture = new ColorTransform(1,2,3,4);
-    	
-    	assertEquals(2, fixture.prepareToEncode(encoder, context));
-    	fixture.encode(encoder, context);
-    	
-    	assertEquals(16, encoder.getPointer());
-    	assertArrayEquals(data, encoder.getData());
-    }
-    
-    @Test
-    public void encodeAddWithAlpha() throws CoderException
-    {
-    	data = new byte[] { -112, 72, -48};   	
-    	encoder = new SWFEncoder(data.length);
-       	context = new Context();
-       	context.getVariables().put(Context.TRANSPARENT, 1);
-    	
-    	fixture = new ColorTransform(1,2,3,4);
-    	assertEquals(3, fixture.prepareToEncode(encoder, context));
-    	fixture.encode(encoder, context);
-    	
-    	assertEquals(24, encoder.getPointer());
-    	assertArrayEquals(data, encoder.getData());
-    }
-    
-    @Test
-    public void encodeWithoutAlpha() throws CoderException
-    {
-    	data = new byte[] { -20, -128, 32, 6, 0, 0, 64, 16, 3};   	
-    	encoder = new SWFEncoder(data.length);
-       	context = new Context();
-    	
-    	fixture = new ColorTransform(1,2,3,4,1.0f,2.0f,3.0f,4.0f);
-    	
-    	assertEquals(9, fixture.prepareToEncode(encoder, context));
-    	fixture.encode(encoder, context);
-    	
-    	assertEquals(72, encoder.getPointer());
-    	assertArrayEquals(data, encoder.getData());
-    }
-    
-    @Test
-    public void encodeWithAlpha() throws CoderException
-    {
-    	data = new byte[] { -16, 64, 8, 0, -64, 16, 0, 0, 64, 8, 0, -64, 16};   	
-    	encoder = new SWFEncoder(data.length);
-       	context = new Context();
-       	context.getVariables().put(Context.TRANSPARENT, 1);
-    	
-    	fixture = new ColorTransform(1,2,3,4,1.0f,2.0f,3.0f,4.0f);
+	@Test
+	public void encodeMultiplyWithoutAlpha() throws CoderException {
+		data = new byte[] { 108, -128, 32, 6, 0 };
+		encoder = new SWFEncoder(data.length);
+		context = new Context();
 
-    	assertEquals(13, fixture.prepareToEncode(encoder, context));
-    	fixture.encode(encoder, context);
-    	
-    	assertEquals(104, encoder.getPointer());
-    	assertArrayEquals(data, encoder.getData());
-    }
+		fixture = new ColorTransform(1.0f, 2.0f, 3.0f, 4.0f);
 
-    @Test
-    public void decodeMultiplyWithoutAlpha() throws CoderException
-    {
-    	data = new byte[] { 108, -128, 32, 6, 0};   	
-    	decoder = new SWFDecoder(data);
-       	context = new Context();
-     	
-       	fixture = new ColorTransform(decoder, context);
-            	
-    	assertEquals(40, decoder.getPointer());
-     	assertEquals(1.0f, fixture.getMultiplyRed());
-    	assertEquals(2.0f, fixture.getMultiplyGreen());
-    	assertEquals(3.0f, fixture.getMultiplyBlue());
-    	assertEquals(1.0f, fixture.getMultiplyAlpha());
-    }
-    
-    @Test
-    public void decodeMultiplyWithAlpha() throws CoderException
-    {
-    	data = new byte[] { 112, 64, 8, 0, -64, 16, 0};   	
-    	decoder = new SWFDecoder(data);
-       	context = new Context();
-       	context.getVariables().put(Context.TRANSPARENT, 1);
-     	
-    	fixture = new ColorTransform(decoder, context);
-    	
-    	assertEquals(56, decoder.getPointer());
-    	assertEquals(1.0f, fixture.getMultiplyRed());
-    	assertEquals(2.0f, fixture.getMultiplyGreen());
-    	assertEquals(3.0f, fixture.getMultiplyBlue());
-    	assertEquals(4.0f, fixture.getMultiplyAlpha());
-   }
-    
-    @Test
-    public void decodeAddWithoutAlpha() throws CoderException
-    {
-    	data = new byte[] { -116, -90};   	
-    	decoder = new SWFDecoder(data);
-       	context = new Context();
-     	
-       	fixture = new ColorTransform(decoder, context);
-            	
-    	assertEquals(16, decoder.getPointer());
-    	assertEquals(1, fixture.getAddRed());
-    	assertEquals(2, fixture.getAddGreen());
-    	assertEquals(3, fixture.getAddBlue());
-    	assertEquals(0, fixture.getAddAlpha());
-    }
-    
-    @Test
-    public void decodeAddWithAlpha() throws CoderException
-    {
-    	data = new byte[] { -112, 72, -48};   	
-    	decoder = new SWFDecoder(data);
-       	context = new Context();
-       	context.getVariables().put(Context.TRANSPARENT, 1);
-    	
-       	fixture = new ColorTransform(decoder, context);
-            	
-    	assertEquals(24, decoder.getPointer());
-    	assertEquals(1, fixture.getAddRed());
-    	assertEquals(2, fixture.getAddGreen());
-    	assertEquals(3, fixture.getAddBlue());
-    	assertEquals(4, fixture.getAddAlpha());
-    }
-    
-    @Test
-    public void decodeWithoutAlpha() throws CoderException
-    {
-    	data = new byte[] { -20, -128, 32, 6, 0, 0, 64, 16, 3};   	
-    	decoder = new SWFDecoder(data);
-       	context = new Context();
+		assertEquals(5, fixture.prepareToEncode(encoder, context));
+		fixture.encode(encoder, context);
 
-       	fixture = new ColorTransform(decoder, context);
-        
-    	assertEquals(72, decoder.getPointer());
-    	assertEquals(1, fixture.getAddRed());
-    	assertEquals(2, fixture.getAddGreen());
-    	assertEquals(3, fixture.getAddBlue());
-    	assertEquals(0, fixture.getAddAlpha());
-    	assertEquals(1.0f, fixture.getMultiplyRed());
-    	assertEquals(2.0f, fixture.getMultiplyGreen());
-    	assertEquals(3.0f, fixture.getMultiplyBlue());
-    	assertEquals(1.0f, fixture.getMultiplyAlpha());
-    }
-    
-    @Test
-    public void decodeWithAlpha() throws CoderException
-    {
-    	data = new byte[] { -16, 64, 8, 0, -64, 16, 0, 0, 64, 8, 0, -64, 16};   	
-    	decoder = new SWFDecoder(data);
-       	context = new Context();
-       	context.getVariables().put(Context.TRANSPARENT, 1);
-     	
-       	fixture = new ColorTransform(decoder, context);
-        
-    	assertEquals(104, decoder.getPointer());
-    	assertEquals(1, fixture.getAddRed());
-    	assertEquals(2, fixture.getAddGreen());
-    	assertEquals(3, fixture.getAddBlue());
-    	assertEquals(4, fixture.getAddAlpha());
-    	assertEquals(1.0f, fixture.getMultiplyRed());
-    	assertEquals(2.0f, fixture.getMultiplyGreen());
-    	assertEquals(3.0f, fixture.getMultiplyBlue());
-    	assertEquals(4.0f, fixture.getMultiplyAlpha());
-    }
+		assertEquals(40, encoder.getPointer());
+		assertArrayEquals(data, encoder.getData());
+	}
+
+	@Test
+	public void encodeMultiplyWithAlpha() throws CoderException {
+		data = new byte[] { 112, 64, 8, 0, -64, 16, 0 };
+		encoder = new SWFEncoder(data.length);
+		context = new Context();
+		context.getVariables().put(Context.TRANSPARENT, 1);
+
+		fixture = new ColorTransform(1.0f, 2.0f, 3.0f, 4.0f);
+		assertEquals(7, fixture.prepareToEncode(encoder, context));
+		fixture.encode(encoder, context);
+
+		assertEquals(56, encoder.getPointer());
+		assertArrayEquals(data, encoder.getData());
+	}
+
+	@Test
+	public void encodeAddWithoutAlpha() throws CoderException {
+		data = new byte[] { -116, -90 };
+		encoder = new SWFEncoder(data.length);
+		context = new Context();
+
+		fixture = new ColorTransform(1, 2, 3, 4);
+
+		assertEquals(2, fixture.prepareToEncode(encoder, context));
+		fixture.encode(encoder, context);
+
+		assertEquals(16, encoder.getPointer());
+		assertArrayEquals(data, encoder.getData());
+	}
+
+	@Test
+	public void encodeAddWithAlpha() throws CoderException {
+		data = new byte[] { -112, 72, -48 };
+		encoder = new SWFEncoder(data.length);
+		context = new Context();
+		context.getVariables().put(Context.TRANSPARENT, 1);
+
+		fixture = new ColorTransform(1, 2, 3, 4);
+		assertEquals(3, fixture.prepareToEncode(encoder, context));
+		fixture.encode(encoder, context);
+
+		assertEquals(24, encoder.getPointer());
+		assertArrayEquals(data, encoder.getData());
+	}
+
+	@Test
+	public void encodeWithoutAlpha() throws CoderException {
+		data = new byte[] { -20, -128, 32, 6, 0, 0, 64, 16, 3 };
+		encoder = new SWFEncoder(data.length);
+		context = new Context();
+
+		fixture = new ColorTransform(1, 2, 3, 4, 1.0f, 2.0f, 3.0f, 4.0f);
+
+		assertEquals(9, fixture.prepareToEncode(encoder, context));
+		fixture.encode(encoder, context);
+
+		assertEquals(72, encoder.getPointer());
+		assertArrayEquals(data, encoder.getData());
+	}
+
+	@Test
+	public void encodeWithAlpha() throws CoderException {
+		data = new byte[] { -16, 64, 8, 0, -64, 16, 0, 0, 64, 8, 0, -64, 16 };
+		encoder = new SWFEncoder(data.length);
+		context = new Context();
+		context.getVariables().put(Context.TRANSPARENT, 1);
+
+		fixture = new ColorTransform(1, 2, 3, 4, 1.0f, 2.0f, 3.0f, 4.0f);
+
+		assertEquals(13, fixture.prepareToEncode(encoder, context));
+		fixture.encode(encoder, context);
+
+		assertEquals(104, encoder.getPointer());
+		assertArrayEquals(data, encoder.getData());
+	}
+
+	@Test
+	public void decodeMultiplyWithoutAlpha() throws CoderException {
+		data = new byte[] { 108, -128, 32, 6, 0 };
+		decoder = new SWFDecoder(data);
+		context = new Context();
+
+		fixture = new ColorTransform(decoder, context);
+
+		assertEquals(40, decoder.getPointer());
+		assertEquals(1.0f, fixture.getMultiplyRed());
+		assertEquals(2.0f, fixture.getMultiplyGreen());
+		assertEquals(3.0f, fixture.getMultiplyBlue());
+		assertEquals(1.0f, fixture.getMultiplyAlpha());
+	}
+
+	@Test
+	public void decodeMultiplyWithAlpha() throws CoderException {
+		data = new byte[] { 112, 64, 8, 0, -64, 16, 0 };
+		decoder = new SWFDecoder(data);
+		context = new Context();
+		context.getVariables().put(Context.TRANSPARENT, 1);
+
+		fixture = new ColorTransform(decoder, context);
+
+		assertEquals(56, decoder.getPointer());
+		assertEquals(1.0f, fixture.getMultiplyRed());
+		assertEquals(2.0f, fixture.getMultiplyGreen());
+		assertEquals(3.0f, fixture.getMultiplyBlue());
+		assertEquals(4.0f, fixture.getMultiplyAlpha());
+	}
+
+	@Test
+	public void decodeAddWithoutAlpha() throws CoderException {
+		data = new byte[] { -116, -90 };
+		decoder = new SWFDecoder(data);
+		context = new Context();
+
+		fixture = new ColorTransform(decoder, context);
+
+		assertEquals(16, decoder.getPointer());
+		assertEquals(1, fixture.getAddRed());
+		assertEquals(2, fixture.getAddGreen());
+		assertEquals(3, fixture.getAddBlue());
+		assertEquals(0, fixture.getAddAlpha());
+	}
+
+	@Test
+	public void decodeAddWithAlpha() throws CoderException {
+		data = new byte[] { -112, 72, -48 };
+		decoder = new SWFDecoder(data);
+		context = new Context();
+		context.getVariables().put(Context.TRANSPARENT, 1);
+
+		fixture = new ColorTransform(decoder, context);
+
+		assertEquals(24, decoder.getPointer());
+		assertEquals(1, fixture.getAddRed());
+		assertEquals(2, fixture.getAddGreen());
+		assertEquals(3, fixture.getAddBlue());
+		assertEquals(4, fixture.getAddAlpha());
+	}
+
+	@Test
+	public void decodeWithoutAlpha() throws CoderException {
+		data = new byte[] { -20, -128, 32, 6, 0, 0, 64, 16, 3 };
+		decoder = new SWFDecoder(data);
+		context = new Context();
+
+		fixture = new ColorTransform(decoder, context);
+
+		assertEquals(72, decoder.getPointer());
+		assertEquals(1, fixture.getAddRed());
+		assertEquals(2, fixture.getAddGreen());
+		assertEquals(3, fixture.getAddBlue());
+		assertEquals(0, fixture.getAddAlpha());
+		assertEquals(1.0f, fixture.getMultiplyRed());
+		assertEquals(2.0f, fixture.getMultiplyGreen());
+		assertEquals(3.0f, fixture.getMultiplyBlue());
+		assertEquals(1.0f, fixture.getMultiplyAlpha());
+	}
+
+	@Test
+	public void decodeWithAlpha() throws CoderException {
+		data = new byte[] { -16, 64, 8, 0, -64, 16, 0, 0, 64, 8, 0, -64, 16 };
+		decoder = new SWFDecoder(data);
+		context = new Context();
+		context.getVariables().put(Context.TRANSPARENT, 1);
+
+		fixture = new ColorTransform(decoder, context);
+
+		assertEquals(104, decoder.getPointer());
+		assertEquals(1, fixture.getAddRed());
+		assertEquals(2, fixture.getAddGreen());
+		assertEquals(3, fixture.getAddBlue());
+		assertEquals(4, fixture.getAddAlpha());
+		assertEquals(1.0f, fixture.getMultiplyRed());
+		assertEquals(2.0f, fixture.getMultiplyGreen());
+		assertEquals(3.0f, fixture.getMultiplyBlue());
+		assertEquals(4.0f, fixture.getMultiplyAlpha());
+	}
 }

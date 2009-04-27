@@ -46,7 +46,8 @@ import com.flagstone.transform.coder.SWFEncoder;
 /**
  * DefineButton2 defines the appearance and actions of push and menu buttons.
  * 
- * <p>It provides a more sophisticated model for creating buttons than 
+ * <p>
+ * It provides a more sophisticated model for creating buttons than
  * {@link DefineButton}:
  * </p>
  * 
@@ -56,24 +57,26 @@ import com.flagstone.transform.coder.SWFEncoder;
  * <li>Actions can be executed for any button event.</li>
  * </ul>
  * 
- * <p>Push and Menu buttons behave slightly differently in tracking mouse movements
+ * <p>
+ * Push and Menu buttons behave slightly differently in tracking mouse movements
  * when the button is clicked. A Push button 'captures' the mouse so if the
  * cursor is dragged outside of the active area of the button and the mouse
  * click is released then the Release Outside event is still sent to the button.
  * A Menu button does not 'capture' the mouse so if the cursor is dragged out of
- * the active area the button returns to its 'inactive' state.</p>
+ * the active area the button returns to its 'inactive' state.
+ * </p>
  * 
- * <p>A DefineButton2 object must contain at least one ButtonShape. If more
- * than one button shape is defined for a given button state then each shape
- * will be displayed by the button. The order in which the shapes are displayed
- * is determined by the layer assigned to each button record.
+ * <p>
+ * A DefineButton2 object must contain at least one ButtonShape. If more than
+ * one button shape is defined for a given button state then each shape will be
+ * displayed by the button. The order in which the shapes are displayed is
+ * determined by the layer assigned to each button record.
  * </p>
  * 
  * @see ButtonShape
  * @see ButtonEventHandler
  */
-public final class DefineButton2 implements DefineTag
-{
+public final class DefineButton2 implements DefineTag {
 	private static final String FORMAT = "DefineButton2: { identifier=%d; buttonRecords=%s; handlers=%s }";
 
 	private int identifier;
@@ -84,18 +87,18 @@ public final class DefineButton2 implements DefineTag
 	private transient int start;
 	private transient int end;
 	private transient int length;
-	
-	//TODO(doc) 
-	//TODO(optimise) 
-	public DefineButton2(final SWFDecoder coder, final Context context) throws CoderException
-	{
-		Map<Integer,Integer> vars = context.getVariables();
+
+	// TODO(doc)
+	// TODO(optimise)
+	public DefineButton2(final SWFDecoder coder, final Context context)
+			throws CoderException {
+		final Map<Integer, Integer> vars = context.getVariables();
 		vars.put(Context.TYPE, MovieTypes.DEFINE_BUTTON_2);
 		vars.put(Context.TRANSPARENT, 1);
 
 		start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
-		
+
 		if (length == 0x3F) {
 			length = coder.readWord(4, false);
 		}
@@ -104,25 +107,24 @@ public final class DefineButton2 implements DefineTag
 		identifier = coder.readWord(2, false);
 		menu = coder.readByte() != 0;
 		shapes = new ArrayList<ButtonShape>();
-		
+
 		int offsetToNext = coder.readWord(2, false);
-		
+
 		while (coder.readByte() != 0) {
 			coder.adjustPointer(-8);
 			shapes.add(new ButtonShape(coder, context));
 		}
 
-		if (offsetToNext != 0)
-		{
+		if (offsetToNext != 0) {
 			events = new ArrayList<ButtonEventHandler>();
 			ButtonEventHandler event;
-			
-			do
-			{
+
+			do {
 				offsetToNext = coder.readWord(2, false);
 
 				if (offsetToNext == 0) {
-					event = new ButtonEventHandler((end - coder.getPointer()) >>> 3, coder, context);
+					event = new ButtonEventHandler(
+							(end - coder.getPointer()) >>> 3, coder, context);
 				} else {
 					event = new ButtonEventHandler(offsetToNext, coder, context);
 				}
@@ -130,7 +132,7 @@ public final class DefineButton2 implements DefineTag
 
 			} while (offsetToNext != 0);
 		}
-		
+
 		vars.remove(Context.TYPE);
 		vars.remove(Context.TRANSPARENT);
 
@@ -141,13 +143,14 @@ public final class DefineButton2 implements DefineTag
 	}
 
 	/**
-	 * Creates a DefineButton2 object, specifying the unique identifier,
-	 * the type of button to be created, the button shapes that describe the
+	 * Creates a DefineButton2 object, specifying the unique identifier, the
+	 * type of button to be created, the button shapes that describe the
 	 * button's appearance and the actions that are performed in response to
 	 * each button event.
 	 * 
 	 * @param uid
-	 *            a unique identifier for this button. Must be in the range 1..65535.
+	 *            a unique identifier for this button. Must be in the range
+	 *            1..65535.
 	 * @param menu
 	 *            the button is a menu button (true) or push button (false).
 	 * @param shapes
@@ -155,15 +158,16 @@ public final class DefineButton2 implements DefineTag
 	 * @param events
 	 *            an array of ButtonEvent objects. Must not be null.
 	 */
-	public DefineButton2(int uid, boolean menu, List<ButtonShape> shapes, List<ButtonEventHandler> events)
-	{
+	public DefineButton2(final int uid, final boolean menu, final List<ButtonShape> shapes,
+			final List<ButtonEventHandler> events) {
+		setIdentifier(uid);
 		setMenu(menu);
 		setShapes(shapes);
 		setEvents(events);
 	}
-	
-	//TODO(doc) 
-	public DefineButton2(DefineButton2 object) {
+
+	// TODO(doc)
+	public DefineButton2(final DefineButton2 object) {
 		identifier = object.identifier;
 		menu = object.menu;
 		shapes = new ArrayList<ButtonShape>(object.shapes.size());
@@ -175,14 +179,14 @@ public final class DefineButton2 implements DefineTag
 			events.add(event.copy());
 		}
 	}
-		
+
 	public int getIdentifier() {
 		return identifier;
 	}
 
 	public void setIdentifier(final int uid) {
 		if (uid < 0 || uid > 65535) {
-			throw new IllegalArgumentException(Strings.IDENTIFIER_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
 		}
 		identifier = uid;
 	}
@@ -193,10 +197,9 @@ public final class DefineButton2 implements DefineTag
 	 * @param obj
 	 *            a button shape object. Must not be null.
 	 */
-	public DefineButton2 add(ButtonShape obj)
-	{
+	public DefineButton2 add(final ButtonShape obj) {
 		if (obj == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
 		}
 		shapes.add(obj);
 		return this;
@@ -208,11 +211,10 @@ public final class DefineButton2 implements DefineTag
 	 * @param obj
 	 *            a button event. Must not be null.
 	 */
-	public DefineButton2 add(ButtonEventHandler obj) throws CoderException
-	{
+	public DefineButton2 add(final ButtonEventHandler obj) throws CoderException {
 		if (obj == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
-		}		
+			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+		}
 		events.add(obj);
 		return this;
 	}
@@ -220,24 +222,21 @@ public final class DefineButton2 implements DefineTag
 	/**
 	 * Returns the button type - either PUSH or MENU.
 	 */
-	public boolean isMenu()
-	{
+	public boolean isMenu() {
 		return menu;
 	}
 
 	/**
 	 * Returns the array of button records defined for this button.
 	 */
-	public List<ButtonShape> getShapes()
-	{
+	public List<ButtonShape> getShapes() {
 		return shapes;
 	}
 
 	/**
 	 * Returns the array of button records defined for this button.
 	 */
-	public List<ButtonEventHandler> getEvents() throws CoderException
-	{
+	public List<ButtonEventHandler> getEvents() throws CoderException {
 		return events;
 	}
 
@@ -247,8 +246,7 @@ public final class DefineButton2 implements DefineTag
 	 * @param aType
 	 *            the type of button. Must be either PUSH or MENU.
 	 */
-	public void setMenu(boolean menu)
-	{
+	public void setMenu(final boolean menu) {
 		this.menu = menu;
 	}
 
@@ -258,10 +256,9 @@ public final class DefineButton2 implements DefineTag
 	 * @param anArray
 	 *            an array of ButtonShape objects. Must not be null.
 	 */
-	public void setShapes(List<ButtonShape> anArray)
-	{
+	public void setShapes(final List<ButtonShape> anArray) {
 		if (anArray == null) {
-			throw new IllegalArgumentException(Strings.ARRAY_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
 		}
 		shapes = anArray;
 	}
@@ -273,28 +270,24 @@ public final class DefineButton2 implements DefineTag
 	 * @param anArray
 	 *            and array of ButtonEvent objects. Must not be null.
 	 */
-	public void setEvents(List<ButtonEventHandler> anArray)
-	{
+	public void setEvents(final List<ButtonEventHandler> anArray) {
 		if (anArray == null) {
-			throw new IllegalArgumentException(Strings.ARRAY_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
 		}
 		events = anArray;
 	}
-	
-	public DefineButton2 copy()
-	{
+
+	public DefineButton2 copy() {
 		return new DefineButton2(this);
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return String.format(FORMAT, identifier, shapes, events);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context)
-	{
-		Map<Integer,Integer>vars = context.getVariables();
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
+		final Map<Integer, Integer> vars = context.getVariables();
 		vars.put(Context.TYPE, MovieTypes.DEFINE_BUTTON_2);
 		vars.put(Context.TRANSPARENT, 1);
 
@@ -303,7 +296,7 @@ public final class DefineButton2 implements DefineTag
 		for (ButtonShape shape : shapes) {
 			length += shape.prepareToEncode(coder, context);
 		}
-		
+
 		for (ButtonEventHandler handler : events) {
 			length += 2 + handler.prepareToEncode(coder, context);
 		}
@@ -311,15 +304,15 @@ public final class DefineButton2 implements DefineTag
 		vars.remove(Context.TYPE);
 		vars.remove(Context.TRANSPARENT);
 
-		return (length > 62 ? 6:2) + length;
+		return (length > 62 ? 6 : 2) + length;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException
-	{
-		Map<Integer,Integer>vars = context.getVariables();
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
+		final Map<Integer, Integer> vars = context.getVariables();
 		vars.put(Context.TYPE, MovieTypes.DEFINE_BUTTON_2);
 		vars.put(Context.TRANSPARENT, 1);
-		
+
 		start = coder.getPointer();
 
 		if (length >= 63) {
@@ -329,9 +322,9 @@ public final class DefineButton2 implements DefineTag
 			coder.writeWord((MovieTypes.DEFINE_BUTTON_2 << 6) | length, 2);
 		}
 		end = coder.getPointer() + (length << 3);
-		
+
 		coder.writeWord(identifier, 2);
-		coder.writeWord(menu ? 1:0, 1);
+		coder.writeWord(menu ? 1 : 0, 1);
 
 		int offsetStart = coder.getPointer();
 		coder.writeWord(0, 2);
@@ -345,18 +338,16 @@ public final class DefineButton2 implements DefineTag
 		// Write actions offset
 
 		int currentCursor = coder.getPointer();
-		int offsetEnd = (currentCursor - offsetStart) >> 3;
+		final int offsetEnd = (currentCursor - offsetStart) >> 3;
 		coder.setPointer(offsetStart);
 		coder.writeWord(offsetEnd, 2);
 		coder.setPointer(currentCursor);
 
-		for (ButtonEventHandler handler : events)
-		{
+		for (ButtonEventHandler handler : events) {
 			offsetStart = coder.getPointer();
-			coder.writeWord(handler.length + 2, 2);
 			handler.encode(coder, context);
-		}		
-		
+		}
+
 		// Write offset of zero for last Action Condition
 		currentCursor = coder.getPointer();
 		coder.setPointer(offsetStart);

@@ -39,7 +39,6 @@ import java.util.Set;
 import com.flagstone.transform.Place2;
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.action.ActionData;
-import com.flagstone.transform.button.ButtonEvent;
 import com.flagstone.transform.button.ButtonEventHandler;
 import com.flagstone.transform.coder.Action;
 import com.flagstone.transform.coder.CoderException;
@@ -51,12 +50,16 @@ import com.flagstone.transform.coder.SWFFactory;
 
 //TODO(doc) Review
 /**
- * <p>ClipEvent is used to define the actions that a movie clip will execute in
- * response to a particular event. ClipEvent objects are added to an 
- * {@link Place2} object and the actions are registered with the Flash 
- * Player when the movie clip is added to the display list.</p>
+ * <p>
+ * ClipEvent is used to define the actions that a movie clip will execute in
+ * response to a particular event. ClipEvent objects are added to an
+ * {@link Place2} object and the actions are registered with the Flash Player
+ * when the movie clip is added to the display list.
+ * </p>
  * 
- * <p>The events that a movie clip responds to are:</p>
+ * <p>
+ * The events that a movie clip responds to are:
+ * </p>
  * 
  * <table class="datasheet">
  * <tr>
@@ -77,19 +80,19 @@ import com.flagstone.transform.coder.SWFFactory;
  * </tr>
  * <tr>
  * <td valign="top">MouseDown</td>
- * <td>the left mouse button is pressed while the cursor is outside
- * of the bounding rectangle of the movie clip.</td>
+ * <td>the left mouse button is pressed while the cursor is outside of the
+ * bounding rectangle of the movie clip.</td>
  * </tr>
  * <tr>
  * <td valign="top">MouseUp</td>
- * <td>the left mouse button is pressed and released while the
- * cursor is outside of the bounding rectangle of the movie clip.</td>
+ * <td>the left mouse button is pressed and released while the cursor is outside
+ * of the bounding rectangle of the movie clip.</td>
  * </tr>
  * <tr>
  * <td valign="top">KeyDown</td>
- * <td>a key is pressed on the keyboard. From Flash 6 a key code
- * can be specified to identify a specific key rather than testing for the value
- * inside the actions that are executed in response to the event.</td>
+ * <td>a key is pressed on the keyboard. From Flash 6 a key code can be
+ * specified to identify a specific key rather than testing for the value inside
+ * the actions that are executed in response to the event.</td>
  * </tr>
  * <tr>
  * <td valign="top">KeyUp</td>
@@ -105,12 +108,15 @@ import com.flagstone.transform.coder.SWFFactory;
  * </tr>
  * </table>
  * 
- * <p>Starting with Flash 6 movie clips also respond to the same set of events 
- * as buttons, see {@link ButtonEventHandler}</p>
+ * <p>
+ * Starting with Flash 6 movie clips also respond to the same set of events as
+ * buttons, see {@link ButtonEventHandler}
+ * </p>
  * 
- * <p>A ClipEvent object can define the actions that will be executed in
- * response to more than one event, simply bitwise OR together the individual 
- * event codes:
+ * <p>
+ * A ClipEvent object can define the actions that will be executed in response
+ * to more than one event, simply bitwise OR together the individual event
+ * codes:
  * </p>
  * 
  * <pre>
@@ -119,48 +125,45 @@ import com.flagstone.transform.coder.SWFFactory;
  * 
  * @see Place2
  */
-public final class MovieClipEventHandler implements SWFEncodeable
-{	
+public final class MovieClipEventHandler implements SWFEncodeable {
 	private static final String FORMAT = "MovieClipEventHandler: { event=%d; keyCode=%s; actions=%s }";
-	
+
 	private int event;
 	private int keyCode;
 	private List<Action> actions;
 
 	private transient int offset;
 
-	//TODO(doc)
-	public MovieClipEventHandler(final SWFDecoder coder, final Context context) throws CoderException
-	{
-		int eventSize = (Context.VERSION > 5) ? 4 : 2;
+	// TODO(doc)
+	public MovieClipEventHandler(final SWFDecoder coder, final Context context)
+			throws CoderException {
+		final int eventSize = (Context.VERSION > 5) ? 4 : 2;
 
 		event = coder.readWord(eventSize, false);
 		offset = coder.readWord(4, false);
 
-		if ((event & MovieClipEvent.KEY_PRESS.getValue()) != 0)
-		{
+		if ((event & MovieClipEvent.KEY_PRESS.getValue()) != 0) {
 			keyCode = coder.readByte();
 			offset -= 1;
 		}
 
 		actions = new ArrayList<Action>();
 
-		SWFFactory<Action>decoder = context.getRegistry().getActionDecoder();
+		final SWFFactory<Action> decoder = context.getRegistry()
+				.getActionDecoder();
+		final int end = coder.getPointer() + (offset << 3);
 
 		if (decoder == null) {
 			actions.add(new ActionData(coder.readBytes(new byte[offset])));
-		} 
-		else {
-			int len = offset;
-
-			while (len > 0) {
+		} else {
+			while (coder.getPointer() < end) {
 				actions.add(decoder.getObject(coder, context));
 			}
 		}
 	}
 
 	/**
-	 * Creates a ClipEvent object that with an array of actions that will be 
+	 * Creates a ClipEvent object that with an array of actions that will be
 	 * executed when a particular event occurs.
 	 * 
 	 * @param eventCode
@@ -169,16 +172,16 @@ public final class MovieClipEventHandler implements SWFEncodeable
 	 *            the array of actions that will be executed when the specified
 	 *            event occurs.
 	 */
-	public MovieClipEventHandler(Set<MovieClipEvent> eventCode, List<Action> anArray)
-	{
+	public MovieClipEventHandler(final Set<MovieClipEvent> eventCode,
+			final List<Action> anArray) {
 		setEvent(eventCode);
 		setActions(anArray);
 	}
 
 	/**
-	 * Creates a ClipEvent object that defines the array of actions that
-	 * will be executed when a particular event occurs or when the specified key
-	 * is pressed.
+	 * Creates a ClipEvent object that defines the array of actions that will be
+	 * executed when a particular event occurs or when the specified key is
+	 * pressed.
 	 * 
 	 * @param eventCode
 	 *            the code representing one or more events.
@@ -188,20 +191,20 @@ public final class MovieClipEventHandler implements SWFEncodeable
 	 *            the array of actions that will be executed when the specified
 	 *            event occurs. Must not be null.
 	 */
-	public MovieClipEventHandler(Set<MovieClipEvent> eventCode, int keyCode, List<Action> anArray)
-	{
+	public MovieClipEventHandler(final Set<MovieClipEvent> eventCode,
+			final int keyCode, final List<Action> anArray) {
 		setEvent(eventCode);
 		setKeyCode(keyCode);
 		setActions(anArray);
 	}
-	
-	//TODO(doc)
-	public MovieClipEventHandler(MovieClipEventHandler object) {
+
+	// TODO(doc)
+	public MovieClipEventHandler(final MovieClipEventHandler object) {
 		event = object.event;
 		keyCode = object.keyCode;
-		
+
 		actions = new ArrayList<Action>(object.actions.size());
-		
+
 		for (Action action : object.actions) {
 			actions.add(action.copy());
 		}
@@ -213,29 +216,28 @@ public final class MovieClipEventHandler implements SWFEncodeable
 	 * @param anAction
 	 *            an action object. Must not be null.
 	 */
-	public MovieClipEventHandler add(Action anAction) throws CoderException
-	{
+	public MovieClipEventHandler add(final Action anAction)
+			throws CoderException {
 		if (anAction == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
 		}
 		actions.add(anAction);
 		return this;
 	}
 
-	//TODO(doc)
-	public void setEvent(Set<MovieClipEvent>set)
-	{
+	// TODO(doc)
+	public void setEvent(final Set<MovieClipEvent> set) {
 		for (MovieClipEvent event : set) {
 			this.event |= event.getValue();
 		}
 	}
 
-	//TODO(doc)
-	public Set<MovieClipEvent> getEvent()
-	{
-		Set<MovieClipEvent>set = EnumSet.allOf(MovieClipEvent.class);
-		
-		for (Iterator<MovieClipEvent>iter = set.iterator(); iter.hasNext();) {
+	// TODO(doc)
+	public Set<MovieClipEvent> getEvent() {
+		final Set<MovieClipEvent> set = EnumSet.allOf(MovieClipEvent.class);
+
+		for (final Iterator<MovieClipEvent> iter = set.iterator(); iter
+				.hasNext();) {
 			if ((event & iter.next().getValue()) == 0) {
 				iter.remove();
 			}
@@ -244,11 +246,10 @@ public final class MovieClipEventHandler implements SWFEncodeable
 	}
 
 	/**
-	 * Returns the code for the key that triggers the event when pressed. The 
+	 * Returns the code for the key that triggers the event when pressed. The
 	 * code is typically the ASCII code for standard western keyboards.
 	 */
-	public int getKeyCode()
-	{
+	public int getKeyCode() {
 		return keyCode;
 	}
 
@@ -259,8 +260,7 @@ public final class MovieClipEventHandler implements SWFEncodeable
 	 * @param code
 	 *            the ASCII code for the key that triggers the event.
 	 */
-	public void setKeyCode(int code)
-	{
+	public void setKeyCode(final int code) {
 		keyCode = code;
 	}
 
@@ -272,10 +272,9 @@ public final class MovieClipEventHandler implements SWFEncodeable
 	 *            the array of actions that will be executed when the specified
 	 *            event occurs. Must not be null.
 	 */
-	public void setActions(List<Action> array)
-	{
+	public void setActions(final List<Action> array) {
 		if (array == null) {
-			throw new IllegalArgumentException(Strings.ARRAY_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
 		}
 		actions = array;
 	}
@@ -283,23 +282,20 @@ public final class MovieClipEventHandler implements SWFEncodeable
 	/**
 	 * Returns the array of actions that are executed by the movie clip.
 	 */
-	public List<Action> getActions() throws CoderException
-	{
+	public List<Action> getActions() throws CoderException {
 		return actions;
 	}
 
-	public MovieClipEventHandler copy()
-	{
-		return new MovieClipEventHandler(this);	}
+	public MovieClipEventHandler copy() {
+		return new MovieClipEventHandler(this);
+	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return String.format(FORMAT, event, keyCode, actions);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context)
-	{
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		int length = 4 + ((Context.VERSION > 5) ? 4 : 2);
 
 		offset = (event & MovieClipEvent.KEY_PRESS.getValue()) == 0 ? 0 : 1;
@@ -307,15 +303,15 @@ public final class MovieClipEventHandler implements SWFEncodeable
 		for (Action action : actions) {
 			offset += action.prepareToEncode(coder, context);
 		}
-		
+
 		length += offset;
-		
+
 		return length;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException
-	{
-		int eventSize = (Context.VERSION > 5) ? 4 : 2;
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
+		final int eventSize = (Context.VERSION > 5) ? 4 : 2;
 
 		coder.writeWord(event, eventSize);
 		coder.writeWord(offset, 4);

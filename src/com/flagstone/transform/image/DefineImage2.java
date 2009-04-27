@@ -45,19 +45,24 @@ import com.flagstone.transform.coder.SWFEncoder;
  * DefineImage2 is used to define a transparent image compressed using the
  * lossless zlib compression algorithm.
  * 
- * <p>The class supports colour-mapped images where the image data contains an
+ * <p>
+ * The class supports colour-mapped images where the image data contains an
  * index into a colour table or images where the image data specifies the colour
  * directly. It extends DefineImage by including alpha channel information for
  * the colour table and pixels in the image.
  * </p>
  * 
- * <p>For colour-mapped images the colour table contains up to 256, 32-bit colours.
+ * <p>
+ * For colour-mapped images the colour table contains up to 256, 32-bit colours.
  * The image contains one byte for each pixel which is an index into the table
  * to specify the colour for that pixel. The colour table and the image data are
- * compressed as a single block, with the colour table placed before the image.</p>
+ * compressed as a single block, with the colour table placed before the image.
+ * </p>
  * 
- * <p>For images where the colour is specified directly, the image data contains 32
- * bit colour values.</p>
+ * <p>
+ * For images where the colour is specified directly, the image data contains 32
+ * bit colour values.
+ * </p>
  * 
  * <p>
  * The image data is stored in zlib compressed form within the object. For
@@ -67,28 +72,27 @@ import com.flagstone.transform.coder.SWFEncoder;
  * 
  * @see DefineImage
  */
-public final class DefineImage2 implements ImageTag
-{
+public final class DefineImage2 implements ImageTag {
 	private static final String FORMAT = "DefineImage2: { identifier=%d; width=%d; height=%d; pixelSize=%d; tableSize=%d; compressedData=%d }";
-	
+
 	private int width;
 	private int height;
 	private int pixelSize;
 	private int tableSize;
 	private byte[] data;
 	private int identifier;
-	
+
 	private transient int start;
 	private transient int end;
 	private transient int length;
 	private transient boolean extendLength;
-	
-	//TODO(doc)
-	public DefineImage2(final SWFDecoder coder, final Context context) throws CoderException
-	{
+
+	// TODO(doc)
+	public DefineImage2(final SWFDecoder coder)
+			throws CoderException {
 		start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
-		
+
 		if (length == 0x3F) {
 			length = coder.readWord(4, false);
 		}
@@ -97,21 +101,17 @@ public final class DefineImage2 implements ImageTag
 
 		if (coder.readByte() == 3) {
 			pixelSize = 8;
-		}
-		else {
+		} else {
 			pixelSize = 32;
 		}
 
 		width = coder.readWord(2, false);
 		height = coder.readWord(2, false);
 
-		if (pixelSize == 8)
-		{
+		if (pixelSize == 8) {
 			tableSize = coder.readByte() + 1;
 			data = coder.readBytes(new byte[length - 8]);
-		} 
-		else
-		{
+		} else {
 			data = coder.readBytes(new byte[length - 7]);
 		}
 
@@ -125,7 +125,7 @@ public final class DefineImage2 implements ImageTag
 	 * Creates a DefineImage2 object defining a colour-mapped image.
 	 * 
 	 * @param uid
-	 *            the unique identifier for this object. Must be in the range 
+	 *            the unique identifier for this object. Must be in the range
 	 *            1..65535.
 	 * @param width
 	 *            the width of the image. Must be in the range 0..65535.
@@ -135,10 +135,11 @@ public final class DefineImage2 implements ImageTag
 	 *            the number of entries in the colour table in the compressed
 	 *            data. Each entry is 32 bits. Must be in the range 1..256.
 	 * @param data
-	 *            the zlib compressed colour table and image data. Must not be null.
+	 *            the zlib compressed colour table and image data. Must not be
+	 *            null.
 	 */
-	public DefineImage2(int uid, int width, int height, int tableSize, byte[] data)
-	{
+	public DefineImage2(final int uid, final int width, final int height,
+			final int tableSize, final byte[] data) {
 		extendLength = true;
 		setIdentifier(uid);
 		setWidth(width);
@@ -149,12 +150,12 @@ public final class DefineImage2 implements ImageTag
 	}
 
 	/**
-	 * Creates a DefineImage object defining a true-colour image. Each pixel in 
-	 * the image is 32 bits - 8 bits for the red, green, blue and alpha colour 
+	 * Creates a DefineImage object defining a true-colour image. Each pixel in
+	 * the image is 32 bits - 8 bits for the red, green, blue and alpha colour
 	 * channels.
 	 * 
 	 * @param uid
-	 *            the unique identifier for this object. Must be in the range 
+	 *            the unique identifier for this object. Must be in the range
 	 *            1..65535.
 	 * @param width
 	 *            the width of the image. Must be in the range 0..65535.
@@ -163,8 +164,8 @@ public final class DefineImage2 implements ImageTag
 	 * @param data
 	 *            the zlib compressed image data. Must not be null.
 	 */
-	public DefineImage2(int uid, int width, int height, byte[] data)
-	{
+	public DefineImage2(final int uid, final int width, final int height,
+			final byte[] data) {
 		extendLength = true;
 		setIdentifier(uid);
 		setWidth(width);
@@ -173,10 +174,9 @@ public final class DefineImage2 implements ImageTag
 		tableSize = 0;
 		setData(data);
 	}
-	
-	//TODO(doc)
-	public DefineImage2(DefineImage2 object)
-	{
+
+	// TODO(doc)
+	public DefineImage2(final DefineImage2 object) {
 		extendLength = object.extendLength;
 		width = object.width;
 		height = object.height;
@@ -191,7 +191,7 @@ public final class DefineImage2 implements ImageTag
 
 	public void setIdentifier(final int uid) {
 		if (uid < 0 || uid > 65535) {
-			throw new IllegalArgumentException(Strings.IDENTIFIER_OUT_OF_RANGE);
+			throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
 		}
 		identifier = uid;
 	}
@@ -199,16 +199,14 @@ public final class DefineImage2 implements ImageTag
 	/**
 	 * Returns the width of the image in pixels.
 	 */
-	public int getWidth()
-	{
+	public int getWidth() {
 		return width;
 	}
 
 	/**
 	 * Returns the height of the image in pixels.
 	 */
-	public int getHeight()
-	{
+	public int getHeight() {
 		return height;
 	}
 
@@ -217,8 +215,7 @@ public final class DefineImage2 implements ImageTag
 	 * bits. The pixel size is 8-bits for colour-mapped images and 32 bits for
 	 * images where the colour is specified directly.
 	 */
-	public int getPixelSize()
-	{
+	public int getPixelSize() {
 		return pixelSize;
 	}
 
@@ -227,16 +224,14 @@ public final class DefineImage2 implements ImageTag
 	 * image. For images where the colour is specified directly in the image
 	 * then the table size is zero.
 	 */
-	public int getTableSize()
-	{
+	public int getTableSize() {
 		return tableSize;
 	}
 
 	/**
 	 * Returns the data containing the compressed colour table and image.
 	 */
-	public byte[] getData()
-	{
+	public byte[] getData() {
 		return data;
 	}
 
@@ -246,8 +241,7 @@ public final class DefineImage2 implements ImageTag
 	 * @param aNumber
 	 *            the width of the image. Must be in the range of 0..65535.
 	 */
-	public void setWidth(int aNumber)
-	{
+	public void setWidth(final int aNumber) {
 		width = aNumber;
 	}
 
@@ -257,8 +251,7 @@ public final class DefineImage2 implements ImageTag
 	 * @param aNumber
 	 *            the height of the image. Must be in the range of 0..65535.
 	 */
-	public void setHeight(int aNumber)
-	{
+	public void setHeight(final int aNumber) {
 		height = aNumber;
 	}
 
@@ -269,10 +262,10 @@ public final class DefineImage2 implements ImageTag
 	 * @param size
 	 *            the size of each pixel in bits: must be either 8 or 32.
 	 */
-	public void setPixelSize(int size)
-	{
+	public void setPixelSize(final int size) {
 		if (size != 8 && size != 32) {
-			throw new IllegalArgumentException("Pixel size must be either 8 or 32 bits.");
+			throw new IllegalArgumentException(
+					"Pixel size must be either 8 or 32 bits.");
 		}
 		pixelSize = size;
 	}
@@ -286,10 +279,10 @@ public final class DefineImage2 implements ImageTag
 	 *            the number of entries in the colour table in the compressed
 	 *            image. Must be in the range 1..256.
 	 */
-	public void setTableSize(int size)
-	{
+	public void setTableSize(final int size) {
 		if (size < 1 || size > 256) {
-			throw new IllegalArgumentException("Colour table size must be in the range 1..256.");
+			throw new IllegalArgumentException(
+					"Colour table size must be in the range 1..256.");
 		}
 		tableSize = size;
 	}
@@ -301,36 +294,33 @@ public final class DefineImage2 implements ImageTag
 	 *            byte array containing zlib compressed colour table and image.
 	 *            Must not be null.
 	 */
-	public void setData(byte[] bytes)
-	{
+	public void setData(final byte[] bytes) {
 		if (bytes == null) {
-			throw new IllegalArgumentException(Strings.DATA_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.DATA_IS_NULL);
 		}
 		data = bytes;
 	}
 
-	public DefineImage2 copy() 
-	{
+	public DefineImage2 copy() {
 		return new DefineImage2(this);
 	}
 
 	@Override
-	public String toString()
-	{
-		return String.format(FORMAT, identifier, width, height, pixelSize, tableSize, data.length);
+	public String toString() {
+		return String.format(FORMAT, identifier, width, height, pixelSize,
+				tableSize, data.length);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context)
-	{
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		length = 7;
 		length += (pixelSize == 8) ? 1 : 0;
 		length += data.length;
 
-		return (length > 62 ? 6:2) + length;
+		return (length > 62 ? 6 : 2) + length;
 	}
-	
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException
-	{
+
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		start = coder.getPointer();
 
 		if (length >= 63) {
@@ -340,13 +330,12 @@ public final class DefineImage2 implements ImageTag
 			coder.writeWord((MovieTypes.DEFINE_IMAGE_2 << 6) | length, 2);
 		}
 		end = coder.getPointer() + (length << 3);
-		
+
 		coder.writeWord(identifier, 2);
 
 		if (pixelSize == 8) {
 			coder.writeWord(3, 1);
-		}
-		else { // 32
+		} else { // 32
 			coder.writeWord(5, 1);
 		}
 

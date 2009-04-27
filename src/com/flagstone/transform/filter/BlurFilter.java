@@ -7,8 +7,8 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 public final class BlurFilter implements Filter {
 
-	public BlurFilter(BlurFilter object) {
-
+	public BlurFilter(final BlurFilter object) {
+		//TODO Implement
 	}
 
 	public BlurFilter copy() {
@@ -19,9 +19,13 @@ public final class BlurFilter implements Filter {
 		return 0;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException {
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
+		//TODO Implement
 	}
 
-	public void decode(final SWFDecoder coder, final Context context) throws CoderException {
+	public void decode(final SWFDecoder coder, final Context context)
+			throws CoderException {
+		//TODO Implement
 	}
 }

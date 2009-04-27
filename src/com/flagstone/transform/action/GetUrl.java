@@ -43,12 +43,16 @@ import com.flagstone.transform.coder.SWFEncoder;
  * GetUrl is used to display a web page or load a movie clip into the Flash
  * Player.
  * 
- * <p>In addition to the URL to be loaded, GetUrl also contains a target which 
- * is either a level in the Flash Player where the movie clip will be loaded or 
- * frame or window in the browser where the web page will be displayed.</p>
+ * <p>
+ * In addition to the URL to be loaded, GetUrl also contains a target which is
+ * either a level in the Flash Player where the movie clip will be loaded or
+ * frame or window in the browser where the web page will be displayed.
+ * </p>
  * 
- * <p>The following reserved words may be used to identify a specific frame or 
- * window in a web browser:</p>
+ * <p>
+ * The following reserved words may be used to identify a specific frame or
+ * window in a web browser:
+ * </p>
  * 
  * <table class="datasheet">
  * 
@@ -80,30 +84,30 @@ import com.flagstone.transform.coder.SWFEncoder;
  * 
  * </table>
  * 
- * <p>To load a movie clip into the currently playing movie then the target is a
+ * <p>
+ * To load a movie clip into the currently playing movie then the target is a
  * string literal of the form "_level<i>n</i>". The Flash Player supports the
  * concept of virtual layers (analogous to the layers in the Display List).
  * Higher levels are displayed in front of lower levels. The background of each
  * level is transparent allowing movie clips on lower levels to be visible in
  * areas not filled by the movie clip on a given level. The main movie is loaded
- * into _level0. Movie clips are loaded into any level above this (1, 2, 3, ...).
- * If a movie clip is loaded into a level that already contains a movie
- * clip then the existing clip is replaced by the new one.</p>
+ * into _level0. Movie clips are loaded into any level above this (1, 2, 3,
+ * ...). If a movie clip is loaded into a level that already contains a movie
+ * clip then the existing clip is replaced by the new one.
+ * </p>
  * 
  * @see GetUrl2
  */
-public final class GetUrl implements Action
-{
+public final class GetUrl implements Action {
 	private static final String FORMAT = "GetUrl: { url=%s; target=%s }";
-	
+
 	private String url;
 	private String target;
-	
+
 	private transient int length;
 
-	//TODO(doc)
-	public GetUrl(final SWFDecoder coder, final Context context) throws CoderException
-	{
+	// TODO(doc)
+	public GetUrl(final SWFDecoder coder) throws CoderException {
 		coder.readByte();
 		length = coder.readWord(2, false);
 		url = coder.readString();
@@ -117,11 +121,10 @@ public final class GetUrl implements Action
 	 *            a fully qualified URL. Must not be null or an empty string.
 	 * @param targetString
 	 *            the location (in the Flash Player or web browser) where the
-	 *            contents of file retrieved via the url will be displayed.
-	 *            Must not be null.
+	 *            contents of file retrieved via the url will be displayed. Must
+	 *            not be null.
 	 */
-	public GetUrl(String urlString, String targetString)
-	{
+	public GetUrl(final String urlString, final String targetString) {
 		setUrl(urlString);
 		setTarget(targetString);
 	}
@@ -133,15 +136,13 @@ public final class GetUrl implements Action
 	 * @param urlString
 	 *            a fully qualified URL. Must not be null or an empty string.
 	 */
-	public GetUrl(String urlString)
-	{
+	public GetUrl(final String urlString) {
 		setUrl(urlString);
 		target = "";
 	}
 
-	//TODO(optimise)
-	public GetUrl(GetUrl object)
-	{
+	// TODO(optimise)
+	public GetUrl(final GetUrl object) {
 		url = object.url;
 		target = object.target;
 	}
@@ -149,16 +150,14 @@ public final class GetUrl implements Action
 	/**
 	 * Returns the URL.
 	 */
-	public String getUrl()
-	{
+	public String getUrl() {
 		return url;
 	}
-	
+
 	/**
 	 * Returns the name of the target frame.
 	 */
-	public String getTarget()
-	{
+	public String getTarget() {
 		return target;
 	}
 
@@ -168,13 +167,12 @@ public final class GetUrl implements Action
 	 * @param aString
 	 *            a fully qualified URL. Must not be null or an empty string.
 	 */
-	public void setUrl(String aString)
-	{
+	public void setUrl(final String aString) {
 		if (aString == null) {
-			throw new IllegalArgumentException(Strings.STRING_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.STRING_IS_NULL);
 		}
 		if (aString.length() == 0) {
-			throw new IllegalArgumentException(Strings.STRING_CANNOT_BE_EMPTY);
+			throw new IllegalArgumentException(Strings.STRING_IS_EMPTY);
 		}
 		url = aString;
 	}
@@ -189,10 +187,9 @@ public final class GetUrl implements Action
 	 *            where contents of file retrieved via the url will be
 	 *            displayed. Must not be null.
 	 */
-	public void setTarget(String aString)
-	{
+	public void setTarget(final String aString) {
 		if (aString == null) {
-			throw new IllegalArgumentException(Strings.STRING_CANNOT_BE_NULL);
+			throw new IllegalArgumentException(Strings.STRING_IS_NULL);
 		}
 		target = aString;
 	}
@@ -202,21 +199,19 @@ public final class GetUrl implements Action
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return String.format(FORMAT, url, target);
 	}
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context)
-	{
+	public int prepareToEncode(final SWFEncoder coder, final Context context) {
 		length = coder.strlen(url);
 		length += coder.strlen(target);
 
-		return 3+length;
+		return 3 + length;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException
-	{
+	public void encode(final SWFEncoder coder, final Context context)
+			throws CoderException {
 		coder.writeByte(ActionTypes.GET_URL);
 		coder.writeWord(length, 2);
 		coder.writeString(url);
