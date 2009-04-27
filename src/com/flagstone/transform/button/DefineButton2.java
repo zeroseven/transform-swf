@@ -84,8 +84,6 @@ public final class DefineButton2 implements DefineTag {
 	private List<ButtonShape> shapes;
 	private List<ButtonEventHandler> events;
 
-	private transient int start;
-	private transient int end;
 	private transient int length;
 
 	// TODO(doc)
@@ -96,13 +94,13 @@ public final class DefineButton2 implements DefineTag {
 		vars.put(Context.TYPE, MovieTypes.DEFINE_BUTTON_2);
 		vars.put(Context.TRANSPARENT, 1);
 
-		start = coder.getPointer();
+		final int start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
 
 		if (length == 0x3F) {
 			length = coder.readWord(4, false);
 		}
-		end = coder.getPointer() + (length << 3);
+		final int end = coder.getPointer() + (length << 3);
 
 		identifier = coder.readWord(2, false);
 		menu = coder.readByte() != 0;
@@ -307,13 +305,13 @@ public final class DefineButton2 implements DefineTag {
 		return (length > 62 ? 6 : 2) + length;
 	}
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
+	public void encode(final SWFEncoder coder, final Context context) throws CoderException {
+		
 		final Map<Integer, Integer> vars = context.getVariables();
 		vars.put(Context.TYPE, MovieTypes.DEFINE_BUTTON_2);
 		vars.put(Context.TRANSPARENT, 1);
 
-		start = coder.getPointer();
+		final int start = coder.getPointer();
 
 		if (length >= 63) {
 			coder.writeWord((MovieTypes.DEFINE_BUTTON_2 << 6) | 0x3F, 2);
@@ -321,7 +319,7 @@ public final class DefineButton2 implements DefineTag {
 		} else {
 			coder.writeWord((MovieTypes.DEFINE_BUTTON_2 << 6) | length, 2);
 		}
-		end = coder.getPointer() + (length << 3);
+		final int end = coder.getPointer() + (length << 3);
 
 		coder.writeWord(identifier, 2);
 		coder.writeWord(menu ? 1 : 0, 1);

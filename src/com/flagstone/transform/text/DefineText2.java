@@ -88,7 +88,7 @@ public final class DefineText2 implements DefineTag {
 		if (length == 0x3F) {
 			length = coder.readWord(4, false);
 		}
-		end = coder.getPointer() + (length << 3);
+		final int end = coder.getPointer() + (length << 3);
 
 		identifier = coder.readWord(2, true);
 		bounds = new Bounds(coder);
@@ -332,7 +332,7 @@ public final class DefineText2 implements DefineTag {
 		} else {
 			coder.writeWord((MovieTypes.DEFINE_TEXT_2 << 6) | length, 2);
 		}
-		end = coder.getPointer() + (length << 3);
+		final int end = coder.getPointer() + (length << 3);
 
 		coder.writeWord(identifier, 2);
 		final Map<Integer, Integer> vars = context.getVariables();

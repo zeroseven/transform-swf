@@ -74,21 +74,19 @@ public final class DefineMovieClip implements DefineTag {
 
 	private int identifier;
 
-	private transient int start;
-	private transient int end;
 	private transient int length;
 
 	// TODO(doc)
 	// TODO(optimise)
 	public DefineMovieClip(final SWFDecoder coder, final Context context)
 			throws CoderException {
-		start = coder.getPointer();
+		final int start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
 
 		if (length == 0x3F) {
 			length = coder.readWord(4, false);
 		}
-		end = coder.getPointer() + (length << 3);
+		final int end = coder.getPointer() + (length << 3);
 
 		identifier = coder.readWord(2, false);
 		frameCount = coder.readWord(2, false);
@@ -213,7 +211,7 @@ public final class DefineMovieClip implements DefineTag {
 
 	public void encode(final SWFEncoder coder, final Context context)
 			throws CoderException {
-		start = coder.getPointer();
+		final int start = coder.getPointer();
 
 		if (length >= 63) {
 			coder.writeWord((MovieTypes.DEFINE_MOVIE_CLIP << 6) | 0x3F, 2);
@@ -221,7 +219,7 @@ public final class DefineMovieClip implements DefineTag {
 		} else {
 			coder.writeWord((MovieTypes.DEFINE_MOVIE_CLIP << 6) | length, 2);
 		}
-		end = coder.getPointer() + (length << 3);
+		final int end = coder.getPointer() + (length << 3);
 
 		coder.writeWord(identifier, 2);
 		coder.writeWord(frameCount, 2);

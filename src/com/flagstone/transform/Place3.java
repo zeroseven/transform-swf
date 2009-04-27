@@ -198,15 +198,13 @@ public final class Place3 implements MovieTag {
 	private int blendPlacement;
 	private List<MovieClipEventHandler> events;
 
-	private transient int start;
-	private transient int end;
 	private transient int length;
 
 	// TODO(doc)
 	// TODO(optimise)
 	public Place3(final SWFDecoder coder, final Context context)
 			throws CoderException {
-		start = coder.getPointer();
+		final int start = coder.getPointer();
 
 		final Map<Integer, Integer> vars = context.getVariables();
 		vars.put(Context.TRANSPARENT, 1);
@@ -215,7 +213,7 @@ public final class Place3 implements MovieTag {
 		if (length == 0x3F) {
 			length = coder.readWord(4, false);
 		}
-		end = coder.getPointer() + (length << 3);
+		final int end = coder.getPointer() + (length << 3);
 
 		final boolean hasEvents = coder.readBits(1, false) != 0;
 		final boolean hasDepth = coder.readBits(1, false) != 0;
@@ -662,7 +660,7 @@ public final class Place3 implements MovieTag {
 	// TODO(optimise)
 	public void encode(final SWFEncoder coder, final Context context)
 			throws CoderException {
-		start = coder.getPointer();
+		final int start = coder.getPointer();
 
 		if (length >= 63) {
 			coder.writeWord((MovieTypes.PLACE_3 << 6) | 0x3F, 2);
@@ -670,7 +668,7 @@ public final class Place3 implements MovieTag {
 		} else {
 			coder.writeWord((MovieTypes.PLACE_3 << 6) | length, 2);
 		}
-		end = coder.getPointer() + (length << 3);
+		final int end = coder.getPointer() + (length << 3);
 
 		final Map<Integer, Integer> vars = context.getVariables();
 		vars.put(Context.TRANSPARENT, 1);

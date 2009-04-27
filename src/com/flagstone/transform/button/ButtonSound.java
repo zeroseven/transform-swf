@@ -63,20 +63,18 @@ public final class ButtonSound implements MovieTag {
 	// TODO(code) could replace with a table
 	private transient SoundInfo[] sound = new SoundInfo[] { null, null, null, null };
 
-	private transient int start;
-	private transient int end;
 	private transient int length;
 
 	// TODO(doc)
 	public ButtonSound(final SWFDecoder coder)
 			throws CoderException {
-		start = coder.getPointer();
+		final int start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
 
 		if (length == 0x3F) {
 			length = coder.readWord(4, false);
 		}
-		end = coder.getPointer() + (length << 3);
+		final int end = coder.getPointer() + (length << 3);
 
 		identifier = coder.readWord(2, false);
 
@@ -231,7 +229,7 @@ public final class ButtonSound implements MovieTag {
 
 	public void encode(final SWFEncoder coder, final Context context)
 			throws CoderException {
-		start = coder.getPointer();
+		final int start = coder.getPointer();
 
 		if (length > 62) {
 			coder.writeWord((MovieTypes.BUTTON_SOUND << 6) | 0x3F, 2);
@@ -239,7 +237,7 @@ public final class ButtonSound implements MovieTag {
 		} else {
 			coder.writeWord((MovieTypes.BUTTON_SOUND << 6) | length, 2);
 		}
-		end = coder.getPointer() + (length << 3);
+		final int end = coder.getPointer() + (length << 3);
 
 		coder.writeWord(identifier, 2);
 

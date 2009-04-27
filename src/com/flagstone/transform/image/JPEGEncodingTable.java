@@ -63,20 +63,18 @@ public final class JPEGEncodingTable implements MovieTag {
 	private static final String FORMAT = "JPEGEncodingTable: { encodingTable=%d }";
 	private byte[] table;
 
-	private transient int start;
-	private transient int end;
 	private transient int length;
 
 	// TODO(doc)
 	public JPEGEncodingTable(final SWFDecoder coder)
 			throws CoderException {
-		start = coder.getPointer();
+		final int start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
 
 		if (length == 0x3F) {
 			length = coder.readWord(4, false);
 		}
-		end = coder.getPointer() + (length << 3);
+		final int end = coder.getPointer() + (length << 3);
 
 		table = coder.readBytes(new byte[length]);
 
@@ -145,7 +143,7 @@ public final class JPEGEncodingTable implements MovieTag {
 
 	public void encode(final SWFEncoder coder, final Context context)
 			throws CoderException {
-		start = coder.getPointer();
+		final int start = coder.getPointer();
 
 		if (length >= 63) {
 			coder.writeWord((MovieTypes.JPEG_TABLES << 6) | 0x3F, 2);
@@ -153,7 +151,7 @@ public final class JPEGEncodingTable implements MovieTag {
 		} else {
 			coder.writeWord((MovieTypes.JPEG_TABLES << 6) | length, 2);
 		}
-		end = coder.getPointer() + (length << 3);
+		final int end = coder.getPointer() + (length << 3);
 
 		coder.writeBytes(table);
 

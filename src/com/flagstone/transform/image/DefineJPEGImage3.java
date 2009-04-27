@@ -55,8 +55,6 @@ import com.flagstone.transform.coder.SWFEncoder;
 public final class DefineJPEGImage3 implements ImageTag {
 	private static final String FORMAT = "DefineJPEGImage3: { identifier=%d; image=%d; alpha=%d }";
 
-	private transient int start;
-	private transient int end;
 	private transient int length;
 	private transient int width;
 	private transient int height;
@@ -68,13 +66,13 @@ public final class DefineJPEGImage3 implements ImageTag {
 	// TODO(doc)
 	public DefineJPEGImage3(final SWFDecoder coder)
 			throws CoderException {
-		start = coder.getPointer();
+		final int start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
 
 		if (length == 0x3F) {
 			length = coder.readWord(4, false);
 		}
-		end = coder.getPointer() + (length << 3);
+		final int end = coder.getPointer() + (length << 3);
 		identifier = coder.readWord(2, false);
 
 		final int offset = coder.readWord(4, false);
@@ -200,7 +198,7 @@ public final class DefineJPEGImage3 implements ImageTag {
 
 	public void encode(final SWFEncoder coder, final Context context)
 			throws CoderException {
-		start = coder.getPointer();
+		final int start = coder.getPointer();
 
 		if (length >= 63) {
 			coder.writeWord((MovieTypes.DEFINE_JPEG_IMAGE_3 << 6) | 0x3F, 2);
@@ -208,7 +206,7 @@ public final class DefineJPEGImage3 implements ImageTag {
 		} else {
 			coder.writeWord((MovieTypes.DEFINE_JPEG_IMAGE_3 << 6) | length, 2);
 		}
-		end = coder.getPointer() + (length << 3);
+		final int end = coder.getPointer() + (length << 3);
 
 		coder.writeWord(identifier, 2);
 		coder.writeWord(image.length, 4);

@@ -426,8 +426,8 @@ public final class ExceptionHandler implements Action {
 	}
 
 	// TODO(optimise)
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
+	public void encode(final SWFEncoder coder, final Context context) throws CoderException {
+		
 		coder.writeByte(ActionTypes.EXCEPTION_HANDLER);
 		coder.writeWord(length, 2);
 		coder.writeBits(0, 5);

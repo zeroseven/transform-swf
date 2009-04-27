@@ -102,8 +102,6 @@ public final class DefineMorphShape2 implements DefineTag {
 	private Shape startShape;
 	private Shape endShape;
 
-	private transient int start;
-	private transient int end;
 	private transient int length;
 	private transient int fillBits;
 	private transient int lineBits;
@@ -112,13 +110,13 @@ public final class DefineMorphShape2 implements DefineTag {
 	// TODO(doc)
 	public DefineMorphShape2(final SWFDecoder coder, final Context context)
 			throws CoderException {
-		start = coder.getPointer();
+		final int start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
 
 		if (length == 0x3F) {
 			length = coder.readWord(4, false);
 		}
-		end = coder.getPointer() + (length << 3);
+		final int end = coder.getPointer() + (length << 3);
 		identifier = coder.readWord(2, false);
 
 		final Map<Integer, Integer> vars = context.getVariables();
@@ -546,7 +544,7 @@ public final class DefineMorphShape2 implements DefineTag {
 	// TODO(optimise)
 	public void encode(final SWFEncoder coder, final Context context)
 			throws CoderException {
-		start = coder.getPointer();
+		final int start = coder.getPointer();
 
 		if (length >= 63) {
 			coder.writeWord((MovieTypes.DEFINE_MORPH_SHAPE << 6) | 0x3F, 2);
@@ -554,7 +552,7 @@ public final class DefineMorphShape2 implements DefineTag {
 		} else {
 			coder.writeWord((MovieTypes.DEFINE_MORPH_SHAPE << 6) | length, 2);
 		}
-		end = coder.getPointer() + (length << 3);
+		final int end = coder.getPointer() + (length << 3);
 
 		coder.writeWord(identifier, 2);
 		final Map<Integer, Integer> vars = context.getVariables();

@@ -63,21 +63,19 @@ public final class ButtonColorTransform implements MovieTag {
 	private int identifier;
 	private ColorTransform colorTransform;
 
-	private transient int start;
-	private transient int end;
 	private transient int length;
 
 	// TODO(doc)
 	public ButtonColorTransform(final SWFDecoder coder, final Context context)
 			throws CoderException {
 
-		start = coder.getPointer();
+		final int start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
 
 		if (length == 0x3F) {
 			length = coder.readWord(4, false);
 		}
-		end = coder.getPointer() + (length << 3);
+		final int end = coder.getPointer() + (length << 3);
 
 		identifier = coder.readWord(2, false);
 		colorTransform = new ColorTransform(coder, context);
@@ -168,7 +166,7 @@ public final class ButtonColorTransform implements MovieTag {
 	public void encode(final SWFEncoder coder, final Context context)
 			throws CoderException {
 
-		start = coder.getPointer();
+		final int start = coder.getPointer();
 
 		if (length >= 63) {
 			coder.writeWord((MovieTypes.BUTTON_COLOR_TRANSFORM << 6) | 0x3F, 2);
@@ -177,7 +175,7 @@ public final class ButtonColorTransform implements MovieTag {
 			coder.writeWord((MovieTypes.BUTTON_COLOR_TRANSFORM << 6) | length,
 					2);
 		}
-		end = coder.getPointer() + (length << 3);
+		final int end = coder.getPointer() + (length << 3);
 
 		coder.writeWord(identifier, 2);
 		colorTransform.encode(coder, context);

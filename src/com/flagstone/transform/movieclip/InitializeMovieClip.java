@@ -72,20 +72,18 @@ public final class InitializeMovieClip implements MovieTag {
 	private int identifier;
 	private List<Action> actions;
 
-	private transient int start;
-	private transient int end;
 	private transient int length;
 
 	// TODO(doc)
 	public InitializeMovieClip(final SWFDecoder coder, final Context context)
 			throws CoderException {
-		start = coder.getPointer();
+		final int start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
 
 		if (length == 0x3F) {
 			length = coder.readWord(4, false);
 		}
-		end = coder.getPointer() + (length << 3);
+		final int end = coder.getPointer() + (length << 3);
 
 		identifier = coder.readWord(2, false);
 		actions = new ArrayList<Action>();
@@ -213,7 +211,7 @@ public final class InitializeMovieClip implements MovieTag {
 
 	public void encode(final SWFEncoder coder, final Context context)
 			throws CoderException {
-		start = coder.getPointer();
+		final int start = coder.getPointer();
 
 		if (length > 62) {
 			coder.writeWord((MovieTypes.INITIALIZE << 6) | 0x3F, 2);
@@ -221,7 +219,7 @@ public final class InitializeMovieClip implements MovieTag {
 		} else {
 			coder.writeWord((MovieTypes.INITIALIZE << 6) | length, 2);
 		}
-		end = coder.getPointer() + (length << 3);
+		final int end = coder.getPointer() + (length << 3);
 
 		coder.writeWord(identifier, 2);
 

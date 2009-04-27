@@ -199,8 +199,7 @@ public class Decoder extends Coder {
 	 * 
 	 * @return true if the pattern was found, false otherwise.
 	 */
-	public boolean findBits(final int value, final int numberOfBits,
-			final int step) {
+	public boolean findBits(final int value, final int numberOfBits, final int step) {
 		boolean found;
 		final int mark = getPointer();
 

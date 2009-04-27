@@ -64,8 +64,6 @@ public final class DefineShape4 implements DefineTag {
 	private List<LineStyle2> lineStyles;
 	private Shape shape;
 
-	private transient int start;
-	private transient int end;
 	private transient int length;
 	private transient int fillBits;
 	private transient int lineBits;
@@ -74,13 +72,13 @@ public final class DefineShape4 implements DefineTag {
 	// TODO(doc)
 	public DefineShape4(final SWFDecoder coder, final Context context)
 			throws CoderException {
-		start = coder.getPointer();
+		final int start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
 
 		if (length == 0x3F) {
 			length = coder.readWord(4, false);
 		}
-		end = coder.getPointer() + (length << 3);
+		final int end = coder.getPointer() + (length << 3);
 
 		identifier = coder.readWord(2, false);
 		final Map<Integer, Integer> vars = context.getVariables();
@@ -400,7 +398,7 @@ public final class DefineShape4 implements DefineTag {
 		final Map<Integer, Integer> vars = context.getVariables();
 		vars.put(Context.TRANSPARENT, 1);
 
-		start = coder.getPointer();
+		final int start = coder.getPointer();
 
 		if (length >= 63) {
 			coder.writeWord((MovieTypes.DEFINE_SHAPE_4 << 6) | 0x3F, 2);
@@ -408,7 +406,7 @@ public final class DefineShape4 implements DefineTag {
 		} else {
 			coder.writeWord((MovieTypes.DEFINE_SHAPE_4 << 6) | length, 2);
 		}
-		end = coder.getPointer() + (length << 3);
+		final int end = coder.getPointer() + (length << 3);
 
 		coder.writeWord(identifier, 2);
 

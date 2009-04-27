@@ -57,19 +57,17 @@ public final class SymbolClass implements MovieTag {
 
 	private Map<Integer, String> objects;
 
-	private transient int start;
-	private transient int end;
 	private transient int length;
 
 	public SymbolClass(final SWFDecoder coder) throws CoderException {
 
-		start = coder.getPointer();
+		final int start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
 
 		if (length == 0x3F) {
 			length = coder.readWord(4, false);
 		}
-		end = coder.getPointer() + (length << 3);
+		final int end = coder.getPointer() + (length << 3);
 
 		final int count = coder.readWord(2, false);
 		objects = new LinkedHashMap<Integer, String>(count);
@@ -179,7 +177,7 @@ public final class SymbolClass implements MovieTag {
 	public void encode(final SWFEncoder coder, final Context context)
 			throws CoderException {
 
-		start = coder.getPointer();
+		final int start = coder.getPointer();
 
 		if (length > 62) {
 			coder.writeWord((MovieTypes.SYMBOL << 6) | 0x3F, 2);
@@ -187,7 +185,7 @@ public final class SymbolClass implements MovieTag {
 		} else {
 			coder.writeWord((MovieTypes.SYMBOL << 6) | length, 2);
 		}
-		end = coder.getPointer() + (length << 3);
+		final int end = coder.getPointer() + (length << 3);
 
 		coder.writeWord(objects.size(), 2);
 

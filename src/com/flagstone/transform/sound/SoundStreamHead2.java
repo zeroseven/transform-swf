@@ -93,8 +93,6 @@ public final class SoundStreamHead2 implements MovieTag {
 	private int streamSampleCount;
 	private int latency;
 
-	private transient int start;
-	private transient int end;
 	private transient int length;
 
 	/*
@@ -107,13 +105,13 @@ public final class SoundStreamHead2 implements MovieTag {
 	private transient int reserved = 0;
 
 	public SoundStreamHead2(final SWFDecoder coder) throws CoderException {
-		start = coder.getPointer();
+		final int start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
 
 		if (length == 0x3F) {
 			length = coder.readWord(4, false);
 		}
-		end = coder.getPointer() + (length << 3);
+		final int end = coder.getPointer() + (length << 3);
 
 		reserved = coder.readBits(4, false);
 		switch (coder.readBits(2, false)) {
@@ -437,7 +435,7 @@ public final class SoundStreamHead2 implements MovieTag {
 
 	public void encode(final SWFEncoder coder, final Context context)
 			throws CoderException {
-		start = coder.getPointer();
+		final int start = coder.getPointer();
 
 		if (length >= 63) {
 			coder.writeWord((MovieTypes.SOUND_STREAM_HEAD_2 << 6) | 0x3F, 2);
@@ -445,7 +443,7 @@ public final class SoundStreamHead2 implements MovieTag {
 		} else {
 			coder.writeWord((MovieTypes.SOUND_STREAM_HEAD_2 << 6) | length, 2);
 		}
-		end = coder.getPointer() + (length << 3);
+		final int end = coder.getPointer() + (length << 3);
 
 		coder.writeBits(reserved, 4);
 

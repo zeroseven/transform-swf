@@ -80,27 +80,24 @@ public final class DoAction implements MovieTag {
 
 	private List<Action> actions;
 
-	private transient int start;
-	private transient int end;
 	private transient int length;
 
 	// TODO(doc)
 	public DoAction(final SWFDecoder coder, final Context context)
 			throws CoderException {
 
-		start = coder.getPointer();
+		final int start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
 
 		if (length == 0x3F) {
 			length = coder.readWord(4, false);
 		}
 
-		end = coder.getPointer() + (length << 3);
+		final int end = coder.getPointer() + (length << 3);
 
 		actions = new ArrayList<Action>();
 
-		final SWFFactory<Action> decoder = context.getRegistry()
-				.getActionDecoder();
+		final SWFFactory<Action> decoder = context.getRegistry().getActionDecoder();
 
 		if (decoder == null) {
 			actions.add(new ActionData(coder.readBytes(new byte[length])));
@@ -210,7 +207,7 @@ public final class DoAction implements MovieTag {
 	public void encode(final SWFEncoder coder, final Context context)
 			throws CoderException {
 
-		start = coder.getPointer();
+		final int start = coder.getPointer();
 
 		if (length > 62) {
 			coder.writeWord((MovieTypes.DO_ACTION << 6) | 0x3F, 2);
@@ -218,7 +215,7 @@ public final class DoAction implements MovieTag {
 		} else {
 			coder.writeWord((MovieTypes.DO_ACTION << 6) | length, 2);
 		}
-		end = coder.getPointer() + (length << 3);
+		final int end = coder.getPointer() + (length << 3);
 
 		for (Action action : actions) {
 			action.encode(coder, context);

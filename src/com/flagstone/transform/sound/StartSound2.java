@@ -59,20 +59,18 @@ public final class StartSound2 implements MovieTag {
 	private String soundClass;
 	private SoundInfo sound;
 
-	private transient int start;
-	private transient int end;
 	private transient int length;
 
 	// TODO(doc)
 	public StartSound2(final SWFDecoder coder)
 			throws CoderException {
-		start = coder.getPointer();
+		final int start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
 
 		if (length == 0x3F) {
 			length = coder.readWord(4, false);
 		}
-		end = coder.getPointer() + (length << 3);
+		final int end = coder.getPointer() + (length << 3);
 
 		soundClass = coder.readString();
 		sound = new SoundInfo(coder);
@@ -147,7 +145,7 @@ public final class StartSound2 implements MovieTag {
 
 	public void encode(final SWFEncoder coder, final Context context)
 			throws CoderException {
-		start = coder.getPointer();
+		final int start = coder.getPointer();
 
 		if (length >= 63) {
 			coder.writeWord((MovieTypes.START_SOUND_2 << 6) | 0x3F, 2);
@@ -155,7 +153,7 @@ public final class StartSound2 implements MovieTag {
 		} else {
 			coder.writeWord((MovieTypes.START_SOUND_2 << 6) | length, 2);
 		}
-		end = coder.getPointer() + (length << 3);
+		final int end = coder.getPointer() + (length << 3);
 
 		coder.writeString(soundClass);
 		sound.encode(coder, context);

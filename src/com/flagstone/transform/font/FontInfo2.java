@@ -83,21 +83,19 @@ public final class FontInfo2 implements MovieTag {
 	private int language;
 	private List<Integer> codes;
 
-	private transient int start;
-	private transient int end;
 	private transient int length;
 
 	// TODO(doc)
 	// TODO(optimise)
 	public FontInfo2(final SWFDecoder coder)
 			throws CoderException {
-		start = coder.getPointer();
+		final int start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
 
 		if (length == 0x3F) {
 			length = coder.readWord(4, false);
 		}
-		end = coder.getPointer() + (length << 3);
+		final int end = coder.getPointer() + (length << 3);
 		codes = new ArrayList<Integer>();
 
 		identifier = coder.readWord(2, false);
@@ -374,7 +372,7 @@ public final class FontInfo2 implements MovieTag {
 	// TODO(optimsie)
 	public void encode(final SWFEncoder coder, final Context context)
 			throws CoderException {
-		start = coder.getPointer();
+		final int start = coder.getPointer();
 
 		if (length >= 63) {
 			coder.writeWord((MovieTypes.FONT_INFO_2 << 6) | 0x3F, 2);
@@ -382,7 +380,7 @@ public final class FontInfo2 implements MovieTag {
 		} else {
 			coder.writeWord((MovieTypes.FONT_INFO_2 << 6) | length, 2);
 		}
-		end = coder.getPointer() + (length << 3);
+		final int end = coder.getPointer() + (length << 3);
 
 		coder.writeWord(identifier, 2);
 		coder.writeWord(coder.strlen(name) - 1, 1);

@@ -195,15 +195,13 @@ public final class Place2 implements MovieTag {
 	private String name;
 	private List<MovieClipEventHandler> events;
 
-	private transient int start;
-	private transient int end;
 	private transient int length;
 
 	// TODO(doc)
 	// TODO(optimise)
 	public Place2(final SWFDecoder coder, final Context context)
 			throws CoderException {
-		start = coder.getPointer();
+		final int start = coder.getPointer();
 		final Map<Integer, Integer> vars = context.getVariables();
 		vars.put(Context.TRANSPARENT, 1);
 
@@ -213,7 +211,7 @@ public final class Place2 implements MovieTag {
 			length = coder.readWord(4, false);
 		}
 
-		end = coder.getPointer() + (length << 3);
+		final int end = coder.getPointer() + (length << 3);
 
 		// TODO(optimise) change to transient fields ?
 		final boolean hasEvents = coder.readBits(1, false) != 0;
@@ -604,7 +602,7 @@ public final class Place2 implements MovieTag {
 	public void encode(final SWFEncoder coder, final Context context)
 			throws CoderException {
 		final Map<Integer, Integer> vars = context.getVariables();
-		start = coder.getPointer();
+		final int start = coder.getPointer();
 
 		if (length >= 63) {
 			coder.writeWord((MovieTypes.PLACE_2 << 6) | 0x3F, 2);
@@ -612,7 +610,7 @@ public final class Place2 implements MovieTag {
 		} else {
 			coder.writeWord((MovieTypes.PLACE_2 << 6) | length, 2);
 		}
-		end = coder.getPointer() + (length << 3);
+		final int end = coder.getPointer() + (length << 3);
 
 		vars.put(Context.TRANSPARENT, 1);
 		coder.writeBits(events.isEmpty() ? 0 : 1, 1);

@@ -58,20 +58,18 @@ public final class DefineData implements DefineTag {
 	private int identifier;
 	private byte[] data;
 
-	private transient int start;
-	private transient int end;
 	private transient int length;
 
 	// TODO(doc)
 	public DefineData(final SWFDecoder coder) throws CoderException {
 
-		start = coder.getPointer();
+		final int start = coder.getPointer();
 		length = coder.readWord(2, false) & 0x3F;
 
 		if (length == 0x3F) {
 			length = coder.readWord(4, false);
 		}
-		end = coder.getPointer() + (length << 3);
+		final int end = coder.getPointer() + (length << 3);
 
 		identifier = coder.readWord(2, false);
 		coder.adjustPointer(32);
@@ -157,7 +155,7 @@ public final class DefineData implements DefineTag {
 	public void encode(final SWFEncoder coder, final Context context)
 			throws CoderException {
 
-		start = coder.getPointer();
+		final int start = coder.getPointer();
 
 		if (length > 62) {
 			coder.writeWord((MovieTypes.DEFINE_BINARY_DATA << 6) | 0x3F, 2);
@@ -165,7 +163,7 @@ public final class DefineData implements DefineTag {
 		} else {
 			coder.writeWord((MovieTypes.DEFINE_BINARY_DATA << 6) | length, 2);
 		}
-		end = coder.getPointer() + (length << 3);
+		final int end = coder.getPointer() + (length << 3);
 
 		coder.writeWord(identifier, 2);
 		coder.writeWord(0, 4);

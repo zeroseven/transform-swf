@@ -53,15 +53,13 @@ public final class VideoMetaData implements VideoTag {
 	private int timestamp;
 	private byte[] data;
 
-	private transient int start;
 	private transient int length;
-	private transient int end;
 
 	public VideoMetaData(final FLVDecoder coder) throws CoderException {
-		start = coder.getPointer();
+		final int start = coder.getPointer();
 		coder.readByte();
 		length = coder.readWord(3, false);
-		end = coder.getPointer() + (length << 3);
+		final int end = coder.getPointer() + (length << 3);
 		timestamp = coder.readWord(3, false);
 		coder.readWord(4, false); // reserved
 		data = coder.readBytes(new byte[length]);
@@ -157,11 +155,11 @@ public final class VideoMetaData implements VideoTag {
 	}
 
 	public void encode(final FLVEncoder coder) throws CoderException {
-		start = coder.getPointer();
+		final int start = coder.getPointer();
 
 		coder.writeWord(VideoTypes.VIDEO_DATA, 1);
 		coder.writeWord(length - 11, 3);
-		end = coder.getPointer() + (length << 3);
+		final int end = coder.getPointer() + (length << 3);
 		coder.writeWord(timestamp, 3);
 		coder.writeWord(0, 4);
 		coder.writeBytes(data);
