@@ -29,45 +29,44 @@
  */
 package com.flagstone.transform;
 
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Ignore;
 import org.junit.Test;
 
-import static org.junit.Assert.assertTrue;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.SWFDecoder;
 
-
-
 public final class MovieTest {
 
-	private transient Movie fixture;
+    private transient Movie fixture;
 
-	private transient final byte[] encoded = new byte[] {};
+    private transient final byte[] encoded = new byte[] {};
 
-	@Test
-	@Ignore
-	public void checkCopy() {
-		// fixture = new Movie(identifier, layer, transform, colorTransform);
-		//Movie copy = fixture.copy();
-	}
+    @Test
+    @Ignore
+    public void checkCopy() {
+        // fixture = new Movie(identifier, layer, transform, colorTransform);
+        // Movie copy = fixture.copy();
+    }
 
-	@Test
-	@Ignore
-	public void encode() throws CoderException {
-		//SWFEncoder encoder = new SWFEncoder(encoded.length);
-		//Context context = new Context();
+    @Test
+    @Ignore
+    public void encode() throws CoderException {
+        // SWFEncoder encoder = new SWFEncoder(encoded.length);
+        // Context context = new Context();
 
-		fixture = new Movie();
-	}
+        fixture = new Movie();
+    }
 
-	@Test
-	@Ignore
-	public void decode() throws CoderException {
-		final SWFDecoder decoder = new SWFDecoder(encoded);
-		//Context context = new Context();
+    @Test
+    @Ignore
+    public void decode() throws CoderException {
+        final SWFDecoder decoder = new SWFDecoder(encoded);
+        // Context context = new Context();
 
-		fixture = new Movie();
+        fixture = new Movie();
 
-		assertTrue(decoder.eof());
-	}
+        assertTrue(decoder.eof());
+    }
 }

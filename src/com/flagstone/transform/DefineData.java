@@ -53,125 +53,125 @@ import com.flagstone.transform.coder.SWFEncoder;
  */
 public final class DefineData implements DefineTag {
 
-	private static final String FORMAT = "DefineData: { identifier=%d; data=byte[%d] {...} }";
+    private static final String FORMAT = "DefineData: { identifier=%d; data=byte[%d] {...} }";
 
-	private int identifier;
-	private byte[] data;
+    private int identifier;
+    private byte[] data;
 
-	private transient int length;
+    private transient int length;
 
-	// TODO(doc)
-	public DefineData(final SWFDecoder coder) throws CoderException {
+    // TODO(doc)
+    public DefineData(final SWFDecoder coder) throws CoderException {
 
-		final int start = coder.getPointer();
-		length = coder.readWord(2, false) & 0x3F;
+        final int start = coder.getPointer();
+        length = coder.readWord(2, false) & 0x3F;
 
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
-		final int end = coder.getPointer() + (length << 3);
+        if (length == 0x3F) {
+            length = coder.readWord(4, false);
+        }
+        final int end = coder.getPointer() + (length << 3);
 
-		identifier = coder.readWord(2, false);
-		coder.adjustPointer(32);
-		data = coder.readBytes(new byte[length - 6]);
+        identifier = coder.readWord(2, false);
+        coder.adjustPointer(32);
+        data = coder.readBytes(new byte[length - 6]);
 
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
+        if (coder.getPointer() != end) {
+            throw new CoderException(getClass().getName(), start >> 3, length,
+                    (coder.getPointer() - end) >> 3);
+        }
+    }
 
-	/**
-	 * Creates a DefineData object with the specified data.
-	 * 
-	 * @param uid
-	 *            the unique identifier used to reference this object.
-	 * @param data
-	 *            the data to initialize the object.
-	 */
-	public DefineData(final int uid, final byte[] data) {
-		setIdentifier(uid);
-		setData(data);
-	}
+    /**
+     * Creates a DefineData object with the specified data.
+     * 
+     * @param uid
+     *            the unique identifier used to reference this object.
+     * @param data
+     *            the data to initialize the object.
+     */
+    public DefineData(final int uid, final byte[] data) {
+        setIdentifier(uid);
+        setData(data);
+    }
 
-	/**
-	 * Creates a DefineData initialize with a copy of the data from another
-	 * object.
-	 * 
-	 * @param object
-	 *            a DefineData object used to initialize this one.
-	 */
-	public DefineData(final DefineData object) {
-		identifier = object.identifier;
-		data = Arrays.copyOf(object.data, object.data.length);
-	}
+    /**
+     * Creates a DefineData initialize with a copy of the data from another
+     * object.
+     * 
+     * @param object
+     *            a DefineData object used to initialize this one.
+     */
+    public DefineData(final DefineData object) {
+        identifier = object.identifier;
+        data = Arrays.copyOf(object.data, object.data.length);
+    }
 
-	public int getIdentifier() {
-		return identifier;
-	}
+    public int getIdentifier() {
+        return identifier;
+    }
 
-	public void setIdentifier(final int uid) {
-		if (uid < 1 || uid > 65535) {
-			throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
-		}
-		identifier = uid;
-	}
+    public void setIdentifier(final int uid) {
+        if ((uid < 1) || (uid > 65535)) {
+            throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
+        }
+        identifier = uid;
+    }
 
-	/**
-	 * Returns the array of bytes that will be embedded in the Flash file.
-	 */
-	public byte[] getData() {
-		return data;
-	}
+    /**
+     * Returns the array of bytes that will be embedded in the Flash file.
+     */
+    public byte[] getData() {
+        return data;
+    }
 
-	/**
-	 * Sets the array of bytes that will be embedded in the Flash file.
-	 * 
-	 * @param bytes
-	 *            an array of bytes that contain the encoded binary data. Must
-	 *            not be null.
-	 */
-	public void setData(final byte[] bytes) {
-		if (bytes == null) {
-			throw new IllegalArgumentException(Strings.DATA_IS_NULL);
-		}
-		data = bytes;
-	}
+    /**
+     * Sets the array of bytes that will be embedded in the Flash file.
+     * 
+     * @param bytes
+     *            an array of bytes that contain the encoded binary data. Must
+     *            not be null.
+     */
+    public void setData(final byte[] bytes) {
+        if (bytes == null) {
+            throw new IllegalArgumentException(Strings.DATA_IS_NULL);
+        }
+        data = bytes;
+    }
 
-	public DefineData copy() {
-		return new DefineData(this);
-	}
+    public DefineData copy() {
+        return new DefineData(this);
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, identifier, data.length);
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, identifier, data.length);
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		length = 6 + data.length;
-		return (length > 62 ? 6 : 2) + length;
-	}
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        length = 6 + data.length;
+        return (length > 62 ? 6 : 2) + length;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
 
-		final int start = coder.getPointer();
+        final int start = coder.getPointer();
 
-		if (length > 62) {
-			coder.writeWord((MovieTypes.DEFINE_BINARY_DATA << 6) | 0x3F, 2);
-			coder.writeWord(length, 4);
-		} else {
-			coder.writeWord((MovieTypes.DEFINE_BINARY_DATA << 6) | length, 2);
-		}
-		final int end = coder.getPointer() + (length << 3);
+        if (length > 62) {
+            coder.writeWord((MovieTypes.DEFINE_BINARY_DATA << 6) | 0x3F, 2);
+            coder.writeWord(length, 4);
+        } else {
+            coder.writeWord((MovieTypes.DEFINE_BINARY_DATA << 6) | length, 2);
+        }
+        final int end = coder.getPointer() + (length << 3);
 
-		coder.writeWord(identifier, 2);
-		coder.writeWord(0, 4);
-		coder.writeBytes(data);
+        coder.writeWord(identifier, 2);
+        coder.writeWord(0, 4);
+        coder.writeBytes(data);
 
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
+        if (coder.getPointer() != end) {
+            throw new CoderException(getClass().getName(), start >> 3, length,
+                    (coder.getPointer() - end) >> 3);
+        }
+    }
 }

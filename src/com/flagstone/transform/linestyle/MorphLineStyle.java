@@ -33,8 +33,8 @@ package com.flagstone.transform.linestyle;
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFDecoder;
+import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.Color;
 import com.flagstone.transform.shape.DefineMorphShape;
@@ -53,152 +53,152 @@ import com.flagstone.transform.shape.DefineMorphShape;
  * @see DefineMorphShape
  */
 public final class MorphLineStyle implements SWFEncodeable {
-	private static final String FORMAT = "MorphSolidLine: { startWidth=%d; endWidth=%d; startColor=%s; endColor=%s }";
+    private static final String FORMAT = "MorphSolidLine: { startWidth=%d; endWidth=%d; startColor=%s; endColor=%s }";
 
-	private int startWidth;
-	private int endWidth;
-	private Color startColor;
-	private Color endColor;
+    private int startWidth;
+    private int endWidth;
+    private Color startColor;
+    private Color endColor;
 
-	// TODO(doc)
-	public MorphLineStyle(final SWFDecoder coder, final Context context)
-			throws CoderException {
-		startWidth = coder.readWord(2, false);
-		endWidth = coder.readWord(2, false);
-		startColor = new Color(coder, context);
-		endColor = new Color(coder, context);
-	}
+    // TODO(doc)
+    public MorphLineStyle(final SWFDecoder coder, final Context context)
+            throws CoderException {
+        startWidth = coder.readWord(2, false);
+        endWidth = coder.readWord(2, false);
+        startColor = new Color(coder, context);
+        endColor = new Color(coder, context);
+    }
 
-	/**
-	 * Creates a MorphLineStyle object specifying the starting and ending widths
-	 * and colours.
-	 * 
-	 * @param startWidth
-	 *            the width of the line at the start of the morphing process.
-	 * @param endWidth
-	 *            the width of the line at the end of the morphing process.
-	 * @param startColor
-	 *            the colour of the line at the start of the morphing process.
-	 * @param endColor
-	 *            the colour of the line at the end of the morphing process.
-	 */
-	public MorphLineStyle(final int startWidth, final int endWidth,
-			final Color startColor, final Color endColor) {
-		super();
+    /**
+     * Creates a MorphLineStyle object specifying the starting and ending widths
+     * and colours.
+     * 
+     * @param startWidth
+     *            the width of the line at the start of the morphing process.
+     * @param endWidth
+     *            the width of the line at the end of the morphing process.
+     * @param startColor
+     *            the colour of the line at the start of the morphing process.
+     * @param endColor
+     *            the colour of the line at the end of the morphing process.
+     */
+    public MorphLineStyle(final int startWidth, final int endWidth,
+            final Color startColor, final Color endColor) {
+        super();
 
-		setStartWidth(startWidth);
-		setEndWidth(endWidth);
-		setStartColor(startColor);
-		setEndColor(endColor);
-	}
+        setStartWidth(startWidth);
+        setEndWidth(endWidth);
+        setStartColor(startColor);
+        setEndColor(endColor);
+    }
 
-	// TODO(doc)
-	public MorphLineStyle(final MorphLineStyle object) {
-		startWidth = object.startWidth;
-		endWidth = object.endWidth;
-		startColor = object.startColor;
-		endColor = object.endColor;
-	}
+    // TODO(doc)
+    public MorphLineStyle(final MorphLineStyle object) {
+        startWidth = object.startWidth;
+        endWidth = object.endWidth;
+        startColor = object.startColor;
+        endColor = object.endColor;
+    }
 
-	/**
-	 * Returns the width of the line at the start of the morphing process.
-	 */
-	public int getStartWidth() {
-		return startWidth;
-	}
+    /**
+     * Returns the width of the line at the start of the morphing process.
+     */
+    public int getStartWidth() {
+        return startWidth;
+    }
 
-	/**
-	 * Returns the width of the line at the end of the morphing process.
-	 */
-	public int getEndWidth() {
-		return endWidth;
-	}
+    /**
+     * Returns the width of the line at the end of the morphing process.
+     */
+    public int getEndWidth() {
+        return endWidth;
+    }
 
-	/**
-	 * Returns the colour of the line at the start of the morphing process.
-	 */
-	public Color getStartColor() {
-		return startColor;
-	}
+    /**
+     * Returns the colour of the line at the start of the morphing process.
+     */
+    public Color getStartColor() {
+        return startColor;
+    }
 
-	/**
-	 * Returns the colour of the line at the end of the morphing process.
-	 */
-	public Color getEndColor() {
-		return endColor;
-	}
+    /**
+     * Returns the colour of the line at the end of the morphing process.
+     */
+    public Color getEndColor() {
+        return endColor;
+    }
 
-	/**
-	 * Sets the width of the line at the start of the morphing process.
-	 * 
-	 * @param aNumber
-	 *            the starting width of the line. Must be in the range 0..65535.
-	 */
-	public void setStartWidth(final int aNumber) {
-		if (aNumber < 0 || aNumber > 65535) {
-			throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
-		}
-		startWidth = aNumber;
-	}
+    /**
+     * Sets the width of the line at the start of the morphing process.
+     * 
+     * @param aNumber
+     *            the starting width of the line. Must be in the range 0..65535.
+     */
+    public void setStartWidth(final int aNumber) {
+        if ((aNumber < 0) || (aNumber > 65535)) {
+            throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
+        }
+        startWidth = aNumber;
+    }
 
-	/**
-	 * Sets the width of the line at the end of the morphing process.
-	 * 
-	 * @param aNumber
-	 *            the ending width of the line. Must be in the range 0..65535.
-	 */
-	public void setEndWidth(final int aNumber) {
-		if (aNumber < 0 || aNumber > 65535) {
-			throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
-		}
-		endWidth = aNumber;
-	}
+    /**
+     * Sets the width of the line at the end of the morphing process.
+     * 
+     * @param aNumber
+     *            the ending width of the line. Must be in the range 0..65535.
+     */
+    public void setEndWidth(final int aNumber) {
+        if ((aNumber < 0) || (aNumber > 65535)) {
+            throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
+        }
+        endWidth = aNumber;
+    }
 
-	/**
-	 * Returns the colour of the line at the start of the morphing process.
-	 * 
-	 * @param aColor
-	 *            the starting colour of the line. Must not be null.
-	 */
-	public void setStartColor(final Color aColor) {
-		if (aColor == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
-		}
-		startColor = aColor;
-	}
+    /**
+     * Returns the colour of the line at the start of the morphing process.
+     * 
+     * @param aColor
+     *            the starting colour of the line. Must not be null.
+     */
+    public void setStartColor(final Color aColor) {
+        if (aColor == null) {
+            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+        }
+        startColor = aColor;
+    }
 
-	/**
-	 * Sets the colour of the line at the end of the morphing process.
-	 * 
-	 * @param aColor
-	 *            the ending colour of the line. Must not be null.
-	 */
-	public void setEndColor(final Color aColor) {
-		if (aColor == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
-		}
-		endColor = aColor;
-	}
+    /**
+     * Sets the colour of the line at the end of the morphing process.
+     * 
+     * @param aColor
+     *            the ending colour of the line. Must not be null.
+     */
+    public void setEndColor(final Color aColor) {
+        if (aColor == null) {
+            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+        }
+        endColor = aColor;
+    }
 
-	public MorphLineStyle copy() {
-		return new MorphLineStyle(this);
-	}
+    public MorphLineStyle copy() {
+        return new MorphLineStyle(this);
+    }
 
-	@Override
-	public String toString() {
-		return String
-				.format(FORMAT, startWidth, endWidth, startColor, endColor);
-	}
+    @Override
+    public String toString() {
+        return String
+                .format(FORMAT, startWidth, endWidth, startColor, endColor);
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		return 12;
-	}
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        return 12;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		coder.writeWord(startWidth, 2);
-		coder.writeWord(endWidth, 2);
-		startColor.encode(coder, context);
-		endColor.encode(coder, context);
-	}
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        coder.writeWord(startWidth, 2);
+        coder.writeWord(endWidth, 2);
+        startColor.encode(coder, context);
+        endColor.encode(coder, context);
+    }
 }

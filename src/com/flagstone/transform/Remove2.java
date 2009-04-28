@@ -45,78 +45,78 @@ import com.flagstone.transform.coder.SWFEncoder;
  */
 public final class Remove2 implements MovieTag {
 
-	private static final String FORMAT = "Remove2: { layer=%d }";
+    private static final String FORMAT = "Remove2: { layer=%d }";
 
-	private int layer;
+    private int layer;
 
-	// TODO(doc)
-	public Remove2(final SWFDecoder coder) throws CoderException {
+    // TODO(doc)
+    public Remove2(final SWFDecoder coder) throws CoderException {
 
-		if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
-			coder.readWord(4, false);
-		}
+        if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
+            coder.readWord(4, false);
+        }
 
-		layer = coder.readWord(2, false);
-	}
+        layer = coder.readWord(2, false);
+    }
 
-	/**
-	 * Creates a RemoveObject2, specifying the layer in the display list where
-	 * the object to be removed is currently displayed.
-	 * 
-	 * @param layer
-	 *            the layer number on which the object is displayed. Must be in
-	 *            the range 1.65535.
-	 */
-	public Remove2(final int layer) {
-		setLayer(layer);
-	}
+    /**
+     * Creates a RemoveObject2, specifying the layer in the display list where
+     * the object to be removed is currently displayed.
+     * 
+     * @param layer
+     *            the layer number on which the object is displayed. Must be in
+     *            the range 1.65535.
+     */
+    public Remove2(final int layer) {
+        setLayer(layer);
+    }
 
-	// TODO(doc)
-	public Remove2(final Remove2 object) {
-		layer = object.layer;
-	}
+    // TODO(doc)
+    public Remove2(final Remove2 object) {
+        layer = object.layer;
+    }
 
-	/**
-	 * Returns the layer in the display list where the object to be removed is
-	 * currently displayed.
-	 */
-	public int getLayer() {
-		return layer;
-	}
+    /**
+     * Returns the layer in the display list where the object to be removed is
+     * currently displayed.
+     */
+    public int getLayer() {
+        return layer;
+    }
 
-	/**
-	 * Sets the layer in the display list from which the object will be removed.
-	 * 
-	 * @param aLayer
-	 *            the layer number on which the object is displayed. Must be in
-	 *            the range 1.65535.
-	 */
-	public void setLayer(final int aLayer) {
-		if (aLayer < 1 || aLayer > 65535) {
-			throw new IllegalArgumentException(Strings.LAYER_RANGE);
-		}
-		layer = aLayer;
-	}
+    /**
+     * Sets the layer in the display list from which the object will be removed.
+     * 
+     * @param aLayer
+     *            the layer number on which the object is displayed. Must be in
+     *            the range 1.65535.
+     */
+    public void setLayer(final int aLayer) {
+        if ((aLayer < 1) || (aLayer > 65535)) {
+            throw new IllegalArgumentException(Strings.LAYER_RANGE);
+        }
+        layer = aLayer;
+    }
 
-	public Remove2 copy() {
-		return new Remove2(this);
-	}
+    public Remove2 copy() {
+        return new Remove2(this);
+    }
 
-	/**
-	 * Returns a short description of this action.
-	 */
-	@Override
-	public String toString() {
-		return String.format(FORMAT, layer);
-	}
+    /**
+     * Returns a short description of this action.
+     */
+    @Override
+    public String toString() {
+        return String.format(FORMAT, layer);
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		return 4;
-	}
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        return 4;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		coder.writeWord((MovieTypes.REMOVE_2 << 6) | 2, 2);
-		coder.writeWord(layer, 2);
-	}
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        coder.writeWord((MovieTypes.REMOVE_2 << 6) | 2, 2);
+        coder.writeWord(layer, 2);
+    }
 }

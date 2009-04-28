@@ -29,115 +29,113 @@
  */
 package com.flagstone.transform.coder;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+
 import java.nio.charset.IllegalCharsetNameException;
 import java.nio.charset.UnsupportedCharsetException;
 
 import org.junit.Before;
 import org.junit.Test;
 
-
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotSame;
-
-
 public final class CoderTest {
-	private transient Coder fixture;
+    private transient Coder fixture;
 
-	private transient byte[] data;
+    private transient byte[] data;
 
-	@Before
-	public void setUp() {
-		fixture = new Coder();
-	}
+    @Before
+    public void setUp() {
+        fixture = new Coder();
+    }
 
-	@Test
-	public void setStringEncodingToValidCharacterSet() {
-		fixture.setEncoding("UTF-8");
-		assertEquals("UTF-8", fixture.getEncoding());
-	}
+    @Test
+    public void setStringEncodingToValidCharacterSet() {
+        fixture.setEncoding("UTF-8");
+        assertEquals("UTF-8", fixture.getEncoding());
+    }
 
-	@Test(expected = UnsupportedCharsetException.class)
-	public void setStringEncodingToInvalidCharacterSet() {
-		fixture.setEncoding("null");
-	}
+    @Test(expected = UnsupportedCharsetException.class)
+    public void setStringEncodingToInvalidCharacterSet() {
+        fixture.setEncoding("null");
+    }
 
-	@Test(expected = IllegalCharsetNameException.class)
-	public void setStringEncodingWithEmptyString() {
-		fixture.setEncoding("");
-	}
+    @Test(expected = IllegalCharsetNameException.class)
+    public void setStringEncodingWithEmptyString() {
+        fixture.setEncoding("");
+    }
 
-	@Test
-	public void checkSetDataCreatesCopy() {
-		data = new byte[] { 1, 2, 3, 4, 5 };
+    @Test
+    public void checkSetDataCreatesCopy() {
+        data = new byte[] { 1, 2, 3, 4, 5 };
 
-		fixture.setData(data);
+        fixture.setData(data);
 
-		assertNotSame(data, fixture.data);
-		assertArrayEquals(data, fixture.data);
-	}
+        assertNotSame(data, fixture.data);
+        assertArrayEquals(data, fixture.data);
+    }
 
-	@Test
-	public void checkGetDataCreatesCopy() {
-		data = new byte[] { 1, 2, 3, 4, 5 };
+    @Test
+    public void checkGetDataCreatesCopy() {
+        data = new byte[] { 1, 2, 3, 4, 5 };
 
-		fixture.data = data;
+        fixture.data = data;
 
-		assertNotSame(data, fixture.getData());
-		assertArrayEquals(data, fixture.getData());
-	}
+        assertNotSame(data, fixture.getData());
+        assertArrayEquals(data, fixture.getData());
+    }
 
-	@Test
-	public void checkAccessorForPointer() {
-		fixture.setData(new byte[] { 1, 2, 3, 4 });
-		fixture.setPointer(8);
+    @Test
+    public void checkAccessorForPointer() {
+        fixture.setData(new byte[] { 1, 2, 3, 4 });
+        fixture.setPointer(8);
 
-		assertEquals(8, fixture.getPointer());
-	}
+        assertEquals(8, fixture.getPointer());
+    }
 
-	@Test
-	public void checkSetPointerGoesToCorrectLocation() {
-		fixture.setData(new byte[] { 1, 2, 3, 4 });
-		fixture.setPointer(8);
+    @Test
+    public void checkSetPointerGoesToCorrectLocation() {
+        fixture.setData(new byte[] { 1, 2, 3, 4 });
+        fixture.setPointer(8);
 
-		assertEquals(fixture.data[1], fixture.data[fixture.index]);
-	}
+        assertEquals(fixture.data[1], fixture.data[fixture.index]);
+    }
 
-	@Test
-	public void checkAdjustPointerGoesToCorrectLocation() {
-		fixture.setData(new byte[] { 1, 2, 3, 4 });
+    @Test
+    public void checkAdjustPointerGoesToCorrectLocation() {
+        fixture.setData(new byte[] { 1, 2, 3, 4 });
 
-		fixture.adjustPointer(8);
-		assertEquals(8, fixture.getPointer());
+        fixture.adjustPointer(8);
+        assertEquals(8, fixture.getPointer());
 
-		fixture.adjustPointer(-8);
-		assertEquals(0, fixture.getPointer());
-	}
+        fixture.adjustPointer(-8);
+        assertEquals(0, fixture.getPointer());
+    }
 
-	@Test
-	public void checkAlignToByteOnByteBoundaryLeavesPointerUnchanged() {
-		fixture.setData(new byte[] { 1, 2, 3, 4 });
-		fixture.setPointer(8);
-		fixture.alignToByte();
+    @Test
+    public void checkAlignToByteOnByteBoundaryLeavesPointerUnchanged() {
+        fixture.setData(new byte[] { 1, 2, 3, 4 });
+        fixture.setPointer(8);
+        fixture.alignToByte();
 
-		assertEquals(8, fixture.getPointer());
-	}
+        assertEquals(8, fixture.getPointer());
+    }
 
-	@Test
-	public void checkAlignToByteOnBitBoundaryChangesPointer() {
-		fixture.setData(new byte[] { 1, 2, 3, 4 });
-		fixture.setPointer(9);
-		fixture.alignToByte();
+    @Test
+    public void checkAlignToByteOnBitBoundaryChangesPointer() {
+        fixture.setData(new byte[] { 1, 2, 3, 4 });
+        fixture.setPointer(9);
+        fixture.alignToByte();
 
-		assertEquals(16, fixture.getPointer());
-	}
+        assertEquals(16, fixture.getPointer());
+    }
 
-	@Test
-	public void checkPointerIsAtEndOfFile() {
-		fixture.setData(new byte[] { 1, 2, 3, 4 });
-		fixture.setPointer(32);
+    @Test
+    public void checkPointerIsAtEndOfFile() {
+        fixture.setData(new byte[] { 1, 2, 3, 4 });
+        fixture.setPointer(32);
 
-		assertTrue(fixture.eof());
-	}
+        assertTrue(fixture.eof());
+    }
 }

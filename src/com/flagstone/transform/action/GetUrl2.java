@@ -182,127 +182,127 @@ import com.flagstone.transform.coder.SWFEncoder;
  */
 @SuppressWarnings("PMD.LongVariable")
 public final class GetUrl2 implements Action {
-	private static final String FORMAT = "GetUrl2: { requestType=%s }";
+    private static final String FORMAT = "GetUrl2: { requestType=%s }";
 
-	// TODO(doc)
-	public enum Request {
-		/** Load a movie without submitting the movie variables. */
-		MOVIE_TO_LEVEL(0),
-		/** Load a movie submitting the movie variables using HTTP GET. */
-		MOVIE_TO_LEVEL_WITH_GET(1),
-		/** Load a movie submitting the movie variables using HTTP POST. */
-		MOVIE_TO_LEVEL_WITH_POST(2),
-		/** Load a movie or web page without submitting the movie variables. */
-		MOVIE_TO_TARGET(64),
-		/**
-		 * Load a movie or web page submitting the movie variables using HTTP
-		 * GET.
-		 */
-		MOVIE_TO_TARGET_WITH_GET(65),
-		/**
-		 * Load a movie or web page submitting the movie variables using HTTP
-		 * POST.
-		 */
-		MOVIE_TO_TARGET_WITH_POST(66),
-		/** Load variables without submitting the movie variables. */
-		VARIABLES_TO_LEVEL(128),
-		/** Load variables submitting the movie variables using HTTP GET. */
-		VARIABLES_TO_LEVEL_WITH_GET(129),
-		/** Load variables submitting the movie variables using HTTP POST. */
-		VARIABLES_TO_LEVEL_WITH_POST(130),
-		/** Load variables without submitting the movie variables. */
-		VARIABLES_TO_TARGET(192),
-		/** Load variables submitting the movie variables using HTTP GET. */
-		VARIABLES_TO_TARGET_WITH_GET(193),
-		/** Load variables submitting the movie variables using HTTP POST. */
-		VARIABLES_TO_TARGET_WITH_POST(194);
+    // TODO(doc)
+    public enum Request {
+        /** Load a movie without submitting the movie variables. */
+        MOVIE_TO_LEVEL(0),
+        /** Load a movie submitting the movie variables using HTTP GET. */
+        MOVIE_TO_LEVEL_WITH_GET(1),
+        /** Load a movie submitting the movie variables using HTTP POST. */
+        MOVIE_TO_LEVEL_WITH_POST(2),
+        /** Load a movie or web page without submitting the movie variables. */
+        MOVIE_TO_TARGET(64),
+        /**
+         * Load a movie or web page submitting the movie variables using HTTP
+         * GET.
+         */
+        MOVIE_TO_TARGET_WITH_GET(65),
+        /**
+         * Load a movie or web page submitting the movie variables using HTTP
+         * POST.
+         */
+        MOVIE_TO_TARGET_WITH_POST(66),
+        /** Load variables without submitting the movie variables. */
+        VARIABLES_TO_LEVEL(128),
+        /** Load variables submitting the movie variables using HTTP GET. */
+        VARIABLES_TO_LEVEL_WITH_GET(129),
+        /** Load variables submitting the movie variables using HTTP POST. */
+        VARIABLES_TO_LEVEL_WITH_POST(130),
+        /** Load variables without submitting the movie variables. */
+        VARIABLES_TO_TARGET(192),
+        /** Load variables submitting the movie variables using HTTP GET. */
+        VARIABLES_TO_TARGET_WITH_GET(193),
+        /** Load variables submitting the movie variables using HTTP POST. */
+        VARIABLES_TO_TARGET_WITH_POST(194);
 
-		private static final Map<Integer, Request> TABLE = new LinkedHashMap<Integer, Request>();
+        private static final Map<Integer, Request> TABLE = new LinkedHashMap<Integer, Request>();
 
-		static {
-			for (Request request : values()) {
-				TABLE.put(request.value, request);
-			}
-		}
+        static {
+            for (final Request request : values()) {
+                TABLE.put(request.value, request);
+            }
+        }
 
-		// TODO(doc)
-		public static Request fromInt(final int type) {
-			return TABLE.get(type);
-		}
+        // TODO(doc)
+        public static Request fromInt(final int type) {
+            return TABLE.get(type);
+        }
 
-		private final int value;
+        private final int value;
 
-		private Request(final int value) {
-			this.value = value;
-		}
+        private Request(final int value) {
+            this.value = value;
+        }
 
-		// TODO(doc)
-		public int getValue() {
-			return value;
-		}
-	}
+        // TODO(doc)
+        public int getValue() {
+            return value;
+        }
+    }
 
-	private Request request;
+    private Request request;
 
-	// TODO(doc)
-	public GetUrl2(final SWFDecoder coder) throws CoderException {
-		coder.readByte();
-		coder.readWord(2, false);
-		request = Request.fromInt(coder.readByte());
-	}
+    // TODO(doc)
+    public GetUrl2(final SWFDecoder coder) throws CoderException {
+        coder.readByte();
+        coder.readWord(2, false);
+        request = Request.fromInt(coder.readByte());
+    }
 
-	/**
-	 * Creates a GetUrl2 using the specified request type.
-	 * 
-	 * @param aType
-	 *            the type of request to be performed. Must be one of the
-	 *            constants defined in this class.
-	 */
-	public GetUrl2(final Request request) {
-		setRequest(request);
-	}
+    /**
+     * Creates a GetUrl2 using the specified request type.
+     * 
+     * @param aType
+     *            the type of request to be performed. Must be one of the
+     *            constants defined in this class.
+     */
+    public GetUrl2(final Request request) {
+        setRequest(request);
+    }
 
-	// TODO(doc)
-	public GetUrl2(final GetUrl2 object) {
-		request = object.request;
-	}
+    // TODO(doc)
+    public GetUrl2(final GetUrl2 object) {
+        request = object.request;
+    }
 
-	/**
-	 * Returns the request type.
-	 */
-	public Request getRequest() {
-		return request;
-	}
+    /**
+     * Returns the request type.
+     */
+    public Request getRequest() {
+        return request;
+    }
 
-	// TODO(doc) Update
-	/**
-	 * Sets the request type.
-	 * 
-	 * @param aType
-	 *            the type of request to be performed. Must be one of the
-	 *            constants defined in this class.
-	 */
-	public void setRequest(final Request request) {
-		this.request = request;
-	}
+    // TODO(doc) Update
+    /**
+     * Sets the request type.
+     * 
+     * @param aType
+     *            the type of request to be performed. Must be one of the
+     *            constants defined in this class.
+     */
+    public void setRequest(final Request request) {
+        this.request = request;
+    }
 
-	public GetUrl2 copy() {
-		return new GetUrl2(this);
-	}
+    public GetUrl2 copy() {
+        return new GetUrl2(this);
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, request);
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, request);
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		return 4;
-	}
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        return 4;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		coder.writeByte(ActionTypes.GET_URL_2);
-		coder.writeWord(1, 2);
-		coder.writeWord(request.value, 1);
-	}
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        coder.writeByte(ActionTypes.GET_URL_2);
+        coder.writeWord(1, 2);
+        coder.writeWord(request.value, 1);
+    }
 }

@@ -41,84 +41,84 @@ import com.flagstone.transform.coder.SWFEncoder;
  * SerialNumber is used to add a user-defined serial number into a Flash file.
  */
 public final class SerialNumber implements MovieTag {
-	private static final String FORMAT = "SerialNumber: { serialNumber=%s }";
+    private static final String FORMAT = "SerialNumber: { serialNumber=%s }";
 
-	private String number;
+    private String number;
 
-	private transient int length;
+    private transient int length;
 
-	// TODO(doc)
-	public SerialNumber(final SWFDecoder coder) throws CoderException {
-		length = coder.readWord(2, false) & 0x3F;
+    // TODO(doc)
+    public SerialNumber(final SWFDecoder coder) throws CoderException {
+        length = coder.readWord(2, false) & 0x3F;
 
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
+        if (length == 0x3F) {
+            length = coder.readWord(4, false);
+        }
 
-		number = coder.readString(length - 1, coder.getEncoding());
-		coder.readByte();
-	}
+        number = coder.readString(length - 1, coder.getEncoding());
+        coder.readByte();
+    }
 
-	/**
-	 * Creates a SerialNumber action with the specified string.
-	 * 
-	 * @param aString
-	 *            an arbitrary string containing the serial number. Must not be
-	 *            null.
-	 */
-	public SerialNumber(final String aString) {
-		setNumber(aString);
-	}
+    /**
+     * Creates a SerialNumber action with the specified string.
+     * 
+     * @param aString
+     *            an arbitrary string containing the serial number. Must not be
+     *            null.
+     */
+    public SerialNumber(final String aString) {
+        setNumber(aString);
+    }
 
-	// TODO(doc)
-	public SerialNumber(final SerialNumber object) {
-		number = object.number;
-	}
+    // TODO(doc)
+    public SerialNumber(final SerialNumber object) {
+        number = object.number;
+    }
 
-	/**
-	 * Returns the serial number.
-	 */
-	public String getNumber() {
-		return number;
-	}
+    /**
+     * Returns the serial number.
+     */
+    public String getNumber() {
+        return number;
+    }
 
-	/**
-	 * Sets the serial number.
-	 * 
-	 * @param aString
-	 *            an arbitrary string containing the serial number. Must not be
-	 *            null.
-	 */
-	public void setNumber(final String aString) {
-		if (aString == null) {
-			throw new IllegalArgumentException(Strings.STRING_IS_NULL);
-		}
-		number = aString;
-	}
+    /**
+     * Sets the serial number.
+     * 
+     * @param aString
+     *            an arbitrary string containing the serial number. Must not be
+     *            null.
+     */
+    public void setNumber(final String aString) {
+        if (aString == null) {
+            throw new IllegalArgumentException(Strings.STRING_IS_NULL);
+        }
+        number = aString;
+    }
 
-	public SerialNumber copy() {
-		return new SerialNumber(this);
-	}
+    public SerialNumber copy() {
+        return new SerialNumber(this);
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, number);
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, number);
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		length = coder.strlen(number);
-		return (length > 62 ? 6 : 2) + length;
-	}
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        length = coder.strlen(number);
+        return (length > 62 ? 6 : 2) + length;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		if (length > 62) {
-			coder.writeWord((MovieTypes.SERIAL_NUMBER << 6) | 0x3F, 2);
-			coder.writeWord(length, 4);
-		} else {
-			coder.writeWord((MovieTypes.SERIAL_NUMBER << 6) | length, 2);
-		}
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        if (length > 62) {
+            coder.writeWord((MovieTypes.SERIAL_NUMBER << 6) | 0x3F, 2);
+            coder.writeWord(length, 4);
+        } else {
+            coder.writeWord((MovieTypes.SERIAL_NUMBER << 6) | length, 2);
+        }
 
-		coder.writeString(number);
-	}
+        coder.writeString(number);
+    }
 }

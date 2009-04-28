@@ -9,41 +9,41 @@ import com.flagstone.transform.shape.Shape;
  */
 public final class Glyph {
 
-	private Shape shape;
-	private Bounds bounds;
-	private int advance;
+    private Shape shape;
+    private Bounds bounds;
+    private int advance;
 
-	public Glyph(final Shape shape, final Bounds bounds, final int advance) {
-		this.shape = shape;
-		this.bounds = bounds;
-		this.advance = advance;
-	}
+    public Glyph(final Shape shape, final Bounds bounds, final int advance) {
+        this.shape = shape;
+        this.bounds = bounds;
+        this.advance = advance;
+    }
 
-	public Glyph(final Shape shape) {
-		this.shape = shape;
-	}
+    public Glyph(final Shape shape) {
+        this.shape = shape;
+    }
 
-	public Shape getShape() {
-		return shape;
-	}
+    public Shape getShape() {
+        return shape;
+    }
 
-	public void setShape(final Shape shape) {
-		this.shape = shape;
-	}
+    public void setShape(final Shape shape) {
+        this.shape = shape;
+    }
 
-	public Bounds getBounds() {
-		return bounds;
-	}
+    public Bounds getBounds() {
+        return bounds;
+    }
 
-	public void setBounds(final Bounds bounds) {
-		this.bounds = bounds;
-	}
+    public void setBounds(final Bounds bounds) {
+        this.bounds = bounds;
+    }
 
-	public int getAdvance() {
-		return advance;
-	}
+    public int getAdvance() {
+        return advance;
+    }
 
-	public void setAdvance(final int advance) {
-		this.advance = advance;
-	}
+    public void setAdvance(final int advance) {
+        this.advance = advance;
+    }
 }

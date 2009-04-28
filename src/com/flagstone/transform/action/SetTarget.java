@@ -48,76 +48,76 @@ import com.flagstone.transform.coder.SWFEncoder;
  * 
  */
 public final class SetTarget implements Action {
-	private static final String FORMAT = "SetTarget: { target=%s }";
+    private static final String FORMAT = "SetTarget: { target=%s }";
 
-	private String target;
+    private String target;
 
-	private transient int length;
+    private transient int length;
 
-	// TODO(doc)
-	public SetTarget(final SWFDecoder coder) throws CoderException {
-		coder.readByte();
-		length = coder.readWord(2, false);
-		target = coder.readString();
-	}
+    // TODO(doc)
+    public SetTarget(final SWFDecoder coder) throws CoderException {
+        coder.readByte();
+        length = coder.readWord(2, false);
+        target = coder.readString();
+    }
 
-	/**
-	 * Creates a SetTarget action that changes the context to the specified
-	 * target.
-	 * 
-	 * @param aString
-	 *            the name of a movie clip. Must not be null or zero length
-	 *            string.
-	 */
-	public SetTarget(final String aString) {
-		setTarget(aString);
-	}
+    /**
+     * Creates a SetTarget action that changes the context to the specified
+     * target.
+     * 
+     * @param aString
+     *            the name of a movie clip. Must not be null or zero length
+     *            string.
+     */
+    public SetTarget(final String aString) {
+        setTarget(aString);
+    }
 
-	// TODO(doc)
-	public SetTarget(final SetTarget object) {
-		target = object.target;
-	}
+    // TODO(doc)
+    public SetTarget(final SetTarget object) {
+        target = object.target;
+    }
 
-	/**
-	 * Returns the name of the target movie clip.
-	 */
-	public String getTarget() {
-		return target;
-	}
+    /**
+     * Returns the name of the target movie clip.
+     */
+    public String getTarget() {
+        return target;
+    }
 
-	/**
-	 * Sets the name of the target movie clip.
-	 * 
-	 * @param aString
-	 *            the name of a movie clip. Must not be null or zero length
-	 *            string.
-	 */
-	public void setTarget(final String aString) {
-		if (aString == null || aString.length() == 0) {
-			throw new IllegalArgumentException(Strings.STRING_NOT_SET);
-		}
-		target = aString;
-	}
+    /**
+     * Sets the name of the target movie clip.
+     * 
+     * @param aString
+     *            the name of a movie clip. Must not be null or zero length
+     *            string.
+     */
+    public void setTarget(final String aString) {
+        if ((aString == null) || (aString.length() == 0)) {
+            throw new IllegalArgumentException(Strings.STRING_NOT_SET);
+        }
+        target = aString;
+    }
 
-	public SetTarget copy() {
-		return new SetTarget(this);
-	}
+    public SetTarget copy() {
+        return new SetTarget(this);
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, target);
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, target);
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		length = coder.strlen(target);
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        length = coder.strlen(target);
 
-		return 3 + length;
-	}
+        return 3 + length;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		coder.writeByte(ActionTypes.SET_TARGET);
-		coder.writeWord(length, 2);
-		coder.writeString(target);
-	}
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        coder.writeByte(ActionTypes.SET_TARGET);
+        coder.writeWord(length, 2);
+        coder.writeString(target);
+    }
 }

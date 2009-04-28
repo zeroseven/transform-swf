@@ -45,30 +45,30 @@ import com.flagstone.transform.coder.SWFEncoder;
  * </p>
  */
 public final class Call implements Action {
-	private static final Call INSTANCE = new Call();
+    private static final Call INSTANCE = new Call();
 
-	/**
-	 * Returns a shared instance of the Call action.
-	 */
-	public static Call getInstance() {
-		return INSTANCE;
-	}
+    /**
+     * Returns a shared instance of the Call action.
+     */
+    public static Call getInstance() {
+        return INSTANCE;
+    }
 
-	private Call() {
-	}
+    private Call() {
+    }
 
-	public Call copy() {
-		return this;
-	}
+    public Call copy() {
+        return this;
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		return 3;
-	}
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        return 3;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		coder.writeByte(ActionTypes.CALL);
-		coder.writeByte(0);
-		coder.writeByte(0);
-	}
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        coder.writeByte(ActionTypes.CALL);
+        coder.writeByte(0);
+        coder.writeByte(0);
+    }
 }

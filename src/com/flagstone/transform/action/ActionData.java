@@ -51,55 +51,55 @@ import com.flagstone.transform.coder.SWFEncoder;
  */
 public final class ActionData implements Action {
 
-	private static final String FORMAT = "ActionData: { data[%d] }";
+    private static final String FORMAT = "ActionData: { data[%d] }";
 
-	private transient final byte[] data;
+    private transient final byte[] data;
 
-	/**
-	 * Creates an ActionData object initialised with a set of encoded actions.
-	 * 
-	 * @param bytes
-	 *            the array of encoded actions. Must not be null or empty.
-	 */
-	public ActionData(final byte[] bytes) {
-		if (bytes == null || bytes.length == 0) {
-			throw new IllegalArgumentException(Strings.DATA_NOT_SET);
-		}
-		data = bytes;
-	}
+    /**
+     * Creates an ActionData object initialised with a set of encoded actions.
+     * 
+     * @param bytes
+     *            the array of encoded actions. Must not be null or empty.
+     */
+    public ActionData(final byte[] bytes) {
+        if ((bytes == null) || (bytes.length == 0)) {
+            throw new IllegalArgumentException(Strings.DATA_NOT_SET);
+        }
+        data = bytes;
+    }
 
-	/**
-	 * Creates a copy of this ActionData object.
-	 * 
-	 * @param object
-	 *            the ActionData object used to initialise this one.
-	 */
-	public ActionData(final ActionData object) {
-		data = Arrays.copyOf(object.data, object.data.length);
-	}
+    /**
+     * Creates a copy of this ActionData object.
+     * 
+     * @param object
+     *            the ActionData object used to initialise this one.
+     */
+    public ActionData(final ActionData object) {
+        data = Arrays.copyOf(object.data, object.data.length);
+    }
 
-	/**
-	 * Returns the encoded actions.
-	 */
-	public byte[] getData() {
-		return data;
-	}
+    /**
+     * Returns the encoded actions.
+     */
+    public byte[] getData() {
+        return data;
+    }
 
-	public ActionData copy() {
-		return new ActionData(this);
-	}
+    public ActionData copy() {
+        return new ActionData(this);
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, data.length);
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, data.length);
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		return data.length;
-	}
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        return data.length;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		coder.writeBytes(data);
-	}
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        coder.writeBytes(data);
+    }
 }

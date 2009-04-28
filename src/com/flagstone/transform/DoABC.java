@@ -49,163 +49,163 @@ import com.flagstone.transform.coder.SWFEncoder;
  */
 public final class DoABC implements MovieTag {
 
-	private static final String FORMAT = "DoABC: { name=%s; deferred=%d; actions=data[%d] {...} }";
+    private static final String FORMAT = "DoABC: { name=%s; deferred=%d; actions=data[%d] {...} }";
 
-	private String name;
-	private int deferred;
-	private byte[] data;
+    private String name;
+    private int deferred;
+    private byte[] data;
 
-	private transient int length;
+    private transient int length;
 
-	// TODO(doc)
-	public DoABC(final SWFDecoder coder) throws CoderException {
+    // TODO(doc)
+    public DoABC(final SWFDecoder coder) throws CoderException {
 
-		final int start = coder.getPointer();
-		length = coder.readWord(2, false) & 0x3F;
+        final int start = coder.getPointer();
+        length = coder.readWord(2, false) & 0x3F;
 
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
-		final int end = coder.getPointer() + (length << 3);
+        if (length == 0x3F) {
+            length = coder.readWord(4, false);
+        }
+        final int end = coder.getPointer() + (length << 3);
 
-		deferred = coder.readBits(32, false); // TODO(optimise) replace with
-												// readWord()
-		name = coder.readString();
-		data = coder.readBytes(new byte[(end - coder.getPointer()) >>> 3]);
+        deferred = coder.readBits(32, false); // TODO(optimise) replace with
+        // readWord()
+        name = coder.readString();
+        data = coder.readBytes(new byte[(end - coder.getPointer()) >>> 3]);
 
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
+        if (coder.getPointer() != end) {
+            throw new CoderException(getClass().getName(), start >> 3, length,
+                    (coder.getPointer() - end) >> 3);
+        }
+    }
 
-	/**
-	 * Creates a DoABC object with the name and compiled Actionscript 3.0
-	 * byte-codes.
-	 * 
-	 * @param name
-	 *            the name used to identify the script.
-	 * @param defer
-	 *            whether execution of the script is deferred.
-	 * @param script
-	 *            the compiled Actionscript 3.0 byte-codes.
-	 */
-	public DoABC(final String name, final boolean defer, final byte[] script) {
-		setName(name);
-		setDeferred(defer);
-		setData(script);
-	}
+    /**
+     * Creates a DoABC object with the name and compiled Actionscript 3.0
+     * byte-codes.
+     * 
+     * @param name
+     *            the name used to identify the script.
+     * @param defer
+     *            whether execution of the script is deferred.
+     * @param script
+     *            the compiled Actionscript 3.0 byte-codes.
+     */
+    public DoABC(final String name, final boolean defer, final byte[] script) {
+        setName(name);
+        setDeferred(defer);
+        setData(script);
+    }
 
-	/**
-	 * Creates a DoABC initialize with a copy of the data from another object.
-	 * 
-	 * @param object
-	 *            a DoABC object used to initialize this one.
-	 */
-	public DoABC(final DoABC object) {
-		name = object.name;
-		deferred = object.deferred;
-		data = Arrays.copyOf(object.data, object.data.length);
-	}
+    /**
+     * Creates a DoABC initialize with a copy of the data from another object.
+     * 
+     * @param object
+     *            a DoABC object used to initialize this one.
+     */
+    public DoABC(final DoABC object) {
+        name = object.name;
+        deferred = object.deferred;
+        data = Arrays.copyOf(object.data, object.data.length);
+    }
 
-	/**
-	 * Returns the name of the script.
-	 */
-	public String getName() {
-		return name;
-	}
+    /**
+     * Returns the name of the script.
+     */
+    public String getName() {
+        return name;
+    }
 
-	/**
-	 * Sets the name of the script.
-	 * 
-	 * @param name
-	 *            the name assigned to the script so it can be referred to. Must
-	 *            not be null or an empty string.
-	 */
-	public void setName(final String name) {
-		if (name == null || name.length() == 0) {
-			throw new IllegalArgumentException(Strings.STRING_NOT_SET);
-		}
-		this.name = name;
-	}
+    /**
+     * Sets the name of the script.
+     * 
+     * @param name
+     *            the name assigned to the script so it can be referred to. Must
+     *            not be null or an empty string.
+     */
+    public void setName(final String name) {
+        if ((name == null) || (name.length() == 0)) {
+            throw new IllegalArgumentException(Strings.STRING_NOT_SET);
+        }
+        this.name = name;
+    }
 
-	/**
-	 * Returns true is the script is loaded but not executed or false if it is
-	 * loaded and executed.
-	 */
-	public boolean isDeferred() {
-		return (deferred & 1) != 0;
-	}
+    /**
+     * Returns true is the script is loaded but not executed or false if it is
+     * loaded and executed.
+     */
+    public boolean isDeferred() {
+        return (deferred & 1) != 0;
+    }
 
-	/**
-	 * Sets whether execution of the script is deferred.
-	 * 
-	 * @param defer
-	 *            execution of the script is deferred (true) or executed
-	 *            immediately (false).
-	 */
-	public void setDeferred(final boolean defer) {
-		this.deferred = defer ? 1 : 0;
-	}
+    /**
+     * Sets whether execution of the script is deferred.
+     * 
+     * @param defer
+     *            execution of the script is deferred (true) or executed
+     *            immediately (false).
+     */
+    public void setDeferred(final boolean defer) {
+        this.deferred = defer ? 1 : 0;
+    }
 
-	/**
-	 * Returns the array of Actionscript byte-codes.
-	 */
-	public byte[] getData() {
-		return data;
-	}
+    /**
+     * Returns the array of Actionscript byte-codes.
+     */
+    public byte[] getData() {
+        return data;
+    }
 
-	/**
-	 * Sets the script containing compiled Actionscript 3.0 byte-codes.
-	 * 
-	 * @param bytes
-	 *            an array of byte-codes. Must not be null.
-	 */
-	public void setData(final byte[] bytes) {
-		// TODO(optimise) replace with single test and new string DATA_NOT_SET
-		if (bytes == null) {
-			throw new IllegalArgumentException(Strings.DATA_IS_NULL);
-		} else if (bytes.length == 0) {
-			throw new IllegalArgumentException(Strings.DATA_IS_EMPTY);
-		}
-		data = bytes;
-	}
+    /**
+     * Sets the script containing compiled Actionscript 3.0 byte-codes.
+     * 
+     * @param bytes
+     *            an array of byte-codes. Must not be null.
+     */
+    public void setData(final byte[] bytes) {
+        // TODO(optimise) replace with single test and new string DATA_NOT_SET
+        if (bytes == null) {
+            throw new IllegalArgumentException(Strings.DATA_IS_NULL);
+        } else if (bytes.length == 0) {
+            throw new IllegalArgumentException(Strings.DATA_IS_EMPTY);
+        }
+        data = bytes;
+    }
 
-	public DoABC copy() {
-		return new DoABC(this);
-	}
+    public DoABC copy() {
+        return new DoABC(this);
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, name, deferred, data.length);
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, name, deferred, data.length);
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		length = 4 + coder.strlen(name) + data.length;
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        length = 4 + coder.strlen(name) + data.length;
 
-		return (length > 62 ? 6 : 2) + length;
-	}
+        return (length > 62 ? 6 : 2) + length;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
 
-		final int start = coder.getPointer();
+        final int start = coder.getPointer();
 
-		if (length > 62) {
-			coder.writeWord((MovieTypes.DO_ABC << 6) | 0x3F, 2);
-			coder.writeWord(length, 4);
-		} else {
-			coder.writeWord((MovieTypes.DO_ABC << 6) | length, 2);
-		}
-		final int end = coder.getPointer() + (length << 3);
+        if (length > 62) {
+            coder.writeWord((MovieTypes.DO_ABC << 6) | 0x3F, 2);
+            coder.writeWord(length, 4);
+        } else {
+            coder.writeWord((MovieTypes.DO_ABC << 6) | length, 2);
+        }
+        final int end = coder.getPointer() + (length << 3);
 
-		coder.writeBits(deferred, 32); // TODO(optimise) replace with readWord()
-		coder.writeString(name);
-		coder.writeBytes(data);
+        coder.writeBits(deferred, 32); // TODO(optimise) replace with readWord()
+        coder.writeString(name);
+        coder.writeBytes(data);
 
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
+        if (coder.getPointer() != end) {
+            throw new CoderException(getClass().getName(), start >> 3, length,
+                    (coder.getPointer() - end) >> 3);
+        }
+    }
 }

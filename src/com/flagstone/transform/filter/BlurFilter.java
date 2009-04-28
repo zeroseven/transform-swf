@@ -10,89 +10,91 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 public final class BlurFilter implements Filter {
 
-	private static final String FORMAT = "BlurFilter: { blurX=%f; blurY=%f; passes=%d }";
-	
-	private final int blurX;
-	private final int blurY;
-	private final int passes;
+    private static final String FORMAT = "BlurFilter: { blurX=%f; blurY=%f; passes=%d }";
 
-	public BlurFilter(final SWFDecoder coder, final Context context) throws CoderException {
-		coder.readByte();
-		blurX = coder.readWord(4, true);
-		blurY = coder.readWord(4, true);
-		passes = (coder.readByte() & 0x00FF) >>> 3;
-	}
+    private final int blurX;
+    private final int blurY;
+    private final int passes;
 
-	public BlurFilter(float blurX, float blurY, int passes) {
-		this.blurX = (int)(blurX * 65536);
-		this.blurY = (int)(blurY * 65536);
-		
-		if (passes < 0 || passes > 31) {
-			throw new IllegalArgumentException(Strings.VALUE_RANGE);
-		}
-		this.passes = passes;
-	}
+    public BlurFilter(final SWFDecoder coder, final Context context)
+            throws CoderException {
+        coder.readByte();
+        blurX = coder.readWord(4, true);
+        blurY = coder.readWord(4, true);
+        passes = (coder.readByte() & 0x00FF) >>> 3;
+    }
 
-	public BlurFilter(final BlurFilter object) {
-		blurX = object.blurX;
-		blurY = object.blurY;
-		passes = object.passes;
-	}
-	
-	public float getBlurX() {
-		return blurX / 65536.0f;
-	}
+    public BlurFilter(final float blurX, final float blurY, final int passes) {
+        this.blurX = (int) (blurX * 65536);
+        this.blurY = (int) (blurY * 65536);
 
-	public float getBlurY() {
-		return blurY / 65536.0f;
-	}
-	
-	public int getPasses() {
-		return passes;
-	}
+        if ((passes < 0) || (passes > 31)) {
+            throw new IllegalArgumentException(Strings.VALUE_RANGE);
+        }
+        this.passes = passes;
+    }
 
-	public BlurFilter copy() {
-		return new BlurFilter(this);
-	}
-	
-	@Override
-	public String toString() {
-		return String.format(FORMAT, getBlurX(), getBlurY(), passes);
-	}
+    public BlurFilter(final BlurFilter object) {
+        blurX = object.blurX;
+        blurY = object.blurY;
+        passes = object.passes;
+    }
 
-	@Override
-	public boolean equals(final Object object) {
-		boolean result;
-		BlurFilter filter;
+    public float getBlurX() {
+        return blurX / 65536.0f;
+    }
 
-		if (object == null) {
-			result = false;
-		} else if (object == this) {
-			result = true;
-		} else if (object instanceof BlurFilter) {
-			filter = (BlurFilter) object;
-			result = blurX == filter.blurX && blurY == filter.blurY &&
-				passes == filter.passes;
-		} else {
-			result = false;
-		}
-		return result;
-	}
+    public float getBlurY() {
+        return blurY / 65536.0f;
+    }
 
-	@Override
-	public int hashCode() {
-		return ((blurX*31) + blurY)*31 + passes;
-	}
+    public int getPasses() {
+        return passes;
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		return 10;
-	}
+    public BlurFilter copy() {
+        return new BlurFilter(this);
+    }
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException {
-		coder.writeByte(FilterTypes.BLUR);
-		coder.writeWord(blurX, 4);
-		coder.writeWord(blurY, 4);
-		coder.writeByte(passes << 3);
+    @Override
+    public String toString() {
+        return String.format(FORMAT, getBlurX(), getBlurY(), passes);
+    }
 
-	}
+    @Override
+    public boolean equals(final Object object) {
+        boolean result;
+        BlurFilter filter;
+
+        if (object == null) {
+            result = false;
+        } else if (object == this) {
+            result = true;
+        } else if (object instanceof BlurFilter) {
+            filter = (BlurFilter) object;
+            result = (blurX == filter.blurX) && (blurY == filter.blurY)
+                    && (passes == filter.passes);
+        } else {
+            result = false;
+        }
+        return result;
+    }
+
+    @Override
+    public int hashCode() {
+        return ((blurX * 31) + blurY) * 31 + passes;
+    }
+
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        return 10;
+    }
+
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        coder.writeByte(FilterTypes.BLUR);
+        coder.writeWord(blurX, 4);
+        coder.writeWord(blurY, 4);
+        coder.writeByte(passes << 3);
+
+    }
 }

@@ -35,109 +35,109 @@ import com.flagstone.transform.shape.ShapeRecord;
 /**
  */
 public final class DecoderRegistry {
-	private static DecoderRegistry defaultRegistry;
+    private static DecoderRegistry defaultRegistry;
 
-	static {
-		defaultRegistry = new DecoderRegistry();
-		defaultRegistry.setFilterDecoder(new FilterDecoder());
-		defaultRegistry.setFillStyleDecoder(new FillStyleDecoder());
-		defaultRegistry.setMorphFillStyleDecoder(new MorphFillStyleDecoder());
-		defaultRegistry.setShapeDecoder(new ShapeDecoder());
-		defaultRegistry.setActionDecoder(new ActionDecoder());
-		defaultRegistry.setMovieDecoder(new MovieDecoder());
-		defaultRegistry.setVideoDecoder(new VideoDecoder());
-	}
+    static {
+        defaultRegistry = new DecoderRegistry();
+        defaultRegistry.setFilterDecoder(new FilterDecoder());
+        defaultRegistry.setFillStyleDecoder(new FillStyleDecoder());
+        defaultRegistry.setMorphFillStyleDecoder(new MorphFillStyleDecoder());
+        defaultRegistry.setShapeDecoder(new ShapeDecoder());
+        defaultRegistry.setActionDecoder(new ActionDecoder());
+        defaultRegistry.setMovieDecoder(new MovieDecoder());
+        defaultRegistry.setVideoDecoder(new VideoDecoder());
+    }
 
-	public static DecoderRegistry getDefault() {
-		return new DecoderRegistry(defaultRegistry);
-	}
+    public static DecoderRegistry getDefault() {
+        return new DecoderRegistry(defaultRegistry);
+    }
 
-	public static void setDefault(final DecoderRegistry registry) {
-		defaultRegistry = new DecoderRegistry(registry);
-	}
+    public static void setDefault(final DecoderRegistry registry) {
+        defaultRegistry = new DecoderRegistry(registry);
+    }
 
-	private transient SWFFactory<Filter> filterDecoder;
-	private transient SWFFactory<FillStyle> fillStyleDecoder;
-	private transient SWFFactory<FillStyle> morphStyleDecoder;
-	private transient SWFFactory<ShapeRecord> shapeDecoder;
-	private transient SWFFactory<Action> actionDecoder;
-	private transient SWFFactory<MovieTag> movieDecoder;
-	private transient FLVFactory<VideoTag> videoDecoder;
+    private transient SWFFactory<Filter> filterDecoder;
+    private transient SWFFactory<FillStyle> fillStyleDecoder;
+    private transient SWFFactory<FillStyle> morphStyleDecoder;
+    private transient SWFFactory<ShapeRecord> shapeDecoder;
+    private transient SWFFactory<Action> actionDecoder;
+    private transient SWFFactory<MovieTag> movieDecoder;
+    private transient FLVFactory<VideoTag> videoDecoder;
 
-	/**
-	 * Creates a DecoderRegistry with no decoders yet registered.
-	 */
-	public DecoderRegistry() {
-		// All decoders default to null
-	}
+    /**
+     * Creates a DecoderRegistry with no decoders yet registered.
+     */
+    public DecoderRegistry() {
+        // All decoders default to null
+    }
 
-	public DecoderRegistry(final DecoderRegistry registry) {
-		filterDecoder = registry.filterDecoder.copy();
-		fillStyleDecoder = registry.fillStyleDecoder.copy();
-		morphStyleDecoder = registry.morphStyleDecoder.copy();
-		shapeDecoder = registry.shapeDecoder.copy();
-		actionDecoder = registry.actionDecoder.copy();
-		movieDecoder = registry.movieDecoder.copy();
-		videoDecoder = registry.videoDecoder.copy();
-	}
+    public DecoderRegistry(final DecoderRegistry registry) {
+        filterDecoder = registry.filterDecoder.copy();
+        fillStyleDecoder = registry.fillStyleDecoder.copy();
+        morphStyleDecoder = registry.morphStyleDecoder.copy();
+        shapeDecoder = registry.shapeDecoder.copy();
+        actionDecoder = registry.actionDecoder.copy();
+        movieDecoder = registry.movieDecoder.copy();
+        videoDecoder = registry.videoDecoder.copy();
+    }
 
-	public DecoderRegistry copy() {
-		return new DecoderRegistry(this);
-	}
+    public DecoderRegistry copy() {
+        return new DecoderRegistry(this);
+    }
 
-	public SWFFactory<Filter> getFilterDecoder() {
-		return filterDecoder;
-	}
+    public SWFFactory<Filter> getFilterDecoder() {
+        return filterDecoder;
+    }
 
-	public void setFilterDecoder(final SWFFactory<Filter> factory) {
-		filterDecoder = factory;
-	}
+    public void setFilterDecoder(final SWFFactory<Filter> factory) {
+        filterDecoder = factory;
+    }
 
-	public SWFFactory<FillStyle> getFillStyleDecoder() {
-		return fillStyleDecoder;
-	}
+    public SWFFactory<FillStyle> getFillStyleDecoder() {
+        return fillStyleDecoder;
+    }
 
-	public void setFillStyleDecoder(final SWFFactory<FillStyle> factory) {
-		fillStyleDecoder = factory;
-	}
+    public void setFillStyleDecoder(final SWFFactory<FillStyle> factory) {
+        fillStyleDecoder = factory;
+    }
 
-	public SWFFactory<FillStyle> getMorphFillStyleDecoder() {
-		return morphStyleDecoder;
-	}
+    public SWFFactory<FillStyle> getMorphFillStyleDecoder() {
+        return morphStyleDecoder;
+    }
 
-	public void setMorphFillStyleDecoder(final SWFFactory<FillStyle> factory) {
-		morphStyleDecoder = factory;
-	}
+    public void setMorphFillStyleDecoder(final SWFFactory<FillStyle> factory) {
+        morphStyleDecoder = factory;
+    }
 
-	public SWFFactory<ShapeRecord> getShapeDecoder() {
-		return shapeDecoder;
-	}
+    public SWFFactory<ShapeRecord> getShapeDecoder() {
+        return shapeDecoder;
+    }
 
-	public void setShapeDecoder(final SWFFactory<ShapeRecord> factory) {
-		shapeDecoder = factory;
-	}
+    public void setShapeDecoder(final SWFFactory<ShapeRecord> factory) {
+        shapeDecoder = factory;
+    }
 
-	public SWFFactory<Action> getActionDecoder() {
-		return actionDecoder;
-	}
+    public SWFFactory<Action> getActionDecoder() {
+        return actionDecoder;
+    }
 
-	public void setActionDecoder(final SWFFactory<Action> factory) {
-		actionDecoder = factory;
-	}
+    public void setActionDecoder(final SWFFactory<Action> factory) {
+        actionDecoder = factory;
+    }
 
-	public SWFFactory<MovieTag> getMovieDecoder() {
-		return movieDecoder;
-	}
+    public SWFFactory<MovieTag> getMovieDecoder() {
+        return movieDecoder;
+    }
 
-	public void setMovieDecoder(final SWFFactory<MovieTag> factory) {
-		movieDecoder = factory;
-	}
+    public void setMovieDecoder(final SWFFactory<MovieTag> factory) {
+        movieDecoder = factory;
+    }
 
-	public FLVFactory<VideoTag> getVideoDecoder() {
-		return videoDecoder;
-	}
+    public FLVFactory<VideoTag> getVideoDecoder() {
+        return videoDecoder;
+    }
 
-	public void setVideoDecoder(final FLVFactory<VideoTag> factory) {
-		videoDecoder = factory;
-	}
+    public void setVideoDecoder(final FLVFactory<VideoTag> factory) {
+        videoDecoder = factory;
+    }
 }

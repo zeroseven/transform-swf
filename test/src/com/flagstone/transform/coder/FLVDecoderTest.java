@@ -29,86 +29,85 @@
  */
 package com.flagstone.transform.coder;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
-
-
 public final class FLVDecoderTest {
-	private transient FLVDecoder fixture;
+    private transient FLVDecoder fixture;
 
-	private transient byte[] data;
+    private transient byte[] data;
 
-	@Before
-	public void setUp() {
-		fixture = new FLVDecoder(new byte[0]);
-	}
+    @Before
+    public void setUp() {
+        fixture = new FLVDecoder(new byte[0]);
+    }
 
-	@Test
-	public void readUnsignedShort() {
-		data = new byte[] { -1, -1 };
-		fixture.setData(data);
+    @Test
+    public void readUnsignedShort() {
+        data = new byte[] { -1, -1 };
+        fixture.setData(data);
 
-		assertEquals(65535, fixture.scanUnsignedShort());
-		assertEquals(0, fixture.getPointer());
-	}
+        assertEquals(65535, fixture.scanUnsignedShort());
+        assertEquals(0, fixture.getPointer());
+    }
 
-	@Test
-	public void readWordUnsigned() {
-		data = new byte[] { 1, 2, 3, 4 };
-		fixture.setData(data);
+    @Test
+    public void readWordUnsigned() {
+        data = new byte[] { 1, 2, 3, 4 };
+        fixture.setData(data);
 
-		assertEquals(0x01020304, fixture.readWord(data.length, false));
-		assertEquals(data.length << 3, fixture.getPointer());
-	}
+        assertEquals(0x01020304, fixture.readWord(data.length, false));
+        assertEquals(data.length << 3, fixture.getPointer());
+    }
 
-	@Test
-	public void readWordSigned() {
-		data = new byte[] { -1, -128, 3, 4 };
-		fixture.setData(data);
+    @Test
+    public void readWordSigned() {
+        data = new byte[] { -1, -128, 3, 4 };
+        fixture.setData(data);
 
-		assertEquals(0xFF800304, fixture.readWord(data.length, true));
-		assertEquals(data.length << 3, fixture.getPointer());
-	}
+        assertEquals(0xFF800304, fixture.readWord(data.length, true));
+        assertEquals(data.length << 3, fixture.getPointer());
+    }
 
-	@Test
-	public void readWordWithSignExtension() {
-		data = new byte[] { -128, 3, 4 };
-		fixture.setData(data);
+    @Test
+    public void readWordWithSignExtension() {
+        data = new byte[] { -128, 3, 4 };
+        fixture.setData(data);
 
-		assertEquals(0xFF800304, fixture.readWord(data.length, true));
-		assertEquals(data.length << 3, fixture.getPointer());
-	}
+        assertEquals(0xFF800304, fixture.readWord(data.length, true));
+        assertEquals(data.length << 3, fixture.getPointer());
+    }
 
-	@Test
-	public void readDouble() {
-		data = new byte[] { 0x3F, (byte) 0xF0, 0x00, 0x00, 0x00, 0x00, 0x00,
-				0x00 };
-		fixture.setData(data);
+    @Test
+    public void readDouble() {
+        data = new byte[] { 0x3F, (byte) 0xF0, 0x00, 0x00, 0x00, 0x00, 0x00,
+                0x00 };
+        fixture.setData(data);
 
-		assertEquals(1.0, fixture.readDouble());
-		assertEquals(64, fixture.getPointer());
-	}
+        assertEquals(1.0, fixture.readDouble());
+        assertEquals(64, fixture.getPointer());
+    }
 
-	@Test
-	public void findWordWithSuccess() {
-		data = new byte[] { 0x30, 0x30, 0x31 };
-		fixture.setData(data);
+    @Test
+    public void findWordWithSuccess() {
+        data = new byte[] { 0x30, 0x30, 0x31 };
+        fixture.setData(data);
 
-		assertTrue(fixture.findWord(0x3031, 2, 1));
-		assertEquals(8, fixture.getPointer());
-	}
+        assertTrue(fixture.findWord(0x3031, 2, 1));
+        assertEquals(8, fixture.getPointer());
+    }
 
-	@Test
-	public void findWordWithoutSuccess() {
-		data = new byte[] { 0x30, 0x30, 0x31 };
-		fixture.setData(data);
-		fixture.setPointer(8);
+    @Test
+    public void findWordWithoutSuccess() {
+        data = new byte[] { 0x30, 0x30, 0x31 };
+        fixture.setData(data);
+        fixture.setPointer(8);
 
-		assertFalse(fixture.findWord(0x41, 1, 1));
-		assertEquals(8, fixture.getPointer());
-	}
+        assertFalse(fixture.findWord(0x41, 1, 1));
+        assertEquals(8, fixture.getPointer());
+    }
 }

@@ -29,13 +29,13 @@
  */
 package com.flagstone.transform.fillstyle;
 
-import org.junit.Test;
-
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertArrayEquals;
+
+import org.junit.Test;
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
@@ -43,64 +43,62 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.Color;
 
-
-
 public final class MorphSolidFillTest {
 
-	private transient final Color startColor = new Color(1, 2, 3, 4);
-	private transient final Color endColor = new Color(5, 6, 7, 8);
+    private transient final Color startColor = new Color(1, 2, 3, 4);
+    private transient final Color endColor = new Color(5, 6, 7, 8);
 
-	private transient MorphSolidFill fixture;
+    private transient MorphSolidFill fixture;
 
-	private transient final byte[] encoded = new byte[] { 0x00, 0x01, 0x02,
-			0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
+    private transient final byte[] encoded = new byte[] { 0x00, 0x01, 0x02,
+            0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAccessorForStartColorWithNull() {
-		fixture = new MorphSolidFill(null, endColor);
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkAccessorForStartColorWithNull() {
+        fixture = new MorphSolidFill(null, endColor);
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAccessorForEndColorWithNull() {
-		fixture = new MorphSolidFill(startColor, null);
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkAccessorForEndColorWithNull() {
+        fixture = new MorphSolidFill(startColor, null);
+    }
 
-	@Test
-	public void checkCopy() {
-		fixture = new MorphSolidFill(startColor, endColor);
-		final MorphSolidFill copy = fixture.copy();
+    @Test
+    public void checkCopy() {
+        fixture = new MorphSolidFill(startColor, endColor);
+        final MorphSolidFill copy = fixture.copy();
 
-		assertNotSame(fixture, copy);
-		assertSame(fixture.getStartColor(), copy.getStartColor());
-		assertEquals(fixture.toString(), copy.toString());
-	}
+        assertNotSame(fixture, copy);
+        assertSame(fixture.getStartColor(), copy.getStartColor());
+        assertEquals(fixture.toString(), copy.toString());
+    }
 
-	@Test
-	public void encode() throws CoderException {
-		final SWFEncoder encoder = new SWFEncoder(encoded.length);
-		final Context context = new Context();
-		context.getVariables().put(Context.TRANSPARENT, 1);
+    @Test
+    public void encode() throws CoderException {
+        final SWFEncoder encoder = new SWFEncoder(encoded.length);
+        final Context context = new Context();
+        context.getVariables().put(Context.TRANSPARENT, 1);
 
-		fixture = new MorphSolidFill(startColor, endColor);
-		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
-		fixture.encode(encoder, context);
+        fixture = new MorphSolidFill(startColor, endColor);
+        assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
+        fixture.encode(encoder, context);
 
-		assertTrue(encoder.eof());
-		assertArrayEquals(encoded, encoder.getData());
-	}
+        assertTrue(encoder.eof());
+        assertArrayEquals(encoded, encoder.getData());
+    }
 
-	@Test
-	public void decode() throws CoderException {
-		final SWFDecoder decoder = new SWFDecoder(encoded);
-		final Context context = new Context();
-		context.getVariables().put(Context.TRANSPARENT, 1);
+    @Test
+    public void decode() throws CoderException {
+        final SWFDecoder decoder = new SWFDecoder(encoded);
+        final Context context = new Context();
+        context.getVariables().put(Context.TRANSPARENT, 1);
 
-		fixture = new MorphSolidFill(decoder, context);
+        fixture = new MorphSolidFill(decoder, context);
 
-		assertTrue(decoder.eof());
-		assertEquals(startColor.getRed(), fixture.getStartColor().getRed());
-		assertEquals(startColor.getGreen(), fixture.getStartColor().getGreen());
-		assertEquals(startColor.getBlue(), fixture.getStartColor().getBlue());
-		assertEquals(startColor.getAlpha(), fixture.getStartColor().getAlpha());
-	}
+        assertTrue(decoder.eof());
+        assertEquals(startColor.getRed(), fixture.getStartColor().getRed());
+        assertEquals(startColor.getGreen(), fixture.getStartColor().getGreen());
+        assertEquals(startColor.getBlue(), fixture.getStartColor().getBlue());
+        assertEquals(startColor.getAlpha(), fixture.getStartColor().getAlpha());
+    }
 }

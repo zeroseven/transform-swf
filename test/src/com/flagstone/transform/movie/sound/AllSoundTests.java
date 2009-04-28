@@ -5,8 +5,8 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( { DefineSoundTest.class, EnvelopeTest.class,
-		SoundInfoTest.class, SoundStreamBlockTest.class,
-		SoundStreamHeadTest.class, SoundStreamHead2Test.class,
-		StartSoundTest.class, StartSound2Test.class, })
+        SoundInfoTest.class, SoundStreamBlockTest.class,
+        SoundStreamHeadTest.class, SoundStreamHead2Test.class,
+        StartSoundTest.class, StartSound2Test.class, })
 public final class AllSoundTests {
 }

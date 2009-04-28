@@ -47,192 +47,193 @@ import com.flagstone.transform.coder.SWFEncoder;
 //TODO(optimise) Add pack/unpack methods
 public final class FocalGradientFill implements FillStyle {
 
-	public enum Spread {
-		PAD(0), REFLECT(0x40), REPEAT(0xC0);
+    public enum Spread {
+        PAD(0), REFLECT(0x40), REPEAT(0xC0);
 
-		private static final Map<Integer, Spread> TABLE = new LinkedHashMap<Integer, Spread>();
+        private static final Map<Integer, Spread> TABLE = new LinkedHashMap<Integer, Spread>();
 
-		static {
-			for (Spread type : values()) {
-				TABLE.put(type.value, type);
-			}
-		}
+        static {
+            for (final Spread type : values()) {
+                TABLE.put(type.value, type);
+            }
+        }
 
-		public static Spread fromInt(final int type) {
-			return TABLE.get(type);
-		}
+        public static Spread fromInt(final int type) {
+            return TABLE.get(type);
+        }
 
-		private int value;
+        private int value;
 
-		private Spread(final int value) {
-			this.value = value;
-		}
+        private Spread(final int value) {
+            this.value = value;
+        }
 
-		public int getValue() {
-			return value;
-		}
-	}
+        public int getValue() {
+            return value;
+        }
+    }
 
-	public enum Interpolation {
-		NORMAL(0), LINEAR(0x10);
+    public enum Interpolation {
+        NORMAL(0), LINEAR(0x10);
 
-		private static final Map<Integer, Interpolation> TABLE = new LinkedHashMap<Integer, Interpolation>();
+        private static final Map<Integer, Interpolation> TABLE = new LinkedHashMap<Integer, Interpolation>();
 
-		static {
-			for (Interpolation type : values()) {
-				TABLE.put(type.value, type);
-			}
-		}
+        static {
+            for (final Interpolation type : values()) {
+                TABLE.put(type.value, type);
+            }
+        }
 
-		public static Interpolation fromInt(final int type) {
-			return TABLE.get(type);
-		}
+        public static Interpolation fromInt(final int type) {
+            return TABLE.get(type);
+        }
 
-		private int value;
+        private int value;
 
-		private Interpolation(final int value) {
-			this.value = value;
-		}
+        private Interpolation(final int value) {
+            this.value = value;
+        }
 
-		public int getValue() {
-			return value;
-		}
-	}
-	
-	private static final String FORMAT = "FocalGradientFill: { spread=%s; interpolation=%s; focalPoint=%d, gradients=%s}";
+        public int getValue() {
+            return value;
+        }
+    }
 
-	private transient int type;
-	private int spread;
-	private int interpolation;
-	private int focalPoint;
-	private List<Gradient> gradients;
+    private static final String FORMAT = "FocalGradientFill: { spread=%s; interpolation=%s; focalPoint=%d, gradients=%s}";
 
-	private transient int count;
+    private transient final int type;
+    private int spread;
+    private int interpolation;
+    private int focalPoint;
+    private List<Gradient> gradients;
 
-	public FocalGradientFill(final SWFDecoder coder, final Context context)
-			throws CoderException {
-		type = coder.readByte();
-		count = coder.readByte();
-		gradients = new ArrayList<Gradient>(count);
+    private transient int count;
 
-		for (int i = 0; i < count; i++) {
-			gradients.add(new Gradient(coder, context));
-		}
-	}
+    public FocalGradientFill(final SWFDecoder coder, final Context context)
+            throws CoderException {
+        type = coder.readByte();
+        count = coder.readByte();
+        gradients = new ArrayList<Gradient>(count);
 
-	public FocalGradientFill(final Spread spread,
-			final Interpolation interpolation, final float point,
-			final List<Gradient> anArray) {
-		type = 0x13;
-		setSpread(spread);
-		setInterpolation(interpolation);
-		setGradients(anArray);
-		setFocalPoint(point);
-	}
+        for (int i = 0; i < count; i++) {
+            gradients.add(new Gradient(coder, context));
+        }
+    }
 
-	public FocalGradientFill(final FocalGradientFill object) {
-		type = object.type;
-		spread = object.spread;
-		interpolation = object.interpolation;
-		focalPoint = object.focalPoint;
-		gradients = new ArrayList<Gradient>(object.gradients);
-	}
+    public FocalGradientFill(final Spread spread,
+            final Interpolation interpolation, final float point,
+            final List<Gradient> anArray) {
+        type = 0x13;
+        setSpread(spread);
+        setInterpolation(interpolation);
+        setGradients(anArray);
+        setFocalPoint(point);
+    }
 
-	public Spread getSpread() {
-		return Spread.fromInt(spread);
-	}
+    public FocalGradientFill(final FocalGradientFill object) {
+        type = object.type;
+        spread = object.spread;
+        interpolation = object.interpolation;
+        focalPoint = object.focalPoint;
+        gradients = new ArrayList<Gradient>(object.gradients);
+    }
 
-	public void setSpread(final Spread spread) {
-		this.spread = spread.getValue();
-	}
+    public Spread getSpread() {
+        return Spread.fromInt(spread);
+    }
 
-	public Interpolation getInterpolation() {
-		return Interpolation.fromInt(interpolation);
-	}
+    public void setSpread(final Spread spread) {
+        this.spread = spread.getValue();
+    }
 
-	public void setInterpolation(final Interpolation interpolation) {
-		this.interpolation = interpolation.getValue();
-	}
+    public Interpolation getInterpolation() {
+        return Interpolation.fromInt(interpolation);
+    }
 
-	public float getFocalPoint() {
-		return focalPoint / 256.0f;
-	}
+    public void setInterpolation(final Interpolation interpolation) {
+        this.interpolation = interpolation.getValue();
+    }
 
-	public void setFocalPoint(final float point) {
-		this.focalPoint = (int) (point * 256);
-	}
+    public float getFocalPoint() {
+        return focalPoint / 256.0f;
+    }
 
-	/**
-	 * Add a Gradient object to the array of gradient objects. For Flash 7 and
-	 * earlier versions there can be up to 8 Gradients. For Flash 8 onwards this
-	 * number was increased to 15.
-	 * 
-	 * @param aGradient
-	 *            an Gradient object. Must not be null.
-	 */
-	public FocalGradientFill add(final Gradient aGradient) {
-		if (aGradient == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
-		}
-		if (gradients.size() == 15) {
-			throw new IllegalArgumentException(Strings.MAX_GRADIENTS);
-		}
-		gradients.add(aGradient);
-		return this;
-	}
+    public void setFocalPoint(final float point) {
+        this.focalPoint = (int) (point * 256);
+    }
 
-	/**
-	 * Returns the array of Gradient objects defining the points for the
-	 * gradient fill.
-	 */
-	public List<Gradient> getGradients() {
-		return gradients;
-	}
+    /**
+     * Add a Gradient object to the array of gradient objects. For Flash 7 and
+     * earlier versions there can be up to 8 Gradients. For Flash 8 onwards this
+     * number was increased to 15.
+     * 
+     * @param aGradient
+     *            an Gradient object. Must not be null.
+     */
+    public FocalGradientFill add(final Gradient aGradient) {
+        if (aGradient == null) {
+            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+        }
+        if (gradients.size() == 15) {
+            throw new IllegalArgumentException(Strings.MAX_GRADIENTS);
+        }
+        gradients.add(aGradient);
+        return this;
+    }
 
-	/**
-	 * Sets the array of control points that define the gradient. For Flash 7
-	 * and earlier this array can contain up to 8 Gradient objects. For Flash 8
-	 * onwards this limit was increased to 15.
-	 * 
-	 * @param anArray
-	 *            an array of Gradient objects. Must not be null.
-	 */
-	public void setGradients(final List<Gradient> anArray) {
-		// TODO Check whether array size is > 15
-		if (anArray == null) {
-			throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
-		}
-		gradients = anArray;
-	}
+    /**
+     * Returns the array of Gradient objects defining the points for the
+     * gradient fill.
+     */
+    public List<Gradient> getGradients() {
+        return gradients;
+    }
 
-	public FocalGradientFill copy() {
-		return new FocalGradientFill(this);
-	}
+    /**
+     * Sets the array of control points that define the gradient. For Flash 7
+     * and earlier this array can contain up to 8 Gradient objects. For Flash 8
+     * onwards this limit was increased to 15.
+     * 
+     * @param anArray
+     *            an array of Gradient objects. Must not be null.
+     */
+    public void setGradients(final List<Gradient> anArray) {
+        // TODO Check whether array size is > 15
+        if (anArray == null) {
+            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+        }
+        gradients = anArray;
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, getSpread(), getInterpolation(), focalPoint, gradients);
-	}
+    public FocalGradientFill copy() {
+        return new FocalGradientFill(this);
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		// TODO(optimise) Calculate size of gradient array directly.
-		int length = 2;
-		count = gradients.size();
+    @Override
+    public String toString() {
+        return String.format(FORMAT, getSpread(), getInterpolation(),
+                focalPoint, gradients);
+    }
 
-		for (Gradient gradient : gradients) {
-			length += gradient.prepareToEncode(coder, context);
-		}
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        // TODO(optimise) Calculate size of gradient array directly.
+        int length = 2;
+        count = gradients.size();
 
-		return length;
-	}
+        for (final Gradient gradient : gradients) {
+            length += gradient.prepareToEncode(coder, context);
+        }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		coder.writeByte(type);
-		coder.writeWord(count | spread | interpolation, 1);
+        return length;
+    }
 
-		for (Gradient gradient : gradients) {
-			gradient.encode(coder, context);
-		}
-	}
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        coder.writeByte(type);
+        coder.writeWord(count | spread | interpolation, 1);
+
+        for (final Gradient gradient : gradients) {
+            gradient.encode(coder, context);
+        }
+    }
 }

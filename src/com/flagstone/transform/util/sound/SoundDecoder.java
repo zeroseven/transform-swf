@@ -18,16 +18,16 @@ import com.flagstone.transform.coder.MovieTag;
  * @see MP3Decoder
  */
 public interface SoundDecoder {
-	void read(String path) throws FileNotFoundException, IOException,
-			DataFormatException;
+    void read(String path) throws FileNotFoundException, IOException,
+            DataFormatException;
 
-	void read(File file) throws FileNotFoundException, IOException,
-			DataFormatException;
+    void read(File file) throws FileNotFoundException, IOException,
+            DataFormatException;
 
-	void read(URL url) throws FileNotFoundException, IOException,
-			DataFormatException;
+    void read(URL url) throws FileNotFoundException, IOException,
+            DataFormatException;
 
-	MovieTag defineSound(int identifier);
+    MovieTag defineSound(int identifier);
 
-	List<MovieTag> streamSound(int frameRate);
+    List<MovieTag> streamSound(int frameRate);
 }

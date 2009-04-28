@@ -29,67 +29,66 @@
  */
 package com.flagstone.transform.image;
 
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Ignore;
 import org.junit.Test;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotSame;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-
-
 public final class JPEGEncodingTableTest {
 
-	private transient JPEGEncodingTable fixture;
+    private transient JPEGEncodingTable fixture;
 
-	private transient final byte[] encoded = new byte[] { 0x06, 0x01, 0x01,
-			0x00, 0x02, 0x00, 0x06, 0x50 };
+    private transient final byte[] encoded = new byte[] { 0x06, 0x01, 0x01,
+            0x00, 0x02, 0x00, 0x06, 0x50 };
 
-	private transient final byte[] extended = new byte[] { 0x7F, 0x01, 0x06,
-			0x00, 0x00, 0x00, 0x01, 0x00, 0x02, 0x00, 0x06, 0x50 };
+    private transient final byte[] extended = new byte[] { 0x7F, 0x01, 0x06,
+            0x00, 0x00, 0x00, 0x01, 0x00, 0x02, 0x00, 0x06, 0x50 };
 
-	@Test
-	@Ignore
-	public void checkCopy() {
-		// fixture = new JPEGEncodingTable(identifier, layer, transform,
-		// colorTransform);
-		final JPEGEncodingTable copy = fixture.copy();
+    @Test
+    @Ignore
+    public void checkCopy() {
+        // fixture = new JPEGEncodingTable(identifier, layer, transform,
+        // colorTransform);
+        final JPEGEncodingTable copy = fixture.copy();
 
-		assertNotSame(fixture, copy);
-	}
+        assertNotSame(fixture, copy);
+    }
 
-	@Test
-	@Ignore
-	public void encode() throws CoderException {
-		final SWFEncoder encoder = new SWFEncoder(encoded.length);
+    @Test
+    @Ignore
+    public void encode() throws CoderException {
+        final SWFEncoder encoder = new SWFEncoder(encoded.length);
 
-		// fixture = new JPEGEncodingTable(identifier, layer, transform);
-		// assertEquals(encoded.length, fixture.prepareToEncode(encoder,
-		// context));
-		// fixture.encode(encoder, context);
+        // fixture = new JPEGEncodingTable(identifier, layer, transform);
+        // assertEquals(encoded.length, fixture.prepareToEncode(encoder,
+        // context));
+        // fixture.encode(encoder, context);
 
-		assertTrue(encoder.eof());
-	}
+        assertTrue(encoder.eof());
+    }
 
-	@Test
-	@Ignore
-	public void decode() throws CoderException {
-		final SWFDecoder decoder = new SWFDecoder(encoded);
+    @Test
+    @Ignore
+    public void decode() throws CoderException {
+        final SWFDecoder decoder = new SWFDecoder(encoded);
 
-		// fixture = new JPEGEncodingTable(decoder, context);
+        // fixture = new JPEGEncodingTable(decoder, context);
 
-		assertTrue(decoder.eof());
-	}
+        assertTrue(decoder.eof());
+    }
 
-	@Test
-	@Ignore
-	public void decodeExtended() throws CoderException {
-		final SWFDecoder decoder = new SWFDecoder(extended);
+    @Test
+    @Ignore
+    public void decodeExtended() throws CoderException {
+        final SWFDecoder decoder = new SWFDecoder(extended);
 
-		// fixture = new JPEGEncodingTable(decoder, context);
+        // fixture = new JPEGEncodingTable(decoder, context);
 
-		assertTrue(decoder.eof());
-	}
+        assertTrue(decoder.eof());
+    }
 }

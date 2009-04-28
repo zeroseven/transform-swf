@@ -40,125 +40,124 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 //TODO(doc)
 public final class DefineFontName implements DefineTag {
-	private static final String FORMAT = "DefineFontName: { identifier=%d; name=%s; copyright=%s }";
+    private static final String FORMAT = "DefineFontName: { identifier=%d; name=%s; copyright=%s }";
 
-	private int identifier;
-	private String name;
-	private String copyright;
+    private int identifier;
+    private String name;
+    private String copyright;
 
-	private transient int length;
+    private transient int length;
 
-	public DefineFontName(final SWFDecoder coder)
-			throws CoderException {
-		final int start = coder.getPointer();
-		length = coder.readWord(2, false) & 0x3F;
+    public DefineFontName(final SWFDecoder coder) throws CoderException {
+        final int start = coder.getPointer();
+        length = coder.readWord(2, false) & 0x3F;
 
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
-		final int end = coder.getPointer() + (length << 3);
+        if (length == 0x3F) {
+            length = coder.readWord(4, false);
+        }
+        final int end = coder.getPointer() + (length << 3);
 
-		identifier = coder.readWord(2, false);
-		name = coder.readString();
-		copyright = coder.readString();
+        identifier = coder.readWord(2, false);
+        name = coder.readString();
+        copyright = coder.readString();
 
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
+        if (coder.getPointer() != end) {
+            throw new CoderException(getClass().getName(), start >> 3, length,
+                    (coder.getPointer() - end) >> 3);
+        }
+    }
 
-	public DefineFontName(final int uid, final String name,
-			final String copyright) {
-		setIdentifier(uid);
-		setName(name);
-		setCopyright(copyright);
-	}
+    public DefineFontName(final int uid, final String name,
+            final String copyright) {
+        setIdentifier(uid);
+        setName(name);
+        setCopyright(copyright);
+    }
 
-	public DefineFontName(final DefineFontName object) {
-		identifier = object.identifier;
-		name = object.name;
-		copyright = object.copyright;
-	}
+    public DefineFontName(final DefineFontName object) {
+        identifier = object.identifier;
+        name = object.name;
+        copyright = object.copyright;
+    }
 
-	public int getIdentifier() {
-		return identifier;
-	}
+    public int getIdentifier() {
+        return identifier;
+    }
 
-	public void setIdentifier(final int uid) {
-		if (uid < 1 || uid > 65535) {
-			throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
-		}
-		identifier = uid;
-	}
+    public void setIdentifier(final int uid) {
+        if ((uid < 1) || (uid > 65535)) {
+            throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
+        }
+        identifier = uid;
+    }
 
-	/**
-	 * Returns the name of the font family.
-	 * 
-	 * @return the name of the font.
-	 */
-	public String getName() {
-		return name;
-	}
+    /**
+     * Returns the name of the font family.
+     * 
+     * @return the name of the font.
+     */
+    public String getName() {
+        return name;
+    }
 
-	/**
-	 * Set the name of the font.
-	 * 
-	 * @param aString
-	 *            the name assigned to the font, identifying the font family.
-	 *            Must not be null.
-	 */
-	public void setName(final String aString) {
-		if (aString == null) {
-			throw new IllegalArgumentException(Strings.STRING_IS_NULL);
-		}
-		name = aString;
-	}
+    /**
+     * Set the name of the font.
+     * 
+     * @param aString
+     *            the name assigned to the font, identifying the font family.
+     *            Must not be null.
+     */
+    public void setName(final String aString) {
+        if (aString == null) {
+            throw new IllegalArgumentException(Strings.STRING_IS_NULL);
+        }
+        name = aString;
+    }
 
-	public String getCopyright() {
-		return copyright;
-	}
+    public String getCopyright() {
+        return copyright;
+    }
 
-	public void setCopyright(final String aString) {
-		if (aString == null) {
-			throw new IllegalArgumentException(Strings.STRING_IS_NULL);
-		}
-		copyright = aString;
-	}
+    public void setCopyright(final String aString) {
+        if (aString == null) {
+            throw new IllegalArgumentException(Strings.STRING_IS_NULL);
+        }
+        copyright = aString;
+    }
 
-	public DefineFontName copy() {
-		return new DefineFontName(this);
-	}
+    public DefineFontName copy() {
+        return new DefineFontName(this);
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, identifier, name, copyright);
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, identifier, name, copyright);
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		length = 2 + coder.strlen(name) + coder.strlen(copyright);
-		return (length > 62 ? 6 : 2) + length;
-	}
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        length = 2 + coder.strlen(name) + coder.strlen(copyright);
+        return (length > 62 ? 6 : 2) + length;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		final int start = coder.getPointer();
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        final int start = coder.getPointer();
 
-		if (length > 62) {
-			coder.writeWord((MovieTypes.DEFINE_FONT_NAME << 6) | 0x3F, 2);
-			coder.writeWord(length, 4);
-		} else {
-			coder.writeWord((MovieTypes.DEFINE_FONT_NAME << 6) | length, 2);
-		}
-		final int end = coder.getPointer() + (length << 3);
+        if (length > 62) {
+            coder.writeWord((MovieTypes.DEFINE_FONT_NAME << 6) | 0x3F, 2);
+            coder.writeWord(length, 4);
+        } else {
+            coder.writeWord((MovieTypes.DEFINE_FONT_NAME << 6) | length, 2);
+        }
+        final int end = coder.getPointer() + (length << 3);
 
-		coder.writeWord(identifier, 2);
-		coder.writeString(name);
-		coder.writeString(copyright);
+        coder.writeWord(identifier, 2);
+        coder.writeString(name);
+        coder.writeString(copyright);
 
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
+        if (coder.getPointer() != end) {
+            throw new CoderException(getClass().getName(), start >> 3, length,
+                    (coder.getPointer() - end) >> 3);
+        }
+    }
 }

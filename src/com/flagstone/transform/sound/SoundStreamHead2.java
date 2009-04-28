@@ -78,423 +78,425 @@ import com.flagstone.transform.datatype.SoundFormat;
  * @see SoundStreamHead
  */
 public final class SoundStreamHead2 implements MovieTag {
-	private static final String FORMAT = "SoundStreamHead: { format=%s; "
-			+ "playbackRate=%d; playbackChannels=%d; playbackSampleSize=%d; "
-			+ "streamRate=%d; streamChannels=%d; streamSampleSize=%d; "
-			+ "streamSampleCount=%d; latency=%d}";
+    private static final String FORMAT = "SoundStreamHead: { format=%s; "
+            + "playbackRate=%d; playbackChannels=%d; playbackSampleSize=%d; "
+            + "streamRate=%d; streamChannels=%d; streamSampleSize=%d; "
+            + "streamSampleCount=%d; latency=%d}";
 
-	private SoundFormat format;
-	private int playRate;
-	private int playChannels;
-	private int playSampleSize;
-	private int streamRate;
-	private int streamChannels;
-	private int streamSampleSize;
-	private int streamSampleCount;
-	private int latency;
+    private SoundFormat format;
+    private int playRate;
+    private int playChannels;
+    private int playSampleSize;
+    private int streamRate;
+    private int streamChannels;
+    private int streamSampleSize;
+    private int streamSampleCount;
+    private int latency;
 
-	private transient int length;
+    private transient int length;
 
-	/*
-	 * The following variable is used to preserve the value of a reserved field
-	 * when decoding then encoding an existing Flash file. Macromedia's file
-	 * file format specification states that this field is always zero - it is
-	 * not, so this is used to preserve the value in case it is implementing an
-	 * undocumented feature.
-	 */
-	private transient int reserved = 0;
+    /*
+     * The following variable is used to preserve the value of a reserved field
+     * when decoding then encoding an existing Flash file. Macromedia's file
+     * file format specification states that this field is always zero - it is
+     * not, so this is used to preserve the value in case it is implementing an
+     * undocumented feature.
+     */
+    private transient int reserved = 0;
 
-	public SoundStreamHead2(final SWFDecoder coder) throws CoderException {
-		final int start = coder.getPointer();
-		length = coder.readWord(2, false) & 0x3F;
+    public SoundStreamHead2(final SWFDecoder coder) throws CoderException {
+        final int start = coder.getPointer();
+        length = coder.readWord(2, false) & 0x3F;
 
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
-		final int end = coder.getPointer() + (length << 3);
+        if (length == 0x3F) {
+            length = coder.readWord(4, false);
+        }
+        final int end = coder.getPointer() + (length << 3);
 
-		reserved = coder.readBits(4, false);
-		switch (coder.readBits(2, false)) {
-		case 0:
-			playRate = 5512;
-			break;
-		case 1:
-			playRate = 11025;
-			break;
-		case 2:
-			playRate = 22050;
-			break;
-		case 3:
-			playRate = 44100;
-			break;
-		default:
-			playRate = 0;
-			break;
-		}
-		playSampleSize = coder.readBits(1, false) + 1;
-		playChannels = coder.readBits(1, false) + 1;
+        reserved = coder.readBits(4, false);
+        switch (coder.readBits(2, false)) {
+        case 0:
+            playRate = 5512;
+            break;
+        case 1:
+            playRate = 11025;
+            break;
+        case 2:
+            playRate = 22050;
+            break;
+        case 3:
+            playRate = 44100;
+            break;
+        default:
+            playRate = 0;
+            break;
+        }
+        playSampleSize = coder.readBits(1, false) + 1;
+        playChannels = coder.readBits(1, false) + 1;
 
-		format = SoundFormat.fromInt(coder.readBits(4, false));
+        format = SoundFormat.fromInt(coder.readBits(4, false));
 
-		switch (coder.readBits(2, false)) {
-		case 0:
-			streamRate = 5512;
-			break;
-		case 1:
-			streamRate = 11025;
-			break;
-		case 2:
-			streamRate = 22050;
-			break;
-		case 3:
-			streamRate = 44100;
-			break;
-		default:
-			streamRate = 0;
-			break;
-		}
-		streamSampleSize = coder.readBits(1, false) + 1;
-		streamChannels = coder.readBits(1, false) + 1;
-		streamSampleCount = coder.readWord(2, false);
+        switch (coder.readBits(2, false)) {
+        case 0:
+            streamRate = 5512;
+            break;
+        case 1:
+            streamRate = 11025;
+            break;
+        case 2:
+            streamRate = 22050;
+            break;
+        case 3:
+            streamRate = 44100;
+            break;
+        default:
+            streamRate = 0;
+            break;
+        }
+        streamSampleSize = coder.readBits(1, false) + 1;
+        streamChannels = coder.readBits(1, false) + 1;
+        streamSampleCount = coder.readWord(2, false);
 
-		if (length == 6 && format == SoundFormat.MP3) {
-			latency = coder.readWord(2, true);
-		}
+        if ((length == 6) && (format == SoundFormat.MP3)) {
+            latency = coder.readWord(2, true);
+        }
 
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
+        if (coder.getPointer() != end) {
+            throw new CoderException(getClass().getName(), start >> 3, length,
+                    (coder.getPointer() - end) >> 3);
+        }
+    }
 
-	/**
-	 * Creates a SoundStreamHead2 object specifying all the parameters required
-	 * to define the sound.
-	 * 
-	 * @param encoding
-	 *            the compression format for the sound data, either
-	 *            DefineSound.NATIVE_PCM, DefineSound.ADPCM, DefineSound.MP3,
-	 *            DefineSound.PCM or DefineSound.NELLYMOSER (Flash 6+ only).
-	 * @param playRate
-	 *            the recommended rate for playing the sound, either 5512,
-	 *            11025, 22050 or 44100 Hz.
-	 * @param playChannels
-	 *            The recommended number of playback channels: 1 = mono or 2 =
-	 *            stereo.
-	 * @param playSize
-	 *            the recommended uncompressed sample size for playing the
-	 *            sound, either 1 or 2 bytes.
-	 * @param streamingRate
-	 *            the rate at which the sound was sampled, either 5512, 11025,
-	 *            22050 or 44100 Hz.
-	 * @param streamingChannels
-	 *            the number of channels: 1 = mono or 2 = stereo.
-	 * @param streamingSize
-	 *            the sample size for the sound, either 1 or 2 bytes.
-	 * @param streamingCount
-	 *            the number of samples in each subsequent SoundStreamBlock
-	 *            object.
-	 */
-	public SoundStreamHead2(final SoundFormat encoding, final int playRate,
-			final int playChannels, final int playSize,
-			final int streamingRate, final int streamingChannels,
-			final int streamingSize, final int streamingCount) {
-		setFormat(encoding);
-		setPlayRate(playRate);
-		setPlayChannels(playChannels);
-		setPlaySampleSize(playSize);
-		setStreamRate(streamingRate);
-		setStreamChannels(streamingChannels);
-		setStreamSampleSize(streamingSize);
-		setStreamSampleCount(streamingCount);
-	}
+    /**
+     * Creates a SoundStreamHead2 object specifying all the parameters required
+     * to define the sound.
+     * 
+     * @param encoding
+     *            the compression format for the sound data, either
+     *            DefineSound.NATIVE_PCM, DefineSound.ADPCM, DefineSound.MP3,
+     *            DefineSound.PCM or DefineSound.NELLYMOSER (Flash 6+ only).
+     * @param playRate
+     *            the recommended rate for playing the sound, either 5512,
+     *            11025, 22050 or 44100 Hz.
+     * @param playChannels
+     *            The recommended number of playback channels: 1 = mono or 2 =
+     *            stereo.
+     * @param playSize
+     *            the recommended uncompressed sample size for playing the
+     *            sound, either 1 or 2 bytes.
+     * @param streamingRate
+     *            the rate at which the sound was sampled, either 5512, 11025,
+     *            22050 or 44100 Hz.
+     * @param streamingChannels
+     *            the number of channels: 1 = mono or 2 = stereo.
+     * @param streamingSize
+     *            the sample size for the sound, either 1 or 2 bytes.
+     * @param streamingCount
+     *            the number of samples in each subsequent SoundStreamBlock
+     *            object.
+     */
+    public SoundStreamHead2(final SoundFormat encoding, final int playRate,
+            final int playChannels, final int playSize,
+            final int streamingRate, final int streamingChannels,
+            final int streamingSize, final int streamingCount) {
+        setFormat(encoding);
+        setPlayRate(playRate);
+        setPlayChannels(playChannels);
+        setPlaySampleSize(playSize);
+        setStreamRate(streamingRate);
+        setStreamChannels(streamingChannels);
+        setStreamSampleSize(streamingSize);
+        setStreamSampleCount(streamingCount);
+    }
 
-	// TODO(doc)
-	public SoundStreamHead2(final SoundStreamHead2 object) {
-		format = object.format;
-		playRate = object.playRate;
-		playChannels = object.playChannels;
-		playSampleSize = object.playSampleSize;
-		streamRate = object.streamRate;
-		streamChannels = object.streamChannels;
-		streamSampleSize = object.streamSampleSize;
-		streamSampleCount = object.streamSampleCount;
-		latency = object.latency;
-	}
+    // TODO(doc)
+    public SoundStreamHead2(final SoundStreamHead2 object) {
+        format = object.format;
+        playRate = object.playRate;
+        playChannels = object.playChannels;
+        playSampleSize = object.playSampleSize;
+        streamRate = object.streamRate;
+        streamChannels = object.streamChannels;
+        streamSampleSize = object.streamSampleSize;
+        streamSampleCount = object.streamSampleCount;
+        latency = object.latency;
+    }
 
-	/**
-	 * Returns the streaming sound format. For the SoundStreamHead2 class
-	 * supports NATIVE_PCM, ADPCM, MP3, PCM or NELLYMOSER encoded sound data.
-	 */
-	public SoundFormat getFormat() {
-		return format;
-	}
+    /**
+     * Returns the streaming sound format. For the SoundStreamHead2 class
+     * supports NATIVE_PCM, ADPCM, MP3, PCM or NELLYMOSER encoded sound data.
+     */
+    public SoundFormat getFormat() {
+        return format;
+    }
 
-	/**
-	 * Sets the format for the streaming sound.
-	 * 
-	 * @param encoding
-	 *            the compression format for the sound data, either
-	 *            DefineSound.NATIVE_PCM, DefineSound.ADPCM, DefineSound.MP3,
-	 *            DefineSound.PCM or DefineSound.NELLYMOSER.
-	 */
-	// TODO(doc) Review
-	public void setFormat(final SoundFormat encoding) {
-		format = encoding;
-	}
+    /**
+     * Sets the format for the streaming sound.
+     * 
+     * @param encoding
+     *            the compression format for the sound data, either
+     *            DefineSound.NATIVE_PCM, DefineSound.ADPCM, DefineSound.MP3,
+     *            DefineSound.PCM or DefineSound.NELLYMOSER.
+     */
+    // TODO(doc) Review
+    public void setFormat(final SoundFormat encoding) {
+        format = encoding;
+    }
 
-	/**
-	 * Returns the recommended playback rate: 5512, 11025, 22050 or 44100 Hertz.
-	 */
-	public int getPlayRate() {
-		return playRate;
-	}
+    /**
+     * Returns the recommended playback rate: 5512, 11025, 22050 or 44100 Hertz.
+     */
+    public int getPlayRate() {
+        return playRate;
+    }
 
-	/**
-	 * Returns the recommended number of playback channels = 1 = mono 2 =
-	 * stereo.
-	 */
-	public int getPlayChannels() {
-		return playChannels;
-	}
+    /**
+     * Returns the recommended number of playback channels = 1 = mono 2 =
+     * stereo.
+     */
+    public int getPlayChannels() {
+        return playChannels;
+    }
 
-	/**
-	 * Returns the recommended playback sample range in bytes: 1 or 2.
-	 */
-	public int getPlaySampleSize() {
-		return playSampleSize;
-	}
+    /**
+     * Returns the recommended playback sample range in bytes: 1 or 2.
+     */
+    public int getPlaySampleSize() {
+        return playSampleSize;
+    }
 
-	/**
-	 * Returns the sample rate: 5512, 11025, 22050 or 44100 Hz in the streaming
-	 * sound.
-	 */
-	public float getStreamRate() {
-		return streamRate;
-	}
+    /**
+     * Returns the sample rate: 5512, 11025, 22050 or 44100 Hz in the streaming
+     * sound.
+     */
+    public float getStreamRate() {
+        return streamRate;
+    }
 
-	/**
-	 * Returns the number of channels, 1 = mono 2 = stereo, in the streaming
-	 * sound.
-	 */
-	public int getStreamChannels() {
-		return streamChannels;
-	}
+    /**
+     * Returns the number of channels, 1 = mono 2 = stereo, in the streaming
+     * sound.
+     */
+    public int getStreamChannels() {
+        return streamChannels;
+    }
 
-	/**
-	 * Returns the sample size in bytes: 1 or 2 in the streaming sound.
-	 */
-	public int getStreamSampleSize() {
-		return streamSampleSize;
-	}
+    /**
+     * Returns the sample size in bytes: 1 or 2 in the streaming sound.
+     */
+    public int getStreamSampleSize() {
+        return streamSampleSize;
+    }
 
-	/**
-	 * Returns the average number of samples in each stream block following.
-	 */
-	public int getStreamSampleCount() {
-		return streamSampleCount;
-	}
+    /**
+     * Returns the average number of samples in each stream block following.
+     */
+    public int getStreamSampleCount() {
+        return streamSampleCount;
+    }
 
-	/**
-	 * Sets the recommended playback rate in Hz. Must be either: 5512, 11025,
-	 * 22050 or 44100.
-	 * 
-	 * @param rate
-	 *            the recommended rate for playing the sound.
-	 */
-	public void setPlayRate(final int rate) {
-		if (rate != 5512 && rate != 11025 && rate != 22050 && rate != 44100) {
-			throw new IllegalArgumentException(Strings.SOUND_RATE_RANGE);
-		}
-		playRate = rate;
-	}
+    /**
+     * Sets the recommended playback rate in Hz. Must be either: 5512, 11025,
+     * 22050 or 44100.
+     * 
+     * @param rate
+     *            the recommended rate for playing the sound.
+     */
+    public void setPlayRate(final int rate) {
+        if ((rate != 5512) && (rate != 11025) && (rate != 22050)
+                && (rate != 44100)) {
+            throw new IllegalArgumentException(Strings.SOUND_RATE_RANGE);
+        }
+        playRate = rate;
+    }
 
-	/**
-	 * Sets the recommended number of playback channels = 1 = mono 2 = stereo.
-	 * 
-	 * @param channels
-	 *            the recommended number of playback channels.
-	 */
-	public void setPlayChannels(final int channels) {
-		if (channels < 1 || channels > 2) {
-			throw new IllegalArgumentException(Strings.CHANNEL_RANGE);
-		}
-		playChannels = channels;
-	}
+    /**
+     * Sets the recommended number of playback channels = 1 = mono 2 = stereo.
+     * 
+     * @param channels
+     *            the recommended number of playback channels.
+     */
+    public void setPlayChannels(final int channels) {
+        if ((channels < 1) || (channels > 2)) {
+            throw new IllegalArgumentException(Strings.CHANNEL_RANGE);
+        }
+        playChannels = channels;
+    }
 
-	/**
-	 * Sets the recommended playback sample size in bytes. Must be wither 1 or
-	 * 2.
-	 * 
-	 * @param playSize
-	 *            the recommended sample size for playing the sound.
-	 */
-	public void setPlaySampleSize(final int playSize) {
-		if (playSize < 1 || playSize > 2) {
-			throw new IllegalArgumentException(Strings.SAMPLE_SIZE_RANGE);
-		}
-		playSampleSize = playSize;
-	}
+    /**
+     * Sets the recommended playback sample size in bytes. Must be wither 1 or
+     * 2.
+     * 
+     * @param playSize
+     *            the recommended sample size for playing the sound.
+     */
+    public void setPlaySampleSize(final int playSize) {
+        if ((playSize < 1) || (playSize > 2)) {
+            throw new IllegalArgumentException(Strings.SAMPLE_SIZE_RANGE);
+        }
+        playSampleSize = playSize;
+    }
 
-	/**
-	 * Sets the sample rate in Hz for the streaming sound. Must be either: 5512,
-	 * 11025, 22050 or 44100.
-	 * 
-	 * @param rate
-	 *            the rate at which the streaming sound was sampled.
-	 */
-	public void setStreamRate(final int rate) {
-		if (rate != 5512 && rate != 11025 && rate != 22050 && rate != 44100) {
-			throw new IllegalArgumentException(Strings.SOUND_RATE_RANGE);
-		}
-		streamRate = rate;
-	}
+    /**
+     * Sets the sample rate in Hz for the streaming sound. Must be either: 5512,
+     * 11025, 22050 or 44100.
+     * 
+     * @param rate
+     *            the rate at which the streaming sound was sampled.
+     */
+    public void setStreamRate(final int rate) {
+        if ((rate != 5512) && (rate != 11025) && (rate != 22050)
+                && (rate != 44100)) {
+            throw new IllegalArgumentException(Strings.SOUND_RATE_RANGE);
+        }
+        streamRate = rate;
+    }
 
-	/**
-	 * Sets the number of channels in the streaming sound: 1 = mono 2 = stereo.
-	 * 
-	 * @param channels
-	 *            the number of channels in the streaming sound.
-	 */
-	public void setStreamChannels(final int channels) {
-		if (channels < 1 || channels > 2) {
-			throw new IllegalArgumentException(Strings.CHANNEL_RANGE);
-		}
-		streamChannels = channels;
-	}
+    /**
+     * Sets the number of channels in the streaming sound: 1 = mono 2 = stereo.
+     * 
+     * @param channels
+     *            the number of channels in the streaming sound.
+     */
+    public void setStreamChannels(final int channels) {
+        if ((channels < 1) || (channels > 2)) {
+            throw new IllegalArgumentException(Strings.CHANNEL_RANGE);
+        }
+        streamChannels = channels;
+    }
 
-	/**
-	 * Sets the sample size in bytes for the streaming sound. Must be 1 or 2.
-	 * 
-	 * @param size
-	 *            the sample size for the sound.
-	 */
-	public void setStreamSampleSize(final int size) {
-		if (size < 1 || size > 2) {
-			throw new IllegalArgumentException(Strings.SAMPLE_SIZE_RANGE);
-		}
-		streamSampleSize = size;
-	}
+    /**
+     * Sets the sample size in bytes for the streaming sound. Must be 1 or 2.
+     * 
+     * @param size
+     *            the sample size for the sound.
+     */
+    public void setStreamSampleSize(final int size) {
+        if ((size < 1) || (size > 2)) {
+            throw new IllegalArgumentException(Strings.SAMPLE_SIZE_RANGE);
+        }
+        streamSampleSize = size;
+    }
 
-	/**
-	 * Sets the number of samples in each stream block.
-	 * 
-	 * @param count
-	 *            the number of samples in each subsequent SoundStreamBlock
-	 *            object.
-	 */
-	public void setStreamSampleCount(final int count) {
-		if (count < 0) {
-			throw new IllegalArgumentException(Strings.NEGATIVE_NUMBER);
-		}
-		streamSampleCount = count;
-	}
+    /**
+     * Sets the number of samples in each stream block.
+     * 
+     * @param count
+     *            the number of samples in each subsequent SoundStreamBlock
+     *            object.
+     */
+    public void setStreamSampleCount(final int count) {
+        if (count < 0) {
+            throw new IllegalArgumentException(Strings.NEGATIVE_NUMBER);
+        }
+        streamSampleCount = count;
+    }
 
-	/**
-	 * For MP3 encoded sounds, returns the number of samples to skip when
-	 * starting to play a sound.
-	 * 
-	 * @return the number of samples skipped in an MP3 encoded sound Returns 0
-	 *         for other sound formats.
-	 */
-	public int getLatency() {
-		return latency;
-	}
+    /**
+     * For MP3 encoded sounds, returns the number of samples to skip when
+     * starting to play a sound.
+     * 
+     * @return the number of samples skipped in an MP3 encoded sound Returns 0
+     *         for other sound formats.
+     */
+    public int getLatency() {
+        return latency;
+    }
 
-	/**
-	 * Set the number of samples to skip when starting to play an MP3 encoded
-	 * sound.
-	 * 
-	 * @param latency
-	 *            the number of samples to be skipped in an MP3 encoded sound
-	 *            should be 0 for other sound formats.
-	 */
-	public void setLatency(final int latency) {
-		this.latency = latency;
-	}
+    /**
+     * Set the number of samples to skip when starting to play an MP3 encoded
+     * sound.
+     * 
+     * @param latency
+     *            the number of samples to be skipped in an MP3 encoded sound
+     *            should be 0 for other sound formats.
+     */
+    public void setLatency(final int latency) {
+        this.latency = latency;
+    }
 
-	public SoundStreamHead2 copy() {
-		return new SoundStreamHead2(this);
-	}
+    public SoundStreamHead2 copy() {
+        return new SoundStreamHead2(this);
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, format, playRate, playChannels,
-				playSampleSize, streamRate, streamChannels, streamSampleSize,
-				streamSampleCount, latency);
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, format, playRate, playChannels,
+                playSampleSize, streamRate, streamChannels, streamSampleSize,
+                streamSampleCount, latency);
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		length = 4;
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        length = 4;
 
-		if (format == SoundFormat.MP3 && latency > 0) {
-			length += 2;
-		}
-		return (length > 62 ? 6 : 2) + length;
-	}
+        if ((format == SoundFormat.MP3) && (latency > 0)) {
+            length += 2;
+        }
+        return (length > 62 ? 6 : 2) + length;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		final int start = coder.getPointer();
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        final int start = coder.getPointer();
 
-		if (length >= 63) {
-			coder.writeWord((MovieTypes.SOUND_STREAM_HEAD_2 << 6) | 0x3F, 2);
-			coder.writeWord(length, 4);
-		} else {
-			coder.writeWord((MovieTypes.SOUND_STREAM_HEAD_2 << 6) | length, 2);
-		}
-		final int end = coder.getPointer() + (length << 3);
+        if (length >= 63) {
+            coder.writeWord((MovieTypes.SOUND_STREAM_HEAD_2 << 6) | 0x3F, 2);
+            coder.writeWord(length, 4);
+        } else {
+            coder.writeWord((MovieTypes.SOUND_STREAM_HEAD_2 << 6) | length, 2);
+        }
+        final int end = coder.getPointer() + (length << 3);
 
-		coder.writeBits(reserved, 4);
+        coder.writeBits(reserved, 4);
 
-		switch (playRate) {
-		case 5512:
-			coder.writeBits(0, 2);
-			break;
-		case 11025:
-			coder.writeBits(1, 2);
-			break;
-		case 22050:
-			coder.writeBits(2, 2);
-			break;
-		case 44100:
-			coder.writeBits(3, 2);
-			break;
-		default:
-			break;
-		}
-		coder.writeBits(playSampleSize - 1, 1);
-		coder.writeBits(playChannels - 1, 1);
+        switch (playRate) {
+        case 5512:
+            coder.writeBits(0, 2);
+            break;
+        case 11025:
+            coder.writeBits(1, 2);
+            break;
+        case 22050:
+            coder.writeBits(2, 2);
+            break;
+        case 44100:
+            coder.writeBits(3, 2);
+            break;
+        default:
+            break;
+        }
+        coder.writeBits(playSampleSize - 1, 1);
+        coder.writeBits(playChannels - 1, 1);
 
-		coder.writeBits(format.getValue(), 4);
+        coder.writeBits(format.getValue(), 4);
 
-		switch (streamRate) {
-		case 5512:
-			coder.writeBits(0, 2);
-			break;
-		case 11025:
-			coder.writeBits(1, 2);
-			break;
-		case 22050:
-			coder.writeBits(2, 2);
-			break;
-		case 44100:
-			coder.writeBits(3, 2);
-			break;
-		default:
-			break;
-		}
-		coder.writeBits(streamSampleSize - 1, 1);
-		coder.writeBits(streamChannels - 1, 1);
-		coder.writeWord(streamSampleCount, 2);
+        switch (streamRate) {
+        case 5512:
+            coder.writeBits(0, 2);
+            break;
+        case 11025:
+            coder.writeBits(1, 2);
+            break;
+        case 22050:
+            coder.writeBits(2, 2);
+            break;
+        case 44100:
+            coder.writeBits(3, 2);
+            break;
+        default:
+            break;
+        }
+        coder.writeBits(streamSampleSize - 1, 1);
+        coder.writeBits(streamChannels - 1, 1);
+        coder.writeWord(streamSampleCount, 2);
 
-		if (format == SoundFormat.MP3 && latency > 0) {
-			coder.writeWord(latency, 2);
-		}
+        if ((format == SoundFormat.MP3) && (latency > 0)) {
+            coder.writeWord(latency, 2);
+        }
 
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
+        if (coder.getPointer() != end) {
+            throw new CoderException(getClass().getName(), start >> 3, length,
+                    (coder.getPointer() - end) >> 3);
+        }
+    }
 }

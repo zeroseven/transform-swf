@@ -34,36 +34,34 @@ import org.junit.Test;
 
 import com.flagstone.transform.coder.CoderException;
 
-
-
 public final class ScreenPacketTest {
 
-	private transient ScreenPacket fixture;
+    private transient ScreenPacket fixture;
 
-	private transient final byte[] encoded = new byte[] { 0x06, 0x01, 0x01,
-			0x00, 0x02, 0x00, 0x06, 0x50 };
+    private transient final byte[] encoded = new byte[] { 0x06, 0x01, 0x01,
+            0x00, 0x02, 0x00, 0x06, 0x50 };
 
-	@Test
-	@Ignore
-	public void checkCopy() {
-		//TODO Implement
-	}
+    @Test
+    @Ignore
+    public void checkCopy() {
+        // TODO Implement
+    }
 
-	@Test
-	@Ignore
-	public void encodeCoordTransform() throws CoderException {
-		//TODO Implement
-	}
+    @Test
+    @Ignore
+    public void encodeCoordTransform() throws CoderException {
+        // TODO Implement
+    }
 
-	@Test
-	@Ignore
-	public void decode() throws CoderException {
-		//TODO Implement
-	}
+    @Test
+    @Ignore
+    public void decode() throws CoderException {
+        // TODO Implement
+    }
 
-	@Test
-	@Ignore
-	public void decodeExtended() throws CoderException {
-		//TODO Implement
-	}
+    @Test
+    @Ignore
+    public void decodeExtended() throws CoderException {
+        // TODO Implement
+    }
 }

@@ -53,71 +53,71 @@ import com.flagstone.transform.shape.DefineShape3;
  */
 public final class SolidFill implements FillStyle {
 
-	private static final String FORMAT = "SolidFill: { color=%s }";
+    private static final String FORMAT = "SolidFill: { color=%s }";
 
-	private Color color;
+    private Color color;
 
-	// TODO(doc)
-	public SolidFill(final SWFDecoder coder, final Context context)
-			throws CoderException {
-		coder.adjustPointer(8);
-		color = new Color(coder, context);
-	}
+    // TODO(doc)
+    public SolidFill(final SWFDecoder coder, final Context context)
+            throws CoderException {
+        coder.adjustPointer(8);
+        color = new Color(coder, context);
+    }
 
-	/**
-	 * Creates a SolidFill object with the specified colour.
-	 * 
-	 * @param aColor
-	 *            an Color object that defines the colour that the area will be
-	 *            filled with. Must not be null.
-	 */
-	public SolidFill(final Color aColor) {
-		setColor(aColor);
-	}
+    /**
+     * Creates a SolidFill object with the specified colour.
+     * 
+     * @param aColor
+     *            an Color object that defines the colour that the area will be
+     *            filled with. Must not be null.
+     */
+    public SolidFill(final Color aColor) {
+        setColor(aColor);
+    }
 
-	// TODO(doc)
-	public SolidFill(final SolidFill object) {
-		color = object.color;
-	}
+    // TODO(doc)
+    public SolidFill(final SolidFill object) {
+        color = object.color;
+    }
 
-	/**
-	 * Returns the colour of the fill style.
-	 */
-	public Color getColor() {
-		return color;
-	}
+    /**
+     * Returns the colour of the fill style.
+     */
+    public Color getColor() {
+        return color;
+    }
 
-	/**
-	 * Sets the colour of the fill style.
-	 * 
-	 * @param aColor
-	 *            an Color object that defines the colour that the area will be
-	 *            filled with. Must not be null.
-	 */
-	public void setColor(final Color aColor) {
-		if (aColor == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
-		}
-		color = aColor;
-	}
+    /**
+     * Sets the colour of the fill style.
+     * 
+     * @param aColor
+     *            an Color object that defines the colour that the area will be
+     *            filled with. Must not be null.
+     */
+    public void setColor(final Color aColor) {
+        if (aColor == null) {
+            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+        }
+        color = aColor;
+    }
 
-	public SolidFill copy() {
-		return new SolidFill(this);
-	}
+    public SolidFill copy() {
+        return new SolidFill(this);
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, color.toString());
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, color.toString());
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		// TODO(optimise) calculate size of color directly.
-		return 1 + color.prepareToEncode(coder, context);
-	}
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        // TODO(optimise) calculate size of color directly.
+        return 1 + color.prepareToEncode(coder, context);
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		coder.writeByte(0);
-		color.encode(coder, context);
-	}
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        coder.writeByte(0);
+        color.encode(coder, context);
+    }
 }

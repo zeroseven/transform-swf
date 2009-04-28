@@ -32,5 +32,5 @@ package com.flagstone.transform.linestyle;
 
 //TODO(doc)
 public enum JoinStyle {
-	ROUND, BEVEL, MITER;
+    ROUND, BEVEL, MITER;
 }

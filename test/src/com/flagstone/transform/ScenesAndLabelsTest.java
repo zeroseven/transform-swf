@@ -29,140 +29,138 @@
  */
 package com.flagstone.transform;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.junit.Test;
-
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertArrayEquals;
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-
-
 public final class ScenesAndLabelsTest {
 
-	private static Map<Integer, String> scenes = new LinkedHashMap<Integer, String>();
+    private static Map<Integer, String> scenes = new LinkedHashMap<Integer, String>();
 
-	private static Map<Integer, String> labels = new LinkedHashMap<Integer, String>();
+    private static Map<Integer, String> labels = new LinkedHashMap<Integer, String>();
 
-	static {
-		scenes.put(1, "A");
-		scenes.put(2, "B");
-		scenes.put(3, "C");
+    static {
+        scenes.put(1, "A");
+        scenes.put(2, "B");
+        scenes.put(3, "C");
 
-		labels.put(4, "D");
-		labels.put(5, "E");
-		labels.put(6, "F");
-	}
+        labels.put(4, "D");
+        labels.put(5, "E");
+        labels.put(6, "F");
+    }
 
-	private transient ScenesAndLabels fixture;
+    private transient ScenesAndLabels fixture;
 
-	private transient final byte[] encoded = new byte[] { (byte) 0x94, 0x15,
-			0x03, 0x01, 0x41, 0x00, 0x02, 0x42, 0x00, 0x03, 0x43, 0x00, 0x03,
-			0x04, 0x44, 0x00, 0x05, 0x45, 0x00, 0x06, 0x46, 0x00, };
+    private transient final byte[] encoded = new byte[] { (byte) 0x94, 0x15,
+            0x03, 0x01, 0x41, 0x00, 0x02, 0x42, 0x00, 0x03, 0x43, 0x00, 0x03,
+            0x04, 0x44, 0x00, 0x05, 0x45, 0x00, 0x06, 0x46, 0x00, };
 
-	private transient final byte[] extended = new byte[] { (byte) 0xBF, 0x15,
-			0x14, 0x00, 0x00, 0x00, 0x03, 0x01, 0x41, 0x00, 0x02, 0x42, 0x00,
-			0x03, 0x43, 0x00, 0x03, 0x04, 0x44, 0x00, 0x05, 0x45, 0x00, 0x06,
-			0x46, 0x00, };
+    private transient final byte[] extended = new byte[] { (byte) 0xBF, 0x15,
+            0x14, 0x00, 0x00, 0x00, 0x03, 0x01, 0x41, 0x00, 0x02, 0x42, 0x00,
+            0x03, 0x43, 0x00, 0x03, 0x04, 0x44, 0x00, 0x05, 0x45, 0x00, 0x06,
+            0x46, 0x00, };
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAccessorForSceneIdentifierWithLowerBound() {
-		fixture = new ScenesAndLabels(scenes, labels);
-		fixture.addScene(-1, "A");
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkAccessorForSceneIdentifierWithLowerBound() {
+        fixture = new ScenesAndLabels(scenes, labels);
+        fixture.addScene(-1, "A");
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAccessorForSceneIdentifierWithUpperBound() {
-		fixture = new ScenesAndLabels(scenes, labels);
-		fixture.addScene(65536, "A");
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkAccessorForSceneIdentifierWithUpperBound() {
+        fixture = new ScenesAndLabels(scenes, labels);
+        fixture.addScene(65536, "A");
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAccessorForSceneNameWithNull() {
-		fixture = new ScenesAndLabels(scenes, labels);
-		fixture.addScene(1, null);
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkAccessorForSceneNameWithNull() {
+        fixture = new ScenesAndLabels(scenes, labels);
+        fixture.addScene(1, null);
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAccessorForSceneNameWithEmpty() {
-		fixture = new ScenesAndLabels(scenes, labels);
-		fixture.addScene(1, "");
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkAccessorForSceneNameWithEmpty() {
+        fixture = new ScenesAndLabels(scenes, labels);
+        fixture.addScene(1, "");
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAccessorForLabelIdentifierWithLowerBound() {
-		fixture = new ScenesAndLabels(scenes, labels);
-		fixture.addLabel(-1, "A");
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkAccessorForLabelIdentifierWithLowerBound() {
+        fixture = new ScenesAndLabels(scenes, labels);
+        fixture.addLabel(-1, "A");
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAccessorForLabelIdentifierWithUpperBound() {
-		fixture = new ScenesAndLabels(scenes, labels);
-		fixture.addLabel(65536, "A");
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkAccessorForLabelIdentifierWithUpperBound() {
+        fixture = new ScenesAndLabels(scenes, labels);
+        fixture.addLabel(65536, "A");
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAccessorForLabelNameWithNull() {
-		fixture = new ScenesAndLabels(scenes, labels);
-		fixture.addLabel(1, null);
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkAccessorForLabelNameWithNull() {
+        fixture = new ScenesAndLabels(scenes, labels);
+        fixture.addLabel(1, null);
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAccessorForLabelNameWithEmpty() {
-		fixture = new ScenesAndLabels(scenes, labels);
-		fixture.addLabel(1, "");
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkAccessorForLabelNameWithEmpty() {
+        fixture = new ScenesAndLabels(scenes, labels);
+        fixture.addLabel(1, "");
+    }
 
-	@Test
-	public void checkCopy() {
-		fixture = new ScenesAndLabels(scenes, labels);
-		final ScenesAndLabels copy = fixture.copy();
+    @Test
+    public void checkCopy() {
+        fixture = new ScenesAndLabels(scenes, labels);
+        final ScenesAndLabels copy = fixture.copy();
 
-		assertNotSame(fixture.getScenes(), copy.getScenes());
-		assertNotSame(fixture.getLabels(), copy.getLabels());
-		assertEquals(fixture.toString(), copy.toString());
-	}
+        assertNotSame(fixture.getScenes(), copy.getScenes());
+        assertNotSame(fixture.getLabels(), copy.getLabels());
+        assertEquals(fixture.toString(), copy.toString());
+    }
 
-	@Test
-	public void encode() throws CoderException {
-		final SWFEncoder encoder = new SWFEncoder(encoded.length);
-		final Context context = new Context();
+    @Test
+    public void encode() throws CoderException {
+        final SWFEncoder encoder = new SWFEncoder(encoded.length);
+        final Context context = new Context();
 
-		fixture = new ScenesAndLabels(scenes, labels);
-		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
-		fixture.encode(encoder, context);
+        fixture = new ScenesAndLabels(scenes, labels);
+        assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
+        fixture.encode(encoder, context);
 
-		assertTrue(encoder.eof());
-		assertArrayEquals(encoded, encoder.getData());
-	}
+        assertTrue(encoder.eof());
+        assertArrayEquals(encoded, encoder.getData());
+    }
 
-	@Test
-	public void decode() throws CoderException {
-		final SWFDecoder decoder = new SWFDecoder(encoded);
+    @Test
+    public void decode() throws CoderException {
+        final SWFDecoder decoder = new SWFDecoder(encoded);
 
-		fixture = new ScenesAndLabels(decoder);
+        fixture = new ScenesAndLabels(decoder);
 
-		assertTrue(decoder.eof());
-		assertEquals(scenes, fixture.getScenes());
-		assertEquals(labels, fixture.getLabels());
-	}
+        assertTrue(decoder.eof());
+        assertEquals(scenes, fixture.getScenes());
+        assertEquals(labels, fixture.getLabels());
+    }
 
-	@Test
-	public void decodeExtended() throws CoderException {
-		final SWFDecoder decoder = new SWFDecoder(extended);
+    @Test
+    public void decodeExtended() throws CoderException {
+        final SWFDecoder decoder = new SWFDecoder(extended);
 
-		fixture = new ScenesAndLabels(decoder);
+        fixture = new ScenesAndLabels(decoder);
 
-		assertTrue(decoder.eof());
-		assertEquals(scenes, fixture.getScenes());
-		assertEquals(labels, fixture.getLabels());
-	}
+        assertTrue(decoder.eof());
+        assertEquals(scenes, fixture.getScenes());
+        assertEquals(labels, fixture.getLabels());
+    }
 }

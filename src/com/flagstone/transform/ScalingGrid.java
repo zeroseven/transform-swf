@@ -41,75 +41,75 @@ import com.flagstone.transform.datatype.Bounds;
 //TODO(doc)
 public final class ScalingGrid implements DefineTag {
 
-	private static final String FORMAT = "ScalingGrid: { identifier=%d; bounds=%s; }";
+    private static final String FORMAT = "ScalingGrid: { identifier=%d; bounds=%s; }";
 
-	private int identifier;
-	private Bounds bounds;
+    private int identifier;
+    private Bounds bounds;
 
-	private transient int length;
+    private transient int length;
 
-	// TODO(doc)
-	public ScalingGrid(final SWFDecoder coder) throws CoderException {
+    // TODO(doc)
+    public ScalingGrid(final SWFDecoder coder) throws CoderException {
 
-		if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
-			coder.readWord(4, false);
-		}
+        if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
+            coder.readWord(4, false);
+        }
 
-		identifier = coder.readWord(2, false);
-		bounds = new Bounds(coder);
-	}
+        identifier = coder.readWord(2, false);
+        bounds = new Bounds(coder);
+    }
 
-	public ScalingGrid(final int identifier, final Bounds bounds) {
-		setIdentifier(identifier);
-		setBounds(bounds);
-	}
+    public ScalingGrid(final int identifier, final Bounds bounds) {
+        setIdentifier(identifier);
+        setBounds(bounds);
+    }
 
-	public ScalingGrid(final ScalingGrid object) {
-		identifier = object.identifier;
-		bounds = object.bounds;
-	}
+    public ScalingGrid(final ScalingGrid object) {
+        identifier = object.identifier;
+        bounds = object.bounds;
+    }
 
-	public int getIdentifier() {
-		return identifier;
-	}
+    public int getIdentifier() {
+        return identifier;
+    }
 
-	public void setIdentifier(final int uid) {
-		if (uid < 1 || uid > 65535) {
-			throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
-		}
-		identifier = uid;
-	}
+    public void setIdentifier(final int uid) {
+        if ((uid < 1) || (uid > 65535)) {
+            throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
+        }
+        identifier = uid;
+    }
 
-	public Bounds getBounds() {
-		return bounds;
-	}
+    public Bounds getBounds() {
+        return bounds;
+    }
 
-	public void setBounds(final Bounds aBounds) {
-		if (aBounds == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
-		}
-		bounds = aBounds;
-	}
+    public void setBounds(final Bounds aBounds) {
+        if (aBounds == null) {
+            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+        }
+        bounds = aBounds;
+    }
 
-	public ScalingGrid copy() {
-		return new ScalingGrid(this);
-	}
+    public ScalingGrid copy() {
+        return new ScalingGrid(this);
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, identifier, bounds.toString());
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, identifier, bounds.toString());
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		length = 2 + bounds.prepareToEncode(coder, context);
-		return 2 + length;
-	}
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        length = 2 + bounds.prepareToEncode(coder, context);
+        return 2 + length;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
 
-		coder.writeWord((MovieTypes.DEFINE_SCALING_GRID << 6) | length, 2);
-		coder.writeWord(identifier, 2);
-		bounds.encode(coder, context);
-	}
+        coder.writeWord((MovieTypes.DEFINE_SCALING_GRID << 6) | length, 2);
+        coder.writeWord(identifier, 2);
+        bounds.encode(coder, context);
+    }
 }

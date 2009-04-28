@@ -67,169 +67,169 @@ import com.flagstone.transform.coder.SWFFactory;
  * @see DoAction
  */
 public final class InitializeMovieClip implements MovieTag {
-	private static final String FORMAT = "Initialize: { identifier=%d; actions=%s }";
+    private static final String FORMAT = "Initialize: { identifier=%d; actions=%s }";
 
-	private int identifier;
-	private List<Action> actions;
+    private int identifier;
+    private List<Action> actions;
 
-	private transient int length;
+    private transient int length;
 
-	// TODO(doc)
-	public InitializeMovieClip(final SWFDecoder coder, final Context context)
-			throws CoderException {
-		final int start = coder.getPointer();
-		length = coder.readWord(2, false) & 0x3F;
+    // TODO(doc)
+    public InitializeMovieClip(final SWFDecoder coder, final Context context)
+            throws CoderException {
+        final int start = coder.getPointer();
+        length = coder.readWord(2, false) & 0x3F;
 
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
-		final int end = coder.getPointer() + (length << 3);
+        if (length == 0x3F) {
+            length = coder.readWord(4, false);
+        }
+        final int end = coder.getPointer() + (length << 3);
 
-		identifier = coder.readWord(2, false);
-		actions = new ArrayList<Action>();
+        identifier = coder.readWord(2, false);
+        actions = new ArrayList<Action>();
 
-		final SWFFactory<Action> decoder = context.getRegistry()
-				.getActionDecoder();
+        final SWFFactory<Action> decoder = context.getRegistry()
+                .getActionDecoder();
 
-		if (decoder == null) {
-			actions.add(new ActionData(coder.readBytes(new byte[length - 2])));
-		} else {
-			while (coder.getPointer() < end) {
-				actions.add(decoder.getObject(coder, context));
-			}
-		}
+        if (decoder == null) {
+            actions.add(new ActionData(coder.readBytes(new byte[length - 2])));
+        } else {
+            while (coder.getPointer() < end) {
+                actions.add(decoder.getObject(coder, context));
+            }
+        }
 
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
+        if (coder.getPointer() != end) {
+            throw new CoderException(getClass().getName(), start >> 3, length,
+                    (coder.getPointer() - end) >> 3);
+        }
+    }
 
-	/**
-	 * Creates a Initialize object that will initialise the movie clip with the
-	 * specified identifier with the actions in the array.
-	 * 
-	 * @param uid
-	 *            the identifier of the movie clip to initialise. Must be in the
-	 *            range 1..65535.
-	 * @param anArray
-	 *            the array of action objects. Must not be null.
-	 */
-	public InitializeMovieClip(final int uid, final List<Action> anArray) {
-		setIdentifier(uid);
-		setActions(anArray);
-	}
+    /**
+     * Creates a Initialize object that will initialise the movie clip with the
+     * specified identifier with the actions in the array.
+     * 
+     * @param uid
+     *            the identifier of the movie clip to initialise. Must be in the
+     *            range 1..65535.
+     * @param anArray
+     *            the array of action objects. Must not be null.
+     */
+    public InitializeMovieClip(final int uid, final List<Action> anArray) {
+        setIdentifier(uid);
+        setActions(anArray);
+    }
 
-	// TODO(doc)
-	public InitializeMovieClip(final InitializeMovieClip object) {
-		identifier = object.identifier;
+    // TODO(doc)
+    public InitializeMovieClip(final InitializeMovieClip object) {
+        identifier = object.identifier;
 
-		actions = new ArrayList<Action>(object.actions.size());
+        actions = new ArrayList<Action>(object.actions.size());
 
-		for (Action action : object.actions) {
-			actions.add(action.copy());
-		}
-	}
+        for (final Action action : object.actions) {
+            actions.add(action.copy());
+        }
+    }
 
-	/**
-	 * Returns the identifier of the movie clip that will be initialised.
-	 */
-	public int getIdentifier() {
-		return identifier;
-	}
+    /**
+     * Returns the identifier of the movie clip that will be initialised.
+     */
+    public int getIdentifier() {
+        return identifier;
+    }
 
-	/**
-	 * Sets the identifier of the movie clip that will be initialised.
-	 * 
-	 * @param aNumber
-	 *            the identifier of the movie clip. The value must be in the
-	 *            range 1..65535.
-	 */
-	public void setIdentifier(final int aNumber) {
-		if (aNumber < 1 || aNumber > 65535) {
-			throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
-		}
-		identifier = aNumber;
-	}
+    /**
+     * Sets the identifier of the movie clip that will be initialised.
+     * 
+     * @param aNumber
+     *            the identifier of the movie clip. The value must be in the
+     *            range 1..65535.
+     */
+    public void setIdentifier(final int aNumber) {
+        if ((aNumber < 1) || (aNumber > 65535)) {
+            throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
+        }
+        identifier = aNumber;
+    }
 
-	/**
-	 * Adds the action object to the array of actions.
-	 * 
-	 * @param anAction
-	 *            an object belonging to a class derived from Action. Must not
-	 *            be null.
-	 */
-	public InitializeMovieClip add(final Action anAction) {
-		if (anAction == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
-		}
-		actions.add(anAction);
-		return this;
-	}
+    /**
+     * Adds the action object to the array of actions.
+     * 
+     * @param anAction
+     *            an object belonging to a class derived from Action. Must not
+     *            be null.
+     */
+    public InitializeMovieClip add(final Action anAction) {
+        if (anAction == null) {
+            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+        }
+        actions.add(anAction);
+        return this;
+    }
 
-	/**
-	 * Get the array of actions that are used to initialise the movie clip.
-	 */
-	public List<Action> getActions() {
-		return actions;
-	}
+    /**
+     * Get the array of actions that are used to initialise the movie clip.
+     */
+    public List<Action> getActions() {
+        return actions;
+    }
 
-	/**
-	 * Set the array of actions of the movie clip that will be initialised
-	 * 
-	 * @param anArray
-	 *            the array of action objects. Must not be null.
-	 */
-	public void setActions(final List<Action> anArray) {
-		if (anArray == null) {
-			throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
-		}
-		actions = anArray;
-	}
+    /**
+     * Set the array of actions of the movie clip that will be initialised
+     * 
+     * @param anArray
+     *            the array of action objects. Must not be null.
+     */
+    public void setActions(final List<Action> anArray) {
+        if (anArray == null) {
+            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+        }
+        actions = anArray;
+    }
 
-	/**
-	 * Creates and returns a deep copy of this object.
-	 */
-	public InitializeMovieClip copy() {
-		return new InitializeMovieClip(this);
-	}
+    /**
+     * Creates and returns a deep copy of this object.
+     */
+    public InitializeMovieClip copy() {
+        return new InitializeMovieClip(this);
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, identifier, actions);
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, identifier, actions);
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		length = 2;
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        length = 2;
 
-		for (Action action : actions) {
-			length += action.prepareToEncode(coder, context);
-		}
+        for (final Action action : actions) {
+            length += action.prepareToEncode(coder, context);
+        }
 
-		return (length > 62 ? 6 : 2) + length;
-	}
+        return (length > 62 ? 6 : 2) + length;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		final int start = coder.getPointer();
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        final int start = coder.getPointer();
 
-		if (length > 62) {
-			coder.writeWord((MovieTypes.INITIALIZE << 6) | 0x3F, 2);
-			coder.writeWord(length, 4);
-		} else {
-			coder.writeWord((MovieTypes.INITIALIZE << 6) | length, 2);
-		}
-		final int end = coder.getPointer() + (length << 3);
+        if (length > 62) {
+            coder.writeWord((MovieTypes.INITIALIZE << 6) | 0x3F, 2);
+            coder.writeWord(length, 4);
+        } else {
+            coder.writeWord((MovieTypes.INITIALIZE << 6) | length, 2);
+        }
+        final int end = coder.getPointer() + (length << 3);
 
-		coder.writeWord(identifier, 2);
+        coder.writeWord(identifier, 2);
 
-		for (Action action : actions) {
-			action.encode(coder, context);
-		}
+        for (final Action action : actions) {
+            action.encode(coder, context);
+        }
 
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
+        if (coder.getPointer() != end) {
+            throw new CoderException(getClass().getName(), start >> 3, length,
+                    (coder.getPointer() - end) >> 3);
+        }
+    }
 }

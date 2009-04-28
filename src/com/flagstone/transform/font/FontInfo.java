@@ -77,317 +77,316 @@ import com.flagstone.transform.coder.SWFEncoder;
  * </p>
  */
 public final class FontInfo implements MovieTag {
-	private static final String FORMAT = "FontInfo: { identifier=%d; encoding=%s; small=%s; italic=%s; bold=%s; name=%s; codes=%s }";
+    private static final String FORMAT = "FontInfo: { identifier=%d; encoding=%s; small=%s; italic=%s; bold=%s; name=%s; codes=%s }";
 
-	private int identifier;
-	private String name;
-	private CharacterEncoding encoding;
-	private boolean small;
-	private boolean italic;
-	private boolean bold;
-	private List<Integer> codes;
+    private int identifier;
+    private String name;
+    private CharacterEncoding encoding;
+    private boolean small;
+    private boolean italic;
+    private boolean bold;
+    private List<Integer> codes;
 
-	private transient int length;
-	private transient boolean wideCodes = false;
+    private transient int length;
+    private transient boolean wideCodes = false;
 
-	// TODO(doc)
-	// TODO(optimise)
-	public FontInfo(final SWFDecoder coder)
-			throws CoderException {
-		codes = new ArrayList<Integer>();
+    // TODO(doc)
+    // TODO(optimise)
+    public FontInfo(final SWFDecoder coder) throws CoderException {
+        codes = new ArrayList<Integer>();
 
-		final int start = coder.getPointer();
-		length = coder.readWord(2, false) & 0x3F;
+        final int start = coder.getPointer();
+        length = coder.readWord(2, false) & 0x3F;
 
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
-		final int end = coder.getPointer() + (length << 3);
+        if (length == 0x3F) {
+            length = coder.readWord(4, false);
+        }
+        final int end = coder.getPointer() + (length << 3);
 
-		identifier = coder.readWord(2, false);
-		final int nameLength = coder.readByte();
-		name = coder.readString(nameLength, coder.getEncoding());
+        identifier = coder.readWord(2, false);
+        final int nameLength = coder.readByte();
+        name = coder.readString(nameLength, coder.getEncoding());
 
-		if (name.length() > 0) {
-			while (name.charAt(name.length() - 1) == 0) {
-				name = name.substring(0, name.length() - 1);
-			}
-		}
+        if (name.length() > 0) {
+            while (name.charAt(name.length() - 1) == 0) {
+                name = name.substring(0, name.length() - 1);
+            }
+        }
 
-		/* reserved */coder.readBits(2, false);
-		small = coder.readBits(1, false) != 0;
-		encoding = CharacterEncoding.fromInt(coder.readBits(2, false));
-		italic = coder.readBits(1, false) != 0;
-		bold = coder.readBits(1, false) != 0;
-		wideCodes = coder.readBits(1, false) != 0;
+        /* reserved */coder.readBits(2, false);
+        small = coder.readBits(1, false) != 0;
+        encoding = CharacterEncoding.fromInt(coder.readBits(2, false));
+        italic = coder.readBits(1, false) != 0;
+        bold = coder.readBits(1, false) != 0;
+        wideCodes = coder.readBits(1, false) != 0;
 
-		int bytesRead = 3 + nameLength + 1;
+        int bytesRead = 3 + nameLength + 1;
 
-		while (bytesRead < length) {
-			codes.add(coder.readWord(wideCodes ? 2 : 1, false));
-			bytesRead += (wideCodes) ? 2 : 1;
-		}
+        while (bytesRead < length) {
+            codes.add(coder.readWord(wideCodes ? 2 : 1, false));
+            bytesRead += (wideCodes) ? 2 : 1;
+        }
 
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
+        if (coder.getPointer() != end) {
+            throw new CoderException(getClass().getName(), start >> 3, length,
+                    (coder.getPointer() - end) >> 3);
+        }
+    }
 
-	/**
-	 * Constructs a basic FontInfo object specifying only the name and style of
-	 * the font.
-	 * 
-	 * @param uid
-	 *            the unique identifier of the DefineFont that contains the
-	 *            glyphs for the font.
-	 * @param name
-	 *            the name assigned to the font, identifying the font family.
-	 * @param bold
-	 *            indicates whether the font weight is bold (true) or normal
-	 *            (false).
-	 * @param italic
-	 *            indicates whether the font style is italic (true) or plain
-	 *            (false).
-	 */
-	public FontInfo(final int uid, final String name, final boolean bold,
-			final boolean italic) {
-		setIdentifier(uid);
-		setName(name);
-		setItalic(italic);
-		setBold(bold);
-		small = false;
-		encoding = CharacterEncoding.UCS2;
-		codes = new ArrayList<Integer>();
-	}
+    /**
+     * Constructs a basic FontInfo object specifying only the name and style of
+     * the font.
+     * 
+     * @param uid
+     *            the unique identifier of the DefineFont that contains the
+     *            glyphs for the font.
+     * @param name
+     *            the name assigned to the font, identifying the font family.
+     * @param bold
+     *            indicates whether the font weight is bold (true) or normal
+     *            (false).
+     * @param italic
+     *            indicates whether the font style is italic (true) or plain
+     *            (false).
+     */
+    public FontInfo(final int uid, final String name, final boolean bold,
+            final boolean italic) {
+        setIdentifier(uid);
+        setName(name);
+        setItalic(italic);
+        setBold(bold);
+        small = false;
+        encoding = CharacterEncoding.UCS2;
+        codes = new ArrayList<Integer>();
+    }
 
-	// TODO(doc)
-	public FontInfo(final FontInfo object) {
-		identifier = object.identifier;
-		name = object.name;
-		italic = object.italic;
-		bold = object.bold;
-		small = object.small;
-		encoding = object.encoding;
-		codes = new ArrayList<Integer>(object.codes);
-	}
+    // TODO(doc)
+    public FontInfo(final FontInfo object) {
+        identifier = object.identifier;
+        name = object.name;
+        italic = object.italic;
+        bold = object.bold;
+        small = object.small;
+        encoding = object.encoding;
+        codes = new ArrayList<Integer>(object.codes);
+    }
 
-	/**
-	 * Returns the unique identifier of the font definition that this font
-	 * information is for.
-	 */
-	public int getIdentifier() {
-		return identifier;
-	}
+    /**
+     * Returns the unique identifier of the font definition that this font
+     * information is for.
+     */
+    public int getIdentifier() {
+        return identifier;
+    }
 
-	/**
-	 * Returns the name of the font family.
-	 */
-	public String getName() {
-		return name;
-	}
+    /**
+     * Returns the name of the font family.
+     */
+    public String getName() {
+        return name;
+    }
 
-	/**
-	 * Returns the encoding scheme used for characters rendered in the font,
-	 * either ASCII, SJIS or UCS2.
-	 */
-	public CharacterEncoding getEncoding() {
-		return encoding;
-	}
+    /**
+     * Returns the encoding scheme used for characters rendered in the font,
+     * either ASCII, SJIS or UCS2.
+     */
+    public CharacterEncoding getEncoding() {
+        return encoding;
+    }
 
-	/**
-	 * Does the font have a small point size. This is used only with a Unicode
-	 * font encoding.
-	 */
-	public boolean isSmall() {
-		return small;
-	}
+    /**
+     * Does the font have a small point size. This is used only with a Unicode
+     * font encoding.
+     */
+    public boolean isSmall() {
+        return small;
+    }
 
-	/**
-	 * Sets the font is small. Used only with Unicode fonts ot provide better
-	 * appearance when the point size is small.
-	 * 
-	 * @param aBool
-	 *            true if the font will be aligned on pixel boundaries.
-	 */
-	public void setSmall(final boolean aBool) {
-		small = aBool;
-	}
+    /**
+     * Sets the font is small. Used only with Unicode fonts ot provide better
+     * appearance when the point size is small.
+     * 
+     * @param aBool
+     *            true if the font will be aligned on pixel boundaries.
+     */
+    public void setSmall(final boolean aBool) {
+        small = aBool;
+    }
 
-	/**
-	 * Is the font style italics.
-	 */
-	public boolean isItalic() {
-		return italic;
-	}
+    /**
+     * Is the font style italics.
+     */
+    public boolean isItalic() {
+        return italic;
+    }
 
-	/**
-	 * Is the font weight bold.
-	 */
-	public boolean isBold() {
-		return bold;
-	}
+    /**
+     * Is the font weight bold.
+     */
+    public boolean isBold() {
+        return bold;
+    }
 
-	/**
-	 * Returns the array of character codes.
-	 */
-	public List<Integer> getCodes() {
-		return codes;
-	}
+    /**
+     * Returns the array of character codes.
+     */
+    public List<Integer> getCodes() {
+        return codes;
+    }
 
-	/**
-	 * Sets the identifier of the font that this font information is for.
-	 * 
-	 * @param uid
-	 *            the unique identifier of the DefineFont that contains the
-	 *            glyphs for the font. Must be in the range 1..65535.
-	 */
-	public void setIdentifier(final int uid) {
-		if (uid < 1 || uid > 65535) {
-			throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
-		}
-		identifier = uid;
-	}
+    /**
+     * Sets the identifier of the font that this font information is for.
+     * 
+     * @param uid
+     *            the unique identifier of the DefineFont that contains the
+     *            glyphs for the font. Must be in the range 1..65535.
+     */
+    public void setIdentifier(final int uid) {
+        if ((uid < 1) || (uid > 65535)) {
+            throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
+        }
+        identifier = uid;
+    }
 
-	/**
-	 * Sets the name of the font. The name be omitted (set to an empty string)
-	 * if the font is embedded in the Flash file, i.e. the corresponding
-	 * DefineFont object has all the glyph information.
-	 * 
-	 * @param aString
-	 *            the name assigned to the font, identifying the font family.
-	 *            Must not be null.
-	 */
-	public void setName(final String aString) {
-		if (aString == null) {
-			throw new IllegalArgumentException(Strings.STRING_IS_NULL);
-		}
-		name = aString;
-	}
+    /**
+     * Sets the name of the font. The name be omitted (set to an empty string)
+     * if the font is embedded in the Flash file, i.e. the corresponding
+     * DefineFont object has all the glyph information.
+     * 
+     * @param aString
+     *            the name assigned to the font, identifying the font family.
+     *            Must not be null.
+     */
+    public void setName(final String aString) {
+        if (aString == null) {
+            throw new IllegalArgumentException(Strings.STRING_IS_NULL);
+        }
+        name = aString;
+    }
 
-	/**
-	 * Sets the font character encoding.
-	 * 
-	 * @param anEncoding
-	 *            the encoding used to identify characters, either ASCII, SJIS
-	 *            or UCS2.
-	 */
-	public void setEncoding(final CharacterEncoding anEncoding) {
-		encoding = anEncoding;
-	}
+    /**
+     * Sets the font character encoding.
+     * 
+     * @param anEncoding
+     *            the encoding used to identify characters, either ASCII, SJIS
+     *            or UCS2.
+     */
+    public void setEncoding(final CharacterEncoding anEncoding) {
+        encoding = anEncoding;
+    }
 
-	/**
-	 * Sets the font is italics.
-	 * 
-	 * @param aBool
-	 *            a boolean flag indicating whether the font will be rendered in
-	 *            italics.
-	 */
-	public void setItalic(final boolean aBool) {
-		italic = aBool;
-	}
+    /**
+     * Sets the font is italics.
+     * 
+     * @param aBool
+     *            a boolean flag indicating whether the font will be rendered in
+     *            italics.
+     */
+    public void setItalic(final boolean aBool) {
+        italic = aBool;
+    }
 
-	/**
-	 * Sets the font is bold.
-	 * 
-	 * @param aBool
-	 *            a boolean flag indicating whether the font will be rendered in
-	 *            bold face.
-	 */
-	public void setBold(final boolean aBool) {
-		bold = aBool;
-	}
+    /**
+     * Sets the font is bold.
+     * 
+     * @param aBool
+     *            a boolean flag indicating whether the font will be rendered in
+     *            bold face.
+     */
+    public void setBold(final boolean aBool) {
+        bold = aBool;
+    }
 
-	/**
-	 * Add a code to the array of codes. The index position of a character code
-	 * in the array identifies the index of the corresponding glyph in the
-	 * DefineFont object.
-	 * 
-	 * @param aCode
-	 *            a code for a glyph. Must be in the range 0..65535.
-	 */
-	public void addCode(final int aCode) {
-		if (aCode < 0 || aCode > 65535) {
-			throw new IllegalArgumentException(Strings.CHAR_CODE_RANGE);
-		}
-		codes.add(aCode);
-	}
+    /**
+     * Add a code to the array of codes. The index position of a character code
+     * in the array identifies the index of the corresponding glyph in the
+     * DefineFont object.
+     * 
+     * @param aCode
+     *            a code for a glyph. Must be in the range 0..65535.
+     */
+    public void addCode(final int aCode) {
+        if ((aCode < 0) || (aCode > 65535)) {
+            throw new IllegalArgumentException(Strings.CHAR_CODE_RANGE);
+        }
+        codes.add(aCode);
+    }
 
-	/**
-	 * Sets the array of character codes. The index position of a character code
-	 * in the array identifies the index of the corresponding glyph in the
-	 * DefineFont object.
-	 * 
-	 * @param anArray
-	 *            the array mapping glyphs to particular character codes. Must
-	 *            not be null.
-	 */
-	public void setCodes(final List<Integer> anArray) {
-		if (anArray == null) {
-			throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
-		}
-		codes = anArray;
-	}
+    /**
+     * Sets the array of character codes. The index position of a character code
+     * in the array identifies the index of the corresponding glyph in the
+     * DefineFont object.
+     * 
+     * @param anArray
+     *            the array mapping glyphs to particular character codes. Must
+     *            not be null.
+     */
+    public void setCodes(final List<Integer> anArray) {
+        if (anArray == null) {
+            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+        }
+        codes = anArray;
+    }
 
-	public FontInfo copy() {
-		return new FontInfo(this);
-	}
+    public FontInfo copy() {
+        return new FontInfo(this);
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, identifier, encoding, small, italic, bold,
-				name, codes);
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, identifier, encoding, small, italic, bold,
+                name, codes);
+    }
 
-	// TODO(optimise)
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		length = 3;
-		length += coder.strlen(name);
+    // TODO(optimise)
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        length = 3;
+        length += coder.strlen(name);
 
-		wideCodes = false;
+        wideCodes = false;
 
-		for (Integer code : codes) {
-			if (code.intValue() > 255) {
-				wideCodes = true;
-			}
-		}
+        for (final Integer code : codes) {
+            if (code.intValue() > 255) {
+                wideCodes = true;
+            }
+        }
 
-		length += codes.size() * (wideCodes ? 2 : 1);
+        length += codes.size() * (wideCodes ? 2 : 1);
 
-		return (length > 62 ? 6 : 2) + length;
-	}
+        return (length > 62 ? 6 : 2) + length;
+    }
 
-	// TODO(optimise)
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		final int start = coder.getPointer();
+    // TODO(optimise)
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        final int start = coder.getPointer();
 
-		if (length >= 63) {
-			coder.writeWord((MovieTypes.FONT_INFO << 6) | 0x3F, 2);
-			coder.writeWord(length, 4);
-		} else {
-			coder.writeWord((MovieTypes.FONT_INFO << 6) | length, 2);
-		}
-		final int end = coder.getPointer() + (length << 3);
+        if (length >= 63) {
+            coder.writeWord((MovieTypes.FONT_INFO << 6) | 0x3F, 2);
+            coder.writeWord(length, 4);
+        } else {
+            coder.writeWord((MovieTypes.FONT_INFO << 6) | length, 2);
+        }
+        final int end = coder.getPointer() + (length << 3);
 
-		coder.writeWord(identifier, 2);
-		coder.writeWord(coder.strlen(name) - 1, 1);
-		coder.writeString(name);
-		coder.adjustPointer(-8);
-		coder.writeBits(0, 2);
-		coder.writeBits(small ? 1 : 0, 1);
-		coder.writeBits(encoding.getValue(), 2);
-		coder.writeBits(italic ? 1 : 0, 1);
-		coder.writeBits(bold ? 1 : 0, 1);
-		coder.writeBits(wideCodes ? 1 : 0, 1);
+        coder.writeWord(identifier, 2);
+        coder.writeWord(coder.strlen(name) - 1, 1);
+        coder.writeString(name);
+        coder.adjustPointer(-8);
+        coder.writeBits(0, 2);
+        coder.writeBits(small ? 1 : 0, 1);
+        coder.writeBits(encoding.getValue(), 2);
+        coder.writeBits(italic ? 1 : 0, 1);
+        coder.writeBits(bold ? 1 : 0, 1);
+        coder.writeBits(wideCodes ? 1 : 0, 1);
 
-		for (Integer code : codes) {
-			coder.writeWord(code.intValue(), wideCodes ? 2 : 1);
-		}
+        for (final Integer code : codes) {
+            coder.writeWord(code.intValue(), wideCodes ? 2 : 1);
+        }
 
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
+        if (coder.getPointer() != end) {
+            throw new CoderException(getClass().getName(), start >> 3, length,
+                    (coder.getPointer() - end) >> 3);
+        }
+    }
 }

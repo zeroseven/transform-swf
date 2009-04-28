@@ -49,45 +49,45 @@ import com.flagstone.transform.coder.SWFEncoder;
  */
 public final class MovieData implements MovieTag {
 
-	private static final String FORMAT = "MovieData: { data[%d] }";
+    private static final String FORMAT = "MovieData: { data[%d] }";
 
-	private final transient byte[] data;
+    private final transient byte[] data;
 
-	// TODO(doc)
-	public MovieData(final byte[] bytes) {
-		if (bytes == null || bytes.length == 0) {
-			throw new IllegalArgumentException(Strings.DATA_NOT_SET);
-		}
-		data = bytes;
-	}
+    // TODO(doc)
+    public MovieData(final byte[] bytes) {
+        if ((bytes == null) || (bytes.length == 0)) {
+            throw new IllegalArgumentException(Strings.DATA_NOT_SET);
+        }
+        data = bytes;
+    }
 
-	// TODO(doc)
-	public MovieData(final MovieData object) {
-		data = Arrays.copyOf(object.data, object.data.length);
-	}
+    // TODO(doc)
+    public MovieData(final MovieData object) {
+        data = Arrays.copyOf(object.data, object.data.length);
+    }
 
-	/**
-	 * Returns the encoded MovieTag objects.
-	 */
-	public byte[] getData() {
-		return data;
-	}
+    /**
+     * Returns the encoded MovieTag objects.
+     */
+    public byte[] getData() {
+        return data;
+    }
 
-	public MovieData copy() {
-		return new MovieData(this);
-	}
+    public MovieData copy() {
+        return new MovieData(this);
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, data.length);
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, data.length);
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		return data.length;
-	}
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        return data.length;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		coder.writeBytes(data);
-	}
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        coder.writeBytes(data);
+    }
 }

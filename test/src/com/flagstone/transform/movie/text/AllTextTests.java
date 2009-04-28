@@ -5,7 +5,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( { DefineTextTest.class, DefineText2Test.class,
-		DefineTextFieldTest.class, GlyphIndexTest.class,
-		TextSettingsTest.class, TextSpanTest.class, })
+        DefineTextFieldTest.class, GlyphIndexTest.class,
+        TextSettingsTest.class, TextSpanTest.class, })
 public final class AllTextTests {
 }

@@ -29,75 +29,73 @@
  */
 package com.flagstone.transform;
 
-import org.junit.Test;
-
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-
-
 public final class MovieMetaDataTest {
 
-	private static transient final String metaData = "ABC123";
+    private static transient final String metaData = "ABC123";
 
-	private transient MovieMetaData fixture;
+    private transient MovieMetaData fixture;
 
-	private transient final byte[] encoded = new byte[] { 0x47, 0x13, 0x41,
-			0x42, 0x043, 0x31, 0x32, 0x33, 0x00 };
+    private transient final byte[] encoded = new byte[] { 0x47, 0x13, 0x41,
+            0x42, 0x043, 0x31, 0x32, 0x33, 0x00 };
 
-	private transient final byte[] extended = new byte[] { 0x3F, 0x13, 0x07,
-			0x00, 0x00, 0x00, 0x41, 0x42, 0x043, 0x31, 0x32, 0x33, 0x00 };
+    private transient final byte[] extended = new byte[] { 0x3F, 0x13, 0x07,
+            0x00, 0x00, 0x00, 0x41, 0x42, 0x043, 0x31, 0x32, 0x33, 0x00 };
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAccessorForMetaDataWithNull() {
-		fixture = new MovieMetaData((String) null);
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkAccessorForMetaDataWithNull() {
+        fixture = new MovieMetaData((String) null);
+    }
 
-	@Test
-	public void checkCopy() {
-		fixture = new MovieMetaData(metaData);
-		final MovieMetaData copy = fixture.copy();
+    @Test
+    public void checkCopy() {
+        fixture = new MovieMetaData(metaData);
+        final MovieMetaData copy = fixture.copy();
 
-		assertEquals(fixture.getMetaData(), copy.getMetaData());
-		assertEquals(fixture.toString(), copy.toString());
-	}
+        assertEquals(fixture.getMetaData(), copy.getMetaData());
+        assertEquals(fixture.toString(), copy.toString());
+    }
 
-	@Test
-	public void encode() throws CoderException {
-		final SWFEncoder encoder = new SWFEncoder(encoded.length);
-		final Context context = new Context();
+    @Test
+    public void encode() throws CoderException {
+        final SWFEncoder encoder = new SWFEncoder(encoded.length);
+        final Context context = new Context();
 
-		fixture = new MovieMetaData(metaData);
-		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
-		fixture.encode(encoder, context);
+        fixture = new MovieMetaData(metaData);
+        assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
+        fixture.encode(encoder, context);
 
-		assertTrue(encoder.eof());
-		assertArrayEquals(encoded, encoder.getData());
-	}
+        assertTrue(encoder.eof());
+        assertArrayEquals(encoded, encoder.getData());
+    }
 
-	@Test
-	public void decode() throws CoderException {
-		final SWFDecoder decoder = new SWFDecoder(encoded);
+    @Test
+    public void decode() throws CoderException {
+        final SWFDecoder decoder = new SWFDecoder(encoded);
 
-		fixture = new MovieMetaData(decoder);
+        fixture = new MovieMetaData(decoder);
 
-		assertTrue(decoder.eof());
-		assertEquals(metaData, fixture.getMetaData());
-	}
+        assertTrue(decoder.eof());
+        assertEquals(metaData, fixture.getMetaData());
+    }
 
-	@Test
-	public void decodeExtended() throws CoderException {
-		final SWFDecoder decoder = new SWFDecoder(extended);
+    @Test
+    public void decodeExtended() throws CoderException {
+        final SWFDecoder decoder = new SWFDecoder(extended);
 
-		fixture = new MovieMetaData(decoder);
+        fixture = new MovieMetaData(decoder);
 
-		assertTrue(decoder.eof());
-		assertEquals(metaData, fixture.getMetaData());
-	}
+        assertTrue(decoder.eof());
+        assertEquals(metaData, fixture.getMetaData());
+    }
 }

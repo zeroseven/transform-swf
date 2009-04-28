@@ -35,146 +35,146 @@ package com.flagstone.transform.coder;
  */
 public final class SWFEncoder extends Encoder {
 
-	/**
-	 * Creates an SWFEncoder with the buffer used to encode data set to the
-	 * specified size.
-	 * 
-	 * @param size
-	 *            the number of bytes in the internal buffer.
-	 */
-	public SWFEncoder(final int size) {
-		super(size);
-	}
+    /**
+     * Creates an SWFEncoder with the buffer used to encode data set to the
+     * specified size.
+     * 
+     * @param size
+     *            the number of bytes in the internal buffer.
+     */
+    public SWFEncoder(final int size) {
+        super(size);
+    }
 
-	/**
-	 * Calculate minimum number of bytes a 32-bit unsigned integer can be
-	 * encoded in.
-	 * 
-	 * @param value
-	 *            an integer containing the value to be written.
-	 * @return the number of bytes required to encode the integer.
-	 */
-	public static int sizeVariableU32(final int value) {
+    /**
+     * Calculate minimum number of bytes a 32-bit unsigned integer can be
+     * encoded in.
+     * 
+     * @param value
+     *            an integer containing the value to be written.
+     * @return the number of bytes required to encode the integer.
+     */
+    public static int sizeVariableU32(final int value) {
 
-		int val = value;
-		int size;
+        int val = value;
+        int size;
 
-		if (val > 127) {
-			size = 2;
-			val = val >>> 7;
+        if (val > 127) {
+            size = 2;
+            val = val >>> 7;
 
-			if (val > 127) {
-				size += 1;
-				val = val >>> 7;
+            if (val > 127) {
+                size += 1;
+                val = val >>> 7;
 
-				if (val > 127) {
-					size += 1;
-					val = val >>> 7;
+                if (val > 127) {
+                    size += 1;
+                    val = val >>> 7;
 
-					if (val > 127) {
-						size += 1;
-					}
-				}
-			}
-		} else {
-			size = 1;
-		}
-		return size;
-	}
+                    if (val > 127) {
+                        size += 1;
+                    }
+                }
+            }
+        } else {
+            size = 1;
+        }
+        return size;
+    }
 
-	/**
-	 * Write a word.
-	 * 
-	 * @param value
-	 *            an integer containing the value to be written.
-	 * 
-	 * @param numberOfBytes
-	 *            the (least significant) number of bytes from the value that
-	 *            will be written.
-	 */
-	public void writeWord(final int value, final int numberOfBytes) {
-		for (int i = 0; i < numberOfBytes; i++) {
-			data[index++] = (byte) (value >>> (i << 3));
-		}
-	}
+    /**
+     * Write a word.
+     * 
+     * @param value
+     *            an integer containing the value to be written.
+     * 
+     * @param numberOfBytes
+     *            the (least significant) number of bytes from the value that
+     *            will be written.
+     */
+    public void writeWord(final int value, final int numberOfBytes) {
+        for (int i = 0; i < numberOfBytes; i++) {
+            data[index++] = (byte) (value >>> (i << 3));
+        }
+    }
 
-	/**
-	 * Write a 32-bit unsigned integer, encoded in a variable number of bytes.
-	 * 
-	 * @param value
-	 *            an integer containing the value to be written.
-	 */
-	public void writeVariableU32(final int value) {
+    /**
+     * Write a 32-bit unsigned integer, encoded in a variable number of bytes.
+     * 
+     * @param value
+     *            an integer containing the value to be written.
+     */
+    public void writeVariableU32(final int value) {
 
-		int val = value;
+        int val = value;
 
-		if (val > 127) {
-			data[index++] = (byte) ((val & 0x007F) | 0x0080);
-			val = val >>> 7;
+        if (val > 127) {
+            data[index++] = (byte) ((val & 0x007F) | 0x0080);
+            val = val >>> 7;
 
-			if (val > 127) {
-				data[index++] = (byte) ((val & 0x007F) | 0x0080);
-				val = val >>> 7;
+            if (val > 127) {
+                data[index++] = (byte) ((val & 0x007F) | 0x0080);
+                val = val >>> 7;
 
-				if (val > 127) {
-					data[index++] = (byte) ((val & 0x007F) | 0x0080);
-					val = val >>> 7;
+                if (val > 127) {
+                    data[index++] = (byte) ((val & 0x007F) | 0x0080);
+                    val = val >>> 7;
 
-					if (val > 127) {
-						data[index++] = (byte) ((val & 0x007F) | 0x0080);
-						val = val >>> 7;
+                    if (val > 127) {
+                        data[index++] = (byte) ((val & 0x007F) | 0x0080);
+                        val = val >>> 7;
 
-						data[index++] = (byte) (val & 0x007F);
-					} else {
-						data[index++] = (byte) (val & 0x007F);
-					}
-				} else {
-					data[index++] = (byte) (val & 0x007F);
-				}
-			} else {
-				data[index++] = (byte) (val & 0x007F);
-			}
-		} else {
-			data[index++] = (byte) (value & 0x007F);
-		}
-	}
+                        data[index++] = (byte) (val & 0x007F);
+                    } else {
+                        data[index++] = (byte) (val & 0x007F);
+                    }
+                } else {
+                    data[index++] = (byte) (val & 0x007F);
+                }
+            } else {
+                data[index++] = (byte) (val & 0x007F);
+            }
+        } else {
+            data[index++] = (byte) (value & 0x007F);
+        }
+    }
 
-	/**
-	 * Write a single-precision floating point number.
-	 * 
-	 * @param value
-	 *            the value to be written.
-	 */
-	public void writeHalf(final float value) {
-		final int intValue = Float.floatToIntBits(value);
+    /**
+     * Write a single-precision floating point number.
+     * 
+     * @param value
+     *            the value to be written.
+     */
+    public void writeHalf(final float value) {
+        final int intValue = Float.floatToIntBits(value);
 
-		final int sign = intValue >>> 16;
-		final int exp = ((intValue >> 23) & 0x1F) << 10;
-		final int val = ((intValue >> 13) & 0x3FF);
+        final int sign = intValue >>> 16;
+        final int exp = ((intValue >> 23) & 0x1F) << 10;
+        final int val = ((intValue >> 13) & 0x3FF);
 
-		writeWord(sign | exp | val, 2);
-	}
+        writeWord(sign | exp | val, 2);
+    }
 
-	/**
-	 * Write a single-precision floating point number.
-	 * 
-	 * @param value
-	 *            the value to be written.
-	 */
-	public void writeFloat(final float value) {
-		writeWord(Float.floatToIntBits(value), 4);
-	}
+    /**
+     * Write a single-precision floating point number.
+     * 
+     * @param value
+     *            the value to be written.
+     */
+    public void writeFloat(final float value) {
+        writeWord(Float.floatToIntBits(value), 4);
+    }
 
-	/**
-	 * Write a double-precision floating point number.
-	 * 
-	 * @param value
-	 *            the value to be written.
-	 */
-	public void writeDouble(final double value) {
-		final long longValue = Double.doubleToLongBits(value);
+    /**
+     * Write a double-precision floating point number.
+     * 
+     * @param value
+     *            the value to be written.
+     */
+    public void writeDouble(final double value) {
+        final long longValue = Double.doubleToLongBits(value);
 
-		writeWord((int) (longValue >>> 32), 4);
-		writeWord((int) longValue, 4);
-	}
+        writeWord((int) (longValue >>> 32), 4);
+        writeWord((int) longValue, 4);
+    }
 }

@@ -35,40 +35,40 @@ import java.util.Map;
 
 //TODO(doc)
 public enum CharacterEncoding {
-	/**
-	 * Defines that the characters in a font are encoded using SJIS standard for
-	 * representing Kanji characters.
-	 */
-	SJIS(2),
-	/**
-	 * Defines that the characters in a font are encoded using ANSI (ASCII)
-	 * standard.
-	 */
-	ANSI(1),
-	/**
-	 * Defines that the characters in a font are encoded using Unicode (UTF-8).
-	 */
-	UCS2(0);
+    /**
+     * Defines that the characters in a font are encoded using SJIS standard for
+     * representing Kanji characters.
+     */
+    SJIS(2),
+    /**
+     * Defines that the characters in a font are encoded using ANSI (ASCII)
+     * standard.
+     */
+    ANSI(1),
+    /**
+     * Defines that the characters in a font are encoded using Unicode (UTF-8).
+     */
+    UCS2(0);
 
-	private static final Map<Integer, CharacterEncoding> TABLE = new LinkedHashMap<Integer, CharacterEncoding>();
+    private static final Map<Integer, CharacterEncoding> TABLE = new LinkedHashMap<Integer, CharacterEncoding>();
 
-	static {
-		for (CharacterEncoding encoding : values()) {
-			TABLE.put(encoding.value, encoding);
-		}
-	}
+    static {
+        for (final CharacterEncoding encoding : values()) {
+            TABLE.put(encoding.value, encoding);
+        }
+    }
 
-	public static CharacterEncoding fromInt(final int type) {
-		return TABLE.get(type);
-	}
+    public static CharacterEncoding fromInt(final int type) {
+        return TABLE.get(type);
+    }
 
-	private final int value;
+    private final int value;
 
-	private CharacterEncoding(final int value) {
-		this.value = value;
-	}
+    private CharacterEncoding(final int value) {
+        this.value = value;
+    }
 
-	public int getValue() {
-		return value;
-	}
+    public int getValue() {
+        return value;
+    }
 }

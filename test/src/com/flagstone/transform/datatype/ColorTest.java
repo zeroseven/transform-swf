@@ -29,6 +29,11 @@
  */
 package com.flagstone.transform.datatype;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
 
 import com.flagstone.transform.coder.CoderException;
@@ -36,120 +41,115 @@ import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 public final class ColorTest {
 
-	private static int red = 1;
-	private static int green = 2;
-	private static int blue = 3;
-	private static int alpha = 4;
+    private static int red = 1;
+    private static int green = 2;
+    private static int blue = 3;
+    private static int alpha = 4;
 
-	private static byte[] opaque = new byte[] { 1, 2, 3 };
-	private static byte[] transparent = new byte[] { 1, 2, 3, 4 };
+    private static byte[] opaque = new byte[] { 1, 2, 3 };
+    private static byte[] transparent = new byte[] { 1, 2, 3, 4 };
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkLowValueThrowsException() {
-		new Color(-1, 2, 3);
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkLowValueThrowsException() {
+        new Color(-1, 2, 3);
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkHighValueThrowsException() {
-		new Color(256, 2, 3);
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkHighValueThrowsException() {
+        new Color(256, 2, 3);
+    }
 
-	@Test
-	public void checkSameIsEqual() {
-		final Color color = new Color(red, green, blue, alpha);
-		
-		assertEquals("Identical colours are not equal", color, color);
-	}
+    @Test
+    public void checkSameIsEqual() {
+        final Color color = new Color(red, green, blue, alpha);
 
-	@Test
-	public void checkDifferentIsEqual() {
-		final Color color = new Color(red, green, blue, alpha);
-		final Color other = new Color(red, green, blue, alpha);
-		
-		assertEquals("Identical colours are not equal", color, other);
-	}
+        assertEquals("Identical colours are not equal", color, color);
+    }
 
-	@Test
-	public void checkOtherIsNotEqual() {
-		final Color color = new Color(red, green, blue, alpha);
-		final Color other = new Color(4, 3, 2, 1);
-		
-		assertFalse("Different colors are equal", color.equals(other));
-	}
+    @Test
+    public void checkDifferentIsEqual() {
+        final Color color = new Color(red, green, blue, alpha);
+        final Color other = new Color(red, green, blue, alpha);
 
-	@Test
-	public void checkObjectIsNotEqual() {
-		final Color color = new Color(red, green, blue, alpha);
-		final Object other = new Object();
-		
-		assertFalse("Object is a Color", color.equals(other));
-	}
+        assertEquals("Identical colours are not equal", color, other);
+    }
 
-	@Test
-	public void checkNullIsNotEqual() {
-		final Color color = new Color(red, green, blue, alpha);
-		final Color other = null;
-		
-		assertFalse("Different colors are equal", color.equals(other));
-	}
+    @Test
+    public void checkOtherIsNotEqual() {
+        final Color color = new Color(red, green, blue, alpha);
+        final Color other = new Color(4, 3, 2, 1);
 
-	@Test
-	public void encodeOpaqueColour() throws CoderException {
-		final SWFEncoder encoder = new SWFEncoder(opaque.length);
-		final Context context = new Context();
+        assertFalse("Different colors are equal", color.equals(other));
+    }
 
-		final Color color = new Color(red, green, blue);
-		final int length = color.prepareToEncode(encoder, context);
-		color.encode(encoder, context);
+    @Test
+    public void checkObjectIsNotEqual() {
+        final Color color = new Color(red, green, blue, alpha);
+        final Object other = new Object();
 
-		assertTrue("Object not fully encoded", encoder.eof());
-		assertEquals("Incorrect caclulated size", opaque.length, length);
-		assertArrayEquals("Incorrect encoding", opaque, encoder.getData());
-	}
+        assertFalse("Object is a Color", color.equals(other));
+    }
 
-	@Test
-	public void encodeTransparentColour() throws CoderException {
-		final SWFEncoder encoder = new SWFEncoder(transparent.length);
-		final Context context = new Context().put(Context.TRANSPARENT, 1);
+    @Test
+    public void checkNullIsNotEqual() {
+        final Color color = new Color(red, green, blue, alpha);
+        final Color other = null;
 
-		final Color color = new Color(red, green, blue, alpha);
-		final int length = color.prepareToEncode(encoder, context);
-		color.encode(encoder, context);
+        assertFalse("Different colors are equal", color.equals(other));
+    }
 
-		assertTrue("Object not fully encoded", encoder.eof());
-		assertEquals("Incorrect caclulated size", transparent.length, length);
-		assertArrayEquals("Incorrect encoding", transparent, encoder.getData());
-	}
+    @Test
+    public void encodeOpaqueColour() throws CoderException {
+        final SWFEncoder encoder = new SWFEncoder(opaque.length);
+        final Context context = new Context();
 
-	@Test
-	public void decodeOpaqueColour() throws CoderException {
-		final SWFDecoder decoder = new SWFDecoder(opaque);
-		final Context context = new Context();
+        final Color color = new Color(red, green, blue);
+        final int length = color.prepareToEncode(encoder, context);
+        color.encode(encoder, context);
 
-		final Color color = new Color(decoder, context);
+        assertTrue("Object not fully encoded", encoder.eof());
+        assertEquals("Incorrect caclulated size", opaque.length, length);
+        assertArrayEquals("Incorrect encoding", opaque, encoder.getData());
+    }
 
-		assertTrue("Data not fully decoded", decoder.eof());
-		assertEquals("Red not decoded", red, color.getRed());
-		assertEquals("Green not decoded", green, color.getGreen());
-		assertEquals("Blue not decoded", blue, color.getBlue());
-		assertEquals("Incorrect default value for alpha", 255, color.getAlpha());
-	}
+    @Test
+    public void encodeTransparentColour() throws CoderException {
+        final SWFEncoder encoder = new SWFEncoder(transparent.length);
+        final Context context = new Context().put(Context.TRANSPARENT, 1);
 
-	@Test
-	public void decodeTransparentColour() throws CoderException {
-		final SWFDecoder decoder = new SWFDecoder(transparent);
-		final Context context = new Context().put(Context.TRANSPARENT, 1);
+        final Color color = new Color(red, green, blue, alpha);
+        final int length = color.prepareToEncode(encoder, context);
+        color.encode(encoder, context);
 
-		final Color color = new Color(decoder, context);
+        assertTrue("Object not fully encoded", encoder.eof());
+        assertEquals("Incorrect caclulated size", transparent.length, length);
+        assertArrayEquals("Incorrect encoding", transparent, encoder.getData());
+    }
 
-		assertTrue("Data not fully decoded", decoder.eof());
-		assertEquals("Alpha not decoded", alpha, color.getAlpha());
-	}
+    @Test
+    public void decodeOpaqueColour() throws CoderException {
+        final SWFDecoder decoder = new SWFDecoder(opaque);
+        final Context context = new Context();
+
+        final Color color = new Color(decoder, context);
+
+        assertTrue("Data not fully decoded", decoder.eof());
+        assertEquals("Red not decoded", red, color.getRed());
+        assertEquals("Green not decoded", green, color.getGreen());
+        assertEquals("Blue not decoded", blue, color.getBlue());
+        assertEquals("Incorrect default value for alpha", 255, color.getAlpha());
+    }
+
+    @Test
+    public void decodeTransparentColour() throws CoderException {
+        final SWFDecoder decoder = new SWFDecoder(transparent);
+        final Context context = new Context().put(Context.TRANSPARENT, 1);
+
+        final Color color = new Color(decoder, context);
+
+        assertTrue("Data not fully decoded", decoder.eof());
+        assertEquals("Alpha not decoded", alpha, color.getAlpha());
+    }
 }

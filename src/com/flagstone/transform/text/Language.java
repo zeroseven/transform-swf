@@ -36,36 +36,36 @@ import java.util.Map;
 //TODO(doc)
 public enum Language {
 
-	/** The spoken language for traditional Chinese fonts. */
-	TRADITIONAL_CHINESE(5),
-	/** The spoken language for simplified Chinese fonts. */
-	SIMPLIFIED_CHINESE(4),
-	/** The spoken language for Japanese fonts. */
-	KOREAN(3),
-	/** The spoken language for Korean fonts. */
-	JAPANESE(2),
-	/** The spoken language for Latin fonts. */
-	LATIN(1);
+    /** The spoken language for traditional Chinese fonts. */
+    TRADITIONAL_CHINESE(5),
+    /** The spoken language for simplified Chinese fonts. */
+    SIMPLIFIED_CHINESE(4),
+    /** The spoken language for Japanese fonts. */
+    KOREAN(3),
+    /** The spoken language for Korean fonts. */
+    JAPANESE(2),
+    /** The spoken language for Latin fonts. */
+    LATIN(1);
 
-	private static final Map<Integer, Language> TABLE = new LinkedHashMap<Integer, Language>();
+    private static final Map<Integer, Language> TABLE = new LinkedHashMap<Integer, Language>();
 
-	static {
-		for (Language language : values()) {
-			TABLE.put(language.value, language);
-		}
-	}
+    static {
+        for (final Language language : values()) {
+            TABLE.put(language.value, language);
+        }
+    }
 
-	public static Language fromInt(final int type) {
-		return TABLE.get(type);
-	}
+    public static Language fromInt(final int type) {
+        return TABLE.get(type);
+    }
 
-	private int value;
+    private int value;
 
-	private Language(final int value) {
-		this.value = value;
-	}
+    private Language(final int value) {
+        this.value = value;
+    }
 
-	public int getValue() {
-		return value;
-	}
+    public int getValue() {
+        return value;
+    }
 }

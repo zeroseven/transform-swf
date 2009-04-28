@@ -6,24 +6,24 @@ package com.flagstone.transform.action;
  */
 public final class Null {
 
-	private static final String FORMAT = "Null";
-	private static final Null INSTANCE = new Null();
+    private static final String FORMAT = "Null";
+    private static final Null INSTANCE = new Null();
 
-	/**
-	 * Returns a canonical Null object.
-	 * 
-	 * @return an object that can safely be shared among objects.
-	 */
-	public static Null getInstance() {
-		return INSTANCE;
-	}
+    /**
+     * Returns a canonical Null object.
+     * 
+     * @return an object that can safely be shared among objects.
+     */
+    public static Null getInstance() {
+        return INSTANCE;
+    }
 
-	private Null() {
-		// Singleton
-	}
+    private Null() {
+        // Singleton
+    }
 
-	@Override
-	public String toString() {
-		return FORMAT;
-	}
+    @Override
+    public String toString() {
+        return FORMAT;
+    }
 }

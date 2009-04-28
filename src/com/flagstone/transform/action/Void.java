@@ -6,24 +6,24 @@ package com.flagstone.transform.action;
  */
 public final class Void {
 
-	private static final String FORMAT = "Void";
-	private static final Void INSTANCE = new Void();
+    private static final String FORMAT = "Void";
+    private static final Void INSTANCE = new Void();
 
-	/**
-	 * Returns a canonical Void object.
-	 * 
-	 * @return an object that can safely be shared among objects.
-	 */
-	public static Void getInstance() {
-		return INSTANCE;
-	}
+    /**
+     * Returns a canonical Void object.
+     * 
+     * @return an object that can safely be shared among objects.
+     */
+    public static Void getInstance() {
+        return INSTANCE;
+    }
 
-	private Void() {
-		// Singleton
-	}
+    private Void() {
+        // Singleton
+    }
 
-	@Override
-	public String toString() {
-		return FORMAT;
-	}
+    @Override
+    public String toString() {
+        return FORMAT;
+    }
 }

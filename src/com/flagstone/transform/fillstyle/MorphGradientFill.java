@@ -52,193 +52,193 @@ import com.flagstone.transform.datatype.CoordTransform;
  */
 public final class MorphGradientFill implements FillStyle {
 
-	private static final String FORMAT = "MorphGradientFill: { start=%s; end=%s; gradients=%s }";
+    private static final String FORMAT = "MorphGradientFill: { start=%s; end=%s; gradients=%s }";
 
-	private transient int type;
-	private CoordTransform startTransform;
-	private CoordTransform endTransform;
-	private List<MorphGradient> gradients;
+    private transient int type;
+    private CoordTransform startTransform;
+    private CoordTransform endTransform;
+    private List<MorphGradient> gradients;
 
-	private transient int count;
+    private transient int count;
 
-	// TODO(doc)
-	public MorphGradientFill(final SWFDecoder coder, final Context context)
-			throws CoderException {
-		type = coder.readByte();
-		startTransform = new CoordTransform(coder);
-		endTransform = new CoordTransform(coder);
-		count = coder.readByte();
+    // TODO(doc)
+    public MorphGradientFill(final SWFDecoder coder, final Context context)
+            throws CoderException {
+        type = coder.readByte();
+        startTransform = new CoordTransform(coder);
+        endTransform = new CoordTransform(coder);
+        count = coder.readByte();
 
-		gradients = new ArrayList<MorphGradient>(count);
+        gradients = new ArrayList<MorphGradient>(count);
 
-		for (int i = 0; i < count; i++) {
-			gradients.add(new MorphGradient(coder, context));
-		}
-	}
+        for (int i = 0; i < count; i++) {
+            gradients.add(new MorphGradient(coder, context));
+        }
+    }
 
-	/**
-	 * Creates a MorphGradientFill object specifying the type of fill, starting
-	 * and ending coordinate transforms and the array of gradient records.
-	 * 
-	 * @param type
-	 *            the type of gradient fill, either FillStyle.LINEAR or
-	 *            FillStyle.RADIAL.
-	 * @param start
-	 *            the coordinate transform mapping the gradient square onto
-	 *            physical coordinates at the start of the morphing process.
-	 * @param end
-	 *            the coordinate transform mapping the gradient square onto
-	 *            physical coordinates at the end of the morphing process.
-	 * @param gradients
-	 *            an array of MorphGradient objects defining the control points
-	 *            for the gradient.
-	 */
-	public MorphGradientFill(final boolean radial, final CoordTransform start,
-			final CoordTransform end, final List<MorphGradient> gradients) {
-		setRadial(radial);
-		setStartTransform(start);
-		setEndTransform(end);
-		setGradients(gradients);
-	}
+    /**
+     * Creates a MorphGradientFill object specifying the type of fill, starting
+     * and ending coordinate transforms and the array of gradient records.
+     * 
+     * @param type
+     *            the type of gradient fill, either FillStyle.LINEAR or
+     *            FillStyle.RADIAL.
+     * @param start
+     *            the coordinate transform mapping the gradient square onto
+     *            physical coordinates at the start of the morphing process.
+     * @param end
+     *            the coordinate transform mapping the gradient square onto
+     *            physical coordinates at the end of the morphing process.
+     * @param gradients
+     *            an array of MorphGradient objects defining the control points
+     *            for the gradient.
+     */
+    public MorphGradientFill(final boolean radial, final CoordTransform start,
+            final CoordTransform end, final List<MorphGradient> gradients) {
+        setRadial(radial);
+        setStartTransform(start);
+        setEndTransform(end);
+        setGradients(gradients);
+    }
 
-	// TODO(doc)
-	public MorphGradientFill(final MorphGradientFill object) {
-		type = object.type;
-		startTransform = object.startTransform;
-		endTransform = object.endTransform;
+    // TODO(doc)
+    public MorphGradientFill(final MorphGradientFill object) {
+        type = object.type;
+        startTransform = object.startTransform;
+        endTransform = object.endTransform;
 
-		gradients = new ArrayList<MorphGradient>(object.gradients.size());
+        gradients = new ArrayList<MorphGradient>(object.gradients.size());
 
-		for (MorphGradient gradient : object.gradients) {
-			gradients.add(gradient.copy());
-		}
-	}
+        for (final MorphGradient gradient : object.gradients) {
+            gradients.add(gradient.copy());
+        }
+    }
 
-	/**
-	 * Add a MorphGradient object to the array of gradient objects.
-	 * 
-	 * @param aGradient
-	 *            an MorphGradient object. Must not be null.
-	 */
-	public MorphGradientFill add(final MorphGradient aGradient) {
-		if (aGradient == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
-		}
-		if (gradients.size() == 15) {
-			throw new IllegalArgumentException(Strings.MAX_GRADIENTS);
-		}
-		gradients.add(aGradient);
-		return this;
-	}
+    /**
+     * Add a MorphGradient object to the array of gradient objects.
+     * 
+     * @param aGradient
+     *            an MorphGradient object. Must not be null.
+     */
+    public MorphGradientFill add(final MorphGradient aGradient) {
+        if (aGradient == null) {
+            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+        }
+        if (gradients.size() == 15) {
+            throw new IllegalArgumentException(Strings.MAX_GRADIENTS);
+        }
+        gradients.add(aGradient);
+        return this;
+    }
 
-	public boolean isRadial() {
-		return (type & 0x02) != 0;
-	}
+    public boolean isRadial() {
+        return (type & 0x02) != 0;
+    }
 
-	public void setRadial(final boolean radial) {
-		if (radial) {
-			type = 0x12;
-		} else {
-			type = 0x10;
-		}
-	}
+    public void setRadial(final boolean radial) {
+        if (radial) {
+            type = 0x12;
+        } else {
+            type = 0x10;
+        }
+    }
 
-	/**
-	 * Returns the coordinate transform mapping the gradient square onto
-	 * physical coordinates at the start of the morphing process.
-	 */
-	public CoordTransform getStartTransform() {
-		return startTransform;
-	}
+    /**
+     * Returns the coordinate transform mapping the gradient square onto
+     * physical coordinates at the start of the morphing process.
+     */
+    public CoordTransform getStartTransform() {
+        return startTransform;
+    }
 
-	/**
-	 * Returns the coordinate transform mapping the gradient square onto
-	 * physical coordinates at the end of the morphing process.
-	 */
-	public CoordTransform getEndTransform() {
-		return endTransform;
-	}
+    /**
+     * Returns the coordinate transform mapping the gradient square onto
+     * physical coordinates at the end of the morphing process.
+     */
+    public CoordTransform getEndTransform() {
+        return endTransform;
+    }
 
-	/**
-	 * Returns the array of MorphGradients defining the control points for the
-	 * gradient.
-	 */
-	public List<MorphGradient> getGradients() {
-		return gradients;
-	}
+    /**
+     * Returns the array of MorphGradients defining the control points for the
+     * gradient.
+     */
+    public List<MorphGradient> getGradients() {
+        return gradients;
+    }
 
-	/**
-	 * Sets the coordinate transform mapping the gradient square onto physical
-	 * coordinates at the start of the morphing process.
-	 * 
-	 * @param aTransform
-	 *            the starting coordinate transform. Must not be null.
-	 */
-	public void setStartTransform(final CoordTransform aTransform) {
-		if (aTransform == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
-		}
-		startTransform = aTransform;
-	}
+    /**
+     * Sets the coordinate transform mapping the gradient square onto physical
+     * coordinates at the start of the morphing process.
+     * 
+     * @param aTransform
+     *            the starting coordinate transform. Must not be null.
+     */
+    public void setStartTransform(final CoordTransform aTransform) {
+        if (aTransform == null) {
+            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+        }
+        startTransform = aTransform;
+    }
 
-	/**
-	 * Sets the coordinate transform mapping the gradient square onto physical
-	 * coordinates at the end of the morphing process.
-	 * 
-	 * @param aTransform
-	 *            the ending coordinate transform. Must not be null.
-	 */
-	public void setEndTransform(final CoordTransform aTransform) {
-		if (aTransform == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
-		}
-		endTransform = aTransform;
-	}
+    /**
+     * Sets the coordinate transform mapping the gradient square onto physical
+     * coordinates at the end of the morphing process.
+     * 
+     * @param aTransform
+     *            the ending coordinate transform. Must not be null.
+     */
+    public void setEndTransform(final CoordTransform aTransform) {
+        if (aTransform == null) {
+            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+        }
+        endTransform = aTransform;
+    }
 
-	/**
-	 * Sets the array of control points that define the gradient. The final
-	 * array should contain at least two control points. Up to Flash 7 the array
-	 * can contain up to 8 control points. For Flash 8 onwards this limit was
-	 * increased to 15.
-	 * 
-	 * @param anArray
-	 *            an array of MorphGradient objects. Must not be null.
-	 */
-	public void setGradients(final List<MorphGradient> anArray) {
-		if (anArray == null) {
-			throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
-		}
-		if (anArray.size() > 15) {
-			throw new IllegalArgumentException(Strings.MAX_GRADIENTS);
-		}
-		gradients = anArray;
-	}
+    /**
+     * Sets the array of control points that define the gradient. The final
+     * array should contain at least two control points. Up to Flash 7 the array
+     * can contain up to 8 control points. For Flash 8 onwards this limit was
+     * increased to 15.
+     * 
+     * @param anArray
+     *            an array of MorphGradient objects. Must not be null.
+     */
+    public void setGradients(final List<MorphGradient> anArray) {
+        if (anArray == null) {
+            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+        }
+        if (anArray.size() > 15) {
+            throw new IllegalArgumentException(Strings.MAX_GRADIENTS);
+        }
+        gradients = anArray;
+    }
 
-	@Override
-	public MorphGradientFill copy() {
-		return new MorphGradientFill(this);
-	}
+    @Override
+    public MorphGradientFill copy() {
+        return new MorphGradientFill(this);
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, startTransform, endTransform, gradients);
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, startTransform, endTransform, gradients);
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		count = gradients.size();
-		return 2 + startTransform.prepareToEncode(coder, context)
-				+ endTransform.prepareToEncode(coder, context) + (count * 10);
-	}
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        count = gradients.size();
+        return 2 + startTransform.prepareToEncode(coder, context)
+                + endTransform.prepareToEncode(coder, context) + (count * 10);
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		coder.writeByte(type);
-		startTransform.encode(coder, context);
-		endTransform.encode(coder, context);
-		coder.writeByte(count);
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        coder.writeByte(type);
+        startTransform.encode(coder, context);
+        endTransform.encode(coder, context);
+        coder.writeByte(count);
 
-		for (MorphGradient gradient : gradients) {
-			gradient.encode(coder, context);
-		}
-	}
+        for (final MorphGradient gradient : gradients) {
+            gradient.encode(coder, context);
+        }
+    }
 }

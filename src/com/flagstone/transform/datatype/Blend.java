@@ -40,78 +40,78 @@ import java.util.Map;
  * underlying object appears.
  */
 public enum Blend {
-	/**
-	 * Applies colour form the current layer normally with no blending with the
-	 * underlying layers.
-	 */
-	NORMAL(1),
-	/** Sets the opacity of the current layer at 100% before blending. */
-	LAYER(2),
-	/** Multiplies layers together. This has the effect of darkening the layer. */
-	MULTIPLY(3),
-	/**
-	 * Multiplies this inverse of the layer with the underlying layer, creating
-	 * a bleaching effect.
-	 */
-	SCREEN(4),
-	/**
-	 * Displays colours from the underlying layer that are lighter than the
-	 * current layer.
-	 */
-	LIGHTEN(5),
-	/**
-	 * Displays colours from the underlying layer that are darker than the
-	 * current layer.
-	 */
-	DARKEN(6),
-	/** Add the colours of the layers together. */
-	ADD(7),
-	/** Subtract the current layer colour from the underlying layer. */
-	SUBTRACT(8),
-	/**
-	 * Subtracts the largest colour value from the smallest, creating a colour
-	 * negative effect.
-	 */
-	DIFFERENCE(9),
-	/** Inverts the colours of the current layer. */
-	INVERT(10),
-	/** Applies the transparency of the current layer to the underlying layer. */
-	ALPHA(11),
-	/**
-	 * Delete the colours from the underlying layer that match the colour on the
-	 * current layer.
-	 */
-	ERASE(12),
-	/**
-	 * Use the colour from the current layer to select colours from the
-	 * underlying layer.
-	 */
-	OVERLAY(13),
-	/**
-	 * Select colours from the underlying layer using the values on the current
-	 * layer.
-	 */
-	HARDLIGHT(14);
+    /**
+     * Applies colour form the current layer normally with no blending with the
+     * underlying layers.
+     */
+    NORMAL(1),
+    /** Sets the opacity of the current layer at 100% before blending. */
+    LAYER(2),
+    /** Multiplies layers together. This has the effect of darkening the layer. */
+    MULTIPLY(3),
+    /**
+     * Multiplies this inverse of the layer with the underlying layer, creating
+     * a bleaching effect.
+     */
+    SCREEN(4),
+    /**
+     * Displays colours from the underlying layer that are lighter than the
+     * current layer.
+     */
+    LIGHTEN(5),
+    /**
+     * Displays colours from the underlying layer that are darker than the
+     * current layer.
+     */
+    DARKEN(6),
+    /** Add the colours of the layers together. */
+    ADD(7),
+    /** Subtract the current layer colour from the underlying layer. */
+    SUBTRACT(8),
+    /**
+     * Subtracts the largest colour value from the smallest, creating a colour
+     * negative effect.
+     */
+    DIFFERENCE(9),
+    /** Inverts the colours of the current layer. */
+    INVERT(10),
+    /** Applies the transparency of the current layer to the underlying layer. */
+    ALPHA(11),
+    /**
+     * Delete the colours from the underlying layer that match the colour on the
+     * current layer.
+     */
+    ERASE(12),
+    /**
+     * Use the colour from the current layer to select colours from the
+     * underlying layer.
+     */
+    OVERLAY(13),
+    /**
+     * Select colours from the underlying layer using the values on the current
+     * layer.
+     */
+    HARDLIGHT(14);
 
-	private static final Map<Integer, Blend> TABLE = new LinkedHashMap<Integer, Blend>();
+    private static final Map<Integer, Blend> TABLE = new LinkedHashMap<Integer, Blend>();
 
-	static {
-		for (Blend format : values()) {
-			TABLE.put(format.value, format);
-		}
-	}
+    static {
+        for (final Blend format : values()) {
+            TABLE.put(format.value, format);
+        }
+    }
 
-	public static Blend fromInt(final int type) {
-		return TABLE.get(type);
-	}
+    public static Blend fromInt(final int type) {
+        return TABLE.get(type);
+    }
 
-	private final int value;
+    private final int value;
 
-	private Blend(final int value) {
-		this.value = value;
-	}
+    private Blend(final int value) {
+        this.value = value;
+    }
 
-	public int getValue() {
-		return value;
-	}
+    public int getValue() {
+        return value;
+    }
 }

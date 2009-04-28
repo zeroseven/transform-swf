@@ -66,71 +66,71 @@ import com.flagstone.transform.coder.SWFEncoder;
  * @see If
  */
 public final class Jump implements Action {
-	private static final String FORMAT = "Jump: { offset=%d }";
+    private static final String FORMAT = "Jump: { offset=%d }";
 
-	private int offset;
+    private int offset;
 
-	// TODO(doc)
-	public Jump(final SWFDecoder coder) throws CoderException {
-		coder.readByte();
-		coder.readWord(2, false);
-		offset = coder.readWord(2, true);
-	}
+    // TODO(doc)
+    public Jump(final SWFDecoder coder) throws CoderException {
+        coder.readByte();
+        coder.readWord(2, false);
+        offset = coder.readWord(2, true);
+    }
 
-	/**
-	 * Creates a Jump action with the specified offset.
-	 * 
-	 * @param anOffset
-	 *            the number of bytes to add to the instruction pointer. The
-	 *            offset must be in the range -32768..32767.
-	 */
-	public Jump(final int anOffset) {
-		setOffset(anOffset);
-	}
+    /**
+     * Creates a Jump action with the specified offset.
+     * 
+     * @param anOffset
+     *            the number of bytes to add to the instruction pointer. The
+     *            offset must be in the range -32768..32767.
+     */
+    public Jump(final int anOffset) {
+        setOffset(anOffset);
+    }
 
-	// TODO(doc)
-	public Jump(final Jump object) {
-		offset = object.offset;
-	}
+    // TODO(doc)
+    public Jump(final Jump object) {
+        offset = object.offset;
+    }
 
-	/**
-	 * Returns the offset that will be added to the instruction pointer.
-	 */
-	public int getOffset() {
-		return offset;
-	}
+    /**
+     * Returns the offset that will be added to the instruction pointer.
+     */
+    public int getOffset() {
+        return offset;
+    }
 
-	/**
-	 * Sets the offset to add to the instruction pointer.
-	 * 
-	 * @param anOffset
-	 *            the number of bytes to add to the instruction pointer. The
-	 *            offset must be in the range -32768..32767.
-	 */
-	public void setOffset(final int anOffset) {
-		if (anOffset < -32768 || anOffset > 32767) {
-			throw new IllegalArgumentException(Strings.SIGNED_RANGE);
-		}
-		offset = anOffset;
-	}
+    /**
+     * Sets the offset to add to the instruction pointer.
+     * 
+     * @param anOffset
+     *            the number of bytes to add to the instruction pointer. The
+     *            offset must be in the range -32768..32767.
+     */
+    public void setOffset(final int anOffset) {
+        if ((anOffset < -32768) || (anOffset > 32767)) {
+            throw new IllegalArgumentException(Strings.SIGNED_RANGE);
+        }
+        offset = anOffset;
+    }
 
-	public Jump copy() {
-		return new Jump(this);
-	}
+    public Jump copy() {
+        return new Jump(this);
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, offset);
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, offset);
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		return 5;
-	}
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        return 5;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		coder.writeByte(ActionTypes.JUMP);
-		coder.writeWord(2, 2);
-		coder.writeWord(offset, 2);
-	}
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        coder.writeByte(ActionTypes.JUMP);
+        coder.writeWord(2, 2);
+        coder.writeWord(offset, 2);
+    }
 }

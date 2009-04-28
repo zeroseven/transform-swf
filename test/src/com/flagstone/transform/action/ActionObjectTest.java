@@ -29,12 +29,12 @@
  */
 package com.flagstone.transform.action;
 
-import org.junit.Test;
-
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
@@ -43,102 +43,102 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 public final class ActionObjectTest {
 
-	private static transient final int type = 128;
-	private transient final byte[] data = new byte[] { 1, 2, 3, 4 };
+    private static transient final int type = 128;
+    private transient final byte[] data = new byte[] { 1, 2, 3, 4 };
 
-	private transient ActionObject fixture;
+    private transient ActionObject fixture;
 
-	private transient final byte[] basic = new byte[] { (byte) 0x01 };
+    private transient final byte[] basic = new byte[] { (byte) 0x01 };
 
-	private transient final byte[] empty = new byte[] { (byte) 0x80, 0x00, 0x00 };
+    private transient final byte[] empty = new byte[] { (byte) 0x80, 0x00, 0x00 };
 
-	private transient final byte[] encoded = new byte[] { (byte) 0x80, 0x04,
-			0x00, 0x01, 0x02, 0x03, 0x04 };
+    private transient final byte[] encoded = new byte[] { (byte) 0x80, 0x04,
+            0x00, 0x01, 0x02, 0x03, 0x04 };
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAccessorForDataWithNull() {
-		fixture = new ActionObject(type, null);
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkAccessorForDataWithNull() {
+        fixture = new ActionObject(type, null);
+    }
 
-	@Test
-	public void checkCopy() {
-		fixture = new ActionObject(type, data);
-		final ActionObject copy = fixture.copy();
+    @Test
+    public void checkCopy() {
+        fixture = new ActionObject(type, data);
+        final ActionObject copy = fixture.copy();
 
-		assertNotSame(fixture, copy);
-		assertNotSame(fixture.getData(), copy.getData());
-		assertEquals(fixture.toString(), copy.toString());
-	}
+        assertNotSame(fixture, copy);
+        assertNotSame(fixture.getData(), copy.getData());
+        assertEquals(fixture.toString(), copy.toString());
+    }
 
-	@Test
-	public void encode() throws CoderException {
-		final SWFEncoder encoder = new SWFEncoder(encoded.length);
-		final Context context = new Context();
+    @Test
+    public void encode() throws CoderException {
+        final SWFEncoder encoder = new SWFEncoder(encoded.length);
+        final Context context = new Context();
 
-		fixture = new ActionObject(type, data);
-		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
-		fixture.encode(encoder, context);
+        fixture = new ActionObject(type, data);
+        assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
+        fixture.encode(encoder, context);
 
-		assertTrue(encoder.eof());
-		assertArrayEquals(encoded, encoder.getData());
-	}
+        assertTrue(encoder.eof());
+        assertArrayEquals(encoded, encoder.getData());
+    }
 
-	@Test
-	public void encodeBasic() throws CoderException {
-		final SWFEncoder encoder = new SWFEncoder(basic.length);
-		final Context context = new Context();
+    @Test
+    public void encodeBasic() throws CoderException {
+        final SWFEncoder encoder = new SWFEncoder(basic.length);
+        final Context context = new Context();
 
-		fixture = new ActionObject(1);
-		assertEquals(basic.length, fixture.prepareToEncode(encoder, context));
-		fixture.encode(encoder, context);
+        fixture = new ActionObject(1);
+        assertEquals(basic.length, fixture.prepareToEncode(encoder, context));
+        fixture.encode(encoder, context);
 
-		assertTrue(encoder.eof());
-		assertArrayEquals(basic, encoder.getData());
-	}
+        assertTrue(encoder.eof());
+        assertArrayEquals(basic, encoder.getData());
+    }
 
-	@Test
-	public void encodeEmpty() throws CoderException {
-		final SWFEncoder encoder = new SWFEncoder(empty.length);
-		final Context context = new Context();
+    @Test
+    public void encodeEmpty() throws CoderException {
+        final SWFEncoder encoder = new SWFEncoder(empty.length);
+        final Context context = new Context();
 
-		fixture = new ActionObject(type, new byte[0]);
-		assertEquals(empty.length, fixture.prepareToEncode(encoder, context));
-		fixture.encode(encoder, context);
+        fixture = new ActionObject(type, new byte[0]);
+        assertEquals(empty.length, fixture.prepareToEncode(encoder, context));
+        fixture.encode(encoder, context);
 
-		assertTrue(encoder.eof());
-		assertArrayEquals(empty, encoder.getData());
-	}
+        assertTrue(encoder.eof());
+        assertArrayEquals(empty, encoder.getData());
+    }
 
-	@Test
-	public void decode() throws CoderException {
-		final SWFDecoder decoder = new SWFDecoder(encoded);
+    @Test
+    public void decode() throws CoderException {
+        final SWFDecoder decoder = new SWFDecoder(encoded);
 
-		fixture = new ActionObject(decoder);
+        fixture = new ActionObject(decoder);
 
-		assertTrue(decoder.eof());
-		assertEquals(type, fixture.getType());
-		assertArrayEquals(data, fixture.getData());
-	}
+        assertTrue(decoder.eof());
+        assertEquals(type, fixture.getType());
+        assertArrayEquals(data, fixture.getData());
+    }
 
-	@Test
-	public void decodeBasic() throws CoderException {
-		final SWFDecoder decoder = new SWFDecoder(basic);
+    @Test
+    public void decodeBasic() throws CoderException {
+        final SWFDecoder decoder = new SWFDecoder(basic);
 
-		fixture = new ActionObject(decoder);
+        fixture = new ActionObject(decoder);
 
-		assertTrue(decoder.eof());
-		assertEquals(1, fixture.getType());
-		assertArrayEquals(null, fixture.getData());
-	}
+        assertTrue(decoder.eof());
+        assertEquals(1, fixture.getType());
+        assertArrayEquals(null, fixture.getData());
+    }
 
-	@Test
-	public void decodeEmpty() throws CoderException {
-		final SWFDecoder decoder = new SWFDecoder(empty);
+    @Test
+    public void decodeEmpty() throws CoderException {
+        final SWFDecoder decoder = new SWFDecoder(empty);
 
-		fixture = new ActionObject(decoder);
+        fixture = new ActionObject(decoder);
 
-		assertTrue(decoder.eof());
-		assertEquals(type, fixture.getType());
-		assertArrayEquals(new byte[0], fixture.getData());
-	}
+        assertTrue(decoder.eof());
+        assertEquals(type, fixture.getType());
+        assertArrayEquals(new byte[0], fixture.getData());
+    }
 }

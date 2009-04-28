@@ -66,45 +66,45 @@ import com.flagstone.transform.coder.SWFEncoder;
  */
 public final class ShowFrame implements MovieTag {
 
-	private static final String FORMAT = "ShowFrame";
+    private static final String FORMAT = "ShowFrame";
 
-	private static final ShowFrame INSTANCE = new ShowFrame();
+    private static final ShowFrame INSTANCE = new ShowFrame();
 
-	/**
-	 * Returns a shared ShowFrame object.
-	 * 
-	 * @return an object that can safely be shared among objects.
-	 */
-	public static ShowFrame getInstance() {
-		return INSTANCE;
-	}
+    /**
+     * Returns a shared ShowFrame object.
+     * 
+     * @return an object that can safely be shared among objects.
+     */
+    public static ShowFrame getInstance() {
+        return INSTANCE;
+    }
 
-	private ShowFrame() {
-	}
+    private ShowFrame() {
+    }
 
-	// TODO(doc)
-	public ShowFrame copy() {
-		return this;
-	}
+    // TODO(doc)
+    public ShowFrame copy() {
+        return this;
+    }
 
-	@Override
-	public String toString() {
-		return FORMAT;
-	}
+    @Override
+    public String toString() {
+        return FORMAT;
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		return 2;
-	}
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        return 2;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		coder.writeWord((MovieTypes.SHOW_FRAME << 6) | 0, 2);
-	}
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        coder.writeWord((MovieTypes.SHOW_FRAME << 6) | 0, 2);
+    }
 
-	public void decode(final SWFDecoder coder, final Context context)
-			throws CoderException {
-		if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
-			coder.readWord(4, false);
-		}
-	}
+    public void decode(final SWFDecoder coder, final Context context)
+            throws CoderException {
+        if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
+            coder.readWord(4, false);
+        }
+    }
 }

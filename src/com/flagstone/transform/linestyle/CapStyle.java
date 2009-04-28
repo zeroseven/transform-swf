@@ -32,5 +32,5 @@ package com.flagstone.transform.linestyle;
 
 //TODO(doc)
 public enum CapStyle {
-	ROUND, NONE, SQUARE;
+    ROUND, NONE, SQUARE;
 }

@@ -10,180 +10,185 @@ import com.flagstone.transform.datatype.Color;
 
 public final class BevelFilter implements Filter {
 
-	public enum Mode {
-		INNER, KNOCKOUT, TOP
-	};
+    public enum Mode {
+        INNER, KNOCKOUT, TOP
+    };
 
-	private static final String FORMAT = "BevelFilter: { " +
-			"shadow=%s; highlight=%s; blurX=%f; blurY=%f; passes=%d " +
-			"angle=%d; disance=%d, strength=%d; mode=%s; passes=%d}";
-	
-	private Color shadow;
-	private Color highlight;
-	private int blurX;
-	private int blurY;
-	private int angle;
-	private int distance;
-	private int strength;
-	private Mode mode;
-	private int passes;
+    private static final String FORMAT = "BevelFilter: { "
+            + "shadow=%s; highlight=%s; blurX=%f; blurY=%f; passes=%d "
+            + "angle=%d; disance=%d, strength=%d; mode=%s; passes=%d}";
 
-	public BevelFilter(final SWFDecoder coder, final Context context) throws CoderException {
-		coder.adjustPointer(8);
-		shadow = new Color(coder, context);
-		highlight = new Color(coder, context);
-		blurX = coder.readWord(4, true);
-		blurY = coder.readWord(4, true);
-		angle = coder.readWord(4, true);
-		distance = coder.readWord(4, true);
-		strength = coder.readWord(2, true);
-		unpack(coder.readByte());
-	}
+    private final Color shadow;
+    private final Color highlight;
+    private final int blurX;
+    private final int blurY;
+    private final int angle;
+    private final int distance;
+    private final int strength;
+    private Mode mode;
+    private int passes;
 
-	public BevelFilter(Color shadow, Color highlight, float blurX, float blurY, 
-			float angle, float distance, float strength, Mode mode, int passes) {
-		this.shadow = shadow;
-		this.highlight = highlight;
-		this.blurX = (int)(blurX * 65536.0f);
-		this.blurY = (int)(blurY * 65536.0f);
-		this.angle = (int)(angle * 65536.0f);
-		this.distance = (int)(distance * 65536.0f);
-		this.strength = (int)(strength * 256.0f);;
-		this.mode = mode;
-		this.passes = passes;
-	}
+    public BevelFilter(final SWFDecoder coder, final Context context)
+            throws CoderException {
+        coder.adjustPointer(8);
+        shadow = new Color(coder, context);
+        highlight = new Color(coder, context);
+        blurX = coder.readWord(4, true);
+        blurY = coder.readWord(4, true);
+        angle = coder.readWord(4, true);
+        distance = coder.readWord(4, true);
+        strength = coder.readWord(2, true);
+        unpack(coder.readByte());
+    }
 
-	public BevelFilter(final BevelFilter object) {
-		shadow = object.shadow;
-		highlight = object.highlight;
-		blurX = object.blurX;
-		blurY = object.blurY;
-		angle = object.angle;
-		distance = object.distance;
-		strength = object.strength;
-		mode = object.mode;
-		passes = object.passes;
-	}
-	
-	public Color getShadow() {
-		return shadow;
-	}
-	
-	public Color getHightlight() {
-		return highlight;
-	}
-	
-	public float getBlurX() {
-		return blurX / 65536.0f;
-	}
+    public BevelFilter(final Color shadow, final Color highlight,
+            final float blurX, final float blurY, final float angle,
+            final float distance, final float strength, final Mode mode,
+            final int passes) {
+        this.shadow = shadow;
+        this.highlight = highlight;
+        this.blurX = (int) (blurX * 65536.0f);
+        this.blurY = (int) (blurY * 65536.0f);
+        this.angle = (int) (angle * 65536.0f);
+        this.distance = (int) (distance * 65536.0f);
+        this.strength = (int) (strength * 256.0f);
+        ;
+        this.mode = mode;
+        this.passes = passes;
+    }
 
-	public float getBlurY() {
-		return blurY / 65536.0f;
-	}
-	
-	public float getAngle() {
-		return angle / 65536.0f;
-	}
-	
-	public float getDistance() {
-		return distance / 65536.0f;
-	}
-	
-	public float getStrength() {
-		return strength / 256.0f;
-	}
-	
-	public int getPasses() {
-		return passes;
-	}
+    public BevelFilter(final BevelFilter object) {
+        shadow = object.shadow;
+        highlight = object.highlight;
+        blurX = object.blurX;
+        blurY = object.blurY;
+        angle = object.angle;
+        distance = object.distance;
+        strength = object.strength;
+        mode = object.mode;
+        passes = object.passes;
+    }
 
-	public BevelFilter copy() {
-		return new BevelFilter(this);
-	}
-	
-	@Override
-	public String toString() {
-		return String.format(FORMAT, shadow, highlight, angle,distance, strength, 
-				getBlurX(), getBlurY(), passes);
-	}
+    public Color getShadow() {
+        return shadow;
+    }
 
-	@Override
-	public boolean equals(final Object object) {
-		boolean result;
-		BevelFilter filter;
+    public Color getHightlight() {
+        return highlight;
+    }
 
-		if (object == null) {
-			result = false;
-		} else if (object == this) {
-			result = true;
-		} else if (object instanceof BevelFilter) {
-			filter = (BevelFilter) object;
-			result = shadow.equals(filter.shadow) && 
-				highlight.equals(filter.highlight) &&
-				blurX == filter.blurX && blurY == filter.blurY &&
-				angle == filter.angle && distance == filter.distance &&
-				strength == filter.strength && mode == filter.mode &&
-				passes == filter.passes;
-		} else {
-			result = false;
-		}
-		return result;
-	}
+    public float getBlurX() {
+        return blurX / 65536.0f;
+    }
 
-	@Override
-	public int hashCode() {
-		return ((((((((shadow.hashCode()*31) + highlight.hashCode())*31 + 
-			blurX)*31 + blurY)*31 + angle*31) + distance)*31 +
-			strength)*31 + mode.hashCode())*31 + passes;
-	}
+    public float getBlurY() {
+        return blurY / 65536.0f;
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		return 28;
-	}
+    public float getAngle() {
+        return angle / 65536.0f;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException {
-		coder.writeByte(FilterTypes.BEVEL);
-		shadow.encode(coder, context);
-		highlight.encode(coder, context);
-		coder.writeWord(blurX, 4);
-		coder.writeWord(blurY, 4);
-		coder.writeWord(angle, 4);
-		coder.writeWord(distance, 4);
-		coder.writeWord(strength, 2);
-		coder.writeByte(pack());
-	}
+    public float getDistance() {
+        return distance / 65536.0f;
+    }
 
-	private int pack() {
-		int value = passes;
+    public float getStrength() {
+        return strength / 256.0f;
+    }
 
-		switch (mode) {
-		case TOP:
-			value |= 0x0030;
-			break;
-		case KNOCKOUT:
-			value |= 0x0060;
-			break;
-		case INNER:
-			value |= 0x00A0;
-			break;
-		}
+    public int getPasses() {
+        return passes;
+    }
 
-		return value;
-	}
+    public BevelFilter copy() {
+        return new BevelFilter(this);
+    }
 
-	private void unpack(final int value) {
-		passes = value & 0x0F;
+    @Override
+    public String toString() {
+        return String.format(FORMAT, shadow, highlight, angle, distance,
+                strength, getBlurX(), getBlurY(), passes);
+    }
 
-		switch ((value & 0x0D) >>> 4) {
-		case 1:
-			mode = Mode.TOP;
-			break;
-		case 4:
-			mode = Mode.KNOCKOUT;
-			break;
-		case 8:
-			mode = Mode.INNER;
-			break;
-		}
-	}
+    @Override
+    public boolean equals(final Object object) {
+        boolean result;
+        BevelFilter filter;
+
+        if (object == null) {
+            result = false;
+        } else if (object == this) {
+            result = true;
+        } else if (object instanceof BevelFilter) {
+            filter = (BevelFilter) object;
+            result = shadow.equals(filter.shadow)
+                    && highlight.equals(filter.highlight)
+                    && (blurX == filter.blurX) && (blurY == filter.blurY)
+                    && (angle == filter.angle) && (distance == filter.distance)
+                    && (strength == filter.strength) && (mode == filter.mode)
+                    && (passes == filter.passes);
+        } else {
+            result = false;
+        }
+        return result;
+    }
+
+    @Override
+    public int hashCode() {
+        return ((((((((shadow.hashCode() * 31) + highlight.hashCode()) * 31 + blurX) * 31 + blurY) * 31 + angle * 31) + distance) * 31 + strength) * 31 + mode
+                .hashCode())
+                * 31 + passes;
+    }
+
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        return 28;
+    }
+
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        coder.writeByte(FilterTypes.BEVEL);
+        shadow.encode(coder, context);
+        highlight.encode(coder, context);
+        coder.writeWord(blurX, 4);
+        coder.writeWord(blurY, 4);
+        coder.writeWord(angle, 4);
+        coder.writeWord(distance, 4);
+        coder.writeWord(strength, 2);
+        coder.writeByte(pack());
+    }
+
+    private int pack() {
+        int value = passes;
+
+        switch (mode) {
+        case TOP:
+            value |= 0x0030;
+            break;
+        case KNOCKOUT:
+            value |= 0x0060;
+            break;
+        case INNER:
+            value |= 0x00A0;
+            break;
+        }
+
+        return value;
+    }
+
+    private void unpack(final int value) {
+        passes = value & 0x0F;
+
+        switch ((value & 0x0D) >>> 4) {
+        case 1:
+            mode = Mode.TOP;
+            break;
+        case 4:
+            mode = Mode.KNOCKOUT;
+            break;
+        case 8:
+            mode = Mode.INNER;
+            break;
+        }
+    }
 }

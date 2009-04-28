@@ -29,27 +29,27 @@
  */
 package com.flagstone.transform.action;
 
-import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
 
 public final class TableIndexTest {
 
-	private transient TableIndex fixture;
+    private transient TableIndex fixture;
 
-	@Test
-	public void checkConstructorSetsIndex() {
-		fixture = new TableIndex(10);
-		assertEquals(10, fixture.getIndex());
-	}
+    @Test
+    public void checkConstructorSetsIndex() {
+        fixture = new TableIndex(10);
+        assertEquals(10, fixture.getIndex());
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAccessorForIndexWithLowerBound() {
-		fixture = new TableIndex(-1);
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkAccessorForIndexWithLowerBound() {
+        fixture = new TableIndex(-1);
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAccessorForIndexWithUpperBound() {
-		fixture = new TableIndex(65536);
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkAccessorForIndexWithUpperBound() {
+        fixture = new TableIndex(65536);
+    }
 }

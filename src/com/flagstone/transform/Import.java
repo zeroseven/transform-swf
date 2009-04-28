@@ -63,173 +63,173 @@ import com.flagstone.transform.coder.SWFEncoder;
  * @see Export
  */
 public final class Import implements MovieTag {
-	private static final String FORMAT = "Import: { url=%s; objects=%s }";
+    private static final String FORMAT = "Import: { url=%s; objects=%s }";
 
-	private String url;
-	private Map<Integer, String> objects;
+    private String url;
+    private Map<Integer, String> objects;
 
-	private transient int length;
+    private transient int length;
 
-	// TODO(doc)
-	public Import(final SWFDecoder coder) throws CoderException {
-		length = coder.readWord(2, false) & 0x3F;
+    // TODO(doc)
+    public Import(final SWFDecoder coder) throws CoderException {
+        length = coder.readWord(2, false) & 0x3F;
 
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
+        if (length == 0x3F) {
+            length = coder.readWord(4, false);
+        }
 
-		url = coder.readString();
+        url = coder.readString();
 
-		final int count = coder.readWord(2, false);
-		objects = new LinkedHashMap<Integer, String>(count);
+        final int count = coder.readWord(2, false);
+        objects = new LinkedHashMap<Integer, String>(count);
 
-		for (int i = 0; i < count; i++) {
-			add(coder.readWord(2, false), coder.readString());
-		}
-	}
+        for (int i = 0; i < count; i++) {
+            add(coder.readWord(2, false), coder.readString());
+        }
+    }
 
-	/**
-	 * Creates a Import object that imports an object from the specified file.
-	 * 
-	 * @param aUrl
-	 *            the URL referencing the file to be imported.
-	 * 
-	 * @param map
-	 *            the table to add the identifier-name pairs of the objects that
-	 *            will be imported.
-	 */
-	public Import(final String aUrl, final Map<Integer, String> map) {
-		setUrl(aUrl);
-		objects = map;
-	}
+    /**
+     * Creates a Import object that imports an object from the specified file.
+     * 
+     * @param aUrl
+     *            the URL referencing the file to be imported.
+     * 
+     * @param map
+     *            the table to add the identifier-name pairs of the objects that
+     *            will be imported.
+     */
+    public Import(final String aUrl, final Map<Integer, String> map) {
+        setUrl(aUrl);
+        objects = map;
+    }
 
-	/**
-	 * Creates a Import object that imports an object from the specified file.
-	 * The exported object is referenced by a name assigned to it when it was
-	 * exported. The newly imported object must be assigned an identifier that
-	 * is unique within the movie the object is imported into. Limited security
-	 * is provided by requiring that the URL must be in the same domain or
-	 * sub-domain as the URL of the movie which contains this object.
-	 * 
-	 * @param aUrl
-	 *            the URL referencing the file to be imported.
-	 * @param uid
-	 *            the identifier of the object to be exported.
-	 * @param aString
-	 *            the name of the exported object to allow it to be referenced.
-	 */
-	public Import(final String aUrl, final int uid, final String aString) {
-		setUrl(aUrl);
-		objects = new LinkedHashMap<Integer, String>();
-		add(uid, aString);
-	}
+    /**
+     * Creates a Import object that imports an object from the specified file.
+     * The exported object is referenced by a name assigned to it when it was
+     * exported. The newly imported object must be assigned an identifier that
+     * is unique within the movie the object is imported into. Limited security
+     * is provided by requiring that the URL must be in the same domain or
+     * sub-domain as the URL of the movie which contains this object.
+     * 
+     * @param aUrl
+     *            the URL referencing the file to be imported.
+     * @param uid
+     *            the identifier of the object to be exported.
+     * @param aString
+     *            the name of the exported object to allow it to be referenced.
+     */
+    public Import(final String aUrl, final int uid, final String aString) {
+        setUrl(aUrl);
+        objects = new LinkedHashMap<Integer, String>();
+        add(uid, aString);
+    }
 
-	// TODO(doc)
-	public Import(final Import object) {
-		url = object.url;
-		objects = new LinkedHashMap<Integer, String>(object.objects);
-	}
+    // TODO(doc)
+    public Import(final Import object) {
+        url = object.url;
+        objects = new LinkedHashMap<Integer, String>(object.objects);
+    }
 
-	/**
-	 * Adds the identifier and name to the list of objects to be imported.
-	 * 
-	 * @param uid
-	 *            the identifier of the object to be imported. Must be in the
-	 *            range 1..65535.
-	 * @param aString
-	 *            the name of the imported object to allow it to be referenced.
-	 *            Must not be null or an empty string.
-	 */
-	public void add(final int uid, final String aString) {
-		if (uid < 1 || uid > 65535) {
-			throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
-		}
-		if (aString == null || aString.length() == 0) {
-			throw new IllegalArgumentException(Strings.STRING_NOT_SET);
-		}
-		objects.put(uid, aString);
-	}
+    /**
+     * Adds the identifier and name to the list of objects to be imported.
+     * 
+     * @param uid
+     *            the identifier of the object to be imported. Must be in the
+     *            range 1..65535.
+     * @param aString
+     *            the name of the imported object to allow it to be referenced.
+     *            Must not be null or an empty string.
+     */
+    public void add(final int uid, final String aString) {
+        if ((uid < 1) || (uid > 65535)) {
+            throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
+        }
+        if ((aString == null) || (aString.length() == 0)) {
+            throw new IllegalArgumentException(Strings.STRING_NOT_SET);
+        }
+        objects.put(uid, aString);
+    }
 
-	/**
-	 * Returns the URL of the file containing the object to be imported. Limited
-	 * security is provided by requiring that the URL must be in the same domain
-	 * or sub-domain as the URL of the movie which contains this object.
-	 */
-	public String getUrl() {
-		return url;
-	}
+    /**
+     * Returns the URL of the file containing the object to be imported. Limited
+     * security is provided by requiring that the URL must be in the same domain
+     * or sub-domain as the URL of the movie which contains this object.
+     */
+    public String getUrl() {
+        return url;
+    }
 
-	/**
-	 * Returns the table of objects to be imported.
-	 */
-	public Map<Integer, String> getObjects() {
-		return objects;
-	}
+    /**
+     * Returns the table of objects to be imported.
+     */
+    public Map<Integer, String> getObjects() {
+        return objects;
+    }
 
-	/**
-	 * Sets the URL of the file containing the imported objects. The URL must be
-	 * in the same sub-domain and relative to the URL of the file containing the
-	 * Import object.
-	 * 
-	 * @param aString
-	 *            a URL relative to the URL of the file containing the Import
-	 *            object. Must not be null or an empty string.
-	 */
-	public void setUrl(final String aString) {
-		if (aString == null || aString.length() == 0) {
-			throw new IllegalArgumentException(Strings.STRING_NOT_SET);
-		}
-		url = aString;
-	}
+    /**
+     * Sets the URL of the file containing the imported objects. The URL must be
+     * in the same sub-domain and relative to the URL of the file containing the
+     * Import object.
+     * 
+     * @param aString
+     *            a URL relative to the URL of the file containing the Import
+     *            object. Must not be null or an empty string.
+     */
+    public void setUrl(final String aString) {
+        if ((aString == null) || (aString.length() == 0)) {
+            throw new IllegalArgumentException(Strings.STRING_NOT_SET);
+        }
+        url = aString;
+    }
 
-	/**
-	 * Sets the table of objects to be imported.
-	 * 
-	 * @param aTable
-	 *            the table of objects being imported. Must not be null.
-	 */
-	public void setObjects(final Map<Integer, String> aTable) {
-		objects = aTable;
-	}
+    /**
+     * Sets the table of objects to be imported.
+     * 
+     * @param aTable
+     *            the table of objects being imported. Must not be null.
+     */
+    public void setObjects(final Map<Integer, String> aTable) {
+        objects = aTable;
+    }
 
-	/**
-	 * Creates and returns a deep copy of this object.
-	 */
-	public Import copy() {
-		return new Import(this);
-	}
+    /**
+     * Creates and returns a deep copy of this object.
+     */
+    public Import copy() {
+        return new Import(this);
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, url, objects);
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, url, objects);
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		length = 2 + coder.strlen(url);
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        length = 2 + coder.strlen(url);
 
-		for (Integer identifier : objects.keySet()) {
-			length += 2 + coder.strlen(objects.get(identifier));
-		}
+        for (final Integer identifier : objects.keySet()) {
+            length += 2 + coder.strlen(objects.get(identifier));
+        }
 
-		return (length > 62 ? 6 : 2) + length;
-	}
+        return (length > 62 ? 6 : 2) + length;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		if (length > 62) {
-			coder.writeWord((MovieTypes.IMPORT << 6) | 0x3F, 2);
-			coder.writeWord(length, 4);
-		} else {
-			coder.writeWord((MovieTypes.IMPORT << 6) | length, 2);
-		}
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        if (length > 62) {
+            coder.writeWord((MovieTypes.IMPORT << 6) | 0x3F, 2);
+            coder.writeWord(length, 4);
+        } else {
+            coder.writeWord((MovieTypes.IMPORT << 6) | length, 2);
+        }
 
-		coder.writeString(url);
+        coder.writeString(url);
 
-		coder.writeWord(objects.size(), 2);
+        coder.writeWord(objects.size(), 2);
 
-		for (Integer identifier : objects.keySet()) {
-			coder.writeWord(identifier.intValue(), 2);
-			coder.writeString(objects.get(identifier));
-		}
-	}
+        for (final Integer identifier : objects.keySet()) {
+            coder.writeWord(identifier.intValue(), 2);
+            coder.writeString(objects.get(identifier));
+        }
+    }
 }

@@ -35,8 +35,8 @@ import java.util.Map;
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFDecoder;
+import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.Bounds;
 
@@ -61,94 +61,94 @@ import com.flagstone.transform.datatype.Bounds;
  * @see com.flagstone.transform.factory.text.TextFactory
  */
 public final class GlyphIndex implements SWFEncodeable {
-	private static final String FORMAT = "GlyphIndex: { glyphIndex=%d; advance=%d }";
+    private static final String FORMAT = "GlyphIndex: { glyphIndex=%d; advance=%d }";
 
-	private final transient int index;
-	private final transient int advance;
+    private final transient int index;
+    private final transient int advance;
 
-	// TODO(doc)
-	public GlyphIndex(final SWFDecoder coder, final Context context)
-			throws CoderException {
-		final Map<Integer, Integer> vars = context.getVariables();
-		index = coder.readBits(vars.get(Context.GLYPH_SIZE), false);
-		advance = coder.readBits(vars.get(Context.ADVANCE_SIZE), true);
-	}
+    // TODO(doc)
+    public GlyphIndex(final SWFDecoder coder, final Context context)
+            throws CoderException {
+        final Map<Integer, Integer> vars = context.getVariables();
+        index = coder.readBits(vars.get(Context.GLYPH_SIZE), false);
+        advance = coder.readBits(vars.get(Context.ADVANCE_SIZE), true);
+    }
 
-	/**
-	 * Creates a Character specifying the index of the glyph to be displayed and
-	 * the spacing to the next glyph.
-	 * 
-	 * @param anIndex
-	 *            the index into the array of Shapes in a font definition object
-	 *            that defines the glyph that represents the character to be
-	 *            displayed.
-	 * 
-	 * @param anAdvance
-	 *            the relative position in twips, from the origin of the glyph
-	 *            representing this character to the next glyph to be displayed.
-	 */
-	public GlyphIndex(final int anIndex, final int anAdvance) {
-		if (anIndex < 0) {
-			throw new IllegalArgumentException(Strings.NEGATIVE_NUMBER);
-		}
-		index = anIndex;
+    /**
+     * Creates a Character specifying the index of the glyph to be displayed and
+     * the spacing to the next glyph.
+     * 
+     * @param anIndex
+     *            the index into the array of Shapes in a font definition object
+     *            that defines the glyph that represents the character to be
+     *            displayed.
+     * 
+     * @param anAdvance
+     *            the relative position in twips, from the origin of the glyph
+     *            representing this character to the next glyph to be displayed.
+     */
+    public GlyphIndex(final int anIndex, final int anAdvance) {
+        if (anIndex < 0) {
+            throw new IllegalArgumentException(Strings.NEGATIVE_NUMBER);
+        }
+        index = anIndex;
 
-		advance = anAdvance;
-	}
+        advance = anAdvance;
+    }
 
-	/**
-	 * Returns the index of the glyph, in a font definition object, that will
-	 * displayed to represent this character.
-	 */
-	public int getGlyphIndex() {
-		return index;
-	}
+    /**
+     * Returns the index of the glyph, in a font definition object, that will
+     * displayed to represent this character.
+     */
+    public int getGlyphIndex() {
+        return index;
+    }
 
-	/**
-	 * Returns the spacing in twips between the glyph representing this
-	 * character and the next.
-	 */
-	public int getAdvance() {
-		return advance;
-	}
+    /**
+     * Returns the spacing in twips between the glyph representing this
+     * character and the next.
+     */
+    public int getAdvance() {
+        return advance;
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, index, advance);
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, index, advance);
+    }
 
-	@Override
-	public boolean equals(final Object other) {
-		boolean result;
-		GlyphIndex object;
+    @Override
+    public boolean equals(final Object other) {
+        boolean result;
+        GlyphIndex object;
 
-		if (other == null) {
-			result = false;
-		} else if (other == this) {
-			result = true;
-		} else if (other instanceof Bounds) {
-			object = (GlyphIndex) other;
-			result = index == object.index && advance == object.advance;
-		} else {
-			result = false;
-		}
-		return result;
-	}
+        if (other == null) {
+            result = false;
+        } else if (other == this) {
+            result = true;
+        } else if (other instanceof Bounds) {
+            object = (GlyphIndex) other;
+            result = (index == object.index) && (advance == object.advance);
+        } else {
+            result = false;
+        }
+        return result;
+    }
 
-	@Override
-	public int hashCode() {
-		return (index * 31) + advance;
-	}
+    @Override
+    public int hashCode() {
+        return (index * 31) + advance;
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		final Map<Integer, Integer> vars = context.getVariables();
-		return vars.get(Context.GLYPH_SIZE) + vars.get(Context.ADVANCE_SIZE);
-	}
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        final Map<Integer, Integer> vars = context.getVariables();
+        return vars.get(Context.GLYPH_SIZE) + vars.get(Context.ADVANCE_SIZE);
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		final Map<Integer, Integer> vars = context.getVariables();
-		coder.writeBits(index, vars.get(Context.GLYPH_SIZE));
-		coder.writeBits(advance, vars.get(Context.ADVANCE_SIZE));
-	}
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        final Map<Integer, Integer> vars = context.getVariables();
+        coder.writeBits(index, vars.get(Context.GLYPH_SIZE));
+        coder.writeBits(advance, vars.get(Context.ADVANCE_SIZE));
+    }
 }

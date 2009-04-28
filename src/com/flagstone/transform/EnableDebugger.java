@@ -49,89 +49,89 @@ import com.flagstone.transform.coder.SWFEncoder;
  * </p>
  */
 public final class EnableDebugger implements MovieTag {
-	private static final String FORMAT = "EnableDebugger: { password=%s }";
+    private static final String FORMAT = "EnableDebugger: { password=%s }";
 
-	private String password;
+    private String password;
 
-	private transient int length;
+    private transient int length;
 
-	// TODO(doc)
-	public EnableDebugger(final SWFDecoder coder) throws CoderException {
-		length = coder.readWord(2, false) & 0x3F;
+    // TODO(doc)
+    public EnableDebugger(final SWFDecoder coder) throws CoderException {
+        length = coder.readWord(2, false) & 0x3F;
 
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
+        if (length == 0x3F) {
+            length = coder.readWord(4, false);
+        }
 
-		coder.readWord(2, false);
-		password = coder.readString();
-	}
+        coder.readWord(2, false);
+        password = coder.readString();
+    }
 
-	/**
-	 * Creates a EnableDebugger2 object with an MD5 encrypted password.
-	 * 
-	 * @param password
-	 *            the string defining the password. Must not be an empty string
-	 *            or null.
-	 */
-	public EnableDebugger(final String password) {
-		setPassword(password);
-	}
+    /**
+     * Creates a EnableDebugger2 object with an MD5 encrypted password.
+     * 
+     * @param password
+     *            the string defining the password. Must not be an empty string
+     *            or null.
+     */
+    public EnableDebugger(final String password) {
+        setPassword(password);
+    }
 
-	// TODO(doc)
-	public EnableDebugger(final EnableDebugger object) {
-		password = object.password;
-	}
+    // TODO(doc)
+    public EnableDebugger(final EnableDebugger object) {
+        password = object.password;
+    }
 
-	/**
-	 * Returns the MD5 encrypted password.
-	 */
-	public String getPassword() {
-		return password;
-	}
+    /**
+     * Returns the MD5 encrypted password.
+     */
+    public String getPassword() {
+        return password;
+    }
 
-	/**
-	 * Sets the MD5 encrypted password.
-	 * 
-	 * @param aString
-	 *            the string defining the password. Must not be an empty string
-	 *            or null.
-	 */
-	public void setPassword(final String aString) {
-		if (aString == null) {
-			throw new IllegalArgumentException(Strings.STRING_IS_NULL);
-		}
-		if (aString.length() == 0) {
-			throw new IllegalArgumentException(Strings.STRING_IS_EMPTY);
-		}
-		password = aString;
-	}
+    /**
+     * Sets the MD5 encrypted password.
+     * 
+     * @param aString
+     *            the string defining the password. Must not be an empty string
+     *            or null.
+     */
+    public void setPassword(final String aString) {
+        if (aString == null) {
+            throw new IllegalArgumentException(Strings.STRING_IS_NULL);
+        }
+        if (aString.length() == 0) {
+            throw new IllegalArgumentException(Strings.STRING_IS_EMPTY);
+        }
+        password = aString;
+    }
 
-	public EnableDebugger copy() {
-		return new EnableDebugger(this);
-	}
+    public EnableDebugger copy() {
+        return new EnableDebugger(this);
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, password);
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, password);
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		length = 2 + coder.strlen(password);
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        length = 2 + coder.strlen(password);
 
-		return (length > 62 ? 6 : 2) + length;
-	}
+        return (length > 62 ? 6 : 2) + length;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		if (length > 62) {
-			coder.writeWord((MovieTypes.ENABLE_DEBUGGER << 6) | 0x3F, 2);
-			coder.writeWord(length, 4);
-		} else {
-			coder.writeWord((MovieTypes.ENABLE_DEBUGGER << 6) | length, 2);
-		}
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        if (length > 62) {
+            coder.writeWord((MovieTypes.ENABLE_DEBUGGER << 6) | 0x3F, 2);
+            coder.writeWord(length, 4);
+        } else {
+            coder.writeWord((MovieTypes.ENABLE_DEBUGGER << 6) | length, 2);
+        }
 
-		coder.writeWord(0, 2);
-		coder.writeString(password);
-	}
+        coder.writeWord(0, 2);
+        coder.writeString(password);
+    }
 }

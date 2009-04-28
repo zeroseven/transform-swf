@@ -45,111 +45,111 @@ import com.flagstone.transform.coder.SWFEncoder;
  * be decoded and encoded, giving a measure of forward-compatibility.
  */
 public final class ActionObject implements Action {
-	private static final String FORMAT = "ActionObject: { type=%d; data[%s] }";
+    private static final String FORMAT = "ActionObject: { type=%d; data[%s] }";
 
-	private final transient int type;
-	private final transient byte[] data;
+    private final transient int type;
+    private final transient byte[] data;
 
-	/**
-	 * Creates and initialises an ActionObject using values encoded in the Flash
-	 * binary format.
-	 * 
-	 * @param coder
-	 *            an SWFDecoder object that contains the encoded Flash data.
-	 * 
-	 * @param context
-	 *            a Context object used to pass information between objects on
-	 *            how the information the data should be decoded.
-	 * 
-	 * @throws CoderException
-	 *             if an error occurs while decoding the data.
-	 */
-	public ActionObject(final SWFDecoder coder) throws CoderException {
-		type = coder.readByte();
+    /**
+     * Creates and initialises an ActionObject using values encoded in the Flash
+     * binary format.
+     * 
+     * @param coder
+     *            an SWFDecoder object that contains the encoded Flash data.
+     * 
+     * @param context
+     *            a Context object used to pass information between objects on
+     *            how the information the data should be decoded.
+     * 
+     * @throws CoderException
+     *             if an error occurs while decoding the data.
+     */
+    public ActionObject(final SWFDecoder coder) throws CoderException {
+        type = coder.readByte();
 
-		if (type > 127) {
-			data = coder.readBytes(new byte[coder.readWord(2, false)]);
-		} else {
-			data = null;
-		}
-	}
+        if (type > 127) {
+            data = coder.readBytes(new byte[coder.readWord(2, false)]);
+        } else {
+            data = null;
+        }
+    }
 
-	/**
-	 * Creates an ActionObject specifying only the type.
-	 * 
-	 * @param type
-	 *            the value identifying the action when it is encoded.
-	 */
-	public ActionObject(final int type) {
-		this.type = type;
-		data = null;
-	}
+    /**
+     * Creates an ActionObject specifying only the type.
+     * 
+     * @param type
+     *            the value identifying the action when it is encoded.
+     */
+    public ActionObject(final int type) {
+        this.type = type;
+        data = null;
+    }
 
-	/**
-	 * Creates an ActionObject specifying the type and the data that represents
-	 * the body of the action encoded in the Flash binary format.
-	 * 
-	 * @param type
-	 *            the value identifying the action when it is encoded.
-	 * @param bytes
-	 *            the body of the action when it is encoded in the Flash format.
-	 */
-	public ActionObject(final int type, final byte[] bytes) {
-		this.type = type;
+    /**
+     * Creates an ActionObject specifying the type and the data that represents
+     * the body of the action encoded in the Flash binary format.
+     * 
+     * @param type
+     *            the value identifying the action when it is encoded.
+     * @param bytes
+     *            the body of the action when it is encoded in the Flash format.
+     */
+    public ActionObject(final int type, final byte[] bytes) {
+        this.type = type;
 
-		if (bytes == null) {
-			throw new IllegalArgumentException(Strings.DATA_IS_NULL);
-		}
-		data = bytes;
-	}
+        if (bytes == null) {
+            throw new IllegalArgumentException(Strings.DATA_IS_NULL);
+        }
+        data = bytes;
+    }
 
-	/**
-	 * Creates an ActionObject by copying an existing one.
-	 * 
-	 * @param object
-	 *            an ActionObject.
-	 */
-	public ActionObject(final ActionObject object) {
-		type = object.type;
-		data = Arrays.copyOf(object.data, object.data.length);
-	}
+    /**
+     * Creates an ActionObject by copying an existing one.
+     * 
+     * @param object
+     *            an ActionObject.
+     */
+    public ActionObject(final ActionObject object) {
+        type = object.type;
+        data = Arrays.copyOf(object.data, object.data.length);
+    }
 
-	/**
-	 * Returns the type that identifies the type of action when it is encoded in
-	 * the Flash binary format.
-	 */
-	public int getType() {
-		return type;
-	}
+    /**
+     * Returns the type that identifies the type of action when it is encoded in
+     * the Flash binary format.
+     */
+    public int getType() {
+        return type;
+    }
 
-	/**
-	 * Returns the encoded data for the action.
-	 */
-	public byte[] getData() {
-		return data;
-	}
+    /**
+     * Returns the encoded data for the action.
+     */
+    public byte[] getData() {
+        return data;
+    }
 
-	public ActionObject copy() {
-		return new ActionObject(this);
-	}
+    public ActionObject copy() {
+        return new ActionObject(this);
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, type, (data == null ? data : String
-				.valueOf(data.length)));
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, type, (data == null ? data : String
+                .valueOf(data.length)));
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		return ((type > 127) ? 3 : 1) + ((data == null) ? 0 : data.length);
-	}
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        return ((type > 127) ? 3 : 1) + ((data == null) ? 0 : data.length);
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		coder.writeByte(type);
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        coder.writeByte(type);
 
-		if (type > 127) {
-			coder.writeWord(data.length, 2);
-			coder.writeBytes(data);
-		}
-	}
+        if (type > 127) {
+            coder.writeWord(data.length, 2);
+            coder.writeBytes(data);
+        }
+    }
 }

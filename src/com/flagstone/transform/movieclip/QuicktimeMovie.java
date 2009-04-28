@@ -42,97 +42,97 @@ import com.flagstone.transform.coder.SWFEncoder;
  * The QuicktimeMovie defines the path to an Quicktime movie to be played.
  */
 public final class QuicktimeMovie implements MovieTag {
-	private static final String FORMAT = "QuicktimeMovie: { name=%s }";
+    private static final String FORMAT = "QuicktimeMovie: { name=%s }";
 
-	private String path;
+    private String path;
 
-	private transient int length;
+    private transient int length;
 
-	// TODO(doc)
-	public QuicktimeMovie(final SWFDecoder coder) throws CoderException {
-		final int start = coder.getPointer();
-		length = coder.readWord(2, false) & 0x3F;
+    // TODO(doc)
+    public QuicktimeMovie(final SWFDecoder coder) throws CoderException {
+        final int start = coder.getPointer();
+        length = coder.readWord(2, false) & 0x3F;
 
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
-		final int end = coder.getPointer() + (length << 3);
+        if (length == 0x3F) {
+            length = coder.readWord(4, false);
+        }
+        final int end = coder.getPointer() + (length << 3);
 
-		path = coder.readString();
+        path = coder.readString();
 
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
+        if (coder.getPointer() != end) {
+            throw new CoderException(getClass().getName(), start >> 3, length,
+                    (coder.getPointer() - end) >> 3);
+        }
+    }
 
-	/**
-	 * Creates a QuicktimeMovie object referencing the specified file.
-	 * 
-	 * @param aString
-	 *            the file or URL where the file is located. Must not be null.
-	 */
-	public QuicktimeMovie(final String aString) {
-		setPath(aString);
-	}
+    /**
+     * Creates a QuicktimeMovie object referencing the specified file.
+     * 
+     * @param aString
+     *            the file or URL where the file is located. Must not be null.
+     */
+    public QuicktimeMovie(final String aString) {
+        setPath(aString);
+    }
 
-	// TODO(doc)
-	public QuicktimeMovie(final QuicktimeMovie object) {
-		path = object.path;
-	}
+    // TODO(doc)
+    public QuicktimeMovie(final QuicktimeMovie object) {
+        path = object.path;
+    }
 
-	/**
-	 * Returns the reference to the file containing the movie.
-	 */
-	public String getPath() {
-		return path;
-	}
+    /**
+     * Returns the reference to the file containing the movie.
+     */
+    public String getPath() {
+        return path;
+    }
 
-	/**
-	 * Sets the reference to the file containing the movie.
-	 * 
-	 * @param aString
-	 *            the file or URL where the file is located. Must not be null.
-	 */
-	public void setPath(final String aString) {
-		if (aString == null) {
-			throw new IllegalArgumentException(Strings.STRING_IS_NULL);
-		}
-		path = aString;
-	}
+    /**
+     * Sets the reference to the file containing the movie.
+     * 
+     * @param aString
+     *            the file or URL where the file is located. Must not be null.
+     */
+    public void setPath(final String aString) {
+        if (aString == null) {
+            throw new IllegalArgumentException(Strings.STRING_IS_NULL);
+        }
+        path = aString;
+    }
 
-	public QuicktimeMovie copy() {
-		return new QuicktimeMovie(this);
-	}
+    public QuicktimeMovie copy() {
+        return new QuicktimeMovie(this);
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, path);
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, path);
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		length = coder.strlen(path);
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        length = coder.strlen(path);
 
-		return (length > 62 ? 6 : 2) + length;
-	}
+        return (length > 62 ? 6 : 2) + length;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		final int start = coder.getPointer();
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        final int start = coder.getPointer();
 
-		if (length > 62) {
-			coder.writeWord((MovieTypes.QUICKTIME_MOVIE << 6) | 0x3F, 2);
-			coder.writeWord(length, 4);
-		} else {
-			coder.writeWord((MovieTypes.QUICKTIME_MOVIE << 6) | length, 2);
-		}
-		final int end = coder.getPointer() + (length << 3);
+        if (length > 62) {
+            coder.writeWord((MovieTypes.QUICKTIME_MOVIE << 6) | 0x3F, 2);
+            coder.writeWord(length, 4);
+        } else {
+            coder.writeWord((MovieTypes.QUICKTIME_MOVIE << 6) | length, 2);
+        }
+        final int end = coder.getPointer() + (length << 3);
 
-		coder.writeString(path);
+        coder.writeString(path);
 
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
+        if (coder.getPointer() != end) {
+            throw new CoderException(getClass().getName(), start >> 3, length,
+                    (coder.getPointer() - end) >> 3);
+        }
+    }
 }

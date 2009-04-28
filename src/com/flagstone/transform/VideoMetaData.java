@@ -48,125 +48,125 @@ import com.flagstone.transform.coder.VideoTypes;
  * </p>
  */
 public final class VideoMetaData implements VideoTag {
-	private static final String FORMAT = "VideoMetaData: { data=%d }";
+    private static final String FORMAT = "VideoMetaData: { data=%d }";
 
-	private int timestamp;
-	private byte[] data;
+    private int timestamp;
+    private byte[] data;
 
-	private transient int length;
+    private transient int length;
 
-	public VideoMetaData(final FLVDecoder coder) throws CoderException {
-		final int start = coder.getPointer();
-		coder.readByte();
-		length = coder.readWord(3, false);
-		final int end = coder.getPointer() + (length << 3);
-		timestamp = coder.readWord(3, false);
-		coder.readWord(4, false); // reserved
-		data = coder.readBytes(new byte[length]);
+    public VideoMetaData(final FLVDecoder coder) throws CoderException {
+        final int start = coder.getPointer();
+        coder.readByte();
+        length = coder.readWord(3, false);
+        final int end = coder.getPointer() + (length << 3);
+        timestamp = coder.readWord(3, false);
+        coder.readWord(4, false); // reserved
+        data = coder.readBytes(new byte[length]);
 
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
+        if (coder.getPointer() != end) {
+            throw new CoderException(getClass().getName(), start >> 3, length,
+                    (coder.getPointer() - end) >> 3);
+        }
+    }
 
-	/**
-	 * Constructs a new VideoMetaData object with the encoded data).
-	 * 
-	 * @param data
-	 *            an array of bytes containing the encoded meta-data. Must not
-	 *            be null.
-	 */
-	public VideoMetaData(final int timestamp, final byte[] data) {
-		setTimestamp(timestamp);
-		setData(data);
-	}
+    /**
+     * Constructs a new VideoMetaData object with the encoded data).
+     * 
+     * @param data
+     *            an array of bytes containing the encoded meta-data. Must not
+     *            be null.
+     */
+    public VideoMetaData(final int timestamp, final byte[] data) {
+        setTimestamp(timestamp);
+        setData(data);
+    }
 
-	public VideoMetaData(final VideoMetaData object) {
-		timestamp = object.timestamp;
-		data = Arrays.copyOf(object.data, object.data.length);
-	}
+    public VideoMetaData(final VideoMetaData object) {
+        timestamp = object.timestamp;
+        data = Arrays.copyOf(object.data, object.data.length);
+    }
 
-	/**
-	 * Returns the timestamp, in milliseconds, relative to the start of the
-	 * file, when the audio or video will be played.
-	 */
-	public int getTimestamp() {
-		return timestamp;
-	}
+    /**
+     * Returns the timestamp, in milliseconds, relative to the start of the
+     * file, when the audio or video will be played.
+     */
+    public int getTimestamp() {
+        return timestamp;
+    }
 
-	/**
-	 * Sets the timestamp, in milliseconds, relative to the start of the file,
-	 * when the audio or video will be played.
-	 * 
-	 * @param time
-	 *            the time in milliseconds relative to the start of the file.
-	 *            Must be in the range 0..16,777,215.
-	 */
-	public void setTimestamp(final int time) {
-		if (time < 0 || time > 16777215) {
-			throw new IllegalArgumentException(Strings.TIMESTAMP_RANGE);
-		}
-		timestamp = time;
-	}
+    /**
+     * Sets the timestamp, in milliseconds, relative to the start of the file,
+     * when the audio or video will be played.
+     * 
+     * @param time
+     *            the time in milliseconds relative to the start of the file.
+     *            Must be in the range 0..16,777,215.
+     */
+    public void setTimestamp(final int time) {
+        if ((time < 0) || (time > 16777215)) {
+            throw new IllegalArgumentException(Strings.TIMESTAMP_RANGE);
+        }
+        timestamp = time;
+    }
 
-	/**
-	 * Get the encoded meta data that describes how the video stream should be
-	 * played.
-	 */
-	public byte[] getData() {
-		return data;
-	}
+    /**
+     * Get the encoded meta data that describes how the video stream should be
+     * played.
+     */
+    public byte[] getData() {
+        return data;
+    }
 
-	/**
-	 * Sets the encoded meta data that describes how the video stream should be
-	 * played.
-	 * 
-	 * @param data
-	 *            an array of bytes containing the encoded meta-data. Must not
-	 *            be null.
-	 */
-	public void setData(final byte[] data) {
-		if (data == null) {
-			throw new IllegalArgumentException(Strings.DATA_IS_NULL);
-		}
-		this.data = data;
-	}
+    /**
+     * Sets the encoded meta data that describes how the video stream should be
+     * played.
+     * 
+     * @param data
+     *            an array of bytes containing the encoded meta-data. Must not
+     *            be null.
+     */
+    public void setData(final byte[] data) {
+        if (data == null) {
+            throw new IllegalArgumentException(Strings.DATA_IS_NULL);
+        }
+        this.data = data;
+    }
 
-	/**
-	 * Creates and returns a deep copy of this object.
-	 */
-	public VideoMetaData copy() {
-		return new VideoMetaData(this);
-	}
+    /**
+     * Creates and returns a deep copy of this object.
+     */
+    public VideoMetaData copy() {
+        return new VideoMetaData(this);
+    }
 
-	/**
-	 * Returns a short description of this action.
-	 */
-	@Override
-	public String toString() {
-		return String.format(FORMAT, data.length);
-	}
+    /**
+     * Returns a short description of this action.
+     */
+    @Override
+    public String toString() {
+        return String.format(FORMAT, data.length);
+    }
 
-	public int prepareToEncode() {
-		length = 11 + data.length;
+    public int prepareToEncode() {
+        length = 11 + data.length;
 
-		return length;
-	}
+        return length;
+    }
 
-	public void encode(final FLVEncoder coder) throws CoderException {
-		final int start = coder.getPointer();
+    public void encode(final FLVEncoder coder) throws CoderException {
+        final int start = coder.getPointer();
 
-		coder.writeWord(VideoTypes.VIDEO_DATA, 1);
-		coder.writeWord(length - 11, 3);
-		final int end = coder.getPointer() + (length << 3);
-		coder.writeWord(timestamp, 3);
-		coder.writeWord(0, 4);
-		coder.writeBytes(data);
+        coder.writeWord(VideoTypes.VIDEO_DATA, 1);
+        coder.writeWord(length - 11, 3);
+        final int end = coder.getPointer() + (length << 3);
+        coder.writeWord(timestamp, 3);
+        coder.writeWord(0, 4);
+        coder.writeBytes(data);
 
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
+        if (coder.getPointer() != end) {
+            throw new CoderException(getClass().getName(), start >> 3, length,
+                    (coder.getPointer() - end) >> 3);
+        }
+    }
 }

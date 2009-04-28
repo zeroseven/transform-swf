@@ -34,43 +34,43 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.zip.DataFormatException;
 
-import com.flagstone.transform.Video;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.flagstone.transform.Video;
 
 /**
  * DecodeVideoTest is used to create Videos using all the Flash files in a given
  * directory to verify that they can be decoded correctly.
  */
 public final class VideoDecodeTest {
-	private static File srcDir;
-	private static FilenameFilter filter;
+    private static File srcDir;
+    private static FilenameFilter filter;
 
-	@BeforeClass
-	public static void setUp() {
-		if (System.getProperty("test.suite") == null) {
-			srcDir = new File("test/data/flv/reference");
-		} else {
-			srcDir = new File(System.getProperty("test.suites"));
-		}
+    @BeforeClass
+    public static void setUp() {
+        if (System.getProperty("test.suite") == null) {
+            srcDir = new File("test/data/flv/reference");
+        } else {
+            srcDir = new File(System.getProperty("test.suites"));
+        }
 
-		filter = new FilenameFilter() {
-			public boolean accept(final File directory, final String name) {
-				return name.endsWith(".flv");
-			}
-		};
-	}
+        filter = new FilenameFilter() {
+            public boolean accept(final File directory, final String name) {
+                return name.endsWith(".flv");
+            }
+        };
+    }
 
-	@Test
-	public void decode() throws DataFormatException, IOException {
-		File sourceFile = null;
-		final Video video = new Video();
-		final String[] files = srcDir.list(filter);
+    @Test
+    public void decode() throws DataFormatException, IOException {
+        File sourceFile = null;
+        final Video video = new Video();
+        final String[] files = srcDir.list(filter);
 
-		for (String file : files) {
-			sourceFile = new File(srcDir, file);
-			video.decodeFromFile(sourceFile);
-		}
-	}
+        for (final String file : files) {
+            sourceFile = new File(srcDir, file);
+            video.decodeFromFile(sourceFile);
+        }
+    }
 }

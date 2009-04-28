@@ -43,78 +43,78 @@ import com.flagstone.transform.coder.SWFEncoder;
  */
 public final class Free implements MovieTag {
 
-	private static final String FORMAT = "Free: { identifier=%d }";
+    private static final String FORMAT = "Free: { identifier=%d }";
 
-	private int identifier;
+    private int identifier;
 
-	// TODo(doc)
-	public Free(final SWFDecoder coder) throws CoderException {
+    // TODo(doc)
+    public Free(final SWFDecoder coder) throws CoderException {
 
-		if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
-			coder.readWord(4, false);
-		}
+        if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
+            coder.readWord(4, false);
+        }
 
-		identifier = coder.readWord(2, false);
-	}
+        identifier = coder.readWord(2, false);
+    }
 
-	/**
-	 * Creates a Free object with the specified identifier.
-	 * 
-	 * @param uid
-	 *            the unique identifier of the object to be deleted. Must be in
-	 *            the range 1..65535.
-	 */
-	public Free(final int uid) {
-		setIdentifier(uid);
-	}
+    /**
+     * Creates a Free object with the specified identifier.
+     * 
+     * @param uid
+     *            the unique identifier of the object to be deleted. Must be in
+     *            the range 1..65535.
+     */
+    public Free(final int uid) {
+        setIdentifier(uid);
+    }
 
-	/**
-	 * Creates a Free initialised with a copy of the data from another object.
-	 * 
-	 * @param object
-	 *            a Free object used to initialise this one.
-	 */
-	public Free(final Free object) {
-		identifier = object.identifier;
-	}
+    /**
+     * Creates a Free initialised with a copy of the data from another object.
+     * 
+     * @param object
+     *            a Free object used to initialise this one.
+     */
+    public Free(final Free object) {
+        identifier = object.identifier;
+    }
 
-	/**
-	 * Returns the identifier of the object to be deleted.
-	 */
-	public int getIdentifier() {
-		return identifier;
-	}
+    /**
+     * Returns the identifier of the object to be deleted.
+     */
+    public int getIdentifier() {
+        return identifier;
+    }
 
-	/**
-	 * Sets the identifier of the object to be deleted.
-	 * 
-	 * @param uid
-	 *            the identifier of the object to be deleted. Must be in the
-	 *            range 1..65535.
-	 */
-	public void setIdentifier(final int uid) {
-		if (uid < 1 || uid > 65535) {
-			throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
-		}
-		identifier = uid;
-	}
+    /**
+     * Sets the identifier of the object to be deleted.
+     * 
+     * @param uid
+     *            the identifier of the object to be deleted. Must be in the
+     *            range 1..65535.
+     */
+    public void setIdentifier(final int uid) {
+        if ((uid < 1) || (uid > 65535)) {
+            throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
+        }
+        identifier = uid;
+    }
 
-	public Free copy() {
-		return new Free(this);
-	}
+    public Free copy() {
+        return new Free(this);
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, identifier);
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, identifier);
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		return 4;
-	}
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        return 4;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		coder.writeWord((MovieTypes.FREE << 6) | 2, 2);
-		coder.writeWord(identifier, 2);
-	}
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        coder.writeWord((MovieTypes.FREE << 6) | 2, 2);
+        coder.writeWord(identifier, 2);
+    }
 }

@@ -29,14 +29,15 @@
  */
 package com.flagstone.transform.movieclip;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.Test;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertArrayEquals;
+import org.junit.Test;
 
 import com.flagstone.transform.action.BasicAction;
 import com.flagstone.transform.coder.Action;
@@ -48,92 +49,90 @@ import com.flagstone.transform.coder.DecoderRegistry;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-
-
 public final class InitializeMovieClipTest {
 
-	private static int identifier = 1;
-	private static List<Action> list = new ArrayList<Action>();
+    private static int identifier = 1;
+    private static List<Action> list = new ArrayList<Action>();
 
-	static {
-		list.add(BasicAction.ADD);
-		list.add(BasicAction.END);
-	}
+    static {
+        list.add(BasicAction.ADD);
+        list.add(BasicAction.END);
+    }
 
-	private transient InitializeMovieClip fixture;
+    private transient InitializeMovieClip fixture;
 
-	private transient final byte[] encoded = new byte[] { (byte) 0xC4, 0x0E,
-			0x01, 0x00, ActionTypes.ADD, ActionTypes.END };
+    private transient final byte[] encoded = new byte[] { (byte) 0xC4, 0x0E,
+            0x01, 0x00, ActionTypes.ADD, ActionTypes.END };
 
-	private transient final byte[] extended = new byte[] { (byte) 0xFF, 0x0E,
-			0x04, 0x00, 0x00, 0x00, 0x01, 0x00, ActionTypes.ADD,
-			ActionTypes.END };
+    private transient final byte[] extended = new byte[] { (byte) 0xFF, 0x0E,
+            0x04, 0x00, 0x00, 0x00, 0x01, 0x00, ActionTypes.ADD,
+            ActionTypes.END };
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAccessorForIdentifierWithLowerBound() {
-		fixture = new InitializeMovieClip(0, list);
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkAccessorForIdentifierWithLowerBound() {
+        fixture = new InitializeMovieClip(0, list);
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAccessorForIdentifierWithUpperBound() {
-		fixture = new InitializeMovieClip(65536, list);
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkAccessorForIdentifierWithUpperBound() {
+        fixture = new InitializeMovieClip(65536, list);
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAddNullNull() {
-		fixture = new InitializeMovieClip(identifier, null);
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkAddNullNull() {
+        fixture = new InitializeMovieClip(identifier, null);
+    }
 
-	@Test
-	public void checkCopy() {
-		fixture = new InitializeMovieClip(identifier, list);
-		final InitializeMovieClip copy = fixture.copy();
+    @Test
+    public void checkCopy() {
+        fixture = new InitializeMovieClip(identifier, list);
+        final InitializeMovieClip copy = fixture.copy();
 
-		assertEquals(fixture.getIdentifier(), copy.getIdentifier());
-		assertNotSame(fixture.getActions(), copy.getActions());
-		assertEquals(fixture.toString(), copy.toString());
-	}
+        assertEquals(fixture.getIdentifier(), copy.getIdentifier());
+        assertNotSame(fixture.getActions(), copy.getActions());
+        assertEquals(fixture.toString(), copy.toString());
+    }
 
-	@Test
-	public void encode() throws CoderException {
-		final SWFEncoder encoder = new SWFEncoder(encoded.length);
-		final Context context = new Context();
+    @Test
+    public void encode() throws CoderException {
+        final SWFEncoder encoder = new SWFEncoder(encoded.length);
+        final Context context = new Context();
 
-		fixture = new InitializeMovieClip(identifier, list);
-		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
-		fixture.encode(encoder, context);
+        fixture = new InitializeMovieClip(identifier, list);
+        assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
+        fixture.encode(encoder, context);
 
-		assertTrue(encoder.eof());
-		assertArrayEquals(encoded, encoder.getData());
-	}
+        assertTrue(encoder.eof());
+        assertArrayEquals(encoded, encoder.getData());
+    }
 
-	@Test
-	public void decode() throws CoderException {
-		final SWFDecoder decoder = new SWFDecoder(encoded);
-		final Context context = new Context();
-		final DecoderRegistry registry = new DecoderRegistry();
-		registry.setActionDecoder(new ActionDecoder());
-		context.setRegistry(registry);
+    @Test
+    public void decode() throws CoderException {
+        final SWFDecoder decoder = new SWFDecoder(encoded);
+        final Context context = new Context();
+        final DecoderRegistry registry = new DecoderRegistry();
+        registry.setActionDecoder(new ActionDecoder());
+        context.setRegistry(registry);
 
-		fixture = new InitializeMovieClip(decoder, context);
+        fixture = new InitializeMovieClip(decoder, context);
 
-		assertTrue(decoder.eof());
-		assertEquals(identifier, fixture.getIdentifier());
-		assertEquals(list, fixture.getActions());
-	}
+        assertTrue(decoder.eof());
+        assertEquals(identifier, fixture.getIdentifier());
+        assertEquals(list, fixture.getActions());
+    }
 
-	@Test
-	public void decodeExtended() throws CoderException {
-		final SWFDecoder decoder = new SWFDecoder(extended);
-		final Context context = new Context();
-		final DecoderRegistry registry = new DecoderRegistry();
-		registry.setActionDecoder(new ActionDecoder());
-		context.setRegistry(registry);
+    @Test
+    public void decodeExtended() throws CoderException {
+        final SWFDecoder decoder = new SWFDecoder(extended);
+        final Context context = new Context();
+        final DecoderRegistry registry = new DecoderRegistry();
+        registry.setActionDecoder(new ActionDecoder());
+        context.setRegistry(registry);
 
-		fixture = new InitializeMovieClip(decoder, context);
+        fixture = new InitializeMovieClip(decoder, context);
 
-		assertTrue(decoder.eof());
-		assertEquals(identifier, fixture.getIdentifier());
-		assertEquals(list, fixture.getActions());
-	}
+        assertTrue(decoder.eof());
+        assertEquals(identifier, fixture.getIdentifier());
+        assertEquals(list, fixture.getActions());
+    }
 }

@@ -33,8 +33,8 @@ package com.flagstone.transform.font;
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFDecoder;
+import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFEncoder;
 
 //TODO(doc) Review
@@ -57,113 +57,113 @@ import com.flagstone.transform.coder.SWFEncoder;
  * @see DefineFont2
  */
 public final class Kerning implements SWFEncodeable {
-	private static final String FORMAT = "Kerning: { leftGlyph=%d; rightGlyph=%d; adjustment=%d } ";
+    private static final String FORMAT = "Kerning: { leftGlyph=%d; rightGlyph=%d; adjustment=%d } ";
 
-	private final transient int leftGlyph;
-	private final transient int rightGlyph;
-	private final transient int adjustment;
+    private final transient int leftGlyph;
+    private final transient int rightGlyph;
+    private final transient int adjustment;
 
-	private transient int size;
+    private transient int size;
 
-	public Kerning(final SWFDecoder coder, final Context context)
-			throws CoderException {
-		size = context.getVariables().containsKey(Context.WIDE_CODES) ? 2 : 1;
-		leftGlyph = coder.readWord(size, false);
-		rightGlyph = coder.readWord(size, false);
-		adjustment = coder.readWord(2, true);
-	}
+    public Kerning(final SWFDecoder coder, final Context context)
+            throws CoderException {
+        size = context.getVariables().containsKey(Context.WIDE_CODES) ? 2 : 1;
+        leftGlyph = coder.readWord(size, false);
+        rightGlyph = coder.readWord(size, false);
+        adjustment = coder.readWord(2, true);
+    }
 
-	/**
-	 * Creates a Kerning object specifying the glyph indexes and adjustment. The
-	 * value for the adjustment must be specified in twips.
-	 * 
-	 * @param leftIndex
-	 *            the index in a code table for the glyph on the left side of
-	 *            the pair. Must be in the range 0..65535.
-	 * @param rightIndex
-	 *            the index in a code table for the glyph on the right side of
-	 *            the pair. Must be in the range 0..65535.
-	 * @param adjust
-	 *            the adjustment that will be added to the advance defined for
-	 *            the left glyph. Must be in the range -32768..32767.
-	 */
-	public Kerning(final int leftIndex, final int rightIndex, final int adjust) {
-		if (leftIndex < 0 || leftIndex > 65535) {
-			throw new IllegalArgumentException(Strings.GLYPH_INDEX_RANGE);
-		}
-		leftGlyph = leftIndex;
+    /**
+     * Creates a Kerning object specifying the glyph indexes and adjustment. The
+     * value for the adjustment must be specified in twips.
+     * 
+     * @param leftIndex
+     *            the index in a code table for the glyph on the left side of
+     *            the pair. Must be in the range 0..65535.
+     * @param rightIndex
+     *            the index in a code table for the glyph on the right side of
+     *            the pair. Must be in the range 0..65535.
+     * @param adjust
+     *            the adjustment that will be added to the advance defined for
+     *            the left glyph. Must be in the range -32768..32767.
+     */
+    public Kerning(final int leftIndex, final int rightIndex, final int adjust) {
+        if ((leftIndex < 0) || (leftIndex > 65535)) {
+            throw new IllegalArgumentException(Strings.GLYPH_INDEX_RANGE);
+        }
+        leftGlyph = leftIndex;
 
-		if (rightIndex < 0 || rightIndex > 65535) {
-			throw new IllegalArgumentException(Strings.GLYPH_INDEX_RANGE);
-		}
-		rightGlyph = rightIndex;
+        if ((rightIndex < 0) || (rightIndex > 65535)) {
+            throw new IllegalArgumentException(Strings.GLYPH_INDEX_RANGE);
+        }
+        rightGlyph = rightIndex;
 
-		if (adjust < -32768 || adjust > 32767) {
-			throw new IllegalArgumentException(Strings.SIGNED_RANGE);
-		}
-		adjustment = adjust;
-	}
+        if ((adjust < -32768) || (adjust > 32767)) {
+            throw new IllegalArgumentException(Strings.SIGNED_RANGE);
+        }
+        adjustment = adjust;
+    }
 
-	/**
-	 * Returns the index of the left glyph in the kerning pair.
-	 */
-	public int getLeftGlyph() {
-		return leftGlyph;
-	}
+    /**
+     * Returns the index of the left glyph in the kerning pair.
+     */
+    public int getLeftGlyph() {
+        return leftGlyph;
+    }
 
-	/**
-	 * Returns the index of the right glyph in the kerning pair.
-	 */
-	public int getRightGlyph() {
-		return rightGlyph;
-	}
+    /**
+     * Returns the index of the right glyph in the kerning pair.
+     */
+    public int getRightGlyph() {
+        return rightGlyph;
+    }
 
-	/**
-	 * Returns the adjustment, in twips, to the advance of the left glyph.
-	 */
-	public int getAdjustment() {
-		return adjustment;
-	}
+    /**
+     * Returns the adjustment, in twips, to the advance of the left glyph.
+     */
+    public int getAdjustment() {
+        return adjustment;
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, leftGlyph, rightGlyph, adjustment);
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, leftGlyph, rightGlyph, adjustment);
+    }
 
-	@Override
-	public boolean equals(final Object object) {
-		boolean result;
-		Kerning kerning;
+    @Override
+    public boolean equals(final Object object) {
+        boolean result;
+        Kerning kerning;
 
-		if (object == null) {
-			result = false;
-		} else if (object == this) {
-			result = true;
-		} else if (object instanceof Kerning) {
-			kerning = (Kerning) object;
-			result = leftGlyph == kerning.leftGlyph
-					&& rightGlyph == kerning.rightGlyph
-					&& adjustment == kerning.adjustment;
-		} else {
-			result = false;
-		}
-		return result;
-	}
+        if (object == null) {
+            result = false;
+        } else if (object == this) {
+            result = true;
+        } else if (object instanceof Kerning) {
+            kerning = (Kerning) object;
+            result = (leftGlyph == kerning.leftGlyph)
+                    && (rightGlyph == kerning.rightGlyph)
+                    && (adjustment == kerning.adjustment);
+        } else {
+            result = false;
+        }
+        return result;
+    }
 
-	@Override
-	public int hashCode() {
-		return ((leftGlyph * 31) + rightGlyph) * 31 + adjustment;
-	}
+    @Override
+    public int hashCode() {
+        return ((leftGlyph * 31) + rightGlyph) * 31 + adjustment;
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		size = context.getVariables().containsKey(Context.WIDE_CODES) ? 2 : 1;
-		return (size << 2) + 2;
-	}
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        size = context.getVariables().containsKey(Context.WIDE_CODES) ? 2 : 1;
+        return (size << 2) + 2;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		coder.writeWord(leftGlyph, size);
-		coder.writeWord(rightGlyph, size);
-		coder.writeWord(adjustment, 2);
-	}
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        coder.writeWord(leftGlyph, size);
+        coder.writeWord(rightGlyph, size);
+        coder.writeWord(adjustment, 2);
+    }
 }

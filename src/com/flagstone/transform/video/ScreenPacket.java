@@ -41,251 +41,253 @@ import com.flagstone.transform.coder.SWFEncoder;
  * 
  */
 public final class ScreenPacket implements Cloneable {
-	private boolean keyFrame;
-	private int blockWidth;
-	private int blockHeight;
-	private int imageWidth;
-	private int imageHeight;
-	private List<ImageBlock> imageBlocks;
+    private boolean keyFrame;
+    private int blockWidth;
+    private int blockHeight;
+    private int imageWidth;
+    private int imageHeight;
+    private List<ImageBlock> imageBlocks;
 
-	public ScreenPacket(final byte[] data) {
-		final SWFDecoder coder = new SWFDecoder(data);
+    public ScreenPacket(final byte[] data) {
+        final SWFDecoder coder = new SWFDecoder(data);
 
-		keyFrame = coder.readBits(4, false) == 1;
-		coder.readBits(4, false); // codec = screen_video
+        keyFrame = coder.readBits(4, false) == 1;
+        coder.readBits(4, false); // codec = screen_video
 
-		blockWidth = (coder.readBits(4, false) + 1) * 16;
-		imageWidth = coder.readBits(12, false);
-		blockHeight = (coder.readBits(4, false) + 1) * 16;
-		imageHeight = coder.readBits(12, false);
+        blockWidth = (coder.readBits(4, false) + 1) * 16;
+        imageWidth = coder.readBits(12, false);
+        blockHeight = (coder.readBits(4, false) + 1) * 16;
+        imageHeight = coder.readBits(12, false);
 
-		final int columns = imageWidth / blockWidth
-				+ ((imageWidth % blockWidth > 0) ? 1 : 0);
-		final int rows = imageHeight / blockHeight
-				+ ((imageHeight % blockHeight > 0) ? 1 : 0);
+        final int columns = imageWidth / blockWidth
+                + ((imageWidth % blockWidth > 0) ? 1 : 0);
+        final int rows = imageHeight / blockHeight
+                + ((imageHeight % blockHeight > 0) ? 1 : 0);
 
-		int height = imageHeight;
-		int width = imageWidth;
+        int height = imageHeight;
+        int width = imageWidth;
 
-		imageBlocks.clear();
-		ImageBlock block;
+        imageBlocks.clear();
+        ImageBlock block;
 
-		for (int i = 0; i < rows; i++, height -= blockHeight) {
-			for (int j = 0; j < columns; j++, width -= blockWidth) {
-				final int length = coder.readBits(16, false);
+        for (int i = 0; i < rows; i++, height -= blockHeight) {
+            for (int j = 0; j < columns; j++, width -= blockWidth) {
+                final int length = coder.readBits(16, false);
 
-				if (length == 0) {
-					block = new ImageBlock(0, 0, null);
-				} else {
-					final int dataHeight = (height < blockHeight) ? height
-							: blockHeight;
-					final int dataWidth = (width < blockWidth) ? width : blockWidth;
+                if (length == 0) {
+                    block = new ImageBlock(0, 0, null);
+                } else {
+                    final int dataHeight = (height < blockHeight) ? height
+                            : blockHeight;
+                    final int dataWidth = (width < blockWidth) ? width
+                            : blockWidth;
 
-					block = new ImageBlock(dataHeight, dataWidth, coder
-							.readBytes(new byte[length]));
-				}
+                    block = new ImageBlock(dataHeight, dataWidth, coder
+                            .readBytes(new byte[length]));
+                }
 
-				imageBlocks.add(block);
-			}
-		}
-	}
+                imageBlocks.add(block);
+            }
+        }
+    }
 
-	protected ScreenPacket() {
-		imageBlocks = new ArrayList<ImageBlock>();
-	}
+    protected ScreenPacket() {
+        imageBlocks = new ArrayList<ImageBlock>();
+    }
 
-	/**
-	 * Creates a ScreenVideoPacket.
-	 * 
-	 * @param key
-	 *            indicates whether the packet contains a key frame.
-	 * @param imageWidth
-	 *            the width of the frame.
-	 * @param imageHeight
-	 *            the height of the frame.
-	 * @param blockWidth
-	 *            the width of the blocks that make up the frame.
-	 * @param blockHeight
-	 *            the height of the blocks that make up the frame.
-	 * @param blocks
-	 *            the array of ImageBlocks that make up the frame.
-	 */
-	public ScreenPacket(final boolean key, final int imageWidth, final int imageHeight,
-			final int blockWidth, final int blockHeight, final List<ImageBlock> blocks) {
-		setKeyFrame(key);
-		setImageWidth(imageWidth);
-		setImageHeight(imageHeight);
-		setBlockWidth(blockWidth);
-		setBlockHeight(blockHeight);
-		setImageBlocks(blocks);
-	}
+    /**
+     * Creates a ScreenVideoPacket.
+     * 
+     * @param key
+     *            indicates whether the packet contains a key frame.
+     * @param imageWidth
+     *            the width of the frame.
+     * @param imageHeight
+     *            the height of the frame.
+     * @param blockWidth
+     *            the width of the blocks that make up the frame.
+     * @param blockHeight
+     *            the height of the blocks that make up the frame.
+     * @param blocks
+     *            the array of ImageBlocks that make up the frame.
+     */
+    public ScreenPacket(final boolean key, final int imageWidth,
+            final int imageHeight, final int blockWidth, final int blockHeight,
+            final List<ImageBlock> blocks) {
+        setKeyFrame(key);
+        setImageWidth(imageWidth);
+        setImageHeight(imageHeight);
+        setBlockWidth(blockWidth);
+        setBlockHeight(blockHeight);
+        setImageBlocks(blocks);
+    }
 
-	public ScreenPacket(final ScreenPacket object) {
-		keyFrame = object.keyFrame;
-		blockWidth = object.blockWidth;
-		blockHeight = object.blockHeight;
-		imageWidth = object.imageWidth;
-		imageHeight = object.imageHeight;
+    public ScreenPacket(final ScreenPacket object) {
+        keyFrame = object.keyFrame;
+        blockWidth = object.blockWidth;
+        blockHeight = object.blockHeight;
+        imageWidth = object.imageWidth;
+        imageHeight = object.imageHeight;
 
-		imageBlocks = new ArrayList<ImageBlock>(object.imageBlocks.size());
+        imageBlocks = new ArrayList<ImageBlock>(object.imageBlocks.size());
 
-		for (ImageBlock block : object.imageBlocks) {
-			imageBlocks.add(block.copy());
-		}
-	}
+        for (final ImageBlock block : object.imageBlocks) {
+            imageBlocks.add(block.copy());
+        }
+    }
 
-	/**
-	 * Add an image block to the array that make up the frame.
-	 * 
-	 * @param block
-	 *            an ImageBlock. Must not be null.
-	 */
-	public ScreenPacket add(final ImageBlock block) {
-		imageBlocks.add(block);
-		return this;
-	}
+    /**
+     * Add an image block to the array that make up the frame.
+     * 
+     * @param block
+     *            an ImageBlock. Must not be null.
+     */
+    public ScreenPacket add(final ImageBlock block) {
+        imageBlocks.add(block);
+        return this;
+    }
 
-	/**
-	 * Returns true if the packet contains a key frame
-	 */
-	public boolean isKeyFrame() {
-		return keyFrame;
-	}
+    /**
+     * Returns true if the packet contains a key frame
+     */
+    public boolean isKeyFrame() {
+        return keyFrame;
+    }
 
-	/**
-	 * Sets whether the frame is a key frame (true) or normal one (false).
-	 * 
-	 * @param key
-	 *            a boolean value indicating whether the frame is key (true) or
-	 *            normal (false.
-	 */
-	public void setKeyFrame(final boolean key) {
-		keyFrame = key;
-	}
+    /**
+     * Sets whether the frame is a key frame (true) or normal one (false).
+     * 
+     * @param key
+     *            a boolean value indicating whether the frame is key (true) or
+     *            normal (false.
+     */
+    public void setKeyFrame(final boolean key) {
+        keyFrame = key;
+    }
 
-	/**
-	 * Returns the width of the frame in pixels.
-	 */
-	public int getImageWidth() {
-		return imageWidth;
-	}
+    /**
+     * Returns the width of the frame in pixels.
+     */
+    public int getImageWidth() {
+        return imageWidth;
+    }
 
-	/**
-	 * Sets the width of the frame.
-	 * 
-	 * @param width
-	 *            the width of the frame in pixels.
-	 */
-	public void setImageWidth(final int width) {
-		imageWidth = width;
-	}
+    /**
+     * Sets the width of the frame.
+     * 
+     * @param width
+     *            the width of the frame in pixels.
+     */
+    public void setImageWidth(final int width) {
+        imageWidth = width;
+    }
 
-	/**
-	 * Returns the height of the frame in pixels.
-	 */
-	public int getImageHeight() {
-		return imageHeight;
-	}
+    /**
+     * Returns the height of the frame in pixels.
+     */
+    public int getImageHeight() {
+        return imageHeight;
+    }
 
-	public void setImageHeight(final int height) {
-		imageHeight = height;
-	}
+    public void setImageHeight(final int height) {
+        imageHeight = height;
+    }
 
-	/**
-	 * Returns the width of the blocks in pixels.
-	 */
-	public int getBlockWidth() {
-		return blockWidth;
-	}
+    /**
+     * Returns the width of the blocks in pixels.
+     */
+    public int getBlockWidth() {
+        return blockWidth;
+    }
 
-	/**
-	 * Sets the width of the image blocks.
-	 * 
-	 * @param width
-	 *            the width of the blocks in pixels.
-	 */
-	public void setBlockWidth(final int width) {
-		blockWidth = width;
-	}
+    /**
+     * Sets the width of the image blocks.
+     * 
+     * @param width
+     *            the width of the blocks in pixels.
+     */
+    public void setBlockWidth(final int width) {
+        blockWidth = width;
+    }
 
-	/**
-	 * Returns the height of the blocks in pixels.
-	 */
-	public int getBlockHeight() {
-		return blockHeight;
-	}
+    /**
+     * Returns the height of the blocks in pixels.
+     */
+    public int getBlockHeight() {
+        return blockHeight;
+    }
 
-	/**
-	 * Sets the height of the image blocks.
-	 * 
-	 * @param height
-	 *            the height of the blocks in pixels.
-	 */
-	public void setBlockHeight(final int height) {
-		blockHeight = height;
-	}
+    /**
+     * Sets the height of the image blocks.
+     * 
+     * @param height
+     *            the height of the blocks in pixels.
+     */
+    public void setBlockHeight(final int height) {
+        blockHeight = height;
+    }
 
-	/**
-	 * Returns the image blocks that have changed in this frame,
-	 */
-	public List<ImageBlock> getImageBlocks() {
-		return imageBlocks;
-	}
+    /**
+     * Returns the image blocks that have changed in this frame,
+     */
+    public List<ImageBlock> getImageBlocks() {
+        return imageBlocks;
+    }
 
-	/**
-	 * Set the image blocks that have changed in this frame. If this is a key
-	 * frame then all image blocks are displayed.
-	 * 
-	 * @param blocks
-	 *            the array of image blocks. Must not be null.
-	 */
-	public void setImageBlocks(final List<ImageBlock> blocks) {
-		imageBlocks = new ArrayList<ImageBlock>(blocks);
-	}
+    /**
+     * Set the image blocks that have changed in this frame. If this is a key
+     * frame then all image blocks are displayed.
+     * 
+     * @param blocks
+     *            the array of image blocks. Must not be null.
+     */
+    public void setImageBlocks(final List<ImageBlock> blocks) {
+        imageBlocks = new ArrayList<ImageBlock>(blocks);
+    }
 
-	/**
-	 * Creates and returns a deep copy of this object.
-	 */
-	public ScreenPacket copy() {
-		return new ScreenPacket(this);
-	}
+    /**
+     * Creates and returns a deep copy of this object.
+     */
+    public ScreenPacket copy() {
+        return new ScreenPacket(this);
+    }
 
-	private int length() {
-		int length = 5;
+    private int length() {
+        int length = 5;
 
-		for (ImageBlock block : imageBlocks) {
-			length += 2;
+        for (final ImageBlock block : imageBlocks) {
+            length += 2;
 
-			if (!block.isEmpty()) {
-				length += block.getBlock().length;
-			}
-		}
-		return length;
-	}
+            if (!block.isEmpty()) {
+                length += block.getBlock().length;
+            }
+        }
+        return length;
+    }
 
-	public byte[] encode() {
-		final SWFEncoder coder = new SWFEncoder(length());
+    public byte[] encode() {
+        final SWFEncoder coder = new SWFEncoder(length());
 
-		coder.writeBits(keyFrame ? 1 : 2, 4);
-		coder.writeBits(3, 4);
+        coder.writeBits(keyFrame ? 1 : 2, 4);
+        coder.writeBits(3, 4);
 
-		coder.writeBits((blockWidth / 16) - 1, 4);
-		coder.writeBits(imageWidth, 12);
-		coder.writeBits((blockHeight / 16) - 1, 4);
-		coder.writeBits(imageHeight, 12);
+        coder.writeBits((blockWidth / 16) - 1, 4);
+        coder.writeBits(imageWidth, 12);
+        coder.writeBits((blockHeight / 16) - 1, 4);
+        coder.writeBits(imageHeight, 12);
 
-		byte[] blockData;
+        byte[] blockData;
 
-		for (ImageBlock block : imageBlocks) {
-			if (block.isEmpty()) {
-				coder.writeWord(0, 2);
-			} else {
-				blockData = block.getBlock();
-				coder.writeBits(blockData.length, 16);
-				coder.writeBytes(blockData);
-			}
-		}
+        for (final ImageBlock block : imageBlocks) {
+            if (block.isEmpty()) {
+                coder.writeWord(0, 2);
+            } else {
+                blockData = block.getBlock();
+                coder.writeBits(blockData.length, 16);
+                coder.writeBytes(blockData);
+            }
+        }
 
-		return coder.getData();
-	}
+        return coder.getData();
+    }
 }

@@ -29,17 +29,17 @@
  */
 package com.flagstone.transform.action;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
-
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertArrayEquals;
 
 import com.flagstone.transform.coder.Action;
 import com.flagstone.transform.coder.ActionDecoder;
@@ -50,82 +50,81 @@ import com.flagstone.transform.coder.DecoderRegistry;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-
 public final class NewFunction2Test {
 
-	private static String name = "function";
-	private static Map<String, Integer> args = new LinkedHashMap<String, Integer>();
-	private static List<Action> actions = new ArrayList<Action>();
+    private static String name = "function";
+    private static Map<String, Integer> args = new LinkedHashMap<String, Integer>();
+    private static List<Action> actions = new ArrayList<Action>();
 
-	static {
-		args.put("a", 1);
-		args.put("b", 2);
+    static {
+        args.put("a", 1);
+        args.put("b", 2);
 
-		actions.add(BasicAction.ADD);
-		actions.add(BasicAction.END);
-	}
+        actions.add(BasicAction.ADD);
+        actions.add(BasicAction.END);
+    }
 
-	private static transient final int type = ActionTypes.NEW_FUNCTION_2;
-	private transient NewFunction2 fixture;
+    private static transient final int type = ActionTypes.NEW_FUNCTION_2;
+    private transient NewFunction2 fixture;
 
-	private transient final byte[] encoded = new byte[] { (byte) type, 0x16,
-			0x00, 0x66, 0x75, 0x6E, 0x63, 0x74, 0x69, 0x6F, 0x6E, 0x00, 0x02,
-			0x00, 0x00, 0x00, 0x00, 0x01, 0x61, 0x00, 0x02, 0x62, 0x00, 0x02,
-			0x00, ActionTypes.ADD, ActionTypes.END };
+    private transient final byte[] encoded = new byte[] { (byte) type, 0x16,
+            0x00, 0x66, 0x75, 0x6E, 0x63, 0x74, 0x69, 0x6F, 0x6E, 0x00, 0x02,
+            0x00, 0x00, 0x00, 0x00, 0x01, 0x61, 0x00, 0x02, 0x62, 0x00, 0x02,
+            0x00, ActionTypes.ADD, ActionTypes.END };
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAddNullArgument() {
-		fixture = new NewFunction2(name, args, actions);
-		fixture.add((String) null);
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkAddNullArgument() {
+        fixture = new NewFunction2(name, args, actions);
+        fixture.add((String) null);
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAddEmptyArgument() {
-		fixture = new NewFunction2(name, args, actions);
-		fixture.add("");
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkAddEmptyArgument() {
+        fixture = new NewFunction2(name, args, actions);
+        fixture.add("");
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAddNullAction() {
-		fixture = new NewFunction2(name, args, actions);
-		fixture.add((Action) null);
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkAddNullAction() {
+        fixture = new NewFunction2(name, args, actions);
+        fixture.add((Action) null);
+    }
 
-	@Test
-	public void checkCopy() {
-		fixture = new NewFunction2(name, args, actions);
-		final NewFunction2 copy = fixture.copy();
+    @Test
+    public void checkCopy() {
+        fixture = new NewFunction2(name, args, actions);
+        final NewFunction2 copy = fixture.copy();
 
-		assertNotSame(fixture.getActions(), copy.getActions());
-		assertEquals(fixture.toString(), copy.toString());
-	}
+        assertNotSame(fixture.getActions(), copy.getActions());
+        assertEquals(fixture.toString(), copy.toString());
+    }
 
-	@Test
-	public void encode() throws CoderException {
-		final SWFEncoder encoder = new SWFEncoder(encoded.length);
-		final Context context = new Context();
+    @Test
+    public void encode() throws CoderException {
+        final SWFEncoder encoder = new SWFEncoder(encoded.length);
+        final Context context = new Context();
 
-		fixture = new NewFunction2(name, args, actions);
-		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
-		fixture.encode(encoder, context);
+        fixture = new NewFunction2(name, args, actions);
+        assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
+        fixture.encode(encoder, context);
 
-		assertTrue(encoder.eof());
-		assertArrayEquals(encoded, encoder.getData());
-	}
+        assertTrue(encoder.eof());
+        assertArrayEquals(encoded, encoder.getData());
+    }
 
-	@Test
-	public void decode() throws CoderException {
-		final SWFDecoder decoder = new SWFDecoder(encoded);
-		final Context context = new Context();
-		final DecoderRegistry registry = new DecoderRegistry();
-		registry.setActionDecoder(new ActionDecoder());
-		context.setRegistry(registry);
+    @Test
+    public void decode() throws CoderException {
+        final SWFDecoder decoder = new SWFDecoder(encoded);
+        final Context context = new Context();
+        final DecoderRegistry registry = new DecoderRegistry();
+        registry.setActionDecoder(new ActionDecoder());
+        context.setRegistry(registry);
 
-		fixture = new NewFunction2(decoder, context);
+        fixture = new NewFunction2(decoder, context);
 
-		assertTrue(decoder.eof());
-		assertEquals(name, fixture.getName());
-		assertEquals(args, fixture.getArguments());
-		assertEquals(actions, fixture.getActions());
-	}
+        assertTrue(decoder.eof());
+        assertEquals(name, fixture.getName());
+        assertEquals(args, fixture.getArguments());
+        assertEquals(actions, fixture.getActions());
+    }
 }

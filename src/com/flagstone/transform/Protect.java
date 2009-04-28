@@ -65,101 +65,101 @@ import com.flagstone.transform.coder.SWFEncoder;
  * </p>
  */
 public final class Protect implements MovieTag {
-	private static final String FORMAT = "Protect: { password=%s }";
+    private static final String FORMAT = "Protect: { password=%s }";
 
-	private String password;
+    private String password;
 
-	private transient int length;
+    private transient int length;
 
-	/**
-	 * Creates a Protect object - use for files with Flash version 2 and above.
-	 */
-	public Protect(final SWFDecoder coder) throws CoderException {
-		length = coder.readWord(2, false) & 0x3F;
+    /**
+     * Creates a Protect object - use for files with Flash version 2 and above.
+     */
+    public Protect(final SWFDecoder coder) throws CoderException {
+        length = coder.readWord(2, false) & 0x3F;
 
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
+        if (length == 0x3F) {
+            length = coder.readWord(4, false);
+        }
 
-		/*
-		 * Force a read of the entire password field, including any zero bytes
-		 * that are encountered.
-		 */
-		if (length > 0) {
-			coder.readWord(2, false);
-			password = coder.readString(length - 2, coder.getEncoding());
+        /*
+         * Force a read of the entire password field, including any zero bytes
+         * that are encountered.
+         */
+        if (length > 0) {
+            coder.readWord(2, false);
+            password = coder.readString(length - 2, coder.getEncoding());
 
-			while (password.charAt(password.length() - 1) == 0) {
-				password = password.substring(0, password.length() - 1);
-			}
-		}
-	}
+            while (password.charAt(password.length() - 1) == 0) {
+                password = password.substring(0, password.length() - 1);
+            }
+        }
+    }
 
-	/**
-	 * Creates a Protect object with the specified password - uses for file with
-	 * Flash version 4 and above.
-	 * 
-	 * @param password
-	 *            the string defining the password. Must not be null.
-	 */
-	public Protect(final String password) {
-		setPassword(password);
-	}
+    /**
+     * Creates a Protect object with the specified password - uses for file with
+     * Flash version 4 and above.
+     * 
+     * @param password
+     *            the string defining the password. Must not be null.
+     */
+    public Protect(final String password) {
+        setPassword(password);
+    }
 
-	// TODO(doc)
-	public Protect(final Protect object) {
-		password = object.password;
-	}
+    // TODO(doc)
+    public Protect(final Protect object) {
+        password = object.password;
+    }
 
-	/**
-	 * Returns the MD5 encrypted password. This may be null if the object was
-	 * decoded from a file containing Flash version 2 or 3.
-	 */
-	public String getPassword() {
-		return password;
-	}
+    /**
+     * Returns the MD5 encrypted password. This may be null if the object was
+     * decoded from a file containing Flash version 2 or 3.
+     */
+    public String getPassword() {
+        return password;
+    }
 
-	/**
-	 * Sets the MD5 encrypted password.
-	 * 
-	 * @param aString
-	 *            the string defining the password. Must not be null.
-	 */
-	public void setPassword(final String aString) {
-		if (aString == null) {
-			throw new IllegalArgumentException(Strings.STRING_IS_NULL);
-		}
-		password = aString;
-	}
+    /**
+     * Sets the MD5 encrypted password.
+     * 
+     * @param aString
+     *            the string defining the password. Must not be null.
+     */
+    public void setPassword(final String aString) {
+        if (aString == null) {
+            throw new IllegalArgumentException(Strings.STRING_IS_NULL);
+        }
+        password = aString;
+    }
 
-	public Protect copy() {
-		return new Protect(this);
-	}
+    public Protect copy() {
+        return new Protect(this);
+    }
 
-	/**
-	 * Returns a short description of this action.
-	 */
-	@Override
-	public String toString() {
-		return String.format(FORMAT, password);
-	}
+    /**
+     * Returns a short description of this action.
+     */
+    @Override
+    public String toString() {
+        return String.format(FORMAT, password);
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		length = 0;
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        length = 0;
 
-		if (password.length() > 0) {
-			length += 2 + coder.strlen(password);
-		}
-		return (length > 62 ? 6 : 2) + length;
-	}
+        if (password.length() > 0) {
+            length += 2 + coder.strlen(password);
+        }
+        return (length > 62 ? 6 : 2) + length;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		coder.writeWord((MovieTypes.PROTECT << 6) | length, 2);
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        coder.writeWord((MovieTypes.PROTECT << 6) | length, 2);
 
-		if (password.length() > 0) {
-			coder.writeWord(0, 2);
-			coder.writeString(password);
-		}
-	}
+        if (password.length() > 0) {
+            coder.writeWord(0, 2);
+            coder.writeString(password);
+        }
+    }
 }

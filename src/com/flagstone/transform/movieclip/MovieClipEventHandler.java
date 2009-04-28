@@ -43,8 +43,8 @@ import com.flagstone.transform.button.ButtonEventHandler;
 import com.flagstone.transform.coder.Action;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFDecoder;
+import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.coder.SWFFactory;
 
@@ -126,202 +126,202 @@ import com.flagstone.transform.coder.SWFFactory;
  * @see Place2
  */
 public final class MovieClipEventHandler implements SWFEncodeable {
-	private static final String FORMAT = "MovieClipEventHandler: { event=%d; keyCode=%s; actions=%s }";
+    private static final String FORMAT = "MovieClipEventHandler: { event=%d; keyCode=%s; actions=%s }";
 
-	private int event;
-	private int keyCode;
-	private List<Action> actions;
+    private int event;
+    private int keyCode;
+    private List<Action> actions;
 
-	private transient int offset;
+    private transient int offset;
 
-	// TODO(doc)
-	public MovieClipEventHandler(final SWFDecoder coder, final Context context)
-			throws CoderException {
-		final int eventSize = (Context.VERSION > 5) ? 4 : 2;
+    // TODO(doc)
+    public MovieClipEventHandler(final SWFDecoder coder, final Context context)
+            throws CoderException {
+        final int eventSize = (Context.VERSION > 5) ? 4 : 2;
 
-		event = coder.readWord(eventSize, false);
-		offset = coder.readWord(4, false);
+        event = coder.readWord(eventSize, false);
+        offset = coder.readWord(4, false);
 
-		if ((event & MovieClipEvent.KEY_PRESS.getValue()) != 0) {
-			keyCode = coder.readByte();
-			offset -= 1;
-		}
+        if ((event & MovieClipEvent.KEY_PRESS.getValue()) != 0) {
+            keyCode = coder.readByte();
+            offset -= 1;
+        }
 
-		actions = new ArrayList<Action>();
+        actions = new ArrayList<Action>();
 
-		final SWFFactory<Action> decoder = context.getRegistry()
-				.getActionDecoder();
-		final int end = coder.getPointer() + (offset << 3);
+        final SWFFactory<Action> decoder = context.getRegistry()
+                .getActionDecoder();
+        final int end = coder.getPointer() + (offset << 3);
 
-		if (decoder == null) {
-			actions.add(new ActionData(coder.readBytes(new byte[offset])));
-		} else {
-			while (coder.getPointer() < end) {
-				actions.add(decoder.getObject(coder, context));
-			}
-		}
-	}
+        if (decoder == null) {
+            actions.add(new ActionData(coder.readBytes(new byte[offset])));
+        } else {
+            while (coder.getPointer() < end) {
+                actions.add(decoder.getObject(coder, context));
+            }
+        }
+    }
 
-	/**
-	 * Creates a ClipEvent object that with an array of actions that will be
-	 * executed when a particular event occurs.
-	 * 
-	 * @param eventCode
-	 *            the code representing one or more events.
-	 * @param anArray
-	 *            the array of actions that will be executed when the specified
-	 *            event occurs.
-	 */
-	public MovieClipEventHandler(final Set<MovieClipEvent> eventCode,
-			final List<Action> anArray) {
-		setEvent(eventCode);
-		setActions(anArray);
-	}
+    /**
+     * Creates a ClipEvent object that with an array of actions that will be
+     * executed when a particular event occurs.
+     * 
+     * @param eventCode
+     *            the code representing one or more events.
+     * @param anArray
+     *            the array of actions that will be executed when the specified
+     *            event occurs.
+     */
+    public MovieClipEventHandler(final Set<MovieClipEvent> eventCode,
+            final List<Action> anArray) {
+        setEvent(eventCode);
+        setActions(anArray);
+    }
 
-	/**
-	 * Creates a ClipEvent object that defines the array of actions that will be
-	 * executed when a particular event occurs or when the specified key is
-	 * pressed.
-	 * 
-	 * @param eventCode
-	 *            the code representing one or more events.
-	 * @param keyCode
-	 *            the ASCII code for the key pressed on the keyboard.
-	 * @param anArray
-	 *            the array of actions that will be executed when the specified
-	 *            event occurs. Must not be null.
-	 */
-	public MovieClipEventHandler(final Set<MovieClipEvent> eventCode,
-			final int keyCode, final List<Action> anArray) {
-		setEvent(eventCode);
-		setKeyCode(keyCode);
-		setActions(anArray);
-	}
+    /**
+     * Creates a ClipEvent object that defines the array of actions that will be
+     * executed when a particular event occurs or when the specified key is
+     * pressed.
+     * 
+     * @param eventCode
+     *            the code representing one or more events.
+     * @param keyCode
+     *            the ASCII code for the key pressed on the keyboard.
+     * @param anArray
+     *            the array of actions that will be executed when the specified
+     *            event occurs. Must not be null.
+     */
+    public MovieClipEventHandler(final Set<MovieClipEvent> eventCode,
+            final int keyCode, final List<Action> anArray) {
+        setEvent(eventCode);
+        setKeyCode(keyCode);
+        setActions(anArray);
+    }
 
-	// TODO(doc)
-	public MovieClipEventHandler(final MovieClipEventHandler object) {
-		event = object.event;
-		keyCode = object.keyCode;
+    // TODO(doc)
+    public MovieClipEventHandler(final MovieClipEventHandler object) {
+        event = object.event;
+        keyCode = object.keyCode;
 
-		actions = new ArrayList<Action>(object.actions.size());
+        actions = new ArrayList<Action>(object.actions.size());
 
-		for (Action action : object.actions) {
-			actions.add(action.copy());
-		}
-	}
+        for (final Action action : object.actions) {
+            actions.add(action.copy());
+        }
+    }
 
-	/**
-	 * Adds an action to the array of actions.
-	 * 
-	 * @param anAction
-	 *            an action object. Must not be null.
-	 */
-	public MovieClipEventHandler add(final Action anAction)
-			throws CoderException {
-		if (anAction == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
-		}
-		actions.add(anAction);
-		return this;
-	}
+    /**
+     * Adds an action to the array of actions.
+     * 
+     * @param anAction
+     *            an action object. Must not be null.
+     */
+    public MovieClipEventHandler add(final Action anAction)
+            throws CoderException {
+        if (anAction == null) {
+            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+        }
+        actions.add(anAction);
+        return this;
+    }
 
-	// TODO(doc)
-	public void setEvent(final Set<MovieClipEvent> set) {
-		for (MovieClipEvent event : set) {
-			this.event |= event.getValue();
-		}
-	}
+    // TODO(doc)
+    public void setEvent(final Set<MovieClipEvent> set) {
+        for (final MovieClipEvent event : set) {
+            this.event |= event.getValue();
+        }
+    }
 
-	// TODO(doc)
-	public Set<MovieClipEvent> getEvent() {
-		final Set<MovieClipEvent> set = EnumSet.allOf(MovieClipEvent.class);
+    // TODO(doc)
+    public Set<MovieClipEvent> getEvent() {
+        final Set<MovieClipEvent> set = EnumSet.allOf(MovieClipEvent.class);
 
-		for (final Iterator<MovieClipEvent> iter = set.iterator(); iter
-				.hasNext();) {
-			if ((event & iter.next().getValue()) == 0) {
-				iter.remove();
-			}
-		}
-		return set;
-	}
+        for (final Iterator<MovieClipEvent> iter = set.iterator(); iter
+                .hasNext();) {
+            if ((event & iter.next().getValue()) == 0) {
+                iter.remove();
+            }
+        }
+        return set;
+    }
 
-	/**
-	 * Returns the code for the key that triggers the event when pressed. The
-	 * code is typically the ASCII code for standard western keyboards.
-	 */
-	public int getKeyCode() {
-		return keyCode;
-	}
+    /**
+     * Returns the code for the key that triggers the event when pressed. The
+     * code is typically the ASCII code for standard western keyboards.
+     */
+    public int getKeyCode() {
+        return keyCode;
+    }
 
-	/**
-	 * Sets the code for the key that triggers the event when pressed. The code
-	 * is typically the ASCII code for standard western keyboards.
-	 * 
-	 * @param code
-	 *            the ASCII code for the key that triggers the event.
-	 */
-	public void setKeyCode(final int code) {
-		keyCode = code;
-	}
+    /**
+     * Sets the code for the key that triggers the event when pressed. The code
+     * is typically the ASCII code for standard western keyboards.
+     * 
+     * @param code
+     *            the ASCII code for the key that triggers the event.
+     */
+    public void setKeyCode(final int code) {
+        keyCode = code;
+    }
 
-	/**
-	 * Sets the array of actions that are executed by the movie clip in response
-	 * to specified event(s).
-	 * 
-	 * @param array
-	 *            the array of actions that will be executed when the specified
-	 *            event occurs. Must not be null.
-	 */
-	public void setActions(final List<Action> array) {
-		if (array == null) {
-			throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
-		}
-		actions = array;
-	}
+    /**
+     * Sets the array of actions that are executed by the movie clip in response
+     * to specified event(s).
+     * 
+     * @param array
+     *            the array of actions that will be executed when the specified
+     *            event occurs. Must not be null.
+     */
+    public void setActions(final List<Action> array) {
+        if (array == null) {
+            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+        }
+        actions = array;
+    }
 
-	/**
-	 * Returns the array of actions that are executed by the movie clip.
-	 */
-	public List<Action> getActions() throws CoderException {
-		return actions;
-	}
+    /**
+     * Returns the array of actions that are executed by the movie clip.
+     */
+    public List<Action> getActions() throws CoderException {
+        return actions;
+    }
 
-	public MovieClipEventHandler copy() {
-		return new MovieClipEventHandler(this);
-	}
+    public MovieClipEventHandler copy() {
+        return new MovieClipEventHandler(this);
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, event, keyCode, actions);
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, event, keyCode, actions);
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		int length = 4 + ((Context.VERSION > 5) ? 4 : 2);
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        int length = 4 + ((Context.VERSION > 5) ? 4 : 2);
 
-		offset = (event & MovieClipEvent.KEY_PRESS.getValue()) == 0 ? 0 : 1;
+        offset = (event & MovieClipEvent.KEY_PRESS.getValue()) == 0 ? 0 : 1;
 
-		for (Action action : actions) {
-			offset += action.prepareToEncode(coder, context);
-		}
+        for (final Action action : actions) {
+            offset += action.prepareToEncode(coder, context);
+        }
 
-		length += offset;
+        length += offset;
 
-		return length;
-	}
+        return length;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		final int eventSize = (Context.VERSION > 5) ? 4 : 2;
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        final int eventSize = (Context.VERSION > 5) ? 4 : 2;
 
-		coder.writeWord(event, eventSize);
-		coder.writeWord(offset, 4);
+        coder.writeWord(event, eventSize);
+        coder.writeWord(offset, 4);
 
-		if ((event & MovieClipEvent.KEY_PRESS.getValue()) != 0) {
-			coder.writeByte(keyCode);
-		}
+        if ((event & MovieClipEvent.KEY_PRESS.getValue()) != 0) {
+            coder.writeByte(keyCode);
+        }
 
-		for (Action action : actions) {
-			action.encode(coder, context);
-		}
-	}
+        for (final Action action : actions) {
+            action.encode(coder, context);
+        }
+    }
 }

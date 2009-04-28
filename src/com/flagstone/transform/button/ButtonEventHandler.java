@@ -41,8 +41,8 @@ import com.flagstone.transform.action.ActionData;
 import com.flagstone.transform.coder.Action;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFDecoder;
+import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.coder.SWFFactory;
 
@@ -203,168 +203,170 @@ import com.flagstone.transform.coder.SWFFactory;
  * @see DefineButton2
  */
 public final class ButtonEventHandler implements SWFEncodeable {
-	private static final String FORMAT = "ButtonEventHandler: { event=%s; actions=%s }";
+    private static final String FORMAT = "ButtonEventHandler: { event=%s; actions=%s }";
 
-	/**
-	 * Returns the code used to identify that a character has been typed on the
-	 * keyboard. This method should be used for characters that are not already
-	 * defined as a constant in this class.
-	 * 
-	 * @param character
-	 *            a keyboard character.
-	 */
-	public static int codeForKey(final char character) {
-		return character << 9;
-	}
+    /**
+     * Returns the code used to identify that a character has been typed on the
+     * keyboard. This method should be used for characters that are not already
+     * defined as a constant in this class.
+     * 
+     * @param character
+     *            a keyboard character.
+     */
+    public static int codeForKey(final char character) {
+        return character << 9;
+    }
 
-	private int event;
-	private List<Action> actions;
+    private int event;
+    private List<Action> actions;
 
-	private transient int length = 0;
+    private transient int length = 0;
 
-	// TODO(doc)
-	public ButtonEventHandler(final int size, final SWFDecoder coder, final Context context)
-			throws CoderException {
-		event = coder.readWord(2, false);
-		length = size;
+    // TODO(doc)
+    public ButtonEventHandler(final int size, final SWFDecoder coder,
+            final Context context) throws CoderException {
+        event = coder.readWord(2, false);
+        length = size;
 
-		actions = new ArrayList<Action>();
+        actions = new ArrayList<Action>();
 
-		final SWFFactory<Action> decoder = context.getRegistry().getActionDecoder();
+        final SWFFactory<Action> decoder = context.getRegistry()
+                .getActionDecoder();
 
-		if (decoder == null) {
-			if (length != 0) {
-				actions.add(new ActionData(coder.readBytes(new byte[length])));
-			}
-		} else {
-			final int end = coder.getPointer() + (length << 3);
+        if (decoder == null) {
+            if (length != 0) {
+                actions.add(new ActionData(coder.readBytes(new byte[length])));
+            }
+        } else {
+            final int end = coder.getPointer() + (length << 3);
 
-			while (coder.getPointer() < end) {
-				actions.add(decoder.getObject(coder, context));
-			}
-		}
-	}
+            while (coder.getPointer() < end) {
+                actions.add(decoder.getObject(coder, context));
+            }
+        }
+    }
 
-	/**
-	 * Creates an ButtonEvent object that defines the array of actions that will
-	 * be executed when a particular event occurs.
-	 * 
-	 * @param aNumber
-	 *            the event code. Must be in the range 1..65535.
-	 * @param anArray
-	 *            the array of action objects that will be executed when the
-	 *            specified event(s) occur.
-	 */
-	public ButtonEventHandler(final Set<ButtonEvent> aNumber, final List<Action> anArray) {
-		setEvent(aNumber);
-		setActions(anArray);
-	}
+    /**
+     * Creates an ButtonEvent object that defines the array of actions that will
+     * be executed when a particular event occurs.
+     * 
+     * @param aNumber
+     *            the event code. Must be in the range 1..65535.
+     * @param anArray
+     *            the array of action objects that will be executed when the
+     *            specified event(s) occur.
+     */
+    public ButtonEventHandler(final Set<ButtonEvent> aNumber,
+            final List<Action> anArray) {
+        setEvent(aNumber);
+        setActions(anArray);
+    }
 
-	// TODO(doc)
-	public ButtonEventHandler(final ButtonEventHandler object) {
-		event = object.event;
-		actions = new ArrayList<Action>();
+    // TODO(doc)
+    public ButtonEventHandler(final ButtonEventHandler object) {
+        event = object.event;
+        actions = new ArrayList<Action>();
 
-		for (Action action : actions) {
-			actions.add(action.copy());
-		}
-	}
+        for (final Action action : actions) {
+            actions.add(action.copy());
+        }
+    }
 
-	/**
-	 * Add an action to the end of the actions array.
-	 * 
-	 * @param anAction
-	 *            an object derived from the base class Action. Must not be
-	 *            null.
-	 */
-	public ButtonEventHandler add(final Action anAction) throws CoderException {
-		if (anAction == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
-		}
-		actions.add(anAction);
-		return this;
-	}
+    /**
+     * Add an action to the end of the actions array.
+     * 
+     * @param anAction
+     *            an object derived from the base class Action. Must not be
+     *            null.
+     */
+    public ButtonEventHandler add(final Action anAction) throws CoderException {
+        if (anAction == null) {
+            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+        }
+        actions.add(anAction);
+        return this;
+    }
 
-	/**
-	 * Returns the compound event code that this ButtonEvent defines actions
-	 * for.
-	 */
-	public Set<ButtonEvent> getEvent() {
-		final Set<ButtonEvent> set = EnumSet.allOf(ButtonEvent.class);
+    /**
+     * Returns the compound event code that this ButtonEvent defines actions
+     * for.
+     */
+    public Set<ButtonEvent> getEvent() {
+        final Set<ButtonEvent> set = EnumSet.allOf(ButtonEvent.class);
 
-		for (final Iterator<ButtonEvent> iter = set.iterator(); iter.hasNext();) {
-			if ((event & iter.next().getValue()) == 0) {
-				iter.remove();
-			}
-		}
-		return set;
-	}
+        for (final Iterator<ButtonEvent> iter = set.iterator(); iter.hasNext();) {
+            if ((event & iter.next().getValue()) == 0) {
+                iter.remove();
+            }
+        }
+        return set;
+    }
 
-	/**
-	 * Returns the array of actions that are executed by the button in response
-	 * to specified event(s).
-	 */
-	public List<Action> getActions() throws CoderException {
-		return actions;
-	}
+    /**
+     * Returns the array of actions that are executed by the button in response
+     * to specified event(s).
+     */
+    public List<Action> getActions() throws CoderException {
+        return actions;
+    }
 
-	/**
-	 * Sets the event code that this ButtonEvent defines actions for.
-	 * 
-	 * @param aNumber
-	 *            the event code. Must be in the range 1..65535.
-	 */
-	public void setEvent(final Set<ButtonEvent> set) {
-		for (ButtonEvent event : set) {
-			this.event |= event.getValue();
-		}
-	}
+    /**
+     * Sets the event code that this ButtonEvent defines actions for.
+     * 
+     * @param aNumber
+     *            the event code. Must be in the range 1..65535.
+     */
+    public void setEvent(final Set<ButtonEvent> set) {
+        for (final ButtonEvent event : set) {
+            this.event |= event.getValue();
+        }
+    }
 
-	/**
-	 * Sets the array of actions that are executed by the button in response to
-	 * specified event(s).
-	 * 
-	 * @param anArray
-	 *            the array of action objects that will be executed when the
-	 *            specified event(s) occur. The array may be empty but must not
-	 *            be null.
-	 */
-	public void setActions(final List<Action> anArray) {
-		if (anArray == null) {
-			throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
-		}
-		actions = anArray;
-	}
+    /**
+     * Sets the array of actions that are executed by the button in response to
+     * specified event(s).
+     * 
+     * @param anArray
+     *            the array of action objects that will be executed when the
+     *            specified event(s) occur. The array may be empty but must not
+     *            be null.
+     */
+    public void setActions(final List<Action> anArray) {
+        if (anArray == null) {
+            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+        }
+        actions = anArray;
+    }
 
-	/**
-	 * Creates and returns a deep copy of this object.
-	 */
-	public ButtonEventHandler copy() {
-		return new ButtonEventHandler(this);
-	}
+    /**
+     * Creates and returns a deep copy of this object.
+     */
+    public ButtonEventHandler copy() {
+        return new ButtonEventHandler(this);
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, event, actions);
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, event, actions);
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		length = 2;
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        length = 2;
 
-		for (Action action : actions) {
-			length += action.prepareToEncode(coder, context);
-		}
+        for (final Action action : actions) {
+            length += action.prepareToEncode(coder, context);
+        }
 
-		return length;
-	}
+        return length;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		coder.writeWord(length+2, 2);
-		coder.writeWord(event, 2);
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        coder.writeWord(length + 2, 2);
+        coder.writeWord(event, 2);
 
-		for (Action action : actions) {
-			action.encode(coder, context);
-		}
-	}
+        for (final Action action : actions) {
+            action.encode(coder, context);
+        }
+    }
 }

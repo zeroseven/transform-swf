@@ -31,10 +31,10 @@
 package com.flagstone.transform.datatype;
 
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFEncodeable;
-import com.flagstone.transform.coder.Encoder;
 import com.flagstone.transform.coder.Context;
+import com.flagstone.transform.coder.Encoder;
 import com.flagstone.transform.coder.SWFDecoder;
+import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFEncoder;
 
 /**
@@ -68,142 +68,142 @@ import com.flagstone.transform.coder.SWFEncoder;
  */
 public final class Bounds implements SWFEncodeable {
 
-	private static final String FORMAT = "Bounds: { minX=%d; minY=%d; maxX=%d; maxY=%d }";
+    private static final String FORMAT = "Bounds: { minX=%d; minY=%d; maxX=%d; maxY=%d }";
 
-	private final transient int minX;
-	private final transient int minY;
-	private final transient int maxX;
-	private final transient int maxY;
+    private final transient int minX;
+    private final transient int minY;
+    private final transient int maxX;
+    private final transient int maxY;
 
-	private transient int size;
+    private transient int size;
 
-	/**
-	 * Creates and initialises a Bounds using values encoded in the Flash binary
-	 * format.
-	 * 
-	 * @param coder
-	 *            an SWFDecoder object that contains the encoded Flash data.
-	 * 
-	 * @throws CoderException
-	 *             if an error occurs while decoding the data.
-	 */
-	public Bounds(final SWFDecoder coder) throws CoderException {
-		size = coder.readBits(5, false);
-		minX = coder.readBits(size, true);
-		maxX = coder.readBits(size, true);
-		minY = coder.readBits(size, true);
-		maxY = coder.readBits(size, true);
-		coder.alignToByte();
-	}
+    /**
+     * Creates and initialises a Bounds using values encoded in the Flash binary
+     * format.
+     * 
+     * @param coder
+     *            an SWFDecoder object that contains the encoded Flash data.
+     * 
+     * @throws CoderException
+     *             if an error occurs while decoding the data.
+     */
+    public Bounds(final SWFDecoder coder) throws CoderException {
+        size = coder.readBits(5, false);
+        minX = coder.readBits(size, true);
+        maxX = coder.readBits(size, true);
+        minY = coder.readBits(size, true);
+        maxY = coder.readBits(size, true);
+        coder.alignToByte();
+    }
 
-	/**
-	 * Creates a Bounds object representing a rectangle with the corners at
-	 * (xmin,ymin) and (xmax,ymax).
-	 * 
-	 * @param xmin
-	 *            x-coordinate of the top left corner.
-	 * @param ymin
-	 *            y-coordinate of the top left corner.
-	 * @param xmax
-	 *            x-coordinate of bottom right corner.
-	 * @param ymax
-	 *            y-coordinate of bottom right corner.
-	 */
-	public Bounds(final int xmin, final int ymin, final int xmax, final int ymax) {
-		minX = xmin;
-		minY = ymin;
-		maxX = xmax;
-		maxY = ymax;
-	}
+    /**
+     * Creates a Bounds object representing a rectangle with the corners at
+     * (xmin,ymin) and (xmax,ymax).
+     * 
+     * @param xmin
+     *            x-coordinate of the top left corner.
+     * @param ymin
+     *            y-coordinate of the top left corner.
+     * @param xmax
+     *            x-coordinate of bottom right corner.
+     * @param ymax
+     *            y-coordinate of bottom right corner.
+     */
+    public Bounds(final int xmin, final int ymin, final int xmax, final int ymax) {
+        minX = xmin;
+        minY = ymin;
+        maxX = xmax;
+        maxY = ymax;
+    }
 
-	/**
-	 * Returns the x-coordinate of the top left corner of the bounding rectangle
-	 * as seen on a screen.
-	 */
-	public int getMinX() {
-		return minX;
-	}
+    /**
+     * Returns the x-coordinate of the top left corner of the bounding rectangle
+     * as seen on a screen.
+     */
+    public int getMinX() {
+        return minX;
+    }
 
-	/**
-	 * Returns the x-coordinate of the bottom right corner of the bounding
-	 * rectangle as seen on a screen.
-	 */
-	public int getMaxX() {
-		return maxX;
-	}
+    /**
+     * Returns the x-coordinate of the bottom right corner of the bounding
+     * rectangle as seen on a screen.
+     */
+    public int getMaxX() {
+        return maxX;
+    }
 
-	/**
-	 * Returns the y-coordinate of the top left corner of the bounding rectangle
-	 * as seen on a screen.
-	 */
-	public int getMinY() {
-		return minY;
-	}
+    /**
+     * Returns the y-coordinate of the top left corner of the bounding rectangle
+     * as seen on a screen.
+     */
+    public int getMinY() {
+        return minY;
+    }
 
-	/**
-	 * Returns the y-coordinate of the bottom right corner of the bounding
-	 * rectangle as seen on a screen.
-	 */
-	public int getMaxY() {
-		return maxY;
-	}
+    /**
+     * Returns the y-coordinate of the bottom right corner of the bounding
+     * rectangle as seen on a screen.
+     */
+    public int getMaxY() {
+        return maxY;
+    }
 
-	/**
-	 * Returns the width of the rectangle in twips.
-	 */
-	public int getWidth() {
-		return maxX - minX;
-	}
+    /**
+     * Returns the width of the rectangle in twips.
+     */
+    public int getWidth() {
+        return maxX - minX;
+    }
 
-	/**
-	 * Returns the height of the rectangle in twips.
-	 */
-	public int getHeight() {
-		return maxY - minY;
-	}
+    /**
+     * Returns the height of the rectangle in twips.
+     */
+    public int getHeight() {
+        return maxY - minY;
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, minX, minY, maxX, maxY);
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, minX, minY, maxX, maxY);
+    }
 
-	@Override
-	public boolean equals(final Object object) {
-		boolean result;
-		Bounds bounds;
+    @Override
+    public boolean equals(final Object object) {
+        boolean result;
+        Bounds bounds;
 
-		if (object == null) {
-			result = false;
-		} else if (object == this) {
-			result = true;
-		} else if (object instanceof Bounds) {
-			bounds = (Bounds) object;
-			result = minX == bounds.minX && minY == bounds.minY
-					&& maxX == bounds.maxX && maxY == bounds.maxY;
-		} else {
-			result = false;
-		}
-		return result;
-	}
+        if (object == null) {
+            result = false;
+        } else if (object == this) {
+            result = true;
+        } else if (object instanceof Bounds) {
+            bounds = (Bounds) object;
+            result = (minX == bounds.minX) && (minY == bounds.minY)
+                    && (maxX == bounds.maxX) && (maxY == bounds.maxY);
+        } else {
+            result = false;
+        }
+        return result;
+    }
 
-	@Override
-	public int hashCode() {
-		return (((minX * 31) + minY) * 31 + maxX) * 31 + maxY;
-	}
+    @Override
+    public int hashCode() {
+        return (((minX * 31) + minY) * 31 + maxX) * 31 + maxY;
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		size = Encoder.maxSize(minX, minY, maxX, maxY);
-		// add extra 7 bits so result is byte aligned.
-		return ((12 + (size << 2))) >> 3;
-	}
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        size = Encoder.maxSize(minX, minY, maxX, maxY);
+        // add extra 7 bits so result is byte aligned.
+        return ((12 + (size << 2))) >> 3;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		coder.writeBits(size, 5);
-		coder.writeBits(minX, size);
-		coder.writeBits(maxX, size);
-		coder.writeBits(minY, size);
-		coder.writeBits(maxY, size);
-		coder.alignToByte();
-	}
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        coder.writeBits(size, 5);
+        coder.writeBits(minX, size);
+        coder.writeBits(maxX, size);
+        coder.writeBits(minY, size);
+        coder.writeBits(maxY, size);
+        coder.alignToByte();
+    }
 }

@@ -33,8 +33,8 @@ package com.flagstone.transform.fillstyle;
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFDecoder;
+import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFEncoder;
 
 //TODO(doc) Review
@@ -64,101 +64,101 @@ import com.flagstone.transform.coder.SWFEncoder;
  * @see MorphGradientFill
  */
 public final class MorphGradient implements SWFEncodeable {
-	private static final String FORMAT = "MorphGradient: { start=%s; end=%s }";
+    private static final String FORMAT = "MorphGradient: { start=%s; end=%s }";
 
-	private Gradient start;
-	private Gradient end;
+    private Gradient start;
+    private Gradient end;
 
-	public MorphGradient(final SWFDecoder coder, final Context context)
-			throws CoderException {
-		start = new Gradient(coder, context);
-		end = new Gradient(coder, context);
-	}
+    public MorphGradient(final SWFDecoder coder, final Context context)
+            throws CoderException {
+        start = new Gradient(coder, context);
+        end = new Gradient(coder, context);
+    }
 
-	/**
-	 * Creates a MorphGradient object specifying the starting and ending
-	 * gradients.
-	 * 
-	 * @param start
-	 *            the Gradient containing the initial ratio and colour.
-	 * @param end
-	 *            the Gradient containing the final ratio and colour.
-	 */
-	public MorphGradient(final Gradient start, final Gradient end) {
-		setStart(start);
-		setEnd(end);
-	}
+    /**
+     * Creates a MorphGradient object specifying the starting and ending
+     * gradients.
+     * 
+     * @param start
+     *            the Gradient containing the initial ratio and colour.
+     * @param end
+     *            the Gradient containing the final ratio and colour.
+     */
+    public MorphGradient(final Gradient start, final Gradient end) {
+        setStart(start);
+        setEnd(end);
+    }
 
-	public MorphGradient(final MorphGradient object) {
-		start = object.start;
-		end = object.end;
-	}
+    public MorphGradient(final MorphGradient object) {
+        start = object.start;
+        end = object.end;
+    }
 
-	/**
-	 * Returns the gradient containing the ratio and colour at the start of the
-	 * morphing process.
-	 */
-	public Gradient getStart() {
-		return start;
-	}
+    /**
+     * Returns the gradient containing the ratio and colour at the start of the
+     * morphing process.
+     */
+    public Gradient getStart() {
+        return start;
+    }
 
-	/**
-	 * Returns the gradient containing the ratio and colour at the end of the
-	 * morphing process.
-	 */
-	public Gradient getEnd() {
-		return end;
-	}
+    /**
+     * Returns the gradient containing the ratio and colour at the end of the
+     * morphing process.
+     */
+    public Gradient getEnd() {
+        return end;
+    }
 
-	/**
-	 * Sets the gradient at the start of the morphing process.
-	 * 
-	 * @param gradent
-	 *            the Gradient containing the ratio and colour at the start of
-	 *            the morphing process.
-	 */
-	public void setStart(final Gradient gradient) {
-		if (gradient == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
-		}
-		start = gradient;
-	}
+    /**
+     * Sets the gradient at the start of the morphing process.
+     * 
+     * @param gradent
+     *            the Gradient containing the ratio and colour at the start of
+     *            the morphing process.
+     */
+    public void setStart(final Gradient gradient) {
+        if (gradient == null) {
+            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+        }
+        start = gradient;
+    }
 
-	/**
-	 * Sets the gradient at the end of the morphing process.
-	 * 
-	 * @param gradent
-	 *            the Gradient containing the ratio and colour at the end of the
-	 *            morphing process.
-	 */
-	public void setEnd(final Gradient gradient) {
-		if (gradient == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
-		}
-		end = gradient;
-	}
+    /**
+     * Sets the gradient at the end of the morphing process.
+     * 
+     * @param gradent
+     *            the Gradient containing the ratio and colour at the end of the
+     *            morphing process.
+     */
+    public void setEnd(final Gradient gradient) {
+        if (gradient == null) {
+            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+        }
+        end = gradient;
+    }
 
-	public MorphGradient copy() {
-		return new MorphGradient(this);
-	}
+    public MorphGradient copy() {
+        return new MorphGradient(this);
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, start.toString(), end.toString());
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, start.toString(), end.toString());
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		int length = 0;
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        int length = 0;
 
-		length += start.prepareToEncode(coder, context);
-		length += end.prepareToEncode(coder, context);
+        length += start.prepareToEncode(coder, context);
+        length += end.prepareToEncode(coder, context);
 
-		return length;
-	}
+        return length;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		start.encode(coder, context);
-		end.encode(coder, context);
-	}
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        start.encode(coder, context);
+        end.encode(coder, context);
+    }
 }

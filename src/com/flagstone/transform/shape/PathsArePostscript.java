@@ -53,32 +53,32 @@ import com.flagstone.transform.coder.SWFEncoder;
  */
 // TODO(doc)
 public final class PathsArePostscript implements MovieTag {
-	
-	private static final PathsArePostscript INSTANCE = new PathsArePostscript();
 
-	/**
-	 * Returns a singleton.
-	 * 
-	 * @return an object that can safely be shared among objects.
-	 */
-	public static PathsArePostscript getInstance() {
-		return INSTANCE;
-	}
+    private static final PathsArePostscript INSTANCE = new PathsArePostscript();
 
-	private PathsArePostscript() {
-	}
+    /**
+     * Returns a singleton.
+     * 
+     * @return an object that can safely be shared among objects.
+     */
+    public static PathsArePostscript getInstance() {
+        return INSTANCE;
+    }
 
-	public PathsArePostscript copy() {
-		return this;
-	}
+    private PathsArePostscript() {
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		context.getVariables().put(Context.POSTSCRIPT, 1);
-		return 2;
-	}
+    public PathsArePostscript copy() {
+        return this;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		coder.writeWord((MovieTypes.PATHS_ARE_POSTSCRIPT << 6) | 0, 2);
-	}
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        context.getVariables().put(Context.POSTSCRIPT, 1);
+        return 2;
+    }
+
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        coder.writeWord((MovieTypes.PATHS_ARE_POSTSCRIPT << 6) | 0, 2);
+    }
 }

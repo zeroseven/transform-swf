@@ -76,74 +76,74 @@ import com.flagstone.transform.coder.SWFEncoder;
  * @see Jump
  */
 public final class If implements Action {
-	private static final String FORMAT = "If: { offset=%d }";
+    private static final String FORMAT = "If: { offset=%d }";
 
-	private int offset;
+    private int offset;
 
-	// TODO(doc)
-	public If(final SWFDecoder coder) throws CoderException {
-		coder.readByte();
-		coder.readWord(2, false);
-		offset = coder.readWord(2, true);
-	}
+    // TODO(doc)
+    public If(final SWFDecoder coder) throws CoderException {
+        coder.readByte();
+        coder.readWord(2, false);
+        offset = coder.readWord(2, true);
+    }
 
-	/**
-	 * Creates an if action with the specified offset. The offset must be in the
-	 * range -32768..32767.
-	 * 
-	 * @param anOffset
-	 *            the number of bytes to add to the instruction pointer if the
-	 *            value popped off the stack evaluates to true.
-	 */
-	public If(final int anOffset) {
-		setOffset(anOffset);
-	}
+    /**
+     * Creates an if action with the specified offset. The offset must be in the
+     * range -32768..32767.
+     * 
+     * @param anOffset
+     *            the number of bytes to add to the instruction pointer if the
+     *            value popped off the stack evaluates to true.
+     */
+    public If(final int anOffset) {
+        setOffset(anOffset);
+    }
 
-	// TODO(doc)
-	public If(final If object) {
-		offset = object.offset;
-	}
+    // TODO(doc)
+    public If(final If object) {
+        offset = object.offset;
+    }
 
-	/**
-	 * Returns the offset that will be added to the instruction pointer if the
-	 * value at the top of the stack evaluates to true (non-zero).
-	 */
-	public int getOffset() {
-		return offset;
-	}
+    /**
+     * Returns the offset that will be added to the instruction pointer if the
+     * value at the top of the stack evaluates to true (non-zero).
+     */
+    public int getOffset() {
+        return offset;
+    }
 
-	/**
-	 * Sets the offset to add to the instruction pointer if the value at the top
-	 * of the stack evaluates to true (non-zero).
-	 * 
-	 * @param aNumber
-	 *            the number of bytes to add to the instruction pointer. The
-	 *            offset must be in the range -32768..32767.
-	 */
-	public void setOffset(final int aNumber) {
-		if (aNumber < -32768 || aNumber > 32767) {
-			throw new IllegalArgumentException(Strings.SIGNED_RANGE);
-		}
-		offset = aNumber;
-	}
+    /**
+     * Sets the offset to add to the instruction pointer if the value at the top
+     * of the stack evaluates to true (non-zero).
+     * 
+     * @param aNumber
+     *            the number of bytes to add to the instruction pointer. The
+     *            offset must be in the range -32768..32767.
+     */
+    public void setOffset(final int aNumber) {
+        if ((aNumber < -32768) || (aNumber > 32767)) {
+            throw new IllegalArgumentException(Strings.SIGNED_RANGE);
+        }
+        offset = aNumber;
+    }
 
-	public If copy() {
-		return new If(this);
-	}
+    public If copy() {
+        return new If(this);
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, offset);
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, offset);
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		return 5;
-	}
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        return 5;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		coder.writeByte(ActionTypes.IF);
-		coder.writeWord(2, 2);
-		coder.writeWord(offset, 2);
-	}
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        coder.writeByte(ActionTypes.IF);
+        coder.writeWord(2, 2);
+        coder.writeWord(offset, 2);
+    }
 }

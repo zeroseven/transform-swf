@@ -29,12 +29,12 @@
  */
 package com.flagstone.transform.action;
 
-import org.junit.Test;
-
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
 
 import com.flagstone.transform.coder.ActionTypes;
 import com.flagstone.transform.coder.CoderException;
@@ -44,43 +44,43 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 public final class GetUrl2Test {
 
-	private static transient final int type = ActionTypes.GET_URL_2;
-	private transient final GetUrl2.Request request = GetUrl2.Request.MOVIE_TO_LEVEL;
+    private static transient final int type = ActionTypes.GET_URL_2;
+    private transient final GetUrl2.Request request = GetUrl2.Request.MOVIE_TO_LEVEL;
 
-	private transient GetUrl2 fixture;
+    private transient GetUrl2 fixture;
 
-	private transient final byte[] encoded = new byte[] { (byte) type, 0x01,
-			0x00, (byte) request.getValue() };
+    private transient final byte[] encoded = new byte[] { (byte) type, 0x01,
+            0x00, (byte) request.getValue() };
 
-	@Test
-	public void checkCopy() {
-		fixture = new GetUrl2(request);
-		final GetUrl2 copy = fixture.copy();
+    @Test
+    public void checkCopy() {
+        fixture = new GetUrl2(request);
+        final GetUrl2 copy = fixture.copy();
 
-		assertNotSame(fixture, copy);
-		assertEquals(fixture.toString(), copy.toString());
-	}
+        assertNotSame(fixture, copy);
+        assertEquals(fixture.toString(), copy.toString());
+    }
 
-	@Test
-	public void encode() throws CoderException {
-		final SWFEncoder encoder = new SWFEncoder(encoded.length);
-		final Context context = new Context();
+    @Test
+    public void encode() throws CoderException {
+        final SWFEncoder encoder = new SWFEncoder(encoded.length);
+        final Context context = new Context();
 
-		fixture = new GetUrl2(request);
-		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
-		fixture.encode(encoder, context);
+        fixture = new GetUrl2(request);
+        assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
+        fixture.encode(encoder, context);
 
-		assertTrue(encoder.eof());
-		assertArrayEquals(encoded, encoder.getData());
-	}
+        assertTrue(encoder.eof());
+        assertArrayEquals(encoded, encoder.getData());
+    }
 
-	@Test
-	public void decode() throws CoderException {
-		final SWFDecoder decoder = new SWFDecoder(encoded);
+    @Test
+    public void decode() throws CoderException {
+        final SWFDecoder decoder = new SWFDecoder(encoded);
 
-		fixture = new GetUrl2(decoder);
+        fixture = new GetUrl2(decoder);
 
-		assertTrue(decoder.eof());
-		assertEquals(request, fixture.getRequest());
-	}
+        assertTrue(decoder.eof());
+        assertEquals(request, fixture.getRequest());
+    }
 }

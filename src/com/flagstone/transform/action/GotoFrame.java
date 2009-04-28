@@ -54,69 +54,69 @@ import com.flagstone.transform.coder.SWFEncoder;
  * @see GotoFrame2
  */
 public final class GotoFrame implements Action {
-	private static final String FORMAT = "GotoFrame: { frameNumber=%d }";
+    private static final String FORMAT = "GotoFrame: { frameNumber=%d }";
 
-	private int frameNumber;
+    private int frameNumber;
 
-	// TODO(doc)
-	public GotoFrame(final SWFDecoder coder) throws CoderException {
-		coder.readByte();
-		coder.readWord(2, false);
-		frameNumber = coder.readWord(2, false);
-	}
+    // TODO(doc)
+    public GotoFrame(final SWFDecoder coder) throws CoderException {
+        coder.readByte();
+        coder.readWord(2, false);
+        frameNumber = coder.readWord(2, false);
+    }
 
-	/**
-	 * Creates a GotoFrame with the specified frame number.
-	 * 
-	 * @param aNumber
-	 *            the number of the frame. Must be in the range 1..65535.
-	 */
-	public GotoFrame(final int aNumber) {
-		setFrameNumber(aNumber);
-	}
+    /**
+     * Creates a GotoFrame with the specified frame number.
+     * 
+     * @param aNumber
+     *            the number of the frame. Must be in the range 1..65535.
+     */
+    public GotoFrame(final int aNumber) {
+        setFrameNumber(aNumber);
+    }
 
-	// TODO(doc)
-	public GotoFrame(final GotoFrame object) {
-		frameNumber = object.frameNumber;
-	}
+    // TODO(doc)
+    public GotoFrame(final GotoFrame object) {
+        frameNumber = object.frameNumber;
+    }
 
-	/**
-	 * Returns the number of the frame to move the main time-line to.
-	 */
-	public int getFrameNumber() {
-		return frameNumber;
-	}
+    /**
+     * Returns the number of the frame to move the main time-line to.
+     */
+    public int getFrameNumber() {
+        return frameNumber;
+    }
 
-	/**
-	 * Sets the number of the frame to move the main time-line to.
-	 * 
-	 * @param aNumber
-	 *            the frame number. Must be in the range 1..65535.
-	 */
-	public void setFrameNumber(final int aNumber) {
-		if (aNumber < 1 || aNumber > 65535) {
-			throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
-		}
-		frameNumber = aNumber;
-	}
+    /**
+     * Sets the number of the frame to move the main time-line to.
+     * 
+     * @param aNumber
+     *            the frame number. Must be in the range 1..65535.
+     */
+    public void setFrameNumber(final int aNumber) {
+        if ((aNumber < 1) || (aNumber > 65535)) {
+            throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
+        }
+        frameNumber = aNumber;
+    }
 
-	public GotoFrame copy() {
-		return new GotoFrame(this);
-	}
+    public GotoFrame copy() {
+        return new GotoFrame(this);
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, frameNumber);
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, frameNumber);
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		return 5;
-	}
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        return 5;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		coder.writeByte(ActionTypes.GOTO_FRAME);
-		coder.writeWord(2, 2);
-		coder.writeWord(frameNumber, 2);
-	}
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        coder.writeByte(ActionTypes.GOTO_FRAME);
+        coder.writeWord(2, 2);
+        coder.writeWord(frameNumber, 2);
+    }
 }

@@ -30,16 +30,16 @@
 package com.flagstone.transform.coder;
 
 public final class FilterTypes {
-	public static final int DROP_SHADOW = 0;
-	public static final int BLUR = 1;
-	public static final int GLOW = 2;
-	public static final int BEVEL = 3;
-	public static final int GRADIENT_GLOW = 4;
-	public static final int CONVOLUTION = 5;
-	public static final int COLOR_MATRIX = 6;
-	public static final int GRADIENT_BEVEL = 7;
+    public static final int DROP_SHADOW = 0;
+    public static final int BLUR = 1;
+    public static final int GLOW = 2;
+    public static final int BEVEL = 3;
+    public static final int GRADIENT_GLOW = 4;
+    public static final int CONVOLUTION = 5;
+    public static final int COLOR_MATRIX = 6;
+    public static final int GRADIENT_BEVEL = 7;
 
-	private FilterTypes() {
-		// Class contains only constants
-	}
+    private FilterTypes() {
+        // Class contains only constants
+    }
 }

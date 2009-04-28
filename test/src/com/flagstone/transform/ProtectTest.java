@@ -29,76 +29,74 @@
  */
 package com.flagstone.transform;
 
-import org.junit.Test;
-
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-
-
 public final class ProtectTest {
 
-	private static transient final String password = "ABC123";
+    private static transient final String password = "ABC123";
 
-	private transient Protect fixture;
+    private transient Protect fixture;
 
-	private transient final byte[] encoded = new byte[] { 0x09, 0x06, 0x00,
-			0x00, 0x41, 0x42, 0x043, 0x31, 0x32, 0x33, 0x00 };
+    private transient final byte[] encoded = new byte[] { 0x09, 0x06, 0x00,
+            0x00, 0x41, 0x42, 0x043, 0x31, 0x32, 0x33, 0x00 };
 
-	private transient final byte[] extended = new byte[] { (byte) 0x3F, 0x06,
-			0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x41, 0x42, 0x043, 0x31, 0x32,
-			0x33, 0x00 };
+    private transient final byte[] extended = new byte[] { (byte) 0x3F, 0x06,
+            0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x41, 0x42, 0x043, 0x31, 0x32,
+            0x33, 0x00 };
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAccessorForPasswordWithNull() {
-		fixture = new Protect((String) null);
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkAccessorForPasswordWithNull() {
+        fixture = new Protect((String) null);
+    }
 
-	@Test
-	public void checkCopy() {
-		fixture = new Protect(password);
-		final Protect copy = fixture.copy();
+    @Test
+    public void checkCopy() {
+        fixture = new Protect(password);
+        final Protect copy = fixture.copy();
 
-		assertEquals(fixture.getPassword(), copy.getPassword());
-		assertEquals(fixture.toString(), copy.toString());
-	}
+        assertEquals(fixture.getPassword(), copy.getPassword());
+        assertEquals(fixture.toString(), copy.toString());
+    }
 
-	@Test
-	public void encode() throws CoderException {
-		final SWFEncoder encoder = new SWFEncoder(encoded.length);
-		final Context context = new Context();
+    @Test
+    public void encode() throws CoderException {
+        final SWFEncoder encoder = new SWFEncoder(encoded.length);
+        final Context context = new Context();
 
-		fixture = new Protect(password);
-		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
-		fixture.encode(encoder, context);
+        fixture = new Protect(password);
+        assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
+        fixture.encode(encoder, context);
 
-		assertTrue(encoder.eof());
-		assertArrayEquals(encoded, encoder.getData());
-	}
+        assertTrue(encoder.eof());
+        assertArrayEquals(encoded, encoder.getData());
+    }
 
-	@Test
-	public void decode() throws CoderException {
-		final SWFDecoder decoder = new SWFDecoder(encoded);
+    @Test
+    public void decode() throws CoderException {
+        final SWFDecoder decoder = new SWFDecoder(encoded);
 
-		fixture = new Protect(decoder);
+        fixture = new Protect(decoder);
 
-		assertTrue(decoder.eof());
-		assertEquals(password, fixture.getPassword());
-	}
+        assertTrue(decoder.eof());
+        assertEquals(password, fixture.getPassword());
+    }
 
-	@Test
-	public void decodeExtended() throws CoderException {
-		final SWFDecoder decoder = new SWFDecoder(extended);
-		
-		fixture = new Protect(decoder);
+    @Test
+    public void decodeExtended() throws CoderException {
+        final SWFDecoder decoder = new SWFDecoder(extended);
 
-		assertTrue(decoder.eof());
-		assertEquals(password, fixture.getPassword());
-	}
+        fixture = new Protect(decoder);
+
+        assertTrue(decoder.eof());
+        assertEquals(password, fixture.getPassword());
+    }
 }

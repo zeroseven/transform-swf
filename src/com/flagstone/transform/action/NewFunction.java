@@ -65,235 +65,235 @@ import com.flagstone.transform.coder.SWFFactory;
  * @see NewFunction2
  */
 public final class NewFunction implements Action {
-	private static final String FORMAT = "NewFunction: { name=%s; arguments=%s; actions=%s }";
+    private static final String FORMAT = "NewFunction: { name=%s; arguments=%s; actions=%s }";
 
-	private String name;
-	private List<String> arguments;
-	private List<Action> actions;
+    private String name;
+    private List<String> arguments;
+    private List<Action> actions;
 
-	private transient int length;
-	private transient int actionsLength;
+    private transient int length;
+    private transient int actionsLength;
 
-	// TODO(doc)
-	public NewFunction(final SWFDecoder coder, final Context context)
-			throws CoderException {
-		arguments = new ArrayList<String>();
-		actions = new ArrayList<Action>();
+    // TODO(doc)
+    public NewFunction(final SWFDecoder coder, final Context context)
+            throws CoderException {
+        arguments = new ArrayList<String>();
+        actions = new ArrayList<Action>();
 
-		coder.readByte();
-		length = coder.readWord(2, false);
-		name = coder.readString();
+        coder.readByte();
+        length = coder.readWord(2, false);
+        name = coder.readString();
 
-		final int argumentCount = coder.readWord(2, false);
+        final int argumentCount = coder.readWord(2, false);
 
-		arguments = new ArrayList<String>(argumentCount);
-		actions = new ArrayList<Action>();
+        arguments = new ArrayList<String>(argumentCount);
+        actions = new ArrayList<Action>();
 
-		if (argumentCount > 0) {
-			for (int i = argumentCount; i > 0; i--) {
-				arguments.add(coder.readString());
-			}
-		}
+        if (argumentCount > 0) {
+            for (int i = argumentCount; i > 0; i--) {
+                arguments.add(coder.readString());
+            }
+        }
 
-		actionsLength = coder.readWord(2, false);
-		actions = new ArrayList<Action>();
+        actionsLength = coder.readWord(2, false);
+        actions = new ArrayList<Action>();
 
-		final int end = coder.getPointer() + (actionsLength << 3);
-		final SWFFactory<Action> decoder = context.getRegistry()
-				.getActionDecoder();
+        final int end = coder.getPointer() + (actionsLength << 3);
+        final SWFFactory<Action> decoder = context.getRegistry()
+                .getActionDecoder();
 
-		while (coder.getPointer() < end) {
-			actions.add(decoder.getObject(coder, context));
-		}
-	}
+        while (coder.getPointer() < end) {
+            actions.add(decoder.getObject(coder, context));
+        }
+    }
 
-	/**
-	 * Creates a NewFunction with the specified name, argument names and actions
-	 * to be executed. The order of the Strings in the argument array indicate
-	 * the order in which the values will be popped off the stack when the
-	 * function is executed. The fist argument is popped from the stack first.
-	 * 
-	 * @param aString
-	 *            the name of the function. May not be null.
-	 * @param argumentArray
-	 *            an array of Strings listing the names of the arguments.
-	 * @param actionArray
-	 *            the array of actions that define the operation performed by
-	 *            the function.
-	 */
-	public NewFunction(final String aString, final List<String> argumentArray,
-			final List<Action> actionArray) {
-		setName(aString);
-		setArguments(argumentArray);
-		setActions(actionArray);
-	}
+    /**
+     * Creates a NewFunction with the specified name, argument names and actions
+     * to be executed. The order of the Strings in the argument array indicate
+     * the order in which the values will be popped off the stack when the
+     * function is executed. The fist argument is popped from the stack first.
+     * 
+     * @param aString
+     *            the name of the function. May not be null.
+     * @param argumentArray
+     *            an array of Strings listing the names of the arguments.
+     * @param actionArray
+     *            the array of actions that define the operation performed by
+     *            the function.
+     */
+    public NewFunction(final String aString, final List<String> argumentArray,
+            final List<Action> actionArray) {
+        setName(aString);
+        setArguments(argumentArray);
+        setActions(actionArray);
+    }
 
-	/**
-	 * Creates a anonymous NewFunction with the specified argument names and
-	 * actions to be executed. Use this constructor when defining functions that
-	 * will be assigned to object variables and used as methods.
-	 * 
-	 * @param argumentArray
-	 *            an array of Strings listing the names of the arguments.
-	 * @param actionArray
-	 *            the array of actions that define the operation performed by
-	 *            the function.
-	 */
-	public NewFunction(final List<String> argumentArray,
-			final List<Action> actionArray) {
-		name = "";
-		setArguments(argumentArray);
-		setActions(actionArray);
-	}
+    /**
+     * Creates a anonymous NewFunction with the specified argument names and
+     * actions to be executed. Use this constructor when defining functions that
+     * will be assigned to object variables and used as methods.
+     * 
+     * @param argumentArray
+     *            an array of Strings listing the names of the arguments.
+     * @param actionArray
+     *            the array of actions that define the operation performed by
+     *            the function.
+     */
+    public NewFunction(final List<String> argumentArray,
+            final List<Action> actionArray) {
+        name = "";
+        setArguments(argumentArray);
+        setActions(actionArray);
+    }
 
-	// TODO(doc)
-	public NewFunction(final NewFunction object) {
-		name = object.name;
+    // TODO(doc)
+    public NewFunction(final NewFunction object) {
+        name = object.name;
 
-		arguments = new ArrayList<String>(object.arguments);
-		actions = new ArrayList<Action>(object.actions.size());
+        arguments = new ArrayList<String>(object.arguments);
+        actions = new ArrayList<Action>(object.actions.size());
 
-		for (Action action : object.actions) {
-			actions.add(action.copy());
-		}
-	}
+        for (final Action action : object.actions) {
+            actions.add(action.copy());
+        }
+    }
 
-	/**
-	 * Adds the name of an argument to the array of argument names.
-	 * 
-	 * @param anArgument
-	 *            the name of an argument passed to the NewFunction object. Must
-	 *            not be null or an empty string.
-	 */
-	public NewFunction add(final String anArgument) {
-		if (anArgument == null || anArgument.length() == 0) {
-			throw new IllegalArgumentException(Strings.STRING_NOT_SET);
-		}
-		arguments.add(anArgument);
-		return this;
-	}
+    /**
+     * Adds the name of an argument to the array of argument names.
+     * 
+     * @param anArgument
+     *            the name of an argument passed to the NewFunction object. Must
+     *            not be null or an empty string.
+     */
+    public NewFunction add(final String anArgument) {
+        if ((anArgument == null) || (anArgument.length() == 0)) {
+            throw new IllegalArgumentException(Strings.STRING_NOT_SET);
+        }
+        arguments.add(anArgument);
+        return this;
+    }
 
-	/**
-	 * Adds the action object to the array of actions.
-	 * 
-	 * @param anAction
-	 *            an object belonging to a class derived from Action. Must not
-	 *            be null.
-	 */
-	public NewFunction add(final Action anAction) {
-		if (anAction == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
-		}
-		actions.add(anAction);
-		return this;
-	}
+    /**
+     * Adds the action object to the array of actions.
+     * 
+     * @param anAction
+     *            an object belonging to a class derived from Action. Must not
+     *            be null.
+     */
+    public NewFunction add(final Action anAction) {
+        if (anAction == null) {
+            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+        }
+        actions.add(anAction);
+        return this;
+    }
 
-	/**
-	 * Returns the name of the function.
-	 */
-	public String getName() {
-		return name;
-	}
+    /**
+     * Returns the name of the function.
+     */
+    public String getName() {
+        return name;
+    }
 
-	/**
-	 * Returns the names of the function arguments.
-	 */
-	public List<String> getArguments() {
-		return arguments;
-	}
+    /**
+     * Returns the names of the function arguments.
+     */
+    public List<String> getArguments() {
+        return arguments;
+    }
 
-	/**
-	 * Returns the actions.
-	 */
-	public List<Action> getActions() {
-		return actions;
-	}
+    /**
+     * Returns the actions.
+     */
+    public List<Action> getActions() {
+        return actions;
+    }
 
-	/**
-	 * Sets the name of the function. The name may be an empty string when
-	 * defining methods.
-	 * 
-	 * @param aString
-	 *            the name of the function. Must not be null.
-	 */
-	public void setName(final String aString) {
-		if (aString == null) {
-			throw new IllegalArgumentException(Strings.STRING_IS_NULL);
-		}
-		name = aString;
-	}
+    /**
+     * Sets the name of the function. The name may be an empty string when
+     * defining methods.
+     * 
+     * @param aString
+     *            the name of the function. Must not be null.
+     */
+    public void setName(final String aString) {
+        if (aString == null) {
+            throw new IllegalArgumentException(Strings.STRING_IS_NULL);
+        }
+        name = aString;
+    }
 
-	/**
-	 * Sets the names of the function arguments.
-	 * 
-	 * @param anArray
-	 *            an array of Strings listing the names of the arguments. Must
-	 *            not be null.
-	 */
-	public void setArguments(final List<String> anArray) {
-		if (anArray == null) {
-			throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
-		}
-		arguments = anArray;
-	}
+    /**
+     * Sets the names of the function arguments.
+     * 
+     * @param anArray
+     *            an array of Strings listing the names of the arguments. Must
+     *            not be null.
+     */
+    public void setArguments(final List<String> anArray) {
+        if (anArray == null) {
+            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+        }
+        arguments = anArray;
+    }
 
-	/**
-	 * Sets the actions.
-	 * 
-	 * @param anArray
-	 *            the array of actions that define the operation performed by
-	 *            the function. Must not be null.
-	 */
-	public void setActions(final List<Action> anArray) {
-		if (anArray == null) {
-			throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
-		}
-		actions = anArray;
-	}
+    /**
+     * Sets the actions.
+     * 
+     * @param anArray
+     *            the array of actions that define the operation performed by
+     *            the function. Must not be null.
+     */
+    public void setActions(final List<Action> anArray) {
+        if (anArray == null) {
+            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+        }
+        actions = anArray;
+    }
 
-	public NewFunction copy() {
-		return new NewFunction(this);
-	}
+    public NewFunction copy() {
+        return new NewFunction(this);
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, name, arguments, actions);
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, name, arguments, actions);
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		length = 2 + coder.strlen(name);
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        length = 2 + coder.strlen(name);
 
-		for (String argument : arguments) {
-			length += coder.strlen(argument);
-		}
+        for (final String argument : arguments) {
+            length += coder.strlen(argument);
+        }
 
-		length += 2;
-		actionsLength = 0;
+        length += 2;
+        actionsLength = 0;
 
-		for (Action action : actions) {
-			actionsLength += action.prepareToEncode(coder, context);
-		}
+        for (final Action action : actions) {
+            actionsLength += action.prepareToEncode(coder, context);
+        }
 
-		return 3 + length + actionsLength;
-	}
+        return 3 + length + actionsLength;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		coder.writeWord(ActionTypes.NEW_FUNCTION, 1);
-		coder.writeWord(length, 2);
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        coder.writeWord(ActionTypes.NEW_FUNCTION, 1);
+        coder.writeWord(length, 2);
 
-		coder.writeString(name);
+        coder.writeString(name);
 
-		coder.writeWord(arguments.size(), 2);
+        coder.writeWord(arguments.size(), 2);
 
-		for (String argument : arguments) {
-			coder.writeString(argument);
-		}
+        for (final String argument : arguments) {
+            coder.writeString(argument);
+        }
 
-		coder.writeWord(actionsLength, 2);
+        coder.writeWord(actionsLength, 2);
 
-		for (Action action : actions) {
-			action.encode(coder, context);
-		}
-	}
+        for (final Action action : actions) {
+            action.encode(coder, context);
+        }
+    }
 }

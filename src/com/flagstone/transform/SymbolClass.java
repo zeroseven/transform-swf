@@ -53,150 +53,150 @@ import com.flagstone.transform.coder.SWFEncoder;
  */
 public final class SymbolClass implements MovieTag {
 
-	private static final String FORMAT = "SymbolClass: { objects=%s }";
+    private static final String FORMAT = "SymbolClass: { objects=%s }";
 
-	private Map<Integer, String> objects;
+    private Map<Integer, String> objects;
 
-	private transient int length;
+    private transient int length;
 
-	public SymbolClass(final SWFDecoder coder) throws CoderException {
+    public SymbolClass(final SWFDecoder coder) throws CoderException {
 
-		final int start = coder.getPointer();
-		length = coder.readWord(2, false) & 0x3F;
+        final int start = coder.getPointer();
+        length = coder.readWord(2, false) & 0x3F;
 
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
-		final int end = coder.getPointer() + (length << 3);
+        if (length == 0x3F) {
+            length = coder.readWord(4, false);
+        }
+        final int end = coder.getPointer() + (length << 3);
 
-		final int count = coder.readWord(2, false);
-		objects = new LinkedHashMap<Integer, String>(count);
+        final int count = coder.readWord(2, false);
+        objects = new LinkedHashMap<Integer, String>(count);
 
-		for (int i = 0; i < count; i++) {
-			objects.put(coder.readWord(2, false), coder.readString());
-		}
+        for (int i = 0; i < count; i++) {
+            objects.put(coder.readWord(2, false), coder.readString());
+        }
 
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
+        if (coder.getPointer() != end) {
+            throw new CoderException(getClass().getName(), start >> 3, length,
+                    (coder.getPointer() - end) >> 3);
+        }
+    }
 
-	/**
-	 * Creates an SYMBOL object with an empty array.
-	 * 
-	 * @param map
-	 *            the table containing identifier/name pairs for the objects
-	 *            that will be SYMBOLed from the movie.
-	 */
-	public SymbolClass(final Map<Integer, String> map) {
-		objects = map;
-	}
+    /**
+     * Creates an SYMBOL object with an empty array.
+     * 
+     * @param map
+     *            the table containing identifier/name pairs for the objects
+     *            that will be SYMBOLed from the movie.
+     */
+    public SymbolClass(final Map<Integer, String> map) {
+        objects = map;
+    }
 
-	/**
-	 * Creates an SYMBOL object that SYMBOLs the object with the specified
-	 * identifier. The SYMBOLed object is assigned the specified name to allow
-	 * it to be referenced in files importing the object.
-	 * 
-	 * @param uid
-	 *            the identifier of the object to be SYMBOLed. Must be in the
-	 *            range 1..65535.
-	 * @param aString
-	 *            the name of the SYMBOLed object to allow it to be referenced.
-	 *            Must not be an empty string or null.
-	 */
-	public SymbolClass(final int uid, final String aString) {
-		objects = new LinkedHashMap<Integer, String>();
-		add(uid, aString);
-	}
+    /**
+     * Creates an SYMBOL object that SYMBOLs the object with the specified
+     * identifier. The SYMBOLed object is assigned the specified name to allow
+     * it to be referenced in files importing the object.
+     * 
+     * @param uid
+     *            the identifier of the object to be SYMBOLed. Must be in the
+     *            range 1..65535.
+     * @param aString
+     *            the name of the SYMBOLed object to allow it to be referenced.
+     *            Must not be an empty string or null.
+     */
+    public SymbolClass(final int uid, final String aString) {
+        objects = new LinkedHashMap<Integer, String>();
+        add(uid, aString);
+    }
 
-	public SymbolClass(final SymbolClass object) {
-		objects = new LinkedHashMap<Integer, String>(object.objects);
-	}
+    public SymbolClass(final SymbolClass object) {
+        objects = new LinkedHashMap<Integer, String>(object.objects);
+    }
 
-	/**
-	 * Adds the identifier and name to the list of objects to be SYMBOLed.
-	 * 
-	 * @param uid
-	 *            the identifier of the object to be SYMBOLed.
-	 * @param aString
-	 *            the name of the SYMBOLed object to allow it to be referenced.
-	 *            The name must not be null or an empty string.
-	 */
-	public void add(final int uid, final String aString) {
-		if (uid < 1 || uid > 65535) {
-			throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
-		}
-		if (aString == null || aString.length() == 0) {
-			throw new IllegalArgumentException(Strings.STRING_NOT_SET);
-		}
-		objects.put(uid, aString);
-	}
+    /**
+     * Adds the identifier and name to the list of objects to be SYMBOLed.
+     * 
+     * @param uid
+     *            the identifier of the object to be SYMBOLed.
+     * @param aString
+     *            the name of the SYMBOLed object to allow it to be referenced.
+     *            The name must not be null or an empty string.
+     */
+    public void add(final int uid, final String aString) {
+        if ((uid < 1) || (uid > 65535)) {
+            throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
+        }
+        if ((aString == null) || (aString.length() == 0)) {
+            throw new IllegalArgumentException(Strings.STRING_NOT_SET);
+        }
+        objects.put(uid, aString);
+    }
 
-	/**
-	 * Returns the table of objects to be SYMBOLed.
-	 */
-	public Map<Integer, String> getObjects() {
-		return objects;
-	}
+    /**
+     * Returns the table of objects to be SYMBOLed.
+     */
+    public Map<Integer, String> getObjects() {
+        return objects;
+    }
 
-	/**
-	 * Sets the table of objects to be SYMBOLed.
-	 * 
-	 * @param aTable
-	 *            the table of objects being imported. Must not be null.
-	 */
-	public void setObjects(final Map<Integer, String> aTable) {
-		if (aTable == null) {
-			throw new IllegalArgumentException(Strings.TABLE_IS_NULL);
-		}
-		objects = aTable;
-	}
+    /**
+     * Sets the table of objects to be SYMBOLed.
+     * 
+     * @param aTable
+     *            the table of objects being imported. Must not be null.
+     */
+    public void setObjects(final Map<Integer, String> aTable) {
+        if (aTable == null) {
+            throw new IllegalArgumentException(Strings.TABLE_IS_NULL);
+        }
+        objects = aTable;
+    }
 
-	// TODO(doc)
-	public SymbolClass copy() {
-		return new SymbolClass(this);
-	}
+    // TODO(doc)
+    public SymbolClass copy() {
+        return new SymbolClass(this);
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, objects);
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, objects);
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
 
-		length = 2;
+        length = 2;
 
-		for (String name : objects.values()) {
-			length += 2 + coder.strlen(name);
-		}
+        for (final String name : objects.values()) {
+            length += 2 + coder.strlen(name);
+        }
 
-		return (length > 62 ? 6 : 2) + length;
-	}
+        return (length > 62 ? 6 : 2) + length;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
 
-		final int start = coder.getPointer();
+        final int start = coder.getPointer();
 
-		if (length > 62) {
-			coder.writeWord((MovieTypes.SYMBOL << 6) | 0x3F, 2);
-			coder.writeWord(length, 4);
-		} else {
-			coder.writeWord((MovieTypes.SYMBOL << 6) | length, 2);
-		}
-		final int end = coder.getPointer() + (length << 3);
+        if (length > 62) {
+            coder.writeWord((MovieTypes.SYMBOL << 6) | 0x3F, 2);
+            coder.writeWord(length, 4);
+        } else {
+            coder.writeWord((MovieTypes.SYMBOL << 6) | length, 2);
+        }
+        final int end = coder.getPointer() + (length << 3);
 
-		coder.writeWord(objects.size(), 2);
+        coder.writeWord(objects.size(), 2);
 
-		for (Integer identifier : objects.keySet()) {
-			coder.writeWord(identifier.intValue(), 2);
-			coder.writeString(objects.get(identifier));
-		}
+        for (final Integer identifier : objects.keySet()) {
+            coder.writeWord(identifier.intValue(), 2);
+            coder.writeString(objects.get(identifier));
+        }
 
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
+        if (coder.getPointer() != end) {
+            throw new CoderException(getClass().getName(), start >> 3, length,
+                    (coder.getPointer() - end) >> 3);
+        }
+    }
 }

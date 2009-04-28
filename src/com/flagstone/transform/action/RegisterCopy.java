@@ -65,80 +65,80 @@ import com.flagstone.transform.coder.SWFEncoder;
  * @see Push
  */
 public final class RegisterCopy implements Action {
-	private static final String FORMAT = "RegisterCopy: { registerNumber=%d }";
+    private static final String FORMAT = "RegisterCopy: { registerNumber=%d }";
 
-	private int registerNumber;
+    private int registerNumber;
 
-	// TODO(doc)
-	public RegisterCopy(final SWFDecoder coder) throws CoderException {
-		coder.readByte();
-		coder.readWord(2, false);
-		registerNumber = coder.readByte();
-	}
+    // TODO(doc)
+    public RegisterCopy(final SWFDecoder coder) throws CoderException {
+        coder.readByte();
+        coder.readWord(2, false);
+        registerNumber = coder.readByte();
+    }
 
-	/**
-	 * Creates a RegisterCopy object with the register number.
-	 * 
-	 * @param anIndex
-	 *            the number of one of the Flash Player's internal registers.
-	 *            Must be in the range 0..255.
-	 */
-	public RegisterCopy(final int anIndex) {
-		setRegisterNumber(anIndex);
-	}
+    /**
+     * Creates a RegisterCopy object with the register number.
+     * 
+     * @param anIndex
+     *            the number of one of the Flash Player's internal registers.
+     *            Must be in the range 0..255.
+     */
+    public RegisterCopy(final int anIndex) {
+        setRegisterNumber(anIndex);
+    }
 
-	// TODO(doc)
-	public RegisterCopy(final RegisterCopy object) {
-		registerNumber = object.registerNumber;
-	}
+    // TODO(doc)
+    public RegisterCopy(final RegisterCopy object) {
+        registerNumber = object.registerNumber;
+    }
 
-	/**
-	 * Returns the number of the Player register that the value on the stack
-	 * will be copied to.
-	 */
-	public int getRegisterNumber() {
-		return registerNumber;
-	}
+    /**
+     * Returns the number of the Player register that the value on the stack
+     * will be copied to.
+     */
+    public int getRegisterNumber() {
+        return registerNumber;
+    }
 
-	/**
-	 * Returns the number of the Player register that the value on the stack
-	 * will be copied to.
-	 * 
-	 * @param anIndex
-	 *            the number of one of the Flash Player's internal registers.
-	 *            Must be in the range 0..255.
-	 */
-	public void setRegisterNumber(final int anIndex) {
-		if (anIndex < 0 || anIndex > 255) {
-			throw new IllegalArgumentException(Strings.REGISTER_RANGE);
-		}
-		registerNumber = anIndex;
-	}
+    /**
+     * Returns the number of the Player register that the value on the stack
+     * will be copied to.
+     * 
+     * @param anIndex
+     *            the number of one of the Flash Player's internal registers.
+     *            Must be in the range 0..255.
+     */
+    public void setRegisterNumber(final int anIndex) {
+        if ((anIndex < 0) || (anIndex > 255)) {
+            throw new IllegalArgumentException(Strings.REGISTER_RANGE);
+        }
+        registerNumber = anIndex;
+    }
 
-	public RegisterCopy copy() {
-		return new RegisterCopy(this);
-	}
+    public RegisterCopy copy() {
+        return new RegisterCopy(this);
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, registerNumber);
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, registerNumber);
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		return 4;
-	}
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        return 4;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		coder.writeByte(ActionTypes.REGISTER_COPY);
-		coder.writeWord(2, 2);
-		coder.writeByte(registerNumber);
-	}
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        coder.writeByte(ActionTypes.REGISTER_COPY);
+        coder.writeWord(2, 2);
+        coder.writeByte(registerNumber);
+    }
 
-	public void decode(final SWFDecoder coder, final Context context)
-			throws CoderException {
-		coder.readByte();
-		coder.readWord(2, false);
-		registerNumber = coder.readByte();
-	}
+    public void decode(final SWFDecoder coder, final Context context)
+            throws CoderException {
+        coder.readByte();
+        coder.readWord(2, false);
+        registerNumber = coder.readByte();
+    }
 }

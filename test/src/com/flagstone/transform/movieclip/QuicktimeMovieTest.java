@@ -29,75 +29,73 @@
  */
 package com.flagstone.transform.movieclip;
 
-import org.junit.Test;
-
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-
-
 public final class QuicktimeMovieTest {
 
-	private static transient final String path = "ABC123";
+    private static transient final String path = "ABC123";
 
-	private transient QuicktimeMovie fixture;
+    private transient QuicktimeMovie fixture;
 
-	private transient final byte[] encoded = new byte[] { (byte) 0x87, 0x09,
-			0x41, 0x42, 0x043, 0x31, 0x32, 0x33, 0x00 };
+    private transient final byte[] encoded = new byte[] { (byte) 0x87, 0x09,
+            0x41, 0x42, 0x043, 0x31, 0x32, 0x33, 0x00 };
 
-	private transient final byte[] extended = new byte[] { (byte) 0xBF, 0x09,
-			0x07, 0x00, 0x00, 0x00, 0x41, 0x42, 0x043, 0x31, 0x32, 0x33, 0x00 };
+    private transient final byte[] extended = new byte[] { (byte) 0xBF, 0x09,
+            0x07, 0x00, 0x00, 0x00, 0x41, 0x42, 0x043, 0x31, 0x32, 0x33, 0x00 };
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAccessorForPathWithNull() {
-		fixture = new QuicktimeMovie((String) null);
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkAccessorForPathWithNull() {
+        fixture = new QuicktimeMovie((String) null);
+    }
 
-	@Test
-	public void checkCopy() {
-		fixture = new QuicktimeMovie(path);
-		final QuicktimeMovie copy = fixture.copy();
+    @Test
+    public void checkCopy() {
+        fixture = new QuicktimeMovie(path);
+        final QuicktimeMovie copy = fixture.copy();
 
-		assertEquals(fixture.getPath(), copy.getPath());
-		assertEquals(fixture.toString(), copy.toString());
-	}
+        assertEquals(fixture.getPath(), copy.getPath());
+        assertEquals(fixture.toString(), copy.toString());
+    }
 
-	@Test
-	public void encode() throws CoderException {
-		final SWFEncoder encoder = new SWFEncoder(encoded.length);
-		final Context context = new Context();
+    @Test
+    public void encode() throws CoderException {
+        final SWFEncoder encoder = new SWFEncoder(encoded.length);
+        final Context context = new Context();
 
-		fixture = new QuicktimeMovie(path);
-		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
-		fixture.encode(encoder, context);
+        fixture = new QuicktimeMovie(path);
+        assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
+        fixture.encode(encoder, context);
 
-		assertTrue(encoder.eof());
-		assertArrayEquals(encoded, encoder.getData());
-	}
+        assertTrue(encoder.eof());
+        assertArrayEquals(encoded, encoder.getData());
+    }
 
-	@Test
-	public void decode() throws CoderException {
-		final SWFDecoder decoder = new SWFDecoder(encoded);
+    @Test
+    public void decode() throws CoderException {
+        final SWFDecoder decoder = new SWFDecoder(encoded);
 
-		fixture = new QuicktimeMovie(decoder);
+        fixture = new QuicktimeMovie(decoder);
 
-		assertTrue(decoder.eof());
-		assertEquals(path, fixture.getPath());
-	}
+        assertTrue(decoder.eof());
+        assertEquals(path, fixture.getPath());
+    }
 
-	@Test
-	public void decodeExtended() throws CoderException {
-		final SWFDecoder decoder = new SWFDecoder(extended);
+    @Test
+    public void decodeExtended() throws CoderException {
+        final SWFDecoder decoder = new SWFDecoder(extended);
 
-		fixture = new QuicktimeMovie(decoder);
+        fixture = new QuicktimeMovie(decoder);
 
-		assertTrue(decoder.eof());
-		assertEquals(path, fixture.getPath());
-	}
+        assertTrue(decoder.eof());
+        assertEquals(path, fixture.getPath());
+    }
 }

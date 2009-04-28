@@ -64,140 +64,140 @@ import com.flagstone.transform.coder.SWFEncoder;
  */
 public final class FrameLabel implements MovieTag {
 
-	private static final String FORMAT = "FrameLabel: { label=%s; anchor=%s}";
+    private static final String FORMAT = "FrameLabel: { label=%s; anchor=%s}";
 
-	private String label;
-	private boolean anchor;
+    private String label;
+    private boolean anchor;
 
-	private transient int length;
+    private transient int length;
 
-	public FrameLabel(final SWFDecoder coder) throws CoderException {
+    public FrameLabel(final SWFDecoder coder) throws CoderException {
 
-		length = coder.readWord(2, false) & 0x3F;
+        length = coder.readWord(2, false) & 0x3F;
 
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
-		final int end = coder.getPointer() + (length << 3);
+        if (length == 0x3F) {
+            length = coder.readWord(4, false);
+        }
+        final int end = coder.getPointer() + (length << 3);
 
-		label = coder.readString();
+        label = coder.readString();
 
-		if (coder.getPointer() < end) {
-			anchor = coder.readByte() != 0;
-		}
-	}
+        if (coder.getPointer() < end) {
+            anchor = coder.readByte() != 0;
+        }
+    }
 
-	/**
-	 * Creates a FrameLabel object with the specified name.
-	 * 
-	 * @param aString
-	 *            the string that defines the label that will be assigned to the
-	 *            current frame. Must not be null or an empty string.
-	 */
-	public FrameLabel(final String aString) {
-		setLabel(aString);
-	}
+    /**
+     * Creates a FrameLabel object with the specified name.
+     * 
+     * @param aString
+     *            the string that defines the label that will be assigned to the
+     *            current frame. Must not be null or an empty string.
+     */
+    public FrameLabel(final String aString) {
+        setLabel(aString);
+    }
 
-	/**
-	 * Creates a FrameLabel object with the specified name. If the isAnchor flag
-	 * is true then the frame can be directly addressed by a URL and the Flash
-	 * Player will begin playing the movie at the specified frame.
-	 * 
-	 * @param aString
-	 *            the string that defines the label that will be assigned to the
-	 *            current frame. Must not be null or an empty string.
-	 * @param isAnchor
-	 *            if true the name will be used as an anchor when referencing
-	 *            the frame in a URL.
-	 */
-	public FrameLabel(final String aString, final boolean isAnchor) {
-		setLabel(aString);
-		setAnchor(isAnchor); // TODO(optimise) no need to call method
-	}
+    /**
+     * Creates a FrameLabel object with the specified name. If the isAnchor flag
+     * is true then the frame can be directly addressed by a URL and the Flash
+     * Player will begin playing the movie at the specified frame.
+     * 
+     * @param aString
+     *            the string that defines the label that will be assigned to the
+     *            current frame. Must not be null or an empty string.
+     * @param isAnchor
+     *            if true the name will be used as an anchor when referencing
+     *            the frame in a URL.
+     */
+    public FrameLabel(final String aString, final boolean isAnchor) {
+        setLabel(aString);
+        setAnchor(isAnchor); // TODO(optimise) no need to call method
+    }
 
-	/**
-	 * Creates a FrameLabel object with a copy of the label and anchor from
-	 * another FrameLabel object.
-	 * 
-	 * @param object
-	 *            a FrameLabel object to copy.
-	 */
-	public FrameLabel(final FrameLabel object) {
-		label = object.label;
-		anchor = object.anchor;
-	}
+    /**
+     * Creates a FrameLabel object with a copy of the label and anchor from
+     * another FrameLabel object.
+     * 
+     * @param object
+     *            a FrameLabel object to copy.
+     */
+    public FrameLabel(final FrameLabel object) {
+        label = object.label;
+        anchor = object.anchor;
+    }
 
-	/**
-	 * Returns the label.
-	 */
-	public String getLabel() {
-		return label;
-	}
+    /**
+     * Returns the label.
+     */
+    public String getLabel() {
+        return label;
+    }
 
-	/**
-	 * Sets the label.
-	 * 
-	 * @param label
-	 *            the string that defines the label that will be assigned to the
-	 *            current frame. Must not be null or an empty string.
-	 */
-	public void setLabel(final String label) {
-		if (label == null || label.length() == 0) {
-			throw new IllegalArgumentException(Strings.STRING_NOT_SET);
-		}
-		this.label = label;
-	}
+    /**
+     * Sets the label.
+     * 
+     * @param label
+     *            the string that defines the label that will be assigned to the
+     *            current frame. Must not be null or an empty string.
+     */
+    public void setLabel(final String label) {
+        if ((label == null) || (label.length() == 0)) {
+            throw new IllegalArgumentException(Strings.STRING_NOT_SET);
+        }
+        this.label = label;
+    }
 
-	/**
-	 * Returns the flag indicating whether the frame name is also used as an
-	 * anchor so the frame can be referenced from outside of the movie.
-	 */
-	public boolean isAnchor() {
-		return anchor;
-	}
+    /**
+     * Returns the flag indicating whether the frame name is also used as an
+     * anchor so the frame can be referenced from outside of the movie.
+     */
+    public boolean isAnchor() {
+        return anchor;
+    }
 
-	/**
-	 * Sets the flag indicating whether the frame name is also used as an anchor
-	 * so the frame can be referenced from outside of the movie.
-	 * 
-	 * @param anchored
-	 *            true if the frame is an anchor frame, false otherwise.
-	 */
-	public void setAnchor(final boolean anchored) {
-		anchor = anchored;
-	}
+    /**
+     * Sets the flag indicating whether the frame name is also used as an anchor
+     * so the frame can be referenced from outside of the movie.
+     * 
+     * @param anchored
+     *            true if the frame is an anchor frame, false otherwise.
+     */
+    public void setAnchor(final boolean anchored) {
+        anchor = anchored;
+    }
 
-	public FrameLabel copy() {
-		return new FrameLabel(this);
-	}
+    public FrameLabel copy() {
+        return new FrameLabel(this);
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, label, String.valueOf(anchor));
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, label, String.valueOf(anchor));
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
 
-		length = coder.strlen(label);
-		length += anchor ? 1 : 0;
+        length = coder.strlen(label);
+        length += anchor ? 1 : 0;
 
-		return (length > 62 ? 6 : 2) + length;
-	}
+        return (length > 62 ? 6 : 2) + length;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
 
-		if (length > 62) {
-			coder.writeWord((MovieTypes.FRAME_LABEL << 6) | 0x3F, 2);
-			coder.writeWord(length, 4);
-		} else {
-			coder.writeWord((MovieTypes.FRAME_LABEL << 6) | length, 2);
-		}
+        if (length > 62) {
+            coder.writeWord((MovieTypes.FRAME_LABEL << 6) | 0x3F, 2);
+            coder.writeWord(length, 4);
+        } else {
+            coder.writeWord((MovieTypes.FRAME_LABEL << 6) | length, 2);
+        }
 
-		coder.writeString(label);
+        coder.writeString(label);
 
-		if (anchor) {
-			coder.writeWord(1, 1);
-		}
-	}
+        if (anchor) {
+            coder.writeWord(1, 1);
+        }
+    }
 }

@@ -29,68 +29,67 @@
  */
 package com.flagstone.transform.movie.sound;
 
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Ignore;
 import org.junit.Test;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotSame;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.sound.SoundStreamHead2;
 
-
-
 public final class SoundStreamHead2Test {
 
-	private transient SoundStreamHead2 fixture;
+    private transient SoundStreamHead2 fixture;
 
-	private transient final byte[] encoded = new byte[] { 0x06, 0x01, 0x01,
-			0x00, 0x02, 0x00, 0x06, 0x50 };
+    private transient final byte[] encoded = new byte[] { 0x06, 0x01, 0x01,
+            0x00, 0x02, 0x00, 0x06, 0x50 };
 
-	private transient final byte[] extended = new byte[] { 0x7F, 0x01, 0x06,
-			0x00, 0x00, 0x00, 0x01, 0x00, 0x02, 0x00, 0x06, 0x50 };
+    private transient final byte[] extended = new byte[] { 0x7F, 0x01, 0x06,
+            0x00, 0x00, 0x00, 0x01, 0x00, 0x02, 0x00, 0x06, 0x50 };
 
-	@Test
-	@Ignore
-	public void checkCopy() {
-		// fixture = new SoundStreamHead2(identifier, layer, transform,
-		// colorTransform);
-		final SoundStreamHead2 copy = fixture.copy();
+    @Test
+    @Ignore
+    public void checkCopy() {
+        // fixture = new SoundStreamHead2(identifier, layer, transform,
+        // colorTransform);
+        final SoundStreamHead2 copy = fixture.copy();
 
-		assertNotSame(fixture, copy);
-	}
+        assertNotSame(fixture, copy);
+    }
 
-	@Test
-	@Ignore
-	public void encode() throws CoderException {
-		final SWFEncoder encoder = new SWFEncoder(encoded.length);
+    @Test
+    @Ignore
+    public void encode() throws CoderException {
+        final SWFEncoder encoder = new SWFEncoder(encoded.length);
 
-		// fixture = new SoundStreamHead2(identifier, layer, transform);
-		// assertEquals(encoded.length, fixture.prepareToEncode(encoder,
-		// context));
-		// fixture.encode(encoder, context);
+        // fixture = new SoundStreamHead2(identifier, layer, transform);
+        // assertEquals(encoded.length, fixture.prepareToEncode(encoder,
+        // context));
+        // fixture.encode(encoder, context);
 
-		assertTrue(encoder.eof());
-	}
+        assertTrue(encoder.eof());
+    }
 
-	@Test
-	@Ignore
-	public void decode() throws CoderException {
-		final SWFDecoder decoder = new SWFDecoder(encoded);
+    @Test
+    @Ignore
+    public void decode() throws CoderException {
+        final SWFDecoder decoder = new SWFDecoder(encoded);
 
-		// fixture = new SoundStreamHead2(decoder, context);
+        // fixture = new SoundStreamHead2(decoder, context);
 
-		assertTrue(decoder.eof());
-	}
+        assertTrue(decoder.eof());
+    }
 
-	@Test
-	@Ignore
-	public void decodeExtended() throws CoderException {
-		final SWFDecoder decoder = new SWFDecoder(extended);
+    @Test
+    @Ignore
+    public void decodeExtended() throws CoderException {
+        final SWFDecoder decoder = new SWFDecoder(extended);
 
-		// fixture = new SoundStreamHead2(decoder, context);
+        // fixture = new SoundStreamHead2(decoder, context);
 
-		assertTrue(decoder.eof());
-	}
+        assertTrue(decoder.eof());
+    }
 }

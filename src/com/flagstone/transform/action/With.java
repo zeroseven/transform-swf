@@ -59,108 +59,108 @@ import com.flagstone.transform.coder.SWFFactory;
  * </p>
  */
 public final class With implements Action {
-	private static final String FORMAT = "With: { actions=%s }";
+    private static final String FORMAT = "With: { actions=%s }";
 
-	private List<Action> actions;
+    private List<Action> actions;
 
-	private transient int length;
+    private transient int length;
 
-	// TODO(doc)
-	public With(final SWFDecoder coder, final Context context)
-			throws CoderException {
-		final SWFFactory<Action> decoder = context.getRegistry()
-				.getActionDecoder();
+    // TODO(doc)
+    public With(final SWFDecoder coder, final Context context)
+            throws CoderException {
+        final SWFFactory<Action> decoder = context.getRegistry()
+                .getActionDecoder();
 
-		coder.readByte();
-		coder.readWord(2, false);
-		length = coder.readWord(2, false);
-		final int end = coder.getPointer() + (length << 3);
+        coder.readByte();
+        coder.readWord(2, false);
+        length = coder.readWord(2, false);
+        final int end = coder.getPointer() + (length << 3);
 
-		actions = new ArrayList<Action>();
+        actions = new ArrayList<Action>();
 
-		while (coder.getPointer() < end) {
-			actions.add(decoder.getObject(coder, context));
-		}
-	}
+        while (coder.getPointer() < end) {
+            actions.add(decoder.getObject(coder, context));
+        }
+    }
 
-	/**
-	 * Creates a With object with an array of actions.
-	 * 
-	 * @param anArray
-	 *            the array of action objects. Must not be null.
-	 */
-	public With(final List<Action> anArray) {
-		setActions(anArray);
-	}
+    /**
+     * Creates a With object with an array of actions.
+     * 
+     * @param anArray
+     *            the array of action objects. Must not be null.
+     */
+    public With(final List<Action> anArray) {
+        setActions(anArray);
+    }
 
-	// TODO(doc)
-	public With(final With object) {
-		actions = new ArrayList<Action>(object.actions.size());
+    // TODO(doc)
+    public With(final With object) {
+        actions = new ArrayList<Action>(object.actions.size());
 
-		for (Action action : object.actions) {
-			actions.add(action.copy());
-		}
-	}
+        for (final Action action : object.actions) {
+            actions.add(action.copy());
+        }
+    }
 
-	/**
-	 * Adds the action object to the array of actions.
-	 * 
-	 * @param anAction
-	 *            an object belonging to a class derived from Action. Must not
-	 *            be null.
-	 */
-	public With add(final Action anAction) {
-		if (anAction == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
-		}
-		actions.add(anAction);
-		return this;
-	}
+    /**
+     * Adds the action object to the array of actions.
+     * 
+     * @param anAction
+     *            an object belonging to a class derived from Action. Must not
+     *            be null.
+     */
+    public With add(final Action anAction) {
+        if (anAction == null) {
+            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+        }
+        actions.add(anAction);
+        return this;
+    }
 
-	/**
-	 * Get the array of actions that are executed for the movie clip target.
-	 */
-	public List<Action> getActions() {
-		return actions;
-	}
+    /**
+     * Get the array of actions that are executed for the movie clip target.
+     */
+    public List<Action> getActions() {
+        return actions;
+    }
 
-	/**
-	 * Set the array of actions that will be executed for the movie clip target.
-	 * 
-	 * @param anArray
-	 *            the array of action objects. Must not be null.
-	 */
-	public void setActions(final List<Action> anArray) {
-		actions = anArray;
-	}
+    /**
+     * Set the array of actions that will be executed for the movie clip target.
+     * 
+     * @param anArray
+     *            the array of action objects. Must not be null.
+     */
+    public void setActions(final List<Action> anArray) {
+        actions = anArray;
+    }
 
-	public With copy() {
-		return new With(this);
-	}
+    public With copy() {
+        return new With(this);
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, actions);
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, actions);
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		length = 2;
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        length = 2;
 
-		for (Action action : actions) {
-			length += action.prepareToEncode(coder, context);
-		}
+        for (final Action action : actions) {
+            length += action.prepareToEncode(coder, context);
+        }
 
-		return 3 + length;
-	}
+        return 3 + length;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		coder.writeWord(ActionTypes.WITH, 1);
-		coder.writeWord(2, 2);
-		coder.writeWord(length - 2, 2);
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        coder.writeWord(ActionTypes.WITH, 1);
+        coder.writeWord(2, 2);
+        coder.writeWord(length - 2, 2);
 
-		for (Action action : actions) {
-			action.encode(coder, context);
-		}
-	}
+        for (final Action action : actions) {
+            action.encode(coder, context);
+        }
+    }
 }

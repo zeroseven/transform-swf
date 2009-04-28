@@ -34,41 +34,41 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.zip.DataFormatException;
 
-import com.flagstone.transform.Movie;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.flagstone.transform.Movie;
 
 /**
  * DecodeMovieTest is used to create Movies using all the Flash files in a given
  * directory to verify that they can be decoded correctly.
  */
 public final class MovieDecodeTest {
-	private static File srcDir;
-	private static FilenameFilter filter;
+    private static File srcDir;
+    private static FilenameFilter filter;
 
-	@BeforeClass
-	public static void setUp() {
-		if (System.getProperty("test.suite") == null) {
-			srcDir = new File("test/data/swf/reference");
-		} else {
-			srcDir = new File(System.getProperty("test.suites"));
-		}
+    @BeforeClass
+    public static void setUp() {
+        if (System.getProperty("test.suite") == null) {
+            srcDir = new File("test/data/swf/reference");
+        } else {
+            srcDir = new File(System.getProperty("test.suites"));
+        }
 
-		filter = new FilenameFilter() {
-			public boolean accept(final File directory, final String name) {
-				return name.endsWith(".swf");
-			}
-		};
-	}
+        filter = new FilenameFilter() {
+            public boolean accept(final File directory, final String name) {
+                return name.endsWith(".swf");
+            }
+        };
+    }
 
-	@Test
-	public void decode() throws DataFormatException, IOException {
-		final Movie movie = new Movie();
-		final String[] files = srcDir.list(filter);
+    @Test
+    public void decode() throws DataFormatException, IOException {
+        final Movie movie = new Movie();
+        final String[] files = srcDir.list(filter);
 
-		for (String file : files) {
-			movie.decodeFromFile(new File(srcDir, file));
-		}
-	}
+        for (final String file : files) {
+            movie.decodeFromFile(new File(srcDir, file));
+        }
+    }
 }

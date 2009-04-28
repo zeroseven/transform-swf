@@ -29,16 +29,16 @@
  */
 package com.flagstone.transform;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertArrayEquals;
 
 import com.flagstone.transform.action.ActionData;
 import com.flagstone.transform.action.BasicAction;
@@ -52,113 +52,113 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 public final class DoActionTest {
 
-	private transient List<Action> actions;
+    private transient List<Action> actions;
 
-	private transient DoAction fixture;
+    private transient DoAction fixture;
 
-	private transient final byte[] encoded = new byte[] { (byte) 0x02, 0x03,
-			0x04, 0x00 };
+    private transient final byte[] encoded = new byte[] { (byte) 0x02, 0x03,
+            0x04, 0x00 };
 
-	private transient final byte[] extended = new byte[] { (byte) 0x3F, 0x03,
-			0x02, 0x00, 0x00, 0x00, 0x04, 0x00 };
+    private transient final byte[] extended = new byte[] { (byte) 0x3F, 0x03,
+            0x02, 0x00, 0x00, 0x00, 0x04, 0x00 };
 
-	@Before
-	public void setUp() {
-		actions = new ArrayList<Action>();
-		actions.add(BasicAction.NEXT_FRAME);
-		actions.add(BasicAction.END);
-	}
+    @Before
+    public void setUp() {
+        actions = new ArrayList<Action>();
+        actions.add(BasicAction.NEXT_FRAME);
+        actions.add(BasicAction.END);
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAccessorForActionsWithNull() {
-		fixture = new DoAction();
-		fixture.setActions(null);
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkAccessorForActionsWithNull() {
+        fixture = new DoAction();
+        fixture.setActions(null);
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAddNullAction() {
-		fixture = new DoAction();
-		fixture.add(null);
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkAddNullAction() {
+        fixture = new DoAction();
+        fixture.add(null);
+    }
 
-	@Test
-	public void checkCopy() {
-		fixture = new DoAction(actions);
-		assertNotSame(fixture, fixture.copy());
-		assertEquals(actions, fixture.copy().getActions());
-		assertEquals(fixture.toString(), fixture.copy().toString());
-	}
+    @Test
+    public void checkCopy() {
+        fixture = new DoAction(actions);
+        assertNotSame(fixture, fixture.copy());
+        assertEquals(actions, fixture.copy().getActions());
+        assertEquals(fixture.toString(), fixture.copy().toString());
+    }
 
-	@Test
-	public void encode() throws CoderException {
-		final SWFEncoder encoder = new SWFEncoder(encoded.length);
-		final Context context = new Context();
+    @Test
+    public void encode() throws CoderException {
+        final SWFEncoder encoder = new SWFEncoder(encoded.length);
+        final Context context = new Context();
 
-		fixture = new DoAction(actions);
-		assertEquals(4, fixture.prepareToEncode(encoder, context));
-		fixture.encode(encoder, context);
+        fixture = new DoAction(actions);
+        assertEquals(4, fixture.prepareToEncode(encoder, context));
+        fixture.encode(encoder, context);
 
-		assertTrue(encoder.eof());
-		assertArrayEquals(encoded, encoder.getData());
-	}
+        assertTrue(encoder.eof());
+        assertArrayEquals(encoded, encoder.getData());
+    }
 
-	@Test
-	public void encodeExtended() throws CoderException {
-		final SWFEncoder encoder = new SWFEncoder(106);
-		final Context context = new Context();
+    @Test
+    public void encodeExtended() throws CoderException {
+        final SWFEncoder encoder = new SWFEncoder(106);
+        final Context context = new Context();
 
-		fixture = new DoAction();
+        fixture = new DoAction();
 
-		for (int i = 0; i < 99; i++) {
-			fixture.add(BasicAction.ADD);
-		}
+        for (int i = 0; i < 99; i++) {
+            fixture.add(BasicAction.ADD);
+        }
 
-		fixture.add(BasicAction.END);
+        fixture.add(BasicAction.END);
 
-		assertEquals(106, fixture.prepareToEncode(encoder, context));
-		fixture.encode(encoder, context);
+        assertEquals(106, fixture.prepareToEncode(encoder, context));
+        fixture.encode(encoder, context);
 
-		assertTrue(encoder.eof());
-	}
+        assertTrue(encoder.eof());
+    }
 
-	@Test
-	public void checkDecode() throws CoderException {
-		final SWFDecoder decoder = new SWFDecoder(encoded);
-		final Context context = new Context();
-		final DecoderRegistry registry = new DecoderRegistry();
-		registry.setActionDecoder(new ActionDecoder());
-		context.setRegistry(registry);
+    @Test
+    public void checkDecode() throws CoderException {
+        final SWFDecoder decoder = new SWFDecoder(encoded);
+        final Context context = new Context();
+        final DecoderRegistry registry = new DecoderRegistry();
+        registry.setActionDecoder(new ActionDecoder());
+        context.setRegistry(registry);
 
-		fixture = new DoAction(decoder, context);
+        fixture = new DoAction(decoder, context);
 
-		assertTrue(decoder.eof());
-		assertEquals(actions, fixture.getActions());
-	}
+        assertTrue(decoder.eof());
+        assertEquals(actions, fixture.getActions());
+    }
 
-	@Test
-	public void checkDecodeExtended() throws CoderException {
-		final SWFDecoder decoder = new SWFDecoder(extended);
-		final Context context = new Context();
-		final DecoderRegistry registry = new DecoderRegistry();
-		registry.setActionDecoder(new ActionDecoder());
-		context.setRegistry(registry);
+    @Test
+    public void checkDecodeExtended() throws CoderException {
+        final SWFDecoder decoder = new SWFDecoder(extended);
+        final Context context = new Context();
+        final DecoderRegistry registry = new DecoderRegistry();
+        registry.setActionDecoder(new ActionDecoder());
+        context.setRegistry(registry);
 
-		fixture = new DoAction(decoder, context);
+        fixture = new DoAction(decoder, context);
 
-		assertTrue(decoder.eof());
-		assertEquals(actions, fixture.getActions());
-	}
+        assertTrue(decoder.eof());
+        assertEquals(actions, fixture.getActions());
+    }
 
-	@Test
-	public void checkDecodeContainsActionData() throws CoderException {
-		final SWFDecoder decoder = new SWFDecoder(encoded);
-		final Context context = new Context();
-		final DecoderRegistry registry = new DecoderRegistry();
-		context.setRegistry(registry);
+    @Test
+    public void checkDecodeContainsActionData() throws CoderException {
+        final SWFDecoder decoder = new SWFDecoder(encoded);
+        final Context context = new Context();
+        final DecoderRegistry registry = new DecoderRegistry();
+        context.setRegistry(registry);
 
-		fixture = new DoAction(decoder, context);
+        fixture = new DoAction(decoder, context);
 
-		assertEquals(1, fixture.getActions().size());
-		assertTrue(fixture.getActions().get(0) instanceof ActionData);
-	}
+        assertEquals(1, fixture.getActions().size());
+        assertTrue(fixture.getActions().get(0) instanceof ActionData);
+    }
 }

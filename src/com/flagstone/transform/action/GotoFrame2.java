@@ -75,136 +75,136 @@ import com.flagstone.transform.coder.SWFEncoder;
  * @see GotoFrame
  */
 public final class GotoFrame2 implements Action {
-	private static final String FORMAT = "Gotoframe2: { playFrame=%s; frameOffset=%d }";
+    private static final String FORMAT = "Gotoframe2: { playFrame=%s; frameOffset=%d }";
 
-	private boolean play;
-	private int frameOffset;
+    private boolean play;
+    private int frameOffset;
 
-	private transient int length;
-	private transient boolean hasOffset;
+    private transient int length;
+    private transient boolean hasOffset;
 
-	// TODO(doc)
-	public GotoFrame2(final SWFDecoder coder) throws CoderException {
-		coder.readByte();
-		length = coder.readWord(2, false);
-		coder.readBits(6, false);
-		hasOffset = coder.readBits(1, false) != 0;
-		play = coder.readBits(1, false) != 0;
+    // TODO(doc)
+    public GotoFrame2(final SWFDecoder coder) throws CoderException {
+        coder.readByte();
+        length = coder.readWord(2, false);
+        coder.readBits(6, false);
+        hasOffset = coder.readBits(1, false) != 0;
+        play = coder.readBits(1, false) != 0;
 
-		if (hasOffset) {
-			frameOffset = coder.readWord(2, false);
-		}
-	}
+        if (hasOffset) {
+            frameOffset = coder.readWord(2, false);
+        }
+    }
 
-	/**
-	 * Creates a GotoFrame2 object with the specified play flag setting.
-	 * 
-	 * @param aBool
-	 *            true if the player should being playing the movie at the
-	 *            specified frame. false if the player should stop playing the
-	 *            movie.
-	 */
-	public GotoFrame2(final boolean aBool) {
-		setPlay(aBool);
-		frameOffset = 0;
-	}
+    /**
+     * Creates a GotoFrame2 object with the specified play flag setting.
+     * 
+     * @param aBool
+     *            true if the player should being playing the movie at the
+     *            specified frame. false if the player should stop playing the
+     *            movie.
+     */
+    public GotoFrame2(final boolean aBool) {
+        setPlay(aBool);
+        frameOffset = 0;
+    }
 
-	/**
-	 * Creates a GotoFrame2 object with the specified play flag setting and
-	 * frame offset for a given scene.
-	 * 
-	 * @param offset
-	 *            a number which will be added to the number of the frame popped
-	 *            from the stack to give the final frame number. Must be in the
-	 *            range 1..65535.
-	 * @param aBool
-	 *            true if the player should being playing the movie at the
-	 *            specified frame, false if the player should stop playing the
-	 *            movie.
-	 */
-	public GotoFrame2(final int offset, final boolean aBool) {
-		setPlay(aBool);
-		setFrameOffset(offset);
-	}
+    /**
+     * Creates a GotoFrame2 object with the specified play flag setting and
+     * frame offset for a given scene.
+     * 
+     * @param offset
+     *            a number which will be added to the number of the frame popped
+     *            from the stack to give the final frame number. Must be in the
+     *            range 1..65535.
+     * @param aBool
+     *            true if the player should being playing the movie at the
+     *            specified frame, false if the player should stop playing the
+     *            movie.
+     */
+    public GotoFrame2(final int offset, final boolean aBool) {
+        setPlay(aBool);
+        setFrameOffset(offset);
+    }
 
-	// TODO(doc)
-	public GotoFrame2(final GotoFrame2 object) {
-		play = object.play;
-		frameOffset = object.frameOffset;
-	}
+    // TODO(doc)
+    public GotoFrame2(final GotoFrame2 object) {
+        play = object.play;
+        frameOffset = object.frameOffset;
+    }
 
-	/**
-	 * Returns the offset that will be added to the 'logical' frame number
-	 * obtained from the stack to generate the 'physical' frame number.
-	 */
-	public int getFrameOffset() {
-		return frameOffset;
-	}
+    /**
+     * Returns the offset that will be added to the 'logical' frame number
+     * obtained from the stack to generate the 'physical' frame number.
+     */
+    public int getFrameOffset() {
+        return frameOffset;
+    }
 
-	/**
-	 * Sets the offset that will be added to the 'logical' frame number obtained
-	 * from the stack to generate the 'physical' frame number.
-	 * 
-	 * @param offset
-	 *            a number that will be added to the frame number obtained form
-	 *            the stack. Must be in the range 1..65535.
-	 */
-	public void setFrameOffset(final int offset) {
-		if (offset < 0 || offset > 65535) {
-			throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
-		}
-		frameOffset = offset;
-	}
+    /**
+     * Sets the offset that will be added to the 'logical' frame number obtained
+     * from the stack to generate the 'physical' frame number.
+     * 
+     * @param offset
+     *            a number that will be added to the frame number obtained form
+     *            the stack. Must be in the range 1..65535.
+     */
+    public void setFrameOffset(final int offset) {
+        if ((offset < 0) || (offset > 65535)) {
+            throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
+        }
+        frameOffset = offset;
+    }
 
-	/**
-	 * Returns the play flag.
-	 * 
-	 * @return true if the player will being playing the movie at the specified
-	 *         frame, false otherwise.
-	 */
-	public boolean isPlay() {
-		return play;
-	}
+    /**
+     * Returns the play flag.
+     * 
+     * @return true if the player will being playing the movie at the specified
+     *         frame, false otherwise.
+     */
+    public boolean isPlay() {
+        return play;
+    }
 
-	/**
-	 * Sets the play flag.
-	 * 
-	 * @param aBool
-	 *            true if the player should being playing the movie at the
-	 *            specified frame. false if the player should stop playing the
-	 *            movie.
-	 */
-	public void setPlay(final boolean aBool) {
-		play = aBool;
-	}
+    /**
+     * Sets the play flag.
+     * 
+     * @param aBool
+     *            true if the player should being playing the movie at the
+     *            specified frame. false if the player should stop playing the
+     *            movie.
+     */
+    public void setPlay(final boolean aBool) {
+        play = aBool;
+    }
 
-	public GotoFrame2 copy() {
-		return new GotoFrame2(this);
-	}
+    public GotoFrame2 copy() {
+        return new GotoFrame2(this);
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, String.valueOf(play), frameOffset);
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, String.valueOf(play), frameOffset);
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		hasOffset = frameOffset > 0;
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        hasOffset = frameOffset > 0;
 
-		length = 1 + (hasOffset ? 2 : 0);
+        length = 1 + (hasOffset ? 2 : 0);
 
-		return 3 + length;
-	}
+        return 3 + length;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		coder.writeByte(ActionTypes.GOTO_FRAME_2);
-		coder.writeWord(length, 2);
-		coder.writeBits(0, 6);
-		coder.writeBits(hasOffset ? 1 : 0, 1);
-		coder.writeBits(play ? 1 : 0, 1);
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        coder.writeByte(ActionTypes.GOTO_FRAME_2);
+        coder.writeWord(length, 2);
+        coder.writeBits(0, 6);
+        coder.writeBits(hasOffset ? 1 : 0, 1);
+        coder.writeBits(play ? 1 : 0, 1);
 
-		if (hasOffset) {
-			coder.writeWord(frameOffset, 2);
-		}
-	}
+        if (hasOffset) {
+            coder.writeWord(frameOffset, 2);
+        }
+    }
 }

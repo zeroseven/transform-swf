@@ -53,195 +53,194 @@ import com.flagstone.transform.coder.SWFEncoder;
  * @see DefineJPEGImage3
  */
 public final class DefineJPEGImage3 implements ImageTag {
-	private static final String FORMAT = "DefineJPEGImage3: { identifier=%d; image=%d; alpha=%d }";
+    private static final String FORMAT = "DefineJPEGImage3: { identifier=%d; image=%d; alpha=%d }";
 
-	private transient int length;
-	private transient int width;
-	private transient int height;
+    private transient int length;
+    private transient int width;
+    private transient int height;
 
-	private byte[] image;
-	private byte[] alpha;
-	private int identifier;
+    private byte[] image;
+    private byte[] alpha;
+    private int identifier;
 
-	// TODO(doc)
-	public DefineJPEGImage3(final SWFDecoder coder)
-			throws CoderException {
-		final int start = coder.getPointer();
-		length = coder.readWord(2, false) & 0x3F;
+    // TODO(doc)
+    public DefineJPEGImage3(final SWFDecoder coder) throws CoderException {
+        final int start = coder.getPointer();
+        length = coder.readWord(2, false) & 0x3F;
 
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
-		final int end = coder.getPointer() + (length << 3);
-		identifier = coder.readWord(2, false);
+        if (length == 0x3F) {
+            length = coder.readWord(4, false);
+        }
+        final int end = coder.getPointer() + (length << 3);
+        identifier = coder.readWord(2, false);
 
-		final int offset = coder.readWord(4, false);
+        final int offset = coder.readWord(4, false);
 
-		image = coder.readBytes(new byte[offset]);
-		alpha = coder.readBytes(new byte[length - offset - 6]);
+        image = coder.readBytes(new byte[offset]);
+        alpha = coder.readBytes(new byte[length - offset - 6]);
 
-		decodeInfo();
+        decodeInfo();
 
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
+        if (coder.getPointer() != end) {
+            throw new CoderException(getClass().getName(), start >> 3, length,
+                    (coder.getPointer() - end) >> 3);
+        }
+    }
 
-	/**
-	 * Creates a DefineJPEGImage3 object with the specified image data, and
-	 * alpha channel data.
-	 * 
-	 * @param uid
-	 *            the unique identifier for this object. Must be in the range
-	 *            1..65535.
-	 * @param image
-	 *            the JPEG encoded image data. Must not be null.
-	 * @param alpha
-	 *            byte array containing the zlib compressed alpha channel data.
-	 *            Must not be null.
-	 */
-	public DefineJPEGImage3(final int uid, final byte[] image,
-			final byte[] alpha) {
-		setIdentifier(uid);
-		setImage(image);
-		setAlpha(alpha);
-	}
+    /**
+     * Creates a DefineJPEGImage3 object with the specified image data, and
+     * alpha channel data.
+     * 
+     * @param uid
+     *            the unique identifier for this object. Must be in the range
+     *            1..65535.
+     * @param image
+     *            the JPEG encoded image data. Must not be null.
+     * @param alpha
+     *            byte array containing the zlib compressed alpha channel data.
+     *            Must not be null.
+     */
+    public DefineJPEGImage3(final int uid, final byte[] image,
+            final byte[] alpha) {
+        setIdentifier(uid);
+        setImage(image);
+        setAlpha(alpha);
+    }
 
-	// TODO(doc)
-	public DefineJPEGImage3(final DefineJPEGImage3 object) {
-		identifier = object.identifier;
-		width = object.width;
-		height = object.height;
-		image = Arrays.copyOf(object.image, object.image.length);
-		alpha = Arrays.copyOf(object.alpha, object.alpha.length);
-	}
+    // TODO(doc)
+    public DefineJPEGImage3(final DefineJPEGImage3 object) {
+        identifier = object.identifier;
+        width = object.width;
+        height = object.height;
+        image = Arrays.copyOf(object.image, object.image.length);
+        alpha = Arrays.copyOf(object.alpha, object.alpha.length);
+    }
 
-	public int getIdentifier() {
-		return identifier;
-	}
+    public int getIdentifier() {
+        return identifier;
+    }
 
-	public void setIdentifier(final int uid) {
-		if (uid < 0 || uid > 65535) {
-			throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
-		}
-		identifier = uid;
-	}
+    public void setIdentifier(final int uid) {
+        if ((uid < 0) || (uid > 65535)) {
+            throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
+        }
+        identifier = uid;
+    }
 
-	/**
-	 * Returns the width of the image in pixels.
-	 */
-	public int getWidth() {
-		return width;
-	}
+    /**
+     * Returns the width of the image in pixels.
+     */
+    public int getWidth() {
+        return width;
+    }
 
-	/**
-	 * Returns the height of the image in pixels.
-	 */
-	public int getHeight() {
-		return height;
-	}
+    /**
+     * Returns the height of the image in pixels.
+     */
+    public int getHeight() {
+        return height;
+    }
 
-	/**
-	 * Returns the image data.
-	 */
-	public byte[] getImage() {
-		return image;
-	}
+    /**
+     * Returns the image data.
+     */
+    public byte[] getImage() {
+        return image;
+    }
 
-	/**
-	 * Returns the alpha channel data.
-	 */
-	public byte[] getAlpha() {
-		return alpha;
-	}
+    /**
+     * Returns the alpha channel data.
+     */
+    public byte[] getAlpha() {
+        return alpha;
+    }
 
-	/**
-	 * Sets the image data.
-	 * 
-	 * @param bytes
-	 *            an array of bytes containing the image table. Must not be
-	 *            null.
-	 */
-	public void setImage(final byte[] bytes) {
-		image = bytes;
-		decodeInfo();
-	}
+    /**
+     * Sets the image data.
+     * 
+     * @param bytes
+     *            an array of bytes containing the image table. Must not be
+     *            null.
+     */
+    public void setImage(final byte[] bytes) {
+        image = bytes;
+        decodeInfo();
+    }
 
-	/**
-	 * Sets the alpha channel data with the zlib compressed data.
-	 * 
-	 * @param bytes
-	 *            array of bytes containing zlib encoded alpha channel. Must not
-	 *            be null.
-	 */
-	public void setAlpha(final byte[] bytes) {
-		alpha = bytes;
-	}
+    /**
+     * Sets the alpha channel data with the zlib compressed data.
+     * 
+     * @param bytes
+     *            array of bytes containing zlib encoded alpha channel. Must not
+     *            be null.
+     */
+    public void setAlpha(final byte[] bytes) {
+        alpha = bytes;
+    }
 
-	public DefineJPEGImage3 copy() {
-		return new DefineJPEGImage3(this);
-	}
+    public DefineJPEGImage3 copy() {
+        return new DefineJPEGImage3(this);
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, identifier, image.length, alpha.length);
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, identifier, image.length, alpha.length);
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		length = 6;
-		length += image.length;
-		length += alpha.length;
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        length = 6;
+        length += image.length;
+        length += alpha.length;
 
-		return (length > 62 ? 6 : 2) + length;
-	}
+        return (length > 62 ? 6 : 2) + length;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		final int start = coder.getPointer();
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        final int start = coder.getPointer();
 
-		if (length >= 63) {
-			coder.writeWord((MovieTypes.DEFINE_JPEG_IMAGE_3 << 6) | 0x3F, 2);
-			coder.writeWord(length, 4);
-		} else {
-			coder.writeWord((MovieTypes.DEFINE_JPEG_IMAGE_3 << 6) | length, 2);
-		}
-		final int end = coder.getPointer() + (length << 3);
+        if (length >= 63) {
+            coder.writeWord((MovieTypes.DEFINE_JPEG_IMAGE_3 << 6) | 0x3F, 2);
+            coder.writeWord(length, 4);
+        } else {
+            coder.writeWord((MovieTypes.DEFINE_JPEG_IMAGE_3 << 6) | length, 2);
+        }
+        final int end = coder.getPointer() + (length << 3);
 
-		coder.writeWord(identifier, 2);
-		coder.writeWord(image.length, 4);
-		coder.writeBytes(image);
-		coder.writeBytes(alpha);
+        coder.writeWord(identifier, 2);
+        coder.writeWord(image.length, 4);
+        coder.writeBytes(image);
+        coder.writeBytes(alpha);
 
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
+        if (coder.getPointer() != end) {
+            throw new CoderException(getClass().getName(), start >> 3, length,
+                    (coder.getPointer() - end) >> 3);
+        }
+    }
 
-	private void decodeInfo() {
-		final FLVDecoder coder = new FLVDecoder(image);
+    private void decodeInfo() {
+        final FLVDecoder coder = new FLVDecoder(image);
 
-		if (coder.readWord(2, false) == 0xffd8) {
-			int marker;
+        if (coder.readWord(2, false) == 0xffd8) {
+            int marker;
 
-			do {
-				marker = coder.readWord(2, false);
+            do {
+                marker = coder.readWord(2, false);
 
-				if ((marker & 0xff00) == 0xff00) {
-					if (marker >= 0xffc0 && marker <= 0xffcf
-							&& marker != 0xffc4 && marker != 0xffc8) {
-						coder.adjustPointer(24);
-						height = coder.readWord(2, false);
-						width = coder.readWord(2, false);
-						break;
-					} else {
-						coder
-								.adjustPointer((coder.readWord(2, false) - 2) << 3);
-					}
-				}
+                if ((marker & 0xff00) == 0xff00) {
+                    if ((marker >= 0xffc0) && (marker <= 0xffcf)
+                            && (marker != 0xffc4) && (marker != 0xffc8)) {
+                        coder.adjustPointer(24);
+                        height = coder.readWord(2, false);
+                        width = coder.readWord(2, false);
+                        break;
+                    } else {
+                        coder
+                                .adjustPointer((coder.readWord(2, false) - 2) << 3);
+                    }
+                }
 
-			} while ((marker & 0xff00) == 0xff00);
-		}
-	}
+            } while ((marker & 0xff00) == 0xff00);
+        }
+    }
 }

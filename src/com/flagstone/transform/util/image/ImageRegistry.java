@@ -36,39 +36,39 @@ import java.util.Map;
 /**
  */
 public final class ImageRegistry {
-	private static Map<ImageEncoding, ImageProvider> providers = new LinkedHashMap<ImageEncoding, ImageProvider>();
+    private static Map<ImageEncoding, ImageProvider> providers = new LinkedHashMap<ImageEncoding, ImageProvider>();
 
-	static {
-		for (ImageEncoding encoding : ImageEncoding.values()) {
-			registerProvider(encoding, encoding.getProvider());
-		}
-	}
+    static {
+        for (final ImageEncoding encoding : ImageEncoding.values()) {
+            registerProvider(encoding, encoding.getProvider());
+        }
+    }
 
-	/**
-	 * Register an ImageDecoder to handle images in the specified format. The
-	 * image formats currently supported are defined in the {@link ImageInfo}
-	 * class.
-	 * 
-	 * @param encoding
-	 *            the string identifying the image format.
-	 * @param decoder
-	 *            any class that implements the ImageDecoder interface.
-	 */
-	public static void registerProvider(final ImageEncoding encoding,
-			final ImageProvider decoder) {
-		providers.put(encoding, decoder);
-	}
+    /**
+     * Register an ImageDecoder to handle images in the specified format. The
+     * image formats currently supported are defined in the {@link ImageInfo}
+     * class.
+     * 
+     * @param encoding
+     *            the string identifying the image format.
+     * @param decoder
+     *            any class that implements the ImageDecoder interface.
+     */
+    public static void registerProvider(final ImageEncoding encoding,
+            final ImageProvider decoder) {
+        providers.put(encoding, decoder);
+    }
 
-	public static ImageDecoder getImageProvider(final ImageEncoding encoding) {
+    public static ImageDecoder getImageProvider(final ImageEncoding encoding) {
 
-		if (providers.containsKey(encoding)) {
-			return providers.get(encoding).newDecoder();
-		} else {
-			throw new IllegalArgumentException();
-		}
-	}
+        if (providers.containsKey(encoding)) {
+            return providers.get(encoding).newDecoder();
+        } else {
+            throw new IllegalArgumentException();
+        }
+    }
 
-	private ImageRegistry() {
-		// Registry is shared.
-	}
+    private ImageRegistry() {
+        // Registry is shared.
+    }
 }

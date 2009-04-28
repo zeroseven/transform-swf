@@ -20,75 +20,76 @@ import com.flagstone.transform.coder.Copyable;
  * @see DefineVideo
  */
 public final class ImageBlock implements Copyable<ImageBlock> {
-	private final int width;
-	private final int height;
-	private final byte[] block;
+    private final int width;
+    private final int height;
+    private final byte[] block;
 
-	/**
-	 * Create a new image block with the specified width and height and image
-	 * data. The image is compressed using the zip format.
-	 * 
-	 * @param width
-	 *            the width of the block in pixels.
-	 * @param height
-	 *            the height of the block in pixels
-	 * @param data
-	 *            the pixels covered by the block, compressed using the zip
-	 *            format.
-	 */
-	public ImageBlock(final int width, final int height, final byte[] data) {
-		this.width = width;
-		this.height = height;
-		block = data;
-	}
+    /**
+     * Create a new image block with the specified width and height and image
+     * data. The image is compressed using the zip format.
+     * 
+     * @param width
+     *            the width of the block in pixels.
+     * @param height
+     *            the height of the block in pixels
+     * @param data
+     *            the pixels covered by the block, compressed using the zip
+     *            format.
+     */
+    public ImageBlock(final int width, final int height, final byte[] data) {
+        this.width = width;
+        this.height = height;
+        block = data;
+    }
 
-	// TODO(doc)
-	public ImageBlock(final ImageBlock object) {
-		width = object.width;
-		height = object.height;
-		block = Arrays.copyOf(object.block, object.block.length);
-	}
+    // TODO(doc)
+    public ImageBlock(final ImageBlock object) {
+        width = object.width;
+        height = object.height;
+        block = Arrays.copyOf(object.block, object.block.length);
+    }
 
-	/**
-	 * Return the width of the block. although the block size is specified in
-	 * parent ScreenVideoPacket object the actual block size used may vary if
-	 * the tiled array of blocks overlaps the edge of the image.
-	 */
-	public int getWidth() {
-		return width;
-	}
+    /**
+     * Return the width of the block. although the block size is specified in
+     * parent ScreenVideoPacket object the actual block size used may vary if
+     * the tiled array of blocks overlaps the edge of the image.
+     */
+    public int getWidth() {
+        return width;
+    }
 
-	/**
-	 * Return the height of the block. although the block size is specified in
-	 * parent ScreenVideoPacket object the actual block size used may vary if
-	 * the tiled array of blocks overlaps the edge of the image.
-	 */
-	public int getHeight() {
-		return height;
-	}
+    /**
+     * Return the height of the block. although the block size is specified in
+     * parent ScreenVideoPacket object the actual block size used may vary if
+     * the tiled array of blocks overlaps the edge of the image.
+     */
+    public int getHeight() {
+        return height;
+    }
 
-	/**
-	 * Returns the zipped image data for the block.
-	 */
-	public byte[] getBlock() {
-		return block;
-	}
+    /**
+     * Returns the zipped image data for the block.
+     */
+    public byte[] getBlock() {
+        return block;
+    }
 
-	/**
-	 * When a ScreenVideo stream is created only the image blocks that change
-	 * are included. The blocks that do not change are encoded as empty blocks
-	 * which have width and height of zero and do not contain any image data.
-	 * This convenience method is used to determine when an image block contains
-	 * any valid image data.
-	 * 
-	 * @return true if the block covers an area of the image that changed or
-	 *         false if no image data is included.
-	 */
-	public boolean isEmpty() {
-		return width == 0 || height == 0 || block == null || block.length == 0;
-	}
+    /**
+     * When a ScreenVideo stream is created only the image blocks that change
+     * are included. The blocks that do not change are encoded as empty blocks
+     * which have width and height of zero and do not contain any image data.
+     * This convenience method is used to determine when an image block contains
+     * any valid image data.
+     * 
+     * @return true if the block covers an area of the image that changed or
+     *         false if no image data is included.
+     */
+    public boolean isEmpty() {
+        return (width == 0) || (height == 0) || (block == null)
+                || (block.length == 0);
+    }
 
-	public ImageBlock copy() {
-		return new ImageBlock(this);
-	}
+    public ImageBlock copy() {
+        return new ImageBlock(this);
+    }
 }

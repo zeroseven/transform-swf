@@ -35,39 +35,39 @@ import java.util.Map;
 
 public final class ColorTable {
 
-	private final transient Map<Integer, Color> colors;
+    private final transient Map<Integer, Color> colors;
 
-	public ColorTable() {
-		colors = new LinkedHashMap<Integer, Color>();
-	}
+    public ColorTable() {
+        colors = new LinkedHashMap<Integer, Color>();
+    }
 
-	public void clear() {
-		colors.clear();
-	}
+    public void clear() {
+        colors.clear();
+    }
 
-	public void add(final int rgb, final Color color) {
-		colors.put(rgb, color);
-	}
+    public void add(final int rgb, final Color color) {
+        colors.put(rgb, color);
+    }
 
-	public void remove(final int rgb) {
-		colors.remove(rgb);
-	}
+    public void remove(final int rgb) {
+        colors.remove(rgb);
+    }
 
-	public Color get(final int rgb) {
+    public Color get(final int rgb) {
 
-		if (colors.containsKey(rgb)) {
-			return colors.get(rgb);
-		} else {
-			throw new IllegalArgumentException();
-		}
-	}
+        if (colors.containsKey(rgb)) {
+            return colors.get(rgb);
+        } else {
+            throw new IllegalArgumentException();
+        }
+    }
 
-	public Color get(final int rgb, final int alpha) {
+    public Color get(final int rgb, final int alpha) {
 
-		if (colors.containsKey(rgb)) {
-			return new Color(rgb, alpha);
-		} else {
-			throw new IllegalArgumentException();
-		}
-	}
+        if (colors.containsKey(rgb)) {
+            return new Color(rgb, alpha);
+        } else {
+            throw new IllegalArgumentException();
+        }
+    }
 }

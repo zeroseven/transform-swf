@@ -38,6 +38,6 @@ package com.flagstone.transform.coder;
  *            The class to create copies for.
  */
 public interface Copyable<T> {
-	/** Returns a complete copy of this object. */
-	T copy();
+    /** Returns a complete copy of this object. */
+    T copy();
 }

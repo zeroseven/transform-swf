@@ -66,207 +66,206 @@ import com.flagstone.transform.shape.ShapeData;
  * @see FontInfo2
  */
 public final class DefineFont implements DefineTag {
-	private static final String FORMAT = "DefineFont: { identifier=%d; shapes=%s }";
+    private static final String FORMAT = "DefineFont: { identifier=%d; shapes=%s }";
 
-	private int identifier;
-	private List<Shape> shapes;
+    private int identifier;
+    private List<Shape> shapes;
 
-	private transient int length;
+    private transient int length;
 
-	// TODO(optimise)
-	// TODO(doc)
-	public DefineFont(final SWFDecoder coder)
-			throws CoderException {
-		final int start = coder.getPointer();
-		length = coder.readWord(2, false) & 0x3F;
+    // TODO(optimise)
+    // TODO(doc)
+    public DefineFont(final SWFDecoder coder) throws CoderException {
+        final int start = coder.getPointer();
+        length = coder.readWord(2, false) & 0x3F;
 
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
-		final int end = coder.getPointer() + (length << 3);
+        if (length == 0x3F) {
+            length = coder.readWord(4, false);
+        }
+        final int end = coder.getPointer() + (length << 3);
 
-		identifier = coder.readWord(2, false);
-		shapes = new ArrayList<Shape>();
+        identifier = coder.readWord(2, false);
+        shapes = new ArrayList<Shape>();
 
-		final int offsetStart = coder.getPointer();
-		final int shapeCount = coder.readWord(2, false) / 2;
+        final int offsetStart = coder.getPointer();
+        final int shapeCount = coder.readWord(2, false) / 2;
 
-		coder.setPointer(offsetStart);
+        coder.setPointer(offsetStart);
 
-		int[] offset = new int[shapeCount + 1];
+        final int[] offset = new int[shapeCount + 1];
 
-		for (int i = 0; i < shapeCount; i++) {
-			offset[i] = coder.readWord(2, false);
-		}
+        for (int i = 0; i < shapeCount; i++) {
+            offset[i] = coder.readWord(2, false);
+        }
 
-		offset[shapeCount] = length - 2;
+        offset[shapeCount] = length - 2;
 
-		Shape shape;
+        Shape shape;
 
-		for (int i = 0; i < shapeCount; i++) {
-			coder.setPointer(offsetStart + (offset[i] << 3));
+        for (int i = 0; i < shapeCount; i++) {
+            coder.setPointer(offsetStart + (offset[i] << 3));
 
-			shape = new Shape();
-			shape.add(new ShapeData(coder.readBytes(new byte[offset[i + 1]
-					- offset[i]])));
-			shapes.add(shape);
-		}
+            shape = new Shape();
+            shape.add(new ShapeData(coder.readBytes(new byte[offset[i + 1]
+                    - offset[i]])));
+            shapes.add(shape);
+        }
 
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
+        if (coder.getPointer() != end) {
+            throw new CoderException(getClass().getName(), start >> 3, length,
+                    (coder.getPointer() - end) >> 3);
+        }
+    }
 
-	/**
-	 * Creates a DefineFont object setting the unique identifier for the object
-	 * and the array of glyphs used to render the characters used from the font.
-	 * 
-	 * @param uid
-	 *            the unique identifier for this object.
-	 * @param anArray
-	 *            an array of Shape objects that define the outlines for each
-	 *            glyph in the font.
-	 */
-	public DefineFont(final int uid, final List<Shape> anArray) {
-		setIdentifier(uid);
-		setShapes(anArray);
-	}
+    /**
+     * Creates a DefineFont object setting the unique identifier for the object
+     * and the array of glyphs used to render the characters used from the font.
+     * 
+     * @param uid
+     *            the unique identifier for this object.
+     * @param anArray
+     *            an array of Shape objects that define the outlines for each
+     *            glyph in the font.
+     */
+    public DefineFont(final int uid, final List<Shape> anArray) {
+        setIdentifier(uid);
+        setShapes(anArray);
+    }
 
-	// TODO(doc)
-	public DefineFont(final DefineFont object) {
-		identifier = object.identifier;
-		shapes = new ArrayList<Shape>(object.shapes.size());
-		for (Shape shape : object.shapes) {
-			shapes.add(shape.copy());
-		}
-	}
+    // TODO(doc)
+    public DefineFont(final DefineFont object) {
+        identifier = object.identifier;
+        shapes = new ArrayList<Shape>(object.shapes.size());
+        for (final Shape shape : object.shapes) {
+            shapes.add(shape.copy());
+        }
+    }
 
-	public int getIdentifier() {
-		return identifier;
-	}
+    public int getIdentifier() {
+        return identifier;
+    }
 
-	public void setIdentifier(final int uid) {
-		if (uid < 0 || uid > 65535) {
-			throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
-		}
-		identifier = uid;
-	}
+    public void setIdentifier(final int uid) {
+        if ((uid < 0) || (uid > 65535)) {
+            throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
+        }
+        identifier = uid;
+    }
 
-	/**
-	 * Add a shape to the array of shapes that represent the glyphs for the
-	 * font.
-	 * 
-	 * @param obj
-	 *            a shape which must not be null.
-	 */
-	public DefineFont add(final Shape obj) {
-		if (obj == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
-		}
-		shapes.add(obj);
-		return this;
-	}
+    /**
+     * Add a shape to the array of shapes that represent the glyphs for the
+     * font.
+     * 
+     * @param obj
+     *            a shape which must not be null.
+     */
+    public DefineFont add(final Shape obj) {
+        if (obj == null) {
+            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+        }
+        shapes.add(obj);
+        return this;
+    }
 
-	/**
-	 * Returns the array of shapes that define the outline for each glyph.
-	 */
-	public List<Shape> getShapes() {
-		return shapes;
-	}
+    /**
+     * Returns the array of shapes that define the outline for each glyph.
+     */
+    public List<Shape> getShapes() {
+        return shapes;
+    }
 
-	/**
-	 * Sets the array of shapes that describe each glyph.
-	 * 
-	 * @param anArray
-	 *            an array of Shape objects that define the outlines for each
-	 *            glyph in the font. Must not be null.
-	 */
-	public void setShapes(final List<Shape> anArray) {
-		if (anArray == null) {
-			throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
-		}
-		shapes = anArray;
-	}
+    /**
+     * Sets the array of shapes that describe each glyph.
+     * 
+     * @param anArray
+     *            an array of Shape objects that define the outlines for each
+     *            glyph in the font. Must not be null.
+     */
+    public void setShapes(final List<Shape> anArray) {
+        if (anArray == null) {
+            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+        }
+        shapes = anArray;
+    }
 
-	public DefineFont copy() {
-		return new DefineFont(this);
-	}
+    public DefineFont copy() {
+        return new DefineFont(this);
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, identifier, shapes);
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, identifier, shapes);
+    }
 
-	// TODO(optimise)
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		length = 2;
+    // TODO(optimise)
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        length = 2;
 
-		final Map<Integer, Integer> vars = context.getVariables();
-		vars.put(Context.FILL_SIZE, 1);
-		vars.put(Context.LINE_SIZE, vars.containsKey(Context.POSTSCRIPT) ? 1
-				: 0);
+        final Map<Integer, Integer> vars = context.getVariables();
+        vars.put(Context.FILL_SIZE, 1);
+        vars.put(Context.LINE_SIZE, vars.containsKey(Context.POSTSCRIPT) ? 1
+                : 0);
 
-		length += shapes.size() * 2;
+        length += shapes.size() * 2;
 
-		for (Shape shape : shapes) {
-			length += shape.prepareToEncode(coder, context);
-		}
+        for (final Shape shape : shapes) {
+            length += shape.prepareToEncode(coder, context);
+        }
 
-		vars.put(Context.FILL_SIZE, 0);
-		vars.put(Context.LINE_SIZE, 0);
+        vars.put(Context.FILL_SIZE, 0);
+        vars.put(Context.LINE_SIZE, 0);
 
-		return (length > 62 ? 6 : 2) + length;
-	}
+        return (length > 62 ? 6 : 2) + length;
+    }
 
-	// TODO(optimise)
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		final int start = coder.getPointer();
+    // TODO(optimise)
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        final int start = coder.getPointer();
 
-		if (length >= 63) {
-			coder.writeWord((MovieTypes.DEFINE_FONT << 6) | 0x3F, 2);
-			coder.writeWord(length, 4);
-		} else {
-			coder.writeWord((MovieTypes.DEFINE_FONT << 6) | length, 2);
-		}
-		final int end = coder.getPointer() + (length << 3);
-		coder.writeWord(identifier, 2);
+        if (length >= 63) {
+            coder.writeWord((MovieTypes.DEFINE_FONT << 6) | 0x3F, 2);
+            coder.writeWord(length, 4);
+        } else {
+            coder.writeWord((MovieTypes.DEFINE_FONT << 6) | length, 2);
+        }
+        final int end = coder.getPointer() + (length << 3);
+        coder.writeWord(identifier, 2);
 
-		final Map<Integer, Integer> vars = context.getVariables();
-		vars.put(Context.FILL_SIZE, 1);
-		vars.put(Context.LINE_SIZE, vars.containsKey(Context.POSTSCRIPT) ? 1
-				: 0);
+        final Map<Integer, Integer> vars = context.getVariables();
+        vars.put(Context.FILL_SIZE, 1);
+        vars.put(Context.LINE_SIZE, vars.containsKey(Context.POSTSCRIPT) ? 1
+                : 0);
 
-		int currentLocation;
-		int offset;
+        int currentLocation;
+        int offset;
 
-		final int tableStart = coder.getPointer();
+        final int tableStart = coder.getPointer();
 
-		for (int i = 0; i < shapes.size(); i++) {
-			coder.writeWord(0, 2);
-		}
+        for (int i = 0; i < shapes.size(); i++) {
+            coder.writeWord(0, 2);
+        }
 
-		int tableEntry = tableStart;
+        int tableEntry = tableStart;
 
-		for (Shape shape : shapes) {
-			currentLocation = coder.getPointer();
-			offset = (coder.getPointer() - tableStart) >> 3;
+        for (final Shape shape : shapes) {
+            currentLocation = coder.getPointer();
+            offset = (coder.getPointer() - tableStart) >> 3;
 
-			coder.setPointer(tableEntry);
-			coder.writeWord(offset, 2);
-			coder.setPointer(currentLocation);
+            coder.setPointer(tableEntry);
+            coder.writeWord(offset, 2);
+            coder.setPointer(currentLocation);
 
-			shape.encode(coder, context);
-			tableEntry += 16;
-		}
+            shape.encode(coder, context);
+            tableEntry += 16;
+        }
 
-		vars.put(Context.FILL_SIZE, 0);
-		vars.put(Context.LINE_SIZE, 0);
+        vars.put(Context.FILL_SIZE, 0);
+        vars.put(Context.LINE_SIZE, 0);
 
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
+        if (coder.getPointer() != end) {
+            throw new CoderException(getClass().getName(), start >> 3, length,
+                    (coder.getPointer() - end) >> 3);
+        }
+    }
 }

@@ -30,6 +30,5 @@
 
 package com.flagstone.transform.coder;
 
-
 public interface Filter extends SWFEncodeable, Copyable<Filter> {
 }

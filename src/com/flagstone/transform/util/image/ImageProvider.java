@@ -31,5 +31,5 @@
 package com.flagstone.transform.util.image;
 
 public interface ImageProvider {
-	ImageDecoder newDecoder();
+    ImageDecoder newDecoder();
 }

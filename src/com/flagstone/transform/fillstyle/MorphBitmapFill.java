@@ -85,168 +85,167 @@ import com.flagstone.transform.shape.DefineMorphShape;
  */
 public final class MorphBitmapFill implements FillStyle {
 
-	private static final String FORMAT = "MorphBitmapFill: { identifier=%d; start=%s; end=%s }";
+    private static final String FORMAT = "MorphBitmapFill: { identifier=%d; start=%s; end=%s }";
 
-	private transient int type;
-	private int identifier;
-	private CoordTransform startTransform;
-	private CoordTransform endTransform;
+    private transient int type;
+    private int identifier;
+    private CoordTransform startTransform;
+    private CoordTransform endTransform;
 
-	// TODO(doc)
-	public MorphBitmapFill(final SWFDecoder coder)
-			throws CoderException {
-		type = coder.readByte();
-		identifier = coder.readWord(2, false);
-		startTransform = new CoordTransform(coder);
-		endTransform = new CoordTransform(coder);
-	}
+    // TODO(doc)
+    public MorphBitmapFill(final SWFDecoder coder) throws CoderException {
+        type = coder.readByte();
+        identifier = coder.readWord(2, false);
+        startTransform = new CoordTransform(coder);
+        endTransform = new CoordTransform(coder);
+    }
 
-	/**
-	 * Creates a MorphBitmapFill specifying the type, bitmap image and
-	 * coordinate transforms for the image at the start and end of the morphing
-	 * process.
-	 * 
-	 * @param type
-	 *            the type of bitmap fill, must be one of the constants defined
-	 *            in the FillStyle class, either TILED, CLIPPED,
-	 *            UNSMOOTHED_TILED or UNSMOOTHED_CLIPPED.
-	 * @param uid
-	 *            the unique identifier for the image. Must be in the range
-	 *            1..65535.
-	 * @param start
-	 *            the coordinate transform defining the appearance of the image
-	 *            at the start of the morphing process.
-	 * @param end
-	 *            the coordinate transform defining the appearance of the image
-	 *            at the end of the morphing process.
-	 */
-	public MorphBitmapFill(final boolean tiled, final boolean smoothed,
-			final int uid, final CoordTransform start, final CoordTransform end) {
-		type = 0x40;
-		setTiled(tiled);
-		setSmoothed(smoothed);
-		setIdentifier(uid);
-		setStartTransform(start);
-		setEndTransform(end);
-	}
+    /**
+     * Creates a MorphBitmapFill specifying the type, bitmap image and
+     * coordinate transforms for the image at the start and end of the morphing
+     * process.
+     * 
+     * @param type
+     *            the type of bitmap fill, must be one of the constants defined
+     *            in the FillStyle class, either TILED, CLIPPED,
+     *            UNSMOOTHED_TILED or UNSMOOTHED_CLIPPED.
+     * @param uid
+     *            the unique identifier for the image. Must be in the range
+     *            1..65535.
+     * @param start
+     *            the coordinate transform defining the appearance of the image
+     *            at the start of the morphing process.
+     * @param end
+     *            the coordinate transform defining the appearance of the image
+     *            at the end of the morphing process.
+     */
+    public MorphBitmapFill(final boolean tiled, final boolean smoothed,
+            final int uid, final CoordTransform start, final CoordTransform end) {
+        type = 0x40;
+        setTiled(tiled);
+        setSmoothed(smoothed);
+        setIdentifier(uid);
+        setStartTransform(start);
+        setEndTransform(end);
+    }
 
-	// TODO(doc)
-	public MorphBitmapFill(final MorphBitmapFill object) {
-		type = object.type;
-		identifier = object.identifier;
-		startTransform = object.startTransform;
-		endTransform = object.endTransform;
-	}
+    // TODO(doc)
+    public MorphBitmapFill(final MorphBitmapFill object) {
+        type = object.type;
+        identifier = object.identifier;
+        startTransform = object.startTransform;
+        endTransform = object.endTransform;
+    }
 
-	public boolean isTiled() {
-		return (type & 0x01) != 0;
-	}
+    public boolean isTiled() {
+        return (type & 0x01) != 0;
+    }
 
-	public void setTiled(final boolean tiled) {
-		if (tiled) {
-			type &= 0x00FE;
-		} else {
-			type |= 0x0001;
-		}
-	}
+    public void setTiled(final boolean tiled) {
+        if (tiled) {
+            type &= 0x00FE;
+        } else {
+            type |= 0x0001;
+        }
+    }
 
-	public boolean isSmoothed() {
-		return (type & 0x02) != 0;
-	}
+    public boolean isSmoothed() {
+        return (type & 0x02) != 0;
+    }
 
-	public void setSmoothed(final boolean smoothed) {
-		if (smoothed) {
-			type &= 0x00FD;
-		} else {
-			type |= 0x0002;
-		}
-	}
+    public void setSmoothed(final boolean smoothed) {
+        if (smoothed) {
+            type &= 0x00FD;
+        } else {
+            type |= 0x0002;
+        }
+    }
 
-	/**
-	 * Returns the unique identifier of the bitmap image.
-	 */
-	public int getIdentifier() {
-		return identifier;
-	}
+    /**
+     * Returns the unique identifier of the bitmap image.
+     */
+    public int getIdentifier() {
+        return identifier;
+    }
 
-	/**
-	 * Returns the coordinate transform defining the appearance of the image at
-	 * the start of the morphing process.
-	 */
-	public CoordTransform getStartTransform() {
-		return startTransform;
-	}
+    /**
+     * Returns the coordinate transform defining the appearance of the image at
+     * the start of the morphing process.
+     */
+    public CoordTransform getStartTransform() {
+        return startTransform;
+    }
 
-	/**
-	 * Returns the coordinate transform defining the appearance of the image at
-	 * the end of the morphing process.
-	 */
-	public CoordTransform getEndTransform() {
-		return endTransform;
-	}
+    /**
+     * Returns the coordinate transform defining the appearance of the image at
+     * the end of the morphing process.
+     */
+    public CoordTransform getEndTransform() {
+        return endTransform;
+    }
 
-	/**
-	 * Sets the identifier of the bitmap image to be used in the morphing
-	 * process.
-	 * 
-	 * @param uid
-	 *            the unique identifier of the bitmap image. Must be in the
-	 *            range 1..65535.
-	 */
-	public void setIdentifier(final int uid) {
-		if ((uid < 1) || (uid > 65535)) {
-			throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
-		}
-		identifier = uid;
-	}
+    /**
+     * Sets the identifier of the bitmap image to be used in the morphing
+     * process.
+     * 
+     * @param uid
+     *            the unique identifier of the bitmap image. Must be in the
+     *            range 1..65535.
+     */
+    public void setIdentifier(final int uid) {
+        if ((uid < 1) || (uid > 65535)) {
+            throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
+        }
+        identifier = uid;
+    }
 
-	/**
-	 * Sets the coordinate transform defining the appearance of the image at the
-	 * start of the morphing process.
-	 * 
-	 * @param aTransform
-	 *            the starting coordinate transform. Must not be null.
-	 */
-	public void setStartTransform(final CoordTransform aTransform) {
-		if (aTransform == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
-		}
-		startTransform = aTransform;
-	}
+    /**
+     * Sets the coordinate transform defining the appearance of the image at the
+     * start of the morphing process.
+     * 
+     * @param aTransform
+     *            the starting coordinate transform. Must not be null.
+     */
+    public void setStartTransform(final CoordTransform aTransform) {
+        if (aTransform == null) {
+            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+        }
+        startTransform = aTransform;
+    }
 
-	/**
-	 * Sets the coordinate transform defining the appearance of the image at the
-	 * end of the morphing process.
-	 * 
-	 * @param aTransform
-	 *            the ending coordinate transform. Must not be null.
-	 */
-	public void setEndTransform(final CoordTransform aTransform) {
-		if (aTransform == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
-		}
-		endTransform = aTransform;
-	}
+    /**
+     * Sets the coordinate transform defining the appearance of the image at the
+     * end of the morphing process.
+     * 
+     * @param aTransform
+     *            the ending coordinate transform. Must not be null.
+     */
+    public void setEndTransform(final CoordTransform aTransform) {
+        if (aTransform == null) {
+            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+        }
+        endTransform = aTransform;
+    }
 
-	public MorphBitmapFill copy() {
-		return new MorphBitmapFill(this);
-	}
+    public MorphBitmapFill copy() {
+        return new MorphBitmapFill(this);
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, identifier, startTransform, endTransform);
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, identifier, startTransform, endTransform);
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		return 3 + startTransform.prepareToEncode(coder, context)
-				+ endTransform.prepareToEncode(coder, context);
-	}
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        return 3 + startTransform.prepareToEncode(coder, context)
+                + endTransform.prepareToEncode(coder, context);
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		coder.writeByte(type);
-		coder.writeWord(identifier, 2);
-		startTransform.encode(coder, context);
-		endTransform.encode(coder, context);
-	}
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        coder.writeByte(type);
+        coder.writeWord(identifier, 2);
+        startTransform.encode(coder, context);
+        endTransform.encode(coder, context);
+    }
 }

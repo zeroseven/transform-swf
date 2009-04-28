@@ -76,154 +76,155 @@ import com.flagstone.transform.coder.SWFFactory;
  */
 public final class DoAction implements MovieTag {
 
-	private static final String FORMAT = "DoAction: { actions=%s }";
+    private static final String FORMAT = "DoAction: { actions=%s }";
 
-	private List<Action> actions;
+    private List<Action> actions;
 
-	private transient int length;
+    private transient int length;
 
-	// TODO(doc)
-	public DoAction(final SWFDecoder coder, final Context context)
-			throws CoderException {
+    // TODO(doc)
+    public DoAction(final SWFDecoder coder, final Context context)
+            throws CoderException {
 
-		final int start = coder.getPointer();
-		length = coder.readWord(2, false) & 0x3F;
+        final int start = coder.getPointer();
+        length = coder.readWord(2, false) & 0x3F;
 
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
+        if (length == 0x3F) {
+            length = coder.readWord(4, false);
+        }
 
-		final int end = coder.getPointer() + (length << 3);
+        final int end = coder.getPointer() + (length << 3);
 
-		actions = new ArrayList<Action>();
+        actions = new ArrayList<Action>();
 
-		final SWFFactory<Action> decoder = context.getRegistry().getActionDecoder();
+        final SWFFactory<Action> decoder = context.getRegistry()
+                .getActionDecoder();
 
-		if (decoder == null) {
-			actions.add(new ActionData(coder.readBytes(new byte[length])));
-		} else {
-			while (coder.getPointer() < end) {
-				actions.add(decoder.getObject(coder, context));
-			}
-		}
+        if (decoder == null) {
+            actions.add(new ActionData(coder.readBytes(new byte[length])));
+        } else {
+            while (coder.getPointer() < end) {
+                actions.add(decoder.getObject(coder, context));
+            }
+        }
 
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
+        if (coder.getPointer() != end) {
+            throw new CoderException(getClass().getName(), start >> 3, length,
+                    (coder.getPointer() - end) >> 3);
+        }
+    }
 
-	/**
-	 * Creates a new DoAction class with an empty array.
-	 */
-	public DoAction() {
-		actions = new ArrayList<Action>();
-	}
+    /**
+     * Creates a new DoAction class with an empty array.
+     */
+    public DoAction() {
+        actions = new ArrayList<Action>();
+    }
 
-	/**
-	 * Creates a DoAction object with an array of actions.
-	 * 
-	 * @param anArray
-	 *            the array of action objects. Cannot be null.
-	 */
-	public DoAction(final List<Action> anArray) {
-		setActions(anArray);
-	}
+    /**
+     * Creates a DoAction object with an array of actions.
+     * 
+     * @param anArray
+     *            the array of action objects. Cannot be null.
+     */
+    public DoAction(final List<Action> anArray) {
+        setActions(anArray);
+    }
 
-	/**
-	 * Creates a DoAction object with a copy of the actions from another
-	 * DoAction object.
-	 * 
-	 * @param object
-	 *            a DoAction object to copy.
-	 */
-	public DoAction(final DoAction object) {
-		actions = new ArrayList<Action>(object.actions.size());
-		for (Action action : object.actions) {
-			actions.add(action.copy());
-		}
-	}
+    /**
+     * Creates a DoAction object with a copy of the actions from another
+     * DoAction object.
+     * 
+     * @param object
+     *            a DoAction object to copy.
+     */
+    public DoAction(final DoAction object) {
+        actions = new ArrayList<Action>(object.actions.size());
+        for (final Action action : object.actions) {
+            actions.add(action.copy());
+        }
+    }
 
-	/**
-	 * Adds the action object to the array of actions. If the object already
-	 * contains encoded actions then they will be deleted.
-	 * 
-	 * @param anAction
-	 *            an object belonging to a class derived from Action. The
-	 *            argument cannot be null.
-	 */
-	public DoAction add(final Action anAction) {
-		if (anAction == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
-		}
-		actions.add(anAction);
-		return this;
-	}
+    /**
+     * Adds the action object to the array of actions. If the object already
+     * contains encoded actions then they will be deleted.
+     * 
+     * @param anAction
+     *            an object belonging to a class derived from Action. The
+     *            argument cannot be null.
+     */
+    public DoAction add(final Action anAction) {
+        if (anAction == null) {
+            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+        }
+        actions.add(anAction);
+        return this;
+    }
 
-	/**
-	 * Returns the array of actions that are executed when the frame is
-	 * displayed.
-	 * 
-	 * @return the array of action objects.
-	 */
-	public List<Action> getActions() {
-		return actions;
-	}
+    /**
+     * Returns the array of actions that are executed when the frame is
+     * displayed.
+     * 
+     * @return the array of action objects.
+     */
+    public List<Action> getActions() {
+        return actions;
+    }
 
-	/**
-	 * Set the array of actions that will be executed when the next ShowFrame
-	 * tag is executed by the Flash Player. If the object already contains
-	 * encoded actions then they will be deleted.
-	 * 
-	 * @param anArray
-	 *            the array of action objects. May be empty but cannot be null.
-	 */
-	public void setActions(final List<Action> anArray) {
-		if (anArray == null) {
-			throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
-		}
-		actions = anArray;
-	}
+    /**
+     * Set the array of actions that will be executed when the next ShowFrame
+     * tag is executed by the Flash Player. If the object already contains
+     * encoded actions then they will be deleted.
+     * 
+     * @param anArray
+     *            the array of action objects. May be empty but cannot be null.
+     */
+    public void setActions(final List<Action> anArray) {
+        if (anArray == null) {
+            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+        }
+        actions = anArray;
+    }
 
-	public DoAction copy() {
-		return new DoAction(this);
-	}
+    public DoAction copy() {
+        return new DoAction(this);
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, actions.toString());
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, actions.toString());
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		length = 0;
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        length = 0;
 
-		for (Action action : actions) {
-			length += action.prepareToEncode(coder, context);
-		}
+        for (final Action action : actions) {
+            length += action.prepareToEncode(coder, context);
+        }
 
-		return (length > 62 ? 6 : 2) + length;
-	}
+        return (length > 62 ? 6 : 2) + length;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
 
-		final int start = coder.getPointer();
+        final int start = coder.getPointer();
 
-		if (length > 62) {
-			coder.writeWord((MovieTypes.DO_ACTION << 6) | 0x3F, 2);
-			coder.writeWord(length, 4);
-		} else {
-			coder.writeWord((MovieTypes.DO_ACTION << 6) | length, 2);
-		}
-		final int end = coder.getPointer() + (length << 3);
+        if (length > 62) {
+            coder.writeWord((MovieTypes.DO_ACTION << 6) | 0x3F, 2);
+            coder.writeWord(length, 4);
+        } else {
+            coder.writeWord((MovieTypes.DO_ACTION << 6) | length, 2);
+        }
+        final int end = coder.getPointer() + (length << 3);
 
-		for (Action action : actions) {
-			action.encode(coder, context);
-		}
+        for (final Action action : actions) {
+            action.encode(coder, context);
+        }
 
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
+        if (coder.getPointer() != end) {
+            throw new CoderException(getClass().getName(), start >> 3, length,
+                    (coder.getPointer() - end) >> 3);
+        }
+    }
 }

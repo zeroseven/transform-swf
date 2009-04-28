@@ -77,287 +77,290 @@ import com.flagstone.transform.coder.SWFEncoder;
  * @see ButtonEventHandler
  */
 public final class DefineButton2 implements DefineTag {
-	private static final String FORMAT = "DefineButton2: { identifier=%d; buttonRecords=%s; handlers=%s }";
+    private static final String FORMAT = "DefineButton2: { identifier=%d; buttonRecords=%s; handlers=%s }";
 
-	private int identifier;
-	private boolean menu;
-	private List<ButtonShape> shapes;
-	private List<ButtonEventHandler> events;
+    private int identifier;
+    private boolean menu;
+    private List<ButtonShape> shapes;
+    private List<ButtonEventHandler> events;
 
-	private transient int length;
+    private transient int length;
 
-	// TODO(doc)
-	// TODO(optimise)
-	public DefineButton2(final SWFDecoder coder, final Context context)
-			throws CoderException {
-		final Map<Integer, Integer> vars = context.getVariables();
-		vars.put(Context.TYPE, MovieTypes.DEFINE_BUTTON_2);
-		vars.put(Context.TRANSPARENT, 1);
+    // TODO(doc)
+    // TODO(optimise)
+    public DefineButton2(final SWFDecoder coder, final Context context)
+            throws CoderException {
+        final Map<Integer, Integer> vars = context.getVariables();
+        vars.put(Context.TYPE, MovieTypes.DEFINE_BUTTON_2);
+        vars.put(Context.TRANSPARENT, 1);
 
-		final int start = coder.getPointer();
-		length = coder.readWord(2, false) & 0x3F;
+        final int start = coder.getPointer();
+        length = coder.readWord(2, false) & 0x3F;
 
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
-		final int end = coder.getPointer() + (length << 3);
+        if (length == 0x3F) {
+            length = coder.readWord(4, false);
+        }
+        final int end = coder.getPointer() + (length << 3);
 
-		identifier = coder.readWord(2, false);
-		menu = coder.readByte() != 0;
-		shapes = new ArrayList<ButtonShape>();
+        identifier = coder.readWord(2, false);
+        menu = coder.readByte() != 0;
+        shapes = new ArrayList<ButtonShape>();
 
-		int offsetToNext = coder.readWord(2, false);
+        int offsetToNext = coder.readWord(2, false);
 
-		while (coder.readByte() != 0) {
-			coder.adjustPointer(-8);
-			shapes.add(new ButtonShape(coder, context));
-		}
+        while (coder.readByte() != 0) {
+            coder.adjustPointer(-8);
+            shapes.add(new ButtonShape(coder, context));
+        }
 
-		if (offsetToNext != 0) {
-			events = new ArrayList<ButtonEventHandler>();
-			ButtonEventHandler event;
+        if (offsetToNext != 0) {
+            events = new ArrayList<ButtonEventHandler>();
+            ButtonEventHandler event;
 
-			do {
-				offsetToNext = coder.readWord(2, false);
+            do {
+                offsetToNext = coder.readWord(2, false);
 
-				if (offsetToNext == 0) {
-					event = new ButtonEventHandler(
-							(end - coder.getPointer()) >>> 3, coder, context);
-				} else {
-					event = new ButtonEventHandler(offsetToNext, coder, context);
-				}
-				events.add(event);
+                if (offsetToNext == 0) {
+                    event = new ButtonEventHandler(
+                            (end - coder.getPointer()) >>> 3, coder, context);
+                } else {
+                    event = new ButtonEventHandler(offsetToNext, coder, context);
+                }
+                events.add(event);
 
-			} while (offsetToNext != 0);
-		}
+            } while (offsetToNext != 0);
+        }
 
-		vars.remove(Context.TYPE);
-		vars.remove(Context.TRANSPARENT);
+        vars.remove(Context.TYPE);
+        vars.remove(Context.TRANSPARENT);
 
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
+        if (coder.getPointer() != end) {
+            throw new CoderException(getClass().getName(), start >> 3, length,
+                    (coder.getPointer() - end) >> 3);
+        }
+    }
 
-	/**
-	 * Creates a DefineButton2 object, specifying the unique identifier, the
-	 * type of button to be created, the button shapes that describe the
-	 * button's appearance and the actions that are performed in response to
-	 * each button event.
-	 * 
-	 * @param uid
-	 *            a unique identifier for this button. Must be in the range
-	 *            1..65535.
-	 * @param menu
-	 *            the button is a menu button (true) or push button (false).
-	 * @param shapes
-	 *            an array of Button objects. Must not be null.
-	 * @param events
-	 *            an array of ButtonEvent objects. Must not be null.
-	 */
-	public DefineButton2(final int uid, final boolean menu, final List<ButtonShape> shapes,
-			final List<ButtonEventHandler> events) {
-		setIdentifier(uid);
-		setMenu(menu);
-		setShapes(shapes);
-		setEvents(events);
-	}
+    /**
+     * Creates a DefineButton2 object, specifying the unique identifier, the
+     * type of button to be created, the button shapes that describe the
+     * button's appearance and the actions that are performed in response to
+     * each button event.
+     * 
+     * @param uid
+     *            a unique identifier for this button. Must be in the range
+     *            1..65535.
+     * @param menu
+     *            the button is a menu button (true) or push button (false).
+     * @param shapes
+     *            an array of Button objects. Must not be null.
+     * @param events
+     *            an array of ButtonEvent objects. Must not be null.
+     */
+    public DefineButton2(final int uid, final boolean menu,
+            final List<ButtonShape> shapes,
+            final List<ButtonEventHandler> events) {
+        setIdentifier(uid);
+        setMenu(menu);
+        setShapes(shapes);
+        setEvents(events);
+    }
 
-	// TODO(doc)
-	public DefineButton2(final DefineButton2 object) {
-		identifier = object.identifier;
-		menu = object.menu;
-		shapes = new ArrayList<ButtonShape>(object.shapes.size());
-		for (ButtonShape shape : object.shapes) {
-			shapes.add(shape.copy());
-		}
-		events = new ArrayList<ButtonEventHandler>(object.events.size());
-		for (ButtonEventHandler event : object.events) {
-			events.add(event.copy());
-		}
-	}
+    // TODO(doc)
+    public DefineButton2(final DefineButton2 object) {
+        identifier = object.identifier;
+        menu = object.menu;
+        shapes = new ArrayList<ButtonShape>(object.shapes.size());
+        for (final ButtonShape shape : object.shapes) {
+            shapes.add(shape.copy());
+        }
+        events = new ArrayList<ButtonEventHandler>(object.events.size());
+        for (final ButtonEventHandler event : object.events) {
+            events.add(event.copy());
+        }
+    }
 
-	public int getIdentifier() {
-		return identifier;
-	}
+    public int getIdentifier() {
+        return identifier;
+    }
 
-	public void setIdentifier(final int uid) {
-		if (uid < 0 || uid > 65535) {
-			throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
-		}
-		identifier = uid;
-	}
+    public void setIdentifier(final int uid) {
+        if ((uid < 0) || (uid > 65535)) {
+            throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
+        }
+        identifier = uid;
+    }
 
-	/**
-	 * Adds an ButtonShape to the array of button records.
-	 * 
-	 * @param obj
-	 *            a button shape object. Must not be null.
-	 */
-	public DefineButton2 add(final ButtonShape obj) {
-		if (obj == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
-		}
-		shapes.add(obj);
-		return this;
-	}
+    /**
+     * Adds an ButtonShape to the array of button records.
+     * 
+     * @param obj
+     *            a button shape object. Must not be null.
+     */
+    public DefineButton2 add(final ButtonShape obj) {
+        if (obj == null) {
+            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+        }
+        shapes.add(obj);
+        return this;
+    }
 
-	/**
-	 * Adds a button event object to the array of button events.
-	 * 
-	 * @param obj
-	 *            a button event. Must not be null.
-	 */
-	public DefineButton2 add(final ButtonEventHandler obj) throws CoderException {
-		if (obj == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
-		}
-		events.add(obj);
-		return this;
-	}
+    /**
+     * Adds a button event object to the array of button events.
+     * 
+     * @param obj
+     *            a button event. Must not be null.
+     */
+    public DefineButton2 add(final ButtonEventHandler obj)
+            throws CoderException {
+        if (obj == null) {
+            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+        }
+        events.add(obj);
+        return this;
+    }
 
-	/**
-	 * Returns the button type - either PUSH or MENU.
-	 */
-	public boolean isMenu() {
-		return menu;
-	}
+    /**
+     * Returns the button type - either PUSH or MENU.
+     */
+    public boolean isMenu() {
+        return menu;
+    }
 
-	/**
-	 * Returns the array of button records defined for this button.
-	 */
-	public List<ButtonShape> getShapes() {
-		return shapes;
-	}
+    /**
+     * Returns the array of button records defined for this button.
+     */
+    public List<ButtonShape> getShapes() {
+        return shapes;
+    }
 
-	/**
-	 * Returns the array of button records defined for this button.
-	 */
-	public List<ButtonEventHandler> getEvents() throws CoderException {
-		return events;
-	}
+    /**
+     * Returns the array of button records defined for this button.
+     */
+    public List<ButtonEventHandler> getEvents() throws CoderException {
+        return events;
+    }
 
-	/**
-	 * Sets the button type.
-	 * 
-	 * @param aType
-	 *            the type of button. Must be either PUSH or MENU.
-	 */
-	public void setMenu(final boolean menu) {
-		this.menu = menu;
-	}
+    /**
+     * Sets the button type.
+     * 
+     * @param aType
+     *            the type of button. Must be either PUSH or MENU.
+     */
+    public void setMenu(final boolean menu) {
+        this.menu = menu;
+    }
 
-	/**
-	 * Sets the array of button shapes defined for this button.
-	 * 
-	 * @param anArray
-	 *            an array of ButtonShape objects. Must not be null.
-	 */
-	public void setShapes(final List<ButtonShape> anArray) {
-		if (anArray == null) {
-			throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
-		}
-		shapes = anArray;
-	}
+    /**
+     * Sets the array of button shapes defined for this button.
+     * 
+     * @param anArray
+     *            an array of ButtonShape objects. Must not be null.
+     */
+    public void setShapes(final List<ButtonShape> anArray) {
+        if (anArray == null) {
+            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+        }
+        shapes = anArray;
+    }
 
-	/**
-	 * Sets the array of button events defined for this button. If the object
-	 * already contains encodedEvents then they will be deleted.
-	 * 
-	 * @param anArray
-	 *            and array of ButtonEvent objects. Must not be null.
-	 */
-	public void setEvents(final List<ButtonEventHandler> anArray) {
-		if (anArray == null) {
-			throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
-		}
-		events = anArray;
-	}
+    /**
+     * Sets the array of button events defined for this button. If the object
+     * already contains encodedEvents then they will be deleted.
+     * 
+     * @param anArray
+     *            and array of ButtonEvent objects. Must not be null.
+     */
+    public void setEvents(final List<ButtonEventHandler> anArray) {
+        if (anArray == null) {
+            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+        }
+        events = anArray;
+    }
 
-	public DefineButton2 copy() {
-		return new DefineButton2(this);
-	}
+    public DefineButton2 copy() {
+        return new DefineButton2(this);
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, identifier, shapes, events);
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, identifier, shapes, events);
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		final Map<Integer, Integer> vars = context.getVariables();
-		vars.put(Context.TYPE, MovieTypes.DEFINE_BUTTON_2);
-		vars.put(Context.TRANSPARENT, 1);
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        final Map<Integer, Integer> vars = context.getVariables();
+        vars.put(Context.TYPE, MovieTypes.DEFINE_BUTTON_2);
+        vars.put(Context.TRANSPARENT, 1);
 
-		length = 6;
+        length = 6;
 
-		for (ButtonShape shape : shapes) {
-			length += shape.prepareToEncode(coder, context);
-		}
+        for (final ButtonShape shape : shapes) {
+            length += shape.prepareToEncode(coder, context);
+        }
 
-		for (ButtonEventHandler handler : events) {
-			length += 2 + handler.prepareToEncode(coder, context);
-		}
+        for (final ButtonEventHandler handler : events) {
+            length += 2 + handler.prepareToEncode(coder, context);
+        }
 
-		vars.remove(Context.TYPE);
-		vars.remove(Context.TRANSPARENT);
+        vars.remove(Context.TYPE);
+        vars.remove(Context.TRANSPARENT);
 
-		return (length > 62 ? 6 : 2) + length;
-	}
+        return (length > 62 ? 6 : 2) + length;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context) throws CoderException {
-		
-		final Map<Integer, Integer> vars = context.getVariables();
-		vars.put(Context.TYPE, MovieTypes.DEFINE_BUTTON_2);
-		vars.put(Context.TRANSPARENT, 1);
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
 
-		final int start = coder.getPointer();
+        final Map<Integer, Integer> vars = context.getVariables();
+        vars.put(Context.TYPE, MovieTypes.DEFINE_BUTTON_2);
+        vars.put(Context.TRANSPARENT, 1);
 
-		if (length >= 63) {
-			coder.writeWord((MovieTypes.DEFINE_BUTTON_2 << 6) | 0x3F, 2);
-			coder.writeWord(length, 4);
-		} else {
-			coder.writeWord((MovieTypes.DEFINE_BUTTON_2 << 6) | length, 2);
-		}
-		final int end = coder.getPointer() + (length << 3);
+        final int start = coder.getPointer();
 
-		coder.writeWord(identifier, 2);
-		coder.writeWord(menu ? 1 : 0, 1);
+        if (length >= 63) {
+            coder.writeWord((MovieTypes.DEFINE_BUTTON_2 << 6) | 0x3F, 2);
+            coder.writeWord(length, 4);
+        } else {
+            coder.writeWord((MovieTypes.DEFINE_BUTTON_2 << 6) | length, 2);
+        }
+        final int end = coder.getPointer() + (length << 3);
 
-		int offsetStart = coder.getPointer();
-		coder.writeWord(0, 2);
+        coder.writeWord(identifier, 2);
+        coder.writeWord(menu ? 1 : 0, 1);
 
-		for (ButtonShape shape : shapes) {
-			shape.encode(coder, context);
-		}
+        int offsetStart = coder.getPointer();
+        coder.writeWord(0, 2);
 
-		coder.writeWord(0, 1);
+        for (final ButtonShape shape : shapes) {
+            shape.encode(coder, context);
+        }
 
-		// Write actions offset
+        coder.writeWord(0, 1);
 
-		int currentCursor = coder.getPointer();
-		final int offsetEnd = (currentCursor - offsetStart) >> 3;
-		coder.setPointer(offsetStart);
-		coder.writeWord(offsetEnd, 2);
-		coder.setPointer(currentCursor);
+        // Write actions offset
 
-		for (ButtonEventHandler handler : events) {
-			offsetStart = coder.getPointer();
-			handler.encode(coder, context);
-		}
+        int currentCursor = coder.getPointer();
+        final int offsetEnd = (currentCursor - offsetStart) >> 3;
+        coder.setPointer(offsetStart);
+        coder.writeWord(offsetEnd, 2);
+        coder.setPointer(currentCursor);
 
-		// Write offset of zero for last Action Condition
-		currentCursor = coder.getPointer();
-		coder.setPointer(offsetStart);
-		coder.writeWord(0, 2);
-		coder.setPointer(currentCursor);
+        for (final ButtonEventHandler handler : events) {
+            offsetStart = coder.getPointer();
+            handler.encode(coder, context);
+        }
 
-		vars.remove(Context.TYPE);
-		vars.remove(Context.TRANSPARENT);
+        // Write offset of zero for last Action Condition
+        currentCursor = coder.getPointer();
+        coder.setPointer(offsetStart);
+        coder.writeWord(0, 2);
+        coder.setPointer(currentCursor);
 
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
+        vars.remove(Context.TYPE);
+        vars.remove(Context.TRANSPARENT);
+
+        if (coder.getPointer() != end) {
+            throw new CoderException(getClass().getName(), start >> 3, length,
+                    (coder.getPointer() - end) >> 3);
+        }
+    }
 }

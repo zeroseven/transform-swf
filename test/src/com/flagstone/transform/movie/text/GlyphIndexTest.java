@@ -29,61 +29,60 @@
  */
 package com.flagstone.transform.movie.text;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Ignore;
 import org.junit.Test;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.text.GlyphIndex;
 
-
-
 public final class GlyphIndexTest {
 
-	private transient GlyphIndex fixture;
+    private transient GlyphIndex fixture;
 
-	private transient final byte[] encoded = new byte[] { 0x06, 0x01, 0x01,
-			0x00, 0x02, 0x00, 0x06, 0x50 };
+    private transient final byte[] encoded = new byte[] { 0x06, 0x01, 0x01,
+            0x00, 0x02, 0x00, 0x06, 0x50 };
 
-	private transient final byte[] extended = new byte[] { 0x7F, 0x01, 0x06,
-			0x00, 0x00, 0x00, 0x01, 0x00, 0x02, 0x00, 0x06, 0x50 };
+    private transient final byte[] extended = new byte[] { 0x7F, 0x01, 0x06,
+            0x00, 0x00, 0x00, 0x01, 0x00, 0x02, 0x00, 0x06, 0x50 };
 
-	@Test
-	@Ignore
-	public void encodeCoordTransform() throws CoderException {
-		final SWFEncoder encoder = new SWFEncoder(encoded.length);
-		final Context context = new Context();
+    @Test
+    @Ignore
+    public void encodeCoordTransform() throws CoderException {
+        final SWFEncoder encoder = new SWFEncoder(encoded.length);
+        final Context context = new Context();
 
-		// fixture = new GlyphIndex(identifier, layer, transform);
-		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
-		fixture.encode(encoder, context);
+        // fixture = new GlyphIndex(identifier, layer, transform);
+        assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
+        fixture.encode(encoder, context);
 
-		assertTrue(encoder.eof());
-	}
+        assertTrue(encoder.eof());
+    }
 
-	@Test
-	@Ignore
-	public void decode() throws CoderException {
-		final SWFDecoder decoder = new SWFDecoder(encoded);
-		final Context context = new Context();
+    @Test
+    @Ignore
+    public void decode() throws CoderException {
+        final SWFDecoder decoder = new SWFDecoder(encoded);
+        final Context context = new Context();
 
-		fixture = new GlyphIndex(decoder, context);
+        fixture = new GlyphIndex(decoder, context);
 
-		assertTrue(decoder.eof());
-	}
+        assertTrue(decoder.eof());
+    }
 
-	@Test
-	@Ignore
-	public void decodeExtended() throws CoderException {
-		final SWFDecoder decoder = new SWFDecoder(extended);
-		final Context context = new Context();
+    @Test
+    @Ignore
+    public void decodeExtended() throws CoderException {
+        final SWFDecoder decoder = new SWFDecoder(extended);
+        final Context context = new Context();
 
-		fixture = new GlyphIndex(decoder, context);
+        fixture = new GlyphIndex(decoder, context);
 
-		assertTrue(decoder.eof());
-	}
+        assertTrue(decoder.eof());
+    }
 }

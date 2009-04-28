@@ -29,13 +29,13 @@
  */
 package com.flagstone.transform.fillstyle;
 
-import org.junit.Test;
-
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertArrayEquals;
+
+import org.junit.Test;
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
@@ -43,81 +43,79 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.Color;
 
-
-
 public final class MorphGradientTest {
 
-	private static transient final int startRatio = 1;
-	private static transient final Color startColor = new Color(2, 3, 4, 5);
-	private static transient final int endRatio = 6;
-	private static transient final Color endColor = new Color(7, 8, 9, 10);
+    private static transient final int startRatio = 1;
+    private static transient final Color startColor = new Color(2, 3, 4, 5);
+    private static transient final int endRatio = 6;
+    private static transient final Color endColor = new Color(7, 8, 9, 10);
 
-	private transient MorphGradient fixture;
+    private transient MorphGradient fixture;
 
-	private transient final byte[] encoded = new byte[] { 0x01, 0x02, 0x03,
-			0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A };
+    private transient final byte[] encoded = new byte[] { 0x01, 0x02, 0x03,
+            0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A };
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAccessorForRatioWithLowerBound() {
-		fixture = new MorphGradient(new Gradient(-1, startColor), new Gradient(
-				endRatio, endColor));
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkAccessorForRatioWithLowerBound() {
+        fixture = new MorphGradient(new Gradient(-1, startColor), new Gradient(
+                endRatio, endColor));
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAccessorForRatioWithUpperBound() {
-		fixture = new MorphGradient(new Gradient(256, startColor),
-				new Gradient(endRatio, endColor));
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkAccessorForRatioWithUpperBound() {
+        fixture = new MorphGradient(new Gradient(256, startColor),
+                new Gradient(endRatio, endColor));
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAccessorForColorWithNull() {
-		fixture = new MorphGradient(new Gradient(startRatio, null),
-				new Gradient(endRatio, endColor));
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkAccessorForColorWithNull() {
+        fixture = new MorphGradient(new Gradient(startRatio, null),
+                new Gradient(endRatio, endColor));
+    }
 
-	@Test
-	public void checkCopy() {
-		fixture = new MorphGradient(new Gradient(startRatio, startColor),
-				new Gradient(endRatio, endColor));
-		final MorphGradient copy = fixture.copy();
+    @Test
+    public void checkCopy() {
+        fixture = new MorphGradient(new Gradient(startRatio, startColor),
+                new Gradient(endRatio, endColor));
+        final MorphGradient copy = fixture.copy();
 
-		assertNotSame(fixture, copy);
-		assertSame(fixture.getStart().getColor(), copy.getStart().getColor());
-		assertEquals(fixture.toString(), copy.toString());
-	}
+        assertNotSame(fixture, copy);
+        assertSame(fixture.getStart().getColor(), copy.getStart().getColor());
+        assertEquals(fixture.toString(), copy.toString());
+    }
 
-	@Test
-	public void encode() throws CoderException {
-		final SWFEncoder encoder = new SWFEncoder(encoded.length);
-		final Context context = new Context();
-		context.getVariables().put(Context.TRANSPARENT, 1);
+    @Test
+    public void encode() throws CoderException {
+        final SWFEncoder encoder = new SWFEncoder(encoded.length);
+        final Context context = new Context();
+        context.getVariables().put(Context.TRANSPARENT, 1);
 
-		fixture = new MorphGradient(new Gradient(startRatio, startColor),
-				new Gradient(endRatio, endColor));
-		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
-		fixture.encode(encoder, context);
+        fixture = new MorphGradient(new Gradient(startRatio, startColor),
+                new Gradient(endRatio, endColor));
+        assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
+        fixture.encode(encoder, context);
 
-		assertTrue(encoder.eof());
-		assertArrayEquals(encoded, encoder.getData());
-	}
+        assertTrue(encoder.eof());
+        assertArrayEquals(encoded, encoder.getData());
+    }
 
-	@Test
-	public void decode() throws CoderException {
-		final SWFDecoder decoder = new SWFDecoder(encoded);
-		final Context context = new Context();
-		context.getVariables().put(Context.TRANSPARENT, 1);
+    @Test
+    public void decode() throws CoderException {
+        final SWFDecoder decoder = new SWFDecoder(encoded);
+        final Context context = new Context();
+        context.getVariables().put(Context.TRANSPARENT, 1);
 
-		fixture = new MorphGradient(decoder, context);
+        fixture = new MorphGradient(decoder, context);
 
-		assertTrue(decoder.eof());
-		assertEquals(startRatio, fixture.getStart().getRatio());
-		assertEquals(startColor.getRed(), fixture.getStart().getColor()
-				.getRed());
-		assertEquals(startColor.getGreen(), fixture.getStart().getColor()
-				.getGreen());
-		assertEquals(startColor.getBlue(), fixture.getStart().getColor()
-				.getBlue());
-		assertEquals(startColor.getAlpha(), fixture.getStart().getColor()
-				.getAlpha());
-	}
+        assertTrue(decoder.eof());
+        assertEquals(startRatio, fixture.getStart().getRatio());
+        assertEquals(startColor.getRed(), fixture.getStart().getColor()
+                .getRed());
+        assertEquals(startColor.getGreen(), fixture.getStart().getColor()
+                .getGreen());
+        assertEquals(startColor.getBlue(), fixture.getStart().getColor()
+                .getBlue());
+        assertEquals(startColor.getAlpha(), fixture.getStart().getColor()
+                .getAlpha());
+    }
 }

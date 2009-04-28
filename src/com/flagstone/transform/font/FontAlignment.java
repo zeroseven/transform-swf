@@ -43,168 +43,168 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 //TODO(doc)
 public final class FontAlignment implements MovieTag {
-	public enum StrokeWidth {
-		THIN, MEDIUM, THICK
-	};
+    public enum StrokeWidth {
+        THIN, MEDIUM, THICK
+    };
 
-	private static final String FORMAT = "FontAlignment: { identifier=%d; strokeWidth=%s; zones=%s }";
+    private static final String FORMAT = "FontAlignment: { identifier=%d; strokeWidth=%s; zones=%s }";
 
-	private int identifier;
-	private transient int hints;
-	private List<GlyphAlignment> zones;
+    private int identifier;
+    private transient int hints;
+    private List<GlyphAlignment> zones;
 
-	private transient int length;
+    private transient int length;
 
-	public FontAlignment(final SWFDecoder coder, final Context context)
-			throws CoderException {
-		final int start = coder.getPointer();
-		length = coder.readWord(2, false) & 0x3F;
+    public FontAlignment(final SWFDecoder coder, final Context context)
+            throws CoderException {
+        final int start = coder.getPointer();
+        length = coder.readWord(2, false) & 0x3F;
 
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
-		final int end = coder.getPointer() + (length << 3);
+        if (length == 0x3F) {
+            length = coder.readWord(4, false);
+        }
+        final int end = coder.getPointer() + (length << 3);
 
-		identifier = coder.readWord(2, false);
-		hints = coder.readByte();
+        identifier = coder.readWord(2, false);
+        hints = coder.readByte();
 
-		zones = new ArrayList<GlyphAlignment>();
+        zones = new ArrayList<GlyphAlignment>();
 
-		while (coder.getPointer() < end) {
-			zones.add(new GlyphAlignment(coder));
-		}
+        while (coder.getPointer() < end) {
+            zones.add(new GlyphAlignment(coder));
+        }
 
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
+        if (coder.getPointer() != end) {
+            throw new CoderException(getClass().getName(), start >> 3, length,
+                    (coder.getPointer() - end) >> 3);
+        }
+    }
 
-	public FontAlignment(final int uid, final StrokeWidth stroke,
-			final List<GlyphAlignment> list) {
-		setIdentifier(uid);
-		setStrokeWidth(stroke);
-		setZones(list);
-	}
+    public FontAlignment(final int uid, final StrokeWidth stroke,
+            final List<GlyphAlignment> list) {
+        setIdentifier(uid);
+        setStrokeWidth(stroke);
+        setZones(list);
+    }
 
-	public FontAlignment(final FontAlignment object) {
-		identifier = object.identifier;
-		hints = object.hints;
-		zones = new ArrayList<GlyphAlignment>(object.zones);
-	}
+    public FontAlignment(final FontAlignment object) {
+        identifier = object.identifier;
+        hints = object.hints;
+        zones = new ArrayList<GlyphAlignment>(object.zones);
+    }
 
-	/**
-	 * Returns the unique identifier of the font definition that the alignment
-	 * information is for.
-	 */
-	public int getIdentifier() {
-		return identifier;
-	}
+    /**
+     * Returns the unique identifier of the font definition that the alignment
+     * information is for.
+     */
+    public int getIdentifier() {
+        return identifier;
+    }
 
-	/**
-	 * Sets the identifier of the font that this alignment information is for.
-	 * 
-	 * @param uid
-	 *            the unique identifier of the DefineFont that contains the
-	 *            glyphs for the font. Must be in the range 1..65535.
-	 */
-	public void setIdentifier(final int uid) {
-		if (uid < 1 || uid > 65535) {
-			throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
-		}
-		identifier = uid;
-	}
+    /**
+     * Sets the identifier of the font that this alignment information is for.
+     * 
+     * @param uid
+     *            the unique identifier of the DefineFont that contains the
+     *            glyphs for the font. Must be in the range 1..65535.
+     */
+    public void setIdentifier(final int uid) {
+        if ((uid < 1) || (uid > 65535)) {
+            throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
+        }
+        identifier = uid;
+    }
 
-	public StrokeWidth getStrokeWidth() {
-		StrokeWidth stroke;
-		switch (hints) {
-		case 0x40:
-			stroke = StrokeWidth.MEDIUM;
-			break;
-		case 0x80:
-			stroke = StrokeWidth.THICK;
-			break;
-		default:
-			stroke = StrokeWidth.THIN;
-			break;
-		}
-		return stroke;
-	}
+    public StrokeWidth getStrokeWidth() {
+        StrokeWidth stroke;
+        switch (hints) {
+        case 0x40:
+            stroke = StrokeWidth.MEDIUM;
+            break;
+        case 0x80:
+            stroke = StrokeWidth.THICK;
+            break;
+        default:
+            stroke = StrokeWidth.THIN;
+            break;
+        }
+        return stroke;
+    }
 
-	public void setStrokeWidth(final StrokeWidth stroke) {
-		switch (stroke) {
-		case MEDIUM:
-			hints = 0x80;
-			break;
-		case THICK:
-			hints = 0x40;
-			break;
-		default:
-			hints = 0x00;
-			break;
-		}
-	}
+    public void setStrokeWidth(final StrokeWidth stroke) {
+        switch (stroke) {
+        case MEDIUM:
+            hints = 0x80;
+            break;
+        case THICK:
+            hints = 0x40;
+            break;
+        default:
+            hints = 0x00;
+            break;
+        }
+    }
 
-	public List<GlyphAlignment> getZones() {
-		return zones;
-	}
+    public List<GlyphAlignment> getZones() {
+        return zones;
+    }
 
-	public void setZones(final List<GlyphAlignment> array) {
-		if (array == null) {
-			throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
-		}
-		zones = array;
-	}
+    public void setZones(final List<GlyphAlignment> array) {
+        if (array == null) {
+            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+        }
+        zones = array;
+    }
 
-	public FontAlignment addZone(final GlyphAlignment zone) {
-		if (zone == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
-		}
-		zones.add(zone);
-		return this;
-	}
+    public FontAlignment addZone(final GlyphAlignment zone) {
+        if (zone == null) {
+            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+        }
+        zones.add(zone);
+        return this;
+    }
 
-	public FontAlignment copy() {
-		return new FontAlignment(this);
-	}
+    public FontAlignment copy() {
+        return new FontAlignment(this);
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, identifier, getStrokeWidth(), zones);
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, identifier, getStrokeWidth(), zones);
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		length = 3;
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        length = 3;
 
-		for (GlyphAlignment zone : zones) {
-			length += zone.prepareToEncode(coder, context);
-		}
+        for (final GlyphAlignment zone : zones) {
+            length += zone.prepareToEncode(coder, context);
+        }
 
-		return (length > 62 ? 6 : 2) + length;
-	}
+        return (length > 62 ? 6 : 2) + length;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		final int start = coder.getPointer();
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        final int start = coder.getPointer();
 
-		if (length >= 63) {
-			coder.writeWord((MovieTypes.FONT_ALIGNMENT << 6) | 0x3F, 2);
-			coder.writeWord(length, 4);
-		} else {
-			coder.writeWord((MovieTypes.FONT_ALIGNMENT << 6) | length, 2);
-		}
-		final int end = coder.getPointer() + (length << 3);
+        if (length >= 63) {
+            coder.writeWord((MovieTypes.FONT_ALIGNMENT << 6) | 0x3F, 2);
+            coder.writeWord(length, 4);
+        } else {
+            coder.writeWord((MovieTypes.FONT_ALIGNMENT << 6) | length, 2);
+        }
+        final int end = coder.getPointer() + (length << 3);
 
-		coder.writeWord(identifier, 2);
-		coder.writeByte(hints);
+        coder.writeWord(identifier, 2);
+        coder.writeByte(hints);
 
-		for (GlyphAlignment zone : zones) {
-			zone.encode(coder, context);
-		}
+        for (final GlyphAlignment zone : zones) {
+            zone.encode(coder, context);
+        }
 
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
+        if (coder.getPointer() != end) {
+            throw new CoderException(getClass().getName(), start >> 3, length,
+                    (coder.getPointer() - end) >> 3);
+        }
+    }
 }

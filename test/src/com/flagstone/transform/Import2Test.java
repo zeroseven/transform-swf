@@ -29,124 +29,122 @@
  */
 package com.flagstone.transform;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertArrayEquals;
-
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-
-
 public final class Import2Test {
 
-	private static String url;
-	private static Map<Integer, String> table;
+    private static String url;
+    private static Map<Integer, String> table;
 
-	@BeforeClass
-	public static void initialize() {
-		url = "ABC";
+    @BeforeClass
+    public static void initialize() {
+        url = "ABC";
 
-		table = new LinkedHashMap<Integer, String>();
-		table.put(1, "A");
-		table.put(2, "B");
-		table.put(3, "C");
-	}
+        table = new LinkedHashMap<Integer, String>();
+        table.put(1, "A");
+        table.put(2, "B");
+        table.put(3, "C");
+    }
 
-	private transient Import2 fixture;
+    private transient Import2 fixture;
 
-	private transient final byte[] encoded = new byte[] { (byte) 0xD4, 0x11,
-			0x41, 0x42, 0x43, 0x00, 0x01, 0x00, 0x03, 0x00, 0x01, 0x00, 0x41,
-			0x00, 0x02, 0x00, 0x42, 0x00, 0x03, 0x00, 0x43, 0x00, };
+    private transient final byte[] encoded = new byte[] { (byte) 0xD4, 0x11,
+            0x41, 0x42, 0x43, 0x00, 0x01, 0x00, 0x03, 0x00, 0x01, 0x00, 0x41,
+            0x00, 0x02, 0x00, 0x42, 0x00, 0x03, 0x00, 0x43, 0x00, };
 
-	private transient final byte[] extended = new byte[] { 0x7F, 0x11, 0x14,
-			0x00, 0x00, 0x00, 0x41, 0x42, 0x43, 0x00, 0x01, 0x00, 0x03, 0x00,
-			0x01, 0x00, 0x41, 0x00, 0x02, 0x00, 0x42, 0x00, 0x03, 0x00, 0x43,
-			0x00, };
+    private transient final byte[] extended = new byte[] { 0x7F, 0x11, 0x14,
+            0x00, 0x00, 0x00, 0x41, 0x42, 0x43, 0x00, 0x01, 0x00, 0x03, 0x00,
+            0x01, 0x00, 0x41, 0x00, 0x02, 0x00, 0x42, 0x00, 0x03, 0x00, 0x43,
+            0x00, };
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAccessorForUrlWithNull() {
-		fixture = new Import2(null, table);
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkAccessorForUrlWithNull() {
+        fixture = new Import2(null, table);
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAccessorForUrlWithEmpty() {
-		fixture = new Import2("", table);
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkAccessorForUrlWithEmpty() {
+        fixture = new Import2("", table);
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAccessorForIdentifierWithLowerBound() {
-		fixture = new Import2(url, table);
-		fixture.add(0, "A");
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkAccessorForIdentifierWithLowerBound() {
+        fixture = new Import2(url, table);
+        fixture.add(0, "A");
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAccessorForIdentifierWithUpperBound() {
-		fixture = new Import2(url, table);
-		fixture.add(65536, "A");
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkAccessorForIdentifierWithUpperBound() {
+        fixture = new Import2(url, table);
+        fixture.add(65536, "A");
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAccessorForNameWithNull() {
-		fixture = new Import2(url, table);
-		fixture.add(1, null);
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkAccessorForNameWithNull() {
+        fixture = new Import2(url, table);
+        fixture.add(1, null);
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAccessorForNameWithEmpty() {
-		fixture = new Import2(url, table);
-		fixture.add(1, "");
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkAccessorForNameWithEmpty() {
+        fixture = new Import2(url, table);
+        fixture.add(1, "");
+    }
 
-	@Test
-	public void checkCopy() {
-		fixture = new Import2(url, table);
-		final Import2 copy = fixture.copy();
+    @Test
+    public void checkCopy() {
+        fixture = new Import2(url, table);
+        final Import2 copy = fixture.copy();
 
-		assertEquals(fixture.getUrl(), copy.getUrl());
-		assertNotSame(fixture.getObjects(), copy.getObjects());
-		assertEquals(fixture.toString(), copy.toString());
-	}
+        assertEquals(fixture.getUrl(), copy.getUrl());
+        assertNotSame(fixture.getObjects(), copy.getObjects());
+        assertEquals(fixture.toString(), copy.toString());
+    }
 
-	@Test
-	public void encode() throws CoderException {
-		final SWFEncoder encoder = new SWFEncoder(encoded.length);
-		final Context context = new Context();
+    @Test
+    public void encode() throws CoderException {
+        final SWFEncoder encoder = new SWFEncoder(encoded.length);
+        final Context context = new Context();
 
-		fixture = new Import2(url, table);
-		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
-		fixture.encode(encoder, context);
+        fixture = new Import2(url, table);
+        assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
+        fixture.encode(encoder, context);
 
-		assertTrue(encoder.eof());
-		assertArrayEquals(encoded, encoder.getData());
-	}
+        assertTrue(encoder.eof());
+        assertArrayEquals(encoded, encoder.getData());
+    }
 
-	@Test
-	public void decode() throws CoderException {
-		final SWFDecoder decoder = new SWFDecoder(encoded);
+    @Test
+    public void decode() throws CoderException {
+        final SWFDecoder decoder = new SWFDecoder(encoded);
 
-		fixture = new Import2(decoder);
+        fixture = new Import2(decoder);
 
-		assertTrue(decoder.eof());
-		assertEquals(table, fixture.getObjects());
-	}
+        assertTrue(decoder.eof());
+        assertEquals(table, fixture.getObjects());
+    }
 
-	@Test
-	public void decodeExtended() throws CoderException {
-		final SWFDecoder decoder = new SWFDecoder(extended);
+    @Test
+    public void decodeExtended() throws CoderException {
+        final SWFDecoder decoder = new SWFDecoder(extended);
 
-		fixture = new Import2(decoder);
+        fixture = new Import2(decoder);
 
-		assertTrue(decoder.eof());
-		assertEquals(table, fixture.getObjects());
-	}
+        assertTrue(decoder.eof());
+        assertEquals(table, fixture.getObjects());
+    }
 }

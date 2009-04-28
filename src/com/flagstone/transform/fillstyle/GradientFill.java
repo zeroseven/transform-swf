@@ -86,233 +86,233 @@ import com.flagstone.transform.datatype.CoordTransform;
 // TODO(optimise) Add pack/unpack methods
 public final class GradientFill implements FillStyle {
 
-	public enum Spread {
-		PAD(0), REFLECT(0x40), REPEAT(0xC0);
+    public enum Spread {
+        PAD(0), REFLECT(0x40), REPEAT(0xC0);
 
-		private static final Map<Integer, Spread> TABLE = new LinkedHashMap<Integer, Spread>();
+        private static final Map<Integer, Spread> TABLE = new LinkedHashMap<Integer, Spread>();
 
-		static {
-			for (Spread type : values()) {
-				TABLE.put(type.value, type);
-			}
-		}
+        static {
+            for (final Spread type : values()) {
+                TABLE.put(type.value, type);
+            }
+        }
 
-		public static Spread fromInt(final int type) {
-			return TABLE.get(type);
-		}
+        public static Spread fromInt(final int type) {
+            return TABLE.get(type);
+        }
 
-		private int value;
+        private int value;
 
-		private Spread(final int value) {
-			this.value = value;
-		}
+        private Spread(final int value) {
+            this.value = value;
+        }
 
-		public int getValue() {
-			return value;
-		}
-	}
+        public int getValue() {
+            return value;
+        }
+    }
 
-	public enum Interpolation {
-		NORMAL(0), LINEAR(0x10);
+    public enum Interpolation {
+        NORMAL(0), LINEAR(0x10);
 
-		private static final Map<Integer, Interpolation> TABLE = new LinkedHashMap<Integer, Interpolation>();
+        private static final Map<Integer, Interpolation> TABLE = new LinkedHashMap<Integer, Interpolation>();
 
-		static {
-			for (Interpolation type : values()) {
-				TABLE.put(type.value, type);
-			}
-		}
+        static {
+            for (final Interpolation type : values()) {
+                TABLE.put(type.value, type);
+            }
+        }
 
-		public static Interpolation fromInt(final int type) {
-			return TABLE.get(type);
-		}
+        public static Interpolation fromInt(final int type) {
+            return TABLE.get(type);
+        }
 
-		private int value;
+        private int value;
 
-		private Interpolation(final int value) {
-			this.value = value;
-		}
+        private Interpolation(final int value) {
+            this.value = value;
+        }
 
-		public int getValue() {
-			return value;
-		}
-	}
+        public int getValue() {
+            return value;
+        }
+    }
 
-	private static final String FORMAT = "GradientFill: { transform=%s; gradients=%s }";
+    private static final String FORMAT = "GradientFill: { transform=%s; gradients=%s }";
 
-	private transient int type;
-	private int spread;
-	private int interpolation;
-	private CoordTransform transform;
-	private List<Gradient> gradients;
+    private transient int type;
+    private int spread;
+    private int interpolation;
+    private CoordTransform transform;
+    private List<Gradient> gradients;
 
-	private transient int count;
+    private transient int count;
 
-	public GradientFill(final SWFDecoder coder, final Context context)
-			throws CoderException {
-		type = coder.readByte();
-		transform = new CoordTransform(coder);
-		count = coder.readByte();
-		spread = count & 0x00C0;
-		interpolation = count & 0x0030;
-		count = count & 0x00FF;
-		gradients = new ArrayList<Gradient>(count);
+    public GradientFill(final SWFDecoder coder, final Context context)
+            throws CoderException {
+        type = coder.readByte();
+        transform = new CoordTransform(coder);
+        count = coder.readByte();
+        spread = count & 0x00C0;
+        interpolation = count & 0x0030;
+        count = count & 0x00FF;
+        gradients = new ArrayList<Gradient>(count);
 
-		for (int i = 0; i < count; i++) {
-			gradients.add(new Gradient(coder, context));
-		}
-	}
+        for (int i = 0; i < count; i++) {
+            gradients.add(new Gradient(coder, context));
+        }
+    }
 
-	/**
-	 * Creates a GradientFill object specifying the type, coordinate transform
-	 * and array of gradient points.
-	 * 
-	 * @param type
-	 *            the type of gradient fill, either FillStyle.LINEAR or
-	 *            FillStyle.RADIAL.
-	 * @param aTransform
-	 *            the coordinate transform mapping the gradient square onto
-	 *            physical coordinates. Must not be null.
-	 * @param anArray
-	 *            an array of Gradient objects defining the control points for
-	 *            the gradient. For Flash 7 and earlier versions there can be up
-	 *            to 8 Gradients. For Flash 8 onwards this number was increased
-	 *            to 15. Must not be null.
-	 */
-	public GradientFill(final boolean radial, final CoordTransform aTransform,
-			final List<Gradient> anArray) {
-		setRadial(radial);
-		setTransform(aTransform);
-		setGradients(anArray);
-	}
+    /**
+     * Creates a GradientFill object specifying the type, coordinate transform
+     * and array of gradient points.
+     * 
+     * @param type
+     *            the type of gradient fill, either FillStyle.LINEAR or
+     *            FillStyle.RADIAL.
+     * @param aTransform
+     *            the coordinate transform mapping the gradient square onto
+     *            physical coordinates. Must not be null.
+     * @param anArray
+     *            an array of Gradient objects defining the control points for
+     *            the gradient. For Flash 7 and earlier versions there can be up
+     *            to 8 Gradients. For Flash 8 onwards this number was increased
+     *            to 15. Must not be null.
+     */
+    public GradientFill(final boolean radial, final CoordTransform aTransform,
+            final List<Gradient> anArray) {
+        setRadial(radial);
+        setTransform(aTransform);
+        setGradients(anArray);
+    }
 
-	// TODO(doc)
-	public GradientFill(final GradientFill object) {
-		type = object.type;
-		transform = object.transform;
-		gradients = new ArrayList<Gradient>(object.gradients);
-	}
+    // TODO(doc)
+    public GradientFill(final GradientFill object) {
+        type = object.type;
+        transform = object.transform;
+        gradients = new ArrayList<Gradient>(object.gradients);
+    }
 
-	public boolean isRadial() {
-		return (type & 0x02) != 0;
-	}
+    public boolean isRadial() {
+        return (type & 0x02) != 0;
+    }
 
-	public void setRadial(final boolean radial) {
-		if (radial) {
-			type = 0x12;
-		} else {
-			type = 0x10;
-		}
-	}
+    public void setRadial(final boolean radial) {
+        if (radial) {
+            type = 0x12;
+        } else {
+            type = 0x10;
+        }
+    }
 
-	public Spread getSpread() {
-		return Spread.fromInt(spread);
-	}
+    public Spread getSpread() {
+        return Spread.fromInt(spread);
+    }
 
-	public void setSpread(final Spread spread) {
-		this.spread = spread.getValue();
-	}
+    public void setSpread(final Spread spread) {
+        this.spread = spread.getValue();
+    }
 
-	public Interpolation getInterpolation() {
-		return Interpolation.fromInt(interpolation);
-	}
+    public Interpolation getInterpolation() {
+        return Interpolation.fromInt(interpolation);
+    }
 
-	public void setInterpolation(final Interpolation interpolation) {
-		this.interpolation = interpolation.getValue();
-	}
+    public void setInterpolation(final Interpolation interpolation) {
+        this.interpolation = interpolation.getValue();
+    }
 
-	/**
-	 * Returns the coordinate transform mapping the gradient square onto
-	 * physical coordinates.
-	 */
-	public CoordTransform getTransform() {
-		return transform;
-	}
+    /**
+     * Returns the coordinate transform mapping the gradient square onto
+     * physical coordinates.
+     */
+    public CoordTransform getTransform() {
+        return transform;
+    }
 
-	/**
-	 * Returns the array of Gradient objects defining the points for the
-	 * gradient fill.
-	 */
-	public List<Gradient> getGradients() {
-		return gradients;
-	}
+    /**
+     * Returns the array of Gradient objects defining the points for the
+     * gradient fill.
+     */
+    public List<Gradient> getGradients() {
+        return gradients;
+    }
 
-	/**
-	 * Sets the coordinate transform mapping the gradient square onto physical
-	 * coordinates.
-	 * 
-	 * @param aTransform
-	 *            the coordinate transform. Must not be null.
-	 */
-	public void setTransform(final CoordTransform aTransform) {
-		if (aTransform == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
-		}
-		transform = aTransform;
-	}
+    /**
+     * Sets the coordinate transform mapping the gradient square onto physical
+     * coordinates.
+     * 
+     * @param aTransform
+     *            the coordinate transform. Must not be null.
+     */
+    public void setTransform(final CoordTransform aTransform) {
+        if (aTransform == null) {
+            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+        }
+        transform = aTransform;
+    }
 
-	/**
-	 * Sets the array of control points that define the gradient. For Flash 7
-	 * and earlier this array can contain up to 8 Gradient objects. For Flash 8
-	 * onwards this limit was increased to 15.
-	 * 
-	 * @param anArray
-	 *            an array of Gradient objects. Must not be null.
-	 */
-	public void setGradients(final List<Gradient> anArray) {
-		if (anArray == null) {
-			throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
-		}
-		if (anArray.size() > 15) {
-			throw new IllegalArgumentException(Strings.MAX_GRADIENTS);
-		}
-		gradients = anArray;
-	}
+    /**
+     * Sets the array of control points that define the gradient. For Flash 7
+     * and earlier this array can contain up to 8 Gradient objects. For Flash 8
+     * onwards this limit was increased to 15.
+     * 
+     * @param anArray
+     *            an array of Gradient objects. Must not be null.
+     */
+    public void setGradients(final List<Gradient> anArray) {
+        if (anArray == null) {
+            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+        }
+        if (anArray.size() > 15) {
+            throw new IllegalArgumentException(Strings.MAX_GRADIENTS);
+        }
+        gradients = anArray;
+    }
 
-	/**
-	 * Add a Gradient object to the array of gradient objects. For Flash 7 and
-	 * earlier versions there can be up to 8 Gradients. For Flash 8 onwards this
-	 * number was increased to 15.
-	 * 
-	 * @param aGradient
-	 *            an Gradient object. Must not be null.
-	 */
-	public GradientFill add(final Gradient aGradient) {
-		if (aGradient == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
-		}
-		if (gradients.size() == 15) {
-			throw new IllegalArgumentException(Strings.MAX_GRADIENTS);
-		}
-		gradients.add(aGradient);
-		return this;
-	}
+    /**
+     * Add a Gradient object to the array of gradient objects. For Flash 7 and
+     * earlier versions there can be up to 8 Gradients. For Flash 8 onwards this
+     * number was increased to 15.
+     * 
+     * @param aGradient
+     *            an Gradient object. Must not be null.
+     */
+    public GradientFill add(final Gradient aGradient) {
+        if (aGradient == null) {
+            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+        }
+        if (gradients.size() == 15) {
+            throw new IllegalArgumentException(Strings.MAX_GRADIENTS);
+        }
+        gradients.add(aGradient);
+        return this;
+    }
 
-	public GradientFill copy() {
-		return new GradientFill(this);
-	}
+    public GradientFill copy() {
+        return new GradientFill(this);
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, transform, gradients);
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, transform, gradients);
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		count = gradients.size();
-		return 2
-				+ transform.prepareToEncode(coder, context)
-				+ (count * (context.getVariables().containsKey(
-						Context.TRANSPARENT) ? 5 : 4));
-	}
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        count = gradients.size();
+        return 2
+                + transform.prepareToEncode(coder, context)
+                + (count * (context.getVariables().containsKey(
+                        Context.TRANSPARENT) ? 5 : 4));
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		coder.writeByte(type);
-		transform.encode(coder, context);
-		coder.writeWord(count | spread | interpolation, 1);
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        coder.writeByte(type);
+        transform.encode(coder, context);
+        coder.writeWord(count | spread | interpolation, 1);
 
-		for (Gradient gradient : gradients) {
-			gradient.encode(coder, context);
-		}
-	}
+        for (final Gradient gradient : gradients) {
+            gradient.encode(coder, context);
+        }
+    }
 }

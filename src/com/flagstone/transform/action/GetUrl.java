@@ -99,122 +99,122 @@ import com.flagstone.transform.coder.SWFEncoder;
  * @see GetUrl2
  */
 public final class GetUrl implements Action {
-	private static final String FORMAT = "GetUrl: { url=%s; target=%s }";
+    private static final String FORMAT = "GetUrl: { url=%s; target=%s }";
 
-	private String url;
-	private String target;
+    private String url;
+    private String target;
 
-	private transient int length;
+    private transient int length;
 
-	// TODO(doc)
-	public GetUrl(final SWFDecoder coder) throws CoderException {
-		coder.readByte();
-		length = coder.readWord(2, false);
-		url = coder.readString();
-		target = coder.readString();
-	}
+    // TODO(doc)
+    public GetUrl(final SWFDecoder coder) throws CoderException {
+        coder.readByte();
+        length = coder.readWord(2, false);
+        url = coder.readString();
+        target = coder.readString();
+    }
 
-	/**
-	 * Creates a GetUrl with the specified url and target frame.
-	 * 
-	 * @param urlString
-	 *            a fully qualified URL. Must not be null or an empty string.
-	 * @param targetString
-	 *            the location (in the Flash Player or web browser) where the
-	 *            contents of file retrieved via the url will be displayed. Must
-	 *            not be null.
-	 */
-	public GetUrl(final String urlString, final String targetString) {
-		setUrl(urlString);
-		setTarget(targetString);
-	}
+    /**
+     * Creates a GetUrl with the specified url and target frame.
+     * 
+     * @param urlString
+     *            a fully qualified URL. Must not be null or an empty string.
+     * @param targetString
+     *            the location (in the Flash Player or web browser) where the
+     *            contents of file retrieved via the url will be displayed. Must
+     *            not be null.
+     */
+    public GetUrl(final String urlString, final String targetString) {
+        setUrl(urlString);
+        setTarget(targetString);
+    }
 
-	/**
-	 * Creates a GetUrl with the specified url. The target defaults to the
-	 * current window.
-	 * 
-	 * @param urlString
-	 *            a fully qualified URL. Must not be null or an empty string.
-	 */
-	public GetUrl(final String urlString) {
-		setUrl(urlString);
-		target = "";
-	}
+    /**
+     * Creates a GetUrl with the specified url. The target defaults to the
+     * current window.
+     * 
+     * @param urlString
+     *            a fully qualified URL. Must not be null or an empty string.
+     */
+    public GetUrl(final String urlString) {
+        setUrl(urlString);
+        target = "";
+    }
 
-	// TODO(optimise)
-	public GetUrl(final GetUrl object) {
-		url = object.url;
-		target = object.target;
-	}
+    // TODO(optimise)
+    public GetUrl(final GetUrl object) {
+        url = object.url;
+        target = object.target;
+    }
 
-	/**
-	 * Returns the URL.
-	 */
-	public String getUrl() {
-		return url;
-	}
+    /**
+     * Returns the URL.
+     */
+    public String getUrl() {
+        return url;
+    }
 
-	/**
-	 * Returns the name of the target frame.
-	 */
-	public String getTarget() {
-		return target;
-	}
+    /**
+     * Returns the name of the target frame.
+     */
+    public String getTarget() {
+        return target;
+    }
 
-	/**
-	 * Sets the URL of the file to be retrieved.
-	 * 
-	 * @param aString
-	 *            a fully qualified URL. Must not be null or an empty string.
-	 */
-	public void setUrl(final String aString) {
-		if (aString == null) {
-			throw new IllegalArgumentException(Strings.STRING_IS_NULL);
-		}
-		if (aString.length() == 0) {
-			throw new IllegalArgumentException(Strings.STRING_IS_EMPTY);
-		}
-		url = aString;
-	}
+    /**
+     * Sets the URL of the file to be retrieved.
+     * 
+     * @param aString
+     *            a fully qualified URL. Must not be null or an empty string.
+     */
+    public void setUrl(final String aString) {
+        if (aString == null) {
+            throw new IllegalArgumentException(Strings.STRING_IS_NULL);
+        }
+        if (aString.length() == 0) {
+            throw new IllegalArgumentException(Strings.STRING_IS_EMPTY);
+        }
+        url = aString;
+    }
 
-	/**
-	 * Sets the name of the Target where the URL will be displayed. The target
-	 * may be a frame or window in a web browser when displaying a web page or a
-	 * level in the current movie when loading a movie clip.
-	 * 
-	 * @param aString
-	 *            the name of the location (in the Flash Player or web browser)
-	 *            where contents of file retrieved via the url will be
-	 *            displayed. Must not be null.
-	 */
-	public void setTarget(final String aString) {
-		if (aString == null) {
-			throw new IllegalArgumentException(Strings.STRING_IS_NULL);
-		}
-		target = aString;
-	}
+    /**
+     * Sets the name of the Target where the URL will be displayed. The target
+     * may be a frame or window in a web browser when displaying a web page or a
+     * level in the current movie when loading a movie clip.
+     * 
+     * @param aString
+     *            the name of the location (in the Flash Player or web browser)
+     *            where contents of file retrieved via the url will be
+     *            displayed. Must not be null.
+     */
+    public void setTarget(final String aString) {
+        if (aString == null) {
+            throw new IllegalArgumentException(Strings.STRING_IS_NULL);
+        }
+        target = aString;
+    }
 
-	public GetUrl copy() {
-		return new GetUrl(this);
-	}
+    public GetUrl copy() {
+        return new GetUrl(this);
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, url, target);
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, url, target);
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		length = coder.strlen(url);
-		length += coder.strlen(target);
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        length = coder.strlen(url);
+        length += coder.strlen(target);
 
-		return 3 + length;
-	}
+        return 3 + length;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		coder.writeByte(ActionTypes.GET_URL);
-		coder.writeWord(length, 2);
-		coder.writeString(url);
-		coder.writeString(target);
-	}
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        coder.writeByte(ActionTypes.GET_URL);
+        coder.writeWord(length, 2);
+        coder.writeString(url);
+        coder.writeString(target);
+    }
 }

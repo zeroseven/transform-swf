@@ -29,53 +29,53 @@
  */
 package com.flagstone.transform.coder;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertArrayEquals;
-
 public final class FLVEncoderTest {
-	private transient FLVEncoder fixture;
+    private transient FLVEncoder fixture;
 
-	private transient byte[] data;
+    private transient byte[] data;
 
-	@Before
-	public void setUp() {
-		fixture = new FLVEncoder(0);
-	}
+    @Before
+    public void setUp() {
+        fixture = new FLVEncoder(0);
+    }
 
-	@Test
-	public void writeWordUnsigned() {
-		data = new byte[] { 1, 2, 3, 4 };
+    @Test
+    public void writeWordUnsigned() {
+        data = new byte[] { 1, 2, 3, 4 };
 
-		fixture.setData(new byte[data.length]);
-		fixture.writeWord(0x01020304, data.length);
+        fixture.setData(new byte[data.length]);
+        fixture.writeWord(0x01020304, data.length);
 
-		assertArrayEquals(data, fixture.data);
-		assertEquals(data.length << 3, fixture.getPointer());
-	}
+        assertArrayEquals(data, fixture.data);
+        assertEquals(data.length << 3, fixture.getPointer());
+    }
 
-	@Test
-	public void writeWordSigned() {
-		data = new byte[] { -1, -128, 3, 4 };
+    @Test
+    public void writeWordSigned() {
+        data = new byte[] { -1, -128, 3, 4 };
 
-		fixture.setData(new byte[data.length]);
-		fixture.writeWord(0xFF800304, data.length);
+        fixture.setData(new byte[data.length]);
+        fixture.writeWord(0xFF800304, data.length);
 
-		assertArrayEquals(data, fixture.data);
-		assertEquals(data.length << 3, fixture.getPointer());
-	}
+        assertArrayEquals(data, fixture.data);
+        assertEquals(data.length << 3, fixture.getPointer());
+    }
 
-	@Test
-	public void readDouble() {
-		data = new byte[] { 0x3F, (byte) 0xF0, 0x00, 0x00, 0x00, 0x00, 0x00,
-				0x00 };
+    @Test
+    public void readDouble() {
+        data = new byte[] { 0x3F, (byte) 0xF0, 0x00, 0x00, 0x00, 0x00, 0x00,
+                0x00 };
 
-		fixture.setData(new byte[data.length]);
-		fixture.writeDouble(1.0);
+        fixture.setData(new byte[data.length]);
+        fixture.writeDouble(1.0);
 
-		assertArrayEquals(data, fixture.data);
-		assertEquals(data.length << 3, fixture.getPointer());
-	}
+        assertArrayEquals(data, fixture.data);
+        assertEquals(data.length << 3, fixture.getPointer());
+    }
 }

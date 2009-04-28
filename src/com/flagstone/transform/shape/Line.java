@@ -34,8 +34,8 @@ import java.util.Map;
 
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.Encoder;
 import com.flagstone.transform.coder.Context;
+import com.flagstone.transform.coder.Encoder;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.linestyle.LineStyle;
@@ -58,133 +58,133 @@ import com.flagstone.transform.linestyle.LineStyle;
  * @see LineStyle
  */
 public final class Line implements ShapeRecord {
-	private static final String FORMAT = "Line: (%d, %d);";
+    private static final String FORMAT = "Line: (%d, %d);";
 
-	private transient int xCoord;
-	private transient int yCoord;
+    private transient int xCoord;
+    private transient int yCoord;
 
-	private transient boolean vertical;
-	private transient boolean general;
-	private transient int size;
+    private transient boolean vertical;
+    private transient boolean general;
+    private transient int size;
 
-	// TODO(doc)
-	// TODO(optimise)
-	public Line(final SWFDecoder coder) throws CoderException {
-		coder.adjustPointer(2); // shape and edge
+    // TODO(doc)
+    // TODO(optimise)
+    public Line(final SWFDecoder coder) throws CoderException {
+        coder.adjustPointer(2); // shape and edge
 
-		size = coder.readBits(4, false) + 2;
+        size = coder.readBits(4, false) + 2;
 
-		if (coder.readBits(1, false) == 0) {
-			if (coder.readBits(1, false) == 0) {
-				xCoord = coder.readBits(size, true);
-				yCoord = 0;
-			} else {
-				xCoord = 0;
-				yCoord = coder.readBits(size, true);
-			}
-		} else {
-			xCoord = coder.readBits(size, true);
-			yCoord = coder.readBits(size, true);
-		}
-	}
+        if (coder.readBits(1, false) == 0) {
+            if (coder.readBits(1, false) == 0) {
+                xCoord = coder.readBits(size, true);
+                yCoord = 0;
+            } else {
+                xCoord = 0;
+                yCoord = coder.readBits(size, true);
+            }
+        } else {
+            xCoord = coder.readBits(size, true);
+            yCoord = coder.readBits(size, true);
+        }
+    }
 
-	/**
-	 * Creates a Line with the specified relative coordinates.
-	 * 
-	 * @param xCoord
-	 *            the x-coordinate of the end point, specified relative to the
-	 *            current drawing point. Must be in the range -65536..65535.
-	 * @param yCoord
-	 *            the y-coordinate of the end point, specified relative to the
-	 *            current drawing point. Must be in the range -65536..65535.
-	 */
-	public Line(final int xCoord, final int yCoord) {
-		setPoint(xCoord, yCoord);
-	}
+    /**
+     * Creates a Line with the specified relative coordinates.
+     * 
+     * @param xCoord
+     *            the x-coordinate of the end point, specified relative to the
+     *            current drawing point. Must be in the range -65536..65535.
+     * @param yCoord
+     *            the y-coordinate of the end point, specified relative to the
+     *            current drawing point. Must be in the range -65536..65535.
+     */
+    public Line(final int xCoord, final int yCoord) {
+        setPoint(xCoord, yCoord);
+    }
 
-	// TODO(doc)
-	public Line(final Line object) {
-		xCoord = object.xCoord;
-		yCoord = object.yCoord;
-	}
+    // TODO(doc)
+    public Line(final Line object) {
+        xCoord = object.xCoord;
+        yCoord = object.yCoord;
+    }
 
-	/**
-	 * Returns the relative x-coordinate.
-	 */
-	public int getX() {
-		return xCoord;
-	}
+    /**
+     * Returns the relative x-coordinate.
+     */
+    public int getX() {
+        return xCoord;
+    }
 
-	/**
-	 * Returns the relative y-coordinate.
-	 */
-	public int getY() {
-		return yCoord;
-	}
+    /**
+     * Returns the relative y-coordinate.
+     */
+    public int getY() {
+        return yCoord;
+    }
 
-	/**
-	 * Sets the relative x and y coordinates.
-	 * 
-	 * @param xCoord
-	 *            the x-coordinate of the end point. Must be in the range
-	 *            -65536..65535.
-	 * @param yCoord
-	 *            the y-coordinate of the end point. Must be in the range
-	 *            -65536..65535.
-	 */
-	public void setPoint(final int xCoord, final int yCoord) {
-		if (xCoord < -65536 || xCoord > 65535) {
-			throw new IllegalArgumentException(Strings.COORDINATES_RANGE);
-		}
-		this.xCoord = xCoord;
+    /**
+     * Sets the relative x and y coordinates.
+     * 
+     * @param xCoord
+     *            the x-coordinate of the end point. Must be in the range
+     *            -65536..65535.
+     * @param yCoord
+     *            the y-coordinate of the end point. Must be in the range
+     *            -65536..65535.
+     */
+    public void setPoint(final int xCoord, final int yCoord) {
+        if ((xCoord < -65536) || (xCoord > 65535)) {
+            throw new IllegalArgumentException(Strings.COORDINATES_RANGE);
+        }
+        this.xCoord = xCoord;
 
-		if (yCoord < -65536 || yCoord > 65535) {
-			throw new IllegalArgumentException(Strings.COORDINATES_RANGE);
-		}
-		this.yCoord = yCoord;
-	}
+        if ((yCoord < -65536) || (yCoord > 65535)) {
+            throw new IllegalArgumentException(Strings.COORDINATES_RANGE);
+        }
+        this.yCoord = yCoord;
+    }
 
-	public Line copy() {
-		return new Line(this);
-	}
+    public Line copy() {
+        return new Line(this);
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, xCoord, yCoord);
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, xCoord, yCoord);
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		vertical = xCoord == 0;
-		general = xCoord != 0 && yCoord != 0;
-		size = Encoder.maxSize(xCoord, yCoord, 1);
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        vertical = xCoord == 0;
+        general = (xCoord != 0) && (yCoord != 0);
+        size = Encoder.maxSize(xCoord, yCoord, 1);
 
-		int numberOfBits = 7;
+        int numberOfBits = 7;
 
-		if (general) {
-			numberOfBits += size << 1;
-		} else {
-			numberOfBits += 1 + size;
-		}
+        if (general) {
+            numberOfBits += size << 1;
+        } else {
+            numberOfBits += 1 + size;
+        }
 
-		final Map<Integer, Integer> vars = context.getVariables();
-		vars.put(Context.SHAPE_SIZE, vars.get(Context.SHAPE_SIZE)
-				+ numberOfBits);
+        final Map<Integer, Integer> vars = context.getVariables();
+        vars.put(Context.SHAPE_SIZE, vars.get(Context.SHAPE_SIZE)
+                + numberOfBits);
 
-		return numberOfBits;
-	}
+        return numberOfBits;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		coder.writeBits(3, 2);
-		coder.writeBits(size - 2, 4);
-		coder.writeBits(general ? 1 : 0, 1);
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        coder.writeBits(3, 2);
+        coder.writeBits(size - 2, 4);
+        coder.writeBits(general ? 1 : 0, 1);
 
-		if (general) {
-			coder.writeBits(xCoord, size);
-			coder.writeBits(yCoord, size);
-		} else {
-			coder.writeBits(vertical ? 1 : 0, 1);
-			coder.writeBits(vertical ? yCoord : xCoord, size);
-		}
-	}
+        if (general) {
+            coder.writeBits(xCoord, size);
+            coder.writeBits(yCoord, size);
+        } else {
+            coder.writeBits(vertical ? 1 : 0, 1);
+            coder.writeBits(vertical ? yCoord : xCoord, size);
+        }
+    }
 }

@@ -35,93 +35,92 @@ import java.util.List;
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFDecoder;
+import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFEncoder;
 
 //TODO(code) Implement
 //TODO(doc)
 public final class GlyphAlignment implements SWFEncodeable {
-	private static final String FORMAT = "GlyphAlignment: { alignments=%s; alignX=%s; alignY=%s }";
+    private static final String FORMAT = "GlyphAlignment: { alignments=%s; alignX=%s; alignY=%s }";
 
-	private List<AlignmentZone> alignments;
-	private transient int masks;
+    private List<AlignmentZone> alignments;
+    private transient int masks;
 
-	public GlyphAlignment(final SWFDecoder coder)
-			throws CoderException {
-		final int count = coder.readByte();
+    public GlyphAlignment(final SWFDecoder coder) throws CoderException {
+        final int count = coder.readByte();
 
-		alignments = new ArrayList<AlignmentZone>(count);
+        alignments = new ArrayList<AlignmentZone>(count);
 
-		for (int i = 0; i < count; i++) {
-			alignments.add(new AlignmentZone(coder));
-		}
-		masks = coder.readByte();
-	}
+        for (int i = 0; i < count; i++) {
+            alignments.add(new AlignmentZone(coder));
+        }
+        masks = coder.readByte();
+    }
 
-	public GlyphAlignment(final List<AlignmentZone> list, final boolean xAlign,
-			final boolean yAlign) {
-		setAlignments(list);
-		setAlignmentX(xAlign);
-		setAlignmentY(yAlign);
-	}
+    public GlyphAlignment(final List<AlignmentZone> list, final boolean xAlign,
+            final boolean yAlign) {
+        setAlignments(list);
+        setAlignmentX(xAlign);
+        setAlignmentY(yAlign);
+    }
 
-	public GlyphAlignment(final GlyphAlignment object) {
-		alignments = new ArrayList<AlignmentZone>(object.alignments);
-		masks = object.masks;
-	}
+    public GlyphAlignment(final GlyphAlignment object) {
+        alignments = new ArrayList<AlignmentZone>(object.alignments);
+        masks = object.masks;
+    }
 
-	public boolean alignmentX() {
-		return (masks & 0x01) != 0;
-	}
+    public boolean alignmentX() {
+        return (masks & 0x01) != 0;
+    }
 
-	public void setAlignmentX(final boolean hasAlign) {
-		masks &= 0xFE;
-		if (hasAlign) {
-			masks |= 1;
-		}
-	}
+    public void setAlignmentX(final boolean hasAlign) {
+        masks &= 0xFE;
+        if (hasAlign) {
+            masks |= 1;
+        }
+    }
 
-	public boolean alignmentY() {
-		return (masks & 0x02) != 0;
-	}
+    public boolean alignmentY() {
+        return (masks & 0x02) != 0;
+    }
 
-	public void setAlignmentY(final boolean hasAlign) {
-		masks &= 0xFD;
-		if (hasAlign) {
-			masks |= 2;
-		}
-	}
+    public void setAlignmentY(final boolean hasAlign) {
+        masks &= 0xFD;
+        if (hasAlign) {
+            masks |= 2;
+        }
+    }
 
-	public List<AlignmentZone> getAlignments() {
-		return alignments;
-	}
+    public List<AlignmentZone> getAlignments() {
+        return alignments;
+    }
 
-	public void setAlignments(final List<AlignmentZone> aligments) {
-		this.alignments = aligments;
-	}
+    public void setAlignments(final List<AlignmentZone> aligments) {
+        this.alignments = aligments;
+    }
 
-	public GlyphAlignment copy() {
-		return new GlyphAlignment(this);
-	}
+    public GlyphAlignment copy() {
+        return new GlyphAlignment(this);
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, alignments, String.valueOf(alignmentX()),
-				String.valueOf(alignmentY()));
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, alignments, String.valueOf(alignmentX()),
+                String.valueOf(alignmentY()));
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		return 10;
-	}
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        return 10;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		coder.writeByte(2);
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        coder.writeByte(2);
 
-		for (AlignmentZone zone : alignments) {
-			zone.encode(coder, context);
-		}
-		coder.writeByte(masks);
-	}
+        for (final AlignmentZone zone : alignments) {
+            zone.encode(coder, context);
+        }
+        coder.writeByte(masks);
+    }
 }

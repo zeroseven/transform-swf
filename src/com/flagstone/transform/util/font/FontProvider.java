@@ -31,5 +31,5 @@
 package com.flagstone.transform.util.font;
 
 public interface FontProvider {
-	FontDecoder newDecoder();
+    FontDecoder newDecoder();
 }

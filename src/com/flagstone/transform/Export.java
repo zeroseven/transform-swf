@@ -51,137 +51,137 @@ import com.flagstone.transform.coder.SWFEncoder;
  * </p>
  */
 public final class Export implements MovieTag {
-	private static final String FORMAT = "Export: { objects=%s }";
+    private static final String FORMAT = "Export: { objects=%s }";
 
-	private Map<Integer, String> objects;
+    private Map<Integer, String> objects;
 
-	private transient int length;
+    private transient int length;
 
-	// TODO(doc)
-	public Export(final SWFDecoder coder) throws CoderException {
-		length = coder.readWord(2, false) & 0x3F;
+    // TODO(doc)
+    public Export(final SWFDecoder coder) throws CoderException {
+        length = coder.readWord(2, false) & 0x3F;
 
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
+        if (length == 0x3F) {
+            length = coder.readWord(4, false);
+        }
 
-		final int count = coder.readWord(2, false);
-		objects = new LinkedHashMap<Integer, String>();
+        final int count = coder.readWord(2, false);
+        objects = new LinkedHashMap<Integer, String>();
 
-		for (int i = 0; i < count; i++) {
-			add(coder.readWord(2, false), coder.readString());
-		}
-	}
+        for (int i = 0; i < count; i++) {
+            add(coder.readWord(2, false), coder.readString());
+        }
+    }
 
-	/**
-	 * Creates an Export object with an empty array.
-	 * 
-	 * @param map
-	 *            the table containing identifier/name pairs for the objects
-	 *            that will be exported from the movie.
-	 */
-	public Export(final Map<Integer, String> map) {
-		objects = map;
-	}
+    /**
+     * Creates an Export object with an empty array.
+     * 
+     * @param map
+     *            the table containing identifier/name pairs for the objects
+     *            that will be exported from the movie.
+     */
+    public Export(final Map<Integer, String> map) {
+        objects = map;
+    }
 
-	/**
-	 * Creates an Export object that exports the object with the specified
-	 * identifier. The exported object is assigned the specified name to allow
-	 * it to be referenced in files importing the object.
-	 * 
-	 * @param uid
-	 *            the identifier of the object to be exported. Must be in the
-	 *            range 1..65535.
-	 * @param aString
-	 *            the name of the exported object to allow it to be referenced.
-	 *            Must not be an empty string or null.
-	 */
-	public Export(final int uid, final String aString) {
-		objects = new LinkedHashMap<Integer, String>();
-		add(uid, aString);
-	}
+    /**
+     * Creates an Export object that exports the object with the specified
+     * identifier. The exported object is assigned the specified name to allow
+     * it to be referenced in files importing the object.
+     * 
+     * @param uid
+     *            the identifier of the object to be exported. Must be in the
+     *            range 1..65535.
+     * @param aString
+     *            the name of the exported object to allow it to be referenced.
+     *            Must not be an empty string or null.
+     */
+    public Export(final int uid, final String aString) {
+        objects = new LinkedHashMap<Integer, String>();
+        add(uid, aString);
+    }
 
-	// TODO(doc)
-	public Export(final Export object) {
-		objects = new LinkedHashMap<Integer, String>(object.objects.size());
-		objects.putAll(object.objects);
-	}
+    // TODO(doc)
+    public Export(final Export object) {
+        objects = new LinkedHashMap<Integer, String>(object.objects.size());
+        objects.putAll(object.objects);
+    }
 
-	/**
-	 * Adds the identifier and name to the list of objects to be exported.
-	 * 
-	 * @param uid
-	 *            the identifier of the object to be exported.
-	 * @param aString
-	 *            the name of the exported object to allow it to be referenced.
-	 *            The name must not be null or an empty string.
-	 */
-	public void add(final int uid, final String aString) {
-		if (uid < 1 || uid > 65535) {
-			throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
-		}
-		if (aString == null || aString.length() == 0) {
-			throw new IllegalArgumentException(Strings.STRING_NOT_SET);
-		}
+    /**
+     * Adds the identifier and name to the list of objects to be exported.
+     * 
+     * @param uid
+     *            the identifier of the object to be exported.
+     * @param aString
+     *            the name of the exported object to allow it to be referenced.
+     *            The name must not be null or an empty string.
+     */
+    public void add(final int uid, final String aString) {
+        if ((uid < 1) || (uid > 65535)) {
+            throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
+        }
+        if ((aString == null) || (aString.length() == 0)) {
+            throw new IllegalArgumentException(Strings.STRING_NOT_SET);
+        }
 
-		objects.put(uid, aString);
-	}
+        objects.put(uid, aString);
+    }
 
-	/**
-	 * Returns the table of objects to be exported.
-	 */
-	public Map<Integer, String> getObjects() {
-		return objects;
-	}
+    /**
+     * Returns the table of objects to be exported.
+     */
+    public Map<Integer, String> getObjects() {
+        return objects;
+    }
 
-	/**
-	 * Sets the table of objects to be exported.
-	 * 
-	 * @param aTable
-	 *            the table of objects being imported. Must not be null.
-	 */
-	public void setObjects(final Map<Integer, String> aTable) {
-		if (aTable == null) {
-			throw new IllegalArgumentException(Strings.TABLE_IS_NULL);
-		}
-		objects = aTable;
-	}
+    /**
+     * Sets the table of objects to be exported.
+     * 
+     * @param aTable
+     *            the table of objects being imported. Must not be null.
+     */
+    public void setObjects(final Map<Integer, String> aTable) {
+        if (aTable == null) {
+            throw new IllegalArgumentException(Strings.TABLE_IS_NULL);
+        }
+        objects = aTable;
+    }
 
-	/**
-	 * Creates and returns a deep copy of this object.
-	 */
-	public Export copy() {
-		return new Export(this);
-	}
+    /**
+     * Creates and returns a deep copy of this object.
+     */
+    public Export copy() {
+        return new Export(this);
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, objects);
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, objects);
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		length = 2;
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        length = 2;
 
-		for (Integer identifier : objects.keySet()) {
-			length += 2 + coder.strlen(objects.get(identifier));
-		}
-		return (length > 62 ? 6 : 2) + length;
-	}
+        for (final Integer identifier : objects.keySet()) {
+            length += 2 + coder.strlen(objects.get(identifier));
+        }
+        return (length > 62 ? 6 : 2) + length;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		if (length > 62) {
-			coder.writeWord((MovieTypes.EXPORT << 6) | 0x3F, 2);
-			coder.writeWord(length, 4);
-		} else {
-			coder.writeWord((MovieTypes.EXPORT << 6) | length, 2);
-		}
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        if (length > 62) {
+            coder.writeWord((MovieTypes.EXPORT << 6) | 0x3F, 2);
+            coder.writeWord(length, 4);
+        } else {
+            coder.writeWord((MovieTypes.EXPORT << 6) | length, 2);
+        }
 
-		coder.writeWord(objects.size(), 2);
+        coder.writeWord(objects.size(), 2);
 
-		for (Integer identifier : objects.keySet()) {
-			coder.writeWord(identifier.intValue(), 2);
-			coder.writeString(objects.get(identifier));
-		}
-	}
+        for (final Integer identifier : objects.keySet()) {
+            coder.writeWord(identifier.intValue(), 2);
+            coder.writeString(objects.get(identifier));
+        }
+    }
 }

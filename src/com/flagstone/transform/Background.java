@@ -60,75 +60,75 @@ import com.flagstone.transform.datatype.Color;
  */
 public final class Background implements MovieTag {
 
-	private static final String FORMAT = "Background: { color=%s }";
+    private static final String FORMAT = "Background: { color=%s }";
 
-	private Color color;
+    private Color color;
 
-	// TODO(doc)
-	public Background(final SWFDecoder coder, final Context context)
-			throws CoderException {
-		if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
-			coder.readWord(4, false);
-		}
-		color = new Color(coder, context);
-	}
+    // TODO(doc)
+    public Background(final SWFDecoder coder, final Context context)
+            throws CoderException {
+        if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
+            coder.readWord(4, false);
+        }
+        color = new Color(coder, context);
+    }
 
-	/**
-	 * Creates a Background object with a the specified colour.
-	 * 
-	 * @param aColor
-	 *            the colour for the background. Must not be null.
-	 */
-	public Background(final Color aColor) {
-		setColor(aColor);
-	}
+    /**
+     * Creates a Background object with a the specified colour.
+     * 
+     * @param aColor
+     *            the colour for the background. Must not be null.
+     */
+    public Background(final Color aColor) {
+        setColor(aColor);
+    }
 
-	/**
-	 * Creates a Background object, using the colour from another object.
-	 * 
-	 * @param object
-	 *            a Background object.
-	 */
-	public Background(final Background object) {
-		color = object.color;
-	}
+    /**
+     * Creates a Background object, using the colour from another object.
+     * 
+     * @param object
+     *            a Background object.
+     */
+    public Background(final Background object) {
+        color = object.color;
+    }
 
-	/**
-	 * Returns the colour for the movie background.
-	 */
-	public Color getColor() {
-		return color;
-	}
+    /**
+     * Returns the colour for the movie background.
+     */
+    public Color getColor() {
+        return color;
+    }
 
-	/**
-	 * Sets the colour for the movie background.
-	 * 
-	 * @param color
-	 *            the colour for the background. Must not be null.
-	 */
-	public void setColor(final Color color) {
-		if (color == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
-		}
-		this.color = color;
-	}
+    /**
+     * Sets the colour for the movie background.
+     * 
+     * @param color
+     *            the colour for the background. Must not be null.
+     */
+    public void setColor(final Color color) {
+        if (color == null) {
+            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+        }
+        this.color = color;
+    }
 
-	public Background copy() {
-		return new Background(this);
-	}
+    public Background copy() {
+        return new Background(this);
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, color.toString());
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, color.toString());
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		return 5;
-	}
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        return 5;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		coder.writeWord((MovieTypes.SET_BACKGROUND_COLOR << 6) | 3, 2);
-		color.encode(coder, context);
-	}
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        coder.writeWord((MovieTypes.SET_BACKGROUND_COLOR << 6) | 3, 2);
+        color.encode(coder, context);
+    }
 }

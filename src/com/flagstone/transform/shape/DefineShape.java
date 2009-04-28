@@ -36,9 +36,9 @@ import java.util.Map;
 
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.DefineTag;
 import com.flagstone.transform.coder.Encoder;
-import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.FillStyle;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -69,331 +69,331 @@ import com.flagstone.transform.linestyle.LineStyle;
  * @see DefineShape3
  */
 public final class DefineShape implements DefineTag {
-	private static final String FORMAT = "DefineShape: { identifier=%d; bounds=%s; fillStyles=%s; lineStyles=%s; shape=%s }";
+    private static final String FORMAT = "DefineShape: { identifier=%d; bounds=%s; fillStyles=%s; lineStyles=%s; shape=%s }";
 
-	private int identifier;
-	private Bounds bounds;
-	private List<FillStyle> fillStyles;
-	private List<LineStyle> lineStyles;
-	private Shape shape;
+    private int identifier;
+    private Bounds bounds;
+    private List<FillStyle> fillStyles;
+    private List<LineStyle> lineStyles;
+    private Shape shape;
 
-	private transient int length;
-	private transient int fillBits;
-	private transient int lineBits;
+    private transient int length;
+    private transient int fillBits;
+    private transient int lineBits;
 
-	// TODO(doc)
-	public DefineShape(final SWFDecoder coder, final Context context)
-			throws CoderException {
-		final int start = coder.getPointer();
-		length = coder.readWord(2, false) & 0x3F;
+    // TODO(doc)
+    public DefineShape(final SWFDecoder coder, final Context context)
+            throws CoderException {
+        final int start = coder.getPointer();
+        length = coder.readWord(2, false) & 0x3F;
 
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
-		final int end = coder.getPointer() + (length << 3);
+        if (length == 0x3F) {
+            length = coder.readWord(4, false);
+        }
+        final int end = coder.getPointer() + (length << 3);
 
-		identifier = coder.readWord(2, false);
-		bounds = new Bounds(coder);
+        identifier = coder.readWord(2, false);
+        bounds = new Bounds(coder);
 
-		fillStyles = new ArrayList<FillStyle>();
-		lineStyles = new ArrayList<LineStyle>();
+        fillStyles = new ArrayList<FillStyle>();
+        lineStyles = new ArrayList<LineStyle>();
 
-		final int fillStyleCount = coder.readByte();
-		
-		final SWFFactory<FillStyle> decoder = context.getRegistry()
-				.getFillStyleDecoder();
+        final int fillStyleCount = coder.readByte();
 
-		FillStyle fill;
-		int type;
+        final SWFFactory<FillStyle> decoder = context.getRegistry()
+                .getFillStyleDecoder();
 
-		for (int i = 0; i < fillStyleCount; i++) {
+        FillStyle fill;
+        int type;
 
-			type = coder.scanByte();
-			fill = decoder.getObject(coder, context);
+        for (int i = 0; i < fillStyleCount; i++) {
 
-			if (fill == null) {
-				throw new CoderException(String.valueOf(type), start >>> 3, 0,
-						0, Strings.INVALID_FILLSTYLE);
-			}
+            type = coder.scanByte();
+            fill = decoder.getObject(coder, context);
 
-			fillStyles.add(fill);
-		}
+            if (fill == null) {
+                throw new CoderException(String.valueOf(type), start >>> 3, 0,
+                        0, Strings.INVALID_FILLSTYLE);
+            }
 
-		final int lineStyleCount = coder.readByte();
+            fillStyles.add(fill);
+        }
 
-		for (int i = 0; i < lineStyleCount; i++) {
-			lineStyles.add(new LineStyle(coder, context));
-		}
+        final int lineStyleCount = coder.readByte();
 
-		shape = new Shape(coder, context);
+        for (int i = 0; i < lineStyleCount; i++) {
+            lineStyles.add(new LineStyle(coder, context));
+        }
 
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
+        shape = new Shape(coder, context);
 
-	/**
-	 * Creates a DefineShape object.
-	 * 
-	 * @param uid
-	 *            the unique identifier for the shape in the range 1..65535.
-	 * @param aBounds
-	 *            the bounding rectangle for the shape. Must not be null.
-	 * @param fillStyleArray
-	 *            the array of fill styles used in the shape. Must not be null.
-	 * @param lineStyleArray
-	 *            the array of line styles used in the shape. Must not be null.
-	 * @param aShape
-	 *            the shape to be drawn. Must not be null.
-	 */
-	public DefineShape(final int uid, final Bounds aBounds,
-			final List<FillStyle> fillStyleArray,
-			final List<LineStyle> lineStyleArray, final Shape aShape) {
-		setIdentifier(uid);
-		setBounds(aBounds);
-		setFillStyles(fillStyleArray);
-		setLineStyles(lineStyleArray);
-		setShape(aShape);
-	}
+        if (coder.getPointer() != end) {
+            throw new CoderException(getClass().getName(), start >> 3, length,
+                    (coder.getPointer() - end) >> 3);
+        }
+    }
 
-	// TODO(doc)
-	public DefineShape(final DefineShape object) {
-		identifier = object.identifier;
-		bounds = object.bounds;
-		fillStyles = new ArrayList<FillStyle>(object.fillStyles.size());
-		for (FillStyle style : object.fillStyles) {
-			fillStyles.add(style.copy());
-		}
-		lineStyles = new ArrayList<LineStyle>(object.lineStyles.size());
-		for (LineStyle style : object.lineStyles) {
-			lineStyles.add(style.copy());
-		}
-		shape = object.shape.copy();
-	}
+    /**
+     * Creates a DefineShape object.
+     * 
+     * @param uid
+     *            the unique identifier for the shape in the range 1..65535.
+     * @param aBounds
+     *            the bounding rectangle for the shape. Must not be null.
+     * @param fillStyleArray
+     *            the array of fill styles used in the shape. Must not be null.
+     * @param lineStyleArray
+     *            the array of line styles used in the shape. Must not be null.
+     * @param aShape
+     *            the shape to be drawn. Must not be null.
+     */
+    public DefineShape(final int uid, final Bounds aBounds,
+            final List<FillStyle> fillStyleArray,
+            final List<LineStyle> lineStyleArray, final Shape aShape) {
+        setIdentifier(uid);
+        setBounds(aBounds);
+        setFillStyles(fillStyleArray);
+        setLineStyles(lineStyleArray);
+        setShape(aShape);
+    }
 
-	public int getIdentifier() {
-		return identifier;
-	}
+    // TODO(doc)
+    public DefineShape(final DefineShape object) {
+        identifier = object.identifier;
+        bounds = object.bounds;
+        fillStyles = new ArrayList<FillStyle>(object.fillStyles.size());
+        for (final FillStyle style : object.fillStyles) {
+            fillStyles.add(style.copy());
+        }
+        lineStyles = new ArrayList<LineStyle>(object.lineStyles.size());
+        for (final LineStyle style : object.lineStyles) {
+            lineStyles.add(style.copy());
+        }
+        shape = object.shape.copy();
+    }
 
-	public void setIdentifier(final int uid) {
-		if (uid < 0 || uid > 65535) {
-			throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
-		}
-		identifier = uid;
-	}
+    public int getIdentifier() {
+        return identifier;
+    }
 
-	/**
-	 * Returns the width of the shape in twips.
-	 */
-	public int getWidth() {
-		return bounds.getWidth();
-	}
+    public void setIdentifier(final int uid) {
+        if ((uid < 0) || (uid > 65535)) {
+            throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
+        }
+        identifier = uid;
+    }
 
-	/**
-	 * Returns the height of the shape in twips.
-	 */
-	public int getHeight() {
-		return bounds.getHeight();
-	}
+    /**
+     * Returns the width of the shape in twips.
+     */
+    public int getWidth() {
+        return bounds.getWidth();
+    }
 
-	/**
-	 * Add a LineStyle to the array of line styles.
-	 * 
-	 * @param style
-	 *            and LineStyle object. Must not be null.
-	 */
-	public DefineShape add(final LineStyle style) {
-		if (style == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
-		}
-		lineStyles.add(style);
-		return this;
-	}
+    /**
+     * Returns the height of the shape in twips.
+     */
+    public int getHeight() {
+        return bounds.getHeight();
+    }
 
-	/**
-	 * Add the fill style to the array of fill styles.
-	 * 
-	 * @param style
-	 *            and FillStyle object. Must not be null.
-	 */
-	public DefineShape add(final FillStyle style) {
-		if (style == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
-		}
-		fillStyles.add(style);
-		return this;
-	}
+    /**
+     * Add a LineStyle to the array of line styles.
+     * 
+     * @param style
+     *            and LineStyle object. Must not be null.
+     */
+    public DefineShape add(final LineStyle style) {
+        if (style == null) {
+            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+        }
+        lineStyles.add(style);
+        return this;
+    }
 
-	/**
-	 * Returns the bounding rectangle for the shape.
-	 */
-	public Bounds getBounds() {
-		return bounds;
-	}
+    /**
+     * Add the fill style to the array of fill styles.
+     * 
+     * @param style
+     *            and FillStyle object. Must not be null.
+     */
+    public DefineShape add(final FillStyle style) {
+        if (style == null) {
+            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+        }
+        fillStyles.add(style);
+        return this;
+    }
 
-	/**
-	 * Returns the array fill styles.
-	 */
-	public List<FillStyle> getFillStyles() {
-		return fillStyles;
-	}
+    /**
+     * Returns the bounding rectangle for the shape.
+     */
+    public Bounds getBounds() {
+        return bounds;
+    }
 
-	/**
-	 * Returns the array line styles.
-	 */
-	public List<LineStyle> getLineStyles() {
-		return lineStyles;
-	}
+    /**
+     * Returns the array fill styles.
+     */
+    public List<FillStyle> getFillStyles() {
+        return fillStyles;
+    }
 
-	/**
-	 * Returns the shape.
-	 */
-	public Shape getShape() {
-		return shape;
-	}
+    /**
+     * Returns the array line styles.
+     */
+    public List<LineStyle> getLineStyles() {
+        return lineStyles;
+    }
 
-	/**
-	 * Sets the bounding rectangle that encloses the shape.
-	 * 
-	 * @param aBounds
-	 *            set the bounding rectangle for the shape. Must not be null.
-	 */
-	public void setBounds(final Bounds aBounds) {
-		if (aBounds == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
-		}
-		bounds = aBounds;
-	}
+    /**
+     * Returns the shape.
+     */
+    public Shape getShape() {
+        return shape;
+    }
 
-	/**
-	 * Sets the array fill styles that will be used to draw the shape.
-	 * 
-	 * @param anArray
-	 *            set the fill styles for the shape. Must not be null.
-	 */
-	public void setFillStyles(final List<FillStyle> anArray) {
-		if (anArray == null) {
-			throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
-		}
-		fillStyles = anArray;
-	}
+    /**
+     * Sets the bounding rectangle that encloses the shape.
+     * 
+     * @param aBounds
+     *            set the bounding rectangle for the shape. Must not be null.
+     */
+    public void setBounds(final Bounds aBounds) {
+        if (aBounds == null) {
+            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+        }
+        bounds = aBounds;
+    }
 
-	/**
-	 * Sets the array of styles that will be used to draw the outline of the
-	 * shape.
-	 * 
-	 * @param anArray
-	 *            set the line styles for the shape. Must not be null.
-	 */
-	public void setLineStyles(final List<LineStyle> anArray) {
-		if (anArray == null) {
-			throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
-		}
-		lineStyles = anArray;
-	}
+    /**
+     * Sets the array fill styles that will be used to draw the shape.
+     * 
+     * @param anArray
+     *            set the fill styles for the shape. Must not be null.
+     */
+    public void setFillStyles(final List<FillStyle> anArray) {
+        if (anArray == null) {
+            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+        }
+        fillStyles = anArray;
+    }
 
-	/**
-	 * Sets the shape.
-	 * 
-	 * @param aShape
-	 *            set the shape to be drawn. Must not be null.
-	 */
-	public void setShape(final Shape aShape) {
-		if (aShape == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
-		}
-		shape = aShape;
-	}
+    /**
+     * Sets the array of styles that will be used to draw the outline of the
+     * shape.
+     * 
+     * @param anArray
+     *            set the line styles for the shape. Must not be null.
+     */
+    public void setLineStyles(final List<LineStyle> anArray) {
+        if (anArray == null) {
+            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+        }
+        lineStyles = anArray;
+    }
 
-	public DefineShape copy() {
-		return new DefineShape(this);
-	}
+    /**
+     * Sets the shape.
+     * 
+     * @param aShape
+     *            set the shape to be drawn. Must not be null.
+     */
+    public void setShape(final Shape aShape) {
+        if (aShape == null) {
+            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+        }
+        shape = aShape;
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, identifier, bounds, fillStyles,
-				lineStyles, shape);
-	}
+    public DefineShape copy() {
+        return new DefineShape(this);
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		fillBits = Encoder.unsignedSize(fillStyles.size());
-		lineBits = Encoder.unsignedSize(lineStyles.size());
+    @Override
+    public String toString() {
+        return String.format(FORMAT, identifier, bounds, fillStyles,
+                lineStyles, shape);
+    }
 
-		final Map<Integer, Integer> vars = context.getVariables();
-		if (vars.containsKey(Context.POSTSCRIPT)) {
-			if (fillBits == 0) {
-				fillBits = 1;
-			}
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        fillBits = Encoder.unsignedSize(fillStyles.size());
+        lineBits = Encoder.unsignedSize(lineStyles.size());
 
-			if (lineBits == 0) {
-				lineBits = 1;
-			}
-		}
+        final Map<Integer, Integer> vars = context.getVariables();
+        if (vars.containsKey(Context.POSTSCRIPT)) {
+            if (fillBits == 0) {
+                fillBits = 1;
+            }
 
-		length = 2 + bounds.prepareToEncode(coder, context);
-		length += 1;
+            if (lineBits == 0) {
+                lineBits = 1;
+            }
+        }
 
-		for (FillStyle style : fillStyles) {
-			length += style.prepareToEncode(coder, context);
-		}
+        length = 2 + bounds.prepareToEncode(coder, context);
+        length += 1;
 
-		length += 1;
+        for (final FillStyle style : fillStyles) {
+            length += style.prepareToEncode(coder, context);
+        }
 
-		for (LineStyle style : lineStyles) {
-			length += style.prepareToEncode(coder, context);
-		}
+        length += 1;
 
-		vars.put(Context.FILL_SIZE, fillBits);
-		vars.put(Context.LINE_SIZE, lineBits);
+        for (final LineStyle style : lineStyles) {
+            length += style.prepareToEncode(coder, context);
+        }
 
-		length += shape.prepareToEncode(coder, context);
+        vars.put(Context.FILL_SIZE, fillBits);
+        vars.put(Context.LINE_SIZE, lineBits);
 
-		vars.put(Context.FILL_SIZE, 0);
-		vars.put(Context.LINE_SIZE, 0);
+        length += shape.prepareToEncode(coder, context);
 
-		return (length > 62 ? 6 : 2) + length;
-	}
+        vars.put(Context.FILL_SIZE, 0);
+        vars.put(Context.LINE_SIZE, 0);
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		final int start = coder.getPointer();
+        return (length > 62 ? 6 : 2) + length;
+    }
 
-		if (length >= 63) {
-			coder.writeWord((MovieTypes.DEFINE_SHAPE << 6) | 0x3F, 2);
-			coder.writeWord(length, 4);
-		} else {
-			coder.writeWord((MovieTypes.DEFINE_SHAPE << 6) | length, 2);
-		}
-		final int end = coder.getPointer() + (length << 3);
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        final int start = coder.getPointer();
 
-		coder.writeWord(identifier, 2);
-		bounds.encode(coder, context);
+        if (length >= 63) {
+            coder.writeWord((MovieTypes.DEFINE_SHAPE << 6) | 0x3F, 2);
+            coder.writeWord(length, 4);
+        } else {
+            coder.writeWord((MovieTypes.DEFINE_SHAPE << 6) | length, 2);
+        }
+        final int end = coder.getPointer() + (length << 3);
 
-		coder.writeWord(fillStyles.size(), 1);
+        coder.writeWord(identifier, 2);
+        bounds.encode(coder, context);
 
-		for (FillStyle style : fillStyles) {
-			style.encode(coder, context);
-		}
+        coder.writeWord(fillStyles.size(), 1);
 
-		coder.writeWord(lineStyles.size(), 1);
+        for (final FillStyle style : fillStyles) {
+            style.encode(coder, context);
+        }
 
-		for (LineStyle style : lineStyles) {
-			style.encode(coder, context);
-		}
+        coder.writeWord(lineStyles.size(), 1);
 
-		final Map<Integer, Integer> vars = context.getVariables();
-		vars.put(Context.FILL_SIZE, fillBits);
-		vars.put(Context.LINE_SIZE, lineBits);
+        for (final LineStyle style : lineStyles) {
+            style.encode(coder, context);
+        }
 
-		shape.encode(coder, context);
+        final Map<Integer, Integer> vars = context.getVariables();
+        vars.put(Context.FILL_SIZE, fillBits);
+        vars.put(Context.LINE_SIZE, lineBits);
 
-		vars.put(Context.FILL_SIZE, 0);
-		vars.put(Context.LINE_SIZE, 0);
+        shape.encode(coder, context);
 
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
+        vars.put(Context.FILL_SIZE, 0);
+        vars.put(Context.LINE_SIZE, 0);
+
+        if (coder.getPointer() != end) {
+            throw new CoderException(getClass().getName(), start >> 3, length,
+                    (coder.getPointer() - end) >> 3);
+        }
+    }
 }

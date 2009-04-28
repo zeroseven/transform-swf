@@ -37,35 +37,35 @@ package com.flagstone.transform.coder;
  * </p>
  */
 public interface FLVEncodeable {
-	/**
-	 * Prepare an object for encoding, returning the length in bytes of an
-	 * object when it is encoded.
-	 * 
-	 * This method on all objects to be encoded is called before they are
-	 * encoded. In addition to calculating the size of buffer to be allocated
-	 * this method also used to initialise variables, such as offsets and flags
-	 * that will be used when the object is encoded. This allows the encoding
-	 * process to take place in a single pass and avoids having to re-allocate
-	 * memory.
-	 * 
-	 * @param context
-	 *            an Context that allows information to be passed between
-	 *            objects to control how they are initialised for encoding.
-	 * 
-	 * @return the length in bytes of the object when it is encoded.
-	 */
-	int prepareToEncode();
+    /**
+     * Prepare an object for encoding, returning the length in bytes of an
+     * object when it is encoded.
+     * 
+     * This method on all objects to be encoded is called before they are
+     * encoded. In addition to calculating the size of buffer to be allocated
+     * this method also used to initialise variables, such as offsets and flags
+     * that will be used when the object is encoded. This allows the encoding
+     * process to take place in a single pass and avoids having to re-allocate
+     * memory.
+     * 
+     * @param context
+     *            an Context that allows information to be passed between
+     *            objects to control how they are initialised for encoding.
+     * 
+     * @return the length in bytes of the object when it is encoded.
+     */
+    int prepareToEncode();
 
-	/**
-	 * Encode an object to the binary format used in Flash files.
-	 * 
-	 * @param coder
-	 *            an Encoder object that is used to encode the object to its
-	 *            binary form.
-	 * 
-	 * @param context
-	 *            an Context that allows information to be passed between
-	 *            objects to control how they are encoded.
-	 */
-	void encode(FLVEncoder coder) throws CoderException;
+    /**
+     * Encode an object to the binary format used in Flash files.
+     * 
+     * @param coder
+     *            an Encoder object that is used to encode the object to its
+     *            binary form.
+     * 
+     * @param context
+     *            an Context that allows information to be passed between
+     *            objects to control how they are encoded.
+     */
+    void encode(FLVEncoder coder) throws CoderException;
 }

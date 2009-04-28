@@ -33,8 +33,8 @@ package com.flagstone.transform.datatype;
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFDecoder;
+import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFEncoder;
 
 /**
@@ -55,152 +55,152 @@ import com.flagstone.transform.coder.SWFEncoder;
 // TODO(doc) Check comments for all methods
 public final class Color implements SWFEncodeable {
 
-	private static final String FORMAT = "Color: { red=%d; green=%d; blue=%d; alpha=%d }";
+    private static final String FORMAT = "Color: { red=%d; green=%d; blue=%d; alpha=%d }";
 
-	private final transient int red;
-	private final transient int green;
-	private final transient int blue;
-	private final transient int alpha;
+    private final transient int red;
+    private final transient int green;
+    private final transient int blue;
+    private final transient int alpha;
 
-	public Color(final SWFDecoder coder, final Context context)
-			throws CoderException {
-		red = coder.readByte();
-		green = coder.readByte();
-		blue = coder.readByte();
-		alpha = (context.getVariables().containsKey(Context.TRANSPARENT)) ? coder
-				.readByte()
-				: 255;
-	}
+    public Color(final SWFDecoder coder, final Context context)
+            throws CoderException {
+        red = coder.readByte();
+        green = coder.readByte();
+        blue = coder.readByte();
+        alpha = (context.getVariables().containsKey(Context.TRANSPARENT)) ? coder
+                .readByte()
+                : 255;
+    }
 
-	public Color(final int rgb) {
-		red = (rgb >>> 16) & 0x00FF;
-		green = (rgb >>> 8) & 0x00FF;
-		blue = rgb & 0x00FF;
-		alpha = 255;
-	}
+    public Color(final int rgb) {
+        red = (rgb >>> 16) & 0x00FF;
+        green = (rgb >>> 8) & 0x00FF;
+        blue = rgb & 0x00FF;
+        alpha = 255;
+    }
 
-	public Color(final int rgb, final int alpha) {
-		red = (rgb >>> 16) & 0x00FF;
-		green = (rgb >>> 8) & 0x00FF;
-		blue = rgb & 0x00FF;
-		this.alpha = alpha;
-	}
+    public Color(final int rgb, final int alpha) {
+        red = (rgb >>> 16) & 0x00FF;
+        green = (rgb >>> 8) & 0x00FF;
+        blue = rgb & 0x00FF;
+        this.alpha = alpha;
+    }
 
-	/**
-	 * Creates a Color object containing red, green and blue channels. The alpha
-	 * channel defaults to the value 255 - defining an opaque colour.
-	 * 
-	 * @param red
-	 *            value for the red channel, in the range 0..255.
-	 * @param green
-	 *            value for the green channel, in the range 0..255.
-	 * @param blue
-	 *            value for the blue channel, in the range 0..255.
-	 */
-	public Color(final int red, final int green, final int blue) {
-		this.red = checkLevel(red);
-		this.green = checkLevel(green);
-		this.blue = checkLevel(blue);
-		alpha = 255;
-	}
+    /**
+     * Creates a Color object containing red, green and blue channels. The alpha
+     * channel defaults to the value 255 - defining an opaque colour.
+     * 
+     * @param red
+     *            value for the red channel, in the range 0..255.
+     * @param green
+     *            value for the green channel, in the range 0..255.
+     * @param blue
+     *            value for the blue channel, in the range 0..255.
+     */
+    public Color(final int red, final int green, final int blue) {
+        this.red = checkLevel(red);
+        this.green = checkLevel(green);
+        this.blue = checkLevel(blue);
+        alpha = 255;
+    }
 
-	/**
-	 * Creates a transparent Color object containing red, green, blue and alpha
-	 * channels.
-	 * 
-	 * @param red
-	 *            value for the red channel, in the range 0..255.
-	 * @param green
-	 *            value for the green channel, in the range 0..255.
-	 * @param blue
-	 *            value for the blue channel, in the range 0..255.
-	 * @param alpha
-	 *            value for the alpha channel, in the range 0..255.
-	 */
-	public Color(final int red, final int green, final int blue, final int alpha) {
-		this.red = checkLevel(red);
-		this.green = checkLevel(green);
-		this.blue = checkLevel(blue);
-		this.alpha = checkLevel(alpha);
-	}
+    /**
+     * Creates a transparent Color object containing red, green, blue and alpha
+     * channels.
+     * 
+     * @param red
+     *            value for the red channel, in the range 0..255.
+     * @param green
+     *            value for the green channel, in the range 0..255.
+     * @param blue
+     *            value for the blue channel, in the range 0..255.
+     * @param alpha
+     *            value for the alpha channel, in the range 0..255.
+     */
+    public Color(final int red, final int green, final int blue, final int alpha) {
+        this.red = checkLevel(red);
+        this.green = checkLevel(green);
+        this.blue = checkLevel(blue);
+        this.alpha = checkLevel(alpha);
+    }
 
-	private int checkLevel(final int level) {
-		if (level < 0 || level > 255) {
-			throw new IllegalArgumentException(Strings.COLOR_RANGE);
-		}
-		return level;
-	}
+    private int checkLevel(final int level) {
+        if ((level < 0) || (level > 255)) {
+            throw new IllegalArgumentException(Strings.COLOR_RANGE);
+        }
+        return level;
+    }
 
-	/**
-	 * Returns the value for the red colour channel.
-	 */
-	public int getRed() {
-		return red;
-	}
+    /**
+     * Returns the value for the red colour channel.
+     */
+    public int getRed() {
+        return red;
+    }
 
-	/**
-	 * Returns the value for the green colour channel.
-	 */
-	public int getGreen() {
-		return green;
-	}
+    /**
+     * Returns the value for the green colour channel.
+     */
+    public int getGreen() {
+        return green;
+    }
 
-	/**
-	 * Returns the value for the blue colour channel.
-	 */
-	public int getBlue() {
-		return blue;
-	}
+    /**
+     * Returns the value for the blue colour channel.
+     */
+    public int getBlue() {
+        return blue;
+    }
 
-	/**
-	 * Returns the value for the alpha colour channel.
-	 */
-	public int getAlpha() {
-		return alpha;
-	}
+    /**
+     * Returns the value for the alpha colour channel.
+     */
+    public int getAlpha() {
+        return alpha;
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, red, green, blue, alpha);
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, red, green, blue, alpha);
+    }
 
-	@Override
-	public boolean equals(final Object object) {
-		boolean result;
-		Color color;
+    @Override
+    public boolean equals(final Object object) {
+        boolean result;
+        Color color;
 
-		if (object == null) {
-			result = false;
-		} else if (object == this) {
-			result = true;
-		} else if (object instanceof Color) {
-			color = (Color) object;
-			result = red == color.red && green == color.green
-					&& blue == color.blue && alpha == color.alpha;
-		} else {
-			result = false;
-		}
-		return result;
-	}
+        if (object == null) {
+            result = false;
+        } else if (object == this) {
+            result = true;
+        } else if (object instanceof Color) {
+            color = (Color) object;
+            result = (red == color.red) && (green == color.green)
+                    && (blue == color.blue) && (alpha == color.alpha);
+        } else {
+            result = false;
+        }
+        return result;
+    }
 
-	@Override
-	public int hashCode() {
-		return (((red * 31) + green) * 31 + blue) * 31 + alpha;
-	}
+    @Override
+    public int hashCode() {
+        return (((red * 31) + green) * 31 + blue) * 31 + alpha;
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		return (context.getVariables().containsKey(Context.TRANSPARENT)) ? 4
-				: 3;
-	}
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        return (context.getVariables().containsKey(Context.TRANSPARENT)) ? 4
+                : 3;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		coder.writeByte(red);
-		coder.writeByte(green);
-		coder.writeByte(blue);
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        coder.writeByte(red);
+        coder.writeByte(green);
+        coder.writeByte(blue);
 
-		if (context.getVariables().containsKey(Context.TRANSPARENT)) {
-			coder.writeByte(alpha);
-		}
-	}
+        if (context.getVariables().containsKey(Context.TRANSPARENT)) {
+            coder.writeByte(alpha);
+        }
+    }
 }

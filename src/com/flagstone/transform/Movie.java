@@ -33,6 +33,7 @@ package com.flagstone.transform;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,9 +44,10 @@ import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 import java.util.zip.InflaterInputStream;
 
+import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.DecoderRegistry;
 import com.flagstone.transform.coder.DefineTag;
-import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -79,465 +81,467 @@ import com.flagstone.transform.datatype.Bounds;
  */
 public final class Movie {
 
-	public enum Signature {
-		FWS, CWS
-	}
-
-	public enum Encoding {
-		ANSI, SJIS, UTF8
-	}
-
-	private static final String FORMAT = "Movie: { signature=%s; version=%d; frameSize=%s; frameRate=%f; objects=%s }";
-
-	private DecoderRegistry registry;
-	private int identifier;
-	private Encoding encoding;
-
-	private Signature signature;
-	private int version;
-	private Bounds frameSize;
-	private float frameRate;
-	private List<MovieTag> objects;
-
-	private transient int length;
-	private transient int frameCount;
-
-	public Movie() {
-		encoding = Encoding.UTF8;
-		signature = Signature.CWS;
-		version = 9;
-		objects = new ArrayList<MovieTag>();
-	}
-
-	public Movie(final Movie object) {
-
-		if (object.registry != null) {
-			registry = object.registry.copy();
-		}
-
-		identifier = object.identifier;
-		encoding = object.encoding;
-
-		signature = object.signature;
-		version = object.version;
-		frameSize = object.frameSize;
-		frameRate = object.frameRate;
-
-		objects = new ArrayList<MovieTag>(object.objects.size());
-
-		for (MovieTag tag : object.objects) {
-			objects.add(tag.copy());
-		}
-	}
-
-	/**
-	 * Sets the registry containing the object used to decode the different
-	 * types of object found in a movie.
-	 * 
-	 * @param registry
-	 */
-	public void setRegistry(final DecoderRegistry registry) {
-		this.registry = registry;
-	}
-
-	/**
-	 * Sets the initial value for the unique identifier assigned to definition
-	 * objects.
-	 * 
-	 * @param aValue
-	 *            an initial value for the unique identifier.
-	 */
-	public void setIdentifier(final int aValue) {
-		identifier = aValue;
-	}
-
-	/**
-	 * Sets the encoding scheme for strings encoded and decoded from Flash
-	 * files.
-	 */
-	public void setEncoding(final Encoding enc) {
-		encoding = enc;
-	}
-
-	/**
-	 * Returns a unique identifier that will be assigned to definition objects.
-	 * In order to reference objects that define items such as shapes, sounds,
-	 * etc. each must be assigned an identifier that is unique for a given
-	 * Movie.
-	 * 
-	 * When binary data is decoded into a sequence of objects, the Movie class
-	 * tracks each Define tag decoded, recording the highest value. If a new
-	 * Define tag is added to the array of decoded objects the identifier
-	 * assigned to the new tag will be guaranteed to be unique.
-	 * 
-	 * @return an unique identifier for objects that define shapes, sounds, etc.
-	 *         in a Flash file.
-	 */
-	public int identifier() {
-		return ++identifier;
-	}
-
-	/**
-	 * Returns the signature identifying that the movie contains Flash.
-	 */
-	public Signature getSignature() {
-		return signature;
-	}
-
-	/**
-	 * Sets the signature for the Flash data when it is encoded.
-	 */
-	public void setSignature(final Signature sig) {
-		signature = sig;
-	}
-
-	/**
-	 * Returns the number representing the version of Flash that the movie
-	 * represents.
-	 */
-	public int getVersion() {
-		return version;
-	}
-
-	/**
-	 * Sets the Flash version supported in this Movie. Note that there are no
-	 * restrictions on the objects that can be used in a coder. Using objects
-	 * that are not supported by an earlier version of the Flash file format may
-	 * cause the Player to not display the movie correctly or even crash the
-	 * Player.
-	 * 
-	 * @param aNumber
-	 *            the version of the Flash file format that this movie utilises.
-	 */
-	public void setVersion(final int aNumber) {
-		if (aNumber < 0) {
-			throw new IllegalArgumentException(Strings.NEGATIVE_NUMBER);
-		}
-		version = aNumber;
-	}
-
-	/**
-	 * Returns the bounding rectangle that defines the size of the player
-	 * screen.
-	 */
-	public Bounds getFrameSize() {
-		return frameSize;
-	}
-
-	/**
-	 * Sets the bounding rectangle that defines the size of the player screen.
-	 * The coordinates of the bounding rectangle are also used to define the
-	 * coordinate range. For example if a 400 x 400 pixel rectangle is defined,
-	 * specifying the values for the x and y coordinates the range -200 to 200
-	 * sets the centre of the screen at (0,0), if the x and y coordinates are
-	 * specified in the range 0 to 400 then the centre of the screen will be at
-	 * (200, 200).
-	 * 
-	 * @param aBounds
-	 *            the Bounds object that defines the frame size. Must not be
-	 *            null.
-	 */
-	public void setFrameSize(final Bounds aBounds) {
-		if (aBounds == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
-		}
-		frameSize = aBounds;
-	}
-
-	/**
-	 * Returns the number of frames played per second that the movie will be
-	 * displayed at.
-	 */
-	public float getFrameRate() {
-		return frameRate;
-	}
-
-	/**
-	 * Sets the number of frames played per second that the Player will display
-	 * the coder.
-	 * 
-	 * @param aNumber
-	 *            the number of frames per second that the movie is played.
-	 */
-	public void setFrameRate(final float aNumber) {
-		frameRate = aNumber;
-	}
-
-	/**
-	 * Returns the array of objects contained in the Movie.
-	 */
-	public List<MovieTag> getObjects() {
-		return objects;
-	}
-
-	/**
-	 * Sets the array of objects contained in the Movie.
-	 * 
-	 * @param anArray
-	 *            the array of objects that describe a coder. Must not be null.
-	 */
-	public void setObjects(final List<MovieTag> anArray) {
-		if (anArray == null) {
-			throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
-		}
-		objects = anArray;
-	}
-
-	/**
-	 * Adds the object to the Movie.
-	 * 
-	 * @param anObject
-	 *            the object to be added to the movie. Must not be null.
-	 */
-	public Movie add(final MovieTag anObject) {
-		if (anObject == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
-		}
-		objects.add(anObject);
-		return this;
-	}
-
-	/**
-	 * Decodes the contents of the specified file. An object for each tag
-	 * decoded from the file is placed in the Movie's object array in the order
-	 * they were decoded from the file. If an error occurs while reading and
-	 * parsing the file then an exception is thrown.
-	 * 
-	 * @param file
-	 *            the Flash file that will be parsed.
-	 * @throws FileNotFoundException
-	 *             - if an error occurs while reading the file.
-	 * @throws DataFormatException
-	 *             - if the file does not contain Flash data.
-	 * @throws CoderException
-	 *             - if an error occurs while decoding the file.
-	 * @throws IOException
-	 *             - if an I/O error occurs while reading the file.
-	 */
-	public void decodeFromFile(final File file) throws DataFormatException,
-			IOException {
-		final FileInputStream stream = new FileInputStream(file);
-
-		try {
-			decodeFromStream(stream);
-		} finally {
-			stream.close();
-		}
-	}
-
-	/**
-	 * Decodes the binary Flash data from an input stream. If an error occurs
-	 * while the data is being decoded an exception is thrown. The array of
-	 * objects in the Movie will contain the last tag successfully decoded.
-	 * 
-	 * @param stream
-	 *            an InputStream from which the objects will be decoded.
-	 * 
-	 * @throws DataFormatException
-	 *             if the file does not contain Flash data.
-	 * @throws IOException
-	 *             if an I/O error occurs while reading the file.
-	 * @throws CoderException
-	 *             if an error occurs while decoding the file.
-	 */
-	public void decodeFromStream(final InputStream stream)
-			throws DataFormatException, IOException {
-
-		byte[] buffer = new byte[8];
-		int bytesRead = stream.read(buffer);
-
-		if (buffer[1] != 0x57 || buffer[2] == 0x53) {
-			throw new DataFormatException(Strings.NOT_SWF_SIGNATURE);
-		}
-
-		if (buffer[0] == 0x43) {
-			signature = Signature.FWS;
-		} else if (buffer[0] == 0x46) {
-			signature = Signature.CWS;
-		} else {
-			throw new DataFormatException(Strings.NOT_SWF_SIGNATURE);
-		}
-
-		version = buffer[3] & 0x00FF;
-
-		length = buffer[4] & 0x00FF;
-		length |= (buffer[5] & 0x00FF) << 8;
-		length |= (buffer[6] & 0x00FF) << 16;
-		length |= (buffer[7] & 0x00FF) << 24;
-
-		final InputStream streamIn;
-
-		if (signature == Signature.CWS) {
-			streamIn = new InflaterInputStream(stream);
-		} else {
-			streamIn = new DataInputStream(stream);
-		}
-
-		if (!signature.equals("FWS")) {
-			throw new DataFormatException(Strings.NOT_SWF_SIGNATURE);
-		}
-
-		bytesRead += streamIn.read(buffer, 0, 2);
-
-		final int size = 4 + ((12 + ((buffer[0] & 0xF8) >> 1)) >>> 3);
-
-		buffer = Arrays.copyOf(buffer, size + 2);
-		bytesRead += streamIn.read(buffer, 2, size);
-
-		final SWFDecoder decoder = new SWFDecoder(buffer);
-		final Context context = new Context();
-		context.getVariables().put(Context.VERSION, version);
-
-		if (registry == null) {
-			context.setRegistry(DecoderRegistry.getDefault());
-		} else {
-			context.setRegistry(registry);
-		}
-
-		frameSize = new Bounds(decoder);
-		frameRate = decoder.readWord(2, true) / 256.0f;
-		frameCount = decoder.readWord(2, false);
-
-		buffer = new byte[length - size - 10];
-		streamIn.read(buffer);
-		decoder.setData(buffer);
-		decoder.setEncoding(encoding.toString());
-
-		final SWFFactory<MovieTag> factory = registry.getMovieDecoder();
-
-		if (factory == null) {
-			objects.add(new MovieData(decoder.getData()));
-		} else {
-			MovieTag object;
-
-			while (!decoder.eof()) {
-
-				object = factory.getObject(decoder, context);
-
-				if (object instanceof DefineTag) {
-					identifier = ((DefineTag) object).getIdentifier();
-				}
-
-				objects.add(object);
-			}
-		}
-	}
-
-	/**
-	 * Encodes the array of objects and writes the data to the specified file.
-	 * If an error occurs while encoding the file then an exception is thrown.
-	 * 
-	 * @param file
-	 *            the Flash file that the movie will be encoded to.
-	 * 
-	 * @throws FileNotFoundException
-	 *             - if an error occurs while opening the file.
-	 * @throws CoderException
-	 *             - if an error occurs while encoding the file.
-	 * @throws IOException
-	 *             - if an I/O error occurs while writing the file.
-	 * @throws DataFormatException
-	 *             if an error occurs when compressing the flash file.
-	 */
-	public void encodeToFile(final File file) throws IOException, DataFormatException {
-		final FileOutputStream stream = new FileOutputStream(file);
-
-		try {
-			stream.write(encode());
-		} finally {
-			stream.close();
-		}
-	}
-
-	/**
-	 * Returns the encoded representation of the array of objects that this
-	 * Movie contains. If an error occurs while encoding the file then an
-	 * exception is thrown.
-	 * 
-	 * @return the array of bytes representing the encoded objects.
-	 * @throws CoderException
-	 *             - if an error occurs while encoding the file.
-	 * @throws IOException
-	 *             - if an I/O error occurs while encoding the file.
-	 * @throws DataFormatException
-	 *             if an error occurs when compressing the flash file.
-	 */
-	public byte[] encode() throws DataFormatException, IOException {
-		final SWFEncoder coder = new SWFEncoder(0);
-		final Context context = new Context();
-
-		coder.setEncoding(encoding.toString());
-		context.getVariables().put(Context.VERSION, version);
-
-		prepareToEncode(coder, context);
-
-		coder.setData(length);
-
-		coder.writeString(signature.toString());
-		coder.adjustPointer(-8);
-		coder.writeByte(version);
-		coder.writeWord(length, 4);
-		frameSize.encode(coder, context);
-		coder.writeWord((int) (frameRate * 256), 2);
-		coder.writeWord(frameCount, 2);
-
-		for (MovieTag tag : objects) {
-			tag.encode(coder, context);
-		}
-		coder.writeWord(0, 2);
-
-		byte[] data = new byte[length];
-
-		if (signature == Signature.CWS) {
-			data = zip(coder.getData(), length);
-		} else {
-			data = coder.getData();
-		}
-		return data;
-	}
-
-	/**
-	 * Creates and returns a deep copy of this object.
-	 */
-	public Movie copy() {
-		return new Movie(this);
-	}
-
-	@Override
-	public String toString() {
-		return String.format(FORMAT, signature, version, frameSize, frameRate,
-				objects);
-	}
-
-	private int prepareToEncode(final SWFEncoder coder, final Context context) {
-		frameCount = 0;
-
-		length = 14; // Includes End
-		length += frameSize.prepareToEncode(coder, context);
-
-		for (MovieTag tag : objects) {
-			length += tag.prepareToEncode(coder, context);
-			if (tag instanceof ShowFrame) {
-				frameCount += 1;
-			}
-		}
-
-		return length;
-	}
-
-	private byte[] zip(final byte[] bytes, final int len) throws DataFormatException {
-		final Deflater deflater = new Deflater();
-		final byte[] data = new byte[len];
-
-		deflater.setInput(bytes, 8, len - 8);
-		deflater.finish();
-
-		final int bytesCompressed = deflater.deflate(data);
-		final byte[] compressedData = new byte[8 + bytesCompressed];
-
-		System.arraycopy(bytes, 0, compressedData, 0, 8);
-		System.arraycopy(data, 0, compressedData, 8, bytesCompressed);
-
-		return compressedData;
-	}
+    public enum Signature {
+        FWS, CWS
+    }
+
+    public enum Encoding {
+        ANSI, SJIS, UTF8
+    }
+
+    private static final String FORMAT = "Movie: { signature=%s; version=%d; frameSize=%s; frameRate=%f; objects=%s }";
+
+    private DecoderRegistry registry;
+    private int identifier;
+    private Encoding encoding;
+
+    private Signature signature;
+    private int version;
+    private Bounds frameSize;
+    private float frameRate;
+    private List<MovieTag> objects;
+
+    private transient int length;
+    private transient int frameCount;
+
+    public Movie() {
+        encoding = Encoding.UTF8;
+        signature = Signature.CWS;
+        version = 9;
+        objects = new ArrayList<MovieTag>();
+    }
+
+    public Movie(final Movie object) {
+
+        if (object.registry != null) {
+            registry = object.registry.copy();
+        }
+
+        identifier = object.identifier;
+        encoding = object.encoding;
+
+        signature = object.signature;
+        version = object.version;
+        frameSize = object.frameSize;
+        frameRate = object.frameRate;
+
+        objects = new ArrayList<MovieTag>(object.objects.size());
+
+        for (final MovieTag tag : object.objects) {
+            objects.add(tag.copy());
+        }
+    }
+
+    /**
+     * Sets the registry containing the object used to decode the different
+     * types of object found in a movie.
+     * 
+     * @param registry
+     */
+    public void setRegistry(final DecoderRegistry registry) {
+        this.registry = registry;
+    }
+
+    /**
+     * Sets the initial value for the unique identifier assigned to definition
+     * objects.
+     * 
+     * @param aValue
+     *            an initial value for the unique identifier.
+     */
+    public void setIdentifier(final int aValue) {
+        identifier = aValue;
+    }
+
+    /**
+     * Sets the encoding scheme for strings encoded and decoded from Flash
+     * files.
+     */
+    public void setEncoding(final Encoding enc) {
+        encoding = enc;
+    }
+
+    /**
+     * Returns a unique identifier that will be assigned to definition objects.
+     * In order to reference objects that define items such as shapes, sounds,
+     * etc. each must be assigned an identifier that is unique for a given
+     * Movie.
+     * 
+     * When binary data is decoded into a sequence of objects, the Movie class
+     * tracks each Define tag decoded, recording the highest value. If a new
+     * Define tag is added to the array of decoded objects the identifier
+     * assigned to the new tag will be guaranteed to be unique.
+     * 
+     * @return an unique identifier for objects that define shapes, sounds, etc.
+     *         in a Flash file.
+     */
+    public int identifier() {
+        return ++identifier;
+    }
+
+    /**
+     * Returns the signature identifying that the movie contains Flash.
+     */
+    public Signature getSignature() {
+        return signature;
+    }
+
+    /**
+     * Sets the signature for the Flash data when it is encoded.
+     */
+    public void setSignature(final Signature sig) {
+        signature = sig;
+    }
+
+    /**
+     * Returns the number representing the version of Flash that the movie
+     * represents.
+     */
+    public int getVersion() {
+        return version;
+    }
+
+    /**
+     * Sets the Flash version supported in this Movie. Note that there are no
+     * restrictions on the objects that can be used in a coder. Using objects
+     * that are not supported by an earlier version of the Flash file format may
+     * cause the Player to not display the movie correctly or even crash the
+     * Player.
+     * 
+     * @param aNumber
+     *            the version of the Flash file format that this movie utilises.
+     */
+    public void setVersion(final int aNumber) {
+        if (aNumber < 0) {
+            throw new IllegalArgumentException(Strings.NEGATIVE_NUMBER);
+        }
+        version = aNumber;
+    }
+
+    /**
+     * Returns the bounding rectangle that defines the size of the player
+     * screen.
+     */
+    public Bounds getFrameSize() {
+        return frameSize;
+    }
+
+    /**
+     * Sets the bounding rectangle that defines the size of the player screen.
+     * The coordinates of the bounding rectangle are also used to define the
+     * coordinate range. For example if a 400 x 400 pixel rectangle is defined,
+     * specifying the values for the x and y coordinates the range -200 to 200
+     * sets the centre of the screen at (0,0), if the x and y coordinates are
+     * specified in the range 0 to 400 then the centre of the screen will be at
+     * (200, 200).
+     * 
+     * @param aBounds
+     *            the Bounds object that defines the frame size. Must not be
+     *            null.
+     */
+    public void setFrameSize(final Bounds aBounds) {
+        if (aBounds == null) {
+            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+        }
+        frameSize = aBounds;
+    }
+
+    /**
+     * Returns the number of frames played per second that the movie will be
+     * displayed at.
+     */
+    public float getFrameRate() {
+        return frameRate;
+    }
+
+    /**
+     * Sets the number of frames played per second that the Player will display
+     * the coder.
+     * 
+     * @param aNumber
+     *            the number of frames per second that the movie is played.
+     */
+    public void setFrameRate(final float aNumber) {
+        frameRate = aNumber;
+    }
+
+    /**
+     * Returns the array of objects contained in the Movie.
+     */
+    public List<MovieTag> getObjects() {
+        return objects;
+    }
+
+    /**
+     * Sets the array of objects contained in the Movie.
+     * 
+     * @param anArray
+     *            the array of objects that describe a coder. Must not be null.
+     */
+    public void setObjects(final List<MovieTag> anArray) {
+        if (anArray == null) {
+            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+        }
+        objects = anArray;
+    }
+
+    /**
+     * Adds the object to the Movie.
+     * 
+     * @param anObject
+     *            the object to be added to the movie. Must not be null.
+     */
+    public Movie add(final MovieTag anObject) {
+        if (anObject == null) {
+            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+        }
+        objects.add(anObject);
+        return this;
+    }
+
+    /**
+     * Decodes the contents of the specified file. An object for each tag
+     * decoded from the file is placed in the Movie's object array in the order
+     * they were decoded from the file. If an error occurs while reading and
+     * parsing the file then an exception is thrown.
+     * 
+     * @param file
+     *            the Flash file that will be parsed.
+     * @throws FileNotFoundException
+     *             - if an error occurs while reading the file.
+     * @throws DataFormatException
+     *             - if the file does not contain Flash data.
+     * @throws CoderException
+     *             - if an error occurs while decoding the file.
+     * @throws IOException
+     *             - if an I/O error occurs while reading the file.
+     */
+    public void decodeFromFile(final File file) throws DataFormatException,
+            IOException {
+        final FileInputStream stream = new FileInputStream(file);
+
+        try {
+            decodeFromStream(stream);
+        } finally {
+            stream.close();
+        }
+    }
+
+    /**
+     * Decodes the binary Flash data from an input stream. If an error occurs
+     * while the data is being decoded an exception is thrown. The array of
+     * objects in the Movie will contain the last tag successfully decoded.
+     * 
+     * @param stream
+     *            an InputStream from which the objects will be decoded.
+     * 
+     * @throws DataFormatException
+     *             if the file does not contain Flash data.
+     * @throws IOException
+     *             if an I/O error occurs while reading the file.
+     * @throws CoderException
+     *             if an error occurs while decoding the file.
+     */
+    public void decodeFromStream(final InputStream stream)
+            throws DataFormatException, IOException {
+
+        byte[] buffer = new byte[8];
+        int bytesRead = stream.read(buffer);
+
+        if ((buffer[1] != 0x57) || (buffer[2] == 0x53)) {
+            throw new DataFormatException(Strings.NOT_SWF_SIGNATURE);
+        }
+
+        if (buffer[0] == 0x43) {
+            signature = Signature.FWS;
+        } else if (buffer[0] == 0x46) {
+            signature = Signature.CWS;
+        } else {
+            throw new DataFormatException(Strings.NOT_SWF_SIGNATURE);
+        }
+
+        version = buffer[3] & 0x00FF;
+
+        length = buffer[4] & 0x00FF;
+        length |= (buffer[5] & 0x00FF) << 8;
+        length |= (buffer[6] & 0x00FF) << 16;
+        length |= (buffer[7] & 0x00FF) << 24;
+
+        final InputStream streamIn;
+
+        if (signature == Signature.CWS) {
+            streamIn = new InflaterInputStream(stream);
+        } else {
+            streamIn = new DataInputStream(stream);
+        }
+
+        if (!signature.equals("FWS")) {
+            throw new DataFormatException(Strings.NOT_SWF_SIGNATURE);
+        }
+
+        bytesRead += streamIn.read(buffer, 0, 2);
+
+        final int size = 4 + ((12 + ((buffer[0] & 0xF8) >> 1)) >>> 3);
+
+        buffer = Arrays.copyOf(buffer, size + 2);
+        bytesRead += streamIn.read(buffer, 2, size);
+
+        final SWFDecoder decoder = new SWFDecoder(buffer);
+        final Context context = new Context();
+        context.getVariables().put(Context.VERSION, version);
+
+        if (registry == null) {
+            context.setRegistry(DecoderRegistry.getDefault());
+        } else {
+            context.setRegistry(registry);
+        }
+
+        frameSize = new Bounds(decoder);
+        frameRate = decoder.readWord(2, true) / 256.0f;
+        frameCount = decoder.readWord(2, false);
+
+        buffer = new byte[length - size - 10];
+        streamIn.read(buffer);
+        decoder.setData(buffer);
+        decoder.setEncoding(encoding.toString());
+
+        final SWFFactory<MovieTag> factory = registry.getMovieDecoder();
+
+        if (factory == null) {
+            objects.add(new MovieData(decoder.getData()));
+        } else {
+            MovieTag object;
+
+            while (!decoder.eof()) {
+
+                object = factory.getObject(decoder, context);
+
+                if (object instanceof DefineTag) {
+                    identifier = ((DefineTag) object).getIdentifier();
+                }
+
+                objects.add(object);
+            }
+        }
+    }
+
+    /**
+     * Encodes the array of objects and writes the data to the specified file.
+     * If an error occurs while encoding the file then an exception is thrown.
+     * 
+     * @param file
+     *            the Flash file that the movie will be encoded to.
+     * 
+     * @throws FileNotFoundException
+     *             - if an error occurs while opening the file.
+     * @throws CoderException
+     *             - if an error occurs while encoding the file.
+     * @throws IOException
+     *             - if an I/O error occurs while writing the file.
+     * @throws DataFormatException
+     *             if an error occurs when compressing the flash file.
+     */
+    public void encodeToFile(final File file) throws IOException,
+            DataFormatException {
+        final FileOutputStream stream = new FileOutputStream(file);
+
+        try {
+            stream.write(encode());
+        } finally {
+            stream.close();
+        }
+    }
+
+    /**
+     * Returns the encoded representation of the array of objects that this
+     * Movie contains. If an error occurs while encoding the file then an
+     * exception is thrown.
+     * 
+     * @return the array of bytes representing the encoded objects.
+     * @throws CoderException
+     *             - if an error occurs while encoding the file.
+     * @throws IOException
+     *             - if an I/O error occurs while encoding the file.
+     * @throws DataFormatException
+     *             if an error occurs when compressing the flash file.
+     */
+    public byte[] encode() throws DataFormatException, IOException {
+        final SWFEncoder coder = new SWFEncoder(0);
+        final Context context = new Context();
+
+        coder.setEncoding(encoding.toString());
+        context.getVariables().put(Context.VERSION, version);
+
+        prepareToEncode(coder, context);
+
+        coder.setData(length);
+
+        coder.writeString(signature.toString());
+        coder.adjustPointer(-8);
+        coder.writeByte(version);
+        coder.writeWord(length, 4);
+        frameSize.encode(coder, context);
+        coder.writeWord((int) (frameRate * 256), 2);
+        coder.writeWord(frameCount, 2);
+
+        for (final MovieTag tag : objects) {
+            tag.encode(coder, context);
+        }
+        coder.writeWord(0, 2);
+
+        byte[] data = new byte[length];
+
+        if (signature == Signature.CWS) {
+            data = zip(coder.getData(), length);
+        } else {
+            data = coder.getData();
+        }
+        return data;
+    }
+
+    /**
+     * Creates and returns a deep copy of this object.
+     */
+    public Movie copy() {
+        return new Movie(this);
+    }
+
+    @Override
+    public String toString() {
+        return String.format(FORMAT, signature, version, frameSize, frameRate,
+                objects);
+    }
+
+    private int prepareToEncode(final SWFEncoder coder, final Context context) {
+        frameCount = 0;
+
+        length = 14; // Includes End
+        length += frameSize.prepareToEncode(coder, context);
+
+        for (final MovieTag tag : objects) {
+            length += tag.prepareToEncode(coder, context);
+            if (tag instanceof ShowFrame) {
+                frameCount += 1;
+            }
+        }
+
+        return length;
+    }
+
+    private byte[] zip(final byte[] bytes, final int len)
+            throws DataFormatException {
+        final Deflater deflater = new Deflater();
+        final byte[] data = new byte[len];
+
+        deflater.setInput(bytes, 8, len - 8);
+        deflater.finish();
+
+        final int bytesCompressed = deflater.deflate(data);
+        final byte[] compressedData = new byte[8 + bytesCompressed];
+
+        System.arraycopy(bytes, 0, compressedData, 0, 8);
+        System.arraycopy(data, 0, compressedData, 8, bytesCompressed);
+
+        return compressedData;
+    }
 }

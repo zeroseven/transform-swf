@@ -40,17 +40,17 @@ import com.flagstone.transform.coder.ImageTag;
 
 public interface ImageDecoder {
 
-	void read(File file) throws FileNotFoundException, IOException,
-			DataFormatException;
+    void read(File file) throws FileNotFoundException, IOException,
+            DataFormatException;
 
-	void read(URL url) throws FileNotFoundException, IOException,
-			DataFormatException;
+    void read(URL url) throws FileNotFoundException, IOException,
+            DataFormatException;
 
-	int getWidth();
+    int getWidth();
 
-	int getHeight();
+    int getHeight();
 
-	byte[] getImage();
+    byte[] getImage();
 
-	ImageTag defineImage(int identifier);
+    ImageTag defineImage(int identifier);
 }

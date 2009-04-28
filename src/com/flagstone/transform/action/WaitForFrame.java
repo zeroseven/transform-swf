@@ -60,104 +60,104 @@ import com.flagstone.transform.coder.SWFEncoder;
  * @see If
  */
 public final class WaitForFrame implements Action {
-	private static final String FORMAT = "WaitForFrame: { frameNumber=%d; actionCount=%d }";
+    private static final String FORMAT = "WaitForFrame: { frameNumber=%d; actionCount=%d }";
 
-	private int frameNumber;
-	private int actionCount;
+    private int frameNumber;
+    private int actionCount;
 
-	// TODO(doc)
-	public WaitForFrame(final SWFDecoder coder) throws CoderException {
-		coder.readByte();
-		coder.readWord(2, false);
-		frameNumber = coder.readWord(2, false);
-		actionCount = coder.readByte();
-	}
+    // TODO(doc)
+    public WaitForFrame(final SWFDecoder coder) throws CoderException {
+        coder.readByte();
+        coder.readWord(2, false);
+        frameNumber = coder.readWord(2, false);
+        actionCount = coder.readByte();
+    }
 
-	/**
-	 * Creates a WaitForFrame object with the specified frame number and the
-	 * number of actions that will be executed when the frame is loaded.
-	 * 
-	 * @param aFrameNumber
-	 *            the number of the frame to wait for. Must be in the range
-	 *            1..65535.
-	 * @param anActionCount
-	 *            the number (not bytes) of actions to execute. Must be in the
-	 *            range 0..255.
-	 */
-	public WaitForFrame(final int aFrameNumber, final int anActionCount) {
-		setFrameNumber(aFrameNumber);
-		setActionCount(anActionCount);
-	}
+    /**
+     * Creates a WaitForFrame object with the specified frame number and the
+     * number of actions that will be executed when the frame is loaded.
+     * 
+     * @param aFrameNumber
+     *            the number of the frame to wait for. Must be in the range
+     *            1..65535.
+     * @param anActionCount
+     *            the number (not bytes) of actions to execute. Must be in the
+     *            range 0..255.
+     */
+    public WaitForFrame(final int aFrameNumber, final int anActionCount) {
+        setFrameNumber(aFrameNumber);
+        setActionCount(anActionCount);
+    }
 
-	// TODO(doc)
-	public WaitForFrame(final WaitForFrame object) {
-		frameNumber = object.frameNumber;
-		actionCount = object.actionCount;
-	}
+    // TODO(doc)
+    public WaitForFrame(final WaitForFrame object) {
+        frameNumber = object.frameNumber;
+        actionCount = object.actionCount;
+    }
 
-	/**
-	 * Returns the frame number.
-	 */
-	public int getFrameNumber() {
-		return frameNumber;
-	}
+    /**
+     * Returns the frame number.
+     */
+    public int getFrameNumber() {
+        return frameNumber;
+    }
 
-	/**
-	 * Returns the number of actions that will be executed when the specified
-	 * frame is loaded.
-	 */
-	public int getActionCount() {
-		return actionCount;
-	}
+    /**
+     * Returns the number of actions that will be executed when the specified
+     * frame is loaded.
+     */
+    public int getActionCount() {
+        return actionCount;
+    }
 
-	/**
-	 * Sets the frame number.
-	 * 
-	 * @param aNumber
-	 *            the number of the frame to wait for. Must be in the range
-	 *            1..65535.
-	 */
-	public void setFrameNumber(final int aNumber) {
-		if (aNumber < 1 || aNumber > 65535) {
-			throw new IllegalArgumentException(Strings.FRAME_RANGE);
-		}
-		frameNumber = aNumber;
-	}
+    /**
+     * Sets the frame number.
+     * 
+     * @param aNumber
+     *            the number of the frame to wait for. Must be in the range
+     *            1..65535.
+     */
+    public void setFrameNumber(final int aNumber) {
+        if ((aNumber < 1) || (aNumber > 65535)) {
+            throw new IllegalArgumentException(Strings.FRAME_RANGE);
+        }
+        frameNumber = aNumber;
+    }
 
-	/**
-	 * Sets the number of actions to execute if the frame has been loaded.
-	 * Unlike other actions it is the number of actions that are specified not
-	 * the number of bytes in memory they occupy.
-	 * 
-	 * @param aNumber
-	 *            the number of actions to execute. Must be in the range 0..255.
-	 */
-	public void setActionCount(final int aNumber) {
-		if (aNumber < 0 || aNumber > 255) {
-			throw new IllegalArgumentException(
-					"Number of actions must be in the range 0..255.");
-		}
-		actionCount = aNumber;
-	}
+    /**
+     * Sets the number of actions to execute if the frame has been loaded.
+     * Unlike other actions it is the number of actions that are specified not
+     * the number of bytes in memory they occupy.
+     * 
+     * @param aNumber
+     *            the number of actions to execute. Must be in the range 0..255.
+     */
+    public void setActionCount(final int aNumber) {
+        if ((aNumber < 0) || (aNumber > 255)) {
+            throw new IllegalArgumentException(
+                    "Number of actions must be in the range 0..255.");
+        }
+        actionCount = aNumber;
+    }
 
-	public WaitForFrame copy() {
-		return new WaitForFrame(this);
-	}
+    public WaitForFrame copy() {
+        return new WaitForFrame(this);
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, frameNumber, actionCount);
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, frameNumber, actionCount);
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		return 6;
-	}
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        return 6;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		coder.writeByte(ActionTypes.WAIT_FOR_FRAME);
-		coder.writeWord(3, 2);
-		coder.writeWord(frameNumber, 2);
-		coder.writeByte(actionCount);
-	}
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        coder.writeByte(ActionTypes.WAIT_FOR_FRAME);
+        coder.writeWord(3, 2);
+        coder.writeWord(frameNumber, 2);
+        coder.writeByte(actionCount);
+    }
 }

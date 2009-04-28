@@ -56,99 +56,98 @@ import com.flagstone.transform.coder.SWFEncoder;
  * @see SoundStreamHead2
  */
 public final class SoundStreamBlock implements MovieTag {
-	private static final String FORMAT = "SoundStreamBlock: { soundData=%d }";
+    private static final String FORMAT = "SoundStreamBlock: { soundData=%d }";
 
-	private byte[] soundData;
+    private byte[] soundData;
 
-	private transient int length;
+    private transient int length;
 
-	// TODO(doc)
-	public SoundStreamBlock(final SWFDecoder coder)
-			throws CoderException {
-		final int start = coder.getPointer();
-		length = coder.readWord(2, false) & 0x3F;
+    // TODO(doc)
+    public SoundStreamBlock(final SWFDecoder coder) throws CoderException {
+        final int start = coder.getPointer();
+        length = coder.readWord(2, false) & 0x3F;
 
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
-		final int end = coder.getPointer() + (length << 3);
+        if (length == 0x3F) {
+            length = coder.readWord(4, false);
+        }
+        final int end = coder.getPointer() + (length << 3);
 
-		soundData = coder.readBytes(new byte[length]);
+        soundData = coder.readBytes(new byte[length]);
 
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
+        if (coder.getPointer() != end) {
+            throw new CoderException(getClass().getName(), start >> 3, length,
+                    (coder.getPointer() - end) >> 3);
+        }
+    }
 
-	/**
-	 * Creates a SoundStreamBlock specifying the sound data in the format
-	 * defined by a preceding SoundStreamHead or SoundStreamHead2 object.
-	 * 
-	 * @param bytes
-	 *            an array of bytes containing the sound data. Must not be null.
-	 */
-	public SoundStreamBlock(final byte[] bytes) {
-		setSoundData(bytes);
-	}
+    /**
+     * Creates a SoundStreamBlock specifying the sound data in the format
+     * defined by a preceding SoundStreamHead or SoundStreamHead2 object.
+     * 
+     * @param bytes
+     *            an array of bytes containing the sound data. Must not be null.
+     */
+    public SoundStreamBlock(final byte[] bytes) {
+        setSoundData(bytes);
+    }
 
-	// TODO(doc)
-	public SoundStreamBlock(final SoundStreamBlock object) {
-		soundData = Arrays.copyOf(object.soundData, object.soundData.length);
-	}
+    // TODO(doc)
+    public SoundStreamBlock(final SoundStreamBlock object) {
+        soundData = Arrays.copyOf(object.soundData, object.soundData.length);
+    }
 
-	/**
-	 * Returns the sound data in the format defined by a preceding
-	 * SoundStreamHead or SoundStreamHead2 object.
-	 */
-	public byte[] getSoundData() {
-		return soundData;
-	}
+    /**
+     * Returns the sound data in the format defined by a preceding
+     * SoundStreamHead or SoundStreamHead2 object.
+     */
+    public byte[] getSoundData() {
+        return soundData;
+    }
 
-	/**
-	 * Sets the sound data.
-	 * 
-	 * @param bytes
-	 *            an array of bytes containing the sound data. Must not be null.
-	 */
-	public void setSoundData(final byte[] bytes) {
-		if (bytes == null) {
-			throw new IllegalArgumentException(Strings.DATA_IS_NULL);
-		}
-		soundData = bytes;
-	}
+    /**
+     * Sets the sound data.
+     * 
+     * @param bytes
+     *            an array of bytes containing the sound data. Must not be null.
+     */
+    public void setSoundData(final byte[] bytes) {
+        if (bytes == null) {
+            throw new IllegalArgumentException(Strings.DATA_IS_NULL);
+        }
+        soundData = bytes;
+    }
 
-	public SoundStreamBlock copy() {
-		return new SoundStreamBlock(this);
-	}
+    public SoundStreamBlock copy() {
+        return new SoundStreamBlock(this);
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, soundData.length);
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, soundData.length);
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		length = soundData.length;
-		return (length > 62 ? 6 : 2) + length;
-	}
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        length = soundData.length;
+        return (length > 62 ? 6 : 2) + length;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		final int start = coder.getPointer();
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        final int start = coder.getPointer();
 
-		if (length >= 63) {
-			coder.writeWord((MovieTypes.SOUND_STREAM_BLOCK << 6) | 0x3F, 2);
-			coder.writeWord(length, 4);
-		} else {
-			coder.writeWord((MovieTypes.SOUND_STREAM_BLOCK << 6) | length, 2);
-		}
-		final int end = coder.getPointer() + (length << 3);
+        if (length >= 63) {
+            coder.writeWord((MovieTypes.SOUND_STREAM_BLOCK << 6) | 0x3F, 2);
+            coder.writeWord(length, 4);
+        } else {
+            coder.writeWord((MovieTypes.SOUND_STREAM_BLOCK << 6) | length, 2);
+        }
+        final int end = coder.getPointer() + (length << 3);
 
-		coder.writeBytes(soundData);
+        coder.writeBytes(soundData);
 
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
+        if (coder.getPointer() != end) {
+            throw new CoderException(getClass().getName(), start >> 3, length,
+                    (coder.getPointer() - end) >> 3);
+        }
+    }
 }

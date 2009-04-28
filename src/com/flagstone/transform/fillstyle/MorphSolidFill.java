@@ -48,96 +48,96 @@ import com.flagstone.transform.shape.DefineMorphShape;
  */
 public final class MorphSolidFill implements FillStyle {
 
-	private static final String FORMAT = "MorphSolidFill: { start=%s; end=%s}";
+    private static final String FORMAT = "MorphSolidFill: { start=%s; end=%s}";
 
-	private Color startColor;
-	private Color endColor;
+    private Color startColor;
+    private Color endColor;
 
-	// TODO(doc)
-	public MorphSolidFill(final SWFDecoder coder, final Context context)
-			throws CoderException {
-		coder.adjustPointer(8);
-		startColor = new Color(coder, context);
-		endColor = new Color(coder, context);
-	}
+    // TODO(doc)
+    public MorphSolidFill(final SWFDecoder coder, final Context context)
+            throws CoderException {
+        coder.adjustPointer(8);
+        startColor = new Color(coder, context);
+        endColor = new Color(coder, context);
+    }
 
-	/**
-	 * Creates a MorphSolidFill object specifying the starting and ending
-	 * colours.
-	 * 
-	 * @param start
-	 *            the colour at the start of the morphing process.
-	 * @param end
-	 *            the colour at the end of the morphing process.
-	 */
-	public MorphSolidFill(final Color start, final Color end) {
-		setStartColor(start);
-		setEndColor(end);
-	}
+    /**
+     * Creates a MorphSolidFill object specifying the starting and ending
+     * colours.
+     * 
+     * @param start
+     *            the colour at the start of the morphing process.
+     * @param end
+     *            the colour at the end of the morphing process.
+     */
+    public MorphSolidFill(final Color start, final Color end) {
+        setStartColor(start);
+        setEndColor(end);
+    }
 
-	// TODO(doc)
-	public MorphSolidFill(final MorphSolidFill object) {
-		startColor = object.startColor;
-		endColor = object.endColor;
-	}
+    // TODO(doc)
+    public MorphSolidFill(final MorphSolidFill object) {
+        startColor = object.startColor;
+        endColor = object.endColor;
+    }
 
-	/**
-	 * Returns the colour at the start of the morphing process.
-	 */
-	public Color getStartColor() {
-		return startColor;
-	}
+    /**
+     * Returns the colour at the start of the morphing process.
+     */
+    public Color getStartColor() {
+        return startColor;
+    }
 
-	/**
-	 * Returns the colour at the end of the morphing process.
-	 */
-	public Color getEndColor() {
-		return endColor;
-	}
+    /**
+     * Returns the colour at the end of the morphing process.
+     */
+    public Color getEndColor() {
+        return endColor;
+    }
 
-	/**
-	 * Sets the colour at the start of the morphing process.
-	 * 
-	 * @param aColor
-	 *            the start colour. Must not be null.
-	 */
-	public void setStartColor(final Color aColor) {
-		if (aColor == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
-		}
-		startColor = aColor;
-	}
+    /**
+     * Sets the colour at the start of the morphing process.
+     * 
+     * @param aColor
+     *            the start colour. Must not be null.
+     */
+    public void setStartColor(final Color aColor) {
+        if (aColor == null) {
+            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+        }
+        startColor = aColor;
+    }
 
-	/**
-	 * Sets the colour at the end of the morphing process.
-	 * 
-	 * @param aColor
-	 *            the end colour. Must not be null.
-	 */
-	public void setEndColor(final Color aColor) {
-		if (aColor == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
-		}
-		endColor = aColor;
-	}
+    /**
+     * Sets the colour at the end of the morphing process.
+     * 
+     * @param aColor
+     *            the end colour. Must not be null.
+     */
+    public void setEndColor(final Color aColor) {
+        if (aColor == null) {
+            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+        }
+        endColor = aColor;
+    }
 
-	public MorphSolidFill copy() {
-		return new MorphSolidFill(this);
-	}
+    public MorphSolidFill copy() {
+        return new MorphSolidFill(this);
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, startColor, endColor);
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, startColor, endColor);
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		return 9;
-	}
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        return 9;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		coder.writeByte(0);
-		startColor.encode(coder, context);
-		endColor.encode(coder, context);
-	}
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        coder.writeByte(0);
+        startColor.encode(coder, context);
+        endColor.encode(coder, context);
+    }
 }

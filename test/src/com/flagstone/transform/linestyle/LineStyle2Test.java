@@ -29,14 +29,14 @@
  */
 package com.flagstone.transform.linestyle;
 
-import org.junit.Ignore;
-import org.junit.Test;
-
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertArrayEquals;
+
+import org.junit.Ignore;
+import org.junit.Test;
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
@@ -44,56 +44,54 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.Color;
 
-
-
 public final class LineStyle2Test {
 
-	private static transient final int width = 1;
-	private transient final Color color = new Color(2, 3, 4);
+    private static transient final int width = 1;
+    private transient final Color color = new Color(2, 3, 4);
 
-	private transient LineStyle2 fixture;
+    private transient LineStyle2 fixture;
 
-	private transient final byte[] encoded = new byte[] { 0x01, 0x00, 0x02,
-			0x03, 0x04 };
+    private transient final byte[] encoded = new byte[] { 0x01, 0x00, 0x02,
+            0x03, 0x04 };
 
-	@Test
-	@Ignore
-	public void checkCopy() {
-		fixture = new LineStyle2(width, color);
-		final LineStyle2 copy = fixture.copy();
+    @Test
+    @Ignore
+    public void checkCopy() {
+        fixture = new LineStyle2(width, color);
+        final LineStyle2 copy = fixture.copy();
 
-		assertNotSame(fixture, copy);
-		assertSame(fixture.getColor(), copy.getColor());
-		assertEquals(fixture.toString(), copy.toString());
-	}
+        assertNotSame(fixture, copy);
+        assertSame(fixture.getColor(), copy.getColor());
+        assertEquals(fixture.toString(), copy.toString());
+    }
 
-	@Test
-	@Ignore
-	public void encode() throws CoderException {
-		final SWFEncoder encoder = new SWFEncoder(encoded.length);
-		final Context context = new Context();
+    @Test
+    @Ignore
+    public void encode() throws CoderException {
+        final SWFEncoder encoder = new SWFEncoder(encoded.length);
+        final Context context = new Context();
 
-		fixture = new LineStyle2(width, color);
-		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
-		fixture.encode(encoder, context);
+        fixture = new LineStyle2(width, color);
+        assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
+        fixture.encode(encoder, context);
 
-		assertTrue(encoder.eof());
-		assertArrayEquals(encoded, encoder.getData());
-	}
+        assertTrue(encoder.eof());
+        assertArrayEquals(encoded, encoder.getData());
+    }
 
-	@Test
-	@Ignore
-	public void decode() throws CoderException {
-		final SWFDecoder decoder = new SWFDecoder(encoded);
-		final Context context = new Context();
+    @Test
+    @Ignore
+    public void decode() throws CoderException {
+        final SWFDecoder decoder = new SWFDecoder(encoded);
+        final Context context = new Context();
 
-		fixture = new LineStyle2(decoder, context);
+        fixture = new LineStyle2(decoder, context);
 
-		assertTrue(decoder.eof());
-		assertEquals(width, fixture.getWidth());
-		assertEquals(color.getRed(), fixture.getColor().getRed());
-		assertEquals(color.getGreen(), fixture.getColor().getGreen());
-		assertEquals(color.getBlue(), fixture.getColor().getBlue());
-		assertEquals(color.getAlpha(), fixture.getColor().getAlpha());
-	}
+        assertTrue(decoder.eof());
+        assertEquals(width, fixture.getWidth());
+        assertEquals(color.getRed(), fixture.getColor().getRed());
+        assertEquals(color.getGreen(), fixture.getColor().getGreen());
+        assertEquals(color.getBlue(), fixture.getColor().getBlue());
+        assertEquals(color.getAlpha(), fixture.getColor().getAlpha());
+    }
 }

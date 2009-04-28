@@ -51,109 +51,109 @@ import com.flagstone.transform.coder.SWFEncoder;
  */
 public final class LimitScript implements MovieTag {
 
-	private static final String FORMAT = "LimitScript: { depth=%d; timeout=%d }";
+    private static final String FORMAT = "LimitScript: { depth=%d; timeout=%d }";
 
-	private int depth;
-	private int timeout;
+    private int depth;
+    private int timeout;
 
-	// TODO(doc)
-	public LimitScript(final SWFDecoder coder) throws CoderException {
+    // TODO(doc)
+    public LimitScript(final SWFDecoder coder) throws CoderException {
 
-		if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
-			coder.readWord(4, false);
-		}
+        if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
+            coder.readWord(4, false);
+        }
 
-		depth = coder.readWord(2, false);
-		timeout = coder.readWord(2, false);
-	}
+        depth = coder.readWord(2, false);
+        timeout = coder.readWord(2, false);
+    }
 
-	/**
-	 * Creates a LimitScript object that limits the recursion depth to
-	 * <em>depth</em> levels and specifies that any sequence of actions will
-	 * timeout after <em>timeout</em> seconds.
-	 * 
-	 * @param depth
-	 *            the maximum depth a sequence of actions can recurse to. Must
-	 *            be in the range 0..65535.
-	 * @param timeout
-	 *            the time in seconds that a sequence of actions is allowed to
-	 *            execute before the Flash Player displays a dialog box asking
-	 *            whether the script should be terminated. Must be in the range
-	 *            0..65535.
-	 */
-	public LimitScript(final int depth, final int timeout) {
-		setDepth(depth);
-		setTimeout(timeout);
-	}
+    /**
+     * Creates a LimitScript object that limits the recursion depth to
+     * <em>depth</em> levels and specifies that any sequence of actions will
+     * timeout after <em>timeout</em> seconds.
+     * 
+     * @param depth
+     *            the maximum depth a sequence of actions can recurse to. Must
+     *            be in the range 0..65535.
+     * @param timeout
+     *            the time in seconds that a sequence of actions is allowed to
+     *            execute before the Flash Player displays a dialog box asking
+     *            whether the script should be terminated. Must be in the range
+     *            0..65535.
+     */
+    public LimitScript(final int depth, final int timeout) {
+        setDepth(depth);
+        setTimeout(timeout);
+    }
 
-	public LimitScript(final LimitScript object) {
-		depth = object.depth;
-		timeout = object.timeout;
-	}
+    public LimitScript(final LimitScript object) {
+        depth = object.depth;
+        timeout = object.timeout;
+    }
 
-	/**
-	 * Returns the maximum recursion level.
-	 */
-	public int getDepth() {
-		return depth;
-	}
+    /**
+     * Returns the maximum recursion level.
+     */
+    public int getDepth() {
+        return depth;
+    }
 
-	/**
-	 * Sets the maximum recursion level.
-	 * 
-	 * @param depth
-	 *            the maximum depth a sequence of actions can recurse to. Must
-	 *            be in the range 0..65535.
-	 */
-	public void setDepth(final int depth) {
-		if (depth < 0 || depth > 65535) {
-			throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
-		}
-		this.depth = depth;
-	}
+    /**
+     * Sets the maximum recursion level.
+     * 
+     * @param depth
+     *            the maximum depth a sequence of actions can recurse to. Must
+     *            be in the range 0..65535.
+     */
+    public void setDepth(final int depth) {
+        if ((depth < 0) || (depth > 65535)) {
+            throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
+        }
+        this.depth = depth;
+    }
 
-	/**
-	 * Returns the maximum time a sequence of actions will execute before the
-	 * Flash Player present a dialog box asking whether the script should be
-	 * terminated.
-	 */
-	public int getTimeout() {
-		return timeout;
-	}
+    /**
+     * Returns the maximum time a sequence of actions will execute before the
+     * Flash Player present a dialog box asking whether the script should be
+     * terminated.
+     */
+    public int getTimeout() {
+        return timeout;
+    }
 
-	/**
-	 * Sets the maximum time a sequence of actions will execute before the Flash
-	 * Player present a dialog box asking whether the script should be
-	 * terminated.
-	 * 
-	 * @param time
-	 *            the time in seconds that a sequence of actions is allowed to
-	 *            execute. Must be in the range 0..65535.
-	 */
-	public void setTimeout(final int time) {
-		if (time < 0 || time > 65535) {
-			throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
-		}
-		timeout = time;
-	}
+    /**
+     * Sets the maximum time a sequence of actions will execute before the Flash
+     * Player present a dialog box asking whether the script should be
+     * terminated.
+     * 
+     * @param time
+     *            the time in seconds that a sequence of actions is allowed to
+     *            execute. Must be in the range 0..65535.
+     */
+    public void setTimeout(final int time) {
+        if ((time < 0) || (time > 65535)) {
+            throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
+        }
+        timeout = time;
+    }
 
-	public LimitScript copy() {
-		return new LimitScript(this);
-	}
+    public LimitScript copy() {
+        return new LimitScript(this);
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, depth, timeout);
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, depth, timeout);
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		return 6;
-	}
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        return 6;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		coder.writeWord((MovieTypes.LIMIT_SCRIPT << 6) | 4, 2);
-		coder.writeWord(depth, 2);
-		coder.writeWord(timeout, 2);
-	}
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        coder.writeWord((MovieTypes.LIMIT_SCRIPT << 6) | 4, 2);
+        coder.writeWord(depth, 2);
+        coder.writeWord(timeout, 2);
+    }
 }

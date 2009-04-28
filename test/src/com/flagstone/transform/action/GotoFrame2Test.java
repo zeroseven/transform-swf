@@ -29,12 +29,12 @@
  */
 package com.flagstone.transform.action;
 
-import org.junit.Test;
-
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
 
 import com.flagstone.transform.coder.ActionTypes;
 import com.flagstone.transform.coder.CoderException;
@@ -44,109 +44,109 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 public final class GotoFrame2Test {
 
-	private static transient final int type = ActionTypes.GOTO_FRAME_2;
-	private static transient final boolean play = true;
-	private static transient final int offset = 1;
+    private static transient final int type = ActionTypes.GOTO_FRAME_2;
+    private static transient final boolean play = true;
+    private static transient final int offset = 1;
 
-	private transient GotoFrame2 fixture;
+    private transient GotoFrame2 fixture;
 
-	private transient final byte[] encoded = new byte[] { (byte) type, 0x03,
-			0x00, 0x03, 0x01, 0x00 };
+    private transient final byte[] encoded = new byte[] { (byte) type, 0x03,
+            0x00, 0x03, 0x01, 0x00 };
 
-	private transient final byte[] stop = new byte[] { (byte) type, 0x01, 0x00,
-			0x00 };
+    private transient final byte[] stop = new byte[] { (byte) type, 0x01, 0x00,
+            0x00 };
 
-	private transient final byte[] noOffset = new byte[] { (byte) type, 0x01,
-			0x00, 0x01 };
+    private transient final byte[] noOffset = new byte[] { (byte) type, 0x01,
+            0x00, 0x01 };
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAccessorForIdentifierWithLowerBound() {
-		fixture = new GotoFrame2(-1, play);
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkAccessorForIdentifierWithLowerBound() {
+        fixture = new GotoFrame2(-1, play);
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAccessorForIdentifierWithUpperBound() {
-		fixture = new GotoFrame2(65536, play);
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkAccessorForIdentifierWithUpperBound() {
+        fixture = new GotoFrame2(65536, play);
+    }
 
-	@Test
-	public void checkCopy() {
-		fixture = new GotoFrame2(offset, play);
-		final GotoFrame2 copy = fixture.copy();
+    @Test
+    public void checkCopy() {
+        fixture = new GotoFrame2(offset, play);
+        final GotoFrame2 copy = fixture.copy();
 
-		assertNotSame(fixture, copy);
-		assertEquals(fixture.toString(), copy.toString());
-	}
+        assertNotSame(fixture, copy);
+        assertEquals(fixture.toString(), copy.toString());
+    }
 
-	@Test
-	public void encode() throws CoderException {
-		final SWFEncoder encoder = new SWFEncoder(encoded.length);
-		final Context context = new Context();
+    @Test
+    public void encode() throws CoderException {
+        final SWFEncoder encoder = new SWFEncoder(encoded.length);
+        final Context context = new Context();
 
-		fixture = new GotoFrame2(offset, play);
-		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
-		fixture.encode(encoder, context);
+        fixture = new GotoFrame2(offset, play);
+        assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
+        fixture.encode(encoder, context);
 
-		assertTrue(encoder.eof());
-		assertArrayEquals(encoded, encoder.getData());
-	}
+        assertTrue(encoder.eof());
+        assertArrayEquals(encoded, encoder.getData());
+    }
 
-	@Test
-	public void encodeWithNoOffset() throws CoderException {
-		final SWFEncoder encoder = new SWFEncoder(noOffset.length);
-		final Context context = new Context();
+    @Test
+    public void encodeWithNoOffset() throws CoderException {
+        final SWFEncoder encoder = new SWFEncoder(noOffset.length);
+        final Context context = new Context();
 
-		fixture = new GotoFrame2(0, play);
-		assertEquals(noOffset.length, fixture.prepareToEncode(encoder, context));
-		fixture.encode(encoder, context);
+        fixture = new GotoFrame2(0, play);
+        assertEquals(noOffset.length, fixture.prepareToEncode(encoder, context));
+        fixture.encode(encoder, context);
 
-		assertTrue(encoder.eof());
-		assertArrayEquals(noOffset, encoder.getData());
-	}
+        assertTrue(encoder.eof());
+        assertArrayEquals(noOffset, encoder.getData());
+    }
 
-	@Test
-	public void encodeWithPlaySetToFalse() throws CoderException {
-		final SWFEncoder encoder = new SWFEncoder(stop.length);
-		final Context context = new Context();
+    @Test
+    public void encodeWithPlaySetToFalse() throws CoderException {
+        final SWFEncoder encoder = new SWFEncoder(stop.length);
+        final Context context = new Context();
 
-		fixture = new GotoFrame2(0, false);
-		assertEquals(stop.length, fixture.prepareToEncode(encoder, context));
-		fixture.encode(encoder, context);
+        fixture = new GotoFrame2(0, false);
+        assertEquals(stop.length, fixture.prepareToEncode(encoder, context));
+        fixture.encode(encoder, context);
 
-		assertTrue(encoder.eof());
-		assertArrayEquals(stop, encoder.getData());
-	}
+        assertTrue(encoder.eof());
+        assertArrayEquals(stop, encoder.getData());
+    }
 
-	@Test
-	public void decode() throws CoderException {
-		final SWFDecoder decoder = new SWFDecoder(encoded);
+    @Test
+    public void decode() throws CoderException {
+        final SWFDecoder decoder = new SWFDecoder(encoded);
 
-		fixture = new GotoFrame2(decoder);
+        fixture = new GotoFrame2(decoder);
 
-		assertTrue(decoder.eof());
-		assertEquals(offset, fixture.getFrameOffset());
-		assertEquals(play, fixture.isPlay());
-	}
+        assertTrue(decoder.eof());
+        assertEquals(offset, fixture.getFrameOffset());
+        assertEquals(play, fixture.isPlay());
+    }
 
-	@Test
-	public void decodeWithNoOffset() throws CoderException {
-		final SWFDecoder decoder = new SWFDecoder(noOffset);
+    @Test
+    public void decodeWithNoOffset() throws CoderException {
+        final SWFDecoder decoder = new SWFDecoder(noOffset);
 
-		fixture = new GotoFrame2(decoder);
+        fixture = new GotoFrame2(decoder);
 
-		assertTrue(decoder.eof());
-		assertEquals(0, fixture.getFrameOffset());
-		assertEquals(play, fixture.isPlay());
-	}
+        assertTrue(decoder.eof());
+        assertEquals(0, fixture.getFrameOffset());
+        assertEquals(play, fixture.isPlay());
+    }
 
-	@Test
-	public void decodeWithPlaySetToFalse() throws CoderException {
-		final SWFDecoder decoder = new SWFDecoder(stop);
+    @Test
+    public void decodeWithPlaySetToFalse() throws CoderException {
+        final SWFDecoder decoder = new SWFDecoder(stop);
 
-		fixture = new GotoFrame2(decoder);
+        fixture = new GotoFrame2(decoder);
 
-		assertTrue(decoder.eof());
-		assertEquals(0, fixture.getFrameOffset());
-		assertEquals(false, fixture.isPlay());
-	}
+        assertTrue(decoder.eof());
+        assertEquals(0, fixture.getFrameOffset());
+        assertEquals(false, fixture.isPlay());
+    }
 }

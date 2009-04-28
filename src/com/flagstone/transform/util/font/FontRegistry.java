@@ -36,39 +36,39 @@ import java.util.Map;
 /**
  */
 public final class FontRegistry {
-	private static Map<FontEncoding, FontProvider> providers = new LinkedHashMap<FontEncoding, FontProvider>();
+    private static Map<FontEncoding, FontProvider> providers = new LinkedHashMap<FontEncoding, FontProvider>();
 
-	static {
-		for (FontEncoding encoding : FontEncoding.values()) {
-			registerProvider(encoding, encoding.getProvider());
-		}
-	}
+    static {
+        for (final FontEncoding encoding : FontEncoding.values()) {
+            registerProvider(encoding, encoding.getProvider());
+        }
+    }
 
-	/**
-	 * Register an FontDecoder to handle images in the specified format. The
-	 * image formats currently supported are defined in the {@link FontInfo}
-	 * class.
-	 * 
-	 * @param encoding
-	 *            the string identifying the image format.
-	 * @param decoder
-	 *            any class that implements the FontDecoder interface.
-	 */
-	public static void registerProvider(final FontEncoding encoding,
-			final FontProvider decoder) {
-		providers.put(encoding, decoder);
-	}
+    /**
+     * Register an FontDecoder to handle images in the specified format. The
+     * image formats currently supported are defined in the {@link FontInfo}
+     * class.
+     * 
+     * @param encoding
+     *            the string identifying the image format.
+     * @param decoder
+     *            any class that implements the FontDecoder interface.
+     */
+    public static void registerProvider(final FontEncoding encoding,
+            final FontProvider decoder) {
+        providers.put(encoding, decoder);
+    }
 
-	public static FontDecoder getFontProvider(final FontEncoding encoding) {
+    public static FontDecoder getFontProvider(final FontEncoding encoding) {
 
-		if (providers.containsKey(encoding)) {
-			return providers.get(encoding).newDecoder();
-		} else {
-			throw new IllegalArgumentException();
-		}
-	}
+        if (providers.containsKey(encoding)) {
+            return providers.get(encoding).newDecoder();
+        } else {
+            throw new IllegalArgumentException();
+        }
+    }
 
-	private FontRegistry() {
-		// Registry is shared.
-	}
+    private FontRegistry() {
+        // Registry is shared.
+    }
 }

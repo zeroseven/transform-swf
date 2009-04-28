@@ -60,104 +60,103 @@ import com.flagstone.transform.coder.SWFEncoder;
  * @see DefineJPEGImage
  */
 public final class JPEGEncodingTable implements MovieTag {
-	private static final String FORMAT = "JPEGEncodingTable: { encodingTable=%d }";
-	private byte[] table;
+    private static final String FORMAT = "JPEGEncodingTable: { encodingTable=%d }";
+    private byte[] table;
 
-	private transient int length;
+    private transient int length;
 
-	// TODO(doc)
-	public JPEGEncodingTable(final SWFDecoder coder)
-			throws CoderException {
-		final int start = coder.getPointer();
-		length = coder.readWord(2, false) & 0x3F;
+    // TODO(doc)
+    public JPEGEncodingTable(final SWFDecoder coder) throws CoderException {
+        final int start = coder.getPointer();
+        length = coder.readWord(2, false) & 0x3F;
 
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
-		final int end = coder.getPointer() + (length << 3);
+        if (length == 0x3F) {
+            length = coder.readWord(4, false);
+        }
+        final int end = coder.getPointer() + (length << 3);
 
-		table = coder.readBytes(new byte[length]);
+        table = coder.readBytes(new byte[length]);
 
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
+        if (coder.getPointer() != end) {
+            throw new CoderException(getClass().getName(), start >> 3, length,
+                    (coder.getPointer() - end) >> 3);
+        }
+    }
 
-	/**
-	 * Creates a JPEGEncodingTable object with the encoding table data.
-	 * 
-	 * @param bytes
-	 *            an array of bytes contains the data for the encoding table.
-	 *            Must not be null.
-	 */
-	public JPEGEncodingTable(final byte[] bytes) {
-		setTable(bytes);
-	}
+    /**
+     * Creates a JPEGEncodingTable object with the encoding table data.
+     * 
+     * @param bytes
+     *            an array of bytes contains the data for the encoding table.
+     *            Must not be null.
+     */
+    public JPEGEncodingTable(final byte[] bytes) {
+        setTable(bytes);
+    }
 
-	// TODO(doc)
-	public JPEGEncodingTable(final JPEGEncodingTable object) {
-		table = Arrays.copyOf(object.table, object.table.length);
-	}
+    // TODO(doc)
+    public JPEGEncodingTable(final JPEGEncodingTable object) {
+        table = Arrays.copyOf(object.table, object.table.length);
+    }
 
-	/**
-	 * Returns the encoding table.
-	 */
-	public byte[] getTable() {
-		return table;
-	}
+    /**
+     * Returns the encoding table.
+     */
+    public byte[] getTable() {
+        return table;
+    }
 
-	/**
-	 * Sets the encoding table.
-	 * 
-	 * @param bytes
-	 *            an array of bytes contains the data for the encoding table.
-	 *            Must not be null or zero length.
-	 */
-	public void setTable(final byte[] bytes) {
-		if (bytes == null) {
-			throw new IllegalArgumentException(Strings.DATA_IS_NULL);
-		}
+    /**
+     * Sets the encoding table.
+     * 
+     * @param bytes
+     *            an array of bytes contains the data for the encoding table.
+     *            Must not be null or zero length.
+     */
+    public void setTable(final byte[] bytes) {
+        if (bytes == null) {
+            throw new IllegalArgumentException(Strings.DATA_IS_NULL);
+        }
 
-		if (bytes.length == 0) {
-			throw new IllegalArgumentException(Strings.DATA_IS_EMPTY);
-		}
+        if (bytes.length == 0) {
+            throw new IllegalArgumentException(Strings.DATA_IS_EMPTY);
+        }
 
-		table = bytes;
-	}
+        table = bytes;
+    }
 
-	public JPEGEncodingTable copy() {
-		return new JPEGEncodingTable(this);
-	}
+    public JPEGEncodingTable copy() {
+        return new JPEGEncodingTable(this);
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, table.length);
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, table.length);
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		length = table.length;
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        length = table.length;
 
-		return (length > 62 ? 6 : 2) + length;
-	}
+        return (length > 62 ? 6 : 2) + length;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		final int start = coder.getPointer();
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        final int start = coder.getPointer();
 
-		if (length >= 63) {
-			coder.writeWord((MovieTypes.JPEG_TABLES << 6) | 0x3F, 2);
-			coder.writeWord(length, 4);
-		} else {
-			coder.writeWord((MovieTypes.JPEG_TABLES << 6) | length, 2);
-		}
-		final int end = coder.getPointer() + (length << 3);
+        if (length >= 63) {
+            coder.writeWord((MovieTypes.JPEG_TABLES << 6) | 0x3F, 2);
+            coder.writeWord(length, 4);
+        } else {
+            coder.writeWord((MovieTypes.JPEG_TABLES << 6) | length, 2);
+        }
+        final int end = coder.getPointer() + (length << 3);
 
-		coder.writeBytes(table);
+        coder.writeBytes(table);
 
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
+        if (coder.getPointer() != end) {
+            throw new CoderException(getClass().getName(), start >> 3, length,
+                    (coder.getPointer() - end) >> 3);
+        }
+    }
 }

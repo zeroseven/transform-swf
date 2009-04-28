@@ -37,17 +37,17 @@ import com.flagstone.transform.Movie;
  * DecodeMovie verifies that Flash file can be decoded into a Movie.
  */
 public final class DecodeMovie {
-	public static void main(final String[] args) {
-		final File srcFile = new File(args[0]);
+    public static void main(final String[] args) {
+        final File srcFile = new File(args[0]);
 
-		try {
-			new Movie().decodeFromFile(srcFile);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+        try {
+            new Movie().decodeFromFile(srcFile);
+        } catch (final Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-	private DecodeMovie() {
-		// Private
-	}
+    private DecodeMovie() {
+        // Private
+    }
 }

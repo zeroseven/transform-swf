@@ -29,6 +29,11 @@
  */
 package com.flagstone.transform.fillstyle;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
 
 import com.flagstone.transform.coder.CoderException;
@@ -37,73 +42,68 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.CoordTransform;
 
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertArrayEquals;
-
 public final class BitmapFillTest {
 
-	private static transient final boolean tiled = false;
-	private static transient final boolean smoothed = false;
-	private static transient final int identifier = 1;
-	private static transient final CoordTransform transform = CoordTransform
-			.translate(1, 2);
+    private static transient final boolean tiled = false;
+    private static transient final boolean smoothed = false;
+    private static transient final int identifier = 1;
+    private static transient final CoordTransform transform = CoordTransform
+            .translate(1, 2);
 
-	private transient BitmapFill fixture;
+    private transient BitmapFill fixture;
 
-	private transient final byte[] encoded = new byte[] { 0x43, 0x01, 0x00,
-			0x06, 0x50 };
+    private transient final byte[] encoded = new byte[] { 0x43, 0x01, 0x00,
+            0x06, 0x50 };
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAccessorForIdentifierWithLowerBound() {
-		fixture = new BitmapFill(tiled, smoothed, 0, transform);
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkAccessorForIdentifierWithLowerBound() {
+        fixture = new BitmapFill(tiled, smoothed, 0, transform);
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAccessorForIdentifierWithUpperBound() {
-		fixture = new BitmapFill(tiled, smoothed, 65536, transform);
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkAccessorForIdentifierWithUpperBound() {
+        fixture = new BitmapFill(tiled, smoothed, 65536, transform);
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAccessorForDataWithNull() {
-		fixture = new BitmapFill(tiled, smoothed, 1, null);
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkAccessorForDataWithNull() {
+        fixture = new BitmapFill(tiled, smoothed, 1, null);
+    }
 
-	@Test
-	public void checkCopy() {
-		fixture = new BitmapFill(tiled, smoothed, identifier, transform);
-		assertEquals(fixture.getIdentifier(), fixture.copy().getIdentifier());
-		assertSame(fixture.getTransform(), fixture.copy().getTransform());
-		assertEquals(fixture.toString(), fixture.toString());
-	}
+    @Test
+    public void checkCopy() {
+        fixture = new BitmapFill(tiled, smoothed, identifier, transform);
+        assertEquals(fixture.getIdentifier(), fixture.copy().getIdentifier());
+        assertSame(fixture.getTransform(), fixture.copy().getTransform());
+        assertEquals(fixture.toString(), fixture.toString());
+    }
 
-	@Test
-	public void encode() throws CoderException {
+    @Test
+    public void encode() throws CoderException {
 
-		final SWFEncoder encoder = new SWFEncoder(encoded.length);
-		final Context context = new Context();
+        final SWFEncoder encoder = new SWFEncoder(encoded.length);
+        final Context context = new Context();
 
-		fixture = new BitmapFill(tiled, smoothed, identifier, transform);
-		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
-		fixture.encode(encoder, context);
+        fixture = new BitmapFill(tiled, smoothed, identifier, transform);
+        assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
+        fixture.encode(encoder, context);
 
-		assertTrue(encoder.eof());
-		assertArrayEquals(encoded, encoder.getData());
-	}
+        assertTrue(encoder.eof());
+        assertArrayEquals(encoded, encoder.getData());
+    }
 
-	@Test
-	public void decode() throws CoderException {
+    @Test
+    public void decode() throws CoderException {
 
-		final SWFDecoder decoder = new SWFDecoder(encoded);
+        final SWFDecoder decoder = new SWFDecoder(encoded);
 
-		fixture = new BitmapFill(decoder);
+        fixture = new BitmapFill(decoder);
 
-		assertTrue(decoder.eof());
-		assertEquals(identifier, fixture.getIdentifier());
-		assertEquals(transform.getTranslateX(), fixture.getTransform()
-				.getTranslateX());
-		assertEquals(transform.getTranslateY(), fixture.getTransform()
-				.getTranslateY());
-	}
+        assertTrue(decoder.eof());
+        assertEquals(identifier, fixture.getIdentifier());
+        assertEquals(transform.getTranslateX(), fixture.getTransform()
+                .getTranslateX());
+        assertEquals(transform.getTranslateY(), fixture.getTransform()
+                .getTranslateY());
+    }
 }

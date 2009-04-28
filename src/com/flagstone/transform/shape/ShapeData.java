@@ -39,43 +39,43 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 //TODO(doc)
 public final class ShapeData implements ShapeRecord {
-	private static final String FORMAT = "ShapeData: { data[%d] }";
+    private static final String FORMAT = "ShapeData: { data[%d] }";
 
-	private final transient byte[] data;
+    private final transient byte[] data;
 
-	public ShapeData(final byte[] bytes) {
-		if (bytes == null) {
-			throw new IllegalArgumentException(Strings.DATA_IS_NULL);
-		}
-		data = bytes;
-	}
+    public ShapeData(final byte[] bytes) {
+        if (bytes == null) {
+            throw new IllegalArgumentException(Strings.DATA_IS_NULL);
+        }
+        data = bytes;
+    }
 
-	public ShapeData(final ShapeData object) {
-		data = Arrays.copyOf(object.data, object.data.length);
-	}
+    public ShapeData(final ShapeData object) {
+        data = Arrays.copyOf(object.data, object.data.length);
+    }
 
-	/**
-	 * Returns the encoded data for the action.
-	 */
-	public byte[] getData() {
-		return data;
-	}
+    /**
+     * Returns the encoded data for the action.
+     */
+    public byte[] getData() {
+        return data;
+    }
 
-	public ShapeData copy() {
-		return new ShapeData(this);
-	}
+    public ShapeData copy() {
+        return new ShapeData(this);
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, data.length);
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, data.length);
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		return data.length;
-	}
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        return data.length;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		coder.writeBytes(data);
-	}
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        coder.writeBytes(data);
+    }
 }

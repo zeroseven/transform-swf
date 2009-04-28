@@ -39,9 +39,9 @@ import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.Filter;
-import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
+import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.Blend;
 import com.flagstone.transform.datatype.ColorTransform;
@@ -84,280 +84,281 @@ import com.flagstone.transform.datatype.CoordTransform;
  * @see DefineButton2
  */
 public final class ButtonShape implements SWFEncodeable {
-	private static final String FORMAT = "ButtonShape: { state=%d; identifier=%d; layer=%d; transform=%s; colorTransform=%s }";
+    private static final String FORMAT = "ButtonShape: { state=%d; identifier=%d; layer=%d; transform=%s; colorTransform=%s }";
 
-	private int state;
-	private int identifier;
-	private int layer;
-	private CoordTransform transform;
-	private ColorTransform colorTransform;
-	private List<Filter> filters;
-	private Blend blendMode;
+    private int state;
+    private int identifier;
+    private int layer;
+    private CoordTransform transform;
+    private ColorTransform colorTransform;
+    private List<Filter> filters;
+    private Blend blendMode;
 
-	// TODO(doc)
-	// TODO(code) implement fully
-	public ButtonShape(final SWFDecoder coder, final Context context)
-			throws CoderException {
-		coder.readBits(4, false);
+    // TODO(doc)
+    // TODO(code) implement fully
+    public ButtonShape(final SWFDecoder coder, final Context context)
+            throws CoderException {
+        coder.readBits(4, false);
 
-		state = coder.readBits(4, false);
-		identifier = coder.readWord(2, false);
-		layer = coder.readWord(2, false);
-		transform = new CoordTransform(coder);
+        state = coder.readBits(4, false);
+        identifier = coder.readWord(2, false);
+        layer = coder.readWord(2, false);
+        transform = new CoordTransform(coder);
 
-		if (context.getVariables().get(Context.TYPE) == MovieTypes.DEFINE_BUTTON_2) {
-			colorTransform = new ColorTransform(coder, context);
-		}
-	}
+        if (context.getVariables().get(Context.TYPE) == MovieTypes.DEFINE_BUTTON_2) {
+            colorTransform = new ColorTransform(coder, context);
+        }
+    }
 
-	/**
-	 * Creates an ButtonShape object with a coordinate transform that will be
-	 * applied to the shape drawn for the button states.
-	 * 
-	 * @param aState
-	 *            the state of the button when the shape is drawn. The compound
-	 *            state code must be in the range 1..15.
-	 * @param uid
-	 *            the unique identifier of an DefineShape, DefineShape2 or
-	 *            DefineShape3 object. Must be in the range 1..65535.
-	 * @param aLayer
-	 *            the layer in the display list on which the shape is drawn.
-	 *            Must be in the range 1..65535.
-	 * @param aTransform
-	 *            a coordinate transform that changes the appearance of the
-	 *            shape when it is drawn.
-	 */
-	public ButtonShape(final Set<ButtonState> states, final int uid, final int aLayer,
-			final CoordTransform aTransform) {
-		setState(states);
-		setIdentifier(uid);
-		setLayer(aLayer);
-		setTransform(aTransform);
-	}
+    /**
+     * Creates an ButtonShape object with a coordinate transform that will be
+     * applied to the shape drawn for the button states.
+     * 
+     * @param aState
+     *            the state of the button when the shape is drawn. The compound
+     *            state code must be in the range 1..15.
+     * @param uid
+     *            the unique identifier of an DefineShape, DefineShape2 or
+     *            DefineShape3 object. Must be in the range 1..65535.
+     * @param aLayer
+     *            the layer in the display list on which the shape is drawn.
+     *            Must be in the range 1..65535.
+     * @param aTransform
+     *            a coordinate transform that changes the appearance of the
+     *            shape when it is drawn.
+     */
+    public ButtonShape(final Set<ButtonState> states, final int uid,
+            final int aLayer, final CoordTransform aTransform) {
+        setState(states);
+        setIdentifier(uid);
+        setLayer(aLayer);
+        setTransform(aTransform);
+    }
 
-	/**
-	 * Creates a ButtonShape object with a coordinate and colour transform that
-	 * will be applied to the shape drawn for the button states.
-	 * 
-	 * IMPORTANT: Only DefineButton2 makes use of the ColorTransform. The colour
-	 * transform will not be encoded if the ButtonShape is used for a
-	 * DefineButton object.
-	 * 
-	 * @param states
-	 *            the state of the button when the shape is drawn. The compound
-	 *            state code must be in the range 1..15.
-	 * @param uid
-	 *            the unique identifier of an DefineShape, DefineShape2 or
-	 *            DefineShape3 object. Must be in the range 1..65535.
-	 * @param aLayer
-	 *            the layer in the display list on which the shape is drawn.
-	 *            Must be in the range 1..65353.
-	 * @param aTransform
-	 *            an CoordTransform object that changes the appearance of the
-	 *            shape when it is drawn. Must not be null.
-	 * @param aColorTransform
-	 *            an ColorTransform object that changes the colour of the shape
-	 *            when it is drawn. Must not be null.
-	 */
-	public ButtonShape(final Set<ButtonState> states, final int uid, final int aLayer,
-			final CoordTransform aTransform, final ColorTransform aColorTransform) {
-		setState(states);
-		setIdentifier(uid);
-		setLayer(aLayer);
-		setTransform(aTransform);
-		setColorTransform(aColorTransform);
-	}
+    /**
+     * Creates a ButtonShape object with a coordinate and colour transform that
+     * will be applied to the shape drawn for the button states.
+     * 
+     * IMPORTANT: Only DefineButton2 makes use of the ColorTransform. The colour
+     * transform will not be encoded if the ButtonShape is used for a
+     * DefineButton object.
+     * 
+     * @param states
+     *            the state of the button when the shape is drawn. The compound
+     *            state code must be in the range 1..15.
+     * @param uid
+     *            the unique identifier of an DefineShape, DefineShape2 or
+     *            DefineShape3 object. Must be in the range 1..65535.
+     * @param aLayer
+     *            the layer in the display list on which the shape is drawn.
+     *            Must be in the range 1..65353.
+     * @param aTransform
+     *            an CoordTransform object that changes the appearance of the
+     *            shape when it is drawn. Must not be null.
+     * @param aColorTransform
+     *            an ColorTransform object that changes the colour of the shape
+     *            when it is drawn. Must not be null.
+     */
+    public ButtonShape(final Set<ButtonState> states, final int uid,
+            final int aLayer, final CoordTransform aTransform,
+            final ColorTransform aColorTransform) {
+        setState(states);
+        setIdentifier(uid);
+        setLayer(aLayer);
+        setTransform(aTransform);
+        setColorTransform(aColorTransform);
+    }
 
-	// TODO(doc)
-	public ButtonShape(final ButtonShape object) {
-		state = object.state;
-		identifier = object.identifier;
-		layer = object.layer;
-		transform = object.transform;
-		colorTransform = object.colorTransform;
-	}
+    // TODO(doc)
+    public ButtonShape(final ButtonShape object) {
+        state = object.state;
+        identifier = object.identifier;
+        layer = object.layer;
+        transform = object.transform;
+        colorTransform = object.colorTransform;
+    }
 
-	// TODO(doc)
-	public Set<ButtonState> getState() {
-		final Set<ButtonState> set = EnumSet.allOf(ButtonState.class);
+    // TODO(doc)
+    public Set<ButtonState> getState() {
+        final Set<ButtonState> set = EnumSet.allOf(ButtonState.class);
 
-		for (final Iterator<ButtonState> iter = set.iterator(); iter.hasNext();) {
-			if ((state & iter.next().getValue()) == 0) {
-				iter.remove();
-			}
-		}
-		return set;
-	}
+        for (final Iterator<ButtonState> iter = set.iterator(); iter.hasNext();) {
+            if ((state & iter.next().getValue()) == 0) {
+                iter.remove();
+            }
+        }
+        return set;
+    }
 
-	// TODO(doc)
-	public void setState(final Set<ButtonState> states) {
-		for (ButtonState state : states) {
-			this.state |= state.getValue();
-		}
-	}
+    // TODO(doc)
+    public void setState(final Set<ButtonState> states) {
+        for (final ButtonState state : states) {
+            this.state |= state.getValue();
+        }
+    }
 
-	/**
-	 * Return the unique identifier of the shape that this Button applies to.
-	 */
-	public int getIdentifier() {
-		return identifier;
-	}
+    /**
+     * Return the unique identifier of the shape that this Button applies to.
+     */
+    public int getIdentifier() {
+        return identifier;
+    }
 
-	/**
-	 * Sets the unique identifier of the DefineShape, DefineShape2 or
-	 * DefineShape3 object that defines the appearance of the button when it is
-	 * in the specified state(s).
-	 * 
-	 * @param uid
-	 *            the unique identifier of the shape object that defines the
-	 *            shape's appearance. Must be in the range 1..65535.
-	 */
-	public void setIdentifier(final int uid) {
-		if (uid < 1 || uid > 65535) {
-			throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
-		}
-		identifier = uid;
-	}
+    /**
+     * Sets the unique identifier of the DefineShape, DefineShape2 or
+     * DefineShape3 object that defines the appearance of the button when it is
+     * in the specified state(s).
+     * 
+     * @param uid
+     *            the unique identifier of the shape object that defines the
+     *            shape's appearance. Must be in the range 1..65535.
+     */
+    public void setIdentifier(final int uid) {
+        if ((uid < 1) || (uid > 65535)) {
+            throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
+        }
+        identifier = uid;
+    }
 
-	/**
-	 * Returns the layer that the button will be displayed on.
-	 */
-	public int getLayer() {
-		return layer;
-	}
+    /**
+     * Returns the layer that the button will be displayed on.
+     */
+    public int getLayer() {
+        return layer;
+    }
 
-	/**
-	 * Sets the layer in the display list that the shape will be displayed on.
-	 * 
-	 * @param aNumber
-	 *            the number of the layer in the display list where the shape is
-	 *            drawn. Must be in the range 1..65535.
-	 */
-	public void setLayer(final int aNumber) {
-		if (aNumber < 1 || aNumber > 65535) {
-			throw new IllegalArgumentException(Strings.LAYER_RANGE);
-		}
-		layer = aNumber;
-	}
+    /**
+     * Sets the layer in the display list that the shape will be displayed on.
+     * 
+     * @param aNumber
+     *            the number of the layer in the display list where the shape is
+     *            drawn. Must be in the range 1..65535.
+     */
+    public void setLayer(final int aNumber) {
+        if ((aNumber < 1) || (aNumber > 65535)) {
+            throw new IllegalArgumentException(Strings.LAYER_RANGE);
+        }
+        layer = aNumber;
+    }
 
-	/**
-	 * Returns the coordinate transform that will be applied to the button.
-	 */
-	public CoordTransform getTransform() {
-		return transform;
-	}
+    /**
+     * Returns the coordinate transform that will be applied to the button.
+     */
+    public CoordTransform getTransform() {
+        return transform;
+    }
 
-	/**
-	 * Sets the coordinate transform that will be applied to the shape to change
-	 * it's appearance.
-	 * 
-	 * @param aTransform
-	 *            an CoordTransform object that will be applied to the shape.
-	 *            Must not be null.
-	 */
-	public void setTransform(final CoordTransform aTransform) {
-		if (aTransform == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
-		}
-		transform = aTransform;
-	}
+    /**
+     * Sets the coordinate transform that will be applied to the shape to change
+     * it's appearance.
+     * 
+     * @param aTransform
+     *            an CoordTransform object that will be applied to the shape.
+     *            Must not be null.
+     */
+    public void setTransform(final CoordTransform aTransform) {
+        if (aTransform == null) {
+            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+        }
+        transform = aTransform;
+    }
 
-	/**
-	 * Returns the colour transform that will be applied to the button.
-	 * 
-	 * Note that the colour transform will only be used if the ButtonShape is
-	 * added to a DefineButton2 object.
-	 */
-	public ColorTransform getColorTransform() {
-		return colorTransform;
-	}
+    /**
+     * Returns the colour transform that will be applied to the button.
+     * 
+     * Note that the colour transform will only be used if the ButtonShape is
+     * added to a DefineButton2 object.
+     */
+    public ColorTransform getColorTransform() {
+        return colorTransform;
+    }
 
-	/**
-	 * Sets the colour transform that will be applied to the shape to change
-	 * it's colour.
-	 * 
-	 * IMPORTANT: The colour transform is only used in DefineButton2 objects.
-	 * 
-	 * @param aTransform
-	 *            an ColorTransform object that will be applied to the shape.
-	 *            Must not be null, even if the ButtonShape will be added to a
-	 *            DefineButton object.
-	 */
-	public void setColorTransform(final ColorTransform aTransform) {
-		if (aTransform == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
-		}
-		colorTransform = aTransform;
-	}
+    /**
+     * Sets the colour transform that will be applied to the shape to change
+     * it's colour.
+     * 
+     * IMPORTANT: The colour transform is only used in DefineButton2 objects.
+     * 
+     * @param aTransform
+     *            an ColorTransform object that will be applied to the shape.
+     *            Must not be null, even if the ButtonShape will be added to a
+     *            DefineButton object.
+     */
+    public void setColorTransform(final ColorTransform aTransform) {
+        if (aTransform == null) {
+            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+        }
+        colorTransform = aTransform;
+    }
 
-	// TODO(doc)
-	public ButtonShape add(final Filter filter) {
-		if (filter == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
-		}
-		filters.add(filter);
-		return this;
-	}
+    // TODO(doc)
+    public ButtonShape add(final Filter filter) {
+        if (filter == null) {
+            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+        }
+        filters.add(filter);
+        return this;
+    }
 
-	// TODO(doc)
-	public List<Filter> getFilters() {
-		return filters;
-	}
+    // TODO(doc)
+    public List<Filter> getFilters() {
+        return filters;
+    }
 
-	// TODO(doc)
-	public void setFilters(final List<Filter> array) {
-		if (array == null) {
-			throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
-		}
-		filters = array;
-	}
+    // TODO(doc)
+    public void setFilters(final List<Filter> array) {
+        if (array == null) {
+            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+        }
+        filters = array;
+    }
 
-	// TODO(doc)
-	public Blend getBlendMode() {
-		return blendMode;
-	}
+    // TODO(doc)
+    public Blend getBlendMode() {
+        return blendMode;
+    }
 
-	// TODO(doc)
-	public void setBlendMode(final Blend blend) {
-		blendMode = blend;
-	}
+    // TODO(doc)
+    public void setBlendMode(final Blend blend) {
+        blendMode = blend;
+    }
 
-	/**
-	 * Creates and returns a deep copy of this object.
-	 */
-	public ButtonShape copy() {
-		return new ButtonShape(this);
-	}
+    /**
+     * Creates and returns a deep copy of this object.
+     */
+    public ButtonShape copy() {
+        return new ButtonShape(this);
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, state, identifier, layer, transform,
-				colorTransform);
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, state, identifier, layer, transform,
+                colorTransform);
+    }
 
-	// TODO(code) implement fully
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		int length = 5 + transform.prepareToEncode(coder, context);
+    // TODO(code) implement fully
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        int length = 5 + transform.prepareToEncode(coder, context);
 
-		if (context.getVariables().get(Context.TYPE) == MovieTypes.DEFINE_BUTTON_2) {
-			length += colorTransform.prepareToEncode(coder, context);
-		}
+        if (context.getVariables().get(Context.TYPE) == MovieTypes.DEFINE_BUTTON_2) {
+            length += colorTransform.prepareToEncode(coder, context);
+        }
 
-		return length;
-	}
+        return length;
+    }
 
-	// TODO(code) implement fully
-	// TODO(code) Add test so blend and filters are only added in flash 8+
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		coder.writeBits(0, 4);
-		coder.writeBits(state, 4);
-		coder.writeWord(identifier, 2);
-		coder.writeWord(layer, 2);
-		transform.encode(coder, context);
+    // TODO(code) implement fully
+    // TODO(code) Add test so blend and filters are only added in flash 8+
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        coder.writeBits(0, 4);
+        coder.writeBits(state, 4);
+        coder.writeWord(identifier, 2);
+        coder.writeWord(layer, 2);
+        transform.encode(coder, context);
 
-		if (context.getVariables().get(Context.TYPE) == MovieTypes.DEFINE_BUTTON_2) {
-			colorTransform.encode(coder, context);
-		}
-	}
+        if (context.getVariables().get(Context.TYPE) == MovieTypes.DEFINE_BUTTON_2) {
+            colorTransform.encode(coder, context);
+        }
+    }
 }

@@ -31,10 +31,10 @@
 package com.flagstone.transform.datatype;
 
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.SWFEncodeable;
-import com.flagstone.transform.coder.Encoder;
 import com.flagstone.transform.coder.Context;
+import com.flagstone.transform.coder.Encoder;
 import com.flagstone.transform.coder.SWFDecoder;
+import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFEncoder;
 
 /**
@@ -100,344 +100,344 @@ import com.flagstone.transform.coder.SWFEncoder;
 // TODO(doc) review.
 public final class ColorTransform implements SWFEncodeable {
 
-	private static final String FORMAT = "ColorTransform: { multiply=[%f, %f, %f, %f]; add=[%d, %d, %d, %d] }";
+    private static final String FORMAT = "ColorTransform: { multiply=[%f, %f, %f, %f]; add=[%d, %d, %d, %d] }";
 
-	private final transient int multiplyRed;
-	private final transient int multiplyGreen;
-	private final transient int multiplyBlue;
-	private final transient int multiplyAlpha;
+    private final transient int multiplyRed;
+    private final transient int multiplyGreen;
+    private final transient int multiplyBlue;
+    private final transient int multiplyAlpha;
 
-	private final transient int addRed;
-	private final transient int addGreen;
-	private final transient int addBlue;
-	private final transient int addAlpha;
+    private final transient int addRed;
+    private final transient int addGreen;
+    private final transient int addBlue;
+    private final transient int addAlpha;
 
-	private transient int size;
-	private transient boolean hasMultiply;
-	private transient boolean hasAdd;
-	private transient boolean hasAlpha;
+    private transient int size;
+    private transient boolean hasMultiply;
+    private transient boolean hasAdd;
+    private transient boolean hasAlpha;
 
-	public ColorTransform(final SWFDecoder coder, final Context context)
-			throws CoderException {
+    public ColorTransform(final SWFDecoder coder, final Context context)
+            throws CoderException {
 
-		coder.alignToByte(); // TODO(optimise) Can this be removed.
+        coder.alignToByte(); // TODO(optimise) Can this be removed.
 
-		hasAdd = coder.readBits(1, false) != 0;
-		hasMultiply = coder.readBits(1, false) != 0;
-		hasAlpha = context.getVariables().containsKey(Context.TRANSPARENT);
-		size = coder.readBits(4, false);
+        hasAdd = coder.readBits(1, false) != 0;
+        hasMultiply = coder.readBits(1, false) != 0;
+        hasAlpha = context.getVariables().containsKey(Context.TRANSPARENT);
+        size = coder.readBits(4, false);
 
-		if (hasMultiply) {
-			multiplyRed = coder.readBits(size, true);
-			multiplyGreen = coder.readBits(size, true);
-			multiplyBlue = coder.readBits(size, true);
-			multiplyAlpha = hasAlpha ? coder.readBits(size, true) : 256;
-		} else {
-			multiplyRed = 256;
-			multiplyGreen = 256;
-			multiplyBlue = 256;
-			multiplyAlpha = 256;
-		}
+        if (hasMultiply) {
+            multiplyRed = coder.readBits(size, true);
+            multiplyGreen = coder.readBits(size, true);
+            multiplyBlue = coder.readBits(size, true);
+            multiplyAlpha = hasAlpha ? coder.readBits(size, true) : 256;
+        } else {
+            multiplyRed = 256;
+            multiplyGreen = 256;
+            multiplyBlue = 256;
+            multiplyAlpha = 256;
+        }
 
-		if (hasAdd) {
-			addRed = coder.readBits(size, true);
-			addGreen = coder.readBits(size, true);
-			addBlue = coder.readBits(size, true);
-			addAlpha = hasAlpha ? coder.readBits(size, true) : 0;
-		} else {
-			addRed = 0;
-			addGreen = 0;
-			addBlue = 0;
-			addAlpha = 0;
-		}
+        if (hasAdd) {
+            addRed = coder.readBits(size, true);
+            addGreen = coder.readBits(size, true);
+            addBlue = coder.readBits(size, true);
+            addAlpha = hasAlpha ? coder.readBits(size, true) : 0;
+        } else {
+            addRed = 0;
+            addGreen = 0;
+            addBlue = 0;
+            addAlpha = 0;
+        }
 
-		coder.alignToByte();
-	}
+        coder.alignToByte();
+    }
 
-	/**
-	 * Creates an add colour transform.
-	 * 
-	 * @param addRed
-	 *            value to add to the red colour channel.
-	 * @param addGreen
-	 *            value to add to the green colour channel.
-	 * @param addBlue
-	 *            value to add to the blue colour channel.
-	 * @param addAlpha
-	 *            value to add to the alpha colour channel.
-	 */
-	public ColorTransform(final int addRed, final int addGreen,
-			final int addBlue, final int addAlpha) {
-		multiplyRed = 256;
-		multiplyGreen = 256;
-		multiplyBlue = 256;
-		multiplyAlpha = 256;
+    /**
+     * Creates an add colour transform.
+     * 
+     * @param addRed
+     *            value to add to the red colour channel.
+     * @param addGreen
+     *            value to add to the green colour channel.
+     * @param addBlue
+     *            value to add to the blue colour channel.
+     * @param addAlpha
+     *            value to add to the alpha colour channel.
+     */
+    public ColorTransform(final int addRed, final int addGreen,
+            final int addBlue, final int addAlpha) {
+        multiplyRed = 256;
+        multiplyGreen = 256;
+        multiplyBlue = 256;
+        multiplyAlpha = 256;
 
-		this.addRed = addRed;
-		this.addGreen = addGreen;
-		this.addBlue = addBlue;
-		this.addAlpha = addAlpha;
-	}
+        this.addRed = addRed;
+        this.addGreen = addGreen;
+        this.addBlue = addBlue;
+        this.addAlpha = addAlpha;
+    }
 
-	/**
-	 * Creates a multiply colour transform that will apply the colour channels.
-	 * 
-	 * @param mulRed
-	 *            value to multiply the red colour channel by.
-	 * @param mulGreen
-	 *            value to multiply the green colour channel by.
-	 * @param mulBlue
-	 *            value to multiply the blue colour channel by.
-	 * @param mulAlpha
-	 *            value to multiply the alpha colour channel by.
-	 */
-	public ColorTransform(final float mulRed, final float mulGreen,
-			final float mulBlue, final float mulAlpha) {
-		multiplyRed = (int) (mulRed * 256);
-		multiplyGreen = (int) (mulGreen * 256);
-		multiplyBlue = (int) (mulBlue * 256);
-		multiplyAlpha = (int) (mulAlpha * 256);
+    /**
+     * Creates a multiply colour transform that will apply the colour channels.
+     * 
+     * @param mulRed
+     *            value to multiply the red colour channel by.
+     * @param mulGreen
+     *            value to multiply the green colour channel by.
+     * @param mulBlue
+     *            value to multiply the blue colour channel by.
+     * @param mulAlpha
+     *            value to multiply the alpha colour channel by.
+     */
+    public ColorTransform(final float mulRed, final float mulGreen,
+            final float mulBlue, final float mulAlpha) {
+        multiplyRed = (int) (mulRed * 256);
+        multiplyGreen = (int) (mulGreen * 256);
+        multiplyBlue = (int) (mulBlue * 256);
+        multiplyAlpha = (int) (mulAlpha * 256);
 
-		addRed = 0;
-		addGreen = 0;
-		addBlue = 0;
-		addAlpha = 0;
-	}
+        addRed = 0;
+        addGreen = 0;
+        addBlue = 0;
+        addAlpha = 0;
+    }
 
-	public ColorTransform(final int addRed, final int addGreen,
-			final int addBlue, final int addAlpha, final float mulRed,
-			final float mulGreen, final float mulBlue, final float mulAlpha) {
+    public ColorTransform(final int addRed, final int addGreen,
+            final int addBlue, final int addAlpha, final float mulRed,
+            final float mulGreen, final float mulBlue, final float mulAlpha) {
 
-		this.addRed = addRed;
-		this.addGreen = addGreen;
-		this.addBlue = addBlue;
-		this.addAlpha = addAlpha;
+        this.addRed = addRed;
+        this.addGreen = addGreen;
+        this.addBlue = addBlue;
+        this.addAlpha = addAlpha;
 
-		multiplyRed = (int) (mulRed * 256);
-		multiplyGreen = (int) (mulGreen * 256);
-		multiplyBlue = (int) (mulBlue * 256);
-		multiplyAlpha = (int) (mulAlpha * 256);
-	}
+        multiplyRed = (int) (mulRed * 256);
+        multiplyGreen = (int) (mulGreen * 256);
+        multiplyBlue = (int) (mulBlue * 256);
+        multiplyAlpha = (int) (mulAlpha * 256);
+    }
 
-	/**
-	 * Create a copy of a ColorTransform object.
-	 * 
-	 * @param object
-	 *            the ColorTransform object used to initialise this one.
-	 */
-	public ColorTransform(final ColorTransform object) {
+    /**
+     * Create a copy of a ColorTransform object.
+     * 
+     * @param object
+     *            the ColorTransform object used to initialise this one.
+     */
+    public ColorTransform(final ColorTransform object) {
 
-		multiplyRed = object.multiplyRed;
-		multiplyGreen = object.multiplyGreen;
-		multiplyBlue = object.multiplyBlue;
-		multiplyAlpha = object.multiplyAlpha;
+        multiplyRed = object.multiplyRed;
+        multiplyGreen = object.multiplyGreen;
+        multiplyBlue = object.multiplyBlue;
+        multiplyAlpha = object.multiplyAlpha;
 
-		addRed = object.addRed;
-		addGreen = object.addGreen;
-		addBlue = object.addBlue;
-		addAlpha = object.addAlpha;
-	}
+        addRed = object.addRed;
+        addGreen = object.addGreen;
+        addBlue = object.addBlue;
+        addAlpha = object.addAlpha;
+    }
 
-	/**
-	 * Returns the value of the multiply term for the red channel.
-	 */
-	public float getMultiplyRed() {
-		return multiplyRed / 256.0f;
-	}
+    /**
+     * Returns the value of the multiply term for the red channel.
+     */
+    public float getMultiplyRed() {
+        return multiplyRed / 256.0f;
+    }
 
-	/**
-	 * Returns the value of the multiply term for the green channel.
-	 */
-	public float getMultiplyGreen() {
-		return multiplyGreen / 256.0f;
-	}
+    /**
+     * Returns the value of the multiply term for the green channel.
+     */
+    public float getMultiplyGreen() {
+        return multiplyGreen / 256.0f;
+    }
 
-	/**
-	 * Returns the value of the multiply term for the blue channel.
-	 */
-	public float getMultiplyBlue() {
-		return multiplyBlue / 256.0f;
-	}
+    /**
+     * Returns the value of the multiply term for the blue channel.
+     */
+    public float getMultiplyBlue() {
+        return multiplyBlue / 256.0f;
+    }
 
-	/**
-	 * Returns the value of the multiply term for the alpha channel.
-	 */
-	public float getMultiplyAlpha() {
-		return multiplyAlpha / 256.0f;
-	}
+    /**
+     * Returns the value of the multiply term for the alpha channel.
+     */
+    public float getMultiplyAlpha() {
+        return multiplyAlpha / 256.0f;
+    }
 
-	/**
-	 * Returns the value of the add term for the red channel.
-	 */
-	public int getAddRed() {
-		return addRed;
-	}
+    /**
+     * Returns the value of the add term for the red channel.
+     */
+    public int getAddRed() {
+        return addRed;
+    }
 
-	/**
-	 * Returns the value of the add term for the green channel.
-	 */
-	public int getAddGreen() {
-		return addGreen;
-	}
+    /**
+     * Returns the value of the add term for the green channel.
+     */
+    public int getAddGreen() {
+        return addGreen;
+    }
 
-	/**
-	 * Returns the value of the add term for the blue channel.
-	 */
-	public int getAddBlue() {
-		return addBlue;
-	}
+    /**
+     * Returns the value of the add term for the blue channel.
+     */
+    public int getAddBlue() {
+        return addBlue;
+    }
 
-	/**
-	 * Returns the value of the add term for the alpha channel.
-	 */
-	public int getAddAlpha() {
-		return addAlpha;
-	}
+    /**
+     * Returns the value of the add term for the alpha channel.
+     */
+    public int getAddAlpha() {
+        return addAlpha;
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, multiplyRed / 256.0f,
-				multiplyGreen / 256.0f, multiplyBlue / 256.0f,
-				multiplyAlpha / 256.0f, addRed, addGreen, addBlue, addAlpha);
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, multiplyRed / 256.0f,
+                multiplyGreen / 256.0f, multiplyBlue / 256.0f,
+                multiplyAlpha / 256.0f, addRed, addGreen, addBlue, addAlpha);
+    }
 
-	@Override
-	public boolean equals(final Object object) {
-		boolean result;
-		ColorTransform transform;
+    @Override
+    public boolean equals(final Object object) {
+        boolean result;
+        ColorTransform transform;
 
-		if (object == null) {
-			result = false;
-		} else if (object == this) {
-			result = true;
-		} else if (object instanceof ColorTransform) {
-			transform = (ColorTransform) object;
-			result = addRed == transform.addRed
-					&& addGreen == transform.addGreen
-					&& addBlue == transform.addBlue
-					&& addAlpha == transform.addAlpha
-					&& multiplyRed == transform.multiplyRed
-					&& multiplyGreen == transform.multiplyGreen
-					&& multiplyBlue == transform.multiplyBlue
-					&& multiplyAlpha == transform.multiplyAlpha;
-		} else {
-			result = false;
-		}
-		return result;
-	}
+        if (object == null) {
+            result = false;
+        } else if (object == this) {
+            result = true;
+        } else if (object instanceof ColorTransform) {
+            transform = (ColorTransform) object;
+            result = (addRed == transform.addRed)
+                    && (addGreen == transform.addGreen)
+                    && (addBlue == transform.addBlue)
+                    && (addAlpha == transform.addAlpha)
+                    && (multiplyRed == transform.multiplyRed)
+                    && (multiplyGreen == transform.multiplyGreen)
+                    && (multiplyBlue == transform.multiplyBlue)
+                    && (multiplyAlpha == transform.multiplyAlpha);
+        } else {
+            result = false;
+        }
+        return result;
+    }
 
-	@Override
-	public int hashCode() {
-		return ((((((addRed * 31 + addGreen) * 31 + addBlue) * 31 + addAlpha) * 31 + multiplyRed) * 31 + multiplyGreen) * 31 + multiplyBlue)
-				* 31 + multiplyAlpha;
-	}
+    @Override
+    public int hashCode() {
+        return ((((((addRed * 31 + addGreen) * 31 + addBlue) * 31 + addAlpha) * 31 + multiplyRed) * 31 + multiplyGreen) * 31 + multiplyBlue)
+                * 31 + multiplyAlpha;
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
 
-		int numberOfBits = 13; // include extra 7 bits for byte alignment
+        int numberOfBits = 13; // include extra 7 bits for byte alignment
 
-		hasMultiply = containsMultiplyTerms(context);
-		hasAdd = containsAddTerms(context);
-		hasAlpha = context.getVariables().containsKey(Context.TRANSPARENT);
-		size = fieldSize(context);
+        hasMultiply = containsMultiplyTerms(context);
+        hasAdd = containsAddTerms(context);
+        hasAlpha = context.getVariables().containsKey(Context.TRANSPARENT);
+        size = fieldSize(context);
 
-		if (hasMultiply) {
-			numberOfBits += size * (hasAlpha ? 4 : 3);
-		}
+        if (hasMultiply) {
+            numberOfBits += size * (hasAlpha ? 4 : 3);
+        }
 
-		if (hasAdd) {
-			numberOfBits += size * (hasAlpha ? 4 : 3);
-		}
+        if (hasAdd) {
+            numberOfBits += size * (hasAlpha ? 4 : 3);
+        }
 
-		return numberOfBits >> 3;
-	}
+        return numberOfBits >> 3;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
 
-		coder.alignToByte(); // TODO(optimise) Can this be removed.
+        coder.alignToByte(); // TODO(optimise) Can this be removed.
 
-		coder.writeBits(hasAdd ? 1 : 0, 1);
-		coder.writeBits(hasMultiply ? 1 : 0, 1);
-		coder.writeBits(size, 4);
+        coder.writeBits(hasAdd ? 1 : 0, 1);
+        coder.writeBits(hasMultiply ? 1 : 0, 1);
+        coder.writeBits(size, 4);
 
-		if (hasMultiply) {
-			coder.writeBits(multiplyRed, size);
-			coder.writeBits(multiplyGreen, size);
-			coder.writeBits(multiplyBlue, size);
+        if (hasMultiply) {
+            coder.writeBits(multiplyRed, size);
+            coder.writeBits(multiplyGreen, size);
+            coder.writeBits(multiplyBlue, size);
 
-			if (hasAlpha) {
-				coder.writeBits(multiplyAlpha, size);
-			}
-		}
+            if (hasAlpha) {
+                coder.writeBits(multiplyAlpha, size);
+            }
+        }
 
-		if (hasAdd) {
-			coder.writeBits(addRed, size);
-			coder.writeBits(addGreen, size);
-			coder.writeBits(addBlue, size);
+        if (hasAdd) {
+            coder.writeBits(addRed, size);
+            coder.writeBits(addGreen, size);
+            coder.writeBits(addBlue, size);
 
-			if (hasAlpha) {
-				coder.writeBits(addAlpha, size);
-			}
-		}
+            if (hasAlpha) {
+                coder.writeBits(addAlpha, size);
+            }
+        }
 
-		coder.alignToByte();
-	}
+        coder.alignToByte();
+    }
 
-	private boolean containsAddTerms(final Context context) {
-		return (addRed != 0)
-				|| (addGreen != 0)
-				|| (addBlue != 0)
-				|| (context.getVariables().containsKey(Context.TRANSPARENT) && addAlpha != 0);
-	}
+    private boolean containsAddTerms(final Context context) {
+        return (addRed != 0)
+                || (addGreen != 0)
+                || (addBlue != 0)
+                || (context.getVariables().containsKey(Context.TRANSPARENT) && (addAlpha != 0));
+    }
 
-	private boolean containsMultiplyTerms(final Context context) {
-		return multiplyRed != 256
-				|| multiplyGreen != 256
-				|| multiplyBlue != 256
-				|| (context.getVariables().containsKey(Context.TRANSPARENT) && multiplyAlpha != 256);
-	}
+    private boolean containsMultiplyTerms(final Context context) {
+        return (multiplyRed != 256)
+                || (multiplyGreen != 256)
+                || (multiplyBlue != 256)
+                || (context.getVariables().containsKey(Context.TRANSPARENT) && (multiplyAlpha != 256));
+    }
 
-	private int addFieldSize(final Context context) {
+    private int addFieldSize(final Context context) {
 
-		int size;
+        int size;
 
-		if (context.getVariables().containsKey(Context.TRANSPARENT)) {
-			size = Encoder.maxSize(addRed, addGreen, addBlue, addAlpha);
-		} else {
-			size = Encoder.maxSize(addRed, addGreen, addBlue);
-		}
-		return size;
-	}
+        if (context.getVariables().containsKey(Context.TRANSPARENT)) {
+            size = Encoder.maxSize(addRed, addGreen, addBlue, addAlpha);
+        } else {
+            size = Encoder.maxSize(addRed, addGreen, addBlue);
+        }
+        return size;
+    }
 
-	private int multiplyFieldSize(final Context context) {
+    private int multiplyFieldSize(final Context context) {
 
-		int size;
+        int size;
 
-		if (context.getVariables().containsKey(Context.TRANSPARENT)) {
-			size = Encoder.maxSize(multiplyRed, multiplyGreen, multiplyBlue,
-					multiplyAlpha);
-		} else {
-			size = Encoder.maxSize(multiplyRed, multiplyGreen, multiplyBlue);
-		}
+        if (context.getVariables().containsKey(Context.TRANSPARENT)) {
+            size = Encoder.maxSize(multiplyRed, multiplyGreen, multiplyBlue,
+                    multiplyAlpha);
+        } else {
+            size = Encoder.maxSize(multiplyRed, multiplyGreen, multiplyBlue);
+        }
 
-		return size;
-	}
+        return size;
+    }
 
-	private int fieldSize(final Context context) {
-		int numberOfBits;
+    private int fieldSize(final Context context) {
+        int numberOfBits;
 
-		if (hasAdd && !hasMultiply) {
-			numberOfBits = addFieldSize(context);
-		} else if (!hasAdd && hasMultiply) {
-			numberOfBits = multiplyFieldSize(context);
-		} else if (hasAdd && hasMultiply) {
-			numberOfBits = Math.max(addFieldSize(context),
-					multiplyFieldSize(context));
-		} else {
-			numberOfBits = 1;
-		}
+        if (hasAdd && !hasMultiply) {
+            numberOfBits = addFieldSize(context);
+        } else if (!hasAdd && hasMultiply) {
+            numberOfBits = multiplyFieldSize(context);
+        } else if (hasAdd && hasMultiply) {
+            numberOfBits = Math.max(addFieldSize(context),
+                    multiplyFieldSize(context));
+        } else {
+            numberOfBits = 1;
+        }
 
-		return numberOfBits;
-	}
+        return numberOfBits;
+    }
 }

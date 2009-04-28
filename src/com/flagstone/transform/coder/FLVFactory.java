@@ -5,7 +5,7 @@ package com.flagstone.transform.coder;
  */
 public interface FLVFactory<T> {
 
-	FLVFactory<T> copy();
+    FLVFactory<T> copy();
 
-	T getObject(final FLVDecoder coder) throws CoderException;
+    T getObject(final FLVDecoder coder) throws CoderException;
 }

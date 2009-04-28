@@ -5,7 +5,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( { FLVDecoderTest.class, FLVEncoderTest.class,
-		CoderTest.class, DecoderTest.class, EncoderTest.class,
-		SWFDecoderTest.class, SWFEncoderTest.class, })
+        CoderTest.class, DecoderTest.class, EncoderTest.class,
+        SWFDecoderTest.class, SWFEncoderTest.class, })
 public final class AllCoderTests {
 }

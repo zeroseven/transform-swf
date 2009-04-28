@@ -34,8 +34,8 @@ import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.Copyable;
-import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFDecoder;
+import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.Color;
 import com.flagstone.transform.shape.Line;
@@ -69,99 +69,99 @@ import com.flagstone.transform.shape.Line;
  * @see Line
  */
 public final class LineStyle implements SWFEncodeable, Copyable<LineStyle> {
-	private static final String FORMAT = "LineStyle : { width=%d; color=%s }";
+    private static final String FORMAT = "LineStyle : { width=%d; color=%s }";
 
-	private int width;
-	private Color color;
+    private int width;
+    private Color color;
 
-	// TODO(doc)
-	public LineStyle(final SWFDecoder coder, final Context context)
-			throws CoderException {
-		width = coder.readWord(2, false);
-		color = new Color(coder, context);
-	}
+    // TODO(doc)
+    public LineStyle(final SWFDecoder coder, final Context context)
+            throws CoderException {
+        width = coder.readWord(2, false);
+        color = new Color(coder, context);
+    }
 
-	/**
-	 * Creates a LineStyle, specifying the width and colour of the line.
-	 * 
-	 * @param aWidth
-	 *            the width of the line. Must be in the range 0..65535.
-	 * @param aColor
-	 *            the colour of the line. Must not be null.
-	 */
-	public LineStyle(final int aWidth, final Color aColor) {
-		setWidth(aWidth);
-		setColor(aColor);
-	}
+    /**
+     * Creates a LineStyle, specifying the width and colour of the line.
+     * 
+     * @param aWidth
+     *            the width of the line. Must be in the range 0..65535.
+     * @param aColor
+     *            the colour of the line. Must not be null.
+     */
+    public LineStyle(final int aWidth, final Color aColor) {
+        setWidth(aWidth);
+        setColor(aColor);
+    }
 
-	// TODO(doc)
-	public LineStyle(final LineStyle object) {
-		width = object.width;
-		color = object.color;
-	}
+    // TODO(doc)
+    public LineStyle(final LineStyle object) {
+        width = object.width;
+        color = object.color;
+    }
 
-	/**
-	 * Returns the width of the line.
-	 */
-	public int getWidth() {
-		return width;
-	}
+    /**
+     * Returns the width of the line.
+     */
+    public int getWidth() {
+        return width;
+    }
 
-	/**
-	 * Returns the colour of the line.
-	 */
-	public Color getColor() {
-		return color;
-	}
+    /**
+     * Returns the colour of the line.
+     */
+    public Color getColor() {
+        return color;
+    }
 
-	/**
-	 * Sets the width of the line.
-	 * 
-	 * @param aNumber
-	 *            the width of the line. Must be in the range 0..65535.
-	 */
-	public void setWidth(final int aNumber) {
-		if (aNumber < 0 || aNumber > 65535) {
-			throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
-		}
-		width = aNumber;
-	}
+    /**
+     * Sets the width of the line.
+     * 
+     * @param aNumber
+     *            the width of the line. Must be in the range 0..65535.
+     */
+    public void setWidth(final int aNumber) {
+        if ((aNumber < 0) || (aNumber > 65535)) {
+            throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
+        }
+        width = aNumber;
+    }
 
-	/**
-	 * Sets the colour of the line.
-	 * 
-	 * @param aColor
-	 *            the colour of the line. Must be not be null.
-	 */
-	public void setColor(final Color aColor) {
-		if (aColor == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
-		}
-		color = aColor;
-	}
+    /**
+     * Sets the colour of the line.
+     * 
+     * @param aColor
+     *            the colour of the line. Must be not be null.
+     */
+    public void setColor(final Color aColor) {
+        if (aColor == null) {
+            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+        }
+        color = aColor;
+    }
 
-	public LineStyle copy() {
-		return new LineStyle(this);
-	}
+    public LineStyle copy() {
+        return new LineStyle(this);
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, width, color);
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, width, color);
+    }
 
-	// TODO(optimise)
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		int length = 2;
+    // TODO(optimise)
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        int length = 2;
 
-		length += context.getVariables().containsKey(Context.TRANSPARENT) ? 4
-				: 3;
+        length += context.getVariables().containsKey(Context.TRANSPARENT) ? 4
+                : 3;
 
-		return length;
-	}
+        return length;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		coder.writeWord(width, 2);
-		color.encode(coder, context);
-	}
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        coder.writeWord(width, 2);
+        color.encode(coder, context);
+    }
 }

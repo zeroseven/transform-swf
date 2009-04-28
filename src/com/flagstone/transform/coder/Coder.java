@@ -44,131 +44,131 @@ import com.flagstone.transform.Strings;
  */
 public class Coder {
 
-	public static final String UNDERFLOW = "Underflow";
-	public static final String OVERFLOW = "Overflow";
+    public static final String UNDERFLOW = "Underflow";
+    public static final String OVERFLOW = "Overflow";
 
-	protected String encoding;
-	protected byte[] data;
+    protected String encoding;
+    protected byte[] data;
 
-	protected transient int pointer;
-	protected transient int index;
-	protected transient int offset;
-	protected transient int end;
+    protected transient int pointer;
+    protected transient int index;
+    protected transient int offset;
+    protected transient int end;
 
-	/**
-	 * Creates a new Coder object.
-	 */
-	public Coder() {
-		encoding = "UTF-8";
-	}
+    /**
+     * Creates a new Coder object.
+     */
+    public Coder() {
+        encoding = "UTF-8";
+    }
 
-	/**
-	 * Returns character encoding scheme used when encoding or decoding strings.
-	 */
-	public String getEncoding() {
-		return encoding;
-	}
+    /**
+     * Returns character encoding scheme used when encoding or decoding strings.
+     */
+    public String getEncoding() {
+        return encoding;
+    }
 
-	/**
-	 * Sets the character encoding scheme used when encoding or decoding
-	 * strings.
-	 * 
-	 * If the character set encoding is not supported by the Java environment
-	 * then an UnsupportedCharsetException will be thrown. If the character set
-	 * cannot be identified then an IllegalCharsetNameException will be thrown.
-	 * 
-	 * @param charSet
-	 *            the name of the character set used to encode strings.
-	 */
-	public void setEncoding(final String charSet) {
-		if (!Charset.isSupported(charSet)) {
-			throw new UnsupportedCharsetException(String.format(
-					Strings.INVALID_ENCODING, charSet));
-		}
-		encoding = charSet;
-	}
+    /**
+     * Sets the character encoding scheme used when encoding or decoding
+     * strings.
+     * 
+     * If the character set encoding is not supported by the Java environment
+     * then an UnsupportedCharsetException will be thrown. If the character set
+     * cannot be identified then an IllegalCharsetNameException will be thrown.
+     * 
+     * @param charSet
+     *            the name of the character set used to encode strings.
+     */
+    public void setEncoding(final String charSet) {
+        if (!Charset.isSupported(charSet)) {
+            throw new UnsupportedCharsetException(String.format(
+                    Strings.INVALID_ENCODING, charSet));
+        }
+        encoding = charSet;
+    }
 
-	/**
-	 * Returns the array of bytes containing the encoded data.
-	 */
-	public byte[] getData() {
-		return Arrays.copyOf(data, data.length);
-	}
+    /**
+     * Returns the array of bytes containing the encoded data.
+     */
+    public byte[] getData() {
+        return Arrays.copyOf(data, data.length);
+    }
 
-	/**
-	 * Sets the array of bytes used for the encoded data.
-	 * 
-	 * @param bytes
-	 *            an array of bytes.
-	 */
-	public void setData(final byte[] bytes) {
-		data = new byte[bytes.length];
-		index = 0;
-		offset = 0;
-		pointer = 0;
-		end = bytes.length << 3;
-		data = Arrays.copyOf(bytes, bytes.length);
-	}
+    /**
+     * Sets the array of bytes used for the encoded data.
+     * 
+     * @param bytes
+     *            an array of bytes.
+     */
+    public void setData(final byte[] bytes) {
+        data = new byte[bytes.length];
+        index = 0;
+        offset = 0;
+        pointer = 0;
+        end = bytes.length << 3;
+        data = Arrays.copyOf(bytes, bytes.length);
+    }
 
-	/**
-	 * Sets the internal buffer used for encoding objects to the specified size.
-	 * 
-	 * @param size
-	 *            the size of the internal buffer in bytes.
-	 */
-	public void setData(final int size) {
-		data = new byte[size];
-		index = 0;
-		offset = 0;
-		pointer = 0;
-		end = data.length << 3;
-	}
+    /**
+     * Sets the internal buffer used for encoding objects to the specified size.
+     * 
+     * @param size
+     *            the size of the internal buffer in bytes.
+     */
+    public void setData(final int size) {
+        data = new byte[size];
+        index = 0;
+        offset = 0;
+        pointer = 0;
+        end = data.length << 3;
+    }
 
-	/**
-	 * Returns the location, in bits, where the next value will be read or
-	 * written.
-	 */
-	public int getPointer() {
-		return (index << 3) + offset;
-	}
+    /**
+     * Returns the location, in bits, where the next value will be read or
+     * written.
+     */
+    public int getPointer() {
+        return (index << 3) + offset;
+    }
 
-	/**
-	 * Sets the location, in bits, where the next value will be read or written.
-	 * 
-	 * @param location
-	 *            the offset in bits from the start of the array of bytes.
-	 */
-	public void setPointer(final int location) {
-		index = location >>> 3;
-		offset = location & 7;
-	}
+    /**
+     * Sets the location, in bits, where the next value will be read or written.
+     * 
+     * @param location
+     *            the offset in bits from the start of the array of bytes.
+     */
+    public void setPointer(final int location) {
+        index = location >>> 3;
+        offset = location & 7;
+    }
 
-	/**
-	 * Changes the location where the next value will be read or written by.
-	 * 
-	 * @param numberOfBits
-	 *            the number of bits to add to the current location.
-	 */
-	public void adjustPointer(final int numberOfBits) {
-		pointer = (index << 3) + offset + numberOfBits;
-		index = pointer >>> 3;
-		offset = pointer & 7;
-	}
+    /**
+     * Changes the location where the next value will be read or written by.
+     * 
+     * @param numberOfBits
+     *            the number of bits to add to the current location.
+     */
+    public void adjustPointer(final int numberOfBits) {
+        pointer = (index << 3) + offset + numberOfBits;
+        index = pointer >>> 3;
+        offset = pointer & 7;
+    }
 
-	/**
-	 * Changes the location to the next byte boundary.
-	 */
-	public void alignToByte() {
-		if (offset > 0) {
-			index += 1;
-			offset = 0;
-		}
-	}
+    /**
+     * Changes the location to the next byte boundary.
+     */
+    public void alignToByte() {
+        if (offset > 0) {
+            index += 1;
+            offset = 0;
+        }
+    }
 
-	/**
-	 * Returns true of the internal pointer is at the end of the buffer.
-	 */
-	public boolean eof() {
-		return index == data.length && offset == 0;
-	}
+    /**
+     * Returns true of the internal pointer is at the end of the buffer.
+     */
+    public boolean eof() {
+        return (index == data.length) && (offset == 0);
+    }
 }

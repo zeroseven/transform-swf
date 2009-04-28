@@ -29,16 +29,16 @@
  */
 package com.flagstone.transform.fillstyle;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Ignore;
 import org.junit.Test;
-
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertArrayEquals;
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
@@ -47,56 +47,55 @@ import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.Color;
 import com.flagstone.transform.datatype.CoordTransform;
 
-
-
 public final class FocalGradientFillTest {
 
-	private static transient boolean radial = false;
-	private static transient CoordTransform transform = CoordTransform.translate(1, 2);
-	private static transient List<Gradient> list = new ArrayList<Gradient>();
+    private static transient boolean radial = false;
+    private static transient CoordTransform transform = CoordTransform
+            .translate(1, 2);
+    private static transient List<Gradient> list = new ArrayList<Gradient>();
 
-	static {
-		list.add(new Gradient(1, new Color(2, 3, 4)));
-		list.add(new Gradient(5, new Color(6, 7, 8)));
-	}
+    static {
+        list.add(new Gradient(1, new Color(2, 3, 4)));
+        list.add(new Gradient(5, new Color(6, 7, 8)));
+    }
 
-	private transient FocalGradientFill fixture;
+    private transient FocalGradientFill fixture;
 
-	private transient final byte[] encoded = new byte[] {};
+    private transient final byte[] encoded = new byte[] {};
 
-	@Test
-	@Ignore
-	public void checkCopy() {
-		// fixture = new FocalGradientFill(type, transform, list);
-		final FocalGradientFill copy = fixture.copy();
+    @Test
+    @Ignore
+    public void checkCopy() {
+        // fixture = new FocalGradientFill(type, transform, list);
+        final FocalGradientFill copy = fixture.copy();
 
-		assertNotSame(fixture.getGradients(), copy.getGradients());
-		assertEquals(fixture.toString(), copy.toString());
-	}
+        assertNotSame(fixture.getGradients(), copy.getGradients());
+        assertEquals(fixture.toString(), copy.toString());
+    }
 
-	@Test
-	@Ignore
-	public void encode() throws CoderException {
-		final SWFEncoder encoder = new SWFEncoder(encoded.length);
-		final Context context = new Context();
+    @Test
+    @Ignore
+    public void encode() throws CoderException {
+        final SWFEncoder encoder = new SWFEncoder(encoded.length);
+        final Context context = new Context();
 
-		// fixture = new FocalGradientFill(type, transform, list);
-		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
-		fixture.encode(encoder, context);
+        // fixture = new FocalGradientFill(type, transform, list);
+        assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
+        fixture.encode(encoder, context);
 
-		assertTrue(encoder.eof());
-		assertArrayEquals(encoded, encoder.getData());
-	}
+        assertTrue(encoder.eof());
+        assertArrayEquals(encoded, encoder.getData());
+    }
 
-	@Test
-	@Ignore
-	public void decode() throws CoderException {
-		final SWFDecoder decoder = new SWFDecoder(encoded);
-		final Context context = new Context();
+    @Test
+    @Ignore
+    public void decode() throws CoderException {
+        final SWFDecoder decoder = new SWFDecoder(encoded);
+        final Context context = new Context();
 
-		fixture = new FocalGradientFill(decoder, context);
+        fixture = new FocalGradientFill(decoder, context);
 
-		assertTrue(decoder.eof());
-		// TODO compare fields
-	}
+        assertTrue(decoder.eof());
+        // TODO compare fields
+    }
 }

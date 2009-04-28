@@ -29,12 +29,12 @@
  */
 package com.flagstone.transform.action;
 
-import org.junit.Test;
-
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
 
 import com.flagstone.transform.coder.ActionTypes;
 import com.flagstone.transform.coder.CoderException;
@@ -44,53 +44,53 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 public final class RegisterCopyTest {
 
-	private static transient final int type = ActionTypes.REGISTER_COPY;
-	private static transient final int number = 1;
+    private static transient final int type = ActionTypes.REGISTER_COPY;
+    private static transient final int number = 1;
 
-	private transient RegisterCopy fixture;
+    private transient RegisterCopy fixture;
 
-	private transient final byte[] encoded = new byte[] { (byte) type, 0x02,
-			0x00, 0x01 };
+    private transient final byte[] encoded = new byte[] { (byte) type, 0x02,
+            0x00, 0x01 };
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAccessorForRegisterNumberWithLowerBound() {
-		fixture = new RegisterCopy(-1);
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkAccessorForRegisterNumberWithLowerBound() {
+        fixture = new RegisterCopy(-1);
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAccessorForRegisterNumberWithUpperBound() {
-		fixture = new RegisterCopy(256);
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkAccessorForRegisterNumberWithUpperBound() {
+        fixture = new RegisterCopy(256);
+    }
 
-	@Test
-	public void checkCopy() {
-		fixture = new RegisterCopy(number);
-		final RegisterCopy copy = fixture.copy();
+    @Test
+    public void checkCopy() {
+        fixture = new RegisterCopy(number);
+        final RegisterCopy copy = fixture.copy();
 
-		assertNotSame(fixture, copy);
-		assertEquals(fixture.toString(), copy.toString());
-	}
+        assertNotSame(fixture, copy);
+        assertEquals(fixture.toString(), copy.toString());
+    }
 
-	@Test
-	public void encode() throws CoderException {
-		final SWFEncoder encoder = new SWFEncoder(encoded.length);
-		final Context context = new Context();
+    @Test
+    public void encode() throws CoderException {
+        final SWFEncoder encoder = new SWFEncoder(encoded.length);
+        final Context context = new Context();
 
-		fixture = new RegisterCopy(number);
-		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
-		fixture.encode(encoder, context);
+        fixture = new RegisterCopy(number);
+        assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
+        fixture.encode(encoder, context);
 
-		assertTrue(encoder.eof());
-		assertArrayEquals(encoded, encoder.getData());
-	}
+        assertTrue(encoder.eof());
+        assertArrayEquals(encoded, encoder.getData());
+    }
 
-	@Test
-	public void decode() throws CoderException {
-		final SWFDecoder decoder = new SWFDecoder(encoded);
+    @Test
+    public void decode() throws CoderException {
+        final SWFDecoder decoder = new SWFDecoder(encoded);
 
-		fixture = new RegisterCopy(decoder);
+        fixture = new RegisterCopy(decoder);
 
-		assertTrue(decoder.eof());
-		assertEquals(number, fixture.getRegisterNumber());
-	}
+        assertTrue(decoder.eof());
+        assertEquals(number, fixture.getRegisterNumber());
+    }
 }

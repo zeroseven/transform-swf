@@ -24,55 +24,55 @@ import com.flagstone.transform.Strings;
  */
 public final class TableIndex {
 
-	private final static String FORMAT = "TableIndex: { index=%d }";
+    private final static String FORMAT = "TableIndex: { index=%d }";
 
-	private final transient int index;
+    private final transient int index;
 
-	/**
-	 * Creates a TableIndex object referencing the value stored in the literal
-	 * table.
-	 * 
-	 * @param anIndex
-	 *            the index into the literal table. Must be in the range
-	 *            0..65535.
-	 */
-	public TableIndex(final int anIndex) {
-		if (anIndex < 0 || anIndex > 65535) {
-			throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
-		}
-		index = anIndex;
-	}
+    /**
+     * Creates a TableIndex object referencing the value stored in the literal
+     * table.
+     * 
+     * @param anIndex
+     *            the index into the literal table. Must be in the range
+     *            0..65535.
+     */
+    public TableIndex(final int anIndex) {
+        if ((anIndex < 0) || (anIndex > 65535)) {
+            throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
+        }
+        index = anIndex;
+    }
 
-	/**
-	 * Returns the index in the table of string literals.
-	 */
-	public int getIndex() {
-		return index;
-	}
+    /**
+     * Returns the index in the table of string literals.
+     */
+    public int getIndex() {
+        return index;
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, index);
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, index);
+    }
 
-	@Override
-	public boolean equals(final Object other) {
-		boolean result;
+    @Override
+    public boolean equals(final Object other) {
+        boolean result;
 
-		if (other == null) {
-			result = false;
-		} else if (other == this) {
-			result = true;
-		} else if (other instanceof TableIndex) {
-			result = index == ((TableIndex) other).index;
-		} else {
-			result = false;
-		}
-		return result;
-	}
+        if (other == null) {
+            result = false;
+        } else if (other == this) {
+            result = true;
+        } else if (other instanceof TableIndex) {
+            result = index == ((TableIndex) other).index;
+        } else {
+            result = false;
+        }
+        return result;
+    }
 
-	@Override
-	public int hashCode() {
-		return 31 * index;
-	}
+    @Override
+    public int hashCode() {
+        return 31 * index;
+    }
 }

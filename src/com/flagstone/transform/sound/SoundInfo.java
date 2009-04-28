@@ -36,8 +36,8 @@ import java.util.Map;
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFDecoder;
+import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFEncoder;
 
 //TODO(doc) Review
@@ -72,275 +72,274 @@ import com.flagstone.transform.coder.SWFEncoder;
  * @see DefineSound
  */
 public final class SoundInfo implements SWFEncodeable {
-	private static final String FORMAT = "SoundInfo: { identifier=%d; mode=%s; inPoint=%d; outPoint=%d; loopCount=%d; envelopes=%s; }";
+    private static final String FORMAT = "SoundInfo: { identifier=%d; mode=%s; inPoint=%d; outPoint=%d; loopCount=%d; envelopes=%s; }";
 
-	// TODO(doc)
-	public enum Mode {
-		/** Start playing the sound. */
-		START(0),
-		/** Start playing the sound or continues if it is already playing. */
-		CONTINUE(1),
-		/** Stop playing the sound. */
-		STOP(2);
+    // TODO(doc)
+    public enum Mode {
+        /** Start playing the sound. */
+        START(0),
+        /** Start playing the sound or continues if it is already playing. */
+        CONTINUE(1),
+        /** Stop playing the sound. */
+        STOP(2);
 
-		private static final Map<Integer, Mode> TABLE = new LinkedHashMap<Integer, Mode>();
+        private static final Map<Integer, Mode> TABLE = new LinkedHashMap<Integer, Mode>();
 
-		static {
-			for (Mode encoding : values()) {
-				TABLE.put(encoding.value, encoding);
-			}
-		}
+        static {
+            for (final Mode encoding : values()) {
+                TABLE.put(encoding.value, encoding);
+            }
+        }
 
-		public static Mode fromInt(final int type) {
-			return TABLE.get(type);
-		}
+        public static Mode fromInt(final int type) {
+            return TABLE.get(type);
+        }
 
-		private final int value;
+        private final int value;
 
-		private Mode(final int value) {
-			this.value = value;
-		}
+        private Mode(final int value) {
+            this.value = value;
+        }
 
-		public int getValue() {
-			return value;
-		}
-	}
+        public int getValue() {
+            return value;
+        }
+    }
 
-	private int identifier;
-	private Mode mode;
-	private Integer inPoint;
-	private Integer outPoint;
-	private Integer loopCount;
-	private Envelope envelope;
+    private int identifier;
+    private Mode mode;
+    private Integer inPoint;
+    private Integer outPoint;
+    private Integer loopCount;
+    private Envelope envelope;
 
-	// TODO(doc)
-	public SoundInfo(final SWFDecoder coder)
-			throws CoderException {
-		identifier = coder.readWord(2, false);
-		mode = Mode.fromInt(coder.readBits(4, false));
-		final boolean hasEnvelope = coder.readBits(1, false) != 0;
-		final boolean hasLoopCount = coder.readBits(1, false) != 0;
-		final boolean hasOutPoint = coder.readBits(1, false) != 0;
-		final boolean hasInPoint = coder.readBits(1, false) != 0;
+    // TODO(doc)
+    public SoundInfo(final SWFDecoder coder) throws CoderException {
+        identifier = coder.readWord(2, false);
+        mode = Mode.fromInt(coder.readBits(4, false));
+        final boolean hasEnvelope = coder.readBits(1, false) != 0;
+        final boolean hasLoopCount = coder.readBits(1, false) != 0;
+        final boolean hasOutPoint = coder.readBits(1, false) != 0;
+        final boolean hasInPoint = coder.readBits(1, false) != 0;
 
-		if (hasInPoint) {
-			inPoint = coder.readWord(4, false);
-		}
+        if (hasInPoint) {
+            inPoint = coder.readWord(4, false);
+        }
 
-		if (hasOutPoint) {
-			outPoint = coder.readWord(4, false);
-		}
+        if (hasOutPoint) {
+            outPoint = coder.readWord(4, false);
+        }
 
-		if (hasLoopCount) {
-			loopCount = coder.readWord(2, false);
-		}
+        if (hasLoopCount) {
+            loopCount = coder.readWord(2, false);
+        }
 
-		if (hasEnvelope) {
-			envelope = new Envelope(coder);
-		}
-	}
+        if (hasEnvelope) {
+            envelope = new Envelope(coder);
+        }
+    }
 
-	/**
-	 * Creates ad Sound object specifying how the sound is played and the number
-	 * of times the sound is repeated.
-	 * 
-	 * @param uid
-	 *            the unique identifier of the object that contains the sound
-	 *            data.
-	 * @param aMode
-	 *            how the sound is synchronised when the frames are displayed:
-	 *            Play - do not play the sound if it is already playing and Stop
-	 *            - stop playing the sound.
-	 * @param aCount
-	 *            the number of times the sound is repeated. May be set to zero
-	 *            if the sound will not be repeated.
-	 */
-	public SoundInfo(final int uid, final Mode aMode, final int aCount,
-			final Envelope envelope) {
-		setIdentifier(uid);
-		setMode(aMode);
-		setLoopCount(aCount);
-		setEnvelope(envelope);
-	}
+    /**
+     * Creates ad Sound object specifying how the sound is played and the number
+     * of times the sound is repeated.
+     * 
+     * @param uid
+     *            the unique identifier of the object that contains the sound
+     *            data.
+     * @param aMode
+     *            how the sound is synchronised when the frames are displayed:
+     *            Play - do not play the sound if it is already playing and Stop
+     *            - stop playing the sound.
+     * @param aCount
+     *            the number of times the sound is repeated. May be set to zero
+     *            if the sound will not be repeated.
+     */
+    public SoundInfo(final int uid, final Mode aMode, final int aCount,
+            final Envelope envelope) {
+        setIdentifier(uid);
+        setMode(aMode);
+        setLoopCount(aCount);
+        setEnvelope(envelope);
+    }
 
-	// TODO(doc)
-	public SoundInfo(final SoundInfo object) {
-		identifier = object.identifier;
-		mode = object.mode;
-		loopCount = object.loopCount;
-		inPoint = object.inPoint;
-		outPoint = object.outPoint;
-		envelope = envelope.copy();
-	}
+    // TODO(doc)
+    public SoundInfo(final SoundInfo object) {
+        identifier = object.identifier;
+        mode = object.mode;
+        loopCount = object.loopCount;
+        inPoint = object.inPoint;
+        outPoint = object.outPoint;
+        envelope = envelope.copy();
+    }
 
-	/**
-	 * Returns the identifier of the sound to the played.
-	 */
-	public int getIdentifier() {
-		return identifier;
-	}
+    /**
+     * Returns the identifier of the sound to the played.
+     */
+    public int getIdentifier() {
+        return identifier;
+    }
 
-	/**
-	 * Returns the synchronisation mode: START - start playing the sound,
-	 * CONTINUE - do not play the sound if it is already playing and STOP - stop
-	 * playing the sound.
-	 */
-	public Mode getMode() {
-		return mode;
-	}
+    /**
+     * Returns the synchronisation mode: START - start playing the sound,
+     * CONTINUE - do not play the sound if it is already playing and STOP - stop
+     * playing the sound.
+     */
+    public Mode getMode() {
+        return mode;
+    }
 
-	/**
-	 * Returns the sample number at which the sound reaches full volume when
-	 * fading in.
-	 */
-	public Integer getInPoint() {
-		return inPoint;
-	}
+    /**
+     * Returns the sample number at which the sound reaches full volume when
+     * fading in.
+     */
+    public Integer getInPoint() {
+        return inPoint;
+    }
 
-	/**
-	 * Returns the sample number at which the sound starts to fade.
-	 */
-	public Integer getOutPoint() {
-		return outPoint;
-	}
+    /**
+     * Returns the sample number at which the sound starts to fade.
+     */
+    public Integer getOutPoint() {
+        return outPoint;
+    }
 
-	/**
-	 * Returns the number of times the sound will be repeated.
-	 */
-	public Integer getLoopCount() {
-		return loopCount;
-	}
+    /**
+     * Returns the number of times the sound will be repeated.
+     */
+    public Integer getLoopCount() {
+        return loopCount;
+    }
 
-	/**
-	 * Returns the Envelope that control the levels the sound is played.
-	 */
-	public Envelope getEnvelope() {
-		return envelope;
-	}
+    /**
+     * Returns the Envelope that control the levels the sound is played.
+     */
+    public Envelope getEnvelope() {
+        return envelope;
+    }
 
-	/**
-	 * Sets the identifier of the sound to the played.
-	 * 
-	 * @param uid
-	 *            the identifier for the sound to be played. Must be in the
-	 *            range 1..65535.
-	 */
-	public void setIdentifier(final int uid) {
-		if (uid < 0 || uid > 65535) {
-			throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
-		}
-		identifier = uid;
-	}
+    /**
+     * Sets the identifier of the sound to the played.
+     * 
+     * @param uid
+     *            the identifier for the sound to be played. Must be in the
+     *            range 1..65535.
+     */
+    public void setIdentifier(final int uid) {
+        if ((uid < 0) || (uid > 65535)) {
+            throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
+        }
+        identifier = uid;
+    }
 
-	/**
-	 * Sets how the sound is synchronised when the frames are displayed: START -
-	 * start playing the sound, CONTINUE - do not play the sound if it is
-	 * already playing and STOP - stop playing the sound.
-	 * 
-	 * @param aMode
-	 *            how the sound is played.
-	 */
-	public void setMode(final Mode mode) {
-		this.mode = mode;
-	}
+    /**
+     * Sets how the sound is synchronised when the frames are displayed: START -
+     * start playing the sound, CONTINUE - do not play the sound if it is
+     * already playing and STOP - stop playing the sound.
+     * 
+     * @param aMode
+     *            how the sound is played.
+     */
+    public void setMode(final Mode mode) {
+        this.mode = mode;
+    }
 
-	/**
-	 * Sets the sample number at which the sound reaches full volume when fading
-	 * in. May be set to zero if the sound does not fade in.
-	 * 
-	 * @param aNumber
-	 *            the sample number which the sound fades in to.
-	 */
-	public void setInPoint(final Integer aNumber) {
-		if (aNumber != null && (aNumber < 0 || aNumber > 65535)) {
-			throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
-		}
-		inPoint = aNumber;
-	}
+    /**
+     * Sets the sample number at which the sound reaches full volume when fading
+     * in. May be set to zero if the sound does not fade in.
+     * 
+     * @param aNumber
+     *            the sample number which the sound fades in to.
+     */
+    public void setInPoint(final Integer aNumber) {
+        if ((aNumber != null) && ((aNumber < 0) || (aNumber > 65535))) {
+            throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
+        }
+        inPoint = aNumber;
+    }
 
-	/**
-	 * Sets the sample number at which the sound starts to fade. May be set to
-	 * zero if the sound does not fade out.
-	 * 
-	 * @param aNumber
-	 *            the sample number at which the sound starts to fade.
-	 */
-	public void setOutPoint(final Integer aNumber) {
-		if (aNumber != null && (aNumber < 0 || aNumber > 65535)) {
-			throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
-		}
-		outPoint = aNumber;
-	}
+    /**
+     * Sets the sample number at which the sound starts to fade. May be set to
+     * zero if the sound does not fade out.
+     * 
+     * @param aNumber
+     *            the sample number at which the sound starts to fade.
+     */
+    public void setOutPoint(final Integer aNumber) {
+        if ((aNumber != null) && ((aNumber < 0) || (aNumber > 65535))) {
+            throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
+        }
+        outPoint = aNumber;
+    }
 
-	/**
-	 * Sets the number of times the sound is repeated. May be set to zero if the
-	 * sound will not be repeated.
-	 * 
-	 * @param aNumber
-	 *            the number of times the sound is repeated.
-	 */
-	public void setLoopCount(final Integer aNumber) {
-		if (aNumber != null && (aNumber < 0 || aNumber > 65535)) {
-			throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
-		}
-		loopCount = aNumber;
-	}
+    /**
+     * Sets the number of times the sound is repeated. May be set to zero if the
+     * sound will not be repeated.
+     * 
+     * @param aNumber
+     *            the number of times the sound is repeated.
+     */
+    public void setLoopCount(final Integer aNumber) {
+        if ((aNumber != null) && ((aNumber < 0) || (aNumber > 65535))) {
+            throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
+        }
+        loopCount = aNumber;
+    }
 
-	/**
-	 * Sets the Envelope that define the levels at which a sound is played over
-	 * the duration of the sound. May be set to null if no envelope is defined.
-	 * 
-	 * @param anArray
-	 *            an array of Envelope objects.
-	 */
-	public void setEnvelope(final Envelope envelope) {
-		this.envelope = envelope;
-	}
+    /**
+     * Sets the Envelope that define the levels at which a sound is played over
+     * the duration of the sound. May be set to null if no envelope is defined.
+     * 
+     * @param anArray
+     *            an array of Envelope objects.
+     */
+    public void setEnvelope(final Envelope envelope) {
+        this.envelope = envelope;
+    }
 
-	public SoundInfo copy() {
-		return new SoundInfo(this);
-	}
+    public SoundInfo copy() {
+        return new SoundInfo(this);
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, identifier, mode, inPoint, outPoint,
-				loopCount, envelope);
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, identifier, mode, inPoint, outPoint,
+                loopCount, envelope);
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		int length = 3;
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        int length = 3;
 
-		length += (inPoint == 0) ? 0 : 4;
-		length += (outPoint == 0) ? 0 : 4;
-		length += (loopCount == 0) ? 0 : 2;
+        length += (inPoint == 0) ? 0 : 4;
+        length += (outPoint == 0) ? 0 : 4;
+        length += (loopCount == 0) ? 0 : 2;
 
-		if (envelope != null) {
-			length += envelope.prepareToEncode(coder, context);
-		}
+        if (envelope != null) {
+            length += envelope.prepareToEncode(coder, context);
+        }
 
-		return length;
-	}
+        return length;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		coder.writeWord(identifier, 2);
-		coder.writeBits(mode.getValue(), 4);
-		coder.writeBits(envelope == null ? 1 : 0, 1);
-		coder.writeBits(loopCount == 0 ? 0 : 1, 1);
-		coder.writeBits(outPoint == 0 ? 0 : 1, 1);
-		coder.writeBits(inPoint == 0 ? 0 : 1, 1);
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        coder.writeWord(identifier, 2);
+        coder.writeBits(mode.getValue(), 4);
+        coder.writeBits(envelope == null ? 1 : 0, 1);
+        coder.writeBits(loopCount == 0 ? 0 : 1, 1);
+        coder.writeBits(outPoint == 0 ? 0 : 1, 1);
+        coder.writeBits(inPoint == 0 ? 0 : 1, 1);
 
-		if (inPoint != 0) {
-			coder.writeWord(inPoint, 4);
-		}
-		if (outPoint != 0) {
-			coder.writeWord(outPoint, 4);
-		}
-		if (loopCount != 0) {
-			coder.writeWord(loopCount, 2);
-		}
-		if (envelope != null) {
-			envelope.encode(coder, context);
-		}
-	}
+        if (inPoint != 0) {
+            coder.writeWord(inPoint, 4);
+        }
+        if (outPoint != 0) {
+            coder.writeWord(outPoint, 4);
+        }
+        if (loopCount != 0) {
+            coder.writeWord(loopCount, 2);
+        }
+        if (envelope != null) {
+            envelope.encode(coder, context);
+        }
+    }
 }

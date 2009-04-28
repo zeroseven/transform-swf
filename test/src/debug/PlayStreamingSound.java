@@ -1,7 +1,6 @@
 package debug;
 
 import java.io.File;
-import java.util.Iterator;
 import java.util.List;
 
 import com.flagstone.transform.Background;
@@ -12,41 +11,41 @@ import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.datatype.WebPalette;
 
 public final class PlayStreamingSound {
-	public static void main(final String[] args) {
-		
-		final File sourceFile = new File(args[0]);
-		final File destFile = new File(args[1]);
+    public static void main(final String[] args) {
 
-		try {
-			if (!destFile.getParentFile().exists()) {
-				destFile.getParentFile().mkdirs();
-			}
+        final File sourceFile = new File(args[0]);
+        final File destFile = new File(args[1]);
 
-			final float framesPerSecond = 12.0f;
+        try {
+            if (!destFile.getParentFile().exists()) {
+                destFile.getParentFile().mkdirs();
+            }
 
-			final Movie movie = new Movie();
-			final List<MovieTag> sound = null; // TODO
-											// SoundFactory.streamSound((int)framesPerSecond,
-											// sourceFile);
+            final float framesPerSecond = 12.0f;
 
-			movie.setFrameSize(new Bounds(0, 0, 8000, 4000));
-			movie.setFrameRate(framesPerSecond);
+            final Movie movie = new Movie();
+            final List<MovieTag> sound = null; // TODO
+            // SoundFactory.streamSound((int)framesPerSecond,
+            // sourceFile);
 
-			movie.add(new Background(WebPalette.LIGHT_BLUE.color()));
-			movie.add(sound.remove(0));
+            movie.setFrameSize(new Bounds(0, 0, 8000, 4000));
+            movie.setFrameRate(framesPerSecond);
 
-			for (final Iterator<MovieTag> i = sound.iterator(); i.hasNext();) {
-				movie.add(i.next());
-				movie.add(ShowFrame.getInstance());
-			}
+            movie.add(new Background(WebPalette.LIGHT_BLUE.color()));
+            movie.add(sound.remove(0));
 
-			movie.encodeToFile(destFile);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+            for (final MovieTag movieTag : sound) {
+                movie.add(movieTag);
+                movie.add(ShowFrame.getInstance());
+            }
 
-	private PlayStreamingSound() {
-		// Private.
-	}
+            movie.encodeToFile(destFile);
+        } catch (final Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private PlayStreamingSound() {
+        // Private.
+    }
 }

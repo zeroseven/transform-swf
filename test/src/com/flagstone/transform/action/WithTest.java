@@ -29,16 +29,16 @@
  */
 package com.flagstone.transform.action;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertArrayEquals;
 
 import com.flagstone.transform.coder.Action;
 import com.flagstone.transform.coder.ActionDecoder;
@@ -51,60 +51,60 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 public final class WithTest {
 
-	private static List<Action> list;
+    private static List<Action> list;
 
-	@BeforeClass
-	public static void initialize() {
-		list = new ArrayList<Action>();
-		list.add(BasicAction.ADD);
-		list.add(BasicAction.END);
-	}
+    @BeforeClass
+    public static void initialize() {
+        list = new ArrayList<Action>();
+        list.add(BasicAction.ADD);
+        list.add(BasicAction.END);
+    }
 
-	private static transient final int type = ActionTypes.WITH;
-	private transient With fixture;
+    private static transient final int type = ActionTypes.WITH;
+    private transient With fixture;
 
-	private transient final byte[] encoded = new byte[] { (byte) type, 0x02,
-			0x00, 0x02, 0x00, ActionTypes.ADD, ActionTypes.END };
+    private transient final byte[] encoded = new byte[] { (byte) type, 0x02,
+            0x00, 0x02, 0x00, ActionTypes.ADD, ActionTypes.END };
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAddNullNull() {
-		fixture = new With(list);
-		fixture.add(null);
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkAddNullNull() {
+        fixture = new With(list);
+        fixture.add(null);
+    }
 
-	@Test
-	public void checkCopy() {
-		fixture = new With(list);
-		final With copy = fixture.copy();
+    @Test
+    public void checkCopy() {
+        fixture = new With(list);
+        final With copy = fixture.copy();
 
-		assertNotSame(fixture.getActions(), copy.getActions());
-		assertEquals(fixture.toString(), copy.toString());
-	}
+        assertNotSame(fixture.getActions(), copy.getActions());
+        assertEquals(fixture.toString(), copy.toString());
+    }
 
-	@Test
-	public void encode() throws CoderException {
-		final SWFEncoder encoder = new SWFEncoder(encoded.length);
-		final Context context = new Context();
+    @Test
+    public void encode() throws CoderException {
+        final SWFEncoder encoder = new SWFEncoder(encoded.length);
+        final Context context = new Context();
 
-		fixture = new With(list);
-		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
-		fixture.encode(encoder, context);
+        fixture = new With(list);
+        assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
+        fixture.encode(encoder, context);
 
-		assertTrue(encoder.eof());
-		assertArrayEquals(encoded, encoder.getData());
-	}
+        assertTrue(encoder.eof());
+        assertArrayEquals(encoded, encoder.getData());
+    }
 
-	@Test
-	public void decode() throws CoderException {
-		final SWFDecoder decoder = new SWFDecoder(encoded);
-		final Context context = new Context();
-		DecoderRegistry registry = new DecoderRegistry();
-		registry.setActionDecoder(new ActionDecoder());
-		context.setRegistry(registry);
+    @Test
+    public void decode() throws CoderException {
+        final SWFDecoder decoder = new SWFDecoder(encoded);
+        final Context context = new Context();
+        final DecoderRegistry registry = new DecoderRegistry();
+        registry.setActionDecoder(new ActionDecoder());
+        context.setRegistry(registry);
 
-		fixture = new With(decoder, context);
+        fixture = new With(decoder, context);
 
-		assertTrue(decoder.eof());
-		assertEquals(list, fixture.getActions());
-	}
+        assertTrue(decoder.eof());
+        assertEquals(list, fixture.getActions());
+    }
 }

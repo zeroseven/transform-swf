@@ -29,28 +29,28 @@
  */
 package com.flagstone.transform.action;
 
-import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
 
 public final class RegisterIndexTest {
 
-	private transient RegisterIndex fixture;
+    private transient RegisterIndex fixture;
 
-	@Test
-	public void checkConstructorSetsIndex() {
-		int index = 10;
-		fixture = new RegisterIndex(index);
-		assertEquals(index, fixture.getIndex());
-	}
+    @Test
+    public void checkConstructorSetsIndex() {
+        final int index = 10;
+        fixture = new RegisterIndex(index);
+        assertEquals(index, fixture.getIndex());
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkNegativeIndexThrowsException() {
-		fixture = new RegisterIndex(-1);
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkNegativeIndexThrowsException() {
+        fixture = new RegisterIndex(-1);
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkLargeIndexThrowsException() {
-		fixture = new RegisterIndex(256);
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkLargeIndexThrowsException() {
+        fixture = new RegisterIndex(256);
+    }
 }

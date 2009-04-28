@@ -16,7 +16,12 @@ import com.flagstone.transform.Movie;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.datatype.Bounds;
-import com.flagstone.transform.font.*;
+import com.flagstone.transform.font.CharacterEncoding;
+import com.flagstone.transform.font.DefineFont;
+import com.flagstone.transform.font.DefineFont2;
+import com.flagstone.transform.font.FontInfo;
+import com.flagstone.transform.font.FontInfo2;
+import com.flagstone.transform.font.Kerning;
 import com.flagstone.transform.shape.Shape;
 
 /**
@@ -67,326 +72,331 @@ import com.flagstone.transform.shape.Shape;
  * </p>
  */
 public final class SWFFontDecoder implements FontProvider, FontDecoder {
-	
-	private transient String name;
-	private transient boolean bold;
-	private transient boolean italic;
-
-	private transient CharacterEncoding encoding;
-
-	private transient float ascent;
-	private transient float descent;
-	private transient float leading;
-
-	private transient int[] charToGlyph;
-	private transient int[] glyphToChar;
-
-	private transient Glyph[] glyphTable;
-
-	private transient int glyphCount;
-	private transient int missingGlyph;
-	private transient char maxChar;
-
-	private transient List<Kerning> kernings = new ArrayList<Kerning>();
-
-	private transient int scale;
-	private transient int metrics;
-	private transient int glyphOffset;
-
-	public FontDecoder newDecoder() {
-		return new TTFDecoder();
-	}
-
-	public void read(final File file) throws FileNotFoundException, IOException,
-			DataFormatException {
-		final FileInputStream stream = new FileInputStream(file);
-		try {
-			decode(stream);
-		} finally {
-			stream.close();
-		}
-	}
-
-	public void read(final URL url) throws FileNotFoundException, IOException,
-			DataFormatException {
-		final URLConnection connection = url.openConnection();
-
-		if (connection.getContentLength() < 0) {
-			throw new FileNotFoundException(url.getFile());
-		}
-
-		final InputStream stream = connection.getInputStream();
-
-		try {
-			decode(stream);
-		} finally {
-			stream.close();
-		}
-	}
-
-	public Font[] getFonts() {
-		final Font[] fonts = null;
-		//TODO(implement)
-		return fonts;
-	}
-
-	private void decode(final InputStream stream) throws FileNotFoundException,
-			CoderException, IOException, DataFormatException {
-		final Movie movie = new Movie();
-		movie.decodeFromStream(stream);
-
-		final List<Font> list = new ArrayList<Font>();
-
-		SWFFontDecoder decoder;
-
-		for (MovieTag obj : movie.getObjects()) {
-			if (obj instanceof DefineFont2) {
-				decoder = new SWFFontDecoder();
-				decoder.decode((DefineFont2) obj);
-			}
-		}
-	}
-
-	/**
-	 * Initialise this object with the information from a flash font definition.
-	 * 
-	 * @param glyphs
-	 *            a DefineFont object which contains the definition of the
-	 *            glyphs.
-	 * 
-	 * @param info
-	 *            a FontInfo object that contains information on the font name,
-	 *            weight, style and character codes.
-	 */
-	public void decode(final DefineFont glyphs, final FontInfo info) {
-		name = info.getName();
-		bold = info.isBold();
-		italic = info.isItalic();
-
-		encoding = info.getEncoding();
-
-		if (encoding == CharacterEncoding.ANSI) {
-			encoding = CharacterEncoding.UCS2;
-		}
-
-		ascent = 0;
-		descent = 0;
-		leading = 0;
-
-		missingGlyph = 0;
-
-		glyphCount = glyphs.getShapes().size();
-		glyphTable = new Glyph[glyphCount];
-		glyphToChar = new int[glyphCount];
-
-		maxChar = 0;
-		charToGlyph = new int[0];
-
-		if (glyphCount > 0) {
-			int glyphIndex = 0;
-
-			for (final Iterator<Shape> i = glyphs.getShapes().iterator(); i.hasNext(); glyphIndex++) {
-				glyphTable[glyphIndex] = new Glyph(i.next());
-			}
-
-			glyphIndex = 0;
-
-			for (Integer code : info.getCodes()) {
-				maxChar = (char) (code > maxChar ? code : maxChar);
-			}
-
-			charToGlyph = new int[maxChar + 1];
-
-			for (Integer code : info.getCodes()) {
-				charToGlyph[code] = glyphIndex;
-				glyphToChar[glyphIndex] = code;
-			}
-
-			/*
-			 * TODO if (glyphs.getAdvances() != null) { glyphIndex = 0;
-			 * 
-			 * for (Iterator<Integer> i = font.getAdvances().iterator();
-			 * i.hasNext(); glyphIndex++)
-			 * glyphTable[glyphIndex].setAdvance(i.next()); }
-			 * 
-			 * if (font.getBounds() != null) { glyphIndex = 0;
-			 * 
-			 * for (Iterator<Bounds> i = font.getBounds().iterator();
-			 * i.hasNext(); glyphIndex++)
-			 * glyphTable[glyphIndex].setBounds(i.next()); }
-			 */
-		}
-	}
-
-	/**
-	 * Initialise this object with the information from a flash font definition.
-	 * 
-	 * @param glyphs
-	 *            a DefineFont object which contains the definition of the
-	 *            glyphs.
-	 * 
-	 * @param info
-	 *            a FontInfo2 object that contains information on the font name,
-	 *            weight, style and character codes.
-	 */
-	public void decode(final DefineFont glyphs, final FontInfo2 info) {
-		name = info.getName();
-		bold = info.isBold();
-		italic = info.isItalic();
-
-		encoding = info.getEncoding();
-
-		if (encoding == CharacterEncoding.ANSI) {
-			encoding = CharacterEncoding.UCS2;
-		}
-
-		// TODO ascent = info.getAscent();
-		// TODO descent = info.getDescent();
-		// TODO leading = info.getLeading();
-
-		missingGlyph = 0;
-
-		glyphCount = glyphs.getShapes().size();
-		glyphTable = new Glyph[glyphCount];
-		glyphToChar = new int[glyphCount];
-
-		maxChar = 0;
-		charToGlyph = new int[0];
-
-		if (glyphCount > 0) {
-			int glyphIndex = 0;
-
-			for (final Iterator<Shape> i = glyphs.getShapes().iterator(); i.hasNext(); glyphIndex++) {
-				glyphTable[glyphIndex] = new Glyph(i.next());
-			}
-
-			glyphIndex = 0;
-
-			for (Integer code : info.getCodes()) {
-				maxChar = (char) (code > maxChar ? code : maxChar);
-			}
-
-			charToGlyph = new int[maxChar + 1];
-
-			int code;
-
-			for (final Iterator<Integer> i = info.getCodes().iterator(); i.hasNext(); glyphIndex++) {
-				code = i.next();
-
-				charToGlyph[code] = glyphIndex;
-				glyphToChar[glyphIndex] = code;
-			}
-
-			/*
-			 * TODO if (glyphs.getAdvances() != null) { glyphIndex = 0;
-			 * 
-			 * for (Iterator<Integer> i = font.getAdvances().iterator();
-			 * i.hasNext(); glyphIndex++)
-			 * glyphTable[glyphIndex].setAdvance(i.next()); }
-			 * 
-			 * if (font.getBounds() != null) { glyphIndex = 0;
-			 * 
-			 * for (Iterator<Bounds> i = font.getBounds().iterator();
-			 * i.hasNext(); glyphIndex++)
-			 * glyphTable[glyphIndex].setBounds(i.next()); }
-			 */
-		}
-	}
-
-	/**
-	 * Initialise this object with the information from a flash font definition.
-	 * 
-	 * @param font
-	 *            a DefineFont2 object that contains information on the font
-	 *            name, weight, style and character codes as well as the glyph
-	 *            definitions.
-	 */
-	public void decode(final DefineFont2 font) {
-		name = font.getName();
-		bold = font.isBold();
-		italic = font.isItalic();
-
-		encoding = font.getEncoding();
-
-		if (encoding == CharacterEncoding.ANSI) {
-			encoding = CharacterEncoding.UCS2;
-		}
-
-		ascent = font.getAscent();
-		descent = font.getDescent();
-		leading = font.getLeading();
-
-		missingGlyph = 0;
-
-		glyphCount = font.getShapes().size();
-		glyphTable = new Glyph[glyphCount];
-		glyphToChar = new int[glyphCount];
-
-		maxChar = 0;
-		charToGlyph = new int[0];
-
-		if (glyphCount > 0) {
-			int glyphIndex = 0;
-
-			for (final Iterator<Shape> i = font.getShapes().iterator(); i.hasNext(); glyphIndex++) {
-				glyphTable[glyphIndex] = new Glyph(i.next());
-			}
-
-			glyphIndex = 0;
-
-			for (Integer code : font.getCodes()) {
-				maxChar = (char) (code > maxChar ? code : maxChar);
-			}
-
-			charToGlyph = new int[maxChar + 1];
-
-			int code;
-
-			for (final Iterator<Integer> i = font.getCodes().iterator(); i.hasNext(); glyphIndex++) {
-				code = i.next();
-
-				charToGlyph[code] = glyphIndex;
-				glyphToChar[glyphIndex] = code;
-			}
-
-			if (font.getAdvances() != null) {
-				glyphIndex = 0;
-
-				for (final Iterator<Integer> i = font.getAdvances().iterator(); i
-						.hasNext(); glyphIndex++) {
-					glyphTable[glyphIndex].setAdvance(i.next());
-				}
-			}
-
-			if (font.getBounds() != null) {
-				glyphIndex = 0;
-
-				for (final Iterator<Bounds> i = font.getBounds().iterator(); i
-						.hasNext(); glyphIndex++) {
-					glyphTable[glyphIndex].setBounds(i.next());
-				}
-			}
-		}
-	}
-
-	private byte[] loadFile(final File file) throws FileNotFoundException,
-			IOException {
-		final byte[] data = new byte[(int) file.length()];
-
-		FileInputStream stream = null;
-
-		try {
-			stream = new FileInputStream(file);
-			final int bytesRead = stream.read(data);
-
-			if (bytesRead != data.length) {
-				throw new IOException(file.getAbsolutePath());
-			}
-		} finally {
-			if (stream != null) {
-				stream.close();
-			}
-		}
-		return data;
-	}
+
+    private transient String name;
+    private transient boolean bold;
+    private transient boolean italic;
+
+    private transient CharacterEncoding encoding;
+
+    private transient float ascent;
+    private transient float descent;
+    private transient float leading;
+
+    private transient int[] charToGlyph;
+    private transient int[] glyphToChar;
+
+    private transient Glyph[] glyphTable;
+
+    private transient int glyphCount;
+    private transient int missingGlyph;
+    private transient char maxChar;
+
+    private transient final List<Kerning> kernings = new ArrayList<Kerning>();
+
+    private transient int scale;
+    private transient int metrics;
+    private transient int glyphOffset;
+
+    public FontDecoder newDecoder() {
+        return new TTFDecoder();
+    }
+
+    public void read(final File file) throws FileNotFoundException,
+            IOException, DataFormatException {
+        final FileInputStream stream = new FileInputStream(file);
+        try {
+            decode(stream);
+        } finally {
+            stream.close();
+        }
+    }
+
+    public void read(final URL url) throws FileNotFoundException, IOException,
+            DataFormatException {
+        final URLConnection connection = url.openConnection();
+
+        if (connection.getContentLength() < 0) {
+            throw new FileNotFoundException(url.getFile());
+        }
+
+        final InputStream stream = connection.getInputStream();
+
+        try {
+            decode(stream);
+        } finally {
+            stream.close();
+        }
+    }
+
+    public Font[] getFonts() {
+        final Font[] fonts = null;
+        // TODO(implement)
+        return fonts;
+    }
+
+    private void decode(final InputStream stream) throws FileNotFoundException,
+            CoderException, IOException, DataFormatException {
+        final Movie movie = new Movie();
+        movie.decodeFromStream(stream);
+
+        final List<Font> list = new ArrayList<Font>();
+
+        SWFFontDecoder decoder;
+
+        for (final MovieTag obj : movie.getObjects()) {
+            if (obj instanceof DefineFont2) {
+                decoder = new SWFFontDecoder();
+                decoder.decode((DefineFont2) obj);
+            }
+        }
+    }
+
+    /**
+     * Initialise this object with the information from a flash font definition.
+     * 
+     * @param glyphs
+     *            a DefineFont object which contains the definition of the
+     *            glyphs.
+     * 
+     * @param info
+     *            a FontInfo object that contains information on the font name,
+     *            weight, style and character codes.
+     */
+    public void decode(final DefineFont glyphs, final FontInfo info) {
+        name = info.getName();
+        bold = info.isBold();
+        italic = info.isItalic();
+
+        encoding = info.getEncoding();
+
+        if (encoding == CharacterEncoding.ANSI) {
+            encoding = CharacterEncoding.UCS2;
+        }
+
+        ascent = 0;
+        descent = 0;
+        leading = 0;
+
+        missingGlyph = 0;
+
+        glyphCount = glyphs.getShapes().size();
+        glyphTable = new Glyph[glyphCount];
+        glyphToChar = new int[glyphCount];
+
+        maxChar = 0;
+        charToGlyph = new int[0];
+
+        if (glyphCount > 0) {
+            int glyphIndex = 0;
+
+            for (final Iterator<Shape> i = glyphs.getShapes().iterator(); i
+                    .hasNext(); glyphIndex++) {
+                glyphTable[glyphIndex] = new Glyph(i.next());
+            }
+
+            glyphIndex = 0;
+
+            for (final Integer code : info.getCodes()) {
+                maxChar = (char) (code > maxChar ? code : maxChar);
+            }
+
+            charToGlyph = new int[maxChar + 1];
+
+            for (final Integer code : info.getCodes()) {
+                charToGlyph[code] = glyphIndex;
+                glyphToChar[glyphIndex] = code;
+            }
+
+            /*
+             * TODO if (glyphs.getAdvances() != null) { glyphIndex = 0;
+             * 
+             * for (Iterator<Integer> i = font.getAdvances().iterator();
+             * i.hasNext(); glyphIndex++)
+             * glyphTable[glyphIndex].setAdvance(i.next()); }
+             * 
+             * if (font.getBounds() != null) { glyphIndex = 0;
+             * 
+             * for (Iterator<Bounds> i = font.getBounds().iterator();
+             * i.hasNext(); glyphIndex++)
+             * glyphTable[glyphIndex].setBounds(i.next()); }
+             */
+        }
+    }
+
+    /**
+     * Initialise this object with the information from a flash font definition.
+     * 
+     * @param glyphs
+     *            a DefineFont object which contains the definition of the
+     *            glyphs.
+     * 
+     * @param info
+     *            a FontInfo2 object that contains information on the font name,
+     *            weight, style and character codes.
+     */
+    public void decode(final DefineFont glyphs, final FontInfo2 info) {
+        name = info.getName();
+        bold = info.isBold();
+        italic = info.isItalic();
+
+        encoding = info.getEncoding();
+
+        if (encoding == CharacterEncoding.ANSI) {
+            encoding = CharacterEncoding.UCS2;
+        }
+
+        // TODO ascent = info.getAscent();
+        // TODO descent = info.getDescent();
+        // TODO leading = info.getLeading();
+
+        missingGlyph = 0;
+
+        glyphCount = glyphs.getShapes().size();
+        glyphTable = new Glyph[glyphCount];
+        glyphToChar = new int[glyphCount];
+
+        maxChar = 0;
+        charToGlyph = new int[0];
+
+        if (glyphCount > 0) {
+            int glyphIndex = 0;
+
+            for (final Iterator<Shape> i = glyphs.getShapes().iterator(); i
+                    .hasNext(); glyphIndex++) {
+                glyphTable[glyphIndex] = new Glyph(i.next());
+            }
+
+            glyphIndex = 0;
+
+            for (final Integer code : info.getCodes()) {
+                maxChar = (char) (code > maxChar ? code : maxChar);
+            }
+
+            charToGlyph = new int[maxChar + 1];
+
+            int code;
+
+            for (final Iterator<Integer> i = info.getCodes().iterator(); i
+                    .hasNext(); glyphIndex++) {
+                code = i.next();
+
+                charToGlyph[code] = glyphIndex;
+                glyphToChar[glyphIndex] = code;
+            }
+
+            /*
+             * TODO if (glyphs.getAdvances() != null) { glyphIndex = 0;
+             * 
+             * for (Iterator<Integer> i = font.getAdvances().iterator();
+             * i.hasNext(); glyphIndex++)
+             * glyphTable[glyphIndex].setAdvance(i.next()); }
+             * 
+             * if (font.getBounds() != null) { glyphIndex = 0;
+             * 
+             * for (Iterator<Bounds> i = font.getBounds().iterator();
+             * i.hasNext(); glyphIndex++)
+             * glyphTable[glyphIndex].setBounds(i.next()); }
+             */
+        }
+    }
+
+    /**
+     * Initialise this object with the information from a flash font definition.
+     * 
+     * @param font
+     *            a DefineFont2 object that contains information on the font
+     *            name, weight, style and character codes as well as the glyph
+     *            definitions.
+     */
+    public void decode(final DefineFont2 font) {
+        name = font.getName();
+        bold = font.isBold();
+        italic = font.isItalic();
+
+        encoding = font.getEncoding();
+
+        if (encoding == CharacterEncoding.ANSI) {
+            encoding = CharacterEncoding.UCS2;
+        }
+
+        ascent = font.getAscent();
+        descent = font.getDescent();
+        leading = font.getLeading();
+
+        missingGlyph = 0;
+
+        glyphCount = font.getShapes().size();
+        glyphTable = new Glyph[glyphCount];
+        glyphToChar = new int[glyphCount];
+
+        maxChar = 0;
+        charToGlyph = new int[0];
+
+        if (glyphCount > 0) {
+            int glyphIndex = 0;
+
+            for (final Iterator<Shape> i = font.getShapes().iterator(); i
+                    .hasNext(); glyphIndex++) {
+                glyphTable[glyphIndex] = new Glyph(i.next());
+            }
+
+            glyphIndex = 0;
+
+            for (final Integer code : font.getCodes()) {
+                maxChar = (char) (code > maxChar ? code : maxChar);
+            }
+
+            charToGlyph = new int[maxChar + 1];
+
+            int code;
+
+            for (final Iterator<Integer> i = font.getCodes().iterator(); i
+                    .hasNext(); glyphIndex++) {
+                code = i.next();
+
+                charToGlyph[code] = glyphIndex;
+                glyphToChar[glyphIndex] = code;
+            }
+
+            if (font.getAdvances() != null) {
+                glyphIndex = 0;
+
+                for (final Iterator<Integer> i = font.getAdvances().iterator(); i
+                        .hasNext(); glyphIndex++) {
+                    glyphTable[glyphIndex].setAdvance(i.next());
+                }
+            }
+
+            if (font.getBounds() != null) {
+                glyphIndex = 0;
+
+                for (final Iterator<Bounds> i = font.getBounds().iterator(); i
+                        .hasNext(); glyphIndex++) {
+                    glyphTable[glyphIndex].setBounds(i.next());
+                }
+            }
+        }
+    }
+
+    private byte[] loadFile(final File file) throws FileNotFoundException,
+            IOException {
+        final byte[] data = new byte[(int) file.length()];
+
+        FileInputStream stream = null;
+
+        try {
+            stream = new FileInputStream(file);
+            final int bytesRead = stream.read(data);
+
+            if (bytesRead != data.length) {
+                throw new IOException(file.getAbsolutePath());
+            }
+        } finally {
+            if (stream != null) {
+                stream.close();
+            }
+        }
+        return data;
+    }
 }

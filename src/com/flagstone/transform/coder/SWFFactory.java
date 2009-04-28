@@ -5,8 +5,8 @@ package com.flagstone.transform.coder;
  */
 public interface SWFFactory<T> {
 
-	SWFFactory<T> copy();
+    SWFFactory<T> copy();
 
-	T getObject(final SWFDecoder coder, final Context context)
-			throws CoderException;
+    T getObject(final SWFDecoder coder, final Context context)
+            throws CoderException;
 }

@@ -108,215 +108,215 @@ import com.flagstone.transform.coder.MovieTag;
  * 
  */
 public final class Frame {
-	/**
-	 * Create a frame based view of a movie. Objects from the movie are grouped
-	 * into Frame objects. Objects from the movie are added to the frame so any
-	 * changes made are reflected in the movie. However objects added or removed
-	 * from a frame are not reflected in the movie.
-	 * 
-	 * @param aMovie
-	 *            an Movie object.
-	 * @return an array of Frame objects.
-	 */
-	public static List<Frame> framesFromMovie(final Movie aMovie)
-			throws CoderException {
-		final ArrayList<Frame> frames = new ArrayList<Frame>();
+    /**
+     * Create a frame based view of a movie. Objects from the movie are grouped
+     * into Frame objects. Objects from the movie are added to the frame so any
+     * changes made are reflected in the movie. However objects added or removed
+     * from a frame are not reflected in the movie.
+     * 
+     * @param aMovie
+     *            an Movie object.
+     * @return an array of Frame objects.
+     */
+    public static List<Frame> framesFromMovie(final Movie aMovie)
+            throws CoderException {
+        final ArrayList<Frame> frames = new ArrayList<Frame>();
 
-		Frame currentFrame = new Frame();
+        Frame currentFrame = new Frame();
 
-		for (MovieTag currentObject : aMovie.getObjects()) {
-			if (currentObject instanceof DoAction) {
-				currentFrame.actions = ((DoAction) currentObject).getActions();
-			} else if (currentObject instanceof FrameLabel) {
-				currentFrame.label = ((FrameLabel) currentObject).getLabel();
-			} else if (currentObject instanceof DefineTag) {
-				currentFrame.addDefinition(currentObject);
-			} else if (currentObject instanceof ShowFrame) {
-				frames.add(currentFrame);
-				currentFrame = new Frame();
-			} else {
-				currentFrame.addCommand(currentObject);
-			}
-		}
-		return frames;
-	}
+        for (final MovieTag currentObject : aMovie.getObjects()) {
+            if (currentObject instanceof DoAction) {
+                currentFrame.actions = ((DoAction) currentObject).getActions();
+            } else if (currentObject instanceof FrameLabel) {
+                currentFrame.label = ((FrameLabel) currentObject).getLabel();
+            } else if (currentObject instanceof DefineTag) {
+                currentFrame.addDefinition(currentObject);
+            } else if (currentObject instanceof ShowFrame) {
+                frames.add(currentFrame);
+                currentFrame = new Frame();
+            } else {
+                currentFrame.addCommand(currentObject);
+            }
+        }
+        return frames;
+    }
 
-	private String label;
-	private List<MovieTag> definitions;
-	private List<MovieTag> commands;
-	private List<Action> actions;
+    private String label;
+    private List<MovieTag> definitions;
+    private List<MovieTag> commands;
+    private List<Action> actions;
 
-	/**
-	 * Creates a empty frame with no label defined and the definitions, commands
-	 * and actions arrays empty.
-	 */
-	public Frame() {
-		label = "";
-		definitions = new ArrayList<MovieTag>();
-		commands = new ArrayList<MovieTag>();
-		actions = new ArrayList<Action>();
-	}
+    /**
+     * Creates a empty frame with no label defined and the definitions, commands
+     * and actions arrays empty.
+     */
+    public Frame() {
+        label = "";
+        definitions = new ArrayList<MovieTag>();
+        commands = new ArrayList<MovieTag>();
+        actions = new ArrayList<Action>();
+    }
 
-	/**
-	 * Adds the action object to the frame.
-	 * 
-	 * @param anObject
-	 *            the action object to be added to the frame. Must not be null.
-	 */
-	public void addAction(final Action anObject) {
-		if (anObject == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
-		}
+    /**
+     * Adds the action object to the frame.
+     * 
+     * @param anObject
+     *            the action object to be added to the frame. Must not be null.
+     */
+    public void addAction(final Action anObject) {
+        if (anObject == null) {
+            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+        }
 
-		actions.add(anObject);
-	}
+        actions.add(anObject);
+    }
 
-	/**
-	 * Adds an object to the frame that defines an object to be displayed in the
-	 * movie.
-	 * 
-	 * @param anObject
-	 *            a sub-class of Definition. Must not be null.
-	 */
-	public void addDefinition(final MovieTag anObject) {
-		if (anObject == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
-		}
+    /**
+     * Adds an object to the frame that defines an object to be displayed in the
+     * movie.
+     * 
+     * @param anObject
+     *            a sub-class of Definition. Must not be null.
+     */
+    public void addDefinition(final MovieTag anObject) {
+        if (anObject == null) {
+            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+        }
 
-		definitions.add(anObject);
-	}
+        definitions.add(anObject);
+    }
 
-	/**
-	 * Adds the display list command to the frame.
-	 * 
-	 * @param anObject
-	 *            an MovieTag the manipulates the display list. Must not be
-	 *            null.
-	 */
-	public void addCommand(final MovieTag anObject) {
-		if (anObject == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
-		}
+    /**
+     * Adds the display list command to the frame.
+     * 
+     * @param anObject
+     *            an MovieTag the manipulates the display list. Must not be
+     *            null.
+     */
+    public void addCommand(final MovieTag anObject) {
+        if (anObject == null) {
+            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+        }
 
-		commands.add(anObject);
-	}
+        commands.add(anObject);
+    }
 
-	/**
-	 * Returns the label assigned to the frame.
-	 * 
-	 * @return the label. The string will be empty if no label is defined.
-	 */
-	public String getLabel() {
-		return label;
-	}
+    /**
+     * Returns the label assigned to the frame.
+     * 
+     * @return the label. The string will be empty if no label is defined.
+     */
+    public String getLabel() {
+        return label;
+    }
 
-	/**
-	 * Returns the array of definition objects contained in the frame.
-	 * 
-	 * @return the array of definitions.
-	 */
-	public List<MovieTag> getDefinitions() {
-		return definitions;
-	}
+    /**
+     * Returns the array of definition objects contained in the frame.
+     * 
+     * @return the array of definitions.
+     */
+    public List<MovieTag> getDefinitions() {
+        return definitions;
+    }
 
-	/**
-	 * Returns the array of commands that update the display list.
-	 * 
-	 * @return the array of commands objects.
-	 */
-	public List<MovieTag> getCommands() {
-		return commands;
-	}
+    /**
+     * Returns the array of commands that update the display list.
+     * 
+     * @return the array of commands objects.
+     */
+    public List<MovieTag> getCommands() {
+        return commands;
+    }
 
-	/**
-	 * Returns the array of action objects that will be execute when the frame
-	 * is displayed.
-	 * 
-	 * @return the array of actions defined for the frame.
-	 */
-	public List<Action> getActions() {
-		return actions;
-	}
+    /**
+     * Returns the array of action objects that will be execute when the frame
+     * is displayed.
+     * 
+     * @return the array of actions defined for the frame.
+     */
+    public List<Action> getActions() {
+        return actions;
+    }
 
-	/**
-	 * Sets the label for the frame.
-	 * 
-	 * @param aString
-	 *            the label.
-	 */
-	public void setLabel(final String aString) {
-		label = aString;
-	}
+    /**
+     * Sets the label for the frame.
+     * 
+     * @param aString
+     *            the label.
+     */
+    public void setLabel(final String aString) {
+        label = aString;
+    }
 
-	/**
-	 * Sets the array of action objects for the frame.
-	 * 
-	 * @param anArray
-	 *            the array of actions. Must not be null.
-	 */
-	public void setDefinitions(final List<MovieTag> anArray) {
-		if (anArray == null) {
-			throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
-		}
-		definitions = anArray;
-	}
+    /**
+     * Sets the array of action objects for the frame.
+     * 
+     * @param anArray
+     *            the array of actions. Must not be null.
+     */
+    public void setDefinitions(final List<MovieTag> anArray) {
+        if (anArray == null) {
+            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+        }
+        definitions = anArray;
+    }
 
-	/**
-	 * Sets the array of commands that updated the display list for the frame.
-	 * The changes are visible when the frame is displayed.
-	 * 
-	 * @param anArray
-	 *            the array of command objects. Must not be null.
-	 */
-	public void setCommands(final List<MovieTag> anArray) {
-		if (anArray == null) {
-			throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
-		}
-		commands = anArray;
-	}
+    /**
+     * Sets the array of commands that updated the display list for the frame.
+     * The changes are visible when the frame is displayed.
+     * 
+     * @param anArray
+     *            the array of command objects. Must not be null.
+     */
+    public void setCommands(final List<MovieTag> anArray) {
+        if (anArray == null) {
+            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+        }
+        commands = anArray;
+    }
 
-	/**
-	 * Sets the array of action objects for the frame.
-	 * 
-	 * @param anArray
-	 *            the array of actions. Must not be null.
-	 */
-	public void setActions(final List<Action> anArray) {
-		if (anArray == null) {
-			throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
-		}
-		actions = anArray;
-	}
+    /**
+     * Sets the array of action objects for the frame.
+     * 
+     * @param anArray
+     *            the array of actions. Must not be null.
+     */
+    public void setActions(final List<Action> anArray) {
+        if (anArray == null) {
+            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+        }
+        actions = anArray;
+    }
 
-	/**
-	 * Add the objects in the frame to the movie. The contents of the
-	 * definitions and commands arrays are added to the movie. If a label is
-	 * assigned to the frame then an FrameLabel object is added to the movie. If
-	 * actions are defined then an DoAction object is added containing the
-	 * actions defined in the frame.
-	 * 
-	 * @param aMovie
-	 *            an Movie object. Must not be null.
-	 */
-	public void addToMovie(final Movie aMovie) {
-		if (!definitions.isEmpty()) {
-			for (MovieTag object : definitions) {
-				aMovie.add(object);
-			}
-		}
+    /**
+     * Add the objects in the frame to the movie. The contents of the
+     * definitions and commands arrays are added to the movie. If a label is
+     * assigned to the frame then an FrameLabel object is added to the movie. If
+     * actions are defined then an DoAction object is added containing the
+     * actions defined in the frame.
+     * 
+     * @param aMovie
+     *            an Movie object. Must not be null.
+     */
+    public void addToMovie(final Movie aMovie) {
+        if (!definitions.isEmpty()) {
+            for (final MovieTag object : definitions) {
+                aMovie.add(object);
+            }
+        }
 
-		if (label.length() > 0) {
-			aMovie.add(new FrameLabel(label));
-		}
+        if (label.length() > 0) {
+            aMovie.add(new FrameLabel(label));
+        }
 
-		if (!actions.isEmpty()) {
-			aMovie.add(new DoAction(actions));
-		}
+        if (!actions.isEmpty()) {
+            aMovie.add(new DoAction(actions));
+        }
 
-		for (MovieTag object : commands) {
-			aMovie.add(object);
-		}
+        for (final MovieTag object : commands) {
+            aMovie.add(object);
+        }
 
-		aMovie.add(ShowFrame.getInstance());
-	}
+        aMovie.add(ShowFrame.getInstance());
+    }
 }

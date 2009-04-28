@@ -33,8 +33,8 @@ package com.flagstone.transform.fillstyle;
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFDecoder;
+import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.Color;
 import com.flagstone.transform.font.Kerning;
@@ -72,89 +72,89 @@ import com.flagstone.transform.font.Kerning;
  * @see GradientFill
  */
 public final class Gradient implements SWFEncodeable {
-	private static final String FORMAT = "Gradient: { ratio=%d; color=%s }";
+    private static final String FORMAT = "Gradient: { ratio=%d; color=%s }";
 
-	private final transient int ratio;
-	private final transient Color color;
+    private final transient int ratio;
+    private final transient Color color;
 
-	public Gradient(final SWFDecoder coder, final Context context)
-			throws CoderException {
-		ratio = coder.readByte();
-		color = new Color(coder, context);
-	}
+    public Gradient(final SWFDecoder coder, final Context context)
+            throws CoderException {
+        ratio = coder.readByte();
+        color = new Color(coder, context);
+    }
 
-	/**
-	 * Creates a Gradient object with the specified ratio and color.
-	 * 
-	 * @param aRatio
-	 *            the ratio along the gradient square. Must be in the range
-	 *            0..255.
-	 * @param aColor
-	 *            the color at the control point. Must not be null.
-	 */
-	public Gradient(final int aRatio, final Color aColor) {
-		if (aRatio < 0 || aRatio > 255) {
-			throw new IllegalArgumentException(Strings.RATIO_RANGE);
-		}
-		ratio = aRatio;
+    /**
+     * Creates a Gradient object with the specified ratio and color.
+     * 
+     * @param aRatio
+     *            the ratio along the gradient square. Must be in the range
+     *            0..255.
+     * @param aColor
+     *            the color at the control point. Must not be null.
+     */
+    public Gradient(final int aRatio, final Color aColor) {
+        if ((aRatio < 0) || (aRatio > 255)) {
+            throw new IllegalArgumentException(Strings.RATIO_RANGE);
+        }
+        ratio = aRatio;
 
-		if (aColor == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
-		}
-		color = aColor;
-	}
+        if (aColor == null) {
+            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+        }
+        color = aColor;
+    }
 
-	/**
-	 * Returns the ratio that defines the relative point across the gradient
-	 * square.
-	 */
-	public int getRatio() {
-		return ratio;
-	}
+    /**
+     * Returns the ratio that defines the relative point across the gradient
+     * square.
+     */
+    public int getRatio() {
+        return ratio;
+    }
 
-	/**
-	 * Returns the colour that is displayed at the control point across the
-	 * gradient square defined by the ratio.
-	 */
-	public Color getColor() {
-		return color;
-	}
+    /**
+     * Returns the colour that is displayed at the control point across the
+     * gradient square defined by the ratio.
+     */
+    public Color getColor() {
+        return color;
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, ratio, color);
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, ratio, color);
+    }
 
-	@Override
-	public boolean equals(final Object object) {
-		boolean result;
-		Gradient gradient;
+    @Override
+    public boolean equals(final Object object) {
+        boolean result;
+        Gradient gradient;
 
-		if (object == null) {
-			result = false;
-		} else if (object == this) {
-			result = true;
-		} else if (object instanceof Kerning) {
-			gradient = (Gradient) object;
-			result = ratio == gradient.ratio && color.equals(gradient.color);
-		} else {
-			result = false;
-		}
-		return result;
-	}
+        if (object == null) {
+            result = false;
+        } else if (object == this) {
+            result = true;
+        } else if (object instanceof Kerning) {
+            gradient = (Gradient) object;
+            result = (ratio == gradient.ratio) && color.equals(gradient.color);
+        } else {
+            result = false;
+        }
+        return result;
+    }
 
-	@Override
-	public int hashCode() {
-		return (ratio * 31) + color.hashCode();
-	}
+    @Override
+    public int hashCode() {
+        return (ratio * 31) + color.hashCode();
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		return 1 + color.prepareToEncode(coder, context);
-	}
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        return 1 + color.prepareToEncode(coder, context);
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		coder.writeByte(ratio);
-		color.encode(coder, context);
-	}
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        coder.writeByte(ratio);
+        color.encode(coder, context);
+    }
 }

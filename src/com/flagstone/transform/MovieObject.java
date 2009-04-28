@@ -50,76 +50,76 @@ import com.flagstone.transform.coder.SWFEncoder;
  */
 public final class MovieObject implements MovieTag {
 
-	private static final String FORMAT = "MovieObject: { type=%d; data=byte[%d] {...} }";
+    private static final String FORMAT = "MovieObject: { type=%d; data=byte[%d] {...} }";
 
-	private final transient int type;
-	private final transient byte[] data;
+    private final transient int type;
+    private final transient byte[] data;
 
-	private transient int length;
+    private transient int length;
 
-	public MovieObject(final SWFDecoder coder) throws CoderException {
+    public MovieObject(final SWFDecoder coder) throws CoderException {
 
-		type = coder.scanUnsignedShort() >>> 6;
-		length = coder.readWord(2, false) & 0x3F;
+        type = coder.scanUnsignedShort() >>> 6;
+        length = coder.readWord(2, false) & 0x3F;
 
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
+        if (length == 0x3F) {
+            length = coder.readWord(4, false);
+        }
 
-		data = coder.readBytes(new byte[length]);
-	}
+        data = coder.readBytes(new byte[length]);
+    }
 
-	// TODO(doc)
-	public MovieObject(final int type, final byte[] bytes) {
-		this.type = type;
+    // TODO(doc)
+    public MovieObject(final int type, final byte[] bytes) {
+        this.type = type;
 
-		if (bytes == null) {
-			throw new IllegalArgumentException(Strings.DATA_IS_NULL);
-		}
-		data = bytes;
-	}
+        if (bytes == null) {
+            throw new IllegalArgumentException(Strings.DATA_IS_NULL);
+        }
+        data = bytes;
+    }
 
-	// TODO(doc)
-	public MovieObject(final MovieObject object) {
-		type = object.type;
-		data = Arrays.copyOf(object.data, object.data.length);
-	}
+    // TODO(doc)
+    public MovieObject(final MovieObject object) {
+        type = object.type;
+        data = Arrays.copyOf(object.data, object.data.length);
+    }
 
-	// TODO(doc)
-	public int getType() {
-		return type;
-	}
+    // TODO(doc)
+    public int getType() {
+        return type;
+    }
 
-	/**
-	 * Returns the encoded data for the movie tag object.
-	 */
-	public byte[] getData() {
-		return data;
-	}
+    /**
+     * Returns the encoded data for the movie tag object.
+     */
+    public byte[] getData() {
+        return data;
+    }
 
-	public MovieObject copy() {
-		return new MovieObject(this);
-	}
+    public MovieObject copy() {
+        return new MovieObject(this);
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, type, data.length);
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, type, data.length);
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		length = data.length;
-		return (length > 62 ? 6 : 2) + length;
-	}
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        length = data.length;
+        return (length > 62 ? 6 : 2) + length;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		if (length > 62) {
-			coder.writeWord((type << 6) | 0x3F, 2);
-			coder.writeWord(length, 4);
-		} else {
-			coder.writeWord((type << 6) | length, 2);
-		}
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        if (length > 62) {
+            coder.writeWord((type << 6) | 0x3F, 2);
+            coder.writeWord(length, 4);
+        } else {
+            coder.writeWord((type << 6) | length, 2);
+        }
 
-		coder.writeBytes(data);
-	}
+        coder.writeBytes(data);
+    }
 }

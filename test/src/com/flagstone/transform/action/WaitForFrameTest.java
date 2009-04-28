@@ -29,12 +29,12 @@
  */
 package com.flagstone.transform.action;
 
-import org.junit.Test;
-
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
 
 import com.flagstone.transform.coder.ActionTypes;
 import com.flagstone.transform.coder.CoderException;
@@ -44,65 +44,65 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 public final class WaitForFrameTest {
 
-	private static transient final int type = ActionTypes.WAIT_FOR_FRAME;
-	private static transient final int frame = 1;
-	private static transient final int count = 2;
+    private static transient final int type = ActionTypes.WAIT_FOR_FRAME;
+    private static transient final int frame = 1;
+    private static transient final int count = 2;
 
-	private transient WaitForFrame fixture;
+    private transient WaitForFrame fixture;
 
-	private transient final byte[] encoded = new byte[] { (byte) type, 0x03,
-			0x00, 0x01, 0x00, 0x02 };
+    private transient final byte[] encoded = new byte[] { (byte) type, 0x03,
+            0x00, 0x01, 0x00, 0x02 };
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAccessorForFrameNumberWithLowerBound() {
-		fixture = new WaitForFrame(0, count);
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkAccessorForFrameNumberWithLowerBound() {
+        fixture = new WaitForFrame(0, count);
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAccessorForFrameNumberWithUpperBound() {
-		fixture = new WaitForFrame(65536, count);
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkAccessorForFrameNumberWithUpperBound() {
+        fixture = new WaitForFrame(65536, count);
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAccessorForActionCountWithLowerBound() {
-		fixture = new WaitForFrame(frame, -1);
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkAccessorForActionCountWithLowerBound() {
+        fixture = new WaitForFrame(frame, -1);
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAccessorForActionCountWithUpperBound() {
-		fixture = new WaitForFrame(frame, 256);
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkAccessorForActionCountWithUpperBound() {
+        fixture = new WaitForFrame(frame, 256);
+    }
 
-	@Test
-	public void checkCopy() {
-		fixture = new WaitForFrame(frame, count);
-		final WaitForFrame copy = fixture.copy();
+    @Test
+    public void checkCopy() {
+        fixture = new WaitForFrame(frame, count);
+        final WaitForFrame copy = fixture.copy();
 
-		assertNotSame(fixture, copy);
-		assertEquals(fixture.toString(), copy.toString());
-	}
+        assertNotSame(fixture, copy);
+        assertEquals(fixture.toString(), copy.toString());
+    }
 
-	@Test
-	public void encode() throws CoderException {
-		final SWFEncoder encoder = new SWFEncoder(encoded.length);
-		final Context context = new Context();
+    @Test
+    public void encode() throws CoderException {
+        final SWFEncoder encoder = new SWFEncoder(encoded.length);
+        final Context context = new Context();
 
-		fixture = new WaitForFrame(frame, count);
-		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
-		fixture.encode(encoder, context);
+        fixture = new WaitForFrame(frame, count);
+        assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
+        fixture.encode(encoder, context);
 
-		assertTrue(encoder.eof());
-		assertArrayEquals(encoded, encoder.getData());
-	}
+        assertTrue(encoder.eof());
+        assertArrayEquals(encoded, encoder.getData());
+    }
 
-	@Test
-	public void decode() throws CoderException {
-		final SWFDecoder decoder = new SWFDecoder(encoded);
+    @Test
+    public void decode() throws CoderException {
+        final SWFDecoder decoder = new SWFDecoder(encoded);
 
-		fixture = new WaitForFrame(decoder);
+        fixture = new WaitForFrame(decoder);
 
-		assertTrue(decoder.eof());
-		assertEquals(frame, fixture.getFrameNumber());
-		assertEquals(count, fixture.getActionCount());
-	}
+        assertTrue(decoder.eof());
+        assertEquals(frame, fixture.getFrameNumber());
+        assertEquals(count, fixture.getActionCount());
+    }
 }

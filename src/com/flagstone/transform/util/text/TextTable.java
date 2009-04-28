@@ -45,196 +45,198 @@ import com.flagstone.transform.text.GlyphIndex;
 import com.flagstone.transform.text.TextSpan;
 
 public final class TextTable {
-	
-	private transient int size;
-	private transient int ascent;
-	private transient int descent;
-	private transient int identifier;
 
-	private transient Map<Character, GlyphIndex> characters;
+    private transient int size;
+    private transient int ascent;
+    private transient int descent;
+    private transient int identifier;
 
-	public TextTable(final DefineFont2 font, final int size) {
-		characters = new LinkedHashMap<Character, GlyphIndex>();
+    private transient final Map<Character, GlyphIndex> characters;
 
-		final List<Integer> codes = font.getCodes();
-		final List<Integer> advances = font.getAdvances();
+    public TextTable(final DefineFont2 font, final int size) {
+        characters = new LinkedHashMap<Character, GlyphIndex>();
 
-		final float scale = size / 1024.0f;
-		final int count = codes.size();
+        final List<Integer> codes = font.getCodes();
+        final List<Integer> advances = font.getAdvances();
 
-		for (int i = 0; i < count; i++) {
-			characters.put((char) codes.get(i).intValue(), new GlyphIndex(i,
-					(int) (advances.get(i) * scale)));
-		}
-	}
+        final float scale = size / 1024.0f;
+        final int count = codes.size();
 
-	/**
-	 * Create a bound box that encloses the line of text when rendered using the
-	 * specified font and size.
-	 * 
-	 * @param text
-	 *            the string to be displayed.
-	 * 
-	 * @param font
-	 *            the font used to display the text.
-	 * 
-	 * @param size
-	 *            the size of the font in twips.
-	 * 
-	 * @return the bounding box that completely encloses the text.
-	 */
-	public Bounds boundsForText(final String text) {
-		final Bounds bounds = null; //TODO(implement)
+        for (int i = 0; i < count; i++) {
+            characters.put((char) codes.get(i).intValue(), new GlyphIndex(i,
+                    (int) (advances.get(i) * scale)));
+        }
+    }
 
-		return bounds;
-	}
+    /**
+     * Create a bound box that encloses the line of text when rendered using the
+     * specified font and size.
+     * 
+     * @param text
+     *            the string to be displayed.
+     * 
+     * @param font
+     *            the font used to display the text.
+     * 
+     * @param size
+     *            the size of the font in twips.
+     * 
+     * @return the bounding box that completely encloses the text.
+     */
+    public Bounds boundsForText(final String text) {
+        final Bounds bounds = null; // TODO(implement)
 
-	/**
-	 * Create an array of characters that can be added to a text span.
-	 * 
-	 * @param text
-	 *            the string to be displayed.
-	 * 
-	 * @param font
-	 *            the font used to display the text.
-	 * 
-	 * @param size
-	 *            the size of the font in twips.
-	 * 
-	 * @return a TextSpan object that can be added to a DefineText or
-	 *         DefineText2 object.
-	 */
-	public List<GlyphIndex> charactersForText(final String text) {
-		final List<GlyphIndex> characters = new ArrayList<GlyphIndex>(text.length());
-		//TODO(implement)
-		return characters;
-	}
+        return bounds;
+    }
 
-	/**
-	 * Create a span of text that can be added to a static text field.
-	 * 
-	 * @param text
-	 *            the string to be displayed.
-	 * 
-	 * @param font
-	 *            the font used to display the text.
-	 * 
-	 * @param size
-	 *            the size of the font in twips.
-	 * 
-	 * @param color
-	 *            the colour used to display the text.
-	 * 
-	 * @return a TextSpan object that can be added to a DefineText or
-	 *         DefineText2 object.
-	 */
-	public TextSpan defineSpan(final String text, final Color color) {
-		final float scale = size / 1024.0f;
+    /**
+     * Create an array of characters that can be added to a text span.
+     * 
+     * @param text
+     *            the string to be displayed.
+     * 
+     * @param font
+     *            the font used to display the text.
+     * 
+     * @param size
+     *            the size of the font in twips.
+     * 
+     * @return a TextSpan object that can be added to a DefineText or
+     *         DefineText2 object.
+     */
+    public List<GlyphIndex> charactersForText(final String text) {
+        final List<GlyphIndex> characters = new ArrayList<GlyphIndex>(text
+                .length());
+        // TODO(implement)
+        return characters;
+    }
 
-		final int xCoord = 0;
-		final int yCoord = (int) (ascent / scale);
+    /**
+     * Create a span of text that can be added to a static text field.
+     * 
+     * @param text
+     *            the string to be displayed.
+     * 
+     * @param font
+     *            the font used to display the text.
+     * 
+     * @param size
+     *            the size of the font in twips.
+     * 
+     * @param color
+     *            the colour used to display the text.
+     * 
+     * @return a TextSpan object that can be added to a DefineText or
+     *         DefineText2 object.
+     */
+    public TextSpan defineSpan(final String text, final Color color) {
+        final float scale = size / 1024.0f;
 
-		return new TextSpan(identifier, size, color, xCoord, yCoord,
-				charactersForText(text));
-	}
+        final int xCoord = 0;
+        final int yCoord = (int) (ascent / scale);
 
-	/**
-	 * Create a definition for a static text field that displays a single line
-	 * of text in the specified font.
-	 * 
-	 * @param uid
-	 *            the unique identifier that will be used to reference the text
-	 *            field in a flash file.
-	 * 
-	 * @param text
-	 *            the string to be displayed.
-	 * 
-	 * @param font
-	 *            the font used to display the text.
-	 * 
-	 * @param size
-	 *            the size of the font in twips.
-	 * 
-	 * @param color
-	 *            the colour used to display the text.
-	 * 
-	 * @return a DefineText2 object that can be added to a Flash file.
-	 */
-	public DefineText2 defineText(final int uid, final String text, final Color color) {
-		final CoordTransform transform = new CoordTransform(1.0f, 1.0f, 0.0f, 0.0f,
-				0, 0);
-		final ArrayList<TextSpan> spans = new ArrayList<TextSpan>();
+        return new TextSpan(identifier, size, color, xCoord, yCoord,
+                charactersForText(text));
+    }
 
-		spans.add(defineSpan(text, color));
+    /**
+     * Create a definition for a static text field that displays a single line
+     * of text in the specified font.
+     * 
+     * @param uid
+     *            the unique identifier that will be used to reference the text
+     *            field in a flash file.
+     * 
+     * @param text
+     *            the string to be displayed.
+     * 
+     * @param font
+     *            the font used to display the text.
+     * 
+     * @param size
+     *            the size of the font in twips.
+     * 
+     * @param color
+     *            the colour used to display the text.
+     * 
+     * @return a DefineText2 object that can be added to a Flash file.
+     */
+    public DefineText2 defineText(final int uid, final String text,
+            final Color color) {
+        final CoordTransform transform = new CoordTransform(1.0f, 1.0f, 0.0f,
+                0.0f, 0, 0);
+        final ArrayList<TextSpan> spans = new ArrayList<TextSpan>();
 
-		return new DefineText2(uid, boundsForText(text), transform, spans);
-	}
+        spans.add(defineSpan(text, color));
 
-	/**
-	 * Create a definition for a static text field that displays a block of text
-	 * in the specified font.
-	 * 
-	 * @param uid
-	 *            the unique identifier that will be used to reference the text
-	 *            field in a flash file.
-	 * 
-	 * @param lines
-	 *            the array of strings to be displayed.
-	 * 
-	 * @param font
-	 *            the font used to display the text.
-	 * 
-	 * @param size
-	 *            the size of the font in twips.
-	 * 
-	 * @param color
-	 *            the colour used to display the text.
-	 * 
-	 * @return a DefineText2 object that can be added to a Flash file.
-	 */
-	public DefineText2 defineTextBlock(final int uid, final List<String> lines,
-			final Color color, final int lineSpacing) {
-		final CoordTransform transform = new CoordTransform(1.0f, 1.0f, 0.0f, 0.0f,
-				0, 0);
-		final float scale = size / 1024.0f;
+        return new DefineText2(uid, boundsForText(text), transform, spans);
+    }
 
-		int xMin = 0;
-		int yMin = 0;
-		int xMax = 0;
-		int yMax = 0;
+    /**
+     * Create a definition for a static text field that displays a block of text
+     * in the specified font.
+     * 
+     * @param uid
+     *            the unique identifier that will be used to reference the text
+     *            field in a flash file.
+     * 
+     * @param lines
+     *            the array of strings to be displayed.
+     * 
+     * @param font
+     *            the font used to display the text.
+     * 
+     * @param size
+     *            the size of the font in twips.
+     * 
+     * @param color
+     *            the colour used to display the text.
+     * 
+     * @return a DefineText2 object that can be added to a Flash file.
+     */
+    public DefineText2 defineTextBlock(final int uid, final List<String> lines,
+            final Color color, final int lineSpacing) {
+        final CoordTransform transform = new CoordTransform(1.0f, 1.0f, 0.0f,
+                0.0f, 0, 0);
+        final float scale = size / 1024.0f;
 
-		final int xOffset = 0;
-		int yOffset = (int) (ascent / scale);
+        int xMin = 0;
+        int yMin = 0;
+        int xMax = 0;
+        int yMax = 0;
 
-		final ArrayList<TextSpan> spans = new ArrayList<TextSpan>();
-		String text;
+        final int xOffset = 0;
+        int yOffset = (int) (ascent / scale);
 
-		int lineNumber = 0;
+        final ArrayList<TextSpan> spans = new ArrayList<TextSpan>();
+        String text;
 
-		for (final Iterator<String> i = lines.iterator(); i.hasNext(); yOffset += lineSpacing, lineNumber++) {
-			text = i.next();
+        int lineNumber = 0;
 
-			spans.add(new TextSpan(identifier, size, color, xOffset, yOffset,
-					charactersForText(text)));
+        for (final Iterator<String> i = lines.iterator(); i.hasNext(); yOffset += lineSpacing, lineNumber++) {
+            text = i.next();
 
-			final Bounds bounds = boundsForText(text);
+            spans.add(new TextSpan(identifier, size, color, xOffset, yOffset,
+                    charactersForText(text)));
 
-			if (lineNumber == 0) {
-				yMin = bounds.getMinY();
-				yMax = bounds.getMaxY();
-			} else {
-				yMax += lineSpacing;
-			}
+            final Bounds bounds = boundsForText(text);
 
-			if (lineNumber == lines.size() - 1) {
-				yMax += bounds.getHeight();
-			}
+            if (lineNumber == 0) {
+                yMin = bounds.getMinY();
+                yMax = bounds.getMaxY();
+            } else {
+                yMax += lineSpacing;
+            }
 
-			xMin = (xMin < bounds.getMinX()) ? xMin : bounds.getMinX();
-			xMax = (xMax > bounds.getMaxX()) ? xMax : bounds.getMaxX();
-		}
+            if (lineNumber == lines.size() - 1) {
+                yMax += bounds.getHeight();
+            }
 
-		return new DefineText2(uid, new Bounds(xMin, yMin, xMax, yMax),
-				transform, spans);
-	}
+            xMin = (xMin < bounds.getMinX()) ? xMin : bounds.getMinX();
+            xMax = (xMax > bounds.getMaxX()) ? xMax : bounds.getMaxX();
+        }
+
+        return new DefineText2(uid, new Bounds(xMin, yMin, xMax, yMax),
+                transform, spans);
+    }
 }

@@ -4,7 +4,6 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
-
 import java.util.zip.DataFormatException;
 
 import com.flagstone.transform.Background;
@@ -18,49 +17,49 @@ import com.flagstone.transform.sound.StartSound;
 import com.flagstone.transform.util.sound.SoundProvider;
 
 public class EventSoundTest {
-	
-	protected void playSounds(final File sourceDir, final String[] files, final File destDir)
-			throws IOException, DataFormatException {
-		File sourceFile;
-		File destFile;
-		final DefineSound sound;
-		final SoundProvider provider;
 
-		if (!destDir.exists() && !destDir.mkdirs()) {
-			fail();
-		}
+    protected void playSounds(final File sourceDir, final String[] files,
+            final File destDir) throws IOException, DataFormatException {
+        File sourceFile;
+        File destFile;
+        final DefineSound sound;
+        final SoundProvider provider;
 
-		for (String file : files) {
-			sourceFile = new File(sourceDir, file);
-			destFile = new File(destDir, file.substring(0, file
-					.lastIndexOf('.'))
-					+ ".swf");
-			// TODO sound = provider.defineSound(1);
-			// TODO playSound(sound, destFile);
-		}
-	}
+        if (!destDir.exists() && !destDir.mkdirs()) {
+            fail();
+        }
 
-	protected void playSound(final DefineSound sound, final File file) throws IOException,
-			DataFormatException {
-		final float framesPerSecond = 12.0f;
-		final Movie movie = new Movie();
+        for (final String file : files) {
+            sourceFile = new File(sourceDir, file);
+            destFile = new File(destDir, file.substring(0, file
+                    .lastIndexOf('.'))
+                    + ".swf");
+            // TODO sound = provider.defineSound(1);
+            // TODO playSound(sound, destFile);
+        }
+    }
 
-		movie.setFrameSize(new Bounds(0, 0, 8000, 4000));
-		movie.setFrameRate(framesPerSecond);
-		movie.add(new Background(WebPalette.LIGHT_BLUE.color()));
+    protected void playSound(final DefineSound sound, final File file)
+            throws IOException, DataFormatException {
+        final float framesPerSecond = 12.0f;
+        final Movie movie = new Movie();
 
-		final float duration = ((float) sound.getSampleCount() / (float) sound
-				.getRate());
-		final int numberOfFrames = (int) (duration * framesPerSecond);
+        movie.setFrameSize(new Bounds(0, 0, 8000, 4000));
+        movie.setFrameRate(framesPerSecond);
+        movie.add(new Background(WebPalette.LIGHT_BLUE.color()));
 
-		movie.add(sound);
-		movie.add(new StartSound(new SoundInfo(sound.getIdentifier(),
-				SoundInfo.Mode.START, 0, null)));
+        final float duration = ((float) sound.getSampleCount() / (float) sound
+                .getRate());
+        final int numberOfFrames = (int) (duration * framesPerSecond);
 
-		for (int j = 0; j < numberOfFrames; j++) {
-			movie.add(ShowFrame.getInstance());
-		}
+        movie.add(sound);
+        movie.add(new StartSound(new SoundInfo(sound.getIdentifier(),
+                SoundInfo.Mode.START, 0, null)));
 
-		movie.encodeToFile(file);
-	}
+        for (int j = 0; j < numberOfFrames; j++) {
+            movie.add(ShowFrame.getInstance());
+        }
+
+        movie.encodeToFile(file);
+    }
 }

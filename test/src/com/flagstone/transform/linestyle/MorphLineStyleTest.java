@@ -29,13 +29,13 @@
  */
 package com.flagstone.transform.linestyle;
 
-import org.junit.Test;
-
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertArrayEquals;
+
+import org.junit.Test;
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
@@ -43,93 +43,91 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.Color;
 
-
-
 public final class MorphLineStyleTest {
 
-	private static transient final int startWidth = 1;
-	private transient final Color startColor = new Color(2, 3, 4, 5);
-	private static transient final int endWidth = 6;
-	private transient final Color endColor = new Color(7, 8, 9, 10);
+    private static transient final int startWidth = 1;
+    private transient final Color startColor = new Color(2, 3, 4, 5);
+    private static transient final int endWidth = 6;
+    private transient final Color endColor = new Color(7, 8, 9, 10);
 
-	private transient MorphLineStyle fixture;
+    private transient MorphLineStyle fixture;
 
-	private transient final byte[] encoded = new byte[] { 0x01, 0x00, 0x06,
-			0x00, 0x02, 0x03, 0x04, 0x05, 0x07, 0x08, 0x09, 0x0A };
+    private transient final byte[] encoded = new byte[] { 0x01, 0x00, 0x06,
+            0x00, 0x02, 0x03, 0x04, 0x05, 0x07, 0x08, 0x09, 0x0A };
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAccessorForStartWidthWithLowerBound() {
-		fixture = new MorphLineStyle(-1, endWidth, startColor, endColor);
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkAccessorForStartWidthWithLowerBound() {
+        fixture = new MorphLineStyle(-1, endWidth, startColor, endColor);
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAccessorForStartWidthWithUpperBound() {
-		fixture = new MorphLineStyle(65536, endWidth, startColor, endColor);
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkAccessorForStartWidthWithUpperBound() {
+        fixture = new MorphLineStyle(65536, endWidth, startColor, endColor);
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAccessorForEndWidthWithLowerBound() {
-		fixture = new MorphLineStyle(startWidth, -1, startColor, endColor);
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkAccessorForEndWidthWithLowerBound() {
+        fixture = new MorphLineStyle(startWidth, -1, startColor, endColor);
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAccessorForEndWidthWithUpperBound() {
-		fixture = new MorphLineStyle(startWidth, 65536, startColor, endColor);
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkAccessorForEndWidthWithUpperBound() {
+        fixture = new MorphLineStyle(startWidth, 65536, startColor, endColor);
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAccessorForStartColorWithNull() {
-		fixture = new MorphLineStyle(startWidth, endWidth, null, endColor);
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkAccessorForStartColorWithNull() {
+        fixture = new MorphLineStyle(startWidth, endWidth, null, endColor);
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAccessorForEndColorWithNull() {
-		fixture = new MorphLineStyle(startWidth, endWidth, startColor, null);
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkAccessorForEndColorWithNull() {
+        fixture = new MorphLineStyle(startWidth, endWidth, startColor, null);
+    }
 
-	@Test
-	public void checkCopy() {
-		fixture = new MorphLineStyle(startWidth, endWidth, startColor, endColor);
-		final MorphLineStyle copy = fixture.copy();
+    @Test
+    public void checkCopy() {
+        fixture = new MorphLineStyle(startWidth, endWidth, startColor, endColor);
+        final MorphLineStyle copy = fixture.copy();
 
-		assertNotSame(fixture, copy);
-		assertSame(fixture.getStartColor(), copy.getStartColor());
-		assertSame(fixture.getEndColor(), copy.getEndColor());
-		assertEquals(fixture.toString(), copy.toString());
-	}
+        assertNotSame(fixture, copy);
+        assertSame(fixture.getStartColor(), copy.getStartColor());
+        assertSame(fixture.getEndColor(), copy.getEndColor());
+        assertEquals(fixture.toString(), copy.toString());
+    }
 
-	@Test
-	public void encode() throws CoderException {
-		final SWFEncoder encoder = new SWFEncoder(encoded.length);
-		final Context context = new Context();
-		context.getVariables().put(Context.TRANSPARENT, 1);
+    @Test
+    public void encode() throws CoderException {
+        final SWFEncoder encoder = new SWFEncoder(encoded.length);
+        final Context context = new Context();
+        context.getVariables().put(Context.TRANSPARENT, 1);
 
-		fixture = new MorphLineStyle(startWidth, endWidth, startColor, endColor);
-		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
-		fixture.encode(encoder, context);
+        fixture = new MorphLineStyle(startWidth, endWidth, startColor, endColor);
+        assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
+        fixture.encode(encoder, context);
 
-		assertTrue(encoder.eof());
-		assertArrayEquals(encoded, encoder.getData());
-	}
+        assertTrue(encoder.eof());
+        assertArrayEquals(encoded, encoder.getData());
+    }
 
-	@Test
-	public void decode() throws CoderException {
-		final SWFDecoder decoder = new SWFDecoder(encoded);
-		final Context context = new Context();
-		context.getVariables().put(Context.TRANSPARENT, 1);
+    @Test
+    public void decode() throws CoderException {
+        final SWFDecoder decoder = new SWFDecoder(encoded);
+        final Context context = new Context();
+        context.getVariables().put(Context.TRANSPARENT, 1);
 
-		fixture = new MorphLineStyle(decoder, context);
+        fixture = new MorphLineStyle(decoder, context);
 
-		assertTrue(decoder.eof());
-		assertEquals(startWidth, fixture.getStartWidth());
-		assertEquals(endWidth, fixture.getEndWidth());
-		assertEquals(startColor.getRed(), fixture.getStartColor().getRed());
-		assertEquals(startColor.getGreen(), fixture.getStartColor().getGreen());
-		assertEquals(startColor.getBlue(), fixture.getStartColor().getBlue());
-		assertEquals(startColor.getAlpha(), fixture.getStartColor().getAlpha());
-		assertEquals(endColor.getRed(), fixture.getEndColor().getRed());
-		assertEquals(endColor.getGreen(), fixture.getEndColor().getGreen());
-		assertEquals(endColor.getBlue(), fixture.getEndColor().getBlue());
-		assertEquals(endColor.getAlpha(), fixture.getEndColor().getAlpha());
-	}
+        assertTrue(decoder.eof());
+        assertEquals(startWidth, fixture.getStartWidth());
+        assertEquals(endWidth, fixture.getEndWidth());
+        assertEquals(startColor.getRed(), fixture.getStartColor().getRed());
+        assertEquals(startColor.getGreen(), fixture.getStartColor().getGreen());
+        assertEquals(startColor.getBlue(), fixture.getStartColor().getBlue());
+        assertEquals(startColor.getAlpha(), fixture.getStartColor().getAlpha());
+        assertEquals(endColor.getRed(), fixture.getEndColor().getRed());
+        assertEquals(endColor.getGreen(), fixture.getEndColor().getGreen());
+        assertEquals(endColor.getBlue(), fixture.getEndColor().getBlue());
+        assertEquals(endColor.getAlpha(), fixture.getEndColor().getAlpha());
+    }
 }

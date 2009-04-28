@@ -37,28 +37,28 @@ package com.flagstone.transform.coder;
  * </p>
  */
 public interface SWFEncodeable {
-	/**
-	 * Prepare an object for encoding, returning the expected size of an object
-	 * when it is encoded. This method also used to initialise variables, such
-	 * as offsets and flags that will be used when the object is encoded.
-	 * 
-	 * Generally the method returns the size in bytes, however when called on
-	 * objects that use bit fields such as shapes the methods will return the
-	 * size in bits.
-	 * 
-	 * @param coder
-	 *            an SWFEncoder object.
-	 * 
-	 * @return the size of the object when it is encoded.
-	 */
-	int prepareToEncode(final SWFEncoder coder, final Context context);
+    /**
+     * Prepare an object for encoding, returning the expected size of an object
+     * when it is encoded. This method also used to initialise variables, such
+     * as offsets and flags that will be used when the object is encoded.
+     * 
+     * Generally the method returns the size in bytes, however when called on
+     * objects that use bit fields such as shapes the methods will return the
+     * size in bits.
+     * 
+     * @param coder
+     *            an SWFEncoder object.
+     * 
+     * @return the size of the object when it is encoded.
+     */
+    int prepareToEncode(final SWFEncoder coder, final Context context);
 
-	/**
-	 * Encode an object to the Flash binary format.
-	 * 
-	 * @param coder
-	 *            an SWFEncoder object.
-	 */
-	void encode(final SWFEncoder coder, final Context context)
-			throws CoderException;
+    /**
+     * Encode an object to the Flash binary format.
+     * 
+     * @param coder
+     *            an SWFEncoder object.
+     */
+    void encode(final SWFEncoder coder, final Context context)
+            throws CoderException;
 }

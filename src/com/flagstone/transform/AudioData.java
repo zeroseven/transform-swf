@@ -63,308 +63,310 @@ import com.flagstone.transform.datatype.SoundFormat;
  * @see VideoData
  */
 public final class AudioData implements VideoTag {
-	private static final String FORMAT = "AudioData: { timestamp=%d; format=%d; rate=%d; channelCount=%d; "
-			+ "sampleSize=%d; data=%d }";
 
-	private int timestamp;
-	private SoundFormat format;
-	private int rate;
-	private int channelCount;
-	private int sampleSize;
-	private byte[] data;
+    private static final String FORMAT = "AudioData: { timestamp=%d; format=%d;"
+            + " rate=%d; channelCount=%d; sampleSize=%d; data=%d }";
 
-	private transient int length;
+    private int timestamp;
+    private SoundFormat format;
+    private int rate;
+    private int channelCount;
+    private int sampleSize;
+    private byte[] data;
 
-	public AudioData(final FLVDecoder coder) throws CoderException {
-		final int start = coder.getPointer();
-		coder.readByte();
-		length = coder.readWord(3, false);
-		final int end = coder.getPointer() + (length << 3);
-		timestamp = coder.readWord(3, false);
-		coder.readWord(4, false); // reserved
-		unpack(coder.readByte());
-		data = coder.readBytes(new byte[length - 1]);
+    private transient int length;
 
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
+    public AudioData(final FLVDecoder coder) throws CoderException {
+        final int start = coder.getPointer();
+        coder.readByte();
+        length = coder.readWord(3, false);
+        final int end = coder.getPointer() + (length << 3);
+        timestamp = coder.readWord(3, false);
+        coder.readWord(4, false); // reserved
+        unpack(coder.readByte());
+        data = coder.readBytes(new byte[length - 1]);
 
-	public AudioData() {
-		format = SoundFormat.PCM;
-		rate = 5512;
-		channelCount = 0;
-		sampleSize = 1;
-		data = new byte[0];
-	}
+        if (coder.getPointer() != end) {
+            throw new CoderException(getClass().getName(), start >> 3, length,
+                    (coder.getPointer() - end) >> 3);
+        }
+    }
 
-	/**
-	 * Creates an AudioData object.
-	 * 
-	 * @param timestamp
-	 *            time in milliseconds from the start of the file that the sound
-	 *            will be played.
-	 * @param format
-	 *            the encoding format for the sound, either
-	 *            Constants.NATIVE_PCM, Constants.ADPCM, Constants.MP3,
-	 *            Constants.NELLYMOSER_8K or Constants.NELLYMOSER.
-	 * @param rate
-	 *            the number of samples per second that the sound is played at,
-	 *            must be either 5512, 11025, 22050 or 44100. The rate is
-	 *            ignored if the format is Constants.NELLYMOSER_8K.
-	 * @param channels
-	 *            the number of channels in the sound, must be either 1 (Mono)
-	 *            or 2 (Stereo). If the format is NELLYMOSER the number of
-	 *            channels must be set to 1. The number of channels is ignored
-	 *            if the format is Constants.NELLYMOSER_8K.
-	 * @param size
-	 *            the size of an uncompressed sound sample in bytes, must be
-	 *            either 1 or 2. For NELLYMOSER and NELLYMOSER_8K formats the
-	 *            sample size must be 1.
-	 * @param bytes
-	 *            the sound data which cannot be null,
-	 */
-	public AudioData(final int timestamp, final SoundFormat format,
-			final int rate, final int channels, final int size,
-			final byte[] bytes) {
-		setTimestamp(timestamp);
-		setFormat(format);
-		setRate(rate);
-		setChannelCount(channels);
-		setSampleSize(size);
-		setData(bytes);
-	}
+    public AudioData() {
+        format = SoundFormat.PCM;
+        rate = 5512;
+        channelCount = 0;
+        sampleSize = 1;
+        data = new byte[0];
+    }
 
-	public AudioData(final AudioData object) {
-		format = object.format;
-		rate = object.rate;
-		channelCount = object.channelCount;
-		sampleSize = object.sampleSize;
-		data = Arrays.copyOf(object.data, object.data.length);
-	}
+    /**
+     * Creates an AudioData object.
+     * 
+     * @param timestamp
+     *            time in milliseconds from the start of the file that the sound
+     *            will be played.
+     * @param format
+     *            the encoding format for the sound, either
+     *            Constants.NATIVE_PCM, Constants.ADPCM, Constants.MP3,
+     *            Constants.NELLYMOSER_8K or Constants.NELLYMOSER.
+     * @param rate
+     *            the number of samples per second that the sound is played at,
+     *            must be either 5512, 11025, 22050 or 44100. The rate is
+     *            ignored if the format is Constants.NELLYMOSER_8K.
+     * @param channels
+     *            the number of channels in the sound, must be either 1 (Mono)
+     *            or 2 (Stereo). If the format is NELLYMOSER the number of
+     *            channels must be set to 1. The number of channels is ignored
+     *            if the format is Constants.NELLYMOSER_8K.
+     * @param size
+     *            the size of an uncompressed sound sample in bytes, must be
+     *            either 1 or 2. For NELLYMOSER and NELLYMOSER_8K formats the
+     *            sample size must be 1.
+     * @param bytes
+     *            the sound data which cannot be null,
+     */
+    public AudioData(final int timestamp, final SoundFormat format,
+            final int rate, final int channels, final int size,
+            final byte[] bytes) {
+        setTimestamp(timestamp);
+        setFormat(format);
+        setRate(rate);
+        setChannelCount(channels);
+        setSampleSize(size);
+        setData(bytes);
+    }
 
-	/**
-	 * Returns the timestamp, in milliseconds, relative to the start of the
-	 * file, when the audio or video will be played.
-	 */
-	public int getTimestamp() {
-		return timestamp;
-	}
+    public AudioData(final AudioData object) {
+        format = object.format;
+        rate = object.rate;
+        channelCount = object.channelCount;
+        sampleSize = object.sampleSize;
+        data = Arrays.copyOf(object.data, object.data.length);
+    }
 
-	/**
-	 * Sets the timestamp, in milliseconds, relative to the start of the file,
-	 * when the audio or video will be played.
-	 * 
-	 * @param time
-	 *            the time in milliseconds relative to the start of the file.
-	 *            Must be in the range 0..16,777,215.
-	 */
-	public void setTimestamp(final int time) {
-		if (time < 0 || time > 16777215) {
-			throw new IllegalArgumentException(Strings.TIMESTAMP_RANGE);
-		}
-		timestamp = time;
-	}
+    /**
+     * Returns the timestamp, in milliseconds, relative to the start of the
+     * file, when the audio or video will be played.
+     */
+    public int getTimestamp() {
+        return timestamp;
+    }
 
-	/**
-	 * Returns the format used to encode the sound.
-	 * 
-	 * @return the format used to compress the sound, either
-	 *         Constants.NATIVE_PCM, Constants.ADPCM, Constants.MP3,
-	 *         Constants.NELLYMOSER or Constants.NELLYMOSER_8K.
-	 */
-	public SoundFormat getFormat() {
-		return format;
-	}
+    /**
+     * Sets the timestamp, in milliseconds, relative to the start of the file,
+     * when the audio or video will be played.
+     * 
+     * @param time
+     *            the time in milliseconds relative to the start of the file.
+     *            Must be in the range 0..16,777,215.
+     */
+    public void setTimestamp(final int time) {
+        if ((time < 0) || (time > 16777215)) {
+            throw new IllegalArgumentException(Strings.TIMESTAMP_RANGE);
+        }
+        timestamp = time;
+    }
 
-	/**
-	 * Sets the encoding format used to encode the sound.
-	 * 
-	 * @param format
-	 *            the format for the sound, either Constants.NATIVE_PCM,
-	 *            Constants.ADPCM, Constants.MP3, Constants.NELLYMOSER or
-	 *            Constants.NELLYMOSER_8K.
-	 */
-	public void setFormat(final SoundFormat format) {
-		this.format = format;
-	}
+    /**
+     * Returns the format used to encode the sound.
+     * 
+     * @return the format used to compress the sound, either
+     *         Constants.NATIVE_PCM, Constants.ADPCM, Constants.MP3,
+     *         Constants.NELLYMOSER or Constants.NELLYMOSER_8K.
+     */
+    public SoundFormat getFormat() {
+        return format;
+    }
 
-	/**
-	 * Returns the rate at which the sound will be played, in Hertz
-	 * 
-	 * @return the rate at which the sound was sampled. either: 5512, 11025,
-	 *         22050 or 44100.
-	 */
-	public int getRate() {
-		return rate;
-	}
+    /**
+     * Sets the encoding format used to encode the sound.
+     * 
+     * @param format
+     *            the format for the sound, either Constants.NATIVE_PCM,
+     *            Constants.ADPCM, Constants.MP3, Constants.NELLYMOSER or
+     *            Constants.NELLYMOSER_8K.
+     */
+    public void setFormat(final SoundFormat format) {
+        this.format = format;
+    }
 
-	/**
-	 * Sets the rate at which the sound was sampled in Hertz. The playback rate
-	 * for NELLYMOSER_8K encoded audio is fixed at 8KHz so setting the rate has
-	 * no effect.
-	 * 
-	 * @param rate
-	 *            the rate at which the sounds is played in Hz, MUST either
-	 *            5512, 11025, 22050 or 44100.
-	 */
-	public void setRate(final int rate) {
-		if (rate != 5512 && rate != 11025 && rate != 22050 && rate != 44100) {
-			throw new IllegalArgumentException(Strings.SOUND_RATE_RANGE);
-		}
-		this.rate = rate;
-	}
+    /**
+     * Returns the rate at which the sound will be played, in Hertz
+     * 
+     * @return the rate at which the sound was sampled. either: 5512, 11025,
+     *         22050 or 44100.
+     */
+    public int getRate() {
+        return rate;
+    }
 
-	/**
-	 * Returns the number of channels in the sound, either 1 (Mono) or 2
-	 * (Stereo).
-	 */
-	public int getChannelCount() {
-		return channelCount;
-	}
+    /**
+     * Sets the rate at which the sound was sampled in Hertz. The playback rate
+     * for NELLYMOSER_8K encoded audio is fixed at 8KHz so setting the rate has
+     * no effect.
+     * 
+     * @param rate
+     *            the rate at which the sounds is played in Hz, MUST either
+     *            5512, 11025, 22050 or 44100.
+     */
+    public void setRate(final int rate) {
+        if ((rate != 5512) && (rate != 11025) && (rate != 22050)
+                && (rate != 44100)) {
+            throw new IllegalArgumentException(Strings.SOUND_RATE_RANGE);
+        }
+        this.rate = rate;
+    }
 
-	/**
-	 * Sets the number of channels in the sound. Both the NELLYMOSER and
-	 * NELLYMOSER_8K are mono format. For NELLYMOSER the number of channels must
-	 * be set to 1. For NELLYMOSER_8K the setting for the number of channels has
-	 * no effect.
-	 * 
-	 * @param count
-	 *            the number of channels in the sound. Must be either 1 (Mono)
-	 *            or 2 (Stereo).
-	 */
-	public void setChannelCount(final int count) {
-		if (count < 1 || count > 2) {
-			throw new IllegalArgumentException(Strings.CHANNEL_RANGE);
-		}
-		channelCount = count;
-	}
+    /**
+     * Returns the number of channels in the sound, either 1 (Mono) or 2
+     * (Stereo).
+     */
+    public int getChannelCount() {
+        return channelCount;
+    }
 
-	/**
-	 * Returns the size of an uncompressed sample in bytes, either 1 (8-bit) or
-	 * 2 (16.-bit).
-	 */
-	public int getSampleSize() {
-		return sampleSize;
-	}
+    /**
+     * Sets the number of channels in the sound. Both the NELLYMOSER and
+     * NELLYMOSER_8K are mono format. For NELLYMOSER the number of channels must
+     * be set to 1. For NELLYMOSER_8K the setting for the number of channels has
+     * no effect.
+     * 
+     * @param count
+     *            the number of channels in the sound. Must be either 1 (Mono)
+     *            or 2 (Stereo).
+     */
+    public void setChannelCount(final int count) {
+        if ((count < 1) || (count > 2)) {
+            throw new IllegalArgumentException(Strings.CHANNEL_RANGE);
+        }
+        channelCount = count;
+    }
 
-	/**
-	 * Sets the sample size in bytes.
-	 * 
-	 * @param size
-	 *            the size of sound samples in bytes. Must be either 1 or 2. For
-	 *            NELLYMOSER and NELLYMOSER_8K formats the sample size must be
-	 *            1.
-	 */
-	public void setSampleSize(final int size) {
-		if (size < 1 || size > 2) {
-			throw new IllegalArgumentException(Strings.SAMPLE_SIZE_RANGE);
-		}
-		sampleSize = size;
-	}
+    /**
+     * Returns the size of an uncompressed sample in bytes, either 1 (8-bit) or
+     * 2 (16.-bit).
+     */
+    public int getSampleSize() {
+        return sampleSize;
+    }
 
-	/**
-	 * Returns the sound data.
-	 */
-	public byte[] getData() {
-		return data;
-	}
+    /**
+     * Sets the sample size in bytes.
+     * 
+     * @param size
+     *            the size of sound samples in bytes. Must be either 1 or 2. For
+     *            NELLYMOSER and NELLYMOSER_8K formats the sample size must be
+     *            1.
+     */
+    public void setSampleSize(final int size) {
+        if ((size < 1) || (size > 2)) {
+            throw new IllegalArgumentException(Strings.SAMPLE_SIZE_RANGE);
+        }
+        sampleSize = size;
+    }
 
-	/**
-	 * Sets the sound data.
-	 * 
-	 * @param bytes
-	 *            the sound data. Can be zero length but must not be null.
-	 */
-	public void setData(final byte[] bytes) {
-		if (bytes == null) {
-			throw new IllegalArgumentException(Strings.DATA_IS_NULL);
-		}
-		data = bytes;
-	}
+    /**
+     * Returns the sound data.
+     */
+    public byte[] getData() {
+        return data;
+    }
 
-	/**
-	 * Creates and returns a deep copy of this object.
-	 */
-	public AudioData copy() {
-		return new AudioData(this);
-	}
+    /**
+     * Sets the sound data.
+     * 
+     * @param bytes
+     *            the sound data. Can be zero length but must not be null.
+     */
+    public void setData(final byte[] bytes) {
+        if (bytes == null) {
+            throw new IllegalArgumentException(Strings.DATA_IS_NULL);
+        }
+        data = bytes;
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, timestamp, format, rate, channelCount,
-				sampleSize, data.length);
-	}
+    /**
+     * Creates and returns a deep copy of this object.
+     */
+    public AudioData copy() {
+        return new AudioData(this);
+    }
 
-	public int prepareToEncode() {
-		length = 12 + data.length;
+    @Override
+    public String toString() {
+        return String.format(FORMAT, timestamp, format, rate, channelCount,
+                sampleSize, data.length);
+    }
 
-		return length;
-	}
+    public int prepareToEncode() {
+        length = 12 + data.length;
 
-	public void encode(final FLVEncoder coder) throws CoderException {
-		final int start = coder.getPointer();
+        return length;
+    }
 
-		coder.writeWord(VideoTypes.VIDEO_DATA, 1);
-		coder.writeWord(length - 11, 3);
-		final int end = coder.getPointer() + (length << 3);
-		coder.writeWord(timestamp, 3);
-		coder.writeWord(0, 4);
-		coder.writeByte(pack());
-		coder.writeBytes(data);
+    public void encode(final FLVEncoder coder) throws CoderException {
+        final int start = coder.getPointer();
 
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
+        coder.writeWord(VideoTypes.VIDEO_DATA, 1);
+        coder.writeWord(length - 11, 3);
+        final int end = coder.getPointer() + (length << 3);
+        coder.writeWord(timestamp, 3);
+        coder.writeWord(0, 4);
+        coder.writeByte(pack());
+        coder.writeBytes(data);
 
-	private byte pack() {
-		byte value = (byte) (format.getValue() << 4);
+        if (coder.getPointer() != end) {
+            throw new CoderException(getClass().getName(), start >> 3, length,
+                    (coder.getPointer() - end) >> 3);
+        }
+    }
 
-		switch (rate) {
-		case 5512:
-			break;
-		case 11025:
-			value |= 4;
-			break;
-		case 22050:
-			value |= 8;
-			break;
-		case 44100:
-			value |= 12;
-			break;
-		default:
-			break;
-		}
-		value |= sampleSize == 2 ? 2 : 0;
-		value |= channelCount == 2 ? 1 : 0;
+    private byte pack() {
+        byte value = (byte) (format.getValue() << 4);
 
-		return value;
-	}
+        switch (rate) {
+        case 5512:
+            break;
+        case 11025:
+            value |= 4;
+            break;
+        case 22050:
+            value |= 8;
+            break;
+        case 44100:
+            value |= 12;
+            break;
+        default:
+            break;
+        }
+        value |= sampleSize == 2 ? 2 : 0;
+        value |= channelCount == 2 ? 1 : 0;
 
-	private void unpack(final int value) {
-		format = SoundFormat.fromInt((value >> 4) & 0x0F);
+        return value;
+    }
 
-		switch (value & 0x0C) {
-		case 0:
-			rate = 5512;
-			break;
-		case 4:
-			rate = 11025;
-			break;
-		case 8:
-			rate = 22050;
-			break;
-		case 12:
-			rate = 44100;
-			break;
-		default:
-			break;
-		}
-		sampleSize = (value & 0x02) == 0 ? 1 : 2;
-		channelCount = (value & 0x01) == 0 ? 1 : 2;
-	}
+    private void unpack(final int value) {
+        format = SoundFormat.fromInt((value >> 4) & 0x0F);
+
+        switch (value & 0x0C) {
+        case 0:
+            rate = 5512;
+            break;
+        case 4:
+            rate = 11025;
+            break;
+        case 8:
+            rate = 22050;
+            break;
+        case 12:
+            rate = 44100;
+            break;
+        default:
+            break;
+        }
+        sampleSize = (value & 0x02) == 0 ? 1 : 2;
+        channelCount = (value & 0x01) == 0 ? 1 : 2;
+    }
 
 }

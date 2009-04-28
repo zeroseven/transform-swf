@@ -60,103 +60,103 @@ import com.flagstone.transform.coder.SWFEncoder;
  */
 public final class Remove implements MovieTag {
 
-	private static final String FORMAT = "Remove: { identifier=%d; layer=%d }";
+    private static final String FORMAT = "Remove: { identifier=%d; layer=%d }";
 
-	private int identifier;
-	private int layer;
+    private int identifier;
+    private int layer;
 
-	// TODO(doc)
-	public Remove(final SWFDecoder coder) throws CoderException {
+    // TODO(doc)
+    public Remove(final SWFDecoder coder) throws CoderException {
 
-		if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
-			coder.readWord(4, false);
-		}
+        if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
+            coder.readWord(4, false);
+        }
 
-		identifier = coder.readWord(2, false);
-		layer = coder.readWord(2, false);
-	}
+        identifier = coder.readWord(2, false);
+        layer = coder.readWord(2, false);
+    }
 
-	/**
-	 * Creates a RemoveObject object that will remove an object with the
-	 * specified identifier from the given layer in the display list.
-	 * 
-	 * @param uid
-	 *            the unique identifier for the object currently on the display
-	 *            list. Must be in the range 1.65535.
-	 * @param layer
-	 *            the layer in the display list where the object is being
-	 *            displayed. Must be in the range 1.65535.
-	 */
-	public Remove(final int uid, final int layer) {
-		setIdentifier(uid);
-		setLayer(layer);
-	}
+    /**
+     * Creates a RemoveObject object that will remove an object with the
+     * specified identifier from the given layer in the display list.
+     * 
+     * @param uid
+     *            the unique identifier for the object currently on the display
+     *            list. Must be in the range 1.65535.
+     * @param layer
+     *            the layer in the display list where the object is being
+     *            displayed. Must be in the range 1.65535.
+     */
+    public Remove(final int uid, final int layer) {
+        setIdentifier(uid);
+        setLayer(layer);
+    }
 
-	// TODO(doc)
-	public Remove(final Remove object) {
-		identifier = object.identifier;
-		layer = object.layer;
-	}
+    // TODO(doc)
+    public Remove(final Remove object) {
+        identifier = object.identifier;
+        layer = object.layer;
+    }
 
-	/**
-	 * Returns the identifier of the object to be removed from the display list.
-	 */
-	public int getIdentifier() {
-		return identifier;
-	}
+    /**
+     * Returns the identifier of the object to be removed from the display list.
+     */
+    public int getIdentifier() {
+        return identifier;
+    }
 
-	/**
-	 * Returns the layer in the display list where the object will be displayed.
-	 */
-	public int getLayer() {
-		return layer;
-	}
+    /**
+     * Returns the layer in the display list where the object will be displayed.
+     */
+    public int getLayer() {
+        return layer;
+    }
 
-	/**
-	 * Sets the identifier of the object to be removed.
-	 * 
-	 * @param uid
-	 *            the unique identifier for the object currently on the display
-	 *            list. Must be in the range 1.65535.
-	 */
-	public void setIdentifier(final int uid) {
-		if (uid < 1 || uid > 65535) {
-			throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
-		}
-		identifier = uid;
-	}
+    /**
+     * Sets the identifier of the object to be removed.
+     * 
+     * @param uid
+     *            the unique identifier for the object currently on the display
+     *            list. Must be in the range 1.65535.
+     */
+    public void setIdentifier(final int uid) {
+        if ((uid < 1) || (uid > 65535)) {
+            throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
+        }
+        identifier = uid;
+    }
 
-	/**
-	 * Sets the layer in the display list where the object will be displayed.
-	 * 
-	 * @param aLayer
-	 *            the layer in the display list where the object is being
-	 *            displayed. Must be in the range 1.65535.
-	 */
-	public void setLayer(final int aLayer) {
-		if (aLayer < 1 || aLayer > 65535) {
-			throw new IllegalArgumentException(Strings.LAYER_RANGE);
-		}
-		layer = aLayer;
-	}
+    /**
+     * Sets the layer in the display list where the object will be displayed.
+     * 
+     * @param aLayer
+     *            the layer in the display list where the object is being
+     *            displayed. Must be in the range 1.65535.
+     */
+    public void setLayer(final int aLayer) {
+        if ((aLayer < 1) || (aLayer > 65535)) {
+            throw new IllegalArgumentException(Strings.LAYER_RANGE);
+        }
+        layer = aLayer;
+    }
 
-	public Remove copy() {
-		return new Remove(this);
-	}
+    public Remove copy() {
+        return new Remove(this);
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, identifier, layer);
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, identifier, layer);
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		return 6;
-	}
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        return 6;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		coder.writeWord((MovieTypes.REMOVE << 6) | 4, 2);
-		coder.writeWord(identifier, 2);
-		coder.writeWord(layer, 2);
-	}
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        coder.writeWord((MovieTypes.REMOVE << 6) | 4, 2);
+        coder.writeWord(identifier, 2);
+        coder.writeWord(layer, 2);
+    }
 }

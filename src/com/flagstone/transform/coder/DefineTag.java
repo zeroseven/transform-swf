@@ -35,17 +35,17 @@ package com.flagstone.transform.coder;
  * definitions for shapes, images, sounds ,etc. to a Flash file.
  */
 public interface DefineTag extends MovieTag {
-	/**
-	 * Returns the unique identifier assigned to this object.
-	 */
-	int getIdentifier();
+    /**
+     * Returns the unique identifier assigned to this object.
+     */
+    int getIdentifier();
 
-	/**
-	 * Sets the unique identifier for an object within a given Movie.
-	 * 
-	 * @param uid
-	 *            a unique identifier for the object. Must be in the range
-	 *            1..65535.
-	 */
-	void setIdentifier(final int uid);
+    /**
+     * Sets the unique identifier for an object within a given Movie.
+     * 
+     * @param uid
+     *            a unique identifier for the object. Must be in the range
+     *            1..65535.
+     */
+    void setIdentifier(final int uid);
 }

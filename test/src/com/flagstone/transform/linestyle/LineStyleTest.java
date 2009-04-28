@@ -29,13 +29,13 @@
  */
 package com.flagstone.transform.linestyle;
 
-import org.junit.Test;
-
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertArrayEquals;
+
+import org.junit.Test;
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
@@ -43,68 +43,66 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.Color;
 
-
-
 public final class LineStyleTest {
 
-	private static transient final int width = 1;
-	private transient final Color color = new Color(2, 3, 4);
+    private static transient final int width = 1;
+    private transient final Color color = new Color(2, 3, 4);
 
-	private transient LineStyle fixture;
+    private transient LineStyle fixture;
 
-	private transient final byte[] encoded = new byte[] { 0x01, 0x00, 0x02,
-			0x03, 0x04 };
+    private transient final byte[] encoded = new byte[] { 0x01, 0x00, 0x02,
+            0x03, 0x04 };
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAccessorForWidthWithLowerBound() {
-		fixture = new LineStyle(-1, color);
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkAccessorForWidthWithLowerBound() {
+        fixture = new LineStyle(-1, color);
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAccessorForWidthWithUpperBound() {
-		fixture = new LineStyle(65536, color);
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkAccessorForWidthWithUpperBound() {
+        fixture = new LineStyle(65536, color);
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAccessorForColorWithNull() {
-		fixture = new LineStyle(1, null);
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkAccessorForColorWithNull() {
+        fixture = new LineStyle(1, null);
+    }
 
-	@Test
-	public void checkCopy() {
-		fixture = new LineStyle(width, color);
-		final LineStyle copy = fixture.copy();
+    @Test
+    public void checkCopy() {
+        fixture = new LineStyle(width, color);
+        final LineStyle copy = fixture.copy();
 
-		assertNotSame(fixture, copy);
-		assertSame(fixture.getColor(), copy.getColor());
-		assertEquals(fixture.toString(), copy.toString());
-	}
+        assertNotSame(fixture, copy);
+        assertSame(fixture.getColor(), copy.getColor());
+        assertEquals(fixture.toString(), copy.toString());
+    }
 
-	@Test
-	public void encode() throws CoderException {
-		final SWFEncoder encoder = new SWFEncoder(encoded.length);
-		final Context context = new Context();
+    @Test
+    public void encode() throws CoderException {
+        final SWFEncoder encoder = new SWFEncoder(encoded.length);
+        final Context context = new Context();
 
-		fixture = new LineStyle(width, color);
-		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
-		fixture.encode(encoder, context);
+        fixture = new LineStyle(width, color);
+        assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
+        fixture.encode(encoder, context);
 
-		assertTrue(encoder.eof());
-		assertArrayEquals(encoded, encoder.getData());
-	}
+        assertTrue(encoder.eof());
+        assertArrayEquals(encoded, encoder.getData());
+    }
 
-	@Test
-	public void decode() throws CoderException {
-		final SWFDecoder decoder = new SWFDecoder(encoded);
-		final Context context = new Context();
+    @Test
+    public void decode() throws CoderException {
+        final SWFDecoder decoder = new SWFDecoder(encoded);
+        final Context context = new Context();
 
-		fixture = new LineStyle(decoder, context);
+        fixture = new LineStyle(decoder, context);
 
-		assertTrue(decoder.eof());
-		assertEquals(width, fixture.getWidth());
-		assertEquals(color.getRed(), fixture.getColor().getRed());
-		assertEquals(color.getGreen(), fixture.getColor().getGreen());
-		assertEquals(color.getBlue(), fixture.getColor().getBlue());
-		assertEquals(color.getAlpha(), fixture.getColor().getAlpha());
-	}
+        assertTrue(decoder.eof());
+        assertEquals(width, fixture.getWidth());
+        assertEquals(color.getRed(), fixture.getColor().getRed());
+        assertEquals(color.getGreen(), fixture.getColor().getGreen());
+        assertEquals(color.getBlue(), fixture.getColor().getBlue());
+        assertEquals(color.getAlpha(), fixture.getColor().getAlpha());
+    }
 }

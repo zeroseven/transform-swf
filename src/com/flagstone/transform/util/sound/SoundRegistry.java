@@ -33,42 +33,44 @@ package com.flagstone.transform.util.sound;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.flagstone.transform.sound.SoundInfo;
+
 /**
  */
 public final class SoundRegistry {
-	private static Map<SoundEncoding, SoundProvider> providers = new LinkedHashMap<SoundEncoding, SoundProvider>();
+    private static Map<SoundEncoding, SoundProvider> providers = new LinkedHashMap<SoundEncoding, SoundProvider>();
 
-	static {
-		for (SoundEncoding encoding : SoundEncoding.values()) {
-			registerProvider(encoding, encoding.getProvider());
-		}
-	}
+    static {
+        for (final SoundEncoding encoding : SoundEncoding.values()) {
+            registerProvider(encoding, encoding.getProvider());
+        }
+    }
 
-	/**
-	 * Register an SoundDecoder to handle images in the specified format. The
-	 * image formats currently supported are defined in the {@link SoundInfo}
-	 * class.
-	 * 
-	 * @param encoding
-	 *            the string identifying the image format.
-	 * @param decoder
-	 *            any class that implements the SoundDecoder interface.
-	 */
-	public static void registerProvider(final SoundEncoding encoding,
-			final SoundProvider decoder) {
-		providers.put(encoding, decoder);
-	}
+    /**
+     * Register an SoundDecoder to handle images in the specified format. The
+     * image formats currently supported are defined in the {@link SoundInfo}
+     * class.
+     * 
+     * @param encoding
+     *            the string identifying the image format.
+     * @param decoder
+     *            any class that implements the SoundDecoder interface.
+     */
+    public static void registerProvider(final SoundEncoding encoding,
+            final SoundProvider decoder) {
+        providers.put(encoding, decoder);
+    }
 
-	public static SoundDecoder getSoundProvider(final SoundEncoding encoding) {
+    public static SoundDecoder getSoundProvider(final SoundEncoding encoding) {
 
-		if (providers.containsKey(encoding)) {
-			return providers.get(encoding).newDecoder();
-		} else {
-			throw new IllegalArgumentException();
-		}
-	}
+        if (providers.containsKey(encoding)) {
+            return providers.get(encoding).newDecoder();
+        } else {
+            throw new IllegalArgumentException();
+        }
+    }
 
-	private SoundRegistry() {
-		// Registry is shared.
-	}
+    private SoundRegistry() {
+        // Registry is shared.
+    }
 }

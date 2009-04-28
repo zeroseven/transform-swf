@@ -5,6 +5,6 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( { DefineMovieClipTest.class,
-		InitializeMovieClipTest.class, QuicktimeMovieTest.class, })
+        InitializeMovieClipTest.class, QuicktimeMovieTest.class, })
 public final class AllMovieClipTests {
 }

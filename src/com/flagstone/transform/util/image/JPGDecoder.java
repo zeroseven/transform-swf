@@ -52,135 +52,135 @@ import com.flagstone.transform.image.DefineJPEGImage2;
  * JPGDecoder decodes JPEG images so they can be used in a Flash file.
  */
 public final class JPGDecoder implements ImageProvider, ImageDecoder {
-	
-	private transient int width;
-	private transient int height;
-	private transient byte[] image;
 
-	public void read(final File file) throws FileNotFoundException, IOException,
-			DataFormatException {
-		final ImageInfo info = new ImageInfo();
-		info.setInput(new RandomAccessFile(file, "r"));
-		info.setDetermineImageNumber(true);
+    private transient int width;
+    private transient int height;
+    private transient byte[] image;
 
-		if (!info.check()) {
-			throw new DataFormatException(Strings.INVALID_FORMAT);
-		}
+    public void read(final File file) throws FileNotFoundException,
+            IOException, DataFormatException {
+        final ImageInfo info = new ImageInfo();
+        info.setInput(new RandomAccessFile(file, "r"));
+        info.setDetermineImageNumber(true);
 
-		decode(loadFile(file));
-	}
+        if (!info.check()) {
+            throw new DataFormatException(Strings.INVALID_FORMAT);
+        }
 
-	public void read(final URL url) throws FileNotFoundException, IOException,
-			DataFormatException {
-		final URLConnection connection = url.openConnection();
+        decode(loadFile(file));
+    }
 
-		final int fileSize = connection.getContentLength();
+    public void read(final URL url) throws FileNotFoundException, IOException,
+            DataFormatException {
+        final URLConnection connection = url.openConnection();
 
-		if (fileSize < 0) {
-			throw new FileNotFoundException(url.getFile());
-		}
+        final int fileSize = connection.getContentLength();
 
-		final byte[] bytes = new byte[fileSize];
+        if (fileSize < 0) {
+            throw new FileNotFoundException(url.getFile());
+        }
 
-		final InputStream stream = url.openStream();
-		final BufferedInputStream buffer = new BufferedInputStream(stream);
+        final byte[] bytes = new byte[fileSize];
 
-		buffer.read(bytes);
-		buffer.close();
+        final InputStream stream = url.openStream();
+        final BufferedInputStream buffer = new BufferedInputStream(stream);
 
-		final ImageInfo info = new ImageInfo();
-		info.setInput(new ByteArrayInputStream(bytes));
-		info.setDetermineImageNumber(true);
+        buffer.read(bytes);
+        buffer.close();
 
-		if (!info.check()) {
-			throw new DataFormatException(Strings.INVALID_FORMAT);
-		}
+        final ImageInfo info = new ImageInfo();
+        info.setInput(new ByteArrayInputStream(bytes));
+        info.setDetermineImageNumber(true);
 
-		decode(bytes);
-	}
+        if (!info.check()) {
+            throw new DataFormatException(Strings.INVALID_FORMAT);
+        }
 
-	public ImageTag defineImage(final int identifier) {
-		return new DefineJPEGImage2(identifier, image);
-	}
+        decode(bytes);
+    }
 
-	public ImageDecoder newDecoder() {
-		return new JPGDecoder();
-	}
+    public ImageTag defineImage(final int identifier) {
+        return new DefineJPEGImage2(identifier, image);
+    }
 
-	private byte[] loadFile(final File file) throws FileNotFoundException,
-			IOException {
-		final byte[] data = new byte[(int) file.length()];
+    public ImageDecoder newDecoder() {
+        return new JPGDecoder();
+    }
 
-		FileInputStream stream = null;
+    private byte[] loadFile(final File file) throws FileNotFoundException,
+            IOException {
+        final byte[] data = new byte[(int) file.length()];
 
-		try {
-			stream = new FileInputStream(file);
-			final int bytesRead = stream.read(data);
+        FileInputStream stream = null;
 
-			if (bytesRead != data.length) {
-				throw new IOException(file.getAbsolutePath());
-			}
-		} finally {
-			if (stream != null) {
-				stream.close();
-			}
-		}
-		return data;
-	}
+        try {
+            stream = new FileInputStream(file);
+            final int bytesRead = stream.read(data);
 
-	protected void decode(final byte[] data) throws DataFormatException {
-		image = new byte[data.length];
+            if (bytesRead != data.length) {
+                throw new IOException(file.getAbsolutePath());
+            }
+        } finally {
+            if (stream != null) {
+                stream.close();
+            }
+        }
+        return data;
+    }
 
-		System.arraycopy(data, 0, image, 0, data.length);
+    protected void decode(final byte[] data) throws DataFormatException {
+        image = new byte[data.length];
 
-		if (!jpegInfo()) {
-			throw new DataFormatException(Strings.INVALID_FORMAT);
-		}
+        System.arraycopy(data, 0, image, 0, data.length);
 
-	}
+        if (!jpegInfo()) {
+            throw new DataFormatException(Strings.INVALID_FORMAT);
+        }
 
-	public int getWidth() {
-		return width;
-	}
+    }
 
-	public int getHeight() {
-		return height;
-	}
+    public int getWidth() {
+        return width;
+    }
 
-	public byte[] getImage() {
-		return Arrays.copyOf(image, image.length);
-	}
+    public int getHeight() {
+        return height;
+    }
 
-	private boolean jpegInfo() {
-		final FLVDecoder coder = new FLVDecoder(image);
+    public byte[] getImage() {
+        return Arrays.copyOf(image, image.length);
+    }
 
-		boolean result;
+    private boolean jpegInfo() {
+        final FLVDecoder coder = new FLVDecoder(image);
 
-		if (coder.readWord(2, false) == 0xffd8) {
-			int marker;
+        boolean result;
 
-			do {
-				marker = coder.readWord(2, false);
+        if (coder.readWord(2, false) == 0xffd8) {
+            int marker;
 
-				if ((marker & 0xff00) == 0xff00) {
-					if (marker >= 0xffc0 && marker <= 0xffcf
-							&& marker != 0xffc4 && marker != 0xffc8) {
-						coder.adjustPointer(24);
-						coder.readWord(2, false);
-						coder.readWord(2, false);
-						break;
-					} else {
-						coder
-								.adjustPointer((coder.readWord(2, false) - 2) << 3);
-					}
-				}
+            do {
+                marker = coder.readWord(2, false);
 
-			} while ((marker & 0xff00) == 0xff00);
+                if ((marker & 0xff00) == 0xff00) {
+                    if ((marker >= 0xffc0) && (marker <= 0xffcf)
+                            && (marker != 0xffc4) && (marker != 0xffc8)) {
+                        coder.adjustPointer(24);
+                        coder.readWord(2, false);
+                        coder.readWord(2, false);
+                        break;
+                    } else {
+                        coder
+                                .adjustPointer((coder.readWord(2, false) - 2) << 3);
+                    }
+                }
 
-			result = true;
-		} else {
-			result = false;
-		}
-		return result;
-	}
+            } while ((marker & 0xff00) == 0xff00);
+
+            result = true;
+        } else {
+            result = false;
+        }
+        return result;
+    }
 }

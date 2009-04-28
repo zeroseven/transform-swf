@@ -31,5 +31,5 @@
 package com.flagstone.transform.util.sound;
 
 public interface SoundProvider {
-	SoundDecoder newDecoder();
+    SoundDecoder newDecoder();
 }

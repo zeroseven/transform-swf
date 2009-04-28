@@ -35,63 +35,63 @@ import java.util.Map;
 
 public enum SoundFormat {
 
-	/**
-	 * NATIVE_PCM - uncompressed Pulse Code Modulated: samples are either 1 or 2
-	 * bytes. For two-byte samples the byte order is dependent on the platform
-	 * on which the Flash Player is hosted. Sounds created on a platform which
-	 * support big-endian byte order will not be played correctly when listened
-	 * to on a platform which supports little-endian byte order.
-	 */
-	NATIVE_PCM(0),
-	/**
-	 * ADPCM - compressed ADaptive Pulse Code Modulated: samples are encoded and
-	 * compressed by comparing the difference between successive sound sample
-	 * which dramatically reduces the size of the encoded sound when compared to
-	 * the uncompressed PCM formats. Use this format or MP3 whenever possible.
-	 */
-	ADPCM(1),
-	/**
-	 * MP3 - compressed MPEG Audio Layer-3.
-	 * */
-	MP3(2),
-	/**
-	 * PCM - an uncompressed pulse code modulated sound. Samples are either 1 or
-	 * 2 bytes. The byte ordering for 16-bit samples us little-endian.
-	 */
-	PCM(3),
-	/**
-	 * NELLYMOSER_8K - compressed Nellymoser Asao format for a mono sound played
-	 * at 8KHz supporting low bit-rate sound for improved synchronisation
-	 * between the sound and frame rate of movies. This format is not supported
-	 * in SWF files.
-	 */
-	NELLYMOSER_8K(5),
-	/**
-	 * NELLYMOSER - compressed Nellymoser Asao format supporting low bit-rate
-	 * sound for improved synchronisation between the sound and frame rate of
-	 * movies. This format is for mono sounds.
-	 */
-	NELLYMOSER(6);
+    /**
+     * NATIVE_PCM - uncompressed Pulse Code Modulated: samples are either 1 or 2
+     * bytes. For two-byte samples the byte order is dependent on the platform
+     * on which the Flash Player is hosted. Sounds created on a platform which
+     * support big-endian byte order will not be played correctly when listened
+     * to on a platform which supports little-endian byte order.
+     */
+    NATIVE_PCM(0),
+    /**
+     * ADPCM - compressed ADaptive Pulse Code Modulated: samples are encoded and
+     * compressed by comparing the difference between successive sound sample
+     * which dramatically reduces the size of the encoded sound when compared to
+     * the uncompressed PCM formats. Use this format or MP3 whenever possible.
+     */
+    ADPCM(1),
+    /**
+     * MP3 - compressed MPEG Audio Layer-3.
+     * */
+    MP3(2),
+    /**
+     * PCM - an uncompressed pulse code modulated sound. Samples are either 1 or
+     * 2 bytes. The byte ordering for 16-bit samples us little-endian.
+     */
+    PCM(3),
+    /**
+     * NELLYMOSER_8K - compressed Nellymoser Asao format for a mono sound played
+     * at 8KHz supporting low bit-rate sound for improved synchronisation
+     * between the sound and frame rate of movies. This format is not supported
+     * in SWF files.
+     */
+    NELLYMOSER_8K(5),
+    /**
+     * NELLYMOSER - compressed Nellymoser Asao format supporting low bit-rate
+     * sound for improved synchronisation between the sound and frame rate of
+     * movies. This format is for mono sounds.
+     */
+    NELLYMOSER(6);
 
-	private static final Map<Integer, SoundFormat> TABLE = new LinkedHashMap<Integer, SoundFormat>();
+    private static final Map<Integer, SoundFormat> TABLE = new LinkedHashMap<Integer, SoundFormat>();
 
-	static {
-		for (SoundFormat format : values()) {
-			TABLE.put(format.value, format);
-		}
-	}
+    static {
+        for (final SoundFormat format : values()) {
+            TABLE.put(format.value, format);
+        }
+    }
 
-	public static SoundFormat fromInt(final int type) {
-		return TABLE.get(type);
-	}
+    public static SoundFormat fromInt(final int type) {
+        return TABLE.get(type);
+    }
 
-	private final int value;
+    private final int value;
 
-	private SoundFormat(final int value) {
-		this.value = value;
-	}
+    private SoundFormat(final int value) {
+        this.value = value;
+    }
 
-	public int getValue() {
-		return value;
-	}
+    public int getValue() {
+        return value;
+    }
 }

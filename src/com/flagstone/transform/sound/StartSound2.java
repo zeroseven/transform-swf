@@ -54,113 +54,112 @@ import com.flagstone.transform.coder.SWFEncoder;
  * @see SoundInfo
  */
 public final class StartSound2 implements MovieTag {
-	private static final String FORMAT = "StartSound2: { sound=%s }";
+    private static final String FORMAT = "StartSound2: { sound=%s }";
 
-	private String soundClass;
-	private SoundInfo sound;
+    private String soundClass;
+    private SoundInfo sound;
 
-	private transient int length;
+    private transient int length;
 
-	// TODO(doc)
-	public StartSound2(final SWFDecoder coder)
-			throws CoderException {
-		final int start = coder.getPointer();
-		length = coder.readWord(2, false) & 0x3F;
+    // TODO(doc)
+    public StartSound2(final SWFDecoder coder) throws CoderException {
+        final int start = coder.getPointer();
+        length = coder.readWord(2, false) & 0x3F;
 
-		if (length == 0x3F) {
-			length = coder.readWord(4, false);
-		}
-		final int end = coder.getPointer() + (length << 3);
+        if (length == 0x3F) {
+            length = coder.readWord(4, false);
+        }
+        final int end = coder.getPointer() + (length << 3);
 
-		soundClass = coder.readString();
-		sound = new SoundInfo(coder);
+        soundClass = coder.readString();
+        sound = new SoundInfo(coder);
 
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
+        if (coder.getPointer() != end) {
+            throw new CoderException(getClass().getName(), start >> 3, length,
+                    (coder.getPointer() - end) >> 3);
+        }
+    }
 
-	/**
-	 * Creates a StartSound object with an Sound object that identifies the
-	 * sound and controls how it is played.
-	 * 
-	 * @param aSound
-	 *            the Sound object. Must not be null.
-	 */
-	public StartSound2(final SoundInfo aSound) {
-		setSound(aSound);
-	}
+    /**
+     * Creates a StartSound object with an Sound object that identifies the
+     * sound and controls how it is played.
+     * 
+     * @param aSound
+     *            the Sound object. Must not be null.
+     */
+    public StartSound2(final SoundInfo aSound) {
+        setSound(aSound);
+    }
 
-	// TODO(doc)
-	public StartSound2(final StartSound2 object) {
-		soundClass = object.soundClass;
-		sound = object.sound.copy();
-	}
+    // TODO(doc)
+    public StartSound2(final StartSound2 object) {
+        soundClass = object.soundClass;
+        sound = object.sound.copy();
+    }
 
-	// TODO(doc)
-	public String getSoundClass() {
-		return soundClass;
-	}
+    // TODO(doc)
+    public String getSoundClass() {
+        return soundClass;
+    }
 
-	/**
-	 * Returns the Sound object describing how the sound will be played.
-	 */
-	public SoundInfo getSound() {
-		return sound;
-	}
+    /**
+     * Returns the Sound object describing how the sound will be played.
+     */
+    public SoundInfo getSound() {
+        return sound;
+    }
 
-	// TODO(doc)
-	public void setSoundClass(final String className) {
-		soundClass = className;
-	}
+    // TODO(doc)
+    public void setSoundClass(final String className) {
+        soundClass = className;
+    }
 
-	/**
-	 * Sets the Sound object that describes how the sound will be played.
-	 * 
-	 * @param aSound
-	 *            the Sound object that controls how the sound is played. Must
-	 *            not be null.
-	 */
-	public void setSound(final SoundInfo aSound) {
-		if (aSound == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
-		}
-		sound = aSound;
-	}
+    /**
+     * Sets the Sound object that describes how the sound will be played.
+     * 
+     * @param aSound
+     *            the Sound object that controls how the sound is played. Must
+     *            not be null.
+     */
+    public void setSound(final SoundInfo aSound) {
+        if (aSound == null) {
+            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+        }
+        sound = aSound;
+    }
 
-	public StartSound2 copy() {
-		return new StartSound2(this);
-	}
+    public StartSound2 copy() {
+        return new StartSound2(this);
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, sound);
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, sound);
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		length = soundClass.length() + sound.prepareToEncode(coder, context);
-		return (length > 62 ? 6 : 2) + length;
-	}
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        length = soundClass.length() + sound.prepareToEncode(coder, context);
+        return (length > 62 ? 6 : 2) + length;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		final int start = coder.getPointer();
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        final int start = coder.getPointer();
 
-		if (length >= 63) {
-			coder.writeWord((MovieTypes.START_SOUND_2 << 6) | 0x3F, 2);
-			coder.writeWord(length, 4);
-		} else {
-			coder.writeWord((MovieTypes.START_SOUND_2 << 6) | length, 2);
-		}
-		final int end = coder.getPointer() + (length << 3);
+        if (length >= 63) {
+            coder.writeWord((MovieTypes.START_SOUND_2 << 6) | 0x3F, 2);
+            coder.writeWord(length, 4);
+        } else {
+            coder.writeWord((MovieTypes.START_SOUND_2 << 6) | length, 2);
+        }
+        final int end = coder.getPointer() + (length << 3);
 
-		coder.writeString(soundClass);
-		sound.encode(coder, context);
+        coder.writeString(soundClass);
+        sound.encode(coder, context);
 
-		if (coder.getPointer() != end) {
-			throw new CoderException(getClass().getName(), start >> 3, length,
-					(coder.getPointer() - end) >> 3);
-		}
-	}
+        if (coder.getPointer() != end) {
+            throw new CoderException(getClass().getName(), start >> 3, length,
+                    (coder.getPointer() - end) >> 3);
+        }
+    }
 }

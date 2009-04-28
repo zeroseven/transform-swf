@@ -29,12 +29,13 @@
  */
 package com.flagstone.transform.button;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Ignore;
 import org.junit.Test;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertEquals;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -42,54 +43,54 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 public final class ButtonSoundTest {
 
-	private transient ButtonSound fixture;
+    private transient ButtonSound fixture;
 
-	private transient final byte[] encoded = new byte[] { 0x06, 0x01, 0x01,
-			0x00, 0x02, 0x00, 0x06, 0x50 };
+    private transient final byte[] encoded = new byte[] { 0x06, 0x01, 0x01,
+            0x00, 0x02, 0x00, 0x06, 0x50 };
 
-	private transient final byte[] extended = new byte[] { 0x7F, 0x01, 0x06,
-			0x00, 0x00, 0x00, 0x01, 0x00, 0x02, 0x00, 0x06, 0x50 };
+    private transient final byte[] extended = new byte[] { 0x7F, 0x01, 0x06,
+            0x00, 0x00, 0x00, 0x01, 0x00, 0x02, 0x00, 0x06, 0x50 };
 
-	@Test
-	@Ignore
-	public void checkCopy() {
-		// fixture = new ButtonSound(identifier, layer, transform,
-		// colorTransform);
-		final ButtonSound copy = fixture.copy();
+    @Test
+    @Ignore
+    public void checkCopy() {
+        // fixture = new ButtonSound(identifier, layer, transform,
+        // colorTransform);
+        final ButtonSound copy = fixture.copy();
 
-		assertNotSame(fixture, copy);
-	}
+        assertNotSame(fixture, copy);
+    }
 
-	@Test
-	@Ignore
-	public void encodeCoordTransform() throws CoderException {
-		final SWFEncoder encoder = new SWFEncoder(encoded.length);
-		final Context context = new Context();
+    @Test
+    @Ignore
+    public void encodeCoordTransform() throws CoderException {
+        final SWFEncoder encoder = new SWFEncoder(encoded.length);
+        final Context context = new Context();
 
-		// fixture = new ButtonSound(identifier, layer, transform);
-		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
-		fixture.encode(encoder, context);
+        // fixture = new ButtonSound(identifier, layer, transform);
+        assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
+        fixture.encode(encoder, context);
 
-		assertTrue(encoder.eof());
-	}
+        assertTrue(encoder.eof());
+    }
 
-	@Test
-	@Ignore
-	public void decode() throws CoderException {
-		final SWFDecoder decoder = new SWFDecoder(encoded);
+    @Test
+    @Ignore
+    public void decode() throws CoderException {
+        final SWFDecoder decoder = new SWFDecoder(encoded);
 
-		fixture = new ButtonSound(decoder);
+        fixture = new ButtonSound(decoder);
 
-		assertTrue(decoder.eof());
-	}
+        assertTrue(decoder.eof());
+    }
 
-	@Test
-	@Ignore
-	public void decodeExtended() throws CoderException {
-		final SWFDecoder decoder = new SWFDecoder(extended);
+    @Test
+    @Ignore
+    public void decodeExtended() throws CoderException {
+        final SWFDecoder decoder = new SWFDecoder(extended);
 
-		fixture = new ButtonSound(decoder);
+        fixture = new ButtonSound(decoder);
 
-		assertTrue(decoder.eof());
-	}
+        assertTrue(decoder.eof());
+    }
 }

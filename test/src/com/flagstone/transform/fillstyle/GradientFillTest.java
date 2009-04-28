@@ -29,17 +29,17 @@
  */
 package com.flagstone.transform.fillstyle;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertArrayEquals;
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
@@ -48,64 +48,63 @@ import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.Color;
 import com.flagstone.transform.datatype.CoordTransform;
 
-
-
 public final class GradientFillTest {
 
-	private static transient boolean radial = false;
-	private static transient CoordTransform transform = CoordTransform.translate(1, 2);
+    private static transient boolean radial = false;
+    private static transient CoordTransform transform = CoordTransform
+            .translate(1, 2);
 
-	private static List<Gradient> list;
+    private static List<Gradient> list;
 
-	@BeforeClass
-	public static void initialize() {
-		list = new ArrayList<Gradient>();
-		list.add(new Gradient(1, new Color(2, 3, 4)));
-		list.add(new Gradient(5, new Color(6, 7, 8)));
-	}
+    @BeforeClass
+    public static void initialize() {
+        list = new ArrayList<Gradient>();
+        list.add(new Gradient(1, new Color(2, 3, 4)));
+        list.add(new Gradient(5, new Color(6, 7, 8)));
+    }
 
-	private transient GradientFill fixture;
+    private transient GradientFill fixture;
 
-	private transient final byte[] encoded = new byte[] { 0x10, 0x06, 0x50,
-			0x02, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
+    private transient final byte[] encoded = new byte[] { 0x10, 0x06, 0x50,
+            0x02, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAddNullGradient() {
-		fixture = new GradientFill(radial, transform, list);
-		fixture.add(null);
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkAddNullGradient() {
+        fixture = new GradientFill(radial, transform, list);
+        fixture.add(null);
+    }
 
-	@Test
-	public void checkCopy() {
-		fixture = new GradientFill(radial, transform, list);
-		final GradientFill copy = fixture.copy();
+    @Test
+    public void checkCopy() {
+        fixture = new GradientFill(radial, transform, list);
+        final GradientFill copy = fixture.copy();
 
-		assertSame(fixture.getTransform(), copy.getTransform());
-		assertNotSame(fixture.getGradients(), copy.getGradients());
-		assertEquals(fixture.toString(), copy.toString());
-	}
+        assertSame(fixture.getTransform(), copy.getTransform());
+        assertNotSame(fixture.getGradients(), copy.getGradients());
+        assertEquals(fixture.toString(), copy.toString());
+    }
 
-	@Test
-	public void encode() throws CoderException {
-		final SWFEncoder encoder = new SWFEncoder(encoded.length);
-		final Context context = new Context();
+    @Test
+    public void encode() throws CoderException {
+        final SWFEncoder encoder = new SWFEncoder(encoded.length);
+        final Context context = new Context();
 
-		fixture = new GradientFill(radial, transform, list);
-		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
-		fixture.encode(encoder, context);
+        fixture = new GradientFill(radial, transform, list);
+        assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
+        fixture.encode(encoder, context);
 
-		assertTrue(encoder.eof());
-		assertArrayEquals(encoded, encoder.getData());
-	}
+        assertTrue(encoder.eof());
+        assertArrayEquals(encoded, encoder.getData());
+    }
 
-	@Test
-	public void decode() throws CoderException {
-		final SWFDecoder decoder = new SWFDecoder(encoded);
-		final Context context = new Context();
+    @Test
+    public void decode() throws CoderException {
+        final SWFDecoder decoder = new SWFDecoder(encoded);
+        final Context context = new Context();
 
-		fixture = new GradientFill(decoder, context);
+        fixture = new GradientFill(decoder, context);
 
-		assertTrue(decoder.eof());
-		// TODO compare fields
-	}
+        assertTrue(decoder.eof());
+        // TODO compare fields
+    }
 }

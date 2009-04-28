@@ -104,219 +104,219 @@ import com.flagstone.transform.coder.SWFEncoder;
  */
 public final class Push implements Action {
 
-	private static final String FORMAT = "Push: { values=%s }";
+    private static final String FORMAT = "Push: { values=%s }";
 
-	private List<Object> values;
+    private List<Object> values;
 
-	private transient int length;
+    private transient int length;
 
-	// TODO(doc)
-	public Push(final SWFDecoder coder) throws CoderException {
+    // TODO(doc)
+    public Push(final SWFDecoder coder) throws CoderException {
 
-		coder.readByte();
-		length = coder.readWord(2, false);
-		values = new ArrayList<Object>();
+        coder.readByte();
+        length = coder.readWord(2, false);
+        values = new ArrayList<Object>();
 
-		int valuesLength = length;
+        int valuesLength = length;
 
-		while (valuesLength > 0) {
-			final int dataType = coder.readByte();
+        while (valuesLength > 0) {
+            final int dataType = coder.readByte();
 
-			switch (dataType) {
-			case 0:
-				final int start = coder.getPointer();
-				int strlen = 0;
+            switch (dataType) {
+            case 0:
+                final int start = coder.getPointer();
+                int strlen = 0;
 
-				while (coder.readWord(1, false) != 0) {
-					strlen += 1;
-				}
+                while (coder.readWord(1, false) != 0) {
+                    strlen += 1;
+                }
 
-				coder.setPointer(start);
-				values.add(coder.readString(strlen));
-				coder.adjustPointer(8);
-				valuesLength -= strlen + 2;
-				break;
-			case 1: // Pre version 5 property
-				values.add(Property.fromInt(coder.readWord(4, false)));
-				valuesLength -= 5;
-				break;
-			case 2:
-				values.add(Null.getInstance());
-				valuesLength -= 1;
-				break;
-			case 3:
-				values.add(Void.getInstance());
-				valuesLength -= 1;
-				break;
-			case 4:
-				values.add(new RegisterIndex(coder.readByte()));
-				valuesLength -= 2;
-				break;
-			case 5:
-				values.add(coder.readByte() != 0);
-				valuesLength -= 2;
-				break;
-			case 6:
-				values.add(coder.readDouble());
-				valuesLength -= 9;
-				break;
-			case 7:
-				values.add(coder.readWord(4, false));
-				valuesLength -= 5;
-				break;
-			case 8:
-				values.add(new TableIndex(coder.readWord(1, false)));
-				valuesLength -= 2;
-				break;
-			case 9:
-				values.add(new TableIndex(coder.readWord(2, false)));
-				valuesLength -= 3;
-				break;
-			default:
-				break;
-			}
-		}
-	}
+                coder.setPointer(start);
+                values.add(coder.readString(strlen));
+                coder.adjustPointer(8);
+                valuesLength -= strlen + 2;
+                break;
+            case 1: // Pre version 5 property
+                values.add(Property.fromInt(coder.readWord(4, false)));
+                valuesLength -= 5;
+                break;
+            case 2:
+                values.add(Null.getInstance());
+                valuesLength -= 1;
+                break;
+            case 3:
+                values.add(Void.getInstance());
+                valuesLength -= 1;
+                break;
+            case 4:
+                values.add(new RegisterIndex(coder.readByte()));
+                valuesLength -= 2;
+                break;
+            case 5:
+                values.add(coder.readByte() != 0);
+                valuesLength -= 2;
+                break;
+            case 6:
+                values.add(coder.readDouble());
+                valuesLength -= 9;
+                break;
+            case 7:
+                values.add(coder.readWord(4, false));
+                valuesLength -= 5;
+                break;
+            case 8:
+                values.add(new TableIndex(coder.readWord(1, false)));
+                valuesLength -= 2;
+                break;
+            case 9:
+                values.add(new TableIndex(coder.readWord(2, false)));
+                valuesLength -= 3;
+                break;
+            default:
+                break;
+            }
+        }
+    }
 
-	public Push() {
-		values = new ArrayList<Object>();
-	}
+    public Push() {
+        values = new ArrayList<Object>();
+    }
 
-	/**
-	 * Creates a Push action that will push the values in the array onto the
-	 * stack.
-	 * 
-	 * @param anArray
-	 *            an array of values to be pushed onto the stack. The values in
-	 *            the array must be one of the following classes: Boolean,
-	 *            Integer, Double, String, RegisterIndex or TableIndex. Must not
-	 *            be null.
-	 */
-	public Push(final List<Object> anArray) {
-		setValues(anArray);
-	}
+    /**
+     * Creates a Push action that will push the values in the array onto the
+     * stack.
+     * 
+     * @param anArray
+     *            an array of values to be pushed onto the stack. The values in
+     *            the array must be one of the following classes: Boolean,
+     *            Integer, Double, String, RegisterIndex or TableIndex. Must not
+     *            be null.
+     */
+    public Push(final List<Object> anArray) {
+        setValues(anArray);
+    }
 
-	// TODO(doc)
-	public Push(final Push object) {
-		values = new ArrayList<Object>(object.values);
-	}
+    // TODO(doc)
+    public Push(final Push object) {
+        values = new ArrayList<Object>(object.values);
+    }
 
-	public Push add(final Object value) {
-		values.add(value);
-		return this;
-	}
+    public Push add(final Object value) {
+        values.add(value);
+        return this;
+    }
 
-	/**
-	 * Returns the array of values that will be pushed onto the Flash Player's
-	 * stack.
-	 */
-	public List<Object> getValues() {
-		return values;
-	}
+    /**
+     * Returns the array of values that will be pushed onto the Flash Player's
+     * stack.
+     */
+    public List<Object> getValues() {
+        return values;
+    }
 
-	/**
-	 * Sets the array of values.
-	 * 
-	 * @param anArray
-	 *            replaces the existing array of value with anArray. The values
-	 *            in the array must be one of the following classes: Boolean,
-	 *            Integer, Double, String, Null, Void, RegisterIndex or
-	 *            TableIndex. Must not be null.
-	 */
-	public void setValues(final List<Object> anArray) {
-		if (anArray == null) {
-			throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
-		}
-		values = anArray;
-	}
+    /**
+     * Sets the array of values.
+     * 
+     * @param anArray
+     *            replaces the existing array of value with anArray. The values
+     *            in the array must be one of the following classes: Boolean,
+     *            Integer, Double, String, Null, Void, RegisterIndex or
+     *            TableIndex. Must not be null.
+     */
+    public void setValues(final List<Object> anArray) {
+        if (anArray == null) {
+            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+        }
+        values = anArray;
+    }
 
-	/**
-	 * Creates and returns a deep copy of this object.
-	 */
-	public Push copy() {
-		return new Push(this);
-	}
+    /**
+     * Creates and returns a deep copy of this object.
+     */
+    public Push copy() {
+        return new Push(this);
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, values);
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, values);
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
 
-		length = 0;
+        length = 0;
 
-		for (Object anObject : values) {
-			if (anObject instanceof Boolean) {
-				length += 2;
-			} else if (anObject instanceof Property) {
-				length += 5;
-			} else if (anObject instanceof Integer) {
-				length += 5;
-			} else if (anObject instanceof Double) {
-				length += 9;
-			} else if (anObject instanceof String) {
-				length += 1 + coder.strlen(anObject.toString());
-			} else if (anObject instanceof Null) {
-				length += 1;
-			} else if (anObject instanceof Void) {
-				length += 1;
-			} else if (anObject instanceof TableIndex) {
-				if (((TableIndex) anObject).getIndex() < 256) {
-					length += 2;
-				} else {
-					length += 3;
-				}
-			} else if (anObject instanceof RegisterIndex) {
-				length += 2;
-			}
-		}
+        for (final Object anObject : values) {
+            if (anObject instanceof Boolean) {
+                length += 2;
+            } else if (anObject instanceof Property) {
+                length += 5;
+            } else if (anObject instanceof Integer) {
+                length += 5;
+            } else if (anObject instanceof Double) {
+                length += 9;
+            } else if (anObject instanceof String) {
+                length += 1 + coder.strlen(anObject.toString());
+            } else if (anObject instanceof Null) {
+                length += 1;
+            } else if (anObject instanceof Void) {
+                length += 1;
+            } else if (anObject instanceof TableIndex) {
+                if (((TableIndex) anObject).getIndex() < 256) {
+                    length += 2;
+                } else {
+                    length += 3;
+                }
+            } else if (anObject instanceof RegisterIndex) {
+                length += 2;
+            }
+        }
 
-		return length + 3;
-	}
+        return length + 3;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
 
-		coder.writeByte(ActionTypes.PUSH);
-		coder.writeWord(length, 2);
+        coder.writeByte(ActionTypes.PUSH);
+        coder.writeWord(length, 2);
 
-		for (Object anObject : values) {
-			if (anObject instanceof Boolean) {
-				coder.writeWord(5, 1);
-				coder.writeWord(((Boolean) anObject).booleanValue() ? 1 : 0, 1);
-			} else if (anObject instanceof Integer) {
-				coder.writeWord(7, 1);
-				coder.writeWord(((Integer) anObject).intValue(), 4);
-			} else if (anObject instanceof Property) {
-				coder.writeWord(1, 1);
-				coder.writeWord(((Property) anObject).getValue(context
-						.getVariables().get(Context.VERSION)), 4);
-			} else if (anObject instanceof Double) {
-				coder.writeWord(6, 1);
-				coder.writeDouble(((Double) anObject).doubleValue());
-			} else if (anObject instanceof String) {
-				coder.writeWord(0, 1);
-				coder.writeString(anObject.toString());
-			} else if (anObject instanceof Null) {
-				coder.writeWord(2, 1);
-			} else if (anObject instanceof Void) {
-				coder.writeWord(3, 1);
-			} else if (anObject instanceof TableIndex) {
-				if (((TableIndex) anObject).getIndex() < 256) {
-					coder.writeWord(8, 1);
-					coder.writeWord(((TableIndex) anObject).getIndex(), 1);
-				} else {
-					coder.writeWord(9, 1);
-					coder.writeWord(((TableIndex) anObject).getIndex(), 2);
-				}
-			} else if (anObject instanceof RegisterIndex) {
-				coder.writeWord(4, 1);
-				coder.writeWord(((RegisterIndex) anObject).getIndex(), 1);
-			} else {
-				throw new CoderException(getClass().getName(), 0, 0, 0,
-						Strings.INVALID_OBJECT);
-			}
-		}
-	}
+        for (final Object anObject : values) {
+            if (anObject instanceof Boolean) {
+                coder.writeWord(5, 1);
+                coder.writeWord(((Boolean) anObject).booleanValue() ? 1 : 0, 1);
+            } else if (anObject instanceof Integer) {
+                coder.writeWord(7, 1);
+                coder.writeWord(((Integer) anObject).intValue(), 4);
+            } else if (anObject instanceof Property) {
+                coder.writeWord(1, 1);
+                coder.writeWord(((Property) anObject).getValue(context
+                        .getVariables().get(Context.VERSION)), 4);
+            } else if (anObject instanceof Double) {
+                coder.writeWord(6, 1);
+                coder.writeDouble(((Double) anObject).doubleValue());
+            } else if (anObject instanceof String) {
+                coder.writeWord(0, 1);
+                coder.writeString(anObject.toString());
+            } else if (anObject instanceof Null) {
+                coder.writeWord(2, 1);
+            } else if (anObject instanceof Void) {
+                coder.writeWord(3, 1);
+            } else if (anObject instanceof TableIndex) {
+                if (((TableIndex) anObject).getIndex() < 256) {
+                    coder.writeWord(8, 1);
+                    coder.writeWord(((TableIndex) anObject).getIndex(), 1);
+                } else {
+                    coder.writeWord(9, 1);
+                    coder.writeWord(((TableIndex) anObject).getIndex(), 2);
+                }
+            } else if (anObject instanceof RegisterIndex) {
+                coder.writeWord(4, 1);
+                coder.writeWord(((RegisterIndex) anObject).getIndex(), 1);
+            } else {
+                throw new CoderException(getClass().getName(), 0, 0, 0,
+                        Strings.INVALID_OBJECT);
+            }
+        }
+    }
 }

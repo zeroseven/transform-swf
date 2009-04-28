@@ -29,59 +29,60 @@
  */
 package com.flagstone.transform.action;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertArrayEquals;
 
 public final class ActionDataTest {
 
-	private transient final byte[] data = new byte[] { 1, 2, 0 };
+    private transient final byte[] data = new byte[] { 1, 2, 0 };
 
-	private transient ActionData fixture;
+    private transient ActionData fixture;
 
-	private transient final byte[] encoded = new byte[] { 1, 2, 0 };
+    private transient final byte[] encoded = new byte[] { 1, 2, 0 };
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAccessorForDataWithNull() {
-		fixture = new ActionData((byte[]) null);
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkAccessorForDataWithNull() {
+        fixture = new ActionData((byte[]) null);
+    }
 
-	@Test
-	public void checkCopy() {
-		fixture = new ActionData(data);
-		assertNotSame(fixture.getData(), fixture.copy().getData());
-		assertEquals(fixture.toString(), fixture.toString());
-	}
+    @Test
+    public void checkCopy() {
+        fixture = new ActionData(data);
+        assertNotSame(fixture.getData(), fixture.copy().getData());
+        assertEquals(fixture.toString(), fixture.toString());
+    }
 
-	@Test
-	public void encode() throws CoderException {
+    @Test
+    public void encode() throws CoderException {
 
-		final SWFEncoder encoder = new SWFEncoder(encoded.length);
-		final Context context = new Context();
+        final SWFEncoder encoder = new SWFEncoder(encoded.length);
+        final Context context = new Context();
 
-		fixture = new ActionData(data);
-		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
-		fixture.encode(encoder, context);
+        fixture = new ActionData(data);
+        assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
+        fixture.encode(encoder, context);
 
-		assertTrue(encoder.eof());
-		assertArrayEquals(encoded, encoder.getData());
-	}
+        assertTrue(encoder.eof());
+        assertArrayEquals(encoded, encoder.getData());
+    }
 
-	@Test
-	public void decode() throws CoderException {
+    @Test
+    public void decode() throws CoderException {
 
-		final SWFDecoder decoder = new SWFDecoder(data);
+        final SWFDecoder decoder = new SWFDecoder(data);
 
-		fixture = new ActionData(decoder.readBytes(new byte[data.length]));
+        fixture = new ActionData(decoder.readBytes(new byte[data.length]));
 
-		assertTrue(decoder.eof());
-		assertArrayEquals(data, fixture.getData());
-	}
+        assertTrue(decoder.eof());
+        assertArrayEquals(data, fixture.getData());
+    }
 }

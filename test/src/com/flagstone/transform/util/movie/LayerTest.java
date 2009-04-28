@@ -29,8 +29,13 @@
  */
 package com.flagstone.transform.util.movie;
 
-import java.util.List;
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import com.flagstone.transform.Movie;
 import com.flagstone.transform.Place2;
@@ -43,226 +48,221 @@ import com.flagstone.transform.datatype.CoordTransform;
 import com.flagstone.transform.datatype.Placement;
 import com.flagstone.transform.text.DefineTextField;
 
-import org.junit.Before;
-import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-
 public final class LayerTest {
-	private Layer layer;
-	private DefineTextField obj;
+    private Layer layer;
+    private DefineTextField obj;
 
-	@Before
-	public void setUp() {
-		obj = new DefineTextField(1).setBounds(new Bounds(0, 0, 0, 0));
+    @Before
+    public void setUp() {
+        obj = new DefineTextField(1).setBounds(new Bounds(0, 0, 0, 0));
 
-		layer = new Layer(1);
-		layer.add(obj);
-	}
+        layer = new Layer(1);
+        layer.add(obj);
+    }
 
-	@Test
-	public void merge() {
-		final ArrayList<Layer> layers = new ArrayList<Layer>();
+    @Test
+    public void merge() {
+        final ArrayList<Layer> layers = new ArrayList<Layer>();
 
-		final Layer one = new Layer(1);
-		one.select(1);
-		one.move(1, 1);
-		one.show();
+        final Layer one = new Layer(1);
+        one.select(1);
+        one.move(1, 1);
+        one.show();
 
-		layers.add(one);
+        layers.add(one);
 
-		final Layer two = new Layer(2);
-		two.select(2);
-		two.move(2, 2);
-		two.show();
-		two.move(3, 3);
-		two.show();
+        final Layer two = new Layer(2);
+        two.select(2);
+        two.move(2, 2);
+        two.show();
+        two.move(3, 3);
+        two.show();
 
-		layers.add(two);
+        layers.add(two);
 
-		final Layer three = new Layer(3);
-		three.select(3);
-		three.move(3, 3);
-		three.show();
-		three.move(4, 4);
-		three.show();
-		three.move(5, 5);
-		three.show();
+        final Layer three = new Layer(3);
+        three.select(3);
+        three.move(3, 3);
+        three.show();
+        three.move(4, 4);
+        three.show();
+        three.move(5, 5);
+        three.show();
 
-		layers.add(three);
+        layers.add(three);
 
-		final Movie movie = new Movie();
-		movie.add(Place2.show(1, 1, 1, 1));
-		movie.add(Place2.show(2, 2, 2, 2));
-		movie.add(Place2.show(3, 3, 3, 3));
-		movie.add(ShowFrame.getInstance());
-		movie.add(Place2.move(2, 3, 3));
-		movie.add(Place2.move(3, 4, 4));
-		movie.add(ShowFrame.getInstance());
-		movie.add(Place2.move(3, 5, 5));
-		movie.add(ShowFrame.getInstance());
+        final Movie movie = new Movie();
+        movie.add(Place2.show(1, 1, 1, 1));
+        movie.add(Place2.show(2, 2, 2, 2));
+        movie.add(Place2.show(3, 3, 3, 3));
+        movie.add(ShowFrame.getInstance());
+        movie.add(Place2.move(2, 3, 3));
+        movie.add(Place2.move(3, 4, 4));
+        movie.add(ShowFrame.getInstance());
+        movie.add(Place2.move(3, 5, 5));
+        movie.add(ShowFrame.getInstance());
 
-		assertEquals(Layer.merge(layers), movie.getObjects());
-	}
+        assertEquals(Layer.merge(layers), movie.getObjects());
+    }
 
-	@Test
-	public void add() {
-		assertEquals(layer.getIdentifier(), 0);
-		assertEquals(layer.getObjects().size(), 1);
-	}
+    @Test
+    public void add() {
+        assertEquals(layer.getIdentifier(), 0);
+        assertEquals(layer.getObjects().size(), 1);
+    }
 
-	@Test
-	public void selectIdentifier() {
-		layer.select(obj.getIdentifier());
+    @Test
+    public void selectIdentifier() {
+        layer.select(obj.getIdentifier());
 
-		assertEquals(layer.getIdentifier(), obj.getIdentifier());
-		assertEquals(layer.getObjects().size(), 2);
-	}
+        assertEquals(layer.getIdentifier(), obj.getIdentifier());
+        assertEquals(layer.getObjects().size(), 2);
+    }
 
-	@Test
-	public void selectObject() {
-		layer.select(obj);
+    @Test
+    public void selectObject() {
+        layer.select(obj);
 
-		assertEquals(layer.getIdentifier(), obj.getIdentifier());
-		assertEquals(layer.getObjects().size(), 2);
+        assertEquals(layer.getIdentifier(), obj.getIdentifier());
+        assertEquals(layer.getObjects().size(), 2);
 
-		final Place2 place = (Place2) layer.getObjects().get(1);
-		assertEquals(place.getMode(), Placement.NEW);
-	}
+        final Place2 place = (Place2) layer.getObjects().get(1);
+        assertEquals(place.getMode(), Placement.NEW);
+    }
 
-	@Test
-	public void modify() {
-		layer.show();
-		layer.move(10, 10);
+    @Test
+    public void modify() {
+        layer.show();
+        layer.move(10, 10);
 
-		final List<MovieTag> array = layer.getObjects();
-		final Place2 place = (Place2) array.get(3);
+        final List<MovieTag> array = layer.getObjects();
+        final Place2 place = (Place2) array.get(3);
 
-		assertEquals(place.getMode(), Placement.MODIFY);
-	}
+        assertEquals(place.getMode(), Placement.MODIFY);
+    }
 
-	@Test
-	public void replace() {
-		layer.show();
-		layer.move(10, 10);
-		layer.replace(obj.getIdentifier());
+    @Test
+    public void replace() {
+        layer.show();
+        layer.move(10, 10);
+        layer.replace(obj.getIdentifier());
 
-		final List<MovieTag> array = layer.getObjects();
-		final Place2 place = (Place2) array.get(3);
+        final List<MovieTag> array = layer.getObjects();
+        final Place2 place = (Place2) array.get(3);
 
-		assertEquals(place.getMode(), Placement.REPLACE);
-	}
+        assertEquals(place.getMode(), Placement.REPLACE);
+    }
 
-	@Test
-	public void remove() {
-		layer.show();
-		layer.remove();
+    @Test
+    public void remove() {
+        layer.show();
+        layer.remove();
 
-		assertEquals(layer.getObjects().get(3), new Remove2(layer.getLayer()));
-	}
+        assertEquals(layer.getObjects().get(3), new Remove2(layer.getLayer()));
+    }
 
-	@Test
-	public void show() {
-		layer.show();
+    @Test
+    public void show() {
+        layer.show();
 
-		assertEquals(layer.getObjects().size(), 3);
-		assertEquals(layer.getObjects().get(2), ShowFrame.getInstance());
-	}
+        assertEquals(layer.getObjects().size(), 3);
+        assertEquals(layer.getObjects().get(2), ShowFrame.getInstance());
+    }
 
-	@Test
-	public void showMultipleFrames() {
-		layer.show(5);
+    @Test
+    public void showMultipleFrames() {
+        layer.show(5);
 
-		assertEquals(layer.getObjects().size(), 7);
-	}
+        assertEquals(layer.getObjects().size(), 7);
+    }
 
-	@Test
-	public void move() {
-		final int x = 10;
-		final int y = 10;
+    @Test
+    public void move() {
+        final int x = 10;
+        final int y = 10;
 
-		layer.move(-x, -y);
-		layer.move(x, y);
+        layer.move(-x, -y);
+        layer.move(x, y);
 
-		assertEquals(layer.getObjects().get(1), Place2.show(
-				obj.getIdentifier(), layer.getLayer(), x, y));
-	}
+        assertEquals(layer.getObjects().get(1), Place2.show(
+                obj.getIdentifier(), layer.getLayer(), x, y));
+    }
 
-	@Test
-	public void color() {
-		final int r = 0x33;
-		final int g = 0x66;
-		final int b = 0x99;
+    @Test
+    public void color() {
+        final int r = 0x33;
+        final int g = 0x66;
+        final int b = 0x99;
 
-		layer.color(r, g, b);
+        layer.color(r, g, b);
 
-		assertEquals(((Place2) layer.getObjects().get(1)).getColorTransform(),
-				new ColorTransform(r, g, b, 255));
-	}
+        assertEquals(((Place2) layer.getObjects().get(1)).getColorTransform(),
+                new ColorTransform(r, g, b, 255));
+    }
 
-	@Test
-	public void transparentColor() {
-		final int r = 0x33;
-		final int g = 0x66;
-		final int b = 0x99;
-		final int a = 0xCC;
+    @Test
+    public void transparentColor() {
+        final int r = 0x33;
+        final int g = 0x66;
+        final int b = 0x99;
+        final int a = 0xCC;
 
-		layer.color(r, g, b, a);
+        layer.color(r, g, b, a);
 
-		assertEquals(((Place2) layer.getObjects().get(1)).getColorTransform(),
-				new ColorTransform(r, g, b, a));
-	}
+        assertEquals(((Place2) layer.getObjects().get(1)).getColorTransform(),
+                new ColorTransform(r, g, b, a));
+    }
 
-	@Test
-	public void clip() {
-		final int depth = 1;
+    @Test
+    public void clip() {
+        final int depth = 1;
 
-		layer.clip(depth);
+        layer.clip(depth);
 
-		assertEquals(((Place2) layer.getObjects().get(1)).getDepth(), depth);
-	}
+        assertEquals(((Place2) layer.getObjects().get(1)).getDepth(), depth);
+    }
 
-	@Test
-	public void morph() {
-		final float ratio = 0.25f;
+    @Test
+    public void morph() {
+        final float ratio = 0.25f;
 
-		layer.morph(ratio);
+        layer.morph(ratio);
 
-		assertEquals(((Place2) layer.getObjects().get(1)).getRatio(), ratio,
-				0.0f);
-	}
+        assertEquals(((Place2) layer.getObjects().get(1)).getRatio(), ratio,
+                0.0f);
+    }
 
-	@Test
-	public void name() {
-		final String label = "test";
+    @Test
+    public void name() {
+        final String label = "test";
 
-		layer.name(label);
+        layer.name(label);
 
-		assertEquals(((Place2) layer.getObjects().get(1)).getName(), label);
-	}
+        assertEquals(((Place2) layer.getObjects().get(1)).getName(), label);
+    }
 
-	@Test
-	public void changeColor() {
-		final int r = 0x33;
-		final int g = 0x66;
-		final int b = 0x99;
-		final int a = 0xFF;
+    @Test
+    public void changeColor() {
+        final int r = 0x33;
+        final int g = 0x66;
+        final int b = 0x99;
+        final int a = 0xFF;
 
-		layer.change(new ColorTransform(r, g, b, a));
+        layer.change(new ColorTransform(r, g, b, a));
 
-		assertEquals(((Place2) layer.getObjects().get(1)).getColorTransform(),
-				new ColorTransform(r, g, b, a));
-	}
+        assertEquals(((Place2) layer.getObjects().get(1)).getColorTransform(),
+                new ColorTransform(r, g, b, a));
+    }
 
-	@Test
-	public void changeLocation() {
-		final int x = 10;
-		final int y = 10;
+    @Test
+    public void changeLocation() {
+        final int x = 10;
+        final int y = 10;
 
-		layer.change(CoordTransform.translate(x, y));
+        layer.change(CoordTransform.translate(x, y));
 
-		assertEquals(((Place2) layer.getObjects().get(1)).getTransform(),
-				CoordTransform.translate(x, y));
-	}
+        assertEquals(((Place2) layer.getObjects().get(1)).getTransform(),
+                CoordTransform.translate(x, y));
+    }
 
 }

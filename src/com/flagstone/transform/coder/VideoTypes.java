@@ -30,21 +30,21 @@
 package com.flagstone.transform.coder;
 
 public final class VideoTypes {
-	/**
-	 * The type for creating objects containing the audio track for a video.
-	 */
-	public static final int AUDIO_DATA = 8;
-	/**
-	 * The type for creating objects containing the video.
-	 */
-	public static final int VIDEO_DATA = 9;
-	/**
-	 * The type for creating objects containing the meta-data describing a
-	 * video.
-	 */
-	public static final int META_DATA = 18;
+    /**
+     * The type for creating objects containing the audio track for a video.
+     */
+    public static final int AUDIO_DATA = 8;
+    /**
+     * The type for creating objects containing the video.
+     */
+    public static final int VIDEO_DATA = 9;
+    /**
+     * The type for creating objects containing the meta-data describing a
+     * video.
+     */
+    public static final int META_DATA = 18;
 
-	private VideoTypes() {
-		// Class contains only constants
-	}
+    private VideoTypes() {
+        // Class contains only constants
+    }
 }

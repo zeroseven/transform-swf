@@ -29,12 +29,12 @@
  */
 package com.flagstone.transform.action;
 
-import org.junit.Test;
-
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
 
 import com.flagstone.transform.coder.ActionTypes;
 import com.flagstone.transform.coder.CoderException;
@@ -44,53 +44,53 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 public final class IfTest {
 
-	private static transient final int type = ActionTypes.IF;
-	private static transient final int offset = 1;
+    private static transient final int type = ActionTypes.IF;
+    private static transient final int offset = 1;
 
-	private transient If fixture;
+    private transient If fixture;
 
-	private transient final byte[] encoded = new byte[] { (byte) type, 0x02,
-			0x00, 0x01, 0x00 };
+    private transient final byte[] encoded = new byte[] { (byte) type, 0x02,
+            0x00, 0x01, 0x00 };
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAccessorForOffsetWithLowerBound() {
-		fixture = new If(-32769);
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkAccessorForOffsetWithLowerBound() {
+        fixture = new If(-32769);
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAccessorForOffsetWithUpperBound() {
-		fixture = new If(32768);
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void checkAccessorForOffsetWithUpperBound() {
+        fixture = new If(32768);
+    }
 
-	@Test
-	public void checkCopy() {
-		fixture = new If(offset);
-		final If copy = fixture.copy();
+    @Test
+    public void checkCopy() {
+        fixture = new If(offset);
+        final If copy = fixture.copy();
 
-		assertNotSame(fixture, copy);
-		assertEquals(fixture.toString(), copy.toString());
-	}
+        assertNotSame(fixture, copy);
+        assertEquals(fixture.toString(), copy.toString());
+    }
 
-	@Test
-	public void encode() throws CoderException {
-		final SWFEncoder encoder = new SWFEncoder(encoded.length);
-		final Context context = new Context();
+    @Test
+    public void encode() throws CoderException {
+        final SWFEncoder encoder = new SWFEncoder(encoded.length);
+        final Context context = new Context();
 
-		fixture = new If(offset);
-		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
-		fixture.encode(encoder, context);
+        fixture = new If(offset);
+        assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
+        fixture.encode(encoder, context);
 
-		assertTrue(encoder.eof());
-		assertArrayEquals(encoded, encoder.getData());
-	}
+        assertTrue(encoder.eof());
+        assertArrayEquals(encoded, encoder.getData());
+    }
 
-	@Test
-	public void decode() throws CoderException {
-		final SWFDecoder decoder = new SWFDecoder(encoded);
+    @Test
+    public void decode() throws CoderException {
+        final SWFDecoder decoder = new SWFDecoder(encoded);
 
-		fixture = new If(decoder);
+        fixture = new If(decoder);
 
-		assertTrue(decoder.eof());
-		assertEquals(offset, fixture.getOffset());
-	}
+        assertTrue(decoder.eof());
+        assertEquals(offset, fixture.getOffset());
+    }
 }

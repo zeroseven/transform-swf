@@ -11,31 +11,31 @@ import com.flagstone.transform.shape.ShapeStyle;
  */
 public final class ShapeDecoder implements SWFFactory<ShapeRecord> {
 
-	public SWFFactory<ShapeRecord> copy() {
-		return new ShapeDecoder();
-	}
+    public SWFFactory<ShapeRecord> copy() {
+        return new ShapeDecoder();
+    }
 
-	public ShapeRecord getObject(final SWFDecoder coder, final Context context)
-			throws CoderException {
+    public ShapeRecord getObject(final SWFDecoder coder, final Context context)
+            throws CoderException {
 
-		ShapeRecord record = null;
+        ShapeRecord record = null;
 
-		final int type = coder.readBits(6, false);
+        final int type = coder.readBits(6, false);
 
-		if (type != 0) {
-			coder.adjustPointer(-6);
+        if (type != 0) {
+            coder.adjustPointer(-6);
 
-			if ((type & 0x20) > 0) {
-				if ((type & 0x10) > 0) {
-					record = new Line(coder);
-				} else {
-					record = new Curve(coder);
-				}
-			} else {
-				record = new ShapeStyle(coder, context);
-			}
-		}
+            if ((type & 0x20) > 0) {
+                if ((type & 0x10) > 0) {
+                    record = new Line(coder);
+                } else {
+                    record = new Curve(coder);
+                }
+            } else {
+                record = new ShapeStyle(coder, context);
+            }
+        }
 
-		return record;
-	}
+        return record;
+    }
 }

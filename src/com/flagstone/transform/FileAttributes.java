@@ -40,81 +40,81 @@ import com.flagstone.transform.coder.SWFEncoder;
 //TODO(doc) Description and methods
 public final class FileAttributes implements MovieTag {
 
-	private static final String FORMAT = "FileAttributes: { metadata=%d; actionscript3=%d; userNetwork=%d }";
+    private static final String FORMAT = "FileAttributes: { metadata=%d; actionscript3=%d; userNetwork=%d }";
 
-	private int hasMetaData;
-	private int hasActionscript;
-	private int useNetwork;
+    private int hasMetaData;
+    private int hasActionscript;
+    private int useNetwork;
 
-	public FileAttributes(final SWFDecoder coder) throws CoderException {
+    public FileAttributes(final SWFDecoder coder) throws CoderException {
 
-		if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
-			coder.readWord(4, false);
-		}
+        if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
+            coder.readWord(4, false);
+        }
 
-		final int value = coder.readByte();
-		hasMetaData = value & 16;
-		hasActionscript = value & 8;
-		useNetwork = value & 1;
+        final int value = coder.readByte();
+        hasMetaData = value & 16;
+        hasActionscript = value & 8;
+        useNetwork = value & 1;
 
-		coder.adjustPointer(24);
-	}
+        coder.adjustPointer(24);
+    }
 
-	public FileAttributes(final boolean metadata, final boolean actionscript,
-			final boolean network) {
-		setHasMetaData(metadata);
-		setHasActionscript(actionscript);
-		setUseNetwork(network);
-	}
+    public FileAttributes(final boolean metadata, final boolean actionscript,
+            final boolean network) {
+        setHasMetaData(metadata);
+        setHasActionscript(actionscript);
+        setUseNetwork(network);
+    }
 
-	public FileAttributes(final FileAttributes object) {
-		hasMetaData = object.hasMetaData;
-		hasActionscript = object.hasActionscript;
-		useNetwork = object.useNetwork;
-	}
+    public FileAttributes(final FileAttributes object) {
+        hasMetaData = object.hasMetaData;
+        hasActionscript = object.hasActionscript;
+        useNetwork = object.useNetwork;
+    }
 
-	public boolean hasMetaData() {
-		return (hasMetaData & 16) != 0;
-	}
+    public boolean hasMetaData() {
+        return (hasMetaData & 16) != 0;
+    }
 
-	public void setHasMetaData(final boolean metadata) {
-		hasMetaData = metadata ? 16 : 0;
-	}
+    public void setHasMetaData(final boolean metadata) {
+        hasMetaData = metadata ? 16 : 0;
+    }
 
-	public boolean hasActionscript() {
-		return (hasActionscript & 8) != 0;
-	}
+    public boolean hasActionscript() {
+        return (hasActionscript & 8) != 0;
+    }
 
-	public void setHasActionscript(final boolean actionscript) {
-		hasActionscript = actionscript ? 8 : 0;
-	}
+    public void setHasActionscript(final boolean actionscript) {
+        hasActionscript = actionscript ? 8 : 0;
+    }
 
-	public boolean useNetwork() {
-		return (useNetwork & 1) != 0;
-	}
+    public boolean useNetwork() {
+        return (useNetwork & 1) != 0;
+    }
 
-	public void setUseNetwork(final boolean network) {
-		useNetwork = network ? 1 : 0;
-	}
+    public void setUseNetwork(final boolean network) {
+        useNetwork = network ? 1 : 0;
+    }
 
-	public FileAttributes copy() {
-		return new FileAttributes(this);
-	}
+    public FileAttributes copy() {
+        return new FileAttributes(this);
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, hasMetaData >> 4, hasActionscript >> 2,
-				useNetwork);
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, hasMetaData >> 4, hasActionscript >> 2,
+                useNetwork);
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		return 6;
-	}
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        return 6;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		coder.writeWord((MovieTypes.FILE_ATTRIBUTES << 6) | 4, 2);
-		coder.writeByte(hasMetaData | hasActionscript | useNetwork);
-		coder.writeWord(0, 3);
-	}
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        coder.writeWord((MovieTypes.FILE_ATTRIBUTES << 6) | 4, 2);
+        coder.writeByte(hasMetaData | hasActionscript | useNetwork);
+        coder.writeWord(0, 3);
+    }
 }

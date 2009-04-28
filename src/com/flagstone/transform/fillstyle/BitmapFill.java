@@ -94,141 +94,140 @@ import com.flagstone.transform.shape.DefineShape3;
  */
 public final class BitmapFill implements FillStyle {
 
-	private static final String FORMAT = "BitmapFill: { identifier=%d; transform=%s }";
+    private static final String FORMAT = "BitmapFill: { identifier=%d; transform=%s }";
 
-	private transient int type;
-	private int identifier;
-	private CoordTransform transform;
+    private transient int type;
+    private int identifier;
+    private CoordTransform transform;
 
-	// TODO(doc)
-	public BitmapFill(final SWFDecoder coder)
-			throws CoderException {
-		type = coder.readByte();
-		identifier = coder.readWord(2, false);
-		transform = new CoordTransform(coder);
-	}
+    // TODO(doc)
+    public BitmapFill(final SWFDecoder coder) throws CoderException {
+        type = coder.readByte();
+        identifier = coder.readWord(2, false);
+        transform = new CoordTransform(coder);
+    }
 
-	/**
-	 * Creates a BitmapFill object, setting the fill type, the unique identifier
-	 * for the image and the coordinate transform used to set the scale and
-	 * registration of the image.
-	 * 
-	 * @param tiled
-	 *            whether the image will be repeated if it smaller than the area
-	 *            to be filled.
-	 * @param smoothed
-	 *            whether the image will be smoothed to improve display quality.
-	 * @param uid
-	 *            the unique identifier of the object containing the image to be
-	 *            displayed. Must be in the range 1..65535.
-	 * @param transform
-	 *            a CoordTransform object that typically changes the size and
-	 *            location and position of the image inside the parent shape.
-	 */
-	public BitmapFill(final boolean tiled, final boolean smoothed,
-			final int uid, final CoordTransform transform) {
-		type = 0x40;
-		setTiled(tiled);
-		setSmoothed(smoothed);
-		setIdentifier(uid);
-		setTransform(transform);
-	}
+    /**
+     * Creates a BitmapFill object, setting the fill type, the unique identifier
+     * for the image and the coordinate transform used to set the scale and
+     * registration of the image.
+     * 
+     * @param tiled
+     *            whether the image will be repeated if it smaller than the area
+     *            to be filled.
+     * @param smoothed
+     *            whether the image will be smoothed to improve display quality.
+     * @param uid
+     *            the unique identifier of the object containing the image to be
+     *            displayed. Must be in the range 1..65535.
+     * @param transform
+     *            a CoordTransform object that typically changes the size and
+     *            location and position of the image inside the parent shape.
+     */
+    public BitmapFill(final boolean tiled, final boolean smoothed,
+            final int uid, final CoordTransform transform) {
+        type = 0x40;
+        setTiled(tiled);
+        setSmoothed(smoothed);
+        setIdentifier(uid);
+        setTransform(transform);
+    }
 
-	// TODO(doc)
-	public BitmapFill(final BitmapFill object) {
-		type = object.type;
-		identifier = object.identifier;
-		transform = object.transform;
-	}
+    // TODO(doc)
+    public BitmapFill(final BitmapFill object) {
+        type = object.type;
+        identifier = object.identifier;
+        transform = object.transform;
+    }
 
-	public boolean isTiled() {
-		return (type & 0x01) != 0;
-	}
+    public boolean isTiled() {
+        return (type & 0x01) != 0;
+    }
 
-	public void setTiled(final boolean tiled) {
-		if (tiled) {
-			type &= 0x00FE;
-		} else {
-			type |= 0x0001;
-		}
-	}
+    public void setTiled(final boolean tiled) {
+        if (tiled) {
+            type &= 0x00FE;
+        } else {
+            type |= 0x0001;
+        }
+    }
 
-	public boolean isSmoothed() {
-		return (type & 0x02) != 0;
-	}
+    public boolean isSmoothed() {
+        return (type & 0x02) != 0;
+    }
 
-	public void setSmoothed(final boolean smoothed) {
-		if (smoothed) {
-			type &= 0x00FD;
-		} else {
-			type |= 0x0002;
-		}
-	}
+    public void setSmoothed(final boolean smoothed) {
+        if (smoothed) {
+            type &= 0x00FD;
+        } else {
+            type |= 0x0002;
+        }
+    }
 
-	/**
-	 * Returns the unique identifier of the object containing the image to be
-	 * displayed.
-	 */
-	public int getIdentifier() {
-		return identifier;
-	}
+    /**
+     * Returns the unique identifier of the object containing the image to be
+     * displayed.
+     */
+    public int getIdentifier() {
+        return identifier;
+    }
 
-	/**
-	 * Sets the unique identifier of the object containing the image to be
-	 * displayed.
-	 * 
-	 * @param uid
-	 *            the unique identifier of the object containing the image to be
-	 *            displayed which must be in the range 1..65535.
-	 */
-	public void setIdentifier(final int uid) {
-		if ((uid < 1) || (uid > 65535)) {
-			throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
-		}
-		identifier = uid;
-	}
+    /**
+     * Sets the unique identifier of the object containing the image to be
+     * displayed.
+     * 
+     * @param uid
+     *            the unique identifier of the object containing the image to be
+     *            displayed which must be in the range 1..65535.
+     */
+    public void setIdentifier(final int uid) {
+        if ((uid < 1) || (uid > 65535)) {
+            throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
+        }
+        identifier = uid;
+    }
 
-	/**
-	 * Returns the coordinate transform that will be applied to the image when
-	 * it is displayed.
-	 */
-	public CoordTransform getTransform() {
-		return transform;
-	}
+    /**
+     * Returns the coordinate transform that will be applied to the image when
+     * it is displayed.
+     */
+    public CoordTransform getTransform() {
+        return transform;
+    }
 
-	/**
-	 * Sets the coordinate transform applied to the image to display it inside
-	 * the shape. Typically the transform will scale the image by a factor of 20
-	 * so that the image is displayed at the correct screen resolution.
-	 * 
-	 * @param aTransform
-	 *            a CoordTransform object that changes the appearance and
-	 *            location of the image inside the shape. Must not be null.
-	 */
-	public void setTransform(final CoordTransform aTransform) {
-		if (aTransform == null) {
-			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
-		}
-		transform = aTransform;
-	}
+    /**
+     * Sets the coordinate transform applied to the image to display it inside
+     * the shape. Typically the transform will scale the image by a factor of 20
+     * so that the image is displayed at the correct screen resolution.
+     * 
+     * @param aTransform
+     *            a CoordTransform object that changes the appearance and
+     *            location of the image inside the shape. Must not be null.
+     */
+    public void setTransform(final CoordTransform aTransform) {
+        if (aTransform == null) {
+            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+        }
+        transform = aTransform;
+    }
 
-	public BitmapFill copy() {
-		return new BitmapFill(this);
-	}
+    public BitmapFill copy() {
+        return new BitmapFill(this);
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, identifier, transform);
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, identifier, transform);
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		return 3 + transform.prepareToEncode(coder, context);
-	}
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        return 3 + transform.prepareToEncode(coder, context);
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		coder.writeByte(type);
-		coder.writeWord(identifier, 2);
-		transform.encode(coder, context);
-	}
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        coder.writeByte(type);
+        coder.writeWord(identifier, 2);
+        transform.encode(coder, context);
+    }
 }

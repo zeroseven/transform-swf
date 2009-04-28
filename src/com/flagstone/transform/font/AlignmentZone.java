@@ -32,70 +32,70 @@ package com.flagstone.transform.font;
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFDecoder;
+import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFEncoder;
 
 public final class AlignmentZone implements SWFEncodeable {
-	private static final String FORMAT = "AlignmentZone: { coordinate=%f; range=%f }";
+    private static final String FORMAT = "AlignmentZone: { coordinate=%f; range=%f }";
 
-	private transient final float coordinate;
-	private transient final float range;
+    private transient final float coordinate;
+    private transient final float range;
 
-	public AlignmentZone(final SWFDecoder coder) {
-		coordinate = coder.readHalf();
-		range = coder.readHalf();
-	}
+    public AlignmentZone(final SWFDecoder coder) {
+        coordinate = coder.readHalf();
+        range = coder.readHalf();
+    }
 
-	public AlignmentZone(final float coordinate, final float range) {
-		this.coordinate = coordinate;
-		this.range = range;
-	}
+    public AlignmentZone(final float coordinate, final float range) {
+        this.coordinate = coordinate;
+        this.range = range;
+    }
 
-	public float getCoordinate() {
-		return coordinate;
-	}
+    public float getCoordinate() {
+        return coordinate;
+    }
 
-	public float getRange() {
-		return range;
-	}
+    public float getRange() {
+        return range;
+    }
 
-	@Override
-	public String toString() {
-		return String.format(FORMAT, coordinate, range);
-	}
+    @Override
+    public String toString() {
+        return String.format(FORMAT, coordinate, range);
+    }
 
-	@Override
-	public boolean equals(final Object object) {
-		boolean result;
+    @Override
+    public boolean equals(final Object object) {
+        boolean result;
 
-		if (object == null) {
-			result = false;
-		} else if (object == this) {
-			result = true;
-		} else if (object instanceof AlignmentZone) {
-			final AlignmentZone zone = (AlignmentZone) object;
-			result = coordinate == zone.coordinate && range == zone.range;
-		} else {
-			result = false;
-		}
+        if (object == null) {
+            result = false;
+        } else if (object == this) {
+            result = true;
+        } else if (object instanceof AlignmentZone) {
+            final AlignmentZone zone = (AlignmentZone) object;
+            result = (coordinate == zone.coordinate) && (range == zone.range);
+        } else {
+            result = false;
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	@Override
-	public int hashCode() {
-		return (Float.floatToIntBits(coordinate) * 31)
-				+ Float.floatToIntBits(range);
-	}
+    @Override
+    public int hashCode() {
+        return (Float.floatToIntBits(coordinate) * 31)
+                + Float.floatToIntBits(range);
+    }
 
-	public int prepareToEncode(final SWFEncoder coder, final Context context) {
-		return 4;
-	}
+    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        return 4;
+    }
 
-	public void encode(final SWFEncoder coder, final Context context)
-			throws CoderException {
-		coder.writeHalf(coordinate);
-		coder.writeHalf(range);
-	}
+    public void encode(final SWFEncoder coder, final Context context)
+            throws CoderException {
+        coder.writeHalf(coordinate);
+        coder.writeHalf(range);
+    }
 }
