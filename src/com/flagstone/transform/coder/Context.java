@@ -44,4 +44,9 @@ public final class Context {
 	public void setVariables(final Map<Integer, Integer> map) {
 		variables = map;
 	}
+	
+	public Context put(Integer key, Integer value) {
+		variables.put(key, value);
+		return this;
+	}
 }
