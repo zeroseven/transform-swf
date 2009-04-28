@@ -45,6 +45,9 @@ public final class Strings {
 	public static final String TIMESTAMP_RANGE = "The timestamp must be in the range 0..16777215.";
 	public static final String BUTTON_TYPE_RANGE = "The type for a button must be either MENU or PUSH.";
 	public static final String INVALID_OBJECT = "The object is not supported.";
+	public static final String VALUE_NOT_SET = "The value is not set.";
+	public static final String VALUE_RANGE = "The value contains an invalid value.";
+	public static final String INVALID_FILTER = "The object contains an unsupported Filter.";
 
 	private Strings() {
 		// constructor used to suppress PMD warning, rather than remove rule.

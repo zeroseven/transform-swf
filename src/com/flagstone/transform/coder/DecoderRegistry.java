@@ -39,6 +39,7 @@ public final class DecoderRegistry {
 
 	static {
 		defaultRegistry = new DecoderRegistry();
+		defaultRegistry.setFilterDecoder(new FilterDecoder());
 		defaultRegistry.setFillStyleDecoder(new FillStyleDecoder());
 		defaultRegistry.setMorphFillStyleDecoder(new MorphFillStyleDecoder());
 		defaultRegistry.setShapeDecoder(new ShapeDecoder());
@@ -55,6 +56,7 @@ public final class DecoderRegistry {
 		defaultRegistry = new DecoderRegistry(registry);
 	}
 
+	private transient SWFFactory<Filter> filterDecoder;
 	private transient SWFFactory<FillStyle> fillStyleDecoder;
 	private transient SWFFactory<FillStyle> morphStyleDecoder;
 	private transient SWFFactory<ShapeRecord> shapeDecoder;
@@ -70,6 +72,7 @@ public final class DecoderRegistry {
 	}
 
 	public DecoderRegistry(final DecoderRegistry registry) {
+		filterDecoder = registry.filterDecoder.copy();
 		fillStyleDecoder = registry.fillStyleDecoder.copy();
 		morphStyleDecoder = registry.morphStyleDecoder.copy();
 		shapeDecoder = registry.shapeDecoder.copy();
@@ -80,6 +83,14 @@ public final class DecoderRegistry {
 
 	public DecoderRegistry copy() {
 		return new DecoderRegistry(this);
+	}
+
+	public SWFFactory<Filter> getFilterDecoder() {
+		return filterDecoder;
+	}
+
+	public void setFilterDecoder(final SWFFactory<Filter> factory) {
+		filterDecoder = factory;
 	}
 
 	public SWFFactory<FillStyle> getFillStyleDecoder() {

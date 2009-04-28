@@ -36,14 +36,16 @@ import java.util.Map;
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
+import com.flagstone.transform.coder.Filter;
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.coder.SWFFactory;
 import com.flagstone.transform.datatype.ColorTransform;
 import com.flagstone.transform.datatype.CoordTransform;
 import com.flagstone.transform.datatype.Placement;
-import com.flagstone.transform.filter.Filter;
+import com.flagstone.transform.datatype.Blend;
 import com.flagstone.transform.movieclip.MovieClipEvent;
 import com.flagstone.transform.movieclip.MovieClipEventHandler;
 
@@ -195,7 +197,7 @@ public final class Place3 implements MovieTag {
 	private String name;
 	private Integer depth;
 	private List<Filter> filters;
-	private int blendPlacement;
+	private int blend;
 	private List<MovieClipEventHandler> events;
 
 	private transient int length;
@@ -221,6 +223,7 @@ public final class Place3 implements MovieTag {
 		final boolean hasRatio = coder.readBits(1, false) != 0;
 		final boolean hasColorTransform = coder.readBits(1, false) != 0;
 		final boolean hasTransform = coder.readBits(1, false) != 0;
+		final boolean hasFilters = coder.readBits(1, false) != 0;
 
 		switch (coder.readBits(2, false)) {
 		case 1:
@@ -258,6 +261,18 @@ public final class Place3 implements MovieTag {
 
 		if (hasDepth) {
 			depth = coder.readWord(2, false);
+		}
+		
+		filters = new ArrayList<Filter>(); 
+		
+		if (hasFilters) {
+			SWFFactory<Filter> decoder = context.getRegistry().getFilterDecoder();
+			
+			int count = coder.readByte();
+			
+			for (int i=0; i<count; i++) {
+				filters.add(decoder.getObject(coder, context));
+			}
 		}
 
 		if (hasEvents) {
@@ -316,7 +331,7 @@ public final class Place3 implements MovieTag {
 			events.add(event.copy());
 		}
 
-		blendPlacement = object.blendPlacement;
+		blend = object.blend;
 	}
 
 	/**
@@ -535,16 +550,14 @@ public final class Place3 implements MovieTag {
 		return this;
 	}
 
-	public int getBlendPlacement() {
-		return blendPlacement;
+	//TODO(doc)
+	public Blend getBlend() {
+		return Blend.fromInt(blend);
 	}
 
-	// TODO Change to an EnumSet
-	public void setBlendPlacement(final int aNumber) {
-		if (aNumber < 0 || aNumber > 255) {
-			throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
-		}
-		blendPlacement = aNumber;
+	//TODO(doc)
+	public void setBlend(final Blend mode) {
+		blend = mode.getValue();
 	}
 
 	/**
