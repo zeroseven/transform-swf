@@ -35,8 +35,6 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 
-@SuppressWarnings( { "PMD.TooManyMethods",
-		"PMD.JUnitAssertionsShouldIncludeMessage" })
 public final class EncoderTest {
 	private transient Encoder fixture;
 

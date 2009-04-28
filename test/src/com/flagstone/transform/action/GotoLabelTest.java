@@ -41,12 +41,10 @@ import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
-		"PMD.JUnitAssertionsShouldIncludeMessage" })
 public final class GotoLabelTest {
 
-	private transient final int type = ActionTypes.GOTO_LABEL;
-	private transient final String label = "ABC123";
+	private static transient final int type = ActionTypes.GOTO_LABEL;
+	private static transient final String label = "ABC123";
 
 	private transient GotoLabel fixture;
 
@@ -61,15 +59,15 @@ public final class GotoLabelTest {
 	@Test
 	public void checkCopy() {
 		fixture = new GotoLabel(label);
-		GotoLabel copy = fixture.copy();
+		final GotoLabel copy = fixture.copy();
 
 		assertEquals(fixture.toString(), copy.toString());
 	}
 
 	@Test
 	public void encode() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(encoded.length);
-		Context context = new Context();
+		final SWFEncoder encoder = new SWFEncoder(encoded.length);
+		final Context context = new Context();
 
 		fixture = new GotoLabel(label);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
@@ -81,7 +79,7 @@ public final class GotoLabelTest {
 
 	@Test
 	public void decode() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(encoded);
+		final SWFDecoder decoder = new SWFDecoder(encoded);
 
 		fixture = new GotoLabel(decoder);
 

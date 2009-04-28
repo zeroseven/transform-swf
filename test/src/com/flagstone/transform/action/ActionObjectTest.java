@@ -41,11 +41,9 @@ import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
-		"PMD.JUnitAssertionsShouldIncludeMessage" })
 public final class ActionObjectTest {
 
-	private transient final int type = 128;
+	private static transient final int type = 128;
 	private transient final byte[] data = new byte[] { 1, 2, 3, 4 };
 
 	private transient ActionObject fixture;
@@ -65,7 +63,7 @@ public final class ActionObjectTest {
 	@Test
 	public void checkCopy() {
 		fixture = new ActionObject(type, data);
-		ActionObject copy = fixture.copy();
+		final ActionObject copy = fixture.copy();
 
 		assertNotSame(fixture, copy);
 		assertNotSame(fixture.getData(), copy.getData());
@@ -74,8 +72,8 @@ public final class ActionObjectTest {
 
 	@Test
 	public void encode() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(encoded.length);
-		Context context = new Context();
+		final SWFEncoder encoder = new SWFEncoder(encoded.length);
+		final Context context = new Context();
 
 		fixture = new ActionObject(type, data);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
@@ -87,8 +85,8 @@ public final class ActionObjectTest {
 
 	@Test
 	public void encodeBasic() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(basic.length);
-		Context context = new Context();
+		final SWFEncoder encoder = new SWFEncoder(basic.length);
+		final Context context = new Context();
 
 		fixture = new ActionObject(1);
 		assertEquals(basic.length, fixture.prepareToEncode(encoder, context));
@@ -100,8 +98,8 @@ public final class ActionObjectTest {
 
 	@Test
 	public void encodeEmpty() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(empty.length);
-		Context context = new Context();
+		final SWFEncoder encoder = new SWFEncoder(empty.length);
+		final Context context = new Context();
 
 		fixture = new ActionObject(type, new byte[0]);
 		assertEquals(empty.length, fixture.prepareToEncode(encoder, context));
@@ -113,7 +111,7 @@ public final class ActionObjectTest {
 
 	@Test
 	public void decode() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(encoded);
+		final SWFDecoder decoder = new SWFDecoder(encoded);
 
 		fixture = new ActionObject(decoder);
 
@@ -124,7 +122,7 @@ public final class ActionObjectTest {
 
 	@Test
 	public void decodeBasic() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(basic);
+		final SWFDecoder decoder = new SWFDecoder(basic);
 
 		fixture = new ActionObject(decoder);
 
@@ -135,7 +133,7 @@ public final class ActionObjectTest {
 
 	@Test
 	public void decodeEmpty() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(empty);
+		final SWFDecoder decoder = new SWFDecoder(empty);
 
 		fixture = new ActionObject(decoder);
 

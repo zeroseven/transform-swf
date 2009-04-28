@@ -35,8 +35,8 @@ import org.junit.Test;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.datatype.VideoFrameType;
 
-@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
-		"PMD.JUnitAssertionsShouldIncludeMessage" })
+
+
 public final class VideoFrameTest {
 
 	private transient VideoFrameType fixture;

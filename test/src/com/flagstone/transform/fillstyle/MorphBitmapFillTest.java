@@ -42,16 +42,16 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 
-@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
-		"PMD.JUnitAssertionsShouldIncludeMessage" })
+
+
 public final class MorphBitmapFillTest {
 
-	private transient final boolean tiled = false;
-	private transient final boolean smoothed = false;
-	private transient final int identifier = 1;
-	private transient final CoordTransform start = CoordTransform.translate(1,
+	private static transient final boolean tiled = false;
+	private static transient final boolean smoothed = false;
+	private static transient final int identifier = 1;
+	private static transient final CoordTransform start = CoordTransform.translate(1,
 			2);
-	private transient final CoordTransform end = CoordTransform.translate(1, 2);
+	private static transient final CoordTransform end = CoordTransform.translate(1, 2);
 
 	private transient MorphBitmapFill fixture;
 
@@ -91,8 +91,8 @@ public final class MorphBitmapFillTest {
 	@Test
 	public void encode() throws CoderException {
 
-		SWFEncoder encoder = new SWFEncoder(encoded.length);
-		Context context = new Context();
+		final SWFEncoder encoder = new SWFEncoder(encoded.length);
+		final Context context = new Context();
 
 		fixture = new MorphBitmapFill(tiled, smoothed, identifier, start, end);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
@@ -105,7 +105,7 @@ public final class MorphBitmapFillTest {
 	@Test
 	public void decode() throws CoderException {
 
-		SWFDecoder decoder = new SWFDecoder(encoded);
+		final SWFDecoder decoder = new SWFDecoder(encoded);
 
 		fixture = new MorphBitmapFill(decoder);
 

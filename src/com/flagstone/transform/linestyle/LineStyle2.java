@@ -347,7 +347,6 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
 		}
 	}
 
-	@SuppressWarnings( { "PMD.CyclomaticComplexity", "PMD.NPathComplexity" })
 	private int pack() {
 
 		int value = 0;
@@ -384,7 +383,6 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
 		return value;
 	}
 
-	@SuppressWarnings("PMD.CyclomaticComplexity")
 	private void unpack(final int value) {
 
 		if ((value & 0x00004000) > 0) {

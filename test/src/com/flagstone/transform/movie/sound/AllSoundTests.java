@@ -8,6 +8,5 @@ import org.junit.runners.Suite;
 		SoundInfoTest.class, SoundStreamBlockTest.class,
 		SoundStreamHeadTest.class, SoundStreamHead2Test.class,
 		StartSoundTest.class, StartSound2Test.class, })
-@SuppressWarnings("PMD.AtLeastOneConstructor")
 public final class AllSoundTests {
 }

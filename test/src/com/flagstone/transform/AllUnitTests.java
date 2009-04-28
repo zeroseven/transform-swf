@@ -25,6 +25,5 @@ import com.flagstone.transform.video.AllVideoDataTests;
 		AllImageTests.class, AllLineStyleTests.class, AllMovieClipTests.class,
 		AllShapeTests.class, AllSoundTests.class, AllTextTests.class,
 		AllVideoTests.class, AllVideoDataTests.class, })
-@SuppressWarnings("PMD.AtLeastOneConstructor")
 public final class AllUnitTests {
 }

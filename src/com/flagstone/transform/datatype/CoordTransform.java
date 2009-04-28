@@ -64,8 +64,6 @@ import com.flagstone.transform.coder.SWFEncoder;
  * 
  */
 // TODO(doc) Review
-// TODO(pmd) Remove warning suppressors and re-check
-@SuppressWarnings( { "PMD.TooManyMethods", "PMD.LocalVariableCouldBeFinal" })
 public final class CoordTransform implements SWFEncodeable {
 
 	private static final String FORMAT = "CoordTransform: { scaleX=%f; scaleY=%f; shearX=%f; shearY=%f; transX=%d; transY=%d }";

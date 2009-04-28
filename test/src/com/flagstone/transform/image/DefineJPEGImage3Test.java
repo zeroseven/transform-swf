@@ -40,8 +40,8 @@ import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
-		"PMD.JUnitAssertionsShouldIncludeMessage" })
+
+
 public final class DefineJPEGImage3Test {
 
 	private transient DefineJPEGImage3 fixture;
@@ -57,7 +57,7 @@ public final class DefineJPEGImage3Test {
 	public void checkCopy() {
 		// fixture = new DefineJPEGImage3(identifier, layer, transform,
 		// colorTransform);
-		DefineJPEGImage3 copy = fixture.copy();
+		final DefineJPEGImage3 copy = fixture.copy();
 
 		assertNotSame(fixture, copy);
 	}
@@ -65,8 +65,8 @@ public final class DefineJPEGImage3Test {
 	@Test
 	@Ignore
 	public void encodeCoordTransform() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(encoded.length);
-		Context context = new Context();
+		final SWFEncoder encoder = new SWFEncoder(encoded.length);
+		final Context context = new Context();
 
 		// fixture = new DefineJPEGImage3(identifier, layer, transform);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
@@ -78,7 +78,7 @@ public final class DefineJPEGImage3Test {
 	@Test
 	@Ignore
 	public void decode() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(encoded);
+		final SWFDecoder decoder = new SWFDecoder(encoded);
 
 		fixture = new DefineJPEGImage3(decoder);
 
@@ -88,7 +88,7 @@ public final class DefineJPEGImage3Test {
 	@Test
 	@Ignore
 	public void decodeExtended() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(extended);
+		final SWFDecoder decoder = new SWFDecoder(extended);
 
 		fixture = new DefineJPEGImage3(decoder);
 

@@ -42,13 +42,11 @@ import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
-		"PMD.JUnitAssertionsShouldIncludeMessage" })
 public final class GetUrlTest {
 
-	private transient final int type = ActionTypes.GET_URL;
-	private transient final String url = "url";
-	private transient final String target = "_blank";
+	private static transient final int type = ActionTypes.GET_URL;
+	private static transient final String url = "url";
+	private static transient final String target = "_blank";
 
 	private transient GetUrl fixture;
 
@@ -74,7 +72,7 @@ public final class GetUrlTest {
 	@Test
 	public void checkCopy() {
 		fixture = new GetUrl(url, target);
-		GetUrl copy = fixture.copy();
+		final GetUrl copy = fixture.copy();
 
 		assertNotSame(fixture, copy);
 		assertEquals(fixture.toString(), copy.toString());
@@ -82,8 +80,8 @@ public final class GetUrlTest {
 
 	@Test
 	public void encode() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(encoded.length);
-		Context context = new Context();
+		final SWFEncoder encoder = new SWFEncoder(encoded.length);
+		final Context context = new Context();
 
 		fixture = new GetUrl(url, target);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
@@ -95,7 +93,7 @@ public final class GetUrlTest {
 
 	@Test
 	public void decode() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(encoded);
+		final SWFDecoder decoder = new SWFDecoder(encoded);
 
 		fixture = new GetUrl(decoder);
 

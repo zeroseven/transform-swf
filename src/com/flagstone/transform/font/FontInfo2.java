@@ -70,7 +70,6 @@ import com.flagstone.transform.coder.SWFEncoder;
  * 
  * @see FontInfo
  */
-@SuppressWarnings("PMD.TooManyMethods")
 public final class FontInfo2 implements MovieTag {
 	private static final String FORMAT = "FontInfo2: { identifier=%d; encoding=%s; small=%s; italic=%s; bold=%s; language=%s; name=%s; codes=%s }";
 
@@ -369,7 +368,7 @@ public final class FontInfo2 implements MovieTag {
 		return (length > 62 ? 6 : 2) + length;
 	}
 
-	// TODO(optimsie)
+	// TODO(optimise)
 	public void encode(final SWFEncoder coder, final Context context)
 			throws CoderException {
 		final int start = coder.getPointer();

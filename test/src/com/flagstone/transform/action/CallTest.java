@@ -40,8 +40,6 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 
-@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
-		"PMD.JUnitAssertionsShouldIncludeMessage" })
 public final class CallTest {
 
 	private transient Call fixture;
@@ -59,8 +57,8 @@ public final class CallTest {
 	@Test
 	public void encode() throws CoderException {
 
-		SWFEncoder encoder = new SWFEncoder(encoded.length);
-		Context context = new Context();
+		final SWFEncoder encoder = new SWFEncoder(encoded.length);
+		final Context context = new Context();
 
 		fixture = Call.getInstance();
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));

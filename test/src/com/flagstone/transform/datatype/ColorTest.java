@@ -2,7 +2,7 @@
  * ColorTest.java
  * Transform
  *
- * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
+ * Copyright (c) 2009 Flagstone Software Ltd. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
@@ -41,149 +41,115 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
-		"PMD.JUnitAssertionsShouldIncludeMessage" })
 public final class ColorTest {
 
-	private transient final int red = 1;
-	private transient final int green = 2;
-	private transient final int blue = 3;
-	private transient final int alpha = 4;
+	private static int red = 1;
+	private static int green = 2;
+	private static int blue = 3;
+	private static int alpha = 4;
 
-	private transient Color fixture;
-
-	private transient byte[] opaque = new byte[] { 1, 2, 3 };
-	private transient byte[] transparent = new byte[] { 1, 2, 3, 4 };
-
-	private transient SWFEncoder encoder;
-	private transient SWFDecoder decoder;
-	private transient Context context;
+	private static byte[] opaque = new byte[] { 1, 2, 3 };
+	private static byte[] transparent = new byte[] { 1, 2, 3, 4 };
 
 	@Test(expected = IllegalArgumentException.class)
-	public void checkRedBelowRangeThrowsException() {
-		fixture = new Color(-1, 2, 3);
+	public void checkLowValueThrowsException() {
+		new Color(-1, 2, 3);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void checkRedAboveRangeThrowsException() {
-		fixture = new Color(256, 2, 3);
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void checkGreenBelowRangeThrowsException() {
-		fixture = new Color(1, -1, 3);
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void checkGreenAboveRangeThrowsException() {
-		fixture = new Color(1, 256, 3);
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void checkBlueBelowRangeThrowsException() {
-		fixture = new Color(1, 2, -1);
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void checkBlueAboveRangeThrowsException() {
-		fixture = new Color(1, 2, 256);
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAlphaBelowRangeThrowsException() {
-		fixture = new Color(1, 2, 3, -1);
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void checkAlphaAboveRangeThrowsException() {
-		fixture = new Color(1, 2, 3, 256);
-	}
-
-	@Test
-	@SuppressWarnings("PMD.EqualsNull")
-	public void checkNullIsnotEqual() {
-		assertFalse(new Color(red, green, blue, alpha).equals(null));
-	}
-
-	@Test
-	public void checkObjectIsNotEqual() {
-		assertFalse(new Color(red, green, blue, alpha).equals(new Object()));
+	public void checkHighValueThrowsException() {
+		new Color(256, 2, 3);
 	}
 
 	@Test
 	public void checkSameIsEqual() {
-		fixture = new Color(red, green, blue, alpha);
-		assertEquals(fixture, fixture);
+		final Color color = new Color(red, green, blue, alpha);
+		
+		assertEquals("Identical colours are not equal", color, color);
 	}
 
 	@Test
-	public void checkIsNotEqual() {
-		fixture = new Color(red, green, blue, alpha);
-		assertFalse(fixture.equals(new Color(4, 3, 2, 1)));
+	public void checkDifferentIsEqual() {
+		final Color color = new Color(red, green, blue, alpha);
+		final Color other = new Color(red, green, blue, alpha);
+		
+		assertEquals("Identical colours are not equal", color, other);
 	}
 
 	@Test
-	public void checkOtherIsEqual() {
-		assertTrue(new Color(red, green, blue, alpha).equals(new Color(red,
-				green, blue, alpha)));
+	public void checkOtherIsNotEqual() {
+		final Color color = new Color(red, green, blue, alpha);
+		final Color other = new Color(4, 3, 2, 1);
+		
+		assertFalse("Different colors are equal", color.equals(other));
+	}
+
+	@Test
+	public void checkObjectIsNotEqual() {
+		final Color color = new Color(red, green, blue, alpha);
+		final Object other = new Object();
+		
+		assertFalse("Object is a Color", color.equals(other));
+	}
+
+	@Test
+	public void checkNullIsNotEqual() {
+		final Color color = new Color(red, green, blue, alpha);
+		final Color other = null;
+		
+		assertFalse("Different colors are equal", color.equals(other));
 	}
 
 	@Test
 	public void encodeOpaqueColour() throws CoderException {
-		encoder = new SWFEncoder(opaque.length);
-		context = new Context();
+		final SWFEncoder encoder = new SWFEncoder(opaque.length);
+		final Context context = new Context();
 
-		fixture = new Color(red, green, blue);
+		final Color color = new Color(red, green, blue);
+		final int length = color.prepareToEncode(encoder, context);
+		color.encode(encoder, context);
 
-		assertEquals(opaque.length, fixture.prepareToEncode(encoder, context));
-		fixture.encode(encoder, context);
-
-		assertTrue(encoder.eof());
-		assertArrayEquals(opaque, encoder.getData());
+		assertTrue("Object not fully encoded", encoder.eof());
+		assertEquals("Incorrect caclulated size", opaque.length, length);
+		assertArrayEquals("Incorrect encoding", opaque, encoder.getData());
 	}
 
 	@Test
 	public void encodeTransparentColour() throws CoderException {
-		encoder = new SWFEncoder(transparent.length);
-		context = new Context();
-		context.getVariables().put(Context.TRANSPARENT, 1);
+		final SWFEncoder encoder = new SWFEncoder(transparent.length);
+		final Context context = new Context().put(Context.TRANSPARENT, 1);
 
-		fixture = new Color(red, green, blue, alpha);
+		final Color color = new Color(red, green, blue, alpha);
+		final int length = color.prepareToEncode(encoder, context);
+		color.encode(encoder, context);
 
-		assertEquals(transparent.length, fixture.prepareToEncode(encoder,
-				context));
-		fixture.encode(encoder, context);
-
-		assertTrue(encoder.eof());
-		assertArrayEquals(transparent, encoder.getData());
+		assertTrue("Object not fully encoded", encoder.eof());
+		assertEquals("Incorrect caclulated size", transparent.length, length);
+		assertArrayEquals("Incorrect encoding", transparent, encoder.getData());
 	}
 
 	@Test
 	public void decodeOpaqueColour() throws CoderException {
-		decoder = new SWFDecoder(opaque);
-		context = new Context();
+		final SWFDecoder decoder = new SWFDecoder(opaque);
+		final Context context = new Context();
 
-		fixture = new Color(decoder, context);
+		final Color color = new Color(decoder, context);
 
-		assertTrue(decoder.eof());
-		assertEquals(red, fixture.getRed());
-		assertEquals(green, fixture.getGreen());
-		assertEquals(blue, fixture.getBlue());
-		assertEquals(255, fixture.getAlpha());
+		assertTrue("Data not fully decoded", decoder.eof());
+		assertEquals("Red not decoded", red, color.getRed());
+		assertEquals("Green not decoded", green, color.getGreen());
+		assertEquals("Blue not decoded", blue, color.getBlue());
+		assertEquals("Incorrect default value for alpha", 255, color.getAlpha());
 	}
 
 	@Test
 	public void decodeTransparentColour() throws CoderException {
-		decoder = new SWFDecoder(transparent);
-		context = new Context();
-		context.getVariables().put(Context.TRANSPARENT, 0);
+		final SWFDecoder decoder = new SWFDecoder(transparent);
+		final Context context = new Context().put(Context.TRANSPARENT, 1);
 
-		fixture = new Color(decoder, context);
+		final Color color = new Color(decoder, context);
 
-		assertTrue(decoder.eof());
-		assertEquals(red, fixture.getRed());
-		assertEquals(green, fixture.getGreen());
-		assertEquals(blue, fixture.getBlue());
-		assertEquals(alpha, fixture.getAlpha());
+		assertTrue("Data not fully decoded", decoder.eof());
+		assertEquals("Alpha not decoded", alpha, color.getAlpha());
 	}
 }

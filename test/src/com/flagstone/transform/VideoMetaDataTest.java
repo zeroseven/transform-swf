@@ -34,8 +34,8 @@ import org.junit.Test;
 
 import com.flagstone.transform.coder.CoderException;
 
-@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
-		"PMD.JUnitAssertionsShouldIncludeMessage" })
+
+
 public final class VideoMetaDataTest {
 
 	private transient VideoMetaData fixture;

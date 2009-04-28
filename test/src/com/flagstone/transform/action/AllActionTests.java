@@ -13,6 +13,5 @@ import org.junit.runners.Suite;
 		RegisterIndexTest.class, SetTargetTest.class, TableTest.class,
 		TableIndexTest.class, WaitForFrameTest.class, WaitForFrame2Test.class,
 		WithTest.class })
-@SuppressWarnings("PMD.AtLeastOneConstructor")
 public final class AllActionTests {
 }

@@ -39,8 +39,8 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.sound.SoundStreamHead2;
 
-@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
-		"PMD.JUnitAssertionsShouldIncludeMessage" })
+
+
 public final class SoundStreamHead2Test {
 
 	private transient SoundStreamHead2 fixture;
@@ -56,7 +56,7 @@ public final class SoundStreamHead2Test {
 	public void checkCopy() {
 		// fixture = new SoundStreamHead2(identifier, layer, transform,
 		// colorTransform);
-		SoundStreamHead2 copy = fixture.copy();
+		final SoundStreamHead2 copy = fixture.copy();
 
 		assertNotSame(fixture, copy);
 	}
@@ -64,7 +64,7 @@ public final class SoundStreamHead2Test {
 	@Test
 	@Ignore
 	public void encode() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(encoded.length);
+		final SWFEncoder encoder = new SWFEncoder(encoded.length);
 
 		// fixture = new SoundStreamHead2(identifier, layer, transform);
 		// assertEquals(encoded.length, fixture.prepareToEncode(encoder,
@@ -77,7 +77,7 @@ public final class SoundStreamHead2Test {
 	@Test
 	@Ignore
 	public void decode() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(encoded);
+		final SWFDecoder decoder = new SWFDecoder(encoded);
 
 		// fixture = new SoundStreamHead2(decoder, context);
 
@@ -87,7 +87,7 @@ public final class SoundStreamHead2Test {
 	@Test
 	@Ignore
 	public void decodeExtended() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(extended);
+		final SWFDecoder decoder = new SWFDecoder(extended);
 
 		// fixture = new SoundStreamHead2(decoder, context);
 

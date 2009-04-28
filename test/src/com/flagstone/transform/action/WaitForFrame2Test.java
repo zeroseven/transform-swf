@@ -42,12 +42,11 @@ import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
-		"PMD.JUnitAssertionsShouldIncludeMessage" })
+
 public final class WaitForFrame2Test {
 
-	private transient final int type = ActionTypes.WAIT_FOR_FRAME_2;
-	private transient final int count = 2;
+	private static transient final int type = ActionTypes.WAIT_FOR_FRAME_2;
+	private static transient final int count = 2;
 
 	private transient WaitForFrame2 fixture;
 
@@ -67,7 +66,7 @@ public final class WaitForFrame2Test {
 	@Test
 	public void checkCopy() {
 		fixture = new WaitForFrame2(count);
-		WaitForFrame2 copy = fixture.copy();
+		final WaitForFrame2 copy = fixture.copy();
 
 		assertNotSame(fixture, copy);
 		assertEquals(fixture.toString(), copy.toString());
@@ -75,8 +74,8 @@ public final class WaitForFrame2Test {
 
 	@Test
 	public void encode() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(encoded.length);
-		Context context = new Context();
+		final SWFEncoder encoder = new SWFEncoder(encoded.length);
+		final Context context = new Context();
 
 		fixture = new WaitForFrame2(count);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
@@ -88,7 +87,7 @@ public final class WaitForFrame2Test {
 
 	@Test
 	public void decode() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(encoded);
+		final SWFDecoder decoder = new SWFDecoder(encoded);
 
 		fixture = new WaitForFrame2(decoder);
 

@@ -76,7 +76,6 @@ import com.flagstone.transform.coder.SWFEncoder;
  * every device the text is displayed.
  * </p>
  */
-@SuppressWarnings("PMD.TooManyMethods")
 public final class FontInfo implements MovieTag {
 	private static final String FORMAT = "FontInfo: { identifier=%d; encoding=%s; small=%s; italic=%s; bold=%s; name=%s; codes=%s }";
 

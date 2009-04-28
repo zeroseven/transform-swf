@@ -42,8 +42,8 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.Color;
 
-@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
-		"PMD.JUnitAssertionsShouldIncludeMessage" })
+
+
 public final class BackgroundTest {
 
 	private transient final Color color = new Color(1, 2, 3);
@@ -63,7 +63,7 @@ public final class BackgroundTest {
 	@Test
 	public void checkCopy() {
 		fixture = new Background(color);
-		Background copy = fixture.copy();
+		final Background copy = fixture.copy();
 
 		assertSame(fixture.getColor(), copy.getColor());
 		assertEquals(fixture.toString(), copy.toString());
@@ -71,8 +71,8 @@ public final class BackgroundTest {
 
 	@Test
 	public void encode() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(encoded.length);
-		Context context = new Context();
+		final SWFEncoder encoder = new SWFEncoder(encoded.length);
+		final Context context = new Context();
 
 		fixture = new Background(color);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
@@ -84,8 +84,8 @@ public final class BackgroundTest {
 
 	@Test
 	public void decode() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(encoded);
-		Context context = new Context();
+		final SWFDecoder decoder = new SWFDecoder(encoded);
+		final Context context = new Context();
 
 		fixture = new Background(decoder, context);
 
@@ -95,8 +95,8 @@ public final class BackgroundTest {
 
 	@Test
 	public void decodeExtended() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(extended);
-		Context context = new Context();
+		final SWFDecoder decoder = new SWFDecoder(extended);
+		final Context context = new Context();
 
 		fixture = new Background(decoder, context);
 

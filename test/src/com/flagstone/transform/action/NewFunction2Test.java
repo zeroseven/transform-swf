@@ -50,8 +50,7 @@ import com.flagstone.transform.coder.DecoderRegistry;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
-		"PMD.JUnitAssertionsShouldIncludeMessage" })
+
 public final class NewFunction2Test {
 
 	private static String name = "function";
@@ -66,7 +65,7 @@ public final class NewFunction2Test {
 		actions.add(BasicAction.END);
 	}
 
-	private transient final int type = ActionTypes.NEW_FUNCTION_2;
+	private static transient final int type = ActionTypes.NEW_FUNCTION_2;
 	private transient NewFunction2 fixture;
 
 	private transient final byte[] encoded = new byte[] { (byte) type, 0x16,
@@ -95,7 +94,7 @@ public final class NewFunction2Test {
 	@Test
 	public void checkCopy() {
 		fixture = new NewFunction2(name, args, actions);
-		NewFunction2 copy = fixture.copy();
+		final NewFunction2 copy = fixture.copy();
 
 		assertNotSame(fixture.getActions(), copy.getActions());
 		assertEquals(fixture.toString(), copy.toString());
@@ -103,8 +102,8 @@ public final class NewFunction2Test {
 
 	@Test
 	public void encode() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(encoded.length);
-		Context context = new Context();
+		final SWFEncoder encoder = new SWFEncoder(encoded.length);
+		final Context context = new Context();
 
 		fixture = new NewFunction2(name, args, actions);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
@@ -116,9 +115,9 @@ public final class NewFunction2Test {
 
 	@Test
 	public void decode() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(encoded);
-		Context context = new Context();
-		DecoderRegistry registry = new DecoderRegistry();
+		final SWFDecoder decoder = new SWFDecoder(encoded);
+		final Context context = new Context();
+		final DecoderRegistry registry = new DecoderRegistry();
 		registry.setActionDecoder(new ActionDecoder());
 		context.setRegistry(registry);
 

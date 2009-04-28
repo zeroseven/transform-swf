@@ -41,11 +41,11 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.Color;
 
-@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
-		"PMD.JUnitAssertionsShouldIncludeMessage" })
+
+
 public final class GradientTest {
 
-	private transient final int ratio = 1;
+	private static transient final int ratio = 1;
 	private transient final Color color = new Color(2, 3, 4);
 
 	private transient Gradient fixture;
@@ -70,8 +70,8 @@ public final class GradientTest {
 
 	@Test
 	public void encode() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(encoded.length);
-		Context context = new Context();
+		final SWFEncoder encoder = new SWFEncoder(encoded.length);
+		final Context context = new Context();
 
 		fixture = new Gradient(ratio, color);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
@@ -83,8 +83,8 @@ public final class GradientTest {
 
 	@Test
 	public void decode() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(encoded);
-		Context context = new Context();
+		final SWFDecoder decoder = new SWFDecoder(encoded);
+		final Context context = new Context();
 
 		fixture = new Gradient(decoder, context);
 

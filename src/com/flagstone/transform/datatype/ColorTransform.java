@@ -352,7 +352,6 @@ public final class ColorTransform implements SWFEncodeable {
 		return numberOfBits >> 3;
 	}
 
-	@SuppressWarnings("PMD.NPathComplexity")
 	public void encode(final SWFEncoder coder, final Context context)
 			throws CoderException {
 

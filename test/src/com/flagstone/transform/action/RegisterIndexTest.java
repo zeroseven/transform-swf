@@ -33,7 +33,6 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal" })
 public final class RegisterIndexTest {
 
 	private transient RegisterIndex fixture;

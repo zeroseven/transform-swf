@@ -43,8 +43,8 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.Color;
 
-@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
-		"PMD.JUnitAssertionsShouldIncludeMessage" })
+
+
 public final class SolidFillTest {
 
 	private transient final Color color = new Color(1, 2, 3);
@@ -62,7 +62,7 @@ public final class SolidFillTest {
 	@Test
 	public void checkCopy() {
 		fixture = new SolidFill(color);
-		SolidFill copy = fixture.copy();
+		final SolidFill copy = fixture.copy();
 
 		assertNotSame(fixture, copy);
 		assertSame(fixture.getColor(), copy.getColor());
@@ -71,8 +71,8 @@ public final class SolidFillTest {
 
 	@Test
 	public void encode() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(encoded.length);
-		Context context = new Context();
+		final SWFEncoder encoder = new SWFEncoder(encoded.length);
+		final Context context = new Context();
 
 		fixture = new SolidFill(color);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
@@ -84,8 +84,8 @@ public final class SolidFillTest {
 
 	@Test
 	public void decode() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(encoded);
-		Context context = new Context();
+		final SWFDecoder decoder = new SWFDecoder(encoded);
+		final Context context = new Context();
 
 		fixture = new SolidFill(decoder, context);
 

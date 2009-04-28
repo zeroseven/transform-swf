@@ -41,7 +41,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNotSame;
 
-@SuppressWarnings( { "PMD.JUnitAssertionsShouldIncludeMessage" })
+
 public final class CoderTest {
 	private transient Coder fixture;
 

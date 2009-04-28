@@ -41,8 +41,8 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.shape.Line;
 
-@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
-		"PMD.JUnitAssertionsShouldIncludeMessage" })
+
+
 public final class LineTest {
 
 	private transient Line fixture;
@@ -57,7 +57,7 @@ public final class LineTest {
 	@Ignore
 	public void checkCopy() {
 		// fixture = new Line(identifier, layer, transform, colorTransform);
-		Line copy = fixture.copy();
+		final Line copy = fixture.copy();
 
 		assertNotSame(fixture, copy);
 	}
@@ -65,8 +65,8 @@ public final class LineTest {
 	@Test
 	@Ignore
 	public void encodeCoordTransform() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(encoded.length);
-		Context context = new Context();
+		final SWFEncoder encoder = new SWFEncoder(encoded.length);
+		final Context context = new Context();
 
 		// fixture = new Line(identifier, layer, transform);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
@@ -78,7 +78,7 @@ public final class LineTest {
 	@Test
 	@Ignore
 	public void decode() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(encoded);
+		final SWFDecoder decoder = new SWFDecoder(encoded);
 
 		fixture = new Line(decoder);
 
@@ -88,7 +88,7 @@ public final class LineTest {
 	@Test
 	@Ignore
 	public void decodeExtended() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(extended);
+		final SWFDecoder decoder = new SWFDecoder(extended);
 
 		fixture = new Line(decoder);
 

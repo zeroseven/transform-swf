@@ -39,8 +39,8 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.text.TextSettings;
 
-@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
-		"PMD.JUnitAssertionsShouldIncludeMessage" })
+
+
 public final class TextSettingsTest {
 
 	private transient TextSettings fixture;
@@ -56,7 +56,7 @@ public final class TextSettingsTest {
 	public void checkCopy() {
 		// fixture = new TextSettings(identifier, layer, transform,
 		// colorTransform);
-		TextSettings copy = fixture.copy();
+		final TextSettings copy = fixture.copy();
 
 		assertNotSame(fixture, copy);
 	}
@@ -64,7 +64,7 @@ public final class TextSettingsTest {
 	@Test
 	@Ignore
 	public void encode() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(encoded.length);
+		final SWFEncoder encoder = new SWFEncoder(encoded.length);
 		//Context context = new Context();
 
 		// fixture = new TextSettings(identifier, layer, transform);
@@ -78,7 +78,7 @@ public final class TextSettingsTest {
 	@Test
 	@Ignore
 	public void decode() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(encoded);
+		final SWFDecoder decoder = new SWFDecoder(encoded);
 
 		// fixture = new TextSettings(decoder, context);
 
@@ -88,7 +88,7 @@ public final class TextSettingsTest {
 	@Test
 	@Ignore
 	public void decodeExtended() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(extended);
+		final SWFDecoder decoder = new SWFDecoder(extended);
 
 		// fixture = new TextSettings(decoder, context);
 

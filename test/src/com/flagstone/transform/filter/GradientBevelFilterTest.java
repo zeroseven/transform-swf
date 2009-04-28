@@ -40,8 +40,8 @@ import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
-		"PMD.JUnitAssertionsShouldIncludeMessage" })
+
+
 public final class GradientBevelFilterTest {
 
 	private transient GradientBevelFilter fixture;
@@ -57,7 +57,7 @@ public final class GradientBevelFilterTest {
 	public void checkCopy() {
 		// fixture = new GradientBevelFilter(identifier, layer, transform,
 		// colorTransform);
-		GradientBevelFilter copy = fixture.copy();
+		final GradientBevelFilter copy = fixture.copy();
 
 		assertNotSame(fixture, copy);
 	}
@@ -65,8 +65,8 @@ public final class GradientBevelFilterTest {
 	@Test
 	@Ignore
 	public void encodeCoordTransform() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(encoded.length);
-		Context context = new Context();
+		final SWFEncoder encoder = new SWFEncoder(encoded.length);
+		final Context context = new Context();
 
 		// fixture = new GradientBevelFilter(identifier, layer, transform);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
@@ -78,7 +78,7 @@ public final class GradientBevelFilterTest {
 	@Test
 	@Ignore
 	public void decode() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(encoded);
+		final SWFDecoder decoder = new SWFDecoder(encoded);
 
 		// fixture = new GradientBevelFilter(decoder, context);
 
@@ -88,7 +88,7 @@ public final class GradientBevelFilterTest {
 	@Test
 	@Ignore
 	public void decodeExtended() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(extended);
+		final SWFDecoder decoder = new SWFDecoder(extended);
 
 		// fixture = new GradientBevelFilter(decoder, context);
 

@@ -43,13 +43,13 @@ import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
-		"PMD.JUnitAssertionsShouldIncludeMessage" })
+
+
 public final class DefineFontNameTest {
 
-	private transient final int identifier = 1;
-	private transient final String name = "font";
-	private transient final String copyright = "copyright";
+	private static transient final int identifier = 1;
+	private static transient final String name = "font";
+	private static transient final String copyright = "copyright";
 
 	private transient DefineFontName fixture;
 
@@ -84,7 +84,7 @@ public final class DefineFontNameTest {
 	@Test
 	public void checkCopy() {
 		fixture = new DefineFontName(identifier, name, copyright);
-		DefineFontName copy = fixture.copy();
+		final DefineFontName copy = fixture.copy();
 
 		assertNotSame(fixture, copy);
 		assertEquals(fixture.getIdentifier(), copy.getIdentifier());
@@ -95,8 +95,8 @@ public final class DefineFontNameTest {
 
 	@Test
 	public void encode() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(encoded.length);
-		Context context = new Context();
+		final SWFEncoder encoder = new SWFEncoder(encoded.length);
+		final Context context = new Context();
 
 		fixture = new DefineFontName(identifier, name, copyright);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
@@ -109,10 +109,10 @@ public final class DefineFontNameTest {
 	@Test
 	public void encodeExtended() throws CoderException {
 
-		SWFEncoder encoder = new SWFEncoder(114);
-		Context context = new Context();
+		final SWFEncoder encoder = new SWFEncoder(114);
+		final Context context = new Context();
 
-		char[] chars = new char[100];
+		final char[] chars = new char[100];
 		Arrays.fill(chars, 'a');
 
 		fixture = new DefineFontName(identifier, name, new String(chars));
@@ -124,7 +124,7 @@ public final class DefineFontNameTest {
 
 	@Test
 	public void decode() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(encoded);
+		final SWFDecoder decoder = new SWFDecoder(encoded);
 
 		fixture = new DefineFontName(decoder);
 
@@ -136,7 +136,7 @@ public final class DefineFontNameTest {
 
 	@Test
 	public void decodeExtended() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(extended);
+		final SWFDecoder decoder = new SWFDecoder(extended);
 
 		fixture = new DefineFontName(decoder);
 

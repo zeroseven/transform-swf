@@ -39,22 +39,16 @@ import com.flagstone.transform.coder.SWFEncoder;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
-@SuppressWarnings( { "PMD.TooManyMethods", "PMD.LocalVariableCouldBeFinal",
-		"PMD.JUnitAssertionsShouldIncludeMessage" })
 public final class ColorTransformTest {
 	private transient ColorTransform fixture;
-
-	private transient SWFEncoder encoder;
-	private transient SWFDecoder decoder;
-	private transient Context context;
 
 	private transient byte[] data;
 
 	@Test
 	public void encodeMultiplyWithoutAlpha() throws CoderException {
 		data = new byte[] { 108, -128, 32, 6, 0 };
-		encoder = new SWFEncoder(data.length);
-		context = new Context();
+		final SWFEncoder encoder = new SWFEncoder(data.length);
+		final Context context = new Context();
 
 		fixture = new ColorTransform(1.0f, 2.0f, 3.0f, 4.0f);
 
@@ -68,8 +62,8 @@ public final class ColorTransformTest {
 	@Test
 	public void encodeMultiplyWithAlpha() throws CoderException {
 		data = new byte[] { 112, 64, 8, 0, -64, 16, 0 };
-		encoder = new SWFEncoder(data.length);
-		context = new Context();
+		final SWFEncoder encoder = new SWFEncoder(data.length);
+		final Context context = new Context();
 		context.getVariables().put(Context.TRANSPARENT, 1);
 
 		fixture = new ColorTransform(1.0f, 2.0f, 3.0f, 4.0f);
@@ -83,8 +77,8 @@ public final class ColorTransformTest {
 	@Test
 	public void encodeAddWithoutAlpha() throws CoderException {
 		data = new byte[] { -116, -90 };
-		encoder = new SWFEncoder(data.length);
-		context = new Context();
+		final SWFEncoder encoder = new SWFEncoder(data.length);
+		final Context context = new Context();
 
 		fixture = new ColorTransform(1, 2, 3, 4);
 
@@ -98,8 +92,8 @@ public final class ColorTransformTest {
 	@Test
 	public void encodeAddWithAlpha() throws CoderException {
 		data = new byte[] { -112, 72, -48 };
-		encoder = new SWFEncoder(data.length);
-		context = new Context();
+		final SWFEncoder encoder = new SWFEncoder(data.length);
+		final Context context = new Context();
 		context.getVariables().put(Context.TRANSPARENT, 1);
 
 		fixture = new ColorTransform(1, 2, 3, 4);
@@ -113,8 +107,8 @@ public final class ColorTransformTest {
 	@Test
 	public void encodeWithoutAlpha() throws CoderException {
 		data = new byte[] { -20, -128, 32, 6, 0, 0, 64, 16, 3 };
-		encoder = new SWFEncoder(data.length);
-		context = new Context();
+		final SWFEncoder encoder = new SWFEncoder(data.length);
+		final Context context = new Context();
 
 		fixture = new ColorTransform(1, 2, 3, 4, 1.0f, 2.0f, 3.0f, 4.0f);
 
@@ -128,8 +122,8 @@ public final class ColorTransformTest {
 	@Test
 	public void encodeWithAlpha() throws CoderException {
 		data = new byte[] { -16, 64, 8, 0, -64, 16, 0, 0, 64, 8, 0, -64, 16 };
-		encoder = new SWFEncoder(data.length);
-		context = new Context();
+		final SWFEncoder encoder = new SWFEncoder(data.length);
+		final Context context = new Context();
 		context.getVariables().put(Context.TRANSPARENT, 1);
 
 		fixture = new ColorTransform(1, 2, 3, 4, 1.0f, 2.0f, 3.0f, 4.0f);
@@ -144,8 +138,8 @@ public final class ColorTransformTest {
 	@Test
 	public void decodeMultiplyWithoutAlpha() throws CoderException {
 		data = new byte[] { 108, -128, 32, 6, 0 };
-		decoder = new SWFDecoder(data);
-		context = new Context();
+		final SWFDecoder decoder = new SWFDecoder(data);
+		final Context context = new Context();
 
 		fixture = new ColorTransform(decoder, context);
 
@@ -159,8 +153,8 @@ public final class ColorTransformTest {
 	@Test
 	public void decodeMultiplyWithAlpha() throws CoderException {
 		data = new byte[] { 112, 64, 8, 0, -64, 16, 0 };
-		decoder = new SWFDecoder(data);
-		context = new Context();
+		final SWFDecoder decoder = new SWFDecoder(data);
+		final Context context = new Context();
 		context.getVariables().put(Context.TRANSPARENT, 1);
 
 		fixture = new ColorTransform(decoder, context);
@@ -175,8 +169,8 @@ public final class ColorTransformTest {
 	@Test
 	public void decodeAddWithoutAlpha() throws CoderException {
 		data = new byte[] { -116, -90 };
-		decoder = new SWFDecoder(data);
-		context = new Context();
+		final SWFDecoder decoder = new SWFDecoder(data);
+		final Context context = new Context();
 
 		fixture = new ColorTransform(decoder, context);
 
@@ -190,8 +184,8 @@ public final class ColorTransformTest {
 	@Test
 	public void decodeAddWithAlpha() throws CoderException {
 		data = new byte[] { -112, 72, -48 };
-		decoder = new SWFDecoder(data);
-		context = new Context();
+		final SWFDecoder decoder = new SWFDecoder(data);
+		final Context context = new Context();
 		context.getVariables().put(Context.TRANSPARENT, 1);
 
 		fixture = new ColorTransform(decoder, context);
@@ -206,8 +200,8 @@ public final class ColorTransformTest {
 	@Test
 	public void decodeWithoutAlpha() throws CoderException {
 		data = new byte[] { -20, -128, 32, 6, 0, 0, 64, 16, 3 };
-		decoder = new SWFDecoder(data);
-		context = new Context();
+		final SWFDecoder decoder = new SWFDecoder(data);
+		final Context context = new Context();
 
 		fixture = new ColorTransform(decoder, context);
 
@@ -225,8 +219,8 @@ public final class ColorTransformTest {
 	@Test
 	public void decodeWithAlpha() throws CoderException {
 		data = new byte[] { -16, 64, 8, 0, -64, 16, 0, 0, 64, 8, 0, -64, 16 };
-		decoder = new SWFDecoder(data);
-		context = new Context();
+		final SWFDecoder decoder = new SWFDecoder(data);
+		final Context context = new Context();
 		context.getVariables().put(Context.TRANSPARENT, 1);
 
 		fixture = new ColorTransform(decoder, context);

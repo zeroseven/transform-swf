@@ -47,8 +47,6 @@ import com.flagstone.transform.coder.DecoderRegistry;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
-		"PMD.JUnitAssertionsShouldIncludeMessage" })
 public final class ExceptionHandlerTest {
 
 	private static String variable = "var";
@@ -65,7 +63,7 @@ public final class ExceptionHandlerTest {
 		finalActions.add(BasicAction.END);
 	}
 
-	private transient final int type = ActionTypes.EXCEPTION_HANDLER;
+	private static transient final int type = ActionTypes.EXCEPTION_HANDLER;
 	private transient ExceptionHandler fixture;
 
 	private transient final byte[] encoded = new byte[] { (byte) type, 0x11,
@@ -98,7 +96,7 @@ public final class ExceptionHandlerTest {
 	public void checkCopy() {
 		fixture = new ExceptionHandler(variable, tryActions, catchActions,
 				finalActions);
-		ExceptionHandler copy = fixture.copy();
+		final ExceptionHandler copy = fixture.copy();
 
 		assertNotSame(fixture.getTryActions(), copy.getTryActions());
 		assertNotSame(fixture.getCatchActions(), copy.getCatchActions());
@@ -108,8 +106,8 @@ public final class ExceptionHandlerTest {
 
 	@Test
 	public void encode() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(encoded.length);
-		Context context = new Context();
+		final SWFEncoder encoder = new SWFEncoder(encoded.length);
+		final Context context = new Context();
 
 		fixture = new ExceptionHandler(variable, tryActions, catchActions,
 				finalActions);
@@ -122,9 +120,9 @@ public final class ExceptionHandlerTest {
 
 	@Test
 	public void decode() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(encoded);
-		Context context = new Context();
-		DecoderRegistry registry = new DecoderRegistry();
+		final SWFDecoder decoder = new SWFDecoder(encoded);
+		final Context context = new Context();
+		final DecoderRegistry registry = new DecoderRegistry();
 		registry.setActionDecoder(new ActionDecoder());
 		context.setRegistry(registry);
 

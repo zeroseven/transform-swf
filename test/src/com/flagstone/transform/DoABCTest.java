@@ -41,13 +41,13 @@ import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
-		"PMD.JUnitAssertionsShouldIncludeMessage" })
+
+
 public final class DoABCTest {
 
-	private transient final String name = "script";
-	private transient final boolean defer = true;
-	private transient final byte[] data = new byte[] { 1, 2, 3, 4 };
+	private static transient final String name = "script";
+	private static transient final boolean defer = true;
+	private static transient final byte[] data = new byte[] { 1, 2, 3, 4 };
 
 	private transient DoABC fixture;
 
@@ -82,7 +82,7 @@ public final class DoABCTest {
 	@Test
 	public void checkCopy() {
 		fixture = new DoABC(name, false, data);
-		DoABC copy = fixture.copy();
+		final DoABC copy = fixture.copy();
 
 		assertEquals(name, copy.getName());
 		assertEquals(false, copy.isDeferred());
@@ -93,8 +93,8 @@ public final class DoABCTest {
 
 	@Test
 	public void encode() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(encoded.length);
-		Context context = new Context();
+		final SWFEncoder encoder = new SWFEncoder(encoded.length);
+		final Context context = new Context();
 
 		fixture = new DoABC(name, defer, data);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
@@ -106,8 +106,8 @@ public final class DoABCTest {
 
 	@Test
 	public void encodeDefault() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(encoded.length);
-		Context context = new Context();
+		final SWFEncoder encoder = new SWFEncoder(encoded.length);
+		final Context context = new Context();
 
 		fixture = new DoABC(name, defer, data);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
@@ -119,8 +119,8 @@ public final class DoABCTest {
 
 	@Test
 	public void encodeExtended() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(117);
-		Context context = new Context();
+		final SWFEncoder encoder = new SWFEncoder(117);
+		final Context context = new Context();
 
 		fixture = new DoABC(name, defer, new byte[100]);
 		assertEquals(117, fixture.prepareToEncode(encoder, context));
@@ -131,7 +131,7 @@ public final class DoABCTest {
 
 	@Test
 	public void checkDecode() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(encoded);
+		final SWFDecoder decoder = new SWFDecoder(encoded);
 
 		fixture = new DoABC(decoder);
 
@@ -143,7 +143,7 @@ public final class DoABCTest {
 
 	@Test
 	public void checkDecodeExtended() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(extended);
+		final SWFDecoder decoder = new SWFDecoder(extended);
 
 		fixture = new DoABC(decoder);
 

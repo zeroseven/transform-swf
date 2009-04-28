@@ -39,7 +39,6 @@ package com.flagstone.transform.coder;
  * defined for Actionscript 3.0 are not included.
  * </p>
  */
-@SuppressWarnings("PMD.ShortVariable")
 public final class ActionTypes {
 	/** The type for creating the end of a sequence of actions. */
 	public static final int END = 0;

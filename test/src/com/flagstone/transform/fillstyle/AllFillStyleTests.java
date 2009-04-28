@@ -8,6 +8,5 @@ import org.junit.runners.Suite;
 		GradientTest.class, GradientFillTest.class, MorphBitmapFillTest.class,
 		MorphGradientTest.class, MorphGradientFillTest.class,
 		MorphSolidFillTest.class, SolidFillTest.class })
-@SuppressWarnings("PMD.AtLeastOneConstructor")
 public final class AllFillStyleTests {
 }

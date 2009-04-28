@@ -34,7 +34,6 @@ package com.flagstone.transform.coder;
  * The MovieTypes interface defines constants for all the different types of
  * MovieTag defined in the Flash file format specification.
  */
-@SuppressWarnings("PMD.LongVariable")
 public final class MovieTypes {
 	/** The type used to create ShowFrame objects. */
 	public static final int SHOW_FRAME = 1;

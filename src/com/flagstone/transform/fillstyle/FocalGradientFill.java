@@ -98,6 +98,8 @@ public final class FocalGradientFill implements FillStyle {
 			return value;
 		}
 	}
+	
+	private static final String FORMAT = "FocalGradientFill: { spread=%s; interpolation=%s; focalPoint=%d, gradients=%s}";
 
 	private transient int type;
 	private int spread;
@@ -157,7 +159,6 @@ public final class FocalGradientFill implements FillStyle {
 	}
 
 	public void setFocalPoint(final float point) {
-		// TODO value checking required ?
 		this.focalPoint = (int) (point * 256);
 	}
 
@@ -170,8 +171,12 @@ public final class FocalGradientFill implements FillStyle {
 	 *            an Gradient object. Must not be null.
 	 */
 	public FocalGradientFill add(final Gradient aGradient) {
-		// TODO value checking required ?
-		// TODO Check whether count will exceed 15.
+		if (aGradient == null) {
+			throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+		}
+		if (gradients.size() == 15) {
+			throw new IllegalArgumentException(Strings.MAX_GRADIENTS);
+		}
 		gradients.add(aGradient);
 		return this;
 	}
@@ -200,15 +205,13 @@ public final class FocalGradientFill implements FillStyle {
 		gradients = anArray;
 	}
 
-	@Override
 	public FocalGradientFill copy() {
 		return new FocalGradientFill(this);
 	}
 
 	@Override
-	// TODO add format string
 	public String toString() {
-		return "";
+		return String.format(FORMAT, getSpread(), getInterpolation(), focalPoint, gradients);
 	}
 
 	public int prepareToEncode(final SWFEncoder coder, final Context context) {

@@ -36,8 +36,8 @@ import static org.junit.Assert.assertTrue;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.SWFDecoder;
 
-@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
-		"PMD.JUnitAssertionsShouldIncludeMessage" })
+
+
 public final class MovieTest {
 
 	private transient Movie fixture;
@@ -63,7 +63,7 @@ public final class MovieTest {
 	@Test
 	@Ignore
 	public void decode() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(encoded);
+		final SWFDecoder decoder = new SWFDecoder(encoded);
 		//Context context = new Context();
 
 		fixture = new Movie();

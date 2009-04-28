@@ -46,8 +46,6 @@ import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
-		"PMD.JUnitAssertionsShouldIncludeMessage" })
 public final class TableTest {
 
 	private static List<String> list;
@@ -60,7 +58,7 @@ public final class TableTest {
 		list.add("C");
 	}
 
-	private transient final int type = ActionTypes.TABLE;
+	private static transient final int type = ActionTypes.TABLE;
 	private transient Table fixture;
 
 	private transient final byte[] encoded = new byte[] { (byte) type, 0x08,
@@ -75,7 +73,7 @@ public final class TableTest {
 	@Test
 	public void checkCopy() {
 		fixture = new Table(list);
-		Table copy = fixture.copy();
+		final Table copy = fixture.copy();
 
 		assertNotSame(fixture.getValues(), copy.getValues());
 		assertEquals(fixture.toString(), copy.toString());
@@ -83,8 +81,8 @@ public final class TableTest {
 
 	@Test
 	public void encode() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(encoded.length);
-		Context context = new Context();
+		final SWFEncoder encoder = new SWFEncoder(encoded.length);
+		final Context context = new Context();
 
 		fixture = new Table(list);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
@@ -96,7 +94,7 @@ public final class TableTest {
 
 	@Test
 	public void decode() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(encoded);
+		final SWFDecoder decoder = new SWFDecoder(encoded);
 
 		fixture = new Table(decoder);
 

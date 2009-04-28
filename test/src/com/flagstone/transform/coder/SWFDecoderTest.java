@@ -36,7 +36,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 
-@SuppressWarnings( { "PMD.JUnitAssertionsShouldIncludeMessage" })
+
 public final class SWFDecoderTest {
 	private transient SWFDecoder fixture;
 

@@ -49,8 +49,6 @@ import com.flagstone.transform.coder.DecoderRegistry;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
-		"PMD.JUnitAssertionsShouldIncludeMessage" })
 public final class WithTest {
 
 	private static List<Action> list;
@@ -62,7 +60,7 @@ public final class WithTest {
 		list.add(BasicAction.END);
 	}
 
-	private transient final int type = ActionTypes.WITH;
+	private static transient final int type = ActionTypes.WITH;
 	private transient With fixture;
 
 	private transient final byte[] encoded = new byte[] { (byte) type, 0x02,
@@ -77,7 +75,7 @@ public final class WithTest {
 	@Test
 	public void checkCopy() {
 		fixture = new With(list);
-		With copy = fixture.copy();
+		final With copy = fixture.copy();
 
 		assertNotSame(fixture.getActions(), copy.getActions());
 		assertEquals(fixture.toString(), copy.toString());
@@ -85,8 +83,8 @@ public final class WithTest {
 
 	@Test
 	public void encode() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(encoded.length);
-		Context context = new Context();
+		final SWFEncoder encoder = new SWFEncoder(encoded.length);
+		final Context context = new Context();
 
 		fixture = new With(list);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
@@ -98,8 +96,8 @@ public final class WithTest {
 
 	@Test
 	public void decode() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(encoded);
-		Context context = new Context();
+		final SWFDecoder decoder = new SWFDecoder(encoded);
+		final Context context = new Context();
 		DecoderRegistry registry = new DecoderRegistry();
 		registry.setActionDecoder(new ActionDecoder());
 		context.setRegistry(registry);

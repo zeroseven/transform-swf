@@ -7,6 +7,5 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses( { FLVDecoderTest.class, FLVEncoderTest.class,
 		CoderTest.class, DecoderTest.class, EncoderTest.class,
 		SWFDecoderTest.class, SWFEncoderTest.class, })
-@SuppressWarnings("PMD.AtLeastOneConstructor")
 public final class AllCoderTests {
 }

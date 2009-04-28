@@ -36,7 +36,6 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal" })
 public final class PropertyTest {
 
 	private static final String VALUE_MISMATCH = "Values do not match for %s";

@@ -41,8 +41,8 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.shape.ShapeData;
 
-@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
-		"PMD.JUnitAssertionsShouldIncludeMessage" })
+
+
 public final class ShapeDataTest {
 
 	private transient ShapeData fixture;
@@ -58,7 +58,7 @@ public final class ShapeDataTest {
 	public void checkCopy() {
 		// fixture = new ShapeData(identifier, layer, transform,
 		// colorTransform);
-		ShapeData copy = fixture.copy();
+		final ShapeData copy = fixture.copy();
 
 		assertNotSame(fixture, copy);
 	}
@@ -66,8 +66,8 @@ public final class ShapeDataTest {
 	@Test
 	@Ignore
 	public void encodeCoordTransform() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(encoded.length);
-		Context context = new Context();
+		final SWFEncoder encoder = new SWFEncoder(encoded.length);
+		final Context context = new Context();
 
 		// fixture = new ShapeData(identifier, layer, transform);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
@@ -79,7 +79,7 @@ public final class ShapeDataTest {
 	@Test
 	@Ignore
 	public void decode() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(encoded);
+		final SWFDecoder decoder = new SWFDecoder(encoded);
 
 		// fixture = new ShapeData(decoder, context);
 
@@ -89,7 +89,7 @@ public final class ShapeDataTest {
 	@Test
 	@Ignore
 	public void decodeExtended() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(extended);
+		final SWFDecoder decoder = new SWFDecoder(extended);
 
 		// fixture = new ShapeData(decoder, context);
 

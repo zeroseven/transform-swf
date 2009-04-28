@@ -220,7 +220,7 @@ public final class ButtonEventHandler implements SWFEncodeable {
 	private int event;
 	private List<Action> actions;
 
-	private transient int length = 0; // TODO DefineText2 uses this field
+	private transient int length = 0;
 
 	// TODO(doc)
 	public ButtonEventHandler(final int size, final SWFDecoder coder, final Context context)

@@ -8,6 +8,5 @@ import org.junit.runners.Suite;
 		ColorMatrixFilterTest.class, ConvolutionFilterTest.class,
 		DropShadowFilterTest.class, GlowFilterTest.class,
 		GradientBevelFilterTest.class, GradientGlowFilterTest.class })
-@SuppressWarnings("PMD.AtLeastOneConstructor")
 public final class AllFilterTests {
 }

@@ -15,6 +15,5 @@ import org.junit.runners.Suite;
 		ImportTest.class, Import2Test.class, MovieMetaDataTest.class,
 		PathsArePostscriptTest.class, ProtectTest.class,
 		ScenesAndLabelsTest.class, SerialNumberTest.class })
-@SuppressWarnings("PMD.AtLeastOneConstructor")
 public final class AllMovieTests {
 }

@@ -41,8 +41,8 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 
-@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
-		"PMD.JUnitAssertionsShouldIncludeMessage" })
+
+
 public final class MovieDataTest {
 
 	private transient final byte[] data = new byte[] { 1, 2, 0 };
@@ -66,8 +66,8 @@ public final class MovieDataTest {
 	@Test
 	public void encode() throws CoderException {
 
-		SWFEncoder encoder = new SWFEncoder(encoded.length);
-		Context context = new Context();
+		final SWFEncoder encoder = new SWFEncoder(encoded.length);
+		final Context context = new Context();
 
 		fixture = new MovieData(data);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
@@ -80,7 +80,7 @@ public final class MovieDataTest {
 	@Test
 	public void decode() throws CoderException {
 
-		SWFDecoder decoder = new SWFDecoder(data);
+		final SWFDecoder decoder = new SWFDecoder(data);
 
 		fixture = new MovieData(decoder.readBytes(new byte[data.length]));
 

@@ -64,7 +64,6 @@ import com.flagstone.transform.shape.ShapeData;
  * @see FontInfo
  * @see DefineFont
  */
-@SuppressWarnings("PMD.TooManyMethods")
 public final class DefineFont2 implements DefineTag {
 	// TODO(code) Replace with StringBuilder for optional attributes ?
 	private static final String FORMAT = "DefineFont2: { identifier=%d; encoding=%s; "

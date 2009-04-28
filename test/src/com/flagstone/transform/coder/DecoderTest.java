@@ -38,8 +38,6 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 
-@SuppressWarnings( { "PMD.TooManyMethods", "PMD.LocalVariableCouldBeFinal",
-		"PMD.JUnitAssertionsShouldIncludeMessage" })
 public final class DecoderTest {
 	private transient Decoder fixture;
 
@@ -135,8 +133,8 @@ public final class DecoderTest {
 
 	@Test
 	public void readBytes() {
-		byte[] data = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 };
-		byte[] buffer = new byte[data.length];
+		final byte[] data = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 };
+		final byte[] buffer = new byte[data.length];
 
 		fixture.setData(data);
 		fixture.readBytes(buffer);

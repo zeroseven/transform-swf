@@ -7,6 +7,5 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses( { ButtonColorTransformTest.class,
 		ButtonEventHandlerTest.class, ButtonShapeTest.class,
 		ButtonSoundTest.class, DefineButtonTest.class, DefineButton2Test.class })
-@SuppressWarnings("PMD.AtLeastOneConstructor")
 public final class AllButtonTests {
 }

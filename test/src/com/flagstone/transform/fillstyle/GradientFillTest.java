@@ -48,12 +48,12 @@ import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.Color;
 import com.flagstone.transform.datatype.CoordTransform;
 
-@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
-		"PMD.JUnitAssertionsShouldIncludeMessage" })
+
+
 public final class GradientFillTest {
 
-	private transient boolean radial = false;
-	private transient CoordTransform transform = CoordTransform.translate(1, 2);
+	private static transient boolean radial = false;
+	private static transient CoordTransform transform = CoordTransform.translate(1, 2);
 
 	private static List<Gradient> list;
 
@@ -78,7 +78,7 @@ public final class GradientFillTest {
 	@Test
 	public void checkCopy() {
 		fixture = new GradientFill(radial, transform, list);
-		GradientFill copy = fixture.copy();
+		final GradientFill copy = fixture.copy();
 
 		assertSame(fixture.getTransform(), copy.getTransform());
 		assertNotSame(fixture.getGradients(), copy.getGradients());
@@ -87,8 +87,8 @@ public final class GradientFillTest {
 
 	@Test
 	public void encode() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(encoded.length);
-		Context context = new Context();
+		final SWFEncoder encoder = new SWFEncoder(encoded.length);
+		final Context context = new Context();
 
 		fixture = new GradientFill(radial, transform, list);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
@@ -100,8 +100,8 @@ public final class GradientFillTest {
 
 	@Test
 	public void decode() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(encoded);
-		Context context = new Context();
+		final SWFDecoder decoder = new SWFDecoder(encoded);
+		final Context context = new Context();
 
 		fixture = new GradientFill(decoder, context);
 

@@ -44,8 +44,8 @@ import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
-		"PMD.JUnitAssertionsShouldIncludeMessage" })
+
+
 public final class ScenesAndLabelsTest {
 
 	private static Map<Integer, String> scenes = new LinkedHashMap<Integer, String>();
@@ -124,7 +124,7 @@ public final class ScenesAndLabelsTest {
 	@Test
 	public void checkCopy() {
 		fixture = new ScenesAndLabels(scenes, labels);
-		ScenesAndLabels copy = fixture.copy();
+		final ScenesAndLabels copy = fixture.copy();
 
 		assertNotSame(fixture.getScenes(), copy.getScenes());
 		assertNotSame(fixture.getLabels(), copy.getLabels());
@@ -133,8 +133,8 @@ public final class ScenesAndLabelsTest {
 
 	@Test
 	public void encode() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(encoded.length);
-		Context context = new Context();
+		final SWFEncoder encoder = new SWFEncoder(encoded.length);
+		final Context context = new Context();
 
 		fixture = new ScenesAndLabels(scenes, labels);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
@@ -146,7 +146,7 @@ public final class ScenesAndLabelsTest {
 
 	@Test
 	public void decode() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(encoded);
+		final SWFDecoder decoder = new SWFDecoder(encoded);
 
 		fixture = new ScenesAndLabels(decoder);
 
@@ -157,7 +157,7 @@ public final class ScenesAndLabelsTest {
 
 	@Test
 	public void decodeExtended() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(extended);
+		final SWFDecoder decoder = new SWFDecoder(extended);
 
 		fixture = new ScenesAndLabels(decoder);
 

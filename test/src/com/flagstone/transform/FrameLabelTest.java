@@ -40,12 +40,12 @@ import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
-		"PMD.JUnitAssertionsShouldIncludeMessage" })
+
+
 public final class FrameLabelTest {
 
-	private transient final String label = "Frame";
-	private transient final boolean anchor = true;
+	private static transient final String label = "Frame";
+	private static transient final boolean anchor = true;
 
 	private transient FrameLabel fixture;
 
@@ -67,7 +67,7 @@ public final class FrameLabelTest {
 	@Test
 	public void checkCopy() {
 		fixture = new FrameLabel(label, anchor);
-		FrameLabel copy = fixture.copy();
+		final FrameLabel copy = fixture.copy();
 
 		assertEquals(fixture.getLabel(), copy.getLabel());
 		assertEquals(fixture.isAnchor(), copy.isAnchor());
@@ -76,8 +76,8 @@ public final class FrameLabelTest {
 
 	@Test
 	public void encode() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(encoded.length);
-		Context context = new Context();
+		final SWFEncoder encoder = new SWFEncoder(encoded.length);
+		final Context context = new Context();
 
 		fixture = new FrameLabel(label, anchor);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
@@ -89,7 +89,7 @@ public final class FrameLabelTest {
 
 	@Test
 	public void decode() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(encoded);
+		final SWFDecoder decoder = new SWFDecoder(encoded);
 
 		fixture = new FrameLabel(decoder);
 
@@ -100,7 +100,7 @@ public final class FrameLabelTest {
 
 	@Test
 	public void decodeExtended() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(extended);
+		final SWFDecoder decoder = new SWFDecoder(extended);
 
 		fixture = new FrameLabel(decoder);
 

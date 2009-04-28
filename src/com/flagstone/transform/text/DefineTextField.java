@@ -219,7 +219,6 @@ import com.flagstone.transform.datatype.Color;
  * </table>
  * 
  */
-@SuppressWarnings("PMD.TooManyMethods")
 public final class DefineTextField implements DefineTag {
 	// TODO(doc)
 	public enum Align {

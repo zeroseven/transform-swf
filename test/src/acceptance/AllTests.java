@@ -7,6 +7,5 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses( { AllMovieTests.class, AllVideoTests.class,
 		AllShapeTests.class, AllImageTests.class, AllSoundTests.class,
 		AllFontTests.class })
-@SuppressWarnings("PMD.AtLeastOneConstructor")
 public final class AllTests {
 }

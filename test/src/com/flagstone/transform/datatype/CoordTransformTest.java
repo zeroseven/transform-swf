@@ -43,15 +43,9 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 
-@SuppressWarnings( { "PMD.TooManyMethods",
-		"PMD.JUnitAssertionsShouldIncludeMessage",
-		"PMD.LocalVariableCouldBeFinal", "PMD.JUnitTestsShouldIncludeAssert" })
 public final class CoordTransformTest {
 	private transient CoordTransform fixture;
 
-	private transient SWFEncoder encoder;
-	private transient SWFDecoder decoder;
-	private transient Context context;
 	private transient byte[] data;
 
 	@Test
@@ -151,8 +145,9 @@ public final class CoordTransformTest {
 		fixture = CoordTransform.translate(xCoord, yCoord);
 
 		data = new byte[] { 6, 80 };
-		SWFEncoder encoder = new SWFEncoder(data.length);
-
+		final SWFEncoder encoder = new SWFEncoder(data.length);
+		final Context context = new Context();
+		
 		assertEquals(2, fixture.prepareToEncode(encoder, context));
 		fixture.encode(encoder, context);
 
@@ -168,7 +163,8 @@ public final class CoordTransformTest {
 		fixture = CoordTransform.scale(scaleX, scaleY);
 
 		data = new byte[] { -52, -128, 0, 32, 0, 0, 64 };
-		SWFEncoder encoder = new SWFEncoder(data.length);
+		final SWFEncoder encoder = new SWFEncoder(data.length);
+		final Context context = new Context();
 
 		assertEquals(7, fixture.prepareToEncode(encoder, context));
 		fixture.encode(encoder, context);
@@ -185,7 +181,8 @@ public final class CoordTransformTest {
 		fixture = CoordTransform.shear(shearX, shearY);
 
 		data = new byte[] { 102, 64, 0, 16, 0, 0, 64 };
-		SWFEncoder encoder = new SWFEncoder(data.length);
+		final SWFEncoder encoder = new SWFEncoder(data.length);
+		final Context context = new Context();
 
 		assertEquals(7, fixture.prepareToEncode(encoder, context));
 		fixture.encode(encoder, context);
@@ -202,7 +199,8 @@ public final class CoordTransformTest {
 		fixture = new CoordTransform(matrix);
 
 		data = new byte[] { -52, -128, 0, 32, 0, 13, 12, 0, 1, 0, 0, 2, 0 };
-		SWFEncoder encoder = new SWFEncoder(data.length);
+		final SWFEncoder encoder = new SWFEncoder(data.length);
+		final Context context = new Context();
 
 		assertEquals(13, fixture.prepareToEncode(encoder, context));
 		fixture.encode(encoder, context);
@@ -217,7 +215,7 @@ public final class CoordTransformTest {
 		int yCoord = 2;
 
 		data = new byte[] { 6, 80 };
-		SWFDecoder decoder = new SWFDecoder(data);
+		final SWFDecoder decoder = new SWFDecoder(data);
 
 		fixture = new CoordTransform(decoder);
 
@@ -232,7 +230,7 @@ public final class CoordTransformTest {
 		float scaleY = 2.0f;
 
 		data = new byte[] { -52, -128, 0, 32, 0, 0, 64 };
-		SWFDecoder decoder = new SWFDecoder(data);
+		final SWFDecoder decoder = new SWFDecoder(data);
 
 		fixture = new CoordTransform(decoder);
 
@@ -247,7 +245,7 @@ public final class CoordTransformTest {
 		float shearY = 2.0f;
 
 		data = new byte[] { 102, 64, 0, 16, 0, 0, 64 };
-		SWFDecoder decoder = new SWFDecoder(data);
+		final SWFDecoder decoder = new SWFDecoder(data);
 
 		fixture = new CoordTransform(decoder);
 
@@ -262,7 +260,7 @@ public final class CoordTransformTest {
 				{ 3.0f, 2.0f, 0.0f }, { 0.0f, 0.0f, 1.0f } };
 
 		data = new byte[] { -52, -128, 0, 32, 0, 13, 12, 0, 1, 0, 0, 2, 0 };
-		SWFDecoder decoder = new SWFDecoder(data);
+		final SWFDecoder decoder = new SWFDecoder(data);
 
 		fixture = new CoordTransform(decoder);
 
@@ -270,7 +268,6 @@ public final class CoordTransformTest {
 		compare(matrix, fixture.getMatrix());
 	}
 
-	@SuppressWarnings("PMD.UseAssertEqualsInsteadOfAssertTrue")
 	private void compare(final float[][] left, final float[][] right) {
 		for (int i = 0; i < left.length; i++) {
 			assertTrue(Arrays.equals(left[i], right[i]));

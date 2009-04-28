@@ -38,12 +38,11 @@ import static org.junit.Assert.assertArrayEquals;
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.shape.PathsArePostscript;
 
-@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
-		"PMD.JUnitAssertionsShouldIncludeMessage" })
+
+
 public final class PathsArePostscriptTest {
 
 	private transient PathsArePostscript fixture;
@@ -56,7 +55,7 @@ public final class PathsArePostscriptTest {
 	@Test
 	public void checkCopy() {
 		fixture = PathsArePostscript.getInstance();
-		PathsArePostscript copy = fixture.copy();
+		final PathsArePostscript copy = fixture.copy();
 
 		assertSame(fixture, fixture.copy());
 		assertEquals(fixture.toString(), copy.toString());
@@ -64,8 +63,8 @@ public final class PathsArePostscriptTest {
 
 	@Test
 	public void encode() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(encoded.length);
-		Context context = new Context();
+		final SWFEncoder encoder = new SWFEncoder(encoded.length);
+		final Context context = new Context();
 
 		fixture = PathsArePostscript.getInstance();
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));

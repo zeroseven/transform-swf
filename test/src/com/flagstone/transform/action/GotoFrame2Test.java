@@ -42,13 +42,11 @@ import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
-		"PMD.JUnitAssertionsShouldIncludeMessage" })
 public final class GotoFrame2Test {
 
-	private transient final int type = ActionTypes.GOTO_FRAME_2;
-	private transient boolean play = true;
-	private transient final int offset = 1;
+	private static transient final int type = ActionTypes.GOTO_FRAME_2;
+	private static transient final boolean play = true;
+	private static transient final int offset = 1;
 
 	private transient GotoFrame2 fixture;
 
@@ -74,7 +72,7 @@ public final class GotoFrame2Test {
 	@Test
 	public void checkCopy() {
 		fixture = new GotoFrame2(offset, play);
-		GotoFrame2 copy = fixture.copy();
+		final GotoFrame2 copy = fixture.copy();
 
 		assertNotSame(fixture, copy);
 		assertEquals(fixture.toString(), copy.toString());
@@ -82,8 +80,8 @@ public final class GotoFrame2Test {
 
 	@Test
 	public void encode() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(encoded.length);
-		Context context = new Context();
+		final SWFEncoder encoder = new SWFEncoder(encoded.length);
+		final Context context = new Context();
 
 		fixture = new GotoFrame2(offset, play);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
@@ -95,8 +93,8 @@ public final class GotoFrame2Test {
 
 	@Test
 	public void encodeWithNoOffset() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(noOffset.length);
-		Context context = new Context();
+		final SWFEncoder encoder = new SWFEncoder(noOffset.length);
+		final Context context = new Context();
 
 		fixture = new GotoFrame2(0, play);
 		assertEquals(noOffset.length, fixture.prepareToEncode(encoder, context));
@@ -108,8 +106,8 @@ public final class GotoFrame2Test {
 
 	@Test
 	public void encodeWithPlaySetToFalse() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(stop.length);
-		Context context = new Context();
+		final SWFEncoder encoder = new SWFEncoder(stop.length);
+		final Context context = new Context();
 
 		fixture = new GotoFrame2(0, false);
 		assertEquals(stop.length, fixture.prepareToEncode(encoder, context));
@@ -121,7 +119,7 @@ public final class GotoFrame2Test {
 
 	@Test
 	public void decode() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(encoded);
+		final SWFDecoder decoder = new SWFDecoder(encoded);
 
 		fixture = new GotoFrame2(decoder);
 
@@ -132,7 +130,7 @@ public final class GotoFrame2Test {
 
 	@Test
 	public void decodeWithNoOffset() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(noOffset);
+		final SWFDecoder decoder = new SWFDecoder(noOffset);
 
 		fixture = new GotoFrame2(decoder);
 
@@ -143,7 +141,7 @@ public final class GotoFrame2Test {
 
 	@Test
 	public void decodeWithPlaySetToFalse() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(stop);
+		final SWFDecoder decoder = new SWFDecoder(stop);
 
 		fixture = new GotoFrame2(decoder);
 

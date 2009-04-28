@@ -390,7 +390,6 @@ public final class MorphLineStyle2 implements SWFEncodeable,
 		}
 	}
 
-	@SuppressWarnings( { "PMD.CyclomaticComplexity", "PMD.NPathComplexity" })
 	private int pack() {
 
 		int value = 0;
@@ -427,7 +426,6 @@ public final class MorphLineStyle2 implements SWFEncodeable,
 		return value;
 	}
 
-	@SuppressWarnings("PMD.CyclomaticComplexity")
 	private void unpack(final int value) {
 
 		if ((value & 0x00004000) > 0) {

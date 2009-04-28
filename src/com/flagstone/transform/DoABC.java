@@ -151,7 +151,6 @@ public final class DoABC implements MovieTag {
 	/**
 	 * Returns the array of Actionscript byte-codes.
 	 */
-	@SuppressWarnings("PMD.MethodReturnsInternalArray")
 	public byte[] getData() {
 		return data;
 	}
@@ -162,7 +161,6 @@ public final class DoABC implements MovieTag {
 	 * @param bytes
 	 *            an array of byte-codes. Must not be null.
 	 */
-	@SuppressWarnings("PMD.ArrayIsStoredDirectly")
 	public void setData(final byte[] bytes) {
 		// TODO(optimise) replace with single test and new string DATA_NOT_SET
 		if (bytes == null) {

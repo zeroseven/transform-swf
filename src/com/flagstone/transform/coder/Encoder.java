@@ -46,7 +46,6 @@ public class Encoder extends Coder {
 	 * 
 	 * @return the number of bits required to encode the value.
 	 */
-	@SuppressWarnings("PMD.AvoidFinalLocalVariable")
 	public static int unsignedSize(final int value) {
 
 		final int val = (value < 0) ? -value - 1 : value;
@@ -69,7 +68,6 @@ public class Encoder extends Coder {
 	 * 
 	 * @return the number of bits required to encode the value.
 	 */
-	@SuppressWarnings("PMD.AvoidFinalLocalVariable")
 	public static int size(final int value) {
 		int counter = 32;
 		int mask = 0x80000000;
@@ -91,7 +89,6 @@ public class Encoder extends Coder {
 	 * 
 	 * @return the minimum number of bits required to encode each of the values.
 	 */
-	@SuppressWarnings("PMD.DataflowAnomalyAnalysis")
 	public static int maxSize(final int... values) {
 
 		int max = 0;
@@ -124,8 +121,6 @@ public class Encoder extends Coder {
 	 * @param numberOfBits
 	 *            the (least significant) number of bits that will be written.
 	 */
-	@SuppressWarnings( { "PMD.AvoidFinalLocalVariable",
-			"PMD.DataflowAnomalyAnalysis" })
 	public void writeBits(final int value, final int numberOfBits) {
 
 		final int val = ((value << (32 - numberOfBits)) >>> offset)

@@ -41,11 +41,11 @@ import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
-		"PMD.JUnitAssertionsShouldIncludeMessage" })
+
+
 public final class Remove2Test {
 
-	private transient final int layer = 1;
+	private static transient final int layer = 1;
 
 	private transient Remove2 fixture;
 
@@ -68,7 +68,7 @@ public final class Remove2Test {
 	@Test
 	public void checkCopy() {
 		fixture = new Remove2(layer);
-		Remove2 copy = fixture.copy();
+		final Remove2 copy = fixture.copy();
 
 		assertNotSame(fixture, copy);
 		assertEquals(fixture.getLayer(), copy.getLayer());
@@ -77,8 +77,8 @@ public final class Remove2Test {
 
 	@Test
 	public void encode() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(encoded.length);
-		Context context = new Context();
+		final SWFEncoder encoder = new SWFEncoder(encoded.length);
+		final Context context = new Context();
 
 		fixture = new Remove2(layer);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
@@ -90,7 +90,7 @@ public final class Remove2Test {
 
 	@Test
 	public void decode() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(encoded);
+		final SWFDecoder decoder = new SWFDecoder(encoded);
 
 		fixture = new Remove2(decoder);
 
@@ -100,7 +100,7 @@ public final class Remove2Test {
 
 	@Test
 	public void decodeExtended() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(extended);
+		final SWFDecoder decoder = new SWFDecoder(extended);
 
 		fixture = new Remove2(decoder);
 

@@ -2,7 +2,7 @@
  * BoundsTest.java
  * Transform
  *
- * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
+ * Copyright (c) 2009 Flagstone Software Ltd. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
@@ -40,22 +40,16 @@ import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
-		"PMD.JUnitAssertionsShouldIncludeMessage" })
 public final class BoundsTest {
 
-	private transient final int xmin = 1;
-	private transient final int ymin = 2;
-	private transient final int xmax = 3;
-	private transient final int ymax = 4;
-
-	private transient Bounds fixture;
-
-	private transient SWFEncoder encoder;
-	private transient SWFDecoder decoder;
-	private transient Context context;
+	private static int xmin = 1;
+	private static int ymin = 2;
+	private static int xmax = 3;
+	private static int ymax = 4;
 
 	private transient final byte[] encoded = new byte[] { 32, -103, 32 };
+
+	private transient Bounds fixture;
 
 	@Test
 	public void checkWidth() {
@@ -68,7 +62,6 @@ public final class BoundsTest {
 	}
 
 	@Test
-	@SuppressWarnings("PMD.EqualsNull")
 	public void checkNullIsnotEqual() {
 		assertFalse(new Bounds(1, 2, 3, 4).equals(null));
 	}
@@ -97,7 +90,9 @@ public final class BoundsTest {
 
 	@Test
 	public void encodeWithBoundsSet() throws CoderException {
-		encoder = new SWFEncoder(encoded.length);
+		final SWFEncoder encoder = new SWFEncoder(encoded.length);
+		final Context context = new Context();
+		
 		fixture = new Bounds(xmin, ymin, xmax, ymax);
 
 		assertEquals(3, fixture.prepareToEncode(encoder, context));
@@ -109,7 +104,7 @@ public final class BoundsTest {
 
 	@Test
 	public void decodeWithBoundsSet() throws CoderException {
-		decoder = new SWFDecoder(encoded);
+		final SWFDecoder decoder = new SWFDecoder(encoded);
 
 		fixture = new Bounds(decoder);
 

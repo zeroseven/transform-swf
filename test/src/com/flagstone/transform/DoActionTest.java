@@ -50,8 +50,6 @@ import com.flagstone.transform.coder.DecoderRegistry;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
-		"PMD.JUnitAssertionsShouldIncludeMessage" })
 public final class DoActionTest {
 
 	private transient List<Action> actions;
@@ -93,8 +91,8 @@ public final class DoActionTest {
 
 	@Test
 	public void encode() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(encoded.length);
-		Context context = new Context();
+		final SWFEncoder encoder = new SWFEncoder(encoded.length);
+		final Context context = new Context();
 
 		fixture = new DoAction(actions);
 		assertEquals(4, fixture.prepareToEncode(encoder, context));
@@ -106,8 +104,8 @@ public final class DoActionTest {
 
 	@Test
 	public void encodeExtended() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(106);
-		Context context = new Context();
+		final SWFEncoder encoder = new SWFEncoder(106);
+		final Context context = new Context();
 
 		fixture = new DoAction();
 
@@ -125,9 +123,9 @@ public final class DoActionTest {
 
 	@Test
 	public void checkDecode() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(encoded);
-		Context context = new Context();
-		DecoderRegistry registry = new DecoderRegistry();
+		final SWFDecoder decoder = new SWFDecoder(encoded);
+		final Context context = new Context();
+		final DecoderRegistry registry = new DecoderRegistry();
 		registry.setActionDecoder(new ActionDecoder());
 		context.setRegistry(registry);
 
@@ -139,9 +137,9 @@ public final class DoActionTest {
 
 	@Test
 	public void checkDecodeExtended() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(extended);
-		Context context = new Context();
-		DecoderRegistry registry = new DecoderRegistry();
+		final SWFDecoder decoder = new SWFDecoder(extended);
+		final Context context = new Context();
+		final DecoderRegistry registry = new DecoderRegistry();
 		registry.setActionDecoder(new ActionDecoder());
 		context.setRegistry(registry);
 
@@ -153,8 +151,10 @@ public final class DoActionTest {
 
 	@Test
 	public void checkDecodeContainsActionData() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(encoded);
-		Context context = new Context();
+		final SWFDecoder decoder = new SWFDecoder(encoded);
+		final Context context = new Context();
+		final DecoderRegistry registry = new DecoderRegistry();
+		context.setRegistry(registry);
 
 		fixture = new DoAction(decoder, context);
 

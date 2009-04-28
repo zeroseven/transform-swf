@@ -44,8 +44,8 @@ import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
-		"PMD.JUnitAssertionsShouldIncludeMessage" })
+
+
 public final class ImportTest {
 
 	private static String url = "ABC";
@@ -105,7 +105,7 @@ public final class ImportTest {
 	@Test
 	public void checkCopy() {
 		fixture = new Import(url, table);
-		Import copy = fixture.copy();
+		final Import copy = fixture.copy();
 
 		assertEquals(fixture.getUrl(), copy.getUrl());
 		assertNotSame(fixture.getObjects(), copy.getObjects());
@@ -114,8 +114,8 @@ public final class ImportTest {
 
 	@Test
 	public void encode() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(encoded.length);
-		Context context = new Context();
+		final SWFEncoder encoder = new SWFEncoder(encoded.length);
+		final Context context = new Context();
 
 		fixture = new Import(url, table);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
@@ -127,7 +127,7 @@ public final class ImportTest {
 
 	@Test
 	public void decode() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(encoded);
+		final SWFDecoder decoder = new SWFDecoder(encoded);
 
 		fixture = new Import(decoder);
 
@@ -137,7 +137,7 @@ public final class ImportTest {
 
 	@Test
 	public void decodeExtended() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(extended);
+		final SWFDecoder decoder = new SWFDecoder(extended);
 
 		fixture = new Import(decoder);
 

@@ -8,6 +8,5 @@ import org.junit.runners.Suite;
 		DefineJPEGImageTest.class, DefineJPEGImage2Test.class,
 		DefineJPEGImage3Test.class, ImageBlockTest.class,
 		JPEGEncodingTableTest.class })
-@SuppressWarnings("PMD.AtLeastOneConstructor")
 public final class AllImageTests {
 }

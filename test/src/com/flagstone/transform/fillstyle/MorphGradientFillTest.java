@@ -46,14 +46,14 @@ import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.Color;
 import com.flagstone.transform.datatype.CoordTransform;
 
-@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
-		"PMD.JUnitAssertionsShouldIncludeMessage" })
+
+
 public final class MorphGradientFillTest {
 
-	private transient boolean radial = false;
-	private transient CoordTransform start = CoordTransform.translate(1, 2);
-	private transient CoordTransform end = CoordTransform.translate(1, 2);
-	private static List<MorphGradient> list = new ArrayList<MorphGradient>();
+	private static transient boolean radial = false;
+	private static transient CoordTransform start = CoordTransform.translate(1, 2);
+	private static transient CoordTransform end = CoordTransform.translate(1, 2);
+	private static transient List<MorphGradient> list = new ArrayList<MorphGradient>();
 
 	static {
 		list.add(new MorphGradient(new Gradient(1, new Color(2, 3, 4, 5)),
@@ -78,7 +78,7 @@ public final class MorphGradientFillTest {
 	@Test
 	public void checkCopy() {
 		fixture = new MorphGradientFill(radial, start, end, list);
-		MorphGradientFill copy = fixture.copy();
+		final MorphGradientFill copy = fixture.copy();
 
 		assertSame(fixture.getStartTransform(), copy.getStartTransform());
 		assertSame(fixture.getEndTransform(), copy.getEndTransform());
@@ -88,8 +88,8 @@ public final class MorphGradientFillTest {
 
 	@Test
 	public void encode() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(encoded.length);
-		Context context = new Context();
+		final SWFEncoder encoder = new SWFEncoder(encoded.length);
+		final Context context = new Context();
 		context.getVariables().put(Context.TRANSPARENT, 1);
 
 		fixture = new MorphGradientFill(radial, start, end, list);
@@ -102,8 +102,8 @@ public final class MorphGradientFillTest {
 
 	@Test
 	public void decode() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(encoded);
-		Context context = new Context();
+		final SWFDecoder decoder = new SWFDecoder(encoded);
+		final Context context = new Context();
 		context.getVariables().put(Context.TRANSPARENT, 1);
 
 		fixture = new MorphGradientFill(decoder, context);

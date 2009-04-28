@@ -46,12 +46,12 @@ import com.flagstone.transform.datatype.ColorTransform;
 import com.flagstone.transform.datatype.CoordTransform;
 import com.flagstone.transform.datatype.Placement;
 
-@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
-		"PMD.JUnitAssertionsShouldIncludeMessage" })
+
+
 public final class Place2Test {
 
-	private transient final int identifier = 1;
-	private transient final int layer = 2;
+	private static transient final int identifier = 1;
+	private static transient final int layer = 2;
 	private transient final CoordTransform transform = CoordTransform
 			.translate(1, 2);
 	private transient final ColorTransform colorTransform = new ColorTransform(
@@ -98,7 +98,7 @@ public final class Place2Test {
 	@Ignore
 	public void checkCopy() {
 		// fixture = new Place2(identifier, layer, transform, colorTransform);
-		Place2 copy = fixture.copy();
+		final Place2 copy = fixture.copy();
 
 		assertNotSame(fixture, copy);
 		assertEquals(fixture.getIdentifier(), copy.getIdentifier());
@@ -111,8 +111,8 @@ public final class Place2Test {
 	@Test
 	@Ignore
 	public void encodeCoordTransform() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(coord.length);
-		Context context = new Context();
+		final SWFEncoder encoder = new SWFEncoder(coord.length);
+		final Context context = new Context();
 
 		fixture = new Place2().setMode(Placement.NEW).setIdentifier(identifier)
 				.setLayer(layer).setTransform(transform);
@@ -126,8 +126,8 @@ public final class Place2Test {
 	@Test
 	@Ignore
 	public void encodeCoordAndColorTransforms() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(coordAndColor.length);
-		Context context = new Context();
+		final SWFEncoder encoder = new SWFEncoder(coordAndColor.length);
+		final Context context = new Context();
 
 		// fixture = new Place2(identifier, layer, transform, colorTransform);
 		assertEquals(coordAndColor.length, fixture.prepareToEncode(encoder,
@@ -141,8 +141,8 @@ public final class Place2Test {
 	@Test
 	@Ignore
 	public void decode() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(coord);
-		Context context = new Context();
+		final SWFDecoder decoder = new SWFDecoder(coord);
+		final Context context = new Context();
 
 		fixture = new Place2(decoder, context);
 
@@ -158,8 +158,8 @@ public final class Place2Test {
 	@Test
 	@Ignore
 	public void decodeExtended() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(extended);
-		Context context = new Context();
+		final SWFDecoder decoder = new SWFDecoder(extended);
+		final Context context = new Context();
 
 		fixture = new Place2(decoder, context);
 
@@ -175,8 +175,8 @@ public final class Place2Test {
 	@Test
 	@Ignore
 	public void decodeCoordAndColorTransforms() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(coordAndColor);
-		Context context = new Context();
+		final SWFDecoder decoder = new SWFDecoder(coordAndColor);
+		final Context context = new Context();
 
 		fixture = new Place2(decoder, context);
 

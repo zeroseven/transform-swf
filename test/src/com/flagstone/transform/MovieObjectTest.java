@@ -41,11 +41,11 @@ import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
-		"PMD.JUnitAssertionsShouldIncludeMessage" })
+
+
 public final class MovieObjectTest {
 
-	private transient final int type = 1;
+	private static transient final int type = 1;
 	private transient final byte[] data = new byte[] { 1, 2, 3, 4 };
 
 	private transient MovieObject fixture;
@@ -64,7 +64,7 @@ public final class MovieObjectTest {
 	@Test
 	public void checkCopy() {
 		fixture = new MovieObject(type, data);
-		MovieObject copy = fixture.copy();
+		final MovieObject copy = fixture.copy();
 
 		assertNotSame(fixture, copy);
 		assertNotSame(fixture.getData(), copy.getData());
@@ -73,8 +73,8 @@ public final class MovieObjectTest {
 
 	@Test
 	public void encode() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(encoded.length);
-		Context context = new Context();
+		final SWFEncoder encoder = new SWFEncoder(encoded.length);
+		final Context context = new Context();
 
 		fixture = new MovieObject(type, data);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
@@ -87,8 +87,8 @@ public final class MovieObjectTest {
 	@Test
 	public void encodeExtended() throws CoderException {
 
-		SWFEncoder encoder = new SWFEncoder(106);
-		Context context = new Context();
+		final SWFEncoder encoder = new SWFEncoder(106);
+		final Context context = new Context();
 
 		fixture = new MovieObject(type, new byte[100]);
 		assertEquals(106, fixture.prepareToEncode(encoder, context));
@@ -99,7 +99,7 @@ public final class MovieObjectTest {
 
 	@Test
 	public void decode() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(encoded);
+		final SWFDecoder decoder = new SWFDecoder(encoded);
 
 		fixture = new MovieObject(decoder);
 
@@ -110,7 +110,7 @@ public final class MovieObjectTest {
 
 	@Test
 	public void decodeExtended() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(extended);
+		final SWFDecoder decoder = new SWFDecoder(extended);
 
 		fixture = new MovieObject(decoder);
 

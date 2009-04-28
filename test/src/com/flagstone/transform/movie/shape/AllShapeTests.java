@@ -8,6 +8,5 @@ import org.junit.runners.Suite;
 		ShapeTest.class, ShapeDataTest.class, DefineShapeTest.class,
 		DefineShape2Test.class, DefineShape3Test.class, DefineShape4Test.class,
 		DefineMorphShapeTest.class, DefineMorphShape2Test.class, })
-@SuppressWarnings("PMD.AtLeastOneConstructor")
 public final class AllShapeTests {
 }

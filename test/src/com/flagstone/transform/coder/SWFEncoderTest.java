@@ -36,7 +36,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 
-@SuppressWarnings( { "PMD.JUnitAssertionsShouldIncludeMessage" })
+
 public final class SWFEncoderTest {
 	private transient SWFEncoder fixture;
 

@@ -46,8 +46,7 @@ import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
-		"PMD.JUnitAssertionsShouldIncludeMessage" })
+
 public final class PushTest {
 
 	private transient static List<Object> values;
@@ -67,7 +66,7 @@ public final class PushTest {
 		values.add(new TableIndex(256));
 	}
 
-	private transient final int type = ActionTypes.PUSH;
+	private static transient final int type = ActionTypes.PUSH;
 	private transient Push fixture;
 
 	private transient final byte[] encoded = new byte[] { (byte) type, 0x21,
@@ -79,7 +78,7 @@ public final class PushTest {
 	@Test
 	public void checkCopy() {
 		fixture = new Push(values);
-		Push copy = fixture.copy();
+		final Push copy = fixture.copy();
 
 		assertNotSame(fixture.getValues(), copy.getValues());
 		assertEquals(fixture.toString(), copy.toString());
@@ -87,8 +86,8 @@ public final class PushTest {
 
 	@Test
 	public void encode() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(encoded.length);
-		Context context = new Context();
+		final SWFEncoder encoder = new SWFEncoder(encoded.length);
+		final Context context = new Context();
 		context.getVariables().put(Context.VERSION, 4);
 
 		fixture = new Push(values);
@@ -101,8 +100,8 @@ public final class PushTest {
 
 	@Test
 	public void decode() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(encoded);
-		Context context = new Context();
+		final SWFDecoder decoder = new SWFDecoder(encoded);
+		final Context context = new Context();
 		context.getVariables().put(Context.VERSION, 4);
 
 		fixture = new Push(decoder);

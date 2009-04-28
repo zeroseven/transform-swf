@@ -41,8 +41,8 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.shape.DefineMorphShape2;
 
-@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
-		"PMD.JUnitAssertionsShouldIncludeMessage" })
+
+
 public final class DefineMorphShape2Test {
 
 	private transient DefineMorphShape2 fixture;
@@ -58,7 +58,7 @@ public final class DefineMorphShape2Test {
 	public void checkCopy() {
 		// fixture = new DefineMorphShape2(identifier, layer, transform,
 		// colorTransform);
-		DefineMorphShape2 copy = fixture.copy();
+		final DefineMorphShape2 copy = fixture.copy();
 
 		assertNotSame(fixture, copy);
 	}
@@ -66,8 +66,8 @@ public final class DefineMorphShape2Test {
 	@Test
 	@Ignore
 	public void encodeCoordTransform() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(encoded.length);
-		Context context = new Context();
+		final SWFEncoder encoder = new SWFEncoder(encoded.length);
+		final Context context = new Context();
 
 		// fixture = new DefineMorphShape2(identifier, layer, transform);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
@@ -79,8 +79,8 @@ public final class DefineMorphShape2Test {
 	@Test
 	@Ignore
 	public void decode() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(encoded);
-		Context context = new Context();
+		final SWFDecoder decoder = new SWFDecoder(encoded);
+		final Context context = new Context();
 
 		fixture = new DefineMorphShape2(decoder, context);
 
@@ -90,8 +90,8 @@ public final class DefineMorphShape2Test {
 	@Test
 	@Ignore
 	public void decodeExtended() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(extended);
-		Context context = new Context();
+		final SWFDecoder decoder = new SWFDecoder(extended);
+		final Context context = new Context();
 
 		fixture = new DefineMorphShape2(decoder, context);
 

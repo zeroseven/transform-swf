@@ -39,8 +39,8 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.video.ImageBlock;
 
-@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
-		"PMD.JUnitAssertionsShouldIncludeMessage" })
+
+
 public final class ImageBlockTest {
 
 	private transient ImageBlock fixture;
@@ -56,7 +56,7 @@ public final class ImageBlockTest {
 	public void checkCopy() {
 		// fixture = new ImageBlock(identifier, layer, transform,
 		// colorTransform);
-		ImageBlock copy = fixture.copy();
+		final ImageBlock copy = fixture.copy();
 
 		assertNotSame(fixture, copy);
 	}
@@ -64,7 +64,7 @@ public final class ImageBlockTest {
 	@Test
 	@Ignore
 	public void encode() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(encoded.length);
+		final SWFEncoder encoder = new SWFEncoder(encoded.length);
 
 		// fixture = new ImageBlock(identifier, layer, transform);
 		// assertEquals(encoded.length, fixture.prepareToEncode(encoder,
@@ -77,7 +77,7 @@ public final class ImageBlockTest {
 	@Test
 	@Ignore
 	public void decode() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(encoded);
+		final SWFDecoder decoder = new SWFDecoder(encoded);
 
 		// fixture = new ImageBlock(decoder, context);
 
@@ -87,7 +87,7 @@ public final class ImageBlockTest {
 	@Test
 	@Ignore
 	public void decodeExtended() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(extended);
+		final SWFDecoder decoder = new SWFDecoder(extended);
 
 		// fixture = new ImageBlock(decoder, context);
 

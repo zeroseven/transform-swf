@@ -39,8 +39,8 @@ import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
-		"PMD.JUnitAssertionsShouldIncludeMessage" })
+
+
 public final class DropShadowFilterTest {
 
 	private transient DropShadowFilter fixture;
@@ -56,7 +56,7 @@ public final class DropShadowFilterTest {
 	public void checkCopy() {
 		// fixture = new DropShadowFilter(identifier, layer, transform,
 		// colorTransform);
-		DropShadowFilter copy = fixture.copy();
+		final DropShadowFilter copy = fixture.copy();
 
 		assertNotSame(fixture, copy);
 	}
@@ -64,8 +64,8 @@ public final class DropShadowFilterTest {
 	@Test
 	@Ignore
 	public void encodeCoordTransform() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(encoded.length);
-		Context context = new Context();
+		final SWFEncoder encoder = new SWFEncoder(encoded.length);
+		final Context context = new Context();
 
 		// fixture = new DropShadowFilter(identifier, layer, transform);
 		// assertEquals(encoded.length, fixture.prepareToEncode(encoder,
@@ -78,8 +78,8 @@ public final class DropShadowFilterTest {
 	@Test
 	@Ignore
 	public void decode() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(encoded);
-		Context context = new Context();
+		final SWFDecoder decoder = new SWFDecoder(encoded);
+		final Context context = new Context();
 
 		// fixture = new DropShadowFilter(decoder, context);
 
@@ -89,8 +89,8 @@ public final class DropShadowFilterTest {
 	@Test
 	@Ignore
 	public void decodeExtended() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(extended);
-		Context context = new Context();
+		final SWFDecoder decoder = new SWFDecoder(extended);
+		final Context context = new Context();
 
 		// fixture = new DropShadowFilter(decoder, context);
 

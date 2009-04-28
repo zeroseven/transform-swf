@@ -65,7 +65,6 @@ import com.flagstone.transform.shape.ShapeData;
  * @see FontInfo
  * @see DefineFont
  */
-@SuppressWarnings("PMD.TooManyMethods")
 public final class DefineFont3 implements DefineTag {
 	private static final String FORMAT = "DefineFont3: { identifier=%d; encoding=%d; "
 			+ "small=%d; italic=%d; bold=%d; language=%s; name=%s; shapes=%s; "

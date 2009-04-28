@@ -38,8 +38,8 @@ import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
-		"PMD.JUnitAssertionsShouldIncludeMessage" })
+
+
 public final class JPEGEncodingTableTest {
 
 	private transient JPEGEncodingTable fixture;
@@ -55,7 +55,7 @@ public final class JPEGEncodingTableTest {
 	public void checkCopy() {
 		// fixture = new JPEGEncodingTable(identifier, layer, transform,
 		// colorTransform);
-		JPEGEncodingTable copy = fixture.copy();
+		final JPEGEncodingTable copy = fixture.copy();
 
 		assertNotSame(fixture, copy);
 	}
@@ -63,7 +63,7 @@ public final class JPEGEncodingTableTest {
 	@Test
 	@Ignore
 	public void encode() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(encoded.length);
+		final SWFEncoder encoder = new SWFEncoder(encoded.length);
 
 		// fixture = new JPEGEncodingTable(identifier, layer, transform);
 		// assertEquals(encoded.length, fixture.prepareToEncode(encoder,
@@ -76,7 +76,7 @@ public final class JPEGEncodingTableTest {
 	@Test
 	@Ignore
 	public void decode() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(encoded);
+		final SWFDecoder decoder = new SWFDecoder(encoded);
 
 		// fixture = new JPEGEncodingTable(decoder, context);
 
@@ -86,7 +86,7 @@ public final class JPEGEncodingTableTest {
 	@Test
 	@Ignore
 	public void decodeExtended() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(extended);
+		final SWFDecoder decoder = new SWFDecoder(extended);
 
 		// fixture = new JPEGEncodingTable(decoder, context);
 

@@ -40,11 +40,11 @@ import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-@SuppressWarnings( { "PMD.LocalVariableCouldBeFinal",
-		"PMD.JUnitAssertionsShouldIncludeMessage" })
+
+
 public final class EnableDebugger2Test {
 
-	private transient final String password = "ABC123";
+	private static transient final String password = "ABC123";
 
 	private transient EnableDebugger2 fixture;
 
@@ -68,7 +68,7 @@ public final class EnableDebugger2Test {
 	@Test
 	public void checkCopy() {
 		fixture = new EnableDebugger2(password);
-		EnableDebugger2 copy = fixture.copy();
+		final EnableDebugger2 copy = fixture.copy();
 
 		assertEquals(fixture.getPassword(), copy.getPassword());
 		assertEquals(fixture.toString(), copy.toString());
@@ -76,8 +76,8 @@ public final class EnableDebugger2Test {
 
 	@Test
 	public void encode() throws CoderException {
-		SWFEncoder encoder = new SWFEncoder(encoded.length);
-		Context context = new Context();
+		final SWFEncoder encoder = new SWFEncoder(encoded.length);
+		final Context context = new Context();
 
 		fixture = new EnableDebugger2(password);
 		assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
@@ -89,7 +89,7 @@ public final class EnableDebugger2Test {
 
 	@Test
 	public void decode() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(encoded);
+		final SWFDecoder decoder = new SWFDecoder(encoded);
 
 		fixture = new EnableDebugger2(decoder);
 
@@ -99,7 +99,7 @@ public final class EnableDebugger2Test {
 
 	@Test
 	public void decodeExtended() throws CoderException {
-		SWFDecoder decoder = new SWFDecoder(extended);
+		final SWFDecoder decoder = new SWFDecoder(extended);
 
 		fixture = new EnableDebugger2(decoder);
 
