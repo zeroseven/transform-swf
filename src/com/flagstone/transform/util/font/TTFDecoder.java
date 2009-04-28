@@ -68,7 +68,6 @@ import com.flagstone.transform.util.shape.Canvas;
  * libraries of "pre-parsed" flash fonts is the preferred way of use fonts.
  * </p>
  */
-@SuppressWarnings("unused")
 public final class TTFDecoder implements FontProvider, FontDecoder {
 	private static final int OS_2 = 0x4F532F32;
 	private static final int HEAD = 0x68656164;

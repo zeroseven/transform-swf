@@ -138,11 +138,6 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
 		return new PNGDecoder();
 	}
 
-	public void read(final String path) throws FileNotFoundException, IOException,
-			DataFormatException {
-		read(new File(path));
-	}
-
 	public void read(final File file) throws FileNotFoundException, IOException,
 			DataFormatException {
 		final ImageInfo info = new ImageInfo();
@@ -210,7 +205,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
 			object = new DefineImage2(identifier, width, height, zip(image));
 			break;
 		default:
-			break; // TODO Fix this
+			throw new AssertionError(Strings.INVALID_FORMAT);
 		}
 		return object;
 	}

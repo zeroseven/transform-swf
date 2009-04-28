@@ -160,7 +160,6 @@ import java.util.Vector;
  * 
  * @author Marco Schmidt
  */
-@SuppressWarnings("PMD")
 public final class ImageInfo {
 	/**
 	 * Return value of {@link #getFormat()} for JPEG streams. ImageInfo can

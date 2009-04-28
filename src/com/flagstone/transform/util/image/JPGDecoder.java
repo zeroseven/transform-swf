@@ -57,11 +57,6 @@ public final class JPGDecoder implements ImageProvider, ImageDecoder {
 	private transient int height;
 	private transient byte[] image;
 
-	public void read(final String path) throws FileNotFoundException, IOException,
-			DataFormatException {
-		read(new File(path));
-	}
-
 	public void read(final File file) throws FileNotFoundException, IOException,
 			DataFormatException {
 		final ImageInfo info = new ImageInfo();

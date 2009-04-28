@@ -119,7 +119,7 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
 			object = new DefineImage2(identifier, width, height, zip(image));
 			break;
 		default:
-			break; // TODO Fix this
+			throw new AssertionError(Strings.INVALID_FORMAT);
 		}
 		return object;
 	}

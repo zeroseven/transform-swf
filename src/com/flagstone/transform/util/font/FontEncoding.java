@@ -2,7 +2,7 @@ package com.flagstone.transform.util.font;
 
 enum FontEncoding {
 
-	SWF("swf", new SWFDecoder()), TTF("ttf", new TTFDecoder());
+	SWF("swf", new SWFFontDecoder()), TTF("ttf", new TTFDecoder());
 
 	private final String mimeType;
 	private final FontProvider provider;

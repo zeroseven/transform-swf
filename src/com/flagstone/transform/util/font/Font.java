@@ -57,7 +57,6 @@ import com.flagstone.transform.shape.Shape;
  * libraries of "pre-parsed" flash fonts is the preferred way of use fonts.
  * </p>
  */
-@SuppressWarnings("unused")
 public final class Font {
 	private String name;
 	private boolean bold;

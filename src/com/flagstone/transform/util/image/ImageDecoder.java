@@ -39,8 +39,6 @@ import java.util.zip.DataFormatException;
 import com.flagstone.transform.coder.ImageTag;
 
 public interface ImageDecoder {
-	void read(String path) throws FileNotFoundException, IOException,
-			DataFormatException;
 
 	void read(File file) throws FileNotFoundException, IOException,
 			DataFormatException;

@@ -36,6 +36,7 @@ import java.util.List;
 import com.flagstone.transform.Place2;
 import com.flagstone.transform.Remove2;
 import com.flagstone.transform.ShowFrame;
+import com.flagstone.transform.coder.DefineTag;
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.datatype.ColorTransform;
 import com.flagstone.transform.datatype.CoordTransform;
@@ -282,9 +283,9 @@ public final class Layer {
 	 *            an object definition, DefineShape, DefineImage, etc. that will
 	 *            be added to the display list.
 	 */
-	public void select(final MovieTag definition) {
+	public void select(final DefineTag definition) {
 		add(definition);
-		// TODO select(definition.getIdentifier());
+		select(definition.getIdentifier());
 	}
 
 	/**

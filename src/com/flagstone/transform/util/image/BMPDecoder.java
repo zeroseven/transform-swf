@@ -73,11 +73,6 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
 	private transient int greenMask;
 	private transient int blueMask;
 
-	public void read(final String path) throws FileNotFoundException, IOException,
-			DataFormatException {
-		read(new File(path));
-	}
-
 	public void read(final File file) throws FileNotFoundException, IOException,
 			DataFormatException {
 		final ImageInfo info = new ImageInfo();
@@ -145,7 +140,7 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
 			object = new DefineImage2(identifier, width, height, zip(image));
 			break;
 		default:
-			break; // TODO fix this
+			throw new AssertionError(Strings.INVALID_FORMAT);
 		}
 		return object;
 	}

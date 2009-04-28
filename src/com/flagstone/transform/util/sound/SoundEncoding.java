@@ -2,7 +2,8 @@ package com.flagstone.transform.util.sound;
 
 enum SoundEncoding {
 
-	MP3("audio/mpeg", new MP3Decoder()), WAV("audio/x-wav", new WAVDecoder());
+	MP3("audio/mpeg", new MP3Decoder()), 
+	WAV("audio/x-wav", new WAVDecoder());
 
 	private final String mimeType;
 	private final SoundProvider provider;
