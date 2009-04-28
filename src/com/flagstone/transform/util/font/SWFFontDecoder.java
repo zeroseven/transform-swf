@@ -66,8 +66,7 @@ import com.flagstone.transform.shape.Shape;
  * libraries of "pre-parsed" flash fonts is the preferred way of use fonts.
  * </p>
  */
-@SuppressWarnings("unused")
-public final class SWFDecoder implements FontProvider, FontDecoder {
+public final class SWFFontDecoder implements FontProvider, FontDecoder {
 	
 	private transient String name;
 	private transient boolean bold;
@@ -138,11 +137,11 @@ public final class SWFDecoder implements FontProvider, FontDecoder {
 
 		final List<Font> list = new ArrayList<Font>();
 
-		SWFDecoder decoder;
+		SWFFontDecoder decoder;
 
 		for (MovieTag obj : movie.getObjects()) {
 			if (obj instanceof DefineFont2) {
-				decoder = new SWFDecoder();
+				decoder = new SWFFontDecoder();
 				decoder.decode((DefineFont2) obj);
 			}
 		}
@@ -170,9 +169,9 @@ public final class SWFDecoder implements FontProvider, FontDecoder {
 			encoding = CharacterEncoding.UCS2;
 		}
 
-		// TODO ascent = info.getAscent();
-		// TODO descent = info.getDescent();
-		// TODO leading = info.getLeading();
+		ascent = 0;
+		descent = 0;
+		leading = 0;
 
 		missingGlyph = 0;
 
