@@ -12,10 +12,12 @@ enum SoundEncoding {
         this.provider = provider;
     }
 
+    /** TODO(method). */
     public String getMimeType() {
         return mimeType;
     }
 
+    /** TODO(method). */
     public SoundProvider getProvider() {
         return provider;
     }

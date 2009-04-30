@@ -4,27 +4,27 @@
  *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  *  * Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice, 
- *    this list of conditions and the following disclaimer in the documentation 
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors 
- *    may be used to endorse or promote products derived from this software 
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
@@ -53,6 +53,7 @@ import com.flagstone.transform.sound.SoundStreamHead2;
 /**
  * Decoder for MP3 sounds so they can be added to a flash file.
  */
+//TODO(class)
 public final class MP3Decoder implements SoundProvider, SoundDecoder {
     private static final int MPEG1 = 3;
     private static final int MP3_FRAME_SIZE[] = { 576, 576, 576, 1152 };
@@ -81,17 +82,14 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
     public SoundDecoder newDecoder() {
         return new MP3Decoder();
     }
-
-    public void read(final String path) throws FileNotFoundException,
-            IOException, DataFormatException {
-        read(new File(path));
-    }
-
+    
+    /** TODO(method). */
     public void read(final File file) throws FileNotFoundException,
             IOException, DataFormatException {
-        decode(loadFile(file));
+        read(new FileInputStream(file), (int)file.length());
     }
 
+    /** TODO(method). */
     public void read(final URL url) throws FileNotFoundException, IOException,
             DataFormatException {
         final URLConnection connection = url.openConnection();
@@ -101,37 +99,28 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
         if (fileSize < 0) {
             throw new FileNotFoundException(url.getFile());
         }
-
-        final byte[] bytes = new byte[fileSize];
-
-        final InputStream stream = url.openStream();
-        final BufferedInputStream buffer = new BufferedInputStream(stream);
-
-        buffer.read(bytes);
-        buffer.close();
-
-        decode(bytes);
+        read(url.openStream(), fileSize);
     }
 
     /**
      * Create a definition for an event sound using the sound in the specified
      * file.
-     * 
+     *
      * @param identifier
      *            the unique identifier that will be used to refer to the sound
      *            in the Flash file.
-     * 
+     *
      * @param file
      *            the File containing the abstract path to the sound.
-     * 
+     *
      * @return a sound definition that can be added to a Movie.
-     * 
+     *
      * @throws FileNotFoundException
      *             if the file cannot be found or opened.
-     * 
+     *
      * @throws IOException
      *             if there is an error reading the file.
-     * 
+     *
      * @throws DataFormatException
      *             if there is a problem decoding the image, either it is in an
      *             unsupported format or an error occurred while decoding the
@@ -149,26 +138,26 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
 
     /**
      * Generates all the objects required to stream a sound from a file.
-     * 
+     *
      * @param frameRate
      *            the rate at which the movie is played. Sound are streamed with
      *            one block of sound data per frame.
-     * 
+     *
      * @param file
      *            the File containing the abstract path to the file containing
      *            the sound.
-     * 
+     *
      * @return an array where the first object is the SoundStreamHead2 object
      *         that defines the streaming sound, followed by SoundStreamBlock
      *         objects containing the sound samples that will be played in each
      *         frame.
-     * 
+     *
      * @throws FileNotFoundException
      *             if the file cannot be found or opened.
-     * 
+     *
      * @throws IOException
      *             if there is an error reading the file.
-     * 
+     *
      * @throws DataFormatException
      *             if there is a problem decoding the sound, either it is in an
      *             unsupported format or an error occurred while decoding the
@@ -307,8 +296,15 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
         return data;
     }
 
-    protected void decode(final byte[] data) throws DataFormatException {
-        final FLVDecoder coder = new FLVDecoder(data);
+    public void read(InputStream stream, int size) throws IOException, DataFormatException {
+
+        final byte[] bytes = new byte[(int)size];
+        final BufferedInputStream buffer = new BufferedInputStream(stream);
+
+        buffer.read(bytes);
+        buffer.close();
+
+        final FLVDecoder coder = new FLVDecoder(bytes);
 
         int numberOfFrames = 0;
         int frameStart = 0;
