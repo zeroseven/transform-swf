@@ -4,27 +4,27 @@
  *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  *  * Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice, 
- *    this list of conditions and the following disclaimer in the documentation 
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors 
- *    may be used to endorse or promote products derived from this software 
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
@@ -48,6 +48,7 @@ import java.util.zip.Inflater;
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.FLVDecoder;
 import com.flagstone.transform.coder.ImageTag;
+import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.image.DefineImage;
 import com.flagstone.transform.image.DefineImage2;
 
@@ -55,6 +56,7 @@ import com.flagstone.transform.image.DefineImage2;
  * PNGDecoder decodes Portable Network Graphics (PNG) format images so they can
  * be used in a Flash file.
  */
+//TODO(class)
 public final class PNGDecoder implements ImageProvider, ImageDecoder {
     // Tables mapping grey scale values onto 8-bit colour channels
 
@@ -117,7 +119,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
     private static final int TRANSPARENT_GREEN = 9;
     private static final int TRANSPARENT_BLUE = 10;
 
-    private transient final int[] attributes = new int[16];
+    private final transient int[] attributes = new int[16];
     private transient byte[] chunkData = new byte[0];
 
     private transient ImageFormat format;
@@ -130,6 +132,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
         return new PNGDecoder();
     }
 
+    /** TODO(method). */
     public void read(final File file) throws FileNotFoundException,
             IOException, DataFormatException {
         final ImageInfo info = new ImageInfo();
@@ -140,38 +143,24 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
             throw new DataFormatException(Strings.INVALID_FORMAT);
         }
 
-        decode(loadFile(file));
+        read(new FileInputStream(file), (int)file.length());
     }
 
+    /** TODO(method). */
     public void read(final URL url) throws FileNotFoundException, IOException,
             DataFormatException {
         final URLConnection connection = url.openConnection();
 
-        final int fileSize = connection.getContentLength();
+        int length = connection.getContentLength();
 
-        if (fileSize < 0) {
+        if (length < 0) {
             throw new FileNotFoundException(url.getFile());
         }
 
-        final byte[] bytes = new byte[fileSize];
-
-        final InputStream stream = url.openStream();
-        final BufferedInputStream buffer = new BufferedInputStream(stream);
-
-        buffer.read(bytes);
-        buffer.close();
-
-        final ImageInfo info = new ImageInfo();
-        info.setInput(new ByteArrayInputStream(bytes));
-        info.setDetermineImageNumber(true);
-
-        if (!info.check()) {
-            throw new DataFormatException(Strings.INVALID_FORMAT);
-        }
-
-        decode(bytes);
+        read(url.openStream(), length);
     }
 
+    /** TODO(method). */
     public ImageTag defineImage(final int identifier) {
         ImageTag object = null;
 
@@ -202,7 +191,14 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
         return object;
     }
 
-    protected void decode(final byte[] bytes) throws DataFormatException {
+    public void read(InputStream stream, int size) throws DataFormatException, IOException {
+
+        final byte[] bytes = new byte[(int)size];
+        final BufferedInputStream buffer = new BufferedInputStream(stream);
+
+        buffer.read(bytes);
+        buffer.close();
+
         final FLVDecoder coder = new FLVDecoder(bytes);
 
         int length = 0;
@@ -842,14 +838,17 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
         return formattedImage;
     }
 
+    /** TODO(method). */
     public int getWidth() {
         return width;
     }
 
+    /** TODO(method). */
     public int getHeight() {
         return height;
     }
 
+    /** TODO(method). */
     public byte[] getImage() {
         return Arrays.copyOf(image, image.length);
     }

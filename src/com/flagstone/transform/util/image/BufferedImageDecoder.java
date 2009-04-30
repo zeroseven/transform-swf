@@ -12,6 +12,7 @@ import java.awt.image.IndexColorModel;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -47,51 +48,25 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
         return new BufferedImageDecoder();
     }
 
-    public void read(final String path) throws FileNotFoundException,
-            IOException, DataFormatException {
-        read(new File(path));
-    }
-
     public void read(final File file) throws FileNotFoundException,
             IOException, DataFormatException {
-        final ImageInfo info = new ImageInfo();
-        info.setInput(new RandomAccessFile(file, "r"));
-        info.setDetermineImageNumber(true);
-
-        if (!info.check()) {
-            throw new DataFormatException(Strings.INVALID_FORMAT);
-        }
-
-        decode(ImageIO.read(file));
+         read(new FileInputStream(file), (int)file.length());
     }
 
     public void read(final URL url) throws FileNotFoundException, IOException,
             DataFormatException {
         final URLConnection connection = url.openConnection();
-
         final int fileSize = connection.getContentLength();
 
         if (fileSize < 0) {
             throw new FileNotFoundException(url.getFile());
         }
 
-        final byte[] bytes = new byte[fileSize];
-
-        final InputStream stream = url.openStream();
-        final BufferedInputStream buffer = new BufferedInputStream(stream);
-
-        buffer.read(bytes);
-        buffer.close();
-
-        final ImageInfo info = new ImageInfo();
-        info.setInput(new ByteArrayInputStream(bytes));
-        info.setDetermineImageNumber(true);
-
-        if (!info.check()) {
-            throw new DataFormatException(Strings.INVALID_FORMAT);
-        }
-
-        decode(ImageIO.read(url));
+        read(url.openStream(), fileSize);
+    }
+    
+    public void read(InputStream stream, int size) throws IOException,DataFormatException {
+        read(ImageIO.read(stream));
     }
 
     public ImageTag defineImage(final int identifier) {
@@ -126,16 +101,16 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
 
     /**
      * Create an image definition from a BufferedImage.
-     * 
+     *
      * @param identifier
      *            the unique identifier that will be used to refer to the image
      *            in the Flash file.
-     * 
+     *
      * @param obj
      *            the BufferedImage containing the image.
-     * 
+     *
      * @return an image definition that can be added to a Movie.
-     * 
+     *
      * @throws DataFormatException
      *             if there is a problem extracting the image, from the
      *             BufferedImage image.
@@ -145,7 +120,7 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
         ImageTag object = null;
 
         final BufferedImageDecoder decoder = new BufferedImageDecoder();
-        decoder.decode(obj);
+        decoder.read(obj);
 
         switch (format) {
         case IDX8:
@@ -176,12 +151,12 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
 
     /**
      * Create a BufferedImage from a Flash image.
-     * 
+     *
      * @param image
      *            an image from a Flash file.
-     * 
+     *
      * @return a BufferedImage containing the image.
-     * 
+     *
      * @throws DataFormatException
      *             if there is a problem decoding the BufferedImage.
      */
@@ -354,12 +329,12 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
 
     /**
      * Create a BufferedImage from a Flash image.
-     * 
+     *
      * @param image
      *            an image from a Flash file.
-     * 
+     *
      * @return a BufferedImage containing the image.
-     * 
+     *
      * @throws DataFormatException
      *             if there is a problem decoding the BufferedImage.
      */
@@ -504,7 +479,7 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
      * Resizes a BufferedImage to the specified width and height. The aspect
      * ratio of the image is maintained so the area in the new image not covered
      * by the resized original will be transparent.
-     * 
+     *
      * @param image
      *            the BufferedImage to resize.
      * @param width
@@ -555,8 +530,9 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
 
         return resized;
     }
-
-    public void decode(final BufferedImage obj) throws DataFormatException {
+    
+    public void read(final BufferedImage obj) throws DataFormatException {
+        
         final DataBuffer buffer = obj.getData().getDataBuffer();
 
         width = obj.getWidth();

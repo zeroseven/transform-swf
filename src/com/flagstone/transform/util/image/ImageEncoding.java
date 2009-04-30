@@ -1,16 +1,26 @@
 package com.flagstone.transform.util.image;
 
-enum ImageEncoding {
-
-    BMP("image/bmp", new BMPDecoder()), GIF("image/gif",
-            new BufferedImageDecoder()), IFF("image/iff",
-            new BufferedImageDecoder()), JPEG("image/jpeg", new JPGDecoder()), PBM(
-            "image/x-portable-bitmap", new BufferedImageDecoder()), PCX(
-            "image/pcx", new BufferedImageDecoder()), PGM(
-            "image/x-portable-pixmap", new BufferedImageDecoder()), PNG(
-            "image/png", new PNGDecoder()), PSD("image/psd",
-            new BufferedImageDecoder()), RAS("image/ras",
-            new BufferedImageDecoder());
+public enum ImageEncoding {
+    /** TODO(doc). */
+    BMP("image/bmp", new BMPDecoder()),
+    /** TODO(doc). */
+    GIF("image/gif", new BufferedImageDecoder()),
+    /** TODO(doc). */
+    IFF("image/iff", new BufferedImageDecoder()),
+    /** TODO(doc). */
+    JPEG("image/jpeg", new JPGDecoder()),
+    /** TODO(doc). */
+    PBM("image/x-portable-bitmap", new BufferedImageDecoder()),
+    /** TODO(doc). */
+    PCX("image/pcx", new BufferedImageDecoder()),
+    /** TODO(doc). */
+    PGM("image/x-portable-pixmap", new BufferedImageDecoder()),
+    /** TODO(doc). */
+    PNG("image/png", new PNGDecoder()), 
+    /** TODO(doc). */
+    PSD("image/psd",new BufferedImageDecoder()),
+    /** TODO(doc). */
+    RAS("image/ras", new BufferedImageDecoder());
 
     private final String mimeType;
     private final ImageProvider provider;
@@ -20,10 +30,12 @@ enum ImageEncoding {
         this.provider = provider;
     }
 
+    /** TODO(method). */
     public String getMimeType() {
         return mimeType;
     }
 
+    /** TODO(method). */
     public ImageProvider getProvider() {
         return provider;
     }

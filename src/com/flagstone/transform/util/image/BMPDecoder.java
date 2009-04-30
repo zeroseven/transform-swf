@@ -4,27 +4,27 @@
  *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  *  * Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice, 
- *    this list of conditions and the following disclaimer in the documentation 
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors 
- *    may be used to endorse or promote products derived from this software 
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
@@ -45,6 +45,7 @@ import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 
 import com.flagstone.transform.Strings;
+import com.flagstone.transform.coder.BitInputStream;
 import com.flagstone.transform.coder.ImageTag;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.image.DefineImage;
@@ -53,13 +54,14 @@ import com.flagstone.transform.image.DefineImage2;
 /**
  * BMPDecoder decodes Bitmap images (BMP) so they can be used in a Flash file.
  */
+//TODO(class)
 public final class BMPDecoder implements ImageProvider, ImageDecoder {
-    private final static int[] bmpSignature = { 66, 77 };
+    private static final int[] bmpSignature = { 66, 77 };
 
-    private final static int BI_RGB = 0;
-    private final static int BI_RLE8 = 1;
-    private final static int BI_RLE4 = 2;
-    private final static int BI_BITFIELDS = 3;
+    private static final int BI_RGB = 0;
+    private static final int BI_RLE8 = 1;
+    private static final int BI_RLE4 = 2;
+    private static final int BI_BITFIELDS = 3;
 
     private transient ImageFormat format;
     private transient int width;
@@ -73,48 +75,29 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
     private transient int greenMask;
     private transient int blueMask;
 
-    public void read(final File file) throws FileNotFoundException,
-            IOException, DataFormatException {
-        final ImageInfo info = new ImageInfo();
-        info.setInput(new RandomAccessFile(file, "r"));
-        info.setDetermineImageNumber(true);
-
-        if (!info.check()) {
-            throw new DataFormatException(Strings.INVALID_FORMAT);
-        }
-
-        decode(loadFile(file));
+    public void read(final File file) throws IOException, DataFormatException {
+        read(new FileInputStream(file), (int)file.length());
     }
 
+    /** TODO(method). */
     public void read(final URL url) throws FileNotFoundException, IOException,
             DataFormatException {
         final URLConnection connection = url.openConnection();
-
-        final int fileSize = connection.getContentLength();
-
-        if (fileSize < 0) {
-            throw new FileNotFoundException(url.getFile());
-        }
-
-        final byte[] bytes = new byte[fileSize];
-
-        final InputStream stream = url.openStream();
-        final BufferedInputStream buffer = new BufferedInputStream(stream);
-
-        buffer.read(bytes);
-        buffer.close();
-
-        final ImageInfo info = new ImageInfo();
-        info.setInput(new ByteArrayInputStream(bytes));
-        info.setDetermineImageNumber(true);
-
-        if (!info.check()) {
+        
+        if (!connection.getContentType().equals("image/bmp")) {
             throw new DataFormatException(Strings.INVALID_FORMAT);
         }
 
-        decode(bytes);
+        int length = connection.getContentLength();
+
+        if (length < 0) {
+            throw new FileNotFoundException(url.getFile());
+        }
+
+        read(url.openStream(), length);
     }
 
+    /** TODO(method). */
     public ImageTag defineImage(final int identifier) {
         ImageTag object = null;
 
@@ -145,23 +128,34 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
         return object;
     }
 
+    /** TODO(method). */
     public ImageDecoder newDecoder() {
         return new BMPDecoder();
     }
 
+    /** TODO(method). */
     public int getWidth() {
         return width;
     }
 
+    /** TODO(method). */
     public int getHeight() {
         return height;
     }
 
+    /** TODO(method). */
     public byte[] getImage() {
         return Arrays.copyOf(image, image.length);
     }
 
-    protected void decode(final byte[] bytes) throws DataFormatException {
+    public void read(InputStream stream, int length) throws DataFormatException, IOException {
+        
+        final byte[] bytes = new byte[(int)length];
+        final BufferedInputStream buffer = new BufferedInputStream(stream);
+
+        buffer.read(bytes);
+        buffer.close();
+
         final SWFDecoder coder = new SWFDecoder(bytes);
 
         for (int i = 0; i < 2; i++) {
