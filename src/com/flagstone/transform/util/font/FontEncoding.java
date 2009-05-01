@@ -12,10 +12,12 @@ enum FontEncoding {
         this.provider = provider;
     }
 
+    /** TODO(method). */
     public String getMimeType() {
         return mimeType;
     }
 
+    /** TODO(method). */
     public FontProvider getProvider() {
         return provider;
     }

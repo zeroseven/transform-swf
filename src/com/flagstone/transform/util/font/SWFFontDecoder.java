@@ -28,7 +28,7 @@ import com.flagstone.transform.shape.Shape;
  * <p>
  * Font is used to add embedded fonts to a movie.
  * </p>
- * 
+ *
  * <p>
  * Flash supports two types of font definition: embedded fonts where the Flash
  * file contains the glyphs that are drawn to represents the text characters and
@@ -37,7 +37,7 @@ import com.flagstone.transform.shape.Shape;
  * regardless of where it is played - if a Flash Player does not contain a
  * device font it will substitute it with another.
  * </p>
- * 
+ *
  * <p>
  * Device fonts can be added to a movie by simply creating a DefineFont or
  * DefineFont2 object which contain the name of the font. An embedded font must
@@ -45,23 +45,23 @@ import com.flagstone.transform.shape.Shape;
  * text to be displayed. The Font class hides all this detail and makes it easy
  * to add embedded fonts to a movie.
  * <p>
- * 
+ *
  * <p>
  * The Font class can be used to create embedded fonts in three ways:
  * </p>
- * 
+ *
  * <ol>
  * <li>Using TrueType or OpenType font definition stored in a file.</li>
  * <li>Using an existing font definition from a flash file.</li>
  * <li>Using a given Java AWT font as a template.</li>
  * </ol>
- * 
+ *
  * <P>
  * For OpenType or TrueType fonts, files with the extensions ".otf" or ".ttf"
  * may be used. Files containing collections of fonts ".otc" are not currently
  * supported.
  * </p>
- * 
+ *
  * <p>
  * Using an existing Flash font definition is the most interesting. Fonts can
  * initially be created using AWT Font objects or TrueType files and all the
@@ -71,6 +71,7 @@ import com.flagstone.transform.shape.Shape;
  * libraries of "pre-parsed" flash fonts is the preferred way of use fonts.
  * </p>
  */
+//TODO(class)
 public final class SWFFontDecoder implements FontProvider, FontDecoder {
 
     private transient String name;
@@ -92,7 +93,7 @@ public final class SWFFontDecoder implements FontProvider, FontDecoder {
     private transient int missingGlyph;
     private transient char maxChar;
 
-    private transient final List<Kerning> kernings = new ArrayList<Kerning>();
+    private final transient List<Kerning> kernings = new ArrayList<Kerning>();
 
     private transient int scale;
     private transient int metrics;
@@ -102,6 +103,7 @@ public final class SWFFontDecoder implements FontProvider, FontDecoder {
         return new TTFDecoder();
     }
 
+    /** TODO(method). */
     public void read(final File file) throws FileNotFoundException,
             IOException, DataFormatException {
         final FileInputStream stream = new FileInputStream(file);
@@ -112,6 +114,7 @@ public final class SWFFontDecoder implements FontProvider, FontDecoder {
         }
     }
 
+    /** TODO(method). */
     public void read(final URL url) throws FileNotFoundException, IOException,
             DataFormatException {
         final URLConnection connection = url.openConnection();
@@ -129,6 +132,7 @@ public final class SWFFontDecoder implements FontProvider, FontDecoder {
         }
     }
 
+    /** TODO(method). */
     public Font[] getFonts() {
         final Font[] fonts = null;
         // TODO(implement)
@@ -154,11 +158,11 @@ public final class SWFFontDecoder implements FontProvider, FontDecoder {
 
     /**
      * Initialise this object with the information from a flash font definition.
-     * 
+     *
      * @param glyphs
      *            a DefineFont object which contains the definition of the
      *            glyphs.
-     * 
+     *
      * @param info
      *            a FontInfo object that contains information on the font name,
      *            weight, style and character codes.
@@ -209,14 +213,14 @@ public final class SWFFontDecoder implements FontProvider, FontDecoder {
             }
 
             /*
-             * TODO if (glyphs.getAdvances() != null) { glyphIndex = 0;
-             * 
+             * TODO(code) if (glyphs.getAdvances() != null) { glyphIndex = 0;
+             *
              * for (Iterator<Integer> i = font.getAdvances().iterator();
              * i.hasNext(); glyphIndex++)
              * glyphTable[glyphIndex].setAdvance(i.next()); }
-             * 
+             *
              * if (font.getBounds() != null) { glyphIndex = 0;
-             * 
+             *
              * for (Iterator<Bounds> i = font.getBounds().iterator();
              * i.hasNext(); glyphIndex++)
              * glyphTable[glyphIndex].setBounds(i.next()); }
@@ -226,11 +230,11 @@ public final class SWFFontDecoder implements FontProvider, FontDecoder {
 
     /**
      * Initialise this object with the information from a flash font definition.
-     * 
+     *
      * @param glyphs
      *            a DefineFont object which contains the definition of the
      *            glyphs.
-     * 
+     *
      * @param info
      *            a FontInfo2 object that contains information on the font name,
      *            weight, style and character codes.
@@ -246,9 +250,9 @@ public final class SWFFontDecoder implements FontProvider, FontDecoder {
             encoding = CharacterEncoding.UCS2;
         }
 
-        // TODO ascent = info.getAscent();
-        // TODO descent = info.getDescent();
-        // TODO leading = info.getLeading();
+        // TODO(code) ascent = info.getAscent();
+        // TODO(code) descent = info.getDescent();
+        // TODO(code) leading = info.getLeading();
 
         missingGlyph = 0;
 
@@ -286,14 +290,14 @@ public final class SWFFontDecoder implements FontProvider, FontDecoder {
             }
 
             /*
-             * TODO if (glyphs.getAdvances() != null) { glyphIndex = 0;
-             * 
+             * TODO(code) if (glyphs.getAdvances() != null) { glyphIndex = 0;
+             *
              * for (Iterator<Integer> i = font.getAdvances().iterator();
              * i.hasNext(); glyphIndex++)
              * glyphTable[glyphIndex].setAdvance(i.next()); }
-             * 
+             *
              * if (font.getBounds() != null) { glyphIndex = 0;
-             * 
+             *
              * for (Iterator<Bounds> i = font.getBounds().iterator();
              * i.hasNext(); glyphIndex++)
              * glyphTable[glyphIndex].setBounds(i.next()); }
@@ -303,7 +307,7 @@ public final class SWFFontDecoder implements FontProvider, FontDecoder {
 
     /**
      * Initialise this object with the information from a flash font definition.
-     * 
+     *
      * @param font
      *            a DefineFont2 object that contains information on the font
      *            name, weight, style and character codes as well as the glyph

@@ -26,7 +26,7 @@ import com.flagstone.transform.util.shape.Canvas;
  * <p>
  * Font is used to add embedded fonts to a movie.
  * </p>
- * 
+ *
  * <p>
  * Flash supports two types of font definition: embedded fonts where the Flash
  * file contains the glyphs that are drawn to represents the text characters and
@@ -35,7 +35,7 @@ import com.flagstone.transform.util.shape.Canvas;
  * regardless of where it is played - if a Flash Player does not contain a
  * device font it will substitute it with another.
  * </p>
- * 
+ *
  * <p>
  * Device fonts can be added to a movie by simply creating a DefineFont or
  * DefineFont2 object which contain the name of the font. An embedded font must
@@ -43,23 +43,23 @@ import com.flagstone.transform.util.shape.Canvas;
  * text to be displayed. The Font class hides all this detail and makes it easy
  * to add embedded fonts to a movie.
  * <p>
- * 
+ *
  * <p>
  * The Font class can be used to create embedded fonts in three ways:
  * </p>
- * 
+ *
  * <ol>
  * <li>Using TrueType or OpenType font definition stored in a file.</li>
  * <li>Using an existing font definition from a flash file.</li>
  * <li>Using a given Java AWT font as a template.</li>
  * </ol>
- * 
+ *
  * <P>
  * For OpenType or TrueType fonts, files with the extensions ".otf" or ".ttf"
  * may be used. Files containing collections of fonts ".otc" are not currently
  * supported.
  * </p>
- * 
+ *
  * <p>
  * Using an existing Flash font definition is the most interesting. Fonts can
  * initially be created using AWT Font objects or TrueType files and all the
@@ -69,6 +69,7 @@ import com.flagstone.transform.util.shape.Canvas;
  * libraries of "pre-parsed" flash fonts is the preferred way of use fonts.
  * </p>
  */
+//TODO(class)
 public final class TTFDecoder implements FontProvider, FontDecoder {
     private static final int OS_2 = 0x4F532F32;
     private static final int HEAD = 0x68656164;
@@ -138,11 +139,13 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         return new TTFDecoder();
     }
 
+    /** TODO(method). */
     public void read(final File file) throws FileNotFoundException,
             IOException, DataFormatException {
         decode(loadFile(file));
     }
 
+    /** TODO(method). */
     public void read(final URL url) throws FileNotFoundException, IOException,
             DataFormatException {
         final URLConnection connection = url.openConnection();
@@ -163,6 +166,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         }
     }
 
+    /** TODO(method). */
     public Font[] getFonts() {
         final Font[] fonts = null;
 
@@ -341,7 +345,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
          */
         bold = coder.readBits(1, false) != 0;
         italic = coder.readBits(1, false) != 0;
-        coder.readBits(14, false); // 
+        coder.readBits(14, false); //
 
         coder.readWord(2, false);// smallest readable size in pixels
         coder.readWord(2, true); // font direction hint
@@ -941,19 +945,19 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
             /*
              * for (int i=0; i<endPtsOfContours.length; i++) endPtsOfContours[i]
              * = points.endPoints[i];
-             * 
+             *
              * xCoordinates = new int[numberOfPoints];
-             * 
+             *
              * for (int i=0; i<numberOfPoints; i++) xCoordinates[i] =
              * points.xCoordinates[i];
-             * 
+             *
              * yCoordinates = new int[numberOfPoints];
-             * 
+             *
              * for (int i=0; i<numberOfPoints; i++) yCoordinates[i] =
              * points.yCoordinates[i];
-             * 
+             *
              * onCurve = new boolean[numberOfPoints];
-             * 
+             *
              * for (int i=0; i<numberOfPoints; i++) onCurve[i] =
              * points.onCurve[i];
              */

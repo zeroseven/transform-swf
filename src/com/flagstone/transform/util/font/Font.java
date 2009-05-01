@@ -16,7 +16,7 @@ import com.flagstone.transform.shape.Shape;
  * <p>
  * Font is used to add embedded fonts to a movie.
  * </p>
- * 
+ *
  * <p>
  * Flash supports two types of font definition: embedded fonts where the Flash
  * file contains the glyphs that are drawn to represents the text characters and
@@ -25,7 +25,7 @@ import com.flagstone.transform.shape.Shape;
  * regardless of where it is played - if a Flash Player does not contain a
  * device font it will substitute it with another.
  * </p>
- * 
+ *
  * <p>
  * Device fonts can be added to a movie by simply creating a DefineFont or
  * DefineFont2 object which contain the name of the font. An embedded font must
@@ -33,23 +33,23 @@ import com.flagstone.transform.shape.Shape;
  * text to be displayed. The Font class hides all this detail and makes it easy
  * to add embedded fonts to a movie.
  * <p>
- * 
+ *
  * <p>
  * The Font class can be used to create embedded fonts in three ways:
  * </p>
- * 
+ *
  * <ol>
  * <li>Using TrueType or OpenType font definition stored in a file.</li>
  * <li>Using an existing font definition from a flash file.</li>
  * <li>Using a given Java AWT font as a template.</li>
  * </ol>
- * 
+ *
  * <P>
  * For OpenType or TrueType fonts, files with the extensions ".otf" or ".ttf"
  * may be used. Files containing collections of fonts ".otc" are not currently
  * supported.
  * </p>
- * 
+ *
  * <p>
  * Using an existing Flash font definition is the most interesting. Fonts can
  * initially be created using AWT Font objects or TrueType files and all the
@@ -59,6 +59,7 @@ import com.flagstone.transform.shape.Shape;
  * libraries of "pre-parsed" flash fonts is the preferred way of use fonts.
  * </p>
  */
+//TODO(class)
 public final class Font {
     private String name;
     private boolean bold;
@@ -176,6 +177,7 @@ public final class Font {
         return maxChar;
     }
 
+    /** TODO(method). */
     public int getMissingGlyph() {
         return missingGlyph;
     }
@@ -183,15 +185,15 @@ public final class Font {
     /**
      * Create and return a DefineFont2 object that contains information to
      * display a set of characters.
-     * 
+     *
      * @param identifier
      *            the unique identifier that will be used to reference the font
      *            definition in the flash file.
-     * 
+     *
      * @param characters
      *            the set of characters that the font must contain glyphs and
      *            layout information for,
-     * 
+     *
      * @return a font definition that contains information for all the glyphs in
      *         the set of characters.
      */
@@ -239,10 +241,10 @@ public final class Font {
 
     /**
      * Tests whether the font can display all the characters in a string.
-     * 
+     *
      * @param aString
      *            the string to be displayed.
-     * 
+     *
      * @return the index of the character that cannot be displayed or -1 if all
      *         characters have corresponding glyphs.
      */
@@ -262,10 +264,10 @@ public final class Font {
      * Tests whether a character can be displayed by the font or whether the
      * "missing" character glyph (usually an empty box) will be displayed
      * instead.
-     * 
+     *
      * @param character
      *            the character to be displayed.
-     * 
+     *
      * @return true if the font contains a glyph for character or false if there
      *         is no corresponding glyph and the missing character glyph will be
      *         displayed.
@@ -285,10 +287,10 @@ public final class Font {
 
     /**
      * Returns the glyph for the specified character.
-     * 
+     *
      * @param character
      *            the character.
-     * 
+     *
      * @return the Glyph object which contains the layout information.
      */
     public int glyphForCharacter(final char character) {
@@ -299,10 +301,10 @@ public final class Font {
      * Returns the characters code for the glyph at a specified index in the
      * font. This method is used for extracting the strings displayed by static
      * text (DefineText, DefineText2) fields.
-     * 
+     *
      * @param index
      *            the index of the font.
-     * 
+     *
      * @return the character code for the glyph.
      */
     public char characterForGlyph(final int index) {
@@ -314,7 +316,7 @@ public final class Font {
      * conceptually a font with a point size of 1024. The number returned needs
      * to be scaled to the correct size in order to calculate the advance to the
      * next character.
-     * 
+     *
      * @param character
      *            the character code.
      * @return the advance in twips to the next character.
@@ -323,6 +325,7 @@ public final class Font {
         return glyphTable[charToGlyph[character]].getAdvance();
     }
 
+    /** TODO(method). */
     public int fontKey() {
         int value = 17;
 

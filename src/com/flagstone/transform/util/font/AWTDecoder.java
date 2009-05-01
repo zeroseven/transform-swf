@@ -18,6 +18,7 @@ import com.flagstone.transform.font.Kerning;
 import com.flagstone.transform.shape.Shape;
 import com.flagstone.transform.util.shape.Canvas;
 
+//TODO(class)
 public final class AWTDecoder {
 
     private transient String name;
@@ -39,13 +40,14 @@ public final class AWTDecoder {
     private transient int missingGlyph;
     private transient char maxChar;
 
-    private transient final List<Kerning> kernings = new ArrayList<Kerning>();
+    private final transient List<Kerning> kernings = new ArrayList<Kerning>();
 
     public void read(final java.awt.Font font) throws FileNotFoundException,
             IOException, DataFormatException {
         decode(font);
     }
 
+    /** TODO(method). */
     public Font[] getFont() {
         final Font[] font = null;
         // TODO(implement)
@@ -61,7 +63,7 @@ public final class AWTDecoder {
         name = font.getName();
         encoding = CharacterEncoding.UCS2;
 
-        // TODO still needed ? final Rectangle2D transform =
+        // TODO(code) still needed ? final Rectangle2D transform =
         // transformToEMSquare(font, fontContext);
 
         final double scaleY = 1024.0;
