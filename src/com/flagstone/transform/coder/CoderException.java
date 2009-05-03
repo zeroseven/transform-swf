@@ -12,42 +12,46 @@ import java.io.IOException;
  * to be detected.
  * </p>
  */
+//TODO(class)
 public final class CoderException extends IOException {
 
     private static final long serialVersionUID = 1;
 
-    private static final String FORMAT = "CoderException: { name=%s; location=%d; length=%d; delta=%d; message=%s }";
+    private static final String FORMAT = "CoderException: { "
+            + "name=%s; location=%d; length=%d; delta=%d; message=%s }";
 
+    /** TODO(method). */
     public static final String UNDERFLOW = "Underflow";
+    /** TODO(method). */
     public static final String OVERFLOW = "Overflow";
 
-    private transient final String name;
-    private transient final int start;
-    private transient final int length;
-    private transient final int delta;
+    private final transient String name;
+    private final transient int start;
+    private final transient int length;
+    private final transient int delta;
 
     /**
      * Creates a CoderException to report where a problem occurred when encoding
      * or decoding a Flash (.swf) file.
-     * 
+     *
      * @param name
      *            the name of the object or action that was being encoded or
      *            decoded when the problem occurred.
-     * 
+     *
      * @param start
      *            the address in the file where the data structure being
      *            encoded/decoded is located. This is only valid for files being
      *            decoded since the encoded file will not be written if an
      *            exception occurs.
-     * 
+     *
      * @param length
      *            the number of bytes that were expected to be encoded or
      *            decoded.
-     * 
+     *
      * @param delta
      *            the difference between the expected number of bytes and the
      *            actual number encoded or decoded.
-     * 
+     *
      * @param message
      *            a message indicating type of object that caused the error and
      *            and whether the difference was more (overflow) or less
@@ -65,21 +69,21 @@ public final class CoderException extends IOException {
     /**
      * Creates a CoderException to report where a problem occurred when encoding
      * or decoding a Flash (.swf) file.
-     * 
+     *
      * @param name
      *            the name of the object or action that was being encoded or
      *            decoded when the problem occurred.
-     * 
+     *
      * @param start
      *            the address in the file where the data structure being
      *            encoded/decoded is located. This is only valid for files being
      *            decoded since the encoded file will not be written if an
      *            exception occurs.
-     * 
+     *
      * @param length
      *            the number of bytes that were expected to be encoded or
      *            decoded.
-     * 
+     *
      * @param delta
      *            the difference between the expected number of bytes and the
      *            actual number encoded or decoded.

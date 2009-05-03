@@ -1,30 +1,30 @@
 /*
  * DefineButton.java
  * Transform
- * 
+ *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  *  * Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice, 
- *    this list of conditions and the following disclaimer in the documentation 
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors 
- *    may be used to endorse or promote products derived from this software 
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
@@ -44,20 +44,20 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.coder.SWFFactory;
 
-//TODO(doc) Review
 /**
  * DefineButton defines the appearance of a button and the actions performed
  * when the button is clicked.
- * 
+ *
  * <p>
  * DefineButton must contain at least one ButtonShape object. If more than one
  * button shape is defined for a given button state then each shape will be
  * displayed by the button. The order in which the shapes are displayed is
  * determined by the layer assigned to each ButtonShape object.
  * </P>
- * 
+ *
  * @see ButtonShape
  */
+//TODO(class)
 public final class DefineButton implements DefineTag {
     private static final String FORMAT = "DefineButton: { identifier=%d; buttonRecords=%s; actions=%s }";
 
@@ -68,7 +68,21 @@ public final class DefineButton implements DefineTag {
 
     private transient int length;
 
-    // TODO(doc)
+    /**
+     * Creates and initialises a DefineButton object using values encoded
+     * in the Flash binary format.
+     *
+     * @param coder
+     *            an SWFDecoder object that contains the encoded Flash data.
+     *
+     * @param context
+     *            a Context object used to manage the decoders for different
+     *            type of object and to pass information on how objects are
+     *            decoded.
+     *
+     * @throws CoderException
+     *             if an error occurs while decoding the data.
+     */
     // TODO(optimise)
     public DefineButton(final SWFDecoder coder, final Context context)
             throws CoderException {
@@ -115,7 +129,7 @@ public final class DefineButton implements DefineTag {
     /**
      * Creates a DefineButton object with the identifier, button shapes and
      * actions.
-     * 
+     *
      * @param uid
      *            the unique identifier for this button.
      * @param buttons
@@ -131,7 +145,14 @@ public final class DefineButton implements DefineTag {
         setActions(actions);
     }
 
-    // TODO(doc)
+    /**
+     * Creates and initialises a DefineButton object using the values copied
+     * from another DefineButton object.
+     *
+     * @param object
+     *            a DefineButton object from which the values will be
+     *            copied.
+     */
     public DefineButton(final DefineButton object) {
         identifier = object.identifier;
         shapes = new ArrayList<ButtonShape>(object.shapes.size());
@@ -144,10 +165,12 @@ public final class DefineButton implements DefineTag {
         }
     }
 
+    /** TODO(method). */
     public int getIdentifier() {
         return identifier;
     }
 
+    /** TODO(method). */
     public void setIdentifier(final int uid) {
         if ((uid < 0) || (uid > 65535)) {
             throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
@@ -157,7 +180,7 @@ public final class DefineButton implements DefineTag {
 
     /**
      * Adds the button shape to the array of button shapes.
-     * 
+     *
      * @param obj
      *            an ButtonShape object. Must not be null.
      */
@@ -171,7 +194,7 @@ public final class DefineButton implements DefineTag {
 
     /**
      * Adds the action to the array of actions.
-     * 
+     *
      * @param obj
      *            an action object. Must not be null.
      */
@@ -200,7 +223,7 @@ public final class DefineButton implements DefineTag {
 
     /**
      * Sets the array of button shapes defined for this button.
-     * 
+     *
      * @param anArray
      *            an array of Button objects. Must not be null.
      */
@@ -214,7 +237,7 @@ public final class DefineButton implements DefineTag {
     /**
      * Sets the array of actions that will be executed when the button is
      * clicked and released.
-     * 
+     *
      * @param anArray
      *            and array of action objects. Must not be null.
      */
@@ -225,6 +248,7 @@ public final class DefineButton implements DefineTag {
         actions = anArray;
     }
 
+    /** TODO(method). */
     public DefineButton copy() {
         return new DefineButton(this);
     }
@@ -234,6 +258,7 @@ public final class DefineButton implements DefineTag {
         return String.format(FORMAT, identifier, shapes, actions);
     }
 
+    /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         length = 2;
 
@@ -250,6 +275,7 @@ public final class DefineButton implements DefineTag {
         return (length > 62 ? 6 : 2) + length;
     }
 
+    /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         final int start = coder.getPointer();

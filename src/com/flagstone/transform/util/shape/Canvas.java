@@ -4,27 +4,27 @@
  *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  *  * Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice, 
- *    this list of conditions and the following disclaimer in the documentation 
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors 
- *    may be used to endorse or promote products derived from this software 
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.flagstone.transform.coder.FillStyle;
+import com.flagstone.transform.coder.ShapeRecord;
 import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.linestyle.LineStyle;
 import com.flagstone.transform.shape.Curve;
@@ -41,7 +42,6 @@ import com.flagstone.transform.shape.DefineShape2;
 import com.flagstone.transform.shape.DefineShape3;
 import com.flagstone.transform.shape.Line;
 import com.flagstone.transform.shape.Shape;
-import com.flagstone.transform.shape.ShapeRecord;
 import com.flagstone.transform.shape.ShapeStyle;
 
 /**
@@ -51,7 +51,7 @@ import com.flagstone.transform.shape.ShapeStyle;
  * using both absolute coordinates and coordinates relative to the current point
  * (updated after every operation) are supported.
  * </p>
- * 
+ *
  * <p>
  * For curves both cubic and quadratic curves are supported. Flash only supports
  * quadratic curves so cubic curves are approximated by a series of line
@@ -60,39 +60,39 @@ import com.flagstone.transform.shape.ShapeStyle;
  * attribute which can be used to limit the number of line segments that are
  * drawn.
  * </p>
- * 
+ *
  * <p>
  * As a path is drawn the maximum and minimum x and y coordinates are recorded
  * so that the bounding rectangle that completely encloses the shape can be
  * defined. This is used when creating shape definitions using the DefineShape,
  * DefineShape2 or DefineShape3 classes.
  * <p>
- * 
+ *
  * <p>
  * The Canvas class also supports a number of method to create closed paths that
  * represent different geometric shapes. Basic rectangles, ellipses and circles
  * are supported. More complex shapes can be drawn using the polygon() method
  * which uses pairs of points to specified the vertices of an arbitrary shapes.
  * </p>
- * 
+ *
  * <p>
  * When drawing paths whether coordinates are specified in twips or pixels is
  * set when the Canvas object is created. When specifying coordinates in pixels
  * all coordinates are converted internally to twips to perform the actual
  * drawing.
  * </p>
- * 
+ *
  * <p>
  * The following code samples illustrate how to use the Canvas class create
  * shapes.
  * </p>
- * 
+ *
  *<pre>
  * Canvas path = new Canvas(true); // coordinates are in pixels.
- * 
+ *
  * int width = 200;
  * int height = 100;
- * 
+ *
  * newPath();
  * setLineStyle(new LineStyle(1, ColorTable.black()));
  * setFillStyle(new SolidFill(ColorTable.red()));
@@ -102,18 +102,19 @@ import com.flagstone.transform.shape.ShapeStyle;
  * rline(-width, 0);
  * rline(0, -height);
  * closePath();
- * 
+ *
  * DefineShape3 rect = path.defineShape(movie.newIdentifier());
- * 
+ *
  *</pre>
  */
+//TODO(class)
 public final class Canvas {
     private static final double FLATTEN_LIMIT = 0.25;
 
     private transient boolean arePixels;
 
-    private transient final double[] cubicX = new double[4];
-    private transient final double[] cubicY = new double[4];
+    private final transient double[] cubicX = new double[4];
+    private final transient double[] cubicY = new double[4];
 
     private transient boolean pathInProgress = false;
 
@@ -133,22 +134,22 @@ public final class Canvas {
 
     private transient int lineWidth;
 
-    private transient final List<ShapeRecord> objects;
-    private transient final List<LineStyle> lineStyles;
-    private transient final List<FillStyle> fillStyles;
+    private final transient List<ShapeRecord> objects;
+    private final transient List<LineStyle> lineStyles;
+    private final transient List<FillStyle> fillStyles;
 
     /**
      * Creates an ShapeConstructor object with no path defined.
-     * 
+     *
      * The pixels flag controls whether the coordinates passed to methods when
      * creating a path of predefined shape are expressed in pixels (true) or
      * twips (false).
-     * 
+     *
      * Flash coordinates are specified in twips (1 twip equals 1/1440th of an
      * inch or 1/20th of a point). Allowing coordinates to be specified in
      * pixels simplifies the drawing process avoiding the conversion to twips by
      * multiplying each value by 20.
-     * 
+     *
      * @param pixels
      *            coordinates are specified in pixels when true and twips when
      *            false.
@@ -198,7 +199,7 @@ public final class Canvas {
     /**
      * Returns the Shape object containing the objects used to draw the current
      * path.
-     * 
+     *
      * @return an Shape object contain the Line, Curve and ShapeStyle objects
      *         used to construct the current path.
      */
@@ -215,7 +216,7 @@ public final class Canvas {
 
     /**
      * Set the style used to draw lines.
-     * 
+     *
      * @param style
      *            a line style.
      */
@@ -234,7 +235,7 @@ public final class Canvas {
 
     /**
      * Set the style used to fill enclosed areas.
-     * 
+     *
      * @param style
      *            a fill style.
      */
@@ -252,7 +253,7 @@ public final class Canvas {
 
     /**
      * Set the style used to fill overlapping enclosed areas.
-     * 
+     *
      * @param style
      *            a fill style.
      */
@@ -270,11 +271,11 @@ public final class Canvas {
 
     /**
      * Generates a shape containing the current path and styles.
-     * 
+     *
      * The shape is constructed with copies of the style arrays and the shape
      * representing the path drawn. This allows the number of styles to be
      * changed without affecting previously created shapes.
-     * 
+     *
      * @param identifier
      *            an unique identifier for the shape.
      */
@@ -285,11 +286,11 @@ public final class Canvas {
 
     /**
      * Generates a transparent shape containing the current path and styles.
-     * 
+     *
      * The shape is constructed with copies of the style arrays and the shape
      * representing the path drawn. This allows the number of styles to be
      * changed without affecting previously created shapes.
-     * 
+     *
      * @param identifier
      *            an unique identifier for the shape.
      */
@@ -334,7 +335,7 @@ public final class Canvas {
 
     /**
      * Move to the point (x,y).
-     * 
+     *
      * @param xCoord
      *            the x-coordinate of the point to move to.
      * @param yCoord
@@ -351,6 +352,7 @@ public final class Canvas {
         setInitial(pointX, pointY);
     }
 
+    /** TODO(method). */
     public void moveForFont(final int xCoord, final int yCoord) {
         final int pointX = arePixels ? xCoord * 20 : xCoord;
         final int pointY = arePixels ? yCoord * 20 : yCoord;
@@ -369,7 +371,7 @@ public final class Canvas {
 
     /**
      * Move relative to the current point.
-     * 
+     *
      * @param xCoord
      *            the distance along the x-axis.
      * @param yCoord
@@ -388,7 +390,7 @@ public final class Canvas {
 
     /**
      * draw a line from the current point to the point (x,y).
-     * 
+     *
      * @param xCoord
      *            the x-coordinate of the end of the line.
      * @param yCoord
@@ -410,7 +412,7 @@ public final class Canvas {
 
     /**
      * Draw a line relative to the current point.
-     * 
+     *
      * @param xCoord
      *            the distance along the x-axis to the end of the line.
      * @param yCoord
@@ -433,7 +435,7 @@ public final class Canvas {
     /**
      * Draw a quadratic bezier curve from the current point to the point (x,y)
      * with the control point (x1, y1).
-     * 
+     *
      * @param acontrolX
      *            the x-coordinate of the control point.
      * @param acontrolY
@@ -467,7 +469,7 @@ public final class Canvas {
 
     /**
      * Draw a quadratic bezier curve relative to the current point to the point.
-     * 
+     *
      * @param rcontrolX
      *            the distance along the x-axis from the current point to the
      *            control point.
@@ -502,11 +504,11 @@ public final class Canvas {
     /**
      * Draw a cubic bezier curve from the current point to the point (x,y) with
      * the off-curve control points (x1, y1) and (x2, y2).
-     * 
+     *
      * IMPORTANT: Converting cubic bezier curves to the quadratic bezier curves
      * supported by Flash is mathematically difficult. The cubic curve is
      * approximated by a series of straight line segments.
-     * 
+     *
      * @param cax
      *            the x-coordinate of the first control point.
      * @param cay
@@ -536,11 +538,11 @@ public final class Canvas {
 
     /**
      * Draw a cubic bezier curve relative to the current point.
-     * 
+     *
      * IMPORTANT: Converting cubic bezier curves to the quadratic bezier curves
      * supported by Flash is mathematically difficult. The cubic curve is
      * approximated by a series of straight line segments.
-     * 
+     *
      * @param controlAX
      *            the distance along the x-axis from the current point to the
      *            first control point.
@@ -578,10 +580,10 @@ public final class Canvas {
     /**
      * Draw a quadratic bezier curve from the current point to the point (x,y)
      * using the control point for the previously drawn curve.
-     * 
+     *
      * If no curve has been drawn previously then a control point midway along
      * the previous line or move is used.
-     * 
+     *
      * @param xCoord
      *            the x-coordinate of the end of the curve.
      * @param yCoord
@@ -608,10 +610,10 @@ public final class Canvas {
     /**
      * Draw a quadratic bezier curve relative to the current point to the point
      * using the control point for the previously drawn curve.
-     * 
+     *
      * If no curve has been drawn previously then a control point midway along
      * the previous line or move is used.
-     * 
+     *
      * @param xCoord
      *            the distance along the x-axis from the current point to the
      *            end of the curve.
@@ -641,10 +643,10 @@ public final class Canvas {
      * Draw a cubic bezier curve from the current point to the point (x,y). The
      * first control point is the one defined for the previously drawn curve.
      * The second control point is the coordinates (x2, y2).
-     * 
+     *
      * If no curve has been drawn previously then a control point midway along
      * the previous line or move is used.
-     * 
+     *
      * @param ctrlX
      *            the x-coordinate of the control point.
      * @param ctrlY
@@ -672,10 +674,10 @@ public final class Canvas {
      * Draw a cubic bezier curve relative to the current point. The first
      * control point is the one defined for the previously drawn curve. The
      * second control point is the relative point (x2, y2).
-     * 
+     *
      * If no curve has been drawn previously then a control point midway along
      * the previous line or move is used.
-     * 
+     *
      * @param ctrlX
      *            the distance along the x-axis from the current point to the
      *            second control point.
@@ -706,11 +708,11 @@ public final class Canvas {
     /**
      * Draws a closed path in the shape of a rectangle with the specified width
      * and height. The centre of the rectangle is located at the point (x,y).
-     * 
+     *
      * The origin of the shape can be used to control the relative placement of
      * the rectangle when it is placed on the Flash Player's display list using
      * either the PlaceObject or PlaceObject2 class.
-     * 
+     *
      * @param xCoord
      *            the x-coordinate of the centre of the rectangle.
      * @param yCoord
@@ -732,7 +734,7 @@ public final class Canvas {
     /**
      * Draws a closed path in the shape of a rectangle with the specified width
      * and height. The centre of the rectangle is located at the point (0,0).
-     * 
+     *
      * @param width
      *            the width of the rectangle.
      * @param height
@@ -746,13 +748,13 @@ public final class Canvas {
      * Draws a closed path in the shape of a rectangle with rounded corners. The
      * shape is drawn with specified width and height and the radius argument
      * specified the radius of the quarter circle used to draw the corners.
-     * 
+     *
      * The centre of the rectangle is located at the point (x,y).
-     * 
+     *
      * The origin of the shape can be used to control the relative placement of
      * the rectangle when it is placed on the Flash Player's display list using
      * either the PlaceObject or PlaceObject2 class.
-     * 
+     *
      * @param xCoord
      *            the x-coordinate of the centre of the rectangle.
      * @param yCoord
@@ -786,7 +788,7 @@ public final class Canvas {
      * shape is drawn with specified width and height and the radius argument
      * specified the radius of the quarter circle used to draw the corners. The
      * centre of the rectangle is located at the point (0,0).
-     * 
+     *
      * @param width
      *            the width of the rectangle.
      * @param height
@@ -801,13 +803,13 @@ public final class Canvas {
     /**
      * Draws a closed path in the shape of an ellipse. The arguments rx and ry
      * specify the radius of the ellipse in the x and y directions respectively.
-     * 
+     *
      * The centre of the ellipse is located at the point (x,y).
-     * 
+     *
      * The origin of the shape can be used to control the relative placement of
      * the ellipse when it is placed on the Flash Player's display list using
      * either the PlaceObject or PlaceObject2 class.
-     * 
+     *
      * @param centreX
      *            the x-coordinate of the centre of the ellipse.
      * @param centreY
@@ -862,9 +864,9 @@ public final class Canvas {
     /**
      * Draws a closed path in the shape of an ellipse. The arguments rx and ry
      * specify the radius of the ellipse in the x and y directions respectively.
-     * 
+     *
      * The centre of the ellipse is located at the point (0,0).
-     * 
+     *
      * @param radiusX
      *            the radius of the ellipse in the x direction.
      * @param radiusY
@@ -877,11 +879,11 @@ public final class Canvas {
     /**
      * Draws a closed path in the shape of a circle. The centre of the circle is
      * located at the point (x,y) with radius r.
-     * 
+     *
      * The origin of the shape can be used to control the relative placement of
      * the circle when it is placed on the Flash Player's display list using
      * either the PlaceObject or PlaceObject2 class.
-     * 
+     *
      * @param xCoord
      *            the x-coordinate of the centre of the circle.
      * @param yCoord
@@ -896,7 +898,7 @@ public final class Canvas {
     /**
      * Draws a closed path in the shape of a circle. The centre of the circle is
      * located at the point (0,0) with radius r.
-     * 
+     *
      * @param radius
      *            the radius of the circle.
      */
@@ -909,10 +911,10 @@ public final class Canvas {
      * the array argument. The first pair of points in the array specifies a
      * move. Line segments a drawn relative to the current point which is
      * updated after each segment is drawn.
-     * 
+     *
      * If the number of points is an odd number then the last point will be
      * ignored.
-     * 
+     *
      * @param points
      *            and array of coordinate pairs. The first pair of points
      *            defines the coordinates of a move operation, successive pairs
@@ -939,10 +941,10 @@ public final class Canvas {
      * the array argument. The first pair of points in the array specifies a
      * move. Line segments a drawn using absolute coordinates. The current point
      * which is updated after each segment is drawn.
-     * 
+     *
      * If the number of points is an odd number then the last point will be
      * ignored.
-     * 
+     *
      * @param points
      *            and array of coordinate pairs. The first pair of points
      *            defines the coordinates of a move operation, successive pairs
@@ -1014,8 +1016,8 @@ public final class Canvas {
     }
 
     private void flatten() {
-        final double[] quadX = new double[] { 0.0, 0.0, 0.0, 0.0 };
-        final double[] quadY = new double[] { 0.0, 0.0, 0.0, 0.0 };
+        final double[] quadX = {0.0, 0.0, 0.0, 0.0};
+        final double[] quadY = {0.0, 0.0, 0.0, 0.0};
 
         double delta;
         double pointAX;

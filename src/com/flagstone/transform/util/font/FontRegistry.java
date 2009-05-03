@@ -33,11 +33,11 @@ package com.flagstone.transform.util.font;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/**
- */
-//TODO(class)
+/** TODO(class). */
 public final class FontRegistry {
-    private static Map<String, FontProvider> providers = new LinkedHashMap<String, FontProvider>();
+
+    private static Map<String, FontProvider> providers =
+        new LinkedHashMap<String, FontProvider>();
 
     static {
         for (final FontEncoding encoding : FontEncoding.values()) {

@@ -3,7 +3,7 @@ package com.flagstone.transform.button;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-//TODO(doc) Review
+/** TODO(class). */
 public enum ButtonEvent {
     /**
      * Code for the button event that occurs when the mouse cursor moves over
@@ -159,6 +159,7 @@ public enum ButtonEvent {
         }
     }
 
+    /** TODO(method). */
     public static ButtonEvent fromInt(final int type) {
         return TABLE.get(type);
     }
@@ -169,6 +170,7 @@ public enum ButtonEvent {
         this.value = value;
     }
 
+    /** TODO(method). */
     public int getValue() {
         return value;
     }

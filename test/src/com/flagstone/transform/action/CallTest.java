@@ -44,7 +44,7 @@ public final class CallTest {
 
     private transient Call fixture;
 
-    private transient final byte[] encoded = new byte[] { (byte) 0x9E, 0x00,
+    private final transient byte[] encoded = new byte[] { (byte) 0x9E, 0x00,
             0x00 };
 
     @Test

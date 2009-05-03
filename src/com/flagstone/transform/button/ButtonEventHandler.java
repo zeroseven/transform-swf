@@ -1,30 +1,30 @@
 /*
  * ButtonEvent.java
  * Transform
- * 
+ *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  *  * Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice, 
- *    this list of conditions and the following disclaimer in the documentation 
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors 
- *    may be used to endorse or promote products derived from this software 
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
@@ -46,11 +46,10 @@ import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.coder.SWFFactory;
 
-//TODO(doc) Review
 /**
  * ButtonEvent is used to define the actions that a (menu or push) button will
- * execute in response to a particular event. A button responds to:</p>
- * 
+ * execute in response to a particular event. A button responds to:
+ *
  * <table class="datasheet">
  * <tr>
  * <td valign="top">RollOver</td>
@@ -80,14 +79,13 @@ import com.flagstone.transform.coder.SWFFactory;
  * <td>the mouse button is clicked, the mouse cursor is dragged into the active
  * area of the button and the mouse button is released.</td>
  * </tr>
- * </td> </tr>
  * </table>
- * 
+ *
  * <p>
  * When a button is configured as a menu item then three additional events can
  * occur:
  * </p>
- * 
+ *
  * <table class="datasheet">
  * <tr>
  * <td valign="top">MenuDragOver</td>
@@ -105,22 +103,22 @@ import com.flagstone.transform.coder.SWFFactory;
  * into the active area of the menu item.</td>
  * </tr>
  * </table>
- * 
+ *
  * <p>
  * In addition to responding to mouse events, buttons also respond to keys being
  * pressed on the keyboard. Keyboard events are defined by the character key
  * being pressed, e.g. "t", "T", "$", etc. The event code for a key is generated
  * using the <b>codeForKey</b> method:
  * </p>
- * 
+ *
  * <pre>
  * int eventCode = ButtonEvent.codeForKey('J');
  * </pre>
- * 
+ *
  * <p>
  * For control keys the codes are defined using the following set of constants:
  * </p>
- * 
+ *
  * <table>
  * <tr>
  * <td>&lt;Left&gt;</td>
@@ -183,25 +181,26 @@ import com.flagstone.transform.coder.SWFFactory;
  * <td>Space bar.</td>
  * </tr>
  * </table>
- * 
+ *
  * <p>
  * A button can respond in the same way for multiple events by creating a
  * compound event code created by performing a bit-wise Or of the individual
  * codes:
  * </p>
- * 
+ *
  * <pre>
  * int eventCode = ButtonEvent.RollOver | ButtonEvent.Press;
  * int eventCode = ButtonEvent.Enter | ButtonEvent.PageUp;
  * </pre>
- * 
+ *
  * <p>
  * While multiple mouse events can be defined for a button only one keyboard
  * event can be defined.
  * </p>
- * 
+ *
  * @see DefineButton2
  */
+//TODO(class)
 public final class ButtonEventHandler implements SWFEncodeable {
     private static final String FORMAT = "ButtonEventHandler: { event=%s; actions=%s }";
 
@@ -209,7 +208,7 @@ public final class ButtonEventHandler implements SWFEncodeable {
      * Returns the code used to identify that a character has been typed on the
      * keyboard. This method should be used for characters that are not already
      * defined as a constant in this class.
-     * 
+     *
      * @param character
      *            a keyboard character.
      */
@@ -222,7 +221,21 @@ public final class ButtonEventHandler implements SWFEncodeable {
 
     private transient int length = 0;
 
-    // TODO(doc)
+    /**
+     * Creates and initialises a ButtonEventHandler object using values encoded
+     * in the Flash binary format.
+     *
+     * @param coder
+     *            an SWFDecoder object that contains the encoded Flash data.
+     *
+     * @param context
+     *            a Context object used to manage the decoders for different
+     *            type of object and to pass information on how objects are
+     *            decoded.
+     *
+     * @throws CoderException
+     *             if an error occurs while decoding the data.
+     */
     public ButtonEventHandler(final int size, final SWFDecoder coder,
             final Context context) throws CoderException {
         event = coder.readWord(2, false);
@@ -249,7 +262,7 @@ public final class ButtonEventHandler implements SWFEncodeable {
     /**
      * Creates an ButtonEvent object that defines the array of actions that will
      * be executed when a particular event occurs.
-     * 
+     *
      * @param aNumber
      *            the event code. Must be in the range 1..65535.
      * @param anArray
@@ -262,7 +275,14 @@ public final class ButtonEventHandler implements SWFEncodeable {
         setActions(anArray);
     }
 
-    // TODO(doc)
+    /**
+     * Creates and initialises a ButtonEventHandler object using the values copied
+     * from another ButtonEventHandler object.
+     *
+     * @param object
+     *            a ButtonEventHandler object from which the values will be
+     *            copied.
+     */
     public ButtonEventHandler(final ButtonEventHandler object) {
         event = object.event;
         actions = new ArrayList<Action>();
@@ -274,7 +294,7 @@ public final class ButtonEventHandler implements SWFEncodeable {
 
     /**
      * Add an action to the end of the actions array.
-     * 
+     *
      * @param anAction
      *            an object derived from the base class Action. Must not be
      *            null.
@@ -312,20 +332,20 @@ public final class ButtonEventHandler implements SWFEncodeable {
 
     /**
      * Sets the event code that this ButtonEvent defines actions for.
-     * 
-     * @param aNumber
-     *            the event code. Must be in the range 1..65535.
+     *
+     * @param set
+     *            the set of events.
      */
     public void setEvent(final Set<ButtonEvent> set) {
-        for (final ButtonEvent event : set) {
-            this.event |= event.getValue();
+        for (final ButtonEvent buttonEvent : set) {
+            event |= buttonEvent.getValue();
         }
     }
 
     /**
      * Sets the array of actions that are executed by the button in response to
      * specified event(s).
-     * 
+     *
      * @param anArray
      *            the array of action objects that will be executed when the
      *            specified event(s) occur. The array may be empty but must not
@@ -350,6 +370,7 @@ public final class ButtonEventHandler implements SWFEncodeable {
         return String.format(FORMAT, event, actions);
     }
 
+    /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         length = 2;
 
@@ -360,6 +381,7 @@ public final class ButtonEventHandler implements SWFEncodeable {
         return length;
     }
 
+    /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         coder.writeWord(length + 2, 2);

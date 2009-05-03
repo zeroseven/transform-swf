@@ -1,30 +1,30 @@
 /*
  * DefineMorphShape.java
  * Transform
- * 
+ *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  *  * Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice, 
- *    this list of conditions and the following disclaimer in the documentation 
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors 
- *    may be used to endorse or promote products derived from this software 
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
@@ -47,20 +47,19 @@ import com.flagstone.transform.coder.SWFFactory;
 import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.linestyle.MorphLineStyle2;
 
-//TODO(doc) Review
 /**
  * DefineMorphShape defines a shape that will morph from one form into another.
- * 
+ *
  * <p>
  * Only the start and end shapes are defined the Flash Player will perform the
  * interpolation that transforms the shape at each staging in the morphing
  * process.
  * </p>
- * 
+ *
  * <p>
  * Morphing can be applied to any shape, however there are a few restrictions:
  * </p>
- * 
+ *
  * <ul>
  * <li>The start and end shapes must have the same number of edges (Line and
  * Curve objects).</li>
@@ -72,7 +71,7 @@ import com.flagstone.transform.linestyle.MorphLineStyle2;
  * number of points in the start and end shape.</li>
  * <li>The start and end shape must contain the same set of ShapeStyle objects.</li>
  * </ul>
- * 
+ *
  * <p>
  * To perform the morphing of a shape the shape is placed in the display list
  * using a PlaceObject2 object. The ratio attribute in the PlaceObject2 object
@@ -80,15 +79,19 @@ import com.flagstone.transform.linestyle.MorphLineStyle2;
  * 65535 where 0 represents the start of the morphing process and 65535, the
  * end.
  * </p>
- * 
+ *
  * <p>
  * The edges in the shapes may change their type when a shape is morphed.
  * Straight edges can become curves and vice versa.
  * </p>
- * 
+ *
  */
+//TODO(class)
 public final class DefineMorphShape2 implements DefineTag {
-    private static final String FORMAT = "DefineMorphShape2: { identifier=%d; startShapeBounds=%s; endShapeBounds=%s; startEdgeBounds=%s; endEdgeBounds=%s; fillStyles=%s; lineStyles=%s; startShape=%s; endShape=%s }";
+    private static final String FORMAT = "DefineMorphShape2: { identifier=%d;"
+            + " startShapeBounds=%s; endShapeBounds=%s; "
+            + " startEdgeBounds=%s; endEdgeBounds=%s;"
+            + " fillStyles=%s; lineStyles=%s; startShape=%s; endShape=%s }";
 
     private int identifier;
     private Bounds startShapeBounds;
@@ -107,7 +110,21 @@ public final class DefineMorphShape2 implements DefineTag {
     private transient int lineBits;
     private transient boolean scaling;
 
-    // TODO(doc)
+    /**
+     * Creates and initialises a DefineMorphShape2 object using values encoded
+     * in the Flash binary format.
+     *
+     * @param coder
+     *            an SWFDecoder object that contains the encoded Flash data.
+     *
+     * @param context
+     *            a Context object used to manage the decoders for different
+     *            type of object and to pass information on how objects are
+     *            decoded.
+     *
+     * @throws CoderException
+     *             if an error occurs while decoding the data.
+     */
     public DefineMorphShape2(final SWFDecoder coder, final Context context)
             throws CoderException {
         final int start = coder.getPointer();
@@ -195,7 +212,7 @@ public final class DefineMorphShape2 implements DefineTag {
 
     /**
      * Creates a DefineMorphShape object.
-     * 
+     *
      * @param uid
      *            an unique identifier for this object. Must be in the range
      *            1..65535.
@@ -230,7 +247,14 @@ public final class DefineMorphShape2 implements DefineTag {
         setEndShape(endShape);
     }
 
-    // TODO(doc)
+    /**
+     * Creates and initialises a DefineMorphShape2 object using the values copied
+     * from another DefineMorphShape2 object.
+     *
+     * @param object
+     *            a DefineMorphShape2 object from which the values will be
+     *            copied.
+     */
     public DefineMorphShape2(final DefineMorphShape2 object) {
         identifier = object.identifier;
         startShapeBounds = object.startShapeBounds;
@@ -249,10 +273,12 @@ public final class DefineMorphShape2 implements DefineTag {
         endShape = object.endShape.copy();
     }
 
+    /** TODO(method). */
     public int getIdentifier() {
         return identifier;
     }
 
+    /** TODO(method). */
     public void setIdentifier(final int uid) {
         if ((uid < 0) || (uid > 65535)) {
             throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
@@ -276,7 +302,7 @@ public final class DefineMorphShape2 implements DefineTag {
 
     /**
      * Add a LineStyle object to the array of line styles.
-     * 
+     *
      * @param aLineStyle
      *            and LineStyle object. Must not be null.
      */
@@ -287,7 +313,7 @@ public final class DefineMorphShape2 implements DefineTag {
 
     /**
      * Add the fill style object to the array of fill styles.
-     * 
+     *
      * @param aFillStyle
      *            an FillStyle object. Must not be null.
      */
@@ -359,7 +385,7 @@ public final class DefineMorphShape2 implements DefineTag {
 
     /**
      * Sets the starting bounds of the shape.
-     * 
+     *
      * @param aBounds
      *            the bounding rectangle enclosing the start shape. Must not be
      *            null.
@@ -373,7 +399,7 @@ public final class DefineMorphShape2 implements DefineTag {
 
     /**
      * Sets the ending bounds of the shape.
-     * 
+     *
      * @param aBounds
      *            the bounding rectangle enclosing the end shape. Must not be
      *            null.
@@ -387,7 +413,7 @@ public final class DefineMorphShape2 implements DefineTag {
 
     /**
      * Sets the starting bounds of the shape.
-     * 
+     *
      * @param aBounds
      *            the bounding rectangle enclosing the start shape. Must not be
      *            null.
@@ -401,7 +427,7 @@ public final class DefineMorphShape2 implements DefineTag {
 
     /**
      * Sets the ending bounds of the shape.
-     * 
+     *
      * @param aBounds
      *            the bounding rectangle enclosing the end shape. Must not be
      *            null.
@@ -415,7 +441,7 @@ public final class DefineMorphShape2 implements DefineTag {
 
     /**
      * Sets the array of morph fill styles.
-     * 
+     *
      * @param anArray
      *            an array of MorphSolidFill, MorphBitmapFill and
      *            MorphGradientFill objects. Must not be null.
@@ -429,7 +455,7 @@ public final class DefineMorphShape2 implements DefineTag {
 
     /**
      * Sets the array of morph line styles.
-     * 
+     *
      * @param anArray
      *            an array of MorphLineStyle objects. Must not be null.
      */
@@ -443,7 +469,7 @@ public final class DefineMorphShape2 implements DefineTag {
     /**
      * Sets the shape that will be displayed at the start of the morphing
      * process.
-     * 
+     *
      * @param aShape
      *            the shape at the start of the morphing process. Must not be
      *            null.
@@ -457,7 +483,7 @@ public final class DefineMorphShape2 implements DefineTag {
 
     /**
      * Sets the shape that will be displayed at the end of the morphing process.
-     * 
+     *
      * @param aShape
      *            the shape at the end of the morphing process. Must not be
      *            null.
@@ -484,6 +510,7 @@ public final class DefineMorphShape2 implements DefineTag {
     }
 
     // TODO(optimise)
+    /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         fillBits = Encoder.unsignedSize(fillStyles.size());
         lineBits = Encoder.unsignedSize(lineStyles.size());
@@ -544,6 +571,7 @@ public final class DefineMorphShape2 implements DefineTag {
     }
 
     // TODO(optimise)
+    /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         final int start = coder.getPointer();

@@ -1,5 +1,6 @@
 package com.flagstone.transform.util.image;
 
+/** TODO(class). */
 public enum ImageEncoding {
     /** TODO(doc). */
     BMP("image/bmp", new BMPDecoder()),
@@ -16,9 +17,9 @@ public enum ImageEncoding {
     /** TODO(doc). */
     PGM("image/x-portable-pixmap", new BufferedImageDecoder()),
     /** TODO(doc). */
-    PNG("image/png", new PNGDecoder()), 
+    PNG("image/png", new PNGDecoder()),
     /** TODO(doc). */
-    PSD("image/psd",new BufferedImageDecoder()),
+    PSD("image/psd", new BufferedImageDecoder()),
     /** TODO(doc). */
     RAS("image/ras", new BufferedImageDecoder());
 

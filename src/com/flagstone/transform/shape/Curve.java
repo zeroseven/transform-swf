@@ -1,30 +1,30 @@
 /*
  * Curve.java
  * Transform
- * 
+ *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  *  * Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice, 
- *    this list of conditions and the following disclaimer in the documentation 
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors 
- *    may be used to endorse or promote products derived from this software 
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
@@ -36,6 +36,7 @@ import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.Encoder;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.coder.ShapeRecord;
 
 /**
  * <p>
@@ -45,18 +46,19 @@ import com.flagstone.transform.coder.SWFEncoder;
  * which defines the end-point of the curve, and which is specified relative to
  * the anchor point.
  * </p>
- * 
+ *
  * <img src="doc-files/quadratic.gif">
- * 
+ *
  * <p>
  * Flash does not directly support Cubic Bezier curves. Converting a Cubic
  * Bezier curve to a Quadratic curve is a non trivial process, however the
  * Canvas class contains a method to perform the conversion simplifying the
  * create of Shape outlines in Flash from other graphics formats.
  * </p>
- * 
+ *
  * @see com.flagstone.transform.util.shape.Canvas
  */
+//TODO(class)
 public final class Curve implements ShapeRecord {
     private static final String FORMAT = "Curve: control=(%d,%d), anchor=(%d,%d);";
 
@@ -67,8 +69,17 @@ public final class Curve implements ShapeRecord {
 
     private transient int size;
 
-    // TODO(doc)
-    public Curve(final SWFDecoder coder) throws CoderException {
+    /**
+     * Creates and initialises a Curve object using values encoded
+     * in the Flash binary format.
+     *
+     * @param coder
+     *            an SWFDecoder object that contains the encoded Flash data.
+     *
+     * @throws CoderException
+     *             if an error occurs while decoding the data.
+     */
+   public Curve(final SWFDecoder coder) throws CoderException {
         // skip over shapeType and edgeType
         coder.adjustPointer(2);
         size = coder.readBits(4, false) + 2;
@@ -81,7 +92,7 @@ public final class Curve implements ShapeRecord {
     /**
      * Creates a Curve object specifying the anchor and control point
      * coordinates.
-     * 
+     *
      * @param controlX
      *            the x-coordinate of the control point, specified relative to
      *            the current drawing point. Must be in the range -65535..65535.
@@ -100,7 +111,14 @@ public final class Curve implements ShapeRecord {
         setPoints(controlX, controlY, anchorX, anchorY);
     }
 
-    // TODO(doc)
+    /**
+     * Creates and initialises a Curve object using the values copied
+     * from another Curve object.
+     *
+     * @param object
+     *            a Curve object from which the values will be
+     *            copied.
+     */
     public Curve(final Curve object) {
         controlX = object.controlX;
         controlY = object.controlY;
@@ -143,39 +161,40 @@ public final class Curve implements ShapeRecord {
     /**
      * Sets the x and y coordinates of the control and anchor points. Values
      * must be in the range -65535..65535.
-     * 
-     * @param controlX
+     *
+     * @param xControl
      *            the x-coordinate of the control point.
-     * @param controlY
+     * @param yControl
      *            the y-coordinate of the control point.
-     * @param anchorX
+     * @param xAnchor
      *            the x-coordinate of the anchor point.
-     * @param anchorY
+     * @param yAnchor
      *            the y-coordinate of the anchor point.
      */
-    public void setPoints(final int controlX, final int controlY,
-            final int anchorX, final int anchorY) {
-        if ((controlX < -65535) || (controlX > 65535)) {
+    public void setPoints(final int xControl, final int yControl,
+            final int xAnchor, final int yAnchor) {
+        if ((xControl < -65535) || (xControl > 65535)) {
             throw new IllegalArgumentException(Strings.COORDINATES_RANGE);
         }
-        this.controlX = controlX;
+        controlX = xControl;
 
-        if ((controlY < -65535) || (controlY > 65535)) {
+        if ((yControl < -65535) || (yControl > 65535)) {
             throw new IllegalArgumentException(Strings.COORDINATES_RANGE);
         }
-        this.controlY = controlY;
+        controlY = yControl;
 
-        if ((anchorX < -65535) || (anchorX > 65535)) {
+        if ((xAnchor < -65535) || (xAnchor > 65535)) {
             throw new IllegalArgumentException(Strings.COORDINATES_RANGE);
         }
-        this.anchorX = anchorX;
+        anchorX = xAnchor;
 
-        if ((anchorY < -65535) || (anchorY > 65535)) {
+        if ((yAnchor < -65535) || (yAnchor > 65535)) {
             throw new IllegalArgumentException(Strings.COORDINATES_RANGE);
         }
-        this.anchorY = anchorY;
+        anchorY = yAnchor;
     }
 
+    /** TODO(method). */
     public Curve copy() {
         return new Curve(this);
     }
@@ -185,6 +204,7 @@ public final class Curve implements ShapeRecord {
         return String.format(FORMAT, controlX, controlY, anchorX, anchorY);
     }
 
+    /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         int numberOfBits = 6;
 
@@ -198,6 +218,7 @@ public final class Curve implements ShapeRecord {
         return numberOfBits;
     }
 
+    /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         coder.writeBits(2, 2); // shapeType, edgeType

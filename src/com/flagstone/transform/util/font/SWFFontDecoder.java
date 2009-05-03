@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.zip.DataFormatException;
 
 import com.flagstone.transform.Movie;
-import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.font.CharacterEncoding;
@@ -99,13 +98,13 @@ public final class SWFFontDecoder implements FontProvider, FontDecoder {
     private transient int metrics;
     private transient int glyphOffset;
 
+    /** TODO(method). */
     public FontDecoder newDecoder() {
         return new TTFDecoder();
     }
 
     /** TODO(method). */
-    public void read(final File file) throws FileNotFoundException,
-            IOException, DataFormatException {
+    public void read(final File file) throws IOException, DataFormatException {
         final FileInputStream stream = new FileInputStream(file);
         try {
             decode(stream);
@@ -115,8 +114,7 @@ public final class SWFFontDecoder implements FontProvider, FontDecoder {
     }
 
     /** TODO(method). */
-    public void read(final URL url) throws FileNotFoundException, IOException,
-            DataFormatException {
+    public void read(final URL url) throws IOException, DataFormatException {
         final URLConnection connection = url.openConnection();
 
         if (connection.getContentLength() < 0) {
@@ -139,8 +137,7 @@ public final class SWFFontDecoder implements FontProvider, FontDecoder {
         return fonts;
     }
 
-    private void decode(final InputStream stream) throws FileNotFoundException,
-            CoderException, IOException, DataFormatException {
+    private void decode(final InputStream stream) throws IOException, DataFormatException {
         final Movie movie = new Movie();
         movie.decodeFromStream(stream);
 
@@ -381,26 +378,5 @@ public final class SWFFontDecoder implements FontProvider, FontDecoder {
                 }
             }
         }
-    }
-
-    private byte[] loadFile(final File file) throws FileNotFoundException,
-            IOException {
-        final byte[] data = new byte[(int) file.length()];
-
-        FileInputStream stream = null;
-
-        try {
-            stream = new FileInputStream(file);
-            final int bytesRead = stream.read(data);
-
-            if (bytesRead != data.length) {
-                throw new IOException(file.getAbsolutePath());
-            }
-        } finally {
-            if (stream != null) {
-                stream.close();
-            }
-        }
-        return data;
     }
 }

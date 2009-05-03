@@ -31,12 +31,11 @@
 package com.flagstone.transform.util.font;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.util.zip.DataFormatException;
 
+/** TODO(class). */
 public interface FontDecoder {
     /**
      * Initialise this object with the font information decoded from a TrueType
@@ -46,18 +45,16 @@ public interface FontDecoder {
      *            the File containing the abstract path to the file containing
      *            the font.
      *
-     * @throws FileNotFoundException
-     *             is the file cannot be found or opened.
      * @throws IOException
      *             if there is an error reading the file.
      * @throws DataFormatException
      *             if the there is an error decoding the font.
      */
-    void read(File file) throws FileNotFoundException, IOException,
-            DataFormatException;
+    void read(File file) throws IOException, DataFormatException;
 
-    void read(URL url) throws FileNotFoundException, IOException,
-            DataFormatException;
+    /** TODO(method). */
+    void read(URL url) throws IOException, DataFormatException;
 
+    /** TODO(method). */
     Font[] getFonts();
 }

@@ -1,30 +1,30 @@
 /*
  * DefineText2.java
  * Transform
- * 
+ *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  *  * Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice, 
- *    this list of conditions and the following disclaimer in the documentation 
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors 
- *    may be used to endorse or promote products derived from this software 
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
@@ -44,15 +44,14 @@ import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.datatype.CoordTransform;
 
-//TODO(doc) Review
 /**
  * DefineText2 defines one or more lines of transparent text.
- * 
+ *
  * <p>
  * It extends the functionality provided by the DefineText class by encoding the
  * alpha channel of the colour objects used to set the text color.
  * </p>
- * 
+ *
  * <p>
  * DefineText2 class acts as a container for the text. The bounding rectangle
  * and transform controls how the text is laid out. Each TextSpan object
@@ -61,10 +60,11 @@ import com.flagstone.transform.datatype.CoordTransform;
  * coordinate transform can be used to control the size and orientation of the
  * text when it is displayed.
  * </p>
- * 
+ *
  * @see TextSpan
  * @see DefineText
  */
+//TODO(class)
 public final class DefineText2 implements DefineTag {
     private static final String FORMAT = "DefineText2: { identifier=%d; bounds=%s; transform=%s; objects=%s }";
 
@@ -72,13 +72,26 @@ public final class DefineText2 implements DefineTag {
     private CoordTransform transform;
     private List<TextSpan> objects;
 
-    private transient int end;
     private transient int length;
     private transient int glyphBits;
     private transient int advanceBits;
     private int identifier;
 
-    // TODO(doc)
+    /**
+     * Creates and initialises a DefineText2 object using values encoded
+     * in the Flash binary format.
+     *
+     * @param coder
+     *            an SWFDecoder object that contains the encoded Flash data.
+     *
+     * @param context
+     *            a Context object used to manage the decoders for different
+     *            type of object and to pass information on how objects are
+     *            decoded.
+     *
+     * @throws CoderException
+     *             if an error occurs while decoding the data.
+     */
     // TODO(optimise)
     public DefineText2(final SWFDecoder coder, final Context context)
             throws CoderException {
@@ -145,7 +158,7 @@ public final class DefineText2 implements DefineTag {
     /**
      * Creates a DefineText2 object with the specified bounding rectangle,
      * coordinate transform and text records.
-     * 
+     *
      * @param uid
      *            the unique identifier for this object. Must be in the range
      *            1..65535
@@ -166,7 +179,14 @@ public final class DefineText2 implements DefineTag {
         setObjects(spans);
     }
 
-    // TODO(doc)
+    /**
+     * Creates and initialises a DefineText2 object using the values copied
+     * from another DefineText2 object.
+     *
+     * @param object
+     *            a DefineText2 object from which the values will be
+     *            copied.
+     */
     public DefineText2(final DefineText2 object) {
         identifier = object.identifier;
         bounds = object.bounds;
@@ -177,10 +197,12 @@ public final class DefineText2 implements DefineTag {
         }
     }
 
+    /** TODO(method). */
     public int getIdentifier() {
         return identifier;
     }
 
+    /** TODO(method). */
     public void setIdentifier(final int uid) {
         if ((uid < 0) || (uid > 65535)) {
             throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
@@ -204,7 +226,7 @@ public final class DefineText2 implements DefineTag {
 
     /**
      * Add a TextSpan object to the array of text spans.
-     * 
+     *
      * @param obj
      *            an TextSpan object. Must not be null.
      */
@@ -219,7 +241,7 @@ public final class DefineText2 implements DefineTag {
     /**
      * Returns the bounding rectangle that completely encloses the text to be
      * displayed.
-     * 
+     *
      * @return the bounding rectangle of the text.
      */
     public Bounds getBounds() {
@@ -243,7 +265,7 @@ public final class DefineText2 implements DefineTag {
 
     /**
      * Sets the bounding rectangle that encloses the text being displayed.
-     * 
+     *
      * @param aBounds
      *            the bounding rectangle enclosing the text. Must not be null.
      */
@@ -257,7 +279,7 @@ public final class DefineText2 implements DefineTag {
     /**
      * Sets the coordinate transform that changes the orientation and size of
      * the text displayed.
-     * 
+     *
      * @param aTransform
      *            an CoordTransform to change the size and orientation of the
      *            text. Must not be null.
@@ -271,7 +293,7 @@ public final class DefineText2 implements DefineTag {
 
     /**
      * Sets the array of text spans that define the text to be displayed.
-     * 
+     *
      * @param array
      *            an array of TextSpan objects that define the text to be
      *            displayed. Must not be null.
@@ -295,6 +317,7 @@ public final class DefineText2 implements DefineTag {
         return String.format(FORMAT, identifier, bounds, transform, objects);
     }
 
+    /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         glyphBits = calculateSizeForGlyphs();
         advanceBits = calculateSizeForAdvances();
@@ -322,6 +345,7 @@ public final class DefineText2 implements DefineTag {
     }
 
     // TODO(optimise)
+    /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         final int start = coder.getPointer();

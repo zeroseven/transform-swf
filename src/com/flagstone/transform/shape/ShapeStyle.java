@@ -1,30 +1,30 @@
 /*
  * ShapeStyle.java
  * Transform
- * 
+ *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  *  * Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice, 
- *    this list of conditions and the following disclaimer in the documentation 
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors 
- *    may be used to endorse or promote products derived from this software 
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
@@ -42,26 +42,26 @@ import com.flagstone.transform.coder.FillStyle;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.coder.SWFFactory;
+import com.flagstone.transform.coder.ShapeRecord;
 import com.flagstone.transform.linestyle.LineStyle;
 
-//TODO(doc) Review
 /**
  * ShapeStyle is used to change the drawing environment when a shape is drawn.
  * Three operations can be performed:
- * 
+ *
  * <ul>
  * <li>Select a line style or fill style.</li>
  * <li>Move the current drawing point.</li>
  * <li>Define a new set of line and fill styles.</li>
  * </ul>
- * 
+ *
  * <p>
  * An ShapeStyle object can specify one or more of the operations rather than
  * specifying them in separate ShapeStyle objects - compacting the size of the
  * binary data when the object is encoded. Conversely if an operation is not
  * defined then the values may be omitted.
  * </p>
- * 
+ *
  * <p>
  * Line and Fill styles are selected by the index position, starting at 1, of
  * the style in an array of styles. An index of zero means that no style is
@@ -72,7 +72,7 @@ import com.flagstone.transform.linestyle.LineStyle;
  * style as the overlapping area would form a hole in the shape and not be
  * filled.
  * </p>
- * 
+ *
  * <p>
  * A new drawing point is specified using the absolute x and y coordinates. If
  * an ShapeStyle object is the first in a shape then the current drawing point
@@ -80,21 +80,23 @@ import com.flagstone.transform.linestyle.LineStyle;
  * drawing point is set then the x and y coordinates may be set to
  * VALUE_NOT_SET.
  * </p>
- * 
+ *
  * <p>
  * Finally the line or fill style arrays may left empty if no new styles are
  * being specified.
  * </p>
- * 
+ *
  * <p>
  * Note that the values for the moveX and moveY attributes and the line and fill
  * styles arrays are defined in pairs and are optional only if both are set to
  * VALUE_NOT_SET.
  * </p>
- * 
+ *
  */
+//TODO(class)
 public final class ShapeStyle implements ShapeRecord {
-    private static final String FORMAT = "ShapeStyle: { move=(%d, %d); fill=%d; alt=%d; line=%d; fillStyles=%s; lineStyles=%s }";
+    private static final String FORMAT = "ShapeStyle: { move=(%d, %d);"
+            + " fill=%d; alt=%d; line=%d; fillStyles=%s; lineStyles=%s }";
 
     private Integer moveX;
     private Integer moveY;
@@ -110,7 +112,21 @@ public final class ShapeStyle implements ShapeRecord {
     private transient boolean hasFill;
     private transient boolean hasMove;
 
-    // TODO(doc)
+    /**
+     * Creates and initialises a ShapeStyle object using values encoded
+     * in the Flash binary format.
+     *
+     * @param coder
+     *            an SWFDecoder object that contains the encoded Flash data.
+     *
+     * @param context
+     *            a Context object used to manage the decoders for different
+     *            type of object and to pass information on how objects are
+     *            decoded.
+     *
+     * @throws CoderException
+     *             if an error occurs while decoding the data.
+     */
     // TODO(optimise)
     public ShapeStyle(final SWFDecoder coder, final Context context)
             throws CoderException {
@@ -200,6 +216,14 @@ public final class ShapeStyle implements ShapeRecord {
         lineStyles = new ArrayList<LineStyle>();
     }
 
+    /**
+     * Creates and initialises a ShapeStyle object using the values copied
+     * from another ShapeStyle object.
+     *
+     * @param object
+     *            a ShapeStyle object from which the values will be
+     *            copied.
+     */
     public ShapeStyle(final ShapeStyle object) {
         moveX = object.moveX;
         moveY = object.moveY;
@@ -222,7 +246,7 @@ public final class ShapeStyle implements ShapeRecord {
 
     /**
      * Add a LineStyle object to the array of line styles.
-     * 
+     *
      * @param style
      *            and LineStyle object. Must not be null.
      */
@@ -236,7 +260,7 @@ public final class ShapeStyle implements ShapeRecord {
 
     /**
      * Add the fill style object to the array of fill styles.
-     * 
+     *
      * @param style
      *            and FillStyle object. Must not be null.
      */
@@ -305,12 +329,12 @@ public final class ShapeStyle implements ShapeRecord {
 
     /**
      * Sets the coordinates of any relative move.
-     * 
+     *
      * @param xCoord
      *            move the current point by aNumber in the x direction. Must be
      *            in the range -65535..65535.
-     * 
-     * @param xCoord
+     *
+     * @param yCoord
      *            move the current point by aNumber in the y direction. Must be
      *            in the range -65535..65535.
      */
@@ -334,7 +358,7 @@ public final class ShapeStyle implements ShapeRecord {
      * Sets the index of the fill style that will be applied to any area filled.
      * May be set to zero if no style is selected or null if the line style
      * remains unchanged.
-     * 
+     *
      * @param anIndex
      *            selects the fill style at anIndex in the fill styles array of
      *            the parent Shape object.
@@ -348,7 +372,7 @@ public final class ShapeStyle implements ShapeRecord {
      * Sets the index of the fill style that will be applied to any overlapping
      * area filled. May be set to zero if no style is selected or null if the ~
      * line style remains unchanged.
-     * 
+     *
      * @param anIndex
      *            selects the alternate fill style at anIndex in the fill styles
      *            array of the parent Shape object.
@@ -362,7 +386,7 @@ public final class ShapeStyle implements ShapeRecord {
      * Sets the index of the line style that will be applied to any line drawn.
      * May be set to zero if no style is selected or null if the line style
      * remains unchanged.
-     * 
+     *
      * @param anIndex
      *            selects the line style at anIndex in the line styles array of
      *            the parent Shape object.
@@ -375,7 +399,7 @@ public final class ShapeStyle implements ShapeRecord {
     /**
      * Sets the array of new line styles. May be set to null if no styles are
      * being defined.
-     * 
+     *
      * @param anArray
      *            an array of LineStyle objects. Must not be null.
      */
@@ -390,7 +414,7 @@ public final class ShapeStyle implements ShapeRecord {
     /**
      * Sets the array of new fill styles. May be set to null if no styles are
      * being defined.
-     * 
+     *
      * @param anArray
      *            an array of fill style objects. Must not be null.
      */
@@ -415,6 +439,7 @@ public final class ShapeStyle implements ShapeRecord {
                 lineStyle, fillStyles, lineStyles);
     }
 
+    /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         hasLine = lineStyle != null;
         hasFill = fillStyle != null;
@@ -425,9 +450,9 @@ public final class ShapeStyle implements ShapeRecord {
         int numberOfBits = 6;
 
         if (hasMove) {
-            final int _moveFieldSize = Math.max(Encoder.size(moveX), Encoder
+            final int fieldSize = Math.max(Encoder.size(moveX), Encoder
                     .size(moveY));
-            numberOfBits += 5 + _moveFieldSize * 2;
+            numberOfBits += 5 + fieldSize * 2;
         }
 
         final Map<Integer, Integer> vars = context.getVariables();
@@ -483,6 +508,7 @@ public final class ShapeStyle implements ShapeRecord {
         return numberOfBits;
     }
 
+    /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         coder.writeBits(0, 1);
@@ -495,12 +521,12 @@ public final class ShapeStyle implements ShapeRecord {
         final Map<Integer, Integer> vars = context.getVariables();
 
         if (hasMove) {
-            final int _moveFieldSize = Math.max(Encoder.size(moveX), Encoder
+            final int fieldSize = Math.max(Encoder.size(moveX), Encoder
                     .size(moveY));
 
-            coder.writeBits(_moveFieldSize, 5);
-            coder.writeBits(moveX, _moveFieldSize);
-            coder.writeBits(moveY, _moveFieldSize);
+            coder.writeBits(fieldSize, 5);
+            coder.writeBits(moveX, fieldSize);
+            coder.writeBits(moveY, fieldSize);
         }
 
         if (hasFill) {

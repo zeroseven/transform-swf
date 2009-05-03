@@ -46,16 +46,16 @@ import com.flagstone.transform.datatype.Color;
 
 public final class LineStyle2Test {
 
-    private static transient final int width = 1;
-    private transient final Color color = new Color(2, 3, 4);
+    private static final transient int width = 1;
+    private final transient Color color = new Color(2, 3, 4);
 
     private transient LineStyle2 fixture;
 
-    private transient final byte[] encoded = new byte[] { 0x01, 0x00, 0x02,
+    private final transient byte[] encoded = new byte[] { 0x01, 0x00, 0x02,
             0x03, 0x04 };
 
     @Test
-    @Ignore
+    @Ignore //TODO(implement)
     public void checkCopy() {
         fixture = new LineStyle2(width, color);
         final LineStyle2 copy = fixture.copy();
@@ -66,7 +66,7 @@ public final class LineStyle2Test {
     }
 
     @Test
-    @Ignore
+    @Ignore //TODO(implement)
     public void encode() throws CoderException {
         final SWFEncoder encoder = new SWFEncoder(encoded.length);
         final Context context = new Context();
@@ -80,7 +80,7 @@ public final class LineStyle2Test {
     }
 
     @Test
-    @Ignore
+    @Ignore //TODO(implement)
     public void decode() throws CoderException {
         final SWFDecoder decoder = new SWFDecoder(encoded);
         final Context context = new Context();

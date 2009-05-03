@@ -1,30 +1,30 @@
 /*
  * DefineImage2.java
  * Transform
- * 
+ *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  *  * Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice, 
- *    this list of conditions and the following disclaimer in the documentation 
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors 
- *    may be used to endorse or promote products derived from this software 
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
@@ -40,40 +40,42 @@ import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-//TODO(doc) Review
 /**
  * DefineImage2 is used to define a transparent image compressed using the
  * lossless zlib compression algorithm.
- * 
+ *
  * <p>
  * The class supports colour-mapped images where the image data contains an
  * index into a colour table or images where the image data specifies the colour
  * directly. It extends DefineImage by including alpha channel information for
  * the colour table and pixels in the image.
  * </p>
- * 
+ *
  * <p>
  * For colour-mapped images the colour table contains up to 256, 32-bit colours.
  * The image contains one byte for each pixel which is an index into the table
  * to specify the colour for that pixel. The colour table and the image data are
  * compressed as a single block, with the colour table placed before the image.
  * </p>
- * 
+ *
  * <p>
  * For images where the colour is specified directly, the image data contains 32
  * bit colour values.
  * </p>
- * 
+ *
  * <p>
  * The image data is stored in zlib compressed form within the object. For
  * colour-mapped images the compressed data contains the colour table followed
  * by the image data.
  * </p>
- * 
+ *
  * @see DefineImage
  */
+//TODO(class)
 public final class DefineImage2 implements ImageTag {
-    private static final String FORMAT = "DefineImage2: { identifier=%d; width=%d; height=%d; pixelSize=%d; tableSize=%d; compressedData=%d }";
+    private static final String FORMAT = "DefineImage2: { identifier=%d;"
+            + " width=%d; height=%d; pixelSize=%d; tableSize=%d;"
+            + " compressedData=%d }";
 
     private int width;
     private int height;
@@ -85,7 +87,16 @@ public final class DefineImage2 implements ImageTag {
     private transient int length;
     private transient boolean extendLength;
 
-    // TODO(doc)
+    /**
+     * Creates and initialises an DefineImage2 object using values encoded
+     * in the Flash binary format.
+     *
+     * @param coder
+     *            an SWFDecoder object that contains the encoded Flash data.
+     *
+     * @throws CoderException
+     *             if an error occurs while decoding the data.
+     */
     public DefineImage2(final SWFDecoder coder) throws CoderException {
         final int start = coder.getPointer();
         length = coder.readWord(2, false) & 0x3F;
@@ -120,7 +131,7 @@ public final class DefineImage2 implements ImageTag {
 
     /**
      * Creates a DefineImage2 object defining a colour-mapped image.
-     * 
+     *
      * @param uid
      *            the unique identifier for this object. Must be in the range
      *            1..65535.
@@ -150,7 +161,7 @@ public final class DefineImage2 implements ImageTag {
      * Creates a DefineImage object defining a true-colour image. Each pixel in
      * the image is 32 bits - 8 bits for the red, green, blue and alpha colour
      * channels.
-     * 
+     *
      * @param uid
      *            the unique identifier for this object. Must be in the range
      *            1..65535.
@@ -172,7 +183,14 @@ public final class DefineImage2 implements ImageTag {
         setData(data);
     }
 
-    // TODO(doc)
+    /**
+     * Creates and initialises a DefineImage2 object using the values copied
+     * from another DefineImage2 object.
+     *
+     * @param object
+     *            a DefineImage2 object from which the values will be
+     *            copied.
+     */
     public DefineImage2(final DefineImage2 object) {
         extendLength = object.extendLength;
         width = object.width;
@@ -182,10 +200,12 @@ public final class DefineImage2 implements ImageTag {
         data = Arrays.copyOf(object.data, object.data.length);
     }
 
+    /** TODO(method). */
     public int getIdentifier() {
         return identifier;
     }
 
+    /** TODO(method). */
     public void setIdentifier(final int uid) {
         if ((uid < 0) || (uid > 65535)) {
             throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
@@ -234,7 +254,7 @@ public final class DefineImage2 implements ImageTag {
 
     /**
      * Sets the width of the image in pixels.
-     * 
+     *
      * @param aNumber
      *            the width of the image. Must be in the range of 0..65535.
      */
@@ -244,7 +264,7 @@ public final class DefineImage2 implements ImageTag {
 
     /**
      * Sets the height of the image in pixels.
-     * 
+     *
      * @param aNumber
      *            the height of the image. Must be in the range of 0..65535.
      */
@@ -255,7 +275,7 @@ public final class DefineImage2 implements ImageTag {
     /**
      * Sets the size of the pixel in bits: 8 for colour-mapped images, 32 for
      * direct images.
-     * 
+     *
      * @param size
      *            the size of each pixel in bits: must be either 8 or 32.
      */
@@ -271,7 +291,7 @@ public final class DefineImage2 implements ImageTag {
      * Sets the number of entries in the colour table in the compressed image.
      * For images where the colour is specified directly in the image then the
      * table size should be zero.
-     * 
+     *
      * @param size
      *            the number of entries in the colour table in the compressed
      *            image. Must be in the range 1..256.
@@ -286,7 +306,7 @@ public final class DefineImage2 implements ImageTag {
 
     /**
      * Sets the data containing the compressed image and colour table.
-     * 
+     *
      * @param bytes
      *            byte array containing zlib compressed colour table and image.
      *            Must not be null.
@@ -298,6 +318,7 @@ public final class DefineImage2 implements ImageTag {
         data = bytes;
     }
 
+    /** TODO(method). */
     public DefineImage2 copy() {
         return new DefineImage2(this);
     }
@@ -308,6 +329,7 @@ public final class DefineImage2 implements ImageTag {
                 tableSize, data.length);
     }
 
+    /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         length = 7;
         length += (pixelSize == 8) ? 1 : 0;
@@ -316,6 +338,7 @@ public final class DefineImage2 implements ImageTag {
         return (length > 62 ? 6 : 2) + length;
     }
 
+    /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         final int start = coder.getPointer();

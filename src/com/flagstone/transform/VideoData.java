@@ -4,27 +4,27 @@
  *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  *  * Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice, 
- *    this list of conditions and the following disclaimer in the documentation 
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors 
- *    may be used to endorse or promote products derived from this software 
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package com.flagstone.transform;
@@ -42,7 +42,7 @@ import com.flagstone.transform.datatype.VideoFrameType;
 /**
  * The VideoData class is used to store the data for a single frame in a Flash
  * Video file (.flv).
- * 
+ *
  * <p>
  * VideoData contains information on the codec used to encode the video along
  * with information on the frame - whether it is a key frame which must be
@@ -50,6 +50,7 @@ import com.flagstone.transform.datatype.VideoFrameType;
  * maintain synchronisation with the audio track (Sorenson codec only).
  * </p>
  */
+//TODO(class)
 public final class VideoData implements VideoTag {
     private static final String FORMAT = "VideoData: { codec=%s; frameType=%s; data =%d }";
 
@@ -60,6 +61,16 @@ public final class VideoData implements VideoTag {
 
     private transient int length;
 
+    /**
+     * Creates and initialises a Video object using values encoded
+     * in the Flash Video binary format.
+     *
+     * @param coder
+     *            an FLVDecoder object that contains the encoded Flash Video data.
+     *
+     * @throws CoderException
+     *             if an error occurs while decoding the data.
+     */
     public VideoData(final FLVDecoder coder) throws CoderException {
         final int start = coder.getPointer();
         coder.readByte();
@@ -81,7 +92,7 @@ public final class VideoData implements VideoTag {
      * should be displayed, the video data and the format used to encode it and
      * the type of frame that the video represents - either a key frame, regular
      * frame or an optional frame which can be discarded (H263 format only).
-     * 
+     *
      * @param timestamp
      *            the time in milliseconds at which the data should be played.
      * @param format
@@ -103,6 +114,14 @@ public final class VideoData implements VideoTag {
         setData(data);
     }
 
+    /**
+     * Creates and initialises a VideoData object using the values copied
+     * from another VideoData object.
+     *
+     * @param object
+     *            a VideoData object from which the values will be
+     *            copied.
+     */
     public VideoData(final VideoData object) {
         format = object.format;
         frameType = object.frameType;
@@ -120,7 +139,7 @@ public final class VideoData implements VideoTag {
     /**
      * Sets the timestamp, in milliseconds, relative to the start of the file,
      * when the audio or video will be played.
-     * 
+     *
      * @param time
      *            the time in milliseconds relative to the start of the file.
      *            Must be in the range 0..16,777,215.
@@ -137,7 +156,7 @@ public final class VideoData implements VideoTag {
      * for data that was encoded using the modified Sorenson H263 format or
      * Constants.ScreenVideo for video that was encoded using Macromedia's
      * ScreenVideo format.
-     * 
+     *
      * @return the format used to encode the video either Constants.H263 or
      *         Constants.SCREEN_VIDEO.
      */
@@ -150,7 +169,7 @@ public final class VideoData implements VideoTag {
      * data that was encoded using the modified Sorenson H263 format or
      * Constants.ScreenVideo for video that was encoded using Macromedia's
      * ScreenVideo format.
-     * 
+     *
      * @param format
      *            the format used to encode the video either Constants.H263 or
      *            Constants.SCREEN_VIDEO.
@@ -164,7 +183,7 @@ public final class VideoData implements VideoTag {
      * Constants.KeyFrame, Constants.Frame or Constants.Optional. The latter is
      * used only to indicate disposable frame and is only used with the Sorenson
      * modified H263 format.
-     * 
+     *
      * @return the type of frame, either Constants.KeyFrame, Constants.Frame or
      *         Constants.Optional.
      */
@@ -178,7 +197,7 @@ public final class VideoData implements VideoTag {
      * key frames other whether display of the frame is optional (
      * Constants.Optional). The latter is used only with video encoded using the
      * Sorenson modified H263 format.
-     * 
+     *
      * @param type
      *            the type of frame being displayed, either Constants.KeyFrame,
      *            Constants.Frame or Constants.Optional.
@@ -189,7 +208,7 @@ public final class VideoData implements VideoTag {
 
     /**
      * Get the encoded video data.
-     * 
+     *
      * @return an array of bytes encoded using the format indicated in the codec
      *         attribute, either Constants.H263 or Constants.SCREEN_VIDEO.
      */
@@ -199,7 +218,7 @@ public final class VideoData implements VideoTag {
 
     /**
      * Sets the encoded video data for the frame.
-     * 
+     *
      * @param data
      *            an array of bytes containing the video encoded using the
      *            format indicated in the codec attribute, either Constants.H263
@@ -221,12 +240,14 @@ public final class VideoData implements VideoTag {
         return String.format(FORMAT, format, frameType, data.length);
     }
 
+    /** {@inheritDoc} */
     public int prepareToEncode() {
         length = 12 + data.length;
 
         return length;
     }
 
+    /** {@inheritDoc} */
     public void encode(final FLVEncoder coder) throws CoderException {
         final int start = coder.getPointer();
 
@@ -269,6 +290,9 @@ public final class VideoData implements VideoTag {
         case OPTIONAL:
             value |= 3;
             break;
+        default:
+            throw new CoderException(getClass().getName(), 0, 0, 0,
+                    Strings.INVALID_FORMAT);
         }
 
         return value;

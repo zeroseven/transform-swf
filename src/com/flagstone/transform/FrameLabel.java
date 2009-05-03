@@ -30,8 +30,6 @@
 
 package com.flagstone.transform;
 
-import com.flagstone.transform.action.GetUrl;
-import com.flagstone.transform.action.GetUrl2;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTag;
@@ -39,10 +37,9 @@ import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-//TODO(doc) Review
 /**
  * FrameLabel defines a name for the current frame in a movie or movie clip.
- * 
+ *
  * <p>
  * The name can be referenced from other objects such as GotoFrame2 to simplify
  * the creation of scripts to control movies by using a predefined name rather
@@ -51,17 +48,18 @@ import com.flagstone.transform.coder.SWFEncoder;
  * loaded and displayed the frame that contains the corresponding FrameLabel
  * object.
  * </p>
- * 
+ *
  * <p>
  * If a frame is defined as an anchor it may also be referenced externally when
  * specifying the movie to play using a URL - similar to the way names links are
  * used in HTML. When the Flash Player loads a movie it will begin playing at
  * the frame specified in the URL.
  * </p>
- * 
+ *
  * @see GetUrl
  * @see GetUrl2
  */
+//TODO(class)
 public final class FrameLabel implements MovieTag {
 
     private static final String FORMAT = "FrameLabel: { label=%s; anchor=%s}";
@@ -71,6 +69,16 @@ public final class FrameLabel implements MovieTag {
 
     private transient int length;
 
+    /**
+     * Creates and initialises a FrameLabel object using values encoded
+     * in the Flash binary format.
+     *
+     * @param coder
+     *            an SWFDecoder object that contains the encoded Flash data.
+     *
+     * @throws CoderException
+     *             if an error occurs while decoding the data.
+     */
     public FrameLabel(final SWFDecoder coder) throws CoderException {
 
         length = coder.readWord(2, false) & 0x3F;
@@ -89,7 +97,7 @@ public final class FrameLabel implements MovieTag {
 
     /**
      * Creates a FrameLabel object with the specified name.
-     * 
+     *
      * @param aString
      *            the string that defines the label that will be assigned to the
      *            current frame. Must not be null or an empty string.
@@ -102,7 +110,7 @@ public final class FrameLabel implements MovieTag {
      * Creates a FrameLabel object with the specified name. If the isAnchor flag
      * is true then the frame can be directly addressed by a URL and the Flash
      * Player will begin playing the movie at the specified frame.
-     * 
+     *
      * @param aString
      *            the string that defines the label that will be assigned to the
      *            current frame. Must not be null or an empty string.
@@ -118,7 +126,7 @@ public final class FrameLabel implements MovieTag {
     /**
      * Creates a FrameLabel object with a copy of the label and anchor from
      * another FrameLabel object.
-     * 
+     *
      * @param object
      *            a FrameLabel object to copy.
      */
@@ -136,7 +144,7 @@ public final class FrameLabel implements MovieTag {
 
     /**
      * Sets the label.
-     * 
+     *
      * @param label
      *            the string that defines the label that will be assigned to the
      *            current frame. Must not be null or an empty string.
@@ -159,7 +167,7 @@ public final class FrameLabel implements MovieTag {
     /**
      * Sets the flag indicating whether the frame name is also used as an anchor
      * so the frame can be referenced from outside of the movie.
-     * 
+     *
      * @param anchored
      *            true if the frame is an anchor frame, false otherwise.
      */
@@ -167,6 +175,7 @@ public final class FrameLabel implements MovieTag {
         anchor = anchored;
     }
 
+    /** TODO(method). */
     public FrameLabel copy() {
         return new FrameLabel(this);
     }
@@ -176,6 +185,7 @@ public final class FrameLabel implements MovieTag {
         return String.format(FORMAT, label, String.valueOf(anchor));
     }
 
+    /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
 
         length = coder.strlen(label);
@@ -184,6 +194,7 @@ public final class FrameLabel implements MovieTag {
         return (length > 62 ? 6 : 2) + length;
     }
 
+    /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
 

@@ -1,30 +1,30 @@
 /*
  * LineStyle2.java
  * Transform
- * 
+ *
  * Copyright (c) 2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  *  * Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice, 
- *    this list of conditions and the following disclaimer in the documentation 
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors 
- *    may be used to endorse or promote products derived from this software 
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
@@ -41,10 +41,10 @@ import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.coder.SWFFactory;
 import com.flagstone.transform.datatype.Color;
 
-//TODO(doc) add description and comments for methods.
+/** TODO(class). */
 public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
 
-    public static final String FORMAT = "LineStyle2: { width=%d; color=%s;"
+    private static final String FORMAT = "LineStyle2: { width=%d; color=%s;"
             + " fillStyle=%s; startCap=%s; endCap=%s; joinStyle=%s;"
             + " scaledHorizontally=%d; scaledVertically=%d;"
             + " pixelAligned=%s; lineClosed=%d; miterLimit=%d }";
@@ -67,6 +67,21 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
     private transient boolean hasFillStyle;
     private transient boolean hasMiter;
 
+    /**
+     * Creates and initialises a LineStyle2 object using values encoded
+     * in the Flash binary format.
+     *
+     * @param coder
+     *            an SWFDecoder object that contains the encoded Flash data.
+     *
+     * @param context
+     *            a Context object used to manage the decoders for different
+     *            type of object and to pass information on how objects are
+     *            decoded.
+     *
+     * @throws CoderException
+     *             if an error occurs while decoding the data.
+     */
     public LineStyle2(final SWFDecoder coder, final Context context)
             throws CoderException {
 
@@ -86,6 +101,7 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
         }
     }
 
+    /** TODO(method). */
     public LineStyle2(final int width, final Color color) {
         super();
 
@@ -97,6 +113,7 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
         lineClosed = true;
     }
 
+    /** TODO(method). */
     public LineStyle2(final int width, final FillStyle style) {
         super();
 
@@ -108,6 +125,14 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
         lineClosed = true;
     }
 
+     /**
+     * Creates and initialises a LineStyle2 object using the values copied
+     * from another LineStyle2 object.
+     *
+     * @param object
+     *            a LineStyle2 object from which the values will be
+     *            copied.
+     */
     public LineStyle2(final LineStyle2 object) {
         width = object.width;
         color = object.color;
@@ -136,8 +161,8 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
 
     /**
      * Sets the width of the line.
-     * 
-     * @param aNumber
+     *
+     * @param width
      *            the width of the line. Must be in the range 0..65535.
      */
     public void setWidth(final int width) {
@@ -156,7 +181,7 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
 
     /**
      * Sets the colour of the line.
-     * 
+     *
      * @param aColor
      *            the colour of the line. Must be not be null.
      */
@@ -167,6 +192,7 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
         color = aColor;
     }
 
+    /** TODO(method). */
     public CapStyle getStartCap() {
         CapStyle style;
         if (startCap == 1) {
@@ -179,6 +205,7 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
         return style;
     }
 
+    /** TODO(method). */
     public void setStartCap(final CapStyle capStyle) {
         switch (capStyle) {
         case NONE:
@@ -193,6 +220,7 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
         }
     }
 
+    /** TODO(method). */
     public CapStyle getEndCap() {
         CapStyle style;
         if (endCap == 1) {
@@ -205,6 +233,7 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
         return style;
     }
 
+    /** TODO(method). */
     public void setEndCap(final CapStyle capStyle) {
         switch (capStyle) {
         case NONE:
@@ -219,6 +248,7 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
         }
     }
 
+    /** TODO(method). */
     public JoinStyle getJoinStyle() {
         JoinStyle style;
         if (endCap == 1) {
@@ -231,6 +261,7 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
         return style;
     }
 
+    /** TODO(method). */
     public void setJoinStyle(final JoinStyle style) {
         switch (style) {
         case BEVEL:
@@ -245,42 +276,52 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
         }
     }
 
+    /** TODO(method). */
     public boolean isScaledHorizontally() {
         return scaledHorizontally;
     }
 
+    /** TODO(method). */
     public void setScaledHorizontally(final boolean scaled) {
         scaledHorizontally = scaled;
     }
 
+    /** TODO(method). */
     public boolean isScaledVertically() {
         return scaledVertically;
     }
 
+    /** TODO(method). */
     public void setScaledVertically(final boolean scaled) {
         scaledVertically = scaled;
     }
 
+    /** TODO(method). */
     public boolean isPixelAligned() {
         return pixelAligned;
     }
 
+    /** TODO(method). */
     public void setPixelAligned(final boolean aligned) {
         pixelAligned = aligned;
     }
 
+    /** TODO(method). */
     public boolean isLineClosed() {
         return lineClosed;
     }
 
+    /** TODO(method). */
     public void setLineClosed(final boolean closed) {
         lineClosed = closed;
     }
 
+    /** TODO(method). */
     public int getMiterLimit() {
         return miterLimit;
     }
 
+    /** TODO(method). */
     public void setMiterLimit(final int limit) {
         if ((limit < 0) || (limit > 65535)) {
             throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
@@ -288,14 +329,17 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
         miterLimit = limit;
     }
 
+    /** TODO(method). */
     public FillStyle getFillStyle() {
         return fillStyle;
     }
 
+    /** TODO(method). */
     public void setFillStyle(final FillStyle style) {
         fillStyle = style;
     }
 
+    /** TODO(method). */
     public LineStyle2 copy() {
         return new LineStyle2(this);
     }
@@ -307,6 +351,7 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
                 lineClosed, miterLimit);
     }
 
+    /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
 
         hasFillStyle = fillStyle != null;
@@ -331,6 +376,7 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
         return length;
     }
 
+    /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         coder.writeWord(width, 2);

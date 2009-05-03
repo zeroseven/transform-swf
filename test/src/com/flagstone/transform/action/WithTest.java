@@ -60,10 +60,10 @@ public final class WithTest {
         list.add(BasicAction.END);
     }
 
-    private static transient final int type = ActionTypes.WITH;
+    private static final transient int type = ActionTypes.WITH;
     private transient With fixture;
 
-    private transient final byte[] encoded = new byte[] { (byte) type, 0x02,
+    private final transient byte[] encoded = new byte[] { (byte) type, 0x02,
             0x00, 0x02, 0x00, ActionTypes.ADD, ActionTypes.END };
 
     @Test(expected = IllegalArgumentException.class)

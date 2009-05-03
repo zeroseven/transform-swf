@@ -53,24 +53,24 @@ import com.flagstone.transform.sound.SoundStreamHead2;
 /**
  * Decoder for MP3 sounds so they can be added to a flash file.
  */
-//TODO(class)
 public final class MP3Decoder implements SoundProvider, SoundDecoder {
     private static final int MPEG1 = 3;
-    private static final int MP3_FRAME_SIZE[] = { 576, 576, 576, 1152 };
-    private static final int CHANNEL_COUNT[] = { 2, 2, 2, 1 };
+    private static final int[] MP3_FRAME_SIZE = {576, 576, 576, 1152};
+    private static final int[] CHANNEL_COUNT = {2, 2, 2, 1};
 
-    private static final int BIT_RATES[][] = {
-            { -1, 8, 16, 24, 32, 40, 48, 56, 64, 80, 96, 112, 128, 144, 160, -1 }, // MPEG
-            // 2.5
-            { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 }, // Reserved
-            { -1, 8, 16, 24, 32, 40, 48, 56, 64, 80, 96, 112, 128, 144, 160, -1 }, // MPEG
-            // 2.0
-            { -1, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256,
-                    320, -1 }, // MPEG 1.0
+    private static final int[][] BIT_RATES = {
+        {-1, 8, 16, 24, 32, 40, 48, 56, 64, 80, 96, 112, 128, 144, 160, -1}, // MPEG 2.5
+        {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, // Reserved
+        {-1, 8, 16, 24, 32, 40, 48, 56, 64, 80, 96, 112, 128, 144, 160, -1}, // MPEG 2.0
+        {-1, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, -1}, // MPEG 1.0
     };
 
-    private static final int SAMPLE_RATES[][] = { { 11025, -1, -1, -1 },
-            { -1, -1, -1, -1 }, { 22050, -1, -1, -1 }, { 44100, -1, -1, -1 } };
+    private static final int[][] SAMPLE_RATES = {
+        {11025, -1, -1, -1},
+        {-1, -1, -1, -1},
+        {22050, -1, -1, -1},
+        {44100, -1, -1, -1}
+    };
 
     private SoundFormat format;
     private int numberOfChannels;
@@ -79,19 +79,18 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
     private int sampleSize;
     private byte[] sound = null;
 
+    /** TODO(method). */
     public SoundDecoder newDecoder() {
         return new MP3Decoder();
     }
-    
+
     /** TODO(method). */
-    public void read(final File file) throws FileNotFoundException,
-            IOException, DataFormatException {
-        read(new FileInputStream(file), (int)file.length());
+    public void read(final File file) throws IOException, DataFormatException {
+        read(new FileInputStream(file), (int) file.length());
     }
 
     /** TODO(method). */
-    public void read(final URL url) throws FileNotFoundException, IOException,
-            DataFormatException {
+    public void read(final URL url) throws IOException, DataFormatException {
         final URLConnection connection = url.openConnection();
 
         final int fileSize = connection.getContentLength();
@@ -110,21 +109,7 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
      *            the unique identifier that will be used to refer to the sound
      *            in the Flash file.
      *
-     * @param file
-     *            the File containing the abstract path to the sound.
-     *
      * @return a sound definition that can be added to a Movie.
-     *
-     * @throws FileNotFoundException
-     *             if the file cannot be found or opened.
-     *
-     * @throws IOException
-     *             if there is an error reading the file.
-     *
-     * @throws DataFormatException
-     *             if there is a problem decoding the image, either it is in an
-     *             unsupported format or an error occurred while decoding the
-     *             image.
      */
     public DefineSound defineSound(final int identifier) {
         final byte[] bytes = new byte[2 + sound.length];
@@ -143,25 +128,10 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
      *            the rate at which the movie is played. Sound are streamed with
      *            one block of sound data per frame.
      *
-     * @param file
-     *            the File containing the abstract path to the file containing
-     *            the sound.
-     *
      * @return an array where the first object is the SoundStreamHead2 object
      *         that defines the streaming sound, followed by SoundStreamBlock
      *         objects containing the sound samples that will be played in each
      *         frame.
-     *
-     * @throws FileNotFoundException
-     *             if the file cannot be found or opened.
-     *
-     * @throws IOException
-     *             if there is an error reading the file.
-     *
-     * @throws DataFormatException
-     *             if there is a problem decoding the sound, either it is in an
-     *             unsupported format or an error occurred while decoding the
-     *             sound data.
      */
     public List<MovieTag> streamSound(final int frameRate) {
         final ArrayList<MovieTag> array = new ArrayList<MovieTag>();
@@ -275,30 +245,10 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
         return frameSize;
     }
 
-    private byte[] loadFile(final File file) throws FileNotFoundException,
-            IOException {
-        final byte[] data = new byte[(int) file.length()];
+    /** TODO(method). */
+    public void read(final InputStream stream, final int size) throws IOException, DataFormatException {
 
-        FileInputStream stream = null;
-
-        try {
-            stream = new FileInputStream(file);
-            final int bytesRead = stream.read(data);
-
-            if (bytesRead != data.length) {
-                throw new IOException(file.getAbsolutePath());
-            }
-        } finally {
-            if (stream != null) {
-                stream.close();
-            }
-        }
-        return data;
-    }
-
-    public void read(InputStream stream, int size) throws IOException, DataFormatException {
-
-        final byte[] bytes = new byte[(int)size];
+        final byte[] bytes = new byte[(int) size];
         final BufferedInputStream buffer = new BufferedInputStream(stream);
 
         buffer.read(bytes);
@@ -319,8 +269,7 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
             marker = coder.readWord(3, false);
             coder.adjustPointer(-24);
 
-            if (marker == 0x494433) // ID3
-            {
+            if (marker == 0x494433) {
                 coder.adjustPointer(24); // ID3 signature
                 coder.adjustPointer(8); // version number
                 coder.adjustPointer(8); // revision number
@@ -340,11 +289,11 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
                 totalLength += coder.readByte();
 
                 coder.adjustPointer(totalLength << 3);
-            } else if (marker == 0x544147) // ID3 V1
-            {
+            } else if (marker == 0x544147) {
+                // ID3 V1
                 coder.adjustPointer(128 << 3);
-            } else if (coder.readBits(11, false) == 0x7FF) // MP3 frame
-            {
+            } else if (coder.readBits(11, false) == 0x7FF) {
+                // MP3 frame
                 coder.adjustPointer(-11);
 
                 if (numberOfFrames == 0) {

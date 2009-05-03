@@ -36,8 +36,7 @@ public final class DefineTextTest {
         }
 
         font = new Font();
-        // TODO font.decode(new java.awt.Font("Arial", java.awt.Font.PLAIN,
-        // 12));
+        // TODO(code) font.decode(new java.awt.Font("Arial", java.awt.Font.PLAIN, 12));
     }
 
     @Test
@@ -67,7 +66,7 @@ public final class DefineTextTest {
         movie.add(new Background(WebPalette.LIGHT_BLUE.color()));
         movie.add(definition);
 
-        final DefineText2 text = null; // TODO
+        final DefineText2 text = null; // TODO(code)
         // TextTable.defineText(movie.newIdentifier(),
         // alphabet, definition, fontSize,
         // ColorTable.black());
@@ -127,7 +126,7 @@ public final class DefineTextTest {
         movie.add(definition);
 
         for (int i = 0; i < alphabet.length(); i++) {
-            final DefineText2 text = null; // TODO
+            final DefineText2 text = null; // TODO(code)
             // TextFactory.defineText(movie.newIdentifier(),
             // alphabet.substring(i,i+1),
             // definition, fontSize,
@@ -135,7 +134,7 @@ public final class DefineTextTest {
 
             final int textWidth = text.getBounds().getWidth();
             final int textHeight = text.getBounds().getHeight();
-            final int advance = 0; // TODO
+            final int advance = 0; // TODO(code)
             // TextFactory.boundsForText(alphabet.substring(i,i+1),
             // definition, fontSize).getWidth() + 40;
 

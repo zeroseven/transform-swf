@@ -1,30 +1,30 @@
 /*
  * Coder.java
  * Transform
- * 
+ *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  *  * Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice, 
- *    this list of conditions and the following disclaimer in the documentation 
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors 
- *    may be used to endorse or promote products derived from this software 
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
@@ -44,7 +44,9 @@ import com.flagstone.transform.Strings;
  */
 public class Coder {
 
+    /** TODO(doc). */
     public static final String UNDERFLOW = "Underflow";
+    /** TODO(doc). */
     public static final String OVERFLOW = "Overflow";
 
     protected String encoding;
@@ -65,22 +67,22 @@ public class Coder {
     /**
      * Returns character encoding scheme used when encoding or decoding strings.
      */
-    public String getEncoding() {
+    public final String getEncoding() {
         return encoding;
     }
 
     /**
      * Sets the character encoding scheme used when encoding or decoding
      * strings.
-     * 
+     *
      * If the character set encoding is not supported by the Java environment
      * then an UnsupportedCharsetException will be thrown. If the character set
      * cannot be identified then an IllegalCharsetNameException will be thrown.
-     * 
+     *
      * @param charSet
      *            the name of the character set used to encode strings.
      */
-    public void setEncoding(final String charSet) {
+    public final void setEncoding(final String charSet) {
         if (!Charset.isSupported(charSet)) {
             throw new UnsupportedCharsetException(String.format(
                     Strings.INVALID_ENCODING, charSet));
@@ -91,17 +93,17 @@ public class Coder {
     /**
      * Returns the array of bytes containing the encoded data.
      */
-    public byte[] getData() {
+    public final byte[] getData() {
         return Arrays.copyOf(data, data.length);
     }
 
     /**
      * Sets the array of bytes used for the encoded data.
-     * 
+     *
      * @param bytes
      *            an array of bytes.
      */
-    public void setData(final byte[] bytes) {
+    public final void setData(final byte[] bytes) {
         data = new byte[bytes.length];
         index = 0;
         offset = 0;
@@ -112,11 +114,11 @@ public class Coder {
 
     /**
      * Sets the internal buffer used for encoding objects to the specified size.
-     * 
+     *
      * @param size
      *            the size of the internal buffer in bytes.
      */
-    public void setData(final int size) {
+    public final void setData(final int size) {
         data = new byte[size];
         index = 0;
         offset = 0;
@@ -128,28 +130,28 @@ public class Coder {
      * Returns the location, in bits, where the next value will be read or
      * written.
      */
-    public int getPointer() {
+    public final int getPointer() {
         return (index << 3) + offset;
     }
 
     /**
      * Sets the location, in bits, where the next value will be read or written.
-     * 
+     *
      * @param location
      *            the offset in bits from the start of the array of bytes.
      */
-    public void setPointer(final int location) {
+    public final void setPointer(final int location) {
         index = location >>> 3;
         offset = location & 7;
     }
 
     /**
      * Changes the location where the next value will be read or written by.
-     * 
+     *
      * @param numberOfBits
      *            the number of bits to add to the current location.
      */
-    public void adjustPointer(final int numberOfBits) {
+    public final void adjustPointer(final int numberOfBits) {
         pointer = (index << 3) + offset + numberOfBits;
         index = pointer >>> 3;
         offset = pointer & 7;
@@ -158,7 +160,7 @@ public class Coder {
     /**
      * Changes the location to the next byte boundary.
      */
-    public void alignToByte() {
+    public final void alignToByte() {
         if (offset > 0) {
             index += 1;
             offset = 0;
@@ -168,7 +170,7 @@ public class Coder {
     /**
      * Returns true of the internal pointer is at the end of the buffer.
      */
-    public boolean eof() {
+    public final boolean eof() {
         return (index == data.length) && (offset == 0);
     }
 }

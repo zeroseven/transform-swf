@@ -44,13 +44,13 @@ import com.flagstone.transform.datatype.Color;
 
 public final class BackgroundTest {
 
-    private transient final Color color = new Color(1, 2, 3);
+    private final transient Color color = new Color(1, 2, 3);
 
     private transient Background fixture;
 
-    private transient final byte[] encoded = new byte[] { 0x43, 0x02, 0x01,
+    private final transient byte[] encoded = new byte[] { 0x43, 0x02, 0x01,
             0x02, 0x03 };
-    private transient final byte[] extended = new byte[] { 0x7F, 0x02, 0x03,
+    private final transient byte[] extended = new byte[] { 0x7F, 0x02, 0x03,
             0x00, 0x00, 0x00, 0x01, 0x02, 0x03 };
 
     @Test(expected = IllegalArgumentException.class)

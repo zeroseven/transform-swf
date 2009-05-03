@@ -2,21 +2,20 @@ package com.flagstone.transform.video;
 
 import java.util.Arrays;
 
-import com.flagstone.transform.DefineVideo;
 import com.flagstone.transform.coder.Copyable;
 
 /**
  * ImageBlock is used to sub-divide an image into a set of blocks so they can be
  * streamed using Screen Video. Image blocks are compared so only pixel
  * information for the portions of the image that change are sent.
- * 
+ *
  * <p>
  * An image is divided by tiling the blocks across the image from top-left to
  * bottom right. If the image is not covered an integer number of blocks then
  * the size of the blocks along the right and bottom edges of the image are
  * reduced in size.
  * </p>
- * 
+ *
  * @see DefineVideo
  */
 public final class ImageBlock implements Copyable<ImageBlock> {
@@ -27,7 +26,7 @@ public final class ImageBlock implements Copyable<ImageBlock> {
     /**
      * Create a new image block with the specified width and height and image
      * data. The image is compressed using the zip format.
-     * 
+     *
      * @param width
      *            the width of the block in pixels.
      * @param height
@@ -42,7 +41,14 @@ public final class ImageBlock implements Copyable<ImageBlock> {
         block = data;
     }
 
-    // TODO(doc)
+    /**
+     * Creates and initialises a ImageBlock object using the values copied
+     * from another ImageBlock object.
+     *
+     * @param object
+     *            a ImageBlock object from which the values will be
+     *            copied.
+     */
     public ImageBlock(final ImageBlock object) {
         width = object.width;
         height = object.height;
@@ -80,7 +86,7 @@ public final class ImageBlock implements Copyable<ImageBlock> {
      * which have width and height of zero and do not contain any image data.
      * This convenience method is used to determine when an image block contains
      * any valid image data.
-     * 
+     *
      * @return true if the block covers an area of the image that changed or
      *         false if no image data is included.
      */
@@ -89,6 +95,7 @@ public final class ImageBlock implements Copyable<ImageBlock> {
                 || (block.length == 0);
     }
 
+    /** TODO(method). */
     public ImageBlock copy() {
         return new ImageBlock(this);
     }

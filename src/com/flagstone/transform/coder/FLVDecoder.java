@@ -1,6 +1,9 @@
 package com.flagstone.transform.coder;
 
-public class FLVDecoder extends Decoder {
+/** TODO(class). */
+public final class FLVDecoder extends Decoder {
+
+    /** TODO(method). */
     public FLVDecoder(final byte[] data) {
         super(data);
     }
@@ -14,14 +17,14 @@ public class FLVDecoder extends Decoder {
 
     /**
      * Read a word.
-     * 
+     *
      * @param numberOfBytes
      *            the number of bytes read in the range 1..4.
-     * 
+     *
      * @param signed
      *            indicates whether the value read is signed (true) or unsigned
      *            (false).
-     * 
+     *
      * @return the decoded value.
      */
     public int readWord(final int numberOfBytes, final boolean signed) {
@@ -42,7 +45,7 @@ public class FLVDecoder extends Decoder {
 
     /**
      * Read a double-precision floating point number.
-     * 
+     *
      * @return the decoded value.
      */
     public double readDouble() {
@@ -57,16 +60,16 @@ public class FLVDecoder extends Decoder {
      * found, returning true to signal a successful search. If word cannot be
      * found then the method returns false and the position of the internal
      * pointer is not changed.
-     * 
+     *
      * @param value
      *            the value to search for.
-     * 
+     *
      * @param numberOfBytes
      *            the number of bytes from the value to compare.
-     * 
+     *
      * @param step
      *            the number of bytes to step between searches.
-     * 
+     *
      * @return true if the pattern was found, false otherwise.
      */
     public boolean findWord(final int value, final int numberOfBytes,

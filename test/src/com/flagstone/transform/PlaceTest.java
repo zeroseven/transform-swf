@@ -46,22 +46,22 @@ import com.flagstone.transform.datatype.CoordTransform;
 
 public final class PlaceTest {
 
-    private static transient final int identifier = 1;
-    private static transient final int layer = 2;
-    private transient final CoordTransform transform = CoordTransform
+    private static final transient int identifier = 1;
+    private static final transient int layer = 2;
+    private final transient CoordTransform transform = CoordTransform
             .translate(1, 2);
-    private transient final ColorTransform colorTransform = new ColorTransform(
+    private final transient ColorTransform colorTransform = new ColorTransform(
             1, 2, 3, 4);
 
     private transient Place fixture;
 
-    private transient final byte[] coord = new byte[] { 0x06, 0x01, 0x01, 0x00,
+    private final transient byte[] coord = new byte[] { 0x06, 0x01, 0x01, 0x00,
             0x02, 0x00, 0x06, 0x50 };
 
-    private transient final byte[] coordAndColor = new byte[] { 0x08, 0x01,
+    private final transient byte[] coordAndColor = new byte[] { 0x08, 0x01,
             0x01, 0x00, 0x02, 0x00, 0x06, 0x50, (byte) 0x8C, (byte) 0xA6 };
 
-    private transient final byte[] extended = new byte[] { 0x7F, 0x01, 0x06,
+    private final transient byte[] extended = new byte[] { 0x7F, 0x01, 0x06,
             0x00, 0x00, 0x00, 0x01, 0x00, 0x02, 0x00, 0x06, 0x50 };
 
     @Test(expected = IllegalArgumentException.class)

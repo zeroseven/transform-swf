@@ -1,30 +1,30 @@
 /*
  * DefineVideo.java
  * Transform
- * 
+ *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  *  * Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice, 
- *    this list of conditions and the following disclaimer in the documentation 
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors 
- *    may be used to endorse or promote products derived from this software 
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
@@ -37,12 +37,10 @@ import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.VideoFormat;
-import com.flagstone.transform.datatype.VideoFrameType;
 
-//TODO(doc) Review
 /**
  * The DefineVideo class is used to define a video stream within a Flash file.
- * 
+ *
  * <p>
  * Video objects contain a unique identifier and are treated in the same way as
  * shapes, buttons, images, etc. The video data displayed is define using the
@@ -51,23 +49,31 @@ import com.flagstone.transform.datatype.VideoFrameType;
  * video data is ignored. The actual video data is encoded using the VideoFrame
  * class.
  * </p>
- * 
+ *
  * <p>
  * The ScreenVideo format was introduced in Flash 7, only the H263 format was
  * supported in Flash 6.
  * </p>
- * 
+ *
  * @see VideoFrameType
  */
 // TODO(optimise) Add pack/unpack methods
 // TODO(code) consider keeping Deblocking as an int and hand enum in accessors.
+//TODO(class)
 public final class DefineVideo implements DefineTag {
 
-    private static final String FORMAT = "DefineVideo: { identifier=%d; frameCount=%d; "
-            + "width=%d; height=%d; deblocking=%s; smoothing=%s; codec=%s }";
+    private static final String FORMAT = "DefineVideo: { identifier=%d;"
+            + " frameCount=%d; width=%d; height=%d; deblocking=%s;"
+            + " smoothing=%s; codec=%s }";
 
+    /** TODO(class). */
     public enum Deblocking {
-        OFF, ON, VIDEO
+        /** TODO(doc). */
+        OFF,
+        /** TODO(doc). */
+        ON,
+        /** TODO(doc). */
+        VIDEO
     }
 
     private int identifier;
@@ -80,7 +86,16 @@ public final class DefineVideo implements DefineTag {
 
     private transient int length;
 
-    // TODO(doc)
+    /**
+     * Creates and initialises a DefineVideo object using values encoded in the
+     * Flash binary format.
+     *
+     * @param coder
+     *            an SWFDecoder object that contains the encoded Flash data.
+     *
+     * @throws CoderException
+     *             if an error occurs while decoding the data.
+     */
     public DefineVideo(final SWFDecoder coder) throws CoderException {
 
         final int start = coder.getPointer();
@@ -131,7 +146,7 @@ public final class DefineVideo implements DefineTag {
 
     /**
      * Creates a DefineVideo object with the specified parameters.
-     * 
+     *
      * @param uid
      *            the unique identifier for this object. Must be in the range
      *            1..65535.
@@ -166,7 +181,14 @@ public final class DefineVideo implements DefineTag {
         setCodec(codec);
     }
 
-    // TODO(doc)
+    /**
+     * Creates and initialises an DefineVideo object using the values
+     * copied from another DefineVideo object.
+     *
+     * @param object
+     *            a DefineVideo object from which the values will be
+     *            copied.
+     */
     public DefineVideo(final DefineVideo object) {
         identifier = object.identifier;
         frameCount = object.frameCount;
@@ -177,10 +199,12 @@ public final class DefineVideo implements DefineTag {
         codec = object.codec;
     }
 
+    /** TODO(method). */
     public int getIdentifier() {
         return identifier;
     }
 
+    /** TODO(method). */
     public void setIdentifier(final int uid) {
         if ((uid < 0) || (uid > 65535)) {
             throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
@@ -197,7 +221,7 @@ public final class DefineVideo implements DefineTag {
 
     /**
      * Sets the number of frames in the video.
-     * 
+     *
      * @param count
      *            the number of video frames. Must be in the range 0..65535.
      */
@@ -217,7 +241,7 @@ public final class DefineVideo implements DefineTag {
 
     /**
      * Sets the width of each frame in pixels.
-     * 
+     *
      * @param size
      *            the width of the frame. Must be in the range 0..65535.
      */
@@ -237,7 +261,7 @@ public final class DefineVideo implements DefineTag {
 
     /**
      * Sets the height of each frame in pixels.
-     * 
+     *
      * @param size
      *            the height of the frame. Must be in the range 0..65535.
      */
@@ -258,7 +282,7 @@ public final class DefineVideo implements DefineTag {
 
     /**
      * Sets the method used to control the Flash Player's deblocking filter.
-     * 
+     *
      * @param value
      *            the deblocking filter control, either OFF, ON or USE_VIDEO to
      *            allow the video data to specify whether the deblocking filter
@@ -279,7 +303,7 @@ public final class DefineVideo implements DefineTag {
     /**
      * Sets whether Flash Player's smoothing filter is on or off when the video
      * is played.
-     * 
+     *
      * @param smoothing
      *            true if smoothing is turned on, false if it is turned off.
      */
@@ -302,7 +326,7 @@ public final class DefineVideo implements DefineTag {
      * data encoded using the Sorenson modified H263 format or
      * DefineVideo.ScreenVideo (Flash 7 only) for data encoded using
      * Macromedia's Screen Video format.
-     * 
+     *
      * @param codec
      *            the format used encode the video, either DefineVideo.H263 or
      *            DefineVideo.ScreenVideo.
@@ -311,6 +335,7 @@ public final class DefineVideo implements DefineTag {
         this.codec = codec;
     }
 
+    /** TODO(method). */
     public DefineVideo copy() {
         return new DefineVideo(this);
     }
@@ -321,6 +346,7 @@ public final class DefineVideo implements DefineTag {
                 deblocking, smoothing, codec);
     }
 
+    /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
 
         length = 10;
@@ -328,6 +354,7 @@ public final class DefineVideo implements DefineTag {
         return 12;
     }
 
+    /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
 

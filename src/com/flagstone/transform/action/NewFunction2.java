@@ -1,30 +1,30 @@
 /*
  * NewFunction2.java
  * Transform
- * 
+ *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  *  * Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice, 
- *    this list of conditions and the following disclaimer in the documentation 
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors 
- *    may be used to endorse or promote products derived from this software 
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
@@ -47,11 +47,10 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.coder.SWFFactory;
 
-//TODO(doc) Review
 /**
  * The NewFunction2 action is used to create a user-defined function with
  * optimisations to improve performance.
- * 
+ *
  * <p>
  * NewFunction2 was added in Flash 7 to improve the performance of function
  * calls by allowing pre-defined variables such as <em>_root</em>,
@@ -59,12 +58,12 @@ import com.flagstone.transform.coder.SWFFactory;
  * <em>arguments</em> passed to the function to be pre-loaded to a set of up to
  * 256 internal registers.
  * </p>
- * 
+ *
  * <p>
  * The optimisation attribute is a compound code, containing a number of flags
  * that control which variables are pre-loaded:
  * </p>
- * 
+ *
  * <table class="datasheet">
  * <tr>
  * <td valign="top">CreateSuper</td>
@@ -105,37 +104,39 @@ import com.flagstone.transform.coder.SWFFactory;
  * <td>Pre-load the <em>_global</em> variable into register number 5.</td>
  * </tr>
  * </table>
- * 
+ *
  * <p>
  * The register numbers that the predefined variables are assigned to are fixed.
  * When specifying which of the functions arguments are also assigned to
  * registers it is important avoid these locations otherwise the variables will
  * be overwritten.
  * </p>
- * 
+ *
  * <p>
  * User-defined functions are also used to create methods for user-defined
  * objects. The name of the function is omitted and the function definition is
  * assigned to a variable which allows it to be referenced at a alter time. See
  * the example below.
  * </p>
- * 
+ *
  * <p>
  * The arguments supplied to the function can be referenced by the name supplied
  * in the arguments array.
  * </p>
- * 
+ *
  * <p>
  * All the action objects added are owned by the function. They will be deleted
  * when the function definition is deleted.
  * </p>
- * 
+ *
  * @see NewFunction
  */
+//TODO(class)
 public final class NewFunction2 implements Action {
-    private static final String FORMAT = "NewFunction2: { name=%s; registerCount=%d; optimizations=%s; arguments=%s; actions=%s }";
+    private static final String FORMAT = "NewFunction2: { name=%s; "
+            + "registerCount=%d; optimizations=%s; arguments=%s; actions=%s }";
 
-    // TODO(doc)
+    /** TODO(method). */
     public enum Optimization {
         /** Create and initialised the predefined variable, <em>super</em>. */
         CREATE_SUPER(4),
@@ -156,7 +157,8 @@ public final class NewFunction2 implements Action {
         /** Load the predefine variable, <em>_global</em>, into register 6. */
         LOAD_GLOBAL(32768);
 
-        private static final Map<Integer, Optimization> TABLE = new LinkedHashMap<Integer, Optimization>();
+        private static final Map<Integer, Optimization> TABLE =
+            new LinkedHashMap<Integer, Optimization>();
 
         static {
             for (final Optimization opt : values()) {
@@ -164,6 +166,7 @@ public final class NewFunction2 implements Action {
             }
         }
 
+        /** TODO(method). */
         public static Optimization fromInt(final int type) {
             return TABLE.get(type);
         }
@@ -174,7 +177,7 @@ public final class NewFunction2 implements Action {
             this.value = value;
         }
 
-        // TODO(doc)
+        /** TODO(method). */
         public int getValue() {
             return value;
         }
@@ -189,7 +192,21 @@ public final class NewFunction2 implements Action {
     private transient int length;
     private transient int actionsLength;
 
-    // TODO(doc)
+    /**
+     * Creates and initialises a NewFunction2 definition using values encoded
+     * in the Flash binary format.
+     *
+     * @param coder
+     *            an SWFDecoder object that contains the encoded Flash data.
+     *
+     * @param context
+     *            a Context object used to manage the decoders for different
+     *            type of object and to pass information on how objects are
+     *            decoded.
+     *
+     * @throws CoderException
+     *             if an error occurs while decoding the data.
+     */
     // TODO(optimise)
     public NewFunction2(final SWFDecoder coder, final Context context)
             throws CoderException {
@@ -230,7 +247,7 @@ public final class NewFunction2 implements Action {
      * to be executed. The order of the Strings in the argument array indicate
      * the order in which the values will be popped off the stack when the
      * function is executed. The first argument is popped from the stack first.
-     * 
+     *
      * @param name
      *            the name of the function. Can be an empty string if the
      *            function is anonymous.
@@ -248,7 +265,14 @@ public final class NewFunction2 implements Action {
         setActions(actions);
     }
 
-    // TODO(doc)
+    /**
+     * Creates and initialises a NewFunction2 action using the values
+     * copied from another NewFunction2 action.
+     *
+     * @param object
+     *            a NewFunction2 action from which the values will be
+     *            copied. References to immutable objects will be shared.
+     */
     public NewFunction2(final NewFunction2 object) {
         name = object.name;
         registerCount = object.registerCount;
@@ -264,7 +288,7 @@ public final class NewFunction2 implements Action {
 
     /**
      * Adds the name of an argument to the array of argument names.
-     * 
+     *
      * @param anArgument
      *            the name of an argument passed to the NewFunction object. Must
      *            not be null.
@@ -279,7 +303,7 @@ public final class NewFunction2 implements Action {
 
     /**
      * Adds the action object to the array of actions.
-     * 
+     *
      * @param anAction
      *            an object belonging to a class derived from Action. Must not
      *            be null.
@@ -302,7 +326,7 @@ public final class NewFunction2 implements Action {
     /**
      * Sets the name of the function. The name may be an empty string when
      * defining methods.
-     * 
+     *
      * @param aString
      *            the name of the function or null for a method. Must not be
      *            null.
@@ -324,7 +348,7 @@ public final class NewFunction2 implements Action {
     /**
      * Sets the number of registers to allocate for function variables. Up to
      * 256 registers may be allocated for each function.
-     * 
+     *
      * @param count
      *            the number of registers to allocate. Must be in the range
      *            0..255.
@@ -336,7 +360,7 @@ public final class NewFunction2 implements Action {
         registerCount = count;
     }
 
-    // TODO(doc)
+    /** TODO(method). */
     public Set<Optimization> getOptimizations() {
         final Set<Optimization> set = EnumSet.allOf(Optimization.class);
 
@@ -348,7 +372,7 @@ public final class NewFunction2 implements Action {
         return set;
     }
 
-    // TODO(doc)
+    /** TODO(method). */
     public void setOptimizations(final Set<Optimization> optimizations) {
         for (final Optimization opt : optimizations) {
             this.optimizations |= opt.getValue();
@@ -365,13 +389,7 @@ public final class NewFunction2 implements Action {
     }
 
     /**
-     * Sets the array of RegisterVariables that define the function arguments
-     * and whether they are assigned to internal registers or to local variables
-     * in memory.
-     * 
-     * @param anArray
-     *            an array of Strings listing the names of the arguments. Must
-     *            not be null.
+     * TODO(method).
      */
     public void setArguments(final Map<String, Integer> map) {
         if (map == null) {
@@ -389,7 +407,7 @@ public final class NewFunction2 implements Action {
 
     /**
      * Sets the actions.
-     * 
+     *
      * @param anArray
      *            the array of actions that define the operation performed by
      *            the function. Must not be null.
@@ -401,6 +419,7 @@ public final class NewFunction2 implements Action {
         actions = anArray;
     }
 
+    /** TODO(method). */
     public NewFunction2 copy() {
         return new NewFunction2(this);
     }
@@ -412,6 +431,7 @@ public final class NewFunction2 implements Action {
     }
 
     // TODO(optimise)
+    /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         length = 5 + coder.strlen(name);
 
@@ -433,6 +453,7 @@ public final class NewFunction2 implements Action {
     }
 
     // TODO(optimise)
+    /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         coder.writeWord(ActionTypes.NEW_FUNCTION_2, 1);

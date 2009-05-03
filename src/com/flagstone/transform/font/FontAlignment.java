@@ -1,30 +1,30 @@
 /*
  * FontAlignment.java
  * Transform
- * 
+ *
  * Copyright (c) 2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  *  * Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice, 
- *    this list of conditions and the following disclaimer in the documentation 
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors 
- *    may be used to endorse or promote products derived from this software 
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
@@ -41,10 +41,17 @@ import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-//TODO(doc)
+/** TODO(class). */
 public final class FontAlignment implements MovieTag {
+
+    /** TODO(class). */
     public enum StrokeWidth {
-        THIN, MEDIUM, THICK
+        /** TODO(doc). */
+        THIN,
+        /** TODO(doc). */
+        MEDIUM,
+        /** TODO(doc). */
+        THICK
     };
 
     private static final String FORMAT = "FontAlignment: { identifier=%d; strokeWidth=%s; zones=%s }";
@@ -55,6 +62,21 @@ public final class FontAlignment implements MovieTag {
 
     private transient int length;
 
+    /**
+     * Creates and initialises a FontAlignment object using values encoded
+     * in the Flash binary format.
+     *
+     * @param coder
+     *            an SWFDecoder object that contains the encoded Flash data.
+     *
+     * @param context
+     *            a Context object used to manage the decoders for different
+     *            type of object and to pass information on how objects are
+     *            decoded.
+     *
+     * @throws CoderException
+     *             if an error occurs while decoding the data.
+     */
     public FontAlignment(final SWFDecoder coder, final Context context)
             throws CoderException {
         final int start = coder.getPointer();
@@ -80,6 +102,7 @@ public final class FontAlignment implements MovieTag {
         }
     }
 
+    /** TODO(method). */
     public FontAlignment(final int uid, final StrokeWidth stroke,
             final List<GlyphAlignment> list) {
         setIdentifier(uid);
@@ -87,6 +110,14 @@ public final class FontAlignment implements MovieTag {
         setZones(list);
     }
 
+    /**
+     * Creates and initialises a FontAlignment object using the values copied
+     * from another FontAlignment object.
+     *
+     * @param object
+     *            a FontAlignment object from which the values will be
+     *            copied.
+     */
     public FontAlignment(final FontAlignment object) {
         identifier = object.identifier;
         hints = object.hints;
@@ -103,7 +134,7 @@ public final class FontAlignment implements MovieTag {
 
     /**
      * Sets the identifier of the font that this alignment information is for.
-     * 
+     *
      * @param uid
      *            the unique identifier of the DefineFont that contains the
      *            glyphs for the font. Must be in the range 1..65535.
@@ -115,6 +146,7 @@ public final class FontAlignment implements MovieTag {
         identifier = uid;
     }
 
+    /** TODO(method). */
     public StrokeWidth getStrokeWidth() {
         StrokeWidth stroke;
         switch (hints) {
@@ -131,6 +163,7 @@ public final class FontAlignment implements MovieTag {
         return stroke;
     }
 
+    /** TODO(method). */
     public void setStrokeWidth(final StrokeWidth stroke) {
         switch (stroke) {
         case MEDIUM:
@@ -145,10 +178,12 @@ public final class FontAlignment implements MovieTag {
         }
     }
 
+    /** TODO(method). */
     public List<GlyphAlignment> getZones() {
         return zones;
     }
 
+    /** TODO(method). */
     public void setZones(final List<GlyphAlignment> array) {
         if (array == null) {
             throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
@@ -156,6 +191,7 @@ public final class FontAlignment implements MovieTag {
         zones = array;
     }
 
+    /** TODO(method). */
     public FontAlignment addZone(final GlyphAlignment zone) {
         if (zone == null) {
             throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
@@ -164,6 +200,7 @@ public final class FontAlignment implements MovieTag {
         return this;
     }
 
+    /** TODO(method). */
     public FontAlignment copy() {
         return new FontAlignment(this);
     }
@@ -173,6 +210,7 @@ public final class FontAlignment implements MovieTag {
         return String.format(FORMAT, identifier, getStrokeWidth(), zones);
     }
 
+    /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         length = 3;
 
@@ -183,6 +221,7 @@ public final class FontAlignment implements MovieTag {
         return (length > 62 ? 6 : 2) + length;
     }
 
+    /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         final int start = coder.getPointer();

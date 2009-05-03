@@ -45,11 +45,11 @@ import com.flagstone.transform.datatype.Color;
 
 public final class SolidFillTest {
 
-    private transient final Color color = new Color(1, 2, 3);
+    private final transient Color color = new Color(1, 2, 3);
 
     private transient SolidFill fixture;
 
-    private transient final byte[] encoded = new byte[] { 0x00, 0x01, 0x02,
+    private final transient byte[] encoded = new byte[] { 0x00, 0x01, 0x02,
             0x03 };
 
     @Test(expected = IllegalArgumentException.class)

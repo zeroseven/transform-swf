@@ -44,10 +44,11 @@ import com.flagstone.transform.coder.SWFEncoder;
 /**
  * DefineJPEGImage2 is used to define a JPEG encoded image with an integrated
  * encoding table.
- * 
+ *
  * @see DefineJPEGImage
  * @see DefineJPEGImage3
  */
+//TODO(class)
 public final class DefineJPEGImage2 implements ImageTag {
     private static final String FORMAT = "DefineJPEGImage2: { identifier=%d; image=%d; }";
 
@@ -58,7 +59,16 @@ public final class DefineJPEGImage2 implements ImageTag {
     private transient int width;
     private transient int height;
 
-    // TODO(doc)
+    /**
+     * Creates and initialises a DefineJPEGImage2 object using values encoded
+     * in the Flash binary format.
+     *
+     * @param coder
+     *            an SWFDecoder object that contains the encoded Flash data.
+     *
+     * @throws CoderException
+     *             if an error occurs while decoding the data.
+     */
     public DefineJPEGImage2(final SWFDecoder coder) throws CoderException {
         final int start = coder.getPointer();
         length = coder.readWord(2, false) & 0x3F;
@@ -80,8 +90,8 @@ public final class DefineJPEGImage2 implements ImageTag {
     }
 
     /**
-     * Creates a DefineJPEGImage2 object with the identifier and JPEG image data
-     * 
+     * Creates a DefineJPEGImage2 object with the identifier and JPEG image data.
+     *
      * @param uid
      *            the unique identifier for this object. Must be in the range
      *            1..65535.
@@ -93,7 +103,14 @@ public final class DefineJPEGImage2 implements ImageTag {
         setImage(image);
     }
 
-    // TODO(doc)
+    /**
+     * Creates and initialises a DefineJPEGImage2 object using the values copied
+     * from another DefineJPEGImage2 object.
+     *
+     * @param object
+     *            a DefineJPEGImage2 object from which the values will be
+     *            copied.
+     */
     public DefineJPEGImage2(final DefineJPEGImage2 object) {
         identifier = object.identifier;
         width = object.width;
@@ -101,10 +118,12 @@ public final class DefineJPEGImage2 implements ImageTag {
         image = Arrays.copyOf(object.image, object.image.length);
     }
 
+    /** TODO(method). */
     public int getIdentifier() {
         return identifier;
     }
 
+    /** TODO(method). */
     public void setIdentifier(final int uid) {
         if ((uid < 0) || (uid > 65535)) {
             throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
@@ -135,7 +154,7 @@ public final class DefineJPEGImage2 implements ImageTag {
 
     /**
      * Sets the image data.
-     * 
+     *
      * @param bytes
      *            an array of bytes containing the image data. Must not be null.
      */
@@ -159,12 +178,14 @@ public final class DefineJPEGImage2 implements ImageTag {
         return String.format(FORMAT, identifier, image.length);
     }
 
+    /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         length = 2 + image.length;
 
         return (length > 62 ? 6 : 2) + length;
     }
 
+    /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         final int start = coder.getPointer();

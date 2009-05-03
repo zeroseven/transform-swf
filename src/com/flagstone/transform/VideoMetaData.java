@@ -4,27 +4,27 @@
  *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  *  * Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice, 
- *    this list of conditions and the following disclaimer in the documentation 
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors 
- *    may be used to endorse or promote products derived from this software 
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package com.flagstone.transform;
@@ -40,13 +40,14 @@ import com.flagstone.transform.coder.VideoTypes;
 /**
  * The VideoMetaData class is used to store information on how the video stream
  * should be displayed.
- * 
+ *
  * <p>
  * Although meta-data can be found in all flash Video files there is no
  * documentation published by Adobe that describes the data structure. As a
  * result the information is decoded as a simple block of binary data.
  * </p>
  */
+//TODO(class)
 public final class VideoMetaData implements VideoTag {
     private static final String FORMAT = "VideoMetaData: { data=%d }";
 
@@ -55,6 +56,16 @@ public final class VideoMetaData implements VideoTag {
 
     private transient int length;
 
+    /**
+     * Creates and initialises a VideoMetaData object using values encoded
+     * in the Flash binary format.
+     *
+     * @param coder
+     *            an FLVDecoder object that contains the encoded Flash data.
+     *
+     * @throws CoderException
+     *             if an error occurs while decoding the data.
+     */
     public VideoMetaData(final FLVDecoder coder) throws CoderException {
         final int start = coder.getPointer();
         coder.readByte();
@@ -72,7 +83,7 @@ public final class VideoMetaData implements VideoTag {
 
     /**
      * Constructs a new VideoMetaData object with the encoded data).
-     * 
+     *
      * @param data
      *            an array of bytes containing the encoded meta-data. Must not
      *            be null.
@@ -82,6 +93,14 @@ public final class VideoMetaData implements VideoTag {
         setData(data);
     }
 
+    /**
+     * Creates and initialises a VideoMetaData object using the values copied
+     * from another VideoMetaData object.
+     *
+     * @param object
+     *            a VideoMetaData object from which the values will be
+     *            copied.
+     */
     public VideoMetaData(final VideoMetaData object) {
         timestamp = object.timestamp;
         data = Arrays.copyOf(object.data, object.data.length);
@@ -98,7 +117,7 @@ public final class VideoMetaData implements VideoTag {
     /**
      * Sets the timestamp, in milliseconds, relative to the start of the file,
      * when the audio or video will be played.
-     * 
+     *
      * @param time
      *            the time in milliseconds relative to the start of the file.
      *            Must be in the range 0..16,777,215.
@@ -121,7 +140,7 @@ public final class VideoMetaData implements VideoTag {
     /**
      * Sets the encoded meta data that describes how the video stream should be
      * played.
-     * 
+     *
      * @param data
      *            an array of bytes containing the encoded meta-data. Must not
      *            be null.
@@ -148,12 +167,14 @@ public final class VideoMetaData implements VideoTag {
         return String.format(FORMAT, data.length);
     }
 
+    /** {@inheritDoc} */
     public int prepareToEncode() {
         length = 11 + data.length;
 
         return length;
     }
 
+    /** {@inheritDoc} */
     public void encode(final FLVEncoder coder) throws CoderException {
         final int start = coder.getPointer();
 

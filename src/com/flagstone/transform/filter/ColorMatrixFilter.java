@@ -10,12 +10,23 @@ import com.flagstone.transform.coder.FilterTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
+/** TODO(class). */
 public final class ColorMatrixFilter implements Filter {
 
     private static final String FORMAT = "ColorMatrix: { matrix=%s }";
 
     private final float[] matrix;
 
+    /**
+     * Creates and initialises a ColorMatrix object using values encoded
+     * in the Flash binary format.
+     *
+     * @param coder
+     *            an SWFDecoder object that contains the encoded Flash data.
+     *
+     * @throws CoderException
+     *             if an error occurs while decoding the data.
+     */
     public ColorMatrixFilter(final SWFDecoder coder) throws CoderException {
         coder.readByte();
         matrix = new float[20];
@@ -24,6 +35,7 @@ public final class ColorMatrixFilter implements Filter {
         }
     }
 
+    /** TODO(method). */
     public ColorMatrixFilter(final float[] matrix) {
         if ((matrix == null) || (matrix.length != 20)) {
             throw new IllegalArgumentException(Strings.VALUE_NOT_SET);
@@ -31,16 +43,9 @@ public final class ColorMatrixFilter implements Filter {
         this.matrix = Arrays.copyOf(matrix, matrix.length);
     }
 
-    public ColorMatrixFilter(final ColorMatrixFilter object) {
-        matrix = object.matrix;
-    }
-
+    /** TODO(method). */
     public float[] getMatrix() {
         return Arrays.copyOf(matrix, matrix.length);
-    }
-
-    public ColorMatrixFilter copy() {
-        return new ColorMatrixFilter(this);
     }
 
     @Override
@@ -71,10 +76,12 @@ public final class ColorMatrixFilter implements Filter {
         return Arrays.hashCode(matrix);
     }
 
+    /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         return 81;
     }
 
+    /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         coder.writeByte(FilterTypes.COLOR_MATRIX);

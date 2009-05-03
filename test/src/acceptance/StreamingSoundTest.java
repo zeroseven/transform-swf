@@ -32,9 +32,9 @@ public class StreamingSoundTest {
             destFile = new File(destDir, file.substring(0, file
                     .lastIndexOf('.'))
                     + ".swf");
-            // TODO stream = SoundFactory.streamSound((int)framesPerSecond,
+            // TODO(code) stream = SoundFactory.streamSound((int)framesPerSecond,
             // sourceFile);
-            // TODO playSound(stream, destFile);
+            // playSound(stream, destFile);
         }
     }
 

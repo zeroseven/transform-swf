@@ -33,13 +33,11 @@ package com.flagstone.transform.util.sound;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.flagstone.transform.sound.SoundInfo;
-
-/**
- */
-//TODO(class)
+/** TODO(class). */
 public final class SoundRegistry {
-    private static Map<String, SoundProvider> providers = new LinkedHashMap<String, SoundProvider>();
+
+    private static Map<String, SoundProvider> providers =
+        new LinkedHashMap<String, SoundProvider>();
 
     static {
         for (final SoundEncoding encoding : SoundEncoding.values()) {

@@ -43,14 +43,14 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 public final class FreeTest {
 
-    private static transient final int identifier = 1;
+    private static final transient int identifier = 1;
 
     private transient Free fixture;
 
-    private transient final byte[] encoded = new byte[] { (byte) 0xC2, 0x00,
+    private final transient byte[] encoded = new byte[] { (byte) 0xC2, 0x00,
             0x01, 0x00 };
 
-    private transient final byte[] extended = new byte[] { (byte) 0xFF, 0x00,
+    private final transient byte[] extended = new byte[] { (byte) 0xFF, 0x00,
             0x02, 0x00, 0x00, 0x00, 0x01, 0x00 };
 
     @Test(expected = IllegalArgumentException.class)

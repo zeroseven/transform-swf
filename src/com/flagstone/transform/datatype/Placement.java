@@ -1,5 +1,11 @@
 package com.flagstone.transform.datatype;
 
+/** TODO(class). */
 public enum Placement {
-    MODIFY, NEW, REPLACE
+    /** TODO(doc). */
+    MODIFY,
+    /** TODO(doc). */
+    NEW,
+    /** TODO(doc). */
+    REPLACE
 }

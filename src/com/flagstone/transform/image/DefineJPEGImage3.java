@@ -43,15 +43,16 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 /**
  * DefineJPEGImage3 is used to define a transparent JPEG encoded image.
- * 
+ *
  * <p>
  * It extends the DefineJPEGImage2 class by including a separate zlib compressed
  * table of alpha channel values. This allows the transparency of existing JPEG
  * encoded images to be changed without re-encoding the original image.
  * </p>
- * 
+ *
  * @see DefineJPEGImage3
  */
+//TODO(class)
 public final class DefineJPEGImage3 implements ImageTag {
     private static final String FORMAT = "DefineJPEGImage3: { identifier=%d; image=%d; alpha=%d }";
 
@@ -63,7 +64,16 @@ public final class DefineJPEGImage3 implements ImageTag {
     private byte[] alpha;
     private int identifier;
 
-    // TODO(doc)
+    /**
+     * Creates and initialises a DefineJPEGImage3 object using values encoded
+     * in the Flash binary format.
+     *
+     * @param coder
+     *            an SWFDecoder object that contains the encoded Flash data.
+     *
+     * @throws CoderException
+     *             if an error occurs while decoding the data.
+     */
     public DefineJPEGImage3(final SWFDecoder coder) throws CoderException {
         final int start = coder.getPointer();
         length = coder.readWord(2, false) & 0x3F;
@@ -90,7 +100,7 @@ public final class DefineJPEGImage3 implements ImageTag {
     /**
      * Creates a DefineJPEGImage3 object with the specified image data, and
      * alpha channel data.
-     * 
+     *
      * @param uid
      *            the unique identifier for this object. Must be in the range
      *            1..65535.
@@ -107,7 +117,14 @@ public final class DefineJPEGImage3 implements ImageTag {
         setAlpha(alpha);
     }
 
-    // TODO(doc)
+    /**
+     * Creates and initialises a DefineJPEGImage3 object using the values copied
+     * from another DefineJPEGImage3 object.
+     *
+     * @param object
+     *            a DefineJPEGImage3 object from which the values will be
+     *            copied.
+     */
     public DefineJPEGImage3(final DefineJPEGImage3 object) {
         identifier = object.identifier;
         width = object.width;
@@ -116,10 +133,12 @@ public final class DefineJPEGImage3 implements ImageTag {
         alpha = Arrays.copyOf(object.alpha, object.alpha.length);
     }
 
+    /** TODO(method). */
     public int getIdentifier() {
         return identifier;
     }
 
+    /** TODO(method). */
     public void setIdentifier(final int uid) {
         if ((uid < 0) || (uid > 65535)) {
             throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
@@ -157,7 +176,7 @@ public final class DefineJPEGImage3 implements ImageTag {
 
     /**
      * Sets the image data.
-     * 
+     *
      * @param bytes
      *            an array of bytes containing the image table. Must not be
      *            null.
@@ -169,7 +188,7 @@ public final class DefineJPEGImage3 implements ImageTag {
 
     /**
      * Sets the alpha channel data with the zlib compressed data.
-     * 
+     *
      * @param bytes
      *            array of bytes containing zlib encoded alpha channel. Must not
      *            be null.
@@ -178,6 +197,7 @@ public final class DefineJPEGImage3 implements ImageTag {
         alpha = bytes;
     }
 
+    /** TODO(method). */
     public DefineJPEGImage3 copy() {
         return new DefineJPEGImage3(this);
     }
@@ -187,6 +207,7 @@ public final class DefineJPEGImage3 implements ImageTag {
         return String.format(FORMAT, identifier, image.length, alpha.length);
     }
 
+    /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         length = 6;
         length += image.length;
@@ -195,6 +216,7 @@ public final class DefineJPEGImage3 implements ImageTag {
         return (length > 62 ? 6 : 2) + length;
     }
 
+    /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         final int start = coder.getPointer();

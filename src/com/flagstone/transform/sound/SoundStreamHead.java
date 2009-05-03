@@ -1,30 +1,30 @@
 /*
  * SoundStreamHead.java
  * Transform
- * 
+ *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  *  * Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice, 
- *    this list of conditions and the following disclaimer in the documentation 
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors 
- *    may be used to endorse or promote products derived from this software 
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
@@ -43,18 +43,18 @@ import com.flagstone.transform.datatype.SoundFormat;
  * SoundStreamHead defines the format of a streaming sound, identifying the
  * encoding scheme, the rate at which the sound will be played and the size of
  * the decoded samples.
- * 
+ *
  * <p>
  * Sounds may be either mono or stereo and encoded using either NATIVE_PCM,
  * ADPCM, MP3 or NELLYMOSER formats and have sampling rates of 5512, 11025,
  * 22050 or 44100 Hertz.
  * </p>
- * 
+ *
  * <p>
  * The actual sound is streamed used the SoundStreamBlock class which contains
  * the data for each frame in a movie.
  * </p>
- * 
+ *
  * <p>
  * When a stream sound is played if the Flash Player cannot render the frames
  * fast enough to maintain synchronisation with the sound being played then
@@ -65,17 +65,18 @@ import com.flagstone.transform.datatype.SoundFormat;
  * the resolution or playback rate can improve synchronisation with the frames
  * displayed.
  * </p>
- * 
+ *
  * <p>
  * SoundStreamHead2 allows way the sound is played to differ from the way it is
  * encoded and streamed to the player. This allows the Player more control over
  * how the animation is rendered. Reducing the resolution or playback rate can
  * improve synchronisation with the frames displayed.
  * </p>
- * 
+ *
  * @see SoundStreamBlock
  * @see SoundStreamHead2
  */
+//TODO(class)
 public final class SoundStreamHead implements MovieTag {
     private static final String FORMAT = "SoundStreamHead: { format=%s; "
             + "playbackRate=%d; playbackChannels=%d; playbackSampleSize=%d; "
@@ -94,7 +95,16 @@ public final class SoundStreamHead implements MovieTag {
 
     private transient int length;
 
-    // TODO(doc)
+    /**
+     * Creates and initialises a SoundStreamHead object using values encoded
+     * in the Flash binary format.
+     *
+     * @param coder
+     *            an SWFDecoder object that contains the encoded Flash data.
+     *
+     * @throws CoderException
+     *             if an error occurs while decoding the data.
+     */
     public SoundStreamHead(final SWFDecoder coder) throws CoderException {
         final int start = coder.getPointer();
         length = coder.readWord(2, false) & 0x3F;
@@ -161,7 +171,7 @@ public final class SoundStreamHead implements MovieTag {
     /**
      * Creates a SoundStreamHead object specifying all the parameters required
      * to define the sound.
-     * 
+     *
      * @param playRate
      *            the recommended rate for playing the sound, either 5512,
      *            11025, 22050 or 44100 Hz.
@@ -196,7 +206,14 @@ public final class SoundStreamHead implements MovieTag {
         setStreamSampleCount(streamingCount);
     }
 
-    // TODO(doc)
+    /**
+     * Creates and initialises a SoundStreamHead object using the values copied
+     * from another SoundStreamHead object.
+     *
+     * @param object
+     *            a SoundStreamHead object from which the values will be
+     *            copied.
+     */
     public SoundStreamHead(final SoundStreamHead object) {
         format = object.format;
         playRate = object.playRate;
@@ -219,7 +236,7 @@ public final class SoundStreamHead implements MovieTag {
 
     /**
      * Sets the format for the streaming sound.
-     * 
+     *
      * @param encoding
      *            the compression format for the sound data, either
      *            DefineSound.ADPCM or DefineSound.MP3.
@@ -283,7 +300,7 @@ public final class SoundStreamHead implements MovieTag {
     /**
      * Sets the recommended playback rate in Hz. Must be either: 5512, 11025,
      * 22050 or 44100.
-     * 
+     *
      * @param rate
      *            the recommended rate for playing the sound.
      */
@@ -297,7 +314,7 @@ public final class SoundStreamHead implements MovieTag {
 
     /**
      * Sets the recommended number of playback channels = 1 = mono 2 = stereo.
-     * 
+     *
      * @param channels
      *            the recommended number of playback channels.
      */
@@ -311,7 +328,7 @@ public final class SoundStreamHead implements MovieTag {
     /**
      * Sets the recommended playback sample size in bytes. Must be wither 1 or
      * 2.
-     * 
+     *
      * @param playSize
      *            the recommended sample size for playing the sound.
      */
@@ -325,7 +342,7 @@ public final class SoundStreamHead implements MovieTag {
     /**
      * Sets the sample rate in Hz for the streaming sound. Must be either: 5512,
      * 11025, 22050 or 44100.
-     * 
+     *
      * @param rate
      *            the rate at which the streaming sound was sampled.
      */
@@ -339,7 +356,7 @@ public final class SoundStreamHead implements MovieTag {
 
     /**
      * Sets the number of channels in the streaming sound: 1 = mono 2 = stereo.
-     * 
+     *
      * @param channels
      *            the number of channels in the streaming sound.
      */
@@ -352,7 +369,7 @@ public final class SoundStreamHead implements MovieTag {
 
     /**
      * Sets the sample size in bytes for the streaming sound. Must be 1 or 2.
-     * 
+     *
      * @param size
      *            the sample size for the sound.
      */
@@ -365,7 +382,7 @@ public final class SoundStreamHead implements MovieTag {
 
     /**
      * Sets the number of samples in each stream block.
-     * 
+     *
      * @param count
      *            the number of samples in each subsequent SoundStreamBlock
      *            object.
@@ -380,7 +397,7 @@ public final class SoundStreamHead implements MovieTag {
     /**
      * For MP3 encoded sounds, returns the number of samples to skip when
      * starting to play a sound.
-     * 
+     *
      * @return the number of samples skipped in an MP3 encoded sound Returns 0
      *         for other sound formats.
      */
@@ -391,7 +408,7 @@ public final class SoundStreamHead implements MovieTag {
     /**
      * Set the number of samples to skip when starting to play an MP3 encoded
      * sound.
-     * 
+     *
      * @param latency
      *            the number of samples to be skipped in an MP3 encoded sound
      *            should be 0 for other sound formats.
@@ -400,6 +417,7 @@ public final class SoundStreamHead implements MovieTag {
         this.latency = latency;
     }
 
+    /** TODO(method). */
     public SoundStreamHead copy() {
         return new SoundStreamHead(this);
     }
@@ -411,6 +429,7 @@ public final class SoundStreamHead implements MovieTag {
                 streamSampleCount, latency);
     }
 
+    /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         length = 4;
 
@@ -420,6 +439,7 @@ public final class SoundStreamHead implements MovieTag {
         return (length > 62 ? 6 : 2) + length;
     }
 
+    /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         final int start = coder.getPointer();

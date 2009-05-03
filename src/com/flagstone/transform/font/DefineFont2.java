@@ -1,30 +1,30 @@
 /*
  * DefineFont2.java
  * Transform
- * 
+ *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  *  * Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice, 
- *    this list of conditions and the following disclaimer in the documentation 
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors 
- *    may be used to endorse or promote products derived from this software 
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
@@ -45,13 +45,12 @@ import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.shape.Shape;
 import com.flagstone.transform.shape.ShapeData;
 
-//TODO(doc) Review
 /**
  * <p>
  * DefineFont2 defines the shapes and layout of the glyphs used in a font. It
  * extends the functionality provided by DefineFont and FontInfo by:
  * </p>
- * 
+ *
  * <ul>
  * <li>allowing more than 65535 glyphs in a particular font.</li>
  * <li>including the functionality provided by the FontInfo class.</li>
@@ -60,10 +59,11 @@ import com.flagstone.transform.shape.ShapeData;
  * <li>specifying bounding rectangles for each glyph.</li>
  * <li>specifying kerning pairs defining the distance between pairs of glyphs.</li>
  * </ul>
- * 
+ *
  * @see FontInfo
  * @see DefineFont
  */
+//TODO(class)
 public final class DefineFont2 implements DefineTag {
     // TODO(code) Replace with StringBuilder for optional attributes ?
     private static final String FORMAT = "DefineFont2: { identifier=%d; encoding=%s; "
@@ -90,7 +90,21 @@ public final class DefineFont2 implements DefineTag {
     private transient boolean wideOffsets;
     private transient boolean wideCodes;
 
-    // TODO(doc)
+    /**
+     * Creates and initialises a DefineFont2 object using values encoded
+     * in the Flash binary format.
+     *
+     * @param coder
+     *            an SWFDecoder object that contains the encoded Flash data.
+     *
+     * @param context
+     *            a Context object used to manage the decoders for different
+     *            type of object and to pass information on how objects are
+     *            decoded.
+     *
+     * @throws CoderException
+     *             if an error occurs while decoding the data.
+     */
     // TODO(optimise)
     public DefineFont2(final SWFDecoder coder, final Context context)
             throws CoderException {
@@ -117,13 +131,9 @@ public final class DefineFont2 implements DefineTag {
 
         if (format == 1) {
             encoding = CharacterEncoding.ANSI;
-        }
-        // Flash 7
-        else if (format == 2) {
+        } else if (format == 2) {
             small = true;
-        }
-        // End Flash 7
-        else if (format == 4) {
+        } else if (format == 4) {
             encoding = CharacterEncoding.SJIS;
         }
 
@@ -203,19 +213,19 @@ public final class DefineFont2 implements DefineTag {
 
     /**
      * Creates a DefineFont2 object specifying only the name of the font.
-     * 
+     *
      * If none of the remaining attributes are set the Flash Player will load
      * the font from the system on which it is running or substitute a suitable
      * font if the specified font cannot be found. This is particularly useful
      * when defining fonts that will be used to display text in DefineTextField
      * objects.
-     * 
+     *
      * The font will be defined to use Unicode encoding. The flags which define
      * the font's face will be set to false. The arrays of glyphs which define
      * the shapes and the code which map the character codes to a particular
      * glyph will remain empty since the font is loaded from the system on which
      * it is displayed.
-     * 
+     *
      * @param uid
      *            the unique identifier for this font object.
      * @param name
@@ -232,7 +242,14 @@ public final class DefineFont2 implements DefineTag {
         kernings = new ArrayList<Kerning>();
     }
 
-    // TODO(doc)
+    /**
+     * Creates and initialises a DefineFont2 object using the values copied
+     * from another DefineFont2 object.
+     *
+     * @param object
+     *            a DefineFont2 object from which the values will be
+     *            copied.
+     */
     public DefineFont2(final DefineFont2 object) {
         identifier = object.identifier;
         encoding = object.encoding;
@@ -254,10 +271,12 @@ public final class DefineFont2 implements DefineTag {
         kernings = new ArrayList<Kerning>(object.kernings);
     }
 
+    /** TODO(method). */
     public int getIdentifier() {
         return identifier;
     }
 
+    /** TODO(method). */
     public void setIdentifier(final int uid) {
         if ((uid < 0) || (uid > 65535)) {
             throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
@@ -268,7 +287,7 @@ public final class DefineFont2 implements DefineTag {
     /**
      * Add a character code and the corresponding glyph that will be displayed.
      * Character codes should be added to the font in ascending order.
-     * 
+     *
      * @param code
      *            the character code. Must be in the range 0..65535.
      * @param obj
@@ -293,7 +312,7 @@ public final class DefineFont2 implements DefineTag {
      * Add an advance to the array of advances. The index position of the entry
      * in the advance array is also used to identify the corresponding glyph and
      * vice-versa.
-     * 
+     *
      * @param anAdvance
      *            an advance for a glyph. Must be in the range -32768..32767.
      */
@@ -309,7 +328,7 @@ public final class DefineFont2 implements DefineTag {
      * Add a bounds object to the array of bounds for each glyph. The index
      * position of the entry in the bounds array is also used to identify the
      * corresponding glyph and vice-versa.
-     * 
+     *
      * @param obj
      *            an Bounds. Must not be null.
      */
@@ -323,7 +342,7 @@ public final class DefineFont2 implements DefineTag {
 
     /**
      * Add a kerning object to the array of kernings for pairs of glyphs.
-     * 
+     *
      * @param anObject
      *            an Kerning. Must not be null.
      */
@@ -338,7 +357,7 @@ public final class DefineFont2 implements DefineTag {
     /**
      * Returns the encoding used for the font codes, either Text.ASCII,
      * Text.SJIS or Text.Unicode.
-     * 
+     *
      * @return the encoding used to represent characters rendered in the font.
      */
     public CharacterEncoding getEncoding() {
@@ -348,7 +367,7 @@ public final class DefineFont2 implements DefineTag {
     /**
      * Does the font have a small point size. This is used only with a Unicode
      * font encoding.
-     * 
+     *
      * @return a boolean indicating whether the font will be aligned on pixel
      *         boundaries.
      */
@@ -358,7 +377,7 @@ public final class DefineFont2 implements DefineTag {
 
     /**
      * Sets the font is small. Used only with Unicode fonts.
-     * 
+     *
      * @param aBool
      *            a boolean flag indicating the font will be aligned on pixel
      *            boundaries.
@@ -371,7 +390,7 @@ public final class DefineFont2 implements DefineTag {
 
     /**
      * Is the font italicised.
-     * 
+     *
      * @return a boolean indicating whether the font is rendered in italics.
      */
     public boolean isItalic() {
@@ -380,7 +399,7 @@ public final class DefineFont2 implements DefineTag {
 
     /**
      * Is the font bold.
-     * 
+     *
      * @return a boolean indicating whether the font is rendered in a bold face.
      */
     public boolean isBold() {
@@ -392,7 +411,7 @@ public final class DefineFont2 implements DefineTag {
      * Returns the language code identifying the type of spoken language for the
      * font either Text.Japanese, Text.Korean, Text.Latin,
      * Text.SimplifiedChinese or Text.TraditionalChinese.
-     * 
+     *
      * @return the language code used to determine how line-breaks are inserted
      *         into text rendered using the font. Returns 0 if the object was
      *         decoded from a movie contains Flash 5 or less.
@@ -404,10 +423,10 @@ public final class DefineFont2 implements DefineTag {
     /**
      * Sets the language code used to determine the position of line-breaks in
      * text rendered using the font.
-     * 
+     *
      * NOTE: The language attribute is ignored if the object is encoded in a
      * Flash 5 movie.
-     * 
+     *
      * @param code
      *            the code identifying the spoken language either Text.Japanese,
      *            Text.Korean, Text.Latin, Text.SimplifiedChinese or
@@ -421,7 +440,7 @@ public final class DefineFont2 implements DefineTag {
 
     /**
      * Returns the name of the font family.
-     * 
+     *
      * @return the name of the font.
      */
     public String getName() {
@@ -431,7 +450,7 @@ public final class DefineFont2 implements DefineTag {
     /**
      * Returns the array of shapes used to define the outlines of each font
      * glyph.
-     * 
+     *
      * @return an array of Shape objects
      */
     public List<Shape> getShapes() {
@@ -442,7 +461,7 @@ public final class DefineFont2 implements DefineTag {
      * Returns the array of codes used to identify each glyph in the font. The
      * ordinal position of each Integer representing a code identifies a
      * particular glyph in the shapes array.
-     * 
+     *
      * @return an array of Integer objects that contain the character codes for
      *         each glyph in the font.
      */
@@ -452,7 +471,7 @@ public final class DefineFont2 implements DefineTag {
 
     /**
      * Returns the ascent for the font in twips.
-     * 
+     *
      * @return the ascent for the font.
      */
     public int getAscent() {
@@ -461,7 +480,7 @@ public final class DefineFont2 implements DefineTag {
 
     /**
      * Returns the descent for the font in twips.
-     * 
+     *
      * @return the descent for the font.
      */
     public int getDescent() {
@@ -470,7 +489,7 @@ public final class DefineFont2 implements DefineTag {
 
     /**
      * Returns the leading for the font in twips.
-     * 
+     *
      * @return the leading for the font.
      */
     public int getLeading() {
@@ -479,7 +498,7 @@ public final class DefineFont2 implements DefineTag {
 
     /**
      * Returns the array of advances defined for each glyph in the font.
-     * 
+     *
      * @return an array of Integer objects that contain the advance for each
      *         glyph in the font.
      */
@@ -490,7 +509,7 @@ public final class DefineFont2 implements DefineTag {
     /**
      * Returns the array of bounding rectangles defined for each glyph in the
      * font.
-     * 
+     *
      * @return an array of Bounds objects.
      */
     public List<Bounds> getBounds() {
@@ -500,7 +519,7 @@ public final class DefineFont2 implements DefineTag {
     /**
      * Returns the array of kerning records that define the spacing between
      * glyph pairs.
-     * 
+     *
      * @return an array of Kerning objects that define the spacing adjustment
      *         between pairs of glyphs.
      */
@@ -510,7 +529,7 @@ public final class DefineFont2 implements DefineTag {
 
     /**
      * Sets the encoding for the font character codes.
-     * 
+     *
      * @param aType
      *            the encoding scheme used to denote characters, either ASCII,
      *            SJIS or UCS2.
@@ -521,7 +540,7 @@ public final class DefineFont2 implements DefineTag {
 
     /**
      * Set the font is italicised.
-     * 
+     *
      * @param aBool
      *            a boolean flag indicating whether the font will be rendered in
      *            italics
@@ -532,7 +551,7 @@ public final class DefineFont2 implements DefineTag {
 
     /**
      * Set the font is bold.
-     * 
+     *
      * @param aBool
      *            a boolean flag indicating whether the font will be rendered in
      *            bold face.
@@ -543,7 +562,7 @@ public final class DefineFont2 implements DefineTag {
 
     /**
      * Set the name of the font.
-     * 
+     *
      * @param aString
      *            the name assigned to the font, identifying the font family.
      *            Must not be null.
@@ -558,7 +577,7 @@ public final class DefineFont2 implements DefineTag {
     /**
      * Set the array of shape records that define the outlines of the characters
      * used from the font.
-     * 
+     *
      * @param anArray
      *            an array of Shape objects that define the glyphs for the font.
      *            Must not be null.
@@ -572,7 +591,7 @@ public final class DefineFont2 implements DefineTag {
 
     /**
      * Sets the codes used to identify each glyph in the font.
-     * 
+     *
      * @param anArray
      *            sets the code table that maps a particular glyph to a
      *            character code. Must not be null.
@@ -586,7 +605,7 @@ public final class DefineFont2 implements DefineTag {
 
     /**
      * Sets the ascent for the font in twips.
-     * 
+     *
      * @param aNumber
      *            the ascent for the font in the range -32768..32767.
      */
@@ -599,7 +618,7 @@ public final class DefineFont2 implements DefineTag {
 
     /**
      * Sets the descent for the font in twips.
-     * 
+     *
      * @param aNumber
      *            the descent for the font in the range -32768..32767.
      */
@@ -612,7 +631,7 @@ public final class DefineFont2 implements DefineTag {
 
     /**
      * Sets the leading for the font in twips.
-     * 
+     *
      * @param aNumber
      *            the descent for the font in the range -32768..32767.
      */
@@ -625,7 +644,7 @@ public final class DefineFont2 implements DefineTag {
 
     /**
      * Sets the array of advances for each glyph in the font.
-     * 
+     *
      * @param anArray
      *            of Integer objects that define the spacing between glyphs.
      *            Must not be null.
@@ -639,7 +658,7 @@ public final class DefineFont2 implements DefineTag {
 
     /**
      * Sets the array of bounding rectangles for each glyph in the font.
-     * 
+     *
      * @param anArray
      *            an array of Bounds objects that define the bounding rectangles
      *            that enclose each glyph in the font. Must not be null.
@@ -653,7 +672,7 @@ public final class DefineFont2 implements DefineTag {
 
     /**
      * Sets the array of kerning records for pairs of glyphs in the font.
-     * 
+     *
      * @param anArray
      *            an array of Kerning objects that define an adjustment applied
      *            to the spacing between pairs of glyphs. Must not be null.
@@ -665,6 +684,7 @@ public final class DefineFont2 implements DefineTag {
         kernings = anArray;
     }
 
+    /** TODO(method). */
     public DefineFont2 copy() {
         return new DefineFont2(this);
     }
@@ -677,6 +697,7 @@ public final class DefineFont2 implements DefineTag {
     }
 
     // TODO(optimise)
+    /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         wideCodes = (Context.VERSION > 5)
                 || (encoding != CharacterEncoding.ANSI);
@@ -726,6 +747,7 @@ public final class DefineFont2 implements DefineTag {
     }
 
     // TODO(optimise)
+    /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         int format;

@@ -41,17 +41,17 @@ public final class MovieTest {
 
     private transient Movie fixture;
 
-    private transient final byte[] encoded = new byte[] {};
+    private final transient byte[] encoded = new byte[] {};
 
     @Test
-    @Ignore
+    @Ignore //TODO(implement)
     public void checkCopy() {
         // fixture = new Movie(identifier, layer, transform, colorTransform);
         // Movie copy = fixture.copy();
     }
 
     @Test
-    @Ignore
+    @Ignore //TODO(implement)
     public void encode() throws CoderException {
         // SWFEncoder encoder = new SWFEncoder(encoded.length);
         // Context context = new Context();
@@ -60,7 +60,7 @@ public final class MovieTest {
     }
 
     @Test
-    @Ignore
+    @Ignore //TODO(implement)
     public void decode() throws CoderException {
         final SWFDecoder decoder = new SWFDecoder(encoded);
         // Context context = new Context();

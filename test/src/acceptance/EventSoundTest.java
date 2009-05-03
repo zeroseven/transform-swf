@@ -34,8 +34,8 @@ public class EventSoundTest {
             destFile = new File(destDir, file.substring(0, file
                     .lastIndexOf('.'))
                     + ".swf");
-            // TODO sound = provider.defineSound(1);
-            // TODO playSound(sound, destFile);
+            // TODO(code) sound = provider.defineSound(1);
+            // playSound(sound, destFile);
         }
     }
 

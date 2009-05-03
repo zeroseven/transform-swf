@@ -1,30 +1,30 @@
 /*
  * Symbol.java
  * Transform
- * 
+ *
  * Copyright (c) 2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  *  * Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice, 
- *    this list of conditions and the following disclaimer in the documentation 
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors 
- *    may be used to endorse or promote products derived from this software 
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
@@ -40,17 +40,17 @@ import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-//TODO(doc) Review
 /**
  * Symbol is used to SYMBOL one or more shapes and other objects so they can be
  * used in another Flash file.
- * 
+ *
  * <p>
  * Since the identifier for an object is only unique within a given Flash file,
  * each object SYMBOLed must be given a name so it can referenced when it is
  * imported.
  * </p>
  */
+//TODO(class)
 public final class SymbolClass implements MovieTag {
 
     private static final String FORMAT = "SymbolClass: { objects=%s }";
@@ -59,6 +59,16 @@ public final class SymbolClass implements MovieTag {
 
     private transient int length;
 
+    /**
+     * Creates and initialises a SymbolClass object using values encoded
+     * in the Flash binary format.
+     *
+     * @param coder
+     *            an SWFDecoder object that contains the encoded Flash data.
+     *
+     * @throws CoderException
+     *             if an error occurs while decoding the data.
+     */
     public SymbolClass(final SWFDecoder coder) throws CoderException {
 
         final int start = coder.getPointer();
@@ -84,7 +94,7 @@ public final class SymbolClass implements MovieTag {
 
     /**
      * Creates an SYMBOL object with an empty array.
-     * 
+     *
      * @param map
      *            the table containing identifier/name pairs for the objects
      *            that will be SYMBOLed from the movie.
@@ -97,7 +107,7 @@ public final class SymbolClass implements MovieTag {
      * Creates an SYMBOL object that SYMBOLs the object with the specified
      * identifier. The SYMBOLed object is assigned the specified name to allow
      * it to be referenced in files importing the object.
-     * 
+     *
      * @param uid
      *            the identifier of the object to be SYMBOLed. Must be in the
      *            range 1..65535.
@@ -110,13 +120,21 @@ public final class SymbolClass implements MovieTag {
         add(uid, aString);
     }
 
+    /**
+     * Creates and initialises a SymbolClass object using the table values copied
+     * from another SymbolClass object.
+     *
+     * @param object
+     *            a SymbolClass object from which the table will be
+     *            copied.
+     */
     public SymbolClass(final SymbolClass object) {
         objects = new LinkedHashMap<Integer, String>(object.objects);
     }
 
     /**
      * Adds the identifier and name to the list of objects to be SYMBOLed.
-     * 
+     *
      * @param uid
      *            the identifier of the object to be SYMBOLed.
      * @param aString
@@ -142,7 +160,7 @@ public final class SymbolClass implements MovieTag {
 
     /**
      * Sets the table of objects to be SYMBOLed.
-     * 
+     *
      * @param aTable
      *            the table of objects being imported. Must not be null.
      */
@@ -153,7 +171,7 @@ public final class SymbolClass implements MovieTag {
         objects = aTable;
     }
 
-    // TODO(doc)
+    /** TODO(method). */
     public SymbolClass copy() {
         return new SymbolClass(this);
     }
@@ -163,6 +181,7 @@ public final class SymbolClass implements MovieTag {
         return String.format(FORMAT, objects);
     }
 
+    /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
 
         length = 2;
@@ -174,6 +193,7 @@ public final class SymbolClass implements MovieTag {
         return (length > 62 ? 6 : 2) + length;
     }
 
+    /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
 

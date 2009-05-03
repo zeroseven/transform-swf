@@ -1,30 +1,30 @@
 /*
  * ColorTransform.java
  * Transform
- * 
+ *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  *  * Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice, 
- *    this list of conditions and the following disclaimer in the documentation 
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors 
- *    may be used to endorse or promote products derived from this software 
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
@@ -42,49 +42,49 @@ import com.flagstone.transform.coder.SWFEncoder;
  * A ColorTransform is used to change the colour of a shape or button without
  * changing the values in the original definition of the object.
  * </p>
- * 
+ *
  * <p>
  * Two types of transformation are supported: Add and Multiply. In Add
  * transformations a value is added to each colour channel:
  * </p>
- * 
+ *
  * <pre>
  * newRed = red + addRedTerm
  * newGreen = green + addGreenTerm
  * newBlue = blue + addBlueTerm
  * newAlpha = alpha + addAlphaTerm
  * </pre>
- * 
+ *
  * <p>
  * In Multiply transformations each colour channel is multiplied by a given
  * value:
  * </p>
- * 
+ *
  * <pre>
  * newRed = red * multiplyRedTerm
  * newGreen = green * multiplyGreenTerm
  * newBlue = blue * multiplyBlueTerm
  * newAlpha = alpha * multiplyAlphaTerm
  * </pre>
- * 
+ *
  * <p>
  * Add and Multiply transforms may be combined in which case the multiply terms
  * are applied to the colour channel before the add terms.
  * </p>
- * 
+ *
  * <pre>
  * newRed = (red * multiplyRedTerm) + addRedTerm
  * newGreen = (green * multiplyGreenTerm) + addGreenTerm
  * newBlue = (blue * multiplyBlueTerm) + addBlueTerm
  * newAlpha = (alpha * multiplyAlphaTerm) + addAlphaTerm
  * </pre>
- * 
+ *
  * <p>
  * For each type of transform the result of the calculation is limited to the
  * range 0..255. If the result is less than 0 or greater than 255 then it is
  * clamped at 0 and 255 respectively.
  * </p>
- * 
+ *
  * <p>
  * Not all objects containing a colour transform use the add or multiply terms
  * defined for the alpha channel. The colour objects defined in an DefineButton,
@@ -93,14 +93,15 @@ import com.flagstone.transform.coder.SWFEncoder;
  * channel is stored in a SWFContext which is passed when the transform is
  * encoded or decoded.
  * </p>
- * 
+ *
  */
 // TODO(optimise) Can hasAdd or hasMultiply be set in constructors.
 // TODO(optimise) Is there a more efficient way of calculating field size.
-// TODO(doc) review.
+//TODO(class)
 public final class ColorTransform implements SWFEncodeable {
 
-    private static final String FORMAT = "ColorTransform: { multiply=[%f, %f, %f, %f]; add=[%d, %d, %d, %d] }";
+    private static final String FORMAT = "ColorTransform: { "
+            + "multiply=[%f, %f, %f, %f]; add=[%d, %d, %d, %d] }";
 
     private final transient int multiplyRed;
     private final transient int multiplyGreen;
@@ -117,6 +118,21 @@ public final class ColorTransform implements SWFEncodeable {
     private transient boolean hasAdd;
     private transient boolean hasAlpha;
 
+    /**
+     * Creates and initialises a ColorTransform object using values encoded
+     * in the Flash binary format.
+     *
+     * @param coder
+     *            an SWFDecoder object that contains the encoded Flash data.
+     *
+     * @param context
+     *            a Context object used to manage the decoders for different
+     *            type of object and to pass information on how objects are
+     *            decoded.
+     *
+     * @throws CoderException
+     *             if an error occurs while decoding the data.
+     */
     public ColorTransform(final SWFDecoder coder, final Context context)
             throws CoderException {
 
@@ -156,7 +172,7 @@ public final class ColorTransform implements SWFEncodeable {
 
     /**
      * Creates an add colour transform.
-     * 
+     *
      * @param addRed
      *            value to add to the red colour channel.
      * @param addGreen
@@ -181,7 +197,7 @@ public final class ColorTransform implements SWFEncodeable {
 
     /**
      * Creates a multiply colour transform that will apply the colour channels.
-     * 
+     *
      * @param mulRed
      *            value to multiply the red colour channel by.
      * @param mulGreen
@@ -204,6 +220,7 @@ public final class ColorTransform implements SWFEncodeable {
         addAlpha = 0;
     }
 
+    /** TODO(method). */
     public ColorTransform(final int addRed, final int addGreen,
             final int addBlue, final int addAlpha, final float mulRed,
             final float mulGreen, final float mulBlue, final float mulAlpha) {
@@ -217,25 +234,6 @@ public final class ColorTransform implements SWFEncodeable {
         multiplyGreen = (int) (mulGreen * 256);
         multiplyBlue = (int) (mulBlue * 256);
         multiplyAlpha = (int) (mulAlpha * 256);
-    }
-
-    /**
-     * Create a copy of a ColorTransform object.
-     * 
-     * @param object
-     *            the ColorTransform object used to initialise this one.
-     */
-    public ColorTransform(final ColorTransform object) {
-
-        multiplyRed = object.multiplyRed;
-        multiplyGreen = object.multiplyGreen;
-        multiplyBlue = object.multiplyBlue;
-        multiplyAlpha = object.multiplyAlpha;
-
-        addRed = object.addRed;
-        addGreen = object.addGreen;
-        addBlue = object.addBlue;
-        addAlpha = object.addAlpha;
     }
 
     /**
@@ -328,10 +326,12 @@ public final class ColorTransform implements SWFEncodeable {
 
     @Override
     public int hashCode() {
-        return ((((((addRed * 31 + addGreen) * 31 + addBlue) * 31 + addAlpha) * 31 + multiplyRed) * 31 + multiplyGreen) * 31 + multiplyBlue)
-                * 31 + multiplyAlpha;
+        return ((((((addRed * 31 + addGreen) * 31 + addBlue) * 31
+            + addAlpha) * 31 + multiplyRed) * 31 + multiplyGreen) * 31
+            + multiplyBlue) * 31 + multiplyAlpha;
     }
 
+    /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
 
         int numberOfBits = 13; // include extra 7 bits for byte alignment
@@ -352,6 +352,7 @@ public final class ColorTransform implements SWFEncodeable {
         return numberOfBits >> 3;
     }
 
+    /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
 
@@ -400,28 +401,28 @@ public final class ColorTransform implements SWFEncodeable {
 
     private int addFieldSize(final Context context) {
 
-        int size;
+        int count;
 
         if (context.getVariables().containsKey(Context.TRANSPARENT)) {
-            size = Encoder.maxSize(addRed, addGreen, addBlue, addAlpha);
+            count = Encoder.maxSize(addRed, addGreen, addBlue, addAlpha);
         } else {
-            size = Encoder.maxSize(addRed, addGreen, addBlue);
+            count = Encoder.maxSize(addRed, addGreen, addBlue);
         }
-        return size;
+        return count;
     }
 
     private int multiplyFieldSize(final Context context) {
 
-        int size;
+        int count;
 
         if (context.getVariables().containsKey(Context.TRANSPARENT)) {
-            size = Encoder.maxSize(multiplyRed, multiplyGreen, multiplyBlue,
+            count = Encoder.maxSize(multiplyRed, multiplyGreen, multiplyBlue,
                     multiplyAlpha);
         } else {
-            size = Encoder.maxSize(multiplyRed, multiplyGreen, multiplyBlue);
+            count = Encoder.maxSize(multiplyRed, multiplyGreen, multiplyBlue);
         }
 
-        return size;
+        return count;
     }
 
     private int fieldSize(final Context context) {

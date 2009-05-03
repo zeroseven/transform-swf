@@ -1,30 +1,30 @@
 /*
  * DefineJPEGImage.java
  * Transform
- * 
+ *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  *  * Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice, 
- *    this list of conditions and the following disclaimer in the documentation 
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors 
- *    may be used to endorse or promote products derived from this software 
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
@@ -41,17 +41,16 @@ import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-//TODO(doc) Review
 /**
  * DefineJPEGImage is used to define a JPEG encoded image.
- * 
+ *
  * <p>
  * DefineJPEGImage objects only contain the image data, the encoding table for
  * the image is defined in a JPEGEncodingTable object. All images using a shared
  * JPEGEncodingTable object to represent the encoding table have the same
  * compression ratio.
  * </p>
- * 
+ *
  * <p>
  * Although the DefineJPEGImage class is supposed to be used with the
  * JPEGEncodingTable class which defines the encoding table for the images it is
@@ -59,11 +58,12 @@ import com.flagstone.transform.coder.SWFEncoder;
  * encoding table then the Flash Player will still display the JPEG image
  * correctly if it contain the encoding table block in the image data.
  * </p>
- * 
+ *
  * @see JPEGEncodingTable
  * @see DefineJPEGImage2
  * @see DefineJPEGImage3
  */
+//TODO(class)
 public final class DefineJPEGImage implements ImageTag {
     private static final String FORMAT = "DefineJPEGImage: { identifier=%d; image=%d; }";
 
@@ -74,7 +74,16 @@ public final class DefineJPEGImage implements ImageTag {
     private transient int width;
     private transient int height;
 
-    // TODO(doc)
+    /**
+     * Creates and initialises a DefineJPEGImage object using values encoded
+     * in the Flash binary format.
+     *
+     * @param coder
+     *            an SWFDecoder object that contains the encoded Flash data.
+     *
+     * @throws CoderException
+     *             if an error occurs while decoding the data.
+     */
     public DefineJPEGImage(final SWFDecoder coder) throws CoderException {
         final int start = coder.getPointer();
         length = coder.readWord(2, false) & 0x3F;
@@ -96,7 +105,7 @@ public final class DefineJPEGImage implements ImageTag {
 
     /**
      * Creates a DefineJPEGImage object with the identifier and JPEG data.
-     * 
+     *
      * @param uid
      *            the unique identifier for this object. Must be in the range
      *            1..65535.
@@ -108,7 +117,14 @@ public final class DefineJPEGImage implements ImageTag {
         setImage(bytes);
     }
 
-    // TODO(doc)
+    /**
+     * Creates and initialises a DefineJPEGImage object using the values copied
+     * from another DefineJPEGImage object.
+     *
+     * @param object
+     *            a DefineJPEGImage object from which the values will be
+     *            copied.
+     */
     public DefineJPEGImage(final DefineJPEGImage object) {
         identifier = object.identifier;
         width = object.width;
@@ -116,10 +132,12 @@ public final class DefineJPEGImage implements ImageTag {
         image = Arrays.copyOf(object.image, object.image.length);
     }
 
+    /** TODO(method). */
     public int getIdentifier() {
         return identifier;
     }
 
+    /** TODO(method). */
     public void setIdentifier(final int uid) {
         if ((uid < 0) || (uid > 65535)) {
             throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
@@ -153,7 +171,7 @@ public final class DefineJPEGImage implements ImageTag {
      * containing a JPEG encoded image. if the image contains an encoding table
      * the Flash Player will display it correctly and there is no need to
      * specify a separate table using a JPEGEncodingTable object.
-     * 
+     *
      * @param bytes
      *            an array of bytes containing the image data. Must not be null
      *            or empty.
@@ -166,6 +184,7 @@ public final class DefineJPEGImage implements ImageTag {
         decodeInfo();
     }
 
+    /** TODO(method). */
     public DefineJPEGImage copy() {
         return new DefineJPEGImage(this);
     }
@@ -175,12 +194,14 @@ public final class DefineJPEGImage implements ImageTag {
         return String.format(FORMAT, identifier, image.length);
     }
 
+    /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         length = 2 + image.length;
 
         return (length > 62 ? 6 : 2) + length;
     }
 
+    /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         final int start = coder.getPointer();

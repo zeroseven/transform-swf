@@ -1,30 +1,30 @@
 /*
  * CoordTransform.java
  * Transform
- * 
+ *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  *  * Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice, 
- *    this list of conditions and the following disclaimer in the documentation 
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors 
- *    may be used to endorse or promote products derived from this software 
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
@@ -43,15 +43,15 @@ import com.flagstone.transform.coder.SWFEncoder;
  * allowing an object to be scaled, rotated or moved without changing the
  * original definition of how the object is drawn.
  * </p>
- * 
+ *
  * <p>
  * A two-dimensional transform is defined using a 3x3 matrix and the new values
  * for a pair of coordinates (x,y) are calculated using the following matrix
  * multiplication:
  * </p>
- * 
+ *
  * <img src="doc-files/transform.gif">
- * 
+ *
  * <p>
  * Different transformations such as scaling, rotation, shearing and translation
  * can be performed using the above matrix multiplication. More complex
@@ -61,18 +61,19 @@ import com.flagstone.transform.coder.SWFEncoder;
  * transforms is not commutative, the order in which transformations are applied
  * will affect the final result.
  * </p>
- * 
+ *
  */
-// TODO(doc) Review
+//TODO(class)
 public final class CoordTransform implements SWFEncodeable {
 
-    private static final String FORMAT = "CoordTransform: { scaleX=%f; scaleY=%f; shearX=%f; shearY=%f; transX=%d; transY=%d }";
+    private static final String FORMAT = "CoordTransform: { scaleX=%f;"
+            + " scaleY=%f; shearX=%f; shearY=%f; transX=%d; transY=%d }";
 
     /**
      * Create a new coordinate transform by multiplying two matrices together to
      * calculate the product. Since matrix multiplication is not commutative the
      * order in which the arguments are passed is important.
-     * 
+     *
      * @param left
      *            a 3x3 matrix
      * @param right
@@ -106,7 +107,7 @@ public final class CoordTransform implements SWFEncodeable {
 
     /**
      * Returns a translation transform.
-     * 
+     *
      * @param xCoord
      *            the x coordinate of the transformation.
      * @param yCoord
@@ -119,7 +120,7 @@ public final class CoordTransform implements SWFEncodeable {
 
     /**
      * Returns a scaling transform.
-     * 
+     *
      * @param xScale
      *            the scaling factor along the x-axis.
      * @param yScale
@@ -132,7 +133,7 @@ public final class CoordTransform implements SWFEncodeable {
 
     /**
      * Returns a CoordTransform initialised for a shearing operation.
-     * 
+     *
      * @param xShear
      *            the shearing factor along the x-axis.
      * @param yShear
@@ -145,7 +146,7 @@ public final class CoordTransform implements SWFEncodeable {
 
     /**
      * Returns a CoordTransform initialised for a rotation in degrees.
-     * 
+     *
      * @param angle
      *            the of rotation in degrees.
      * @return a CoordTransform containing the rotation.
@@ -174,8 +175,14 @@ public final class CoordTransform implements SWFEncodeable {
     private transient boolean hasShear;
 
     /**
-     * Creates a unity coordinate transform - one that will not change the
-     * location or appearance when it is applied to an object.
+     * Creates and initialises a CoordTransform object using values encoded
+     * in the Flash binary format.
+     *
+     * @param coder
+     *            an SWFDecoder object that contains the encoded Flash data.
+     *
+     * @throws CoderException
+     *             if an error occurs while decoding the data.
      */
     public CoordTransform(final SWFDecoder coder) throws CoderException {
 
@@ -210,6 +217,7 @@ public final class CoordTransform implements SWFEncodeable {
         coder.alignToByte();
     }
 
+    /** TODO(method). */
     public CoordTransform(final float[][] matrix) {
         scaleX = (int) (matrix[0][0] * 65536.0f);
         scaleY = (int) (matrix[1][1] * 65536.0f);
@@ -219,6 +227,7 @@ public final class CoordTransform implements SWFEncodeable {
         translateY = (int) matrix[1][2];
     }
 
+    /** TODO(method). */
     public CoordTransform(final float scaleX, final float scaleY,
             final float shearX, final float shearY, final int xCoord,
             final int yCoord) {
@@ -228,21 +237,6 @@ public final class CoordTransform implements SWFEncodeable {
         this.shearY = (int) (shearY * 65536.0f);
         translateX = xCoord;
         translateY = yCoord;
-    }
-
-    /**
-     * Create a copy of a CoordTransform object.
-     * 
-     * @param object
-     *            the CoordTransform object used to initialise this one.
-     */
-    public CoordTransform(final CoordTransform object) {
-        scaleX = object.scaleX;
-        scaleY = object.scaleY;
-        shearX = object.shearX;
-        shearY = object.shearY;
-        translateX = object.translateX;
-        translateY = object.translateY;
     }
 
     /**
@@ -292,9 +286,9 @@ public final class CoordTransform implements SWFEncodeable {
      */
     public float[][] getMatrix() {
         return new float[][] {
-                { scaleX / 65536.0f, shearY / 65536.0f, translateX },
-                { shearX / 65536.0f, scaleY / 65536.0f, translateY },
-                { 0.0f, 0.0f, 1.0f } };
+            {scaleX / 65536.0f, shearY / 65536.0f, translateX },
+            {shearX / 65536.0f, scaleY / 65536.0f, translateY },
+            {0.0f, 0.0f, 1.0f } };
     }
 
     /**
@@ -341,6 +335,7 @@ public final class CoordTransform implements SWFEncodeable {
                 * 31 + translateY;
     }
 
+    /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         int numberOfBits = 14; // include extra 7 bits for byte alignment
 
@@ -369,6 +364,7 @@ public final class CoordTransform implements SWFEncodeable {
         return numberOfBits >> 3;
     }
 
+    /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         coder.alignToByte();

@@ -2,11 +2,10 @@ package com.flagstone.transform.action;
 
 import com.flagstone.transform.Strings;
 
-//TODO(doc) Review
 /**
  * TableIndex is used with an Push action to push a reference to an entry in a
  * table of string literals onto the stack.
- * 
+ *
  * <p>
  * In the Macromedia Flash (SWF) File Format Specification all literals used in
  * calculations are stored as strings. When performing a series of actions each
@@ -18,20 +17,21 @@ import com.flagstone.transform.Strings;
  * reduces the number of bytes required to perform a given calculation when the
  * values are used repeatedly.
  * </p>
- * 
+ *
  * @see Table
  * @see Push
  */
+//TODO(class)
 public final class TableIndex {
 
-    private final static String FORMAT = "TableIndex: { index=%d }";
+    private static final String FORMAT = "TableIndex: { index=%d }";
 
     private final transient int index;
 
     /**
      * Creates a TableIndex object referencing the value stored in the literal
      * table.
-     * 
+     *
      * @param anIndex
      *            the index into the literal table. Must be in the range
      *            0..65535.

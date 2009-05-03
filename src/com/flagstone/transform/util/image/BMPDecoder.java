@@ -31,13 +31,11 @@
 package com.flagstone.transform.util.image;
 
 import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.RandomAccessFile;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Arrays;
@@ -45,7 +43,6 @@ import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 
 import com.flagstone.transform.Strings;
-import com.flagstone.transform.coder.BitInputStream;
 import com.flagstone.transform.coder.ImageTag;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.image.DefineImage;
@@ -56,7 +53,8 @@ import com.flagstone.transform.image.DefineImage2;
  */
 //TODO(class)
 public final class BMPDecoder implements ImageProvider, ImageDecoder {
-    private static final int[] bmpSignature = { 66, 77 };
+
+    private static final int[] SIGNATURE = {66, 77};
 
     private static final int BI_RGB = 0;
     private static final int BI_RLE8 = 1;
@@ -75,15 +73,15 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
     private transient int greenMask;
     private transient int blueMask;
 
+    /** TODO(method). */
     public void read(final File file) throws IOException, DataFormatException {
-        read(new FileInputStream(file), (int)file.length());
+        read(new FileInputStream(file), (int) file.length());
     }
 
     /** TODO(method). */
-    public void read(final URL url) throws FileNotFoundException, IOException,
-            DataFormatException {
+    public void read(final URL url) throws IOException, DataFormatException {
         final URLConnection connection = url.openConnection();
-        
+
         if (!connection.getContentType().equals("image/bmp")) {
             throw new DataFormatException(Strings.INVALID_FORMAT);
         }
@@ -148,9 +146,10 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
         return Arrays.copyOf(image, image.length);
     }
 
-    public void read(InputStream stream, int length) throws DataFormatException, IOException {
-        
-        final byte[] bytes = new byte[(int)length];
+    /** TODO(method). */
+    public void read(final InputStream stream, final int length) throws DataFormatException, IOException {
+
+        final byte[] bytes = new byte[(int) length];
         final BufferedInputStream buffer = new BufferedInputStream(stream);
 
         buffer.read(bytes);
@@ -159,7 +158,7 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
         final SWFDecoder coder = new SWFDecoder(bytes);
 
         for (int i = 0; i < 2; i++) {
-            if (coder.readByte() != bmpSignature[i]) {
+            if (coder.readByte() != SIGNATURE[i]) {
                 throw new DataFormatException(Strings.INVALID_FORMAT);
             }
         }
@@ -576,27 +575,6 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
         final byte[] newData = Arrays.copyOf(compressedData, bytesCompressed);
 
         return newData;
-    }
-
-    private byte[] loadFile(final File file) throws FileNotFoundException,
-            IOException {
-        final byte[] data = new byte[(int) file.length()];
-
-        FileInputStream stream = null;
-
-        try {
-            stream = new FileInputStream(file);
-            final int bytesRead = stream.read(data);
-
-            if (bytesRead != data.length) {
-                throw new IOException(file.getAbsolutePath());
-            }
-        } finally {
-            if (stream != null) {
-                stream.close();
-            }
-        }
-        return data;
     }
 
     private byte[] adjustScan(final int width, final int height,

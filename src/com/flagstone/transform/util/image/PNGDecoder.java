@@ -31,7 +31,6 @@
 package com.flagstone.transform.util.image;
 
 import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -48,7 +47,6 @@ import java.util.zip.Inflater;
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.FLVDecoder;
 import com.flagstone.transform.coder.ImageTag;
-import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.image.DefineImage;
 import com.flagstone.transform.image.DefineImage2;
 
@@ -60,14 +58,14 @@ import com.flagstone.transform.image.DefineImage2;
 public final class PNGDecoder implements ImageProvider, ImageDecoder {
     // Tables mapping grey scale values onto 8-bit colour channels
 
-    private static final int[] MONOCHROME = { 0, 255 };
-    private static final int[] GREYCSALE2 = { 0, 85, 170, 255 };
-    private static final int[] GREYCSALE4 = { 0, 17, 34, 51, 68, 85, 102, 119,
-            136, 153, 170, 187, 204, 221, 238, 255 };
+    private static final int[] MONOCHROME = {0, 255};
+    private static final int[] GREYCSALE2 = {0, 85, 170, 255};
+    private static final int[] GREYCSALE4 = {0, 17, 34, 51, 68, 85, 102, 119,
+            136, 153, 170, 187, 204, 221, 238, 255};
 
     // Constants used for PNG images
 
-    private static final int[] SIGNATURE = { 137, 80, 78, 71, 13, 10, 26, 10 };
+    private static final int[] SIGNATURE = {137, 80, 78, 71, 13, 10, 26, 10};
 
     // private static final int CRITICAL_CHUNK = 0x20000000;
 
@@ -102,10 +100,10 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
     private static final int AVG_FILTER = 3;
     private static final int PAETH_FILTER = 4;
 
-    private static final int[] startRow = { 0, 0, 4, 0, 2, 0, 1 };
-    private static final int[] startColumn = { 0, 4, 0, 2, 0, 1, 0 };
-    private static final int[] rowIncrement = { 8, 8, 8, 4, 4, 2, 2 };
-    private static final int[] columnIncrement = { 8, 8, 4, 4, 2, 2, 1 };
+    private static final int[] START_ROW = {0, 0, 4, 0, 2, 0, 1};
+    private static final int[] START_COLUMN = {0, 4, 0, 2, 0, 1, 0};
+    private static final int[] ROW_STEP = {8, 8, 8, 4, 4, 2, 2};
+    private static final int[] COLUMN_STEP = {8, 8, 4, 4, 2, 2, 1};
 
     private static final int BIT_DEPTH = 0;
     private static final int COLOUR_COMPONENTS = 1;
@@ -128,13 +126,13 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
     private transient byte[] table;
     private transient byte[] image;
 
+    /** TODO(method). */
     public ImageDecoder newDecoder() {
         return new PNGDecoder();
     }
 
     /** TODO(method). */
-    public void read(final File file) throws FileNotFoundException,
-            IOException, DataFormatException {
+    public void read(final File file) throws IOException, DataFormatException {
         final ImageInfo info = new ImageInfo();
         info.setInput(new RandomAccessFile(file, "r"));
         info.setDetermineImageNumber(true);
@@ -143,12 +141,11 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
             throw new DataFormatException(Strings.INVALID_FORMAT);
         }
 
-        read(new FileInputStream(file), (int)file.length());
+        read(new FileInputStream(file), (int) file.length());
     }
 
     /** TODO(method). */
-    public void read(final URL url) throws FileNotFoundException, IOException,
-            DataFormatException {
+    public void read(final URL url) throws IOException, DataFormatException {
         final URLConnection connection = url.openConnection();
 
         int length = connection.getContentLength();
@@ -191,9 +188,10 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
         return object;
     }
 
-    public void read(InputStream stream, int size) throws DataFormatException, IOException {
+    /** TODO(method). */
+    public void read(final InputStream stream, final int size) throws DataFormatException, IOException {
 
-        final byte[] bytes = new byte[(int)size];
+        final byte[] bytes = new byte[(int) size];
         final BufferedInputStream buffer = new BufferedInputStream(stream);
 
         buffer.read(bytes);
@@ -405,13 +403,13 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
         int xp = 0;
 
         for (int pass = 0; pass < numberOfPasses; pass++) {
-            rowStart = (attributes[INTERLACE_METHOD] == 1) ? startRow[pass] : 0;
-            rowInc = (attributes[INTERLACE_METHOD] == 1) ? rowIncrement[pass]
+            rowStart = (attributes[INTERLACE_METHOD] == 1) ? START_ROW[pass] : 0;
+            rowInc = (attributes[INTERLACE_METHOD] == 1) ? ROW_STEP[pass]
                     : 1;
 
-            colStart = (attributes[INTERLACE_METHOD] == 1) ? startColumn[pass]
+            colStart = (attributes[INTERLACE_METHOD] == 1) ? START_COLUMN[pass]
                     : 0;
-            colInc = (attributes[INTERLACE_METHOD] == 1) ? columnIncrement[pass]
+            colInc = (attributes[INTERLACE_METHOD] == 1) ? COLUMN_STEP[pass]
                     : 1;
 
             for (row = rowStart; (row < height)
@@ -497,10 +495,10 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
         }
     }
 
-    private int paeth(final byte L, final byte u, final byte nw) {
-        final int a = 0xFF & L;
-        final int b = 0xFF & u;
-        final int c = 0xFF & nw;
+    private int paeth(final byte lower, final byte upper, final byte next) {
+        final int a = 0xFF & lower;
+        final int b = 0xFF & upper;
+        final int c = 0xFF & next;
         final int p = a + b - c;
         int pa = p - a;
 
@@ -759,27 +757,6 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
         final byte[] newData = Arrays.copyOf(compressedData, bytesCompressed);
 
         return newData;
-    }
-
-    private byte[] loadFile(final File file) throws FileNotFoundException,
-            IOException {
-        final byte[] data = new byte[(int) file.length()];
-
-        FileInputStream stream = null;
-
-        try {
-            stream = new FileInputStream(file);
-            final int bytesRead = stream.read(data);
-
-            if (bytesRead != data.length) {
-                throw new IOException(file.getAbsolutePath());
-            }
-        } finally {
-            if (stream != null) {
-                stream.close();
-            }
-        }
-        return data;
     }
 
     private byte[] adjustScan(final int width, final int height,

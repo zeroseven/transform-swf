@@ -65,10 +65,10 @@ public final class PushTest {
         values.add(new TableIndex(256));
     }
 
-    private static transient final int type = ActionTypes.PUSH;
+    private static final transient int type = ActionTypes.PUSH;
     private transient Push fixture;
 
-    private transient final byte[] encoded = new byte[] { (byte) type, 0x21,
+    private final transient byte[] encoded = new byte[] { (byte) type, 0x21,
             0x00, 0x00, 0x61, 0x00, 0x01, 0x00, 0x00, (byte) 0xC0, 0x40, 0x02,
             0x03, 0x04, 0x01, 0x05, 0x01, 0x06, 0x00, 0x00, (byte) 0xF0, 0x3F,
             0x00, 0x00, 0x00, 0x00, 0x07, 0x01, 0x00, 0x00, 0x00, 0x08, 0x01,

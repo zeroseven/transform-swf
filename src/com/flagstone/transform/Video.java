@@ -4,34 +4,33 @@
  *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  *  * Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice, 
- *    this list of conditions and the following disclaimer in the documentation 
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors 
- *    may be used to endorse or promote products derived from this software 
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package com.flagstone.transform;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -50,6 +49,7 @@ import com.flagstone.transform.coder.VideoTag;
  * and accessing the objects that represent the different data structures used
  * for audio and video data.
  */
+//TODO(class)
 public final class Video implements Cloneable {
     private static final String FORMAT = "Video: { signature=%s; version=%d; objects=%s ";
 
@@ -66,6 +66,7 @@ public final class Video implements Cloneable {
         objects = new ArrayList<VideoTag>();
     }
 
+    /** TODO(method). */
     public Video(final Video object) {
         signature = object.signature;
         version = object.version;
@@ -85,7 +86,7 @@ public final class Video implements Cloneable {
 
     /**
      * Sets the Flash Video version.
-     * 
+     *
      * @param aNumber
      *            the version of the Flash Video file format that this object
      *            utilises.
@@ -103,7 +104,7 @@ public final class Video implements Cloneable {
 
     /**
      * Sets the array of objects contained in the Video.
-     * 
+     *
      * @param anArray
      *            the array of objects that describe a coder. Must not be null.
      */
@@ -116,7 +117,7 @@ public final class Video implements Cloneable {
 
     /**
      * Adds the object to the Movie.
-     * 
+     *
      * @param anObject
      *            the object to be added to the coder. Must not be null.
      */
@@ -130,7 +131,7 @@ public final class Video implements Cloneable {
 
     /**
      * Adds the array of object to the Video.
-     * 
+     *
      * @param array
      *            an array of VideoTags that will be added to the video in the
      *            order they are in the array. Must not be null.
@@ -148,12 +149,10 @@ public final class Video implements Cloneable {
      * decoded from the file is placed in the object array in the order they
      * were read from the file. If an error occurs while reading and parsing the
      * file then an exception is thrown.
-     * 
+     *
      * @param path
      *            the path to the Flash Video file that will be parsed.
-     * 
-     * @throws FileNotFoundException
-     *             - if an error occurs while reading the file.
+     *
      * @throws DataFormatException
      *             - if the file does not contain Flash data.
      * @throws IOException
@@ -169,12 +168,10 @@ public final class Video implements Cloneable {
      * decoded from the file is placed in the object array in the order they
      * were read from the file. If an error occurs while reading and parsing the
      * file then an exception is thrown.
-     * 
+     *
      * @param file
      *            the Flash Video file that will be parsed.
-     * 
-     * @throws FileNotFoundException
-     *             - if an error occurs while reading the file.
+     *
      * @throws DataFormatException
      *             - if the file does not contain Flash data.
      * @throws IOException
@@ -196,20 +193,19 @@ public final class Video implements Cloneable {
     /**
      * Decodes the binary Flash Video data stored in the byte array. If an error
      * occurs while the data is being decoded an exception is thrown.
-     * 
+     *
      * @param bytes
      *            an array of bytes that contain the encoded Flash Video
      *            objects.
-     * 
+     *
      * @throws DataFormatException
      *             - if the file does not contain Flash data.
      * @throws IOException
      *             - if an error occurs while reading and decoding the file.
      */
     public void decodeFromData(final byte[] bytes) throws IOException,
-            DataFormatException
+            DataFormatException {
 
-    {
         final FLVDecoder coder = new FLVDecoder(bytes);
 
         isFlashVideo(bytes);
@@ -234,15 +230,16 @@ public final class Video implements Cloneable {
     /**
      * Encodes the array of objects and writes the data to the specified file.
      * If an error occurs while encoding the file then an exception is thrown.
-     * 
+     *
      * @param path
      *            the path to the file that the video will be encoded to.
-     * 
+     *
      * @throws FileNotFoundException
      *             - if an error occurs while reading the file.
      * @throws IOException
      *             - if an error occurs while encoding and writing the file.
      */
+    /** {@inheritDoc} */
     public void encodeToFile(final String path) throws IOException {
         final FileOutputStream fileContents = new FileOutputStream(path);
 
@@ -255,15 +252,16 @@ public final class Video implements Cloneable {
     /**
      * Encodes the array of objects and writes the data to the specified file.
      * If an error occurs while encoding the file then an exception is thrown.
-     * 
+     *
      * @param file
      *            the file that the video will be encoded to.
-     * 
+     *
      * @throws FileNotFoundException
      *             - if an error occurs while reading the file.
      * @throws IOException
      *             - if an error occurs while encoding and writing the file.
      */
+    /** {@inheritDoc} */
     public void encodeToFile(final File file) throws IOException {
         final FileOutputStream fileContents = new FileOutputStream(file);
 
@@ -277,9 +275,9 @@ public final class Video implements Cloneable {
      * Returns the encoded representation of the array of objects that this
      * Video contains. If an error occurs while encoding the file then an
      * exception is thrown.
-     * 
+     *
      * @return the array of bytes representing the encoded objects.
-     * 
+     *
      * @throws IOException
      *             if an error occurs while the data is being decoded.
      */

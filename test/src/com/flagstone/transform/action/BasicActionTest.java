@@ -43,9 +43,9 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 public final class BasicActionTest {
 
-    private transient final BasicAction fixture = BasicAction.NEXT_FRAME;
+    private final transient BasicAction fixture = BasicAction.NEXT_FRAME;
 
-    private transient final byte[] encoded = new byte[] { ActionTypes.NEXT_FRAME };
+    private final transient byte[] encoded = new byte[] { ActionTypes.NEXT_FRAME };
 
     @Test
     public void checkCopy() {

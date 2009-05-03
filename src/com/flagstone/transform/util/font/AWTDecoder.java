@@ -6,7 +6,6 @@ import java.awt.font.LineMetrics;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Rectangle2D;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +17,7 @@ import com.flagstone.transform.font.Kerning;
 import com.flagstone.transform.shape.Shape;
 import com.flagstone.transform.util.shape.Canvas;
 
-//TODO(class)
+/** TODO(class). */
 public final class AWTDecoder {
 
     private transient String name;
@@ -42,8 +41,9 @@ public final class AWTDecoder {
 
     private final transient List<Kerning> kernings = new ArrayList<Kerning>();
 
-    public void read(final java.awt.Font font) throws FileNotFoundException,
-            IOException, DataFormatException {
+    /** TODO(method). */
+    public void read(final java.awt.Font font)
+        throws IOException, DataFormatException {
         decode(font);
     }
 
@@ -99,7 +99,7 @@ public final class AWTDecoder {
         // create the glyph for the characters that cannot be displayed
 
         GlyphVector glyphVector = font.createGlyphVector(fontContext,
-                new int[] { missingGlyph });
+                new int[] {missingGlyph});
         java.awt.Shape outline = glyphVector.getGlyphOutline(0);
         int advance = (int) (glyphVector.getGlyphMetrics(0).getAdvance());
         glyphTable[index] = new Glyph(convertShape(outline), new Bounds(0, 0,
@@ -118,7 +118,7 @@ public final class AWTDecoder {
                     : (char) missingGlyph;
 
             glyphVector = font.createGlyphVector(fontContext,
-                    new char[] { character });
+                    new char[] {character});
 
             outline = glyphVector.getGlyphOutline(0);
             advance = (int) (glyphVector.getGlyphMetrics(0).getAdvance());
@@ -130,7 +130,7 @@ public final class AWTDecoder {
 
             if (!font.hasUniformLineMetrics()) {
                 final LineMetrics lineMetrics = font.getLineMetrics(
-                        new char[] { character }, 0, 1, fontContext);
+                        new char[] {character}, 0, 1, fontContext);
 
                 ascent = Math.max(lineMetrics.getAscent(), ascent);
                 descent = Math.max(lineMetrics.getDescent(), descent);
@@ -166,7 +166,7 @@ public final class AWTDecoder {
 
             if (font.canDisplay(currentChar)) {
                 final GlyphVector glyphVector = font.createGlyphVector(
-                        fontContext, new char[] { currentChar });
+                        fontContext, new char[] {currentChar});
                 final Rectangle2D bounds = glyphVector.getGlyphOutline(0)
                         .getBounds2D();
 

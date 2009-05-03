@@ -1,5 +1,11 @@
 package com.flagstone.transform.datatype;
 
+/** TODO(class). */
 public enum VideoFrameType {
-    KEY, NORMAL, OPTIONAL
+    /** TODO(doc). */
+    KEY,
+    /** TODO(doc). */
+    NORMAL,
+    /** TODO(doc). */
+    OPTIONAL
 }

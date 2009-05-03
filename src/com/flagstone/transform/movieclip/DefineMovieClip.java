@@ -1,30 +1,30 @@
 /*
  * DefineMovieClip.java
  * Transform
- * 
+ *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  *  * Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice, 
- *    this list of conditions and the following disclaimer in the documentation 
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors 
- *    may be used to endorse or promote products derived from this software 
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
@@ -44,20 +44,19 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.coder.SWFFactory;
 
-//TODO(doc) Review
 /**
  * DefineMovieClip defines a movie clip that animates shapes within a movie. It
  * contains an array of movie objects that define the placement of shapes,
  * buttons, text and images and the order in which they are displayed through a
  * time-line that is separate from the parent movie.
- * 
+ *
  * <p>
  * Although a movie clip contains the commands that instructs the Flash Player
  * on how to animate the clip it cannot contain any new definitions of objects.
  * All definitions must be in the main movie. All objects referred to by the
  * movie clip must be also defined in the main movie before they can be used.
  * </p>
- * 
+ *
  * <p>
  * When using the DefineMovieClip object can only contain objects from the
  * following classes: ShowFrame, PlaceObject, PlaceObject2, RemoveObject,
@@ -65,6 +64,7 @@ import com.flagstone.transform.coder.SWFFactory;
  * SoundStreamHead2 or SoundStreamBlock. Other objects are not allowed.
  * </p>
  */
+//TODO(class)
 public final class DefineMovieClip implements DefineTag {
     private static final String FORMAT = "DefineMovieClip: { identifier=%d; objects=%s }";
 
@@ -76,7 +76,21 @@ public final class DefineMovieClip implements DefineTag {
 
     private transient int length;
 
-    // TODO(doc)
+    /**
+     * Creates and initialises a DefineMovieClip object using values encoded
+     * in the Flash binary format.
+     *
+     * @param coder
+     *            an SWFDecoder object that contains the encoded Flash data.
+     *
+     * @param context
+     *            a Context object used to manage the decoders for different
+     *            type of object and to pass information on how objects are
+     *            decoded.
+     *
+     * @throws CoderException
+     *             if an error occurs while decoding the data.
+     */
     // TODO(optimise)
     public DefineMovieClip(final SWFDecoder coder, final Context context)
             throws CoderException {
@@ -115,7 +129,7 @@ public final class DefineMovieClip implements DefineTag {
     /**
      * Creates a DefineMovieClip object with the unique identifier and array of
      * movie objects.
-     * 
+     *
      * @param uid
      *            a unique identifier for the movie clip. Must be in the range
      *            1..65535,
@@ -127,7 +141,14 @@ public final class DefineMovieClip implements DefineTag {
         setObjects(anArray);
     }
 
-    // TODO(doc)
+    /**
+     * Creates and initialises a DefineMovieClip object using the values copied
+     * from another DefineMovieClip object.
+     *
+     * @param object
+     *            a DefineMovieClip object from which the values will be
+     *            copied.
+     */
     public DefineMovieClip(final DefineMovieClip object) {
         identifier = object.identifier;
         objects = new ArrayList<MovieTag>(object.objects.size());
@@ -136,10 +157,12 @@ public final class DefineMovieClip implements DefineTag {
         }
     }
 
+    /** TODO(method). */
     public int getIdentifier() {
         return identifier;
     }
 
+    /** TODO(method). */
     public void setIdentifier(final int uid) {
         if ((uid < 1) || (uid > 65535)) {
             throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
@@ -150,7 +173,7 @@ public final class DefineMovieClip implements DefineTag {
     /**
      * Adds the movie object to the array of objects that update the display
      * list. See description above for the list of acceptable types.
-     * 
+     *
      * @param obj
      *            a Movie object. Must not be null
      */
@@ -171,7 +194,7 @@ public final class DefineMovieClip implements DefineTag {
 
     /**
      * Sets the array of movie objects.
-     * 
+     *
      * @param anArray
      *            the array of movie objects. Must not be null.
      */
@@ -194,6 +217,7 @@ public final class DefineMovieClip implements DefineTag {
         return String.format(FORMAT, identifier, objects);
     }
 
+    /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
 
         frameCount = 0;
@@ -209,6 +233,7 @@ public final class DefineMovieClip implements DefineTag {
         return (length > 62 ? 6 : 2) + length;
     }
 
+    /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         final int start = coder.getPointer();

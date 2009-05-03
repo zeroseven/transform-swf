@@ -1,30 +1,30 @@
 /*
  * ActionObject.java
  * Transform
- * 
+ *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  *  * Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice, 
- *    this list of conditions and the following disclaimer in the documentation 
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors 
- *    may be used to endorse or promote products derived from this software 
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
@@ -44,7 +44,11 @@ import com.flagstone.transform.coder.SWFEncoder;
  * action. It allow actions not supported in the current version of Transform to
  * be decoded and encoded, giving a measure of forward-compatibility.
  */
+//TODO(class)
 public final class ActionObject implements Action {
+
+    private static final int HIGHEST_BYTE_CODE = 127;
+
     private static final String FORMAT = "ActionObject: { type=%d; data[%s] }";
 
     private final transient int type;
@@ -53,21 +57,17 @@ public final class ActionObject implements Action {
     /**
      * Creates and initialises an ActionObject using values encoded in the Flash
      * binary format.
-     * 
+     *
      * @param coder
      *            an SWFDecoder object that contains the encoded Flash data.
-     * 
-     * @param context
-     *            a Context object used to pass information between objects on
-     *            how the information the data should be decoded.
-     * 
+     *
      * @throws CoderException
      *             if an error occurs while decoding the data.
      */
     public ActionObject(final SWFDecoder coder) throws CoderException {
         type = coder.readByte();
 
-        if (type > 127) {
+        if (type > HIGHEST_BYTE_CODE) {
             data = coder.readBytes(new byte[coder.readWord(2, false)]);
         } else {
             data = null;
@@ -76,26 +76,26 @@ public final class ActionObject implements Action {
 
     /**
      * Creates an ActionObject specifying only the type.
-     * 
-     * @param type
+     *
+     * @param actionType
      *            the value identifying the action when it is encoded.
      */
-    public ActionObject(final int type) {
-        this.type = type;
+    public ActionObject(final int actionType) {
+        type = actionType;
         data = null;
     }
 
     /**
      * Creates an ActionObject specifying the type and the data that represents
      * the body of the action encoded in the Flash binary format.
-     * 
-     * @param type
+     *
+     * @param actionType
      *            the value identifying the action when it is encoded.
      * @param bytes
      *            the body of the action when it is encoded in the Flash format.
      */
-    public ActionObject(final int type, final byte[] bytes) {
-        this.type = type;
+    public ActionObject(final int actionType, final byte[] bytes) {
+        type = actionType;
 
         if (bytes == null) {
             throw new IllegalArgumentException(Strings.DATA_IS_NULL);
@@ -105,7 +105,7 @@ public final class ActionObject implements Action {
 
     /**
      * Creates an ActionObject by copying an existing one.
-     * 
+     *
      * @param object
      *            an ActionObject.
      */
@@ -129,6 +129,7 @@ public final class ActionObject implements Action {
         return data;
     }
 
+    /** Creates a complete copy of the object. */
     public ActionObject copy() {
         return new ActionObject(this);
     }
@@ -139,15 +140,24 @@ public final class ActionObject implements Action {
                 .valueOf(data.length)));
     }
 
+    /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
-        return ((type > 127) ? 3 : 1) + ((data == null) ? 0 : data.length);
+        final int length;
+
+        if (type > HIGHEST_BYTE_CODE) {
+            length = 3 + data.length;
+        } else {
+            length = 1;
+        }
+        return length;
     }
 
+    /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         coder.writeByte(type);
 
-        if (type > 127) {
+        if (type > HIGHEST_BYTE_CODE) {
             coder.writeWord(data.length, 2);
             coder.writeBytes(data);
         }

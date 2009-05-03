@@ -1,5 +1,6 @@
 package com.flagstone.transform.button;
 
+/** TODO(class). */
 public enum ButtonState {
     /** The button is up. */
     UP(1),
@@ -16,6 +17,7 @@ public enum ButtonState {
         this.value = value;
     }
 
+    /** TODO(method). */
     int getValue() {
         return value;
     }

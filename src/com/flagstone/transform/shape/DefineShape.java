@@ -1,30 +1,30 @@
 /*
  * DefineShape.java
  * Transform
- * 
+ *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  *  * Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice, 
- *    this list of conditions and the following disclaimer in the documentation 
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors 
- *    may be used to endorse or promote products derived from this software 
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
@@ -49,7 +49,7 @@ import com.flagstone.transform.linestyle.LineStyle;
 
 /**
  * DefineShape defines a shape to be displayed.
- * 
+ *
  * <p>
  * The shape defines a path containing a mix of straight and curved edges and
  * pen move actions. A path need not be contiguous. When the shape is drawn the
@@ -59,17 +59,20 @@ import com.flagstone.transform.linestyle.LineStyle;
  * colour, a bitmap image or a gradient. The line style specifies the colour and
  * thickness of the line drawn around the shape outline.
  * </p>
- * 
+ *
  * <p>
  * For both line and fill styles the selected style may be undefined, allowing
  * the shape to be drawn without an outline or left unfilled.
  * </p>
- * 
+ *
  * @see DefineShape2
  * @see DefineShape3
  */
+//TODO(class)
 public final class DefineShape implements DefineTag {
-    private static final String FORMAT = "DefineShape: { identifier=%d; bounds=%s; fillStyles=%s; lineStyles=%s; shape=%s }";
+
+    private static final String FORMAT = "DefineShape: { identifier=%d;"
+            + " bounds=%s; fillStyles=%s; lineStyles=%s; shape=%s }";
 
     private int identifier;
     private Bounds bounds;
@@ -81,7 +84,21 @@ public final class DefineShape implements DefineTag {
     private transient int fillBits;
     private transient int lineBits;
 
-    // TODO(doc)
+    /**
+     * Creates and initialises a DefineShape object using values encoded
+     * in the Flash binary format.
+     *
+     * @param coder
+     *            an SWFDecoder object that contains the encoded Flash data.
+     *
+     * @param context
+     *            a Context object used to manage the decoders for different
+     *            type of object and to pass information on how objects are
+     *            decoded.
+     *
+     * @throws CoderException
+     *             if an error occurs while decoding the data.
+     */
     public DefineShape(final SWFDecoder coder, final Context context)
             throws CoderException {
         final int start = coder.getPointer();
@@ -135,7 +152,7 @@ public final class DefineShape implements DefineTag {
 
     /**
      * Creates a DefineShape object.
-     * 
+     *
      * @param uid
      *            the unique identifier for the shape in the range 1..65535.
      * @param aBounds
@@ -157,7 +174,14 @@ public final class DefineShape implements DefineTag {
         setShape(aShape);
     }
 
-    // TODO(doc)
+    /**
+     * Creates and initialises a DefineShape object using the values copied
+     * from another DefineShape object.
+     *
+     * @param object
+     *            a DefineShape object from which the values will be
+     *            copied.
+     */
     public DefineShape(final DefineShape object) {
         identifier = object.identifier;
         bounds = object.bounds;
@@ -172,10 +196,12 @@ public final class DefineShape implements DefineTag {
         shape = object.shape.copy();
     }
 
+    /** TODO(method). */
     public int getIdentifier() {
         return identifier;
     }
 
+    /** TODO(method). */
     public void setIdentifier(final int uid) {
         if ((uid < 0) || (uid > 65535)) {
             throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
@@ -199,7 +225,7 @@ public final class DefineShape implements DefineTag {
 
     /**
      * Add a LineStyle to the array of line styles.
-     * 
+     *
      * @param style
      *            and LineStyle object. Must not be null.
      */
@@ -213,7 +239,7 @@ public final class DefineShape implements DefineTag {
 
     /**
      * Add the fill style to the array of fill styles.
-     * 
+     *
      * @param style
      *            and FillStyle object. Must not be null.
      */
@@ -255,7 +281,7 @@ public final class DefineShape implements DefineTag {
 
     /**
      * Sets the bounding rectangle that encloses the shape.
-     * 
+     *
      * @param aBounds
      *            set the bounding rectangle for the shape. Must not be null.
      */
@@ -268,7 +294,7 @@ public final class DefineShape implements DefineTag {
 
     /**
      * Sets the array fill styles that will be used to draw the shape.
-     * 
+     *
      * @param anArray
      *            set the fill styles for the shape. Must not be null.
      */
@@ -282,7 +308,7 @@ public final class DefineShape implements DefineTag {
     /**
      * Sets the array of styles that will be used to draw the outline of the
      * shape.
-     * 
+     *
      * @param anArray
      *            set the line styles for the shape. Must not be null.
      */
@@ -295,7 +321,7 @@ public final class DefineShape implements DefineTag {
 
     /**
      * Sets the shape.
-     * 
+     *
      * @param aShape
      *            set the shape to be drawn. Must not be null.
      */
@@ -306,6 +332,7 @@ public final class DefineShape implements DefineTag {
         shape = aShape;
     }
 
+    /** TODO(method). */
     public DefineShape copy() {
         return new DefineShape(this);
     }
@@ -316,6 +343,7 @@ public final class DefineShape implements DefineTag {
                 lineStyles, shape);
     }
 
+    /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         fillBits = Encoder.unsignedSize(fillStyles.size());
         lineBits = Encoder.unsignedSize(lineStyles.size());
@@ -355,6 +383,7 @@ public final class DefineShape implements DefineTag {
         return (length > 62 ? 6 : 2) + length;
     }
 
+    /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         final int start = coder.getPointer();

@@ -14,12 +14,12 @@ import java.util.zip.DataFormatException;
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.FLVDecoder;
+import com.flagstone.transform.coder.ShapeRecord;
 import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.datatype.CoordTransform;
 import com.flagstone.transform.font.CharacterEncoding;
 import com.flagstone.transform.font.Kerning;
 import com.flagstone.transform.shape.Shape;
-import com.flagstone.transform.shape.ShapeRecord;
 import com.flagstone.transform.util.shape.Canvas;
 
 /**
@@ -108,7 +108,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
     private static final int HAVE_SCALE = 0x08;
     private static final int HAVE_XYSCALE = 0x40;
     private static final int HAVE_2X2 = 0x80;
-    private static final int HAS__MORE = 0x10;
+    private static final int HAS_MORE = 0x10;
 
     private String name;
     private boolean bold;
@@ -135,19 +135,18 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
     private int metrics;
     private int glyphOffset;
 
+    /** TODO(method). */
     public FontDecoder newDecoder() {
         return new TTFDecoder();
     }
 
     /** TODO(method). */
-    public void read(final File file) throws FileNotFoundException,
-            IOException, DataFormatException {
+    public void read(final File file) throws IOException, DataFormatException {
         decode(loadFile(file));
     }
 
     /** TODO(method). */
-    public void read(final URL url) throws FileNotFoundException, IOException,
-            DataFormatException {
+    public void read(final URL url) throws IOException, DataFormatException {
         final URLConnection connection = url.openConnection();
         final int contentLength = connection.getContentLength();
 
@@ -183,7 +182,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         /* int entrySelector = */coder.readWord(2, false);
         /* int rangeShift = */coder.readWord(2, false);
 
-        int os_2Offset = 0;
+        int os2Offset = 0;
         int headOffset = 0;
         int hheaOffset = 0;
         int maxpOffset = 0;
@@ -193,7 +192,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         int hmtxOffset = 0;
         int nameOffset = 0;
 
-        int os_2Length = 0;
+        int os2Length = 0;
         int headLength = 0;
         int hheaLength = 0;
         int maxpLength = 0;
@@ -222,8 +221,8 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
              */
             switch (chunkType) {
             case OS_2:
-                os_2Offset = offset;
-                os_2Length = length;
+                os2Offset = offset;
+                os2Length = length;
                 break;
             case CMAP:
                 cmapOffset = offset;
@@ -269,10 +268,10 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
             decodeMAXP(coder);
             bytesRead = (coder.getPointer() - maxpOffset) >> 3;
         }
-        if (os_2Offset != 0) {
-            coder.setPointer(os_2Offset);
+        if (os2Offset != 0) {
+            coder.setPointer(os2Offset);
             decodeOS2(coder);
-            bytesRead = (coder.getPointer() - os_2Offset) >> 3;
+            bytesRead = (coder.getPointer() - os2Offset) >> 3;
         }
         if (headOffset != 0) {
             coder.setPointer(headOffset);
@@ -347,7 +346,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         italic = coder.readBits(1, false) != 0;
         coder.readBits(14, false); //
 
-        coder.readWord(2, false);// smallest readable size in pixels
+        coder.readWord(2, false); // smallest readable size in pixels
         coder.readWord(2, true); // font direction hint
         glyphOffset = coder.readWord(2, true);
         coder.readWord(2, true); // glyph data format
@@ -468,16 +467,16 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
 
             String nameEncoding = "UTF-8";
 
-            if (platformId == 0) // Unicode
-            {
+            if (platformId == 0) {
+                // Unicode
                 nameEncoding = "UTF-16";
-            } else if (platformId == 1) // Macintosh
-            {
+            } else if (platformId == 1) {
+                // Macintosh
                 if ((encodingId == 0) && (languageId == 0)) {
                     nameEncoding = "ISO8859-1";
                 }
-            } else if (platformId == 3) // Microsoft
-            {
+            } else if (platformId == 3) {
+                // Microsoft
                 switch (encodingId) {
                 case 1:
                     nameEncoding = "UTF-16";
@@ -583,18 +582,18 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
             offset = coder.readWord(4, false) << 3;
             current = coder.getPointer();
 
-            if (platformId == 0) // Unicode
-            {
+            if (platformId == 0) {
+                // Unicode
                 encoding = CharacterEncoding.UCS2;
-            } else if (platformId == 1) // Macintosh
-            {
+            } else if (platformId == 1) {
+                // Macintosh
                 if (encodingId == 1) {
                     encoding = CharacterEncoding.SJIS;
                 } else {
                     encoding = CharacterEncoding.ANSI;
                 }
-            } else if (platformId == 3) // Microsoft
-            {
+            } else if (platformId == 3) {
+                // Microsoft
                 if (encodingId == 1) {
                     encoding = CharacterEncoding.UCS2;
                 } else if (encodingId == 2) {
@@ -1076,7 +1075,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
             }
             shape.getObjects().addAll(path.getShape().getObjects());
 
-        } while ((flags & HAS__MORE) > 0);
+        } while ((flags & HAS_MORE) > 0);
 
         glyphTable[glyphIndex] = new Glyph(shape, new Bounds(xMin, yMin, xMax,
                 yMax), 0);
@@ -1087,8 +1086,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         // glyphTable[glyphIndex].endPoints = endPtsOfContours;
     }
 
-    private byte[] loadFile(final File file) throws FileNotFoundException,
-            IOException {
+    private byte[] loadFile(final File file) throws IOException {
         final byte[] data = new byte[(int) file.length()];
 
         FileInputStream stream = null;

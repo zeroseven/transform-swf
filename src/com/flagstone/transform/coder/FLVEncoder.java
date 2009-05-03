@@ -1,17 +1,16 @@
 package com.flagstone.transform.coder;
 
-public class FLVEncoder extends Encoder {
-    protected int type;
-    public int version;
-    protected String encoding;
+/** TODO(class). */
+public final class FLVEncoder extends Encoder {
 
+    /** TODO(method). */
     public FLVEncoder(final int size) {
         super(size);
     }
 
     /**
      * Write a word.
-     * 
+     *
      * @param value
      *            the value to be written.
      * @param numberOfBytes
@@ -29,7 +28,7 @@ public class FLVEncoder extends Encoder {
 
     /**
      * Write a double-precision floating point number.
-     * 
+     *
      * @param value
      *            the value to be written.
      */

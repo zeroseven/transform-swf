@@ -1,30 +1,30 @@
 /*
  * FocalGradientFill.java
  * Transform
- * 
+ *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  *  * Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice, 
- *    this list of conditions and the following disclaimer in the documentation 
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors 
- *    may be used to endorse or promote products derived from this software 
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
@@ -42,13 +42,18 @@ import com.flagstone.transform.coder.FillStyle;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-//TODO(doc) Add documentation
-//TODO(code) Implement
 //TODO(optimise) Add pack/unpack methods
+/** TODO(class). */
 public final class FocalGradientFill implements FillStyle {
 
+    /** TODO(class). */
     public enum Spread {
-        PAD(0), REFLECT(0x40), REPEAT(0xC0);
+        /** TODO(doc). */
+        PAD(0),
+        /** TODO(doc). */
+        REFLECT(0x40),
+        /** TODO(doc). */
+        REPEAT(0xC0);
 
         private static final Map<Integer, Spread> TABLE = new LinkedHashMap<Integer, Spread>();
 
@@ -58,7 +63,8 @@ public final class FocalGradientFill implements FillStyle {
             }
         }
 
-        public static Spread fromInt(final int type) {
+        /** TODO(method). */
+       public static Spread fromInt(final int type) {
             return TABLE.get(type);
         }
 
@@ -68,13 +74,18 @@ public final class FocalGradientFill implements FillStyle {
             this.value = value;
         }
 
+        /** TODO(method). */
         public int getValue() {
             return value;
         }
     }
 
+    /** TODO(class). */
     public enum Interpolation {
-        NORMAL(0), LINEAR(0x10);
+        /** TODO(doc). */
+        NORMAL(0),
+        /** TODO(doc). */
+        LINEAR(0x10);
 
         private static final Map<Integer, Interpolation> TABLE = new LinkedHashMap<Integer, Interpolation>();
 
@@ -84,7 +95,8 @@ public final class FocalGradientFill implements FillStyle {
             }
         }
 
-        public static Interpolation fromInt(final int type) {
+        /** TODO(method). */
+       public static Interpolation fromInt(final int type) {
             return TABLE.get(type);
         }
 
@@ -94,14 +106,16 @@ public final class FocalGradientFill implements FillStyle {
             this.value = value;
         }
 
+        /** TODO(method). */
         public int getValue() {
             return value;
         }
     }
 
-    private static final String FORMAT = "FocalGradientFill: { spread=%s; interpolation=%s; focalPoint=%d, gradients=%s}";
+    private static final String FORMAT = "FocalGradientFill: { spread=%s;"
+            + " interpolation=%s; focalPoint=%d, gradients=%s}";
 
-    private transient final int type;
+    private final transient int type;
     private int spread;
     private int interpolation;
     private int focalPoint;
@@ -109,6 +123,21 @@ public final class FocalGradientFill implements FillStyle {
 
     private transient int count;
 
+    /**
+     * Creates and initialises a FocalGradientFill fill style using values encoded
+     * in the Flash binary format.
+     *
+     * @param coder
+     *            an SWFDecoder object that contains the encoded Flash data.
+     *
+     * @param context
+     *            a Context object used to manage the decoders for different
+     *            type of object and to pass information on how objects are
+     *            decoded.
+     *
+     * @throws CoderException
+     *             if an error occurs while decoding the data.
+     */
     public FocalGradientFill(final SWFDecoder coder, final Context context)
             throws CoderException {
         type = coder.readByte();
@@ -120,6 +149,7 @@ public final class FocalGradientFill implements FillStyle {
         }
     }
 
+    /** TODO(method). */
     public FocalGradientFill(final Spread spread,
             final Interpolation interpolation, final float point,
             final List<Gradient> anArray) {
@@ -130,6 +160,14 @@ public final class FocalGradientFill implements FillStyle {
         setFocalPoint(point);
     }
 
+    /**
+     * Creates and initialises a FocalGradientFill fill style using the values copied
+     * from another FocalGradientFill object.
+     *
+     * @param object
+     *            a FocalGradientFill fill style from which the values will be
+     *            copied.
+     */
     public FocalGradientFill(final FocalGradientFill object) {
         type = object.type;
         spread = object.spread;
@@ -138,26 +176,32 @@ public final class FocalGradientFill implements FillStyle {
         gradients = new ArrayList<Gradient>(object.gradients);
     }
 
+    /** TODO(method). */
     public Spread getSpread() {
         return Spread.fromInt(spread);
     }
 
+    /** TODO(method). */
     public void setSpread(final Spread spread) {
         this.spread = spread.getValue();
     }
 
+    /** TODO(method). */
     public Interpolation getInterpolation() {
         return Interpolation.fromInt(interpolation);
     }
 
+    /** TODO(method). */
     public void setInterpolation(final Interpolation interpolation) {
         this.interpolation = interpolation.getValue();
     }
 
+    /** TODO(method). */
     public float getFocalPoint() {
         return focalPoint / 256.0f;
     }
 
+    /** TODO(method). */
     public void setFocalPoint(final float point) {
         this.focalPoint = (int) (point * 256);
     }
@@ -166,7 +210,7 @@ public final class FocalGradientFill implements FillStyle {
      * Add a Gradient object to the array of gradient objects. For Flash 7 and
      * earlier versions there can be up to 8 Gradients. For Flash 8 onwards this
      * number was increased to 15.
-     * 
+     *
      * @param aGradient
      *            an Gradient object. Must not be null.
      */
@@ -193,18 +237,21 @@ public final class FocalGradientFill implements FillStyle {
      * Sets the array of control points that define the gradient. For Flash 7
      * and earlier this array can contain up to 8 Gradient objects. For Flash 8
      * onwards this limit was increased to 15.
-     * 
+     *
      * @param anArray
      *            an array of Gradient objects. Must not be null.
      */
     public void setGradients(final List<Gradient> anArray) {
-        // TODO Check whether array size is > 15
         if (anArray == null) {
             throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+        }
+        if (gradients.size() == 15) {
+            throw new IllegalArgumentException(Strings.MAX_GRADIENTS);
         }
         gradients = anArray;
     }
 
+    /** TODO(method). */
     public FocalGradientFill copy() {
         return new FocalGradientFill(this);
     }
@@ -215,6 +262,7 @@ public final class FocalGradientFill implements FillStyle {
                 focalPoint, gradients);
     }
 
+    /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         // TODO(optimise) Calculate size of gradient array directly.
         int length = 2;
@@ -227,6 +275,7 @@ public final class FocalGradientFill implements FillStyle {
         return length;
     }
 
+    /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         coder.writeByte(type);

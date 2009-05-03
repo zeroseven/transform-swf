@@ -14,6 +14,7 @@ public final class Glyph {
     private Bounds bounds;
     private int advance;
 
+    /** TODO(method). */
     public Glyph(final Shape shape, final Bounds bounds, final int advance) {
         this.shape = shape;
         this.bounds = bounds;

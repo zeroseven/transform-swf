@@ -48,7 +48,7 @@ public final class BoundsTest {
     private static int xmax = 3;
     private static int ymax = 4;
 
-    private transient final byte[] encoded = new byte[] { 32, -103, 32 };
+    private final transient byte[] encoded = new byte[] { 32, -103, 32 };
 
     private transient Bounds fixture;
 

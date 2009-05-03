@@ -1,30 +1,30 @@
 /*
  * PlaceObject.java
  * Transform
- * 
+ *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  *  * Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice, 
- *    this list of conditions and the following disclaimer in the documentation 
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors 
- *    may be used to endorse or promote products derived from this software 
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
@@ -39,11 +39,10 @@ import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.ColorTransform;
 import com.flagstone.transform.datatype.CoordTransform;
 
-//TODO(doc) Review
 /**
  * PlaceObject is used to add an object (shape, button, etc.) to the Flash
  * Player's display list.
- * 
+ *
  * <p>
  * When adding an object to the display list a coordinate transform can be
  * applied to the object. This is principally used to specify the location of
@@ -51,7 +50,7 @@ import com.flagstone.transform.datatype.CoordTransform;
  * transforms can also be specified such as rotating or scaling the object
  * without changing the original definition.
  * </p>
- * 
+ *
  * <p>
  * Similarly the color transform allows the color of the object to be changed
  * when it is displayed without changing the original definition. The
@@ -60,11 +59,12 @@ import com.flagstone.transform.datatype.CoordTransform;
  * The colour transform is optional and may be set to null, reducing the size of
  * the PlaceObject instruction when it is encoded.
  * </p>
- * 
+ *
  * @see Place2
  * @see Remove
  * @see Remove2
  */
+//TODO(class)
 public final class Place implements MovieTag {
     // TODO(code) Consider replacing with StringBuilder for optional fields
     private static final String FORMAT = "Place: { layer=%d; identifier=%d; transform=%s; colorTransform=%s; }";
@@ -76,7 +76,21 @@ public final class Place implements MovieTag {
 
     private transient int length;
 
-    // TODO(doc)
+    /**
+     * Creates and initialises a Place object using values encoded
+     * in the Flash binary format.
+     *
+     * @param coder
+     *            an SWFDecoder object that contains the encoded Flash data.
+     *
+     * @param context
+     *            a Context object used to manage the decoders for different
+     *            type of object and to pass information on how objects are
+     *            decoded.
+     *
+     * @throws CoderException
+     *             if an error occurs while decoding the data.
+     */
     public Place(final SWFDecoder coder, final Context context)
             throws CoderException {
         final int start = coder.getPointer();
@@ -113,7 +127,7 @@ public final class Place implements MovieTag {
      * Creates a PlaceObject object that places the the object with the
      * identifier at the specified layer, coordinate transform and colour
      * transform.
-     * 
+     *
      * @param uid
      *            the unique identifier for the object to the placed on the
      *            display list. Must be in the range 1..65535.
@@ -135,7 +149,14 @@ public final class Place implements MovieTag {
         setColorTransform(aColorTransform);
     }
 
-    // TODO(doc)
+    /**
+     * Creates and initialises a Place object using the values copied
+     * from another Place object.
+     *
+     * @param object
+     *            a Place object from which the values will be
+     *            copied.
+     */
     public Place(final Place object) {
         identifier = object.identifier;
         layer = object.layer;
@@ -175,7 +196,7 @@ public final class Place implements MovieTag {
 
     /**
      * Sets the identifier of the object that will be added to the display list.
-     * 
+     *
      * @param uid
      *            the unique identifier for the object to the placed on the
      *            display list. Must be in the range 1..65535.
@@ -190,7 +211,7 @@ public final class Place implements MovieTag {
 
     /**
      * Sets the layer that defines the order in which objects are displayed.
-     * 
+     *
      * @param aNumber
      *            the layer in the display list where the object will be placed.
      *            Must be in the range 1..65535.
@@ -206,7 +227,7 @@ public final class Place implements MovieTag {
     /**
      * Sets the transform that defines the position where the object is
      * displayed.
-     * 
+     *
      * @param aTransform
      *            an CoordTransform object that defines the orientation, size
      *            and location of the object when it is drawn. Must not be null.
@@ -221,7 +242,7 @@ public final class Place implements MovieTag {
 
     /**
      * Sets the location where the object will be displayed.
-     * 
+     *
      * @param xCoord
      *            the x-coordinate of the object's origin.
      * @param yCoord
@@ -236,7 +257,7 @@ public final class Place implements MovieTag {
     /**
      * Sets the colour transform that defines any colour effects applied when
      * the object is displayed.
-     * 
+     *
      * @param aColorTransform
      *            an ColorTransform object that defines the colour of the object
      *            when it is drawn. May be set to null.
@@ -247,9 +268,8 @@ public final class Place implements MovieTag {
     }
 
     /**
-     * Creates and returns a deep copy of this object.
+     * Creates and returns a complete copy of this object.
      */
-    // TODO(doc) remove
     public Place copy() {
         return new Place(this);
     }
@@ -260,6 +280,7 @@ public final class Place implements MovieTag {
                 colorTransform);
     }
 
+    /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         length = 4;
         length += transform.prepareToEncode(coder, context);
@@ -270,6 +291,7 @@ public final class Place implements MovieTag {
         return 2 + length;
     }
 
+    /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         final int start = coder.getPointer();

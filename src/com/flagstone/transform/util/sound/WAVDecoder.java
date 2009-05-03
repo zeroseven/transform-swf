@@ -55,9 +55,9 @@ import com.flagstone.transform.sound.SoundStreamHead2;
  */
 //TODO(class)
 public final class WAVDecoder implements SoundProvider, SoundDecoder {
-    private static final int[] riffSignature = { 82, 73, 70, 70 };
-    private static final int[] wavSignature = { 87, 65, 86, 69 };
 
+    private static final int[] RIFF = {82, 73, 70, 70};
+    private static final int[] WAV = {87, 65, 86, 69};
     private static final int FMT = 0x20746d66;
     private static final int DATA = 0x61746164;
 
@@ -74,14 +74,12 @@ public final class WAVDecoder implements SoundProvider, SoundDecoder {
     }
 
     /** TODO(method). */
-    public void read(final File file) throws FileNotFoundException,
-            IOException, DataFormatException {
-        read(new FileInputStream(file), (int)file.length());
+    public void read(final File file) throws IOException, DataFormatException {
+        read(new FileInputStream(file), (int) file.length());
     }
 
     /** TODO(method). */
-    public void read(final URL url) throws FileNotFoundException, IOException,
-            DataFormatException {
+    public void read(final URL url) throws IOException, DataFormatException {
         final URLConnection connection = url.openConnection();
 
         final int fileSize = connection.getContentLength();
@@ -100,46 +98,11 @@ public final class WAVDecoder implements SoundProvider, SoundDecoder {
      *            the unique identifier that will be used to refer to the sound
      *            in the Flash file.
      *
-     * @param file
-     *            the File containing the abstract path to the sound.
-     *
      * @return a sound definition that can be added to a Movie.
-     *
-     * @throws FileNotFoundException
-     *             if the file cannot be found or opened.
-     *
-     * @throws IOException
-     *             if there is an error reading the file.
-     *
-     * @throws DataFormatException
-     *             if there is a problem decoding the image, either it is in an
-     *             unsupported format or an error occurred while decoding the
-     *             image.
      */
     public DefineSound defineSound(final int identifier) {
         return new DefineSound(identifier, format, sampleRate,
                 numberOfChannels, sampleSize, samplesPerChannel, sound);
-    }
-
-    private byte[] loadFile(final File file) throws FileNotFoundException,
-            IOException {
-        final byte[] data = new byte[(int) file.length()];
-
-        FileInputStream stream = null;
-
-        try {
-            stream = new FileInputStream(file);
-            final int bytesRead = stream.read(data);
-
-            if (bytesRead != data.length) {
-                throw new IOException(file.getAbsolutePath());
-            }
-        } finally {
-            if (stream != null) {
-                stream.close();
-            }
-        }
-        return data;
     }
 
     /**
@@ -150,25 +113,10 @@ public final class WAVDecoder implements SoundProvider, SoundDecoder {
      *            the rate at which the movie is played. Sound are streamed with
      *            one block of sound data per frame.
      *
-     * @param url
-     *            the Uniform Resource Locator referencing the file containing
-     *            the sound.
-     *
      * @return an array where the first object is the SoundStreamHead2 object
      *         that defines the streaming sound, followed by SoundStreamBlock
      *         objects containing the sound samples that will be played in each
      *         frame.
-     *
-     * @throws FileNotFoundException
-     *             if the file cannot be found or opened.
-     *
-     * @throws IOException
-     *             if there is an error reading the file.
-     *
-     * @throws DataFormatException
-     *             if there is a problem decoding the sound, either it is in an
-     *             unsupported format or an error occurred while decoding the
-     *             sound data.
      */
     public List<MovieTag> streamSound(final int frameRate) {
         final ArrayList<MovieTag> array = new ArrayList<MovieTag>();
@@ -204,9 +152,10 @@ public final class WAVDecoder implements SoundProvider, SoundDecoder {
         return array;
     }
 
-    public void read(InputStream stream, int size) throws IOException, DataFormatException {
+    /** TODO(method). */
+    public void read(final InputStream stream, final int size) throws IOException, DataFormatException {
 
-        final byte[] bytes = new byte[(int)size];
+        final byte[] bytes = new byte[(int) size];
         final BufferedInputStream buffer = new BufferedInputStream(stream);
 
         buffer.read(bytes);
@@ -215,7 +164,7 @@ public final class WAVDecoder implements SoundProvider, SoundDecoder {
         final SWFDecoder coder = new SWFDecoder(bytes);
 
         for (int i = 0; i < 4; i++) {
-            if (coder.readByte() != riffSignature[i]) {
+            if (coder.readByte() != RIFF[i]) {
                 throw new DataFormatException(Strings.INVALID_FORMAT);
             }
         }
@@ -223,7 +172,7 @@ public final class WAVDecoder implements SoundProvider, SoundDecoder {
         coder.readWord(4, false);
 
         for (int i = 0; i < 4; i++) {
-            if (coder.readByte() != wavSignature[i]) {
+            if (coder.readByte() != WAV[i]) {
                 throw new DataFormatException(Strings.INVALID_FORMAT);
             }
         }

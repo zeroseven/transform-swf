@@ -4,12 +4,15 @@ import com.flagstone.transform.AudioData;
 import com.flagstone.transform.VideoData;
 import com.flagstone.transform.VideoMetaData;
 
+/** TODO(class). */
 public final class VideoDecoder implements FLVFactory<VideoTag> {
 
+    /** TODO(method). */
     public FLVFactory<VideoTag> copy() {
         return new VideoDecoder();
     }
 
+    /** TODO(method). */
     public VideoTag getObject(final FLVDecoder coder) throws CoderException {
 
         VideoTag object;

@@ -59,10 +59,10 @@ public final class DefineMovieClipTest {
 
     private transient DefineMovieClip fixture;
 
-    private transient final byte[] encoded = new byte[] { (byte) 0xC8, 0x09,
+    private final transient byte[] encoded = new byte[] { (byte) 0xC8, 0x09,
             0x01, 0x00, 0x01, 0x00, 0x40, 0x00, 0x00, 0x00 };
 
-    private transient final byte[] extended = new byte[] { (byte) 0xFF, 0x09,
+    private final transient byte[] extended = new byte[] { (byte) 0xFF, 0x09,
             0x08, 0x00, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00, 0x40, 0x00, 0x00,
             0x00 };
 

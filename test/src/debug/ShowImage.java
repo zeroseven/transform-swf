@@ -17,11 +17,15 @@ public final class ShowImage {
         final String sourceFile = args[0];
         final String destFile = args[1];
         Movie movie;
+        ImageFactory factory;
 
         try {
             movie = new Movie();
-            final ImageTag image = ImageFactory.defineImage(movie.identifier(),
-                    sourceFile);
+            factory = new ImageFactory();
+
+            factory.read(new File(sourceFile));
+
+            final ImageTag image = factory.defineImage(movie.identifier());
 
             final int imageWidth = image.getWidth();
             final int imageHeight = image.getHeight();
@@ -36,7 +40,7 @@ public final class ShowImage {
 
             movie.add(new Background(WebPalette.LIGHT_BLUE.color()));
             movie.add(image);
-            movie.add(ImageFactory.defineEnclosingShape(shapeId, image,
+            movie.add(factory.defineEnclosingShape(shapeId, image.getIdentifier(),
                     imageWidth / 2, imageHeight / 2, null));
             movie.add(Place2.show(shapeId, 1, 0, 0));
             movie.add(ShowFrame.getInstance());

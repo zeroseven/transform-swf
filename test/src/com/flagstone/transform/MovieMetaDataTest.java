@@ -42,14 +42,14 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 public final class MovieMetaDataTest {
 
-    private static transient final String metaData = "ABC123";
+    private static final transient String metaData = "ABC123";
 
     private transient MovieMetaData fixture;
 
-    private transient final byte[] encoded = new byte[] { 0x47, 0x13, 0x41,
+    private final transient byte[] encoded = new byte[] { 0x47, 0x13, 0x41,
             0x42, 0x043, 0x31, 0x32, 0x33, 0x00 };
 
-    private transient final byte[] extended = new byte[] { 0x3F, 0x13, 0x07,
+    private final transient byte[] extended = new byte[] { 0x3F, 0x13, 0x07,
             0x00, 0x00, 0x00, 0x41, 0x42, 0x043, 0x31, 0x32, 0x33, 0x00 };
 
     @Test(expected = IllegalArgumentException.class)

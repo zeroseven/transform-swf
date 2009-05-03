@@ -42,14 +42,14 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 public final class FrameLabelTest {
 
-    private static transient final String label = "Frame";
-    private static transient final boolean anchor = true;
+    private static final transient String label = "Frame";
+    private static final transient boolean anchor = true;
 
     private transient FrameLabel fixture;
 
-    private transient final byte[] encoded = new byte[] { (byte) 0xC7, 0x0A,
+    private final transient byte[] encoded = new byte[] { (byte) 0xC7, 0x0A,
             0x46, 0x72, 0x061, 0x6D, 0x65, 0x00, 0x01 };
-    private transient final byte[] extended = new byte[] { (byte) 0xFF, 0x0A,
+    private final transient byte[] extended = new byte[] { (byte) 0xFF, 0x0A,
             0x07, 0x00, 0x00, 0x00, 0x46, 0x72, 0x061, 0x6D, 0x65, 0x00, 0x01 };
 
     @Test(expected = IllegalArgumentException.class)

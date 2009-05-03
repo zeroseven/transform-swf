@@ -25,12 +25,15 @@ import com.flagstone.transform.action.With;
  * Factory is the default implementation of an SWFFactory which used to create
  * instances of Transform classes.
  */
+//TODO(class)
 public final class ActionDecoder implements SWFFactory<Action> {
 
+    /** TODO(method). */
     public SWFFactory<Action> copy() {
         return new ActionDecoder();
     }
 
+    /** TODO(method). */
     public Action getObject(final SWFDecoder coder, final Context context)
             throws CoderException {
 

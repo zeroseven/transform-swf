@@ -45,14 +45,14 @@ import com.flagstone.transform.datatype.Color;
 
 public final class MorphGradientTest {
 
-    private static transient final int startRatio = 1;
-    private static transient final Color startColor = new Color(2, 3, 4, 5);
-    private static transient final int endRatio = 6;
-    private static transient final Color endColor = new Color(7, 8, 9, 10);
+    private static final transient int startRatio = 1;
+    private static final transient Color startColor = new Color(2, 3, 4, 5);
+    private static final transient int endRatio = 6;
+    private static final transient Color endColor = new Color(7, 8, 9, 10);
 
     private transient MorphGradient fixture;
 
-    private transient final byte[] encoded = new byte[] { 0x01, 0x02, 0x03,
+    private final transient byte[] encoded = new byte[] { 0x01, 0x02, 0x03,
             0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A };
 
     @Test(expected = IllegalArgumentException.class)

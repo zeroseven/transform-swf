@@ -1,30 +1,30 @@
 /*
  * SoundStreamBlock.java
  * Transform
- * 
+ *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  *  * Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice, 
- *    this list of conditions and the following disclaimer in the documentation 
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors 
- *    may be used to endorse or promote products derived from this software 
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
@@ -42,7 +42,7 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 /**
  * SoundStreamBlock contains the sound data being streamed to the Flash Player.
- * 
+ *
  * <p>
  * Streaming sounds are played in tight synchronisation with one
  * SoundStreamBlock object defining the sound for each frame displayed in a
@@ -51,10 +51,11 @@ import com.flagstone.transform.coder.SWFEncoder;
  * then frames will be skipped. Normally the player will reduce the frame rate
  * so every frame of a movie is played.
  * </p>
- * 
+ *
  * @see SoundStreamHead
  * @see SoundStreamHead2
  */
+//TODO(class)
 public final class SoundStreamBlock implements MovieTag {
     private static final String FORMAT = "SoundStreamBlock: { soundData=%d }";
 
@@ -62,7 +63,16 @@ public final class SoundStreamBlock implements MovieTag {
 
     private transient int length;
 
-    // TODO(doc)
+    /**
+     * Creates and initialises a SoundStreamBlock object using values encoded
+     * in the Flash binary format.
+     *
+     * @param coder
+     *            an SWFDecoder object that contains the encoded Flash data.
+     *
+     * @throws CoderException
+     *             if an error occurs while decoding the data.
+     */
     public SoundStreamBlock(final SWFDecoder coder) throws CoderException {
         final int start = coder.getPointer();
         length = coder.readWord(2, false) & 0x3F;
@@ -83,7 +93,7 @@ public final class SoundStreamBlock implements MovieTag {
     /**
      * Creates a SoundStreamBlock specifying the sound data in the format
      * defined by a preceding SoundStreamHead or SoundStreamHead2 object.
-     * 
+     *
      * @param bytes
      *            an array of bytes containing the sound data. Must not be null.
      */
@@ -91,7 +101,14 @@ public final class SoundStreamBlock implements MovieTag {
         setSoundData(bytes);
     }
 
-    // TODO(doc)
+    /**
+     * Creates and initialises a SoundStreamBlock object using the values copied
+     * from another SoundStreamBlock object.
+     *
+     * @param object
+     *            a SoundStreamBlock object from which the values will be
+     *            copied.
+     */
     public SoundStreamBlock(final SoundStreamBlock object) {
         soundData = Arrays.copyOf(object.soundData, object.soundData.length);
     }
@@ -106,7 +123,7 @@ public final class SoundStreamBlock implements MovieTag {
 
     /**
      * Sets the sound data.
-     * 
+     *
      * @param bytes
      *            an array of bytes containing the sound data. Must not be null.
      */
@@ -117,6 +134,7 @@ public final class SoundStreamBlock implements MovieTag {
         soundData = bytes;
     }
 
+    /** TODO(method). */
     public SoundStreamBlock copy() {
         return new SoundStreamBlock(this);
     }
@@ -126,11 +144,13 @@ public final class SoundStreamBlock implements MovieTag {
         return String.format(FORMAT, soundData.length);
     }
 
+    /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         length = soundData.length;
         return (length > 62 ? 6 : 2) + length;
     }
 
+    /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         final int start = coder.getPointer();

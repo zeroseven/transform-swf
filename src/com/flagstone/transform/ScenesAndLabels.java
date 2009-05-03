@@ -1,30 +1,30 @@
 /*
  * Symbol.java
  * Transform
- * 
+ *
  * Copyright (c) 2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  *  * Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice, 
- *    this list of conditions and the following disclaimer in the documentation 
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors 
- *    may be used to endorse or promote products derived from this software 
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
@@ -40,7 +40,7 @@ import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-//TODO(doc) Description and methods
+/** TODO(class). */
 public final class ScenesAndLabels implements MovieTag {
 
     private static final String FORMAT = "ScenesAndLabels: { scenes=%s; labels=%s }";
@@ -50,6 +50,16 @@ public final class ScenesAndLabels implements MovieTag {
 
     private transient int length;
 
+    /**
+     * Creates and initialises a ScenesAndLabels object using values encoded
+     * in the Flash binary format.
+     *
+     * @param coder
+     *            an SWFDecoder object that contains the encoded Flash data.
+     *
+     * @throws CoderException
+     *             if an error occurs while decoding the data.
+     */
     public ScenesAndLabels(final SWFDecoder coder) throws CoderException {
 
         final int start = coder.getPointer();
@@ -81,17 +91,27 @@ public final class ScenesAndLabels implements MovieTag {
         }
     }
 
+    /** TODO(method). */
     public ScenesAndLabels(final Map<Integer, String> scenes,
             final Map<Integer, String> labels) {
         this.scenes = scenes;
         this.labels = labels;
     }
 
+    /**
+     * Creates and initialises a ScenesAndLabels object using the values copied
+     * from another ScenesAndLabels object.
+     *
+     * @param object
+     *            a ScenesAndLabels object from which the values will be
+     *            copied.
+     */
     public ScenesAndLabels(final ScenesAndLabels object) {
         scenes = new LinkedHashMap<Integer, String>(object.scenes);
         labels = new LinkedHashMap<Integer, String>(object.labels);
     }
 
+    /** TODO(method). */
     public void addScene(final int offset, final String name) {
         if ((offset < 0) || (offset > 65535)) {
             throw new IllegalArgumentException(Strings.FRAME_RANGE);
@@ -102,10 +122,12 @@ public final class ScenesAndLabels implements MovieTag {
         scenes.put(offset, name);
     }
 
+    /** TODO(method). */
     public Map<Integer, String> getScenes() {
         return scenes;
     }
 
+    /** TODO(method). */
     public void setScenes(final Map<Integer, String> map) {
         if (map == null) {
             throw new IllegalArgumentException(Strings.TABLE_IS_NULL);
@@ -113,6 +135,7 @@ public final class ScenesAndLabels implements MovieTag {
         scenes = map;
     }
 
+    /** TODO(method). */
     public void addLabel(final int offset, final String name) {
         if ((offset < 0) || (offset > 65535)) {
             throw new IllegalArgumentException(Strings.FRAME_RANGE);
@@ -123,10 +146,12 @@ public final class ScenesAndLabels implements MovieTag {
         labels.put(offset, name);
     }
 
+    /** TODO(method). */
     public Map<Integer, String> getLabels() {
         return labels;
     }
 
+    /** TODO(method). */
     public void setLabels(final Map<Integer, String> map) {
         if (map == null) {
             throw new IllegalArgumentException(Strings.TABLE_IS_NULL);
@@ -134,6 +159,7 @@ public final class ScenesAndLabels implements MovieTag {
         labels = map;
     }
 
+    /** TODO(method). */
     public ScenesAndLabels copy() {
         return new ScenesAndLabels(this);
     }
@@ -143,6 +169,7 @@ public final class ScenesAndLabels implements MovieTag {
         return String.format(FORMAT, scenes, labels);
     }
 
+    /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
 
         length = SWFEncoder.sizeVariableU32(scenes.size());
@@ -162,6 +189,7 @@ public final class ScenesAndLabels implements MovieTag {
         return (length > 62 ? 6 : 2) + length;
     }
 
+    /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
 

@@ -1,30 +1,30 @@
 /*
  * PlaceObject2.java
  * Transform
- * 
+ *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  *  * Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice, 
- *    this list of conditions and the following disclaimer in the documentation 
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors 
- *    may be used to endorse or promote products derived from this software 
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
@@ -50,13 +50,13 @@ import com.flagstone.transform.movieclip.MovieClipEventHandler;
 /**
  * PlaceObject2 is used to add and manipulate objects (shape, button, etc.) on
  * the Flash Player's display list.
- * 
+ *
  * <p>
  * PlaceObject2 supersedes the PlaceObject class providing more functionality
  * and easier manipulation of objects in the display list through the following
  * operations:
  * </p>
- * 
+ *
  * <ul>
  * <li>Place a new shape on the display list.</li>
  * <li>Change an existing shape by moving it to new location or changing its
@@ -68,7 +68,7 @@ import com.flagstone.transform.movieclip.MovieClipEventHandler;
  * <li>Define the sequence of actions that are executed when an event occurs in
  * movie clip.</li>
  * </ul>
- * 
+ *
  * <p>
  * <b>Clipping Depth</b><br/>
  * With the introduction of Flash 3 the display list supported a clipping layer.
@@ -77,7 +77,7 @@ import com.flagstone.transform.movieclip.MovieClipEventHandler;
  * mask objects between the layer containing the clipping path and a specified
  * layer.
  * </p>
- * 
+ *
  * <p>
  * <b>Shape Morphing</b><br/>
  * Shapes that will be morphed are defined using the DefineMorphShape class
@@ -87,7 +87,7 @@ import com.flagstone.transform.movieclip.MovieClipEventHandler;
  * 0 generates a shape identical to the starting shape in the DefineMorphShape
  * object and 1.0 generates the shape at the end of the morphing process.
  * </p>
- * 
+ *
  * <p>
  * <b>Movie Clip Event Handlers</b><br/>
  * With the introduction of Flash 5, movie clips (defined using the
@@ -98,7 +98,7 @@ import com.flagstone.transform.movieclip.MovieClipEventHandler;
  * events can be handled by defining an ClipEvent for each type of event. For
  * more information see the ClipEvent class.
  * </p>
- * 
+ *
  * <p>
  * Since only one object can be placed on a given layer an existing object on
  * the display list can be identified by the layer it is displayed on rather
@@ -106,7 +106,7 @@ import com.flagstone.transform.movieclip.MovieClipEventHandler;
  * remaining attributes are optional according to the different operation being
  * performed:
  * </p>
- * 
+ *
  * <ul>
  * <li>If an existing object on the display list is being modified then only the
  * layer number is required. Previously in the PlaceObject class both the
@@ -125,22 +125,24 @@ import com.flagstone.transform.movieclip.MovieClipEventHandler;
  * <li>If no events are being defined for a movie clip then the array of
  * ClipEvent object may be left empty.</li>
  * </ul>
- * 
+ *
  * <p>
  * The Layer class provides a simple API for manipulating objects on the display
  * list. While it is relatively simple to create instances of PlaceObject2
  * object that perform the same steps the API provided by Player is easier to
  * use and much more readable.
  * </p>
- * 
+ *
  * @see com.flagstone.transform.util.movie.Layer
  */
+//TODO(class)
 public final class Place2 implements MovieTag {
     // TODO(code) Consider replacing with StringBuilder for optional fields
     private static final String FORMAT = "PlaceObject2: { mode=%s; layer=%d; "
             + "identifier=%d; transform=%s; colorTransform=%s; ratio=%d; "
             + "clippingDepth=%d; name=%s; clipEvents=%s}";
 
+    /** TODO(method). */
     public static Place2 show(final int identifier, final int layer,
             final int xCoord, final int yCoord) {
         final Place2 object = new Place2();
@@ -151,6 +153,7 @@ public final class Place2 implements MovieTag {
         return object;
     }
 
+    /** TODO(method). */
     public static Place2 modify(final int layer) {
         final Place2 object = new Place2();
         object.placeType = Placement.MODIFY;
@@ -158,6 +161,7 @@ public final class Place2 implements MovieTag {
         return object;
     }
 
+    /** TODO(method). */
     public static Place2 move(final int layer, final int xCoord,
             final int yCoord) {
         final Place2 object = new Place2();
@@ -167,6 +171,7 @@ public final class Place2 implements MovieTag {
         return object;
     }
 
+    /** TODO(method). */
     public static Place2 replace(final int identifier, final int layer) {
         final Place2 object = new Place2();
         object.placeType = Placement.REPLACE;
@@ -175,6 +180,7 @@ public final class Place2 implements MovieTag {
         return object;
     }
 
+    /** TODO(method). */
     public static Place2 replace(final int identifier, final int layer,
             final int xCoord, final int yCoord) {
         final Place2 object = new Place2();
@@ -197,7 +203,21 @@ public final class Place2 implements MovieTag {
 
     private transient int length;
 
-    // TODO(doc)
+    /**
+     * Creates and initialises a Place2 object using values encoded
+     * in the Flash binary format.
+     *
+     * @param coder
+     *            an SWFDecoder object that contains the encoded Flash data.
+     *
+     * @param context
+     *            a Context object used to manage the decoders for different
+     *            type of object and to pass information on how objects are
+     *            decoded.
+     *
+     * @throws CoderException
+     *             if an error occurs while decoding the data.
+     */
     // TODO(optimise)
     public Place2(final SWFDecoder coder, final Context context)
             throws CoderException {
@@ -231,7 +251,9 @@ public final class Place2 implements MovieTag {
         case 3:
             placeType = Placement.REPLACE;
             break;
-        // TODO(code) case 0 should throw exception
+        default:
+            throw new CoderException(getClass().getName(), start >> 3, length,
+                    0, Strings.INVALID_FORMAT);
         }
 
         layer = coder.readWord(2, false);
@@ -288,7 +310,14 @@ public final class Place2 implements MovieTag {
         // Creates uninitialised object
     }
 
-    // TODO(doc)
+    /**
+     * Creates and initialises a Place2 object using the values copied
+     * from another Place2 object.
+     *
+     * @param object
+     *            a Place2 object from which the values will be
+     *            copied.
+     */
     // TODO(optimise) immutable objects
     public Place2(final Place2 object) {
         placeType = object.placeType;
@@ -312,13 +341,12 @@ public final class Place2 implements MovieTag {
         }
     }
 
-    // TODO(doc) review
     /**
      * Adds a clip event to the array of clip events.
-     * 
+     *
      * @param aClipEvent
      *            a clip event object.
-     * 
+     *
      *            throws NullPointerException of the clip event object is null
      */
     public Place2 add(final MovieClipEventHandler aClipEvent)
@@ -343,10 +371,10 @@ public final class Place2 implements MovieTag {
      * Set the array of Clip events. Clip Events are only valid for movie clips
      * and the argument should be set to null when placing other types of
      * object.
-     * 
+     *
      * If the object already contains a set of encoded clip event objects they
      * will be deleted.
-     * 
+     *
      * @param anArray
      *            an array of ClipEvent objects.
      */
@@ -425,7 +453,7 @@ public final class Place2 implements MovieTag {
 
     /**
      * Sets the type of placement.
-     * 
+     *
      * @param aType
      *            the type of operation to be performed, either New, Modify or
      *            Replace.
@@ -437,7 +465,7 @@ public final class Place2 implements MovieTag {
 
     /**
      * Sets the layer at which the object will be placed.
-     * 
+     *
      * @param aLayer
      *            the layer number on which the object is being displayed. Must
      *            be in the range 1..65535.
@@ -452,7 +480,7 @@ public final class Place2 implements MovieTag {
 
     /**
      * Sets the identifier of the object.
-     * 
+     *
      * @param uid
      *            the identifier of a new object to be displayed. Must be in the
      *            range 1..65535.
@@ -469,7 +497,7 @@ public final class Place2 implements MovieTag {
      * Sets the coordinate transform that defines the position where the object
      * will be displayed. The argument may be null if the location of the object
      * is not being changed.
-     * 
+     *
      * @param aTransform
      *            an CoordTransform object that will be applied to the object
      *            displayed.
@@ -481,7 +509,7 @@ public final class Place2 implements MovieTag {
 
     /**
      * Sets the location where the object will be displayed.
-     * 
+     *
      * @param xCoord
      *            the x-coordinate of the object's origin.
      * @param yCoord
@@ -497,7 +525,7 @@ public final class Place2 implements MovieTag {
      * Sets the colour transform that defines the colour effects applied to the
      * object. The argument may be null if the color of the object is not being
      * changed.
-     * 
+     *
      * @param aTransform
      *            an ColorTransform object that will be applied to the object
      *            displayed.
@@ -511,7 +539,7 @@ public final class Place2 implements MovieTag {
      * Sets point of the morphing process for a morph shape in the range
      * 0..65535. May be set to null if the shape being placed is not being
      * morphed.
-     * 
+     *
      * @param aNumber
      *            the progress in the morphing process.
      */
@@ -527,7 +555,7 @@ public final class Place2 implements MovieTag {
     /**
      * Sets the number of layers that this object will mask. May be set to zero
      * if the shape being placed does not define a clipping area.
-     * 
+     *
      * @param aNumber
      *            the number of layers clipped.
      */
@@ -543,7 +571,7 @@ public final class Place2 implements MovieTag {
      * Set the name of an object to be displayed. If a shape is not being
      * assigned a name then setting the argument to null will omit the attribute
      * when the object is encoded.
-     * 
+     *
      * @param aString
      *            the name assigned to the object.
      */
@@ -566,6 +594,7 @@ public final class Place2 implements MovieTag {
     }
 
     // TODO(optimise)
+    /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         final Map<Integer, Integer> vars = context.getVariables();
         vars.put(Context.TRANSPARENT, 1);
@@ -599,6 +628,7 @@ public final class Place2 implements MovieTag {
     }
 
     // TODO(optimise)
+    /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         final Map<Integer, Integer> vars = context.getVariables();
@@ -630,6 +660,9 @@ public final class Place2 implements MovieTag {
         case REPLACE:
             coder.writeBits(3, 2);
             break;
+        default:
+            throw new CoderException(getClass().getName(), start >> 3, length,
+                    0, Strings.INVALID_FORMAT);
         }
 
         coder.writeWord(layer, 2);

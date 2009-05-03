@@ -8,6 +8,7 @@ import com.flagstone.transform.coder.FilterTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
+/** TODO(class). */
 public final class BlurFilter implements Filter {
 
     private static final String FORMAT = "BlurFilter: { blurX=%f; blurY=%f; passes=%d }";
@@ -16,6 +17,21 @@ public final class BlurFilter implements Filter {
     private final int blurY;
     private final int passes;
 
+    /**
+     * Creates and initialises a BlueFilter object using values encoded
+     * in the Flash binary format.
+     *
+     * @param coder
+     *            an SWFDecoder object that contains the encoded Flash data.
+     *
+     * @param context
+     *            a Context object used to manage the decoders for different
+     *            type of object and to pass information on how objects are
+     *            decoded.
+     *
+     * @throws CoderException
+     *             if an error occurs while decoding the data.
+     */
     public BlurFilter(final SWFDecoder coder, final Context context)
             throws CoderException {
         coder.readByte();
@@ -24,6 +40,7 @@ public final class BlurFilter implements Filter {
         passes = (coder.readByte() & 0x00FF) >>> 3;
     }
 
+    /** TODO(method). */
     public BlurFilter(final float blurX, final float blurY, final int passes) {
         this.blurX = (int) (blurX * 65536);
         this.blurY = (int) (blurY * 65536);
@@ -34,26 +51,19 @@ public final class BlurFilter implements Filter {
         this.passes = passes;
     }
 
-    public BlurFilter(final BlurFilter object) {
-        blurX = object.blurX;
-        blurY = object.blurY;
-        passes = object.passes;
-    }
-
+    /** TODO(method). */
     public float getBlurX() {
         return blurX / 65536.0f;
     }
 
+    /** TODO(method). */
     public float getBlurY() {
         return blurY / 65536.0f;
     }
 
+    /** TODO(method). */
     public int getPasses() {
         return passes;
-    }
-
-    public BlurFilter copy() {
-        return new BlurFilter(this);
     }
 
     @Override
@@ -85,10 +95,12 @@ public final class BlurFilter implements Filter {
         return ((blurX * 31) + blurY) * 31 + passes;
     }
 
+    /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         return 10;
     }
 
+    /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         coder.writeByte(FilterTypes.BLUR);

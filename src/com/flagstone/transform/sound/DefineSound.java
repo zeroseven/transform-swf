@@ -1,30 +1,30 @@
 /*
  * DefineSound.java
  * Transform
- * 
+ *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  *  * Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice, 
- *    this list of conditions and the following disclaimer in the documentation 
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors 
- *    may be used to endorse or promote products derived from this software 
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
@@ -41,15 +41,14 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.SoundFormat;
 
-//TODO(doc) Review
 /**
  * DefineSound is used to define a sound that will be played when a given event
  * occurs.
- * 
+ *
  * <p>
  * Three different types of object are used to play an event sound:
  * </p>
- * 
+ *
  * <ul>
  * <li>The DefineSound object that contains the sampled sound.</li>
  * <li>A Sound object that defines how the sound fades in and out, whether it
@@ -58,18 +57,21 @@ import com.flagstone.transform.datatype.SoundFormat;
  * <li>A StartSound object that signals the Flash Player to begin playing the
  * sound.</li>
  * </ul>
- * 
+ *
  * <p>
  * Five encoded formats for the sound data are supported: NATIVE_PCM, PCM,
  * ADPCM, MP3 and NELLYMOSER.
  * </p>
- * 
+ *
  * @see SoundInfo
  * @see StartSound
  */
+//TODO(class)
 public final class DefineSound implements DefineTag {
 
-    private static final String FORMAT = "DefineSound: { identifier=%d; format=%s; rate=%d; channelCount=%d; sampleSize=%d sampleCount=%d }";
+    private static final String FORMAT = "DefineSound: { identifier=%d;"
+            + " format=%s; rate=%d; channelCount=%d; sampleSize=%d "
+            + " sampleCount=%d }";
 
     private SoundFormat format;
     private int rate;
@@ -81,7 +83,16 @@ public final class DefineSound implements DefineTag {
 
     private transient int length;
 
-    // TODO(doc)
+    /**
+     * Creates and initialises a DefineSound object using values encoded
+     * in the Flash binary format.
+     *
+     * @param coder
+     *            an SWFDecoder object that contains the encoded Flash data.
+     *
+     * @throws CoderException
+     *             if an error occurs while decoding the data.
+     */
     public DefineSound(final SWFDecoder coder) throws CoderException {
 
         final int start = coder.getPointer();
@@ -128,7 +139,7 @@ public final class DefineSound implements DefineTag {
     /**
      * Creates a DefineSound object specifying the unique identifier and all the
      * parameters required to describe the sound.
-     * 
+     *
      * @param uid
      *            the unique identifier for this sound. Must be in the range
      *            1..65535.
@@ -162,7 +173,14 @@ public final class DefineSound implements DefineTag {
         setData(bytes);
     }
 
-    // TODO(doc)
+    /**
+     * Creates and initialises a DefineSound object using the values copied
+     * from another DefineSound object.
+     *
+     * @param object
+     *            a DefineSound object from which the values will be
+     *            copied.
+     */
     public DefineSound(final DefineSound object) {
         format = object.format;
         rate = object.rate;
@@ -172,10 +190,12 @@ public final class DefineSound implements DefineTag {
         data = Arrays.copyOf(object.data, object.data.length);
     }
 
+    /** TODO(method). */
     public int getIdentifier() {
         return identifier;
     }
 
+    /** TODO(method). */
     public void setIdentifier(final int uid) {
         if ((uid < 0) || (uid > 65535)) {
             throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
@@ -231,7 +251,7 @@ public final class DefineSound implements DefineTag {
      * Sets the compression format used.Must be either Constants.NATIVE_PCM,
      * Constants.ADPCM or Constants.PCM from Flash 1 onwards, Constants.MP3 from
      * Flash 4 onwards, or Constants.NELLYMOSER from Flash 6 onwards.
-     * 
+     *
      * @param encoding
      *            the format for the sound.
      */
@@ -241,7 +261,7 @@ public final class DefineSound implements DefineTag {
 
     /**
      * Sets the sampling rate in Hertz.
-     * 
+     *
      * @param rate
      *            the rate at which the sounds is played in Hz. Must be one of:
      *            5512, 11025, 22050 or 44100.
@@ -256,7 +276,7 @@ public final class DefineSound implements DefineTag {
 
     /**
      * Sets the number of channels defined in the sound.
-     * 
+     *
      * @param channels
      *            the number of channels in the sound, must be either 1 (Mono)
      *            or 2 (Stereo).
@@ -270,7 +290,7 @@ public final class DefineSound implements DefineTag {
 
     /**
      * Sets the sample size in bytes.
-     * 
+     *
      * @param size
      *            the size of sound samples in bytes. Must be either 1 or 2.
      */
@@ -283,7 +303,7 @@ public final class DefineSound implements DefineTag {
 
     /**
      * Sets the number of samples in the sound data.
-     * 
+     *
      * @param count
      *            the number of samples for the sound.
      */
@@ -296,7 +316,7 @@ public final class DefineSound implements DefineTag {
 
     /**
      * Sets the sound data.
-     * 
+     *
      * @param bytes
      *            the sound data. Must not be null.
      */
@@ -307,6 +327,7 @@ public final class DefineSound implements DefineTag {
         data = bytes;
     }
 
+    /** TODO(method). */
     public DefineSound copy() {
         return new DefineSound(this);
     }
@@ -317,6 +338,7 @@ public final class DefineSound implements DefineTag {
                 sampleSize, sampleCount);
     }
 
+    /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         length = 7;
         length += data.length;
@@ -324,6 +346,7 @@ public final class DefineSound implements DefineTag {
         return (length > 62 ? 6 : 2) + length;
     }
 
+    /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
 

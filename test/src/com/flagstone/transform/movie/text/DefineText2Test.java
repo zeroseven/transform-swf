@@ -45,14 +45,14 @@ public final class DefineText2Test {
 
     private transient DefineText2 fixture;
 
-    private transient final byte[] encoded = new byte[] { 0x06, 0x01, 0x01,
+    private final transient byte[] encoded = new byte[] { 0x06, 0x01, 0x01,
             0x00, 0x02, 0x00, 0x06, 0x50 };
 
-    private transient final byte[] extended = new byte[] { 0x7F, 0x01, 0x06,
+    private final transient byte[] extended = new byte[] { 0x7F, 0x01, 0x06,
             0x00, 0x00, 0x00, 0x01, 0x00, 0x02, 0x00, 0x06, 0x50 };
 
     @Test
-    @Ignore
+    @Ignore //TODO(implement)
     public void encodeCoordTransform() throws CoderException {
         final SWFEncoder encoder = new SWFEncoder(encoded.length);
         final Context context = new Context();
@@ -65,7 +65,7 @@ public final class DefineText2Test {
     }
 
     @Test
-    @Ignore
+    @Ignore //TODO(implement)
     public void decode() throws CoderException {
         final SWFDecoder decoder = new SWFDecoder(encoded);
         final Context context = new Context();
@@ -76,7 +76,7 @@ public final class DefineText2Test {
     }
 
     @Test
-    @Ignore
+    @Ignore //TODO(implement)
     public void decodeExtended() throws CoderException {
         final SWFDecoder decoder = new SWFDecoder(extended);
         final Context context = new Context();

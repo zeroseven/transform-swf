@@ -42,16 +42,16 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 public final class FileAttributesTest {
 
-    private static transient final boolean hasMetaData = true;
-    private static transient final boolean hasActionscript = true;
-    private static transient final boolean useNetwork = true;
+    private static final transient boolean hasMetaData = true;
+    private static final transient boolean hasActionscript = true;
+    private static final transient boolean useNetwork = true;
 
     private transient FileAttributes fixture;
 
-    private transient final byte[] encoded = new byte[] { 0x44, 0x11, 0x19,
+    private final transient byte[] encoded = new byte[] { 0x44, 0x11, 0x19,
             0x00, 0x00, 0x00 };
 
-    private transient final byte[] extended = new byte[] { (byte) 0x7F, 0x11,
+    private final transient byte[] extended = new byte[] { (byte) 0x7F, 0x11,
             0x04, 0x00, 0x00, 0x00, 0x19, 0x00, 0x00, 0x00 };
 
     @Test

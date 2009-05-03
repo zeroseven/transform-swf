@@ -1,30 +1,30 @@
 /*
  * DefineFont.java
  * Transform
- * 
+ *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  *  * Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice, 
- *    this list of conditions and the following disclaimer in the documentation 
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors 
- *    may be used to endorse or promote products derived from this software 
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
@@ -44,27 +44,27 @@ import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.shape.Shape;
 import com.flagstone.transform.shape.ShapeData;
 
-//TODO(doc) Review
 /**
  * DefineFont defines the glyphs that are drawn when text characters are
  * rendered in a particular font.
- * 
+ *
  * <p>
  * A complete definition of a font is created using the DefineFont object for
  * the glyphs along with an FontInfo or FontInfo2 object which contains the name
  * of the font, whether the font face is bold or italics and a table that maps
  * character codes to the glyphs that is drawn to represent the character.
  * </p>
- * 
+ *
  * <p>
  * When defining a font only the glyphs used from a particular font are
  * included. Unused glyphs can be omitted greatly reducing the amount of
  * information that is encoded.
  * </p>
- * 
+ *
  * @see FontInfo
  * @see FontInfo2
  */
+//TODO(class)
 public final class DefineFont implements DefineTag {
     private static final String FORMAT = "DefineFont: { identifier=%d; shapes=%s }";
 
@@ -74,7 +74,16 @@ public final class DefineFont implements DefineTag {
     private transient int length;
 
     // TODO(optimise)
-    // TODO(doc)
+    /**
+     * Creates and initialises a DefineFont object using values encoded
+     * in the Flash binary format.
+     *
+     * @param coder
+     *            an SWFDecoder object that contains the encoded Flash data.
+     *
+     * @throws CoderException
+     *             if an error occurs while decoding the data.
+     */
     public DefineFont(final SWFDecoder coder) throws CoderException {
         final int start = coder.getPointer();
         length = coder.readWord(2, false) & 0x3F;
@@ -120,7 +129,7 @@ public final class DefineFont implements DefineTag {
     /**
      * Creates a DefineFont object setting the unique identifier for the object
      * and the array of glyphs used to render the characters used from the font.
-     * 
+     *
      * @param uid
      *            the unique identifier for this object.
      * @param anArray
@@ -132,7 +141,14 @@ public final class DefineFont implements DefineTag {
         setShapes(anArray);
     }
 
-    // TODO(doc)
+    /**
+     * Creates and initialises a DefineFont object using the values copied
+     * from another DefineFont object.
+     *
+     * @param object
+     *            a DefineFont object from which the values will be
+     *            copied.
+     */
     public DefineFont(final DefineFont object) {
         identifier = object.identifier;
         shapes = new ArrayList<Shape>(object.shapes.size());
@@ -141,10 +157,12 @@ public final class DefineFont implements DefineTag {
         }
     }
 
+    /** TODO(method). */
     public int getIdentifier() {
         return identifier;
     }
 
+    /** TODO(method). */
     public void setIdentifier(final int uid) {
         if ((uid < 0) || (uid > 65535)) {
             throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
@@ -155,7 +173,7 @@ public final class DefineFont implements DefineTag {
     /**
      * Add a shape to the array of shapes that represent the glyphs for the
      * font.
-     * 
+     *
      * @param obj
      *            a shape which must not be null.
      */
@@ -176,7 +194,7 @@ public final class DefineFont implements DefineTag {
 
     /**
      * Sets the array of shapes that describe each glyph.
-     * 
+     *
      * @param anArray
      *            an array of Shape objects that define the outlines for each
      *            glyph in the font. Must not be null.
@@ -188,6 +206,7 @@ public final class DefineFont implements DefineTag {
         shapes = anArray;
     }
 
+    /** TODO(method). */
     public DefineFont copy() {
         return new DefineFont(this);
     }
@@ -198,6 +217,7 @@ public final class DefineFont implements DefineTag {
     }
 
     // TODO(optimise)
+    /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         length = 2;
 
@@ -219,6 +239,7 @@ public final class DefineFont implements DefineTag {
     }
 
     // TODO(optimise)
+    /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         final int start = coder.getPointer();

@@ -56,10 +56,10 @@ public final class DoActionTest {
 
     private transient DoAction fixture;
 
-    private transient final byte[] encoded = new byte[] { (byte) 0x02, 0x03,
+    private final transient byte[] encoded = new byte[] { (byte) 0x02, 0x03,
             0x04, 0x00 };
 
-    private transient final byte[] extended = new byte[] { (byte) 0x3F, 0x03,
+    private final transient byte[] extended = new byte[] { (byte) 0x3F, 0x03,
             0x02, 0x00, 0x00, 0x00, 0x04, 0x00 };
 
     @Before

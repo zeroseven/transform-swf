@@ -1,30 +1,30 @@
 /*
  * Push.java
  * Transform
- * 
+ *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  *  * Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice, 
- *    this list of conditions and the following disclaimer in the documentation 
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors 
- *    may be used to endorse or promote products derived from this software 
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
@@ -41,14 +41,13 @@ import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-//TODO(doc) Review
 /**
  * Push is used to push values on the Flash Player's internal stack.
- * 
+ *
  * <p>
  * Push supports the full range of data types supported by Flash:
  * </p>
- * 
+ *
  * <table class="datasheet">
  * <tr>
  * <td valign="top" nowrap width="20%">Boolean</td>
@@ -94,14 +93,15 @@ import com.flagstone.transform.coder.SWFEncoder;
  * Player.</td>
  * </tr>
  * </table>
- * 
+ *
  * @see Push.Null
  * @see Push.Property
  * @see Push.Register
  * @see Push.TableIndex
  * @see Push.Void
- * 
+ *
  */
+//TODO(class)
 public final class Push implements Action {
 
     private static final String FORMAT = "Push: { values=%s }";
@@ -110,7 +110,16 @@ public final class Push implements Action {
 
     private transient int length;
 
-    // TODO(doc)
+    /**
+     * Creates and initialises a Push action using values encoded
+     * in the Flash binary format.
+     *
+     * @param coder
+     *            an SWFDecoder object that contains the encoded Flash data.
+     *
+     * @throws CoderException
+     *             if an error occurs while decoding the data.
+     */
     public Push(final SWFDecoder coder) throws CoderException {
 
         coder.readByte();
@@ -178,6 +187,7 @@ public final class Push implements Action {
         }
     }
 
+    /** TODO(method). */
     public Push() {
         values = new ArrayList<Object>();
     }
@@ -185,7 +195,7 @@ public final class Push implements Action {
     /**
      * Creates a Push action that will push the values in the array onto the
      * stack.
-     * 
+     *
      * @param anArray
      *            an array of values to be pushed onto the stack. The values in
      *            the array must be one of the following classes: Boolean,
@@ -196,11 +206,19 @@ public final class Push implements Action {
         setValues(anArray);
     }
 
-    // TODO(doc)
+    /**
+     * Creates and initialises a Push action using the values
+     * copied from another Push action.
+     *
+     * @param object
+     *            a Push action from which the values will be
+     *            copied. References to immutable objects will be shared.
+     */
     public Push(final Push object) {
         values = new ArrayList<Object>(object.values);
     }
 
+    /** TODO(method). */
     public Push add(final Object value) {
         values.add(value);
         return this;
@@ -216,7 +234,7 @@ public final class Push implements Action {
 
     /**
      * Sets the array of values.
-     * 
+     *
      * @param anArray
      *            replaces the existing array of value with anArray. The values
      *            in the array must be one of the following classes: Boolean,
@@ -242,6 +260,7 @@ public final class Push implements Action {
         return String.format(FORMAT, values);
     }
 
+    /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
 
         length = 0;
@@ -275,6 +294,7 @@ public final class Push implements Action {
         return length + 3;
     }
 
+    /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
 

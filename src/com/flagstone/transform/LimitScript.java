@@ -1,30 +1,30 @@
 /*
  * LimitScript.java
  * Transform
- * 
+ *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  *  * Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice, 
- *    this list of conditions and the following disclaimer in the documentation 
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors 
- *    may be used to endorse or promote products derived from this software 
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
@@ -41,7 +41,7 @@ import com.flagstone.transform.coder.SWFEncoder;
  * The LimitScript is used to define the execution environment of the Flash
  * Player, limiting the resources available when executing actions and improving
  * performance.
- * 
+ *
  * <p>
  * LimitScript can be used to limit the maximum recursion depth and limit the
  * time a sequence of actions can execute for. This provides a rudimentary
@@ -49,6 +49,7 @@ import com.flagstone.transform.coder.SWFEncoder;
  * should a script fail.
  * </p>
  */
+//TODO(class)
 public final class LimitScript implements MovieTag {
 
     private static final String FORMAT = "LimitScript: { depth=%d; timeout=%d }";
@@ -56,7 +57,16 @@ public final class LimitScript implements MovieTag {
     private int depth;
     private int timeout;
 
-    // TODO(doc)
+    /**
+     * Creates and initialises a LimitScript object using values encoded
+     * in the Flash binary format.
+     *
+     * @param coder
+     *            an SWFDecoder object that contains the encoded Flash data.
+     *
+     * @throws CoderException
+     *             if an error occurs while decoding the data.
+     */
     public LimitScript(final SWFDecoder coder) throws CoderException {
 
         if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
@@ -71,7 +81,7 @@ public final class LimitScript implements MovieTag {
      * Creates a LimitScript object that limits the recursion depth to
      * <em>depth</em> levels and specifies that any sequence of actions will
      * timeout after <em>timeout</em> seconds.
-     * 
+     *
      * @param depth
      *            the maximum depth a sequence of actions can recurse to. Must
      *            be in the range 0..65535.
@@ -86,6 +96,14 @@ public final class LimitScript implements MovieTag {
         setTimeout(timeout);
     }
 
+    /**
+     * Creates and initialises a LimitScript object using the values copied
+     * from another LimitScript object.
+     *
+     * @param object
+     *            a LimitScript object from which the values will be
+     *            copied.
+     */
     public LimitScript(final LimitScript object) {
         depth = object.depth;
         timeout = object.timeout;
@@ -100,7 +118,7 @@ public final class LimitScript implements MovieTag {
 
     /**
      * Sets the maximum recursion level.
-     * 
+     *
      * @param depth
      *            the maximum depth a sequence of actions can recurse to. Must
      *            be in the range 0..65535.
@@ -125,7 +143,7 @@ public final class LimitScript implements MovieTag {
      * Sets the maximum time a sequence of actions will execute before the Flash
      * Player present a dialog box asking whether the script should be
      * terminated.
-     * 
+     *
      * @param time
      *            the time in seconds that a sequence of actions is allowed to
      *            execute. Must be in the range 0..65535.
@@ -137,6 +155,7 @@ public final class LimitScript implements MovieTag {
         timeout = time;
     }
 
+    /** TODO(method). */
     public LimitScript copy() {
         return new LimitScript(this);
     }
@@ -146,10 +165,12 @@ public final class LimitScript implements MovieTag {
         return String.format(FORMAT, depth, timeout);
     }
 
+    /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         return 6;
     }
 
+    /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         coder.writeWord((MovieTypes.LIMIT_SCRIPT << 6) | 4, 2);

@@ -43,12 +43,12 @@ import com.flagstone.transform.datatype.Color;
 
 public final class GradientTest {
 
-    private static transient final int ratio = 1;
-    private transient final Color color = new Color(2, 3, 4);
+    private static final transient int ratio = 1;
+    private final transient Color color = new Color(2, 3, 4);
 
     private transient Gradient fixture;
 
-    private transient final byte[] encoded = new byte[] { 0x01, 0x02, 0x03,
+    private final transient byte[] encoded = new byte[] { 0x01, 0x02, 0x03,
             0x04 };
 
     @Test(expected = IllegalArgumentException.class)

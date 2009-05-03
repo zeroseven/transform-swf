@@ -46,6 +46,7 @@ import java.util.zip.Deflater;
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.FillStyle;
 import com.flagstone.transform.coder.ImageTag;
+import com.flagstone.transform.coder.ShapeRecord;
 import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.datatype.CoordTransform;
 import com.flagstone.transform.fillstyle.BitmapFill;
@@ -53,7 +54,6 @@ import com.flagstone.transform.linestyle.LineStyle;
 import com.flagstone.transform.shape.DefineShape3;
 import com.flagstone.transform.shape.Line;
 import com.flagstone.transform.shape.Shape;
-import com.flagstone.transform.shape.ShapeRecord;
 import com.flagstone.transform.shape.ShapeStyle;
 import com.flagstone.transform.video.ImageBlock;
 
@@ -142,23 +142,14 @@ import com.flagstone.transform.video.ImageBlock;
  */
 //TODO(class)
 public final class ImageFactory {
-    
+
     private ImageDecoder decoder;
-    
+
     /**
      * Create an image definition for the image located in the specified file.
      *
-     * @param identifier
-     *            the unique identifier that will be used to refer to the image
-     *            in the Flash file.
-     *
      * @param file
      *            a file containing the abstract path to the image.
-     *
-     * @return an image definition that can be added to a Movie.
-     *
-     * @throws FileNotFoundException
-     *             if the file cannot be found or opened.
      *
      * @throws IOException
      *             if there is an error reading the file.
@@ -169,7 +160,7 @@ public final class ImageFactory {
      *             image.
      */
     public void read(final File file) throws IOException, DataFormatException {
-        
+
         final ImageInfo info = new ImageInfo();
         info.setInput(new RandomAccessFile(file, "r"));
         info.setDetermineImageNumber(true);
@@ -179,23 +170,14 @@ public final class ImageFactory {
         }
 
         decoder = ImageRegistry.getImageProvider(info.getImageFormat().getMimeType());
-        decoder.read(new FileInputStream(file), (int)file.length());
+        decoder.read(new FileInputStream(file), (int) file.length());
     }
 
     /**
      * Create an image definition for the image referenced by a URL.
      *
-     * @param identifier
-     *            the unique identifier that will be used to refer to the image
-     *            in the Flash file.
-     *
      * @param url
      *            the Uniform Resource Locator referencing the file.
-     *
-     * @return an image definition that can be added to a Movie.
-     *
-     * @throws FileNotFoundException
-     *             if the file cannot be found or opened.
      *
      * @throws IOException
      *             if there is an error reading the file.
@@ -206,17 +188,17 @@ public final class ImageFactory {
      *             image.
      */
     public void read(final URL url) throws IOException, DataFormatException {
-        
+
         final URLConnection connection = url.openConnection();
         final int fileSize = connection.getContentLength();
- 
+
         if (fileSize < 0) {
             throw new FileNotFoundException(url.getFile());
         }
 
         String mimeType = connection.getContentType();
         decoder = ImageRegistry.getImageProvider(mimeType);
-        
+
         if (decoder == null) {
             throw new DataFormatException(Strings.INVALID_IMAGE);
         }
@@ -224,6 +206,7 @@ public final class ImageFactory {
         decoder.read(url.openStream(), fileSize);
     }
 
+    /** TODO(method). */
     public ImageTag defineImage(final int identifier) {
         return decoder.defineImage(identifier);
     }
@@ -241,7 +224,7 @@ public final class ImageFactory {
      *            an unique identifier that is used to reference the shape
      *            definition in a Flash movie.
      *
-     * @param image
+     * @param imageId
      *            the unique identifier of the image generated using the
      *            defineImage() method.
      *
@@ -261,7 +244,7 @@ public final class ImageFactory {
      */
     public DefineShape3 defineEnclosingShape(final int shapeId, final int imageId,
             final int xOrigin, final int yOrigin, final LineStyle borderStyle) {
-        
+
         int lineWidth = 0;
 
         if (borderStyle != null) {
@@ -306,13 +289,12 @@ public final class ImageFactory {
      * the block may be reduced so that it fits the image exactly. In other
      * words the blocks are not padded with extra pixel information.
      *
+     * @param  blocks
+     *            an array of FMImageBlock objects.
      * @param blockWidth
      *            the width of a block in pixels.
      * @param blockHeight
      *            the height of a block in pixels
-     * @param file
-     *            the File containing the abstract path to the image.
-     * @return an array of FMImageBlock objects.
      */
     public void getImageAsBlocks(final List<ImageBlock> blocks,
             final int blockWidth, final int blockHeight) {
@@ -325,7 +307,7 @@ public final class ImageFactory {
         byte[] image = decoder.getImage();
         int width = decoder.getWidth();
         int height = decoder.getHeight();
-        
+
         final byte[] formattedImage = new byte[width * height * 3];
 
         for (row = height - 1; row >= 0; row--) {

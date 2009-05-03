@@ -46,18 +46,18 @@ import com.flagstone.transform.datatype.Color;
 
 public final class MorphLineStyle2Test {
 
-    private static transient final int startWidth = 1;
-    private transient final Color startColor = new Color(2, 3, 4, 5);
-    private static transient final int endWidth = 6;
-    private transient final Color endColor = new Color(7, 8, 9, 10);
+    private static final transient int startWidth = 1;
+    private final transient Color startColor = new Color(2, 3, 4, 5);
+    private static final transient int endWidth = 6;
+    private final transient Color endColor = new Color(7, 8, 9, 10);
 
     private transient MorphLineStyle2 fixture;
 
-    private transient final byte[] encoded = new byte[] { 0x01, 0x00, 0x06,
+    private final transient byte[] encoded = new byte[] { 0x01, 0x00, 0x06,
             0x00, 0x02, 0x03, 0x04, 0x05, 0x07, 0x08, 0x09, 0x0A };
 
     @Test
-    @Ignore
+    @Ignore //TODO(implement)
     public void checkCopy() {
         fixture = new MorphLineStyle2(startWidth, endWidth, startColor,
                 endColor);
@@ -70,7 +70,7 @@ public final class MorphLineStyle2Test {
     }
 
     @Test
-    @Ignore
+    @Ignore //TODO(implement)
     public void encode() throws CoderException {
         final SWFEncoder encoder = new SWFEncoder(encoded.length);
         final Context context = new Context();
@@ -86,7 +86,7 @@ public final class MorphLineStyle2Test {
     }
 
     @Test
-    @Ignore
+    @Ignore //TODO(implement)
     public void decode() throws CoderException {
         final SWFDecoder decoder = new SWFDecoder(encoded);
         final Context context = new Context();

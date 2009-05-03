@@ -43,11 +43,11 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 public final class MovieDataTest {
 
-    private transient final byte[] data = new byte[] { 1, 2, 0 };
+    private final transient byte[] data = new byte[] { 1, 2, 0 };
 
     private transient MovieData fixture;
 
-    private transient final byte[] encoded = new byte[] { 1, 2, 0 };
+    private final transient byte[] encoded = new byte[] { 1, 2, 0 };
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForDataWithNull() {

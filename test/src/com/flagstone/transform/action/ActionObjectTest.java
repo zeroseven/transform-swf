@@ -43,16 +43,16 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 public final class ActionObjectTest {
 
-    private static transient final int type = 128;
-    private transient final byte[] data = new byte[] { 1, 2, 3, 4 };
+    private static final transient int type = 128;
+    private final transient byte[] data = new byte[] { 1, 2, 3, 4 };
 
     private transient ActionObject fixture;
 
-    private transient final byte[] basic = new byte[] { (byte) 0x01 };
+    private final transient byte[] basic = new byte[] { (byte) 0x01 };
 
-    private transient final byte[] empty = new byte[] { (byte) 0x80, 0x00, 0x00 };
+    private final transient byte[] empty = new byte[] { (byte) 0x80, 0x00, 0x00 };
 
-    private transient final byte[] encoded = new byte[] { (byte) 0x80, 0x04,
+    private final transient byte[] encoded = new byte[] { (byte) 0x80, 0x04,
             0x00, 0x01, 0x02, 0x03, 0x04 };
 
     @Test(expected = IllegalArgumentException.class)

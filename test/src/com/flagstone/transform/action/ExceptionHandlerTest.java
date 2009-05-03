@@ -64,10 +64,10 @@ public final class ExceptionHandlerTest {
         finalActions.add(BasicAction.END);
     }
 
-    private static transient final int type = ActionTypes.EXCEPTION_HANDLER;
+    private static final transient int type = ActionTypes.EXCEPTION_HANDLER;
     private transient ExceptionHandler fixture;
 
-    private transient final byte[] encoded = new byte[] { (byte) type, 0x11,
+    private final transient byte[] encoded = new byte[] { (byte) type, 0x11,
             0x00, 0x07, 0x02, 0x00, 0x02, 0x00, 0x02, 0x00, 0x76, 0x61, 0x72,
             0x00, ActionTypes.ADD, ActionTypes.END, ActionTypes.SUBTRACT,
             ActionTypes.END, ActionTypes.MULTIPLY, ActionTypes.END, };

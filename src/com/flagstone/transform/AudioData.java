@@ -4,27 +4,27 @@
  *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  *  * Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice, 
- *    this list of conditions and the following disclaimer in the documentation 
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors 
- *    may be used to endorse or promote products derived from this software 
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package com.flagstone.transform;
@@ -39,12 +39,10 @@ import com.flagstone.transform.coder.VideoTypes;
 import com.flagstone.transform.datatype.SoundFormat;
 
 /**
- * <p>
- * AudioData is used to specify the audio track in Flash video files, defining
+ * AudioData is used to specify the audio track in Flash video files. It defines
  * the timestamp at which the sound is played, the format, playback rate,
  * whether the sound is stereo or mono and the size of each sound sample.
- * <p>
- * 
+ *
  * <p>
  * Sounds may be either mono or stereo and encoded using either NATIVE_PCM,
  * ADPCM, MP3, NELLYMOSER or NELLYMOSER_8K formats and have sampling rates of
@@ -53,15 +51,16 @@ import com.flagstone.transform.datatype.SoundFormat;
  * 'fixed' format for a mono sound with an 8KHz sample rate so the values for
  * the playback rate and number of channels will be ignored.
  * </p>
- * 
+ *
  * <p>
  * When playing the sound the timestamp is used exclusively. Any internal timing
  * information in the audio data is ignored.
  * </p>
- * 
+ *
  * @see Video
  * @see VideoData
  */
+//TODO(class)
 public final class AudioData implements VideoTag {
 
     private static final String FORMAT = "AudioData: { timestamp=%d; format=%d;"
@@ -76,6 +75,16 @@ public final class AudioData implements VideoTag {
 
     private transient int length;
 
+    /**
+     * Creates and initialises an AudioData object using values encoded
+     * in the Flash Video binary format.
+     *
+     * @param coder
+     *            an FLVDecoder object that contains the encoded Flash data.
+     *
+     * @throws CoderException
+     *             if an error occurs while decoding the data.
+     */
     public AudioData(final FLVDecoder coder) throws CoderException {
         final int start = coder.getPointer();
         coder.readByte();
@@ -92,6 +101,7 @@ public final class AudioData implements VideoTag {
         }
     }
 
+    /** TODO(method). */
     public AudioData() {
         format = SoundFormat.PCM;
         rate = 5512;
@@ -102,7 +112,7 @@ public final class AudioData implements VideoTag {
 
     /**
      * Creates an AudioData object.
-     * 
+     *
      * @param timestamp
      *            time in milliseconds from the start of the file that the sound
      *            will be played.
@@ -137,6 +147,14 @@ public final class AudioData implements VideoTag {
         setData(bytes);
     }
 
+    /**
+     * Creates and initialises an AudioData object using the values
+     * copied from another AudioData object.
+     *
+     * @param object
+     *            a AudioData object from which the values will be
+     *            copied.
+     */
     public AudioData(final AudioData object) {
         format = object.format;
         rate = object.rate;
@@ -156,7 +174,7 @@ public final class AudioData implements VideoTag {
     /**
      * Sets the timestamp, in milliseconds, relative to the start of the file,
      * when the audio or video will be played.
-     * 
+     *
      * @param time
      *            the time in milliseconds relative to the start of the file.
      *            Must be in the range 0..16,777,215.
@@ -170,7 +188,7 @@ public final class AudioData implements VideoTag {
 
     /**
      * Returns the format used to encode the sound.
-     * 
+     *
      * @return the format used to compress the sound, either
      *         Constants.NATIVE_PCM, Constants.ADPCM, Constants.MP3,
      *         Constants.NELLYMOSER or Constants.NELLYMOSER_8K.
@@ -181,7 +199,7 @@ public final class AudioData implements VideoTag {
 
     /**
      * Sets the encoding format used to encode the sound.
-     * 
+     *
      * @param format
      *            the format for the sound, either Constants.NATIVE_PCM,
      *            Constants.ADPCM, Constants.MP3, Constants.NELLYMOSER or
@@ -192,8 +210,8 @@ public final class AudioData implements VideoTag {
     }
 
     /**
-     * Returns the rate at which the sound will be played, in Hertz
-     * 
+     * Returns the rate at which the sound will be played, in Hertz.
+     *
      * @return the rate at which the sound was sampled. either: 5512, 11025,
      *         22050 or 44100.
      */
@@ -205,7 +223,7 @@ public final class AudioData implements VideoTag {
      * Sets the rate at which the sound was sampled in Hertz. The playback rate
      * for NELLYMOSER_8K encoded audio is fixed at 8KHz so setting the rate has
      * no effect.
-     * 
+     *
      * @param rate
      *            the rate at which the sounds is played in Hz, MUST either
      *            5512, 11025, 22050 or 44100.
@@ -231,7 +249,7 @@ public final class AudioData implements VideoTag {
      * NELLYMOSER_8K are mono format. For NELLYMOSER the number of channels must
      * be set to 1. For NELLYMOSER_8K the setting for the number of channels has
      * no effect.
-     * 
+     *
      * @param count
      *            the number of channels in the sound. Must be either 1 (Mono)
      *            or 2 (Stereo).
@@ -253,7 +271,7 @@ public final class AudioData implements VideoTag {
 
     /**
      * Sets the sample size in bytes.
-     * 
+     *
      * @param size
      *            the size of sound samples in bytes. Must be either 1 or 2. For
      *            NELLYMOSER and NELLYMOSER_8K formats the sample size must be
@@ -275,7 +293,7 @@ public final class AudioData implements VideoTag {
 
     /**
      * Sets the sound data.
-     * 
+     *
      * @param bytes
      *            the sound data. Can be zero length but must not be null.
      */
@@ -299,12 +317,14 @@ public final class AudioData implements VideoTag {
                 sampleSize, data.length);
     }
 
+    /** {@inheritDoc} */
     public int prepareToEncode() {
         length = 12 + data.length;
 
         return length;
     }
 
+    /** {@inheritDoc} */
     public void encode(final FLVEncoder coder) throws CoderException {
         final int start = coder.getPointer();
 

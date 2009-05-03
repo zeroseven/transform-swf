@@ -5,8 +5,10 @@ package com.flagstone.transform.coder;
  */
 public interface SWFFactory<T> {
 
+    /** TODO(method). */
     SWFFactory<T> copy();
 
+    /** TODO(method). */
     T getObject(final SWFDecoder coder, final Context context)
             throws CoderException;
 }

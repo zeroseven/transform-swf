@@ -43,17 +43,17 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 public final class DoABCTest {
 
-    private static transient final String name = "script";
-    private static transient final boolean defer = true;
-    private static transient final byte[] data = new byte[] { 1, 2, 3, 4 };
+    private static final transient String name = "script";
+    private static final transient boolean defer = true;
+    private static final transient byte[] data = new byte[] { 1, 2, 3, 4 };
 
     private transient DoABC fixture;
 
-    private transient final byte[] encoded = new byte[] { (byte) 0x8F, 0x14,
+    private final transient byte[] encoded = new byte[] { (byte) 0x8F, 0x14,
             0x00, 0x00, 0x00, 0x01, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x00,
             0x01, 0x02, 0x03, 0x04 };
 
-    private transient final byte[] extended = new byte[] { (byte) 0xBF, 0x14,
+    private final transient byte[] extended = new byte[] { (byte) 0xBF, 0x14,
             0x0F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x73, 0x63, 0x72,
             0x69, 0x70, 0x74, 0x00, 0x01, 0x02, 0x03, 0x04 };
 

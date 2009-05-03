@@ -46,16 +46,16 @@ import com.flagstone.transform.coder.MovieTag;
  * TODO(class).
  */
 public final class SoundFactory {
-    
+
     private SoundDecoder decoder;
-    
+
     /**
      * TODO(method).
      */
     public void read(final File file) throws IOException, DataFormatException {
-        
+
         String mimeType;
-        
+
         if (file.getName().endsWith("wav")) {
             mimeType = "audio/x-wav";
         } else if (file.getName().endsWith("mp3")) {
@@ -65,24 +65,24 @@ public final class SoundFactory {
         }
 
         decoder = SoundRegistry.getSoundProvider(mimeType);
-        decoder.read(new FileInputStream(file), (int)file.length());
+        decoder.read(new FileInputStream(file), (int) file.length());
     }
 
     /**
       * TODO(method).
      */
     public void read(final URL url) throws IOException, DataFormatException {
-        
+
         final URLConnection connection = url.openConnection();
         final int fileSize = connection.getContentLength();
- 
+
         if (fileSize < 0) {
             throw new FileNotFoundException(url.getFile());
         }
 
         String mimeType = connection.getContentType();
         decoder = SoundRegistry.getSoundProvider(mimeType);
-        
+
         if (decoder == null) {
             throw new DataFormatException(Strings.INVALID_IMAGE);
         }
@@ -96,11 +96,11 @@ public final class SoundFactory {
     public MovieTag defineSound(final int identifier) {
         return decoder.defineSound(identifier);
     }
-    
+
     /**
      * TODO(method).
      */
-    public List<MovieTag> streamSound(int frameRate) {
+    public List<MovieTag> streamSound(final int frameRate) {
         return decoder.streamSound(frameRate);
 
     }

@@ -33,12 +33,10 @@ package com.flagstone.transform.util.image;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/**
- */
-//TODO(class)
+/** TODO(class). */
 public final class ImageRegistry {
-    
-    private static Map<String, ImageProvider> providers = 
+
+    private static Map<String, ImageProvider> providers =
         new LinkedHashMap<String, ImageProvider>();
 
     static {

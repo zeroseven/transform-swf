@@ -1,30 +1,30 @@
 /*
  * Initialize.java
  * Transform
- * 
+ *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  *  * Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice, 
- *    this list of conditions and the following disclaimer in the documentation 
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors 
- *    may be used to endorse or promote products derived from this software 
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
@@ -33,7 +33,6 @@ package com.flagstone.transform.movieclip;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.flagstone.transform.DoAction;
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.action.ActionData;
 import com.flagstone.transform.coder.Action;
@@ -45,16 +44,15 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.coder.SWFFactory;
 
-//TODO(doc) Review
 /**
  * Initialize is used to specify a sequence of actions that are executed to
  * initialise a movie clip before it is displayed.
- * 
+ *
  * <p>
  * Initialize implements the #initclip pragma defined in the ActionScript
  * language.
  * </p>
- * 
+ *
  * <p>
  * Unlike the DoAction class which specifies the actions that are executed when
  * a particular frame is displayed the actions contained in an Initialize object
@@ -63,9 +61,10 @@ import com.flagstone.transform.coder.SWFFactory;
  * actions are skipped. Also there can only be one Initialize object for each
  * movie clip defined in the movie.
  * </p>
- * 
+ *
  * @see DoAction
  */
+//TODO(class)
 public final class InitializeMovieClip implements MovieTag {
     private static final String FORMAT = "Initialize: { identifier=%d; actions=%s }";
 
@@ -74,7 +73,21 @@ public final class InitializeMovieClip implements MovieTag {
 
     private transient int length;
 
-    // TODO(doc)
+    /**
+     * Creates and initialises an InitializeMovieClip object using values encoded
+     * in the Flash binary format.
+     *
+     * @param coder
+     *            an SWFDecoder object that contains the encoded Flash data.
+     *
+     * @param context
+     *            a Context object used to manage the decoders for different
+     *            type of object and to pass information on how objects are
+     *            decoded.
+     *
+     * @throws CoderException
+     *             if an error occurs while decoding the data.
+     */
     public InitializeMovieClip(final SWFDecoder coder, final Context context)
             throws CoderException {
         final int start = coder.getPointer();
@@ -108,7 +121,7 @@ public final class InitializeMovieClip implements MovieTag {
     /**
      * Creates a Initialize object that will initialise the movie clip with the
      * specified identifier with the actions in the array.
-     * 
+     *
      * @param uid
      *            the identifier of the movie clip to initialise. Must be in the
      *            range 1..65535.
@@ -120,7 +133,14 @@ public final class InitializeMovieClip implements MovieTag {
         setActions(anArray);
     }
 
-    // TODO(doc)
+    /**
+     * Creates and initialises an InitializeMovieClip object using the values copied
+     * from another InitializeMovieClip object.
+     *
+     * @param object
+     *            an InitializeMovieClip object from which the values will be
+     *            copied.
+     */
     public InitializeMovieClip(final InitializeMovieClip object) {
         identifier = object.identifier;
 
@@ -140,7 +160,7 @@ public final class InitializeMovieClip implements MovieTag {
 
     /**
      * Sets the identifier of the movie clip that will be initialised.
-     * 
+     *
      * @param aNumber
      *            the identifier of the movie clip. The value must be in the
      *            range 1..65535.
@@ -154,7 +174,7 @@ public final class InitializeMovieClip implements MovieTag {
 
     /**
      * Adds the action object to the array of actions.
-     * 
+     *
      * @param anAction
      *            an object belonging to a class derived from Action. Must not
      *            be null.
@@ -175,8 +195,8 @@ public final class InitializeMovieClip implements MovieTag {
     }
 
     /**
-     * Set the array of actions of the movie clip that will be initialised
-     * 
+     * Set the array of actions of the movie clip that will be initialised.
+     *
      * @param anArray
      *            the array of action objects. Must not be null.
      */
@@ -199,6 +219,7 @@ public final class InitializeMovieClip implements MovieTag {
         return String.format(FORMAT, identifier, actions);
     }
 
+    /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         length = 2;
 
@@ -209,6 +230,7 @@ public final class InitializeMovieClip implements MovieTag {
         return (length > 62 ? 6 : 2) + length;
     }
 
+    /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         final int start = coder.getPointer();

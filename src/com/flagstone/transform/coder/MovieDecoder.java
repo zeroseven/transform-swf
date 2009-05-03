@@ -68,12 +68,15 @@ import com.flagstone.transform.text.TextSettings;
  * Factory is the default implementation of an SWFFactory which used to create
  * instances of Transform classes.
  */
+//TODO(class)
 public final class MovieDecoder implements SWFFactory<MovieTag> {
 
+    /** TODO(method). */
     public SWFFactory<MovieTag> copy() {
         return new MovieDecoder();
     }
 
+    /** TODO(method). */
     public MovieTag getObject(final SWFDecoder coder, final Context context)
             throws CoderException {
 

@@ -9,14 +9,11 @@ import java.awt.image.DataBufferByte;
 import java.awt.image.DataBufferInt;
 import java.awt.image.DataBufferUShort;
 import java.awt.image.IndexColorModel;
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.RandomAccessFile;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Arrays;
@@ -44,17 +41,18 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
     private transient byte[] table;
     private transient byte[] image;
 
+    /** TODO(method). */
     public ImageDecoder newDecoder() {
         return new BufferedImageDecoder();
     }
 
-    public void read(final File file) throws FileNotFoundException,
-            IOException, DataFormatException {
-         read(new FileInputStream(file), (int)file.length());
+    /** TODO(method). */
+    public void read(final File file) throws IOException, DataFormatException {
+         read(new FileInputStream(file), (int) file.length());
     }
 
-    public void read(final URL url) throws FileNotFoundException, IOException,
-            DataFormatException {
+    /** TODO(method). */
+    public void read(final URL url) throws IOException, DataFormatException {
         final URLConnection connection = url.openConnection();
         final int fileSize = connection.getContentLength();
 
@@ -64,11 +62,13 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
 
         read(url.openStream(), fileSize);
     }
-    
-    public void read(InputStream stream, int size) throws IOException,DataFormatException {
+
+    /** TODO(method). */
+    public void read(final InputStream stream, final int size) throws IOException, DataFormatException {
         read(ImageIO.read(stream));
     }
 
+    /** TODO(method). */
     public ImageTag defineImage(final int identifier) {
         ImageTag object = null;
 
@@ -160,7 +160,7 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
      * @throws DataFormatException
      *             if there is a problem decoding the BufferedImage.
      */
-    public static BufferedImage bufferedImage(final DefineImage image)
+    public BufferedImage bufferedImage(final DefineImage image)
             throws DataFormatException {
         BufferedImage bufferedImage = null;
 
@@ -315,14 +315,17 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
         return bufferedImage;
     }
 
+    /** TODO(method). */
     public int getWidth() {
         return width;
     }
 
+    /** TODO(method). */
     public int getHeight() {
         return height;
     }
 
+    /** TODO(method). */
     public byte[] getImage() {
         return Arrays.copyOf(image, image.length);
     }
@@ -338,7 +341,7 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
      * @throws DataFormatException
      *             if there is a problem decoding the BufferedImage.
      */
-    public static BufferedImage bufferedImage(final DefineImage2 image)
+    public BufferedImage bufferedImage(final DefineImage2 image)
             throws DataFormatException {
         BufferedImage bufferedImage = null;
 
@@ -488,38 +491,38 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
      *            the height of the resized image in pixels.
      * @return a new BufferedImage with the specified width and height.
      */
-    public static BufferedImage resizeImage(final BufferedImage image,
+    public BufferedImage resizeImage(final BufferedImage image,
             final int width, final int height) {
-        int image_type = image.getType();
+        int imageType = image.getType();
 
-        if (image_type == BufferedImage.TYPE_CUSTOM) {
-            image_type = BufferedImage.TYPE_4BYTE_ABGR;
+        if (imageType == BufferedImage.TYPE_CUSTOM) {
+            imageType = BufferedImage.TYPE_4BYTE_ABGR;
         }
 
         final BufferedImage resized = new BufferedImage(width, height,
                 BufferedImage.TYPE_4BYTE_ABGR);
 
-        final double width_ratio = (double) image.getWidth() / (double) width;
-        final double height_ratio = (double) image.getHeight()
+        final double widthRatio = (double) image.getWidth() / (double) width;
+        final double heightRatio = (double) image.getHeight()
                 / (double) height;
-        double ratio = (width_ratio > height_ratio ? width_ratio : height_ratio);
+        double ratio = (widthRatio > heightRatio ? widthRatio : heightRatio);
 
         if (ratio < 1.0) {
             ratio = 1.0;
         }
 
-        final int image_width = (int) (image.getWidth() / ratio);
-        final int image_height = (int) (image.getHeight() / ratio);
+        final int imageWidth = (int) (image.getWidth() / ratio);
+        final int imageHeight = (int) (image.getHeight() / ratio);
 
-        final int xCoord = (width - image_width) / 2;
-        final int yCoord = (height - image_height) / 2;
+        final int xCoord = (width - imageWidth) / 2;
+        final int yCoord = (height - imageHeight) / 2;
 
         final Graphics2D graphics = resized.createGraphics();
         graphics.setColor(new Color(0.0f, 0.0f, 0.0f, 0.0f));
         graphics.fillRect(0, 0, width, height);
 
-        final java.awt.Image scaled = image.getScaledInstance(image_width,
-                image_height, java.awt.Image.SCALE_SMOOTH);
+        final java.awt.Image scaled = image.getScaledInstance(imageWidth,
+                imageHeight, java.awt.Image.SCALE_SMOOTH);
         new javax.swing.ImageIcon(scaled);
 
         graphics.drawImage(scaled, xCoord, yCoord, null);
@@ -530,9 +533,10 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
 
         return resized;
     }
-    
+
+    /** TODO(method). */
     public void read(final BufferedImage obj) throws DataFormatException {
-        
+
         final DataBuffer buffer = obj.getData().getDataBuffer();
 
         width = obj.getWidth();
@@ -953,7 +957,7 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
         return formattedImage;
     }
 
-    private static byte[] unzip(final byte[] bytes, final int width,
+    private byte[] unzip(final byte[] bytes, final int width,
             final int height) throws DataFormatException {
         final byte[] data = new byte[width * height * 8];
         int count = 0;

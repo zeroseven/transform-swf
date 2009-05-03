@@ -1,30 +1,30 @@
 /*
  * DefineButton2.java
  * Transform
- * 
+ *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  *  * Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice, 
- *    this list of conditions and the following disclaimer in the documentation 
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors 
- *    may be used to endorse or promote products derived from this software 
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
@@ -42,21 +42,20 @@ import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-//TODO(doc) Review
 /**
  * DefineButton2 defines the appearance and actions of push and menu buttons.
- * 
+ *
  * <p>
  * It provides a more sophisticated model for creating buttons than
  * {@link DefineButton}:
  * </p>
- * 
+ *
  * <ul>
  * <li>Two types of button are supported, <B>Push</B> and <B>Menu</B>.</li>
  * <li>The number of events that a button can respond to is increased.</li>
  * <li>Actions can be executed for any button event.</li>
  * </ul>
- * 
+ *
  * <p>
  * Push and Menu buttons behave slightly differently in tracking mouse movements
  * when the button is clicked. A Push button 'captures' the mouse so if the
@@ -65,17 +64,18 @@ import com.flagstone.transform.coder.SWFEncoder;
  * A Menu button does not 'capture' the mouse so if the cursor is dragged out of
  * the active area the button returns to its 'inactive' state.
  * </p>
- * 
+ *
  * <p>
  * A DefineButton2 object must contain at least one ButtonShape. If more than
  * one button shape is defined for a given button state then each shape will be
  * displayed by the button. The order in which the shapes are displayed is
  * determined by the layer assigned to each button record.
  * </p>
- * 
+ *
  * @see ButtonShape
  * @see ButtonEventHandler
  */
+//TODO(class)
 public final class DefineButton2 implements DefineTag {
     private static final String FORMAT = "DefineButton2: { identifier=%d; buttonRecords=%s; handlers=%s }";
 
@@ -86,7 +86,21 @@ public final class DefineButton2 implements DefineTag {
 
     private transient int length;
 
-    // TODO(doc)
+    /**
+     * Creates and initialises a DefineButton2 object using values encoded
+     * in the Flash binary format.
+     *
+     * @param coder
+     *            an SWFDecoder object that contains the encoded Flash data.
+     *
+     * @param context
+     *            a Context object used to manage the decoders for different
+     *            type of object and to pass information on how objects are
+     *            decoded.
+     *
+     * @throws CoderException
+     *             if an error occurs while decoding the data.
+     */
     // TODO(optimise)
     public DefineButton2(final SWFDecoder coder, final Context context)
             throws CoderException {
@@ -145,7 +159,7 @@ public final class DefineButton2 implements DefineTag {
      * type of button to be created, the button shapes that describe the
      * button's appearance and the actions that are performed in response to
      * each button event.
-     * 
+     *
      * @param uid
      *            a unique identifier for this button. Must be in the range
      *            1..65535.
@@ -165,7 +179,14 @@ public final class DefineButton2 implements DefineTag {
         setEvents(events);
     }
 
-    // TODO(doc)
+    /**
+     * Creates and initialises a DefineButton2 object using the values copied
+     * from another DefineButton2 object.
+     *
+     * @param object
+     *            a DefineButton2 object from which the values will be
+     *            copied.
+     */
     public DefineButton2(final DefineButton2 object) {
         identifier = object.identifier;
         menu = object.menu;
@@ -179,10 +200,12 @@ public final class DefineButton2 implements DefineTag {
         }
     }
 
+    /** TODO(method). */
     public int getIdentifier() {
         return identifier;
     }
 
+    /** TODO(method). */
     public void setIdentifier(final int uid) {
         if ((uid < 0) || (uid > 65535)) {
             throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
@@ -192,7 +215,7 @@ public final class DefineButton2 implements DefineTag {
 
     /**
      * Adds an ButtonShape to the array of button records.
-     * 
+     *
      * @param obj
      *            a button shape object. Must not be null.
      */
@@ -206,7 +229,7 @@ public final class DefineButton2 implements DefineTag {
 
     /**
      * Adds a button event object to the array of button events.
-     * 
+     *
      * @param obj
      *            a button event. Must not be null.
      */
@@ -241,10 +264,11 @@ public final class DefineButton2 implements DefineTag {
     }
 
     /**
-     * Sets the button type.
-     * 
-     * @param aType
-     *            the type of button. Must be either PUSH or MENU.
+     * Sets whether the button is a menu button or a push button.
+     *
+     * @param menu
+     *            the type of button, true if the button is a menu button,
+     *            false if it is a push button.
      */
     public void setMenu(final boolean menu) {
         this.menu = menu;
@@ -252,7 +276,7 @@ public final class DefineButton2 implements DefineTag {
 
     /**
      * Sets the array of button shapes defined for this button.
-     * 
+     *
      * @param anArray
      *            an array of ButtonShape objects. Must not be null.
      */
@@ -266,7 +290,7 @@ public final class DefineButton2 implements DefineTag {
     /**
      * Sets the array of button events defined for this button. If the object
      * already contains encodedEvents then they will be deleted.
-     * 
+     *
      * @param anArray
      *            and array of ButtonEvent objects. Must not be null.
      */
@@ -277,6 +301,7 @@ public final class DefineButton2 implements DefineTag {
         events = anArray;
     }
 
+    /** TODO(method). */
     public DefineButton2 copy() {
         return new DefineButton2(this);
     }
@@ -286,6 +311,7 @@ public final class DefineButton2 implements DefineTag {
         return String.format(FORMAT, identifier, shapes, events);
     }
 
+    /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         final Map<Integer, Integer> vars = context.getVariables();
         vars.put(Context.TYPE, MovieTypes.DEFINE_BUTTON_2);
@@ -307,6 +333,7 @@ public final class DefineButton2 implements DefineTag {
         return (length > 62 ? 6 : 2) + length;
     }
 
+    /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
 

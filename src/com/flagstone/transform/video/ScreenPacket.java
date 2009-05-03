@@ -1,30 +1,30 @@
 /*
  * ScreenVideoPacket.java
  * Transform
- * 
+ *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  *  * Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice, 
- *    this list of conditions and the following disclaimer in the documentation 
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors 
- *    may be used to endorse or promote products derived from this software 
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package com.flagstone.transform.video;
@@ -38,7 +38,6 @@ import com.flagstone.transform.coder.SWFEncoder;
 /**
  * The ScreenVideoPacket class is used to encode or decode a frame of video data
  * using Macromedia's ScreenVideo format.
- * 
  */
 public final class ScreenPacket implements Cloneable {
     private boolean keyFrame;
@@ -48,6 +47,7 @@ public final class ScreenPacket implements Cloneable {
     private int imageHeight;
     private List<ImageBlock> imageBlocks;
 
+    /** TODO(method). */
     public ScreenPacket(final byte[] data) {
         final SWFDecoder coder = new SWFDecoder(data);
 
@@ -91,13 +91,14 @@ public final class ScreenPacket implements Cloneable {
         }
     }
 
-    protected ScreenPacket() {
+    /** TODO(method). */
+    public ScreenPacket() {
         imageBlocks = new ArrayList<ImageBlock>();
     }
 
     /**
      * Creates a ScreenVideoPacket.
-     * 
+     *
      * @param key
      *            indicates whether the packet contains a key frame.
      * @param imageWidth
@@ -122,6 +123,14 @@ public final class ScreenPacket implements Cloneable {
         setImageBlocks(blocks);
     }
 
+    /**
+     * Creates and initialises a ScreenPacket object using the values copied
+     * from another ScreenPacket object.
+     *
+     * @param object
+     *            a ScreenPacket object from which the values will be
+     *            copied.
+     */
     public ScreenPacket(final ScreenPacket object) {
         keyFrame = object.keyFrame;
         blockWidth = object.blockWidth;
@@ -138,7 +147,7 @@ public final class ScreenPacket implements Cloneable {
 
     /**
      * Add an image block to the array that make up the frame.
-     * 
+     *
      * @param block
      *            an ImageBlock. Must not be null.
      */
@@ -148,7 +157,7 @@ public final class ScreenPacket implements Cloneable {
     }
 
     /**
-     * Returns true if the packet contains a key frame
+     * Returns true if the packet contains a key frame.
      */
     public boolean isKeyFrame() {
         return keyFrame;
@@ -156,7 +165,7 @@ public final class ScreenPacket implements Cloneable {
 
     /**
      * Sets whether the frame is a key frame (true) or normal one (false).
-     * 
+     *
      * @param key
      *            a boolean value indicating whether the frame is key (true) or
      *            normal (false.
@@ -174,7 +183,7 @@ public final class ScreenPacket implements Cloneable {
 
     /**
      * Sets the width of the frame.
-     * 
+     *
      * @param width
      *            the width of the frame in pixels.
      */
@@ -189,6 +198,7 @@ public final class ScreenPacket implements Cloneable {
         return imageHeight;
     }
 
+    /** TODO(method). */
     public void setImageHeight(final int height) {
         imageHeight = height;
     }
@@ -202,7 +212,7 @@ public final class ScreenPacket implements Cloneable {
 
     /**
      * Sets the width of the image blocks.
-     * 
+     *
      * @param width
      *            the width of the blocks in pixels.
      */
@@ -219,7 +229,7 @@ public final class ScreenPacket implements Cloneable {
 
     /**
      * Sets the height of the image blocks.
-     * 
+     *
      * @param height
      *            the height of the blocks in pixels.
      */
@@ -228,7 +238,7 @@ public final class ScreenPacket implements Cloneable {
     }
 
     /**
-     * Returns the image blocks that have changed in this frame,
+     * Returns the image blocks that have changed in this frame.
      */
     public List<ImageBlock> getImageBlocks() {
         return imageBlocks;
@@ -237,7 +247,7 @@ public final class ScreenPacket implements Cloneable {
     /**
      * Set the image blocks that have changed in this frame. If this is a key
      * frame then all image blocks are displayed.
-     * 
+     *
      * @param blocks
      *            the array of image blocks. Must not be null.
      */
@@ -265,6 +275,7 @@ public final class ScreenPacket implements Cloneable {
         return length;
     }
 
+    /** TODO(method). */
     public byte[] encode() {
         final SWFEncoder coder = new SWFEncoder(length());
 

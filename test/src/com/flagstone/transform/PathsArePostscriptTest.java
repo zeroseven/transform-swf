@@ -45,9 +45,9 @@ public final class PathsArePostscriptTest {
 
     private transient PathsArePostscript fixture;
 
-    private transient final byte[] encoded = new byte[] { 0x40, 0x06 };
+    private final transient byte[] encoded = new byte[] { 0x40, 0x06 };
 
-    private transient final byte[] extended = new byte[] { 0x7F, 0x06, 0x00,
+    private final transient byte[] extended = new byte[] { 0x7F, 0x06, 0x00,
             0x00, 0x00, 0x00 };
 
     @Test

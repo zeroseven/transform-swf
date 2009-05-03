@@ -40,45 +40,44 @@ import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-//TODO(doc) Review
 
 /**
  * DefineImage is used to define an image compressed using the lossless zlib
  * compression algorithm.
- * 
+ *
  * <p>
  * The class supports colour-mapped images where the image data contains an
  * index into a colour table or images where the image data specifies the colour
  * directly.
  * </p>
- * 
+ *
  * <p>
  * For colour-mapped images the colour table contains up to 256, 24-bit colours.
  * The image contains one byte for each pixel which is an index into the table
  * to specify the colour for that pixel. The colour table and the image data are
  * compressed as a single block, with the colour table placed before the image.
  * </p>
- * 
+ *
  * <p>
  * For images where the colour is specified directly, the image data contains
  * either 16 or 24 bit colour values. For 16-bit colour values the most
  * significant bit is zero followed by three, 5-bit fields for the red, green
  * and blue channels:
  * </p>
- * 
+ *
  * <pre>
  *  +-+--------+--------+--------+
  *  |0|   Red  |  Green |  Blue  |
  *  +-+--------+--------+--------+
  *  15                            0
  * </pre>
- * 
+ *
  * <p>
  * Four bytes are used to represent 24-bit colours. The first byte is always set
  * to zero and the following bytes contain the colour values for the red, green
  * and blue colour channels.
  * </p>
- * 
+ *
  * <p>
  * The number of bytes in each row of an image must be aligned to a 32-bit word
  * boundary. For example if an image if an icon is 25 pixels wide, then for an
@@ -86,17 +85,20 @@ import com.flagstone.transform.coder.SWFEncoder;
  * pad each row; for a 16-bit direct mapped colour image an additional two bytes
  * must be used as padding.
  * </p>
- * 
+ *
  * <p>
  * The image data is stored in zlib compressed form within the object. For
  * colour-mapped images the compressed data contains the colour table followed
  * by the image data. The colour table is omitted for direct-mapped images.
  * </p>
- * 
+ *
  * @see DefineImage2
  */
+//TODO(class)
 public final class DefineImage implements ImageTag {
-    private static final String FORMAT = "DefineImage: { identifier=%d; pixelSize=%d; width=%d; height=%d; tableSize=%d; compressedData=%d }";
+    private static final String FORMAT = "DefineImage: { identifier=%d;"
+            + " pixelSize=%d; width=%d; height=%d; tableSize=%d;"
+            + " compressedData=%d }";
 
     private int width;
     private int height;
@@ -108,7 +110,16 @@ public final class DefineImage implements ImageTag {
     private transient int length;
     private transient boolean extendLength;
 
-    // TODO(doc)
+    /**
+     * Creates and initialises a DefineImage object using values encoded
+     * in the Flash binary format.
+     *
+     * @param coder
+     *            an SWFDecoder object that contains the encoded Flash data.
+     *
+     * @throws CoderException
+     *             if an error occurs while decoding the data.
+     */
     public DefineImage(final SWFDecoder coder) throws CoderException {
         final int start = coder.getPointer();
         length = coder.readWord(2, false) & 0x3F;
@@ -153,7 +164,7 @@ public final class DefineImage implements ImageTag {
 
     /**
      * Creates a DefineImage object defining a colour-mapped image.
-     * 
+     *
      * @param uid
      *            the unique identifier for this object. Must be in the range
      *            1..65535.
@@ -180,7 +191,7 @@ public final class DefineImage implements ImageTag {
 
     /**
      * Creates a DefineImage object defining an true-colour image.
-     * 
+     *
      * @param uid
      *            the unique identifier for this object. Must be in the range
      *            1..65535.
@@ -204,7 +215,14 @@ public final class DefineImage implements ImageTag {
         setData(data);
     }
 
-    // TODO(doc)
+    /**
+     * Creates and initialises a DefineImage object using the values copied
+     * from another DefineImage object.
+     *
+     * @param object
+     *            a DefineImage object from which the values will be
+     *            copied.
+     */
     public DefineImage(final DefineImage object) {
         extendLength = object.extendLength;
         width = object.width;
@@ -214,10 +232,12 @@ public final class DefineImage implements ImageTag {
         data = Arrays.copyOf(object.data, object.data.length);
     }
 
+    /** TODO(method). */
     public int getIdentifier() {
         return identifier;
     }
 
+    /** TODO(method). */
     public void setIdentifier(final int uid) {
         if ((uid < 0) || (uid > 65535)) {
             throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
@@ -234,7 +254,7 @@ public final class DefineImage implements ImageTag {
 
     /**
      * Returns the height of the image in pixels (not twips).
-     * 
+     *
      * @return the height of the image in pixels.
      */
     public int getHeight() {
@@ -245,7 +265,7 @@ public final class DefineImage implements ImageTag {
      * Returns the number of bits used to represent each pixel. Either 8, 16 or
      * 24 bits. The pixel size is 8-bits for colour-mapped images and 16 or 24
      * bits for images where the colour is specified directly.
-     * 
+     *
      * @return the number of bits per pixel: 8, 16 or 24.
      */
     public int getPixelSize() {
@@ -269,8 +289,8 @@ public final class DefineImage implements ImageTag {
     }
 
     /**
-     * Sets the width of the image in pixels
-     * 
+     * Sets the width of the image in pixels.
+     *
      * @param aNumber
      *            the width of the image. Must be in the range 0..65535.
      */
@@ -283,7 +303,7 @@ public final class DefineImage implements ImageTag {
 
     /**
      * Sets the height of the image in pixels.
-     * 
+     *
      * @param aNumber
      *            the height of the image in pixels. Must be in the range
      *            0..65535.
@@ -299,7 +319,7 @@ public final class DefineImage implements ImageTag {
      * Sets the size of the pixel in bits: 8, 16 or 32. The pixel size is 8-bits
      * for colour-mapped images and 16 or 24 bits for images where the colour is
      * specified directly.
-     * 
+     *
      * @param size
      *            the size of each pixel in bits. Must be either 8, 16 or 24.
      */
@@ -315,7 +335,7 @@ public final class DefineImage implements ImageTag {
      * Sets the number of entries in the colour table in the compressed image.
      * For images where the colour is specified directly in the image then the
      * table size should be zero.
-     * 
+     *
      * @param size
      *            the number of entries in the colour table in the compressed
      *            image, in the range 1..256.
@@ -330,7 +350,7 @@ public final class DefineImage implements ImageTag {
 
     /**
      * Sets the data containing the compressed image and colour table.
-     * 
+     *
      * @param bytes
      *            byte array containing zlib compressed colour table and image.
      *            Must not be null.
@@ -355,6 +375,7 @@ public final class DefineImage implements ImageTag {
                 tableSize, data.length);
     }
 
+    /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         length = 7;
         length += (pixelSize == 8) ? 1 : 0;
@@ -363,6 +384,7 @@ public final class DefineImage implements ImageTag {
         return (length > 62 ? 6 : 2) + length;
     }
 
+    /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         final int start = coder.getPointer();

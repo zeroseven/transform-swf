@@ -1,30 +1,30 @@
 /*
  * VideoFrame.java
  * Transform
- * 
+ *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  *  * Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice, 
- *    this list of conditions and the following disclaimer in the documentation 
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors 
- *    may be used to endorse or promote products derived from this software 
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
@@ -39,12 +39,11 @@ import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-//TODO(doc) Review
 
 /**
  * VideoFrame contains the video data displayed in a single frame of a Flash
  * movie (.swf).
- * 
+ *
  * <p>
  * Each frame of video is displayed whenever display list is updated using the
  * ShowFrame object - any timing information stored within the video data is
@@ -52,9 +51,10 @@ import com.flagstone.transform.coder.SWFEncoder;
  * frame rate of the video may be the same or less than the frame rate of the
  * Flash movie but not higher.
  * </p>
- * 
+ *
  * @see DefineVideo
  */
+//TODO(class)
 public final class VideoFrame implements MovieTag {
     private static final String FORMAT = "VideoFrame: { identifier=%d; frameNumber=%d; data=%d }";
 
@@ -64,7 +64,16 @@ public final class VideoFrame implements MovieTag {
 
     private transient int length;
 
-    // TODO(doc)
+    /**
+     * Creates and initialises a VideoFrame object using values encoded
+     * in the Flash binary format.
+     *
+     * @param coder
+     *            an SWFDecoder object that contains the encoded Flash data.
+     *
+     * @throws CoderException
+     *             if an error occurs while decoding the data.
+     */
     public VideoFrame(final SWFDecoder coder) throws CoderException {
         length = coder.readWord(2, false) & 0x3F;
 
@@ -80,7 +89,7 @@ public final class VideoFrame implements MovieTag {
     /**
      * Constructs a new VideoFrame object which will display the specified frame
      * of video data in the DefineVideo object that matches the identifier.
-     * 
+     *
      * @param uid
      *            the unique identifier of the DefineVideo object. Must be in
      *            the range 1..65535.
@@ -96,7 +105,14 @@ public final class VideoFrame implements MovieTag {
         setData(data);
     }
 
-    // TODO(doc)
+    /**
+     * Creates and initialises a VideoFrame object using the values copied
+     * from another VideoFrame object.
+     *
+     * @param object
+     *            a VideoFrame object from which the values will be
+     *            copied.
+     */
     public VideoFrame(final VideoFrame object) {
         identifier = object.identifier;
         frameNumber = object.frameNumber;
@@ -114,7 +130,7 @@ public final class VideoFrame implements MovieTag {
     /**
      * Sets the identifier of the DefineVideo object where the frame will be
      * displayed.
-     * 
+     *
      * @param uid
      *            the unique identifier of the DefineVideo object. Must be in
      *            the range 1..65535.
@@ -135,7 +151,7 @@ public final class VideoFrame implements MovieTag {
 
     /**
      * Sets the number of the frame.
-     * 
+     *
      * @param number
      *            the frame number. Must be in the range 1..65535.
      */
@@ -157,7 +173,7 @@ public final class VideoFrame implements MovieTag {
     /**
      * Sets the encoded video data. In Flash 6 modified H263 encoded video is
      * supported. Flash 7 supports both modified H263 and ScreenVideo,
-     * 
+     *
      * @param data
      *            the encoded video data. Must not be null.
      */
@@ -168,6 +184,7 @@ public final class VideoFrame implements MovieTag {
         this.data = data;
     }
 
+    /** TODO(method). */
     public VideoFrame copy() {
         return new VideoFrame(this);
     }
@@ -177,12 +194,14 @@ public final class VideoFrame implements MovieTag {
         return String.format(FORMAT, identifier, frameNumber, data.length);
     }
 
+    /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         length = 4 + data.length;
 
         return (length > 62 ? 6 : 2) + length;
     }
 
+    /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         if (length >= 63) {

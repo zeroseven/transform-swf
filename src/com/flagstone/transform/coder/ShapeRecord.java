@@ -28,11 +28,8 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.flagstone.transform.shape;
+package com.flagstone.transform.coder;
 
-import com.flagstone.transform.coder.Copyable;
-import com.flagstone.transform.coder.SWFEncodeable;
-
-//TODO(doc)
+/** TODO(class). */
 public interface ShapeRecord extends SWFEncodeable, Copyable<ShapeRecord> {
 }

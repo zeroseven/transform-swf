@@ -46,14 +46,14 @@ public final class CurveTest {
 
     private transient Curve fixture;
 
-    private transient final byte[] encoded = new byte[] { 0x06, 0x01, 0x01,
+    private final transient byte[] encoded = new byte[] { 0x06, 0x01, 0x01,
             0x00, 0x02, 0x00, 0x06, 0x50 };
 
-    private transient final byte[] extended = new byte[] { 0x7F, 0x01, 0x06,
+    private final transient byte[] extended = new byte[] { 0x7F, 0x01, 0x06,
             0x00, 0x00, 0x00, 0x01, 0x00, 0x02, 0x00, 0x06, 0x50 };
 
     @Test
-    @Ignore
+    @Ignore //TODO(implement)
     public void checkCopy() {
         // fixture = new Curve(identifier, layer, transform, colorTransform);
         final Curve copy = fixture.copy();
@@ -62,7 +62,7 @@ public final class CurveTest {
     }
 
     @Test
-    @Ignore
+    @Ignore //TODO(implement)
     public void encodeCoordTransform() throws CoderException {
         final SWFEncoder encoder = new SWFEncoder(encoded.length);
         final Context context = new Context();
@@ -75,7 +75,7 @@ public final class CurveTest {
     }
 
     @Test
-    @Ignore
+    @Ignore //TODO(implement)
     public void decode() throws CoderException {
         final SWFDecoder decoder = new SWFDecoder(encoded);
         fixture = new Curve(decoder);
@@ -83,7 +83,7 @@ public final class CurveTest {
     }
 
     @Test
-    @Ignore
+    @Ignore //TODO(implement)
     public void decodeExtended() throws CoderException {
         final SWFDecoder decoder = new SWFDecoder(extended);
         fixture = new Curve(decoder);

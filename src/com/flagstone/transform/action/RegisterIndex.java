@@ -6,20 +6,21 @@ import com.flagstone.transform.Strings;
  * RegisterIndex is used references a value stored in one of the Flash Player's
  * internal registers. The value will be pushed onto the top of the Flash
  * Player's stack.
- * 
+ *
  * @see RegisterCopy
  * @see Push
  */
+//TODO(class)
 public final class RegisterIndex {
 
-    private final static String FORMAT = "Register: { index=%d }";
+    private static final String FORMAT = "Register: { index=%d }";
 
     private final transient int index;
 
     /**
      * Creates a RegisterIndex object referencing the value stored in one of the
      * Flash Player's internal registers.
-     * 
+     *
      * @param anIndex
      *            the register number. Must be in the range 0..255.
      */

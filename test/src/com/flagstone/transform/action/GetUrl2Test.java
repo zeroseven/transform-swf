@@ -44,12 +44,12 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 public final class GetUrl2Test {
 
-    private static transient final int type = ActionTypes.GET_URL_2;
-    private transient final GetUrl2.Request request = GetUrl2.Request.MOVIE_TO_LEVEL;
+    private static final transient int type = ActionTypes.GET_URL_2;
+    private final transient GetUrl2.Request request = GetUrl2.Request.MOVIE_TO_LEVEL;
 
     private transient GetUrl2 fixture;
 
-    private transient final byte[] encoded = new byte[] { (byte) type, 0x01,
+    private final transient byte[] encoded = new byte[] { (byte) type, 0x01,
             0x00, (byte) request.getValue() };
 
     @Test

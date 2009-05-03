@@ -1,30 +1,30 @@
 /*
  * RegisterCopy.java
  * Transform
- * 
+ *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  *  * Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice, 
- *    this list of conditions and the following disclaimer in the documentation 
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors 
- *    may be used to endorse or promote products derived from this software 
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
@@ -38,11 +38,10 @@ import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-//TODO(doc) Review
 /**
  * RegisterCopy is used to copy the item at the top of the stack to one of the
  * Flash Player's internal registers.
- * 
+ *
  * <p>
  * The Flash Player uses a stack to store values when executing the actions
  * associated with a button being pushed, frame being played, etc. If a value is
@@ -55,21 +54,31 @@ import com.flagstone.transform.coder.SWFEncoder;
  * the Flash Player uses the value directly rather than pushing the value onto
  * the stack then immediately popping to use the value in a calculation.
  * </p>
- * 
+ *
  * <p>
  * The value is not removed from the stack. The number of registers supported
  * was expanded in Flash 7 from 4 to 256.
  * </p>
- * 
+ *
  * @see Register
  * @see Push
  */
+//TODO(class)
 public final class RegisterCopy implements Action {
     private static final String FORMAT = "RegisterCopy: { registerNumber=%d }";
 
     private int registerNumber;
 
-    // TODO(doc)
+    /**
+     * Creates and initialises a RegisterCopy action using values encoded
+     * in the Flash binary format.
+     *
+     * @param coder
+     *            an SWFDecoder object that contains the encoded Flash data.
+     *
+     * @throws CoderException
+     *             if an error occurs while decoding the data.
+     */
     public RegisterCopy(final SWFDecoder coder) throws CoderException {
         coder.readByte();
         coder.readWord(2, false);
@@ -78,7 +87,7 @@ public final class RegisterCopy implements Action {
 
     /**
      * Creates a RegisterCopy object with the register number.
-     * 
+     *
      * @param anIndex
      *            the number of one of the Flash Player's internal registers.
      *            Must be in the range 0..255.
@@ -87,7 +96,14 @@ public final class RegisterCopy implements Action {
         setRegisterNumber(anIndex);
     }
 
-    // TODO(doc)
+    /**
+     * Creates and initialises a RegisterCopy action using the values
+     * copied from another RegisterCopy action.
+     *
+     * @param object
+     *            a RegisterCopy action from which the values will be
+     *            copied.
+     */
     public RegisterCopy(final RegisterCopy object) {
         registerNumber = object.registerNumber;
     }
@@ -103,7 +119,7 @@ public final class RegisterCopy implements Action {
     /**
      * Returns the number of the Player register that the value on the stack
      * will be copied to.
-     * 
+     *
      * @param anIndex
      *            the number of one of the Flash Player's internal registers.
      *            Must be in the range 0..255.
@@ -115,6 +131,7 @@ public final class RegisterCopy implements Action {
         registerNumber = anIndex;
     }
 
+    /** TODO(method). */
     public RegisterCopy copy() {
         return new RegisterCopy(this);
     }
@@ -124,10 +141,12 @@ public final class RegisterCopy implements Action {
         return String.format(FORMAT, registerNumber);
     }
 
+    /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         return 4;
     }
 
+    /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         coder.writeByte(ActionTypes.REGISTER_COPY);
@@ -135,6 +154,7 @@ public final class RegisterCopy implements Action {
         coder.writeByte(registerNumber);
     }
 
+    /** TODO(method). */
     public void decode(final SWFDecoder coder, final Context context)
             throws CoderException {
         coder.readByte();

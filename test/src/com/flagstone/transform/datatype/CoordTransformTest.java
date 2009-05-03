@@ -108,16 +108,6 @@ public final class CoordTransformTest {
     }
 
     @Test
-    public void checkConstructorCreatesCopy() {
-        final float[][] expected = new float[][] { { 1.0f, 2.0f, 3.0f },
-                { 4.0f, 5.0f, 6.0f }, { 0.0f, 0.0f, 1.0f } };
-
-        fixture = new CoordTransform(expected);
-
-        compare(expected, new CoordTransform(fixture).getMatrix());
-    }
-
-    @Test
     public void checkMatrixIsNotUnityTransform() {
         final float[][] expected = new float[][] { { 1.0f, 0.0f, 0.0f },
                 { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 1.0f } };
@@ -125,16 +115,6 @@ public final class CoordTransformTest {
         fixture = new CoordTransform(expected);
 
         assertFalse(fixture.isUnityTransform());
-    }
-
-    @Test
-    public void checkCopy() {
-        final float[][] expected = new float[][] { { 1.0f, 2.0f, 3.0f },
-                { 4.0f, 5.0f, 6.0f }, { 0.0f, 0.0f, 1.0f } };
-
-        fixture = new CoordTransform(expected);
-
-        compare(expected, new CoordTransform(fixture).getMatrix());
     }
 
     @Test

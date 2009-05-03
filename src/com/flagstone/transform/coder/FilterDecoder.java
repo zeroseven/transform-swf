@@ -14,12 +14,15 @@ import com.flagstone.transform.filter.GradientGlowFilter;
  * Factory is the default implementation of an SWFFactory which used to create
  * instances of Transform classes.
  */
+//TODO(class)
 public final class FilterDecoder implements SWFFactory<Filter> {
 
+    /** TODO(method). */
     public SWFFactory<Filter> copy() {
         return new FilterDecoder();
     }
 
+    /** TODO(method). */
     public Filter getObject(final SWFDecoder coder, final Context context)
             throws CoderException {
 

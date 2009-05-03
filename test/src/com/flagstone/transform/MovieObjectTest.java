@@ -43,15 +43,15 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 public final class MovieObjectTest {
 
-    private static transient final int type = 1;
-    private transient final byte[] data = new byte[] { 1, 2, 3, 4 };
+    private static final transient int type = 1;
+    private final transient byte[] data = new byte[] { 1, 2, 3, 4 };
 
     private transient MovieObject fixture;
 
-    private transient final byte[] encoded = new byte[] { (byte) 0x44, 0x00,
+    private final transient byte[] encoded = new byte[] { (byte) 0x44, 0x00,
             0x01, 0x02, 0x03, 0x04 };
 
-    private transient final byte[] extended = new byte[] { (byte) 0x7F, 0x00,
+    private final transient byte[] extended = new byte[] { (byte) 0x7F, 0x00,
             0x04, 0x00, 0x00, 0x00, 0x01, 0x02, 0x03, 0x04 };
 
     @Test(expected = IllegalArgumentException.class)

@@ -44,17 +44,17 @@ import com.flagstone.transform.datatype.CoordTransform;
 
 public final class MorphBitmapFillTest {
 
-    private static transient final boolean tiled = false;
-    private static transient final boolean smoothed = false;
-    private static transient final int identifier = 1;
-    private static transient final CoordTransform start = CoordTransform
+    private static final transient boolean tiled = false;
+    private static final transient boolean smoothed = false;
+    private static final transient int identifier = 1;
+    private static final transient CoordTransform start = CoordTransform
             .translate(1, 2);
-    private static transient final CoordTransform end = CoordTransform
+    private static final transient CoordTransform end = CoordTransform
             .translate(1, 2);
 
     private transient MorphBitmapFill fixture;
 
-    private transient final byte[] encoded = new byte[] { 0x43, 0x01, 0x00,
+    private final transient byte[] encoded = new byte[] { 0x43, 0x01, 0x00,
             0x06, 0x50, 0x06, 0x50 };
 
     @Test(expected = IllegalArgumentException.class)

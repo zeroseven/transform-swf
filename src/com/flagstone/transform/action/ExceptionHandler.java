@@ -1,31 +1,25 @@
 /*
- * ExceptionHandler.java
- * Transform
- * 
- * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification, 
- * are permitted provided that the following conditions are met:
- *
- *  * Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice, 
- *    this list of conditions and the following disclaimer in the documentation 
- *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors 
- *    may be used to endorse or promote products derived from this software 
- *    without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
- * OF THE POSSIBILITY OF SUCH DAMAGE.
+ * ExceptionHandler.java Transform Copyright (c) 2001-2009 Flagstone Software
+ * Ltd. All rights reserved. Redistribution and use in source and binary forms,
+ * with or without modification, are permitted provided that the following
+ * conditions are met: Redistributions of source code must retain the above
+ * copyright notice, this list of conditions and the following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution. Neither the name of
+ * Flagstone Software Ltd. nor the names of its contributors may be used to
+ * endorse or promote products derived from this software without specific prior
+ * written permission. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
+ * CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT
+ * NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ * PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+ * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 package com.flagstone.transform.action;
@@ -46,12 +40,12 @@ import com.flagstone.transform.coder.SWFFactory;
  * The ExceptionHandler class is used to represent try..catch blocks in
  * Actionscript so exceptions can be thrown and handled when executing a series
  * of actions.
- * 
+ *
  * <p>
  * The thrown object can be assigned to either one of the Flash Player's 256
  * internal registers or to a variable in memory.
  * </p>
- * 
+ *
  * <p>
  * The ExceptionHandler class contains three arrays of actions supporting the
  * standard syntax for an exception with try, catch and finally blocks. Both the
@@ -60,6 +54,7 @@ import com.flagstone.transform.coder.SWFFactory;
  * arrays.
  * </p>
  */
+// TODO(class)
 public final class ExceptionHandler implements Action {
     private static final String FORMAT = "ExceptionHandler: { variable=%s; register=%d try=%s; catch=%s; final=%s }";
 
@@ -74,8 +69,23 @@ public final class ExceptionHandler implements Action {
     private transient int catchLength;
     private transient int finalLength;
 
-    // TODO(doc)
+    /** TODO(method). */
     // TODO(optimise)
+    /**
+     * Creates and initialises an ExceptionHandler action using values encoded
+     * in the Flash binary format.
+     *
+     * @param coder
+     *            an SWFDecoder object that contains the encoded Flash data.
+     *
+     * @param context
+     *            a Context object used to manage the decoders for different
+     *            type of object and to pass information on how objects are
+     *            decoded.
+     *
+     * @throws CoderException
+     *             if an error occurs while decoding the data.
+     */
     public ExceptionHandler(final SWFDecoder coder, final Context context)
             throws CoderException {
         coder.readByte();
@@ -132,7 +142,7 @@ public final class ExceptionHandler implements Action {
     /**
      * Creates a new exception handler with the thrown object assigned to a
      * local variable.
-     * 
+     *
      * @param name
      *            the name of the variable that the thrown object will be
      *            assigned to. Must not be null.
@@ -161,7 +171,7 @@ public final class ExceptionHandler implements Action {
     /**
      * Constructs a new exception handler with the thrown object assigned to one
      * of the Flash Player's internal registers.
-     * 
+     *
      * @param index
      *            the number of the register that the thrown object will be
      *            assigned to. Must be in the range 0..255.
@@ -186,6 +196,14 @@ public final class ExceptionHandler implements Action {
         setFinalActions(finallyArray);
     }
 
+    /**
+     * Creates and initialises an ExceptionHandler action using the values
+     * copied from another ExceptionHandler.
+     *
+     * @param object
+     *            an ExceptionHandler object from which the values will be
+     *            copied. References to immutable objects will be shared.
+     */
     public ExceptionHandler(final ExceptionHandler object) {
         variable = object.variable;
         register = object.register;
@@ -211,7 +229,7 @@ public final class ExceptionHandler implements Action {
 
     /**
      * Adds the action object to the array of actions for the try block.
-     * 
+     *
      * @param anAction
      *            an action. Must not be null.
      */
@@ -230,7 +248,7 @@ public final class ExceptionHandler implements Action {
 
     /**
      * Adds the action object to the array of actions for the catch block.
-     * 
+     *
      * @param anAction
      *            an action. Must not be null.
      */
@@ -249,7 +267,7 @@ public final class ExceptionHandler implements Action {
 
     /**
      * Adds the action object to the array of actions for the finally block.
-     * 
+     *
      * @param anAction
      *            an action. Must not be null.
      */
@@ -269,7 +287,7 @@ public final class ExceptionHandler implements Action {
     /**
      * Returns the name of the variable which the exception object is assigned
      * to.
-     * 
+     *
      * @return the name of the function. Returns null if the exception object
      *         will be assigned to a register.
      */
@@ -279,7 +297,7 @@ public final class ExceptionHandler implements Action {
 
     /**
      * Sets the name of the variable that the exception object is assigned to.
-     * 
+     *
      * @param name
      *            the name of the variable. May be null if the exception object
      *            will be signed to a register, but not null.
@@ -296,7 +314,7 @@ public final class ExceptionHandler implements Action {
     /**
      * Returns the index of the register that the exception object is assigned
      * to.
-     * 
+     *
      * @return the number of register. Returns 0 if the exception object will be
      *         assigned to a local variable.
      */
@@ -306,7 +324,7 @@ public final class ExceptionHandler implements Action {
 
     /**
      * Sets the index of the register that the exception object is assigned to.
-     * 
+     *
      * @param index
      *            the number of the register in the range 0..255. If the index
      *            is 0 then the exception object will be assigned to a local
@@ -321,7 +339,7 @@ public final class ExceptionHandler implements Action {
 
     /**
      * Returns the array of actions executed in the try block.
-     * 
+     *
      * @return the array of actions for the try block.
      */
     public List<Action> getTryActions() {
@@ -330,7 +348,7 @@ public final class ExceptionHandler implements Action {
 
     /**
      * Sets the array of actions executed in the try block.
-     * 
+     *
      * @param array
      *            the array of actions for the try block. Must not be null.
      */
@@ -343,7 +361,7 @@ public final class ExceptionHandler implements Action {
 
     /**
      * Returns the array of actions executed in the catch block.
-     * 
+     *
      * @return the array of actions for the catch block.
      */
     public List<Action> getCatchActions() {
@@ -352,7 +370,7 @@ public final class ExceptionHandler implements Action {
 
     /**
      * Sets the array of actions executed in the catch block.
-     * 
+     *
      * @param array
      *            the array of actions for the catch block. May be empty if no
      *            catch block is defined but must not be null.
@@ -366,7 +384,7 @@ public final class ExceptionHandler implements Action {
 
     /**
      * Returns the array of actions executed in the finally block.
-     * 
+     *
      * @return the array of actions for the finally block.
      */
     public List<Action> getFinalActions() {
@@ -375,7 +393,7 @@ public final class ExceptionHandler implements Action {
 
     /**
      * Sets the array of actions executed in the final block.
-     * 
+     *
      * @param array
      *            the array of actions for the final block. May be empty if no
      *            finally block is defined but must not be null.
@@ -387,6 +405,7 @@ public final class ExceptionHandler implements Action {
         finalActions = array;
     }
 
+    /** TODO(method). */
     public ExceptionHandler copy() {
         return new ExceptionHandler(this);
     }
@@ -398,6 +417,7 @@ public final class ExceptionHandler implements Action {
     }
 
     // TODO(optimise)
+    /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         length = 7;
         length += (register == 0) ? coder.strlen(variable) : 1;
@@ -426,6 +446,7 @@ public final class ExceptionHandler implements Action {
     }
 
     // TODO(optimise)
+    /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
 

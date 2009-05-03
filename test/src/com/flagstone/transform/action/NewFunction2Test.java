@@ -64,10 +64,10 @@ public final class NewFunction2Test {
         actions.add(BasicAction.END);
     }
 
-    private static transient final int type = ActionTypes.NEW_FUNCTION_2;
+    private static final transient int type = ActionTypes.NEW_FUNCTION_2;
     private transient NewFunction2 fixture;
 
-    private transient final byte[] encoded = new byte[] { (byte) type, 0x16,
+    private final transient byte[] encoded = new byte[] { (byte) type, 0x16,
             0x00, 0x66, 0x75, 0x6E, 0x63, 0x74, 0x69, 0x6F, 0x6E, 0x00, 0x02,
             0x00, 0x00, 0x00, 0x00, 0x01, 0x61, 0x00, 0x02, 0x62, 0x00, 0x02,
             0x00, ActionTypes.ADD, ActionTypes.END };

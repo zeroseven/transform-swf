@@ -1,30 +1,30 @@
 /*
  * DefineTextField.java
  * Transform
- * 
+ *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  *  * Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice, 
- *    this list of conditions and the following disclaimer in the documentation 
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors 
- *    may be used to endorse or promote products derived from this software 
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
@@ -43,86 +43,85 @@ import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.datatype.Color;
 
-//TODO(doc) Review
 /**
  * DefineTextField defines an editable text field.
- * 
+ *
  * <p>
  * The value entered into the text field is assigned to a specified variable
  * allowing the creation of forms to accept values entered by a person viewing
  * the Flash file.
  * </p>
- * 
+ *
  * <p>
  * The class contains a complex set of attributes which allows a high degree of
  * control over how a text field is displayed:
  * </p>
- * 
+ *
  * <table class="datasheet">
- * 
+ *
  * <tr>
  * <td valign="top">wordWrap</td>
  * <td>Indicates whether the text should be wrapped.</td>
  * </tr>
- * 
+ *
  * <tr>
  * <td valign="top">multiline</td>
  * <td>Indicates whether the text field contains multiple lines.</td>
  * </tr>
- * 
+ *
  * <tr>
  * <td valign="top">password</td>
  * <td>Indicates whether the text field will be used to display a password.</td>
  * </tr>
- * 
+ *
  * <tr>
  * <td valign="top">readOnly</td>
  * <td>Indicates whether the text field is read only.</td>
  * </tr>
- * 
+ *
  * <tr>
  * <td valign="top">selectable</td>
  * <td>Indicates whether the text field is selectable.</td>
  * </tr>
- * 
+ *
  * <tr>
  * <td valign="top">bordered</td>
  * <td>Indicates whether the text field is bordered.</td>
  * </tr>
- * 
+ *
  * <tr>
  * <td valign="top">HTML</td>
  * <td>Indicates whether the text field contains HTML.</td>
  * </tr>
- * 
+ *
  * <tr>
  * <td valign="top">useFontGlyphs</td>
  * <td>Use either the glyphs defined in the movie to display the text or load
  * the specified from the platform on which the Flash Player is hosted.</td>
  * </tr>
- * 
+ *
  * <tr>
  * <td valign="top">autosize</td>
  * <td>Indicates whether the text field will resize automatically to fit the
  * text entered.</td>
  * </tr>
- * 
+ *
  * <tr>
  * <td valign="top">maxLength</td>
  * <td>The maximum length of the text field. May be set to zero is not maximum
  * length is defined.</td>
  * </tr>
- * 
+ *
  * </table>
- * 
+ *
  * <p>
  * Additional layout information for the spacing of the text relative to the
  * text field borders can also be specified through the following set of
  * attributes:
  * </p>
- * 
+ *
  * <table class="datasheet">
- * 
+ *
  * <tr>
  * <td valign="top">alignment</td>
  * <td>Whether the text in the field is left-aligned, right-aligned, centred.</td>
@@ -144,7 +143,7 @@ import com.flagstone.transform.datatype.Color;
  * <td>Leading in twips.</td>
  * </tr>
  * </table>
- * 
+ *
  * <p>
  * The default values for the alignment is AlignLeft while the leftMargin,
  * rightMargin indent and leading attributes are set to the constant
@@ -153,26 +152,26 @@ import com.flagstone.transform.datatype.Color;
  * then they must all have values assigned for the field to be displayed
  * correctly otherwise default values of 0 will be used.
  * </p>
- * 
+ *
  * <p>
  * <b>HTML Support</b><br/>
  * Setting the HTML flag to true allows text marked up with a limited set of
  * HTML tags to be displayed in the text field. The following tags are
  * supported:
  * </p>
- * 
+ *
  * <table>
  * <tr>
  * <td>&lt;p&gt;&lt;/p&gt;</td>
  * <td>Delimits a paragraph. Only the align attribute is supported:<br>
  * <p [align = left | right | center ]> </p></td>
  * </tr>
- * 
+ *
  * <tr>
  * <td valign="top" nowrap>&lt;br&gt;</td>
- * <td>Inserts a line break.> </p></td>
+ * <td>Inserts a line break.</td>
  * </tr>
- * 
+ *
  * <tr>
  * <td valign="top" nowrap>&lt;a&gt;&lt;/a&gt;</td>
  * <td>Define a hyperlink. Two attributes are supported:
@@ -182,7 +181,7 @@ import com.flagstone.transform.datatype.Color;
  * </ul>
  * </td>
  * </tr>
- * 
+ *
  * <tr>
  * <td valign="top" nowrap>&lt;font&gt;&lt;/font&gt;</td>
  * <td>Format enclosed text using the font. Three attributes are supported:
@@ -194,33 +193,34 @@ import com.flagstone.transform.datatype.Color;
  * </ul>
  * </td>
  * </tr>
- * 
+ *
  * <tr>
  * <td valign="top" nowrap>&lt;b&gt;&lt;/b&gt;</td>
  * <td>Delimits text that should be displayed in bold.</td>
  * </tr>
- * 
+ *
  * <tr>
  * <td valign="top" nowrap>&lt;b&gt;&lt;/b&gt;</td>
  * <td>Delimits text that should be displayed in italics.</td>
  * </tr>
- * 
+ *
  * <tr>
  * <td valign="top" nowrap>&lt;b&gt;&lt;/b&gt;</td>
  * <td>Delimits text that should be displayed underlined.</td>
  * </tr>
- * 
+ *
  * <tr>
  * <td valign="top" nowrap>&lt;li&gt;&lt;/li&gt;</td>
  * <td>Display bulleted paragraph. Strictly speaking this is not an HTML list.
  * The &lt;ul&gt; tag is not required and no other list format is supported.</td>
  * </tr>
- * 
+ *
  * </table>
- * 
+ *
  */
+//TODO(class)
 public final class DefineTextField implements DefineTag {
-    // TODO(doc)
+    /** TODO(method). */
     public enum Align {
         /** Defines that the text displayed in a text field is left aligned. */
         LEFT(0),
@@ -239,6 +239,7 @@ public final class DefineTextField implements DefineTag {
             }
         }
 
+        /** TODO(method). */
         public static Align fromInt(final int type) {
             return TABLE.get(type);
         }
@@ -249,6 +250,7 @@ public final class DefineTextField implements DefineTag {
             this.value = value;
         }
 
+        /** TODO(method). */
         public int getValue() {
             return value;
         }
@@ -282,7 +284,21 @@ public final class DefineTextField implements DefineTag {
 
     private transient int length;
 
-    // TODO(doc)
+    /**
+     * Creates and initialises a DefineTextField object using values encoded
+     * in the Flash binary format.
+     *
+     * @param coder
+     *            an SWFDecoder object that contains the encoded Flash data.
+     *
+     * @param context
+     *            a Context object used to manage the decoders for different
+     *            type of object and to pass information on how objects are
+     *            decoded.
+     *
+     * @throws CoderException
+     *             if an error occurs while decoding the data.
+     */
     // TODO(optimise)
     public DefineTextField(final SWFDecoder coder, final Context context)
             throws CoderException {
@@ -363,6 +379,14 @@ public final class DefineTextField implements DefineTag {
         setIdentifier(uid);
     }
 
+    /**
+     * Creates and initialises a DefineTextField object using the values copied
+     * from another DefineTextField object.
+     *
+     * @param object
+     *            a DefineTextField object from which the values will be
+     *            copied.
+     */
     public DefineTextField(final DefineTextField object) {
         identifier = object.identifier;
         bounds = object.bounds;
@@ -391,10 +415,12 @@ public final class DefineTextField implements DefineTag {
         initialText = object.initialText;
     }
 
+    /** TODO(method). */
     public int getIdentifier() {
         return identifier;
     }
 
+    /** TODO(method). */
     public void setIdentifier(final int uid) {
         if ((uid < 0) || (uid > 65535)) {
             throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
@@ -482,7 +508,7 @@ public final class DefineTextField implements DefineTag {
     // End Flash 6
     /**
      * Sets whether the text field will resize to fit the contents.
-     * 
+     *
      * @param aFlag
      *            indicate whether the text field will resize automatically.
      */
@@ -494,7 +520,7 @@ public final class DefineTextField implements DefineTag {
     /**
      * Indicates whether the text will be displayed using the font defined in
      * the movie or whether a font defined on the host platform will be used.
-     * 
+     *
      * @return true if the text will be displayed using the glyphs from the font
      *         defined in the movie, false if the glyphs will be loaded from the
      *         platform on which the Flash Player is hosted.
@@ -510,6 +536,7 @@ public final class DefineTextField implements DefineTag {
         return fontIdentifier;
     }
 
+    /** TODO(method). */
     public String getFontClass() {
         return fontClass;
     }
@@ -588,7 +615,7 @@ public final class DefineTextField implements DefineTag {
 
     /**
      * Sets the bounding rectangle of the text field.
-     * 
+     *
      * @param aBounds
      *            the bounding rectangle enclosing the text field. Must not be
      *            null.
@@ -603,7 +630,7 @@ public final class DefineTextField implements DefineTag {
 
     /**
      * Set whether the text field supports word wrapping.
-     * 
+     *
      * @param aFlag
      *            set whether the text field is word wrapped.
      */
@@ -614,7 +641,7 @@ public final class DefineTextField implements DefineTag {
 
     /**
      * Set whether the text field contains multiple lines of text.
-     * 
+     *
      * @param aFlag
      *            set whether the text field is multiline.
      */
@@ -625,7 +652,7 @@ public final class DefineTextField implements DefineTag {
 
     /**
      * Set whether the text field should protect passwords entered.
-     * 
+     *
      * @param aFlag
      *            set whether the text field is password protected.
      */
@@ -636,7 +663,7 @@ public final class DefineTextField implements DefineTag {
 
     /**
      * Set whether the text field is read-only.
-     * 
+     *
      * @param aFlag
      *            set whether the text field is read-only.
      */
@@ -647,7 +674,7 @@ public final class DefineTextField implements DefineTag {
 
     /**
      * Set whether the text field is selectable.
-     * 
+     *
      * @param aFlag
      *            set whether the text field is selectable.
      */
@@ -658,7 +685,7 @@ public final class DefineTextField implements DefineTag {
 
     /**
      * Set whether the text field is bordered.
-     * 
+     *
      * @param aFlag
      *            set whether the text field is bordered.
      */
@@ -669,7 +696,7 @@ public final class DefineTextField implements DefineTag {
 
     /**
      * Set whether the text field contains HTML.
-     * 
+     *
      * @param aFlag
      *            set whether the text field contains HTML.
      */
@@ -682,7 +709,7 @@ public final class DefineTextField implements DefineTag {
      * Set whether the text field characters are displayed using the font
      * defined in the movie or whether the Flash Player uses a font definition
      * loaded from the platform on which it is hosted.
-     * 
+     *
      * @param aFlag
      *            set whether the text field characters will be drawn using the
      *            font in the movie (true) or use a font loaded by the Flash
@@ -695,7 +722,7 @@ public final class DefineTextField implements DefineTag {
 
     /**
      * Sets the identifier of the font used to display the characters.
-     * 
+     *
      * @param anIdentifier
      *            the identifier for the font that the text will be rendered in.
      *            Must be in the range 1..65535.
@@ -709,15 +736,16 @@ public final class DefineTextField implements DefineTag {
         return this;
     }
 
-    public DefineTextField setFontClass(final String fontClass) {
-        this.fontClass = fontClass;
+    /** TODO(method). */
+    public DefineTextField setFontClass(final String name) {
+        fontClass = name;
         fontIdentifier = 0;
         return this;
     }
 
     /**
      * Sets the height of the characters.
-     * 
+     *
      * @param aNumber
      *            the height of the font. Must be in the range 0..65535.
      */
@@ -732,7 +760,7 @@ public final class DefineTextField implements DefineTag {
     /**
      * Sets the text color. If set to null then the text color defaults to
      * black.
-     * 
+     *
      * @param aColor
      *            the colour object that defines the text colour.
      */
@@ -748,7 +776,7 @@ public final class DefineTextField implements DefineTag {
     /**
      * Sets the maximum length of the text displayed. May be set to zero if no
      * maximum length is defined.
-     * 
+     *
      * @param aNumber
      *            the maximum number of characters displayed in the field. Must
      *            be in the range 0..65535.
@@ -764,8 +792,8 @@ public final class DefineTextField implements DefineTag {
     /**
      * Sets the alignment of the text, either AlignLeft, AlignRight, AlignCenter
      * or AlignJustify.
-     * 
-     * @param aType
+     *
+     * @param align
      *            the type of alignment. Must be either ALIGN_LEFT, ALIGN_RIGHT
      *            or ALIGN_JUSTIFY.
      */
@@ -776,7 +804,7 @@ public final class DefineTextField implements DefineTag {
 
     /**
      * Sets the left margin in twips.
-     * 
+     *
      * @param aNumber
      *            the width of the left margin. Must be in the range 0..65535.
      */
@@ -790,7 +818,7 @@ public final class DefineTextField implements DefineTag {
 
     /**
      * Sets the right margin in twips.
-     * 
+     *
      * @param aNumber
      *            the width of the right margin. Must be in the range 0..65535.
      */
@@ -804,7 +832,7 @@ public final class DefineTextField implements DefineTag {
 
     /**
      * Returns the indentation of the first line of text in twips.
-     * 
+     *
      * @param aNumber
      *            the indentation for the first line. Must be in the range
      *            0..65535.
@@ -819,7 +847,7 @@ public final class DefineTextField implements DefineTag {
 
     /**
      * Sets the spacing between lines, measured in twips.
-     * 
+     *
      * @param aNumber
      *            the value for the leading. Must be in the range -32768..32767.
      */
@@ -834,7 +862,7 @@ public final class DefineTextField implements DefineTag {
     /**
      * Sets the name of the variable the value in the text field will be
      * assigned to.
-     * 
+     *
      * @param aString
      *            the name of the variable.
      */
@@ -845,7 +873,7 @@ public final class DefineTextField implements DefineTag {
 
     /**
      * Sets the value that will initially be displayed in the text field.
-     * 
+     *
      * @param aString
      *            the initial text displayed.
      */
@@ -896,6 +924,7 @@ public final class DefineTextField implements DefineTag {
         return String.format("", identifier, bounds, wordWrapped, multiline);
     }
 
+    /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         final Map<Integer, Integer> vars = context.getVariables();
         vars.put(Context.TRANSPARENT, 1);
@@ -915,6 +944,7 @@ public final class DefineTextField implements DefineTag {
         return (length > 62 ? 6 : 2) + length;
     }
 
+    /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         final int start = coder.getPointer();

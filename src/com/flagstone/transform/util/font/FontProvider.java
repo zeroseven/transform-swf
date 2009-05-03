@@ -30,6 +30,8 @@
 
 package com.flagstone.transform.util.font;
 
+/** TODO(class). */
 public interface FontProvider {
+    /** TODO(method). */
     FontDecoder newDecoder();
 }

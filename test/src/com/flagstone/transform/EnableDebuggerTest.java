@@ -42,14 +42,14 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 public final class EnableDebuggerTest {
 
-    private static transient final String password = "ABC123";
+    private static final transient String password = "ABC123";
 
     private transient EnableDebugger fixture;
 
-    private transient final byte[] encoded = new byte[] { (byte) 0x89, 0x0E,
+    private final transient byte[] encoded = new byte[] { (byte) 0x89, 0x0E,
             0x00, 0x00, 0x41, 0x42, 0x043, 0x31, 0x32, 0x33, 0x00 };
 
-    private transient final byte[] extended = new byte[] { (byte) 0xBF, 0x0E,
+    private final transient byte[] extended = new byte[] { (byte) 0xBF, 0x0E,
             0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x41, 0x42, 0x043, 0x31, 0x32,
             0x33, 0x00 };
 

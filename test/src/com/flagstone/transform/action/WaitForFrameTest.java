@@ -44,13 +44,13 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 public final class WaitForFrameTest {
 
-    private static transient final int type = ActionTypes.WAIT_FOR_FRAME;
-    private static transient final int frame = 1;
-    private static transient final int count = 2;
+    private static final transient int type = ActionTypes.WAIT_FOR_FRAME;
+    private static final transient int frame = 1;
+    private static final transient int count = 2;
 
     private transient WaitForFrame fixture;
 
-    private transient final byte[] encoded = new byte[] { (byte) type, 0x03,
+    private final transient byte[] encoded = new byte[] { (byte) type, 0x03,
             0x00, 0x01, 0x00, 0x02 };
 
     @Test(expected = IllegalArgumentException.class)

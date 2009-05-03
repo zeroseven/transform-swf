@@ -31,31 +31,28 @@
 package com.flagstone.transform.util.font;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.List;
 import java.util.zip.DataFormatException;
 
 import com.flagstone.transform.Strings;
-import com.flagstone.transform.coder.MovieTag;
 
 /**
  * TODO(class).
  */
 public final class FontFactory {
-    
+
     private FontDecoder decoder;
-    
+
     /**
      * TODO(method).
      */
     public void read(final File file) throws IOException, DataFormatException {
-        
+
         String fontType;
-        
+
         if (file.getName().endsWith("ttf")) {
             fontType = "ttf";
         } else if (file.getName().endsWith("swf")) {
@@ -72,17 +69,17 @@ public final class FontFactory {
       * TODO(method).
      */
     public void read(final URL url) throws IOException, DataFormatException {
-        
+
         final URLConnection connection = url.openConnection();
         final int fileSize = connection.getContentLength();
- 
+
         if (fileSize < 0) {
             throw new FileNotFoundException(url.getFile());
         }
 
         String mimeType = connection.getContentType();
         decoder = FontRegistry.getFontProvider(mimeType);
-        
+
         if (decoder == null) {
             throw new DataFormatException(Strings.INVALID_IMAGE);
         }
@@ -91,7 +88,7 @@ public final class FontFactory {
     }
 
     /**
-     * 
+     *
      * @return
      */
     Font[] getFonts() {

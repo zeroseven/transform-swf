@@ -9,42 +9,60 @@ import java.util.Map;
  */
 public final class Context {
 
-    public final static int VERSION = 1;
-    public final static int TYPE = 2;
-    public final static int TRANSPARENT = 3;
-    public final static int WIDE_CODES = 4;
-    public final static int ARRAY_EXTENDED = 8;
-    public final static int POSTSCRIPT = 9;
-    public final static int SCALING_STROKE = 10;
-    public final static int FILL_SIZE = 11;
-    public final static int LINE_SIZE = 12;
-    public final static int ADVANCE_SIZE = 13;
-    public final static int GLYPH_SIZE = 14;
-    public final static int SHAPE_SIZE = 15;
+    /** TODO(doc). */
+    public static final int VERSION = 1;
+    /** TODO(doc). */
+    public static final int TYPE = 2;
+    /** TODO(doc). */
+   public static final int TRANSPARENT = 3;
+    /** TODO(doc). */
+    public static final int WIDE_CODES = 4;
+    /** TODO(doc). */
+    public static final int ARRAY_EXTENDED = 8;
+    /** TODO(doc). */
+    public static final int POSTSCRIPT = 9;
+    /** TODO(doc). */
+    public static final int SCALING_STROKE = 10;
+    /** TODO(doc). */
+    public static final int FILL_SIZE = 11;
+    /** TODO(doc). */
+    public static final int LINE_SIZE = 12;
+    /** TODO(doc). */
+    public static final int ADVANCE_SIZE = 13;
+    /** TODO(doc). */
+    public static final int GLYPH_SIZE = 14;
+    /** TODO(doc). */
+    public static final int SHAPE_SIZE = 15;
 
     private DecoderRegistry registry;
     private Map<Integer, Integer> variables;
 
+    /** TODO(method). */
     public Context() {
         variables = new LinkedHashMap<Integer, Integer>();
     }
 
+    /** TODO(method). */
     public DecoderRegistry getRegistry() {
         return registry;
     }
 
+    /** TODO(method). */
     public void setRegistry(final DecoderRegistry registry) {
         this.registry = registry;
     }
 
+    /** TODO(method). */
     public Map<Integer, Integer> getVariables() {
         return variables;
     }
 
+    /** TODO(method). */
     public void setVariables(final Map<Integer, Integer> map) {
         variables = map;
     }
 
+    /** TODO(method). */
     public Context put(final Integer key, final Integer value) {
         variables.put(key, value);
         return this;

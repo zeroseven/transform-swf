@@ -62,8 +62,8 @@ public final class PlayEventSoundTest {
             destFile = new File(destDir, file.substring(0, file
                     .lastIndexOf('.'))
                     + ".swf");
-            // TODO sound = SoundFactory.defineSound(1, sourceFile);
-            // TODO playSound(sound, destFile);
+            // TODO(code) sound = SoundFactory.defineSound(1, sourceFile);
+            // playSound(sound, destFile);
         }
     }
 

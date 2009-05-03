@@ -1,30 +1,30 @@
 /*
  * ColorTable.java
  * Transform
- * 
+ *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  *  * Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice, 
- *    this list of conditions and the following disclaimer in the documentation 
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors 
- *    may be used to endorse or promote products derived from this software 
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES, LOSS OF USE, 
- * DATA, OR PROFITS, OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES, LOSS OF USE,
+ * DATA, OR PROFITS, OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
@@ -36,7 +36,7 @@ package com.flagstone.transform.datatype;
  * generate Color objects for each of the colours defined in the Netscape Colour
  * Table.
  * </p>
- * 
+ *
  * <table BORDER="1" BGCOLOR="#FFFFFF" CELLPADDING="5" * CELLSPACING="4" width="90%">
  * <TR>
  * <TD ALIGN="center" BGCOLOR="aliceblue" WIDTH="15%">aliceblue<BR>
@@ -71,8 +71,8 @@ package com.flagstone.transform.datatype;
  * A52A2A</TD>
  * </TR>
  * <TR>
- * <TD ALIGN="center" BGCOLOR="black" WIDTH="15%"><FONT COLOR="FFFFFF">black<BR>
- * 000000</FONT></TD>
+ * <TD ALIGN="center" BGCOLOR="black" WIDTH="15%">black<BR>
+ * 000000</TD>
  * <TD ALIGN="center" BGCOLOR="cadetblue" WIDTH="15%">cadetblue<BR>
  * 5F9EA0</TD>
  * <TD ALIGN="center" BGCOLOR="chartreuse" WIDTH="15%">chartreuse<BR>
@@ -411,55 +411,286 @@ package com.flagstone.transform.datatype;
  * </table>
  */
 public enum WebPalette {
-
-    ALICE_BLUE(0x00F0F8FF), ANTIQUE_WHITE(0x00FAEBD7), AQUA(0x0000FFFF), AQUAMARINE(
-            0x007FFFD4), AZURE(0x00F0FFFF), BEIGE(0x00F5F5DC), BISQUE(
-            0x00FFE4C4), BLACK(0x00000000), BLANCHED_ALMOND(0x00FFEBCD), BLUE(
-            0x000000FF), BLUE_VIOLET(0x008A2BE2), BROWN(0x00A52A2A), BURLYWOOD(
-            0x00DEB887), CADET_BLUE(0x005F9EA0), CHARTREUSE(0x007FFF00), CHOCOLATE(
-            0x00D2691E), CORAL(0x00FF7F50), CORNFLOWER_BLUE(0x006495ED), CORNSILK(
-            0x00FFF8DC), CRIMSON(0x00DC143C), CYAN(0x0000FFFF), DARK_BLUE(
-            0x0000008B), DARK_CYAN(0x00008B8B), DARK_GOLDENROD(0x00B8860B), DARK_GRAY(
-            0x00A9A9A9), DARK_GREEN(0x00006400), DARK_KHAKI(0x00BDB76B), DARK_MAGENTA(
-            0x008B008B), DARK_OLIVE_GREEN(0x00556B2F), DARK_ORANGE(0x00FF8C00), DARK_ORCHID(
-            0x009932CC), DARK_RED(0x008B0000), DARK_SALMON(0x00E9967A), DARK_SEA_GREEN(
-            0x008FBC8F), DARK_SLATE_BLUE(0x00483D8B), DARK_SLATE_GRAY(
-            0x002F4F4F), DARK_TURQUOISE(0x0000CED1), DARK_VIOLET(0x009400D3), DEEP_PINK(
-            0x00FF1493), DEEP_SKY_BLUE(0x0000BFFF), DIM_GRAY(0x00696969), DODGER_BLUE(
-            0x001E90FF), FIREBRICK(0x00B22222), FLORAL_WHITE(0x00FFFAF0), FOREST_GREEN(
-            0x00228B22), FUCHSIA(0x00FF00FF), GAINSBORO(0x00DCDCDC), GHOST_WHITE(
-            0x00F8F8FB), GOLD(0x00FFD700), GOLDENROD(0x00DAA520), GRAY(
-            0x00808080), GREEN(0x00008000), GREEN_YELLOW(0x00ADFF2F), HONEYDEW(
-            0x00F0FFF0), HOT_PINK(0x00FF69B4), INDIAN_RED(0x00CD5C5C), INDIGO(
-            0x004B0082), IVORY(0x00FFFFF0), KHAKI(0x00F0E68C), LAVENDER(
-            0x00E6E6FA), LAVENDER_BLUSH(0x00FFF0F5), LAWN_GREEN(0x007CFC00), LEMON_CHIFFON(
-            0x00FFFACD), LIGHT_BLUE(0x00ADD8E6), LIGHT_CORAL(0x00F08080), LIGHT_CYAN(
-            0x00E0FFFF), LIGHT_GOLDENROD_YELLOW(0x00FAFAD2), LIGHT_GREEN(
-            0x0090EE90), LIGHT_GREY(0x00D3D3D3), LIGHT_PINK(0x00FFB6C1), LIGHT_SALMON(
-            0x00FFA07A), LIGHT_SEA_GREEN(0x0020B2AA), LIGHT_SKY_BLUE(0x0087CEFA), LIGHT_SLATE_GRAY(
-            0x00778899), LIGHT_STEEL_BLUE(0x00B0C4DE), LIGHT_YELLOW(0x00FFFFE0), LIME(
-            0x0000FF00), LIME_GREEN(0x0032CD32), LINEN(0x00FAF0E6), MAGENTA(
-            0x00FF00FF), MAROON(0x00800000), MEDIUM_AQUAMARINE(0x0066CDAA), MEDIUM_BLUE(
-            0x000000CD), MEDIUM_ORCHID(0x00BA55D3), MEDIUM_PURPLE(0x009370DB), MEDIUM_SEAGREEN(
-            0x003CB371), MEDIUM_SLATEBLUE(0x007B68EE), MEDIUM_SPRINGGREEN(
-            0x0000FA9A), MEDIUM_TURQUOISE(0x0048D1CC), MEDIUM_VIOLETRED(
-            0x00C71585), MIDNIGHT_BLUE(0x00191970), MINT_CREAM(0x00F5FFFA), MISTY_ROSE(
-            0x00FFE4E1), MOCCASIN(0x00FFE4B5), NAVAJO_WHITE(0x00FFDEAD), NAVY(
-            0x00000080), OLD_LACE(0x00FDF5E6), OLIVE(0x00808000), OLIVE_DRAB(
-            0x006B8E23), ORANGE(0x00FFA500), ORANGE_RED(0x00FF4500), ORCHID(
-            0x00DA70D6), PALE_GOLDENROD(0x00EEE8AA), PALE_GREEN(0x0098FB98), PALE_TURQUOISE(
-            0x00AFEEEE), PALE_VIOLET_RED(0x00DB7093), PAPAYA_WHIP(0x00FFEFD5), PEACH_PUFF(
-            0x00FFDAB9), PERU(0x00CD853F), PINK(0x00FFC0CB), PLUM(0x00DDA0DD), POWDER_BLUE(
-            0x00B0E0E6), PURPLE(0x00800080), RED(0x00FF0000), ROSY_BROWN(
-            0x00BC8F8F), ROYAL_BLUE(0x004169E1), SADDLE_BROWN(0x008B4513), SALMON(
-            0x00FA8072), SANDY_BROWN(0x00F4A460), SEA_GREEN(0x002E8B57), SEASHELL(
-            0x00FFF5EE), SIENNA(0x00A0522D), SILVER(0x00C0C0C0), SKY_BLUE(
-            0x0087CEEB), SLATE_BLUE(0x006A5ACD), SLATE_GRAY(0x00708090), SNOW(
-            0x00FFFAFA), SPRING_GREEN(0x0000FF7F), STEEL_BLUE(0x004682B4), TAN(
-            0x00D2B48C), TEAL(0x00008080), THISTLE(0x00D8BFD8), TOMATO(
-            0x00FF6347), TURQUOISE(0x0040E0D0), VIOLET(0x00EE82EE), WHEAT(
-            0x00F5DEB3), WHITE(0x00FFFFFF), WHITE_SMOKE(0x00F5F5F5), YELLOW(
-            0x00FFFF00), YELLOW_GREEN(0x009ACD32);
+    /** TODO(method). */
+    ALICE_BLUE(0x00F0F8FF),
+    /** TODO(method). */
+    ANTIQUE_WHITE(0x00FAEBD7),
+    /** TODO(method). */
+    AQUA(0x0000FFFF),
+    /** TODO(method). */
+    AQUAMARINE(0x007FFFD4),
+    /** TODO(method). */
+    AZURE(0x00F0FFFF),
+    /** TODO(method). */
+    BEIGE(0x00F5F5DC),
+    /** TODO(method). */
+    BISQUE(0x00FFE4C4),
+    /** TODO(method). */
+    BLACK(0x00000000),
+    /** TODO(method). */
+    BLANCHED_ALMOND(0x00FFEBCD),
+    /** TODO(method). */
+    BLUE(0x000000FF),
+    /** TODO(method). */
+    BLUE_VIOLET(0x008A2BE2),
+    /** TODO(method). */
+    BROWN(0x00A52A2A),
+    /** TODO(method). */
+    BURLYWOOD(0x00DEB887),
+    /** TODO(method). */
+    CADET_BLUE(0x005F9EA0),
+    /** TODO(method). */
+    CHARTREUSE(0x007FFF00),
+    /** TODO(method). */
+    CHOCOLATE(0x00D2691E),
+    /** TODO(method). */
+    CORAL(0x00FF7F50),
+    /** TODO(method). */
+    CORNFLOWER_BLUE(0x006495ED),
+    /** TODO(method). */
+    CORNSILK(0x00FFF8DC),
+    /** TODO(method). */
+    CRIMSON(0x00DC143C),
+    /** TODO(method). */
+    CYAN(0x0000FFFF),
+    /** TODO(method). */
+    DARK_BLUE(0x0000008B),
+    /** TODO(method). */
+    DARK_CYAN(0x00008B8B),
+    /** TODO(method). */
+    DARK_GOLDENROD(0x00B8860B),
+    /** TODO(method). */
+    DARK_GRAY(0x00A9A9A9),
+    /** TODO(method). */
+    DARK_GREEN(0x00006400),
+    /** TODO(method). */
+    DARK_KHAKI(0x00BDB76B),
+    /** TODO(method). */
+    DARK_MAGENTA(0x008B008B),
+    /** TODO(method). */
+    DARK_OLIVE_GREEN(0x00556B2F),
+    /** TODO(method). */
+    DARK_ORANGE(0x00FF8C00),
+    /** TODO(method). */
+    DARK_ORCHID(0x009932CC),
+    /** TODO(method). */
+    DARK_RED(0x008B0000),
+    /** TODO(method). */
+    DARK_SALMON(0x00E9967A),
+    /** TODO(method). */
+    DARK_SEA_GREEN(0x008FBC8F),
+    /** TODO(method). */
+    DARK_SLATE_BLUE(0x00483D8B),
+    /** TODO(method). */
+    DARK_SLATE_GRAY(0x002F4F4F),
+    /** TODO(method). */
+    DARK_TURQUOISE(0x0000CED1),
+    /** TODO(method). */
+    DARK_VIOLET(0x009400D3),
+    /** TODO(method). */
+    DEEP_PINK(0x00FF1493),
+    /** TODO(method). */
+    DEEP_SKY_BLUE(0x0000BFFF),
+    /** TODO(method). */
+    DIM_GRAY(0x00696969),
+    /** TODO(method). */
+    DODGER_BLUE(0x001E90FF),
+    /** TODO(method). */
+    FIREBRICK(0x00B22222),
+    /** TODO(method). */
+    FLORAL_WHITE(0x00FFFAF0),
+    /** TODO(method). */
+    FOREST_GREEN(0x00228B22),
+    /** TODO(method). */
+    FUCHSIA(0x00FF00FF),
+    /** TODO(method). */
+    GAINSBORO(0x00DCDCDC),
+    /** TODO(method). */
+    GHOST_WHITE(0x00F8F8FB),
+    /** TODO(method). */
+    GOLD(0x00FFD700),
+    /** TODO(method). */
+    GOLDENROD(0x00DAA520),
+    /** TODO(method). */
+    GRAY(0x00808080),
+    /** TODO(method). */
+    GREEN(0x00008000),
+    /** TODO(method). */
+    GREEN_YELLOW(0x00ADFF2F),
+    /** TODO(method). */
+    HONEYDEW(0x00F0FFF0),
+    /** TODO(method). */
+    HOT_PINK(0x00FF69B4),
+    /** TODO(method). */
+    INDIAN_RED(0x00CD5C5C),
+    /** TODO(method). */
+    INDIGO(0x004B0082),
+    /** TODO(method). */
+    IVORY(0x00FFFFF0),
+    /** TODO(method). */
+    KHAKI(0x00F0E68C),
+    /** TODO(method). */
+    LAVENDER(0x00E6E6FA),
+    /** TODO(method). */
+    LAVENDER_BLUSH(0x00FFF0F5),
+    /** TODO(method). */
+    LAWN_GREEN(0x007CFC00),
+    /** TODO(method). */
+    LEMON_CHIFFON(0x00FFFACD),
+    /** TODO(method). */
+    LIGHT_BLUE(0x00ADD8E6),
+    /** TODO(method). */
+    LIGHT_CORAL(0x00F08080),
+    /** TODO(method). */
+    LIGHT_CYAN(0x00E0FFFF),
+    /** TODO(method). */
+    LIGHT_GOLDENROD_YELLOW(0x00FAFAD2),
+    /** TODO(method). */
+    LIGHT_GREEN(0x0090EE90),
+    /** TODO(method). */
+    LIGHT_GREY(0x00D3D3D3),
+    /** TODO(method). */
+    LIGHT_PINK(0x00FFB6C1),
+    /** TODO(method). */
+    LIGHT_SALMON(0x00FFA07A),
+    /** TODO(method). */
+    LIGHT_SEA_GREEN(0x0020B2AA),
+    /** TODO(method). */
+    LIGHT_SKY_BLUE(0x0087CEFA),
+    /** TODO(method). */
+    LIGHT_SLATE_GRAY(0x00778899),
+    /** TODO(method). */
+    LIGHT_STEEL_BLUE(0x00B0C4DE),
+    /** TODO(method). */
+    LIGHT_YELLOW(0x00FFFFE0),
+    /** TODO(method). */
+    LIME(0x0000FF00),
+    /** TODO(method). */
+    LIME_GREEN(0x0032CD32),
+    /** TODO(method). */
+    LINEN(0x00FAF0E6),
+    /** TODO(method). */
+    MAGENTA(0x00FF00FF),
+    /** TODO(method). */
+    MAROON(0x00800000),
+    /** TODO(method). */
+    MEDIUM_AQUAMARINE(0x0066CDAA),
+    /** TODO(method). */
+    MEDIUM_BLUE(0x000000CD),
+    /** TODO(method). */
+    MEDIUM_ORCHID(0x00BA55D3),
+    /** TODO(method). */
+    MEDIUM_PURPLE(0x009370DB),
+    /** TODO(method). */
+    MEDIUM_SEAGREEN(0x003CB371),
+    /** TODO(method). */
+    MEDIUM_SLATEBLUE(0x007B68EE),
+    /** TODO(method). */
+    MEDIUM_SPRINGGREEN(0x0000FA9A),
+    /** TODO(method). */
+    MEDIUM_TURQUOISE(0x0048D1CC),
+    /** TODO(method). */
+    MEDIUM_VIOLETRED(0x00C71585),
+    /** TODO(method). */
+    MIDNIGHT_BLUE(0x00191970),
+    /** TODO(method). */
+    MINT_CREAM(0x00F5FFFA),
+    /** TODO(method). */
+    MISTY_ROSE(0x00FFE4E1),
+    /** TODO(method). */
+    MOCCASIN(0x00FFE4B5),
+    /** TODO(method). */
+    NAVAJO_WHITE(0x00FFDEAD),
+    /** TODO(method). */
+    NAVY(0x00000080),
+    /** TODO(method). */
+    OLD_LACE(0x00FDF5E6),
+    /** TODO(method). */
+    OLIVE(0x00808000),
+    /** TODO(method). */
+    OLIVE_DRAB(0x006B8E23),
+    /** TODO(method). */
+    ORANGE(0x00FFA500),
+    /** TODO(method). */
+    ORANGE_RED(0x00FF4500),
+    /** TODO(method). */
+    ORCHID(0x00DA70D6),
+    /** TODO(method). */
+    PALE_GOLDENROD(0x00EEE8AA),
+    /** TODO(method). */
+    PALE_GREEN(0x0098FB98),
+    /** TODO(method). */
+    PALE_TURQUOISE(0x00AFEEEE),
+    /** TODO(method). */
+    PALE_VIOLET_RED(0x00DB7093),
+    /** TODO(method). */
+    PAPAYA_WHIP(0x00FFEFD5),
+    /** TODO(method). */
+    PEACH_PUFF(0x00FFDAB9),
+    /** TODO(method). */
+    PERU(0x00CD853F),
+    /** TODO(method). */
+    PINK(0x00FFC0CB),
+    /** TODO(method). */
+    PLUM(0x00DDA0DD),
+    /** TODO(method). */
+    POWDER_BLUE(0x00B0E0E6),
+    /** TODO(method). */
+    PURPLE(0x00800080),
+    /** TODO(method). */
+    RED(0x00FF0000),
+    /** TODO(method). */
+    ROSY_BROWN(0x00BC8F8F),
+    /** TODO(method). */
+    ROYAL_BLUE(0x004169E1),
+    /** TODO(method). */
+    SADDLE_BROWN(0x008B4513),
+    /** TODO(method). */
+    SALMON(0x00FA8072),
+    /** TODO(method). */
+    SANDY_BROWN(0x00F4A460),
+    /** TODO(method). */
+    SEA_GREEN(0x002E8B57),
+    /** TODO(method). */
+    SEASHELL(0x00FFF5EE),
+    /** TODO(method). */
+    SIENNA(0x00A0522D),
+    /** TODO(method). */
+    SILVER(0x00C0C0C0),
+    /** TODO(method). */
+    SKY_BLUE(0x0087CEEB),
+    /** TODO(method). */
+    SLATE_BLUE(0x006A5ACD),
+    /** TODO(method). */
+    SLATE_GRAY(0x00708090),
+    /** TODO(method). */
+    SNOW(0x00FFFAFA),
+    /** TODO(method). */
+    SPRING_GREEN(0x0000FF7F),
+    /** TODO(method). */
+    STEEL_BLUE(0x004682B4),
+    /** TODO(method). */
+    TAN(0x00D2B48C),
+    /** TODO(method). */
+    TEAL(0x00008080),
+    /** TODO(method). */
+    THISTLE(0x00D8BFD8),
+    /** TODO(method). */
+    TOMATO(0x00FF6347),
+    /** TODO(method). */
+    TURQUOISE(0x0040E0D0),
+    /** TODO(method). */
+    VIOLET(0x00EE82EE),
+    /** TODO(method). */
+    WHEAT(0x00F5DEB3),
+    /** TODO(method). */
+    WHITE(0x00FFFFFF),
+    /** TODO(method). */
+    WHITE_SMOKE(0x00F5F5F5),
+    /** TODO(method). */
+    YELLOW(0x00FFFF00),
+    /** TODO(method). */
+    YELLOW_GREEN(0x009ACD32);
 
     private Color color;
 
@@ -467,6 +698,7 @@ public enum WebPalette {
         color = new Color(rgb);
     }
 
+    /** TODO(method). */
     public Color color() {
         return color;
     }

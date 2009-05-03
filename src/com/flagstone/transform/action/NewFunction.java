@@ -1,30 +1,30 @@
 /*
  * NewFunction.java
  * Transform
- * 
+ *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  *  * Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice, 
- *    this list of conditions and the following disclaimer in the documentation 
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors 
- *    may be used to endorse or promote products derived from this software 
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
@@ -42,28 +42,28 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.coder.SWFFactory;
 
-//TODO(doc) Review
 /**
  * The NewFunction action is used to create a user-defined function.
- * 
+ *
  * <p>
  * User-defined functions are also used to create methods for user-defined
  * objects. The name of the function is omitted and the function definition is
  * assigned to a variable which allows it to be referenced at a later time.
  * </p>
- * 
+ *
  * <p>
  * In the actions which form the function body all the arguments passed to the
  * function can be referenced by the name supplied in the arguments array.
  * </p>
- * 
+ *
  * <p>
  * All the action objects created are owned by the function. They will be
  * deleted when the function definition is deleted.
  * </p>
- * 
+ *
  * @see NewFunction2
  */
+//TODO(class)
 public final class NewFunction implements Action {
     private static final String FORMAT = "NewFunction: { name=%s; arguments=%s; actions=%s }";
 
@@ -74,7 +74,21 @@ public final class NewFunction implements Action {
     private transient int length;
     private transient int actionsLength;
 
-    // TODO(doc)
+    /**
+     * Creates and initialises a NewFunction definition using values encoded
+     * in the Flash binary format.
+     *
+     * @param coder
+     *            an SWFDecoder object that contains the encoded Flash data.
+     *
+     * @param context
+     *            a Context object used to manage the decoders for different
+     *            type of object and to pass information on how objects are
+     *            decoded.
+     *
+     * @throws CoderException
+     *             if an error occurs while decoding the data.
+     */
     public NewFunction(final SWFDecoder coder, final Context context)
             throws CoderException {
         arguments = new ArrayList<String>();
@@ -112,7 +126,7 @@ public final class NewFunction implements Action {
      * to be executed. The order of the Strings in the argument array indicate
      * the order in which the values will be popped off the stack when the
      * function is executed. The fist argument is popped from the stack first.
-     * 
+     *
      * @param aString
      *            the name of the function. May not be null.
      * @param argumentArray
@@ -132,7 +146,7 @@ public final class NewFunction implements Action {
      * Creates a anonymous NewFunction with the specified argument names and
      * actions to be executed. Use this constructor when defining functions that
      * will be assigned to object variables and used as methods.
-     * 
+     *
      * @param argumentArray
      *            an array of Strings listing the names of the arguments.
      * @param actionArray
@@ -146,7 +160,14 @@ public final class NewFunction implements Action {
         setActions(actionArray);
     }
 
-    // TODO(doc)
+    /**
+     * Creates and initialises a NewFunction action using the values
+     * copied from another NewFunction action.
+     *
+     * @param object
+     *            a NewFunction action from which the values will be
+     *            copied. References to immutable objects will be shared.
+     */
     public NewFunction(final NewFunction object) {
         name = object.name;
 
@@ -160,7 +181,7 @@ public final class NewFunction implements Action {
 
     /**
      * Adds the name of an argument to the array of argument names.
-     * 
+     *
      * @param anArgument
      *            the name of an argument passed to the NewFunction object. Must
      *            not be null or an empty string.
@@ -175,7 +196,7 @@ public final class NewFunction implements Action {
 
     /**
      * Adds the action object to the array of actions.
-     * 
+     *
      * @param anAction
      *            an object belonging to a class derived from Action. Must not
      *            be null.
@@ -212,7 +233,7 @@ public final class NewFunction implements Action {
     /**
      * Sets the name of the function. The name may be an empty string when
      * defining methods.
-     * 
+     *
      * @param aString
      *            the name of the function. Must not be null.
      */
@@ -225,7 +246,7 @@ public final class NewFunction implements Action {
 
     /**
      * Sets the names of the function arguments.
-     * 
+     *
      * @param anArray
      *            an array of Strings listing the names of the arguments. Must
      *            not be null.
@@ -239,7 +260,7 @@ public final class NewFunction implements Action {
 
     /**
      * Sets the actions.
-     * 
+     *
      * @param anArray
      *            the array of actions that define the operation performed by
      *            the function. Must not be null.
@@ -251,6 +272,7 @@ public final class NewFunction implements Action {
         actions = anArray;
     }
 
+    /** TODO(method). */
     public NewFunction copy() {
         return new NewFunction(this);
     }
@@ -260,6 +282,7 @@ public final class NewFunction implements Action {
         return String.format(FORMAT, name, arguments, actions);
     }
 
+    /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         length = 2 + coder.strlen(name);
 
@@ -277,6 +300,7 @@ public final class NewFunction implements Action {
         return 3 + length + actionsLength;
     }
 
+    /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         coder.writeWord(ActionTypes.NEW_FUNCTION, 1);

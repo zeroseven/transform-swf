@@ -38,30 +38,26 @@ public final class VideoDataTest {
 
     private transient VideoData fixture;
 
-    private transient final byte[] encoded = new byte[] { 0x06, 0x01, 0x01,
+    private final transient byte[] encoded = new byte[] { 0x06, 0x01, 0x01,
             0x00, 0x02, 0x00, 0x06, 0x50 };
 
     @Test
-    @Ignore
+    @Ignore //TODO(implement)
     public void checkCopy() {
-        // TODO Implement
     }
 
     @Test
-    @Ignore
+    @Ignore //TODO(implement)
     public void encodeCoordTransform() throws CoderException {
-        // TODO Implement
     }
 
     @Test
-    @Ignore
+    @Ignore //TODO(implement)
     public void decode() throws CoderException {
-        // TODO Implement
     }
 
     @Test
-    @Ignore
+    @Ignore //TODO(implement)
     public void decodeExtended() throws CoderException {
-        // TODO Implement
     }
 }

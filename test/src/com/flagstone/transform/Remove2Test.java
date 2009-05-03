@@ -43,14 +43,14 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 public final class Remove2Test {
 
-    private static transient final int layer = 1;
+    private static final transient int layer = 1;
 
     private transient Remove2 fixture;
 
-    private transient final byte[] encoded = new byte[] { 0x02, 0x07, 0x01,
+    private final transient byte[] encoded = new byte[] { 0x02, 0x07, 0x01,
             0x00 };
 
-    private transient final byte[] extended = new byte[] { 0x7F, 0x07, 0x02,
+    private final transient byte[] extended = new byte[] { 0x7F, 0x07, 0x02,
             0x00, 0x00, 0x00, 0x01, 0x00 };
 
     @Test(expected = IllegalArgumentException.class)

@@ -3,7 +3,7 @@ package com.flagstone.transform.movieclip;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-//TODO(doc)
+/** TODO(class). */
 public enum MovieClipEvent {
     /** Code for a load event. */
     LOAD(1),
@@ -70,6 +70,7 @@ public enum MovieClipEvent {
         }
     }
 
+    /** TODO(method). */
     public static MovieClipEvent fromInt(final int type) {
         return TABLE.get(type);
     }
@@ -80,6 +81,7 @@ public enum MovieClipEvent {
         this.value = value;
     }
 
+    /** TODO(method). */
     public int getValue() {
         return value;
     }

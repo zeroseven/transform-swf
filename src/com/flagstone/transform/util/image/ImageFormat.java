@@ -1,5 +1,15 @@
 package com.flagstone.transform.util.image;
 
+/** TODO(class). */
 public enum ImageFormat {
-    IDX8, IDXA, RGB5, RGB8, RGBA;
+    /** TODO(method). */
+    IDX8,
+    /** TODO(method). */
+    IDXA,
+    /** TODO(method). */
+    RGB5,
+    /** TODO(method). */
+    RGB8,
+    /** TODO(method). */
+    RGBA;
 }

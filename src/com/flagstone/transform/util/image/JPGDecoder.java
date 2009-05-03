@@ -31,13 +31,11 @@
 package com.flagstone.transform.util.image;
 
 import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.RandomAccessFile;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Arrays;
@@ -46,27 +44,24 @@ import java.util.zip.DataFormatException;
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.FLVDecoder;
 import com.flagstone.transform.coder.ImageTag;
-import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.image.DefineJPEGImage2;
 
 /**
  * JPGDecoder decodes JPEG images so they can be used in a Flash file.
  */
-//TODO(class)
 public final class JPGDecoder implements ImageProvider, ImageDecoder {
 
     private transient int width;
     private transient int height;
     private transient byte[] image;
 
-    public void read(final File file) throws FileNotFoundException,
-            IOException, DataFormatException {
-        read(new FileInputStream(file), (int)file.length());
+    /** TODO(method). */
+    public void read(final File file) throws IOException, DataFormatException {
+        read(new FileInputStream(file), (int) file.length());
     }
 
     /** TODO(method). */
-    public void read(final URL url) throws FileNotFoundException, IOException,
-            DataFormatException {
+    public void read(final URL url) throws IOException, DataFormatException {
         final URLConnection connection = url.openConnection();
 
         if (!connection.getContentType().equals("image/bmp")) {
@@ -92,9 +87,10 @@ public final class JPGDecoder implements ImageProvider, ImageDecoder {
         return new JPGDecoder();
     }
 
-     public void read(InputStream stream, int size) throws DataFormatException, IOException {
+    /** TODO(method). */
+     public void read(final InputStream stream, final int size) throws DataFormatException, IOException {
 
-        image = new byte[(int)size];
+        image = new byte[(int) size];
         final BufferedInputStream buffer = new BufferedInputStream(stream);
 
         buffer.read(image);

@@ -33,7 +33,6 @@ package com.flagstone.transform;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,7 +43,6 @@ import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 import java.util.zip.InflaterInputStream;
 
-import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.DecoderRegistry;
 import com.flagstone.transform.coder.DefineTag;
@@ -57,19 +55,19 @@ import com.flagstone.transform.datatype.Bounds;
 /**
  * Movie is a container class for the objects that represents the data
  * structures in a Flash file.
- * 
+ *
  * <p>
  * Movie is the core class of the Transform package. It is used to parse and
  * generate Flash files, translating the binary format of the Flash file into an
  * array objects that can be inspected and updated.
  * </p>
- * 
+ *
  * <p>
  * A Movie object also contains the attributes that make up the header
  * information of the Flash file, identifying the version support, size of the
  * Flash Player screen, etc.
  * </p>
- * 
+ *
  * <p>
  * Movie is also used to generate the unique identifiers that are used to
  * reference objects. Each call to newIdentifier() returns a unique number for
@@ -79,14 +77,25 @@ import com.flagstone.transform.datatype.Bounds;
  * does not conflict with an existing object.
  * </p>
  */
+//TODO(class)
 public final class Movie {
 
-    public enum Signature {
-        FWS, CWS
+    /** TODO(class). */
+   public enum Signature {
+       /** TODO(method). */
+       FWS,
+       /** TODO(method). */
+       CWS
     }
 
+    /** TODO(class). */
     public enum Encoding {
-        ANSI, SJIS, UTF8
+        /** TODO(method). */
+        ANSI,
+        /** TODO(method). */
+        SJIS,
+        /** TODO(method). */
+        UTF8
     }
 
     private static final String FORMAT = "Movie: { signature=%s; version=%d; frameSize=%s; frameRate=%f; objects=%s }";
@@ -104,6 +113,7 @@ public final class Movie {
     private transient int length;
     private transient int frameCount;
 
+    /** TODO(method). */
     public Movie() {
         encoding = Encoding.UTF8;
         signature = Signature.CWS;
@@ -111,6 +121,7 @@ public final class Movie {
         objects = new ArrayList<MovieTag>();
     }
 
+    /** TODO(method). */
     public Movie(final Movie object) {
 
         if (object.registry != null) {
@@ -135,7 +146,7 @@ public final class Movie {
     /**
      * Sets the registry containing the object used to decode the different
      * types of object found in a movie.
-     * 
+     *
      * @param registry
      */
     public void setRegistry(final DecoderRegistry registry) {
@@ -145,7 +156,7 @@ public final class Movie {
     /**
      * Sets the initial value for the unique identifier assigned to definition
      * objects.
-     * 
+     *
      * @param aValue
      *            an initial value for the unique identifier.
      */
@@ -166,12 +177,12 @@ public final class Movie {
      * In order to reference objects that define items such as shapes, sounds,
      * etc. each must be assigned an identifier that is unique for a given
      * Movie.
-     * 
+     *
      * When binary data is decoded into a sequence of objects, the Movie class
      * tracks each Define tag decoded, recording the highest value. If a new
      * Define tag is added to the array of decoded objects the identifier
      * assigned to the new tag will be guaranteed to be unique.
-     * 
+     *
      * @return an unique identifier for objects that define shapes, sounds, etc.
      *         in a Flash file.
      */
@@ -207,7 +218,7 @@ public final class Movie {
      * that are not supported by an earlier version of the Flash file format may
      * cause the Player to not display the movie correctly or even crash the
      * Player.
-     * 
+     *
      * @param aNumber
      *            the version of the Flash file format that this movie utilises.
      */
@@ -234,7 +245,7 @@ public final class Movie {
      * sets the centre of the screen at (0,0), if the x and y coordinates are
      * specified in the range 0 to 400 then the centre of the screen will be at
      * (200, 200).
-     * 
+     *
      * @param aBounds
      *            the Bounds object that defines the frame size. Must not be
      *            null.
@@ -257,7 +268,7 @@ public final class Movie {
     /**
      * Sets the number of frames played per second that the Player will display
      * the coder.
-     * 
+     *
      * @param aNumber
      *            the number of frames per second that the movie is played.
      */
@@ -274,7 +285,7 @@ public final class Movie {
 
     /**
      * Sets the array of objects contained in the Movie.
-     * 
+     *
      * @param anArray
      *            the array of objects that describe a coder. Must not be null.
      */
@@ -287,7 +298,7 @@ public final class Movie {
 
     /**
      * Adds the object to the Movie.
-     * 
+     *
      * @param anObject
      *            the object to be added to the movie. Must not be null.
      */
@@ -304,15 +315,11 @@ public final class Movie {
      * decoded from the file is placed in the Movie's object array in the order
      * they were decoded from the file. If an error occurs while reading and
      * parsing the file then an exception is thrown.
-     * 
+     *
      * @param file
      *            the Flash file that will be parsed.
-     * @throws FileNotFoundException
-     *             - if an error occurs while reading the file.
      * @throws DataFormatException
      *             - if the file does not contain Flash data.
-     * @throws CoderException
-     *             - if an error occurs while decoding the file.
      * @throws IOException
      *             - if an I/O error occurs while reading the file.
      */
@@ -331,16 +338,14 @@ public final class Movie {
      * Decodes the binary Flash data from an input stream. If an error occurs
      * while the data is being decoded an exception is thrown. The array of
      * objects in the Movie will contain the last tag successfully decoded.
-     * 
+     *
      * @param stream
      *            an InputStream from which the objects will be decoded.
-     * 
+     *
      * @throws DataFormatException
      *             if the file does not contain Flash data.
      * @throws IOException
      *             if an I/O error occurs while reading the file.
-     * @throws CoderException
-     *             if an error occurs while decoding the file.
      */
     public void decodeFromStream(final InputStream stream)
             throws DataFormatException, IOException {
@@ -428,19 +433,16 @@ public final class Movie {
     /**
      * Encodes the array of objects and writes the data to the specified file.
      * If an error occurs while encoding the file then an exception is thrown.
-     * 
+     *
      * @param file
      *            the Flash file that the movie will be encoded to.
-     * 
-     * @throws FileNotFoundException
-     *             - if an error occurs while opening the file.
-     * @throws CoderException
-     *             - if an error occurs while encoding the file.
+     *
      * @throws IOException
      *             - if an I/O error occurs while writing the file.
      * @throws DataFormatException
      *             if an error occurs when compressing the flash file.
      */
+    /** {@inheritDoc} */
     public void encodeToFile(final File file) throws IOException,
             DataFormatException {
         final FileOutputStream stream = new FileOutputStream(file);
@@ -456,10 +458,9 @@ public final class Movie {
      * Returns the encoded representation of the array of objects that this
      * Movie contains. If an error occurs while encoding the file then an
      * exception is thrown.
-     * 
+     *
      * @return the array of bytes representing the encoded objects.
-     * @throws CoderException
-     *             - if an error occurs while encoding the file.
+
      * @throws IOException
      *             - if an I/O error occurs while encoding the file.
      * @throws DataFormatException

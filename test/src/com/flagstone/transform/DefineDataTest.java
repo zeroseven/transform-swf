@@ -43,15 +43,15 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 public final class DefineDataTest {
 
-    private static transient final int identifier = 1;
-    private transient final byte[] data = new byte[] { 1, 2, 3, 4 };
+    private static final transient int identifier = 1;
+    private final transient byte[] data = new byte[] { 1, 2, 3, 4 };
 
     private transient DefineData fixture;
 
-    private transient final byte[] encoded = new byte[] { (byte) 0xCA, 0x15,
+    private final transient byte[] encoded = new byte[] { (byte) 0xCA, 0x15,
             0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x02, 0x03, 0x04 };
 
-    private transient final byte[] extended = new byte[] { (byte) 0xFF, 0x15,
+    private final transient byte[] extended = new byte[] { (byte) 0xFF, 0x15,
             0x0A, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01,
             0x02, 0x03, 0x04 };
 

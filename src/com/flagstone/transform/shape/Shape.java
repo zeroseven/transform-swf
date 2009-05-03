@@ -1,30 +1,30 @@
 /*
  * Shape.java
  * Transform
- * 
+ *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  *  * Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice, 
- *    this list of conditions and the following disclaimer in the documentation 
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors 
- *    may be used to endorse or promote products derived from this software 
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
@@ -40,27 +40,42 @@ import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.font.DefineFont;
+import com.flagstone.transform.coder.ShapeRecord;
 
 /**
  * Shape is a container class for the shape objects (Line, Curve and ShapeStyle
  * objects) that describe how a particular shape is drawn.
- * 
+ *
  * <p>
  * Shapes are used in shape and font definitions. The Shape class is used to
  * simplify the design of these classes and provides no added functionality
  * other than acting as a container class.
  * </p>
- * 
+ *
  * @see DefineShape
  * @see DefineFont
  */
+//TODO(class)
 public final class Shape implements SWFEncodeable {
     private static final String FORMAT = "Shape: { records=%s }";
 
     private List<ShapeRecord> objects;
 
-    // TODO(doc)
+    /**
+     * Creates and initialises a Shape object using values encoded
+     * in the Flash binary format.
+     *
+     * @param coder
+     *            an SWFDecoder object that contains the encoded Flash data.
+     *
+     * @param context
+     *            a Context object used to manage the decoders for different
+     *            type of object and to pass information on how objects are
+     *            decoded.
+     *
+     * @throws CoderException
+     *             if an error occurs while decoding the data.
+     */
     public Shape(final SWFDecoder coder, final Context context)
             throws CoderException {
         objects = new ArrayList<ShapeRecord>();
@@ -95,7 +110,7 @@ public final class Shape implements SWFEncodeable {
         coder.alignToByte();
     }
 
-    // TODO(doc)
+    /** TODO(method). */
     public Shape() {
         objects = new ArrayList<ShapeRecord>();
     }
@@ -103,7 +118,7 @@ public final class Shape implements SWFEncodeable {
     /**
      * Creates a Shape object, specifying the Objects that describe how the
      * shape is drawn.
-     * 
+     *
      * @param anArray
      *            the array of shape records. Must not be null.
      */
@@ -111,7 +126,14 @@ public final class Shape implements SWFEncodeable {
         setObjects(anArray);
     }
 
-    // TODO(doc)
+    /**
+     * Creates and initialises a Shape object using the values copied
+     * from another Shape object.
+     *
+     * @param object
+     *            a Shape object from which the values will be
+     *            copied.
+     */
     public Shape(final Shape object) {
         objects = new ArrayList<ShapeRecord>(object.objects.size());
 
@@ -122,7 +144,7 @@ public final class Shape implements SWFEncodeable {
 
     /**
      * Adds the object to the array of shape records.
-     * 
+     *
      * @param anObject
      *            an instance of ShapeStyle, Line or Curve. Must not be null.
      */
@@ -143,7 +165,7 @@ public final class Shape implements SWFEncodeable {
 
     /**
      * Sets the array of shape records.
-     * 
+     *
      * @param anArray
      *            the array of shape records. Must not be null.
      */
@@ -154,6 +176,7 @@ public final class Shape implements SWFEncodeable {
         objects = anArray;
     }
 
+    /** TODO(method). */
     public Shape copy() {
         return new Shape(this);
     }
@@ -163,6 +186,7 @@ public final class Shape implements SWFEncodeable {
         return String.format(FORMAT, objects);
     }
 
+    /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         int numberOfBits = 0;
 
@@ -181,6 +205,7 @@ public final class Shape implements SWFEncodeable {
         return numberOfBits >> 3;
     }
 
+    /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         final Map<Integer, Integer> vars = context.getVariables();

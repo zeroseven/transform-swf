@@ -44,15 +44,15 @@ import com.flagstone.transform.datatype.Bounds;
 
 public final class ScalingGridTest {
 
-    private static transient final int identifier = 1;
-    private transient final Bounds bounds = new Bounds(1, 2, 3, 4);
+    private static final transient int identifier = 1;
+    private final transient Bounds bounds = new Bounds(1, 2, 3, 4);
 
     private transient ScalingGrid fixture;
 
-    private transient final byte[] encoded = new byte[] { (byte) 0x85, 0x13,
+    private final transient byte[] encoded = new byte[] { (byte) 0x85, 0x13,
             0x01, 0x00, 0x20, (byte) 0x99, 0x20 };
 
-    private transient final byte[] extended = new byte[] { (byte) 0xBF, 0x13,
+    private final transient byte[] extended = new byte[] { (byte) 0xBF, 0x13,
             0x05, 0x00, 0x00, 0x00, 0x01, 0x00, 0x20, (byte) 0x99, 0x20 };
 
     @Test(expected = IllegalArgumentException.class)

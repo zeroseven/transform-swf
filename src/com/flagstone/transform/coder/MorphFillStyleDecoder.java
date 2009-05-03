@@ -9,12 +9,15 @@ import com.flagstone.transform.fillstyle.MorphSolidFill;
  * Factory is the default implementation of an SWFFactory which used to create
  * instances of Transform classes.
  */
+//TODO(class)
 public final class MorphFillStyleDecoder implements SWFFactory<FillStyle> {
 
+    /** TODO(method). */
     public SWFFactory<FillStyle> copy() {
         return new MorphFillStyleDecoder();
     }
 
+    /** TODO(method). */
     public FillStyle getObject(final SWFDecoder coder, final Context context)
             throws CoderException {
 

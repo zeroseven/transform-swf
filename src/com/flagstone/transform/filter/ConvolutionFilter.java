@@ -8,6 +8,7 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.Color;
 
+/** TODO(class). */
 public final class ConvolutionFilter implements Filter {
 
     private static final String FORMAT = "ConvolutionFilter: { matrix=%s; "
@@ -23,6 +24,21 @@ public final class ConvolutionFilter implements Filter {
     private transient int rows;
     private transient int cols;
 
+    /**
+     * Creates and initialises a ConvolutionFilter object using values encoded
+     * in the Flash binary format.
+     *
+     * @param coder
+     *            an SWFDecoder object that contains the encoded Flash data.
+     *
+     * @param context
+     *            a Context object used to manage the decoders for different
+     *            type of object and to pass information on how objects are
+     *            decoded.
+     *
+     * @throws CoderException
+     *             if an error occurs while decoding the data.
+     */
     public ConvolutionFilter(final SWFDecoder coder, final Context context)
             throws CoderException {
         coder.readByte();
@@ -42,41 +58,34 @@ public final class ConvolutionFilter implements Filter {
         alpha = coder.readBits(1, false) != 0;
     }
 
-    public ConvolutionFilter(final ConvolutionFilter object) {
-        divisor = object.divisor;
-        bias = object.bias;
-        matrix = object.matrix;
-        color = object.color;
-        clamp = object.clamp;
-        alpha = object.alpha;
-    }
-
+    /** TODO(method). */
     public float getDivisor() {
         return divisor;
     }
 
+    /** TODO(method). */
     public float getBias() {
         return divisor;
     }
 
+    /** TODO(method). */
     public float[][] getMatrix() {
         return matrix.clone();
     }
 
+    /** TODO(method). */
     public Color getColor() {
         return color;
     }
 
+    /** TODO(method). */
     public boolean isClamp() {
         return clamp;
     }
 
+    /** TODO(method). */
     public boolean isAlpha() {
         return alpha;
-    }
-
-    public ConvolutionFilter copy() {
-        return new ConvolutionFilter(this);
     }
 
     @Override
@@ -114,6 +123,7 @@ public final class ConvolutionFilter implements Filter {
                 * 31 + Boolean.valueOf(alpha).hashCode();
     }
 
+    /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         rows = matrix.length;
         cols = matrix[0].length;
@@ -121,6 +131,7 @@ public final class ConvolutionFilter implements Filter {
         return 16 + rows * cols * 4;
     }
 
+    /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         coder.writeByte(FilterTypes.CONVOLUTION);

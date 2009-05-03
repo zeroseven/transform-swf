@@ -1,30 +1,30 @@
 /*
  * FontInfo.java
  * Transform
- * 
+ *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  *  * Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice, 
- *    this list of conditions and the following disclaimer in the documentation 
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors 
- *    may be used to endorse or promote products derived from this software 
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
@@ -40,7 +40,7 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 /**
  * TextSettings allows you to control how individual text fields are rendered.
- * 
+ *
  * <p>
  * There are four parameters that control how the text is rendered:
  * </p>
@@ -56,17 +56,18 @@ import com.flagstone.transform.coder.SWFEncoder;
  * </ol>
  * <p>
  * The thickness and sharpness control the how the text is rendered:
- * 
+ *
  * <pre>
  *    outsideCutoff = (0.5 * sharpness - thickness) * fontSize
  *    insideCutoff = (-0.5 * sharpness - thickness) * fontSize
  * </pre>
- * 
+ *
  * Note that Adobe reports the results can be poor when the text is scaled by a
  * significant amount and so the default values of 0.0 should be used for the
  * thickness and sharpness values.
  * </p>
  */
+//TODO(class)
 public final class TextSettings implements MovieTag {
     /**
      * Grid specifies how letters are aligned with respect to the pixel grid on
@@ -81,7 +82,8 @@ public final class TextSettings implements MovieTag {
         SUBPIXEL
     }
 
-    private static final String FORMAT = "TextSettings: { identifier=%d, useAdvanced=%s, grid=%s, thickness=%f, sharpness=%f }";
+    private static final String FORMAT = "TextSettings: { identifier=%d;"
+            + " useAdvanced=%s, grid=%s, thickness=%f, sharpness=%f }";
 
     private transient int identifier;
     private transient int rendering;
@@ -91,14 +93,10 @@ public final class TextSettings implements MovieTag {
     /**
      * Creates and initialises an TextSettings using values encoded in the Flash
      * binary format.
-     * 
+     *
      * @param coder
      *            an SWFDecoder object that contains the encoded Flash data.
-     * 
-     * @param context
-     *            a Context object used to pass information between objects on
-     *            how the information the data should be decoded.
-     * 
+     *
      * @throws CoderException
      *             if an error occurs while decoding the data.
      */
@@ -116,7 +114,7 @@ public final class TextSettings implements MovieTag {
 
     /**
      * Creates a TextSettings object with the specified values.
-     * 
+     *
      * @param uid
      *            the unique identifier of an existing text field.
      * @param advanced
@@ -141,7 +139,7 @@ public final class TextSettings implements MovieTag {
     /**
      * Creates an TextSettings object and initialised it by copying the values
      * from an existing one.
-     * 
+     *
      * @param object
      *            a TextSettings object.
      */
@@ -162,7 +160,7 @@ public final class TextSettings implements MovieTag {
 
     /**
      * Sets the identifier of the text definition that this object applies to.
-     * 
+     *
      * @param uid
      *            the unique identifier of an DefineText, DefineText2 or
      *            DefineTextField object. Must be in the range 1..65535.
@@ -192,7 +190,7 @@ public final class TextSettings implements MovieTag {
 
     /**
      * Returns the alignment of letters with respect to the pixel grid.
-     * 
+     *
      * @return the alignment, either NONE, PIXEL or SUBPIXEL.
      */
     public Grid getGrid() {
@@ -215,7 +213,7 @@ public final class TextSettings implements MovieTag {
     /**
      * Selects how the text letters will be aligned with respect to the pixel
      * grid used in LCD screens.
-     * 
+     *
      * @param alignment
      *            the alignment with respect to the pixel grid, either NONE,
      *            PIXEL or SUBPIXEL.
@@ -247,7 +245,7 @@ public final class TextSettings implements MovieTag {
     /**
      * Sets the value used to control the thickness of a line when rendered. May
      * be set to 0.0 if the default anti-aliasing value will be used.
-     * 
+     *
      * @param thickness
      *            the value of the thickness parameter used by the rendering
      *            engine.
@@ -267,7 +265,7 @@ public final class TextSettings implements MovieTag {
     /**
      * Sets the value used to control the sharpness of a line when rendered. May
      * be set to 0.0 if the default anti-aliasing value will be used.
-     * 
+     *
      * @param sharpness
      *            the value of the sharpness parameter used by the rendering
      *            engine.
@@ -276,6 +274,7 @@ public final class TextSettings implements MovieTag {
         this.sharpness = (int) (sharpness * 65536);
     }
 
+    /** TODO(method). */
     public TextSettings copy() {
         return new TextSettings(this);
     }
@@ -286,10 +285,12 @@ public final class TextSettings implements MovieTag {
                 getGrid(), thickness / 65536.0f, sharpness / 65536.0f);
     }
 
+    /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         return 14;
     }
 
+    /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         coder.writeWord((MovieTypes.TEXT_SETTINGS << 6) | 12, 2);

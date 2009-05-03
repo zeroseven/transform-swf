@@ -48,22 +48,22 @@ import com.flagstone.transform.datatype.Placement;
 
 public final class Place3Test {
 
-    private static transient final int identifier = 1;
-    private static transient final int layer = 2;
-    private transient final CoordTransform transform = CoordTransform
+    private static final transient int identifier = 1;
+    private static final transient int layer = 2;
+    private final transient CoordTransform transform = CoordTransform
             .translate(1, 2);
-    private transient final ColorTransform colorTransform = new ColorTransform(
+    private final transient ColorTransform colorTransform = new ColorTransform(
             1, 2, 3, 4);
 
     private transient Place3 fixture;
 
-    private transient final byte[] coord = new byte[] { 0x06, 0x01, 0x01, 0x00,
+    private final transient byte[] coord = new byte[] { 0x06, 0x01, 0x01, 0x00,
             0x02, 0x00, 0x06, 0x50 };
 
-    private transient final byte[] coordAndColor = new byte[] { 0x08, 0x01,
+    private final transient byte[] coordAndColor = new byte[] { 0x08, 0x01,
             0x01, 0x00, 0x02, 0x00, 0x06, 0x50, (byte) 0x8C, (byte) 0xA6 };
 
-    private transient final byte[] extended = new byte[] { 0x7F, 0x01, 0x06,
+    private final transient byte[] extended = new byte[] { 0x7F, 0x01, 0x06,
             0x00, 0x00, 0x00, 0x01, 0x00, 0x02, 0x00, 0x06, 0x50 };
 
     @Test(expected = IllegalArgumentException.class)
@@ -87,13 +87,13 @@ public final class Place3Test {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    @Ignore
+    @Ignore //TODO(implement)
     public void checkAccessorForColorTransformWithNull() {
         fixture = new Place3().setColorTransform(null);
     }
 
     @Test
-    @Ignore
+    @Ignore //TODO(implement)
     public void checkCopy() {
         // fixture = new Place3(identifier, layer, transform, colorTransform);
         final Place3 copy = fixture.copy();
@@ -107,7 +107,7 @@ public final class Place3Test {
     }
 
     @Test
-    @Ignore
+    @Ignore //TODO(implement)
     public void encodeCoordTransform() throws CoderException {
         final SWFEncoder encoder = new SWFEncoder(coord.length);
         final Context context = new Context();
@@ -122,7 +122,7 @@ public final class Place3Test {
     }
 
     @Test
-    @Ignore
+    @Ignore //TODO(implement)
     public void encodeCoordAndColorTransforms() throws CoderException {
         final SWFEncoder encoder = new SWFEncoder(coordAndColor.length);
         final Context context = new Context();
@@ -137,7 +137,7 @@ public final class Place3Test {
     }
 
     @Test
-    @Ignore
+    @Ignore //TODO(implement)
     public void decode() throws CoderException {
         final SWFDecoder decoder = new SWFDecoder(coord);
         final Context context = new Context();
@@ -154,7 +154,7 @@ public final class Place3Test {
     }
 
     @Test
-    @Ignore
+    @Ignore //TODO(implement)
     public void decodeExtended() throws CoderException {
         final SWFDecoder decoder = new SWFDecoder(extended);
         final Context context = new Context();
@@ -171,7 +171,7 @@ public final class Place3Test {
     }
 
     @Test
-    @Ignore
+    @Ignore //TODO(implement)
     public void decodeCoordAndColorTransforms() throws CoderException {
         final SWFDecoder decoder = new SWFDecoder(coordAndColor);
         final Context context = new Context();

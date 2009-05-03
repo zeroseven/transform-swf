@@ -1,5 +1,9 @@
 package com.flagstone.transform.datatype;
 
+/** TODO(class). */
 public enum VideoFormat {
-    H263, SCREEN
+    /** TODO(doc). */
+    H263,
+    /** TODO(doc). */
+    SCREEN
 }

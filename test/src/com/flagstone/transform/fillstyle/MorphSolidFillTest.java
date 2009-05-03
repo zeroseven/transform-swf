@@ -45,12 +45,12 @@ import com.flagstone.transform.datatype.Color;
 
 public final class MorphSolidFillTest {
 
-    private transient final Color startColor = new Color(1, 2, 3, 4);
-    private transient final Color endColor = new Color(5, 6, 7, 8);
+    private final transient Color startColor = new Color(1, 2, 3, 4);
+    private final transient Color endColor = new Color(5, 6, 7, 8);
 
     private transient MorphSolidFill fixture;
 
-    private transient final byte[] encoded = new byte[] { 0x00, 0x01, 0x02,
+    private final transient byte[] encoded = new byte[] { 0x00, 0x01, 0x02,
             0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
 
     @Test(expected = IllegalArgumentException.class)

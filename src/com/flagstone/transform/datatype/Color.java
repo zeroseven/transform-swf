@@ -1,30 +1,30 @@
 /*
  * Color.java
  * Transform
- * 
+ *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  *  * Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice, 
- *    this list of conditions and the following disclaimer in the documentation 
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors 
- *    may be used to endorse or promote products derived from this software 
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
@@ -42,7 +42,7 @@ import com.flagstone.transform.coder.SWFEncoder;
  * Color is used to represent 32-bit colours in the RGB colour space with 8 bits
  * per channel and an optional alpha channel.
  * </p>
- * 
+ *
  * <p>
  * Whether a colour contains transparency information is determined by the
  * object that contains the colour. For example colours in a DefineShape or
@@ -53,6 +53,7 @@ import com.flagstone.transform.coder.SWFEncoder;
  * </p>
  */
 // TODO(doc) Check comments for all methods
+//TODO(class)
 public final class Color implements SWFEncodeable {
 
     private static final String FORMAT = "Color: { red=%d; green=%d; blue=%d; alpha=%d }";
@@ -62,6 +63,21 @@ public final class Color implements SWFEncodeable {
     private final transient int blue;
     private final transient int alpha;
 
+    /**
+     * Creates and initialises a Color object using values encoded
+     * in the Flash binary format.
+     *
+     * @param coder
+     *            an SWFDecoder object that contains the encoded Flash data.
+     *
+     * @param context
+     *            a Context object used to manage the decoders for different
+     *            type of object and to pass information on how objects are
+     *            decoded.
+     *
+     * @throws CoderException
+     *             if an error occurs while decoding the data.
+     */
     public Color(final SWFDecoder coder, final Context context)
             throws CoderException {
         red = coder.readByte();
@@ -72,6 +88,7 @@ public final class Color implements SWFEncodeable {
                 : 255;
     }
 
+    /** TODO(method). */
     public Color(final int rgb) {
         red = (rgb >>> 16) & 0x00FF;
         green = (rgb >>> 8) & 0x00FF;
@@ -79,6 +96,7 @@ public final class Color implements SWFEncodeable {
         alpha = 255;
     }
 
+    /** TODO(method). */
     public Color(final int rgb, final int alpha) {
         red = (rgb >>> 16) & 0x00FF;
         green = (rgb >>> 8) & 0x00FF;
@@ -89,7 +107,7 @@ public final class Color implements SWFEncodeable {
     /**
      * Creates a Color object containing red, green and blue channels. The alpha
      * channel defaults to the value 255 - defining an opaque colour.
-     * 
+     *
      * @param red
      *            value for the red channel, in the range 0..255.
      * @param green
@@ -107,7 +125,7 @@ public final class Color implements SWFEncodeable {
     /**
      * Creates a transparent Color object containing red, green, blue and alpha
      * channels.
-     * 
+     *
      * @param red
      *            value for the red channel, in the range 0..255.
      * @param green
@@ -188,11 +206,13 @@ public final class Color implements SWFEncodeable {
         return (((red * 31) + green) * 31 + blue) * 31 + alpha;
     }
 
+    /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         return (context.getVariables().containsKey(Context.TRANSPARENT)) ? 4
                 : 3;
     }
 
+    /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         coder.writeByte(red);

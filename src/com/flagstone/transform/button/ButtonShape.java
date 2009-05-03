@@ -47,7 +47,6 @@ import com.flagstone.transform.datatype.Blend;
 import com.flagstone.transform.datatype.ColorTransform;
 import com.flagstone.transform.datatype.CoordTransform;
 
-//TODO(doc) Review
 /**
  * <p>
  * ButtonShape identifies the shape that is drawn when a button is in a
@@ -55,23 +54,23 @@ import com.flagstone.transform.datatype.CoordTransform;
  * Up and Down allowing simple animations to be created when a button is
  * clicked.
  * </p>
- * 
+ *
  * <p>
  * A shape is also used to define active area of the button. When defining the
  * active area the outline of the shape defines the boundary of the area, the
  * shape itself is not displayed. The button will only respond to mouse events
  * when the cursor is placed inside the active area.
  * </p>
- * 
+ *
  * <p>
  * An shape can be used more than one state. Multiple states can be defined by
  * bitwise Or-ing individual state codes together:
  * </p>
- * 
+ *
  * <pre>
  * int buttonState = Button.Up | Button.Over;
  * </pre>
- * 
+ *
  * <p>
  * The order in which shapes are displayed is controlled by the layer number. As
  * with the Flash Player's display list shapes on a layer with a higher number
@@ -79,12 +78,14 @@ import com.flagstone.transform.datatype.CoordTransform;
  * and color transform can also be applied to each shape to change its
  * appearance when it is displayed when the button enters the specified state.
  * </p>
- * 
+ *
  * @see DefineButton
  * @see DefineButton2
  */
+//TODO(class)
 public final class ButtonShape implements SWFEncodeable {
-    private static final String FORMAT = "ButtonShape: { state=%d; identifier=%d; layer=%d; transform=%s; colorTransform=%s }";
+    private static final String FORMAT = "ButtonShape: { state=%d;"
+            + " identifier=%d; layer=%d; transform=%s; colorTransform=%s }";
 
     private int state;
     private int identifier;
@@ -94,7 +95,21 @@ public final class ButtonShape implements SWFEncodeable {
     private List<Filter> filters;
     private Blend blendMode;
 
-    // TODO(doc)
+    /**
+     * Creates and initialises a ButtonShape object using values encoded
+     * in the Flash binary format.
+     *
+     * @param coder
+     *            an SWFDecoder object that contains the encoded Flash data.
+     *
+     * @param context
+     *            a Context object used to manage the decoders for different
+     *            type of object and to pass information on how objects are
+     *            decoded.
+     *
+     * @throws CoderException
+     *             if an error occurs while decoding the data.
+     */
     // TODO(code) implement fully
     public ButtonShape(final SWFDecoder coder, final Context context)
             throws CoderException {
@@ -113,10 +128,9 @@ public final class ButtonShape implements SWFEncodeable {
     /**
      * Creates an ButtonShape object with a coordinate transform that will be
      * applied to the shape drawn for the button states.
-     * 
-     * @param aState
-     *            the state of the button when the shape is drawn. The compound
-     *            state code must be in the range 1..15.
+     *
+     * @param states
+     *            the set of states of the button when the shape is drawn.
      * @param uid
      *            the unique identifier of an DefineShape, DefineShape2 or
      *            DefineShape3 object. Must be in the range 1..65535.
@@ -138,11 +152,11 @@ public final class ButtonShape implements SWFEncodeable {
     /**
      * Creates a ButtonShape object with a coordinate and colour transform that
      * will be applied to the shape drawn for the button states.
-     * 
+     *
      * IMPORTANT: Only DefineButton2 makes use of the ColorTransform. The colour
      * transform will not be encoded if the ButtonShape is used for a
      * DefineButton object.
-     * 
+     *
      * @param states
      *            the state of the button when the shape is drawn. The compound
      *            state code must be in the range 1..15.
@@ -169,7 +183,14 @@ public final class ButtonShape implements SWFEncodeable {
         setColorTransform(aColorTransform);
     }
 
-    // TODO(doc)
+    /**
+     * Creates and initialises a ButtonShape object using the values copied
+     * from another ButtonShape object.
+     *
+     * @param object
+     *            a ButtonShape object from which the values will be
+     *            copied.
+     */
     public ButtonShape(final ButtonShape object) {
         state = object.state;
         identifier = object.identifier;
@@ -178,7 +199,7 @@ public final class ButtonShape implements SWFEncodeable {
         colorTransform = object.colorTransform;
     }
 
-    // TODO(doc)
+    /** TODO(method). */
     public Set<ButtonState> getState() {
         final Set<ButtonState> set = EnumSet.allOf(ButtonState.class);
 
@@ -190,10 +211,10 @@ public final class ButtonShape implements SWFEncodeable {
         return set;
     }
 
-    // TODO(doc)
+    /** TODO(method). */
     public void setState(final Set<ButtonState> states) {
-        for (final ButtonState state : states) {
-            this.state |= state.getValue();
+        for (final ButtonState buttonState : states) {
+            this.state |= buttonState.getValue();
         }
     }
 
@@ -208,7 +229,7 @@ public final class ButtonShape implements SWFEncodeable {
      * Sets the unique identifier of the DefineShape, DefineShape2 or
      * DefineShape3 object that defines the appearance of the button when it is
      * in the specified state(s).
-     * 
+     *
      * @param uid
      *            the unique identifier of the shape object that defines the
      *            shape's appearance. Must be in the range 1..65535.
@@ -229,7 +250,7 @@ public final class ButtonShape implements SWFEncodeable {
 
     /**
      * Sets the layer in the display list that the shape will be displayed on.
-     * 
+     *
      * @param aNumber
      *            the number of the layer in the display list where the shape is
      *            drawn. Must be in the range 1..65535.
@@ -251,7 +272,7 @@ public final class ButtonShape implements SWFEncodeable {
     /**
      * Sets the coordinate transform that will be applied to the shape to change
      * it's appearance.
-     * 
+     *
      * @param aTransform
      *            an CoordTransform object that will be applied to the shape.
      *            Must not be null.
@@ -265,7 +286,7 @@ public final class ButtonShape implements SWFEncodeable {
 
     /**
      * Returns the colour transform that will be applied to the button.
-     * 
+     *
      * Note that the colour transform will only be used if the ButtonShape is
      * added to a DefineButton2 object.
      */
@@ -276,9 +297,9 @@ public final class ButtonShape implements SWFEncodeable {
     /**
      * Sets the colour transform that will be applied to the shape to change
      * it's colour.
-     * 
+     *
      * IMPORTANT: The colour transform is only used in DefineButton2 objects.
-     * 
+     *
      * @param aTransform
      *            an ColorTransform object that will be applied to the shape.
      *            Must not be null, even if the ButtonShape will be added to a
@@ -291,7 +312,7 @@ public final class ButtonShape implements SWFEncodeable {
         colorTransform = aTransform;
     }
 
-    // TODO(doc)
+    /** TODO(method). */
     public ButtonShape add(final Filter filter) {
         if (filter == null) {
             throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
@@ -300,12 +321,12 @@ public final class ButtonShape implements SWFEncodeable {
         return this;
     }
 
-    // TODO(doc)
+    /** TODO(method). */
     public List<Filter> getFilters() {
         return filters;
     }
 
-    // TODO(doc)
+    /** TODO(method). */
     public void setFilters(final List<Filter> array) {
         if (array == null) {
             throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
@@ -313,12 +334,12 @@ public final class ButtonShape implements SWFEncodeable {
         filters = array;
     }
 
-    // TODO(doc)
+    /** TODO(method). */
     public Blend getBlendMode() {
         return blendMode;
     }
 
-    // TODO(doc)
+    /** TODO(method). */
     public void setBlendMode(final Blend blend) {
         blendMode = blend;
     }
@@ -337,6 +358,7 @@ public final class ButtonShape implements SWFEncodeable {
     }
 
     // TODO(code) implement fully
+    /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         int length = 5 + transform.prepareToEncode(coder, context);
 
@@ -349,6 +371,7 @@ public final class ButtonShape implements SWFEncodeable {
 
     // TODO(code) implement fully
     // TODO(code) Add test so blend and filters are only added in flash 8+
+    /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         coder.writeBits(0, 4);

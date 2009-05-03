@@ -6,7 +6,7 @@ import java.util.Map;
 /**
  * Property defines the set of attributes that can accessed for movies and movie
  * clips when executing actions.
- * 
+ *
  * @see Push
  */
 public enum Property {
@@ -134,6 +134,7 @@ public enum Property {
         }
     }
 
+    /** TODO(method). */
     public static Property fromInt(final int type) {
         return TABLE.get(type);
     }
@@ -144,6 +145,7 @@ public enum Property {
         this.value = value;
     }
 
+    /** TODO(method). */
     public int getValue(final int version) {
         return version < 5 ? Float.floatToIntBits(value) : value;
     }

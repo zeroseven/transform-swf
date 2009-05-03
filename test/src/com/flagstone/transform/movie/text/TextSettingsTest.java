@@ -44,14 +44,14 @@ public final class TextSettingsTest {
 
     private transient TextSettings fixture;
 
-    private transient final byte[] encoded = new byte[] { 0x06, 0x01, 0x01,
+    private final transient byte[] encoded = new byte[] { 0x06, 0x01, 0x01,
             0x00, 0x02, 0x00, 0x06, 0x50 };
 
-    private transient final byte[] extended = new byte[] { 0x7F, 0x01, 0x06,
+    private final transient byte[] extended = new byte[] { 0x7F, 0x01, 0x06,
             0x00, 0x00, 0x00, 0x01, 0x00, 0x02, 0x00, 0x06, 0x50 };
 
     @Test
-    @Ignore
+    @Ignore //TODO(implement)
     public void checkCopy() {
         // fixture = new TextSettings(identifier, layer, transform,
         // colorTransform);
@@ -61,7 +61,7 @@ public final class TextSettingsTest {
     }
 
     @Test
-    @Ignore
+    @Ignore //TODO(implement)
     public void encode() throws CoderException {
         final SWFEncoder encoder = new SWFEncoder(encoded.length);
         // Context context = new Context();
@@ -75,7 +75,7 @@ public final class TextSettingsTest {
     }
 
     @Test
-    @Ignore
+    @Ignore //TODO(implement)
     public void decode() throws CoderException {
         final SWFDecoder decoder = new SWFDecoder(encoded);
 
@@ -85,7 +85,7 @@ public final class TextSettingsTest {
     }
 
     @Test
-    @Ignore
+    @Ignore //TODO(implement)
     public void decodeExtended() throws CoderException {
         final SWFDecoder decoder = new SWFDecoder(extended);
 

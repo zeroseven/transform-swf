@@ -30,6 +30,8 @@
 
 package com.flagstone.transform.util.sound;
 
+/** TODO(class). */
 public interface SoundProvider {
+    /** TODO(method). */
     SoundDecoder newDecoder();
 }
