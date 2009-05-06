@@ -1,5 +1,5 @@
 /*
- * VideoFormat.java
+ * ImageFormat.java
  * Transform
  *
  * Copyright (c) 2009 Flagstone Software Ltd. All rights reserved.
@@ -31,19 +31,33 @@
 package com.flagstone.transform.datatype;
 
 /**
- * VideoFormat is used to identify the different encoding formats used for
- * video in Flash and Flash Video files.
+ * ImageFormat is used to represent the different encodings for lossless images
+ * in a Flash file.
  */
-public enum VideoFormat {
+public enum ImageFormat {
     /**
-     * H263 is a low bit-rate compressed format originally developed for
-     * video-conferencing by the ITU-T Video Coding Experts Group (VCEG).
+     * The opaque image contains a colour table with 256 entries. Each entry
+     * contains values for the red, green and blue colour channels.
      */
-    H263,
+    IDX8,
     /**
-     * Screen Video is a simple format used primarily for compressing sequences
-     * of screen shots where only the differences between successive frames are
-     * encoded.
+     * The transparent image contains a colour table with 256 entries. Each
+     * entry contains values for the red, green, blue and alpha channels.
      */
-    SCREEN
+    IDXA,
+    /**
+     * The opaque image is a true colour image, with the values for the red,
+     * green and blue colour channels represented by a 5-bit number.
+     */
+    RGB5,
+    /**
+     * The opaque image is a true colour image, with the values for the red,
+     * green and blue colour channels represented by a 8-bit number.
+     */
+    RGB8,
+    /**
+     * The transparent image is a true colour image, with the values for the
+     * red, green, blue and alpha channels represented by a 8-bit number.
+     */
+    RGBA;
 }

@@ -4,32 +4,33 @@
  *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  *
- *  * Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer.
+ *  * Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
  *  * Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
- *    may be used to endorse or promote products derived from this software
- *    without specific prior written permission.
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its
+ *    contributors may be used to endorse or promote products derived from this
+ *    software without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
- * OF THE POSSIBILITY OF SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
-
 package com.flagstone.transform.datatype;
 
+import com.flagstone.transform.Constants;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.Encoder;
@@ -38,11 +39,9 @@ import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFEncoder;
 
 /**
- * <p>
- * CoordTransform is used to specify two-dimensional coordinate transforms,
- * allowing an object to be scaled, rotated or moved without changing the
+ * CoordTransform is used to specify a two-dimensional coordinate transform
+ * which allows an object to be scaled, rotated or moved without changing the
  * original definition of how the object is drawn.
- * </p>
  *
  * <p>
  * A two-dimensional transform is defined using a 3x3 matrix and the new values
@@ -61,13 +60,16 @@ import com.flagstone.transform.coder.SWFEncoder;
  * transforms is not commutative, the order in which transformations are applied
  * will affect the final result.
  * </p>
- *
  */
-//TODO(class)
 public final class CoordTransform implements SWFEncodeable {
 
     private static final String FORMAT = "CoordTransform: { scaleX=%f;"
             + " scaleY=%f; shearX=%f; shearY=%f; transX=%d; transY=%d }";
+
+    private static final float SCALE_FACTOR = 65536.0f;
+    private static final int DEFAULT_SCALE = 65536;
+    private static final float SHEAR_FACTOR = 65536.0f;
+    private static final int DEFAULT_SHEAR = 0;
 
     /**
      * Create a new coordinate transform by multiplying two matrices together to
@@ -106,7 +108,7 @@ public final class CoordTransform implements SWFEncodeable {
     }
 
     /**
-     * Returns a translation transform.
+     * Create a translation transform.
      *
      * @param xCoord
      *            the x coordinate of the transformation.
@@ -119,7 +121,7 @@ public final class CoordTransform implements SWFEncodeable {
     }
 
     /**
-     * Returns a scaling transform.
+     * Create a scaling transform.
      *
      * @param xScale
      *            the scaling factor along the x-axis.
@@ -132,7 +134,7 @@ public final class CoordTransform implements SWFEncodeable {
     }
 
     /**
-     * Returns a CoordTransform initialised for a shearing operation.
+     * Create a CoordTransform initialised for a shearing operation.
      *
      * @param xShear
      *            the shearing factor along the x-axis.
@@ -145,7 +147,7 @@ public final class CoordTransform implements SWFEncodeable {
     }
 
     /**
-     * Returns a CoordTransform initialised for a rotation in degrees.
+     * Create a CoordTransform initialised for a rotation in degrees.
      *
      * @param angle
      *            the of rotation in degrees.
@@ -167,12 +169,13 @@ public final class CoordTransform implements SWFEncodeable {
     private final transient int translateX;
     private final transient int translateY;
 
+    private transient boolean hasScale;
+    private transient boolean hasShear;
+
     private transient int scaleSize;
     private transient int shearSize;
     private transient int transSize;
 
-    private transient boolean hasScale;
-    private transient boolean hasShear;
 
     /**
      * Creates and initialises a CoordTransform object using values encoded
@@ -195,8 +198,8 @@ public final class CoordTransform implements SWFEncodeable {
             scaleX = coder.readBits(scaleSize, true);
             scaleY = coder.readBits(scaleSize, true);
         } else {
-            scaleX = 65536;
-            scaleY = 65536;
+            scaleX = DEFAULT_SCALE;
+            scaleY = DEFAULT_SCALE;
         }
 
         hasShear = coder.readBits(1, false) != 0;
@@ -206,8 +209,8 @@ public final class CoordTransform implements SWFEncodeable {
             shearX = coder.readBits(shearSize, true);
             shearY = coder.readBits(shearSize, true);
         } else {
-            shearX = 0;
-            shearY = 0;
+            shearX = DEFAULT_SHEAR;
+            shearY = DEFAULT_SHEAR;
         }
 
         transSize = coder.readBits(5, false);
@@ -217,24 +220,45 @@ public final class CoordTransform implements SWFEncodeable {
         coder.alignToByte();
     }
 
-    /** TODO(method). */
+    /**
+     * Creates and initialises a CoordTransform object using a 3x3 matrix.
+     *
+     * @param matrix
+     *            a 3x3 matrix containing the transform values.
+     */
     public CoordTransform(final float[][] matrix) {
-        scaleX = (int) (matrix[0][0] * 65536.0f);
-        scaleY = (int) (matrix[1][1] * 65536.0f);
-        shearX = (int) (matrix[1][0] * 65536.0f);
-        shearY = (int) (matrix[0][1] * 65536.0f);
+        scaleX = (int) (matrix[0][0] * SCALE_FACTOR);
+        scaleY = (int) (matrix[1][1] * SCALE_FACTOR);
+        shearX = (int) (matrix[1][0] * SHEAR_FACTOR);
+        shearY = (int) (matrix[0][1] * SHEAR_FACTOR);
         translateX = (int) matrix[0][2];
         translateY = (int) matrix[1][2];
     }
 
-    /** TODO(method). */
-    public CoordTransform(final float scaleX, final float scaleY,
-            final float shearX, final float shearY, final int xCoord,
+    /**
+     * Creates an initialises a CoordTransform with scaling, shearing and
+     * translation values.
+     *
+     * @param xScale
+     *            the scaling factor along the x-axis.
+     * @param yScale
+     *            the scaling factor along the y-axis
+     * @param xShear
+     *            the shearing factor along the x-axis.
+     * @param yShear
+     *            the shearing factor along the y-axis
+     * @param xCoord
+     *            the x coordinate of the transformation.
+     * @param yCoord
+     *            the y coordinate of the transformation.
+     */
+    public CoordTransform(final float xScale, final float yScale,
+            final float xShear, final float yShear, final int xCoord,
             final int yCoord) {
-        this.scaleX = (int) (scaleX * 65536.0f);
-        this.scaleY = (int) (scaleY * 65536.0f);
-        this.shearX = (int) (shearX * 65536.0f);
-        this.shearY = (int) (shearY * 65536.0f);
+        scaleX = (int) (xScale * SCALE_FACTOR);
+        scaleY = (int) (yScale * SCALE_FACTOR);
+        shearX = (int) (xShear * SHEAR_FACTOR);
+        shearY = (int) (yShear * SHEAR_FACTOR);
         translateX = xCoord;
         translateY = yCoord;
     }
@@ -243,28 +267,28 @@ public final class CoordTransform implements SWFEncodeable {
      * Returns the scaling factor along the x-axis.
      */
     public float getScaleX() {
-        return scaleX / 65536.0f;
+        return scaleX / SCALE_FACTOR;
     }
 
     /**
      * Returns the scaling factor along the y-axis.
      */
     public float getScaleY() {
-        return scaleY / 65536.0f;
+        return scaleY / SCALE_FACTOR;
     }
 
     /**
      * Returns the shearing factor along the x-axis.
      */
     public float getShearX() {
-        return shearX / 65536.0f;
+        return shearX / SHEAR_FACTOR;
     }
 
     /**
      * Returns the shearing factor along the y-axis.
      */
     public float getShearY() {
-        return shearY / 65536.0f;
+        return shearY / SHEAR_FACTOR;
     }
 
     /**
@@ -286,26 +310,19 @@ public final class CoordTransform implements SWFEncodeable {
      */
     public float[][] getMatrix() {
         return new float[][] {
-            {scaleX / 65536.0f, shearY / 65536.0f, translateX },
-            {shearX / 65536.0f, scaleY / 65536.0f, translateY },
+            {scaleX / SCALE_FACTOR, shearY / SHEAR_FACTOR, translateX },
+            {shearX / SHEAR_FACTOR, scaleY / SCALE_FACTOR, translateY },
             {0.0f, 0.0f, 1.0f } };
     }
 
-    /**
-     * Returns true if the transform will leave the position, size and rotation
-     * of the object unchanged.
-     */
-    public boolean isUnityTransform() {
-        return (scaleX == 65536) && (scaleY == 65536) && (shearX == 0)
-                && (shearY == 0) && (translateX == 0) && (translateY == 0);
-    }
-
+    /** {@inheritDoc} */
     @Override
     public String toString() {
-        return String.format(FORMAT, scaleX / 65536.0f, scaleY / 65536.0f,
-                shearX / 65536.0f, shearY / 65536.0f, translateX, translateY);
+        return String.format(FORMAT, getScaleX(), getScaleY(),
+                getShearX(), getShearY(), translateX, translateY);
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean equals(final Object object) {
         boolean result;
@@ -329,17 +346,20 @@ public final class CoordTransform implements SWFEncodeable {
         return result;
     }
 
+    /** {@inheritDoc} */
     @Override
     public int hashCode() {
-        return ((((scaleX * 31 + scaleY) * 31 + shearX) * 31 + shearY) * 31 + translateX)
-                * 31 + translateY;
+        return ((((scaleX * Constants.PRIME + scaleY)
+                * Constants.PRIME + shearX) * Constants.PRIME + shearY)
+                * Constants.PRIME + translateX) * Constants.PRIME + translateY;
     }
 
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
-        int numberOfBits = 14; // include extra 7 bits for byte alignment
+        // include extra 7 bits for byte alignment
+        int numberOfBits = 14;
 
-        hasScale = (scaleX != 65536) || (scaleY != 65536);
+        hasScale = (scaleX != DEFAULT_SCALE) || (scaleY != DEFAULT_SCALE);
         hasShear = (shearX != 0) || (shearY != 0);
 
         if (hasScale || hasShear || ((translateX != 0) || (translateY != 0))) {

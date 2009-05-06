@@ -4,32 +4,33 @@
  *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  *
- *  * Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer.
+ *  * Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
  *  * Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
- *    may be used to endorse or promote products derived from this software
- *    without specific prior written permission.
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its
+ *    contributors may be used to endorse or promote products derived from this
+ *    software without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
- * OF THE POSSIBILITY OF SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
-
 package com.flagstone.transform.datatype;
 
+import com.flagstone.transform.Constants;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.Encoder;
@@ -41,7 +42,7 @@ import com.flagstone.transform.coder.SWFEncoder;
  * <p>
  * The Bounds class defines the area inside which shapes, text fields and
  * characters are drawn.
- * <p>
+ * </p>
  *
  * <p>
  * In Flash the axes are specified relative to the top left corner of the screen
@@ -66,10 +67,10 @@ import com.flagstone.transform.coder.SWFEncoder;
  * it then only the pixels inside of the bounding box will be repainted.
  * </p>
  */
-//TODO(class)
 public final class Bounds implements SWFEncodeable {
 
-    private static final String FORMAT = "Bounds: { minX=%d; minY=%d; maxX=%d; maxY=%d }";
+    private static final String FORMAT = "Bounds: {"
+    		+ " minX=%d; minY=%d; maxX=%d; maxY=%d }";
 
     private final transient int minX;
     private final transient int minY;
@@ -163,11 +164,13 @@ public final class Bounds implements SWFEncodeable {
         return maxY - minY;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         return String.format(FORMAT, minX, minY, maxX, maxY);
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean equals(final Object object) {
         boolean result;
@@ -187,16 +190,18 @@ public final class Bounds implements SWFEncodeable {
         return result;
     }
 
+    /** {@inheritDoc} */
     @Override
     public int hashCode() {
-        return (((minX * 31) + minY) * 31 + maxX) * 31 + maxY;
+        return ((minX * Constants.PRIME + minY) * Constants.PRIME + maxX)
+            * Constants.PRIME + maxY;
     }
 
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         size = Encoder.maxSize(minX, minY, maxX, maxY);
         // add extra 7 bits so result is byte aligned.
-        return ((12 + (size << 2))) >> 3;
+        return (12 + (size << 2)) >> 3;
     }
 
     /** {@inheritDoc} */

@@ -50,21 +50,20 @@ public final class BoundsTest {
 
     private final transient byte[] encoded = new byte[] { 32, -103, 32 };
 
-    private transient Bounds fixture;
-
     @Test
     public void checkWidth() {
         assertEquals(3, new Bounds(1, 2, 4, 8).getWidth());
     }
 
     @Test
-    public void checkHeigth() {
+    public void checkHeight() {
         assertEquals(6, new Bounds(1, 2, 4, 8).getHeight());
     }
 
     @Test
-    public void checkNullIsnotEqual() {
-        assertFalse(new Bounds(1, 2, 3, 4).equals(null));
+    public void checkNullIsNotEqual() {
+        final Bounds bounds = null;
+        assertFalse(new Bounds(1, 2, 3, 4).equals(bounds));
     }
 
     @Test
@@ -74,13 +73,13 @@ public final class BoundsTest {
 
     @Test
     public void checkSameIsEqual() {
-        fixture = new Bounds(1, 2, 3, 4);
+        final Bounds fixture = new Bounds(1, 2, 3, 4);
         assertEquals(fixture, fixture);
     }
 
     @Test
-    public void checkIsNotEqual() {
-        fixture = new Bounds(1, 2, 3, 4);
+    public void checkDifferentIsNotEqual() {
+        final Bounds fixture = new Bounds(1, 2, 3, 4);
         assertFalse(fixture.equals(new Bounds(4, 3, 2, 1)));
     }
 
@@ -94,12 +93,13 @@ public final class BoundsTest {
         final SWFEncoder encoder = new SWFEncoder(encoded.length);
         final Context context = new Context();
 
-        fixture = new Bounds(xmin, ymin, xmax, ymax);
-
-        assertEquals(3, fixture.prepareToEncode(encoder, context));
+        final Bounds fixture = new Bounds(xmin, ymin, xmax, ymax);
+        final int length = fixture.prepareToEncode(encoder, context);
+        
         fixture.encode(encoder, context);
 
-        assertEquals(24, encoder.getPointer());
+        assertTrue(encoder.eof());
+        assertEquals(encoded.length, length);
         assertArrayEquals(encoded, encoder.getData());
     }
 
@@ -107,12 +107,9 @@ public final class BoundsTest {
     public void decodeWithBoundsSet() throws CoderException {
         final SWFDecoder decoder = new SWFDecoder(encoded);
 
-        fixture = new Bounds(decoder);
+        final Bounds fixture = new Bounds(decoder);
 
         assertTrue(decoder.eof());
-        assertEquals(xmin, fixture.getMinX());
-        assertEquals(ymin, fixture.getMinY());
-        assertEquals(xmax, fixture.getMaxX());
-        assertEquals(ymax, fixture.getMaxY());
+        assertEquals(fixture, new Bounds(xmin, ymin, xmax, ymax));
     }
 }

@@ -65,7 +65,7 @@ public final class ColorTest {
     public void checkSameIsEqual() {
         final Color color = new Color(red, green, blue, alpha);
 
-        assertEquals("Identical colours are not equal", color, color);
+        assertEquals(color, color);
     }
 
     @Test
@@ -73,7 +73,7 @@ public final class ColorTest {
         final Color color = new Color(red, green, blue, alpha);
         final Color other = new Color(red, green, blue, alpha);
 
-        assertEquals("Identical colours are not equal", color, other);
+        assertEquals(color, other);
     }
 
     @Test
@@ -81,7 +81,7 @@ public final class ColorTest {
         final Color color = new Color(red, green, blue, alpha);
         final Color other = new Color(4, 3, 2, 1);
 
-        assertFalse("Different colors are equal", color.equals(other));
+        assertFalse(color.equals(other));
     }
 
     @Test
@@ -89,7 +89,7 @@ public final class ColorTest {
         final Color color = new Color(red, green, blue, alpha);
         final Object other = new Object();
 
-        assertFalse("Object is a Color", color.equals(other));
+        assertFalse(color.equals(other));
     }
 
     @Test
@@ -97,7 +97,7 @@ public final class ColorTest {
         final Color color = new Color(red, green, blue, alpha);
         final Color other = null;
 
-        assertFalse("Different colors are equal", color.equals(other));
+        assertFalse(color.equals(other));
     }
 
     @Test
@@ -109,9 +109,9 @@ public final class ColorTest {
         final int length = color.prepareToEncode(encoder, context);
         color.encode(encoder, context);
 
-        assertTrue("Object not fully encoded", encoder.eof());
-        assertEquals("Incorrect caclulated size", opaque.length, length);
-        assertArrayEquals("Incorrect encoding", opaque, encoder.getData());
+        assertTrue(encoder.eof());
+        assertEquals(opaque.length, length);
+        assertArrayEquals(opaque, encoder.getData());
     }
 
     @Test
@@ -123,9 +123,9 @@ public final class ColorTest {
         final int length = color.prepareToEncode(encoder, context);
         color.encode(encoder, context);
 
-        assertTrue("Object not fully encoded", encoder.eof());
-        assertEquals("Incorrect caclulated size", transparent.length, length);
-        assertArrayEquals("Incorrect encoding", transparent, encoder.getData());
+        assertTrue(encoder.eof());
+        assertEquals(transparent.length, length);
+        assertArrayEquals(transparent, encoder.getData());
     }
 
     @Test
@@ -135,11 +135,11 @@ public final class ColorTest {
 
         final Color color = new Color(decoder, context);
 
-        assertTrue("Data not fully decoded", decoder.eof());
-        assertEquals("Red not decoded", red, color.getRed());
-        assertEquals("Green not decoded", green, color.getGreen());
-        assertEquals("Blue not decoded", blue, color.getBlue());
-        assertEquals("Incorrect default value for alpha", 255, color.getAlpha());
+        assertTrue(decoder.eof());
+        assertEquals(red, color.getRed());
+        assertEquals(green, color.getGreen());
+        assertEquals(blue, color.getBlue());
+        assertEquals(255, color.getAlpha());
     }
 
     @Test
@@ -149,7 +149,7 @@ public final class ColorTest {
 
         final Color color = new Color(decoder, context);
 
-        assertTrue("Data not fully decoded", decoder.eof());
-        assertEquals("Alpha not decoded", alpha, color.getAlpha());
+        assertTrue(decoder.eof());
+        assertEquals(alpha, color.getAlpha());
     }
 }
