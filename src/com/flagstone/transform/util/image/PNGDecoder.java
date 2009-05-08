@@ -47,6 +47,7 @@ import java.util.zip.Inflater;
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.FLVDecoder;
 import com.flagstone.transform.coder.ImageTag;
+import com.flagstone.transform.datatype.ImageFormat;
 import com.flagstone.transform.image.DefineImage;
 import com.flagstone.transform.image.DefineImage2;
 

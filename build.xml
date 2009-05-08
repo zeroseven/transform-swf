@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <project name="transform" default="build" basedir=".">
 
-    <description>ANT build file for Transform.
+	<description>ANT build file for Transform.
 
         The following major targets are available:
 
@@ -33,61 +33,58 @@
 
     </description>
 
-    <property name="src.dir" location="src"/>
-    <property name="lib.dir" location="lib"/>
-    <property name="build.dir" location="bin"/>
+	<property name="src.dir" location="src" />
+	<property name="lib.dir" location="lib" />
+	<property name="build.dir" location="bin" />
 
-    <property name="package.name" value="transform"/>
-    <property name="package.dir" value="com/flagstone/${package.name}"/>
+	<property name="package.name" value="transform" />
+	<property name="package.dir" value="com/flagstone/${package.name}" />
 
-<!-- **********************************************************
+	<!-- **********************************************************
          Major targets for compiling and packaging the classes.
      ********************************************************** -->
 
-    <target name="build" depends="clean,classes,jar"
-        description="Compile optimized versions of the classes for deployment"/>
+	<target name="build" depends="clean,classes,jar" description="Compile optimized versions of the classes for deployment" />
 
-<!-- *******************************************************************
+	<!-- *******************************************************************
          Minor targets to compile and package different sets of classes.
      ******************************************************************* -->
 
-    <target name="clean" description="Remove all the compiled classes">
-        <delete dir="${build.dir}" failonerror="false"/>
-        <delete file="${package.name}.jar" failonerror="false"/>
-    </target>
+	<target name="clean" description="Remove all the compiled classes">
+		<delete dir="${build.dir}" failonerror="false" />
+		<delete file="${package.name}.jar" failonerror="false" />
+	</target>
 
-    <target name="debug" description="Compile debug versions of the classes">
+	<target name="debug" description="Compile debug versions of the classes">
 
-        <mkdir dir="${build.dir}"/>
+		<mkdir dir="${build.dir}" />
 
-        <javac srcdir="${src.dir}" destdir="${build.dir}"
-            debug="on" optimize="off" source="1.6">
-            <include name="${package.dir}/*.java" />
-            <include name="${package.dir}/util/*.java" />
-        </javac>
+		<javac srcdir="${src.dir}" destdir="${build.dir}" debug="on" optimize="off" source="1.6">
+			<include name="${package.dir}/*.java" />
+			<include name="${package.dir}/util/*.java" />
+		</javac>
 
-    </target>
+	</target>
 
-    <target name="classes" description="Compile the transform and utilities classes">
+	<target name="classes" description="Compile the transform and utilities classes">
 
-        <mkdir dir="${build.dir}"/>
+		<mkdir dir="${build.dir}" />
 
-        <javac srcdir="${src.dir}" destdir="${build.dir}"
-            debug="off" optimize="on" source="1.6">
-            <include name="${package.dir}/*.java" />
-            <include name="${package.dir}/util/*.java" />
-        </javac>
+		<javac srcdir="${src.dir}" destdir="${build.dir}" debug="off" optimize="on" source="1.6">
+			<include name="${package.dir}/*.java" />
+			<include name="${package.dir}/util/*.java" />
+		</javac>
 
-    </target>
+	</target>
 
-    <target name="jar" description="Package all of the classes in a JAR file">
+	<target name="jar" description="Package all of the classes in a JAR file">
 
-        <jar jarfile="${package.name}.jar">
-            <fileset dir="${build.dir}">
-                <include name="${package.dir}/**"/>
-            </fileset>
-        </jar>
+		<jar jarfile="${package.name}.jar">
+			<fileset dir="${build.dir}">
+				<include name="${package.dir}/**" />
+			</fileset>
+		</jar>
 
-    </target>
+	</target>
 
 </project>

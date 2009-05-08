@@ -299,7 +299,7 @@ public final class Place3 implements MovieTag {
         }
 
         if (hasEvents) {
-            final int eventSize = Context.VERSION > 5 ? 4 : 2;
+            final int eventSize = vars.get(Context.VERSION) > 5 ? 4 : 2;
             events = new ArrayList<MovieClipEventHandler>(eventSize);
 
             coder.readWord(2, false);
@@ -681,7 +681,7 @@ public final class Place3 implements MovieTag {
         length += name == null ? 0 : coder.strlen(name);
 
         if (!events.isEmpty()) {
-            final int eventSize = Context.VERSION > 5 ? 4 : 2;
+            final int eventSize = vars.get(Context.VERSION) > 5 ? 4 : 2;
 
             length += 2 + eventSize;
 
@@ -751,7 +751,7 @@ public final class Place3 implements MovieTag {
         }
 
         if (!events.isEmpty()) {
-            final int eventSize = Context.VERSION > 5 ? 4 : 2;
+            final int eventSize = vars.get(Context.VERSION) > 5 ? 4 : 2;
             int eventMask = 0;
 
             coder.writeWord(0, 2);

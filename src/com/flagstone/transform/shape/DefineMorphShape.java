@@ -144,7 +144,8 @@ public final class DefineMorphShape implements DefineTag {
         fillStyles = new ArrayList<FillStyle>();
         lineStyles = new ArrayList<MorphLineStyle>();
 
-        // final int offset = coder.readWord(4, false);
+        // offset to the start of the second shape
+        coder.readWord(4, false);
         // final int first = coder.getPointer();
 
         int fillStyleCount = coder.readByte();

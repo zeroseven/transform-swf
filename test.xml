@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<project name="transform-test" default="unit-test" basedir=".">
+
+	<description>ANT build file for testing Transform.</description>
+
+    <import file="build.xml"/>
+
+    <property name="test.dir" location="test" />
+    <property name="test.result.dir" value="${test.dir}/results" />
+    <property name="test.report.dir" value="${test.dir}/reports" />
+
+	<target name="unit-test" description="Run Unit Tests">
+
+        <delete dir="${test.result.dir}/unit" failonerror="false"/>
+        <mkdir dir="${test.result.dir}/unit" />
+
+        <delete dir="${test.report.dir}/unit" failonerror="false"/>
+        <mkdir dir="${test.report.dir}/unit" />
+
+		<junit printsummary="yes" haltonfailure="no">
+			<classpath>
+				<pathelement location="${lib.dir}/junit.jar" />
+				<pathelement location="${build.dir}" />
+			</classpath>
+
+			<formatter type="xml"/>
+
+		    <batchtest fork="no" todir="${test.result.dir}/unit">
+				<fileset dir="bin">
+					<include name="**/*Test.class" />
+					<exclude name="**/All*.class" />
+                    <exclude name="acceptance/**" />
+                    <exclude name="debug/**" />
+                    <exclude name="metrics/**" />
+                    <exclude name="tools/**" />
+				</fileset>
+			</batchtest>
+		</junit>
+
+		<junitreport todir="${test.report.dir}/unit">
+			<fileset dir="${test.result.dir}/unit">
+				<include name="*.xml" />
+			</fileset>
+			<report format="frames" todir="${test.report.dir}/unit" />
+		</junitreport>
+
+	</target>
+
+</project>

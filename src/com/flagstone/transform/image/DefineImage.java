@@ -225,6 +225,7 @@ public final class DefineImage implements ImageTag {
      */
     public DefineImage(final DefineImage object) {
         extendLength = object.extendLength;
+        identifier = object.identifier;
         width = object.width;
         height = object.height;
         pixelSize = object.pixelSize;

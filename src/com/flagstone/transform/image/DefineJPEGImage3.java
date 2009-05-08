@@ -240,29 +240,30 @@ public final class DefineJPEGImage3 implements ImageTag {
         }
     }
 
-    private void decodeInfo() {
+    private void decodeInfo()
+    {
         final FLVDecoder coder = new FLVDecoder(image);
 
-        if (coder.readWord(2, false) == 0xffd8) {
-            int marker;
+        while (!coder.eof())
+        {
+            int marker = coder.readWord(2, false);
+            
+            if (marker == 0xffd8 || marker == 0xffd9) {
+                continue;
+            }
+            
+            int size = coder.readWord(2, false);
 
-            do {
-                marker = coder.readWord(2, false);
-
-                if ((marker & 0xff00) == 0xff00) {
-                    if ((marker >= 0xffc0) && (marker <= 0xffcf)
-                            && (marker != 0xffc4) && (marker != 0xffc8)) {
-                        coder.adjustPointer(24);
-                        height = coder.readWord(2, false);
-                        width = coder.readWord(2, false);
-                        break;
-                    } else {
-                        coder
-                                .adjustPointer((coder.readWord(2, false) - 2) << 3);
-                    }
-                }
-
-            } while ((marker & 0xff00) == 0xff00);
+            if (marker >= 0xffc0 && marker <= 0xffcf 
+                    && marker != 0xffc4 && marker != 0xffc8)
+            {
+                coder.readWord(1, false);
+                height = coder.readWord(2, false);
+                width = coder.readWord(2, false);
+                return;
+            } else {
+                coder.adjustPointer((size - 2) << 3);
+            }
         }
     }
 }

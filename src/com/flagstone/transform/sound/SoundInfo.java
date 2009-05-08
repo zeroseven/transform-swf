@@ -188,7 +188,10 @@ public final class SoundInfo implements SWFEncodeable {
         loopCount = object.loopCount;
         inPoint = object.inPoint;
         outPoint = object.outPoint;
-        envelope = envelope.copy();
+        
+        if (object.envelope != null) {
+            envelope = object.envelope.copy();
+        }
     }
 
     /**
@@ -330,9 +333,9 @@ public final class SoundInfo implements SWFEncodeable {
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         int length = 3;
 
-        length += (inPoint == 0) ? 0 : 4;
-        length += (outPoint == 0) ? 0 : 4;
-        length += (loopCount == 0) ? 0 : 2;
+        length += (inPoint == null) ? 0 : 4;
+        length += (outPoint == null) ? 0 : 4;
+        length += (loopCount == null) ? 0 : 2;
 
         if (envelope != null) {
             length += envelope.prepareToEncode(coder, context);
@@ -346,18 +349,18 @@ public final class SoundInfo implements SWFEncodeable {
             throws CoderException {
         coder.writeWord(identifier, 2);
         coder.writeBits(mode.getValue(), 4);
-        coder.writeBits(envelope == null ? 1 : 0, 1);
-        coder.writeBits(loopCount == 0 ? 0 : 1, 1);
-        coder.writeBits(outPoint == 0 ? 0 : 1, 1);
-        coder.writeBits(inPoint == 0 ? 0 : 1, 1);
+        coder.writeBits(envelope == null ? 0 : 1, 1);
+        coder.writeBits(loopCount == null ? 0 : 1, 1);
+        coder.writeBits(outPoint == null ? 0 : 1, 1);
+        coder.writeBits(inPoint == null ? 0 : 1, 1);
 
-        if (inPoint != 0) {
+        if (inPoint != null) {
             coder.writeWord(inPoint, 4);
         }
-        if (outPoint != 0) {
+        if (outPoint != null) {
             coder.writeWord(outPoint, 4);
         }
-        if (loopCount != 0) {
+        if (loopCount != null) {
             coder.writeWord(loopCount, 2);
         }
         if (envelope != null) {

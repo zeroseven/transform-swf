@@ -182,6 +182,7 @@ public final class DefineSound implements DefineTag {
      *            copied.
      */
     public DefineSound(final DefineSound object) {
+        identifier = object.identifier;
         format = object.format;
         rate = object.rate;
         channelCount = object.channelCount;

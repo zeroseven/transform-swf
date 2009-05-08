@@ -287,7 +287,7 @@ public final class ButtonEventHandler implements SWFEncodeable {
         event = object.event;
         actions = new ArrayList<Action>();
 
-        for (final Action action : actions) {
+        for (final Action action : object.actions) {
             actions.add(action.copy());
         }
     }

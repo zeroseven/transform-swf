@@ -37,7 +37,6 @@ import com.flagstone.transform.coder.FLVEncoder;
 import com.flagstone.transform.coder.VideoTag;
 import com.flagstone.transform.coder.VideoTypes;
 import com.flagstone.transform.datatype.VideoFormat;
-import com.flagstone.transform.datatype.VideoFrameType;
 
 /**
  * The VideoData class is used to store the data for a single frame in a Flash
@@ -52,11 +51,40 @@ import com.flagstone.transform.datatype.VideoFrameType;
  */
 //TODO(class)
 public final class VideoData implements VideoTag {
+    
+    /**
+     * Frame is used to identify whether frames are key, optional, etc.
+     */
+    public enum Frame {
+        /**
+         * A key frame. For video encoded using the AVC format key frames are 
+         * seekable.
+         */
+        KEY,
+        /**
+         * A regular frame.
+         */
+        NORMAL,
+        /**
+         * An optional frame which may be dropped to maintain the frame rate of 
+         * the video. Used only with H263 encoded video streams. 
+         */
+        OPTIONAL,
+        /**
+         * A generated key frame. Used only by streaming servers.
+         */
+        GENERATED,
+        /**
+         * A command frame. 
+         */
+        COMMAND
+    }
+
     private static final String FORMAT = "VideoData: { codec=%s; frameType=%s; data =%d }";
 
     private int timestamp;
     private VideoFormat format;
-    private VideoFrameType frameType;
+    private Frame frameType;
     private byte[] data;
 
     private transient int length;
@@ -107,7 +135,7 @@ public final class VideoData implements VideoTag {
      *            or Constants.SCREEN_VIDEO.
      */
     public VideoData(final int timestamp, final VideoFormat format,
-            final VideoFrameType type, final byte[] data) {
+            final Frame type, final byte[] data) {
         setTimestamp(timestamp);
         setFormat(format);
         setFrameType(type);
@@ -187,7 +215,7 @@ public final class VideoData implements VideoTag {
      * @return the type of frame, either Constants.KeyFrame, Constants.Frame or
      *         Constants.Optional.
      */
-    public VideoFrameType getFrameType() {
+    public Frame getFrameType() {
         return frameType;
     }
 
@@ -202,7 +230,7 @@ public final class VideoData implements VideoTag {
      *            the type of frame being displayed, either Constants.KeyFrame,
      *            Constants.Frame or Constants.Optional.
      */
-    public void setFrameType(final VideoFrameType type) {
+    public void setFrameType(final Frame type) {
         frameType = type;
     }
 
@@ -314,13 +342,13 @@ public final class VideoData implements VideoTag {
 
         switch (value & 0x0F) {
         case 1:
-            frameType = VideoFrameType.KEY;
+            frameType = Frame.KEY;
             break;
         case 2:
-            frameType = VideoFrameType.NORMAL;
+            frameType = Frame.NORMAL;
             break;
         case 3:
-            frameType = VideoFrameType.OPTIONAL;
+            frameType = Frame.OPTIONAL;
             break;
         default:
             throw new CoderException(getClass().getName(), 0, 0, 0,

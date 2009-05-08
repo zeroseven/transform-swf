@@ -83,11 +83,21 @@ public final class Movie {
     /** TODO(class). */
    public enum Signature {
        /** TODO(method). */
-       FWS,
+       FWS(new byte[] { 0x46, 0x57, 0x53}),
        /** TODO(method). */
-       CWS
+       CWS(new byte[] { 0x43, 0x57, 0x53});
+       
+       private byte[] bytes;
+       
+       private Signature(byte[] data) {
+           bytes = Arrays.copyOf(data, data.length);
+       }
+       
+       public boolean matches(byte[] data) {
+           return Arrays.equals(bytes, data);
+       }
     }
-
+ 
     /** TODO(class). */
     public enum Encoding {
         /** TODO(method). */
@@ -353,13 +363,11 @@ public final class Movie {
         byte[] buffer = new byte[8];
         int bytesRead = stream.read(buffer);
 
-        if ((buffer[1] != 0x57) || (buffer[2] == 0x53)) {
-            throw new DataFormatException(Strings.NOT_SWF_SIGNATURE);
-        }
+        byte[] sig = Arrays.copyOf(buffer, 3);
 
-        if (buffer[0] == 0x43) {
+        if (Signature.FWS.matches(sig)) {
             signature = Signature.FWS;
-        } else if (buffer[0] == 0x46) {
+        } else if (Signature.CWS.matches(sig)) {
             signature = Signature.CWS;
         } else {
             throw new DataFormatException(Strings.NOT_SWF_SIGNATURE);
@@ -380,20 +388,15 @@ public final class Movie {
             streamIn = new DataInputStream(stream);
         }
 
-        if (!signature.equals("FWS")) {
-            throw new DataFormatException(Strings.NOT_SWF_SIGNATURE);
-        }
-
         bytesRead += streamIn.read(buffer, 0, 2);
 
-        final int size = 4 + ((12 + ((buffer[0] & 0xF8) >> 1)) >>> 3);
+        final int size = 2 + ((12 + ((buffer[0] & 0xF8) >> 1)) >>> 3);
 
         buffer = Arrays.copyOf(buffer, size + 2);
         bytesRead += streamIn.read(buffer, 2, size);
 
         final SWFDecoder decoder = new SWFDecoder(buffer);
-        final Context context = new Context();
-        context.getVariables().put(Context.VERSION, version);
+        final Context context = new Context().put(Context.VERSION, version);
 
         if (registry == null) {
             context.setRegistry(DecoderRegistry.getDefault());
@@ -406,11 +409,16 @@ public final class Movie {
         frameCount = decoder.readWord(2, false);
 
         buffer = new byte[length - size - 10];
-        streamIn.read(buffer);
+        int read = 0;
+        
+        do {
+            read += streamIn.read(buffer, read, buffer.length-read);
+        } while (read < buffer.length);
+        
         decoder.setData(buffer);
         decoder.setEncoding(encoding.toString());
 
-        final SWFFactory<MovieTag> factory = registry.getMovieDecoder();
+        final SWFFactory<MovieTag> factory = context.getRegistry().getMovieDecoder();
 
         if (factory == null) {
             objects.add(new MovieData(decoder.getData()));
@@ -427,6 +435,8 @@ public final class Movie {
 
                 objects.add(object);
             }
+            // Remove the last object which is the end of movie marker.
+            objects.remove(objects.size()-1);
         }
     }
 

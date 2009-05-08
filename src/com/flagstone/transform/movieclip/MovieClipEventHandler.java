@@ -318,7 +318,7 @@ public final class MovieClipEventHandler implements SWFEncodeable {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
-        int length = 4 + ((Context.VERSION > 5) ? 4 : 2);
+        int length = 4 + ((context.getVariables().get(Context.VERSION) > 5) ? 4 : 2);
 
         offset = (event & MovieClipEvent.KEY_PRESS.getValue()) == 0 ? 0 : 1;
 
@@ -334,7 +334,7 @@ public final class MovieClipEventHandler implements SWFEncodeable {
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
-        final int eventSize = (Context.VERSION > 5) ? 4 : 2;
+        final int eventSize = (context.getVariables().get(Context.VERSION)> 5) ? 4 : 2;
 
         coder.writeWord(event, eventSize);
         coder.writeWord(offset, 4);

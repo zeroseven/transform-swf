@@ -65,6 +65,7 @@ import com.flagstone.transform.coder.SWFEncoder;
  */
 //TODO(class)
 public final class Protect implements MovieTag {
+    
     private static final String FORMAT = "Protect: { password=%s }";
 
     private String password;
@@ -103,7 +104,14 @@ public final class Protect implements MovieTag {
     }
 
     /**
-     * Creates a Protect object with the specified password - uses for file with
+     * Creates a Protect object with no password - Flash versions 1 to 3 only.
+      */
+    public Protect() {
+        // password remains null
+    }
+
+    /**
+     * Creates a Protect object with the specified password - used for file with
      * Flash version 4 and above.
      *
      * @param password
@@ -146,7 +154,7 @@ public final class Protect implements MovieTag {
         password = aString;
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public Protect copy() {
         return new Protect(this);
     }
@@ -163,7 +171,7 @@ public final class Protect implements MovieTag {
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         length = 0;
 
-        if (password.length() > 0) {
+        if (password != null) {
             length += 2 + coder.strlen(password);
         }
         return (length > 62 ? 6 : 2) + length;
@@ -174,7 +182,7 @@ public final class Protect implements MovieTag {
             throws CoderException {
         coder.writeWord((MovieTypes.PROTECT << 6) | length, 2);
 
-        if (password.length() > 0) {
+        if (password != null) {
             coder.writeWord(0, 2);
             coder.writeString(password);
         }

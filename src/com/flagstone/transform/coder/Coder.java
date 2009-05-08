@@ -48,6 +48,16 @@ public class Coder {
     public static final String UNDERFLOW = "Underflow";
     /** TODO(doc). */
     public static final String OVERFLOW = "Overflow";
+    
+    /** TODO(doc). */
+    public static final int MASK_BYTE_0 = 255;
+
+    /** TODO(doc). */
+    public static final int SELECT_BYTE_3 = 24;
+    /** TODO(doc). */
+    public static final int SELECT_BYTE_2 = 16;
+    /** TODO(doc). */
+    public static final int SELECT_BYTE_1 = 8;
 
     protected String encoding;
     protected byte[] data;

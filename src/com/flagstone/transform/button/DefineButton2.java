@@ -136,9 +136,9 @@ public final class DefineButton2 implements DefineTag {
 
                 if (offsetToNext == 0) {
                     event = new ButtonEventHandler(
-                            (end - coder.getPointer()) >>> 3, coder, context);
+                            (end - coder.getPointer() - 16) >>> 3, coder, context);
                 } else {
-                    event = new ButtonEventHandler(offsetToNext, coder, context);
+                    event = new ButtonEventHandler(offsetToNext - 2, coder, context);
                 }
                 events.add(event);
 

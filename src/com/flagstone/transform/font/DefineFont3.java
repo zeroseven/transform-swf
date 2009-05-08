@@ -700,7 +700,7 @@ public final class DefineFont3 implements DefineTag {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
-        wideCodes = (Context.VERSION > 5)
+        wideCodes = (context.getVariables().get(Context.VERSION) > 5)
                 || (encoding != CharacterEncoding.ANSI);
 
         final Map<Integer, Integer> vars = context.getVariables();
@@ -786,7 +786,7 @@ public final class DefineFont3 implements DefineTag {
         coder.writeBits(wideCodes ? 1 : 0, 1);
         coder.writeBits(italic ? 1 : 0, 1);
         coder.writeBits(bold ? 1 : 0, 1);
-        coder.writeWord(Context.VERSION > 5 ? language : 0, 1);
+        coder.writeWord(vars.get(Context.VERSION) > 5 ? language : 0, 1);
         coder.writeWord(coder.strlen(name) - 1, 1);
 
         coder.writeString(name);

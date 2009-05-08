@@ -937,7 +937,7 @@ public final class DefineTextField implements DefineTag {
         length += (maxLength > 0) ? 2 : 0;
         length += (containsLayout()) ? 9 : 0;
         length += coder.strlen(variableName);
-        length += (initialText.length() > 0) ? coder.strlen(initialText) : 0;
+        length += (initialText == null) ? 0 : coder.strlen(initialText);
 
         vars.remove(Context.TRANSPARENT);
 
@@ -962,7 +962,7 @@ public final class DefineTextField implements DefineTag {
         vars.put(Context.TRANSPARENT, 1);
 
         bounds.encode(coder, context);
-        coder.writeBits(initialText.length() > 0 ? 1 : 0, 1);
+        coder.writeBits(initialText != null ? 1 : 0, 1);
         coder.writeBits(wordWrapped ? 1 : 0, 1);
         coder.writeBits(multiline ? 1 : 0, 1);
         coder.writeBits(password ? 1 : 0, 1);
@@ -1003,7 +1003,7 @@ public final class DefineTextField implements DefineTag {
 
         coder.writeString(variableName);
 
-        if (initialText.length() > 0) {
+        if (initialText != null) {
             coder.writeString(initialText);
         }
         vars.remove(Context.TRANSPARENT);

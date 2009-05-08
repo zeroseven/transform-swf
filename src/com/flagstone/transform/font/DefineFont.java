@@ -244,7 +244,7 @@ public final class DefineFont implements DefineTag {
             throws CoderException {
         final int start = coder.getPointer();
 
-        if (length >= 63) {
+        if (length > 62) {
             coder.writeWord((MovieTypes.DEFINE_FONT << 6) | 0x3F, 2);
             coder.writeWord(length, 4);
         } else {

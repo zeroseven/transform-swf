@@ -193,6 +193,7 @@ public final class DefineImage2 implements ImageTag {
      */
     public DefineImage2(final DefineImage2 object) {
         extendLength = object.extendLength;
+        identifier = object.identifier;
         width = object.width;
         height = object.height;
         pixelSize = object.pixelSize;
