@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.zip.DataFormatException;
 
 import com.flagstone.transform.coder.MovieTag;
+import com.flagstone.transform.sound.DefineSound;
 
 /**
  * SoundDecoder is an interface that classes used to decode different sound
@@ -25,7 +26,7 @@ public interface SoundDecoder {
     /** TODO(method). */
     void read(InputStream stream, int size) throws IOException, DataFormatException;
     /** TODO(method). */
-    MovieTag defineSound(int identifier);
+    DefineSound defineSound(int identifier);
     /** TODO(method). */
     List<MovieTag> streamSound(int frameRate);
 }

@@ -41,6 +41,7 @@ import java.util.zip.DataFormatException;
 
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.MovieTag;
+import com.flagstone.transform.sound.DefineSound;
 
 /**
  * TODO(class).
@@ -93,7 +94,7 @@ public final class SoundFactory {
     /**
      * TODO(method).
      */
-    public MovieTag defineSound(final int identifier) {
+    public DefineSound defineSound(final int identifier) {
         return decoder.defineSound(identifier);
     }
 

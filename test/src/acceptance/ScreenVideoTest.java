@@ -30,11 +30,13 @@ import com.flagstone.transform.util.image.ImageRegistry;
 import com.flagstone.transform.video.ImageBlock;
 import com.flagstone.transform.video.ScreenPacket;
 
-public final class ShowScreenVideoImageTest {
+public final class ScreenVideoTest {
+    
     @Test
     public void showPNG() throws IOException, DataFormatException {
+        
         final File sourceDir = new File("test/data/png-screenshots");
-        final File destDir = new File("test/results/ShowScreenVideoImageTest");
+        final File destDir = new File("test/results/acceptance/ScreenVideoTest");
 
         final FilenameFilter filter = new FilenameFilter() {
             public boolean accept(final File directory, final String name) {
@@ -44,16 +46,12 @@ public final class ShowScreenVideoImageTest {
 
         final String[] files = sourceDir.list(filter);
 
-        Movie movie;
-        MovieTag image;
+        Movie movie = new Movie();
 
         File destFile = null;
 
         final int blockWidth = 64;
         final int blockHeight = 64;
-
-        int screenWidth;
-        int screenHeight;
 
         final int numberOfFrames = files.length;
         final Deblocking deblocking = Deblocking.OFF;
@@ -61,27 +59,17 @@ public final class ShowScreenVideoImageTest {
         final VideoFormat codec = VideoFormat.SCREEN;
         int identifier;
 
-        final ImageInfo info = new ImageInfo();
-        info.setInput(new RandomAccessFile(new File(sourceDir, files[0]), "r"));
-        info.setDetermineImageNumber(true);
+        final ImageFactory factory = new ImageFactory();
+        factory.read(new File(files[0]));
+        final ImageTag image = factory.defineImage(movie.identifier());
 
-        if (!info.check()) {
-            throw new DataFormatException(Strings.INVALID_FORMAT);
-        }
-
-        ImageDecoder provider = ImageRegistry.getImageProvider(info
-                .getImageFormat().getMimeType());
-        provider.read(new File(sourceDir, files[0]));
-        image = provider.defineImage(0);
-
-        screenWidth = ((ImageTag) image).getWidth();
-        screenHeight = ((ImageTag) image).getHeight();
+        int screenWidth = image.getWidth();
+        int screenHeight = image.getHeight();
 
         movie = new Movie();
         identifier = movie.identifier();
 
-        movie
-                .setFrameSize(new Bounds(0, 0, screenWidth * 20,
+        movie.setFrameSize(new Bounds(0, 0, screenWidth * 20,
                         screenHeight * 20));
         movie.setFrameRate(4.0f);
         movie.add(new Background(WebPalette.ALICE_BLUE.color()));
@@ -92,9 +80,8 @@ public final class ShowScreenVideoImageTest {
         final List<ImageBlock> prev = new ArrayList<ImageBlock>();
         final List<ImageBlock> next = new ArrayList<ImageBlock>();
         List<ImageBlock> delta = new ArrayList<ImageBlock>();
-/* TODO(fix)
-        ImageFactory.getImageAsBlocks(provider.getImage(), provider.getWidth(),
-                provider.getHeight(), prev, blockWidth, blockHeight);
+        
+        factory.getImageAsBlocks(prev, blockWidth, blockHeight);
 
         ScreenPacket packet = new ScreenPacket(true, screenWidth, screenHeight,
                 blockWidth, blockHeight, prev);
@@ -108,19 +95,8 @@ public final class ShowScreenVideoImageTest {
         for (int i = 1; i < numberOfFrames; i++) {
             final File srcFile = new File(sourceDir, files[i]);
 
-            info.setInput(new RandomAccessFile(srcFile, "r"));
-            info.setDetermineImageNumber(true);
-
-            if (!info.check()) {
-                throw new DataFormatException(Strings.INVALID_FORMAT);
-            }
-
-            provider = ImageRegistry.getImageProvider(info.getImageFormat());
-            provider.read(srcFile);
-
-            ImageFactory.getImageAsBlocks(provider.getImage(), provider
-                    .getWidth(), provider.getHeight(), next, blockWidth,
-                    blockHeight);
+            factory.read(srcFile);
+            factory.getImageAsBlocks(next, blockWidth, blockHeight);
 
             delta = new ArrayList<ImageBlock>(prev.size());
 
@@ -141,7 +117,7 @@ public final class ShowScreenVideoImageTest {
             movie.add(new VideoFrame(identifier, i, packet.encode()));
             movie.add(ShowFrame.getInstance());
         }
-*/
+
         destFile = new File(destDir, sourceDir.getName() + ".swf");
         movie.encodeToFile(destFile);
     }

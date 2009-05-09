@@ -307,7 +307,7 @@ public final class Place2 implements MovieTag {
      * Creates an uninitialised Place2 object.
      */
     public Place2() {
-        // Creates uninitialised object
+        events = new ArrayList<MovieClipEventHandler>();
     }
 
     /**

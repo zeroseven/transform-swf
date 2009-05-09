@@ -91,7 +91,7 @@ public final class FontFactory {
      *
      * @return
      */
-    Font[] getFonts() {
+    public Font[] getFonts() {
         return decoder.getFonts();
     }
 }

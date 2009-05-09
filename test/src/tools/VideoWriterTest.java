@@ -1,5 +1,5 @@
 /*
- * DecodeVideoTest.java
+ * DecodeMovieTest.java
  * Transform
  *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
@@ -27,67 +27,66 @@
  * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package acceptance;
+package tools;
 
 import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.util.Arrays;
-import java.util.Collection;
+import java.io.IOException;
+import java.util.zip.DataFormatException;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
 
+import com.flagstone.transform.Movie;
 import com.flagstone.transform.Video;
 
 /**
- * DecodeVideoTest is used to create Videos using all the Flash files in a given
+ * DecodeMovieTest is used to create Movies using all the Flash files in a given
  * directory to verify that they can be decoded correctly.
  */
-@RunWith(Parameterized.class)
-public final class VideoDecodeTest {
+public final class VideoWriterTest {
+    private static File srcDir;
+    private static File destDir;
+    private static FilenameFilter filter;
 
-    @Parameters
-    public static Collection<Object[]>  files() {
-
-        final File srcDir;
-
+    @BeforeClass
+    public static void setUp() {
         if (System.getProperty("test.suite") == null) {
             srcDir = new File("test/data/flv/reference");
         } else {
             srcDir = new File(System.getProperty("test.suites"));
         }
 
-        final FilenameFilter filter = new FilenameFilter() {
+        filter = new FilenameFilter() {
             public boolean accept(final File directory, final String name) {
                 return name.endsWith(".flv");
             }
         };
-        
-        String[] files = srcDir.list(filter);
-        Object[][] collection = new Object[files.length][1];
 
-        for (int i=0; i<files.length; i++) {
-            collection[i][0] = new File(srcDir, files[i]);
+        destDir = new File("test/results", "VideoWriterTest");
+
+        if (!destDir.exists() && !destDir.mkdirs()) {
+            fail();
         }
-        return Arrays.asList(collection);
-    }
-
-    private File file;
-
-    public VideoDecodeTest(File file) {
-        this.file = file;
     }
 
     @Test
-    public void decode() {
-        try {
-            new Video().decodeFromFile(file);
-        } catch (Exception e) {
-            fail(file.getPath());
+    public void write() throws DataFormatException, IOException {
+        File sourceFile = null;
+        File destFile;
+
+        final Video video = new Video();
+        final VideoWriter writer = new VideoWriter();
+
+        final String[] files = srcDir.list(filter);
+
+        for (final String file : files) {
+            sourceFile = new File(srcDir, file);
+            destFile = new File(destDir, file.replaceFirst("\\.flv", ".txt"));
+            video.decodeFromFile(sourceFile);
+            writer.write(video, destFile);
         }
     }
 }

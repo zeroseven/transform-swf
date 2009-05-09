@@ -33,11 +33,10 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.datatype.VideoFrameType;
 
 public final class VideoFrameTest {
 
-    private transient VideoFrameType fixture;
+    private transient VideoFrame fixture;
 
     private final transient byte[] encoded = new byte[] { 0x06, 0x01, 0x01,
             0x00, 0x02, 0x00, 0x06, 0x50 };
