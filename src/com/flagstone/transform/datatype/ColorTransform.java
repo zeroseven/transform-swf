@@ -31,6 +31,7 @@
 package com.flagstone.transform.datatype;
 
 import com.flagstone.transform.Constants;
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -98,6 +99,7 @@ public final class ColorTransform implements SWFEncodeable {
     private static final String FORMAT = "ColorTransform: { "
             + "multiply=[%f, %f, %f, %f]; add=[%d, %d, %d, %d] }";
     
+    private static final int FIELD_SIZE = 4;
     private static final float SCALE_MULTIPLY = 256.0f;
     private static final int DEFAULT_MULTIPLY = 256;
     private static final int DEFAULT_ADD = 0;
@@ -139,7 +141,7 @@ public final class ColorTransform implements SWFEncodeable {
         hasAdd = coder.readBits(1, false) != 0;
         hasMultiply = coder.readBits(1, false) != 0;
         hasAlpha = context.getVariables().containsKey(Context.TRANSPARENT);
-        size = coder.readBits(4, false);
+        size = coder.readBits(FIELD_SIZE, false);
 
         if (hasMultiply) {
             multiplyRed = coder.readBits(size, true);
@@ -364,8 +366,7 @@ public final class ColorTransform implements SWFEncodeable {
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
 
-        // include extra 7 bits for byte alignment
-        int numberOfBits = 13;
+        int numberOfBits = 2 + FIELD_SIZE + Coder.BYTE_ALIGN;
 
         hasAlpha = context.getVariables().containsKey(Context.TRANSPARENT);
         size = 0;
@@ -398,7 +399,7 @@ public final class ColorTransform implements SWFEncodeable {
             numberOfBits += size * (hasAlpha ? Color.RGBA : Color.RGB);
         }
 
-        return numberOfBits >> 3;
+        return numberOfBits >> Coder.BITS_TO_BYTES;
     }
 
     /** {@inheritDoc} */
@@ -407,7 +408,7 @@ public final class ColorTransform implements SWFEncodeable {
 
         coder.writeBits(hasAdd ? 1 : 0, 1);
         coder.writeBits(hasMultiply ? 1 : 0, 1);
-        coder.writeBits(size, 4);
+        coder.writeBits(size, FIELD_SIZE);
 
         if (hasMultiply) {
             coder.writeBits(multiplyRed, size);

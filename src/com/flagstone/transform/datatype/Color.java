@@ -67,8 +67,10 @@ public final class Color implements SWFEncodeable {
     private static final String FORMAT = "Color: {"
     		+ " red=%d; green=%d; blue=%d; alpha=%d }";
 
-    private static final int MIN_LEVEL = 0;
-    private static final int MAX_LEVEL = 255;
+    /** The minimum value that can be assigned to a colour channel. */
+    public static final int MIN_LEVEL = 0;
+    /** The maximum value that can be assigned to a colour channel. */
+    public static final int MAX_LEVEL = 255;
 
     private final transient int red;
     private final transient int green;

@@ -44,74 +44,74 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 public final class BoundsTest {
 
-    private static int xmin = 1;
-    private static int ymin = 2;
-    private static int xmax = 3;
-    private static int ymax = 4;
+    private static final int XMIN = 1;
+    private static final int YMIN = 2;
+    private static final int XMAX = 3;
+    private static final int YMAX = 4;
 
-    private final transient byte[] encoded = {32, -103, 32};
+    private static final byte[] ENCODED = {32, -103, 32};
 
     @Test
     public void checkWidth() {
-        assertEquals(3, new Bounds(1, 2, 4, 8).getWidth());
+        assertEquals(XMAX - XMIN, new Bounds(XMIN, 0, XMAX, 0).getWidth());
     }
 
     @Test
     public void checkHeight() {
-        assertEquals(6, new Bounds(1, 2, 4, 8).getHeight());
+        assertEquals(YMAX - YMIN, new Bounds(0, YMIN, 0, YMAX).getHeight());
     }
 
     @Test
     public void checkNullIsNotEqual() {
         final Bounds bounds = null;
-        assertFalse(new Bounds(xmin, ymin, xmax, ymax).equals(bounds));
+        assertFalse(new Bounds(XMIN, YMIN, XMAX, YMAX).equals(bounds));
     }
 
     @Test
     public void checkObjectIsNotEqual() {
-        assertFalse(new Bounds(xmin, ymin, xmax, ymax).equals(new Object()));
+        assertFalse(new Bounds(XMIN, YMIN, XMAX, YMAX).equals(new Object()));
     }
 
     @Test
     public void checkSameIsEqual() {
-        final Bounds fixture = new Bounds(xmin, ymin, xmax, ymax);
+        final Bounds fixture = new Bounds(XMIN, YMIN, XMAX, YMAX);
         assertEquals(fixture, fixture);
     }
 
     @Test
     public void checkDifferentIsNotEqual() {
-        final Bounds fixture = new Bounds(xmin, ymin, xmax, ymax);
-        assertFalse(fixture.equals(new Bounds(ymax, xmax, ymin, xmin)));
+        final Bounds fixture = new Bounds(XMIN, YMIN, XMAX, YMAX);
+        assertFalse(fixture.equals(new Bounds(YMAX, XMAX, YMIN, XMIN)));
     }
 
     @Test
     public void checkOtherIsEqual() {
-        assertTrue(new Bounds(xmin, ymin, xmax, ymax).equals(
-                new Bounds(xmin, ymin, xmax, ymax)));
+        assertTrue(new Bounds(XMIN, YMIN, XMAX, YMAX).equals(
+                new Bounds(XMIN, YMIN, XMAX, YMAX)));
     }
 
     @Test
     public void encodeWithBoundsSet() throws CoderException {
-        final SWFEncoder encoder = new SWFEncoder(encoded.length);
+        final SWFEncoder encoder = new SWFEncoder(ENCODED.length);
         final Context context = new Context();
 
-        final Bounds fixture = new Bounds(xmin, ymin, xmax, ymax);
+        final Bounds fixture = new Bounds(XMIN, YMIN, XMAX, YMAX);
         final int length = fixture.prepareToEncode(encoder, context);
 
         fixture.encode(encoder, context);
 
         assertTrue(encoder.eof());
-        assertEquals(encoded.length, length);
-        assertArrayEquals(encoded, encoder.getData());
+        assertEquals(ENCODED.length, length);
+        assertArrayEquals(ENCODED, encoder.getData());
     }
 
     @Test
     public void decodeWithBoundsSet() throws CoderException {
-        final SWFDecoder decoder = new SWFDecoder(encoded);
+        final SWFDecoder decoder = new SWFDecoder(ENCODED);
 
         final Bounds fixture = new Bounds(decoder);
 
         assertTrue(decoder.eof());
-        assertEquals(fixture, new Bounds(xmin, ymin, xmax, ymax));
+        assertEquals(fixture, new Bounds(XMIN, YMIN, XMAX, YMAX));
     }
 }

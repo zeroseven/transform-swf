@@ -31,6 +31,7 @@
 package com.flagstone.transform.datatype;
 
 import com.flagstone.transform.Constants;
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.Encoder;
@@ -72,6 +73,8 @@ public final class Bounds implements SWFEncodeable {
     private static final String FORMAT = "Bounds: {"
     		+ " minX=%d; minY=%d; maxX=%d; maxY=%d }";
 
+    private static final int FIELD_SIZE = 5;
+
     private final transient int minX;
     private final transient int minY;
     private final transient int maxX;
@@ -90,7 +93,7 @@ public final class Bounds implements SWFEncodeable {
      *             if an error occurs while decoding the data.
      */
     public Bounds(final SWFDecoder coder) throws CoderException {
-        size = coder.readBits(5, false);
+        size = coder.readBits(FIELD_SIZE, false);
         minX = coder.readBits(size, true);
         maxX = coder.readBits(size, true);
         minY = coder.readBits(size, true);
@@ -200,14 +203,14 @@ public final class Bounds implements SWFEncodeable {
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         size = Encoder.maxSize(minX, minY, maxX, maxY);
-        // add extra 7 bits so result is byte aligned.
-        return (12 + (size << 2)) >> 3;
+        return (FIELD_SIZE + Coder.BYTE_ALIGN
+                    + (size << 2)) >> Coder.BITS_TO_BYTES;
     }
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
-        coder.writeBits(size, 5);
+        coder.writeBits(size, FIELD_SIZE);
         coder.writeBits(minX, size);
         coder.writeBits(maxX, size);
         coder.writeBits(minY, size);

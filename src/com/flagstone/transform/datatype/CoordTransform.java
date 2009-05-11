@@ -31,6 +31,7 @@
 package com.flagstone.transform.datatype;
 
 import com.flagstone.transform.Constants;
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.Encoder;
@@ -66,9 +67,19 @@ public final class CoordTransform implements SWFEncodeable {
     private static final String FORMAT = "CoordTransform: { scaleX=%f;"
             + " scaleY=%f; shearX=%f; shearY=%f; transX=%d; transY=%d }";
 
-    private static final float SCALE_FACTOR = 65536.0f;
+    /** 
+     * The factor applied to real numbers used for scaling terms when storing 
+     * them as fixed point values.
+     */
+    public static final float SCALE_FACTOR = 65536.0f;
+    /** 
+     * The factor applied to real numbers used for shearing terms when storing 
+     * them as fixed point values.
+     */
+    public static final float SHEAR_FACTOR = 65536.0f;
+
+    private static final int FIELD_SIZE = 5;
     private static final int DEFAULT_SCALE = 65536;
-    private static final float SHEAR_FACTOR = 65536.0f;
     private static final int DEFAULT_SHEAR = 0;
 
     /**
@@ -156,10 +167,11 @@ public final class CoordTransform implements SWFEncodeable {
     public static CoordTransform rotate(final int angle) {
 
         final double radians = Math.toRadians(angle);
-        final float cos = (float) Math.cos(radians);
-        final float sin = (float) Math.sin(radians);
+        final double cos =  Math.cos(radians);
+        final double sin = Math.sin(radians);
 
-        return new CoordTransform(cos, cos, sin, -sin, 0, 0);
+        return new CoordTransform((float)cos, (float)cos, 
+                (float)sin, -(float)sin, 0, 0);
     }
 
     private final transient int scaleX;
@@ -194,7 +206,7 @@ public final class CoordTransform implements SWFEncodeable {
         hasScale = coder.readBits(1, false) != 0;
 
         if (hasScale) {
-            scaleSize = coder.readBits(5, false);
+            scaleSize = coder.readBits(FIELD_SIZE, false);
             scaleX = coder.readBits(scaleSize, true);
             scaleY = coder.readBits(scaleSize, true);
         } else {
@@ -205,7 +217,7 @@ public final class CoordTransform implements SWFEncodeable {
         hasShear = coder.readBits(1, false) != 0;
 
         if (hasShear) {
-            shearSize = coder.readBits(5, false);
+            shearSize = coder.readBits(FIELD_SIZE, false);
             shearX = coder.readBits(shearSize, true);
             shearY = coder.readBits(shearSize, true);
         } else {
@@ -213,7 +225,7 @@ public final class CoordTransform implements SWFEncodeable {
             shearY = DEFAULT_SHEAR;
         }
 
-        transSize = coder.readBits(5, false);
+        transSize = coder.readBits(FIELD_SIZE, false);
         translateX = coder.readBits(transSize, true);
         translateY = coder.readBits(transSize, true);
 
@@ -356,8 +368,8 @@ public final class CoordTransform implements SWFEncodeable {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
-        // include extra 7 bits for byte alignment
-        int numberOfBits = 14;
+
+        int numberOfBits = 2 + FIELD_SIZE + Coder.BYTE_ALIGN;
 
         hasScale = (scaleX != DEFAULT_SCALE) || (scaleY != DEFAULT_SCALE);
         hasShear = (shearX != 0) || (shearY != 0);
@@ -373,26 +385,25 @@ public final class CoordTransform implements SWFEncodeable {
 
         if (hasScale) {
             scaleSize = Math.max(Encoder.size(scaleX), Encoder.size(scaleY));
-            numberOfBits += 5 + (scaleSize << 1);
+            numberOfBits += FIELD_SIZE + (scaleSize << 1);
         }
 
         if (hasShear) {
             shearSize = Math.max(Encoder.size(shearX), Encoder.size(shearY));
-            numberOfBits += 5 + (shearSize << 1);
+            numberOfBits += FIELD_SIZE + (shearSize << 1);
         }
 
-        return numberOfBits >> 3;
+        return numberOfBits >> Coder.BITS_TO_BYTES;
     }
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
-        coder.alignToByte();
 
         coder.writeBits(hasScale ? 1 : 0, 1);
 
         if (hasScale) {
-            coder.writeBits(scaleSize, 5);
+            coder.writeBits(scaleSize, FIELD_SIZE);
             coder.writeBits(scaleX, scaleSize);
             coder.writeBits(scaleY, scaleSize);
         }
@@ -400,12 +411,12 @@ public final class CoordTransform implements SWFEncodeable {
         coder.writeBits(hasShear ? 1 : 0, 1);
 
         if (hasShear) {
-            coder.writeBits(shearSize, 5);
+            coder.writeBits(shearSize, FIELD_SIZE);
             coder.writeBits(shearX, shearSize);
             coder.writeBits(shearY, shearSize);
         }
 
-        coder.writeBits(transSize, 5);
+        coder.writeBits(transSize, FIELD_SIZE);
         coder.writeBits(translateX, transSize);
         coder.writeBits(translateY, transSize);
 
