@@ -54,7 +54,7 @@ import com.flagstone.transform.coder.SWFEncoder;
 public final class Color implements SWFEncodeable {
 
     /**
-     * The number of channels in an opaque Color object. Only used within the 
+     * The number of channels in an opaque Color object. Only used within the
      * framework or when adding a new class.
      */
     public static final int RGB = 3;
@@ -65,7 +65,7 @@ public final class Color implements SWFEncodeable {
     public static final int RGBA = 4;
 
     private static final String FORMAT = "Color: {"
-    		+ " red=%d; green=%d; blue=%d; alpha=%d }";
+            + " red=%d; green=%d; blue=%d; alpha=%d }";
 
     /** The minimum value that can be assigned to a colour channel. */
     public static final int MIN_LEVEL = 0;
@@ -108,7 +108,7 @@ public final class Color implements SWFEncodeable {
     /**
      * Creates an opaque colour object using an integer to represent the values
      * for the red, green and blue colour channels.
-     * 
+     *
      * @param rgb
      *            the integer value of the colour channels. The value is a
      *            24-bit integer with the value for the red channel in the most
@@ -122,17 +122,17 @@ public final class Color implements SWFEncodeable {
     }
 
     /**
-     * Creates a transparent colour object using two integers, the first to 
+     * Creates a transparent colour object using two integers, the first to
      * represents the values for the red, green and blue colour channels and the
      * second the value for the transparency.
-     * 
+     *
      * @param rgb
      *            the integer value of the colour channels. The value is a
      *            24-bit integer with the value for the red channel in the most
      *            significant byte and blue in the least significant.
      * @param alpha
-     *            the value for the level of transparency, in the range 0..255
-     *            where 0 is completely transparent and 255 is completely opaque.
+     *            the level of transparency, in the range 0..255 where 0 is
+     *            completely transparent and 255 is completely opaque.
      */
     public Color(final int rgb, final int alpha) {
         red = (rgb >>> Coder.SELECT_BYTE_2) & Coder.MASK_BYTE_0;
@@ -249,8 +249,8 @@ public final class Color implements SWFEncodeable {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
-        return (context.getVariables().containsKey(Context.TRANSPARENT)) ?
-                RGBA : RGB;
+        return (context.getVariables().containsKey(Context.TRANSPARENT))
+            ? RGBA : RGB;
     }
 
     /** {@inheritDoc} */

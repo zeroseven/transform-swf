@@ -98,7 +98,7 @@ public final class ColorTransform implements SWFEncodeable {
 
     private static final String FORMAT = "ColorTransform: { "
             + "multiply=[%f, %f, %f, %f]; add=[%d, %d, %d, %d] }";
-    
+
     private static final int FIELD_SIZE = 4;
     private static final float SCALE_MULTIPLY = 256.0f;
     private static final int DEFAULT_MULTIPLY = 256;
@@ -147,7 +147,12 @@ public final class ColorTransform implements SWFEncodeable {
             multiplyRed = coder.readBits(size, true);
             multiplyGreen = coder.readBits(size, true);
             multiplyBlue = coder.readBits(size, true);
-            multiplyAlpha = hasAlpha ? coder.readBits(size, true) : DEFAULT_MULTIPLY;
+            
+            if (hasAlpha) {
+                multiplyAlpha = coder.readBits(size, true);
+            } else {
+                multiplyAlpha = DEFAULT_MULTIPLY;
+            }
         } else {
             multiplyRed = DEFAULT_MULTIPLY;
             multiplyGreen = DEFAULT_MULTIPLY;
@@ -159,7 +164,12 @@ public final class ColorTransform implements SWFEncodeable {
             addRed = coder.readBits(size, true);
             addGreen = coder.readBits(size, true);
             addBlue = coder.readBits(size, true);
-            addAlpha = hasAlpha ? coder.readBits(size, true) : DEFAULT_ADD;
+            
+            if (hasAlpha) {
+                addAlpha = coder.readBits(size, true);
+            } else {
+                addAlpha = DEFAULT_ADD;
+            }
         } else {
             addRed = DEFAULT_ADD;
             addGreen = DEFAULT_ADD;

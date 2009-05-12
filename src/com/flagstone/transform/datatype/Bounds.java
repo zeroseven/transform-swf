@@ -71,7 +71,7 @@ import com.flagstone.transform.coder.SWFEncoder;
 public final class Bounds implements SWFEncodeable {
 
     private static final String FORMAT = "Bounds: {"
-    		+ " minX=%d; minY=%d; maxX=%d; maxY=%d }";
+            + " minX=%d; minY=%d; maxX=%d; maxY=%d }";
 
     private static final int FIELD_SIZE = 5;
 

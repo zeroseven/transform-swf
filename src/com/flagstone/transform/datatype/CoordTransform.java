@@ -67,13 +67,13 @@ public final class CoordTransform implements SWFEncodeable {
     private static final String FORMAT = "CoordTransform: { scaleX=%f;"
             + " scaleY=%f; shearX=%f; shearY=%f; transX=%d; transY=%d }";
 
-    /** 
-     * The factor applied to real numbers used for scaling terms when storing 
+    /**
+     * The factor applied to real numbers used for scaling terms when storing
      * them as fixed point values.
      */
     public static final float SCALE_FACTOR = 65536.0f;
-    /** 
-     * The factor applied to real numbers used for shearing terms when storing 
+    /**
+     * The factor applied to real numbers used for shearing terms when storing
      * them as fixed point values.
      */
     public static final float SHEAR_FACTOR = 65536.0f;
@@ -170,8 +170,8 @@ public final class CoordTransform implements SWFEncodeable {
         final double cos =  Math.cos(radians);
         final double sin = Math.sin(radians);
 
-        return new CoordTransform((float)cos, (float)cos, 
-                (float)sin, -(float)sin, 0, 0);
+        return new CoordTransform((float) cos, (float) cos,
+                (float) sin, -(float) sin, 0, 0);
     }
 
     private final transient int scaleX;
@@ -400,20 +400,22 @@ public final class CoordTransform implements SWFEncodeable {
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
 
-        coder.writeBits(hasScale ? 1 : 0, 1);
-
         if (hasScale) {
+            coder.writeBits(1, 1);
             coder.writeBits(scaleSize, FIELD_SIZE);
             coder.writeBits(scaleX, scaleSize);
             coder.writeBits(scaleY, scaleSize);
+        } else {
+            coder.writeBits(0, 1);
         }
 
-        coder.writeBits(hasShear ? 1 : 0, 1);
-
         if (hasShear) {
+            coder.writeBits(1, 1);
             coder.writeBits(shearSize, FIELD_SIZE);
             coder.writeBits(shearX, shearSize);
             coder.writeBits(shearY, shearSize);
+        } else {
+            coder.writeBits(0, 1);
         }
 
         coder.writeBits(transSize, FIELD_SIZE);
