@@ -91,6 +91,6 @@ public final class RegisterCopyTest {
         fixture = new RegisterCopy(decoder);
 
         assertTrue(decoder.eof());
-        assertEquals(number, fixture.getRegisterNumber());
+        assertEquals(number, fixture.getNumber());
     }
 }

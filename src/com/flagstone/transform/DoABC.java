@@ -50,7 +50,8 @@ import com.flagstone.transform.coder.SWFEncoder;
 //TODO(class)
 public final class DoABC implements MovieTag {
 
-    private static final String FORMAT = "DoABC: { name=%s; deferred=%d; actions=data[%d] {...} }";
+    private static final String FORMAT = "DoABC: { name=%s; deferred=%d;"
+            + " actions=byte[%d] {...} }";
 
     private String name;
     private int deferred;

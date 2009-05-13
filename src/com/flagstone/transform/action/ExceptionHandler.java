@@ -1,25 +1,32 @@
 /*
- * ExceptionHandler.java Transform Copyright (c) 2001-2009 Flagstone Software
- * Ltd. All rights reserved. Redistribution and use in source and binary forms,
- * with or without modification, are permitted provided that the following
- * conditions are met: Redistributions of source code must retain the above
- * copyright notice, this list of conditions and the following disclaimer.
- * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution. Neither the name of
- * Flagstone Software Ltd. nor the names of its contributors may be used to
- * endorse or promote products derived from this software without specific prior
- * written permission. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
- * CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT
- * NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
- * PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
- * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
- * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
- * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
- * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
- * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * ExceptionHandler.java 
+ * Transform 
+ * 
+ * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved. 
+ * 
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ *  * Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its
+ *    contributors may be used to endorse or promote products derived from this
+ *    software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
 
 package com.flagstone.transform.action;
@@ -38,12 +45,11 @@ import com.flagstone.transform.coder.SWFFactory;
 
 /**
  * The ExceptionHandler class is used to represent try..catch blocks in
- * Actionscript so exceptions can be thrown and handled when executing a series
- * of actions.
+ * Actionscript.
  *
  * <p>
- * The thrown object can be assigned to either one of the Flash Player's 256
- * internal registers or to a variable in memory.
+ * When an exception is thrown, the object can be assigned to either one of the 
+ * Flash Player's 256 internal registers or to a variable in memory.
  * </p>
  *
  * <p>
@@ -54,9 +60,10 @@ import com.flagstone.transform.coder.SWFFactory;
  * arrays.
  * </p>
  */
-// TODO(class)
 public final class ExceptionHandler implements Action {
-    private static final String FORMAT = "ExceptionHandler: { variable=%s; register=%d try=%s; catch=%s; final=%s }";
+    
+    private static final String FORMAT = "ExceptionHandler: { variable=%s;"
+    		+ " register=%d try=%s; catch=%s; final=%s }";
 
     private int register;
     private String variable;
@@ -69,8 +76,6 @@ public final class ExceptionHandler implements Action {
     private transient int catchLength;
     private transient int finalLength;
 
-    /** TODO(method). */
-    // TODO(optimise)
     /**
      * Creates and initialises an ExceptionHandler action using values encoded
      * in the Flash binary format.
@@ -89,6 +94,7 @@ public final class ExceptionHandler implements Action {
     public ExceptionHandler(final SWFDecoder coder, final Context context)
             throws CoderException {
         coder.readByte();
+        // TODO(optimise)
         length = coder.readWord(2, false);
 
         coder.readBits(5, false);
@@ -405,20 +411,21 @@ public final class ExceptionHandler implements Action {
         finalActions = array;
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public ExceptionHandler copy() {
         return new ExceptionHandler(this);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         return String.format(FORMAT, variable, register, tryActions,
                 catchActions, finalActions);
     }
 
-    // TODO(optimise)
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        // TODO(optimise)
         length = 7;
         length += (register == 0) ? coder.strlen(variable) : 1;
 
@@ -445,11 +452,11 @@ public final class ExceptionHandler implements Action {
         return 3 + length;
     }
 
-    // TODO(optimise)
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
 
+        // TODO(optimise)
         coder.writeByte(ActionTypes.EXCEPTION_HANDLER);
         coder.writeWord(length, 2);
         coder.writeBits(0, 5);

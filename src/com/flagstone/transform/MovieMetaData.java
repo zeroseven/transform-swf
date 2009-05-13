@@ -73,10 +73,11 @@ public final class MovieMetaData implements MovieTag {
     }
 
     /**
-     * Creates a SerialNumber action with the specified string.
+     * Creates a MoveMetaData object with the specified string containing the 
+     * meta-data for the movie.
      *
      * @param aString
-     *            an arbitrary string containing the serial number. Must not be
+     *            an arbitrary string containing the meta-data. Must not be
      *            null.
      */
     public MovieMetaData(final String aString) {
@@ -108,7 +109,7 @@ public final class MovieMetaData implements MovieTag {
         metaData = aString;
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public MovieMetaData copy() {
         return new MovieMetaData(this);
     }

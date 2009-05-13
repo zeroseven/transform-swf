@@ -4,30 +4,30 @@
  *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  *
- *  * Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer.
+ *  * Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
  *  * Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
- *    may be used to endorse or promote products derived from this software
- *    without specific prior written permission.
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its
+ *    contributors may be used to endorse or promote products derived from this
+ *    software without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
- * OF THE POSSIBILITY OF SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
-
 package com.flagstone.transform;
 
 import com.flagstone.transform.coder.CoderException;
@@ -64,10 +64,10 @@ import com.flagstone.transform.datatype.CoordTransform;
  * @see Remove
  * @see Remove2
  */
-//TODO(class)
 public final class Place implements MovieTag {
-    // TODO(code) Consider replacing with StringBuilder for optional fields
-    private static final String FORMAT = "Place: { layer=%d; identifier=%d; transform=%s; colorTransform=%s; }";
+
+    private static final String FORMAT = "Place: { layer=%d; identifier=%d;"
+            + " transform=%s; colorTransform=%s }";
 
     private int identifier;
     private int layer;
@@ -117,10 +117,24 @@ public final class Place implements MovieTag {
     }
 
     /**
-     * Creates an uninitialised Place object.
+     * Creates a PlaceObject object that places the the object with the
+     * identifier at the specified layer and at the position specified by the
+     * coordinate transform.
+     *
+     * @param uid
+     *            the unique identifier for the object to the placed on the
+     *            display list. Must be in the range 1..65535.
+     * @param layer
+     *            the layer in the display list where the object will be placed.
+     * @param transform
+     *            an CoordTransform object that defines the orientation, size
+     *            and location of the object when it is drawn. Must not be null.
      */
-    public Place() {
-        // Creates uninitialised object.
+    public Place(final int uid, final int layer, 
+            final CoordTransform transform) {
+        setIdentifier(uid);
+        setLayer(layer);
+        setTransform(transform);
     }
 
     /**
@@ -131,22 +145,22 @@ public final class Place implements MovieTag {
      * @param uid
      *            the unique identifier for the object to the placed on the
      *            display list. Must be in the range 1..65535.
-     * @param aLayer
+     * @param layer
      *            the layer in the display list where the object will be placed.
-     * @param aTransform
+     * @param transform
      *            an CoordTransform object that defines the orientation, size
      *            and location of the object when it is drawn. Must not be null.
-     * @param aColorTransform
+     * @param colorTransform
      *            an ColorTransform object that defines the colour of the object
      *            when it is drawn.
      */
-    public Place(final int uid, final int aLayer,
-            final CoordTransform aTransform,
-            final ColorTransform aColorTransform) {
+    public Place(final int uid, final int layer,
+            final CoordTransform transform,
+            final ColorTransform colorTransform) {
         setIdentifier(uid);
-        setLayer(aLayer);
-        setTransform(aTransform);
-        setColorTransform(aColorTransform);
+        setLayer(layer);
+        setTransform(transform);
+        setColorTransform(colorTransform);
     }
 
     /**
@@ -172,29 +186,6 @@ public final class Place implements MovieTag {
     }
 
     /**
-     * Returns the layer that defines the order in which objects are displayed.
-     */
-    public int getLayer() {
-        return layer;
-    }
-
-    /**
-     * Returns the transform that defines the position where the object is
-     * displayed.
-     */
-    public CoordTransform getTransform() {
-        return transform;
-    }
-
-    /**
-     * Returns the colour transform that defines any colour effects applied when
-     * the object is displayed. May be null if no transform is defined.
-     */
-    public ColorTransform getColorTransform() {
-        return colorTransform;
-    }
-
-    /**
      * Sets the identifier of the object that will be added to the display list.
      *
      * @param uid
@@ -207,6 +198,13 @@ public final class Place implements MovieTag {
         }
         identifier = uid;
         return this;
+    }
+
+    /**
+     * Returns the layer that defines the order in which objects are displayed.
+     */
+    public int getLayer() {
+        return layer;
     }
 
     /**
@@ -225,6 +223,14 @@ public final class Place implements MovieTag {
     }
 
     /**
+     * Returns the transform that defines the position where the object is
+     * displayed.
+     */
+    public CoordTransform getTransform() {
+        return transform;
+    }
+
+    /**
      * Sets the transform that defines the position where the object is
      * displayed.
      *
@@ -238,6 +244,14 @@ public final class Place implements MovieTag {
         }
         transform = aTransform;
         return this;
+    }
+
+    /**
+     * Returns the colour transform that defines any colour effects applied when
+     * the object is displayed. May be null if no transform is defined.
+     */
+    public ColorTransform getColorTransform() {
+        return colorTransform;
     }
 
     /**
@@ -267,13 +281,12 @@ public final class Place implements MovieTag {
         return this;
     }
 
-    /**
-     * Creates and returns a complete copy of this object.
-     */
+    /** {@inheritDoc} */
     public Place copy() {
         return new Place(this);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         return String.format(FORMAT, identifier, layer, transform,

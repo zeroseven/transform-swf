@@ -51,7 +51,8 @@ import com.flagstone.transform.coder.SWFEncoder;
 //TODO(class)
 public final class MovieObject implements MovieTag {
 
-    private static final String FORMAT = "MovieObject: { type=%d; data=byte[%d] {...} }";
+    private static final String FORMAT = "MovieObject: { type=%d;"
+            + " data=byte[%d] {...} }";
 
     private final transient int type;
     private final transient byte[] data;
@@ -115,11 +116,12 @@ public final class MovieObject implements MovieTag {
         return data;
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public MovieObject copy() {
         return new MovieObject(this);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         return String.format(FORMAT, type, data.length);

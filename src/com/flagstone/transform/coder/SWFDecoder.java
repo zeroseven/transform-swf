@@ -37,6 +37,17 @@ package com.flagstone.transform.coder;
 //TODO(class)
 public final class SWFDecoder extends Decoder {
 
+    /** 
+     * A bit mask applied to a 16-bit word to extract the length of the
+     * encoded object.
+     */
+    public static final int MASK_LENGTH = 0x3F;
+    /**
+     * The maximum length an encoded object can be before the length must be
+     * encoded using a 32-bit integer.
+     */
+    public static final int MAX_LENGTH = 62;
+
     /**
      * Creates a SWFDecoder object initialised with the data to be decoded.
      *

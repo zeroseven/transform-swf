@@ -4,28 +4,29 @@
  *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  *
- *  * Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer.
+ *  * Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
  *  * Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
- *    may be used to endorse or promote products derived from this software
- *    without specific prior written permission.
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its
+ *    contributors may be used to endorse or promote products derived from this
+ *    software without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
- * OF THE POSSIBILITY OF SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
 
 package com.flagstone.transform;
@@ -61,8 +62,8 @@ import com.flagstone.transform.coder.SWFEncoder;
  *
  * @see Export
  */
-//TODO(class)
 public final class Import implements MovieTag {
+    
     private static final String FORMAT = "Import: { url=%s; objects=%s }";
 
     private String url;
@@ -98,6 +99,13 @@ public final class Import implements MovieTag {
     }
 
     /**
+     * Creates an Import object with an empty table.
+     */
+    public Import() {
+        objects = new LinkedHashMap<Integer, String>();
+    }
+
+    /**
      * Creates a Import object that imports an object from the specified file.
      *
      * @param aUrl
@@ -110,27 +118,6 @@ public final class Import implements MovieTag {
     public Import(final String aUrl, final Map<Integer, String> map) {
         setUrl(aUrl);
         objects = map;
-    }
-
-    /**
-     * Creates a Import object that imports an object from the specified file.
-     * The exported object is referenced by a name assigned to it when it was
-     * exported. The newly imported object must be assigned an identifier that
-     * is unique within the movie the object is imported into. Limited security
-     * is provided by requiring that the URL must be in the same domain or
-     * sub-domain as the URL of the movie which contains this object.
-     *
-     * @param aUrl
-     *            the URL referencing the file to be imported.
-     * @param uid
-     *            the identifier of the object to be exported.
-     * @param aString
-     *            the name of the exported object to allow it to be referenced.
-     */
-    public Import(final String aUrl, final int uid, final String aString) {
-        setUrl(aUrl);
-        objects = new LinkedHashMap<Integer, String>();
-        add(uid, aString);
     }
 
     /**
@@ -156,7 +143,7 @@ public final class Import implements MovieTag {
      *            the name of the imported object to allow it to be referenced.
      *            Must not be null or an empty string.
      */
-    public void add(final int uid, final String aString) {
+    public Import add(final int uid, final String aString) {
         if ((uid < 1) || (uid > 65535)) {
             throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
         }
@@ -164,6 +151,7 @@ public final class Import implements MovieTag {
             throw new IllegalArgumentException(Strings.STRING_NOT_SET);
         }
         objects.put(uid, aString);
+        return this;
     }
 
     /**
@@ -208,13 +196,12 @@ public final class Import implements MovieTag {
         objects = aTable;
     }
 
-    /**
-     * Creates and returns a deep copy of this object.
-     */
+    /** {@inheritDoc} */
     public Import copy() {
         return new Import(this);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         return String.format(FORMAT, url, objects);

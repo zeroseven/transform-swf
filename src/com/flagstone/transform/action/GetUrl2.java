@@ -4,28 +4,29 @@
  *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  *
- *  * Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer.
+ *  * Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
  *  * Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
- *    may be used to endorse or promote products derived from this software
- *    without specific prior written permission.
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its
+ *    contributors may be used to endorse or promote products derived from this
+ *    software without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
- * OF THE POSSIBILITY OF SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
 
 package com.flagstone.transform.action;
@@ -106,85 +107,15 @@ import com.flagstone.transform.coder.SWFEncoder;
  * level <i>n</i>.
  * </p>
  *
- * <p>
- * The type of request being submitted to the server is defined by the
- * requestType attribute rather than being retrieved from the stack. The
- * following request types are supported:
- * </p>
- *
- * <table class="datasheet">
- * <tr>
- * <td valign="top">MovieToLevel</td>
- * <td>Load a movie to the specified level.</td>
- * </tr>
- * <tr>
- * <td valign="top">MovieToLevelWithGet</td>
- * <td>Load a movie submitting the movie variables using the HTTP GET method.</td>
- * </tr>
- * <tr>
- * <td valign="top">MovieToLevelWithPost</td>
- * <td>Load a movie submitting the movie variables using the HTTP POST method.</td>
- * </tr>
- *
- * <tr>
- * <td valign="top">MovieToTarget</td>
- * <td>Load a new Flash movie or web page to the specified target.</td>
- * </tr>
- * <tr>
- * <td valign="top">MovieToTargetWithGet</td>
- * <td>Load a new Flash movie or web page to the specified target, submitting
- * the movie variables using the HTTP GET method.</td>
- * </tr>
- * <tr>
- * <td valign="top">MovieToTargetWithPost</td>
- * <td>Load a new Flash movie or web page to the specified target, submitting
- * the movie variables using the HTTP POST method.</td>
- * </tr>
- *
- * <tr>
- * <td valign="top">VariablesToLevel</td>
- * <td>Load values for selected movie variables to the specified level.</td>
- * </tr>
- * <tr>
- * <td valign="top">VariablesToLevelWithGet</td>
- * <td>Load values for selected movie variables to the specified level,
- * submitting the movie variables using the HTTP GET method.</td>
- * </tr>
- * <tr>
- * <td valign="top">VariablesToLevelWithPost</td>
- * <td>Load values for selected movie variables to the specified level,
- * submitting the movie variables using the HTTP POST method.</td>
- * </tr>
- *
- * <tr>
- * <td valign="top">VariablesToTarget</td>
- * <td>Load values for selected movie variables to the specified level.</td>
- * </tr>
- * <tr>
- * <td valign="top">VariablesToTargetWithGet</td>
- * <td>Load values for selected movie variables to the specified target,
- * submitting the movie variables using the HTTP GET method.</td>
- * </tr>
- * <tr>
- * <td valign="top">VariablesToTargetWithPost</td>
- * <td>Load values for selected movie variables to the specified target,
- * submitting the movie variables using the HTTP POST method.</td>
- * </tr>
- * </table>
- *
- * <p>
- * When variables are submitted they are encoded using standard x-www-urlencoded
- * encoding.
- * </p>
- *
- * @see GetUrl
  */
-@SuppressWarnings("PMD.LongVariable")
-//TODO(class)
 public final class GetUrl2 implements Action {
+    
     private static final String FORMAT = "GetUrl2: { requestType=%s }";
 
-    /** TODO(method). */
+    /** 
+     * Request defines the different types of request that can be submitted
+     * to a server using a GetUrl action.
+      */
     public enum Request {
         /** Load a movie without submitting the movie variables. */
         MOVIE_TO_LEVEL(0),
@@ -217,7 +148,8 @@ public final class GetUrl2 implements Action {
         /** Load variables submitting the movie variables using HTTP POST. */
         VARIABLES_TO_TARGET_WITH_POST(194);
 
-        private static final Map<Integer, Request> TABLE = new LinkedHashMap<Integer, Request>();
+        private static final Map<Integer, Request> TABLE =
+            new LinkedHashMap<Integer, Request>();
 
         static {
             for (final Request request : values()) {
@@ -225,7 +157,15 @@ public final class GetUrl2 implements Action {
             }
         }
 
-        /** TODO(method). */
+        /**
+         * Get the Request that is identified by an integer value. This method 
+         * is used when decoding a Request from a Flash file.
+         *
+         * @param type
+         *            the integer value read from a Flash file.
+         *
+         * @return the Request identified by the integer value.
+         */
         public static Request fromInt(final int type) {
             return TABLE.get(type);
         }
@@ -236,7 +176,12 @@ public final class GetUrl2 implements Action {
             this.value = value;
         }
 
-        /** TODO(method). */
+        /**
+         * Get the integer value that is used to identify this Request. This 
+         * method is used when encoding a Request in a Flash file.
+         *
+         * @return the integer value used to encode this Request.
+         */
         public int getValue() {
             return value;
         }
@@ -298,11 +243,12 @@ public final class GetUrl2 implements Action {
         this.request = request;
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public GetUrl2 copy() {
         return new GetUrl2(this);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         return String.format(FORMAT, request);

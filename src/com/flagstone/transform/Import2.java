@@ -67,7 +67,6 @@ import com.flagstone.transform.coder.SWFEncoder;
  * @see Export
  * @see Import
  */
-//TODO(class)
 public final class Import2 implements MovieTag {
 
     private static final String FORMAT = "Import2: { url=%s; objects=%s }";
@@ -107,7 +106,14 @@ public final class Import2 implements MovieTag {
     }
 
     /**
-     * Creates a Import object that imports an object from the specified file.
+     * Creates a Import2 object with an empty table.
+     */
+    public Import2() {
+        objects = new LinkedHashMap<Integer, String>();
+    }
+
+    /**
+     * Creates an Import2 object that imports an object from the specified file.
      *
      * @param aUrl
      *            the URL referencing the file to be imported.
@@ -119,27 +125,6 @@ public final class Import2 implements MovieTag {
     public Import2(final String aUrl, final Map<Integer, String> map) {
         setUrl(aUrl);
         objects = map;
-    }
-
-    /**
-     * Creates a Import object that imports an object from the specified file.
-     * The exported object is referenced by a name assigned to it when it was
-     * exported. The newly imported object must be assigned an identifier that
-     * is unique within the movie the object is imported into. Limited security
-     * is provided by requiring that the URL must be in the same domain or
-     * sub-domain as the URL of the movie which contains this object.
-     *
-     * @param aUrl
-     *            the URL referencing the file to be imported.
-     * @param uid
-     *            the identifier of the object to be exported.
-     * @param aString
-     *            the name of the exported object to allow it to be referenced.
-     */
-    public Import2(final String aUrl, final int uid, final String aString) {
-        setUrl(aUrl);
-        objects = new LinkedHashMap<Integer, String>();
-        add(uid, aString);
     }
 
     /**
@@ -165,7 +150,7 @@ public final class Import2 implements MovieTag {
      *            the name of the imported object to allow it to be referenced.
      *            Must not be null or an empty string.
      */
-    public void add(final int uid, final String aString) {
+    public Import2 add(final int uid, final String aString) {
         if ((uid < 1) || (uid > 65535)) {
             throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
         }
@@ -173,6 +158,7 @@ public final class Import2 implements MovieTag {
             throw new IllegalArgumentException(Strings.STRING_NOT_SET);
         }
         objects.put(uid, aString);
+        return this;
     }
 
     /**
@@ -182,13 +168,6 @@ public final class Import2 implements MovieTag {
      */
     public String getUrl() {
         return url;
-    }
-
-    /**
-     * Returns the table of objects to be imported.
-     */
-    public Map<Integer, String> getObjects() {
-        return objects;
     }
 
     /**
@@ -208,6 +187,13 @@ public final class Import2 implements MovieTag {
     }
 
     /**
+     * Returns the table of objects to be imported.
+     */
+    public Map<Integer, String> getObjects() {
+        return objects;
+    }
+
+    /**
      * Sets the table of objects to be imported.
      *
      * @param aTable
@@ -217,11 +203,12 @@ public final class Import2 implements MovieTag {
         objects = aTable;
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public Import2 copy() {
         return new Import2(this);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         return String.format(FORMAT, url, objects);

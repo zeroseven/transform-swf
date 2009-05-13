@@ -37,6 +37,22 @@ package com.flagstone.transform.coder;
 public final class SWFEncoder extends Encoder {
 
     /**
+     * The maximum length in bytes of an encoded object before the length must 
+     * be encoded using a 32-bit integer.
+     */
+    public static final int MAX_LENGTH = 62;
+    /**
+     * The number of bits used to encode the length field when the length is 
+     * less than the maximum length of 62.
+     */
+    public static final int LENGTH_BITS = 6;
+    /**
+     * Values used to indicate that the length of an object has been encoded
+     * as a 32-bit integer following the header for the MovieTag.
+     */
+    public static final int EXTENDED = 0x3F;
+
+    /**
      * Creates an SWFEncoder with the buffer used to encode data set to the
      * specified size.
      *

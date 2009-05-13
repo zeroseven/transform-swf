@@ -1,9 +1,16 @@
 package com.flagstone.transform;
 
-/** TODO(class). */
-public class Constants {
+/**
+ * Constants is where constants used throughout the framework are defined. The 
+ * primary use is for numeric values so that literals (magic numbers) can be 
+ * avoided. 
+ */
+public final class Constants {
     
-    /** TODO(doc). */
+    /**
+     * The prime number used to generate the value in the hashCode() method 
+     * of immutable objects.
+     */
     public static final int PRIME = 31;
     
     private Constants() {

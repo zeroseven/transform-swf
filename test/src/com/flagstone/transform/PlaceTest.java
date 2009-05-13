@@ -66,27 +66,27 @@ public final class PlaceTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForIdentifierWithLowerBound() {
-        fixture = new Place().setIdentifier(0);
+        fixture = new Place(0, layer, transform);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForIdentifierWithUpperBound() {
-        fixture = new Place().setIdentifier(65536);
+        fixture = new Place(65536, layer, transform);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForLayerWithLowerBound() {
-        fixture = new Place().setLayer(0);
+        fixture = new Place(identifier, 0, transform);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForLayerWithUpperBound() {
-        fixture = new Place().setLayer(65536);
+        fixture = new Place(identifier, 65536, transform);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForCoordTransformWithNull() {
-        fixture = new Place().setTransform(null);
+        fixture = new Place(identifier, layer, null);
     }
 
     @Test
@@ -107,8 +107,7 @@ public final class PlaceTest {
         final SWFEncoder encoder = new SWFEncoder(coord.length);
         final Context context = new Context();
 
-        fixture = new Place().setIdentifier(identifier).setLayer(layer)
-                .setTransform(transform);
+        fixture = new Place(identifier, layer, transform);
         assertEquals(coord.length, fixture.prepareToEncode(encoder, context));
         fixture.encode(encoder, context);
 

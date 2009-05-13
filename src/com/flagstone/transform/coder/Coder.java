@@ -50,6 +50,11 @@ public class Coder {
     public static final String OVERFLOW = "Overflow";
     
     /** TODO(doc). */
+    public static final int BYTE_ALIGN = 7;
+    /** TODO(doc). */
+    public static final int BITS_TO_BYTES = 3;
+
+    /** TODO(doc). */
     public static final int MASK_BYTE_0 = 255;
 
     /** TODO(doc). */

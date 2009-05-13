@@ -41,7 +41,7 @@ public final class RegisterIndexTest {
     public void checkConstructorSetsIndex() {
         final int index = 10;
         fixture = new RegisterIndex(index);
-        assertEquals(index, fixture.getIndex());
+        assertEquals(index, fixture.getNumber());
     }
 
     @Test(expected = IllegalArgumentException.class)

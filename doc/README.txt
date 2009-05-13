@@ -23,7 +23,7 @@ examples.
 Transform SWF is made available under the terms of the Berkeley Software
 Distribution (BSD) license. This allow you complete freedom to use and
 distribute the code in source and/or binary form as long as you respect
-the original copyright. Please see the LiCENCE.txt file for exact terms.
+the original copyright. Please see the LICENCE.txt file for exact terms.
 
 -----------------
   Contributions
