@@ -101,7 +101,7 @@ public final class ActionObject implements Action {
         if (bytes == null) {
             throw new IllegalArgumentException(Strings.DATA_IS_NULL);
         }
-        data = bytes;
+        data = Arrays.copyOf(bytes, bytes.length);
     }
 
     /**
@@ -112,7 +112,7 @@ public final class ActionObject implements Action {
      */
     public ActionObject(final ActionObject object) {
         type = object.type;
-        data = Arrays.copyOf(object.data, object.data.length);
+        data = object.data;
     }
 
     /**
@@ -127,7 +127,7 @@ public final class ActionObject implements Action {
      * Returns the encoded data for the action.
      */
     public byte[] getData() {
-        return data;
+        return Arrays.copyOf(data, data.length);
     }
 
     /** {@inheritDoc} */

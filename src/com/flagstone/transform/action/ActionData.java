@@ -67,7 +67,7 @@ public final class ActionData implements Action {
         if ((bytes == null) || (bytes.length == 0)) {
             throw new IllegalArgumentException(Strings.DATA_NOT_SET);
         }
-        data = bytes;
+        data = Arrays.copyOf(bytes, bytes.length);
     }
 
     /**
@@ -77,14 +77,14 @@ public final class ActionData implements Action {
      *            the ActionData object used to initialise this one.
      */
     public ActionData(final ActionData object) {
-        data = Arrays.copyOf(object.data, object.data.length);
+        data = object.data;
     }
 
     /**
-     * Returns the encoded actions.
+     * Returns a copy of the encoded actions.
      */
     public byte[] getData() {
-        return data;
+        return Arrays.copyOf(data, data.length);
     }
 
     /** {@inheritDoc} */

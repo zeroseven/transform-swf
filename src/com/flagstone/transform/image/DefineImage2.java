@@ -4,28 +4,29 @@
  *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  *
- *  * Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer.
+ *  * Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
  *  * Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
- *    may be used to endorse or promote products derived from this software
- *    without specific prior written permission.
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its
+ *    contributors may be used to endorse or promote products derived from this
+ *    software without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
- * OF THE POSSIBILITY OF SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
 
 package com.flagstone.transform.image;
@@ -46,9 +47,9 @@ import com.flagstone.transform.coder.SWFEncoder;
  *
  * <p>
  * The class supports colour-mapped images where the image data contains an
- * index into a colour table or images where the image data specifies the colour
- * directly. It extends DefineImage by including alpha channel information for
- * the colour table and pixels in the image.
+ * index into a colour table or direct-mapped images where the colour is
+ * specified directly. It extends DefineImage by including alpha channel 
+ * information for the colour table and pixels in the image.
  * </p>
  *
  * <p>
@@ -71,18 +72,17 @@ import com.flagstone.transform.coder.SWFEncoder;
  *
  * @see DefineImage
  */
-//TODO(class)
 public final class DefineImage2 implements ImageTag {
+    
     private static final String FORMAT = "DefineImage2: { identifier=%d;"
-            + " width=%d; height=%d; pixelSize=%d; tableSize=%d;"
-            + " compressedData=%d }";
+            + " width=%d; height=%d; pixelSize=%d; tableSize=%d; image=%d }";
 
+    private int identifier;
     private int width;
     private int height;
     private int pixelSize;
     private int tableSize;
-    private byte[] data;
-    private int identifier;
+    private byte[] image;
 
     private transient int length;
     private transient boolean extendLength;
@@ -118,9 +118,9 @@ public final class DefineImage2 implements ImageTag {
 
         if (pixelSize == 8) {
             tableSize = coder.readByte() + 1;
-            data = coder.readBytes(new byte[length - 8]);
+            image = coder.readBytes(new byte[length - 8]);
         } else {
-            data = coder.readBytes(new byte[length - 7]);
+            image = coder.readBytes(new byte[length - 7]);
         }
 
         if (coder.getPointer() != end) {
@@ -154,7 +154,7 @@ public final class DefineImage2 implements ImageTag {
         setHeight(height);
         setPixelSize(8);
         setTableSize(tableSize);
-        setData(data);
+        setImage(data);
     }
 
     /**
@@ -180,7 +180,7 @@ public final class DefineImage2 implements ImageTag {
         setHeight(height);
         setPixelSize(32);
         tableSize = 0;
-        setData(data);
+        setImage(data);
     }
 
     /**
@@ -198,15 +198,15 @@ public final class DefineImage2 implements ImageTag {
         height = object.height;
         pixelSize = object.pixelSize;
         tableSize = object.tableSize;
-        data = Arrays.copyOf(object.data, object.data.length);
+        image = object.image;
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public int getIdentifier() {
         return identifier;
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public void setIdentifier(final int uid) {
         if ((uid < 0) || (uid > 65535)) {
             throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
@@ -247,10 +247,10 @@ public final class DefineImage2 implements ImageTag {
     }
 
     /**
-     * Returns the data containing the compressed colour table and image.
+     * Returns a copy the data containing the compressed colour table and image.
      */
-    public byte[] getData() {
-        return data;
+    public byte[] getImage() {
+        return Arrays.copyOf(image, image.length);
     }
 
     /**
@@ -312,29 +312,30 @@ public final class DefineImage2 implements ImageTag {
      *            byte array containing zlib compressed colour table and image.
      *            Must not be null.
      */
-    public void setData(final byte[] bytes) {
+    public void setImage(final byte[] bytes) {
         if (bytes == null) {
             throw new IllegalArgumentException(Strings.DATA_IS_NULL);
         }
-        data = bytes;
+        image = Arrays.copyOf(bytes, bytes.length);
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public DefineImage2 copy() {
         return new DefineImage2(this);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         return String.format(FORMAT, identifier, width, height, pixelSize,
-                tableSize, data.length);
+                tableSize, image.length);
     }
 
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         length = 7;
         length += (pixelSize == 8) ? 1 : 0;
-        length += data.length;
+        length += image.length;
 
         return (length > 62 ? 6 : 2) + length;
     }
@@ -367,7 +368,7 @@ public final class DefineImage2 implements ImageTag {
             coder.writeWord(tableSize - 1, 1);
         }
 
-        coder.writeBytes(data);
+        coder.writeBytes(image);
 
         if (coder.getPointer() != end) {
             throw new CoderException(getClass().getName(), start >> 3, length,

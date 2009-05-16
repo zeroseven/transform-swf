@@ -114,7 +114,7 @@ public final class DefineData implements DefineTag {
      */
     public DefineData(final DefineData object) {
         identifier = object.identifier;
-        data = Arrays.copyOf(object.data, object.data.length);
+        data = object.data;
     }
 
     /** {@inheritDoc} */
@@ -131,10 +131,11 @@ public final class DefineData implements DefineTag {
     }
 
     /**
-     * Returns the array of bytes that will be embedded in the Flash file.
+     * Returns a copy of the array of bytes that will be embedded in the 
+     * Flash file.
      */
     public byte[] getData() {
-        return data;
+        return Arrays.copyOf(data, data.length);
     }
 
     /**
@@ -148,7 +149,7 @@ public final class DefineData implements DefineTag {
         if (bytes == null) {
             throw new IllegalArgumentException(Strings.DATA_IS_NULL);
         }
-        data = bytes;
+        data = Arrays.copyOf(bytes, bytes.length);
     }
 
     /** {@inheritDoc} */

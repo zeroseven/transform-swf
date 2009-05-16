@@ -116,7 +116,7 @@ public final class DoABC implements MovieTag {
     public DoABC(final DoABC object) {
         name = object.name;
         deferred = object.deferred;
-        data = Arrays.copyOf(object.data, object.data.length);
+        data = object.data;
     }
 
     /**
@@ -160,10 +160,10 @@ public final class DoABC implements MovieTag {
     }
 
     /**
-     * Returns the array of Actionscript byte-codes.
+     * Returns a copy of the array containing the Actionscript byte-codes.
      */
     public byte[] getData() {
-        return data;
+        return Arrays.copyOf(data, data.length);
     }
 
     /**
@@ -176,7 +176,7 @@ public final class DoABC implements MovieTag {
         if (bytes == null || bytes.length == 0) {
             throw new IllegalArgumentException(Strings.DATA_NOT_SET);
         }
-        data = bytes;
+        data = Arrays.copyOf(bytes, bytes.length);
     }
 
     /** TODO(method). */

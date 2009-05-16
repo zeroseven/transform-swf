@@ -38,7 +38,7 @@ public final class ImageBlock implements Copyable<ImageBlock> {
     public ImageBlock(final int width, final int height, final byte[] data) {
         this.width = width;
         this.height = height;
-        block = data;
+        block = Arrays.copyOf(data, data.length);
     }
 
     /**
@@ -52,7 +52,7 @@ public final class ImageBlock implements Copyable<ImageBlock> {
     public ImageBlock(final ImageBlock object) {
         width = object.width;
         height = object.height;
-        block = Arrays.copyOf(object.block, object.block.length);
+        block = object.block;
     }
 
     /**
@@ -77,7 +77,7 @@ public final class ImageBlock implements Copyable<ImageBlock> {
      * Returns the zipped image data for the block.
      */
     public byte[] getBlock() {
-        return block;
+        return Arrays.copyOf(block, block.length);
     }
 
     /**

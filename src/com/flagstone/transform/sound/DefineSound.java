@@ -4,28 +4,29 @@
  *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  *
- *  * Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer.
+ *  * Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
  *  * Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
- *    may be used to endorse or promote products derived from this software
- *    without specific prior written permission.
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its
+ *    contributors may be used to endorse or promote products derived from this
+ *    software without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
- * OF THE POSSIBILITY OF SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
 
 package com.flagstone.transform.sound;
@@ -51,9 +52,9 @@ import com.flagstone.transform.datatype.SoundFormat;
  *
  * <ul>
  * <li>The DefineSound object that contains the sampled sound.</li>
- * <li>A Sound object that defines how the sound fades in and out, whether it
- * repeats and also defines an envelope for more sophisticated control over how
- * the sound is played.</li>
+ * <li>A SoundInfo object that defines how the sound fades in and out, whether
+ * it repeats and also defines an envelope for more sophisticated control over
+ * how the sound is played.</li>
  * <li>A StartSound object that signals the Flash Player to begin playing the
  * sound.</li>
  * </ul>
@@ -66,19 +67,18 @@ import com.flagstone.transform.datatype.SoundFormat;
  * @see SoundInfo
  * @see StartSound
  */
-//TODO(class)
 public final class DefineSound implements DefineTag {
 
     private static final String FORMAT = "DefineSound: { identifier=%d;"
             + " format=%s; rate=%d; channelCount=%d; sampleSize=%d "
             + " sampleCount=%d }";
 
-    private SoundFormat format;
+    private int format;
     private int rate;
     private int channelCount;
     private int sampleSize;
     private int sampleCount;
-    private byte[] data;
+    private byte[] sound;
     private int identifier;
 
     private transient int length;
@@ -104,7 +104,7 @@ public final class DefineSound implements DefineTag {
         final int end = coder.getPointer() + (length << 3);
 
         identifier = coder.readWord(2, false);
-        format = SoundFormat.fromInt(coder.readBits(4, false));
+        format = coder.readBits(4, false);
 
         switch (coder.readBits(2, false)) {
         case 0:
@@ -128,7 +128,7 @@ public final class DefineSound implements DefineTag {
         channelCount = coder.readBits(1, false) + 1;
         sampleCount = coder.readWord(4, false);
 
-        data = coder.readBytes(new byte[length - 7]);
+        sound = coder.readBytes(new byte[length - 7]);
 
         if (coder.getPointer() != end) {
             throw new CoderException(getClass().getName(), start >> 3, length,
@@ -170,7 +170,7 @@ public final class DefineSound implements DefineTag {
         setChannelCount(channels);
         setSampleSize(sampleSize);
         setSampleCount(count);
-        setData(bytes);
+        setSound(bytes);
     }
 
     /**
@@ -188,15 +188,15 @@ public final class DefineSound implements DefineTag {
         channelCount = object.channelCount;
         sampleSize = object.sampleSize;
         sampleCount = object.sampleCount;
-        data = Arrays.copyOf(object.data, object.data.length);
+        sound = object.sound;
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public int getIdentifier() {
         return identifier;
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public void setIdentifier(final int uid) {
         if ((uid < 0) || (uid > 65535)) {
             throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
@@ -205,11 +205,34 @@ public final class DefineSound implements DefineTag {
     }
 
     /**
-     * Returns the compression format used, either NATIVE_PCM, PCM or ADPCM (all
-     * Flash 1), MP3 (Flash 4+) or NELLYMOSER (Flash 6+).
+     * Returns the compression format used.
      */
-    public SoundFormat getFormat() {
-        return format;
+    public SoundFormat getFormat() {    
+        SoundFormat value;
+        
+        switch (format) {
+        case 0: 
+            value = SoundFormat.NATIVE_PCM;
+            break;
+        case 1: 
+            value = SoundFormat.ADPCM;
+            break;
+        case 2: 
+            value = SoundFormat.MP3;
+            break;
+        case 3: 
+            value = SoundFormat.PCM;
+            break;
+        case 5: 
+            value = SoundFormat.NELLYMOSER_8K;
+            break;
+        case 6: 
+            value = SoundFormat.NELLYMOSER;
+            break;
+        default:
+            throw new IllegalStateException("Unsupported sound format.");
+        }
+        return value;
     }
 
     /**
@@ -242,22 +265,41 @@ public final class DefineSound implements DefineTag {
     }
 
     /**
-     * Returns the sound data.
+     * Returns a copy of the sound data.
      */
-    public byte[] getData() {
-        return data;
+    public byte[] getSound() {
+        return Arrays.copyOf(sound, sound.length);
     }
 
     /**
-     * Sets the compression format used.Must be either Constants.NATIVE_PCM,
-     * Constants.ADPCM or Constants.PCM from Flash 1 onwards, Constants.MP3 from
-     * Flash 4 onwards, or Constants.NELLYMOSER from Flash 6 onwards.
+     * Sets the compression format used.
      *
      * @param encoding
      *            the format for the sound.
      */
     public void setFormat(final SoundFormat encoding) {
-        format = encoding;
+        switch (encoding) {
+        case NATIVE_PCM: 
+            format = 0;
+            break;
+        case ADPCM: 
+            format = 1;
+            break;
+        case MP3: 
+            format = 2;
+            break;
+        case PCM: 
+            format = 3;
+            break;
+        case NELLYMOSER_8K: 
+            format = 5;
+            break;
+        case NELLYMOSER: 
+            format = 6;
+            break;
+        default:
+            throw new IllegalArgumentException("Unsupported sound format.");
+        }
     }
 
     /**
@@ -321,18 +363,19 @@ public final class DefineSound implements DefineTag {
      * @param bytes
      *            the sound data. Must not be null.
      */
-    public void setData(final byte[] bytes) {
+    public void setSound(final byte[] bytes) {
         if (bytes == null) {
             throw new IllegalArgumentException(Strings.DATA_IS_NULL);
         }
-        data = bytes;
+        sound = Arrays.copyOf(bytes, bytes.length);
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public DefineSound copy() {
         return new DefineSound(this);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         return String.format(FORMAT, identifier, format, rate, channelCount,
@@ -342,7 +385,7 @@ public final class DefineSound implements DefineTag {
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         length = 7;
-        length += data.length;
+        length += sound.length;
 
         return (length > 62 ? 6 : 2) + length;
     }
@@ -362,7 +405,7 @@ public final class DefineSound implements DefineTag {
         final int end = coder.getPointer() + (length << 3);
 
         coder.writeWord(identifier, 2);
-        coder.writeBits(format.getValue(), 4);
+        coder.writeBits(format, 4);
 
         switch (rate) {
         case 5512:
@@ -384,7 +427,7 @@ public final class DefineSound implements DefineTag {
         coder.writeBits(channelCount - 1, 1);
         coder.writeWord(sampleCount, 4);
 
-        coder.writeBytes(data);
+        coder.writeBytes(sound);
 
         if (coder.getPointer() != end) {
             throw new CoderException(getClass().getName(), start >> 3, length,

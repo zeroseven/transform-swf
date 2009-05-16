@@ -50,7 +50,7 @@ public final class ShapeData implements ShapeRecord {
         if (bytes == null) {
             throw new IllegalArgumentException(Strings.DATA_IS_NULL);
         }
-        data = bytes;
+        data = Arrays.copyOf(bytes, bytes.length);
     }
 
     /**
@@ -62,14 +62,14 @@ public final class ShapeData implements ShapeRecord {
      *            copied.
      */
     public ShapeData(final ShapeData object) {
-        data = Arrays.copyOf(object.data, object.data.length);
+        data = object.data;
     }
 
     /**
-     * Returns the encoded data for the action.
+     * Returns a copy of the encoded data for the action.
      */
     public byte[] getData() {
-        return data;
+        return Arrays.copyOf(data, data.length);
     }
 
     /** TODO(method). */

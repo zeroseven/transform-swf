@@ -88,7 +88,7 @@ public final class MovieObject implements MovieTag {
         if (bytes == null) {
             throw new IllegalArgumentException(Strings.DATA_IS_NULL);
         }
-        data = bytes;
+        data = Arrays.copyOf(bytes, bytes.length);
     }
 
     /**
@@ -101,7 +101,7 @@ public final class MovieObject implements MovieTag {
      */
     public MovieObject(final MovieObject object) {
         type = object.type;
-        data = Arrays.copyOf(object.data, object.data.length);
+        data = object.data;
     }
 
     /** TODO(method). */
@@ -110,10 +110,10 @@ public final class MovieObject implements MovieTag {
     }
 
     /**
-     * Returns the encoded data for the movie tag object.
+     * Returns a copy of the encoded data for the movie tag object.
      */
     public byte[] getData() {
-        return data;
+        return Arrays.copyOf(data, data.length);
     }
 
     /** {@inheritDoc} */

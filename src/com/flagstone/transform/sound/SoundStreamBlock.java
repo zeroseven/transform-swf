@@ -4,28 +4,29 @@
  *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  *
- *  * Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer.
+ *  * Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
  *  * Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
- *    may be used to endorse or promote products derived from this software
- *    without specific prior written permission.
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its
+ *    contributors may be used to endorse or promote products derived from this
+ *    software without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
- * OF THE POSSIBILITY OF SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
 
 package com.flagstone.transform.sound;
@@ -55,11 +56,11 @@ import com.flagstone.transform.coder.SWFEncoder;
  * @see SoundStreamHead
  * @see SoundStreamHead2
  */
-//TODO(class)
 public final class SoundStreamBlock implements MovieTag {
-    private static final String FORMAT = "SoundStreamBlock: { soundData=%d }";
+    
+    private static final String FORMAT = "SoundStreamBlock: { sound=%d }";
 
-    private byte[] soundData;
+    private byte[] sound;
 
     private transient int length;
 
@@ -82,7 +83,7 @@ public final class SoundStreamBlock implements MovieTag {
         }
         final int end = coder.getPointer() + (length << 3);
 
-        soundData = coder.readBytes(new byte[length]);
+        sound = coder.readBytes(new byte[length]);
 
         if (coder.getPointer() != end) {
             throw new CoderException(getClass().getName(), start >> 3, length,
@@ -98,7 +99,7 @@ public final class SoundStreamBlock implements MovieTag {
      *            an array of bytes containing the sound data. Must not be null.
      */
     public SoundStreamBlock(final byte[] bytes) {
-        setSoundData(bytes);
+        setSound(bytes);
     }
 
     /**
@@ -110,15 +111,15 @@ public final class SoundStreamBlock implements MovieTag {
      *            copied.
      */
     public SoundStreamBlock(final SoundStreamBlock object) {
-        soundData = Arrays.copyOf(object.soundData, object.soundData.length);
+        sound = object.sound;
     }
 
     /**
-     * Returns the sound data in the format defined by a preceding
+     * Returns a copy of the sound data in the format defined by a preceding
      * SoundStreamHead or SoundStreamHead2 object.
      */
-    public byte[] getSoundData() {
-        return soundData;
+    public byte[] getSound() {
+        return Arrays.copyOf(sound, sound.length);
     }
 
     /**
@@ -127,26 +128,27 @@ public final class SoundStreamBlock implements MovieTag {
      * @param bytes
      *            an array of bytes containing the sound data. Must not be null.
      */
-    public void setSoundData(final byte[] bytes) {
+    public void setSound(final byte[] bytes) {
         if (bytes == null) {
             throw new IllegalArgumentException(Strings.DATA_IS_NULL);
         }
-        soundData = bytes;
+        sound = Arrays.copyOf(bytes, bytes.length);
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public SoundStreamBlock copy() {
         return new SoundStreamBlock(this);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
-        return String.format(FORMAT, soundData.length);
+        return String.format(FORMAT, sound.length);
     }
 
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
-        length = soundData.length;
+        length = sound.length;
         return (length > 62 ? 6 : 2) + length;
     }
 
@@ -163,7 +165,7 @@ public final class SoundStreamBlock implements MovieTag {
         }
         final int end = coder.getPointer() + (length << 3);
 
-        coder.writeBytes(soundData);
+        coder.writeBytes(sound);
 
         if (coder.getPointer() != end) {
             throw new CoderException(getClass().getName(), start >> 3, length,

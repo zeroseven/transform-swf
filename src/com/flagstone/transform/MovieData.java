@@ -59,7 +59,7 @@ public final class MovieData implements MovieTag {
         if ((bytes == null) || (bytes.length == 0)) {
             throw new IllegalArgumentException(Strings.DATA_NOT_SET);
         }
-        data = bytes;
+        data = Arrays.copyOf(bytes, bytes.length);
     }
 
     /**
@@ -71,14 +71,14 @@ public final class MovieData implements MovieTag {
      *            copied.
      */
     public MovieData(final MovieData object) {
-        data = Arrays.copyOf(object.data, object.data.length);
+        data = object.data;
     }
 
     /**
-     * Returns the encoded MovieTag objects.
+     * Returns a copy the encoded MovieTag objects.
      */
     public byte[] getData() {
-        return data;
+        return Arrays.copyOf(data, data.length);
     }
 
     /** TODO(method). */

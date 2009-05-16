@@ -103,7 +103,7 @@ public final class VideoMetaData implements VideoTag {
      */
     public VideoMetaData(final VideoMetaData object) {
         timestamp = object.timestamp;
-        data = Arrays.copyOf(object.data, object.data.length);
+        data = object.data;
     }
 
     /**
@@ -130,11 +130,11 @@ public final class VideoMetaData implements VideoTag {
     }
 
     /**
-     * Get the encoded meta data that describes how the video stream should be
-     * played.
+     * Get a copy of the encoded meta data that describes how the video stream
+     * should be played.
      */
     public byte[] getData() {
-        return data;
+        return Arrays.copyOf(data, data.length);
     }
 
     /**
@@ -149,7 +149,7 @@ public final class VideoMetaData implements VideoTag {
         if (data == null) {
             throw new IllegalArgumentException(Strings.DATA_IS_NULL);
         }
-        this.data = data;
+        this.data = Arrays.copyOf(data, data.length);
     }
 
     /**

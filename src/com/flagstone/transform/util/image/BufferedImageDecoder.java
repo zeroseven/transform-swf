@@ -176,7 +176,7 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
         width = image.getWidth();
         height = image.getHeight();
 
-        final byte[] data = unzip(image.getData(), width, height);
+        final byte[] data = unzip(image.getImage(), width, height);
 
         final int scanLength = (width + 3) & ~3;
         final int tableLength = image.getTableSize();
@@ -357,7 +357,7 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
         width = image.getWidth();
         height = image.getHeight();
 
-        final byte[] data = unzip(image.getData(), width, height);
+        final byte[] data = unzip(image.getImage(), width, height);
 
         final int scanLength = (width + 3) & ~3;
         final int tableLength = image.getTableSize();

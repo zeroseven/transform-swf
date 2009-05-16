@@ -153,7 +153,7 @@ public final class VideoData implements VideoTag {
     public VideoData(final VideoData object) {
         format = object.format;
         frameType = object.frameType;
-        data = Arrays.copyOf(object.data, object.data.length);
+        data = object.data;
     }
 
     /**
@@ -235,13 +235,13 @@ public final class VideoData implements VideoTag {
     }
 
     /**
-     * Get the encoded video data.
+     * Get a copy of the encoded video data.
      *
      * @return an array of bytes encoded using the format indicated in the codec
      *         attribute, either Constants.H263 or Constants.SCREEN_VIDEO.
      */
     public byte[] getData() {
-        return data;
+        return Arrays.copyOf(data, data.length);
     }
 
     /**
@@ -253,7 +253,7 @@ public final class VideoData implements VideoTag {
      *            or Constants.SCREEN_VIDEO.
      */
     public void setData(final byte[] data) {
-        this.data = data;
+        this.data = Arrays.copyOf(data, data.length);
     }
 
     /**

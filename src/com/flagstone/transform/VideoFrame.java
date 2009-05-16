@@ -117,7 +117,7 @@ public final class VideoFrame implements MovieTag {
     public VideoFrame(final VideoFrame object) {
         identifier = object.identifier;
         frameNumber = object.frameNumber;
-        data = Arrays.copyOf(object.data, object.data.length);
+        data = object.data;
     }
 
     /**
@@ -164,11 +164,12 @@ public final class VideoFrame implements MovieTag {
     }
 
     /**
-     * Returns the encoded video data. In Flash 6 modified H263 encoded video is
-     * supported. Flash 7 supports both modified H263 and ScreenVideo.
+     * Returns a copy ogf the encoded video data. In Flash 6 modified H263
+     * encoded video is supported. Flash 7 supports both modified H263 and
+     * ScreenVideo.
      */
     public byte[] getData() {
-        return data;
+        return Arrays.copyOf(data, data.length);
     }
 
     /**
@@ -182,7 +183,7 @@ public final class VideoFrame implements MovieTag {
         if (data == null) {
             throw new IllegalArgumentException(Strings.DATA_IS_NULL);
         }
-        this.data = data;
+        this.data =  Arrays.copyOf(data, data.length);
     }
 
     /** {@inheritDoc} */

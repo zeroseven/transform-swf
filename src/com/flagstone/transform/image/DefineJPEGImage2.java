@@ -4,28 +4,29 @@
  *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  *
- *  * Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer.
+ *  * Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
  *  * Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
- *    may be used to endorse or promote products derived from this software
- *    without specific prior written permission.
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its
+ *    contributors may be used to endorse or promote products derived from this
+ *    software without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
- * OF THE POSSIBILITY OF SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
 
 package com.flagstone.transform.image;
@@ -35,7 +36,6 @@ import java.util.Arrays;
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.FLVDecoder;
 import com.flagstone.transform.coder.ImageTag;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -48,9 +48,10 @@ import com.flagstone.transform.coder.SWFEncoder;
  * @see DefineJPEGImage
  * @see DefineJPEGImage3
  */
-//TODO(class)
 public final class DefineJPEGImage2 implements ImageTag {
-    private static final String FORMAT = "DefineJPEGImage2: { identifier=%d; image=%d; }";
+    
+    private static final String FORMAT = "DefineJPEGImage2: { identifier=%d;"
+            + " image=%d; }";
 
     private int identifier;
     private byte[] image;
@@ -115,15 +116,15 @@ public final class DefineJPEGImage2 implements ImageTag {
         identifier = object.identifier;
         width = object.width;
         height = object.height;
-        image = Arrays.copyOf(object.image, object.image.length);
+        image = object.image;
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public int getIdentifier() {
         return identifier;
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public void setIdentifier(final int uid) {
         if ((uid < 0) || (uid > 65535)) {
             throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
@@ -146,10 +147,10 @@ public final class DefineJPEGImage2 implements ImageTag {
     }
 
     /**
-     * Returns the image data.
+     * Returns a copy of the image data.
      */
     public byte[] getImage() {
-        return image;
+        return Arrays.copyOf(image, image.length);
     }
 
     /**
@@ -162,17 +163,16 @@ public final class DefineJPEGImage2 implements ImageTag {
         if (bytes == null) {
             throw new IllegalArgumentException(Strings.DATA_IS_NULL);
         }
-        image = bytes;
+        image = Arrays.copyOf(bytes, bytes.length);
         decodeInfo();
     }
 
-    /**
-     * Creates and returns a deep copy of this object.
-     */
+    /** {@inheritDoc} */
     public DefineJPEGImage2 copy() {
         return new DefineJPEGImage2(this);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         return String.format(FORMAT, identifier, image.length);
@@ -208,28 +208,9 @@ public final class DefineJPEGImage2 implements ImageTag {
     }
 
     private void decodeInfo() {
-        final FLVDecoder coder = new FLVDecoder(image);
-
-        if (coder.readWord(2, false) == 0xffd8) {
-            int marker;
-
-            do {
-                marker = coder.readWord(2, false);
-
-                if ((marker & 0xff00) == 0xff00) {
-                    if ((marker >= 0xffc0) && (marker <= 0xffcf)
-                            && (marker != 0xffc4) && (marker != 0xffc8)) {
-                        coder.adjustPointer(24);
-                        height = coder.readWord(2, false);
-                        width = coder.readWord(2, false);
-                        break;
-                    } else {
-                        coder
-                                .adjustPointer((coder.readWord(2, false) - 2) << 3);
-                    }
-                }
-
-            } while ((marker & 0xff00) == 0xff00);
-        }
+        JPEGInfo info = new JPEGInfo();
+        info.decode(image);
+        width = info.getWidth();
+        height = info.getHeight();
     }
 }

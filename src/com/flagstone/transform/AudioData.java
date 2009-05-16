@@ -68,7 +68,7 @@ public final class AudioData implements VideoTag {
             + " rate=%d; channelCount=%d; sampleSize=%d; data=%d }";
 
     private int timestamp;
-    private SoundFormat format;
+    private int format;
     private int rate;
     private int channelCount;
     private int sampleSize;
@@ -104,7 +104,7 @@ public final class AudioData implements VideoTag {
 
     /** TODO(method). */
     public AudioData() {
-        format = SoundFormat.PCM;
+        format = 0;
         rate = 5512;
         channelCount = 0;
         sampleSize = 1;
@@ -161,7 +161,7 @@ public final class AudioData implements VideoTag {
         rate = object.rate;
         channelCount = object.channelCount;
         sampleSize = object.sampleSize;
-        data = Arrays.copyOf(object.data, object.data.length);
+        data = object.data;
     }
 
     /**
@@ -195,19 +195,64 @@ public final class AudioData implements VideoTag {
      *         Constants.NELLYMOSER or Constants.NELLYMOSER_8K.
      */
     public SoundFormat getFormat() {
-        return format;
+        SoundFormat value;
+        
+        switch (format) {
+        case 0: 
+            value = SoundFormat.NATIVE_PCM;
+            break;
+        case 1: 
+            value = SoundFormat.ADPCM;
+            break;
+        case 2: 
+            value = SoundFormat.MP3;
+            break;
+        case 3: 
+            value = SoundFormat.PCM;
+            break;
+        case 5: 
+            value = SoundFormat.NELLYMOSER_8K;
+            break;
+        case 6: 
+            value = SoundFormat.NELLYMOSER;
+            break;
+        default:
+            throw new IllegalStateException("Unsupported sound format.");
+        }
+        return value;
     }
 
     /**
      * Sets the encoding format used to encode the sound.
      *
-     * @param format
+     * @param encoding
      *            the format for the sound, either Constants.NATIVE_PCM,
      *            Constants.ADPCM, Constants.MP3, Constants.NELLYMOSER or
      *            Constants.NELLYMOSER_8K.
      */
-    public void setFormat(final SoundFormat format) {
-        this.format = format;
+    public void setFormat(final SoundFormat encoding) {
+        switch (encoding) {
+        case NATIVE_PCM: 
+            format = 0;
+            break;
+        case ADPCM: 
+            format = 1;
+            break;
+        case MP3: 
+            format = 2;
+            break;
+        case PCM: 
+            format = 3;
+            break;
+        case NELLYMOSER_8K: 
+            format = 5;
+            break;
+        case NELLYMOSER: 
+            format = 6;
+            break;
+        default:
+            throw new IllegalArgumentException("Unsupported sound format.");
+        }
     }
 
     /**
@@ -286,10 +331,10 @@ public final class AudioData implements VideoTag {
     }
 
     /**
-     * Returns the sound data.
+     * Returns a copy of the sound data.
      */
     public byte[] getData() {
-        return data;
+        return Arrays.copyOf(data, data.length);
     }
 
     /**
@@ -302,7 +347,7 @@ public final class AudioData implements VideoTag {
         if (bytes == null) {
             throw new IllegalArgumentException(Strings.DATA_IS_NULL);
         }
-        data = bytes;
+        data = Arrays.copyOf(bytes, bytes.length);
     }
 
     /** {@inheritDoc} */
@@ -343,7 +388,7 @@ public final class AudioData implements VideoTag {
     }
 
     private byte pack() {
-        byte value = (byte) (format.getValue() << 4);
+        byte value = (byte) (format << 4);
 
         switch (rate) {
         case 5512:
@@ -367,7 +412,7 @@ public final class AudioData implements VideoTag {
     }
 
     private void unpack(final int value) {
-        format = SoundFormat.fromInt((value >> 4) & 0x0F);
+        format = (value >> 4) & 0x0F;
 
         switch (value & 0x0C) {
         case 0:

@@ -4,28 +4,29 @@
  *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  *
- *  * Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer.
+ *  * Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
  *  * Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
- *    may be used to endorse or promote products derived from this software
- *    without specific prior written permission.
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its
+ *    contributors may be used to endorse or promote products derived from this
+ *    software without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
- * OF THE POSSIBILITY OF SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
 
 package com.flagstone.transform.sound;
@@ -83,7 +84,7 @@ public final class SoundStreamHead2 implements MovieTag {
             + "streamRate=%d; streamChannels=%d; streamSampleSize=%d; "
             + "streamSampleCount=%d; latency=%d}";
 
-    private SoundFormat format;
+    private int format;
     private int playRate;
     private int playChannels;
     private int playSampleSize;
@@ -144,7 +145,7 @@ public final class SoundStreamHead2 implements MovieTag {
         playSampleSize = coder.readBits(1, false) + 1;
         playChannels = coder.readBits(1, false) + 1;
 
-        format = SoundFormat.fromInt(coder.readBits(4, false));
+        format = coder.readBits(4, false);
 
         switch (coder.readBits(2, false)) {
         case 0:
@@ -167,7 +168,7 @@ public final class SoundStreamHead2 implements MovieTag {
         streamChannels = coder.readBits(1, false) + 1;
         streamSampleCount = coder.readWord(2, false);
 
-        if ((length == 6) && (format == SoundFormat.MP3)) {
+        if ((length == 6) && (format == 2)) {
             latency = coder.readWord(2, true);
         }
 
@@ -240,23 +241,63 @@ public final class SoundStreamHead2 implements MovieTag {
     }
 
     /**
-     * Returns the streaming sound format. For the SoundStreamHead2 class
-     * supports NATIVE_PCM, ADPCM, MP3, PCM or NELLYMOSER encoded sound data.
+     * Returns the streaming sound format.
      */
     public SoundFormat getFormat() {
-        return format;
+        SoundFormat value;
+        
+        switch (format) {
+        case 0: 
+            value = SoundFormat.NATIVE_PCM;
+            break;
+        case 1: 
+            value = SoundFormat.ADPCM;
+            break;
+        case 2: 
+            value = SoundFormat.MP3;
+            break;
+        case 3: 
+            value = SoundFormat.PCM;
+            break;
+        case 5: 
+            value = SoundFormat.NELLYMOSER_8K;
+            break;
+        case 6: 
+            value = SoundFormat.NELLYMOSER;
+            break;
+        default:
+            throw new IllegalStateException("Unsupported sound format.");
+        }
+        return value;
     }
 
     /**
      * Sets the format for the streaming sound.
      *
      * @param encoding
-     *            the compression format for the sound data, either
-     *            DefineSound.NATIVE_PCM, DefineSound.ADPCM, DefineSound.MP3,
-     *            DefineSound.PCM or DefineSound.NELLYMOSER.
+     *            the compression format for the sound data, must be either
+     *            NATIVE_PCM, ADPCM, MP3, PCM or NELLYMOSER from SoundFormat.
      */
     public void setFormat(final SoundFormat encoding) {
-        format = encoding;
+        switch (encoding) {
+        case NATIVE_PCM: 
+            format = 0;
+            break;
+        case ADPCM: 
+            format = 1;
+            break;
+        case MP3: 
+            format = 2;
+            break;
+        case PCM: 
+            format = 3;
+            break;
+        case NELLYMOSER: 
+            format = 6;
+            break;
+        default:
+            throw new IllegalArgumentException("Unsupported sound format.");
+        }
     }
 
     /**
@@ -447,7 +488,7 @@ public final class SoundStreamHead2 implements MovieTag {
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         length = 4;
 
-        if ((format == SoundFormat.MP3) && (latency > 0)) {
+        if ((format == 2) && (latency > 0)) {
             length += 2;
         }
         return (length > 62 ? 6 : 2) + length;
@@ -487,7 +528,7 @@ public final class SoundStreamHead2 implements MovieTag {
         coder.writeBits(playSampleSize - 1, 1);
         coder.writeBits(playChannels - 1, 1);
 
-        coder.writeBits(format.getValue(), 4);
+        coder.writeBits(format, 4);
 
         switch (streamRate) {
         case 5512:
@@ -509,7 +550,7 @@ public final class SoundStreamHead2 implements MovieTag {
         coder.writeBits(streamChannels - 1, 1);
         coder.writeWord(streamSampleCount, 2);
 
-        if ((format == SoundFormat.MP3) && (latency > 0)) {
+        if ((format == 2) && (latency > 0)) {
             coder.writeWord(latency, 2);
         }
 
