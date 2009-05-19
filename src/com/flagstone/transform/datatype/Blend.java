@@ -33,6 +33,8 @@ package com.flagstone.transform.datatype;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.flagstone.transform.coder.BlendTypes;
+
 /**
  * Blend modes let you control how the colours and transparency of successive
  * layers are composited together when the Flash Player displays the objects on
@@ -44,66 +46,66 @@ public enum Blend {
      * Applies colour form the current layer normally with no blending with the
      * underlying layers.
      */
-    NORMAL(1),
+    NORMAL(BlendTypes.NORMAL),
     /**
      * Sets the opacity of the current layer at 100% before blending.
      */
-    LAYER(2),
+    LAYER(BlendTypes.LAYER),
     /**
      * Multiplies layers together. This has the effect of darkening the layer.
      */
-    MULTIPLY(3),
+    MULTIPLY(BlendTypes.MULTIPLY),
     /**
      * Multiplies this inverse of the layer with the underlying layer, creating
      * a bleaching effect.
      */
-    SCREEN(4),
+    SCREEN(BlendTypes.SCREEN),
     /**
      * Displays colours from the underlying layer that are lighter than the
      * current layer.
      */
-    LIGHTEN(5),
+    LIGHTEN(BlendTypes.LIGHTEN),
     /**
      * Displays colours from the underlying layer that are darker than the
      * current layer.
      */
-    DARKEN(6),
+    DARKEN(BlendTypes.DARKEN),
     /**
      * Add the colours of the layers together.
      */
-    ADD(7),
+    ADD(BlendTypes.ADD),
     /**
      * Subtract the current layer colour from the underlying layer.
      */
-    SUBTRACT(8),
+    SUBTRACT(BlendTypes.SUBTRACT),
     /**
      * Subtracts the largest colour value from the smallest, creating a colour
      * negative effect.
      */
-    DIFFERENCE(9),
+    DIFFERENCE(BlendTypes.DIFFERENCE),
     /**
      * Inverts the colours of the current layer.
      */
-    INVERT(10),
+    INVERT(BlendTypes.INVERT),
     /**
      * Applies the transparency of the current layer to the underlying layer.
      */
-    ALPHA(11),
+    ALPHA(BlendTypes.ALPHA),
     /**
      * Delete the colours from the underlying layer that match the colour on the
      * current layer.
      */
-    ERASE(12),
+    ERASE(BlendTypes.ERASE),
     /**
      * Use the colour from the current layer to select colours from the
      * underlying layer.
      */
-    OVERLAY(13),
+    OVERLAY(BlendTypes.OVERLAY),
     /**
      * Select colours from the underlying layer using the values on the current
      * layer.
      */
-    HARDLIGHT(14);
+    HARDLIGHT(BlendTypes.HARDLIGHT);
 
     private static final Map<Integer, Blend> TABLE =
         new LinkedHashMap <Integer, Blend>();
