@@ -33,18 +33,21 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.EnumSet;
+import java.util.Set;
+
 import org.junit.Test;
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.datatype.MovieAttribute;
 
 public final class FileAttributesTest {
 
-    private static final transient boolean hasMetaData = true;
-    private static final transient boolean hasActionscript = true;
-    private static final transient boolean useNetwork = true;
+    private static final transient Set<MovieAttribute> attributes = 
+        EnumSet.allOf(MovieAttribute.class);
 
     private transient FileAttributes fixture;
 
@@ -56,12 +59,9 @@ public final class FileAttributesTest {
 
     @Test
     public void checkCopy() {
-        fixture = new FileAttributes(hasMetaData, hasActionscript, useNetwork);
+        fixture = new FileAttributes(attributes);
         final FileAttributes copy = fixture.copy();
 
-        assertEquals(fixture.hasMetaData(), copy.hasMetaData());
-        assertEquals(fixture.hasActionscript(), copy.hasActionscript());
-        assertEquals(fixture.useNetwork(), copy.useNetwork());
         assertEquals(fixture.toString(), copy.toString());
     }
 
@@ -70,7 +70,7 @@ public final class FileAttributesTest {
         final SWFEncoder encoder = new SWFEncoder(encoded.length);
         final Context context = new Context();
 
-        fixture = new FileAttributes(hasMetaData, hasActionscript, useNetwork);
+        fixture = new FileAttributes(attributes);
         assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
         fixture.encode(encoder, context);
 
@@ -85,9 +85,9 @@ public final class FileAttributesTest {
         fixture = new FileAttributes(decoder);
 
         assertTrue(decoder.eof());
-        assertEquals(hasMetaData, fixture.hasMetaData());
-        assertEquals(hasActionscript, fixture.hasActionscript());
-        assertEquals(useNetwork, fixture.useNetwork());
+        assertTrue(fixture.getAttributes().contains(MovieAttribute.METADATA));
+        assertTrue(fixture.getAttributes().contains(MovieAttribute.NETWORK_ACCESS));
+        assertTrue(fixture.getAttributes().contains(MovieAttribute.ACTIONSCRIPT_3));
     }
 
     @Test
@@ -97,8 +97,8 @@ public final class FileAttributesTest {
         fixture = new FileAttributes(decoder);
 
         assertTrue(decoder.eof());
-        assertEquals(hasMetaData, fixture.hasMetaData());
-        assertEquals(hasActionscript, fixture.hasActionscript());
-        assertEquals(useNetwork, fixture.useNetwork());
+        assertTrue(fixture.getAttributes().contains(MovieAttribute.METADATA));
+        assertTrue(fixture.getAttributes().contains(MovieAttribute.NETWORK_ACCESS));
+        assertTrue(fixture.getAttributes().contains(MovieAttribute.ACTIONSCRIPT_3));
     }
 }

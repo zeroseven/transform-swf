@@ -30,8 +30,8 @@
 
 package com.flagstone.transform.button;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -44,6 +44,7 @@ import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.coder.SWFFactory;
 import com.flagstone.transform.datatype.ColorTransform;
 import com.flagstone.transform.datatype.CoordTransform;
 
@@ -84,8 +85,10 @@ import com.flagstone.transform.datatype.CoordTransform;
  */
 //TODO(class)
 public final class ButtonShape implements SWFEncodeable {
+    
     private static final String FORMAT = "ButtonShape: { state=%d;"
-            + " identifier=%d; layer=%d; transform=%s; colorTransform=%s }";
+            + " identifier=%d; layer=%d; transform=%s; colorTransform=%s"
+            + " blend=%s, filters=%s }";
 
     private int state;
     private int identifier;
@@ -93,7 +96,10 @@ public final class ButtonShape implements SWFEncodeable {
     private CoordTransform transform;
     private ColorTransform colorTransform;
     private List<Filter> filters;
-    private Blend blendMode;
+    private Integer blend;
+    
+    private transient boolean hasBlend;
+    private transient boolean hasFilters;
 
     /**
      * Creates and initialises a ButtonShape object using values encoded
@@ -110,10 +116,12 @@ public final class ButtonShape implements SWFEncodeable {
      * @throws CoderException
      *             if an error occurs while decoding the data.
      */
-    // TODO(code) implement fully
     public ButtonShape(final SWFDecoder coder, final Context context)
             throws CoderException {
-        coder.readBits(4, false);
+        coder.readBits(2, false);
+        
+        hasBlend = coder.readBits(1, false) != 0;
+        hasFilters = coder.readBits(1, false) != 0;
 
         state = coder.readBits(4, false);
         identifier = coder.readWord(2, false);
@@ -123,64 +131,26 @@ public final class ButtonShape implements SWFEncodeable {
         if (context.getVariables().get(Context.TYPE) == MovieTypes.DEFINE_BUTTON_2) {
             colorTransform = new ColorTransform(coder, context);
         }
+        
+        if (hasFilters) {
+            SWFFactory<Filter> decoder = context.getRegistry().getFilterDecoder();
+            
+            int count = coder.readByte();   
+            filters = new ArrayList<Filter>(count);
+            for (int i=0; i<count; i++) {
+               filters.add(decoder.getObject(coder, context)); 
+            }
+        }
+        
+        if (hasBlend) {
+            blend = coder.readByte();
+        }
     }
 
     /**
-     * Creates an ButtonShape object with a coordinate transform that will be
-     * applied to the shape drawn for the button states.
-     *
-     * @param states
-     *            the set of states of the button when the shape is drawn.
-     * @param uid
-     *            the unique identifier of an DefineShape, DefineShape2 or
-     *            DefineShape3 object. Must be in the range 1..65535.
-     * @param aLayer
-     *            the layer in the display list on which the shape is drawn.
-     *            Must be in the range 1..65535.
-     * @param aTransform
-     *            a coordinate transform that changes the appearance of the
-     *            shape when it is drawn.
+     * Creates am uninitialised ButtonShape object.
      */
-    public ButtonShape(final Set<ButtonState> states, final int uid,
-            final int aLayer, final CoordTransform aTransform) {
-        setState(states);
-        setIdentifier(uid);
-        setLayer(aLayer);
-        setTransform(aTransform);
-    }
-
-    /**
-     * Creates a ButtonShape object with a coordinate and colour transform that
-     * will be applied to the shape drawn for the button states.
-     *
-     * IMPORTANT: Only DefineButton2 makes use of the ColorTransform. The colour
-     * transform will not be encoded if the ButtonShape is used for a
-     * DefineButton object.
-     *
-     * @param states
-     *            the state of the button when the shape is drawn. The compound
-     *            state code must be in the range 1..15.
-     * @param uid
-     *            the unique identifier of an DefineShape, DefineShape2 or
-     *            DefineShape3 object. Must be in the range 1..65535.
-     * @param aLayer
-     *            the layer in the display list on which the shape is drawn.
-     *            Must be in the range 1..65353.
-     * @param aTransform
-     *            an CoordTransform object that changes the appearance of the
-     *            shape when it is drawn. Must not be null.
-     * @param aColorTransform
-     *            an ColorTransform object that changes the colour of the shape
-     *            when it is drawn. Must not be null.
-     */
-    public ButtonShape(final Set<ButtonState> states, final int uid,
-            final int aLayer, final CoordTransform aTransform,
-            final ColorTransform aColorTransform) {
-        setState(states);
-        setIdentifier(uid);
-        setLayer(aLayer);
-        setTransform(aTransform);
-        setColorTransform(aColorTransform);
+    public ButtonShape() {
     }
 
     /**
@@ -197,6 +167,8 @@ public final class ButtonShape implements SWFEncodeable {
         layer = object.layer;
         transform = object.transform;
         colorTransform = object.colorTransform;
+        filters = new ArrayList<Filter>(object.filters);
+        blend = object.blend;
     }
 
     /** TODO(method). */
@@ -219,7 +191,7 @@ public final class ButtonShape implements SWFEncodeable {
     }
 
     /** TODO(method). */
-    public void setState(final Set<ButtonState> states) {
+    public ButtonShape setState(final Set<ButtonState> states) {
         for (final ButtonState buttonState : states) {
             switch (buttonState) {
             case UP:
@@ -238,6 +210,7 @@ public final class ButtonShape implements SWFEncodeable {
                 throw new IllegalArgumentException();
             }
         }
+        return this;
     }
 
     /**
@@ -256,11 +229,12 @@ public final class ButtonShape implements SWFEncodeable {
      *            the unique identifier of the shape object that defines the
      *            shape's appearance. Must be in the range 1..65535.
      */
-    public void setIdentifier(final int uid) {
+    public ButtonShape setIdentifier(final int uid) {
         if ((uid < 1) || (uid > 65535)) {
             throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
         }
         identifier = uid;
+        return this;
     }
 
     /**
@@ -277,11 +251,12 @@ public final class ButtonShape implements SWFEncodeable {
      *            the number of the layer in the display list where the shape is
      *            drawn. Must be in the range 1..65535.
      */
-    public void setLayer(final int aNumber) {
+    public ButtonShape setLayer(final int aNumber) {
         if ((aNumber < 1) || (aNumber > 65535)) {
             throw new IllegalArgumentException(Strings.LAYER_RANGE);
         }
         layer = aNumber;
+        return this;
     }
 
     /**
@@ -299,11 +274,12 @@ public final class ButtonShape implements SWFEncodeable {
      *            an CoordTransform object that will be applied to the shape.
      *            Must not be null.
      */
-    public void setTransform(final CoordTransform aTransform) {
+    public ButtonShape setTransform(final CoordTransform aTransform) {
         if (aTransform == null) {
             throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
         }
         transform = aTransform;
+        return this;
     }
 
     /**
@@ -327,11 +303,12 @@ public final class ButtonShape implements SWFEncodeable {
      *            Must not be null, even if the ButtonShape will be added to a
      *            DefineButton object.
      */
-    public void setColorTransform(final ColorTransform aTransform) {
+    public ButtonShape setColorTransform(final ColorTransform aTransform) {
         if (aTransform == null) {
             throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
         }
         colorTransform = aTransform;
+        return this;
     }
 
     /** TODO(method). */
@@ -349,50 +326,67 @@ public final class ButtonShape implements SWFEncodeable {
     }
 
     /** TODO(method). */
-    public void setFilters(final List<Filter> array) {
+    public ButtonShape setFilters(final List<Filter> array) {
         if (array == null) {
             throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
         }
         filters = array;
+        return this;
     }
 
     /** TODO(method). */
-    public Blend getBlendMode() {
-        return blendMode;
+    public Blend getBlend() {
+        return Blend.fromInt(blend);
     }
 
     /** TODO(method). */
-    public void setBlendMode(final Blend blend) {
-        blendMode = blend;
+    public ButtonShape setBlend(final Blend mode) {
+        if (mode == null) {
+            blend = null;
+        } else {
+            blend = mode.getValue();
+        }
+        return this;
     }
 
-    /**
-     * Creates and returns a deep copy of this object.
-     */
+    /** {@inheritDoc} */
     public ButtonShape copy() {
         return new ButtonShape(this);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         return String.format(FORMAT, state, identifier, layer, transform,
                 colorTransform);
     }
 
-    // TODO(code) implement fully
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        
+        hasBlend = blend != null;
+        hasFilters = !filters.isEmpty(); 
+        
         int length = 5 + transform.prepareToEncode(coder, context);
 
         if (context.getVariables().get(Context.TYPE) == MovieTypes.DEFINE_BUTTON_2) {
             length += colorTransform.prepareToEncode(coder, context);
         }
+        
+        if (hasFilters) {
+            length += 1;
+            for (Filter filter : filters) {
+                length += filter.prepareToEncode(coder, context);
+            }
+        }
 
+        if (hasBlend) {
+            length += 1;
+        }
+        
         return length;
     }
 
-    // TODO(code) implement fully
-    // TODO(code) Add test so blend and filters are only added in flash 8+
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
@@ -404,6 +398,17 @@ public final class ButtonShape implements SWFEncodeable {
 
         if (context.getVariables().get(Context.TYPE) == MovieTypes.DEFINE_BUTTON_2) {
             colorTransform.encode(coder, context);
+        }
+        
+        if (hasFilters) {
+            coder.writeByte(filters.size());
+            for (Filter filter : filters) {
+                filter.encode(coder, context);
+            }
+        }
+
+        if (hasBlend) {
+            coder.writeByte(blend);
         }
     }
 }

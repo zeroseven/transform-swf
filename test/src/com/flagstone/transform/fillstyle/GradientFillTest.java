@@ -50,7 +50,7 @@ import com.flagstone.transform.datatype.CoordTransform;
 
 public final class GradientFillTest {
 
-    private static transient boolean radial = false;
+    private static transient GradientType radial = GradientType.RADIAL;
     private static transient CoordTransform transform = CoordTransform
             .translate(1, 2);
 

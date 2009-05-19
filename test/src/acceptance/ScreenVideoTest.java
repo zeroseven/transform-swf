@@ -17,7 +17,7 @@ import com.flagstone.transform.Place2;
 import com.flagstone.transform.ShowFrame;
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.VideoFrame;
-import com.flagstone.transform.DefineVideo.Deblocking;
+import com.flagstone.transform.video.Deblocking;
 import com.flagstone.transform.coder.ImageTag;
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.datatype.Bounds;

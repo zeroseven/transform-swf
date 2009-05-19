@@ -31,8 +31,13 @@ package com.flagstone.transform;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.DataFormatException;
@@ -50,8 +55,10 @@ import com.flagstone.transform.coder.VideoTag;
  * for audio and video data.
  */
 //TODO(class)
-public final class Video implements Cloneable {
-    private static final String FORMAT = "Video: { signature=%s; version=%d; objects=%s ";
+public final class Video {
+    
+    private static final String FORMAT = "Video: { signature=%s; version=%d;"
+            + " objects=%s }";
 
     private String signature;
     private int version;
@@ -129,88 +136,81 @@ public final class Video implements Cloneable {
         return this;
     }
 
-    /**
-     * Adds the array of object to the Video.
-     *
-     * @param array
-     *            an array of VideoTags that will be added to the video in the
-     *            order they are in the array. Must not be null.
-     */
-    public Video add(final List<VideoTag> array) {
-        if (array == null) {
-            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
-        }
-        objects.addAll(array);
-        return this;
+    /** {@inheritDoc} */
+    public Video copy() {
+        return new Video(this);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String toString() {
+        return String.format(FORMAT, signature, version, objects);
     }
 
     /**
-     * Decodes the contents of the specified file. An object for each tag
-     * decoded from the file is placed in the object array in the order they
-     * were read from the file. If an error occurs while reading and parsing the
-     * file then an exception is thrown.
-     *
-     * @param path
-     *            the path to the Flash Video file that will be parsed.
-     *
-     * @throws DataFormatException
-     *             - if the file does not contain Flash data.
-     * @throws IOException
-     *             - if an error occurs while reading and decoding the file.
-     */
-    public void decodeFromFile(final String path) throws IOException,
-            DataFormatException {
-        decodeFromFile(new File(path));
-    }
-
-    /**
-     * Decodes the contents of the specified file. An object for each tag
-     * decoded from the file is placed in the object array in the order they
-     * were read from the file. If an error occurs while reading and parsing the
-     * file then an exception is thrown.
+     * Decodes the contents of the specified Flash Video file.
      *
      * @param file
-     *            the Flash Video file that will be parsed.
-     *
+     *            the Flash Video file that will be decoded.
      * @throws DataFormatException
-     *             - if the file does not contain Flash data.
+     *             - if the file does not contain Flash Video data.
      * @throws IOException
      *             - if an error occurs while reading and decoding the file.
      */
     public void decodeFromFile(final File file) throws IOException,
             DataFormatException {
-        final FileInputStream fileContents = new FileInputStream(file);
+        final FileInputStream stream = new FileInputStream(file);
 
-        final int fileLength = (int) file.length();
-        final byte[] contents = new byte[fileLength];
-
-        fileContents.read(contents);
-        fileContents.close();
-
-        decodeFromData(contents);
+        try {
+            decodeFromStream(stream, (int) file.length());
+        } finally {
+            stream.close();
+        }
     }
 
     /**
-     * Decodes the binary Flash Video data stored in the byte array. If an error
-     * occurs while the data is being decoded an exception is thrown.
+     * Decodes the contents of the flash video file referenced by the URL.
      *
-     * @param bytes
-     *            an array of bytes that contain the encoded Flash Video
-     *            objects.
-     *
+     * @param url
+     *            the path to the Flash Video file.
      * @throws DataFormatException
-     *             - if the file does not contain Flash data.
+     *             - if the file does not contain Flash Video data.
      * @throws IOException
      *             - if an error occurs while reading and decoding the file.
      */
-    public void decodeFromData(final byte[] bytes) throws IOException,
+    public void decodeFromURL(final URL url) throws IOException, DataFormatException {
+        
+        final URLConnection connection = url.openConnection();
+
+        int length = connection.getContentLength();
+
+        if (length < 0) {
+            throw new FileNotFoundException(url.getFile());
+        }
+        
+        InputStream stream = url.openStream();
+
+        try {
+            decodeFromStream(stream, length);
+        } finally {
+            stream.close();
+        }
+    }
+
+    private void decodeFromStream(InputStream stream, int length) throws IOException,
             DataFormatException {
 
-        final FLVDecoder coder = new FLVDecoder(bytes);
-
-        isFlashVideo(bytes);
-
+        byte[] data = new byte[length];
+        stream.read(data);
+        
+        final FLVDecoder coder = new FLVDecoder(data);
+        
         signature = coder.readString(3);
+        
+        if (!signature.equals("FLV")) {
+            throw new DataFormatException(Strings.NOT_FLV_SIGNATURE);
+        }
+        
         version = coder.readByte();
         coder.readByte(); // audio & video flags
         coder.readWord(4, false); // header length always 9
@@ -228,62 +228,43 @@ public final class Video implements Cloneable {
     }
 
     /**
-     * Encodes the array of objects and writes the data to the specified file.
-     * If an error occurs while encoding the file then an exception is thrown.
-     *
-     * @param path
-     *            the path to the file that the video will be encoded to.
-     *
-     * @throws FileNotFoundException
-     *             - if an error occurs while reading the file.
-     * @throws IOException
-     *             - if an error occurs while encoding and writing the file.
-     */
-    /** {@inheritDoc} */
-    public void encodeToFile(final String path) throws IOException {
-        final FileOutputStream fileContents = new FileOutputStream(path);
-
-        final byte[] encodedData = encode();
-
-        fileContents.write(encodedData);
-        fileContents.close();
-    }
-
-    /**
-     * Encodes the array of objects and writes the data to the specified file.
-     * If an error occurs while encoding the file then an exception is thrown.
+     * Encodes the Video and writes the data to the specified file.
      *
      * @param file
      *            the file that the video will be encoded to.
-     *
      * @throws FileNotFoundException
      *             - if an error occurs while reading the file.
      * @throws IOException
      *             - if an error occurs while encoding and writing the file.
      */
-    /** {@inheritDoc} */
     public void encodeToFile(final File file) throws IOException {
-        final FileOutputStream fileContents = new FileOutputStream(file);
+        final FileOutputStream stream = new FileOutputStream(file);
 
-        final byte[] encodedData = encode();
-
-        fileContents.write(encodedData);
-        fileContents.close();
+        try {
+            encodeToStream(stream);
+        } finally {
+            stream.close();
+        }
     }
 
     /**
-     * Returns the encoded representation of the array of objects that this
-     * Video contains. If an error occurs while encoding the file then an
-     * exception is thrown.
+     * Encodes the Video and writes the data to the specified stream.
      *
-     * @return the array of bytes representing the encoded objects.
-     *
+     * @param stream
+     *            the output stream that the video will be encoded to.
+     * @throws FileNotFoundException
+     *             - if an error occurs while reading the file.
      * @throws IOException
-     *             if an error occurs while the data is being decoded.
+     *             - if an error occurs while encoding and writing the file.
      */
-    public byte[] encode() throws IOException {
-        final int fileLength = prepareToEncode();
+    public void encodeToStream(final OutputStream stream) throws IOException {
 
+        int fileLength = 13;
+
+        for (final VideoTag object : objects) {
+            fileLength += 4 + object.prepareToEncode();
+        }
+ 
         final FLVEncoder coder = new FLVEncoder(fileLength);
 
         int flags = 0;
@@ -305,37 +286,7 @@ public final class Video implements Cloneable {
         for (final VideoTag object : objects) {
             object.encode(coder);
         }
-        return coder.getData();
-    }
-
-    /**
-     * Creates and returns a deep copy of this object.
-     */
-    public Video copy() {
-        return new Video(this);
-    }
-
-    @Override
-    public String toString() {
-        return String.format(FORMAT, signature, version, objects);
-    }
-
-    private int prepareToEncode() {
-        int length = 13;
-
-        for (final VideoTag object : objects) {
-            length += 4 + object.prepareToEncode();
-        }
-        return length;
-    }
-
-    private void isFlashVideo(final byte[] bytes) throws DataFormatException {
-        if ((bytes == null) || (bytes.length < 8)) {
-            throw new DataFormatException(Strings.DATA_IS_NULL);
-        }
-
-        if ((bytes[0] != 0x46) || (bytes[1] != 0x4C) || (bytes[2] != 0x56)) {
-            throw new DataFormatException(Strings.NOT_FLV_SIGNATURE);
-        }
+        
+        stream.write(coder.getData());
     }
 }

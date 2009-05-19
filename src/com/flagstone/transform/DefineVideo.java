@@ -37,6 +37,7 @@ import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.VideoFormat;
+import com.flagstone.transform.video.Deblocking;
 
 /**
  * The DefineVideo class is used to define a video stream within a Flash file.
@@ -57,8 +58,6 @@ import com.flagstone.transform.datatype.VideoFormat;
  *
  * @see VideoFrameType
  */
-// TODO(optimise) Add pack/unpack methods
-// TODO(code) consider keeping Deblocking as an int and hand enum in accessors.
 //TODO(class)
 public final class DefineVideo implements DefineTag {
 
@@ -66,23 +65,13 @@ public final class DefineVideo implements DefineTag {
             + " frameCount=%d; width=%d; height=%d; deblocking=%s;"
             + " smoothing=%s; codec=%s }";
 
-    /** TODO(class). */
-    public enum Deblocking {
-        /** TODO(doc). */
-        OFF,
-        /** TODO(doc). */
-        ON,
-        /** TODO(doc). */
-        VIDEO
-    }
-
     private int identifier;
     private int frameCount;
     private int width;
     private int height;
-    private Deblocking deblocking;
+    private int deblocking;
     private boolean smoothing;
-    private VideoFormat codec;
+    private int codec;
 
     private transient int length;
 
@@ -113,30 +102,9 @@ public final class DefineVideo implements DefineTag {
 
         coder.readBits(5, false);
 
-        switch (coder.readBits(2, false)) {
-        case 1:
-            deblocking = Deblocking.OFF;
-            break;
-        case 2:
-            deblocking = Deblocking.ON;
-            break;
-        default:
-            deblocking = Deblocking.VIDEO;
-            break;
-        }
+        deblocking = coder.readBits(2, false);
         smoothing = coder.readBits(1, false) == 1;
-
-        switch (coder.readByte()) {
-        case 2:
-            codec = VideoFormat.H263;
-            break;
-        case 3:
-            codec = VideoFormat.SCREEN;
-            break;
-        default:
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    0, Strings.INVALID_FORMAT);
-        }
+        codec = coder.readByte();
 
         if (coder.getPointer() != end) {
             throw new CoderException(getClass().getName(), start >> 3, length,
@@ -277,7 +245,19 @@ public final class DefineVideo implements DefineTag {
      * either OFF, ON or USE_VIDEO.
      */
     public Deblocking getDeblocking() {
-        return deblocking;
+        Deblocking value;
+        switch (deblocking) {
+        case 1:
+            value = Deblocking.OFF;
+            break;
+        case 2:
+            value = Deblocking.ON;
+            break;
+        default:
+            value = Deblocking.VIDEO;
+            break;
+        }
+        return value;
     }
 
     /**
@@ -289,7 +269,19 @@ public final class DefineVideo implements DefineTag {
      *            is used.
      */
     public void setDeblocking(final Deblocking value) {
-        deblocking = value;
+        switch (value) {
+        case VIDEO:
+            deblocking = 0;
+            break;
+        case OFF:
+            deblocking = 1;
+            break;
+        case ON:
+            deblocking = 2;
+            break;
+        default:
+            throw new IllegalArgumentException();
+        }
     }
 
     /**
@@ -312,13 +304,24 @@ public final class DefineVideo implements DefineTag {
     }
 
     /**
-     * Get the format used to encode the video data, either Constants.H263 for
+     * Get the format used to encode the video data, either VideoFormat.H263 for
      * data encoded using the Sorenson modified H263 format or
-     * Constants.ScreenVideo (Flash 7 only) for data encoded using Macromedia's
+     * VideoFormat.SCREEN (Flash 7 only) for data encoded using Macromedia's
      * Screen Video format.
      */
     public VideoFormat getCodec() {
-        return codec;
+        VideoFormat value;
+        switch (codec) {
+        case 2:
+            value = VideoFormat.H263;
+            break;
+        case 3:
+            value = VideoFormat.SCREEN;
+            break;
+        default:
+            throw new IllegalStateException();
+        }
+        return value;
     }
 
     /**
@@ -327,19 +330,29 @@ public final class DefineVideo implements DefineTag {
      * DefineVideo.ScreenVideo (Flash 7 only) for data encoded using
      * Macromedia's Screen Video format.
      *
-     * @param codec
-     *            the format used encode the video, either DefineVideo.H263 or
-     *            DefineVideo.ScreenVideo.
+     * @param format
+     *            the format used encode the video, either VideoFormat.H263 or
+     *            VideoFormat.SCREEN.
      */
-    public void setCodec(final VideoFormat codec) {
-        this.codec = codec;
+    public void setCodec(final VideoFormat format) {
+        switch (format) {
+        case H263:
+            this.codec = 2;
+            break;
+        case SCREEN:
+            this.codec = 3;
+            break;
+        default:
+            throw new IllegalArgumentException();
+        }
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public DefineVideo copy() {
         return new DefineVideo(this);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         return String.format(FORMAT, identifier, frameCount, width, height,
@@ -373,34 +386,9 @@ public final class DefineVideo implements DefineTag {
         coder.writeWord(width, 2);
         coder.writeWord(height, 2);
         coder.writeBits(0, 5);
-
-        switch (deblocking) {
-        case VIDEO:
-            coder.writeBits(0, 2);
-            break;
-        case OFF:
-            coder.writeBits(1, 2);
-            break;
-        case ON:
-            coder.writeBits(2, 2);
-            break;
-        default:
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    0, Strings.INVALID_FORMAT);
-        }
+        coder.writeBits(deblocking, 2);
         coder.writeBits(smoothing ? 1 : 0, 1);
-
-        switch (codec) {
-        case H263:
-            coder.writeByte(2);
-            break;
-        case SCREEN:
-            coder.writeByte(3);
-            break;
-        default:
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    0, Strings.INVALID_FORMAT);
-        }
+        coder.writeByte(codec);
 
         if (coder.getPointer() != end) {
             throw new CoderException(getClass().getName(), start >> 3, length,

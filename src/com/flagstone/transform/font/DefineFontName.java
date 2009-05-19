@@ -40,7 +40,9 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 /** TODO(class). */
 public final class DefineFontName implements DefineTag {
-    private static final String FORMAT = "DefineFontName: { identifier=%d; name=%s; copyright=%s }";
+    
+    private static final String FORMAT = "DefineFontName: { identifier=%d;"
+            + " name=%s; copyright=%s }";
 
     private int identifier;
     private String name;
@@ -99,12 +101,12 @@ public final class DefineFontName implements DefineTag {
         copyright = object.copyright;
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public int getIdentifier() {
         return identifier;
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public void setIdentifier(final int uid) {
         if ((uid < 1) || (uid > 65535)) {
             throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
@@ -148,11 +150,12 @@ public final class DefineFontName implements DefineTag {
         copyright = aString;
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public DefineFontName copy() {
         return new DefineFontName(this);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         return String.format(FORMAT, identifier, name, copyright);

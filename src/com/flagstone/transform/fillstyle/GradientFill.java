@@ -83,11 +83,11 @@ import com.flagstone.transform.datatype.CoordTransform;
  *
  * @see Gradient
  */
-// TODO(optimise) Add pack/unpack methods
 //TODO(class)
 public final class GradientFill implements FillStyle {
 
-    private static final String FORMAT = "GradientFill: { transform=%s; gradients=%s }";
+    private static final String FORMAT = "GradientFill: { transform=%s;"
+            + " gradients=%s }";
 
     private transient int type;
     private int spread;
@@ -131,6 +131,9 @@ public final class GradientFill implements FillStyle {
      * Creates a GradientFill object specifying the type, coordinate transform
      * and array of gradient points.
      *
+     * @param type
+     *            identifies whether the gradient is rendered linearly or 
+     *            radially.
      * @param aTransform
      *            the coordinate transform mapping the gradient square onto
      *            physical coordinates. Must not be null.
@@ -140,9 +143,9 @@ public final class GradientFill implements FillStyle {
      *            to 8 Gradients. For Flash 8 onwards this number was increased
      *            to 15. Must not be null.
      */
-    public GradientFill(final boolean radial, final CoordTransform aTransform,
+    public GradientFill(final GradientType type, final CoordTransform aTransform,
             final List<Gradient> anArray) {
-        setRadial(radial);
+        setType(type);
         setTransform(aTransform);
         setGradients(anArray);
     }
@@ -162,18 +165,27 @@ public final class GradientFill implements FillStyle {
     }
 
     /** TODO(method). */
-    public boolean isRadial() {
-        return (type & 0x02) != 0;
+    public GradientType getType() {
+        GradientType value;
+        if (type == 0x10) {
+            value = GradientType.LINEAR;
+        } else {
+            value = GradientType.RADIAL;
+        }
+        return value;
     }
 
     /** TODO(method). */
-    public void setRadial(final boolean radial) {
-        if (radial) {
-            type = 0x12;
-        } else {
-            type = 0x10;
+    public void setType(final GradientType type) {
+        switch (type) {
+        case LINEAR:
+            this.type = 0x10;
+            break;
+        default:
+            this.type = 0x12;
+            break;
         }
-    }
+     }
 
     /** TODO(method). */
     public Spread getSpread() {
@@ -308,11 +320,12 @@ public final class GradientFill implements FillStyle {
         return this;
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public GradientFill copy() {
         return new GradientFill(this);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         return String.format(FORMAT, transform, gradients);

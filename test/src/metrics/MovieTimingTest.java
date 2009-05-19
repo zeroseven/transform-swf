@@ -3,6 +3,7 @@ package metrics;
 import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -120,7 +121,7 @@ public final class MovieTimingTest {
         final double before = System.currentTimeMillis();
 
         for (int i = 0; i < iterations; i++) {
-            movie.encode();
+            movie.encodeToStream(new ByteArrayOutputStream());
         }
 
         final double duration = (System.currentTimeMillis() - before)

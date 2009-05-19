@@ -45,7 +45,6 @@ import com.flagstone.transform.coder.SWFFactory;
 import com.flagstone.transform.datatype.ColorTransform;
 import com.flagstone.transform.datatype.CoordTransform;
 import com.flagstone.transform.datatype.Placement;
-import com.flagstone.transform.movieclip.MovieClipEvent;
 import com.flagstone.transform.movieclip.MovieClipEventHandler;
 
 /**
@@ -139,8 +138,9 @@ import com.flagstone.transform.movieclip.MovieClipEventHandler;
 //TODO(class)
 public final class Place3 implements MovieTag {
     private static final String FORMAT = "PlaceObject3: { place=%s; layer=%d; "
-            + "identifier=%d; transform=%d; colorTransform=%d; ratio=%d; "
-            + "clippingDepth=%d; name=%d; clipEvents=%s}";
+            + "bitmapCached=%s; identifier=%d; transform=%d; colorTransform=%d; "
+            + "ratio=%d; clippingDepth=%d; name=%s; className=%s; "
+            + "filters=%s; blend=%s;  clipEvents=%s}";
 
     /** TODO(method). */
     public static Place3 show(final int identifier, final int layer,
@@ -194,6 +194,7 @@ public final class Place3 implements MovieTag {
     private Placement placeType;
     private int layer;
     private String className;
+    private boolean bitmapCached;
     private int identifier;
     private CoordTransform transform;
     private ColorTransform colorTransform;
@@ -201,10 +202,14 @@ public final class Place3 implements MovieTag {
     private String name;
     private Integer depth;
     private List<Filter> filters;
-    private int blend;
+    private Integer blend;
     private List<MovieClipEventHandler> events;
 
     private transient int length;
+    private transient boolean hasBlend;
+    private transient boolean hasFilters; 
+    private transient boolean hasImage; 
+    private transient boolean hasClassName; 
 
     /**
      * Creates and initialises a Place3 object using values encoded
@@ -241,7 +246,6 @@ public final class Place3 implements MovieTag {
         final boolean hasRatio = coder.readBits(1, false) != 0;
         final boolean hasColorTransform = coder.readBits(1, false) != 0;
         final boolean hasTransform = coder.readBits(1, false) != 0;
-        final boolean hasFilters = coder.readBits(1, false) != 0;
 
         switch (coder.readBits(2, false)) {
         case 1:
@@ -257,8 +261,20 @@ public final class Place3 implements MovieTag {
             throw new CoderException(getClass().getName(), start >> 3, length,
                     0, Strings.INVALID_FORMAT);
         }
+        
+        coder.readBits(3, false);
+        
+        hasBlend = coder.readBits(1, false) != 0;
+        hasFilters = coder.readBits(1, false) != 0;
+        hasImage = coder.readBits(1, false) != 0;
+        hasClassName = coder.readBits(1, false) != 0;
+        bitmapCached = coder.readBits(1, false) != 0;
 
         layer = coder.readWord(2, false);
+
+        if (hasClassName || (placeType == Placement.NEW && hasImage)) {
+            className = coder.readString();
+        }
 
         if ((placeType == Placement.NEW) || (placeType == Placement.REPLACE)) {
             identifier = coder.readWord(2, false);
@@ -295,6 +311,10 @@ public final class Place3 implements MovieTag {
             for (int i = 0; i < count; i++) {
                 filters.add(decoder.getObject(coder, context));
             }
+        }
+  
+        if (hasBlend) {
+            blend = coder.readByte();
         }
 
         if (hasEvents) {
@@ -336,6 +356,7 @@ public final class Place3 implements MovieTag {
     public Place3(final Place3 object) {
         placeType = object.placeType;
         layer = object.layer;
+        bitmapCached = object.bitmapCached;
         className = object.className;
         identifier = object.identifier;
         if (object.transform != null) {
@@ -349,13 +370,13 @@ public final class Place3 implements MovieTag {
         name = object.name;
 
         filters = new ArrayList<Filter>(object.filters);
+        blend = object.blend;
         events = new ArrayList<MovieClipEventHandler>(object.events.size());
 
         for (final MovieClipEventHandler event : object.events) {
             events.add(event.copy());
         }
 
-        blend = object.blend;
     }
 
     /**
@@ -443,20 +464,6 @@ public final class Place3 implements MovieTag {
      */
     public Place3 setTransform(final CoordTransform aTransform) {
         transform = aTransform;
-        return this;
-    }
-
-    /**
-     * Sets the location where the object will be displayed.
-     *
-     * @param xCoord
-     *            the x-coordinate of the object's origin.
-     * @param yCoord
-     *            the x-coordinate of the object's origin.
-     * @return this object.
-     */
-    public Place3 setLocation(final int xCoord, final int yCoord) {
-        transform = CoordTransform.translate(xCoord, yCoord);
         return this;
     }
 
@@ -554,6 +561,21 @@ public final class Place3 implements MovieTag {
     }
 
     /**
+     * TODO(method).
+     */
+    public boolean isBitmapCached() {
+        return bitmapCached;
+    }
+
+    /**
+     * TODO(method).
+     */
+    public Place3 setBitmapCached(final boolean cached) {
+        bitmapCached = cached;
+        return this;
+    }
+
+    /**
      * Returns the name of the object. May be an empty string if a name was not
      * assigned to the object.
      */
@@ -575,13 +597,30 @@ public final class Place3 implements MovieTag {
     }
 
     /** TODO(method). */
+    public List<Filter> getFilters() {
+        return filters;
+    }
+
+    /** TODO(method). */
+    public void setFilters(final List<Filter> array) {
+        if (array == null) {
+            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+        }
+        filters = array;
+    }
+
+    /** TODO(method). */
     public Blend getBlend() {
         return Blend.fromInt(blend);
     }
 
     /** TODO(method). */
     public void setBlend(final Blend mode) {
-        blend = mode.getValue();
+        if (mode == null) {
+            blend = null;
+        } else {
+            blend = mode.getValue();
+        }
     }
 
     /**
@@ -638,37 +677,27 @@ public final class Place3 implements MovieTag {
         return this;
     }
 
-    /** TODO(method). */
-    public List<Filter> getFilters() {
-        return filters;
-    }
-
-    /** TODO(method). */
-    public void setFilters(final List<Filter> array) {
-        if (array == null) {
-            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
-        }
-        filters = array;
-    }
-
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public Place3 copy() {
         return new Place3(this);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         return String.format(FORMAT, placeType, layer, identifier, transform,
                 colorTransform, ratio, depth, name, events);
     }
 
-    // TODO(optimise)
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         final Map<Integer, Integer> vars = context.getVariables();
         vars.put(Context.TRANSPARENT, 1);
+        
+        hasBlend = blend != null;
+        hasFilters = !filters.isEmpty(); 
 
-        length = 3;
+        length = 4;
         length += ((placeType == Placement.NEW) || (placeType == Placement.REPLACE)) ? 2
                 : 0;
         length += transform == null ? 0 : transform.prepareToEncode(coder,
@@ -678,7 +707,18 @@ public final class Place3 implements MovieTag {
         length += ratio == null ? 0 : 2;
         length += depth == null ? 0 : 2;
         length += name == null ? 0 : coder.strlen(name);
+        length += className == null ? 0 : coder.strlen(className);
 
+        if (hasFilters) {
+            for (final Filter filter : filters) {
+                length += filter.prepareToEncode(coder, context);
+            }
+        }
+        
+        if (hasBlend) {
+            length += 1;
+        }
+        
         if (!events.isEmpty()) {
             final int eventSize = vars.get(Context.VERSION) > 5 ? 4 : 2;
 
@@ -696,7 +736,6 @@ public final class Place3 implements MovieTag {
         return (length > 62 ? 6 : 2) + length;
     }
 
-    // TODO(optimise)
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
@@ -727,8 +766,17 @@ public final class Place3 implements MovieTag {
             coder.writeBits(3, 2);
         }
 
+        coder.writeBits(bitmapCached ? 1 : 0, 2);
+        coder.writeBits(className == null ? 0 : 1, 1);
+        coder.writeBits(bitmapCached ? 1 : 0, 1);
+        coder.writeBits(hasBlend ? 1 : 0, 1);
+        coder.writeBits(hasFilters ? 1 : 0, 1);
+
         coder.writeWord(layer, 2);
 
+        if (className != null) {
+            coder.writeString(className);
+        }
         if ((placeType == Placement.NEW) || (placeType == Placement.REPLACE)) {
             coder.writeWord(identifier, 2);
         }
@@ -747,6 +795,16 @@ public final class Place3 implements MovieTag {
 
         if (depth != null) {
             coder.writeWord(depth, 2);
+        }
+        
+        if (hasFilters) {
+            for (Filter filter : filters) {
+                filter.encode(coder, context);
+            }
+        }
+
+        if (hasBlend) {
+            coder.writeByte(blend);
         }
 
         if (!events.isEmpty()) {

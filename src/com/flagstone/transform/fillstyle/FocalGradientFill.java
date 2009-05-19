@@ -42,7 +42,6 @@ import com.flagstone.transform.coder.FillStyle;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-//TODO(optimise) Add pack/unpack methods
 /** TODO(class). */
 public final class FocalGradientFill implements FillStyle {
 
@@ -231,11 +230,12 @@ public final class FocalGradientFill implements FillStyle {
         gradients = anArray;
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public FocalGradientFill copy() {
         return new FocalGradientFill(this);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         return String.format(FORMAT, getSpread(), getInterpolation(),

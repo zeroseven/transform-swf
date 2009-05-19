@@ -52,9 +52,10 @@ import com.flagstone.transform.datatype.CoordTransform;
 //TODO(class)
 public final class MorphGradientFill implements FillStyle {
 
-    private static final String FORMAT = "MorphGradientFill: { start=%s; end=%s; gradients=%s }";
+    private static final String FORMAT = "MorphGradientFill: { start=%s;"
+            + " end=%s; gradients=%s }";
 
-    private transient int type;
+    private int type;
     private CoordTransform startTransform;
     private CoordTransform endTransform;
     private List<MorphGradient> gradients;
@@ -94,6 +95,9 @@ public final class MorphGradientFill implements FillStyle {
      * Creates a MorphGradientFill object specifying the type of fill, starting
      * and ending coordinate transforms and the array of gradient records.
      *
+     * @param type
+     *            identifies whether the gradient is rendered linearly or 
+     *            radially.
      * @param start
      *            the coordinate transform mapping the gradient square onto
      *            physical coordinates at the start of the morphing process.
@@ -104,9 +108,9 @@ public final class MorphGradientFill implements FillStyle {
      *            an array of MorphGradient objects defining the control points
      *            for the gradient.
      */
-    public MorphGradientFill(final boolean radial, final CoordTransform start,
+    public MorphGradientFill(final GradientType type, final CoordTransform start,
             final CoordTransform end, final List<MorphGradient> gradients) {
-        setRadial(radial);
+        setType(type);
         setStartTransform(start);
         setEndTransform(end);
         setGradients(gradients);
@@ -150,18 +154,27 @@ public final class MorphGradientFill implements FillStyle {
     }
 
     /** TODO(method). */
-    public boolean isRadial() {
-        return (type & 0x02) != 0;
+    public GradientType getType() {
+        GradientType value;
+        if (type == 0x10) {
+            value = GradientType.LINEAR;
+        } else {
+            value = GradientType.RADIAL;
+        }
+        return value;
     }
 
     /** TODO(method). */
-    public void setRadial(final boolean radial) {
-        if (radial) {
-            type = 0x12;
-        } else {
-            type = 0x10;
+    public void setType(final GradientType type) {
+        switch (type) {
+        case LINEAR:
+            this.type = 0x10;
+            break;
+        default:
+            this.type = 0x12;
+            break;
         }
-    }
+     }
 
     /**
      * Returns the coordinate transform mapping the gradient square onto

@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.zip.DataFormatException;
 
 import com.flagstone.transform.datatype.Bounds;
-import com.flagstone.transform.font.CharacterEncoding;
+import com.flagstone.transform.datatype.CharacterEncoding;
 import com.flagstone.transform.font.Kerning;
 import com.flagstone.transform.shape.Shape;
 import com.flagstone.transform.util.shape.Canvas;

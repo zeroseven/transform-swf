@@ -1,5 +1,5 @@
 /*
- * FIleAttributes.java
+ * FileAttributes.java
  * Transform
  *
  * Copyright (c) 2009 Flagstone Software Ltd. All rights reserved.
@@ -31,22 +31,23 @@
 
 package com.flagstone.transform;
 
+import java.util.EnumSet;
+import java.util.Set;
+
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.datatype.MovieAttribute;
 
 /** TODO(class). */
 public final class FileAttributes implements MovieTag {
 
-    private static final String FORMAT = "FileAttributes: { metadata=%d;"
-            + " actionscript3=%d; userNetwork=%d }";
+    private static final String FORMAT = "FileAttributes: { attributes=%s }";
 
-    private int hasMetaData;
-    private int hasActionscript;
-    private int useNetwork;
+    private int attributes;
 
     /**
      * Creates and initialises a FileAttributes object using values encoded
@@ -63,21 +64,13 @@ public final class FileAttributes implements MovieTag {
         if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
             coder.readWord(4, false);
         }
-
-        final int value = coder.readByte();
-        hasMetaData = value & 16;
-        hasActionscript = value & 8;
-        useNetwork = value & 1;
-
+        attributes = coder.readByte();
         coder.adjustPointer(24);
     }
 
     /** TODO(method). */
-    public FileAttributes(final boolean metadata, final boolean actionscript,
-            final boolean network) {
-        setHasMetaData(metadata);
-        setHasActionscript(actionscript);
-        setUseNetwork(network);
+    public FileAttributes(Set<MovieAttribute>set) {
+        setAttributes(set);
     }
 
     /**
@@ -89,39 +82,38 @@ public final class FileAttributes implements MovieTag {
      *            copied.
      */
     public FileAttributes(final FileAttributes object) {
-        hasMetaData = object.hasMetaData;
-        hasActionscript = object.hasActionscript;
-        useNetwork = object.useNetwork;
+        attributes = object.attributes;
     }
 
     /** TODO(method). */
-    public boolean hasMetaData() {
-        return (hasMetaData & 16) != 0;
+    public Set<MovieAttribute> getAttributes() {
+        Set<MovieAttribute>set = EnumSet.noneOf(MovieAttribute.class);
+        
+        if ((attributes & 1) != 0) {
+            set.add(MovieAttribute.NETWORK_ACCESS);
+        }
+        if ((attributes & 8) != 0) {
+            set.add(MovieAttribute.ACTIONSCRIPT_3);
+        }
+        if ((attributes & 16) != 0) {
+            set.add(MovieAttribute.METADATA);
+        }
+        return set;
     }
 
     /** TODO(method). */
-    public void setHasMetaData(final boolean metadata) {
-        hasMetaData = metadata ? 16 : 0;
-    }
-
-    /** TODO(method). */
-    public boolean hasActionscript() {
-        return (hasActionscript & 8) != 0;
-    }
-
-    /** TODO(method). */
-    public void setHasActionscript(final boolean actionscript) {
-        hasActionscript = actionscript ? 8 : 0;
-    }
-
-    /** TODO(method). */
-    public boolean useNetwork() {
-        return (useNetwork & 1) != 0;
-    }
-
-    /** TODO(method). */
-    public void setUseNetwork(final boolean network) {
-        useNetwork = network ? 1 : 0;
+    public void setAttributes(Set<MovieAttribute>set) {
+        attributes = 0;
+        
+        if (set.contains(MovieAttribute.NETWORK_ACCESS)) {
+            attributes |= 1;
+        }
+        if (set.contains(MovieAttribute.ACTIONSCRIPT_3)) {
+            attributes |= 8;
+        }
+        if (set.contains(MovieAttribute.METADATA)) {
+            attributes |= 16;
+        }
     }
 
     /** {@inheritDoc} */
@@ -132,8 +124,7 @@ public final class FileAttributes implements MovieTag {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        return String.format(FORMAT, hasMetaData >> 4, hasActionscript >> 2,
-                useNetwork);
+        return String.format(FORMAT, attributes);
     }
 
     /** {@inheritDoc} */
@@ -145,7 +136,7 @@ public final class FileAttributes implements MovieTag {
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         coder.writeWord((MovieTypes.FILE_ATTRIBUTES << 6) | 4, 2);
-        coder.writeByte(hasMetaData | hasActionscript | useNetwork);
+        coder.writeByte(attributes);
         coder.writeWord(0, 3);
     }
 }

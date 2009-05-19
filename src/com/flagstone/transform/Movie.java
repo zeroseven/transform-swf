@@ -36,6 +36,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -51,6 +52,7 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.coder.SWFFactory;
 import com.flagstone.transform.datatype.Bounds;
+import com.flagstone.transform.datatype.CharacterEncoding;
 
 /**
  * Movie is a container class for the objects that represents the data
@@ -98,21 +100,12 @@ public final class Movie {
        }
     }
  
-    /** TODO(class). */
-    public enum Encoding {
-        /** TODO(method). */
-        ANSI,
-        /** TODO(method). */
-        SJIS,
-        /** TODO(method). */
-        UTF8
-    }
-
-    private static final String FORMAT = "Movie: { signature=%s; version=%d; frameSize=%s; frameRate=%f; objects=%s }";
+    private static final String FORMAT = "Movie: { signature=%s; version=%d;"
+            + " frameSize=%s; frameRate=%f; objects=%s }";
 
     private DecoderRegistry registry;
+    private CharacterEncoding encoding;
     private int identifier;
-    private Encoding encoding;
 
     private Signature signature;
     private int version;
@@ -125,7 +118,7 @@ public final class Movie {
 
     /** TODO(method). */
     public Movie() {
-        encoding = Encoding.UTF8;
+        encoding = CharacterEncoding.UTF8;
         signature = Signature.CWS;
         version = 9;
         objects = new ArrayList<MovieTag>();
@@ -178,7 +171,7 @@ public final class Movie {
      * Sets the encoding scheme for strings encoded and decoded from Flash
      * files.
      */
-    public void setEncoding(final Encoding enc) {
+    public void setEncoding(final CharacterEncoding enc) {
         encoding = enc;
     }
 
@@ -321,6 +314,20 @@ public final class Movie {
     }
 
     /**
+     * Creates and returns a complete copy of this object.
+     */
+    public Movie copy() {
+        return new Movie(this);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String toString() {
+        return String.format(FORMAT, signature, version, frameSize, frameRate,
+                objects);
+    }
+
+    /**
      * Decodes the contents of the specified file. An object for each tag
      * decoded from the file is placed in the Movie's object array in the order
      * they were decoded from the file. If an error occurs while reading and
@@ -458,7 +465,7 @@ public final class Movie {
         final FileOutputStream stream = new FileOutputStream(file);
 
         try {
-            stream.write(encode());
+            encodeToStream(stream);
         } finally {
             stream.close();
         }
@@ -469,21 +476,33 @@ public final class Movie {
      * Movie contains. If an error occurs while encoding the file then an
      * exception is thrown.
      *
-     * @return the array of bytes representing the encoded objects.
-
+     * @param stream
+     *            the output stream that the video will be encoded to.
      * @throws IOException
      *             - if an I/O error occurs while encoding the file.
      * @throws DataFormatException
      *             if an error occurs when compressing the flash file.
      */
-    public byte[] encode() throws DataFormatException, IOException {
+    public void encodeToStream(OutputStream stream) throws DataFormatException,
+        IOException {
+        
         final SWFEncoder coder = new SWFEncoder(0);
         final Context context = new Context();
 
         coder.setEncoding(encoding.toString());
         context.getVariables().put(Context.VERSION, version);
 
-        prepareToEncode(coder, context);
+        frameCount = 0;
+
+        length = 14; // Includes End
+        length += frameSize.prepareToEncode(coder, context);
+
+        for (final MovieTag tag : objects) {
+            length += tag.prepareToEncode(coder, context);
+            if (tag instanceof ShowFrame) {
+                frameCount += 1;
+            }
+        }
 
         coder.setData(length);
 
@@ -507,36 +526,7 @@ public final class Movie {
         } else {
             data = coder.getData();
         }
-        return data;
-    }
-
-    /**
-     * Creates and returns a deep copy of this object.
-     */
-    public Movie copy() {
-        return new Movie(this);
-    }
-
-    @Override
-    public String toString() {
-        return String.format(FORMAT, signature, version, frameSize, frameRate,
-                objects);
-    }
-
-    private int prepareToEncode(final SWFEncoder coder, final Context context) {
-        frameCount = 0;
-
-        length = 14; // Includes End
-        length += frameSize.prepareToEncode(coder, context);
-
-        for (final MovieTag tag : objects) {
-            length += tag.prepareToEncode(coder, context);
-            if (tag instanceof ShowFrame) {
-                frameCount += 1;
-            }
-        }
-
-        return length;
+        stream.write(data);
     }
 
     private byte[] zip(final byte[] bytes, final int len)

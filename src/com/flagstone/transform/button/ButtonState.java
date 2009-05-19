@@ -1,6 +1,8 @@
 package com.flagstone.transform.button;
 
-/** TODO(class). */
+/**
+ * ButtonState is used to identify the different states of a button. 
+ */
 public enum ButtonState {
     /** The button is up. */
     UP,

@@ -40,6 +40,7 @@ import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.datatype.CharacterEncoding;
 
 /**
  * FontInfo defines the name and face of a font and maps the codes for a given

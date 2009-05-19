@@ -49,7 +49,7 @@ import com.flagstone.transform.datatype.CoordTransform;
 
 public final class MorphGradientFillTest {
 
-    private static transient boolean radial = false;
+    private static transient GradientType radial = GradientType.RADIAL;
     private static transient CoordTransform start = CoordTransform.translate(1,
             2);
     private static transient CoordTransform end = CoordTransform

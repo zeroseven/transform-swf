@@ -7,7 +7,7 @@ import java.util.Locale;
 import java.util.Set;
 
 import com.flagstone.transform.datatype.Bounds;
-import com.flagstone.transform.font.CharacterEncoding;
+import com.flagstone.transform.datatype.CharacterEncoding;
 import com.flagstone.transform.font.DefineFont2;
 import com.flagstone.transform.font.Kerning;
 import com.flagstone.transform.shape.Shape;

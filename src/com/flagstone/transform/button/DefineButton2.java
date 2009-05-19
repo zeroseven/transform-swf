@@ -77,10 +77,12 @@ import com.flagstone.transform.coder.SWFEncoder;
  */
 //TODO(class)
 public final class DefineButton2 implements DefineTag {
-    private static final String FORMAT = "DefineButton2: { identifier=%d; buttonRecords=%s; handlers=%s }";
+    
+    private static final String FORMAT = "DefineButton2: { identifier=%d;"
+            + " buttonRecords=%s; handlers=%s }";
 
     private int identifier;
-    private boolean menu;
+    private int type;
     private List<ButtonShape> shapes;
     private List<ButtonEventHandler> events;
 
@@ -117,7 +119,7 @@ public final class DefineButton2 implements DefineTag {
         final int end = coder.getPointer() + (length << 3);
 
         identifier = coder.readWord(2, false);
-        menu = coder.readByte() != 0;
+        type = coder.readByte();
         shapes = new ArrayList<ButtonShape>();
 
         int offsetToNext = coder.readWord(2, false);
@@ -170,11 +172,11 @@ public final class DefineButton2 implements DefineTag {
      * @param events
      *            an array of ButtonEvent objects. Must not be null.
      */
-    public DefineButton2(final int uid, final boolean menu,
+    public DefineButton2(final int uid, final ButtonType type,
             final List<ButtonShape> shapes,
             final List<ButtonEventHandler> events) {
         setIdentifier(uid);
-        setMenu(menu);
+        setType(type);
         setShapes(shapes);
         setEvents(events);
     }
@@ -189,7 +191,7 @@ public final class DefineButton2 implements DefineTag {
      */
     public DefineButton2(final DefineButton2 object) {
         identifier = object.identifier;
-        menu = object.menu;
+        type = object.type;
         shapes = new ArrayList<ButtonShape>(object.shapes.size());
         for (final ButtonShape shape : object.shapes) {
             shapes.add(shape.copy());
@@ -245,8 +247,16 @@ public final class DefineButton2 implements DefineTag {
     /**
      * Returns the button type - either PUSH or MENU.
      */
-    public boolean isMenu() {
-        return menu;
+    public ButtonType getType() {
+        ButtonType value;
+        switch (type) {
+        case 0:
+            value = ButtonType.PUSH;
+            break;
+        default:
+            value = ButtonType.MENU;
+        }
+        return value;
     }
 
     /**
@@ -266,12 +276,18 @@ public final class DefineButton2 implements DefineTag {
     /**
      * Sets whether the button is a menu button or a push button.
      *
-     * @param menu
-     *            the type of button, true if the button is a menu button,
-     *            false if it is a push button.
+     * @param type
+     *            the type of button, either ButtonType.MENU or ButtonType.PUSH.
      */
-    public void setMenu(final boolean menu) {
-        this.menu = menu;
+    public void setType(final ButtonType type) {
+        switch (type) {
+        case PUSH:
+            this.type = 0;
+            break;
+        default:
+            this.type = 1;
+            break;
+        }
     }
 
     /**
@@ -301,11 +317,12 @@ public final class DefineButton2 implements DefineTag {
         events = anArray;
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public DefineButton2 copy() {
         return new DefineButton2(this);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         return String.format(FORMAT, identifier, shapes, events);
@@ -352,7 +369,7 @@ public final class DefineButton2 implements DefineTag {
         final int end = coder.getPointer() + (length << 3);
 
         coder.writeWord(identifier, 2);
-        coder.writeWord(menu ? 1 : 0, 1);
+        coder.writeByte(type);
 
         int offsetStart = coder.getPointer();
         coder.writeWord(0, 2);

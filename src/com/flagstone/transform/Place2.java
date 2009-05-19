@@ -137,7 +137,7 @@ import com.flagstone.transform.movieclip.MovieClipEventHandler;
  */
 //TODO(class)
 public final class Place2 implements MovieTag {
-    // TODO(code) Consider replacing with StringBuilder for optional fields
+
     private static final String FORMAT = "PlaceObject2: { mode=%s; layer=%d; "
             + "identifier=%d; transform=%s; colorTransform=%s; ratio=%d; "
             + "clippingDepth=%d; name=%s; clipEvents=%s}";
