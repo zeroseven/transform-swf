@@ -78,39 +78,15 @@ public final class SoundInfo implements SWFEncodeable {
     /** TODO(class). */
     public enum Mode {
         /** Start playing the sound. */
-        START(0),
+        START,
         /** Start playing the sound or continues if it is already playing. */
-        CONTINUE(1),
+        CONTINUE,
         /** Stop playing the sound. */
-        STOP(2);
-
-        private static final Map<Integer, Mode> TABLE = new LinkedHashMap<Integer, Mode>();
-
-        static {
-            for (final Mode encoding : values()) {
-                TABLE.put(encoding.value, encoding);
-            }
-        }
-
-        /** TODO(method). */
-        public static Mode fromInt(final int type) {
-            return TABLE.get(type);
-        }
-
-        private final int value;
-
-        private Mode(final int value) {
-            this.value = value;
-        }
-
-        /** TODO(method). */
-        public int getValue() {
-            return value;
-        }
+        STOP;
     }
 
     private int identifier;
-    private Mode mode;
+    private int mode;
     private Integer inPoint;
     private Integer outPoint;
     private Integer loopCount;
@@ -128,7 +104,7 @@ public final class SoundInfo implements SWFEncodeable {
      */
     public SoundInfo(final SWFDecoder coder) throws CoderException {
         identifier = coder.readWord(2, false);
-        mode = Mode.fromInt(coder.readBits(4, false));
+        mode = coder.readBits(4, false);
         final boolean hasEnvelope = coder.readBits(1, false) != 0;
         final boolean hasLoopCount = coder.readBits(1, false) != 0;
         final boolean hasOutPoint = coder.readBits(1, false) != 0;
@@ -207,7 +183,21 @@ public final class SoundInfo implements SWFEncodeable {
      * playing the sound.
      */
     public Mode getMode() {
-        return mode;
+        Mode value;
+        switch (mode) {
+        case 0:
+            value = Mode.START;
+            break;
+        case 1:
+            value = Mode.CONTINUE;
+            break;
+        case 2:
+            value = Mode.STOP;
+            break;
+        default:
+            throw new IllegalStateException();
+        }
+        return value;
     }
 
     /**
@@ -262,7 +252,19 @@ public final class SoundInfo implements SWFEncodeable {
      *            how the sound is played.
      */
     public void setMode(final Mode mode) {
-        this.mode = mode;
+        switch (mode) {
+        case START:
+            this.mode = 0;
+            break;
+        case CONTINUE:
+            this.mode = 1;
+            break;
+        case STOP:
+            this.mode = 2;
+            break;
+        default:
+            throw new IllegalArgumentException();
+        }
     }
 
     /**
@@ -348,7 +350,7 @@ public final class SoundInfo implements SWFEncodeable {
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         coder.writeWord(identifier, 2);
-        coder.writeBits(mode.getValue(), 4);
+        coder.writeBits(mode, 4);
         coder.writeBits(envelope == null ? 0 : 1, 1);
         coder.writeBits(loopCount == null ? 0 : 1, 1);
         coder.writeBits(outPoint == null ? 0 : 1, 1);

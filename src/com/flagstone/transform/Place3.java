@@ -42,7 +42,6 @@ import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.coder.SWFFactory;
-import com.flagstone.transform.datatype.Blend;
 import com.flagstone.transform.datatype.ColorTransform;
 import com.flagstone.transform.datatype.CoordTransform;
 import com.flagstone.transform.datatype.Placement;
@@ -757,9 +756,7 @@ public final class Place3 implements MovieTag {
             coder.writeWord(0, 2);
 
             for (final MovieClipEventHandler handler : events) {
-                for (final MovieClipEvent event : handler.getEvent()) {
-                    eventMask |= event.getValue();
-                }
+                eventMask |= handler.getEventCode();
             }
 
             coder.writeWord(eventMask, eventSize);

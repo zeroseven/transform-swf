@@ -87,72 +87,6 @@ import com.flagstone.transform.datatype.CoordTransform;
 //TODO(class)
 public final class GradientFill implements FillStyle {
 
-    /** TODO(class). */
-    public enum Spread {
-        /** TODO(doc). */
-        PAD(0),
-        /** TODO(doc). */
-        REFLECT(0x40),
-        /** TODO(doc). */
-        REPEAT(0xC0);
-
-        private static final Map<Integer, Spread> TABLE = new LinkedHashMap<Integer, Spread>();
-
-        static {
-            for (final Spread type : values()) {
-                TABLE.put(type.value, type);
-            }
-        }
-
-        /** TODO(method). */
-        public static Spread fromInt(final int type) {
-            return TABLE.get(type);
-        }
-
-        private int value;
-
-        private Spread(final int value) {
-            this.value = value;
-        }
-
-        /** TODO(method). */
-        public int getValue() {
-            return value;
-        }
-    }
-
-    /** TODO(class). */
-    public enum Interpolation {
-        /** TODO(doc). */
-        NORMAL(0),
-        /** TODO(doc). */
-        LINEAR(0x10);
-
-        private static final Map<Integer, Interpolation> TABLE = new LinkedHashMap<Integer, Interpolation>();
-
-        static {
-            for (final Interpolation type : values()) {
-                TABLE.put(type.value, type);
-            }
-        }
-
-        /** TODO(method). */
-        public static Interpolation fromInt(final int type) {
-            return TABLE.get(type);
-        }
-
-        private int value;
-
-        private Interpolation(final int value) {
-            this.value = value;
-        }
-
-        /** TODO(method). */
-        public int getValue() {
-            return value;
-        }
-    }
-
     private static final String FORMAT = "GradientFill: { transform=%s; gradients=%s }";
 
     private transient int type;
@@ -243,22 +177,68 @@ public final class GradientFill implements FillStyle {
 
     /** TODO(method). */
     public Spread getSpread() {
-        return Spread.fromInt(spread);
+        Spread value;
+        switch (spread) {
+        case 0:
+            value = Spread.PAD;
+            break;
+        case 0x40:
+            value = Spread.REFLECT;
+            break;
+        case 0xC0:
+            value = Spread.REPEAT;
+            break;
+        default:
+            throw new IllegalStateException();
+        }
+        return value;
     }
 
     /** TODO(method). */
-    public void setSpread(final Spread spread) {
-        this.spread = spread.getValue();
+    public void setSpread(final Spread type) {
+        switch (type) {
+        case PAD:
+            spread = 0;
+            break;
+        case REFLECT:
+            spread = 0x40;
+            break;
+        case REPEAT:
+            spread = 0xC0;
+            break;
+        default:
+            throw new IllegalArgumentException();
+        }
     }
 
     /** TODO(method). */
     public Interpolation getInterpolation() {
-        return Interpolation.fromInt(interpolation);
+        Interpolation value;
+        switch (interpolation) {
+        case 0:
+            value = Interpolation.NORMAL;
+            break;
+        case 16:
+            value = Interpolation.LINEAR;
+            break;
+        default:
+            throw new IllegalStateException();
+        }
+        return value;
     }
 
     /** TODO(method). */
-    public void setInterpolation(final Interpolation interpolation) {
-        this.interpolation = interpolation.getValue();
+    public void setInterpolation(final Interpolation type) {
+        switch (type) {
+        case NORMAL:
+            interpolation = 0;
+            break;
+        case LINEAR:
+            interpolation = 16;
+            break;
+        default:
+            throw new IllegalArgumentException();
+        }
     }
 
     /**

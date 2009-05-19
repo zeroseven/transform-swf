@@ -33,7 +33,6 @@ package com.flagstone.transform.action;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -140,48 +139,23 @@ public final class NewFunction2 implements Action {
     /** TODO(method). */
     public enum Optimization {
         /** Create and initialised the predefined variable, <em>super</em>. */
-        CREATE_SUPER(4),
+        CREATE_SUPER,
         /** Create and initialised the predefined variable, <em>arguments</em>. */
-        CREATE_ARGUMENTS(16),
+        CREATE_ARGUMENTS,
         /** Create and initialised the predefined variable, <em>this</em>. */
-        CREATE_THIS(64),
+        CREATE_THIS,
         /** Load the predefine variable, <em>this</em>, into register 1. */
-        LOAD_THIS(128),
+        LOAD_THIS,
         /** Load the predefine variable, <em>arguments</em>, into register 2. */
-        LOAD_ARGUMENTS(32),
+        LOAD_ARGUMENTS,
         /** Load the predefine variable, <em>super</em>, into register 3. */
-        LOAD_SUPER(8),
+        LOAD_SUPER,
         /** Load the predefine variable, <em>_root</em>, into register 4. */
-        LOAD_ROOT(2),
+        LOAD_ROOT,
         /** Load the predefine variable, <em>_parent</em>, into register 5. */
-        LOAD_PARENT(1),
+        LOAD_PARENT,
         /** Load the predefine variable, <em>_global</em>, into register 6. */
-        LOAD_GLOBAL(32768);
-
-        private static final Map<Integer, Optimization> TABLE =
-            new LinkedHashMap<Integer, Optimization>();
-
-        static {
-            for (final Optimization opt : values()) {
-                TABLE.put(opt.value, opt);
-            }
-        }
-
-        /** TODO(method). */
-        public static Optimization fromInt(final int type) {
-            return TABLE.get(type);
-        }
-
-        private final int value;
-
-        private Optimization(final int value) {
-            this.value = value;
-        }
-
-        /** TODO(method). */
-        public int getValue() {
-            return value;
-        }
+        LOAD_GLOBAL;
     }
 
     private String name;
@@ -363,12 +337,34 @@ public final class NewFunction2 implements Action {
 
     /** TODO(method). */
     public Set<Optimization> getOptimizations() {
-        final Set<Optimization> set = EnumSet.allOf(Optimization.class);
+        final Set<Optimization> set = EnumSet.noneOf(Optimization.class);
 
-        for (final Iterator<Optimization> iter = set.iterator(); iter.hasNext();) {
-            if ((optimizations & iter.next().getValue()) == 0) {
-                iter.remove();
-            }
+        if ((optimizations & 4) != 0) {
+            set.add(Optimization.CREATE_SUPER);
+        }
+        if ((optimizations & 16) != 0) {
+            set.add(Optimization.CREATE_ARGUMENTS);
+        }
+        if ((optimizations & 64) != 0) {
+            set.add(Optimization.CREATE_THIS);
+        }
+        if ((optimizations & 128) != 0) {
+            set.add(Optimization.LOAD_THIS);
+        }
+        if ((optimizations & 32) != 0) {
+            set.add(Optimization.LOAD_ARGUMENTS);
+        }
+        if ((optimizations & 8) != 0) {
+            set.add(Optimization.LOAD_SUPER);
+        }
+        if ((optimizations & 2) != 0) {
+            set.add(Optimization.LOAD_ROOT);
+        }
+        if ((optimizations & 1) != 0) {
+            set.add(Optimization.LOAD_PARENT);
+        }
+        if ((optimizations & 32768) != 0) {
+            set.add(Optimization.LOAD_GLOBAL);
         }
         return set;
     }
@@ -376,8 +372,38 @@ public final class NewFunction2 implements Action {
     /** TODO(method). */
     public void setOptimizations(final Set<Optimization> optimizations) {
         for (final Optimization opt : optimizations) {
-            this.optimizations |= opt.getValue();
-        }
+            switch (opt) {
+            case CREATE_SUPER:
+                this.optimizations |= 4;
+                break;
+            case CREATE_ARGUMENTS:
+                this.optimizations |= 16;
+                break;
+            case CREATE_THIS:
+                this.optimizations |= 64;
+                break;
+            case LOAD_THIS:
+                this.optimizations |= 128;
+                break;
+            case LOAD_ARGUMENTS:
+                this.optimizations |= 32;
+                break;
+            case LOAD_SUPER:
+                this.optimizations |= 8;
+                break;
+            case LOAD_ROOT:
+                this.optimizations |= 2;
+                break;
+            case LOAD_PARENT:
+                this.optimizations |= 1;
+                break;
+            case LOAD_GLOBAL:
+                this.optimizations |= 32768;
+                break;
+            default:
+                throw new IllegalArgumentException();
+            }
+         }
     }
 
     /**
@@ -420,11 +446,12 @@ public final class NewFunction2 implements Action {
         actions = anArray;
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public NewFunction2 copy() {
         return new NewFunction2(this);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         return String.format(FORMAT, name, registerCount, optimizations,

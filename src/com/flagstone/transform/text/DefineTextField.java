@@ -223,37 +223,13 @@ public final class DefineTextField implements DefineTag {
     /** TODO(method). */
     public enum Align {
         /** Defines that the text displayed in a text field is left aligned. */
-        LEFT(0),
+        LEFT,
         /** Defines that the text displayed in a text field is right aligned. */
-        RIGHT(1),
+        RIGHT,
         /** Defines that the text displayed in a text field is centre aligned. */
-        CENTER(2),
+        CENTER,
         /** Defines that the text displayed in a text field is justified. */
-        JUSTIFY(3);
-
-        private static final Map<Integer, Align> TABLE = new LinkedHashMap<Integer, Align>();
-
-        static {
-            for (final Align align : values()) {
-                TABLE.put(align.value, align);
-            }
-        }
-
-        /** TODO(method). */
-        public static Align fromInt(final int type) {
-            return TABLE.get(type);
-        }
-
-        private final int value;
-
-        private Align(final int value) {
-            this.value = value;
-        }
-
-        /** TODO(method). */
-        public int getValue() {
-            return value;
-        }
+        JUSTIFY;
     }
 
     private int identifier;
@@ -274,7 +250,7 @@ public final class DefineTextField implements DefineTag {
     private int fontHeight;
     private Color color;
     private int maxLength;
-    private Align alignment;
+    private int alignment;
     private Integer leftMargin;
     private Integer rightMargin;
     private Integer indent;
@@ -351,7 +327,7 @@ public final class DefineTextField implements DefineTag {
         }
 
         if (containsLayout) {
-            alignment = Align.fromInt(coder.readByte());
+            alignment = coder.readByte();
             leftMargin = coder.readWord(2, false);
             rightMargin = coder.readWord(2, false);
             indent = coder.readWord(2, false);
@@ -567,7 +543,24 @@ public final class DefineTextField implements DefineTag {
      * AlignCenter or AlignJustify.
      */
     public Align getAlignment() {
-        return alignment;
+        Align value;
+        switch (alignment) {
+        case 0:
+            value = Align.LEFT;
+            break;
+        case 1:
+            value = Align.RIGHT;
+            break;
+        case 2:
+            value = Align.CENTER;
+            break;
+        case 3:
+            value = Align.JUSTIFY;
+            break;
+        default:
+            throw new IllegalStateException();
+        }
+        return value;
     }
 
     /**
@@ -798,7 +791,22 @@ public final class DefineTextField implements DefineTag {
      *            or ALIGN_JUSTIFY.
      */
     public DefineTextField setAlignment(final Align align) {
-        alignment = align;
+        switch(align) {
+        case LEFT:
+            alignment = 0;
+            break;
+        case RIGHT:
+            alignment = 1;
+            break;
+        case CENTER:
+            alignment = 2;
+            break;
+        case JUSTIFY:
+            alignment = 3;
+            break;
+        default:
+            throw new IllegalArgumentException();
+        }
         return this;
     }
 
@@ -994,7 +1002,7 @@ public final class DefineTextField implements DefineTag {
         }
 
         if (containsLayout()) {
-            coder.writeWord(alignment == null ? 0 : alignment.getValue(), 1);
+            coder.writeWord(alignment, 1);
             coder.writeWord(leftMargin == null ? 0 : leftMargin, 2);
             coder.writeWord(rightMargin == null ? 0 : rightMargin, 2);
             coder.writeWord(indent == null ? 0 : indent, 2);
@@ -1015,7 +1023,7 @@ public final class DefineTextField implements DefineTag {
     }
 
     private boolean containsLayout() {
-        return (alignment != null) || (leftMargin != null)
+        return (leftMargin != null)
                 || (rightMargin != null) || (indent != null)
                 || (leading != null);
     }

@@ -30,47 +30,20 @@
 
 package com.flagstone.transform.font;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 /** TODO(class). */
 public enum CharacterEncoding {
     /**
      * Defines that the characters in a font are encoded using SJIS standard for
      * representing Kanji characters.
      */
-    SJIS(2),
+    SJIS,
     /**
      * Defines that the characters in a font are encoded using ANSI (ASCII)
      * standard.
      */
-    ANSI(1),
+    ANSI,
     /**
      * Defines that the characters in a font are encoded using Unicode (UTF-8).
      */
-    UCS2(0);
-
-    private static final Map<Integer, CharacterEncoding> TABLE = new LinkedHashMap<Integer, CharacterEncoding>();
-
-    static {
-        for (final CharacterEncoding encoding : values()) {
-            TABLE.put(encoding.value, encoding);
-        }
-    }
-
-    /** TODO(method). */
-    public static CharacterEncoding fromInt(final int type) {
-        return TABLE.get(type);
-    }
-
-    private final int value;
-
-    private CharacterEncoding(final int value) {
-        this.value = value;
-    }
-
-    /** TODO(method). */
-    public int getValue() {
-        return value;
-    }
+    UCS2;
 }

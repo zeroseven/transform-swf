@@ -155,7 +155,7 @@ public final class MovieClipEventHandler implements SWFEncodeable {
         event = coder.readWord(eventSize, false);
         offset = coder.readWord(4, false);
 
-        if ((event & MovieClipEvent.KEY_PRESS.getValue()) != 0) {
+        if ((event & 131072) != 0) {
             keyCode = coder.readByte();
             offset -= 1;
         }
@@ -248,21 +248,137 @@ public final class MovieClipEventHandler implements SWFEncodeable {
     /** TODO(method). */
     public void setEvent(final Set<MovieClipEvent> set) {
         for (final MovieClipEvent clipEvent : set) {
-            event |= clipEvent.getValue();
+            switch (clipEvent) {
+            case LOAD:
+                event |= 1;
+                break;
+            case ENTER_FRAME:
+                event |= 2;
+                break;
+            case UNLOAD:
+                event |= 4;
+                break;
+            case MOUSE_MOVE:
+                event |= 8;
+                break;
+            case MOUSE_DOWN:
+                event |= 16;
+                break;
+            case MOUSE_UP:
+                event |= 32;
+                break;
+            case  KEY_DOWN:
+                event |= 64;
+                break;
+            case KEY_UP:
+                event |= 128;
+                break;
+            case DATA:
+                event |= 256;
+                break;
+            case INITIALIZE:
+                event |= 512;
+                break;
+            case PRESS:
+                event |= 1024;
+                break;
+            case RELEASE:
+                event |= 2048;
+                break;
+            case RELEASE_OUT:
+                event |= 4096;
+                break;
+            case ROLL_OVER:
+                event |= 8192;
+                break;
+            case ROLL_OUT:
+                event |= 16384;
+                break;
+            case DRAG_OVER:
+                event |= 32768;
+                break;
+            case DRAG_OUT:
+                event |= 0;
+                break;
+            case KEY_PRESS:
+                event |= 131072;
+                break;
+            case CONSTRUCT:
+                event |= 262144;
+                break;
+            default: 
+                throw new IllegalArgumentException();
+            }
         }
     }
 
     /** TODO(method). */
     public Set<MovieClipEvent> getEvent() {
-        final Set<MovieClipEvent> set = EnumSet.allOf(MovieClipEvent.class);
+        final Set<MovieClipEvent> set = EnumSet.noneOf(MovieClipEvent.class);
 
-        for (final Iterator<MovieClipEvent> iter = set.iterator(); iter
-                .hasNext();) {
-            if ((event & iter.next().getValue()) == 0) {
-                iter.remove();
-            }
+        if ((event & 1) != 0) {
+            set.add(MovieClipEvent.LOAD);
+        }
+        if ((event & 2) != 0) {
+            set.add(MovieClipEvent.ENTER_FRAME);
+        }
+        if ((event & 4) != 0) {
+            set.add(MovieClipEvent.UNLOAD);
+        }
+        if ((event & 8) != 0) {
+            set.add(MovieClipEvent.MOUSE_MOVE);
+        }
+        if ((event & 16) != 0) {
+            set.add(MovieClipEvent.MOUSE_DOWN);
+        }
+        if ((event & 32) != 0) {
+            set.add(MovieClipEvent.MOUSE_UP);
+        }
+        if ((event & 64) != 0) {
+            set.add(MovieClipEvent.KEY_DOWN);
+        }
+        if ((event & 128) != 0) {
+            set.add(MovieClipEvent.KEY_UP);
+        }
+        if ((event & 256) != 0) {
+            set.add(MovieClipEvent.DATA);
+        }
+        if ((event & 512) != 0) {
+            set.add(MovieClipEvent.INITIALIZE);
+        }
+        if ((event & 1024) != 0) {
+            set.add(MovieClipEvent.PRESS);
+        }
+        if ((event & 2048) != 0) {
+            set.add(MovieClipEvent.RELEASE);
+        }
+        if ((event & 4096) != 0) {
+            set.add(MovieClipEvent.RELEASE_OUT);
+        }
+        if ((event & 8192) != 0) {
+            set.add(MovieClipEvent.ROLL_OVER);
+        }
+        if ((event & 16384) != 0) {
+            set.add(MovieClipEvent.ROLL_OUT);
+        }
+        if ((event & 32768) != 0) {
+            set.add(MovieClipEvent.DRAG_OVER);
+        }
+        if ((event & 65536) != 0) {
+            set.add(MovieClipEvent.DRAG_OUT);
+        }
+        if ((event & 131072) != 0) {
+            set.add(MovieClipEvent.KEY_PRESS);
+        }
+        if ((event & 262144) != 0) {
+            set.add(MovieClipEvent.CONSTRUCT);
         }
         return set;
+    }
+    
+    /** TODO(method). */
+    public int getEventCode() {
+        return event;
     }
 
     /**
@@ -320,7 +436,7 @@ public final class MovieClipEventHandler implements SWFEncodeable {
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         int length = 4 + ((context.getVariables().get(Context.VERSION) > 5) ? 4 : 2);
 
-        offset = (event & MovieClipEvent.KEY_PRESS.getValue()) == 0 ? 0 : 1;
+        offset = (event & 131072) == 0 ? 0 : 1;
 
         for (final Action action : actions) {
             offset += action.prepareToEncode(coder, context);
@@ -339,7 +455,7 @@ public final class MovieClipEventHandler implements SWFEncodeable {
         coder.writeWord(event, eventSize);
         coder.writeWord(offset, 4);
 
-        if ((event & MovieClipEvent.KEY_PRESS.getValue()) != 0) {
+        if ((event & 131072) != 0) {
             coder.writeByte(keyCode);
         }
 

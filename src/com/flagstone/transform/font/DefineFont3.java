@@ -72,7 +72,7 @@ public final class DefineFont3 implements DefineTag {
             + "codes=%s; ascent=%d; descent=%d; leading=%d; advances=%s; bounds=%s; kernings=%s }";
 
     private int identifier;
-    private CharacterEncoding encoding;
+    private int encoding;
     private boolean small;
     private boolean italic;
     private boolean bold;
@@ -126,14 +126,14 @@ public final class DefineFont3 implements DefineTag {
         final boolean containsLayout = coder.readBits(1, false) != 0;
         final int format = coder.readBits(3, false);
 
-        encoding = CharacterEncoding.UCS2;
+        encoding = 0;
 
         if (format == 1) {
-            encoding = CharacterEncoding.ANSI;
+            encoding = 1;
         } else if (format == 2) {
             small = true;
         } else if (format == 4) {
-            encoding = CharacterEncoding.SJIS;
+            encoding = 2;
         }
 
         wideOffsets = coder.readBits(1, false) != 0;
@@ -234,7 +234,7 @@ public final class DefineFont3 implements DefineTag {
         setIdentifier(uid);
         setName(name);
 
-        encoding = CharacterEncoding.UCS2;
+        encoding = 0;
         shapes = new ArrayList<Shape>();
         codes = new ArrayList<Integer>();
         advances = new ArrayList<Integer>();
@@ -355,13 +355,25 @@ public final class DefineFont3 implements DefineTag {
     }
 
     /**
-     * Returns the encoding used for the font codes, either Text.ASCII,
-     * Text.SJIS or Text.Unicode.
-     *
-     * @return the encoding used to represent characters rendered in the font.
+     * Returns the encoding scheme used for characters rendered in the font,
+     * either ASCII, SJIS or UCS2.
      */
     public CharacterEncoding getEncoding() {
-        return encoding;
+        CharacterEncoding value;
+        switch(encoding) {
+        case 0:
+            value = CharacterEncoding.UCS2;
+            break;
+        case 1:
+            value = CharacterEncoding.ANSI;
+            break;
+        case 2:
+            value = CharacterEncoding.SJIS;
+            break;
+        default:
+            throw new IllegalStateException();
+        }
+        return value;
     }
 
     /**
@@ -528,14 +540,26 @@ public final class DefineFont3 implements DefineTag {
     }
 
     /**
-     * Sets the encoding for the font character codes.
+     * Sets the font character encoding.
      *
-     * @param aType
-     *            the encoding scheme used to denote characters, either ASCII,
-     *            SJIS or UCS2.
+     * @param anEncoding
+     *            the encoding used to identify characters, either ASCII, SJIS
+     *            or UNICODE.
      */
-    public void setEncoding(final CharacterEncoding aType) {
-        encoding = aType;
+    public void setEncoding(final CharacterEncoding anEncoding) {
+        switch(anEncoding) {
+        case UCS2:
+            encoding = 0;
+            break;
+        case ANSI:
+            encoding = 1;
+            break;
+        case SJIS:
+            encoding = 2;
+            break;
+        default:
+            throw new IllegalArgumentException();
+        }
     }
 
     /**
@@ -701,7 +725,7 @@ public final class DefineFont3 implements DefineTag {
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         wideCodes = (context.getVariables().get(Context.VERSION) > 5)
-                || (encoding != CharacterEncoding.ANSI);
+                || encoding != 1;
 
         final Map<Integer, Integer> vars = context.getVariables();
         vars.put(Context.FILL_SIZE, 1);
@@ -752,11 +776,11 @@ public final class DefineFont3 implements DefineTag {
         int format;
         final Map<Integer, Integer> vars = context.getVariables();
 
-        if (encoding == CharacterEncoding.ANSI) {
+        if (encoding == 1) {
             format = 1;
         } else if (small) {
             format = 2;
-        } else if (encoding == CharacterEncoding.SJIS) {
+        } else if (encoding == 2) {
             format = 4;
         } else {
             format = 0;

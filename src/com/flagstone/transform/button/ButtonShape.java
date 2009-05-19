@@ -35,6 +35,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import com.flagstone.transform.Blend;
 import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
@@ -43,7 +44,6 @@ import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.datatype.Blend;
 import com.flagstone.transform.datatype.ColorTransform;
 import com.flagstone.transform.datatype.CoordTransform;
 
@@ -201,12 +201,19 @@ public final class ButtonShape implements SWFEncodeable {
 
     /** TODO(method). */
     public Set<ButtonState> getState() {
-        final Set<ButtonState> set = EnumSet.allOf(ButtonState.class);
+        final Set<ButtonState> set = EnumSet.noneOf(ButtonState.class);
 
-        for (final Iterator<ButtonState> iter = set.iterator(); iter.hasNext();) {
-            if ((state & iter.next().getValue()) == 0) {
-                iter.remove();
-            }
+        if ((state & 0x01) != 0) {
+            set.add(ButtonState.UP);
+        }
+        if ((state & 0x02) != 0) {
+            set.add(ButtonState.OVER);
+        }
+        if ((state & 0x04) != 0) {
+            set.add(ButtonState.DOWN);
+        }
+        if ((state & 0x08) != 0) {
+            set.add(ButtonState.ACTIVE);
         }
         return set;
     }
@@ -214,7 +221,22 @@ public final class ButtonShape implements SWFEncodeable {
     /** TODO(method). */
     public void setState(final Set<ButtonState> states) {
         for (final ButtonState buttonState : states) {
-            this.state |= buttonState.getValue();
+            switch (buttonState) {
+            case UP:
+                this.state |= 1;
+                break;
+            case OVER:
+                this.state |= 2;
+                break;
+            case DOWN:
+                this.state |= 4;
+                break;
+            case ACTIVE:
+                this.state |= 8;
+                break;
+            default:
+                throw new IllegalArgumentException();
+            }
         }
     }
 

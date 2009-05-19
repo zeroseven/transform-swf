@@ -12,22 +12,90 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.Color;
 import com.flagstone.transform.fillstyle.Gradient;
+import com.flagstone.transform.filter.GradientBevelFilter.Builder;
 
 /** TODO(class). */
 public final class GradientGlowFilter implements Filter {
 
     /** TODO(class). */
-    public enum Mode {
-        /** TODO(doc). */
-        INNER,
-        /** TODO(doc). */
-        KNOCKOUT,
-        /** TODO(doc). */
-        TOP
-    };
+    public static class Builder {
+        private List<Gradient>gradients;
+        private int blurX;
+        private int blurY;
+        private int angle;
+        private int distance;
+        private int strength;
+        private int mode;
+        private int passes;
+
+        /** TODO(method). */
+        public Builder() {
+            gradients = new ArrayList<Gradient>();
+        }
+        
+        /** TODO(method). */
+        public Builder addGradient(Gradient gradient) {
+            gradients.add(gradient);
+            return this;
+        }
+                
+        /** TODO(method). */
+        public Builder blur(float xAmount, float yAmount) {
+            blurX = (int) (xAmount * 65536.0f);
+            blurY = (int) (yAmount * 65536.0f);
+            return this;
+        }
+        
+        /** TODO(method). */
+        public Builder mode(FilterMode mode) {
+            switch (mode) {
+            case TOP:
+                 this.mode = 0x0030;
+                break;
+            case KNOCKOUT:
+                this.mode = 0x0060;
+                break;
+            case INNER:
+                this.mode = 0x00A0;
+                break;
+            default:
+                throw new IllegalArgumentException();
+            }
+            return this;
+        }
+
+        /** TODO(method). */
+        public Builder angle(float angle) {
+            this.angle = (int) (angle * 65536.0f);
+            return this;
+        }
+        
+        /** TODO(method). */
+        public Builder distance(float distance) {
+            this.distance = (int) (distance * 65536.0f);
+            return this;
+        }
+        
+        /** TODO(method). */
+        public Builder strength(float strength) {
+            this.strength = (int) (strength * 256.0f);
+            return this;
+        }
+        
+        /** TODO(method). */
+        public Builder passes(int count) {
+            passes = count;
+            return this;
+        }
+        
+        /** TODO(method). */
+        public GradientGlowFilter build() {
+            return new GradientGlowFilter(this);
+        }
+    }
 
     private static final String FORMAT = "GradientGlowFilter: { "
-            + "gradients=%s; blurX=%f; blurY=%f; passes=%d "
+            + "gradients=%s; blurX=%f; blurY=%f; "
             + "angle=%d; disance=%d, strength=%d; mode=%s; passes=%d}";
 
     private final List<Gradient> gradients;
@@ -36,8 +104,19 @@ public final class GradientGlowFilter implements Filter {
     private final int angle;
     private final int distance;
     private final int strength;
-    private Mode mode;
-    private int passes;
+    private final int mode;
+    private final int passes;
+
+    private GradientGlowFilter(Builder builder) {
+        gradients = builder.gradients;
+        blurX = builder.blurX;
+        blurY = builder.blurY;
+        angle = builder.angle;
+        distance = builder.distance;
+        strength =  builder.strength;
+        mode =  builder.mode;
+        passes = builder.passes;
+    }
 
     /**
      * Creates and initialises a GradientGlowFilter object using values encoded
@@ -82,21 +161,11 @@ public final class GradientGlowFilter implements Filter {
         angle = coder.readWord(4, true);
         distance = coder.readWord(4, true);
         strength = coder.readWord(2, true);
-        unpack(coder.readByte());
-    }
-
-    /** TODO(method). */
-    public GradientGlowFilter(final List<Gradient> list, final float blurX,
-            final float blurY, final float angle, final float distance,
-            final float strength, final Mode mode, final int passes) {
-        this.gradients = list;
-        this.blurX = (int) (blurX * 65536.0f);
-        this.blurY = (int) (blurY * 65536.0f);
-        this.angle = (int) (angle * 65536.0f);
-        this.distance = (int) (distance * 65536.0f);
-        this.strength = (int) (strength * 256.0f);
-        this.mode = mode;
-        this.passes = passes;
+        
+        final int value = coder.readByte();
+        
+        passes = value & 0x0F;
+        mode = (value & 0x0D) >>> 4;
     }
 
     /** TODO(method). */
@@ -127,6 +196,25 @@ public final class GradientGlowFilter implements Filter {
     /** TODO(method). */
     public float getStrength() {
         return strength / 256.0f;
+    }
+    
+    /** TODO(method). */
+    public FilterMode getMode() {
+        FilterMode value;
+        switch (mode) {
+        case 0x0030:
+            value = FilterMode.TOP;
+            break;
+        case 0x0060:
+            value = FilterMode.KNOCKOUT;
+            break;
+        case 0x00A0:
+            value = FilterMode.INNER;
+            break;
+        default:
+            throw new IllegalStateException();
+        }
+        return value;
     }
 
     /** TODO(method). */
@@ -165,7 +253,7 @@ public final class GradientGlowFilter implements Filter {
     @Override
     public int hashCode() {
         return (((((((gradients.hashCode() * 31) + blurX) * 31 + blurY) * 31
-            + angle * 31) + distance) * 31 + strength) * 31 + mode.hashCode())
+            + angle * 31) + distance) * 31 + strength) * 31 + mode)
             * 31 + passes;
     }
 
@@ -193,44 +281,6 @@ public final class GradientGlowFilter implements Filter {
         coder.writeWord(angle, 4);
         coder.writeWord(distance, 4);
         coder.writeWord(strength, 2);
-        coder.writeByte(pack());
-    }
-
-    private int pack() throws CoderException {
-        int value = passes;
-
-        switch (mode) {
-        case TOP:
-            value |= 0x0030;
-            break;
-        case KNOCKOUT:
-            value |= 0x0060;
-            break;
-        case INNER:
-            value |= 0x00A0;
-            break;
-        default:
-            throw new CoderException(getClass().getName(), 0, 0, 0, Strings.INVALID_FORMAT);
-        }
-
-        return value;
-    }
-
-    private void unpack(final int value) throws CoderException {
-        passes = value & 0x0F;
-
-        switch ((value & 0x0D) >>> 4) {
-        case 1:
-            mode = Mode.TOP;
-            break;
-        case 4:
-            mode = Mode.KNOCKOUT;
-            break;
-        case 8:
-            mode = Mode.INNER;
-            break;
-        default:
-            throw new CoderException(getClass().getName(), 0, 0, 0, Strings.INVALID_FORMAT);
-        }
+        coder.writeByte(mode | passes);
     }
 }

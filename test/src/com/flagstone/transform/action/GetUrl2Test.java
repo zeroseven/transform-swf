@@ -50,7 +50,7 @@ public final class GetUrl2Test {
     private transient GetUrl2 fixture;
 
     private final transient byte[] encoded = new byte[] { (byte) type, 0x01,
-            0x00, (byte) request.getValue() };
+            0x00, 0x00 };
 
     @Test
     public void checkCopy() {

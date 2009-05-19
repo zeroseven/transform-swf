@@ -118,76 +118,32 @@ public final class GetUrl2 implements Action {
       */
     public enum Request {
         /** Load a movie without submitting the movie variables. */
-        MOVIE_TO_LEVEL(0),
+        MOVIE_TO_LEVEL,
         /** Load a movie submitting the movie variables using HTTP GET. */
-        MOVIE_TO_LEVEL_WITH_GET(1),
+        MOVIE_TO_LEVEL_WITH_GET,
         /** Load a movie submitting the movie variables using HTTP POST. */
-        MOVIE_TO_LEVEL_WITH_POST(2),
+        MOVIE_TO_LEVEL_WITH_POST,
         /** Load a movie or web page without submitting the movie variables. */
-        MOVIE_TO_TARGET(64),
-        /**
-         * Load a movie or web page submitting the movie variables using HTTP
-         * GET.
-         */
-        MOVIE_TO_TARGET_WITH_GET(65),
-        /**
-         * Load a movie or web page submitting the movie variables using HTTP
-         * POST.
-         */
-        MOVIE_TO_TARGET_WITH_POST(66),
+        MOVIE_TO_TARGET,
+        /** Load a movie or web page sending variables using HTTP GET. */
+        MOVIE_TO_TARGET_WITH_GET,
+        /** Load a movie or web page sending the variables using HTTP POST. */
+        MOVIE_TO_TARGET_WITH_POST,
         /** Load variables without submitting the movie variables. */
-        VARIABLES_TO_LEVEL(128),
+        VARIABLES_TO_LEVEL,
         /** Load variables submitting the movie variables using HTTP GET. */
-        VARIABLES_TO_LEVEL_WITH_GET(129),
+        VARIABLES_TO_LEVEL_WITH_GET,
         /** Load variables submitting the movie variables using HTTP POST. */
-        VARIABLES_TO_LEVEL_WITH_POST(130),
+        VARIABLES_TO_LEVEL_WITH_POST,
         /** Load variables without submitting the movie variables. */
-        VARIABLES_TO_TARGET(192),
+        VARIABLES_TO_TARGET,
         /** Load variables submitting the movie variables using HTTP GET. */
-        VARIABLES_TO_TARGET_WITH_GET(193),
+        VARIABLES_TO_TARGET_WITH_GET,
         /** Load variables submitting the movie variables using HTTP POST. */
-        VARIABLES_TO_TARGET_WITH_POST(194);
-
-        private static final Map<Integer, Request> TABLE =
-            new LinkedHashMap<Integer, Request>();
-
-        static {
-            for (final Request request : values()) {
-                TABLE.put(request.value, request);
-            }
-        }
-
-        /**
-         * Get the Request that is identified by an integer value. This method 
-         * is used when decoding a Request from a Flash file.
-         *
-         * @param type
-         *            the integer value read from a Flash file.
-         *
-         * @return the Request identified by the integer value.
-         */
-        public static Request fromInt(final int type) {
-            return TABLE.get(type);
-        }
-
-        private final int value;
-
-        private Request(final int value) {
-            this.value = value;
-        }
-
-        /**
-         * Get the integer value that is used to identify this Request. This 
-         * method is used when encoding a Request in a Flash file.
-         *
-         * @return the integer value used to encode this Request.
-         */
-        public int getValue() {
-            return value;
-        }
+        VARIABLES_TO_TARGET_WITH_POST;
     }
 
-    private Request request;
+    private int request;
 
     /**
      * Creates and initialises a GetUrl2 action using values encoded
@@ -202,7 +158,7 @@ public final class GetUrl2 implements Action {
     public GetUrl2(final SWFDecoder coder) throws CoderException {
         coder.readByte();
         coder.readWord(2, false);
-        request = Request.fromInt(coder.readByte());
+        request = coder.readByte();
     }
 
     /**
@@ -231,16 +187,96 @@ public final class GetUrl2 implements Action {
      * Returns the request type.
      */
     public Request getRequest() {
-        return request;
+        Request value;
+        switch(request) {
+        case 0:
+            value = Request.MOVIE_TO_LEVEL;
+            break;
+        case 1:
+            value = Request.MOVIE_TO_LEVEL_WITH_GET;
+            break;
+        case 2:
+            value = Request.MOVIE_TO_LEVEL_WITH_POST;
+            break;
+        case 64:
+            value = Request.MOVIE_TO_TARGET;
+            break;
+        case 65:
+            value = Request.MOVIE_TO_TARGET_WITH_POST;
+            break;
+        case 66:
+            value = Request.MOVIE_TO_TARGET_WITH_POST;
+            break;
+        case 128:
+            value = Request.MOVIE_TO_LEVEL_WITH_POST;
+            break;
+        case 129:
+            value = Request.MOVIE_TO_LEVEL_WITH_POST;
+            break;
+        case 130:
+            value = Request.MOVIE_TO_LEVEL_WITH_POST;
+            break;
+        case 192:
+            value = Request.VARIABLES_TO_LEVEL_WITH_POST;
+            break;
+        case 193:
+            value = Request.VARIABLES_TO_LEVEL_WITH_POST;
+            break;
+        case 194:
+            value = Request.VARIABLES_TO_LEVEL_WITH_POST;
+            break;
+        default:
+            throw new IllegalStateException();
+        }
+        return value;
     }
 
     /** TODO(method).
      *
-     * @param request
+     * @param type
      *            the type of request to be performed.
      */
-    public void setRequest(final Request request) {
-        this.request = request;
+    public void setRequest(final Request type) {
+        switch (type) {
+        case MOVIE_TO_LEVEL:
+            request = 0;
+            break;
+        case MOVIE_TO_LEVEL_WITH_GET:
+            request = 1;
+            break;
+        case MOVIE_TO_LEVEL_WITH_POST:
+            request = 2;
+            break;
+        case MOVIE_TO_TARGET:
+            request = 64;
+            break;
+        case MOVIE_TO_TARGET_WITH_GET:
+            request = 65;
+            break;
+        case MOVIE_TO_TARGET_WITH_POST:
+            request = 66;
+            break;
+        case VARIABLES_TO_LEVEL:
+            request = 128;
+            break;
+        case VARIABLES_TO_LEVEL_WITH_GET:
+            request = 129;
+            break;
+        case VARIABLES_TO_LEVEL_WITH_POST:
+            request = 130;
+            break;
+        case VARIABLES_TO_TARGET:
+            request = 192;
+            break;
+        case VARIABLES_TO_TARGET_WITH_GET:
+            request = 193;
+            break;
+        case VARIABLES_TO_TARGET_WITH_POST:
+            request = 194;
+            break;
+        default:
+            throw new IllegalArgumentException();
+        }
     }
 
     /** {@inheritDoc} */
@@ -264,6 +300,6 @@ public final class GetUrl2 implements Action {
             throws CoderException {
         coder.writeByte(ActionTypes.GET_URL_2);
         coder.writeWord(1, 2);
-        coder.writeWord(request.value, 1);
+        coder.writeWord(request, 1);
     }
 }

@@ -1,6 +1,5 @@
 package com.flagstone.transform.filter;
 
-import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.Filter;
@@ -13,12 +12,62 @@ import com.flagstone.transform.datatype.Color;
 public final class GlowFilter implements Filter {
 
     /** TODO(class). */
-    public enum Mode {
-        /** TODO(doc). */
-        INNER,
-        /** TODO(doc). */
-        KNOCKOUT
-    };
+    public static class Builder {
+        private Color color;
+        private int blurX;
+        private int blurY;
+        private int strength;
+        private int mode;
+        private int passes;
+        
+        /** TODO(method). */
+       public Builder color(Color color) {
+            this.color = color;
+            return this;
+        }
+        
+        /** TODO(method). */
+        public Builder blur(float xAmount, float yAmount) {
+            blurX = (int) (xAmount * 65536.0f);
+            blurY = (int) (yAmount * 65536.0f);
+            return this;
+        }
+        
+        /** TODO(method). */
+        public Builder mode(FilterMode mode) {
+            switch (mode) {
+            case TOP:
+                 this.mode = 0x0030;
+                break;
+            case KNOCKOUT:
+                this.mode = 0x0060;
+                break;
+            case INNER:
+                this.mode = 0x00A0;
+                break;
+            default:
+                throw new IllegalArgumentException();
+            }
+            return this;
+        }
+        
+        /** TODO(method). */
+        public Builder strength(float strength) {
+            this.strength = (int) (strength * 256.0f);
+            return this;
+        }
+        
+        /** TODO(method). */
+        public Builder passes(int count) {
+            passes = count;
+            return this;
+        }
+        
+        /** TODO(method). */
+        public GlowFilter build() {
+            return new GlowFilter(this);
+        }
+    }
 
     private static final String FORMAT = "GlowFilter: { "
             + "color=%s; blurX=%f; blurY=%f; passes=%d "
@@ -28,8 +77,17 @@ public final class GlowFilter implements Filter {
     private final int blurX;
     private final int blurY;
     private final int strength;
-    private Mode mode;
-    private int passes;
+    private final int mode;
+    private final int passes;
+
+    private GlowFilter(Builder builder) {
+        color = builder.color;
+        blurX = builder.blurX;
+        blurY = builder.blurY;
+        strength =  builder.strength;
+        mode =  builder.mode;
+        passes = builder.passes;
+    }
 
     /**
      * Creates and initialises a GlowFilter object using values encoded
@@ -53,18 +111,11 @@ public final class GlowFilter implements Filter {
         blurX = coder.readWord(4, true);
         blurY = coder.readWord(4, true);
         strength = coder.readWord(2, true);
-        unpack(coder.readByte());
-    }
-
-    /** TODO(method). */
-    public GlowFilter(final Color color, final float blurX, final float blurY,
-            final float strength, final Mode mode, final int passes) {
-        this.color = color;
-        this.blurX = (int) (blurX * 65536.0f);
-        this.blurY = (int) (blurY * 65536.0f);
-        this.strength = (int) (strength * 256.0f);
-        this.mode = mode;
-        this.passes = passes;
+        
+        final int value = coder.readByte();
+        
+        passes = value & 0x0F;
+        mode = (value & 0x0D) >>> 4;
     }
 
     /** TODO(method). */
@@ -85,6 +136,22 @@ public final class GlowFilter implements Filter {
     /** TODO(method). */
     public float getStrength() {
         return strength / 256.0f;
+    }
+
+    /** TODO(method). */
+    public FilterMode getMode() {
+        FilterMode value;
+        switch (mode) {
+        case 0x0060:
+            value = FilterMode.KNOCKOUT;
+            break;
+        case 0x00A0:
+            value = FilterMode.INNER;
+            break;
+        default:
+            throw new IllegalStateException();
+        }
+        return value;
     }
 
     /** TODO(method). */
@@ -120,9 +187,8 @@ public final class GlowFilter implements Filter {
 
     @Override
     public int hashCode() {
-        return (((((color.hashCode() * 31) + blurX) * 31 + blurY) * 31 + strength) * 31 + mode
-                .hashCode())
-                * 31 + passes;
+        return (((((color.hashCode() * 31) + blurX) * 31 + blurY) * 31 
+                + strength) * 31 + mode) * 31 + passes;
     }
 
     /** {@inheritDoc} */
@@ -138,40 +204,6 @@ public final class GlowFilter implements Filter {
         coder.writeWord(blurX, 4);
         coder.writeWord(blurY, 4);
         coder.writeWord(strength, 2);
-        coder.writeByte(pack());
-    }
-
-    private int pack() throws CoderException {
-        int value = passes;
-
-        switch (mode) {
-        case KNOCKOUT:
-            value |= 0x0060;
-            break;
-        case INNER:
-            value |= 0x00A0;
-            break;
-        default:
-            throw new CoderException(getClass().getName(), 0, 0, 0,
-                    Strings.INVALID_ENCODING);
-        }
-
-        return value;
-    }
-
-    private void unpack(final int value) throws CoderException {
-        passes = value & 0x0F;
-
-        switch ((value & 0x0D) >>> 4) {
-        case 4:
-            mode = Mode.KNOCKOUT;
-            break;
-        case 8:
-            mode = Mode.INNER;
-            break;
-        default:
-            throw new CoderException(getClass().getName(), 0, 0, 0,
-                    Strings.INVALID_ENCODING);
-        }
+        coder.writeByte(mode | passes);
     }
 }

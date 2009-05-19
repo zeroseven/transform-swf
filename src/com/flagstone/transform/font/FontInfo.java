@@ -82,7 +82,7 @@ public final class FontInfo implements MovieTag {
 
     private int identifier;
     private String name;
-    private CharacterEncoding encoding;
+    private int encoding;
     private boolean small;
     private boolean italic;
     private boolean bold;
@@ -125,7 +125,7 @@ public final class FontInfo implements MovieTag {
 
         /* reserved */coder.readBits(2, false);
         small = coder.readBits(1, false) != 0;
-        encoding = CharacterEncoding.fromInt(coder.readBits(2, false));
+        encoding = coder.readBits(2, false);
         italic = coder.readBits(1, false) != 0;
         bold = coder.readBits(1, false) != 0;
         wideCodes = coder.readBits(1, false) != 0;
@@ -166,7 +166,7 @@ public final class FontInfo implements MovieTag {
         setItalic(italic);
         setBold(bold);
         small = false;
-        encoding = CharacterEncoding.UCS2;
+        encoding = 0;
         codes = new ArrayList<Integer>();
     }
 
@@ -208,7 +208,21 @@ public final class FontInfo implements MovieTag {
      * either ASCII, SJIS or UCS2.
      */
     public CharacterEncoding getEncoding() {
-        return encoding;
+        CharacterEncoding value;
+        switch(encoding) {
+        case 0:
+            value = CharacterEncoding.UCS2;
+            break;
+        case 1:
+            value = CharacterEncoding.ANSI;
+            break;
+        case 2:
+            value = CharacterEncoding.SJIS;
+            break;
+        default:
+            throw new IllegalStateException();
+        }
+        return value;
     }
 
     /**
@@ -286,10 +300,22 @@ public final class FontInfo implements MovieTag {
      *
      * @param anEncoding
      *            the encoding used to identify characters, either ASCII, SJIS
-     *            or UCS2.
+     *            or UNICODE.
      */
     public void setEncoding(final CharacterEncoding anEncoding) {
-        encoding = anEncoding;
+        switch(anEncoding) {
+        case UCS2:
+            encoding = 0;
+            break;
+        case ANSI:
+            encoding = 1;
+            break;
+        case SJIS:
+            encoding = 2;
+            break;
+        default:
+            throw new IllegalArgumentException();
+        }
     }
 
     /**
@@ -395,7 +421,7 @@ public final class FontInfo implements MovieTag {
         coder.adjustPointer(-8);
         coder.writeBits(0, 2);
         coder.writeBits(small ? 1 : 0, 1);
-        coder.writeBits(encoding.getValue(), 2);
+        coder.writeBits(encoding, 2);
         coder.writeBits(italic ? 1 : 0, 1);
         coder.writeBits(bold ? 1 : 0, 1);
         coder.writeBits(wideCodes ? 1 : 0, 1);

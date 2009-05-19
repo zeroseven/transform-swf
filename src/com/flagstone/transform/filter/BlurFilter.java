@@ -11,7 +11,8 @@ import com.flagstone.transform.coder.SWFEncoder;
 /** TODO(class). */
 public final class BlurFilter implements Filter {
 
-    private static final String FORMAT = "BlurFilter: { blurX=%f; blurY=%f; passes=%d }";
+    private static final String FORMAT = "BlurFilter: { blurX=%f; blurY=%f;"
+            + " passes=%d }";
 
     private final int blurX;
     private final int blurY;

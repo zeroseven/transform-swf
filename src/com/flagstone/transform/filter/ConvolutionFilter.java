@@ -7,9 +7,71 @@ import com.flagstone.transform.coder.FilterTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.Color;
+import com.flagstone.transform.filter.BevelFilter.Builder;
 
 /** TODO(class). */
 public final class ConvolutionFilter implements Filter {
+
+    /** TODO(class). */
+    public static class Builder {
+        private float[][] matrix;
+        private float divisor;
+        private float bias;
+        private Color color;
+        private boolean clamp;
+        private boolean alpha;
+        
+        private int rows;
+        private int cols;
+        
+        /** TODO(method). */
+        public Builder matrix(float[][] matrix) {
+            rows = matrix.length;
+            cols = matrix[0].length;
+            this.matrix = new float[rows][cols];
+            for (int i = 0; i < rows; i++) {
+                for (int j = 0; j < cols; j++) {
+                    this.matrix[i][j] = matrix[i][j];
+                }
+            }
+            return this;
+        }
+        
+        /** TODO(method). */
+        public Builder divisor(float value) {
+            divisor = value;
+            return this;
+        }
+        
+        /** TODO(method). */
+        public Builder bias(float value) {
+            bias = value;
+            return this;
+        }
+        
+        /** TODO(method). */
+        public Builder color(Color color) {
+            this.color = color;
+            return this;
+        }
+        
+        /** TODO(method). */
+        public Builder clamp(boolean clamp) {
+            this.clamp = clamp;
+            return this;
+        }
+        
+        /** TODO(method). */
+        public Builder alpha(boolean alpha) {
+            this.alpha = alpha;
+            return this;
+        }
+        
+        /** TODO(method). */
+        public ConvolutionFilter build() {
+            return new ConvolutionFilter(this);
+        }
+    }
 
     private static final String FORMAT = "ConvolutionFilter: { matrix=%s; "
             + "divisor=%d; bias=%d; color=%s; clamp=%s; alpha=%s }";
@@ -23,6 +85,15 @@ public final class ConvolutionFilter implements Filter {
 
     private transient int rows;
     private transient int cols;
+    
+    private ConvolutionFilter(Builder builder) {
+        matrix = builder.matrix;
+        divisor = builder.divisor;
+        bias = builder.bias;
+        color = builder.color;
+        clamp = builder.clamp;
+        alpha = builder.alpha;
+    }
 
     /**
      * Creates and initialises a ConvolutionFilter object using values encoded
@@ -117,10 +188,12 @@ public final class ConvolutionFilter implements Filter {
 
     @Override
     public int hashCode() {
-        return (((((matrix.hashCode() * 31) + Float.floatToIntBits(divisor)) * 31 + Float
-                .floatToIntBits(bias)) * 31 + color.hashCode()) * 31 + Boolean
-                .valueOf(clamp).hashCode())
-                * 31 + Boolean.valueOf(alpha).hashCode();
+        return ((((matrix.hashCode() * 31
+                + Float.floatToIntBits(divisor)) * 31
+                + Float.floatToIntBits(bias)) * 31
+                + color.hashCode()) * 31
+                + Boolean.valueOf(clamp).hashCode())* 31
+                + Boolean.valueOf(alpha).hashCode();
     }
 
     /** {@inheritDoc} */

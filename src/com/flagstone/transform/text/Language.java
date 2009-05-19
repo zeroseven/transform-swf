@@ -1,5 +1,5 @@
 /*
- * Blend.java
+ * Language.java
  * Transform
  *
  * Copyright (c) 2009 Flagstone Software Ltd. All rights reserved.
@@ -30,44 +30,16 @@
 
 package com.flagstone.transform.text;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 /** TODO(class). */
 public enum Language {
-
     /** The spoken language for traditional Chinese fonts. */
-    TRADITIONAL_CHINESE(5),
+    TRADITIONAL_CHINESE,
     /** The spoken language for simplified Chinese fonts. */
-    SIMPLIFIED_CHINESE(4),
+    SIMPLIFIED_CHINESE,
     /** The spoken language for Japanese fonts. */
-    KOREAN(3),
+    KOREAN,
     /** The spoken language for Korean fonts. */
-    JAPANESE(2),
+    JAPANESE,
     /** The spoken language for Latin fonts. */
-    LATIN(1);
-
-    private static final Map<Integer, Language> TABLE = new LinkedHashMap<Integer, Language>();
-
-    static {
-        for (final Language language : values()) {
-            TABLE.put(language.value, language);
-        }
-    }
-
-    /** TODO(method). */
-    public static Language fromInt(final int type) {
-        return TABLE.get(type);
-    }
-
-    private int value;
-
-    private Language(final int value) {
-        this.value = value;
-    }
-
-    /** TODO(method). */
-    public int getValue() {
-        return value;
-    }
+    LATIN;
 }

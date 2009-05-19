@@ -694,9 +694,7 @@ public final class Place2 implements MovieTag {
             coder.writeWord(0, 2);
 
             for (final MovieClipEventHandler handler : events) {
-                for (final MovieClipEvent event : handler.getEvent()) {
-                    eventMask |= event.getValue();
-                }
+                eventMask |= handler.getEventCode();
             }
 
             coder.writeWord(eventMask, eventSize);

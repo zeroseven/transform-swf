@@ -164,16 +164,7 @@ public enum Property {
         }
     }
 
-    /**
-     * Get the Property that is identified by an integer value. This method is
-     * used when decoding a Property from a Flash file.
-     *
-     * @param type
-     *            the integer value read from a Flash file.
-     *
-     * @return the Property identified by the integer value.
-     */
-    public static Property fromInt(final int type) {
+    protected static Property fromInt(final int type) {
         return TABLE.get(type);
     }
 
@@ -183,13 +174,7 @@ public enum Property {
         this.value = value;
     }
 
-    /**
-     * Get the integer value that is used to identify this Property. This method is
-     * used when encoding a Property in a Flash file.
-     *
-     * @return the integer value used to encode this Property.
-     */
-    public int getValue(final int version) {
+    protected int getValue(final int version) {
         return version < 5 ? Float.floatToIntBits(value) : value;
     }
 }
