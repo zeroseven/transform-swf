@@ -101,7 +101,7 @@ public final class AWTFontTest {
             movie.encodeToFile(destFile);
         } catch (Exception e) {
             e.printStackTrace();
-            fail(sourceFont.getName());
+            fail(sourceFont.getFace().getName());
         }
     }
 }

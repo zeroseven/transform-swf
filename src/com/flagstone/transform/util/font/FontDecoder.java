@@ -33,6 +33,7 @@ package com.flagstone.transform.util.font;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.zip.DataFormatException;
 
 /** TODO(class). */
@@ -56,5 +57,5 @@ public interface FontDecoder {
     void read(URL url) throws IOException, DataFormatException;
 
     /** TODO(method). */
-    Font[] getFonts();
+    List<Font> getFonts();
 }

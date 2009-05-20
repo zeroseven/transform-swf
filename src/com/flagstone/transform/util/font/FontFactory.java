@@ -35,9 +35,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.List;
 import java.util.zip.DataFormatException;
-
-
 
 /**
  * TODO(class).
@@ -91,7 +90,7 @@ public final class FontFactory {
      *
      * @return
      */
-    public Font[] getFonts() {
+    public List<Font> getFonts() {
         return decoder.getFonts();
     }
 }

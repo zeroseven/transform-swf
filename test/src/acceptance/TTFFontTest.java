@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.zip.DataFormatException;
 
@@ -84,8 +85,8 @@ public final class TTFFontTest {
             final Movie movie = new Movie();
             final FontFactory factory = new FontFactory();
             factory.read(sourceFile);
-            Font[] fonts = factory.getFonts();
-            DefineFont2 font = fonts[0].defineFont(movie.identifier(), set);
+            List<Font> fonts = factory.getFonts();
+            DefineFont2 font = fonts.get(0).defineFont(movie.identifier(), set);
 
             final DefineTextField text = new DefineTextField(movie.identifier());
             text.setBounds(new Bounds(0, 0, width, height));

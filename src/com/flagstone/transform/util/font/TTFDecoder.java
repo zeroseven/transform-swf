@@ -71,6 +71,7 @@ import com.flagstone.transform.util.shape.Canvas;
  */
 //TODO(class)
 public final class TTFDecoder implements FontProvider, FontDecoder {
+    
     private static final int OS_2 = 0x4F532F32;
     private static final int HEAD = 0x68656164;
     private static final int HHEA = 0x68686561;
@@ -129,11 +130,11 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
     private int missingGlyph;
     private char maxChar;
 
-    private final List<Kerning> kernings = new ArrayList<Kerning>();
-
     private int scale;
     private int metrics;
     private int glyphOffset;
+
+    private List<Font>fonts;
 
     /** TODO(method). */
     public FontDecoder newDecoder() {
@@ -166,9 +167,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
     }
 
     /** TODO(method). */
-    public Font[] getFonts() {
-        final Font[] fonts = null;
-
+    public List<Font> getFonts() {
         return fonts;
     }
 
@@ -309,6 +308,23 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
             decodeCMAP(coder);
             bytesRead = (coder.getPointer() - cmapOffset) >> 3;
         }
+        
+        Font font = new Font();
+        
+        font.setFace(new FontFace(name, bold, italic));
+        font.setEncoding(encoding);
+        font.setAscent(ascent);
+        font.setDescent(descent);
+        font.setLeading(leading);
+        font.setNumberOfGlyphs(glyphCount);
+        font.setMissingGlyph(missingGlyph);
+        font.setHighestChar(maxChar);
+        
+        for (int i=0; i<glyphCount; i++) {
+            font.addGlyph((char)glyphToChar[i], glyphTable[i]);
+        }
+        
+        fonts.add(font);
     }
 
     private void decodeHEAD(final FLVDecoder coder) {

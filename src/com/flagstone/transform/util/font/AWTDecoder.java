@@ -8,7 +8,9 @@ import java.awt.geom.PathIterator;
 import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.DataFormatException;
 
 import com.flagstone.transform.datatype.Bounds;
@@ -20,26 +22,11 @@ import com.flagstone.transform.util.shape.Canvas;
 /** TODO(class). */
 public final class AWTDecoder {
 
-    private transient String name;
-    private transient boolean bold;
-    private transient boolean italic;
-
-    private transient CharacterEncoding encoding;
-
-    private transient float ascent;
-    private transient float descent;
-    private transient float leading;
-
-    private transient int[] charToGlyph;
-    private transient int[] glyphToChar;
-
-    private transient Glyph[] glyphTable;
-
-    private transient int glyphCount;
-    private transient int missingGlyph;
-    private transient char maxChar;
-
-    private final transient List<Kerning> kernings = new ArrayList<Kerning>();
+    private List<Font>fonts;
+    
+    public AWTDecoder() {
+        fonts = new ArrayList<Font>();
+    }
 
     /** TODO(method). */
     public void read(final java.awt.Font font)
@@ -48,20 +35,20 @@ public final class AWTDecoder {
     }
 
     /** TODO(method). */
-    public Font[] getFont() {
-        final Font[] font = null;
-        // TODO(implement)
-        return font;
+    public List<Font> getFonts() {
+        return fonts;
     }
 
     private void decode(final java.awt.Font aFont) {
 
         final FontRenderContext fontContext = new FontRenderContext(
                 new AffineTransform(), true, true);
-        java.awt.Font font = aFont.deriveFont(1.0f);
+        java.awt.Font awtFont = aFont.deriveFont(1.0f);
 
-        name = font.getName();
-        encoding = CharacterEncoding.UCS2;
+        Font font = new Font();
+        
+        font.setFace(new FontFace(awtFont.getName(), awtFont.isBold(), awtFont.isItalic()));
+        font.setEncoding(CharacterEncoding.UCS2);
 
         // TODO(code) still needed ? final Rectangle2D transform =
         // transformToEMSquare(font, fontContext);
@@ -79,57 +66,55 @@ public final class AWTDecoder {
         final AffineTransform affine = AffineTransform.getTranslateInstance(
                 translateX, translateY);
 
-        font = font.deriveFont(affine);
-        font = font.deriveFont((float) scaleX);
+        awtFont = awtFont.deriveFont(affine);
+        awtFont = awtFont.deriveFont((float) scaleX);
 
-        missingGlyph = font.getMissingGlyphCode();
+        final int missingGlyph = awtFont.getMissingGlyphCode();
+        final int count = awtFont.getNumGlyphs();
 
-        bold = font.isBold();
-        italic = font.isItalic();
+        font.setMissingGlyph(missingGlyph);
+        font.setNumberOfGlyphs(count);
+        font.setHighestChar((char)65536);
 
-        final int count = font.getNumGlyphs();
         int index = 0;
         int code = 0;
         char character;
 
-        glyphTable = new Glyph[count];
-        charToGlyph = new int[65536];
-        glyphToChar = new int[count];
-
         // create the glyph for the characters that cannot be displayed
 
-        GlyphVector glyphVector = font.createGlyphVector(fontContext,
+        GlyphVector glyphVector = awtFont.createGlyphVector(fontContext,
                 new int[] {missingGlyph});
         java.awt.Shape outline = glyphVector.getGlyphOutline(0);
         int advance = (int) (glyphVector.getGlyphMetrics(0).getAdvance());
-        glyphTable[index] = new Glyph(convertShape(outline), new Bounds(0, 0,
-                0, 0), advance);
-        charToGlyph[code] = index;
-        glyphToChar[index] = code;
-
+        
+        font.addGlyph((char)missingGlyph, new Glyph(convertShape(outline), 
+                new Bounds(0, 0, 0, 0), advance));
+                
         index = 1;
+        
+        float ascent = 0.0f;
+        float descent = 0.0f;
+        float leading = 0.0f;
 
         /*
          * Run through all the unicode character codes looking for a
          * corresponding glyph.
          */
         while ((index < count) && (code < 65536)) {
-            character = font.canDisplay(code) ? (char) code
+            character = awtFont.canDisplay(code) ? (char) code
                     : (char) missingGlyph;
 
-            glyphVector = font.createGlyphVector(fontContext,
+            glyphVector = awtFont.createGlyphVector(fontContext,
                     new char[] {character});
 
             outline = glyphVector.getGlyphOutline(0);
             advance = (int) (glyphVector.getGlyphMetrics(0).getAdvance());
 
-            glyphTable[index] = new Glyph(convertShape(outline), new Bounds(0,
-                    0, 0, 0), advance);
-            charToGlyph[character] = index;
-            glyphToChar[index] = character;
-
-            if (!font.hasUniformLineMetrics()) {
-                final LineMetrics lineMetrics = font.getLineMetrics(
+            font.addGlyph(character,  new Glyph(convertShape(outline), 
+                    new Bounds(0, 0, 0, 0), advance));
+            
+            if (!awtFont.hasUniformLineMetrics()) {
+                final LineMetrics lineMetrics = awtFont.getLineMetrics(
                         new char[] {character}, 0, 1, fontContext);
 
                 ascent = Math.max(lineMetrics.getAscent(), ascent);
@@ -143,6 +128,11 @@ public final class AWTDecoder {
 
             code++;
         }
+        font.setAscent(ascent);
+        font.setDescent(descent);
+        font.setLeading(leading);
+        
+        fonts.add(font);
     }
 
     private Rectangle2D transformToEMSquare(final java.awt.Font font,

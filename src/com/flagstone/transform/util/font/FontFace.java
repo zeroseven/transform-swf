@@ -1,21 +1,21 @@
 package com.flagstone.transform.util.font;
 
 /** TODO(class). */
-public final class FontKey {
+public final class FontFace {
 
     private final transient String name;
     private final transient boolean bold;
     private final transient boolean italic;
 
     /** TODO(method). */
-    public FontKey(final String name, final boolean isBold, final boolean isItalic) {
+    public FontFace(final String name, final boolean isBold, final boolean isItalic) {
         this.name = name;
         this.bold = isBold;
         this.italic = isItalic;
     }
 
     /** TODO(method). */
-    public FontKey(final String name, final int style) {
+    public FontFace(final String name, final int style) {
         this.name = name;
         this.bold = (style & java.awt.Font.BOLD) != 0;
         this.italic = (style & java.awt.Font.ITALIC) != 0;
@@ -71,14 +71,14 @@ public final class FontKey {
     @Override
     public boolean equals(final Object object) {
         boolean result;
-        FontKey key;
+        FontFace key;
 
         if (object == null) {
             result = false;
         } else if (object == this) {
             result = true;
-        } else if (object instanceof FontKey) {
-            key = (FontKey) object;
+        } else if (object instanceof FontFace) {
+            key = (FontFace) object;
             result = name.equals(name) && bold == key.bold
                     && italic == key.italic;
         } else {

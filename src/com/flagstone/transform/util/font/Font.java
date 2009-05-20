@@ -61,10 +61,8 @@ import com.flagstone.transform.shape.Shape;
  */
 //TODO(class)
 public final class Font {
-    private String name;
-    private boolean bold;
-    private boolean italic;
 
+    private FontFace face; 
     private CharacterEncoding encoding;
 
     private float ascent;
@@ -73,12 +71,13 @@ public final class Font {
 
     private int[] charToGlyph;
     private int[] glyphToChar;
-
     private Glyph[] glyphTable;
+    
+    private transient int glyphIndex;
 
     private int glyphCount;
     private int missingGlyph;
-    private char maxChar;
+    private char highestChar;
 
     private final List<Kerning> kernings = new ArrayList<Kerning>();
 
@@ -87,51 +86,14 @@ public final class Font {
     private int glyphOffset;
 
     /**
-     * Returns name of the font face which contains the name of the font
-     * followed by "Bold" for bold fonts and "Italic" for fonts with an italic
-     * style.
+     * TODO(method).
      */
-    public String getFace() {
-        return name + (bold ? " Bold" : "") + (italic ? " Italic" : "");
+    public FontFace getFace() {
+        return face;
     }
-
-    /**
-     * Returns the (family) name of the font.
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Returns true if the font weight is bold or false if it is normal.
-     */
-    public boolean isBold() {
-        return bold;
-    }
-
-    /**
-     * Returns true if the font style is italic or false if it is normal.
-     */
-    public boolean isItalic() {
-        return italic;
-    }
-
-    /**
-     * Returns the code for the font style, as defined in the AWT Font class,
-     * either Font.PLAIN or a combination of Font.BOLD and Font.ITALIC.
-     */
-    public int getStyle() {
-        int style = java.awt.Font.PLAIN;
-
-        if (bold && !italic) {
-            style = java.awt.Font.BOLD;
-        } else if (bold && italic) {
-            style = java.awt.Font.BOLD + java.awt.Font.ITALIC;
-        } else if (!bold && italic) {
-            style = java.awt.Font.ITALIC;
-        }
-
-        return style;
+    
+    public void setFace(FontFace face) {
+        this.face = face;
     }
 
     /**
@@ -141,6 +103,10 @@ public final class Font {
     public CharacterEncoding getEncoding() {
         return encoding;
     }
+    
+    public void setEncoding(CharacterEncoding enc) {
+        encoding = enc;
+    }
 
     /**
      * Returns the ascent (maximum distance) above the baseline for the font.
@@ -148,12 +114,20 @@ public final class Font {
     public float getAscent() {
         return ascent;
     }
+    
+    public void setAscent(float ascent) {
+        this.ascent = ascent;
+    }
 
     /**
      * Returns the descent (maximum distance) below the baseline for the font.
      */
     public float getDescent() {
         return descent;
+    }
+    
+    public void setDescent(float descent) {
+        this.descent = descent;
     }
 
     /**
@@ -163,23 +137,53 @@ public final class Font {
         return leading;
     }
 
+    
+    public void setLeading(float leading) {
+        this.leading = leading;
+    }
     /**
      * Returns the number of glyphs defined in the font.
      */
-    public int numberOfGlyphs() {
+    public int getNumberOfGlyphs() {
         return glyphCount;
+    }
+    
+    public void setNumberOfGlyphs(int count) {
+        glyphTable = new Glyph[count];
+        glyphToChar = new int[count];
+        glyphIndex = 0;
     }
 
     /**
      * Returns the highest character code defined in the font.
      */
-    public char highestChar() {
-        return maxChar;
+    public char getHighestChar() {
+        return highestChar;
     }
-
+    
+    public void setHighestChar(char c) {
+        highestChar = c;
+        charToGlyph = new int[c];
+    }
+    
     /** TODO(method). */
     public int getMissingGlyph() {
         return missingGlyph;
+    }
+    
+    public void setMissingGlyph(int index) {
+        missingGlyph = index;
+    }
+    
+    public Glyph getGlyph(int index) {
+        return glyphTable[index];
+    }
+    
+    public void addGlyph(final char code, final Glyph glyph) {
+        glyphTable[glyphIndex] = glyph;
+        glyphToChar[glyphIndex] = code;
+        charToGlyph[code] = glyphIndex;
+        glyphIndex++;
     }
 
     /**
@@ -222,11 +226,11 @@ public final class Font {
             }
         }
 
-        fontDefinition = new DefineFont2(identifier, name);
+        fontDefinition = new DefineFont2(identifier, face.getName());
 
         fontDefinition.setEncoding(encoding);
-        fontDefinition.setItalic(italic);
-        fontDefinition.setBold(bold);
+        fontDefinition.setItalic(face.isItalic());
+        fontDefinition.setBold(face.isBold());
         fontDefinition.setAscent((int) ascent);
         fontDefinition.setDescent((int) descent);
         fontDefinition.setLeading((int) leading);
@@ -323,16 +327,5 @@ public final class Font {
      */
     public int advanceForCharacter(final char character) {
         return glyphTable[charToGlyph[character]].getAdvance();
-    }
-
-    /** TODO(method). */
-    public int fontKey() {
-        int value = 17;
-
-        value = value * 31 + name.toLowerCase(Locale.getDefault()).hashCode();
-        value = value * 31 + (bold ? 1 : 0);
-        value = value * 31 + (italic ? 1 : 0);
-
-        return value;
     }
 }

@@ -1,5 +1,5 @@
 /*
- * ZonePair.java
+ * GlyphAlignment.java
  * Transform
  *
  * Copyright (c) 2009 Flagstone Software Ltd. All rights reserved.
