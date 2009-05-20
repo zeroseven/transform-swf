@@ -202,21 +202,11 @@ import com.flagstone.transform.coder.SWFFactory;
  */
 //TODO(class)
 public final class ButtonEventHandler implements SWFEncodeable {
+    
     private static final String FORMAT = "ButtonEventHandler: { event=%s; actions=%s }";
 
-    /**
-     * Returns the code used to identify that a character has been typed on the
-     * keyboard. This method should be used for characters that are not already
-     * defined as a constant in this class.
-     *
-     * @param character
-     *            a keyboard character.
-     */
-    public static int codeForKey(final char character) {
-        return character << 9;
-    }
-
     private int event;
+    private int key;
     private List<Action> actions;
 
     private transient int length = 0;
@@ -238,7 +228,9 @@ public final class ButtonEventHandler implements SWFEncodeable {
      */
     public ButtonEventHandler(final int size, final SWFDecoder coder,
             final Context context) throws CoderException {
-        event = coder.readWord(2, false);
+        final int eventKey = coder.readWord(2, false);
+        event = eventKey & 0x1FF;
+        key = eventKey & 0xE00;
         length = size;
 
         actions = new ArrayList<Action>();
@@ -260,19 +252,10 @@ public final class ButtonEventHandler implements SWFEncodeable {
     }
 
     /**
-     * Creates an ButtonEvent object that defines the array of actions that will
-     * be executed when a particular event occurs.
-     *
-     * @param aNumber
-     *            the event code. Must be in the range 1..65535.
-     * @param anArray
-     *            the array of action objects that will be executed when the
-     *            specified event(s) occur.
+     * Creates an uninitialised ButtonEvent object.
      */
-    public ButtonEventHandler(final Set<ButtonEvent> aNumber,
-            final List<Action> anArray) {
-        setEvent(aNumber);
-        setActions(anArray);
+    public ButtonEventHandler() {
+        actions = new ArrayList<Action>();
     }
 
     /**
@@ -323,25 +306,49 @@ public final class ButtonEventHandler implements SWFEncodeable {
     }
 
     /**
+     * Sets the event code that this ButtonEvent defines actions for.
+     *
+     * @param set
+     *            the set of events.
+     */
+    public ButtonEventHandler setEvent(final Set<ButtonEvent> set) {
+        for (final ButtonEvent buttonEvent : set) {
+            event |= buttonEvent.getValue();
+        }
+        return this;
+    }
+
+    /**
      * Returns the array of actions that are executed by the button in response
      * to specified event(s).
      */
     public List<Action> getActions() throws CoderException {
         return actions;
     }
-
+    
     /**
-     * Sets the event code that this ButtonEvent defines actions for.
-     *
-     * @param set
-     *            the set of events.
+     * TODO(method).
      */
-    public void setEvent(final Set<ButtonEvent> set) {
-        for (final ButtonEvent buttonEvent : set) {
-            event |= buttonEvent.getValue();
-        }
+    public char getKey() {
+        return (char)(key >>> 9);
     }
-
+    
+    /**
+     * TODO(method).
+     */
+    public ButtonEventHandler setKey(ButtonKey key) {
+        this.key = (key.getChar() << 9);
+        return this;
+    }
+    
+    /**
+     * TODO(method).
+     */
+    public ButtonEventHandler setKey(char key) {
+        this.key = ( (int) key << 9);
+        return this;
+    }
+    
     /**
      * Sets the array of actions that are executed by the button in response to
      * specified event(s).
@@ -351,20 +358,20 @@ public final class ButtonEventHandler implements SWFEncodeable {
      *            specified event(s) occur. The array may be empty but must not
      *            be null.
      */
-    public void setActions(final List<Action> anArray) {
+    public ButtonEventHandler setActions(final List<Action> anArray) {
         if (anArray == null) {
             throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
         }
         actions = anArray;
+        return this;
     }
 
-    /**
-     * Creates and returns a deep copy of this object.
-     */
+    /** {@inheritDoc} */
     public ButtonEventHandler copy() {
         return new ButtonEventHandler(this);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         return String.format(FORMAT, event, actions);
@@ -385,7 +392,7 @@ public final class ButtonEventHandler implements SWFEncodeable {
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         coder.writeWord(length + 2, 2);
-        coder.writeWord(event, 2);
+        coder.writeWord(event | key, 2);
 
         for (final Action action : actions) {
             action.encode(coder, context);
