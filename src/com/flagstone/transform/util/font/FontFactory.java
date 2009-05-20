@@ -37,7 +37,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.zip.DataFormatException;
 
-import com.flagstone.transform.Strings;
+
 
 /**
  * TODO(class).
@@ -58,7 +58,7 @@ public final class FontFactory {
         } else if (file.getName().endsWith("swf")) {
             fontType = "swf";
         } else {
-            throw new DataFormatException(Strings.INVALID_FORMAT);
+            throw new DataFormatException("Unsupported format");
         }
 
         decoder = FontRegistry.getFontProvider(fontType);
@@ -81,7 +81,7 @@ public final class FontFactory {
         decoder = FontRegistry.getFontProvider(mimeType);
 
         if (decoder == null) {
-            throw new DataFormatException(Strings.INVALID_IMAGE);
+            throw new DataFormatException("Unsupported format");
         }
 
         decoder.read(url);

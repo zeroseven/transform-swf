@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.flagstone.transform.Blend;
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.Filter;
@@ -47,6 +47,7 @@ import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.coder.SWFFactory;
 import com.flagstone.transform.datatype.ColorTransform;
 import com.flagstone.transform.datatype.CoordTransform;
+import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 /**
  * <p>
@@ -231,7 +232,7 @@ public final class ButtonShape implements SWFEncodeable {
      */
     public ButtonShape setIdentifier(final int uid) {
         if ((uid < 1) || (uid > 65535)) {
-            throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
+             throw new IllegalArgumentRangeException(1, 65536, uid);
         }
         identifier = uid;
         return this;
@@ -253,7 +254,7 @@ public final class ButtonShape implements SWFEncodeable {
      */
     public ButtonShape setLayer(final int aNumber) {
         if ((aNumber < 1) || (aNumber > 65535)) {
-            throw new IllegalArgumentException(Strings.LAYER_RANGE);
+            throw new IllegalArgumentRangeException(1, 65536, aNumber);
         }
         layer = aNumber;
         return this;
@@ -276,7 +277,7 @@ public final class ButtonShape implements SWFEncodeable {
      */
     public ButtonShape setTransform(final CoordTransform aTransform) {
         if (aTransform == null) {
-            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+            throw new NullPointerException();
         }
         transform = aTransform;
         return this;
@@ -305,7 +306,7 @@ public final class ButtonShape implements SWFEncodeable {
      */
     public ButtonShape setColorTransform(final ColorTransform aTransform) {
         if (aTransform == null) {
-            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+            throw new NullPointerException();
         }
         colorTransform = aTransform;
         return this;
@@ -314,7 +315,7 @@ public final class ButtonShape implements SWFEncodeable {
     /** TODO(method). */
     public ButtonShape add(final Filter filter) {
         if (filter == null) {
-            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+            throw new NullPointerException();
         }
         filters.add(filter);
         return this;
@@ -328,7 +329,7 @@ public final class ButtonShape implements SWFEncodeable {
     /** TODO(method). */
     public ButtonShape setFilters(final List<Filter> array) {
         if (array == null) {
-            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+            throw new NullPointerException();
         }
         filters = array;
         return this;

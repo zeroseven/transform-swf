@@ -30,7 +30,8 @@
  */
 package com.flagstone.transform.action;
 
-import com.flagstone.transform.Strings;
+
+import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 /**
  * RegisterIndex is used references a value stored in one of the Flash Player's
@@ -55,7 +56,7 @@ public final class RegisterIndex {
      */
     public RegisterIndex(final int index) {
         if ((index < 0) || (index > 255)) {
-            throw new IllegalArgumentException(Strings.REGISTER_RANGE);
+            throw new IllegalArgumentRangeException(0, 255, index);
         }
         number = index;
     }

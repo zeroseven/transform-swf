@@ -42,7 +42,7 @@ import java.util.Arrays;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.coder.ImageTag;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.datatype.ImageFormat;
@@ -84,7 +84,7 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
         final URLConnection connection = url.openConnection();
 
         if (!connection.getContentType().equals("image/bmp")) {
-            throw new DataFormatException(Strings.INVALID_FORMAT);
+            throw new DataFormatException("Unsupported format");
         }
 
         int length = connection.getContentLength();
@@ -122,7 +122,7 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
             object = new DefineImage2(identifier, width, height, zip(image));
             break;
         default:
-            throw new AssertionError(Strings.INVALID_FORMAT);
+            throw new AssertionError("Unsupported format");
         }
         return object;
     }
@@ -160,7 +160,7 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
 
         for (int i = 0; i < 2; i++) {
             if (coder.readByte() != SIGNATURE[i]) {
-                throw new DataFormatException(Strings.INVALID_FORMAT);
+                throw new DataFormatException("Unsupported format");
             }
         }
 
@@ -235,7 +235,7 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
             bitDepth = 8;
             break;
         default:
-            throw new DataFormatException(Strings.INVALID_FORMAT);
+            throw new DataFormatException("Unsupported format");
         }
 
         if (format == ImageFormat.IDX8) {
@@ -274,7 +274,7 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
                 decodeRLE4(coder);
                 break;
             default:
-                throw new DataFormatException(Strings.INVALID_FORMAT);
+                throw new DataFormatException("Unsupported format");
             }
         } else {
             image = new byte[height * width * 4];
@@ -292,7 +292,7 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
                 decodeRGBA(coder);
                 break;
             default:
-                throw new DataFormatException(Strings.INVALID_FORMAT);
+                throw new DataFormatException("Unsupported format");
             }
         }
     }

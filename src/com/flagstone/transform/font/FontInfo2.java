@@ -33,7 +33,7 @@ package com.flagstone.transform.font;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTag;
@@ -41,6 +41,7 @@ import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.CharacterEncoding;
+import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 
 /**
@@ -281,7 +282,7 @@ public final class FontInfo2 implements MovieTag {
      */
     public void setIdentifier(final int uid) {
         if ((uid < 1) || (uid > 65535)) {
-            throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
+             throw new IllegalArgumentRangeException(1, 65536, uid);
         }
         identifier = uid;
     }
@@ -297,7 +298,7 @@ public final class FontInfo2 implements MovieTag {
      */
     public void setName(final String aString) {
         if (aString == null) {
-            throw new IllegalArgumentException(Strings.STRING_IS_NULL);
+            throw new NullPointerException();
         }
         name = aString;
     }
@@ -373,7 +374,7 @@ public final class FontInfo2 implements MovieTag {
      */
     public void addCode(final int aCode) {
         if ((aCode < 0) || (aCode > 65535)) {
-            throw new IllegalArgumentException(Strings.CHAR_CODE_RANGE);
+            throw new IllegalArgumentRangeException(0, 65535, aCode);
         }
         codes.add(aCode);
     }
@@ -389,7 +390,7 @@ public final class FontInfo2 implements MovieTag {
      */
     public void setCodes(final List<Integer> anArray) {
         if (anArray == null) {
-            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+            throw new NullPointerException();
         }
         codes = anArray;
     }

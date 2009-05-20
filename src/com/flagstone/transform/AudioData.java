@@ -38,6 +38,8 @@ import com.flagstone.transform.coder.FLVEncoder;
 import com.flagstone.transform.coder.VideoTag;
 import com.flagstone.transform.coder.VideoTypes;
 import com.flagstone.transform.datatype.SoundFormat;
+import com.flagstone.transform.exception.IllegalArgumentRangeException;
+import com.flagstone.transform.exception.IllegalArgumentValueException;
 
 /**
  * AudioData is used to specify the audio track in Flash video files. It defines
@@ -182,7 +184,7 @@ public final class AudioData implements VideoTag {
      */
     public void setTimestamp(final int time) {
         if ((time < 0) || (time > 16777215)) {
-            throw new IllegalArgumentException(Strings.TIMESTAMP_RANGE);
+            throw new IllegalArgumentRangeException(0, 16777215, time);
         }
         timestamp = time;
     }
@@ -277,7 +279,7 @@ public final class AudioData implements VideoTag {
     public void setRate(final int rate) {
         if ((rate != 5512) && (rate != 11025) && (rate != 22050)
                 && (rate != 44100)) {
-            throw new IllegalArgumentException(Strings.SOUND_RATE_RANGE);
+            throw new IllegalArgumentValueException(new int[] {5512, 11025, 22050, 44100}, rate);
         }
         this.rate = rate;
     }
@@ -302,7 +304,7 @@ public final class AudioData implements VideoTag {
      */
     public void setChannelCount(final int count) {
         if ((count < 1) || (count > 2)) {
-            throw new IllegalArgumentException(Strings.CHANNEL_RANGE);
+            throw new IllegalArgumentRangeException(1, 2, count);
         }
         channelCount = count;
     }
@@ -325,7 +327,7 @@ public final class AudioData implements VideoTag {
      */
     public void setSampleSize(final int size) {
         if ((size < 1) || (size > 2)) {
-            throw new IllegalArgumentException(Strings.SAMPLE_SIZE_RANGE);
+            throw new IllegalArgumentRangeException(1, 2, size);
         }
         sampleSize = size;
     }
@@ -345,7 +347,7 @@ public final class AudioData implements VideoTag {
      */
     public void setData(final byte[] bytes) {
         if (bytes == null) {
-            throw new IllegalArgumentException(Strings.DATA_IS_NULL);
+            throw new NullPointerException();
         }
         data = Arrays.copyOf(bytes, bytes.length);
     }

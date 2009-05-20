@@ -37,6 +37,7 @@ import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.exception.StringSizeException;
 
 /**
  * EnableDebugger2 is an updated version or the EnableDebugger instruction which
@@ -124,10 +125,10 @@ public final class EnableDebugger2 implements MovieTag {
      */
     public void setPassword(final String aString) {
         if (aString == null) {
-            throw new IllegalArgumentException(Strings.STRING_IS_NULL);
+            throw new NullPointerException();
         }
         if (aString.length() == 0) {
-            throw new IllegalArgumentException(Strings.STRING_IS_EMPTY);
+            throw new StringSizeException(0, Integer.MAX_VALUE, 0);
         }
         password = aString;
     }

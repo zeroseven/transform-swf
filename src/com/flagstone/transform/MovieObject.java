@@ -86,7 +86,7 @@ public final class MovieObject implements MovieTag {
         this.type = type;
 
         if (bytes == null) {
-            throw new IllegalArgumentException(Strings.DATA_IS_NULL);
+            throw new NullPointerException();
         }
         data = Arrays.copyOf(bytes, bytes.length);
     }

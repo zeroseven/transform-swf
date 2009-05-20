@@ -30,7 +30,7 @@
 
 package com.flagstone.transform.movieclip;
 
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTag;
@@ -113,7 +113,7 @@ public final class QuicktimeMovie implements MovieTag {
      */
     public void setPath(final String aString) {
         if (aString == null) {
-            throw new IllegalArgumentException(Strings.STRING_IS_NULL);
+            throw new NullPointerException();
         }
         path = aString;
     }

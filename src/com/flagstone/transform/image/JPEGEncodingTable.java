@@ -33,13 +33,14 @@ package com.flagstone.transform.image;
 
 import java.util.Arrays;
 
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.exception.ArraySizeException;
 
 /**
  * JPEGEncodingTable defines the Huffman encoding table for JPEG images.
@@ -133,11 +134,10 @@ public final class JPEGEncodingTable implements MovieTag {
      */
     public void setTable(final byte[] bytes) {
         if (bytes == null) {
-            throw new IllegalArgumentException(Strings.DATA_IS_NULL);
+            throw new NullPointerException();
         }
-
         if (bytes.length == 0) {
-            throw new IllegalArgumentException(Strings.DATA_IS_EMPTY);
+            throw new ArraySizeException(0, Integer.MAX_VALUE, bytes.length);
         }
 
         table = Arrays.copyOf(bytes, bytes.length);

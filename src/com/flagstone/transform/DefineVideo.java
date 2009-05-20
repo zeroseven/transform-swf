@@ -37,6 +37,7 @@ import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.VideoFormat;
+import com.flagstone.transform.exception.IllegalArgumentRangeException;
 import com.flagstone.transform.video.Deblocking;
 
 /**
@@ -174,8 +175,8 @@ public final class DefineVideo implements DefineTag {
 
     /** TODO(method). */
     public void setIdentifier(final int uid) {
-        if ((uid < 0) || (uid > 65535)) {
-            throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
+        if ((uid < 1) || (uid > 65535)) {
+             throw new IllegalArgumentRangeException(1, 65536, uid);
         }
         identifier = uid;
     }
@@ -195,7 +196,7 @@ public final class DefineVideo implements DefineTag {
      */
     public void setFrameCount(final int count) {
         if ((count < 0) || (count > 65535)) {
-            throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
+            throw new IllegalArgumentRangeException(0, 65535, count);
         }
         frameCount = count;
     }
@@ -215,7 +216,7 @@ public final class DefineVideo implements DefineTag {
      */
     public void setWidth(final int size) {
         if ((size < 0) || (size > 65535)) {
-            throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
+            throw new IllegalArgumentRangeException(0, 65535, size);
         }
         width = size;
     }
@@ -235,7 +236,7 @@ public final class DefineVideo implements DefineTag {
      */
     public void setHeight(final int size) {
         if ((size < 0) || (size > 65535)) {
-            throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
+            throw new IllegalArgumentRangeException(0, 65535, size);
         }
         this.height = size;
     }

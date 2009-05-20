@@ -39,7 +39,7 @@ import java.net.URLConnection;
 import java.util.List;
 import java.util.zip.DataFormatException;
 
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.sound.DefineSound;
 
@@ -62,7 +62,7 @@ public final class SoundFactory {
         } else if (file.getName().endsWith("mp3")) {
             mimeType = "audio/mpeg";
         } else {
-            throw new DataFormatException(Strings.INVALID_FORMAT);
+            throw new DataFormatException("Unsupported format");
         }
 
         decoder = SoundRegistry.getSoundProvider(mimeType);
@@ -85,7 +85,7 @@ public final class SoundFactory {
         decoder = SoundRegistry.getSoundProvider(mimeType);
 
         if (decoder == null) {
-            throw new DataFormatException(Strings.INVALID_IMAGE);
+            throw new DataFormatException("Unsupported format");
         }
 
         decoder.read(url.openStream(), fileSize);

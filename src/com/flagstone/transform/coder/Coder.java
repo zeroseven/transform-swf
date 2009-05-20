@@ -34,7 +34,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.Arrays;
 
-import com.flagstone.transform.Strings;
+
 
 /**
  * <p>
@@ -99,8 +99,7 @@ public class Coder {
      */
     public final void setEncoding(final String charSet) {
         if (!Charset.isSupported(charSet)) {
-            throw new UnsupportedCharsetException(String.format(
-                    Strings.INVALID_ENCODING, charSet));
+            throw new UnsupportedCharsetException(charSet);
         }
         encoding = charSet;
     }

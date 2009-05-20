@@ -30,7 +30,7 @@
 
 package com.flagstone.transform.sound;
 
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTag;
@@ -140,7 +140,7 @@ public final class StartSound2 implements MovieTag {
      */
     public void setSound(final SoundInfo aSound) {
         if (aSound == null) {
-            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+            throw new NullPointerException();
         }
         sound = aSound;
     }

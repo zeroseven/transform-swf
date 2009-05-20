@@ -37,6 +37,7 @@ import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 /**
  * RemoveObject removes an object from the Flash Player's Display List.
@@ -131,7 +132,7 @@ public final class Remove implements MovieTag {
      */
     public void setIdentifier(final int uid) {
         if ((uid < 1) || (uid > 65535)) {
-            throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
+             throw new IllegalArgumentRangeException(1, 65536, uid);
         }
         identifier = uid;
     }
@@ -152,7 +153,7 @@ public final class Remove implements MovieTag {
      */
     public void setLayer(final int aLayer) {
         if ((aLayer < 1) || (aLayer > 65535)) {
-            throw new IllegalArgumentException(Strings.LAYER_RANGE);
+            throw new IllegalArgumentRangeException(1, 65536, aLayer);
         }
         layer = aLayer;
     }

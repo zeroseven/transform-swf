@@ -3,7 +3,7 @@ package com.flagstone.transform.filter;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.Filter;

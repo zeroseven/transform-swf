@@ -41,7 +41,7 @@ import java.net.URLConnection;
 import java.util.Arrays;
 import java.util.zip.DataFormatException;
 
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.coder.FLVDecoder;
 import com.flagstone.transform.coder.ImageTag;
 import com.flagstone.transform.image.DefineJPEGImage2;
@@ -65,7 +65,7 @@ public final class JPGDecoder implements ImageProvider, ImageDecoder {
         final URLConnection connection = url.openConnection();
 
         if (!connection.getContentType().equals("image/bmp")) {
-            throw new DataFormatException(Strings.INVALID_FORMAT);
+            throw new DataFormatException("Unsupported format");
         }
 
         int length = connection.getContentLength();
@@ -97,7 +97,7 @@ public final class JPGDecoder implements ImageProvider, ImageDecoder {
         buffer.close();
 
         if (!jpegInfo()) {
-            throw new DataFormatException(Strings.INVALID_FORMAT);
+            throw new DataFormatException("Unsupported format");
         }
 
     }

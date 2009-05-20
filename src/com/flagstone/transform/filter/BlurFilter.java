@@ -1,12 +1,13 @@
 package com.flagstone.transform.filter;
 
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.Filter;
 import com.flagstone.transform.coder.FilterTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 /** TODO(class). */
 public final class BlurFilter implements Filter {
@@ -47,7 +48,7 @@ public final class BlurFilter implements Filter {
         this.blurY = (int) (blurY * 65536);
 
         if ((passes < 0) || (passes > 31)) {
-            throw new IllegalArgumentException(Strings.VALUE_RANGE);
+            throw new IllegalArgumentRangeException(0, 31, passes);
         }
         this.passes = passes;
     }

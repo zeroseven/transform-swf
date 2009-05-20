@@ -38,6 +38,7 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.ColorTransform;
 import com.flagstone.transform.datatype.CoordTransform;
+import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 /**
  * PlaceObject is used to add an object (shape, button, etc.) to the Flash
@@ -194,7 +195,7 @@ public final class Place implements MovieTag {
      */
     public Place setIdentifier(final int uid) {
         if ((uid < 1) || (uid > 65535)) {
-            throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
+             throw new IllegalArgumentRangeException(1, 65536, uid);
         }
         identifier = uid;
         return this;
@@ -216,7 +217,7 @@ public final class Place implements MovieTag {
      */
     public Place setLayer(final int aNumber) {
         if ((aNumber < 1) || (aNumber > 65535)) {
-            throw new IllegalArgumentException(Strings.LAYER_RANGE);
+            throw new IllegalArgumentRangeException(1, 65536, aNumber);
         }
         layer = aNumber;
         return this;
@@ -240,7 +241,7 @@ public final class Place implements MovieTag {
      */
     public Place setTransform(final CoordTransform aTransform) {
         if (aTransform == null) {
-            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+            throw new NullPointerException();
         }
         transform = aTransform;
         return this;

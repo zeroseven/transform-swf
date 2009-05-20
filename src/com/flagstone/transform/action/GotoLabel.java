@@ -30,13 +30,14 @@
  */
 package com.flagstone.transform.action;
 
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.coder.Action;
 import com.flagstone.transform.coder.ActionTypes;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.exception.StringSizeException;
 
 /**
  * The GotoLabel action instructs the player to move to the frame in the current
@@ -108,7 +109,7 @@ public final class GotoLabel implements Action {
      */
     public void setLabel(final String aString) {
         if (aString == null) {
-            throw new IllegalArgumentException(Strings.STRING_NOT_SET);
+            throw new StringSizeException(0, Integer.MAX_VALUE, 0);
         }
         label = aString;
     }

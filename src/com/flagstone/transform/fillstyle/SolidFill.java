@@ -30,7 +30,7 @@
 
 package com.flagstone.transform.fillstyle;
 
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.FillStyle;
@@ -114,7 +114,7 @@ public final class SolidFill implements FillStyle {
      */
     public void setColor(final Color aColor) {
         if (aColor == null) {
-            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+            throw new NullPointerException();
         }
         color = aColor;
     }

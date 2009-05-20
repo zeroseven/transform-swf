@@ -117,7 +117,7 @@ public final class Video {
      */
     public void setObjects(final List<VideoTag> anArray) {
         if (anArray == null) {
-            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+            throw new NullPointerException();
         }
         objects = anArray;
     }
@@ -130,7 +130,7 @@ public final class Video {
      */
     public Video add(final VideoTag anObject) {
         if (anObject == null) {
-            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+            throw new NullPointerException();
         }
         objects.add(anObject);
         return this;
@@ -208,7 +208,7 @@ public final class Video {
         signature = coder.readString(3);
         
         if (!signature.equals("FLV")) {
-            throw new DataFormatException(Strings.NOT_FLV_SIGNATURE);
+            throw new DataFormatException("Not FLV format");
         }
         
         version = coder.readByte();

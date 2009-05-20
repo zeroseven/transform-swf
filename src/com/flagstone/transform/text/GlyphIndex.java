@@ -32,13 +32,14 @@ package com.flagstone.transform.text;
 
 import java.util.Map;
 
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.Bounds;
+import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 /**
  * <p>
@@ -103,7 +104,7 @@ public final class GlyphIndex implements SWFEncodeable {
      */
     public GlyphIndex(final int anIndex, final int anAdvance) {
         if (anIndex < 0) {
-            throw new IllegalArgumentException(Strings.NEGATIVE_NUMBER);
+            throw new IllegalArgumentRangeException(0, Integer.MAX_VALUE, anAdvance);
         }
         index = anIndex;
 

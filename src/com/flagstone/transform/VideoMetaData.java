@@ -36,6 +36,7 @@ import com.flagstone.transform.coder.FLVDecoder;
 import com.flagstone.transform.coder.FLVEncoder;
 import com.flagstone.transform.coder.VideoTag;
 import com.flagstone.transform.coder.VideoTypes;
+import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 /**
  * The VideoMetaData class is used to store information on how the video stream
@@ -124,7 +125,7 @@ public final class VideoMetaData implements VideoTag {
      */
     public void setTimestamp(final int time) {
         if ((time < 0) || (time > 16777215)) {
-            throw new IllegalArgumentException(Strings.TIMESTAMP_RANGE);
+            throw new IllegalArgumentRangeException(0, 16777215, time);
         }
         timestamp = time;
     }
@@ -147,7 +148,7 @@ public final class VideoMetaData implements VideoTag {
      */
     public void setData(final byte[] data) {
         if (data == null) {
-            throw new IllegalArgumentException(Strings.DATA_IS_NULL);
+            throw new NullPointerException();
         }
         this.data = Arrays.copyOf(data, data.length);
     }

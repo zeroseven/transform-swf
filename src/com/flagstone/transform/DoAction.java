@@ -161,7 +161,7 @@ public final class DoAction implements MovieTag {
      */
     public DoAction add(final Action anAction) {
         if (anAction == null) {
-            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+            throw new NullPointerException();
         }
         actions.add(anAction);
         return this;
@@ -187,7 +187,7 @@ public final class DoAction implements MovieTag {
      */
     public void setActions(final List<Action> anArray) {
         if (anArray == null) {
-            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+            throw new NullPointerException();
         }
         actions = anArray;
     }

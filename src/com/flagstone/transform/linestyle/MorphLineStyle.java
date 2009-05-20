@@ -30,13 +30,14 @@
 
 package com.flagstone.transform.linestyle;
 
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.Color;
+import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 /**
  * MorphSolidLine defines the width and colour of a line drawn for a shape is it
@@ -157,7 +158,7 @@ public final class MorphLineStyle implements SWFEncodeable {
      */
     public void setStartWidth(final int aNumber) {
         if ((aNumber < 0) || (aNumber > 65535)) {
-            throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
+            throw new IllegalArgumentRangeException(0, 65535, aNumber);
         }
         startWidth = aNumber;
     }
@@ -170,7 +171,7 @@ public final class MorphLineStyle implements SWFEncodeable {
      */
     public void setEndWidth(final int aNumber) {
         if ((aNumber < 0) || (aNumber > 65535)) {
-            throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
+            throw new IllegalArgumentRangeException(0, 65535, aNumber);
         }
         endWidth = aNumber;
     }
@@ -183,7 +184,7 @@ public final class MorphLineStyle implements SWFEncodeable {
      */
     public void setStartColor(final Color aColor) {
         if (aColor == null) {
-            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+            throw new NullPointerException();
         }
         startColor = aColor;
     }
@@ -196,7 +197,7 @@ public final class MorphLineStyle implements SWFEncodeable {
      */
     public void setEndColor(final Color aColor) {
         if (aColor == null) {
-            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+            throw new NullPointerException();
         }
         endColor = aColor;
     }

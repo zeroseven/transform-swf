@@ -36,6 +36,7 @@ import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.exception.StringSizeException;
 
 /**
  * FrameLabel defines a name for the current frame in a movie or movie clip.
@@ -149,8 +150,11 @@ public final class FrameLabel implements MovieTag {
      *            current frame. Must not be null or an empty string.
      */
     public void setLabel(final String label) {
-        if ((label == null) || (label.length() == 0)) {
-            throw new IllegalArgumentException(Strings.STRING_NOT_SET);
+        if (label == null) {
+            throw new NullPointerException();
+        }
+        if (label.length() == 0) {
+            throw new StringSizeException(0, Integer.MAX_VALUE, 0);
         }
         this.label = label;
     }

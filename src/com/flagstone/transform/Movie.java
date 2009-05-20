@@ -53,6 +53,7 @@ import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.coder.SWFFactory;
 import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.datatype.CharacterEncoding;
+import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 /**
  * Movie is a container class for the objects that represents the data
@@ -227,7 +228,7 @@ public final class Movie {
      */
     public void setVersion(final int aNumber) {
         if (aNumber < 0) {
-            throw new IllegalArgumentException(Strings.NEGATIVE_NUMBER);
+            throw new IllegalArgumentRangeException(0, Integer.MAX_VALUE, aNumber);
         }
         version = aNumber;
     }
@@ -255,7 +256,7 @@ public final class Movie {
      */
     public void setFrameSize(final Bounds aBounds) {
         if (aBounds == null) {
-            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+            throw new NullPointerException();
         }
         frameSize = aBounds;
     }
@@ -294,7 +295,7 @@ public final class Movie {
      */
     public void setObjects(final List<MovieTag> anArray) {
         if (anArray == null) {
-            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+            throw new NullPointerException();
         }
         objects = anArray;
     }
@@ -307,7 +308,7 @@ public final class Movie {
      */
     public Movie add(final MovieTag anObject) {
         if (anObject == null) {
-            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+            throw new NullPointerException();
         }
         objects.add(anObject);
         return this;
@@ -377,7 +378,7 @@ public final class Movie {
         } else if (Signature.CWS.matches(sig)) {
             signature = Signature.CWS;
         } else {
-            throw new DataFormatException(Strings.NOT_SWF_SIGNATURE);
+            throw new DataFormatException("Not SWF Format");
         }
 
         version = buffer[3] & 0x00FF;

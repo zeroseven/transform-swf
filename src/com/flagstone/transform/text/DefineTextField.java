@@ -33,7 +33,7 @@ package com.flagstone.transform.text;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.DefineTag;
@@ -42,6 +42,7 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.datatype.Color;
+import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 /**
  * DefineTextField defines an editable text field.
@@ -398,8 +399,8 @@ public final class DefineTextField implements DefineTag {
 
     /** TODO(method). */
     public void setIdentifier(final int uid) {
-        if ((uid < 0) || (uid > 65535)) {
-            throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
+        if ((uid < 1) || (uid > 65535)) {
+             throw new IllegalArgumentRangeException(1, 65536, uid);
         }
         identifier = uid;
     }
@@ -615,7 +616,7 @@ public final class DefineTextField implements DefineTag {
      */
     public DefineTextField setBounds(final Bounds aBounds) {
         if (aBounds == null) {
-            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+            throw new NullPointerException();
         }
         bounds = aBounds;
         return this;
@@ -716,15 +717,15 @@ public final class DefineTextField implements DefineTag {
     /**
      * Sets the identifier of the font used to display the characters.
      *
-     * @param anIdentifier
+     * @param uid
      *            the identifier for the font that the text will be rendered in.
      *            Must be in the range 1..65535.
      */
-    public DefineTextField setFontIdentifier(final int anIdentifier) {
-        if ((anIdentifier < 1) || (anIdentifier > 65535)) {
-            throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
+    public DefineTextField setFontIdentifier(final int uid) {
+        if ((uid < 1) || (uid > 65535)) {
+             throw new IllegalArgumentRangeException(1, 65536, uid);
         }
-        fontIdentifier = anIdentifier;
+        fontIdentifier = uid;
         fontClass = null;
         return this;
     }
@@ -744,7 +745,7 @@ public final class DefineTextField implements DefineTag {
      */
     public DefineTextField setFontHeight(final int aNumber) {
         if ((aNumber < 0) || (aNumber > 65535)) {
-            throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
+            throw new IllegalArgumentRangeException(0, 65535, aNumber);
         }
         fontHeight = aNumber;
         return this;
@@ -776,7 +777,7 @@ public final class DefineTextField implements DefineTag {
      */
     public DefineTextField setMaxLength(final int aNumber) {
         if ((aNumber < 0) || (aNumber > 65535)) {
-            throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
+            throw new IllegalArgumentRangeException(0, 65535, aNumber);
         }
         maxLength = aNumber;
         return this;
@@ -818,7 +819,7 @@ public final class DefineTextField implements DefineTag {
      */
     public DefineTextField setLeftMargin(final Integer aNumber) {
         if ((aNumber != null) && ((aNumber < 0) || (aNumber > 65535))) {
-            throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
+            throw new IllegalArgumentRangeException(0, 65535, aNumber);
         }
         leftMargin = aNumber;
         return this;
@@ -832,7 +833,7 @@ public final class DefineTextField implements DefineTag {
      */
     public DefineTextField setRightMargin(final Integer aNumber) {
         if ((aNumber != null) && ((aNumber < 0) || (aNumber > 65535))) {
-            throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
+            throw new IllegalArgumentRangeException(0, 65535, aNumber);
         }
         rightMargin = aNumber;
         return this;
@@ -847,7 +848,7 @@ public final class DefineTextField implements DefineTag {
      */
     public DefineTextField setIndent(final Integer aNumber) {
         if ((aNumber != null) && ((aNumber < 0) || (aNumber > 65535))) {
-            throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
+            throw new IllegalArgumentRangeException(0, 65535, aNumber);
         }
         indent = aNumber;
         return this;
@@ -861,7 +862,7 @@ public final class DefineTextField implements DefineTag {
      */
     public DefineTextField setLeading(final Integer aNumber) {
         if ((aNumber != null) && ((aNumber < -32768) || (aNumber > 32767))) {
-            throw new IllegalArgumentException(Strings.SIGNED_RANGE);
+            throw new IllegalArgumentRangeException(-32768, 32768, aNumber);
         }
         leading = aNumber;
         return this;

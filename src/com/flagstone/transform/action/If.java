@@ -31,13 +31,14 @@
 
 package com.flagstone.transform.action;
 
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.coder.Action;
 import com.flagstone.transform.coder.ActionTypes;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 /**
  * The If action is used to perform a conditional branch to control the actions
@@ -139,7 +140,7 @@ public final class If implements Action {
      */
     public void setOffset(final int aNumber) {
         if ((aNumber < -32768) || (aNumber > 32767)) {
-            throw new IllegalArgumentException(Strings.SIGNED_RANGE);
+            throw new IllegalArgumentRangeException(-32768, 32768, aNumber);
         }
         offset = aNumber;
     }

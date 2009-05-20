@@ -47,6 +47,7 @@ import com.flagstone.transform.coder.SWFFactory;
 import com.flagstone.transform.datatype.ColorTransform;
 import com.flagstone.transform.datatype.CoordTransform;
 import com.flagstone.transform.datatype.PlaceType;
+import com.flagstone.transform.exception.IllegalArgumentRangeException;
 import com.flagstone.transform.movieclip.MovieClipEventHandler;
 
 /**
@@ -272,7 +273,7 @@ public final class Place3 implements MovieTag {
             break;
         default:
             throw new CoderException(getClass().getName(), start >> 3, length,
-                    0, Strings.INVALID_FORMAT);
+                    0, "Unsupported format");
         }
         
         coder.readBits(3, false);
@@ -429,7 +430,7 @@ public final class Place3 implements MovieTag {
      */
     public Place3 setLayer(final int aLayer) {
         if ((aLayer < 1) || (aLayer > 65535)) {
-            throw new IllegalArgumentException(Strings.LAYER_RANGE);
+            throw new IllegalArgumentRangeException(1, 65536, aLayer);
         }
         layer = aLayer;
         return this;
@@ -453,7 +454,7 @@ public final class Place3 implements MovieTag {
      */
     public Place3 setIdentifier(final int uid) {
         if ((uid < 1) || (uid > 65535)) {
-            throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
+             throw new IllegalArgumentRangeException(1, 65536, uid);
         }
         identifier = uid;
         return this;
@@ -547,7 +548,7 @@ public final class Place3 implements MovieTag {
      */
     public Place3 setDepth(final Integer aNumber) {
         if ((aNumber != null) && ((aNumber < 1) || (aNumber > 65535))) {
-            throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
+             throw new IllegalArgumentRangeException(1, 65536, aNumber);
         }
         depth = aNumber;
         return this;
@@ -618,7 +619,7 @@ public final class Place3 implements MovieTag {
     /** TODO(method). */
     public void setFilters(final List<Filter> array) {
         if (array == null) {
-            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+            throw new NullPointerException();
         }
         filters = array;
     }
@@ -649,7 +650,7 @@ public final class Place3 implements MovieTag {
     public Place3 add(final MovieClipEventHandler aClipEvent)
             throws CoderException {
         if (aClipEvent == null) {
-            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+            throw new NullPointerException();
         }
         events.add(aClipEvent);
         return this;
@@ -677,7 +678,7 @@ public final class Place3 implements MovieTag {
      */
     public void setEvents(final List<MovieClipEventHandler> anArray) {
         if (anArray == null) {
-            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+            throw new NullPointerException();
         }
         events = anArray;
     }
@@ -685,7 +686,7 @@ public final class Place3 implements MovieTag {
     /** TODO(method). */
     public Place3 add(final Filter filter) {
         if (filter == null) {
-            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+            throw new NullPointerException();
         }
         filters.add(filter);
         return this;

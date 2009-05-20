@@ -30,7 +30,7 @@
 
 package com.flagstone.transform.fillstyle;
 
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -142,7 +142,7 @@ public final class MorphGradient implements SWFEncodeable {
      */
     public void setStart(final Gradient gradient) {
         if (gradient == null) {
-            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+            throw new NullPointerException();
         }
         start = gradient;
     }
@@ -156,7 +156,7 @@ public final class MorphGradient implements SWFEncodeable {
      */
     public void setEnd(final Gradient gradient) {
         if (gradient == null) {
-            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+            throw new NullPointerException();
         }
         end = gradient;
     }

@@ -31,13 +31,14 @@
 
 package com.flagstone.transform.action;
 
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.coder.Action;
 import com.flagstone.transform.coder.ActionTypes;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 /**
  * RegisterCopy is used to copy the item at the top of the stack to one of the
@@ -127,7 +128,7 @@ public final class RegisterCopy implements Action {
      */
     public void setNumber(final int anIndex) {
         if ((anIndex < 0) || (anIndex > 255)) {
-            throw new IllegalArgumentException(Strings.REGISTER_RANGE);
+            throw new IllegalArgumentRangeException(0, 255, anIndex);
         }
         number = anIndex;
     }

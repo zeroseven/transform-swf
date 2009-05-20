@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.DefineTag;
@@ -43,6 +43,7 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.datatype.CharacterEncoding;
+import com.flagstone.transform.exception.IllegalArgumentRangeException;
 import com.flagstone.transform.shape.Shape;
 import com.flagstone.transform.shape.ShapeData;
 
@@ -280,7 +281,7 @@ public final class DefineFont3 implements DefineTag {
     /** TODO(method). */
     public void setIdentifier(final int uid) {
         if ((uid < 0) || (uid > 65535)) {
-            throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
+             throw new IllegalArgumentRangeException(1, 65536, uid);
         }
         identifier = uid;
     }
@@ -297,12 +298,12 @@ public final class DefineFont3 implements DefineTag {
      */
     public DefineFont3 addGlyph(final int code, final Shape obj) {
         if ((code < 0) || (code > 65535)) {
-            throw new IllegalArgumentException(Strings.CHAR_CODE_RANGE);
+            throw new IllegalArgumentRangeException(0, 65535, code);
         }
         codes.add(code);
 
         if (obj == null) {
-            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+            throw new NullPointerException();
         }
         shapes.add(obj);
 
@@ -319,7 +320,7 @@ public final class DefineFont3 implements DefineTag {
      */
     public DefineFont3 addAdvance(final int anAdvance) {
         if ((anAdvance < -32768) || (anAdvance > 32767)) {
-            throw new IllegalArgumentException(Strings.SIGNED_RANGE);
+            throw new IllegalArgumentRangeException(-32768, 32768, anAdvance);
         }
         advances.add(anAdvance);
         return this;
@@ -335,7 +336,7 @@ public final class DefineFont3 implements DefineTag {
      */
     public DefineFont3 add(final Bounds obj) {
         if (obj == null) {
-            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+            throw new NullPointerException();
         }
         bounds.add(obj);
         return this;
@@ -349,7 +350,7 @@ public final class DefineFont3 implements DefineTag {
      */
     public DefineFont3 add(final Kerning anObject) {
         if (anObject == null) {
-            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+            throw new NullPointerException();
         }
         kernings.add(anObject);
         return this;
@@ -594,7 +595,7 @@ public final class DefineFont3 implements DefineTag {
      */
     public void setName(final String aString) {
         if (aString == null) {
-            throw new IllegalArgumentException(Strings.STRING_IS_NULL);
+            throw new NullPointerException();
         }
         name = aString;
     }
@@ -609,7 +610,7 @@ public final class DefineFont3 implements DefineTag {
      */
     public void setShapes(final List<Shape> anArray) {
         if (anArray == null) {
-            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+            throw new NullPointerException();
         }
         shapes = anArray;
     }
@@ -623,7 +624,7 @@ public final class DefineFont3 implements DefineTag {
      */
     public void setCodes(final List<Integer> anArray) {
         if (anArray == null) {
-            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+            throw new NullPointerException();
         }
         codes = anArray;
     }
@@ -636,7 +637,7 @@ public final class DefineFont3 implements DefineTag {
      */
     public void setAscent(final int aNumber) {
         if ((aNumber < -32768) || (aNumber > 32767)) {
-            throw new IllegalArgumentException(Strings.SIGNED_RANGE);
+            throw new IllegalArgumentRangeException(-32768, 32768, aNumber);
         }
         ascent = aNumber;
     }
@@ -649,7 +650,7 @@ public final class DefineFont3 implements DefineTag {
      */
     public void setDescent(final int aNumber) {
         if ((aNumber < -32768) || (aNumber > 32767)) {
-            throw new IllegalArgumentException(Strings.SIGNED_RANGE);
+            throw new IllegalArgumentRangeException(-32768, 32768, aNumber);
         }
         descent = aNumber;
     }
@@ -662,7 +663,7 @@ public final class DefineFont3 implements DefineTag {
      */
     public void setLeading(final int aNumber) {
         if ((aNumber < -32768) || (aNumber > 32767)) {
-            throw new IllegalArgumentException(Strings.SIGNED_RANGE);
+            throw new IllegalArgumentRangeException(-32768, 32768, aNumber);
         }
         leading = aNumber;
     }
@@ -676,7 +677,7 @@ public final class DefineFont3 implements DefineTag {
      */
     public void setAdvances(final List<Integer> anArray) {
         if (anArray == null) {
-            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+            throw new NullPointerException();
         }
         advances = anArray;
     }
@@ -690,7 +691,7 @@ public final class DefineFont3 implements DefineTag {
      */
     public void setBounds(final List<Bounds> anArray) {
         if (anArray == null) {
-            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+            throw new NullPointerException();
         }
         bounds = anArray;
     }
@@ -704,7 +705,7 @@ public final class DefineFont3 implements DefineTag {
      */
     public void setKernings(final List<Kerning> anArray) {
         if (anArray == null) {
-            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+            throw new NullPointerException();
         }
         kernings = anArray;
     }

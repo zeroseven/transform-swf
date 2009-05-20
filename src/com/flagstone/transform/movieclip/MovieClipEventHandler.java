@@ -36,7 +36,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.action.ActionData;
 import com.flagstone.transform.coder.Action;
 import com.flagstone.transform.coder.CoderException;
@@ -239,7 +239,7 @@ public final class MovieClipEventHandler implements SWFEncodeable {
     public MovieClipEventHandler add(final Action anAction)
             throws CoderException {
         if (anAction == null) {
-            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+            throw new NullPointerException();
         }
         actions.add(anAction);
         return this;
@@ -410,7 +410,7 @@ public final class MovieClipEventHandler implements SWFEncodeable {
      */
     public void setActions(final List<Action> array) {
         if (array == null) {
-            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+            throw new NullPointerException();
         }
         actions = array;
     }

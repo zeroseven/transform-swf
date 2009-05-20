@@ -31,13 +31,14 @@
 
 package com.flagstone.transform.action;
 
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.coder.Action;
 import com.flagstone.transform.coder.ActionTypes;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.exception.StringSizeException;
 
 /**
  * SetTarget selects a movie clip to allow its time-line to be controlled. The
@@ -110,8 +111,11 @@ public final class SetTarget implements Action {
      *            string.
      */
     public void setTarget(final String aString) {
-        if ((aString == null) || (aString.length() == 0)) {
-            throw new IllegalArgumentException(Strings.STRING_NOT_SET);
+        if (aString == null) {
+            throw new NullPointerException();
+        }
+        if (aString.length() == 0) {
+            throw new StringSizeException(0, Short.MAX_VALUE, 0);
         }
         target = aString;
     }

@@ -37,6 +37,7 @@ import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 /**
  * RemoveObject2 removes an object from the display list, requiring only the
@@ -110,7 +111,7 @@ public final class Remove2 implements MovieTag {
      */
     public void setLayer(final int aLayer) {
         if ((aLayer < 1) || (aLayer > 65535)) {
-            throw new IllegalArgumentException(Strings.LAYER_RANGE);
+            throw new IllegalArgumentRangeException(1, 65536, aLayer);
         }
         layer = aLayer;
     }

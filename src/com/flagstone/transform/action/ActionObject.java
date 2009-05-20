@@ -33,7 +33,7 @@ package com.flagstone.transform.action;
 
 import java.util.Arrays;
 
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.coder.Action;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
@@ -99,7 +99,7 @@ public final class ActionObject implements Action {
         type = actionType;
 
         if (bytes == null) {
-            throw new IllegalArgumentException(Strings.DATA_IS_NULL);
+            throw new NullPointerException();
         }
         data = Arrays.copyOf(bytes, bytes.length);
     }

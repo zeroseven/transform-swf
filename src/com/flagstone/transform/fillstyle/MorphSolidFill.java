@@ -30,7 +30,7 @@
 
 package com.flagstone.transform.fillstyle;
 
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.FillStyle;
@@ -121,7 +121,7 @@ public final class MorphSolidFill implements FillStyle {
      */
     public void setStartColor(final Color aColor) {
         if (aColor == null) {
-            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+            throw new NullPointerException();
         }
         startColor = aColor;
     }
@@ -134,7 +134,7 @@ public final class MorphSolidFill implements FillStyle {
      */
     public void setEndColor(final Color aColor) {
         if (aColor == null) {
-            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+            throw new NullPointerException();
         }
         endColor = aColor;
     }

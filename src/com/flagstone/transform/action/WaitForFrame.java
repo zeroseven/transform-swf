@@ -31,13 +31,14 @@
 
 package com.flagstone.transform.action;
 
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.coder.Action;
 import com.flagstone.transform.coder.ActionTypes;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 /**
  * The WaitForFrame action instructs the player to wait until the specified
@@ -137,7 +138,7 @@ public final class WaitForFrame implements Action {
      */
     public void setFrameNumber(final int aNumber) {
         if ((aNumber < 1) || (aNumber > 65535)) {
-            throw new IllegalArgumentException(Strings.FRAME_RANGE);
+            throw new IllegalArgumentRangeException(1, 65535, aNumber);
         }
         frameNumber = aNumber;
     }

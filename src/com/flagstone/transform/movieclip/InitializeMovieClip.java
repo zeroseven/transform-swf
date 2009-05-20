@@ -33,7 +33,7 @@ package com.flagstone.transform.movieclip;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.action.ActionData;
 import com.flagstone.transform.coder.Action;
 import com.flagstone.transform.coder.CoderException;
@@ -43,6 +43,7 @@ import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.coder.SWFFactory;
+import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 /**
  * Initialize is used to specify a sequence of actions that are executed to
@@ -161,15 +162,15 @@ public final class InitializeMovieClip implements MovieTag {
     /**
      * Sets the identifier of the movie clip that will be initialised.
      *
-     * @param aNumber
+     * @param uid
      *            the identifier of the movie clip. The value must be in the
      *            range 1..65535.
      */
-    public void setIdentifier(final int aNumber) {
-        if ((aNumber < 1) || (aNumber > 65535)) {
-            throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
+    public void setIdentifier(final int uid) {
+        if ((uid < 1) || (uid > 65535)) {
+             throw new IllegalArgumentRangeException(1, 65536, uid);
         }
-        identifier = aNumber;
+        identifier = uid;
     }
 
     /**
@@ -181,7 +182,7 @@ public final class InitializeMovieClip implements MovieTag {
      */
     public InitializeMovieClip add(final Action anAction) {
         if (anAction == null) {
-            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+            throw new NullPointerException();
         }
         actions.add(anAction);
         return this;
@@ -202,7 +203,7 @@ public final class InitializeMovieClip implements MovieTag {
      */
     public void setActions(final List<Action> anArray) {
         if (anArray == null) {
-            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+            throw new NullPointerException();
         }
         actions = anArray;
     }

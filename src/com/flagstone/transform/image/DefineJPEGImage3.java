@@ -33,13 +33,14 @@ package com.flagstone.transform.image;
 
 import java.util.Arrays;
 
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.ImageTag;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 /**
  * DefineJPEGImage3 is used to define a transparent JPEG encoded image.
@@ -141,8 +142,8 @@ public final class DefineJPEGImage3 implements ImageTag {
 
     /** {@inheritDoc} */
     public void setIdentifier(final int uid) {
-        if ((uid < 0) || (uid > 65535)) {
-            throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
+        if ((uid < 1) || (uid > 65535)) {
+             throw new IllegalArgumentRangeException(1, 65536, uid);
         }
         identifier = uid;
     }

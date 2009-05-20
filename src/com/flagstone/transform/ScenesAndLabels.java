@@ -34,6 +34,8 @@ package com.flagstone.transform;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.flagstone.transform.exception.StringSizeException;
+import com.flagstone.transform.exception.IllegalArgumentRangeException;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTag;
@@ -125,10 +127,13 @@ public final class ScenesAndLabels implements MovieTag {
     /** TODO(method). */
     public ScenesAndLabels addScene(final int offset, final String name) {
         if ((offset < 0) || (offset > 65535)) {
-            throw new IllegalArgumentException(Strings.FRAME_RANGE);
+            throw new IllegalArgumentRangeException(0, 65535, offset);
         }
-        if ((name == null) || (name.length() == 0)) {
-            throw new IllegalArgumentException(Strings.STRING_NOT_SET);
+        if (name == null) {
+            throw new NullPointerException();
+        }
+        if (name.length() == 0) {
+            throw new StringSizeException(0, Integer.MAX_VALUE, 0);
         }
         scenes.put(offset, name);
         return this;
@@ -142,7 +147,7 @@ public final class ScenesAndLabels implements MovieTag {
     /** TODO(method). */
     public void setScenes(final Map<Integer, String> map) {
         if (map == null) {
-            throw new IllegalArgumentException(Strings.TABLE_IS_NULL);
+            throw new NullPointerException();
         }
         scenes = map;
     }
@@ -150,10 +155,13 @@ public final class ScenesAndLabels implements MovieTag {
     /** TODO(method). */
     public ScenesAndLabels addLabel(final int offset, final String name) {
         if ((offset < 0) || (offset > 65535)) {
-            throw new IllegalArgumentException(Strings.FRAME_RANGE);
+            throw new IllegalArgumentRangeException(0, 65535, offset);
         }
-        if ((name == null) || (name.length() == 0)) {
-            throw new IllegalArgumentException(Strings.STRING_NOT_SET);
+        if (name == null) {
+            throw new NullPointerException();
+        }
+        if (name.length() == 0) {
+            throw new StringSizeException(0, Integer.MAX_VALUE, 0);
         }
         labels.put(offset, name);
         return this;
@@ -167,7 +175,7 @@ public final class ScenesAndLabels implements MovieTag {
     /** TODO(method). */
     public void setLabels(final Map<Integer, String> map) {
         if (map == null) {
-            throw new IllegalArgumentException(Strings.TABLE_IS_NULL);
+            throw new NullPointerException();
         }
         labels = map;
     }

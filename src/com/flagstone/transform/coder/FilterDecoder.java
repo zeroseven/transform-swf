@@ -1,6 +1,6 @@
 package com.flagstone.transform.coder;
 
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.filter.BevelFilter;
 import com.flagstone.transform.filter.BlurFilter;
 import com.flagstone.transform.filter.ColorMatrixFilter;
@@ -55,7 +55,7 @@ public final class FilterDecoder implements SWFFactory<Filter> {
             break;
         default:
             throw new CoderException(getClass().getName(), coder.getPointer(),
-                    0, 0, Strings.INVALID_FILTER);
+                    0, 0, "Unsupported Filter");
         }
         return filter;
     }

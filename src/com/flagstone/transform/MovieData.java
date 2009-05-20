@@ -36,6 +36,7 @@ import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.exception.ArraySizeException;
 
 /**
  * MovieData is used to store one or more MovieTags which already have been
@@ -56,8 +57,11 @@ public final class MovieData implements MovieTag {
 
     /** TODO(method). */
     public MovieData(final byte[] bytes) {
-        if ((bytes == null) || (bytes.length == 0)) {
-            throw new IllegalArgumentException(Strings.DATA_NOT_SET);
+        if (bytes == null) {
+            throw new NullPointerException();
+        }
+        if (bytes.length == 0) {
+            throw new ArraySizeException(0, Integer.MAX_VALUE, bytes.length);
         }
         data = Arrays.copyOf(bytes, bytes.length);
     }

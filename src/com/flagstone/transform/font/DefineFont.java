@@ -34,13 +34,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.DefineTag;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.exception.IllegalArgumentRangeException;
 import com.flagstone.transform.shape.Shape;
 import com.flagstone.transform.shape.ShapeData;
 
@@ -165,7 +166,7 @@ public final class DefineFont implements DefineTag {
     /** TODO(method). */
     public void setIdentifier(final int uid) {
         if ((uid < 0) || (uid > 65535)) {
-            throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
+             throw new IllegalArgumentRangeException(1, 65536, uid);
         }
         identifier = uid;
     }
@@ -179,7 +180,7 @@ public final class DefineFont implements DefineTag {
      */
     public DefineFont add(final Shape obj) {
         if (obj == null) {
-            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+            throw new NullPointerException();
         }
         shapes.add(obj);
         return this;
@@ -201,7 +202,7 @@ public final class DefineFont implements DefineTag {
      */
     public void setShapes(final List<Shape> anArray) {
         if (anArray == null) {
-            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+            throw new NullPointerException();
         }
         shapes = anArray;
     }

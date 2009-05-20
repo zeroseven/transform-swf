@@ -31,13 +31,14 @@
 package com.flagstone.transform.datatype;
 
 import com.flagstone.transform.Constants;
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 /**
  * Color is used to represent 32-bit colours in the RGB colour space with 8 bits
@@ -153,9 +154,19 @@ public final class Color implements SWFEncodeable {
      *            value for the blue channel, in the range 0..255.
      */
     public Color(final int red, final int green, final int blue) {
-        this.red = checkLevel(red);
-        this.green = checkLevel(green);
-        this.blue = checkLevel(blue);
+        if ((red < MIN_LEVEL) || (red > MAX_LEVEL)) {
+            throw new IllegalArgumentRangeException(MIN_LEVEL, MAX_LEVEL, red);
+        }
+        if ((green < MIN_LEVEL) || (green > MAX_LEVEL)) {
+            throw new IllegalArgumentRangeException(MIN_LEVEL, MAX_LEVEL, green);
+        }
+        if ((blue < MIN_LEVEL) || (blue > MAX_LEVEL)) {
+            throw new IllegalArgumentRangeException(MIN_LEVEL, MAX_LEVEL, blue);
+        }
+
+        this.red = red;
+        this.green = green;
+        this.blue = blue;
         alpha = MAX_LEVEL;
     }
 
@@ -173,17 +184,23 @@ public final class Color implements SWFEncodeable {
      *            value for the alpha channel, in the range 0..255.
      */
     public Color(final int red, final int green, final int blue, final int alpha) {
-        this.red = checkLevel(red);
-        this.green = checkLevel(green);
-        this.blue = checkLevel(blue);
-        this.alpha = checkLevel(alpha);
-    }
-
-    private int checkLevel(final int level) {
-        if ((level < MIN_LEVEL) || (level > MAX_LEVEL)) {
-            throw new IllegalArgumentException(Strings.COLOR_RANGE);
+        if ((red < MIN_LEVEL) || (red > MAX_LEVEL)) {
+            throw new IllegalArgumentRangeException(MIN_LEVEL, MAX_LEVEL, red);
         }
-        return level;
+        if ((green < MIN_LEVEL) || (green > MAX_LEVEL)) {
+            throw new IllegalArgumentRangeException(MIN_LEVEL, MAX_LEVEL, green);
+        }
+        if ((blue < MIN_LEVEL) || (blue > MAX_LEVEL)) {
+            throw new IllegalArgumentRangeException(MIN_LEVEL, MAX_LEVEL, blue);
+        }
+        if ((alpha < MIN_LEVEL) || (alpha > MAX_LEVEL)) {
+            throw new IllegalArgumentRangeException(MIN_LEVEL, MAX_LEVEL, alpha);
+        }
+
+        this.red = red;
+        this.green = green;
+        this.blue = blue;
+        this.alpha = alpha;
     }
 
     /**

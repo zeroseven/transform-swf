@@ -33,13 +33,14 @@ package com.flagstone.transform.image;
 
 import java.util.Arrays;
 
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.ImageTag;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 /**
  * DefineImage is used to define an image compressed using the lossless zlib
@@ -239,8 +240,8 @@ public final class DefineImage implements ImageTag {
 
     /** {@inheritDoc} */
     public void setIdentifier(final int uid) {
-        if ((uid < 0) || (uid > 65535)) {
-            throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
+        if ((uid < 1) || (uid > 65535)) {
+             throw new IllegalArgumentRangeException(1, 65536, uid);
         }
         identifier = uid;
     }
@@ -296,7 +297,7 @@ public final class DefineImage implements ImageTag {
      */
     public void setWidth(final int aNumber) {
         if ((aNumber < 0) || (aNumber > 65535)) {
-            throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
+            throw new IllegalArgumentRangeException(0, 65535, aNumber);
         }
         width = aNumber;
     }
@@ -310,7 +311,7 @@ public final class DefineImage implements ImageTag {
      */
     public void setHeight(final int aNumber) {
         if ((aNumber < 0) || (aNumber > 65535)) {
-            throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
+            throw new IllegalArgumentRangeException(0, 65535, aNumber);
         }
         height = aNumber;
     }
@@ -357,7 +358,7 @@ public final class DefineImage implements ImageTag {
      */
     public void setImage(final byte[] bytes) {
         if (bytes == null) {
-            throw new IllegalArgumentException(Strings.DATA_IS_NULL);
+            throw new NullPointerException();
         }
         image = Arrays.copyOf(bytes, bytes.length);
     }

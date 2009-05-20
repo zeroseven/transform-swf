@@ -34,7 +34,7 @@ package com.flagstone.transform.action;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.coder.Action;
 import com.flagstone.transform.coder.ActionTypes;
 import com.flagstone.transform.coder.CoderException;
@@ -42,6 +42,7 @@ import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.coder.SWFFactory;
+import com.flagstone.transform.exception.StringSizeException;
 
 /**
  * The NewFunction action is used to create a user-defined function.
@@ -202,8 +203,11 @@ public final class NewFunction implements Action {
      *            not be null or an empty string.
      */
     public NewFunction add(final String anArgument) {
-        if ((anArgument == null) || (anArgument.length() == 0)) {
-            throw new IllegalArgumentException(Strings.STRING_NOT_SET);
+        if (anArgument == null) {
+            throw new NullPointerException();
+        }
+        if (anArgument.length() == 0) {
+            throw new StringSizeException(0, Short.MAX_VALUE, 0);
         }
         arguments.add(anArgument);
         return this;
@@ -218,7 +222,7 @@ public final class NewFunction implements Action {
      */
     public NewFunction add(final Action anAction) {
         if (anAction == null) {
-            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+            throw new NullPointerException();
         }
         actions.add(anAction);
         return this;
@@ -240,7 +244,7 @@ public final class NewFunction implements Action {
      */
     public void setName(final String aString) {
         if (aString == null) {
-            throw new IllegalArgumentException(Strings.STRING_IS_NULL);
+            throw new NullPointerException();
         }
         name = aString;
     }
@@ -261,7 +265,7 @@ public final class NewFunction implements Action {
      */
     public void setArguments(final List<String> anArray) {
         if (anArray == null) {
-            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+            throw new NullPointerException();
         }
         arguments = anArray;
     }
@@ -282,7 +286,7 @@ public final class NewFunction implements Action {
      */
     public void setActions(final List<Action> anArray) {
         if (anArray == null) {
-            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+            throw new NullPointerException();
         }
         actions = anArray;
     }

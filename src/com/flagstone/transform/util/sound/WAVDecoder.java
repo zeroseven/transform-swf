@@ -42,7 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.DataFormatException;
 
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.datatype.SoundFormat;
@@ -165,7 +165,7 @@ public final class WAVDecoder implements SoundProvider, SoundDecoder {
 
         for (int i = 0; i < 4; i++) {
             if (coder.readByte() != RIFF[i]) {
-                throw new DataFormatException(Strings.INVALID_FORMAT);
+                throw new DataFormatException("Unsupported format");
             }
         }
 
@@ -173,7 +173,7 @@ public final class WAVDecoder implements SoundProvider, SoundDecoder {
 
         for (int i = 0; i < 4; i++) {
             if (coder.readByte() != WAV[i]) {
-                throw new DataFormatException(Strings.INVALID_FORMAT);
+                throw new DataFormatException("Unsupported format");
             }
         }
 
@@ -207,7 +207,7 @@ public final class WAVDecoder implements SoundProvider, SoundDecoder {
         format = SoundFormat.PCM;
 
         if (coder.readWord(2, false) != 1) {
-            throw new DataFormatException(Strings.INVALID_FORMAT);
+            throw new DataFormatException("Unsupported format");
         }
 
         numberOfChannels = coder.readWord(2, false);

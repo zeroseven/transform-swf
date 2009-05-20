@@ -33,7 +33,7 @@ package com.flagstone.transform.sound;
 
 import java.util.Arrays;
 
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTag;
@@ -130,7 +130,7 @@ public final class SoundStreamBlock implements MovieTag {
      */
     public void setSound(final byte[] bytes) {
         if (bytes == null) {
-            throw new IllegalArgumentException(Strings.DATA_IS_NULL);
+            throw new NullPointerException();
         }
         sound = Arrays.copyOf(bytes, bytes.length);
     }

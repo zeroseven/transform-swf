@@ -35,7 +35,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.FillStyle;
@@ -278,7 +278,7 @@ public final class GradientFill implements FillStyle {
      */
     public void setTransform(final CoordTransform aTransform) {
         if (aTransform == null) {
-            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+            throw new NullPointerException();
         }
         transform = aTransform;
     }
@@ -293,10 +293,10 @@ public final class GradientFill implements FillStyle {
      */
     public void setGradients(final List<Gradient> anArray) {
         if (anArray == null) {
-            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+            throw new NullPointerException();
         }
         if (anArray.size() > 15) {
-            throw new IllegalArgumentException(Strings.MAX_GRADIENTS);
+            throw new IllegalStateException("Maximum number of gradients exceeded.");
         }
         gradients = anArray;
     }
@@ -311,10 +311,10 @@ public final class GradientFill implements FillStyle {
      */
     public GradientFill add(final Gradient aGradient) {
         if (aGradient == null) {
-            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+            throw new NullPointerException();
         }
         if (gradients.size() == 15) {
-            throw new IllegalArgumentException(Strings.MAX_GRADIENTS);
+            throw new IllegalStateException("Maximum number of gradients exceeded.");
         }
         gradients.add(aGradient);
         return this;

@@ -30,13 +30,14 @@
 
 package com.flagstone.transform.fillstyle;
 
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.Color;
+import com.flagstone.transform.exception.IllegalArgumentRangeException;
 import com.flagstone.transform.font.Kerning;
 
 /**
@@ -108,12 +109,12 @@ public final class Gradient implements SWFEncodeable {
      */
     public Gradient(final int aRatio, final Color aColor) {
         if ((aRatio < 0) || (aRatio > 255)) {
-            throw new IllegalArgumentException(Strings.RATIO_RANGE);
+            throw new IllegalArgumentRangeException(0, 255, aRatio);
         }
         ratio = aRatio;
 
         if (aColor == null) {
-            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+            throw new NullPointerException();
         }
         color = aColor;
     }

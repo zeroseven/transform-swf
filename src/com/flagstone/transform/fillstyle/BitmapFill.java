@@ -30,13 +30,14 @@
 
 package com.flagstone.transform.fillstyle;
 
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.FillStyle;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.CoordTransform;
+import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 /**
  * <p>
@@ -199,7 +200,7 @@ public final class BitmapFill implements FillStyle {
      */
     public void setIdentifier(final int uid) {
         if ((uid < 1) || (uid > 65535)) {
-            throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
+             throw new IllegalArgumentRangeException(1, 65536, uid);
         }
         identifier = uid;
     }
@@ -223,7 +224,7 @@ public final class BitmapFill implements FillStyle {
      */
     public void setTransform(final CoordTransform aTransform) {
         if (aTransform == null) {
-            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+            throw new NullPointerException();
         }
         transform = aTransform;
     }

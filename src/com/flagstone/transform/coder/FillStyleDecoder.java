@@ -1,6 +1,6 @@
 package com.flagstone.transform.coder;
 
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.fillstyle.BitmapFill;
 import com.flagstone.transform.fillstyle.GradientFill;
 import com.flagstone.transform.fillstyle.SolidFill;
@@ -47,7 +47,7 @@ public final class FillStyleDecoder implements SWFFactory<FillStyle> {
             break;
         default:
             throw new CoderException(getClass().getName(), coder.getPointer(),
-                    0, 0, Strings.INVALID_FILLSTYLE);
+                    0, 0, "Unsupported FillStyle");
         }
         return style;
     }

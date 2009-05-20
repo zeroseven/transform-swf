@@ -2,7 +2,7 @@ package com.flagstone.transform.filter;
 
 import java.util.Arrays;
 
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.Filter;
@@ -38,7 +38,7 @@ public final class ColorMatrixFilter implements Filter {
     /** TODO(method). */
     public ColorMatrixFilter(final float[] matrix) {
         if ((matrix == null) || (matrix.length != 20)) {
-            throw new IllegalArgumentException(Strings.VALUE_NOT_SET);
+            throw new IllegalArgumentException("Value not set");
         }
         this.matrix = Arrays.copyOf(matrix, matrix.length);
     }

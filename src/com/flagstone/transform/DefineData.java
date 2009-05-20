@@ -38,6 +38,7 @@ import com.flagstone.transform.coder.DefineTag;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 /**
  * DefineData is used to embed binary data in a Flash file.
@@ -125,7 +126,7 @@ public final class DefineData implements DefineTag {
     /** {@inheritDoc} */
     public void setIdentifier(final int uid) {
         if ((uid < 1) || (uid > 65535)) {
-            throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
+             throw new IllegalArgumentRangeException(1, 65536, uid);
         }
         identifier = uid;
     }
@@ -147,7 +148,7 @@ public final class DefineData implements DefineTag {
      */
     public void setData(final byte[] bytes) {
         if (bytes == null) {
-            throw new IllegalArgumentException(Strings.DATA_IS_NULL);
+            throw new NullPointerException();
         }
         data = Arrays.copyOf(bytes, bytes.length);
     }

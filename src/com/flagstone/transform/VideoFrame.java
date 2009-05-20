@@ -38,6 +38,7 @@ import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 /**
  * VideoFrame contains the video data displayed in a single frame of a Flash
@@ -138,7 +139,7 @@ public final class VideoFrame implements MovieTag {
      */
     public void setIdentifier(final int uid) {
         if ((uid < 1) || (uid > 65535)) {
-            throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
+             throw new IllegalArgumentRangeException(1, 65536, uid);
         }
         identifier = uid;
     }
@@ -158,7 +159,7 @@ public final class VideoFrame implements MovieTag {
      */
     public void setFrameNumber(final int number) {
         if ((number < 1) || (number > 65535)) {
-            throw new IllegalArgumentException(Strings.FRAME_RANGE);
+            throw new IllegalArgumentRangeException(1, 65535, number);
         }
         frameNumber = number;
     }
@@ -181,7 +182,7 @@ public final class VideoFrame implements MovieTag {
      */
     public void setData(final byte[] data) {
         if (data == null) {
-            throw new IllegalArgumentException(Strings.DATA_IS_NULL);
+            throw new NullPointerException();
         }
         this.data =  Arrays.copyOf(data, data.length);
     }

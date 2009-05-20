@@ -37,7 +37,7 @@ import com.flagstone.transform.DoAction;
 import com.flagstone.transform.FrameLabel;
 import com.flagstone.transform.Movie;
 import com.flagstone.transform.ShowFrame;
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.coder.Action;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.DefineTag;
@@ -166,7 +166,7 @@ public final class Frame {
      */
     public void addAction(final Action anObject) {
         if (anObject == null) {
-            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+            throw new NullPointerException();
         }
 
         actions.add(anObject);
@@ -181,7 +181,7 @@ public final class Frame {
      */
     public void addDefinition(final MovieTag anObject) {
         if (anObject == null) {
-            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+            throw new NullPointerException();
         }
 
         definitions.add(anObject);
@@ -196,7 +196,7 @@ public final class Frame {
      */
     public void addCommand(final MovieTag anObject) {
         if (anObject == null) {
-            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+            throw new NullPointerException();
         }
 
         commands.add(anObject);
@@ -257,7 +257,7 @@ public final class Frame {
      */
     public void setDefinitions(final List<MovieTag> anArray) {
         if (anArray == null) {
-            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+            throw new NullPointerException();
         }
         definitions = anArray;
     }
@@ -271,7 +271,7 @@ public final class Frame {
      */
     public void setCommands(final List<MovieTag> anArray) {
         if (anArray == null) {
-            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+            throw new NullPointerException();
         }
         commands = anArray;
     }
@@ -284,7 +284,7 @@ public final class Frame {
      */
     public void setActions(final List<Action> anArray) {
         if (anArray == null) {
-            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+            throw new NullPointerException();
         }
         actions = anArray;
     }

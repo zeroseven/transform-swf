@@ -39,6 +39,8 @@ import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.exception.StringSizeException;
+import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 /**
  * Import2 is used to import shapes and other objects from another Flash file
@@ -152,10 +154,13 @@ public final class Import2 implements MovieTag {
      */
     public Import2 add(final int uid, final String aString) {
         if ((uid < 1) || (uid > 65535)) {
-            throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
+             throw new IllegalArgumentRangeException(1, 65536, uid);
         }
-        if ((aString == null) || (aString.length() == 0)) {
-            throw new IllegalArgumentException(Strings.STRING_NOT_SET);
+        if (aString == null) {
+            throw new NullPointerException();
+        }
+        if (aString.length() == 0) {
+            throw new StringSizeException(0, Integer.MAX_VALUE, 0);
         }
         objects.put(uid, aString);
         return this;
@@ -180,8 +185,11 @@ public final class Import2 implements MovieTag {
      *            object. Must not be null or an empty string.
      */
     public void setUrl(final String aString) {
-        if ((aString == null) || (aString.length() == 0)) {
-            throw new IllegalArgumentException(Strings.STRING_NOT_SET);
+        if (aString == null) {
+            throw new NullPointerException();
+        }
+        if (aString.length() == 0) {
+            throw new StringSizeException(0, Integer.MAX_VALUE, 0);
         }
         url = aString;
     }

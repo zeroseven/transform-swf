@@ -33,12 +33,13 @@ package com.flagstone.transform.sound;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 /** TODO(class). */
 public final class Envelope implements SWFEncodeable {
@@ -113,12 +114,12 @@ public final class Envelope implements SWFEncodeable {
             mark = markValue;
 
             if ((leftValue < 0) || (leftValue > 65535)) {
-                throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
+                throw new IllegalArgumentRangeException(0, 65535, leftValue);
             }
             left = leftValue;
 
             if ((rightValue < 0) || (rightValue > 65535)) {
-                throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
+                throw new IllegalArgumentRangeException(0, 65535, rightValue);
             }
             right = rightValue;
         }
@@ -231,7 +232,7 @@ public final class Envelope implements SWFEncodeable {
      */
     public Envelope add(final Level level) {
         if (level == null) {
-            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+            throw new NullPointerException();
         }
         levels.add(level);
         return this;
@@ -254,7 +255,7 @@ public final class Envelope implements SWFEncodeable {
      */
     public void setLevels(final List<Level> anArray) {
         if (anArray == null) {
-            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+            throw new NullPointerException();
         }
         levels = anArray;
     }

@@ -32,13 +32,14 @@ package com.flagstone.transform.shape;
 
 import java.util.Map;
 
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.Encoder;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.coder.ShapeRecord;
+import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 /**
  * Line defines a straight line. The line is drawn from the current drawing
@@ -151,12 +152,12 @@ public final class Line implements ShapeRecord {
      */
     public void setPoint(final int coordX, final int coordY) {
         if ((coordX < -65536) || (coordX > 65535)) {
-            throw new IllegalArgumentException(Strings.COORDINATES_RANGE);
+            throw new IllegalArgumentRangeException(-65535, 65535, coordX);
         }
         xCoord = coordX;
 
         if ((coordY < -65536) || (coordY > 65535)) {
-            throw new IllegalArgumentException(Strings.COORDINATES_RANGE);
+            throw new IllegalArgumentRangeException(-65535, 65535, coordY);
         }
        yCoord = coordY;
     }

@@ -30,13 +30,14 @@
  */
 package com.flagstone.transform.action;
 
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.coder.Action;
 import com.flagstone.transform.coder.ActionTypes;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 /**
  * The GotoFrame2 action instructs the player to go to the named or numbered
@@ -168,7 +169,7 @@ public final class GotoFrame2 implements Action {
      */
     public void setFrameOffset(final int offset) {
         if ((offset < 0) || (offset > 65535)) {
-            throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
+            throw new IllegalArgumentRangeException(0, 65535, offset);
         }
         frameOffset = offset;
     }

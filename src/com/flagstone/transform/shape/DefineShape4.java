@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.DefineTag;
@@ -45,6 +45,7 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.coder.SWFFactory;
 import com.flagstone.transform.datatype.Bounds;
+import com.flagstone.transform.exception.IllegalArgumentRangeException;
 import com.flagstone.transform.linestyle.LineStyle2;
 
 /**
@@ -126,7 +127,7 @@ public final class DefineShape4 implements DefineTag {
 
             if (fill == null) {
                 throw new CoderException(String.valueOf(type), start >>> 3, 0,
-                        0, Strings.INVALID_FILLSTYLE);
+                        0, "Unsupported FillStyle");
             }
 
             fillStyles.add(fill);
@@ -209,8 +210,8 @@ public final class DefineShape4 implements DefineTag {
 
     /** TODO(method). */
     public void setIdentifier(final int uid) {
-        if ((uid < 0) || (uid > 65535)) {
-            throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
+        if ((uid < 1) || (uid > 65535)) {
+             throw new IllegalArgumentRangeException(1, 65536, uid);
         }
         identifier = uid;
     }
@@ -230,7 +231,7 @@ public final class DefineShape4 implements DefineTag {
      */
     public void setShapeBounds(final Bounds aBounds) {
         if (aBounds == null) {
-            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+            throw new NullPointerException();
         }
         shapeBounds = aBounds;
     }
@@ -250,7 +251,7 @@ public final class DefineShape4 implements DefineTag {
      */
     public void setEdgeBounds(final Bounds aBounds) {
         if (aBounds == null) {
-            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+            throw new NullPointerException();
         }
         edgeBounds = aBounds;
     }
@@ -277,7 +278,7 @@ public final class DefineShape4 implements DefineTag {
      */
     public DefineShape4 add(final LineStyle2 style) {
         if (style == null) {
-            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+            throw new NullPointerException();
         }
         lineStyles.add(style);
         return this;
@@ -291,7 +292,7 @@ public final class DefineShape4 implements DefineTag {
      */
     public DefineShape4 add(final FillStyle style) {
         if (style == null) {
-            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+            throw new NullPointerException();
         }
         fillStyles.add(style);
         return this;
@@ -326,7 +327,7 @@ public final class DefineShape4 implements DefineTag {
      */
     public void setFillStyles(final List<FillStyle> anArray) {
         if (anArray == null) {
-            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+            throw new NullPointerException();
         }
         fillStyles = anArray;
     }
@@ -340,7 +341,7 @@ public final class DefineShape4 implements DefineTag {
      */
     public void setLineStyles(final List<LineStyle2> anArray) {
         if (anArray == null) {
-            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+            throw new NullPointerException();
         }
         lineStyles = anArray;
     }
@@ -353,7 +354,7 @@ public final class DefineShape4 implements DefineTag {
      */
     public void setShape(final Shape aShape) {
         if (aShape == null) {
-            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+            throw new NullPointerException();
         }
         shape = aShape;
     }

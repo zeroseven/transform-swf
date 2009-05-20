@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.Encoder;
@@ -42,6 +42,7 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.Color;
+import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 /**
  * TextSpan is used to display a group of characters with a selected font and
@@ -262,7 +263,7 @@ public final class TextSpan implements SWFEncodeable {
      */
     public void setIdentifier(final Integer uid) {
         if ((uid != null) && ((uid < 1) || (uid > 65535))) {
-            throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
+             throw new IllegalArgumentRangeException(1, 65536, uid);
         }
         identifier = uid;
     }
@@ -288,7 +289,7 @@ public final class TextSpan implements SWFEncodeable {
      */
     public void setOffsetX(final Integer offset) {
         if ((offset != null) && ((offset < -32768) || (offset > 32767))) {
-            throw new IllegalArgumentException(Strings.SIGNED_RANGE);
+            throw new IllegalArgumentRangeException(-32768, 32768, offset);
         }
         offsetX = offset;
     }
@@ -304,7 +305,7 @@ public final class TextSpan implements SWFEncodeable {
      */
     public void setOffsetY(final Integer offset) {
         if ((offset != null) && ((offset < -32768) || (offset > 32767))) {
-            throw new IllegalArgumentException(Strings.SIGNED_RANGE);
+            throw new IllegalArgumentRangeException(-32768, 32768, offset);
         }
         offsetY = offset;
     }
@@ -318,7 +319,7 @@ public final class TextSpan implements SWFEncodeable {
      */
     public void setHeight(final Integer aHeight) {
         if ((aHeight < 0) || (aHeight > 65535)) {
-            throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
+            throw new IllegalArgumentRangeException(0, 65535, aHeight);
         }
         height = aHeight;
     }
@@ -351,7 +352,7 @@ public final class TextSpan implements SWFEncodeable {
      */
     public void setCharacters(final List<GlyphIndex> anArray) {
         if (anArray == null) {
-            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+            throw new NullPointerException();
         }
         characters = anArray;
     }

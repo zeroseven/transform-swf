@@ -37,6 +37,7 @@ import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 /**
  * The TabOrder class is used to set the tabbing order of text fields, movie
@@ -122,7 +123,7 @@ public final class TabOrder implements MovieTag {
      */
     public void setLayer(final int layer) {
         if ((layer < 1) || (layer > 65535)) {
-            throw new IllegalArgumentException(Strings.LAYER_RANGE);
+            throw new IllegalArgumentRangeException(1, 65536, layer);
         }
         this.layer = layer;
     }
@@ -142,7 +143,7 @@ public final class TabOrder implements MovieTag {
      */
     public void setIndex(final int index) {
         if ((index < 0) || (index > 65535)) {
-            throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
+            throw new IllegalArgumentRangeException(0, 65535, index);
         }
         this.index = index;
     }

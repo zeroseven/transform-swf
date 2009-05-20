@@ -43,7 +43,7 @@ import java.util.List;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.coder.FillStyle;
 import com.flagstone.transform.coder.ImageTag;
 import com.flagstone.transform.coder.ShapeRecord;
@@ -166,7 +166,7 @@ public final class ImageFactory {
         info.setDetermineImageNumber(true);
 
         if (!info.check()) {
-            throw new DataFormatException(Strings.INVALID_FORMAT);
+            throw new DataFormatException("Unsupported format");
         }
 
         decoder = ImageRegistry.getImageProvider(info.getImageFormat().getMimeType());
@@ -200,7 +200,7 @@ public final class ImageFactory {
         decoder = ImageRegistry.getImageProvider(mimeType);
 
         if (decoder == null) {
-            throw new DataFormatException(Strings.INVALID_IMAGE);
+            throw new DataFormatException("Unsupported format");
         }
 
         decoder.read(url.openStream(), fileSize);

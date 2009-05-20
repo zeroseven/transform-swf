@@ -34,7 +34,7 @@ package com.flagstone.transform.action;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.coder.Action;
 import com.flagstone.transform.coder.ActionTypes;
 import com.flagstone.transform.coder.CoderException;
@@ -135,7 +135,7 @@ public final class Table implements Action {
      */
     public Table add(final String aString) {
         if (aString == null) {
-            throw new IllegalArgumentException(Strings.STRING_IS_NULL);
+            throw new NullPointerException();
         }
         values.add(aString);
         return this;
@@ -157,7 +157,7 @@ public final class Table implements Action {
      */
     public void setValues(final List<String> anArray) {
         if (anArray == null) {
-            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+            throw new NullPointerException();
         }
 
         values = anArray;

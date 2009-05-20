@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -145,7 +145,7 @@ public final class Shape implements SWFEncodeable {
      */
     public Shape add(final ShapeRecord anObject) {
         if (anObject == null) {
-            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+            throw new NullPointerException();
         }
         objects.add(anObject);
         return this;
@@ -166,7 +166,7 @@ public final class Shape implements SWFEncodeable {
      */
     public void setObjects(final List<ShapeRecord> anArray) {
         if (anArray == null) {
-            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+            throw new NullPointerException();
         }
         objects = anArray;
     }

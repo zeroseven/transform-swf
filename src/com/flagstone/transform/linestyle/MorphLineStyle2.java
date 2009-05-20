@@ -30,7 +30,7 @@
 
 package com.flagstone.transform.linestyle;
 
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.Copyable;
@@ -40,6 +40,7 @@ import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.coder.SWFFactory;
 import com.flagstone.transform.datatype.Color;
+import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 /** TODO(class). */
 public final class MorphLineStyle2 implements SWFEncodeable,
@@ -186,7 +187,7 @@ public final class MorphLineStyle2 implements SWFEncodeable,
      */
     public void setStartWidth(final int aNumber) {
         if ((aNumber < 0) || (aNumber > 65535)) {
-            throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
+            throw new IllegalArgumentRangeException(0, 65535, aNumber);
         }
         startWidth = aNumber;
     }
@@ -199,7 +200,7 @@ public final class MorphLineStyle2 implements SWFEncodeable,
      */
     public void setEndWidth(final int aNumber) {
         if ((aNumber < 0) || (aNumber > 65535)) {
-            throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
+            throw new IllegalArgumentRangeException(0, 65535, aNumber);
         }
         endWidth = aNumber;
     }
@@ -212,7 +213,7 @@ public final class MorphLineStyle2 implements SWFEncodeable,
      */
     public void setStartColor(final Color aColor) {
         if (aColor == null) {
-            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+            throw new NullPointerException();
         }
         startColor = aColor;
     }
@@ -225,7 +226,7 @@ public final class MorphLineStyle2 implements SWFEncodeable,
      */
     public void setEndColor(final Color aColor) {
         if (aColor == null) {
-            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+            throw new NullPointerException();
         }
         endColor = aColor;
     }
@@ -362,7 +363,7 @@ public final class MorphLineStyle2 implements SWFEncodeable,
     /** TODO(method). */
     public void setMiterLimit(final int limit) {
         if ((limit < 0) || (limit > 65535)) {
-            throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
+            throw new IllegalArgumentRangeException(0, 65535, limit);
         }
         miterLimit = limit;
     }

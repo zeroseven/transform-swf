@@ -37,6 +37,7 @@ import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 /**
  * The LimitScript is used to define the execution environment of the Flash
@@ -125,7 +126,7 @@ public final class LimitScript implements MovieTag {
      */
     public void setDepth(final int depth) {
         if ((depth < 0) || (depth > 65535)) {
-            throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
+            throw new IllegalArgumentRangeException(0, 65535, depth);
         }
         this.depth = depth;
     }
@@ -150,7 +151,7 @@ public final class LimitScript implements MovieTag {
      */
     public void setTimeout(final int time) {
         if ((time < 0) || (time > 65535)) {
-            throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
+            throw new IllegalArgumentRangeException(0, 65535, time);
         }
         timeout = time;
     }

@@ -38,6 +38,8 @@ import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.exception.ArraySizeException;
+import com.flagstone.transform.exception.StringSizeException;
 
 /**
  * DoABC is used to define scripts containing Actionscript 3.0 byte-codes.
@@ -134,8 +136,11 @@ public final class DoABC implements MovieTag {
      *            not be null or an empty string.
      */
     public void setName(final String name) {
-        if ((name == null) || (name.length() == 0)) {
-            throw new IllegalArgumentException(Strings.STRING_NOT_SET);
+        if (name == null) {
+            throw new NullPointerException();
+        }
+        if (name.length() == 0) {
+            throw new StringSizeException(0, Integer.MAX_VALUE, 0);
         }
         this.name = name;
     }
@@ -173,8 +178,11 @@ public final class DoABC implements MovieTag {
      *            an array of byte-codes. Must not be null.
      */
     public void setData(final byte[] bytes) {
-        if (bytes == null || bytes.length == 0) {
-            throw new IllegalArgumentException(Strings.DATA_NOT_SET);
+        if (bytes == null) {
+            throw new NullPointerException();
+        }
+        if (bytes.length == 0) {
+            throw new ArraySizeException(0, Integer.MAX_VALUE, bytes.length);
         }
         data = Arrays.copyOf(bytes, bytes.length);
     }

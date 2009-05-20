@@ -30,12 +30,13 @@
 
 package com.flagstone.transform.font;
 
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 /**
  * Kerning is used to fine-tune the spacing between specific pairs of characters
@@ -104,17 +105,17 @@ public final class Kerning implements SWFEncodeable {
      */
     public Kerning(final int leftIndex, final int rightIndex, final int adjust) {
         if ((leftIndex < 0) || (leftIndex > 65535)) {
-            throw new IllegalArgumentException(Strings.GLYPH_INDEX_RANGE);
+            throw new IllegalArgumentRangeException(0, 65535, leftIndex);
         }
         leftGlyph = leftIndex;
 
         if ((rightIndex < 0) || (rightIndex > 65535)) {
-            throw new IllegalArgumentException(Strings.GLYPH_INDEX_RANGE);
+            throw new IllegalArgumentRangeException(0, 65535, rightIndex);
         }
         rightGlyph = rightIndex;
 
         if ((adjust < -32768) || (adjust > 32767)) {
-            throw new IllegalArgumentException(Strings.SIGNED_RANGE);
+            throw new IllegalArgumentRangeException(-32768, 32768, adjust);
         }
         adjustment = adjust;
     }

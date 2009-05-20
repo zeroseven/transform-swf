@@ -34,7 +34,7 @@ package com.flagstone.transform.action;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.coder.Action;
 import com.flagstone.transform.coder.ActionTypes;
 import com.flagstone.transform.coder.CoderException;
@@ -133,7 +133,7 @@ public final class With implements Action {
      */
     public With add(final Action anAction) {
         if (anAction == null) {
-            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+            throw new NullPointerException();
         }
         actions.add(anAction);
         return this;

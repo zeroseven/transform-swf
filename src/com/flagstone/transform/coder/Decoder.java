@@ -30,7 +30,9 @@
 
 package com.flagstone.transform.coder;
 
-import com.flagstone.transform.Strings;
+import java.nio.charset.UnsupportedCharsetException;
+
+
 
 /**
  * Decoder provides a set of method for decoding data that is not byte-ordered,
@@ -156,8 +158,7 @@ public class Decoder extends Coder {
             return new String(readBytes(new byte[numberOfBytes]), 0,
                     numberOfBytes, charset);
         } catch (final java.io.UnsupportedEncodingException e) {
-            throw new IllegalArgumentException(String.format(
-                    Strings.INVALID_ENCODING, charset), e);
+            throw new UnsupportedCharsetException(charset);
         }
     }
 

@@ -44,7 +44,7 @@ import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.coder.FLVDecoder;
 import com.flagstone.transform.coder.ImageTag;
 import com.flagstone.transform.datatype.ImageFormat;
@@ -139,7 +139,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
         info.setDetermineImageNumber(true);
 
         if (!info.check()) {
-            throw new DataFormatException(Strings.INVALID_FORMAT);
+            throw new DataFormatException("Unsupported format");
         }
 
         read(new FileInputStream(file), (int) file.length());
@@ -184,7 +184,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
             object = new DefineImage2(identifier, width, height, zip(image));
             break;
         default:
-            throw new AssertionError(Strings.INVALID_FORMAT);
+            throw new AssertionError("Unsupported format");
         }
         return object;
     }
@@ -206,7 +206,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
 
         for (int i = 0; i < 8; i++) {
             if (coder.readByte() != SIGNATURE[i]) {
-                throw new DataFormatException(Strings.INVALID_FORMAT);
+                throw new DataFormatException("Unsupported format");
             }
         }
 
@@ -283,7 +283,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
             attributes[COLOUR_COMPONENTS] = 4;
             break;
         default:
-            throw new DataFormatException(Strings.INVALID_FORMAT);
+            throw new DataFormatException("Unsupported format");
         }
     }
 
@@ -464,7 +464,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
                     }
                     break;
                 default:
-                    throw new DataFormatException(Strings.INVALID_FORMAT);
+                    throw new DataFormatException("Unsupported format");
                 }
 
                 System.arraycopy(current, 0, previous, 0, scanLength);
@@ -489,7 +489,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
                         decodeAlphaTrueColour(coder, row, col);
                         break;
                     default:
-                        throw new DataFormatException(Strings.INVALID_FORMAT);
+                        throw new DataFormatException("Unsupported format");
                     }
                 }
             }
@@ -559,7 +559,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
             colour = (byte) (pixel >> 8);
             break;
         default:
-            throw new DataFormatException(Strings.INVALID_FORMAT);
+            throw new DataFormatException("Unsupported format");
         }
 
         image[row * width + col] = colour;
@@ -581,7 +581,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
                 pixel = coder.readWord(2, false);
                 colour = (byte) (pixel >> 8);
             } else {
-                throw new DataFormatException(Strings.INVALID_FORMAT);
+                throw new DataFormatException("Unsupported format");
             }
 
             image[row * width + col + i] = colour;
@@ -610,7 +610,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
             index = coder.readWord(2, false);
             break;
         default:
-            throw new DataFormatException(Strings.INVALID_FORMAT);
+            throw new DataFormatException("Unsupported format");
         }
         image[row * width + col] = (byte) index;
     }
@@ -648,7 +648,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
             alpha = coder.readWord(2, false) >> 8;
             break;
         default:
-            throw new DataFormatException(Strings.INVALID_FORMAT);
+            throw new DataFormatException("Unsupported format");
         }
 
         image[row * width + col] = colour;
@@ -670,7 +670,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
                 pixel = coder.readWord(2, false);
                 colour = (byte) (pixel >> 8);
             } else {
-                throw new DataFormatException(Strings.INVALID_FORMAT);
+                throw new DataFormatException("Unsupported format");
             }
 
             image[row * width + col + i] = colour;

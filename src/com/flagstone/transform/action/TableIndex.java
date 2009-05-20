@@ -30,7 +30,8 @@
  */
 package com.flagstone.transform.action;
 
-import com.flagstone.transform.Strings;
+
+import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 /**
  * TableIndex is used with an Push action to push a reference to an entry in a
@@ -55,7 +56,7 @@ public final class TableIndex {
      */
     public TableIndex(final int anIndex) {
         if ((anIndex < 0) || (anIndex > 65535)) {
-            throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
+            throw new IllegalArgumentRangeException(0, 65535, anIndex);
         }
         index = anIndex;
     }

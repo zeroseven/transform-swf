@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.DefineTag;
@@ -43,6 +43,7 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.datatype.CoordTransform;
+import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 /**
  * DefineText defines one or more lines of text.
@@ -204,8 +205,8 @@ public final class DefineText implements DefineTag {
 
     /** TODO(method). */
     public void setIdentifier(final int uid) {
-        if ((uid < 0) || (uid > 65535)) {
-            throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
+        if ((uid < 1) || (uid > 65535)) {
+             throw new IllegalArgumentRangeException(1, 65536, uid);
         }
         identifier = uid;
     }
@@ -232,7 +233,7 @@ public final class DefineText implements DefineTag {
      */
     public DefineText add(final TextSpan obj) {
         if (obj == null) {
-            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+            throw new NullPointerException();
         }
         objects.add(obj);
         return this;
@@ -269,7 +270,7 @@ public final class DefineText implements DefineTag {
      */
     public void setBounds(final Bounds aBounds) {
         if (aBounds == null) {
-            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+            throw new NullPointerException();
         }
         bounds = aBounds;
     }
@@ -284,7 +285,7 @@ public final class DefineText implements DefineTag {
      */
     public void setTransform(final CoordTransform aTransform) {
         if (aTransform == null) {
-            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+            throw new NullPointerException();
         }
         transform = aTransform;
     }
@@ -298,7 +299,7 @@ public final class DefineText implements DefineTag {
      */
     public void setObjects(final List<TextSpan> array) {
         if (array == null) {
-            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+            throw new NullPointerException();
         }
         objects = array;
     }

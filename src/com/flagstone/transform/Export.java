@@ -39,6 +39,8 @@ import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.exception.StringSizeException;
+import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 /**
  * Export is used to export one or more shapes and other objects so they can be
@@ -125,10 +127,13 @@ public final class Export implements MovieTag {
      */
     public Export add(final int uid, final String aString) {
         if ((uid < 1) || (uid > 65535)) {
-            throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
+             throw new IllegalArgumentRangeException(1, 65536, uid);
         }
-        if ((aString == null) || (aString.length() == 0)) {
-            throw new IllegalArgumentException(Strings.STRING_NOT_SET);
+        if (aString == null) {
+            throw new NullPointerException();
+        }
+        if (aString.length() == 0) {
+            throw new StringSizeException(0, Integer.MAX_VALUE, 0);
         }
 
         objects.put(uid, aString);
@@ -150,7 +155,7 @@ public final class Export implements MovieTag {
      */
     public void setObjects(final Map<Integer, String> aTable) {
         if (aTable == null) {
-            throw new IllegalArgumentException(Strings.TABLE_IS_NULL);
+            throw new NullPointerException();
         }
         objects = aTable;
     }

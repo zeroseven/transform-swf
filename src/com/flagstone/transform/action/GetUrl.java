@@ -31,13 +31,14 @@
 
 package com.flagstone.transform.action;
 
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.coder.Action;
 import com.flagstone.transform.coder.ActionTypes;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.exception.StringSizeException;
 
 /**
  * GetUrl is used to display a web page or load a movie clip into the Flash
@@ -183,10 +184,10 @@ public final class GetUrl implements Action {
      */
     public void setUrl(final String aString) {
         if (aString == null) {
-            throw new IllegalArgumentException(Strings.STRING_IS_NULL);
+            throw new NullPointerException();
         }
         if (aString.length() == 0) {
-            throw new IllegalArgumentException(Strings.STRING_IS_EMPTY);
+            throw new StringSizeException(0, Short.MAX_VALUE, 0);
         }
         url = aString;
     }
@@ -203,7 +204,7 @@ public final class GetUrl implements Action {
      */
     public void setTarget(final String aString) {
         if (aString == null) {
-            throw new IllegalArgumentException(Strings.STRING_IS_NULL);
+            throw new NullPointerException();
         }
         target = aString;
     }

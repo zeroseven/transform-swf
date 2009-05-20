@@ -33,7 +33,7 @@ package com.flagstone.transform.sound;
 
 import java.util.Arrays;
 
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.DefineTag;
@@ -41,6 +41,8 @@ import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.SoundFormat;
+import com.flagstone.transform.exception.IllegalArgumentRangeException;
+import com.flagstone.transform.exception.IllegalArgumentValueException;
 
 /**
  * DefineSound is used to define a sound that will be played when a given event
@@ -198,8 +200,8 @@ public final class DefineSound implements DefineTag {
 
     /** {@inheritDoc} */
     public void setIdentifier(final int uid) {
-        if ((uid < 0) || (uid > 65535)) {
-            throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
+        if ((uid < 1) || (uid > 65535)) {
+             throw new IllegalArgumentRangeException(1, 65536, uid);
         }
         identifier = uid;
     }
@@ -312,7 +314,7 @@ public final class DefineSound implements DefineTag {
     public void setRate(final int rate) {
         if ((rate != 5512) && (rate != 11025) && (rate != 22050)
                 && (rate != 44100)) {
-            throw new IllegalArgumentException(Strings.SOUND_RATE_RANGE);
+            throw new IllegalArgumentValueException(new int[] {5512, 11025, 22050, 44100}, rate);
         }
         this.rate = rate;
     }
@@ -326,7 +328,7 @@ public final class DefineSound implements DefineTag {
      */
     public void setChannelCount(final int channels) {
         if ((channels < 1) || (channels > 2)) {
-            throw new IllegalArgumentException(Strings.CHANNEL_RANGE);
+            throw new IllegalArgumentRangeException(1, 2, channels);
         }
         channelCount = channels;
     }
@@ -339,7 +341,7 @@ public final class DefineSound implements DefineTag {
      */
     public void setSampleSize(final int size) {
         if ((size < 1) || (size > 2)) {
-            throw new IllegalArgumentException(Strings.SAMPLE_SIZE_RANGE);
+            throw new IllegalArgumentRangeException(1, 2, size);
         }
         sampleSize = size;
     }
@@ -352,7 +354,7 @@ public final class DefineSound implements DefineTag {
      */
     public void setSampleCount(final int count) {
         if (count < 1) {
-            throw new IllegalArgumentException(Strings.NEGATIVE_NUMBER);
+            throw new IllegalArgumentRangeException(1, Integer.MAX_VALUE, count);
         }
         sampleCount = count;
     }
@@ -365,7 +367,7 @@ public final class DefineSound implements DefineTag {
      */
     public void setSound(final byte[] bytes) {
         if (bytes == null) {
-            throw new IllegalArgumentException(Strings.DATA_IS_NULL);
+            throw new NullPointerException();
         }
         sound = Arrays.copyOf(bytes, bytes.length);
     }

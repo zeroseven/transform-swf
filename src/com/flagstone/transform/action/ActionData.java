@@ -33,11 +33,11 @@ package com.flagstone.transform.action;
 
 import java.util.Arrays;
 
-import com.flagstone.transform.Strings;
 import com.flagstone.transform.coder.Action;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.exception.ArraySizeException;
 
 /**
  * ActionData is used to store one or more actions which already have been
@@ -64,8 +64,11 @@ public final class ActionData implements Action {
      *            the array of encoded actions. Must not be null or empty.
      */
     public ActionData(final byte[] bytes) {
-        if ((bytes == null) || (bytes.length == 0)) {
-            throw new IllegalArgumentException(Strings.DATA_NOT_SET);
+        if (bytes == null) {
+            throw new NullPointerException();
+        }
+        if (bytes.length == 0) {
+            throw new ArraySizeException(0, Integer.MAX_VALUE, bytes.length);
         }
         data = Arrays.copyOf(bytes, bytes.length);
     }

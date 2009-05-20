@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.DefineTag;
@@ -45,6 +45,7 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.coder.SWFFactory;
 import com.flagstone.transform.datatype.Bounds;
+import com.flagstone.transform.exception.IllegalArgumentRangeException;
 import com.flagstone.transform.linestyle.MorphLineStyle;
 
 /**
@@ -167,7 +168,7 @@ public final class DefineMorphShape implements DefineTag {
 
             if (fillStyle == null) {
                 throw new CoderException(String.valueOf(type), start >>> 3, 0,
-                        0, Strings.INVALID_FILLSTYLE);
+                        0, "Unsupported FillStyle");
             }
 
             fillStyles.add(fillStyle);
@@ -274,8 +275,8 @@ public final class DefineMorphShape implements DefineTag {
 
     /** TODO(method). */
     public void setIdentifier(final int uid) {
-        if ((uid < 0) || (uid > 65535)) {
-            throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
+        if ((uid < 1) || (uid > 65535)) {
+             throw new IllegalArgumentRangeException(1, 65536, uid);
         }
         identifier = uid;
     }
@@ -370,7 +371,7 @@ public final class DefineMorphShape implements DefineTag {
      */
     public void setStartBounds(final Bounds aBounds) {
         if (aBounds == null) {
-            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+            throw new NullPointerException();
         }
         startBounds = aBounds;
     }
@@ -384,7 +385,7 @@ public final class DefineMorphShape implements DefineTag {
      */
     public void setEndBounds(final Bounds aBounds) {
         if (aBounds == null) {
-            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+            throw new NullPointerException();
         }
         endBounds = aBounds;
     }
@@ -398,7 +399,7 @@ public final class DefineMorphShape implements DefineTag {
      */
     public void setFillStyles(final List<FillStyle> anArray) {
         if (anArray == null) {
-            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+            throw new NullPointerException();
         }
         fillStyles = anArray;
     }
@@ -411,7 +412,7 @@ public final class DefineMorphShape implements DefineTag {
      */
     public void setLineStyles(final List<MorphLineStyle> anArray) {
         if (anArray == null) {
-            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+            throw new NullPointerException();
         }
         lineStyles = anArray;
     }
@@ -426,7 +427,7 @@ public final class DefineMorphShape implements DefineTag {
      */
     public void setStartShape(final Shape aShape) {
         if (aShape == null) {
-            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+            throw new NullPointerException();
         }
         startShape = aShape;
     }
@@ -440,7 +441,7 @@ public final class DefineMorphShape implements DefineTag {
      */
     public void setEndShape(final Shape aShape) {
         if (aShape == null) {
-            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+            throw new NullPointerException();
         }
         endShape = aShape;
     }

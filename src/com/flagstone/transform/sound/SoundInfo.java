@@ -33,12 +33,13 @@ package com.flagstone.transform.sound;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 /**
  * SoundInfo identifies a sound (previously defined using The DefineSound class)
@@ -237,8 +238,8 @@ public final class SoundInfo implements SWFEncodeable {
      *            range 1..65535.
      */
     public void setIdentifier(final int uid) {
-        if ((uid < 0) || (uid > 65535)) {
-            throw new IllegalArgumentException(Strings.IDENTIFIER_RANGE);
+        if ((uid < 1) || (uid > 65535)) {
+             throw new IllegalArgumentRangeException(1, 65536, uid);
         }
         identifier = uid;
     }
@@ -276,7 +277,7 @@ public final class SoundInfo implements SWFEncodeable {
      */
     public void setInPoint(final Integer aNumber) {
         if ((aNumber != null) && ((aNumber < 0) || (aNumber > 65535))) {
-            throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
+            throw new IllegalArgumentRangeException(0, 65535, aNumber);
         }
         inPoint = aNumber;
     }
@@ -290,7 +291,7 @@ public final class SoundInfo implements SWFEncodeable {
      */
     public void setOutPoint(final Integer aNumber) {
         if ((aNumber != null) && ((aNumber < 0) || (aNumber > 65535))) {
-            throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
+            throw new IllegalArgumentRangeException(0, 65535, aNumber);
         }
         outPoint = aNumber;
     }
@@ -304,8 +305,8 @@ public final class SoundInfo implements SWFEncodeable {
      */
     public void setLoopCount(final Integer aNumber) {
         if ((aNumber != null) && ((aNumber < 0) || (aNumber > 65535))) {
-            throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
-        }
+            throw new IllegalArgumentRangeException(0, 65535, aNumber);
+       }
         loopCount = aNumber;
     }
 

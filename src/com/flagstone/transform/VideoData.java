@@ -37,6 +37,7 @@ import com.flagstone.transform.coder.FLVEncoder;
 import com.flagstone.transform.coder.VideoTag;
 import com.flagstone.transform.coder.VideoTypes;
 import com.flagstone.transform.datatype.VideoFormat;
+import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 /**
  * The VideoData class is used to store the data for a single frame in a Flash
@@ -174,7 +175,7 @@ public final class VideoData implements VideoTag {
      */
     public void setTimestamp(final int time) {
         if ((time < 0) || (time > 16777215)) {
-            throw new IllegalArgumentException(Strings.TIMESTAMP_RANGE);
+            throw new IllegalArgumentRangeException(0, 16777215, time);
         }
         timestamp = time;
     }
@@ -305,7 +306,7 @@ public final class VideoData implements VideoTag {
             break;
         default:
             throw new CoderException(getClass().getName(), 0, 0, 0,
-                    Strings.INVALID_FORMAT);
+                    "Unsupported format");
         }
 
         switch (frameType) {
@@ -320,7 +321,7 @@ public final class VideoData implements VideoTag {
             break;
         default:
             throw new CoderException(getClass().getName(), 0, 0, 0,
-                    Strings.INVALID_FORMAT);
+                    "Unsupported format");
         }
 
         return value;
@@ -337,7 +338,7 @@ public final class VideoData implements VideoTag {
             break;
         default:
             throw new CoderException(getClass().getName(), 0, 0, 0,
-                    Strings.INVALID_FORMAT);
+                    "Unsupported format");
         }
 
         switch (value & 0x0F) {
@@ -352,7 +353,7 @@ public final class VideoData implements VideoTag {
             break;
         default:
             throw new CoderException(getClass().getName(), 0, 0, 0,
-                    Strings.INVALID_FORMAT);
+                    "Unsupported format");
         }
     }
 }

@@ -34,7 +34,7 @@ package com.flagstone.transform.action;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.coder.Action;
 import com.flagstone.transform.coder.ActionTypes;
 import com.flagstone.transform.coder.CoderException;
@@ -251,7 +251,7 @@ public final class Push implements Action {
      */
     public void setValues(final List<Object> anArray) {
         if (anArray == null) {
-            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+            throw new NullPointerException();
         }
         values = anArray;
     }
@@ -342,7 +342,7 @@ public final class Push implements Action {
                 coder.writeWord(((RegisterIndex) anObject).getNumber(), 1);
             } else {
                 throw new CoderException(getClass().getName(), 0, 0, 0,
-                        Strings.INVALID_OBJECT);
+                        "Unsupported value");
             }
         }
     }

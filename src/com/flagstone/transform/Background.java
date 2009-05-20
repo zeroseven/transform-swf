@@ -124,7 +124,7 @@ public final class Background implements MovieTag {
      */
     public void setColor(final Color color) {
         if (color == null) {
-            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+            throw new NullPointerException();
         }
         this.color = color;
     }

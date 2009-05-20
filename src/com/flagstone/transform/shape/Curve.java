@@ -30,13 +30,14 @@
 
 package com.flagstone.transform.shape;
 
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.Encoder;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.coder.ShapeRecord;
+import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 /**
  * <p>
@@ -174,22 +175,22 @@ public final class Curve implements ShapeRecord {
     public void setPoints(final int xControl, final int yControl,
             final int xAnchor, final int yAnchor) {
         if ((xControl < -65535) || (xControl > 65535)) {
-            throw new IllegalArgumentException(Strings.COORDINATES_RANGE);
+            throw new IllegalArgumentRangeException(-65535, 65535, xControl);
         }
         controlX = xControl;
 
         if ((yControl < -65535) || (yControl > 65535)) {
-            throw new IllegalArgumentException(Strings.COORDINATES_RANGE);
+            throw new IllegalArgumentRangeException(-65535, 65535, yControl);
         }
         controlY = yControl;
 
         if ((xAnchor < -65535) || (xAnchor > 65535)) {
-            throw new IllegalArgumentException(Strings.COORDINATES_RANGE);
+            throw new IllegalArgumentRangeException(-65535, 65535, xAnchor);
         }
         anchorX = xAnchor;
 
         if ((yAnchor < -65535) || (yAnchor > 65535)) {
-            throw new IllegalArgumentException(Strings.COORDINATES_RANGE);
+            throw new IllegalArgumentRangeException(-65535, 65535, yAnchor);
         }
         anchorY = yAnchor;
     }

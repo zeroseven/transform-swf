@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.Encoder;
@@ -43,6 +43,7 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.coder.SWFFactory;
 import com.flagstone.transform.coder.ShapeRecord;
+import com.flagstone.transform.exception.IllegalArgumentRangeException;
 import com.flagstone.transform.linestyle.LineStyle;
 
 /**
@@ -183,7 +184,7 @@ public final class ShapeStyle implements ShapeRecord {
 
                 if (fill == null) {
                     throw new CoderException(String.valueOf(type), start >>> 3,
-                            0, 0, Strings.INVALID_FILLSTYLE);
+                            0, 0, "Unsupported FillStyle");
                 }
 
                 fillStyles.add(fill);
@@ -252,7 +253,7 @@ public final class ShapeStyle implements ShapeRecord {
      */
     public ShapeStyle add(final LineStyle style) {
         if (style == null) {
-            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+            throw new NullPointerException();
         }
         lineStyles.add(style);
         return this;
@@ -266,7 +267,7 @@ public final class ShapeStyle implements ShapeRecord {
      */
     public ShapeStyle add(final FillStyle style) {
         if (style == null) {
-            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+            throw new NullPointerException();
         }
         fillStyles.add(style);
         return this;
@@ -341,13 +342,13 @@ public final class ShapeStyle implements ShapeRecord {
     public ShapeStyle setMove(final Integer xCoord, final Integer yCoord) {
         if (((xCoord == null) && (yCoord != null))
                 || ((xCoord != null) && (yCoord == null))) {
-            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+            throw new NullPointerException();
         }
         if ((xCoord != null) && ((xCoord < -65535) || (xCoord > 65535))) {
-            throw new IllegalArgumentException(Strings.COORDINATES_RANGE);
+            throw new IllegalArgumentRangeException(-65535, 65535, xCoord);
         }
         if ((yCoord != null) && ((yCoord < -65535) || (yCoord > 65535))) {
-            throw new IllegalArgumentException(Strings.COORDINATES_RANGE);
+            throw new IllegalArgumentRangeException(-65535, 65535, yCoord);
         }
         moveX = xCoord;
         moveY = yCoord;
@@ -405,7 +406,7 @@ public final class ShapeStyle implements ShapeRecord {
      */
     public ShapeStyle setLineStyles(final List<LineStyle> anArray) {
         if (anArray == null) {
-            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+            throw new NullPointerException();
         }
         lineStyles = anArray;
         return this;
@@ -420,7 +421,7 @@ public final class ShapeStyle implements ShapeRecord {
      */
     public ShapeStyle setFillStyles(final List<FillStyle> anArray) {
         if (anArray == null) {
-            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+            throw new NullPointerException();
         }
         fillStyles = anArray;
         return this;

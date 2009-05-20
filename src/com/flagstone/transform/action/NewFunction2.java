@@ -38,7 +38,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.coder.Action;
 import com.flagstone.transform.coder.ActionTypes;
 import com.flagstone.transform.coder.CoderException;
@@ -46,6 +46,8 @@ import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.coder.SWFFactory;
+import com.flagstone.transform.exception.StringSizeException;
+import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 /**
  * The NewFunction2 action is used to create a user-defined function with
@@ -269,8 +271,11 @@ public final class NewFunction2 implements Action {
      *            not be null.
      */
     public NewFunction2 add(final String anArgument) {
-        if ((anArgument == null) || (anArgument.length() == 0)) {
-            throw new IllegalArgumentException(Strings.STRING_NOT_SET);
+        if (anArgument == null) {
+            throw new NullPointerException();
+        }
+        if (anArgument.length() == 0) {
+            throw new StringSizeException(0, Short.MAX_VALUE, 0);
         }
         arguments.put(anArgument, 0);
         return this;
@@ -285,7 +290,7 @@ public final class NewFunction2 implements Action {
      */
     public NewFunction2 add(final Action anAction) {
         if (anAction == null) {
-            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+            throw new NullPointerException();
         }
         actions.add(anAction);
         return this;
@@ -308,7 +313,7 @@ public final class NewFunction2 implements Action {
      */
     public void setName(final String aString) {
         if (aString == null) {
-            throw new IllegalArgumentException(Strings.STRING_IS_NULL);
+            throw new NullPointerException();
         }
         name = aString;
     }
@@ -322,15 +327,15 @@ public final class NewFunction2 implements Action {
 
     /**
      * Sets the number of registers to allocate for function variables. Up to
-     * 256 registers may be allocated for each function.
+     * 255 registers may be allocated for each function.
      *
      * @param count
      *            the number of registers to allocate. Must be in the range
      *            0..255.
      */
     public void setRegisterCount(final int count) {
-        if ((count < 0) || (count > 256)) {
-            throw new IllegalArgumentException(Strings.REGISTER_RANGE);
+        if ((count < 1) || (count > 255)) {
+            throw new IllegalArgumentRangeException(1, 255, count);
         }
         registerCount = count;
     }
@@ -420,7 +425,7 @@ public final class NewFunction2 implements Action {
      */
     public void setArguments(final Map<String, Integer> map) {
         if (map == null) {
-            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+            throw new NullPointerException();
         }
         arguments = map;
     }
@@ -441,7 +446,7 @@ public final class NewFunction2 implements Action {
      */
     public void setActions(final List<Action> anArray) {
         if (anArray == null) {
-            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+            throw new NullPointerException();
         }
         actions = anArray;
     }

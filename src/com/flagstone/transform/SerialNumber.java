@@ -109,7 +109,7 @@ public final class SerialNumber implements MovieTag {
      */
     public void setNumber(final String aString) {
         if (aString == null) {
-            throw new IllegalArgumentException(Strings.STRING_IS_NULL);
+            throw new NullPointerException();
         }
         number = aString;
     }

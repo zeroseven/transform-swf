@@ -34,7 +34,7 @@ package com.flagstone.transform.action;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.coder.Action;
 import com.flagstone.transform.coder.ActionTypes;
 import com.flagstone.transform.coder.CoderException;
@@ -42,6 +42,8 @@ import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.coder.SWFFactory;
+import com.flagstone.transform.exception.StringSizeException;
+import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 /**
  * The ExceptionHandler class is used to represent try..catch blocks in
@@ -241,7 +243,7 @@ public final class ExceptionHandler implements Action {
      */
     public ExceptionHandler addToTry(final Action anAction) {
         if (anAction == null) {
-            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+            throw new NullPointerException();
         }
 
         if (tryActions == null) {
@@ -260,7 +262,7 @@ public final class ExceptionHandler implements Action {
      */
     public ExceptionHandler addToCatch(final Action anAction) {
         if (anAction == null) {
-            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+            throw new NullPointerException();
         }
 
         if (catchActions == null) {
@@ -279,7 +281,7 @@ public final class ExceptionHandler implements Action {
      */
     public ExceptionHandler addToFinally(final Action anAction) {
         if (anAction == null) {
-            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+            throw new NullPointerException();
         }
 
         if (catchActions == null) {
@@ -306,12 +308,12 @@ public final class ExceptionHandler implements Action {
      *
      * @param name
      *            the name of the variable. May be null if the exception object
-     *            will be signed to a register, but not null.
+     *            will be signed to a register, but not empty.
      */
     public void setVariable(final String name) {
 
         if (name.length() == 0) {
-            throw new IllegalArgumentException(Strings.STRING_IS_EMPTY);
+            throw new StringSizeException(0, Short.MAX_VALUE, 0);
         }
         variable = name;
         register = 0;
@@ -338,7 +340,7 @@ public final class ExceptionHandler implements Action {
      */
     public void setRegister(final int index) {
         if ((index < 0) || (index > 255)) {
-            throw new IllegalArgumentException(Strings.REGISTER_RANGE);
+            throw new IllegalArgumentRangeException(0, 255, index);
         }
         register = index;
     }
@@ -360,7 +362,7 @@ public final class ExceptionHandler implements Action {
      */
     public void setTryActions(final List<Action> array) {
         if (array == null) {
-            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+            throw new NullPointerException();
         }
         tryActions = array;
     }
@@ -383,7 +385,7 @@ public final class ExceptionHandler implements Action {
      */
     public void setCatchActions(final List<Action> array) {
         if (array == null) {
-            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+            throw new NullPointerException();
         }
         catchActions = array;
     }
@@ -406,7 +408,7 @@ public final class ExceptionHandler implements Action {
      */
     public void setFinalActions(final List<Action> array) {
         if (array == null) {
-            throw new IllegalArgumentException(Strings.ARRAY_IS_NULL);
+            throw new NullPointerException();
         }
         finalActions = array;
     }

@@ -30,7 +30,7 @@
 
 package com.flagstone.transform.linestyle;
 
-import com.flagstone.transform.Strings;
+
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.Copyable;
@@ -40,6 +40,7 @@ import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.coder.SWFFactory;
 import com.flagstone.transform.datatype.Color;
+import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 /** TODO(class). */
 public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
@@ -167,7 +168,7 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
      */
     public void setWidth(final int width) {
         if ((width < 0) || (width > 65535)) {
-            throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
+            throw new IllegalArgumentRangeException(0, 65535, width);
         }
         this.width = width;
     }
@@ -187,7 +188,7 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
      */
     public void setColor(final Color aColor) {
         if (aColor == null) {
-            throw new IllegalArgumentException(Strings.OBJECT_IS_NULL);
+            throw new NullPointerException();
         }
         color = aColor;
     }
@@ -324,7 +325,7 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
     /** TODO(method). */
     public void setMiterLimit(final int limit) {
         if ((limit < 0) || (limit > 65535)) {
-            throw new IllegalArgumentException(Strings.UNSIGNED_RANGE);
+            throw new IllegalArgumentRangeException(0, 65535, limit);
         }
         miterLimit = limit;
     }
