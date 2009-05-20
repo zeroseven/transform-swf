@@ -77,7 +77,7 @@ public final class JPGImageTest {
             movie.add(new Background(WebPalette.LIGHT_BLUE.color()));
             movie.add(image);
             movie.add(shape);
-            movie.add(new Place2().show(shape, 1, 0, 0));
+            movie.add(Place2.show(shape, 1, 0, 0));
             movie.add(ShowFrame.getInstance());
             movie.encodeToFile(destFile);
         

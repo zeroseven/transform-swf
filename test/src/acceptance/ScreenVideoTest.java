@@ -86,7 +86,7 @@ public final class ScreenVideoTest {
         ScreenPacket packet = new ScreenPacket(true, screenWidth, screenHeight,
                 blockWidth, blockHeight, prev);
 
-        movie.add(new Place2().show(identifier, 1, 0, 0));
+        movie.add(Place2.show(identifier, 1, 0, 0));
         movie.add(new VideoFrame(identifier, 0, packet.encode()));
         movie.add(ShowFrame.getInstance());
 

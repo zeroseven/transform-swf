@@ -273,7 +273,7 @@ public final class Layer {
      */
     public void select(final int uid) {
         identifier = uid;
-        place = new Place2().show(uid, layerNumber, 0, 0);
+        place = Place2.show(uid, layerNumber, 0, 0);
         displayList.add(place);
     }
 
@@ -340,7 +340,7 @@ public final class Layer {
                 alpha);
 
         if (place == null) {
-            displayList.add(new Place2().modify(layerNumber).setColorTransform(
+            displayList.add(Place2.modify(layerNumber).setColorTransform(
                     transform));
         } else {
             place.setColorTransform(transform);
@@ -356,7 +356,7 @@ public final class Layer {
      */
     public void clip(final int depth) {
         if (place == null) {
-            displayList.add(new Place2().modify(layerNumber).setDepth(depth));
+            displayList.add(Place2.modify(layerNumber).setDepth(depth));
         } else {
             place.setDepth(depth);
         }
@@ -371,7 +371,7 @@ public final class Layer {
      */
     public void morph(final float ratio) {
         if (place == null) {
-            displayList.add(new Place2().modify(layerNumber).setRatio(
+            displayList.add(Place2.modify(layerNumber).setRatio(
                     (int) (ratio * 65535.0f)));
         } else {
             place.setRatio((int) (ratio * 65535.0f));
@@ -386,7 +386,7 @@ public final class Layer {
      */
     public void name(final String name) {
         if (place == null) {
-            displayList.add(new Place2().modify(layerNumber).setName(name));
+            displayList.add(Place2.modify(layerNumber).setName(name));
         } else {
             place.setName(name);
         }
@@ -413,7 +413,7 @@ public final class Layer {
         identifier = uid;
 
         if (place == null) {
-            displayList.add(new Place2().replace(uid, layerNumber));
+            displayList.add(Place2.replace(uid, layerNumber));
         } else {
             place.setIdentifier(uid);
             place.setType(PlaceType.REPLACE);
@@ -429,7 +429,7 @@ public final class Layer {
     public void change(final ColorTransform color) {
         if (place == null) {
             displayList
-                    .add(new Place2().modify(layerNumber).setColorTransform(color));
+                    .add(Place2.modify(layerNumber).setColorTransform(color));
         } else {
             place.setColorTransform(color);
         }
@@ -448,7 +448,7 @@ public final class Layer {
      */
     public void change(final CoordTransform coord) {
         if (place == null) {
-            displayList.add(new Place2().modify(layerNumber).setTransform(coord));
+            displayList.add(Place2.modify(layerNumber).setTransform(coord));
         } else {
             place.setTransform(coord);
         }

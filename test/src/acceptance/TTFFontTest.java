@@ -101,7 +101,7 @@ public final class TTFFontTest {
             movie.add(new Background(WebPalette.LIGHT_BLUE.color()));
             movie.add(font);
             movie.add(text);
-            movie.add(new Place2().show(text, 1, margin, margin));
+            movie.add(Place2.show(text, 1, margin, margin));
             movie.add(ShowFrame.getInstance());
             movie.encodeToFile(destFile);
         } catch (Exception e) {

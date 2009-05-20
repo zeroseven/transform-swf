@@ -144,6 +144,66 @@ public final class Place2 implements MovieTag {
             + "identifier=%d; transform=%s; colorTransform=%s; ratio=%d; "
             + "clippingDepth=%d; name=%s; clipEvents=%s}";
     
+    
+    /** TODO(method). */
+    public static Place2 show(final int identifier, final int layer,
+            final int xCoord, final int yCoord) {
+        Place2 object = new Place2();
+        object.setType(PlaceType.NEW);
+        object.setLayer(layer);
+        object.setIdentifier(identifier);
+        object.setTransform(CoordTransform.translate(xCoord, yCoord));
+        return object;
+    }
+    
+    /** TODO(method). */
+    public static Place2 show(final DefineTag tag, final int layer,
+            final int xCoord, final int yCoord) {
+        Place2 object = new Place2();
+        object.setType(PlaceType.NEW);
+        object.setLayer(layer);
+        object.setIdentifier(tag.getIdentifier());
+        object.setTransform(CoordTransform.translate(xCoord, yCoord));
+        return object;
+    }
+
+    /** TODO(method). */
+    public static Place2 modify(final int layer) {
+        Place2 object = new Place2();
+        object.setType(PlaceType.MODIFY);
+        object.setLayer(layer);
+        return object;
+    }
+
+    /** TODO(method). */
+    public static Place2 move(final int layer, final int xCoord, final int yCoord) {
+        Place2 object = new Place2();
+        object.setType(PlaceType.MODIFY);
+        object.setLayer(layer);
+        object.setTransform(CoordTransform.translate(xCoord, yCoord));
+        return object;
+    }
+
+    /** TODO(method). */
+    public static Place2 replace(final int identifier, final int layer) {
+        Place2 object = new Place2();
+        object.setType(PlaceType.REPLACE);
+        object.setLayer(layer);
+        object.setIdentifier(identifier);
+        return object;
+    }
+
+    /** TODO(method). */
+    public static Place2 replace(final int identifier, final int layer,
+            final int xCoord, final int yCoord) {
+        Place2 object = new Place2();
+        object.setType(PlaceType.REPLACE);
+        object.setLayer(layer);
+        object.setIdentifier(identifier);
+        object.setTransform(CoordTransform.translate(xCoord, yCoord));
+        return object;
+    }      
+
     private PlaceType type;
     private int layer;
     private int identifier;
@@ -292,60 +352,7 @@ public final class Place2 implements MovieTag {
             events.add(event.copy());
         }
     }
-    
-    /** TODO(method). */
-    public Place2 show(final int identifier, final int layer,
-            final int xCoord, final int yCoord) {
-        setType(PlaceType.NEW);
-        setLayer(layer);
-        setIdentifier(identifier);
-        setTransform(CoordTransform.translate(xCoord, yCoord));
-        return this;
-    }
-    
-    /** TODO(method). */
-    public Place2 show(final DefineTag object, final int layer,
-            final int xCoord, final int yCoord) {
-        setType(PlaceType.NEW);
-        setLayer(layer);
-        setIdentifier(object.getIdentifier());
-        setTransform(CoordTransform.translate(xCoord, yCoord));
-        return this;
-    }
-
-    /** TODO(method). */
-    public Place2 modify(final int layer) {
-        setType(PlaceType.MODIFY);
-        setLayer(layer);
-        return this;
-    }
-
-    /** TODO(method). */
-    public Place2 move(final int layer, final int xCoord, final int yCoord) {
-        setType(PlaceType.MODIFY);
-        setLayer(layer);
-        setTransform(CoordTransform.translate(xCoord, yCoord));
-        return this;
-    }
-
-    /** TODO(method). */
-    public Place2 replace(final int identifier, final int layer) {
-        setType(PlaceType.REPLACE);
-        setLayer(layer);
-        setIdentifier(identifier);
-        return this;
-    }
-
-    /** TODO(method). */
-    public Place2 replace(final int identifier, final int layer,
-            final int xCoord, final int yCoord) {
-        setType(PlaceType.REPLACE);
-        setLayer(layer);
-        setIdentifier(identifier);
-        setTransform(CoordTransform.translate(xCoord, yCoord));
-        return this;
-    }      
-
+ 
     /**
      * Adds a clip event to the array of clip events.
      *

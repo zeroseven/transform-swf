@@ -144,6 +144,65 @@ public final class Place3 implements MovieTag {
             + " bitmapCached=%s; identifier=%d; transform=%d; colorTransform=%d;"
             + " ratio=%d; clippingDepth=%d; name=%s; className=%s;"
             + " filters=%s; blend=%s; clipEvents=%s}";
+    
+    /** TODO(method). */
+    public static Place3 show(final int identifier, final int layer,
+            final int xCoord, final int yCoord) {
+        Place3 object = new Place3();
+        object.setType(PlaceType.NEW);
+        object.setLayer(layer);
+        object.setIdentifier(identifier);
+        object.setTransform(CoordTransform.translate(xCoord, yCoord));
+        return object;
+    }
+    
+    /** TODO(method). */
+    public static Place3 show(final DefineTag tag, final int layer,
+            final int xCoord, final int yCoord) {
+        Place3 object = new Place3();
+        object.setType(PlaceType.NEW);
+        object.setLayer(layer);
+        object.setIdentifier(tag.getIdentifier());
+        object.setTransform(CoordTransform.translate(xCoord, yCoord));
+        return object;
+    }
+
+    /** TODO(method). */
+    public static Place3 modify(final int layer) {
+        Place3 object = new Place3();
+        object.setType(PlaceType.MODIFY);
+        object.setLayer(layer);
+        return object;
+    }
+
+    /** TODO(method). */
+    public static Place3 move(final int layer, final int xCoord, final int yCoord) {
+        Place3 object = new Place3();
+        object.setType(PlaceType.MODIFY);
+        object.setLayer(layer);
+        object.setTransform(CoordTransform.translate(xCoord, yCoord));
+        return object;
+    }
+
+    /** TODO(method). */
+    public static Place3 replace(final int identifier, final int layer) {
+        Place3 object = new Place3();
+        object.setType(PlaceType.REPLACE);
+        object.setLayer(layer);
+        object.setIdentifier(identifier);
+        return object;
+    }
+
+    /** TODO(method). */
+    public static Place3 replace(final int identifier, final int layer,
+            final int xCoord, final int yCoord) {
+        Place3 object = new Place3();
+        object.setType(PlaceType.REPLACE);
+        object.setLayer(layer);
+        object.setIdentifier(identifier);
+        object.setTransform(CoordTransform.translate(xCoord, yCoord));
+        return object;
+    }      
 
     private PlaceType type;
     private int layer;
@@ -333,59 +392,6 @@ public final class Place3 implements MovieTag {
         }
 
     }
-    
-    /** TODO(method). */
-    public Place3 show(final int identifier, final int layer,
-            final int xCoord, final int yCoord) {
-        setType(PlaceType.NEW);
-        setLayer(layer);
-        setIdentifier(identifier);
-        setTransform(CoordTransform.translate(xCoord, yCoord));
-        return this;
-    }
-    
-    /** TODO(method). */
-    public Place3 show(final DefineTag object, final int layer,
-            final int xCoord, final int yCoord) {
-        setType(PlaceType.NEW);
-        setLayer(layer);
-        setIdentifier(object.getIdentifier());
-        setTransform(CoordTransform.translate(xCoord, yCoord));
-        return this;
-    }
-
-    /** TODO(method). */
-    public Place3 modify(final int layer) {
-        setType(PlaceType.MODIFY);
-        setLayer(layer);
-        return this;
-    }
-
-    /** TODO(method). */
-    public Place3 move(final int layer, final int xCoord, final int yCoord) {
-        setType(PlaceType.MODIFY);
-        setLayer(layer);
-        setTransform(CoordTransform.translate(xCoord, yCoord));
-        return this;
-    }
-
-    /** TODO(method). */
-    public Place3 replace(final int identifier, final int layer) {
-        setType(PlaceType.REPLACE);
-        setLayer(layer);
-        setIdentifier(identifier);
-        return this;
-    }
-
-    /** TODO(method). */
-    public Place3 replace(final int identifier, final int layer,
-            final int xCoord, final int yCoord) {
-        setType(PlaceType.REPLACE);
-        setLayer(layer);
-        setIdentifier(identifier);
-        setTransform(CoordTransform.translate(xCoord, yCoord));
-        return this;
-    }      
 
     /**
      * Returns the type of place operation being performed.

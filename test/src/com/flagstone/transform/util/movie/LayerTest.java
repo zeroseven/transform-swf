@@ -92,9 +92,9 @@ public final class LayerTest {
         layers.add(three);
 
         final Movie movie = new Movie();
-        movie.add(new Place2().show(1, 1, 1, 1));
-        movie.add(new Place2().show(2, 2, 2, 2));
-        movie.add(new Place2().show(3, 3, 3, 3));
+        movie.add(Place2.show(1, 1, 1, 1));
+        movie.add(Place2.show(2, 2, 2, 2));
+        movie.add(Place2.show(3, 3, 3, 3));
         movie.add(ShowFrame.getInstance());
         movie.add(new Place2().move(2, 3, 3));
         movie.add(new Place2().move(3, 4, 4));
@@ -184,7 +184,7 @@ public final class LayerTest {
         layer.move(-x, -y);
         layer.move(x, y);
 
-        assertEquals(layer.getObjects().get(1), new Place2().show(
+        assertEquals(layer.getObjects().get(1), Place2.show(
                 obj.getIdentifier(), layer.getLayer(), x, y));
     }
 
