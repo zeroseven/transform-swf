@@ -34,7 +34,7 @@ package com.flagstone.transform.datatype;
  * Placement the different ways an object can be added to the display list
  * by a Place2 or Place3 instruction.
  */
-public enum Placement {
+public enum PlaceType {
     /**
      * Update an object already in the display list.
      */

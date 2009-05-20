@@ -45,7 +45,7 @@ import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.datatype.ColorTransform;
 import com.flagstone.transform.datatype.CoordTransform;
-import com.flagstone.transform.datatype.Placement;
+import com.flagstone.transform.datatype.PlaceType;
 import com.flagstone.transform.text.DefineTextField;
 
 public final class LayerTest {
@@ -92,14 +92,14 @@ public final class LayerTest {
         layers.add(three);
 
         final Movie movie = new Movie();
-        movie.add(Place2.show(1, 1, 1, 1));
-        movie.add(Place2.show(2, 2, 2, 2));
-        movie.add(Place2.show(3, 3, 3, 3));
+        movie.add(new Place2().show(1, 1, 1, 1));
+        movie.add(new Place2().show(2, 2, 2, 2));
+        movie.add(new Place2().show(3, 3, 3, 3));
         movie.add(ShowFrame.getInstance());
-        movie.add(Place2.move(2, 3, 3));
-        movie.add(Place2.move(3, 4, 4));
+        movie.add(new Place2().move(2, 3, 3));
+        movie.add(new Place2().move(3, 4, 4));
         movie.add(ShowFrame.getInstance());
-        movie.add(Place2.move(3, 5, 5));
+        movie.add(new Place2().move(3, 5, 5));
         movie.add(ShowFrame.getInstance());
 
         assertEquals(Layer.merge(layers), movie.getObjects());
@@ -127,7 +127,7 @@ public final class LayerTest {
         assertEquals(layer.getObjects().size(), 2);
 
         final Place2 place = (Place2) layer.getObjects().get(1);
-        assertEquals(place.getMode(), Placement.NEW);
+        assertEquals(place.getType(), PlaceType.NEW);
     }
 
     @Test
@@ -138,7 +138,7 @@ public final class LayerTest {
         final List<MovieTag> array = layer.getObjects();
         final Place2 place = (Place2) array.get(3);
 
-        assertEquals(place.getMode(), Placement.MODIFY);
+        assertEquals(place.getType(), PlaceType.MODIFY);
     }
 
     @Test
@@ -150,7 +150,7 @@ public final class LayerTest {
         final List<MovieTag> array = layer.getObjects();
         final Place2 place = (Place2) array.get(3);
 
-        assertEquals(place.getMode(), Placement.REPLACE);
+        assertEquals(place.getType(), PlaceType.REPLACE);
     }
 
     @Test
@@ -184,7 +184,7 @@ public final class LayerTest {
         layer.move(-x, -y);
         layer.move(x, y);
 
-        assertEquals(layer.getObjects().get(1), Place2.show(
+        assertEquals(layer.getObjects().get(1), new Place2().show(
                 obj.getIdentifier(), layer.getLayer(), x, y));
     }
 

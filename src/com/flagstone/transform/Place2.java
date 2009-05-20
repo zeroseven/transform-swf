@@ -1,31 +1,32 @@
 /*
- * PlaceObject2.java
+ * Place2.java
  * Transform
  *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  *
- *  * Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer.
+ *  * Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
  *  * Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
- *    may be used to endorse or promote products derived from this software
- *    without specific prior written permission.
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its
+ *    contributors may be used to endorse or promote products derived from this
+ *    software without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
- * OF THE POSSIBILITY OF SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
 
 package com.flagstone.transform;
@@ -36,13 +37,14 @@ import java.util.Map;
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
+import com.flagstone.transform.coder.DefineTag;
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.ColorTransform;
 import com.flagstone.transform.datatype.CoordTransform;
-import com.flagstone.transform.datatype.Placement;
+import com.flagstone.transform.datatype.PlaceType;
 import com.flagstone.transform.movieclip.MovieClipEvent;
 import com.flagstone.transform.movieclip.MovieClipEventHandler;
 
@@ -138,60 +140,11 @@ import com.flagstone.transform.movieclip.MovieClipEventHandler;
 //TODO(class)
 public final class Place2 implements MovieTag {
 
-    private static final String FORMAT = "PlaceObject2: { mode=%s; layer=%d; "
+    private static final String FORMAT = "Place2: { type=%s; layer=%d; "
             + "identifier=%d; transform=%s; colorTransform=%s; ratio=%d; "
             + "clippingDepth=%d; name=%s; clipEvents=%s}";
-
-    /** TODO(method). */
-    public static Place2 show(final int identifier, final int layer,
-            final int xCoord, final int yCoord) {
-        final Place2 object = new Place2();
-        object.placeType = Placement.NEW;
-        object.setIdentifier(identifier);
-        object.setLayer(layer);
-        object.transform = CoordTransform.translate(xCoord, yCoord);
-        return object;
-    }
-
-    /** TODO(method). */
-    public static Place2 modify(final int layer) {
-        final Place2 object = new Place2();
-        object.placeType = Placement.MODIFY;
-        object.setLayer(layer);
-        return object;
-    }
-
-    /** TODO(method). */
-    public static Place2 move(final int layer, final int xCoord,
-            final int yCoord) {
-        final Place2 object = new Place2();
-        object.placeType = Placement.MODIFY;
-        object.setLayer(layer);
-        object.transform = CoordTransform.translate(xCoord, yCoord);
-        return object;
-    }
-
-    /** TODO(method). */
-    public static Place2 replace(final int identifier, final int layer) {
-        final Place2 object = new Place2();
-        object.placeType = Placement.REPLACE;
-        object.setIdentifier(identifier);
-        object.setLayer(layer);
-        return object;
-    }
-
-    /** TODO(method). */
-    public static Place2 replace(final int identifier, final int layer,
-            final int xCoord, final int yCoord) {
-        final Place2 object = new Place2();
-        object.placeType = Placement.REPLACE;
-        object.setIdentifier(identifier);
-        object.setLayer(layer);
-        object.transform = CoordTransform.translate(xCoord, yCoord);
-        return object;
-    }
-
-    private Placement placeType;
+    
+    private PlaceType type;
     private int layer;
     private int identifier;
     private CoordTransform transform;
@@ -243,13 +196,13 @@ public final class Place2 implements MovieTag {
 
         switch (coder.readBits(2, false)) {
         case 1:
-            placeType = Placement.MODIFY;
+            type = PlaceType.MODIFY;
             break;
         case 2:
-            placeType = Placement.NEW;
+            type = PlaceType.NEW;
             break;
         case 3:
-            placeType = Placement.REPLACE;
+            type = PlaceType.REPLACE;
             break;
         default:
             throw new CoderException(getClass().getName(), start >> 3, length,
@@ -259,7 +212,7 @@ public final class Place2 implements MovieTag {
         layer = coder.readWord(2, false);
         events = new ArrayList<MovieClipEventHandler>();
 
-        if ((placeType == Placement.NEW) || (placeType == Placement.REPLACE)) {
+        if ((type == PlaceType.NEW) || (type == PlaceType.REPLACE)) {
             identifier = coder.readWord(2, false);
         }
 
@@ -318,9 +271,8 @@ public final class Place2 implements MovieTag {
      *            a Place2 object from which the values will be
      *            copied.
      */
-    // TODO(optimise) immutable objects
     public Place2(final Place2 object) {
-        placeType = object.placeType;
+        type = object.type;
         layer = object.layer;
         identifier = object.identifier;
 
@@ -340,6 +292,59 @@ public final class Place2 implements MovieTag {
             events.add(event.copy());
         }
     }
+    
+    /** TODO(method). */
+    public Place2 show(final int identifier, final int layer,
+            final int xCoord, final int yCoord) {
+        setType(PlaceType.NEW);
+        setLayer(layer);
+        setIdentifier(identifier);
+        setTransform(CoordTransform.translate(xCoord, yCoord));
+        return this;
+    }
+    
+    /** TODO(method). */
+    public Place2 show(final DefineTag object, final int layer,
+            final int xCoord, final int yCoord) {
+        setType(PlaceType.NEW);
+        setLayer(layer);
+        setIdentifier(object.getIdentifier());
+        setTransform(CoordTransform.translate(xCoord, yCoord));
+        return this;
+    }
+
+    /** TODO(method). */
+    public Place2 modify(final int layer) {
+        setType(PlaceType.MODIFY);
+        setLayer(layer);
+        return this;
+    }
+
+    /** TODO(method). */
+    public Place2 move(final int layer, final int xCoord, final int yCoord) {
+        setType(PlaceType.MODIFY);
+        setLayer(layer);
+        setTransform(CoordTransform.translate(xCoord, yCoord));
+        return this;
+    }
+
+    /** TODO(method). */
+    public Place2 replace(final int identifier, final int layer) {
+        setType(PlaceType.REPLACE);
+        setLayer(layer);
+        setIdentifier(identifier);
+        return this;
+    }
+
+    /** TODO(method). */
+    public Place2 replace(final int identifier, final int layer,
+            final int xCoord, final int yCoord) {
+        setType(PlaceType.REPLACE);
+        setLayer(layer);
+        setIdentifier(identifier);
+        setTransform(CoordTransform.translate(xCoord, yCoord));
+        return this;
+    }      
 
     /**
      * Adds a clip event to the array of clip events.
@@ -388,8 +393,8 @@ public final class Place2 implements MovieTag {
     /**
      * Returns the type of place operation being performed.
      */
-    public Placement getMode() {
-        return placeType;
+    public PlaceType getType() {
+        return type;
     }
 
     /**
@@ -458,8 +463,8 @@ public final class Place2 implements MovieTag {
      *            the type of operation to be performed, either New, Modify or
      *            Replace.
      */
-    public Place2 setMode(final Placement aType) {
-        placeType = aType;
+    public Place2 setType(final PlaceType aType) {
+        type = aType;
         return this;
     }
 
@@ -580,16 +585,15 @@ public final class Place2 implements MovieTag {
         return this;
     }
 
-    /**
-     * Creates and returns a deep copy of this object.
-     */
+    /** {@inheritDoc} */
     public Place2 copy() {
         return new Place2(this);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
-        return String.format(FORMAT, placeType, layer, identifier, transform,
+        return String.format(FORMAT, type, layer, identifier, transform,
                 colorTransform, ratio, depth, name, events);
     }
 
@@ -600,8 +604,8 @@ public final class Place2 implements MovieTag {
         vars.put(Context.TRANSPARENT, 1);
 
         length = 3;
-        length += (placeType.equals(Placement.NEW) || placeType
-                .equals(Placement.REPLACE)) ? 2 : 0;
+        length += (type.equals(PlaceType.NEW) || type
+                .equals(PlaceType.REPLACE)) ? 2 : 0;
         length += transform == null ? 0 : transform.prepareToEncode(coder,
                 context);
         length += colorTransform == null ? 0 : colorTransform.prepareToEncode(
@@ -650,7 +654,7 @@ public final class Place2 implements MovieTag {
         coder.writeBits(colorTransform == null ? 0 : 1, 1);
         coder.writeBits(transform == null ? 0 : 1, 1);
 
-        switch (placeType) {
+        switch (type) {
         case MODIFY:
             coder.writeBits(1, 2);
             break;
@@ -667,7 +671,7 @@ public final class Place2 implements MovieTag {
 
         coder.writeWord(layer, 2);
 
-        if ((placeType == Placement.NEW) || (placeType == Placement.REPLACE)) {
+        if ((type == PlaceType.NEW) || (type == PlaceType.REPLACE)) {
             coder.writeWord(identifier, 2);
         }
         if (transform != null) {

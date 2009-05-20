@@ -81,11 +81,11 @@ public final class DefineTextTest {
                 textWidth, textHeight);
 
         movie.add(path.defineShape(shapeId));
-        movie.add(Place2.show(shapeId, layer++, x + textWidth / 2, y
+        movie.add(new Place2().show(shapeId, layer++, x + textWidth / 2, y
                 + textHeight / 2));
 
         movie.add(text);
-        movie.add(Place2.show(text.getIdentifier(), layer++, x, y));
+        movie.add(new Place2().show(text.getIdentifier(), layer++, x, y));
         movie.add(ShowFrame.getInstance());
 
         movie.setFrameSize(new Bounds(0, 0, textWidth + 2 * margin, textHeight
@@ -146,11 +146,11 @@ public final class DefineTextTest {
                     textWidth, textHeight);
 
             movie.add(path.defineShape(shapeId));
-            movie.add(Place2.show(shapeId, layer++, x + textWidth / 2, y
+            movie.add(new Place2().show(shapeId, layer++, x + textWidth / 2, y
                     + textHeight / 2));
 
             movie.add(text);
-            movie.add(Place2.show(text.getIdentifier(), layer++, x, y));
+            movie.add(new Place2().show(text.getIdentifier(), layer++, x, y));
 
             if (i % charsPerLine == charsPerLine - 1) {
                 maxWidth = x + advance + margin > maxWidth ? x + advance

@@ -42,7 +42,7 @@ public final class ShowImage {
             movie.add(image);
             movie.add(factory.defineEnclosingShape(shapeId, image.getIdentifier(),
                     imageWidth / 2, imageHeight / 2, null));
-            movie.add(Place2.show(shapeId, 1, 0, 0));
+            movie.add(new Place2().show(shapeId, 1, 0, 0));
             movie.add(ShowFrame.getInstance());
 
             movie.encodeToFile(new File(destFile));

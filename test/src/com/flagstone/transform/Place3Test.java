@@ -44,7 +44,7 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.ColorTransform;
 import com.flagstone.transform.datatype.CoordTransform;
-import com.flagstone.transform.datatype.Placement;
+import com.flagstone.transform.datatype.PlaceType;
 
 public final class Place3Test {
 
@@ -112,7 +112,7 @@ public final class Place3Test {
         final SWFEncoder encoder = new SWFEncoder(coord.length);
         final Context context = new Context();
 
-        fixture = new Place3().setPlacement(Placement.NEW).setIdentifier(
+        fixture = new Place3().setType(PlaceType.NEW).setIdentifier(
                 identifier).setLayer(layer).setTransform(transform);
         assertEquals(coord.length, fixture.prepareToEncode(encoder, context));
         fixture.encode(encoder, context);

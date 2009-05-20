@@ -1,31 +1,32 @@
 /*
- * PlaceObject2.java
+ * Place3.java
  * Transform
  *
- * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
+ * Copyright (c) 2009 Flagstone Software Ltd. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  *
- *  * Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer.
+ *  * Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
  *  * Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *  * Neither the name of Flagstone Software Ltd. nor the names of its contributors
- *    may be used to endorse or promote products derived from this software
- *    without specific prior written permission.
+ *  * Neither the name of Flagstone Software Ltd. nor the names of its
+ *    contributors may be used to endorse or promote products derived from this
+ *    software without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
- * OF THE POSSIBILITY OF SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
 
 package com.flagstone.transform;
@@ -36,6 +37,7 @@ import java.util.Map;
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
+import com.flagstone.transform.coder.DefineTag;
 import com.flagstone.transform.coder.Filter;
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.MovieTypes;
@@ -44,7 +46,7 @@ import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.coder.SWFFactory;
 import com.flagstone.transform.datatype.ColorTransform;
 import com.flagstone.transform.datatype.CoordTransform;
-import com.flagstone.transform.datatype.Placement;
+import com.flagstone.transform.datatype.PlaceType;
 import com.flagstone.transform.movieclip.MovieClipEventHandler;
 
 /**
@@ -137,61 +139,13 @@ import com.flagstone.transform.movieclip.MovieClipEventHandler;
  */
 //TODO(class)
 public final class Place3 implements MovieTag {
-    private static final String FORMAT = "PlaceObject3: { place=%s; layer=%d; "
-            + "bitmapCached=%s; identifier=%d; transform=%d; colorTransform=%d; "
-            + "ratio=%d; clippingDepth=%d; name=%s; className=%s; "
-            + "filters=%s; blend=%s;  clipEvents=%s}";
+    
+    private static final String FORMAT = "PlaceObject3: { type=%s; layer=%d;"
+            + " bitmapCached=%s; identifier=%d; transform=%d; colorTransform=%d;"
+            + " ratio=%d; clippingDepth=%d; name=%s; className=%s;"
+            + " filters=%s; blend=%s; clipEvents=%s}";
 
-    /** TODO(method). */
-    public static Place3 show(final int identifier, final int layer,
-            final int xCoord, final int yCoord) {
-        final Place3 object = new Place3();
-        object.placeType = Placement.NEW;
-        object.setIdentifier(identifier);
-        object.setLayer(layer);
-        object.transform = CoordTransform.translate(xCoord, yCoord);
-        return object;
-    }
-
-    /** TODO(method). */
-    public static Place3 modify(final int layer) {
-        final Place3 object = new Place3();
-        object.placeType = Placement.MODIFY;
-        object.setLayer(layer);
-        return object;
-    }
-
-    /** TODO(method). */
-    public static Place3 move(final int layer, final int xCoord,
-            final int yCoord) {
-        final Place3 object = new Place3();
-        object.placeType = Placement.MODIFY;
-        object.setLayer(layer);
-        object.transform = CoordTransform.translate(xCoord, yCoord);
-        return object;
-    }
-
-    /** TODO(method). */
-    public static Place3 replace(final int identifier, final int layer) {
-        final Place3 object = new Place3();
-        object.placeType = Placement.REPLACE;
-        object.setIdentifier(identifier);
-        object.setLayer(layer);
-        return object;
-    }
-
-    /** TODO(method). */
-    public static Place3 replace(final int identifier, final int layer,
-            final int xCoord, final int yCoord) {
-        final Place3 object = new Place3();
-        object.placeType = Placement.REPLACE;
-        object.setIdentifier(identifier);
-        object.setLayer(layer);
-        object.transform = CoordTransform.translate(xCoord, yCoord);
-        return object;
-    }
-
-    private Placement placeType;
+    private PlaceType type;
     private int layer;
     private String className;
     private boolean bitmapCached;
@@ -249,13 +203,13 @@ public final class Place3 implements MovieTag {
 
         switch (coder.readBits(2, false)) {
         case 1:
-            placeType = Placement.MODIFY;
+            type = PlaceType.MODIFY;
             break;
         case 2:
-            placeType = Placement.NEW;
+            type = PlaceType.NEW;
             break;
         case 3:
-            placeType = Placement.REPLACE;
+            type = PlaceType.REPLACE;
             break;
         default:
             throw new CoderException(getClass().getName(), start >> 3, length,
@@ -272,11 +226,11 @@ public final class Place3 implements MovieTag {
 
         layer = coder.readWord(2, false);
 
-        if (hasClassName || (placeType == Placement.NEW && hasImage)) {
+        if (hasClassName || (type == PlaceType.NEW && hasImage)) {
             className = coder.readString();
         }
 
-        if ((placeType == Placement.NEW) || (placeType == Placement.REPLACE)) {
+        if ((type == PlaceType.NEW) || (type == PlaceType.REPLACE)) {
             identifier = coder.readWord(2, false);
         }
 
@@ -342,7 +296,8 @@ public final class Place3 implements MovieTag {
      * Creates an uninitialised Place3 object.
      */
     public Place3() {
-        // Create uninitialized object
+        filters = new ArrayList<Filter>();
+        events = new ArrayList<MovieClipEventHandler>();
     }
 
     /**
@@ -354,7 +309,7 @@ public final class Place3 implements MovieTag {
      *            copied.
      */
     public Place3(final Place3 object) {
-        placeType = object.placeType;
+        type = object.type;
         layer = object.layer;
         bitmapCached = object.bitmapCached;
         className = object.className;
@@ -378,12 +333,65 @@ public final class Place3 implements MovieTag {
         }
 
     }
+    
+    /** TODO(method). */
+    public Place3 show(final int identifier, final int layer,
+            final int xCoord, final int yCoord) {
+        setType(PlaceType.NEW);
+        setLayer(layer);
+        setIdentifier(identifier);
+        setTransform(CoordTransform.translate(xCoord, yCoord));
+        return this;
+    }
+    
+    /** TODO(method). */
+    public Place3 show(final DefineTag object, final int layer,
+            final int xCoord, final int yCoord) {
+        setType(PlaceType.NEW);
+        setLayer(layer);
+        setIdentifier(object.getIdentifier());
+        setTransform(CoordTransform.translate(xCoord, yCoord));
+        return this;
+    }
+
+    /** TODO(method). */
+    public Place3 modify(final int layer) {
+        setType(PlaceType.MODIFY);
+        setLayer(layer);
+        return this;
+    }
+
+    /** TODO(method). */
+    public Place3 move(final int layer, final int xCoord, final int yCoord) {
+        setType(PlaceType.MODIFY);
+        setLayer(layer);
+        setTransform(CoordTransform.translate(xCoord, yCoord));
+        return this;
+    }
+
+    /** TODO(method). */
+    public Place3 replace(final int identifier, final int layer) {
+        setType(PlaceType.REPLACE);
+        setLayer(layer);
+        setIdentifier(identifier);
+        return this;
+    }
+
+    /** TODO(method). */
+    public Place3 replace(final int identifier, final int layer,
+            final int xCoord, final int yCoord) {
+        setType(PlaceType.REPLACE);
+        setLayer(layer);
+        setIdentifier(identifier);
+        setTransform(CoordTransform.translate(xCoord, yCoord));
+        return this;
+    }      
 
     /**
      * Returns the type of place operation being performed.
      */
-    public Placement getPlacement() {
-        return placeType;
+    public PlaceType getType() {
+        return type;
     }
 
     /**
@@ -393,8 +401,8 @@ public final class Place3 implements MovieTag {
      *            the type of operation to be performed, either New, Modify or
      *            Replace.
      */
-    public Place3 setPlacement(final Placement aType) {
-        placeType = aType;
+    public Place3 setType(final PlaceType aType) {
+        type = aType;
         return this;
     }
 
@@ -685,7 +693,7 @@ public final class Place3 implements MovieTag {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        return String.format(FORMAT, placeType, layer, identifier, transform,
+        return String.format(FORMAT, type, layer, identifier, transform,
                 colorTransform, ratio, depth, name, events);
     }
 
@@ -698,7 +706,7 @@ public final class Place3 implements MovieTag {
         hasFilters = !filters.isEmpty(); 
 
         length = 4;
-        length += ((placeType == Placement.NEW) || (placeType == Placement.REPLACE)) ? 2
+        length += ((type == PlaceType.NEW) || (type == PlaceType.REPLACE)) ? 2
                 : 0;
         length += transform == null ? 0 : transform.prepareToEncode(coder,
                 context);
@@ -758,9 +766,9 @@ public final class Place3 implements MovieTag {
         coder.writeBits(colorTransform == null ? 0 : 1, 1);
         coder.writeBits(transform == null ? 0 : 1, 1);
 
-        if (placeType == Placement.MODIFY) {
+        if (type == PlaceType.MODIFY) {
             coder.writeBits(1, 2);
-        } else if (placeType == Placement.NEW) {
+        } else if (type == PlaceType.NEW) {
             coder.writeBits(2, 2);
         } else {
             coder.writeBits(3, 2);
@@ -777,7 +785,7 @@ public final class Place3 implements MovieTag {
         if (className != null) {
             coder.writeString(className);
         }
-        if ((placeType == Placement.NEW) || (placeType == Placement.REPLACE)) {
+        if ((type == PlaceType.NEW) || (type == PlaceType.REPLACE)) {
             coder.writeWord(identifier, 2);
         }
         if (transform != null) {
