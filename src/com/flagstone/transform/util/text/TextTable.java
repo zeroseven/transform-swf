@@ -1,5 +1,5 @@
 /*
- *  TextConstructor.java
+ *  TextTable.java
  *  Transform Utilities
  *
  * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
@@ -56,6 +56,7 @@ public final class TextTable {
 
     /** TODO(method). */
     public TextTable(final DefineFont2 font, final int size) {
+        
         characters = new LinkedHashMap<Character, GlyphIndex>();
 
         final List<Integer> codes = font.getCodes();
@@ -63,6 +64,9 @@ public final class TextTable {
 
         final float scale = size / 1024.0f;
         final int count = codes.size();
+
+        ascent = (int) (font.getAscent() * scale);
+        descent = (int) (font.getDescent() * scale);
 
         for (int i = 0; i < count; i++) {
             characters.put((char) codes.get(i).intValue(), new GlyphIndex(i,
@@ -80,9 +84,15 @@ public final class TextTable {
      * @return the bounding box that completely encloses the text.
      */
     public Bounds boundsForText(final String text) {
-        final Bounds bounds = null; // TODO(implement)
+        
+        int total = 0;
+        
+        for (int i=0; i<text.length(); i++) {
+            total += characters.get(text.charAt(i)).getAdvance();
+        }
 
-        return bounds;
+
+        return new Bounds(0,descent,total,ascent);
     }
 
     /**
@@ -97,7 +107,10 @@ public final class TextTable {
     public List<GlyphIndex> charactersForText(final String text) {
         final List<GlyphIndex> list = new ArrayList<GlyphIndex>(text
                 .length());
-        // TODO(implement)
+        for (int i=0; i<text.length(); i++) {
+            list.add(characters.get(text.charAt(i)));
+        }
+
         return list;
     }
 
