@@ -68,7 +68,7 @@ public final class FrameTest {
         movie.add(new FrameLabel(label));
         movie.add(ShowFrame.getInstance());
 
-        final List<Frame> frames = Frame.framesFromMovie(movie);
+        final List<Frame> frames = Frame.split(movie);
 
         assertEquals(frames.size(), 1);
         assertEquals(frames.get(0).getLabel(), label);
@@ -78,7 +78,7 @@ public final class FrameTest {
     public void frameWithNoLabel() throws CoderException {
         movie.add(ShowFrame.getInstance());
 
-        final List<Frame> frames = Frame.framesFromMovie(movie);
+        final List<Frame> frames = Frame.split(movie);
 
         assertEquals(frames.size(), 1);
         assertEquals(frames.get(0).getLabel(), null);
@@ -91,7 +91,7 @@ public final class FrameTest {
         movie.add(command);
         movie.add(ShowFrame.getInstance());
 
-        final List<Frame> frames = Frame.framesFromMovie(movie);
+        final List<Frame> frames = Frame.split(movie);
 
         assertEquals(frames.size(), 1);
         assertEquals(frames.get(0).getCommands().size(), 1);
@@ -102,7 +102,7 @@ public final class FrameTest {
     public void frameWithNoCommand() throws CoderException {
         movie.add(ShowFrame.getInstance());
 
-        final List<Frame> frames = Frame.framesFromMovie(movie);
+        final List<Frame> frames = Frame.split(movie);
 
         assertEquals(frames.size(), 1);
         assertEquals(frames.get(0).getCommands().size(), 0);
@@ -116,7 +116,7 @@ public final class FrameTest {
         movie.add(field);
         movie.add(ShowFrame.getInstance());
 
-        final List<Frame> frames = Frame.framesFromMovie(movie);
+        final List<Frame> frames = Frame.split(movie);
 
         assertEquals(frames.size(), 1);
         assertEquals(frames.get(0).getDefinitions().size(), 1);
@@ -127,7 +127,7 @@ public final class FrameTest {
     public void frameWithNoDefinition() throws CoderException {
         movie.add(ShowFrame.getInstance());
 
-        final List<Frame> frames = Frame.framesFromMovie(movie);
+        final List<Frame> frames = Frame.split(movie);
 
         assertEquals(frames.size(), 1);
         assertEquals(frames.get(0).getDefinitions().size(), 0);
@@ -145,7 +145,7 @@ public final class FrameTest {
         movie.add(actions);
         movie.add(ShowFrame.getInstance());
 
-        final List<Frame> frames = Frame.framesFromMovie(movie);
+        final List<Frame> frames = Frame.split(movie);
 
         assertEquals(frames.size(), 1);
         assertEquals(frames.get(0).getActions().size(), 2);
@@ -157,7 +157,7 @@ public final class FrameTest {
     public void frameWithNoActions() throws CoderException {
         movie.add(ShowFrame.getInstance());
 
-        final List<Frame> frames = Frame.framesFromMovie(movie);
+        final List<Frame> frames = Frame.split(movie);
 
         assertEquals(frames.size(), 1);
         assertEquals(frames.get(0).getActions().size(), 0);
@@ -172,7 +172,7 @@ public final class FrameTest {
         frame.addCommand(Place2.show(1, 1, 0, 0));
         frame.addToMovie(movie);
 
-        final List<Frame> frames = Frame.framesFromMovie(movie);
+        final List<Frame> frames = Frame.split(movie);
 
         assertNotSame(frame, frames.get(0));
         assertEquals(frame, frames.get(0));
@@ -183,7 +183,7 @@ public final class FrameTest {
         movie.add(ShowFrame.getInstance());
         movie.add(ShowFrame.getInstance());
 
-        final List<Frame> frames = Frame.framesFromMovie(movie);
+        final List<Frame> frames = Frame.split(movie);
 
         assertEquals(frames.size(), 2);
     }

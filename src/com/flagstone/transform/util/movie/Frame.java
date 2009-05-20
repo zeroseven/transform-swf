@@ -119,10 +119,9 @@ public final class Frame {
      *            an Movie object.
      * @return an array of Frame objects.
      */
-    public static List<Frame> framesFromMovie(final Movie aMovie)
-            throws CoderException {
+    public static List<Frame> split(final Movie aMovie) throws CoderException {
         final ArrayList<Frame> frames = new ArrayList<Frame>();
-
+        int index = 1;
         Frame currentFrame = new Frame();
 
         for (final MovieTag currentObject : aMovie.getObjects()) {
@@ -133,6 +132,7 @@ public final class Frame {
             } else if (currentObject instanceof DefineTag) {
                 currentFrame.addDefinition(currentObject);
             } else if (currentObject instanceof ShowFrame) {
+                currentFrame.setNumber(index++);
                 frames.add(currentFrame);
                 currentFrame = new Frame();
             } else {
@@ -143,6 +143,7 @@ public final class Frame {
     }
 
     private String label;
+    private int number;
     private List<MovieTag> definitions;
     private List<MovieTag> commands;
     private List<Action> actions;
@@ -152,7 +153,17 @@ public final class Frame {
      * and actions arrays empty.
      */
     public Frame() {
-        label = "";
+        definitions = new ArrayList<MovieTag>();
+        commands = new ArrayList<MovieTag>();
+        actions = new ArrayList<Action>();
+    }
+
+    /**
+     * Creates a empty frame with no label defined and the definitions, commands
+     * and actions arrays empty.
+     */
+    public Frame(int number) {
+        setNumber(number);
         definitions = new ArrayList<MovieTag>();
         commands = new ArrayList<MovieTag>();
         actions = new ArrayList<Action>();
@@ -168,7 +179,6 @@ public final class Frame {
         if (anObject == null) {
             throw new NullPointerException();
         }
-
         actions.add(anObject);
     }
 
@@ -183,7 +193,6 @@ public final class Frame {
         if (anObject == null) {
             throw new NullPointerException();
         }
-
         definitions.add(anObject);
     }
 
@@ -198,8 +207,14 @@ public final class Frame {
         if (anObject == null) {
             throw new NullPointerException();
         }
-
         commands.add(anObject);
+    }
+
+    /**
+     * Returns the number of the frame.
+      */
+    public int getNumber() {
+        return number;
     }
 
     /**
@@ -237,6 +252,16 @@ public final class Frame {
      */
     public List<Action> getActions() {
         return actions;
+    }
+
+    /**
+     * Sets the number for the frame.
+     *
+     * @param number
+     *            the frame number.
+     */
+    public void setNumber(final int number) {
+        this.number = number;
     }
 
     /**

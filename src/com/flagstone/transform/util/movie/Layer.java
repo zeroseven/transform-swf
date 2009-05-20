@@ -155,50 +155,44 @@ public final class Layer {
      * @return an array of all the objects contained in each layer. This array
      *         can then be added to the movie.
      */
-    public static List<MovieTag> merge(final List<Layer> layers) {
-        final ArrayList<MovieTag> objects = new ArrayList<MovieTag>();
-
-        final int[] idx = new int[layers.size()];
-
-        for (int i = 0; i < idx.length; i++) {
-            idx[i] = 0;
-        }
-
-        while (true) {
-            List<MovieTag> array = null;
-            MovieTag object;
-
-            for (int i = 0; i < idx.length; i++) {
-                array = layers.get(i).getObjects();
-
-                while (idx[i] < array.size()) {
-                    object = array.get(idx[i]++);
-
-                    if (object instanceof ShowFrame) {
-                        break;
-                    }
-
-                    objects.add(object);
-                }
-
-                if (idx[i] == array.size()) {
-                    array = null;
+    public static List<Frame> merge(final List<Layer> layers) {
+        
+        int lastFrame = 0;
+        
+        for (Layer layer : layers) {
+            for (Frame frame : layer.getFrames()) {
+                if (frame.getNumber() > lastFrame) {
+                    lastFrame = frame.getNumber();
                 }
             }
-            objects.add(ShowFrame.getInstance());
-
-            if (array == null) {
-                break;
+        }
+         
+        final ArrayList<Frame> merged = new ArrayList<Frame>(lastFrame);
+        
+        for (int i=1; i<=lastFrame; i++) {
+            merged.add(new Frame(i));
+        }
+        
+        Frame selected;
+        
+        for (Layer layer : layers) {
+            for (Frame frame : layer.getFrames()) {
+                selected = merged.get(frame.getNumber()-1);
+                
+                selected.setActions(frame.getActions());
+                selected.setCommands(frame.getCommands());
+                selected.setDefinitions(frame.getDefinitions());
+                
+                if (frame.getLabel() != null) {
+                    selected.setLabel(frame.getLabel());
+                }
             }
         }
-
-        return objects;
+        return merged;
     }
 
     private final int layerNumber;
-    private int identifier;
-    private Place2 place;
-    private final List<MovieTag> displayList;
+    private final List<Frame> frames;
 
     /**
      * Create a new Layer object. Layers are used to define the order in which
@@ -210,8 +204,7 @@ public final class Layer {
      */
     public Layer(final int number) {
         layerNumber = number;
-        identifier = 0;
-        displayList = new ArrayList<MovieTag>();
+        frames = new ArrayList<Frame>();
     }
 
     /**
@@ -225,265 +218,21 @@ public final class Layer {
     }
 
     /**
-     * Return the identifier of the object on the layer. Note: it is possible to
-     * place more than one object on a layer however only one should be visible
-     * on the display list at a given time.
-     *
-     * @return the unique identifier used to reference the object.
+     * TODO(method).
      */
-    public int getIdentifier() {
-        return identifier;
+    public List<Frame> getFrames() {
+        return frames;
     }
 
     /**
-     * Return the array of commands used to manipulate the object on the display
-     * list.
+     * Add a frame to the layer. The object may be selected later for display.
      *
-     * @return an array of MovieTag containing the definition of the object
-     *         (shape, text, etc) to be displayed and the associated commands
-     *         that update the position of the object on the screen.
+     * @param frame
+     *            a Frame object.
      */
-    public List<MovieTag> getObjects() {
-        return displayList;
-    }
-
-    /**
-     * Add an object to the layer. The object may be selected later for display.
-     *
-     * @param definition
-     *            an object defining an image, shape, text, sound or video.
-     */
-    public Layer add(final MovieTag definition) {
-        displayList.add(definition);
+    public Layer add(final Frame frame) {
+        frames.add(frame);
+        frame.setNumber(frames.size());
         return this;
-    }
-
-    /**
-     * Select the object previously added to the layer to be added on the
-     * display list. The object will be placed at the default coordinates (0,0).
-     *
-     * IMPORTANT: You only need to use this method when adding an object to the
-     * display list for the first time or when re-adding it after it has been
-     * deleted. Since the display list has one layer per object then the layer
-     * number can be used to identify which object to update.
-     *
-     * @param uid
-     *            an object definition, DefineShape, DefineImage, etc. that will
-     *            be added to the display list.
-     */
-    public void select(final int uid) {
-        identifier = uid;
-        place = Place2.show(uid, layerNumber, 0, 0);
-        displayList.add(place);
-    }
-
-    /**
-     * Add an object to the later and select it to be added on the display list.
-     *
-     * @param definition
-     *            an object definition, DefineShape, DefineImage, etc. that will
-     *            be added to the display list.
-     */
-    public void select(final DefineTag definition) {
-        add(definition);
-        select(definition.getIdentifier());
-    }
-
-    /**
-     * Set the coordinates where the object will be displayed.
-     *
-     * @param xCoord
-     *            the x-coordinate, expressed in twips.
-     * @param yCoord
-     *            the y-coordinate, expressed in twips.
-     */
-    public void move(final int xCoord, final int yCoord) {
-        if (place == null) {
-            place = new Place2().move(layerNumber, xCoord, yCoord);
-            displayList.add(place);
-        } else {
-            place.setTransform(CoordTransform.translate(xCoord, yCoord));
-        }
-    }
-
-    /**
-     * Change the colour of the object to the values (r,g,b). The colour will be
-     * opaque so you cannot use this method to change only the colour of a
-     * transparent object.
-     *
-     * @param red
-     *            the red component of the colour.
-     * @param green
-     *            the green component of the colour.
-     * @param blue
-     *            the blue component of the colour.
-     */
-    public void color(final int red, final int green, final int blue) {
-        color(red, green, blue, 255);
-    }
-
-    /**
-     * Change the colour of the object to the values (r,g,b,a).
-     *
-     * @param red
-     *            the red component of the colour.
-     * @param green
-     *            the green component of the colour.
-     * @param blue
-     *            the blue component of the colour.
-     * @param alpha
-     *            the transparency component.
-     */
-    public void color(final int red, final int green, final int blue,
-            final int alpha) {
-        final ColorTransform transform = new ColorTransform(red, green, blue,
-                alpha);
-
-        if (place == null) {
-            displayList.add(Place2.modify(layerNumber).setColorTransform(
-                    transform));
-        } else {
-            place.setColorTransform(transform);
-        }
-    }
-
-    /**
-     * Set the number of layers that the outline of the object will clip when
-     * placed on the display list.
-     *
-     * @param depth
-     *            the number of layers that will be clipped.
-     */
-    public void clip(final int depth) {
-        if (place == null) {
-            displayList.add(Place2.modify(layerNumber).setDepth(depth));
-        } else {
-            place.setDepth(depth);
-        }
-    }
-
-    /**
-     * Set the point in the morphing process for a morph shape in the range 0.0
-     * to 1.0.
-     *
-     * @param ratio
-     *            the ratio between the starting shape and the end shape.
-     */
-    public void morph(final float ratio) {
-        if (place == null) {
-            displayList.add(Place2.modify(layerNumber).setRatio(
-                    (int) (ratio * 65535.0f)));
-        } else {
-            place.setRatio((int) (ratio * 65535.0f));
-        }
-    }
-
-    /**
-     * Assign a name to the object.
-     *
-     * @param name
-     *            a string that can be used to reference the object.
-     */
-    public void name(final String name) {
-        if (place == null) {
-            displayList.add(Place2.modify(layerNumber).setName(name));
-        } else {
-            place.setName(name);
-        }
-    }
-
-    /**
-     * Remove the object from the display list.
-     */
-    public void remove() {
-        if (place != null) {
-            place = null;
-        }
-
-        displayList.add(new Remove2(layerNumber));
-    }
-
-    /**
-     * Replace the object on the display list.
-     *
-     * @param uid
-     *            the unique identifier used to reference the object.
-     */
-    public void replace(final int uid) {
-        identifier = uid;
-
-        if (place == null) {
-            displayList.add(Place2.replace(uid, layerNumber));
-        } else {
-            place.setIdentifier(uid);
-            place.setType(PlaceType.REPLACE);
-        }
-    }
-
-    /**
-     * Change the colour of the object by applying a color transform.
-     *
-     * @param color
-     *            the color transform to apply to the shape.
-     */
-    public void change(final ColorTransform color) {
-        if (place == null) {
-            displayList
-                    .add(Place2.modify(layerNumber).setColorTransform(color));
-        } else {
-            place.setColorTransform(color);
-        }
-    }
-
-    /**
-     * Change the position, orientation and scaling of the object by applying a
-     * 2D coordinate transform.
-     *
-     * Use this method to apply more complex coordinate transforms to an object
-     * for example that composite move, scaling and rotation operations in a
-     * single step.
-     *
-     * @param coord
-     *            the coordinate transform to apply to the object.
-     */
-    public void change(final CoordTransform coord) {
-        if (place == null) {
-            displayList.add(Place2.modify(layerNumber).setTransform(coord));
-        } else {
-            place.setTransform(coord);
-        }
-    }
-
-    /**
-     * Instruct the Flash Player to display a frame and render the contents of
-     * the display list, applying the commands previously set. You must use this
-     * method for any of the other operations to take effect.
-     *
-     */
-    public void show() {
-        show(1);
-    }
-
-    /**
-     * Display one or more frames. The state (position, orientation, visibility,
-     * etc.) of the object will remain unchanged for the duration of the added
-     * frames.
-     *
-     * @param count
-     *            the number of frames to be displayed. Must be a positive
-     *            number.
-     */
-    public void show(final int count) {
-        if (count < 1) {
-            throw new IllegalArgumentException("Must show at least one frame");
-        }
-
-        if (place != null) {
-            place = null;
-        }
-
-        for (int i = 0; i < count; i++) {
-            displayList.add(ShowFrame.getInstance());
-        }
     }
 }
