@@ -1,7 +1,0 @@
-2009-04-13 - smackay@flagstonesoftware.com
-
-    * Added code to new repository. The release notes contain a summary of the
-	  changes from version 2.6.
-	  
-    
- 
