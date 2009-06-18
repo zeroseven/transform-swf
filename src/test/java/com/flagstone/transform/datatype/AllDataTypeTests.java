@@ -37,6 +37,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
     BoundsTest.class,
     ColorTest.class,
+    ColorPatternTest.class,
     ColorTransformTest.class,
     CoordTransformTest.class }
 )

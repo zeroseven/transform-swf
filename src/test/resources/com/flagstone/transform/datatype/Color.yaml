@@ -1,0 +1,16 @@
+---
+# A colour where only the red, green and blue values are encoded
+red: 1
+green: 2
+blue: 3
+alpha: 255
+data: !!binary
+  AQID
+---
+# A colour with red, green, blue and alpha values encoded
+red: 1
+green: 2
+blue: 3
+alpha: 4
+data: !!binary
+  AQIDBA==

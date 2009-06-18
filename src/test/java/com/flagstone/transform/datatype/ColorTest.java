@@ -30,17 +30,13 @@
  */
 package com.flagstone.transform.datatype;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 
-import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.SWFDecoder;
-import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 public final class ColorTest {
 
@@ -49,28 +45,88 @@ public final class ColorTest {
     private static final int BLUE = 3;
     private static final int ALPHA = 4;
 
-    private static final byte[] OPAQUE = {1, 2, 3};
-    private static final byte[] TRANSPARENT = {1, 2, 3, 4};
+    private static final int TOO_LOW = Color.MIN_LEVEL-1;
+    private static final int TOO_HIGH = Color.MAX_LEVEL+1;
 
-    @Test(expected = IllegalArgumentException.class)
-    public void checkLowValueThrowsException() {
-        new Color(Color.MIN_LEVEL-1, GREEN, BLUE);
+    @Test
+    public void checkConstructorSetsRed() {
+        assertEquals(RED, new Color(RED, GREEN, BLUE, ALPHA).getRed());
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void checkHighValueThrowsException() {
-        new Color(Color.MAX_LEVEL+1, GREEN, BLUE);
+    @Test(expected=IllegalArgumentRangeException.class)
+    public void checkRedValueBelowRangeThrowsException() {
+        new Color(TOO_LOW, GREEN, BLUE, ALPHA);    
+    }
+
+    @Test(expected=IllegalArgumentRangeException.class)
+    public void checkRedValueAboveRangeThrowsException() {
+        new Color(TOO_HIGH, GREEN, BLUE, ALPHA);    
     }
 
     @Test
-    public void checkSameIsEqual() {
+    public void checkConstructorSetsGreen() {
+        assertEquals(GREEN, new Color(RED, GREEN, BLUE, ALPHA).getGreen());
+    }
+
+    @Test(expected=IllegalArgumentRangeException.class)
+    public void checkGreenValueBelowRangeThrowsException() {
+        new Color(RED, TOO_LOW, BLUE, ALPHA);    
+    }
+
+    @Test(expected=IllegalArgumentRangeException.class)
+    public void checkGreenValueAboveRangeThrowsException() {
+        new Color(RED, TOO_HIGH, BLUE, ALPHA);    
+    }
+
+    @Test
+    public void checkConstructorSetsBlue() {
+        assertEquals(BLUE, new Color(RED, GREEN, BLUE, ALPHA).getBlue());
+    }
+
+    @Test(expected=IllegalArgumentRangeException.class)
+    public void checkBlueValueBelowRangeThrowsException() {
+        new Color(RED, GREEN, TOO_LOW, ALPHA);    
+    }
+
+    @Test(expected=IllegalArgumentRangeException.class)
+    public void checkBlueValueAboveRangeThrowsException() {
+        new Color(RED, GREEN, TOO_HIGH, ALPHA);    
+    }
+
+    @Test
+    public void checkConstructorSetsAlpha() {
+        assertEquals(ALPHA, new Color(RED, GREEN, BLUE, ALPHA).getAlpha());
+    }
+
+    @Test(expected=IllegalArgumentRangeException.class)
+    public void checkAlphaValueBelowRangeThrowsException() {
+        new Color(RED, GREEN, BLUE, TOO_LOW);    
+    }
+
+    @Test(expected=IllegalArgumentRangeException.class)
+    public void checkAlphaValueAboveRangeThrowsException() {
+        new Color(RED, GREEN, BLUE, TOO_HIGH);    
+    }
+
+    @Test
+    public void checkString() {
+        assertNotNull(new Color(RED, GREEN, BLUE, ALPHA).toString());
+    }
+
+    @Test
+    public void checkHashCode() {
+        assertEquals(31810, new Color(RED, GREEN, BLUE, ALPHA).hashCode());
+    }
+
+    @Test
+    public void checkSameObjectIsEqual() {
         final Color color = new Color(RED, GREEN, BLUE, ALPHA);
 
         assertEquals(color, color);
     }
 
     @Test
-    public void checkDifferentIsEqual() {
+    public void checkSameColorIsEqual() {
         final Color color = new Color(RED, GREEN, BLUE, ALPHA);
         final Color other = new Color(RED, GREEN, BLUE, ALPHA);
 
@@ -78,9 +134,9 @@ public final class ColorTest {
     }
 
     @Test
-    public void checkOtherIsNotEqual() {
+    public void checkDifferentColorIsNotEqual() {
         final Color color = new Color(RED, GREEN, BLUE, ALPHA);
-        final Color other = new Color(ALPHA, BLUE, GREEN, RED);
+        final Color other = new Color(RED, GREEN, BLUE);
 
         assertFalse(color.equals(other));
     }
@@ -99,58 +155,5 @@ public final class ColorTest {
         final Color other = null;
 
         assertFalse(color.equals(other));
-    }
-
-    @Test
-    public void encodeOpaqueColour() throws CoderException {
-        final SWFEncoder encoder = new SWFEncoder(OPAQUE.length);
-        final Context context = new Context();
-
-        final Color color = new Color(RED, GREEN, BLUE);
-        final int length = color.prepareToEncode(encoder, context);
-        color.encode(encoder, context);
-
-        assertTrue(encoder.eof());
-        assertEquals(OPAQUE.length, length);
-        assertArrayEquals(OPAQUE, encoder.getData());
-    }
-
-    @Test
-    public void encodeTransparentColour() throws CoderException {
-        final SWFEncoder encoder = new SWFEncoder(TRANSPARENT.length);
-        final Context context = new Context().put(Context.TRANSPARENT, 1);
-
-        final Color color = new Color(RED, GREEN, BLUE, ALPHA);
-        final int length = color.prepareToEncode(encoder, context);
-        color.encode(encoder, context);
-
-        assertTrue(encoder.eof());
-        assertEquals(TRANSPARENT.length, length);
-        assertArrayEquals(TRANSPARENT, encoder.getData());
-    }
-
-    @Test
-    public void decodeOpaqueColour() throws CoderException {
-        final SWFDecoder decoder = new SWFDecoder(OPAQUE);
-        final Context context = new Context();
-
-        final Color color = new Color(decoder, context);
-
-        assertTrue(decoder.eof());
-        assertEquals(RED, color.getRed());
-        assertEquals(GREEN, color.getGreen());
-        assertEquals(BLUE, color.getBlue());
-        assertEquals(Color.MAX_LEVEL, color.getAlpha());
-    }
-
-    @Test
-    public void decodeTransparentColour() throws CoderException {
-        final SWFDecoder decoder = new SWFDecoder(TRANSPARENT);
-        final Context context = new Context().put(Context.TRANSPARENT, 1);
-
-        final Color color = new Color(decoder, context);
-
-        assertTrue(decoder.eof());
-        assertEquals(ALPHA, color.getAlpha());
     }
 }
