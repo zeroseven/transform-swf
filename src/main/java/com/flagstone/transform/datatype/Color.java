@@ -107,42 +107,6 @@ public final class Color implements SWFEncodeable {
     }
 
     /**
-     * Creates an opaque colour object using an integer to represent the values
-     * for the red, green and blue colour channels.
-     *
-     * @param rgb
-     *            the integer value of the colour channels. The value is a
-     *            24-bit integer with the value for the red channel in the most
-     *            significant byte and blue in the least significant.
-     */
-    public Color(final int rgb) {
-        red = (rgb >>> Coder.SELECT_BYTE_2) & Coder.MASK_BYTE_0;
-        green = (rgb >>> Coder.SELECT_BYTE_1) & Coder.MASK_BYTE_0;
-        blue = rgb & Coder.MASK_BYTE_0;
-        alpha = MAX_LEVEL;
-    }
-
-    /**
-     * Creates a transparent colour object using two integers, the first to
-     * represents the values for the red, green and blue colour channels and the
-     * second the value for the transparency.
-     *
-     * @param rgb
-     *            the integer value of the colour channels. The value is a
-     *            24-bit integer with the value for the red channel in the most
-     *            significant byte and blue in the least significant.
-     * @param alpha
-     *            the level of transparency, in the range 0..255 where 0 is
-     *            completely transparent and 255 is completely opaque.
-     */
-    public Color(final int rgb, final int alpha) {
-        red = (rgb >>> Coder.SELECT_BYTE_2) & Coder.MASK_BYTE_0;
-        green = (rgb >>> Coder.SELECT_BYTE_1) & Coder.MASK_BYTE_0;
-        blue = rgb & Coder.MASK_BYTE_0;
-        this.alpha = alpha;
-    }
-
-    /**
      * Creates a Color object containing red, green and blue channels. The alpha
      * channel defaults to the value 255 - defining an opaque colour.
      *
@@ -154,20 +118,7 @@ public final class Color implements SWFEncodeable {
      *            value for the blue channel, in the range 0..255.
      */
     public Color(final int red, final int green, final int blue) {
-        if ((red < MIN_LEVEL) || (red > MAX_LEVEL)) {
-            throw new IllegalArgumentRangeException(MIN_LEVEL, MAX_LEVEL, red);
-        }
-        if ((green < MIN_LEVEL) || (green > MAX_LEVEL)) {
-            throw new IllegalArgumentRangeException(MIN_LEVEL, MAX_LEVEL, green);
-        }
-        if ((blue < MIN_LEVEL) || (blue > MAX_LEVEL)) {
-            throw new IllegalArgumentRangeException(MIN_LEVEL, MAX_LEVEL, blue);
-        }
-
-        this.red = red;
-        this.green = green;
-        this.blue = blue;
-        alpha = MAX_LEVEL;
+        this(red, green, blue, MAX_LEVEL);
     }
 
     /**
@@ -260,8 +211,8 @@ public final class Color implements SWFEncodeable {
     /** {@inheritDoc} */
     @Override
     public int hashCode() {
-        return ((red * Constants.PRIME + green) *  Constants.PRIME + blue)
-            *  Constants.PRIME + alpha;
+        return ((red * Constants.PRIME + green) * Constants.PRIME + blue)
+            * Constants.PRIME + alpha;
     }
 
     /** {@inheritDoc} */
