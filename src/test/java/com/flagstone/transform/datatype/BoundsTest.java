@@ -30,17 +30,11 @@
  */
 package com.flagstone.transform.datatype;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
-
-import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.SWFDecoder;
-import com.flagstone.transform.coder.SWFEncoder;
 
 public final class BoundsTest {
 
@@ -48,8 +42,6 @@ public final class BoundsTest {
     private static final int YMIN = 2;
     private static final int XMAX = 3;
     private static final int YMAX = 4;
-
-    private static final byte[] ENCODED = {32, -103, 32};
 
     @Test
     public void checkWidth() {
@@ -88,30 +80,5 @@ public final class BoundsTest {
     public void checkOtherIsEqual() {
         assertTrue(new Bounds(XMIN, YMIN, XMAX, YMAX).equals(
                 new Bounds(XMIN, YMIN, XMAX, YMAX)));
-    }
-
-    @Test
-    public void encodeWithBoundsSet() throws CoderException {
-        final SWFEncoder encoder = new SWFEncoder(ENCODED.length);
-        final Context context = new Context();
-
-        final Bounds fixture = new Bounds(XMIN, YMIN, XMAX, YMAX);
-        final int length = fixture.prepareToEncode(encoder, context);
-
-        fixture.encode(encoder, context);
-
-        assertTrue(encoder.eof());
-        assertEquals(ENCODED.length, length);
-        assertArrayEquals(ENCODED, encoder.getData());
-    }
-
-    @Test
-    public void decodeWithBoundsSet() throws CoderException {
-        final SWFDecoder decoder = new SWFDecoder(ENCODED);
-
-        final Bounds fixture = new Bounds(decoder);
-
-        assertTrue(decoder.eof());
-        assertEquals(fixture, new Bounds(XMIN, YMIN, XMAX, YMAX));
     }
 }
