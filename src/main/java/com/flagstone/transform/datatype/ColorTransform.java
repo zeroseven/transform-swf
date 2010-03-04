@@ -367,7 +367,10 @@ public final class ColorTransform implements SWFEncodeable {
     /** {@inheritDoc} */
     @Override
     public int hashCode() {
-        return (((addRed * Constants.PRIME + multiplyRed)
+        return ((((((addRed * Constants.PRIME + addGreen)
+                * Constants.PRIME + addBlue)
+                * Constants.PRIME + addAlpha)
+                * Constants.PRIME + multiplyRed)
                 * Constants.PRIME + multiplyGreen)
                 * Constants.PRIME + multiplyBlue)
                 * Constants.PRIME + multiplyAlpha;
