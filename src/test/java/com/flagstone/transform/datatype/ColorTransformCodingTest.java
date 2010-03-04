@@ -53,7 +53,7 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
 @RunWith(Parameterized.class)
-public final class ColorTransformPatternTest {
+public final class ColorTransformCodingTest {
     
     private static final String RESOURCE = "com/flagstone/transform/datatype/ColorTransform.yaml";
     
@@ -73,7 +73,7 @@ public final class ColorTransformPatternTest {
     @Parameters
     public static Collection<Object[]>  patterns() {
 
-        ClassLoader loader = ColorTransformPatternTest.class.getClassLoader();
+        ClassLoader loader = ColorTransformCodingTest.class.getClassLoader();
         InputStream other = loader.getResourceAsStream(RESOURCE);
         Yaml yaml = new Yaml();
         
@@ -98,7 +98,7 @@ public final class ColorTransformPatternTest {
     
     private Context context;
     
-    public ColorTransformPatternTest(Map<String,Object>values) {
+    public ColorTransformCodingTest(Map<String,Object>values) {
         mred = (Double)values.get(MRED);
         mgreen = (Double)values.get(MGREEN);
         mblue = (Double)values.get(MBLUE);

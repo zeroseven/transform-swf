@@ -52,7 +52,7 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
 @RunWith(Parameterized.class)
-public final class BoundsPatternTest {
+public final class BoundsCodingTest {
     
     private static final String RESOURCE = "com/flagstone/transform/datatype/Bounds.yaml";
 
@@ -65,7 +65,7 @@ public final class BoundsPatternTest {
     @Parameters
     public static Collection<Object[]>  patterns() {
 
-        ClassLoader loader = BoundsPatternTest.class.getClassLoader();
+        ClassLoader loader = BoundsCodingTest.class.getClassLoader();
         InputStream other = loader.getResourceAsStream(RESOURCE);
         Yaml yaml = new Yaml();
         
@@ -86,7 +86,7 @@ public final class BoundsPatternTest {
     
     private Context context;
     
-    public BoundsPatternTest(Map<String,Object>values) {
+    public BoundsCodingTest(Map<String,Object>values) {
         xMin = (Integer)values.get(XMIN);
         yMin = (Integer)values.get(YMIN);
         xMax = (Integer)values.get(XMAX);

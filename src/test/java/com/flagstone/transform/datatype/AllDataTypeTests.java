@@ -36,9 +36,9 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     BoundsTest.class,
-    BoundsPatternTest.class,
+    BoundsCodingTest.class,
     ColorTest.class,
-    ColorPatternTest.class,
+    ColorCodingTest.class,
     ColorTransformTest.class,
     CoordTransformTest.class }
 )
