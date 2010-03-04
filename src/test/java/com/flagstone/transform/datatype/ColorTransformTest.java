@@ -30,214 +30,114 @@
  */
 package com.flagstone.transform.datatype;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 
-import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.SWFDecoder;
-import com.flagstone.transform.coder.SWFEncoder;
-
 public final class ColorTransformTest {
-
-    private static final float MRED = 1.0f;
-    private static final float MGREEN = 2.0f;
-    private static final float MBLUE = 3.0f;
-    private static final float MALPHA = 4.0f;
 
     private static final int ARED = 1;
     private static final int AGREEN = 2;
     private static final int ABLUE = 3;
     private static final int AALPHA = 4;
 
-    private static final byte[] MULTIPLY_NO_ALPHA = {108, -128, 32, 6, 0};
-    private static final byte[] MULTIPLY_WITH_ALPHA = {112, 64, 8, 0, -64, 16, 0};
-
-    private static final byte[] ADD_NO_ALPHA = {-116, -90};
-    private static final byte[] ADD_WITH_ALPHA = {-112, 72, -48};
-
-    private static final byte[] NO_ALPHA = {-20, -128, 32, 6, 0, 0, 64, 16, 3};
-    private static final byte[] WITH_ALPHA = {-16, 64, 8, 0, -64, 16, 0, 0, 64, 8, 0, -64, 16};
+    private static final float MRED = 1.0f;
+    private static final float MGREEN = 2.0f;
+    private static final float MBLUE = 3.0f;
+    private static final float MALPHA = 4.0f;
 
     @Test
-    public void encodeMultiplyWithoutAlpha() throws CoderException {
-
-        final SWFEncoder encoder = new SWFEncoder(MULTIPLY_NO_ALPHA.length);
-        final Context context = new Context();
-
-        final ColorTransform fixture = new ColorTransform(MRED, MGREEN,
-                MBLUE, MALPHA);
-        final int length = fixture.prepareToEncode(encoder, context);
-
-        fixture.encode(encoder, context);
-
-        assertTrue(encoder.eof());
-        assertEquals(MULTIPLY_NO_ALPHA.length, length);
-        assertArrayEquals(MULTIPLY_NO_ALPHA, encoder.getData());
+    public void checkConstructorSetsAddRed() {
+        assertEquals(ARED, new ColorTransform(ARED, AGREEN, ABLUE, AALPHA).getAddRed());
     }
 
     @Test
-    public void encodeMultiplyWithAlpha() throws CoderException {
-
-        final SWFEncoder encoder = new SWFEncoder(MULTIPLY_WITH_ALPHA.length);
-        final Context context = new Context().put(Context.TRANSPARENT, 1);
-
-        final ColorTransform fixture = new ColorTransform(MRED, MGREEN,
-                MBLUE, MALPHA);
-        final int length = fixture.prepareToEncode(encoder, context);
-
-        fixture.encode(encoder, context);
-
-        assertTrue(encoder.eof());
-        assertEquals(MULTIPLY_WITH_ALPHA.length, length);
-        assertArrayEquals(MULTIPLY_WITH_ALPHA, encoder.getData());
+    public void checkConstructorSetsAddGreen() {
+        assertEquals(AGREEN, new ColorTransform(ARED, AGREEN, ABLUE, AALPHA).getAddGreen());
     }
 
     @Test
-    public void encodeAddWithoutAlpha() throws CoderException {
-
-        final SWFEncoder encoder = new SWFEncoder(ADD_NO_ALPHA.length);
-        final Context context = new Context();
-
-        final ColorTransform fixture = new ColorTransform(ARED, AGREEN,
-                ABLUE, AALPHA);
-        final int length = fixture.prepareToEncode(encoder, context);
-
-        fixture.encode(encoder, context);
-
-        assertTrue(encoder.eof());
-        assertEquals(ADD_NO_ALPHA.length, length);
-        assertArrayEquals(ADD_NO_ALPHA, encoder.getData());
+    public void checkConstructorSetsAddBlue() {
+        assertEquals(ABLUE, new ColorTransform(ARED, AGREEN, ABLUE, AALPHA).getAddBlue());
     }
 
     @Test
-    public void encodeAddWithAlpha() throws CoderException {
-
-        final SWFEncoder encoder = new SWFEncoder(ADD_WITH_ALPHA.length);
-        final Context context = new Context().put(Context.TRANSPARENT, 1);
-
-        final ColorTransform fixture = new ColorTransform(ARED, AGREEN,
-                ABLUE, AALPHA);
-        final int length = fixture.prepareToEncode(encoder, context);
-
-        fixture.encode(encoder, context);
-
-        assertTrue(encoder.eof());
-        assertEquals(ADD_WITH_ALPHA.length, length);
-        assertArrayEquals(ADD_WITH_ALPHA, encoder.getData());
+    public void checkConstructorSetsAddAlpha() {
+        assertEquals(AALPHA, new ColorTransform(ARED, AGREEN, ABLUE, AALPHA).getAddAlpha());
     }
 
     @Test
-    public void encodeWithoutAlpha() throws CoderException {
-
-        final SWFEncoder encoder = new SWFEncoder(NO_ALPHA.length);
-        final Context context = new Context();
-
-        final ColorTransform fixture = new ColorTransform(ARED, AGREEN,
-                ABLUE, AALPHA, MRED, MGREEN, MBLUE, MALPHA);
-        final int length = fixture.prepareToEncode(encoder, context);
-
-        fixture.encode(encoder, context);
-
-        assertTrue(encoder.eof());
-        assertEquals(NO_ALPHA.length, length);
-        assertArrayEquals(NO_ALPHA, encoder.getData());
+    public void checkConstructorSetsMultiplyRed() {
+        assertEquals(Float.valueOf(MRED), 
+                Float.valueOf(new ColorTransform(MRED, MGREEN, MBLUE, MALPHA).getMultiplyRed()));
     }
 
     @Test
-    public void encodeWithAlpha() throws CoderException {
-
-        final SWFEncoder encoder = new SWFEncoder(WITH_ALPHA.length);
-        final Context context = new Context().put(Context.TRANSPARENT, 1);
-
-        final ColorTransform fixture = new ColorTransform(ARED, AGREEN,
-                ABLUE, AALPHA, MRED, MGREEN, MBLUE, MALPHA);
-        final int length = fixture.prepareToEncode(encoder, context);
-
-        fixture.encode(encoder, context);
-
-        assertTrue(encoder.eof());
-        assertEquals(WITH_ALPHA.length, length);
-        assertArrayEquals(WITH_ALPHA, encoder.getData());
+    public void checkConstructorSetsMultiplyGreen() {
+        assertEquals(Float.valueOf(MGREEN), 
+                Float.valueOf(new ColorTransform(MRED, AGREEN, ABLUE, MALPHA).getMultiplyGreen()));
     }
 
     @Test
-    public void decodeMultiplyWithoutAlpha() throws CoderException {
-
-        final SWFDecoder decoder = new SWFDecoder(MULTIPLY_NO_ALPHA);
-        final Context context = new Context();
-
-        final ColorTransform fixture = new ColorTransform(decoder, context);
-
-        assertTrue(decoder.eof());
-        assertEquals(fixture, new ColorTransform(MRED, MGREEN, MBLUE,
-                1.0f));
+    public void checkConstructorSetsMultiplyBlue() {
+        assertEquals(Float.valueOf(MBLUE), 
+                Float.valueOf(new ColorTransform(MRED, MGREEN, MBLUE, MALPHA).getMultiplyBlue()));
     }
 
     @Test
-    public void decodeMultiplyWithAlpha() throws CoderException {
-
-        final SWFDecoder decoder = new SWFDecoder(MULTIPLY_WITH_ALPHA);
-        final Context context = new Context().put(Context.TRANSPARENT, 1);
-
-        final ColorTransform fixture = new ColorTransform(decoder, context);
-
-        assertTrue(decoder.eof());
-        assertEquals(fixture, new ColorTransform(MRED, MGREEN, MBLUE,
-                MALPHA));
+    public void checkConstructorSetsMultiplyAlpha() {
+        assertEquals(Float.valueOf(MALPHA), 
+                Float.valueOf(new ColorTransform(MRED, MGREEN, MBLUE, MALPHA).getMultiplyAlpha()));
     }
 
     @Test
-    public void decodeAddWithoutAlpha() throws CoderException {
-
-        final SWFDecoder decoder = new SWFDecoder(ADD_NO_ALPHA);
-        final Context context = new Context();
-
-        final ColorTransform fixture = new ColorTransform(decoder, context);
-
-        assertTrue(decoder.eof());
-        assertEquals(fixture, new ColorTransform(ARED, AGREEN, ABLUE, 0));
+    public void checkString() {
+        assertNotNull(new ColorTransform(ARED, AGREEN, ABLUE, AALPHA).toString());
     }
 
     @Test
-    public void decodeAddWithAlpha() throws CoderException {
-
-        final SWFDecoder decoder = new SWFDecoder(ADD_WITH_ALPHA);
-        final Context context = new Context().put(Context.TRANSPARENT, 1);
-
-        final ColorTransform fixture = new ColorTransform(decoder, context);
-
-        assertTrue(decoder.eof());
-        assertEquals(fixture, new ColorTransform(ARED, AGREEN, ABLUE,
-                AALPHA));
+    public void checkHashCode() {
+        assertEquals(-679687358, new ColorTransform(ARED, AGREEN, ABLUE, AALPHA).hashCode());
     }
 
     @Test
-    public void decodeWithoutAlpha() throws CoderException {
+    public void checkSameObjectIsEqual() {
+        final ColorTransform color = new ColorTransform(ARED, AGREEN, ABLUE, AALPHA);
 
-        final SWFDecoder decoder = new SWFDecoder(NO_ALPHA);
-        final Context context = new Context();
-
-        final ColorTransform fixture = new ColorTransform(decoder, context);
-
-        assertTrue(decoder.eof());
-        assertEquals(fixture, new ColorTransform(ARED, AGREEN, ABLUE, 0,
-                        MRED, MGREEN, MBLUE, 1.0f));
+        assertEquals(color, color);
     }
 
     @Test
-    public void decodeWithAlpha() throws CoderException {
+    public void checkSameColorTransformIsEqual() {
+        final ColorTransform color = new ColorTransform(ARED, AGREEN, ABLUE, AALPHA);
+        final ColorTransform other = new ColorTransform(ARED, AGREEN, ABLUE, AALPHA);
 
-        final SWFDecoder decoder = new SWFDecoder(WITH_ALPHA);
-        final Context context = new Context().put(Context.TRANSPARENT, 1);
+        assertEquals(color, other);
+    }
 
-        final ColorTransform fixture = new ColorTransform(decoder, context);
+    @Test
+    public void checkDifferentColorTransformIsNotEqual() {
+        final ColorTransform color = new ColorTransform(ARED, AGREEN, ABLUE, AALPHA);
+        final ColorTransform other = new ColorTransform(MRED, MGREEN, MBLUE, MALPHA);
 
-        assertTrue(decoder.eof());
-        assertEquals(fixture, new ColorTransform(ARED, AGREEN, ABLUE,
-                AALPHA, MRED, MGREEN, MBLUE, MALPHA));
+        assertFalse(color.equals(other));
+    }
+
+    @Test
+    public void checkObjectIsNotEqual() {
+        final ColorTransform color = new ColorTransform(ARED, AGREEN, ABLUE, AALPHA);
+        final Object other = new Object();
+
+        assertFalse(color.equals(other));
+    }
+
+    @Test
+    public void checkNullIsNotEqual() {
+        final ColorTransform color = new ColorTransform(ARED, AGREEN, ABLUE, AALPHA);
+        final ColorTransform other = null;
+
+        assertFalse(color.equals(other));
     }
 }
