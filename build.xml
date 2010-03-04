@@ -44,7 +44,8 @@
          Major targets for compiling and packaging the classes.
      ********************************************************** -->
 
-	<target name="build" depends="clean,classes,jar" description="Compile optimized versions of the classes for deployment" />
+	<target name="build" depends="clean,classes,jar" 
+		description="Compile optimized versions for deployment" />
 
 	<!-- *******************************************************************
          Minor targets to compile and package different sets of classes.
@@ -59,18 +60,21 @@
 
 		<mkdir dir="${build.dir}" />
 
-		<javac srcdir="${src.dir}" destdir="${build.dir}" debug="on" optimize="off" source="1.6">
+		<javac srcdir="${src.dir}" destdir="${build.dir}" 
+			debug="on" optimize="off" source="1.6">
 			<include name="${package.dir}/*.java" />
 			<include name="${package.dir}/util/*.java" />
 		</javac>
 
 	</target>
 
-	<target name="classes" description="Compile the transform and utilities classes">
+	<target name="classes" 
+		description="Compile the transform and utilities classes">
 
 		<mkdir dir="${build.dir}" />
 
-		<javac srcdir="${src.dir}" destdir="${build.dir}" debug="off" optimize="on" source="1.6">
+		<javac srcdir="${src.dir}" destdir="${build.dir}" 
+			debug="off" optimize="on" source="1.6">
 			<include name="${package.dir}/*.java" />
 			<include name="${package.dir}/util/*.java" />
 		</javac>
