@@ -57,9 +57,9 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>SnakeYAML</groupId>
+			<groupId>org.yaml</groupId>
 			<artifactId>SnakeYAML</artifactId>
-			<version>1.2</version>
+			<version>1.4</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -82,14 +82,39 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
-				<configuration>
-                    <descriptorRefs>
-                        <descriptorRef>project</descriptorRef>
-                    </descriptorRefs>
-					<descriptors>
-						<descriptor>src/main/assembly/dist.xml</descriptor>
-					</descriptors>
-				</configuration>
+				<executions>
+					<execution>
+						<id>create-distribution</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<descriptorRefs>
+								<descriptorRef>project</descriptorRef>
+							</descriptorRefs>
+							<descriptors>
+								<descriptor>src/main/assembly/dist.xml</descriptor>
+							</descriptors>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-gpg-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>sign-artifacts</id>
+						<phase>verify</phase>
+ 						<goals>
+							<goal>sign</goal>
+						</goals>
+                        <configuration>
+                            <keyname>smackay</keyname>
+                        </configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
@@ -148,7 +173,7 @@
 	<distributionManagement>
 		<site>
 			<id>transform.sourceforge.net</id>
-			<url>scp://shell.sourceforge.net/home/groups/t/tr/transform-swf/htdocs</url>
+			<url>scp://shell.sourceforge.net/home/groups/t/tr/transform-swf/htdocs/rel-3-0</url>
 		</site>
 	</distributionManagement>
 
