@@ -117,7 +117,7 @@ public final class BoundsPatternTest {
     }
 
     @Test
-    public void checkColorIsDecoded() throws CoderException {
+    public void checkBoundsIsDecoded() throws CoderException {
         final SWFDecoder decoder = new SWFDecoder(data);
         final Bounds bounds = new Bounds(decoder);
 
