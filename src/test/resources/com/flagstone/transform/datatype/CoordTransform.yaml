@@ -1,0 +1,26 @@
+---
+# A scaling transform
+xscale: 1.0
+yscale: 2.0
+data: !!binary
+  zIAAIAAAQA==
+---
+# A shearing transform
+xshear: 1.0
+yshear: 2.0
+data: !!binary
+  ZkAAEAAAQA==
+---
+# A translation transform
+xcoord: 1
+ycoord: 2
+data: !!binary
+  BlA=
+---
+# A rotation transform
+xscale: 1.0
+yscale: 2.0
+xshear: 3.0
+yshear: 4.0
+data: !!binary
+  zIAAIAANDAABAAACAA==

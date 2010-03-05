@@ -68,6 +68,21 @@ public final class CoordTransform implements SWFEncodeable {
             + " scaleY=%f; shearX=%f; shearY=%f; transX=%d; transY=%d }";
 
     /**
+     * The default value used for the scaling terms when a translation or 
+     * shearing transform is created.
+     */
+    public static final float DEFAULT_SCALE = 1.0f;
+    /**
+     * The default value used for the shearing terms when a translation or 
+     * scaling transform is created.
+     */
+    public static final float DEFAULT_SHEAR = 0.0f;
+    /**
+     * The default value used for the translation terms when a scaling or 
+     * shearing transform is created.
+     */
+    public static final int DEFAULT_COORD = 0;
+    /**
      * The factor applied to real numbers used for scaling terms when storing
      * them as fixed point values.
      */
@@ -79,8 +94,8 @@ public final class CoordTransform implements SWFEncodeable {
     public static final float SHEAR_FACTOR = 65536.0f;
 
     private static final int FIELD_SIZE = 5;
-    private static final int DEFAULT_SCALE = 65536;
-    private static final int DEFAULT_SHEAR = 0;
+    private static final int DEFAULT_INT_SCALE = 65536;
+    private static final int DEFAULT_INT_SHEAR = 0;
 
     /**
      * Create a new coordinate transform by multiplying two matrices together to
@@ -210,8 +225,8 @@ public final class CoordTransform implements SWFEncodeable {
             scaleX = coder.readBits(scaleSize, true);
             scaleY = coder.readBits(scaleSize, true);
         } else {
-            scaleX = DEFAULT_SCALE;
-            scaleY = DEFAULT_SCALE;
+            scaleX = DEFAULT_INT_SCALE;
+            scaleY = DEFAULT_INT_SCALE;
         }
 
         hasShear = coder.readBits(1, false) != 0;
@@ -221,8 +236,8 @@ public final class CoordTransform implements SWFEncodeable {
             shearX = coder.readBits(shearSize, true);
             shearY = coder.readBits(shearSize, true);
         } else {
-            shearX = DEFAULT_SHEAR;
-            shearY = DEFAULT_SHEAR;
+            shearX = DEFAULT_INT_SHEAR;
+            shearY = DEFAULT_INT_SHEAR;
         }
 
         transSize = coder.readBits(FIELD_SIZE, false);
@@ -371,7 +386,7 @@ public final class CoordTransform implements SWFEncodeable {
 
         int numberOfBits = 2 + FIELD_SIZE + Coder.BYTE_ALIGN;
 
-        hasScale = (scaleX != DEFAULT_SCALE) || (scaleY != DEFAULT_SCALE);
+        hasScale = (scaleX != DEFAULT_INT_SCALE) || (scaleY != DEFAULT_INT_SCALE);
         hasShear = (shearX != 0) || (shearY != 0);
 
         if (hasScale || hasShear || ((translateX != 0) || (translateY != 0))) {

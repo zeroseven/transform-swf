@@ -30,37 +30,11 @@
  */
 package com.flagstone.transform.datatype;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.SWFDecoder;
-import com.flagstone.transform.coder.SWFEncoder;
-
 public final class CoordTransformTest {
-
-    private static final float SCALE_X = 1.0f;
-    private static final float SCALE_Y = 2.0f;
-
-    private static final float SHEAR_X = 1.0f;
-    private static final float SHEAR_Y = 2.0f;
-
-    private static final int X_COORD = 1;
-    private static final int Y_COORD = 2;
-
-    private static final float[][] ROTATE_MATRIX = {
-        {1.0f, 4.0f, 0.0f},
-        {3.0f, 2.0f, 0.0f},
-        {0.0f, 0.0f, 1.0f}};
-
-    private static final byte[] SCALE = {-52, -128, 0, 32, 0, 0, 64};
-    private static final byte[] SHEAR = {102, 64, 0, 16, 0, 0, 64};
-    private static final byte[] TRANSLATE = {6, 80};
-    private static final byte[] ROTATE = {-52, -128, 0, 32, 0, 13, 12, 0, 1, 0, 0, 2, 0};
 
     @Test
     public void checkProduct() {
@@ -145,125 +119,14 @@ public final class CoordTransformTest {
     @Test
     public void checkConstructorSetsOnlyTranslation() {
 
-        final CoordTransform fixture = CoordTransform.translate(X_COORD, Y_COORD);
+        final CoordTransform fixture = CoordTransform.translate(1, 2);
 
         final float[][] expected = {
-                {1.0f, 0.0f, X_COORD},
-                {0.0f, 1.0f, Y_COORD},
+                {1.0f, 0.0f, 1.0f},
+                {0.0f, 1.0f, 2.0f},
                 {0.0f, 0.0f, 1.0f}};
 
         assertTrue(compare(expected, fixture.getMatrix()));
-    }
-
-    @Test
-    public void checkEncodeTranslation() throws CoderException {
-
-        final SWFEncoder encoder = new SWFEncoder(TRANSLATE.length);
-        final Context context = new Context();
-
-        final CoordTransform fixture = CoordTransform.translate(X_COORD, Y_COORD);
-        final int length = fixture.prepareToEncode(encoder, context);
-
-        fixture.encode(encoder, context);
-
-        assertTrue(encoder.eof());
-        assertEquals(length, TRANSLATE.length);
-        assertArrayEquals(TRANSLATE, encoder.getData());
-    }
-
-    @Test
-    public void checkEncodeScale() throws CoderException {
-
-        final SWFEncoder encoder = new SWFEncoder(SCALE.length);
-        final Context context = new Context();
-
-        final CoordTransform fixture = CoordTransform.scale(SCALE_X, SCALE_Y);
-        final int length = fixture.prepareToEncode(encoder, context);
-
-        fixture.encode(encoder, context);
-
-        assertTrue(encoder.eof());
-        assertEquals(length, SCALE.length);
-        assertArrayEquals(SCALE, encoder.getData());
-    }
-
-    @Test
-    public void checkEncodeShear() throws CoderException {
-
-        final SWFEncoder encoder = new SWFEncoder(SHEAR.length);
-        final Context context = new Context();
-
-        final CoordTransform fixture = CoordTransform.shear(SHEAR_X, SHEAR_Y);
-        final int length = fixture.prepareToEncode(encoder, context);
-
-        fixture.encode(encoder, context);
-
-        assertTrue(encoder.eof());
-        assertEquals(length, SHEAR.length);
-        assertArrayEquals(SHEAR, encoder.getData());
-    }
-
-    @Test
-    public void checkEncodeRotate() throws CoderException {
-
-        final SWFEncoder encoder = new SWFEncoder(ROTATE.length);
-        final Context context = new Context();
-
-        final CoordTransform fixture = new CoordTransform(ROTATE_MATRIX);
-        final int length = fixture.prepareToEncode(encoder, context);
-
-        fixture.encode(encoder, context);
-
-        assertTrue(encoder.eof());
-        assertEquals(length, ROTATE.length);
-        assertArrayEquals(ROTATE, encoder.getData());
-    }
-
-    @Test
-    public void checkDecodeTranslation() throws CoderException {
-
-        final SWFDecoder decoder = new SWFDecoder(TRANSLATE);
-
-        final CoordTransform fixture = new CoordTransform(decoder);
-
-        assertTrue(decoder.eof());
-        assertEquals(X_COORD, fixture.getMatrix()[0][2]);
-        assertEquals(Y_COORD, fixture.getMatrix()[1][2]);
-    }
-
-    @Test
-    public void checkDecodeScale() throws CoderException {
-
-        final SWFDecoder decoder = new SWFDecoder(SCALE);
-
-        final CoordTransform fixture = new CoordTransform(decoder);
-
-        assertTrue(decoder.eof());
-        assertEquals(SCALE_X, fixture.getMatrix()[0][0]);
-        assertEquals(SCALE_Y, fixture.getMatrix()[1][1]);
-    }
-
-    @Test
-    public void checkDecodeShear() throws CoderException {
-
-        final SWFDecoder decoder = new SWFDecoder(SHEAR);
-
-        final CoordTransform fixture = new CoordTransform(decoder);
-
-        assertTrue(decoder.eof());
-        assertEquals(SHEAR_X, fixture.getMatrix()[1][0]);
-        assertEquals(SHEAR_Y, fixture.getMatrix()[0][1]);
-    }
-
-    @Test
-    public void checkDecodeRotate() throws CoderException {
-
-        final SWFDecoder decoder = new SWFDecoder(ROTATE);
-
-        final CoordTransform fixture = new CoordTransform(decoder);
-
-        assertTrue(decoder.eof());
-        assertTrue(compare(ROTATE_MATRIX, fixture.getMatrix()));
     }
 
     private boolean compare(final float[][] left, final float[][] right) {
