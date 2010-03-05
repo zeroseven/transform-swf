@@ -9,11 +9,12 @@
 	<name>transform</name>
 	<description>Transform is an Open Source framework for reading and writing Flash (.swf) and Flash Video (.flv) files. The API gives you complete control over how files are created with access to all the features supported by the Flash Player but yet is still intuitive and easy to use.</description>
 	<url>http://www.flagstonesoftware.com/transform/</url>
+	<inceptionYear>2002</inceptionYear>
 
 	<licenses>
 		<license>
 			<name>BSD</name>
-			<url>http://www.flagstonesoftware.com/bsd.html</url>
+			<url>http://www.flagstonesoftware.com/transform/LICENSE.txt</url>
 			<distribution>repo</distribution>
 			<comments>Open Source, Berkeley Software Distribution Licence</comments>
 		</license>
@@ -23,10 +24,6 @@
 		<name>Flagstone Software Ltd.</name>
 		<url>http://www.flagstonesoftware.com</url>
 	</organization>
-	<issueManagement>
-		<system>Trac</system>
-		<url>http://sourceforge.net/apps/trac/transform-swf/</url>
-	</issueManagement>
 
 	<developers>
 		<developer>
@@ -42,10 +39,31 @@
 			<timezone>0</timezone>
 		</developer>
 	</developers>
+	
+	<mailingLists>
+        <mailingList>
+            <name>Transform-SWF Updates</name>
+            <subscribe>http://lists.sourceforge.net/lists/listinfo/transform-swf-updates</subscribe>
+            <unsubscribe>http://lists.sourceforge.net/lists/listinfo/transform-swf-updates</unsubscribe>
+            <archive>http://sourceforge.net/mailarchive/forum.php?forum_name=transform-swf-updates</archive>
+        </mailingList>
+        <mailingList>
+            <name>Java Updates</name>
+            <subscribe>http://flagstonesoftware.com/mailman/listinfo/java-updates_flagstonesoftware.com</subscribe>
+            <unsubscribe>http://flagstonesoftware.com/mailman/listinfo/java-updates_flagstonesoftware.com</unsubscribe>
+            <archive>http://flagstonesoftware.com/pipermail/java-updates_flagstonesoftware.com/</archive>
+        </mailingList>
+    </mailingLists>
+	
+	<issueManagement>
+		<system>Trac</system>
+		<url>http://sourceforge.net/apps/trac/transform-swf/</url>
+	</issueManagement>
 
 	<scm>
-		<connection>http://transform-swf.svn.sourceforge.net/svnroot/transform-swf/trunk</connection>
-		<developerConnection>https://transform-swf.svn.sourceforge.net/svnroot/transform-swf/trunk</developerConnection>
+		<connection>scm:svn:http://transform-swf.svn.sourceforge.net/svnroot/transform-swf/trunk</connection>
+		<developerConnection>scm:svn:https://transform-swf.svn.sourceforge.net/svnroot/transform-swf/trunk</developerConnection>
+		<tag>HEAD</tag>
 		<url>http://transform-swf.svn.sourceforge.net/viewvc/transform-swf/trunk</url>
 	</scm>
 
