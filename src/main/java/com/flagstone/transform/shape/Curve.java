@@ -36,7 +36,6 @@ import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.Encoder;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.coder.ShapeRecord;
 import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 /**

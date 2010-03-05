@@ -28,7 +28,7 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.flagstone.transform;
+package com.flagstone.transform.video;
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
@@ -36,9 +36,7 @@ import com.flagstone.transform.coder.DefineTag;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.datatype.VideoFormat;
 import com.flagstone.transform.exception.IllegalArgumentRangeException;
-import com.flagstone.transform.video.Deblocking;
 
 /**
  * The DefineVideo class is used to define a video stream within a Flash file.

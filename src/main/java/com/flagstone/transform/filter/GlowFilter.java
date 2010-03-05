@@ -2,8 +2,6 @@ package com.flagstone.transform.filter;
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.Filter;
-import com.flagstone.transform.coder.FilterTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.Color;

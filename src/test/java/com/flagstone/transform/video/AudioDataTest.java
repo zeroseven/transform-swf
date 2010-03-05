@@ -27,16 +27,17 @@
  * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.flagstone.transform;
+package com.flagstone.transform.video;
 
 import org.junit.Ignore;
 import org.junit.Test;
 
 import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.video.AudioData;
 
-public final class VideoMetaDataTest {
+public final class AudioDataTest {
 
-    private transient VideoMetaData fixture;
+    private transient AudioData fixture;
 
     private final transient byte[] encoded = new byte[] { 0x06, 0x01, 0x01,
             0x00, 0x02, 0x00, 0x06, 0x50 };

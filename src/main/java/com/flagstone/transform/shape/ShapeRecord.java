@@ -1,8 +1,8 @@
 /*
- * PlaceTest.java
+ * ShapeRecord.java
  * Transform
  *
- * Copyright (c) 2009 Flagstone Software Ltd. All rights reserved.
+ * Copyright (c) 2001-2006 Flagstone Software Ltd. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
@@ -27,37 +27,12 @@
  * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.flagstone.transform;
 
-import org.junit.Ignore;
-import org.junit.Test;
+package com.flagstone.transform.shape;
 
-import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.Copyable;
+import com.flagstone.transform.coder.SWFEncodeable;
 
-public final class VideoTest {
-
-    // private transient Video fixture;
-
-    // private final transient byte[] encoded = new byte[] { 0x06, 0x01, 0x01,
-    // 0x00, 0x02, 0x00, 0x06, 0x50 };
-
-    @Test
-    @Ignore //TODO(implement)
-    public void checkCopy() {
-    }
-
-    @Test
-    @Ignore //TODO(implement)
-    public void encodeCoordTransform() throws CoderException {
-    }
-
-    @Test
-    @Ignore //TODO(implement)
-    public void decode() throws CoderException {
-    }
-
-    @Test
-    @Ignore //TODO(implement)
-    public void decodeExtended() throws CoderException {
-    }
+/** TODO(class). */
+public interface ShapeRecord extends SWFEncodeable, Copyable<ShapeRecord> {
 }

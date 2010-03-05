@@ -33,7 +33,6 @@ package com.flagstone.transform.datatype;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.flagstone.transform.coder.BlendTypes;
 
 /**
  * Blend modes let you control how the colours and transparency of successive

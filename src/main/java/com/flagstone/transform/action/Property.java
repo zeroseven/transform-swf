@@ -33,7 +33,6 @@ package com.flagstone.transform.action;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.flagstone.transform.coder.PropertyTypes;
 
 /**
  * Property defines the set of attributes that can accessed for movies and movie

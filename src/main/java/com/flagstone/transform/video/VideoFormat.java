@@ -1,5 +1,5 @@
 /*
- * MovieAttribute.java
+ * VideoFormat.java
  * Transform
  *
  * Copyright (c) 2009 Flagstone Software Ltd. All rights reserved.
@@ -28,23 +28,22 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.flagstone.transform.datatype;
+package com.flagstone.transform.video;
 
 /**
- * FileAttr defines the set of attributes for a Movie (Flash 8+).
+ * VideoFormat is used to identify the different encoding formats used for
+ * video in Flash and Flash Video files.
  */
-public enum MovieAttribute {
+public enum VideoFormat {
     /**
-     * The movie contains meta-data.
+     * H263 is a low bit-rate compressed format originally developed for
+     * video-conferencing by the ITU-T Video Coding Experts Group (VCEG).
      */
-    METADATA,
+    H263,
     /**
-     * The movie contains Actionscript 3.
+     * Screen Video is a simple format used primarily for compressing sequences
+     * of screen shots where only the differences between successive frames are
+     * encoded.
      */
-    ACTIONSCRIPT_3,
-    /**
-     * The movie is allowed to access files over the network when loaded
-     * locally.
-     */
-    NETWORK_ACCESS
+    SCREEN
 }

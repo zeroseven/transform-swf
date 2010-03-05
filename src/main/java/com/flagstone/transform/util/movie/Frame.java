@@ -38,7 +38,7 @@ import com.flagstone.transform.FrameLabel;
 import com.flagstone.transform.Movie;
 import com.flagstone.transform.ShowFrame;
 
-import com.flagstone.transform.coder.Action;
+import com.flagstone.transform.action.Action;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.DefineTag;
 import com.flagstone.transform.coder.MovieTag;

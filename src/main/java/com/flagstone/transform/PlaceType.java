@@ -1,5 +1,5 @@
 /*
- * Placement.java
+ * PlaceType.java
  * Transform
  *
  * Copyright (c) 2009 Flagstone Software Ltd. All rights reserved.
@@ -28,7 +28,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.flagstone.transform.datatype;
+package com.flagstone.transform;
 
 /**
  * Placement the different ways an object can be added to the display list

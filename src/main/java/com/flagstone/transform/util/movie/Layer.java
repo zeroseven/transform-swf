@@ -34,13 +34,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.flagstone.transform.Place2;
+import com.flagstone.transform.PlaceType;
 import com.flagstone.transform.Remove2;
 import com.flagstone.transform.ShowFrame;
 import com.flagstone.transform.coder.DefineTag;
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.datatype.ColorTransform;
 import com.flagstone.transform.datatype.CoordTransform;
-import com.flagstone.transform.datatype.PlaceType;
 
 /**
  * The Layer class can be used to simplify the creation of movies. It provides a

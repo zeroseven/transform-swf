@@ -1,8 +1,8 @@
 /*
- * Call.java
+ * CharacterFormat.java
  * Transform
  *
- * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
+ * Copyright (c) 2009 Flagstone Software Ltd. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -29,47 +29,26 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.flagstone.transform.action;
-
-import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.SWFEncoder;
+package com.flagstone.transform.font;
 
 /**
- * Call is used to execute the actions previously assigned to a given frame with
- * an DoAction object. Call is a stack-based action, the value for the <i>frame
- * name</i> or <i>frame number</i> is retrieved from the top of the stack when
- * it is executed.
+ * CharacterFormat is used to identify the encoding used for characters in 
+ * strings and font definitions.
  */
-public final class Call implements Action {
-    
-    private static final Call INSTANCE = new Call();
-
+public enum CharacterFormat {
     /**
-     * Returns a shared instance of the Call action.
+     * Defines that the characters in a font or string are encoded using SJIS 
+     * standard for representing Kanji characters.
      */
-    public static Call getInstance() {
-        return INSTANCE;
-    }
-
-    private Call() {
-    }
-
-    /** {@inheritDoc} */
-    public Call copy() {
-        return this;
-    }
-
-    /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
-        return 3;
-    }
-
-    /** {@inheritDoc} */
-   public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
-        coder.writeByte(ActionTypes.CALL);
-        coder.writeByte(0);
-        coder.writeByte(0);
-    }
+    SJIS,
+    /**
+     * Defines that the characters in a font or string are encoded using the
+     * ANSI (ASCII) standard.
+     */
+    ANSI,
+    /**
+     * Defines that the characters in a font or string are encoded using 
+     * Unicode UCS2.
+     */
+    UCS2;
 }

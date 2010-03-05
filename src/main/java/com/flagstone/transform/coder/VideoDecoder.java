@@ -1,8 +1,8 @@
 package com.flagstone.transform.coder;
 
-import com.flagstone.transform.AudioData;
-import com.flagstone.transform.VideoData;
-import com.flagstone.transform.VideoMetaData;
+import com.flagstone.transform.video.AudioData;
+import com.flagstone.transform.video.VideoData;
+import com.flagstone.transform.video.VideoMetaData;
 
 /** TODO(class). */
 public final class VideoDecoder implements FLVFactory<VideoTag> {

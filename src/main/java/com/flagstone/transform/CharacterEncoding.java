@@ -29,11 +29,11 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.flagstone.transform.datatype;
+package com.flagstone.transform;
 
 /**
  * CharacterEncoding is used to identify the encoding used for characters in 
- * strings and font definitions.
+ * strings stored in the movie.
  */
 public enum CharacterEncoding {
     /**
@@ -46,11 +46,6 @@ public enum CharacterEncoding {
      * ANSI (ASCII) standard.
      */
     ANSI,
-    /**
-     * Defines that the characters in a font or string are encoded using 
-     * Unicode UCS2.
-     */
-    UCS2,
     /**
      * Defines that the characters in a font or string are encoded using 
      * Unicode (UTF-8).

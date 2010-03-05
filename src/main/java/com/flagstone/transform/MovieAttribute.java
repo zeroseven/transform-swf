@@ -1,8 +1,8 @@
 /*
- * Action.java
+ * MovieAttribute.java
  * Transform
  *
- * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
+ * Copyright (c) 2009 Flagstone Software Ltd. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -28,11 +28,23 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.flagstone.transform.coder;
+package com.flagstone.transform;
 
 /**
- * Action defines a type that is used to identify all the different types of 
- * actions that can be added to a movie.
+ * FileAttr defines the set of attributes for a Movie (Flash 8+).
  */
-public interface Action extends SWFEncodeable, Copyable<Action> {
+public enum MovieAttribute {
+    /**
+     * The movie contains meta-data.
+     */
+    METADATA,
+    /**
+     * The movie contains Actionscript 3.
+     */
+    ACTIONSCRIPT_3,
+    /**
+     * The movie is allowed to access files over the network when loaded
+     * locally.
+     */
+    NETWORK_ACCESS
 }

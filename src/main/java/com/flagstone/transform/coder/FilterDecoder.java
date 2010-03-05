@@ -6,6 +6,7 @@ import com.flagstone.transform.filter.BlurFilter;
 import com.flagstone.transform.filter.ColorMatrixFilter;
 import com.flagstone.transform.filter.ConvolutionFilter;
 import com.flagstone.transform.filter.DropShadowFilter;
+import com.flagstone.transform.filter.Filter;
 import com.flagstone.transform.filter.GlowFilter;
 import com.flagstone.transform.filter.GradientBevelFilter;
 import com.flagstone.transform.filter.GradientGlowFilter;

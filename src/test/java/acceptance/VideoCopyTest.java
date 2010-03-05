@@ -16,7 +16,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 import tools.VideoWriter;
 
-import com.flagstone.transform.Video;
+import com.flagstone.transform.video.Video;
 
 @RunWith(Parameterized.class)
 public final class VideoCopyTest {

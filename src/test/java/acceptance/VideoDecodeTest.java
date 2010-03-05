@@ -41,7 +41,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import com.flagstone.transform.Video;
+import com.flagstone.transform.video.Video;
 
 /**
  * DecodeVideoTest is used to create Videos using all the Flash files in a given

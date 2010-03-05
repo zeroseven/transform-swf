@@ -2,6 +2,7 @@ package com.flagstone.transform.coder;
 
 
 import com.flagstone.transform.fillstyle.BitmapFill;
+import com.flagstone.transform.fillstyle.FillStyle;
 import com.flagstone.transform.fillstyle.GradientFill;
 import com.flagstone.transform.fillstyle.SolidFill;
 

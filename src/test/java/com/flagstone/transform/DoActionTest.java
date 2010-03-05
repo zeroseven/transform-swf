@@ -41,9 +41,9 @@ import java.util.List;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.flagstone.transform.action.Action;
 import com.flagstone.transform.action.ActionData;
 import com.flagstone.transform.action.BasicAction;
-import com.flagstone.transform.coder.Action;
 import com.flagstone.transform.coder.ActionDecoder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;

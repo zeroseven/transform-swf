@@ -21,7 +21,7 @@ import tools.MovieWriter;
 import tools.VideoWriter;
 
 import com.flagstone.transform.Movie;
-import com.flagstone.transform.Video;
+import com.flagstone.transform.video.Video;
 
 @RunWith(Parameterized.class)
 public final class VideoEncodeTest {

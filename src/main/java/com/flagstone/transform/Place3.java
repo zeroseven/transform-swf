@@ -38,16 +38,16 @@ import java.util.Map;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.DefineTag;
-import com.flagstone.transform.coder.Filter;
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.coder.SWFFactory;
+import com.flagstone.transform.datatype.Blend;
 import com.flagstone.transform.datatype.ColorTransform;
 import com.flagstone.transform.datatype.CoordTransform;
-import com.flagstone.transform.datatype.PlaceType;
 import com.flagstone.transform.exception.IllegalArgumentRangeException;
+import com.flagstone.transform.filter.Filter;
 import com.flagstone.transform.movieclip.MovieClipEventHandler;
 
 /**

@@ -32,7 +32,6 @@ package com.flagstone.transform.video;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.flagstone.transform.VideoFrame;
 import com.flagstone.transform.coder.CoderException;
 
 public final class VideoFrameTest {

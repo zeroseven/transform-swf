@@ -40,12 +40,11 @@ import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.datatype.MovieAttribute;
 
 /** TODO(class). */
-public final class FileAttributes implements MovieTag {
+public final class MovieAttributes implements MovieTag {
 
-    private static final String FORMAT = "FileAttributes: { attributes=%s }";
+    private static final String FORMAT = "MovieAttributes: { attributes=%s }";
 
     private int attributes;
 
@@ -59,7 +58,7 @@ public final class FileAttributes implements MovieTag {
      * @throws CoderException
      *             if an error occurs while decoding the data.
      */
-    public FileAttributes(final SWFDecoder coder) throws CoderException {
+    public MovieAttributes(final SWFDecoder coder) throws CoderException {
 
         if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
             coder.readWord(4, false);
@@ -69,7 +68,7 @@ public final class FileAttributes implements MovieTag {
     }
 
     /** TODO(method). */
-    public FileAttributes(Set<MovieAttribute>set) {
+    public MovieAttributes(Set<MovieAttribute>set) {
         setAttributes(set);
     }
 
@@ -81,7 +80,7 @@ public final class FileAttributes implements MovieTag {
      *            a FileAttributes object from which the values will be
      *            copied.
      */
-    public FileAttributes(final FileAttributes object) {
+    public MovieAttributes(final MovieAttributes object) {
         attributes = object.attributes;
     }
 
@@ -117,8 +116,8 @@ public final class FileAttributes implements MovieTag {
     }
 
     /** {@inheritDoc} */
-    public FileAttributes copy() {
-        return new FileAttributes(this);
+    public MovieAttributes copy() {
+        return new MovieAttributes(this);
     }
 
     /** {@inheritDoc} */

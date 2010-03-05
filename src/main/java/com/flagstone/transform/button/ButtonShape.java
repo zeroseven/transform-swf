@@ -35,11 +35,10 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
-import com.flagstone.transform.Blend;
+import com.flagstone.transform.datatype.Blend;
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.Filter;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
@@ -48,6 +47,7 @@ import com.flagstone.transform.coder.SWFFactory;
 import com.flagstone.transform.datatype.ColorTransform;
 import com.flagstone.transform.datatype.CoordTransform;
 import com.flagstone.transform.exception.IllegalArgumentRangeException;
+import com.flagstone.transform.filter.Filter;
 
 /**
  * <p>

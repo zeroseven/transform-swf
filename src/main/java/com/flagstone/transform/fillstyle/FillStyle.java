@@ -1,8 +1,8 @@
 /*
- * Filter.java
+ * FillStyle.java
  * Transform
  *
- * Copyright (c) 2009 Flagstone Software Ltd. All rights reserved.
+ * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
@@ -28,8 +28,14 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.flagstone.transform.coder;
+package com.flagstone.transform.fillstyle;
 
-/** TODO(class). */
-public interface Filter extends SWFEncodeable {
+import com.flagstone.transform.coder.Copyable;
+import com.flagstone.transform.coder.SWFEncodeable;
+
+/**
+ * The FillStyle interface identifies the fill styles that can be added to a
+ * shape.
+ */
+public interface FillStyle extends SWFEncodeable, Copyable<FillStyle> {
 }

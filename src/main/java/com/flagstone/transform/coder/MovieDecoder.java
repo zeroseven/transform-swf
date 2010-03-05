@@ -2,13 +2,12 @@ package com.flagstone.transform.coder;
 
 import com.flagstone.transform.Background;
 import com.flagstone.transform.DefineData;
-import com.flagstone.transform.DefineVideo;
 import com.flagstone.transform.DoABC;
 import com.flagstone.transform.DoAction;
 import com.flagstone.transform.EnableDebugger;
 import com.flagstone.transform.EnableDebugger2;
 import com.flagstone.transform.Export;
-import com.flagstone.transform.FileAttributes;
+import com.flagstone.transform.MovieAttributes;
 import com.flagstone.transform.FrameLabel;
 import com.flagstone.transform.Free;
 import com.flagstone.transform.Import;
@@ -28,7 +27,6 @@ import com.flagstone.transform.SerialNumber;
 import com.flagstone.transform.ShowFrame;
 import com.flagstone.transform.SymbolClass;
 import com.flagstone.transform.TabOrder;
-import com.flagstone.transform.VideoFrame;
 import com.flagstone.transform.button.ButtonColorTransform;
 import com.flagstone.transform.button.ButtonSound;
 import com.flagstone.transform.button.DefineButton;
@@ -63,6 +61,8 @@ import com.flagstone.transform.text.DefineText;
 import com.flagstone.transform.text.DefineText2;
 import com.flagstone.transform.text.DefineTextField;
 import com.flagstone.transform.text.TextSettings;
+import com.flagstone.transform.video.DefineVideo;
+import com.flagstone.transform.video.VideoFrame;
 
 /**
  * Factory is the default implementation of an SWFFactory which used to create
@@ -235,7 +235,7 @@ public final class MovieDecoder implements SWFFactory<MovieTag> {
             obj = new TabOrder(coder);
             break;
         case MovieTypes.FILE_ATTRIBUTES:
-            obj = new FileAttributes(coder);
+            obj = new MovieAttributes(coder);
             break;
         case MovieTypes.PLACE_3:
             obj = new Place3(coder, context);

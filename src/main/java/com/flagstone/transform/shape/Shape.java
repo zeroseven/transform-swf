@@ -34,7 +34,6 @@ import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.coder.ShapeRecord;
 
 /**
  * Shape is a container class for the shape objects (Line, Curve and ShapeStyle

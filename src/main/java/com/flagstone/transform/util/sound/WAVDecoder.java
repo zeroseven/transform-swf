@@ -45,8 +45,8 @@ import java.util.zip.DataFormatException;
 
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.SWFDecoder;
-import com.flagstone.transform.datatype.SoundFormat;
 import com.flagstone.transform.sound.DefineSound;
+import com.flagstone.transform.sound.SoundFormat;
 import com.flagstone.transform.sound.SoundStreamBlock;
 import com.flagstone.transform.sound.SoundStreamHead2;
 

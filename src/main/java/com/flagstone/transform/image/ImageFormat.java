@@ -28,11 +28,10 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.flagstone.transform.datatype;
+package com.flagstone.transform.image;
 
 /**
- * ImageFormat is used to represent the different encodings for lossless images
- * in a Flash file.
+ * ImageFormat is used to represent the different formats for lossless images.
  */
 public enum ImageFormat {
     /**

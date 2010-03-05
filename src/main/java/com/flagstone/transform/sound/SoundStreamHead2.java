@@ -38,7 +38,6 @@ import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.datatype.SoundFormat;
 import com.flagstone.transform.exception.IllegalArgumentRangeException;
 import com.flagstone.transform.exception.IllegalArgumentValueException;
 

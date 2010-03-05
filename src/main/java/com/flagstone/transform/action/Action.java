@@ -1,8 +1,8 @@
 /*
- * VideoFormat.java
+ * Action.java
  * Transform
  *
- * Copyright (c) 2009 Flagstone Software Ltd. All rights reserved.
+ * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -28,22 +28,14 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.flagstone.transform.datatype;
+package com.flagstone.transform.action;
+
+import com.flagstone.transform.coder.Copyable;
+import com.flagstone.transform.coder.SWFEncodeable;
 
 /**
- * VideoFormat is used to identify the different encoding formats used for
- * video in Flash and Flash Video files.
+ * Action defines a type that is used to identify all the different types of 
+ * actions that can be added to a movie.
  */
-public enum VideoFormat {
-    /**
-     * H263 is a low bit-rate compressed format originally developed for
-     * video-conferencing by the ITU-T Video Coding Experts Group (VCEG).
-     */
-    H263,
-    /**
-     * Screen Video is a simple format used primarily for compressing sequences
-     * of screen shots where only the differences between successive frames are
-     * encoded.
-     */
-    SCREEN
+public interface Action extends SWFEncodeable, Copyable<Action> {
 }

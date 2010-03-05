@@ -40,7 +40,10 @@ import org.junit.runners.Suite;
     ColorTest.class,
     ColorCodingTest.class,
     ColorTransformTest.class,
-    CoordTransformTest.class }
+    ColorTransformCodingTest.class,
+    CoordTransformTest.class,
+    CoordTransformCodingTest.class
+    }
 )
 public final class AllDataTypeTests {
 }

@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.zip.DataFormatException;
 
 import com.flagstone.transform.datatype.Bounds;
-import com.flagstone.transform.datatype.CharacterEncoding;
+import com.flagstone.transform.font.CharacterFormat;
 import com.flagstone.transform.font.Kerning;
 import com.flagstone.transform.shape.Shape;
 import com.flagstone.transform.util.shape.Canvas;
@@ -48,7 +48,7 @@ public final class AWTDecoder {
         Font font = new Font();
         
         font.setFace(new FontFace(awtFont.getName(), awtFont.isBold(), awtFont.isItalic()));
-        font.setEncoding(CharacterEncoding.UCS2);
+        font.setEncoding(CharacterFormat.UCS2);
 
         // TODO(code) still needed ? final Rectangle2D transform =
         // transformToEMSquare(font, fontContext);

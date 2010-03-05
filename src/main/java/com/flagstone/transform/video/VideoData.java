@@ -27,7 +27,7 @@
  * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.flagstone.transform;
+package com.flagstone.transform.video;
 
 import java.util.Arrays;
 
@@ -36,7 +36,6 @@ import com.flagstone.transform.coder.FLVDecoder;
 import com.flagstone.transform.coder.FLVEncoder;
 import com.flagstone.transform.coder.VideoTag;
 import com.flagstone.transform.coder.VideoTypes;
-import com.flagstone.transform.datatype.VideoFormat;
 import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 /**

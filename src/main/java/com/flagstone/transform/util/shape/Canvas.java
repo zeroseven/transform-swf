@@ -33,15 +33,15 @@ package com.flagstone.transform.util.shape;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.flagstone.transform.coder.FillStyle;
-import com.flagstone.transform.coder.ShapeRecord;
 import com.flagstone.transform.datatype.Bounds;
+import com.flagstone.transform.fillstyle.FillStyle;
 import com.flagstone.transform.linestyle.LineStyle;
 import com.flagstone.transform.shape.Curve;
 import com.flagstone.transform.shape.DefineShape2;
 import com.flagstone.transform.shape.DefineShape3;
 import com.flagstone.transform.shape.Line;
 import com.flagstone.transform.shape.Shape;
+import com.flagstone.transform.shape.ShapeRecord;
 import com.flagstone.transform.shape.ShapeStyle;
 
 /**

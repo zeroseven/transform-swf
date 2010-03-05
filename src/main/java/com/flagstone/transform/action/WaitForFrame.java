@@ -32,8 +32,6 @@
 package com.flagstone.transform.action;
 
 
-import com.flagstone.transform.coder.Action;
-import com.flagstone.transform.coder.ActionTypes;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;

@@ -28,13 +28,12 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.flagstone.transform.coder;
+package com.flagstone.transform.datatype;
 
 /** 
  * BlendTypes defines the values that are used to encode Blends. 
  */
 public final class BlendTypes {
-    
     /** Value used to identify a NORMAL Blend when it is encoded. */
     public static final int NORMAL = 1;
     /** Value used to identify a LAYER Blend when it is encoded. */

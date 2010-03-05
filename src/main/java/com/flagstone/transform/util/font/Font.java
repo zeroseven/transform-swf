@@ -3,11 +3,10 @@ package com.flagstone.transform.util.font;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 
 import com.flagstone.transform.datatype.Bounds;
-import com.flagstone.transform.datatype.CharacterEncoding;
+import com.flagstone.transform.font.CharacterFormat;
 import com.flagstone.transform.font.DefineFont2;
 import com.flagstone.transform.font.Kerning;
 import com.flagstone.transform.shape.Shape;
@@ -63,7 +62,7 @@ import com.flagstone.transform.shape.Shape;
 public final class Font {
 
     private FontFace face; 
-    private CharacterEncoding encoding;
+    private CharacterFormat encoding;
 
     private float ascent;
     private float descent;
@@ -100,11 +99,11 @@ public final class Font {
      * Returns the encoding scheme used for the character codes, either UCS2,
      * ANSI or SJIS.
      */
-    public CharacterEncoding getEncoding() {
+    public CharacterFormat getEncoding() {
         return encoding;
     }
     
-    public void setEncoding(CharacterEncoding enc) {
+    public void setEncoding(CharacterFormat enc) {
         encoding = enc;
     }
 

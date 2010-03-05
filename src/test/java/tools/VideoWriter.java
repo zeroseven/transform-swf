@@ -5,8 +5,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
 
-import com.flagstone.transform.Video;
 import com.flagstone.transform.coder.VideoTag;
+import com.flagstone.transform.video.Video;
 
 public class VideoWriter {
 

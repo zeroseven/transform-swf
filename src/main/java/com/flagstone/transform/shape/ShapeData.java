@@ -36,7 +36,6 @@ import java.util.Arrays;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.coder.ShapeRecord;
 
 /** TODO(class). */
 public final class ShapeData implements ShapeRecord {

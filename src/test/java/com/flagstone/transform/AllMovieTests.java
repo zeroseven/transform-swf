@@ -3,6 +3,8 @@ package com.flagstone.transform;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+import com.flagstone.transform.video.DefineVideoTest;
+
 @RunWith(Suite.class)
 @Suite.SuiteClasses( { BackgroundTest.class, DefineDataTest.class,
         DefineVideoTest.class, DoABCTest.class, DoActionTest.class,
@@ -11,7 +13,7 @@ import org.junit.runners.Suite;
         PlaceTest.class, Place2Test.class, Place3Test.class, RemoveTest.class,
         Remove2Test.class, ScalingGridTest.class, ShowFrameTest.class,
         SymbolClassTest.class, TabOrderTest.class, EnableDebuggerTest.class,
-        EnableDebugger2Test.class, ExportTest.class, FileAttributesTest.class,
+        EnableDebugger2Test.class, ExportTest.class, MovieAttributesTest.class,
         ImportTest.class, Import2Test.class, MovieMetaDataTest.class,
         PathsArePostscriptTest.class, ProtectTest.class,
         ScenesAndLabelsTest.class, SerialNumberTest.class })

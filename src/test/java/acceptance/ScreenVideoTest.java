@@ -11,24 +11,24 @@ import java.util.zip.DataFormatException;
 import org.junit.Test;
 
 import com.flagstone.transform.Background;
-import com.flagstone.transform.DefineVideo;
 import com.flagstone.transform.Movie;
 import com.flagstone.transform.Place2;
 import com.flagstone.transform.ShowFrame;
 
-import com.flagstone.transform.VideoFrame;
 import com.flagstone.transform.video.Deblocking;
 import com.flagstone.transform.coder.ImageTag;
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.datatype.Bounds;
-import com.flagstone.transform.datatype.VideoFormat;
 import com.flagstone.transform.datatype.WebPalette;
 import com.flagstone.transform.util.image.ImageDecoder;
 import com.flagstone.transform.util.image.ImageFactory;
 import com.flagstone.transform.util.image.ImageInfo;
 import com.flagstone.transform.util.image.ImageRegistry;
+import com.flagstone.transform.video.DefineVideo;
 import com.flagstone.transform.video.ImageBlock;
 import com.flagstone.transform.video.ScreenPacket;
+import com.flagstone.transform.video.VideoFormat;
+import com.flagstone.transform.video.VideoFrame;
 
 public final class ScreenVideoTest {
     

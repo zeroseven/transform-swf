@@ -1,8 +1,8 @@
 /*
- * ShapeRecord.java
+ * VideoObject.java
  * Transform
  *
- * Copyright (c) 2001-2006 Flagstone Software Ltd. All rights reserved.
+ * Copyright (c) 2001-2009 Flagstone Software Ltd. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
@@ -27,9 +27,28 @@
  * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-package com.flagstone.transform.coder;
+package com.flagstone.transform.filter;
 
 /** TODO(class). */
-public interface ShapeRecord extends SWFEncodeable, Copyable<ShapeRecord> {
+public final class FilterTypes {
+    /** TODO(doc). */
+    public static final int DROP_SHADOW = 0;
+    /** TODO(doc). */
+    public static final int BLUR = 1;
+    /** TODO(doc). */
+    public static final int GLOW = 2;
+    /** TODO(doc). */
+    public static final int BEVEL = 3;
+    /** TODO(doc). */
+    public static final int GRADIENT_GLOW = 4;
+    /** TODO(doc). */
+    public static final int CONVOLUTION = 5;
+    /** TODO(doc). */
+    public static final int COLOR_MATRIX = 6;
+    /** TODO(doc). */
+   public static final int GRADIENT_BEVEL = 7;
+
+    private FilterTypes() {
+        // Class contains only constants
+    }
 }

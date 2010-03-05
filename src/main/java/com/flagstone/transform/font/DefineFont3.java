@@ -42,7 +42,6 @@ import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.Bounds;
-import com.flagstone.transform.datatype.CharacterEncoding;
 import com.flagstone.transform.exception.IllegalArgumentRangeException;
 import com.flagstone.transform.shape.Shape;
 import com.flagstone.transform.shape.ShapeData;
@@ -360,17 +359,17 @@ public final class DefineFont3 implements DefineTag {
      * Returns the encoding scheme used for characters rendered in the font,
      * either ASCII, SJIS or UCS2.
      */
-    public CharacterEncoding getEncoding() {
-        CharacterEncoding value;
+    public CharacterFormat getEncoding() {
+        CharacterFormat value;
         switch(encoding) {
         case 0:
-            value = CharacterEncoding.UCS2;
+            value = CharacterFormat.UCS2;
             break;
         case 1:
-            value = CharacterEncoding.ANSI;
+            value = CharacterFormat.ANSI;
             break;
         case 2:
-            value = CharacterEncoding.SJIS;
+            value = CharacterFormat.SJIS;
             break;
         default:
             throw new IllegalStateException();
@@ -548,7 +547,7 @@ public final class DefineFont3 implements DefineTag {
      *            the encoding used to identify characters, either ASCII, SJIS
      *            or UNICODE.
      */
-    public void setEncoding(final CharacterEncoding anEncoding) {
+    public void setEncoding(final CharacterFormat anEncoding) {
         switch(anEncoding) {
         case UCS2:
             encoding = 0;

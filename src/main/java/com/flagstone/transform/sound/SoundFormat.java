@@ -28,7 +28,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.flagstone.transform.datatype;
+package com.flagstone.transform.sound;
 
 /**
  * SoundFormat is used to identify the different encoding formats used for event

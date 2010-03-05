@@ -2,6 +2,7 @@ package com.flagstone.transform.coder;
 
 import com.flagstone.transform.shape.Curve;
 import com.flagstone.transform.shape.Line;
+import com.flagstone.transform.shape.ShapeRecord;
 import com.flagstone.transform.shape.ShapeStyle;
 
 /**

@@ -28,7 +28,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.flagstone.transform.coder;
+package com.flagstone.transform.action;
 
 /**
  * ActionTypes defines the constants that identify the different types of action

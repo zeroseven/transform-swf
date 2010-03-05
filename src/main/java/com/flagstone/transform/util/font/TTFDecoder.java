@@ -12,14 +12,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.DataFormatException;
 
+import com.flagstone.transform.CharacterEncoding;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.FLVDecoder;
-import com.flagstone.transform.coder.ShapeRecord;
 import com.flagstone.transform.datatype.Bounds;
-import com.flagstone.transform.datatype.CharacterEncoding;
 import com.flagstone.transform.datatype.CoordTransform;
+import com.flagstone.transform.font.CharacterFormat;
 import com.flagstone.transform.font.Kerning;
 import com.flagstone.transform.shape.Shape;
+import com.flagstone.transform.shape.ShapeRecord;
 import com.flagstone.transform.util.shape.Canvas;
 
 /**
@@ -115,7 +116,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
     private boolean bold;
     private boolean italic;
 
-    private CharacterEncoding encoding;
+    private CharacterFormat encoding;
 
     private float ascent;
     private float descent;
@@ -600,22 +601,22 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
 
             if (platformId == 0) {
                 // Unicode
-                encoding = CharacterEncoding.UCS2;
+                encoding = CharacterFormat.UCS2;
             } else if (platformId == 1) {
                 // Macintosh
                 if (encodingId == 1) {
-                    encoding = CharacterEncoding.SJIS;
+                    encoding = CharacterFormat.SJIS;
                 } else {
-                    encoding = CharacterEncoding.ANSI;
+                    encoding = CharacterFormat.ANSI;
                 }
             } else if (platformId == 3) {
                 // Microsoft
                 if (encodingId == 1) {
-                    encoding = CharacterEncoding.UCS2;
+                    encoding = CharacterFormat.UCS2;
                 } else if (encodingId == 2) {
-                    encoding = CharacterEncoding.SJIS;
+                    encoding = CharacterFormat.SJIS;
                 } else {
-                    encoding = CharacterEncoding.ANSI;
+                    encoding = CharacterFormat.ANSI;
                 }
             }
 
@@ -695,7 +696,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
             }
             coder.setPointer(current);
         }
-        encoding = CharacterEncoding.SJIS;
+        encoding = CharacterFormat.SJIS;
     }
 
     private void decodeGlyphs(final FLVDecoder coder, final int glyfOffset)

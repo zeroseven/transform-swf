@@ -15,10 +15,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.DataFormatException;
 
+import com.flagstone.transform.CharacterEncoding;
 import com.flagstone.transform.Movie;
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.datatype.Bounds;
-import com.flagstone.transform.datatype.CharacterEncoding;
 import com.flagstone.transform.font.DefineFont;
 import com.flagstone.transform.font.DefineFont2;
 import com.flagstone.transform.font.FontInfo;
