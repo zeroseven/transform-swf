@@ -350,7 +350,7 @@ public enum WebPalette {
      * @return
      *           the Color object representing this entry in the table.
      */
-    public Color color(int alpha) {
+    public Color color(final int alpha) {
         return new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
     }
 }

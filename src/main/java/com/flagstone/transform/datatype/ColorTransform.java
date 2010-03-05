@@ -384,24 +384,12 @@ public final class ColorTransform implements SWFEncodeable {
         hasAlpha = context.getVariables().containsKey(Context.TRANSPARENT);
         size = 0;
 
-        if (hasAdd) {
-            size = Math.max(size, SWFEncoder.size(addRed));
-            size = Math.max(size, SWFEncoder.size(addGreen));
-            size = Math.max(size, SWFEncoder.size(addBlue));
-
-            if (hasAlpha) {
-                size = Math.max(size, SWFEncoder.size(addAlpha));
-            }
+        if (hasMultiply) {
+            sizeTerms(multiplyRed, multiplyGreen, multiplyBlue, multiplyAlpha);
         }
 
-        if (hasMultiply) {
-            size = Math.max(size, SWFEncoder.size(multiplyRed));
-            size = Math.max(size, SWFEncoder.size(multiplyGreen));
-            size = Math.max(size, SWFEncoder.size(multiplyBlue));
-
-            if (hasAlpha) {
-                size = Math.max(size, SWFEncoder.size(multiplyAlpha));
-            }
+        if (hasAdd) {
+            sizeTerms(addRed, addGreen, addBlue, addAlpha);
         }
 
         if (hasMultiply) {
@@ -424,25 +412,36 @@ public final class ColorTransform implements SWFEncodeable {
         coder.writeBits(size, FIELD_SIZE);
 
         if (hasMultiply) {
-            coder.writeBits(multiplyRed, size);
-            coder.writeBits(multiplyGreen, size);
-            coder.writeBits(multiplyBlue, size);
-
-            if (hasAlpha) {
-                coder.writeBits(multiplyAlpha, size);
-            }
+            encodeTerms(multiplyRed, multiplyGreen, multiplyBlue, 
+                    multiplyAlpha, coder);
         }
 
         if (hasAdd) {
-            coder.writeBits(addRed, size);
-            coder.writeBits(addGreen, size);
-            coder.writeBits(addBlue, size);
-
-            if (hasAlpha) {
-                coder.writeBits(addAlpha, size);
-            }
+            encodeTerms(addRed, addGreen, addBlue, addAlpha, coder);
         }
 
         coder.alignToByte();
+    }
+    
+    private void sizeTerms(final int red, final int green, final int blue, 
+            final int alpha) {
+        size = Math.max(size, SWFEncoder.size(red));
+        size = Math.max(size, SWFEncoder.size(green));
+        size = Math.max(size, SWFEncoder.size(blue));
+
+        if (hasAlpha) {
+            size = Math.max(size, SWFEncoder.size(alpha));
+        }
+    }
+    
+    private void encodeTerms(final int red, final int green, final int blue, 
+            final int alpha, final SWFEncoder coder) {
+        coder.writeBits(red, size);
+        coder.writeBits(green, size);
+        coder.writeBits(blue, size);
+        
+        if (hasAlpha) {
+            coder.writeBits(alpha, size);
+        }
     }
 }

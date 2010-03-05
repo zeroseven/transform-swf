@@ -32,7 +32,6 @@ package com.flagstone.transform.datatype;
 
 import com.flagstone.transform.Constants;
 
-import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
