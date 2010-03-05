@@ -1,0 +1,6 @@
+Introduction
+
+  Transform is an Open Source framework for reading and writing Flash (.swf) and 
+  Flash Video (.flv) files. The API gives you complete control over how files 
+  are created with access to all the features supported by the Flash Player but 
+  yet is still intuitive and easy to use.

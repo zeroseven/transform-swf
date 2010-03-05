@@ -1,481 +1,75 @@
--------------------------------------------------
-  Release Notes for Transform SWF, Version 3.0. 
--------------------------------------------------
-
-IMPORTANT: This document contains the set of implemented in version 3.0 
-of the Transform SWF framework.
-
-For this version the same philosophy of providing a low-level API which exposes 
-all the data structures in a Flash file as objects is maintained. Files will 
-still be generated and parsed in the same way. Porting code from Transform 2 
-should be very simple and extensive rewrites will not be necessary.
-
-New Features
-
-	1. Full support for Flash 9.
-    2. Code is written for Java 6.
-    3. Abstract classes are replaced by interfaces.
-    4. Null is avoided unless an object is optional.
-    5. Better handling of optionally decoded objects.
-    
-Renamed Classes
-
-    1. The "FS" prefix has been dropped.
-    2. Renamed FSButton to ButtonShape.
-   	3. Renamed FSText to TextSpan
-   	4. Renamed FSSound to SoundInfo
-   	5. Renamed FSSolidLine to LineStyle 
-   	6. Renamed FSMorphSolidLine to MorphLineStyle.
-   	7. Renamed FSCharacter to GlyphIndex.
-   	8. Dropped the Object suffix from PlaceObject[2], RemoveObject[2].
-	9. Renamed UnknownObject to MovieObject.
-   10. Renamed UnknownAction to ActionObject.
-   11. Renamed ClipEvent to MovieClipEventHandler.
-   12. Renamed ButtonEvent to ButtonEventHandler.
-   13. Renamed SetBackgroundColor to Background.
-   14. Renamed Initialize to InitializeMovieClip.
-   
-Class Changes
-
-    1. Changes to Place[Object]2.
-    2. Changes to DefineTextField.
-    3. Simplified constructors on FSColorTransform.
-    4. Arrays of actions now must end with an End action.
-    5. Set methods now throw exceptions if the arguments are invalid.
-    6. The encoding table and image for JPEGs are treated as a single block.
-    7. The following classes were deleted:
-           Pointer
-           CharacterSet
-    
-Internal Changes    
-
-    1. Code was optimised to eliminate unnecessary assignments. 
-    2. Transient variables are used to hold state when encoding.
-    3. Push now handles encoding and decoding of primitive types.
-    4. Coder no longer clamps the internal pointer or allocated new storage. 
-    
-Package Changes
-
-    1. com.flagstone.transform was split into several smaller packages.
-    2. Unit tests have been moved into a parallel source tree.
-
-Documentation Changes
-
-    1. Simplified class descriptions.
-    
-
-----------------
-  New Features
-----------------
-
-1. Full support for Flash 9.
-
-   All the data structures in Flash 8 and Flash 9 are supported.
-
-2. Code is written for Java 6.
-
-   With Sun declaring the End-of-Life for Java 5, the base JDK for the Transform 
-   framework is now Java 6. The code makes extensive use of the array copying 
-   methods introduced in Java 6 so compatibility with Java 5 is not possible.
-   
-   The code was updated change so all the Collection classes now use parameterised 
-   types. Collections are passed by interface. For example:
-   
- 	   public void setObjects(ArrayList<FSMovieObject> anArray)
-   
-   now passes a List as an argument:
-   
- 	   public void setObjects(List<MovieTag> anArray)
-   	   
-   The framework uses Iterators to step through the collections so the exact 
-   types passed to the classes is not important.
-   
-   Integer constants are replaced by enums. EnumSets replace the setting of 
-   compound values that previously used or'ing of integer values, for example
-   when defining the set of events that a movie clip or button will respond to.
-   
-   PathsArePostscript, ShowFrame and immutable actions are now implemented as 
-   singletons. The BasicAction class which implements all the immutable actions
-   except call is implemented as an enum.
-
-3. Abstract classes are replaced by interfaces.
-
-   Originally TranformObject was an abstract base class that defined the methods
-   used to encode and decode objects from a Flash file. This was replaced by 
-   the more generically named SWFObject so the similarly named FLVObject could 
-   be used for the interface that all Flash Video objects implements.
-   
-   Abstract base classes such as MovieObject, DefineObject, ActionObject, 
-   FillStyleObject, ShapeObject and LineStyleObject were used to reuse code
-   and define the methods used by sub-classes. All these have been replaced
-   by interfaces: MovieTag, DefineTag, Action and FillStyle. LineStyleObject
-   was not implemented as an interface as LineStyle2 objects not mixed with~
-   LineStyles so maintaining an interface was not necessary.
-   
-   Moving to an interface based design gave tow major benefits, first there was 
-   greater scope for optimisation by minimising the amount of code called for 
-   encoding and decoding simple (and commonly used) classes such as ShowFrame.
-   The second benefit is that it allows specific types to be create to identify
-   groups of similar objects. For example images implement the ImageTag interface
-   which allows their width and height to be determined. The result is that the 
-   code is a lot more flexible and easier to use and optimise.
-   
-4. Null is avoided unless an object is optional.
-
-   In the previous release objects (and collections) would often be set to 
-   null. This applied to fields where the object was required but has yet to be
-   defined. This lax policy was tightened so that ONLY objects which are optional
-   and so are completely omitted when encoded or decoded to a Flash file can be 
-   null.
-   
-   This major effect is that newly created objects can be encoded and decoded 
-   again correctly - they may cause an error when executed by the Flash Player 
-   but strictly speaking they are valid objects since they comply with the file 
-   format specification.
-   
-   Instead being null, collections are always empty. 
-   
-   Similarly strings many now be empty rather than null. Often in a flash data 
-   structure the length of a string is encoded so empty strings are easily handled. 
-   Avoiding the use of null, more accurately, means that the object has no name 
-   rather than the name was undefined.
-     
-5. Better handling of optionally decoded objects.
-
-   For objects that contain actions and shapes the previous release allows the
-   data to be selectively decoded. The data was stored in the objects and 
-   decoded lazily if the object was accessed.
-   
-   New classes were added, ActionData, MovieData, ShapeData to contain the 
-   optionally decoded data so the objects that contain actions and shapes no 
-   longer maintain a separate block of data.
-   
-   This has two advantages, the first is that it simplifies the classes and makes
-   the code more reliable, consistent and easier to maintain. The second is that
-   it increases the scope for selective decoding and allows selective encoding.
-   For example when generating files from a template you can now pre-encode 
-   objects that will not be edited to increase performance when the template 
-   is copied, edited and encoded.
-   
--------------------
-  Renamed Classes
--------------------
-
-1. The "FS" prefix on all other classes has been dropped. 
-
-   The prefix was a hangover from the original Objective-C code way back at the 
-   dawn  of time. There are collisions with class names in the java.awt package 
-   but these apply to classes in com.flagstone.transform.util and so there should 
-   not be many times were you have to write java.awt.Image, etc. in order to 
-   distinguish between classes.
-   
-2. Renamed FSButton to ButtonShape.
-
-   The class was renamed to make its purpose clearer.
-
-3. Renamed FSText to TextSpan
-
-   FSText defined a set of FSCharacters which are positioned within an 
-   FSDefineText object so the class was renamed to make it more accurate - the
-   name was chosen after the HTML span element to its purpose is clear.
-   	
-4. Renamed FSSound to SoundInfo
-
-   The class was renamed to avoid naming conflict with the Sound factory class
-   in the com.flagstone.transform.factory.sound package which was renamed to 
-   Sound. The name also matches the one used in the File Format Specification
-   from Adobe.
-   	
-5. Renamed FSSolidLine to LineStyle 
-
-   The class was renamed to match the one used in the File Format Specification
-   from Adobe. The LineStyle data structure added in Flash 8 can use different
-   fill styles to paint the line so the name used in the framework was no longer
-   accurate. 
-   	
-6. Renamed FSMorphSolidLine to MorphLineStyle.
-
-   Renamed for the same reasons as FSSolidLine.
-
-7. Renamed FSCharacter to GlyphIndex.
-
-   The new name is a little unwieldy but it is more accurate since the object 
-   contained an index into the array of glyphs for a font which only indirectly
-   referred to a character. 
-
-8. Dropped the Object suffix from PlaceObject[2], RemoveObject[2]
-
-   These classes are used a lot so they were renamed to cut down on the amount 
-   of typing. Dropping the 'Object' makes the general way of naming objects 
-   more consistent since only abstract base classes now have the 'Object' suffix.
-      
-9. Renamed UnknownObject to MovieObject.
-
-   The name is more accurate than UnknownObject and leaves names ending in 
-   Tag for interfaces. The name reflects the fact that it is a generic object
-   that can be added to a movie.
-
-10. Renamed UnknownAction to ActionObject.
-
-   The name is more accurate than UnknownObject and leaves names ending in 
-   Tag for interfaces.
-
-11. Renamed ClipEvent to MovieClipEventHandler.
-
-   An enum, called MovieClipEvent, was added for all the different events 
-   that a movie clip responds to so the ClipEvent class was renamed to 
-   MovieClipEventHandler to make its purpose clearer.
-
- 12. Renamed ButtonEvent to ButtonEventHandler.
-
-   ButtonEvent is now an enum containing all the different events that a button
-   responds to so the ButtonEvent class was renamed to ButtonEventHandler to 
-   make its purpose clearer.
-   
-13. Renamed SetBackgroundColor to Background.
-
-   Background is a lot less typing than SetBackgroundColor.
-
-14. Renamed Initialize to InitializeMovieClip.
-
-   Renamed to make its purpose clearer.
-   
------------------
-  Class Changes
------------------
-
-1. Changes to Place[Object]2.
-
-   a. Simplified constructors on FSPlaceObject2.
-   
-   Since FSLayer supports provides an API for manipulating the display list the
-   number of constructors on FSPlaceObject2 was reduced to reduce the complexity
-   of the class and make it easier to use. The following constructors were 
-   removed:
-    
-   public FSPlaceObject2(int id, int layer, float aRatio, int x, int y)
-   public FSPlaceObject2(int id, int layer, FSCoordTransform tx)
-   public FSPlaceObject2(int id, int layer, int aDepth, int x, int y)
-   public FSPlaceObject2(int id, int layer, ArrayList events, String aName, int x, int y)
-   public FSPlaceObject2(int id, int layer, byte[] encodedEvents, String name, int x, int y) 
-   public FSPlaceObject2(int id, int layer)
-   public FSPlaceObject2(int layer, FSCoordTransform tx)
-   public FSPlaceObject2(int layer, FSColorTransform cx)
-   public FSPlaceObject2(int layer, float ratio, int x, int y)
-   public FSPlaceObject2(int layer, float ratio, FSCoordTransform tx)
-   public FSPlaceObject2(int type, int id, int layer, FSCoordTransform tx, FSColorTransform cx)
-
-   b. Add a nested Builder class, PlaceBuilder to simplify the process of 
-   constructing Place2 objects.
-  
-   c. Ratios on PlaceObject2 are now integers.
-
-   Changed ratio on PlaceObject2 from a float with the range 0.0..1.0 to an
-   int with the range 0..65535. Originally float was used to help distinguish 
-   between the myriad of constructors but now with the class being simplified 
-   this extra abstraction is no longer required.
-   
-   The change makes using the feature a little harder to use but should give
-   finer control over the morphing process without having to resort to specifying
-   numbers with 2 or 3 decimal places.
-
-2. Changes to DefineTextField.
-
-   a. Removed attribute strings on DefineTextField.
-
-   The set of strings which allowed the large number of attributed in a 
-   DefineTextField object to be set using a Map were deleted. The default state
-   for the attributes when an object is constructed is the mostly commonly used
-   settings and so in practice only a few mutator methods are called. 
-   Consequently the strings were removed along with the mutator methods that 
-   used the map in order to simplify the code.
-   
-   b. Added a nested Builder class, DefineTextFieldBuilder to simplify the 
-   process of constructing text fields.
-    
-   c DefineTextField color is always encoded.
-
-   The color used to display text in a DefineTextField is described in the Flash
-   file format specification as being optional - if omitted then a default colour 
-   is used. However there is no mention of what the default colour is (most
-   probably it is black). Rather than rely on a default the colour is now 
-   explicitly set to black and the object is always encoded.
-   
-   During decoding the colour decoded from the binary data, if specified will
-   override this default. This ensures that a dynamic text field always has a 
-   valid colour object.
-
-3. Simplified constructors on FSColorTransform.
-
-   The set of constructors has been reduced to:
-   
-       public ColorTransform()
-       
-	   public ColorTransform(int addRed, int addGreen, int addBlue, int addAlpha)
-	   
-	   public ColorTransform(float multiplyRed, float multiplyGreen, 
-	       float multiplyBlue, float multiplyAlpha)
-   
-   Mutator methods are now used to set the other terms and so a complete 
-   transform can be specified in two lines of code.
-    
-4. Arrays of actions now must end with an End action.
-
-   This is the only change which might cause problems. In Transform 2.x if an
-   array of actions did not have an End object then one was "mysteriously" 
-   added when the object was prepared for encoding in the length() method. This 
-   is no longer the case and all arrays of actions must be terminated with an 
-   END action, unless otherwise specified in the class documentation.
-   
-5. Set methods now throw exception if the arguments are invalid.
-
-   Accessor methods that set object attributes now perform simple checks on the 
-   arguments passed and throw either IllegalArgumentException or NullPointerException 
-   if the state of the object would become invalid.
-     
-7. The encoding table and image for JPEGs are treated as a single block.
-
-   With the release of Flash 8 the encoding table and image data are treated 
-   as a single block of data. The classes FSDefineJPEG2 and FSDefineJPEG3 have
-   been updated to reflect this. This avoid some of the coding issues caused
-   by bugs in earlier versions of Flash where the start and end markers in the 
-   JPEG data were incorrectly reversed.
-
-8. The following classes were deleted:
-
-   CharacterSet was used to record the set of characters used when displaying 
-   text so that an embedded font was encoded only with the character used, saving 
-   space. The class was deleted since an auto-boxed Set<Character> collection 
-   would do a better job, more efficiently.
-      
-   Pointer was a custom data structure added by Macromedia to support their 
-   generator product. It was rarely encountered in files and so was deleted.
-   The data structure will now be decoded as an MovieObject if it is even 
-   encountered in a file.
-   
--------------------- 
-  Internal Changes 
---------------------   
-
-1. Code was optimised to eliminate unnecessary assignments.
-
-   When an object was instantiated all the attributes were set. If an object
-   was created during the process of decoding a movie then the attributes values
-   would all be overwritten. Now the attributes are only initialised within the 
-   constructors to speed up the code.
-   
-2. Transient variables are used to hold state when encoding.
-
-   Encoding a Flash is a two-part process. First the prepareToEncode() method
-   is called to calculate the size of the buffer required to hold the encoded
-   data and so avoid any memory reallocation costs. Secondly the encodeWithCoder()
-   method called to write the encoded values.
-   
-   Often the same operation to calculate an objects size were performed in both
-   methods. These values are now saved in fields, marked using the transient 
-   keyword, to speed up the encoding process.  
- 
-3. Push now handles encoding and decoding of primitive types.
-
-   The Push class handles the encoding and decoding of the primitive types 
-   used to push values onto the Flash Player stack. The classes RegisterIndex, 
-   TableIndex, Null and Void had methods that supported encoding and decoding.
-   Since these methods were not used they were removed.
-       	
-4. Coder no longer clamps the internal pointer or allocated new storage. 
-   
-   If an buffer overflow error occurs the value of the internal pointer used 
-   to mark the current position in the buffer is no longer clamped to the 
-   start and end of the buffer. Instead any further attempts to read data will
-   result in an ArrayIndeOutOfBoundsException being thrown.
-   
-   Overflows are really programming errors and should not be disguised. The 
-   behaviour was originally instituted when Transform was in early stage of 
-   development and so provide some robustness to the framework when dealing 
-   with badly encoded objects.
-   
-   
--------------------
-  Package Changes
--------------------
-
-1. com.flagstone.transform was split into several smaller packages.
-
-   With the refactoring to make testing easier, conversion of constants into 
-   enums and the new classes for Flash 8 and Flash 9 the total number of 
-   classes in the framework was 201 (at the latest count).
-   
-   To make it easier to test and understand what all the classes are used for
-   the com.flagstone.transform package was broken down into several smaller 
-   packages, each containing 10 classes or so.
-
-   The new top-level package structure is:
-   
-       com.flagstone.transform.coder
-       com.flagstone.transform.factory
-       com.flagstone.transform.movie
-       com.flagstone.transform.util
-       com.flagstone.transform.video
-       
-   coder contains all the classes for reading flash, flash video, font, image 
-   and sound files and classes for writing flash and flash video.
-   
-   factory contains nested packages for generating the movie objects for fonts,
-   images, text and sound, along with factory class used for decoding flash files.
-   Most of the classes here are refactored versions of the classes in the 
-   com.flagstone.transform.util package from version 2.3.
-   
-   movie contains all the classes that are decoded from a Flash file. There are 
-   nested packages grouping together the differnet classes for handling fonts,
-   images, sounds etc.
-   
-   util contains classes that simplify the organisation and building of Flash
-   files and Flash video files. It contains the classes from version 2.3
-   com.flagstone.transform.util package that are not strictly factories.
-   
-   video contains all the classes for Flash video files.
-   
-   
- 2. Unit tests have been moved into a parallel source tree.
- 
-   A separate source tree was created for all the unit and acceptance tests. All
-   the unit tests from the package com.flagstone.transform.test were moved to
-   the parallel package com.flagstone.transform:
-   
-  /
-   |
-   +- src
-   |   |
-   |   +- com.flagstone.transform.movie
-   |   +- com.flagstone.transform.util
-   |   ...
-   |
-   +- test
-       |
-       +- src
-           |
-           +- com.flagstone.transform.movie
-           +- com.flagstone.transform.util
-           +- com.flagstone.transform.acceptance 
-       
-   The test tree is no longer included in the regular distribution of the 
-   framework. It is available from the repository however.
-   
-     
- ------------------------
-  Documentation Changes
--------------------------
-
-1. Simplified class datasheets
-
-   The description for each class was simplified to give a brief introduction
-   to the class and what it does. Most of the details on how to use the class
-   and code fragments have been removed. 
-   
-   Instead the current set of examples and other documentation on the web site
-   will be converted into a Cookbook with working examples on how to use each
-   class. This will make it easier to use the framework by showing how to use
-   the classes to create flash animations rather than trying to abstract the 
-   process into text descriptions.
- 
+What's New in Version 3?
+
+  The big changes from the current release (version 2.3.1) to version 3.0 include:
+
+  * <<Full support for Flash 9.>> All the data structures added in Flash and 
+  Flash 9 are now supported. The only thing currently missing is support for 
+  Actionscript 3 - the DoABC class (similar to the current DoAction class) 
+  gives you access to the compiled code however there are no classes that
+  represent the individual instructions (byte-codes).
+
+  * <<Interfaces replace abstract classes.>> Originally abstract classes were 
+  primarily used for code reuse - MovieObject is a good example which allowed 
+  the code for encoding and decoding the header fields (containing the type and 
+  length) of each data structure to be reused in most of the classes in the 
+  framework. From a design perspective using interfaces results in better code 
+  but perhaps more interestingly, avoiding reuse allowed the code for individual 
+  classes to be optimised for speed. When an object was encoded a test was 
+  performed to see whether the length should be written as a 32-bit integer then 
+  after the encoding was complete a test was performed to see whether an 
+  overflow error occurred. For small, fixed size classes such as ShowFrame, 
+  GotoFrame, etc. this overhead makes no sense at all and while using interfaces 
+  forced the code that used to reside in MovieObject to be implemented in each 
+  class it allowed the same code to optimised on a per-class basis which should 
+  yield significant performance improvements.
+
+  * <<Integer constants are replaced by enums.>> Enums and EnumSets are used 
+  wherever possible to replace integer constants - simplify the classes and 
+  generally making the code easier to use.
+
+  * <<More singletons and immutable classes.>> State-less classes such as 
+  PathsArePostscript, ShowFrame and Actions are now implemented as singletons 
+  while the classes that represent simple data structures such as TableIndex, 
+  RegisterIndex, Color, Bounds, etc. are now immutable - their state is set only 
+  through constructors. One of the main goals for Transform was to allow 
+  Flash files to be edited however these basic data types are rarely changed,
+  so limiting edits to replacing an existing object does not carry a significant
+  cost. There is one major advantage is that create copies of movies gets a lot
+  faster as a result. This should see significant improvements in performance 
+  for applications that use existing Flash files as templates.
+
+  * <<Better class names.>> In case you had not noticed already the 'FS' 
+  prefix on the class names is dropped. Also a number of classes were renamed to
+  better match the names used by Adobe in the Flash File Format Specification 
+  and make their purpose clearer.
+
+  * <<Less documentation.>> The current class datasheets try and provide a 
+  detailed description of the class and how to use it. With the creation of the 
+  {{{http://www.flagstonesoftware.com/cookbook/index.html}Cookbook}} which 
+  contains an increasing number of working examples the documentation for each 
+  class is simplified to try and give a concise summary of what it is. This 
+  should result in better quality documentation that is easier to maintain.
+
+  * <<Null is avoided unless an object is optional.>> In version 2, null was 
+  often used to represent uninitialised values so that required fields could 
+  easily be identified when objects were encoded. This lax policy has been 
+  tightened so that null is ONLY used when an object is truly optional e.g. for 
+  color and coordinate transforms in Place2. The advantage is a cleaner design 
+  that avoid ambiguities when decoding objects.
+
+  * <<New Factories and Service Providers.>> The utilities classes that were 
+  used to generates the objects representing images, sounds and text were 
+  refactored to follow the Service Provider pattern, see
+  {{{http://java.sun.com/docs/books/effective}Joshua Bloch's Effective Java}}. 
+  This makes the framework easily extensible allowing new providers to be 
+  registered, or existing ones replaced. Factory classes are used for decoding 
+  Flash files again allowing existing code to be replaced or performance 
+  optimised by leaving classes encoded as binary data.
+
+  * <<More packages.>> The com.flagstone.transform package was split so 
+  classes with similar functionality are grouped together into separate 
+  packages. While this reduces the learning curve and makes it easier to 
+  describe all the functionality supported in Transform the real benefit was in 
+  simplifying testing, specifically in managing the large number of unit tests 
+  that are now included.
  
