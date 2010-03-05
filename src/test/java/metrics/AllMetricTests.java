@@ -4,6 +4,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( { MovieMemoryTest.class, MovieTimingTest.class, })
+@Suite.SuiteClasses( { MovieMemoryTest.class, MovieTimingTest.class })
 public final class AllMetricTests {
 }
