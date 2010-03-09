@@ -46,10 +46,11 @@ import com.flagstone.transform.fillstyle.FillStyle;
 public final class MorphLineStyle2 implements SWFEncodeable,
         Copyable<MorphLineStyle2> {
 
-    private static final String FORMAT = "LineStyle2: { width=%d; color=%s;"
+    private static final String FORMAT = "MorphLineStyle2: {"
+            + " startWidth=%d; endWidth=%d; startColor=%s; endColor=%s;"
             + " fillStyle=%s; startCap=%s; endCap=%s; joinStyle=%s;"
-            + " scaledHorizontally=%d; scaledVertically=%d;"
-            + " pixelAligned=%s; lineClosed=%d; miterLimit=%d }";
+            + " scaledHorizontally=%b; scaledVertically=%b;"
+            + " pixelAligned=%b; lineClosed=%b; miterLimit=%d }";
 
     private int startWidth;
     private int endWidth;
