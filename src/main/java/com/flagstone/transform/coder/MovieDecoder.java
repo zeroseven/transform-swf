@@ -47,9 +47,11 @@ import com.flagstone.transform.movieclip.DefineMovieClip;
 import com.flagstone.transform.movieclip.InitializeMovieClip;
 import com.flagstone.transform.movieclip.QuicktimeMovie;
 import com.flagstone.transform.shape.DefineMorphShape;
+import com.flagstone.transform.shape.DefineMorphShape2;
 import com.flagstone.transform.shape.DefineShape;
 import com.flagstone.transform.shape.DefineShape2;
 import com.flagstone.transform.shape.DefineShape3;
+import com.flagstone.transform.shape.DefineShape4;
 import com.flagstone.transform.shape.PathsArePostscript;
 import com.flagstone.transform.sound.DefineSound;
 import com.flagstone.transform.sound.SoundStreamBlock;
@@ -264,6 +266,12 @@ public final class MovieDecoder implements SWFFactory<MovieTag> {
         case MovieTypes.DO_ABC:
             obj = new DoABC(coder);
             break;
+        case MovieTypes.DEFINE_SHAPE_4: 
+            obj = new DefineShape4(coder, context); 
+            break; 
+        case MovieTypes.DEFINE_MORPH_SHAPE_2: 
+            obj = new DefineMorphShape2(coder, context); 
+            break;         
         case MovieTypes.DEFINE_BINARY_DATA:
             obj = new DefineData(coder);
             break;
