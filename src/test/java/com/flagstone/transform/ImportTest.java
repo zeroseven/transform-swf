@@ -29,20 +29,13 @@
  */
 package com.flagstone.transform;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.junit.Test;
-
-import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.SWFDecoder;
-import com.flagstone.transform.coder.SWFEncoder;
 
 public final class ImportTest {
 
@@ -57,14 +50,6 @@ public final class ImportTest {
     }
 
     private transient Import fixture;
-
-    private final transient byte[] encoded = new byte[] { 0x52, 0x0E, 0x41,
-            0x42, 0x43, 0x00, 0x03, 0x00, 0x01, 0x00, 0x41, 0x00, 0x02, 0x00,
-            0x42, 0x00, 0x03, 0x00, 0x43, 0x00, };
-
-    private final transient byte[] extended = new byte[] { 0x7F, 0x0E, 0x12,
-            0x00, 0x00, 0x00, 0x41, 0x42, 0x43, 0x00, 0x03, 0x00, 0x01, 0x00,
-            0x41, 0x00, 0x02, 0x00, 0x42, 0x00, 0x03, 0x00, 0x43, 0x00, };
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForUrlWithNull() {
@@ -108,38 +93,5 @@ public final class ImportTest {
         assertEquals(fixture.getUrl(), copy.getUrl());
         assertNotSame(fixture.getObjects(), copy.getObjects());
         assertEquals(fixture.toString(), copy.toString());
-    }
-
-    @Test
-    public void encode() throws CoderException {
-        final SWFEncoder encoder = new SWFEncoder(encoded.length);
-        final Context context = new Context();
-
-        fixture = new Import(url, table);
-        assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
-        fixture.encode(encoder, context);
-
-        assertTrue(encoder.eof());
-        assertArrayEquals(encoded, encoder.getData());
-    }
-
-    @Test
-    public void decode() throws CoderException {
-        final SWFDecoder decoder = new SWFDecoder(encoded);
-
-        fixture = new Import(decoder);
-
-        assertTrue(decoder.eof());
-        assertEquals(table, fixture.getObjects());
-    }
-
-    @Test
-    public void decodeExtended() throws CoderException {
-        final SWFDecoder decoder = new SWFDecoder(extended);
-
-        fixture = new Import(decoder);
-
-        assertTrue(decoder.eof());
-        assertEquals(table, fixture.getObjects());
     }
 }

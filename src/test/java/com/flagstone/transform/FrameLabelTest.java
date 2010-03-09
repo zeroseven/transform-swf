@@ -29,16 +29,9 @@
  */
 package com.flagstone.transform;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
-
-import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.SWFDecoder;
-import com.flagstone.transform.coder.SWFEncoder;
 
 public final class FrameLabelTest {
 
@@ -46,11 +39,6 @@ public final class FrameLabelTest {
     private static final transient boolean anchor = true;
 
     private transient FrameLabel fixture;
-
-    private final transient byte[] encoded = new byte[] { (byte) 0xC7, 0x0A,
-            0x46, 0x72, 0x061, 0x6D, 0x65, 0x00, 0x01 };
-    private final transient byte[] extended = new byte[] { (byte) 0xFF, 0x0A,
-            0x07, 0x00, 0x00, 0x00, 0x46, 0x72, 0x061, 0x6D, 0x65, 0x00, 0x01 };
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForLabelWithNull() {
@@ -70,40 +58,5 @@ public final class FrameLabelTest {
         assertEquals(fixture.getLabel(), copy.getLabel());
         assertEquals(fixture.isAnchor(), copy.isAnchor());
         assertEquals(fixture.toString(), copy.toString());
-    }
-
-    @Test
-    public void encode() throws CoderException {
-        final SWFEncoder encoder = new SWFEncoder(encoded.length);
-        final Context context = new Context();
-
-        fixture = new FrameLabel(label, anchor);
-        assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
-        fixture.encode(encoder, context);
-
-        assertTrue(encoder.eof());
-        assertArrayEquals(encoded, encoder.getData());
-    }
-
-    @Test
-    public void decode() throws CoderException {
-        final SWFDecoder decoder = new SWFDecoder(encoded);
-
-        fixture = new FrameLabel(decoder);
-
-        assertTrue(decoder.eof());
-        assertEquals(label, fixture.getLabel());
-        assertEquals(anchor, fixture.isAnchor());
-    }
-
-    @Test
-    public void decodeExtended() throws CoderException {
-        final SWFDecoder decoder = new SWFDecoder(extended);
-
-        fixture = new FrameLabel(decoder);
-
-        assertTrue(decoder.eof());
-        assertEquals(label, fixture.getLabel());
-        assertEquals(anchor, fixture.isAnchor());
     }
 }

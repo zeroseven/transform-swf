@@ -1,0 +1,12 @@
+---
+# Export with normal length
+label: Frame
+anchor: true
+data: !!binary
+  xwpGcmFtZQAB
+---
+# Export with extended length
+label: Frame
+anchor: true
+data: !!binary
+  /woHAAAARnJhbWUAAQ==

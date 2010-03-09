@@ -1,0 +1,14 @@
+---
+# MovieObject with normal length
+type: 1
+bytes: !!binary
+  AQIDBA==
+data: !!binary
+  RxNBQkMxMjMA
+---
+# MovieObject with extended length
+type: 1
+bytes: !!binary
+  AQIDBA==
+data: !!binary
+  8ABAAAAAECAwQA==

@@ -1,0 +1,8 @@
+---
+# MovieAttributes with normal length
+data: !!binary
+  RBEZAAAA
+---
+# MovieAttributes with extended length
+data: !!binary
+  fxEEAAAAGQAAAA==

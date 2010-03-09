@@ -1,0 +1,14 @@
+---
+# DefineData with normal length
+identifier: 1
+bytes: !!binary
+  AQIDBA==
+data: !!binary
+  yhUBAAAAAAABAgME
+---
+# DefineData with extended length
+identifier: 1
+bytes: !!binary
+  AQIDBA==
+data: !!binary
+  /xUKAAAAAQAAAAAAAQIDBA==

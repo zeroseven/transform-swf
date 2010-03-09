@@ -1,0 +1,10 @@
+---
+# SerialNumber with normal length
+number: ABC123
+data: !!binary
+  RwpBQkMxMjMA
+---
+# SerialNumber with extended length
+number: ABC123
+data: !!binary
+  PwoHAAAAQUJDMTIzAA==

@@ -29,17 +29,10 @@
  */
 package com.flagstone.transform;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
-
-import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.SWFDecoder;
-import com.flagstone.transform.coder.SWFEncoder;
 
 public final class MovieObjectTest {
 
@@ -47,12 +40,6 @@ public final class MovieObjectTest {
     private final transient byte[] data = new byte[] { 1, 2, 3, 4 };
 
     private transient MovieObject fixture;
-
-    private final transient byte[] encoded = new byte[] { (byte) 0x44, 0x00,
-            0x01, 0x02, 0x03, 0x04 };
-
-    private final transient byte[] extended = new byte[] { (byte) 0x7F, 0x00,
-            0x04, 0x00, 0x00, 0x00, 0x01, 0x02, 0x03, 0x04 };
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForDataWithNull() {
@@ -67,53 +54,5 @@ public final class MovieObjectTest {
         assertNotSame(fixture, copy);
         assertNotSame(fixture.getData(), copy.getData());
         assertEquals(fixture.toString(), copy.toString());
-    }
-
-    @Test
-    public void encode() throws CoderException {
-        final SWFEncoder encoder = new SWFEncoder(encoded.length);
-        final Context context = new Context();
-
-        fixture = new MovieObject(type, data);
-        assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
-        fixture.encode(encoder, context);
-
-        assertTrue(encoder.eof());
-        assertArrayEquals(encoded, encoder.getData());
-    }
-
-    @Test
-    public void encodeExtended() throws CoderException {
-
-        final SWFEncoder encoder = new SWFEncoder(106);
-        final Context context = new Context();
-
-        fixture = new MovieObject(type, new byte[100]);
-        assertEquals(106, fixture.prepareToEncode(encoder, context));
-        fixture.encode(encoder, context);
-
-        assertTrue(encoder.eof());
-    }
-
-    @Test
-    public void decode() throws CoderException {
-        final SWFDecoder decoder = new SWFDecoder(encoded);
-
-        fixture = new MovieObject(decoder);
-
-        assertTrue(decoder.eof());
-        assertEquals(type, fixture.getType());
-        assertArrayEquals(data, fixture.getData());
-    }
-
-    @Test
-    public void decodeExtended() throws CoderException {
-        final SWFDecoder decoder = new SWFDecoder(extended);
-
-        fixture = new MovieObject(decoder);
-
-        assertTrue(decoder.eof());
-        assertEquals(type, fixture.getType());
-        assertArrayEquals(data, fixture.getData());
     }
 }

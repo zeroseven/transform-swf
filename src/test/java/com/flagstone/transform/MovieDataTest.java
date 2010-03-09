@@ -29,25 +29,16 @@
  */
 package com.flagstone.transform;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
-
-import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.SWFDecoder;
-import com.flagstone.transform.coder.SWFEncoder;
 
 public final class MovieDataTest {
 
     private final transient byte[] data = new byte[] { 1, 2, 0 };
 
     private transient MovieData fixture;
-
-    private final transient byte[] encoded = new byte[] { 1, 2, 0 };
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForDataWithNull() {
@@ -59,30 +50,5 @@ public final class MovieDataTest {
         fixture = new MovieData(data);
         assertNotSame(fixture.getData(), fixture.copy().getData());
         assertEquals(fixture.toString(), fixture.toString());
-    }
-
-    @Test
-    public void encode() throws CoderException {
-
-        final SWFEncoder encoder = new SWFEncoder(encoded.length);
-        final Context context = new Context();
-
-        fixture = new MovieData(data);
-        assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
-        fixture.encode(encoder, context);
-
-        assertTrue(encoder.eof());
-        assertArrayEquals(encoded, encoder.getData());
-    }
-
-    @Test
-    public void decode() throws CoderException {
-
-        final SWFDecoder decoder = new SWFDecoder(data);
-
-        fixture = new MovieData(decoder.readBytes(new byte[data.length]));
-
-        assertTrue(decoder.eof());
-        assertArrayEquals(data, fixture.getData());
     }
 }

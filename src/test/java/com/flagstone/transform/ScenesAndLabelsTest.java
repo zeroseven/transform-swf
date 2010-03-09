@@ -62,15 +62,6 @@ public final class ScenesAndLabelsTest {
 
     private transient ScenesAndLabels fixture;
 
-    private final transient byte[] encoded = new byte[] { (byte) 0x94, 0x15,
-            0x03, 0x01, 0x41, 0x00, 0x02, 0x42, 0x00, 0x03, 0x43, 0x00, 0x03,
-            0x04, 0x44, 0x00, 0x05, 0x45, 0x00, 0x06, 0x46, 0x00, };
-
-    private final transient byte[] extended = new byte[] { (byte) 0xBF, 0x15,
-            0x14, 0x00, 0x00, 0x00, 0x03, 0x01, 0x41, 0x00, 0x02, 0x42, 0x00,
-            0x03, 0x43, 0x00, 0x03, 0x04, 0x44, 0x00, 0x05, 0x45, 0x00, 0x06,
-            0x46, 0x00, };
-
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForSceneIdentifierWithLowerBound() {
         fixture = new ScenesAndLabels(scenes, labels);
@@ -127,40 +118,5 @@ public final class ScenesAndLabelsTest {
         assertNotSame(fixture.getScenes(), copy.getScenes());
         assertNotSame(fixture.getLabels(), copy.getLabels());
         assertEquals(fixture.toString(), copy.toString());
-    }
-
-    @Test
-    public void encode() throws CoderException {
-        final SWFEncoder encoder = new SWFEncoder(encoded.length);
-        final Context context = new Context();
-
-        fixture = new ScenesAndLabels(scenes, labels);
-        assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
-        fixture.encode(encoder, context);
-
-        assertTrue(encoder.eof());
-        assertArrayEquals(encoded, encoder.getData());
-    }
-
-    @Test
-    public void decode() throws CoderException {
-        final SWFDecoder decoder = new SWFDecoder(encoded);
-
-        fixture = new ScenesAndLabels(decoder);
-
-        assertTrue(decoder.eof());
-        assertEquals(scenes, fixture.getScenes());
-        assertEquals(labels, fixture.getLabels());
-    }
-
-    @Test
-    public void decodeExtended() throws CoderException {
-        final SWFDecoder decoder = new SWFDecoder(extended);
-
-        fixture = new ScenesAndLabels(decoder);
-
-        assertTrue(decoder.eof());
-        assertEquals(scenes, fixture.getScenes());
-        assertEquals(labels, fixture.getLabels());
     }
 }

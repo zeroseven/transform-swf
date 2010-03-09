@@ -1,0 +1,10 @@
+---
+# EnableDebugger2 with normal length
+password: ABC123
+data: !!binary
+  CRAAAEFCQzEyMwA=
+---
+# EnableDebugger2 with extended length
+password: ABC123
+data: !!binary
+  PxAJAAAAAABBQkMxMjMA

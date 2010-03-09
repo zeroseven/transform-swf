@@ -1,0 +1,8 @@
+---
+# PathsArePostscript with normal length
+data: !!binary
+  QAY=
+---
+# PathsArePostscript with extended length
+data: !!binary
+  fwYAAAAA

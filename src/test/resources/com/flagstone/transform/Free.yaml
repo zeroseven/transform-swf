@@ -1,0 +1,10 @@
+---
+# Free with normal length
+identifier: 1
+data: !!binary
+  xwpGcmFtZQAB
+---
+# Free with extended length
+identifier: 1
+data: !!binary
+  /woHAAAARnJhbWUAAQ==

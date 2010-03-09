@@ -49,14 +49,6 @@ public final class DoABCTest {
 
     private transient DoABC fixture;
 
-    private final transient byte[] encoded = new byte[] { (byte) 0x8F, 0x14,
-            0x00, 0x00, 0x00, 0x01, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x00,
-            0x01, 0x02, 0x03, 0x04 };
-
-    private final transient byte[] extended = new byte[] { (byte) 0xBF, 0x14,
-            0x0F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x73, 0x63, 0x72,
-            0x69, 0x70, 0x74, 0x00, 0x01, 0x02, 0x03, 0x04 };
-
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForNameWithNull() {
         fixture = new DoABC(null, defer, data);
@@ -87,67 +79,5 @@ public final class DoABCTest {
         assertNotSame(data, copy.getData());
         assertArrayEquals(data, copy.getData());
         assertEquals(fixture.toString(), copy.toString());
-    }
-
-    @Test
-    public void encode() throws CoderException {
-        final SWFEncoder encoder = new SWFEncoder(encoded.length);
-        final Context context = new Context();
-
-        fixture = new DoABC(name, defer, data);
-        assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
-        fixture.encode(encoder, context);
-
-        assertTrue(encoder.eof());
-        assertArrayEquals(encoded, encoder.getData());
-    }
-
-    @Test
-    public void encodeDefault() throws CoderException {
-        final SWFEncoder encoder = new SWFEncoder(encoded.length);
-        final Context context = new Context();
-
-        fixture = new DoABC(name, defer, data);
-        assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
-        fixture.encode(encoder, context);
-
-        assertTrue(encoder.eof());
-        assertArrayEquals(encoded, encoder.getData());
-    }
-
-    @Test
-    public void encodeExtended() throws CoderException {
-        final SWFEncoder encoder = new SWFEncoder(117);
-        final Context context = new Context();
-
-        fixture = new DoABC(name, defer, new byte[100]);
-        assertEquals(117, fixture.prepareToEncode(encoder, context));
-        fixture.encode(encoder, context);
-
-        assertTrue(encoder.eof());
-    }
-
-    @Test
-    public void checkDecode() throws CoderException {
-        final SWFDecoder decoder = new SWFDecoder(encoded);
-
-        fixture = new DoABC(decoder);
-
-        assertTrue(decoder.eof());
-        assertEquals(name, fixture.getName());
-        assertEquals(defer, fixture.isDeferred());
-        assertArrayEquals(data, fixture.getData());
-    }
-
-    @Test
-    public void checkDecodeExtended() throws CoderException {
-        final SWFDecoder decoder = new SWFDecoder(extended);
-
-        fixture = new DoABC(decoder);
-
-        assertTrue(decoder.eof());
-        assertEquals(name, fixture.getName());
-        assertEquals(defer, fixture.isDeferred());
-        assertArrayEquals(data, fixture.getData());
     }
 }

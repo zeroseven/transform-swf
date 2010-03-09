@@ -1,0 +1,16 @@
+---
+# Export with normal length
+table:
+  1: A
+  2: B
+  3: C
+data: !!binary
+  Dg4DAAEAQQACAEIAAwBDAA==
+---
+# Export with extended length
+table:
+  1: A
+  2: B
+  3: C
+data: !!binary
+  Pw4OAAAAAwABAEEAAgBCAAMAQwA=

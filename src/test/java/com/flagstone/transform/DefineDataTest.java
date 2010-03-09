@@ -29,17 +29,10 @@
  */
 package com.flagstone.transform;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
-
-import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.SWFDecoder;
-import com.flagstone.transform.coder.SWFEncoder;
 
 public final class DefineDataTest {
 
@@ -47,13 +40,6 @@ public final class DefineDataTest {
     private final transient byte[] data = new byte[] { 1, 2, 3, 4 };
 
     private transient DefineData fixture;
-
-    private final transient byte[] encoded = new byte[] { (byte) 0xCA, 0x15,
-            0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x02, 0x03, 0x04 };
-
-    private final transient byte[] extended = new byte[] { (byte) 0xFF, 0x15,
-            0x0A, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01,
-            0x02, 0x03, 0x04 };
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForIdentifierWithLowerBound() {
@@ -79,53 +65,5 @@ public final class DefineDataTest {
         assertEquals(fixture.getIdentifier(), copy.getIdentifier());
         assertNotSame(fixture.getData(), copy.getData());
         assertEquals(fixture.toString(), copy.toString());
-    }
-
-    @Test
-    public void encode() throws CoderException {
-        final SWFEncoder encoder = new SWFEncoder(encoded.length);
-        final Context context = new Context();
-
-        fixture = new DefineData(identifier, data);
-        assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
-        fixture.encode(encoder, context);
-
-        assertTrue(encoder.eof());
-        assertArrayEquals(encoded, encoder.getData());
-    }
-
-    @Test
-    public void encodeExtended() throws CoderException {
-
-        final SWFEncoder encoder = new SWFEncoder(112);
-        final Context context = new Context();
-
-        fixture = new DefineData(identifier, new byte[100]);
-        assertEquals(112, fixture.prepareToEncode(encoder, context));
-        fixture.encode(encoder, context);
-
-        assertTrue(encoder.eof());
-    }
-
-    @Test
-    public void decode() throws CoderException {
-        final SWFDecoder decoder = new SWFDecoder(encoded);
-
-        fixture = new DefineData(decoder);
-
-        assertTrue(decoder.eof());
-        assertEquals(identifier, fixture.getIdentifier());
-        assertArrayEquals(data, fixture.getData());
-    }
-
-    @Test
-    public void decodeExtended() throws CoderException {
-        final SWFDecoder decoder = new SWFDecoder(extended);
-
-        fixture = new DefineData(decoder);
-
-        assertTrue(decoder.eof());
-        assertEquals(identifier, fixture.getIdentifier());
-        assertArrayEquals(data, fixture.getData());
     }
 }

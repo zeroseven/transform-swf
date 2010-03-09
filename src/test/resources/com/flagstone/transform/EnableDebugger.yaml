@@ -1,0 +1,10 @@
+---
+# EnableDebugger with normal length
+password: ABC123
+data: !!binary
+  iQ4AAEFCQzEyMwA=
+---
+# EnableDebugger with extended length
+password: ABC123
+data: !!binary
+  vw4JAAAAAABBQkMxMjMA

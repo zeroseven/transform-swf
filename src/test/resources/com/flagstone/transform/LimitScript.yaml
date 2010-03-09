@@ -1,0 +1,12 @@
+---
+# LimitScript with normal length
+depth: 1
+timeout: 30
+data: !!binary
+  RBABAB4A
+---
+# LimitScript with extended length
+depth: 1
+timeout: 30
+data: !!binary
+  fwEEAAAAAQAeAA==

@@ -29,17 +29,10 @@
  */
 package com.flagstone.transform;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
-
-import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.SWFDecoder;
-import com.flagstone.transform.coder.SWFEncoder;
 
 public final class Remove2Test {
 
@@ -47,19 +40,13 @@ public final class Remove2Test {
 
     private transient Remove2 fixture;
 
-    private final transient byte[] encoded = new byte[] { 0x02, 0x07, 0x01,
-            0x00 };
-
-    private final transient byte[] extended = new byte[] { 0x7F, 0x07, 0x02,
-            0x00, 0x00, 0x00, 0x01, 0x00 };
-
     @Test(expected = IllegalArgumentException.class)
-    public void checkAccessorForTimeoutWithLowerBound() {
+    public void checkAccessorForLayerWithLowerBound() {
         fixture = new Remove2(0);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void checkAccessorForTimeoutWithUpperBound() {
+    public void checkAccessorForLayerWithUpperBound() {
         fixture = new Remove2(65536);
     }
 
@@ -71,38 +58,5 @@ public final class Remove2Test {
         assertNotSame(fixture, copy);
         assertEquals(fixture.getLayer(), copy.getLayer());
         assertEquals(fixture.toString(), copy.toString());
-    }
-
-    @Test
-    public void encode() throws CoderException {
-        final SWFEncoder encoder = new SWFEncoder(encoded.length);
-        final Context context = new Context();
-
-        fixture = new Remove2(layer);
-        assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
-        fixture.encode(encoder, context);
-
-        assertTrue(encoder.eof());
-        assertArrayEquals(encoded, encoder.getData());
-    }
-
-    @Test
-    public void decode() throws CoderException {
-        final SWFDecoder decoder = new SWFDecoder(encoded);
-
-        fixture = new Remove2(decoder);
-
-        assertTrue(decoder.eof());
-        assertEquals(layer, fixture.getLayer());
-    }
-
-    @Test
-    public void decodeExtended() throws CoderException {
-        final SWFDecoder decoder = new SWFDecoder(extended);
-
-        fixture = new Remove2(decoder);
-
-        assertTrue(decoder.eof());
-        assertEquals(layer, fixture.getLayer());
     }
 }

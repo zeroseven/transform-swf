@@ -29,27 +29,17 @@
  */
 package com.flagstone.transform;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.shape.PathsArePostscript;
 
 public final class PathsArePostscriptTest {
 
     private transient PathsArePostscript fixture;
-
-    private final transient byte[] encoded = new byte[] { 0x40, 0x06 };
-
-    private final transient byte[] extended = new byte[] { 0x7F, 0x06, 0x00,
-            0x00, 0x00, 0x00 };
-
+    
     @Test
     public void checkCopy() {
         fixture = PathsArePostscript.getInstance();
@@ -57,18 +47,5 @@ public final class PathsArePostscriptTest {
 
         assertSame(fixture, fixture.copy());
         assertEquals(fixture.toString(), copy.toString());
-    }
-
-    @Test
-    public void encode() throws CoderException {
-        final SWFEncoder encoder = new SWFEncoder(encoded.length);
-        final Context context = new Context();
-
-        fixture = PathsArePostscript.getInstance();
-        assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
-        fixture.encode(encoder, context);
-
-        assertTrue(encoder.eof());
-        assertArrayEquals(encoded, encoder.getData());
     }
 }

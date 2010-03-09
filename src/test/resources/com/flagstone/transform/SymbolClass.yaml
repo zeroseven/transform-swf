@@ -1,0 +1,16 @@
+---
+# SymbolClass with normal length
+table:
+  1: A
+  2: B
+  3: C
+data: !!binary
+  DhMDAAEAQQACAEIAAwBDAA==
+---
+# SymbolClass with extended length
+table:
+  1: A
+  2: B
+  3: C
+data: !!binary
+  PxMOAAAAAwABAEEAAgBCAAMAQwA=

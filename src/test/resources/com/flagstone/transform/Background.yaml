@@ -1,0 +1,14 @@
+---
+# Background with normal length
+red: 1
+green: 2
+blue: 3
+data: !!binary
+  QwIBAgM=
+---
+# Background with extended length
+red: 1
+green: 2
+blue: 3
+data: !!binary
+  fwIDAAAAAQID

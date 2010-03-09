@@ -1,0 +1,18 @@
+---
+# Import with normal length
+url: ABC
+table:
+  1: A
+  2: B
+  3: C
+data: !!binary
+  Ug5BQkMAAwABAEEAAgBCAAMAQwA=
+---
+# Export with extended length
+url: ABC
+table:
+  1: A
+  2: B
+  3: C
+data: !!binary
+  fw4SAAAAQUJDAAMAAQBBAAIAQgADAEMA

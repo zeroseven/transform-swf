@@ -1,0 +1,12 @@
+---
+# DoAction with normal length
+actions:
+  - 4 #NextFrame
+data: !!binary
+  AgMEAA==
+---
+# DoAction with extended length
+actions:
+  - 4 #NextFrame
+data: !!binary
+  PwMCAAAABAA=

@@ -30,10 +30,8 @@
  */
 package com.flagstone.transform;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,24 +40,11 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.flagstone.transform.action.Action;
-import com.flagstone.transform.action.ActionData;
 import com.flagstone.transform.action.BasicAction;
-import com.flagstone.transform.coder.ActionDecoder;
-import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.DecoderRegistry;
-import com.flagstone.transform.coder.SWFDecoder;
-import com.flagstone.transform.coder.SWFEncoder;
 
 public final class DoActionTest {
 
     private static final List<Action> actions = new ArrayList<Action>();
-
-    private static final transient byte[] ENCODED = {(byte) 0x02, 0x03,
-        0x04, 0x00};
-
-    private static final transient byte[] EXTENDED = {(byte) 0x3F, 0x03,
-        0x02, 0x00, 0x00, 0x00, 0x04, 0x00};
 
     private transient DoAction fixture;
 
@@ -87,78 +72,5 @@ public final class DoActionTest {
         assertNotSame(fixture, fixture.copy());
         assertEquals(actions, fixture.copy().getActions());
         assertEquals(fixture.toString(), fixture.copy().toString());
-    }
-
-    @Test
-    public void encode() throws CoderException {
-        final SWFEncoder encoder = new SWFEncoder(ENCODED.length);
-        final Context context = new Context();
-
-        fixture = new DoAction(actions);
-        assertEquals(4, fixture.prepareToEncode(encoder, context));
-        fixture.encode(encoder, context);
-
-        assertTrue(encoder.eof());
-        assertArrayEquals(ENCODED, encoder.getData());
-    }
-
-    @Test
-    public void encodeExtended() throws CoderException {
-        final SWFEncoder encoder = new SWFEncoder(106);
-        final Context context = new Context();
-
-        fixture = new DoAction();
-
-        for (int i = 0; i < 99; i++) {
-            fixture.add(BasicAction.ADD);
-        }
-
-        fixture.add(BasicAction.END);
-
-        assertEquals(106, fixture.prepareToEncode(encoder, context));
-        fixture.encode(encoder, context);
-
-        assertTrue(encoder.eof());
-    }
-
-    @Test
-    public void checkDecode() throws CoderException {
-        final SWFDecoder decoder = new SWFDecoder(ENCODED);
-        final Context context = new Context();
-        final DecoderRegistry registry = new DecoderRegistry();
-        registry.setActionDecoder(new ActionDecoder());
-        context.setRegistry(registry);
-
-        fixture = new DoAction(decoder, context);
-
-        assertTrue(decoder.eof());
-        assertEquals(actions, fixture.getActions());
-    }
-
-    @Test
-    public void checkDecodeExtended() throws CoderException {
-        final SWFDecoder decoder = new SWFDecoder(EXTENDED);
-        final Context context = new Context();
-        final DecoderRegistry registry = new DecoderRegistry();
-        registry.setActionDecoder(new ActionDecoder());
-        context.setRegistry(registry);
-
-        fixture = new DoAction(decoder, context);
-
-        assertTrue(decoder.eof());
-        assertEquals(actions, fixture.getActions());
-    }
-
-    @Test
-    public void checkDecodeContainsActionData() throws CoderException {
-        final SWFDecoder decoder = new SWFDecoder(ENCODED);
-        final Context context = new Context();
-        final DecoderRegistry registry = new DecoderRegistry();
-        context.setRegistry(registry);
-
-        fixture = new DoAction(decoder, context);
-
-        assertEquals(1, fixture.getActions().size());
-        assertTrue(fixture.getActions().get(0) instanceof ActionData);
     }
 }

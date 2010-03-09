@@ -1,0 +1,8 @@
+---
+# ShowFrame with normal length
+data: !!binary
+  BAA=
+---
+# ShowFrame with extended length
+data: !!binary
+  fwAAAAAA

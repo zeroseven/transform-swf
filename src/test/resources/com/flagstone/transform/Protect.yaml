@@ -1,0 +1,10 @@
+---
+# Protect with normal length
+password: ABC123
+data: !!binary
+  CQYAAEFCQzEyMwA=
+---
+# Protect with extended length
+password: ABC123
+data: !!binary
+  PwYJAAAAAABBQkMxMjMA

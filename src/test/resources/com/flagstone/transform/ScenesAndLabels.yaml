@@ -1,0 +1,24 @@
+---
+# ScenesAndLabels with normal length
+scenes:
+  1: A
+  2: B
+  3: C
+labels:
+  4: D
+  5: E
+  6: F
+data: !!binary
+  lBUDAUEAAkIAA0MAAwREAAVFAAZGAA==
+---
+# ScenesAndLabels with extended length
+scenes:
+  1: A
+  2: B
+  3: C
+labels:
+  4: D
+  5: E
+  6: F
+data: !!binary
+  vxUUAAAAAwFBAAJCAARDAAMERAAFRQAGRgA=

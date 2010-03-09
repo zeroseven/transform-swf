@@ -30,28 +30,16 @@
  */
 package com.flagstone.transform;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.SWFDecoder;
-import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.Color;
 
 public final class BackgroundTest {
 
     private static final transient Color COLOR = new Color(1, 2, 3);
-
-    private static final transient byte[] ENCODED = {0x43, 0x02,
-        0x01, 0x02, 0x03};
-    private static final transient byte[] EXTENDED = {0x7F, 0x02,
-        0x03, 0x00, 0x00, 0x00, 0x01, 0x02, 0x03};
-
     private transient Background fixture;
 
     @Test(expected = IllegalArgumentException.class)
@@ -66,40 +54,5 @@ public final class BackgroundTest {
 
         assertSame(fixture.getColor(), copy.getColor());
         assertEquals(fixture.toString(), copy.toString());
-    }
-
-    @Test
-    public void encode() throws CoderException {
-        final SWFEncoder encoder = new SWFEncoder(ENCODED.length);
-        final Context context = new Context();
-
-        fixture = new Background(COLOR);
-        assertEquals(ENCODED.length, fixture.prepareToEncode(encoder, context));
-        fixture.encode(encoder, context);
-
-        assertTrue(encoder.eof());
-        assertArrayEquals(ENCODED, encoder.getData());
-    }
-
-    @Test
-    public void decode() throws CoderException {
-        final SWFDecoder decoder = new SWFDecoder(ENCODED);
-        final Context context = new Context();
-
-        fixture = new Background(decoder, context);
-
-        assertTrue(decoder.eof());
-        assertEquals(COLOR.toString(), fixture.getColor().toString());
-    }
-
-    @Test
-    public void decodeExtended() throws CoderException {
-        final SWFDecoder decoder = new SWFDecoder(EXTENDED);
-        final Context context = new Context();
-
-        fixture = new Background(decoder, context);
-
-        assertTrue(decoder.eof());
-        assertEquals(COLOR.toString(), fixture.getColor().toString());
     }
 }

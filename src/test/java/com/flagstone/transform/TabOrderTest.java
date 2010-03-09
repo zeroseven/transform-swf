@@ -29,17 +29,10 @@
  */
 package com.flagstone.transform;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
-
-import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.SWFDecoder;
-import com.flagstone.transform.coder.SWFEncoder;
 
 public final class TabOrderTest {
 
@@ -47,12 +40,6 @@ public final class TabOrderTest {
     private static final transient int index = 2;
 
     private transient TabOrder fixture;
-
-    private final transient byte[] encoded = new byte[] { (byte) 0x84, 0x10,
-            0x01, 0x00, 0x02, 0x00 };
-
-    private final transient byte[] extended = new byte[] { (byte) 0xBF, 0x10,
-            0x04, 0x00, 0x00, 0x00, 0x01, 0x00, 0x02, 0x00 };
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForLayerWithLowerBound() {
@@ -83,40 +70,5 @@ public final class TabOrderTest {
         assertEquals(fixture.getLayer(), copy.getLayer());
         assertEquals(fixture.getIndex(), copy.getIndex());
         assertEquals(fixture.toString(), copy.toString());
-    }
-
-    @Test
-    public void encode() throws CoderException {
-        final SWFEncoder encoder = new SWFEncoder(encoded.length);
-        final Context context = new Context();
-
-        fixture = new TabOrder(layer, index);
-        assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
-        fixture.encode(encoder, context);
-
-        assertTrue(encoder.eof());
-        assertArrayEquals(encoded, encoder.getData());
-    }
-
-    @Test
-    public void decode() throws CoderException {
-        final SWFDecoder decoder = new SWFDecoder(encoded);
-
-        fixture = new TabOrder(decoder);
-
-        assertTrue(decoder.eof());
-        assertEquals(layer, fixture.getLayer());
-        assertEquals(index, fixture.getIndex());
-    }
-
-    @Test
-    public void decodeExtended() throws CoderException {
-        final SWFDecoder decoder = new SWFDecoder(extended);
-
-        fixture = new TabOrder(decoder);
-
-        assertTrue(decoder.eof());
-        assertEquals(layer, fixture.getLayer());
-        assertEquals(index, fixture.getIndex());
     }
 }

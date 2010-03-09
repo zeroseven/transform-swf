@@ -1,0 +1,16 @@
+---
+# DoABC with normal length
+name: script
+defer: true
+bytes: !!binary
+  AQIDBA==
+data: !!binary
+  jxQAAAABc2NyaXB0AAECAwQ=
+---
+# DoABC with extended length
+name: script
+defer: true
+bytes: !!binary
+  AQIDBA==
+data: !!binary
+  vxQPAAAAAAAAAXNjcmlwdAABAgME

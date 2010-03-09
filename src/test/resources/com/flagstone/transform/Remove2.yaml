@@ -1,0 +1,10 @@
+---
+# Remove2 with normal length
+layer: 1
+data: !!binary
+  AgcBAA==
+---
+# Remove2 with extended length
+layer: 1
+data: !!binary
+  fwcCAAAAAQA=

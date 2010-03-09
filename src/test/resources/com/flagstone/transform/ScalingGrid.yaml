@@ -1,0 +1,18 @@
+---
+# ScalingGrid with normal length
+identifier: 1
+xmin: 1
+ymin: 2
+xmax: 3
+ymax: 4
+data: !!binary
+  hRMBACCZIA==
+---
+# ScalingGrid with extended length
+identifier: 1
+xmin: 1
+ymin: 2
+xmax: 3
+ymax: 4
+data: !!binary
+  vxMFAAAAAQAgmSA=
