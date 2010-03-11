@@ -17,10 +17,10 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import tools.MovieWriter;
-import tools.VideoWriter;
 
 import com.flagstone.transform.Movie;
+import com.flagstone.transform.tools.MovieWriter;
+import com.flagstone.transform.tools.VideoWriter;
 import com.flagstone.transform.video.Video;
 
 @RunWith(Parameterized.class)

@@ -14,8 +14,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import tools.VideoWriter;
 
+import com.flagstone.transform.tools.VideoWriter;
 import com.flagstone.transform.video.Video;
 
 @RunWith(Parameterized.class)

@@ -17,9 +17,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import tools.MovieWriter;
 
 import com.flagstone.transform.Movie;
+import com.flagstone.transform.tools.MovieWriter;
 
 @RunWith(Parameterized.class)
 public final class MovieCopyTest {
