@@ -1,8 +1,13 @@
 ---
 # ShowFrame with normal length
-data: !!binary
-  BAA=
+din: !!binary
+  QAA=
+dout: !!binary
+  QAA=
 ---
 # ShowFrame with extended length
-data: !!binary
+din: !!binary
   fwAAAAAA
+dout: !!binary
+  QAA=
+  

@@ -1,8 +1,13 @@
 ---
 # MovieAttributes with normal length
-data: !!binary
+din: !!binary
+  RBEZAAAA
+dout: !!binary
   RBEZAAAA
 ---
 # MovieAttributes with extended length
-data: !!binary
+din: !!binary
   fxEEAAAAGQAAAA==
+dout: !!binary
+  RBEZAAAA
+  

@@ -1,10 +1,15 @@
 ---
 # Free with normal length
 identifier: 1
-data: !!binary
-  xwpGcmFtZQAB
+din: !!binary
+  wgABAA==
+dout: !!binary
+  wgABAA==
 ---
 # Free with extended length
 identifier: 1
-data: !!binary
-  /woHAAAARnJhbWUAAQ==
+din: !!binary
+  /wACAAAAAQA=
+dout: !!binary
+  wgABAA==
+  

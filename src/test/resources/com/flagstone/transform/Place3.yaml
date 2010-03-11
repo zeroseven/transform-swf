@@ -1,0 +1,42 @@
+---
+# Place3 new object specifying position
+place: 2
+layer: 1
+identifier: 2
+# translate
+xcoord: 1
+ycoord: 2
+din: !!binary
+  iBEGAAEAAgAGUA==
+dout: !!binary
+  iBEGAAEAAgAGUA==
+---
+# Place3 new object specifying position with extended length
+place: 2
+layer: 1
+identifier: 2
+# translate
+xcoord: 1
+ycoord: 2
+din: !!binary
+  vxEIAAAABgABAAIABlA=
+dout: !!binary
+  iBEGAAEAAgAGUA==
+---
+# Place3 new object specifying position and colour 
+place: 2
+layer: 1
+identifier: 2
+# translate
+xcoord: 1
+ycoord: 2
+# add transform
+red: 1
+green: 2
+blue: 3
+alpha: 4
+din: !!binary
+  ixEOAAEAAgAGUJBI0A==
+dout: !!binary
+  ixEOAAEAAgAGUJBI0A==
+  

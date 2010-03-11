@@ -1,5 +1,5 @@
 /*
- * TabOrderCodingTest.java
+ * PlaceCodingTest.java
  * Transform
  *
  * Copyright (c) 2010 Flagstone Software Ltd. All rights reserved.
@@ -33,6 +33,8 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import static org.junit.Assume.assumeNotNull;
+
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -48,14 +50,22 @@ import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.datatype.ColorTransform;
+import com.flagstone.transform.datatype.CoordTransform;
 
 @RunWith(Parameterized.class)
-public final class TabOrderCodingTest {
+public final class PlaceCodingTest {
 
-    private static final String RESOURCE = "com/flagstone/transform/TabOrder.yaml";
+    private static final String RESOURCE = "com/flagstone/transform/Place.yaml";
 
+    private static final String IDENTIFIER = "identifier";
     private static final String LAYER = "layer";
-    private static final String INDEX = "index";
+    private static final String XCOORD = "xcoord";
+    private static final String YCOORD = "ycoord";
+    private static final String RED = "red";
+    private static final String GREEN = "green";
+    private static final String BLUE = "blue";
+    private static final String ALPHA = "alpha";
     private static final String DIN = "din";
     private static final String DOUT = "dout";
 
@@ -75,15 +85,34 @@ public final class TabOrderCodingTest {
         return list;
     }
 
+    private transient final int identifier;
     private transient final int layer;
-    private transient final int index;
+    private transient final CoordTransform position;
+    private transient final ColorTransform color;
     private transient final byte[] din;
     private transient final byte[] dout;
     private transient final Context context;
     
-    public TabOrderCodingTest(Map<String,Object>values) {
+    public PlaceCodingTest(Map<String,Object>values) {
+        identifier = (Integer)values.get(IDENTIFIER);
         layer = (Integer)values.get(LAYER);
-        index = (Integer)values.get(INDEX);
+        
+        if (values.get(XCOORD) != null) {
+            position = CoordTransform.translate(
+                    (Integer)values.get(XCOORD), (Integer)values.get(YCOORD));            
+        } else {
+            position = null;
+        }
+        
+        if (values.get(RED) != null) {
+            color = new ColorTransform(
+                    (Integer)values.get(RED), (Integer)values.get(GREEN),
+                    (Integer)values.get(BLUE), (Integer)values.get(ALPHA)
+                    );
+        } else {
+            color = null;
+        }
+        
         din = (byte[])values.get(DIN);
         dout = (byte[])values.get(DOUT);
         context = new Context();
@@ -91,7 +120,7 @@ public final class TabOrderCodingTest {
 
     @Test
     public void checkSizeMatchesEncodedSize() throws CoderException {     
-        final TabOrder object = new TabOrder(layer, index);       
+        final Place object = new Place(identifier, layer, position, color);       
         final SWFEncoder encoder = new SWFEncoder(dout.length);        
          
         assertEquals(dout.length, object.prepareToEncode(encoder, context));
@@ -99,7 +128,7 @@ public final class TabOrderCodingTest {
 
     @Test
     public void checkObjectIsEncoded() throws CoderException {
-        final TabOrder object = new TabOrder(layer, index);       
+        final Place object = new Place(identifier, layer, position, color);       
         final SWFEncoder encoder = new SWFEncoder(dout.length);        
         
         object.prepareToEncode(encoder, context);
@@ -110,12 +139,45 @@ public final class TabOrderCodingTest {
     }
 
     @Test
-    public void checkObjectIsDecoded() throws CoderException {
+    public void decode() throws CoderException {
         final SWFDecoder decoder = new SWFDecoder(din);
-        final TabOrder object = new TabOrder(decoder);
+        final Place object = new Place(decoder, context);
 
         assertTrue(decoder.eof());
+
+        assertEquals(identifier, object.getIdentifier());
         assertEquals(layer, object.getLayer());
-        assertEquals(index, object.getIndex());
-   }
+    }
+
+    @Test
+    public void decodePosition() throws CoderException {       
+        assumeNotNull(position);
+        
+        final SWFDecoder decoder = new SWFDecoder(din);
+        final Place object = new Place(decoder, context);
+
+        assertTrue(decoder.eof());
+
+        assertEquals(position.getTranslateX(), object.getTransform()
+                .getTranslateX());
+        assertEquals(position.getTranslateY(), object.getTransform()
+                .getTranslateY());
+    }
+
+    @Test
+    public void decodeColor() throws CoderException {
+        assumeNotNull(color);
+        
+        final SWFDecoder decoder = new SWFDecoder(din);
+        final Place object = new Place(decoder, context);
+
+        assertTrue(decoder.eof());
+
+        assertEquals(color.getAddRed(), object.getColorTransform()
+                .getAddRed());
+        assertEquals(color.getAddGreen(), object.getColorTransform()
+                .getAddGreen());
+        assertEquals(color.getAddBlue(), object.getColorTransform()
+                .getAddBlue());
+    }
 }

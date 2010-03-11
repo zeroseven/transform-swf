@@ -1,10 +1,15 @@
 ---
 # MovieMetaData with normal length
 metadata: ABC123
-data: !!binary
+din: !!binary
+  RxNBQkMxMjMA
+dout: !!binary
   RxNBQkMxMjMA
 ---
 # MovieMetaData with extended length
 metadata: ABC123
-data: !!binary
+din: !!binary
   PxMHAAAAQUJDMTIzAA==
+dout: !!binary
+  RxNBQkMxMjMA
+  

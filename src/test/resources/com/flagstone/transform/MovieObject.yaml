@@ -3,12 +3,17 @@
 type: 1
 bytes: !!binary
   AQIDBA==
-data: !!binary
-  RxNBQkMxMjMA
+din: !!binary
+  RAABAgME
+dout: !!binary
+  RAABAgME
 ---
 # MovieObject with extended length
 type: 1
 bytes: !!binary
   AQIDBA==
-data: !!binary
-  8ABAAAAAECAwQA==
+din: !!binary
+  fwAEAAAAAQIDBA==
+dout: !!binary
+  RAABAgME
+  

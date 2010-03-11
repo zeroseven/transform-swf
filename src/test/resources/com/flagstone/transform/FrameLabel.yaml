@@ -2,11 +2,16 @@
 # Export with normal length
 label: Frame
 anchor: true
-data: !!binary
+din: !!binary
+  xwpGcmFtZQAB
+dout: !!binary
   xwpGcmFtZQAB
 ---
 # Export with extended length
 label: Frame
 anchor: true
-data: !!binary
+din: !!binary
   /woHAAAARnJhbWUAAQ==
+dout: !!binary
+  xwpGcmFtZQAB
+  

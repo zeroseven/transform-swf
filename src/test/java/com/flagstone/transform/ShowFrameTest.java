@@ -45,11 +45,6 @@ public final class ShowFrameTest {
 
     private transient ShowFrame fixture;
 
-    private final transient byte[] encoded = new byte[] { 0x40, 0x00 };
-
-    private final transient byte[] extended = new byte[] { 0x7F, 0x00, 0x00,
-            0x00, 0x00, 0x00 };
-
     @Test
     public void checkCopy() {
         fixture = ShowFrame.getInstance();
@@ -57,40 +52,5 @@ public final class ShowFrameTest {
 
         assertSame(fixture, fixture.copy());
         assertEquals(fixture.toString(), copy.toString());
-    }
-
-    @Test
-    public void encode() throws CoderException {
-        final SWFEncoder encoder = new SWFEncoder(encoded.length);
-        final Context context = new Context();
-
-        fixture = ShowFrame.getInstance();
-        assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
-        fixture.encode(encoder, context);
-
-        assertTrue(encoder.eof());
-        assertArrayEquals(encoded, encoder.getData());
-    }
-
-    @Test
-    public void decode() throws CoderException {
-        final SWFDecoder decoder = new SWFDecoder(encoded);
-        final Context context = new Context();
-
-        fixture = ShowFrame.getInstance();
-        fixture.decode(decoder, context);
-
-        assertTrue(decoder.eof());
-    }
-
-    @Test
-    public void decodeExtended() throws CoderException {
-        final SWFDecoder decoder = new SWFDecoder(extended);
-        final Context context = new Context();
-
-        fixture = ShowFrame.getInstance();
-        fixture.decode(decoder, context);
-
-        assertTrue(decoder.eof());
     }
 }

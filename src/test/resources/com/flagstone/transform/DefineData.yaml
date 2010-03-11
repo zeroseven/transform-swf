@@ -3,12 +3,17 @@
 identifier: 1
 bytes: !!binary
   AQIDBA==
-data: !!binary
+din: !!binary
+  yhUBAAAAAAABAgME
+dout: !!binary
   yhUBAAAAAAABAgME
 ---
 # DefineData with extended length
 identifier: 1
 bytes: !!binary
   AQIDBA==
-data: !!binary
+din: !!binary
   /xUKAAAAAQAAAAAAAQIDBA==
+dout: !!binary
+  yhUBAAAAAAABAgME
+  

@@ -41,6 +41,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.yaml.snakeyaml.Yaml;
 
@@ -48,15 +50,18 @@ import com.flagstone.transform.action.Action;
 import com.flagstone.transform.action.BasicAction;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
+import com.flagstone.transform.coder.DecoderRegistry;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
+@RunWith(Parameterized.class)
 public final class DoActionCodingTest {
 
     private static final String RESOURCE = "com/flagstone/transform/DoAction.yaml";
 
     private static final String ACTIONS = "actions";
-    private static final String DATA = "data";
+    private static final String DIN = "din";
+    private static final String DOUT = "dout";
 
     @Parameters
     public static Collection<Object[]>  patterns() {
@@ -75,7 +80,8 @@ public final class DoActionCodingTest {
     }
 
     private transient final List<Action> actions;
-    private transient final byte[] data;
+    private transient final byte[] din;
+    private transient final byte[] dout;
     private transient final Context context;
     
     public DoActionCodingTest(Map<String,Object>values) {
@@ -84,33 +90,35 @@ public final class DoActionCodingTest {
         for (Integer code : codes) {
             actions.add(BasicAction.fromInt(code));
         }
-        data = (byte[])values.get(DATA);
+        din = (byte[])values.get(DIN);
+        dout = (byte[])values.get(DOUT);
         context = new Context();
+        context.setRegistry(DecoderRegistry.getDefault());
     }
 
     @Test
     public void checkSizeMatchesEncodedSize() throws CoderException {     
         final DoAction object = new DoAction(actions);       
-        final SWFEncoder encoder = new SWFEncoder(data.length);        
+        final SWFEncoder encoder = new SWFEncoder(dout.length);        
          
-        assertEquals(data.length, object.prepareToEncode(encoder, context));
+        assertEquals(dout.length, object.prepareToEncode(encoder, context));
     }
 
     @Test
     public void checkObjectIsEncoded() throws CoderException {
         final DoAction object = new DoAction(actions);       
-        final SWFEncoder encoder = new SWFEncoder(data.length);        
+        final SWFEncoder encoder = new SWFEncoder(dout.length);        
         
         object.prepareToEncode(encoder, context);
         object.encode(encoder, context);
 
         assertTrue(encoder.eof());
-        assertArrayEquals(data, encoder.getData());
+        assertArrayEquals(dout, encoder.getData());
     }
 
     @Test
     public void checkObjectIsDecoded() throws CoderException {
-        final SWFDecoder decoder = new SWFDecoder(data);
+        final SWFDecoder decoder = new SWFDecoder(din);
         final DoAction object = new DoAction(decoder, context);
 
         assertTrue(decoder.eof());

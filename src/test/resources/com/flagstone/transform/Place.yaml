@@ -1,0 +1,39 @@
+---
+# Place object specifying position
+identifier: 1
+layer: 2
+# translate
+xcoord: 1
+ycoord: 2
+din: !!binary
+  BgEBAAIABlA=
+dout: !!binary
+  BgEBAAIABlA=
+---
+# Place object specifying position with extended length
+identifier: 1
+layer: 2
+# translate
+xcoord: 1
+ycoord: 2
+din: !!binary
+  fwEGAAAAAQACAAZQ
+dout: !!binary
+  BgEBAAIABlA=
+---
+# Place object specifying position and colour 
+identifier: 1
+layer: 2
+# translate
+xcoord: 1
+ycoord: 2
+# add transform
+red: 1
+green: 2
+blue: 3
+alpha: 4
+din: !!binary
+  CAEBAAIABlCMpg==
+dout: !!binary
+  CAEBAAIABlCMpg==
+  

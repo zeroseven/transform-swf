@@ -4,7 +4,9 @@ table:
   1: A
   2: B
   3: C
-data: !!binary
+din: !!binary
+  Dg4DAAEAQQACAEIAAwBDAA==
+dout: !!binary
   Dg4DAAEAQQACAEIAAwBDAA==
 ---
 # Export with extended length
@@ -12,5 +14,8 @@ table:
   1: A
   2: B
   3: C
-data: !!binary
+din: !!binary
   Pw4OAAAAAwABAEEAAgBCAAMAQwA=
+dout: !!binary
+  Dg4DAAEAQQACAEIAAwBDAA==
+  

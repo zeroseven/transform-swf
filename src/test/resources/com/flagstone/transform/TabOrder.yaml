@@ -2,11 +2,16 @@
 # TabOrder with normal length
 layer: 1
 index: 2
-data: !!binary
+din: !!binary
+  hBABAAIA
+dout: !!binary
   hBABAAIA
 ---
 # TabOrder with extended length
 layer: 1
 index: 2
-data: !!binary
+din: !!binary
   vxAEAAAAAQACAA==
+dout: !!binary
+  hBABAAIA
+  

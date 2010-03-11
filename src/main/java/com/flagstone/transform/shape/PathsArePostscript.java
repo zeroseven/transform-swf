@@ -55,6 +55,8 @@ import com.flagstone.transform.coder.SWFEncoder;
 //TODO(class)
 public final class PathsArePostscript implements MovieTag {
 
+    private static final String FORMAT = "PathsArePostscript";
+
     private static final PathsArePostscript INSTANCE = new PathsArePostscript();
 
     /**
@@ -72,6 +74,12 @@ public final class PathsArePostscript implements MovieTag {
     /** TODO(method). */
     public PathsArePostscript copy() {
         return this;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String toString() {
+        return FORMAT;
     }
 
     /** {@inheritDoc} */

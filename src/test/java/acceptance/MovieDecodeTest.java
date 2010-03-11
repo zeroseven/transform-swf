@@ -52,7 +52,7 @@ public final class MovieDecodeTest {
         if (System.getProperty("test.suite") == null) {
             srcDir = new File("test/data/swf/reference");
         } else {
-            srcDir = new File(System.getProperty("test.suites"));
+            srcDir = new File(System.getProperty("test.suite"));
         }
 
         final FilenameFilter filter = new FilenameFilter() {

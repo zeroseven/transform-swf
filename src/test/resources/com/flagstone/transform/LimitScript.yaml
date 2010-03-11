@@ -2,11 +2,16 @@
 # LimitScript with normal length
 depth: 1
 timeout: 30
-data: !!binary
+din: !!binary
+  RBABAB4A
+dout: !!binary
   RBABAB4A
 ---
 # LimitScript with extended length
 depth: 1
 timeout: 30
-data: !!binary
+din: !!binary
   fwEEAAAAAQAeAA==
+dout: !!binary
+  RBABAB4A
+  

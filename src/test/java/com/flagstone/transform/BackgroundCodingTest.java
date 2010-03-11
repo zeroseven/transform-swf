@@ -40,6 +40,8 @@ import java.util.Collection;
 import java.util.Map;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.yaml.snakeyaml.Yaml;
 
@@ -49,6 +51,7 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.Color;
 
+@RunWith(Parameterized.class)
 public final class BackgroundCodingTest {
 
     private static final String RESOURCE = "com/flagstone/transform/Background.yaml";
@@ -56,7 +59,8 @@ public final class BackgroundCodingTest {
     private static final String RED = "red";
     private static final String GREEN = "green";
     private static final String BLUE = "blue";
-    private static final String DATA = "data";
+    private static final String DIN = "din";
+    private static final String DOUT = "dout";
 
     @Parameters
     public static Collection<Object[]>  patterns() {
@@ -75,7 +79,8 @@ public final class BackgroundCodingTest {
     }
 
     private transient final Color color;
-    private transient final byte[] data;
+    private transient final byte[] din;
+    private transient final byte[] dout;
     private transient final Context context;
     
     public BackgroundCodingTest(Map<String,Object>values) {
@@ -83,33 +88,34 @@ public final class BackgroundCodingTest {
         final int green = (Integer)values.get(GREEN);
         final int blue = (Integer)values.get(BLUE);
         color = new Color(red, green, blue);
-        data = (byte[])values.get(DATA);
+        din = (byte[])values.get(DIN);
+        dout = (byte[])values.get(DOUT);
         context = new Context();
     }
 
     @Test
     public void checkSizeMatchesEncodedSize() throws CoderException {     
         final Background object = new Background(color);       
-        final SWFEncoder encoder = new SWFEncoder(data.length);        
+        final SWFEncoder encoder = new SWFEncoder(dout.length);        
          
-        assertEquals(data.length, object.prepareToEncode(encoder, context));
+        assertEquals(dout.length, object.prepareToEncode(encoder, context));
     }
 
     @Test
     public void checkBackgroundIsEncoded() throws CoderException {
         final Background object = new Background(color);       
-        final SWFEncoder encoder = new SWFEncoder(data.length);        
+        final SWFEncoder encoder = new SWFEncoder(dout.length);        
         
         object.prepareToEncode(encoder, context);
         object.encode(encoder, context);
 
         assertTrue(encoder.eof());
-        assertArrayEquals(data, encoder.getData());
+        assertArrayEquals(dout, encoder.getData());
     }
 
     @Test
     public void checkBackgroundIsDecoded() throws CoderException {
-        final SWFDecoder decoder = new SWFDecoder(data);
+        final SWFDecoder decoder = new SWFDecoder(din);
         final Background object = new Background(decoder, context);
 
         assertTrue(decoder.eof());

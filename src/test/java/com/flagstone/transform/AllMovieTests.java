@@ -3,8 +3,6 @@ package com.flagstone.transform;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-import com.flagstone.transform.video.DefineVideoTest;
-
 @RunWith(Suite.class)
 @Suite.SuiteClasses( { BackgroundTest.class, BackgroundCodingTest.class,
         DefineDataTest.class, DefineDataCodingTest.class,
@@ -13,14 +11,29 @@ import com.flagstone.transform.video.DefineVideoTest;
         EnableDebuggerTest.class, EnableDebuggerCodingTest.class,
         EnableDebugger2Test.class, EnableDebugger2CodingTest.class, 
         ExportTest.class, ExportCodingTest.class,
-        FrameLabelTest.class, FreeTest.class,
-        LimitScriptTest.class, MovieTest.class, MovieDataTest.class,
-        MovieObjectTest.class, PlaceTest.class, Place2Test.class,
-        Place3Test.class, RemoveTest.class, Remove2Test.class,
-        ScalingGridTest.class, ShowFrameTest.class, SymbolClassTest.class,
-        TabOrderTest.class, ExportTest.class, MovieAttributesTest.class,
-        ImportTest.class, Import2Test.class, MovieMetaDataTest.class,
-        PathsArePostscriptTest.class, ProtectTest.class,
-        ScenesAndLabelsTest.class, SerialNumberTest.class })
+        FrameLabelTest.class, FrameLabelCodingTest.class, 
+        FreeTest.class, FreeCodingTest.class,
+        ImportTest.class, ImportCodingTest.class, 
+        Import2Test.class, Import2CodingTest.class, 
+        LimitScriptTest.class, LimitScriptCodingTest.class, 
+        MovieTest.class, 
+        MovieAttributesTest.class, MovieAttributesCodingTest.class,
+        MovieDataTest.class, MovieDataCodingTest.class,
+        MovieMetaDataTest.class, MovieMetaDataCodingTest.class,
+        MovieObjectTest.class, MovieObjectCodingTest.class,  
+        PathsArePostscriptTest.class, PathsArePostscriptCodingTest.class,
+        PlaceTest.class, PlaceCodingTest.class, 
+        Place2Test.class, Place2CodingTest.class, 
+        Place3Test.class, Place3CodingTest.class, 
+        ProtectTest.class, ProtectCodingTest.class,
+        RemoveTest.class, RemoveCodingTest.class,  
+        Remove2Test.class, Remove2CodingTest.class, 
+        ScalingGridTest.class, ScalingGridCodingTest.class,  
+        ScenesAndLabelsTest.class, ScenesAndLabelsCodingTest.class, 
+        SerialNumberTest.class, SerialNumberCodingTest.class,  
+        ShowFrameTest.class, ShowFrameCodingTest.class,  
+        SymbolClassTest.class, SymbolClassCodingTest.class,
+        TabOrderTest.class, TabOrderCodingTest.class
+        })
 public final class AllMovieTests {
 }

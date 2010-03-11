@@ -781,7 +781,8 @@ public final class Place3 implements MovieTag {
             coder.writeBits(3, 2);
         }
 
-        coder.writeBits(bitmapCached ? 1 : 0, 2);
+        coder.writeBits(0, 3);
+        coder.writeBits(bitmapCached ? 1 : 0, 1);
         coder.writeBits(className == null ? 0 : 1, 1);
         coder.writeBits(bitmapCached ? 1 : 0, 1);
         coder.writeBits(hasBlend ? 1 : 0, 1);

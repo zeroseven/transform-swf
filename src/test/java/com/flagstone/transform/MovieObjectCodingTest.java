@@ -41,6 +41,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.yaml.snakeyaml.Yaml;
 
@@ -49,13 +51,15 @@ import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
+@RunWith(Parameterized.class)
 public final class MovieObjectCodingTest {
 
     private static final String RESOURCE = "com/flagstone/transform/MovieObject.yaml";
 
     private static final String TYPE = "type";
     private static final String BYTES = "bytes";
-    private static final String DATA = "data";
+    private static final String DIN = "din";
+    private static final String DOUT = "dout";
 
     @Parameters
     public static Collection<Object[]>  patterns() {
@@ -75,39 +79,41 @@ public final class MovieObjectCodingTest {
 
     private transient final int type;
     private transient final byte[] bytes;
-    private transient final byte[] data;
+    private transient final byte[] din;
+    private transient final byte[] dout;
     private transient final Context context;
     
     public MovieObjectCodingTest(Map<String,Object>values) {
         type = (Integer)values.get(TYPE);
-        bytes = (byte[])values.get(DATA);
-        data = (byte[])values.get(DATA);
+        bytes = (byte[])values.get(BYTES);
+        din = (byte[])values.get(DIN);
+        dout = (byte[])values.get(DOUT);
         context = new Context();
     }
 
     @Test
     public void checkSizeMatchesEncodedSize() throws CoderException {     
         final MovieObject object = new MovieObject(type, bytes);       
-        final SWFEncoder encoder = new SWFEncoder(data.length);        
+        final SWFEncoder encoder = new SWFEncoder(dout.length);        
          
-        assertEquals(data.length, object.prepareToEncode(encoder, context));
+        assertEquals(dout.length, object.prepareToEncode(encoder, context));
     }
 
     @Test
     public void checkObjectIsEncoded() throws CoderException {
         final MovieObject object = new MovieObject(type, bytes);       
-        final SWFEncoder encoder = new SWFEncoder(data.length);        
+        final SWFEncoder encoder = new SWFEncoder(dout.length);        
         
         object.prepareToEncode(encoder, context);
         object.encode(encoder, context);
 
         assertTrue(encoder.eof());
-        assertArrayEquals(data, encoder.getData());
+        assertArrayEquals(dout, encoder.getData());
     }
 
     @Test
     public void checkObjectIsDecoded() throws CoderException {
-        final SWFDecoder decoder = new SWFDecoder(data);
+        final SWFDecoder decoder = new SWFDecoder(din);
         final MovieObject object = new MovieObject(decoder);
 
         assertTrue(decoder.eof());

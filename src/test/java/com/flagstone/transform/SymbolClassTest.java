@@ -61,7 +61,7 @@ public final class SymbolClassTest {
         fixture.add(65536, "A");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void checkAccessorForNameWithNull() {
         fixture = new SymbolClass(table);
         fixture.add(1, null);

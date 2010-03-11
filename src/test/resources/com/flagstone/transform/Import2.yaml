@@ -5,7 +5,9 @@ table:
   1: A
   2: B
   3: C
-data: !!binary
+din: !!binary
+  1BFBQkMAAQADAAEAQQACAEIAAwBDAA==
+dout: !!binary
   1BFBQkMAAQADAAEAQQACAEIAAwBDAA==
 ---
 # Import2 with extended length
@@ -14,5 +16,8 @@ table:
   1: A
   2: B
   3: C
-data: !!binary
-  8RFAAAAEFCQwABAAMAAQBBAAIAQgADAEMAA=
+din: !!binary
+  /xEUAAAAQUJDAAEAAwABAEEAAgBCAAMAQwA=
+dout: !!binary
+  1BFBQkMAAQADAAEAQQACAEIAAwBDAA==
+  

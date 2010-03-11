@@ -1,10 +1,15 @@
 ---
 # Remove2 with normal length
 layer: 1
-data: !!binary
+din: !!binary
+  AgcBAA==
+dout: !!binary
   AgcBAA==
 ---
 # Remove2 with extended length
 layer: 1
-data: !!binary
+din: !!binary
   fwcCAAAAAQA=
+dout: !!binary
+  AgcBAA==
+  

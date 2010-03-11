@@ -39,6 +39,8 @@ import java.util.Collection;
 import java.util.Map;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.yaml.snakeyaml.Yaml;
 
@@ -47,13 +49,15 @@ import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
+@RunWith(Parameterized.class)
 public final class RemoveCodingTest {
 
     private static final String RESOURCE = "com/flagstone/transform/Remove.yaml";
 
     private static final String IDENTIFIER = "identifier";
     private static final String LAYER = "layer";
-    private static final String DATA = "data";
+    private static final String DIN = "din";
+    private static final String DOUT = "dout";
 
     @Parameters
     public static Collection<Object[]>  patterns() {
@@ -73,39 +77,41 @@ public final class RemoveCodingTest {
 
     private transient final int identifier;
     private transient final int layer;
-    private transient final byte[] data;
+    private transient final byte[] din;
+    private transient final byte[] dout;
     private transient final Context context;
     
     public RemoveCodingTest(Map<String,Object>values) {
         identifier = (Integer)values.get(IDENTIFIER);
         layer = (Integer)values.get(LAYER);
-        data = (byte[])values.get(DATA);
+        din = (byte[])values.get(DIN);
+        dout = (byte[])values.get(DOUT);
         context = new Context();
     }
 
     @Test
     public void checkSizeMatchesEncodedSize() throws CoderException {     
         final Remove object = new Remove(identifier, layer);       
-        final SWFEncoder encoder = new SWFEncoder(data.length);        
+        final SWFEncoder encoder = new SWFEncoder(dout.length);        
          
-        assertEquals(data.length, object.prepareToEncode(encoder, context));
+        assertEquals(dout.length, object.prepareToEncode(encoder, context));
     }
 
     @Test
     public void checkObjectIsEncoded() throws CoderException {
         final Remove object = new Remove(identifier, layer);       
-        final SWFEncoder encoder = new SWFEncoder(data.length);        
+        final SWFEncoder encoder = new SWFEncoder(dout.length);        
         
         object.prepareToEncode(encoder, context);
         object.encode(encoder, context);
 
         assertTrue(encoder.eof());
-        assertArrayEquals(data, encoder.getData());
+        assertArrayEquals(dout, encoder.getData());
     }
 
     @Test
     public void checkObjectIsDecoded() throws CoderException {
-        final SWFDecoder decoder = new SWFDecoder(data);
+        final SWFDecoder decoder = new SWFDecoder(din);
         final Remove object = new Remove(decoder);
 
         assertTrue(decoder.eof());

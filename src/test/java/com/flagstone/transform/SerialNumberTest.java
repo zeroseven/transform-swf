@@ -39,7 +39,7 @@ public final class SerialNumberTest {
 
     private transient SerialNumber fixture;
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void checkAccessorForNumberWithNull() {
         fixture = new SerialNumber((String) null);
     }

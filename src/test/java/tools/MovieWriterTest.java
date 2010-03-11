@@ -55,7 +55,7 @@ public final class MovieWriterTest {
         if (System.getProperty("test.suite") == null) {
             srcDir = new File("test/data/swf/reference");
         } else {
-            srcDir = new File(System.getProperty("test.suites"));
+            srcDir = new File(System.getProperty("test.suite"));
         }
 
         filter = new FilenameFilter() {
@@ -64,7 +64,7 @@ public final class MovieWriterTest {
             }
         };
 
-        destDir = new File("test/results", "MovieWriterTest");
+        destDir = new File("test/results/tools", "MovieWriterTest");
 
         if (!destDir.exists() && !destDir.mkdirs()) {
             fail();

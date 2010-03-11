@@ -427,6 +427,8 @@ public final class Movie {
 
         final SWFFactory<MovieTag> factory = context.getRegistry().getMovieDecoder();
 
+        objects.clear();
+        
         if (factory == null) {
             objects.add(new MovieData(decoder.getData()));
         } else {

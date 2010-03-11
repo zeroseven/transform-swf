@@ -1,10 +1,14 @@
 ---
 # EnableDebugger with normal length
 password: ABC123
-data: !!binary
+din: !!binary
+  iQ4AAEFCQzEyMwA=
+dout: !!binary
   iQ4AAEFCQzEyMwA=
 ---
 # EnableDebugger with extended length
 password: ABC123
-data: !!binary
+din: !!binary
   vw4JAAAAAABBQkMxMjMA
+dout: !!binary
+  iQ4AAEFCQzEyMwA=

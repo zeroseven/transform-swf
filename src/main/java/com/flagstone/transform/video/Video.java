@@ -216,7 +216,7 @@ public final class Video {
         coder.readWord(4, false); // header length always 9
         coder.readWord(4, false); // previous length
 
-        objects = new ArrayList<VideoTag>();
+        objects.clear();
 
         final VideoDecoder decoder = new VideoDecoder();
 

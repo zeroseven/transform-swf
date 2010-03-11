@@ -45,7 +45,6 @@ import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.ColorTransform;
 import com.flagstone.transform.datatype.CoordTransform;
 import com.flagstone.transform.exception.IllegalArgumentRangeException;
-import com.flagstone.transform.movieclip.MovieClipEvent;
 import com.flagstone.transform.movieclip.MovieClipEventHandler;
 
 //TOD0(doc) Review

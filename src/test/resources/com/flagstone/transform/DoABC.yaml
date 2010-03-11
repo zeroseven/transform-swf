@@ -4,7 +4,9 @@ name: script
 defer: true
 bytes: !!binary
   AQIDBA==
-data: !!binary
+din: !!binary
+  jxQAAAABc2NyaXB0AAECAwQ=
+dout: !!binary
   jxQAAAABc2NyaXB0AAECAwQ=
 ---
 # DoABC with extended length
@@ -12,5 +14,8 @@ name: script
 defer: true
 bytes: !!binary
   AQIDBA==
-data: !!binary
+din: !!binary
   vxQPAAAAAAAAAXNjcmlwdAABAgME
+dout: !!binary
+  jxQAAAABc2NyaXB0AAECAwQ=
+  

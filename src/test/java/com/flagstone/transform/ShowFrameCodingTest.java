@@ -39,6 +39,8 @@ import java.util.Collection;
 import java.util.Map;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.yaml.snakeyaml.Yaml;
 
@@ -46,11 +48,13 @@ import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFEncoder;
 
+@RunWith(Parameterized.class)
 public final class ShowFrameCodingTest {
 
     private static final String RESOURCE = "com/flagstone/transform/ShowFrame.yaml";
 
-    private static final String DATA = "data";
+    private static final String DIN = "din";
+    private static final String DOUT = "dout";
 
     @Parameters
     public static Collection<Object[]>  patterns() {
@@ -68,31 +72,33 @@ public final class ShowFrameCodingTest {
         return list;
     }
 
-    private transient final byte[] data;
+    private transient final byte[] din;
+    private transient final byte[] dout;
     private transient final Context context;
     
     public ShowFrameCodingTest(Map<String,Object>values) {
-        data = (byte[])values.get(DATA);
+        din = (byte[])values.get(DIN);
+        dout = (byte[])values.get(DOUT);
         context = new Context();
     }
 
     @Test
     public void checkSizeMatchesEncodedSize() throws CoderException {     
         final ShowFrame object = ShowFrame.getInstance();       
-        final SWFEncoder encoder = new SWFEncoder(data.length);        
+        final SWFEncoder encoder = new SWFEncoder(dout.length);        
          
-        assertEquals(data.length, object.prepareToEncode(encoder, context));
+        assertEquals(dout.length, object.prepareToEncode(encoder, context));
     }
 
     @Test
     public void checkObjectIsEncoded() throws CoderException {
         final ShowFrame object = ShowFrame.getInstance();      
-        final SWFEncoder encoder = new SWFEncoder(data.length);        
+        final SWFEncoder encoder = new SWFEncoder(dout.length);        
         
         object.prepareToEncode(encoder, context);
         object.encode(encoder, context);
 
         assertTrue(encoder.eof());
-        assertArrayEquals(data, encoder.getData());
+        assertArrayEquals(dout, encoder.getData());
     }
 }

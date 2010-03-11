@@ -1,10 +1,15 @@
 ---
 # Protect with normal length
 password: ABC123
-data: !!binary
+dout: !!binary
+  CQYAAEFCQzEyMwA=
+din: !!binary
   CQYAAEFCQzEyMwA=
 ---
 # Protect with extended length
 password: ABC123
-data: !!binary
+din: !!binary
   PwYJAAAAAABBQkMxMjMA
+dout: !!binary
+  CQYAAEFCQzEyMwA=
+  

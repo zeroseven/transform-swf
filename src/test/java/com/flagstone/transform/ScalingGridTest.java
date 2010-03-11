@@ -54,7 +54,7 @@ public final class ScalingGridTest {
         fixture.setIdentifier(65536);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void checkAccessorForDataWithNull() {
         fixture = new ScalingGrid(identifier, null);
     }

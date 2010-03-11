@@ -2,11 +2,17 @@
 # DoAction with normal length
 actions:
   - 4 #NextFrame
-data: !!binary
+  - 0 #End
+din: !!binary
+  AgMEAA==
+dout: !!binary
   AgMEAA==
 ---
 # DoAction with extended length
 actions:
   - 4 #NextFrame
-data: !!binary
+  - 0 #End
+din: !!binary
   PwMCAAAABAA=
+dout: !!binary
+  AgMEAA==

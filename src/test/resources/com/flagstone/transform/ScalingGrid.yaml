@@ -5,7 +5,9 @@ xmin: 1
 ymin: 2
 xmax: 3
 ymax: 4
-data: !!binary
+din: !!binary
+  hRMBACCZIA==
+dout: !!binary
   hRMBACCZIA==
 ---
 # ScalingGrid with extended length
@@ -14,5 +16,8 @@ xmin: 1
 ymin: 2
 xmax: 3
 ymax: 4
-data: !!binary
+din: !!binary
   vxMFAAAAAQAgmSA=
+dout: !!binary
+  hRMBACCZIA==
+  

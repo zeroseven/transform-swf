@@ -1,8 +1,13 @@
 ---
 # PathsArePostscript with normal length
-data: !!binary
+din: !!binary
+  QAY=
+dout: !!binary
   QAY=
 ---
 # PathsArePostscript with extended length
-data: !!binary
+din: !!binary
   fwYAAAAA
+dout: !!binary
+  QAY=
+  

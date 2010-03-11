@@ -49,18 +49,18 @@ public final class DoActionTest {
     private transient DoAction fixture;
 
     @BeforeClass
-    public void initialize() {
+    public static void initialize() {
         actions.add(BasicAction.NEXT_FRAME);
         actions.add(BasicAction.END);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void checkAccessorForActionsWithNull() {
         fixture = new DoAction();
         fixture.setActions(null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void checkAddNullAction() {
         fixture = new DoAction();
         fixture.add(null);

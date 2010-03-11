@@ -56,7 +56,7 @@ public final class VideoWriterTest {
         if (System.getProperty("test.suite") == null) {
             srcDir = new File("test/data/flv/reference");
         } else {
-            srcDir = new File(System.getProperty("test.suites"));
+            srcDir = new File(System.getProperty("test.suite"));
         }
 
         filter = new FilenameFilter() {

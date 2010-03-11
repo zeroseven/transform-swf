@@ -8,7 +8,9 @@ labels:
   4: D
   5: E
   6: F
-data: !!binary
+din: !!binary
+  lBUDAUEAAkIAA0MAAwREAAVFAAZGAA==
+dout: !!binary
   lBUDAUEAAkIAA0MAAwREAAVFAAZGAA==
 ---
 # ScenesAndLabels with extended length
@@ -20,5 +22,8 @@ labels:
   4: D
   5: E
   6: F
-data: !!binary
-  vxUUAAAAAwFBAAJCAARDAAMERAAFRQAGRgA=
+din: !!binary
+  vxUUAAAAAwFBAAJCAANDAAMERAAFRQAGRgA=
+dout: !!binary
+  lBUDAUEAAkIAA0MAAwREAAVFAAZGAA==
+  
