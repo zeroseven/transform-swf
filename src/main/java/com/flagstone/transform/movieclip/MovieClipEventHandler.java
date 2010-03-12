@@ -151,7 +151,7 @@ public final class MovieClipEventHandler implements SWFEncodeable {
      */
     public MovieClipEventHandler(final SWFDecoder coder, final Context context)
             throws CoderException {
-        final int eventSize = (Context.VERSION > 5) ? 4 : 2;
+        final int eventSize = (context.getVariables().get(Context.VERSION) > 5) ? 4 : 2;
 
         event = coder.readWord(eventSize, false);
         offset = coder.readWord(4, false);
