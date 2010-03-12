@@ -418,12 +418,23 @@ public final class Movie {
 
         buffer = new byte[length - size - 10];
         int read = 0;
+        int num = 0;
+        
+        // Get number of bytes read first before adding to total reads since 
+        // the actual size of the file may be less than the specified length
         
         do {
-            read += streamIn.read(buffer, read, buffer.length-read);
-        } while (read < buffer.length);
+            num = streamIn.read(buffer, read, buffer.length-read);
+            if (num != -1) {
+                read += num;
+            }
+        } while (num != -1 && read < buffer.length);
         
-        decoder.setData(buffer);
+        if (read < buffer.length) {
+            decoder.setData(Arrays.copyOf(buffer, read));
+        } else {
+            decoder.setData(buffer);
+        }
         decoder.setEncoding(encoding.toString());
 
         final SWFFactory<MovieTag> factory = context.getRegistry().getMovieDecoder();
