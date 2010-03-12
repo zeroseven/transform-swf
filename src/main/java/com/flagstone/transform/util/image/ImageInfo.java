@@ -1,5 +1,3 @@
-package com.flagstone.transform.util.image;
-
 /*
  * ImageInfo.java
  *
@@ -12,6 +10,8 @@ package com.flagstone.transform.util.image;
  *
  * Contributed to the Public Domain.
  */
+
+package com.flagstone.transform.util.image;
 
 import java.io.DataInput;
 import java.io.FileInputStream;
