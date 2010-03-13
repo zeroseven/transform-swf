@@ -119,7 +119,7 @@ public final class GradientFill implements FillStyle {
         count = coder.readByte();
         spread = count & 0x00C0;
         interpolation = count & 0x0030;
-        count = count & 0x00FF;
+        count = count & 0x000F;
         gradients = new ArrayList<Gradient>(count);
 
         for (int i = 0; i < count; i++) {
@@ -345,7 +345,7 @@ public final class GradientFill implements FillStyle {
             throws CoderException {
         coder.writeByte(type);
         transform.encode(coder, context);
-        coder.writeWord(count | spread | interpolation, 1);
+        coder.writeByte(count | spread | interpolation);
 
         for (final Gradient gradient : gradients) {
             gradient.encode(coder, context);
