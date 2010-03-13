@@ -131,8 +131,9 @@ public final class DefineButton2 implements DefineTag {
             shapes.add(new ButtonShape(coder, context));
         }
 
+        events = new ArrayList<ButtonEventHandler>();
+
         if (offsetToNext != 0) {
-            events = new ArrayList<ButtonEventHandler>();
             ButtonEventHandler event;
 
             do {
