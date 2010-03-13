@@ -135,7 +135,7 @@ public class Encoder extends Coder {
             data[index++] = (byte) (val >>> i);
         }
 
-        if (offset + numberOfBits >= 32) {
+        if (offset + numberOfBits > 32) {
             data[index] = (byte) (value << (8 - offset));
         }
 
