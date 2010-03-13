@@ -36,16 +36,22 @@ import java.util.Map;
 
 /** TODO(class). */
 public enum ButtonEvent {
-    /**
-     * Code for the button event that occurs when the mouse cursor moves over
-     * the active area of a button.
-     */
-    ROLL_OVER(1),
+    
+    // Keep the order for ROLL_OUT and ROLL_OVER though the event codes are
+    // not in the right order. A set of ButtonEvents are used for encoding 
+    // ButtonSounds and ROLL_OUT must be before ROLL_OVER so the correct 
+    // natural order is used when creating an EnumSet,
+    
     /**
      * Code for the button event that occurs when the mouse cursor moves out of
      * the active area of a button.
      */
     ROLL_OUT(2),
+    /**
+     * Code for the button event that occurs when the mouse cursor moves over
+     * the active area of a button.
+     */
+    ROLL_OVER(1),
     /**
      * Code for the button event that occurs when the mouse button is clicked
      * while the mouse cursor is over the active area of the button.
