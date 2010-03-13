@@ -143,8 +143,14 @@ public final class Push implements Action {
                 coder.adjustPointer(8);
                 valuesLength -= strlen + 2;
                 break;
-            case 1: // Pre version 5 property
-                values.add(Property.fromInt(coder.readWord(4, false)));
+            case 1:
+                int value = coder.readWord(4, false);
+                Property prop = Property.fromInt(value);
+                if (prop == null) {
+                    values.add(new PropertyValue(value));
+                } else {
+                    values.add(prop);
+                }
                 valuesLength -= 5;
                 break;
             case 2:
@@ -275,6 +281,8 @@ public final class Push implements Action {
                 length += 2;
             } else if (anObject instanceof Property) {
                 length += 5;
+            } else if (anObject instanceof PropertyValue) {
+                length += 5;
             } else if (anObject instanceof Integer) {
                 length += 5;
             } else if (anObject instanceof Double) {
@@ -317,6 +325,9 @@ public final class Push implements Action {
                 coder.writeWord(1, 1);
                 coder.writeWord(((Property) anObject).getValue(context
                         .getVariables().get(Context.VERSION)), 4);
+            } else if (anObject instanceof PropertyValue) {
+                coder.writeWord(1, 1);
+                coder.writeWord(((PropertyValue) anObject).getValue(), 4);
             } else if (anObject instanceof Double) {
                 coder.writeWord(6, 1);
                 coder.writeDouble(((Double) anObject).doubleValue());
