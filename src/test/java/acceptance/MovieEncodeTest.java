@@ -50,6 +50,8 @@ import org.junit.runners.Parameterized.Parameters;
 
 
 import com.flagstone.transform.Movie;
+import com.flagstone.transform.coder.DecoderRegistry;
+import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.tools.MovieWriter;
 
 @RunWith(Parameterized.class)
@@ -100,7 +102,7 @@ public final class MovieEncodeTest {
 
     @Test
     public void encode() {
-       
+
         try {
             final Movie sourceMovie = new Movie();
             sourceMovie.decodeFromFile(sourceFile);
@@ -108,17 +110,22 @@ public final class MovieEncodeTest {
 
             final Movie destMovie = new Movie();
             destMovie.decodeFromFile(destFile);
-
-            final StringWriter sourceWriter = new StringWriter();
+            
+            assertEquals(sourceMovie.getObjects().size(), 
+                    destMovie.getObjects().size());
             
             final MovieWriter writer = new MovieWriter();
-            writer.write(sourceMovie, sourceWriter);
+            StringWriter sourceWriter = new StringWriter();
+            StringWriter destWriter = new StringWriter();
             
-            final StringWriter destWriter = new StringWriter();
-            writer.write(destMovie, destWriter);
+            for (int i=0; i < sourceMovie.getObjects().size(); i++) {
+                sourceWriter = new StringWriter();
+                destWriter = new StringWriter();
+                writer.write(sourceMovie.getObjects().get(i), sourceWriter);
+                writer.write(destMovie.getObjects().get(i), destWriter);
 
-            assertEquals(sourceWriter.toString(), destWriter.toString());
-            
+                assertEquals(sourceWriter.toString(), destWriter.toString());
+           }
         } catch (Exception e) {
             e.printStackTrace();
             fail(sourceFile.getPath());
