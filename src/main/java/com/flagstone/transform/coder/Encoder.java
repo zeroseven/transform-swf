@@ -136,7 +136,8 @@ public class Encoder extends Coder {
         }
 
         if (offset + numberOfBits > 32) {
-            data[index] = (byte) (value << (8 - offset));
+            byte bv = (byte) (value << (8 - (offset+numberOfBits-32)));
+            data[index] = (byte) (value << (8 - (offset+numberOfBits-32)));
         }
 
         setPointer(mark + numberOfBits);
