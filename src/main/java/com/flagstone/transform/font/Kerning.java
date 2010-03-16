@@ -175,12 +175,13 @@ public final class Kerning implements SWFEncodeable {
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         size = context.getVariables().containsKey(Context.WIDE_CODES) ? 2 : 1;
-        return (size << 2) + 2;
+        return (size << 1) + 2;
     }
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
+        size = context.getVariables().containsKey(Context.WIDE_CODES) ? 2 : 1;
         coder.writeWord(leftGlyph, size);
         coder.writeWord(rightGlyph, size);
         coder.writeWord(adjustment, 2);
