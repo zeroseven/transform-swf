@@ -138,6 +138,7 @@ public final class DefineMorphShape implements DefineTag {
         final Map<Integer, Integer> vars = context.getVariables();
         vars.put(Context.TRANSPARENT, 1);
         vars.put(Context.ARRAY_EXTENDED, 1);
+        vars.put(Context.TYPE, MovieTypes.DEFINE_MORPH_SHAPE);
 
         identifier = coder.readWord(2, false);
 
@@ -201,6 +202,7 @@ public final class DefineMorphShape implements DefineTag {
 
         vars.remove(Context.TRANSPARENT);
         vars.put(Context.ARRAY_EXTENDED, 1);
+        vars.remove(Context.TYPE);
 
         if (coder.getPointer() != end) {
             throw new CoderException(getClass().getName(), start >> 3, length,

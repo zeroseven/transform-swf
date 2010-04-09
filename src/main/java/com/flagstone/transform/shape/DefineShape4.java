@@ -103,6 +103,7 @@ public final class DefineShape4 implements DefineTag {
         identifier = coder.readWord(2, false);
         final Map<Integer, Integer> vars = context.getVariables();
         vars.put(Context.TRANSPARENT, 1);
+        vars.put(Context.TYPE, MovieTypes.DEFINE_SHAPE_4);
 
         shapeBounds = new Bounds(coder);
         edgeBounds = new Bounds(coder);
@@ -150,6 +151,7 @@ public final class DefineShape4 implements DefineTag {
 
         vars.remove(Context.TRANSPARENT);
         vars.remove(Context.ARRAY_EXTENDED);
+        vars.remove(Context.TYPE);
 
         if (coder.getPointer() != end) {
             throw new CoderException(getClass().getName(), start >> 3, length,

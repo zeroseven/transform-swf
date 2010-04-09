@@ -117,6 +117,9 @@ public final class DefineShape implements DefineTag {
         fillStyles = new ArrayList<FillStyle>();
         lineStyles = new ArrayList<LineStyle>();
 
+        final Map<Integer, Integer> vars = context.getVariables();
+        vars.put(Context.TYPE, MovieTypes.DEFINE_SHAPE);
+
         final int fillStyleCount = coder.readByte();
 
         final SWFFactory<FillStyle> decoder = context.getRegistry()
@@ -145,6 +148,8 @@ public final class DefineShape implements DefineTag {
         }
 
         shape = new Shape(coder, context);
+
+        vars.remove(Context.TYPE);
 
         if (coder.getPointer() != end) {
             throw new CoderException(getClass().getName(), start >> 3, length,

@@ -278,11 +278,11 @@ public final class Place3 implements MovieTag {
         
         coder.readBits(3, false);
         
-        hasBlend = coder.readBits(1, false) != 0;
-        hasFilters = coder.readBits(1, false) != 0;
         hasImage = coder.readBits(1, false) != 0;
         hasClassName = coder.readBits(1, false) != 0;
         bitmapCached = coder.readBits(1, false) != 0;
+        hasBlend = coder.readBits(1, false) != 0;
+        hasFilters = coder.readBits(1, false) != 0;
 
         layer = coder.readWord(2, false);
 
@@ -782,7 +782,7 @@ public final class Place3 implements MovieTag {
         }
 
         coder.writeBits(0, 3);
-        coder.writeBits(bitmapCached ? 1 : 0, 1);
+        coder.writeBits(hasImage ? 1 : 0, 1);
         coder.writeBits(className == null ? 0 : 1, 1);
         coder.writeBits(bitmapCached ? 1 : 0, 1);
         coder.writeBits(hasBlend ? 1 : 0, 1);

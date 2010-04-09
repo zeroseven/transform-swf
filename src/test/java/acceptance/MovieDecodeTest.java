@@ -89,6 +89,7 @@ public final class MovieDecodeTest {
         try {
             new Movie().decodeFromFile(file);
         } catch (Exception e) {
+            e.printStackTrace();
             fail(file.getPath());
         }
     }

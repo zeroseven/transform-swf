@@ -38,6 +38,7 @@ import java.util.Map;
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
+import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -103,7 +104,14 @@ public final class Shape implements SWFEncodeable {
                         shape = new Curve(coder);
                     }
                 } else {
-                    shape = new ShapeStyle(coder, context);
+                    int tag = vars.get(Context.TYPE);
+                    
+                    if (tag == MovieTypes.DEFINE_SHAPE_4 ||
+                        tag == MovieTypes.DEFINE_MORPH_SHAPE_2) {
+                        shape = new ShapeStyle2(coder, context);                        
+                    } else {
+                        shape = new ShapeStyle(coder, context);
+                    }
                 }
                 objects.add(shape);
             }

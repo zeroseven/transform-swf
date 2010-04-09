@@ -117,6 +117,7 @@ public final class DefineShape2 implements DefineTag {
         lineStyles = new ArrayList<LineStyle>();
         final Map<Integer, Integer> vars = context.getVariables();
         vars.put(Context.ARRAY_EXTENDED, 1);
+        vars.put(Context.TYPE, MovieTypes.DEFINE_SHAPE_2);
 
         int fillStyleCount = coder.readByte();
 
@@ -152,6 +153,7 @@ public final class DefineShape2 implements DefineTag {
         shape = new Shape(coder, context);
 
         vars.remove(Context.ARRAY_EXTENDED);
+        vars.remove(Context.TYPE);
 
         if (coder.getPointer() != end) {
             throw new CoderException(getClass().getName(), start >> 3, length,
