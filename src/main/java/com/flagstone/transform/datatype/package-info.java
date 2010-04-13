@@ -28,8 +28,8 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.flagstone.transform.datatype;
 /**
  * This package contains the classes that represent the basic data types such
  * as colours and transforms and formats that are used in the framework.
  */
+package com.flagstone.transform.datatype;

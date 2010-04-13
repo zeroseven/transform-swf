@@ -30,8 +30,8 @@
  */
 package com.flagstone.transform.datatype;
 
-/** 
- * BlendTypes defines the values that are used to encode Blends. 
+/**
+ * BlendTypes defines the values that are used to encode Blends.
  */
 public final class BlendTypes {
     /** Value used to identify a NORMAL Blend when it is encoded. */
@@ -63,7 +63,8 @@ public final class BlendTypes {
     /** Value used to identify a HARDLIGHT Blend when it is encoded. */
     public static final int HARDLIGHT = 14;
 
+    /** Private constructor since class only contains constants. */
     private BlendTypes() {
-        // Class contains only constants
+        // Class contains only constants.
     }
 }

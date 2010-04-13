@@ -64,6 +64,7 @@ public final class Color implements SWFEncodeable {
      */
     public static final int RGBA = 4;
 
+    /** Format used by toString() to display object representation. */
     private static final String FORMAT = "Color: {"
             + " red=%d; green=%d; blue=%d; alpha=%d }";
 
@@ -72,9 +73,16 @@ public final class Color implements SWFEncodeable {
     /** The maximum value that can be assigned to a colour channel. */
     public static final int MAX_LEVEL = 255;
 
+    /** Holds the value for the red colour channel. */
     private final transient int red;
+    /** Holds the value for the green colour channel. */
     private final transient int green;
+    /** Holds the value for the blue colour channel. */
     private final transient int blue;
+    /**
+     * Holds the value for the alpha colour channel. Defaults to MAX_LEVEL
+     * (255) when used in classes such as DefineShape or DefineShape2
+     * that only support opaque colours. */
     private final transient int alpha;
 
     /**
@@ -109,52 +117,55 @@ public final class Color implements SWFEncodeable {
      * Creates a Color object containing red, green and blue channels. The alpha
      * channel defaults to the value 255 - defining an opaque colour.
      *
-     * @param red
+     * @param rVal
      *            value for the red channel, in the range 0..255.
-     * @param green
+     * @param gVal
      *            value for the green channel, in the range 0..255.
-     * @param blue
+     * @param bVal
      *            value for the blue channel, in the range 0..255.
      */
-    public Color(final int red, final int green, final int blue) {
-        this(red, green, blue, MAX_LEVEL);
+    public Color(final int rVal, final int gVal, final int bVal) {
+        this(rVal, gVal, bVal, MAX_LEVEL);
     }
 
     /**
      * Creates a transparent Color object containing red, green, blue and alpha
      * channels.
      *
-     * @param red
+     * @param rVal
      *            value for the red channel, in the range 0..255.
-     * @param green
+     * @param gVal
      *            value for the green channel, in the range 0..255.
-     * @param blue
+     * @param bVal
      *            value for the blue channel, in the range 0..255.
-     * @param alpha
+     * @param aVal
      *            value for the alpha channel, in the range 0..255.
      */
-    public Color(final int red, final int green, final int blue, final int alpha) {
-        if ((red < MIN_LEVEL) || (red > MAX_LEVEL)) {
-            throw new IllegalArgumentRangeException(MIN_LEVEL, MAX_LEVEL, red);
+    public Color(final int rVal, final int gVal,
+            final int bVal, final int aVal) {
+        if ((rVal < MIN_LEVEL) || (rVal > MAX_LEVEL)) {
+            throw new IllegalArgumentRangeException(MIN_LEVEL, MAX_LEVEL, rVal);
         }
-        if ((green < MIN_LEVEL) || (green > MAX_LEVEL)) {
-            throw new IllegalArgumentRangeException(MIN_LEVEL, MAX_LEVEL, green);
+        if ((gVal < MIN_LEVEL) || (gVal > MAX_LEVEL)) {
+            throw new IllegalArgumentRangeException(MIN_LEVEL, MAX_LEVEL, gVal);
         }
-        if ((blue < MIN_LEVEL) || (blue > MAX_LEVEL)) {
-            throw new IllegalArgumentRangeException(MIN_LEVEL, MAX_LEVEL, blue);
+        if ((bVal < MIN_LEVEL) || (bVal > MAX_LEVEL)) {
+            throw new IllegalArgumentRangeException(MIN_LEVEL, MAX_LEVEL, bVal);
         }
-        if ((alpha < MIN_LEVEL) || (alpha > MAX_LEVEL)) {
-            throw new IllegalArgumentRangeException(MIN_LEVEL, MAX_LEVEL, alpha);
+        if ((aVal < MIN_LEVEL) || (aVal > MAX_LEVEL)) {
+            throw new IllegalArgumentRangeException(MIN_LEVEL, MAX_LEVEL, aVal);
         }
 
-        this.red = red;
-        this.green = green;
-        this.blue = blue;
-        this.alpha = alpha;
+        red = rVal;
+        green = gVal;
+        blue = bVal;
+        alpha = aVal;
     }
 
     /**
      * Returns the value for the red colour channel.
+     *
+     * @return the level for the red colour channel in the range 0..255.
      */
     public int getRed() {
         return red;
@@ -162,6 +173,8 @@ public final class Color implements SWFEncodeable {
 
     /**
      * Returns the value for the green colour channel.
+     *
+     * @return the level for the green colour channel in the range 0..255.
      */
     public int getGreen() {
         return green;
@@ -169,6 +182,8 @@ public final class Color implements SWFEncodeable {
 
     /**
      * Returns the value for the blue colour channel.
+     *
+     * @return the level for the blue colour channel in the range 0..255.
      */
     public int getBlue() {
         return blue;
@@ -176,6 +191,8 @@ public final class Color implements SWFEncodeable {
 
     /**
      * Returns the value for the alpha colour channel.
+     *
+     * @return the level for the alpha channel in the range 0..255.
      */
     public int getAlpha() {
         return alpha;
@@ -216,8 +233,13 @@ public final class Color implements SWFEncodeable {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
-        return (context.getVariables().containsKey(Context.TRANSPARENT))
-            ? RGBA : RGB;
+        int size;
+        if (context.getVariables().containsKey(Context.TRANSPARENT)) {
+            size = RGBA;
+        } else {
+            size = RGB;
+        }
+        return size;
     }
 
     /** {@inheritDoc} */

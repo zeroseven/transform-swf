@@ -33,7 +33,6 @@ package com.flagstone.transform.datatype;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-
 /**
  * Blend modes let you control how the colours and transparency of successive
  * layers are composited together when the Flash Player displays the objects on
@@ -106,6 +105,7 @@ public enum Blend {
      */
     HARDLIGHT(BlendTypes.HARDLIGHT);
 
+    /** Table used to map encoded integer values to different Blends. */
     private static final Map<Integer, Blend> TABLE =
         new LinkedHashMap <Integer, Blend>();
 
@@ -128,10 +128,17 @@ public enum Blend {
         return TABLE.get(type);
     }
 
+    /** Integer value representing the Blend when it is encoded.  */
     private final int value;
 
-    private Blend(final int value) {
-        this.value = value;
+    /**
+     * Private constructor used to create the table mapping integer
+     * values to different Blends.
+     *
+     * @param val the value representing the Blend when it is encoded.
+     */
+    private Blend(final int val) {
+        value = val;
     }
 
     /**

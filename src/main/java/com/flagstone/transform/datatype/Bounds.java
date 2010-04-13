@@ -70,16 +70,29 @@ import com.flagstone.transform.coder.SWFEncoder;
  */
 public final class Bounds implements SWFEncodeable {
 
+    /** Format used by toString() to display object representation. */
     private static final String FORMAT = "Bounds: {"
             + " minX=%d; minY=%d; maxX=%d; maxY=%d }";
 
+    /**
+     * Size of bit-field used to specify the number of bits representing
+     * encoded bounding box values.
+     */
     private static final int FIELD_SIZE = 5;
 
+    /** X-coordinate of upper left corner of bounding box. */
     private final transient int minX;
+    /** Y-coordinate of upper left corner of bounding box. */
     private final transient int minY;
+    /** X-coordinate of lower right corner of bounding box. */
     private final transient int maxX;
+    /** Y-coordinate of lower right corner of bounding box. */
     private final transient int maxY;
 
+    /**
+     * Holds the field size for bounding box values when encoding and
+     * decoding objects.
+     */
     private transient int size;
 
     /**
@@ -114,7 +127,8 @@ public final class Bounds implements SWFEncodeable {
      * @param ymax
      *            y-coordinate of bottom right corner.
      */
-    public Bounds(final int xmin, final int ymin, final int xmax, final int ymax) {
+    public Bounds(final int xmin, final int ymin,
+            final int xmax, final int ymax) {
         minX = xmin;
         minY = ymin;
         maxX = xmax;
@@ -124,6 +138,8 @@ public final class Bounds implements SWFEncodeable {
     /**
      * Returns the x-coordinate of the top left corner of the bounding rectangle
      * as seen on a screen.
+     *
+     * @return the x-coordinate of the upper left corner.
      */
     public int getMinX() {
         return minX;
@@ -132,6 +148,8 @@ public final class Bounds implements SWFEncodeable {
     /**
      * Returns the x-coordinate of the bottom right corner of the bounding
      * rectangle as seen on a screen.
+     *
+     * @return the x-coordinate of the lower right corner.
      */
     public int getMaxX() {
         return maxX;
@@ -140,6 +158,8 @@ public final class Bounds implements SWFEncodeable {
     /**
      * Returns the y-coordinate of the top left corner of the bounding rectangle
      * as seen on a screen.
+     *
+     * @return the y-coordinate of the upper left corner.
      */
     public int getMinY() {
         return minY;
@@ -148,20 +168,26 @@ public final class Bounds implements SWFEncodeable {
     /**
      * Returns the y-coordinate of the bottom right corner of the bounding
      * rectangle as seen on a screen.
+     *
+     * @return the y-coordinate of the lower right corner.
      */
     public int getMaxY() {
         return maxY;
     }
 
     /**
-     * Returns the width of the rectangle in twips.
+     * Returns the width of the rectangle, measured in twips.
+     *
+     * @return the width of the bounding box in twips.
      */
     public int getWidth() {
         return maxX - minX;
     }
 
     /**
-     * Returns the height of the rectangle in twips.
+     * Returns the height of the rectangle, measured in twips.
+     *
+     * @return the height of the bounding box in twips.
      */
     public int getHeight() {
         return maxY - minY;

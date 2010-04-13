@@ -92,6 +92,15 @@ public class Decoder extends Coder {
 
         return value;
     }
+    
+    /**
+     * Read a single bit and return a boolean value.
+     * 
+     * @return true if the bit field was set, false otherwise.
+     */
+    public final boolean readBool() {
+        return readBits(1, false) != 1;
+    }
 
     /**
      * Read a 16-bit field.

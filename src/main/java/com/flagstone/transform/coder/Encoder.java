@@ -142,6 +142,15 @@ public class Encoder extends Coder {
 
         setPointer(mark + numberOfBits);
     }
+    
+    /**
+     * Write a boolean value as a single bit.
+     * 
+     * @param value the boolean flag to write.
+     */
+    public final void writeBool(final boolean value) {
+        writeBits(value ? 1 : 0, 1);
+    }
 
     /**
      * Write a 16-bit field.

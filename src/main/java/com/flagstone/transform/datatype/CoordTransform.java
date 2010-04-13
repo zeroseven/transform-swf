@@ -64,21 +64,22 @@ import com.flagstone.transform.coder.SWFEncoder;
  */
 public final class CoordTransform implements SWFEncodeable {
 
+    /** Format used by toString() to display object representation. */
     private static final String FORMAT = "CoordTransform: { scaleX=%f;"
             + " scaleY=%f; shearX=%f; shearY=%f; transX=%d; transY=%d }";
 
     /**
-     * The default value used for the scaling terms when a translation or 
+     * The default value used for the scaling terms when a translation or
      * shearing transform is created.
      */
     public static final float DEFAULT_SCALE = 1.0f;
     /**
-     * The default value used for the shearing terms when a translation or 
+     * The default value used for the shearing terms when a translation or
      * scaling transform is created.
      */
     public static final float DEFAULT_SHEAR = 0.0f;
     /**
-     * The default value used for the translation terms when a scaling or 
+     * The default value used for the translation terms when a scaling or
      * shearing transform is created.
      */
     public static final int DEFAULT_COORD = 0;
@@ -93,8 +94,14 @@ public final class CoordTransform implements SWFEncodeable {
      */
     public static final float SHEAR_FACTOR = 65536.0f;
 
+    /**
+     * Size of bit-field used to specify the number of bits representing
+     * encoded transform values.
+     */
     private static final int FIELD_SIZE = 5;
+    /** Default value for scaling terms. */
     private static final int DEFAULT_INT_SCALE = 65536;
+    /** Default value for shearing terms. */
     private static final int DEFAULT_INT_SHEAR = 0;
 
     /**
@@ -108,7 +115,8 @@ public final class CoordTransform implements SWFEncodeable {
      *            a 3x3 matrix
      * @return a new 3x3 matrix contains the product of the two arguments.
      */
-    public static float[][] product(final float[][] left, final float[][] right) {
+    public static float[][] product(final float[][] left,
+            final float[][] right) {
         return new float[][] {
                 {
                         left[0][0] * right[0][0] + left[0][1] * right[1][0]
@@ -189,18 +197,44 @@ public final class CoordTransform implements SWFEncodeable {
                 (float) sin, -(float) sin, 0, 0);
     }
 
+    /** Holds the value for scaling in the x-direction. */
     private final transient int scaleX;
+    /** Holds the value for scaling in the y-direction. */
     private final transient int scaleY;
+    /** Holds the value for shearing in the x-direction. */
     private final transient int shearX;
+    /** Holds the value for shearing in the y-direction. */
     private final transient int shearY;
+    /** Holds the value for a translation in the x-direction. */
     private final transient int translateX;
+    /** Holds the value for a translation in the x-direction. */
     private final transient int translateY;
 
+    /**
+     * Flag used to optimise encoding so checking whether scaling terms are
+     * set is performed only once.
+     */
     private transient boolean hasScale;
+    /**
+     * Flag used to optimise encoding so checking whether shearing terms are
+     * set is performed only once.
+     */
     private transient boolean hasShear;
 
+    /**
+     * Used to store the number of bits required to encode or decode
+     * scaling terms.
+     */
     private transient int scaleSize;
+    /**
+     * Used to store the number of bits required to encode or decode
+     * shearing terms.
+     */
     private transient int shearSize;
+    /**
+     * Used to store the number of bits required to encode or decode
+     * translation terms.
+     */
     private transient int transSize;
 
 
@@ -292,6 +326,8 @@ public final class CoordTransform implements SWFEncodeable {
 
     /**
      * Returns the scaling factor along the x-axis.
+     *
+     * @return the scaling factor in the x-direction.
      */
     public float getScaleX() {
         return scaleX / SCALE_FACTOR;
@@ -299,6 +335,8 @@ public final class CoordTransform implements SWFEncodeable {
 
     /**
      * Returns the scaling factor along the y-axis.
+     *
+     * @return the scaling factor in the y-direction.
      */
     public float getScaleY() {
         return scaleY / SCALE_FACTOR;
@@ -306,6 +344,8 @@ public final class CoordTransform implements SWFEncodeable {
 
     /**
      * Returns the shearing factor along the x-axis.
+     *
+     * @return the shear factor in the x-direction.
      */
     public float getShearX() {
         return shearX / SHEAR_FACTOR;
@@ -313,6 +353,8 @@ public final class CoordTransform implements SWFEncodeable {
 
     /**
      * Returns the shearing factor along the y-axis.
+     *
+     * @return the shear factor in the y-direction.
      */
     public float getShearY() {
         return shearY / SHEAR_FACTOR;
@@ -320,6 +362,8 @@ public final class CoordTransform implements SWFEncodeable {
 
     /**
      * Returns the translation in the x direction.
+     *
+     * @return the translation, measured in twips, in the x-direction.
      */
     public int getTranslateX() {
         return translateX;
@@ -327,13 +371,17 @@ public final class CoordTransform implements SWFEncodeable {
 
     /**
      * Returns the translation along the y-axis.
+     *
+     * @return the translation, measured in twips, in the y-direction.
      */
     public int getTranslateY() {
         return translateY;
     }
 
     /**
-     * Returns the 3 X 3 array that is used to store the transformation values.
+     * Returns a matrix that can be used to create composite transforms.
+     *
+     * @return the 3 X 3 array that is used to store the transformation values.
      */
     public float[][] getMatrix() {
         return new float[][] {
@@ -386,7 +434,8 @@ public final class CoordTransform implements SWFEncodeable {
 
         int numberOfBits = 2 + FIELD_SIZE + Coder.BYTE_ALIGN;
 
-        hasScale = (scaleX != DEFAULT_INT_SCALE) || (scaleY != DEFAULT_INT_SCALE);
+        hasScale = (scaleX != DEFAULT_INT_SCALE)
+                || (scaleY != DEFAULT_INT_SCALE);
         hasShear = (shearX != 0) || (shearY != 0);
 
         if (hasScale || hasShear || ((translateX != 0) || (translateY != 0))) {

@@ -96,28 +96,70 @@ import com.flagstone.transform.coder.SWFEncoder;
  */
 public final class ColorTransform implements SWFEncodeable {
 
+    /** Format used by toString() to display object representation. */
     private static final String FORMAT = "ColorTransform: { "
             + "multiply=[%f, %f, %f, %f]; add=[%d, %d, %d, %d] }";
 
+    /**
+     * Size of bit-field used to specify the number of bits representing
+     * encoded transform values.
+     */
     private static final int FIELD_SIZE = 4;
+    /**
+     * Default value for scaling multiply terms so they can be stored
+     * internally as integers.
+     */
     private static final float SCALE_MULTIPLY = 256.0f;
+    /**
+     * Default value for multiply terms when only an additive transform is
+     * created.
+     */
     private static final int DEFAULT_MULTIPLY = 256;
+    /**
+     * Default value for add terms when only an multiplicative transform is
+     * created.
+     */
     private static final int DEFAULT_ADD = 0;
 
+    /** Multiply term for the red colour channel. */
     private final transient int multiplyRed;
+    /** Multiply term for the green colour channel. */
     private final transient int multiplyGreen;
+    /** Multiply term for the blue colour channel. */
     private final transient int multiplyBlue;
+    /** Multiply term for the alpha colour channel. */
     private final transient int multiplyAlpha;
 
+    /** Add term for the red colour channel. */
     private final transient int addRed;
+    /** Add term for the green colour channel. */
     private final transient int addGreen;
+    /** Add term for the blue colour channel. */
     private final transient int addBlue;
+    /** Add term for the alpha colour channel. */
     private final transient int addAlpha;
 
+    /**
+     * Used in decoding and to optimise encoding so checking whether the
+     * transform contains multiply terms is performed only once.
+     */
     private final transient boolean hasMultiply;
+    /**
+     * Used in decoding and to optimise encoding so checking whether the
+     * transform contains add terms is performed only once.
+     */
     private final transient boolean hasAdd;
 
+    /**
+     * Used to store the number of bits required to encode or decode the
+     * transform terms.
+     */
     private transient int size;
+    /**
+     * Used to optimise decoding and encoding so checking the context to see
+     * whether add and multiply terms for the alpha channel should be read
+     * written is only performed once.
+     */
     private transient boolean hasAlpha;
 
     /**
@@ -138,8 +180,8 @@ public final class ColorTransform implements SWFEncodeable {
     public ColorTransform(final SWFDecoder coder, final Context context)
             throws CoderException {
 
-        hasAdd = coder.readBits(1, false) != 0;
-        hasMultiply = coder.readBits(1, false) != 0;
+        hasAdd = coder.readBool();
+        hasMultiply = coder.readBool();
         hasAlpha = context.getVariables().containsKey(Context.TRANSPARENT);
         size = coder.readBits(FIELD_SIZE, false);
 
@@ -147,7 +189,7 @@ public final class ColorTransform implements SWFEncodeable {
             multiplyRed = coder.readBits(size, true);
             multiplyGreen = coder.readBits(size, true);
             multiplyBlue = coder.readBits(size, true);
-            
+
             if (hasAlpha) {
                 multiplyAlpha = coder.readBits(size, true);
             } else {
@@ -164,7 +206,7 @@ public final class ColorTransform implements SWFEncodeable {
             addRed = coder.readBits(size, true);
             addGreen = coder.readBits(size, true);
             addBlue = coder.readBits(size, true);
-            
+
             if (hasAlpha) {
                 addAlpha = coder.readBits(size, true);
             } else {
@@ -183,26 +225,26 @@ public final class ColorTransform implements SWFEncodeable {
     /**
      * Creates an add colour transform.
      *
-     * @param addRed
+     * @param rAdd
      *            value to add to the red colour channel.
-     * @param addGreen
+     * @param gAdd
      *            value to add to the green colour channel.
-     * @param addBlue
+     * @param bAdd
      *            value to add to the blue colour channel.
-     * @param addAlpha
+     * @param aAdd
      *            value to add to the alpha colour channel.
      */
-    public ColorTransform(final int addRed, final int addGreen,
-            final int addBlue, final int addAlpha) {
+    public ColorTransform(final int rAdd, final int gAdd,
+            final int bAdd, final int aAdd) {
         multiplyRed = DEFAULT_MULTIPLY;
         multiplyGreen = DEFAULT_MULTIPLY;
         multiplyBlue = DEFAULT_MULTIPLY;
         multiplyAlpha = DEFAULT_MULTIPLY;
 
-        this.addRed = addRed;
-        this.addGreen = addGreen;
-        this.addBlue = addBlue;
-        this.addAlpha = addAlpha;
+        addRed = rAdd;
+        addGreen = gAdd;
+        addBlue = bAdd;
+        addAlpha = aAdd;
 
         hasMultiply = false;
         hasAdd = true;
@@ -211,21 +253,21 @@ public final class ColorTransform implements SWFEncodeable {
     /**
      * Creates a multiply colour transform.
      *
-     * @param mulRed
+     * @param rMul
      *            value to multiply the red colour channel by.
-     * @param mulGreen
+     * @param gMul
      *            value to multiply the green colour channel by.
-     * @param mulBlue
+     * @param bMul
      *            value to multiply the blue colour channel by.
-     * @param mulAlpha
+     * @param aMul
      *            value to multiply the alpha colour channel by.
      */
-    public ColorTransform(final float mulRed, final float mulGreen,
-            final float mulBlue, final float mulAlpha) {
-        multiplyRed = (int) (mulRed * SCALE_MULTIPLY);
-        multiplyGreen = (int) (mulGreen * SCALE_MULTIPLY);
-        multiplyBlue = (int) (mulBlue * SCALE_MULTIPLY);
-        multiplyAlpha = (int) (mulAlpha * SCALE_MULTIPLY);
+    public ColorTransform(final float rMul, final float gMul,
+            final float bMul, final float aMul) {
+        multiplyRed = (int) (rMul * SCALE_MULTIPLY);
+        multiplyGreen = (int) (gMul * SCALE_MULTIPLY);
+        multiplyBlue = (int) (bMul * SCALE_MULTIPLY);
+        multiplyAlpha = (int) (aMul * SCALE_MULTIPLY);
 
         addRed = DEFAULT_ADD;
         addGreen = DEFAULT_ADD;
@@ -239,36 +281,36 @@ public final class ColorTransform implements SWFEncodeable {
     /**
      * Creates a colour transform that contains add and multiply terms.
      *
-     * @param mulRed
+     * @param rMul
      *            value to multiply the red colour channel by.
-     * @param mulGreen
+     * @param gMul
      *            value to multiply the green colour channel by.
-     * @param mulBlue
+     * @param bMul
      *            value to multiply the blue colour channel by.
-     * @param mulAlpha
+     * @param aMul
      *            value to multiply the alpha colour channel by.
-     * @param addRed
+     * @param rAdd
      *            value to add to the red colour channel.
-     * @param addGreen
+     * @param gAdd
      *            value to add to the green colour channel.
-     * @param addBlue
+     * @param bAdd
      *            value to add to the blue colour channel.
-     * @param addAlpha
+     * @param aAdd
      *            value to add to the alpha colour channel.
      */
-    public ColorTransform(final int addRed, final int addGreen,
-            final int addBlue, final int addAlpha, final float mulRed,
-            final float mulGreen, final float mulBlue, final float mulAlpha) {
+    public ColorTransform(final int rAdd, final int gAdd,
+            final int bAdd, final int aAdd, final float rMul,
+            final float gMul, final float bMul, final float aMul) {
 
-        this.addRed = addRed;
-        this.addGreen = addGreen;
-        this.addBlue = addBlue;
-        this.addAlpha = addAlpha;
+        addRed = rAdd;
+        addGreen = gAdd;
+        addBlue = bAdd;
+        addAlpha = aAdd;
 
-        multiplyRed = (int) (mulRed * SCALE_MULTIPLY);
-        multiplyGreen = (int) (mulGreen * SCALE_MULTIPLY);
-        multiplyBlue = (int) (mulBlue * SCALE_MULTIPLY);
-        multiplyAlpha = (int) (mulAlpha * SCALE_MULTIPLY);
+        multiplyRed = (int) (rMul * SCALE_MULTIPLY);
+        multiplyGreen = (int) (gMul * SCALE_MULTIPLY);
+        multiplyBlue = (int) (bMul * SCALE_MULTIPLY);
+        multiplyAlpha = (int) (aMul * SCALE_MULTIPLY);
 
         hasMultiply = true;
         hasAdd = true;
@@ -276,6 +318,8 @@ public final class ColorTransform implements SWFEncodeable {
 
     /**
      * Returns the value of the multiply term for the red channel.
+     *
+     * @return the value the red colour channel will be multiplied by.
      */
     public float getMultiplyRed() {
         return multiplyRed / SCALE_MULTIPLY;
@@ -283,6 +327,8 @@ public final class ColorTransform implements SWFEncodeable {
 
     /**
      * Returns the value of the multiply term for the green channel.
+     *
+     * @return the value the green colour channel will be multiplied by.
      */
     public float getMultiplyGreen() {
         return multiplyGreen / SCALE_MULTIPLY;
@@ -290,6 +336,8 @@ public final class ColorTransform implements SWFEncodeable {
 
     /**
      * Returns the value of the multiply term for the blue channel.
+     *
+     * @return the value the blue colour channel will be multiplied by.
      */
     public float getMultiplyBlue() {
         return multiplyBlue / SCALE_MULTIPLY;
@@ -297,6 +345,8 @@ public final class ColorTransform implements SWFEncodeable {
 
     /**
      * Returns the value of the multiply term for the alpha channel.
+     *
+     * @return the value the alpha channel will be multiplied by.
      */
     public float getMultiplyAlpha() {
         return multiplyAlpha / SCALE_MULTIPLY;
@@ -304,6 +354,8 @@ public final class ColorTransform implements SWFEncodeable {
 
     /**
      * Returns the value of the add term for the red channel.
+     *
+     * @return the value that will be added to the red colour channel.
      */
     public int getAddRed() {
         return addRed;
@@ -311,6 +363,8 @@ public final class ColorTransform implements SWFEncodeable {
 
     /**
      * Returns the value of the add term for the green channel.
+     *
+     * @return the value that will be added to the green colour channel.
      */
     public int getAddGreen() {
         return addGreen;
@@ -318,6 +372,8 @@ public final class ColorTransform implements SWFEncodeable {
 
     /**
      * Returns the value of the add term for the blue channel.
+     *
+     * @return the value that will be added to the blue colour channel.
      */
     public int getAddBlue() {
         return addBlue;
@@ -325,6 +381,8 @@ public final class ColorTransform implements SWFEncodeable {
 
     /**
      * Returns the value of the add term for the alpha channel.
+     *
+     * @return the value that will be added to the alpha channel.
      */
     public int getAddAlpha() {
         return addAlpha;
@@ -384,6 +442,14 @@ public final class ColorTransform implements SWFEncodeable {
         hasAlpha = context.getVariables().containsKey(Context.TRANSPARENT);
         size = 0;
 
+        int numberOfBytes;
+
+        if (hasAlpha) {
+            numberOfBytes = Color.RGBA;
+        } else {
+            numberOfBytes = Color.RGB;
+        }
+
         if (hasMultiply) {
             sizeTerms(multiplyRed, multiplyGreen, multiplyBlue, multiplyAlpha);
         }
@@ -393,11 +459,11 @@ public final class ColorTransform implements SWFEncodeable {
         }
 
         if (hasMultiply) {
-            numberOfBits += size * (hasAlpha ? Color.RGBA : Color.RGB);
+            numberOfBits += size * numberOfBytes;
         }
 
         if (hasAdd) {
-            numberOfBits += size * (hasAlpha ? Color.RGBA : Color.RGB);
+            numberOfBits += size * numberOfBytes;
         }
 
         return numberOfBits >> Coder.BITS_TO_BYTES;
@@ -407,12 +473,12 @@ public final class ColorTransform implements SWFEncodeable {
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
 
-        coder.writeBits(hasAdd ? 1 : 0, 1);
-        coder.writeBits(hasMultiply ? 1 : 0, 1);
+        coder.writeBool(hasAdd);
+        coder.writeBool(hasMultiply);
         coder.writeBits(size, FIELD_SIZE);
 
         if (hasMultiply) {
-            encodeTerms(multiplyRed, multiplyGreen, multiplyBlue, 
+            encodeTerms(multiplyRed, multiplyGreen, multiplyBlue,
                     multiplyAlpha, coder);
         }
 
@@ -422,8 +488,16 @@ public final class ColorTransform implements SWFEncodeable {
 
         coder.alignToByte();
     }
-    
-    private void sizeTerms(final int red, final int green, final int blue, 
+
+    /**
+     * Calculate the number of bits to encode either the add or multiply terms.
+     *
+     * @param red the term for the red channel.
+     * @param green the term for the green channel.
+     * @param blue the term for the blue channel.
+     * @param alpha the term for the alpha channel.
+     */
+    private void sizeTerms(final int red, final int green, final int blue,
             final int alpha) {
         size = Math.max(size, SWFEncoder.size(red));
         size = Math.max(size, SWFEncoder.size(green));
@@ -433,13 +507,22 @@ public final class ColorTransform implements SWFEncodeable {
             size = Math.max(size, SWFEncoder.size(alpha));
         }
     }
-    
-    private void encodeTerms(final int red, final int green, final int blue, 
+
+    /**
+     * Encode the add or multiply terms.
+     *
+     * @param red the term for the red channel.
+     * @param green the term for the green channel.
+     * @param blue the term for the blue channel.
+     * @param alpha the term for the alpha channel.
+     * @param coder the Coder used to encode the data.
+     */
+    private void encodeTerms(final int red, final int green, final int blue,
             final int alpha, final SWFEncoder coder) {
         coder.writeBits(red, size);
         coder.writeBits(green, size);
         coder.writeBits(blue, size);
-        
+
         if (hasAlpha) {
             coder.writeBits(alpha, size);
         }
