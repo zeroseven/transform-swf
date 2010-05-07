@@ -166,6 +166,10 @@ public final class MovieTypes {
     public static final int DEFINE_FONT_NAME = 88;
     /** The type used to identify StartSound2 objects when they are encoded. */
     public static final int START_SOUND_2 = 89;
+    /** The type used to identify DefineJPEGImage4 objects when they are encoded. */
+    public static final int DEFINE_JPEG_IMAGE_4 = 90;
+    /** The type used to identify DefineFont4 objects when they are encoded. */
+    public static final int DEFINE_FONT_4 = 91;
 
     private MovieTypes() {
         // Class only contains constants

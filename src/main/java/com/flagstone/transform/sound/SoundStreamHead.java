@@ -253,6 +253,9 @@ public final class SoundStreamHead implements MovieTag {
         case 6: 
             value = SoundFormat.NELLYMOSER;
             break;
+        case 11: 
+            value = SoundFormat.SPEEX;
+            break;
         default:
             throw new IllegalStateException("Unsupported sound format.");
         }
@@ -285,6 +288,9 @@ public final class SoundStreamHead implements MovieTag {
             break;
         case NELLYMOSER: 
             format = 6;
+            break;
+        case SPEEX: 
+            format = 11;
             break;
         default:
             throw new IllegalArgumentException("Unsupported sound format.");

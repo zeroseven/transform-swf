@@ -64,6 +64,8 @@ import com.flagstone.transform.button.DefineButton;
 import com.flagstone.transform.button.DefineButton2;
 import com.flagstone.transform.font.DefineFont;
 import com.flagstone.transform.font.DefineFont2;
+import com.flagstone.transform.font.DefineFont3;
+import com.flagstone.transform.font.DefineFont4;
 import com.flagstone.transform.font.DefineFontName;
 import com.flagstone.transform.font.FontAlignment;
 import com.flagstone.transform.font.FontInfo;
@@ -73,6 +75,7 @@ import com.flagstone.transform.image.DefineImage2;
 import com.flagstone.transform.image.DefineJPEGImage;
 import com.flagstone.transform.image.DefineJPEGImage2;
 import com.flagstone.transform.image.DefineJPEGImage3;
+import com.flagstone.transform.image.DefineJPEGImage4;
 import com.flagstone.transform.image.JPEGEncodingTable;
 import com.flagstone.transform.movieclip.DefineMovieClip;
 import com.flagstone.transform.movieclip.InitializeMovieClip;
@@ -282,6 +285,9 @@ public final class MovieDecoder implements SWFFactory<MovieTag> {
         case MovieTypes.TEXT_SETTINGS:
             obj = new TextSettings(coder);
             break;
+        case MovieTypes.DEFINE_FONT_3:
+            obj = new DefineFont3(coder, context);
+            break;
         case MovieTypes.SYMBOL:
             obj = new SymbolClass(coder);
             break;
@@ -311,6 +317,12 @@ public final class MovieDecoder implements SWFFactory<MovieTag> {
             break;
         case MovieTypes.START_SOUND_2:
             obj = new StartSound2(coder);
+            break;
+        case MovieTypes.DEFINE_JPEG_IMAGE_4:
+            obj = new DefineJPEGImage4(coder);
+            break;
+        case MovieTypes.DEFINE_FONT_4:
+            obj = new DefineFont4(coder, context);
             break;
         default:
             obj = new MovieObject(coder);

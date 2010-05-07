@@ -219,6 +219,9 @@ public final class AudioData implements VideoTag {
         case 6: 
             value = SoundFormat.NELLYMOSER;
             break;
+        case 11: 
+            value = SoundFormat.SPEEX;
+            break;
         default:
             throw new IllegalStateException("Unsupported sound format.");
         }
@@ -252,6 +255,9 @@ public final class AudioData implements VideoTag {
             break;
         case NELLYMOSER: 
             format = 6;
+            break;
+        case SPEEX: 
+            format = 11;
             break;
         default:
             throw new IllegalArgumentException("Unsupported sound format.");

@@ -230,6 +230,9 @@ public final class DefineSound implements DefineTag {
         case 6: 
             value = SoundFormat.NELLYMOSER;
             break;
+        case 11: 
+            value = SoundFormat.SPEEX;
+            break;
         default:
             throw new IllegalStateException("Unsupported sound format.");
         }
@@ -297,6 +300,9 @@ public final class DefineSound implements DefineTag {
             break;
         case NELLYMOSER: 
             format = 6;
+            break;
+        case SPEEX: 
+            format = 11;
             break;
         default:
             throw new IllegalArgumentException("Unsupported sound format.");

@@ -71,5 +71,9 @@ public enum SoundFormat {
      * improved synchronisation between the sound and frame rate of movies. This
      * format is for mono sounds.
      */
-    NELLYMOSER;
+    NELLYMOSER,
+    /**
+     * 
+     */
+    SPEEX;
 }
