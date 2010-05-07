@@ -167,11 +167,34 @@ public final class SWFEncoder extends Encoder {
     public void writeHalf(final float value) {
         final int intValue = Float.floatToIntBits(value);
 
-        final int sign = intValue >>> 16;
-        final int exp = ((intValue >> 23) & 0x1F) << 10;
-        final int val = ((intValue >> 13) & 0x3FF);
-
-        writeWord(sign | exp | val, 2);
+        int s =  (intValue >> 16) & 0x00008000;
+        int e = ((intValue >> 23) & 0x000000ff) - (127 - 15);
+        int m =   intValue        & 0x007fffff;
+         
+        if (e <= 0) {
+            if (e < -10) {
+                writeWord(0, 2);
+            } else {
+                m = (m | 0x00800000) >> (1 - e);                
+                writeWord((s | (m >> 13)), 2);
+            }
+        }
+        else if (e == 0xff - (127 - 15)) {
+            if (m == 0) { // Inf
+                writeWord((s | 0x7c00), 2);
+            } 
+            else { // NAN
+                m >>= 13;
+                writeWord((s | 0x7c00 | m | ((m == 0) ? 1 : 0)), 2);
+            }
+        }
+        else {
+            if (e > 30) { // Overflow
+                writeWord((s | 0x7c00), 2);
+            } else {
+                writeWord((s | (e << 10) | (m >> 13)), 2);
+            }
+        }
     }
 
     /**

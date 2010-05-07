@@ -126,7 +126,6 @@ public enum BasicAction implements Action {
     /** TODO(method). */
     GET_TIME(ActionTypes.GET_TIME),
     /** TODO(method). */
-    /** TODO(method). */
     MB_STRING_EXTRACT(ActionTypes.MB_STRING_EXTRACT),
     /** TODO(method). */
     MB_CHAR_TO_ASCII(ActionTypes.MB_CHAR_TO_ASCII),
@@ -207,7 +206,85 @@ public enum BasicAction implements Action {
     /** TODO(method). */
     STRING_GREATER(ActionTypes.STRING_GREATER),
     /** TODO(method). */
-    EXTENDS(ActionTypes.EXTENDS);
+    EXTENDS(ActionTypes.EXTENDS),
+    //TODO
+    CODE1(ActionTypes.CODE_1),
+    //TODO
+    CODE2(ActionTypes.CODE_2),
+    //TODO
+    CODE22(ActionTypes.CODE_22),
+    //TODO
+    CODE27(ActionTypes.CODE_27),
+    //TODO
+    CODE3(ActionTypes.CODE_3),
+    //TODO
+    CODE30(ActionTypes.CODE_30),
+    //TODO
+    CODE45(ActionTypes.CODE_45),
+    //TODO
+    CODE46(ActionTypes.CODE_46),
+    //TODO
+    CODE47(ActionTypes.CODE_47),
+    //TODO
+    CODE56(ActionTypes.CODE_56),
+    //TODO
+    CODE57(ActionTypes.CODE_57),
+    //TODO
+    CODE86(ActionTypes.CODE_86),
+    //TODO
+    CODE87(ActionTypes.CODE_87),
+    //TODO
+    CODE88(ActionTypes.CODE_88),
+    //TODO
+    CODE89(ActionTypes.CODE_89),
+    //TODO
+    CODE91(ActionTypes.CODE_91),
+    //TODO
+    CODE92(ActionTypes.CODE_92),
+    //TODO
+    CODE93(ActionTypes.CODE_93),
+    //TODO
+    CODE95(ActionTypes.CODE_95),
+    //TODO
+    CODE106(ActionTypes.CODE_106),
+    //TODO
+    CODE107(ActionTypes.CODE_107),
+    //TODO
+    CODE108(ActionTypes.CODE_108),
+    //TODO
+    CODE109(ActionTypes.CODE_109),
+    //TODO
+    CODE110(ActionTypes.CODE_110),
+    //TODO
+    CODE111(ActionTypes.CODE_111),
+    //TODO
+    CODE112(ActionTypes.CODE_112),
+    //TODO
+    CODE113(ActionTypes.CODE_113),
+    //TODO
+    CODE114(ActionTypes.CODE_114),
+    //TODO
+    CODE115(ActionTypes.CODE_115),
+    //TODO
+    CODE116(ActionTypes.CODE_116),
+    //TODO
+    CODE117(ActionTypes.CODE_117),
+    //TODO
+    CODE118(ActionTypes.CODE_118),
+    //TODO
+    CODE119(ActionTypes.CODE_119),
+    //TODO
+    CODE120(ActionTypes.CODE_120),
+    //TODO
+    CODE121(ActionTypes.CODE_121),
+    //TODO
+    CODE122(ActionTypes.CODE_122),
+    //TODO
+    CODE125(ActionTypes.CODE_125),
+    //TODO
+    CODE126(ActionTypes.CODE_126),
+    //TODO
+    CODE127(ActionTypes.CODE_127);
 
     private static final Map<Integer, BasicAction> TABLE = new LinkedHashMap<Integer, BasicAction>();
 

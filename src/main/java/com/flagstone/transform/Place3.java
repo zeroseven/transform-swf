@@ -142,8 +142,9 @@ import com.flagstone.transform.movieclip.MovieClipEventHandler;
 public final class Place3 implements MovieTag {
     
     private static final String FORMAT = "PlaceObject3: { type=%s; layer=%d;"
-            + " bitmapCached=%s; identifier=%d; transform=%d; colorTransform=%d;"
-            + " ratio=%d; clippingDepth=%d; name=%s; className=%s;"
+            + " bitmapCached=%s; identifier=%d; transform=%s; "
+            + " colorTransform=%s; ratio=%d; clippingDepth=%d; "
+            + " name=%s; className=%s; "
             + " filters=%s; blend=%s; clipEvents=%s}";
     
     /** TODO(method). */
@@ -286,7 +287,10 @@ public final class Place3 implements MovieTag {
 
         layer = coder.readWord(2, false);
 
-        if (hasClassName || (type == PlaceType.NEW && hasImage)) {
+        // The following line implements the logic as described in the SWF 9 specification
+        // but it appears to be incorrect. The class name is not given when hasImage is set.
+        //if (hasClassName || ((type == PlaceType.NEW || type == PlaceType.REPLACE) && hasImage)) {
+        if (hasClassName) {
             className = coder.readString();
         }
 
@@ -331,10 +335,11 @@ public final class Place3 implements MovieTag {
             blend = coder.readByte();
         }
 
+        events = new ArrayList<MovieClipEventHandler>();
+
         if (hasEvents) {
             final int eventSize = vars.get(Context.VERSION) > 5 ? 4 : 2;
-            events = new ArrayList<MovieClipEventHandler>(eventSize);
-
+ 
             coder.readWord(2, false);
             coder.readWord(eventSize, false);
 
@@ -347,8 +352,9 @@ public final class Place3 implements MovieTag {
         vars.remove(Context.TRANSPARENT);
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+//            throw new CoderException(getClass().getName(), start >> 3, length,
+//                    (coder.getPointer() - end) >> 3);
+            coder.setPointer(end);
         }
     }
 
@@ -700,8 +706,9 @@ public final class Place3 implements MovieTag {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        return String.format(FORMAT, type, layer, identifier, transform,
-                colorTransform, ratio, depth, name, events);
+        return String.format(FORMAT, type, layer, bitmapCached, identifier, 
+                transform, colorTransform,ratio, depth, name, className, 
+                filters, blend, events);
     }
 
     /** {@inheritDoc} */
@@ -725,6 +732,7 @@ public final class Place3 implements MovieTag {
         length += className == null ? 0 : coder.strlen(className);
 
         if (hasFilters) {
+            length += 1;
             for (final Filter filter : filters) {
                 length += filter.prepareToEncode(coder, context);
             }
@@ -814,6 +822,7 @@ public final class Place3 implements MovieTag {
         }
         
         if (hasFilters) {
+            coder.writeByte(filters.size());
             for (Filter filter : filters) {
                 filter.encode(coder, context);
             }

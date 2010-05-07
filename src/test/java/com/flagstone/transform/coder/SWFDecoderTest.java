@@ -133,11 +133,20 @@ public final class SWFDecoderTest {
     }
 
     @Test
-    public void readHalf() {
+    public void readNegativeHalf() {
         data = new byte[] { 0x00, (byte) 0xC0 };
         fixture.setData(data);
 
-        assertEquals(-2.0, fixture.readHalf());
+        assertEquals(-2.0, fixture.readHalf(), 0.0);
+        assertEquals(16, fixture.getPointer());
+    }
+
+    @Test
+    public void readHalfFraction() {
+        data = new byte[] { 0x55, (byte) 0x35 };
+        fixture.setData(data);
+
+        assertEquals(0.333251953125, fixture.readHalf(), 0.0);
         assertEquals(16, fixture.getPointer());
     }
 
@@ -146,7 +155,7 @@ public final class SWFDecoderTest {
         data = new byte[] { 0x00, 0x00, 0x00, (byte) 0xC0 };
         fixture.setData(data);
 
-        assertEquals(-2.0, fixture.readFloat());
+        assertEquals(-2.0, fixture.readFloat(), 0.0);
         assertEquals(32, fixture.getPointer());
     }
 
@@ -156,7 +165,7 @@ public final class SWFDecoderTest {
                 0x00 };
         fixture.setData(data);
 
-        assertEquals(1.0, fixture.readDouble());
+        assertEquals(1.0, fixture.readDouble(), 0.0);
         assertEquals(64, fixture.getPointer());
     }
 

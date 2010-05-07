@@ -203,6 +203,84 @@ public final class ActionTypes {
     public static final int STRING_GREATER = 104;
     /** The type used to identify Extends actions when they are encoded. */
     public static final int EXTENDS = 105;
+    //TODO What action is this ?
+    public static final int CODE_1 = 1;
+    //TODO What action is this ?
+    public static final int CODE_2 = 2;
+    //TODO What action is this ?
+    public static final int CODE_3 = 3;
+    //TODO What action is this ?
+    public static final int CODE_22 = 22;
+    //TODO What action is this ?
+    public static final int CODE_27 = 27;
+    //TODO What action is this ?
+    public static final int CODE_30 = 30;
+    //TODO What action is this ?
+    public static final int CODE_45 = 45;
+    //TODO What action is this ?
+    public static final int CODE_46 = 46;
+    //TODO What action is this ?
+    public static final int CODE_47 = 47;
+    //TODO What action is this ?
+    public static final int CODE_56 = 56;
+    //TODO What action is this ?
+    public static final int CODE_57 = 57;
+    //TODO What action is this ?
+    public static final int CODE_86 = 86;
+    //TODO What action is this ?
+    public static final int CODE_87 = 87;
+    //TODO What action is this ?
+    public static final int CODE_88 = 88;
+    //TODO What action is this ?
+    public static final int CODE_89 = 89;
+    //TODO What action is this ?
+    public static final int CODE_91 = 91;
+    //TODO What action is this ?
+    public static final int CODE_92 = 92;
+    //TODO What action is this ?
+    public static final int CODE_93 = 93;
+    //TODO What action is this ?
+    public static final int CODE_95 = 95;
+    //TODO What action is this ?
+    public static final int CODE_106 = 106;
+    //TODO What action is this ?
+    public static final int CODE_107 = 107;
+    //TODO What action is this ?
+    public static final int CODE_108 = 108;
+    //TODO What action is this ?
+    public static final int CODE_109 = 109;
+    //TODO What action is this ?
+    public static final int CODE_110 = 110;
+    //TODO What action is this ?
+    public static final int CODE_111 = 111;
+    //TODO What action is this ?
+    public static final int CODE_112 = 112;
+    //TODO What action is this ?
+    public static final int CODE_113 = 113;
+    //TODO What action is this ?
+    public static final int CODE_114 = 114;
+    //TODO What action is this ?
+    public static final int CODE_115 = 115;
+    //TODO What action is this ?
+    public static final int CODE_116 = 116;
+    //TODO What action is this ?
+    public static final int CODE_117 = 117;
+    //TODO What action is this ?
+    public static final int CODE_118 = 118;
+    //TODO What action is this ?
+    public static final int CODE_119 = 119;
+    //TODO What action is this ?
+    public static final int CODE_120 = 120;
+    //TODO What action is this ?
+    public static final int CODE_121 = 121;
+    //TODO What action is this ?
+    public static final int CODE_122 = 122;
+    //TODO What action is this ?
+    public static final int CODE_125 = 125;
+    //TODO What action is this ?
+    public static final int CODE_126 = 126;
+    //TODO What action is this ?
+    public static final int CODE_127 = 127;
     /** The type used to identify GotoFrame actions when they are encoded. */
     public static final int GOTO_FRAME = 129;
     /** The type used to identify GetUrl actions when they are encoded. */

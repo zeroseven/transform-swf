@@ -150,11 +150,22 @@ public final class SWFEncoderTest {
     }
 
     @Test
-    public void writeHalf() {
+    public void writeNegativeHalf() {
         data = new byte[] { 0x00, (byte) 0xC0 };
 
         fixture.data = new byte[data.length];
-        fixture.writeHalf(-2);
+        fixture.writeHalf(-2.0f);
+
+        assertArrayEquals(data, fixture.data);
+        assertEquals(data.length << 3, fixture.getPointer());
+    }
+
+    @Test
+    public void writeHalfFraction() {
+        data = new byte[] { 0x55, (byte) 0x35 };
+
+        fixture.data = new byte[data.length];
+        fixture.writeHalf(0.333251953125f);
 
         assertArrayEquals(data, fixture.data);
         assertEquals(data.length << 3, fixture.getPointer());

@@ -122,8 +122,8 @@ public final class GradientBevelFilter implements Filter {
     }
 
     private static final String FORMAT = "GradientBevelFilter: { "
-            + "gradients=%s; blurX=%f; blurY=%f; passes=%d "
-            + "angle=%d; disance=%d, strength=%d; mode=%s; passes=%d}";
+            + "gradients=%s; blurX=%f; blurY=%f; "
+            + "angle=%f; disance=%f, strength=%f; mode=%s; passes=%d}";
 
     private final List<Gradient> gradients;
     private final int blurX;
@@ -251,8 +251,9 @@ public final class GradientBevelFilter implements Filter {
 
     @Override
     public String toString() {
-        return String.format(FORMAT, gradients, angle, distance, strength,
-                getBlurX(), getBlurY(), passes);
+        return String.format(FORMAT, gradients.toString(), 
+                getBlurX(), getBlurY(),
+                getAngle(), getDistance(), getStrength(), mode, passes);
     }
 
     @Override
@@ -286,7 +287,7 @@ public final class GradientBevelFilter implements Filter {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
-        return 28;
+        return 21 + 5 * gradients.size();
     }
 
     /** {@inheritDoc} */

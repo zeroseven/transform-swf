@@ -99,7 +99,7 @@ public class Decoder extends Coder {
      * @return true if the bit field was set, false otherwise.
      */
     public final boolean readBool() {
-        return readBits(1, false) != 1;
+        return readBits(1, false) == 1;
     }
 
     /**

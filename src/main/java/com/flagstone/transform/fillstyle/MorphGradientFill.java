@@ -82,7 +82,7 @@ public final class MorphGradientFill implements FillStyle {
         type = coder.readByte();
         startTransform = new CoordTransform(coder);
         endTransform = new CoordTransform(coder);
-        count = coder.readByte();
+        count = coder.readByte() & 0x0F;
 
         gradients = new ArrayList<MorphGradient>(count);
 

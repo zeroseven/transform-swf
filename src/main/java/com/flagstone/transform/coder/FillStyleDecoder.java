@@ -34,6 +34,7 @@ package com.flagstone.transform.coder;
 
 import com.flagstone.transform.fillstyle.BitmapFill;
 import com.flagstone.transform.fillstyle.FillStyle;
+import com.flagstone.transform.fillstyle.FocalGradientFill;
 import com.flagstone.transform.fillstyle.GradientFill;
 import com.flagstone.transform.fillstyle.SolidFill;
 
@@ -59,11 +60,14 @@ public final class FillStyleDecoder implements SWFFactory<FillStyle> {
         case 0:
             style = new SolidFill(coder, context);
             break;
-        case 16:
+        case 0x10:
             style = new GradientFill(coder, context);
             break;
-        case 18:
+        case 0x12:
             style = new GradientFill(coder, context);
+            break;
+        case 0x13:
+            style = new FocalGradientFill(coder, context);
             break;
         case 0x40:
             style = new BitmapFill(coder);

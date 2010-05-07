@@ -131,12 +131,37 @@ public final class SWFDecoder extends Decoder {
      */
     public float readHalf() {
         final int bits = readWord(2, false);
-
-        final int sign = (bits & 0x00008000) << 16;
-        final int exp = (bits & 0x00007C00) << 16;
-        final int val = (bits & 0x000003FF) << 13;
-
-        return Float.intBitsToFloat(sign | exp | val);
+        int sign = (bits >> 15) & 0x00000001;
+        int exp = (bits >> 10) & 0x0000001f;
+        int mantissa = bits & 0x000003ff;
+        float value;
+        
+        if (exp == 0) {
+            if (mantissa == 0) { // Plus or minus zero
+                value = Float.intBitsToFloat(sign << 31);
+            } else { // Denormalized number -- renormalize it
+                while ((mantissa & 0x00000400) == 0) {
+                    mantissa <<= 1;
+                    exp -=  1;
+                }
+                exp += 1;
+                exp = exp + (127 - 15);
+                mantissa &= ~0x00000400;
+                mantissa = mantissa << 13;   
+                value = Float.intBitsToFloat((sign << 31) | (exp << 23) | mantissa);
+            }
+        } else if (exp == 31) {
+            if (mantissa == 0) { // Inf
+                value = Float.intBitsToFloat((sign << 31) | 0x7f800000);
+            } else { // NaN
+                value = Float.intBitsToFloat((sign << 31) | 0x7f800000 | (mantissa << 13));
+            }
+        } else {
+            exp = exp + (127 - 15);
+            mantissa = mantissa << 13;
+            value = Float.intBitsToFloat((sign << 31) | (exp << 23) | mantissa);
+        }
+        return value;
     }
 
     /**

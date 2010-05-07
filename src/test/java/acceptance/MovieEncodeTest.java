@@ -118,14 +118,24 @@ public final class MovieEncodeTest {
             StringWriter sourceWriter = new StringWriter();
             StringWriter destWriter = new StringWriter();
             
+            MovieTag sourceTag;
+            MovieTag destTag;
+            
             for (int i=0; i < sourceMovie.getObjects().size(); i++) {
-                sourceWriter = new StringWriter();
-                destWriter = new StringWriter();
-                writer.write(sourceMovie.getObjects().get(i), sourceWriter);
-                writer.write(destMovie.getObjects().get(i), destWriter);
+                sourceTag = sourceMovie.getObjects().get(i);
+                destTag = destMovie.getObjects().get(i);
+                
+                if (!sourceTag.toString().equals(destTag.toString())) {
+                    sourceWriter = new StringWriter();
+                    destWriter = new StringWriter();
+                    
+                    writer.write(sourceTag, sourceWriter);
+                    writer.write(destTag, destWriter);
 
-                assertEquals(sourceWriter.toString(), destWriter.toString());
+                    assertEquals(sourceWriter.toString(), destWriter.toString());
+                }
            }
+
         } catch (Exception e) {
             e.printStackTrace();
             fail(sourceFile.getPath());

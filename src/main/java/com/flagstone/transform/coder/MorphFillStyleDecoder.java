@@ -33,7 +33,9 @@ package com.flagstone.transform.coder;
 
 
 import com.flagstone.transform.fillstyle.FillStyle;
+import com.flagstone.transform.fillstyle.FocalGradientFill;
 import com.flagstone.transform.fillstyle.MorphBitmapFill;
+import com.flagstone.transform.fillstyle.MorphFocalGradientFill;
 import com.flagstone.transform.fillstyle.MorphGradientFill;
 import com.flagstone.transform.fillstyle.MorphSolidFill;
 
@@ -59,11 +61,14 @@ public final class MorphFillStyleDecoder implements SWFFactory<FillStyle> {
         case 0:
             style = new MorphSolidFill(coder, context);
             break;
-        case 16:
+        case 0x10:
             style = new MorphGradientFill(coder, context);
             break;
-        case 18:
+        case 0x12:
             style = new MorphGradientFill(coder, context);
+            break;
+        case 0x13:
+            style = new MorphFocalGradientFill(coder, context);
             break;
         case 0x40:
             style = new MorphBitmapFill(coder);
@@ -78,8 +83,9 @@ public final class MorphFillStyleDecoder implements SWFFactory<FillStyle> {
             style = new MorphBitmapFill(coder);
             break;
         default:
+            int type = coder.scanByte();
             throw new CoderException(getClass().getName(), coder.getPointer(),
-                    0, 0, "Unsupported FillStyle");
+                    0, 0, "Unsupported MorphFillStyle");
         }
         return style;
     }

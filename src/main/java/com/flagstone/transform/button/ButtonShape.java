@@ -120,8 +120,8 @@ public final class ButtonShape implements SWFEncodeable {
      */
     public ButtonShape(final SWFDecoder coder, final Context context)
             throws CoderException {
-        coder.readBits(2, false);
         
+        coder.readBits(2, false); // reserved
         hasBlend = coder.readBits(1, false) != 0;
         hasFilters = coder.readBits(1, false) != 0;
 
@@ -394,7 +394,9 @@ public final class ButtonShape implements SWFEncodeable {
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
-        coder.writeBits(0, 4);
+        coder.writeBits(0, 2);
+        coder.writeBool(hasBlend);
+        coder.writeBool(hasFilters);
         coder.writeBits(state, 4);
         coder.writeWord(identifier, 2);
         coder.writeWord(layer, 2);

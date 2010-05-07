@@ -139,8 +139,8 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
         width = object.width;
         color = object.color;
 
-        if (fillStyle != null) {
-            object.fillStyle = fillStyle.copy();
+        if (object.fillStyle != null) {
+            fillStyle = object.fillStyle.copy();
         }
 
         startCap = object.startCap;

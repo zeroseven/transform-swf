@@ -99,8 +99,8 @@ public final class GlowFilter implements Filter {
     }
 
     private static final String FORMAT = "GlowFilter: { "
-            + "color=%s; blurX=%f; blurY=%f; passes=%d "
-            + "angle=%d; disance=%d, strength=%d; mode=%s; passes=%d}";
+            + "color=%s; blurX=%f; blurY=%f; "
+            + "strength=%f; mode=%s; passes=%d}";
 
     private final Color color;
     private final int blurX;
@@ -190,8 +190,8 @@ public final class GlowFilter implements Filter {
 
     @Override
     public String toString() {
-        return String.format(FORMAT, color, getBlurX(), getBlurY(), strength,
-                passes);
+        return String.format(FORMAT, color.toString(), 
+                getBlurX(), getBlurY(), getStrength(), mode, passes);
     }
 
     @Override
@@ -222,7 +222,7 @@ public final class GlowFilter implements Filter {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
-        return 28;
+        return 16;
     }
 
     /** {@inheritDoc} */

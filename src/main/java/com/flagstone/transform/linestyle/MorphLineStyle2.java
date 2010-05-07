@@ -138,8 +138,8 @@ public final class MorphLineStyle2 implements SWFEncodeable,
         startColor = object.startColor;
         endColor = object.endColor;
 
-        if (fillStyle != null) {
-            object.fillStyle = fillStyle.copy();
+        if (object.fillStyle != null) {
+            fillStyle = object.fillStyle.copy();
         }
 
         startCap = object.startCap;

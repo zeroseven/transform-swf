@@ -124,7 +124,7 @@ public final class GradientGlowFilter implements Filter {
 
     private static final String FORMAT = "GradientGlowFilter: { "
             + "gradients=%s; blurX=%f; blurY=%f; "
-            + "angle=%d; disance=%d, strength=%d; mode=%s; passes=%d}";
+            + "angle=%f; disance=%f, strength=%f; mode=%s; passes=%d}";
 
     private final List<Gradient> gradients;
     private final int blurX;
@@ -252,8 +252,9 @@ public final class GradientGlowFilter implements Filter {
 
     @Override
     public String toString() {
-        return String.format(FORMAT, gradients, angle, distance, strength,
-                getBlurX(), getBlurY(), passes);
+        return String.format(FORMAT, gradients.toString(), 
+                getBlurX(), getBlurY(), 
+                getAngle(), getDistance(), getStrength(), mode, passes);
     }
 
     @Override
@@ -287,13 +288,13 @@ public final class GradientGlowFilter implements Filter {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
-        return 28;
+        return 21 + 5 * gradients.size();
     }
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
-        coder.writeByte(FilterTypes.GRADIENT_BEVEL);
+        coder.writeByte(FilterTypes.GRADIENT_GLOW);
         coder.writeByte(gradients.size());
 
         for (final Gradient gradient : gradients) {

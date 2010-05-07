@@ -581,10 +581,10 @@ public final class DefineMorphShape2 implements DefineTag {
         final int start = coder.getPointer();
 
         if (length >= 63) {
-            coder.writeWord((MovieTypes.DEFINE_MORPH_SHAPE << 6) | 0x3F, 2);
+            coder.writeWord((MovieTypes.DEFINE_MORPH_SHAPE_2 << 6) | 0x3F, 2);
             coder.writeWord(length, 4);
         } else {
-            coder.writeWord((MovieTypes.DEFINE_MORPH_SHAPE << 6) | length, 2);
+            coder.writeWord((MovieTypes.DEFINE_MORPH_SHAPE_2 << 6) | length, 2);
         }
         final int end = coder.getPointer() + (length << 3);
 

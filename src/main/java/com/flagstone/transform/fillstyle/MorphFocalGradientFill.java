@@ -44,17 +44,20 @@ import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.CoordTransform;
 
 /** TODO(class). */
-public final class FocalGradientFill implements FillStyle {
+public final class MorphFocalGradientFill implements FillStyle {
 
-    private static final String FORMAT = "FocalGradientFill: { spread=%s;"
-            + " interpolation=%s; focalPoint=%f; transform=%s; gradients=%s }";
+    private static final String FORMAT = "MorphFocalGradientFill: { spread=%s;"
+            + " interpolation=%s; startFocalPoint=%f; endFocalPoint=%f; "
+            + " startTransform=%s; endTransform=%s; gradients=%s }";
 
     private final transient int type;
     private int spread;
     private int interpolation;
-    private int focalPoint;
-    private CoordTransform transform;
-    private List<Gradient> gradients;
+    private int startFocalPoint;
+    private int endFocalPoint;
+    private CoordTransform startTransform;
+    private CoordTransform endTransform;
+    private List<MorphGradient> gradients;
 
     private transient int count;
 
@@ -73,34 +76,39 @@ public final class FocalGradientFill implements FillStyle {
      * @throws CoderException
      *             if an error occurs while decoding the data.
      */
-    public FocalGradientFill(final SWFDecoder coder, final Context context)
+    public MorphFocalGradientFill(final SWFDecoder coder, final Context context)
             throws CoderException {
         type = coder.readByte();
-        transform = new CoordTransform(coder);
+        startTransform = new CoordTransform(coder);
+        endTransform = new CoordTransform(coder);
         count = coder.readByte();
         spread = count & 0x00C0;
         interpolation = count & 0x0030;
         count = count & 0x000F;
-        gradients = new ArrayList<Gradient>(count);
+        gradients = new ArrayList<MorphGradient>(count);
 
         for (int i = 0; i < count; i++) {
-            gradients.add(new Gradient(coder, context));
+            gradients.add(new MorphGradient(coder, context));
         }
         
-        focalPoint = coder.readWord(2, true);
+        startFocalPoint = coder.readWord(2, true);
+        endFocalPoint = coder.readWord(2, true);
     }
 
     /** TODO(method). */
-    public FocalGradientFill(final Spread spread,
+    public MorphFocalGradientFill(final Spread spread,
             final Interpolation interpolation,
-            final CoordTransform aTransform,
-            final List<Gradient> anArray, final float point) {
+            final CoordTransform start, final CoordTransform end,
+            final List<MorphGradient> anArray, 
+            final float startPoint, final float endPoint) {
         type = 0x13;
         setSpread(spread);
         setInterpolation(interpolation);
-        setTransform(aTransform);
+        setStartTransform(start);
+        setEndTransform(end);
         setGradients(anArray);
-        setFocalPoint(point);
+        setStartFocalPoint(startPoint);
+        setEndFocalPoint(endPoint);
     }
 
     /**
@@ -111,13 +119,15 @@ public final class FocalGradientFill implements FillStyle {
      *            a FocalGradientFill fill style from which the values will be
      *            copied.
      */
-    public FocalGradientFill(final FocalGradientFill object) {
+    public MorphFocalGradientFill(final MorphFocalGradientFill object) {
         type = object.type;
         spread = object.spread;
         interpolation = object.interpolation;
-        focalPoint = object.focalPoint;
-        transform = object.transform;
-        gradients = new ArrayList<Gradient>(object.gradients);
+        startTransform = object.startTransform;
+        endTransform = object.endTransform;
+        startFocalPoint = object.startFocalPoint;
+        endFocalPoint = object.endFocalPoint;
+        gradients = new ArrayList<MorphGradient>(object.gradients);
     }
 
     /** TODO(method). */
@@ -187,13 +197,23 @@ public final class FocalGradientFill implements FillStyle {
     }
 
     /** TODO(method). */
-    public float getFocalPoint() {
-        return focalPoint / 256.0f;
+    public float getStartFocalPoint() {
+        return startFocalPoint / 256.0f;
     }
 
     /** TODO(method). */
-    public void setFocalPoint(final float point) {
-        this.focalPoint = (int) (point * 256);
+    public void setStartFocalPoint(final float point) {
+        this.startFocalPoint = (int) (point * 256);
+    }
+
+    /** TODO(method). */
+    public float getEndFocalPoint() {
+        return endFocalPoint / 256.0f;
+    }
+
+    /** TODO(method). */
+    public void setEndFocalPoint(final float point) {
+        this.endFocalPoint = (int) (point * 256);
     }
 
     /**
@@ -204,7 +224,7 @@ public final class FocalGradientFill implements FillStyle {
      * @param aGradient
      *            an Gradient object. Must not be null.
      */
-    public FocalGradientFill add(final Gradient aGradient) {
+    public MorphFocalGradientFill add(final MorphGradient aGradient) {
         if (aGradient == null) {
             throw new NullPointerException();
         }
@@ -219,7 +239,7 @@ public final class FocalGradientFill implements FillStyle {
      * Returns the array of Gradient objects defining the points for the
      * gradient fill.
      */
-    public List<Gradient> getGradients() {
+    public List<MorphGradient> getGradients() {
         return gradients;
     }
 
@@ -231,7 +251,7 @@ public final class FocalGradientFill implements FillStyle {
      * @param anArray
      *            an array of Gradient objects. Must not be null.
      */
-    public void setGradients(final List<Gradient> anArray) {
+    public void setGradients(final List<MorphGradient> anArray) {
         if (anArray == null) {
             throw new NullPointerException();
         }
@@ -241,47 +261,73 @@ public final class FocalGradientFill implements FillStyle {
         gradients = anArray;
     }
 
+
     /**
      * Returns the coordinate transform mapping the gradient square onto
-     * physical coordinates.
+     * physical coordinates at the start of the morphing process.
      */
-    public CoordTransform getTransform() {
-        return transform;
+    public CoordTransform getStartTransform() {
+        return startTransform;
+    }
+
+    /**
+     * Returns the coordinate transform mapping the gradient square onto
+     * physical coordinates at the end of the morphing process.
+     */
+    public CoordTransform getEndTransform() {
+        return endTransform;
     }
 
     /**
      * Sets the coordinate transform mapping the gradient square onto physical
-     * coordinates.
+     * coordinates at the start of the morphing process.
      *
      * @param aTransform
-     *            the coordinate transform. Must not be null.
+     *            the starting coordinate transform. Must not be null.
      */
-    public void setTransform(final CoordTransform aTransform) {
+    public void setStartTransform(final CoordTransform aTransform) {
         if (aTransform == null) {
             throw new NullPointerException();
         }
-        transform = aTransform;
+        startTransform = aTransform;
+    }
+
+    /**
+     * Sets the coordinate transform mapping the gradient square onto physical
+     * coordinates at the end of the morphing process.
+     *
+     * @param aTransform
+     *            the ending coordinate transform. Must not be null.
+     */
+    public void setEndTransform(final CoordTransform aTransform) {
+        if (aTransform == null) {
+            throw new NullPointerException();
+        }
+        endTransform = aTransform;
     }
 
     /** {@inheritDoc} */
-    public FocalGradientFill copy() {
-        return new FocalGradientFill(this);
+    public MorphFocalGradientFill copy() {
+        return new MorphFocalGradientFill(this);
     }
 
     /** {@inheritDoc} */
     @Override
     public String toString() {
         return String.format(FORMAT, getSpread(), getInterpolation(),
-                getFocalPoint(), transform.toString(), gradients.toString());
+                getStartFocalPoint(), getEndFocalPoint(), 
+                startTransform.toString(), endTransform.toString(),
+                gradients.toString());
     }
 
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         // TODO(optimise) Calculate size of gradient array directly.
-        int length = 4 + transform.prepareToEncode(coder, context);
+        int length = 6 + startTransform.prepareToEncode(coder, context)
+            + endTransform.prepareToEncode(coder, context);
         count = gradients.size();
 
-        for (final Gradient gradient : gradients) {
+        for (final MorphGradient gradient : gradients) {
             length += gradient.prepareToEncode(coder, context);
         }
 
@@ -292,13 +338,15 @@ public final class FocalGradientFill implements FillStyle {
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         coder.writeByte(type);
-        transform.encode(coder, context);
+        startTransform.encode(coder, context);
+        endTransform.encode(coder, context);
         coder.writeWord(count | spread | interpolation, 1);
 
-        for (final Gradient gradient : gradients) {
+        for (final MorphGradient gradient : gradients) {
             gradient.encode(coder, context);
         }
         
-        coder.writeWord(focalPoint, 2);
+        coder.writeWord(startFocalPoint, 2);
+        coder.writeWord(endFocalPoint, 2);
     }
 }

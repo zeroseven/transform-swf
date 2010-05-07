@@ -254,18 +254,15 @@ public final class Place2 implements MovieTag {
         final boolean hasTransform = coder.readBits(1, false) != 0;
 
         switch (coder.readBits(2, false)) {
-        case 1:
-            type = PlaceType.MODIFY;
-            break;
         case 2:
             type = PlaceType.NEW;
             break;
         case 3:
             type = PlaceType.REPLACE;
             break;
-        default:
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    0, "Unsupported format");
+        default: // 0 and 1
+            type = PlaceType.MODIFY;
+            break;
         }
 
         layer = coder.readWord(2, false);
@@ -310,8 +307,9 @@ public final class Place2 implements MovieTag {
         vars.remove(Context.TRANSPARENT);
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            coder.setPointer(end);
+//            throw new CoderException(getClass().getName(), start >> 3, length,
+//                    (coder.getPointer() - end) >> 3);
         }
     }
 

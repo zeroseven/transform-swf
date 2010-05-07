@@ -123,6 +123,7 @@ public final class DefineMovieClip implements DefineTag {
         coder.adjustPointer(16);
 
         if (coder.getPointer() != end) {
+            coder.setPointer(end);
             throw new CoderException(getClass().getName(), start >> 3, length,
                     (coder.getPointer() - end) >> 3);
         }

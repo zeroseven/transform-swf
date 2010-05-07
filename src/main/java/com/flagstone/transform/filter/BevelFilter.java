@@ -121,7 +121,7 @@ public final class BevelFilter implements Filter {
 
     private static final String FORMAT = "BevelFilter: {"
             + " shadow=%s; highlight=%s; blurX=%f; blurY=%f"
-            + " angle=%d; disance=%d, strength=%d; mode=%s; passes=%d}";
+            + " angle=%f; disance=%f, strength=%f; mode=%s; passes=%d}";
 
     private final Color shadow;
     private final Color highlight;
@@ -239,8 +239,9 @@ public final class BevelFilter implements Filter {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        return String.format(FORMAT, shadow, highlight, angle, distance,
-                strength, getBlurX(), getBlurY(), passes);
+        return String.format(FORMAT, shadow.toString(), highlight.toString(), 
+                getAngle(), getDistance(), getStrength(), 
+                getBlurX(), getBlurY(), mode, passes);
     }
 
     /** {@inheritDoc} */

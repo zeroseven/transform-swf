@@ -920,7 +920,7 @@ public final class DefineTextField implements DefineTag {
         builder.append("; fontIdentifier = ").append(fontIdentifier)
                 .append(";");
         builder.append("; fontHeight = ").append(fontHeight);
-        builder.append("; color = ").append(color.toString());
+        builder.append("; color = ").append(color);
         builder.append("; maxLength = ").append(maxLength);
         builder.append("; alignment = ").append(alignment);
         builder.append("; leftMargin = ").append(leftMargin);
@@ -943,7 +943,7 @@ public final class DefineTextField implements DefineTag {
         length += 2;
         length += (fontIdentifier == 0) ? 0 : 4;
         length += fontClass == null ? 0 : coder.strlen(fontClass) + 2;
-        length += 4;
+        length += color == null ? 0 : 4;
         length += (maxLength > 0) ? 2 : 0;
         length += (containsLayout()) ? 9 : 0;
         length += coder.strlen(variableName);
@@ -977,7 +977,7 @@ public final class DefineTextField implements DefineTag {
         coder.writeBits(multiline ? 1 : 0, 1);
         coder.writeBits(password ? 1 : 0, 1);
         coder.writeBits(readOnly ? 1 : 0, 1);
-        coder.writeBits(1, 1);
+        coder.writeBits(color == null ? 0 : 1, 1);
         coder.writeBits(maxLength > 0 ? 1 : 0, 1);
         coder.writeBits(fontIdentifier == 0 ? 0 : 1, 1);
         coder.writeBits(fontClass == null ? 0 : 1, 1);
@@ -997,7 +997,9 @@ public final class DefineTextField implements DefineTag {
             coder.writeWord(fontHeight, 2);
         }
 
-        color.encode(coder, context);
+        if (color != null)  {
+            color.encode(coder, context);
+        }
 
         if (maxLength > 0) {
             coder.writeWord(maxLength, 2);
