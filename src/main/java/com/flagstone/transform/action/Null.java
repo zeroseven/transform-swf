@@ -36,8 +36,10 @@ package com.flagstone.transform.action;
  */
 public final class Null {
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "Null";
-    
+
+    /** Shared instance used for all Null values. */
     private static final Null INSTANCE = new Null();
 
     /**
@@ -49,6 +51,7 @@ public final class Null {
         return INSTANCE;
     }
 
+    /** Constructor used to created the singleton value. */
     private Null() {
         // Singleton
     }

@@ -145,10 +145,7 @@ public final class DoAction implements MovieTag {
      *            a DoAction object to copy.
      */
     public DoAction(final DoAction object) {
-        actions = new ArrayList<Action>(object.actions.size());
-        for (final Action action : object.actions) {
-            actions.add(action.copy());
-        }
+        actions = new ArrayList<Action>(object.actions);
     }
 
     /**

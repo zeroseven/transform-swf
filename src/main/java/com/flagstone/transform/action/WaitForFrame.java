@@ -59,12 +59,22 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  * @see If
  */
 public final class WaitForFrame implements Action {
-    
+
+    /** Format string used in toString() method. */
     private static final String FORMAT = "WaitForFrame: { frameNumber=%d;"
             + " actionCount=%d }";
 
-    private int frameNumber;
-    private int actionCount;
+    /** The maximum offset to the next frame. */
+    private static final int MAX_FRAME_OFFSET = 65535;
+    /** The highest number of actions that can be executed. */
+    private static final int MAX_COUNT = 255;
+    /** Encoded length, excluding header. */
+    private static final int BODY_LENGTH = 3;
+
+    /** The frame number to test. */
+    private final transient int frameNumber;
+    /** The number of actions to execute if the frame has been loaded. */
+    private final transient int actionCount;
 
     /**
      * Creates and initialises a WaitForFrame action using values encoded
@@ -87,16 +97,22 @@ public final class WaitForFrame implements Action {
      * Creates a WaitForFrame object with the specified frame number and the
      * number of actions that will be executed when the frame is loaded.
      *
-     * @param aFrameNumber
+     * @param frame
      *            the number of the frame to wait for. Must be in the range
      *            1..65535.
-     * @param anActionCount
+     * @param count
      *            the number (not bytes) of actions to execute. Must be in the
      *            range 0..255.
      */
-    public WaitForFrame(final int aFrameNumber, final int anActionCount) {
-        setFrameNumber(aFrameNumber);
-        setActionCount(anActionCount);
+    public WaitForFrame(final int frame, final int count) {
+        if ((frame < 1) || (frame > MAX_FRAME_OFFSET)) {
+            throw new IllegalArgumentRangeException(1, MAX_FRAME_OFFSET, frame);
+        }
+        frameNumber = frame;
+        if ((count < 0) || (count > MAX_COUNT)) {
+            throw new IllegalArgumentRangeException(1, MAX_COUNT, count);
+        }
+        actionCount = count;
     }
 
     /**
@@ -113,53 +129,27 @@ public final class WaitForFrame implements Action {
     }
 
     /**
-     * Returns the frame number.
+     * Get the frame number to test to see if has been loaded.
+     *
+     * @return the frame number to test.
      */
     public int getFrameNumber() {
         return frameNumber;
     }
 
     /**
-     * Returns the number of actions that will be executed when the specified
+     * Get the number of actions that will be executed when the specified
      * frame is loaded.
+     *
+     * @return the number of actions to execute.
      */
     public int getActionCount() {
         return actionCount;
     }
 
-    /**
-     * Sets the frame number.
-     *
-     * @param aNumber
-     *            the number of the frame to wait for. Must be in the range
-     *            1..65535.
-     */
-    public void setFrameNumber(final int aNumber) {
-        if ((aNumber < 1) || (aNumber > 65535)) {
-            throw new IllegalArgumentRangeException(1, 65535, aNumber);
-        }
-        frameNumber = aNumber;
-    }
-
-    /**
-     * Sets the number of actions to execute if the frame has been loaded.
-     * Unlike other actions it is the number of actions that are specified not
-     * the number of bytes in memory they occupy.
-     *
-     * @param aNumber
-     *            the number of actions to execute. Must be in the range 0..255.
-     */
-    public void setActionCount(final int aNumber) {
-        if ((aNumber < 0) || (aNumber > 255)) {
-            throw new IllegalArgumentException(
-                    "Number of actions must be in the range 0..255.");
-        }
-        actionCount = aNumber;
-    }
-
     /** {@inheritDoc} */
     public WaitForFrame copy() {
-        return new WaitForFrame(this);
+        return this;
     }
 
     /** {@inheritDoc} */
@@ -170,14 +160,14 @@ public final class WaitForFrame implements Action {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
-        return 6;
+        return SWFEncoder.ACTION_HEADER + BODY_LENGTH;
     }
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         coder.writeByte(ActionTypes.WAIT_FOR_FRAME);
-        coder.writeWord(3, 2);
+        coder.writeWord(BODY_LENGTH, 2);
         coder.writeWord(frameNumber, 2);
         coder.writeByte(actionCount);
     }

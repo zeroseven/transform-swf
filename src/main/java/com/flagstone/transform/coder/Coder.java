@@ -54,7 +54,11 @@ public class Coder {
     public static final int BYTE_ALIGN = 7;
     /** TODO(doc). */
     public static final int BITS_TO_BYTES = 3;
+    
+    public static final int BITS_PER_BYTE = 8;
+    public static final int BITS_PER_SHORT = 16;
 
+    public static final int BYTES_PER_WORD = 4;
     /** TODO(doc). */
     public static final int MASK_BYTE_0 = 255;
 

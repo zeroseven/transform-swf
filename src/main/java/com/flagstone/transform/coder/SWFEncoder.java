@@ -38,6 +38,10 @@ package com.flagstone.transform.coder;
 //TODO(class)
 public final class SWFEncoder extends Encoder {
 
+    /** 
+     * Length, in bytes, of type and length fields of an encoded action. 
+     */
+    public static final int ACTION_HEADER = 3;
     /**
      * The maximum length in bytes of an encoded object before the length must 
      * be encoded using a 32-bit integer.

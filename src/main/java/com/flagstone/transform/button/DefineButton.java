@@ -161,10 +161,7 @@ public final class DefineButton implements DefineTag {
         for (final ButtonShape shape : object.shapes) {
             shapes.add(shape.copy());
         }
-        actions = new ArrayList<Action>(object.actions.size());
-        for (final Action action : object.actions) {
-            actions.add(action.copy());
-        }
+        actions = new ArrayList<Action>(object.actions);
     }
 
     /** TODO(method). */

@@ -35,6 +35,7 @@ import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 /**
  * The WaitForFrame2 action instructs the player to wait until the specified
@@ -59,10 +60,15 @@ import com.flagstone.transform.coder.SWFEncoder;
  * @see If
  */
 public final class WaitForFrame2 implements Action {
-    
+
+    /** Format string used in toString() method. */
     private static final String FORMAT = "WaitForFrame2: { actionCount=%d }";
 
-    private int actionCount;
+    /** The highest number of actions that can be executed. */
+    private static final int MAX_COUNT = 255;
+
+    /** The number of actions to be executed. */
+    private final transient int actionCount;
 
     /**
      * Creates and initialises a WaitForFrame2 action using values encoded
@@ -84,11 +90,14 @@ public final class WaitForFrame2 implements Action {
      * Creates a WaitForFrame2 object with the number of actions to execute if
      * the frame has been loaded.
      *
-     * @param aNumber
+     * @param count
      *            the number of actions to execute. Must be in the range 0..255.
      */
-    public WaitForFrame2(final int aNumber) {
-        setActionCount(aNumber);
+    public WaitForFrame2(final int count) {
+        if ((count < 0) || (count > MAX_COUNT)) {
+            throw new IllegalArgumentRangeException(0, MAX_COUNT, count);
+        }
+        actionCount = count;
     }
 
     /**
@@ -105,30 +114,16 @@ public final class WaitForFrame2 implements Action {
 
     /**
      * Returns the number of actions to execute.
+     *
+     * @return the number of actions, (not encoded bytes).
      */
     public int getActionCount() {
         return actionCount;
     }
 
-    /**
-     * Sets the number of actions to execute if the frame has been loaded.
-     * Unlike other actions it is the number of actions that are specified not
-     * the number of bytes in memory they occupy.
-     *
-     * @param aNumber
-     *            the number of actions to execute. Must be in the range 0..255.
-     */
-    public void setActionCount(final int aNumber) {
-        if ((aNumber < 0) || (aNumber > 255)) {
-            throw new IllegalArgumentException(
-                    "Number of actions must be in the range 0..255.");
-        }
-        actionCount = aNumber;
-    }
-
     /** {@inheritDoc} */
     public WaitForFrame2 copy() {
-        return new WaitForFrame2(this);
+        return this;
     }
 
     /** {@inheritDoc} */
@@ -139,7 +134,7 @@ public final class WaitForFrame2 implements Action {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
-        return 4;
+        return SWFEncoder.ACTION_HEADER + 1;
     }
 
     /** {@inheritDoc} */

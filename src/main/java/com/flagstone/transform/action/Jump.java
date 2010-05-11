@@ -65,10 +65,16 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  * @see If
  */
 public final class Jump implements Action {
-    
-    private static final String FORMAT = "Jump: { offset=%d }";
 
-    private int offset;
+    /** Format string used in toString() method. */
+    private static final String FORMAT = "Jump: { offset=%d }";
+    /** Minimum coder pointer offset. */
+    private static final int MIN_CODE_JUMP = -32768;
+    /** Maximum coder pointer offset. */
+    private static final int MAX_CODE_JUMP = 32767;
+
+    /** The offset to the next action. */
+    private final transient int offset;
 
     /**
      * Creates and initialises a Jump action using values encoded
@@ -94,7 +100,12 @@ public final class Jump implements Action {
      *            offset must be in the range -32768..32767.
      */
     public Jump(final int anOffset) {
-        setOffset(anOffset);
+        if ((anOffset < MIN_CODE_JUMP)
+                || (anOffset > MAX_CODE_JUMP)) {
+            throw new IllegalArgumentRangeException(MIN_CODE_JUMP,
+                    MAX_CODE_JUMP, anOffset);
+        }
+        offset = anOffset;
     }
 
     /**
@@ -110,29 +121,17 @@ public final class Jump implements Action {
     }
 
     /**
-     * Returns the offset that will be added to the instruction pointer.
+     * Get the offset that will be added to the instruction pointer.
+     *
+     * @return the offset to the next action.
      */
     public int getOffset() {
         return offset;
     }
 
-    /**
-     * Sets the offset to add to the instruction pointer.
-     *
-     * @param anOffset
-     *            the number of bytes to add to the instruction pointer. The
-     *            offset must be in the range -32768..32767.
-     */
-    public void setOffset(final int anOffset) {
-        if ((anOffset < -32768) || (anOffset > 32767)) {
-            throw new IllegalArgumentRangeException(-32768, 32768, anOffset);
-        }
-        offset = anOffset;
-    }
-
     /** {@inheritDoc} */
     public Jump copy() {
-        return new Jump(this);
+        return this;
     }
 
     /** {@inheritDoc} */
@@ -143,7 +142,7 @@ public final class Jump implements Action {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
-        return 5;
+        return SWFEncoder.ACTION_HEADER + 2;
     }
 
     /** {@inheritDoc} */

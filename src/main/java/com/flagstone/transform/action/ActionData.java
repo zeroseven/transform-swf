@@ -45,15 +45,17 @@ import com.flagstone.transform.exception.ArraySizeException;
  * <p>
  * You can use this class to reduce the time it takes to decode and encode a
  * movie. By selectively decoding the actions in a movie,  actions that are
- * not of interest can be left encoded. Similarly selectively encoding actions 
- * that will not change will improve performance when generating files using a 
+ * not of interest can be left encoded. Similarly selectively encoding actions
+ * that will not change will improve performance when generating files using a
  * movie as a template.
  * </p>
  */
 public final class ActionData implements Action {
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "ActionData: { data=byte[%d] }";
 
+    /** Encoded actions. */
     private final transient byte[] data;
 
     /**
@@ -63,9 +65,6 @@ public final class ActionData implements Action {
      *            the array of encoded actions. Must not be null or empty.
      */
     public ActionData(final byte[] bytes) {
-        if (bytes == null) {
-            throw new NullPointerException();
-        }
         if (bytes.length == 0) {
             throw new ArraySizeException(0, Integer.MAX_VALUE, bytes.length);
         }
@@ -83,7 +82,9 @@ public final class ActionData implements Action {
     }
 
     /**
-     * Returns a copy of the encoded actions.
+     * Creates and returns a copy of the array of encoded actions.
+     *
+     * @return a copy of the encoded actions.
      */
     public byte[] getData() {
         return Arrays.copyOf(data, data.length);
@@ -91,7 +92,7 @@ public final class ActionData implements Action {
 
     /** {@inheritDoc} */
     public ActionData copy() {
-        return new ActionData(this);
+        return this;
     }
 
     /** {@inheritDoc} */

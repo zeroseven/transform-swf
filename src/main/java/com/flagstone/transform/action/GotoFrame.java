@@ -53,10 +53,14 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  * @see GotoFrame2
  */
 public final class GotoFrame implements Action {
-    
-    private static final String FORMAT = "GotoFrame: { frameNumber=%d }";
 
-    private int frameNumber;
+    /** Format string used in toString() method. */
+    private static final String FORMAT = "GotoFrame: { frameNumber=%d }";
+    /** The maximum offset to the next frame. */
+    private static final int MAX_FRAME_OFFSET = 65535;
+
+    /** The frame number to be displayed. */
+    private final transient int frameNumber;
 
     /**
      * Creates and initialises an GotoFrame action using values encoded
@@ -77,11 +81,15 @@ public final class GotoFrame implements Action {
     /**
      * Creates a GotoFrame with the specified frame number.
      *
-     * @param aNumber
+     * @param number
      *            the number of the frame. Must be in the range 1..65535.
      */
-    public GotoFrame(final int aNumber) {
-        setFrameNumber(aNumber);
+    public GotoFrame(final int number) {
+        if ((number < 1) || (number > MAX_FRAME_OFFSET)) {
+            throw new IllegalArgumentRangeException(1,
+                    MAX_FRAME_OFFSET, number);
+        }
+        frameNumber = number;
     }
 
     /**
@@ -98,27 +106,16 @@ public final class GotoFrame implements Action {
 
     /**
      * Returns the number of the frame to move the main time-line to.
+     *
+     * @return the offset to the next frame to be displayed.
      */
     public int getFrameNumber() {
         return frameNumber;
     }
 
-    /**
-     * Sets the number of the frame to move the main time-line to.
-     *
-     * @param aNumber
-     *            the frame number. Must be in the range 1..65535.
-     */
-    public void setFrameNumber(final int aNumber) {
-        if ((aNumber < 1) || (aNumber > 65535)) {
-            throw new IllegalArgumentRangeException(1, 65535, aNumber);
-        }
-        frameNumber = aNumber;
-    }
-
     /** {@inheritDoc} */
     public GotoFrame copy() {
-        return new GotoFrame(this);
+        return this;
     }
 
     /** {@inheritDoc} */
@@ -129,7 +126,7 @@ public final class GotoFrame implements Action {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
-        return 5;
+        return SWFEncoder.ACTION_HEADER + 2;
     }
 
     /** {@inheritDoc} */

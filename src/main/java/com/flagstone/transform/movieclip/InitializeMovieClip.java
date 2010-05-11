@@ -145,12 +145,7 @@ public final class InitializeMovieClip implements MovieTag {
      */
     public InitializeMovieClip(final InitializeMovieClip object) {
         identifier = object.identifier;
-
-        actions = new ArrayList<Action>(object.actions.size());
-
-        for (final Action action : object.actions) {
-            actions.add(action.copy());
-        }
+        actions = new ArrayList<Action>(object.actions);
     }
 
     /**

@@ -36,7 +36,6 @@ import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.exception.StringSizeException;
 
 /**
  * GetUrl is used to display a web page or load a movie clip into the Flash
@@ -95,12 +94,16 @@ import com.flagstone.transform.exception.StringSizeException;
  * @see GetUrl2
  */
 public final class GetUrl implements Action {
-    
+
+    /** Format string used in toString() method. */
     private static final String FORMAT = "GetUrl: { url=%s; target=%s }";
 
-    private String url;
-    private String target;
+    /** The URL to be loaded. */
+    private final transient String url;
+    /** Where the document returned by the URL will be displayed. */
+    private final transient String target;
 
+    /** Length of the action when encoded. */
     private transient int length;
 
     /**
@@ -131,8 +134,15 @@ public final class GetUrl implements Action {
      *            not be null.
      */
     public GetUrl(final String urlString, final String targetString) {
-        setUrl(urlString);
-        setTarget(targetString);
+        if (urlString == null || urlString.length() == 0) {
+            throw new IllegalArgumentException();
+        }
+        url = urlString;
+
+        if (targetString == null) {
+            throw new IllegalArgumentException();
+        }
+        target = targetString;
     }
 
     /**
@@ -143,8 +153,7 @@ public final class GetUrl implements Action {
      *            a fully qualified URL. Must not be null or an empty string.
      */
     public GetUrl(final String urlString) {
-        setUrl(urlString);
-        target = "";
+        this(urlString, "");
     }
 
     /**
@@ -161,55 +170,27 @@ public final class GetUrl implements Action {
     }
 
     /**
-     * Returns the URL.
+     * Get the URL from where the web page or movie clip will be loaded.
+     *
+     * @return the URL.
      */
     public String getUrl() {
         return url;
     }
 
     /**
-     * Returns the name of the target frame.
+     * Get the name of the target frame where the web page or movie clip will
+     * be displayed.
+     *
+     * @return the name of the target frame.
      */
     public String getTarget() {
         return target;
     }
 
-    /**
-     * Sets the URL of the file to be retrieved.
-     *
-     * @param aString
-     *            a fully qualified URL. Must not be null or an empty string.
-     */
-    public void setUrl(final String aString) {
-        if (aString == null) {
-            throw new NullPointerException();
-        }
-        if (aString.length() == 0) {
-            throw new StringSizeException(0, Short.MAX_VALUE, 0);
-        }
-        url = aString;
-    }
-
-    /**
-     * Sets the name of the Target where the URL will be displayed. The target
-     * may be a frame or window in a web browser when displaying a web page or a
-     * level in the current movie when loading a movie clip.
-     *
-     * @param aString
-     *            the name of the location (in the Flash Player or web browser)
-     *            where contents of file retrieved via the url will be
-     *            displayed. Must not be null.
-     */
-    public void setTarget(final String aString) {
-        if (aString == null) {
-            throw new NullPointerException();
-        }
-        target = aString;
-    }
-
     /** {@inheritDoc} */
     public GetUrl copy() {
-        return new GetUrl(this);
+        return this;
     }
 
     /** {@inheritDoc} */
@@ -223,7 +204,7 @@ public final class GetUrl implements Action {
         length = coder.strlen(url);
         length += coder.strlen(target);
 
-        return 3 + length;
+        return SWFEncoder.ACTION_HEADER + length;
     }
 
     /** {@inheritDoc} */

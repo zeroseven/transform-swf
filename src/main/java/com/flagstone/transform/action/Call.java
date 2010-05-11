@@ -42,16 +42,20 @@ import com.flagstone.transform.coder.SWFEncoder;
  * it is executed.
  */
 public final class Call implements Action {
-    
+
+    /** Shared instance. */
     private static final Call INSTANCE = new Call();
 
     /**
      * Returns a shared instance of the Call action.
+     *
+     * @return a singleton used to represent all Call actions.
      */
     public static Call getInstance() {
         return INSTANCE;
     }
 
+    /** Constructor used to created the singleton action. */
     private Call() {
     }
 
@@ -62,14 +66,13 @@ public final class Call implements Action {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
-        return 3;
+        return SWFEncoder.ACTION_HEADER;
     }
 
     /** {@inheritDoc} */
    public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         coder.writeByte(ActionTypes.CALL);
-        coder.writeByte(0);
-        coder.writeByte(0);
+        coder.writeWord(0, 2);
     }
 }

@@ -36,12 +36,15 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.Test;
 
+import com.flagstone.transform.action.NewFunction2.Optimization;
 import com.flagstone.transform.coder.ActionDecoder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
@@ -52,6 +55,8 @@ import com.flagstone.transform.coder.SWFEncoder;
 public final class NewFunction2Test {
 
     private static String name = "function";
+    private static int registers = 0;
+    private static Set<Optimization>optimizations = EnumSet.noneOf(Optimization.class);
     private static Map<String, Integer> args = new LinkedHashMap<String, Integer>();
     private static List<Action> actions = new ArrayList<Action>();
 
@@ -71,27 +76,9 @@ public final class NewFunction2Test {
             0x00, 0x00, 0x00, 0x00, 0x01, 0x61, 0x00, 0x02, 0x62, 0x00, 0x02,
             0x00, ActionTypes.ADD, ActionTypes.END };
 
-    @Test(expected = IllegalArgumentException.class)
-    public void checkAddNullArgument() {
-        fixture = new NewFunction2(name, args, actions);
-        fixture.add((String) null);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void checkAddEmptyArgument() {
-        fixture = new NewFunction2(name, args, actions);
-        fixture.add("");
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void checkAddNullAction() {
-        fixture = new NewFunction2(name, args, actions);
-        fixture.add((Action) null);
-    }
-
     @Test
     public void checkCopy() {
-        fixture = new NewFunction2(name, args, actions);
+        fixture = new NewFunction2(name, registers, optimizations, args, actions);
         final NewFunction2 copy = fixture.copy();
 
         assertNotSame(fixture.getActions(), copy.getActions());
@@ -103,7 +90,7 @@ public final class NewFunction2Test {
         final SWFEncoder encoder = new SWFEncoder(encoded.length);
         final Context context = new Context();
 
-        fixture = new NewFunction2(name, args, actions);
+        fixture = new NewFunction2(name, registers, optimizations, args, actions);
         assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
         fixture.encode(encoder, context);
 

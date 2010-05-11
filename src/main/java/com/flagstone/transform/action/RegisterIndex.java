@@ -43,8 +43,12 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  */
 public final class RegisterIndex {
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "Register: { number=%d }";
+    /** Number of last internal register in the Flash Player. */
+    private static final int LAST_REGISTER = 255;
 
+    /** The number of the Flash Player's internal register. */
     private final transient int number;
 
     /**
@@ -55,15 +59,18 @@ public final class RegisterIndex {
      *            the register number. Must be in the range 0..255.
      */
     public RegisterIndex(final int index) {
-        if ((index < 0) || (index > 255)) {
-            throw new IllegalArgumentRangeException(0, 255, index);
+        if ((index < 0) || (index > LAST_REGISTER)) {
+            throw new IllegalArgumentRangeException(0,
+                    LAST_REGISTER, index);
         }
         number = index;
     }
 
     /**
-     * Returns the number of the register that will be accessed and the value
+     * Get the number of the register that will be accessed and the value
      * pushed onto the Flash Player's stack.
+     *
+     * @return the register number.
      */
     public int getNumber() {
         return number;
@@ -73,28 +80,5 @@ public final class RegisterIndex {
     @Override
     public String toString() {
         return String.format(FORMAT, number);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean equals(final Object other) {
-        boolean result;
-
-        if (other == null) {
-            result = false;
-        } else if (other == this) {
-            result = true;
-        } else if (other instanceof RegisterIndex) {
-            result = number == ((RegisterIndex) other).number;
-        } else {
-            result = false;
-        }
-        return result;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public int hashCode() {
-        return 31 * number;
     }
 }

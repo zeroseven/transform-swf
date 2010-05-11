@@ -65,12 +65,6 @@ public final class WithTest {
     private final transient byte[] encoded = new byte[] { (byte) type, 0x02,
             0x00, 0x02, 0x00, ActionTypes.ADD, ActionTypes.END };
 
-    @Test(expected = IllegalArgumentException.class)
-    public void checkAddNullNull() {
-        fixture = new With(list);
-        fixture.add(null);
-    }
-
     @Test
     public void checkCopy() {
         fixture = new With(list);

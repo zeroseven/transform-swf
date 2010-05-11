@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -57,11 +58,14 @@ import com.flagstone.transform.coder.SWFFactory;
  * </p>
  */
 public final class With implements Action {
-    
+
+    /** Format string used in toString() method. */
     private static final String FORMAT = "With: { actions=%s }";
 
-    private List<Action> actions;
+    /** The list of actions that will be executed. */
+    private final transient List<Action> actions;
 
+    /** The length of the object when encoded. */
     private transient int length;
 
     /**
@@ -87,7 +91,7 @@ public final class With implements Action {
         coder.readByte();
         coder.readWord(2, false);
         length = coder.readWord(2, false);
-        final int end = coder.getPointer() + (length << 3);
+        final int end = coder.getPointer() + (length << Coder.BITS_TO_BYTES);
 
         actions = new ArrayList<Action>();
 
@@ -103,7 +107,10 @@ public final class With implements Action {
      *            the array of action objects. Must not be null.
      */
     public With(final List<Action> anArray) {
-        setActions(anArray);
+        if (anArray == null) {
+            throw new IllegalArgumentException();
+        }
+        actions = anArray;
     }
 
     /**
@@ -115,48 +122,21 @@ public final class With implements Action {
      *            copied.
      */
     public With(final With object) {
-        actions = new ArrayList<Action>(object.actions.size());
-
-        for (final Action action : object.actions) {
-            actions.add(action.copy());
-        }
-    }
-
-    /**
-     * Adds the action object to the array of actions.
-     *
-     * @param anAction
-     *            an object belonging to a class derived from Action. Must not
-     *            be null.
-     */
-    public With add(final Action anAction) {
-        if (anAction == null) {
-            throw new NullPointerException();
-        }
-        actions.add(anAction);
-        return this;
+        actions = new ArrayList<Action>(object.actions);
     }
 
     /**
      * Get the array of actions that are executed for the movie clip target.
+     *
+     * @return a copy of the array of actions that will be executed.
      */
     public List<Action> getActions() {
-        return actions;
-    }
-
-    /**
-     * Set the array of actions that will be executed for the movie clip target.
-     *
-     * @param anArray
-     *            the array of action objects. Must not be null.
-     */
-    public void setActions(final List<Action> anArray) {
-        actions = anArray;
+        return new ArrayList<Action>(actions);
     }
 
     /** {@inheritDoc} */
     public With copy() {
-        return new With(this);
+        return this;
     }
 
     /** {@inheritDoc} */
@@ -173,7 +153,7 @@ public final class With implements Action {
             length += action.prepareToEncode(coder, context);
         }
 
-        return 3 + length;
+        return SWFEncoder.ACTION_HEADER + length;
     }
 
     /** {@inheritDoc} */

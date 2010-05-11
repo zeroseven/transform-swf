@@ -69,24 +69,6 @@ public final class NewFunctionTest {
             0x00, 0x61, 0x00, 0x62, 0x00, 0x02, 0x00, ActionTypes.ADD,
             ActionTypes.END };
 
-    @Test(expected = IllegalArgumentException.class)
-    public void checkAddNullArgument() {
-        fixture = new NewFunction(args, actions);
-        fixture.add((String) null);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void checkAddEmptyArgument() {
-        fixture = new NewFunction(args, actions);
-        fixture.add("");
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void checkAddNullAction() {
-        fixture = new NewFunction(args, actions);
-        fixture.add((Action) null);
-    }
-
     @Test
     public void checkCopy() {
         fixture = new NewFunction(name, args, actions);

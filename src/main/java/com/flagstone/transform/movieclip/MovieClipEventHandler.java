@@ -223,12 +223,7 @@ public final class MovieClipEventHandler implements SWFEncodeable {
     public MovieClipEventHandler(final MovieClipEventHandler object) {
         event = object.event;
         keyCode = object.keyCode;
-
-        actions = new ArrayList<Action>(object.actions.size());
-
-        for (final Action action : object.actions) {
-            actions.add(action.copy());
-        }
+        actions = new ArrayList<Action>(object.actions);
     }
 
     /**

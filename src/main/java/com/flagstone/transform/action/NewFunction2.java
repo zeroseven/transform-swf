@@ -38,13 +38,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.coder.SWFFactory;
-import com.flagstone.transform.exception.StringSizeException;
 import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 /**
@@ -77,7 +76,7 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  * </tr>
  * <tr>
  * <td valign="top">CreateThis</td>
- * <td>Create the and initialise the <em>this</em> variable with the object.</td>
+ * <td>Create and initialise the <em>this</em> variable with the object.</td>
  * </tr>
  * <tr>
  * <td valign="top">LoadThis</td>
@@ -133,39 +132,214 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  */
 //TODO(class)
 public final class NewFunction2 implements Action {
+
+    /** Number of last internal register in the Flash Player. */
+    private static final int LAST_REGISTER = 255;
+
+    /**
+     * The Builder class is used to generate a new NewFunction2 object
+     * using a small set of convenience methods.
+     */
+    public static final class Builder {
+        /** The name, if any, for the function. */
+        private transient String name = "";
+        /** The number of registers to allocate for use by the function. */
+        private transient int registerCount;
+        /** The set of optimizations to speed the function. */
+        private transient int optimizations;
+        /** The set of arguments, with optional register assignments. */
+        private final transient Map<String, Integer> arguments =
+            new LinkedHashMap<String, Integer>();
+        /** The list of actions that make up the function body. */
+        private final transient List<Action>actions = new ArrayList<Action>();
+
+        /**
+         * Set the name of the function. Must not be null or an empty string.
+         * The name defaults to an empty string so this method is not needed to
+         * define methods.
+         *
+         * @param aString the name of the function.
+         * @return this object.
+         */
+        public Builder setName(final String aString) {
+            if (aString == null || aString.length() == 0) {
+                throw new IllegalArgumentException();
+            }
+            name = aString;
+            return this;
+        }
+
+        /**
+         * Set the number of registers to allocate for the function.
+         * @param count the number of registers. Must be in the range 0..255.
+         * @return this object.
+         */
+        public Builder allocate(final int count) {
+            if ((count < 0) || (count > LAST_REGISTER)) {
+                throw new IllegalArgumentRangeException(0,
+                        LAST_REGISTER, count);
+            }
+            registerCount = count;
+            return this;
+        }
+
+        /**
+         * Add an Optimization to be used by the function.
+         * @param opt an Optimization used to speed up the function execution.
+         * @return this object.
+         */
+        public Builder optimize(final Optimization opt) {
+            optimizations |= opt.getValue();
+            return this;
+        }
+
+        /**
+         * Add the name of an argument to the list of arguments that will be
+         * passed to the function. Must not be null or an empty string.
+         * @param argName the name of the argument.
+         * @return this object.
+         */
+        public Builder addArgument(final String argName) {
+            return addArgument(argName, 0);
+        }
+
+        /**
+         * Add the name of an argument and the number of the register where it
+         * will be stored to the list of arguments that will be
+         * passed to the function. The name must not be null or an empty string
+         * and the register number must be in the range 0..255. If the number
+         * is set to zero then the argument will not be stored in a register.
+         *
+         * @param argName the name of the argument.
+         * @param index the register number.
+         * @return this object.
+         */
+        public Builder addArgument(final String argName, final int index) {
+            if (argName == null || argName.length() == 0) {
+                throw new IllegalArgumentException();
+            }
+            if ((index < 0) || (index > LAST_REGISTER)) {
+                throw new IllegalArgumentRangeException(0,
+                        LAST_REGISTER, index);
+            }
+            arguments.put(argName, index);
+            return this;
+        }
+
+        /**
+         * Add an action to the list of actions that will make up the body of
+         * the function. Must not be null.
+         * @param action the action to add to the function body.
+         * @return this object.
+         */
+        public Builder addAction(final Action action) {
+            if (action == null) {
+                throw new IllegalArgumentException();
+            }
+            actions.add(action);
+            return this;
+        }
+
+        /**
+         * Generate an NewFunction2 using the parameters defined in the
+         * Builder.
+         * @return an initialized NewFunction2 object.
+         */
+        public NewFunction2 build() {
+            return new NewFunction2(this);
+        }
+    }
+
+    /** Format string used in toString() method. */
     private static final String FORMAT = "NewFunction2: { name=%s; "
             + "registerCount=%d; optimizations=%s; arguments=%s; actions=%s }";
 
     /** TODO(method). */
     public enum Optimization {
-        /** Create and initialised the predefined variable, <em>super</em>. */
-        CREATE_SUPER,
-        /** Create and initialised the predefined variable, <em>arguments</em>. */
-        CREATE_ARGUMENTS,
+        /** Create the predefined variable, <em>super</em>. */
+        CREATE_SUPER(4),
+        /** Create the predefined variable, <em>arguments</em>. */
+        CREATE_ARGUMENTS(16),
         /** Create and initialised the predefined variable, <em>this</em>. */
-        CREATE_THIS,
+        CREATE_THIS(64),
         /** Load the predefine variable, <em>this</em>, into register 1. */
-        LOAD_THIS,
+        LOAD_THIS(128),
         /** Load the predefine variable, <em>arguments</em>, into register 2. */
-        LOAD_ARGUMENTS,
+        LOAD_ARGUMENTS(32),
         /** Load the predefine variable, <em>super</em>, into register 3. */
-        LOAD_SUPER,
+        LOAD_SUPER(8),
         /** Load the predefine variable, <em>_root</em>, into register 4. */
-        LOAD_ROOT,
+        LOAD_ROOT(2),
         /** Load the predefine variable, <em>_parent</em>, into register 5. */
-        LOAD_PARENT,
+        LOAD_PARENT(1),
         /** Load the predefine variable, <em>_global</em>, into register 6. */
-        LOAD_GLOBAL;
+        LOAD_GLOBAL(32768);
+
+        /** Table used to convert flags into Optimization values. */
+        private static final Map<Integer, Optimization> TABLE;
+
+        static {
+            TABLE = new LinkedHashMap<Integer, Optimization>();
+
+            for (final Optimization opt : values()) {
+                TABLE.put(opt.value, opt);
+            }
+        }
+
+        /** The encoded value for the Optimization. */
+        private final int value;
+
+        /**
+         * Creates and initializes an Optimization for an encoded value.
+         *
+         * @param val the encoded value for an Optimization.
+         */
+        private Optimization(final int val) {
+            value = val;
+        }
+
+        /**
+         * Get the value used to represent the Optimization when encoded.
+         * @return the value used to encode the Optimization.
+         */
+        public int getValue() {
+            return value;
+        }
     }
 
-    private String name;
-    private int registerCount;
-    private int optimizations;
-    private Map<String, Integer> arguments;
-    private List<Action> actions;
+    /** Initial number of bytes when encoding. */
+    private static final int INITIAL_LENGTH = 5;
 
+    /** The name of the function or an empty string for methods. */
+    private final transient String name;
+    /** The number of registers to allocate for variables. */
+    private final transient int registerCount;
+    /** The set of flags identifying optimizations to be applied. */
+    private final transient int optimizations;
+    /** The set of arguments with optional assignment to registers. */
+    private final transient Map<String, Integer> arguments;
+    /** The set of actions that make up the function body. */
+    private final transient List<Action> actions;
+
+    /** The length of the encoded object. */
     private transient int length;
+    /** The length of the encoded function body. */
     private transient int actionsLength;
+
+    /**
+     * Creates and initialises a NewFunction2 object using parameters defined
+     * in the Builder.
+     *
+     * @param builder a Builder object containing the parameters to generate
+     * the function definition.
+     */
+    public NewFunction2(final Builder builder) {
+        name = builder.name;
+        registerCount = builder.registerCount;
+        optimizations = builder.optimizations;
+        arguments = new LinkedHashMap<String, Integer>(builder.arguments);
+        actions = new ArrayList<Action>(builder.actions);
+     }
 
     /**
      * Creates and initialises a NewFunction2 definition using values encoded
@@ -194,12 +368,11 @@ public final class NewFunction2 implements Action {
         name = coder.readString();
         final int argumentCount = coder.readWord(2, false);
         registerCount = coder.readByte();
-        optimizations = coder.readBits(16, false);
+        optimizations = coder.readBits(Coder.BITS_PER_SHORT, false);
 
         int index;
 
         arguments = new LinkedHashMap<String, Integer>(argumentCount);
-        actions = new ArrayList<Action>();
 
         for (int i = 0; i < argumentCount; i++) {
             index = coder.readByte();
@@ -209,7 +382,8 @@ public final class NewFunction2 implements Action {
         actionsLength = coder.readWord(2, false);
         length += actionsLength;
 
-        final int end = coder.getPointer() + (actionsLength << 3);
+        final int end = coder.getPointer()
+            + (actionsLength << Coder.BITS_TO_BYTES);
         actions = new ArrayList<Action>();
 
         while (coder.getPointer() < end) {
@@ -218,26 +392,59 @@ public final class NewFunction2 implements Action {
     }
 
     /**
-     * Creates a NewFunction with the specified name, argument names and actions
-     * to be executed. The order of the Strings in the argument array indicate
-     * the order in which the values will be popped off the stack when the
-     * function is executed. The first argument is popped from the stack first.
+     * Creates a NewFunction2 with the specified name, argument names and
+     * actions to be executed. The order of the Strings in the argument array
+     * indicate the order in which the values will be popped off the stack when
+     * the function is executed. The first argument is popped from the stack
+     * first.
      *
-     * @param name
+     * @param aString
      *            the name of the function. Can be an empty string if the
      *            function is anonymous.
-     * @param arguments
-     *            an array of RegisterVariable objects listing the names of the
-     *            arguments and the registers they are assigned to.
-     * @param actions
+     * @param count
+     *            the number of registers to allocate for variables.
+     * @param opts
+     *            the set of optimizations that will be applied to boost
+     *            function performance.
+     * @param map
+     *            an array of arguments and any register numbers they will be
+     *            assigned to (zero for no assignment).
+     * @param list
      *            the array of actions that define the operation performed by
      *            the function.
      */
-    public NewFunction2(final String name,
-            final Map<String, Integer> arguments, final List<Action> actions) {
-        setName(name);
-        setArguments(arguments);
-        setActions(actions);
+    public NewFunction2(final String aString,
+            final int count,
+            final Set<Optimization>opts,
+            final Map<String, Integer> map,
+            final List<Action> list) {
+
+        if (aString == null || aString.length() == 0) {
+            throw new IllegalArgumentException();
+        }
+        name = aString;
+
+        if ((count < 0) || (count > LAST_REGISTER)) {
+            throw new IllegalArgumentRangeException(0,
+                    LAST_REGISTER, count);
+        }
+        registerCount = count;
+
+        int value = 0;
+        for (Optimization opt : opts) {
+            value |= opt.getValue();
+        }
+        optimizations = value;
+
+        if (map == null) {
+            throw new IllegalArgumentException();
+        }
+        arguments = map;
+
+        if (list == null) {
+            throw new IllegalArgumentException();
+        }
+        actions = list;
     }
 
     /**
@@ -252,206 +459,68 @@ public final class NewFunction2 implements Action {
         name = object.name;
         registerCount = object.registerCount;
         optimizations = object.optimizations;
-
         arguments = new LinkedHashMap<String, Integer>(object.arguments);
-        actions = new ArrayList<Action>(object.actions.size());
-
-        for (final Action action : object.actions) {
-            actions.add(action.copy());
-        }
+        actions = new ArrayList<Action>(object.actions);
     }
 
     /**
-     * Adds the name of an argument to the array of argument names.
+     * Get the name of the function. If the function will be used as an object
+     * method then the name is an empty string.
      *
-     * @param anArgument
-     *            the name of an argument passed to the NewFunction object. Must
-     *            not be null.
-     */
-    public NewFunction2 add(final String anArgument) {
-        if (anArgument == null) {
-            throw new NullPointerException();
-        }
-        if (anArgument.length() == 0) {
-            throw new StringSizeException(0, Short.MAX_VALUE, 0);
-        }
-        arguments.put(anArgument, 0);
-        return this;
-    }
-
-    /**
-     * Adds the action object to the array of actions.
-     *
-     * @param anAction
-     *            an object belonging to a class derived from Action. Must not
-     *            be null.
-     */
-    public NewFunction2 add(final Action anAction) {
-        if (anAction == null) {
-            throw new NullPointerException();
-        }
-        actions.add(anAction);
-        return this;
-    }
-
-    /**
-     * Returns the name of the function.
+     * @return the name of the function or an empty string.
      */
     public String getName() {
         return name;
     }
 
     /**
-     * Sets the name of the function. The name may be an empty string when
-     * defining methods.
+     * Get the number of registers to allocate for function variables.
      *
-     * @param aString
-     *            the name of the function or null for a method. Must not be
-     *            null.
-     */
-    public void setName(final String aString) {
-        if (aString == null) {
-            throw new NullPointerException();
-        }
-        name = aString;
-    }
-
-    /**
-     * Returns the number of registers to allocate for function variables.
+     * @return the number of registers to allocate.
      */
     public int getRegisterCount() {
         return registerCount;
     }
 
     /**
-     * Sets the number of registers to allocate for function variables. Up to
-     * 255 registers may be allocated for each function.
+     * Get the list of Optimizations that will be used.
      *
-     * @param count
-     *            the number of registers to allocate. Must be in the range
-     *            0..255.
+     * @return the set of optimizations to increase performance.
      */
-    public void setRegisterCount(final int count) {
-        if ((count < 1) || (count > 255)) {
-            throw new IllegalArgumentRangeException(1, 255, count);
-        }
-        registerCount = count;
-    }
-
-    /** TODO(method). */
     public Set<Optimization> getOptimizations() {
         final Set<Optimization> set = EnumSet.noneOf(Optimization.class);
-
-        if ((optimizations & 4) != 0) {
-            set.add(Optimization.CREATE_SUPER);
-        }
-        if ((optimizations & 16) != 0) {
-            set.add(Optimization.CREATE_ARGUMENTS);
-        }
-        if ((optimizations & 64) != 0) {
-            set.add(Optimization.CREATE_THIS);
-        }
-        if ((optimizations & 128) != 0) {
-            set.add(Optimization.LOAD_THIS);
-        }
-        if ((optimizations & 32) != 0) {
-            set.add(Optimization.LOAD_ARGUMENTS);
-        }
-        if ((optimizations & 8) != 0) {
-            set.add(Optimization.LOAD_SUPER);
-        }
-        if ((optimizations & 2) != 0) {
-            set.add(Optimization.LOAD_ROOT);
-        }
-        if ((optimizations & 1) != 0) {
-            set.add(Optimization.LOAD_PARENT);
-        }
-        if ((optimizations & 32768) != 0) {
-            set.add(Optimization.LOAD_GLOBAL);
+        for (final Optimization opt : EnumSet.allOf(Optimization.class)) {
+            if ((optimizations & opt.getValue()) != 0) {
+                set.add(opt);
+            }
         }
         return set;
     }
 
-    /** TODO(method). */
-    public void setOptimizations(final Set<Optimization> optimizations) {
-        for (final Optimization opt : optimizations) {
-            switch (opt) {
-            case CREATE_SUPER:
-                this.optimizations |= 4;
-                break;
-            case CREATE_ARGUMENTS:
-                this.optimizations |= 16;
-                break;
-            case CREATE_THIS:
-                this.optimizations |= 64;
-                break;
-            case LOAD_THIS:
-                this.optimizations |= 128;
-                break;
-            case LOAD_ARGUMENTS:
-                this.optimizations |= 32;
-                break;
-            case LOAD_SUPER:
-                this.optimizations |= 8;
-                break;
-            case LOAD_ROOT:
-                this.optimizations |= 2;
-                break;
-            case LOAD_PARENT:
-                this.optimizations |= 1;
-                break;
-            case LOAD_GLOBAL:
-                this.optimizations |= 32768;
-                break;
-            default:
-                throw new IllegalArgumentException();
-            }
-         }
-    }
-
     /**
-     * Returns the array of RegisterVariables that define the function arguments
+     * Get the array of RegisterVariables that define the function arguments
      * and whether they are assigned to internal registers or to local variables
      * in memory.
+     *
+     * @return a copy of the function arguments with optional register
+     * assignments.
      */
     public Map<String, Integer> getArguments() {
-        return arguments;
+        return new LinkedHashMap<String, Integer>(arguments);
     }
 
     /**
-     * TODO(method).
-     */
-    public void setArguments(final Map<String, Integer> map) {
-        if (map == null) {
-            throw new NullPointerException();
-        }
-        arguments = map;
-    }
-
-    /**
-     * Returns the actions executed by the function.
+     * Get the actions executed by the function.
+     *
+     * @return a copy of the array of actions that make up the function body.
      */
     public List<Action> getActions() {
-        return actions;
-    }
-
-    /**
-     * Sets the actions.
-     *
-     * @param anArray
-     *            the array of actions that define the operation performed by
-     *            the function. Must not be null.
-     */
-    public void setActions(final List<Action> anArray) {
-        if (anArray == null) {
-            throw new NullPointerException();
-        }
-        actions = anArray;
+        return new ArrayList<Action>(actions);
     }
 
     /** {@inheritDoc} */
     public NewFunction2 copy() {
-        return new NewFunction2(this);
+        return this;
     }
 
     /** {@inheritDoc} */
@@ -464,7 +533,7 @@ public final class NewFunction2 implements Action {
     // TODO(optimise)
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
-        length = 5 + coder.strlen(name);
+        length = INITIAL_LENGTH + coder.strlen(name);
 
         for (final String arg : arguments.keySet()) {
             length += arg.getBytes().length + 2;
@@ -472,7 +541,11 @@ public final class NewFunction2 implements Action {
 
         length += 2;
 
-        actionsLength = actions.isEmpty() ? 1 : 0;
+        if (actions.isEmpty()) {
+            actionsLength = 1;
+        } else {
+            actionsLength = 0;
+        }
 
         for (final Action action : actions) {
             actionsLength += action.prepareToEncode(coder, context);
@@ -480,10 +553,9 @@ public final class NewFunction2 implements Action {
 
         length += actionsLength;
 
-        return 3 + length;
+        return SWFEncoder.ACTION_HEADER + length;
     }
 
-    // TODO(optimise)
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
@@ -493,7 +565,7 @@ public final class NewFunction2 implements Action {
         coder.writeString(name);
         coder.writeWord(arguments.size(), 2);
         coder.writeByte(registerCount);
-        coder.writeBits(optimizations, 16);
+        coder.writeBits(optimizations, Coder.BITS_PER_SHORT);
 
         for (final String arg : arguments.keySet()) {
             coder.writeByte(arguments.get(arg));

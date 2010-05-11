@@ -35,12 +35,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.coder.SWFFactory;
-import com.flagstone.transform.exception.StringSizeException;
 
 /**
  * The NewFunction action is used to create a user-defined function.
@@ -64,16 +64,101 @@ import com.flagstone.transform.exception.StringSizeException;
  * @see NewFunction2
  */
 public final class NewFunction implements Action {
-    
+
+    /**
+     * The Builder class is used to generate a new NewFunction object
+     * using a small set of convenience methods.
+     */
+    public static final class Builder {
+        /** The name, if any, for the function. */
+        private transient String name = "";
+        /** The function arguments. */
+        private final transient List<String>arguments = new ArrayList<String>();
+        /** The list of actions that make up the function body. */
+        private final transient List<Action>actions = new ArrayList<Action>();
+
+        /**
+         * Set the name of the function. Must not be null or an empty string.
+         * The name defaults to an empty string so this method is not needed to
+         * define methods.
+         *
+         * @param aString the name of the function.
+         * @return this object.
+         */
+        public Builder setName(final String aString) {
+            if (aString == null || aString.length() == 0) {
+                throw new IllegalArgumentException();
+            }
+            name = aString;
+            return this;
+        }
+
+        /**
+         * Add the name of an argument to the list of arguments that will be
+         * passed to the function. Must not be null of an empty string.
+         * @param argName the name of the argument.
+         * @return this object.
+         */
+        public Builder setArgument(final String argName) {
+            if (argName == null || argName.length() == 0) {
+                throw new IllegalArgumentException();
+            }
+            arguments.add(argName);
+            return this;
+        }
+
+        /**
+         * Add an action to the list of actions that will make up the body of
+         * the function. Must not be null.
+         * @param action the action to add to the function body.
+         * @return this object.
+         */
+        public Builder addAction(final Action action) {
+            if (action == null) {
+                throw new IllegalArgumentException();
+            }
+            actions.add(action);
+            return this;
+        }
+
+        /**
+         * Generate an NewFunction using the parameters defined in the
+         * Builder.
+         * @return an initialized NewFunction object.
+         */
+        public NewFunction build() {
+            return new NewFunction(this);
+        }
+    }
+
+    /** Format string used in toString() method. */
     private static final String FORMAT = "NewFunction: { name=%s;"
             + " arguments=%s; actions=%s }";
 
-    private String name;
-    private List<String> arguments;
-    private List<Action> actions;
+    /** The name of the function or an empty string if a method. */
+    private final transient String name;
+    /** The names of the arguments. */
+    private final transient List<String> arguments;
+    /** The actions that make up the function body. */
+    private final transient List<Action> actions;
 
+    /** The length of the function when encoded. */
     private transient int length;
+    /** The length of the actions when encoded. */
     private transient int actionsLength;
+
+    /**
+     * Creates and initialises a NewFunction object using parameters defined
+     * in the Builder.
+     *
+     * @param builder a Builder object containing the parameters to generate
+     * the function definition.
+     */
+    public NewFunction(final Builder builder) {
+        name = builder.name;
+        arguments = new ArrayList<String>(builder.arguments);
+        actions = new ArrayList<Action>(builder.actions);
+    }
 
     /**
      * Creates and initialises a NewFunction definition using values encoded
@@ -92,9 +177,6 @@ public final class NewFunction implements Action {
      */
     public NewFunction(final SWFDecoder coder, final Context context)
             throws CoderException {
-        arguments = new ArrayList<String>();
-        actions = new ArrayList<Action>();
-
         coder.readByte();
         length = coder.readWord(2, false);
         name = coder.readString();
@@ -102,7 +184,6 @@ public final class NewFunction implements Action {
         final int argumentCount = coder.readWord(2, false);
 
         arguments = new ArrayList<String>(argumentCount);
-        actions = new ArrayList<Action>();
 
         if (argumentCount > 0) {
             for (int i = argumentCount; i > 0; i--) {
@@ -113,26 +194,14 @@ public final class NewFunction implements Action {
         actionsLength = coder.readWord(2, false);
         actions = new ArrayList<Action>();
 
-        final int end = coder.getPointer() + (actionsLength << 3);
+        final int end = coder.getPointer()
+                + (actionsLength << Coder.BITS_TO_BYTES);
         final SWFFactory<Action> decoder = context.getRegistry()
                 .getActionDecoder();
 
         while (coder.getPointer() < end) {
             actions.add(decoder.getObject(coder, context));
         }
-    }
-
-    /**
-     * Creates a NewFunction action with no arguments or actions.
-     *
-     * @param name
-     *            the name of the function. May be an empty string if the 
-     *            function will be used as a method.
-     */
-    public NewFunction(final String name) {
-        setName(name);
-        arguments = new ArrayList<String>();
-        actions = new ArrayList<Action>();
     }
 
     /**
@@ -151,9 +220,19 @@ public final class NewFunction implements Action {
      */
     public NewFunction(final String aString, final List<String> argumentArray,
             final List<Action> actionArray) {
-        setName(aString);
-        setArguments(argumentArray);
-        setActions(actionArray);
+        if (aString == null) {
+            throw new IllegalArgumentException();
+        }
+        name = aString;
+        if (argumentArray == null) {
+            throw new IllegalArgumentException();
+        }
+        arguments = argumentArray;
+
+        if (actionArray == null) {
+            throw new IllegalArgumentException();
+        }
+        actions = actionArray;
     }
 
     /**
@@ -169,9 +248,7 @@ public final class NewFunction implements Action {
      */
     public NewFunction(final List<String> argumentArray,
             final List<Action> actionArray) {
-        name = "";
-        setArguments(argumentArray);
-        setActions(actionArray);
+        this("", argumentArray, actionArray);
     }
 
     /**
@@ -186,112 +263,41 @@ public final class NewFunction implements Action {
         name = object.name;
 
         arguments = new ArrayList<String>(object.arguments);
-        actions = new ArrayList<Action>(object.actions.size());
-
-        for (final Action action : object.actions) {
-            actions.add(action.copy());
-        }
+        actions = new ArrayList<Action>(object.actions);
     }
 
     /**
-     * Adds the name of an argument to the array of argument names.
+     * Get the name of the function. If the function will be used as an object
+     * method then the name is an empty string.
      *
-     * @param anArgument
-     *            the name of an argument passed to the NewFunction object. Must
-     *            not be null or an empty string.
-     */
-    public NewFunction add(final String anArgument) {
-        if (anArgument == null) {
-            throw new NullPointerException();
-        }
-        if (anArgument.length() == 0) {
-            throw new StringSizeException(0, Short.MAX_VALUE, 0);
-        }
-        arguments.add(anArgument);
-        return this;
-    }
-
-    /**
-     * Adds the action object to the array of actions.
-     *
-     * @param anAction
-     *            an object belonging to a class derived from Action. Must not
-     *            be null.
-     */
-    public NewFunction add(final Action anAction) {
-        if (anAction == null) {
-            throw new NullPointerException();
-        }
-        actions.add(anAction);
-        return this;
-    }
-
-    /**
-     * Returns the name of the function.
+     * @return the name of the function or an empty string.
      */
     public String getName() {
         return name;
     }
 
     /**
-     * Sets the name of the function. The name may be an empty string when
-     * defining methods.
+     * Get the names of the function arguments.
      *
-     * @param aString
-     *            the name of the function. Must not be null.
-     */
-    public void setName(final String aString) {
-        if (aString == null) {
-            throw new NullPointerException();
-        }
-        name = aString;
-    }
-
-    /**
-     * Returns the names of the function arguments.
+     * @return an array of argument names in the order they appear in the
+     * function definition.
      */
     public List<String> getArguments() {
-        return arguments;
+        return new ArrayList<String>(arguments);
     }
 
     /**
-     * Sets the names of the function arguments.
+     * Get the actions that will be executed.
      *
-     * @param anArray
-     *            an array of Strings listing the names of the arguments. Must
-     *            not be null.
-     */
-    public void setArguments(final List<String> anArray) {
-        if (anArray == null) {
-            throw new NullPointerException();
-        }
-        arguments = anArray;
-    }
-
-    /**
-     * Returns the actions.
+     * @return the actions that define the function behaviour.
      */
     public List<Action> getActions() {
-        return actions;
-    }
-
-    /**
-     * Sets the actions.
-     *
-     * @param anArray
-     *            the array of actions that define the operation performed by
-     *            the function. Must not be null.
-     */
-    public void setActions(final List<Action> anArray) {
-        if (anArray == null) {
-            throw new NullPointerException();
-        }
-        actions = anArray;
+        return new ArrayList<Action>(actions);
     }
 
     /** {@inheritDoc} */
     public NewFunction copy() {
-        return new NewFunction(this);
+        return this;
     }
 
     /** {@inheritDoc} */
@@ -315,7 +321,7 @@ public final class NewFunction implements Action {
             actionsLength += action.prepareToEncode(coder, context);
         }
 
-        return 3 + length + actionsLength;
+        return SWFEncoder.ACTION_HEADER + length + actionsLength;
     }
 
     /** {@inheritDoc} */

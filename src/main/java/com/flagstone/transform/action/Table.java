@@ -57,12 +57,16 @@ import com.flagstone.transform.coder.SWFEncoder;
  * @see Push
  */
 public final class Table implements Action {
-    
+
+    /** Format string used in toString() method. */
     private static final String FORMAT = "Table: { values=%s }";
 
+    /** The list of strings stored in the table. */
     private List<String> values;
 
+    /** The length of the action when it is encoded. */
     private transient int length;
+    /** The number of entries in the table. */
     private transient int tableSize;
 
     /**
@@ -95,7 +99,7 @@ public final class Table implements Action {
     }
 
     /**
-     * Creates an empty Table. 
+     * Creates an empty Table.
      */
     public Table() {
         values = new ArrayList<String>();
@@ -130,17 +134,21 @@ public final class Table implements Action {
      * @param aString
      *            a String that will be added to the end of the table. Must not
      *            be null.
+     *
+     * @return this table.
      */
     public Table add(final String aString) {
         if (aString == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         values.add(aString);
         return this;
     }
 
     /**
-     * Returns the array of Strings stored in the variable table.
+     * Get the table of strings.
+     *
+     * @return the array of Strings stored in the table.
      */
     public List<String> getValues() {
         return values;
@@ -155,9 +163,8 @@ public final class Table implements Action {
      */
     public void setValues(final List<String> anArray) {
         if (anArray == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
-
         values = anArray;
     }
 
@@ -182,7 +189,7 @@ public final class Table implements Action {
 
         tableSize = values.size();
 
-        return 3 + length;
+        return SWFEncoder.ACTION_HEADER + length;
     }
 
     /** {@inheritDoc} */

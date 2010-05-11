@@ -45,11 +45,14 @@ import com.flagstone.transform.exception.StringSizeException;
  * @see FrameLabel
  */
 public final class GotoLabel implements Action {
-    
+
+    /** Format string used in toString() method. */
     private static final String FORMAT = "GotoLabel: { label=%s }";
 
-    private String label;
+    /** The frame label. */
+    private final transient String label;
 
+    /** The length of the action when it is encoded. */
     private transient int length;
 
     /**
@@ -76,7 +79,10 @@ public final class GotoLabel implements Action {
      *            be null or an empty string.
      */
     public GotoLabel(final String aString) {
-        setLabel(aString);
+        if (aString == null) {
+            throw new StringSizeException(0, Integer.MAX_VALUE, 0);
+        }
+        label = aString;
     }
 
     /**
@@ -92,29 +98,17 @@ public final class GotoLabel implements Action {
     }
 
     /**
-     * Returns the frame label.
+     * Get the frame label.
+     *
+     * @return the label assigned a particular frame in the movie.
      */
     public String getLabel() {
         return label;
     }
 
-    /**
-     * Sets the frame label.
-     *
-     * @param aString
-     *            the label assigned a particular frame in the movie. Must not
-     *            be null or an empty string.
-     */
-    public void setLabel(final String aString) {
-        if (aString == null) {
-            throw new StringSizeException(0, Integer.MAX_VALUE, 0);
-        }
-        label = aString;
-    }
-
     /** {@inheritDoc} */
     public GotoLabel copy() {
-        return new GotoLabel(this);
+        return this;
     }
 
     /** {@inheritDoc} */
@@ -127,7 +121,7 @@ public final class GotoLabel implements Action {
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         length = coder.strlen(label);
 
-        return 3 + length;
+        return SWFEncoder.ACTION_HEADER + length;
     }
 
     /** {@inheritDoc} */

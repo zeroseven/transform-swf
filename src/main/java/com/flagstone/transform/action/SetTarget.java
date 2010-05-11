@@ -36,7 +36,6 @@ import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.exception.StringSizeException;
 
 /**
  * SetTarget selects a movie clip to allow its time-line to be controlled. The
@@ -47,11 +46,14 @@ import com.flagstone.transform.exception.StringSizeException;
  *
  */
 public final class SetTarget implements Action {
-    
+
+    /** Format string used in toString() method. */
     private static final String FORMAT = "SetTarget: { target=%s }";
 
-    private String target;
+    /** The name of the movie clip. */
+    private final transient String target;
 
+    /** The length of the action when it is encoded. */
     private transient int length;
 
     /**
@@ -79,7 +81,10 @@ public final class SetTarget implements Action {
      *            string.
      */
     public SetTarget(final String aString) {
-        setTarget(aString);
+        if (aString == null || aString.length() == 0) {
+            throw new IllegalArgumentException();
+        }
+        target = aString;
     }
 
     /**
@@ -95,32 +100,17 @@ public final class SetTarget implements Action {
     }
 
     /**
-     * Returns the name of the target movie clip.
+     * Get the name of the target movie clip.
+     *
+     * @return the name of the movie clip.
      */
     public String getTarget() {
         return target;
     }
 
-    /**
-     * Sets the name of the target movie clip.
-     *
-     * @param aString
-     *            the name of a movie clip. Must not be null or zero length
-     *            string.
-     */
-    public void setTarget(final String aString) {
-        if (aString == null) {
-            throw new NullPointerException();
-        }
-        if (aString.length() == 0) {
-            throw new StringSizeException(0, Short.MAX_VALUE, 0);
-        }
-        target = aString;
-    }
-
     /** {@inheritDoc} */
     public SetTarget copy() {
-        return new SetTarget(this);
+        return this;
     }
 
     /** {@inheritDoc} */
@@ -133,7 +123,7 @@ public final class SetTarget implements Action {
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         length = coder.strlen(target);
 
-        return 3 + length;
+        return SWFEncoder.ACTION_HEADER + length;
     }
 
     /** {@inheritDoc} */

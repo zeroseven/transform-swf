@@ -36,8 +36,10 @@ package com.flagstone.transform.action;
  */
 public final class Void {
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "Void";
-    
+
+    /** Shared instance used for all Null values. */
     private static final Void INSTANCE = new Void();
 
     /**
@@ -49,6 +51,7 @@ public final class Void {
         return INSTANCE;
     }
 
+    /** Constructor used to created the singleton value. */
     private Void() {
         // Singleton
     }

@@ -73,14 +73,30 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  * @see GotoFrame
  */
 public final class GotoFrame2 implements Action {
-    
+
+    /** Format string used in toString() method. */
     private static final String FORMAT = "Gotoframe2: { playFrame=%s;"
             + " frameOffset=%d }";
 
-    private boolean play;
-    private int frameOffset;
+    /** The maximum offset to the next frame. */
+    private static final int MAX_FRAME_OFFSET = 65535;
+    /** Bit mask for field indication if the encoded action has an offset. */
+    private static final int OFFSET_MASK = 0x02;
+    /** Bit mask for field containing play attribute. */
+    private static final int PLAY_MASK = 0x01;
+    /** Encoded length with offset. */
+    private static final int LEN_WITH_OFFSET = 3;
+    /** Encoded length without offset. */
+    private static final int LEN_NO_OFFSET = 1;
 
+    /** Indicates whether the Flash Player should start playing the frame. */
+    private final transient boolean play;
+    /** The offset to the next frame. */
+    private final transient int frameOffset;
+
+    /** The length of the action when it is encoded. */
     private transient int length;
+    /** Flag used to indicate the action contains a frame offset. */
     private transient boolean hasOffset;
 
     /**
@@ -96,12 +112,15 @@ public final class GotoFrame2 implements Action {
     public GotoFrame2(final SWFDecoder coder) throws CoderException {
         coder.readByte();
         length = coder.readWord(2, false);
-        coder.readBits(6, false);
-        hasOffset = coder.readBits(1, false) != 0;
-        play = coder.readBits(1, false) != 0;
+
+        final int flags = coder.readByte();
+        hasOffset = (flags & OFFSET_MASK) != 0;
+        play = (flags & PLAY_MASK) != 0;
 
         if (hasOffset) {
-            frameOffset = coder.readWord(2, false);
+            frameOffset = coder.readWord(2, true);
+        } else {
+            frameOffset = 0;
         }
     }
 
@@ -114,8 +133,7 @@ public final class GotoFrame2 implements Action {
      *            movie.
      */
     public GotoFrame2(final boolean aBool) {
-        setPlay(aBool);
-        frameOffset = 0;
+        this(0, aBool);
     }
 
     /**
@@ -132,8 +150,12 @@ public final class GotoFrame2 implements Action {
      *            movie.
      */
     public GotoFrame2(final int offset, final boolean aBool) {
-        setPlay(aBool);
-        setFrameOffset(offset);
+        if ((offset < 0) || (offset > MAX_FRAME_OFFSET)) {
+            throw new IllegalArgumentRangeException(0,
+                    MAX_FRAME_OFFSET, offset);
+        }
+        frameOffset = offset;
+        play = aBool;
     }
 
     /**
@@ -152,24 +174,11 @@ public final class GotoFrame2 implements Action {
     /**
      * Returns the offset that will be added to the 'logical' frame number
      * obtained from the stack to generate the 'physical' frame number.
+     *
+     * @return the offset to the next frame to be displayed.
      */
     public int getFrameOffset() {
         return frameOffset;
-    }
-
-    /**
-     * Sets the offset that will be added to the 'logical' frame number obtained
-     * from the stack to generate the 'physical' frame number.
-     *
-     * @param offset
-     *            a number that will be added to the frame number obtained form
-     *            the stack. Must be in the range 1..65535.
-     */
-    public void setFrameOffset(final int offset) {
-        if ((offset < 0) || (offset > 65535)) {
-            throw new IllegalArgumentRangeException(0, 65535, offset);
-        }
-        frameOffset = offset;
     }
 
     /**
@@ -182,21 +191,9 @@ public final class GotoFrame2 implements Action {
         return play;
     }
 
-    /**
-     * Sets the play flag.
-     *
-     * @param aBool
-     *            true if the player should being playing the movie at the
-     *            specified frame. false if the player should stop playing the
-     *            movie.
-     */
-    public void setPlay(final boolean aBool) {
-        play = aBool;
-    }
-
     /** {@inheritDoc} */
     public GotoFrame2 copy() {
-        return new GotoFrame2(this);
+        return this;
     }
 
     /** {@inheritDoc} */
@@ -208,10 +205,12 @@ public final class GotoFrame2 implements Action {
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         hasOffset = frameOffset > 0;
-
-        length = 1 + (hasOffset ? 2 : 0);
-
-        return 3 + length;
+        if (hasOffset) {
+            length = LEN_WITH_OFFSET;
+        } else {
+            length = LEN_NO_OFFSET;
+        }
+        return SWFEncoder.ACTION_HEADER + length;
     }
 
     /** {@inheritDoc} */
@@ -219,9 +218,15 @@ public final class GotoFrame2 implements Action {
             throws CoderException {
         coder.writeByte(ActionTypes.GOTO_FRAME_2);
         coder.writeWord(length, 2);
-        coder.writeBits(0, 6);
-        coder.writeBits(hasOffset ? 1 : 0, 1);
-        coder.writeBits(play ? 1 : 0, 1);
+
+        int flags = 0;
+        if (hasOffset) {
+            flags |= OFFSET_MASK;
+        }
+        if (play) {
+            flags |= PLAY_MASK;
+        }
+        coder.writeByte(flags);
 
         if (hasOffset) {
             coder.writeWord(frameOffset, 2);

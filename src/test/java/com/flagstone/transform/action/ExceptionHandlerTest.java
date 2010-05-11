@@ -71,27 +71,6 @@ public final class ExceptionHandlerTest {
             0x00, ActionTypes.ADD, ActionTypes.END, ActionTypes.SUBTRACT,
             ActionTypes.END, ActionTypes.MULTIPLY, ActionTypes.END, };
 
-    @Test(expected = IllegalArgumentException.class)
-    public void checkAddNullActionToTryBlock() {
-        fixture = new ExceptionHandler(variable, tryActions, catchActions,
-                finalActions);
-        fixture.addToTry(null);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void checkAddNullActionToCatchBlock() {
-        fixture = new ExceptionHandler(variable, tryActions, catchActions,
-                finalActions);
-        fixture.addToCatch(null);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void checkAddNullActionToFinallyBlock() {
-        fixture = new ExceptionHandler(variable, tryActions, catchActions,
-                finalActions);
-        fixture.addToFinally(null);
-    }
-
     @Test
     public void checkCopy() {
         fixture = new ExceptionHandler(variable, tryActions, catchActions,

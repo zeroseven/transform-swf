@@ -64,10 +64,14 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  * @see Push
  */
 public final class RegisterCopy implements Action {
-    
-    private static final String FORMAT = "RegisterCopy: { number=%d }";
 
-    private int number;
+    /** Format string used in toString() method. */
+    private static final String FORMAT = "RegisterCopy: { number=%d }";
+    /** Number of last internal register in the Flash Player. */
+    private static final int LAST_REGISTER = 255;
+
+    /** The number of the Flash Player's internal register. */
+    private final transient int number;
 
     /**
      * Creates and initialises a RegisterCopy action using values encoded
@@ -88,12 +92,16 @@ public final class RegisterCopy implements Action {
     /**
      * Creates a RegisterCopy object with the register number.
      *
-     * @param anIndex
+     * @param register
      *            the number of one of the Flash Player's internal registers.
      *            Must be in the range 0..255.
      */
-    public RegisterCopy(final int anIndex) {
-        setNumber(anIndex);
+    public RegisterCopy(final int register) {
+        if ((register < 0) || (register > LAST_REGISTER)) {
+            throw new IllegalArgumentRangeException(0,
+                    LAST_REGISTER, register);
+        }
+        number = register;
     }
 
     /**
@@ -111,29 +119,16 @@ public final class RegisterCopy implements Action {
     /**
      * Returns the number of the Player register that the value on the stack
      * will be copied to.
+     *
+     * @return the register number.
      */
     public int getNumber() {
         return number;
     }
 
-    /**
-     * Returns the number of the Player register that the value on the stack
-     * will be copied to.
-     *
-     * @param anIndex
-     *            the number of one of the Flash Player's internal registers.
-     *            Must be in the range 0..255.
-     */
-    public void setNumber(final int anIndex) {
-        if ((anIndex < 0) || (anIndex > 255)) {
-            throw new IllegalArgumentRangeException(0, 255, anIndex);
-        }
-        number = anIndex;
-    }
-
     /** {@inheritDoc} */
     public RegisterCopy copy() {
-        return new RegisterCopy(this);
+        return this;
     }
 
     /** {@inheritDoc} */
@@ -144,7 +139,7 @@ public final class RegisterCopy implements Action {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
-        return 4;
+        return SWFEncoder.ACTION_HEADER + 2;
     }
 
     /** {@inheritDoc} */
@@ -153,13 +148,5 @@ public final class RegisterCopy implements Action {
         coder.writeByte(ActionTypes.REGISTER_COPY);
         coder.writeWord(2, 2);
         coder.writeByte(number);
-    }
-
-    /** {@inheritDoc} */
-    public void decode(final SWFDecoder coder, final Context context)
-            throws CoderException {
-        coder.readByte();
-        coder.readWord(2, false);
-        number = coder.readByte();
     }
 }

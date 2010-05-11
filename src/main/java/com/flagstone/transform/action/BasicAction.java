@@ -207,86 +207,130 @@ public enum BasicAction implements Action {
     STRING_GREATER(ActionTypes.STRING_GREATER),
     /** TODO(method). */
     EXTENDS(ActionTypes.EXTENDS),
+    /** Undocumented action. */
     //TODO
     CODE1(ActionTypes.CODE_1),
+    /** Undocumented action. */
     //TODO
     CODE2(ActionTypes.CODE_2),
+    /** Undocumented action. */
     //TODO
     CODE22(ActionTypes.CODE_22),
+    /** Undocumented action. */
     //TODO
     CODE27(ActionTypes.CODE_27),
+    /** Undocumented action. */
     //TODO
     CODE3(ActionTypes.CODE_3),
+    /** Undocumented action. */
     //TODO
     CODE30(ActionTypes.CODE_30),
+    /** Undocumented action. */
     //TODO
     CODE45(ActionTypes.CODE_45),
+    /** Undocumented action. */
     //TODO
     CODE46(ActionTypes.CODE_46),
+    /** Undocumented action. */
     //TODO
     CODE47(ActionTypes.CODE_47),
+    /** Undocumented action. */
     //TODO
     CODE56(ActionTypes.CODE_56),
+    /** Undocumented action. */
     //TODO
     CODE57(ActionTypes.CODE_57),
+    /** Undocumented action. */
     //TODO
     CODE86(ActionTypes.CODE_86),
+    /** Undocumented action. */
     //TODO
     CODE87(ActionTypes.CODE_87),
+    /** Undocumented action. */
     //TODO
     CODE88(ActionTypes.CODE_88),
+    /** Undocumented action. */
     //TODO
     CODE89(ActionTypes.CODE_89),
+    /** Undocumented action. */
     //TODO
     CODE91(ActionTypes.CODE_91),
+    /** Undocumented action. */
     //TODO
     CODE92(ActionTypes.CODE_92),
+    /** Undocumented action. */
     //TODO
     CODE93(ActionTypes.CODE_93),
+    /** Undocumented action. */
     //TODO
     CODE95(ActionTypes.CODE_95),
+    /** Undocumented action. */
     //TODO
     CODE106(ActionTypes.CODE_106),
+    /** Undocumented action. */
     //TODO
     CODE107(ActionTypes.CODE_107),
+    /** Undocumented action. */
     //TODO
     CODE108(ActionTypes.CODE_108),
+    /** Undocumented action. */
     //TODO
     CODE109(ActionTypes.CODE_109),
+    /** Undocumented action. */
     //TODO
     CODE110(ActionTypes.CODE_110),
+    /** Undocumented action. */
     //TODO
     CODE111(ActionTypes.CODE_111),
+    /** Undocumented action. */
     //TODO
     CODE112(ActionTypes.CODE_112),
+    /** Undocumented action. */
     //TODO
     CODE113(ActionTypes.CODE_113),
+    /** Undocumented action. */
     //TODO
     CODE114(ActionTypes.CODE_114),
+    /** Undocumented action. */
     //TODO
     CODE115(ActionTypes.CODE_115),
+    /** Undocumented action. */
     //TODO
     CODE116(ActionTypes.CODE_116),
+    /** Undocumented action. */
     //TODO
     CODE117(ActionTypes.CODE_117),
+    /** Undocumented action. */
     //TODO
     CODE118(ActionTypes.CODE_118),
+    /** Undocumented action. */
     //TODO
     CODE119(ActionTypes.CODE_119),
+    /** Undocumented action. */
     //TODO
     CODE120(ActionTypes.CODE_120),
+    /** Undocumented action. */
     //TODO
     CODE121(ActionTypes.CODE_121),
+    /** Undocumented action. */
     //TODO
     CODE122(ActionTypes.CODE_122),
+    /** Undocumented action. */
     //TODO
     CODE125(ActionTypes.CODE_125),
+    /** Undocumented action. */
     //TODO
     CODE126(ActionTypes.CODE_126),
+    /** Undocumented action. */
     //TODO
     CODE127(ActionTypes.CODE_127);
 
-    private static final Map<Integer, BasicAction> TABLE = new LinkedHashMap<Integer, BasicAction>();
+    /**
+     * Table used to store instances of Basic Actions so only one object is
+     * created for each type of action decoded.
+     */
+    private static final Map<Integer, BasicAction> TABLE
+            = new LinkedHashMap<Integer, BasicAction>();
 
     static {
         for (final BasicAction action : values()) {
@@ -299,13 +343,21 @@ public enum BasicAction implements Action {
      *
      * @param actionType
      *            the type that identifies the action when it is encoded.
+     *
+     * @return a shared instance of the object representing a given action type.
      */
     public static BasicAction fromInt(final int actionType) {
         return TABLE.get(actionType);
     }
 
+    /** Type used to identify the action when it is encoded. */
     private final int type;
 
+    /**
+     * Constructor used to create instances for each type of action.
+     *
+     * @param actionType the value representing the action when it is encoded.
+     */
     private BasicAction(final int actionType) {
         type = actionType;
     }

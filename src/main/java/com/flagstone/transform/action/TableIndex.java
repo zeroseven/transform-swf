@@ -42,8 +42,13 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  */
 public final class TableIndex {
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "TableIndex: { index=%d }";
 
+    /** The highest index number supported. */
+    private static final int LAST_INDEX = 65535;
+
+    /** The index into the table of strings. */
     private final transient int index;
 
     /**
@@ -55,14 +60,16 @@ public final class TableIndex {
      *            0..65535.
      */
     public TableIndex(final int anIndex) {
-        if ((anIndex < 0) || (anIndex > 65535)) {
-            throw new IllegalArgumentRangeException(0, 65535, anIndex);
+        if ((anIndex < 0) || (anIndex > LAST_INDEX)) {
+            throw new IllegalArgumentRangeException(0, LAST_INDEX, anIndex);
         }
         index = anIndex;
     }
 
     /**
-     * Returns the index in the table of string literals.
+     * Get the index in the table of string literals.
+     *
+     * @return the index of the string literal.
      */
     public int getIndex() {
         return index;
@@ -72,28 +79,5 @@ public final class TableIndex {
    @Override
     public String toString() {
         return String.format(FORMAT, index);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean equals(final Object other) {
-        boolean result;
-
-        if (other == null) {
-            result = false;
-        } else if (other == this) {
-            result = true;
-        } else if (other instanceof TableIndex) {
-            result = index == ((TableIndex) other).index;
-        } else {
-            result = false;
-        }
-        return result;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public int hashCode() {
-        return 31 * index;
     }
 }

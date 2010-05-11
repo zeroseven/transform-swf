@@ -34,7 +34,7 @@ import com.flagstone.transform.coder.Copyable;
 import com.flagstone.transform.coder.SWFEncodeable;
 
 /**
- * Action defines a type that is used to identify all the different types of 
+ * Action defines a type that is used to identify all the different types of
  * actions that can be added to a movie.
  */
 public interface Action extends SWFEncodeable, Copyable<Action> {

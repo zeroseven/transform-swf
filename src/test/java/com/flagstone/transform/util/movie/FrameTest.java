@@ -137,9 +137,9 @@ public final class FrameTest {
 
     @Test
     public void frameWithActions() throws CoderException {
-        final Push push = new Push(new ArrayList<Object>());
-        push.add("label");
-
+        List<Object>values = new ArrayList<Object>();
+        values.add("label");
+        final Push push = new Push(values);
         final DoAction actions = new DoAction(new ArrayList<Action>());
         actions.add(push);
         actions.add(new GotoFrame2(true));

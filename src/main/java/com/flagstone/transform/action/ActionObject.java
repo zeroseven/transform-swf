@@ -42,16 +42,24 @@ import com.flagstone.transform.coder.SWFEncoder;
 /**
  * ActionObject is a general-purpose class that can be used to represent any
  * action. It allow actions not supported in the current version of Transform to
- * be decoded and encoded from movies until direct support is provided in the 
+ * be decoded and encoded from movies until direct support is provided in the
  * framework.
  */
 public final class ActionObject implements Action {
 
+    /**
+     * The highest value used to encode an action that only operates on values
+     * on the Flash Player's stack.
+     */
     private static final int HIGHEST_BYTE_CODE = 127;
 
-    private static final String FORMAT = "ActionObject: { type=%d; data=byte[%s] }";
+    /** Format string used in toString() method. */
+    private static final String FORMAT = "ActionObject: {"
+        + "type=%d; data=byte[%s] }";
 
+    /** The type used to identify the action. */
     private final transient int type;
+    /** An array encoded arguments, if  any, used by the action. */
     private final transient byte[] data;
 
     /**
@@ -70,7 +78,7 @@ public final class ActionObject implements Action {
         if (type > HIGHEST_BYTE_CODE) {
             data = coder.readBytes(new byte[coder.readWord(2, false)]);
         } else {
-            data = null;
+            data = new byte[0];
         }
     }
 
@@ -82,7 +90,7 @@ public final class ActionObject implements Action {
      */
     public ActionObject(final int actionType) {
         type = actionType;
-        data = null;
+        data = new byte[0];
     }
 
     /**
@@ -96,10 +104,6 @@ public final class ActionObject implements Action {
      */
     public ActionObject(final int actionType, final byte[] bytes) {
         type = actionType;
-
-        if (bytes == null) {
-            throw new NullPointerException();
-        }
         data = Arrays.copyOf(bytes, bytes.length);
     }
 
@@ -117,6 +121,8 @@ public final class ActionObject implements Action {
     /**
      * Returns the type that identifies the type of action when it is encoded in
      * the Flash binary format.
+     *
+     * @return the value identifying the action when it is encoded.
      */
     public int getType() {
         return type;
@@ -124,6 +130,9 @@ public final class ActionObject implements Action {
 
     /**
      * Returns the encoded data for the action.
+     *
+     * @return the array of bytes representing the encoded arguments of the
+     * action.
      */
     public byte[] getData() {
         return Arrays.copyOf(data, data.length);
@@ -137,8 +146,7 @@ public final class ActionObject implements Action {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        return String.format(FORMAT, type, (data == null ? data : String
-                .valueOf(data.length)));
+        return String.format(FORMAT, type, data.length);
     }
 
     /** {@inheritDoc} */
@@ -146,7 +154,7 @@ public final class ActionObject implements Action {
         final int length;
 
         if (type > HIGHEST_BYTE_CODE) {
-            length = 3 + data.length;
+            length = SWFEncoder.ACTION_HEADER + data.length;
         } else {
             length = 1;
         }
