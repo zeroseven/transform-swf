@@ -205,8 +205,13 @@ public final class DefineMorphShape implements DefineTag {
         vars.remove(Context.TYPE);
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            final int delta = (coder.getPointer() - end) >> 3;
+            if (delta == -33) {
+                coder.setPointer(end);
+            } else {
+                throw new CoderException(getClass().getName(), start >> 3, length,
+                        (coder.getPointer() - end) >> 3);
+            }
         }
     }
 
