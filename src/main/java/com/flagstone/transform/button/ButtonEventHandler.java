@@ -281,7 +281,7 @@ public final class ButtonEventHandler implements SWFEncodeable {
      */
     public ButtonEventHandler add(final Action anAction) throws CoderException {
         if (anAction == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         actions.add(anAction);
         return this;
@@ -333,7 +333,7 @@ public final class ButtonEventHandler implements SWFEncodeable {
     /**
      * TODO(method).
      */
-    public ButtonEventHandler setKey(ButtonKey key) {
+    public ButtonEventHandler setKey(final ButtonKey key) {
         this.key = (key.getChar() << 9);
         return this;
     }
@@ -341,7 +341,7 @@ public final class ButtonEventHandler implements SWFEncodeable {
     /**
      * TODO(method).
      */
-    public ButtonEventHandler setKey(char key) {
+    public ButtonEventHandler setKey(final char key) {
         this.key = ( (int) key << 9);
         return this;
     }
@@ -357,7 +357,7 @@ public final class ButtonEventHandler implements SWFEncodeable {
      */
     public ButtonEventHandler setActions(final List<Action> anArray) {
         if (anArray == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         actions = anArray;
         return this;

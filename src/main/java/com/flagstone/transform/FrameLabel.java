@@ -151,7 +151,7 @@ public final class FrameLabel implements MovieTag {
      */
     public void setLabel(final String label) {
         if (label == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         if (label.length() == 0) {
             throw new StringSizeException(0, Integer.MAX_VALUE, 0);

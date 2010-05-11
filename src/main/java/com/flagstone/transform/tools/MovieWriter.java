@@ -39,7 +39,7 @@ import java.io.Writer;
 import com.flagstone.transform.Movie;
 import com.flagstone.transform.coder.MovieTag;
 
-public class MovieWriter {
+public final class MovieWriter {
 
     public void write(final Movie movie, final File file) throws IOException {
         final PrintWriter writer = new PrintWriter(file);
@@ -57,32 +57,24 @@ public class MovieWriter {
     public void write(final MovieTag tag, final Writer writer)
             throws IOException {
 
-        int indent = 0;
+        int level = 0;
         boolean start = false;
 
-        String str = tag.toString();
+        final String str = tag.toString();
 
         for (final char c : str.toCharArray()) {
 
             if (c == '{') {
                 writer.append(c).append('\n');
-                indent++;
-                for (int i = 0; i < indent; i++) {
-                    writer.append('\t');
-                }
+                indent(writer, level++);
                 start = true;
             } else if (c == '}') {
-                indent--;
                 writer.append('\n');
-                for (int i = 0; i < indent; i++) {
-                    writer.append('\t');
-                }
+                indent(writer, --level);
                 writer.append(c);
             } else if (c == ';') {
                 writer.append(c).append('\n');
-                for (int i = 0; i < indent; i++) {
-                    writer.append('\t');
-                }
+                indent(writer, level);
                 start = true;
             } else if (c == '=') {
                 writer.append(' ').append('=').append(' ');
@@ -96,5 +88,12 @@ public class MovieWriter {
             }
         }
         writer.flush();
+    }
+    
+    private void indent(final Writer writer, final int level)
+            throws IOException {
+        for (int i = 0; i < level; i++) {
+            writer.append('\t');
+        }
     }
 }

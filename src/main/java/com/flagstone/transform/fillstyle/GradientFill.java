@@ -32,10 +32,7 @@
 package com.flagstone.transform.fillstyle;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
@@ -176,14 +173,11 @@ public final class GradientFill implements FillStyle {
     }
 
     /** TODO(method). */
-    public void setType(final GradientType type) {
-        switch (type) {
-        case LINEAR:
-            this.type = 0x10;
-            break;
-        default:
-            this.type = 0x12;
-            break;
+    public void setType(final GradientType gradientType) {
+        if (gradientType == GradientType.LINEAR) {
+            type = 0x10;
+        } else {
+            type = 0x12;
         }
      }
 
@@ -278,7 +272,7 @@ public final class GradientFill implements FillStyle {
      */
     public void setTransform(final CoordTransform aTransform) {
         if (aTransform == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         transform = aTransform;
     }
@@ -293,7 +287,7 @@ public final class GradientFill implements FillStyle {
      */
     public void setGradients(final List<Gradient> anArray) {
         if (anArray == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         if (anArray.size() > 15) {
             throw new IllegalStateException("Maximum number of gradients exceeded.");
@@ -311,7 +305,7 @@ public final class GradientFill implements FillStyle {
      */
     public GradientFill add(final Gradient aGradient) {
         if (aGradient == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         if (gradients.size() == 15) {
             throw new IllegalStateException("Maximum number of gradients exceeded.");

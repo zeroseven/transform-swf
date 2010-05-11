@@ -137,71 +137,73 @@ import com.flagstone.transform.movieclip.MovieClipEventHandler;
  * @see com.flagstone.transform.util.movie.Layer
  */
 //TODO(class)
+@SuppressWarnings("PMD.TooManyMethods")
 public final class Place2 implements MovieTag {
 
+    public static final class Builder {
+        /** TODO(method). */
+        public Place2 show(final int identifier, final int layer,
+                final int xCoord, final int yCoord) {
+            final Place2 object = new Place2();
+            object.setType(PlaceType.NEW);
+            object.setLayer(layer);
+            object.setIdentifier(identifier);
+            object.setTransform(CoordTransform.translate(xCoord, yCoord));
+            return object;
+        }
+        
+        /** TODO(method). */
+        public Place2 show(final DefineTag tag, final int layer,
+                final int xCoord, final int yCoord) {
+            final Place2 object = new Place2();
+            object.setType(PlaceType.NEW);
+            object.setLayer(layer);
+            object.setIdentifier(tag.getIdentifier());
+            object.setTransform(CoordTransform.translate(xCoord, yCoord));
+            return object;
+        }
+
+        /** TODO(method). */
+        public Place2 modify(final int layer) {
+            final Place2 object = new Place2();
+            object.setType(PlaceType.MODIFY);
+            object.setLayer(layer);
+            return object;
+        }
+
+        /** TODO(method). */
+        public Place2 move(final int layer, final int xCoord, final int yCoord) {
+            final Place2 object = new Place2();
+            object.setType(PlaceType.MODIFY);
+            object.setLayer(layer);
+            object.setTransform(CoordTransform.translate(xCoord, yCoord));
+            return object;
+        }
+
+        /** TODO(method). */
+        public Place2 replace(final int identifier, final int layer) {
+            final Place2 object = new Place2();
+            object.setType(PlaceType.REPLACE);
+            object.setLayer(layer);
+            object.setIdentifier(identifier);
+            return object;
+        }
+
+        /** TODO(method). */
+        public Place2 replace(final int identifier, final int layer,
+                final int xCoord, final int yCoord) {
+            final Place2 object = new Place2();
+            object.setType(PlaceType.REPLACE);
+            object.setLayer(layer);
+            object.setIdentifier(identifier);
+            object.setTransform(CoordTransform.translate(xCoord, yCoord));
+            return object;
+        }      
+    }
+    
     private static final String FORMAT = "Place2: { type=%s; layer=%d; "
             + "identifier=%d; transform=%s; colorTransform=%s; ratio=%d; "
             + "clippingDepth=%d; name=%s; clipEvents=%s}";
-    
-    
-    /** TODO(method). */
-    public static Place2 show(final int identifier, final int layer,
-            final int xCoord, final int yCoord) {
-        Place2 object = new Place2();
-        object.setType(PlaceType.NEW);
-        object.setLayer(layer);
-        object.setIdentifier(identifier);
-        object.setTransform(CoordTransform.translate(xCoord, yCoord));
-        return object;
-    }
-    
-    /** TODO(method). */
-    public static Place2 show(final DefineTag tag, final int layer,
-            final int xCoord, final int yCoord) {
-        Place2 object = new Place2();
-        object.setType(PlaceType.NEW);
-        object.setLayer(layer);
-        object.setIdentifier(tag.getIdentifier());
-        object.setTransform(CoordTransform.translate(xCoord, yCoord));
-        return object;
-    }
-
-    /** TODO(method). */
-    public static Place2 modify(final int layer) {
-        Place2 object = new Place2();
-        object.setType(PlaceType.MODIFY);
-        object.setLayer(layer);
-        return object;
-    }
-
-    /** TODO(method). */
-    public static Place2 move(final int layer, final int xCoord, final int yCoord) {
-        Place2 object = new Place2();
-        object.setType(PlaceType.MODIFY);
-        object.setLayer(layer);
-        object.setTransform(CoordTransform.translate(xCoord, yCoord));
-        return object;
-    }
-
-    /** TODO(method). */
-    public static Place2 replace(final int identifier, final int layer) {
-        Place2 object = new Place2();
-        object.setType(PlaceType.REPLACE);
-        object.setLayer(layer);
-        object.setIdentifier(identifier);
-        return object;
-    }
-
-    /** TODO(method). */
-    public static Place2 replace(final int identifier, final int layer,
-            final int xCoord, final int yCoord) {
-        Place2 object = new Place2();
-        object.setType(PlaceType.REPLACE);
-        object.setLayer(layer);
-        object.setIdentifier(identifier);
-        object.setTransform(CoordTransform.translate(xCoord, yCoord));
-        return object;
-    }      
 
     private PlaceType type;
     private int layer;
@@ -233,7 +235,7 @@ public final class Place2 implements MovieTag {
     // TODO(optimise)
     public Place2(final SWFDecoder coder, final Context context)
             throws CoderException {
-        final int start = coder.getPointer();
+//        final int start = coder.getPointer();
         final Map<Integer, Integer> vars = context.getVariables();
         vars.put(Context.TRANSPARENT, 1);
 
@@ -244,8 +246,6 @@ public final class Place2 implements MovieTag {
         }
 
         final int end = coder.getPointer() + (length << 3);
-
-        // TODO(optimise) change to transient fields ?
         final boolean hasEvents = coder.readBits(1, false) != 0;
         final boolean hasDepth = coder.readBits(1, false) != 0;
         final boolean hasName = coder.readBits(1, false) != 0;
@@ -307,6 +307,7 @@ public final class Place2 implements MovieTag {
         vars.remove(Context.TRANSPARENT);
 
         if (coder.getPointer() != end) {
+            //TODO Fix me
             coder.setPointer(end);
 //            throw new CoderException(getClass().getName(), start >> 3, length,
 //                    (coder.getPointer() - end) >> 3);
@@ -361,7 +362,7 @@ public final class Place2 implements MovieTag {
     public Place2 add(final MovieClipEventHandler aClipEvent)
             throws CoderException {
         if (aClipEvent == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         events.add(aClipEvent);
         return this;
@@ -389,7 +390,7 @@ public final class Place2 implements MovieTag {
      */
     public void setEvents(final List<MovieClipEventHandler> anArray) {
         if (anArray == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         events = anArray;
     }
@@ -610,10 +611,12 @@ public final class Place2 implements MovieTag {
         length = 3;
         length += (type.equals(PlaceType.NEW) || type
                 .equals(PlaceType.REPLACE)) ? 2 : 0;
-        length += transform == null ? 0 : transform.prepareToEncode(coder,
-                context);
-        length += colorTransform == null ? 0 : colorTransform.prepareToEncode(
-                coder, context);
+        if (transform != null) {
+            length += transform.prepareToEncode(coder, context);
+        }
+        if (colorTransform != null) {
+            length += colorTransform.prepareToEncode(coder, context);
+        }
         length += ratio == null ? 0 : 2;
         length += depth == null ? 0 : 2;
         length += name == null ? 0 : coder.strlen(name);

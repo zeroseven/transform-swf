@@ -163,7 +163,7 @@ public final class Frame {
      * Creates a empty frame with no label defined and the definitions, commands
      * and actions arrays empty.
      */
-    public Frame(int number) {
+    public Frame(final int number) {
         setNumber(number);
         definitions = new ArrayList<MovieTag>();
         commands = new ArrayList<MovieTag>();
@@ -178,7 +178,7 @@ public final class Frame {
      */
     public void addAction(final Action anObject) {
         if (anObject == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         actions.add(anObject);
     }
@@ -192,7 +192,7 @@ public final class Frame {
      */
     public void addDefinition(final MovieTag anObject) {
         if (anObject == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         definitions.add(anObject);
     }
@@ -206,7 +206,7 @@ public final class Frame {
      */
     public void addCommand(final MovieTag anObject) {
         if (anObject == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         commands.add(anObject);
     }
@@ -283,7 +283,7 @@ public final class Frame {
      */
     public void setDefinitions(final List<MovieTag> anArray) {
         if (anArray == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         definitions = anArray;
     }
@@ -297,7 +297,7 @@ public final class Frame {
      */
     public void setCommands(final List<MovieTag> anArray) {
         if (anArray == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         commands = anArray;
     }
@@ -310,7 +310,7 @@ public final class Frame {
      */
     public void setActions(final List<Action> anArray) {
         if (anArray == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         actions = anArray;
     }

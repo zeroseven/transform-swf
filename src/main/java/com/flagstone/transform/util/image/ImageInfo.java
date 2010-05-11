@@ -161,6 +161,7 @@ import java.util.Vector;
  * @author Marco Schmidt
  */
 //TODO(class)
+@SuppressWarnings("PMD")
 public final class ImageInfo {
     /**
      * Return value of {@link #getFormat()} for JPEG streams. ImageInfo can
@@ -747,10 +748,13 @@ public final class ImageInfo {
         return true;
     }
 
-    private static boolean equals(final byte[] a1, int offs1, final byte[] a2,
-            int offs2, int num) {
-        while (num-- > 0) {
-            if (a1[offs1++] != a2[offs2++]) {
+    private static boolean equals(final byte[] a1, final int offs1, final byte[] a2,
+            final int offs2, final int num) {
+        int index1 = offs1;
+        int index2 = offs2;
+        int count = num;
+        while (count-- > 0) {
+            if (a1[index1++] != a2[index2++]) {
                 return false;
             }
         }
@@ -993,7 +997,7 @@ public final class ImageInfo {
                 InputStream in = null;
                 try {
                     final String name = args[index++];
-                    System.out.print(name + ";");
+                    //System.out.print(name + ";");
                     if (name.startsWith("http://")) {
                         in = new URL(name).openConnection().getInputStream();
                     } else {
@@ -1002,7 +1006,7 @@ public final class ImageInfo {
                     run(name, in, imageInfo, verbose);
                     in.close();
                 } catch (final IOException e) {
-                    System.out.println(e);
+                    //System.out.println(e);
                     try {
                         if (in != null) {
                             in.close();
@@ -1014,82 +1018,82 @@ public final class ImageInfo {
         }
     }
 
-    private static void print(final String sourceName, final ImageInfo ii,
-            final boolean verbose) {
-        if (verbose) {
-            printVerbose(sourceName, ii);
-        } else {
-            printCompact(sourceName, ii);
-        }
-    }
+//    private static void print(final String sourceName, final ImageInfo ii,
+//            final boolean verbose) {
+//        if (verbose) {
+//            printVerbose(sourceName, ii);
+//        } else {
+//            printCompact(sourceName, ii);
+//        }
+//    }
 
-    private static void printCompact(final String sourceName,
-            final ImageInfo imageInfo) {
-        final String SEP = "\t";
-        System.out.println(sourceName + SEP + imageInfo.getFormatName() + SEP
-                + imageInfo.getMimeType() + SEP + imageInfo.getWidth() + SEP
-                + imageInfo.getHeight() + SEP + imageInfo.getBitsPerPixel()
-                + SEP + imageInfo.getNumberOfImages() + SEP
-                + imageInfo.getPhysicalWidthDpi() + SEP
-                + imageInfo.getPhysicalHeightDpi() + SEP
-                + imageInfo.getPhysicalWidthInch() + SEP
-                + imageInfo.getPhysicalHeightInch() + SEP
-                + imageInfo.isProgressive());
-    }
+//    private static void printCompact(final String sourceName,
+//            final ImageInfo imageInfo) {
+//        final String SEP = "\t";
+//        System.out.println(sourceName + SEP + imageInfo.getFormatName() + SEP
+//                + imageInfo.getMimeType() + SEP + imageInfo.getWidth() + SEP
+//                + imageInfo.getHeight() + SEP + imageInfo.getBitsPerPixel()
+//                + SEP + imageInfo.getNumberOfImages() + SEP
+//                + imageInfo.getPhysicalWidthDpi() + SEP
+//                + imageInfo.getPhysicalHeightDpi() + SEP
+//                + imageInfo.getPhysicalWidthInch() + SEP
+//                + imageInfo.getPhysicalHeightInch() + SEP
+//                + imageInfo.isProgressive());
+//    }
 
-    private static void printLine(final int indentLevels, final String text,
-            final float value, final float minValidValue) {
-        if (value < minValidValue) {
-            return;
-        }
-        printLine(indentLevels, text, Float.toString(value));
-    }
+//    private static void printLine(final int indentLevels, final String text,
+//            final float value, final float minValidValue) {
+//        if (value < minValidValue) {
+//            return;
+//        }
+//        printLine(indentLevels, text, Float.toString(value));
+//    }
 
-    private static void printLine(final int indentLevels, final String text,
-            final int value, final int minValidValue) {
-        if (value >= minValidValue) {
-            printLine(indentLevels, text, Integer.toString(value));
-        }
-    }
+//    private static void printLine(final int indentLevels, final String text,
+//            final int value, final int minValidValue) {
+//        if (value >= minValidValue) {
+//            printLine(indentLevels, text, Integer.toString(value));
+//        }
+//    }
 
-    private static void printLine(int indentLevels, final String text,
-            final String value) {
-        if ((value == null) || (value.length() == 0)) {
-            return;
-        }
-        while (indentLevels-- > 0) {
-            System.out.print("\t");
-        }
-        if ((text != null) && (text.length() > 0)) {
-            System.out.print(text);
-            System.out.print(" ");
-        }
-        System.out.println(value);
-    }
+//    private static void printLine(int indentLevels, final String text,
+//            final String value) {
+//        if ((value == null) || (value.length() == 0)) {
+//            return;
+//        }
+//        while (indentLevels-- > 0) {
+//            System.out.print("\t");
+//        }
+//        if ((text != null) && (text.length() > 0)) {
+//            System.out.print(text);
+//            System.out.print(" ");
+//        }
+//        System.out.println(value);
+//    }
 
-    private static void printVerbose(final String sourceName, final ImageInfo ii) {
-        printLine(0, null, sourceName);
-        printLine(1, "File format: ", ii.getFormatName());
-        printLine(1, "MIME type: ", ii.getMimeType());
-        printLine(1, "Width (pixels): ", ii.getWidth(), 1);
-        printLine(1, "Height (pixels): ", ii.getHeight(), 1);
-        printLine(1, "Bits per pixel: ", ii.getBitsPerPixel(), 1);
-        printLine(1, "Progressive: ", ii.isProgressive() ? "yes" : "no");
-        printLine(1, "Number of images: ", ii.getNumberOfImages(), 1);
-        printLine(1, "Physical width (dpi): ", ii.getPhysicalWidthDpi(), 1);
-        printLine(1, "Physical height (dpi): ", ii.getPhysicalHeightDpi(), 1);
-        printLine(1, "Physical width (inches): ", ii.getPhysicalWidthInch(),
-                1.0f);
-        printLine(1, "Physical height (inches): ", ii.getPhysicalHeightInch(),
-                1.0f);
-        final int numComments = ii.getNumberOfComments();
-        printLine(1, "Number of textual comments: ", numComments, 1);
-        if (numComments > 0) {
-            for (int i = 0; i < numComments; i++) {
-                printLine(2, null, ii.getComment(i));
-            }
-        }
-    }
+//    private static void printVerbose(final String sourceName, final ImageInfo ii) {
+//        printLine(0, null, sourceName);
+//        printLine(1, "File format: ", ii.getFormatName());
+//        printLine(1, "MIME type: ", ii.getMimeType());
+//        printLine(1, "Width (pixels): ", ii.getWidth(), 1);
+//        printLine(1, "Height (pixels): ", ii.getHeight(), 1);
+//        printLine(1, "Bits per pixel: ", ii.getBitsPerPixel(), 1);
+//        printLine(1, "Progressive: ", ii.isProgressive() ? "yes" : "no");
+//        printLine(1, "Number of images: ", ii.getNumberOfImages(), 1);
+//        printLine(1, "Physical width (dpi): ", ii.getPhysicalWidthDpi(), 1);
+//        printLine(1, "Physical height (dpi): ", ii.getPhysicalHeightDpi(), 1);
+//        printLine(1, "Physical width (inches): ", ii.getPhysicalWidthInch(),
+//                1.0f);
+//        printLine(1, "Physical height (inches): ", ii.getPhysicalHeightInch(),
+//                1.0f);
+//        final int numComments = ii.getNumberOfComments();
+//        printLine(1, "Number of textual comments: ", numComments, 1);
+//        if (numComments > 0) {
+//            for (int i = 0; i < numComments; i++) {
+//                printLine(2, null, ii.getComment(i));
+//            }
+//        }
+//    }
 
     private int read() throws IOException {
         if (in != null) {
@@ -1139,9 +1143,9 @@ public final class ImageInfo {
         imageInfo.setInput(in);
         imageInfo.setDetermineImageNumber(true);
         imageInfo.setCollectComments(verbose);
-        if (imageInfo.check()) {
-            print(sourceName, imageInfo, verbose);
-        }
+//        if (imageInfo.check()) {
+//            print(sourceName, imageInfo, verbose);
+//        }
     }
 
     /**
@@ -1206,8 +1210,9 @@ public final class ImageInfo {
         physicalHeightDpi = newValue;
     }
 
-    private void skip(int num) throws IOException {
-        while (num > 0) {
+    private void skip(final int num) throws IOException {
+        int count = num;
+        while (count > 0) {
             long result;
             if (in != null) {
                 result = in.skip(num);
@@ -1215,7 +1220,7 @@ public final class ImageInfo {
                 result = din.skipBytes(num);
             }
             if (result > 0) {
-                num -= result;
+                count -= result;
             } else {
                 if (in != null) {
                     result = in.read();
@@ -1225,7 +1230,7 @@ public final class ImageInfo {
                 if (result == -1) {
                     throw new IOException("Premature end of input.");
                 } else {
-                    num--;
+                    count--;
                 }
             }
         }

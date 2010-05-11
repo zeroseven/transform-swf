@@ -31,8 +31,6 @@
 
 package com.flagstone.transform.coder;
 
-import java.io.UnsupportedEncodingException;
-
 /**
  * Encoder provides a set of method for encoding data that is not byte-ordered,
  * specifically bit fields and strings.
@@ -136,7 +134,6 @@ public class Encoder extends Coder {
         }
 
         if (offset + numberOfBits > 32) {
-            byte bv = (byte) (value << (8 - (offset+numberOfBits-32)));
             data[index] = (byte) (value << (8 - (offset+numberOfBits-32)));
         }
 
@@ -193,25 +190,6 @@ public class Encoder extends Coder {
     }
 
     /**
-     * Calculates the length of a string when encoded using the specified
-     * character set.
-     *
-     * @param string
-     *            the string to be encoded.
-     *
-     * @return the number of bytes required to encode the string plus 1 for a
-     *         terminating null character.
-     */
-
-    public final int strlen(final String string) {
-        try {
-            return string.getBytes(encoding).length + 1;
-        } catch (final UnsupportedEncodingException e) {
-            throw new AssertionError(e);
-        }
-    }
-
-    /**
      * Write a string using the default character set defined in the encoder.
      *
      * @param str
@@ -220,24 +198,6 @@ public class Encoder extends Coder {
     public final void writeString(final String str) {
         try {
             writeBytes(str.getBytes(encoding));
-            data[index++] = 0;
-        } catch (final java.io.UnsupportedEncodingException e) {
-            throw new AssertionError(e);
-        }
-    }
-
-    /**
-     * Write a string using the specified character set.
-     *
-     * @param str
-     *            the string.
-     *
-     * @param charset
-     *            the name of the character set.
-     */
-    public final void writeString(final String str, final String charset) {
-        try {
-            writeBytes(str.getBytes(charset));
             data[index++] = 0;
         } catch (final java.io.UnsupportedEncodingException e) {
             throw new AssertionError(e);

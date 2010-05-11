@@ -114,16 +114,17 @@ public final class TTFFontTest {
 
         try {
             final Movie movie = new Movie();
+            final Place2.Builder builder = new Place2.Builder();
             final FontFactory factory = new FontFactory();
             factory.read(sourceFile);
             List<Font> fonts = factory.getFonts();
-            DefineFont2 font = fonts.get(0).defineFont(movie.identifier(), set);
+            DefineFont2 font = fonts.get(0).defineFont(movie.nextIdentifier(), set);
 
-            final DefineTextField text = new DefineTextField(movie.identifier());
+            final DefineTextField text = new DefineTextField(movie.nextIdentifier());
             text.setBounds(new Bounds(0, 0, width, height));
             text.setVariableName("var");
             text.setInitialText(alphabet);
-            text.setUseFontGlyphs(true);
+            text.setEmbedded(true);
             text.setFontIdentifier(font.getIdentifier());
             text.setFontHeight(fontSize);
             text.setColor(WebPalette.BLACK.color());
@@ -133,7 +134,7 @@ public final class TTFFontTest {
             movie.add(new Background(WebPalette.LIGHT_BLUE.color()));
             movie.add(font);
             movie.add(text);
-            movie.add(Place2.show(text, 1, margin, margin));
+            movie.add(builder.show(text, 1, margin, margin));
             movie.add(ShowFrame.getInstance());
             movie.encodeToFile(destFile);
         } catch (Exception e) {

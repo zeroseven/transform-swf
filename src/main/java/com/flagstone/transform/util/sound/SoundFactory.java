@@ -49,7 +49,7 @@ import com.flagstone.transform.sound.DefineSound;
  */
 public final class SoundFactory {
 
-    private SoundDecoder decoder;
+    private transient SoundDecoder decoder;
 
     /**
      * TODO(method).
@@ -82,7 +82,7 @@ public final class SoundFactory {
             throw new FileNotFoundException(url.getFile());
         }
 
-        String mimeType = connection.getContentType();
+        final String mimeType = connection.getContentType();
         decoder = SoundRegistry.getSoundProvider(mimeType);
 
         if (decoder == null) {

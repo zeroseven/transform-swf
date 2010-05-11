@@ -32,12 +32,12 @@
 package com.flagstone.transform;
 
 /**
- * CharacterEncoding is used to identify the encoding used for characters in 
+ * CharacterEncoding is used to identify the encoding used for characters in
  * strings stored in the movie.
  */
 public enum CharacterEncoding {
     /**
-     * Defines that the characters in a font or string are encoded using SJIS 
+     * Defines that the characters in a font or string are encoded using SJIS
      * standard for representing Kanji characters.
      */
     SJIS,
@@ -47,7 +47,7 @@ public enum CharacterEncoding {
      */
     ANSI,
     /**
-     * Defines that the characters in a font or string are encoded using 
+     * Defines that the characters in a font or string are encoded using
      * Unicode (UTF-8).
      */
     UTF8;

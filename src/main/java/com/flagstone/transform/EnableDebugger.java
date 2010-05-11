@@ -117,7 +117,7 @@ public final class EnableDebugger implements MovieTag {
      */
     public void setPassword(final String aString) {
         if (aString == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         if (aString.length() == 0) {
             throw new StringSizeException(0, Integer.MAX_VALUE, 0);

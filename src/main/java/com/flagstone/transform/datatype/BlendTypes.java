@@ -34,6 +34,8 @@ package com.flagstone.transform.datatype;
  * BlendTypes defines the values that are used to encode Blends.
  */
 public final class BlendTypes {
+    /** Value used to indicate that no Blend is used. */
+    public static final int NULL = 0;
     /** Value used to identify a NORMAL Blend when it is encoded. */
     public static final int NORMAL = 1;
     /** Value used to identify a LAYER Blend when it is encoded. */

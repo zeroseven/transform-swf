@@ -117,45 +117,11 @@ public final class SoundStreamHead implements MovieTag {
         final int end = coder.getPointer() + (length << 3);
 
         coder.readBits(4, false);
-        switch (coder.readBits(2, false)) {
-        case 0:
-            playRate = 5512;
-            break;
-        case 1:
-            playRate = 11025;
-            break;
-        case 2:
-            playRate = 22050;
-            break;
-        case 3:
-            playRate = 44100;
-            break;
-        default:
-            playRate = 0;
-            break;
-        }
+        playRate = readRate(coder);
         playSampleSize = coder.readBits(1, false) + 1;
         playChannels = coder.readBits(1, false) + 1;
-
         format = coder.readBits(4, false);
-
-        switch (coder.readBits(2, false)) {
-        case 0:
-            streamRate = 5512;
-            break;
-        case 1:
-            streamRate = 11025;
-            break;
-        case 2:
-            streamRate = 22050;
-            break;
-        case 3:
-            streamRate = 44100;
-            break;
-        default:
-            streamRate = 0;
-            break;
-        }
+        streamRate = readRate(coder);
         streamSampleSize = coder.readBits(1, false) + 1;
         streamChannels = coder.readBits(1, false) + 1;
         streamSampleCount = coder.readWord(2, false);
@@ -505,44 +471,11 @@ public final class SoundStreamHead implements MovieTag {
         final int end = coder.getPointer() + (length << 3);
 
         coder.writeBits(0, 4);
-
-        switch (playRate) {
-        case 5512:
-            coder.writeBits(0, 2);
-            break;
-        case 11025:
-            coder.writeBits(1, 2);
-            break;
-        case 22050:
-            coder.writeBits(2, 2);
-            break;
-        case 44100:
-            coder.writeBits(3, 2);
-            break;
-        default:
-            break;
-        }
+        writeRate(playRate, coder);
         coder.writeBits(playSampleSize - 1, 1);
         coder.writeBits(playChannels - 1, 1);
-
         coder.writeBits(format, 4);
-
-        switch (streamRate) {
-        case 5512:
-            coder.writeBits(0, 2);
-            break;
-        case 11025:
-            coder.writeBits(1, 2);
-            break;
-        case 22050:
-            coder.writeBits(2, 2);
-            break;
-        case 44100:
-            coder.writeBits(3, 2);
-            break;
-        default:
-            break;
-        }
+        writeRate(streamRate, coder);
         coder.writeBits(streamSampleSize - 1, 1);
         coder.writeBits(streamChannels - 1, 1);
         coder.writeWord(streamSampleCount, 2);
@@ -554,6 +487,47 @@ public final class SoundStreamHead implements MovieTag {
         if (coder.getPointer() != end) {
             throw new CoderException(getClass().getName(), start >> 3, length,
                     (coder.getPointer() - end) >> 3);
+        }
+    }
+    
+    private int readRate(final SWFDecoder coder) {
+        final int rate;
+        switch (coder.readBits(2, false)) {
+        case 0:
+            rate = 5512;
+            break;
+        case 1:
+            rate = 11025;
+            break;
+        case 2:
+            rate = 22050;
+            break;
+        case 3:
+            rate = 44100;
+            break;
+        default:
+            rate = 0;
+            break;
+        }
+        return rate;
+    }
+    
+    private void writeRate(final int rate, final SWFEncoder coder) {
+        switch (rate) {
+        case 5512:
+            coder.writeBits(0, 2);
+            break;
+        case 11025:
+            coder.writeBits(1, 2);
+            break;
+        case 22050:
+            coder.writeBits(2, 2);
+            break;
+        case 44100:
+            coder.writeBits(3, 2);
+            break;
+        default:
+            break;
         }
     }
 }

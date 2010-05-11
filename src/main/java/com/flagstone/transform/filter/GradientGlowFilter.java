@@ -46,15 +46,15 @@ import com.flagstone.transform.fillstyle.Gradient;
 public final class GradientGlowFilter implements Filter {
 
     /** TODO(class). */
-    public static class Builder {
-        private List<Gradient>gradients;
-        private int blurX;
-        private int blurY;
-        private int angle;
-        private int distance;
-        private int strength;
-        private int mode;
-        private int passes;
+    public static final class Builder {
+        private final transient List<Gradient>gradients;
+        private transient int blurX;
+        private transient int blurY;
+        private transient int angle;
+        private transient int distance;
+        private transient int strength;
+        private transient int mode;
+        private transient int passes;
 
         /** TODO(method). */
         public Builder() {
@@ -62,20 +62,20 @@ public final class GradientGlowFilter implements Filter {
         }
         
         /** TODO(method). */
-        public Builder addGradient(Gradient gradient) {
+        public Builder addGradient(final Gradient gradient) {
             gradients.add(gradient);
             return this;
         }
                 
         /** TODO(method). */
-        public Builder blur(float xAmount, float yAmount) {
+        public Builder setBlur(final float xAmount, final float yAmount) {
             blurX = (int) (xAmount * 65536.0f);
             blurY = (int) (yAmount * 65536.0f);
             return this;
         }
         
         /** TODO(method). */
-        public Builder mode(FilterMode mode) {
+        public Builder setMode(final FilterMode mode) {
             switch (mode) {
             case TOP:
                  this.mode = 0x0030;
@@ -93,25 +93,25 @@ public final class GradientGlowFilter implements Filter {
         }
 
         /** TODO(method). */
-        public Builder angle(float angle) {
+        public Builder setAngle(final float angle) {
             this.angle = (int) (angle * 65536.0f);
             return this;
         }
         
         /** TODO(method). */
-        public Builder distance(float distance) {
+        public Builder setDistance(final float distance) {
             this.distance = (int) (distance * 65536.0f);
             return this;
         }
         
         /** TODO(method). */
-        public Builder strength(float strength) {
+        public Builder setStrength(final float strength) {
             this.strength = (int) (strength * 256.0f);
             return this;
         }
         
         /** TODO(method). */
-        public Builder passes(int count) {
+        public Builder setPasses(final int count) {
             passes = count;
             return this;
         }
@@ -126,16 +126,16 @@ public final class GradientGlowFilter implements Filter {
             + "gradients=%s; blurX=%f; blurY=%f; "
             + "angle=%f; disance=%f, strength=%f; mode=%s; passes=%d}";
 
-    private final List<Gradient> gradients;
-    private final int blurX;
-    private final int blurY;
-    private final int angle;
-    private final int distance;
-    private final int strength;
-    private final int mode;
-    private final int passes;
+    private final transient List<Gradient> gradients;
+    private final transient int blurX;
+    private final transient int blurY;
+    private final transient int angle;
+    private final transient int distance;
+    private final transient int strength;
+    private final transient int mode;
+    private final transient int passes;
 
-    private GradientGlowFilter(Builder builder) {
+    public GradientGlowFilter(final Builder builder) {
         gradients = builder.gradients;
         blurX = builder.blurX;
         blurY = builder.blurY;

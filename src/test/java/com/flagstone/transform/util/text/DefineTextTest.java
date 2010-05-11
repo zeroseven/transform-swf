@@ -88,9 +88,9 @@ public final class DefineTextTest {
         final int y = margin;
 
         final Movie movie = new Movie();
-        final Canvas path = new Canvas(false);
+        final Place2.Builder builder = new Place2.Builder();
 
-        final int fontId = movie.identifier();
+        final int fontId = movie.nextIdentifier();
         final DefineFont2 definition = font.defineFont(fontId, set);
 
         movie.setFrameRate(1.0f);
@@ -104,19 +104,9 @@ public final class DefineTextTest {
 
         final int textWidth = text.getBounds().getWidth();
         final int textHeight = text.getBounds().getHeight();
-        final int shapeId = movie.identifier();
-
-        path.clear();
-        path.setLineStyle(new LineStyle(1, WebPalette.DARK_BLUE.color()));
-        path.rect(text.getBounds().getMinX(), text.getBounds().getMinY(),
-                textWidth, textHeight);
-
-        movie.add(path.defineShape(shapeId));
-        movie.add(Place2.show(shapeId, layer++, x + textWidth / 2, y
-                + textHeight / 2));
 
         movie.add(text);
-        movie.add(Place2.show(text.getIdentifier(), layer++, x, y));
+        movie.add(builder.show(text.getIdentifier(), layer++, x, y));
         movie.add(ShowFrame.getInstance());
 
         movie.setFrameSize(new Bounds(0, 0, textWidth + 2 * margin, textHeight
@@ -127,6 +117,7 @@ public final class DefineTextTest {
     @Test
     public void bounds() throws IOException, DataFormatException {
         final File destFile = new File(destDir, "bounds.swf");
+        final Place2.Builder builder = new Place2.Builder();
 
         final Set<Character> set = new LinkedHashSet<Character>();
         final String alphabet = "abcdefghijklmnopqrstuvwxyz";
@@ -147,9 +138,8 @@ public final class DefineTextTest {
         int x = margin;
         int y = margin;
 
-        final int fontId = movie.identifier();
+        final int fontId = movie.nextIdentifier();
         final DefineFont2 definition = font.defineFont(fontId, set);
-        final Canvas path = new Canvas(false);
 
         movie.setFrameSize(new Bounds(0, 0, 0, 0));
         movie.setFrameRate(1.0f);
@@ -169,19 +159,8 @@ public final class DefineTextTest {
             // TextFactory.boundsForText(alphabet.substring(i,i+1),
             // definition, fontSize).getWidth() + 40;
 
-            final int shapeId = movie.identifier();
-
-            path.clear();
-            path.setLineStyle(new LineStyle(1, WebPalette.DARK_BLUE.color()));
-            path.rect(text.getBounds().getMinX(), text.getBounds().getMinY(),
-                    textWidth, textHeight);
-
-            movie.add(path.defineShape(shapeId));
-            movie.add(Place2.show(shapeId, layer++, x + textWidth / 2, y
-                    + textHeight / 2));
-
             movie.add(text);
-            movie.add(Place2.show(text.getIdentifier(), layer++, x, y));
+            movie.add(builder.show(text.getIdentifier(), layer++, x, y));
 
             if (i % charsPerLine == charsPerLine - 1) {
                 maxWidth = x + advance + margin > maxWidth ? x + advance

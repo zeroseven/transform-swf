@@ -92,13 +92,14 @@ public final class ScreenVideoTest {
 
         final ImageFactory factory = new ImageFactory();
         factory.read(new File(files[0]));
-        final ImageTag image = factory.defineImage(movie.identifier());
+        final ImageTag image = factory.defineImage(movie.nextIdentifier());
+        final Place2.Builder builder = new Place2.Builder();
 
         int screenWidth = image.getWidth();
         int screenHeight = image.getHeight();
 
         movie = new Movie();
-        identifier = movie.identifier();
+        identifier = movie.nextIdentifier();
 
         movie.setFrameSize(new Bounds(0, 0, screenWidth * 20,
                         screenHeight * 20));
@@ -117,7 +118,7 @@ public final class ScreenVideoTest {
         ScreenPacket packet = new ScreenPacket(true, screenWidth, screenHeight,
                 blockWidth, blockHeight, prev);
 
-        movie.add(Place2.show(identifier, 1, 0, 0));
+        movie.add(builder.show(identifier, 1, 0, 0));
         movie.add(new VideoFrame(identifier, 0, packet.encode()));
         movie.add(ShowFrame.getInstance());
 
@@ -141,7 +142,7 @@ public final class ScreenVideoTest {
 
             packet = new ScreenPacket(false, screenWidth, screenHeight,
                     blockWidth, blockHeight, delta);
-            place = new Place2().move(1, 0, 0);
+            place = builder.move(1, 0, 0);
             place.setRatio(i);
 
             movie.add(place);

@@ -32,10 +32,7 @@
 package com.flagstone.transform.fillstyle;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
@@ -206,7 +203,7 @@ public final class FocalGradientFill implements FillStyle {
      */
     public FocalGradientFill add(final Gradient aGradient) {
         if (aGradient == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         if (gradients.size() == 15) {
             throw new IllegalStateException("Maximum number of gradients exceeded.");
@@ -233,7 +230,7 @@ public final class FocalGradientFill implements FillStyle {
      */
     public void setGradients(final List<Gradient> anArray) {
         if (anArray == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         if (gradients.size() == 15) {
             throw new IllegalStateException("Maximum number of gradients exceeded.");
@@ -258,7 +255,7 @@ public final class FocalGradientFill implements FillStyle {
      */
     public void setTransform(final CoordTransform aTransform) {
         if (aTransform == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         transform = aTransform;
     }

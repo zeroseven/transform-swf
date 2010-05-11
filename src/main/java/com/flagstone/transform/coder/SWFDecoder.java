@@ -102,25 +102,35 @@ public final class SWFDecoder extends Decoder {
     public int readVariableU32() {
 
         int value = data[index++] & 0x000000FF;
-
-        if ((value & 0x00000080) != 0) {
-            value = ((data[index++] & 0x000000FF) << 7) + (value & 0x0000007f);
-
-            if ((value & 0x00004000) != 0) {
-                value = ((data[index++] & 0x000000FF) << 14)
-                        + (value & 0x00003fff);
-
-                if ((value & 0x00200000) != 0) {
-                    value = ((data[index++] & 0x000000FF) << 21)
-                            + (value & 0x001fffff);
-
-                    if ((value & 0x10000000) != 0) {
-                        value = ((data[index++] & 0x000000FF) << 28)
-                                + (value & 0x0fffffff);
-                    }
-                }
-            }
-        }
+        
+        final int mask = 0xFFFFFFFF;
+        int test = 0x00000080;
+        int step = 7;
+        
+        while ((value & test) != 0) {
+            value = ((data[index++] & 0x000000FF) << step)
+                + (value & mask >>> (32-step));
+            test <<= 7;
+            step += 7;
+        }        
+//        if ((value & 0x00000080) != 0) {
+//            value = ((data[index++] & 0x000000FF) << 7) + (value & 0x0000007f);
+//
+//            if ((value & 0x00004000) != 0) {
+//                value = ((data[index++] & 0x000000FF) << 14)
+//                        + (value & 0x00003fff);
+//
+//                if ((value & 0x00200000) != 0) {
+//                    value = ((data[index++] & 0x000000FF) << 21)
+//                            + (value & 0x001fffff);
+//
+//                    if ((value & 0x10000000) != 0) {
+//                        value = ((data[index++] & 0x000000FF) << 28)
+//                                + (value & 0x0fffffff);
+//                    }
+//                }
+//            }
+//        }
         return value;
     }
 
@@ -131,7 +141,7 @@ public final class SWFDecoder extends Decoder {
      */
     public float readHalf() {
         final int bits = readWord(2, false);
-        int sign = (bits >> 15) & 0x00000001;
+        final int sign = (bits >> 15) & 0x00000001;
         int exp = (bits >> 10) & 0x0000001f;
         int mantissa = bits & 0x000003ff;
         float value;

@@ -31,44 +31,94 @@
 
 package com.flagstone.transform.movieclip;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 /** TODO(class). */
 public enum MovieClipEvent {
     /** Code for a load event. */
-    LOAD,
+    LOAD(1),
     /** Code for an enter frame event. */
-    ENTER_FRAME,
+    ENTER_FRAME(2),
     /** Code for an unload event. */
-    UNLOAD,
+    UNLOAD(4),
     /** Code for a mouse move event. */
-    MOUSE_MOVE,
+    MOUSE_MOVE(8),
     /** Code for a mouse down event. */
-    MOUSE_DOWN,
+    MOUSE_DOWN(16),
     /** Code for a mouse up event. */
-    MOUSE_UP,
+    MOUSE_UP(32),
     /** Code for a key down event. */
-    KEY_DOWN,
+    KEY_DOWN(64),
     /** Code for a key up event. */
-    KEY_UP,
+    KEY_UP(128),
     /** Code for a data event. */
-    DATA,
+    DATA(256),
     /** Code for an initialise event. */
-    INITIALIZE,
+    INITIALIZE(512),
     /** Code for a press event. */
-    PRESS,
+    PRESS(1024),
     /** Code for a release event. */
-    RELEASE,
+    RELEASE(2048),
     /** Code for a release outside event. */
-    RELEASE_OUT,
+    RELEASE_OUT(4096),
     /** Code for a roll over event. */
-    ROLL_OVER,
+    ROLL_OVER(8192),
     /** Code for a roll out event. */
-    ROLL_OUT,
+    ROLL_OUT(16384),
     /** Code for a drag over event. */
-    DRAG_OVER,
+    DRAG_OVER(32768),
     /** Code for a drag out event. */
-    DRAG_OUT,
+    DRAG_OUT(65536),
     /** Code for a key press event, where the code for the key is specified. */
-    KEY_PRESS,
+    KEY_PRESS(131072),
     /** Code for a construct event. */
-    CONSTRUCT;
+    CONSTRUCT(262144);
+
+    /**
+     * Table used to store instances of Basic Actions so only one object is
+     * created for each type of action decoded.
+     */
+    private static final Map<Integer, MovieClipEvent> TABLE
+            = new LinkedHashMap<Integer, MovieClipEvent>();
+
+    static {
+        for (final MovieClipEvent event : values()) {
+            TABLE.put(event.value, event);
+        }
+    }
+
+    /**
+     * Returns the MovieClipEvent for a given event.
+     *
+     * @param event
+     *            the event that identifies the action when it is encoded.
+     *
+     * @return a shared instance of the object representing a given event.
+     */
+    public static MovieClipEvent fromInt(final int event) {
+        return TABLE.get(event);
+    }
+
+    /** Encoded MovieClipEvent value. */
+    private final transient int value;
+
+    /**
+     * Creates a MovieClipEvent object with the specified value.
+     *
+     * @param eval
+     *            the value for the event.
+     */
+    private MovieClipEvent(final int eval) {
+        value = eval;
+    }
+
+    /**
+     * Get value used to encode the MovieClipEvent.
+     *
+     * @return the encoded event.
+     */
+    public int getValue() {
+        return value;
+    }
 }

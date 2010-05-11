@@ -185,7 +185,7 @@ public final class DefineButton implements DefineTag {
      */
     public DefineButton add(final ButtonShape obj) {
         if (obj == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         shapes.add(obj);
         return this;
@@ -199,7 +199,7 @@ public final class DefineButton implements DefineTag {
      */
     public DefineButton add(final Action obj) throws CoderException {
         if (obj == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         actions.add(obj);
         return this;
@@ -228,7 +228,7 @@ public final class DefineButton implements DefineTag {
      */
     public void setShapes(final List<ButtonShape> anArray) {
         if (anArray == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         shapes = anArray;
     }
@@ -242,7 +242,7 @@ public final class DefineButton implements DefineTag {
      */
     public void setActions(final List<Action> anArray) {
         if (anArray == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         actions = anArray;
     }

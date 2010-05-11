@@ -173,7 +173,7 @@ public final class DefineJPEGImage3 implements ImageTag {
      * Returns  a copy of the alpha channel data.
      */
     public byte[] getAlpha() {
-        return alpha;
+        return Arrays.copyOf(alpha, alpha.length);
     }
 
     /**
@@ -245,7 +245,7 @@ public final class DefineJPEGImage3 implements ImageTag {
 
     private void decodeInfo()
     {
-        JPEGInfo info = new JPEGInfo();
+        final JPEGInfo info = new JPEGInfo();
         info.decode(image);
         width = info.getWidth();
         height = info.getHeight();

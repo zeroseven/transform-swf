@@ -65,7 +65,10 @@ import com.flagstone.transform.image.ImageFormat;
  * BufferedImageDecoder decodes BufferedImages so they can be used in a Flash
  * file.
  */
+@SuppressWarnings("PMD.TooManyMethods")
 public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
+
+    private static final String BAD_FORMAT = "Unsupported format";
 
     private transient ImageFormat format;
     private transient int width;
@@ -126,7 +129,7 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
             object = new DefineImage2(identifier, width, height, zip(image));
             break;
         default:
-            throw new AssertionError("Unsupported format");
+            throw new AssertionError(BAD_FORMAT);
         }
         return object;
     }
@@ -176,7 +179,7 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
             object = new DefineImage2(identifier, width, height, zip(image));
             break;
         default:
-            throw new DataFormatException("Unsupported format");
+            throw new DataFormatException(BAD_FORMAT);
         }
         return object;
     }
@@ -341,7 +344,7 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
             }
             break;
         default:
-            throw new DataFormatException("Unsupported format");
+            throw new DataFormatException(BAD_FORMAT);
         }
 
         return bufferedImage;
@@ -504,7 +507,7 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
             }
             break;
         default:
-            throw new DataFormatException("Unsupported format");
+            throw new DataFormatException(BAD_FORMAT);
         }
 
         return bufferedImage;
@@ -645,7 +648,7 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
                 }
                 break;
             default:
-                throw new DataFormatException("Unsupported format");
+                throw new DataFormatException(BAD_FORMAT);
             }
 
         } else if (buffer.getDataType() == DataBuffer.TYPE_BYTE) {
@@ -829,7 +832,7 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
                 }
                 break;
             default:
-                throw new DataFormatException("Unsupported format");
+                throw new DataFormatException(BAD_FORMAT);
             }
         } else if (buffer.getDataType() == DataBuffer.TYPE_USHORT) {
             final short[] pixels = ((DataBufferUShort) buffer).getData(); // NOPMD
@@ -837,9 +840,9 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
 
             switch (obj.getType()) {
             case BufferedImage.TYPE_USHORT_555_RGB:
-                throw new DataFormatException("Unsupported format");
+                throw new DataFormatException(BAD_FORMAT);
             case BufferedImage.TYPE_USHORT_565_RGB:
-                throw new DataFormatException("Unsupported format");
+                throw new DataFormatException(BAD_FORMAT);
             case BufferedImage.TYPE_USHORT_GRAY:
                 format = ImageFormat.RGB8;
                 image = new byte[height * width * 4];
@@ -858,10 +861,10 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
                 }
                 break;
             default:
-                throw new DataFormatException("Unsupported format");
+                throw new DataFormatException(BAD_FORMAT);
             }
         } else {
-            throw new DataFormatException("Unsupported format");
+            throw new DataFormatException(BAD_FORMAT);
         }
     }
 

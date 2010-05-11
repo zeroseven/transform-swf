@@ -292,7 +292,7 @@ public final class FontInfo implements MovieTag {
      */
     public void setName(final String aString) {
         if (aString == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         name = aString;
     }
@@ -368,7 +368,7 @@ public final class FontInfo implements MovieTag {
      */
     public void setCodes(final List<Integer> anArray) {
         if (anArray == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         codes = anArray;
     }
@@ -422,11 +422,11 @@ public final class FontInfo implements MovieTag {
         coder.writeString(name);
         coder.adjustPointer(-8);
         coder.writeBits(0, 2);
-        coder.writeBits(small ? 1 : 0, 1);
+        coder.writeBool(small);
         coder.writeBits(encoding, 2);
-        coder.writeBits(italic ? 1 : 0, 1);
-        coder.writeBits(bold ? 1 : 0, 1);
-        coder.writeBits(wideCodes ? 1 : 0, 1);
+        coder.writeBool(italic);
+        coder.writeBool(bold);
+        coder.writeBool(wideCodes);
 
         for (final Integer code : codes) {
             coder.writeWord(code.intValue(), wideCodes ? 2 : 1);

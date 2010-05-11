@@ -31,10 +31,6 @@
 
 package com.flagstone.transform.sound;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
-
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -336,15 +332,18 @@ public final class SoundInfo implements SWFEncodeable {
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         int length = 3;
-
-        length += (inPoint == null) ? 0 : 4;
-        length += (outPoint == null) ? 0 : 4;
-        length += (loopCount == null) ? 0 : 2;
-
+        if (inPoint != null) {
+            length += 4;
+        }
+        if (outPoint != null) {
+            length += 4;
+        }
+        if (loopCount != null) {
+            length += 2;
+        }
         if (envelope != null) {
             length += envelope.prepareToEncode(coder, context);
         }
-
         return length;
     }
 
@@ -353,10 +352,10 @@ public final class SoundInfo implements SWFEncodeable {
             throws CoderException {
         coder.writeWord(identifier, 2);
         coder.writeBits(mode, 4);
-        coder.writeBits(envelope == null ? 0 : 1, 1);
-        coder.writeBits(loopCount == null ? 0 : 1, 1);
-        coder.writeBits(outPoint == null ? 0 : 1, 1);
-        coder.writeBits(inPoint == null ? 0 : 1, 1);
+        coder.writeBool(envelope != null);
+        coder.writeBool(loopCount != null);
+        coder.writeBool(outPoint != null);
+        coder.writeBool(inPoint != null);
 
         if (inPoint != null) {
             coder.writeWord(inPoint, 4);

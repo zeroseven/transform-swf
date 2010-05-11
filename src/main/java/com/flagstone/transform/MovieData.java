@@ -59,7 +59,7 @@ public final class MovieData implements MovieTag {
     /** TODO(method). */
     public MovieData(final byte[] bytes) {
         if (bytes == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         if (bytes.length == 0) {
             throw new ArraySizeException(0, Integer.MAX_VALUE, bytes.length);

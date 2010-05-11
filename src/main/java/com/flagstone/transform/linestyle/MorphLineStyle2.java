@@ -63,8 +63,8 @@ public final class MorphLineStyle2 implements SWFEncodeable,
     private int joinStyle;
     private FillStyle fillStyle;
 
-    private boolean scaledHorizontally;
-    private boolean scaledVertically;
+    private boolean horizontal;
+    private boolean vertical;
     private boolean pixelAligned;
     private boolean lineClosed;
 
@@ -118,8 +118,8 @@ public final class MorphLineStyle2 implements SWFEncodeable,
         setStartColor(startColor);
         setEndColor(endColor);
 
-        scaledVertically = true;
-        scaledVertically = true;
+        vertical = true;
+        vertical = true;
         lineClosed = true;
     }
 
@@ -146,8 +146,8 @@ public final class MorphLineStyle2 implements SWFEncodeable,
         endCap = object.endCap;
         joinStyle = object.joinStyle;
 
-        scaledHorizontally = object.scaledHorizontally;
-        scaledVertically = object.scaledVertically;
+        horizontal = object.horizontal;
+        vertical = object.vertical;
         pixelAligned = object.pixelAligned;
         lineClosed = object.lineClosed;
         miterLimit = object.miterLimit;
@@ -215,7 +215,7 @@ public final class MorphLineStyle2 implements SWFEncodeable,
      */
     public void setStartColor(final Color aColor) {
         if (aColor == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         startColor = aColor;
     }
@@ -228,7 +228,7 @@ public final class MorphLineStyle2 implements SWFEncodeable,
      */
     public void setEndColor(final Color aColor) {
         if (aColor == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         endColor = aColor;
     }
@@ -318,23 +318,23 @@ public final class MorphLineStyle2 implements SWFEncodeable,
     }
 
     /** TODO(method). */
-    public boolean isScaledHorizontally() {
-        return scaledHorizontally;
+    public boolean isHorizontal() {
+        return horizontal;
     }
 
     /** TODO(method). */
-    public void setScaledHorizontally(final boolean scaled) {
-        scaledHorizontally = scaled;
+    public void setHorizontal(final boolean scaled) {
+        horizontal = scaled;
     }
 
     /** TODO(method). */
-    public boolean isScaledVertically() {
-        return scaledVertically;
+    public boolean isVertical() {
+        return vertical;
     }
 
     /** TODO(method). */
-    public void setScaledVertically(final boolean scaled) {
-        scaledVertically = scaled;
+    public void setVertical(final boolean scaled) {
+        vertical = scaled;
     }
 
     /** TODO(method). */
@@ -389,7 +389,7 @@ public final class MorphLineStyle2 implements SWFEncodeable,
     public String toString() {
         return String.format(FORMAT, startWidth, endWidth, startColor,
                 endColor, fillStyle, startCap, endCap, joinStyle,
-                scaledHorizontally, scaledVertically, pixelAligned, lineClosed,
+                horizontal, vertical, pixelAligned, lineClosed,
                 miterLimit);
     }
 
@@ -412,7 +412,7 @@ public final class MorphLineStyle2 implements SWFEncodeable,
             length += 4;
         }
 
-        if (scaledHorizontally || scaledVertically) {
+        if (horizontal || vertical) {
             context.getVariables().put(Context.SCALING_STROKE, 1);
         }
 
@@ -441,32 +441,22 @@ public final class MorphLineStyle2 implements SWFEncodeable,
     private int pack() {
 
         int value = 0;
-
-        switch (startCap) {
-        case 1:
+        
+        if (startCap == 1) {
             value |= 0x00004000;
-            break;
-        case 2:
+        } else if (startCap == 2) {
             value |= 0x00008000;
-            break;
-        default:
-            break;
         }
-
-        switch (joinStyle) {
-        case 1:
+        
+        if (joinStyle == 1) {
             value |= 0x00001000;
-            break;
-        case 2:
+        } else if (joinStyle == 2) {
             value |= 0x00002000;
-            break;
-        default:
-            break;
         }
 
         value |= fillStyle == null ? 0 : 0x00000800;
-        value |= scaledHorizontally ? 0 : 0x00000400;
-        value |= scaledVertically ? 0 : 0x00000200;
+        value |= horizontal ? 0 : 0x00000400;
+        value |= vertical ? 0 : 0x00000200;
         value |= pixelAligned ? 0x00000100 : 0;
         value |= lineClosed ? 0 : 0x00000004;
         value |= endCap;
@@ -496,8 +486,8 @@ public final class MorphLineStyle2 implements SWFEncodeable,
         }
 
         hasFillStyle = (value & 0x00000800) != 0;
-        scaledHorizontally = (value & 0x00000400) == 0;
-        scaledVertically = (value & 0x00000200) == 0;
+        horizontal = (value & 0x00000400) == 0;
+        vertical = (value & 0x00000200) == 0;
         pixelAligned = (value & 0x00000100) != 0;
         lineClosed = (value & 0x00000004) == 0;
         endCap = value & 0x00000003;

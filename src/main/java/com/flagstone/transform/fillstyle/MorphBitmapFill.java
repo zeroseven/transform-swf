@@ -223,7 +223,7 @@ public final class MorphBitmapFill implements FillStyle {
      */
     public void setStartTransform(final CoordTransform aTransform) {
         if (aTransform == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         startTransform = aTransform;
     }
@@ -237,7 +237,7 @@ public final class MorphBitmapFill implements FillStyle {
      */
     public void setEndTransform(final CoordTransform aTransform) {
         if (aTransform == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         endTransform = aTransform;
     }

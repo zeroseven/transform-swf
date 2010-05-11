@@ -141,7 +141,7 @@ public final class StartSound2 implements MovieTag {
      */
     public void setSound(final SoundInfo aSound) {
         if (aSound == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         sound = aSound;
     }

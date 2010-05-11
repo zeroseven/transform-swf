@@ -32,6 +32,7 @@ package com.flagstone.transform;
 
 import java.util.Arrays;
 
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.DefineTag;
@@ -55,12 +56,16 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  */
 public final class DefineData implements DefineTag {
 
-    private static final String FORMAT = "DefineData: {"
-            + "identifier=%d; data=byte[%d] {...} }";
+    /** Format string used in toString() method. */
+    private static final String FORMAT = "DefineData: { identifier=%d;"
+            + " data=byte[%d] {...} }";
 
+    /** Unique identifier for this definition. */
     private int identifier;
+    /** Binary encoded data. */
     private byte[] data;
 
+    /** Length of the encoded object. */
     private transient int length;
 
     /**
@@ -81,14 +86,15 @@ public final class DefineData implements DefineTag {
         if (length > SWFDecoder.MAX_LENGTH) {
             length = coder.readWord(4, false);
         }
-        final int end = coder.getPointer() + (length << 3);
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
         identifier = coder.readWord(2, false);
         coder.adjustPointer(32);
         data = coder.readBytes(new byte[length - 6]);
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
                     (coder.getPointer() - end) >> 3);
         }
     }
@@ -98,12 +104,12 @@ public final class DefineData implements DefineTag {
      *
      * @param uid
      *            the unique identifier used to reference this object.
-     * @param data
+     * @param bytes
      *            the data to initialize the object.
      */
-    public DefineData(final int uid, final byte[] data) {
+    public DefineData(final int uid, final byte[] bytes) {
         setIdentifier(uid);
-        setData(data);
+        setData(bytes);
     }
 
     /**
@@ -148,7 +154,7 @@ public final class DefineData implements DefineTag {
      */
     public void setData(final byte[] bytes) {
         if (bytes == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         data = Arrays.copyOf(bytes, bytes.length);
     }
@@ -175,7 +181,8 @@ public final class DefineData implements DefineTag {
             throws CoderException {
 
         final int start = coder.getPointer();
-        final int type = MovieTypes.DEFINE_BINARY_DATA << SWFEncoder.LENGTH_BITS;
+        final int type = MovieTypes.DEFINE_BINARY_DATA
+                << SWFEncoder.LENGTH_BITS;
 
         if (length > SWFEncoder.MAX_LENGTH) {
             coder.writeWord(type | SWFEncoder.EXTENDED, 2);

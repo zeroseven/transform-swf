@@ -48,7 +48,7 @@ public final class ShapeData implements ShapeRecord {
     /** TODO(method). */
     public ShapeData(final byte[] bytes) {
         if (bytes == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         data = Arrays.copyOf(bytes, bytes.length);
     }

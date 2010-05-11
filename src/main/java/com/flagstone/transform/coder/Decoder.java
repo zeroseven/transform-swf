@@ -168,7 +168,7 @@ public class Decoder extends Coder {
             return new String(readBytes(new byte[numberOfBytes]), 0,
                     numberOfBytes, charset);
         } catch (final java.io.UnsupportedEncodingException e) {
-            throw new UnsupportedCharsetException(charset);
+            throw new UnsupportedCharsetException(charset); //NOPMD
         }
     }
 

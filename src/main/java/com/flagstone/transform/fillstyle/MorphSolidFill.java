@@ -121,7 +121,7 @@ public final class MorphSolidFill implements FillStyle {
      */
     public void setStartColor(final Color aColor) {
         if (aColor == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         startColor = aColor;
     }
@@ -134,7 +134,7 @@ public final class MorphSolidFill implements FillStyle {
      */
     public void setEndColor(final Color aColor) {
         if (aColor == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         endColor = aColor;
     }

@@ -70,7 +70,7 @@ public final class ButtonSound implements MovieTag {
             ButtonEvent.PRESS, ButtonEvent.RELEASE);
 
     private int identifier;
-    private Map<ButtonEvent, SoundInfo>table;
+    private transient Map<ButtonEvent, SoundInfo>table;
     
     private transient int length;
 
@@ -95,36 +95,23 @@ public final class ButtonSound implements MovieTag {
 
         identifier = coder.readWord(2, false);
         table = new LinkedHashMap<ButtonEvent, SoundInfo>();
-       
-        if (coder.readWord(2, false) != 0) {
-            coder.adjustPointer(-16);
-            table.put(ButtonEvent.ROLL_OUT, new SoundInfo(coder));
-        }
-        
-        if (coder.getPointer() != end) {
-            if (coder.readWord(2, false) != 0) {
-                coder.adjustPointer(-16);
-                table.put(ButtonEvent.ROLL_OVER, new SoundInfo(coder));
-            }
-        }
 
-        if (coder.getPointer() != end) {
-            if (coder.readWord(2, false) != 0) {
-                coder.adjustPointer(-16);
-                table.put(ButtonEvent.PRESS, new SoundInfo(coder));
-            }
-        }
-        
-        if (coder.getPointer() != end) {
-            if (coder.readWord(2, false) != 0) {
-                coder.adjustPointer(-16);
-                table.put(ButtonEvent.RELEASE, new SoundInfo(coder));
-            }
-        }
+        decodeInfo(ButtonEvent.ROLL_OUT, coder, end);
+        decodeInfo(ButtonEvent.ROLL_OVER, coder, end);
+        decodeInfo(ButtonEvent.PRESS, coder, end);
+        decodeInfo(ButtonEvent.RELEASE, coder, end);
 
         if (coder.getPointer() != end) {
             throw new CoderException(getClass().getName(), start >> 3, length,
                     (coder.getPointer() - end) >> 3);
+        }
+    }
+    
+    private void decodeInfo(final ButtonEvent event, 
+            final SWFDecoder coder, final int end) throws CoderException {
+        if (coder.getPointer() != end && coder.readWord(2, false) != 0) {
+            coder.adjustPointer(-16);
+            table.put(event, new SoundInfo(coder));
         }
     }
 
@@ -235,7 +222,7 @@ public final class ButtonSound implements MovieTag {
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         length = 2;
-        
+
         for (ButtonEvent event : EVENTS) {
             if (table.containsKey(event)) {
                 length += table.get(event).prepareToEncode(coder, context);

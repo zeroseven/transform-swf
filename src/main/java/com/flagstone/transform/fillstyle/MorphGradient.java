@@ -143,7 +143,7 @@ public final class MorphGradient implements SWFEncodeable {
      */
     public void setStart(final Gradient gradient) {
         if (gradient == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         start = gradient;
     }
@@ -157,7 +157,7 @@ public final class MorphGradient implements SWFEncodeable {
      */
     public void setEnd(final Gradient gradient) {
         if (gradient == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         end = gradient;
     }

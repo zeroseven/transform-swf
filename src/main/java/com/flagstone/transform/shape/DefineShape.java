@@ -238,7 +238,7 @@ public final class DefineShape implements DefineTag {
      */
     public DefineShape add(final LineStyle style) {
         if (style == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         lineStyles.add(style);
         return this;
@@ -252,7 +252,7 @@ public final class DefineShape implements DefineTag {
      */
     public DefineShape add(final FillStyle style) {
         if (style == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         fillStyles.add(style);
         return this;
@@ -294,7 +294,7 @@ public final class DefineShape implements DefineTag {
      */
     public void setBounds(final Bounds aBounds) {
         if (aBounds == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         bounds = aBounds;
     }
@@ -307,7 +307,7 @@ public final class DefineShape implements DefineTag {
      */
     public void setFillStyles(final List<FillStyle> anArray) {
         if (anArray == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         fillStyles = anArray;
     }
@@ -321,7 +321,7 @@ public final class DefineShape implements DefineTag {
      */
     public void setLineStyles(final List<LineStyle> anArray) {
         if (anArray == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         lineStyles = anArray;
     }
@@ -334,7 +334,7 @@ public final class DefineShape implements DefineTag {
      */
     public void setShape(final Shape aShape) {
         if (aShape == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         shape = aShape;
     }

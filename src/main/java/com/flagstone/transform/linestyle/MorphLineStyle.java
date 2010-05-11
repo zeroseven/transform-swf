@@ -185,7 +185,7 @@ public final class MorphLineStyle implements SWFEncodeable {
      */
     public void setStartColor(final Color aColor) {
         if (aColor == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         startColor = aColor;
     }
@@ -198,7 +198,7 @@ public final class MorphLineStyle implements SWFEncodeable {
      */
     public void setEndColor(final Color aColor) {
         if (aColor == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         endColor = aColor;
     }

@@ -80,27 +80,11 @@ public final class SWFEncoder extends Encoder {
     public static int sizeVariableU32(final int value) {
 
         int val = value;
-        int size;
-
-        if (val > 127) {
-            size = 2;
+        int size = 1;
+        
+        while (val > 127) {
+            size += 1;
             val = val >>> 7;
-
-            if (val > 127) {
-                size += 1;
-                val = val >>> 7;
-
-                if (val > 127) {
-                    size += 1;
-                    val = val >>> 7;
-
-                    if (val > 127) {
-                        size += 1;
-                    }
-                }
-            }
-        } else {
-            size = 1;
         }
         return size;
     }
@@ -171,32 +155,30 @@ public final class SWFEncoder extends Encoder {
     public void writeHalf(final float value) {
         final int intValue = Float.floatToIntBits(value);
 
-        int s =  (intValue >> 16) & 0x00008000;
-        int e = ((intValue >> 23) & 0x000000ff) - (127 - 15);
-        int m =   intValue        & 0x007fffff;
-         
-        if (e <= 0) {
-            if (e < -10) {
+        final int sign = (intValue >> 16) & 0x00008000;
+        final int exponent = ((intValue >> 23) & 0x000000ff) - (127 - 15);
+        int mantissa = intValue & 0x007fffff;
+
+        if (exponent <= 0) {
+            if (exponent < -10) {
                 writeWord(0, 2);
             } else {
-                m = (m | 0x00800000) >> (1 - e);                
-                writeWord((s | (m >> 13)), 2);
+                mantissa = (mantissa | 0x00800000) >> (1 - exponent);
+                writeWord((sign | (mantissa >> 13)), 2);
             }
-        }
-        else if (e == 0xff - (127 - 15)) {
-            if (m == 0) { // Inf
-                writeWord((s | 0x7c00), 2);
-            } 
+        } else if (exponent == 0xff - (127 - 15)) {
+            if (mantissa == 0) { // Inf
+                writeWord((sign | 0x7c00), 2);
+            }
             else { // NAN
-                m >>= 13;
-                writeWord((s | 0x7c00 | m | ((m == 0) ? 1 : 0)), 2);
+                mantissa >>= 13;
+                writeWord((sign | 0x7c00 | mantissa | ((mantissa == 0) ? 1 : 0)), 2);
             }
-        }
-        else {
-            if (e > 30) { // Overflow
-                writeWord((s | 0x7c00), 2);
+        } else {
+            if (exponent > 30) { // Overflow
+                writeWord((sign | 0x7c00), 2);
             } else {
-                writeWord((s | (e << 10) | (m >> 13)), 2);
+                writeWord((sign | (exponent << 10) | (mantissa >> 13)), 2);
             }
         }
     }

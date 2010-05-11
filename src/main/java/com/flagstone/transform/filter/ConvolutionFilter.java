@@ -36,25 +36,24 @@ import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.Color;
-import com.flagstone.transform.filter.BevelFilter.Builder;
 
 /** TODO(class). */
 public final class ConvolutionFilter implements Filter {
 
     /** TODO(class). */
-    public static class Builder {
-        private float[][] matrix;
-        private float divisor;
-        private float bias;
-        private Color color;
-        private boolean clamp;
-        private boolean alpha;
+    public static final class Builder {
+        private transient float[][] matrix;
+        private transient float divisor;
+        private transient float bias;
+        private transient Color color;
+        private transient boolean clamp;
+        private transient boolean alpha;
         
-        private int rows;
-        private int cols;
+        private transient int rows;
+        private transient int cols;
         
         /** TODO(method). */
-        public Builder matrix(float[][] matrix) {
+        public Builder setMatrix(final float[][] matrix) {
             rows = matrix.length;
             cols = matrix[0].length;
             this.matrix = new float[rows][cols];
@@ -67,31 +66,31 @@ public final class ConvolutionFilter implements Filter {
         }
         
         /** TODO(method). */
-        public Builder divisor(float value) {
+        public Builder setDivisor(final float value) {
             divisor = value;
             return this;
         }
         
         /** TODO(method). */
-        public Builder bias(float value) {
+        public Builder setBias(final float value) {
             bias = value;
             return this;
         }
         
         /** TODO(method). */
-        public Builder color(Color color) {
+        public Builder setColor(final Color color) {
             this.color = color;
             return this;
         }
         
         /** TODO(method). */
-        public Builder clamp(boolean clamp) {
+        public Builder setClamp(final boolean clamp) {
             this.clamp = clamp;
             return this;
         }
         
         /** TODO(method). */
-        public Builder alpha(boolean alpha) {
+        public Builder setAlpha(final boolean alpha) {
             this.alpha = alpha;
             return this;
         }
@@ -105,17 +104,17 @@ public final class ConvolutionFilter implements Filter {
     private static final String FORMAT = "ConvolutionFilter: { matrix=%s; "
             + "divisor=%d; bias=%d; color=%s; clamp=%s; alpha=%s }";
 
-    private final float[][] matrix;
-    private final float divisor;
-    private final float bias;
-    private final Color color;
-    private final boolean clamp;
-    private final boolean alpha;
+    private final transient float[][] matrix;
+    private final transient float divisor;
+    private final transient float bias;
+    private final transient Color color;
+    private final transient boolean clamp;
+    private final transient boolean alpha;
 
     private transient int rows;
     private transient int cols;
     
-    private ConvolutionFilter(Builder builder) {
+    public ConvolutionFilter(final Builder builder) {
         matrix = builder.matrix;
         divisor = builder.divisor;
         bias = builder.bias;

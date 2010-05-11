@@ -144,7 +144,7 @@ public final class MorphGradientFill implements FillStyle {
      */
     public MorphGradientFill add(final MorphGradient aGradient) {
         if (aGradient == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         if (gradients.size() == 15) {
             throw new IllegalStateException("Maximum number of gradients exceeded.");
@@ -165,16 +165,13 @@ public final class MorphGradientFill implements FillStyle {
     }
 
     /** TODO(method). */
-    public void setType(final GradientType type) {
-        switch (type) {
-        case LINEAR:
-            this.type = 0x10;
-            break;
-        default:
-            this.type = 0x12;
-            break;
+    public void setType(final GradientType gradientType) {
+        if (gradientType == GradientType.LINEAR) {
+            type = 0x10;
+        } else {
+            type = 0x12;
         }
-     }
+    }
 
     /**
      * Returns the coordinate transform mapping the gradient square onto
@@ -209,7 +206,7 @@ public final class MorphGradientFill implements FillStyle {
      */
     public void setStartTransform(final CoordTransform aTransform) {
         if (aTransform == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         startTransform = aTransform;
     }
@@ -223,7 +220,7 @@ public final class MorphGradientFill implements FillStyle {
      */
     public void setEndTransform(final CoordTransform aTransform) {
         if (aTransform == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         endTransform = aTransform;
     }
@@ -239,7 +236,7 @@ public final class MorphGradientFill implements FillStyle {
      */
     public void setGradients(final List<MorphGradient> anArray) {
         if (anArray == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         if (anArray.size() > 15) {
             throw new IllegalStateException("Maximum number of gradients exceeded.");

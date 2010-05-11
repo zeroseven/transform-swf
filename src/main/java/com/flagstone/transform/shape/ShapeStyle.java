@@ -253,7 +253,7 @@ public final class ShapeStyle implements ShapeRecord {
      */
     public ShapeStyle add(final LineStyle style) {
         if (style == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         lineStyles.add(style);
         return this;
@@ -267,7 +267,7 @@ public final class ShapeStyle implements ShapeRecord {
      */
     public ShapeStyle add(final FillStyle style) {
         if (style == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         fillStyles.add(style);
         return this;
@@ -329,6 +329,36 @@ public final class ShapeStyle implements ShapeRecord {
     }
 
     /**
+     * Sets the x-coordinate of any relative move.
+     *
+     * @param coord
+     *            move the current point by aNumber in the x direction. Must be
+     *            in the range -65535..65535.
+     */
+    public ShapeStyle setMoveX(final Integer coord) {
+        if ((coord != null) && ((coord < -65535) || (coord > 65535))) {
+            throw new IllegalArgumentRangeException(-65535, 65535, coord);
+        }
+        moveX = coord;
+        return this;
+    }
+    
+    /**
+     * Sets the x-coordinate of any relative move.
+     *
+     * @param coord
+     *            move the current point by aNumber in the x direction. Must be
+     *            in the range -65535..65535.
+     */
+    public ShapeStyle setMoveY(final Integer coord) {
+        if ((coord != null) && ((coord < -65535) || (coord > 65535))) {
+            throw new IllegalArgumentRangeException(-65535, 65535, coord);
+        }
+        moveY = coord;
+        return this;
+    }
+
+    /**
      * Sets the coordinates of any relative move.
      *
      * @param xCoord
@@ -342,7 +372,7 @@ public final class ShapeStyle implements ShapeRecord {
     public ShapeStyle setMove(final Integer xCoord, final Integer yCoord) {
         if (((xCoord == null) && (yCoord != null))
                 || ((xCoord != null) && (yCoord == null))) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         if ((xCoord != null) && ((xCoord < -65535) || (xCoord > 65535))) {
             throw new IllegalArgumentRangeException(-65535, 65535, xCoord);
@@ -406,7 +436,7 @@ public final class ShapeStyle implements ShapeRecord {
      */
     public ShapeStyle setLineStyles(final List<LineStyle> anArray) {
         if (anArray == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         lineStyles = anArray;
         return this;
@@ -421,7 +451,7 @@ public final class ShapeStyle implements ShapeRecord {
      */
     public ShapeStyle setFillStyles(final List<FillStyle> anArray) {
         if (anArray == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         fillStyles = anArray;
         return this;
@@ -513,11 +543,11 @@ public final class ShapeStyle implements ShapeRecord {
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         coder.writeBits(0, 1);
-        coder.writeBits(hasStyles ? 1 : 0, 1);
-        coder.writeBits(hasLine ? 1 : 0, 1);
-        coder.writeBits(hasAlt ? 1 : 0, 1);
-        coder.writeBits(hasFill ? 1 : 0, 1);
-        coder.writeBits(hasMove ? 1 : 0, 1);
+        coder.writeBool(hasStyles);
+        coder.writeBool(hasLine);
+        coder.writeBool(hasAlt);
+        coder.writeBool(hasFill);
+        coder.writeBool(hasMove);
 
         final Map<Integer, Integer> vars = context.getVariables();
 

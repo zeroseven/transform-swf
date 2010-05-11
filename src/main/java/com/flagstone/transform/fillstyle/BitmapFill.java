@@ -224,7 +224,7 @@ public final class BitmapFill implements FillStyle {
      */
     public void setTransform(final CoordTransform aTransform) {
         if (aTransform == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         transform = aTransform;
     }

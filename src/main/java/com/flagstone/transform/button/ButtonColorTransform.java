@@ -166,7 +166,7 @@ public final class ButtonColorTransform implements MovieTag {
      */
     public void setColorTransform(final ColorTransform transform) {
         if (transform == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         colorTransform = transform;
     }

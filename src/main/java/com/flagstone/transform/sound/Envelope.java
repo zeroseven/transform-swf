@@ -233,7 +233,7 @@ public final class Envelope implements SWFEncodeable {
      */
     public Envelope add(final Level level) {
         if (level == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         levels.add(level);
         return this;
@@ -256,7 +256,7 @@ public final class Envelope implements SWFEncodeable {
      */
     public void setLevels(final List<Level> anArray) {
         if (anArray == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         levels = anArray;
     }

@@ -105,7 +105,7 @@ public final class MovieMetaData implements MovieTag {
     /** TODO(method). */
     public void setMetaData(final String aString) {
         if (aString == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         metaData = aString;
     }

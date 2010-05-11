@@ -35,11 +35,12 @@ public class IllegalArgumentRangeException extends IllegalArgumentException {
 
     private static final long serialVersionUID = -9208368642722953411L;
     
-    private int lower;
-    private int upper;
-    private int value;
+    private final transient int lower;
+    private final transient int upper;
+    private final transient int value;
 
-    public IllegalArgumentRangeException(int lower, int upper, int value) {
+    public IllegalArgumentRangeException(final int lower, final int upper, 
+            final int value) {
         super("Lower Bound: " + lower + " Upper Bound: "+ upper
                 + " Value: " + value);
         this.lower = lower;

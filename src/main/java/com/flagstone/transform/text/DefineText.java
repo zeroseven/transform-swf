@@ -234,7 +234,7 @@ public final class DefineText implements DefineTag {
      */
     public DefineText add(final TextSpan obj) {
         if (obj == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         objects.add(obj);
         return this;
@@ -271,7 +271,7 @@ public final class DefineText implements DefineTag {
      */
     public void setBounds(final Bounds aBounds) {
         if (aBounds == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         bounds = aBounds;
     }
@@ -286,7 +286,7 @@ public final class DefineText implements DefineTag {
      */
     public void setTransform(final CoordTransform aTransform) {
         if (aTransform == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         transform = aTransform;
     }
@@ -300,7 +300,7 @@ public final class DefineText implements DefineTag {
      */
     public void setObjects(final List<TextSpan> array) {
         if (array == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         objects = array;
     }

@@ -130,7 +130,7 @@ public final class ScenesAndLabels implements MovieTag {
             throw new IllegalArgumentRangeException(0, 65535, offset);
         }
         if (name == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         if (name.length() == 0) {
             throw new StringSizeException(0, Integer.MAX_VALUE, 0);
@@ -147,7 +147,7 @@ public final class ScenesAndLabels implements MovieTag {
     /** TODO(method). */
     public void setScenes(final Map<Integer, String> map) {
         if (map == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         scenes = map;
     }
@@ -158,7 +158,7 @@ public final class ScenesAndLabels implements MovieTag {
             throw new IllegalArgumentRangeException(0, 65535, offset);
         }
         if (name == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         if (name.length() == 0) {
             throw new StringSizeException(0, Integer.MAX_VALUE, 0);
@@ -175,7 +175,7 @@ public final class ScenesAndLabels implements MovieTag {
     /** TODO(method). */
     public void setLabels(final Map<Integer, String> map) {
         if (map == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         labels = map;
     }

@@ -180,7 +180,7 @@ public final class DefineJPEGImage implements ImageTag {
      */
     public void setImage(final byte[] bytes) {
         if (bytes == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         if (bytes.length == 0) {
             throw new ArraySizeException(0, Integer.MAX_VALUE, bytes.length);
@@ -230,7 +230,7 @@ public final class DefineJPEGImage implements ImageTag {
     }
 
     private void decodeInfo() {
-        JPEGInfo info = new JPEGInfo();
+        final JPEGInfo info = new JPEGInfo();
         info.decode(image);
         width = info.getWidth();
         height = info.getHeight();

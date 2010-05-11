@@ -354,7 +354,7 @@ public final class AudioData implements VideoTag {
      */
     public void setData(final byte[] bytes) {
         if (bytes == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         data = Arrays.copyOf(bytes, bytes.length);
     }

@@ -135,9 +135,9 @@ public final class ButtonShape implements SWFEncodeable {
         }
         
         if (hasFilters) {
-            SWFFactory<Filter> decoder = context.getRegistry().getFilterDecoder();
-            
-            int count = coder.readByte();   
+            final SWFFactory<Filter> decoder =
+                context.getRegistry().getFilterDecoder();
+            final int count = coder.readByte();   
             filters = new ArrayList<Filter>(count);
             for (int i=0; i<count; i++) {
                filters.add(decoder.getObject(coder, context)); 
@@ -148,6 +148,11 @@ public final class ButtonShape implements SWFEncodeable {
         
         if (hasBlend) {
             blend = coder.readByte();
+            if (blend == 0) {
+                blend = 1;
+            }
+        } else {
+            blend = 0;
         }
     }
 
@@ -155,6 +160,7 @@ public final class ButtonShape implements SWFEncodeable {
      * Creates am uninitialised ButtonShape object.
      */
     public ButtonShape() {
+        // Empty constructor
     }
 
     /**
@@ -280,7 +286,7 @@ public final class ButtonShape implements SWFEncodeable {
      */
     public ButtonShape setTransform(final CoordTransform aTransform) {
         if (aTransform == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         transform = aTransform;
         return this;
@@ -309,7 +315,7 @@ public final class ButtonShape implements SWFEncodeable {
      */
     public ButtonShape setColorTransform(final ColorTransform aTransform) {
         if (aTransform == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         colorTransform = aTransform;
         return this;
@@ -318,7 +324,7 @@ public final class ButtonShape implements SWFEncodeable {
     /** TODO(method). */
     public ButtonShape add(final Filter filter) {
         if (filter == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         filters.add(filter);
         return this;
@@ -332,7 +338,7 @@ public final class ButtonShape implements SWFEncodeable {
     /** TODO(method). */
     public ButtonShape setFilters(final List<Filter> array) {
         if (array == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         filters = array;
         return this;
@@ -345,11 +351,7 @@ public final class ButtonShape implements SWFEncodeable {
 
     /** TODO(method). */
     public ButtonShape setBlend(final Blend mode) {
-        if (mode == null) {
-            blend = null;
-        } else {
-            blend = mode.getValue();
-        }
+        blend = mode.getValue();
         return this;
     }
 
@@ -368,8 +370,8 @@ public final class ButtonShape implements SWFEncodeable {
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         
-        hasBlend = blend != null;
-        hasFilters = !filters.isEmpty(); 
+        hasBlend = blend != 0;
+        hasFilters ^= filters.isEmpty();
         
         int length = 5 + transform.prepareToEncode(coder, context);
 

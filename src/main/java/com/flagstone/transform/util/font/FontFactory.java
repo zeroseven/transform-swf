@@ -44,7 +44,7 @@ import java.util.zip.DataFormatException;
  */
 public final class FontFactory {
 
-    private FontDecoder decoder;
+    private transient FontDecoder decoder;
 
     /**
      * TODO(method).
@@ -77,7 +77,7 @@ public final class FontFactory {
             throw new FileNotFoundException(url.getFile());
         }
 
-        String mimeType = connection.getContentType();
+        final String mimeType = connection.getContentType();
         decoder = FontRegistry.getFontProvider(mimeType);
 
         if (decoder == null) {

@@ -80,34 +80,6 @@ public final class CanvasTest {
     }
 
     @Test
-    public void rectangle() throws DataFormatException, IOException {
-        final File destFile = new File(resultDir, "rectangle.swf");
-        path.rect(width / 2, -height / 2, width, height);
-        showShape(path.defineShape(1), destFile);
-    }
-
-    @Test
-    public void roundedRectangle() throws DataFormatException, IOException {
-        final File destFile = new File(resultDir, "rounded.swf");
-        path.rect(width / 2, height / 2, width, height, 10);
-        showShape(path.defineShape(1), destFile);
-    }
-
-    @Test
-    public void circle() throws DataFormatException, IOException {
-        final File destFile = new File(resultDir, "circle.swf");
-        path.circle(-width / 2, height / 2, height / 2);
-        showShape(path.defineShape(1), destFile);
-    }
-
-    @Test
-    public void ellipse() throws DataFormatException, IOException {
-        final File destFile = new File(resultDir, "ellipse.swf");
-        path.ellipse(-width / 2, -height / 2, width / 2, height / 2);
-        showShape(path.defineShape(1), destFile);
-    }
-
-    @Test
     public void rpolyline() throws DataFormatException, IOException {
         final File destFile = new File(resultDir, "rpolyline.swf");
 
@@ -130,12 +102,13 @@ public final class CanvasTest {
     private void showShape(final DefineShape2 shape, final File file)
             throws DataFormatException, IOException {
         final Movie movie = new Movie();
+        final Place2.Builder builder = new Place2.Builder();
         movie.setFrameRate(1.0f);
         movie.setFrameSize(shape.getBounds());
         movie.add(new Background(WebPalette.LIGHT_BLUE.color()));
 
         movie.add(shape);
-        movie.add(Place2.show(shape, 1, 0, 0));
+        movie.add(builder.show(shape, 1, 0, 0));
         movie.add(ShowFrame.getInstance());
 
         movie.encodeToFile(file);

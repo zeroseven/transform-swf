@@ -155,7 +155,7 @@ public final class Push implements Action {
     /** Type identifying Void values. */
     private static final int TYPE_VOID = 3;
     /** Type identifying RegisterIndex object. */
-    private static final int TYPE_RINDEX = 4;
+    private static final int TYPE_REGISTER = 4;
     /** Type identifying Boolean values. */
     private static final int TYPE_BOOLEAN = 5;
     /** Type identifying Double values. */
@@ -240,7 +240,7 @@ public final class Push implements Action {
                 values.add(Void.getInstance());
                 valuesLength -= LENGTH_VOID;
                 break;
-            case TYPE_RINDEX:
+            case TYPE_REGISTER:
                 values.add(new RegisterIndex(coder.readByte()));
                 valuesLength -= LENGTH_RINDEX;
                 break;
@@ -397,7 +397,7 @@ public final class Push implements Action {
                     coder.writeWord(((TableIndex) obj).getIndex(), 2);
                 }
             } else if (obj instanceof RegisterIndex) {
-                coder.writeWord(TYPE_RINDEX, 1);
+                coder.writeWord(TYPE_REGISTER, 1);
                 coder.writeWord(((RegisterIndex) obj).getNumber(), 1);
             } else {
                 throw new CoderException(getClass().getName(), 0, 0, 0,

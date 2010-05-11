@@ -88,7 +88,8 @@ public final class FrameTest {
 
     @Test
     public void frameWithCommand() throws CoderException {
-        final Place2 command = Place2.show(1, 1, 0, 0);
+        final Place2.Builder builder = new Place2.Builder();
+        final Place2 command = builder.show(1, 1, 0, 0);
 
         movie.add(command);
         movie.add(ShowFrame.getInstance());
@@ -168,10 +169,11 @@ public final class FrameTest {
     @Test
     public void addFrameToMovie() throws CoderException {
         final Frame frame = new Frame();
+        final Place2.Builder builder = new Place2.Builder();
         frame.setLabel("label");
         frame.addDefinition(new DefineTextField(1).setBounds(new Bounds(0, 0,
                 100, 100)));
-        frame.addCommand(Place2.show(1, 1, 0, 0));
+        frame.addCommand(builder.show(1, 1, 0, 0));
         frame.addToMovie(movie);
 
         final List<Frame> frames = Frame.split(movie);

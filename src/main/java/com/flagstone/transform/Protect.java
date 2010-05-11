@@ -149,7 +149,7 @@ public final class Protect implements MovieTag {
      */
     public void setPassword(final String aString) {
         if (aString == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         password = aString;
     }

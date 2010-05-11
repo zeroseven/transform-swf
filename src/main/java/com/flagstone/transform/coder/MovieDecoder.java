@@ -105,6 +105,7 @@ import com.flagstone.transform.video.VideoFrame;
  * instances of Transform classes.
  */
 //TODO(class)
+@SuppressWarnings("PMD")
 public final class MovieDecoder implements SWFFactory<MovieTag> {
 
     /** TODO(method). */
@@ -280,7 +281,7 @@ public final class MovieDecoder implements SWFFactory<MovieTag> {
             obj = new Import2(coder);
             break;
         case MovieTypes.FONT_ALIGNMENT:
-            obj = new FontAlignment(coder, context);
+            obj = new FontAlignment(coder);
             break;
         case MovieTypes.TEXT_SETTINGS:
             obj = new TextSettings(coder);
@@ -322,7 +323,7 @@ public final class MovieDecoder implements SWFFactory<MovieTag> {
             obj = new DefineJPEGImage4(coder);
             break;
         case MovieTypes.DEFINE_FONT_4:
-            obj = new DefineFont4(coder, context);
+            obj = new DefineFont4(coder);
             break;
         default:
             obj = new MovieObject(coder);

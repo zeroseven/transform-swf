@@ -353,7 +353,7 @@ public final class TextSpan implements SWFEncodeable {
      */
     public void setCharacters(final List<GlyphIndex> anArray) {
         if (anArray == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         characters = anArray;
     }
@@ -411,10 +411,10 @@ public final class TextSpan implements SWFEncodeable {
         coder.writeBits(1, 1);
         coder.writeBits(0, 3);
 
-        coder.writeBits(hasFont ? 1 : 0, 1);
-        coder.writeBits(hasColor ? 1 : 0, 1);
-        coder.writeBits(hasY ? 1 : 0, 1);
-        coder.writeBits(hasX ? 1 : 0, 1);
+        coder.writeBool(hasFont);
+        coder.writeBool(hasColor);
+        coder.writeBool(hasY);
+        coder.writeBool(hasX);
 
         if (hasStyle) {
             if (hasFont) {

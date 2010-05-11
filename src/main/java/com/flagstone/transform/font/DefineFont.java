@@ -181,7 +181,7 @@ public final class DefineFont implements DefineTag {
      */
     public DefineFont add(final Shape obj) {
         if (obj == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         shapes.add(obj);
         return this;
@@ -203,7 +203,7 @@ public final class DefineFont implements DefineTag {
      */
     public void setShapes(final List<Shape> anArray) {
         if (anArray == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         shapes = anArray;
     }

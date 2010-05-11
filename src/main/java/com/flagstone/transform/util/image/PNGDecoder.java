@@ -57,9 +57,12 @@ import com.flagstone.transform.image.ImageFormat;
  * be used in a Flash file.
  */
 //TODO(class)
+@SuppressWarnings("PMD.TooManyMethods")
 public final class PNGDecoder implements ImageProvider, ImageDecoder {
-    // Tables mapping grey scale values onto 8-bit colour channels
+    
+    private static final String BAD_FORMAT = "Unsupported format";
 
+    // Tables mapping grey scale values onto 8-bit colour channels
     private static final int[] MONOCHROME = {0, 255};
     private static final int[] GREYCSALE2 = {0, 85, 170, 255};
     private static final int[] GREYCSALE4 = {0, 17, 34, 51, 68, 85, 102, 119,
@@ -140,7 +143,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
         info.setDetermineImageNumber(true);
 
         if (!info.check()) {
-            throw new DataFormatException("Unsupported format");
+            throw new DataFormatException(BAD_FORMAT);
         }
 
         read(new FileInputStream(file), (int) file.length());
@@ -149,8 +152,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
     /** TODO(method). */
     public void read(final URL url) throws IOException, DataFormatException {
         final URLConnection connection = url.openConnection();
-
-        int length = connection.getContentLength();
+        final int length = connection.getContentLength();
 
         if (length < 0) {
             throw new FileNotFoundException(url.getFile());
@@ -185,7 +187,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
             object = new DefineImage2(identifier, width, height, zip(image));
             break;
         default:
-            throw new AssertionError("Unsupported format");
+            throw new AssertionError(BAD_FORMAT);
         }
         return object;
     }
@@ -207,7 +209,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
 
         for (int i = 0; i < 8; i++) {
             if (coder.readByte() != SIGNATURE[i]) {
-                throw new DataFormatException("Unsupported format");
+                throw new DataFormatException(BAD_FORMAT);
             }
         }
 
@@ -284,7 +286,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
             attributes[COLOUR_COMPONENTS] = 4;
             break;
         default:
-            throw new DataFormatException("Unsupported format");
+            throw new DataFormatException(BAD_FORMAT);
         }
     }
 
@@ -390,7 +392,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
         int colInc = 0;
 
         int imageIndex = 0;
-        int pixelCount = 0;
+//        int pixelCount = 0;
 
         int row = 0;
         int col = 0;
@@ -401,8 +403,8 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
 
         final int numberOfPasses = (attributes[INTERLACE_METHOD] == 1) ? 7 : 1;
 
-        int xc = 0;
-        int xp = 0;
+        int cindex = 0;
+        int pindex = 0;
 
         for (int pass = 0; pass < numberOfPasses; pass++) {
             rowStart = (attributes[INTERLACE_METHOD] == 1) ? START_ROW[pass] : 0;
@@ -416,8 +418,8 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
 
             for (row = rowStart; (row < height)
                     && (imageIndex < encodedImage.length); row += rowInc) {
-                for (col = colStart, pixelCount = 0, scanBits = 0; col < width; col += colInc) {
-                    pixelCount++;
+                for (col = colStart, /* pixelCount = 0, */ scanBits = 0; col < width; col += colInc) {
+                    /* pixelCount++; */
                     scanBits += bitsPerPixel;
                 }
 
@@ -435,37 +437,37 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
                 case NO_FILTER:
                     break;
                 case SUB_FILTER:
-                    for (xc = bytesPerPixel, xp = 0; xc < scanLength; xc++, xp++) {
-                        current[xc] = (byte) (current[xc] + current[xp]);
+                    for (cindex = bytesPerPixel, pindex = 0; cindex < scanLength; cindex++, pindex++) {
+                        current[cindex] = (byte) (current[cindex] + current[pindex]);
                     }
                     break;
                 case UP_FILTER:
-                    for (xc = 0; xc < scanLength; xc++) {
-                        current[xc] = (byte) (current[xc] + previous[xc]);
+                    for (cindex = 0; cindex < scanLength; cindex++) {
+                        current[cindex] = (byte) (current[cindex] + previous[cindex]);
                     }
                     break;
                 case AVG_FILTER:
-                    for (xc = 0; xc < bytesPerPixel; xc++) {
-                        current[xc] = (byte) (current[xc] + (0 + (0xFF & previous[xc])) / 2);
+                    for (cindex = 0; cindex < bytesPerPixel; cindex++) {
+                        current[cindex] = (byte) (current[cindex] + (0 + (0xFF & previous[cindex])) / 2);
                     }
 
-                    for (xc = bytesPerPixel, xp = 0; xc < scanLength; xc++, xp++) {
-                        current[xc] = (byte) (current[xc] + ((0xFF & current[xp]) + (0xFF & previous[xc])) / 2);
+                    for (cindex = bytesPerPixel, pindex = 0; cindex < scanLength; cindex++, pindex++) {
+                        current[cindex] = (byte) (current[cindex] + ((0xFF & current[pindex]) + (0xFF & previous[cindex])) / 2);
                     }
                     break;
                 case PAETH_FILTER:
-                    for (xc = 0; xc < bytesPerPixel; xc++) {
-                        current[xc] = (byte) (current[xc] + paeth((byte) 0,
-                                previous[xc], (byte) 0));
+                    for (cindex = 0; cindex < bytesPerPixel; cindex++) {
+                        current[cindex] = (byte) (current[cindex] + paeth((byte) 0,
+                                previous[cindex], (byte) 0));
                     }
 
-                    for (xc = bytesPerPixel, xp = 0; xc < scanLength; xc++, xp++) {
-                        current[xc] = (byte) (current[xc] + paeth(current[xp],
-                                previous[xc], previous[xp]));
+                    for (cindex = bytesPerPixel, pindex = 0; cindex < scanLength; cindex++, pindex++) {
+                        current[cindex] = (byte) (current[cindex] + paeth(current[pindex],
+                                previous[cindex], previous[pindex]));
                     }
                     break;
                 default:
-                    throw new DataFormatException("Unsupported format");
+                    throw new DataFormatException(BAD_FORMAT);
                 }
 
                 System.arraycopy(current, 0, previous, 0, scanLength);
@@ -490,7 +492,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
                         decodeAlphaTrueColour(coder, row, col);
                         break;
                     default:
-                        throw new DataFormatException("Unsupported format");
+                        throw new DataFormatException(BAD_FORMAT);
                     }
                 }
             }
@@ -498,36 +500,36 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
     }
 
     private int paeth(final byte lower, final byte upper, final byte next) {
-        final int a = 0xFF & lower;
-        final int b = 0xFF & upper;
-        final int c = 0xFF & next;
-        final int p = a + b - c;
-        int pa = p - a;
+        final int left = 0xFF & lower;
+        final int above = 0xFF & upper;
+        final int upperLeft = 0xFF & next;
+        final int estimate = left + above - upperLeft;
+        int distLeft = estimate - left;
 
-        if (pa < 0) {
-            pa = -pa;
+        if (distLeft < 0) {
+            distLeft = -distLeft;
         }
 
-        int pb = p - b;
+        int distAbove = estimate - above;
 
-        if (pb < 0) {
-            pb = -pb;
+        if (distAbove < 0) {
+            distAbove = -distAbove;
         }
 
-        int pc = p - c;
+        int distUpperLeft = estimate - upperLeft;
 
-        if (pc < 0) {
-            pc = -pc;
+        if (distUpperLeft < 0) {
+            distUpperLeft = -distUpperLeft;
         }
 
-        int value;
+        final int value;
 
-        if ((pa <= pb) && (pa <= pc)) {
-            value = a;
-        } else if (pb <= pc) {
-            value = b;
+        if ((distLeft <= distAbove) && (distLeft <= distUpperLeft)) {
+            value = left;
+        } else if (distAbove <= distUpperLeft) {
+            value = above;
         } else {
-            value = c;
+            value = upperLeft;
         }
 
         return value;
@@ -560,7 +562,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
             colour = (byte) (pixel >> 8);
             break;
         default:
-            throw new DataFormatException("Unsupported format");
+            throw new DataFormatException(BAD_FORMAT);
         }
 
         image[row * width + col] = colour;
@@ -582,7 +584,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
                 pixel = coder.readWord(2, false);
                 colour = (byte) (pixel >> 8);
             } else {
-                throw new DataFormatException("Unsupported format");
+                throw new DataFormatException(BAD_FORMAT);
             }
 
             image[row * width + col + i] = colour;
@@ -611,7 +613,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
             index = coder.readWord(2, false);
             break;
         default:
-            throw new DataFormatException("Unsupported format");
+            throw new DataFormatException(BAD_FORMAT);
         }
         image[row * width + col] = (byte) index;
     }
@@ -649,7 +651,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
             alpha = coder.readWord(2, false) >> 8;
             break;
         default:
-            throw new DataFormatException("Unsupported format");
+            throw new DataFormatException(BAD_FORMAT);
         }
 
         image[row * width + col] = colour;
@@ -671,7 +673,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
                 pixel = coder.readWord(2, false);
                 colour = (byte) (pixel >> 8);
             } else {
-                throw new DataFormatException("Unsupported format");
+                throw new DataFormatException(BAD_FORMAT);
             }
 
             image[row * width + col + i] = colour;

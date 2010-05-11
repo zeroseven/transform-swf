@@ -144,7 +144,7 @@ import com.flagstone.transform.video.ImageBlock;
 //TODO(class)
 public final class ImageFactory {
 
-    private ImageDecoder decoder;
+    private transient ImageDecoder decoder;
 
     /**
      * Create an image definition for the image located in the specified file.
@@ -197,7 +197,7 @@ public final class ImageFactory {
             throw new FileNotFoundException(url.getFile());
         }
 
-        String mimeType = connection.getContentType();
+        final String mimeType = connection.getContentType();
         decoder = ImageRegistry.getImageProvider(mimeType);
 
         if (decoder == null) {
@@ -305,9 +305,9 @@ public final class ImageFactory {
         int src = 0;
         int dst = 0;
 
-        byte[] image = decoder.getImage();
-        int width = decoder.getWidth();
-        int height = decoder.getHeight();
+        final byte[] image = decoder.getImage();
+        final int width = decoder.getWidth();
+        final int height = decoder.getHeight();
 
         final byte[] formattedImage = new byte[width * height * 3];
 
@@ -349,9 +349,8 @@ public final class ImageFactory {
                     }
                 }
 
-                blocks
-                        .add(new ImageBlock(xSpan, ySpan,
-                                zip(blockData, offset)));
+                blocks.add(new ImageBlock(xSpan, ySpan, 
+                        zip(blockData, offset)));
             }
         }
     }

@@ -134,7 +134,7 @@ public final class DefineFontName implements DefineTag {
      */
     public void setName(final String aString) {
         if (aString == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         name = aString;
     }
@@ -147,7 +147,7 @@ public final class DefineFontName implements DefineTag {
     /** TODO(method). */
     public void setCopyright(final String aString) {
         if (aString == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         copyright = aString;
     }

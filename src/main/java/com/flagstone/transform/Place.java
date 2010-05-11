@@ -241,7 +241,7 @@ public final class Place implements MovieTag {
      */
     public Place setTransform(final CoordTransform aTransform) {
         if (aTransform == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         transform = aTransform;
         return this;

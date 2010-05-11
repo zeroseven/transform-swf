@@ -42,14 +42,12 @@ import com.flagstone.transform.coder.SWFEncoder;
 /** TODO(class). */
 public final class ColorMatrixFilter implements Filter {
 
+    private static final String ROW_FORMAT = "[%f, %f, %f, %f, %f]";
     private static final String FORMAT = "ColorMatrix: { matrix=["
-            + "[%f, %f, %f, %f, %f]"
-            + "[%f, %f, %f, %f, %f]"
-            + "[%f, %f, %f, %f, %f]"
-            + "[%f, %f, %f, %f, %f]"
+            + ROW_FORMAT + ROW_FORMAT + ROW_FORMAT + ROW_FORMAT
             + "]}";
 
-    private final float[] matrix;
+    private final transient float[] matrix;
 
     /**
      * Creates and initialises a ColorMatrix object using values encoded

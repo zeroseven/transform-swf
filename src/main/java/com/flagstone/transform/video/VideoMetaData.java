@@ -149,7 +149,7 @@ public final class VideoMetaData implements VideoTag {
      */
     public void setData(final byte[] data) {
         if (data == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         this.data = Arrays.copyOf(data, data.length);
     }

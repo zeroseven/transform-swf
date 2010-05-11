@@ -115,7 +115,7 @@ public final class Gradient implements SWFEncodeable {
         ratio = aRatio;
 
         if (aColor == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         color = aColor;
     }

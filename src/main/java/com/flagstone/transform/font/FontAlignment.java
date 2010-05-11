@@ -79,7 +79,7 @@ public final class FontAlignment implements MovieTag {
      * @throws CoderException
      *             if an error occurs while decoding the data.
      */
-    public FontAlignment(final SWFDecoder coder, final Context context)
+    public FontAlignment(final SWFDecoder coder)
             throws CoderException {
         final int start = coder.getPointer();
         length = coder.readWord(2, false) & 0x3F;
@@ -188,7 +188,7 @@ public final class FontAlignment implements MovieTag {
     /** TODO(method). */
     public void setZones(final List<GlyphAlignment> array) {
         if (array == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         zones = array;
     }
@@ -196,7 +196,7 @@ public final class FontAlignment implements MovieTag {
     /** TODO(method). */
     public FontAlignment addZone(final GlyphAlignment zone) {
         if (zone == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         zones.add(zone);
         return this;

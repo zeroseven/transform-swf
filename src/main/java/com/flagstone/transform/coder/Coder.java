@@ -31,6 +31,7 @@
 
 package com.flagstone.transform.coder;
 
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.Arrays;
@@ -52,8 +53,10 @@ public class Coder {
     
     /** TODO(doc). */
     public static final int BYTE_ALIGN = 7;
-    /** TODO(doc). */
+    /** Right shift to convert number of bits to number of bytes. */
     public static final int BITS_TO_BYTES = 3;
+    /** Left shift to convert number of bytes to number of bits. */
+    public static final int BYTES_TO_BITS = 3;
     
     public static final int BITS_PER_BYTE = 8;
     public static final int BITS_PER_SHORT = 16;
@@ -107,6 +110,25 @@ public class Coder {
             throw new UnsupportedCharsetException(charSet);
         }
         encoding = charSet;
+    }
+
+    /**
+     * Calculates the length of a string when encoded using the specified
+     * character set.
+     *
+     * @param string
+     *            the string to be encoded.
+     *
+     * @return the number of bytes required to encode the string plus 1 for a
+     *         terminating null character.
+     */
+
+    public final int strlen(final String string) {
+        try {
+            return string.getBytes(encoding).length + 1;
+        } catch (final UnsupportedEncodingException e) {
+            throw new AssertionError(e);
+        }
     }
 
     /**

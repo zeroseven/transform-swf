@@ -59,8 +59,8 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
     private int joinStyle;
     private FillStyle fillStyle;
 
-    private boolean scaledHorizontally;
-    private boolean scaledVertically;
+    private boolean horizontal;
+    private boolean vertical;
     private boolean pixelAligned;
     private boolean lineClosed;
 
@@ -110,8 +110,8 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
         setWidth(width);
         setColor(color);
 
-        scaledVertically = true;
-        scaledVertically = true;
+        vertical = true;
+        vertical = true;
         lineClosed = true;
     }
 
@@ -122,8 +122,8 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
         setWidth(width);
         setFillStyle(style);
 
-        scaledVertically = true;
-        scaledVertically = true;
+        vertical = true;
+        vertical = true;
         lineClosed = true;
     }
 
@@ -147,8 +147,8 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
         endCap = object.endCap;
         joinStyle = object.joinStyle;
 
-        scaledHorizontally = object.scaledHorizontally;
-        scaledVertically = object.scaledVertically;
+        horizontal = object.horizontal;
+        vertical = object.vertical;
         pixelAligned = object.pixelAligned;
         lineClosed = object.lineClosed;
         miterLimit = object.miterLimit;
@@ -189,7 +189,7 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
      */
     public void setColor(final Color aColor) {
         if (aColor == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         color = aColor;
     }
@@ -279,23 +279,23 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
     }
 
     /** TODO(method). */
-    public boolean isScaledHorizontally() {
-        return scaledHorizontally;
+    public boolean isHorizontal() {
+        return horizontal;
     }
 
     /** TODO(method). */
-    public void setScaledHorizontally(final boolean scaled) {
-        scaledHorizontally = scaled;
+    public void setHorizontal(final boolean scaled) {
+        horizontal = scaled;
     }
 
     /** TODO(method). */
-    public boolean isScaledVertically() {
-        return scaledVertically;
+    public boolean isVertical() {
+        return vertical;
     }
 
     /** TODO(method). */
-    public void setScaledVertically(final boolean scaled) {
-        scaledVertically = scaled;
+    public void setVertical(final boolean scaled) {
+        vertical = scaled;
     }
 
     /** TODO(method). */
@@ -349,7 +349,7 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
     @Override
     public String toString() {
         return String.format(FORMAT, width, color, fillStyle, startCap, endCap,
-                joinStyle, scaledHorizontally, scaledVertically, pixelAligned,
+                joinStyle, horizontal, vertical, pixelAligned,
                 lineClosed, miterLimit);
     }
 
@@ -371,7 +371,7 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
             length += 4;
         }
 
-        if (scaledHorizontally || scaledVertically) {
+        if (horizontal || vertical) {
             context.getVariables().put(Context.SCALING_STROKE, 1);
         }
 
@@ -422,8 +422,8 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
         }
 
         value |= fillStyle == null ? 0 : 0x00000800;
-        value |= scaledHorizontally ? 0 : 0x00000400;
-        value |= scaledVertically ? 0 : 0x00000200;
+        value |= horizontal ? 0 : 0x00000400;
+        value |= vertical ? 0 : 0x00000200;
         value |= pixelAligned ? 0x00000100 : 0;
         value |= lineClosed ? 0 : 0x00000004;
         value |= endCap;
@@ -453,8 +453,8 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
         }
 
         hasFillStyle = (value & 0x00000800) != 0;
-        scaledHorizontally = (value & 0x00000400) == 0;
-        scaledVertically = (value & 0x00000200) == 0;
+        horizontal = (value & 0x00000400) == 0;
+        vertical = (value & 0x00000200) == 0;
         pixelAligned = (value & 0x00000100) != 0;
         lineClosed = (value & 0x00000004) == 0;
         endCap = value & 0x00000003;

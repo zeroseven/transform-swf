@@ -32,9 +32,10 @@
 package com.flagstone.transform.coder;
 
 /**
- * MovieTypes defines the constants that identify a MovieTag when it is encoded 
+ * MovieTypes defines the constants that identify a MovieTag when it is encoded
  * according to the Flash file format specification.
  */
+@SuppressWarnings("PMD.LongVariable")
 public final class MovieTypes {
     /** The type used to identify ShowFrame objects when they are encoded. */
     public static final int SHOW_FRAME = 1;

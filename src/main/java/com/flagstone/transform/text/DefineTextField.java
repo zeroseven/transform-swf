@@ -31,9 +31,7 @@
 
 package com.flagstone.transform.text;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
-
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
@@ -221,6 +219,7 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  *
  */
 //TODO(class)
+@SuppressWarnings({"PMD.TooManyFields","PMD.TooManyMethods"})
 public final class DefineTextField implements DefineTag {
     /** TODO(method). */
     public enum Align {
@@ -240,12 +239,12 @@ public final class DefineTextField implements DefineTag {
     private boolean multiline;
     private boolean password;
     private boolean readOnly;
-    private int reserved1;
+    private transient int reserved1;
     private boolean selectable;
     private boolean bordered;
-    private boolean reserved2;
+    private transient boolean reserved2;
     private boolean html;
-    private boolean useGlyphs;
+    private boolean embedded;
     private boolean autoSize;
     private int fontIdentifier;
     private String fontClass;
@@ -309,7 +308,7 @@ public final class DefineTextField implements DefineTag {
         bordered = coder.readBits(1, false) != 0;
         reserved2 = coder.readBits(1, false) != 0;
         html = coder.readBits(1, false) != 0;
-        useGlyphs = coder.readBits(1, false) != 0;
+        embedded = coder.readBits(1, false) != 0;
 
         if (containsFont) {
             fontIdentifier = coder.readWord(2, false);
@@ -377,7 +376,7 @@ public final class DefineTextField implements DefineTag {
         bordered = object.bordered;
         reserved2 = object.reserved2;
         html = object.html;
-        useGlyphs = object.useGlyphs;
+        embedded = object.embedded;
         autoSize = object.autoSize;
         fontIdentifier = object.fontIdentifier;
         fontClass = object.fontClass;
@@ -472,7 +471,7 @@ public final class DefineTextField implements DefineTag {
     /**
      * Does the text field contain HTML.
      */
-    public boolean isHTML() {
+    public boolean isHtml() {
         return html;
     }
 
@@ -503,8 +502,8 @@ public final class DefineTextField implements DefineTag {
      *         defined in the movie, false if the glyphs will be loaded from the
      *         platform on which the Flash Player is hosted.
      */
-    public boolean useFontGlyphs() {
-        return useGlyphs;
+    public boolean isEmbedded() {
+        return embedded;
     }
 
     /**
@@ -617,7 +616,7 @@ public final class DefineTextField implements DefineTag {
      */
     public DefineTextField setBounds(final Bounds aBounds) {
         if (aBounds == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         bounds = aBounds;
         return this;
@@ -695,7 +694,7 @@ public final class DefineTextField implements DefineTag {
      * @param aFlag
      *            set whether the text field contains HTML.
      */
-    public DefineTextField setHTML(final boolean aFlag) {
+    public DefineTextField setHtml(final boolean aFlag) {
         html = aFlag;
         return this;
     }
@@ -710,8 +709,8 @@ public final class DefineTextField implements DefineTag {
      *            font in the movie (true) or use a font loaded by the Flash
      *            Player (false).
      */
-    public DefineTextField setUseFontGlyphs(final boolean aFlag) {
-        useGlyphs = aFlag;
+    public DefineTextField setEmbedded(final boolean aFlag) {
+        embedded = aFlag;
         return this;
     }
 
@@ -727,7 +726,7 @@ public final class DefineTextField implements DefineTag {
              throw new IllegalArgumentRangeException(1, 65536, uid);
         }
         fontIdentifier = uid;
-        fontClass = null;
+        fontClass = null;  //NOPMD
         return this;
     }
 
@@ -916,7 +915,7 @@ public final class DefineTextField implements DefineTag {
         builder.append("; selectable = ").append(selectable);
         builder.append("; bordered = ").append(bordered);
         builder.append("; HTML = ").append(html);
-        builder.append("; useFontGlyphs = ").append(useGlyphs);
+        builder.append("; embedded = ").append(embedded);
         builder.append("; fontIdentifier = ").append(fontIdentifier)
                 .append(";");
         builder.append("; fontHeight = ").append(fontHeight);
@@ -972,28 +971,28 @@ public final class DefineTextField implements DefineTag {
         vars.put(Context.TRANSPARENT, 1);
 
         bounds.encode(coder, context);
-        coder.writeBits(initialText != null ? 1 : 0, 1);
-        coder.writeBits(wordWrapped ? 1 : 0, 1);
-        coder.writeBits(multiline ? 1 : 0, 1);
-        coder.writeBits(password ? 1 : 0, 1);
-        coder.writeBits(readOnly ? 1 : 0, 1);
-        coder.writeBits(color == null ? 0 : 1, 1);
-        coder.writeBits(maxLength > 0 ? 1 : 0, 1);
-        coder.writeBits(fontIdentifier == 0 ? 0 : 1, 1);
-        coder.writeBits(fontClass == null ? 0 : 1, 1);
-        coder.writeBits(autoSize ? 1 : 0, 1);
-        coder.writeBits(containsLayout() ? 1 : 0, 1);
-        coder.writeBits(selectable ? 1 : 0, 1);
-        coder.writeBits(bordered ? 1 : 0, 1);
+        coder.writeBool(initialText != null);
+        coder.writeBool(wordWrapped);
+        coder.writeBool(multiline);
+        coder.writeBool(password);
+        coder.writeBool(readOnly);
+        coder.writeBool(color != null);
+        coder.writeBool(maxLength > 0);
+        coder.writeBool(fontIdentifier != 0);
+        coder.writeBool(fontClass != null);
+        coder.writeBool(autoSize);
+        coder.writeBool(containsLayout());
+        coder.writeBool(selectable);
+        coder.writeBool(bordered);
         coder.writeBits(0, 1);
-        coder.writeBits(html ? 1 : 0, 1);
-        coder.writeBits(useGlyphs ? 1 : 0, 1);
+        coder.writeBool(html);
+        coder.writeBool(embedded);
 
-        if (fontIdentifier != 0) {
-            coder.writeWord(fontIdentifier, 2);
+        if (fontIdentifier == 0) {
+            coder.writeString(fontClass);
             coder.writeWord(fontHeight, 2);
         } else if (fontClass != null) {
-            coder.writeString(fontClass);
+            coder.writeWord(fontIdentifier, 2);
             coder.writeWord(fontHeight, 2);
         }
 

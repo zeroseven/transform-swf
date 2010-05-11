@@ -70,7 +70,7 @@ public final class DefineVideo implements DefineTag {
     private int width;
     private int height;
     private int deblocking;
-    private boolean smoothing;
+    private boolean smoothed;
     private int codec;
 
     private transient int length;
@@ -103,7 +103,7 @@ public final class DefineVideo implements DefineTag {
         coder.readBits(5, false);
 
         deblocking = coder.readBits(2, false);
-        smoothing = coder.readBits(1, false) == 1;
+        smoothed = coder.readBits(1, false) == 1;
         codec = coder.readByte();
 
         if (coder.getPointer() != end) {
@@ -145,7 +145,7 @@ public final class DefineVideo implements DefineTag {
         setWidth(width);
         setHeight(height);
         setDeblocking(deblocking);
-        setSmoothing(smoothing);
+        setSmoothed(smoothing);
         setCodec(codec);
     }
 
@@ -163,7 +163,7 @@ public final class DefineVideo implements DefineTag {
         width = object.width;
         height = object.height;
         deblocking = object.deblocking;
-        smoothing = object.smoothing;
+        smoothed = object.smoothed;
         codec = object.codec;
     }
 
@@ -289,7 +289,7 @@ public final class DefineVideo implements DefineTag {
      * played.
      */
     public boolean isSmoothed() {
-        return smoothing;
+        return smoothed;
     }
 
     /**
@@ -299,8 +299,8 @@ public final class DefineVideo implements DefineTag {
      * @param smoothing
      *            true if smoothing is turned on, false if it is turned off.
      */
-    public void setSmoothing(final boolean smoothing) {
-        this.smoothing = smoothing;
+    public void setSmoothed(final boolean smoothing) {
+        smoothed = smoothing;
     }
 
     /**
@@ -356,7 +356,7 @@ public final class DefineVideo implements DefineTag {
     @Override
     public String toString() {
         return String.format(FORMAT, identifier, frameCount, width, height,
-                deblocking, smoothing, codec);
+                deblocking, smoothed, codec);
     }
 
     /** {@inheritDoc} */
@@ -387,7 +387,7 @@ public final class DefineVideo implements DefineTag {
         coder.writeWord(height, 2);
         coder.writeBits(0, 5);
         coder.writeBits(deblocking, 2);
-        coder.writeBits(smoothing ? 1 : 0, 1);
+        coder.writeBits(smoothed ? 1 : 0, 1);
         coder.writeByte(codec);
 
         if (coder.getPointer() != end) {

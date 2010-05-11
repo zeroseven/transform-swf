@@ -95,20 +95,21 @@ public final class BMPImageTest {
             final Movie movie = new Movie();
             final ImageFactory factory = new ImageFactory();
             factory.read(sourceFile);
-            final ImageTag image = factory.defineImage(movie.identifier());
-    
+            final ImageTag image = factory.defineImage(movie.nextIdentifier());
+            final Place2.Builder builder = new Place2.Builder();
+   
             final int xOrigin = image.getWidth() / 2;
             final int yOrigin = image.getHeight() / 2;
     
             final DefineShape3 shape = factory.defineEnclosingShape(movie
-                    .identifier(), 10, -xOrigin, -yOrigin, null);
+                    .nextIdentifier(), 10, -xOrigin, -yOrigin, null);
     
             movie.setFrameRate(1.0f);
             movie.setFrameSize(shape.getBounds());
             movie.add(new Background(WebPalette.LIGHT_BLUE.color()));
             movie.add(image);
             movie.add(shape);
-            movie.add(Place2.show(shape, 1, 0, 0));
+            movie.add(builder.show(shape, 1, 0, 0));
             movie.add(ShowFrame.getInstance());
             movie.encodeToFile(destFile);
         

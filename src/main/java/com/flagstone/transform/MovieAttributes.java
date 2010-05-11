@@ -68,7 +68,7 @@ public final class MovieAttributes implements MovieTag {
     }
 
     /** TODO(method). */
-    public MovieAttributes(Set<MovieAttribute>set) {
+    public MovieAttributes(final Set<MovieAttribute>set) {
         setAttributes(set);
     }
 
@@ -86,7 +86,7 @@ public final class MovieAttributes implements MovieTag {
 
     /** TODO(method). */
     public Set<MovieAttribute> getAttributes() {
-        Set<MovieAttribute>set = EnumSet.noneOf(MovieAttribute.class);
+        final Set<MovieAttribute>set = EnumSet.noneOf(MovieAttribute.class);
         
         if ((attributes & 1) != 0) {
             set.add(MovieAttribute.NETWORK_ACCESS);
@@ -101,7 +101,7 @@ public final class MovieAttributes implements MovieTag {
     }
 
     /** TODO(method). */
-    public void setAttributes(Set<MovieAttribute>set) {
+    public void setAttributes(final Set<MovieAttribute>set) {
         attributes = 0;
         
         if (set.contains(MovieAttribute.NETWORK_ACCESS)) {

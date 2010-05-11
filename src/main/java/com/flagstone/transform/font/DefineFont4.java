@@ -69,7 +69,7 @@ public final class DefineFont4 implements DefineTag {
      * @throws CoderException
      *             if an error occurs while decoding the data.
      */
-    public DefineFont4(final SWFDecoder coder, final Context context)
+    public DefineFont4(final SWFDecoder coder)
             throws CoderException {
         final int start = coder.getPointer();
         length = coder.readWord(2, false) & 0x3F;
@@ -95,7 +95,7 @@ public final class DefineFont4 implements DefineTag {
     }
 
     public DefineFont4(final int uid, final String name, 
-            final boolean isItalic,boolean isBold, byte[] font) {
+            final boolean isItalic, final boolean isBold, final byte[] font) {
         setIdentifier(uid);
         setItalic(isItalic);
         setBold(isBold);
@@ -190,7 +190,7 @@ public final class DefineFont4 implements DefineTag {
      */
     public void setName(final String aString) {
         if (aString == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         name = aString;
     }
@@ -202,7 +202,7 @@ public final class DefineFont4 implements DefineTag {
 
     public void setData(final byte[] bytes) {
         if (bytes == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         data = Arrays.copyOf(bytes, bytes.length);
     }

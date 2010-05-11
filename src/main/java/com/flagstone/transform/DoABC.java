@@ -138,7 +138,7 @@ public final class DoABC implements MovieTag {
      */
     public void setName(final String name) {
         if (name == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         if (name.length() == 0) {
             throw new StringSizeException(0, Integer.MAX_VALUE, 0);
@@ -180,7 +180,7 @@ public final class DoABC implements MovieTag {
      */
     public void setData(final byte[] bytes) {
         if (bytes == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         if (bytes.length == 0) {
             throw new ArraySizeException(0, Integer.MAX_VALUE, bytes.length);

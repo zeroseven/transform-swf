@@ -109,15 +109,15 @@ import com.flagstone.transform.shape.ShapeStyle;
  *</pre>
  */
 //TODO(class)
+@SuppressWarnings({"PMD.TooManyMethods","PMD.TooManyFields"})
 public final class Canvas {
     private static final double FLATTEN_LIMIT = 0.25;
 
-    private transient boolean arePixels;
+    private final transient boolean arePixels;
+    private transient boolean pathInProgress = false;
 
     private final transient double[] cubicX = new double[4];
     private final transient double[] cubicY = new double[4];
-
-    private transient boolean pathInProgress = false;
 
     private transient int initialX;
     private transient int initialY;
@@ -448,15 +448,23 @@ public final class Canvas {
      */
     public void curve(final int acontrolX, final int acontrolY,
             final int aanchorX, final int aanchorY) {
-        final int rcontrolX = (arePixels ? acontrolX * 20 : acontrolX)
-                - currentX;
-        final int rcontrolY = (arePixels ? acontrolY * 20 : acontrolY)
-                - currentY;
-        final int ranchorX = (arePixels ? aanchorX * 20 : aanchorX) - currentX
-                - rcontrolX;
-        final int ranchorY = (arePixels ? aanchorY * 20 : aanchorY) - currentY
-                - rcontrolY;
+        final int rcontrolX;
+        final int rcontrolY;
+        final int ranchorX;
+        final int ranchorY;
 
+        if (arePixels) {
+            rcontrolX = acontrolX * 20 - currentX;
+            rcontrolY = acontrolY * 20 - currentY;
+            ranchorX = aanchorX * 20 - currentX - rcontrolX;
+            ranchorY = aanchorY * 20 - currentY - rcontrolY;
+        } else {
+            rcontrolX = acontrolX - currentX;
+            rcontrolY = acontrolY - currentY;
+            ranchorX = aanchorX - currentX - rcontrolX;
+            ranchorY = aanchorY - currentY - rcontrolY;
+        }
+        
         objects.add(new Curve(rcontrolX, rcontrolY, ranchorX, ranchorY));
 
         if (!pathInProgress) {
@@ -486,10 +494,22 @@ public final class Canvas {
      */
     public void rcurve(final int rcontrolX, final int rcontrolY,
             final int ranchorX, final int ranchorY) {
-        final int px1 = arePixels ? rcontrolX * 20 : rcontrolX;
-        final int py1 = arePixels ? rcontrolY * 20 : rcontrolY;
-        final int px2 = arePixels ? ranchorX * 20 : ranchorX;
-        final int py2 = arePixels ? ranchorY * 20 : ranchorY;
+        final int px1;
+        final int py1;
+        final int px2;
+        final int py2;
+
+        if (arePixels) {
+            px1 = rcontrolX * 20;
+            py1 = rcontrolY * 20;
+            px2 = ranchorX * 20;
+            py2 = ranchorY * 20;
+        } else {
+            px1 = rcontrolX;
+            py1 = rcontrolY;
+            px2 = ranchorX;
+            py2 = ranchorY;
+        }
 
         objects.add(new Curve(px1, py1, px2, py2));
 
@@ -527,13 +547,22 @@ public final class Canvas {
             final int cby, final int anx, final int any) {
         cubicX[0] = currentX;
         cubicY[0] = currentY;
-        cubicX[1] = arePixels ? cax * 20 : cax;
-        cubicY[1] = arePixels ? cay * 20 : cay;
-        cubicX[2] = arePixels ? cbx * 20 : cbx;
-        cubicY[2] = arePixels ? cby * 20 : cby;
-        cubicX[3] = arePixels ? anx * 20 : anx;
-        cubicY[3] = arePixels ? any * 20 : any;
-
+        
+        if (arePixels) {
+            cubicX[1] = cax * 20;
+            cubicY[1] = cay * 20;
+            cubicX[2] = cbx * 20;
+            cubicY[2] = cby * 20;
+            cubicX[3] = anx * 20;
+            cubicY[3] = any * 20;
+        } else {
+            cubicX[1] = cax;
+            cubicY[1] = cay;
+            cubicX[2] = cbx;
+            cubicY[2] = cby;
+            cubicX[3] = anx;
+            cubicY[3] = any;
+        }
         flatten();
     }
 
@@ -568,13 +597,23 @@ public final class Canvas {
             final int anchorY) {
         cubicX[0] = currentX;
         cubicY[0] = currentY;
-        cubicX[1] = currentX + (arePixels ? controlAX * 20 : controlAX);
-        cubicY[1] = currentY + (arePixels ? controlAY * 20 : controlAY);
-        cubicX[2] = currentX + (arePixels ? controlBX * 20 : controlBX);
-        cubicY[2] = currentY + (arePixels ? controlBY * 20 : controlBY);
-        cubicX[3] = currentX + (arePixels ? anchorX * 20 : anchorX);
-        cubicY[3] = currentY + (arePixels ? anchorY * 20 : anchorY);
-
+        
+        if (arePixels) {
+            cubicX[1] = currentX + controlAX * 20;
+            cubicY[1] = currentY + controlAY * 20;
+            cubicX[2] = currentX + controlBX * 20;
+            cubicY[2] = currentY + controlBY * 20;
+            cubicX[3] = currentX + anchorX * 20;
+            cubicY[3] = currentY + anchorY * 20;
+        } else {
+            cubicX[1] = currentX + controlAX;
+            cubicY[1] = currentY + controlAY;
+            cubicX[2] = currentX + controlBX;
+            cubicY[2] = currentY + controlBY;
+            cubicX[3] = currentX + anchorX;
+            cubicY[3] = currentY + anchorY;
+        }
+ 
         flatten();
     }
 
@@ -662,11 +701,23 @@ public final class Canvas {
         final int acontrolX = currentX - controlX;
         final int acontrolY = currentY - controlY;
 
-        final int bcontrolX = (arePixels ? ctrlX * 20 : ctrlX) - currentX;
-        final int bcontrolY = (arePixels ? ctrlY * 20 : ctrlY) - currentY;
+        final int bcontrolX;
+        final int bcontrolY;
 
-        final int pointX = (arePixels ? anchorX * 20 : anchorX) - currentX;
-        final int pointY = (arePixels ? anchorY * 20 : anchorY) - currentY;
+        final int pointX;
+        final int pointY;
+        
+        if (arePixels) {
+            bcontrolX = ctrlX * 20 - currentX;
+            bcontrolY = ctrlY * 20 - currentY;
+            pointX = anchorX * 20 - currentX;
+            pointY = anchorY * 20 - currentY;
+        } else {
+            bcontrolX = ctrlX - currentX;
+            bcontrolY = ctrlY - currentY;
+            pointX = anchorX - currentX;
+            pointY = anchorY - currentY;
+        }
 
         rcurve(acontrolX, acontrolY, bcontrolX, bcontrolY, pointX, pointY);
     }
@@ -697,214 +748,24 @@ public final class Canvas {
         final int acontrolX = currentX - controlX;
         final int acontrolY = currentY - controlY;
 
-        final int bcontrolX = arePixels ? ctrlX * 20 : ctrlX;
-        final int bcontrolY = arePixels ? ctrlY * 20 : ctrlY;
-
-        final int pointX = arePixels ? anchorX * 20 : anchorX;
-        final int pointY = arePixels ? anchorY * 20 : anchorY;
+        final int bcontrolX;
+        final int bcontrolY;
+        final int pointX;
+        final int pointY;
+        
+        if (arePixels) {
+            bcontrolX = ctrlX * 20;
+            bcontrolY = ctrlY * 20;
+            pointX = anchorX * 20;
+            pointY = anchorY * 20;
+        } else {
+            bcontrolX = ctrlX;
+            bcontrolY = ctrlY;
+            pointX = anchorX;
+            pointY = anchorY;
+        }
 
         rcurve(acontrolX, acontrolY, bcontrolX, bcontrolY, pointX, pointY);
-    }
-
-    /**
-     * Draws a closed path in the shape of a rectangle with the specified width
-     * and height. The centre of the rectangle is located at the point (x,y).
-     *
-     * The origin of the shape can be used to control the relative placement of
-     * the rectangle when it is placed on the Flash Player's display list using
-     * either the PlaceObject or PlaceObject2 class.
-     *
-     * @param xCoord
-     *            the x-coordinate of the centre of the rectangle.
-     * @param yCoord
-     *            the y-coordinate of the centre of the rectangle.
-     * @param width
-     *            the width of the rectangle.
-     * @param height
-     *            the height of the rectangle.
-     */
-    public void rect(final int xCoord, final int yCoord, final int width,
-            final int height) {
-        move(xCoord - width / 2, yCoord - height / 2);
-        rline(width, 0);
-        rline(0, height);
-        rline(-width, 0);
-        rline(0, -height);
-    }
-
-    /**
-     * Draws a closed path in the shape of a rectangle with the specified width
-     * and height. The centre of the rectangle is located at the point (0,0).
-     *
-     * @param width
-     *            the width of the rectangle.
-     * @param height
-     *            the height of the rectangle.
-     */
-    public void rect(final int width, final int height) {
-        rect(0, 0, width, height);
-    }
-
-    /**
-     * Draws a closed path in the shape of a rectangle with rounded corners. The
-     * shape is drawn with specified width and height and the radius argument
-     * specified the radius of the quarter circle used to draw the corners.
-     *
-     * The centre of the rectangle is located at the point (x,y).
-     *
-     * The origin of the shape can be used to control the relative placement of
-     * the rectangle when it is placed on the Flash Player's display list using
-     * either the PlaceObject or PlaceObject2 class.
-     *
-     * @param xCoord
-     *            the x-coordinate of the centre of the rectangle.
-     * @param yCoord
-     *            the y-coordinate of the centre of the rectangle.
-     * @param width
-     *            the width of the rectangle.
-     * @param height
-     *            the height of the rectangle.
-     * @param radius
-     *            the radius of the quarter circle used to draw the corners.
-     */
-    public void rect(final int xCoord, final int yCoord, final int width,
-            final int height, final int radius) {
-        final int side = (height < width) ? height : width;
-        final int corner = (radius > side / 2) ? side / 2 : radius;
-
-        move(xCoord, yCoord - height / 2);
-        rline(width / 2 - corner, 0);
-        rcurve(corner, 0, 0, corner);
-        rline(0, height - 2 * corner);
-        rcurve(0, corner, -corner, 0);
-        rline(-(width - 2 * corner), 0);
-        rcurve(-corner, 0, 0, -corner);
-        rline(0, -(height - 2 * corner));
-        rcurve(0, -corner, corner, 0);
-        close();
-    }
-
-    /**
-     * Draws a closed path in the shape of a rectangle with rounded corners. The
-     * shape is drawn with specified width and height and the radius argument
-     * specified the radius of the quarter circle used to draw the corners. The
-     * centre of the rectangle is located at the point (0,0).
-     *
-     * @param width
-     *            the width of the rectangle.
-     * @param height
-     *            the height of the rectangle.
-     * @param radius
-     *            the radius of the quarter circle used to draw the corners.
-     */
-    public void rect(final int width, final int height, final int radius) {
-        rect(0, 0, width, height, radius);
-    }
-
-    /**
-     * Draws a closed path in the shape of an ellipse. The arguments rx and ry
-     * specify the radius of the ellipse in the x and y directions respectively.
-     *
-     * The centre of the ellipse is located at the point (x,y).
-     *
-     * The origin of the shape can be used to control the relative placement of
-     * the ellipse when it is placed on the Flash Player's display list using
-     * either the PlaceObject or PlaceObject2 class.
-     *
-     * @param centreX
-     *            the x-coordinate of the centre of the ellipse.
-     * @param centreY
-     *            the y-coordinate of the centre of the ellipse.
-     * @param radiusX
-     *            the radius of the ellipse in the x direction.
-     * @param radiusY
-     *            the radius of the ellipse in the y direction.
-     */
-    public void ellipse(final int centreX, final int centreY,
-            final int radiusX, final int radiusY) {
-        boolean wasInPixels = false;
-
-        int pcx = centreX;
-        int py = centreY;
-        int prx = radiusX;
-        int pry = radiusY;
-
-        if (arePixels) {
-            arePixels = false;
-            wasInPixels = true;
-
-            pcx *= 20;
-            py *= 20;
-            prx *= 20;
-            pry *= 20;
-        }
-
-        final int startX = (int) (0.707 * prx) + pcx;
-        final int startY = (int) (0.707 * pry) + py;
-
-        final int anchorX = (int) (0.293 * prx);
-        final int anchorY = (int) (0.293 * pry);
-        final int ctrlX = (int) (0.414 * prx);
-        final int ctrlY = (int) (0.414 * pry);
-
-        move(startX, startY);
-        rcurve(-anchorX, anchorY, -ctrlX, 0);
-        rcurve(-ctrlX, 0, -anchorX, -anchorY);
-        rcurve(-anchorX, -anchorY, 0, -ctrlY);
-        rcurve(0, -ctrlY, anchorX, -anchorY);
-        rcurve(anchorX, -anchorY, ctrlX, 0);
-        rcurve(ctrlX, 0, anchorX, anchorY);
-        rcurve(anchorX, anchorY, 0, ctrlY);
-        rcurve(0, ctrlY, -anchorX, anchorY);
-
-        if (wasInPixels) {
-            arePixels = true;
-        }
-    }
-
-    /**
-     * Draws a closed path in the shape of an ellipse. The arguments rx and ry
-     * specify the radius of the ellipse in the x and y directions respectively.
-     *
-     * The centre of the ellipse is located at the point (0,0).
-     *
-     * @param radiusX
-     *            the radius of the ellipse in the x direction.
-     * @param radiusY
-     *            the radius of the ellipse in the y direction.
-     */
-    public void ellipse(final int radiusX, final int radiusY) {
-        ellipse(0, 0, radiusX, radiusY);
-    }
-
-    /**
-     * Draws a closed path in the shape of a circle. The centre of the circle is
-     * located at the point (x,y) with radius r.
-     *
-     * The origin of the shape can be used to control the relative placement of
-     * the circle when it is placed on the Flash Player's display list using
-     * either the PlaceObject or PlaceObject2 class.
-     *
-     * @param xCoord
-     *            the x-coordinate of the centre of the circle.
-     * @param yCoord
-     *            the y-coordinate of the centre of the circle.
-     * @param radius
-     *            the radius of the circle.
-     */
-    public void circle(final int xCoord, final int yCoord, final int radius) {
-        ellipse(xCoord, yCoord, radius, radius);
-    }
-
-    /**
-     * Draws a closed path in the shape of a circle. The centre of the circle is
-     * located at the point (0,0) with radius r.
-     *
-     * @param radius
-     *            the radius of the circle.
-     */
-    public void circle(final int radius) {
-        ellipse(0, 0, radius, radius);
     }
 
     /**

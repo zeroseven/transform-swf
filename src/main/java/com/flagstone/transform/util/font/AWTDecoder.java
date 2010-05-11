@@ -36,24 +36,20 @@ import java.awt.font.GlyphVector;
 import java.awt.font.LineMetrics;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.PathIterator;
-import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.zip.DataFormatException;
 
 import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.font.CharacterFormat;
-import com.flagstone.transform.font.Kerning;
 import com.flagstone.transform.shape.Shape;
 import com.flagstone.transform.util.shape.Canvas;
 
 /** TODO(class). */
 public final class AWTDecoder {
 
-    private List<Font>fonts;
+    private final transient List<Font>fonts;
     
     public AWTDecoder() {
         fonts = new ArrayList<Font>();
@@ -76,7 +72,7 @@ public final class AWTDecoder {
                 new AffineTransform(), true, true);
         java.awt.Font awtFont = aFont.deriveFont(1.0f);
 
-        Font font = new Font();
+        final Font font = new Font();
         
         font.setFace(new FontFace(awtFont.getName(), awtFont.isBold(), awtFont.isItalic()));
         font.setEncoding(CharacterFormat.UCS2);
@@ -120,9 +116,9 @@ public final class AWTDecoder {
         
         font.addGlyph((char)missingGlyph, new Glyph(convertShape(outline), 
                 new Bounds(0, 0, 0, 0), advance));
-                
+
         index = 1;
-        
+
         float ascent = 0.0f;
         float descent = 0.0f;
         float leading = 0.0f;
@@ -143,7 +139,7 @@ public final class AWTDecoder {
 
             font.addGlyph(character,  new Glyph(convertShape(outline), 
                     new Bounds(0, 0, 0, 0), advance));
-            
+
             if (!awtFont.hasUniformLineMetrics()) {
                 final LineMetrics lineMetrics = awtFont.getLineMetrics(
                         new char[] {character}, 0, 1, fontContext);
@@ -162,47 +158,47 @@ public final class AWTDecoder {
         font.setAscent(ascent);
         font.setDescent(descent);
         font.setLeading(leading);
-        
+
         fonts.add(font);
     }
 
-    private Rectangle2D transformToEMSquare(final java.awt.Font font,
-            final FontRenderContext fontContext) {
-        final int numGlyphs = font.getNumGlyphs();
-        int characterCode = 0;
-        int glyphIndex = 0;
-
-        double xCoord = 0.0;
-        double yCoord = 0.0;
-        double width = 0.0;
-        double height = 0.0;
-
-        /*
-         * Scan through all the glyphs looking for glyphs that will fall outside
-         * the left or bottom side of the EM Square once the glyph has been
-         * scaled.
-         */
-        while ((glyphIndex < numGlyphs) && (characterCode < 65536)) {
-            final char currentChar = (char) characterCode;
-
-            if (font.canDisplay(currentChar)) {
-                final GlyphVector glyphVector = font.createGlyphVector(
-                        fontContext, new char[] {currentChar});
-                final Rectangle2D bounds = glyphVector.getGlyphOutline(0)
-                        .getBounds2D();
-
-                xCoord = Math.min(bounds.getX(), xCoord);
-                yCoord = Math.min(bounds.getY(), yCoord);
-
-                width = Math.max(bounds.getWidth(), width);
-                height = Math.max(bounds.getHeight(), height);
-
-                glyphIndex++;
-            }
-            characterCode++;
-        }
-        return new Rectangle2D.Double(xCoord, yCoord, width, height);
-    }
+//    private Rectangle2D transformToEMSquare(final java.awt.Font font,
+//            final FontRenderContext fontContext) {
+//        final int numGlyphs = font.getNumGlyphs();
+//        int characterCode = 0;
+//        int glyphIndex = 0;
+//
+//        double xCoord = 0.0;
+//        double yCoord = 0.0;
+//        double width = 0.0;
+//        double height = 0.0;
+//
+//        /*
+//         * Scan through all the glyphs looking for glyphs that will fall outside
+//         * the left or bottom side of the EM Square once the glyph has been
+//         * scaled.
+//         */
+//        while ((glyphIndex < numGlyphs) && (characterCode < 65536)) {
+//            final char currentChar = (char) characterCode;
+//
+//            if (font.canDisplay(currentChar)) {
+//                final GlyphVector glyphVector = font.createGlyphVector(
+//                        fontContext, new char[] {currentChar});
+//                final Rectangle2D bounds = glyphVector.getGlyphOutline(0)
+//                        .getBounds2D();
+//
+//                xCoord = Math.min(bounds.getX(), xCoord);
+//                yCoord = Math.min(bounds.getY(), yCoord);
+//
+//                width = Math.max(bounds.getWidth(), width);
+//                height = Math.max(bounds.getHeight(), height);
+//
+//                glyphIndex++;
+//            }
+//            characterCode++;
+//        }
+//        return new Rectangle2D.Double(xCoord, yCoord, width, height);
+//    }
 
     private Shape convertShape(final java.awt.Shape glyph) {
         final PathIterator pathIter = glyph.getPathIterator(null);

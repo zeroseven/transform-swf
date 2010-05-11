@@ -139,7 +139,69 @@ import com.flagstone.transform.movieclip.MovieClipEventHandler;
  * @see com.flagstone.transform.util.movie.Layer
  */
 //TODO(class)
+@SuppressWarnings({"PMD.TooManyFields","PMD.TooManyMethods"})
 public final class Place3 implements MovieTag {
+
+    public static final class Builder {
+        /** TODO(method). */
+        public Place3 show(final int identifier, final int layer,
+                final int xCoord, final int yCoord) {
+            final Place3 object = new Place3();
+            object.setType(PlaceType.NEW);
+            object.setLayer(layer);
+            object.setIdentifier(identifier);
+            object.setTransform(CoordTransform.translate(xCoord, yCoord));
+            return object;
+        }
+        
+        /** TODO(method). */
+        public Place3 show(final DefineTag tag, final int layer,
+                final int xCoord, final int yCoord) {
+            final Place3 object = new Place3();
+            object.setType(PlaceType.NEW);
+            object.setLayer(layer);
+            object.setIdentifier(tag.getIdentifier());
+            object.setTransform(CoordTransform.translate(xCoord, yCoord));
+            return object;
+        }
+
+        /** TODO(method). */
+        public Place3 modify(final int layer) {
+            final Place3 object = new Place3();
+            object.setType(PlaceType.MODIFY);
+            object.setLayer(layer);
+            return object;
+        }
+
+        /** TODO(method). */
+        public Place3 move(final int layer, final int xCoord, final int yCoord) {
+            final Place3 object = new Place3();
+            object.setType(PlaceType.MODIFY);
+            object.setLayer(layer);
+            object.setTransform(CoordTransform.translate(xCoord, yCoord));
+            return object;
+        }
+
+        /** TODO(method). */
+        public Place3 replace(final int identifier, final int layer) {
+            final Place3 object = new Place3();
+            object.setType(PlaceType.REPLACE);
+            object.setLayer(layer);
+            object.setIdentifier(identifier);
+            return object;
+        }
+
+        /** TODO(method). */
+        public Place3 replace(final int identifier, final int layer,
+                final int xCoord, final int yCoord) {
+            final Place3 object = new Place3();
+            object.setType(PlaceType.REPLACE);
+            object.setLayer(layer);
+            object.setIdentifier(identifier);
+            object.setTransform(CoordTransform.translate(xCoord, yCoord));
+            return object;
+        }      
+    }
     
     private static final String FORMAT = "PlaceObject3: { type=%s; layer=%d;"
             + " bitmapCached=%s; identifier=%d; transform=%s; "
@@ -147,64 +209,6 @@ public final class Place3 implements MovieTag {
             + " name=%s; className=%s; "
             + " filters=%s; blend=%s; clipEvents=%s}";
     
-    /** TODO(method). */
-    public static Place3 show(final int identifier, final int layer,
-            final int xCoord, final int yCoord) {
-        Place3 object = new Place3();
-        object.setType(PlaceType.NEW);
-        object.setLayer(layer);
-        object.setIdentifier(identifier);
-        object.setTransform(CoordTransform.translate(xCoord, yCoord));
-        return object;
-    }
-    
-    /** TODO(method). */
-    public static Place3 show(final DefineTag tag, final int layer,
-            final int xCoord, final int yCoord) {
-        Place3 object = new Place3();
-        object.setType(PlaceType.NEW);
-        object.setLayer(layer);
-        object.setIdentifier(tag.getIdentifier());
-        object.setTransform(CoordTransform.translate(xCoord, yCoord));
-        return object;
-    }
-
-    /** TODO(method). */
-    public static Place3 modify(final int layer) {
-        Place3 object = new Place3();
-        object.setType(PlaceType.MODIFY);
-        object.setLayer(layer);
-        return object;
-    }
-
-    /** TODO(method). */
-    public static Place3 move(final int layer, final int xCoord, final int yCoord) {
-        Place3 object = new Place3();
-        object.setType(PlaceType.MODIFY);
-        object.setLayer(layer);
-        object.setTransform(CoordTransform.translate(xCoord, yCoord));
-        return object;
-    }
-
-    /** TODO(method). */
-    public static Place3 replace(final int identifier, final int layer) {
-        Place3 object = new Place3();
-        object.setType(PlaceType.REPLACE);
-        object.setLayer(layer);
-        object.setIdentifier(identifier);
-        return object;
-    }
-
-    /** TODO(method). */
-    public static Place3 replace(final int identifier, final int layer,
-            final int xCoord, final int yCoord) {
-        Place3 object = new Place3();
-        object.setType(PlaceType.REPLACE);
-        object.setLayer(layer);
-        object.setIdentifier(identifier);
-        object.setTransform(CoordTransform.translate(xCoord, yCoord));
-        return object;
-    }      
 
     private PlaceType type;
     private int layer;
@@ -224,7 +228,6 @@ public final class Place3 implements MovieTag {
     private transient boolean hasBlend;
     private transient boolean hasFilters; 
     private transient boolean hasImage; 
-    private transient boolean hasClassName; 
 
     /**
      * Creates and initialises a Place3 object using values encoded
@@ -244,7 +247,7 @@ public final class Place3 implements MovieTag {
     // TODO(optimise)
     public Place3(final SWFDecoder coder, final Context context)
             throws CoderException {
-        final int start = coder.getPointer();
+//        final int start = coder.getPointer();
 
         final Map<Integer, Integer> vars = context.getVariables();
         vars.put(Context.TRANSPARENT, 1);
@@ -263,33 +266,34 @@ public final class Place3 implements MovieTag {
         final boolean hasTransform = coder.readBits(1, false) != 0;
 
         switch (coder.readBits(2, false)) {
-        case 1:
-            type = PlaceType.MODIFY;
-            break;
         case 2:
             type = PlaceType.NEW;
             break;
         case 3:
             type = PlaceType.REPLACE;
             break;
-        default:
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    0, "Unsupported format");
+        default: // 0,1
+            type = PlaceType.MODIFY;
+            break;
         }
-        
+
         coder.readBits(3, false);
-        
+
         hasImage = coder.readBits(1, false) != 0;
-        hasClassName = coder.readBits(1, false) != 0;
+        final boolean hasClassName = coder.readBits(1, false) != 0;
         bitmapCached = coder.readBits(1, false) != 0;
         hasBlend = coder.readBits(1, false) != 0;
         hasFilters = coder.readBits(1, false) != 0;
 
         layer = coder.readWord(2, false);
 
-        // The following line implements the logic as described in the SWF 9 specification
-        // but it appears to be incorrect. The class name is not given when hasImage is set.
-        //if (hasClassName || ((type == PlaceType.NEW || type == PlaceType.REPLACE) && hasImage)) {
+        /* The following line implements the logic as described in the SWF 9 
+         * specification but it appears to be incorrect. The class name is not 
+         * given when hasImage is set.
+         * 
+         * if (hasClassName || ((type == PlaceType.NEW 
+         * || type == PlaceType.REPLACE) && hasImage)) {
+         */
         if (hasClassName) {
             className = coder.readString();
         }
@@ -625,7 +629,7 @@ public final class Place3 implements MovieTag {
     /** TODO(method). */
     public void setFilters(final List<Filter> array) {
         if (array == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         filters = array;
     }
@@ -637,11 +641,7 @@ public final class Place3 implements MovieTag {
 
     /** TODO(method). */
     public void setBlend(final Blend mode) {
-        if (mode == null) {
-            blend = null;
-        } else {
-            blend = mode.getValue();
-        }
+        blend = mode.getValue();
     }
 
     /**
@@ -656,7 +656,7 @@ public final class Place3 implements MovieTag {
     public Place3 add(final MovieClipEventHandler aClipEvent)
             throws CoderException {
         if (aClipEvent == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         events.add(aClipEvent);
         return this;
@@ -684,7 +684,7 @@ public final class Place3 implements MovieTag {
      */
     public void setEvents(final List<MovieClipEventHandler> anArray) {
         if (anArray == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         events = anArray;
     }
@@ -692,7 +692,7 @@ public final class Place3 implements MovieTag {
     /** TODO(method). */
     public Place3 add(final Filter filter) {
         if (filter == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         filters.add(filter);
         return this;
@@ -717,7 +717,7 @@ public final class Place3 implements MovieTag {
         vars.put(Context.TRANSPARENT, 1);
         
         hasBlend = blend != null;
-        hasFilters = !filters.isEmpty(); 
+        hasFilters ^= filters.isEmpty(); 
 
         length = 4;
         length += ((type == PlaceType.NEW) || (type == PlaceType.REPLACE)) ? 2
@@ -774,12 +774,12 @@ public final class Place3 implements MovieTag {
 
         final Map<Integer, Integer> vars = context.getVariables();
         vars.put(Context.TRANSPARENT, 1);
-        coder.writeBits(events.isEmpty() ? 0 : 1, 1);
-        coder.writeBits(depth == null ? 0 : 1, 1);
-        coder.writeBits(name == null ? 0 : 1, 1);
-        coder.writeBits(ratio == null ? 0 : 1, 1);
-        coder.writeBits(colorTransform == null ? 0 : 1, 1);
-        coder.writeBits(transform == null ? 0 : 1, 1);
+        coder.writeBool(!events.isEmpty());
+        coder.writeBool(depth != null);
+        coder.writeBool(name != null);
+        coder.writeBool(ratio != null);
+        coder.writeBool(colorTransform != null);
+        coder.writeBool(transform != null);
 
         if (type == PlaceType.MODIFY) {
             coder.writeBits(1, 2);
@@ -790,11 +790,11 @@ public final class Place3 implements MovieTag {
         }
 
         coder.writeBits(0, 3);
-        coder.writeBits(hasImage ? 1 : 0, 1);
-        coder.writeBits(className == null ? 0 : 1, 1);
-        coder.writeBits(bitmapCached ? 1 : 0, 1);
-        coder.writeBits(hasBlend ? 1 : 0, 1);
-        coder.writeBits(hasFilters ? 1 : 0, 1);
+        coder.writeBool(hasImage);
+        coder.writeBool(className != null);
+        coder.writeBool(bitmapCached);
+        coder.writeBool(hasBlend);
+        coder.writeBool(hasFilters);
 
         coder.writeWord(layer, 2);
 

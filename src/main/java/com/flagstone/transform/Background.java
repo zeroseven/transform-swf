@@ -31,6 +31,7 @@
 
 package com.flagstone.transform;
 
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTag;
@@ -60,8 +61,10 @@ import com.flagstone.transform.datatype.Color;
  */
 public final class Background implements MovieTag {
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "Background: { color=%s }";
 
+    /** The colour that will be displayed on the screen background. */
     private Color color;
 
     /**
@@ -81,8 +84,9 @@ public final class Background implements MovieTag {
      */
     public Background(final SWFDecoder coder, final Context context)
             throws CoderException {
-        if ((coder.readWord(2, false) & SWFDecoder.MASK_LENGTH) > SWFDecoder.MAX_LENGTH) {
-            coder.readWord(4, false);
+        if ((coder.readWord(2, false) & SWFDecoder.MASK_LENGTH)
+                > SWFDecoder.MAX_LENGTH) {
+            coder.readWord(Coder.BYTES_PER_WORD, false);
         }
         color = new Color(coder, context);
     }
@@ -110,7 +114,9 @@ public final class Background implements MovieTag {
     }
 
     /**
-     * Returns the colour for the movie background.
+     * Get the colour for the movie background.
+     *
+     * @return the Color for the background of the Flash Player screen.
      */
     public Color getColor() {
         return color;
@@ -119,14 +125,14 @@ public final class Background implements MovieTag {
     /**
      * Sets the colour for the movie background.
      *
-     * @param color
+     * @param aColor
      *            the colour for the background. Must not be null.
      */
-    public void setColor(final Color color) {
-        if (color == null) {
-            throw new NullPointerException();
+    public void setColor(final Color aColor) {
+        if (aColor == null) {
+            throw new IllegalArgumentException();
         }
-        this.color = color;
+        color = aColor;
     }
 
     /** {@inheritDoc} */
@@ -148,7 +154,8 @@ public final class Background implements MovieTag {
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
-        coder.writeWord((MovieTypes.SET_BACKGROUND_COLOR << SWFEncoder.LENGTH_BITS)
+        coder.writeWord((MovieTypes.SET_BACKGROUND_COLOR
+                << SWFEncoder.LENGTH_BITS)
                 | Color.RGB, 2);
         color.encode(coder, context);
     }

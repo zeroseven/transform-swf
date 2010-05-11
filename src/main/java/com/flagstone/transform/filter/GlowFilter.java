@@ -41,29 +41,29 @@ import com.flagstone.transform.datatype.Color;
 public final class GlowFilter implements Filter {
 
     /** TODO(class). */
-    public static class Builder {
-        private Color color;
-        private int blurX;
-        private int blurY;
-        private int strength;
-        private int mode;
-        private int passes;
+    public static final class Builder {
+        private transient Color color;
+        private transient int blurX;
+        private transient int blurY;
+        private transient int strength;
+        private transient int mode;
+        private transient int passes;
         
         /** TODO(method). */
-       public Builder color(Color color) {
+       public Builder setColor(final Color color) {
             this.color = color;
             return this;
         }
         
         /** TODO(method). */
-        public Builder blur(float xAmount, float yAmount) {
+        public Builder setBlur(final float xAmount, final float yAmount) {
             blurX = (int) (xAmount * 65536.0f);
             blurY = (int) (yAmount * 65536.0f);
             return this;
         }
         
         /** TODO(method). */
-        public Builder mode(FilterMode mode) {
+        public Builder setMode(final FilterMode mode) {
             switch (mode) {
             case TOP:
                  this.mode = 0x0030;
@@ -81,13 +81,13 @@ public final class GlowFilter implements Filter {
         }
         
         /** TODO(method). */
-        public Builder strength(float strength) {
+        public Builder setStrength(final float strength) {
             this.strength = (int) (strength * 256.0f);
             return this;
         }
         
         /** TODO(method). */
-        public Builder passes(int count) {
+        public Builder setPasses(final int count) {
             passes = count;
             return this;
         }
@@ -102,14 +102,14 @@ public final class GlowFilter implements Filter {
             + "color=%s; blurX=%f; blurY=%f; "
             + "strength=%f; mode=%s; passes=%d}";
 
-    private final Color color;
-    private final int blurX;
-    private final int blurY;
-    private final int strength;
-    private final int mode;
-    private final int passes;
+    private final transient Color color;
+    private final transient int blurX;
+    private final transient int blurY;
+    private final transient int strength;
+    private final transient int mode;
+    private final transient int passes;
 
-    private GlowFilter(Builder builder) {
+    public GlowFilter(final Builder builder) {
         color = builder.color;
         blurX = builder.blurX;
         blurY = builder.blurY;
@@ -140,9 +140,9 @@ public final class GlowFilter implements Filter {
         blurX = coder.readWord(4, true);
         blurY = coder.readWord(4, true);
         strength = coder.readWord(2, true);
-        
+
         final int value = coder.readByte();
-        
+
         passes = value & 0x0F;
         mode = (value & 0x0D) >>> 4;
     }

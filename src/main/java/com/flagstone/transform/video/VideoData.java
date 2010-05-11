@@ -81,6 +81,8 @@ public final class VideoData implements VideoTag {
         COMMAND
     }
 
+    private static final String BAD_FORMAT = "Unsupported format";
+    
     private static final String FORMAT = "VideoData: { codec=%s; frameType=%s; data =%d }";
 
     private int timestamp;
@@ -306,7 +308,7 @@ public final class VideoData implements VideoTag {
             break;
         default:
             throw new CoderException(getClass().getName(), 0, 0, 0,
-                    "Unsupported format");
+                    BAD_FORMAT);
         }
 
         switch (frameType) {
@@ -321,7 +323,7 @@ public final class VideoData implements VideoTag {
             break;
         default:
             throw new CoderException(getClass().getName(), 0, 0, 0,
-                    "Unsupported format");
+                    BAD_FORMAT);
         }
 
         return value;
@@ -338,7 +340,7 @@ public final class VideoData implements VideoTag {
             break;
         default:
             throw new CoderException(getClass().getName(), 0, 0, 0,
-                    "Unsupported format");
+                    BAD_FORMAT);
         }
 
         switch (value & 0x0F) {
@@ -353,7 +355,7 @@ public final class VideoData implements VideoTag {
             break;
         default:
             throw new CoderException(getClass().getName(), 0, 0, 0,
-                    "Unsupported format");
+                    BAD_FORMAT);
         }
     }
 }

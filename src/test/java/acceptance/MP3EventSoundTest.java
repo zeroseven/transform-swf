@@ -98,7 +98,7 @@ public final class MP3EventSoundTest {
             
             final SoundFactory factory = new SoundFactory();
             factory.read(sourceFile);
-            final DefineSound sound = factory.defineSound(movie.identifier());
+            final DefineSound sound = factory.defineSound(movie.nextIdentifier());
 
             movie.setFrameSize(new Bounds(0, 0, 8000, 4000));
             movie.setFrameRate(framesPerSecond);

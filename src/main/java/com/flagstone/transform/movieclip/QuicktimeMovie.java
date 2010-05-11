@@ -114,7 +114,7 @@ public final class QuicktimeMovie implements MovieTag {
      */
     public void setPath(final String aString) {
         if (aString == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         path = aString;
     }

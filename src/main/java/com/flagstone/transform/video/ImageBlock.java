@@ -50,9 +50,9 @@ import com.flagstone.transform.coder.Copyable;
  * @see DefineVideo
  */
 public final class ImageBlock implements Copyable<ImageBlock> {
-    private final int width;
-    private final int height;
-    private final byte[] block;
+    private final transient int width;
+    private final transient int height;
+    private final transient byte[] block;
 
     /**
      * Create a new image block with the specified width and height and image

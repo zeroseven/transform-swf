@@ -372,7 +372,7 @@ public final class DefineSound implements DefineTag {
      */
     public void setSound(final byte[] bytes) {
         if (bytes == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         sound = Arrays.copyOf(bytes, bytes.length);
     }

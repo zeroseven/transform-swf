@@ -141,7 +141,7 @@ public final class DefineMorphShape2 implements DefineTag {
         final Map<Integer, Integer> vars = context.getVariables();
         vars.put(Context.TRANSPARENT, 1);
         vars.put(Context.ARRAY_EXTENDED, 1);
-        vars.put(Context.TYPE, MovieTypes.DEFINE_MORPH_SHAPE_2);
+        vars.put(Context.TYPE, MovieTypes.DEFINE_MORPH_SHAPE);
 
         startShapeBounds = new Bounds(coder);
         endShapeBounds = new Bounds(coder);
@@ -396,7 +396,7 @@ public final class DefineMorphShape2 implements DefineTag {
      */
     public void setStartShapeBounds(final Bounds aBounds) {
         if (aBounds == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         startShapeBounds = aBounds;
     }
@@ -410,7 +410,7 @@ public final class DefineMorphShape2 implements DefineTag {
      */
     public void setEndShapeBounds(final Bounds aBounds) {
         if (aBounds == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         endShapeBounds = aBounds;
     }
@@ -424,7 +424,7 @@ public final class DefineMorphShape2 implements DefineTag {
      */
     public void setStartEdgeBounds(final Bounds aBounds) {
         if (aBounds == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         startEdgeBounds = aBounds;
     }
@@ -438,7 +438,7 @@ public final class DefineMorphShape2 implements DefineTag {
      */
     public void setEndEdgeBounds(final Bounds aBounds) {
         if (aBounds == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         endEdgeBounds = aBounds;
     }
@@ -452,7 +452,7 @@ public final class DefineMorphShape2 implements DefineTag {
      */
     public void setFillStyles(final List<FillStyle> anArray) {
         if (anArray == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         fillStyles = anArray;
     }
@@ -465,7 +465,7 @@ public final class DefineMorphShape2 implements DefineTag {
      */
     public void setLineStyles(final List<MorphLineStyle2> anArray) {
         if (anArray == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         lineStyles = anArray;
     }
@@ -480,7 +480,7 @@ public final class DefineMorphShape2 implements DefineTag {
      */
     public void setStartShape(final Shape aShape) {
         if (aShape == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         startShape = aShape;
     }
@@ -494,7 +494,7 @@ public final class DefineMorphShape2 implements DefineTag {
      */
     public void setEndShape(final Shape aShape) {
         if (aShape == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         endShape = aShape;
     }
@@ -581,10 +581,10 @@ public final class DefineMorphShape2 implements DefineTag {
         final int start = coder.getPointer();
 
         if (length >= 63) {
-            coder.writeWord((MovieTypes.DEFINE_MORPH_SHAPE_2 << 6) | 0x3F, 2);
+            coder.writeWord((MovieTypes.DEFINE_MORPH_SHAPE << 6) | 0x3F, 2);
             coder.writeWord(length, 4);
         } else {
-            coder.writeWord((MovieTypes.DEFINE_MORPH_SHAPE_2 << 6) | length, 2);
+            coder.writeWord((MovieTypes.DEFINE_MORPH_SHAPE << 6) | length, 2);
         }
         final int end = coder.getPointer() + (length << 3);
 

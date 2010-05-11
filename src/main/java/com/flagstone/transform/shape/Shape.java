@@ -88,6 +88,7 @@ public final class Shape implements SWFEncodeable {
         vars.put(Context.LINE_SIZE, coder.readBits(4, false));
 
         int type;
+        int tag;
         ShapeRecord shape;
 
         do {
@@ -104,8 +105,7 @@ public final class Shape implements SWFEncodeable {
                         shape = new Curve(coder);
                     }
                 } else {
-                    int tag = vars.get(Context.TYPE);
-                    
+                    tag = vars.get(Context.TYPE);
                     if (tag == MovieTypes.DEFINE_SHAPE_4 ||
                         tag == MovieTypes.DEFINE_MORPH_SHAPE_2) {
                         shape = new ShapeStyle2(coder, context);                        
@@ -159,7 +159,7 @@ public final class Shape implements SWFEncodeable {
      */
     public Shape add(final ShapeRecord anObject) {
         if (anObject == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         objects.add(anObject);
         return this;
@@ -180,7 +180,7 @@ public final class Shape implements SWFEncodeable {
      */
     public void setObjects(final List<ShapeRecord> anArray) {
         if (anArray == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         objects = anArray;
     }

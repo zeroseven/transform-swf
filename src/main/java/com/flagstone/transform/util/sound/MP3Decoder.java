@@ -73,12 +73,12 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
         {44100, -1, -1, -1}
     };
 
-    private SoundFormat format;
-    private int numberOfChannels;
-    private int samplesPerChannel;
-    private int sampleRate;
-    private int sampleSize;
-    private byte[] sound = null;
+    private transient SoundFormat format;
+    private transient int numberOfChannels;
+    private transient int samplesPerChannel;
+    private transient int sampleRate;
+    private transient int sampleSize;
+    private transient byte[] sound = null;
 
     /** TODO(method). */
     public SoundDecoder newDecoder() {

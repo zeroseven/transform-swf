@@ -171,7 +171,7 @@ public final class DefineJPEGImage4 implements ImageTag {
      * Returns  a copy of the alpha channel data.
      */
     public byte[] getAlpha() {
-        return alpha;
+        return Arrays.copyOf(alpha, alpha.length);
     }
 
     /**
@@ -224,10 +224,10 @@ public final class DefineJPEGImage4 implements ImageTag {
         final int start = coder.getPointer();
 
         if (length >= 63) {
-            coder.writeWord((MovieTypes.DEFINE_JPEG_IMAGE_4 << 6) | 0x3F, 2);
+            coder.writeWord((MovieTypes.DEFINE_JPEG_IMAGE_3 << 6) | 0x3F, 2);
             coder.writeWord(length, 4);
         } else {
-            coder.writeWord((MovieTypes.DEFINE_JPEG_IMAGE_4 << 6) | length, 2);
+            coder.writeWord((MovieTypes.DEFINE_JPEG_IMAGE_3 << 6) | length, 2);
         }
         final int end = coder.getPointer() + (length << 3);
 
@@ -245,7 +245,7 @@ public final class DefineJPEGImage4 implements ImageTag {
 
     private void decodeInfo()
     {
-        JPEGInfo info = new JPEGInfo();
+        final JPEGInfo info = new JPEGInfo();
         info.decode(image);
         width = info.getWidth();
         height = info.getHeight();

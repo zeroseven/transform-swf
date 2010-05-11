@@ -37,10 +37,10 @@ public class IllegalArgumentValueException extends IllegalArgumentException {
 
     private static final long serialVersionUID = 3748031731035981638L;
 
-    private int[] set;
-    private int value;
+    private final transient int[] set;
+    private final transient int value;
 
-    public IllegalArgumentValueException(int[] set, int value) {
+    public IllegalArgumentValueException(final int[] set, final int value) {
         super("Valid values: " + set + " Value: " + value);
         this.set = Arrays.copyOf(set, set.length);
         this.value = value;

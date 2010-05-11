@@ -92,6 +92,6 @@ public final class PathsArePostscript implements MovieTag {
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
-        coder.writeWord((MovieTypes.PATHS_ARE_POSTSCRIPT << 6) | 0, 2);
+        coder.writeWord((MovieTypes.DEFINE_MORPH_SHAPE << 6) | 0, 2);
     }
 }

@@ -226,7 +226,7 @@ public final class DefineButton2 implements DefineTag {
      */
     public DefineButton2 add(final ButtonShape obj) {
         if (obj == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         shapes.add(obj);
         return this;
@@ -241,7 +241,7 @@ public final class DefineButton2 implements DefineTag {
     public DefineButton2 add(final ButtonEventHandler obj)
             throws CoderException {
         if (obj == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         events.add(obj);
         return this;
@@ -252,11 +252,9 @@ public final class DefineButton2 implements DefineTag {
      */
     public ButtonType getType() {
         ButtonType value;
-        switch (type) {
-        case 0:
+        if (type == 0) {
             value = ButtonType.PUSH;
-            break;
-        default:
+        } else {
             value = ButtonType.MENU;
         }
         return value;
@@ -279,17 +277,14 @@ public final class DefineButton2 implements DefineTag {
     /**
      * Sets whether the button is a menu button or a push button.
      *
-     * @param type
+     * @param buttonType
      *            the type of button, either ButtonType.MENU or ButtonType.PUSH.
      */
-    public void setType(final ButtonType type) {
-        switch (type) {
-        case PUSH:
-            this.type = 0;
-            break;
-        default:
-            this.type = 1;
-            break;
+    public void setType(final ButtonType buttonType) {
+        if (buttonType == ButtonType.PUSH) {
+            type = 0;
+        } else {
+            type = 1;
         }
     }
 
@@ -301,7 +296,7 @@ public final class DefineButton2 implements DefineTag {
      */
     public void setShapes(final List<ButtonShape> anArray) {
         if (anArray == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         shapes = anArray;
     }
@@ -315,7 +310,7 @@ public final class DefineButton2 implements DefineTag {
      */
     public void setEvents(final List<ButtonEventHandler> anArray) {
         if (anArray == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         events = anArray;
     }

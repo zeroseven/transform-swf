@@ -33,7 +33,6 @@ package com.flagstone.transform.movieclip;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -235,7 +234,7 @@ public final class MovieClipEventHandler implements SWFEncodeable {
     public MovieClipEventHandler add(final Action anAction)
             throws CoderException {
         if (anAction == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         actions.add(anAction);
         return this;
@@ -244,130 +243,17 @@ public final class MovieClipEventHandler implements SWFEncodeable {
     /** TODO(method). */
     public void setEvent(final Set<MovieClipEvent> set) {
         for (final MovieClipEvent clipEvent : set) {
-            switch (clipEvent) {
-            case LOAD:
-                event |= 1;
-                break;
-            case ENTER_FRAME:
-                event |= 2;
-                break;
-            case UNLOAD:
-                event |= 4;
-                break;
-            case MOUSE_MOVE:
-                event |= 8;
-                break;
-            case MOUSE_DOWN:
-                event |= 16;
-                break;
-            case MOUSE_UP:
-                event |= 32;
-                break;
-            case  KEY_DOWN:
-                event |= 64;
-                break;
-            case KEY_UP:
-                event |= 128;
-                break;
-            case DATA:
-                event |= 256;
-                break;
-            case INITIALIZE:
-                event |= 512;
-                break;
-            case PRESS:
-                event |= 1024;
-                break;
-            case RELEASE:
-                event |= 2048;
-                break;
-            case RELEASE_OUT:
-                event |= 4096;
-                break;
-            case ROLL_OVER:
-                event |= 8192;
-                break;
-            case ROLL_OUT:
-                event |= 16384;
-                break;
-            case DRAG_OVER:
-                event |= 32768;
-                break;
-            case DRAG_OUT:
-                event |= 0;
-                break;
-            case KEY_PRESS:
-                event |= 131072;
-                break;
-            case CONSTRUCT:
-                event |= 262144;
-                break;
-            default: 
-                throw new IllegalArgumentException();
-            }
+            event |= clipEvent.getValue();
         }
     }
 
     /** TODO(method). */
     public Set<MovieClipEvent> getEvent() {
-        final Set<MovieClipEvent> set = EnumSet.noneOf(MovieClipEvent.class);
-
-        if ((event & 1) != 0) {
-            set.add(MovieClipEvent.LOAD);
-        }
-        if ((event & 2) != 0) {
-            set.add(MovieClipEvent.ENTER_FRAME);
-        }
-        if ((event & 4) != 0) {
-            set.add(MovieClipEvent.UNLOAD);
-        }
-        if ((event & 8) != 0) {
-            set.add(MovieClipEvent.MOUSE_MOVE);
-        }
-        if ((event & 16) != 0) {
-            set.add(MovieClipEvent.MOUSE_DOWN);
-        }
-        if ((event & 32) != 0) {
-            set.add(MovieClipEvent.MOUSE_UP);
-        }
-        if ((event & 64) != 0) {
-            set.add(MovieClipEvent.KEY_DOWN);
-        }
-        if ((event & 128) != 0) {
-            set.add(MovieClipEvent.KEY_UP);
-        }
-        if ((event & 256) != 0) {
-            set.add(MovieClipEvent.DATA);
-        }
-        if ((event & 512) != 0) {
-            set.add(MovieClipEvent.INITIALIZE);
-        }
-        if ((event & 1024) != 0) {
-            set.add(MovieClipEvent.PRESS);
-        }
-        if ((event & 2048) != 0) {
-            set.add(MovieClipEvent.RELEASE);
-        }
-        if ((event & 4096) != 0) {
-            set.add(MovieClipEvent.RELEASE_OUT);
-        }
-        if ((event & 8192) != 0) {
-            set.add(MovieClipEvent.ROLL_OVER);
-        }
-        if ((event & 16384) != 0) {
-            set.add(MovieClipEvent.ROLL_OUT);
-        }
-        if ((event & 32768) != 0) {
-            set.add(MovieClipEvent.DRAG_OVER);
-        }
-        if ((event & 65536) != 0) {
-            set.add(MovieClipEvent.DRAG_OUT);
-        }
-        if ((event & 131072) != 0) {
-            set.add(MovieClipEvent.KEY_PRESS);
-        }
-        if ((event & 262144) != 0) {
-            set.add(MovieClipEvent.CONSTRUCT);
+        final Set<MovieClipEvent> set = EnumSet.noneOf(MovieClipEvent.class);        
+        for (int i=0, mask = 1; i<32; i++, mask <<= 1) {
+            if ((event & mask) != 0) {
+                set.add(MovieClipEvent.fromInt(mask));
+            }
         }
         return set;
     }
@@ -406,7 +292,7 @@ public final class MovieClipEventHandler implements SWFEncodeable {
      */
     public void setActions(final List<Action> array) {
         if (array == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         actions = array;
     }

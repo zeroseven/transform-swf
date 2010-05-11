@@ -130,7 +130,7 @@ public final class SymbolClass implements MovieTag {
              throw new IllegalArgumentRangeException(1, 65536, uid);
         }
         if (aString == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         if (aString.length() == 0) {
             throw new StringSizeException(0, Integer.MAX_VALUE, 0);
@@ -147,7 +147,7 @@ public final class SymbolClass implements MovieTag {
     /** TODO(method). */
     public void setObjects(final Map<Integer, String> aTable) {
         if (aTable == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         objects = aTable;
     }

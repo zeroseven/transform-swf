@@ -89,14 +89,14 @@ public final class Movie {
        FWS(new byte[] { 0x46, 0x57, 0x53}),
        /** TODO(method). */
        CWS(new byte[] { 0x43, 0x57, 0x53});
-       
+
        private byte[] bytes;
-       
-       private Signature(byte[] data) {
+
+       private Signature(final byte[] data) {
            bytes = Arrays.copyOf(data, data.length);
        }
-       
-       public boolean matches(byte[] data) {
+
+       public boolean matches(final byte[] data) {
            return Arrays.equals(bytes, data);
        }
     }
@@ -104,9 +104,9 @@ public final class Movie {
     private static final String FORMAT = "Movie: { signature=%s; version=%d;"
             + " frameSize=%s; frameRate=%f; objects=%s }";
 
-    private DecoderRegistry registry;
-    private CharacterEncoding encoding;
-    private int identifier;
+    private transient DecoderRegistry registry;
+    private transient CharacterEncoding encoding;
+    private transient int identifier;
 
     private Signature signature;
     private int version;
@@ -190,7 +190,7 @@ public final class Movie {
      * @return an unique identifier for objects that define shapes, sounds, etc.
      *         in a Flash file.
      */
-    public int identifier() {
+    public int nextIdentifier() {
         return ++identifier;
     }
 
@@ -256,7 +256,7 @@ public final class Movie {
      */
     public void setFrameSize(final Bounds aBounds) {
         if (aBounds == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         frameSize = aBounds;
     }
@@ -295,7 +295,7 @@ public final class Movie {
      */
     public void setObjects(final List<MovieTag> anArray) {
         if (anArray == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         objects = anArray;
     }
@@ -308,7 +308,7 @@ public final class Movie {
      */
     public Movie add(final MovieTag anObject) {
         if (anObject == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         objects.add(anObject);
         return this;
@@ -371,7 +371,7 @@ public final class Movie {
         byte[] buffer = new byte[8];
         int bytesRead = stream.read(buffer);
 
-        byte[] sig = Arrays.copyOf(buffer, 3);
+        final byte[] sig = Arrays.copyOf(buffer, 3);
 
         if (Signature.FWS.matches(sig)) {
             signature = Signature.FWS;
@@ -497,8 +497,8 @@ public final class Movie {
      * @throws DataFormatException
      *             if an error occurs when compressing the flash file.
      */
-    public void encodeToStream(OutputStream stream) throws DataFormatException,
-        IOException {
+    public void encodeToStream(final OutputStream stream) 
+            throws DataFormatException, IOException {
         
         final SWFEncoder coder = new SWFEncoder(0);
         final Context context = new Context();

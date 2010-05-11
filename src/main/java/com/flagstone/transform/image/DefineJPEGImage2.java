@@ -162,7 +162,7 @@ public final class DefineJPEGImage2 implements ImageTag {
      */
     public void setImage(final byte[] bytes) {
         if (bytes == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         image = Arrays.copyOf(bytes, bytes.length);
         decodeInfo();
@@ -209,7 +209,7 @@ public final class DefineJPEGImage2 implements ImageTag {
     }
 
     private void decodeInfo() {
-        JPEGInfo info = new JPEGInfo();
+        final JPEGInfo info = new JPEGInfo();
         info.decode(image);
         width = info.getWidth();
         height = info.getHeight();

@@ -66,6 +66,7 @@ import com.flagstone.transform.shape.ShapeData;
  * @see DefineFont
  */
 //TODO(class)
+@SuppressWarnings({"PMD.TooManyFields","PMD.TooManyMethods"})
 public final class DefineFont2 implements DefineTag {
     // TODO(code) Replace with StringBuilder for optional attributes ?
     private static final String FORMAT = "DefineFont2: { identifier=%d; encoding=%s; "
@@ -303,7 +304,7 @@ public final class DefineFont2 implements DefineTag {
         codes.add(code);
 
         if (obj == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         shapes.add(obj);
 
@@ -336,7 +337,7 @@ public final class DefineFont2 implements DefineTag {
      */
     public DefineFont2 add(final Bounds obj) {
         if (obj == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         bounds.add(obj);
         return this;
@@ -350,7 +351,7 @@ public final class DefineFont2 implements DefineTag {
      */
     public DefineFont2 add(final Kerning anObject) {
         if (anObject == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         kernings.add(anObject);
         return this;
@@ -595,7 +596,7 @@ public final class DefineFont2 implements DefineTag {
      */
     public void setName(final String aString) {
         if (aString == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         name = aString;
     }
@@ -610,7 +611,7 @@ public final class DefineFont2 implements DefineTag {
      */
     public void setShapes(final List<Shape> anArray) {
         if (anArray == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         shapes = anArray;
     }
@@ -624,7 +625,7 @@ public final class DefineFont2 implements DefineTag {
      */
     public void setCodes(final List<Integer> anArray) {
         if (anArray == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         codes = anArray;
     }
@@ -677,7 +678,7 @@ public final class DefineFont2 implements DefineTag {
      */
     public void setAdvances(final List<Integer> anArray) {
         if (anArray == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         advances = anArray;
     }
@@ -691,7 +692,7 @@ public final class DefineFont2 implements DefineTag {
      */
     public void setBounds(final List<Bounds> anArray) {
         if (anArray == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         bounds = anArray;
     }
@@ -705,7 +706,7 @@ public final class DefineFont2 implements DefineTag {
      */
     public void setKernings(final List<Kerning> anArray) {
         if (anArray == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         kernings = anArray;
     }

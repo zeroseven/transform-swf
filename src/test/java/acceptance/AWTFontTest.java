@@ -111,13 +111,14 @@ public final class AWTFontTest {
 
         try {
             final Movie movie = new Movie();
-            DefineFont2 font = sourceFont.defineFont(movie.identifier(), set);
+            final DefineFont2 font = sourceFont.defineFont(movie.nextIdentifier(), set);
+            final Place2.Builder builder = new Place2.Builder();
 
-            final DefineTextField text = new DefineTextField(movie.identifier());
+            final DefineTextField text = new DefineTextField(movie.nextIdentifier());
             text.setBounds(new Bounds(0, 0, width, height));
             text.setVariableName("var");
             text.setInitialText(alphabet);
-            text.setUseFontGlyphs(true);
+            text.setEmbedded(true);
             text.setFontIdentifier(font.getIdentifier());
             text.setFontHeight(fontSize);
             text.setColor(WebPalette.BLACK.color());
@@ -127,7 +128,7 @@ public final class AWTFontTest {
             movie.add(new Background(WebPalette.LIGHT_BLUE.color()));
             movie.add(font);
             movie.add(text);
-            movie.add(Place2.show(text, 1, margin, margin));
+            movie.add(builder.show(text, 1, margin, margin));
             movie.add(ShowFrame.getInstance());
             movie.encodeToFile(destFile);
         } catch (Exception e) {

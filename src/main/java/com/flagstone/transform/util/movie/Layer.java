@@ -34,15 +34,6 @@ package com.flagstone.transform.util.movie;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.flagstone.transform.Place2;
-import com.flagstone.transform.PlaceType;
-import com.flagstone.transform.Remove2;
-import com.flagstone.transform.ShowFrame;
-import com.flagstone.transform.coder.DefineTag;
-import com.flagstone.transform.coder.MovieTag;
-import com.flagstone.transform.datatype.ColorTransform;
-import com.flagstone.transform.datatype.CoordTransform;
-
 /**
  * The Layer class can be used to simplify the creation of movies. It provides a
  * series of methods that can be used to control how an object is displayed and
@@ -192,8 +183,8 @@ public final class Layer {
         return merged;
     }
 
-    private final int layerNumber;
-    private final List<Frame> frames;
+    private final transient int layerNumber;
+    private final transient List<Frame> frames;
 
     /**
      * Create a new Layer object. Layers are used to define the order in which

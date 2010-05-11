@@ -60,23 +60,19 @@ public final class JPEGInfo {
      * 
      * @param image the image data.
      */
-    public void decode(byte[] image)
+    public void decode(final byte[] image)
     {
         final FLVDecoder coder = new FLVDecoder(image);
-
-        while (!coder.eof())
-        {
-            int marker = coder.readWord(2, false);
-            
+        int marker;
+        int size;
+        while (!coder.eof()) {    
+            marker = coder.readWord(2, false);
             if (marker == 0xffd8 || marker == 0xffd9) {
                 continue;
             }
-            
-            int size = coder.readWord(2, false);
-
+            size = coder.readWord(2, false);
             if (marker >= 0xffc0 && marker <= 0xffcf 
-                    && marker != 0xffc4 && marker != 0xffc8)
-            {
+                    && marker != 0xffc4 && marker != 0xffc8) {
                 coder.readWord(1, false);
                 height = coder.readWord(2, false);
                 width = coder.readWord(2, false);

@@ -59,6 +59,7 @@ import com.flagstone.transform.action.With;
  * instances of Transform classes.
  */
 //TODO(class)
+@SuppressWarnings("PMD.CyclomaticComplexity")
 public final class ActionDecoder implements SWFFactory<Action> {
 
     /** TODO(method). */

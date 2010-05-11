@@ -111,7 +111,7 @@ public final class ScalingGrid implements DefineTag {
     /** TODO(method). */
     public void setBounds(final Bounds aBounds) {
         if (aBounds == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         bounds = aBounds;
     }

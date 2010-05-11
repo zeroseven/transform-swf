@@ -379,7 +379,7 @@ public final class DefineMorphShape implements DefineTag {
      */
     public void setStartBounds(final Bounds aBounds) {
         if (aBounds == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         startBounds = aBounds;
     }
@@ -393,7 +393,7 @@ public final class DefineMorphShape implements DefineTag {
      */
     public void setEndBounds(final Bounds aBounds) {
         if (aBounds == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         endBounds = aBounds;
     }
@@ -407,7 +407,7 @@ public final class DefineMorphShape implements DefineTag {
      */
     public void setFillStyles(final List<FillStyle> anArray) {
         if (anArray == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         fillStyles = anArray;
     }
@@ -420,7 +420,7 @@ public final class DefineMorphShape implements DefineTag {
      */
     public void setLineStyles(final List<MorphLineStyle> anArray) {
         if (anArray == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         lineStyles = anArray;
     }
@@ -435,7 +435,7 @@ public final class DefineMorphShape implements DefineTag {
      */
     public void setStartShape(final Shape aShape) {
         if (aShape == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         startShape = aShape;
     }
@@ -449,7 +449,7 @@ public final class DefineMorphShape implements DefineTag {
      */
     public void setEndShape(final Shape aShape) {
         if (aShape == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         endShape = aShape;
     }

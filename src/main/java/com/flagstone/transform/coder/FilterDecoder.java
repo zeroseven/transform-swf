@@ -64,7 +64,7 @@ public final class FilterDecoder implements SWFFactory<Filter> {
             filter = new DropShadowFilter(coder, context);
             break;
         case 1:
-            filter = new BlurFilter(coder, context);
+            filter = new BlurFilter(coder);
             break;
         case 2:
             filter = new GlowFilter(coder, context);

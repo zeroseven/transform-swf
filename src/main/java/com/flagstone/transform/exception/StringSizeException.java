@@ -35,11 +35,11 @@ public class StringSizeException extends IllegalArgumentException {
 
     private static final long serialVersionUID = 7376207620131593711L;
 
-    private int min;
-    private int max;
-    private int size;
+    private final transient int min;
+    private final transient int max;
+    private final transient int size;
 
-    public StringSizeException(int min, int max, int size) {
+    public StringSizeException(final int min, final int max, final int size) {
         super("Minimum size: " + min + " Minimum size: "+ max
                 + " Size: " + size);
         this.min = min;

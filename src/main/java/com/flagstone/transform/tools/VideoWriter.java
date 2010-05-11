@@ -39,7 +39,7 @@ import java.io.Writer;
 import com.flagstone.transform.coder.VideoTag;
 import com.flagstone.transform.video.Video;
 
-public class VideoWriter {
+public final class VideoWriter {
 
     public void write(final Video video, final File file) throws IOException {
         final PrintWriter writer = new PrintWriter(file);
@@ -52,7 +52,7 @@ public class VideoWriter {
 
         String str;
 
-        int indent = 0;
+        int level = 0;
         boolean start = false;
 
         for (final VideoTag tag : video.getObjects()) {
@@ -63,23 +63,15 @@ public class VideoWriter {
 
                 if (c == '{') {
                     writer.append(c).append('\n');
-                    indent++;
-                    for (int i = 0; i < indent; i++) {
-                        writer.append('\t');
-                    }
+                    indent(writer, level++);
                     start = true;
                 } else if (c == '}') {
-                    indent--;
                     writer.append('\n');
-                    for (int i = 0; i < indent; i++) {
-                        writer.append('\t');
-                    }
+                    indent(writer, --level);
                     writer.append(c);
                 } else if (c == ';') {
                     writer.append(c).append('\n');
-                    for (int i = 0; i < indent; i++) {
-                        writer.append('\t');
-                    }
+                    indent(writer, level);
                     start = true;
                 } else if (c == '=') {
                     writer.append(' ').append('=').append(' ');
@@ -93,6 +85,13 @@ public class VideoWriter {
                 }
             }
             writer.flush();
+        }
+    }
+    
+    private void indent(final Writer writer, final int level)
+            throws IOException {
+        for (int i = 0; i < level; i++) {
+            writer.append('\t');
         }
     }
 }

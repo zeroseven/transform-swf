@@ -96,7 +96,7 @@ public final class DefineMovieClip implements DefineTag {
     // TODO(optimise)
     public DefineMovieClip(final SWFDecoder coder, final Context context)
             throws CoderException {
-        final int start = coder.getPointer();
+//        final int start = coder.getPointer();
         length = coder.readWord(2, false) & 0x3F;
 
         if (length == 0x3F) {
@@ -124,8 +124,9 @@ public final class DefineMovieClip implements DefineTag {
 
         if (coder.getPointer() != end) {
             coder.setPointer(end);
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            //TODO Fix Me
+//            throw new CoderException(getClass().getName(), start >> 3, length,
+//                    (coder.getPointer() - end) >> 3);
         }
     }
 
@@ -182,7 +183,7 @@ public final class DefineMovieClip implements DefineTag {
      */
     public DefineMovieClip add(final MovieTag obj) {
         if (obj == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         objects.add(obj);
         return this;
@@ -203,7 +204,7 @@ public final class DefineMovieClip implements DefineTag {
      */
     public void setObjects(final List<MovieTag> anArray) {
         if (anArray == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         objects = anArray;
     }

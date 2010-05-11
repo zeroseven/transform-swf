@@ -134,7 +134,7 @@ public final class JPEGEncodingTable implements MovieTag {
      */
     public void setTable(final byte[] bytes) {
         if (bytes == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         if (bytes.length == 0) {
             throw new ArraySizeException(0, Integer.MAX_VALUE, bytes.length);

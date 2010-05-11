@@ -61,9 +61,10 @@ public final class Video {
     private static final String FORMAT = "Video: { signature=%s; version=%d;"
             + " objects=%s }";
 
-    private String signature;
     private int version;
     private List<VideoTag> objects;
+
+    private transient String signature;
 
     /**
      * Creates a Video object with no objects.
@@ -118,7 +119,7 @@ public final class Video {
      */
     public void setObjects(final List<VideoTag> anArray) {
         if (anArray == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         objects = anArray;
     }
@@ -131,7 +132,7 @@ public final class Video {
      */
     public Video add(final VideoTag anObject) {
         if (anObject == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         objects.add(anObject);
         return this;
@@ -180,16 +181,14 @@ public final class Video {
      *             - if an error occurs while reading and decoding the file.
      */
     public void decodeFromURL(final URL url) throws IOException, DataFormatException {
-        
+
         final URLConnection connection = url.openConnection();
-
-        int length = connection.getContentLength();
-
+        final int length = connection.getContentLength();
         if (length < 0) {
             throw new FileNotFoundException(url.getFile());
         }
-        
-        InputStream stream = url.openStream();
+
+        final InputStream stream = url.openStream();
 
         try {
             decodeFromStream(stream, length);
@@ -198,20 +197,19 @@ public final class Video {
         }
     }
 
-    private void decodeFromStream(InputStream stream, int length) throws IOException,
-            DataFormatException {
+    private void decodeFromStream(final InputStream stream, final int length) 
+            throws IOException, DataFormatException {
 
-        byte[] data = new byte[length];
+        final byte[] data = new byte[length];
         stream.read(data);
-        
+
         final FLVDecoder coder = new FLVDecoder(data);
-        
+
         signature = coder.readString(3);
-        
-        if (!signature.equals("FLV")) {
+        if (!"FLV".equals(signature)) {
             throw new DataFormatException("Not FLV format");
         }
-        
+
         version = coder.readByte();
         coder.readByte(); // audio & video flags
         coder.readWord(4, false); // header length always 9

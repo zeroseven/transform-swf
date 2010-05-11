@@ -44,9 +44,9 @@ public final class BlurFilter implements Filter {
     private static final String FORMAT = "BlurFilter: { blurX=%f; blurY=%f;"
             + " passes=%d }";
 
-    private final int blurX;
-    private final int blurY;
-    private final int passes;
+    private final transient int blurX;
+    private final transient int blurY;
+    private final transient int passes;
 
     /**
      * Creates and initialises a BlueFilter object using values encoded
@@ -63,7 +63,7 @@ public final class BlurFilter implements Filter {
      * @throws CoderException
      *             if an error occurs while decoding the data.
      */
-    public BlurFilter(final SWFDecoder coder, final Context context)
+    public BlurFilter(final SWFDecoder coder)
             throws CoderException {
         coder.readByte();
         blurX = coder.readWord(4, true);

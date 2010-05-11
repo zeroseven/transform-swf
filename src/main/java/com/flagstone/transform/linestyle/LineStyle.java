@@ -158,7 +158,7 @@ public final class LineStyle implements SWFEncodeable, Copyable<LineStyle> {
      */
     public void setColor(final Color aColor) {
         if (aColor == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         color = aColor;
     }

@@ -99,21 +99,20 @@ public final class Font {
     private float descent;
     private float leading;
 
-    private int[] charToGlyph;
-    private int[] glyphToChar;
-    private Glyph[] glyphTable;
+    private transient int[] charToGlyph;
+    private transient int[] glyphToChar;
+    private transient Glyph[] glyphTable;
     
     private transient int glyphIndex;
+    private transient int glyphCount;
+    private transient int missingGlyph;
+    private transient char highestChar;
 
-    private int glyphCount;
-    private int missingGlyph;
-    private char highestChar;
+    private final transient List<Kerning> kernings = new ArrayList<Kerning>();
 
-    private final List<Kerning> kernings = new ArrayList<Kerning>();
-
-    private int scale;
-    private int metrics;
-    private int glyphOffset;
+//    private int scale;
+//    private int metrics;
+//    private int glyphOffset;
 
     /**
      * TODO(method).
@@ -122,7 +121,7 @@ public final class Font {
         return face;
     }
     
-    public void setFace(FontFace face) {
+    public void setFace(final FontFace face) {
         this.face = face;
     }
 
@@ -134,7 +133,7 @@ public final class Font {
         return encoding;
     }
     
-    public void setEncoding(CharacterFormat enc) {
+    public void setEncoding(final CharacterFormat enc) {
         encoding = enc;
     }
 
@@ -145,7 +144,7 @@ public final class Font {
         return ascent;
     }
     
-    public void setAscent(float ascent) {
+    public void setAscent(final float ascent) {
         this.ascent = ascent;
     }
 
@@ -156,7 +155,7 @@ public final class Font {
         return descent;
     }
     
-    public void setDescent(float descent) {
+    public void setDescent(final float descent) {
         this.descent = descent;
     }
 
@@ -168,7 +167,7 @@ public final class Font {
     }
 
     
-    public void setLeading(float leading) {
+    public void setLeading(final float leading) {
         this.leading = leading;
     }
     /**
@@ -178,7 +177,7 @@ public final class Font {
         return glyphCount;
     }
     
-    public void setNumberOfGlyphs(int count) {
+    public void setNumberOfGlyphs(final int count) {
         glyphTable = new Glyph[count];
         glyphToChar = new int[count];
         glyphIndex = 0;
@@ -191,9 +190,9 @@ public final class Font {
         return highestChar;
     }
     
-    public void setHighestChar(char c) {
-        highestChar = c;
-        charToGlyph = new int[c];
+    public void setHighestChar(final char highest) {
+        highestChar = highest;
+        charToGlyph = new int[highest];
     }
     
     /** TODO(method). */
@@ -201,11 +200,11 @@ public final class Font {
         return missingGlyph;
     }
     
-    public void setMissingGlyph(int index) {
+    public void setMissingGlyph(final int index) {
         missingGlyph = index;
     }
     
-    public Glyph getGlyph(int index) {
+    public Glyph getGlyph(final int index) {
         return glyphTable[index];
     }
     

@@ -39,40 +39,40 @@ import com.flagstone.transform.datatype.Color;
 
 /** TODO(class). */
 public final class BevelFilter implements Filter {
-    
+
     /** TODO(class). */
-    public static class Builder {
-        private Color shadow;
-        private Color highlight;
-        private int blurX;
-        private int blurY;
-        private int angle;
-        private int distance;
-        private int strength;
-        private int mode;
-        private int passes;
-        
+    public static final class Builder {
+        private transient Color shadow;
+        private transient Color highlight;
+        private transient int blurX;
+        private transient int blurY;
+        private transient int angle;
+        private transient int distance;
+        private transient int strength;
+        private transient int mode;
+        private transient int passes;
+
         /** TODO(method). */
-       public Builder shadow(Color color) {
+       public Builder setShadow(final Color color) {
             shadow = color;
             return this;
         }
-        
+
        /** TODO(method). */
-        public Builder highlight(Color color) {
+        public Builder setHighlight(final Color color) {
             highlight = color;
             return this;
         }
-        
+
         /** TODO(method). */
-        public Builder blur(float xAmount, float yAmount) {
+        public Builder setBlur(final float xAmount, final float yAmount) {
             blurX = (int) (xAmount * 65536.0f);
             blurY = (int) (yAmount * 65536.0f);
             return this;
         }
-        
+
         /** TODO(method). */
-        public Builder mode(FilterMode mode) {
+        public Builder setMode(final FilterMode mode) {
             switch (mode) {
             case TOP:
                  this.mode = 0x0030;
@@ -90,25 +90,25 @@ public final class BevelFilter implements Filter {
         }
 
         /** TODO(method). */
-        public Builder angle(float angle) {
+        public Builder setAngle(final float angle) {
             this.angle = (int) (angle * 65536.0f);
             return this;
         }
         
         /** TODO(method). */
-        public Builder distance(float distance) {
+        public Builder setDistance(final float distance) {
             this.distance = (int) (distance * 65536.0f);
             return this;
         }
         
         /** TODO(method). */
-        public Builder strength(float strength) {
+        public Builder setStrength(final float strength) {
             this.strength = (int) (strength * 256.0f);
             return this;
         }
         
         /** TODO(method). */
-        public Builder passes(int count) {
+        public Builder setPasses(final int count) {
             passes = count;
             return this;
         }
@@ -123,17 +123,17 @@ public final class BevelFilter implements Filter {
             + " shadow=%s; highlight=%s; blurX=%f; blurY=%f"
             + " angle=%f; disance=%f, strength=%f; mode=%s; passes=%d}";
 
-    private final Color shadow;
-    private final Color highlight;
-    private final int blurX;
-    private final int blurY;
-    private final int angle;
-    private final int distance;
-    private final int strength;
-    private final int mode;
-    private final int passes;
+    private final transient Color shadow;
+    private final transient Color highlight;
+    private final transient int blurX;
+    private final transient int blurY;
+    private final transient int angle;
+    private final transient int distance;
+    private final transient int strength;
+    private final transient int mode;
+    private final transient int passes;
 
-    private BevelFilter(Builder builder) {
+    public BevelFilter(final Builder builder) {
         shadow = builder.shadow;
         highlight = builder.highlight;
         blurX = builder.blurX;

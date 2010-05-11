@@ -358,7 +358,7 @@ public final class DefineImage implements ImageTag {
      */
     public void setImage(final byte[] bytes) {
         if (bytes == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         image = Arrays.copyOf(bytes, bytes.length);
     }

@@ -51,6 +51,8 @@ import com.flagstone.transform.image.DefineJPEGImage2;
  * JPGDecoder decodes JPEG images so they can be used in a Flash file.
  */
 public final class JPGDecoder implements ImageProvider, ImageDecoder {
+    
+    private static final String BAD_FORMAT = "Unsupported format";
 
     private transient int width;
     private transient int height;
@@ -66,10 +68,10 @@ public final class JPGDecoder implements ImageProvider, ImageDecoder {
         final URLConnection connection = url.openConnection();
 
         if (!connection.getContentType().equals("image/bmp")) {
-            throw new DataFormatException("Unsupported format");
+            throw new DataFormatException(BAD_FORMAT);
         }
 
-        int length = connection.getContentLength();
+        final int length = connection.getContentLength();
 
         if (length < 0) {
             throw new FileNotFoundException(url.getFile());
@@ -98,7 +100,7 @@ public final class JPGDecoder implements ImageProvider, ImageDecoder {
         buffer.close();
 
         if (!jpegInfo()) {
-            throw new DataFormatException("Unsupported format");
+            throw new DataFormatException(BAD_FORMAT);
         }
 
     }

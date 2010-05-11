@@ -41,6 +41,10 @@ import java.util.Map;
  */
 public enum Blend {
     /**
+     * No Blend.
+     */
+    NULL(BlendTypes.NULL),
+    /**
      * Applies colour form the current layer normally with no blending with the
      * underlying layers.
      */
