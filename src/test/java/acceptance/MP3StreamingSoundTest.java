@@ -63,6 +63,10 @@ public final class MP3StreamingSoundTest {
         final File srcDir = new File("test/data/mp3/reference");
         final File destDir = new File("test/results/acceptance/MP3StreamingSoundTest");
 
+        if (!destDir.exists() && !destDir.mkdirs()) {
+            fail();
+        }
+
         final FilenameFilter filter = new FilenameFilter() {
             public boolean accept(final File directory, final String name) {
                 return name.endsWith(".mp3");

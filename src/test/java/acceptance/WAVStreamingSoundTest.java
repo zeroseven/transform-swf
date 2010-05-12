@@ -63,6 +63,10 @@ public final class WAVStreamingSoundTest {
         final File srcDir = new File("test/data/wav/reference");
         final File destDir = new File("test/results/acceptance/WAVStreamingSoundTest");
 
+        if (!destDir.exists() && !destDir.mkdirs()) {
+            fail();
+        }
+
         final FilenameFilter filter = new FilenameFilter() {
             public boolean accept(final File directory, final String name) {
                 return name.endsWith(".wav");

@@ -63,6 +63,10 @@ public final class JPGImageTest {
         final File srcDir = new File("test/data/jpg/reference");
         final File destDir = new File("test/results/acceptance/JPGImageTest");
 
+        if (!destDir.exists() && !destDir.mkdirs()) {
+            fail();
+        }
+
         final FilenameFilter filter = new FilenameFilter() {
             public boolean accept(final File directory, final String name) {
                 return name.endsWith(".jpg");
@@ -95,14 +99,15 @@ public final class JPGImageTest {
             final Movie movie = new Movie();
             final ImageFactory factory = new ImageFactory();
             factory.read(sourceFile);
-            final ImageTag image = factory.defineImage(movie.nextIdentifier());
+            final int imageId = movie.nextIdentifier();
+            final ImageTag image = factory.defineImage(imageId);
             final Place2.Builder builder = new Place2.Builder();
     
             final int xOrigin = image.getWidth() / 2;
             final int yOrigin = image.getHeight() / 2;
     
             final DefineShape3 shape = factory.defineEnclosingShape(movie
-                    .nextIdentifier(), 10, -xOrigin, -yOrigin, null);
+                    .nextIdentifier(), imageId, -xOrigin, -yOrigin, null);
     
             movie.setFrameRate(1.0f);
             movie.setFrameSize(shape.getBounds());
