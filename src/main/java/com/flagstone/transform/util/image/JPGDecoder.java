@@ -135,12 +135,11 @@ public final class JPGDecoder implements ImageProvider, ImageDecoder {
                     if ((marker >= 0xffc0) && (marker <= 0xffcf)
                             && (marker != 0xffc4) && (marker != 0xffc8)) {
                         coder.adjustPointer(24);
-                        coder.readWord(2, false);
-                        coder.readWord(2, false);
+                        height = coder.readWord(2, false);
+                        width = coder.readWord(2, false);
                         break;
                     } else {
-                        coder
-                                .adjustPointer((coder.readWord(2, false) - 2) << 3);
+                        coder.adjustPointer((coder.readWord(2, false) - 2) << 3);
                     }
                 }
 

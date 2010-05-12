@@ -167,11 +167,11 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
 
         switch (format) {
         case IDX8:
-            object = new DefineImage(identifier, width, height, table.length,
+            object = new DefineImage(identifier, width, height, table.length/4,
                     zip(merge(adjustScan(width, height, image), table)));
             break;
         case IDXA:
-            object = new DefineImage2(identifier, width, height, table.length,
+            object = new DefineImage2(identifier, width, height, table.length/4,
                     zip(mergeAlpha(adjustScan(width, height, image), table)));
             break;
         case RGB5:
@@ -206,6 +206,18 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
         int length = 0;
         int chunkType = 0;
         boolean moreChunks = true;
+
+        attributes[BIT_DEPTH] = 0;
+        attributes[COLOUR_COMPONENTS] = 0;
+        attributes[COLOUR_TYPE] = 0;
+        attributes[FILTER_METHOD] = 0;
+        attributes[INTERLACE_METHOD] = 0;
+        chunkData = new byte[0];
+
+        attributes[TRANSPARENT_GREY] = -1;    
+        attributes[TRANSPARENT_RED] = -1;
+        attributes[TRANSPARENT_GREEN] = -1;
+        attributes[TRANSPARENT_BLUE] = -1;
 
         for (int i = 0; i < 8; i++) {
             if (coder.readByte() != SIGNATURE[i]) {
@@ -565,16 +577,20 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
             throw new DataFormatException(BAD_FORMAT);
         }
 
-        image[row * width + col] = colour;
-        image[row * width + col + 1] = colour;
-        image[row * width + col + 2] = colour;
-        image[row * width + col + 3] = (byte) attributes[TRANSPARENT_GREY];
+        int index = row * (width << 2) + (col << 2);
+        
+        image[index++] = colour;
+        image[index++] = colour;
+        image[index++] = colour;
+        image[index++] = (byte) attributes[TRANSPARENT_GREY];
     }
 
     private void decodeTrueColour(final FLVDecoder coder, final int row,
             final int col) throws DataFormatException {
         int pixel = 0;
         byte colour = 0;
+
+        int index = row * (width << 2) + (col << 2);
 
         for (int i = 0; i < attributes[COLOUR_COMPONENTS]; i++) {
             if (attributes[BIT_DEPTH] == 8) {
@@ -587,9 +603,9 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
                 throw new DataFormatException(BAD_FORMAT);
             }
 
-            image[row * width + col + i] = colour;
+            image[index + i] = colour;
         }
-        image[row * width + col + 3] = (byte) attributes[TRANSPARENT_RED];
+        image[index + 3] = (byte) attributes[TRANSPARENT_RED];
     }
 
     private void decodeIndexedColour(final FLVDecoder coder, final int row,
@@ -654,16 +670,20 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
             throw new DataFormatException(BAD_FORMAT);
         }
 
-        image[row * width + col] = colour;
-        image[row * width + col + 1] = colour;
-        image[row * width + col + 2] = colour;
-        image[row * width + col + 3] = (byte) alpha;
+        int index = row * (width << 2) + (col << 2);
+        
+        image[index++] = colour;
+        image[index++] = colour;
+        image[index++] = colour;
+        image[index] = (byte) alpha;
     }
 
     private void decodeAlphaTrueColour(final FLVDecoder coder, final int row,
             final int col) throws DataFormatException {
         int pixel = 0;
         byte colour = 0;
+
+        int index = row * (width << 2) + (col << 2);
 
         for (int i = 0; i < attributes[COLOUR_COMPONENTS]; i++) {
             if (attributes[BIT_DEPTH] == 8) {
@@ -676,7 +696,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
                 throw new DataFormatException(BAD_FORMAT);
             }
 
-            image[row * width + col + i] = colour;
+            image[index + i] = colour;
         }
     }
 
@@ -714,10 +734,11 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
         for (int i = 0; i < image.length; i += 4) {
             alpha = image[i + 3] & 0xFF;
 
-            image[i] = (byte) (((image[i] & 0xFF) * alpha) / 255);
-            image[i + 1] = (byte) (((image[i + 1] & 0xFF) * alpha) / 255);
-            image[i + 2] = (byte) (((image[i + 2] & 0xFf) * alpha) / 255);
-        }
+            image[i + 3] = (byte) (((image[i + 2] & 0xFf) * alpha) / 255);
+            image[i + 2] = (byte) (((image[i + 1] & 0xFF) * alpha) / 255);
+            image[i + 1] = (byte) (((image[i] & 0xFF) * alpha) / 255);
+            image[i] = (byte) alpha;
+       }
     }
 
     private byte[] merge(final byte[] image, final byte[] table) {
@@ -725,9 +746,8 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
         int dst = 0;
 
         for (int i = 0; i < table.length; i += 4) {
-            merged[dst++] = table[i]; // R
             merged[dst++] = table[i + 1]; // G
-            merged[dst++] = table[i + 2]; // B
+            merged[dst++] = table[i]; // R
         }
 
         for (final byte element : image) {

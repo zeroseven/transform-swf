@@ -106,11 +106,11 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
 
         switch (format) {
         case IDX8:
-            object = new DefineImage(identifier, width, height, table.length,
+            object = new DefineImage(identifier, width, height, table.length/4,
                     zip(merge(adjustScan(width, height, image), table)));
             break;
         case IDXA:
-            object = new DefineImage2(identifier, width, height, table.length,
+            object = new DefineImage2(identifier, width, height, table.length/4,
                     zip(mergeAlpha(adjustScan(width, height, image), table)));
             break;
         case RGB5:
@@ -307,7 +307,8 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
 
         for (int row = height - 1; row > 0; row--) {
             bitsRead = 0;
-
+            index = row * width;
+            
             for (int col = 0; col < width; col++) {
                 image[index++] = (byte) coder.readBits(bitDepth, false);
                 bitsRead += bitDepth;
@@ -343,6 +344,8 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
                 case 2:
                     col += coder.readWord(2, false);
                     row -= coder.readWord(2, false);
+                    index = row * width + col;
+                    
                     for (int i = 0; i < code; i += 2) {
                         image[index++] = (byte) coder.readBits(4, false);
                         image[index++] = (byte) coder.readBits(4, false);
@@ -353,6 +356,7 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
                     }
                     break;
                 default:
+                    index = row * width + col;
                     for (int i = 0; i < code; i += 2) {
                         image[index++] = (byte) coder.readBits(4, false);
                         image[index++] = (byte) coder.readBits(4, false);
@@ -366,8 +370,9 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
             } else {
                 final byte indexA = (byte) coder.readBits(4, false);
                 final byte indexB = (byte) coder.readBits(4, false);
-
-                for (int i = 0; (i < count) && (col < width); i++) {
+                index = row * width + col;
+                
+                for (int i = 0; (i < count) && (col < width); i++, col++) {
                     image[index++] = (i % 2 > 0) ? indexB : indexA;
                 }
             }
@@ -398,6 +403,7 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
                 case 2:
                     col += coder.readWord(2, false);
                     row -= coder.readWord(2, false);
+                    index = row * width + col;
                     for (int i = 0; i < code; i++) {
                         image[index++] = (byte) coder.readByte();
                     }
@@ -407,6 +413,7 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
                     }
                     break;
                 default:
+                    index = row * width + col;
                     for (int i = 0; i < code; i++) {
                         image[index++] = (byte) coder.readByte();
                     }
@@ -418,6 +425,7 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
                 }
             } else {
                 final byte value = (byte) coder.readByte();
+                index = row * width + col;
 
                 for (int i = 0; i < count; i++) {
                     image[index++] = value;
@@ -544,9 +552,9 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
         int dst = 0;
 
         for (int i = 0; i < table.length; i += 4) {
-            merged[dst++] = table[i]; // R
+            merged[dst++] = table[i + 2]; // R
             merged[dst++] = table[i + 1]; // G
-            merged[dst++] = table[i + 2]; // B
+            merged[dst++] = table[i]; // B
         }
 
         for (final byte element : image) {
