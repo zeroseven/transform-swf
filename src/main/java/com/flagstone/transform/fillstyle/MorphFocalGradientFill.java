@@ -59,8 +59,8 @@ public final class MorphFocalGradientFill implements FillStyle {
     private transient int count;
 
     /**
-     * Creates and initialises a FocalGradientFill fill style using values encoded
-     * in the Flash binary format.
+     * Creates and initialises a FocalGradientFill fill style using values
+     * encoded in the Flash binary format.
      *
      * @param coder
      *            an SWFDecoder object that contains the encoded Flash data.
@@ -87,20 +87,20 @@ public final class MorphFocalGradientFill implements FillStyle {
         for (int i = 0; i < count; i++) {
             gradients.add(new MorphGradient(coder, context));
         }
-        
+
         startFocalPoint = coder.readWord(2, true);
         endFocalPoint = coder.readWord(2, true);
     }
 
-    /** TODO(method). */
-    public MorphFocalGradientFill(final Spread spread,
-            final Interpolation interpolation,
+
+    public MorphFocalGradientFill(final Spread spreadType,
+            final Interpolation anInterpolation,
             final CoordTransform start, final CoordTransform end,
-            final List<MorphGradient> anArray, 
+            final List<MorphGradient> anArray,
             final float startPoint, final float endPoint) {
         type = 0x13;
-        setSpread(spread);
-        setInterpolation(interpolation);
+        setSpread(spreadType);
+        setInterpolation(anInterpolation);
         setStartTransform(start);
         setEndTransform(end);
         setGradients(anArray);
@@ -109,8 +109,8 @@ public final class MorphFocalGradientFill implements FillStyle {
     }
 
     /**
-     * Creates and initialises a FocalGradientFill fill style using the values copied
-     * from another FocalGradientFill object.
+     * Creates and initialises a FocalGradientFill fill style using the values
+     * copied from another FocalGradientFill object.
      *
      * @param object
      *            a FocalGradientFill fill style from which the values will be
@@ -127,7 +127,7 @@ public final class MorphFocalGradientFill implements FillStyle {
         gradients = new ArrayList<MorphGradient>(object.gradients);
     }
 
-    /** TODO(method). */
+
     public Spread getSpread() {
         Spread value;
         switch (spread) {
@@ -146,9 +146,9 @@ public final class MorphFocalGradientFill implements FillStyle {
         return value;
     }
 
-    /** TODO(method). */
-    public void setSpread(final Spread type) {
-        switch (type) {
+
+    public void setSpread(final Spread spreadType) {
+        switch (spreadType) {
         case PAD:
             spread = 0;
             break;
@@ -163,7 +163,7 @@ public final class MorphFocalGradientFill implements FillStyle {
         }
     }
 
-    /** TODO(method). */
+
     public Interpolation getInterpolation() {
         Interpolation value;
         switch (interpolation) {
@@ -179,9 +179,9 @@ public final class MorphFocalGradientFill implements FillStyle {
         return value;
     }
 
-    /** TODO(method). */
-    public void setInterpolation(final Interpolation type) {
-        switch (type) {
+
+    public void setInterpolation(final Interpolation interpolationType) {
+        switch (interpolationType) {
         case NORMAL:
             interpolation = 0;
             break;
@@ -193,24 +193,24 @@ public final class MorphFocalGradientFill implements FillStyle {
         }
     }
 
-    /** TODO(method). */
+
     public float getStartFocalPoint() {
         return startFocalPoint / 256.0f;
     }
 
-    /** TODO(method). */
+
     public void setStartFocalPoint(final float point) {
-        this.startFocalPoint = (int) (point * 256);
+        startFocalPoint = (int) (point * 256);
     }
 
-    /** TODO(method). */
+
     public float getEndFocalPoint() {
         return endFocalPoint / 256.0f;
     }
 
-    /** TODO(method). */
+
     public void setEndFocalPoint(final float point) {
-        this.endFocalPoint = (int) (point * 256);
+        endFocalPoint = (int) (point * 256);
     }
 
     /**
@@ -226,7 +226,8 @@ public final class MorphFocalGradientFill implements FillStyle {
             throw new IllegalArgumentException();
         }
         if (gradients.size() == 15) {
-            throw new IllegalStateException("Maximum number of gradients exceeded.");
+            throw new IllegalStateException(
+                    "Maximum number of gradients exceeded.");
         }
         gradients.add(aGradient);
         return this;
@@ -253,7 +254,8 @@ public final class MorphFocalGradientFill implements FillStyle {
             throw new IllegalArgumentException();
         }
         if (gradients.size() == 15) {
-            throw new IllegalStateException("Maximum number of gradients exceeded.");
+            throw new IllegalStateException(
+                    "Maximum number of gradients exceeded.");
         }
         gradients = anArray;
     }
@@ -312,7 +314,7 @@ public final class MorphFocalGradientFill implements FillStyle {
     @Override
     public String toString() {
         return String.format(FORMAT, getSpread(), getInterpolation(),
-                getStartFocalPoint(), getEndFocalPoint(), 
+                getStartFocalPoint(), getEndFocalPoint(),
                 startTransform.toString(), endTransform.toString(),
                 gradients.toString());
     }
@@ -342,7 +344,7 @@ public final class MorphFocalGradientFill implements FillStyle {
         for (final MorphGradient gradient : gradients) {
             gradient.encode(coder, context);
         }
-        
+
         coder.writeWord(startFocalPoint, 2);
         coder.writeWord(endFocalPoint, 2);
     }

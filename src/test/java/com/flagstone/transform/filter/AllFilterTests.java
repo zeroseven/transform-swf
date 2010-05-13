@@ -1,5 +1,5 @@
 /*
- * AllFilterTests.java 
+ * AllFilterTests.java
  * Transform
  *
  * Copyright (c) 2009-2010 Flagstone Software Ltd. All rights reserved.
@@ -35,9 +35,10 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( { BevelFilterTest.class, BlurFilterTest.class,
-        ColorMatrixFilterTest.class, ConvolutionFilterTest.class,
-        DropShadowFilterTest.class, GlowFilterTest.class,
-        GradientBevelFilterTest.class, GradientGlowFilterTest.class })
+@Suite.SuiteClasses({
+    BevelFilterTest.class, BlurFilterTest.class,
+    ColorMatrixFilterTest.class, ConvolutionFilterTest.class,
+    DropShadowFilterTest.class, GlowFilterTest.class,
+    GradientBevelFilterTest.class, GradientGlowFilterTest.class })
 public final class AllFilterTests {
 }

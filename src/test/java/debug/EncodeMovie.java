@@ -35,7 +35,14 @@ import java.io.File;
 
 import com.flagstone.transform.Movie;
 
+/**
+ * EncodeMovie verifies that Flash file can be decoded and re-encoded.
+ */
 public final class EncodeMovie {
+    /**
+     * Run the test from the command line.
+     * @param args array of command line arguments.
+     */
     public static void main(final String[] args) {
         final File srcFile = new File(args[0]);
         final File destFile = new File(args[1]);
@@ -50,6 +57,7 @@ public final class EncodeMovie {
         }
     }
 
+    /** Private constructor. */
     private EncodeMovie() {
         // Private.
     }

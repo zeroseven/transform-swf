@@ -37,9 +37,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.EnumSet;
 import java.util.Map;
-import java.util.Set;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -55,7 +53,8 @@ import com.flagstone.transform.coder.SWFEncoder;
 @RunWith(Parameterized.class)
 public final class MovieMetaDataCodingTest {
 
-    private static final String RESOURCE = "com/flagstone/transform/MovieMetaData.yaml";
+    private static final String RESOURCE =
+        "com/flagstone/transform/MovieMetaData.yaml";
 
     private static final String METADATA = "metadata";
     private static final String DIN = "din";
@@ -67,41 +66,41 @@ public final class MovieMetaDataCodingTest {
         ClassLoader loader = DoActionCodingTest.class.getClassLoader();
         InputStream other = loader.getResourceAsStream(RESOURCE);
         Yaml yaml = new Yaml();
-        
+
         Collection<Object[]> list = new ArrayList<Object[]>();
-         
+
         for (Object data : yaml.loadAll(other)) {
-            list.add(new Object[] { data });
+            list.add(new Object[] {data });
         }
 
         return list;
     }
 
-    private transient final String metadata;
-    private transient final byte[] din;
-    private transient final byte[] dout;
-    private transient final Context context;
-    
-    public MovieMetaDataCodingTest(Map<String,Object>values) {
-        metadata = (String)values.get(METADATA);
-        din = (byte[])values.get(DIN);
-        dout = (byte[])values.get(DOUT);
+    private final transient String metadata;
+    private final transient byte[] din;
+    private final transient byte[] dout;
+    private final transient Context context;
+
+    public MovieMetaDataCodingTest(final Map<String, Object>values) {
+        metadata = (String) values.get(METADATA);
+        din = (byte[]) values.get(DIN);
+        dout = (byte[]) values.get(DOUT);
         context = new Context();
     }
 
     @Test
-    public void checkSizeMatchesEncodedSize() throws CoderException {     
-        final MovieMetaData object = new MovieMetaData(metadata);       
-        final SWFEncoder encoder = new SWFEncoder(dout.length);        
-         
+    public void checkSizeMatchesEncodedSize() throws CoderException {
+        final MovieMetaData object = new MovieMetaData(metadata);
+        final SWFEncoder encoder = new SWFEncoder(dout.length);
+
         assertEquals(dout.length, object.prepareToEncode(encoder, context));
     }
 
     @Test
     public void checkObjectIsEncoded() throws CoderException {
-        final MovieMetaData object = new MovieMetaData(metadata);       
-        final SWFEncoder encoder = new SWFEncoder(dout.length);        
-        
+        final MovieMetaData object = new MovieMetaData(metadata);
+        final SWFEncoder encoder = new SWFEncoder(dout.length);
+
         object.prepareToEncode(encoder, context);
         object.encode(encoder, context);
 

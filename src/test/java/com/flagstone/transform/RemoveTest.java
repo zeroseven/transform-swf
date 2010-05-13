@@ -37,8 +37,8 @@ import org.junit.Test;
 
 public final class RemoveTest {
 
-    private static final transient int identifier = 1;
-    private static final transient int layer = 2;
+    private final transient int identifier = 1;
+    private final transient int layer = 2;
 
     private transient Remove fixture;
 

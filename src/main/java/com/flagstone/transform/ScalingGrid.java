@@ -63,18 +63,18 @@ public final class ScalingGrid implements DefineTag {
      */
     public ScalingGrid(final SWFDecoder coder) throws CoderException {
 
-        if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
-            coder.readWord(4, false);
+        if ((coder.readUI16() & 0x3F) == 0x3F) {
+            coder.readUI32();
         }
 
-        identifier = coder.readWord(2, false);
+        identifier = coder.readUI16();
         bounds = new Bounds(coder);
     }
 
-    /** TODO(method). */
-    public ScalingGrid(final int identifier, final Bounds bounds) {
-        setIdentifier(identifier);
-        setBounds(bounds);
+
+    public ScalingGrid(final int uid, final Bounds aBounds) {
+        setIdentifier(uid);
+        setBounds(aBounds);
     }
 
     /**
@@ -90,25 +90,26 @@ public final class ScalingGrid implements DefineTag {
         bounds = object.bounds;
     }
 
-    /** TODO(method). */
+
     public int getIdentifier() {
         return identifier;
     }
 
-    /** TODO(method). */
+
     public void setIdentifier(final int uid) {
-        if ((uid < 1) || (uid > 65535)) {
-             throw new IllegalArgumentRangeException(1, 65536, uid);
+        if ((uid < SWF.MIN_IDENTIFIER) || (uid > SWF.MAX_IDENTIFIER)) {
+            throw new IllegalArgumentRangeException(
+                    SWF.MIN_IDENTIFIER, SWF.MAX_IDENTIFIER, uid);
         }
         identifier = uid;
     }
 
-    /** TODO(method). */
+
     public Bounds getBounds() {
         return bounds;
     }
 
-    /** TODO(method). */
+
     public void setBounds(final Bounds aBounds) {
         if (aBounds == null) {
             throw new IllegalArgumentException();
@@ -137,7 +138,7 @@ public final class ScalingGrid implements DefineTag {
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
 
-        coder.writeWord((MovieTypes.DEFINE_SCALING_GRID << 6) | length, 2);
+        coder.writeHeader(MovieTypes.DEFINE_SCALING_GRID, length);
         coder.writeWord(identifier, 2);
         bounds.encode(coder, context);
     }

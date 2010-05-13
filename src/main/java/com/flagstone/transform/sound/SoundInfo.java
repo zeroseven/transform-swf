@@ -31,6 +31,7 @@
 
 package com.flagstone.transform.sound;
 
+import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -70,6 +71,7 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  */
 //TODO(class)
 public final class SoundInfo implements SWFEncodeable {
+
     private static final String FORMAT = "SoundInfo: { identifier=%d; mode=%s;"
             + " inPoint=%d; outPoint=%d; loopCount=%d; envelopes=%s; }";
 
@@ -101,7 +103,7 @@ public final class SoundInfo implements SWFEncodeable {
      *             if an error occurs while decoding the data.
      */
     public SoundInfo(final SWFDecoder coder) throws CoderException {
-        identifier = coder.readWord(2, false);
+        identifier = coder.readUI16();
         mode = coder.readBits(4, false);
         final boolean hasEnvelope = coder.readBits(1, false) != 0;
         final boolean hasLoopCount = coder.readBits(1, false) != 0;
@@ -109,15 +111,15 @@ public final class SoundInfo implements SWFEncodeable {
         final boolean hasInPoint = coder.readBits(1, false) != 0;
 
         if (hasInPoint) {
-            inPoint = coder.readWord(4, false);
+            inPoint = coder.readUI32();
         }
 
         if (hasOutPoint) {
-            outPoint = coder.readWord(4, false);
+            outPoint = coder.readUI32();
         }
 
         if (hasLoopCount) {
-            loopCount = coder.readWord(2, false);
+            loopCount = coder.readUI16();
         }
 
         if (hasEnvelope) {
@@ -141,11 +143,11 @@ public final class SoundInfo implements SWFEncodeable {
      *            if the sound will not be repeated.
      */
     public SoundInfo(final int uid, final Mode aMode, final int aCount,
-            final Envelope envelope) {
+            final Envelope anEnvelope) {
         setIdentifier(uid);
         setMode(aMode);
         setLoopCount(aCount);
-        setEnvelope(envelope);
+        setEnvelope(anEnvelope);
     }
 
     /**
@@ -162,7 +164,7 @@ public final class SoundInfo implements SWFEncodeable {
         loopCount = object.loopCount;
         inPoint = object.inPoint;
         outPoint = object.outPoint;
-        
+
         if (object.envelope != null) {
             envelope = object.envelope.copy();
         }
@@ -235,8 +237,9 @@ public final class SoundInfo implements SWFEncodeable {
      *            range 1..65535.
      */
     public void setIdentifier(final int uid) {
-        if ((uid < 1) || (uid > 65535)) {
-             throw new IllegalArgumentRangeException(1, 65536, uid);
+        if ((uid < SWF.MIN_IDENTIFIER) || (uid > SWF.MAX_IDENTIFIER)) {
+            throw new IllegalArgumentRangeException(
+                    SWF.MIN_IDENTIFIER, SWF.MAX_IDENTIFIER, uid);
         }
         identifier = uid;
     }
@@ -246,19 +249,19 @@ public final class SoundInfo implements SWFEncodeable {
      * start playing the sound, CONTINUE - do not play the sound if it is
      * already playing and STOP - stop playing the sound.
      *
-     * @param mode
+     * @param soundMode
      *            how the sound is played.
      */
-    public void setMode(final Mode mode) {
-        switch (mode) {
+    public void setMode(final Mode soundMode) {
+        switch (soundMode) {
         case START:
-            this.mode = 0;
+            mode = 0;
             break;
         case CONTINUE:
-            this.mode = 1;
+            mode = 1;
             break;
         case STOP:
-            this.mode = 2;
+            mode = 2;
             break;
         default:
             throw new IllegalArgumentException();
@@ -311,14 +314,14 @@ public final class SoundInfo implements SWFEncodeable {
      * Sets the Envelope that define the levels at which a sound is played over
      * the duration of the sound. May be set to null if no envelope is defined.
      *
-     * @param envelope
+     * @param anEnvelope
      *            an Envelope object.
      */
-    public void setEnvelope(final Envelope envelope) {
-        this.envelope = envelope;
+    public void setEnvelope(final Envelope anEnvelope) {
+        envelope = anEnvelope;
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public SoundInfo copy() {
         return new SoundInfo(this);
     }

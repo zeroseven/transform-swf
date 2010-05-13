@@ -42,7 +42,6 @@ import java.net.URLConnection;
 import java.util.Arrays;
 import java.util.zip.DataFormatException;
 
-
 import com.flagstone.transform.coder.FLVDecoder;
 import com.flagstone.transform.coder.ImageTag;
 import com.flagstone.transform.image.DefineJPEGImage2;
@@ -51,19 +50,19 @@ import com.flagstone.transform.image.DefineJPEGImage2;
  * JPGDecoder decodes JPEG images so they can be used in a Flash file.
  */
 public final class JPGDecoder implements ImageProvider, ImageDecoder {
-    
+
     private static final String BAD_FORMAT = "Unsupported format";
 
     private transient int width;
     private transient int height;
     private transient byte[] image;
 
-    /** TODO(method). */
+
     public void read(final File file) throws IOException, DataFormatException {
         read(new FileInputStream(file), (int) file.length());
     }
 
-    /** TODO(method). */
+
     public void read(final URL url) throws IOException, DataFormatException {
         final URLConnection connection = url.openConnection();
 
@@ -80,20 +79,21 @@ public final class JPGDecoder implements ImageProvider, ImageDecoder {
         read(url.openStream(), length);
     }
 
-    /** TODO(method). */
+
     public ImageTag defineImage(final int identifier) {
         return new DefineJPEGImage2(identifier, image);
     }
 
-    /** TODO(method). */
+
     public ImageDecoder newDecoder() {
         return new JPGDecoder();
     }
 
-    /** TODO(method). */
-     public void read(final InputStream stream, final int size) throws DataFormatException, IOException {
 
-        image = new byte[(int) size];
+     public void read(final InputStream stream, final int size)
+                 throws DataFormatException, IOException {
+
+        image = new byte[size];
         final BufferedInputStream buffer = new BufferedInputStream(stream);
 
         buffer.read(image);
@@ -105,17 +105,17 @@ public final class JPGDecoder implements ImageProvider, ImageDecoder {
 
     }
 
-    /** TODO(method). */
+
     public int getWidth() {
         return width;
     }
 
-    /** TODO(method). */
+
     public int getHeight() {
         return height;
     }
 
-    /** TODO(method). */
+
     public byte[] getImage() {
         return Arrays.copyOf(image, image.length);
     }
@@ -125,21 +125,21 @@ public final class JPGDecoder implements ImageProvider, ImageDecoder {
 
         boolean result;
 
-        if (coder.readWord(2, false) == 0xffd8) {
+        if (coder.readUI16() == 0xffd8) {
             int marker;
 
             do {
-                marker = coder.readWord(2, false);
+                marker = coder.readUI16();
 
                 if ((marker & 0xff00) == 0xff00) {
                     if ((marker >= 0xffc0) && (marker <= 0xffcf)
                             && (marker != 0xffc4) && (marker != 0xffc8)) {
                         coder.adjustPointer(24);
-                        height = coder.readWord(2, false);
-                        width = coder.readWord(2, false);
+                        height = coder.readUI16();
+                        width = coder.readUI16();
                         break;
                     } else {
-                        coder.adjustPointer((coder.readWord(2, false) - 2) << 3);
+                        coder.adjustPointer((coder.readUI16() - 2) << 3);
                     }
                 }
 

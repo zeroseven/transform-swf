@@ -33,14 +33,13 @@ package com.flagstone.transform;
 
 import java.util.Arrays;
 
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.exception.ArraySizeException;
-import com.flagstone.transform.exception.StringSizeException;
 
 /**
  * DoABC is used to define scripts containing Actionscript 3.0 byte-codes.
@@ -75,12 +74,8 @@ public final class DoABC implements MovieTag {
     public DoABC(final SWFDecoder coder) throws CoderException {
 
         final int start = coder.getPointer();
-        length = coder.readWord(2, false) & 0x3F;
-
-        if (length == 0x3F) {
-            length = coder.readWord(4, false);
-        }
-        final int end = coder.getPointer() + (length << 3);
+        length = coder.readHeader();
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
         deferred = coder.readBits(32, false); // TODO(optimise) replace with
         // readWord()
@@ -88,8 +83,9 @@ public final class DoABC implements MovieTag {
         data = coder.readBytes(new byte[(end - coder.getPointer()) >>> 3]);
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 
@@ -97,15 +93,16 @@ public final class DoABC implements MovieTag {
      * Creates a DoABC object with the name and compiled Actionscript 3.0
      * byte-codes.
      *
-     * @param name
+     * @param scriptName
      *            the name used to identify the script.
      * @param defer
      *            whether execution of the script is deferred.
      * @param script
      *            the compiled Actionscript 3.0 byte-codes.
      */
-    public DoABC(final String name, final boolean defer, final byte[] script) {
-        setName(name);
+    public DoABC(final String scriptName, final boolean defer,
+            final byte[] script) {
+        setName(scriptName);
         setDeferred(defer);
         setData(script);
     }
@@ -132,18 +129,15 @@ public final class DoABC implements MovieTag {
     /**
      * Sets the name of the script.
      *
-     * @param name
+     * @param aString
      *            the name assigned to the script so it can be referred to. Must
      *            not be null or an empty string.
      */
-    public void setName(final String name) {
-        if (name == null) {
+    public void setName(final String aString) {
+        if (aString == null || aString.length() == 0) {
             throw new IllegalArgumentException();
         }
-        if (name.length() == 0) {
-            throw new StringSizeException(0, Integer.MAX_VALUE, 0);
-        }
-        this.name = name;
+        name = aString;
     }
 
     /**
@@ -162,7 +156,11 @@ public final class DoABC implements MovieTag {
      *            immediately (false).
      */
     public void setDeferred(final boolean defer) {
-        this.deferred = defer ? 1 : 0;
+        if (defer) {
+            deferred = 1;
+        } else {
+            deferred = 0;
+        }
     }
 
     /**
@@ -182,13 +180,10 @@ public final class DoABC implements MovieTag {
         if (bytes == null) {
             throw new IllegalArgumentException();
         }
-        if (bytes.length == 0) {
-            throw new ArraySizeException(0, Integer.MAX_VALUE, bytes.length);
-        }
         data = Arrays.copyOf(bytes, bytes.length);
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public DoABC copy() {
         return new DoABC(this);
     }
@@ -210,22 +205,17 @@ public final class DoABC implements MovieTag {
             throws CoderException {
 
         final int start = coder.getPointer();
-
-        if (length > 62) {
-            coder.writeWord((MovieTypes.DO_ABC << 6) | 0x3F, 2);
-            coder.writeWord(length, 4);
-        } else {
-            coder.writeWord((MovieTypes.DO_ABC << 6) | length, 2);
-        }
-        final int end = coder.getPointer() + (length << 3);
+        coder.writeHeader(MovieTypes.DO_ABC, length);
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
         coder.writeBits(deferred, 32); // TODO(optimise) replace with readWord()
         coder.writeString(name);
         coder.writeBytes(data);
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 }

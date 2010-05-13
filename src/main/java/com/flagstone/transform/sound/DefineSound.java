@@ -33,7 +33,8 @@ package com.flagstone.transform.sound;
 
 import java.util.Arrays;
 
-
+import com.flagstone.transform.SWF;
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.DefineTag;
@@ -97,14 +98,10 @@ public final class DefineSound implements DefineTag {
     public DefineSound(final SWFDecoder coder) throws CoderException {
 
         final int start = coder.getPointer();
-        length = coder.readWord(2, false) & 0x3F;
+        length = coder.readHeader();
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
-        if (length == 0x3F) {
-            length = coder.readWord(4, false);
-        }
-        final int end = coder.getPointer() + (length << 3);
-
-        identifier = coder.readWord(2, false);
+        identifier = coder.readUI16();
         format = coder.readBits(4, false);
 
         switch (coder.readBits(2, false)) {
@@ -127,13 +124,14 @@ public final class DefineSound implements DefineTag {
 
         sampleSize = coder.readBits(1, false) + 1;
         channelCount = coder.readBits(1, false) + 1;
-        sampleCount = coder.readWord(4, false);
+        sampleCount = coder.readUI32();
 
         sound = coder.readBytes(new byte[length - 7]);
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 
@@ -148,13 +146,13 @@ public final class DefineSound implements DefineTag {
      *            the encoding format for the sound. For Flash 1 the formats may
      *            be one of the format: NATIVE_PCM, PCM or ADPCM. For Flash 4 or
      *            later include MP3 and Flash 6 or later include NELLYMOSER.
-     * @param rate
+     * @param playbackRate
      *            the number of samples per second that the sound is played at ,
      *            either 5512, 11025, 22050 or 44100.
      * @param channels
      *            the number of channels in the sound, must be either 1 (Mono)
      *            or 2 (Stereo).
-     * @param sampleSize
+     * @param size
      *            the size of an uncompressed sound sample in bits, must be
      *            either 8 or 16.
      * @param count
@@ -163,13 +161,13 @@ public final class DefineSound implements DefineTag {
      *            the sound data.
      */
     public DefineSound(final int uid, final SoundFormat aFormat,
-            final int rate, final int channels, final int sampleSize,
+            final int playbackRate, final int channels, final int size,
             final int count, final byte[] bytes) {
         setIdentifier(uid);
         setFormat(aFormat);
-        setRate(rate);
+        setRate(playbackRate);
         setChannelCount(channels);
-        setSampleSize(sampleSize);
+        setSampleSize(size);
         setSampleCount(count);
         setSound(bytes);
     }
@@ -199,8 +197,9 @@ public final class DefineSound implements DefineTag {
 
     /** {@inheritDoc} */
     public void setIdentifier(final int uid) {
-        if ((uid < 1) || (uid > 65535)) {
-             throw new IllegalArgumentRangeException(1, 65536, uid);
+        if ((uid < SWF.MIN_IDENTIFIER) || (uid > SWF.MAX_IDENTIFIER)) {
+            throw new IllegalArgumentRangeException(
+                    SWF.MIN_IDENTIFIER, SWF.MAX_IDENTIFIER, uid);
         }
         identifier = uid;
     }
@@ -208,29 +207,29 @@ public final class DefineSound implements DefineTag {
     /**
      * Returns the compression format used.
      */
-    public SoundFormat getFormat() {    
+    public SoundFormat getFormat() {
         SoundFormat value;
-        
+
         switch (format) {
-        case 0: 
+        case 0:
             value = SoundFormat.NATIVE_PCM;
             break;
-        case 1: 
+        case 1:
             value = SoundFormat.ADPCM;
             break;
-        case 2: 
+        case 2:
             value = SoundFormat.MP3;
             break;
-        case 3: 
+        case 3:
             value = SoundFormat.PCM;
             break;
-        case 5: 
+        case 5:
             value = SoundFormat.NELLYMOSER_8K;
             break;
-        case 6: 
+        case 6:
             value = SoundFormat.NELLYMOSER;
             break;
-        case 11: 
+        case 11:
             value = SoundFormat.SPEEX;
             break;
         default:
@@ -283,25 +282,25 @@ public final class DefineSound implements DefineTag {
      */
     public void setFormat(final SoundFormat encoding) {
         switch (encoding) {
-        case NATIVE_PCM: 
+        case NATIVE_PCM:
             format = 0;
             break;
-        case ADPCM: 
+        case ADPCM:
             format = 1;
             break;
-        case MP3: 
+        case MP3:
             format = 2;
             break;
-        case PCM: 
+        case PCM:
             format = 3;
             break;
-        case NELLYMOSER_8K: 
+        case NELLYMOSER_8K:
             format = 5;
             break;
-        case NELLYMOSER: 
+        case NELLYMOSER:
             format = 6;
             break;
-        case SPEEX: 
+        case SPEEX:
             format = 11;
             break;
         default:
@@ -312,16 +311,19 @@ public final class DefineSound implements DefineTag {
     /**
      * Sets the sampling rate in Hertz.
      *
-     * @param rate
+     * @param samplingRate
      *            the rate at which the sounds is played in Hz. Must be one of:
      *            5512, 11025, 22050 or 44100.
      */
-    public void setRate(final int rate) {
-        if ((rate != 5512) && (rate != 11025) && (rate != 22050)
-                && (rate != 44100)) {
-            throw new IllegalArgumentValueException(new int[] {5512, 11025, 22050, 44100}, rate);
+    public void setRate(final int samplingRate) {
+        if ((samplingRate != 5512)
+                && (samplingRate != 11025)
+                && (samplingRate != 22050)
+                && (samplingRate != 44100)) {
+            throw new IllegalArgumentValueException(
+                    new int[] {5512, 11025, 22050, 44100}, samplingRate);
         }
-        this.rate = rate;
+        rate = samplingRate;
     }
 
     /**
@@ -359,7 +361,8 @@ public final class DefineSound implements DefineTag {
      */
     public void setSampleCount(final int count) {
         if (count < 1) {
-            throw new IllegalArgumentRangeException(1, Integer.MAX_VALUE, count);
+            throw new IllegalArgumentRangeException(1,
+                    Integer.MAX_VALUE, count);
         }
         sampleCount = count;
     }
@@ -402,14 +405,8 @@ public final class DefineSound implements DefineTag {
             throws CoderException {
 
         final int start = coder.getPointer();
-
-        if (length >= 63) {
-            coder.writeWord((MovieTypes.DEFINE_SOUND << 6) | 0x3F, 2);
-            coder.writeWord(length, 4);
-        } else {
-            coder.writeWord((MovieTypes.DEFINE_SOUND << 6) | length, 2);
-        }
-        final int end = coder.getPointer() + (length << 3);
+        coder.writeHeader(MovieTypes.DEFINE_SOUND, length);
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
         coder.writeWord(identifier, 2);
         coder.writeBits(format, 4);
@@ -437,8 +434,9 @@ public final class DefineSound implements DefineTag {
         coder.writeBytes(sound);
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 }

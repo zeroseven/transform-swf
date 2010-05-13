@@ -39,7 +39,7 @@ import com.flagstone.transform.datatype.Bounds;
 
 public final class ScalingGridTest {
 
-    private static final transient int identifier = 1;
+    private final transient int identifier = 1;
     private final transient Bounds bounds = new Bounds(1, 2, 3, 4);
 
     private transient ScalingGrid fixture;

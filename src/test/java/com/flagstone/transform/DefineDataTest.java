@@ -37,8 +37,8 @@ import org.junit.Test;
 
 public final class DefineDataTest {
 
-    private static final transient int identifier = 1;
-    private final transient byte[] data = new byte[] { 1, 2, 3, 4 };
+    private final transient int identifier = 1;
+    private final transient byte[] data = new byte[] {1, 2, 3, 4 };
 
     private transient DefineData fixture;
 

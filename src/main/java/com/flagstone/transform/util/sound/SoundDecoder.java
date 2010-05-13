@@ -50,14 +50,15 @@ import com.flagstone.transform.sound.DefineSound;
  * @see MP3Decoder
  */
 public interface SoundDecoder {
-    /** TODO(method). */
+
     void read(File file) throws IOException, DataFormatException;
-    /** TODO(method). */
+
     void read(URL url) throws IOException, DataFormatException;
-    /** TODO(method). */
-    void read(InputStream stream, int size) throws IOException, DataFormatException;
-    /** TODO(method). */
+
+    void read(InputStream stream, int size)
+            throws IOException, DataFormatException;
+
     DefineSound defineSound(int identifier);
-    /** TODO(method). */
+
     List<MovieTag> streamSound(int frameRate);
 }

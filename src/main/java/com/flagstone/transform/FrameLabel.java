@@ -30,13 +30,13 @@
  */
 package com.flagstone.transform;
 
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.exception.StringSizeException;
 
 /**
  * FrameLabel defines a name for the current frame in a movie or movie clip.
@@ -56,9 +56,6 @@ import com.flagstone.transform.exception.StringSizeException;
  * used in HTML. When the Flash Player loads a movie it will begin playing at
  * the frame specified in the URL.
  * </p>
- *
- * @see GetUrl
- * @see GetUrl2
  */
 public final class FrameLabel implements MovieTag {
 
@@ -80,13 +77,8 @@ public final class FrameLabel implements MovieTag {
      *             if an error occurs while decoding the data.
      */
     public FrameLabel(final SWFDecoder coder) throws CoderException {
-
-        length = coder.readWord(2, false) & 0x3F;
-
-        if (length == 0x3F) {
-            length = coder.readWord(4, false);
-        }
-        final int end = coder.getPointer() + (length << 3);
+        length = coder.readHeader();
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
         label = coder.readString();
 
@@ -145,18 +137,15 @@ public final class FrameLabel implements MovieTag {
     /**
      * Sets the label.
      *
-     * @param label
+     * @param aString
      *            the string that defines the label that will be assigned to the
      *            current frame. Must not be null or an empty string.
      */
-    public void setLabel(final String label) {
-        if (label == null) {
+    public void setLabel(final String aString) {
+        if (aString == null || aString.length() == 0) {
             throw new IllegalArgumentException();
         }
-        if (label.length() == 0) {
-            throw new StringSizeException(0, Integer.MAX_VALUE, 0);
-        }
-        this.label = label;
+        label = aString;
     }
 
     /**
@@ -202,13 +191,7 @@ public final class FrameLabel implements MovieTag {
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
 
-        if (length > 62) {
-            coder.writeWord((MovieTypes.FRAME_LABEL << 6) | 0x3F, 2);
-            coder.writeWord(length, 4);
-        } else {
-            coder.writeWord((MovieTypes.FRAME_LABEL << 6) | length, 2);
-        }
-
+        coder.writeHeader(MovieTypes.FRAME_LABEL, length);
         coder.writeString(label);
 
         if (anchor) {

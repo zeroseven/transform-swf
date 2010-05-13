@@ -1,5 +1,5 @@
 /*
- * AllFillStyleTests.java 
+ * AllFillStyleTests.java
  * Transform
  *
  * Copyright (c) 2009-2010 Flagstone Software Ltd. All rights reserved.
@@ -35,9 +35,10 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( { BitmapFillTest.class, FocalGradientFillTest.class,
-        GradientTest.class, GradientFillTest.class, MorphBitmapFillTest.class,
-        MorphGradientTest.class, MorphGradientFillTest.class,
-        MorphSolidFillTest.class, SolidFillTest.class })
+@Suite.SuiteClasses({
+    BitmapFillTest.class, FocalGradientFillTest.class,
+    GradientTest.class, GradientFillTest.class, MorphBitmapFillTest.class,
+    MorphGradientTest.class, MorphGradientFillTest.class,
+    MorphSolidFillTest.class, SolidFillTest.class })
 public final class AllFillStyleTests {
 }

@@ -33,7 +33,6 @@ package com.flagstone.transform.filter;
 
 import java.util.Arrays;
 
-
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -67,26 +66,26 @@ public final class ColorMatrixFilter implements Filter {
         }
     }
 
-    /** TODO(method). */
-    public ColorMatrixFilter(final float[] matrix) {
-        if ((matrix == null) || (matrix.length != 20)) {
+
+    public ColorMatrixFilter(final float[] aMatrix) {
+        if ((aMatrix == null) || (aMatrix.length != 20)) {
             throw new IllegalArgumentException("Value not set");
         }
-        this.matrix = Arrays.copyOf(matrix, matrix.length);
+        matrix = Arrays.copyOf(aMatrix, aMatrix.length);
     }
 
-    /** TODO(method). */
+
     public float[] getMatrix() {
         return Arrays.copyOf(matrix, matrix.length);
     }
 
     @Override
     public String toString() {
-        return String.format(FORMAT, 
-                matrix[0],matrix[1],matrix[2],matrix[3],matrix[4],
-                matrix[5],matrix[6],matrix[7],matrix[8],matrix[9],
-                matrix[10],matrix[11],matrix[12],matrix[13],matrix[14],
-                matrix[15],matrix[16],matrix[17],matrix[18],matrix[19]
+        return String.format(FORMAT,
+                matrix[0], matrix[1], matrix[2], matrix[3], matrix[4],
+                matrix[5], matrix[6], matrix[7], matrix[8], matrix[9],
+                matrix[10], matrix[11], matrix[12], matrix[13], matrix[14],
+                matrix[15], matrix[16], matrix[17], matrix[18], matrix[19]
         );
     }
 

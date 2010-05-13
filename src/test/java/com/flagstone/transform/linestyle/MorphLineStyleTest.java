@@ -47,14 +47,14 @@ import com.flagstone.transform.datatype.Color;
 
 public final class MorphLineStyleTest {
 
-    private static final transient int startWidth = 1;
+    private final transient int startWidth = 1;
     private final transient Color startColor = new Color(2, 3, 4, 5);
-    private static final transient int endWidth = 6;
+    private final transient int endWidth = 6;
     private final transient Color endColor = new Color(7, 8, 9, 10);
 
     private transient MorphLineStyle fixture;
 
-    private final transient byte[] encoded = new byte[] { 0x01, 0x00, 0x06,
+    private final transient byte[] encoded = new byte[] {0x01, 0x00, 0x06,
             0x00, 0x02, 0x03, 0x04, 0x05, 0x07, 0x08, 0x09, 0x0A };
 
     @Test(expected = IllegalArgumentException.class)
@@ -89,7 +89,8 @@ public final class MorphLineStyleTest {
 
     @Test
     public void checkCopy() {
-        fixture = new MorphLineStyle(startWidth, endWidth, startColor, endColor);
+        fixture = new MorphLineStyle(startWidth, endWidth,
+                startColor, endColor);
         final MorphLineStyle copy = fixture.copy();
 
         assertNotSame(fixture, copy);
@@ -104,7 +105,8 @@ public final class MorphLineStyleTest {
         final Context context = new Context();
         context.getVariables().put(Context.TRANSPARENT, 1);
 
-        fixture = new MorphLineStyle(startWidth, endWidth, startColor, endColor);
+        fixture = new MorphLineStyle(startWidth, endWidth,
+                startColor, endColor);
         assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
         fixture.encode(encoder, context);
 

@@ -35,14 +35,11 @@ import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.exception.StringSizeException;
 
 /**
  * The GotoLabel action instructs the player to move to the frame in the current
  * movie with the specified label - previously assigned using a FrameLabel
  * object.
- *
- * @see FrameLabel
  */
 public final class GotoLabel implements Action {
 
@@ -67,7 +64,7 @@ public final class GotoLabel implements Action {
      */
     public GotoLabel(final SWFDecoder coder) throws CoderException {
         coder.readByte();
-        length = coder.readWord(2, false);
+        length = coder.readUI16();
         label = coder.readString();
     }
 
@@ -79,8 +76,8 @@ public final class GotoLabel implements Action {
      *            be null or an empty string.
      */
     public GotoLabel(final String aString) {
-        if (aString == null) {
-            throw new StringSizeException(0, Integer.MAX_VALUE, 0);
+        if (aString == null || aString.length() == 0) {
+            throw new IllegalArgumentException();
         }
         label = aString;
     }

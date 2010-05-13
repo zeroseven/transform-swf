@@ -31,6 +31,8 @@
 
 package com.flagstone.transform.util.font;
 
+import com.flagstone.transform.Constants;
+
 /** TODO(class). */
 public final class FontFace {
 
@@ -38,18 +40,19 @@ public final class FontFace {
     private final transient boolean bold;
     private final transient boolean italic;
 
-    /** TODO(method). */
-    public FontFace(final String name, final boolean isBold, final boolean isItalic) {
-        this.name = name;
-        this.bold = isBold;
-        this.italic = isItalic;
+
+    public FontFace(final String fontName,
+            final boolean isBold, final boolean isItalic) {
+        name = fontName;
+        bold = isBold;
+        italic = isItalic;
     }
 
-    /** TODO(method). */
-    public FontFace(final String name, final int style) {
-        this.name = name;
-        this.bold = (style & java.awt.Font.BOLD) != 0;
-        this.italic = (style & java.awt.Font.ITALIC) != 0;
+
+    public FontFace(final String fontName, final int style) {
+        name = fontName;
+        bold = (style & java.awt.Font.BOLD) != 0;
+        italic = (style & java.awt.Font.ITALIC) != 0;
     }
 
     /**
@@ -120,7 +123,8 @@ public final class FontFace {
 
     @Override
     public int hashCode() {
-        return (name.hashCode() * 31 + Boolean.valueOf(bold).hashCode()) * 31
+        return (name.hashCode() * Constants.PRIME
+                + Boolean.valueOf(bold).hashCode()) * Constants.PRIME
                 + Boolean.valueOf(italic).hashCode();
     }
 }

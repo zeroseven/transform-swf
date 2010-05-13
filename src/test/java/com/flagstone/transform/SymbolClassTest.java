@@ -40,7 +40,8 @@ import org.junit.Test;
 
 public final class SymbolClassTest {
 
-    private static Map<Integer, String> table = new LinkedHashMap<Integer, String>();
+    private static Map<Integer, String> table =
+        new LinkedHashMap<Integer, String>();
 
     static {
         table.put(1, "A");

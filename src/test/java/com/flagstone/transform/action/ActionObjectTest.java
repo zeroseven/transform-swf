@@ -44,26 +44,27 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 public final class ActionObjectTest {
 
-    private static final transient int type = 128;
-    private final transient byte[] data = new byte[] { 1, 2, 3, 4 };
+    private static final transient int TYPE = 128;
+    private final transient byte[] data = new byte[] {1, 2, 3, 4 };
 
     private transient ActionObject fixture;
 
-    private final transient byte[] basic = new byte[] { (byte) 0x01 };
+    private final transient byte[] basic = new byte[] {(byte) 0x01 };
 
-    private final transient byte[] empty = new byte[] { (byte) 0x80, 0x00, 0x00 };
+    private final transient byte[] empty =
+        new byte[] {(byte) 0x80, 0x00, 0x00 };
 
-    private final transient byte[] encoded = new byte[] { (byte) 0x80, 0x04,
+    private final transient byte[] encoded = new byte[] {(byte) 0x80, 0x04,
             0x00, 0x01, 0x02, 0x03, 0x04 };
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForDataWithNull() {
-        fixture = new ActionObject(type, null);
+        fixture = new ActionObject(TYPE, null);
     }
 
     @Test
     public void checkCopy() {
-        fixture = new ActionObject(type, data);
+        fixture = new ActionObject(TYPE, data);
         final ActionObject copy = fixture.copy();
 
         assertNotSame(fixture, copy);
@@ -76,7 +77,7 @@ public final class ActionObjectTest {
         final SWFEncoder encoder = new SWFEncoder(encoded.length);
         final Context context = new Context();
 
-        fixture = new ActionObject(type, data);
+        fixture = new ActionObject(TYPE, data);
         assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
         fixture.encode(encoder, context);
 
@@ -102,7 +103,7 @@ public final class ActionObjectTest {
         final SWFEncoder encoder = new SWFEncoder(empty.length);
         final Context context = new Context();
 
-        fixture = new ActionObject(type, new byte[0]);
+        fixture = new ActionObject(TYPE, new byte[0]);
         assertEquals(empty.length, fixture.prepareToEncode(encoder, context));
         fixture.encode(encoder, context);
 
@@ -117,7 +118,7 @@ public final class ActionObjectTest {
         fixture = new ActionObject(decoder);
 
         assertTrue(decoder.eof());
-        assertEquals(type, fixture.getType());
+        assertEquals(TYPE, fixture.getType());
         assertArrayEquals(data, fixture.getData());
     }
 
@@ -139,7 +140,7 @@ public final class ActionObjectTest {
         fixture = new ActionObject(decoder);
 
         assertTrue(decoder.eof());
-        assertEquals(type, fixture.getType());
+        assertEquals(TYPE, fixture.getType());
         assertArrayEquals(new byte[0], fixture.getData());
     }
 }

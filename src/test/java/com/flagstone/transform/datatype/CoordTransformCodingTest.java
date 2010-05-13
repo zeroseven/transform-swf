@@ -39,12 +39,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
-import org.junit.Assume;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
-
 import org.yaml.snakeyaml.Yaml;
 
 import com.flagstone.transform.coder.CoderException;
@@ -54,9 +52,10 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 @RunWith(Parameterized.class)
 public final class CoordTransformCodingTest {
-    
-    private static final String RESOURCE = "com/flagstone/transform/datatype/CoordTransform.yaml";
-    
+
+    private static final String RESOURCE =
+        "com/flagstone/transform/datatype/CoordTransform.yaml";
+
     private static final String XSCALE = "xscale";
     private static final String YSCALE = "yscale";
     private static final String XSHEAR = "xshear";
@@ -71,59 +70,83 @@ public final class CoordTransformCodingTest {
         ClassLoader loader = CoordTransformCodingTest.class.getClassLoader();
         InputStream other = loader.getResourceAsStream(RESOURCE);
         Yaml yaml = new Yaml();
-        
+
         Collection<Object[]> list = new ArrayList<Object[]>();
-         
+
         for (Object data : yaml.loadAll(other)) {
-            list.add(new Object[] { data });
+            list.add(new Object[] {data });
         }
 
         return list;
     }
 
-    private Double xscale;
-    private Double yscale;
-    private Double xshear;
-    private Double yshear;
-    private Integer xcoord;
-    private Integer ycoord;
-    private byte[] data;
-    
-    private Context context;
-    
-    public CoordTransformCodingTest(Map<String,Object>values) {
-        xscale = values.get(XSCALE) == null ? CoordTransform.DEFAULT_SCALE : (Double)values.get(XSCALE);
-        yscale = values.get(YSCALE) == null ? CoordTransform.DEFAULT_SCALE : (Double)values.get(YSCALE);
-        xshear = values.get(XSHEAR) == null ? CoordTransform.DEFAULT_SHEAR : (Double)values.get(XSHEAR);
-        yshear = values.get(YSHEAR) == null ? CoordTransform.DEFAULT_SHEAR : (Double)values.get(YSHEAR);
-        xcoord = values.get(XCOORD) == null ? CoordTransform.DEFAULT_COORD : (Integer)values.get(XCOORD);
-        ycoord = values.get(YCOORD) == null ? CoordTransform.DEFAULT_COORD : (Integer)values.get(YCOORD);
-        data = (byte[])values.get(DATA);
-        
+    private final Double xscale;
+    private final Double yscale;
+    private final Double xshear;
+    private final Double yshear;
+    private final Integer xcoord;
+    private final Integer ycoord;
+    private final byte[] data;
+
+    private final Context context;
+
+    public CoordTransformCodingTest(final Map<String, Object>values) {
+        if (values.get(XSCALE) == null) {
+            xscale = new Double(CoordTransform.DEFAULT_SCALE);
+        } else {
+            xscale = (Double) values.get(XSCALE);
+        }
+        if (values.get(YSCALE) == null) {
+            yscale = new Double(CoordTransform.DEFAULT_SCALE);
+        } else {
+            yscale = (Double) values.get(YSCALE);
+        }
+        if (values.get(XSHEAR) == null) {
+            xshear = new Double(CoordTransform.DEFAULT_SHEAR);
+        } else {
+            xshear = (Double) values.get(XSHEAR);
+        }
+        if (values.get(YSHEAR) == null) {
+            yshear = new Double(CoordTransform.DEFAULT_SHEAR);
+        } else {
+            yshear = (Double) values.get(YSHEAR);
+        }
+        if (values.get(XCOORD) == null) {
+            xcoord = CoordTransform.DEFAULT_COORD;
+        } else {
+            xcoord = (Integer) values.get(XCOORD);
+        }
+        if (values.get(YCOORD) == null) {
+            ycoord = CoordTransform.DEFAULT_COORD;
+        } else {
+            ycoord = (Integer) values.get(YCOORD);
+        }
+        data = (byte[]) values.get(DATA);
+
         context = new Context();
     }
 
     @Test
     public void checkSizeMatchesEncodedSize() throws CoderException {
-        
+
         final CoordTransform transform = new CoordTransform(
                 xscale.floatValue(), yscale.floatValue(),
                 xshear.floatValue(), yshear.floatValue(),
-                xcoord.intValue(), ycoord.intValue());       
-        final SWFEncoder encoder = new SWFEncoder(data.length);        
-         
+                xcoord.intValue(), ycoord.intValue());
+        final SWFEncoder encoder = new SWFEncoder(data.length);
+
         assertEquals(data.length, transform.prepareToEncode(encoder, context));
     }
 
     @Test
     public void checkTransformIsEncoded() throws CoderException {
-        
+
         final CoordTransform transform = new CoordTransform(
                 xscale.floatValue(), yscale.floatValue(),
                 xshear.floatValue(), yshear.floatValue(),
-                xcoord.intValue(), ycoord.intValue());       
-        final SWFEncoder encoder = new SWFEncoder(data.length);        
-        
+                xcoord.intValue(), ycoord.intValue());
+        final SWFEncoder encoder = new SWFEncoder(data.length);
+
         transform.prepareToEncode(encoder, context);
         transform.encode(encoder, context);
 
@@ -133,7 +156,7 @@ public final class CoordTransformCodingTest {
 
     @Test
     public void checkTranformIsDecoded() throws CoderException {
-        
+
         final SWFDecoder decoder = new SWFDecoder(data);
         final CoordTransform transform = new CoordTransform(decoder);
 

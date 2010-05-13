@@ -54,7 +54,8 @@ import com.flagstone.transform.datatype.Color;
 @RunWith(Parameterized.class)
 public final class BackgroundCodingTest {
 
-    private static final String RESOURCE = "com/flagstone/transform/Background.yaml";
+    private static final String RESOURCE =
+        "com/flagstone/transform/Background.yaml";
 
     private static final String RED = "red";
     private static final String GREEN = "green";
@@ -68,44 +69,44 @@ public final class BackgroundCodingTest {
         ClassLoader loader = BackgroundCodingTest.class.getClassLoader();
         InputStream other = loader.getResourceAsStream(RESOURCE);
         Yaml yaml = new Yaml();
-        
+
         Collection<Object[]> list = new ArrayList<Object[]>();
-         
+
         for (Object data : yaml.loadAll(other)) {
-            list.add(new Object[] { data });
+            list.add(new Object[] {data });
         }
 
         return list;
     }
 
-    private transient final Color color;
-    private transient final byte[] din;
-    private transient final byte[] dout;
-    private transient final Context context;
-    
-    public BackgroundCodingTest(Map<String,Object>values) {
-        final int red = (Integer)values.get(RED);
-        final int green = (Integer)values.get(GREEN);
-        final int blue = (Integer)values.get(BLUE);
+    private final transient Color color;
+    private final transient byte[] din;
+    private final transient byte[] dout;
+    private final transient Context context;
+
+    public BackgroundCodingTest(final Map<String, Object>values) {
+        final int red = (Integer) values.get(RED);
+        final int green = (Integer) values.get(GREEN);
+        final int blue = (Integer) values.get(BLUE);
         color = new Color(red, green, blue);
-        din = (byte[])values.get(DIN);
-        dout = (byte[])values.get(DOUT);
+        din = (byte[]) values.get(DIN);
+        dout = (byte[]) values.get(DOUT);
         context = new Context();
     }
 
     @Test
-    public void checkSizeMatchesEncodedSize() throws CoderException {     
-        final Background object = new Background(color);       
-        final SWFEncoder encoder = new SWFEncoder(dout.length);        
-         
+    public void checkSizeMatchesEncodedSize() throws CoderException {
+        final Background object = new Background(color);
+        final SWFEncoder encoder = new SWFEncoder(dout.length);
+
         assertEquals(dout.length, object.prepareToEncode(encoder, context));
     }
 
     @Test
     public void checkBackgroundIsEncoded() throws CoderException {
-        final Background object = new Background(color);       
-        final SWFEncoder encoder = new SWFEncoder(dout.length);        
-        
+        final Background object = new Background(color);
+        final SWFEncoder encoder = new SWFEncoder(dout.length);
+
         object.prepareToEncode(encoder, context);
         object.encode(encoder, context);
 

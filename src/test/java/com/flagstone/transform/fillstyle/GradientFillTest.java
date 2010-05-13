@@ -67,7 +67,7 @@ public final class GradientFillTest {
 
     private transient GradientFill fixture;
 
-    private final transient byte[] encoded = new byte[] { 0x10, 0x06, 0x50,
+    private final transient byte[] encoded = new byte[] {0x10, 0x06, 0x50,
             0x02, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
 
     @Test(expected = IllegalArgumentException.class)

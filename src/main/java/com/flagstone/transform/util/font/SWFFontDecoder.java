@@ -103,18 +103,18 @@ import com.flagstone.transform.shape.Shape;
 //TODO(class)
 public final class SWFFontDecoder implements FontProvider, FontDecoder {
 
-    private final transient Map<Integer,Font>fonts;
-    
+    private final transient Map<Integer, Font>fonts;
+
     public SWFFontDecoder() {
-        fonts = new LinkedHashMap<Integer,Font>();
+        fonts = new LinkedHashMap<Integer, Font>();
     }
 
-    /** TODO(method). */
+
     public FontDecoder newDecoder() {
         return new SWFFontDecoder();
     }
 
-    /** TODO(method). */
+
     public void read(final File file) throws IOException, DataFormatException {
         final FileInputStream stream = new FileInputStream(file);
         try {
@@ -124,7 +124,7 @@ public final class SWFFontDecoder implements FontProvider, FontDecoder {
         }
     }
 
-    /** TODO(method). */
+
     public void read(final URL url) throws IOException, DataFormatException {
         final URLConnection connection = url.openConnection();
 
@@ -141,12 +141,13 @@ public final class SWFFontDecoder implements FontProvider, FontDecoder {
         }
     }
 
-    /** TODO(method). */
+
     public List<Font> getFonts() {
         return new ArrayList<Font>(fonts.values());
     }
 
-    private void decode(final InputStream stream) throws IOException, DataFormatException {
+    private void decode(final InputStream stream)
+            throws IOException, DataFormatException {
         final Movie movie = new Movie();
         movie.decodeFromStream(stream);
 
@@ -167,73 +168,65 @@ public final class SWFFontDecoder implements FontProvider, FontDecoder {
      * @param glyphs
      *            a DefineFont object which contains the definition of the
      *            glyphs.
-     *
-     * @param info
-     *            a FontInfo object that contains information on the font name,
-     *            weight, style and character codes.
      */
     public void decode(final DefineFont glyphs) {
-        
+
         final Font font = new Font();
-        
+
         font.setAscent(0);
         font.setDescent(0);
         font.setLeading(0);
-        
+
         final int glyphCount = glyphs.getShapes().size();
 
         font.setMissingGlyph(0);
         font.setNumberOfGlyphs(glyphCount);
-        font.setHighestChar((char)glyphCount);
+        font.setHighestChar((char) glyphCount);
 
         if (glyphCount > 0) {
-            
+
             Shape shape;
-             
-            for (int i=0; i<glyphCount; i++) {
+
+            for (int i = 0; i < glyphCount; i++) {
                 shape = glyphs.getShapes().get(i);
-                font.addGlyph((char)i, new Glyph(shape));
+                font.addGlyph((char) i, new Glyph(shape));
             }
         }
-        
+
         fonts.put(glyphs.getIdentifier(), font);
     }
 
     /**
      * Initialise this object with the information from a flash font definition.
      *
-     * @param glyphs
-     *            a DefineFont object which contains the definition of the
-     *            glyphs.
-     *
      * @param info
      *            a FontInfo object that contains information on the font name,
      *            weight, style and character codes.
      */
     public void decode(final FontInfo info) {
-        
+
         final Font font = fonts.get(info.getIdentifier());
-        
+
         font.setFace(new FontFace(info.getName(),
                 info.isBold(), info.isItalic()));
-        
+
         font.setEncoding(info.getEncoding());
-        
+
         final int glyphCount = font.getNumberOfGlyphs();
         final int highest = info.getCodes().get(glyphCount);
 
-        font.setHighestChar((char)highest);
+        font.setHighestChar((char) highest);
 
         if (glyphCount > 0) {
-            
+
             Glyph glyph;
             int code;
-            
-            for (int i=0; i<glyphCount; i++) {
+
+            for (int i = 0; i < glyphCount; i++) {
                 glyph = font.getGlyph(i);
                 code = info.getCodes().get(i);
-                
-                font.addGlyph((char)code, glyph);
+
+                font.addGlyph((char) code, glyph);
             }
         }
     }
@@ -241,38 +234,34 @@ public final class SWFFontDecoder implements FontProvider, FontDecoder {
     /**
      * Initialise this object with the information from a flash font definition.
      *
-     * @param glyphs
-     *            a DefineFont object which contains the definition of the
-     *            glyphs.
-     *
      * @param info
      *            a FontInfo2 object that contains information on the font name,
      *            weight, style and character codes.
      */
     public void decode(final FontInfo2 info) {
-        
+
         final Font font = fonts.get(info.getIdentifier());
-        
+
         font.setFace(new FontFace(info.getName(),
                 info.isBold(), info.isItalic()));
-        
+
         font.setEncoding(info.getEncoding());
-        
+
         final int glyphCount = font.getNumberOfGlyphs();
         final int highest = info.getCodes().get(glyphCount);
 
-        font.setHighestChar((char)highest);
+        font.setHighestChar((char) highest);
 
         if (glyphCount > 0) {
-            
+
             Glyph glyph;
             int code;
-            
-            for (int i=0; i<glyphCount; i++) {
+
+            for (int i = 0; i < glyphCount; i++) {
                 glyph = font.getGlyph(i);
                 code = info.getCodes().get(i);
-                
-                font.addGlyph((char)code, glyph);
+
+                font.addGlyph((char) code, glyph);
             }
         }
     }
@@ -286,34 +275,34 @@ public final class SWFFontDecoder implements FontProvider, FontDecoder {
      *            definitions.
      */
     public void decode(final DefineFont2 object) {
-        
+
         final Font font = new Font();
-        
+
         font.setFace(new FontFace(object.getName(),
                 object.isBold(), object.isItalic()));
-        
+
         font.setEncoding(object.getEncoding());
         font.setAscent(object.getAscent());
         font.setDescent(object.getDescent());
         font.setLeading(object.getLeading());
-        
+
         final int glyphCount = object.getShapes().size();
         final int highest = object.getCodes().get(glyphCount);
 
         font.setMissingGlyph(0);
         font.setNumberOfGlyphs(glyphCount);
-        font.setHighestChar((char)highest);
+        font.setHighestChar((char) highest);
 
         if (glyphCount > 0) {
-            
+
             Shape shape;
             Bounds bounds = null;
             int advance;
             int code;
-            
-            for (int i=0; i<glyphCount; i++) {
+
+            for (int i = 0; i < glyphCount; i++) {
                 shape = object.getShapes().get(i);
-                
+
                 if (object.getBounds() != null) {
                      bounds = object.getBounds().get(i);
                 }
@@ -323,11 +312,11 @@ public final class SWFFontDecoder implements FontProvider, FontDecoder {
                     advance = object.getAdvances().get(i);
                 }
                 code = object.getCodes().get(i);
-                
-                font.addGlyph((char)code, new Glyph(shape, bounds, advance));
+
+                font.addGlyph((char) code, new Glyph(shape, bounds, advance));
             }
         }
-        
+
         fonts.put(object.getIdentifier(), font);
     }
 }

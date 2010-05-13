@@ -79,12 +79,12 @@ public final class Remove implements MovieTag {
      */
     public Remove(final SWFDecoder coder) throws CoderException {
 
-        if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
-            coder.readWord(4, false);
+        if ((coder.readUI16() & 0x3F) == 0x3F) {
+            coder.readUI32();
         }
 
-        identifier = coder.readWord(2, false);
-        layer = coder.readWord(2, false);
+        identifier = coder.readUI16();
+        layer = coder.readUI16();
     }
 
     /**
@@ -94,13 +94,13 @@ public final class Remove implements MovieTag {
      * @param uid
      *            the unique identifier for the object currently on the display
      *            list. Must be in the range 1.65535.
-     * @param layer
+     * @param level
      *            the layer in the display list where the object is being
      *            displayed. Must be in the range 1.65535.
      */
-    public Remove(final int uid, final int layer) {
+    public Remove(final int uid, final int level) {
         setIdentifier(uid);
-        setLayer(layer);
+        setLayer(level);
     }
 
     /**
@@ -131,8 +131,9 @@ public final class Remove implements MovieTag {
      *            list. Must be in the range 1.65535.
      */
     public void setIdentifier(final int uid) {
-        if ((uid < 1) || (uid > 65535)) {
-             throw new IllegalArgumentRangeException(1, 65536, uid);
+        if ((uid < SWF.MIN_IDENTIFIER) || (uid > SWF.MAX_IDENTIFIER)) {
+            throw new IllegalArgumentRangeException(
+                    SWF.MIN_IDENTIFIER, SWF.MAX_IDENTIFIER, uid);
         }
         identifier = uid;
     }
@@ -177,7 +178,7 @@ public final class Remove implements MovieTag {
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
-        coder.writeWord((MovieTypes.REMOVE << 6) | 4, 2);
+        coder.writeHeader(MovieTypes.REMOVE, 4);
         coder.writeWord(identifier, 2);
         coder.writeWord(layer, 2);
     }

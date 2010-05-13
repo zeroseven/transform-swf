@@ -33,7 +33,8 @@ package com.flagstone.transform.text;
 
 import java.util.Map;
 
-
+import com.flagstone.transform.Constants;
+import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -63,7 +64,8 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  */
 //TODO(class)
 public final class GlyphIndex implements SWFEncodeable {
-    private static final String FORMAT = "GlyphIndex: { glyphIndex=%d; advance=%d }";
+    private static final String FORMAT = "GlyphIndex: { glyphIndex=%d;"
+    		+ " advance=%d }";
 
     private final transient int index;
     private final transient int advance;
@@ -104,11 +106,15 @@ public final class GlyphIndex implements SWFEncodeable {
      *            representing this character to the next glyph to be displayed.
      */
     public GlyphIndex(final int anIndex, final int anAdvance) {
-        if (anIndex < 0) {
-            throw new IllegalArgumentRangeException(0, Integer.MAX_VALUE, anAdvance);
+        if (anIndex < 0 || anIndex > SWF.MAX_GLYPHS) {
+            throw new IllegalArgumentRangeException(
+                    0, SWF.MAX_GLYPHS, anIndex);
+        }
+        if (anAdvance <  SWF.MIN_ADVANCE || anAdvance > SWF.MAX_ADVANCE) {
+            throw new IllegalArgumentRangeException(
+                    SWF.MIN_ADVANCE, SWF.MAX_ADVANCE, anAdvance);
         }
         index = anIndex;
-
         advance = anAdvance;
     }
 
@@ -153,7 +159,7 @@ public final class GlyphIndex implements SWFEncodeable {
 
     @Override
     public int hashCode() {
-        return (index * 31) + advance;
+        return (index * Constants.PRIME) + advance;
     }
 
     /** {@inheritDoc} */

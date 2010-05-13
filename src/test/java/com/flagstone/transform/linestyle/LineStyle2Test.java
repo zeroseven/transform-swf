@@ -48,12 +48,12 @@ import com.flagstone.transform.datatype.Color;
 
 public final class LineStyle2Test {
 
-    private static final transient int width = 1;
+    private final transient int width = 1;
     private final transient Color color = new Color(2, 3, 4);
 
     private transient LineStyle2 fixture;
 
-    private final transient byte[] encoded = new byte[] { 0x01, 0x00, 0x02,
+    private final transient byte[] encoded = new byte[] {0x01, 0x00, 0x02,
             0x03, 0x04 };
 
     @Test

@@ -44,14 +44,14 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 public final class QuicktimeMovieTest {
 
-    private static final transient String path = "ABC123";
+    private final transient String path = "ABC123";
 
     private transient QuicktimeMovie fixture;
 
-    private final transient byte[] encoded = new byte[] { (byte) 0x87, 0x09,
+    private final transient byte[] encoded = new byte[] {(byte) 0x87, 0x09,
             0x41, 0x42, 0x043, 0x31, 0x32, 0x33, 0x00 };
 
-    private final transient byte[] extended = new byte[] { (byte) 0xBF, 0x09,
+    private final transient byte[] extended = new byte[] {(byte) 0xBF, 0x09,
             0x07, 0x00, 0x00, 0x00, 0x41, 0x42, 0x043, 0x31, 0x32, 0x33, 0x00 };
 
     @Test(expected = IllegalArgumentException.class)

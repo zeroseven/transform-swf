@@ -53,7 +53,8 @@ import com.flagstone.transform.coder.SWFEncoder;
 @RunWith(Parameterized.class)
 public final class LimitScriptCodingTest {
 
-    private static final String RESOURCE = "com/flagstone/transform/LimitScript.yaml";
+    private static final String RESOURCE =
+        "com/flagstone/transform/LimitScript.yaml";
 
     private static final String DEPTH = "depth";
     private static final String TIMEOUT = "timeout";
@@ -66,43 +67,43 @@ public final class LimitScriptCodingTest {
         ClassLoader loader = DoActionCodingTest.class.getClassLoader();
         InputStream other = loader.getResourceAsStream(RESOURCE);
         Yaml yaml = new Yaml();
-        
+
         Collection<Object[]> list = new ArrayList<Object[]>();
-         
+
         for (Object data : yaml.loadAll(other)) {
-            list.add(new Object[] { data });
+            list.add(new Object[] {data });
         }
 
         return list;
     }
 
-    private transient final int depth;
-    private transient final int timeout;
-    private transient final byte[] din;
-    private transient final byte[] dout;
-    private transient final Context context;
-    
-    public LimitScriptCodingTest(Map<String,Object>values) {
-        depth = (Integer)values.get(DEPTH);
-        timeout = (Integer)values.get(TIMEOUT);
-        din = (byte[])values.get(DIN);
-        dout = (byte[])values.get(DOUT);
+    private final transient int depth;
+    private final transient int timeout;
+    private final transient byte[] din;
+    private final transient byte[] dout;
+    private final transient Context context;
+
+    public LimitScriptCodingTest(final Map<String, Object>values) {
+        depth = (Integer) values.get(DEPTH);
+        timeout = (Integer) values.get(TIMEOUT);
+        din = (byte[]) values.get(DIN);
+        dout = (byte[]) values.get(DOUT);
         context = new Context();
     }
 
     @Test
-    public void checkSizeMatchesEncodedSize() throws CoderException {     
-        final LimitScript object = new LimitScript(depth, timeout);       
-        final SWFEncoder encoder = new SWFEncoder(dout.length);        
-         
+    public void checkSizeMatchesEncodedSize() throws CoderException {
+        final LimitScript object = new LimitScript(depth, timeout);
+        final SWFEncoder encoder = new SWFEncoder(dout.length);
+
         assertEquals(dout.length, object.prepareToEncode(encoder, context));
     }
 
     @Test
     public void checkObjectIsEncoded() throws CoderException {
-        final LimitScript object = new LimitScript(depth, timeout);       
-        final SWFEncoder encoder = new SWFEncoder(dout.length);        
-        
+        final LimitScript object = new LimitScript(depth, timeout);
+        final SWFEncoder encoder = new SWFEncoder(dout.length);
+
         object.prepareToEncode(encoder, context);
         object.encode(encoder, context);
 

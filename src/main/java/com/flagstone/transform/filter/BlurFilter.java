@@ -32,6 +32,7 @@
 package com.flagstone.transform.filter;
 
 
+import com.flagstone.transform.Constants;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -55,11 +56,6 @@ public final class BlurFilter implements Filter {
      * @param coder
      *            an SWFDecoder object that contains the encoded Flash data.
      *
-     * @param context
-     *            a Context object used to manage the decoders for different
-     *            type of object and to pass information on how objects are
-     *            decoded.
-     *
      * @throws CoderException
      *             if an error occurs while decoding the data.
      */
@@ -71,28 +67,28 @@ public final class BlurFilter implements Filter {
         passes = (coder.readByte() & 0x00FF) >>> 3;
     }
 
-    /** TODO(method). */
-    public BlurFilter(final float blurX, final float blurY, final int passes) {
-        this.blurX = (int) (blurX * 65536);
-        this.blurY = (int) (blurY * 65536);
 
-        if ((passes < 0) || (passes > 31)) {
-            throw new IllegalArgumentRangeException(0, 31, passes);
+    public BlurFilter(final float xBlur, final float yBlur, final int count) {
+        blurX = (int) (xBlur * 65536);
+        blurY = (int) (yBlur * 65536);
+
+        if ((count < 0) || (count > 31)) {
+            throw new IllegalArgumentRangeException(0, 31, count);
         }
-        this.passes = passes;
+        passes = count;
     }
 
-    /** TODO(method). */
+
     public float getBlurX() {
         return blurX / 65536.0f;
     }
 
-    /** TODO(method). */
+
     public float getBlurY() {
         return blurY / 65536.0f;
     }
 
-    /** TODO(method). */
+
     public int getPasses() {
         return passes;
     }
@@ -123,7 +119,7 @@ public final class BlurFilter implements Filter {
 
     @Override
     public int hashCode() {
-        return ((blurX * 31) + blurY) * 31 + passes;
+        return ((blurX * Constants.PRIME) + blurY) * Constants.PRIME + passes;
     }
 
     /** {@inheritDoc} */

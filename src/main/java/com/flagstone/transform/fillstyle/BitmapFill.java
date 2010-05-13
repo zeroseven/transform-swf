@@ -32,6 +32,7 @@
 package com.flagstone.transform.fillstyle;
 
 
+import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -84,15 +85,12 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  * to the image so its position can be adjusted relative to the origin of the
  * enclosing shape.
  * </p>
- *
- * @see DefineShape
- * @see DefineShape2
- * @see DefineShape3
  */
 //TODO(class)
 public final class BitmapFill implements FillStyle {
 
-    private static final String FORMAT = "BitmapFill: { identifier=%d; transform=%s }";
+    private static final String FORMAT = "BitmapFill: { identifier=%d;"
+    		+ " transform=%s }";
 
     private transient int type;
     private int identifier;
@@ -110,7 +108,7 @@ public final class BitmapFill implements FillStyle {
      */
     public BitmapFill(final SWFDecoder coder) throws CoderException {
         type = coder.readByte();
-        identifier = coder.readWord(2, false);
+        identifier = coder.readUI16();
         transform = new CoordTransform(coder);
     }
 
@@ -127,17 +125,17 @@ public final class BitmapFill implements FillStyle {
      * @param uid
      *            the unique identifier of the object containing the image to be
      *            displayed. Must be in the range 1..65535.
-     * @param transform
+     * @param position
      *            a CoordTransform object that typically changes the size and
      *            location and position of the image inside the parent shape.
      */
     public BitmapFill(final boolean tiled, final boolean smoothed,
-            final int uid, final CoordTransform transform) {
+            final int uid, final CoordTransform position) {
         type = 0x40;
         setTiled(tiled);
         setSmoothed(smoothed);
         setIdentifier(uid);
-        setTransform(transform);
+        setTransform(position);
     }
 
     /**
@@ -154,12 +152,12 @@ public final class BitmapFill implements FillStyle {
         transform = object.transform;
     }
 
-    /** TODO(method). */
+
     public boolean isTiled() {
         return (type & 0x01) != 0;
     }
 
-    /** TODO(method). */
+
     public void setTiled(final boolean tiled) {
         if (tiled) {
             type &= 0x00FE;
@@ -168,12 +166,12 @@ public final class BitmapFill implements FillStyle {
         }
     }
 
-    /** TODO(method). */
+
     public boolean isSmoothed() {
         return (type & 0x02) != 0;
     }
 
-    /** TODO(method). */
+
     public void setSmoothed(final boolean smoothed) {
         if (smoothed) {
             type &= 0x00FD;
@@ -199,8 +197,9 @@ public final class BitmapFill implements FillStyle {
      *            displayed which must be in the range 1..65535.
      */
     public void setIdentifier(final int uid) {
-        if ((uid < 1) || (uid > 65535)) {
-             throw new IllegalArgumentRangeException(1, 65536, uid);
+        if ((uid < SWF.MIN_IDENTIFIER) || (uid > SWF.MAX_IDENTIFIER)) {
+            throw new IllegalArgumentRangeException(
+                    SWF.MIN_IDENTIFIER, SWF.MAX_IDENTIFIER, uid);
         }
         identifier = uid;
     }
@@ -229,7 +228,7 @@ public final class BitmapFill implements FillStyle {
         transform = aTransform;
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public BitmapFill copy() {
         return new BitmapFill(this);
     }

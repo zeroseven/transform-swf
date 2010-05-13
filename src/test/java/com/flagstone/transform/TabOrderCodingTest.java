@@ -53,7 +53,8 @@ import com.flagstone.transform.coder.SWFEncoder;
 @RunWith(Parameterized.class)
 public final class TabOrderCodingTest {
 
-    private static final String RESOURCE = "com/flagstone/transform/TabOrder.yaml";
+    private static final String RESOURCE =
+        "com/flagstone/transform/TabOrder.yaml";
 
     private static final String LAYER = "layer";
     private static final String INDEX = "index";
@@ -66,43 +67,43 @@ public final class TabOrderCodingTest {
         ClassLoader loader = DoActionCodingTest.class.getClassLoader();
         InputStream other = loader.getResourceAsStream(RESOURCE);
         Yaml yaml = new Yaml();
-        
+
         Collection<Object[]> list = new ArrayList<Object[]>();
-         
+
         for (Object data : yaml.loadAll(other)) {
-            list.add(new Object[] { data });
+            list.add(new Object[] {data });
         }
 
         return list;
     }
 
-    private transient final int layer;
-    private transient final int index;
-    private transient final byte[] din;
-    private transient final byte[] dout;
-    private transient final Context context;
-    
-    public TabOrderCodingTest(Map<String,Object>values) {
-        layer = (Integer)values.get(LAYER);
-        index = (Integer)values.get(INDEX);
-        din = (byte[])values.get(DIN);
-        dout = (byte[])values.get(DOUT);
+    private final transient int layer;
+    private final transient int index;
+    private final transient byte[] din;
+    private final transient byte[] dout;
+    private final transient Context context;
+
+    public TabOrderCodingTest(final Map<String, Object>values) {
+        layer = (Integer) values.get(LAYER);
+        index = (Integer) values.get(INDEX);
+        din = (byte[]) values.get(DIN);
+        dout = (byte[]) values.get(DOUT);
         context = new Context();
     }
 
     @Test
-    public void checkSizeMatchesEncodedSize() throws CoderException {     
-        final TabOrder object = new TabOrder(layer, index);       
-        final SWFEncoder encoder = new SWFEncoder(dout.length);        
-         
+    public void checkSizeMatchesEncodedSize() throws CoderException {
+        final TabOrder object = new TabOrder(layer, index);
+        final SWFEncoder encoder = new SWFEncoder(dout.length);
+
         assertEquals(dout.length, object.prepareToEncode(encoder, context));
     }
 
     @Test
     public void checkObjectIsEncoded() throws CoderException {
-        final TabOrder object = new TabOrder(layer, index);       
-        final SWFEncoder encoder = new SWFEncoder(dout.length);        
-        
+        final TabOrder object = new TabOrder(layer, index);
+        final SWFEncoder encoder = new SWFEncoder(dout.length);
+
         object.prepareToEncode(encoder, context);
         object.encode(encoder, context);
 

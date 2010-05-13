@@ -70,7 +70,7 @@ public final class GlyphAlignment implements SWFEncodeable {
         masks = coder.readByte();
     }
 
-    /** TODO(method). */
+
     public GlyphAlignment(final List<AlignmentZone> list, final boolean xAlign,
             final boolean yAlign) {
         setAlignments(list);
@@ -91,12 +91,12 @@ public final class GlyphAlignment implements SWFEncodeable {
         masks = object.masks;
     }
 
-    /** TODO(method). */
+
     public boolean alignmentX() {
         return (masks & 0x01) != 0;
     }
 
-    /** TODO(method). */
+
     public void setAlignmentX(final boolean hasAlign) {
         masks &= 0xFE;
         if (hasAlign) {
@@ -104,12 +104,12 @@ public final class GlyphAlignment implements SWFEncodeable {
         }
     }
 
-    /** TODO(method). */
+
     public boolean alignmentY() {
         return (masks & 0x02) != 0;
     }
 
-    /** TODO(method). */
+
     public void setAlignmentY(final boolean hasAlign) {
         masks &= 0xFD;
         if (hasAlign) {
@@ -117,17 +117,17 @@ public final class GlyphAlignment implements SWFEncodeable {
         }
     }
 
-    /** TODO(method). */
+
     public List<AlignmentZone> getAlignments() {
         return alignments;
     }
 
-    /** TODO(method). */
-    public void setAlignments(final List<AlignmentZone> aligments) {
-        this.alignments = aligments;
+
+    public void setAlignments(final List<AlignmentZone> aligns) {
+        alignments = aligns;
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public GlyphAlignment copy() {
         return new GlyphAlignment(this);
     }

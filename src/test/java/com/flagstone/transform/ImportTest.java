@@ -42,7 +42,8 @@ public final class ImportTest {
 
     private static String url = "ABC";
 
-    private static Map<Integer, String> table = new LinkedHashMap<Integer, String>();
+    private static Map<Integer, String> table =
+        new LinkedHashMap<Integer, String>();
 
     static {
         table.put(1, "A");

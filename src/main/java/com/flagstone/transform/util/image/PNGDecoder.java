@@ -45,7 +45,6 @@ import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
-
 import com.flagstone.transform.coder.FLVDecoder;
 import com.flagstone.transform.coder.ImageTag;
 import com.flagstone.transform.image.DefineImage;
@@ -59,7 +58,7 @@ import com.flagstone.transform.image.ImageFormat;
 //TODO(class)
 @SuppressWarnings("PMD.TooManyMethods")
 public final class PNGDecoder implements ImageProvider, ImageDecoder {
-    
+
     private static final String BAD_FORMAT = "Unsupported format";
 
     // Tables mapping grey scale values onto 8-bit colour channels
@@ -131,12 +130,12 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
     private transient byte[] table;
     private transient byte[] image;
 
-    /** TODO(method). */
+
     public ImageDecoder newDecoder() {
         return new PNGDecoder();
     }
 
-    /** TODO(method). */
+
     public void read(final File file) throws IOException, DataFormatException {
         final ImageInfo info = new ImageInfo();
         info.setInput(new RandomAccessFile(file, "r"));
@@ -149,7 +148,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
         read(new FileInputStream(file), (int) file.length());
     }
 
-    /** TODO(method). */
+
     public void read(final URL url) throws IOException, DataFormatException {
         final URLConnection connection = url.openConnection();
         final int length = connection.getContentLength();
@@ -161,17 +160,19 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
         read(url.openStream(), length);
     }
 
-    /** TODO(method). */
+
     public ImageTag defineImage(final int identifier) {
         ImageTag object = null;
 
         switch (format) {
         case IDX8:
-            object = new DefineImage(identifier, width, height, table.length/4,
+            object = new DefineImage(identifier, width, height,
+                    table.length / 4,
                     zip(merge(adjustScan(width, height, image), table)));
             break;
         case IDXA:
-            object = new DefineImage2(identifier, width, height, table.length/4,
+            object = new DefineImage2(identifier, width, height,
+                    table.length / 4,
                     zip(mergeAlpha(adjustScan(width, height, image), table)));
             break;
         case RGB5:
@@ -192,10 +193,11 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
         return object;
     }
 
-    /** TODO(method). */
-    public void read(final InputStream stream, final int size) throws DataFormatException, IOException {
 
-        final byte[] bytes = new byte[(int) size];
+    public void read(final InputStream stream, final int size)
+            throws DataFormatException, IOException {
+
+        final byte[] bytes = new byte[size];
         final BufferedInputStream buffer = new BufferedInputStream(stream);
 
         buffer.read(bytes);
@@ -214,7 +216,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
         attributes[INTERLACE_METHOD] = 0;
         chunkData = new byte[0];
 
-        attributes[TRANSPARENT_GREY] = -1;    
+        attributes[TRANSPARENT_GREY] = -1;
         attributes[TRANSPARENT_RED] = -1;
         attributes[TRANSPARENT_GREEN] = -1;
         attributes[TRANSPARENT_BLUE] = -1;
@@ -226,8 +228,8 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
         }
 
         while (moreChunks) {
-            length = coder.readWord(4, false);
-            chunkType = coder.readWord(4, false);
+            length = coder.readUI32();
+            chunkType = coder.readUI32();
 
             final int current = coder.getPointer();
             final int next = current + ((length + 4) << 3);
@@ -264,15 +266,15 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
     }
 
     private void decodeIHDR(final FLVDecoder coder) throws DataFormatException {
-        width = coder.readWord(4, false);
-        height = coder.readWord(4, false);
+        width = coder.readUI32();
+        height = coder.readUI32();
         attributes[BIT_DEPTH] = coder.readByte();
         attributes[COLOUR_TYPE] = coder.readByte();
         attributes[COMPRESSION] = coder.readByte();
         attributes[FILTER_METHOD] = coder.readByte();
         attributes[INTERLACE_METHOD] = coder.readByte();
 
-        coder.readWord(4, false); // crc
+        coder.readUI32(); // crc
 
         switch (attributes[COLOUR_TYPE]) {
         case GREYSCALE:
@@ -318,7 +320,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
         } else {
             coder.adjustPointer(length << 3);
         }
-        coder.readWord(4, false); // crc
+        coder.readUI32(); // crc
     }
 
     private void decodeTRNS(final FLVDecoder coder, final int length) {
@@ -326,12 +328,12 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
 
         switch (attributes[COLOUR_TYPE]) {
         case GREYSCALE:
-            attributes[TRANSPARENT_GREY] = coder.readWord(2, false);
+            attributes[TRANSPARENT_GREY] = coder.readUI16();
             break;
         case TRUE_COLOUR:
-            attributes[TRANSPARENT_RED] = coder.readWord(2, false);
-            attributes[TRANSPARENT_GREEN] = coder.readWord(2, false);
-            attributes[TRANSPARENT_BLUE] = coder.readWord(2, false);
+            attributes[TRANSPARENT_RED] = coder.readUI16();
+            attributes[TRANSPARENT_GREEN] = coder.readUI16();
+            attributes[TRANSPARENT_BLUE] = coder.readUI16();
             break;
         case INDEXED_COLOUR:
             format = ImageFormat.IDXA;
@@ -348,7 +350,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
         default:
             break;
         }
-        coder.readWord(4, false); // crc
+        coder.readUI32(); // crc
     }
 
     private void decodeIDAT(final FLVDecoder coder, final int length) {
@@ -365,7 +367,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
 
         chunkData = data;
 
-        coder.readWord(4, false); // crc
+        coder.readUI32(); // crc
     }
 
     private void decodeImage() throws DataFormatException {
@@ -419,7 +421,8 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
         int pindex = 0;
 
         for (int pass = 0; pass < numberOfPasses; pass++) {
-            rowStart = (attributes[INTERLACE_METHOD] == 1) ? START_ROW[pass] : 0;
+            rowStart = (attributes[INTERLACE_METHOD] == 1)
+            ? START_ROW[pass] : 0;
             rowInc = (attributes[INTERLACE_METHOD] == 1) ? ROW_STEP[pass]
                     : 1;
 
@@ -430,7 +433,8 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
 
             for (row = rowStart; (row < height)
                     && (imageIndex < encodedImage.length); row += rowInc) {
-                for (col = colStart, /* pixelCount = 0, */ scanBits = 0; col < width; col += colInc) {
+                for (col = colStart, /* pixelCount = 0, */ scanBits = 0; col
+                        < width; col += colInc) {
                     /* pixelCount++; */
                     scanBits += bitsPerPixel;
                 }
@@ -441,7 +445,8 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
                 filter = encodedImage[imageIndex++];
 
                 for (int i = 0; i < scanLength; i++, imageIndex++) {
-                    current[i] = (imageIndex < encodedImage.length) ? encodedImage[imageIndex]
+                    current[i] = (imageIndex < encodedImage.length)
+                            ? encodedImage[imageIndex]
                             : previous[i];
                 }
 
@@ -449,32 +454,42 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
                 case NO_FILTER:
                     break;
                 case SUB_FILTER:
-                    for (cindex = bytesPerPixel, pindex = 0; cindex < scanLength; cindex++, pindex++) {
-                        current[cindex] = (byte) (current[cindex] + current[pindex]);
+                    for (cindex = bytesPerPixel, pindex = 0;
+                            cindex < scanLength; cindex++, pindex++) {
+                        current[cindex] =
+                            (byte) (current[cindex] + current[pindex]);
                     }
                     break;
                 case UP_FILTER:
                     for (cindex = 0; cindex < scanLength; cindex++) {
-                        current[cindex] = (byte) (current[cindex] + previous[cindex]);
+                        current[cindex] =
+                                (byte) (current[cindex] + previous[cindex]);
                     }
                     break;
                 case AVG_FILTER:
                     for (cindex = 0; cindex < bytesPerPixel; cindex++) {
-                        current[cindex] = (byte) (current[cindex] + (0 + (0xFF & previous[cindex])) / 2);
+                        current[cindex] = (byte) (current[cindex]
+                                        + (0 + (0xFF & previous[cindex])) / 2);
                     }
 
-                    for (cindex = bytesPerPixel, pindex = 0; cindex < scanLength; cindex++, pindex++) {
-                        current[cindex] = (byte) (current[cindex] + ((0xFF & current[pindex]) + (0xFF & previous[cindex])) / 2);
+                    for (cindex = bytesPerPixel, pindex = 0;
+                    cindex < scanLength; cindex++, pindex++) {
+                        current[cindex] = (byte) (current[cindex]
+                            + ((0xFF & current[pindex])
+                                    + (0xFF & previous[cindex])) / 2);
                     }
                     break;
                 case PAETH_FILTER:
                     for (cindex = 0; cindex < bytesPerPixel; cindex++) {
-                        current[cindex] = (byte) (current[cindex] + paeth((byte) 0,
+                        current[cindex] = (byte) (current[cindex]
+                                     + paeth((byte) 0,
                                 previous[cindex], (byte) 0));
                     }
 
-                    for (cindex = bytesPerPixel, pindex = 0; cindex < scanLength; cindex++, pindex++) {
-                        current[cindex] = (byte) (current[cindex] + paeth(current[pindex],
+                    for (cindex = bytesPerPixel, pindex = 0;
+                    cindex < scanLength; cindex++, pindex++) {
+                        current[cindex] = (byte) (current[cindex]
+                                                      + paeth(current[pindex],
                                 previous[cindex], previous[pindex]));
                     }
                     break;
@@ -570,7 +585,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
             colour = (byte) pixel;
             break;
         case 16:
-            pixel = coder.readWord(2, false);
+            pixel = coder.readUI16();
             colour = (byte) (pixel >> 8);
             break;
         default:
@@ -578,7 +593,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
         }
 
         int index = row * (width << 2) + (col << 2);
-        
+
         image[index++] = colour;
         image[index++] = colour;
         image[index++] = colour;
@@ -597,7 +612,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
                 pixel = coder.readByte();
                 colour = (byte) pixel;
             } else if (attributes[BIT_DEPTH] == 16) {
-                pixel = coder.readWord(2, false);
+                pixel = coder.readUI16();
                 colour = (byte) (pixel >> 8);
             } else {
                 throw new DataFormatException(BAD_FORMAT);
@@ -626,7 +641,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
             index = coder.readByte();
             break;
         case 16:
-            index = coder.readWord(2, false);
+            index = coder.readUI16();
             break;
         default:
             throw new DataFormatException(BAD_FORMAT);
@@ -662,16 +677,16 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
             alpha = coder.readByte();
             break;
         case 16:
-            pixel = coder.readWord(2, false);
+            pixel = coder.readUI16();
             colour = (byte) (pixel >> 8);
-            alpha = coder.readWord(2, false) >> 8;
+            alpha = coder.readUI16() >> 8;
             break;
         default:
             throw new DataFormatException(BAD_FORMAT);
         }
 
         int index = row * (width << 2) + (col << 2);
-        
+
         image[index++] = colour;
         image[index++] = colour;
         image[index++] = colour;
@@ -690,7 +705,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
                 pixel = coder.readByte();
                 colour = (byte) pixel;
             } else if (attributes[BIT_DEPTH] == 16) {
-                pixel = coder.readWord(2, false);
+                pixel = coder.readUI16();
                 colour = (byte) (pixel >> 8);
             } else {
                 throw new DataFormatException(BAD_FORMAT);
@@ -715,76 +730,76 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
         return uncompressedData;
     }
 
-    private void orderAlpha(final byte[] image) {
+    private void orderAlpha(final byte[] img) {
         byte alpha;
 
-        for (int i = 0; i < image.length; i += 4) {
-            alpha = image[i + 3];
+        for (int i = 0; i < img.length; i += 4) {
+            alpha = img[i + 3];
 
-            image[i + 3] = image[i + 2];
-            image[i + 2] = image[i + 1];
-            image[i + 1] = image[i];
-            image[i] = alpha;
+            img[i + 3] = img[i + 2];
+            img[i + 2] = img[i + 1];
+            img[i + 1] = img[i];
+            img[i] = alpha;
         }
     }
 
-    private void applyAlpha(final byte[] image) {
+    private void applyAlpha(final byte[] img) {
         int alpha;
 
-        for (int i = 0; i < image.length; i += 4) {
-            alpha = image[i + 3] & 0xFF;
+        for (int i = 0; i < img.length; i += 4) {
+            alpha = img[i + 3] & 0xFF;
 
-            image[i + 3] = (byte) (((image[i + 2] & 0xFf) * alpha) / 255);
-            image[i + 2] = (byte) (((image[i + 1] & 0xFF) * alpha) / 255);
-            image[i + 1] = (byte) (((image[i] & 0xFF) * alpha) / 255);
-            image[i] = (byte) alpha;
+            img[i + 3] = (byte) (((img[i + 2] & 0xFf) * alpha) / 255);
+            img[i + 2] = (byte) (((img[i + 1] & 0xFF) * alpha) / 255);
+            img[i + 1] = (byte) (((img[i] & 0xFF) * alpha) / 255);
+            img[i] = (byte) alpha;
        }
     }
 
-    private byte[] merge(final byte[] image, final byte[] table) {
-        final byte[] merged = new byte[(table.length / 4) * 3 + image.length];
+    private byte[] merge(final byte[] img, final byte[] colors) {
+        final byte[] merged = new byte[(colors.length / 4) * 3 + img.length];
         int dst = 0;
 
-        for (int i = 0; i < table.length; i += 4) {
-            merged[dst++] = table[i + 1]; // G
-            merged[dst++] = table[i]; // R
+        for (int i = 0; i < colors.length; i += 4) {
+            merged[dst++] = colors[i + 1]; // G
+            merged[dst++] = colors[i]; // R
         }
 
-        for (final byte element : image) {
+        for (final byte element : img) {
             merged[dst++] = element;
         }
 
         return merged;
     }
 
-    private byte[] mergeAlpha(final byte[] image, final byte[] table) {
-        final byte[] merged = new byte[table.length + image.length];
+    private byte[] mergeAlpha(final byte[] img, final byte[] colors) {
+        final byte[] merged = new byte[colors.length + img.length];
         int dst = 0;
 
-        for (final byte element : table) {
+        for (final byte element : colors) {
             merged[dst++] = element;
         }
 
-        for (final byte element : image) {
+        for (final byte element : img) {
             merged[dst++] = element;
         }
         return merged;
     }
 
-    private byte[] zip(final byte[] image) {
+    private byte[] zip(final byte[] img) {
         final Deflater deflater = new Deflater();
-        deflater.setInput(image);
+        deflater.setInput(img);
         deflater.finish();
 
-        final byte[] compressedData = new byte[image.length * 2];
+        final byte[] compressedData = new byte[img.length * 2];
         final int bytesCompressed = deflater.deflate(compressedData);
         final byte[] newData = Arrays.copyOf(compressedData, bytesCompressed);
 
         return newData;
     }
 
-    private byte[] adjustScan(final int width, final int height,
-            final byte[] image) {
+    private byte[] adjustScan(final int imgWidth, final int imgHeight,
+            final byte[] img) {
         int src = 0;
         int dst = 0;
         int row;
@@ -793,12 +808,12 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
         int scan = 0;
         byte[] formattedImage = null;
 
-        scan = (width + 3) & ~3;
-        formattedImage = new byte[scan * height];
+        scan = (imgWidth + 3) & ~3;
+        formattedImage = new byte[scan * imgHeight];
 
-        for (row = 0; row < height; row++) {
-            for (col = 0; col < width; col++) {
-                formattedImage[dst++] = image[src++];
+        for (row = 0; row < imgHeight; row++) {
+            for (col = 0; col < imgWidth; col++) {
+                formattedImage[dst++] = img[src++];
             }
 
             while (col++ < scan) {
@@ -809,21 +824,21 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
         return formattedImage;
     }
 
-    private byte[] packColours(final int width, final int height,
-            final byte[] image) {
+    private byte[] packColours(final int imgWidth, final int imgHeight,
+            final byte[] img) {
         int src = 0;
         int dst = 0;
         int row;
         int col;
 
-        final int scan = width + (width & 1);
-        final byte[] formattedImage = new byte[scan * height * 2];
+        final int scan = imgWidth + (imgWidth & 1);
+        final byte[] formattedImage = new byte[scan * imgHeight * 2];
 
-        for (row = 0; row < height; row++) {
-            for (col = 0; col < width; col++, src++) {
-                final int red = (image[src++] & 0xF8) << 7;
-                final int green = (image[src++] & 0xF8) << 2;
-                final int blue = (image[src++] & 0xF8) >> 3;
+        for (row = 0; row < imgHeight; row++) {
+            for (col = 0; col < imgWidth; col++, src++) {
+                final int red = (img[src++] & 0xF8) << 7;
+                final int green = (img[src++] & 0xF8) << 2;
+                final int blue = (img[src++] & 0xF8) >> 3;
                 final int colour = (red | green | blue) & 0x7FFF;
 
                 formattedImage[dst++] = (byte) (colour >> 8);
@@ -839,17 +854,17 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
         return formattedImage;
     }
 
-    /** TODO(method). */
+
     public int getWidth() {
         return width;
     }
 
-    /** TODO(method). */
+
     public int getHeight() {
         return height;
     }
 
-    /** TODO(method). */
+
     public byte[] getImage() {
         return Arrays.copyOf(image, image.length);
     }

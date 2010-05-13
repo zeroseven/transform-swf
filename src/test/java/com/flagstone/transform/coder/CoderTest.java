@@ -70,7 +70,7 @@ public final class CoderTest {
 
     @Test
     public void checkSetDataCreatesCopy() {
-        data = new byte[] { 1, 2, 3, 4, 5 };
+        data = new byte[] {1, 2, 3, 4, 5 };
 
         fixture.setData(data);
 
@@ -80,7 +80,7 @@ public final class CoderTest {
 
     @Test
     public void checkGetDataCreatesCopy() {
-        data = new byte[] { 1, 2, 3, 4, 5 };
+        data = new byte[] {1, 2, 3, 4, 5 };
 
         fixture.data = data;
 
@@ -90,7 +90,7 @@ public final class CoderTest {
 
     @Test
     public void checkAccessorForPointer() {
-        fixture.setData(new byte[] { 1, 2, 3, 4 });
+        fixture.setData(new byte[] {1, 2, 3, 4 });
         fixture.setPointer(8);
 
         assertEquals(8, fixture.getPointer());
@@ -98,7 +98,7 @@ public final class CoderTest {
 
     @Test
     public void checkSetPointerGoesToCorrectLocation() {
-        fixture.setData(new byte[] { 1, 2, 3, 4 });
+        fixture.setData(new byte[] {1, 2, 3, 4 });
         fixture.setPointer(8);
 
         assertEquals(fixture.data[1], fixture.data[fixture.index]);
@@ -106,7 +106,7 @@ public final class CoderTest {
 
     @Test
     public void checkAdjustPointerGoesToCorrectLocation() {
-        fixture.setData(new byte[] { 1, 2, 3, 4 });
+        fixture.setData(new byte[] {1, 2, 3, 4 });
 
         fixture.adjustPointer(8);
         assertEquals(8, fixture.getPointer());
@@ -117,7 +117,7 @@ public final class CoderTest {
 
     @Test
     public void checkAlignToByteOnByteBoundaryLeavesPointerUnchanged() {
-        fixture.setData(new byte[] { 1, 2, 3, 4 });
+        fixture.setData(new byte[] {1, 2, 3, 4 });
         fixture.setPointer(8);
         fixture.alignToByte();
 
@@ -126,7 +126,7 @@ public final class CoderTest {
 
     @Test
     public void checkAlignToByteOnBitBoundaryChangesPointer() {
-        fixture.setData(new byte[] { 1, 2, 3, 4 });
+        fixture.setData(new byte[] {1, 2, 3, 4 });
         fixture.setPointer(9);
         fixture.alignToByte();
 
@@ -135,7 +135,7 @@ public final class CoderTest {
 
     @Test
     public void checkPointerIsAtEndOfFile() {
-        fixture.setData(new byte[] { 1, 2, 3, 4 });
+        fixture.setData(new byte[] {1, 2, 3, 4 });
         fixture.setPointer(32);
 
         assertTrue(fixture.eof());

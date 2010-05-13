@@ -54,9 +54,9 @@ public interface FontDecoder {
      */
     void read(File file) throws IOException, DataFormatException;
 
-    /** TODO(method). */
+    
     void read(URL url) throws IOException, DataFormatException;
 
-    /** TODO(method). */
+    
     List<Font> getFonts();
 }

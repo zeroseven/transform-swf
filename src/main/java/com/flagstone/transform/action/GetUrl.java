@@ -118,7 +118,7 @@ public final class GetUrl implements Action {
      */
     public GetUrl(final SWFDecoder coder) throws CoderException {
         coder.readByte();
-        length = coder.readWord(2, false);
+        length = coder.readUI16();
         url = coder.readString();
         target = coder.readString();
     }

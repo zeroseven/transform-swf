@@ -42,7 +42,14 @@ import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.datatype.WebPalette;
 import com.flagstone.transform.util.image.ImageFactory;
 
+/**
+ * ShowImage displays an image in a Flash file.
+ */
 public final class ShowImage {
+    /**
+     * Run the test from the command line.
+     * @param args array of command line arguments.
+     */
     public static void main(final String[] args) {
 
         final String sourceFile = args[0];
@@ -72,7 +79,8 @@ public final class ShowImage {
 
             movie.add(new Background(WebPalette.LIGHT_BLUE.color()));
             movie.add(image);
-            movie.add(factory.defineEnclosingShape(shapeId, image.getIdentifier(),
+            movie.add(factory.defineEnclosingShape(shapeId,
+                    image.getIdentifier(),
                     imageWidth / 2, imageHeight / 2, null));
             movie.add(builder.show(shapeId, 1, 0, 0));
             movie.add(ShowFrame.getInstance());
@@ -83,6 +91,7 @@ public final class ShowImage {
         }
     }
 
+    /** Private constructor. */
     private ShowImage() {
         // Private.
     }

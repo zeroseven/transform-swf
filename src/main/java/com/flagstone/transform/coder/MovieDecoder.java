@@ -38,12 +38,12 @@ import com.flagstone.transform.DoAction;
 import com.flagstone.transform.EnableDebugger;
 import com.flagstone.transform.EnableDebugger2;
 import com.flagstone.transform.Export;
-import com.flagstone.transform.MovieAttributes;
 import com.flagstone.transform.FrameLabel;
 import com.flagstone.transform.Free;
 import com.flagstone.transform.Import;
 import com.flagstone.transform.Import2;
 import com.flagstone.transform.LimitScript;
+import com.flagstone.transform.MovieAttributes;
 import com.flagstone.transform.MovieMetaData;
 import com.flagstone.transform.MovieObject;
 import com.flagstone.transform.Place;
@@ -108,12 +108,12 @@ import com.flagstone.transform.video.VideoFrame;
 @SuppressWarnings("PMD")
 public final class MovieDecoder implements SWFFactory<MovieTag> {
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public SWFFactory<MovieTag> copy() {
         return new MovieDecoder();
     }
 
-    /** TODO(method). */
+
     public MovieTag getObject(final SWFDecoder coder, final Context context)
             throws CoderException {
 
@@ -228,8 +228,8 @@ public final class MovieDecoder implements SWFFactory<MovieTag> {
             break;
         case MovieTypes.PATHS_ARE_POSTSCRIPT:
             obj = PathsArePostscript.getInstance();
-            if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
-                coder.readWord(4, false);
+            if ((coder.readUI16() & 0x3F) == 0x3F) {
+                coder.readUI32();
             }
             break;
         case MovieTypes.DEFINE_TEXT_FIELD:
@@ -304,12 +304,12 @@ public final class MovieDecoder implements SWFFactory<MovieTag> {
         case MovieTypes.DO_ABC:
             obj = new DoABC(coder);
             break;
-        case MovieTypes.DEFINE_SHAPE_4: 
-            obj = new DefineShape4(coder, context); 
-            break; 
-        case MovieTypes.DEFINE_MORPH_SHAPE_2: 
-            obj = new DefineMorphShape2(coder, context); 
-            break;         
+        case MovieTypes.DEFINE_SHAPE_4:
+            obj = new DefineShape4(coder, context);
+            break;
+        case MovieTypes.DEFINE_MORPH_SHAPE_2:
+            obj = new DefineMorphShape2(coder, context);
+            break;
         case MovieTypes.DEFINE_BINARY_DATA:
             obj = new DefineData(coder);
             break;

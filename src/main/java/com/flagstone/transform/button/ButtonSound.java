@@ -35,7 +35,8 @@ import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-
+import com.flagstone.transform.SWF;
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTag;
@@ -61,17 +62,17 @@ import com.flagstone.transform.sound.SoundInfo;
  */
 //TODO(class)
 public final class ButtonSound implements MovieTag {
-    
+
     private static final String FORMAT = "ButtonSound: { identifier=%d;"
             + " table=%s }";
-    
+
     private static final EnumSet<ButtonEvent>EVENTS = EnumSet.of(
-            ButtonEvent.ROLL_OUT, ButtonEvent.ROLL_OVER, 
+            ButtonEvent.ROLL_OUT, ButtonEvent.ROLL_OVER,
             ButtonEvent.PRESS, ButtonEvent.RELEASE);
 
     private int identifier;
     private transient Map<ButtonEvent, SoundInfo>table;
-    
+
     private transient int length;
 
     /**
@@ -86,14 +87,10 @@ public final class ButtonSound implements MovieTag {
      */
     public ButtonSound(final SWFDecoder coder) throws CoderException {
         final int start = coder.getPointer();
-        length = coder.readWord(2, false) & 0x3F;
+        length = coder.readHeader();
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
-        if (length == 0x3F) {
-            length = coder.readWord(4, false);
-        }
-        final int end = coder.getPointer() + (length << 3);
-
-        identifier = coder.readWord(2, false);
+        identifier = coder.readUI16();
         table = new LinkedHashMap<ButtonEvent, SoundInfo>();
 
         decodeInfo(ButtonEvent.ROLL_OUT, coder, end);
@@ -102,14 +99,15 @@ public final class ButtonSound implements MovieTag {
         decodeInfo(ButtonEvent.RELEASE, coder, end);
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
-    
-    private void decodeInfo(final ButtonEvent event, 
+
+    private void decodeInfo(final ButtonEvent event,
             final SWFDecoder coder, final int end) throws CoderException {
-        if (coder.getPointer() != end && coder.readWord(2, false) != 0) {
+        if (coder.getPointer() != end && coder.readUI16() != 0) {
             coder.adjustPointer(-16);
             table.put(event, new SoundInfo(coder));
         }
@@ -167,10 +165,10 @@ public final class ButtonSound implements MovieTag {
      * there is no SoundInfo object defined for the event code.
      *
      * @param event
-     *            The button event, must be one of ButtonEvent.ROLL_OVER, 
+     *            The button event, must be one of ButtonEvent.ROLL_OVER,
      *            ButtonEvent.ROLL_OUT, ButtonEvent.PRESS, ButtonEvent.RELEASE.
      * @return the SoundInfo that identifies and controls the sound that will be
-     *            played for the event or null if not SoundInfo is defined for 
+     *            played for the event or null if not SoundInfo is defined for
      *            the event.
      */
     public SoundInfo getSoundInfo(final ButtonEvent event) {
@@ -185,8 +183,9 @@ public final class ButtonSound implements MovieTag {
      *            to. Must be in the range 1..65535.
      */
     public void setIdentifier(final int uid) {
-        if ((uid < 1) || (uid > 65535)) {
-             throw new IllegalArgumentRangeException(1, 65536, uid);
+        if ((uid < SWF.MIN_IDENTIFIER) || (uid > SWF.MAX_IDENTIFIER)) {
+            throw new IllegalArgumentRangeException(
+                    SWF.MIN_IDENTIFIER, SWF.MAX_IDENTIFIER, uid);
         }
         identifier = uid;
     }
@@ -237,14 +236,8 @@ public final class ButtonSound implements MovieTag {
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         final int start = coder.getPointer();
-
-        if (length > 62) {
-            coder.writeWord((MovieTypes.BUTTON_SOUND << 6) | 0x3F, 2);
-            coder.writeWord(length, 4);
-        } else {
-            coder.writeWord((MovieTypes.BUTTON_SOUND << 6) | length, 2);
-        }
-        final int end = coder.getPointer() + (length << 3);
+        coder.writeHeader(MovieTypes.BUTTON_SOUND, length);
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
         coder.writeWord(identifier, 2);
 
@@ -257,8 +250,9 @@ public final class ButtonSound implements MovieTag {
         }
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 }

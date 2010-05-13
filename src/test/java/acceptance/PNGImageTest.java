@@ -35,10 +35,8 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.zip.DataFormatException;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -56,7 +54,7 @@ import com.flagstone.transform.util.image.ImageFactory;
 
 @RunWith(Parameterized.class)
 public final class PNGImageTest {
-    
+
     @Parameters
     public static Collection<Object[]> files() {
 
@@ -72,22 +70,22 @@ public final class PNGImageTest {
                 return name.endsWith(".png");
             }
         };
-        
+
         String[] files = srcDir.list(filter);
         Object[][] collection = new Object[files.length][2];
 
-        for (int i=0; i<files.length; i++) {
+        for (int i = 0; i < files.length; i++) {
             collection[i][0] = new File(srcDir, files[i]);
-            collection[i][1] = new File(destDir, 
+            collection[i][1] = new File(destDir,
                     files[i].substring(0, files[i].lastIndexOf('.')) + ".swf");
         }
         return Arrays.asList(collection);
     }
 
-    private File sourceFile;
-    private File destFile;
+    private final File sourceFile;
+    private final File destFile;
 
-    public PNGImageTest(File src, File dst) {
+    public PNGImageTest(final File src, final File dst) {
         sourceFile = src;
         destFile = dst;
     }
@@ -102,13 +100,13 @@ public final class PNGImageTest {
             factory.read(sourceFile);
             final int imageId = movie.nextIdentifier();
             final ImageTag image = factory.defineImage(imageId);
-    
+
             final int xOrigin = image.getWidth() / 2;
             final int yOrigin = image.getHeight() / 2;
-    
+
             final DefineShape3 shape = factory.defineEnclosingShape(movie
                     .nextIdentifier(), imageId, -xOrigin, -yOrigin, null);
-    
+
             movie.setFrameRate(1.0f);
             movie.setFrameSize(shape.getBounds());
             movie.add(new Background(WebPalette.LIGHT_BLUE.color()));
@@ -117,7 +115,7 @@ public final class PNGImageTest {
             movie.add(builder.show(shape, 1, 0, 0));
             movie.add(ShowFrame.getInstance());
             movie.encodeToFile(destFile);
-        
+
         } catch (Exception e) {
             e.printStackTrace();
             fail(sourceFile.getPath());

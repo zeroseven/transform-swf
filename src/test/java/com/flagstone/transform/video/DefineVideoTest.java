@@ -41,16 +41,15 @@ import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.video.DefineVideo;
 
 public final class DefineVideoTest {
 
     private transient DefineVideo fixture;
 
-    private final transient byte[] encoded = new byte[] { 0x06, 0x01, 0x01,
+    private final transient byte[] encoded = new byte[] {0x06, 0x01, 0x01,
             0x00, 0x02, 0x00, 0x06, 0x50 };
 
-    private final transient byte[] extended = new byte[] { 0x7F, 0x01, 0x06,
+    private final transient byte[] extended = new byte[] {0x7F, 0x01, 0x06,
             0x00, 0x00, 0x00, 0x01, 0x00, 0x02, 0x00, 0x06, 0x50 };
 
     @Test

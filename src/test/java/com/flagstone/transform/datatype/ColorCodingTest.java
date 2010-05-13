@@ -39,12 +39,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
-import org.junit.Assume;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
-
 import org.yaml.snakeyaml.Yaml;
 
 import com.flagstone.transform.coder.CoderException;
@@ -54,8 +52,9 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 @RunWith(Parameterized.class)
 public final class ColorCodingTest {
-    
-    private static final String RESOURCE = "com/flagstone/transform/datatype/Color.yaml";
+
+    private static final String RESOURCE =
+        "com/flagstone/transform/datatype/Color.yaml";
 
     private static final String RED = "red";
     private static final String GREEN = "green";
@@ -69,51 +68,51 @@ public final class ColorCodingTest {
         ClassLoader loader = ColorCodingTest.class.getClassLoader();
         InputStream other = loader.getResourceAsStream(RESOURCE);
         Yaml yaml = new Yaml();
-        
+
         Collection<Object[]> list = new ArrayList<Object[]>();
-         
+
         for (Object data : yaml.loadAll(other)) {
-            list.add(new Object[] { data });
+            list.add(new Object[] {data });
         }
 
         return list;
     }
 
-    private Integer red;
-    private Integer green;
-    private Integer blue;
-    private Integer alpha;
-    private byte[] data;
-    
-    private Context context;
-    
-    public ColorCodingTest(Map<String,Object>values) {
-        red = (Integer)values.get(RED);
-        green = (Integer)values.get(GREEN);
-        blue = (Integer)values.get(BLUE);
-        alpha = (Integer)values.get(ALPHA);
-        data = (byte[])values.get(DATA);
-        
+    private final Integer red;
+    private final Integer green;
+    private final Integer blue;
+    private final Integer alpha;
+    private final byte[] data;
+
+    private final Context context;
+
+    public ColorCodingTest(final Map<String, Object>values) {
+        red = (Integer) values.get(RED);
+        green = (Integer) values.get(GREEN);
+        blue = (Integer) values.get(BLUE);
+        alpha = (Integer) values.get(ALPHA);
+        data = (byte[]) values.get(DATA);
+
         context = new Context();
-        
+
         if (data.length == 4) {
             context.put(Context.TRANSPARENT, 1);
         }
     }
 
     @Test
-    public void checkSizeMatchesEncodedSize() throws CoderException {     
-        final Color color = new Color(red, green, blue, alpha);       
-        final SWFEncoder encoder = new SWFEncoder(data.length);        
-         
+    public void checkSizeMatchesEncodedSize() throws CoderException {
+        final Color color = new Color(red, green, blue, alpha);
+        final SWFEncoder encoder = new SWFEncoder(data.length);
+
         assertEquals(data.length, color.prepareToEncode(encoder, context));
     }
 
     @Test
     public void checkColorIsEncoded() throws CoderException {
-        final Color color = new Color(red, green, blue, alpha);       
-        final SWFEncoder encoder = new SWFEncoder(data.length);        
-        
+        final Color color = new Color(red, green, blue, alpha);
+        final SWFEncoder encoder = new SWFEncoder(data.length);
+
         color.prepareToEncode(encoder, context);
         color.encode(encoder, context);
 

@@ -32,14 +32,14 @@ package com.flagstone.transform.image;
 
 import java.util.Arrays;
 
-
+import com.flagstone.transform.SWF;
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.ImageTag;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.exception.ArraySizeException;
 import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 /**
@@ -65,7 +65,7 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  * @see DefineJPEGImage3
  */
 public final class DefineJPEGImage implements ImageTag {
-    
+
     private static final String FORMAT = "DefineJPEGImage: { identifier=%d;"
             + " image=%d; }";
 
@@ -88,20 +88,17 @@ public final class DefineJPEGImage implements ImageTag {
      */
     public DefineJPEGImage(final SWFDecoder coder) throws CoderException {
         final int start = coder.getPointer();
-        length = coder.readWord(2, false) & 0x3F;
-
-        if (length == 0x3F) {
-            length = coder.readWord(4, false);
-        }
-        final int end = coder.getPointer() + (length << 3);
-        identifier = coder.readWord(2, false);
+        length = coder.readHeader();
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
+        identifier = coder.readUI16();
         image = coder.readBytes(new byte[length - 2]);
 
         decodeInfo();
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 
@@ -141,8 +138,9 @@ public final class DefineJPEGImage implements ImageTag {
 
     /** {@inheritDoc} */
     public void setIdentifier(final int uid) {
-        if ((uid < 1) || (uid > 65535)) {
-             throw new IllegalArgumentRangeException(1, 65536, uid);
+        if ((uid < SWF.MIN_IDENTIFIER) || (uid > SWF.MAX_IDENTIFIER)) {
+            throw new IllegalArgumentRangeException(
+                    SWF.MIN_IDENTIFIER, SWF.MAX_IDENTIFIER, uid);
         }
         identifier = uid;
     }
@@ -182,9 +180,6 @@ public final class DefineJPEGImage implements ImageTag {
         if (bytes == null) {
             throw new IllegalArgumentException();
         }
-        if (bytes.length == 0) {
-            throw new ArraySizeException(0, Integer.MAX_VALUE, bytes.length);
-        }
         image = Arrays.copyOf(bytes, bytes.length);
         decodeInfo();
     }
@@ -211,21 +206,16 @@ public final class DefineJPEGImage implements ImageTag {
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         final int start = coder.getPointer();
-
-        if (length >= 63) {
-            coder.writeWord((MovieTypes.DEFINE_JPEG_IMAGE << 6) | 0x3F, 2);
-            coder.writeWord(length, 4);
-        } else {
-            coder.writeWord((MovieTypes.DEFINE_JPEG_IMAGE << 6) | length, 2);
-        }
-        final int end = coder.getPointer() + (length << 3);
+        coder.writeHeader(MovieTypes.DEFINE_JPEG_IMAGE, length);
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
         coder.writeWord(identifier, 2);
         coder.writeBytes(image);
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 

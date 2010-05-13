@@ -51,7 +51,7 @@ public final class SolidFillTest {
 
     private transient SolidFill fixture;
 
-    private final transient byte[] encoded = new byte[] { 0x00, 0x01, 0x02,
+    private final transient byte[] encoded = new byte[] {0x00, 0x01, 0x02,
             0x03 };
 
     @Test(expected = IllegalArgumentException.class)

@@ -50,27 +50,37 @@ public class Coder {
     public static final String UNDERFLOW = "Underflow";
     /** TODO(doc). */
     public static final String OVERFLOW = "Overflow";
-    
+
     /** TODO(doc). */
     public static final int BYTE_ALIGN = 7;
     /** Right shift to convert number of bits to number of bytes. */
     public static final int BITS_TO_BYTES = 3;
     /** Left shift to convert number of bytes to number of bits. */
     public static final int BYTES_TO_BITS = 3;
-    
+
     public static final int BITS_PER_BYTE = 8;
     public static final int BITS_PER_SHORT = 16;
 
     public static final int BYTES_PER_WORD = 4;
-    /** TODO(doc). */
-    public static final int MASK_BYTE_0 = 255;
 
-    /** TODO(doc). */
-    public static final int SELECT_BYTE_3 = 24;
-    /** TODO(doc). */
-    public static final int SELECT_BYTE_2 = 16;
-    /** TODO(doc). */
-    public static final int SELECT_BYTE_1 = 8;
+    /** Bit mask applied to bytes when converting to unsigned integers. */
+    public static final int UNSIGNED_BYTE_MASK = 255;
+
+    /**
+     * Number of bits to shift a byte when moving to/from the second byte
+     * position in a 16-bit or 32-bit word.
+     */
+    public static final int BYTE1 = 8;
+    /**
+     * Number of bits to shift a byte when moving to/from the third byte
+     * position in a 32-bit word.
+     */
+    public static final int BYTE2 = 16;
+    /**
+     * Number of bits to shift a byte when moving to/from the fourth byte
+     * position in a 32-bit word.
+     */
+    public static final int BYTE3 = 24;
 
     protected String encoding;
     protected byte[] data;

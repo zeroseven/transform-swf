@@ -33,20 +33,14 @@ package com.flagstone.transform;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.SWFDecoder;
-import com.flagstone.transform.coder.SWFEncoder;
-
 public final class DoABCTest {
 
-    private static final transient String name = "script";
-    private static final transient boolean defer = true;
-    private static final transient byte[] data = new byte[] { 1, 2, 3, 4 };
+    private final transient String name = "script";
+    private final transient boolean defer = true;
+    private final transient byte[] data = new byte[] {1, 2, 3, 4 };
 
     private transient DoABC fixture;
 

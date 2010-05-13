@@ -44,12 +44,12 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 public final class WaitForFrame2Test {
 
-    private static final transient int type = ActionTypes.WAIT_FOR_FRAME_2;
-    private static final transient int count = 2;
+    private static final transient int TYPE = ActionTypes.WAIT_FOR_FRAME_2;
+    private static final transient int COUNT = 2;
 
     private transient WaitForFrame2 fixture;
 
-    private final transient byte[] encoded = new byte[] { (byte) type, 0x01,
+    private final transient byte[] encoded = new byte[] {(byte) TYPE, 0x01,
             0x00, 0x02 };
 
     @Test(expected = IllegalArgumentException.class)
@@ -64,7 +64,7 @@ public final class WaitForFrame2Test {
 
     @Test
     public void checkCopy() {
-        fixture = new WaitForFrame2(count);
+        fixture = new WaitForFrame2(COUNT);
         final WaitForFrame2 copy = fixture.copy();
 
         assertNotSame(fixture, copy);
@@ -76,7 +76,7 @@ public final class WaitForFrame2Test {
         final SWFEncoder encoder = new SWFEncoder(encoded.length);
         final Context context = new Context();
 
-        fixture = new WaitForFrame2(count);
+        fixture = new WaitForFrame2(COUNT);
         assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
         fixture.encode(encoder, context);
 
@@ -91,6 +91,6 @@ public final class WaitForFrame2Test {
         fixture = new WaitForFrame2(decoder);
 
         assertTrue(decoder.eof());
-        assertEquals(count, fixture.getActionCount());
+        assertEquals(COUNT, fixture.getActionCount());
     }
 }

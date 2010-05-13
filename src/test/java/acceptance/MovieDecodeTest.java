@@ -68,20 +68,20 @@ public final class MovieDecodeTest {
                 return name.endsWith(".swf");
             }
         };
-        
+
         String[] files = srcDir.list(filter);
         Object[][] collection = new Object[files.length][1];
 
-        for (int i=0; i<files.length; i++) {
+        for (int i = 0; i < files.length; i++) {
             collection[i][0] = new File(srcDir, files[i]);
         }
         return Arrays.asList(collection);
     }
 
-    private File file;
+    private final File file;
 
-    public MovieDecodeTest(File file) {
-        this.file = file;
+    public MovieDecodeTest(final File movieFile) {
+        file = movieFile;
     }
 
     @Test

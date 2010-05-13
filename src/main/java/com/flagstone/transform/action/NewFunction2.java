@@ -254,7 +254,7 @@ public final class NewFunction2 implements Action {
     private static final String FORMAT = "NewFunction2: { name=%s; "
             + "registerCount=%d; optimizations=%s; arguments=%s; actions=%s }";
 
-    /** TODO(method). */
+    
     public enum Optimization {
         /** Create the predefined variable, <em>super</em>. */
         CREATE_SUPER(4),
@@ -363,10 +363,10 @@ public final class NewFunction2 implements Action {
                 .getActionDecoder();
 
         coder.readByte();
-        length = coder.readWord(2, false);
+        length = coder.readUI16();
 
         name = coder.readString();
-        final int argumentCount = coder.readWord(2, false);
+        final int argumentCount = coder.readUI16();
         registerCount = coder.readByte();
         optimizations = coder.readBits(Coder.BITS_PER_SHORT, false);
 
@@ -379,7 +379,7 @@ public final class NewFunction2 implements Action {
             arguments.put(coder.readString(), index);
         }
 
-        actionsLength = coder.readWord(2, false);
+        actionsLength = coder.readUI16();
         length += actionsLength;
 
         final int end = coder.getPointer()

@@ -56,8 +56,10 @@ public final class NewFunction2Test {
 
     private static String name = "function";
     private static int registers = 0;
-    private static Set<Optimization>optimizations = EnumSet.noneOf(Optimization.class);
-    private static Map<String, Integer> args = new LinkedHashMap<String, Integer>();
+    private static Set<Optimization>optimizations =
+        EnumSet.noneOf(Optimization.class);
+    private static Map<String, Integer> args =
+        new LinkedHashMap<String, Integer>();
     private static List<Action> actions = new ArrayList<Action>();
 
     static {
@@ -68,17 +70,18 @@ public final class NewFunction2Test {
         actions.add(BasicAction.END);
     }
 
-    private static final transient int type = ActionTypes.NEW_FUNCTION_2;
+    private static final transient int TYPE = ActionTypes.NEW_FUNCTION_2;
     private transient NewFunction2 fixture;
 
-    private final transient byte[] encoded = new byte[] { (byte) type, 0x16,
+    private final transient byte[] encoded = new byte[] {(byte) TYPE, 0x16,
             0x00, 0x66, 0x75, 0x6E, 0x63, 0x74, 0x69, 0x6F, 0x6E, 0x00, 0x02,
             0x00, 0x00, 0x00, 0x00, 0x01, 0x61, 0x00, 0x02, 0x62, 0x00, 0x02,
             0x00, ActionTypes.ADD, ActionTypes.END };
 
     @Test
     public void checkCopy() {
-        fixture = new NewFunction2(name, registers, optimizations, args, actions);
+        fixture = new NewFunction2(name, registers, optimizations,
+                args, actions);
         final NewFunction2 copy = fixture.copy();
 
         assertNotSame(fixture.getActions(), copy.getActions());
@@ -90,7 +93,8 @@ public final class NewFunction2Test {
         final SWFEncoder encoder = new SWFEncoder(encoded.length);
         final Context context = new Context();
 
-        fixture = new NewFunction2(name, registers, optimizations, args, actions);
+        fixture = new NewFunction2(name, registers, optimizations,
+                args, actions);
         assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
         fixture.encode(encoder, context);
 

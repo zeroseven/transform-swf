@@ -34,17 +34,17 @@ package com.flagstone.transform;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.exception.StringSizeException;
 import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 /**
- * SymbolClass is used to export one or more shapes and other objects so they 
+ * SymbolClass is used to export one or more shapes and other objects so they
  * can be used in another Flash file.
  *
  * <p>
@@ -75,23 +75,20 @@ public final class SymbolClass implements MovieTag {
     public SymbolClass(final SWFDecoder coder) throws CoderException {
 
         final int start = coder.getPointer();
-        length = coder.readWord(2, false) & 0x3F;
+        length = coder.readHeader();
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
-        if (length == 0x3F) {
-            length = coder.readWord(4, false);
-        }
-        final int end = coder.getPointer() + (length << 3);
-
-        final int count = coder.readWord(2, false);
+        final int count = coder.readUI16();
         objects = new LinkedHashMap<Integer, String>(count);
 
         for (int i = 0; i < count; i++) {
-            objects.put(coder.readWord(2, false), coder.readString());
+            objects.put(coder.readUI16(), coder.readString());
         }
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 
@@ -113,7 +110,7 @@ public final class SymbolClass implements MovieTag {
     }
 
     /**
-     * Creates and initialises a SymbolClass object using the table values 
+     * Creates and initialises a SymbolClass object using the table values
      * copied from another SymbolClass object.
      *
      * @param object
@@ -124,27 +121,24 @@ public final class SymbolClass implements MovieTag {
         objects = new LinkedHashMap<Integer, String>(object.objects);
     }
 
-    /** TODO(method). */
+
     public SymbolClass add(final int uid, final String aString) {
         if ((uid < 1) || (uid > 65535)) {
              throw new IllegalArgumentRangeException(1, 65536, uid);
         }
-        if (aString == null) {
+        if (aString == null || aString.length() == 0) {
             throw new IllegalArgumentException();
-        }
-        if (aString.length() == 0) {
-            throw new StringSizeException(0, Integer.MAX_VALUE, 0);
         }
         objects.put(uid, aString);
         return this;
     }
 
-    /** TODO(method). */
+
     public Map<Integer, String> getObjects() {
         return objects;
     }
 
-    /** TODO(method). */
+
     public void setObjects(final Map<Integer, String> aTable) {
         if (aTable == null) {
             throw new IllegalArgumentException();
@@ -180,14 +174,8 @@ public final class SymbolClass implements MovieTag {
             throws CoderException {
 
         final int start = coder.getPointer();
-
-        if (length > 62) {
-            coder.writeWord((MovieTypes.SYMBOL << 6) | 0x3F, 2);
-            coder.writeWord(length, 4);
-        } else {
-            coder.writeWord((MovieTypes.SYMBOL << 6) | length, 2);
-        }
-        final int end = coder.getPointer() + (length << 3);
+        coder.writeHeader(MovieTypes.SYMBOL, length);
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
         coder.writeWord(objects.size(), 2);
 
@@ -197,8 +185,9 @@ public final class SymbolClass implements MovieTag {
         }
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 }

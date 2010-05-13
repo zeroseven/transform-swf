@@ -51,9 +51,9 @@ public final class CoderException extends IOException {
     private static final String FORMAT = "CoderException: { "
             + "name=%s; location=%d; length=%d; delta=%d; message=%s }";
 
-    /** TODO(method). */
+
     public static final String UNDERFLOW = "Underflow";
-    /** TODO(method). */
+
     public static final String OVERFLOW = "Overflow";
 
     private final transient String name;
@@ -65,21 +65,21 @@ public final class CoderException extends IOException {
      * Creates a CoderException to report where a problem occurred when encoding
      * or decoding a Flash (.swf) file.
      *
-     * @param name
+     * @param className
      *            the name of the object or action that was being encoded or
      *            decoded when the problem occurred.
      *
-     * @param start
+     * @param location
      *            the address in the file where the data structure being
      *            encoded/decoded is located. This is only valid for files being
      *            decoded since the encoded file will not be written if an
      *            exception occurs.
      *
-     * @param length
+     * @param size
      *            the number of bytes that were expected to be encoded or
      *            decoded.
      *
-     * @param delta
+     * @param difference
      *            the difference between the expected number of bytes and the
      *            actual number encoded or decoded.
      *
@@ -88,44 +88,44 @@ public final class CoderException extends IOException {
      *            and whether the difference was more (overflow) or less
      *            (underflow) than expected.
      */
-    public CoderException(final String name, final int start, final int length,
-            final int delta, final String message) {
+    public CoderException(final String className, final int location,
+            final int size, final int difference, final String message) {
         super(message);
-        this.name = name;
-        this.start = start;
-        this.length = length;
-        this.delta = delta;
+        name = className;
+        start = location;
+        length = size;
+        delta = difference;
     }
 
     /**
      * Creates a CoderException to report where a problem occurred when encoding
      * or decoding a Flash (.swf) file.
      *
-     * @param name
+     * @param className
      *            the name of the object or action that was being encoded or
      *            decoded when the problem occurred.
      *
-     * @param start
+     * @param location
      *            the address in the file where the data structure being
      *            encoded/decoded is located. This is only valid for files being
      *            decoded since the encoded file will not be written if an
      *            exception occurs.
      *
-     * @param length
+     * @param size
      *            the number of bytes that were expected to be encoded or
      *            decoded.
      *
-     * @param delta
+     * @param difference
      *            the difference between the expected number of bytes and the
      *            actual number encoded or decoded.
      */
-    public CoderException(final String name, final int start, final int length,
-            final int delta) {
-        super(delta > 0 ? OVERFLOW : UNDERFLOW);
-        this.name = name;
-        this.start = start;
-        this.length = length;
-        this.delta = delta;
+    public CoderException(final String className, final int location,
+            final int size, final int difference) {
+        super(difference > 0 ? OVERFLOW : UNDERFLOW);
+        name = className;
+        start = location;
+        length = size;
+        delta = difference;
     }
 
     /**

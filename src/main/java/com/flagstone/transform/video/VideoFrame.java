@@ -32,6 +32,7 @@ package com.flagstone.transform.video;
 
 import java.util.Arrays;
 
+import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTag;
@@ -56,7 +57,7 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  */
 //TODO(class)
 public final class VideoFrame implements MovieTag {
-    
+
     private static final String FORMAT = "VideoFrame: { identifier=%d;"
             + " frameNumber=%d; data=%d }";
 
@@ -77,14 +78,9 @@ public final class VideoFrame implements MovieTag {
      *             if an error occurs while decoding the data.
      */
     public VideoFrame(final SWFDecoder coder) throws CoderException {
-        length = coder.readWord(2, false) & 0x3F;
-
-        if (length == 0x3F) {
-            length = coder.readWord(4, false);
-        }
-
-        identifier = coder.readWord(2, false);
-        frameNumber = coder.readWord(2, false);
+        length = coder.readHeader();
+        identifier = coder.readUI16();
+        frameNumber = coder.readUI16();
         data = coder.readBytes(new byte[length - 4]);
     }
 
@@ -95,16 +91,17 @@ public final class VideoFrame implements MovieTag {
      * @param uid
      *            the unique identifier of the DefineVideo object. Must be in
      *            the range 1..65535.
-     * @param frameNumber
+     * @param frame
      *            the number of the frame. Must be in the range 1..65535.
-     * @param data
+     * @param videoData
      *            the encoded video data. For Flash 6 this is encoded in the
      *            H263 format. In Flash 7 H263 and ScreenVideo is supported.
      */
-    public VideoFrame(final int uid, final int frameNumber, final byte[] data) {
+    public VideoFrame(final int uid, final int frame,
+                final byte[] videoData) {
         setIdentifier(uid);
-        setFrameNumber(frameNumber);
-        setData(data);
+        setFrameNumber(frame);
+        setData(videoData);
     }
 
     /**
@@ -138,8 +135,9 @@ public final class VideoFrame implements MovieTag {
      *            the range 1..65535.
      */
     public void setIdentifier(final int uid) {
-        if ((uid < 1) || (uid > 65535)) {
-             throw new IllegalArgumentRangeException(1, 65536, uid);
+        if ((uid < SWF.MIN_IDENTIFIER) || (uid > SWF.MAX_IDENTIFIER)) {
+            throw new IllegalArgumentRangeException(
+                    SWF.MIN_IDENTIFIER, SWF.MAX_IDENTIFIER, uid);
         }
         identifier = uid;
     }
@@ -177,14 +175,14 @@ public final class VideoFrame implements MovieTag {
      * Sets the encoded video data. In Flash 6 modified H263 encoded video is
      * supported. Flash 7 supports both modified H263 and ScreenVideo,
      *
-     * @param data
+     * @param frameData
      *            the encoded video data. Must not be null.
      */
-    public void setData(final byte[] data) {
-        if (data == null) {
+    public void setData(final byte[] frameData) {
+        if (frameData == null) {
             throw new IllegalArgumentException();
         }
-        this.data =  Arrays.copyOf(data, data.length);
+        data =  Arrays.copyOf(frameData, frameData.length);
     }
 
     /** {@inheritDoc} */
@@ -208,13 +206,7 @@ public final class VideoFrame implements MovieTag {
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
-        if (length >= 63) {
-            coder.writeWord((MovieTypes.VIDEO_FRAME << 6) | 0x3F, 2);
-            coder.writeWord(length, 4);
-        } else {
-            coder.writeWord((MovieTypes.VIDEO_FRAME << 6) | length, 2);
-        }
-
+        coder.writeHeader(MovieTypes.VIDEO_FRAME, length);
         coder.writeWord(identifier, 2);
         coder.writeWord(frameNumber, 2);
         coder.writeBytes(data);

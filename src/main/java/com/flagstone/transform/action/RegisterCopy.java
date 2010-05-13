@@ -85,7 +85,7 @@ public final class RegisterCopy implements Action {
      */
     public RegisterCopy(final SWFDecoder coder) throws CoderException {
         coder.readByte();
-        coder.readWord(2, false);
+        coder.readUI16();
         number = coder.readByte();
     }
 

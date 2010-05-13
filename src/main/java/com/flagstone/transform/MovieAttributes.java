@@ -59,15 +59,12 @@ public final class MovieAttributes implements MovieTag {
      *             if an error occurs while decoding the data.
      */
     public MovieAttributes(final SWFDecoder coder) throws CoderException {
-
-        if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
-            coder.readWord(4, false);
-        }
+        coder.readHeader();
         attributes = coder.readByte();
         coder.adjustPointer(24);
     }
 
-    /** TODO(method). */
+
     public MovieAttributes(final Set<MovieAttribute>set) {
         setAttributes(set);
     }
@@ -84,10 +81,10 @@ public final class MovieAttributes implements MovieTag {
         attributes = object.attributes;
     }
 
-    /** TODO(method). */
+
     public Set<MovieAttribute> getAttributes() {
         final Set<MovieAttribute>set = EnumSet.noneOf(MovieAttribute.class);
-        
+
         if ((attributes & 1) != 0) {
             set.add(MovieAttribute.NETWORK_ACCESS);
         }
@@ -100,10 +97,10 @@ public final class MovieAttributes implements MovieTag {
         return set;
     }
 
-    /** TODO(method). */
+
     public void setAttributes(final Set<MovieAttribute>set) {
         attributes = 0;
-        
+
         if (set.contains(MovieAttribute.NETWORK_ACCESS)) {
             attributes |= 1;
         }
@@ -134,7 +131,7 @@ public final class MovieAttributes implements MovieTag {
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
-        coder.writeWord((MovieTypes.FILE_ATTRIBUTES << 6) | 4, 2);
+        coder.writeHeader(MovieTypes.FILE_ATTRIBUTES, 4);
         coder.writeByte(attributes);
         coder.writeWord(0, 3);
     }

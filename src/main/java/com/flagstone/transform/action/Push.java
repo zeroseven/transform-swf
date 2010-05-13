@@ -205,7 +205,7 @@ public final class Push implements Action {
     public Push(final SWFDecoder coder) throws CoderException {
 
         coder.readByte();
-        length = coder.readWord(2, false);
+        length = coder.readUI16();
         values = new ArrayList<Object>();
 
         int valuesLength = length;
@@ -261,7 +261,7 @@ public final class Push implements Action {
                 valuesLength -= LENGTH_TINDEX;
                 break;
             case TYPE_LARGE_TINDEX:
-                values.add(new TableIndex(coder.readWord(2, false)));
+                values.add(new TableIndex(coder.readUI16()));
                 valuesLength -= LENGTH_LTINDEX;
                 break;
             default:

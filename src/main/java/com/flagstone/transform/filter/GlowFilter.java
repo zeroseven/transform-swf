@@ -31,6 +31,7 @@
 
 package com.flagstone.transform.filter;
 
+import com.flagstone.transform.Constants;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -48,51 +49,51 @@ public final class GlowFilter implements Filter {
         private transient int strength;
         private transient int mode;
         private transient int passes;
-        
-        /** TODO(method). */
-       public Builder setColor(final Color color) {
-            this.color = color;
+
+
+       public Builder setColor(final Color aColor) {
+            color = aColor;
             return this;
         }
-        
-        /** TODO(method). */
+
+
         public Builder setBlur(final float xAmount, final float yAmount) {
             blurX = (int) (xAmount * 65536.0f);
             blurY = (int) (yAmount * 65536.0f);
             return this;
         }
-        
-        /** TODO(method). */
-        public Builder setMode(final FilterMode mode) {
-            switch (mode) {
+
+
+        public Builder setMode(final FilterMode filterMode) {
+            switch (filterMode) {
             case TOP:
-                 this.mode = 0x0030;
+                 mode = 0x0030;
                 break;
             case KNOCKOUT:
-                this.mode = 0x0060;
+                mode = 0x0060;
                 break;
             case INNER:
-                this.mode = 0x00A0;
+                mode = 0x00A0;
                 break;
             default:
                 throw new IllegalArgumentException();
             }
             return this;
         }
-        
-        /** TODO(method). */
-        public Builder setStrength(final float strength) {
-            this.strength = (int) (strength * 256.0f);
+
+
+        public Builder setStrength(final float weight) {
+            strength = (int) (weight * 256.0f);
             return this;
         }
-        
-        /** TODO(method). */
+
+
         public Builder setPasses(final int count) {
             passes = count;
             return this;
         }
-        
-        /** TODO(method). */
+
+
         public GlowFilter build() {
             return new GlowFilter(this);
         }
@@ -147,27 +148,27 @@ public final class GlowFilter implements Filter {
         mode = (value & 0x0D) >>> 4;
     }
 
-    /** TODO(method). */
+
     public Color getColor() {
         return color;
     }
 
-    /** TODO(method). */
+
     public float getBlurX() {
         return blurX / 65536.0f;
     }
 
-    /** TODO(method). */
+
     public float getBlurY() {
         return blurY / 65536.0f;
     }
 
-    /** TODO(method). */
+
     public float getStrength() {
         return strength / 256.0f;
     }
 
-    /** TODO(method). */
+
     public FilterMode getMode() {
         FilterMode value;
         switch (mode) {
@@ -183,14 +184,14 @@ public final class GlowFilter implements Filter {
         return value;
     }
 
-    /** TODO(method). */
+
     public int getPasses() {
         return passes;
     }
 
     @Override
     public String toString() {
-        return String.format(FORMAT, color.toString(), 
+        return String.format(FORMAT, color.toString(),
                 getBlurX(), getBlurY(), getStrength(), mode, passes);
     }
 
@@ -216,8 +217,12 @@ public final class GlowFilter implements Filter {
 
     @Override
     public int hashCode() {
-        return (((((color.hashCode() * 31) + blurX) * 31 + blurY) * 31 
-                + strength) * 31 + mode) * 31 + passes;
+        return (((((color.hashCode() * Constants.PRIME)
+                + blurX) * Constants.PRIME
+                + blurY) * Constants.PRIME
+                + strength) * Constants.PRIME
+                + mode) * Constants.PRIME
+                + passes;
     }
 
     /** {@inheritDoc} */

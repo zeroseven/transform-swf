@@ -43,7 +43,6 @@ import java.util.Arrays;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 
-
 import com.flagstone.transform.coder.ImageTag;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.image.DefineImage;
@@ -78,12 +77,12 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
     private transient int greenMask;
     private transient int blueMask;
 
-    /** TODO(method). */
+
     public void read(final File file) throws IOException, DataFormatException {
         read(new FileInputStream(file), (int) file.length());
     }
 
-    /** TODO(method). */
+
     public void read(final URL url) throws IOException, DataFormatException {
         final URLConnection connection = url.openConnection();
 
@@ -100,17 +99,19 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
         read(url.openStream(), length);
     }
 
-    /** TODO(method). */
+
     public ImageTag defineImage(final int identifier) {
         ImageTag object = null;
 
         switch (format) {
         case IDX8:
-            object = new DefineImage(identifier, width, height, table.length/4,
+            object = new DefineImage(identifier, width, height,
+                    table.length / 4,
                     zip(merge(adjustScan(width, height, image), table)));
             break;
         case IDXA:
-            object = new DefineImage2(identifier, width, height, table.length/4,
+            object = new DefineImage2(identifier, width, height,
+                    table.length / 4,
                     zip(mergeAlpha(adjustScan(width, height, image), table)));
             break;
         case RGB5:
@@ -131,30 +132,31 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
         return object;
     }
 
-    /** TODO(method). */
+
     public ImageDecoder newDecoder() {
         return new BMPDecoder();
     }
 
-    /** TODO(method). */
+
     public int getWidth() {
         return width;
     }
 
-    /** TODO(method). */
+
     public int getHeight() {
         return height;
     }
 
-    /** TODO(method). */
+
     public byte[] getImage() {
         return Arrays.copyOf(image, image.length);
     }
 
-    /** TODO(method). */
-    public void read(final InputStream stream, final int length) throws DataFormatException, IOException {
 
-        final byte[] bytes = new byte[(int) length];
+    public void read(final InputStream stream, final int length)
+                    throws DataFormatException, IOException {
+
+        final byte[] bytes = new byte[length];
         final BufferedInputStream buffer = new BufferedInputStream(stream);
 
         buffer.read(bytes);
@@ -168,34 +170,34 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
             }
         }
 
-        coder.readWord(4, false); // fileSize
-        coder.readWord(4, false); // reserved
+        coder.readUI32(); // fileSize
+        coder.readUI32(); // reserved
 
-        final int offset = coder.readWord(4, false);
-        final int headerSize = coder.readWord(4, false);
+        final int offset = coder.readUI32();
+        final int headerSize = coder.readUI32();
 
         int bitsPerPixel;
         int coloursUsed;
 
         switch (headerSize) {
         case 12:
-            width = coder.readWord(2, false);
-            height = coder.readWord(2, false);
-            coder.readWord(2, false); // bitPlanes
-            bitsPerPixel = coder.readWord(2, false);
+            width = coder.readUI16();
+            height = coder.readUI16();
+            coder.readUI16(); // bitPlanes
+            bitsPerPixel = coder.readUI16();
             coloursUsed = 0;
             break;
         case 40:
-            width = coder.readWord(4, false);
-            height = coder.readWord(4, false);
-            coder.readWord(2, false); // bitPlanes
-            bitsPerPixel = coder.readWord(2, false);
-            compressionMethod = coder.readWord(4, false);
-            coder.readWord(4, false); // imageSize
-            coder.readWord(4, false); // horizontalResolution
-            coder.readWord(4, false); // verticalResolution
-            coloursUsed = coder.readWord(4, false);
-            coder.readWord(4, false); // importantColours
+            width = coder.readUI32();
+            height = coder.readUI32();
+            coder.readUI16(); // bitPlanes
+            bitsPerPixel = coder.readUI16();
+            compressionMethod = coder.readUI32();
+            coder.readUI32(); // imageSize
+            coder.readUI32(); // horizontalResolution
+            coder.readUI32(); // verticalResolution
+            coloursUsed = coder.readUI32();
+            coder.readUI32(); // importantColours
             break;
         default:
             bitsPerPixel = 0;
@@ -204,9 +206,9 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
         }
 
         if (compressionMethod == BI_BITFIELDS) {
-            redMask = coder.readWord(4, false);
-            greenMask = coder.readWord(4, false);
-            blueMask = coder.readWord(4, false);
+            redMask = coder.readUI32();
+            greenMask = coder.readUI32();
+            blueMask = coder.readUI32();
         }
 
         switch (bitsPerPixel) {
@@ -308,7 +310,7 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
         for (int row = height - 1; row > 0; row--) {
             bitsRead = 0;
             index = row * width;
-            
+
             for (int col = 0; col < width; col++) {
                 image[index++] = (byte) coder.readBits(bitDepth, false);
                 bitsRead += bitDepth;
@@ -342,10 +344,10 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
                     hasMore = false;
                     break;
                 case 2:
-                    col += coder.readWord(2, false);
-                    row -= coder.readWord(2, false);
+                    col += coder.readUI16();
+                    row -= coder.readUI16();
                     index = row * width + col;
-                    
+
                     for (int i = 0; i < code; i += 2) {
                         image[index++] = (byte) coder.readBits(4, false);
                         image[index++] = (byte) coder.readBits(4, false);
@@ -371,7 +373,7 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
                 final byte indexA = (byte) coder.readBits(4, false);
                 final byte indexB = (byte) coder.readBits(4, false);
                 index = row * width + col;
-                
+
                 for (int i = 0; (i < count) && (col < width); i++, col++) {
                     image[index++] = (i % 2 > 0) ? indexB : indexA;
                 }
@@ -401,8 +403,8 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
                     hasMore = false;
                     break;
                 case 2:
-                    col += coder.readWord(2, false);
-                    row -= coder.readWord(2, false);
+                    col += coder.readUI16();
+                    row -= coder.readUI16();
                     index = row * width + col;
                     for (int i = 0; i < code; i++) {
                         image[index++] = (byte) coder.readByte();
@@ -443,7 +445,7 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
                 bitsRead = 0;
 
                 for (int col = 0; col < width; col++, index += 4) {
-                    final int colour = coder.readWord(2, false) & 0xFFFF;
+                    final int colour = coder.readUI16() & 0xFFFF;
 
                     image[index] = (byte) ((colour & 0x7C00) >> 7);
                     image[index + 1] = (byte) ((colour & 0x03E0) >> 2);
@@ -461,7 +463,7 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
                 bitsRead = 0;
 
                 for (int col = 0; col < width; col++, index += 4) {
-                    final int colour = coder.readWord(2, false) & 0xFFFF;
+                    final int colour = coder.readUI16() & 0xFFFF;
 
                     if ((redMask == 0x7C00) && (greenMask == 0x03E0)
                             && (blueMask == 0x001F)) {
@@ -522,76 +524,76 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
         }
     }
 
-    private void orderAlpha(final byte[] image) {
+    private void orderAlpha(final byte[] img) {
         byte alpha;
 
-        for (int i = 0; i < image.length; i += 4) {
-            alpha = image[i + 3];
+        for (int i = 0; i < img.length; i += 4) {
+            alpha = img[i + 3];
 
-            image[i + 3] = image[i + 2];
-            image[i + 2] = image[i + 1];
-            image[i + 1] = image[i];
-            image[i] = alpha;
+            img[i + 3] = img[i + 2];
+            img[i + 2] = img[i + 1];
+            img[i + 1] = img[i];
+            img[i] = alpha;
         }
     }
 
-    private void applyAlpha(final byte[] image) {
+    private void applyAlpha(final byte[] img) {
         int alpha;
 
-        for (int i = 0; i < image.length; i += 4) {
-            alpha = image[i + 3] & 0xFF;
+        for (int i = 0; i < img.length; i += 4) {
+            alpha = img[i + 3] & 0xFF;
 
-            image[i] = (byte) (((image[i] & 0xFF) * alpha) / 255);
-            image[i + 1] = (byte) (((image[i + 1] & 0xFF) * alpha) / 255);
-            image[i + 2] = (byte) (((image[i + 2] & 0xFf) * alpha) / 255);
+            img[i] = (byte) (((img[i] & 0xFF) * alpha) / 255);
+            img[i + 1] = (byte) (((img[i + 1] & 0xFF) * alpha) / 255);
+            img[i + 2] = (byte) (((img[i + 2] & 0xFf) * alpha) / 255);
         }
     }
 
-    private byte[] merge(final byte[] image, final byte[] table) {
-        final byte[] merged = new byte[(table.length / 4) * 3 + image.length];
+    private byte[] merge(final byte[] img, final byte[] colors) {
+        final byte[] merged = new byte[(colors.length / 4) * 3 + img.length];
         int dst = 0;
 
-        for (int i = 0; i < table.length; i += 4) {
-            merged[dst++] = table[i + 2]; // R
-            merged[dst++] = table[i + 1]; // G
-            merged[dst++] = table[i]; // B
+        for (int i = 0; i < colors.length; i += 4) {
+            merged[dst++] = colors[i + 2]; // R
+            merged[dst++] = colors[i + 1]; // G
+            merged[dst++] = colors[i]; // B
         }
 
-        for (final byte element : image) {
+        for (final byte element : img) {
             merged[dst++] = element;
         }
 
         return merged;
     }
 
-    private byte[] mergeAlpha(final byte[] image, final byte[] table) {
-        final byte[] merged = new byte[table.length + image.length];
+    private byte[] mergeAlpha(final byte[] img, final byte[] colors) {
+        final byte[] merged = new byte[colors.length + img.length];
         int dst = 0;
 
-        for (final byte element : table) {
+        for (final byte element : colors) {
             merged[dst++] = element;
         }
 
-        for (final byte element : image) {
+        for (final byte element : img) {
             merged[dst++] = element;
         }
         return merged;
     }
 
-    private byte[] zip(final byte[] image) {
+    private byte[] zip(final byte[] img) {
         final Deflater deflater = new Deflater();
-        deflater.setInput(image);
+        deflater.setInput(img);
         deflater.finish();
 
-        final byte[] compressedData = new byte[image.length * 2];
+        final byte[] compressedData = new byte[img.length * 2];
         final int bytesCompressed = deflater.deflate(compressedData);
         final byte[] newData = Arrays.copyOf(compressedData, bytesCompressed);
 
         return newData;
     }
 
-    private byte[] adjustScan(final int width, final int height,
-            final byte[] image) {
+    private byte[] adjustScan(final int imgWidth, final int imgHeight,
+            final byte[] img) {
         int src = 0;
         int dst = 0;
         int row;
@@ -600,12 +602,12 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
         int scan = 0;
         byte[] formattedImage = null;
 
-        scan = (width + 3) & ~3;
-        formattedImage = new byte[scan * height];
+        scan = (imgWidth + 3) & ~3;
+        formattedImage = new byte[scan * imgHeight];
 
-        for (row = 0; row < height; row++) {
-            for (col = 0; col < width; col++) {
-                formattedImage[dst++] = image[src++];
+        for (row = 0; row < imgHeight; row++) {
+            for (col = 0; col < imgWidth; col++) {
+                formattedImage[dst++] = img[src++];
             }
 
             while (col++ < scan) {
@@ -616,21 +618,21 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
         return formattedImage;
     }
 
-    private byte[] packColours(final int width, final int height,
-            final byte[] image) {
+    private byte[] packColours(final int imgWidth, final int imgHeight,
+            final byte[] img) {
         int src = 0;
         int dst = 0;
         int row;
         int col;
 
-        final int scan = width + (width & 1);
-        final byte[] formattedImage = new byte[scan * height * 2];
+        final int scan = imgWidth + (imgWidth & 1);
+        final byte[] formattedImage = new byte[scan * imgHeight * 2];
 
-        for (row = 0; row < height; row++) {
-            for (col = 0; col < width; col++, src++) {
-                final int red = (image[src++] & 0xF8) << 7;
-                final int green = (image[src++] & 0xF8) << 2;
-                final int blue = (image[src++] & 0xF8) >> 3;
+        for (row = 0; row < imgHeight; row++) {
+            for (col = 0; col < imgWidth; col++, src++) {
+                final int red = (img[src++] & 0xF8) << 7;
+                final int green = (img[src++] & 0xF8) << 2;
+                final int blue = (img[src++] & 0xF8) >> 3;
                 final int colour = (red | green | blue) & 0x7FFF;
 
                 formattedImage[dst++] = (byte) (colour >> 8);

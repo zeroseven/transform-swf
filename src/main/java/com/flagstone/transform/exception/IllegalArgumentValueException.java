@@ -33,24 +33,25 @@ package com.flagstone.transform.exception;
 
 import java.util.Arrays;
 
-public class IllegalArgumentValueException extends IllegalArgumentException {
+public final class IllegalArgumentValueException
+            extends IllegalArgumentException {
 
     private static final long serialVersionUID = 3748031731035981638L;
 
-    private final transient int[] set;
-    private final transient int value;
+    private final transient int[] expected;
+    private final transient int actual;
 
     public IllegalArgumentValueException(final int[] set, final int value) {
         super("Valid values: " + set + " Value: " + value);
-        this.set = Arrays.copyOf(set, set.length);
-        this.value = value;
+        expected = Arrays.copyOf(set, set.length);
+        actual = value;
     }
-    
-    public int[] getSet() {
-        return Arrays.copyOf(set, set.length);
+
+    public int[] getExpected() {
+        return Arrays.copyOf(expected, expected.length);
     }
-     
-    public int getValue() {
-        return value;
+
+    public int getActual() {
+        return actual;
     }
 }

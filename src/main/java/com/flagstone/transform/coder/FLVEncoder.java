@@ -34,7 +34,7 @@ package com.flagstone.transform.coder;
 /** TODO(class). */
 public final class FLVEncoder extends Encoder {
 
-    /** TODO(method). */
+    
     public FLVEncoder(final int size) {
         super(size);
     }

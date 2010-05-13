@@ -87,11 +87,11 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
     public LineStyle2(final SWFDecoder coder, final Context context)
             throws CoderException {
 
-        width = coder.readWord(2, false);
+        width = coder.readUI16();
         unpack(coder.readB16());
 
         if (hasMiter) {
-            coder.readWord(2, false);
+            coder.readUI16();
         }
 
         if (hasFillStyle) {
@@ -103,23 +103,23 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
         }
     }
 
-    /** TODO(method). */
-    public LineStyle2(final int width, final Color color) {
+
+    public LineStyle2(final int lineWidth, final Color lineColor) {
         super();
 
-        setWidth(width);
-        setColor(color);
+        setWidth(lineWidth);
+        setColor(lineColor);
 
         vertical = true;
         vertical = true;
         lineClosed = true;
     }
 
-    /** TODO(method). */
-    public LineStyle2(final int width, final FillStyle style) {
+
+    public LineStyle2(final int lineWidth, final FillStyle style) {
         super();
 
-        setWidth(width);
+        setWidth(lineWidth);
         setFillStyle(style);
 
         vertical = true;
@@ -164,14 +164,14 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
     /**
      * Sets the width of the line.
      *
-     * @param width
+     * @param thickness
      *            the width of the line. Must be in the range 0..65535.
      */
-    public void setWidth(final int width) {
-        if ((width < 0) || (width > 65535)) {
-            throw new IllegalArgumentRangeException(0, 65535, width);
+    public void setWidth(final int thickness) {
+        if ((thickness < 0) || (thickness > 65535)) {
+            throw new IllegalArgumentRangeException(0, 65535, thickness);
         }
-        this.width = width;
+        width = thickness;
     }
 
     /**
@@ -194,7 +194,7 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
         color = aColor;
     }
 
-    /** TODO(method). */
+
     public CapStyle getStartCap() {
         CapStyle style;
         if (startCap == 1) {
@@ -207,7 +207,7 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
         return style;
     }
 
-    /** TODO(method). */
+
     public void setStartCap(final CapStyle capStyle) {
         switch (capStyle) {
         case NONE:
@@ -222,7 +222,7 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
         }
     }
 
-    /** TODO(method). */
+
     public CapStyle getEndCap() {
         CapStyle style;
         if (endCap == 1) {
@@ -235,7 +235,7 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
         return style;
     }
 
-    /** TODO(method). */
+
     public void setEndCap(final CapStyle capStyle) {
         switch (capStyle) {
         case NONE:
@@ -250,7 +250,7 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
         }
     }
 
-    /** TODO(method). */
+
     public JoinStyle getJoinStyle() {
         JoinStyle style;
         if (endCap == 1) {
@@ -263,7 +263,7 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
         return style;
     }
 
-    /** TODO(method). */
+
     public void setJoinStyle(final JoinStyle style) {
         switch (style) {
         case BEVEL:
@@ -278,52 +278,52 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
         }
     }
 
-    /** TODO(method). */
+
     public boolean isHorizontal() {
         return horizontal;
     }
 
-    /** TODO(method). */
+
     public void setHorizontal(final boolean scaled) {
         horizontal = scaled;
     }
 
-    /** TODO(method). */
+
     public boolean isVertical() {
         return vertical;
     }
 
-    /** TODO(method). */
+
     public void setVertical(final boolean scaled) {
         vertical = scaled;
     }
 
-    /** TODO(method). */
+
     public boolean isPixelAligned() {
         return pixelAligned;
     }
 
-    /** TODO(method). */
+
     public void setPixelAligned(final boolean aligned) {
         pixelAligned = aligned;
     }
 
-    /** TODO(method). */
+
     public boolean isLineClosed() {
         return lineClosed;
     }
 
-    /** TODO(method). */
+
     public void setLineClosed(final boolean closed) {
         lineClosed = closed;
     }
 
-    /** TODO(method). */
+
     public int getMiterLimit() {
         return miterLimit;
     }
 
-    /** TODO(method). */
+
     public void setMiterLimit(final int limit) {
         if ((limit < 0) || (limit > 65535)) {
             throw new IllegalArgumentRangeException(0, 65535, limit);
@@ -331,17 +331,17 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
         miterLimit = limit;
     }
 
-    /** TODO(method). */
+
     public FillStyle getFillStyle() {
         return fillStyle;
     }
 
-    /** TODO(method). */
+
     public void setFillStyle(final FillStyle style) {
         fillStyle = style;
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public LineStyle2 copy() {
         return new LineStyle2(this);
     }

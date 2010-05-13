@@ -33,7 +33,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-
+import com.flagstone.transform.SWF;
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.DefineTag;
@@ -88,14 +89,10 @@ public final class DefineShape3 implements DefineTag {
     public DefineShape3(final SWFDecoder coder, final Context context)
             throws CoderException {
         final int start = coder.getPointer();
-        length = coder.readWord(2, false) & 0x3F;
+        length = coder.readHeader();
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
-        if (length == 0x3F) {
-            length = coder.readWord(4, false);
-        }
-        final int end = coder.getPointer() + (length << 3);
-
-        identifier = coder.readWord(2, false);
+        identifier = coder.readUI16();
         final Map<Integer, Integer> vars = context.getVariables();
         vars.put(Context.TRANSPARENT, 1);
         vars.put(Context.TYPE, MovieTypes.DEFINE_SHAPE_3);
@@ -105,7 +102,7 @@ public final class DefineShape3 implements DefineTag {
         int fillStyleCount = coder.readByte();
 
         if (fillStyleCount == 0xFF) {
-            fillStyleCount = coder.readWord(2, false);
+            fillStyleCount = coder.readUI16();
         }
 
         fillStyles = new ArrayList<FillStyle>();
@@ -131,7 +128,7 @@ public final class DefineShape3 implements DefineTag {
         int lineStyleCount = coder.readByte();
 
         if (lineStyleCount == 0xFF) {
-            lineStyleCount = coder.readWord(2, false);
+            lineStyleCount = coder.readUI16();
         }
 
         for (int i = 0; i < lineStyleCount; i++) {
@@ -147,8 +144,9 @@ public final class DefineShape3 implements DefineTag {
         vars.remove(Context.TYPE);
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 
@@ -198,15 +196,16 @@ public final class DefineShape3 implements DefineTag {
         shape = object.shape.copy();
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public int getIdentifier() {
         return identifier;
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public void setIdentifier(final int uid) {
-        if ((uid < 1) || (uid > 65535)) {
-             throw new IllegalArgumentRangeException(1, 65536, uid);
+        if ((uid < SWF.MIN_IDENTIFIER) || (uid > SWF.MAX_IDENTIFIER)) {
+            throw new IllegalArgumentRangeException(
+                    SWF.MIN_IDENTIFIER, SWF.MAX_IDENTIFIER, uid);
         }
         identifier = uid;
     }
@@ -334,7 +333,7 @@ public final class DefineShape3 implements DefineTag {
         shape = aShape;
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public DefineShape3 copy() {
         return new DefineShape3(this);
     }
@@ -395,14 +394,8 @@ public final class DefineShape3 implements DefineTag {
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         final int start = coder.getPointer();
-
-        if (length >= 63) {
-            coder.writeWord((MovieTypes.DEFINE_SHAPE_3 << 6) | 0x3F, 2);
-            coder.writeWord(length, 4);
-        } else {
-            coder.writeWord((MovieTypes.DEFINE_SHAPE_3 << 6) | length, 2);
-        }
-        final int end = coder.getPointer() + (length << 3);
+        coder.writeHeader(MovieTypes.DEFINE_SHAPE_3, length);
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
         coder.writeWord(identifier, 2);
         final Map<Integer, Integer> vars = context.getVariables();
@@ -444,8 +437,9 @@ public final class DefineShape3 implements DefineTag {
         vars.remove(Context.TRANSPARENT);
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 }

@@ -30,26 +30,22 @@
  */
 package com.flagstone.transform;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.junit.Test;
 
-import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.SWFDecoder;
-import com.flagstone.transform.coder.SWFEncoder;
 
 public final class ScenesAndLabelsTest {
 
-    private static Map<Integer, String> scenes = new LinkedHashMap<Integer, String>();
+    private static Map<Integer, String> scenes =
+        new LinkedHashMap<Integer, String>();
 
-    private static Map<Integer, String> labels = new LinkedHashMap<Integer, String>();
+    private static Map<Integer, String> labels =
+        new LinkedHashMap<Integer, String>();
 
     static {
         scenes.put(1, "A");

@@ -33,7 +33,6 @@ package com.flagstone.transform.shape;
 
 import java.util.Arrays;
 
-
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -45,7 +44,7 @@ public final class ShapeData implements ShapeRecord {
 
     private final transient byte[] data;
 
-    /** TODO(method). */
+
     public ShapeData(final byte[] bytes) {
         if (bytes == null) {
             throw new IllegalArgumentException();
@@ -72,7 +71,7 @@ public final class ShapeData implements ShapeRecord {
         return Arrays.copyOf(data, data.length);
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public ShapeData copy() {
         return new ShapeData(this);
     }

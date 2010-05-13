@@ -42,21 +42,21 @@ import com.flagstone.transform.coder.ImageTag;
 /** TODO(class). */
 public interface ImageDecoder {
 
-    /** TODO(method). */
+
     void read(File file) throws IOException, DataFormatException;
 
-    /** TODO(method). */
+
     void read(URL url) throws IOException, DataFormatException;
 
-    /** TODO(method). */
-    void read(InputStream stream, int size) throws IOException, DataFormatException;
 
-    /** TODO(method). */
+    void read(InputStream stream, int size)
+        throws IOException, DataFormatException;
+
     int getWidth();
-    /** TODO(method). */
+
     int getHeight();
-    /** TODO(method). */
+
     byte[] getImage();
-    /** TODO(method). */
+
     ImageTag defineImage(int identifier);
 }

@@ -35,7 +35,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
@@ -46,15 +45,12 @@ import com.flagstone.transform.coder.SWFEncoder;
 /**
  * Shape is a container class for the shape objects (Line, Curve and ShapeStyle
  * objects) that describe how a particular shape is drawn.
- * 
+ *
  * <p>
  * Shapes are used in shape and font definitions. The Shape class is used to
  * simplify the design of these classes and provides no added functionality
  * other than acting as a container class.
  * </p>
- * 
- * @see DefineShape
- * @see DefineFont
  */
 // TODO(class)
 public final class Shape implements SWFEncodeable {
@@ -67,15 +63,15 @@ public final class Shape implements SWFEncodeable {
     /**
      * Creates and initialises a Shape object using values encoded in the Flash
      * binary format.
-     * 
+     *
      * @param coder
      *            an SWFDecoder object that contains the encoded Flash data.
-     * 
+     *
      * @param context
      *            a Context object used to manage the decoders for different
      *            type of object and to pass information on how objects are
      *            decoded.
-     * 
+     *
      * @throws CoderException
      *             if an error occurs while decoding the data.
      */
@@ -106,9 +102,9 @@ public final class Shape implements SWFEncodeable {
                     }
                 } else {
                     tag = vars.get(Context.TYPE);
-                    if (tag == MovieTypes.DEFINE_SHAPE_4 ||
-                        tag == MovieTypes.DEFINE_MORPH_SHAPE_2) {
-                        shape = new ShapeStyle2(coder, context);                        
+                    if (tag == MovieTypes.DEFINE_SHAPE_4
+                        || tag == MovieTypes.DEFINE_MORPH_SHAPE_2) {
+                        shape = new ShapeStyle2(coder, context);
                     } else {
                         shape = new ShapeStyle(coder, context);
                     }
@@ -120,7 +116,7 @@ public final class Shape implements SWFEncodeable {
         coder.alignToByte();
     }
 
-    /** TODO(method). */
+
     public Shape() {
         objects = new ArrayList<ShapeRecord>();
     }
@@ -128,7 +124,7 @@ public final class Shape implements SWFEncodeable {
     /**
      * Creates a Shape object, specifying the Objects that describe how the
      * shape is drawn.
-     * 
+     *
      * @param anArray
      *            the array of shape records. Must not be null.
      */
@@ -139,7 +135,7 @@ public final class Shape implements SWFEncodeable {
     /**
      * Creates and initialises a Shape object using the values copied from
      * another Shape object.
-     * 
+     *
      * @param object
      *            a Shape object from which the values will be copied.
      */
@@ -153,7 +149,7 @@ public final class Shape implements SWFEncodeable {
 
     /**
      * Adds the object to the array of shape records.
-     * 
+     *
      * @param anObject
      *            an instance of ShapeStyle, Line or Curve. Must not be null.
      */
@@ -174,7 +170,7 @@ public final class Shape implements SWFEncodeable {
 
     /**
      * Sets the array of shape records.
-     * 
+     *
      * @param anArray
      *            the array of shape records. Must not be null.
      */
@@ -185,7 +181,7 @@ public final class Shape implements SWFEncodeable {
         objects = anArray;
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public Shape copy() {
         return new Shape(this);
     }

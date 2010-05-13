@@ -33,6 +33,8 @@ package com.flagstone.transform.text;
 
 import java.util.Map;
 
+import com.flagstone.transform.SWF;
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.DefineTag;
@@ -124,7 +126,7 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  *
  * <tr>
  * <td valign="top">alignment</td>
- * <td>Whether the text in the field is left-aligned, right-aligned, centred.</td>
+ * <td>The text in the field is left-aligned, right-aligned, centred.</td>
  * </tr>
  * <tr>
  * <td valign="top">leftMargin</td>
@@ -212,24 +214,24 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  * <tr>
  * <td valign="top" nowrap>&lt;li&gt;&lt;/li&gt;</td>
  * <td>Display bulleted paragraph. Strictly speaking this is not an HTML list.
- * The &lt;ul&gt; tag is not required and no other list format is supported.</td>
+ * The &lt;ul&gt; tag is not required and no list formats are supported.</td>
  * </tr>
  *
  * </table>
  *
  */
 //TODO(class)
-@SuppressWarnings({"PMD.TooManyFields","PMD.TooManyMethods"})
+@SuppressWarnings({"PMD.TooManyFields", "PMD.TooManyMethods" })
 public final class DefineTextField implements DefineTag {
-    /** TODO(method). */
+
     public enum Align {
-        /** Defines that the text displayed in a text field is left aligned. */
+        /** The text displayed in a text field is left aligned. */
         LEFT,
-        /** Defines that the text displayed in a text field is right aligned. */
+        /** The text displayed in a text field is right aligned. */
         RIGHT,
-        /** Defines that the text displayed in a text field is centre aligned. */
+        /** The text displayed in a text field is centre aligned. */
         CENTER,
-        /** Defines that the text displayed in a text field is justified. */
+        /** The text displayed in a text field is justified. */
         JUSTIFY;
     }
 
@@ -280,14 +282,10 @@ public final class DefineTextField implements DefineTag {
     public DefineTextField(final SWFDecoder coder, final Context context)
             throws CoderException {
         final int start = coder.getPointer();
-        length = coder.readWord(2, false) & 0x3F;
+        length = coder.readHeader();
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
-        if (length == 0x3F) {
-            length = coder.readWord(4, false);
-        }
-        final int end = coder.getPointer() + (length << 3);
-
-        identifier = coder.readWord(2, true);
+        identifier = coder.readUI16();
         final Map<Integer, Integer> vars = context.getVariables();
         vars.put(Context.TRANSPARENT, 1);
 
@@ -311,12 +309,12 @@ public final class DefineTextField implements DefineTag {
         embedded = coder.readBits(1, false) != 0;
 
         if (containsFont) {
-            fontIdentifier = coder.readWord(2, false);
+            fontIdentifier = coder.readUI16();
 
             if (containsClass) {
                 fontClass = coder.readString();
             }
-            fontHeight = coder.readWord(2, false);
+            fontHeight = coder.readUI16();
         }
 
         if (containsColor) {
@@ -324,14 +322,14 @@ public final class DefineTextField implements DefineTag {
         }
 
         if (containsMaxLength) {
-            maxLength = coder.readWord(2, false);
+            maxLength = coder.readUI16();
         }
 
         if (containsLayout) {
             alignment = coder.readByte();
-            leftMargin = coder.readWord(2, false);
-            rightMargin = coder.readWord(2, false);
-            indent = coder.readWord(2, false);
+            leftMargin = coder.readUI16();
+            rightMargin = coder.readUI16();
+            indent = coder.readUI16();
             leading = coder.readWord(2, true);
         }
 
@@ -344,8 +342,9 @@ public final class DefineTextField implements DefineTag {
         vars.remove(Context.TRANSPARENT);
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 
@@ -392,15 +391,16 @@ public final class DefineTextField implements DefineTag {
         initialText = object.initialText;
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public int getIdentifier() {
         return identifier;
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public void setIdentifier(final int uid) {
-        if ((uid < 1) || (uid > 65535)) {
-             throw new IllegalArgumentRangeException(1, 65536, uid);
+        if ((uid < SWF.MIN_IDENTIFIER) || (uid > SWF.MAX_IDENTIFIER)) {
+            throw new IllegalArgumentRangeException(
+                    SWF.MIN_IDENTIFIER, SWF.MAX_IDENTIFIER, uid);
         }
         identifier = uid;
     }
@@ -513,7 +513,7 @@ public final class DefineTextField implements DefineTag {
         return fontIdentifier;
     }
 
-    /** TODO(method). */
+
     public String getFontClass() {
         return fontClass;
     }
@@ -730,7 +730,7 @@ public final class DefineTextField implements DefineTag {
         return this;
     }
 
-    /** TODO(method). */
+
     public DefineTextField setFontClass(final String name) {
         fontClass = name;
         fontIdentifier = 0;
@@ -861,8 +861,9 @@ public final class DefineTextField implements DefineTag {
      *            the value for the leading. Must be in the range -32768..32767.
      */
     public DefineTextField setLeading(final Integer aNumber) {
-        if ((aNumber != null) && ((aNumber < -32768) || (aNumber > 32767))) {
-            throw new IllegalArgumentRangeException(-32768, 32768, aNumber);
+        if ((aNumber < SWF.MIN_LEADING) || (aNumber > SWF.MAX_LEADING)) {
+            throw new IllegalArgumentRangeException(
+                    SWF.MIN_LEADING, SWF.MAX_LEADING, aNumber);
         }
         leading = aNumber;
         return this;
@@ -891,9 +892,7 @@ public final class DefineTextField implements DefineTag {
         return this;
     }
 
-    /**
-     * Creates and returns a deep copy of this object.
-     */
+    /** {@inheritDoc} */
     public DefineTextField copy() {
         return new DefineTextField(this);
     }
@@ -957,14 +956,8 @@ public final class DefineTextField implements DefineTag {
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         final int start = coder.getPointer();
-
-        if (length >= 63) {
-            coder.writeWord((MovieTypes.DEFINE_TEXT_FIELD << 6) | 0x3F, 2);
-            coder.writeWord(length, 4);
-        } else {
-            coder.writeWord((MovieTypes.DEFINE_TEXT_FIELD << 6) | length, 2);
-        }
-        final int end = coder.getPointer() + (length << 3);
+        coder.writeHeader(MovieTypes.DEFINE_TEXT_FIELD, length);
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
         coder.writeWord(identifier, 2);
         final Map<Integer, Integer> vars = context.getVariables();
@@ -1020,8 +1013,9 @@ public final class DefineTextField implements DefineTag {
         vars.remove(Context.TRANSPARENT);
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 

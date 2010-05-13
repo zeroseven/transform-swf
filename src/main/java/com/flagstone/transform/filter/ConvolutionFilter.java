@@ -31,6 +31,7 @@
 
 package com.flagstone.transform.filter;
 
+import com.flagstone.transform.Constants;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -48,61 +49,61 @@ public final class ConvolutionFilter implements Filter {
         private transient Color color;
         private transient boolean clamp;
         private transient boolean alpha;
-        
+
         private transient int rows;
         private transient int cols;
-        
-        /** TODO(method). */
-        public Builder setMatrix(final float[][] matrix) {
-            rows = matrix.length;
-            cols = matrix[0].length;
-            this.matrix = new float[rows][cols];
+
+
+        public Builder setMatrix(final float[][] aMatrix) {
+            rows = aMatrix.length;
+            cols = aMatrix[0].length;
+            matrix = new float[rows][cols];
             for (int i = 0; i < rows; i++) {
                 for (int j = 0; j < cols; j++) {
-                    this.matrix[i][j] = matrix[i][j];
+                    matrix[i][j] = aMatrix[i][j];
                 }
             }
             return this;
         }
-        
-        /** TODO(method). */
+
+
         public Builder setDivisor(final float value) {
             divisor = value;
             return this;
         }
-        
-        /** TODO(method). */
+
+
         public Builder setBias(final float value) {
             bias = value;
             return this;
         }
-        
-        /** TODO(method). */
-        public Builder setColor(final Color color) {
-            this.color = color;
+
+
+        public Builder setColor(final Color aColor) {
+            color = aColor;
             return this;
         }
-        
-        /** TODO(method). */
-        public Builder setClamp(final boolean clamp) {
-            this.clamp = clamp;
+
+
+        public Builder setClamp(final boolean flag) {
+            clamp = flag;
             return this;
         }
-        
-        /** TODO(method). */
-        public Builder setAlpha(final boolean alpha) {
-            this.alpha = alpha;
+
+
+        public Builder setAlpha(final boolean level) {
+            alpha = level;
             return this;
         }
-        
-        /** TODO(method). */
+
+
         public ConvolutionFilter build() {
             return new ConvolutionFilter(this);
         }
     }
 
-    private static final String FORMAT = "ConvolutionFilter: { matrix=%s; "
-            + "divisor=%d; bias=%d; color=%s; clamp=%s; alpha=%s }";
+    private static final String FORMAT = "ConvolutionFilter: { matrix=%s;"
+            + " divisor=%d; bias=%d; color=%s; clamp=%s; alpha=%s }";
 
     private final transient float[][] matrix;
     private final transient float divisor;
@@ -113,7 +114,7 @@ public final class ConvolutionFilter implements Filter {
 
     private transient int rows;
     private transient int cols;
-    
+
     public ConvolutionFilter(final Builder builder) {
         matrix = builder.matrix;
         divisor = builder.divisor;
@@ -157,32 +158,32 @@ public final class ConvolutionFilter implements Filter {
         alpha = coder.readBits(1, false) != 0;
     }
 
-    /** TODO(method). */
+
     public float getDivisor() {
         return divisor;
     }
 
-    /** TODO(method). */
+
     public float getBias() {
         return divisor;
     }
 
-    /** TODO(method). */
+
     public float[][] getMatrix() {
         return matrix.clone();
     }
 
-    /** TODO(method). */
+
     public Color getColor() {
         return color;
     }
 
-    /** TODO(method). */
+
     public boolean isClamp() {
         return clamp;
     }
 
-    /** TODO(method). */
+
     public boolean isAlpha() {
         return alpha;
     }
@@ -216,11 +217,11 @@ public final class ConvolutionFilter implements Filter {
 
     @Override
     public int hashCode() {
-        return ((((matrix.hashCode() * 31
-                + Float.floatToIntBits(divisor)) * 31
-                + Float.floatToIntBits(bias)) * 31
-                + color.hashCode()) * 31
-                + Boolean.valueOf(clamp).hashCode())* 31
+        return ((((matrix.hashCode() * Constants.PRIME
+                + Float.floatToIntBits(divisor)) * Constants.PRIME
+                + Float.floatToIntBits(bias)) * Constants.PRIME
+                + color.hashCode()) * Constants.PRIME
+                + Boolean.valueOf(clamp).hashCode()) * Constants.PRIME
                 + Boolean.valueOf(alpha).hashCode();
     }
 

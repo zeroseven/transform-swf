@@ -88,7 +88,7 @@ public final class Jump implements Action {
      */
     public Jump(final SWFDecoder coder) throws CoderException {
         coder.readByte();
-        coder.readWord(2, false);
+        coder.readUI16();
         offset = coder.readWord(2, true);
     }
 

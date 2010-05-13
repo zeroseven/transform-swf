@@ -31,7 +31,6 @@
 
 package com.flagstone.transform;
 
-import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTag;
@@ -84,9 +83,8 @@ public final class Background implements MovieTag {
      */
     public Background(final SWFDecoder coder, final Context context)
             throws CoderException {
-        if ((coder.readWord(2, false) & SWFDecoder.MASK_LENGTH)
-                > SWFDecoder.MAX_LENGTH) {
-            coder.readWord(Coder.BYTES_PER_WORD, false);
+        if ((coder.readUI16() & SWF.TAG_LENGTH_FIELD) == SWF.IS_EXTENDED) {
+            coder.readUI32();
         }
         color = new Color(coder, context);
     }
@@ -154,9 +152,7 @@ public final class Background implements MovieTag {
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
-        coder.writeWord((MovieTypes.SET_BACKGROUND_COLOR
-                << SWFEncoder.LENGTH_BITS)
-                | Color.RGB, 2);
+        coder.writeHeader(MovieTypes.SET_BACKGROUND_COLOR, Color.RGB);
         color.encode(coder, context);
     }
 }

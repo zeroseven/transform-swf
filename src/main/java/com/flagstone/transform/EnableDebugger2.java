@@ -37,7 +37,6 @@ import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.exception.StringSizeException;
 
 /**
  * EnableDebugger2 is an updated version or the EnableDebugger instruction which
@@ -58,7 +57,7 @@ import com.flagstone.transform.exception.StringSizeException;
  * @see EnableDebugger
  */
 public final class EnableDebugger2 implements MovieTag {
-    
+
     private static final String FORMAT = "EnableDebugger2: { password=%s }";
 
     private String password;
@@ -76,25 +75,20 @@ public final class EnableDebugger2 implements MovieTag {
      *             if an error occurs while decoding the data.
      */
     public EnableDebugger2(final SWFDecoder coder) throws CoderException {
-        length = coder.readWord(2, false) & 0x3F;
-
-        if (length == 0x3F) {
-            length = coder.readWord(4, false);
-        }
-
-        coder.readWord(2, false);
+        length = coder.readHeader();
+        coder.readUI16();
         password = coder.readString();
     }
 
     /**
      * Creates a EnableDebugger2 object with an MD5 encrypted password.
      *
-     * @param password
+     * @param pass
      *            the string defining the password. The string must not be empty
      *            or null.
      */
-    public EnableDebugger2(final String password) {
-        setPassword(password);
+    public EnableDebugger2(final String pass) {
+        setPassword(pass);
     }
 
     /**
@@ -124,11 +118,8 @@ public final class EnableDebugger2 implements MovieTag {
      *            or null.
      */
     public void setPassword(final String aString) {
-        if (aString == null) {
+        if (aString == null || aString.length() == 0) {
             throw new IllegalArgumentException();
-        }
-        if (aString.length() == 0) {
-            throw new StringSizeException(0, Integer.MAX_VALUE, 0);
         }
         password = aString;
     }
@@ -154,13 +145,7 @@ public final class EnableDebugger2 implements MovieTag {
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
-        if (length > 62) {
-            coder.writeWord((MovieTypes.ENABLE_DEBUGGER_2 << 6) | 0x3F, 2);
-            coder.writeWord(length, 4);
-        } else {
-            coder.writeWord((MovieTypes.ENABLE_DEBUGGER_2 << 6) | length, 2);
-        }
-
+        coder.writeHeader(MovieTypes.ENABLE_DEBUGGER_2, length);
         coder.writeWord(0, 2);
         coder.writeString(password);
     }

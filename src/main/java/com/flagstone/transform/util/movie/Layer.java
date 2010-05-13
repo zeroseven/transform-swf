@@ -148,9 +148,9 @@ public final class Layer {
      *         can then be added to the movie.
      */
     public static List<Frame> merge(final List<Layer> layers) {
-        
+
         int lastFrame = 0;
-        
+
         for (Layer layer : layers) {
             for (Frame frame : layer.getFrames()) {
                 if (frame.getNumber() > lastFrame) {
@@ -158,23 +158,23 @@ public final class Layer {
                 }
             }
         }
-         
+
         final ArrayList<Frame> merged = new ArrayList<Frame>(lastFrame);
-        
-        for (int i=1; i<=lastFrame; i++) {
+
+        for (int i = 1; i <= lastFrame; i++) {
             merged.add(new Frame(i));
         }
-        
+
         Frame selected;
-        
+
         for (Layer layer : layers) {
             for (Frame frame : layer.getFrames()) {
-                selected = merged.get(frame.getNumber()-1);
-                
+                selected = merged.get(frame.getNumber() - 1);
+
                 selected.setActions(frame.getActions());
                 selected.setCommands(frame.getCommands());
                 selected.setDefinitions(frame.getDefinitions());
-                
+
                 if (frame.getLabel() != null) {
                     selected.setLabel(frame.getLabel());
                 }

@@ -44,38 +44,38 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 public final class WaitForFrameTest {
 
-    private static final transient int type = ActionTypes.WAIT_FOR_FRAME;
-    private static final transient int frame = 1;
-    private static final transient int count = 2;
+    private static final transient int TYPE = ActionTypes.WAIT_FOR_FRAME;
+    private static final transient int FRAME = 1;
+    private static final transient int COUNT = 2;
 
     private transient WaitForFrame fixture;
 
-    private final transient byte[] encoded = new byte[] { (byte) type, 0x03,
+    private final transient byte[] encoded = new byte[] {(byte) TYPE, 0x03,
             0x00, 0x01, 0x00, 0x02 };
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForFrameNumberWithLowerBound() {
-        fixture = new WaitForFrame(0, count);
+        fixture = new WaitForFrame(0, COUNT);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForFrameNumberWithUpperBound() {
-        fixture = new WaitForFrame(65536, count);
+        fixture = new WaitForFrame(65536, COUNT);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForActionCountWithLowerBound() {
-        fixture = new WaitForFrame(frame, -1);
+        fixture = new WaitForFrame(FRAME, -1);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForActionCountWithUpperBound() {
-        fixture = new WaitForFrame(frame, 256);
+        fixture = new WaitForFrame(FRAME, 256);
     }
 
     @Test
     public void checkCopy() {
-        fixture = new WaitForFrame(frame, count);
+        fixture = new WaitForFrame(FRAME, COUNT);
         final WaitForFrame copy = fixture.copy();
 
         assertNotSame(fixture, copy);
@@ -87,7 +87,7 @@ public final class WaitForFrameTest {
         final SWFEncoder encoder = new SWFEncoder(encoded.length);
         final Context context = new Context();
 
-        fixture = new WaitForFrame(frame, count);
+        fixture = new WaitForFrame(FRAME, COUNT);
         assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
         fixture.encode(encoder, context);
 
@@ -102,7 +102,7 @@ public final class WaitForFrameTest {
         fixture = new WaitForFrame(decoder);
 
         assertTrue(decoder.eof());
-        assertEquals(frame, fixture.getFrameNumber());
-        assertEquals(count, fixture.getActionCount());
+        assertEquals(FRAME, fixture.getFrameNumber());
+        assertEquals(COUNT, fixture.getActionCount());
     }
 }

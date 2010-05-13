@@ -31,6 +31,8 @@
 
 package com.flagstone.transform.video;
 
+import com.flagstone.transform.SWF;
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.DefineTag;
@@ -88,17 +90,13 @@ public final class DefineVideo implements DefineTag {
     public DefineVideo(final SWFDecoder coder) throws CoderException {
 
         final int start = coder.getPointer();
-        length = coder.readWord(2, false) & 0x3F;
-
-        if (length == 0x3F) {
-            length = coder.readWord(4, false);
-        }
-        final int end = coder.getPointer() + (length << 3);
+        length = coder.readHeader();
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
         identifier = coder.readWord(2, true);
-        frameCount = coder.readWord(2, false);
-        width = coder.readWord(2, false);
-        height = coder.readWord(2, false);
+        frameCount = coder.readUI16();
+        width = coder.readUI16();
+        height = coder.readUI16();
 
         coder.readBits(5, false);
 
@@ -107,8 +105,9 @@ public final class DefineVideo implements DefineTag {
         codec = coder.readByte();
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 
@@ -120,33 +119,33 @@ public final class DefineVideo implements DefineTag {
      *            1..65535.
      * @param count
      *            the number of video frames. Must be in the range 0..65535.
-     * @param width
+     * @param frameWidth
      *            the width of each frame in pixels. Must be in the range
      *            0..65535.
-     * @param height
+     * @param frameHeight
      *            the height of each frame in pixels. Must be in the range
      *            0..65535.
-     * @param deblocking
+     * @param deblock
      *            controls whether the Flash Player's deblocking filter is used,
      *            either Off, On or UseVideo to allow the video data to specify
      *            whether the deblocking filter is used.
      * @param smoothing
      *            turns smoothing on or off to improve the quality of the
      *            displayed image.
-     * @param codec
+     * @param videoCodec
      *            the format of the video data. Flash 6 supports H263. Support
      *            for Macromedia's ScreenVideo format was added in Flash 7.
      */
-    public DefineVideo(final int uid, final int count, final int width,
-            final int height, final Deblocking deblocking,
-            final boolean smoothing, final VideoFormat codec) {
+    public DefineVideo(final int uid, final int count, final int frameWidth,
+            final int frameHeight, final Deblocking deblock,
+            final boolean smoothing, final VideoFormat videoCodec) {
         setIdentifier(uid);
         setFrameCount(count);
-        setWidth(width);
-        setHeight(height);
-        setDeblocking(deblocking);
+        setWidth(frameWidth);
+        setHeight(frameHeight);
+        setDeblocking(deblock);
         setSmoothed(smoothing);
-        setCodec(codec);
+        setCodec(videoCodec);
     }
 
     /**
@@ -167,15 +166,16 @@ public final class DefineVideo implements DefineTag {
         codec = object.codec;
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public int getIdentifier() {
         return identifier;
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public void setIdentifier(final int uid) {
-        if ((uid < 1) || (uid > 65535)) {
-             throw new IllegalArgumentRangeException(1, 65536, uid);
+        if ((uid < SWF.MIN_IDENTIFIER) || (uid > SWF.MAX_IDENTIFIER)) {
+            throw new IllegalArgumentRangeException(
+                    SWF.MIN_IDENTIFIER, SWF.MAX_IDENTIFIER, uid);
         }
         identifier = uid;
     }
@@ -237,7 +237,7 @@ public final class DefineVideo implements DefineTag {
         if ((size < 0) || (size > 65535)) {
             throw new IllegalArgumentRangeException(0, 65535, size);
         }
-        this.height = size;
+        height = size;
     }
 
     /**
@@ -337,10 +337,10 @@ public final class DefineVideo implements DefineTag {
     public void setCodec(final VideoFormat format) {
         switch (format) {
         case H263:
-            this.codec = 2;
+            codec = 2;
             break;
         case SCREEN:
-            this.codec = 3;
+            codec = 3;
             break;
         default:
             throw new IllegalArgumentException();
@@ -372,14 +372,8 @@ public final class DefineVideo implements DefineTag {
             throws CoderException {
 
         final int start = coder.getPointer();
-
-        if (length >= 63) {
-            coder.writeWord((MovieTypes.DEFINE_VIDEO << 6) | 0x3F, 2);
-            coder.writeWord(length, 4);
-        } else {
-            coder.writeWord((MovieTypes.DEFINE_VIDEO << 6) | length, 2);
-        }
-        final int end = coder.getPointer() + (length << 3);
+        coder.writeHeader(MovieTypes.DEFINE_VIDEO, length);
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
         coder.writeWord(identifier, 2);
         coder.writeWord(frameCount, 2);
@@ -391,8 +385,9 @@ public final class DefineVideo implements DefineTag {
         coder.writeByte(codec);
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 }

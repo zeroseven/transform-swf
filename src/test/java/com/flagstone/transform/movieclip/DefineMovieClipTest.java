@@ -39,6 +39,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import com.flagstone.transform.ShowFrame;
@@ -52,21 +53,22 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 public final class DefineMovieClipTest {
 
-    private static final int identifier = 1;
-    private static final List<MovieTag> list = new ArrayList<MovieTag>();
-
-    static {
-        list.add(ShowFrame.getInstance());
-    }
+    private final int identifier = 1;
+    private final List<MovieTag> list = new ArrayList<MovieTag>();
 
     private transient DefineMovieClip fixture;
 
-    private final transient byte[] encoded = new byte[] { (byte) 0xC8, 0x09,
+    private final transient byte[] encoded = new byte[] {(byte) 0xC8, 0x09,
             0x01, 0x00, 0x01, 0x00, 0x40, 0x00, 0x00, 0x00 };
 
-    private final transient byte[] extended = new byte[] { (byte) 0xFF, 0x09,
+    private final transient byte[] extended = new byte[] {(byte) 0xFF, 0x09,
             0x08, 0x00, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00, 0x40, 0x00, 0x00,
             0x00 };
+
+    @Before
+    public void setup() {
+        list.add(ShowFrame.getInstance());
+    }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForIdentifierWithLowerBound() {

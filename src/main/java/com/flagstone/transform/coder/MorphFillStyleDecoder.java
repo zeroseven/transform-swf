@@ -45,12 +45,12 @@ import com.flagstone.transform.fillstyle.MorphSolidFill;
 //TODO(class)
 public final class MorphFillStyleDecoder implements SWFFactory<FillStyle> {
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public SWFFactory<FillStyle> copy() {
         return new MorphFillStyleDecoder();
     }
 
-    /** TODO(method). */
+
     public FillStyle getObject(final SWFDecoder coder, final Context context)
             throws CoderException {
 

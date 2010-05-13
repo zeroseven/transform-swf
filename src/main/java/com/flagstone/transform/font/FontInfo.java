@@ -34,7 +34,8 @@ package com.flagstone.transform.font;
 import java.util.ArrayList;
 import java.util.List;
 
-
+import com.flagstone.transform.SWF;
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTag;
@@ -108,14 +109,10 @@ public final class FontInfo implements MovieTag {
         codes = new ArrayList<Integer>();
 
         final int start = coder.getPointer();
-        length = coder.readWord(2, false) & 0x3F;
+        length = coder.readHeader();
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
-        if (length == 0x3F) {
-            length = coder.readWord(4, false);
-        }
-        final int end = coder.getPointer() + (length << 3);
-
-        identifier = coder.readWord(2, false);
+        identifier = coder.readUI16();
         final int nameLength = coder.readByte();
         name = coder.readString(nameLength, coder.getEncoding());
 
@@ -140,8 +137,9 @@ public final class FontInfo implements MovieTag {
         }
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 
@@ -152,21 +150,21 @@ public final class FontInfo implements MovieTag {
      * @param uid
      *            the unique identifier of the DefineFont that contains the
      *            glyphs for the font.
-     * @param name
+     * @param fontName
      *            the name assigned to the font, identifying the font family.
-     * @param bold
+     * @param isBold
      *            indicates whether the font weight is bold (true) or normal
      *            (false).
-     * @param italic
+     * @param isItalic
      *            indicates whether the font style is italic (true) or plain
      *            (false).
      */
-    public FontInfo(final int uid, final String name, final boolean bold,
-            final boolean italic) {
+    public FontInfo(final int uid, final String fontName, final boolean isBold,
+            final boolean isItalic) {
         setIdentifier(uid);
-        setName(name);
-        setItalic(italic);
-        setBold(bold);
+        setName(fontName);
+        setItalic(isItalic);
+        setBold(isBold);
         small = false;
         encoding = 0;
         codes = new ArrayList<Integer>();
@@ -275,8 +273,9 @@ public final class FontInfo implements MovieTag {
      *            glyphs for the font. Must be in the range 1..65535.
      */
     public void setIdentifier(final int uid) {
-        if ((uid < 1) || (uid > 65535)) {
-             throw new IllegalArgumentRangeException(1, 65536, uid);
+        if ((uid < SWF.MIN_IDENTIFIER) || (uid > SWF.MAX_IDENTIFIER)) {
+            throw new IllegalArgumentRangeException(
+                    SWF.MIN_IDENTIFIER, SWF.MAX_IDENTIFIER, uid);
         }
         identifier = uid;
     }
@@ -373,7 +372,7 @@ public final class FontInfo implements MovieTag {
         codes = anArray;
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public FontInfo copy() {
         return new FontInfo(this);
     }
@@ -408,19 +407,12 @@ public final class FontInfo implements MovieTag {
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         final int start = coder.getPointer();
-
-        if (length >= 63) {
-            coder.writeWord((MovieTypes.FONT_INFO << 6) | 0x3F, 2);
-            coder.writeWord(length, 4);
-        } else {
-            coder.writeWord((MovieTypes.FONT_INFO << 6) | length, 2);
-        }
-        final int end = coder.getPointer() + (length << 3);
+        coder.writeHeader(MovieTypes.FONT_INFO, length);
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
         coder.writeWord(identifier, 2);
-        coder.writeWord(coder.strlen(name) - 1, 1);
+        coder.writeWord(coder.strlen(name), 1);
         coder.writeString(name);
-        coder.adjustPointer(-8);
         coder.writeBits(0, 2);
         coder.writeBool(small);
         coder.writeBits(encoding, 2);
@@ -433,8 +425,9 @@ public final class FontInfo implements MovieTag {
         }
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 }

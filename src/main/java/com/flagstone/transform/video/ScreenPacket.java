@@ -48,7 +48,7 @@ public final class ScreenPacket implements Cloneable {
     private int imageHeight;
     private List<ImageBlock> imageBlocks;
 
-    /** TODO(method). */
+
     public ScreenPacket(final byte[] data) {
         final SWFDecoder coder = new SWFDecoder(data);
 
@@ -92,7 +92,7 @@ public final class ScreenPacket implements Cloneable {
         }
     }
 
-    /** TODO(method). */
+
     public ScreenPacket() {
         imageBlocks = new ArrayList<ImageBlock>();
     }
@@ -102,25 +102,25 @@ public final class ScreenPacket implements Cloneable {
      *
      * @param key
      *            indicates whether the packet contains a key frame.
-     * @param imageWidth
+     * @param imgWidth
      *            the width of the frame.
-     * @param imageHeight
+     * @param imgHeight
      *            the height of the frame.
-     * @param blockWidth
+     * @param blkWidth
      *            the width of the blocks that make up the frame.
-     * @param blockHeight
+     * @param blkHeight
      *            the height of the blocks that make up the frame.
      * @param blocks
      *            the array of ImageBlocks that make up the frame.
      */
-    public ScreenPacket(final boolean key, final int imageWidth,
-            final int imageHeight, final int blockWidth, final int blockHeight,
+    public ScreenPacket(final boolean key, final int imgWidth,
+            final int imgHeight, final int blkWidth, final int blkHeight,
             final List<ImageBlock> blocks) {
         setKeyFrame(key);
-        setImageWidth(imageWidth);
-        setImageHeight(imageHeight);
-        setBlockWidth(blockWidth);
-        setBlockHeight(blockHeight);
+        setImageWidth(imgWidth);
+        setImageHeight(imgHeight);
+        setBlockWidth(blkWidth);
+        setBlockHeight(blkHeight);
         setImageBlocks(blocks);
     }
 
@@ -199,7 +199,7 @@ public final class ScreenPacket implements Cloneable {
         return imageHeight;
     }
 
-    /** TODO(method). */
+
     public void setImageHeight(final int height) {
         imageHeight = height;
     }
@@ -256,9 +256,7 @@ public final class ScreenPacket implements Cloneable {
         imageBlocks = new ArrayList<ImageBlock>(blocks);
     }
 
-    /**
-     * Creates and returns a deep copy of this object.
-     */
+    /** {@inheritDoc} */
     public ScreenPacket copy() {
         return new ScreenPacket(this);
     }
@@ -276,7 +274,7 @@ public final class ScreenPacket implements Cloneable {
         return length;
     }
 
-    /** TODO(method). */
+
     public byte[] encode() {
         final SWFEncoder coder = new SWFEncoder(length());
 

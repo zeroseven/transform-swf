@@ -33,6 +33,6 @@ package com.flagstone.transform.util.image;
 
 /** TODO(class). */
 public interface ImageProvider {
-    /** TODO(method). */
+    
     ImageDecoder newDecoder();
 }

@@ -61,11 +61,11 @@ public final class Free implements MovieTag {
      */
     public Free(final SWFDecoder coder) throws CoderException {
 
-        if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
-            coder.readWord(4, false);
+        if ((coder.readUI16() & 0x3F) == 0x3F) {
+            coder.readUI32();
         }
 
-        identifier = coder.readWord(2, false);
+        identifier = coder.readUI16();
     }
 
     /**
@@ -104,8 +104,9 @@ public final class Free implements MovieTag {
      *            range 1..65535.
      */
     public void setIdentifier(final int uid) {
-        if ((uid < 1) || (uid > 65535)) {
-             throw new IllegalArgumentRangeException(1, 65536, uid);
+        if ((uid < SWF.MIN_IDENTIFIER) || (uid > SWF.MAX_IDENTIFIER)) {
+            throw new IllegalArgumentRangeException(
+                    SWF.MIN_IDENTIFIER, SWF.MAX_IDENTIFIER, uid);
         }
         identifier = uid;
     }
@@ -129,7 +130,7 @@ public final class Free implements MovieTag {
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
-        coder.writeWord((MovieTypes.FREE << 6) | 2, 2);
+        coder.writeHeader(MovieTypes.FREE, 2);
         coder.writeWord(identifier, 2);
     }
 }

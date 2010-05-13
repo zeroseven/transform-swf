@@ -46,15 +46,15 @@ import com.flagstone.transform.datatype.CoordTransform;
 
 public final class BitmapFillTest {
 
-    private static final transient boolean tiled = false;
-    private static final transient boolean smoothed = false;
-    private static final transient int identifier = 1;
-    private static final transient CoordTransform transform = CoordTransform
+    private final transient boolean tiled = false;
+    private final transient boolean smoothed = false;
+    private final transient int identifier = 1;
+    private final transient CoordTransform transform = CoordTransform
             .translate(1, 2);
 
     private transient BitmapFill fixture;
 
-    private final transient byte[] encoded = new byte[] { 0x43, 0x01, 0x00,
+    private final transient byte[] encoded = new byte[] {0x43, 0x01, 0x00,
             0x06, 0x50 };
 
     @Test(expected = IllegalArgumentException.class)

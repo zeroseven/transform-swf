@@ -35,7 +35,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-
+import com.flagstone.transform.SWF;
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.DefineTag;
@@ -68,7 +69,8 @@ import com.flagstone.transform.shape.ShapeData;
  */
 //TODO(class)
 public final class DefineFont implements DefineTag {
-    private static final String FORMAT = "DefineFont: { identifier=%d; shapes=%s }";
+    private static final String FORMAT = "DefineFont: { identifier=%d;"
+    		+ " shapes=%s }";
 
     private int identifier;
     private List<Shape> shapes;
@@ -88,25 +90,21 @@ public final class DefineFont implements DefineTag {
      */
     public DefineFont(final SWFDecoder coder) throws CoderException {
         final int start = coder.getPointer();
-        length = coder.readWord(2, false) & 0x3F;
+        length = coder.readHeader();
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
-        if (length == 0x3F) {
-            length = coder.readWord(4, false);
-        }
-        final int end = coder.getPointer() + (length << 3);
-
-        identifier = coder.readWord(2, false);
+        identifier = coder.readUI16();
         shapes = new ArrayList<Shape>();
 
         final int offsetStart = coder.getPointer();
-        final int shapeCount = coder.readWord(2, false) / 2;
+        final int shapeCount = coder.readUI16() / 2;
 
         coder.setPointer(offsetStart);
 
         final int[] offset = new int[shapeCount + 1];
 
         for (int i = 0; i < shapeCount; i++) {
-            offset[i] = coder.readWord(2, false);
+            offset[i] = coder.readUI16();
         }
 
         offset[shapeCount] = length - 2;
@@ -123,8 +121,9 @@ public final class DefineFont implements DefineTag {
         }
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 
@@ -159,15 +158,16 @@ public final class DefineFont implements DefineTag {
         }
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public int getIdentifier() {
         return identifier;
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public void setIdentifier(final int uid) {
-        if ((uid < 0) || (uid > 65535)) {
-             throw new IllegalArgumentRangeException(1, 65536, uid);
+        if ((uid < SWF.MIN_IDENTIFIER) || (uid > SWF.MAX_IDENTIFIER)) {
+            throw new IllegalArgumentRangeException(
+                    SWF.MIN_IDENTIFIER, SWF.MAX_IDENTIFIER, uid);
         }
         identifier = uid;
     }
@@ -208,7 +208,7 @@ public final class DefineFont implements DefineTag {
         shapes = anArray;
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public DefineFont copy() {
         return new DefineFont(this);
     }
@@ -245,14 +245,8 @@ public final class DefineFont implements DefineTag {
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         final int start = coder.getPointer();
-
-        if (length > 62) {
-            coder.writeWord((MovieTypes.DEFINE_FONT << 6) | 0x3F, 2);
-            coder.writeWord(length, 4);
-        } else {
-            coder.writeWord((MovieTypes.DEFINE_FONT << 6) | length, 2);
-        }
-        final int end = coder.getPointer() + (length << 3);
+        coder.writeHeader(MovieTypes.DEFINE_FONT, length);
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
         coder.writeWord(identifier, 2);
 
         final Map<Integer, Integer> vars = context.getVariables();
@@ -287,8 +281,9 @@ public final class DefineFont implements DefineTag {
         vars.put(Context.LINE_SIZE, 0);
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 }

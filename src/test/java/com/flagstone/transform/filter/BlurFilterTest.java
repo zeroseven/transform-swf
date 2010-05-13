@@ -1,5 +1,5 @@
 /*
- * BlurFilterTest.java 
+ * BlurFilterTest.java
  * Transform
  *
  * Copyright (c) 2009-2010 Flagstone Software Ltd. All rights reserved.
@@ -32,7 +32,6 @@
 package com.flagstone.transform.filter;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Ignore;
@@ -47,10 +46,10 @@ public final class BlurFilterTest {
 
     private transient BevelFilter fixture;
 
-    private final transient byte[] encoded = new byte[] { 0x06, 0x01, 0x01,
+    private final transient byte[] encoded = new byte[] {0x06, 0x01, 0x01,
             0x00, 0x02, 0x00, 0x06, 0x50 };
 
-    private final transient byte[] extended = new byte[] { 0x7F, 0x01, 0x06,
+    private final transient byte[] extended = new byte[] {0x7F, 0x01, 0x06,
             0x00, 0x00, 0x00, 0x01, 0x00, 0x02, 0x00, 0x06, 0x50 };
 
     @Test

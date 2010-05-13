@@ -35,7 +35,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-
+import com.flagstone.transform.SWF;
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.DefineTag;
@@ -71,7 +72,7 @@ import com.flagstone.transform.linestyle.MorphLineStyle;
  * start and end shapes.</li>
  * <li>If a gradient fill style is used then the gradient must contain the same
  * number of points in the start and end shape.</li>
- * <li>The start and end shape must contain the same set of ShapeStyle objects.</li>
+ * <li>Start and end shape must contain the same set of ShapeStyle objects.</li>
  * </ul>
  *
  * <p>
@@ -127,20 +128,15 @@ public final class DefineMorphShape implements DefineTag {
     public DefineMorphShape(final SWFDecoder coder, final Context context)
             throws CoderException {
         final int start = coder.getPointer();
-
-        length = coder.readWord(2, false) & 0x3F;
-
-        if (length == 0x3F) {
-            length = coder.readWord(4, false);
-        }
-        final int end = coder.getPointer() + (length << 3);
+        length = coder.readHeader();
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
         final Map<Integer, Integer> vars = context.getVariables();
         vars.put(Context.TRANSPARENT, 1);
         vars.put(Context.ARRAY_EXTENDED, 1);
         vars.put(Context.TYPE, MovieTypes.DEFINE_MORPH_SHAPE);
 
-        identifier = coder.readWord(2, false);
+        identifier = coder.readUI16();
 
         startBounds = new Bounds(coder);
         endBounds = new Bounds(coder);
@@ -148,14 +144,14 @@ public final class DefineMorphShape implements DefineTag {
         lineStyles = new ArrayList<MorphLineStyle>();
 
         // offset to the start of the second shape
-        coder.readWord(4, false);
+        coder.readUI32();
         // final int first = coder.getPointer();
 
         int fillStyleCount = coder.readByte();
 
         if (vars.containsKey(Context.ARRAY_EXTENDED)
                 && (fillStyleCount == 0xFF)) {
-            fillStyleCount = coder.readWord(2, false);
+            fillStyleCount = coder.readUI16();
         }
 
         final SWFFactory<FillStyle> decoder = context.getRegistry()
@@ -180,7 +176,7 @@ public final class DefineMorphShape implements DefineTag {
 
         if (vars.containsKey(Context.ARRAY_EXTENDED)
                 && (lineStyleCount == 0xFF)) {
-            lineStyleCount = coder.readWord(2, false);
+            lineStyleCount = coder.readUI16();
         }
 
         for (int i = 0; i < lineStyleCount; i++) {
@@ -209,8 +205,9 @@ public final class DefineMorphShape implements DefineTag {
             if (delta == -33) {
                 coder.setPointer(end);
             } else {
-                throw new CoderException(getClass().getName(), start >> 3, length,
-                        (coder.getPointer() - end) >> 3);
+                throw new CoderException(getClass().getName(),
+                        start >> Coder.BITS_TO_BYTES, length,
+                        (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
             }
         }
     }
@@ -221,10 +218,10 @@ public final class DefineMorphShape implements DefineTag {
      * @param uid
      *            an unique identifier for this object. Must be in the range
      *            1..65535.
-     * @param startBounds
+     * @param initialBounds
      *            the bounding rectangle enclosing the start shape. Must not be
      *            null.
-     * @param endBounds
+     * @param finalBounds
      *            the bounding rectangle enclosing the end shape. Must not be
      *            null.
      * @param fills
@@ -232,24 +229,24 @@ public final class DefineMorphShape implements DefineTag {
      *            MorphGradientFill objects. Must not be null.
      * @param lines
      *            an array of MorphLineStyle objects. Must not be null.
-     * @param startShape
+     * @param initialShape
      *            the shape at the start of the morphing process. Must not be
      *            null.
-     * @param endShape
+     * @param finalShape
      *            the shape at the end of the morphing process. Must not be
      *            null.
      */
-    public DefineMorphShape(final int uid, final Bounds startBounds,
-            final Bounds endBounds, final List<FillStyle> fills,
-            final List<MorphLineStyle> lines, final Shape startShape,
-            final Shape endShape) {
+    public DefineMorphShape(final int uid, final Bounds initialBounds,
+            final Bounds finalBounds, final List<FillStyle> fills,
+            final List<MorphLineStyle> lines, final Shape initialShape,
+            final Shape finalShape) {
         setIdentifier(uid);
-        setStartBounds(startBounds);
-        setEndBounds(endBounds);
+        setStartBounds(initialBounds);
+        setEndBounds(finalBounds);
         setFillStyles(fills);
         setLineStyles(lines);
-        setStartShape(startShape);
-        setEndShape(endShape);
+        setStartShape(initialShape);
+        setEndShape(finalShape);
     }
 
     /**
@@ -276,15 +273,16 @@ public final class DefineMorphShape implements DefineTag {
         endShape = object.endShape.copy();
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public int getIdentifier() {
         return identifier;
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public void setIdentifier(final int uid) {
-        if ((uid < 1) || (uid > 65535)) {
-             throw new IllegalArgumentRangeException(1, 65536, uid);
+        if ((uid < SWF.MIN_IDENTIFIER) || (uid > SWF.MAX_IDENTIFIER)) {
+            throw new IllegalArgumentRangeException(
+                    SWF.MIN_IDENTIFIER, SWF.MAX_IDENTIFIER, uid);
         }
         identifier = uid;
     }
@@ -454,7 +452,7 @@ public final class DefineMorphShape implements DefineTag {
         endShape = aShape;
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public DefineMorphShape copy() {
         return new DefineMorphShape(this);
     }
@@ -524,14 +522,8 @@ public final class DefineMorphShape implements DefineTag {
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         final int start = coder.getPointer();
-
-        if (length >= 63) {
-            coder.writeWord((MovieTypes.DEFINE_MORPH_SHAPE << 6) | 0x3F, 2);
-            coder.writeWord(length, 4);
-        } else {
-            coder.writeWord((MovieTypes.DEFINE_MORPH_SHAPE << 6) | length, 2);
-        }
-        final int end = coder.getPointer() + (length << 3);
+        coder.writeHeader(MovieTypes.DEFINE_MORPH_SHAPE, length);
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
         coder.writeWord(identifier, 2);
         final Map<Integer, Integer> vars = context.getVariables();
@@ -589,8 +581,9 @@ public final class DefineMorphShape implements DefineTag {
         vars.remove(Context.TRANSPARENT);
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 }

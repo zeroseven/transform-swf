@@ -56,7 +56,8 @@ public final class MorphGradientFillTest {
             2);
     private static transient CoordTransform end = CoordTransform
             .translate(1, 2);
-    private static transient List<MorphGradient> list = new ArrayList<MorphGradient>();
+    private static transient List<MorphGradient> list =
+        new ArrayList<MorphGradient>();
 
     static {
         list.add(new MorphGradient(new Gradient(1, new Color(2, 3, 4, 5)),
@@ -67,7 +68,7 @@ public final class MorphGradientFillTest {
 
     private transient MorphGradientFill fixture;
 
-    private final transient byte[] encoded = new byte[] { 0x10, 0x06, 0x50,
+    private final transient byte[] encoded = new byte[] {0x10, 0x06, 0x50,
             0x06, 0x50, 0x02, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
             0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10, 0x11, 0x12, 0x13,
             0x14 };

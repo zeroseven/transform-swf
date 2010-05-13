@@ -60,10 +60,14 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
     private static final int[] CHANNEL_COUNT = {2, 2, 2, 1};
 
     private static final int[][] BIT_RATES = {
-        {-1, 8, 16, 24, 32, 40, 48, 56, 64, 80, 96, 112, 128, 144, 160, -1}, // MPEG 2.5
-        {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, // Reserved
-        {-1, 8, 16, 24, 32, 40, 48, 56, 64, 80, 96, 112, 128, 144, 160, -1}, // MPEG 2.0
-        {-1, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, -1}, // MPEG 1.0
+     // MPEG 2.5
+        {-1, 8, 16, 24, 32, 40, 48, 56, 64, 80, 96, 112, 128, 144, 160, -1},
+     // Reserved
+        {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
+     // MPEG 2.0
+        {-1, 8, 16, 24, 32, 40, 48, 56, 64, 80, 96, 112, 128, 144, 160, -1},
+     // MPEG 1.0
+        {-1, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, -1},
     };
 
     private static final int[][] SAMPLE_RATES = {
@@ -80,17 +84,17 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
     private transient int sampleSize;
     private transient byte[] sound = null;
 
-    /** TODO(method). */
+
     public SoundDecoder newDecoder() {
         return new MP3Decoder();
     }
 
-    /** TODO(method). */
+
     public void read(final File file) throws IOException, DataFormatException {
         read(new FileInputStream(file), (int) file.length());
     }
 
-    /** TODO(method). */
+
     public void read(final URL url) throws IOException, DataFormatException {
         final URLConnection connection = url.openConnection();
 
@@ -173,7 +177,8 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
         int frameNumber = 0;
 
         while (coder.findBits(0x7FF, 11, 8)) {
-            frameTable[frameNumber][0] = (coder.getPointer() - frameStart + 16) >> 3;
+            frameTable[frameNumber][0] = (coder.getPointer()
+                    - frameStart + 16) >> 3;
 
             coder.adjustPointer(11); // skip start of frame marker
 
@@ -235,7 +240,8 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
         coder.adjustPointer(3);
 
         final int bitRate = BIT_RATES[version][coder.readBits(4, false)];
-        final int samplingRate = SAMPLE_RATES[version][coder.readBits(2, false)];
+        final int samplingRate = SAMPLE_RATES[version]
+                                              [coder.readBits(2, false)];
         final int padding = coder.readBits(1, false);
 
         coder.adjustPointer(-23);
@@ -246,10 +252,11 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
         return frameSize;
     }
 
-    /** TODO(method). */
-    public void read(final InputStream stream, final int size) throws IOException, DataFormatException {
 
-        final byte[] bytes = new byte[(int) size];
+    public void read(final InputStream stream, final int size)
+                    throws IOException, DataFormatException {
+
+        final byte[] bytes = new byte[size];
         final BufferedInputStream buffer = new BufferedInputStream(stream);
 
         buffer.read(bytes);
@@ -392,7 +399,8 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
         coder.adjustPointer(3);
 
         final int bitRate = BIT_RATES[version][coder.readBits(4, false)];
-        final int samplingRate = SAMPLE_RATES[version][coder.readBits(2, false)];
+        final int samplingRate = SAMPLE_RATES[version]
+                                              [coder.readBits(2, false)];
         final int padding = coder.readBits(1, false);
 
         coder.adjustPointer(-23);

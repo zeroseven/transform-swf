@@ -55,15 +55,15 @@ public final class TextTable {
 
     private final transient Map<Character, GlyphIndex> characters;
 
-    /** TODO(method). */
-    public TextTable(final DefineFont2 font, final int size) {
-        
+
+    public TextTable(final DefineFont2 font, final int tableSize) {
+
         characters = new LinkedHashMap<Character, GlyphIndex>();
 
         final List<Integer> codes = font.getCodes();
         final List<Integer> advances = font.getAdvances();
 
-        final float scale = size / 1024.0f;
+        final float scale = tableSize / 1024.0f;
         final int count = codes.size();
 
         ascent = (int) (font.getAscent() * scale);
@@ -85,15 +85,15 @@ public final class TextTable {
      * @return the bounding box that completely encloses the text.
      */
     public Bounds boundsForText(final String text) {
-        
+
         int total = 0;
-        
-        for (int i=0; i<text.length(); i++) {
+
+        for (int i = 0; i < text.length(); i++) {
             total += characters.get(text.charAt(i)).getAdvance();
         }
 
 
-        return new Bounds(0,descent,total,ascent);
+        return new Bounds(0, descent, total, ascent);
     }
 
     /**
@@ -108,7 +108,7 @@ public final class TextTable {
     public List<GlyphIndex> charactersForText(final String text) {
         final List<GlyphIndex> list = new ArrayList<GlyphIndex>(text
                 .length());
-        for (int i=0; i<text.length(); i++) {
+        for (int i = 0; i < text.length(); i++) {
             list.add(characters.get(text.charAt(i)));
         }
 
@@ -199,7 +199,8 @@ public final class TextTable {
 
         int lineNumber = 0;
 
-        for (final Iterator<String> i = lines.iterator(); i.hasNext(); yOffset += lineSpacing, lineNumber++) {
+        for (final Iterator<String> i = lines.iterator(); i.hasNext();
+        yOffset += lineSpacing, lineNumber++) {
             text = i.next();
 
             spans.add(new TextSpan(identifier, size, color, xOffset, yOffset,

@@ -50,18 +50,18 @@ import com.flagstone.transform.util.shape.Canvas;
 public final class AWTDecoder {
 
     private final transient List<Font>fonts;
-    
+
     public AWTDecoder() {
         fonts = new ArrayList<Font>();
     }
 
-    /** TODO(method). */
+
     public void read(final java.awt.Font font)
         throws IOException, DataFormatException {
         decode(font);
     }
 
-    /** TODO(method). */
+
     public List<Font> getFonts() {
         return fonts;
     }
@@ -73,8 +73,9 @@ public final class AWTDecoder {
         java.awt.Font awtFont = aFont.deriveFont(1.0f);
 
         final Font font = new Font();
-        
-        font.setFace(new FontFace(awtFont.getName(), awtFont.isBold(), awtFont.isItalic()));
+
+        font.setFace(new FontFace(awtFont.getName(),
+                awtFont.isBold(), awtFont.isItalic()));
         font.setEncoding(CharacterFormat.UCS2);
 
         // TODO(code) still needed ? final Rectangle2D transform =
@@ -101,7 +102,7 @@ public final class AWTDecoder {
 
         font.setMissingGlyph(missingGlyph);
         font.setNumberOfGlyphs(count);
-        font.setHighestChar((char)65536);
+        font.setHighestChar((char) 65536);
 
         int index = 0;
         int code = 0;
@@ -113,8 +114,8 @@ public final class AWTDecoder {
                 new int[] {missingGlyph});
         java.awt.Shape outline = glyphVector.getGlyphOutline(0);
         int advance = (int) (glyphVector.getGlyphMetrics(0).getAdvance());
-        
-        font.addGlyph((char)missingGlyph, new Glyph(convertShape(outline), 
+
+        font.addGlyph((char) missingGlyph, new Glyph(convertShape(outline),
                 new Bounds(0, 0, 0, 0), advance));
 
         index = 1;
@@ -128,8 +129,11 @@ public final class AWTDecoder {
          * corresponding glyph.
          */
         while ((index < count) && (code < 65536)) {
-            character = awtFont.canDisplay(code) ? (char) code
-                    : (char) missingGlyph;
+            if (awtFont.canDisplay(code)) {
+                character = (char) code;
+            } else {
+                character = (char) missingGlyph;
+            }
 
             glyphVector = awtFont.createGlyphVector(fontContext,
                     new char[] {character});
@@ -137,7 +141,7 @@ public final class AWTDecoder {
             outline = glyphVector.getGlyphOutline(0);
             advance = (int) (glyphVector.getGlyphMetrics(0).getAdvance());
 
-            font.addGlyph(character,  new Glyph(convertShape(outline), 
+            font.addGlyph(character,  new Glyph(convertShape(outline),
                     new Bounds(0, 0, 0, 0), advance));
 
             if (!awtFont.hasUniformLineMetrics()) {
@@ -174,9 +178,9 @@ public final class AWTDecoder {
 //        double height = 0.0;
 //
 //        /*
-//         * Scan through all the glyphs looking for glyphs that will fall outside
-//         * the left or bottom side of the EM Square once the glyph has been
-//         * scaled.
+//         * Scan through all the glyphs looking for glyphs that will fall
+//         * outside the left or bottom side of the EM Square once the glyph
+//         * has been scaled.
 //         */
 //        while ((glyphIndex < numGlyphs) && (characterCode < 65536)) {
 //            final char currentChar = (char) characterCode;

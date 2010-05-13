@@ -72,7 +72,7 @@ public final class PathsArePostscript implements MovieTag {
     private PathsArePostscript() {
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public PathsArePostscript copy() {
         return this;
     }
@@ -92,6 +92,6 @@ public final class PathsArePostscript implements MovieTag {
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
-        coder.writeWord((MovieTypes.DEFINE_MORPH_SHAPE << 6) | 0, 2);
-    }
+        coder.writeHeader(MovieTypes.PATHS_ARE_POSTSCRIPT, 0);
+   }
 }

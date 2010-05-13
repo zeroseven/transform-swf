@@ -54,7 +54,8 @@ import com.flagstone.transform.datatype.Bounds;
 @RunWith(Parameterized.class)
 public final class ScalingGridCodingTest {
 
-    private static final String RESOURCE = "com/flagstone/transform/ScalingGrid.yaml";
+    private static final String RESOURCE =
+        "com/flagstone/transform/ScalingGrid.yaml";
 
     private static final String IDENTIFIER = "identifier";
     private static final String XMIN = "xmin";
@@ -70,47 +71,47 @@ public final class ScalingGridCodingTest {
         ClassLoader loader = DoActionCodingTest.class.getClassLoader();
         InputStream other = loader.getResourceAsStream(RESOURCE);
         Yaml yaml = new Yaml();
-        
+
         Collection<Object[]> list = new ArrayList<Object[]>();
-         
+
         for (Object data : yaml.loadAll(other)) {
-            list.add(new Object[] { data });
+            list.add(new Object[] {data });
         }
 
         return list;
     }
 
-    private transient final int identifier;
-    private transient final Bounds bounds;
-    private transient final byte[] din;
-    private transient final byte[] dout;
-    private transient final Context context;
-    
-    public ScalingGridCodingTest(Map<String,Object>values) {
-        identifier = (Integer)values.get(IDENTIFIER);
+    private final transient int identifier;
+    private final transient Bounds bounds;
+    private final transient byte[] din;
+    private final transient byte[] dout;
+    private final transient Context context;
+
+    public ScalingGridCodingTest(final Map<String, Object>values) {
+        identifier = (Integer) values.get(IDENTIFIER);
         bounds = new Bounds(
-                (Integer)values.get(XMIN),
-                (Integer)values.get(YMIN),
-                (Integer)values.get(XMAX),
-                (Integer)values.get(YMAX));
-        din = (byte[])values.get(DIN);
-        dout = (byte[])values.get(DOUT);
+                (Integer) values.get(XMIN),
+                (Integer) values.get(YMIN),
+                (Integer) values.get(XMAX),
+                (Integer) values.get(YMAX));
+        din = (byte[]) values.get(DIN);
+        dout = (byte[]) values.get(DOUT);
         context = new Context();
     }
 
     @Test
-    public void checkSizeMatchesEncodedSize() throws CoderException {     
-        final ScalingGrid object = new ScalingGrid(identifier, bounds);       
-        final SWFEncoder encoder = new SWFEncoder(dout.length);        
-         
+    public void checkSizeMatchesEncodedSize() throws CoderException {
+        final ScalingGrid object = new ScalingGrid(identifier, bounds);
+        final SWFEncoder encoder = new SWFEncoder(dout.length);
+
         assertEquals(dout.length, object.prepareToEncode(encoder, context));
     }
 
     @Test
     public void checkObjectIsEncoded() throws CoderException {
-        final ScalingGrid object = new ScalingGrid(identifier, bounds);       
-        final SWFEncoder encoder = new SWFEncoder(dout.length);        
-        
+        final ScalingGrid object = new ScalingGrid(identifier, bounds);
+        final SWFEncoder encoder = new SWFEncoder(dout.length);
+
         object.prepareToEncode(encoder, context);
         object.encode(encoder, context);
 

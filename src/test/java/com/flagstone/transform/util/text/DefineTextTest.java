@@ -49,10 +49,8 @@ import com.flagstone.transform.ShowFrame;
 import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.datatype.WebPalette;
 import com.flagstone.transform.font.DefineFont2;
-import com.flagstone.transform.linestyle.LineStyle;
 import com.flagstone.transform.text.DefineText2;
 import com.flagstone.transform.util.font.Font;
-import com.flagstone.transform.util.shape.Canvas;
 
 public final class DefineTextTest {
     private static File destDir;
@@ -67,7 +65,8 @@ public final class DefineTextTest {
         }
 
         font = new Font();
-        // TODO(code) font.decode(new java.awt.Font("Arial", java.awt.Font.PLAIN, 12));
+        // TODO(code) font.decode(new java.awt.Font("Arial",
+        //     java.awt.Font.PLAIN, 12));
     }
 
     @Test
@@ -75,7 +74,8 @@ public final class DefineTextTest {
         final File destFile = new File(destDir, "defineText.swf");
 
         final Set<Character> set = new LinkedHashSet<Character>();
-        final String alphabet = "The quick brown, fox jumped over the lazy dog.";
+        final String alphabet =
+            "The quick brown, fox jumped over the lazy dog.";
 
         for (int i = 0; i < alphabet.length(); i++) {
             set.add(alphabet.charAt(i));

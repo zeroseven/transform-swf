@@ -35,13 +35,12 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.video.VideoData;
 
 public final class VideoDataTest {
 
     private transient VideoData fixture;
 
-    private final transient byte[] encoded = new byte[] { 0x06, 0x01, 0x01,
+    private final transient byte[] encoded = new byte[] {0x06, 0x01, 0x01,
             0x00, 0x02, 0x00, 0x06, 0x50 };
 
     @Test

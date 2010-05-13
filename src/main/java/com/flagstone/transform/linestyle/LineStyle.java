@@ -93,7 +93,7 @@ public final class LineStyle implements SWFEncodeable, Copyable<LineStyle> {
      */
     public LineStyle(final SWFDecoder coder, final Context context)
             throws CoderException {
-        width = coder.readWord(2, false);
+        width = coder.readUI16();
         color = new Color(coder, context);
     }
 
@@ -163,7 +163,7 @@ public final class LineStyle implements SWFEncodeable, Copyable<LineStyle> {
         color = aColor;
     }
 
-    /** TODO(method). */
+    
     public LineStyle copy() {
         return new LineStyle(this);
     }

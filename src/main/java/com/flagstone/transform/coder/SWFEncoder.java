@@ -38,25 +38,25 @@ package com.flagstone.transform.coder;
 //TODO(class)
 public final class SWFEncoder extends Encoder {
 
-    /** 
-     * Length, in bytes, of type and length fields of an encoded action. 
+    /**
+     * Length, in bytes, of type and length fields of an encoded action.
      */
     public static final int ACTION_HEADER = 3;
     /**
-     * The maximum length in bytes of an encoded object before the length must 
+     * The maximum length in bytes of an encoded object before the length must
      * be encoded using a 32-bit integer.
      */
-    public static final int MAX_LENGTH = 62;
+    private static final int MAX_LENGTH = 62;
     /**
-     * The number of bits used to encode the length field when the length is 
+     * The number of bits used to encode the length field when the length is
      * less than the maximum length of 62.
      */
-    public static final int LENGTH_BITS = 6;
+    private static final int LENGTH_FIELD_SIZE = 6;
     /**
      * Values used to indicate that the length of an object has been encoded
      * as a 32-bit integer following the header for the MovieTag.
      */
-    public static final int EXTENDED = 0x3F;
+    private static final int IS_EXTENDED = 0x3F;
 
     /**
      * Creates an SWFEncoder with the buffer used to encode data set to the
@@ -81,7 +81,7 @@ public final class SWFEncoder extends Encoder {
 
         int val = value;
         int size = 1;
-        
+
         while (val > 127) {
             size += 1;
             val = val >>> 7;
@@ -156,7 +156,8 @@ public final class SWFEncoder extends Encoder {
         final int intValue = Float.floatToIntBits(value);
 
         final int sign = (intValue >> 16) & 0x00008000;
-        final int exponent = ((intValue >> 23) & 0x000000ff) - (127 - 15);
+        final int exponent = ((intValue >> 23) & UNSIGNED_BYTE_MASK)
+                        - (127 - 15);
         int mantissa = intValue & 0x007fffff;
 
         if (exponent <= 0) {
@@ -169,10 +170,10 @@ public final class SWFEncoder extends Encoder {
         } else if (exponent == 0xff - (127 - 15)) {
             if (mantissa == 0) { // Inf
                 writeWord((sign | 0x7c00), 2);
-            }
-            else { // NAN
+            } else { // NAN
                 mantissa >>= 13;
-                writeWord((sign | 0x7c00 | mantissa | ((mantissa == 0) ? 1 : 0)), 2);
+                writeWord((sign | 0x7c00 | mantissa
+                        | ((mantissa == 0) ? 1 : 0)), 2);
             }
         } else {
             if (exponent > 30) { // Overflow
@@ -204,5 +205,24 @@ public final class SWFEncoder extends Encoder {
 
         writeWord((int) (longValue >>> 32), 4);
         writeWord((int) longValue, 4);
+    }
+
+    /**
+     * Write the header fields containing type and length of the object.
+     *
+     * Normally objects are encoded with a 2-byte header however if the length
+     * is greater than 62 then the size of the header is extended to 6 bytes
+     * and length is written as a 32-bit integer.
+     *
+     * @param type used to identify the object when decoding.
+     * @param length the length in bytes of the encoded object.
+     */
+    public void writeHeader(final int type, final int length) {
+        if (length > MAX_LENGTH) {
+            writeWord((type << LENGTH_FIELD_SIZE) | IS_EXTENDED, 2);
+            writeWord(length, 4);
+        } else {
+            writeWord((type << LENGTH_FIELD_SIZE) | length, 2);
+        }
     }
 }

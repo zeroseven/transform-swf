@@ -799,7 +799,7 @@ public final class ImageInfo {
         return format;
     }
 
-    /** TODO(method). */
+    
     public ImageEncoding getImageFormat() {
         return imageFormat;
     }
@@ -1236,3 +1236,4 @@ public final class ImageInfo {
         }
     }
 }
+

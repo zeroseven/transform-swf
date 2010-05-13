@@ -30,17 +30,10 @@
  */
 package com.flagstone.transform;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
-
-import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.SWFDecoder;
-import com.flagstone.transform.coder.SWFEncoder;
 
 public final class ShowFrameTest {
 

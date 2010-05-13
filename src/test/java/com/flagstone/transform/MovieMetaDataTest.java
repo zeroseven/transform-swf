@@ -36,7 +36,7 @@ import org.junit.Test;
 
 public final class MovieMetaDataTest {
 
-    private static final transient String metaData = "ABC123";
+    private final transient String metaData = "ABC123";
 
     private transient MovieMetaData fixture;
 

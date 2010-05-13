@@ -42,7 +42,7 @@ import com.flagstone.transform.coder.SWFEncoder;
  * SerialNumber is used to add a user-defined serial number into a Flash file.
  */
 public final class SerialNumber implements MovieTag {
-    
+
     private static final String FORMAT = "SerialNumber: { number=%s }";
 
     private String number;
@@ -60,12 +60,7 @@ public final class SerialNumber implements MovieTag {
      *             if an error occurs while decoding the data.
      */
     public SerialNumber(final SWFDecoder coder) throws CoderException {
-        length = coder.readWord(2, false) & 0x3F;
-
-        if (length == 0x3F) {
-            length = coder.readWord(4, false);
-        }
-
+        length = coder.readHeader();
         number = coder.readString(length - 1, coder.getEncoding());
         coder.readByte();
     }
@@ -134,13 +129,7 @@ public final class SerialNumber implements MovieTag {
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
-        if (length > 62) {
-            coder.writeWord((MovieTypes.SERIAL_NUMBER << 6) | 0x3F, 2);
-            coder.writeWord(length, 4);
-        } else {
-            coder.writeWord((MovieTypes.SERIAL_NUMBER << 6) | length, 2);
-        }
-
+        coder.writeHeader(MovieTypes.SERIAL_NUMBER, length);
         coder.writeString(number);
     }
 }

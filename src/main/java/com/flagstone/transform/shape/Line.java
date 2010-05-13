@@ -33,7 +33,7 @@ package com.flagstone.transform.shape;
 
 import java.util.Map;
 
-
+import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.Encoder;
@@ -54,8 +54,6 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  * used to draw the narrowest of visible lines. In flash 8, SolidLine2 line
  * style was added that supports a range of different mitering options.
  * </p>
- *
- * @see LineStyle
  */
 //TODO(class)
 public final class Line implements ShapeRecord {
@@ -102,15 +100,15 @@ public final class Line implements ShapeRecord {
     /**
      * Creates a Line with the specified relative coordinates.
      *
-     * @param xCoord
+     * @param coordX
      *            the x-coordinate of the end point, specified relative to the
      *            current drawing point. Must be in the range -65536..65535.
-     * @param yCoord
+     * @param coordY
      *            the y-coordinate of the end point, specified relative to the
      *            current drawing point. Must be in the range -65536..65535.
      */
-    public Line(final int xCoord, final int yCoord) {
-        setPoint(xCoord, yCoord);
+    public Line(final int coordX, final int coordY) {
+        setPoint(coordX, coordY);
     }
 
     /**
@@ -151,18 +149,20 @@ public final class Line implements ShapeRecord {
      *            -65536..65535.
      */
     public void setPoint(final int coordX, final int coordY) {
-        if ((coordX < -65536) || (coordX > 65535)) {
-            throw new IllegalArgumentRangeException(-65535, 65535, coordX);
+        if ((coordX < SWF.MIN_COORD) || (coordX > SWF.MAX_COORD)) {
+            throw new IllegalArgumentRangeException(
+                    SWF.MIN_COORD, SWF.MAX_COORD, coordX);
         }
         xCoord = coordX;
 
-        if ((coordY < -65536) || (coordY > 65535)) {
-            throw new IllegalArgumentRangeException(-65535, 65535, coordY);
+        if ((coordY < SWF.MIN_COORD) || (coordY > SWF.MAX_COORD)) {
+            throw new IllegalArgumentRangeException(
+                    SWF.MIN_COORD, SWF.MAX_COORD, coordY);
         }
        yCoord = coordY;
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public Line copy() {
         return new Line(this);
     }

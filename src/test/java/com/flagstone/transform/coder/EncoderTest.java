@@ -189,7 +189,7 @@ public final class EncoderTest {
 
     @Test
     public void writeBytes() {
-        data = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 };
+        data = new byte[] {1, 2, 3, 4, 5, 6, 7, 8 };
         fixture.setData(new byte[data.length]);
 
         fixture.writeBytes(data);
@@ -206,6 +206,6 @@ public final class EncoderTest {
         fixture.writeString("123");
 
         assertEquals(32, fixture.getPointer());
-        assertArrayEquals(new byte[] { 0x31, 0x32, 0x33, 0x00 }, fixture.data);
+        assertArrayEquals(new byte[] {0x31, 0x32, 0x33, 0x00 }, fixture.data);
     }
 }

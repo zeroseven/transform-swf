@@ -43,7 +43,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.zip.DataFormatException;
 
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -62,7 +61,7 @@ import com.flagstone.transform.util.font.FontFactory;
 
 @RunWith(Parameterized.class)
 public final class TTFFontTest {
-    
+
     @Parameters
     public static Collection<Object[]> files() {
 
@@ -74,22 +73,22 @@ public final class TTFFontTest {
                 return name.endsWith(".ttf");
             }
         };
-        
+
         String[] files = srcDir.list(filter);
         Object[][] collection = new Object[files.length][2];
 
-        for (int i=0; i<files.length; i++) {
+        for (int i = 0; i < files.length; i++) {
             collection[i][0] = new File(srcDir, files[i]);
-            collection[i][1] = new File(destDir, 
+            collection[i][1] = new File(destDir,
                     files[i].substring(0, files[i].lastIndexOf('.')) + ".swf");
         }
         return Arrays.asList(collection);
     }
 
-    private File sourceFile;
-    private File destFile;
+    private final File sourceFile;
+    private final File destFile;
 
-    public TTFFontTest(File src, File dst) {
+    public TTFFontTest(final File src, final File dst) {
         sourceFile = src;
         destFile = dst;
     }
@@ -104,10 +103,10 @@ public final class TTFFontTest {
 
         final int screenWidth = width + margin;
         final int screenHeight = height + margin;
-        
+
         String alphabet = "abcdefghijklmnopqrstuvwxyz";
         Set<Character> set = new LinkedHashSet<Character>();
-        
+
         for (int i = 0; i < alphabet.length(); i++) {
             set.add(alphabet.charAt(i));
         }
@@ -118,9 +117,11 @@ public final class TTFFontTest {
             final FontFactory factory = new FontFactory();
             factory.read(sourceFile);
             List<Font> fonts = factory.getFonts();
-            DefineFont2 font = fonts.get(0).defineFont(movie.nextIdentifier(), set);
+            DefineFont2 font = fonts.get(0).defineFont(
+                    movie.nextIdentifier(), set);
 
-            final DefineTextField text = new DefineTextField(movie.nextIdentifier());
+            final DefineTextField text = new DefineTextField(
+                    movie.nextIdentifier());
             text.setBounds(new Bounds(0, 0, width, height));
             text.setVariableName("var");
             text.setInitialText(alphabet);

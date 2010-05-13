@@ -53,7 +53,8 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  */
 public final class LimitScript implements MovieTag {
 
-    private static final String FORMAT = "LimitScript: { depth=%d; timeout=%d }";
+    private static final String FORMAT = "LimitScript: { depth=%d;"
+    		+ " timeout=%d }";
 
     private int depth;
     private int timeout;
@@ -70,12 +71,13 @@ public final class LimitScript implements MovieTag {
      */
     public LimitScript(final SWFDecoder coder) throws CoderException {
 
-        if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
-            coder.readWord(4, false);
+        if ((coder.readUI16() & SWF.TAG_LENGTH_FIELD)
+                > SWF.MOVIE_TAG_LENGTH) {
+            coder.readUI32();
         }
 
-        depth = coder.readWord(2, false);
-        timeout = coder.readWord(2, false);
+        depth = coder.readUI16();
+        timeout = coder.readUI16();
     }
 
     /**
@@ -83,18 +85,18 @@ public final class LimitScript implements MovieTag {
      * <em>depth</em> levels and specifies that any sequence of actions will
      * timeout after <em>timeout</em> seconds.
      *
-     * @param depth
+     * @param stackDepth
      *            the maximum depth a sequence of actions can recurse to. Must
      *            be in the range 0..65535.
-     * @param timeout
+     * @param timeLimit
      *            the time in seconds that a sequence of actions is allowed to
      *            execute before the Flash Player displays a dialog box asking
      *            whether the script should be terminated. Must be in the range
      *            0..65535.
      */
-    public LimitScript(final int depth, final int timeout) {
-        setDepth(depth);
-        setTimeout(timeout);
+    public LimitScript(final int stackDepth, final int timeLimit) {
+        setDepth(stackDepth);
+        setTimeout(timeLimit);
     }
 
     /**
@@ -120,15 +122,15 @@ public final class LimitScript implements MovieTag {
     /**
      * Sets the maximum recursion level.
      *
-     * @param depth
+     * @param stackDepth
      *            the maximum depth a sequence of actions can recurse to. Must
      *            be in the range 0..65535.
      */
-    public void setDepth(final int depth) {
-        if ((depth < 0) || (depth > 65535)) {
-            throw new IllegalArgumentRangeException(0, 65535, depth);
+    public void setDepth(final int stackDepth) {
+        if ((stackDepth < 0) || (stackDepth > 65535)) {
+            throw new IllegalArgumentRangeException(0, 65535, stackDepth);
         }
-        this.depth = depth;
+        depth = stackDepth;
     }
 
     /**

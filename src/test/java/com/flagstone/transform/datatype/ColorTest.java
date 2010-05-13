@@ -45,22 +45,22 @@ public final class ColorTest {
     private static final int BLUE = 3;
     private static final int ALPHA = 4;
 
-    private static final int TOO_LOW = Color.MIN_LEVEL-1;
-    private static final int TOO_HIGH = Color.MAX_LEVEL+1;
+    private static final int TOO_LOW = Color.MIN_LEVEL - 1;
+    private static final int TOO_HIGH = Color.MAX_LEVEL + 1;
 
     @Test
     public void checkConstructorSetsRed() {
         assertEquals(RED, new Color(RED, GREEN, BLUE, ALPHA).getRed());
     }
 
-    @Test(expected=IllegalArgumentRangeException.class)
+    @Test(expected = IllegalArgumentRangeException.class)
     public void checkRedValueBelowRangeThrowsException() {
-        new Color(TOO_LOW, GREEN, BLUE, ALPHA);    
+        new Color(TOO_LOW, GREEN, BLUE, ALPHA);
     }
 
-    @Test(expected=IllegalArgumentRangeException.class)
+    @Test(expected = IllegalArgumentRangeException.class)
     public void checkRedValueAboveRangeThrowsException() {
-        new Color(TOO_HIGH, GREEN, BLUE, ALPHA);    
+        new Color(TOO_HIGH, GREEN, BLUE, ALPHA);
     }
 
     @Test
@@ -68,14 +68,14 @@ public final class ColorTest {
         assertEquals(GREEN, new Color(RED, GREEN, BLUE, ALPHA).getGreen());
     }
 
-    @Test(expected=IllegalArgumentRangeException.class)
+    @Test(expected = IllegalArgumentRangeException.class)
     public void checkGreenValueBelowRangeThrowsException() {
-        new Color(RED, TOO_LOW, BLUE, ALPHA);    
+        new Color(RED, TOO_LOW, BLUE, ALPHA);
     }
 
-    @Test(expected=IllegalArgumentRangeException.class)
+    @Test(expected = IllegalArgumentRangeException.class)
     public void checkGreenValueAboveRangeThrowsException() {
-        new Color(RED, TOO_HIGH, BLUE, ALPHA);    
+        new Color(RED, TOO_HIGH, BLUE, ALPHA);
     }
 
     @Test
@@ -83,14 +83,14 @@ public final class ColorTest {
         assertEquals(BLUE, new Color(RED, GREEN, BLUE, ALPHA).getBlue());
     }
 
-    @Test(expected=IllegalArgumentRangeException.class)
+    @Test(expected = IllegalArgumentRangeException.class)
     public void checkBlueValueBelowRangeThrowsException() {
-        new Color(RED, GREEN, TOO_LOW, ALPHA);    
+        new Color(RED, GREEN, TOO_LOW, ALPHA);
     }
 
-    @Test(expected=IllegalArgumentRangeException.class)
+    @Test(expected = IllegalArgumentRangeException.class)
     public void checkBlueValueAboveRangeThrowsException() {
-        new Color(RED, GREEN, TOO_HIGH, ALPHA);    
+        new Color(RED, GREEN, TOO_HIGH, ALPHA);
     }
 
     @Test
@@ -98,14 +98,14 @@ public final class ColorTest {
         assertEquals(ALPHA, new Color(RED, GREEN, BLUE, ALPHA).getAlpha());
     }
 
-    @Test(expected=IllegalArgumentRangeException.class)
+    @Test(expected = IllegalArgumentRangeException.class)
     public void checkAlphaValueBelowRangeThrowsException() {
-        new Color(RED, GREEN, BLUE, TOO_LOW);    
+        new Color(RED, GREEN, BLUE, TOO_LOW);
     }
 
-    @Test(expected=IllegalArgumentRangeException.class)
+    @Test(expected = IllegalArgumentRangeException.class)
     public void checkAlphaValueAboveRangeThrowsException() {
-        new Color(RED, GREEN, BLUE, TOO_HIGH);    
+        new Color(RED, GREEN, BLUE, TOO_HIGH);
     }
 
     @Test

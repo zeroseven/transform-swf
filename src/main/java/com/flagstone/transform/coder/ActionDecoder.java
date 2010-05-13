@@ -62,12 +62,12 @@ import com.flagstone.transform.action.With;
 @SuppressWarnings("PMD.CyclomaticComplexity")
 public final class ActionDecoder implements SWFFactory<Action> {
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public SWFFactory<Action> copy() {
         return new ActionDecoder();
     }
 
-    /** TODO(method). */
+
     public Action getObject(final SWFDecoder coder, final Context context)
             throws CoderException {
 

@@ -36,12 +36,12 @@ import java.util.Map;
 
 /** TODO(class). */
 public enum ButtonEvent {
-    
+
     // Keep the order for ROLL_OUT and ROLL_OVER though the event codes are
-    // not in the right order. A set of ButtonEvents are used for encoding 
-    // ButtonSounds and ROLL_OUT must be before ROLL_OVER so the correct 
+    // not in the right order. A set of ButtonEvents are used for encoding
+    // ButtonSounds and ROLL_OUT must be before ROLL_OVER so the correct
     // natural order is used when creating an EnumSet,
-    
+
     /**
      * Code for the button event that occurs when the mouse cursor moves out of
      * the active area of a button.
@@ -90,7 +90,8 @@ public enum ButtonEvent {
      */
     MENU_DRAG_OUT(256);
 
-    private static final Map<Integer, ButtonEvent> TABLE = new LinkedHashMap<Integer, ButtonEvent>();
+    private static final Map<Integer, ButtonEvent> TABLE =
+                new LinkedHashMap<Integer, ButtonEvent>();
 
     static {
         for (final ButtonEvent type : values()) {
@@ -104,8 +105,8 @@ public enum ButtonEvent {
 
     private final int value;
 
-    private ButtonEvent(final int value) {
-        this.value = value;
+    private ButtonEvent(final int eventCode) {
+        value = eventCode;
     }
 
     protected int getValue() {

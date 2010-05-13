@@ -39,6 +39,10 @@ import com.flagstone.transform.Movie;
  * DecodeMovie verifies that Flash file can be decoded into a Movie.
  */
 public final class DecodeMovie {
+    /**
+     * Run the test from the command line.
+     * @param args array of command line arguments.
+     */
     public static void main(final String[] args) {
         final File srcFile = new File(args[0]);
 
@@ -49,6 +53,7 @@ public final class DecodeMovie {
         }
     }
 
+    /** Private constructor. */
     private DecodeMovie() {
         // Private
     }

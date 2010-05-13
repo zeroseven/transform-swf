@@ -53,7 +53,8 @@ import com.flagstone.transform.coder.SWFEncoder;
 @RunWith(Parameterized.class)
 public final class Import2CodingTest {
 
-    private static final String RESOURCE = "com/flagstone/transform/Import2.yaml";
+    private static final String RESOURCE =
+        "com/flagstone/transform/Import2.yaml";
 
     private static final String URL = "url";
     private static final String TABLE = "table";
@@ -66,43 +67,44 @@ public final class Import2CodingTest {
         ClassLoader loader = DoActionCodingTest.class.getClassLoader();
         InputStream other = loader.getResourceAsStream(RESOURCE);
         Yaml yaml = new Yaml();
-        
+
         Collection<Object[]> list = new ArrayList<Object[]>();
-         
+
         for (Object data : yaml.loadAll(other)) {
-            list.add(new Object[] { data });
+            list.add(new Object[] {data });
         }
 
         return list;
     }
 
-    private transient final String url;
-    private transient final Map<Integer,String> table;
-    private transient final byte[] din;
-    private transient final byte[] dout;
-    private transient final Context context;
-    
-    public Import2CodingTest(Map<String,Object>values) {
-        url = (String)values.get(URL);
-        table = (Map<Integer,String>)values.get(TABLE);
-        din = (byte[])values.get(DIN);
-        dout = (byte[])values.get(DOUT);
+    private final transient String url;
+    private final transient Map<Integer, String> table;
+    private final transient byte[] din;
+    private final transient byte[] dout;
+    private final transient Context context;
+
+    @SuppressWarnings("unchecked")
+    public Import2CodingTest(final Map<String, Object>values) {
+        url = (String) values.get(URL);
+        table = (Map<Integer, String>) values.get(TABLE);
+        din = (byte[]) values.get(DIN);
+        dout = (byte[]) values.get(DOUT);
         context = new Context();
     }
 
     @Test
-    public void checkSizeMatchesEncodedSize() throws CoderException {     
-        final Import2 object = new Import2(url, table);       
-        final SWFEncoder encoder = new SWFEncoder(dout.length);        
-         
+    public void checkSizeMatchesEncodedSize() throws CoderException {
+        final Import2 object = new Import2(url, table);
+        final SWFEncoder encoder = new SWFEncoder(dout.length);
+
         assertEquals(dout.length, object.prepareToEncode(encoder, context));
     }
 
     @Test
     public void checkObjectIsEncoded() throws CoderException {
-        final Import2 object = new Import2(url, table);       
-        final SWFEncoder encoder = new SWFEncoder(dout.length);        
-        
+        final Import2 object = new Import2(url, table);
+        final SWFEncoder encoder = new SWFEncoder(dout.length);
+
         object.prepareToEncode(encoder, context);
         object.encode(encoder, context);
 

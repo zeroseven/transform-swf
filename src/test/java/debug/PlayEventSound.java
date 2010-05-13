@@ -42,10 +42,21 @@ import com.flagstone.transform.sound.DefineSound;
 import com.flagstone.transform.sound.SoundInfo;
 import com.flagstone.transform.sound.StartSound;
 
+/**
+ * PlayStreamingSound generates a Flash file with a sound file encoded as an
+ * event sound.
+ */
 public final class PlayEventSound {
+    /**
+     * Run the test from the command line.
+     * @param args array of command line arguments.
+     */
     public static void main(final String[] args) {
         final File sourceFile = new File(args[0]);
         final File destFile = new File(args[1]);
+
+        final int screenWidth = 8000;
+        final int screenHeight = 4000;
 
         try {
             if (!destFile.getParentFile().exists()) {
@@ -59,7 +70,7 @@ public final class PlayEventSound {
 
             final float framesPerSecond = 12.0f;
 
-            movie.setFrameSize(new Bounds(0, 0, 8000, 4000));
+            movie.setFrameSize(new Bounds(0, 0, screenWidth, screenHeight));
             movie.setFrameRate(framesPerSecond);
 
             movie.add(new Background(WebPalette.LIGHT_BLUE.color()));
@@ -96,6 +107,7 @@ public final class PlayEventSound {
         }
     }
 
+    /** Private constructor. */
     private PlayEventSound() {
         // Private.
     }

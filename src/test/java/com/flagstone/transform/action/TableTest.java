@@ -58,10 +58,10 @@ public final class TableTest {
         list.add("C");
     }
 
-    private static final transient int type = ActionTypes.TABLE;
+    private static final transient int TYPE = ActionTypes.TABLE;
     private transient Table fixture;
 
-    private final transient byte[] encoded = new byte[] { (byte) type, 0x08,
+    private final transient byte[] encoded = new byte[] {(byte) TYPE, 0x08,
             0x00, 0x03, 0x00, 0x41, 0x00, 0x42, 0x00, 0x43, 0x00, };
 
     @Test(expected = IllegalArgumentException.class)

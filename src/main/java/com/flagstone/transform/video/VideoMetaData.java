@@ -32,6 +32,7 @@ package com.flagstone.transform.video;
 
 import java.util.Arrays;
 
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.FLVDecoder;
 import com.flagstone.transform.coder.FLVEncoder;
@@ -72,27 +73,28 @@ public final class VideoMetaData implements VideoTag {
         final int start = coder.getPointer();
         coder.readByte();
         length = coder.readWord(3, false);
-        final int end = coder.getPointer() + (length << 3);
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
         timestamp = coder.readWord(3, false);
-        coder.readWord(4, false); // reserved
+        coder.readUI32(); // reserved
         data = coder.readBytes(new byte[length]);
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 
     /**
      * Constructs a new VideoMetaData object with the encoded data).
      *
-     * @param data
+     * @param metaData
      *            an array of bytes containing the encoded meta-data. Must not
      *            be null.
      */
-    public VideoMetaData(final int timestamp, final byte[] data) {
-        setTimestamp(timestamp);
-        setData(data);
+    public VideoMetaData(final int time, final byte[] metaData) {
+        setTimestamp(time);
+        setData(metaData);
     }
 
     /**
@@ -143,20 +145,18 @@ public final class VideoMetaData implements VideoTag {
      * Sets the encoded meta data that describes how the video stream should be
      * played.
      *
-     * @param data
+     * @param metaData
      *            an array of bytes containing the encoded meta-data. Must not
      *            be null.
      */
-    public void setData(final byte[] data) {
-        if (data == null) {
+    public void setData(final byte[] metaData) {
+        if (metaData == null) {
             throw new IllegalArgumentException();
         }
-        this.data = Arrays.copyOf(data, data.length);
+        data = Arrays.copyOf(metaData, metaData.length);
     }
 
-    /**
-     * Creates and returns a deep copy of this object.
-     */
+    /** {@inheritDoc} */
     public VideoMetaData copy() {
         return new VideoMetaData(this);
     }
@@ -182,14 +182,15 @@ public final class VideoMetaData implements VideoTag {
 
         coder.writeWord(VideoTypes.VIDEO_DATA, 1);
         coder.writeWord(length - 11, 3);
-        final int end = coder.getPointer() + (length << 3);
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
         coder.writeWord(timestamp, 3);
         coder.writeWord(0, 4);
         coder.writeBytes(data);
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 }

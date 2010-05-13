@@ -32,6 +32,7 @@
 package com.flagstone.transform.shape;
 
 
+import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.Encoder;
@@ -61,7 +62,8 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  */
 //TODO(class)
 public final class Curve implements ShapeRecord {
-    private static final String FORMAT = "Curve: control=(%d,%d), anchor=(%d,%d);";
+    private static final String FORMAT = "Curve: control=(%d,%d);"
+    		+ " anchor=(%d,%d);";
 
     private transient int controlX;
     private transient int controlY;
@@ -94,22 +96,22 @@ public final class Curve implements ShapeRecord {
      * Creates a Curve object specifying the anchor and control point
      * coordinates.
      *
-     * @param controlX
+     * @param xControl
      *            the x-coordinate of the control point, specified relative to
      *            the current drawing point. Must be in the range -65535..65535.
-     * @param controlY
+     * @param yControl
      *            the y-coordinate of the control point, specified relative to
      *            the current drawing point.Must be in the range -65535..65535.
-     * @param anchorX
+     * @param xAnchor
      *            the x-coordinate of the anchor point, specified relative to
      *            the control point.Must be in the range -65535..65535.
-     * @param anchorY
+     * @param yAnchor
      *            the y-coordinate of the anchor point, specified relative to
      *            the control point.Must be in the range -65535..65535.
      */
-    public Curve(final int controlX, final int controlY, final int anchorX,
-            final int anchorY) {
-        setPoints(controlX, controlY, anchorX, anchorY);
+    public Curve(final int xControl, final int yControl,
+            final int xAnchor, final int yAnchor) {
+        setPoints(xControl, yControl, xAnchor, yAnchor);
     }
 
     /**
@@ -174,28 +176,32 @@ public final class Curve implements ShapeRecord {
      */
     public void setPoints(final int xControl, final int yControl,
             final int xAnchor, final int yAnchor) {
-        if ((xControl < -65535) || (xControl > 65535)) {
-            throw new IllegalArgumentRangeException(-65535, 65535, xControl);
+        if ((xControl < SWF.MIN_COORD) || (xControl > SWF.MAX_COORD)) {
+            throw new IllegalArgumentRangeException(
+                    SWF.MIN_COORD, SWF.MAX_COORD, xControl);
         }
         controlX = xControl;
 
-        if ((yControl < -65535) || (yControl > 65535)) {
-            throw new IllegalArgumentRangeException(-65535, 65535, yControl);
+        if ((yControl < SWF.MIN_COORD) || (yControl > SWF.MAX_COORD)) {
+            throw new IllegalArgumentRangeException(
+                    SWF.MIN_COORD, SWF.MAX_COORD, yControl);
         }
         controlY = yControl;
 
-        if ((xAnchor < -65535) || (xAnchor > 65535)) {
-            throw new IllegalArgumentRangeException(-65535, 65535, xAnchor);
+        if ((xAnchor < SWF.MIN_COORD) || (xAnchor > SWF.MAX_COORD)) {
+            throw new IllegalArgumentRangeException(
+                    SWF.MIN_COORD, SWF.MAX_COORD, xAnchor);
         }
         anchorX = xAnchor;
 
-        if ((yAnchor < -65535) || (yAnchor > 65535)) {
-            throw new IllegalArgumentRangeException(-65535, 65535, yAnchor);
+        if ((yAnchor < SWF.MIN_COORD) || (yAnchor > SWF.MAX_COORD)) {
+            throw new IllegalArgumentRangeException(
+                    SWF.MIN_COORD, SWF.MAX_COORD, yAnchor);
         }
         anchorY = yAnchor;
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public Curve copy() {
         return new Curve(this);
     }

@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.DefineTag;
@@ -65,7 +66,8 @@ import com.flagstone.transform.movieclip.MovieClipEventHandler;
  * <li>Change an existing shape by moving it to new location or changing its
  * appearance.</li>
  * <li>Replace an existing shape with a another.</li>
- * <li>Define clipping layers to mask objects displayed in front of a shape.</li>
+ * <li>
+ * Define clipping layers to mask objects displayed in front of a shape.</li>
  * <li>Control the morphing process that changes one shape into another.</li>
  * <li>Assign names to objects rather than using their identifiers.</li>
  * <li>Define the sequence of actions that are executed when an event occurs in
@@ -139,11 +141,11 @@ import com.flagstone.transform.movieclip.MovieClipEventHandler;
  * @see com.flagstone.transform.util.movie.Layer
  */
 //TODO(class)
-@SuppressWarnings({"PMD.TooManyFields","PMD.TooManyMethods"})
+@SuppressWarnings({"PMD.TooManyFields", "PMD.TooManyMethods" })
 public final class Place3 implements MovieTag {
 
     public static final class Builder {
-        /** TODO(method). */
+
         public Place3 show(final int identifier, final int layer,
                 final int xCoord, final int yCoord) {
             final Place3 object = new Place3();
@@ -153,8 +155,8 @@ public final class Place3 implements MovieTag {
             object.setTransform(CoordTransform.translate(xCoord, yCoord));
             return object;
         }
-        
-        /** TODO(method). */
+
+
         public Place3 show(final DefineTag tag, final int layer,
                 final int xCoord, final int yCoord) {
             final Place3 object = new Place3();
@@ -165,7 +167,7 @@ public final class Place3 implements MovieTag {
             return object;
         }
 
-        /** TODO(method). */
+
         public Place3 modify(final int layer) {
             final Place3 object = new Place3();
             object.setType(PlaceType.MODIFY);
@@ -173,8 +175,9 @@ public final class Place3 implements MovieTag {
             return object;
         }
 
-        /** TODO(method). */
-        public Place3 move(final int layer, final int xCoord, final int yCoord) {
+
+        public Place3 move(final int layer, final int xCoord,
+                final int yCoord) {
             final Place3 object = new Place3();
             object.setType(PlaceType.MODIFY);
             object.setLayer(layer);
@@ -182,7 +185,7 @@ public final class Place3 implements MovieTag {
             return object;
         }
 
-        /** TODO(method). */
+
         public Place3 replace(final int identifier, final int layer) {
             final Place3 object = new Place3();
             object.setType(PlaceType.REPLACE);
@@ -191,7 +194,7 @@ public final class Place3 implements MovieTag {
             return object;
         }
 
-        /** TODO(method). */
+
         public Place3 replace(final int identifier, final int layer,
                 final int xCoord, final int yCoord) {
             final Place3 object = new Place3();
@@ -200,15 +203,15 @@ public final class Place3 implements MovieTag {
             object.setIdentifier(identifier);
             object.setTransform(CoordTransform.translate(xCoord, yCoord));
             return object;
-        }      
+        }
     }
-    
+
     private static final String FORMAT = "PlaceObject3: { type=%s; layer=%d;"
             + " bitmapCached=%s; identifier=%d; transform=%s; "
             + " colorTransform=%s; ratio=%d; clippingDepth=%d; "
             + " name=%s; className=%s; "
             + " filters=%s; blend=%s; clipEvents=%s}";
-    
+
 
     private PlaceType type;
     private int layer;
@@ -226,8 +229,8 @@ public final class Place3 implements MovieTag {
 
     private transient int length;
     private transient boolean hasBlend;
-    private transient boolean hasFilters; 
-    private transient boolean hasImage; 
+    private transient boolean hasFilters;
+    private transient boolean hasImage;
 
     /**
      * Creates and initialises a Place3 object using values encoded
@@ -247,16 +250,11 @@ public final class Place3 implements MovieTag {
     // TODO(optimise)
     public Place3(final SWFDecoder coder, final Context context)
             throws CoderException {
-//        final int start = coder.getPointer();
-
         final Map<Integer, Integer> vars = context.getVariables();
         vars.put(Context.TRANSPARENT, 1);
-        length = coder.readWord(2, false) & 0x3F;
-
-        if (length == 0x3F) {
-            length = coder.readWord(4, false);
-        }
-        final int end = coder.getPointer() + (length << 3);
+//        final int start = coder.getPointer();
+        length = coder.readHeader();
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
         final boolean hasEvents = coder.readBits(1, false) != 0;
         final boolean hasDepth = coder.readBits(1, false) != 0;
@@ -285,13 +283,13 @@ public final class Place3 implements MovieTag {
         hasBlend = coder.readBits(1, false) != 0;
         hasFilters = coder.readBits(1, false) != 0;
 
-        layer = coder.readWord(2, false);
+        layer = coder.readUI16();
 
-        /* The following line implements the logic as described in the SWF 9 
-         * specification but it appears to be incorrect. The class name is not 
+        /* The following line implements the logic as described in the SWF 9
+         * specification but it appears to be incorrect. The class name is not
          * given when hasImage is set.
-         * 
-         * if (hasClassName || ((type == PlaceType.NEW 
+         *
+         * if (hasClassName || ((type == PlaceType.NEW
          * || type == PlaceType.REPLACE) && hasImage)) {
          */
         if (hasClassName) {
@@ -299,7 +297,7 @@ public final class Place3 implements MovieTag {
         }
 
         if ((type == PlaceType.NEW) || (type == PlaceType.REPLACE)) {
-            identifier = coder.readWord(2, false);
+            identifier = coder.readUI16();
         }
 
         if (hasTransform) {
@@ -311,7 +309,7 @@ public final class Place3 implements MovieTag {
         }
 
         if (hasRatio) {
-            ratio = coder.readWord(2, false);
+            ratio = coder.readUI16();
         }
 
         if (hasName) {
@@ -319,7 +317,7 @@ public final class Place3 implements MovieTag {
         }
 
         if (hasDepth) {
-            depth = coder.readWord(2, false);
+            depth = coder.readUI16();
         }
 
         filters = new ArrayList<Filter>();
@@ -334,7 +332,7 @@ public final class Place3 implements MovieTag {
                 filters.add(decoder.getObject(coder, context));
             }
         }
-  
+
         if (hasBlend) {
             blend = coder.readByte();
         }
@@ -343,8 +341,8 @@ public final class Place3 implements MovieTag {
 
         if (hasEvents) {
             final int eventSize = vars.get(Context.VERSION) > 5 ? 4 : 2;
- 
-            coder.readWord(2, false);
+
+            coder.readUI16();
             coder.readWord(eventSize, false);
 
             while (coder.readWord(eventSize, false) != 0) {
@@ -356,8 +354,9 @@ public final class Place3 implements MovieTag {
         vars.remove(Context.TRANSPARENT);
 
         if (coder.getPointer() != end) {
-//            throw new CoderException(getClass().getName(), start >> 3, length,
-//                    (coder.getPointer() - end) >> 3);
+//            throw new CoderException(getClass().getName(),
+//            start >> Coder.BITS_TO_BYTES, length,
+//                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
             coder.setPointer(end);
         }
     }
@@ -463,8 +462,9 @@ public final class Place3 implements MovieTag {
      *            range 1..65535.
      */
     public Place3 setIdentifier(final int uid) {
-        if ((uid < 1) || (uid > 65535)) {
-             throw new IllegalArgumentRangeException(1, 65536, uid);
+        if ((uid < SWF.MIN_IDENTIFIER) || (uid > SWF.MAX_IDENTIFIER)) {
+            throw new IllegalArgumentRangeException(
+                    SWF.MIN_IDENTIFIER, SWF.MAX_IDENTIFIER, uid);
         }
         identifier = uid;
         return this;
@@ -621,12 +621,12 @@ public final class Place3 implements MovieTag {
         return this;
     }
 
-    /** TODO(method). */
+
     public List<Filter> getFilters() {
         return filters;
     }
 
-    /** TODO(method). */
+
     public void setFilters(final List<Filter> array) {
         if (array == null) {
             throw new IllegalArgumentException();
@@ -634,12 +634,12 @@ public final class Place3 implements MovieTag {
         filters = array;
     }
 
-    /** TODO(method). */
+
     public Blend getBlend() {
         return Blend.fromInt(blend);
     }
 
-    /** TODO(method). */
+
     public void setBlend(final Blend mode) {
         blend = mode.getValue();
     }
@@ -689,7 +689,7 @@ public final class Place3 implements MovieTag {
         events = anArray;
     }
 
-    /** TODO(method). */
+
     public Place3 add(final Filter filter) {
         if (filter == null) {
             throw new IllegalArgumentException();
@@ -706,8 +706,8 @@ public final class Place3 implements MovieTag {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        return String.format(FORMAT, type, layer, bitmapCached, identifier, 
-                transform, colorTransform,ratio, depth, name, className, 
+        return String.format(FORMAT, type, layer, bitmapCached, identifier,
+                transform, colorTransform, ratio, depth, name, className,
                 filters, blend, events);
     }
 
@@ -715,9 +715,9 @@ public final class Place3 implements MovieTag {
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         final Map<Integer, Integer> vars = context.getVariables();
         vars.put(Context.TRANSPARENT, 1);
-        
+
         hasBlend = blend != null;
-        hasFilters ^= filters.isEmpty(); 
+        hasFilters ^= filters.isEmpty();
 
         length = 4;
         length += ((type == PlaceType.NEW) || (type == PlaceType.REPLACE)) ? 2
@@ -737,11 +737,11 @@ public final class Place3 implements MovieTag {
                 length += filter.prepareToEncode(coder, context);
             }
         }
-        
+
         if (hasBlend) {
             length += 1;
         }
-        
+
         if (!events.isEmpty()) {
             final int eventSize = vars.get(Context.VERSION) > 5 ? 4 : 2;
 
@@ -763,14 +763,8 @@ public final class Place3 implements MovieTag {
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         final int start = coder.getPointer();
-
-        if (length >= 63) {
-            coder.writeWord((MovieTypes.PLACE_3 << 6) | 0x3F, 2);
-            coder.writeWord(length, 4);
-        } else {
-            coder.writeWord((MovieTypes.PLACE_3 << 6) | length, 2);
-        }
-        final int end = coder.getPointer() + (length << 3);
+        coder.writeHeader(MovieTypes.PLACE_3, length);
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
         final Map<Integer, Integer> vars = context.getVariables();
         vars.put(Context.TRANSPARENT, 1);
@@ -820,7 +814,7 @@ public final class Place3 implements MovieTag {
         if (depth != null) {
             coder.writeWord(depth, 2);
         }
-        
+
         if (hasFilters) {
             coder.writeByte(filters.size());
             for (Filter filter : filters) {
@@ -853,8 +847,9 @@ public final class Place3 implements MovieTag {
         vars.remove(Context.TRANSPARENT);
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 }

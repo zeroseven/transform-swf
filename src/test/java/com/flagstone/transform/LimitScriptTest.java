@@ -37,8 +37,8 @@ import org.junit.Test;
 
 public final class LimitScriptTest {
 
-    private static final transient int depth = 1;
-    private static final transient int timeout = 30;
+    private final transient int depth = 1;
+    private final transient int timeout = 30;
 
     private transient LimitScript fixture;
 

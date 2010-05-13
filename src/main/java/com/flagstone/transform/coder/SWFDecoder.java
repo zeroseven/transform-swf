@@ -31,6 +31,8 @@
 
 package com.flagstone.transform.coder;
 
+import com.flagstone.transform.SWF;
+
 /**
  * SWFDecoder extends LittleEndianDecoder by adding a context used to pass
  * information between classes during decoding and a factory class for
@@ -38,17 +40,6 @@ package com.flagstone.transform.coder;
  */
 //TODO(class)
 public final class SWFDecoder extends Decoder {
-
-    /** 
-     * A bit mask applied to a 16-bit word to extract the length of the
-     * encoded object.
-     */
-    public static final int MASK_LENGTH = 0x3F;
-    /**
-     * The maximum length an encoded object can be before the length must be
-     * encoded using a 32-bit integer.
-     */
-    public static final int MAX_LENGTH = 62;
 
     /**
      * Creates a SWFDecoder object initialised with the data to be decoded.
@@ -64,7 +55,32 @@ public final class SWFDecoder extends Decoder {
      * Read an unsigned short integer without changing the internal pointer.
      */
     public int scanUnsignedShort() {
-        return ((data[index + 1] & 0x00FF) << 8) + (data[index] & 0x00FF);
+        return ((data[index + 1] & UNSIGNED_BYTE_MASK) << BYTE1)
+            + (data[index] & UNSIGNED_BYTE_MASK);
+    }
+
+    /**
+     * Read an unsigned 16-bit integer.
+     *
+     * @return the value read.
+     */
+    public int readUI16() {
+        int value = data[index++] & UNSIGNED_BYTE_MASK;
+        value |= (data[index++] & UNSIGNED_BYTE_MASK) << BYTE1;
+        return value;
+    }
+
+    /**
+     * Read an unsigned 32-bit integer.
+     *
+     * @return the value read.
+     */
+    public int readUI32() {
+        int value = data[index++] & UNSIGNED_BYTE_MASK;
+        value |= (data[index++] & UNSIGNED_BYTE_MASK) << BYTE1;
+        value |= (data[index++] & UNSIGNED_BYTE_MASK) << BYTE2;
+        value |= (data[index++] & UNSIGNED_BYTE_MASK) << BYTE3;
+        return value;
     }
 
     /**
@@ -83,7 +99,7 @@ public final class SWFDecoder extends Decoder {
         int value = 0;
 
         for (int i = 0; i < numberOfBytes; i++) {
-            value += (data[index++] & 0x000000FF) << (i << 3);
+            value += (data[index++] & UNSIGNED_BYTE_MASK) << (i << 3);
         }
 
         if (signed) {
@@ -101,20 +117,21 @@ public final class SWFDecoder extends Decoder {
      */
     public int readVariableU32() {
 
-        int value = data[index++] & 0x000000FF;
-        
+        int value = data[index++] & UNSIGNED_BYTE_MASK;
+
         final int mask = 0xFFFFFFFF;
         int test = 0x00000080;
         int step = 7;
-        
+
         while ((value & test) != 0) {
-            value = ((data[index++] & 0x000000FF) << step)
-                + (value & mask >>> (32-step));
+            value = ((data[index++] & UNSIGNED_BYTE_MASK) << step)
+                + (value & mask >>> (32 - step));
             test <<= 7;
             step += 7;
-        }        
+        }
 //        if ((value & 0x00000080) != 0) {
-//            value = ((data[index++] & 0x000000FF) << 7) + (value & 0x0000007f);
+//            value = ((data[index++] & 0x000000FF) << 7)
+//        + (value & 0x0000007f);
 //
 //            if ((value & 0x00004000) != 0) {
 //                value = ((data[index++] & 0x000000FF) << 14)
@@ -145,7 +162,7 @@ public final class SWFDecoder extends Decoder {
         int exp = (bits >> 10) & 0x0000001f;
         int mantissa = bits & 0x000003ff;
         float value;
-        
+
         if (exp == 0) {
             if (mantissa == 0) { // Plus or minus zero
                 value = Float.intBitsToFloat(sign << 31);
@@ -157,19 +174,22 @@ public final class SWFDecoder extends Decoder {
                 exp += 1;
                 exp = exp + (127 - 15);
                 mantissa &= ~0x00000400;
-                mantissa = mantissa << 13;   
-                value = Float.intBitsToFloat((sign << 31) | (exp << 23) | mantissa);
+                mantissa = mantissa << 13;
+                value = Float.intBitsToFloat((sign << 31)
+                        | (exp << 23) | mantissa);
             }
         } else if (exp == 31) {
             if (mantissa == 0) { // Inf
                 value = Float.intBitsToFloat((sign << 31) | 0x7f800000);
             } else { // NaN
-                value = Float.intBitsToFloat((sign << 31) | 0x7f800000 | (mantissa << 13));
+                value = Float.intBitsToFloat((sign << 31)
+                        | 0x7f800000 | (mantissa << 13));
             }
         } else {
             exp = exp + (127 - 15);
             mantissa = mantissa << 13;
-            value = Float.intBitsToFloat((sign << 31) | (exp << 23) | mantissa);
+            value = Float.intBitsToFloat((sign << 31)
+                    | (exp << 23) | mantissa);
         }
         return value;
     }
@@ -193,6 +213,19 @@ public final class SWFDecoder extends Decoder {
         longValue |= readWord(4, false) & 0x00000000FFFFFFFFL;
 
         return Double.longBitsToDouble(longValue);
+    }
+
+    /**
+     * Gets the length of the encoded object from the header fields.
+     *
+     * @return the length of the encoded object in bytes.
+     */
+    public int readHeader() {
+        int length = readUI16() & SWF.TAG_LENGTH_FIELD;
+        if (length == SWF.IS_EXTENDED) {
+            length = readUI32();
+        }
+        return length;
     }
 
     /**

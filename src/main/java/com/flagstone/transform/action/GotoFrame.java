@@ -74,8 +74,8 @@ public final class GotoFrame implements Action {
      */
     public GotoFrame(final SWFDecoder coder) throws CoderException {
         coder.readByte();
-        coder.readWord(2, false);
-        frameNumber = coder.readWord(2, false);
+        coder.readUI16();
+        frameNumber = coder.readUI16();
     }
 
     /**

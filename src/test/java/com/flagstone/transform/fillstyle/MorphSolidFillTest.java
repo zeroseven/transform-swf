@@ -52,7 +52,7 @@ public final class MorphSolidFillTest {
 
     private transient MorphSolidFill fixture;
 
-    private final transient byte[] encoded = new byte[] { 0x00, 0x01, 0x02,
+    private final transient byte[] encoded = new byte[] {0x00, 0x01, 0x02,
             0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
 
     @Test(expected = IllegalArgumentException.class)

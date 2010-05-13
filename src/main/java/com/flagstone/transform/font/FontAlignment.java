@@ -34,7 +34,8 @@ package com.flagstone.transform.font;
 import java.util.ArrayList;
 import java.util.List;
 
-
+import com.flagstone.transform.SWF;
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTag;
@@ -56,7 +57,8 @@ public final class FontAlignment implements MovieTag {
         THICK
     };
 
-    private static final String FORMAT = "FontAlignment: { identifier=%d; strokeWidth=%s; zones=%s }";
+    private static final String FORMAT = "FontAlignment: { identifier=%d;"
+    		+ " strokeWidth=%s; zones=%s }";
 
     private int identifier;
     private transient int hints;
@@ -71,25 +73,16 @@ public final class FontAlignment implements MovieTag {
      * @param coder
      *            an SWFDecoder object that contains the encoded Flash data.
      *
-     * @param context
-     *            a Context object used to manage the decoders for different
-     *            type of object and to pass information on how objects are
-     *            decoded.
-     *
      * @throws CoderException
      *             if an error occurs while decoding the data.
      */
     public FontAlignment(final SWFDecoder coder)
             throws CoderException {
         final int start = coder.getPointer();
-        length = coder.readWord(2, false) & 0x3F;
+        length = coder.readHeader();
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
-        if (length == 0x3F) {
-            length = coder.readWord(4, false);
-        }
-        final int end = coder.getPointer() + (length << 3);
-
-        identifier = coder.readWord(2, false);
+        identifier = coder.readUI16();
         hints = coder.readByte();
 
         zones = new ArrayList<GlyphAlignment>();
@@ -99,12 +92,13 @@ public final class FontAlignment implements MovieTag {
         }
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 
-    /** TODO(method). */
+
     public FontAlignment(final int uid, final StrokeWidth stroke,
             final List<GlyphAlignment> list) {
         setIdentifier(uid);
@@ -142,13 +136,14 @@ public final class FontAlignment implements MovieTag {
      *            glyphs for the font. Must be in the range 1..65535.
      */
     public void setIdentifier(final int uid) {
-        if ((uid < 1) || (uid > 65535)) {
-             throw new IllegalArgumentRangeException(1, 65536, uid);
+        if ((uid < SWF.MIN_IDENTIFIER) || (uid > SWF.MAX_IDENTIFIER)) {
+            throw new IllegalArgumentRangeException(
+                    SWF.MIN_IDENTIFIER, SWF.MAX_IDENTIFIER, uid);
         }
         identifier = uid;
     }
 
-    /** TODO(method). */
+
     public StrokeWidth getStrokeWidth() {
         StrokeWidth stroke;
         switch (hints) {
@@ -165,7 +160,7 @@ public final class FontAlignment implements MovieTag {
         return stroke;
     }
 
-    /** TODO(method). */
+
     public void setStrokeWidth(final StrokeWidth stroke) {
         switch (stroke) {
         case MEDIUM:
@@ -180,12 +175,12 @@ public final class FontAlignment implements MovieTag {
         }
     }
 
-    /** TODO(method). */
+
     public List<GlyphAlignment> getZones() {
         return zones;
     }
 
-    /** TODO(method). */
+
     public void setZones(final List<GlyphAlignment> array) {
         if (array == null) {
             throw new IllegalArgumentException();
@@ -193,7 +188,7 @@ public final class FontAlignment implements MovieTag {
         zones = array;
     }
 
-    /** TODO(method). */
+
     public FontAlignment addZone(final GlyphAlignment zone) {
         if (zone == null) {
             throw new IllegalArgumentException();
@@ -202,7 +197,7 @@ public final class FontAlignment implements MovieTag {
         return this;
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public FontAlignment copy() {
         return new FontAlignment(this);
     }
@@ -227,14 +222,8 @@ public final class FontAlignment implements MovieTag {
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         final int start = coder.getPointer();
-
-        if (length >= 63) {
-            coder.writeWord((MovieTypes.FONT_ALIGNMENT << 6) | 0x3F, 2);
-            coder.writeWord(length, 4);
-        } else {
-            coder.writeWord((MovieTypes.FONT_ALIGNMENT << 6) | length, 2);
-        }
-        final int end = coder.getPointer() + (length << 3);
+        coder.writeHeader(MovieTypes.FONT_ALIGNMENT, length);
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
         coder.writeWord(identifier, 2);
         coder.writeByte(hints);
@@ -244,8 +233,9 @@ public final class FontAlignment implements MovieTag {
         }
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 }

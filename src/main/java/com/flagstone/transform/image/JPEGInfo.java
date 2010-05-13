@@ -37,17 +37,17 @@ import com.flagstone.transform.coder.FLVDecoder;
  * JPEGInfo is used to extract the width and height from a JPEG encoded image.
  */
 public final class JPEGInfo {
-    
+
     private transient int width;
     private transient int height;
-    
+
     /**
      * Return the width of the image.
      */
     public int getWidth() {
         return width;
     }
-    
+
     /**
      * Return the height of the image.
      */
@@ -57,25 +57,24 @@ public final class JPEGInfo {
 
     /**
      * Decode a JPEG encoded image.
-     * 
+     *
      * @param image the image data.
      */
-    public void decode(final byte[] image)
-    {
+    public void decode(final byte[] image) {
         final FLVDecoder coder = new FLVDecoder(image);
         int marker;
         int size;
-        while (!coder.eof()) {    
-            marker = coder.readWord(2, false);
+        while (!coder.eof()) {
+            marker = coder.readUI16();
             if (marker == 0xffd8 || marker == 0xffd9) {
                 continue;
             }
-            size = coder.readWord(2, false);
-            if (marker >= 0xffc0 && marker <= 0xffcf 
+            size = coder.readUI16();
+            if (marker >= 0xffc0 && marker <= 0xffcf
                     && marker != 0xffc4 && marker != 0xffc8) {
                 coder.readWord(1, false);
-                height = coder.readWord(2, false);
-                width = coder.readWord(2, false);
+                height = coder.readUI16();
+                width = coder.readUI16();
                 return;
             } else {
                 coder.adjustPointer((size - 2) << 3);

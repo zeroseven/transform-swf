@@ -57,7 +57,8 @@ import com.flagstone.transform.coder.SWFEncoder;
 @RunWith(Parameterized.class)
 public final class DoActionCodingTest {
 
-    private static final String RESOURCE = "com/flagstone/transform/DoAction.yaml";
+    private static final String RESOURCE =
+        "com/flagstone/transform/DoAction.yaml";
 
     private static final String ACTIONS = "actions";
     private static final String DIN = "din";
@@ -69,46 +70,47 @@ public final class DoActionCodingTest {
         ClassLoader loader = DoActionCodingTest.class.getClassLoader();
         InputStream other = loader.getResourceAsStream(RESOURCE);
         Yaml yaml = new Yaml();
-        
+
         Collection<Object[]> list = new ArrayList<Object[]>();
-         
+
         for (Object data : yaml.loadAll(other)) {
-            list.add(new Object[] { data });
+            list.add(new Object[] {data });
         }
 
         return list;
     }
 
-    private transient final List<Action> actions;
-    private transient final byte[] din;
-    private transient final byte[] dout;
-    private transient final Context context;
-    
-    public DoActionCodingTest(Map<String,Object>values) {
-        List<Integer>codes = (List<Integer>)values.get(ACTIONS);
+    private final transient List<Action> actions;
+    private final transient byte[] din;
+    private final transient byte[] dout;
+    private final transient Context context;
+
+    @SuppressWarnings("unchecked")
+    public DoActionCodingTest(final Map<String, Object>values) {
+        List<Integer>codes = (List<Integer>) values.get(ACTIONS);
         actions = new ArrayList<Action>(codes.size());
         for (Integer code : codes) {
             actions.add(BasicAction.fromInt(code));
         }
-        din = (byte[])values.get(DIN);
-        dout = (byte[])values.get(DOUT);
+        din = (byte[]) values.get(DIN);
+        dout = (byte[]) values.get(DOUT);
         context = new Context();
         context.setRegistry(DecoderRegistry.getDefault());
     }
 
     @Test
-    public void checkSizeMatchesEncodedSize() throws CoderException {     
-        final DoAction object = new DoAction(actions);       
-        final SWFEncoder encoder = new SWFEncoder(dout.length);        
-         
+    public void checkSizeMatchesEncodedSize() throws CoderException {
+        final DoAction object = new DoAction(actions);
+        final SWFEncoder encoder = new SWFEncoder(dout.length);
+
         assertEquals(dout.length, object.prepareToEncode(encoder, context));
     }
 
     @Test
     public void checkObjectIsEncoded() throws CoderException {
-        final DoAction object = new DoAction(actions);       
-        final SWFEncoder encoder = new SWFEncoder(dout.length);        
-        
+        final DoAction object = new DoAction(actions);
+        final SWFEncoder encoder = new SWFEncoder(dout.length);
+
         object.prepareToEncode(encoder, context);
         object.encode(encoder, context);
 

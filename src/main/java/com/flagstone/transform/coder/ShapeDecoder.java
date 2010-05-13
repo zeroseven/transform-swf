@@ -43,12 +43,12 @@ import com.flagstone.transform.shape.ShapeStyle;
 //TODO(class)
 public final class ShapeDecoder implements SWFFactory<ShapeRecord> {
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public SWFFactory<ShapeRecord> copy() {
         return new ShapeDecoder();
     }
 
-    /** TODO(method). */
+
     public ShapeRecord getObject(final SWFDecoder coder, final Context context)
             throws CoderException {
 

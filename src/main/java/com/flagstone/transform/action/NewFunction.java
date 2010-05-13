@@ -178,10 +178,10 @@ public final class NewFunction implements Action {
     public NewFunction(final SWFDecoder coder, final Context context)
             throws CoderException {
         coder.readByte();
-        length = coder.readWord(2, false);
+        length = coder.readUI16();
         name = coder.readString();
 
-        final int argumentCount = coder.readWord(2, false);
+        final int argumentCount = coder.readUI16();
 
         arguments = new ArrayList<String>(argumentCount);
 
@@ -191,7 +191,7 @@ public final class NewFunction implements Action {
             }
         }
 
-        actionsLength = coder.readWord(2, false);
+        actionsLength = coder.readUI16();
         actions = new ArrayList<Action>();
 
         final int end = coder.getPointer()

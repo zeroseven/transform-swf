@@ -89,8 +89,8 @@ public final class With implements Action {
                 .getActionDecoder();
 
         coder.readByte();
-        coder.readWord(2, false);
-        length = coder.readWord(2, false);
+        coder.readUI16();
+        length = coder.readUI16();
         final int end = coder.getPointer() + (length << Coder.BITS_TO_BYTES);
 
         actions = new ArrayList<Action>();

@@ -92,7 +92,7 @@ import com.flagstone.transform.shape.Shape;
 //TODO(class)
 public final class Font {
 
-    private FontFace face; 
+    private FontFace face;
     private CharacterFormat encoding;
 
     private float ascent;
@@ -102,7 +102,7 @@ public final class Font {
     private transient int[] charToGlyph;
     private transient int[] glyphToChar;
     private transient Glyph[] glyphTable;
-    
+
     private transient int glyphIndex;
     private transient int glyphCount;
     private transient int missingGlyph;
@@ -120,9 +120,9 @@ public final class Font {
     public FontFace getFace() {
         return face;
     }
-    
-    public void setFace(final FontFace face) {
-        this.face = face;
+
+    public void setFace(final FontFace fontFace) {
+        face = fontFace;
     }
 
     /**
@@ -132,7 +132,7 @@ public final class Font {
     public CharacterFormat getEncoding() {
         return encoding;
     }
-    
+
     public void setEncoding(final CharacterFormat enc) {
         encoding = enc;
     }
@@ -143,9 +143,9 @@ public final class Font {
     public float getAscent() {
         return ascent;
     }
-    
-    public void setAscent(final float ascent) {
-        this.ascent = ascent;
+
+    public void setAscent(final float dist) {
+        ascent = dist;
     }
 
     /**
@@ -154,9 +154,9 @@ public final class Font {
     public float getDescent() {
         return descent;
     }
-    
-    public void setDescent(final float descent) {
-        this.descent = descent;
+
+    public void setDescent(final float dist) {
+        descent = dist;
     }
 
     /**
@@ -166,17 +166,18 @@ public final class Font {
         return leading;
     }
 
-    
-    public void setLeading(final float leading) {
-        this.leading = leading;
+
+    public void setLeading(final float dist) {
+        leading = dist;
     }
+
     /**
      * Returns the number of glyphs defined in the font.
      */
     public int getNumberOfGlyphs() {
         return glyphCount;
     }
-    
+
     public void setNumberOfGlyphs(final int count) {
         glyphTable = new Glyph[count];
         glyphToChar = new int[count];
@@ -189,25 +190,25 @@ public final class Font {
     public char getHighestChar() {
         return highestChar;
     }
-    
+
     public void setHighestChar(final char highest) {
         highestChar = highest;
         charToGlyph = new int[highest];
     }
-    
-    /** TODO(method). */
+
+
     public int getMissingGlyph() {
         return missingGlyph;
     }
-    
+
     public void setMissingGlyph(final int index) {
         missingGlyph = index;
     }
-    
+
     public Glyph getGlyph(final int index) {
         return glyphTable[index];
     }
-    
+
     public void addGlyph(final char code, final Glyph glyph) {
         glyphTable[glyphIndex] = glyph;
         glyphToChar[glyphIndex] = code;

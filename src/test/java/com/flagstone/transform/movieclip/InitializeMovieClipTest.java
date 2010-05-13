@@ -63,10 +63,10 @@ public final class InitializeMovieClipTest {
 
     private transient InitializeMovieClip fixture;
 
-    private final transient byte[] encoded = new byte[] { (byte) 0xC4, 0x0E,
+    private final transient byte[] encoded = new byte[] {(byte) 0xC4, 0x0E,
             0x01, 0x00, ActionTypes.ADD, ActionTypes.END };
 
-    private final transient byte[] extended = new byte[] { (byte) 0xFF, 0x0E,
+    private final transient byte[] extended = new byte[] {(byte) 0xFF, 0x0E,
             0x04, 0x00, 0x00, 0x00, 0x01, 0x00, ActionTypes.ADD,
             ActionTypes.END };
 

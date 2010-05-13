@@ -87,8 +87,8 @@ public final class MorphSolidFill implements FillStyle {
     }
 
     /**
-     * Creates and initialises a MorphSolidFill fill style using the values copied
-     * from another MorphSolidFill object.
+     * Creates and initialises a MorphSolidFill fill style using the values
+     * copied from another MorphSolidFill object.
      *
      * @param object
      *            a MorphSolidFill fill style from which the values will be
@@ -139,7 +139,7 @@ public final class MorphSolidFill implements FillStyle {
         endColor = aColor;
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public MorphSolidFill copy() {
         return new MorphSolidFill(this);
     }

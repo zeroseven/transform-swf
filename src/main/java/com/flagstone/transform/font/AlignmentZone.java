@@ -31,6 +31,7 @@
 
 package com.flagstone.transform.font;
 
+import com.flagstone.transform.Constants;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -40,7 +41,8 @@ import com.flagstone.transform.coder.SWFEncoder;
 /** TODO(class). */
 public final class AlignmentZone implements SWFEncodeable {
 
-    private static final String FORMAT = "AlignmentZone: { coordinate=%f; range=%f }";
+    private static final String FORMAT = "AlignmentZone: {"
+                + " coordinate=%f; range=%f }";
 
     private final transient float coordinate;
     private final transient float range;
@@ -60,18 +62,18 @@ public final class AlignmentZone implements SWFEncodeable {
         range = coder.readHalf();
     }
 
-    /** TODO(method). */
-    public AlignmentZone(final float coordinate, final float range) {
-        this.coordinate = coordinate;
-        this.range = range;
+
+    public AlignmentZone(final float coord, final float level) {
+        coordinate = coord;
+        range = level;
     }
 
-    /** TODO(method). */
+
     public float getCoordinate() {
         return coordinate;
     }
 
-    /** TODO(method). */
+
     public float getRange() {
         return range;
     }
@@ -101,7 +103,7 @@ public final class AlignmentZone implements SWFEncodeable {
 
     @Override
     public int hashCode() {
-        return (Float.floatToIntBits(coordinate) * 31)
+        return (Float.floatToIntBits(coordinate) * Constants.PRIME)
                 + Float.floatToIntBits(range);
     }
 

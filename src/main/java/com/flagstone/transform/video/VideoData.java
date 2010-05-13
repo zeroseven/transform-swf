@@ -32,6 +32,7 @@ package com.flagstone.transform.video;
 
 import java.util.Arrays;
 
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.FLVDecoder;
 import com.flagstone.transform.coder.FLVEncoder;
@@ -52,13 +53,13 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  */
 //TODO(class)
 public final class VideoData implements VideoTag {
-    
+
     /**
      * Frame is used to identify whether frames are key, optional, etc.
      */
     public enum Frame {
         /**
-         * A key frame. For video encoded using the AVC format key frames are 
+         * A key frame. For video encoded using the AVC format key frames are
          * seekable.
          */
         KEY,
@@ -67,8 +68,8 @@ public final class VideoData implements VideoTag {
          */
         NORMAL,
         /**
-         * An optional frame which may be dropped to maintain the frame rate of 
-         * the video. Used only with H263 encoded video streams. 
+         * An optional frame which may be dropped to maintain the frame rate of
+         * the video. Used only with H263 encoded video streams.
          */
         OPTIONAL,
         /**
@@ -76,14 +77,15 @@ public final class VideoData implements VideoTag {
          */
         GENERATED,
         /**
-         * A command frame. 
+         * A command frame.
          */
         COMMAND
     }
 
     private static final String BAD_FORMAT = "Unsupported format";
-    
-    private static final String FORMAT = "VideoData: { codec=%s; frameType=%s; data =%d }";
+
+    private static final String FORMAT = "VideoData: { codec=%s;"
+    		+ " frameType=%s; data =%d }";
 
     private int timestamp;
     private VideoFormat format;
@@ -97,7 +99,8 @@ public final class VideoData implements VideoTag {
      * in the Flash Video binary format.
      *
      * @param coder
-     *            an FLVDecoder object that contains the encoded Flash Video data.
+     *            an FLVDecoder object that contains the encoded Flash Video
+     *            data.
      *
      * @throws CoderException
      *             if an error occurs while decoding the data.
@@ -106,15 +109,16 @@ public final class VideoData implements VideoTag {
         final int start = coder.getPointer();
         coder.readByte();
         length = coder.readWord(3, false);
-        final int end = coder.getPointer() + (length << 3);
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
         timestamp = coder.readWord(3, false);
-        coder.readWord(4, false); // reserved
+        coder.readUI32(); // reserved
         unpack(coder.readByte());
         data = coder.readBytes(new byte[length - 1]);
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 
@@ -124,25 +128,25 @@ public final class VideoData implements VideoTag {
      * the type of frame that the video represents - either a key frame, regular
      * frame or an optional frame which can be discarded (H263 format only).
      *
-     * @param timestamp
+     * @param time
      *            the time in milliseconds at which the data should be played.
-     * @param format
+     * @param videoFormat
      *            the format used to encode the video either Constants.H263 or
      *            Constants.SCREEN_VIDEO.
      * @param type
      *            the type of frame being displayed, either Constants.KeyFrame,
      *            Constants.Frame or Constants.Optional.
-     * @param data
+     * @param videoData
      *            an array of bytes containing the video encoded using the
      *            format indicated in the codec attribute, either Constants.H263
      *            or Constants.SCREEN_VIDEO.
      */
-    public VideoData(final int timestamp, final VideoFormat format,
-            final Frame type, final byte[] data) {
-        setTimestamp(timestamp);
-        setFormat(format);
+    public VideoData(final int time, final VideoFormat videoFormat,
+            final Frame type, final byte[] videoData) {
+        setTimestamp(time);
+        setFormat(videoFormat);
         setFrameType(type);
-        setData(data);
+        setData(videoData);
     }
 
     /**
@@ -201,12 +205,12 @@ public final class VideoData implements VideoTag {
      * Constants.ScreenVideo for video that was encoded using Macromedia's
      * ScreenVideo format.
      *
-     * @param format
+     * @param videoFormat
      *            the format used to encode the video either Constants.H263 or
      *            Constants.SCREEN_VIDEO.
      */
-    public void setFormat(final VideoFormat format) {
-        this.format = format;
+    public void setFormat(final VideoFormat videoFormat) {
+        format = videoFormat;
     }
 
     /**
@@ -250,18 +254,16 @@ public final class VideoData implements VideoTag {
     /**
      * Sets the encoded video data for the frame.
      *
-     * @param data
+     * @param videoData
      *            an array of bytes containing the video encoded using the
      *            format indicated in the codec attribute, either Constants.H263
      *            or Constants.SCREEN_VIDEO.
      */
-    public void setData(final byte[] data) {
-        this.data = Arrays.copyOf(data, data.length);
+    public void setData(final byte[] videoData) {
+        data = Arrays.copyOf(videoData, videoData.length);
     }
 
-    /**
-     * Creates and returns a deep copy of this object.
-     */
+    /** {@inheritDoc} */
     public VideoData copy() {
         return new VideoData(this);
     }
@@ -284,15 +286,16 @@ public final class VideoData implements VideoTag {
 
         coder.writeWord(VideoTypes.VIDEO_DATA, 1);
         coder.writeWord(length - 11, 3);
-        final int end = coder.getPointer() + (length << 3);
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
         coder.writeWord(timestamp, 3);
         coder.writeWord(0, 4);
         coder.writeByte(pack());
         coder.writeBytes(data);
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 

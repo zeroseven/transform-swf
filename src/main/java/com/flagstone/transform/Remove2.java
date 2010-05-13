@@ -63,23 +63,23 @@ public final class Remove2 implements MovieTag {
      */
     public Remove2(final SWFDecoder coder) throws CoderException {
 
-        if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
-            coder.readWord(4, false);
+        if ((coder.readUI16() & 0x3F) == 0x3F) {
+            coder.readUI32();
         }
 
-        layer = coder.readWord(2, false);
+        layer = coder.readUI16();
     }
 
     /**
      * Creates a RemoveObject2, specifying the layer in the display list where
      * the object to be removed is currently displayed.
      *
-     * @param layer
+     * @param level
      *            the layer number on which the object is displayed. Must be in
      *            the range 1.65535.
      */
-    public Remove2(final int layer) {
-        setLayer(layer);
+    public Remove2(final int level) {
+        setLayer(level);
     }
 
     /**
@@ -135,7 +135,7 @@ public final class Remove2 implements MovieTag {
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
-        coder.writeWord((MovieTypes.REMOVE_2 << 6) | 2, 2);
+        coder.writeHeader(MovieTypes.REMOVE_2, 2);
         coder.writeWord(layer, 2);
     }
 }

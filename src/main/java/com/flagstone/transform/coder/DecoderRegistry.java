@@ -54,12 +54,12 @@ public final class DecoderRegistry {
         defaultRegistry.setVideoDecoder(new VideoDecoder());
     }
 
-    /** TODO(method). */
+
     public static DecoderRegistry getDefault() {
         return new DecoderRegistry(defaultRegistry);
     }
 
-    /** TODO(method). */
+
     public static void setDefault(final DecoderRegistry registry) {
         defaultRegistry = new DecoderRegistry(registry);
     }
@@ -79,7 +79,7 @@ public final class DecoderRegistry {
         // All decoders default to null
     }
 
-    /** TODO(method). */
+
     public DecoderRegistry(final DecoderRegistry registry) {
         filterDecoder = registry.filterDecoder.copy();
         fillStyleDecoder = registry.fillStyleDecoder.copy();
@@ -90,77 +90,77 @@ public final class DecoderRegistry {
         videoDecoder = registry.videoDecoder.copy();
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public DecoderRegistry copy() {
         return new DecoderRegistry(this);
     }
 
-    /** TODO(method). */
+
     public SWFFactory<Filter> getFilterDecoder() {
         return filterDecoder;
     }
 
-    /** TODO(method). */
+
     public void setFilterDecoder(final SWFFactory<Filter> factory) {
         filterDecoder = factory;
     }
 
-    /** TODO(method). */
+
     public SWFFactory<FillStyle> getFillStyleDecoder() {
         return fillStyleDecoder;
     }
 
-    /** TODO(method). */
+
     public void setFillStyleDecoder(final SWFFactory<FillStyle> factory) {
         fillStyleDecoder = factory;
     }
 
-    /** TODO(method). */
+
     public SWFFactory<FillStyle> getMorphFillStyleDecoder() {
         return morphStyleDecoder;
     }
 
-    /** TODO(method). */
+
     public void setMorphFillStyleDecoder(final SWFFactory<FillStyle> factory) {
         morphStyleDecoder = factory;
     }
 
-    /** TODO(method). */
+
     public SWFFactory<ShapeRecord> getShapeDecoder() {
         return shapeDecoder;
     }
 
-    /** TODO(method). */
+
     public void setShapeDecoder(final SWFFactory<ShapeRecord> factory) {
         shapeDecoder = factory;
     }
 
-    /** TODO(method). */
+
     public SWFFactory<Action> getActionDecoder() {
         return actionDecoder;
     }
 
-    /** TODO(method). */
+
     public void setActionDecoder(final SWFFactory<Action> factory) {
         actionDecoder = factory;
     }
 
-    /** TODO(method). */
+
     public SWFFactory<MovieTag> getMovieDecoder() {
         return movieDecoder;
     }
 
-    /** TODO(method). */
+
     public void setMovieDecoder(final SWFFactory<MovieTag> factory) {
         movieDecoder = factory;
     }
 
-    /** TODO(method). */
+
     public FLVFactory<VideoTag> getVideoDecoder() {
         return videoDecoder;
     }
 
-    /** TODO(method). */
+
     public void setVideoDecoder(final FLVFactory<VideoTag> factory) {
         videoDecoder = factory;
     }

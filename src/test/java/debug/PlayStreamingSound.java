@@ -41,11 +41,22 @@ import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.datatype.WebPalette;
 
+/**
+ * PlayStreamingSound generates a Flash file with a sound file encoded as a
+ * streaming sound.
+ */
 public final class PlayStreamingSound {
+    /**
+     * Run the test from the command line.
+     * @param args array of command line arguments.
+     */
     public static void main(final String[] args) {
 
         final File sourceFile = new File(args[0]);
         final File destFile = new File(args[1]);
+
+        final int screenWidth = 8000;
+        final int screenHeight = 4000;
 
         try {
             if (!destFile.getParentFile().exists()) {
@@ -59,7 +70,7 @@ public final class PlayStreamingSound {
             // SoundFactory.streamSound((int)framesPerSecond,
             // sourceFile);
 
-            movie.setFrameSize(new Bounds(0, 0, 8000, 4000));
+            movie.setFrameSize(new Bounds(0, 0, screenWidth, screenHeight));
             movie.setFrameRate(framesPerSecond);
 
             movie.add(new Background(WebPalette.LIGHT_BLUE.color()));
@@ -76,6 +87,7 @@ public final class PlayStreamingSound {
         }
     }
 
+    /** Private constructor. */
     private PlayStreamingSound() {
         // Private.
     }

@@ -39,15 +39,18 @@ import org.junit.Test;
 
 public final class PropertyTest {
 
-    private static final String VALUE_MISMATCH = "Values do not match for %s";
-    private static final String NO_SUCH_PROPERTY = "Cannot look up property for %d";
+    private static final String VALUE_MISMATCH =
+        "Values do not match for %s";
+    private static final String NO_SUCH_PROPERTY =
+        "Cannot look up property for %d";
 
     private transient int flashVersion;
 
     @Test
     public void checkPropertyReturnsIntegerValue() {
 
-        final Map<Property, Integer> table = new LinkedHashMap<Property, Integer>();
+        final Map<Property, Integer> table =
+            new LinkedHashMap<Property, Integer>();
         flashVersion = 5;
 
         table.put(Property.XCOORD, 0);
@@ -82,7 +85,8 @@ public final class PropertyTest {
     @Test
     public void checkPropertyReturnsFloatValue() {
 
-        final Map<Property, Integer> table = new LinkedHashMap<Property, Integer>();
+        final Map<Property, Integer> table =
+            new LinkedHashMap<Property, Integer>();
         flashVersion = 3;
 
         table.put(Property.XCOORD, 0x00000000);
@@ -110,7 +114,7 @@ public final class PropertyTest {
 
         for (final Property property : table.keySet()) {
             assertEquals(String.format(VALUE_MISMATCH, property),
-                    table.get(property).intValue(), 
+                    table.get(property).intValue(),
                     property.getValue(flashVersion));
         }
     }

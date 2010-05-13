@@ -37,8 +37,8 @@ import org.junit.Test;
 
 public final class TabOrderTest {
 
-    private static final transient int layer = 1;
-    private static final transient int index = 2;
+    private final transient int layer = 1;
+    private final transient int index = 2;
 
     private transient TabOrder fixture;
 

@@ -32,6 +32,7 @@
 package com.flagstone.transform.text;
 
 
+import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTag;
@@ -103,14 +104,14 @@ public final class TextSettings implements MovieTag {
      *             if an error occurs while decoding the data.
      */
     public TextSettings(final SWFDecoder coder) throws CoderException {
-        if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
-            coder.readWord(4, false);
+        if ((coder.readUI16() & 0x3F) == 0x3F) {
+            coder.readUI32();
         }
 
-        identifier = coder.readWord(2, false);
+        identifier = coder.readUI16();
         rendering = coder.readByte();
-        thickness = coder.readWord(4, false);
-        sharpness = coder.readWord(4, false);
+        thickness = coder.readUI32();
+        sharpness = coder.readUI32();
         coder.readByte();
     }
 
@@ -124,18 +125,18 @@ public final class TextSettings implements MovieTag {
      *            the text.
      * @param grid
      *            how letters are aligned with respect to the pixel grid.
-     * @param thickness
+     * @param thick
      *            the thickness used when anti-aliasing the text.
-     * @param sharpness
+     * @param sharp
      *            the sharpness used when anti-aliasing the text.
      */
     public TextSettings(final int uid, final boolean advanced, final Grid grid,
-            final float thickness, final float sharpness) {
+            final float thick, final float sharp) {
         setIdentifier(uid);
         useAdvanced(advanced);
         setGrid(grid);
-        setThickness(thickness);
-        setSharpness(sharpness);
+        setThickness(thick);
+        setSharpness(sharp);
     }
 
     /**
@@ -168,8 +169,9 @@ public final class TextSettings implements MovieTag {
      *            DefineTextField object. Must be in the range 1..65535.
      */
     public void setIdentifier(final int uid) {
-        if ((uid < 1) || (uid > 65535)) {
-             throw new IllegalArgumentRangeException(1, 65536, uid);
+        if ((uid < SWF.MIN_IDENTIFIER) || (uid > SWF.MAX_IDENTIFIER)) {
+            throw new IllegalArgumentRangeException(
+                    SWF.MIN_IDENTIFIER, SWF.MAX_IDENTIFIER, uid);
         }
         identifier = uid;
     }
@@ -248,12 +250,12 @@ public final class TextSettings implements MovieTag {
      * Sets the value used to control the thickness of a line when rendered. May
      * be set to 0.0 if the default anti-aliasing value will be used.
      *
-     * @param thickness
+     * @param level
      *            the value of the thickness parameter used by the rendering
      *            engine.
      */
-    public void setThickness(final float thickness) {
-        this.thickness = (int) (thickness * 65536);
+    public void setThickness(final float level) {
+        thickness = (int) (level * 65536);
     }
 
     /**
@@ -268,15 +270,15 @@ public final class TextSettings implements MovieTag {
      * Sets the value used to control the sharpness of a line when rendered. May
      * be set to 0.0 if the default anti-aliasing value will be used.
      *
-     * @param sharpness
+     * @param level
      *            the value of the sharpness parameter used by the rendering
      *            engine.
      */
-    public void setSharpness(final float sharpness) {
-        this.sharpness = (int) (sharpness * 65536);
+    public void setSharpness(final float level) {
+        this.sharpness = (int) (level * 65536);
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public TextSettings copy() {
         return new TextSettings(this);
     }

@@ -62,19 +62,13 @@ public final class MovieMetaData implements MovieTag {
      *             if an error occurs while decoding the data.
      */
     public MovieMetaData(final SWFDecoder coder) throws CoderException {
-
-        length = coder.readWord(2, false) & 0x3F;
-
-        if (length == 0x3F) {
-            length = coder.readWord(4, false);
-        }
-
+        length = coder.readHeader();
         metaData = coder.readString(length - 1, coder.getEncoding());
         coder.readByte();
     }
 
     /**
-     * Creates a MoveMetaData object with the specified string containing the 
+     * Creates a MoveMetaData object with the specified string containing the
      * meta-data for the movie.
      *
      * @param aString
@@ -97,12 +91,12 @@ public final class MovieMetaData implements MovieTag {
         metaData = object.metaData;
     }
 
-    /** TODO(method). */
+
     public String getMetaData() {
         return metaData;
     }
 
-    /** TODO(method). */
+
     public void setMetaData(final String aString) {
         if (aString == null) {
             throw new IllegalArgumentException();
@@ -131,13 +125,7 @@ public final class MovieMetaData implements MovieTag {
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
 
-        if (length > 62) {
-            coder.writeWord((MovieTypes.METADATA << 6) | 0x3F, 2);
-            coder.writeWord(length, 4);
-        } else {
-            coder.writeWord((MovieTypes.METADATA << 6) | length, 2);
-        }
-
+        coder.writeHeader(MovieTypes.METADATA, length);
         coder.writeString(metaData);
     }
 }

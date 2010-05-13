@@ -48,10 +48,10 @@ public final class DefineMorphShape2Test {
 
     private transient DefineMorphShape2 fixture;
 
-    private final transient byte[] encoded = new byte[] { 0x06, 0x01, 0x01,
+    private final transient byte[] encoded = new byte[] {0x06, 0x01, 0x01,
             0x00, 0x02, 0x00, 0x06, 0x50 };
 
-    private final transient byte[] extended = new byte[] { 0x7F, 0x01, 0x06,
+    private final transient byte[] extended = new byte[] {0x7F, 0x01, 0x06,
             0x00, 0x00, 0x00, 0x01, 0x00, 0x02, 0x00, 0x06, 0x50 };
 
     @Test

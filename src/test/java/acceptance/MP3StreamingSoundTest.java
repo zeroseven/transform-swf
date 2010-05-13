@@ -56,12 +56,13 @@ import com.flagstone.transform.util.sound.SoundFactory;
 
 @RunWith(Parameterized.class)
 public final class MP3StreamingSoundTest {
-    
+
     @Parameters
     public static Collection<Object[]> files() {
 
         final File srcDir = new File("test/data/mp3/reference");
-        final File destDir = new File("test/results/acceptance/MP3StreamingSoundTest");
+        final File destDir =
+            new File("test/results/acceptance/MP3StreamingSoundTest");
 
         if (!destDir.exists() && !destDir.mkdirs()) {
             fail();
@@ -72,22 +73,22 @@ public final class MP3StreamingSoundTest {
                 return name.endsWith(".mp3");
             }
         };
-        
+
         String[] files = srcDir.list(filter);
         Object[][] collection = new Object[files.length][2];
 
-        for (int i=0; i<files.length; i++) {
+        for (int i = 0; i < files.length; i++) {
             collection[i][0] = new File(srcDir, files[i]);
-            collection[i][1] = new File(destDir, 
+            collection[i][1] = new File(destDir,
                     files[i].substring(0, files[i].lastIndexOf('.')) + ".swf");
         }
         return Arrays.asList(collection);
     }
 
-    private File sourceFile;
-    private File destFile;
+    private final File sourceFile;
+    private final File destFile;
 
-    public MP3StreamingSoundTest(File src, File dst) {
+    public MP3StreamingSoundTest(final File src, final File dst) {
         sourceFile = src;
         destFile = dst;
     }
@@ -98,10 +99,11 @@ public final class MP3StreamingSoundTest {
         try {
             final float framesPerSecond = 12.0f;
             final Movie movie = new Movie();
-            
+
             final SoundFactory factory = new SoundFactory();
             factory.read(sourceFile);
-            final List<MovieTag> stream = factory.streamSound((int)framesPerSecond);
+            final List<MovieTag> stream =
+                factory.streamSound((int) framesPerSecond);
 
             movie.setFrameSize(new Bounds(0, 0, 8000, 4000));
             movie.setFrameRate(framesPerSecond);
@@ -115,7 +117,7 @@ public final class MP3StreamingSoundTest {
             }
 
             movie.encodeToFile(destFile);
-            
+
         } catch (Exception e) {
             e.printStackTrace();
             fail(sourceFile.getPath());

@@ -69,28 +69,28 @@ public final class TabOrder implements MovieTag {
      */
     public TabOrder(final SWFDecoder coder) throws CoderException {
 
-        if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
-            coder.readWord(4, false);
+        if ((coder.readUI16() & 0x3F) == 0x3F) {
+            coder.readUI32();
         }
 
-        layer = coder.readWord(2, false);
-        index = coder.readWord(2, false);
+        layer = coder.readUI16();
+        index = coder.readUI16();
     }
 
     /**
      * Construct a TabOrder object that set the tab order for the object on the
      * display list at the specified layer.
      *
-     * @param layer
+     * @param level
      *            the layer number which contains the object assigned to the
      *            tabbing order. Must be in the range 1..65535.
-     * @param index
+     * @param idx
      *            the index of the object in the tabbing order. Must be in the
      *            range 0..65535.
      */
-    public TabOrder(final int layer, final int index) {
-        setLayer(layer);
-        setIndex(index);
+    public TabOrder(final int level, final int idx) {
+        setLayer(level);
+        setIndex(idx);
     }
 
     /**
@@ -118,14 +118,14 @@ public final class TabOrder implements MovieTag {
      * Sets the layer number which contains the object assigned to the tabbing
      * order.
      *
-     * @param layer
+     * @param level
      *            the layer number. Must be in the range 1..65535.
      */
-    public void setLayer(final int layer) {
-        if ((layer < 1) || (layer > 65535)) {
-            throw new IllegalArgumentRangeException(1, 65536, layer);
+    public void setLayer(final int level) {
+        if ((level < 1) || (level > 65535)) {
+            throw new IllegalArgumentRangeException(1, 65536, level);
         }
-        this.layer = layer;
+        layer = level;
     }
 
     /**
@@ -138,14 +138,14 @@ public final class TabOrder implements MovieTag {
     /**
      * Sets the index of the object in the tabbing order.
      *
-     * @param index
+     * @param idx
      *            the index in the tabbing order. Must be in the range 0..65535.
      */
-    public void setIndex(final int index) {
-        if ((index < 0) || (index > 65535)) {
-            throw new IllegalArgumentRangeException(0, 65535, index);
+    public void setIndex(final int idx) {
+        if ((idx < 0) || (idx > 65535)) {
+            throw new IllegalArgumentRangeException(0, 65535, idx);
         }
-        this.index = index;
+        index = idx;
     }
 
     /** {@inheritDoc} */
@@ -167,7 +167,7 @@ public final class TabOrder implements MovieTag {
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
-        coder.writeWord((MovieTypes.TAB_ORDER << 6) | 4, 2);
+        coder.writeHeader(MovieTypes.TAB_ORDER, 4);
         coder.writeWord(layer, 2);
         coder.writeWord(index, 2);
     }

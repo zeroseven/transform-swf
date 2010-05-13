@@ -44,19 +44,19 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 public final class GotoFrame2Test {
 
-    private static final transient int type = ActionTypes.GOTO_FRAME_2;
-    private static final transient boolean play = true;
-    private static final transient int offset = 1;
+    private final transient int type = ActionTypes.GOTO_FRAME_2;
+    private final transient boolean play = true;
+    private final transient int offset = 1;
 
     private transient GotoFrame2 fixture;
 
-    private final transient byte[] encoded = new byte[] { (byte) type, 0x03,
+    private final transient byte[] encoded = new byte[] {(byte) type, 0x03,
             0x00, 0x03, 0x01, 0x00 };
 
-    private final transient byte[] stop = new byte[] { (byte) type, 0x01, 0x00,
+    private final transient byte[] stop = new byte[] {(byte) type, 0x01, 0x00,
             0x00 };
 
-    private final transient byte[] noOffset = new byte[] { (byte) type, 0x01,
+    private final transient byte[] noOffset = new byte[] {(byte) type, 0x01,
             0x00, 0x01 };
 
     @Test(expected = IllegalArgumentException.class)
@@ -97,7 +97,8 @@ public final class GotoFrame2Test {
         final Context context = new Context();
 
         fixture = new GotoFrame2(0, play);
-        assertEquals(noOffset.length, fixture.prepareToEncode(encoder, context));
+        assertEquals(noOffset.length,
+                fixture.prepareToEncode(encoder, context));
         fixture.encode(encoder, context);
 
         assertTrue(encoder.eof());

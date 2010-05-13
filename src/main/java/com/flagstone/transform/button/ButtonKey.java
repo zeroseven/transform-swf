@@ -122,11 +122,11 @@ public enum ButtonKey {
 
     private final int value;
 
-    private ButtonKey(final int value) {
-        this.value = value;
+    private ButtonKey(final int keyCode) {
+        value = keyCode;
     }
 
     public char getChar() {
-        return (char)value;
+        return (char) value;
     }
 }

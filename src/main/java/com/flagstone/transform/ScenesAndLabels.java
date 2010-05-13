@@ -34,14 +34,14 @@ package com.flagstone.transform;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.flagstone.transform.exception.StringSizeException;
-import com.flagstone.transform.exception.IllegalArgumentRangeException;
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 /** TODO(class). */
 public final class ScenesAndLabels implements MovieTag {
@@ -67,13 +67,8 @@ public final class ScenesAndLabels implements MovieTag {
     public ScenesAndLabels(final SWFDecoder coder) throws CoderException {
 
         final int start = coder.getPointer();
-
-        length = coder.readWord(2, false) & 0x3F;
-
-        if (length == 0x3F) {
-            length = coder.readWord(4, false);
-        }
-        final int end = coder.getPointer() + (length << 3);
+        length = coder.readHeader();
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
         int count = coder.readVariableU32();
 
@@ -90,13 +85,14 @@ public final class ScenesAndLabels implements MovieTag {
         }
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 
     /**
-     * Creates a ScenesAndLabels object with empty tables for the scenes and 
+     * Creates a ScenesAndLabels object with empty tables for the scenes and
      * labels.
      */
     public ScenesAndLabels() {
@@ -104,11 +100,11 @@ public final class ScenesAndLabels implements MovieTag {
         labels = new LinkedHashMap<Integer, String>();
     }
 
-    /** TODO(method). */
-    public ScenesAndLabels(final Map<Integer, String> scenes,
-            final Map<Integer, String> labels) {
-        this.scenes = scenes;
-        this.labels = labels;
+
+    public ScenesAndLabels(final Map<Integer, String> sceneMap,
+            final Map<Integer, String> labelMap) {
+        scenes = sceneMap;
+        labels = labelMap;
     }
 
     /**
@@ -124,27 +120,24 @@ public final class ScenesAndLabels implements MovieTag {
         labels = new LinkedHashMap<Integer, String>(object.labels);
     }
 
-    /** TODO(method). */
+
     public ScenesAndLabels addScene(final int offset, final String name) {
         if ((offset < 0) || (offset > 65535)) {
             throw new IllegalArgumentRangeException(0, 65535, offset);
         }
-        if (name == null) {
+        if (name == null || name.length() == 0) {
             throw new IllegalArgumentException();
-        }
-        if (name.length() == 0) {
-            throw new StringSizeException(0, Integer.MAX_VALUE, 0);
         }
         scenes.put(offset, name);
         return this;
     }
 
-    /** TODO(method). */
+
     public Map<Integer, String> getScenes() {
         return scenes;
     }
 
-    /** TODO(method). */
+
     public void setScenes(final Map<Integer, String> map) {
         if (map == null) {
             throw new IllegalArgumentException();
@@ -152,27 +145,24 @@ public final class ScenesAndLabels implements MovieTag {
         scenes = map;
     }
 
-    /** TODO(method). */
+
     public ScenesAndLabels addLabel(final int offset, final String name) {
         if ((offset < 0) || (offset > 65535)) {
             throw new IllegalArgumentRangeException(0, 65535, offset);
         }
-        if (name == null) {
+        if (name == null || name.length() == 0) {
             throw new IllegalArgumentException();
-        }
-        if (name.length() == 0) {
-            throw new StringSizeException(0, Integer.MAX_VALUE, 0);
         }
         labels.put(offset, name);
         return this;
     }
 
-    /** TODO(method). */
+
     public Map<Integer, String> getLabels() {
         return labels;
     }
 
-    /** TODO(method). */
+
     public void setLabels(final Map<Integer, String> map) {
         if (map == null) {
             throw new IllegalArgumentException();
@@ -216,14 +206,8 @@ public final class ScenesAndLabels implements MovieTag {
             throws CoderException {
 
         final int start = coder.getPointer();
-
-        if (length > 62) {
-            coder.writeWord((MovieTypes.SCENES_AND_LABELS << 6) | 0x3F, 2);
-            coder.writeWord(length, 4);
-        } else {
-            coder.writeWord((MovieTypes.SCENES_AND_LABELS << 6) | length, 2);
-        }
-        final int end = coder.getPointer() + (length << 3);
+        coder.writeHeader(MovieTypes.SCENES_AND_LABELS, length);
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
         coder.writeVariableU32(scenes.size());
 
@@ -240,8 +224,9 @@ public final class ScenesAndLabels implements MovieTag {
         }
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 }

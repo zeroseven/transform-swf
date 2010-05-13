@@ -32,6 +32,8 @@
 package com.flagstone.transform.button;
 
 
+import com.flagstone.transform.SWF;
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTag;
@@ -60,7 +62,8 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
 //TODO(class)
 public final class ButtonColorTransform implements MovieTag {
 
-    private static final String FORMAT = "ButtonColorTransform: { identifier=%d; colorTransform=%s }";
+    private static final String FORMAT = "ButtonColorTransform: {"
+    		+ " identifier=%d; colorTransform=%s }";
 
     private int identifier;
     private ColorTransform colorTransform;
@@ -68,8 +71,8 @@ public final class ButtonColorTransform implements MovieTag {
     private transient int length;
 
     /**
-     * Creates and initialises a ButtonColorTransform object using values encoded
-     * in the Flash binary format.
+     * Creates and initialises a ButtonColorTransform object using values
+     * encoded in the Flash binary format.
      *
      * @param coder
      *            an SWFDecoder object that contains the encoded Flash data.
@@ -86,19 +89,16 @@ public final class ButtonColorTransform implements MovieTag {
             throws CoderException {
 
         final int start = coder.getPointer();
-        length = coder.readWord(2, false) & 0x3F;
+        length = coder.readHeader();
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
-        if (length == 0x3F) {
-            length = coder.readWord(4, false);
-        }
-        final int end = coder.getPointer() + (length << 3);
-
-        identifier = coder.readWord(2, false);
+        identifier = coder.readUI16();
         colorTransform = new ColorTransform(coder, context);
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 
@@ -118,8 +118,8 @@ public final class ButtonColorTransform implements MovieTag {
     }
 
     /**
-     * Creates and initialises a ButtonColorTransform object using the values copied
-     * from another ButtonColorTransform object.
+     * Creates and initialises a ButtonColorTransform object using the values
+     * copied from another ButtonColorTransform object.
      *
      * @param object
      *            a ButtonColorTransform object from which the values will be
@@ -152,8 +152,9 @@ public final class ButtonColorTransform implements MovieTag {
      *            will be applied to. Must be in the range 1..65535.
      */
     public void setIdentifier(final int uid) {
-        if ((uid < 1) || (uid > 65535)) {
-             throw new IllegalArgumentRangeException(1, 65536, uid);
+        if ((uid < SWF.MIN_IDENTIFIER) || (uid > SWF.MAX_IDENTIFIER)) {
+             throw new IllegalArgumentRangeException(
+                     SWF.MIN_IDENTIFIER, SWF.MAX_IDENTIFIER, uid);
         }
         identifier = uid;
     }
@@ -171,7 +172,7 @@ public final class ButtonColorTransform implements MovieTag {
         colorTransform = transform;
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public ButtonColorTransform copy() {
         return new ButtonColorTransform(this);
     }
@@ -184,7 +185,6 @@ public final class ButtonColorTransform implements MovieTag {
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         length = 4 + colorTransform.prepareToEncode(coder, context);
-
         return (length > 62 ? 6 : 2) + length;
     }
 
@@ -194,22 +194,16 @@ public final class ButtonColorTransform implements MovieTag {
             throws CoderException {
 
         final int start = coder.getPointer();
-
-        if (length >= 63) {
-            coder.writeWord((MovieTypes.BUTTON_COLOR_TRANSFORM << 6) | 0x3F, 2);
-            coder.writeWord(length, 4);
-        } else {
-            coder.writeWord((MovieTypes.BUTTON_COLOR_TRANSFORM << 6) | length,
-                    2);
-        }
-        final int end = coder.getPointer() + (length << 3);
+        coder.writeHeader(MovieTypes.BUTTON_COLOR_TRANSFORM, length);
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
         coder.writeWord(identifier, 2);
         colorTransform.encode(coder, context);
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 }

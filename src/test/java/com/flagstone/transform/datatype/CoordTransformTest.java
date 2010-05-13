@@ -1,5 +1,5 @@
 /*
- * CoordTransformTest.java 
+ * CoordTransformTest.java
  * Transform
  *
  * Copyright (c) 2009-2010 Flagstone Software Ltd. All rights reserved.
@@ -99,15 +99,15 @@ public final class CoordTransformTest {
     @Test
     public void checkRotate() {
         /*
-         * Values are stored as 16-bit fixed point numbers so the precision 
+         * Values are stored as 16-bit fixed point numbers so the precision
          * of the expected result needs to be limited so the comparison passes.
          */
         final int angle = 60;
         final double radians = Math.toRadians(angle);
-        final float cos = (float)((int)(Math.cos(radians) * 
-                CoordTransform.SCALE_FACTOR))/CoordTransform.SCALE_FACTOR;
-        final float sin = (float)((int)(Math.sin(radians) * 
-                CoordTransform.SCALE_FACTOR))/CoordTransform.SCALE_FACTOR;
+        final float cos = ((int) (Math.cos(radians)
+                * CoordTransform.SCALE_FACTOR)) / CoordTransform.SCALE_FACTOR;
+        final float sin = ((int) (Math.sin(radians)
+                * CoordTransform.SCALE_FACTOR)) / CoordTransform.SCALE_FACTOR;
 
         final float[][] expected = {
                 {cos,  -sin, 0.0f},

@@ -85,9 +85,9 @@ public final class Movie {
 
     /** TODO(class). */
    public enum Signature {
-       /** TODO(method). */
+
        FWS(new byte[] { 0x46, 0x57, 0x53}),
-       /** TODO(method). */
+
        CWS(new byte[] { 0x43, 0x57, 0x53});
 
        private byte[] bytes;
@@ -99,8 +99,12 @@ public final class Movie {
        public boolean matches(final byte[] data) {
            return Arrays.equals(bytes, data);
        }
+
+       protected byte get(final int index) {
+           return bytes[index];
+       }
     }
- 
+
     private static final String FORMAT = "Movie: { signature=%s; version=%d;"
             + " frameSize=%s; frameRate=%f; objects=%s }";
 
@@ -117,7 +121,7 @@ public final class Movie {
     private transient int length;
     private transient int frameCount;
 
-    /** TODO(method). */
+
     public Movie() {
         encoding = CharacterEncoding.UTF8;
         signature = Signature.CWS;
@@ -125,7 +129,7 @@ public final class Movie {
         objects = new ArrayList<MovieTag>();
     }
 
-    /** TODO(method). */
+
     public Movie(final Movie object) {
 
         if (object.registry != null) {
@@ -151,10 +155,10 @@ public final class Movie {
      * Sets the registry containing the object used to decode the different
      * types of object found in a movie.
      *
-     * @param registry
+     * @param decoderRegistry
      */
-    public void setRegistry(final DecoderRegistry registry) {
-        this.registry = registry;
+    public void setRegistry(final DecoderRegistry decoderRegistry) {
+        registry = decoderRegistry;
     }
 
     /**
@@ -228,7 +232,8 @@ public final class Movie {
      */
     public void setVersion(final int aNumber) {
         if (aNumber < 0) {
-            throw new IllegalArgumentRangeException(0, Integer.MAX_VALUE, aNumber);
+            throw new IllegalArgumentRangeException(
+                    0, Integer.MAX_VALUE, aNumber);
         }
         version = aNumber;
     }
@@ -314,9 +319,7 @@ public final class Movie {
         return this;
     }
 
-    /**
-     * Creates and returns a complete copy of this object.
-     */
+    /** {@inheritDoc} */
     public Movie copy() {
         return new Movie(this);
     }
@@ -414,22 +417,22 @@ public final class Movie {
 
         frameSize = new Bounds(decoder);
         frameRate = decoder.readWord(2, true) / 256.0f;
-        frameCount = decoder.readWord(2, false);
+        frameCount = decoder.readUI16();
 
         buffer = new byte[length - size - 10];
         int read = 0;
         int num = 0;
-        
-        // Get number of bytes read first before adding to total reads since 
+
+        // Get number of bytes read first before adding to total reads since
         // the actual size of the file may be less than the specified length
-        
+
         do {
-            num = streamIn.read(buffer, read, buffer.length-read);
+            num = streamIn.read(buffer, read, buffer.length - read);
             if (num != -1) {
                 read += num;
             }
         } while (num != -1 && read < buffer.length);
-        
+
         if (read < buffer.length) {
             decoder.setData(Arrays.copyOf(buffer, read));
         } else {
@@ -437,10 +440,11 @@ public final class Movie {
         }
         decoder.setEncoding(encoding.toString());
 
-        final SWFFactory<MovieTag> factory = context.getRegistry().getMovieDecoder();
+        final SWFFactory<MovieTag> factory =
+            context.getRegistry().getMovieDecoder();
 
         objects.clear();
-        
+
         if (factory == null) {
             objects.add(new MovieData(decoder.getData()));
         } else {
@@ -457,7 +461,7 @@ public final class Movie {
                 objects.add(object);
             }
             // Remove the last object which is the end of movie marker.
-            objects.remove(objects.size()-1);
+            objects.remove(objects.size() - 1);
         }
     }
 
@@ -497,9 +501,9 @@ public final class Movie {
      * @throws DataFormatException
      *             if an error occurs when compressing the flash file.
      */
-    public void encodeToStream(final OutputStream stream) 
+    public void encodeToStream(final OutputStream stream)
             throws DataFormatException, IOException {
-        
+
         final SWFEncoder coder = new SWFEncoder(0);
         final Context context = new Context();
 
@@ -520,8 +524,9 @@ public final class Movie {
 
         coder.setData(length);
 
-        coder.writeString(signature.toString());
-        coder.adjustPointer(-8);
+        coder.writeByte(signature.get(0));
+        coder.writeByte(signature.get(1));
+        coder.writeByte(signature.get(2));
         coder.writeByte(version);
         coder.writeWord(length, 4);
         frameSize.encode(coder, context);

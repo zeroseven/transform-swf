@@ -128,8 +128,8 @@ public final class GradientFill implements FillStyle {
      * Creates a GradientFill object specifying the type, coordinate transform
      * and array of gradient points.
      *
-     * @param type
-     *            identifies whether the gradient is rendered linearly or 
+     * @param gradientType
+     *            identifies whether the gradient is rendered linearly or
      *            radially.
      * @param aTransform
      *            the coordinate transform mapping the gradient square onto
@@ -140,9 +140,9 @@ public final class GradientFill implements FillStyle {
      *            to 8 Gradients. For Flash 8 onwards this number was increased
      *            to 15. Must not be null.
      */
-    public GradientFill(final GradientType type, final CoordTransform aTransform,
-            final List<Gradient> anArray) {
-        setType(type);
+    public GradientFill(final GradientType gradientType,
+            final CoordTransform aTransform, final List<Gradient> anArray) {
+        setType(gradientType);
         setTransform(aTransform);
         setGradients(anArray);
     }
@@ -161,7 +161,7 @@ public final class GradientFill implements FillStyle {
         gradients = new ArrayList<Gradient>(object.gradients);
     }
 
-    /** TODO(method). */
+
     public GradientType getType() {
         GradientType value;
         if (type == 0x10) {
@@ -172,7 +172,7 @@ public final class GradientFill implements FillStyle {
         return value;
     }
 
-    /** TODO(method). */
+
     public void setType(final GradientType gradientType) {
         if (gradientType == GradientType.LINEAR) {
             type = 0x10;
@@ -181,7 +181,7 @@ public final class GradientFill implements FillStyle {
         }
      }
 
-    /** TODO(method). */
+
     public Spread getSpread() {
         Spread value;
         switch (spread) {
@@ -200,9 +200,9 @@ public final class GradientFill implements FillStyle {
         return value;
     }
 
-    /** TODO(method). */
-    public void setSpread(final Spread type) {
-        switch (type) {
+
+    public void setSpread(final Spread spreadType) {
+        switch (spreadType) {
         case PAD:
             spread = 0;
             break;
@@ -217,7 +217,7 @@ public final class GradientFill implements FillStyle {
         }
     }
 
-    /** TODO(method). */
+
     public Interpolation getInterpolation() {
         Interpolation value;
         switch (interpolation) {
@@ -233,9 +233,9 @@ public final class GradientFill implements FillStyle {
         return value;
     }
 
-    /** TODO(method). */
-    public void setInterpolation(final Interpolation type) {
-        switch (type) {
+
+    public void setInterpolation(final Interpolation interpolationType) {
+        switch (interpolationType) {
         case NORMAL:
             interpolation = 0;
             break;
@@ -290,7 +290,8 @@ public final class GradientFill implements FillStyle {
             throw new IllegalArgumentException();
         }
         if (anArray.size() > 15) {
-            throw new IllegalStateException("Maximum number of gradients exceeded.");
+            throw new IllegalStateException(
+                    "Maximum number of gradients exceeded.");
         }
         gradients = anArray;
     }
@@ -308,7 +309,8 @@ public final class GradientFill implements FillStyle {
             throw new IllegalArgumentException();
         }
         if (gradients.size() == 15) {
-            throw new IllegalStateException("Maximum number of gradients exceeded.");
+            throw new IllegalStateException(
+                    "Maximum number of gradients exceeded.");
         }
         gradients.add(aGradient);
         return this;

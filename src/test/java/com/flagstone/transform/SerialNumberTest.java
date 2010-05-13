@@ -36,7 +36,7 @@ import org.junit.Test;
 
 public final class SerialNumberTest {
 
-    private static final transient String serial = "ABC123";
+    private final transient String serial = "ABC123";
 
     private transient SerialNumber fixture;
 

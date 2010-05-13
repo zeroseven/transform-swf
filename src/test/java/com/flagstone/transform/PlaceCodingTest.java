@@ -33,7 +33,6 @@ package com.flagstone.transform;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-
 import static org.junit.Assume.assumeNotNull;
 
 import java.io.InputStream;
@@ -76,62 +75,62 @@ public final class PlaceCodingTest {
         ClassLoader loader = DoActionCodingTest.class.getClassLoader();
         InputStream other = loader.getResourceAsStream(RESOURCE);
         Yaml yaml = new Yaml();
-        
+
         Collection<Object[]> list = new ArrayList<Object[]>();
-         
+
         for (Object data : yaml.loadAll(other)) {
-            list.add(new Object[] { data });
+            list.add(new Object[] {data });
         }
 
         return list;
     }
 
-    private transient final int identifier;
-    private transient final int layer;
-    private transient final CoordTransform position;
-    private transient final ColorTransform color;
-    private transient final byte[] din;
-    private transient final byte[] dout;
-    private transient final Context context;
-    
-    public PlaceCodingTest(Map<String,Object>values) {
-        identifier = (Integer)values.get(IDENTIFIER);
-        layer = (Integer)values.get(LAYER);
-        
+    private final transient int identifier;
+    private final transient int layer;
+    private final transient CoordTransform position;
+    private final transient ColorTransform color;
+    private final transient byte[] din;
+    private final transient byte[] dout;
+    private final transient Context context;
+
+    public PlaceCodingTest(final Map<String, Object>values) {
+        identifier = (Integer) values.get(IDENTIFIER);
+        layer = (Integer) values.get(LAYER);
+
         if (values.get(XCOORD) != null) {
             position = CoordTransform.translate(
-                    (Integer)values.get(XCOORD), (Integer)values.get(YCOORD));            
+                    (Integer) values.get(XCOORD), (Integer) values.get(YCOORD));
         } else {
             position = null;
         }
-        
+
         if (values.get(RED) != null) {
             color = new ColorTransform(
-                    (Integer)values.get(RED), (Integer)values.get(GREEN),
-                    (Integer)values.get(BLUE), (Integer)values.get(ALPHA)
+                    (Integer) values.get(RED), (Integer) values.get(GREEN),
+                    (Integer) values.get(BLUE), (Integer) values.get(ALPHA)
                     );
         } else {
             color = null;
         }
-        
-        din = (byte[])values.get(DIN);
-        dout = (byte[])values.get(DOUT);
+
+        din = (byte[]) values.get(DIN);
+        dout = (byte[]) values.get(DOUT);
         context = new Context();
     }
 
     @Test
-    public void checkSizeMatchesEncodedSize() throws CoderException {     
-        final Place object = new Place(identifier, layer, position, color);       
-        final SWFEncoder encoder = new SWFEncoder(dout.length);        
-         
+    public void checkSizeMatchesEncodedSize() throws CoderException {
+        final Place object = new Place(identifier, layer, position, color);
+        final SWFEncoder encoder = new SWFEncoder(dout.length);
+
         assertEquals(dout.length, object.prepareToEncode(encoder, context));
     }
 
     @Test
     public void checkObjectIsEncoded() throws CoderException {
-        final Place object = new Place(identifier, layer, position, color);       
-        final SWFEncoder encoder = new SWFEncoder(dout.length);        
-        
+        final Place object = new Place(identifier, layer, position, color);
+        final SWFEncoder encoder = new SWFEncoder(dout.length);
+
         object.prepareToEncode(encoder, context);
         object.encode(encoder, context);
 
@@ -151,9 +150,9 @@ public final class PlaceCodingTest {
     }
 
     @Test
-    public void decodePosition() throws CoderException {       
+    public void decodePosition() throws CoderException {
         assumeNotNull(position);
-        
+
         final SWFDecoder decoder = new SWFDecoder(din);
         final Place object = new Place(decoder, context);
 
@@ -168,7 +167,7 @@ public final class PlaceCodingTest {
     @Test
     public void decodeColor() throws CoderException {
         assumeNotNull(color);
-        
+
         final SWFDecoder decoder = new SWFDecoder(din);
         final Place object = new Place(decoder, context);
 

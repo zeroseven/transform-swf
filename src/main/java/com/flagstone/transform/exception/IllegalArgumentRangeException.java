@@ -31,31 +31,32 @@
 
 package com.flagstone.transform.exception;
 
-public class IllegalArgumentRangeException extends IllegalArgumentException {
+public final class IllegalArgumentRangeException
+        extends IllegalArgumentException {
 
     private static final long serialVersionUID = -9208368642722953411L;
-    
+
     private final transient int lower;
     private final transient int upper;
     private final transient int value;
 
-    public IllegalArgumentRangeException(final int lower, final int upper, 
-            final int value) {
-        super("Lower Bound: " + lower + " Upper Bound: "+ upper
-                + " Value: " + value);
-        this.lower = lower;
-        this.upper = upper;
-        this.value = value;
+    public IllegalArgumentRangeException(final int start, final int end,
+            final int actual) {
+        super("Lower Bound: " + start + " Upper Bound: " + end
+                + " Value: " + actual);
+        lower = start;
+        upper = end;
+        value = actual;
     }
-    
+
     public int getLower() {
         return lower;
     }
-    
+
     public int getUpper() {
         return upper;
     }
-    
+
     public int getValue() {
         return value;
     }

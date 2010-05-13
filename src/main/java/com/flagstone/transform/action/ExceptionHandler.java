@@ -228,16 +228,16 @@ public final class ExceptionHandler implements Action {
     public ExceptionHandler(final SWFDecoder coder, final Context context)
             throws CoderException {
         coder.readByte();
-        length = coder.readWord(2, false);
+        length = coder.readUI16();
 
         final int flags = coder.readByte();
         final boolean containsVariable = (flags & VARIABLE_MASK) == 1;
         final boolean containsFinal = (flags & FINAL_MASK) == 1;
         final boolean containsCatch = (flags & CATCH_MASK) == 1;
 
-        tryLength = coder.readWord(2, false);
-        catchLength = coder.readWord(2, false);
-        finalLength = coder.readWord(2, false);
+        tryLength = coder.readUI16();
+        catchLength = coder.readUI16();
+        finalLength = coder.readUI16();
 
         if (length == EMPTY_LENGTH) {
             length += tryLength;

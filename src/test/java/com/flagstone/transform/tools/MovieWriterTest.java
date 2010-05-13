@@ -42,7 +42,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.flagstone.transform.Movie;
-import com.flagstone.transform.tools.MovieWriter;
 
 /**
  * DecodeMovieTest is used to create Movies using all the Flash files in a given

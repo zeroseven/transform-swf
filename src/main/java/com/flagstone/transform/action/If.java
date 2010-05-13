@@ -98,7 +98,7 @@ public final class If implements Action {
      */
     public If(final SWFDecoder coder) throws CoderException {
         coder.readByte();
-        coder.readWord(2, false);
+        coder.readUI16();
         offset = coder.readWord(2, true);
     }
 

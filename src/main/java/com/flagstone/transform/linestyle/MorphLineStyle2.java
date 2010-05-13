@@ -90,12 +90,12 @@ public final class MorphLineStyle2 implements SWFEncodeable,
      */
     public MorphLineStyle2(final SWFDecoder coder, final Context context)
             throws CoderException {
-        startWidth = coder.readWord(2, false);
-        endWidth = coder.readWord(2, false);
+        startWidth = coder.readUI16();
+        endWidth = coder.readUI16();
         unpack(coder.readB16());
 
         if (hasMiter) {
-            coder.readWord(2, false);
+            coder.readUI16();
         }
 
         if (hasFillStyle) {
@@ -108,15 +108,15 @@ public final class MorphLineStyle2 implements SWFEncodeable,
         }
     }
 
-    /** TODO(method). */
-    public MorphLineStyle2(final int startWidth, final int endWidth,
-            final Color startColor, final Color endColor) {
+
+    public MorphLineStyle2(final int initialWidth, final int finalWidth,
+            final Color initialColor, final Color finalColor) {
         super();
 
-        setStartWidth(startWidth);
-        setEndWidth(endWidth);
-        setStartColor(startColor);
-        setEndColor(endColor);
+        setStartWidth(initialWidth);
+        setEndWidth(finalWidth);
+        setStartColor(initialColor);
+        setEndColor(finalColor);
 
         vertical = true;
         vertical = true;
@@ -233,7 +233,7 @@ public final class MorphLineStyle2 implements SWFEncodeable,
         endColor = aColor;
     }
 
-    /** TODO(method). */
+
     public CapStyle getStartCap() {
         CapStyle style;
         if (startCap == 1) {
@@ -246,7 +246,7 @@ public final class MorphLineStyle2 implements SWFEncodeable,
         return style;
     }
 
-    /** TODO(method). */
+
     public void setStartCap(final CapStyle capStyle) {
         switch (capStyle) {
         case NONE:
@@ -261,7 +261,7 @@ public final class MorphLineStyle2 implements SWFEncodeable,
         }
     }
 
-    /** TODO(method). */
+
     public CapStyle getEndCap() {
         CapStyle style;
         if (endCap == 1) {
@@ -274,7 +274,7 @@ public final class MorphLineStyle2 implements SWFEncodeable,
         return style;
     }
 
-    /** TODO(method). */
+
     public void setEndCap(final CapStyle capStyle) {
         switch (capStyle) {
         case NONE:
@@ -289,7 +289,7 @@ public final class MorphLineStyle2 implements SWFEncodeable,
         }
     }
 
-    /** TODO(method). */
+
     public JoinStyle getJoinStyle() {
         JoinStyle style;
         if (endCap == 1) {
@@ -302,7 +302,7 @@ public final class MorphLineStyle2 implements SWFEncodeable,
         return style;
     }
 
-    /** TODO(method). */
+
     public void setJoinStyle(final JoinStyle style) {
         switch (style) {
         case BEVEL:
@@ -317,52 +317,52 @@ public final class MorphLineStyle2 implements SWFEncodeable,
         }
     }
 
-    /** TODO(method). */
+
     public boolean isHorizontal() {
         return horizontal;
     }
 
-    /** TODO(method). */
+
     public void setHorizontal(final boolean scaled) {
         horizontal = scaled;
     }
 
-    /** TODO(method). */
+
     public boolean isVertical() {
         return vertical;
     }
 
-    /** TODO(method). */
+
     public void setVertical(final boolean scaled) {
         vertical = scaled;
     }
 
-    /** TODO(method). */
+
     public boolean isPixelAligned() {
         return pixelAligned;
     }
 
-    /** TODO(method). */
+
     public void setPixelAligned(final boolean aligned) {
         pixelAligned = aligned;
     }
 
-    /** TODO(method). */
+
     public boolean isLineClosed() {
         return lineClosed;
     }
 
-    /** TODO(method). */
+
     public void setLineClosed(final boolean closed) {
         lineClosed = closed;
     }
 
-    /** TODO(method). */
+
     public int getMiterLimit() {
         return miterLimit;
     }
 
-    /** TODO(method). */
+
     public void setMiterLimit(final int limit) {
         if ((limit < 0) || (limit > 65535)) {
             throw new IllegalArgumentRangeException(0, 65535, limit);
@@ -370,17 +370,17 @@ public final class MorphLineStyle2 implements SWFEncodeable,
         miterLimit = limit;
     }
 
-    /** TODO(method). */
+
     public FillStyle getFillStyle() {
         return fillStyle;
     }
 
-    /** TODO(method). */
+
     public void setFillStyle(final FillStyle style) {
         fillStyle = style;
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public MorphLineStyle2 copy() {
         return new MorphLineStyle2(this);
     }
@@ -441,13 +441,13 @@ public final class MorphLineStyle2 implements SWFEncodeable,
     private int pack() {
 
         int value = 0;
-        
+
         if (startCap == 1) {
             value |= 0x00004000;
         } else if (startCap == 2) {
             value |= 0x00008000;
         }
-        
+
         if (joinStyle == 1) {
             value |= 0x00001000;
         } else if (joinStyle == 2) {

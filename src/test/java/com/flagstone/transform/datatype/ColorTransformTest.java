@@ -50,84 +50,100 @@ public final class ColorTransformTest {
 
     @Test
     public void checkConstructorSetsAddRed() {
-        assertEquals(ARED, new ColorTransform(ARED, AGREEN, ABLUE, AALPHA).getAddRed());
+        assertEquals(ARED, new ColorTransform(
+                ARED, AGREEN, ABLUE, AALPHA).getAddRed());
     }
 
     @Test
     public void checkConstructorSetsAddGreen() {
-        assertEquals(AGREEN, new ColorTransform(ARED, AGREEN, ABLUE, AALPHA).getAddGreen());
+        assertEquals(AGREEN, new ColorTransform(
+                ARED, AGREEN, ABLUE, AALPHA).getAddGreen());
     }
 
     @Test
     public void checkConstructorSetsAddBlue() {
-        assertEquals(ABLUE, new ColorTransform(ARED, AGREEN, ABLUE, AALPHA).getAddBlue());
+        assertEquals(ABLUE, new ColorTransform(
+                ARED, AGREEN, ABLUE, AALPHA).getAddBlue());
     }
 
     @Test
     public void checkConstructorSetsAddAlpha() {
-        assertEquals(AALPHA, new ColorTransform(ARED, AGREEN, ABLUE, AALPHA).getAddAlpha());
+        assertEquals(AALPHA, new ColorTransform(
+                ARED, AGREEN, ABLUE, AALPHA).getAddAlpha());
     }
 
     @Test
     public void checkConstructorSetsMultiplyRed() {
-        assertEquals(Float.valueOf(MRED), 
-                Float.valueOf(new ColorTransform(MRED, MGREEN, MBLUE, MALPHA).getMultiplyRed()));
+        assertEquals(Float.valueOf(MRED),
+                Float.valueOf(new ColorTransform(
+                        MRED, MGREEN, MBLUE, MALPHA).getMultiplyRed()));
     }
 
     @Test
     public void checkConstructorSetsMultiplyGreen() {
-        assertEquals(Float.valueOf(MGREEN), 
-                Float.valueOf(new ColorTransform(MRED, AGREEN, ABLUE, MALPHA).getMultiplyGreen()));
+        assertEquals(Float.valueOf(MGREEN),
+                Float.valueOf(new ColorTransform(
+                        MRED, AGREEN, ABLUE, MALPHA).getMultiplyGreen()));
     }
 
     @Test
     public void checkConstructorSetsMultiplyBlue() {
-        assertEquals(Float.valueOf(MBLUE), 
-                Float.valueOf(new ColorTransform(MRED, MGREEN, MBLUE, MALPHA).getMultiplyBlue()));
+        assertEquals(Float.valueOf(MBLUE),
+                Float.valueOf(new ColorTransform(
+                        MRED, MGREEN, MBLUE, MALPHA).getMultiplyBlue()));
     }
 
     @Test
     public void checkConstructorSetsMultiplyAlpha() {
-        assertEquals(Float.valueOf(MALPHA), 
-                Float.valueOf(new ColorTransform(MRED, MGREEN, MBLUE, MALPHA).getMultiplyAlpha()));
+        assertEquals(Float.valueOf(MALPHA),
+                Float.valueOf(new ColorTransform(
+                        MRED, MGREEN, MBLUE, MALPHA).getMultiplyAlpha()));
     }
 
     @Test
     public void checkString() {
-        assertNotNull(new ColorTransform(ARED, AGREEN, ABLUE, AALPHA).toString());
+        assertNotNull(new ColorTransform(
+                ARED, AGREEN, ABLUE, AALPHA).toString());
     }
 
     @Test
     public void checkHashCode() {
-        assertEquals(-679687358, new ColorTransform(ARED, AGREEN, ABLUE, AALPHA).hashCode());
+        assertEquals(-679687358, new ColorTransform(
+                ARED, AGREEN, ABLUE, AALPHA).hashCode());
     }
 
     @Test
     public void checkSameObjectIsEqual() {
-        final ColorTransform color = new ColorTransform(ARED, AGREEN, ABLUE, AALPHA);
+        final ColorTransform color = new ColorTransform(
+                ARED, AGREEN, ABLUE, AALPHA);
 
         assertEquals(color, color);
     }
 
     @Test
     public void checkSameColorTransformIsEqual() {
-        final ColorTransform color = new ColorTransform(ARED, AGREEN, ABLUE, AALPHA);
-        final ColorTransform other = new ColorTransform(ARED, AGREEN, ABLUE, AALPHA);
+        final ColorTransform color = new ColorTransform(
+                ARED, AGREEN, ABLUE, AALPHA);
+        final ColorTransform other = new ColorTransform(
+                ARED, AGREEN, ABLUE, AALPHA);
 
         assertEquals(color, other);
     }
 
     @Test
     public void checkDifferentColorTransformIsNotEqual() {
-        final ColorTransform color = new ColorTransform(ARED, AGREEN, ABLUE, AALPHA);
-        final ColorTransform other = new ColorTransform(MRED, MGREEN, MBLUE, MALPHA);
+        final ColorTransform color = new ColorTransform(
+                ARED, AGREEN, ABLUE, AALPHA);
+        final ColorTransform other = new ColorTransform(
+                MRED, MGREEN, MBLUE, MALPHA);
 
         assertFalse(color.equals(other));
     }
 
     @Test
     public void checkObjectIsNotEqual() {
-        final ColorTransform color = new ColorTransform(ARED, AGREEN, ABLUE, AALPHA);
+        final ColorTransform color = new ColorTransform(
+                ARED, AGREEN, ABLUE, AALPHA);
         final Object other = new Object();
 
         assertFalse(color.equals(other));
@@ -135,7 +151,8 @@ public final class ColorTransformTest {
 
     @Test
     public void checkNullIsNotEqual() {
-        final ColorTransform color = new ColorTransform(ARED, AGREEN, ABLUE, AALPHA);
+        final ColorTransform color = new ColorTransform(
+                ARED, AGREEN, ABLUE, AALPHA);
         final ColorTransform other = null;
 
         assertFalse(color.equals(other));

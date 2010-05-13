@@ -57,17 +57,18 @@ public enum ImageEncoding {
     private final String mimeType;
     private final ImageProvider provider;
 
-    private ImageEncoding(final String mimeType, final ImageProvider provider) {
-        this.mimeType = mimeType;
-        this.provider = provider;
+    private ImageEncoding(final String type,
+            final ImageProvider imageProvider) {
+        mimeType = type;
+        provider = imageProvider;
     }
 
-    /** TODO(method). */
+
     public String getMimeType() {
         return mimeType;
     }
 
-    /** TODO(method). */
+
     public ImageProvider getProvider() {
         return provider;
     }

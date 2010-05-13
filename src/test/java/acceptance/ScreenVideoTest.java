@@ -34,7 +34,6 @@ package acceptance;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.DataFormatException;
@@ -45,16 +44,11 @@ import com.flagstone.transform.Background;
 import com.flagstone.transform.Movie;
 import com.flagstone.transform.Place2;
 import com.flagstone.transform.ShowFrame;
-
-import com.flagstone.transform.video.Deblocking;
 import com.flagstone.transform.coder.ImageTag;
-import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.datatype.WebPalette;
-import com.flagstone.transform.util.image.ImageDecoder;
 import com.flagstone.transform.util.image.ImageFactory;
-import com.flagstone.transform.util.image.ImageInfo;
-import com.flagstone.transform.util.image.ImageRegistry;
+import com.flagstone.transform.video.Deblocking;
 import com.flagstone.transform.video.DefineVideo;
 import com.flagstone.transform.video.ImageBlock;
 import com.flagstone.transform.video.ScreenPacket;
@@ -62,12 +56,13 @@ import com.flagstone.transform.video.VideoFormat;
 import com.flagstone.transform.video.VideoFrame;
 
 public final class ScreenVideoTest {
-    
+
     @Test
     public void showPNG() throws IOException, DataFormatException {
-        
+
         final File sourceDir = new File("test/data/png-screenshots");
-        final File destDir = new File("test/results/acceptance/ScreenVideoTest");
+        final File destDir = new File(
+                "test/results/acceptance/ScreenVideoTest");
 
         final FilenameFilter filter = new FilenameFilter() {
             public boolean accept(final File directory, final String name) {
@@ -112,7 +107,7 @@ public final class ScreenVideoTest {
         final List<ImageBlock> prev = new ArrayList<ImageBlock>();
         final List<ImageBlock> next = new ArrayList<ImageBlock>();
         List<ImageBlock> delta = new ArrayList<ImageBlock>();
-        
+
         factory.getImageAsBlocks(prev, blockWidth, blockHeight);
 
         ScreenPacket packet = new ScreenPacket(true, screenWidth, screenHeight,

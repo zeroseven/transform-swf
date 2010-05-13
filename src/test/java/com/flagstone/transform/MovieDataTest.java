@@ -37,7 +37,7 @@ import org.junit.Test;
 
 public final class MovieDataTest {
 
-    private final transient byte[] data = new byte[] { 1, 2, 0 };
+    private final transient byte[] data = new byte[] {1, 2, 0 };
 
     private transient MovieData fixture;
 

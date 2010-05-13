@@ -76,7 +76,7 @@ public final class ActionObject implements Action {
         type = coder.readByte();
 
         if (type > HIGHEST_BYTE_CODE) {
-            data = coder.readBytes(new byte[coder.readWord(2, false)]);
+            data = coder.readBytes(new byte[coder.readUI16()]);
         } else {
             data = new byte[0];
         }

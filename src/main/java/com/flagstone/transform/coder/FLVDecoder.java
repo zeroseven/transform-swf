@@ -34,7 +34,7 @@ package com.flagstone.transform.coder;
 /** TODO(class). */
 public final class FLVDecoder extends Decoder {
 
-    /** TODO(method). */
+    
     public FLVDecoder(final byte[] data) {
         super(data);
     }
@@ -44,6 +44,30 @@ public final class FLVDecoder extends Decoder {
      */
     public int scanUnsignedShort() {
         return ((data[index] & 0x00FF) << 8) + (data[index + 1] & 0x00FF);
+    }
+
+    /**
+     * Read an unsigned 16-bit integer.
+     *
+     * @return the value read.
+     */
+    public int readUI16() {
+        int value = (data[index++] & Coder.UNSIGNED_BYTE_MASK) << Coder.BYTE1;
+        value |= data[index++] & Coder.UNSIGNED_BYTE_MASK;
+        return value;
+    }
+
+    /**
+     * Read an unsigned 32-bit integer.
+     *
+     * @return the value read.
+     */
+    public int readUI32() {
+        int value = (data[index++] & Coder.UNSIGNED_BYTE_MASK) << Coder.BYTE3;
+        value |= (data[index++] & Coder.UNSIGNED_BYTE_MASK) << Coder.BYTE2;
+        value |= (data[index++] & Coder.UNSIGNED_BYTE_MASK) << Coder.BYTE1;
+        value |= data[index++] & Coder.UNSIGNED_BYTE_MASK;
+        return value;
     }
 
     /**

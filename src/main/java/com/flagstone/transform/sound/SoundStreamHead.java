@@ -32,6 +32,7 @@
 package com.flagstone.transform.sound;
 
 
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTag;
@@ -109,12 +110,8 @@ public final class SoundStreamHead implements MovieTag {
      */
     public SoundStreamHead(final SWFDecoder coder) throws CoderException {
         final int start = coder.getPointer();
-        length = coder.readWord(2, false) & 0x3F;
-
-        if (length == 0x3F) {
-            length = coder.readWord(4, false);
-        }
-        final int end = coder.getPointer() + (length << 3);
+        length = coder.readHeader();
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
         coder.readBits(4, false);
         playRate = readRate(coder);
@@ -124,15 +121,16 @@ public final class SoundStreamHead implements MovieTag {
         streamRate = readRate(coder);
         streamSampleSize = coder.readBits(1, false) + 1;
         streamChannels = coder.readBits(1, false) + 1;
-        streamSampleCount = coder.readWord(2, false);
+        streamSampleCount = coder.readUI16();
 
         if ((length == 6) && (format == 2)) {
             latency = coder.readWord(2, true);
         }
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 
@@ -140,10 +138,10 @@ public final class SoundStreamHead implements MovieTag {
      * Creates a SoundStreamHead object specifying all the parameters required
      * to define the sound.
      *
-     * @param playRate
+     * @param playbackRate
      *            the recommended rate for playing the sound, either 5512,
      *            11025, 22050 or 44100 Hz.
-     * @param playChannels
+     * @param playbackChannels
      *            The recommended number of playback channels: 1 = mono or 2 =
      *            stereo.
      * @param playSize
@@ -160,12 +158,12 @@ public final class SoundStreamHead implements MovieTag {
      *            the number of samples in each subsequent SoundStreamBlock
      *            object.
      */
-    public SoundStreamHead(final int playRate, final int playChannels,
+    public SoundStreamHead(final int playbackRate, final int playbackChannels,
             final int playSize, final int streamingRate,
             final int streamingChannels, final int streamingSize,
             final int streamingCount) {
-        setPlayRate(playRate);
-        setPlayChannels(playChannels);
+        setPlayRate(playbackRate);
+        setPlayChannels(playbackChannels);
         setPlaySampleSize(playSize);
 
         setStreamRate(streamingRate);
@@ -199,27 +197,27 @@ public final class SoundStreamHead implements MovieTag {
      */
     public SoundFormat getFormat() {
         SoundFormat value;
-        
+
         switch (format) {
-        case 0: 
+        case 0:
             value = SoundFormat.NATIVE_PCM;
             break;
-        case 1: 
+        case 1:
             value = SoundFormat.ADPCM;
             break;
-        case 2: 
+        case 2:
             value = SoundFormat.MP3;
             break;
-        case 3: 
+        case 3:
             value = SoundFormat.PCM;
             break;
-        case 5: 
+        case 5:
             value = SoundFormat.NELLYMOSER_8K;
             break;
-        case 6: 
+        case 6:
             value = SoundFormat.NELLYMOSER;
             break;
-        case 11: 
+        case 11:
             value = SoundFormat.SPEEX;
             break;
         default:
@@ -237,25 +235,25 @@ public final class SoundStreamHead implements MovieTag {
      */
     public void setFormat(final SoundFormat encoding) {
         switch (encoding) {
-        case NATIVE_PCM: 
+        case NATIVE_PCM:
             format = 0;
             break;
-        case ADPCM: 
+        case ADPCM:
             format = 1;
             break;
-        case MP3: 
+        case MP3:
             format = 2;
             break;
-        case PCM: 
+        case PCM:
             format = 3;
             break;
-        case NELLYMOSER_8K: 
+        case NELLYMOSER_8K:
             format = 5;
             break;
-        case NELLYMOSER: 
+        case NELLYMOSER:
             format = 6;
             break;
-        case SPEEX: 
+        case SPEEX:
             format = 11;
             break;
         default:
@@ -325,7 +323,8 @@ public final class SoundStreamHead implements MovieTag {
     public void setPlayRate(final int rate) {
         if ((rate != 5512) && (rate != 11025) && (rate != 22050)
                 && (rate != 44100)) {
-            throw new IllegalArgumentValueException(new int[] {5512, 11025, 22050, 44100}, rate);
+            throw new IllegalArgumentValueException(
+                    new int[] {5512, 11025, 22050, 44100}, rate);
         }
         playRate = rate;
     }
@@ -367,7 +366,8 @@ public final class SoundStreamHead implements MovieTag {
     public void setStreamRate(final int rate) {
         if ((rate != 5512) && (rate != 11025) && (rate != 22050)
                 && (rate != 44100)) {
-            throw new IllegalArgumentValueException(new int[] {5512, 11025, 22050, 44100}, rate);
+            throw new IllegalArgumentValueException(
+                    new int[] {5512, 11025, 22050, 44100}, rate);
         }
         streamRate = rate;
     }
@@ -407,7 +407,8 @@ public final class SoundStreamHead implements MovieTag {
      */
     public void setStreamSampleCount(final int count) {
         if (count < 0) {
-            throw new IllegalArgumentRangeException(0, Integer.MAX_VALUE, count);
+            throw new IllegalArgumentRangeException(0,
+                    Integer.MAX_VALUE, count);
         }
         streamSampleCount = count;
     }
@@ -427,15 +428,15 @@ public final class SoundStreamHead implements MovieTag {
      * Set the number of samples to skip when starting to play an MP3 encoded
      * sound.
      *
-     * @param latency
+     * @param delay
      *            the number of samples to be skipped in an MP3 encoded sound
      *            should be 0 for other sound formats.
      */
-    public void setLatency(final int latency) {
-        this.latency = latency;
+    public void setLatency(final int delay) {
+        latency = delay;
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public SoundStreamHead copy() {
         return new SoundStreamHead(this);
     }
@@ -461,14 +462,8 @@ public final class SoundStreamHead implements MovieTag {
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         final int start = coder.getPointer();
-
-        if (length >= 63) {
-            coder.writeWord((MovieTypes.SOUND_STREAM_HEAD << 6) | 0x3F, 2);
-            coder.writeWord(length, 4);
-        } else {
-            coder.writeWord((MovieTypes.SOUND_STREAM_HEAD << 6) | length, 2);
-        }
-        final int end = coder.getPointer() + (length << 3);
+        coder.writeHeader(MovieTypes.SOUND_STREAM_HEAD, length);
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
         coder.writeBits(0, 4);
         writeRate(playRate, coder);
@@ -485,11 +480,12 @@ public final class SoundStreamHead implements MovieTag {
         }
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
-    
+
     private int readRate(final SWFDecoder coder) {
         final int rate;
         switch (coder.readBits(2, false)) {
@@ -511,7 +507,7 @@ public final class SoundStreamHead implements MovieTag {
         }
         return rate;
     }
-    
+
     private void writeRate(final int rate, final SWFEncoder coder) {
         switch (rate) {
         case 5512:

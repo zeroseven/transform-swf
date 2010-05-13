@@ -57,7 +57,7 @@ import com.flagstone.transform.coder.VideoTag;
  */
 //TODO(class)
 public final class Video {
-    
+
     private static final String FORMAT = "Video: { signature=%s; version=%d;"
             + " objects=%s }";
 
@@ -75,7 +75,7 @@ public final class Video {
         objects = new ArrayList<VideoTag>();
     }
 
-    /** TODO(method). */
+
     public Video(final Video object) {
         signature = object.signature;
         version = object.version;
@@ -180,7 +180,8 @@ public final class Video {
      * @throws IOException
      *             - if an error occurs while reading and decoding the file.
      */
-    public void decodeFromURL(final URL url) throws IOException, DataFormatException {
+    public void decodeFromURL(final URL url)
+                throws IOException, DataFormatException {
 
         final URLConnection connection = url.openConnection();
         final int length = connection.getContentLength();
@@ -197,7 +198,7 @@ public final class Video {
         }
     }
 
-    private void decodeFromStream(final InputStream stream, final int length) 
+    private void decodeFromStream(final InputStream stream, final int length)
             throws IOException, DataFormatException {
 
         final byte[] data = new byte[length];
@@ -212,8 +213,8 @@ public final class Video {
 
         version = coder.readByte();
         coder.readByte(); // audio & video flags
-        coder.readWord(4, false); // header length always 9
-        coder.readWord(4, false); // previous length
+        coder.readUI32(); // header length always 9
+        coder.readUI32(); // previous length
 
         objects.clear();
 
@@ -221,7 +222,7 @@ public final class Video {
 
         do {
             objects.add(decoder.getObject(coder));
-            coder.readWord(4, false); // previous length
+            coder.readUI32(); // previous length
 
         } while (!coder.eof());
     }
@@ -231,10 +232,9 @@ public final class Video {
      *
      * @param file
      *            the file that the video will be encoded to.
-     * @throws FileNotFoundException
-     *             - if an error occurs while reading the file.
      * @throws IOException
-     *             - if an error occurs while encoding and writing the file.
+     *            if the file cannot be found or if an error occurs while
+     *            encoding and writing the file.
      */
     public void encodeToFile(final File file) throws IOException {
         final FileOutputStream stream = new FileOutputStream(file);
@@ -251,10 +251,8 @@ public final class Video {
      *
      * @param stream
      *            the output stream that the video will be encoded to.
-     * @throws FileNotFoundException
-     *             - if an error occurs while reading the file.
      * @throws IOException
-     *             - if an error occurs while encoding and writing the file.
+     *            if an error occurs while encoding and writing the file.
      */
     public void encodeToStream(final OutputStream stream) throws IOException {
 
@@ -263,7 +261,7 @@ public final class Video {
         for (final VideoTag object : objects) {
             fileLength += 4 + object.prepareToEncode();
         }
- 
+
         final FLVEncoder coder = new FLVEncoder(fileLength);
 
         int flags = 0;
@@ -285,7 +283,7 @@ public final class Video {
         for (final VideoTag object : objects) {
             object.encode(coder);
         }
-        
+
         stream.write(coder.getData());
     }
 }

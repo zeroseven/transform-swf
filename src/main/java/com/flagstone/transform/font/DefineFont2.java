@@ -35,7 +35,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-
+import com.flagstone.transform.SWF;
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.DefineTag;
@@ -56,22 +57,23 @@ import com.flagstone.transform.shape.ShapeData;
  * <ul>
  * <li>allowing more than 65535 glyphs in a particular font.</li>
  * <li>including the functionality provided by the FontInfo class.</li>
- * <li>specifying ascent, descent and leading layout information for the font.</li>
+ * <li>specifying ascent, descent and leading for the font.</li>
  * <li>specifying advances for each glyph.</li>
  * <li>specifying bounding rectangles for each glyph.</li>
- * <li>specifying kerning pairs defining the distance between pairs of glyphs.</li>
+ * <li>specifying kerning pairs adjusting the distance between glyph pairs.</li>
  * </ul>
  *
  * @see FontInfo
  * @see DefineFont
  */
 //TODO(class)
-@SuppressWarnings({"PMD.TooManyFields","PMD.TooManyMethods"})
+@SuppressWarnings({"PMD.TooManyFields", "PMD.TooManyMethods" })
 public final class DefineFont2 implements DefineTag {
     // TODO(code) Replace with StringBuilder for optional attributes ?
-    private static final String FORMAT = "DefineFont2: { identifier=%d; encoding=%s; "
-            + "small=%s; italic=%s; bold=%s; language=%s; name=%s; shapes=%s; "
-            + "codes=%s; ascent=%d; descent=%d; leading=%d; advances=%s; bounds=%s; kernings=%s }";
+    private static final String FORMAT = "DefineFont2: { identifier=%d;"
+    		+ " encoding=%s; small=%s; italic=%s; bold=%s; language=%s;"
+    	    + " name=%s; shapes=%s; codes=%s; ascent=%d; descent=%d;"
+    	    + " leading=%d; advances=%s; bounds=%s; kernings=%s }";
 
     private int identifier;
     private int encoding;
@@ -112,14 +114,10 @@ public final class DefineFont2 implements DefineTag {
     public DefineFont2(final SWFDecoder coder, final Context context)
             throws CoderException {
         final int start = coder.getPointer();
-        length = coder.readWord(2, false) & 0x3F;
+        length = coder.readHeader();
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
-        if (length == 0x3F) {
-            length = coder.readWord(4, false);
-        }
-        final int end = coder.getPointer() + (length << 3);
-
-        identifier = coder.readWord(2, false);
+        identifier = coder.readUI16();
 
         shapes = new ArrayList<Shape>();
         codes = new ArrayList<Integer>();
@@ -161,7 +159,7 @@ public final class DefineFont2 implements DefineTag {
             }
         }
 
-        final int glyphCount = coder.readWord(2, false);
+        final int glyphCount = coder.readUI16();
         final int offsetStart = coder.getPointer();
         final int[] offset = new int[glyphCount + 1];
 
@@ -199,7 +197,7 @@ public final class DefineFont2 implements DefineTag {
                 bounds.add(new Bounds(coder));
             }
 
-            final int kerningCount = coder.readWord(2, false);
+            final int kerningCount = coder.readUI16();
 
             for (int i = 0; i < kerningCount; i++) {
                 kernings.add(new Kerning(coder, context));
@@ -209,8 +207,9 @@ public final class DefineFont2 implements DefineTag {
         vars.remove(Context.WIDE_CODES);
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 
@@ -231,12 +230,12 @@ public final class DefineFont2 implements DefineTag {
      *
      * @param uid
      *            the unique identifier for this font object.
-     * @param name
+     * @param fontName
      *            the name of the font.
      */
-    public DefineFont2(final int uid, final String name) {
+    public DefineFont2(final int uid, final String fontName) {
         setIdentifier(uid);
-        setName(name);
+        setName(fontName);
 
         shapes = new ArrayList<Shape>();
         codes = new ArrayList<Integer>();
@@ -274,15 +273,16 @@ public final class DefineFont2 implements DefineTag {
         kernings = new ArrayList<Kerning>(object.kernings);
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public int getIdentifier() {
         return identifier;
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public void setIdentifier(final int uid) {
-        if ((uid < 0) || (uid > 65535)) {
-             throw new IllegalArgumentRangeException(1, 65536, uid);
+        if ((uid < SWF.MIN_IDENTIFIER) || (uid > SWF.MAX_IDENTIFIER)) {
+            throw new IllegalArgumentRangeException(
+                    SWF.MIN_IDENTIFIER, SWF.MAX_IDENTIFIER, uid);
         }
         identifier = uid;
     }
@@ -320,8 +320,9 @@ public final class DefineFont2 implements DefineTag {
      *            an advance for a glyph. Must be in the range -32768..32767.
      */
     public DefineFont2 addAdvance(final int anAdvance) {
-        if ((anAdvance < -32768) || (anAdvance > 32767)) {
-            throw new IllegalArgumentRangeException(-32768, 32768, anAdvance);
+        if ((anAdvance < SWF.MIN_ADVANCE) || (anAdvance > SWF.MAX_ADVANCE)) {
+            throw new IllegalArgumentRangeException(
+                    SWF.MIN_ADVANCE, SWF.MAX_ADVANCE, anAdvance);
         }
         advances.add(anAdvance);
         return this;
@@ -637,8 +638,9 @@ public final class DefineFont2 implements DefineTag {
      *            the ascent for the font in the range -32768..32767.
      */
     public void setAscent(final int aNumber) {
-        if ((aNumber < -32768) || (aNumber > 32767)) {
-            throw new IllegalArgumentRangeException(-32768, 32768, aNumber);
+        if ((aNumber < SWF.MIN_ASCENT) || (aNumber > SWF.MAX_ASCENT)) {
+            throw new IllegalArgumentRangeException(
+                    SWF.MIN_ASCENT, SWF.MAX_ASCENT, aNumber);
         }
         ascent = aNumber;
     }
@@ -650,8 +652,9 @@ public final class DefineFont2 implements DefineTag {
      *            the descent for the font in the range -32768..32767.
      */
     public void setDescent(final int aNumber) {
-        if ((aNumber < -32768) || (aNumber > 32767)) {
-            throw new IllegalArgumentRangeException(-32768, 32768, aNumber);
+        if ((aNumber < SWF.MIN_DESCENT) || (aNumber > SWF.MAX_DESCENT)) {
+            throw new IllegalArgumentRangeException(
+                    SWF.MIN_DESCENT, SWF.MAX_DESCENT, aNumber);
         }
         descent = aNumber;
     }
@@ -663,8 +666,9 @@ public final class DefineFont2 implements DefineTag {
      *            the descent for the font in the range -32768..32767.
      */
     public void setLeading(final int aNumber) {
-        if ((aNumber < -32768) || (aNumber > 32767)) {
-            throw new IllegalArgumentRangeException(-32768, 32768, aNumber);
+        if ((aNumber < SWF.MIN_LEADING) || (aNumber > SWF.MAX_LEADING)) {
+            throw new IllegalArgumentRangeException(
+                    SWF.MIN_LEADING, SWF.MAX_LEADING, aNumber);
         }
         leading = aNumber;
     }
@@ -711,7 +715,7 @@ public final class DefineFont2 implements DefineTag {
         kernings = anArray;
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public DefineFont2 copy() {
         return new DefineFont2(this);
     }
@@ -747,7 +751,7 @@ public final class DefineFont2 implements DefineTag {
         wideOffsets = (shapes.size() * 2 + glyphLength) > 65535;
 
         length = 5;
-        length += coder.strlen(name) - 1;
+        length += coder.strlen(name);
         length += 2;
         length += shapes.size() * (wideOffsets ? 4 : 2);
         length += wideOffsets ? 4 : 2;
@@ -791,14 +795,8 @@ public final class DefineFont2 implements DefineTag {
         }
 
         final int start = coder.getPointer();
-
-        if (length >= 63) {
-            coder.writeWord((MovieTypes.DEFINE_FONT_2 << 6) | 0x3F, 2);
-            coder.writeWord(length, 4);
-        } else {
-            coder.writeWord((MovieTypes.DEFINE_FONT_2 << 6) | length, 2);
-        }
-        final int end = coder.getPointer() + (length << 3);
+        coder.writeHeader(MovieTypes.DEFINE_FONT_2, length);
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
         coder.writeWord(identifier, 2);
         vars.put(Context.FILL_SIZE, 1);
@@ -816,10 +814,9 @@ public final class DefineFont2 implements DefineTag {
         coder.writeBits(italic ? 1 : 0, 1);
         coder.writeBits(bold ? 1 : 0, 1);
         coder.writeWord(vars.get(Context.VERSION) > 5 ? language : 0, 1);
-        coder.writeWord(coder.strlen(name) - 1, 1);
+        coder.writeWord(coder.strlen(name), 1);
 
         coder.writeString(name);
-        coder.adjustPointer(-8);
         coder.writeWord(shapes.size(), 2);
 
         int currentLocation;
@@ -881,8 +878,9 @@ public final class DefineFont2 implements DefineTag {
         vars.remove(Context.WIDE_CODES);
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 

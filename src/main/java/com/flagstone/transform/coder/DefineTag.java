@@ -37,7 +37,10 @@ package com.flagstone.transform.coder;
  */
 public interface DefineTag extends MovieTag {
     /**
-     * Returns the unique identifier assigned to this object.
+     * Get the unique identifier assigned to this object.
+     *
+     * @return the unique identifier used by the Flash Player to reference this
+     * definition.
      */
     int getIdentifier();
 

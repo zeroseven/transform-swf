@@ -37,9 +37,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.EnumSet;
 import java.util.Map;
-import java.util.Set;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -55,7 +53,8 @@ import com.flagstone.transform.coder.SWFEncoder;
 @RunWith(Parameterized.class)
 public final class MovieDataCodingTest {
 
-    private static final String RESOURCE = "com/flagstone/transform/MovieData.yaml";
+    private static final String RESOURCE =
+        "com/flagstone/transform/MovieData.yaml";
 
     private static final String BYTES = "bytes";
     private static final String DIN = "din";
@@ -67,41 +66,41 @@ public final class MovieDataCodingTest {
         ClassLoader loader = DoActionCodingTest.class.getClassLoader();
         InputStream other = loader.getResourceAsStream(RESOURCE);
         Yaml yaml = new Yaml();
-        
+
         Collection<Object[]> list = new ArrayList<Object[]>();
-         
+
         for (Object data : yaml.loadAll(other)) {
-            list.add(new Object[] { data });
+            list.add(new Object[] {data });
         }
 
         return list;
     }
 
-    private transient final byte[] bytes;
-    private transient final byte[] din;
-    private transient final byte[] dout;
-    private transient final Context context;
-    
-    public MovieDataCodingTest(Map<String,Object>values) {
-        bytes = (byte[])values.get(BYTES);
-        din = (byte[])values.get(DIN);
-        dout = (byte[])values.get(DOUT);
+    private final transient byte[] bytes;
+    private final transient byte[] din;
+    private final transient byte[] dout;
+    private final transient Context context;
+
+    public MovieDataCodingTest(final Map<String, Object>values) {
+        bytes = (byte[]) values.get(BYTES);
+        din = (byte[]) values.get(DIN);
+        dout = (byte[]) values.get(DOUT);
         context = new Context();
     }
 
     @Test
-    public void checkSizeMatchesEncodedSize() throws CoderException {     
-        final MovieData object = new MovieData(bytes);       
-        final SWFEncoder encoder = new SWFEncoder(dout.length);        
-         
+    public void checkSizeMatchesEncodedSize() throws CoderException {
+        final MovieData object = new MovieData(bytes);
+        final SWFEncoder encoder = new SWFEncoder(dout.length);
+
         assertEquals(dout.length, object.prepareToEncode(encoder, context));
     }
 
     @Test
     public void checkObjectIsEncoded() throws CoderException {
-        final MovieData object = new MovieData(bytes);       
-        final SWFEncoder encoder = new SWFEncoder(dout.length);        
-        
+        final MovieData object = new MovieData(bytes);
+        final SWFEncoder encoder = new SWFEncoder(dout.length);
+
         object.prepareToEncode(encoder, context);
         object.encode(encoder, context);
 
@@ -112,8 +111,8 @@ public final class MovieDataCodingTest {
     @Test
     public void decode() throws CoderException {
         final SWFDecoder decoder = new SWFDecoder(din);
-        final byte[] bytes = decoder.readBytes(new byte[din.length]);
-        final MovieData object = new MovieData(bytes);
+        final byte[] data = decoder.readBytes(new byte[din.length]);
+        final MovieData object = new MovieData(data);
 
         assertTrue(decoder.eof());
         assertArrayEquals(din, object.getData());

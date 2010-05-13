@@ -47,17 +47,17 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 public final class DefineFontNameTest {
 
-    private static final transient int identifier = 1;
-    private static final transient String name = "font";
-    private static final transient String copyright = "copyright";
+    private final transient int identifier = 1;
+    private final transient String name = "font";
+    private final transient String copyright = "copyright";
 
     private transient DefineFontName fixture;
 
-    private final transient byte[] encoded = new byte[] { (byte) 0x11, 0x16,
+    private final transient byte[] encoded = new byte[] {(byte) 0x11, 0x16,
             0x01, 0x00, 0x66, 0x6F, 0x6E, 0x74, 0x00, 0x63, 0x6F, 0x70, 0x79,
             0x72, 0x69, 0x67, 0x68, 0x74, 0x00 };
 
-    private final transient byte[] extended = new byte[] { (byte) 0x3F, 0x16,
+    private final transient byte[] extended = new byte[] {(byte) 0x3F, 0x16,
             0x11, 0x00, 0x00, 0x00, 0x01, 0x00, 0x66, 0x6F, 0x6E, 0x74, 0x00,
             0x63, 0x6F, 0x70, 0x79, 0x72, 0x69, 0x67, 0x68, 0x74, 0x00 };
 

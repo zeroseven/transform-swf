@@ -95,14 +95,15 @@ public final class MorphGradient implements SWFEncodeable {
      * Creates a MorphGradient object specifying the starting and ending
      * gradients.
      *
-     * @param start
+     * @param startGradient
      *            the Gradient containing the initial ratio and colour.
-     * @param end
+     * @param endGradient
      *            the Gradient containing the final ratio and colour.
      */
-    public MorphGradient(final Gradient start, final Gradient end) {
-        setStart(start);
-        setEnd(end);
+    public MorphGradient(final Gradient startGradient,
+            final Gradient endGradient) {
+        setStart(startGradient);
+        setEnd(endGradient);
     }
 
     /**
@@ -162,7 +163,7 @@ public final class MorphGradient implements SWFEncodeable {
         end = gradient;
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public MorphGradient copy() {
         return new MorphGradient(this);
     }

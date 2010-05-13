@@ -57,12 +57,13 @@ import com.flagstone.transform.util.sound.SoundFactory;
 
 @RunWith(Parameterized.class)
 public final class WAVEventSoundTest {
-    
+
     @Parameters
     public static Collection<Object[]> files() {
 
         final File srcDir = new File("test/data/wav/reference");
-        final File destDir = new File("test/results/acceptance/WAVEventSoundTest");
+        final File destDir = new File(
+                "test/results/acceptance/WAVEventSoundTest");
 
         if (!destDir.exists() && !destDir.mkdirs()) {
             fail();
@@ -73,22 +74,22 @@ public final class WAVEventSoundTest {
                 return name.endsWith(".wav");
             }
         };
-        
+
         String[] files = srcDir.list(filter);
         Object[][] collection = new Object[files.length][2];
 
-        for (int i=0; i<files.length; i++) {
+        for (int i = 0; i < files.length; i++) {
             collection[i][0] = new File(srcDir, files[i]);
-            collection[i][1] = new File(destDir, 
+            collection[i][1] = new File(destDir,
                     files[i].substring(0, files[i].lastIndexOf('.')) + ".swf");
         }
         return Arrays.asList(collection);
     }
 
-    private File sourceFile;
-    private File destFile;
+    private final File sourceFile;
+    private final File destFile;
 
-    public WAVEventSoundTest(File src, File dst) {
+    public WAVEventSoundTest(final File src, final File dst) {
         sourceFile = src;
         destFile = dst;
     }
@@ -99,27 +100,28 @@ public final class WAVEventSoundTest {
         try {
             final float framesPerSecond = 12.0f;
             final Movie movie = new Movie();
-            
+
             final SoundFactory factory = new SoundFactory();
             factory.read(sourceFile);
-            final DefineSound sound = factory.defineSound(movie.nextIdentifier());
+            final DefineSound sound =
+                factory.defineSound(movie.nextIdentifier());
 
             movie.setFrameSize(new Bounds(0, 0, 8000, 4000));
             movie.setFrameRate(framesPerSecond);
             movie.add(new Background(WebPalette.LIGHT_BLUE.color()));
-            
-            final float duration = ((float) sound.getSampleCount() / (float) sound
-                    .getRate());
+
+            final float duration = ((float) sound.getSampleCount()
+                    / (float) sound.getRate());
             final int numberOfFrames = (int) (duration * framesPerSecond);
-            
+
             movie.add(sound);
             movie.add(new StartSound(new SoundInfo(sound.getIdentifier(),
                     SoundInfo.Mode.START, 0, null)));
-            
+
             for (int j = 0; j < numberOfFrames; j++) {
                 movie.add(ShowFrame.getInstance());
             }
-            
+
             movie.encodeToFile(destFile);
         } catch (Exception e) {
             e.printStackTrace();

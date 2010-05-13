@@ -1,5 +1,5 @@
 /*
- * AllImageTests.java 
+ * AllImageTests.java
  * Transform
  *
  * Copyright (c) 2009-2010 Flagstone Software Ltd. All rights reserved.
@@ -35,9 +35,10 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( { DefineImageTest.class, DefineImage2Test.class,
-        DefineJPEGImageTest.class, DefineJPEGImage2Test.class,
-        DefineJPEGImage3Test.class, ImageBlockTest.class,
-        JPEGEncodingTableTest.class })
+@Suite.SuiteClasses({
+    DefineImageTest.class, DefineImage2Test.class,
+    DefineJPEGImageTest.class, DefineJPEGImage2Test.class,
+    DefineJPEGImage3Test.class, ImageBlockTest.class,
+    JPEGEncodingTableTest.class })
 public final class AllImageTests {
 }

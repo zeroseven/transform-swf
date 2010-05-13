@@ -71,20 +71,14 @@ public final class MovieObject implements MovieTag {
      *             if an error occurs while decoding the data.
      */
     public MovieObject(final SWFDecoder coder) throws CoderException {
-
         type = coder.scanUnsignedShort() >>> 6;
-        length = coder.readWord(2, false) & 0x3F;
-
-        if (length == 0x3F) {
-            length = coder.readWord(4, false);
-        }
-
+        length = coder.readHeader();
         data = coder.readBytes(new byte[length]);
     }
 
-    /** TODO(method). */
-    public MovieObject(final int type, final byte[] bytes) {
-        this.type = type;
+
+    public MovieObject(final int aType, final byte[] bytes) {
+        type = aType;
 
         if (bytes == null) {
             throw new IllegalArgumentException();
@@ -105,7 +99,7 @@ public final class MovieObject implements MovieTag {
         data = object.data;
     }
 
-    /** TODO(method). */
+
     public int getType() {
         return type;
     }
@@ -137,13 +131,7 @@ public final class MovieObject implements MovieTag {
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
-        if (length > 62) {
-            coder.writeWord((type << 6) | 0x3F, 2);
-            coder.writeWord(length, 4);
-        } else {
-            coder.writeWord((type << 6) | length, 2);
-        }
-
+        coder.writeHeader(type, length);
         coder.writeBytes(data);
     }
 }

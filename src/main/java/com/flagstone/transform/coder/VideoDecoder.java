@@ -38,12 +38,12 @@ import com.flagstone.transform.video.VideoMetaData;
 /** TODO(class). */
 public final class VideoDecoder implements FLVFactory<VideoTag> {
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public FLVFactory<VideoTag> copy() {
         return new VideoDecoder();
     }
 
-    /** TODO(method). */
+
     public VideoTag getObject(final FLVDecoder coder) throws CoderException {
 
         VideoTag object;
@@ -61,7 +61,7 @@ public final class VideoDecoder implements FLVFactory<VideoTag> {
         default:
             throw new AssertionError();
         }
-        coder.readWord(4, false); // previous length
+        coder.readUI32(); // previous length
         return object;
     }
 }

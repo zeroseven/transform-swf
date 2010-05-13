@@ -45,7 +45,8 @@ public final class BasicActionTest {
 
     private final transient BasicAction fixture = BasicAction.NEXT_FRAME;
 
-    private final transient byte[] encoded = new byte[] { ActionTypes.NEXT_FRAME };
+    private final transient byte[] encoded =
+           new byte[] {ActionTypes.NEXT_FRAME };
 
     @Test
     public void checkCopy() {

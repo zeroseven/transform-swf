@@ -34,8 +34,9 @@ package com.flagstone.transform.movieclip;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.flagstone.transform.SWF;
 import com.flagstone.transform.ShowFrame;
-
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.DefineTag;
@@ -68,7 +69,8 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  */
 //TODO(class)
 public final class DefineMovieClip implements DefineTag {
-    private static final String FORMAT = "DefineMovieClip: { identifier=%d; objects=%s }";
+    private static final String FORMAT = "DefineMovieClip: { identifier=%d;"
+    		+ " objects=%s }";
 
     private List<MovieTag> objects;
 
@@ -97,15 +99,11 @@ public final class DefineMovieClip implements DefineTag {
     public DefineMovieClip(final SWFDecoder coder, final Context context)
             throws CoderException {
 //        final int start = coder.getPointer();
-        length = coder.readWord(2, false) & 0x3F;
+        length = coder.readHeader();
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
-        if (length == 0x3F) {
-            length = coder.readWord(4, false);
-        }
-        final int end = coder.getPointer() + (length << 3);
-
-        identifier = coder.readWord(2, false);
-        frameCount = coder.readWord(2, false);
+        identifier = coder.readUI16();
+        frameCount = coder.readUI16();
         objects = new ArrayList<MovieTag>();
 
         int type;
@@ -125,8 +123,9 @@ public final class DefineMovieClip implements DefineTag {
         if (coder.getPointer() != end) {
             coder.setPointer(end);
             //TODO Fix Me
-//            throw new CoderException(getClass().getName(), start >> 3, length,
-//                    (coder.getPointer() - end) >> 3);
+//            throw new CoderException(getClass().getName(),
+//                     start >> Coder.BITS_TO_BYTES, length,
+//                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 
@@ -161,15 +160,16 @@ public final class DefineMovieClip implements DefineTag {
         }
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public int getIdentifier() {
         return identifier;
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public void setIdentifier(final int uid) {
-        if ((uid < 1) || (uid > 65535)) {
-             throw new IllegalArgumentRangeException(1, 65536, uid);
+        if ((uid < SWF.MIN_IDENTIFIER) || (uid > SWF.MAX_IDENTIFIER)) {
+            throw new IllegalArgumentRangeException(
+                    SWF.MIN_IDENTIFIER, SWF.MAX_IDENTIFIER, uid);
         }
         identifier = uid;
     }
@@ -209,9 +209,7 @@ public final class DefineMovieClip implements DefineTag {
         objects = anArray;
     }
 
-    /**
-     * Creates and returns a deep copy of this object.
-     */
+    /** {@inheritDoc} */
     public DefineMovieClip copy() {
         return new DefineMovieClip(this);
     }
@@ -241,14 +239,8 @@ public final class DefineMovieClip implements DefineTag {
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         final int start = coder.getPointer();
-
-        if (length >= 63) {
-            coder.writeWord((MovieTypes.DEFINE_MOVIE_CLIP << 6) | 0x3F, 2);
-            coder.writeWord(length, 4);
-        } else {
-            coder.writeWord((MovieTypes.DEFINE_MOVIE_CLIP << 6) | length, 2);
-        }
-        final int end = coder.getPointer() + (length << 3);
+        coder.writeHeader(MovieTypes.DEFINE_MOVIE_CLIP, length);
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
         coder.writeWord(identifier, 2);
         coder.writeWord(frameCount, 2);
@@ -260,8 +252,9 @@ public final class DefineMovieClip implements DefineTag {
         coder.writeWord(0, 2);
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 }

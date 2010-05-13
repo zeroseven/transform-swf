@@ -35,7 +35,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-
+import com.flagstone.transform.SWF;
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.DefineTag;
@@ -79,7 +80,7 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  */
 //TODO(class)
 public final class DefineButton2 implements DefineTag {
-    
+
     private static final String FORMAT = "DefineButton2: { identifier=%d;"
             + " buttonRecords=%s; handlers=%s }";
 
@@ -113,21 +114,16 @@ public final class DefineButton2 implements DefineTag {
         vars.put(Context.TRANSPARENT, 1);
 
         final int start = coder.getPointer();
-        length = coder.readWord(2, false) & 0x3F;
+        length = coder.readHeader();
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
-        if (length == 0x3F) {
-            length = coder.readWord(4, false);
-        }
-        final int end = coder.getPointer() + (length << 3);
-
-        identifier = coder.readWord(2, false);
+        identifier = coder.readUI16();
         type = coder.readByte();
         shapes = new ArrayList<ButtonShape>();
 
-        int offsetToNext = coder.readWord(2, false);
+        int offsetToNext = coder.readUI16();
 
-        while (coder.readByte() != 0) {
-            coder.adjustPointer(-8);
+        while (coder.scanByte() != 0) {
             shapes.add(new ButtonShape(coder, context));
         }
 
@@ -137,13 +133,15 @@ public final class DefineButton2 implements DefineTag {
             ButtonEventHandler event;
 
             do {
-                offsetToNext = coder.readWord(2, false);
+                offsetToNext = coder.readUI16();
 
                 if (offsetToNext == 0) {
                     event = new ButtonEventHandler(
-                            (end - coder.getPointer() - 16) >>> 3, coder, context);
+                            (end - coder.getPointer() - 16)
+                            >> Coder.BITS_TO_BYTES, coder, context);
                 } else {
-                    event = new ButtonEventHandler(offsetToNext - 4, coder, context);
+                    event = new ButtonEventHandler(offsetToNext - 4,
+                            coder, context);
                 }
                 events.add(event);
 
@@ -154,8 +152,9 @@ public final class DefineButton2 implements DefineTag {
         vars.remove(Context.TRANSPARENT);
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 
@@ -168,20 +167,20 @@ public final class DefineButton2 implements DefineTag {
      * @param uid
      *            a unique identifier for this button. Must be in the range
      *            1..65535.
-     * @param menu
+     * @param buttonType
      *            the button is a menu button (true) or push button (false).
-     * @param shapes
+     * @param buttonShapes
      *            an array of Button objects. Must not be null.
-     * @param events
+     * @param handlers
      *            an array of ButtonEvent objects. Must not be null.
      */
-    public DefineButton2(final int uid, final ButtonType type,
-            final List<ButtonShape> shapes,
-            final List<ButtonEventHandler> events) {
+    public DefineButton2(final int uid, final ButtonType buttonType,
+            final List<ButtonShape> buttonShapes,
+            final List<ButtonEventHandler> handlers) {
         setIdentifier(uid);
-        setType(type);
-        setShapes(shapes);
-        setEvents(events);
+        setType(buttonType);
+        setShapes(buttonShapes);
+        setEvents(handlers);
     }
 
     /**
@@ -205,15 +204,16 @@ public final class DefineButton2 implements DefineTag {
         }
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public int getIdentifier() {
         return identifier;
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public void setIdentifier(final int uid) {
-        if ((uid < 0) || (uid > 65535)) {
-             throw new IllegalArgumentRangeException(1, 65536, uid);
+        if ((uid < SWF.MIN_IDENTIFIER) || (uid > SWF.MAX_IDENTIFIER)) {
+            throw new IllegalArgumentRangeException(
+                    SWF.MIN_IDENTIFIER, SWF.MAX_IDENTIFIER, uid);
         }
         identifier = uid;
     }
@@ -357,14 +357,8 @@ public final class DefineButton2 implements DefineTag {
         vars.put(Context.TRANSPARENT, 1);
 
         final int start = coder.getPointer();
-
-        if (length >= 63) {
-            coder.writeWord((MovieTypes.DEFINE_BUTTON_2 << 6) | 0x3F, 2);
-            coder.writeWord(length, 4);
-        } else {
-            coder.writeWord((MovieTypes.DEFINE_BUTTON_2 << 6) | length, 2);
-        }
-        final int end = coder.getPointer() + (length << 3);
+        coder.writeHeader(MovieTypes.DEFINE_BUTTON_2, length);
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
         coder.writeWord(identifier, 2);
         coder.writeByte(type);
@@ -401,8 +395,9 @@ public final class DefineButton2 implements DefineTag {
         vars.remove(Context.TRANSPARENT);
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 }

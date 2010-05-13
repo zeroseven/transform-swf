@@ -61,7 +61,7 @@ public final class ImageRegistry {
         providers.put(mimeType, decoder);
     }
 
-    /** TODO(method). */
+    
     public static ImageDecoder getImageProvider(final String mimeType) {
 
         if (providers.containsKey(mimeType)) {

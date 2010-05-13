@@ -74,7 +74,7 @@ public final class SWFEncoderTest {
 
     @Test
     public void writeWordUnsigned() {
-        data = new byte[] { 4, 3, 2, 1 };
+        data = new byte[] {4, 3, 2, 1 };
 
         fixture.data = new byte[data.length];
         fixture.writeWord(0x01020304, data.length);
@@ -85,7 +85,7 @@ public final class SWFEncoderTest {
 
     @Test
     public void writeWordSigned() {
-        data = new byte[] { 4, 3, -128, -1 };
+        data = new byte[] {4, 3, -128, -1 };
 
         fixture.data = new byte[data.length];
         fixture.writeWord(0xFF800304, data.length);
@@ -96,7 +96,7 @@ public final class SWFEncoderTest {
 
     @Test
     public void writeVariableU32InOneByte() {
-        data = new byte[] { 127 };
+        data = new byte[] {127 };
 
         fixture.data = new byte[data.length];
         fixture.writeVariableU32(127);
@@ -107,7 +107,7 @@ public final class SWFEncoderTest {
 
     @Test
     public void writeVariableU32InTwoBytes() {
-        data = new byte[] { -1, 1 };
+        data = new byte[] {-1, 1 };
 
         fixture.data = new byte[data.length];
         fixture.writeVariableU32(255);
@@ -118,7 +118,7 @@ public final class SWFEncoderTest {
 
     @Test
     public void writeVariableU32InThreeBytes() {
-        data = new byte[] { -1, -1, 3 };
+        data = new byte[] {-1, -1, 3 };
 
         fixture.data = new byte[data.length];
         fixture.writeVariableU32(65535);
@@ -129,7 +129,7 @@ public final class SWFEncoderTest {
 
     @Test
     public void writeVariableU32InFourBytes() {
-        data = new byte[] { -1, -1, -1, 7 };
+        data = new byte[] {-1, -1, -1, 7 };
 
         fixture.data = new byte[data.length];
         fixture.writeVariableU32(16777215);
@@ -140,7 +140,7 @@ public final class SWFEncoderTest {
 
     @Test
     public void writeVariableU32InFiveBytes() {
-        data = new byte[] { -1, -1, -1, -1, 7 };
+        data = new byte[] {-1, -1, -1, -1, 7 };
 
         fixture.data = new byte[data.length];
         fixture.writeVariableU32(2147483647);
@@ -151,7 +151,7 @@ public final class SWFEncoderTest {
 
     @Test
     public void writeNegativeHalf() {
-        data = new byte[] { 0x00, (byte) 0xC0 };
+        data = new byte[] {0x00, (byte) 0xC0 };
 
         fixture.data = new byte[data.length];
         fixture.writeHalf(-2.0f);
@@ -162,7 +162,7 @@ public final class SWFEncoderTest {
 
     @Test
     public void writeHalfFraction() {
-        data = new byte[] { 0x55, (byte) 0x35 };
+        data = new byte[] {0x55, (byte) 0x35 };
 
         fixture.data = new byte[data.length];
         fixture.writeHalf(0.333251953125f);
@@ -173,7 +173,7 @@ public final class SWFEncoderTest {
 
     @Test
     public void writeFloat() {
-        data = new byte[] { 0x00, 0x00, 0x00, (byte) 0xC0 };
+        data = new byte[] {0x00, 0x00, 0x00, (byte) 0xC0 };
 
         fixture.data = new byte[data.length];
         fixture.writeFloat(-2);
@@ -184,7 +184,7 @@ public final class SWFEncoderTest {
 
     @Test
     public void writeDouble() {
-        data = new byte[] { 0x00, 0x00, (byte) 0xF0, 0x3F, 0x00, 0x00, 0x00,
+        data = new byte[] {0x00, 0x00, (byte) 0xF0, 0x3F, 0x00, 0x00, 0x00,
                 0x00 };
 
         fixture.data = new byte[data.length];

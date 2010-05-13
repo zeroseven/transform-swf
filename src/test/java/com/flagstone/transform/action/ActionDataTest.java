@@ -44,11 +44,11 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 public final class ActionDataTest {
 
-    private final transient byte[] data = new byte[] { 1, 2, 0 };
+    private final transient byte[] data = new byte[] {1, 2, 0 };
 
     private transient ActionData fixture;
 
-    private final transient byte[] encoded = new byte[] { 1, 2, 0 };
+    private final transient byte[] encoded = new byte[] {1, 2, 0 };
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForDataWithNull() {

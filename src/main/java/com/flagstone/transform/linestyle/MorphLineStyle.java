@@ -50,12 +50,11 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  * also be specified. The Flash Player performs the interpolation as the shape
  * is morphed.
  * </p>
- *
- * @see DefineMorphShape
  */
 //TODO(class)
 public final class MorphLineStyle implements SWFEncodeable {
-    private static final String FORMAT = "MorphSolidLine: { startWidth=%d; endWidth=%d; startColor=%s; endColor=%s }";
+    private static final String FORMAT = "MorphSolidLine: { startWidth=%d;"
+    		+ " endWidth=%d; startColor=%s; endColor=%s }";
 
     private int startWidth;
     private int endWidth;
@@ -79,8 +78,8 @@ public final class MorphLineStyle implements SWFEncodeable {
      */
     public MorphLineStyle(final SWFDecoder coder, final Context context)
             throws CoderException {
-        startWidth = coder.readWord(2, false);
-        endWidth = coder.readWord(2, false);
+        startWidth = coder.readUI16();
+        endWidth = coder.readUI16();
         startColor = new Color(coder, context);
         endColor = new Color(coder, context);
     }
@@ -89,23 +88,23 @@ public final class MorphLineStyle implements SWFEncodeable {
      * Creates a MorphLineStyle object specifying the starting and ending widths
      * and colours.
      *
-     * @param startWidth
+     * @param initialWidth
      *            the width of the line at the start of the morphing process.
-     * @param endWidth
+     * @param finalWidth
      *            the width of the line at the end of the morphing process.
-     * @param startColor
+     * @param initialColor
      *            the colour of the line at the start of the morphing process.
-     * @param endColor
+     * @param finalColor
      *            the colour of the line at the end of the morphing process.
      */
-    public MorphLineStyle(final int startWidth, final int endWidth,
-            final Color startColor, final Color endColor) {
+    public MorphLineStyle(final int initialWidth, final int finalWidth,
+            final Color initialColor, final Color finalColor) {
         super();
 
-        setStartWidth(startWidth);
-        setEndWidth(endWidth);
-        setStartColor(startColor);
-        setEndColor(endColor);
+        setStartWidth(initialWidth);
+        setEndWidth(finalWidth);
+        setStartColor(initialColor);
+        setEndColor(finalColor);
     }
 
     /**
@@ -203,7 +202,7 @@ public final class MorphLineStyle implements SWFEncodeable {
         endColor = aColor;
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public MorphLineStyle copy() {
         return new MorphLineStyle(this);
     }

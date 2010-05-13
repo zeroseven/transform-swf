@@ -73,8 +73,8 @@ public class Decoder extends Coder {
 
         if (numberOfBits > 0) {
 
-            for (int i = 32; (i > 0) && (index < data.length); i -= 8, index++) {
-                value |= (data[index] & 0x000000FF) << (i - 8);
+            for (int i = 32; (i > 0) && (index < data.length); i -= 8) {
+                value |= (data[index++] & UNSIGNED_BYTE_MASK) << (i - 8);
             }
 
             value <<= offset;
@@ -92,10 +92,10 @@ public class Decoder extends Coder {
 
         return value;
     }
-    
+
     /**
      * Read a single bit and return a boolean value.
-     * 
+     *
      * @return true if the bit field was set, false otherwise.
      */
     public final boolean readBool() {
@@ -109,22 +109,22 @@ public class Decoder extends Coder {
      * is equivalent to reading a 16-bit integer with big-ending byte ordering.
      */
     public final int readB16() {
-        return ((data[index++] & 0x000000FF) << 8)
-                + (data[index++] & 0x000000FF);
+        return ((data[index++] & UNSIGNED_BYTE_MASK) << 8)
+                + (data[index++] & UNSIGNED_BYTE_MASK);
     }
 
     /**
      * Read an unsigned byte without changing the internal pointer.
      */
     public final int scanByte() {
-        return data[index] & 0x000000FF;
+        return data[index] & UNSIGNED_BYTE_MASK;
     }
 
     /**
      * Read an unsigned byte.
      */
     public final int readByte() {
-        return data[index++] & 0x000000FF;
+        return data[index++] & UNSIGNED_BYTE_MASK;
     }
 
     /**
@@ -163,7 +163,8 @@ public class Decoder extends Coder {
      *
      * @return the decoded string.
      */
-    public final String readString(final int numberOfBytes, final String charset) {
+    public final String readString(final int numberOfBytes,
+            final String charset) {
         try {
             return new String(readBytes(new byte[numberOfBytes]), 0,
                     numberOfBytes, charset);

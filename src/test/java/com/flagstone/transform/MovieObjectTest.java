@@ -37,19 +37,19 @@ import org.junit.Test;
 
 public final class MovieObjectTest {
 
-    private static final transient int type = 1;
-    private final transient byte[] data = new byte[] { 1, 2, 3, 4 };
+    private static final transient int TYPE = 1;
+    private final transient byte[] data = new byte[] {1, 2, 3, 4 };
 
     private transient MovieObject fixture;
 
     @Test(expected = NullPointerException.class)
     public void checkAccessorForDataWithNull() {
-        fixture = new MovieObject(type, null);
+        fixture = new MovieObject(TYPE, null);
     }
 
     @Test
     public void checkCopy() {
-        fixture = new MovieObject(type, data);
+        fixture = new MovieObject(TYPE, data);
         final MovieObject copy = fixture.copy();
 
         assertNotSame(fixture, copy);

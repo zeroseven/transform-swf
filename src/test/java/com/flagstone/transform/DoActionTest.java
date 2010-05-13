@@ -44,14 +44,14 @@ import com.flagstone.transform.action.BasicAction;
 
 public final class DoActionTest {
 
-    private static final List<Action> actions = new ArrayList<Action>();
+    private static final List<Action> ACTIONS = new ArrayList<Action>();
 
     private transient DoAction fixture;
 
     @BeforeClass
     public static void initialize() {
-        actions.add(BasicAction.NEXT_FRAME);
-        actions.add(BasicAction.END);
+        ACTIONS.add(BasicAction.NEXT_FRAME);
+        ACTIONS.add(BasicAction.END);
     }
 
     @Test(expected = NullPointerException.class)
@@ -68,9 +68,9 @@ public final class DoActionTest {
 
     @Test
     public void checkCopy() {
-        fixture = new DoAction(actions);
+        fixture = new DoAction(ACTIONS);
         assertNotSame(fixture, fixture.copy());
-        assertEquals(actions, fixture.copy().getActions());
+        assertEquals(ACTIONS, fixture.copy().getActions());
         assertEquals(fixture.toString(), fixture.copy().toString());
     }
 }

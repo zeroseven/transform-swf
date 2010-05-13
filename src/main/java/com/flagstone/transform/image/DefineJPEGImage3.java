@@ -33,7 +33,8 @@ package com.flagstone.transform.image;
 
 import java.util.Arrays;
 
-
+import com.flagstone.transform.SWF;
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.ImageTag;
@@ -54,7 +55,7 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  * @see DefineJPEGImage2
  */
 public final class DefineJPEGImage3 implements ImageTag {
-    
+
     private static final String FORMAT = "DefineJPEGImage3: { identifier=%d;"
             + "image=%d; alpha=%d }";
 
@@ -78,15 +79,11 @@ public final class DefineJPEGImage3 implements ImageTag {
      */
     public DefineJPEGImage3(final SWFDecoder coder) throws CoderException {
         final int start = coder.getPointer();
-        length = coder.readWord(2, false) & 0x3F;
+        length = coder.readHeader();
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
+        identifier = coder.readUI16();
 
-        if (length == 0x3F) {
-            length = coder.readWord(4, false);
-        }
-        final int end = coder.getPointer() + (length << 3);
-        identifier = coder.readWord(2, false);
-
-        final int offset = coder.readWord(4, false);
+        final int offset = coder.readUI32();
 
         image = coder.readBytes(new byte[offset]);
         alpha = coder.readBytes(new byte[length - offset - 6]);
@@ -94,8 +91,9 @@ public final class DefineJPEGImage3 implements ImageTag {
         decodeInfo();
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 
@@ -106,17 +104,17 @@ public final class DefineJPEGImage3 implements ImageTag {
      * @param uid
      *            the unique identifier for this object. Must be in the range
      *            1..65535.
-     * @param image
+     * @param img
      *            the JPEG encoded image data. Must not be null.
-     * @param alpha
+     * @param transparency
      *            byte array containing the zlib compressed alpha channel data.
      *            Must not be null.
      */
-    public DefineJPEGImage3(final int uid, final byte[] image,
-            final byte[] alpha) {
+    public DefineJPEGImage3(final int uid, final byte[] img,
+            final byte[] transparency) {
         setIdentifier(uid);
-        setImage(image);
-        setAlpha(alpha);
+        setImage(img);
+        setAlpha(transparency);
     }
 
     /**
@@ -142,8 +140,9 @@ public final class DefineJPEGImage3 implements ImageTag {
 
     /** {@inheritDoc} */
     public void setIdentifier(final int uid) {
-        if ((uid < 1) || (uid > 65535)) {
-             throw new IllegalArgumentRangeException(1, 65536, uid);
+        if ((uid < SWF.MIN_IDENTIFIER) || (uid > SWF.MAX_IDENTIFIER)) {
+            throw new IllegalArgumentRangeException(
+                    SWF.MIN_IDENTIFIER, SWF.MAX_IDENTIFIER, uid);
         }
         identifier = uid;
     }
@@ -223,14 +222,8 @@ public final class DefineJPEGImage3 implements ImageTag {
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         final int start = coder.getPointer();
-
-        if (length >= 63) {
-            coder.writeWord((MovieTypes.DEFINE_JPEG_IMAGE_3 << 6) | 0x3F, 2);
-            coder.writeWord(length, 4);
-        } else {
-            coder.writeWord((MovieTypes.DEFINE_JPEG_IMAGE_3 << 6) | length, 2);
-        }
-        final int end = coder.getPointer() + (length << 3);
+        coder.writeHeader(MovieTypes.DEFINE_JPEG_IMAGE_3, length);
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
         coder.writeWord(identifier, 2);
         coder.writeWord(image.length, 4);
@@ -238,13 +231,13 @@ public final class DefineJPEGImage3 implements ImageTag {
         coder.writeBytes(alpha);
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 
-    private void decodeInfo()
-    {
+    private void decodeInfo() {
         final JPEGInfo info = new JPEGInfo();
         info.decode(image);
         width = info.getWidth();

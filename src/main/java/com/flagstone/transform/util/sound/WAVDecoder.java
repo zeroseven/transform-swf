@@ -43,7 +43,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.DataFormatException;
 
-
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.sound.DefineSound;
@@ -69,17 +68,17 @@ public final class WAVDecoder implements SoundProvider, SoundDecoder {
     private transient int sampleSize;
     private transient byte[] sound = null;
 
-    /** TODO(method). */
+
     public SoundDecoder newDecoder() {
         return new WAVDecoder();
     }
 
-    /** TODO(method). */
+
     public void read(final File file) throws IOException, DataFormatException {
         read(new FileInputStream(file), (int) file.length());
     }
 
-    /** TODO(method). */
+
     public void read(final URL url) throws IOException, DataFormatException {
         final URLConnection connection = url.openConnection();
 
@@ -153,10 +152,11 @@ public final class WAVDecoder implements SoundProvider, SoundDecoder {
         return array;
     }
 
-    /** TODO(method). */
-    public void read(final InputStream stream, final int size) throws IOException, DataFormatException {
 
-        final byte[] bytes = new byte[(int) size];
+    public void read(final InputStream stream, final int size)
+                    throws IOException, DataFormatException {
+
+        final byte[] bytes = new byte[size];
         final BufferedInputStream buffer = new BufferedInputStream(stream);
 
         buffer.read(bytes);
@@ -170,7 +170,7 @@ public final class WAVDecoder implements SoundProvider, SoundDecoder {
             }
         }
 
-        coder.readWord(4, false);
+        coder.readUI32();
 
         for (int i = 0; i < 4; i++) {
             if (coder.readByte() != WAV[i]) {
@@ -182,8 +182,8 @@ public final class WAVDecoder implements SoundProvider, SoundDecoder {
         int length;
 
         do {
-            chunkType = coder.readWord(4, false);
-            length = coder.readWord(4, false);
+            chunkType = coder.readUI32();
+            length = coder.readUI32();
 
             final int blockStart = coder.getPointer();
 
@@ -207,15 +207,15 @@ public final class WAVDecoder implements SoundProvider, SoundDecoder {
     private void decodeFMT(final SWFDecoder coder) throws DataFormatException {
         format = SoundFormat.PCM;
 
-        if (coder.readWord(2, false) != 1) {
+        if (coder.readUI16() != 1) {
             throw new DataFormatException("Unsupported format");
         }
 
-        numberOfChannels = coder.readWord(2, false);
-        sampleRate = coder.readWord(4, false);
-        coder.readWord(4, false); // total data length
-        coder.readWord(2, false); // total bytes per sample
-        sampleSize = coder.readWord(2, false) / 8;
+        numberOfChannels = coder.readUI16();
+        sampleRate = coder.readUI32();
+        coder.readUI32(); // total data length
+        coder.readUI16(); // total bytes per sample
+        sampleSize = coder.readUI16() / 8;
     }
 
     private void decodeDATA(final SWFDecoder coder, final int length) {

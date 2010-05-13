@@ -37,7 +37,7 @@ import org.junit.Test;
 
 public final class FreeTest {
 
-    private static final transient int identifier = 1;
+    private final transient int identifier = 1;
 
     private transient Free fixture;
 

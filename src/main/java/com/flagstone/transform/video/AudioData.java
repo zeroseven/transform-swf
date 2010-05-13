@@ -33,6 +33,7 @@ package com.flagstone.transform.video;
 
 import java.util.Arrays;
 
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.FLVDecoder;
 import com.flagstone.transform.coder.FLVEncoder;
@@ -93,19 +94,20 @@ public final class AudioData implements VideoTag {
         final int start = coder.getPointer();
         coder.readByte();
         length = coder.readWord(3, false);
-        final int end = coder.getPointer() + (length << 3);
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
         timestamp = coder.readWord(3, false);
-        coder.readWord(4, false); // reserved
+        coder.readUI32(); // reserved
         unpack(coder.readByte());
         data = coder.readBytes(new byte[length - 1]);
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 
-    /** TODO(method). */
+
     public AudioData() {
         format = 0;
         rate = 5512;
@@ -117,14 +119,14 @@ public final class AudioData implements VideoTag {
     /**
      * Creates an AudioData object.
      *
-     * @param timestamp
+     * @param time
      *            time in milliseconds from the start of the file that the sound
      *            will be played.
-     * @param format
+     * @param soundFormat
      *            the encoding format for the sound, either
      *            Constants.NATIVE_PCM, Constants.ADPCM, Constants.MP3,
      *            Constants.NELLYMOSER_8K or Constants.NELLYMOSER.
-     * @param rate
+     * @param sampleRate
      *            the number of samples per second that the sound is played at,
      *            must be either 5512, 11025, 22050 or 44100. The rate is
      *            ignored if the format is Constants.NELLYMOSER_8K.
@@ -140,12 +142,12 @@ public final class AudioData implements VideoTag {
      * @param bytes
      *            the sound data which cannot be null,
      */
-    public AudioData(final int timestamp, final SoundFormat format,
-            final int rate, final int channels, final int size,
+    public AudioData(final int time, final SoundFormat soundFormat,
+            final int sampleRate, final int channels, final int size,
             final byte[] bytes) {
-        setTimestamp(timestamp);
-        setFormat(format);
-        setRate(rate);
+        setTimestamp(time);
+        setFormat(soundFormat);
+        setRate(sampleRate);
         setChannelCount(channels);
         setSampleSize(size);
         setData(bytes);
@@ -199,27 +201,27 @@ public final class AudioData implements VideoTag {
      */
     public SoundFormat getFormat() {
         SoundFormat value;
-        
+
         switch (format) {
-        case 0: 
+        case 0:
             value = SoundFormat.NATIVE_PCM;
             break;
-        case 1: 
+        case 1:
             value = SoundFormat.ADPCM;
             break;
-        case 2: 
+        case 2:
             value = SoundFormat.MP3;
             break;
-        case 3: 
+        case 3:
             value = SoundFormat.PCM;
             break;
-        case 5: 
+        case 5:
             value = SoundFormat.NELLYMOSER_8K;
             break;
-        case 6: 
+        case 6:
             value = SoundFormat.NELLYMOSER;
             break;
-        case 11: 
+        case 11:
             value = SoundFormat.SPEEX;
             break;
         default:
@@ -238,25 +240,25 @@ public final class AudioData implements VideoTag {
      */
     public void setFormat(final SoundFormat encoding) {
         switch (encoding) {
-        case NATIVE_PCM: 
+        case NATIVE_PCM:
             format = 0;
             break;
-        case ADPCM: 
+        case ADPCM:
             format = 1;
             break;
-        case MP3: 
+        case MP3:
             format = 2;
             break;
-        case PCM: 
+        case PCM:
             format = 3;
             break;
-        case NELLYMOSER_8K: 
+        case NELLYMOSER_8K:
             format = 5;
             break;
-        case NELLYMOSER: 
+        case NELLYMOSER:
             format = 6;
             break;
-        case SPEEX: 
+        case SPEEX:
             format = 11;
             break;
         default:
@@ -279,16 +281,19 @@ public final class AudioData implements VideoTag {
      * for NELLYMOSER_8K encoded audio is fixed at 8KHz so setting the rate has
      * no effect.
      *
-     * @param rate
+     * @param sampleRate
      *            the rate at which the sounds is played in Hz, MUST either
      *            5512, 11025, 22050 or 44100.
      */
-    public void setRate(final int rate) {
-        if ((rate != 5512) && (rate != 11025) && (rate != 22050)
-                && (rate != 44100)) {
-            throw new IllegalArgumentValueException(new int[] {5512, 11025, 22050, 44100}, rate);
+    public void setRate(final int sampleRate) {
+        if ((sampleRate != 5512)
+                && (sampleRate != 11025)
+                && (sampleRate != 22050)
+                && (sampleRate != 44100)) {
+            throw new IllegalArgumentValueException(
+                    new int[] {5512, 11025, 22050, 44100}, sampleRate);
         }
-        this.rate = rate;
+        rate = sampleRate;
     }
 
     /**
@@ -384,15 +389,16 @@ public final class AudioData implements VideoTag {
 
         coder.writeWord(VideoTypes.VIDEO_DATA, 1);
         coder.writeWord(length - 11, 3);
-        final int end = coder.getPointer() + (length << 3);
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
         coder.writeWord(timestamp, 3);
         coder.writeWord(0, 4);
         coder.writeByte(pack());
         coder.writeBytes(data);
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 

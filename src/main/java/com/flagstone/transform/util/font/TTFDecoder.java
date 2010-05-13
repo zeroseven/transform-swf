@@ -100,7 +100,7 @@ import com.flagstone.transform.util.shape.Canvas;
  * </p>
  */
 //TODO(class)
-@SuppressWarnings({"PMD.TooManyFields","PMD.TooManyMethods"})
+@SuppressWarnings({"PMD.TooManyFields", "PMD.TooManyMethods" })
 public final class TTFDecoder implements FontProvider, FontDecoder {
 
     private static final int OS_2 = 0x4F532F32;
@@ -167,17 +167,17 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
 
     private transient List<Font>fonts;
 
-    /** TODO(method). */
+
     public FontDecoder newDecoder() {
         return new TTFDecoder();
     }
 
-    /** TODO(method). */
+
     public void read(final File file) throws IOException, DataFormatException {
         decode(loadFile(file));
     }
 
-    /** TODO(method). */
+
     public void read(final URL url) throws IOException, DataFormatException {
         final URLConnection connection = url.openConnection();
         final int contentLength = connection.getContentLength();
@@ -197,7 +197,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         }
     }
 
-    /** TODO(method). */
+
     public List<Font> getFonts() {
         return fonts;
     }
@@ -207,10 +207,10 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
 
         /* float version = */coder.readBits(32, true);
 
-        final int tableCount = coder.readWord(2, false);
-        /* int searchRange = */coder.readWord(2, false);
-        /* int entrySelector = */coder.readWord(2, false);
-        /* int rangeShift = */coder.readWord(2, false);
+        final int tableCount = coder.readUI16();
+        /* int searchRange = */coder.readUI16();
+        /* int entrySelector = */coder.readUI16();
+        /* int rangeShift = */coder.readUI16();
 
         int os2Offset = 0;
         int headOffset = 0;
@@ -238,10 +238,10 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
 //        int length;
 
         for (int i = 0; i < tableCount; i++) {
-            chunkType = coder.readWord(4, false);
-            /* checksum = */ coder.readWord(4, false);
+            chunkType = coder.readUI32();
+            /* checksum = */ coder.readUI32();
             offset = coder.readWord(4, false) << 3;
-            /* length = */ coder.readWord(4, false);
+            /* length = */ coder.readUI32();
 
             /*
              * Chunks are encoded in ascending alphabetical order so the
@@ -351,8 +351,8 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         font.setMissingGlyph(missingGlyph);
         font.setHighestChar(maxChar);
 
-        for (int i=0; i<glyphCount; i++) {
-            font.addGlyph((char)glyphToChar[i], glyphTable[i]);
+        for (int i = 0; i < glyphCount; i++) {
+            font.addGlyph((char) glyphToChar[i], glyphTable[i]);
         }
 
         fonts.add(font);
@@ -363,15 +363,15 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
 
         coder.readBits(32, true); // table version fixed 16
         coder.readBits(32, true); // font version fixed 16
-        coder.readWord(4, false); // checksum adjustment
-        coder.readWord(4, false); // magic number
+        coder.readUI32(); // checksum adjustment
+        coder.readUI32(); // magic number
         coder.readBits(1, false); // baseline at y=0
         coder.readBits(1, false); // side bearing at x=0;
         coder.readBits(1, false); // instructions depend on point size
         coder.readBits(1, false); // force ppem to integer values
         coder.readBits(1, false); // instructions may alter advance
         coder.readBits(11, false);
-        scale = coder.readWord(2, false) / 1024; // units per em
+        scale = coder.readUI16() / 1024; // units per em
 
         if (scale == 0) {
             scale = 1;
@@ -393,7 +393,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         italic = coder.readBits(1, false) != 0;
         coder.readBits(14, false); //
 
-        coder.readWord(2, false); // smallest readable size in pixels
+        coder.readUI16(); // smallest readable size in pixels
         coder.readWord(2, true); // font direction hint
         glyphOffset = coder.readWord(2, true);
         coder.readWord(2, true); // glyph data format
@@ -406,7 +406,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         descent = coder.readWord(2, true);
         leading = coder.readWord(2, true);
 
-        coder.readWord(2, false); // maximum advance in the htmx table
+        coder.readUI16(); // maximum advance in the htmx table
         coder.readWord(2, true); // minimum left side bearing in the htmx table
         coder.readWord(2, true); // minimum right side bearing in the htmx table
         coder.readWord(2, true); // maximum extent
@@ -414,14 +414,14 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         coder.readWord(2, true); // caret slope run
         coder.readWord(2, true); // caret offset
 
-        coder.readWord(2, false); // reserved
-        coder.readWord(2, false); // reserved
-        coder.readWord(2, false); // reserved
-        coder.readWord(2, false); // reserved
+        coder.readUI16(); // reserved
+        coder.readUI16(); // reserved
+        coder.readUI16(); // reserved
+        coder.readUI16(); // reserved
 
         coder.readWord(2, true); // metric data format
 
-        metrics = coder.readWord(2, false);
+        metrics = coder.readUI16();
     }
 
     private void decodeOS2(final FLVDecoder coder) {
@@ -429,17 +429,17 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         final int[] unicodeRange = new int[4];
         final byte[] vendor = new byte[4];
 
-        final int version = coder.readWord(2, false); // version
+        final int version = coder.readUI16(); // version
         coder.readWord(2, true); // average character width
 
-        final int weight = coder.readWord(2, false);
+        final int weight = coder.readUI16();
 
         if (weight == WEIGHT_BOLD) {
             bold = true;
         }
 
-        coder.readWord(2, false); // width class
-        coder.readWord(2, false); // embedding licence
+        coder.readUI16(); // width class
+        coder.readUI16(); // embedding licence
 
         coder.readWord(2, true); // subscript x size
         coder.readWord(2, true); // subscript y size
@@ -456,7 +456,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         coder.readBytes(panose);
 
         for (int i = 0; i < 4; i++) {
-            unicodeRange[i] = coder.readWord(4, false);
+            unicodeRange[i] = coder.readUI32();
         }
 
         coder.readBytes(vendor); // font vendor identification
@@ -466,26 +466,26 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         bold = coder.readBits(1, false) != 0;
         coder.readBits(10, false);
 
-        coder.readWord(2, false); // first unicode character code
-        coder.readWord(2, false); // last unicode character code
+        coder.readUI16(); // first unicode character code
+        coder.readUI16(); // last unicode character code
 
-        ascent = coder.readWord(2, false);
-        descent = coder.readWord(2, false);
-        leading = coder.readWord(2, false);
+        ascent = coder.readUI16();
+        descent = coder.readUI16();
+        leading = coder.readUI16();
 
-        coder.readWord(2, false); // ascent in Windows
-        coder.readWord(2, false); // descent in Windows
+        coder.readUI16(); // ascent in Windows
+        coder.readUI16(); // descent in Windows
 
         if (version > 0) {
-            coder.readWord(4, false); // code page range
-            coder.readWord(4, false); // code page range
+            coder.readUI32(); // code page range
+            coder.readUI32(); // code page range
 
             if (version > 1) {
                 coder.readWord(2, true); // height
                 coder.readWord(2, true); // Capitals height
-                missingGlyph = coder.readWord(2, false);
-                coder.readWord(2, false); // break character
-                coder.readWord(2, false); // maximum context
+                missingGlyph = coder.readUI16();
+                coder.readUI16(); // break character
+                coder.readUI16(); // maximum context
             }
         }
     }
@@ -493,18 +493,18 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
     private void decodeNAME(final FLVDecoder coder) {
         final int stringTableBase = coder.getPointer() >>> 3;
 
-        /* final int format = */ coder.readWord(2, false);
-        final int names = coder.readWord(2, false);
-        final int stringTable = coder.readWord(2, false) + stringTableBase;
+        /* final int format = */ coder.readUI16();
+        final int names = coder.readUI16();
+        final int stringTable = coder.readUI16() + stringTableBase;
 
         for (int i = 0; i < names; i++) {
-            final int platformId = coder.readWord(2, false);
-            final int encodingId = coder.readWord(2, false);
-            final int languageId = coder.readWord(2, false);
-            final int nameId = coder.readWord(2, false);
+            final int platformId = coder.readUI16();
+            final int encodingId = coder.readUI16();
+            final int languageId = coder.readUI16();
+            final int nameId = coder.readUI16();
 
-            final int stringLength = coder.readWord(2, false);
-            final int stringOffset = coder.readWord(2, false);
+            final int stringLength = coder.readUI16();
+            final int stringOffset = coder.readUI16();
 
             final int current = coder.getPointer();
 
@@ -553,28 +553,28 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
 
     private void decodeMAXP(final FLVDecoder coder) {
         final float version = coder.readBits(32, true) / 65536.0f;
-        glyphCount = coder.readWord(2, false);
+        glyphCount = coder.readUI16();
 
         if (version == 1.0) {
-            coder.readWord(2, false); // maximum number of points in a simple
+            coder.readUI16(); // maximum number of points in a simple
             // glyph
-            coder.readWord(2, false); // maximum number of contours in a simple
+            coder.readUI16(); // maximum number of contours in a simple
             // glyph
-            coder.readWord(2, false); // maximum number of points in a composite
+            coder.readUI16(); // maximum number of points in a composite
             // glyph
-            coder.readWord(2, false); // maximum number of contours in a
+            coder.readUI16(); // maximum number of contours in a
             // composite glyph
-            coder.readWord(2, false); // maximum number of zones
-            coder.readWord(2, false); // maximum number of point in Z0
-            coder.readWord(2, false); // number of storage area locations
-            coder.readWord(2, false); // maximum number of FDEFs
-            coder.readWord(2, false); // maximum number of IDEFs
-            coder.readWord(2, false); // maximum stack depth
-            coder.readWord(2, false); // maximum byte count for glyph
+            coder.readUI16(); // maximum number of zones
+            coder.readUI16(); // maximum number of point in Z0
+            coder.readUI16(); // number of storage area locations
+            coder.readUI16(); // maximum number of FDEFs
+            coder.readUI16(); // maximum number of IDEFs
+            coder.readUI16(); // maximum stack depth
+            coder.readUI16(); // maximum byte count for glyph
             // instructions
-            coder.readWord(2, false); // maximum number of components for
+            coder.readUI16(); // maximum number of components for
             // composite glyphs
-            coder.readWord(2, false); // maximum level of recursion
+            coder.readUI16(); // maximum level of recursion
         }
     }
 
@@ -582,7 +582,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         int index = 0;
 
         for (index = 0; index < metrics; index++) {
-            glyphTable[index].setAdvance((coder.readWord(2, false) / scale));
+            glyphTable[index].setAdvance((coder.readUI16() / scale));
             coder.readWord(2, true); // left side bearing
         }
 
@@ -601,8 +601,8 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
     private void decodeCMAP(final FLVDecoder coder) {
         final int tableStart = coder.getPointer();
 
-        /* final int version = */ coder.readWord(2, false);
-        final int numberOfTables = coder.readWord(2, false);
+        /* final int version = */ coder.readUI16();
+        final int numberOfTables = coder.readUI16();
 
         int platformId = 0;
         int encodingId = 0;
@@ -624,8 +624,8 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         int index = 0;
 
         for (tableCount = 0; tableCount < numberOfTables; tableCount++) {
-            platformId = coder.readWord(2, false);
-            encodingId = coder.readWord(2, false);
+            platformId = coder.readUI16();
+            encodingId = coder.readUI16();
             offset = coder.readWord(4, false) << 3;
             current = coder.getPointer();
 
@@ -652,9 +652,9 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
 
             coder.setPointer(tableStart + offset);
 
-            format = coder.readWord(2, false);
-            /* length = */ coder.readWord(2, false);
-            /* language = */ coder.readWord(2, false);
+            format = coder.readUI16();
+            /* length = */ coder.readUI16();
+            /* language = */ coder.readUI16();
 
             switch (format) {
             case 0:
@@ -664,11 +664,11 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
                 }
                 break;
             case 4:
-                segmentCount = coder.readWord(2, false) / 2;
+                segmentCount = coder.readUI16() / 2;
 
-                coder.readWord(2, false); // search range
-                coder.readWord(2, false); // entry selector
-                coder.readWord(2, false); // range shift
+                coder.readUI16(); // search range
+                coder.readUI16(); // entry selector
+                coder.readUI16(); // range shift
 
                 startCount = new int[segmentCount];
                 endCount = new int[segmentCount];
@@ -677,13 +677,13 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
                 rangeAdr = new int[segmentCount];
 
                 for (index = 0; index < segmentCount; index++) {
-                    endCount[index] = coder.readWord(2, false);
+                    endCount[index] = coder.readUI16();
                 }
 
-                coder.readWord(2, false); // reserved padding
+                coder.readUI16(); // reserved padding
 
                 for (index = 0; index < segmentCount; index++) {
-                    startCount[index] = coder.readWord(2, false);
+                    startCount[index] = coder.readUI16();
                 }
 
                 for (index = 0; index < segmentCount; index++) {
@@ -699,17 +699,19 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
                 int location = 0;
 
                 for (index = 0; index < segmentCount; index++) {
-                    for (int code = startCount[index]; code <= endCount[index]; code++) {
+                    for (int code = startCount[index];
+                    code <= endCount[index]; code++) {
                         if (range[index] == 0) {
                             glyphIndex = (delta[index] + code) % 65536;
                         } else {
                             location = rangeAdr[index] + range[index]
                                     + ((code - startCount[index]) << 1);
                             coder.setPointer(location << 3);
-                            glyphIndex = coder.readWord(2, false);
+                            glyphIndex = coder.readUI16();
 
                             if (glyphIndex != 0) {
-                                glyphIndex = (glyphIndex + delta[index]) % 65536;
+                                glyphIndex = (glyphIndex
+                                        + delta[index]) % 65536;
                             }
                         }
 
@@ -738,14 +740,14 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         final int[] offsets = new int[glyphCount];
 
         if (glyphOffset == ITLF_SHORT) {
-            offsets[0] = glyfOffset + (coder.readWord(2, false) * 2 << 3);
+            offsets[0] = glyfOffset + (coder.readUI16() * 2 << 3);
         } else {
             offsets[0] = glyfOffset + (coder.readWord(4, false) << 3);
         }
 
         for (int i = 1; i < glyphCount; i++) {
             if (glyphOffset == ITLF_SHORT) {
-                offsets[i] = glyfOffset + (coder.readWord(2, false) * 2 << 3);
+                offsets[i] = glyfOffset + (coder.readUI16() * 2 << 3);
             } else {
                 offsets[i] = glyfOffset + (coder.readWord(4, false) << 3);
             }
@@ -797,10 +799,10 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         final int[] endPtsOfContours = new int[numberOfContours];
 
         for (int i = 0; i < numberOfContours; i++) {
-            endPtsOfContours[i] = coder.readWord(2, false);
+            endPtsOfContours[i] = coder.readUI16();
         }
 
-        final int instructionCount = coder.readWord(2, false);
+        final int instructionCount = coder.readUI16();
         final int[] instructions = new int[instructionCount];
 
         for (int i = 0; i < instructionCount; i++) {
@@ -973,8 +975,8 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
 //        int destIndex = 0;
 
         do {
-            flags = coder.readWord(2, false);
-            sourceGlyph = coder.readWord(2, false);
+            flags = coder.readUI16();
+            sourceGlyph = coder.readUI16();
 
             if ((sourceGlyph >= glyphTable.length)
                     || (glyphTable[sourceGlyph] == null)) {
@@ -989,25 +991,27 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
             // endPtsOfContours = new int[points.endPoints.length];
 
             /*
-             * for (int i=0; i<endPtsOfContours.length; i++) endPtsOfContours[i]
+             * for (int i = 0; i < endPtsOfContours.length; i++)
+             * endPtsOfContours[i]
              * = points.endPoints[i];
              *
              * xCoordinates = new int[numberOfPoints];
              *
-             * for (int i=0; i<numberOfPoints; i++) xCoordinates[i] =
+             * for (int i = 0; i < numberOfPoints; i++) xCoordinates[i] =
              * points.xCoordinates[i];
              *
              * yCoordinates = new int[numberOfPoints];
              *
-             * for (int i=0; i<numberOfPoints; i++) yCoordinates[i] =
+             * for (int i = 0; i < numberOfPoints; i++) yCoordinates[i] =
              * points.yCoordinates[i];
              *
              * onCurve = new boolean[numberOfPoints];
              *
-             * for (int i=0; i<numberOfPoints; i++) onCurve[i] =
+             * for (int i = 0; i < numberOfPoints; i++) onCurve[i] =
              * points.onCurve[i];
              */
-            if (((flags & ARGS_ARE_WORDS) == 0) && ((flags & ARGS_ARE_XY) == 0)) {
+            if (((flags & ARGS_ARE_WORDS) == 0)
+                    && ((flags & ARGS_ARE_XY) == 0)) {
                 /* destIndex = */ coder.readByte();
                 /* sourceIndex = */ coder.readByte();
 
@@ -1021,8 +1025,8 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
                 yOffset = (coder.readByte() << 24) >> 24;
             } else if (((flags & ARGS_ARE_WORDS) > 0)
                     && ((flags & ARGS_ARE_XY) == 0)) {
-                /* destIndex = */ coder.readWord(2, false);
-                /* sourceIndex = */ coder.readWord(2, false);
+                /* destIndex = */ coder.readUI16();
+                /* sourceIndex = */ coder.readUI16();
 
                 // xCoordinates[destIndex] =
                 // glyphTable[sourceGlyph].xCoordinates[sourceIndex];

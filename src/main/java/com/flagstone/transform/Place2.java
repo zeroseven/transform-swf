@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.DefineTag;
@@ -63,7 +64,8 @@ import com.flagstone.transform.movieclip.MovieClipEventHandler;
  * <li>Change an existing shape by moving it to new location or changing its
  * appearance.</li>
  * <li>Replace an existing shape with a another.</li>
- * <li>Define clipping layers to mask objects displayed in front of a shape.</li>
+ * <li>
+ * Define clipping layers to mask objects displayed in front of a shape.</li>
  * <li>Control the morphing process that changes one shape into another.</li>
  * <li>Assign names to objects rather than using their identifiers.</li>
  * <li>Define the sequence of actions that are executed when an event occurs in
@@ -141,7 +143,7 @@ import com.flagstone.transform.movieclip.MovieClipEventHandler;
 public final class Place2 implements MovieTag {
 
     public static final class Builder {
-        /** TODO(method). */
+
         public Place2 show(final int identifier, final int layer,
                 final int xCoord, final int yCoord) {
             final Place2 object = new Place2();
@@ -151,8 +153,8 @@ public final class Place2 implements MovieTag {
             object.setTransform(CoordTransform.translate(xCoord, yCoord));
             return object;
         }
-        
-        /** TODO(method). */
+
+
         public Place2 show(final DefineTag tag, final int layer,
                 final int xCoord, final int yCoord) {
             final Place2 object = new Place2();
@@ -163,7 +165,7 @@ public final class Place2 implements MovieTag {
             return object;
         }
 
-        /** TODO(method). */
+
         public Place2 modify(final int layer) {
             final Place2 object = new Place2();
             object.setType(PlaceType.MODIFY);
@@ -171,8 +173,9 @@ public final class Place2 implements MovieTag {
             return object;
         }
 
-        /** TODO(method). */
-        public Place2 move(final int layer, final int xCoord, final int yCoord) {
+
+        public Place2 move(final int layer, final int xCoord,
+                final int yCoord) {
             final Place2 object = new Place2();
             object.setType(PlaceType.MODIFY);
             object.setLayer(layer);
@@ -180,7 +183,7 @@ public final class Place2 implements MovieTag {
             return object;
         }
 
-        /** TODO(method). */
+
         public Place2 replace(final int identifier, final int layer) {
             final Place2 object = new Place2();
             object.setType(PlaceType.REPLACE);
@@ -189,7 +192,7 @@ public final class Place2 implements MovieTag {
             return object;
         }
 
-        /** TODO(method). */
+
         public Place2 replace(final int identifier, final int layer,
                 final int xCoord, final int yCoord) {
             final Place2 object = new Place2();
@@ -198,9 +201,9 @@ public final class Place2 implements MovieTag {
             object.setIdentifier(identifier);
             object.setTransform(CoordTransform.translate(xCoord, yCoord));
             return object;
-        }      
+        }
     }
-    
+
     private static final String FORMAT = "Place2: { type=%s; layer=%d; "
             + "identifier=%d; transform=%s; colorTransform=%s; ratio=%d; "
             + "clippingDepth=%d; name=%s; clipEvents=%s}";
@@ -235,17 +238,11 @@ public final class Place2 implements MovieTag {
     // TODO(optimise)
     public Place2(final SWFDecoder coder, final Context context)
             throws CoderException {
-//        final int start = coder.getPointer();
         final Map<Integer, Integer> vars = context.getVariables();
         vars.put(Context.TRANSPARENT, 1);
-
-        length = coder.readWord(2, false) & 0x3F;
-
-        if (length == 0x3F) {
-            length = coder.readWord(4, false);
-        }
-
-        final int end = coder.getPointer() + (length << 3);
+//        final int start = coder.getPointer();
+        length = coder.readHeader();
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
         final boolean hasEvents = coder.readBits(1, false) != 0;
         final boolean hasDepth = coder.readBits(1, false) != 0;
         final boolean hasName = coder.readBits(1, false) != 0;
@@ -265,11 +262,11 @@ public final class Place2 implements MovieTag {
             break;
         }
 
-        layer = coder.readWord(2, false);
+        layer = coder.readUI16();
         events = new ArrayList<MovieClipEventHandler>();
 
         if ((type == PlaceType.NEW) || (type == PlaceType.REPLACE)) {
-            identifier = coder.readWord(2, false);
+            identifier = coder.readUI16();
         }
 
         if (hasTransform) {
@@ -281,7 +278,7 @@ public final class Place2 implements MovieTag {
         }
 
         if (hasRatio) {
-            ratio = coder.readWord(2, false);
+            ratio = coder.readUI16();
         }
 
         if (hasName) {
@@ -289,13 +286,19 @@ public final class Place2 implements MovieTag {
         }
 
         if (hasDepth) {
-            depth = coder.readWord(2, false);
+            depth = coder.readUI16();
         }
 
         if (hasEvents) {
-            final int eventSize = vars.get(Context.VERSION) > 5 ? 4 : 2;
+            final int eventSize;
 
-            coder.readWord(2, false);
+            if (vars.get(Context.VERSION) > 5) {
+                eventSize = 4;
+            } else {
+                eventSize = 2;
+            }
+
+            coder.readUI16();
             coder.readWord(eventSize, false);
 
             while (coder.readWord(eventSize, false) != 0) {
@@ -309,8 +312,9 @@ public final class Place2 implements MovieTag {
         if (coder.getPointer() != end) {
             //TODO Fix me
             coder.setPointer(end);
-//            throw new CoderException(getClass().getName(), start >> 3, length,
-//                    (coder.getPointer() - end) >> 3);
+//            throw new CoderException(getClass().getName(),
+//            start >> Coder.BITS_TO_BYTES, length,
+//                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 
@@ -350,7 +354,7 @@ public final class Place2 implements MovieTag {
             events.add(event.copy());
         }
     }
- 
+
     /**
      * Adds a clip event to the array of clip events.
      *
@@ -496,8 +500,9 @@ public final class Place2 implements MovieTag {
      *            range 1..65535.
      */
     public Place2 setIdentifier(final int uid) {
-        if ((uid < 1) || (uid > 65535)) {
-             throw new IllegalArgumentRangeException(1, 65536, uid);
+        if ((uid < SWF.MIN_IDENTIFIER) || (uid > SWF.MAX_IDENTIFIER)) {
+            throw new IllegalArgumentRangeException(
+                    SWF.MIN_IDENTIFIER, SWF.MAX_IDENTIFIER, uid);
         }
         identifier = uid;
         return this;
@@ -622,7 +627,13 @@ public final class Place2 implements MovieTag {
         length += name == null ? 0 : coder.strlen(name);
 
         if (!events.isEmpty()) {
-            final int eventSize = vars.get(Context.VERSION) > 5 ? 4 : 2;
+            final int eventSize;
+
+            if (vars.get(Context.VERSION) > 5) {
+                eventSize = 4;
+            } else {
+                eventSize = 2;
+            }
 
             length += 2 + eventSize;
 
@@ -644,14 +655,8 @@ public final class Place2 implements MovieTag {
             throws CoderException {
         final Map<Integer, Integer> vars = context.getVariables();
         final int start = coder.getPointer();
-
-        if (length >= 63) {
-            coder.writeWord((MovieTypes.PLACE_2 << 6) | 0x3F, 2);
-            coder.writeWord(length, 4);
-        } else {
-            coder.writeWord((MovieTypes.PLACE_2 << 6) | length, 2);
-        }
-        final int end = coder.getPointer() + (length << 3);
+        coder.writeHeader(MovieTypes.PLACE_2, length);
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
         vars.put(Context.TRANSPARENT, 1);
         coder.writeBits(events.isEmpty() ? 0 : 1, 1);
@@ -672,7 +677,8 @@ public final class Place2 implements MovieTag {
             coder.writeBits(3, 2);
             break;
         default:
-            throw new CoderException(getClass().getName(), start >> 3, length,
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
                     0, "Unsupported format");
         }
 
@@ -699,7 +705,13 @@ public final class Place2 implements MovieTag {
         }
 
         if (!events.isEmpty()) {
-            final int eventSize = vars.get(Context.VERSION) > 5 ? 4 : 2;
+            final int eventSize;
+
+            if (vars.get(Context.VERSION) > 5) {
+                eventSize = 4;
+            } else {
+                eventSize = 2;
+            }
             int eventMask = 0;
 
             coder.writeWord(0, 2);
@@ -720,8 +732,9 @@ public final class Place2 implements MovieTag {
         vars.remove(Context.TRANSPARENT);
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 }

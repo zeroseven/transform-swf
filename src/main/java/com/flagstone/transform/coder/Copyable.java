@@ -39,6 +39,11 @@ package com.flagstone.transform.coder;
  *            The class to create copies for.
  */
 public interface Copyable<T> {
-    /** Returns a complete copy of this object. */
+    /**
+     * Creates a complete copy of this object.
+     *
+     * @return a deep-copy of this object. New instances of mutable objects
+     * are copied and immutable instances are shared.
+     */
     T copy();
 }

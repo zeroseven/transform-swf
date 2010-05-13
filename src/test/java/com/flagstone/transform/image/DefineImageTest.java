@@ -1,5 +1,5 @@
 /*
- * DefineImageTest.java 
+ * DefineImageTest.java
  * Transform
  *
  * Copyright (c) 2009-2010 Flagstone Software Ltd. All rights reserved.
@@ -47,10 +47,10 @@ public final class DefineImageTest {
 
     private transient DefineImage fixture;
 
-    private final transient byte[] encoded = new byte[] { 0x06, 0x01, 0x01,
+    private final transient byte[] encoded = new byte[] {0x06, 0x01, 0x01,
             0x00, 0x02, 0x00, 0x06, 0x50 };
 
-    private final transient byte[] extended = new byte[] { 0x7F, 0x01, 0x06,
+    private final transient byte[] extended = new byte[] {0x7F, 0x01, 0x06,
             0x00, 0x00, 0x00, 0x01, 0x00, 0x02, 0x00, 0x06, 0x50 };
 
     @Test

@@ -31,6 +31,7 @@
 
 package com.flagstone.transform.filter;
 
+import com.flagstone.transform.Constants;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -52,36 +53,36 @@ public final class BevelFilter implements Filter {
         private transient int mode;
         private transient int passes;
 
-        /** TODO(method). */
+
        public Builder setShadow(final Color color) {
             shadow = color;
             return this;
         }
 
-       /** TODO(method). */
+
         public Builder setHighlight(final Color color) {
             highlight = color;
             return this;
         }
 
-        /** TODO(method). */
+
         public Builder setBlur(final float xAmount, final float yAmount) {
             blurX = (int) (xAmount * 65536.0f);
             blurY = (int) (yAmount * 65536.0f);
             return this;
         }
 
-        /** TODO(method). */
-        public Builder setMode(final FilterMode mode) {
-            switch (mode) {
+
+        public Builder setMode(final FilterMode filterMode) {
+            switch (filterMode) {
             case TOP:
-                 this.mode = 0x0030;
+                 mode = 0x0030;
                 break;
             case KNOCKOUT:
-                this.mode = 0x0060;
+                mode = 0x0060;
                 break;
             case INNER:
-                this.mode = 0x00A0;
+                mode = 0x00A0;
                 break;
             default:
                 throw new IllegalArgumentException();
@@ -89,31 +90,31 @@ public final class BevelFilter implements Filter {
             return this;
         }
 
-        /** TODO(method). */
-        public Builder setAngle(final float angle) {
-            this.angle = (int) (angle * 65536.0f);
+
+        public Builder setAngle(final float anAngle) {
+            angle = (int) (anAngle * 65536.0f);
             return this;
         }
-        
-        /** TODO(method). */
-        public Builder setDistance(final float distance) {
-            this.distance = (int) (distance * 65536.0f);
+
+
+        public Builder setDistance(final float dist) {
+            distance = (int) (dist * 65536.0f);
             return this;
         }
-        
-        /** TODO(method). */
-        public Builder setStrength(final float strength) {
-            this.strength = (int) (strength * 256.0f);
+
+
+        public Builder setStrength(final float weight) {
+            strength = (int) (weight * 256.0f);
             return this;
         }
-        
-        /** TODO(method). */
+
+
         public Builder setPasses(final int count) {
             passes = count;
             return this;
         }
-        
-        /** TODO(method). */
+
+
         public BevelFilter build() {
             return new BevelFilter(this);
         }
@@ -170,49 +171,49 @@ public final class BevelFilter implements Filter {
         angle = coder.readWord(4, true);
         distance = coder.readWord(4, true);
         strength = coder.readWord(2, true);
-        
+
         final int value = coder.readByte();
-        
+
         passes = value & 0x0F;
         mode = (value & 0x0D) >>> 4;
     }
 
-    /** TODO(method). */
+
     public Color getShadow() {
         return shadow;
     }
 
-    /** TODO(method). */
+
     public Color getHightlight() {
         return highlight;
     }
 
-    /** TODO(method). */
+
     public float getBlurX() {
         return blurX / 65536.0f;
     }
 
-    /** TODO(method). */
+
     public float getBlurY() {
         return blurY / 65536.0f;
     }
 
-    /** TODO(method). */
+
     public float getAngle() {
         return angle / 65536.0f;
     }
 
-    /** TODO(method). */
+
     public float getDistance() {
         return distance / 65536.0f;
     }
 
-    /** TODO(method). */
+
     public float getStrength() {
         return strength / 256.0f;
     }
-    
-    /** TODO(method). */
+
+
     public FilterMode getMode() {
         FilterMode value;
         switch (mode) {
@@ -231,7 +232,7 @@ public final class BevelFilter implements Filter {
         return value;
     }
 
-    /** TODO(method). */
+
     public int getPasses() {
         return passes;
     }
@@ -239,8 +240,8 @@ public final class BevelFilter implements Filter {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        return String.format(FORMAT, shadow.toString(), highlight.toString(), 
-                getAngle(), getDistance(), getStrength(), 
+        return String.format(FORMAT, shadow.toString(), highlight.toString(),
+                getAngle(), getDistance(), getStrength(),
                 getBlurX(), getBlurY(), mode, passes);
     }
 
@@ -271,9 +272,15 @@ public final class BevelFilter implements Filter {
     /** {@inheritDoc} */
     @Override
     public int hashCode() {
-        return ((((((((shadow.hashCode() * 31) + highlight.hashCode()) * 31 
-                + blurX) * 31 + blurY) * 31 + angle * 31)
-                + distance) * 31 + strength) * 31 + mode ) * 31 + passes;
+        return ((((((((shadow.hashCode() * Constants.PRIME)
+                + highlight.hashCode()) * Constants.PRIME
+                + blurX) * Constants.PRIME
+                + blurY) * Constants.PRIME
+                + angle) * Constants.PRIME
+                + distance) * Constants.PRIME
+                + strength) * Constants.PRIME
+                + mode) * Constants.PRIME
+                + passes;
     }
 
     /** {@inheritDoc} */

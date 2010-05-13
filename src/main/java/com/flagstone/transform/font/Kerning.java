@@ -32,6 +32,8 @@
 package com.flagstone.transform.font;
 
 
+import com.flagstone.transform.Constants;
+import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -59,7 +61,8 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  */
 //TODO(class)
 public final class Kerning implements SWFEncodeable {
-    private static final String FORMAT = "Kerning: { leftGlyph=%d; rightGlyph=%d; adjustment=%d } ";
+    private static final String FORMAT = "Kerning: { leftGlyph=%d;"
+    		+ " rightGlyph=%d; adjustment=%d } ";
 
     private final transient int leftGlyph;
     private final transient int rightGlyph;
@@ -104,19 +107,23 @@ public final class Kerning implements SWFEncodeable {
      *            the adjustment that will be added to the advance defined for
      *            the left glyph. Must be in the range -32768..32767.
      */
-    public Kerning(final int leftIndex, final int rightIndex, final int adjust) {
-        if ((leftIndex < 0) || (leftIndex > 65535)) {
-            throw new IllegalArgumentRangeException(0, 65535, leftIndex);
+    public Kerning(final int leftIndex, final int rightIndex,
+            final int adjust) {
+        if ((leftIndex < 0) || (leftIndex >= SWF.MAX_GLYPHS)) {
+            throw new IllegalArgumentRangeException(
+                    0, SWF.MAX_GLYPHS - 1, leftIndex);
         }
         leftGlyph = leftIndex;
 
-        if ((rightIndex < 0) || (rightIndex > 65535)) {
-            throw new IllegalArgumentRangeException(0, 65535, rightIndex);
+        if ((rightIndex < 0) || (rightIndex >= SWF.MAX_GLYPHS)) {
+            throw new IllegalArgumentRangeException(
+                    0, SWF.MAX_GLYPHS - 1, rightIndex);
         }
         rightGlyph = rightIndex;
 
-        if ((adjust < -32768) || (adjust > 32767)) {
-            throw new IllegalArgumentRangeException(-32768, 32768, adjust);
+        if ((adjust < SWF.MIN_KERNING) || (adjust > SWF.MAX_KERNING)) {
+            throw new IllegalArgumentRangeException(
+                    SWF.MIN_KERNING, SWF.MAX_KERNING, adjust);
         }
         adjustment = adjust;
     }
@@ -169,7 +176,9 @@ public final class Kerning implements SWFEncodeable {
 
     @Override
     public int hashCode() {
-        return ((leftGlyph * 31) + rightGlyph) * 31 + adjustment;
+        return ((leftGlyph * Constants.PRIME)
+                + rightGlyph) * Constants.PRIME
+                + adjustment;
     }
 
     /** {@inheritDoc} */

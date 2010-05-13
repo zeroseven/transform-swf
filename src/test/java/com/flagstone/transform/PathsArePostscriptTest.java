@@ -40,7 +40,7 @@ import com.flagstone.transform.shape.PathsArePostscript;
 public final class PathsArePostscriptTest {
 
     private transient PathsArePostscript fixture;
-    
+
     @Test
     public void checkCopy() {
         fixture = PathsArePostscript.getInstance();

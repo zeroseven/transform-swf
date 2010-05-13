@@ -48,14 +48,14 @@ import com.flagstone.transform.datatype.Color;
 
 public final class MorphLineStyle2Test {
 
-    private static final transient int startWidth = 1;
+    private final transient int startWidth = 1;
     private final transient Color startColor = new Color(2, 3, 4, 5);
-    private static final transient int endWidth = 6;
+    private final transient int endWidth = 6;
     private final transient Color endColor = new Color(7, 8, 9, 10);
 
     private transient MorphLineStyle2 fixture;
 
-    private final transient byte[] encoded = new byte[] { 0x01, 0x00, 0x06,
+    private final transient byte[] encoded = new byte[] {0x01, 0x00, 0x06,
             0x00, 0x02, 0x03, 0x04, 0x05, 0x07, 0x08, 0x09, 0x0A };
 
     @Test

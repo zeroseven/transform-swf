@@ -36,8 +36,8 @@ import org.junit.Test;
 
 public final class FrameLabelTest {
 
-    private static final transient String label = "Frame";
-    private static final transient boolean anchor = true;
+    private final transient String label = "Frame";
+    private final transient boolean anchor = true;
 
     private transient FrameLabel fixture;
 

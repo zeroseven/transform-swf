@@ -59,10 +59,10 @@ public final class WithTest {
         list.add(BasicAction.END);
     }
 
-    private static final transient int type = ActionTypes.WITH;
+    private static final transient int TYPE = ActionTypes.WITH;
     private transient With fixture;
 
-    private final transient byte[] encoded = new byte[] { (byte) type, 0x02,
+    private final transient byte[] encoded = new byte[] {(byte) TYPE, 0x02,
             0x00, 0x02, 0x00, ActionTypes.ADD, ActionTypes.END };
 
     @Test

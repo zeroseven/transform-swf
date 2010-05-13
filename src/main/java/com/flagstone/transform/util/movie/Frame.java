@@ -38,7 +38,6 @@ import com.flagstone.transform.DoAction;
 import com.flagstone.transform.FrameLabel;
 import com.flagstone.transform.Movie;
 import com.flagstone.transform.ShowFrame;
-
 import com.flagstone.transform.action.Action;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.DefineTag;
@@ -163,8 +162,8 @@ public final class Frame {
      * Creates a empty frame with no label defined and the definitions, commands
      * and actions arrays empty.
      */
-    public Frame(final int number) {
-        setNumber(number);
+    public Frame(final int frame) {
+        setNumber(frame);
         definitions = new ArrayList<MovieTag>();
         commands = new ArrayList<MovieTag>();
         actions = new ArrayList<Action>();
@@ -258,11 +257,11 @@ public final class Frame {
     /**
      * Sets the number for the frame.
      *
-     * @param number
+     * @param frameNumber
      *            the frame number.
      */
-    public void setNumber(final int number) {
-        this.number = number;
+    public void setNumber(final int frameNumber) {
+        number = frameNumber;
     }
 
     /**

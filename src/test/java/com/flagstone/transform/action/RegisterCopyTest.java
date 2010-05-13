@@ -44,12 +44,12 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 public final class RegisterCopyTest {
 
-    private static final transient int type = ActionTypes.REGISTER_COPY;
-    private static final transient int number = 1;
+    private final transient int type = ActionTypes.REGISTER_COPY;
+    private final transient int number = 1;
 
     private transient RegisterCopy fixture;
 
-    private final transient byte[] encoded = new byte[] { (byte) type, 0x02,
+    private final transient byte[] encoded = new byte[] {(byte) type, 0x02,
             0x00, 0x01 };
 
     @Test(expected = IllegalArgumentException.class)

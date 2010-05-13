@@ -81,21 +81,17 @@ public final class DefineData implements DefineTag {
     public DefineData(final SWFDecoder coder) throws CoderException {
 
         final int start = coder.getPointer();
-        length = coder.readWord(2, false) & SWFDecoder.MASK_LENGTH;
-
-        if (length > SWFDecoder.MAX_LENGTH) {
-            length = coder.readWord(4, false);
-        }
+        length = coder.readHeader();
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
-        identifier = coder.readWord(2, false);
+        identifier = coder.readUI16();
         coder.adjustPointer(32);
         data = coder.readBytes(new byte[length - 6]);
 
         if (coder.getPointer() != end) {
             throw new CoderException(getClass().getName(),
                     start >> Coder.BITS_TO_BYTES, length,
-                    (coder.getPointer() - end) >> 3);
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 
@@ -131,14 +127,15 @@ public final class DefineData implements DefineTag {
 
     /** {@inheritDoc} */
     public void setIdentifier(final int uid) {
-        if ((uid < 1) || (uid > 65535)) {
-             throw new IllegalArgumentRangeException(1, 65536, uid);
+        if ((uid < SWF.MIN_IDENTIFIER) || (uid > SWF.MAX_IDENTIFIER)) {
+            throw new IllegalArgumentRangeException(
+                    SWF.MIN_IDENTIFIER, SWF.MAX_IDENTIFIER, uid);
         }
         identifier = uid;
     }
 
     /**
-     * Returns a copy of the array of bytes that will be embedded in the 
+     * Returns a copy of the array of bytes that will be embedded in the
      * Flash file.
      */
     public byte[] getData() {
@@ -173,7 +170,7 @@ public final class DefineData implements DefineTag {
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         length = 6 + data.length;
-        return (length > SWFEncoder.MAX_LENGTH ? 6 : 2) + length;
+        return (length > 62 ? 6 : 2) + length;
     }
 
     /** {@inheritDoc} */
@@ -181,24 +178,17 @@ public final class DefineData implements DefineTag {
             throws CoderException {
 
         final int start = coder.getPointer();
-        final int type = MovieTypes.DEFINE_BINARY_DATA
-                << SWFEncoder.LENGTH_BITS;
-
-        if (length > SWFEncoder.MAX_LENGTH) {
-            coder.writeWord(type | SWFEncoder.EXTENDED, 2);
-            coder.writeWord(length, 4);
-        } else {
-            coder.writeWord(type | length, 2);
-        }
-        final int end = coder.getPointer() + (length << 3);
+        coder.writeHeader(MovieTypes.DEFINE_BINARY_DATA, length);
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
         coder.writeWord(identifier, 2);
         coder.writeWord(0, 4);
         coder.writeBytes(data);
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 }

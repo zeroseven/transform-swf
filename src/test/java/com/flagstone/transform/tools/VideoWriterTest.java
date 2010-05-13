@@ -41,8 +41,6 @@ import java.util.zip.DataFormatException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.flagstone.transform.Movie;
-import com.flagstone.transform.tools.VideoWriter;
 import com.flagstone.transform.video.Video;
 
 /**

@@ -61,7 +61,7 @@ public final class SoundRegistry {
         providers.put(mimeType, decoder);
     }
 
-    /** TODO(method). */
+    
     public static SoundDecoder getSoundProvider(final String mimeType) {
 
         if (providers.containsKey(mimeType)) {

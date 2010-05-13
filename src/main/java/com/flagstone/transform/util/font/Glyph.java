@@ -45,45 +45,45 @@ public final class Glyph {
     private Bounds bounds;
     private int advance;
 
-    /** TODO(method). */
-    public Glyph(final Shape shape, final Bounds bounds, final int advance) {
-        this.shape = shape;
-        this.bounds = bounds;
-        this.advance = advance;
+
+    public Glyph(final Shape aShape, final Bounds box, final int dist) {
+        shape = aShape;
+        bounds = box;
+        advance = dist;
     }
 
-    /** TODO(method). */
-    public Glyph(final Shape shape) {
-        this.shape = shape;
+
+    public Glyph(final Shape aShape) {
+        shape = aShape;
     }
 
-    /** TODO(method). */
+
     public Shape getShape() {
         return shape;
     }
 
-    /** TODO(method). */
-    public void setShape(final Shape shape) {
-        this.shape = shape;
+
+    public void setShape(final Shape aShape) {
+        shape = aShape;
     }
 
-    /** TODO(method). */
+
     public Bounds getBounds() {
         return bounds;
     }
 
-    /** TODO(method). */
-    public void setBounds(final Bounds bounds) {
-        this.bounds = bounds;
+
+    public void setBounds(final Bounds box) {
+        bounds = box;
     }
 
-    /** TODO(method). */
+
     public int getAdvance() {
         return advance;
     }
 
-    /** TODO(method). */
-    public void setAdvance(final int advance) {
-        this.advance = advance;
+
+    public void setAdvance(final int dist) {
+        advance = dist;
     }
 }

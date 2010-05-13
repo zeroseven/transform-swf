@@ -58,18 +58,19 @@ public final class ImageBlock implements Copyable<ImageBlock> {
      * Create a new image block with the specified width and height and image
      * data. The image is compressed using the zip format.
      *
-     * @param width
+     * @param blockWidth
      *            the width of the block in pixels.
-     * @param height
+     * @param blockHeight
      *            the height of the block in pixels
-     * @param data
+     * @param pixels
      *            the pixels covered by the block, compressed using the zip
      *            format.
      */
-    public ImageBlock(final int width, final int height, final byte[] data) {
-        this.width = width;
-        this.height = height;
-        block = Arrays.copyOf(data, data.length);
+    public ImageBlock(final int blockWidth, final int blockHeight,
+            final byte[] pixels) {
+        width = blockWidth;
+        height = blockHeight;
+        block = Arrays.copyOf(pixels, pixels.length);
     }
 
     /**
@@ -126,7 +127,7 @@ public final class ImageBlock implements Copyable<ImageBlock> {
                 || (block.length == 0);
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public ImageBlock copy() {
         return new ImageBlock(this);
     }

@@ -67,20 +67,20 @@ public final class VideoDecodeTest {
                 return name.endsWith(".flv");
             }
         };
-        
+
         String[] files = srcDir.list(filter);
         Object[][] collection = new Object[files.length][1];
 
-        for (int i=0; i<files.length; i++) {
+        for (int i = 0; i < files.length; i++) {
             collection[i][0] = new File(srcDir, files[i]);
         }
         return Arrays.asList(collection);
     }
 
-    private File file;
+    private final File file;
 
-    public VideoDecodeTest(File file) {
-        this.file = file;
+    public VideoDecodeTest(final File videoFile) {
+        file = videoFile;
     }
 
     @Test

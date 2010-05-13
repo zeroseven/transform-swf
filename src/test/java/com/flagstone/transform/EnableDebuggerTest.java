@@ -36,7 +36,7 @@ import org.junit.Test;
 
 public final class EnableDebuggerTest {
 
-    private static final transient String password = "ABC123";
+    private final transient String password = "ABC123";
 
     private transient EnableDebugger fixture;
 

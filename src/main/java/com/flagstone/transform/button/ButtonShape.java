@@ -36,8 +36,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
-import com.flagstone.transform.datatype.Blend;
-
+import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
@@ -45,6 +44,7 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.coder.SWFFactory;
+import com.flagstone.transform.datatype.Blend;
 import com.flagstone.transform.datatype.ColorTransform;
 import com.flagstone.transform.datatype.CoordTransform;
 import com.flagstone.transform.exception.IllegalArgumentRangeException;
@@ -87,7 +87,7 @@ import com.flagstone.transform.filter.Filter;
  */
 //TODO(class)
 public final class ButtonShape implements SWFEncodeable {
-    
+
     private static final String FORMAT = "ButtonShape: { state=%d;"
             + " identifier=%d; layer=%d; transform=%s; colorTransform=%s"
             + " blend=%s, filters=%s }";
@@ -99,7 +99,7 @@ public final class ButtonShape implements SWFEncodeable {
     private ColorTransform colorTransform;
     private List<Filter> filters;
     private Integer blend;
-    
+
     private transient boolean hasBlend;
     private transient boolean hasFilters;
 
@@ -120,32 +120,33 @@ public final class ButtonShape implements SWFEncodeable {
      */
     public ButtonShape(final SWFDecoder coder, final Context context)
             throws CoderException {
-        
+
         coder.readBits(2, false); // reserved
         hasBlend = coder.readBits(1, false) != 0;
         hasFilters = coder.readBits(1, false) != 0;
 
         state = coder.readBits(4, false);
-        identifier = coder.readWord(2, false);
-        layer = coder.readWord(2, false);
+        identifier = coder.readUI16();
+        layer = coder.readUI16();
         transform = new CoordTransform(coder);
 
-        if (context.getVariables().get(Context.TYPE) == MovieTypes.DEFINE_BUTTON_2) {
+        if (context.getVariables().get(Context.TYPE)
+                == MovieTypes.DEFINE_BUTTON_2) {
             colorTransform = new ColorTransform(coder, context);
         }
-        
+
         if (hasFilters) {
             final SWFFactory<Filter> decoder =
                 context.getRegistry().getFilterDecoder();
-            final int count = coder.readByte();   
+            final int count = coder.readByte();
             filters = new ArrayList<Filter>(count);
-            for (int i=0; i<count; i++) {
-               filters.add(decoder.getObject(coder, context)); 
+            for (int i = 0; i < count; i++) {
+               filters.add(decoder.getObject(coder, context));
             }
         } else {
             filters = new ArrayList<Filter>();
         }
-        
+
         if (hasBlend) {
             blend = coder.readByte();
             if (blend == 0) {
@@ -181,7 +182,7 @@ public final class ButtonShape implements SWFEncodeable {
         blend = object.blend;
     }
 
-    /** TODO(method). */
+
     public Set<ButtonState> getState() {
         final Set<ButtonState> set = EnumSet.noneOf(ButtonState.class);
 
@@ -200,21 +201,21 @@ public final class ButtonShape implements SWFEncodeable {
         return set;
     }
 
-    /** TODO(method). */
+
     public ButtonShape setState(final Set<ButtonState> states) {
         for (final ButtonState buttonState : states) {
             switch (buttonState) {
             case UP:
-                this.state |= 1;
+                state |= 1;
                 break;
             case OVER:
-                this.state |= 2;
+                state |= 2;
                 break;
             case DOWN:
-                this.state |= 4;
+                state |= 4;
                 break;
             case ACTIVE:
-                this.state |= 8;
+                state |= 8;
                 break;
             default:
                 throw new IllegalArgumentException();
@@ -240,8 +241,9 @@ public final class ButtonShape implements SWFEncodeable {
      *            shape's appearance. Must be in the range 1..65535.
      */
     public ButtonShape setIdentifier(final int uid) {
-        if ((uid < 1) || (uid > 65535)) {
-             throw new IllegalArgumentRangeException(1, 65536, uid);
+        if ((uid < SWF.MIN_IDENTIFIER) || (uid > SWF.MAX_IDENTIFIER)) {
+            throw new IllegalArgumentRangeException(
+                    SWF.MIN_IDENTIFIER, SWF.MAX_IDENTIFIER, uid);
         }
         identifier = uid;
         return this;
@@ -321,7 +323,7 @@ public final class ButtonShape implements SWFEncodeable {
         return this;
     }
 
-    /** TODO(method). */
+
     public ButtonShape add(final Filter filter) {
         if (filter == null) {
             throw new IllegalArgumentException();
@@ -330,12 +332,12 @@ public final class ButtonShape implements SWFEncodeable {
         return this;
     }
 
-    /** TODO(method). */
+
     public List<Filter> getFilters() {
         return filters;
     }
 
-    /** TODO(method). */
+
     public ButtonShape setFilters(final List<Filter> array) {
         if (array == null) {
             throw new IllegalArgumentException();
@@ -344,12 +346,12 @@ public final class ButtonShape implements SWFEncodeable {
         return this;
     }
 
-    /** TODO(method). */
+
     public Blend getBlend() {
         return Blend.fromInt(blend);
     }
 
-    /** TODO(method). */
+
     public ButtonShape setBlend(final Blend mode) {
         blend = mode.getValue();
         return this;
@@ -369,16 +371,17 @@ public final class ButtonShape implements SWFEncodeable {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
-        
+
         hasBlend = blend != 0;
         hasFilters ^= filters.isEmpty();
-        
+
         int length = 5 + transform.prepareToEncode(coder, context);
 
-        if (context.getVariables().get(Context.TYPE) == MovieTypes.DEFINE_BUTTON_2) {
+        if (context.getVariables().get(Context.TYPE)
+                == MovieTypes.DEFINE_BUTTON_2) {
             length += colorTransform.prepareToEncode(coder, context);
         }
-        
+
         if (hasFilters) {
             length += 1;
             for (Filter filter : filters) {
@@ -389,7 +392,7 @@ public final class ButtonShape implements SWFEncodeable {
         if (hasBlend) {
             length += 1;
         }
-        
+
         return length;
     }
 
@@ -404,10 +407,11 @@ public final class ButtonShape implements SWFEncodeable {
         coder.writeWord(layer, 2);
         transform.encode(coder, context);
 
-        if (context.getVariables().get(Context.TYPE) == MovieTypes.DEFINE_BUTTON_2) {
+        if (context.getVariables().get(Context.TYPE)
+                == MovieTypes.DEFINE_BUTTON_2) {
             colorTransform.encode(coder, context);
         }
-        
+
         if (hasFilters) {
             coder.writeByte(filters.size());
             for (Filter filter : filters) {

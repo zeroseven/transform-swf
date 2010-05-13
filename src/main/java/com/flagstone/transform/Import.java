@@ -40,7 +40,6 @@ import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.exception.StringSizeException;
 import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 /**
@@ -65,7 +64,7 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  * @see Export
  */
 public final class Import implements MovieTag {
-    
+
     private static final String FORMAT = "Import: { url=%s; objects=%s }";
 
     private String url;
@@ -84,19 +83,14 @@ public final class Import implements MovieTag {
      *             if an error occurs while decoding the data.
      */
     public Import(final SWFDecoder coder) throws CoderException {
-        length = coder.readWord(2, false) & 0x3F;
-
-        if (length == 0x3F) {
-            length = coder.readWord(4, false);
-        }
-
+        length = coder.readHeader();
         url = coder.readString();
 
-        final int count = coder.readWord(2, false);
+        final int count = coder.readUI16();
         objects = new LinkedHashMap<Integer, String>(count);
 
         for (int i = 0; i < count; i++) {
-            add(coder.readWord(2, false), coder.readString());
+            add(coder.readUI16(), coder.readString());
         }
     }
 
@@ -149,11 +143,8 @@ public final class Import implements MovieTag {
         if ((uid < 1) || (uid > 65535)) {
              throw new IllegalArgumentRangeException(1, 65536, uid);
         }
-        if (aString == null) {
+        if (aString == null || aString.length() == 0) {
             throw new IllegalArgumentException();
-        }
-        if (aString.length() == 0) {
-            throw new StringSizeException(0, Integer.MAX_VALUE, 0);
         }
         objects.put(uid, aString);
         return this;
@@ -185,11 +176,8 @@ public final class Import implements MovieTag {
      *            object. Must not be null or an empty string.
      */
     public void setUrl(final String aString) {
-        if (aString == null) {
+        if (aString == null || aString.length() == 0) {
             throw new IllegalArgumentException();
-        }
-        if (aString.length() == 0) {
-            throw new StringSizeException(0, Integer.MAX_VALUE, 0);
         }
         url = aString;
     }
@@ -229,15 +217,8 @@ public final class Import implements MovieTag {
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
-        if (length > 62) {
-            coder.writeWord((MovieTypes.IMPORT << 6) | 0x3F, 2);
-            coder.writeWord(length, 4);
-        } else {
-            coder.writeWord((MovieTypes.IMPORT << 6) | length, 2);
-        }
-
+        coder.writeHeader(MovieTypes.IMPORT, length);
         coder.writeString(url);
-
         coder.writeWord(objects.size(), 2);
 
         for (final Integer identifier : objects.keySet()) {

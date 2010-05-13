@@ -111,7 +111,7 @@ public final class GotoFrame2 implements Action {
      */
     public GotoFrame2(final SWFDecoder coder) throws CoderException {
         coder.readByte();
-        length = coder.readWord(2, false);
+        length = coder.readUI16();
 
         final int flags = coder.readByte();
         hasOffset = (flags & OFFSET_MASK) != 0;

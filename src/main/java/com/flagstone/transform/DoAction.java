@@ -35,6 +35,7 @@ import java.util.List;
 
 import com.flagstone.transform.action.Action;
 import com.flagstone.transform.action.ActionData;
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTag;
@@ -56,7 +57,7 @@ import com.flagstone.transform.coder.SWFFactory;
  * </p>
  *
  * <p>
- * IMPORTANT: The last action in the array must be BasicAction.END otherwise 
+ * IMPORTANT: The last action in the array must be BasicAction.END otherwise
  * the object will not be encoded correctly.
  * </p>
  *
@@ -93,13 +94,8 @@ public final class DoAction implements MovieTag {
             throws CoderException {
 
         final int start = coder.getPointer();
-        length = coder.readWord(2, false) & 0x3F;
-
-        if (length == 0x3F) {
-            length = coder.readWord(4, false);
-        }
-
-        final int end = coder.getPointer() + (length << 3);
+        length = coder.readHeader();
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
         actions = new ArrayList<Action>();
 
@@ -115,8 +111,9 @@ public final class DoAction implements MovieTag {
         }
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 
@@ -216,22 +213,17 @@ public final class DoAction implements MovieTag {
             throws CoderException {
 
         final int start = coder.getPointer();
-
-        if (length > 62) {
-            coder.writeWord((MovieTypes.DO_ACTION << 6) | 0x3F, 2);
-            coder.writeWord(length, 4);
-        } else {
-            coder.writeWord((MovieTypes.DO_ACTION << 6) | length, 2);
-        }
-        final int end = coder.getPointer() + (length << 3);
+        coder.writeHeader(MovieTypes.DO_ACTION, length);
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
         for (final Action action : actions) {
             action.encode(coder, context);
         }
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 }

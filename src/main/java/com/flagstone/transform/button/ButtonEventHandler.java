@@ -37,9 +37,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-
 import com.flagstone.transform.action.Action;
 import com.flagstone.transform.action.ActionData;
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -203,14 +203,15 @@ import com.flagstone.transform.coder.SWFFactory;
  */
 //TODO(class)
 public final class ButtonEventHandler implements SWFEncodeable {
-    
-    private static final String FORMAT = "ButtonEventHandler: { event=%s; actions=%s }";
+
+    private static final String FORMAT = "ButtonEventHandler: { event=%s;"
+    		+ " actions=%s }";
 
     private int event;
     private int key;
     private List<Action> actions;
 
-    private transient int length = 0;
+    private transient int length;
 
     /**
      * Creates and initialises a ButtonEventHandler object using values encoded
@@ -229,7 +230,7 @@ public final class ButtonEventHandler implements SWFEncodeable {
      */
     public ButtonEventHandler(final int size, final SWFDecoder coder,
             final Context context) throws CoderException {
-        final int eventKey = coder.readWord(2, false);
+        final int eventKey = coder.readUI16();
         event = eventKey & 0x1FF;
         key = eventKey & 0xE00;
         length = size;
@@ -244,7 +245,8 @@ public final class ButtonEventHandler implements SWFEncodeable {
                 actions.add(new ActionData(coder.readBytes(new byte[length])));
             }
         } else {
-            final int end = coder.getPointer() + (length << 3);
+            final int end = coder.getPointer()
+                    + (length << Coder.BYTES_TO_BITS);
 
             while (coder.getPointer() < end) {
                 actions.add(decoder.getObject(coder, context));
@@ -260,8 +262,8 @@ public final class ButtonEventHandler implements SWFEncodeable {
     }
 
     /**
-     * Creates and initialises a ButtonEventHandler object using the values copied
-     * from another ButtonEventHandler object.
+     * Creates and initialises a ButtonEventHandler object using the values
+     * copied from another ButtonEventHandler object.
      *
      * @param object
      *            a ButtonEventHandler object from which the values will be
@@ -294,7 +296,8 @@ public final class ButtonEventHandler implements SWFEncodeable {
     public Set<ButtonEvent> getEvent() {
         final Set<ButtonEvent> set = EnumSet.allOf(ButtonEvent.class);
 
-        for (final Iterator<ButtonEvent> iter = set.iterator(); iter.hasNext();) {
+        for (final Iterator<ButtonEvent> iter = set.iterator();
+                iter.hasNext();) {
             if ((event & iter.next().getValue()) == 0) {
                 iter.remove();
             }
@@ -322,30 +325,30 @@ public final class ButtonEventHandler implements SWFEncodeable {
     public List<Action> getActions() throws CoderException {
         return actions;
     }
-    
+
     /**
      * TODO(method).
      */
     public char getKey() {
-        return (char)(key >>> 9);
+        return (char) (key >>> 9);
     }
-    
+
     /**
      * TODO(method).
      */
-    public ButtonEventHandler setKey(final ButtonKey key) {
-        this.key = (key.getChar() << 9);
+    public ButtonEventHandler setKey(final ButtonKey buttonKey) {
+        key = buttonKey.getChar() << 9;
         return this;
     }
-    
+
     /**
      * TODO(method).
      */
-    public ButtonEventHandler setKey(final char key) {
-        this.key = ( (int) key << 9);
+    public ButtonEventHandler setKey(final char character) {
+        key = character << 9;
         return this;
     }
-    
+
     /**
      * Sets the array of actions that are executed by the button in response to
      * specified event(s).

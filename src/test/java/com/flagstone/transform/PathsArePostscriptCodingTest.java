@@ -53,7 +53,8 @@ import com.flagstone.transform.shape.PathsArePostscript;
 @RunWith(Parameterized.class)
 public final class PathsArePostscriptCodingTest {
 
-    private static final String RESOURCE = "com/flagstone/transform/PathsArePostscript.yaml";
+    private static final String RESOURCE =
+        "com/flagstone/transform/PathsArePostscript.yaml";
 
     private static final String DIN = "din";
     private static final String DOUT = "dout";
@@ -64,39 +65,39 @@ public final class PathsArePostscriptCodingTest {
         ClassLoader loader = DoActionCodingTest.class.getClassLoader();
         InputStream other = loader.getResourceAsStream(RESOURCE);
         Yaml yaml = new Yaml();
-        
+
         Collection<Object[]> list = new ArrayList<Object[]>();
-         
+
         for (Object data : yaml.loadAll(other)) {
-            list.add(new Object[] { data });
+            list.add(new Object[] {data });
         }
 
         return list;
     }
 
-    private transient final byte[] din;
-    private transient final byte[] dout;
-    private transient final Context context;
-    
-    public PathsArePostscriptCodingTest(Map<String,Object>values) {
-        din = (byte[])values.get(DIN);
-        dout = (byte[])values.get(DOUT);
+    private final transient byte[] din;
+    private final transient byte[] dout;
+    private final transient Context context;
+
+    public PathsArePostscriptCodingTest(final Map<String, Object>values) {
+        din = (byte[]) values.get(DIN);
+        dout = (byte[]) values.get(DOUT);
         context = new Context();
     }
 
     @Test
-    public void checkSizeMatchesEncodedSize() throws CoderException {     
-        final PathsArePostscript object = PathsArePostscript.getInstance();       
-        final SWFEncoder encoder = new SWFEncoder(dout.length);        
-         
+    public void checkSizeMatchesEncodedSize() throws CoderException {
+        final PathsArePostscript object = PathsArePostscript.getInstance();
+        final SWFEncoder encoder = new SWFEncoder(dout.length);
+
         assertEquals(dout.length, object.prepareToEncode(encoder, context));
     }
 
     @Test
     public void checkObjectIsEncoded() throws CoderException {
-        final PathsArePostscript object = PathsArePostscript.getInstance();      
-        final SWFEncoder encoder = new SWFEncoder(dout.length);        
-        
+        final PathsArePostscript object = PathsArePostscript.getInstance();
+        final SWFEncoder encoder = new SWFEncoder(dout.length);
+
         object.prepareToEncode(encoder, context);
         object.encode(encoder, context);
 

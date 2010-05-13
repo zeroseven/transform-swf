@@ -61,7 +61,7 @@ public final class FontRegistry {
         providers.put(mimeType, decoder);
     }
 
-    /** TODO(method). */
+    
     public static FontDecoder getFontProvider(final String mimeType) {
 
         if (providers.containsKey(mimeType)) {

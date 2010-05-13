@@ -46,7 +46,9 @@ import com.flagstone.transform.coder.SWFEncoder;
  * When a frame is displayed the Flash Player performs the following:
  * <ul>
  * <li>Any actions defined using a DoAction object are executed.</li>
- * <li>The contents of the Flash Player's display list are drawn on the screen.</li>
+ * <li>
+ * The contents of the Flash Player's display list are drawn on the screen.
+ * </li>
  * </ul>
  * </p>
  *
@@ -101,14 +103,14 @@ public final class ShowFrame implements MovieTag {
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
-        coder.writeWord((MovieTypes.SHOW_FRAME << 6) | 0, 2);
+        coder.writeHeader(MovieTypes.SHOW_FRAME, 0);
     }
 
     /** {@inheritDoc} */
     public void decode(final SWFDecoder coder, final Context context)
             throws CoderException {
-        if ((coder.readWord(2, false) & 0x3F) == 0x3F) {
-            coder.readWord(4, false);
+        if ((coder.readUI16() & 0x3F) == 0x3F) {
+            coder.readUI32();
         }
     }
 }

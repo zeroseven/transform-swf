@@ -30,25 +30,19 @@
  */
 package com.flagstone.transform;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.SWFDecoder;
-import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.ColorTransform;
 import com.flagstone.transform.datatype.CoordTransform;
 
 public final class PlaceTest {
 
-    private static final transient int identifier = 1;
-    private static final transient int layer = 2;
+    private final transient int identifier = 1;
+    private final transient int layer = 2;
     private final transient CoordTransform transform = CoordTransform
             .translate(1, 2);
     private final transient ColorTransform colorTransform = new ColorTransform(

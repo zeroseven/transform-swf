@@ -34,9 +34,10 @@ package com.flagstone.transform.movieclip;
 import java.util.ArrayList;
 import java.util.List;
 
-
+import com.flagstone.transform.SWF;
 import com.flagstone.transform.action.Action;
 import com.flagstone.transform.action.ActionData;
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTag;
@@ -63,12 +64,12 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  * actions are skipped. Also there can only be one Initialize object for each
  * movie clip defined in the movie.
  * </p>
- *
- * @see DoAction
  */
 //TODO(class)
 public final class InitializeMovieClip implements MovieTag {
-    private static final String FORMAT = "Initialize: { identifier=%d; actions=%s }";
+
+    private static final String FORMAT = "Initialize: { identifier=%d;"
+                + " actions=%s }";
 
     private int identifier;
     private List<Action> actions;
@@ -76,8 +77,8 @@ public final class InitializeMovieClip implements MovieTag {
     private transient int length;
 
     /**
-     * Creates and initialises an InitializeMovieClip object using values encoded
-     * in the Flash binary format.
+     * Creates and initialises an InitializeMovieClip object using values
+     * encoded in the Flash binary format.
      *
      * @param coder
      *            an SWFDecoder object that contains the encoded Flash data.
@@ -93,14 +94,10 @@ public final class InitializeMovieClip implements MovieTag {
     public InitializeMovieClip(final SWFDecoder coder, final Context context)
             throws CoderException {
         final int start = coder.getPointer();
-        length = coder.readWord(2, false) & 0x3F;
+        length = coder.readHeader();
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
-        if (length == 0x3F) {
-            length = coder.readWord(4, false);
-        }
-        final int end = coder.getPointer() + (length << 3);
-
-        identifier = coder.readWord(2, false);
+        identifier = coder.readUI16();
         actions = new ArrayList<Action>();
 
         final SWFFactory<Action> decoder = context.getRegistry()
@@ -115,8 +112,9 @@ public final class InitializeMovieClip implements MovieTag {
         }
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 
@@ -136,8 +134,8 @@ public final class InitializeMovieClip implements MovieTag {
     }
 
     /**
-     * Creates and initialises an InitializeMovieClip object using the values copied
-     * from another InitializeMovieClip object.
+     * Creates and initialises an InitializeMovieClip object using the values
+     * copied from another InitializeMovieClip object.
      *
      * @param object
      *            an InitializeMovieClip object from which the values will be
@@ -163,8 +161,9 @@ public final class InitializeMovieClip implements MovieTag {
      *            range 1..65535.
      */
     public void setIdentifier(final int uid) {
-        if ((uid < 1) || (uid > 65535)) {
-             throw new IllegalArgumentRangeException(1, 65536, uid);
+        if ((uid < SWF.MIN_IDENTIFIER) || (uid > SWF.MAX_IDENTIFIER)) {
+            throw new IllegalArgumentRangeException(
+                    SWF.MIN_IDENTIFIER, SWF.MAX_IDENTIFIER, uid);
         }
         identifier = uid;
     }
@@ -204,9 +203,7 @@ public final class InitializeMovieClip implements MovieTag {
         actions = anArray;
     }
 
-    /**
-     * Creates and returns a deep copy of this object.
-     */
+    /** {@inheritDoc} */
     public InitializeMovieClip copy() {
         return new InitializeMovieClip(this);
     }
@@ -231,14 +228,8 @@ public final class InitializeMovieClip implements MovieTag {
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         final int start = coder.getPointer();
-
-        if (length > 62) {
-            coder.writeWord((MovieTypes.INITIALIZE << 6) | 0x3F, 2);
-            coder.writeWord(length, 4);
-        } else {
-            coder.writeWord((MovieTypes.INITIALIZE << 6) | length, 2);
-        }
-        final int end = coder.getPointer() + (length << 3);
+        coder.writeHeader(MovieTypes.INITIALIZE, length);
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
         coder.writeWord(identifier, 2);
 
@@ -247,8 +238,9 @@ public final class InitializeMovieClip implements MovieTag {
         }
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 }

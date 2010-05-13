@@ -225,7 +225,7 @@ public final class GetUrl2 implements Action {
      */
     public GetUrl2(final SWFDecoder coder) throws CoderException {
         coder.readByte();
-        coder.readWord(2, false);
+        coder.readUI16();
         request = coder.readByte();
     }
 

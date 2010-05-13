@@ -30,6 +30,7 @@
  */
 package com.flagstone.transform;
 
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTag;
@@ -95,16 +96,11 @@ public final class Place implements MovieTag {
     public Place(final SWFDecoder coder, final Context context)
             throws CoderException {
         final int start = coder.getPointer();
-        length = coder.readWord(2, false) & 0x3F;
+        length = coder.readHeader();
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
-        if (length == 0x3F) {
-            length = coder.readWord(4, false);
-        }
-
-        final int end = coder.getPointer() + (length << 3);
-
-        identifier = coder.readWord(2, false);
-        layer = coder.readWord(2, false);
+        identifier = coder.readUI16();
+        layer = coder.readUI16();
         transform = new CoordTransform(coder);
 
         if (coder.getPointer() < end) {
@@ -112,8 +108,9 @@ public final class Place implements MovieTag {
         }
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 
@@ -125,17 +122,17 @@ public final class Place implements MovieTag {
      * @param uid
      *            the unique identifier for the object to the placed on the
      *            display list. Must be in the range 1..65535.
-     * @param layer
+     * @param level
      *            the layer in the display list where the object will be placed.
-     * @param transform
+     * @param position
      *            an CoordTransform object that defines the orientation, size
      *            and location of the object when it is drawn. Must not be null.
      */
-    public Place(final int uid, final int layer, 
-            final CoordTransform transform) {
+    public Place(final int uid, final int level,
+            final CoordTransform position) {
         setIdentifier(uid);
-        setLayer(layer);
-        setTransform(transform);
+        setLayer(level);
+        setTransform(position);
     }
 
     /**
@@ -146,22 +143,22 @@ public final class Place implements MovieTag {
      * @param uid
      *            the unique identifier for the object to the placed on the
      *            display list. Must be in the range 1..65535.
-     * @param layer
+     * @param level
      *            the layer in the display list where the object will be placed.
-     * @param transform
+     * @param position
      *            an CoordTransform object that defines the orientation, size
      *            and location of the object when it is drawn. Must not be null.
-     * @param colorTransform
+     * @param color
      *            an ColorTransform object that defines the colour of the object
      *            when it is drawn.
      */
-    public Place(final int uid, final int layer,
-            final CoordTransform transform,
-            final ColorTransform colorTransform) {
+    public Place(final int uid, final int level,
+            final CoordTransform position,
+            final ColorTransform color) {
         setIdentifier(uid);
-        setLayer(layer);
-        setTransform(transform);
-        setColorTransform(colorTransform);
+        setLayer(level);
+        setTransform(position);
+        setColorTransform(color);
     }
 
     /**
@@ -194,8 +191,9 @@ public final class Place implements MovieTag {
      *            display list. Must be in the range 1..65535.
      */
     public Place setIdentifier(final int uid) {
-        if ((uid < 1) || (uid > 65535)) {
-             throw new IllegalArgumentRangeException(1, 65536, uid);
+        if ((uid < SWF.MIN_IDENTIFIER) || (uid > SWF.MAX_IDENTIFIER)) {
+            throw new IllegalArgumentRangeException(
+                    SWF.MIN_IDENTIFIER, SWF.MAX_IDENTIFIER, uid);
         }
         identifier = uid;
         return this;
@@ -309,11 +307,8 @@ public final class Place implements MovieTag {
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         final int start = coder.getPointer();
-        coder.writeWord((MovieTypes.PLACE << 6) | length, 2);
-        final int end = coder.getPointer() + (length << 3); // TODO(optimise)
-                                                            // end = start
-        // +16
-
+        coder.writeHeader(MovieTypes.PLACE, length);
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
         coder.writeWord(identifier, 2);
         coder.writeWord(layer, 2);
         transform.encode(coder, context);
@@ -323,8 +318,9 @@ public final class Place implements MovieTag {
         }
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 }

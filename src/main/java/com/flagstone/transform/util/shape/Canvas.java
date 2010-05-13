@@ -109,9 +109,10 @@ import com.flagstone.transform.shape.ShapeStyle;
  *</pre>
  */
 //TODO(class)
-@SuppressWarnings({"PMD.TooManyMethods","PMD.TooManyFields"})
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.TooManyFields" })
 public final class Canvas {
     private static final double FLATTEN_LIMIT = 0.25;
+    private static final int TWIPS_PER_PIXEL = 20;
 
     private final transient boolean arePixels;
     private transient boolean pathInProgress = false;
@@ -343,8 +344,8 @@ public final class Canvas {
      *            the y-coordinate of the point to move to.
      */
     public void move(final int xCoord, final int yCoord) {
-        final int pointX = arePixels ? xCoord * 20 : xCoord;
-        final int pointY = arePixels ? yCoord * 20 : yCoord;
+        final int pointX = arePixels ? xCoord * TWIPS_PER_PIXEL : xCoord;
+        final int pointY = arePixels ? yCoord * TWIPS_PER_PIXEL : yCoord;
 
         objects.add(new ShapeStyle().setMove(pointX, pointY));
 
@@ -353,10 +354,10 @@ public final class Canvas {
         setInitial(pointX, pointY);
     }
 
-    /** TODO(method). */
+
     public void moveForFont(final int xCoord, final int yCoord) {
-        final int pointX = arePixels ? xCoord * 20 : xCoord;
-        final int pointY = arePixels ? yCoord * 20 : yCoord;
+        final int pointX = arePixels ? xCoord * TWIPS_PER_PIXEL : xCoord;
+        final int pointY = arePixels ? yCoord * TWIPS_PER_PIXEL : yCoord;
         final ShapeStyle style = new ShapeStyle().setMove(pointX, pointY);
 
         if (objects.isEmpty()) {
@@ -379,8 +380,8 @@ public final class Canvas {
      *            the distance along the y-axis.
      */
     public void rmove(final int xCoord, final int yCoord) {
-        final int pointX = arePixels ? xCoord * 20 : xCoord;
-        final int pointY = arePixels ? yCoord * 20 : yCoord;
+        final int pointX = arePixels ? xCoord * TWIPS_PER_PIXEL : xCoord;
+        final int pointY = arePixels ? yCoord * TWIPS_PER_PIXEL : yCoord;
 
         objects.add(new ShapeStyle().setMove(pointX + currentX, pointY
                 + currentY));
@@ -398,8 +399,10 @@ public final class Canvas {
      *            the y-coordinate of the end of the line.
      */
     public void line(final int xCoord, final int yCoord) {
-        final int pointX = (arePixels ? xCoord * 20 : xCoord) - currentX;
-        final int pointY = (arePixels ? yCoord * 20 : yCoord) - currentY;
+        final int pointX = (arePixels ? xCoord * TWIPS_PER_PIXEL
+                : xCoord) - currentX;
+        final int pointY = (arePixels ? yCoord * TWIPS_PER_PIXEL
+                : yCoord) - currentY;
 
         objects.add(new Line(pointX, pointY));
 
@@ -420,8 +423,8 @@ public final class Canvas {
      *            the distance along the y-axis to the end of the line.
      */
     public void rline(final int xCoord, final int yCoord) {
-        final int pointX = arePixels ? xCoord * 20 : xCoord;
-        final int pointY = arePixels ? yCoord * 20 : yCoord;
+        final int pointX = arePixels ? xCoord * TWIPS_PER_PIXEL : xCoord;
+        final int pointY = arePixels ? yCoord * TWIPS_PER_PIXEL : yCoord;
 
         objects.add(new Line(pointX, pointY));
 
@@ -454,17 +457,17 @@ public final class Canvas {
         final int ranchorY;
 
         if (arePixels) {
-            rcontrolX = acontrolX * 20 - currentX;
-            rcontrolY = acontrolY * 20 - currentY;
-            ranchorX = aanchorX * 20 - currentX - rcontrolX;
-            ranchorY = aanchorY * 20 - currentY - rcontrolY;
+            rcontrolX = acontrolX * TWIPS_PER_PIXEL - currentX;
+            rcontrolY = acontrolY * TWIPS_PER_PIXEL - currentY;
+            ranchorX = aanchorX * TWIPS_PER_PIXEL - currentX - rcontrolX;
+            ranchorY = aanchorY * TWIPS_PER_PIXEL - currentY - rcontrolY;
         } else {
             rcontrolX = acontrolX - currentX;
             rcontrolY = acontrolY - currentY;
             ranchorX = aanchorX - currentX - rcontrolX;
             ranchorY = aanchorY - currentY - rcontrolY;
         }
-        
+
         objects.add(new Curve(rcontrolX, rcontrolY, ranchorX, ranchorY));
 
         if (!pathInProgress) {
@@ -500,10 +503,10 @@ public final class Canvas {
         final int py2;
 
         if (arePixels) {
-            px1 = rcontrolX * 20;
-            py1 = rcontrolY * 20;
-            px2 = ranchorX * 20;
-            py2 = ranchorY * 20;
+            px1 = rcontrolX * TWIPS_PER_PIXEL;
+            py1 = rcontrolY * TWIPS_PER_PIXEL;
+            px2 = ranchorX * TWIPS_PER_PIXEL;
+            py2 = ranchorY * TWIPS_PER_PIXEL;
         } else {
             px1 = rcontrolX;
             py1 = rcontrolY;
@@ -547,14 +550,14 @@ public final class Canvas {
             final int cby, final int anx, final int any) {
         cubicX[0] = currentX;
         cubicY[0] = currentY;
-        
+
         if (arePixels) {
-            cubicX[1] = cax * 20;
-            cubicY[1] = cay * 20;
-            cubicX[2] = cbx * 20;
-            cubicY[2] = cby * 20;
-            cubicX[3] = anx * 20;
-            cubicY[3] = any * 20;
+            cubicX[1] = cax * TWIPS_PER_PIXEL;
+            cubicY[1] = cay * TWIPS_PER_PIXEL;
+            cubicX[2] = cbx * TWIPS_PER_PIXEL;
+            cubicY[2] = cby * TWIPS_PER_PIXEL;
+            cubicX[3] = anx * TWIPS_PER_PIXEL;
+            cubicY[3] = any * TWIPS_PER_PIXEL;
         } else {
             cubicX[1] = cax;
             cubicY[1] = cay;
@@ -597,14 +600,14 @@ public final class Canvas {
             final int anchorY) {
         cubicX[0] = currentX;
         cubicY[0] = currentY;
-        
+
         if (arePixels) {
-            cubicX[1] = currentX + controlAX * 20;
-            cubicY[1] = currentY + controlAY * 20;
-            cubicX[2] = currentX + controlBX * 20;
-            cubicY[2] = currentY + controlBY * 20;
-            cubicX[3] = currentX + anchorX * 20;
-            cubicY[3] = currentY + anchorY * 20;
+            cubicX[1] = currentX + controlAX * TWIPS_PER_PIXEL;
+            cubicY[1] = currentY + controlAY * TWIPS_PER_PIXEL;
+            cubicX[2] = currentX + controlBX * TWIPS_PER_PIXEL;
+            cubicY[2] = currentY + controlBY * TWIPS_PER_PIXEL;
+            cubicX[3] = currentX + anchorX * TWIPS_PER_PIXEL;
+            cubicY[3] = currentY + anchorY * TWIPS_PER_PIXEL;
         } else {
             cubicX[1] = currentX + controlAX;
             cubicY[1] = currentY + controlAY;
@@ -613,7 +616,7 @@ public final class Canvas {
             cubicX[3] = currentX + anchorX;
             cubicY[3] = currentY + anchorY;
         }
- 
+
         flatten();
     }
 
@@ -633,8 +636,10 @@ public final class Canvas {
         final int rcontrolX = currentX - controlX;
         final int rcontrolY = currentY - controlY;
 
-        final int pointX = (arePixels ? xCoord * 20 : xCoord) - currentX;
-        final int pointY = (arePixels ? yCoord * 20 : yCoord) - currentY;
+        final int pointX = (arePixels ? xCoord * TWIPS_PER_PIXEL
+                : xCoord) - currentX;
+        final int pointY = (arePixels ? yCoord * TWIPS_PER_PIXEL
+                : yCoord) - currentY;
 
         objects.add(new Curve(rcontrolX, rcontrolY, pointX, pointY));
 
@@ -665,8 +670,8 @@ public final class Canvas {
         final int rcontrolX = currentX - controlX;
         final int rcontrolY = currentY - controlY;
 
-        final int pointX = arePixels ? xCoord * 20 : xCoord;
-        final int pointY = arePixels ? yCoord * 20 : yCoord;
+        final int pointX = arePixels ? xCoord * TWIPS_PER_PIXEL : xCoord;
+        final int pointY = arePixels ? yCoord * TWIPS_PER_PIXEL : yCoord;
 
         objects.add(new Curve(rcontrolX, rcontrolY, pointX, pointY));
 
@@ -706,12 +711,12 @@ public final class Canvas {
 
         final int pointX;
         final int pointY;
-        
+
         if (arePixels) {
-            bcontrolX = ctrlX * 20 - currentX;
-            bcontrolY = ctrlY * 20 - currentY;
-            pointX = anchorX * 20 - currentX;
-            pointY = anchorY * 20 - currentY;
+            bcontrolX = ctrlX * TWIPS_PER_PIXEL - currentX;
+            bcontrolY = ctrlY * TWIPS_PER_PIXEL - currentY;
+            pointX = anchorX * TWIPS_PER_PIXEL - currentX;
+            pointY = anchorY * TWIPS_PER_PIXEL - currentY;
         } else {
             bcontrolX = ctrlX - currentX;
             bcontrolY = ctrlY - currentY;
@@ -752,12 +757,12 @@ public final class Canvas {
         final int bcontrolY;
         final int pointX;
         final int pointY;
-        
+
         if (arePixels) {
-            bcontrolX = ctrlX * 20;
-            bcontrolY = ctrlY * 20;
-            pointX = anchorX * 20;
-            pointY = anchorY * 20;
+            bcontrolX = ctrlX * TWIPS_PER_PIXEL;
+            bcontrolY = ctrlY * TWIPS_PER_PIXEL;
+            pointX = anchorX * TWIPS_PER_PIXEL;
+            pointY = anchorY * TWIPS_PER_PIXEL;
         } else {
             bcontrolX = ctrlX;
             bcontrolY = ctrlY;

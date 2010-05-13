@@ -83,7 +83,7 @@ public final class CanvasTest {
     public void rpolyline() throws DataFormatException, IOException {
         final File destFile = new File(resultDir, "rpolyline.swf");
 
-        final int[] points = new int[] { 0, -100, 10, 0, 0, 90, 90, 0, 0, 20,
+        final int[] points = new int[] {0, -100, 10, 0, 0, 90, 90, 0, 0, 20,
                 -90, 0, 0, 90, -20, 0, 0, -90, -90, 0, 0, -20, 90, 0, 0, -90,
                 10, 0 };
 

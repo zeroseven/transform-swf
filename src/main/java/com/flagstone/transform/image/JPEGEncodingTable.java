@@ -33,14 +33,13 @@ package com.flagstone.transform.image;
 
 import java.util.Arrays;
 
-
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.exception.ArraySizeException;
 
 /**
  * JPEGEncodingTable defines the Huffman encoding table for JPEG images.
@@ -63,7 +62,7 @@ import com.flagstone.transform.exception.ArraySizeException;
  */
 //TODO(class)
 public final class JPEGEncodingTable implements MovieTag {
-    private static final String FORMAT = "JPEGEncodingTable: { encodingTable=%d }";
+    private static final String FORMAT = "JPEGEncodingTable: { table=%d }";
     private byte[] table;
 
     private transient int length;
@@ -80,18 +79,15 @@ public final class JPEGEncodingTable implements MovieTag {
      */
     public JPEGEncodingTable(final SWFDecoder coder) throws CoderException {
         final int start = coder.getPointer();
-        length = coder.readWord(2, false) & 0x3F;
-
-        if (length == 0x3F) {
-            length = coder.readWord(4, false);
-        }
-        final int end = coder.getPointer() + (length << 3);
+        length = coder.readHeader();
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
         table = coder.readBytes(new byte[length]);
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 
@@ -107,8 +103,8 @@ public final class JPEGEncodingTable implements MovieTag {
     }
 
     /**
-     * Creates and initialises a JPEGEncodingTable object using the values copied
-     * from another JPEGEncodingTable object.
+     * Creates and initialises a JPEGEncodingTable object using the values
+     * copied from another JPEGEncodingTable object.
      *
      * @param object
      *            a JPEGEncodingTable object from which the values will be
@@ -136,10 +132,6 @@ public final class JPEGEncodingTable implements MovieTag {
         if (bytes == null) {
             throw new IllegalArgumentException();
         }
-        if (bytes.length == 0) {
-            throw new ArraySizeException(0, Integer.MAX_VALUE, bytes.length);
-        }
-
         table = Arrays.copyOf(bytes, bytes.length);
     }
 
@@ -165,20 +157,15 @@ public final class JPEGEncodingTable implements MovieTag {
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         final int start = coder.getPointer();
-
-        if (length >= 63) {
-            coder.writeWord((MovieTypes.JPEG_TABLES << 6) | 0x3F, 2);
-            coder.writeWord(length, 4);
-        } else {
-            coder.writeWord((MovieTypes.JPEG_TABLES << 6) | length, 2);
-        }
-        final int end = coder.getPointer() + (length << 3);
+        coder.writeHeader(MovieTypes.JPEG_TABLES, length);
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
         coder.writeBytes(table);
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 }

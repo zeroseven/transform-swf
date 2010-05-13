@@ -34,7 +34,7 @@ package com.flagstone.transform.sound;
 import java.util.ArrayList;
 import java.util.List;
 
-
+import com.flagstone.transform.Constants;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -74,7 +74,8 @@ public final class Envelope implements SWFEncodeable {
      */
     public final class Level implements SWFEncodeable {
 
-        private static final String FORMAT = "Envelope: { mark=%d; left=%d; right=%d; }";
+        private static final String FORMAT = "Envelope: { mark=%d; left=%d;"
+        		+ " right=%d; }";
 
         private final transient int mark;
         private final transient int left;
@@ -91,9 +92,9 @@ public final class Envelope implements SWFEncodeable {
          *             if an error occurs while decoding the data.
          */
        public Level(final SWFDecoder coder) throws CoderException {
-            mark = coder.readWord(4, false);
-            left = coder.readWord(2, false);
-            right = coder.readWord(2, false);
+            mark = coder.readUI32();
+            left = coder.readUI16();
+            right = coder.readUI16();
         }
 
         /**
@@ -173,11 +174,12 @@ public final class Envelope implements SWFEncodeable {
 
         @Override
         public int hashCode() {
-            return ((mark * 31) + left) * 31 + right;
+            return ((mark * Constants.PRIME) + left) * Constants.PRIME + right;
         }
 
         /** {@inheritDoc} */
-        public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        public int prepareToEncode(final SWFEncoder coder,
+                final Context context) {
             return 8;
         }
 
@@ -261,7 +263,7 @@ public final class Envelope implements SWFEncodeable {
         levels = anArray;
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public Envelope copy() {
         return new Envelope(this);
     }

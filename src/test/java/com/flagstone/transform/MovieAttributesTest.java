@@ -39,7 +39,7 @@ import org.junit.Test;
 
 public final class MovieAttributesTest {
 
-    private static final transient Set<MovieAttribute> attributes = 
+    private final transient Set<MovieAttribute> attributes =
         EnumSet.allOf(MovieAttribute.class);
 
     private transient MovieAttributes fixture;

@@ -35,7 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-
+import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.Encoder;
@@ -48,10 +48,10 @@ import com.flagstone.transform.linestyle.LineStyle2;
 
 /**
  * ShapeStyle2 is used to change the drawing environment when a shape is drawn.
- * It is identical to ShapeStyle except that line styles are represented by the 
- * LineStyle2 class and ShapeStyle2 objects are only used in DefineShape4 
+ * It is identical to ShapeStyle except that line styles are represented by the
+ * LineStyle2 class and ShapeStyle2 objects are only used in DefineShape4
  * objects.
- * 
+ *
  * Three operations can be performed:
  *
  * <ul>
@@ -173,7 +173,7 @@ public final class ShapeStyle2 implements ShapeRecord {
 
             if (vars.containsKey(Context.ARRAY_EXTENDED)
                     && (fillStyleCount == 0xFF)) {
-                fillStyleCount = coder.readWord(2, false);
+                fillStyleCount = coder.readUI16();
             }
 
             final SWFFactory<FillStyle> decoder = context.getRegistry()
@@ -198,7 +198,7 @@ public final class ShapeStyle2 implements ShapeRecord {
 
             if (vars.containsKey(Context.ARRAY_EXTENDED)
                     && (lineStyleCount == 0xFF)) {
-                lineStyleCount = coder.readWord(2, false);
+                lineStyleCount = coder.readUI16();
             }
 
             for (int i = 0; i < lineStyleCount; i++) {
@@ -340,13 +340,15 @@ public final class ShapeStyle2 implements ShapeRecord {
      *            in the range -65535..65535.
      */
     public ShapeStyle2 setMoveX(final Integer coord) {
-        if ((coord != null) && ((coord < -65535) || (coord > 65535))) {
-            throw new IllegalArgumentRangeException(-65535, 65535, coord);
+        if ((coord != null)
+                && ((coord < SWF.MIN_COORD) || (coord > SWF.MAX_COORD))) {
+            throw new IllegalArgumentRangeException(
+                    SWF.MIN_COORD, SWF.MAX_COORD, coord);
         }
         moveX = coord;
         return this;
     }
-    
+
     /**
      * Sets the x-coordinate of any relative move.
      *
@@ -355,8 +357,10 @@ public final class ShapeStyle2 implements ShapeRecord {
      *            in the range -65535..65535.
      */
     public ShapeStyle2 setMoveY(final Integer coord) {
-        if ((coord != null) && ((coord < -65535) || (coord > 65535))) {
-            throw new IllegalArgumentRangeException(-65535, 65535, coord);
+        if ((coord != null)
+                && ((coord < SWF.MIN_COORD) || (coord > SWF.MAX_COORD))) {
+            throw new IllegalArgumentRangeException(
+                    SWF.MIN_COORD, SWF.MAX_COORD, coord);
         }
         moveY = coord;
         return this;
@@ -378,11 +382,15 @@ public final class ShapeStyle2 implements ShapeRecord {
                 || ((xCoord != null) && (yCoord == null))) {
             throw new IllegalArgumentException();
         }
-        if ((xCoord != null) && ((xCoord < -65535) || (xCoord > 65535))) {
-            throw new IllegalArgumentRangeException(-65535, 65535, xCoord);
+        if ((xCoord != null)
+                && ((xCoord < SWF.MIN_COORD) || (xCoord > SWF.MAX_COORD))) {
+            throw new IllegalArgumentRangeException(
+                    SWF.MIN_COORD, SWF.MAX_COORD, xCoord);
         }
-        if ((yCoord != null) && ((yCoord < -65535) || (yCoord > 65535))) {
-            throw new IllegalArgumentRangeException(-65535, 65535, yCoord);
+        if ((yCoord != null)
+                && ((yCoord < SWF.MIN_COORD) || (yCoord > SWF.MAX_COORD))) {
+            throw new IllegalArgumentRangeException(
+                    SWF.MIN_COORD, SWF.MAX_COORD, yCoord);
         }
         moveX = xCoord;
         moveY = yCoord;
@@ -461,9 +469,7 @@ public final class ShapeStyle2 implements ShapeRecord {
         return this;
     }
 
-    /**
-     * Creates and returns a deep copy of this object.
-     */
+    /** {@inheritDoc} */
     public ShapeStyle2 copy() {
         return new ShapeStyle2(this);
     }
@@ -502,11 +508,13 @@ public final class ShapeStyle2 implements ShapeRecord {
             int numberOfFillBits = Encoder.unsignedSize(fillStyles.size());
             int numberOfLineBits = Encoder.unsignedSize(lineStyles.size());
 
-            if ((numberOfFillBits == 0) && vars.containsKey(Context.POSTSCRIPT)) {
+            if ((numberOfFillBits == 0)
+                    && vars.containsKey(Context.POSTSCRIPT)) {
                 numberOfFillBits = 1;
             }
 
-            if ((numberOfLineBits == 0) && vars.containsKey(Context.POSTSCRIPT)) {
+            if ((numberOfLineBits == 0)
+                    && vars.containsKey(Context.POSTSCRIPT)) {
                 numberOfLineBits = 1;
             }
 
@@ -516,15 +524,18 @@ public final class ShapeStyle2 implements ShapeRecord {
             int numberOfStyleBits = 0;
             final int flushBits = vars.get(Context.SHAPE_SIZE);
 
-            numberOfStyleBits += (flushBits % 8 > 0) ? 8 - (flushBits % 8) : 0;
-            numberOfStyleBits += (countExtended && (fillStyles.size() >= 255)) ? 24
+            numberOfStyleBits += (flushBits % 8 > 0)
+            ? 8 - (flushBits % 8) : 0;
+            numberOfStyleBits += (countExtended
+                    && (fillStyles.size() >= 255)) ? 24
                     : 8;
 
             for (final FillStyle style : fillStyles) {
                 numberOfStyleBits += style.prepareToEncode(coder, context) * 8;
             }
 
-            numberOfStyleBits += (countExtended && (lineStyles.size() >= 255)) ? 24
+            numberOfStyleBits += (countExtended
+                    && (lineStyles.size() >= 255)) ? 24
                     : 8;
 
             for (final LineStyle2 style : lineStyles) {

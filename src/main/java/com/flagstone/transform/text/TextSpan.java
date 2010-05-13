@@ -35,7 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-
+import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.Encoder;
@@ -143,7 +143,7 @@ public final class TextSpan implements SWFEncodeable {
         hasX = coder.readBits(1, false) != 0;
 
         if (hasFont) {
-            identifier = coder.readWord(2, false);
+            identifier = coder.readUI16();
         }
         if (hasColor) {
             color = new Color(coder, context);
@@ -289,8 +289,11 @@ public final class TextSpan implements SWFEncodeable {
      *            -32768..32767 or null if no offset is specified.
      */
     public void setOffsetX(final Integer offset) {
-        if ((offset != null) && ((offset < -32768) || (offset > 32767))) {
-            throw new IllegalArgumentRangeException(-32768, 32768, offset);
+        if ((offset != null)
+                && ((offset < SWF.MIN_OFFSET)
+                || (offset > SWF.MAX_OFFSET))) {
+            throw new IllegalArgumentRangeException(
+                    SWF.MIN_OFFSET, SWF.MAX_OFFSET, offset);
         }
         offsetX = offset;
     }
@@ -305,8 +308,11 @@ public final class TextSpan implements SWFEncodeable {
      *            -32768..32767 or null if no offset is specified.
      */
     public void setOffsetY(final Integer offset) {
-        if ((offset != null) && ((offset < -32768) || (offset > 32767))) {
-            throw new IllegalArgumentRangeException(-32768, 32768, offset);
+        if ((offset != null)
+                && ((offset < SWF.MIN_OFFSET)
+                || (offset > SWF.MAX_OFFSET))) {
+            throw new IllegalArgumentRangeException(
+                    SWF.MIN_OFFSET, SWF.MAX_OFFSET, offset);
         }
         offsetY = offset;
     }
@@ -319,8 +325,9 @@ public final class TextSpan implements SWFEncodeable {
      *            range 0..65535.
      */
     public void setHeight(final Integer aHeight) {
-        if ((aHeight < 0) || (aHeight > 65535)) {
-            throw new IllegalArgumentRangeException(0, 65535, aHeight);
+        if ((aHeight < 0) || (aHeight > SWF.MAX_FONT_SIZE)) {
+            throw new IllegalArgumentRangeException(
+                    0, SWF.MAX_FONT_SIZE, aHeight);
         }
         height = aHeight;
     }
@@ -358,7 +365,7 @@ public final class TextSpan implements SWFEncodeable {
         characters = anArray;
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public TextSpan copy() {
         return new TextSpan(this);
     }

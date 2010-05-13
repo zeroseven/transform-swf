@@ -44,13 +44,13 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 public final class GetUrlTest {
 
-    private static final transient int type = ActionTypes.GET_URL;
-    private static final transient String url = "url";
-    private static final transient String target = "_blank";
+    private final transient int type = ActionTypes.GET_URL;
+    private final transient String url = "url";
+    private final transient String target = "_blank";
 
     private transient GetUrl fixture;
 
-    private final transient byte[] encoded = new byte[] { (byte) type, 0x0B,
+    private final transient byte[] encoded = new byte[] {(byte) type, 0x0B,
             0x00, 0x75, 0x72, 0x6C, 0x00, 0x5F, 0x62, 0x6C, 0x61, 0x6E, 0x6B,
             0x00 };
 

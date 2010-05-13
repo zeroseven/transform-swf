@@ -34,7 +34,6 @@ package com.flagstone.transform.fillstyle;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -63,8 +62,8 @@ public final class MorphGradientFill implements FillStyle {
     private transient int count;
 
     /**
-     * Creates and initialises an MorphGradientFill fill style using values encoded
-     * in the Flash binary format.
+     * Creates and initialises an MorphGradientFill fill style using values
+     * encoded in the Flash binary format.
      *
      * @param coder
      *            an SWFDecoder object that contains the encoded Flash data.
@@ -95,8 +94,8 @@ public final class MorphGradientFill implements FillStyle {
      * Creates a MorphGradientFill object specifying the type of fill, starting
      * and ending coordinate transforms and the array of gradient records.
      *
-     * @param type
-     *            identifies whether the gradient is rendered linearly or 
+     * @param gradientType
+     *            identifies whether the gradient is rendered linearly or
      *            radially.
      * @param start
      *            the coordinate transform mapping the gradient square onto
@@ -104,21 +103,23 @@ public final class MorphGradientFill implements FillStyle {
      * @param end
      *            the coordinate transform mapping the gradient square onto
      *            physical coordinates at the end of the morphing process.
-     * @param gradients
+     * @param grads
      *            an array of MorphGradient objects defining the control points
      *            for the gradient.
      */
-    public MorphGradientFill(final GradientType type, final CoordTransform start,
-            final CoordTransform end, final List<MorphGradient> gradients) {
-        setType(type);
+    public MorphGradientFill(final GradientType gradientType,
+            final CoordTransform start,
+            final CoordTransform end,
+            final List<MorphGradient> grads) {
+        setType(gradientType);
         setStartTransform(start);
         setEndTransform(end);
-        setGradients(gradients);
+        setGradients(grads);
     }
 
     /**
-     * Creates and initialises a MorphGradientFill fill style using the values copied
-     * from another MorphGradientFill object.
+     * Creates and initialises a MorphGradientFill fill style using the values
+     * copied from another MorphGradientFill object.
      *
      * @param object
      *            a MorphGradientFill fill style from which the values will be
@@ -147,13 +148,14 @@ public final class MorphGradientFill implements FillStyle {
             throw new IllegalArgumentException();
         }
         if (gradients.size() == 15) {
-            throw new IllegalStateException("Maximum number of gradients exceeded.");
+            throw new IllegalStateException(
+                    "Maximum number of gradients exceeded.");
         }
         gradients.add(aGradient);
         return this;
     }
 
-    /** TODO(method). */
+
     public GradientType getType() {
         GradientType value;
         if (type == 0x10) {
@@ -164,7 +166,7 @@ public final class MorphGradientFill implements FillStyle {
         return value;
     }
 
-    /** TODO(method). */
+
     public void setType(final GradientType gradientType) {
         if (gradientType == GradientType.LINEAR) {
             type = 0x10;
@@ -239,12 +241,13 @@ public final class MorphGradientFill implements FillStyle {
             throw new IllegalArgumentException();
         }
         if (anArray.size() > 15) {
-            throw new IllegalStateException("Maximum number of gradients exceeded.");
+            throw new IllegalStateException(
+                    "Maximum number of gradients exceeded.");
         }
         gradients = anArray;
     }
 
-    @Override
+    /** {@inheritDoc} */
     public MorphGradientFill copy() {
         return new MorphGradientFill(this);
     }

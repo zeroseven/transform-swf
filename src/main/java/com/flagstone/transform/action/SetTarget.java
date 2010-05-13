@@ -68,7 +68,7 @@ public final class SetTarget implements Action {
      */
     public SetTarget(final SWFDecoder coder) throws CoderException {
         coder.readByte();
-        length = coder.readWord(2, false);
+        length = coder.readUI16();
         target = coder.readString();
     }
 

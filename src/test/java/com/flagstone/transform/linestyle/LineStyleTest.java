@@ -47,12 +47,12 @@ import com.flagstone.transform.datatype.Color;
 
 public final class LineStyleTest {
 
-    private static final transient int width = 1;
+    private static final transient int WIDTH = 1;
     private final transient Color color = new Color(2, 3, 4);
 
     private transient LineStyle fixture;
 
-    private final transient byte[] encoded = new byte[] { 0x01, 0x00, 0x02,
+    private final transient byte[] encoded = new byte[] {0x01, 0x00, 0x02,
             0x03, 0x04 };
 
     @Test(expected = IllegalArgumentException.class)
@@ -72,7 +72,7 @@ public final class LineStyleTest {
 
     @Test
     public void checkCopy() {
-        fixture = new LineStyle(width, color);
+        fixture = new LineStyle(WIDTH, color);
         final LineStyle copy = fixture.copy();
 
         assertNotSame(fixture, copy);
@@ -85,7 +85,7 @@ public final class LineStyleTest {
         final SWFEncoder encoder = new SWFEncoder(encoded.length);
         final Context context = new Context();
 
-        fixture = new LineStyle(width, color);
+        fixture = new LineStyle(WIDTH, color);
         assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
         fixture.encode(encoder, context);
 
@@ -101,7 +101,7 @@ public final class LineStyleTest {
         fixture = new LineStyle(decoder, context);
 
         assertTrue(decoder.eof());
-        assertEquals(width, fixture.getWidth());
+        assertEquals(WIDTH, fixture.getWidth());
         assertEquals(color.getRed(), fixture.getColor().getRed());
         assertEquals(color.getGreen(), fixture.getColor().getGreen());
         assertEquals(color.getBlue(), fixture.getColor().getBlue());

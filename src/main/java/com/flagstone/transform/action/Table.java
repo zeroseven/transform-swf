@@ -81,8 +81,8 @@ public final class Table implements Action {
      */
     public Table(final SWFDecoder coder) throws CoderException {
         coder.readByte();
-        length = coder.readWord(2, false);
-        tableSize = coder.readWord(2, false);
+        length = coder.readUI16();
+        tableSize = coder.readUI16();
         values = new ArrayList<String>(tableSize);
 
         if (tableSize > 0) {

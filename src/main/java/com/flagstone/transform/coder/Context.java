@@ -68,32 +68,32 @@ public final class Context {
     private DecoderRegistry registry;
     private Map<Integer, Integer> variables;
 
-    /** TODO(method). */
+
     public Context() {
         variables = new LinkedHashMap<Integer, Integer>();
     }
 
-    /** TODO(method). */
+
     public DecoderRegistry getRegistry() {
         return registry;
     }
 
-    /** TODO(method). */
-    public void setRegistry(final DecoderRegistry registry) {
-        this.registry = registry;
+
+    public void setRegistry(final DecoderRegistry decoderRegistry) {
+        registry = decoderRegistry;
     }
 
-    /** TODO(method). */
+
     public Map<Integer, Integer> getVariables() {
         return variables;
     }
 
-    /** TODO(method). */
+
     public void setVariables(final Map<Integer, Integer> map) {
         variables = map;
     }
 
-    /** TODO(method). */
+
     public Context put(final Integer key, final Integer value) {
         variables.put(key, value);
         return this;

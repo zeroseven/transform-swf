@@ -41,11 +41,7 @@ import com.flagstone.transform.datatype.Color;
 /**
  * SolidFill defines a solid colour that is used to fill an enclosed area in a
  * shape. Shapes can be filled with transparent colours but only if the fill
- * style is used in a {@link DefineShape3} object.
- *
- * @see DefineShape
- * @see DefineShape2
- * @see DefineShape3
+ * style is used in a DefineShape3 object.
  */
 //TODO(class)
 public final class SolidFill implements FillStyle {
@@ -119,7 +115,7 @@ public final class SolidFill implements FillStyle {
         color = aColor;
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public SolidFill copy() {
         return new SolidFill(this);
     }

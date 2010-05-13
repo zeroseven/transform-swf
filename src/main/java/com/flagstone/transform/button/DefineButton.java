@@ -34,9 +34,10 @@ package com.flagstone.transform.button;
 import java.util.ArrayList;
 import java.util.List;
 
-
+import com.flagstone.transform.SWF;
 import com.flagstone.transform.action.Action;
 import com.flagstone.transform.action.ActionData;
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.DefineTag;
@@ -61,7 +62,8 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  */
 //TODO(class)
 public final class DefineButton implements DefineTag {
-    private static final String FORMAT = "DefineButton: { identifier=%d; buttonRecords=%s; actions=%s }";
+    private static final String FORMAT = "DefineButton: { identifier=%d;"
+    		+ " buttonRecords=%s; actions=%s }";
 
     private int identifier;
 
@@ -89,19 +91,14 @@ public final class DefineButton implements DefineTag {
     public DefineButton(final SWFDecoder coder, final Context context)
             throws CoderException {
         final int start = coder.getPointer();
-        length = coder.readWord(2, false) & 0x3F;
-
-        if (length == 0x3F) {
-            length = coder.readWord(4, false);
-        }
-        final int end = coder.getPointer() + (length << 3);
+        length = coder.readHeader();
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
         final int mark = coder.getPointer() - 16;
 
         shapes = new ArrayList<ButtonShape>();
 
-        while (coder.readByte() != 0) {
-            coder.adjustPointer(-8);
+        while (coder.scanByte() != 0) {
             shapes.add(new ButtonShape(coder, context));
         }
 
@@ -123,8 +120,9 @@ public final class DefineButton implements DefineTag {
         }
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 
@@ -136,15 +134,15 @@ public final class DefineButton implements DefineTag {
      *            the unique identifier for this button.
      * @param buttons
      *            an array of ButtonShapes that are used to draw the button.
-     * @param actions
+     * @param script
      *            and array of actions that are executed when the button is
      *            clicked.
      */
     public DefineButton(final int uid, final List<ButtonShape> buttons,
-            final List<Action> actions) {
+            final List<Action> script) {
         setIdentifier(uid);
         setShapes(buttons);
-        setActions(actions);
+        setActions(script);
     }
 
     /**
@@ -164,15 +162,16 @@ public final class DefineButton implements DefineTag {
         actions = new ArrayList<Action>(object.actions);
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public int getIdentifier() {
         return identifier;
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public void setIdentifier(final int uid) {
-        if ((uid < 0) || (uid > 65535)) {
-             throw new IllegalArgumentRangeException(1, 65536, uid);
+        if ((uid < SWF.MIN_IDENTIFIER) || (uid > SWF.MAX_IDENTIFIER)) {
+            throw new IllegalArgumentRangeException(
+                    SWF.MIN_IDENTIFIER, SWF.MAX_IDENTIFIER, uid);
         }
         identifier = uid;
     }
@@ -247,7 +246,7 @@ public final class DefineButton implements DefineTag {
         actions = anArray;
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public DefineButton copy() {
         return new DefineButton(this);
     }
@@ -278,14 +277,8 @@ public final class DefineButton implements DefineTag {
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         final int start = coder.getPointer();
-
-        if (length >= 63) {
-            coder.writeWord((MovieTypes.DEFINE_BUTTON << 6) | 0x3F, 2);
-            coder.writeWord(length, 4);
-        } else {
-            coder.writeWord((MovieTypes.DEFINE_BUTTON << 6) | length, 2);
-        }
-        final int end = coder.getPointer() + (length << 3);
+        coder.writeHeader(MovieTypes.DEFINE_BUTTON, length);
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
         coder.writeWord(identifier, 2);
 
         for (final ButtonShape shape : shapes) {
@@ -299,8 +292,9 @@ public final class DefineButton implements DefineTag {
         }
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 }

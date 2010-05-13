@@ -44,7 +44,6 @@ import java.util.List;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 
-
 import com.flagstone.transform.coder.ImageTag;
 import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.datatype.CoordTransform;
@@ -118,13 +117,13 @@ import com.flagstone.transform.video.ImageBlock;
  *
  *     Definition image = Image(defineImage(imageId, ...);
  *
- *     int xOrigin = image.getWidth()/2;
- *     int yOrigin = image.getHeight()/2;
+ *     int x = image.getWidth()/2;
+ *     int y = image.getHeight()/2;
  *
  *     LineStyle style = new LineStyle(20, ColorTable.black());
  *
  *     movie.add(image);
- *     movie.add(Image.defineEnclosingShape(shapeId, image, xOrigin, yOrigin, style);
+ *     movie.add(Image.defineEnclosingShape(shapeId, image, x, y, style);
  * </pre>
  *
  * <P>
@@ -170,7 +169,8 @@ public final class ImageFactory {
             throw new DataFormatException("Unsupported format");
         }
 
-        decoder = ImageRegistry.getImageProvider(info.getImageFormat().getMimeType());
+        decoder = ImageRegistry.getImageProvider(
+                info.getImageFormat().getMimeType());
         decoder.read(new FileInputStream(file), (int) file.length());
     }
 
@@ -207,7 +207,7 @@ public final class ImageFactory {
         decoder.read(url.openStream(), fileSize);
     }
 
-    /** TODO(method). */
+
     public ImageTag defineImage(final int identifier) {
         return decoder.defineImage(identifier);
     }
@@ -243,8 +243,9 @@ public final class ImageFactory {
      *            the style drawn around the border of the image. May be null if
      *            no border is drawn.
      */
-    public DefineShape3 defineEnclosingShape(final int shapeId, final int imageId,
-            final int xOrigin, final int yOrigin, final LineStyle borderStyle) {
+    public DefineShape3 defineEnclosingShape(final int shapeId,
+            final int imageId, final int xOrigin, final int yOrigin,
+            final LineStyle borderStyle) {
 
         int lineWidth = 0;
 
@@ -253,7 +254,8 @@ public final class ImageFactory {
         }
 
         final Bounds bounds = new Bounds(-xOrigin * 20 - lineWidth, -yOrigin
-                * 20 - lineWidth, (decoder.getWidth() - xOrigin) * 20 + lineWidth,
+                * 20 - lineWidth, (decoder.getWidth() - xOrigin)
+                * 20 + lineWidth,
                 (decoder.getHeight() - yOrigin) * 20 + lineWidth);
 
         final Shape shape = new Shape(new ArrayList<ShapeRecord>());
@@ -349,7 +351,7 @@ public final class ImageFactory {
                     }
                 }
 
-                blocks.add(new ImageBlock(xSpan, ySpan, 
+                blocks.add(new ImageBlock(xSpan, ySpan,
                         zip(blockData, offset)));
             }
         }

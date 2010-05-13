@@ -33,6 +33,8 @@ package com.flagstone.transform.font;
 
 import java.util.Arrays;
 
+import com.flagstone.transform.SWF;
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.DefineTag;
@@ -61,45 +63,37 @@ public final class DefineFont4 implements DefineTag {
      * @param coder
      *            an SWFDecoder object that contains the encoded Flash data.
      *
-     * @param context
-     *            a Context object used to manage the decoders for different
-     *            type of object and to pass information on how objects are
-     *            decoded.
-     *
      * @throws CoderException
      *             if an error occurs while decoding the data.
      */
     public DefineFont4(final SWFDecoder coder)
             throws CoderException {
         final int start = coder.getPointer();
-        length = coder.readWord(2, false) & 0x3F;
+        length = coder.readHeader();
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
-        if (length == 0x3F) {
-            length = coder.readWord(4, false);
-        }
-        final int end = coder.getPointer() + (length << 3);
-
-        identifier = coder.readWord(2, false);
+        identifier = coder.readUI16();
 
         final int bits = coder.readByte();
 
         italic = (bits & 0x00000002) == 1;
         bold = (bits & 0x00000002) == 1;
         name = coder.readString();
-        data = coder.readBytes(new byte[(end-coder.getPointer()) >>> 3]);
+        data = coder.readBytes(new byte[(end - coder.getPointer()) >>> 3]);
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 
-    public DefineFont4(final int uid, final String name, 
+    public DefineFont4(final int uid, final String fontName,
             final boolean isItalic, final boolean isBold, final byte[] font) {
         setIdentifier(uid);
         setItalic(isItalic);
         setBold(isBold);
-        setName(name);
+        setName(fontName);
         setData(font);
     }
 
@@ -119,15 +113,16 @@ public final class DefineFont4 implements DefineTag {
         data = object.data;
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public int getIdentifier() {
         return identifier;
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public void setIdentifier(final int uid) {
-        if ((uid < 0) || (uid > 65535)) {
-             throw new IllegalArgumentRangeException(1, 65536, uid);
+        if ((uid < SWF.MIN_IDENTIFIER) || (uid > SWF.MAX_IDENTIFIER)) {
+            throw new IllegalArgumentRangeException(
+                    SWF.MIN_IDENTIFIER, SWF.MAX_IDENTIFIER, uid);
         }
         identifier = uid;
     }
@@ -214,7 +209,8 @@ public final class DefineFont4 implements DefineTag {
 
     @Override
     public String toString() {
-        return String.format(FORMAT, identifier, italic, bold, name, data.length);
+        return String.format(FORMAT, identifier, italic, bold,
+                name, data.length);
     }
 
     /** {@inheritDoc} */
@@ -227,14 +223,8 @@ public final class DefineFont4 implements DefineTag {
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         final int start = coder.getPointer();
-
-        if (length >= 63) {
-            coder.writeWord((MovieTypes.DEFINE_FONT_4 << 6) | 0x3F, 2);
-            coder.writeWord(length, 4);
-        } else {
-            coder.writeWord((MovieTypes.DEFINE_FONT_4 << 6) | length, 2);
-        }
-        final int end = coder.getPointer() + (length << 3);
+        coder.writeHeader(MovieTypes.DEFINE_FONT_4, length);
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
         coder.writeWord(identifier, 2);
         coder.writeBits(0, 5);
@@ -245,8 +235,9 @@ public final class DefineFont4 implements DefineTag {
         coder.writeBytes(data);
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 }

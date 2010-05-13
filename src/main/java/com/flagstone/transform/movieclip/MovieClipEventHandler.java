@@ -36,7 +36,6 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
-
 import com.flagstone.transform.action.Action;
 import com.flagstone.transform.action.ActionData;
 import com.flagstone.transform.coder.CoderException;
@@ -50,7 +49,7 @@ import com.flagstone.transform.coder.SWFFactory;
  * <p>
  * ClipEvent is used to define the actions that a movie clip will execute in
  * response to a particular event. ClipEvent objects are added to an
- * {@link Place2} object and the actions are registered with the Flash Player
+ * Place2 object and the actions are registered with the Flash Player
  * when the movie clip is added to the display list.
  * </p>
  *
@@ -97,7 +96,9 @@ import com.flagstone.transform.coder.SWFFactory;
  * </tr>
  * <tr>
  * <td valign="top">Data</td>
- * <td>a GetUrl2 action is executed with the movie clip specified as a target.</td>
+ * <td>
+ * a GetUrl2 action is executed with the movie clip specified as a target.
+ * </td>
  * </tr>
  * <tr>
  * <td valign="top">Construct</td>
@@ -107,7 +108,7 @@ import com.flagstone.transform.coder.SWFFactory;
  *
  * <p>
  * Starting with Flash 6 movie clips also respond to the same set of events as
- * buttons, see {@link ButtonEventHandler}
+ * buttons, see ButtonEventHandler
  * </p>
  *
  * <p>
@@ -119,13 +120,12 @@ import com.flagstone.transform.coder.SWFFactory;
  * <pre>
  * int loadAndMouseMove = ClipEvent.Load | ClipEvent.MouseMove;
  * </pre>
- *
- * @see Place2
  */
 //TODO(class)
 public final class MovieClipEventHandler implements SWFEncodeable {
 
-    private static final String FORMAT = "MovieClipEventHandler: { event=%d; keyCode=%s; actions=%s }";
+    private static final String FORMAT = "MovieClipEventHandler: { event=%d;"
+            + " keyCode=%s; actions=%s }";
 
     private int event;
     private int keyCode;
@@ -134,8 +134,8 @@ public final class MovieClipEventHandler implements SWFEncodeable {
     private transient int offset;
 
     /**
-     * Creates and initialises a MovieClipEventHandler object using values encoded
-     * in the Flash binary format.
+     * Creates and initialises a MovieClipEventHandler object using values
+     * encoded in the Flash binary format.
      *
      * @param coder
      *            an SWFDecoder object that contains the encoded Flash data.
@@ -150,10 +150,16 @@ public final class MovieClipEventHandler implements SWFEncodeable {
      */
     public MovieClipEventHandler(final SWFDecoder coder, final Context context)
             throws CoderException {
-        final int eventSize = (context.getVariables().get(Context.VERSION) > 5) ? 4 : 2;
+        final int eventSize;
+
+        if (context.getVariables().get(Context.VERSION) > 5) {
+            eventSize = 4;
+        } else {
+            eventSize = 2;
+        }
 
         event = coder.readWord(eventSize, false);
-        offset = coder.readWord(4, false);
+        offset = coder.readUI32();
 
         if ((event & 131072) != 0) {
             keyCode = coder.readByte();
@@ -198,22 +204,22 @@ public final class MovieClipEventHandler implements SWFEncodeable {
      *
      * @param eventCode
      *            the code representing one or more events.
-     * @param keyCode
+     * @param character
      *            the ASCII code for the key pressed on the keyboard.
      * @param anArray
      *            the array of actions that will be executed when the specified
      *            event occurs. Must not be null.
      */
     public MovieClipEventHandler(final Set<MovieClipEvent> eventCode,
-            final int keyCode, final List<Action> anArray) {
+            final int character, final List<Action> anArray) {
         setEvent(eventCode);
-        setKeyCode(keyCode);
+        setKeyCode(character);
         setActions(anArray);
     }
 
     /**
-     * Creates and initialises a MovieClipEventHandler object using the values copied
-     * from another MovieClipEventHandler object.
+     * Creates and initialises a MovieClipEventHandler object using the values
+     * copied from another MovieClipEventHandler object.
      *
      * @param object
      *            a MovieClipEventHandler object from which the values will be
@@ -240,25 +246,25 @@ public final class MovieClipEventHandler implements SWFEncodeable {
         return this;
     }
 
-    /** TODO(method). */
+
     public void setEvent(final Set<MovieClipEvent> set) {
         for (final MovieClipEvent clipEvent : set) {
             event |= clipEvent.getValue();
         }
     }
 
-    /** TODO(method). */
+
     public Set<MovieClipEvent> getEvent() {
-        final Set<MovieClipEvent> set = EnumSet.noneOf(MovieClipEvent.class);        
-        for (int i=0, mask = 1; i<32; i++, mask <<= 1) {
+        final Set<MovieClipEvent> set = EnumSet.noneOf(MovieClipEvent.class);
+        for (int i = 0, mask = 1; i < 32; i++, mask <<= 1) {
             if ((event & mask) != 0) {
                 set.add(MovieClipEvent.fromInt(mask));
             }
         }
         return set;
     }
-    
-    /** TODO(method). */
+
+
     public int getEventCode() {
         return event;
     }
@@ -304,7 +310,7 @@ public final class MovieClipEventHandler implements SWFEncodeable {
         return actions;
     }
 
-    /** TODO(method). */
+    /** {@inheritDoc} */
     public MovieClipEventHandler copy() {
         return new MovieClipEventHandler(this);
     }
@@ -316,7 +322,14 @@ public final class MovieClipEventHandler implements SWFEncodeable {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
-        int length = 4 + ((context.getVariables().get(Context.VERSION) > 5) ? 4 : 2);
+        final int eventSize;
+        if (context.getVariables().get(Context.VERSION) > 5) {
+            eventSize = 4;
+        } else {
+            eventSize = 2;
+        }
+
+        int length = 4 + eventSize;
 
         offset = (event & 131072) == 0 ? 0 : 1;
 
@@ -332,7 +345,12 @@ public final class MovieClipEventHandler implements SWFEncodeable {
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
-        final int eventSize = (context.getVariables().get(Context.VERSION)> 5) ? 4 : 2;
+        final int eventSize;
+        if (context.getVariables().get(Context.VERSION) > 5) {
+            eventSize = 4;
+        } else {
+            eventSize = 2;
+        }
 
         coder.writeWord(event, eventSize);
         coder.writeWord(offset, 4);

@@ -82,7 +82,7 @@ public final class WaitForFrame2 implements Action {
      */
     public WaitForFrame2(final SWFDecoder coder) throws CoderException {
         coder.readByte();
-        coder.readWord(2, false);
+        coder.readUI16();
         actionCount = coder.readByte();
     }
 

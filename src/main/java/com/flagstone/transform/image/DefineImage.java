@@ -33,7 +33,8 @@ package com.flagstone.transform.image;
 
 import java.util.Arrays;
 
-
+import com.flagstone.transform.SWF;
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.ImageTag;
@@ -96,7 +97,7 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  * @see DefineImage2
  */
 public final class DefineImage implements ImageTag {
-    
+
     private static final String FORMAT = "DefineImage: { identifier=%d;"
             + " pixelSize=%d; width=%d; height=%d; tableSize=%d; image=%d }";
 
@@ -122,14 +123,10 @@ public final class DefineImage implements ImageTag {
      */
     public DefineImage(final SWFDecoder coder) throws CoderException {
         final int start = coder.getPointer();
-        length = coder.readWord(2, false) & 0x3F;
+        length = coder.readHeader();
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
-        if (length == 0x3F) {
-            length = coder.readWord(4, false);
-        }
-        final int end = coder.getPointer() + (length << 3);
-
-        identifier = coder.readWord(2, false);
+        identifier = coder.readUI16();
 
         switch (coder.readByte()) {
         case 3:
@@ -146,8 +143,8 @@ public final class DefineImage implements ImageTag {
             break;
         }
 
-        width = coder.readWord(2, false);
-        height = coder.readWord(2, false);
+        width = coder.readUI16();
+        height = coder.readUI16();
 
         if (pixelSize == 8) {
             tableSize = coder.readByte() + 1;
@@ -157,8 +154,9 @@ public final class DefineImage implements ImageTag {
         }
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 
@@ -168,24 +166,24 @@ public final class DefineImage implements ImageTag {
      * @param uid
      *            the unique identifier for this object. Must be in the range
      *            1..65535.
-     * @param width
+     * @param imgWidth
      *            the width of the image. Must be in the range 0..65535.
-     * @param height
+     * @param imgHeight
      *            the height of the image. Must be in the range 0..65535.
-     * @param tableSize
+     * @param size
      *            the number of entries in the colour table in the compressed
      *            data. Each entry is 24 bits. Must be in the range 1..256.
      * @param data
      *            the zlib compressed colour table and image data.
      */
-    public DefineImage(final int uid, final int width, final int height,
-            final int tableSize, final byte[] data) {
+    public DefineImage(final int uid, final int imgWidth, final int imgHeight,
+            final int size, final byte[] data) {
         extendLength = true;
         setIdentifier(uid);
-        setWidth(width);
-        setHeight(height);
+        setWidth(imgWidth);
+        setHeight(imgHeight);
         setPixelSize(8);
-        setTableSize(tableSize);
+        setTableSize(size);
         setImage(data);
     }
 
@@ -195,21 +193,21 @@ public final class DefineImage implements ImageTag {
      * @param uid
      *            the unique identifier for this object. Must be in the range
      *            1..65535.
-     * @param width
+     * @param imgWidth
      *            the width of the image. Must be in the range 0..65535.
-     * @param height
+     * @param imgHeight
      *            the height of the image. Must be in the range 0..65535.
      * @param data
      *            the zlib compressed image data.
      * @param size
      *            the size of each pixel, either 16 or 24 bits.
      */
-    public DefineImage(final int uid, final int width, final int height,
+    public DefineImage(final int uid, final int imgWidth, final int imgHeight,
             final byte[] data, final int size) {
         extendLength = true;
         setIdentifier(uid);
-        setWidth(width);
-        setHeight(height);
+        setWidth(imgWidth);
+        setHeight(imgHeight);
         setPixelSize(size);
         tableSize = 0;
         setImage(data);
@@ -240,8 +238,9 @@ public final class DefineImage implements ImageTag {
 
     /** {@inheritDoc} */
     public void setIdentifier(final int uid) {
-        if ((uid < 1) || (uid > 65535)) {
-             throw new IllegalArgumentRangeException(1, 65536, uid);
+        if ((uid < SWF.MIN_IDENTIFIER) || (uid > SWF.MAX_IDENTIFIER)) {
+            throw new IllegalArgumentRangeException(
+                    SWF.MIN_IDENTIFIER, SWF.MAX_IDENTIFIER, uid);
         }
         identifier = uid;
     }
@@ -388,14 +387,9 @@ public final class DefineImage implements ImageTag {
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         final int start = coder.getPointer();
-
-        if (length >= 63) {
-            coder.writeWord((MovieTypes.DEFINE_IMAGE << 6) | 0x3F, 2);
-            coder.writeWord(length, 4);
-        } else {
-            coder.writeWord((MovieTypes.DEFINE_IMAGE << 6) | length, 2);
-        }
-        final int end = coder.getPointer() + (length << 3);
+        coder.writeWord((MovieTypes.DEFINE_IMAGE << 6) | 0x3F, 2);
+        coder.writeWord(length, 4);
+        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
         coder.writeWord(identifier, 2);
 
@@ -423,8 +417,9 @@ public final class DefineImage implements ImageTag {
         coder.writeBytes(image);
 
         if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(), start >> 3, length,
-                    (coder.getPointer() - end) >> 3);
+            throw new CoderException(getClass().getName(),
+                    start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 }

@@ -43,7 +43,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
-
 import org.yaml.snakeyaml.Yaml;
 
 import com.flagstone.transform.coder.CoderException;
@@ -53,8 +52,9 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 @RunWith(Parameterized.class)
 public final class BoundsCodingTest {
-    
-    private static final String RESOURCE = "com/flagstone/transform/datatype/Bounds.yaml";
+
+    private static final String RESOURCE =
+        "com/flagstone/transform/datatype/Bounds.yaml";
 
     private static final String XMIN = "xMin";
     private static final String YMIN = "yMin";
@@ -68,47 +68,47 @@ public final class BoundsCodingTest {
         ClassLoader loader = BoundsCodingTest.class.getClassLoader();
         InputStream other = loader.getResourceAsStream(RESOURCE);
         Yaml yaml = new Yaml();
-        
+
         Collection<Object[]> list = new ArrayList<Object[]>();
-         
+
         for (Object data : yaml.loadAll(other)) {
-            list.add(new Object[] { data });
+            list.add(new Object[] {data });
         }
 
         return list;
     }
 
-    private Integer xMin;
-    private Integer yMin;
-    private Integer xMax;
-    private Integer yMax;
-    private byte[] data;
-    
-    private Context context;
-    
-    public BoundsCodingTest(Map<String,Object>values) {
-        xMin = (Integer)values.get(XMIN);
-        yMin = (Integer)values.get(YMIN);
-        xMax = (Integer)values.get(XMAX);
-        yMax = (Integer)values.get(YMAX);
-        data = (byte[])values.get(DATA);
-        
+    private final Integer xMin;
+    private final Integer yMin;
+    private final Integer xMax;
+    private final Integer yMax;
+    private final byte[] data;
+
+    private final Context context;
+
+    public BoundsCodingTest(final Map<String, Object>values) {
+        xMin = (Integer) values.get(XMIN);
+        yMin = (Integer) values.get(YMIN);
+        xMax = (Integer) values.get(XMAX);
+        yMax = (Integer) values.get(YMAX);
+        data = (byte[]) values.get(DATA);
+
         context = new Context();
     }
 
     @Test
-    public void checkSizeMatchesEncodedSize() throws CoderException {     
-        final Bounds bounds = new Bounds(xMin, yMin, xMax, yMax);       
-        final SWFEncoder encoder = new SWFEncoder(data.length);        
-         
+    public void checkSizeMatchesEncodedSize() throws CoderException {
+        final Bounds bounds = new Bounds(xMin, yMin, xMax, yMax);
+        final SWFEncoder encoder = new SWFEncoder(data.length);
+
         assertEquals(data.length, bounds.prepareToEncode(encoder, context));
     }
 
     @Test
     public void checkBoundsIsEncoded() throws CoderException {
-        final Bounds bounds = new Bounds(xMin, yMin, xMax, yMax);       
-        final SWFEncoder encoder = new SWFEncoder(data.length);        
-        
+        final Bounds bounds = new Bounds(xMin, yMin, xMax, yMax);
+        final SWFEncoder encoder = new SWFEncoder(data.length);
+
         bounds.prepareToEncode(encoder, context);
         bounds.encode(encoder, context);
 

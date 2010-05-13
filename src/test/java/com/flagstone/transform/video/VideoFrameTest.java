@@ -40,7 +40,7 @@ public final class VideoFrameTest {
 
     private transient VideoFrame fixture;
 
-    private final transient byte[] encoded = new byte[] { 0x06, 0x01, 0x01,
+    private final transient byte[] encoded = new byte[] {0x06, 0x01, 0x01,
             0x00, 0x02, 0x00, 0x06, 0x50 };
 
     @Test

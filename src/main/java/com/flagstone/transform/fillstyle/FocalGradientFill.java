@@ -56,8 +56,8 @@ public final class FocalGradientFill implements FillStyle {
     private transient int count;
 
     /**
-     * Creates and initialises a FocalGradientFill fill style using values encoded
-     * in the Flash binary format.
+     * Creates and initialises a FocalGradientFill fill style using values
+     * encoded in the Flash binary format.
      *
      * @param coder
      *            an SWFDecoder object that contains the encoded Flash data.
@@ -83,26 +83,26 @@ public final class FocalGradientFill implements FillStyle {
         for (int i = 0; i < count; i++) {
             gradients.add(new Gradient(coder, context));
         }
-        
+
         focalPoint = coder.readWord(2, true);
     }
 
-    /** TODO(method). */
-    public FocalGradientFill(final Spread spread,
-            final Interpolation interpolation,
+
+    public FocalGradientFill(final Spread spreadType,
+            final Interpolation anInterpolation,
             final CoordTransform aTransform,
             final List<Gradient> anArray, final float point) {
         type = 0x13;
-        setSpread(spread);
-        setInterpolation(interpolation);
+        setSpread(spreadType);
+        setInterpolation(anInterpolation);
         setTransform(aTransform);
         setGradients(anArray);
         setFocalPoint(point);
     }
 
     /**
-     * Creates and initialises a FocalGradientFill fill style using the values copied
-     * from another FocalGradientFill object.
+     * Creates and initialises a FocalGradientFill fill style using the values
+     * copied from another FocalGradientFill object.
      *
      * @param object
      *            a FocalGradientFill fill style from which the values will be
@@ -117,7 +117,7 @@ public final class FocalGradientFill implements FillStyle {
         gradients = new ArrayList<Gradient>(object.gradients);
     }
 
-    /** TODO(method). */
+
     public Spread getSpread() {
         Spread value;
         switch (spread) {
@@ -136,9 +136,9 @@ public final class FocalGradientFill implements FillStyle {
         return value;
     }
 
-    /** TODO(method). */
-    public void setSpread(final Spread type) {
-        switch (type) {
+
+    public void setSpread(final Spread spreadType) {
+        switch (spreadType) {
         case PAD:
             spread = 0;
             break;
@@ -153,7 +153,7 @@ public final class FocalGradientFill implements FillStyle {
         }
     }
 
-    /** TODO(method). */
+
     public Interpolation getInterpolation() {
         Interpolation value;
         switch (interpolation) {
@@ -169,9 +169,9 @@ public final class FocalGradientFill implements FillStyle {
         return value;
     }
 
-    /** TODO(method). */
-    public void setInterpolation(final Interpolation type) {
-        switch (type) {
+
+    public void setInterpolation(final Interpolation interpolationType) {
+        switch (interpolationType) {
         case NORMAL:
             interpolation = 0;
             break;
@@ -183,14 +183,14 @@ public final class FocalGradientFill implements FillStyle {
         }
     }
 
-    /** TODO(method). */
+
     public float getFocalPoint() {
         return focalPoint / 256.0f;
     }
 
-    /** TODO(method). */
+
     public void setFocalPoint(final float point) {
-        this.focalPoint = (int) (point * 256);
+        focalPoint = (int) (point * 256);
     }
 
     /**
@@ -206,7 +206,8 @@ public final class FocalGradientFill implements FillStyle {
             throw new IllegalArgumentException();
         }
         if (gradients.size() == 15) {
-            throw new IllegalStateException("Maximum number of gradients exceeded.");
+            throw new IllegalStateException(
+                    "Maximum number of gradients exceeded.");
         }
         gradients.add(aGradient);
         return this;
@@ -233,7 +234,8 @@ public final class FocalGradientFill implements FillStyle {
             throw new IllegalArgumentException();
         }
         if (gradients.size() == 15) {
-            throw new IllegalStateException("Maximum number of gradients exceeded.");
+            throw new IllegalStateException(
+                    "Maximum number of gradients exceeded.");
         }
         gradients = anArray;
     }
@@ -295,7 +297,7 @@ public final class FocalGradientFill implements FillStyle {
         for (final Gradient gradient : gradients) {
             gradient.encode(coder, context);
         }
-        
+
         coder.writeWord(focalPoint, 2);
     }
 }
