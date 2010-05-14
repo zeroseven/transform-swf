@@ -67,7 +67,7 @@ public final class SolidFill implements FillStyle {
      */
     public SolidFill(final SWFDecoder coder, final Context context)
             throws CoderException {
-        coder.adjustPointer(8);
+        coder.readByte(); // type
         color = new Color(coder, context);
     }
 
@@ -134,7 +134,7 @@ public final class SolidFill implements FillStyle {
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
-        coder.writeByte(0);
+        coder.writeByte(FillStyleTypes.SOLID_COLOR);
         color.encode(coder, context);
     }
 }

@@ -280,7 +280,7 @@ public final class GetUrl2 implements Action {
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         coder.writeByte(ActionTypes.GET_URL_2);
-        coder.writeWord(1, 2);
-        coder.writeWord(request, 1);
+        coder.writeI16(1);
+        coder.writeByte(request);
     }
 }

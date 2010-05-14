@@ -185,12 +185,12 @@ public final class DefineFont2 implements DefineTag {
         }
 
         if (containsLayout) {
-            ascent = coder.readWord(2, true);
-            descent = coder.readWord(2, true);
-            leading = coder.readWord(2, true);
+            ascent = coder.readSI16();
+            descent = coder.readSI16();
+            leading = coder.readSI16();
 
             for (int i = 0; i < glyphCount; i++) {
-                advances.add(coder.readWord(2, true));
+                advances.add(coder.readSI16());
             }
 
             for (int i = 0; i < glyphCount; i++) {
@@ -298,8 +298,8 @@ public final class DefineFont2 implements DefineTag {
      *            character code.
      */
     public DefineFont2 addGlyph(final int code, final Shape obj) {
-        if ((code < 0) || (code > 65535)) {
-            throw new IllegalArgumentRangeException(0, 65535, code);
+        if ((code < 0) || (code > SWF.MAX_CHARACTER)) {
+            throw new IllegalArgumentRangeException(0, SWF.MAX_CHARACTER, code);
         }
         codes.add(code);
 
@@ -774,7 +774,8 @@ public final class DefineFont2 implements DefineTag {
         vars.put(Context.LINE_SIZE, 0);
         vars.remove(Context.WIDE_CODES);
 
-        return (length > 62 ? 6 : 2) + length;
+        return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH
+                : SWFEncoder.STD_LENGTH) + length;
     }
 
     // TODO(optimise)
@@ -798,7 +799,7 @@ public final class DefineFont2 implements DefineTag {
         coder.writeHeader(MovieTypes.DEFINE_FONT_2, length);
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
-        coder.writeWord(identifier, 2);
+        coder.writeI16(identifier);
         vars.put(Context.FILL_SIZE, 1);
         vars.put(Context.LINE_SIZE, vars.containsKey(Context.POSTSCRIPT) ? 1
                 : 0);
@@ -813,11 +814,11 @@ public final class DefineFont2 implements DefineTag {
         coder.writeBits(wideCodes ? 1 : 0, 1);
         coder.writeBits(italic ? 1 : 0, 1);
         coder.writeBits(bold ? 1 : 0, 1);
-        coder.writeWord(vars.get(Context.VERSION) > 5 ? language : 0, 1);
+        coder.writeWord(vars.get(Context.VERSION) > SWF.SWF5 ? language : 0, 1);
         coder.writeWord(coder.strlen(name), 1);
 
         coder.writeString(name);
-        coder.writeWord(shapes.size(), 2);
+        coder.writeI16(shapes.size());
 
         int currentLocation;
         int offset;
@@ -854,19 +855,19 @@ public final class DefineFont2 implements DefineTag {
         }
 
         if (containsLayoutInfo()) {
-            coder.writeWord(ascent, 2);
-            coder.writeWord(descent, 2);
-            coder.writeWord(leading, 2);
+            coder.writeI16(ascent);
+            coder.writeI16(descent);
+            coder.writeI16(leading);
 
             for (final Integer advance : advances) {
-                coder.writeWord(advance.intValue(), 2);
+                coder.writeI16(advance.intValue());
             }
 
             for (final Bounds bound : bounds) {
                 bound.encode(coder, context);
             }
 
-            coder.writeWord(kernings.size(), 2);
+            coder.writeI16(kernings.size());
 
             for (final Kerning kerning : kernings) {
                 kerning.encode(coder, context);

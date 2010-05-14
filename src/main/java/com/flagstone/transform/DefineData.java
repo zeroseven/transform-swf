@@ -85,8 +85,9 @@ public final class DefineData implements DefineTag {
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
         identifier = coder.readUI16();
-        coder.adjustPointer(32);
-        data = coder.readBytes(new byte[length - 6]);
+        coder.adjustPointer(Coder.BITS_PER_INT);
+        data = coder.readBytes(new byte[(coder.getPointer() - end)
+                                        >> Coder.BITS_TO_BYTES]);
 
         if (coder.getPointer() != end) {
             throw new CoderException(getClass().getName(),
@@ -169,8 +170,11 @@ public final class DefineData implements DefineTag {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        //CHECKSTYLE:OFF
         length = 6 + data.length;
-        return (length > 62 ? 6 : 2) + length;
+        return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH
+                : SWFEncoder.STD_LENGTH) + length;
+        //CHECKSTYLE:ON
     }
 
     /** {@inheritDoc} */
@@ -181,8 +185,8 @@ public final class DefineData implements DefineTag {
         coder.writeHeader(MovieTypes.DEFINE_BINARY_DATA, length);
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
-        coder.writeWord(identifier, 2);
-        coder.writeWord(0, 4);
+        coder.writeI16(identifier);
+        coder.writeI32(0);
         coder.writeBytes(data);
 
         if (coder.getPointer() != end) {

@@ -277,8 +277,8 @@ public final class Video {
         coder.writeBytes(signature.getBytes("UTF8"));
         coder.writeByte((byte) version);
         coder.writeByte((byte) flags);
-        coder.writeWord(9, 4);
-        coder.writeWord(0, 4);
+        coder.writeI32(9);
+        coder.writeI32(0);
 
         for (final VideoTag object : objects) {
             object.encode(coder);

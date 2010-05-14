@@ -31,7 +31,6 @@
 
 package com.flagstone.transform.coder;
 
-import com.flagstone.transform.SWF;
 
 /**
  * SWFDecoder extends LittleEndianDecoder by adding a context used to pass
@@ -40,6 +39,15 @@ import com.flagstone.transform.SWF;
  */
 //TODO(class)
 public final class SWFDecoder extends Decoder {
+
+    /**
+     * Bit mask for extracting the length field from the header word.
+     */
+    private static final int LENGTH_FIELD = 0x3F;
+    /**
+     * Reserved length indicating length is encoded in next 32-bit word.
+     */
+    private static final int IS_EXTENDED = 63;
 
     /**
      * Creates a SWFDecoder object initialised with the data to be decoded.
@@ -55,7 +63,7 @@ public final class SWFDecoder extends Decoder {
      * Read an unsigned short integer without changing the internal pointer.
      */
     public int scanUnsignedShort() {
-        return ((data[index + 1] & UNSIGNED_BYTE_MASK) << BYTE1)
+        return ((data[index + 1] & UNSIGNED_BYTE_MASK) << ALIGN_BYTE_1)
             + (data[index] & UNSIGNED_BYTE_MASK);
     }
 
@@ -66,7 +74,18 @@ public final class SWFDecoder extends Decoder {
      */
     public int readUI16() {
         int value = data[index++] & UNSIGNED_BYTE_MASK;
-        value |= (data[index++] & UNSIGNED_BYTE_MASK) << BYTE1;
+        value |= (data[index++] & UNSIGNED_BYTE_MASK) << ALIGN_BYTE_1;
+        return value;
+    }
+
+    /**
+     * Read an unsigned 16-bit integer.
+     *
+     * @return the value read.
+     */
+    public int readSI16() {
+        int value = data[index++] & UNSIGNED_BYTE_MASK;
+        value |= data[index++] << ALIGN_BYTE_1;
         return value;
     }
 
@@ -77,9 +96,22 @@ public final class SWFDecoder extends Decoder {
      */
     public int readUI32() {
         int value = data[index++] & UNSIGNED_BYTE_MASK;
-        value |= (data[index++] & UNSIGNED_BYTE_MASK) << BYTE1;
-        value |= (data[index++] & UNSIGNED_BYTE_MASK) << BYTE2;
-        value |= (data[index++] & UNSIGNED_BYTE_MASK) << BYTE3;
+        value |= (data[index++] & UNSIGNED_BYTE_MASK) << ALIGN_BYTE_1;
+        value |= (data[index++] & UNSIGNED_BYTE_MASK) << ALIGN_BYTE_2;
+        value |= (data[index++] & UNSIGNED_BYTE_MASK) << ALIGN_BYTE_3;
+        return value;
+    }
+
+    /**
+     * Read an unsigned 32-bit integer.
+     *
+     * @return the value read.
+     */
+    public int readSI32() {
+        int value = data[index++] & UNSIGNED_BYTE_MASK;
+        value |= (data[index++] & UNSIGNED_BYTE_MASK) << ALIGN_BYTE_1;
+        value |= (data[index++] & UNSIGNED_BYTE_MASK) << ALIGN_BYTE_2;
+        value |= data[index++] << ALIGN_BYTE_3;
         return value;
     }
 
@@ -221,8 +253,8 @@ public final class SWFDecoder extends Decoder {
      * @return the length of the encoded object in bytes.
      */
     public int readHeader() {
-        int length = readUI16() & SWF.TAG_LENGTH_FIELD;
-        if (length == SWF.IS_EXTENDED) {
+        int length = readUI16() & LENGTH_FIELD;
+        if (length == IS_EXTENDED) {
             length = readUI32();
         }
         return length;

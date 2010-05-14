@@ -340,7 +340,7 @@ public final class Place3 implements MovieTag {
         events = new ArrayList<MovieClipEventHandler>();
 
         if (hasEvents) {
-            final int eventSize = vars.get(Context.VERSION) > 5 ? 4 : 2;
+            final int eventSize = vars.get(Context.VERSION) > SWF.SWF5 ? 4 : 2;
 
             coder.readUI16();
             coder.readWord(eventSize, false);
@@ -438,8 +438,8 @@ public final class Place3 implements MovieTag {
      *            be in the range 1..65535.
      */
     public Place3 setLayer(final int aLayer) {
-        if ((aLayer < 1) || (aLayer > 65535)) {
-            throw new IllegalArgumentRangeException(1, 65536, aLayer);
+        if ((aLayer < 1) || (aLayer > SWF.MAX_LAYER)) {
+            throw new IllegalArgumentRangeException(1, SWF.MAX_LAYER, aLayer);
         }
         layer = aLayer;
         return this;
@@ -533,9 +533,8 @@ public final class Place3 implements MovieTag {
      *            the progress in the morphing process.
      */
     public Place3 setRatio(final Integer aNumber) {
-        if ((aNumber != null) && ((aNumber < 0) || (aNumber > 65535))) {
-            throw new IllegalArgumentException(
-                    "Morphing ratio must be in the range 0..65535.");
+        if ((aNumber != null) && ((aNumber < 0) || (aNumber > SWF.MAX_MORPH))) {
+            throw new IllegalArgumentRangeException(1, SWF.MAX_MORPH, aNumber);
         }
         ratio = aNumber;
         return this;
@@ -557,8 +556,8 @@ public final class Place3 implements MovieTag {
      *            the number of layers clipped.
      */
     public Place3 setDepth(final Integer aNumber) {
-        if ((aNumber != null) && ((aNumber < 1) || (aNumber > 65535))) {
-             throw new IllegalArgumentRangeException(1, 65536, aNumber);
+        if ((aNumber != null) && ((aNumber < 1) || (aNumber > SWF.MAX_LAYER))) {
+             throw new IllegalArgumentRangeException(1, SWF.MAX_LAYER, aNumber);
         }
         depth = aNumber;
         return this;
@@ -713,6 +712,7 @@ public final class Place3 implements MovieTag {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        // CHECKSTYLE:OFF
         final Map<Integer, Integer> vars = context.getVariables();
         vars.put(Context.TRANSPARENT, 1);
 
@@ -743,7 +743,7 @@ public final class Place3 implements MovieTag {
         }
 
         if (!events.isEmpty()) {
-            final int eventSize = vars.get(Context.VERSION) > 5 ? 4 : 2;
+            final int eventSize = vars.get(Context.VERSION) > SWF.SWF5 ? 4 : 2;
 
             length += 2 + eventSize;
 
@@ -756,7 +756,9 @@ public final class Place3 implements MovieTag {
 
         vars.remove(Context.TRANSPARENT);
 
-        return (length > 62 ? 6 : 2) + length;
+        return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH
+                : SWFEncoder.STD_LENGTH) + length;
+        // CHECKSTYLE:ON
     }
 
     /** {@inheritDoc} */
@@ -790,13 +792,13 @@ public final class Place3 implements MovieTag {
         coder.writeBool(hasBlend);
         coder.writeBool(hasFilters);
 
-        coder.writeWord(layer, 2);
+        coder.writeI16(layer);
 
         if (className != null) {
             coder.writeString(className);
         }
         if ((type == PlaceType.NEW) || (type == PlaceType.REPLACE)) {
-            coder.writeWord(identifier, 2);
+            coder.writeI16(identifier);
         }
         if (transform != null) {
             transform.encode(coder, context);
@@ -805,14 +807,14 @@ public final class Place3 implements MovieTag {
             colorTransform.encode(coder, context);
         }
         if (ratio != null) {
-            coder.writeWord(ratio, 2);
+            coder.writeI16(ratio);
         }
         if (name != null) {
             coder.writeString(name);
         }
 
         if (depth != null) {
-            coder.writeWord(depth, 2);
+            coder.writeI16(depth);
         }
 
         if (hasFilters) {
@@ -827,10 +829,10 @@ public final class Place3 implements MovieTag {
         }
 
         if (!events.isEmpty()) {
-            final int eventSize = vars.get(Context.VERSION) > 5 ? 4 : 2;
+            final int eventSize = vars.get(Context.VERSION) > SWF.SWF5 ? 4 : 2;
             int eventMask = 0;
 
-            coder.writeWord(0, 2);
+            coder.writeI16(0);
 
             for (final MovieClipEventHandler handler : events) {
                 eventMask |= handler.getEventCode();

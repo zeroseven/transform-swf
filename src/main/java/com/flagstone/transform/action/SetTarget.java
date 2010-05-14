@@ -130,7 +130,7 @@ public final class SetTarget implements Action {
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         coder.writeByte(ActionTypes.SET_TARGET);
-        coder.writeWord(length, 2);
+        coder.writeI16(length);
         coder.writeString(target);
     }
 }

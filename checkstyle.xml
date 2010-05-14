@@ -12,6 +12,7 @@
   <property name="severity" value="warning"/>
   <module name="TreeWalker">
     <property name="tabWidth" value="4"/>
+    <module name="FileContentsHolder"/>
     <module name="JavadocMethod">
       <property name="logLoadErrors" value="true"/>
       <property name="suppressLoadErrors" value="true"/>
@@ -53,7 +54,6 @@
     <module name="LeftCurly"/>
     <module name="NeedBraces"/>
     <module name="RightCurly"/>
-    <!--module name="AvoidInlineConditionals"/-->
     <module name="DoubleCheckedLocking"/>
     <module name="EmptyStatement"/>
     <module name="EqualsHashCode"/>
@@ -98,6 +98,8 @@
     <property name="message" value="Line has trailing spaces."/>
     <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
   </module>
+  <module name="SuppressionCommentFilter"/>
+  <module name="SuppressWithNearbyCommentFilter"/>
   <module name="SuppressionFilter">
     <property name="file" value="D:/Users/Stuart/Documents/Flagstone/Development/Java/transform-java-3-0/suppressions.xml"/>
   </module>

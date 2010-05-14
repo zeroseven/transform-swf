@@ -33,6 +33,7 @@ package com.flagstone.transform.coder;
 
 import com.flagstone.transform.action.Action;
 import com.flagstone.transform.fillstyle.FillStyle;
+import com.flagstone.transform.fillstyle.FillStyleDecoder;
 import com.flagstone.transform.filter.Filter;
 import com.flagstone.transform.shape.ShapeRecord;
 

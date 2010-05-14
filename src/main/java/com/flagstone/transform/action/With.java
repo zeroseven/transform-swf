@@ -34,7 +34,6 @@ package com.flagstone.transform.action;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
@@ -159,9 +158,9 @@ public final class With implements Action {
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
-        coder.writeWord(ActionTypes.WITH, 1);
-        coder.writeWord(2, 2);
-        coder.writeWord(length - 2, 2);
+        coder.writeByte(ActionTypes.WITH);
+        coder.writeI16(2);
+        coder.writeI16(length - 2);
 
         for (final Action action : actions) {
             action.encode(coder, context);

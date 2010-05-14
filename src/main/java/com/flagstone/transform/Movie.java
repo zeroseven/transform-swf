@@ -416,7 +416,7 @@ public final class Movie {
         }
 
         frameSize = new Bounds(decoder);
-        frameRate = decoder.readWord(2, true) / 256.0f;
+        frameRate = decoder.readSI16() / 256.0f;
         frameCount = decoder.readUI16();
 
         buffer = new byte[length - size - 10];
@@ -528,15 +528,15 @@ public final class Movie {
         coder.writeByte(signature.get(1));
         coder.writeByte(signature.get(2));
         coder.writeByte(version);
-        coder.writeWord(length, 4);
+        coder.writeI32(length);
         frameSize.encode(coder, context);
-        coder.writeWord((int) (frameRate * 256), 2);
-        coder.writeWord(frameCount, 2);
+        coder.writeI16((int) (frameRate * 256));
+        coder.writeI16(frameCount);
 
         for (final MovieTag tag : objects) {
             tag.encode(coder, context);
         }
-        coder.writeWord(0, 2);
+        coder.writeI16(0);
 
         byte[] data = new byte[length];
 

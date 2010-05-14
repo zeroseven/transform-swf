@@ -34,7 +34,6 @@ package com.flagstone.transform.action;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
@@ -228,8 +227,7 @@ public final class Push implements Action {
                 valuesLength -= strlen + 2;
                 break;
             case TYPE_PROPERTY:
-                values.add(new Property(coder.readWord(
-                        Coder.BYTES_PER_WORD, false)));
+                values.add(new Property(coder.readUI32()));
                 valuesLength -= LENGTH_PROPERTY;
                 break;
             case TYPE_NULL:
@@ -253,7 +251,7 @@ public final class Push implements Action {
                 valuesLength -= LENGTH_DOUBLE;
                 break;
             case TYPE_INTEGER:
-                values.add(coder.readWord(Coder.BYTES_PER_WORD, false));
+                values.add(coder.readSI32());
                 valuesLength -= LENGTH_INTEGER;
                 break;
             case TYPE_TINDEX:
@@ -360,45 +358,43 @@ public final class Push implements Action {
             throws CoderException {
 
         coder.writeByte(ActionTypes.PUSH);
-        coder.writeWord(length, 2);
+        coder.writeI16(length);
 
         for (final Object obj : values) {
             if (obj instanceof Boolean) {
-                coder.writeWord(TYPE_BOOLEAN, 1);
+                coder.writeByte(TYPE_BOOLEAN);
                 if (((Boolean) obj).booleanValue()) {
                     coder.writeByte(1);
                 } else {
                     coder.writeByte(0);
                 }
             } else if (obj instanceof Integer) {
-                coder.writeWord(TYPE_INTEGER, 1);
-                coder.writeWord(((Integer) obj).intValue(),
-                        Coder.BYTES_PER_WORD);
+                coder.writeByte(TYPE_INTEGER);
+                coder.writeI32(((Integer) obj).intValue());
             } else if (obj instanceof Property) {
-                coder.writeWord(TYPE_PROPERTY, 1);
-                coder.writeWord(((Property) obj).getValue(),
-                        Coder.BYTES_PER_WORD);
+                coder.writeByte(TYPE_PROPERTY);
+                coder.writeI32(((Property) obj).getValue());
             } else if (obj instanceof Double) {
-                coder.writeWord(TYPE_DOUBLE, 1);
+                coder.writeByte(TYPE_DOUBLE);
                 coder.writeDouble(((Double) obj).doubleValue());
             } else if (obj instanceof String) {
-                coder.writeWord(TYPE_STRING, 1);
+                coder.writeByte(TYPE_STRING);
                 coder.writeString(obj.toString());
             } else if (obj instanceof Null) {
-                coder.writeWord(TYPE_NULL, 1);
+                coder.writeByte(TYPE_NULL);
             } else if (obj instanceof Void) {
-                coder.writeWord(TYPE_VOID, 1);
+                coder.writeByte(TYPE_VOID);
             } else if (obj instanceof TableIndex) {
                 if (((TableIndex) obj).getIndex() <= LAST_REGISTER) {
-                    coder.writeWord(TYPE_TINDEX, 1);
-                    coder.writeWord(((TableIndex) obj).getIndex(), 1);
+                    coder.writeByte(TYPE_TINDEX);
+                    coder.writeByte(((TableIndex) obj).getIndex());
                 } else {
-                    coder.writeWord(TYPE_LARGE_TINDEX, 1);
-                    coder.writeWord(((TableIndex) obj).getIndex(), 2);
+                    coder.writeByte(TYPE_LARGE_TINDEX);
+                    coder.writeI16(((TableIndex) obj).getIndex());
                 }
             } else if (obj instanceof RegisterIndex) {
-                coder.writeWord(TYPE_REGISTER, 1);
-                coder.writeWord(((RegisterIndex) obj).getNumber(), 1);
+                coder.writeByte(TYPE_REGISTER);
+                coder.writeByte(((RegisterIndex) obj).getNumber());
             } else {
                 throw new CoderException(getClass().getName(), 0, 0, 0,
                         "Unsupported value");

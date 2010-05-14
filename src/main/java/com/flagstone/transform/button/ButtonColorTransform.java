@@ -184,8 +184,11 @@ public final class ButtonColorTransform implements MovieTag {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        // CHECKSTYLE:OFF
         length = 4 + colorTransform.prepareToEncode(coder, context);
-        return (length > 62 ? 6 : 2) + length;
+        return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH
+                : SWFEncoder.STD_LENGTH) + length;
+        // CHECKSTYLE:ON
     }
 
     /** {@inheritDoc} */
@@ -197,7 +200,7 @@ public final class ButtonColorTransform implements MovieTag {
         coder.writeHeader(MovieTypes.BUTTON_COLOR_TRANSFORM, length);
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
-        coder.writeWord(identifier, 2);
+        coder.writeI16(identifier);
         colorTransform.encode(coder, context);
 
         if (coder.getPointer() != end) {

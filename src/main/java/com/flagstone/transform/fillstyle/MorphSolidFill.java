@@ -67,7 +67,7 @@ public final class MorphSolidFill implements FillStyle {
      */
     public MorphSolidFill(final SWFDecoder coder, final Context context)
             throws CoderException {
-        coder.adjustPointer(8);
+        coder.readByte(); // type
         startColor = new Color(coder, context);
         endColor = new Color(coder, context);
     }
@@ -151,13 +151,15 @@ public final class MorphSolidFill implements FillStyle {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        // CHECKSTYLE:OFF
         return 9;
+        // CHECKSTYLE:ON
     }
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
-        coder.writeByte(0);
+        coder.writeByte(FillStyleTypes.SOLID_COLOR);
         startColor.encode(coder, context);
         endColor.encode(coder, context);
     }

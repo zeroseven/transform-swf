@@ -1,8 +1,8 @@
 /*
- * Call.java
+ * SoundRates.java
  * Transform
  *
- * Copyright (c) 2001-2010 Flagstone Software Ltd. All rights reserved.
+ * Copyright (c) 2010 Flagstone Software Ltd. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -29,50 +29,22 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.flagstone.transform.action;
-
-import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.SWFEncoder;
+package com.flagstone.transform.sound;
 
 /**
- * Call is used to execute the actions previously assigned to a given frame with
- * an DoAction object. Call is a stack-based action, the value for the <i>frame
- * name</i> or <i>frame number</i> is retrieved from the top of the stack when
- * it is executed.
+ * SoundRate defines the constants that identify the pre-defined sound
+ * sample rates supported by the Flash Player.
  */
-public final class Call implements Action {
+public final class SoundRate {
 
-    /** Shared instance. */
-    private static final Call INSTANCE = new Call();
+    public static final int KHZ_5K = 5512;
+    public static final int KHZ_8K = 8000;
+    public static final int KHZ_11K = 11025;
+    public static final int KHZ_22K = 22050;
+    public static final int KHZ_44K = 44100;
 
-    /**
-     * Returns a shared instance of the Call action.
-     *
-     * @return a singleton used to represent all Call actions.
-     */
-    public static Call getInstance() {
-        return INSTANCE;
-    }
-
-    /** Constructor used to created the singleton action. */
-    private Call() {
-    }
-
-    /** {@inheritDoc} */
-    public Call copy() {
-        return this;
-    }
-
-    /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
-        return SWFEncoder.ACTION_HEADER;
-    }
-
-    /** {@inheritDoc} */
-   public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
-        coder.writeByte(ActionTypes.CALL);
-        coder.writeI16(0);
+    /** SoundRate contains only constants. */
+    private SoundRate() {
+        // private constructor
     }
 }

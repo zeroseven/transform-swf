@@ -85,6 +85,8 @@ public final class TextSettings implements MovieTag {
         SUBPIXEL
     }
 
+    private static final float SCALE_16 = 65536.0f;
+
     private static final String FORMAT = "TextSettings: { identifier=%d;"
             + " useAdvanced=%s, grid=%s, thickness=%f, sharpness=%f }";
 
@@ -104,10 +106,7 @@ public final class TextSettings implements MovieTag {
      *             if an error occurs while decoding the data.
      */
     public TextSettings(final SWFDecoder coder) throws CoderException {
-        if ((coder.readUI16() & 0x3F) == 0x3F) {
-            coder.readUI32();
-        }
-
+        coder.readHeader();
         identifier = coder.readUI16();
         rendering = coder.readByte();
         thickness = coder.readUI32();
@@ -243,7 +242,7 @@ public final class TextSettings implements MovieTag {
      * May be set to 0.0 if the default anti-aliasing value will be used.
      */
     public float getThickness() {
-        return thickness / 65536.0f;
+        return thickness / SCALE_16;
     }
 
     /**
@@ -255,7 +254,7 @@ public final class TextSettings implements MovieTag {
      *            engine.
      */
     public void setThickness(final float level) {
-        thickness = (int) (level * 65536);
+        thickness = (int) (level * SCALE_16);
     }
 
     /**
@@ -263,7 +262,7 @@ public final class TextSettings implements MovieTag {
      * May be set to 0.0 if the default anti-aliasing value will be used.
      */
     public float getSharpness() {
-        return sharpness / 65536.0f;
+        return sharpness / SCALE_16;
     }
 
     /**
@@ -275,7 +274,7 @@ public final class TextSettings implements MovieTag {
      *            engine.
      */
     public void setSharpness(final float level) {
-        this.sharpness = (int) (level * 65536);
+        this.sharpness = (int) (level * SCALE_16);
     }
 
     /** {@inheritDoc} */
@@ -286,7 +285,7 @@ public final class TextSettings implements MovieTag {
     @Override
     public String toString() {
         return String.format(FORMAT, identifier, String.valueOf(useAdvanced()),
-                getGrid(), thickness / 65536.0f, sharpness / 65536.0f);
+                getGrid(), thickness / SCALE_16, sharpness / SCALE_16);
     }
 
     /** {@inheritDoc} */
@@ -298,10 +297,10 @@ public final class TextSettings implements MovieTag {
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         coder.writeWord((MovieTypes.TEXT_SETTINGS << 6) | 12, 2);
-        coder.writeWord(identifier, 2);
+        coder.writeI16(identifier);
         coder.writeByte(rendering);
-        coder.writeWord(thickness, 4);
-        coder.writeWord(sharpness, 4);
+        coder.writeI32(thickness);
+        coder.writeI32(sharpness);
         coder.writeByte(0);
     }
 }

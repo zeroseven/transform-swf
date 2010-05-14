@@ -216,7 +216,8 @@ public final class DefineFont4 implements DefineTag {
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         length = 3 + coder.strlen(name) + data.length;
-        return (length > 62 ? 6 : 2) + length;
+        return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH
+                : SWFEncoder.STD_LENGTH) + length;
     }
 
     /** {@inheritDoc} */
@@ -226,7 +227,7 @@ public final class DefineFont4 implements DefineTag {
         coder.writeHeader(MovieTypes.DEFINE_FONT_4, length);
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
-        coder.writeWord(identifier, 2);
+        coder.writeI16(identifier);
         coder.writeBits(0, 5);
         coder.writeBool(data.length > 0);
         coder.writeBool(italic);

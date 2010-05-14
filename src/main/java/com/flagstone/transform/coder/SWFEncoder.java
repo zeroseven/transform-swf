@@ -39,14 +39,25 @@ package com.flagstone.transform.coder;
 public final class SWFEncoder extends Encoder {
 
     /**
-     * Length, in bytes, of type and length fields of an encoded action.
-     */
-    public static final int ACTION_HEADER = 3;
-    /**
      * The maximum length in bytes of an encoded object before the length must
      * be encoded using a 32-bit integer.
      */
-    private static final int MAX_LENGTH = 62;
+    public static final int STD_LIMIT = 62;
+    /**
+     * Number of bytes occupied by the header when the size of the encoded
+     * object is 62 bytes or less.
+     */
+    public static final int STD_LENGTH = 2;
+    /**
+     * Number of bytes occupied by the header when the size of the encoded
+     * object is greater than 62 bytes.
+     */
+    public static final int EXT_LENGTH = 6;
+
+    /**
+     * Length, in bytes, of type and length fields of an encoded action.
+     */
+    public static final int ACTION_HEADER = 3;
     /**
      * The number of bits used to encode the length field when the length is
      * less than the maximum length of 62.
@@ -90,6 +101,30 @@ public final class SWFEncoder extends Encoder {
     }
 
     /**
+     * Write a 16-bit integer.
+     *
+     * @param value
+     *            an integer containing the value to be written.
+     */
+    public void writeI16(final int value) {
+        data[index++] = (byte) value;
+        data[index++] = (byte) (value >>> ALIGN_BYTE_1);
+    }
+
+    /**
+     * Write a 32-bit integer.
+     *
+     * @param value
+     *            an integer containing the value to be written.
+     */
+    public void writeI32(final int value) {
+        data[index++] = (byte) value;
+        data[index++] = (byte) (value >>> ALIGN_BYTE_1);
+        data[index++] = (byte) (value >>> ALIGN_BYTE_2);
+        data[index++] = (byte) (value >>> ALIGN_BYTE_3);
+    }
+
+    /**
      * Write a word.
      *
      * @param value
@@ -112,7 +147,7 @@ public final class SWFEncoder extends Encoder {
      *            an integer containing the value to be written.
      */
     public void writeVariableU32(final int value) {
-
+        //CHECKSTYLE:OFF
         int val = value;
 
         if (val > 127) {
@@ -144,6 +179,7 @@ public final class SWFEncoder extends Encoder {
         } else {
             data[index++] = (byte) (value & 0x007F);
         }
+        //CHECKSTYLE:ON
     }
 
     /**
@@ -153,8 +189,8 @@ public final class SWFEncoder extends Encoder {
      *            the value to be written.
      */
     public void writeHalf(final float value) {
+        //CHECKSTYLE:OFF
         final int intValue = Float.floatToIntBits(value);
-
         final int sign = (intValue >> 16) & 0x00008000;
         final int exponent = ((intValue >> 23) & UNSIGNED_BYTE_MASK)
                         - (127 - 15);
@@ -162,26 +198,27 @@ public final class SWFEncoder extends Encoder {
 
         if (exponent <= 0) {
             if (exponent < -10) {
-                writeWord(0, 2);
+                writeI16(0);
             } else {
                 mantissa = (mantissa | 0x00800000) >> (1 - exponent);
-                writeWord((sign | (mantissa >> 13)), 2);
+                writeI16((sign | (mantissa >> 13)));
             }
         } else if (exponent == 0xff - (127 - 15)) {
             if (mantissa == 0) { // Inf
-                writeWord((sign | 0x7c00), 2);
+                writeI16(sign | 0x7c00);
             } else { // NAN
                 mantissa >>= 13;
-                writeWord((sign | 0x7c00 | mantissa
-                        | ((mantissa == 0) ? 1 : 0)), 2);
+                writeI16((sign | 0x7c00 | mantissa
+                        | ((mantissa == 0) ? 1 : 0)));
             }
         } else {
             if (exponent > 30) { // Overflow
-                writeWord((sign | 0x7c00), 2);
+                writeI16((sign | 0x7c00));
             } else {
-                writeWord((sign | (exponent << 10) | (mantissa >> 13)), 2);
+                writeI16((sign | (exponent << 10) | (mantissa >> 13)));
             }
         }
+        //CHECKSTYLE:ON
     }
 
     /**
@@ -191,7 +228,7 @@ public final class SWFEncoder extends Encoder {
      *            the value to be written.
      */
     public void writeFloat(final float value) {
-        writeWord(Float.floatToIntBits(value), 4);
+        writeI32(Float.floatToIntBits(value));
     }
 
     /**
@@ -203,8 +240,8 @@ public final class SWFEncoder extends Encoder {
     public void writeDouble(final double value) {
         final long longValue = Double.doubleToLongBits(value);
 
-        writeWord((int) (longValue >>> 32), 4);
-        writeWord((int) longValue, 4);
+        writeI32((int) (longValue >> ALIGN_WORD));
+        writeI32((int) longValue);
     }
 
     /**
@@ -218,11 +255,11 @@ public final class SWFEncoder extends Encoder {
      * @param length the length in bytes of the encoded object.
      */
     public void writeHeader(final int type, final int length) {
-        if (length > MAX_LENGTH) {
-            writeWord((type << LENGTH_FIELD_SIZE) | IS_EXTENDED, 2);
-            writeWord(length, 4);
+        if (length > STD_LIMIT) {
+            writeI16((type << LENGTH_FIELD_SIZE) | IS_EXTENDED);
+            writeI32(length);
         } else {
-            writeWord((type << LENGTH_FIELD_SIZE) | length, 2);
+            writeI16((type << LENGTH_FIELD_SIZE) | length);
         }
     }
 }

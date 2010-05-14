@@ -33,6 +33,7 @@ package com.flagstone.transform.filter;
 
 
 import com.flagstone.transform.Constants;
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -41,6 +42,11 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 /** TODO(class). */
 public final class BlurFilter implements Filter {
+
+    /** Scaling factor for 16.16 fixed point values. */
+    private static final float SCALE_16 = 65536.0f;
+    /** Maximum number of passes to blur an object. */
+    private static final int MAX_BLUR_COUNT = 31;
 
     private static final String FORMAT = "BlurFilter: { blurX=%f; blurY=%f;"
             + " passes=%d }";
@@ -62,30 +68,30 @@ public final class BlurFilter implements Filter {
     public BlurFilter(final SWFDecoder coder)
             throws CoderException {
         coder.readByte();
-        blurX = coder.readWord(4, true);
-        blurY = coder.readWord(4, true);
-        passes = (coder.readByte() & 0x00FF) >>> 3;
+        blurX = coder.readSI32();
+        blurY = coder.readSI32();
+        passes = (coder.readByte() & Coder.UNSIGNED_BYTE_MASK) >>> 3;
     }
 
 
     public BlurFilter(final float xBlur, final float yBlur, final int count) {
-        blurX = (int) (xBlur * 65536);
-        blurY = (int) (yBlur * 65536);
+        blurX = (int) (xBlur * SCALE_16);
+        blurY = (int) (yBlur * SCALE_16);
 
-        if ((count < 0) || (count > 31)) {
-            throw new IllegalArgumentRangeException(0, 31, count);
+        if ((count < 0) || (count > MAX_BLUR_COUNT)) {
+            throw new IllegalArgumentRangeException(0, MAX_BLUR_COUNT, count);
         }
         passes = count;
     }
 
 
     public float getBlurX() {
-        return blurX / 65536.0f;
+        return blurX / SCALE_16;
     }
 
 
     public float getBlurY() {
-        return blurY / 65536.0f;
+        return blurY / SCALE_16;
     }
 
 
@@ -124,15 +130,17 @@ public final class BlurFilter implements Filter {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        // CHECKSTYLE:OFF
         return 10;
+        //CHECKSTYLE:ON
     }
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         coder.writeByte(FilterTypes.BLUR);
-        coder.writeWord(blurX, 4);
-        coder.writeWord(blurY, 4);
+        coder.writeI32(blurX);
+        coder.writeI32(blurY);
         coder.writeByte(passes << 3);
 
     }

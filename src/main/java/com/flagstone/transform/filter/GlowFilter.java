@@ -58,8 +58,8 @@ public final class GlowFilter implements Filter {
 
 
         public Builder setBlur(final float xAmount, final float yAmount) {
-            blurX = (int) (xAmount * 65536.0f);
-            blurY = (int) (yAmount * 65536.0f);
+            blurX = (int) (xAmount * SCALE_16);
+            blurY = (int) (yAmount * SCALE_16);
             return this;
         }
 
@@ -83,7 +83,7 @@ public final class GlowFilter implements Filter {
 
 
         public Builder setStrength(final float weight) {
-            strength = (int) (weight * 256.0f);
+            strength = (int) (weight * SCALE_8);
             return this;
         }
 
@@ -98,6 +98,17 @@ public final class GlowFilter implements Filter {
             return new GlowFilter(this);
         }
     }
+
+    /**
+     * Factor used to scale floating-point so they can be encoded as 16.16
+     * fixed point values..
+     */
+    private static final float SCALE_16 = 65536.0f;
+    /**
+     * Factor used to scale floating-point so they can be encoded as 8.8
+     * fixed point values..
+     */
+    private static final float SCALE_8 = 256.0f;
 
     private static final String FORMAT = "GlowFilter: { "
             + "color=%s; blurX=%f; blurY=%f; "
@@ -138,9 +149,9 @@ public final class GlowFilter implements Filter {
             throws CoderException {
         coder.adjustPointer(8);
         color = new Color(coder, context);
-        blurX = coder.readWord(4, true);
-        blurY = coder.readWord(4, true);
-        strength = coder.readWord(2, true);
+        blurX = coder.readSI32();
+        blurY = coder.readSI32();
+        strength = coder.readSI16();
 
         final int value = coder.readByte();
 
@@ -155,17 +166,17 @@ public final class GlowFilter implements Filter {
 
 
     public float getBlurX() {
-        return blurX / 65536.0f;
+        return blurX / SCALE_16;
     }
 
 
     public float getBlurY() {
-        return blurY / 65536.0f;
+        return blurY / SCALE_16;
     }
 
 
     public float getStrength() {
-        return strength / 256.0f;
+        return strength / SCALE_8;
     }
 
 
@@ -227,7 +238,9 @@ public final class GlowFilter implements Filter {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
+// CHECKSTYLE:OFF
         return 16;
+// CHECKSTYLE:ON
     }
 
     /** {@inheritDoc} */
@@ -235,9 +248,9 @@ public final class GlowFilter implements Filter {
             throws CoderException {
         coder.writeByte(FilterTypes.GLOW);
         color.encode(coder, context);
-        coder.writeWord(blurX, 4);
-        coder.writeWord(blurY, 4);
-        coder.writeWord(strength, 2);
+        coder.writeI32(blurX);
+        coder.writeI32(blurY);
+        coder.writeI16(strength);
         coder.writeByte(mode | passes);
     }
 }

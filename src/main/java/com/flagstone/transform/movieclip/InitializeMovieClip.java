@@ -221,7 +221,8 @@ public final class InitializeMovieClip implements MovieTag {
             length += action.prepareToEncode(coder, context);
         }
 
-        return (length > 62 ? 6 : 2) + length;
+        return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH
+                : SWFEncoder.STD_LENGTH) + length;
     }
 
     /** {@inheritDoc} */
@@ -231,7 +232,7 @@ public final class InitializeMovieClip implements MovieTag {
         coder.writeHeader(MovieTypes.INITIALIZE, length);
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
-        coder.writeWord(identifier, 2);
+        coder.writeI16(identifier);
 
         for (final Action action : actions) {
             action.encode(coder, context);

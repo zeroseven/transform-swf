@@ -264,8 +264,8 @@ public final class ButtonShape implements SWFEncodeable {
      *            drawn. Must be in the range 1..65535.
      */
     public ButtonShape setLayer(final int aNumber) {
-        if ((aNumber < 1) || (aNumber > 65535)) {
-            throw new IllegalArgumentRangeException(1, 65536, aNumber);
+        if ((aNumber < 1) || (aNumber > SWF.MAX_LAYER)) {
+            throw new IllegalArgumentRangeException(1, SWF.MAX_LAYER, aNumber);
         }
         layer = aNumber;
         return this;
@@ -403,8 +403,8 @@ public final class ButtonShape implements SWFEncodeable {
         coder.writeBool(hasBlend);
         coder.writeBool(hasFilters);
         coder.writeBits(state, 4);
-        coder.writeWord(identifier, 2);
-        coder.writeWord(layer, 2);
+        coder.writeI16(identifier);
+        coder.writeI16(layer);
         transform.encode(coder, context);
 
         if (context.getVariables().get(Context.TYPE)

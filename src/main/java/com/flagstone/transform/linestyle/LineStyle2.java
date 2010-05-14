@@ -381,11 +381,11 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
-        coder.writeWord(width, 2);
+        coder.writeI16(width);
         coder.writeB16(pack());
 
         if (hasMiter) {
-            coder.writeWord(miterLimit, 2);
+            coder.writeI16(miterLimit);
         }
 
         if (hasFillStyle) {
@@ -395,8 +395,9 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
         }
     }
 
+    //TODO Fix this to remove the magic numbers
     private int pack() {
-
+// CHECKSTYLE:OFF
         int value = 0;
 
         switch (startCap) {
@@ -427,12 +428,13 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
         value |= pixelAligned ? 0x00000100 : 0;
         value |= lineClosed ? 0 : 0x00000004;
         value |= endCap;
-
+// CHECKSTYLE:OFF
         return value;
     }
 
+    //TODO Fix this to remove the magic numbers
     private void unpack(final int value) {
-
+// CHECKSTYLE:OFF
         if ((value & 0x00004000) > 0) {
             startCap = 1;
         } else if ((value & 0x00008000) > 0) {
@@ -458,5 +460,6 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
         pixelAligned = (value & 0x00000100) != 0;
         lineClosed = (value & 0x00000004) == 0;
         endCap = value & 0x00000003;
+// CHECKSTYLE:OFF
     }
 }

@@ -140,8 +140,9 @@ public final class Import implements MovieTag {
      *            Must not be null or an empty string.
      */
     public Import add(final int uid, final String aString) {
-        if ((uid < 1) || (uid > 65535)) {
-             throw new IllegalArgumentRangeException(1, 65536, uid);
+        if ((uid < 1) || (uid > SWF.MAX_IDENTIFIER)) {
+             throw new IllegalArgumentRangeException(
+                     1, SWF.MAX_IDENTIFIER, uid);
         }
         if (aString == null || aString.length() == 0) {
             throw new IllegalArgumentException();
@@ -211,7 +212,8 @@ public final class Import implements MovieTag {
             length += 2 + coder.strlen(objects.get(identifier));
         }
 
-        return (length > 62 ? 6 : 2) + length;
+        return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH
+                : SWFEncoder.STD_LENGTH) + length;
     }
 
     /** {@inheritDoc} */
@@ -219,10 +221,10 @@ public final class Import implements MovieTag {
             throws CoderException {
         coder.writeHeader(MovieTypes.IMPORT, length);
         coder.writeString(url);
-        coder.writeWord(objects.size(), 2);
+        coder.writeI16(objects.size());
 
         for (final Integer identifier : objects.keySet()) {
-            coder.writeWord(identifier.intValue(), 2);
+            coder.writeI16(identifier.intValue());
             coder.writeString(objects.get(identifier));
         }
     }

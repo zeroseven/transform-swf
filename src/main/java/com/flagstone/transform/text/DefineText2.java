@@ -103,12 +103,12 @@ public final class DefineText2 implements DefineTag {
         length = coder.readHeader();
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
-        identifier = coder.readWord(2, true);
+        identifier = coder.readSI16();
         bounds = new Bounds(coder);
 
-        // This code is used to get round a bug in Flash - sometimes 16,
-        // 8-bit zeroes are written out before the transform. The root
-        // cause in Flash is unknown but seems to be related to the
+        // CHECKSTYLE:OFF This code is used to get round a bug in Flash -
+        // sometimes 16, 8-bit zeroes are written out before the transform.
+        // The root cause in Flash is unknown but seems to be related to the
         // bounds not being set - all values are zero.
 
         final int mark = coder.getPointer();
@@ -126,7 +126,7 @@ public final class DefineText2 implements DefineTag {
             coder.adjustPointer(128);
         }
 
-        // Back to reading the rest of the tag
+        // CHECKSTYLE:ON Back to reading the rest of the tag
 
         transform = new CoordTransform(coder);
 
@@ -341,7 +341,8 @@ public final class DefineText2 implements DefineTag {
         vars.put(Context.GLYPH_SIZE, 0);
         vars.put(Context.ADVANCE_SIZE, 0);
 
-        return (length > 62 ? 6 : 2) + length;
+        return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH
+                : SWFEncoder.STD_LENGTH) + length;
     }
 
     // TODO(optimise)
@@ -352,7 +353,7 @@ public final class DefineText2 implements DefineTag {
         coder.writeHeader(MovieTypes.DEFINE_TEXT_2, length);
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
-        coder.writeWord(identifier, 2);
+        coder.writeI16(identifier);
         final Map<Integer, Integer> vars = context.getVariables();
         vars.put(Context.TRANSPARENT, 1);
         vars.put(Context.GLYPH_SIZE, glyphBits);

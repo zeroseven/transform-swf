@@ -29,14 +29,13 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.flagstone.transform.coder;
+package com.flagstone.transform.fillstyle;
 
 
-import com.flagstone.transform.fillstyle.BitmapFill;
-import com.flagstone.transform.fillstyle.FillStyle;
-import com.flagstone.transform.fillstyle.FocalGradientFill;
-import com.flagstone.transform.fillstyle.GradientFill;
-import com.flagstone.transform.fillstyle.SolidFill;
+import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.Context;
+import com.flagstone.transform.coder.SWFDecoder;
+import com.flagstone.transform.coder.SWFFactory;
 
 /**
  * Factory is the default implementation of an SWFFactory which used to create
@@ -44,6 +43,18 @@ import com.flagstone.transform.fillstyle.SolidFill;
  */
 //TODO(class)
 public final class FillStyleDecoder implements SWFFactory<FillStyle> {
+
+    /** Bit mask for extracting the spread field in gradient fills. */
+    protected static final int SPREAD_MASK = 0x00C0;
+    /** Bit mask for extracting the interpolation field in gradient fills. */
+    protected static final int INTERPOLATION_MASK = 0x0030;
+    /** Bit mask for extracting the interpolation field in gradient fills. */
+    protected static final int GRADIENT_MASK = 0x000F;
+    /** Bit mask for tiled or clipped field in bitmap fills. */
+    protected static final int CLIPPED_MASK = 1;
+    /** Bit mask for smoothed or unsmoothed field in bitmap fills. */
+    protected static final int SMOOTHED_MASK = 2;
+
 
     /** {@inheritDoc} */
     public SWFFactory<FillStyle> copy() {
@@ -57,28 +68,28 @@ public final class FillStyleDecoder implements SWFFactory<FillStyle> {
         FillStyle style;
 
         switch (coder.scanByte()) {
-        case 0:
+        case FillStyleTypes.SOLID_COLOR:
             style = new SolidFill(coder, context);
             break;
-        case 0x10:
+        case FillStyleTypes.LINEAR_GRADIENT:
             style = new GradientFill(coder, context);
             break;
-        case 0x12:
+        case FillStyleTypes.RADIAL_GRADIENT:
             style = new GradientFill(coder, context);
             break;
-        case 0x13:
+        case FillStyleTypes.FOCAL_GRADIENT:
             style = new FocalGradientFill(coder, context);
             break;
-        case 0x40:
+        case FillStyleTypes.TILED_BITMAP:
             style = new BitmapFill(coder);
             break;
-        case 0x41:
+        case FillStyleTypes.CLIPPED_BITMAP:
             style = new BitmapFill(coder);
             break;
-        case 0x42:
+        case FillStyleTypes.UNSMOOTHED_TILED_BITMAP:
             style = new BitmapFill(coder);
             break;
-        case 0x43:
+        case FillStyleTypes.UNSMOOTHED_CLIPPED_BITMAP:
             style = new BitmapFill(coder);
             break;
         default:

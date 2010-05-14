@@ -211,7 +211,7 @@ public final class GetUrl implements Action {
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         coder.writeByte(ActionTypes.GET_URL);
-        coder.writeWord(length, 2);
+        coder.writeI16(length);
         coder.writeString(url);
         coder.writeString(target);
     }

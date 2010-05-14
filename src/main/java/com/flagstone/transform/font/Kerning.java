@@ -90,7 +90,7 @@ public final class Kerning implements SWFEncodeable {
         size = context.getVariables().containsKey(Context.WIDE_CODES) ? 2 : 1;
         leftGlyph = coder.readWord(size, false);
         rightGlyph = coder.readWord(size, false);
-        adjustment = coder.readWord(2, true);
+        adjustment = coder.readSI16();
     }
 
     /**
@@ -193,6 +193,6 @@ public final class Kerning implements SWFEncodeable {
         size = context.getVariables().containsKey(Context.WIDE_CODES) ? 2 : 1;
         coder.writeWord(leftGlyph, size);
         coder.writeWord(rightGlyph, size);
-        coder.writeWord(adjustment, 2);
+        coder.writeI16(adjustment);
     }
 }

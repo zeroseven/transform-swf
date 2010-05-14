@@ -31,9 +31,57 @@
 
 package com.flagstone.transform.fillstyle;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 public enum Interpolation {
-    /** TODO(doc). */
-    NORMAL,
-    /** TODO(doc). */
-    LINEAR;
+    NORMAL(0),
+    LINEAR(16);
+
+    /**
+     * Table used to store instances of Interpolation so only one object is
+     * created for each type.
+     */
+    private static final Map<Integer, Interpolation> TABLE
+            = new LinkedHashMap<Integer, Interpolation>();
+
+    static {
+        for (final Interpolation action : values()) {
+            TABLE.put(action.value, action);
+        }
+    }
+
+    /**
+     * Returns the Interpolation for a given type.
+     *
+     * @param value
+     *            the type that identifies the Interpolation when it is encoded.
+     *
+     * @return a shared instance of the object representing a given
+     * Interpolation.
+     */
+    public static Interpolation fromInt(final int value) {
+        return TABLE.get(value);
+    }
+
+    /** Type used to identify the Interpolation when it is encoded. */
+    private final int value;
+
+    /**
+     * Constructor used to create instances for each type of Interpolation.
+     *
+     * @param spread the value representing the Interpolation when it is
+     * encoded.
+     */
+    private Interpolation(final int spread) {
+        value = spread;
+    }
+
+    /**
+     * Get the value used to represent the Interpolation when it is encoded.
+     * @return the encoded value for the Interpolation.
+     */
+    public int getValue() {
+        return value;
+    }
 }

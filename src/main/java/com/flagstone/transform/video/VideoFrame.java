@@ -200,15 +200,15 @@ public final class VideoFrame implements MovieTag {
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         length = 4 + data.length;
 
-        return (length > 62 ? 6 : 2) + length;
+        return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH : SWFEncoder.STD_LENGTH) + length;
     }
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         coder.writeHeader(MovieTypes.VIDEO_FRAME, length);
-        coder.writeWord(identifier, 2);
-        coder.writeWord(frameNumber, 2);
+        coder.writeI16(identifier);
+        coder.writeI16(frameNumber);
         coder.writeBytes(data);
     }
 }

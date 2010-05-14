@@ -34,6 +34,7 @@ package com.flagstone.transform.fillstyle;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -81,7 +82,7 @@ public final class MorphGradientFill implements FillStyle {
         type = coder.readByte();
         startTransform = new CoordTransform(coder);
         endTransform = new CoordTransform(coder);
-        count = coder.readByte() & 0x0F;
+        count = coder.readByte() & SWF.MAX_GRADIENTS;
 
         gradients = new ArrayList<MorphGradient>(count);
 
@@ -147,7 +148,7 @@ public final class MorphGradientFill implements FillStyle {
         if (aGradient == null) {
             throw new IllegalArgumentException();
         }
-        if (gradients.size() == 15) {
+        if (gradients.size() == SWF.MAX_GRADIENTS) {
             throw new IllegalStateException(
                     "Maximum number of gradients exceeded.");
         }
@@ -155,10 +156,9 @@ public final class MorphGradientFill implements FillStyle {
         return this;
     }
 
-
     public GradientType getType() {
         GradientType value;
-        if (type == 0x10) {
+        if (type == FillStyleTypes.LINEAR_GRADIENT) {
             value = GradientType.LINEAR;
         } else {
             value = GradientType.RADIAL;
@@ -166,12 +166,11 @@ public final class MorphGradientFill implements FillStyle {
         return value;
     }
 
-
     public void setType(final GradientType gradientType) {
         if (gradientType == GradientType.LINEAR) {
-            type = 0x10;
+            type = FillStyleTypes.LINEAR_GRADIENT;
         } else {
-            type = 0x12;
+            type = FillStyleTypes.RADIAL_GRADIENT;
         }
     }
 
@@ -240,7 +239,7 @@ public final class MorphGradientFill implements FillStyle {
         if (anArray == null) {
             throw new IllegalArgumentException();
         }
-        if (anArray.size() > 15) {
+        if (anArray.size() > SWF.MAX_GRADIENTS) {
             throw new IllegalStateException(
                     "Maximum number of gradients exceeded.");
         }
@@ -259,9 +258,11 @@ public final class MorphGradientFill implements FillStyle {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        // CHECKSTYLE:OFF
         count = gradients.size();
         return 2 + startTransform.prepareToEncode(coder, context)
                 + endTransform.prepareToEncode(coder, context) + (count * 10);
+        // CHECKSTYLE:ON
     }
 
     /** {@inheritDoc} */

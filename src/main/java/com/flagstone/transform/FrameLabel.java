@@ -184,7 +184,8 @@ public final class FrameLabel implements MovieTag {
         length = coder.strlen(label);
         length += anchor ? 1 : 0;
 
-        return (length > 62 ? 6 : 2) + length;
+        return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH
+                : SWFEncoder.STD_LENGTH) + length;
     }
 
     /** {@inheritDoc} */
@@ -195,7 +196,7 @@ public final class FrameLabel implements MovieTag {
         coder.writeString(label);
 
         if (anchor) {
-            coder.writeWord(1, 1);
+            coder.writeByte(1);
         }
     }
 }

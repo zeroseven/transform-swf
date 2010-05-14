@@ -37,6 +37,7 @@ import com.flagstone.transform.filter.ColorMatrixFilter;
 import com.flagstone.transform.filter.ConvolutionFilter;
 import com.flagstone.transform.filter.DropShadowFilter;
 import com.flagstone.transform.filter.Filter;
+import com.flagstone.transform.filter.FilterTypes;
 import com.flagstone.transform.filter.GlowFilter;
 import com.flagstone.transform.filter.GradientBevelFilter;
 import com.flagstone.transform.filter.GradientGlowFilter;
@@ -60,28 +61,28 @@ public final class FilterDecoder implements SWFFactory<Filter> {
         Filter filter;
 
         switch (coder.scanByte()) {
-        case 0:
+        case FilterTypes.DROP_SHADOW:
             filter = new DropShadowFilter(coder, context);
             break;
-        case 1:
+        case FilterTypes.BLUR:
             filter = new BlurFilter(coder);
             break;
-        case 2:
+        case FilterTypes.GLOW:
             filter = new GlowFilter(coder, context);
             break;
-        case 3:
+        case FilterTypes.BEVEL:
             filter = new BevelFilter(coder, context);
             break;
-        case 4:
+        case FilterTypes.GRADIENT_GLOW:
             filter = new GradientGlowFilter(coder, context);
             break;
-        case 5:
+        case FilterTypes.CONVOLUTION:
             filter = new ConvolutionFilter(coder, context);
             break;
-        case 6:
+        case FilterTypes.COLOR_MATRIX:
             filter = new ColorMatrixFilter(coder);
             break;
-        case 7:
+        case FilterTypes.GRADIENT_BEVEL:
             filter = new GradientBevelFilter(coder, context);
             break;
         default:

@@ -357,6 +357,12 @@ public final class ActionTypes {
     /** The type used to identify NewFunction action when encoded. */
     public static final int NEW_FUNCTION = 155;
 
+    /**
+     * The highest value used to encode an action that only operates on values
+     * on the Flash Player's stack.
+     */
+    public static final int HIGHEST_BYTE_CODE = 127;
+
     /** Private constructor for a class that contains only constants. */
     private ActionTypes() {
         // Class only contains constants

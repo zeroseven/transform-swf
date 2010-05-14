@@ -34,7 +34,6 @@ package com.flagstone.transform.action;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
@@ -327,18 +326,18 @@ public final class NewFunction implements Action {
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
-        coder.writeWord(ActionTypes.NEW_FUNCTION, 1);
-        coder.writeWord(length, 2);
+        coder.writeByte(ActionTypes.NEW_FUNCTION);
+        coder.writeI16(length);
 
         coder.writeString(name);
 
-        coder.writeWord(arguments.size(), 2);
+        coder.writeI16(arguments.size());
 
         for (final String argument : arguments) {
             coder.writeString(argument);
         }
 
-        coder.writeWord(actionsLength, 2);
+        coder.writeI16(actionsLength);
 
         for (final Action action : actions) {
             action.encode(coder, context);

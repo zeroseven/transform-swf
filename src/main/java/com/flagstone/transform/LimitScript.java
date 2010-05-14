@@ -53,6 +53,11 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  */
 public final class LimitScript implements MovieTag {
 
+    /** Maximum stack depth for recursive functions. */
+    private static final int MAX_DEPTH = 65535;
+    /** Maximum timeout in seconds for function execution. */
+    private static final int MAX_TIMEOUT = 65535;
+
     private static final String FORMAT = "LimitScript: { depth=%d;"
     		+ " timeout=%d }";
 
@@ -70,12 +75,7 @@ public final class LimitScript implements MovieTag {
      *             if an error occurs while decoding the data.
      */
     public LimitScript(final SWFDecoder coder) throws CoderException {
-
-        if ((coder.readUI16() & SWF.TAG_LENGTH_FIELD)
-                > SWF.MOVIE_TAG_LENGTH) {
-            coder.readUI32();
-        }
-
+        coder.readHeader();
         depth = coder.readUI16();
         timeout = coder.readUI16();
     }
@@ -127,8 +127,8 @@ public final class LimitScript implements MovieTag {
      *            be in the range 0..65535.
      */
     public void setDepth(final int stackDepth) {
-        if ((stackDepth < 0) || (stackDepth > 65535)) {
-            throw new IllegalArgumentRangeException(0, 65535, stackDepth);
+        if ((stackDepth < 0) || (stackDepth > MAX_DEPTH)) {
+            throw new IllegalArgumentRangeException(0, MAX_DEPTH, stackDepth);
         }
         depth = stackDepth;
     }
@@ -152,8 +152,8 @@ public final class LimitScript implements MovieTag {
      *            execute. Must be in the range 0..65535.
      */
     public void setTimeout(final int time) {
-        if ((time < 0) || (time > 65535)) {
-            throw new IllegalArgumentRangeException(0, 65535, time);
+        if ((time < 0) || (time > MAX_TIMEOUT)) {
+            throw new IllegalArgumentRangeException(0, MAX_TIMEOUT, time);
         }
         timeout = time;
     }
@@ -171,14 +171,18 @@ public final class LimitScript implements MovieTag {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        // CHECKSTYLE:OFF
         return 6;
+        // CHECKSTYLE:ON
     }
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
-        coder.writeWord((MovieTypes.LIMIT_SCRIPT << 6) | 4, 2);
-        coder.writeWord(depth, 2);
-        coder.writeWord(timeout, 2);
+        // CHECKSTYLE:OFF
+        coder.writeHeader(MovieTypes.LIMIT_SCRIPT, 4);
+        // CHECKSTYLE:OFF
+        coder.writeI16(depth);
+        coder.writeI16(timeout);
     }
 }

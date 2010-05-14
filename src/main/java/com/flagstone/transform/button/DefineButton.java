@@ -102,7 +102,8 @@ public final class DefineButton implements DefineTag {
             shapes.add(new ButtonShape(coder, context));
         }
 
-        final int actionsLength = length - ((coder.getPointer() - mark) >>> 3);
+        final int actionsLength = length - ((coder.getPointer() - mark)
+                >>> Coder.BITS_TO_BYTES);
 
         actions = new ArrayList<Action>();
 
@@ -270,7 +271,8 @@ public final class DefineButton implements DefineTag {
             length += action.prepareToEncode(coder, context);
         }
 
-        return (length > 62 ? 6 : 2) + length;
+        return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH
+                : SWFEncoder.STD_LENGTH) + length;
     }
 
     /** {@inheritDoc} */
@@ -279,7 +281,7 @@ public final class DefineButton implements DefineTag {
         final int start = coder.getPointer();
         coder.writeHeader(MovieTypes.DEFINE_BUTTON, length);
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
-        coder.writeWord(identifier, 2);
+        coder.writeI16(identifier);
 
         for (final ButtonShape shape : shapes) {
             shape.encode(coder, context);

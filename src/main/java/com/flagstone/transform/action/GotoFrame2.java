@@ -118,7 +118,7 @@ public final class GotoFrame2 implements Action {
         play = (flags & PLAY_MASK) != 0;
 
         if (hasOffset) {
-            frameOffset = coder.readWord(2, true);
+            frameOffset = coder.readSI16();
         } else {
             frameOffset = 0;
         }
@@ -217,7 +217,7 @@ public final class GotoFrame2 implements Action {
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         coder.writeByte(ActionTypes.GOTO_FRAME_2);
-        coder.writeWord(length, 2);
+        coder.writeI16(length);
 
         int flags = 0;
         if (hasOffset) {
@@ -229,7 +229,7 @@ public final class GotoFrame2 implements Action {
         coder.writeByte(flags);
 
         if (hasOffset) {
-            coder.writeWord(frameOffset, 2);
+            coder.writeI16(frameOffset);
         }
     }
 }

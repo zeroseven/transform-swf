@@ -73,6 +73,28 @@ public final class SWFEncoderTest {
     }
 
     @Test
+    public void writeI16() {
+        data = new byte[] { 2, 1 };
+
+        fixture.data = new byte[data.length];
+        fixture.writeI16(0x0102);
+
+        assertArrayEquals(data, fixture.data);
+        assertEquals(data.length << 3, fixture.getPointer());
+    }
+
+    @Test
+    public void writeI32() {
+        data = new byte[] {4, 3, 2, 1 };
+
+        fixture.data = new byte[data.length];
+        fixture.writeI32(0x01020304);
+
+        assertArrayEquals(data, fixture.data);
+        assertEquals(data.length << 3, fixture.getPointer());
+    }
+
+    @Test
     public void writeWordUnsigned() {
         data = new byte[] {4, 3, 2, 1 };
 

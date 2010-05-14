@@ -34,6 +34,7 @@ package com.flagstone.transform.fillstyle;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -42,6 +43,9 @@ import com.flagstone.transform.datatype.CoordTransform;
 
 /** TODO(class). */
 public final class MorphFocalGradientFill implements FillStyle {
+
+    /** Scaling factor for saving floats as 8.8 fixed point numbers. */
+    private static final float SCALE_8 = 256.0f;
 
     private static final String FORMAT = "MorphFocalGradientFill: { spread=%s;"
             + " interpolation=%s; startFocalPoint=%f; endFocalPoint=%f; "
@@ -78,18 +82,18 @@ public final class MorphFocalGradientFill implements FillStyle {
         type = coder.readByte();
         startTransform = new CoordTransform(coder);
         endTransform = new CoordTransform(coder);
-        count = coder.readByte();
-        spread = count & 0x00C0;
-        interpolation = count & 0x0030;
-        count = count & 0x000F;
+        count = coder.readByte() & SWF.MAX_GRADIENTS;
+        spread = count & FillStyleDecoder.SPREAD_MASK;
+        interpolation = count & FillStyleDecoder.INTERPOLATION_MASK;
+        count = count & FillStyleDecoder.GRADIENT_MASK;
         gradients = new ArrayList<MorphGradient>(count);
 
         for (int i = 0; i < count; i++) {
             gradients.add(new MorphGradient(coder, context));
         }
 
-        startFocalPoint = coder.readWord(2, true);
-        endFocalPoint = coder.readWord(2, true);
+        startFocalPoint = coder.readSI16();
+        endFocalPoint = coder.readSI16();
     }
 
 
@@ -98,7 +102,7 @@ public final class MorphFocalGradientFill implements FillStyle {
             final CoordTransform start, final CoordTransform end,
             final List<MorphGradient> anArray,
             final float startPoint, final float endPoint) {
-        type = 0x13;
+        type = FillStyleTypes.FOCAL_GRADIENT;
         setSpread(spreadType);
         setInterpolation(anInterpolation);
         setStartTransform(start);
@@ -129,88 +133,41 @@ public final class MorphFocalGradientFill implements FillStyle {
 
 
     public Spread getSpread() {
-        Spread value;
-        switch (spread) {
-        case 0:
-            value = Spread.PAD;
-            break;
-        case 0x40:
-            value = Spread.REFLECT;
-            break;
-        case 0xC0:
-            value = Spread.REPEAT;
-            break;
-        default:
-            throw new IllegalStateException();
-        }
-        return value;
+        return Spread.fromInt(spread);
     }
 
 
-    public void setSpread(final Spread spreadType) {
-        switch (spreadType) {
-        case PAD:
-            spread = 0;
-            break;
-        case REFLECT:
-            spread = 0x40;
-            break;
-        case REPEAT:
-            spread = 0xC0;
-            break;
-        default:
-            throw new IllegalArgumentException();
-        }
+    public void setSpread(final Spread aSpread) {
+        spread = aSpread.getValue();
     }
 
 
     public Interpolation getInterpolation() {
-        Interpolation value;
-        switch (interpolation) {
-        case 0:
-            value = Interpolation.NORMAL;
-            break;
-        case 16:
-            value = Interpolation.LINEAR;
-            break;
-        default:
-            throw new IllegalStateException();
-        }
-        return value;
+        return Interpolation.fromInt(interpolation);
     }
 
 
-    public void setInterpolation(final Interpolation interpolationType) {
-        switch (interpolationType) {
-        case NORMAL:
-            interpolation = 0;
-            break;
-        case LINEAR:
-            interpolation = 16;
-            break;
-        default:
-            throw new IllegalArgumentException();
-        }
+    public void setInterpolation(final Interpolation anInterpolation) {
+        interpolation = anInterpolation.getValue();
     }
-
 
     public float getStartFocalPoint() {
-        return startFocalPoint / 256.0f;
+        return startFocalPoint / SCALE_8;
     }
 
 
     public void setStartFocalPoint(final float point) {
-        startFocalPoint = (int) (point * 256);
+        startFocalPoint = (int) (point * SCALE_8);
     }
 
 
     public float getEndFocalPoint() {
-        return endFocalPoint / 256.0f;
+        return endFocalPoint / SCALE_8;
     }
 
 
     public void setEndFocalPoint(final float point) {
-        endFocalPoint = (int) (point * 256);
+        endFocalPoint = (int) (point * SCALE_8);
     }
 
     /**
@@ -225,7 +182,7 @@ public final class MorphFocalGradientFill implements FillStyle {
         if (aGradient == null) {
             throw new IllegalArgumentException();
         }
-        if (gradients.size() == 15) {
+        if (gradients.size() == SWF.MAX_GRADIENTS) {
             throw new IllegalStateException(
                     "Maximum number of gradients exceeded.");
         }
@@ -253,7 +210,7 @@ public final class MorphFocalGradientFill implements FillStyle {
         if (anArray == null) {
             throw new IllegalArgumentException();
         }
-        if (gradients.size() == 15) {
+        if (gradients.size() > SWF.MAX_GRADIENTS) {
             throw new IllegalStateException(
                     "Maximum number of gradients exceeded.");
         }
@@ -321,6 +278,7 @@ public final class MorphFocalGradientFill implements FillStyle {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        // CHECKSTYLE:OFF
         // TODO(optimise) Calculate size of gradient array directly.
         int length = 6 + startTransform.prepareToEncode(coder, context)
             + endTransform.prepareToEncode(coder, context);
@@ -329,7 +287,7 @@ public final class MorphFocalGradientFill implements FillStyle {
         for (final MorphGradient gradient : gradients) {
             length += gradient.prepareToEncode(coder, context);
         }
-
+        //CHECKSTYLE:ON
         return length;
     }
 
@@ -345,7 +303,7 @@ public final class MorphFocalGradientFill implements FillStyle {
             gradient.encode(coder, context);
         }
 
-        coder.writeWord(startFocalPoint, 2);
-        coder.writeWord(endFocalPoint, 2);
+        coder.writeI16(startFocalPoint);
+        coder.writeI16(endFocalPoint);
     }
 }

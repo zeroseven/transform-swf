@@ -139,14 +139,15 @@ public final class EnableDebugger2 implements MovieTag {
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         length = 2 + coder.strlen(password);
 
-        return (length > 62 ? 6 : 2) + length;
+        return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH
+                : SWFEncoder.STD_LENGTH) + length;
     }
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         coder.writeHeader(MovieTypes.ENABLE_DEBUGGER_2, length);
-        coder.writeWord(0, 2);
+        coder.writeI16(0);
         coder.writeString(password);
     }
 }

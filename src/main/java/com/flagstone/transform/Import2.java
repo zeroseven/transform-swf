@@ -34,6 +34,7 @@ package com.flagstone.transform;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTag;
@@ -91,7 +92,7 @@ public final class Import2 implements MovieTag {
     public Import2(final SWFDecoder coder) throws CoderException {
         length = coder.readHeader();
         url = coder.readString();
-        coder.adjustPointer(16);
+        coder.adjustPointer(Coder.BITS_PER_SHORT);
 
         final int count = coder.readUI16();
         objects = new LinkedHashMap<Integer, String>();
@@ -147,8 +148,9 @@ public final class Import2 implements MovieTag {
      *            Must not be null or an empty string.
      */
     public Import2 add(final int uid, final String aString) {
-        if ((uid < 1) || (uid > 65535)) {
-             throw new IllegalArgumentRangeException(1, 65536, uid);
+        if ((uid < 1) || (uid > SWF.MAX_IDENTIFIER)) {
+             throw new IllegalArgumentRangeException(
+                     1, SWF.MAX_IDENTIFIER, uid);
         }
         if (aString == null || aString.length() == 0) {
             throw new IllegalArgumentException();
@@ -212,14 +214,16 @@ public final class Import2 implements MovieTag {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
-
+        // CHECKSTYLE:OFF
         length = 4 + coder.strlen(url);
 
         for (final String name : objects.values()) {
             length += 2 + coder.strlen(name);
         }
 
-        return (length > 62 ? 6 : 2) + length;
+        return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH
+                : SWFEncoder.STD_LENGTH) + length;
+        // CHECKSTYLE:ON
     }
 
     /** {@inheritDoc} */
@@ -230,10 +234,10 @@ public final class Import2 implements MovieTag {
         coder.writeString(url);
         coder.writeByte(1);
         coder.writeByte(0);
-        coder.writeWord(objects.size(), 2);
+        coder.writeI16(objects.size());
 
         for (final Integer identifier : objects.keySet()) {
-            coder.writeWord(identifier.intValue(), 2);
+            coder.writeI16(identifier.intValue());
             coder.writeString(objects.get(identifier));
         }
     }

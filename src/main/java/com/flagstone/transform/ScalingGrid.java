@@ -62,11 +62,7 @@ public final class ScalingGrid implements DefineTag {
      *             if an error occurs while decoding the data.
      */
     public ScalingGrid(final SWFDecoder coder) throws CoderException {
-
-        if ((coder.readUI16() & 0x3F) == 0x3F) {
-            coder.readUI32();
-        }
-
+        coder.readHeader();
         identifier = coder.readUI16();
         bounds = new Bounds(coder);
     }
@@ -139,7 +135,7 @@ public final class ScalingGrid implements DefineTag {
             throws CoderException {
 
         coder.writeHeader(MovieTypes.DEFINE_SCALING_GRID, length);
-        coder.writeWord(identifier, 2);
+        coder.writeI16(identifier);
         bounds.encode(coder, context);
     }
 }

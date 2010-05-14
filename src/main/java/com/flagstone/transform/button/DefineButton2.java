@@ -328,6 +328,7 @@ public final class DefineButton2 implements DefineTag {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        // CHECKSTYLE:OFF - Fixed length when encoded.
         final Map<Integer, Integer> vars = context.getVariables();
         vars.put(Context.TYPE, MovieTypes.DEFINE_BUTTON_2);
         vars.put(Context.TRANSPARENT, 1);
@@ -345,7 +346,9 @@ public final class DefineButton2 implements DefineTag {
         vars.remove(Context.TYPE);
         vars.remove(Context.TRANSPARENT);
 
-        return (length > 62 ? 6 : 2) + length;
+        return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH
+                : SWFEncoder.STD_LENGTH) + length;
+        // CHECKSTYLE:ON
     }
 
     /** {@inheritDoc} */
@@ -360,24 +363,25 @@ public final class DefineButton2 implements DefineTag {
         coder.writeHeader(MovieTypes.DEFINE_BUTTON_2, length);
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
-        coder.writeWord(identifier, 2);
+        coder.writeI16(identifier);
         coder.writeByte(type);
 
         int offsetStart = coder.getPointer();
-        coder.writeWord(0, 2);
+        coder.writeI16(0);
 
         for (final ButtonShape shape : shapes) {
             shape.encode(coder, context);
         }
 
-        coder.writeWord(0, 1);
+        coder.writeByte(0);
 
         // Write actions offset
 
         int currentCursor = coder.getPointer();
-        final int offsetEnd = (currentCursor - offsetStart) >> 3;
+        final int offsetEnd = (currentCursor - offsetStart)
+                >> Coder.BITS_TO_BYTES;
         coder.setPointer(offsetStart);
-        coder.writeWord(offsetEnd, 2);
+        coder.writeI16(offsetEnd);
         coder.setPointer(currentCursor);
 
         for (final ButtonEventHandler handler : events) {
@@ -388,7 +392,7 @@ public final class DefineButton2 implements DefineTag {
         // Write offset of zero for last Action Condition
         currentCursor = coder.getPointer();
         coder.setPointer(offsetStart);
-        coder.writeWord(0, 2);
+        coder.writeI16(0);
         coder.setPointer(currentCursor);
 
         vars.remove(Context.TYPE);

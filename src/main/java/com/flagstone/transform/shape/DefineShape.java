@@ -122,20 +122,8 @@ public final class DefineShape implements DefineTag {
         final SWFFactory<FillStyle> decoder = context.getRegistry()
                 .getFillStyleDecoder();
 
-        FillStyle fill;
-        int type;
-
         for (int i = 0; i < fillStyleCount; i++) {
-
-            type = coder.scanByte();
-            fill = decoder.getObject(coder, context);
-
-            if (fill == null) {
-                throw new CoderException(String.valueOf(type), start >>> 3, 0,
-                        0, "Unsupported FillStyle");
-            }
-
-            fillStyles.add(fill);
+            fillStyles.add(decoder.getObject(coder, context));
         }
 
         final int lineStyleCount = coder.readByte();
@@ -386,7 +374,8 @@ public final class DefineShape implements DefineTag {
         vars.put(Context.FILL_SIZE, 0);
         vars.put(Context.LINE_SIZE, 0);
 
-        return (length > 62 ? 6 : 2) + length;
+        return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH
+                : SWFEncoder.STD_LENGTH) + length;
     }
 
     /** {@inheritDoc} */
@@ -396,7 +385,7 @@ public final class DefineShape implements DefineTag {
         coder.writeHeader(MovieTypes.DEFINE_SHAPE, length);
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
-        coder.writeWord(identifier, 2);
+        coder.writeI16(identifier);
         bounds.encode(coder, context);
 
         coder.writeWord(fillStyles.size(), 1);

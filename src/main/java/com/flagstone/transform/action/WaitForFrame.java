@@ -68,8 +68,6 @@ public final class WaitForFrame implements Action {
     private static final int MAX_FRAME_OFFSET = 65535;
     /** The highest number of actions that can be executed. */
     private static final int MAX_COUNT = 255;
-    /** Encoded length, excluding header. */
-    private static final int BODY_LENGTH = 3;
 
     /** The frame number to test. */
     private final transient int frameNumber;
@@ -160,15 +158,19 @@ public final class WaitForFrame implements Action {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
-        return SWFEncoder.ACTION_HEADER + BODY_LENGTH;
+        //CHECKSTYLE:OFF - Fixed length when encoded.
+        return SWFEncoder.ACTION_HEADER + 3;
+        //CHECKSTYLE:ON
     }
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         coder.writeByte(ActionTypes.WAIT_FOR_FRAME);
-        coder.writeWord(BODY_LENGTH, 2);
-        coder.writeWord(frameNumber, 2);
+        //CHECKSTYLE:OFF - Fixed length when encoded.
+        coder.writeI16(3);
+        //CHECKSTYLE:ON
+        coder.writeI16(frameNumber);
         coder.writeByte(actionCount);
     }
 }

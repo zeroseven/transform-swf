@@ -372,8 +372,9 @@ public final class FontInfo2 implements MovieTag {
      *            a code for a glyph. Must be in the range 0..65535
      */
     public void addCode(final int aCode) {
-        if ((aCode < 0) || (aCode > 65535)) {
-            throw new IllegalArgumentRangeException(0, 65535, aCode);
+        if ((aCode < 0) || (aCode > SWF.MAX_CHARACTER)) {
+            throw new IllegalArgumentRangeException(
+                    0, SWF.MAX_CHARACTER, aCode);
         }
         codes.add(aCode);
     }
@@ -407,11 +408,14 @@ public final class FontInfo2 implements MovieTag {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        // CHECKSTYLE:OFF
         length = 4;
         length += coder.strlen(name);
         length += codes.size() * 2;
 
-        return (length > 62 ? 6 : 2) + length;
+        return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH
+                : SWFEncoder.STD_LENGTH) + length;
+        // CHECKSTYLE:ON
     }
 
     // TODO(optimise)
@@ -422,7 +426,7 @@ public final class FontInfo2 implements MovieTag {
         coder.writeHeader(MovieTypes.FONT_INFO_2, length);
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
-        coder.writeWord(identifier, 2);
+        coder.writeI16(identifier);
         coder.writeWord(coder.strlen(name), 1);
         coder.writeString(name);
         coder.writeBits(0, 2);
@@ -434,7 +438,7 @@ public final class FontInfo2 implements MovieTag {
         coder.writeByte(language);
 
         for (final Integer code : codes) {
-            coder.writeWord(code.intValue(), 2);
+            coder.writeI16(code.intValue());
         }
 
         if (coder.getPointer() != end) {

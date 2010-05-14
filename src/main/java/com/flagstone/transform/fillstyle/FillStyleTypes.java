@@ -1,8 +1,8 @@
 /*
- * Call.java
+ * FillTypes.java
  * Transform
  *
- * Copyright (c) 2001-2010 Flagstone Software Ltd. All rights reserved.
+ * Copyright (c) 2009-2010 Flagstone Software Ltd. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -29,50 +29,25 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.flagstone.transform.action;
-
-import com.flagstone.transform.coder.CoderException;
-import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.SWFEncoder;
+package com.flagstone.transform.fillstyle;
 
 /**
- * Call is used to execute the actions previously assigned to a given frame with
- * an DoAction object. Call is a stack-based action, the value for the <i>frame
- * name</i> or <i>frame number</i> is retrieved from the top of the stack when
- * it is executed.
+ * FillTypes defines the constants that identify a fill style when it is
+ * encoded according to the Flash file format specification.
  */
-public final class Call implements Action {
+public final class FillStyleTypes {
 
-    /** Shared instance. */
-    private static final Call INSTANCE = new Call();
+    public static final int SOLID_COLOR = 0;
+    public static final int LINEAR_GRADIENT = 0x10;
+    public static final int RADIAL_GRADIENT = 0x12;
+    public static final int FOCAL_GRADIENT = 0x13;
+    public static final int TILED_BITMAP = 0x40;
+    public static final int CLIPPED_BITMAP = 0x41;
+    public static final int UNSMOOTHED_TILED_BITMAP = 0x42;
+    public static final int UNSMOOTHED_CLIPPED_BITMAP = 0x43;
 
-    /**
-     * Returns a shared instance of the Call action.
-     *
-     * @return a singleton used to represent all Call actions.
-     */
-    public static Call getInstance() {
-        return INSTANCE;
-    }
-
-    /** Constructor used to created the singleton action. */
-    private Call() {
-    }
-
-    /** {@inheritDoc} */
-    public Call copy() {
-        return this;
-    }
-
-    /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
-        return SWFEncoder.ACTION_HEADER;
-    }
-
-    /** {@inheritDoc} */
-   public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
-        coder.writeByte(ActionTypes.CALL);
-        coder.writeI16(0);
+    /** FillTypes contains only constants. */
+    private FillStyleTypes() {
+        // private constructor
     }
 }

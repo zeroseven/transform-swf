@@ -91,6 +91,13 @@ import com.flagstone.transform.linestyle.MorphLineStyle;
  */
 //TODO(class)
 public final class DefineMorphShape implements DefineTag {
+
+    /**
+     * Reserved length for style counts indicated that the number of line
+     * or fill styles is encoded in the next 16-bit word.
+     */
+    private static final int EXTENDED = 255;
+
     private static final String FORMAT = "DefineMorphShape: { identifier=%d;"
             + " startBounds=%s; endBounds=%s; fillStyles=%s; lineStyles=%s;"
             + " startShape=%s; endShape=%s }";
@@ -150,7 +157,7 @@ public final class DefineMorphShape implements DefineTag {
         int fillStyleCount = coder.readByte();
 
         if (vars.containsKey(Context.ARRAY_EXTENDED)
-                && (fillStyleCount == 0xFF)) {
+                && (fillStyleCount == EXTENDED)) {
             fillStyleCount = coder.readUI16();
         }
 
@@ -165,7 +172,8 @@ public final class DefineMorphShape implements DefineTag {
             fillStyle = decoder.getObject(coder, context);
 
             if (fillStyle == null) {
-                throw new CoderException(String.valueOf(type), start >>> 3, 0,
+                throw new CoderException(String.valueOf(type),
+                        start >> Coder.BITS_TO_BYTES, 0,
                         0, "Unsupported FillStyle");
             }
 
@@ -175,7 +183,7 @@ public final class DefineMorphShape implements DefineTag {
         int lineStyleCount = coder.readByte();
 
         if (vars.containsKey(Context.ARRAY_EXTENDED)
-                && (lineStyleCount == 0xFF)) {
+                && (lineStyleCount == EXTENDED)) {
             lineStyleCount = coder.readUI16();
         }
 
@@ -487,13 +495,13 @@ public final class DefineMorphShape implements DefineTag {
         length += endBounds.prepareToEncode(coder, context);
         length += 4;
 
-        length += (fillStyles.size() >= 255) ? 3 : 1;
+        length += (fillStyles.size() >= EXTENDED) ? 3 : 1;
 
         for (final FillStyle style : fillStyles) {
             length += style.prepareToEncode(coder, context);
         }
 
-        length += (lineStyles.size() >= 255) ? 3 : 1;
+        length += (lineStyles.size() >= EXTENDED) ? 3 : 1;
 
         for (final MorphLineStyle style : lineStyles) {
             length += style.prepareToEncode(coder, context);
@@ -514,7 +522,8 @@ public final class DefineMorphShape implements DefineTag {
         vars.remove(Context.ARRAY_EXTENDED);
         vars.remove(Context.TRANSPARENT);
 
-        return (length > 62 ? 6 : 2) + length;
+        return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH
+                : SWFEncoder.STD_LENGTH) + length;
     }
 
     // TODO(optimise)
@@ -525,7 +534,7 @@ public final class DefineMorphShape implements DefineTag {
         coder.writeHeader(MovieTypes.DEFINE_MORPH_SHAPE, length);
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
-        coder.writeWord(identifier, 2);
+        coder.writeI16(identifier);
         final Map<Integer, Integer> vars = context.getVariables();
         vars.put(Context.TRANSPARENT, 1);
 
@@ -533,24 +542,24 @@ public final class DefineMorphShape implements DefineTag {
         endBounds.encode(coder, context);
 
         final int offsetStart = coder.getPointer();
-        coder.writeWord(0, 4);
+        coder.writeI32(0);
 
-        if (fillStyles.size() >= 255) {
-            coder.writeWord(0xFF, 1);
-            coder.writeWord(fillStyles.size(), 2);
+        if (fillStyles.size() >= EXTENDED) {
+            coder.writeByte(EXTENDED);
+            coder.writeI16(fillStyles.size());
         } else {
-            coder.writeWord(fillStyles.size(), 1);
+            coder.writeByte(fillStyles.size());
         }
 
         for (final FillStyle style : fillStyles) {
             style.encode(coder, context);
         }
 
-        if (lineStyles.size() >= 255) {
-            coder.writeWord(0xFF, 1);
-            coder.writeWord(lineStyles.size(), 2);
+        if (lineStyles.size() >= EXTENDED) {
+            coder.writeByte(EXTENDED);
+            coder.writeI16(lineStyles.size());
         } else {
-            coder.writeWord(lineStyles.size(), 1);
+            coder.writeByte(lineStyles.size());
         }
 
         for (final MorphLineStyle style : lineStyles) {

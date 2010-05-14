@@ -149,13 +149,13 @@ public final class TextSpan implements SWFEncodeable {
             color = new Color(coder, context);
         }
         if (hasX) {
-            offsetX = coder.readWord(2, true);
+            offsetX = coder.readSI16();
         }
         if (hasY) {
-            offsetY = coder.readWord(2, true);
+            offsetY = coder.readSI16();
         }
         if (hasFont) {
-            height = coder.readWord(2, true);
+            height = coder.readSI16();
         }
 
         final int charCount = coder.readByte();
@@ -263,8 +263,9 @@ public final class TextSpan implements SWFEncodeable {
      *            Must be in the range 1..65535.
      */
     public void setIdentifier(final Integer uid) {
-        if ((uid != null) && ((uid < 1) || (uid > 65535))) {
-             throw new IllegalArgumentRangeException(1, 65536, uid);
+        if ((uid != null) && ((uid < 1) || (uid > SWF.MAX_IDENTIFIER))) {
+             throw new IllegalArgumentRangeException(
+                     1, SWF.MAX_IDENTIFIER, uid);
         }
         identifier = uid;
     }
@@ -425,7 +426,7 @@ public final class TextSpan implements SWFEncodeable {
 
         if (hasStyle) {
             if (hasFont) {
-                coder.writeWord(identifier, 2);
+                coder.writeI16(identifier);
             }
 
             if (hasColor) {
@@ -433,15 +434,15 @@ public final class TextSpan implements SWFEncodeable {
             }
 
             if (hasX) {
-                coder.writeWord(offsetX, 2);
+                coder.writeI16(offsetX);
             }
 
             if (hasY) {
-                coder.writeWord(offsetY, 2);
+                coder.writeI16(offsetY);
             }
 
             if (hasFont) {
-                coder.writeWord(height, 2);
+                coder.writeI16(height);
             }
         }
 

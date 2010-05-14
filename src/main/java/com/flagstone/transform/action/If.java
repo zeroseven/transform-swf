@@ -99,7 +99,7 @@ public final class If implements Action {
     public If(final SWFDecoder coder) throws CoderException {
         coder.readByte();
         coder.readUI16();
-        offset = coder.readWord(2, true);
+        offset = coder.readSI16();
     }
 
     /**
@@ -161,7 +161,7 @@ public final class If implements Action {
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         coder.writeByte(ActionTypes.IF);
-        coder.writeWord(2, 2);
-        coder.writeWord(offset, 2);
+        coder.writeI16(2);
+        coder.writeI16(offset);
     }
 }

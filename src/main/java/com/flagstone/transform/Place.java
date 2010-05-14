@@ -214,8 +214,8 @@ public final class Place implements MovieTag {
      *            Must be in the range 1..65535.
      */
     public Place setLayer(final int aNumber) {
-        if ((aNumber < 1) || (aNumber > 65535)) {
-            throw new IllegalArgumentRangeException(1, 65536, aNumber);
+        if ((aNumber < 1) || (aNumber > SWF.MAX_LAYER)) {
+            throw new IllegalArgumentRangeException(1, SWF.MAX_LAYER, aNumber);
         }
         layer = aNumber;
         return this;
@@ -294,6 +294,7 @@ public final class Place implements MovieTag {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        // CHECKSTYLE:OFF
         length = 4;
         length += transform.prepareToEncode(coder, context);
         // TODO(optimise) replace with if statement ?
@@ -301,7 +302,8 @@ public final class Place implements MovieTag {
                 coder, context);
 
         return 2 + length;
-    }
+        // CHECKSTYLE:ON
+   }
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
@@ -309,8 +311,8 @@ public final class Place implements MovieTag {
         final int start = coder.getPointer();
         coder.writeHeader(MovieTypes.PLACE, length);
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
-        coder.writeWord(identifier, 2);
-        coder.writeWord(layer, 2);
+        coder.writeI16(identifier);
+        coder.writeI16(layer);
         transform.encode(coder, context);
 
         if (colorTransform != null) {

@@ -59,6 +59,11 @@ import com.flagstone.transform.image.ImageFormat;
 @SuppressWarnings("PMD.TooManyMethods")
 public final class PNGDecoder implements ImageProvider, ImageDecoder {
 
+    /** Alpha channel value for opaque colors. */
+    private static final int OPAQUE = 255;
+    /** Mask for reading unsigned 8-bit values. */
+    private static final int UNSIGNED_BYTE = 255;
+
     private static final String BAD_FORMAT = "Unsupported format";
 
     // Tables mapping grey scale values onto 8-bit colour channels
@@ -312,7 +317,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
             table = new byte[paletteSize * 4];
 
             for (int i = 0; i < paletteSize; i++, index += 4) {
-                table[index + 3] = (byte) 0xFF;
+                table[index + 3] = (byte) OPAQUE;
                 table[index + 2] = (byte) coder.readByte();
                 table[index + 1] = (byte) coder.readByte();
                 table[index] = (byte) coder.readByte();
@@ -469,14 +474,15 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
                 case AVG_FILTER:
                     for (cindex = 0; cindex < bytesPerPixel; cindex++) {
                         current[cindex] = (byte) (current[cindex]
-                                        + (0 + (0xFF & previous[cindex])) / 2);
+                                        + (0 + (UNSIGNED_BYTE
+                                                & previous[cindex])) / 2);
                     }
 
                     for (cindex = bytesPerPixel, pindex = 0;
                     cindex < scanLength; cindex++, pindex++) {
                         current[cindex] = (byte) (current[cindex]
-                            + ((0xFF & current[pindex])
-                                    + (0xFF & previous[cindex])) / 2);
+                            + ((UNSIGNED_BYTE & current[pindex])
+                                    + (UNSIGNED_BYTE & previous[cindex])) / 2);
                     }
                     break;
                 case PAETH_FILTER:
@@ -527,9 +533,9 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
     }
 
     private int paeth(final byte lower, final byte upper, final byte next) {
-        final int left = 0xFF & lower;
-        final int above = 0xFF & upper;
-        final int upperLeft = 0xFF & next;
+        final int left = UNSIGNED_BYTE & lower;
+        final int above = UNSIGNED_BYTE & upper;
+        final int upperLeft = UNSIGNED_BYTE & next;
         final int estimate = left + above - upperLeft;
         int distLeft = estimate - left;
 
@@ -747,11 +753,13 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
         int alpha;
 
         for (int i = 0; i < img.length; i += 4) {
-            alpha = img[i + 3] & 0xFF;
+            alpha = img[i + 3] & UNSIGNED_BYTE;
 
-            img[i + 3] = (byte) (((img[i + 2] & 0xFf) * alpha) / 255);
-            img[i + 2] = (byte) (((img[i + 1] & 0xFF) * alpha) / 255);
-            img[i + 1] = (byte) (((img[i] & 0xFF) * alpha) / 255);
+            img[i + 3] = (byte) (((img[i + 2] & UNSIGNED_BYTE) * alpha)
+                    / OPAQUE);
+            img[i + 2] = (byte) (((img[i + 1] & UNSIGNED_BYTE) * alpha)
+                    / OPAQUE);
+            img[i + 1] = (byte) (((img[i] & UNSIGNED_BYTE) * alpha) / OPAQUE);
             img[i] = (byte) alpha;
        }
     }

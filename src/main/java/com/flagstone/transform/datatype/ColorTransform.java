@@ -298,9 +298,11 @@ public final class ColorTransform implements SWFEncodeable {
      * @param aAdd
      *            value to add to the alpha colour channel.
      */
+    // CHECKSTYLE:OFF
     public ColorTransform(final int rAdd, final int gAdd,
             final int bAdd, final int aAdd, final float rMul,
             final float gMul, final float bMul, final float aMul) {
+    // CHECKSTYLE:ON
 
         addRed = rAdd;
         addGreen = gAdd;
@@ -437,7 +439,7 @@ public final class ColorTransform implements SWFEncodeable {
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
 
-        int numberOfBits = 2 + FIELD_SIZE + Coder.BYTE_ALIGN;
+        int numberOfBits = 2 + FIELD_SIZE + Coder.ROUND_TO_BYTES;
 
         hasAlpha = context.getVariables().containsKey(Context.TRANSPARENT);
         size = 0;

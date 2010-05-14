@@ -4,6 +4,16 @@
     "http://www.puppycrawl.com/dtds/suppressions_1_1.dtd">
 <suppressions>
     <suppress checks="JavadocPackageCheck"
+              files="ImageInfo.java"/>
+    <suppress checks="JavadocTypeCheck"
+              files="ImageInfo.java"/>
+    <suppress checks="JavadocMethodCheck"
+              files="ImageInfo.java"/>
+    <suppress checks="JavadocVariableCheck"
+              files="ImageInfo.java"/>
+    <suppress checks="MagicNumberCheck"
+              files="ImageInfo.java"/>
+    <suppress checks="JavadocPackageCheck"
               files=".*Tests?\.java"/>
     <suppress checks="JavadocTypeCheck"
               files=".*Tests?\.java"/>

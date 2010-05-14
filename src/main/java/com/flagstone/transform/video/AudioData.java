@@ -42,6 +42,7 @@ import com.flagstone.transform.coder.VideoTypes;
 import com.flagstone.transform.exception.IllegalArgumentRangeException;
 import com.flagstone.transform.exception.IllegalArgumentValueException;
 import com.flagstone.transform.sound.SoundFormat;
+import com.flagstone.transform.sound.SoundRate;
 
 /**
  * AudioData is used to specify the audio track in Flash video files. It defines
@@ -110,7 +111,7 @@ public final class AudioData implements VideoTag {
 
     public AudioData() {
         format = 0;
-        rate = 5512;
+        rate = SoundRate.KHZ_5K;
         channelCount = 0;
         sampleSize = 1;
         data = new byte[0];
@@ -270,7 +271,7 @@ public final class AudioData implements VideoTag {
      * Returns the rate at which the sound will be played, in Hertz.
      *
      * @return the rate at which the sound was sampled. either: 5512, 11025,
-     *         22050 or 44100.
+     * 22050 or 44100.
      */
     public int getRate() {
         return rate;
@@ -286,12 +287,13 @@ public final class AudioData implements VideoTag {
      *            5512, 11025, 22050 or 44100.
      */
     public void setRate(final int sampleRate) {
-        if ((sampleRate != 5512)
-                && (sampleRate != 11025)
-                && (sampleRate != 22050)
-                && (sampleRate != 44100)) {
+        if ((sampleRate != SoundRate.KHZ_5K)
+                && (sampleRate != SoundRate.KHZ_11K)
+                && (sampleRate != SoundRate.KHZ_22K)
+                && (sampleRate != SoundRate.KHZ_44K)) {
             throw new IllegalArgumentValueException(
-                    new int[] {5512, 11025, 22050, 44100}, sampleRate);
+                    new int[] {SoundRate.KHZ_5K, SoundRate.KHZ_11K,
+                            SoundRate.KHZ_22K, SoundRate.KHZ_44K}, sampleRate);
         }
         rate = sampleRate;
     }
@@ -391,7 +393,7 @@ public final class AudioData implements VideoTag {
         coder.writeWord(length - 11, 3);
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
         coder.writeWord(timestamp, 3);
-        coder.writeWord(0, 4);
+        coder.writeI32(0);
         coder.writeByte(pack());
         coder.writeBytes(data);
 
@@ -406,15 +408,15 @@ public final class AudioData implements VideoTag {
         byte value = (byte) (format << 4);
 
         switch (rate) {
-        case 5512:
+        case SoundRate.KHZ_5K:
             break;
-        case 11025:
+        case SoundRate.KHZ_11K:
             value |= 4;
             break;
-        case 22050:
+        case SoundRate.KHZ_22K:
             value |= 8;
             break;
-        case 44100:
+        case SoundRate.KHZ_44K:
             value |= 12;
             break;
         default:
@@ -431,16 +433,16 @@ public final class AudioData implements VideoTag {
 
         switch (value & 0x0C) {
         case 0:
-            rate = 5512;
+            rate = SoundRate.KHZ_5K;
             break;
         case 4:
-            rate = 11025;
+            rate = SoundRate.KHZ_11K;
             break;
         case 8:
-            rate = 22050;
+            rate = SoundRate.KHZ_22K;
             break;
         case 12:
-            rate = 44100;
+            rate = SoundRate.KHZ_44K;
             break;
         default:
             break;

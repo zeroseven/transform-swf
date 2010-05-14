@@ -44,6 +44,30 @@ public final class SWF {
      */
     public static final int MAX_IDENTIFIER = 65535;
     /**
+     * The highest value that can be used as a layer number on the display list.
+     */
+    public static final int MAX_LAYER = 65535;
+    /**
+     * The highest value that can be used as a morphing ratio.
+     */
+    public static final int MAX_MORPH = 65535;
+    /**
+     * The highest frame number in a given scene.
+     */
+    public static final int MAX_FRAME = 65535;
+    /**
+     * The highest character code that can be defined in fonts.
+     */
+    public static final int MAX_CHARACTER = 65535;
+    /**
+     * The maximum width of an image in pixels.
+     */
+    public static final int MAX_WIDTH = 65535;
+    /**
+     * The maximum height of an image in pixels.
+     */
+    public static final int MAX_HEIGHT = 65535;
+    /**
      * The minimum value that can be used to specify the distance to the origin
      * of the next glyph.
      */
@@ -120,33 +144,15 @@ public final class SWF {
      * The maximum coordinate in along the x or y axes.
      */
     public static final int MAX_COORD = 65535;
+    /**
+     * Maximum number of gradient records.
+     */
+    public static final int MAX_GRADIENTS = 15;
 
-
     /**
-     * A bit mask applied to a 16-bit word of the header to extract the length
-     * of the encoded MovieTag object.
+     * Flash version 5.
      */
-    public static final int TAG_LENGTH_FIELD = 0x3F;
-    /**
-     * Reserved value to show that the length is encoded in the following
-     * 32-bits.
-     */
-    public static final int IS_EXTENDED = 63;
-    /**
-     * The maximum length an encoded MovieTag can be before the length must be
-     * extended and encoded as a 32-bit integer.
-     */
-    public static final int MOVIE_TAG_LENGTH = 62;
-    /**
-     * The length in bytes of an encoded movie object header, when the encoded
-     * length is 62 bytes or less.
-     */
-    public static final int MOVIE_HDR_LEN = 2;
-    /**
-     * The length in bytes of an encoded movie object header, when the encoded
-     * length is greater than 62 bytes.
-     */
-    public static final int MOVIE_EXT_HDR_LEN = 6;
+    public static final int SWF5 = 5;
 
     /** Class contains only constants. */
     private SWF() {

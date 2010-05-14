@@ -482,7 +482,7 @@ public final class ExceptionHandler implements Action {
             throws CoderException {
 
         coder.writeByte(ActionTypes.EXCEPTION_HANDLER);
-        coder.writeWord(length, 2);
+        coder.writeI16(length);
 
         int flags = 0;
 
@@ -497,9 +497,9 @@ public final class ExceptionHandler implements Action {
         }
         coder.writeByte(flags);
 
-        coder.writeWord(tryLength, 2);
-        coder.writeWord(catchLength, 2);
-        coder.writeWord(finalLength, 2);
+        coder.writeI16(tryLength);
+        coder.writeI16(catchLength);
+        coder.writeI16(finalLength);
 
         if (register == 0) {
             coder.writeString(variable);

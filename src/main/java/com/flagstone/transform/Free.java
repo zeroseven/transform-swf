@@ -60,11 +60,7 @@ public final class Free implements MovieTag {
      *             if an error occurs while decoding the data.
      */
     public Free(final SWFDecoder coder) throws CoderException {
-
-        if ((coder.readUI16() & 0x3F) == 0x3F) {
-            coder.readUI32();
-        }
-
+        coder.readHeader();
         identifier = coder.readUI16();
     }
 
@@ -124,13 +120,15 @@ public final class Free implements MovieTag {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        // CHECKSTYLE:OFF
         return 4;
+        // CHECKSTYLE:ON
     }
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         coder.writeHeader(MovieTypes.FREE, 2);
-        coder.writeWord(identifier, 2);
+        coder.writeI16(identifier);
     }
 }

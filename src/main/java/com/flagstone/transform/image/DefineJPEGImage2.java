@@ -183,7 +183,8 @@ public final class DefineJPEGImage2 implements ImageTag {
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         length = 2 + image.length;
 
-        return (length > 62 ? 6 : 2) + length;
+        return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH
+                : SWFEncoder.STD_LENGTH) + length;
     }
 
     /** {@inheritDoc} */
@@ -193,7 +194,7 @@ public final class DefineJPEGImage2 implements ImageTag {
         coder.writeHeader(MovieTypes.DEFINE_JPEG_IMAGE_2, length);
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
-        coder.writeWord(identifier, 2);
+        coder.writeI16(identifier);
         coder.writeBytes(image);
 
         if (coder.getPointer() != end) {

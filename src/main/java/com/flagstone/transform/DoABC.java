@@ -77,10 +77,10 @@ public final class DoABC implements MovieTag {
         length = coder.readHeader();
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
-        deferred = coder.readBits(32, false); // TODO(optimise) replace with
-        // readWord()
+        deferred = coder.readBits(Coder.BITS_PER_INT, false);
         name = coder.readString();
-        data = coder.readBytes(new byte[(end - coder.getPointer()) >>> 3]);
+        data = coder.readBytes(new byte[(end - coder.getPointer())
+                                        >>> Coder.BITS_TO_BYTES]);
 
         if (coder.getPointer() != end) {
             throw new CoderException(getClass().getName(),
@@ -195,9 +195,12 @@ public final class DoABC implements MovieTag {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        // CHECKSTYLE:OFF
         length = 4 + coder.strlen(name) + data.length;
 
-        return (length > 62 ? 6 : 2) + length;
+        return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH
+                : SWFEncoder.STD_LENGTH) + length;
+        // CHECKSTYLE:ON
     }
 
     /** {@inheritDoc} */
@@ -208,7 +211,7 @@ public final class DoABC implements MovieTag {
         coder.writeHeader(MovieTypes.DO_ABC, length);
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
-        coder.writeBits(deferred, 32); // TODO(optimise) replace with readWord()
+        coder.writeBits(deferred, Coder.BITS_PER_INT);
         coder.writeString(name);
         coder.writeBytes(data);
 

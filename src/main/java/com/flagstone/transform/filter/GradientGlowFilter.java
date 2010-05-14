@@ -69,8 +69,8 @@ public final class GradientGlowFilter implements Filter {
 
 
         public Builder setBlur(final float xAmount, final float yAmount) {
-            blurX = (int) (xAmount * 65536.0f);
-            blurY = (int) (yAmount * 65536.0f);
+            blurX = (int) (xAmount * SCALE_16);
+            blurY = (int) (yAmount * SCALE_16);
             return this;
         }
 
@@ -94,19 +94,19 @@ public final class GradientGlowFilter implements Filter {
 
 
         public Builder setAngle(final float anAngle) {
-            angle = (int) (anAngle * 65536.0f);
+            angle = (int) (anAngle * SCALE_16);
             return this;
         }
 
 
         public Builder setDistance(final float dist) {
-            distance = (int) (dist * 65536.0f);
+            distance = (int) (dist * SCALE_16);
             return this;
         }
 
 
         public Builder setStrength(final float weight) {
-            strength = (int) (weight * 256.0f);
+            strength = (int) (weight * SCALE_8);
             return this;
         }
 
@@ -121,6 +121,17 @@ public final class GradientGlowFilter implements Filter {
             return new GradientGlowFilter(this);
         }
     }
+
+    /**
+     * Factor used to scale floating-point so they can be encoded as 16.16
+     * fixed point values..
+     */
+    private static final float SCALE_16 = 65536.0f;
+    /**
+     * Factor used to scale floating-point so they can be encoded as 8.8
+     * fixed point values..
+     */
+    private static final float SCALE_8 = 256.0f;
 
     private static final String FORMAT = "GradientGlowFilter: { "
             + "gradients=%s; blurX=%f; blurY=%f; "
@@ -184,11 +195,11 @@ public final class GradientGlowFilter implements Filter {
             gradients.add(new Gradient(ratio, color));
         }
 
-        blurX = coder.readWord(4, true);
-        blurY = coder.readWord(4, true);
-        angle = coder.readWord(4, true);
-        distance = coder.readWord(4, true);
-        strength = coder.readWord(2, true);
+        blurX = coder.readSI32();
+        blurY = coder.readSI32();
+        angle = coder.readSI32();
+        distance = coder.readSI32();
+        strength = coder.readSI16();
 
         final int value = coder.readByte();
 
@@ -203,27 +214,27 @@ public final class GradientGlowFilter implements Filter {
 
 
     public float getBlurX() {
-        return blurX / 65536.0f;
+        return blurX / SCALE_16;
     }
 
 
     public float getBlurY() {
-        return blurY / 65536.0f;
+        return blurY / SCALE_16;
     }
 
 
     public float getAngle() {
-        return angle / 65536.0f;
+        return angle / SCALE_16;
     }
 
 
     public float getDistance() {
-        return distance / 65536.0f;
+        return distance / SCALE_16;
     }
 
 
     public float getStrength() {
-        return strength / 256.0f;
+        return strength / SCALE_8;
     }
 
 
@@ -310,11 +321,11 @@ public final class GradientGlowFilter implements Filter {
             coder.writeByte(gradient.getRatio());
         }
 
-        coder.writeWord(blurX, 4);
-        coder.writeWord(blurY, 4);
-        coder.writeWord(angle, 4);
-        coder.writeWord(distance, 4);
-        coder.writeWord(strength, 2);
+        coder.writeI32(blurX);
+        coder.writeI32(blurY);
+        coder.writeI32(angle);
+        coder.writeI32(distance);
+        coder.writeI16(strength);
         coder.writeByte(mode | passes);
     }
 }

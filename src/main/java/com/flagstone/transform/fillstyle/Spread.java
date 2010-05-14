@@ -30,11 +30,56 @@
  */
 package com.flagstone.transform.fillstyle;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 public enum Spread {
-    /** TODO(doc). */
-    PAD,
-    /** TODO(doc). */
-    REFLECT,
-    /** TODO(doc). */
-    REPEAT;
+    PAD(0),
+    REFLECT(0x40),
+    REPEAT(0xC0);
+
+    /**
+     * Table used to store instances of Spreads so only one object is
+     * created for each type decoded.
+     */
+    private static final Map<Integer, Spread> TABLE
+            = new LinkedHashMap<Integer, Spread>();
+
+    static {
+        for (final Spread action : values()) {
+            TABLE.put(action.value, action);
+        }
+    }
+
+    /**
+     * Returns the Spread for a given type.
+     *
+     * @param value
+     *            the type that identifies the Spread when it is encoded.
+     *
+     * @return a shared instance of the object representing a given Spread type.
+     */
+    public static Spread fromInt(final int value) {
+        return TABLE.get(value);
+    }
+
+    /** Type used to identify the Spread when it is encoded. */
+    private final int value;
+
+    /**
+     * Constructor used to create instances for each type of Spread.
+     *
+     * @param spread the value representing the Spread when it is encoded.
+     */
+    private Spread(final int spread) {
+        value = spread;
+    }
+
+    /**
+     * Get the value used to represent the Spread when it is encoded.
+     * @return the encoded value for the Spread.
+     */
+    public int getValue() {
+        return value;
+    }
 }

@@ -125,14 +125,20 @@ public final class MovieAttributes implements MovieTag {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        //CHECKSTYLE:OFF
         return 6;
+        //CHECKSTYLE:ON
     }
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
+        //CHECKSTYLE:OFF
         coder.writeHeader(MovieTypes.FILE_ATTRIBUTES, 4);
+        //CHECKSTYLE:ON
         coder.writeByte(attributes);
-        coder.writeWord(0, 3);
+        coder.writeByte(0);
+        coder.writeByte(0);
+        coder.writeByte(0);
     }
 }

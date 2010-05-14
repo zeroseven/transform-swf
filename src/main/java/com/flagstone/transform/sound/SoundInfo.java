@@ -353,7 +353,7 @@ public final class SoundInfo implements SWFEncodeable {
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
-        coder.writeWord(identifier, 2);
+        coder.writeI16(identifier);
         coder.writeBits(mode, 4);
         coder.writeBool(envelope != null);
         coder.writeBool(loopCount != null);
@@ -361,13 +361,13 @@ public final class SoundInfo implements SWFEncodeable {
         coder.writeBool(inPoint != null);
 
         if (inPoint != null) {
-            coder.writeWord(inPoint, 4);
+            coder.writeI32(inPoint);
         }
         if (outPoint != null) {
-            coder.writeWord(outPoint, 4);
+            coder.writeI32(outPoint);
         }
         if (loopCount != null) {
-            coder.writeWord(loopCount, 2);
+            coder.writeI16(loopCount);
         }
         if (envelope != null) {
             envelope.encode(coder, context);

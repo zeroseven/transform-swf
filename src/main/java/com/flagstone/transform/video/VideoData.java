@@ -288,7 +288,7 @@ public final class VideoData implements VideoTag {
         coder.writeWord(length - 11, 3);
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
         coder.writeWord(timestamp, 3);
-        coder.writeWord(0, 4);
+        coder.writeI32(0);
         coder.writeByte(pack());
         coder.writeBytes(data);
 

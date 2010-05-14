@@ -75,7 +75,7 @@ public final class ActionDecoder implements SWFFactory<Action> {
 
         final int type = coder.scanByte();
 
-        if (type < 128) {
+        if (type <= ActionTypes.HIGHEST_BYTE_CODE) {
             action = BasicAction.fromInt(coder.readByte());
         } else {
             switch (type) {

@@ -109,7 +109,7 @@ public final class AlignmentZone implements SWFEncodeable {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
-        return 4;
+        return 4; // SUPPRESS CHECKSTYLE
     }
 
     /** {@inheritDoc} */

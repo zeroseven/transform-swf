@@ -422,12 +422,12 @@ public final class MorphLineStyle2 implements SWFEncodeable,
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
-        coder.writeWord(startWidth, 2);
-        coder.writeWord(endWidth, 2);
+        coder.writeI16(startWidth);
+        coder.writeI16(endWidth);
         coder.writeB16(pack());
 
         if (hasMiter) {
-            coder.writeWord(miterLimit, 2);
+            coder.writeI16(miterLimit);
         }
 
         if (hasFillStyle) {
@@ -438,8 +438,9 @@ public final class MorphLineStyle2 implements SWFEncodeable,
         }
     }
 
+    //TODO Fix this to remove the magic numbers
     private int pack() {
-
+// CHECKSTYLE:OFF
         int value = 0;
 
         if (startCap == 1) {
@@ -462,10 +463,12 @@ public final class MorphLineStyle2 implements SWFEncodeable,
         value |= endCap;
 
         return value;
+// CHECKSTYLE:ON
     }
 
+    //TODO Fix this to remove the magic numbers
     private void unpack(final int value) {
-
+// CHECKSTYLE:OFF
         if ((value & 0x00004000) > 0) {
             startCap = 1;
         } else if ((value & 0x00008000) > 0) {
@@ -491,5 +494,6 @@ public final class MorphLineStyle2 implements SWFEncodeable,
         pixelAligned = (value & 0x00000100) != 0;
         lineClosed = (value & 0x00000004) == 0;
         endCap = value & 0x00000003;
+// CHECKSTYLE:ON
     }
 }

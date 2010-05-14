@@ -56,6 +56,11 @@ import com.flagstone.transform.image.ImageFormat;
 @SuppressWarnings("PMD.TooManyMethods")
 public final class BMPDecoder implements ImageProvider, ImageDecoder {
 
+    /** Level used to indicate an opaque colour */
+    private static final int OPAQUE = 255;
+    /** Mask for reading unsigned 8-bit values. */
+    private static final int UNSIGNED_BYTE = 255;
+
     private static final String BAD_FORMAT = "Unsupported Format";
 
     private static final int[] SIGNATURE = {66, 77};
@@ -253,7 +258,7 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
 
             if (headerSize == 12) {
                 for (int i = 0; i < coloursUsed; i++, index += 4) {
-                    table[index + 3] = (byte) 0xFF;
+                    table[index + 3] = (byte) OPAQUE;
                     table[index + 2] = (byte) coder.readByte();
                     table[index + 1] = (byte) coder.readByte();
                     table[index] = (byte) coder.readByte();
@@ -263,7 +268,8 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
                     table[index] = (byte) coder.readByte();
                     table[index + 1] = (byte) coder.readByte();
                     table[index + 2] = (byte) coder.readByte();
-                    table[index + 3] = (byte) (coder.readByte() | 0xFF);
+                    table[index + 3] = (byte) (coder.readByte()
+                            | UNSIGNED_BYTE);
                 }
             }
 
@@ -450,7 +456,7 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
                     image[index] = (byte) ((colour & 0x7C00) >> 7);
                     image[index + 1] = (byte) ((colour & 0x03E0) >> 2);
                     image[index + 2] = (byte) ((colour & 0x001F) << 3);
-                    image[index + 3] = (byte) 0xFF;
+                    image[index + 3] = (byte) OPAQUE;
 
                     bitsRead += 16;
                 }
@@ -476,7 +482,7 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
                         image[index] = (byte) ((colour & 0xF800) >> 8);
                         image[index + 1] = (byte) ((colour & 0x07E0) >> 3);
                         image[index + 2] = (byte) ((colour & 0x001F) << 3);
-                        image[index + 3] = (byte) 0xFF;
+                        image[index + 3] = (byte) OPAQUE;
                     }
                     bitsRead += 16;
                 }
@@ -499,7 +505,7 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
                 image[index] = (byte) coder.readBits(bitDepth, false);
                 image[index + 1] = (byte) coder.readBits(bitDepth, false);
                 image[index + 2] = (byte) coder.readBits(bitDepth, false);
-                image[index + 3] = (byte) 0xFF;
+                image[index + 3] = (byte) OPAQUE;
 
                 bitsRead += 24;
             }
@@ -519,7 +525,7 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
                 image[index + 1] = (byte) coder.readByte();
                 image[index] = (byte) coder.readByte();
                 image[index + 3] = (byte) coder.readByte();
-                image[index + 3] = (byte) 0xFF;
+                image[index + 3] = (byte) OPAQUE;
             }
         }
     }
@@ -543,9 +549,11 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
         for (int i = 0; i < img.length; i += 4) {
             alpha = img[i + 3] & 0xFF;
 
-            img[i] = (byte) (((img[i] & 0xFF) * alpha) / 255);
-            img[i + 1] = (byte) (((img[i + 1] & 0xFF) * alpha) / 255);
-            img[i + 2] = (byte) (((img[i + 2] & 0xFf) * alpha) / 255);
+            img[i] = (byte) (((img[i] & UNSIGNED_BYTE) * alpha) / OPAQUE);
+            img[i + 1] = (byte) (((img[i + 1] & UNSIGNED_BYTE) * alpha)
+                    / OPAQUE);
+            img[i + 2] = (byte) (((img[i + 2] & UNSIGNED_BYTE) * alpha)
+                    / OPAQUE);
         }
     }
 

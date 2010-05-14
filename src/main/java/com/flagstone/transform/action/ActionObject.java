@@ -33,7 +33,6 @@ package com.flagstone.transform.action;
 
 import java.util.Arrays;
 
-
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -46,12 +45,6 @@ import com.flagstone.transform.coder.SWFEncoder;
  * framework.
  */
 public final class ActionObject implements Action {
-
-    /**
-     * The highest value used to encode an action that only operates on values
-     * on the Flash Player's stack.
-     */
-    private static final int HIGHEST_BYTE_CODE = 127;
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "ActionObject: {"
@@ -75,7 +68,7 @@ public final class ActionObject implements Action {
     public ActionObject(final SWFDecoder coder) throws CoderException {
         type = coder.readByte();
 
-        if (type > HIGHEST_BYTE_CODE) {
+        if (type > ActionTypes.HIGHEST_BYTE_CODE) {
             data = coder.readBytes(new byte[coder.readUI16()]);
         } else {
             data = new byte[0];
@@ -153,7 +146,7 @@ public final class ActionObject implements Action {
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         final int length;
 
-        if (type > HIGHEST_BYTE_CODE) {
+        if (type > ActionTypes.HIGHEST_BYTE_CODE) {
             length = SWFEncoder.ACTION_HEADER + data.length;
         } else {
             length = 1;
@@ -166,8 +159,8 @@ public final class ActionObject implements Action {
             throws CoderException {
         coder.writeByte(type);
 
-        if (type > HIGHEST_BYTE_CODE) {
-            coder.writeWord(data.length, 2);
+        if (type > ActionTypes.HIGHEST_BYTE_CODE) {
+            coder.writeI16(data.length);
             coder.writeBytes(data);
         }
     }

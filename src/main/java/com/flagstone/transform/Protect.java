@@ -168,7 +168,8 @@ public final class Protect implements MovieTag {
         if (password != null) {
             length += 2 + coder.strlen(password);
         }
-        return (length > 62 ? 6 : 2) + length;
+        return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH
+                : SWFEncoder.STD_LENGTH) + length;
     }
 
     /** {@inheritDoc} */
@@ -176,7 +177,7 @@ public final class Protect implements MovieTag {
             throws CoderException {
         coder.writeHeader(MovieTypes.PROTECT, length);
         if (password != null) {
-            coder.writeWord(0, 2);
+            coder.writeI16(0);
             coder.writeString(password);
         }
     }

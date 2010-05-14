@@ -45,6 +45,8 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 public final class DefineJPEGImage4 implements ImageTag {
 
+    private final static float SCALE_8 = 256.0f;
+
     private static final String FORMAT = "DefineJPEGImage4: { identifier=%d;"
             + "deblocking=%f; image=%d; alpha=%d }";
 
@@ -73,7 +75,7 @@ public final class DefineJPEGImage4 implements ImageTag {
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
         identifier = coder.readUI16();
         final int size = coder.readUI32();
-        deblocking = coder.readWord(2, true);
+        deblocking = coder.readSI16();
         image = coder.readBytes(new byte[size]);
         alpha = coder.readBytes(new byte[length - size - 8]);
 
@@ -138,11 +140,11 @@ public final class DefineJPEGImage4 implements ImageTag {
     }
 
     public float getDeblocking() {
-        return deblocking / 256.0f;
+        return deblocking / SCALE_8;
     }
 
     public void setDeblocking(final float level) {
-        deblocking = (int) (level * 256.0f);
+        deblocking = (int) (level * SCALE_8);
     }
 
     /**
@@ -214,7 +216,8 @@ public final class DefineJPEGImage4 implements ImageTag {
         length += image.length;
         length += alpha.length;
 
-        return (length > 62 ? 6 : 2) + length;
+        return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH
+                : SWFEncoder.STD_LENGTH) + length;
     }
 
     /** {@inheritDoc} */
@@ -224,9 +227,9 @@ public final class DefineJPEGImage4 implements ImageTag {
         coder.writeHeader(MovieTypes.DEFINE_JPEG_IMAGE_4, length);
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
-        coder.writeWord(identifier, 2);
-        coder.writeWord(image.length, 4);
-        coder.writeWord(deblocking, 2);
+        coder.writeI16(identifier);
+        coder.writeI32(image.length);
+        coder.writeI16(deblocking);
         coder.writeBytes(image);
         coder.writeBytes(alpha);
 

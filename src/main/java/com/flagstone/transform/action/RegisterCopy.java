@@ -146,7 +146,7 @@ public final class RegisterCopy implements Action {
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         coder.writeByte(ActionTypes.REGISTER_COPY);
-        coder.writeWord(2, 2);
+        coder.writeI16(2);
         coder.writeByte(number);
     }
 }

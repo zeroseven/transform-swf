@@ -96,6 +96,13 @@ import com.flagstone.transform.linestyle.LineStyle;
  */
 //TODO(class)
 public final class ShapeStyle implements ShapeRecord {
+
+    /**
+     * Reserved length for style counts indicated that the number of line
+     * or fill styles is encoded in the next 16-bit word.
+     */
+    private static final int EXTENDED = 255;
+
     private static final String FORMAT = "ShapeStyle: { move=(%d, %d);"
             + " fill=%d; alt=%d; line=%d; fillStyles=%s; lineStyles=%s }";
 
@@ -168,32 +175,21 @@ public final class ShapeStyle implements ShapeRecord {
             int fillStyleCount = coder.readByte();
 
             if (vars.containsKey(Context.ARRAY_EXTENDED)
-                    && (fillStyleCount == 0xFF)) {
+                    && (fillStyleCount == EXTENDED)) {
                 fillStyleCount = coder.readUI16();
             }
 
             final SWFFactory<FillStyle> decoder = context.getRegistry()
                     .getFillStyleDecoder();
 
-            FillStyle fill;
-            int type;
-
             for (int i = 0; i < fillStyleCount; i++) {
-                type = coder.scanByte();
-                fill = decoder.getObject(coder, context);
-
-                if (fill == null) {
-                    throw new CoderException(String.valueOf(type), start >>> 3,
-                            0, 0, "Unsupported FillStyle");
-                }
-
-                fillStyles.add(fill);
+                fillStyles.add(decoder.getObject(coder, context));
             }
 
             int lineStyleCount = coder.readByte();
 
             if (vars.containsKey(Context.ARRAY_EXTENDED)
-                    && (lineStyleCount == 0xFF)) {
+                    && (lineStyleCount == EXTENDED)) {
                 lineStyleCount = coder.readUI16();
             }
 
@@ -523,7 +519,7 @@ public final class ShapeStyle implements ShapeRecord {
             numberOfStyleBits += (flushBits % 8 > 0)
                     ? 8 - (flushBits % 8) : 0;
             numberOfStyleBits += (countExtended
-                    && (fillStyles.size() >= 255)) ? 24
+                    && (fillStyles.size() >= EXTENDED)) ? 24
                     : 8;
 
             for (final FillStyle style : fillStyles) {
@@ -531,7 +527,7 @@ public final class ShapeStyle implements ShapeRecord {
             }
 
             numberOfStyleBits += (countExtended
-                    && (lineStyles.size() >= 255)) ? 24
+                    && (lineStyles.size() >= EXTENDED)) ? 24
                     : 8;
 
             for (final LineStyle style : lineStyles) {
@@ -589,22 +585,22 @@ public final class ShapeStyle implements ShapeRecord {
 
             coder.alignToByte();
 
-            if (countExtended && (fillStyles.size() >= 255)) {
-                coder.writeBits(0xFF, 8);
-                coder.writeBits(fillStyles.size(), 16);
+            if (countExtended && (fillStyles.size() >= EXTENDED)) {
+                coder.writeByte(EXTENDED);
+                coder.writeI16(fillStyles.size());
             } else {
-                coder.writeBits(fillStyles.size(), 8);
+                coder.writeByte(fillStyles.size());
             }
 
             for (final FillStyle style : fillStyles) {
                 style.encode(coder, context);
             }
 
-            if (countExtended && (lineStyles.size() >= 255)) {
-                coder.writeBits(0xFF, 8);
-                coder.writeBits(lineStyles.size(), 16);
+            if (countExtended && (lineStyles.size() >= EXTENDED)) {
+                coder.writeByte(EXTENDED);
+                coder.writeI16(lineStyles.size());
             } else {
-                coder.writeBits(lineStyles.size(), 8);
+                coder.writeByte(lineStyles.size());
             }
 
             for (final LineStyle style : lineStyles) {

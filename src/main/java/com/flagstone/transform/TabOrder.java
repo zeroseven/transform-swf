@@ -52,6 +52,9 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  */
 public final class TabOrder implements MovieTag {
 
+    /** The highest index when defining an objects tab order. */
+    public static final int MAX_TAB = 65535;
+
     private static final String FORMAT = "TabOrder: { layer=%d; index=%d }";
 
     private int layer;
@@ -68,11 +71,7 @@ public final class TabOrder implements MovieTag {
      *             if an error occurs while decoding the data.
      */
     public TabOrder(final SWFDecoder coder) throws CoderException {
-
-        if ((coder.readUI16() & 0x3F) == 0x3F) {
-            coder.readUI32();
-        }
-
+        coder.readHeader();
         layer = coder.readUI16();
         index = coder.readUI16();
     }
@@ -122,8 +121,8 @@ public final class TabOrder implements MovieTag {
      *            the layer number. Must be in the range 1..65535.
      */
     public void setLayer(final int level) {
-        if ((level < 1) || (level > 65535)) {
-            throw new IllegalArgumentRangeException(1, 65536, level);
+        if ((level < 1) || (level > SWF.MAX_LAYER)) {
+            throw new IllegalArgumentRangeException(1, SWF.MAX_LAYER, level);
         }
         layer = level;
     }
@@ -142,8 +141,8 @@ public final class TabOrder implements MovieTag {
      *            the index in the tabbing order. Must be in the range 0..65535.
      */
     public void setIndex(final int idx) {
-        if ((idx < 0) || (idx > 65535)) {
-            throw new IllegalArgumentRangeException(0, 65535, idx);
+        if ((idx < 0) || (idx > MAX_TAB)) {
+            throw new IllegalArgumentRangeException(0, MAX_TAB, idx);
         }
         index = idx;
     }
@@ -161,14 +160,18 @@ public final class TabOrder implements MovieTag {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        // CHECKSTYLE:OFF
         return 6;
+        // CHECKSTYLE:ON
     }
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
+        // CHECKSTYLE:OFF
         coder.writeHeader(MovieTypes.TAB_ORDER, 4);
-        coder.writeWord(layer, 2);
-        coder.writeWord(index, 2);
+        // CHECKSTYLE:ON
+        coder.writeI16(layer);
+        coder.writeI16(index);
     }
 }

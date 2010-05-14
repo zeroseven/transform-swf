@@ -260,6 +260,9 @@ public final class DefineImage2 implements ImageTag {
      *            the width of the image. Must be in the range of 0..65535.
      */
     public void setWidth(final int aNumber) {
+        if ((aNumber < 0) || (aNumber > SWF.MAX_WIDTH)) {
+            throw new IllegalArgumentRangeException(0, SWF.MAX_WIDTH, aNumber);
+        }
         width = aNumber;
     }
 
@@ -270,6 +273,9 @@ public final class DefineImage2 implements ImageTag {
      *            the height of the image. Must be in the range of 0..65535.
      */
     public void setHeight(final int aNumber) {
+        if ((aNumber < 0) || (aNumber > SWF.MAX_HEIGHT)) {
+            throw new IllegalArgumentRangeException(0, SWF.MAX_HEIGHT, aNumber);
+        }
         height = aNumber;
     }
 
@@ -337,7 +343,8 @@ public final class DefineImage2 implements ImageTag {
         length += (pixelSize == 8) ? 1 : 0;
         length += image.length;
 
-        return (length > 62 ? 6 : 2) + length;
+        return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH
+                : SWFEncoder.STD_LENGTH) + length;
     }
 
     /** {@inheritDoc} */
@@ -345,10 +352,10 @@ public final class DefineImage2 implements ImageTag {
             throws CoderException {
         final int start = coder.getPointer();
         coder.writeWord((MovieTypes.DEFINE_IMAGE_2 << 6) | 0x3F, 2);
-        coder.writeWord(length, 4);
+        coder.writeI32(length);
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
-        coder.writeWord(identifier, 2);
+        coder.writeI16(identifier);
 
         if (pixelSize == 8) {
             coder.writeWord(3, 1);
@@ -356,8 +363,8 @@ public final class DefineImage2 implements ImageTag {
             coder.writeWord(5, 1);
         }
 
-        coder.writeWord(width, 2);
-        coder.writeWord(height, 2);
+        coder.writeI16(width);
+        coder.writeI16(height);
 
         if (pixelSize == 8) {
             coder.writeWord(tableSize - 1, 1);

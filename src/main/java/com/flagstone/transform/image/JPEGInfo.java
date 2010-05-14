@@ -31,6 +31,7 @@
 
 package com.flagstone.transform.image;
 
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.FLVDecoder;
 
 /**
@@ -77,7 +78,7 @@ public final class JPEGInfo {
                 width = coder.readUI16();
                 return;
             } else {
-                coder.adjustPointer((size - 2) << 3);
+                coder.adjustPointer((size - 2) << Coder.BYTES_TO_BITS);
             }
         }
     }

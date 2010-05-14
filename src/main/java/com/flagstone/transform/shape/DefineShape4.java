@@ -60,6 +60,12 @@ import com.flagstone.transform.linestyle.LineStyle2;
 //TODO(class)
 public final class DefineShape4 implements DefineTag {
 
+    /**
+     * Reserved length for style counts indicated that the number of line
+     * or fill styles is encoded in the next 16-bit word.
+     */
+    private static final int EXTENDED = 255;
+
     private static final String FORMAT = "DefineShape4: { identifier=%d;"
             + " shapeBounds=%s; edgeBounds=%s; fillStyles=%s; lineStyles=%s;"
             + " shape=%s }";
@@ -109,7 +115,7 @@ public final class DefineShape4 implements DefineTag {
 
         int fillStyleCount = coder.readByte();
 
-        if (fillStyleCount == 0xFF) {
+        if (fillStyleCount == EXTENDED) {
             fillStyleCount = coder.readUI16();
         }
         fillStyles = new ArrayList<FillStyle>();
@@ -117,24 +123,14 @@ public final class DefineShape4 implements DefineTag {
 
         final SWFFactory<FillStyle> decoder = context.getRegistry()
                 .getFillStyleDecoder();
-        FillStyle fill;
-        int type;
 
         for (int i = 0; i < fillStyleCount; i++) {
-            type = coder.scanByte();
-            fill = decoder.getObject(coder, context);
-
-            if (fill == null) {
-                throw new CoderException(String.valueOf(type), start >>> 3, 0,
-                        0, "Unsupported FillStyle");
-            }
-
-            fillStyles.add(fill);
+             fillStyles.add(decoder.getObject(coder, context));
         }
 
         int lineStyleCount = coder.readByte();
 
-        if (lineStyleCount == 0xFF) {
+        if (lineStyleCount == EXTENDED) {
             lineStyleCount = coder.readUI16();
         }
 
@@ -394,7 +390,7 @@ public final class DefineShape4 implements DefineTag {
         length += shapeBounds.prepareToEncode(coder, context);
         length += edgeBounds.prepareToEncode(coder, context);
 
-        length += (fillStyles.size() >= 255) ? 3 : 1;
+        length += (fillStyles.size() >= EXTENDED) ? 3 : 1;
 
         for (final FillStyle style : fillStyles) {
             length += style.prepareToEncode(coder, context);
@@ -402,7 +398,7 @@ public final class DefineShape4 implements DefineTag {
 
         vars.remove(Context.SCALING_STROKE);
 
-        length += (lineStyles.size() >= 255) ? 3 : 1;
+        length += (lineStyles.size() >= EXTENDED) ? 3 : 1;
 
         for (final LineStyle2 style : lineStyles) {
             length += style.prepareToEncode(coder, context);
@@ -422,7 +418,8 @@ public final class DefineShape4 implements DefineTag {
         vars.remove(Context.TRANSPARENT);
         vars.remove(Context.SCALING_STROKE);
 
-        return (length > 62 ? 6 : 2) + length;
+        return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH
+                : SWFEncoder.STD_LENGTH) + length;
     }
 
     /** {@inheritDoc} */
@@ -435,16 +432,16 @@ public final class DefineShape4 implements DefineTag {
         coder.writeHeader(MovieTypes.DEFINE_SHAPE_4, length);
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
-        coder.writeWord(identifier, 2);
+        coder.writeI16(identifier);
 
         shapeBounds.encode(coder, context);
         edgeBounds.encode(coder, context);
 
         coder.writeByte(scaling ? 1 : 2);
 
-        if (fillStyles.size() >= 255) {
-            coder.writeWord(0xFF, 1);
-            coder.writeWord(fillStyles.size(), 2);
+        if (fillStyles.size() >= EXTENDED) {
+            coder.writeWord(EXTENDED, 1);
+            coder.writeI16(fillStyles.size());
         } else {
             coder.writeWord(fillStyles.size(), 1);
         }
@@ -453,9 +450,9 @@ public final class DefineShape4 implements DefineTag {
             style.encode(coder, context);
         }
 
-        if (lineStyles.size() >= 255) {
-            coder.writeWord(0xFF, 1);
-            coder.writeWord(lineStyles.size(), 2);
+        if (lineStyles.size() >= EXTENDED) {
+            coder.writeWord(EXTENDED, 1);
+            coder.writeI16(lineStyles.size());
         } else {
             coder.writeWord(lineStyles.size(), 1);
         }

@@ -34,7 +34,7 @@ package com.flagstone.transform.coder;
 /** TODO(class). */
 public final class FLVDecoder extends Decoder {
 
-    
+
     public FLVDecoder(final byte[] data) {
         super(data);
     }
@@ -43,7 +43,8 @@ public final class FLVDecoder extends Decoder {
      * Read an unsigned short integer without changing the internal pointer.
      */
     public int scanUnsignedShort() {
-        return ((data[index] & 0x00FF) << 8) + (data[index + 1] & 0x00FF);
+        return ((data[index] & 0x00FF) << Coder.BYTES_TO_BITS)
+                + (data[index + 1] & Coder.UNSIGNED_BYTE_MASK);
     }
 
     /**
@@ -52,7 +53,19 @@ public final class FLVDecoder extends Decoder {
      * @return the value read.
      */
     public int readUI16() {
-        int value = (data[index++] & Coder.UNSIGNED_BYTE_MASK) << Coder.BYTE1;
+        int value = (data[index++] & Coder.UNSIGNED_BYTE_MASK)
+                << Coder.ALIGN_BYTE_1;
+        value |= data[index++] & Coder.UNSIGNED_BYTE_MASK;
+        return value;
+    }
+
+    /**
+     * Read a signed 16-bit integer.
+     *
+     * @return the value read.
+     */
+    public int readSI16() {
+        int value = data[index++] << Coder.ALIGN_BYTE_1;
         value |= data[index++] & Coder.UNSIGNED_BYTE_MASK;
         return value;
     }
@@ -63,9 +76,27 @@ public final class FLVDecoder extends Decoder {
      * @return the value read.
      */
     public int readUI32() {
-        int value = (data[index++] & Coder.UNSIGNED_BYTE_MASK) << Coder.BYTE3;
-        value |= (data[index++] & Coder.UNSIGNED_BYTE_MASK) << Coder.BYTE2;
-        value |= (data[index++] & Coder.UNSIGNED_BYTE_MASK) << Coder.BYTE1;
+        int value = (data[index++] & Coder.UNSIGNED_BYTE_MASK)
+                << Coder.ALIGN_BYTE_3;
+        value |= (data[index++] & Coder.UNSIGNED_BYTE_MASK)
+                << Coder.ALIGN_BYTE_2;
+        value |= (data[index++] & Coder.UNSIGNED_BYTE_MASK)
+                << Coder.ALIGN_BYTE_1;
+        value |= data[index++] & Coder.UNSIGNED_BYTE_MASK;
+        return value;
+    }
+
+    /**
+     * Read a signed 32-bit integer.
+     *
+     * @return the value read.
+     */
+    public int readSI32() {
+        int value = data[index++] << Coder.ALIGN_BYTE_3;
+        value |= (data[index++] & Coder.UNSIGNED_BYTE_MASK)
+                << Coder.ALIGN_BYTE_2;
+        value |= (data[index++] & Coder.UNSIGNED_BYTE_MASK)
+                << Coder.ALIGN_BYTE_1;
         value |= data[index++] & Coder.UNSIGNED_BYTE_MASK;
         return value;
     }
@@ -87,12 +118,14 @@ public final class FLVDecoder extends Decoder {
 
         for (int i = 0; i < numberOfBytes; i++) {
             value <<= 8;
-            value += data[index++] & 255;
+            value += data[index++] & Coder.UNSIGNED_BYTE_MASK;
         }
 
         if (signed) {
-            value <<= 32 - (numberOfBytes << 3);
-            value >>= 32 - (numberOfBytes << 3);
+            value <<= Coder.BITS_PER_INT
+                        - (numberOfBytes << Coder.BYTES_TO_BITS);
+            value >>= Coder.BITS_PER_INT
+                        - (numberOfBytes << Coder.BYTES_TO_BITS);
         }
 
         return value;
@@ -104,7 +137,7 @@ public final class FLVDecoder extends Decoder {
      * @return the decoded value.
      */
     public double readDouble() {
-        long longValue = (long) readWord(4, false) << 32;
+        long longValue = (long) readWord(4, false) << Coder.ALIGN_WORD;
         longValue |= readWord(4, false) & 0x00000000FFFFFFFFL;
 
         return Double.longBitsToDouble(longValue);

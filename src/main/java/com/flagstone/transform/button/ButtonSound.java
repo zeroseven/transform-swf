@@ -229,7 +229,8 @@ public final class ButtonSound implements MovieTag {
                 length += 2;
             }
         }
-        return (length > 62 ? 6 : 2) + length;
+        return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH
+                : SWFEncoder.STD_LENGTH) + length;
     }
 
     /** {@inheritDoc} */
@@ -239,13 +240,13 @@ public final class ButtonSound implements MovieTag {
         coder.writeHeader(MovieTypes.BUTTON_SOUND, length);
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
-        coder.writeWord(identifier, 2);
+        coder.writeI16(identifier);
 
         for (ButtonEvent event : EVENTS) {
             if (table.containsKey(event)) {
                 table.get(event).encode(coder, context);
             } else {
-                coder.writeWord(0, 2);
+                coder.writeI16(0);
             }
         }
 

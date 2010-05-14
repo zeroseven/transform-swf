@@ -106,16 +106,16 @@ public final class DefineSound implements DefineTag {
 
         switch (coder.readBits(2, false)) {
         case 0:
-            rate = 5512;
+            rate = SoundRate.KHZ_5K;
             break;
         case 1:
-            rate = 11025;
+            rate = SoundRate.KHZ_11K;
             break;
         case 2:
-            rate = 22050;
+            rate = SoundRate.KHZ_22K;
             break;
         case 3:
-            rate = 44100;
+            rate = SoundRate.KHZ_44K;
             break;
         default:
             rate = 0;
@@ -148,7 +148,7 @@ public final class DefineSound implements DefineTag {
      *            later include MP3 and Flash 6 or later include NELLYMOSER.
      * @param playbackRate
      *            the number of samples per second that the sound is played at ,
-     *            either 5512, 11025, 22050 or 44100.
+     *            either SoundRate.KHZ_5K, SoundRate.KHZ_11K, SoundRate.KHZ_22K or SoundRate.KHZ_44K.
      * @param channels
      *            the number of channels in the sound, must be either 1 (Mono)
      *            or 2 (Stereo).
@@ -239,8 +239,8 @@ public final class DefineSound implements DefineTag {
     }
 
     /**
-     * Returns the rate at which the sound will be played, in Hz: 5512, 11025,
-     * 22050 or 44100.
+     * Returns the rate at which the sound will be played, in Hz: SoundRate.KHZ_5K, SoundRate.KHZ_11K,
+     * SoundRate.KHZ_22K or SoundRate.KHZ_44K.
      */
     public int getRate() {
         return rate;
@@ -313,15 +313,15 @@ public final class DefineSound implements DefineTag {
      *
      * @param samplingRate
      *            the rate at which the sounds is played in Hz. Must be one of:
-     *            5512, 11025, 22050 or 44100.
+     *            SoundRate.KHZ_5K, SoundRate.KHZ_11K, SoundRate.KHZ_22K or SoundRate.KHZ_44K.
      */
     public void setRate(final int samplingRate) {
-        if ((samplingRate != 5512)
-                && (samplingRate != 11025)
-                && (samplingRate != 22050)
-                && (samplingRate != 44100)) {
+        if ((samplingRate != SoundRate.KHZ_5K)
+                && (samplingRate != SoundRate.KHZ_11K)
+                && (samplingRate != SoundRate.KHZ_22K)
+                && (samplingRate != SoundRate.KHZ_44K)) {
             throw new IllegalArgumentValueException(
-                    new int[] {5512, 11025, 22050, 44100}, samplingRate);
+                    new int[] {SoundRate.KHZ_5K, SoundRate.KHZ_11K, SoundRate.KHZ_22K, SoundRate.KHZ_44K}, samplingRate);
         }
         rate = samplingRate;
     }
@@ -397,7 +397,8 @@ public final class DefineSound implements DefineTag {
         length = 7;
         length += sound.length;
 
-        return (length > 62 ? 6 : 2) + length;
+        return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH
+                : SWFEncoder.STD_LENGTH) + length;
     }
 
     /** {@inheritDoc} */
@@ -408,20 +409,20 @@ public final class DefineSound implements DefineTag {
         coder.writeHeader(MovieTypes.DEFINE_SOUND, length);
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
-        coder.writeWord(identifier, 2);
+        coder.writeI16(identifier);
         coder.writeBits(format, 4);
 
         switch (rate) {
-        case 5512:
+        case SoundRate.KHZ_5K:
             coder.writeBits(0, 2);
             break;
-        case 11025:
+        case SoundRate.KHZ_11K:
             coder.writeBits(1, 2);
             break;
-        case 22050:
+        case SoundRate.KHZ_22K:
             coder.writeBits(2, 2);
             break;
-        case 44100:
+        case SoundRate.KHZ_44K:
             coder.writeBits(3, 2);
             break;
         default:
@@ -429,7 +430,7 @@ public final class DefineSound implements DefineTag {
         }
         coder.writeBits(sampleSize - 1, 1);
         coder.writeBits(channelCount - 1, 1);
-        coder.writeWord(sampleCount, 4);
+        coder.writeI32(sampleCount);
 
         coder.writeBytes(sound);
 

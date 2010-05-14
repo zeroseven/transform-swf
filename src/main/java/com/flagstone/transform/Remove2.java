@@ -62,11 +62,7 @@ public final class Remove2 implements MovieTag {
      *             if an error occurs while decoding the data.
      */
     public Remove2(final SWFDecoder coder) throws CoderException {
-
-        if ((coder.readUI16() & 0x3F) == 0x3F) {
-            coder.readUI32();
-        }
-
+        coder.readHeader();
         layer = coder.readUI16();
     }
 
@@ -110,8 +106,8 @@ public final class Remove2 implements MovieTag {
      *            the range 1.65535.
      */
     public void setLayer(final int aLayer) {
-        if ((aLayer < 1) || (aLayer > 65535)) {
-            throw new IllegalArgumentRangeException(1, 65536, aLayer);
+        if ((aLayer < 1) || (aLayer > SWF.MAX_LAYER)) {
+            throw new IllegalArgumentRangeException(1, SWF.MAX_LAYER, aLayer);
         }
         layer = aLayer;
     }
@@ -129,13 +125,17 @@ public final class Remove2 implements MovieTag {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        // CHECKSTYLE:OFF
         return 4;
+        // CHECKSTYLE:ON
     }
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
+        // CHECKSTYLE:OFF
         coder.writeHeader(MovieTypes.REMOVE_2, 2);
-        coder.writeWord(layer, 2);
+        // CHECKSTYLE:ON
+        coder.writeI16(layer);
     }
 }

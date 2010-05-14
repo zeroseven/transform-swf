@@ -229,7 +229,7 @@ public final class Bounds implements SWFEncodeable {
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
         size = Encoder.maxSize(minX, minY, maxX, maxY);
-        return (FIELD_SIZE + Coder.BYTE_ALIGN
+        return (FIELD_SIZE + Coder.ROUND_TO_BYTES
                     + (size << 2)) >> Coder.BITS_TO_BYTES;
     }
 

@@ -34,9 +34,33 @@ package com.flagstone.transform.coder;
 /** TODO(class). */
 public final class FLVEncoder extends Encoder {
 
-    
+
     public FLVEncoder(final int size) {
         super(size);
+    }
+
+    /**
+     * Write a 16-bit integer.
+     *
+     * @param value
+     *            an integer containing the value to be written.
+     */
+    public void writeI16(final int value) {
+        data[index++] = (byte) (value >>> 8);
+        data[index++] = (byte) value;
+    }
+
+    /**
+     * Write a 32-bit integer.
+     *
+     * @param value
+     *            an integer containing the value to be written.
+     */
+    public void writeI32(final int value) {
+        data[index++] = (byte) (value >>> 24);
+        data[index++] = (byte) (value >>> 16);
+        data[index++] = (byte) (value >>> 8);
+        data[index++] = (byte) value;
     }
 
     /**

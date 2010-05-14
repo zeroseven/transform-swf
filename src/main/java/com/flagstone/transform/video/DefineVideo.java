@@ -93,7 +93,7 @@ public final class DefineVideo implements DefineTag {
         length = coder.readHeader();
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
-        identifier = coder.readWord(2, true);
+        identifier = coder.readSI16();
         frameCount = coder.readUI16();
         width = coder.readUI16();
         height = coder.readUI16();
@@ -375,10 +375,10 @@ public final class DefineVideo implements DefineTag {
         coder.writeHeader(MovieTypes.DEFINE_VIDEO, length);
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
-        coder.writeWord(identifier, 2);
-        coder.writeWord(frameCount, 2);
-        coder.writeWord(width, 2);
-        coder.writeWord(height, 2);
+        coder.writeI16(identifier);
+        coder.writeI16(frameCount);
+        coder.writeI16(width);
+        coder.writeI16(height);
         coder.writeBits(0, 5);
         coder.writeBits(deblocking, 2);
         coder.writeBits(smoothed ? 1 : 0, 1);

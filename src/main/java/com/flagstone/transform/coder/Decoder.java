@@ -73,20 +73,21 @@ public class Decoder extends Coder {
 
         if (numberOfBits > 0) {
 
-            for (int i = 32; (i > 0) && (index < data.length); i -= 8) {
+            for (int i = BITS_PER_INT; (i > 0)
+                    && (index < data.length); i -= 8) {
                 value |= (data[index++] & UNSIGNED_BYTE_MASK) << (i - 8);
             }
 
             value <<= offset;
 
             if (signed) {
-                value >>= 32 - numberOfBits;
+                value >>= BITS_PER_INT - numberOfBits;
             } else {
-                value >>>= 32 - numberOfBits;
+                value >>>= BITS_PER_INT - numberOfBits;
             }
 
             pointer += numberOfBits;
-            index = pointer >>> 3;
+            index = pointer >>> BITS_TO_BYTES;
             offset = pointer & 7;
         }
 
@@ -109,7 +110,7 @@ public class Decoder extends Coder {
      * is equivalent to reading a 16-bit integer with big-ending byte ordering.
      */
     public final int readB16() {
-        return ((data[index++] & UNSIGNED_BYTE_MASK) << 8)
+        return ((data[index++] & UNSIGNED_BYTE_MASK) << ALIGN_BYTE_1)
                 + (data[index++] & UNSIGNED_BYTE_MASK);
     }
 

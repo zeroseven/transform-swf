@@ -34,6 +34,7 @@ package com.flagstone.transform.fillstyle;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -114,9 +115,9 @@ public final class GradientFill implements FillStyle {
         type = coder.readByte();
         transform = new CoordTransform(coder);
         count = coder.readByte();
-        spread = count & 0x00C0;
-        interpolation = count & 0x0030;
-        count = count & 0x000F;
+        spread = count & FillStyleDecoder.SPREAD_MASK;
+        interpolation = count & FillStyleDecoder.INTERPOLATION_MASK;
+        count = count & FillStyleDecoder.GRADIENT_MASK;
         gradients = new ArrayList<Gradient>(count);
 
         for (int i = 0; i < count; i++) {
@@ -164,7 +165,7 @@ public final class GradientFill implements FillStyle {
 
     public GradientType getType() {
         GradientType value;
-        if (type == 0x10) {
+        if (type == FillStyleTypes.LINEAR_GRADIENT) {
             value = GradientType.LINEAR;
         } else {
             value = GradientType.RADIAL;
@@ -175,76 +176,30 @@ public final class GradientFill implements FillStyle {
 
     public void setType(final GradientType gradientType) {
         if (gradientType == GradientType.LINEAR) {
-            type = 0x10;
+            type = FillStyleTypes.LINEAR_GRADIENT;
         } else {
-            type = 0x12;
+            type = FillStyleTypes.RADIAL_GRADIENT;
         }
-     }
-
-
-    public Spread getSpread() {
-        Spread value;
-        switch (spread) {
-        case 0:
-            value = Spread.PAD;
-            break;
-        case 0x40:
-            value = Spread.REFLECT;
-            break;
-        case 0xC0:
-            value = Spread.REPEAT;
-            break;
-        default:
-            throw new IllegalStateException();
-        }
-        return value;
     }
 
 
-    public void setSpread(final Spread spreadType) {
-        switch (spreadType) {
-        case PAD:
-            spread = 0;
-            break;
-        case REFLECT:
-            spread = 0x40;
-            break;
-        case REPEAT:
-            spread = 0xC0;
-            break;
-        default:
-            throw new IllegalArgumentException();
-        }
+    public Spread getSpread() {
+        return Spread.fromInt(spread);
+    }
+
+
+    public void setSpread(final Spread aSpread) {
+        spread = aSpread.getValue();
     }
 
 
     public Interpolation getInterpolation() {
-        Interpolation value;
-        switch (interpolation) {
-        case 0:
-            value = Interpolation.NORMAL;
-            break;
-        case 16:
-            value = Interpolation.LINEAR;
-            break;
-        default:
-            throw new IllegalStateException();
-        }
-        return value;
+        return Interpolation.fromInt(interpolation);
     }
 
 
-    public void setInterpolation(final Interpolation interpolationType) {
-        switch (interpolationType) {
-        case NORMAL:
-            interpolation = 0;
-            break;
-        case LINEAR:
-            interpolation = 16;
-            break;
-        default:
-            throw new IllegalArgumentException();
-        }
+    public void setInterpolation(final Interpolation anInterpolation) {
+        interpolation = anInterpolation.getValue();
     }
 
     /**
@@ -289,7 +244,7 @@ public final class GradientFill implements FillStyle {
         if (anArray == null) {
             throw new IllegalArgumentException();
         }
-        if (anArray.size() > 15) {
+        if (anArray.size() > SWF.MAX_GRADIENTS) {
             throw new IllegalStateException(
                     "Maximum number of gradients exceeded.");
         }
@@ -308,7 +263,7 @@ public final class GradientFill implements FillStyle {
         if (aGradient == null) {
             throw new IllegalArgumentException();
         }
-        if (gradients.size() == 15) {
+        if (gradients.size() == SWF.MAX_GRADIENTS) {
             throw new IllegalStateException(
                     "Maximum number of gradients exceeded.");
         }
@@ -329,11 +284,13 @@ public final class GradientFill implements FillStyle {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        // CHECKSTYLE:OFF
         count = gradients.size();
         return 2
                 + transform.prepareToEncode(coder, context)
                 + (count * (context.getVariables().containsKey(
                         Context.TRANSPARENT) ? 5 : 4));
+        // CHECKSTYLE:ON
     }
 
     /** {@inheritDoc} */

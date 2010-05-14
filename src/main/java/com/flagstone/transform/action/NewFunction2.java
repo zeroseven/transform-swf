@@ -254,7 +254,7 @@ public final class NewFunction2 implements Action {
     private static final String FORMAT = "NewFunction2: { name=%s; "
             + "registerCount=%d; optimizations=%s; arguments=%s; actions=%s }";
 
-    
+
     public enum Optimization {
         /** Create the predefined variable, <em>super</em>. */
         CREATE_SUPER(4),
@@ -368,7 +368,7 @@ public final class NewFunction2 implements Action {
         name = coder.readString();
         final int argumentCount = coder.readUI16();
         registerCount = coder.readByte();
-        optimizations = coder.readBits(Coder.BITS_PER_SHORT, false);
+        optimizations = coder.readBits(16, false);
 
         int index;
 
@@ -559,20 +559,20 @@ public final class NewFunction2 implements Action {
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
-        coder.writeWord(ActionTypes.NEW_FUNCTION_2, 1);
-        coder.writeWord(length - actionsLength, 2);
+        coder.writeByte(ActionTypes.NEW_FUNCTION_2);
+        coder.writeI16(length - actionsLength);
 
         coder.writeString(name);
-        coder.writeWord(arguments.size(), 2);
+        coder.writeI16(arguments.size());
         coder.writeByte(registerCount);
-        coder.writeBits(optimizations, Coder.BITS_PER_SHORT);
+        coder.writeBits(optimizations, 16);
 
         for (final String arg : arguments.keySet()) {
             coder.writeByte(arguments.get(arg));
             coder.writeString(arg);
         }
 
-        coder.writeWord(actionsLength, 2);
+        coder.writeI16(actionsLength);
 
         for (final Action action : actions) {
             action.encode(coder, context);

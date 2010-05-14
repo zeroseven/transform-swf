@@ -204,6 +204,13 @@ import com.flagstone.transform.coder.SWFFactory;
 //TODO(class)
 public final class ButtonEventHandler implements SWFEncodeable {
 
+    /** Number of bits to shift key code for encoding with event flags. */
+    private static final int KEY_OFFSET = 9;
+    /** Bit mask for key field. */
+    private static final int KEY_MASK = 0x0E00;
+    /** Bit mask for key field. */
+    private static final int EVENT_MASK = 0x01FF;
+
     private static final String FORMAT = "ButtonEventHandler: { event=%s;"
     		+ " actions=%s }";
 
@@ -231,8 +238,8 @@ public final class ButtonEventHandler implements SWFEncodeable {
     public ButtonEventHandler(final int size, final SWFDecoder coder,
             final Context context) throws CoderException {
         final int eventKey = coder.readUI16();
-        event = eventKey & 0x1FF;
-        key = eventKey & 0xE00;
+        event = eventKey & EVENT_MASK;
+        key = eventKey & KEY_MASK;
         length = size;
 
         actions = new ArrayList<Action>();
@@ -330,14 +337,14 @@ public final class ButtonEventHandler implements SWFEncodeable {
      * TODO(method).
      */
     public char getKey() {
-        return (char) (key >>> 9);
+        return (char) (key >>> KEY_OFFSET);
     }
 
     /**
      * TODO(method).
      */
     public ButtonEventHandler setKey(final ButtonKey buttonKey) {
-        key = buttonKey.getChar() << 9;
+        key = buttonKey.getChar() << KEY_OFFSET;
         return this;
     }
 
@@ -345,7 +352,7 @@ public final class ButtonEventHandler implements SWFEncodeable {
      * TODO(method).
      */
     public ButtonEventHandler setKey(final char character) {
-        key = character << 9;
+        key = character << KEY_OFFSET;
         return this;
     }
 

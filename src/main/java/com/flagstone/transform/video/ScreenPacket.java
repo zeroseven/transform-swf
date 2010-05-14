@@ -290,7 +290,7 @@ public final class ScreenPacket implements Cloneable {
 
         for (final ImageBlock block : imageBlocks) {
             if (block.isEmpty()) {
-                coder.writeWord(0, 2);
+                coder.writeI16(0);
             } else {
                 blockData = block.getBlock();
                 coder.writeBits(blockData.length, 16);

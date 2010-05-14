@@ -35,7 +35,6 @@ import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.MovieTypes;
-import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
 /**
@@ -104,13 +103,5 @@ public final class ShowFrame implements MovieTag {
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         coder.writeHeader(MovieTypes.SHOW_FRAME, 0);
-    }
-
-    /** {@inheritDoc} */
-    public void decode(final SWFDecoder coder, final Context context)
-            throws CoderException {
-        if ((coder.readUI16() & 0x3F) == 0x3F) {
-            coder.readUI32();
-        }
     }
 }

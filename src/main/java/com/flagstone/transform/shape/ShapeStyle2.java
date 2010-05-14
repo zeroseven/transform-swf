@@ -179,19 +179,8 @@ public final class ShapeStyle2 implements ShapeRecord {
             final SWFFactory<FillStyle> decoder = context.getRegistry()
                     .getFillStyleDecoder();
 
-            FillStyle fill;
-            int type;
-
             for (int i = 0; i < fillStyleCount; i++) {
-                type = coder.scanByte();
-                fill = decoder.getObject(coder, context);
-
-                if (fill == null) {
-                    throw new CoderException(String.valueOf(type), start >>> 3,
-                            0, 0, "Unsupported FillStyle");
-                }
-
-                fillStyles.add(fill);
+                fillStyles.add(decoder.getObject(coder, context));
             }
 
             int lineStyleCount = coder.readByte();

@@ -330,7 +330,7 @@ public final class DefineTextField implements DefineTag {
             leftMargin = coder.readUI16();
             rightMargin = coder.readUI16();
             indent = coder.readUI16();
-            leading = coder.readWord(2, true);
+            leading = coder.readSI16();
         }
 
         variableName = coder.readString();
@@ -722,8 +722,9 @@ public final class DefineTextField implements DefineTag {
      *            Must be in the range 1..65535.
      */
     public DefineTextField setFontIdentifier(final int uid) {
-        if ((uid < 1) || (uid > 65535)) {
-             throw new IllegalArgumentRangeException(1, 65536, uid);
+        if ((uid < 1) || (uid > SWF.MAX_IDENTIFIER)) {
+             throw new IllegalArgumentRangeException(
+                     1, SWF.MAX_IDENTIFIER, uid);
         }
         fontIdentifier = uid;
         fontClass = null;  //NOPMD
@@ -744,8 +745,9 @@ public final class DefineTextField implements DefineTag {
      *            the height of the font. Must be in the range 0..65535.
      */
     public DefineTextField setFontHeight(final int aNumber) {
-        if ((aNumber < 0) || (aNumber > 65535)) {
-            throw new IllegalArgumentRangeException(0, 65535, aNumber);
+        if ((aNumber < 0) || (aNumber > SWF.MAX_FONT_SIZE)) {
+            throw new IllegalArgumentRangeException(
+                    0, SWF.MAX_FONT_SIZE, aNumber);
         }
         fontHeight = aNumber;
         return this;
@@ -949,7 +951,8 @@ public final class DefineTextField implements DefineTag {
 
         vars.remove(Context.TRANSPARENT);
 
-        return (length > 62 ? 6 : 2) + length;
+        return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH
+                : SWFEncoder.STD_LENGTH) + length;
     }
 
     /** {@inheritDoc} */
@@ -959,7 +962,7 @@ public final class DefineTextField implements DefineTag {
         coder.writeHeader(MovieTypes.DEFINE_TEXT_FIELD, length);
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
-        coder.writeWord(identifier, 2);
+        coder.writeI16(identifier);
         final Map<Integer, Integer> vars = context.getVariables();
         vars.put(Context.TRANSPARENT, 1);
 
@@ -983,10 +986,10 @@ public final class DefineTextField implements DefineTag {
 
         if (fontIdentifier == 0) {
             coder.writeString(fontClass);
-            coder.writeWord(fontHeight, 2);
+            coder.writeI16(fontHeight);
         } else if (fontClass != null) {
-            coder.writeWord(fontIdentifier, 2);
-            coder.writeWord(fontHeight, 2);
+            coder.writeI16(fontIdentifier);
+            coder.writeI16(fontHeight);
         }
 
         if (color != null)  {
@@ -994,7 +997,7 @@ public final class DefineTextField implements DefineTag {
         }
 
         if (maxLength > 0) {
-            coder.writeWord(maxLength, 2);
+            coder.writeI16(maxLength);
         }
 
         if (containsLayout()) {

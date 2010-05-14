@@ -237,7 +237,8 @@ public final class DefineFont implements DefineTag {
         vars.put(Context.FILL_SIZE, 0);
         vars.put(Context.LINE_SIZE, 0);
 
-        return (length > 62 ? 6 : 2) + length;
+        return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH
+                : SWFEncoder.STD_LENGTH) + length;
     }
 
     // TODO(optimise)
@@ -247,7 +248,7 @@ public final class DefineFont implements DefineTag {
         final int start = coder.getPointer();
         coder.writeHeader(MovieTypes.DEFINE_FONT, length);
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
-        coder.writeWord(identifier, 2);
+        coder.writeI16(identifier);
 
         final Map<Integer, Integer> vars = context.getVariables();
         vars.put(Context.FILL_SIZE, 1);
@@ -260,7 +261,7 @@ public final class DefineFont implements DefineTag {
         final int tableStart = coder.getPointer();
 
         for (int i = 0; i < shapes.size(); i++) {
-            coder.writeWord(0, 2);
+            coder.writeI16(0);
         }
 
         int tableEntry = tableStart;
@@ -270,7 +271,7 @@ public final class DefineFont implements DefineTag {
             offset = (coder.getPointer() - tableStart) >> 3;
 
             coder.setPointer(tableEntry);
-            coder.writeWord(offset, 2);
+            coder.writeI16(offset);
             coder.setPointer(currentLocation);
 
             shape.encode(coder, context);

@@ -48,8 +48,8 @@ public class Encoder extends Coder {
     public static int unsignedSize(final int value) {
 
         final int val = (value < 0) ? -value - 1 : value;
-        int counter = 32;
-        int mask = 0x80000000;
+        int counter = BITS_PER_INT;
+        int mask = MSB_INT;
 
         while (((val & mask) == 0) && (counter > 0)) {
             mask >>>= 1;
@@ -68,8 +68,8 @@ public class Encoder extends Coder {
      * @return the number of bits required to encode the value.
      */
     public static int size(final int value) {
-        int counter = 32;
-        int mask = 0x80000000;
+        int counter = BITS_PER_INT;
+        int mask = MSB_INT;
         final int val = (value < 0) ? -value - 1 : value;
 
         while (((val & mask) == 0) && (counter > 0)) {
@@ -122,9 +122,10 @@ public class Encoder extends Coder {
      */
     public final void writeBits(final int value, final int numberOfBits) {
 
-        final int val = ((value << (32 - numberOfBits)) >>> offset)
-                | (data[index] << 24);
-        int base = 32 - (((offset + numberOfBits + 7) >>> 3) << 3);
+        final int val = ((value << (BITS_PER_INT - numberOfBits)) >>> offset)
+                | (data[index] << ALIGN_BYTE_3);
+        int base = BITS_PER_INT - (((offset + numberOfBits
+                + ROUND_TO_BYTES) >>> BITS_TO_BYTES) << BYTES_TO_BITS);
         base = base < 0 ? 0 : base;
 
         final int mark = getPointer();
@@ -133,16 +134,17 @@ public class Encoder extends Coder {
             data[index++] = (byte) (val >>> i);
         }
 
-        if (offset + numberOfBits > 32) {
-            data[index] = (byte) (value << (8 - (offset + numberOfBits - 32)));
+        if (offset + numberOfBits > BITS_PER_INT) {
+            data[index] = (byte) (value
+                    << (8 - (offset + numberOfBits - BITS_PER_INT)));
         }
 
         setPointer(mark + numberOfBits);
     }
-    
+
     /**
      * Write a boolean value as a single bit.
-     * 
+     *
      * @param value the boolean flag to write.
      */
     public final void writeBool(final boolean value) {
@@ -160,7 +162,7 @@ public class Encoder extends Coder {
      *            will be written.
      */
     public final void writeB16(final int value) {
-        data[index++] = (byte) (value >>> 8);
+        data[index++] = (byte) (value >>> ALIGN_BYTE_1);
         data[index++] = (byte) value;
     }
 

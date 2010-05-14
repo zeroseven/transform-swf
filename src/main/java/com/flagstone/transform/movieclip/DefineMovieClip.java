@@ -232,7 +232,8 @@ public final class DefineMovieClip implements DefineTag {
                 frameCount += 1;
             }
         }
-        return (length > 62 ? 6 : 2) + length;
+        return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH
+                : SWFEncoder.STD_LENGTH) + length;
     }
 
     /** {@inheritDoc} */
@@ -242,14 +243,14 @@ public final class DefineMovieClip implements DefineTag {
         coder.writeHeader(MovieTypes.DEFINE_MOVIE_CLIP, length);
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
-        coder.writeWord(identifier, 2);
-        coder.writeWord(frameCount, 2);
+        coder.writeI16(identifier);
+        coder.writeI16(frameCount);
 
         for (final MovieTag object : objects) {
             object.encode(coder, context);
         }
 
-        coder.writeWord(0, 2);
+        coder.writeI16(0);
 
         if (coder.getPointer() != end) {
             throw new CoderException(getClass().getName(),

@@ -122,8 +122,8 @@ public final class ScenesAndLabels implements MovieTag {
 
 
     public ScenesAndLabels addScene(final int offset, final String name) {
-        if ((offset < 0) || (offset > 65535)) {
-            throw new IllegalArgumentRangeException(0, 65535, offset);
+        if ((offset < 0) || (offset > SWF.MAX_FRAME)) {
+            throw new IllegalArgumentRangeException(0, SWF.MAX_FRAME, offset);
         }
         if (name == null || name.length() == 0) {
             throw new IllegalArgumentException();
@@ -147,8 +147,8 @@ public final class ScenesAndLabels implements MovieTag {
 
 
     public ScenesAndLabels addLabel(final int offset, final String name) {
-        if ((offset < 0) || (offset > 65535)) {
-            throw new IllegalArgumentRangeException(0, 65535, offset);
+        if ((offset < 0) || (offset > SWF.MAX_FRAME)) {
+            throw new IllegalArgumentRangeException(0, SWF.MAX_FRAME, offset);
         }
         if (name == null || name.length() == 0) {
             throw new IllegalArgumentException();
@@ -198,7 +198,8 @@ public final class ScenesAndLabels implements MovieTag {
                     + coder.strlen(labels.get(offset));
         }
 
-        return (length > 62 ? 6 : 2) + length;
+        return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH
+                : SWFEncoder.STD_LENGTH) + length;
     }
 
     /** {@inheritDoc} */

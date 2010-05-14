@@ -81,12 +81,14 @@ public final class ColorMatrixFilter implements Filter {
 
     @Override
     public String toString() {
+// CHECKSTYLE:OFF
         return String.format(FORMAT,
                 matrix[0], matrix[1], matrix[2], matrix[3], matrix[4],
                 matrix[5], matrix[6], matrix[7], matrix[8], matrix[9],
                 matrix[10], matrix[11], matrix[12], matrix[13], matrix[14],
                 matrix[15], matrix[16], matrix[17], matrix[18], matrix[19]
         );
+// CHECKSTYLE:ON
     }
 
     @Override
@@ -114,7 +116,9 @@ public final class ColorMatrixFilter implements Filter {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
+// CHECKSTYLE:OFF - Fixed length when encoded
         return 81;
+// CHECKSTYLE:ON
     }
 
     /** {@inheritDoc} */

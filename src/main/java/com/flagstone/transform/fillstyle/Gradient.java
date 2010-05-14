@@ -1,7 +1,7 @@
 /*
  * Gradient.java
  * Transform
- * 
+ *
  * Copyright (c) 2001-2010 Flagstone Software Ltd. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -74,6 +74,10 @@ import com.flagstone.transform.font.Kerning;
  */
 //TODO(class)
 public final class Gradient implements SWFEncodeable {
+
+    /** Maximum ratio along the gradient square, range 0..255. */
+    private static final int MAX_RATIO = 255;
+
     private static final String FORMAT = "Gradient: { ratio=%d; color=%s }";
 
     private final transient int ratio;
@@ -110,8 +114,8 @@ public final class Gradient implements SWFEncodeable {
      *            the color at the control point. Must not be null.
      */
     public Gradient(final int aRatio, final Color aColor) {
-        if ((aRatio < 0) || (aRatio > 255)) {
-            throw new IllegalArgumentRangeException(0, 255, aRatio);
+        if ((aRatio < 0) || (aRatio > MAX_RATIO)) {
+            throw new IllegalArgumentRangeException(0, MAX_RATIO, aRatio);
         }
         ratio = aRatio;
 

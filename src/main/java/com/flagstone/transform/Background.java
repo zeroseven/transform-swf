@@ -83,9 +83,7 @@ public final class Background implements MovieTag {
      */
     public Background(final SWFDecoder coder, final Context context)
             throws CoderException {
-        if ((coder.readUI16() & SWF.TAG_LENGTH_FIELD) == SWF.IS_EXTENDED) {
-            coder.readUI32();
-        }
+        coder.readHeader();
         color = new Color(coder, context);
     }
 

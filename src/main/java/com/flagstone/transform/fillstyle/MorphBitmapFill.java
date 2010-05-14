@@ -128,7 +128,7 @@ public final class MorphBitmapFill implements FillStyle {
             final int uid,
             final CoordTransform start,
             final CoordTransform end) {
-        type = 0x40;
+        type = FillStyleTypes.TILED_BITMAP;
         setTiled(tiled);
         setSmoothed(smoothed);
         setIdentifier(uid);
@@ -153,29 +153,29 @@ public final class MorphBitmapFill implements FillStyle {
 
 
     public boolean isTiled() {
-        return (type & 0x01) != 0;
+        return (type & FillStyleDecoder.CLIPPED_MASK) != 0;
     }
 
 
     public void setTiled(final boolean tiled) {
         if (tiled) {
-            type &= 0x00FE;
+            type &= ~FillStyleDecoder.CLIPPED_MASK;
         } else {
-            type |= 0x0001;
+            type |= FillStyleDecoder.CLIPPED_MASK;
         }
     }
 
 
     public boolean isSmoothed() {
-        return (type & 0x02) != 0;
+        return (type & FillStyleDecoder.SMOOTHED_MASK) != 0;
     }
 
 
     public void setSmoothed(final boolean smoothed) {
         if (smoothed) {
-            type &= 0x00FD;
+            type &= ~FillStyleDecoder.SMOOTHED_MASK;
         } else {
-            type |= 0x0002;
+            type |= FillStyleDecoder.SMOOTHED_MASK;
         }
     }
 
@@ -258,15 +258,17 @@ public final class MorphBitmapFill implements FillStyle {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
+        // CHECKSTYLE:OFF
         return 3 + startTransform.prepareToEncode(coder, context)
                 + endTransform.prepareToEncode(coder, context);
+        // CHECKSTYLE:ON
     }
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         coder.writeByte(type);
-        coder.writeWord(identifier, 2);
+        coder.writeI16(identifier);
         startTransform.encode(coder, context);
         endTransform.encode(coder, context);
     }
