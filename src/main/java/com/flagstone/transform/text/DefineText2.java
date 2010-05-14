@@ -144,13 +144,14 @@ public final class DefineText2 implements DefineTag {
             objects.add(new TextSpan(coder, context));
         }
 
+        coder.readByte();
+
         vars.remove(Context.TRANSPARENT);
         vars.put(Context.GLYPH_SIZE, 0);
         vars.put(Context.ADVANCE_SIZE, 0);
 
         if (coder.getPointer() != end) {
             throw new CoderException(getClass().getName(),
-
                     start >> Coder.BITS_TO_BYTES, length,
                     (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }

@@ -85,14 +85,14 @@ public final class DefineData implements DefineTag {
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
         identifier = coder.readUI16();
-        coder.adjustPointer(Coder.BITS_PER_INT);
-        data = coder.readBytes(new byte[(coder.getPointer() - end)
-                                        >> Coder.BITS_TO_BYTES]);
+        coder.readUI32();
+        data = coder.readBytes(new byte[(end - coder.getPointer())
+                                        >>> Coder.BITS_TO_BYTES]);
 
         if (coder.getPointer() != end) {
             throw new CoderException(getClass().getName(),
                     start >> Coder.BITS_TO_BYTES, length,
-                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
+                    (coder.getPointer() - end) >>> Coder.BITS_TO_BYTES);
         }
     }
 

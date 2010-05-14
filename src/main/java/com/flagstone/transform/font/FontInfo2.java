@@ -427,8 +427,9 @@ public final class FontInfo2 implements MovieTag {
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
         coder.writeI16(identifier);
-        coder.writeWord(coder.strlen(name), 1);
+        coder.writeWord(coder.strlen(name) - 1, 1);
         coder.writeString(name);
+        coder.adjustPointer(-8);
         coder.writeBits(0, 2);
         coder.writeBool(small);
         coder.writeBits(encoding, 2);

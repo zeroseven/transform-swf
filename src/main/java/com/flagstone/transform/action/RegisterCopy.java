@@ -139,14 +139,14 @@ public final class RegisterCopy implements Action {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final SWFEncoder coder, final Context context) {
-        return SWFEncoder.ACTION_HEADER + 2;
+        return SWFEncoder.ACTION_HEADER + 1;
     }
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws CoderException {
         coder.writeByte(ActionTypes.REGISTER_COPY);
-        coder.writeI16(2);
+        coder.writeI16(1);
         coder.writeByte(number);
     }
 }

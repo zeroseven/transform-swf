@@ -72,7 +72,7 @@ import com.flagstone.transform.shape.ShapeData;
 @SuppressWarnings({"PMD.TooManyFields", "PMD.TooManyMethods" })
 public final class DefineFont3 implements DefineTag {
     private static final String FORMAT = "DefineFont3: { identifier=%d;"
-            + " encoding=%d; small=%d; italic=%d; bold=%d; language=%s;"
+            + " encoding=%d; small=%b; italic=%b; bold=%b; language=%s;"
             + " name=%s; shapes=%s; codes=%s; ascent=%d; descent=%d;"
             + " leading=%d; advances=%s; bounds=%s; kernings=%s }";
 

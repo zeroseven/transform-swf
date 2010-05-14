@@ -105,7 +105,7 @@ public final class DefineText implements DefineTag {
         length = coder.readHeader();
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
-        identifier = coder.readSI16();
+        identifier = coder.readUI16();
         bounds = new Bounds(coder);
 
         // CHECKSTYLE:OFF This code is used to get round a bug in Flash -
@@ -144,6 +144,8 @@ public final class DefineText implements DefineTag {
         while (coder.scanByte() != 0) {
             objects.add(new TextSpan(coder, context));
         }
+
+        coder.readByte();
 
         vars.put(Context.GLYPH_SIZE, 0);
         vars.put(Context.ADVANCE_SIZE, 0);

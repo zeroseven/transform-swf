@@ -962,10 +962,10 @@ public final class DefineTextField implements DefineTag {
         coder.writeHeader(MovieTypes.DEFINE_TEXT_FIELD, length);
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
-        coder.writeI16(identifier);
         final Map<Integer, Integer> vars = context.getVariables();
         vars.put(Context.TRANSPARENT, 1);
 
+        coder.writeI16(identifier);
         bounds.encode(coder, context);
         coder.writeBool(initialText != null);
         coder.writeBool(wordWrapped);
@@ -984,11 +984,11 @@ public final class DefineTextField implements DefineTag {
         coder.writeBool(html);
         coder.writeBool(embedded);
 
-        if (fontIdentifier == 0) {
-            coder.writeString(fontClass);
+        if (fontIdentifier != 0) {
+            coder.writeI16(fontIdentifier);
             coder.writeI16(fontHeight);
         } else if (fontClass != null) {
-            coder.writeI16(fontIdentifier);
+            coder.writeString(fontClass);
             coder.writeI16(fontHeight);
         }
 
