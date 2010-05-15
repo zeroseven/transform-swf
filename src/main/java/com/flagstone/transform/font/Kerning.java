@@ -182,7 +182,7 @@ public final class Kerning implements SWFEncodeable {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
         size = context.getVariables().containsKey(Context.WIDE_CODES) ? 2 : 1;
         return (size << 1) + 2;
     }

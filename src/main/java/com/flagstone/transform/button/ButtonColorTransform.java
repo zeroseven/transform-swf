@@ -183,9 +183,9 @@ public final class ButtonColorTransform implements MovieTag {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
         // CHECKSTYLE:OFF
-        length = 4 + colorTransform.prepareToEncode(coder, context);
+        length = 4 + colorTransform.prepareToEncode(context);
         return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH
                 : SWFEncoder.STD_LENGTH) + length;
         // CHECKSTYLE:ON

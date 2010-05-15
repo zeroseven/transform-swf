@@ -163,7 +163,7 @@ public final class GlyphIndex implements SWFEncodeable {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
         final Map<Integer, Integer> vars = context.getVariables();
         return vars.get(Context.GLYPH_SIZE) + vars.get(Context.ADVANCE_SIZE);
     }

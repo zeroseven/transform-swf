@@ -134,7 +134,7 @@ public final class ColorTransformCodingTest {
                 aalpha);
         final SWFEncoder encoder = new SWFEncoder(data.length);
 
-        assertEquals(data.length, transform.prepareToEncode(encoder, context));
+        assertEquals(data.length, transform.prepareToEncode(context));
     }
 
     @Test
@@ -147,7 +147,7 @@ public final class ColorTransformCodingTest {
                 mgreen.floatValue(), mblue.floatValue(), malpha.floatValue());
         final SWFEncoder encoder = new SWFEncoder(data.length);
 
-        assertEquals(data.length, transform.prepareToEncode(encoder, context));
+        assertEquals(data.length, transform.prepareToEncode(context));
     }
 
     @Test
@@ -162,7 +162,7 @@ public final class ColorTransformCodingTest {
                 malpha.floatValue());
         final SWFEncoder encoder = new SWFEncoder(data.length);
 
-        assertEquals(data.length, transform.prepareToEncode(encoder, context));
+        assertEquals(data.length, transform.prepareToEncode(context));
     }
 
     @Test
@@ -175,7 +175,7 @@ public final class ColorTransformCodingTest {
                 aalpha);
         final SWFEncoder encoder = new SWFEncoder(data.length);
 
-        transform.prepareToEncode(encoder, context);
+        transform.prepareToEncode(context);
         transform.encode(encoder, context);
 
         assertTrue(encoder.eof());
@@ -192,7 +192,7 @@ public final class ColorTransformCodingTest {
                 mgreen.floatValue(), mblue.floatValue(), malpha.floatValue());
         final SWFEncoder encoder = new SWFEncoder(data.length);
 
-        transform.prepareToEncode(encoder, context);
+        transform.prepareToEncode(context);
         transform.encode(encoder, context);
 
         assertTrue(encoder.eof());
@@ -211,7 +211,7 @@ public final class ColorTransformCodingTest {
                 malpha.floatValue());
         final SWFEncoder encoder = new SWFEncoder(data.length);
 
-        transform.prepareToEncode(encoder, context);
+        transform.prepareToEncode(context);
         transform.encode(encoder, context);
 
         assertTrue(encoder.eof());

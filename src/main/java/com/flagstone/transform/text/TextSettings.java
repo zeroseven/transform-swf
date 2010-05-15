@@ -289,7 +289,7 @@ public final class TextSettings implements MovieTag {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
         return 14;
     }
 

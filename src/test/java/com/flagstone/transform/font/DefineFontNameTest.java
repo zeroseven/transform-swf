@@ -99,7 +99,7 @@ public final class DefineFontNameTest {
         final Context context = new Context();
 
         fixture = new DefineFontName(identifier, name, copyright);
-        assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
+        assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
 
         assertTrue(encoder.eof());
@@ -116,7 +116,7 @@ public final class DefineFontNameTest {
         Arrays.fill(chars, 'a');
 
         fixture = new DefineFontName(identifier, name, new String(chars));
-        assertEquals(114, fixture.prepareToEncode(encoder, context));
+        assertEquals(114, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
 
         assertTrue(encoder.eof());

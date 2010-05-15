@@ -31,6 +31,9 @@
 
 package com.flagstone.transform.coder;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
+import java.nio.charset.UnsupportedCharsetException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -65,6 +68,7 @@ public final class Context {
     /** TODO(doc). */
     public static final int SHAPE_SIZE = 15;
 
+    private String encoding;
     private DecoderRegistry registry;
     private Map<Integer, Integer> variables;
 
@@ -73,6 +77,54 @@ public final class Context {
         variables = new LinkedHashMap<Integer, Integer>();
     }
 
+    public Context(final Integer key, final Integer value) {
+        variables = new LinkedHashMap<Integer, Integer>();
+        variables.put(key, value);
+    }
+
+    /**
+     * Returns character encoding scheme used when encoding or decoding strings.
+     */
+    public final String getEncoding() {
+        return encoding;
+    }
+
+    /**
+     * Sets the character encoding scheme used when encoding or decoding
+     * strings.
+     *
+     * If the character set encoding is not supported by the Java environment
+     * then an UnsupportedCharsetException will be thrown. If the character set
+     * cannot be identified then an IllegalCharsetNameException will be thrown.
+     *
+     * @param charSet
+     *            the name of the character set used to encode strings.
+     */
+    public final void setEncoding(final String charSet) {
+        if (!Charset.isSupported(charSet)) {
+            throw new UnsupportedCharsetException(charSet);
+        }
+        encoding = charSet;
+    }
+
+    /**
+     * Calculates the length of a string when encoded using the specified
+     * character set.
+     *
+     * @param string
+     *            the string to be encoded.
+     *
+     * @return the number of bytes required to encode the string plus 1 for a
+     *         terminating null character.
+     */
+
+    public final int strlen(final String string) {
+        try {
+            return string.getBytes(encoding).length + 1;
+        } catch (final UnsupportedEncodingException e) {
+            throw new AssertionError(e);
+        }
+    }
 
     public DecoderRegistry getRegistry() {
         return registry;

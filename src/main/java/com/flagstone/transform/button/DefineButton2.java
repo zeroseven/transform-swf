@@ -329,7 +329,7 @@ public final class DefineButton2 implements DefineTag {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
         // CHECKSTYLE:OFF - Fixed length when encoded.
         final Map<Integer, Integer> vars = context.getVariables();
         vars.put(Context.TYPE, MovieTypes.DEFINE_BUTTON_2);
@@ -338,11 +338,11 @@ public final class DefineButton2 implements DefineTag {
         length = 6;
 
         for (final ButtonShape shape : shapes) {
-            length += shape.prepareToEncode(coder, context);
+            length += shape.prepareToEncode(context);
         }
 
         for (final ButtonEventHandler handler : events) {
-            length += 2 + handler.prepareToEncode(coder, context);
+            length += 2 + handler.prepareToEncode(context);
         }
 
         vars.remove(Context.TYPE);

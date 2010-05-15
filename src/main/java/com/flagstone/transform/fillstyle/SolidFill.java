@@ -126,9 +126,9 @@ public final class SolidFill implements FillStyle {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
         // TODO(optimise) calculate size of color directly.
-        return 1 + color.prepareToEncode(coder, context);
+        return 1 + color.prepareToEncode(context);
     }
 
     /** {@inheritDoc} */

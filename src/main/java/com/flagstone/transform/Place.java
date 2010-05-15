@@ -293,13 +293,13 @@ public final class Place implements MovieTag {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
         // CHECKSTYLE:OFF
         length = 4;
-        length += transform.prepareToEncode(coder, context);
+        length += transform.prepareToEncode(context);
         // TODO(optimise) replace with if statement ?
         length += colorTransform == null ? 0 : colorTransform.prepareToEncode(
-                coder, context);
+                context);
 
         return 2 + length;
         // CHECKSTYLE:ON

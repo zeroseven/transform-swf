@@ -71,7 +71,7 @@ public final class ShapeDataTest {
         final Context context = new Context();
 
         // fixture = new ShapeData(identifier, layer, transform);
-        assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
+        assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
 
         assertTrue(encoder.eof());

@@ -136,8 +136,8 @@ public final class EnableDebugger2 implements MovieTag {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
-        length = 2 + coder.strlen(password);
+    public int prepareToEncode(final Context context) {
+        length = 2 + context.strlen(password);
 
         return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH
                 : SWFEncoder.STD_LENGTH) + length;

@@ -192,21 +192,21 @@ public final class Shape implements SWFEncodeable {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
 
         int length = 0;
 
         isEncoded = objects.size() == 1 && objects.get(0) instanceof ShapeData;
 
         if (isEncoded) {
-            length += objects.get(0).prepareToEncode(coder, context);
+            length += objects.get(0).prepareToEncode(context);
         } else {
             context.getVariables().put(Context.SHAPE_SIZE, 0);
 
             int numberOfBits = 8;
 
             for (final ShapeRecord record : objects) {
-                numberOfBits += record.prepareToEncode(coder, context);
+                numberOfBits += record.prepareToEncode(context);
             }
             numberOfBits += 13; // Add size of end of shape and align to byte
             length += (numberOfBits >>> 3);

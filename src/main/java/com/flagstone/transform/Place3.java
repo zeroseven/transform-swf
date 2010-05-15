@@ -711,7 +711,7 @@ public final class Place3 implements MovieTag {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
         // CHECKSTYLE:OFF
         final Map<Integer, Integer> vars = context.getVariables();
         vars.put(Context.TRANSPARENT, 1);
@@ -722,19 +722,18 @@ public final class Place3 implements MovieTag {
         length = 4;
         length += ((type == PlaceType.NEW) || (type == PlaceType.REPLACE)) ? 2
                 : 0;
-        length += transform == null ? 0 : transform.prepareToEncode(coder,
-                context);
+        length += transform == null ? 0 : transform.prepareToEncode(context);
         length += colorTransform == null ? 0 : colorTransform.prepareToEncode(
-                coder, context);
+                context);
         length += ratio == null ? 0 : 2;
         length += depth == null ? 0 : 2;
-        length += name == null ? 0 : coder.strlen(name);
-        length += className == null ? 0 : coder.strlen(className);
+        length += name == null ? 0 : context.strlen(name);
+        length += className == null ? 0 : context.strlen(className);
 
         if (hasFilters) {
             length += 1;
             for (final Filter filter : filters) {
-                length += filter.prepareToEncode(coder, context);
+                length += filter.prepareToEncode(context);
             }
         }
 
@@ -748,7 +747,7 @@ public final class Place3 implements MovieTag {
             length += 2 + eventSize;
 
             for (final MovieClipEventHandler handler : events) {
-                length += handler.prepareToEncode(coder, context);
+                length += handler.prepareToEncode(context);
             }
 
             length += eventSize;

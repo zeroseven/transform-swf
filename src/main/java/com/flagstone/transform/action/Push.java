@@ -320,7 +320,7 @@ public final class Push implements Action {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
 
         length = 0;
 
@@ -334,7 +334,7 @@ public final class Push implements Action {
             } else if (obj instanceof Double) {
                 length += LENGTH_DOUBLE;
             } else if (obj instanceof String) {
-                length += 1 + coder.strlen(obj.toString());
+                length += 1 + context.strlen(obj.toString());
             } else if (obj instanceof Null) {
                 length += LENGTH_NULL;
             } else if (obj instanceof Void) {

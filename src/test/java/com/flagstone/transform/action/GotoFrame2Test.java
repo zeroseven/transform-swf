@@ -84,7 +84,7 @@ public final class GotoFrame2Test {
         final Context context = new Context();
 
         fixture = new GotoFrame2(offset, play);
-        assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
+        assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
 
         assertTrue(encoder.eof());
@@ -98,7 +98,7 @@ public final class GotoFrame2Test {
 
         fixture = new GotoFrame2(0, play);
         assertEquals(noOffset.length,
-                fixture.prepareToEncode(encoder, context));
+                fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
 
         assertTrue(encoder.eof());
@@ -111,7 +111,7 @@ public final class GotoFrame2Test {
         final Context context = new Context();
 
         fixture = new GotoFrame2(0, false);
-        assertEquals(stop.length, fixture.prepareToEncode(encoder, context));
+        assertEquals(stop.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
 
         assertTrue(encoder.eof());

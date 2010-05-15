@@ -277,15 +277,15 @@ public final class MorphFocalGradientFill implements FillStyle {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
         // CHECKSTYLE:OFF
         // TODO(optimise) Calculate size of gradient array directly.
-        int length = 6 + startTransform.prepareToEncode(coder, context)
-            + endTransform.prepareToEncode(coder, context);
+        int length = 6 + startTransform.prepareToEncode(context)
+            + endTransform.prepareToEncode(context);
         count = gradients.size();
 
         for (final MorphGradient gradient : gradients) {
-            length += gradient.prepareToEncode(coder, context);
+            length += gradient.prepareToEncode(context);
         }
         //CHECKSTYLE:ON
         return length;

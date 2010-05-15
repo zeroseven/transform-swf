@@ -214,8 +214,8 @@ public final class DefineFont4 implements DefineTag {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
-        length = 3 + coder.strlen(name) + data.length;
+    public int prepareToEncode(final Context context) {
+        length = 3 + context.strlen(name) + data.length;
         return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH
                 : SWFEncoder.STD_LENGTH) + length;
     }

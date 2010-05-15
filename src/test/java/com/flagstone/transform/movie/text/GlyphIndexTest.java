@@ -60,7 +60,7 @@ public final class GlyphIndexTest {
         final Context context = new Context();
 
         // fixture = new GlyphIndex(identifier, layer, transform);
-        assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
+        assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
 
         assertTrue(encoder.eof());

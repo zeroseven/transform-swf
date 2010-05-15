@@ -608,7 +608,7 @@ public final class Place2 implements MovieTag {
 
     // TODO(optimise)
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
         // CHECKSTYLE:OFF
         final Map<Integer, Integer> vars = context.getVariables();
         vars.put(Context.TRANSPARENT, 1);
@@ -617,14 +617,14 @@ public final class Place2 implements MovieTag {
         length += (type.equals(PlaceType.NEW) || type
                 .equals(PlaceType.REPLACE)) ? 2 : 0;
         if (transform != null) {
-            length += transform.prepareToEncode(coder, context);
+            length += transform.prepareToEncode(context);
         }
         if (colorTransform != null) {
-            length += colorTransform.prepareToEncode(coder, context);
+            length += colorTransform.prepareToEncode(context);
         }
         length += ratio == null ? 0 : 2;
         length += depth == null ? 0 : 2;
-        length += name == null ? 0 : coder.strlen(name);
+        length += name == null ? 0 : context.strlen(name);
 
         if (!events.isEmpty()) {
             final int eventSize;
@@ -638,7 +638,7 @@ public final class Place2 implements MovieTag {
             length += 2 + eventSize;
 
             for (final MovieClipEventHandler handler : events) {
-                length += handler.prepareToEncode(coder, context);
+                length += handler.prepareToEncode(context);
             }
 
             length += eventSize;

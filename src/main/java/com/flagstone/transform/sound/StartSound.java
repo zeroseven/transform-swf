@@ -141,8 +141,8 @@ public final class StartSound implements MovieTag {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
-        length = sound.prepareToEncode(coder, context);
+    public int prepareToEncode(final Context context) {
+        length = sound.prepareToEncode(context);
         return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH
                 : SWFEncoder.STD_LENGTH) + length;
     }

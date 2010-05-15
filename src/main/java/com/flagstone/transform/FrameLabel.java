@@ -179,9 +179,9 @@ public final class FrameLabel implements MovieTag {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
 
-        length = coder.strlen(label);
+        length = context.strlen(label);
         length += anchor ? 1 : 0;
 
         return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH

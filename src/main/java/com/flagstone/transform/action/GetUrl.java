@@ -200,9 +200,9 @@ public final class GetUrl implements Action {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
-        length = coder.strlen(url);
-        length += coder.strlen(target);
+    public int prepareToEncode(final Context context) {
+        length = context.strlen(url);
+        length += context.strlen(target);
 
         return SWFEncoder.ACTION_HEADER + length;
     }

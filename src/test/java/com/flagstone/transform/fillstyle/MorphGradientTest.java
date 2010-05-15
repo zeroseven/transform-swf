@@ -94,7 +94,7 @@ public final class MorphGradientTest {
 
         fixture = new MorphGradient(new Gradient(startRatio, startColor),
                 new Gradient(endRatio, endColor));
-        assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
+        assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
 
         assertTrue(encoder.eof());

@@ -508,15 +508,16 @@ public final class Movie {
         final Context context = new Context();
 
         coder.setEncoding(encoding.toString());
+        context.setEncoding(encoding.toString());
         context.getVariables().put(Context.VERSION, version);
 
         frameCount = 0;
 
         length = 14; // Includes End
-        length += frameSize.prepareToEncode(coder, context);
+        length += frameSize.prepareToEncode(context);
 
         for (final MovieTag tag : objects) {
-            length += tag.prepareToEncode(coder, context);
+            length += tag.prepareToEncode(context);
             if (tag instanceof ShowFrame) {
                 frameCount += 1;
             }

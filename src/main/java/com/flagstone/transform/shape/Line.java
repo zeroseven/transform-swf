@@ -173,7 +173,7 @@ public final class Line implements ShapeRecord {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
         vertical = xCoord == 0;
         general = (xCoord != 0) && (yCoord != 0);
         size = Encoder.maxSize(xCoord, yCoord, 1);

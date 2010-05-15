@@ -32,103 +32,72 @@ package com.flagstone.transform.datatype;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
-import org.yaml.snakeyaml.Yaml;
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-@RunWith(Parameterized.class)
 public final class ColorCodingTest {
 
-    private static final String RESOURCE =
-        "com/flagstone/transform/datatype/Color.yaml";
-
-    private static final String RED = "red";
-    private static final String GREEN = "green";
-    private static final String BLUE = "blue";
-    private static final String ALPHA = "alpha";
-    private static final String DATA = "data";
-
-    @Parameters
-    public static Collection<Object[]>  patterns() {
-
-        ClassLoader loader = ColorCodingTest.class.getClassLoader();
-        InputStream other = loader.getResourceAsStream(RESOURCE);
-        Yaml yaml = new Yaml();
-
-        Collection<Object[]> list = new ArrayList<Object[]>();
-
-        for (Object data : yaml.loadAll(other)) {
-            list.add(new Object[] {data });
-        }
-
-        return list;
-    }
-
-    private final Integer red;
-    private final Integer green;
-    private final Integer blue;
-    private final Integer alpha;
-    private final byte[] data;
-
-    private final Context context;
-
-    public ColorCodingTest(final Map<String, Object>values) {
-        red = (Integer) values.get(RED);
-        green = (Integer) values.get(GREEN);
-        blue = (Integer) values.get(BLUE);
-        alpha = (Integer) values.get(ALPHA);
-        data = (byte[]) values.get(DATA);
-
-        context = new Context();
-
-        if (data.length == 4) {
-            context.put(Context.TRANSPARENT, 1);
-        }
+    @Test
+    public void checkOpaqueColorIsDecoded() throws CoderException {
+        final SWFDecoder decoder = new SWFDecoder(new byte[] {1, 2, 3});
+        final Context context = new Context();
+        final Color color = new Color(decoder, context);
+        assertEquals(1, color.getRed());
+        assertEquals(2, color.getGreen());
+        assertEquals(3, color.getBlue());
+        assertEquals(255, color.getAlpha());
     }
 
     @Test
-    public void checkSizeMatchesEncodedSize() throws CoderException {
-        final Color color = new Color(red, green, blue, alpha);
-        final SWFEncoder encoder = new SWFEncoder(data.length);
-
-        assertEquals(data.length, color.prepareToEncode(encoder, context));
+    public void checkAlphaColorIsDecoded() throws CoderException {
+        final SWFDecoder decoder = new SWFDecoder(new byte[] {1, 1, 1, 4});
+        final Context context = new Context();
+        final Color color = new Color(decoder, context);
+        assertEquals(4, color.getAlpha());
     }
 
     @Test
-    public void checkColorIsEncoded() throws CoderException {
-        final Color color = new Color(red, green, blue, alpha);
-        final SWFEncoder encoder = new SWFEncoder(data.length);
+    public void checkSizeForOpaqueColour() throws CoderException {
+        final Context context = new Context(Context.TRANSPARENT, 0);
+        assertEquals(3, new Color(0, 0, 0).prepareToEncode(context));
+    }
 
-        color.prepareToEncode(encoder, context);
+    @Test
+    public void checkSizeForTransparentColour() throws CoderException {
+        final Context context = new Context(Context.TRANSPARENT, 1);
+        assertEquals(4, new Color(0, 0, 0).prepareToEncode(context));
+    }
+
+    @Test
+    public void checkOpaqueColourIsEncoded() throws CoderException {
+        final byte[] expected = new byte[] {1, 2, 3};
+        final Color color = new Color(1, 2, 3);
+
+        final SWFEncoder encoder = new SWFEncoder(expected.length);
+        final Context context = new Context();
+
+        color.prepareToEncode(context);
         color.encode(encoder, context);
 
-        assertTrue(encoder.eof());
-        assertArrayEquals(data, encoder.getData());
+        assertArrayEquals(expected, encoder.getData());
     }
 
     @Test
-    public void checkColorIsDecoded() throws CoderException {
-        final SWFDecoder decoder = new SWFDecoder(data);
-        final Color color = new Color(decoder, context);
+    public void checkTransparentColourIsEncoded() throws CoderException {
+        final byte[] expected = new byte[] {1, 2, 3, 4};
+        final Color color = new Color(1, 2, 3, 4);
 
-        assertTrue(decoder.eof());
-        assertEquals(red.intValue(), color.getRed());
-        assertEquals(green.intValue(), color.getGreen());
-        assertEquals(blue.intValue(), color.getBlue());
-        assertEquals(alpha.intValue(), color.getAlpha());
+        final SWFEncoder encoder = new SWFEncoder(expected.length);
+        final Context context = new Context(Context.TRANSPARENT, 1);
+
+        color.prepareToEncode(context);
+        color.encode(encoder, context);
+
+        assertArrayEquals(expected, encoder.getData());
     }
-}
+ }

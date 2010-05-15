@@ -62,7 +62,7 @@ public final class CallTest {
         final Context context = new Context();
 
         fixture = Call.getInstance();
-        assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
+        assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
 
         assertTrue(encoder.eof());

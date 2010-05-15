@@ -150,7 +150,7 @@ public final class MorphSolidFill implements FillStyle {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
         // CHECKSTYLE:OFF
         return 9;
         // CHECKSTYLE:ON

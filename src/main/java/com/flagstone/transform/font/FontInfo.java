@@ -386,10 +386,10 @@ public final class FontInfo implements MovieTag {
 
     // TODO(optimise)
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
         // CHECKSTYLE:OFF
         length = 3;
-        length += coder.strlen(name);
+        length += context.strlen(name);
 
         wideCodes = false;
 

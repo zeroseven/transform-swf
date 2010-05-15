@@ -159,7 +159,7 @@ public final class TabOrder implements MovieTag {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
         // CHECKSTYLE:OFF
         return 6;
         // CHECKSTYLE:ON

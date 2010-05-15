@@ -729,7 +729,7 @@ public final class DefineFont2 implements DefineTag {
 
     // TODO(optimise)
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
         wideCodes = (context.getVariables().get(Context.VERSION) > 5)
                 || encoding != 1;
 
@@ -745,13 +745,13 @@ public final class DefineFont2 implements DefineTag {
         int glyphLength = 0;
 
         for (final Shape shape : shapes) {
-            glyphLength += shape.prepareToEncode(coder, context);
+            glyphLength += shape.prepareToEncode(context);
         }
 
         wideOffsets = (shapes.size() * 2 + glyphLength) > 65535;
 
         length = 5;
-        length += coder.strlen(name);
+        length += context.strlen(name);
         length += 2;
         length += shapes.size() * (wideOffsets ? 4 : 2);
         length += wideOffsets ? 4 : 2;
@@ -763,7 +763,7 @@ public final class DefineFont2 implements DefineTag {
             length += advances.size() * 2;
 
             for (final Bounds bound : bounds) {
-                length += bound.prepareToEncode(coder, context);
+                length += bound.prepareToEncode(context);
             }
 
             length += 2;

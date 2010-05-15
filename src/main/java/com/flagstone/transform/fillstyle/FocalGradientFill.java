@@ -232,14 +232,14 @@ public final class FocalGradientFill implements FillStyle {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
         // CHECKSTYLE:OFF
         // TODO(optimise) Calculate size of gradient array directly.
-        int length = 4 + transform.prepareToEncode(coder, context);
+        int length = 4 + transform.prepareToEncode(context);
         count = gradients.size();
 
         for (final Gradient gradient : gradients) {
-            length += gradient.prepareToEncode(coder, context);
+            length += gradient.prepareToEncode(context);
         }
 
         return length;

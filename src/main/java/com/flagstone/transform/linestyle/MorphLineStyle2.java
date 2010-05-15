@@ -394,7 +394,7 @@ public final class MorphLineStyle2 implements SWFEncodeable,
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
 
         hasFillStyle = fillStyle != null;
         hasMiter = joinStyle == 2;
@@ -406,7 +406,7 @@ public final class MorphLineStyle2 implements SWFEncodeable,
         }
 
         if (hasFillStyle) {
-            length += fillStyle.prepareToEncode(coder, context);
+            length += fillStyle.prepareToEncode(context);
         } else {
             length += 4;
             length += 4;

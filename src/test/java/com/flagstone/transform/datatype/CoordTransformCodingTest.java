@@ -135,7 +135,7 @@ public final class CoordTransformCodingTest {
                 xcoord.intValue(), ycoord.intValue());
         final SWFEncoder encoder = new SWFEncoder(data.length);
 
-        assertEquals(data.length, transform.prepareToEncode(encoder, context));
+        assertEquals(data.length, transform.prepareToEncode(context));
     }
 
     @Test
@@ -147,7 +147,7 @@ public final class CoordTransformCodingTest {
                 xcoord.intValue(), ycoord.intValue());
         final SWFEncoder encoder = new SWFEncoder(data.length);
 
-        transform.prepareToEncode(encoder, context);
+        transform.prepareToEncode(context);
         transform.encode(encoder, context);
 
         assertTrue(encoder.eof());

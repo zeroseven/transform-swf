@@ -237,7 +237,7 @@ public final class GlowFilter implements Filter {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
 // CHECKSTYLE:OFF
         return 16;
 // CHECKSTYLE:ON

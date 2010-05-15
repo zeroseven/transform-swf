@@ -34,7 +34,6 @@ package com.flagstone.transform.action;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -180,11 +179,11 @@ public final class Table implements Action {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
         length = 2;
 
         for (final String str : values) {
-            length += coder.strlen(str);
+            length += context.strlen(str);
         }
 
         tableSize = values.size();

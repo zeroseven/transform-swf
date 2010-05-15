@@ -178,8 +178,7 @@ public final class Envelope implements SWFEncodeable {
         }
 
         /** {@inheritDoc} */
-        public int prepareToEncode(final SWFEncoder coder,
-                final Context context) {
+        public int prepareToEncode(final Context context) {
             return 8;
         }
 
@@ -274,7 +273,7 @@ public final class Envelope implements SWFEncodeable {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
         count = levels.size();
         return 1 + (count << 3);
     }

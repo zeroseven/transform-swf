@@ -86,7 +86,7 @@ public final class LineStyleTest {
         final Context context = new Context();
 
         fixture = new LineStyle(WIDTH, color);
-        assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
+        assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
 
         assertTrue(encoder.eof());

@@ -84,7 +84,7 @@ public final class PathsArePostscript implements MovieTag {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
         context.getVariables().put(Context.POSTSCRIPT, 1);
         return 2;
     }

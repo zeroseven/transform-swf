@@ -125,8 +125,8 @@ public final class ScalingGrid implements DefineTag {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
-        length = 2 + bounds.prepareToEncode(coder, context);
+    public int prepareToEncode(final Context context) {
+        length = 2 + bounds.prepareToEncode(context);
         return 2 + length;
     }
 

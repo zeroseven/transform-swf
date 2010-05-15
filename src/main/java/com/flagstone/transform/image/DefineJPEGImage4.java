@@ -211,7 +211,7 @@ public final class DefineJPEGImage4 implements ImageTag {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
         length = 8;
         length += image.length;
         length += alpha.length;

@@ -385,11 +385,11 @@ public final class ButtonEventHandler implements SWFEncodeable {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
         length = 2;
 
         for (final Action action : actions) {
-            length += action.prepareToEncode(coder, context);
+            length += action.prepareToEncode(context);
         }
 
         return length;

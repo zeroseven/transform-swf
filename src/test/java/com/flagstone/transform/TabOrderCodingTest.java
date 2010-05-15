@@ -96,7 +96,7 @@ public final class TabOrderCodingTest {
         final TabOrder object = new TabOrder(layer, index);
         final SWFEncoder encoder = new SWFEncoder(dout.length);
 
-        assertEquals(dout.length, object.prepareToEncode(encoder, context));
+        assertEquals(dout.length, object.prepareToEncode(context));
     }
 
     @Test
@@ -104,7 +104,7 @@ public final class TabOrderCodingTest {
         final TabOrder object = new TabOrder(layer, index);
         final SWFEncoder encoder = new SWFEncoder(dout.length);
 
-        object.prepareToEncode(encoder, context);
+        object.prepareToEncode(context);
         object.encode(encoder, context);
 
         assertTrue(encoder.eof());

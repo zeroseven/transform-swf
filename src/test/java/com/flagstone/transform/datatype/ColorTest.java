@@ -40,120 +40,105 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 public final class ColorTest {
 
-    private static final int RED = 1;
-    private static final int GREEN = 2;
-    private static final int BLUE = 3;
-    private static final int ALPHA = 4;
-
-    private static final int TOO_LOW = Color.MIN_LEVEL - 1;
-    private static final int TOO_HIGH = Color.MAX_LEVEL + 1;
-
     @Test
     public void checkConstructorSetsRed() {
-        assertEquals(RED, new Color(RED, GREEN, BLUE, ALPHA).getRed());
+        assertEquals(1, new Color(1, 0, 0).getRed());
     }
 
     @Test(expected = IllegalArgumentRangeException.class)
     public void checkRedValueBelowRangeThrowsException() {
-        new Color(TOO_LOW, GREEN, BLUE, ALPHA);
+        new Color(-1, 0, 0);
     }
 
     @Test(expected = IllegalArgumentRangeException.class)
     public void checkRedValueAboveRangeThrowsException() {
-        new Color(TOO_HIGH, GREEN, BLUE, ALPHA);
+        new Color(256, 0, 0);
     }
 
     @Test
     public void checkConstructorSetsGreen() {
-        assertEquals(GREEN, new Color(RED, GREEN, BLUE, ALPHA).getGreen());
+        assertEquals(1, new Color(0, 1, 0).getGreen());
     }
 
     @Test(expected = IllegalArgumentRangeException.class)
     public void checkGreenValueBelowRangeThrowsException() {
-        new Color(RED, TOO_LOW, BLUE, ALPHA);
+        new Color(0, -1, 0);
     }
 
     @Test(expected = IllegalArgumentRangeException.class)
     public void checkGreenValueAboveRangeThrowsException() {
-        new Color(RED, TOO_HIGH, BLUE, ALPHA);
+        new Color(0, 256, 0);
     }
 
     @Test
     public void checkConstructorSetsBlue() {
-        assertEquals(BLUE, new Color(RED, GREEN, BLUE, ALPHA).getBlue());
+        assertEquals(1, new Color(0, 0, 1).getBlue());
     }
 
     @Test(expected = IllegalArgumentRangeException.class)
     public void checkBlueValueBelowRangeThrowsException() {
-        new Color(RED, GREEN, TOO_LOW, ALPHA);
+        new Color(0, 0, -1);
     }
 
     @Test(expected = IllegalArgumentRangeException.class)
     public void checkBlueValueAboveRangeThrowsException() {
-        new Color(RED, GREEN, TOO_HIGH, ALPHA);
+        new Color(0, 0, 256);
+    }
+
+    @Test(expected = IllegalArgumentRangeException.class)
+    public void checkColorIsOpaque() {
+        assertEquals(255, new Color(0, 0, 0).getAlpha());
     }
 
     @Test
     public void checkConstructorSetsAlpha() {
-        assertEquals(ALPHA, new Color(RED, GREEN, BLUE, ALPHA).getAlpha());
+        assertEquals(1, new Color(0, 0, 0, 1).getAlpha());
     }
 
     @Test(expected = IllegalArgumentRangeException.class)
     public void checkAlphaValueBelowRangeThrowsException() {
-        new Color(RED, GREEN, BLUE, TOO_LOW);
+        new Color(0, 0, 0, -1);
     }
 
     @Test(expected = IllegalArgumentRangeException.class)
     public void checkAlphaValueAboveRangeThrowsException() {
-        new Color(RED, GREEN, BLUE, TOO_HIGH);
+        new Color(0, 0, 0, 256);
     }
 
     @Test
     public void checkString() {
-        assertNotNull(new Color(RED, GREEN, BLUE, ALPHA).toString());
+        assertNotNull(new Color(0, 0, 0, 0).toString());
     }
 
     @Test
     public void checkHashCode() {
-        assertEquals(31810, new Color(RED, GREEN, BLUE, ALPHA).hashCode());
+        assertEquals(new Color(0, 0, 0, 0).hashCode(),
+				new Color(0, 0, 0, 0).hashCode());
     }
 
     @Test
     public void checkSameObjectIsEqual() {
-        final Color color = new Color(RED, GREEN, BLUE, ALPHA);
-
+        final Color color = new Color(0, 0, 0, 0);
         assertEquals(color, color);
     }
 
     @Test
     public void checkSameColorIsEqual() {
-        final Color color = new Color(RED, GREEN, BLUE, ALPHA);
-        final Color other = new Color(RED, GREEN, BLUE, ALPHA);
-
-        assertEquals(color, other);
+        assertEquals(new Color(0, 1, 2, 3), new Color(0, 1, 2, 3));
     }
 
     @Test
     public void checkDifferentColorIsNotEqual() {
-        final Color color = new Color(RED, GREEN, BLUE, ALPHA);
-        final Color other = new Color(RED, GREEN, BLUE);
-
-        assertFalse(color.equals(other));
+        assertFalse(new Color(1, 2, 3).equals(new Color(3, 2, 1)));
     }
 
     @Test
     public void checkObjectIsNotEqual() {
-        final Color color = new Color(RED, GREEN, BLUE, ALPHA);
-        final Object other = new Object();
-
-        assertFalse(color.equals(other));
+        assertFalse(new Color(0, 0, 0).equals(new Object()));
     }
 
     @Test
     public void checkNullIsNotEqual() {
-        final Color color = new Color(RED, GREEN, BLUE, ALPHA);
-        final Color other = null;
-
-        assertFalse(color.equals(other));
+        assertFalse(new Color(0, 0, 0).equals(null));
     }
 }

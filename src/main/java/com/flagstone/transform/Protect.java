@@ -162,11 +162,11 @@ public final class Protect implements MovieTag {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
         length = 0;
 
         if (password != null) {
-            length += 2 + coder.strlen(password);
+            length += 2 + context.strlen(password);
         }
         return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH
                 : SWFEncoder.STD_LENGTH) + length;

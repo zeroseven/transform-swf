@@ -96,7 +96,7 @@ public final class MorphBitmapFillTest {
         final Context context = new Context();
 
         fixture = new MorphBitmapFill(tiled, smoothed, identifier, start, end);
-        assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
+        assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
 
         assertTrue(encoder.eof());

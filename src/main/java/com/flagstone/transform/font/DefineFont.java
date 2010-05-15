@@ -220,7 +220,7 @@ public final class DefineFont implements DefineTag {
 
     // TODO(optimise)
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
         length = 2;
 
         final Map<Integer, Integer> vars = context.getVariables();
@@ -231,7 +231,7 @@ public final class DefineFont implements DefineTag {
         length += shapes.size() * 2;
 
         for (final Shape shape : shapes) {
-            length += shape.prepareToEncode(coder, context);
+            length += shape.prepareToEncode(context);
         }
 
         vars.put(Context.FILL_SIZE, 0);

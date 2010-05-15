@@ -147,7 +147,7 @@ public final class JPEGEncodingTable implements MovieTag {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
         length = table.length;
 
         return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH

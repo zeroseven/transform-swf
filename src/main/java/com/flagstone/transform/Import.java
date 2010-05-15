@@ -205,11 +205,11 @@ public final class Import implements MovieTag {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
-        length = 2 + coder.strlen(url);
+    public int prepareToEncode(final Context context) {
+        length = 2 + context.strlen(url);
 
         for (final Integer identifier : objects.keySet()) {
-            length += 2 + coder.strlen(objects.get(identifier));
+            length += 2 + context.strlen(objects.get(identifier));
         }
 
         return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH

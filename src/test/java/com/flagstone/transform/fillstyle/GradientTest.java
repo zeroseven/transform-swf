@@ -74,7 +74,7 @@ public final class GradientTest {
         final Context context = new Context();
 
         fixture = new Gradient(ratio, color);
-        assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
+        assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
 
         assertTrue(encoder.eof());

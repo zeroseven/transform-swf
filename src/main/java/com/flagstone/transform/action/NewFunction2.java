@@ -532,8 +532,8 @@ public final class NewFunction2 implements Action {
 
     // TODO(optimise)
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
-        length = INITIAL_LENGTH + coder.strlen(name);
+    public int prepareToEncode(final Context context) {
+        length = INITIAL_LENGTH + context.strlen(name);
 
         for (final String arg : arguments.keySet()) {
             length += arg.getBytes().length + 2;
@@ -548,7 +548,7 @@ public final class NewFunction2 implements Action {
         }
 
         for (final Action action : actions) {
-            actionsLength += action.prepareToEncode(coder, context);
+            actionsLength += action.prepareToEncode(context);
         }
 
         length += actionsLength;

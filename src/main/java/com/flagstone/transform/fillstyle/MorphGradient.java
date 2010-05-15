@@ -174,9 +174,9 @@ public final class MorphGradient implements SWFEncodeable {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
-        int length = start.prepareToEncode(coder, context);
-        length += end.prepareToEncode(coder, context);
+    public int prepareToEncode(final Context context) {
+        int length = start.prepareToEncode(context);
+        length += end.prepareToEncode(context);
 
         return length;
     }

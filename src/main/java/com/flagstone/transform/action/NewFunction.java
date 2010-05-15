@@ -306,18 +306,18 @@ public final class NewFunction implements Action {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
-        length = 2 + coder.strlen(name);
+    public int prepareToEncode(final Context context) {
+        length = 2 + context.strlen(name);
 
         for (final String argument : arguments) {
-            length += coder.strlen(argument);
+            length += context.strlen(argument);
         }
 
         length += 2;
         actionsLength = 0;
 
         for (final Action action : actions) {
-            actionsLength += action.prepareToEncode(coder, context);
+            actionsLength += action.prepareToEncode(context);
         }
 
         return SWFEncoder.ACTION_HEADER + length + actionsLength;

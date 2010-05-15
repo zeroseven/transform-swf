@@ -393,7 +393,7 @@ public final class DefineSound implements DefineTag {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
         length = 7;
         length += sound.length;
 

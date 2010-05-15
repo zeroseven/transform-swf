@@ -220,13 +220,13 @@ public final class DefineMovieClip implements DefineTag {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
 
         frameCount = 0;
         length = 6;
 
         for (final MovieTag object : objects) {
-            length += object.prepareToEncode(coder, context);
+            length += object.prepareToEncode(context);
 
             if (object instanceof ShowFrame) {
                 frameCount += 1;

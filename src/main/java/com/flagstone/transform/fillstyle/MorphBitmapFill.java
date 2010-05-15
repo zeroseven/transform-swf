@@ -257,10 +257,10 @@ public final class MorphBitmapFill implements FillStyle {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
         // CHECKSTYLE:OFF
-        return 3 + startTransform.prepareToEncode(coder, context)
-                + endTransform.prepareToEncode(coder, context);
+        return 3 + startTransform.prepareToEncode(context)
+                + endTransform.prepareToEncode(context);
         // CHECKSTYLE:ON
     }
 

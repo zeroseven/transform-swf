@@ -369,7 +369,7 @@ public final class DefineShape4 implements DefineTag {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
         fillBits = Encoder.unsignedSize(fillStyles.size());
         lineBits = Encoder.unsignedSize(lineStyles.size());
 
@@ -387,13 +387,13 @@ public final class DefineShape4 implements DefineTag {
         vars.put(Context.TRANSPARENT, 1);
 
         length = 3;
-        length += shapeBounds.prepareToEncode(coder, context);
-        length += edgeBounds.prepareToEncode(coder, context);
+        length += shapeBounds.prepareToEncode(context);
+        length += edgeBounds.prepareToEncode(context);
 
         length += (fillStyles.size() >= EXTENDED) ? 3 : 1;
 
         for (final FillStyle style : fillStyles) {
-            length += style.prepareToEncode(coder, context);
+            length += style.prepareToEncode(context);
         }
 
         vars.remove(Context.SCALING_STROKE);
@@ -401,7 +401,7 @@ public final class DefineShape4 implements DefineTag {
         length += (lineStyles.size() >= EXTENDED) ? 3 : 1;
 
         for (final LineStyle2 style : lineStyles) {
-            length += style.prepareToEncode(coder, context);
+            length += style.prepareToEncode(context);
         }
 
         scaling = vars.containsKey(Context.SCALING_STROKE);
@@ -410,7 +410,7 @@ public final class DefineShape4 implements DefineTag {
         vars.put(Context.FILL_SIZE, fillBits);
         vars.put(Context.LINE_SIZE, lineBits);
 
-        length += shape.prepareToEncode(coder, context);
+        length += shape.prepareToEncode(context);
 
         vars.remove(Context.ARRAY_EXTENDED);
         vars.put(Context.FILL_SIZE, 0);

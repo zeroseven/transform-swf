@@ -239,9 +239,9 @@ public final class BitmapFill implements FillStyle {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
         // CHECKSTYLE:OFF
-        return 3 + transform.prepareToEncode(coder, context);
+        return 3 + transform.prepareToEncode(context);
         // CHECKSTYLE:ON
     }
 

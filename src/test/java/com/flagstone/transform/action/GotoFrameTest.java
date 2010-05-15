@@ -77,7 +77,7 @@ public final class GotoFrameTest {
         final Context context = new Context();
 
         fixture = new GotoFrame(number);
-        assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
+        assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
 
         assertTrue(encoder.eof());

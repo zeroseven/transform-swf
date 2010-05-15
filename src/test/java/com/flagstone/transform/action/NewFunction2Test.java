@@ -95,7 +95,7 @@ public final class NewFunction2Test {
 
         fixture = new NewFunction2(name, registers, optimizations,
                 args, actions);
-        assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
+        assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
 
         assertTrue(encoder.eof());

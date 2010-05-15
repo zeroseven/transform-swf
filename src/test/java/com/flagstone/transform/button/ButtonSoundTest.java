@@ -70,7 +70,7 @@ public final class ButtonSoundTest {
         final Context context = new Context();
 
         // fixture = new ButtonSound(identifier, layer, transform);
-        assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
+        assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
 
         assertTrue(encoder.eof());

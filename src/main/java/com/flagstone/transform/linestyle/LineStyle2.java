@@ -354,7 +354,7 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
 
         hasFillStyle = fillStyle != null;
         hasMiter = joinStyle == 2;
@@ -366,7 +366,7 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
         }
 
         if (hasFillStyle) {
-            length += fillStyle.prepareToEncode(coder, context);
+            length += fillStyle.prepareToEncode(context);
         } else {
             length += 4;
         }

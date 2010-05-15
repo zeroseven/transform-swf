@@ -258,17 +258,17 @@ public final class DefineButton implements DefineTag {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
         length = 2;
 
         for (final ButtonShape shape : shapes) {
-            length += shape.prepareToEncode(coder, context);
+            length += shape.prepareToEncode(context);
         }
 
         length += 1;
 
         for (final Action action : actions) {
-            length += action.prepareToEncode(coder, context);
+            length += action.prepareToEncode(context);
         }
 
         return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH

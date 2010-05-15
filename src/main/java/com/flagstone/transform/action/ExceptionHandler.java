@@ -34,7 +34,6 @@ package com.flagstone.transform.action;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
@@ -447,11 +446,11 @@ public final class ExceptionHandler implements Action {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
         length = EMPTY_LENGTH; // assume thrown object is stored in register.
 
         if (register != 0) {
-            length += coder.strlen(variable) - 1;
+            length += context.strlen(variable) - 1;
         }
 
         tryLength = 0;
@@ -459,15 +458,15 @@ public final class ExceptionHandler implements Action {
         finalLength = 0;
 
         for (final Action action : tryActions) {
-            tryLength += action.prepareToEncode(coder, context);
+            tryLength += action.prepareToEncode(context);
         }
 
         for (final Action action : catchActions) {
-            catchLength += action.prepareToEncode(coder, context);
+            catchLength += action.prepareToEncode(context);
         }
 
         for (final Action action : finalActions) {
-            finalLength += action.prepareToEncode(coder, context);
+            finalLength += action.prepareToEncode(context);
         }
 
         length += tryLength;

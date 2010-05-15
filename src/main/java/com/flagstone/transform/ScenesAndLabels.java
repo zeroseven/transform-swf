@@ -182,20 +182,20 @@ public final class ScenesAndLabels implements MovieTag {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
 
         length = SWFEncoder.sizeVariableU32(scenes.size());
 
         for (final Integer offset : scenes.keySet()) {
             length += SWFEncoder.sizeVariableU32(offset)
-                    + coder.strlen(scenes.get(offset));
+                    + context.strlen(scenes.get(offset));
         }
 
         length += SWFEncoder.sizeVariableU32(labels.size());
 
         for (final Integer offset : labels.keySet()) {
             length += SWFEncoder.sizeVariableU32(offset)
-                    + coder.strlen(labels.get(offset));
+                    + context.strlen(labels.get(offset));
         }
 
         return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH

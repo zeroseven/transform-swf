@@ -129,7 +129,7 @@ public final class BlurFilter implements Filter {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
         // CHECKSTYLE:OFF
         return 10;
         //CHECKSTYLE:ON

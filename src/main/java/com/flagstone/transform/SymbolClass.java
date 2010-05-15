@@ -159,12 +159,12 @@ public final class SymbolClass implements MovieTag {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
 
         length = 2;
 
         for (final String name : objects.values()) {
-            length += 2 + coder.strlen(name);
+            length += 2 + context.strlen(name);
         }
 
         return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH

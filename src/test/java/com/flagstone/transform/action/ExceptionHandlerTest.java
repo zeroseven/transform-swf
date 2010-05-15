@@ -90,7 +90,7 @@ public final class ExceptionHandlerTest {
 
         fixture = new ExceptionHandler(variable, tryActions, catchActions,
                 finalActions);
-        assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
+        assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
 
         assertTrue(encoder.eof());

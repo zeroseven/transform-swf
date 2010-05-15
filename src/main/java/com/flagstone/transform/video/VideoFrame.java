@@ -197,7 +197,7 @@ public final class VideoFrame implements MovieTag {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
         length = 4 + data.length;
 
         return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH : SWFEncoder.STD_LENGTH) + length;

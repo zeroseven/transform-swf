@@ -101,7 +101,7 @@ public final class BoundsCodingTest {
         final Bounds bounds = new Bounds(xMin, yMin, xMax, yMax);
         final SWFEncoder encoder = new SWFEncoder(data.length);
 
-        assertEquals(data.length, bounds.prepareToEncode(encoder, context));
+        assertEquals(data.length, bounds.prepareToEncode(context));
     }
 
     @Test
@@ -109,7 +109,7 @@ public final class BoundsCodingTest {
         final Bounds bounds = new Bounds(xMin, yMin, xMax, yMax);
         final SWFEncoder encoder = new SWFEncoder(data.length);
 
-        bounds.prepareToEncode(encoder, context);
+        bounds.prepareToEncode(context);
         bounds.encode(encoder, context);
 
         assertTrue(encoder.eof());

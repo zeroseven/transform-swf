@@ -407,10 +407,10 @@ public final class FontInfo2 implements MovieTag {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
         // CHECKSTYLE:OFF
         length = 4;
-        length += coder.strlen(name);
+        length += context.strlen(name);
         length += codes.size() * 2;
 
         return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH

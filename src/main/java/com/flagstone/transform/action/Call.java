@@ -65,7 +65,7 @@ public final class Call implements Action {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
         return SWFEncoder.ACTION_HEADER;
     }
 

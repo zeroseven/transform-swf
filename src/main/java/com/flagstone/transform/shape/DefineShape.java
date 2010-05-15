@@ -338,7 +338,7 @@ public final class DefineShape implements DefineTag {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
         fillBits = Encoder.unsignedSize(fillStyles.size());
         lineBits = Encoder.unsignedSize(lineStyles.size());
 
@@ -353,23 +353,23 @@ public final class DefineShape implements DefineTag {
             }
         }
 
-        length = 2 + bounds.prepareToEncode(coder, context);
+        length = 2 + bounds.prepareToEncode(context);
         length += 1;
 
         for (final FillStyle style : fillStyles) {
-            length += style.prepareToEncode(coder, context);
+            length += style.prepareToEncode(context);
         }
 
         length += 1;
 
         for (final LineStyle style : lineStyles) {
-            length += style.prepareToEncode(coder, context);
+            length += style.prepareToEncode(context);
         }
 
         vars.put(Context.FILL_SIZE, fillBits);
         vars.put(Context.LINE_SIZE, lineBits);
 
-        length += shape.prepareToEncode(coder, context);
+        length += shape.prepareToEncode(context);
 
         vars.put(Context.FILL_SIZE, 0);
         vars.put(Context.LINE_SIZE, 0);

@@ -338,7 +338,7 @@ public final class DefineImage2 implements ImageTag {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
         length = 7;
         length += (pixelSize == 8) ? 1 : 0;
         length += image.length;

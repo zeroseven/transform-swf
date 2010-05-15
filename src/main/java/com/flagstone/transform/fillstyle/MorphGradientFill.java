@@ -257,11 +257,11 @@ public final class MorphGradientFill implements FillStyle {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
         // CHECKSTYLE:OFF
         count = gradients.size();
-        return 2 + startTransform.prepareToEncode(coder, context)
-                + endTransform.prepareToEncode(coder, context) + (count * 10);
+        return 2 + startTransform.prepareToEncode(context)
+                + endTransform.prepareToEncode(context) + (count * 10);
         // CHECKSTYLE:ON
     }
 

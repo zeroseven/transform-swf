@@ -203,7 +203,7 @@ public final class GotoFrame2 implements Action {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
         hasOffset = frameOffset > 0;
         if (hasOffset) {
             length = LEN_WITH_OFFSET;

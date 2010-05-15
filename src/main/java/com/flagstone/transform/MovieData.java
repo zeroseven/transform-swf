@@ -93,7 +93,7 @@ public final class MovieData implements MovieTag {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
         return data.length;
     }
 

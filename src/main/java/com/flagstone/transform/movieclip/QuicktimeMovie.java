@@ -128,8 +128,8 @@ public final class QuicktimeMovie implements MovieTag {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
-        length = coder.strlen(path);
+    public int prepareToEncode(final Context context) {
+        length = context.strlen(path);
 
         return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH
                 : SWFEncoder.STD_LENGTH) + length;

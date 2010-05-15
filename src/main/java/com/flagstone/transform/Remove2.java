@@ -124,7 +124,7 @@ public final class Remove2 implements MovieTag {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
         // CHECKSTYLE:OFF
         return 4;
         // CHECKSTYLE:ON

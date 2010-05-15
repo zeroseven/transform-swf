@@ -303,7 +303,7 @@ public final class GradientBevelFilter implements Filter {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
         return 21 + 5 * gradients.size();
     }
 

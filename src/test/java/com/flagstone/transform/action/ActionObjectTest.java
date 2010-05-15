@@ -78,7 +78,7 @@ public final class ActionObjectTest {
         final Context context = new Context();
 
         fixture = new ActionObject(TYPE, data);
-        assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
+        assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
 
         assertTrue(encoder.eof());
@@ -91,7 +91,7 @@ public final class ActionObjectTest {
         final Context context = new Context();
 
         fixture = new ActionObject(1);
-        assertEquals(basic.length, fixture.prepareToEncode(encoder, context));
+        assertEquals(basic.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
 
         assertTrue(encoder.eof());
@@ -104,7 +104,7 @@ public final class ActionObjectTest {
         final Context context = new Context();
 
         fixture = new ActionObject(TYPE, new byte[0]);
-        assertEquals(empty.length, fixture.prepareToEncode(encoder, context));
+        assertEquals(empty.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
 
         assertTrue(encoder.eof());

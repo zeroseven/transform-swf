@@ -82,7 +82,7 @@ public final class MorphSolidFillTest {
         context.getVariables().put(Context.TRANSPARENT, 1);
 
         fixture = new MorphSolidFill(startColor, endColor);
-        assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
+        assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
 
         assertTrue(encoder.eof());

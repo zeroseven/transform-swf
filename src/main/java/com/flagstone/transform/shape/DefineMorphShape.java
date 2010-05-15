@@ -473,7 +473,7 @@ public final class DefineMorphShape implements DefineTag {
 
     // TODO(optimise)
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
         fillBits = Encoder.unsignedSize(fillStyles.size());
         lineBits = Encoder.unsignedSize(lineStyles.size());
 
@@ -491,33 +491,33 @@ public final class DefineMorphShape implements DefineTag {
 
         vars.put(Context.TRANSPARENT, 1);
 
-        length = 2 + startBounds.prepareToEncode(coder, context);
-        length += endBounds.prepareToEncode(coder, context);
+        length = 2 + startBounds.prepareToEncode(context);
+        length += endBounds.prepareToEncode(context);
         length += 4;
 
         length += (fillStyles.size() >= EXTENDED) ? 3 : 1;
 
         for (final FillStyle style : fillStyles) {
-            length += style.prepareToEncode(coder, context);
+            length += style.prepareToEncode(context);
         }
 
         length += (lineStyles.size() >= EXTENDED) ? 3 : 1;
 
         for (final MorphLineStyle style : lineStyles) {
-            length += style.prepareToEncode(coder, context);
+            length += style.prepareToEncode(context);
         }
 
         vars.put(Context.ARRAY_EXTENDED, 1);
         vars.put(Context.FILL_SIZE, fillBits);
         vars.put(Context.LINE_SIZE, lineBits);
 
-        length += startShape.prepareToEncode(coder, context);
+        length += startShape.prepareToEncode(context);
 
         // Number of Fill and Line bits is zero for end shape.
         vars.put(Context.FILL_SIZE, 0);
         vars.put(Context.LINE_SIZE, 0);
 
-        length += endShape.prepareToEncode(coder, context);
+        length += endShape.prepareToEncode(context);
 
         vars.remove(Context.ARRAY_EXTENDED);
         vars.remove(Context.TRANSPARENT);

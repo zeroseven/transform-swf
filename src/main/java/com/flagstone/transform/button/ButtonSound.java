@@ -219,12 +219,12 @@ public final class ButtonSound implements MovieTag {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
         length = 2;
 
         for (ButtonEvent event : EVENTS) {
             if (table.containsKey(event)) {
-                length += table.get(event).prepareToEncode(coder, context);
+                length += table.get(event).prepareToEncode(context);
             } else {
                 length += 2;
             }

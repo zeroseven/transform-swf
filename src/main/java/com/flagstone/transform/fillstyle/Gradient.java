@@ -170,8 +170,8 @@ public final class Gradient implements SWFEncodeable {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
-        return 1 + color.prepareToEncode(coder, context);
+    public int prepareToEncode(final Context context) {
+        return 1 + color.prepareToEncode(context);
     }
 
     /** {@inheritDoc} */

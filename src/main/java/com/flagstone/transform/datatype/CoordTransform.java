@@ -430,7 +430,7 @@ public final class CoordTransform implements SWFEncodeable {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
 
         int numberOfBits = 2 + FIELD_SIZE + Coder.ROUND_TO_BYTES;
 

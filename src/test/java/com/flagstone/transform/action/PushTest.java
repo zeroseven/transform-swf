@@ -90,7 +90,7 @@ public final class PushTest {
         context.getVariables().put(Context.VERSION, 4);
 
         fixture = new Push(values);
-        assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
+        assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
 
         assertTrue(encoder.eof());

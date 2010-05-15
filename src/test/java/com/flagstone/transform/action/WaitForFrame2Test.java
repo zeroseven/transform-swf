@@ -77,7 +77,7 @@ public final class WaitForFrame2Test {
         final Context context = new Context();
 
         fixture = new WaitForFrame2(COUNT);
-        assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
+        assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
 
         assertTrue(encoder.eof());

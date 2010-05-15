@@ -143,7 +143,7 @@ public final class Background implements MovieTag {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
         return 2 + Color.RGB;
     }
 

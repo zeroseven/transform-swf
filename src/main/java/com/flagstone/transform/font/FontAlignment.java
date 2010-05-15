@@ -208,11 +208,11 @@ public final class FontAlignment implements MovieTag {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
         length = 3;
 
         for (final GlyphAlignment zone : zones) {
-            length += zone.prepareToEncode(coder, context);
+            length += zone.prepareToEncode(context);
         }
 
         return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH

@@ -226,7 +226,7 @@ public final class ConvolutionFilter implements Filter {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
         rows = matrix.length;
         cols = matrix[0].length;
 

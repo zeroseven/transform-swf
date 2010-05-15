@@ -333,7 +333,7 @@ public final class SoundInfo implements SWFEncodeable {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
         int length = 3;
         if (inPoint != null) {
             length += 4;
@@ -345,7 +345,7 @@ public final class SoundInfo implements SWFEncodeable {
             length += 2;
         }
         if (envelope != null) {
-            length += envelope.prepareToEncode(coder, context);
+            length += envelope.prepareToEncode(context);
         }
         return length;
     }

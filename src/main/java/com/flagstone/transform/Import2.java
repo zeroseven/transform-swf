@@ -213,12 +213,12 @@ public final class Import2 implements MovieTag {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
         // CHECKSTYLE:OFF
-        length = 4 + coder.strlen(url);
+        length = 4 + context.strlen(url);
 
         for (final String name : objects.values()) {
-            length += 2 + coder.strlen(name);
+            length += 2 + context.strlen(name);
         }
 
         return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH

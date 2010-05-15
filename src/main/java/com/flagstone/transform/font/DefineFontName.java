@@ -164,8 +164,8 @@ public final class DefineFontName implements DefineTag {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
-        length = 2 + coder.strlen(name) + coder.strlen(copyright);
+    public int prepareToEncode(final Context context) {
+        length = 2 + context.strlen(name) + context.strlen(copyright);
         return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH
                 : SWFEncoder.STD_LENGTH) + length;
     }

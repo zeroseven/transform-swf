@@ -473,7 +473,7 @@ public final class ShapeStyle implements ShapeRecord {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
         hasLine = lineStyle != null;
         hasFill = fillStyle != null;
         hasAlt = altFillStyle != null;
@@ -523,7 +523,7 @@ public final class ShapeStyle implements ShapeRecord {
                     : 8;
 
             for (final FillStyle style : fillStyles) {
-                numberOfStyleBits += style.prepareToEncode(coder, context) * 8;
+                numberOfStyleBits += style.prepareToEncode(context) * 8;
             }
 
             numberOfStyleBits += (countExtended
@@ -531,7 +531,7 @@ public final class ShapeStyle implements ShapeRecord {
                     : 8;
 
             for (final LineStyle style : lineStyles) {
-                numberOfStyleBits += style.prepareToEncode(coder, context) * 8;
+                numberOfStyleBits += style.prepareToEncode(context) * 8;
             }
 
             numberOfStyleBits += 8;

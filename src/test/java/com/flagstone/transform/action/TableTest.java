@@ -85,7 +85,7 @@ public final class TableTest {
         final Context context = new Context();
 
         fixture = new Table(list);
-        assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
+        assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
 
         assertTrue(encoder.eof());

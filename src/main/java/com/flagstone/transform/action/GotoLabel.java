@@ -115,8 +115,8 @@ public final class GotoLabel implements Action {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
-        length = coder.strlen(label);
+    public int prepareToEncode(final Context context) {
+        length = context.strlen(label);
 
         return SWFEncoder.ACTION_HEADER + length;
     }

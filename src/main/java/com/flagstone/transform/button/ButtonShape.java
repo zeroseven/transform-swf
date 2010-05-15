@@ -370,22 +370,22 @@ public final class ButtonShape implements SWFEncodeable {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
 
         hasBlend = blend != 0;
         hasFilters ^= filters.isEmpty();
 
-        int length = 5 + transform.prepareToEncode(coder, context);
+        int length = 5 + transform.prepareToEncode(context);
 
         if (context.getVariables().get(Context.TYPE)
                 == MovieTypes.DEFINE_BUTTON_2) {
-            length += colorTransform.prepareToEncode(coder, context);
+            length += colorTransform.prepareToEncode(context);
         }
 
         if (hasFilters) {
             length += 1;
             for (Filter filter : filters) {
-                length += filter.prepareToEncode(coder, context);
+                length += filter.prepareToEncode(context);
             }
         }
 

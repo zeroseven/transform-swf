@@ -115,7 +115,7 @@ public final class ColorMatrixFilter implements Filter {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
 // CHECKSTYLE:OFF - Fixed length when encoded
         return 81;
 // CHECKSTYLE:ON

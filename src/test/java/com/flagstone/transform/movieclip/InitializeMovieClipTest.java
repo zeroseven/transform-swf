@@ -101,7 +101,7 @@ public final class InitializeMovieClipTest {
         final Context context = new Context();
 
         fixture = new InitializeMovieClip(identifier, list);
-        assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
+        assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
 
         assertTrue(encoder.eof());

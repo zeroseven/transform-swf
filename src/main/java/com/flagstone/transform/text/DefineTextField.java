@@ -935,19 +935,19 @@ public final class DefineTextField implements DefineTag {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
         final Map<Integer, Integer> vars = context.getVariables();
         vars.put(Context.TRANSPARENT, 1);
 
-        length = 2 + bounds.prepareToEncode(coder, context);
+        length = 2 + bounds.prepareToEncode(context);
         length += 2;
         length += (fontIdentifier == 0) ? 0 : 4;
-        length += fontClass == null ? 0 : coder.strlen(fontClass) + 2;
+        length += fontClass == null ? 0 : context.strlen(fontClass) + 2;
         length += color == null ? 0 : 4;
         length += (maxLength > 0) ? 2 : 0;
         length += (containsLayout()) ? 9 : 0;
-        length += coder.strlen(variableName);
-        length += (initialText == null) ? 0 : coder.strlen(initialText);
+        length += context.strlen(variableName);
+        length += (initialText == null) ? 0 : context.strlen(initialText);
 
         vars.remove(Context.TRANSPARENT);
 

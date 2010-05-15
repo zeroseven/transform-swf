@@ -54,7 +54,7 @@ public interface SWFEncodeable {
      *
      * @return the size of the object when it is encoded.
      */
-    int prepareToEncode(final SWFEncoder coder, final Context context);
+    int prepareToEncode(final Context context);
 
     /**
      * Encode an object to the Flash binary format.

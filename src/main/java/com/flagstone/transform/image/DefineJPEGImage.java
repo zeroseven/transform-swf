@@ -196,7 +196,7 @@ public final class DefineJPEGImage implements ImageTag {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
         length = 2 + image.length;
 
         return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH

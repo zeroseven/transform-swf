@@ -319,7 +319,7 @@ public final class DefineText2 implements DefineTag {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
         glyphBits = calculateSizeForGlyphs();
         advanceBits = calculateSizeForAdvances();
 
@@ -328,12 +328,12 @@ public final class DefineText2 implements DefineTag {
         vars.put(Context.GLYPH_SIZE, glyphBits);
         vars.put(Context.ADVANCE_SIZE, advanceBits);
 
-        length = 2 + bounds.prepareToEncode(coder, context);
-        length += transform.prepareToEncode(coder, context);
+        length = 2 + bounds.prepareToEncode(context);
+        length += transform.prepareToEncode(context);
         length += 2;
 
         for (final TextSpan span : objects) {
-            length += span.prepareToEncode(coder, context);
+            length += span.prepareToEncode(context);
         }
 
         length += 1;

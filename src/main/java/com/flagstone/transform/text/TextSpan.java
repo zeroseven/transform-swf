@@ -379,7 +379,7 @@ public final class TextSpan implements SWFEncodeable {
 
     // TODO(optimise)
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
         hasFont = (identifier != null) && (height != null);
         hasColor = color != null;
         hasX = offsetX != null;

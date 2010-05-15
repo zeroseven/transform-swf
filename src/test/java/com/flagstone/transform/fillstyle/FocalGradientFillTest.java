@@ -82,7 +82,7 @@ public final class FocalGradientFillTest {
         final Context context = new Context();
 
         // fixture = new FocalGradientFill(type, transform, list);
-        assertEquals(encoded.length, fixture.prepareToEncode(encoder, context));
+        assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
 
         assertTrue(encoder.eof());

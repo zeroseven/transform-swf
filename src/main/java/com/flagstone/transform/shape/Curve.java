@@ -212,7 +212,7 @@ public final class Curve implements ShapeRecord {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final SWFEncoder coder, final Context context) {
+    public int prepareToEncode(final Context context) {
         int numberOfBits = 6;
 
         size = Encoder.maxSize(controlX, controlY, anchorX, anchorY, 1);
