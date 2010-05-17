@@ -32,6 +32,7 @@ package com.flagstone.transform.datatype;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -42,62 +43,69 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 public final class ColorCodingTest {
 
-    @Test
-    public void checkOpaqueColorIsDecoded() throws CoderException {
-        final SWFDecoder decoder = new SWFDecoder(new byte[] {1, 2, 3});
-        final Context context = new Context();
-        final Color color = new Color(decoder, context);
-        assertEquals(1, color.getRed());
-        assertEquals(2, color.getGreen());
-        assertEquals(3, color.getBlue());
-        assertEquals(255, color.getAlpha());
-    }
-
-    @Test
-    public void checkAlphaColorIsDecoded() throws CoderException {
-        final SWFDecoder decoder = new SWFDecoder(new byte[] {1, 1, 1, 4});
-        final Context context = new Context();
-        final Color color = new Color(decoder, context);
-        assertEquals(4, color.getAlpha());
-    }
-
-    @Test
-    public void checkSizeForOpaqueColour() throws CoderException {
-        final Context context = new Context(Context.TRANSPARENT, 0);
-        assertEquals(3, new Color(0, 0, 0).prepareToEncode(context));
-    }
-
-    @Test
-    public void checkSizeForTransparentColour() throws CoderException {
-        final Context context = new Context(Context.TRANSPARENT, 1);
-        assertEquals(4, new Color(0, 0, 0).prepareToEncode(context));
-    }
+    private static final String CALCULATED_LENGTH =
+        "Incorrect calculated length";
+    private static final String NOT_FULLY_ENCODED =
+        "Data was not fully encoded";
+    private static final String NOT_FULLY_DECODED =
+        "Data was not fully decoded";
+    private static final String NOT_ENCODED =
+        "Object was not encoded properly";
+    private static final String NOT_DECODED =
+        "Object was not decoded properly";
 
     @Test
     public void checkOpaqueColourIsEncoded() throws CoderException {
-        final byte[] expected = new byte[] {1, 2, 3};
-        final Color color = new Color(1, 2, 3);
+        final Color object = new Color(1, 2, 3);
+        final byte[] binary = new byte[] {1, 2, 3};
 
-        final SWFEncoder encoder = new SWFEncoder(expected.length);
+        final SWFEncoder encoder = new SWFEncoder(binary.length);
         final Context context = new Context();
 
-        color.prepareToEncode(context);
-        color.encode(encoder, context);
+        final int length = object.prepareToEncode(context);
+        object.encode(encoder, context);
 
-        assertArrayEquals(expected, encoder.getData());
+        assertEquals(CALCULATED_LENGTH, binary.length, length);
+        assertTrue(NOT_FULLY_ENCODED, encoder.eof());
+        assertArrayEquals(NOT_ENCODED, binary, encoder.getData());
     }
 
     @Test
-    public void checkTransparentColourIsEncoded() throws CoderException {
-        final byte[] expected = new byte[] {1, 2, 3, 4};
-        final Color color = new Color(1, 2, 3, 4);
+    public void checkOpaqueColourIsDecoded() throws CoderException {
+        final Color object = new Color(1, 2, 3);
+        final byte[] binary = new byte[] {1, 2, 3};
 
-        final SWFEncoder encoder = new SWFEncoder(expected.length);
+        final SWFDecoder decoder = new SWFDecoder(binary);
+        final Context context = new Context();
+
+        assertEquals(NOT_DECODED, object, new Color(decoder, context));
+        assertTrue(NOT_FULLY_DECODED, decoder.eof());
+   }
+
+    @Test
+    public void checkTransparentColourIsEncoded() throws CoderException {
+        final Color object = new Color(1, 2, 3, 4);
+        final byte[] binary = new byte[] {1, 2, 3, 4};
+
+        final SWFEncoder encoder = new SWFEncoder(binary.length);
+        final Context context = new Context(Context.TRANSPARENT, 1);
+        final int length = object.prepareToEncode(context);
+        object.encode(encoder, context);
+
+        assertEquals(CALCULATED_LENGTH, binary.length, length);
+        assertTrue(NOT_FULLY_ENCODED, encoder.eof());
+        assertArrayEquals(NOT_ENCODED, binary, encoder.getData());
+    }
+
+    @Test
+    public void checkTransparentColourIsDecoded() throws CoderException {
+        final Color object = new Color(1, 2, 3, 4);
+        final byte[] binary = new byte[] {1, 2, 3, 4};
+
+        final SWFDecoder decoder = new SWFDecoder(binary);
         final Context context = new Context(Context.TRANSPARENT, 1);
 
-        color.prepareToEncode(context);
-        color.encode(encoder, context);
-
-        assertArrayEquals(expected, encoder.getData());
-    }
- }
+        assertEquals(NOT_DECODED, object, new Color(decoder, context));
+        assertTrue(NOT_FULLY_DECODED, decoder.eof());
+   }
+}

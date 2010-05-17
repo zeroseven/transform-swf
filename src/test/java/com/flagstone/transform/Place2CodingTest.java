@@ -33,160 +33,91 @@ package com.flagstone.transform;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assume.assumeNotNull;
-
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
-import org.yaml.snakeyaml.Yaml;
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.datatype.ColorTransform;
 import com.flagstone.transform.datatype.CoordTransform;
 
 @RunWith(Parameterized.class)
 public final class Place2CodingTest {
 
-    private static final String RESOURCE =
-        "com/flagstone/transform/Place2.yaml";
-
-    private static final String PLACE = "place";
-    private static final String IDENTIFIER = "identifier";
-    private static final String LAYER = "layer";
-    private static final String XCOORD = "xcoord";
-    private static final String YCOORD = "ycoord";
-    private static final String RED = "red";
-    private static final String GREEN = "green";
-    private static final String BLUE = "blue";
-    private static final String ALPHA = "alpha";
-    private static final String DIN = "din";
-    private static final String DOUT = "dout";
-
-    @Parameters
-    public static Collection<Object[]>  patterns() {
-
-        ClassLoader loader = DoActionCodingTest.class.getClassLoader();
-        InputStream other = loader.getResourceAsStream(RESOURCE);
-        Yaml yaml = new Yaml();
-
-        Collection<Object[]> list = new ArrayList<Object[]>();
-
-        for (Object data : yaml.loadAll(other)) {
-            list.add(new Object[] {data });
-        }
-
-        return list;
-    }
-
-    private final transient int place;
-    private final transient int identifier;
-    private final transient int layer;
-    private final transient CoordTransform position;
-    private final transient ColorTransform color;
-    private final transient byte[] din;
-    private final transient byte[] dout;
-    private final transient Context context;
-
-    public Place2CodingTest(final Map<String, Object>values) {
-        place = (Integer) values.get(PLACE);
-        identifier = (Integer) values.get(IDENTIFIER);
-        layer = (Integer) values.get(LAYER);
-
-        if (values.get(XCOORD) != null) {
-            position = CoordTransform.translate(
-                    (Integer) values.get(XCOORD), (Integer) values.get(YCOORD));
-        } else {
-            position = null;
-        }
-
-        if (values.get(RED) != null) {
-            color = new ColorTransform(
-                    (Integer) values.get(RED), (Integer) values.get(GREEN),
-                    (Integer) values.get(BLUE), (Integer) values.get(ALPHA)
-                    );
-        } else {
-            color = null;
-        }
-
-        din = (byte[]) values.get(DIN);
-        dout = (byte[]) values.get(DOUT);
-        context = new Context();
-    }
+    private static final String CALCULATED_LENGTH =
+        "Incorrect calculated length";
+    private static final String NOT_FULLY_ENCODED =
+        "Data was not fully encoded";
+    private static final String NOT_FULLY_DECODED =
+        "Data was not fully decoded";
+    private static final String NOT_ENCODED =
+        "Object was not encoded properly";
+    private static final String NOT_DECODED =
+        "Object was not decoded properly";
 
     @Test
-    public void checkSizeMatchesEncodedSize() throws CoderException {
-        final Place2 object = new Place2().setType(PlaceType.NEW)
-                .setIdentifier(identifier).setLayer(layer)
-                .setTransform(position).setColorTransform(color);
-        final SWFEncoder encoder = new SWFEncoder(dout.length);
+    public void checkAddWithPositionIsEncoded() throws CoderException {
+        final int uid = 1;
+        final int layer = 2;
+        final int xcoord = 1;
+        final int ycoord = 2;
+        final Place2 object = new Place2.Builder().show(uid, layer,
+                xcoord, ycoord);
 
-        assertEquals(dout.length, object.prepareToEncode(context));
-    }
+        final byte[] binary = new byte[] {(byte) 0x87, 0x06, 0x06, 0x01, 0x00,
+                0x02, 0x00, 0x06, 0x50};
 
-    @Test
-    public void checkObjectIsEncoded() throws CoderException {
-        final Place2 object = new Place2().setType(PlaceType.NEW)
-                .setIdentifier(identifier).setLayer(layer)
-                .setTransform(position).setColorTransform(color);
-        final SWFEncoder encoder = new SWFEncoder(dout.length);
+        final SWFEncoder encoder = new SWFEncoder(binary.length);
+        final Context context = new Context();
 
-        object.prepareToEncode(context);
+        final int length = object.prepareToEncode(context);
         object.encode(encoder, context);
 
-        assertTrue(encoder.eof());
-        assertArrayEquals(dout, encoder.getData());
+        assertEquals(CALCULATED_LENGTH, binary.length, length);
+        assertTrue(NOT_FULLY_ENCODED, encoder.eof());
+        assertArrayEquals(NOT_ENCODED, binary, encoder.getData());
     }
 
     @Test
-    public void decode() throws CoderException {
-        final SWFDecoder decoder = new SWFDecoder(din);
+    public void checkAddWithPositionIsDecoded() throws CoderException {
+        final int identifier = 1;
+        final int layer = 2;
+        final CoordTransform transform = CoordTransform.translate(1, 1);
+
+        final byte[] binary = new byte[] {(byte) 0x87, 0x06, 0x06, 0x01, 0x00,
+                0x02, 0x00, 0x06, 0x50};
+
+        final SWFDecoder decoder = new SWFDecoder(binary);
+        final Context context = new Context();
         final Place2 object = new Place2(decoder, context);
 
-        assertTrue(decoder.eof());
-
-        assertEquals(place, object.getType().ordinal() + 1);
-        assertEquals(identifier, object.getIdentifier());
-        assertEquals(layer, object.getLayer());
-    }
+        assertEquals(NOT_DECODED, identifier, object.getIdentifier());
+        assertEquals(NOT_DECODED, layer, object.getLayer());
+        assertEquals(NOT_DECODED, transform, object.getTransform());
+        assertEquals(NOT_DECODED, null, object.getColorTransform());
+        assertTrue(NOT_FULLY_DECODED, decoder.eof());
+   }
 
     @Test
-    public void decodePosition() throws CoderException {
-        assumeNotNull(position);
+    public void checkExtendedPlaceIsDecoded() throws CoderException {
+        final int identifier = 1;
+        final int layer = 2;
+        final CoordTransform transform = CoordTransform.translate(1, 2);
 
-        final SWFDecoder decoder = new SWFDecoder(din);
+        final byte[] binary = new byte[] {(byte) 0x8A, 0x06, 0x0E, 0x01, 0x00,
+                0x02, 0x00, 0x06, 0x50, (byte) 0x90, 0x48, (byte) 0xD0 };
+
+        final SWFDecoder decoder = new SWFDecoder(binary);
+        final Context context = new Context();
         final Place2 object = new Place2(decoder, context);
 
-        assertTrue(decoder.eof());
-
-        assertEquals(position.getTranslateX(), object.getTransform()
-                .getTranslateX());
-        assertEquals(position.getTranslateY(), object.getTransform()
-                .getTranslateY());
-    }
-
-    @Test
-    public void decodeColor() throws CoderException {
-        assumeNotNull(color);
-
-        final SWFDecoder decoder = new SWFDecoder(din);
-        final Place2 object = new Place2(decoder, context);
-
-        assertTrue(decoder.eof());
-
-        assertEquals(color.getAddRed(), object.getColorTransform()
-                .getAddRed());
-        assertEquals(color.getAddGreen(), object.getColorTransform()
-                .getAddGreen());
-        assertEquals(color.getAddBlue(), object.getColorTransform()
-                .getAddBlue());
-    }
+        assertEquals(NOT_DECODED, identifier, object.getIdentifier());
+        assertEquals(NOT_DECODED, layer, object.getLayer());
+        assertEquals(NOT_DECODED, transform, object.getTransform());
+        assertEquals(NOT_DECODED, null, object.getColorTransform());
+        assertTrue(NOT_FULLY_DECODED, decoder.eof());
+   }
 }

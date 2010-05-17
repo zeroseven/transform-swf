@@ -34,74 +34,35 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
-
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
-import org.yaml.snakeyaml.Yaml;
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.shape.PathsArePostscript;
 
-@RunWith(Parameterized.class)
 public final class PathsArePostscriptCodingTest {
 
-    private static final String RESOURCE =
-        "com/flagstone/transform/PathsArePostscript.yaml";
-
-    private static final String DIN = "din";
-    private static final String DOUT = "dout";
-
-    @Parameters
-    public static Collection<Object[]>  patterns() {
-
-        ClassLoader loader = DoActionCodingTest.class.getClassLoader();
-        InputStream other = loader.getResourceAsStream(RESOURCE);
-        Yaml yaml = new Yaml();
-
-        Collection<Object[]> list = new ArrayList<Object[]>();
-
-        for (Object data : yaml.loadAll(other)) {
-            list.add(new Object[] {data });
-        }
-
-        return list;
-    }
-
-    private final transient byte[] din;
-    private final transient byte[] dout;
-    private final transient Context context;
-
-    public PathsArePostscriptCodingTest(final Map<String, Object>values) {
-        din = (byte[]) values.get(DIN);
-        dout = (byte[]) values.get(DOUT);
-        context = new Context();
-    }
+    private static final String CALCULATED_LENGTH =
+        "Incorrect calculated length";
+    private static final String NOT_FULLY_ENCODED =
+        "Data was not fully encoded";
+    private static final String NOT_ENCODED =
+        "Object was not encoded properly";
 
     @Test
-    public void checkSizeMatchesEncodedSize() throws CoderException {
+    public void checkPathsArePostscriptIsEncoded() throws CoderException {
         final PathsArePostscript object = PathsArePostscript.getInstance();
-        final SWFEncoder encoder = new SWFEncoder(dout.length);
+        final byte[] binary = new byte[] {0x40, 0x06 };
 
-        assertEquals(dout.length, object.prepareToEncode(context));
-    }
+        final SWFEncoder encoder = new SWFEncoder(binary.length);
+        final Context context = new Context();
 
-    @Test
-    public void checkObjectIsEncoded() throws CoderException {
-        final PathsArePostscript object = PathsArePostscript.getInstance();
-        final SWFEncoder encoder = new SWFEncoder(dout.length);
-
-        object.prepareToEncode(context);
+        final int length = object.prepareToEncode(context);
         object.encode(encoder, context);
 
-        assertTrue(encoder.eof());
-        assertArrayEquals(dout, encoder.getData());
+        assertEquals(CALCULATED_LENGTH, binary.length, length);
+        assertTrue(NOT_FULLY_ENCODED, encoder.eof());
+        assertArrayEquals(NOT_ENCODED, binary, encoder.getData());
     }
 }

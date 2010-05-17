@@ -34,247 +34,269 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
-
-import org.junit.Assume;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
-import org.yaml.snakeyaml.Yaml;
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-@RunWith(Parameterized.class)
 public final class ColorTransformCodingTest {
 
-    private static final String RESOURCE =
-        "com/flagstone/transform/datatype/ColorTransform.yaml";
+    private static final String CALCULATED_LENGTH =
+        "Incorrect calculated length";
+    private static final String NOT_FULLY_ENCODED =
+        "Data was not fully encoded";
+    private static final String NOT_FULLY_DECODED =
+        "Data was not fully decoded";
+    private static final String NOT_ENCODED =
+        "Object was not encoded properly";
+    private static final String NOT_DECODED =
+        "Object was not decoded properly";
 
-    private static final Float DEFAULT_MULTIPLY = 1.0f;
-    private static final int DEFAULT_ADD = 0;
+    @Test
+    public void checkOpaqueAddTermsAreEncoded() throws CoderException {
+        final ColorTransform object = new ColorTransform(1, 2, 3, 0);
+        final byte[] binary = new byte[] { (byte) 0x8C, (byte) 0xA6 };
 
-    private static final String MRED = "mred";
-    private static final String MGREEN = "mgreen";
-    private static final String MBLUE = "mblue";
-    private static final String MALPHA = "malpha";
-    private static final String ARED = "ared";
-    private static final String AGREEN = "agreen";
-    private static final String ABLUE = "ablue";
-    private static final String AALPHA = "aalpha";
-    private static final String DATA = "data";
+        final SWFEncoder encoder = new SWFEncoder(binary.length);
+        final Context context = new Context();
 
-    @Parameters
-    public static Collection<Object[]>  patterns() {
+        final int length = object.prepareToEncode(context);
+        object.encode(encoder, context);
 
-        ClassLoader loader = ColorTransformCodingTest.class.getClassLoader();
-        InputStream other = loader.getResourceAsStream(RESOURCE);
-        Yaml yaml = new Yaml();
-
-        Collection<Object[]> list = new ArrayList<Object[]>();
-
-        for (Object data : yaml.loadAll(other)) {
-            list.add(new Object[] {data });
-        }
-
-        return list;
-    }
-
-    private final Double mred;
-    private final Double mgreen;
-    private final Double mblue;
-    private final Double malpha;
-    private final Integer ared;
-    private final Integer agreen;
-    private final Integer ablue;
-    private final Integer aalpha;
-    private final byte[] data;
-
-    private final Context context;
-
-    public ColorTransformCodingTest(final Map<String, Object>values) {
-        mred = (Double) values.get(MRED);
-        mgreen = (Double) values.get(MGREEN);
-        mblue = (Double) values.get(MBLUE);
-        if (values.get(MALPHA) == null) {
-            malpha = 1.0;
-        } else {
-            malpha = (Double) values.get(MALPHA);
-        }
-        ared = (Integer) values.get(ARED);
-        agreen = (Integer) values.get(AGREEN);
-        ablue = (Integer) values.get(ABLUE);
-        if (values.get(AALPHA) == null) {
-            aalpha = 0;
-        } else {
-            aalpha = (Integer) values.get(AALPHA);
-        }
-        data = (byte[]) values.get(DATA);
-
-        context = new Context();
-
-        if (malpha != null || aalpha != null) {
-            context.put(Context.TRANSPARENT, 1);
-        }
+        assertEquals(CALCULATED_LENGTH, binary.length, length);
+        assertTrue(NOT_FULLY_ENCODED, encoder.eof());
+        assertArrayEquals(NOT_ENCODED, binary, encoder.getData());
     }
 
     @Test
-    public void checkSizeMatchesEncodedSizeForAdd() throws CoderException {
+    public void checkOpaqueAddTermsAreDecoded() throws CoderException {
+        final ColorTransform object = new ColorTransform(1, 2, 3, 0);
+        final byte[] binary = new byte[] { (byte) 0x8C, (byte) 0xA6 };
 
-        Assume.assumeNotNull(ared);
-        Assume.assumeTrue(mred == null);
+        final SWFDecoder decoder = new SWFDecoder(binary);
+        final Context context = new Context();
 
-        final ColorTransform transform = new ColorTransform(ared, agreen, ablue,
-                aalpha);
-        final SWFEncoder encoder = new SWFEncoder(data.length);
-
-        assertEquals(data.length, transform.prepareToEncode(context));
+        assertEquals(NOT_DECODED, object, new ColorTransform(decoder, context));
+        assertTrue(NOT_FULLY_DECODED, decoder.eof());
     }
 
     @Test
-    public void checkSizeMatchesEncodedSizeForMultiply() throws CoderException {
+    public void checkOpaqueMultiplyTermsAreDefaults() throws CoderException {
+        final byte[] binary = new byte[] { (byte) 0x8C, (byte) 0xA6 };
 
-        Assume.assumeTrue(ared == null);
-        Assume.assumeNotNull(mred);
+        final SWFDecoder decoder = new SWFDecoder(binary);
+        final Context context = new Context();
+        final ColorTransform decoded = new ColorTransform(decoder, context);
 
-        final ColorTransform transform = new ColorTransform(mred.floatValue(),
-                mgreen.floatValue(), mblue.floatValue(), malpha.floatValue());
-        final SWFEncoder encoder = new SWFEncoder(data.length);
-
-        assertEquals(data.length, transform.prepareToEncode(context));
+        assertEquals(1.0f, decoded.getMultiplyRed(), 0.0f);
+        assertEquals(1.0f, decoded.getMultiplyGreen(), 0.0f);
+        assertEquals(1.0f, decoded.getMultiplyBlue(), 0.0f);
+        assertEquals(1.0f, decoded.getMultiplyAlpha(), 0.0f);
     }
 
     @Test
-    public void checkSizeMatchesEncodedSize() throws CoderException {
+    public void checkOpaqueMultiplyTermsAreEncoded() throws CoderException {
+        final ColorTransform object =
+            new ColorTransform(1.0f, 2.0f, 3.0f, 0.0f);
+        final byte[] binary =
+            new byte[] { 0x6C, (byte) 0x80, 0x20, 0x06, 0x00 };
 
-        Assume.assumeNotNull(ared);
-        Assume.assumeNotNull(mred);
+        final SWFEncoder encoder = new SWFEncoder(binary.length);
+        final Context context = new Context();
 
-        final ColorTransform transform = new ColorTransform(
-                ared, agreen, ablue, aalpha,
-                mred.floatValue(), mgreen.floatValue(), mblue.floatValue(),
-                malpha.floatValue());
-        final SWFEncoder encoder = new SWFEncoder(data.length);
+        final int length = object.prepareToEncode(context);
+        object.encode(encoder, context);
 
-        assertEquals(data.length, transform.prepareToEncode(context));
+        assertEquals(CALCULATED_LENGTH, binary.length, length);
+        assertTrue(NOT_FULLY_ENCODED, encoder.eof());
+        assertArrayEquals(NOT_ENCODED, binary, encoder.getData());
     }
 
     @Test
-    public void checkAddIsEncoded() throws CoderException {
+    public void checkOpaqueMultiplyTermsAreDecoded() throws CoderException {
+        final ColorTransform object =
+            new ColorTransform(1.0f, 2.0f, 3.0f, 0.0f);
+        final byte[] binary =
+            new byte[] { 0x6C, (byte) 0x80, 0x20, 0x06, 0x00 };
 
-        Assume.assumeNotNull(ared);
-        Assume.assumeTrue(mred == null);
+        final SWFDecoder decoder = new SWFDecoder(binary);
+        final Context context = new Context();
 
-        final ColorTransform transform = new ColorTransform(ared, agreen, ablue,
-                aalpha);
-        final SWFEncoder encoder = new SWFEncoder(data.length);
-
-        transform.prepareToEncode(context);
-        transform.encode(encoder, context);
-
-        assertTrue(encoder.eof());
-        assertArrayEquals(data, encoder.getData());
+        assertEquals(NOT_DECODED, object, new ColorTransform(decoder, context));
+        assertTrue(NOT_FULLY_DECODED, decoder.eof());
     }
 
     @Test
-    public void checkMultiplyIsEncoded() throws CoderException {
+    public void checkOpaqueAddTermsAreDefaults() throws CoderException {
+        final byte[] binary =
+            new byte[] { 0x6C, (byte) 0x80, 0x20, 0x06, 0x00 };
 
-        Assume.assumeTrue(ared == null);
-        Assume.assumeNotNull(mred);
+        final SWFDecoder decoder = new SWFDecoder(binary);
+        final Context context = new Context();
+        final ColorTransform decoded = new ColorTransform(decoder, context);
 
-        final ColorTransform transform = new ColorTransform(mred.floatValue(),
-                mgreen.floatValue(), mblue.floatValue(), malpha.floatValue());
-        final SWFEncoder encoder = new SWFEncoder(data.length);
-
-        transform.prepareToEncode(context);
-        transform.encode(encoder, context);
-
-        assertTrue(encoder.eof());
-        assertArrayEquals(data, encoder.getData());
+        assertEquals(0, decoded.getAddRed());
+        assertEquals(0, decoded.getAddGreen());
+        assertEquals(0, decoded.getAddBlue());
+        assertEquals(0, decoded.getAddAlpha());
     }
 
     @Test
-    public void checkObjectIsEncoded() throws CoderException {
+    public void checkOpaqueTermsAreEncoded() throws CoderException {
+        final ColorTransform object =
+            new ColorTransform(1, 2, 3, 0, 1.0f, 2.0f, 3.0f, 1.0f);
+        final byte[] binary = new byte[] {(byte) 0xEC, (byte) 0x80, 0x20, 0x06,
+                0x00, 0x00, 0x40, 0x10, 0x03 };
 
-        Assume.assumeNotNull(ared);
-        Assume.assumeNotNull(mred);
+        final SWFEncoder encoder = new SWFEncoder(binary.length);
+        final Context context = new Context();
 
-        final ColorTransform transform = new ColorTransform(
-                ared, agreen, ablue, aalpha,
-                mred.floatValue(), mgreen.floatValue(), mblue.floatValue(),
-                malpha.floatValue());
-        final SWFEncoder encoder = new SWFEncoder(data.length);
+        final int length = object.prepareToEncode(context);
+        object.encode(encoder, context);
 
-        transform.prepareToEncode(context);
-        transform.encode(encoder, context);
-
-        assertTrue(encoder.eof());
-        assertArrayEquals(data, encoder.getData());
+        assertEquals(CALCULATED_LENGTH, binary.length, length);
+        assertTrue(NOT_FULLY_ENCODED, encoder.eof());
+        assertArrayEquals(NOT_ENCODED, binary, encoder.getData());
     }
 
     @Test
-    public void checkAddIsDecoded() throws CoderException {
+    public void checkOpaqueTermsAreDecoded() throws CoderException {
+        final ColorTransform object =
+            new ColorTransform(1, 2, 3, 0, 1.0f, 2.0f, 3.0f, 1.0f);
+        final byte[] binary = new byte[] {(byte) 0xEC, (byte) 0x80, 0x20, 0x06,
+                0x00, 0x00, 0x40, 0x10, 0x03 };
 
-        Assume.assumeNotNull(ared);
-        Assume.assumeTrue(mred == null);
+        final SWFDecoder decoder = new SWFDecoder(binary);
+        final Context context = new Context();
 
-        final SWFDecoder decoder = new SWFDecoder(data);
-        final ColorTransform transform = new ColorTransform(decoder, context);
+        assertEquals(NOT_DECODED, object, new ColorTransform(decoder, context));
+        assertTrue(NOT_FULLY_DECODED, decoder.eof());
+    }
 
-        assertTrue(decoder.eof());
-        assertEquals(ared.intValue(), transform.getAddRed());
-        assertEquals(agreen.intValue(), transform.getAddGreen());
-        assertEquals(ablue.intValue(), transform.getAddBlue());
-        assertEquals(aalpha.intValue(), transform.getAddAlpha());
-        assertEquals(DEFAULT_MULTIPLY, new Float(transform.getMultiplyRed()));
-        assertEquals(DEFAULT_MULTIPLY, new Float(transform.getMultiplyGreen()));
-        assertEquals(DEFAULT_MULTIPLY, new Float(transform.getMultiplyBlue()));
-        assertEquals(DEFAULT_MULTIPLY, new Float(transform.getMultiplyAlpha()));
+
+    @Test
+    public void checkTransparentAddTermsAreEncoded() throws CoderException {
+        final ColorTransform object = new ColorTransform(1, 2, 3, 4);
+        final byte[] binary = new byte[] {(byte) 0x90, 0x48, (byte) 0xD0 };
+
+        final SWFEncoder encoder = new SWFEncoder(binary.length);
+        final Context context = new Context();
+
+        final int length = object.prepareToEncode(context);
+        object.encode(encoder, context);
+
+        assertEquals(CALCULATED_LENGTH, binary.length, length);
+        assertTrue(NOT_FULLY_ENCODED, encoder.eof());
+        assertArrayEquals(NOT_ENCODED, binary, encoder.getData());
     }
 
     @Test
-    public void checkMultiplyIsDecoded() throws CoderException {
+    public void checkTransparentAddTermsAreDecoded() throws CoderException {
+        final ColorTransform object = new ColorTransform(1, 2, 3, 4);
+        final byte[] binary = new byte[] { (byte) 0x90, 0x48, (byte) 0xD0 };
 
-        Assume.assumeTrue(ared == null);
-        Assume.assumeNotNull(mred);
+        final SWFDecoder decoder = new SWFDecoder(binary);
+        final Context context = new Context();
 
-        final SWFDecoder decoder = new SWFDecoder(data);
-        final ColorTransform transform = new ColorTransform(decoder, context);
-
-        assertTrue(decoder.eof());
-        assertEquals(DEFAULT_ADD, transform.getAddRed());
-        assertEquals(DEFAULT_ADD, transform.getAddGreen());
-        assertEquals(DEFAULT_ADD, transform.getAddBlue());
-        assertEquals(DEFAULT_ADD, transform.getAddAlpha());
-        assertEquals(mred, new Double(transform.getMultiplyRed()));
-        assertEquals(mgreen, new Double(transform.getMultiplyGreen()));
-        assertEquals(mblue, new Double(transform.getMultiplyBlue()));
-        assertEquals(malpha, new Double(transform.getMultiplyAlpha()));
+        assertEquals(NOT_DECODED, object, new ColorTransform(decoder, context));
+        assertTrue(NOT_FULLY_DECODED, decoder.eof());
     }
 
     @Test
-    public void checkObjectIsDecoded() throws CoderException {
+    public void checkTransparentMultiplyTermsAreDefaults() throws CoderException {
+        final byte[] binary = new byte[] { (byte) 0x90, 0x48, (byte) 0xD0 };
 
-        Assume.assumeNotNull(ared);
-        Assume.assumeNotNull(mred);
+        final SWFDecoder decoder = new SWFDecoder(binary);
+        final Context context = new Context();
+        final ColorTransform decoded = new ColorTransform(decoder, context);
 
-        final SWFDecoder decoder = new SWFDecoder(data);
-        final ColorTransform transform = new ColorTransform(decoder, context);
-
-        assertTrue(decoder.eof());
-        assertEquals(ared.intValue(), transform.getAddRed());
-        assertEquals(agreen.intValue(), transform.getAddGreen());
-        assertEquals(ablue.intValue(), transform.getAddBlue());
-        assertEquals(aalpha.intValue(), transform.getAddAlpha());
-        assertEquals(mred, new Double(transform.getMultiplyRed()));
-        assertEquals(mgreen, new Double(transform.getMultiplyGreen()));
-        assertEquals(mblue, new Double(transform.getMultiplyBlue()));
-        assertEquals(malpha, new Double(transform.getMultiplyAlpha()));
+        assertEquals(1.0f, decoded.getMultiplyRed(), 0.0f);
+        assertEquals(1.0f, decoded.getMultiplyGreen(), 0.0f);
+        assertEquals(1.0f, decoded.getMultiplyBlue(), 0.0f);
+        assertEquals(1.0f, decoded.getMultiplyAlpha(), 0.0f);
     }
+
+    @Test
+    public void checkTransparentMultiplyTermsAreEncoded() throws CoderException {
+        final ColorTransform object =
+            new ColorTransform(1.0f, 2.0f, 3.0f, 4.0f);
+        final byte[] binary =
+            new byte[] { 0x70, 0x40, 0x08, 0x00, (byte) 0xC0, 0x10, 0x00 };
+
+        final SWFEncoder encoder = new SWFEncoder(binary.length);
+        final Context context = new Context();
+
+        final int length = object.prepareToEncode(context);
+        object.encode(encoder, context);
+
+        assertEquals(CALCULATED_LENGTH, binary.length, length);
+        assertTrue(NOT_FULLY_ENCODED, encoder.eof());
+        assertArrayEquals(NOT_ENCODED, binary, encoder.getData());
+    }
+
+    @Test
+    public void checkTransparentMultiplyTermsAreDecoded() throws CoderException {
+        final ColorTransform object =
+            new ColorTransform(1.0f, 2.0f, 3.0f, 4.0f);
+        final byte[] binary =
+            new byte[] { 0x70, 0x40, 0x08, 0x00, (byte) 0xC0, 0x10, 0x00 };
+
+        final SWFDecoder decoder = new SWFDecoder(binary);
+        final Context context = new Context();
+
+        assertEquals(NOT_DECODED, object, new ColorTransform(decoder, context));
+        assertTrue(NOT_FULLY_DECODED, decoder.eof());
+    }
+
+    @Test
+    public void checkTransparentAddTermsAreDefaults() throws CoderException {
+        final byte[] binary =
+            new byte[] { 0x70, 0x40, 0x08, 0x00, (byte) 0xC0, 0x10, 0x00 };
+
+        final SWFDecoder decoder = new SWFDecoder(binary);
+        final Context context = new Context();
+        final ColorTransform decoded = new ColorTransform(decoder, context);
+
+        assertEquals(0, decoded.getAddRed());
+        assertEquals(0, decoded.getAddGreen());
+        assertEquals(0, decoded.getAddBlue());
+        assertEquals(0, decoded.getAddAlpha());
+    }
+
+    @Test
+    public void checkTransparentTermsAreEncoded() throws CoderException {
+        final ColorTransform object =
+            new ColorTransform(1, 2, 3, 4, 1.0f, 2.0f, 3.0f, 4.0f);
+        final byte[] binary = new byte[] {(byte) 0xF0, 0x40, 0x08, 0x00,
+                (byte)0xC0, 0x10, 0x00, 0x00,
+                0x40, 0x08, 0x00, (byte) 0xC0, 0x10 };
+
+        final SWFEncoder encoder = new SWFEncoder(binary.length);
+        final Context context = new Context();
+
+        final int length = object.prepareToEncode(context);
+        object.encode(encoder, context);
+
+        assertEquals(CALCULATED_LENGTH, binary.length, length);
+        assertTrue(NOT_FULLY_ENCODED, encoder.eof());
+        assertArrayEquals(NOT_ENCODED, binary, encoder.getData());
+    }
+
+    @Test
+    public void checkTransparentTermsAreDecoded() throws CoderException {
+        final ColorTransform object =
+            new ColorTransform(1, 2, 3, 4, 1.0f, 2.0f, 3.0f, 4.0f);
+        final byte[] binary = new byte[] {(byte) 0xF0, 0x40, 0x08, 0x00,
+                (byte)0xC0, 0x10, 0x00, 0x00,
+                0x40, 0x08, 0x00, (byte) 0xC0, 0x10 };
+
+        final SWFDecoder decoder = new SWFDecoder(binary);
+        final Context context = new Context();
+
+        assertEquals(NOT_DECODED, object, new ColorTransform(decoder, context));
+        assertTrue(NOT_FULLY_DECODED, decoder.eof());
+    }
+
 }

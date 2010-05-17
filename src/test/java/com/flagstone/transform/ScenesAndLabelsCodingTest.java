@@ -34,16 +34,12 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
-import org.yaml.snakeyaml.Yaml;
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
@@ -53,72 +49,88 @@ import com.flagstone.transform.coder.SWFEncoder;
 @RunWith(Parameterized.class)
 public final class ScenesAndLabelsCodingTest {
 
-    private static final String RESOURCE =
-        "com/flagstone/transform/ScenesAndLabels.yaml";
-
-    private static final String SCENES = "scenes";
-    private static final String LABELS = "labels";
-    private static final String DIN = "din";
-    private static final String DOUT = "dout";
-
-    @Parameters
-    public static Collection<Object[]>  patterns() {
-
-        ClassLoader loader = DoActionCodingTest.class.getClassLoader();
-        InputStream other = loader.getResourceAsStream(RESOURCE);
-        Yaml yaml = new Yaml();
-
-        Collection<Object[]> list = new ArrayList<Object[]>();
-
-        for (Object data : yaml.loadAll(other)) {
-            list.add(new Object[] {data });
-        }
-
-        return list;
-    }
-
-    private final transient Map<Integer, String> scenes;
-    private final transient Map<Integer, String> labels;
-    private final transient byte[] din;
-    private final transient byte[] dout;
-    private final transient Context context;
-
-    @SuppressWarnings("unchecked")
-    public ScenesAndLabelsCodingTest(final Map<String, Object>values) {
-        scenes = (Map<Integer, String>) values.get(SCENES);
-        labels = (Map<Integer, String>) values.get(LABELS);
-        din = (byte[]) values.get(DIN);
-        dout = (byte[]) values.get(DOUT);
-        context = new Context();
-    }
+    private static final String CALCULATED_LENGTH =
+        "Incorrect calculated length";
+    private static final String NOT_FULLY_ENCODED =
+        "Data was not fully encoded";
+    private static final String NOT_FULLY_DECODED =
+        "Data was not fully decoded";
+    private static final String NOT_ENCODED =
+        "Object was not encoded properly";
+    private static final String NOT_DECODED =
+        "Object was not decoded properly";
 
     @Test
-    public void checkSizeMatchesEncodedSize() throws CoderException {
+    public void checkScenesAndLabelsIsEncoded() throws CoderException {
+        final Map<Integer, String>scenes = new LinkedHashMap<Integer, String>();
+        scenes.put(1, "A");
+        scenes.put(2, "B");
+        scenes.put(2, "C");
+        final Map<Integer, String>labels = new LinkedHashMap<Integer, String>();
+        scenes.put(4, "D");
+        scenes.put(5, "E");
+        scenes.put(6, "F");
+
         final ScenesAndLabels object = new ScenesAndLabels(scenes, labels);
-        final SWFEncoder encoder = new SWFEncoder(dout.length);
+        final byte[] binary = new byte[] {(byte) 0x094, 0x15, 0x03, 0x01, 0x41,
+                0x00, 0x02, 0x42, 0x00, 0x03, 0x43, 0x00, 0x03, 0x04, 0x44,
+                0x00, 0x05, 0x45, 0x00, 0x06, 0x46, 0x00 };
 
-        assertEquals(dout.length, object.prepareToEncode(context));
-    }
+        final SWFEncoder encoder = new SWFEncoder(binary.length);
+        final Context context = new Context();
 
-    @Test
-    public void checkObjectIsEncoded() throws CoderException {
-        final ScenesAndLabels object = new ScenesAndLabels(scenes, labels);
-        final SWFEncoder encoder = new SWFEncoder(dout.length);
-
-        object.prepareToEncode(context);
+        final int length = object.prepareToEncode(context);
         object.encode(encoder, context);
 
-        assertTrue(encoder.eof());
-        assertArrayEquals(dout, encoder.getData());
+        assertEquals(CALCULATED_LENGTH, binary.length, length);
+        assertTrue(NOT_FULLY_ENCODED, encoder.eof());
+        assertArrayEquals(NOT_ENCODED, binary, encoder.getData());
     }
 
     @Test
-    public void checkObjectIsDecoded() throws CoderException {
-        final SWFDecoder decoder = new SWFDecoder(din);
+    public void checkScenesAndLabelsIsDecoded() throws CoderException {
+        final Map<Integer, String>scenes = new LinkedHashMap<Integer, String>();
+        scenes.put(1, "A");
+        scenes.put(2, "B");
+        scenes.put(2, "C");
+        final Map<Integer, String>labels = new LinkedHashMap<Integer, String>();
+        scenes.put(4, "D");
+        scenes.put(5, "E");
+        scenes.put(6, "F");
+
+        final byte[] binary = new byte[] {(byte) 0x094, 0x15, 0x03, 0x01, 0x41,
+                0x00, 0x02, 0x42, 0x00, 0x03, 0x43, 0x00, 0x03, 0x04, 0x44,
+                0x00, 0x05, 0x45, 0x00, 0x06, 0x46, 0x00 };
+
+        final SWFDecoder decoder = new SWFDecoder(binary);
         final ScenesAndLabels object = new ScenesAndLabels(decoder);
 
-        assertTrue(decoder.eof());
-        assertEquals(scenes, object.getScenes());
-        assertEquals(labels, object.getLabels());
-    }
+        assertEquals(NOT_DECODED, scenes, object.getScenes());
+        assertEquals(NOT_DECODED, labels, object.getLabels());
+        assertTrue(NOT_FULLY_DECODED, decoder.eof());
+   }
+
+    @Test
+    public void checkExtendedScenesAndLabelsIsDecoded() throws CoderException {
+        final Map<Integer, String>scenes = new LinkedHashMap<Integer, String>();
+        scenes.put(1, "A");
+        scenes.put(2, "B");
+        scenes.put(2, "C");
+        final Map<Integer, String>labels = new LinkedHashMap<Integer, String>();
+        scenes.put(4, "D");
+        scenes.put(5, "E");
+        scenes.put(6, "F");
+
+        final byte[] binary = new byte[] {(byte) 0xBF, 0x15, 0x14, 0x00, 0x00,
+                0x00, 0x03, 0x01, 0x41, 0x00, 0x02, 0x42, 0x00, 0x03, 0x43,
+                0x00, 0x03, 0x04, 0x44, 0x00, 0x05, 0x45, 0x00, 0x06, 0x46,
+                0x00 };
+
+        final SWFDecoder decoder = new SWFDecoder(binary);
+        final ScenesAndLabels object = new ScenesAndLabels(decoder);
+
+        assertEquals(NOT_DECODED, scenes, object.getScenes());
+        assertEquals(NOT_DECODED, labels, object.getLabels());
+        assertTrue(NOT_FULLY_DECODED, decoder.eof());
+   }
 }

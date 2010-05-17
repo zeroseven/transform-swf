@@ -34,16 +34,9 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
-import org.yaml.snakeyaml.Yaml;
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
@@ -53,67 +46,55 @@ import com.flagstone.transform.coder.SWFEncoder;
 @RunWith(Parameterized.class)
 public final class MovieMetaDataCodingTest {
 
-    private static final String RESOURCE =
-        "com/flagstone/transform/MovieMetaData.yaml";
-
-    private static final String METADATA = "metadata";
-    private static final String DIN = "din";
-    private static final String DOUT = "dout";
-
-    @Parameters
-    public static Collection<Object[]>  patterns() {
-
-        ClassLoader loader = DoActionCodingTest.class.getClassLoader();
-        InputStream other = loader.getResourceAsStream(RESOURCE);
-        Yaml yaml = new Yaml();
-
-        Collection<Object[]> list = new ArrayList<Object[]>();
-
-        for (Object data : yaml.loadAll(other)) {
-            list.add(new Object[] {data });
-        }
-
-        return list;
-    }
-
-    private final transient String metadata;
-    private final transient byte[] din;
-    private final transient byte[] dout;
-    private final transient Context context;
-
-    public MovieMetaDataCodingTest(final Map<String, Object>values) {
-        metadata = (String) values.get(METADATA);
-        din = (byte[]) values.get(DIN);
-        dout = (byte[]) values.get(DOUT);
-        context = new Context();
-    }
+    private static final String CALCULATED_LENGTH =
+        "Incorrect calculated length";
+    private static final String NOT_FULLY_ENCODED =
+        "Data was not fully encoded";
+    private static final String NOT_FULLY_DECODED =
+        "Data was not fully decoded";
+    private static final String NOT_ENCODED =
+        "Object was not encoded properly";
+    private static final String NOT_DECODED =
+        "Object was not decoded properly";
 
     @Test
-    public void checkSizeMatchesEncodedSize() throws CoderException {
-        final MovieMetaData object = new MovieMetaData(metadata);
-        final SWFEncoder encoder = new SWFEncoder(dout.length);
+    public void checkMovieMetaDataIsEncoded() throws CoderException {
+        final MovieMetaData object = new MovieMetaData("ABC123");
+        final byte[] binary = new byte[] {0x47, 0x13, 0x41, 0x42, 0x43, 0x31,
+                0x32, 0x33, 0x00 };
 
-        assertEquals(dout.length, object.prepareToEncode(context));
-    }
+        final SWFEncoder encoder = new SWFEncoder(binary.length);
+        final Context context = new Context();
 
-    @Test
-    public void checkObjectIsEncoded() throws CoderException {
-        final MovieMetaData object = new MovieMetaData(metadata);
-        final SWFEncoder encoder = new SWFEncoder(dout.length);
-
-        object.prepareToEncode(context);
+        final int length = object.prepareToEncode(context);
         object.encode(encoder, context);
 
-        assertTrue(encoder.eof());
-        assertArrayEquals(dout, encoder.getData());
+        assertEquals(CALCULATED_LENGTH, binary.length, length);
+        assertTrue(NOT_FULLY_ENCODED, encoder.eof());
+        assertArrayEquals(NOT_ENCODED, binary, encoder.getData());
     }
 
     @Test
-    public void checkObjectIsDecoded() throws CoderException {
-        final SWFDecoder decoder = new SWFDecoder(din);
+    public void checkMovieMetaDataIsDecoded() throws CoderException {
+        final byte[] binary = new byte[] {0x47, 0x13, 0x41, 0x42, 0x43, 0x31,
+                0x32, 0x33, 0x00 };
+
+        final SWFDecoder decoder = new SWFDecoder(binary);
         final MovieMetaData object = new MovieMetaData(decoder);
 
-        assertTrue(decoder.eof());
-        assertEquals(metadata, object.getMetaData());
-    }
+        assertEquals(NOT_DECODED, "ABC123", object.getMetaData());
+        assertTrue(NOT_FULLY_DECODED, decoder.eof());
+   }
+
+    @Test
+    public void checkExtendedMovieMetaDataIsDecoded() throws CoderException {
+        final byte[] binary = new byte[] {0x3F, 0x13, 0x07, 0x00, 0x00, 0x00,
+                0x41, 0x42, 0x43, 0x31, 0x32, 0x33, 0x00 };
+
+        final SWFDecoder decoder = new SWFDecoder(binary);
+        final MovieMetaData object = new MovieMetaData(decoder);
+
+        assertEquals(NOT_DECODED, "ABC123", object.getMetaData());
+        assertTrue(NOT_FULLY_DECODED, decoder.eof());
+   }
 }

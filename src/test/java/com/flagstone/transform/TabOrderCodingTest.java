@@ -34,90 +34,66 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
-
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
-import org.yaml.snakeyaml.Yaml;
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-@RunWith(Parameterized.class)
 public final class TabOrderCodingTest {
 
-    private static final String RESOURCE =
-        "com/flagstone/transform/TabOrder.yaml";
-
-    private static final String LAYER = "layer";
-    private static final String INDEX = "index";
-    private static final String DIN = "din";
-    private static final String DOUT = "dout";
-
-    @Parameters
-    public static Collection<Object[]>  patterns() {
-
-        ClassLoader loader = DoActionCodingTest.class.getClassLoader();
-        InputStream other = loader.getResourceAsStream(RESOURCE);
-        Yaml yaml = new Yaml();
-
-        Collection<Object[]> list = new ArrayList<Object[]>();
-
-        for (Object data : yaml.loadAll(other)) {
-            list.add(new Object[] {data });
-        }
-
-        return list;
-    }
-
-    private final transient int layer;
-    private final transient int index;
-    private final transient byte[] din;
-    private final transient byte[] dout;
-    private final transient Context context;
-
-    public TabOrderCodingTest(final Map<String, Object>values) {
-        layer = (Integer) values.get(LAYER);
-        index = (Integer) values.get(INDEX);
-        din = (byte[]) values.get(DIN);
-        dout = (byte[]) values.get(DOUT);
-        context = new Context();
-    }
+    private static final String CALCULATED_LENGTH =
+        "Incorrect calculated length";
+    private static final String NOT_FULLY_ENCODED =
+        "Data was not fully encoded";
+    private static final String NOT_FULLY_DECODED =
+        "Data was not fully decoded";
+    private static final String NOT_ENCODED =
+        "Object was not encoded properly";
+    private static final String NOT_DECODED =
+        "Object was not decoded properly";
 
     @Test
-    public void checkSizeMatchesEncodedSize() throws CoderException {
-        final TabOrder object = new TabOrder(layer, index);
-        final SWFEncoder encoder = new SWFEncoder(dout.length);
+    public void checkTabOrderIsEncoded() throws CoderException {
+        final TabOrder object = new TabOrder(1, 2);
+        final byte[] binary = new byte[] {(byte) 0x84, 0x10, 0x01, 0x00,
+                0x02, 0x00};
 
-        assertEquals(dout.length, object.prepareToEncode(context));
-    }
+        final SWFEncoder encoder = new SWFEncoder(binary.length);
+        final Context context = new Context();
 
-    @Test
-    public void checkObjectIsEncoded() throws CoderException {
-        final TabOrder object = new TabOrder(layer, index);
-        final SWFEncoder encoder = new SWFEncoder(dout.length);
-
-        object.prepareToEncode(context);
+        final int length = object.prepareToEncode(context);
         object.encode(encoder, context);
 
-        assertTrue(encoder.eof());
-        assertArrayEquals(dout, encoder.getData());
+        assertEquals(CALCULATED_LENGTH, binary.length, length);
+        assertTrue(NOT_FULLY_ENCODED, encoder.eof());
+        assertArrayEquals(NOT_ENCODED, binary, encoder.getData());
     }
 
     @Test
-    public void checkObjectIsDecoded() throws CoderException {
-        final SWFDecoder decoder = new SWFDecoder(din);
+    public void checkTabOrderIsDecoded() throws CoderException {
+        final byte[] binary = new byte[] {(byte) 0x84, 0x10, 0x01, 0x00,
+                0x02, 0x00};
+
+        final SWFDecoder decoder = new SWFDecoder(binary);
         final TabOrder object = new TabOrder(decoder);
 
-        assertTrue(decoder.eof());
-        assertEquals(layer, object.getLayer());
-        assertEquals(index, object.getIndex());
+        assertEquals(NOT_DECODED, 1, object.getLayer());
+        assertEquals(NOT_DECODED, 2, object.getIndex());
+        assertTrue(NOT_FULLY_DECODED, decoder.eof());
+   }
+
+    @Test
+    public void checkExtendedTabOrderIsDecoded() throws CoderException {
+        final byte[] binary = new byte[] {(byte) 0xBF, 0x10, 0x04, 0x00, 0x00,
+                0x00, 0x01, 0x00, 0x02, 0x00};
+
+        final SWFDecoder decoder = new SWFDecoder(binary);
+        final TabOrder object = new TabOrder(decoder);
+
+        assertEquals(NOT_DECODED, 1, object.getLayer());
+        assertEquals(NOT_DECODED, 2, object.getIndex());
+        assertTrue(NOT_FULLY_DECODED, decoder.eof());
    }
 }

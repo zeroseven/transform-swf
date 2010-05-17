@@ -34,90 +34,64 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
-
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
-import org.yaml.snakeyaml.Yaml;
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-@RunWith(Parameterized.class)
 public final class FrameLabelCodingTest {
 
-    private static final String RESOURCE =
-        "com/flagstone/transform/FrameLabel.yaml";
-
-    private static final String LABEL = "label";
-    private static final String ANCHOR = "anchor";
-    private static final String DIN = "din";
-    private static final String DOUT = "dout";
-
-    @Parameters
-    public static Collection<Object[]>  patterns() {
-
-        ClassLoader loader = DoActionCodingTest.class.getClassLoader();
-        InputStream other = loader.getResourceAsStream(RESOURCE);
-        Yaml yaml = new Yaml();
-
-        Collection<Object[]> list = new ArrayList<Object[]>();
-
-        for (Object data : yaml.loadAll(other)) {
-            list.add(new Object[] {data });
-        }
-
-        return list;
-    }
-
-    private final transient String label;
-    private final transient boolean anchor;
-    private final transient byte[] din;
-    private final transient byte[] dout;
-    private final transient Context context;
-
-    public FrameLabelCodingTest(final Map<String, Object>values) {
-        label = (String) values.get(LABEL);
-        anchor = (Boolean) values.get(ANCHOR);
-        din = (byte[]) values.get(DIN);
-        dout = (byte[]) values.get(DOUT);
-        context = new Context();
-    }
+    private static final String CALCULATED_LENGTH =
+        "Incorrect calculated length";
+    private static final String NOT_FULLY_ENCODED =
+        "Data was not fully encoded";
+    private static final String NOT_FULLY_DECODED =
+        "Data was not fully decoded";
+    private static final String NOT_ENCODED =
+        "Object was not encoded properly";
+    private static final String NOT_DECODED =
+        "Object was not decoded properly";
 
     @Test
-    public void checkSizeMatchesEncodedSize() throws CoderException {
-        final FrameLabel object = new FrameLabel(label, anchor);
-        final SWFEncoder encoder = new SWFEncoder(dout.length);
+    public void checkFrameLabelIsEncoded() throws CoderException {
+        final FrameLabel object = new FrameLabel("Frame");
+        final byte[] binary = new byte[] {(byte) 0xC7, 0x0A, 0x46, 0x72, 0x61,
+                0x6D, 0x65, 0x00, 0x01 };
 
-        assertEquals(dout.length, object.prepareToEncode(context));
-    }
+        final SWFEncoder encoder = new SWFEncoder(binary.length);
+        final Context context = new Context();
 
-    @Test
-    public void checkObjectIsEncoded() throws CoderException {
-        final FrameLabel object = new FrameLabel(label, anchor);
-        final SWFEncoder encoder = new SWFEncoder(dout.length);
-
-        object.prepareToEncode(context);
+        final int length = object.prepareToEncode(context);
         object.encode(encoder, context);
 
-        assertTrue(encoder.eof());
-        assertArrayEquals(dout, encoder.getData());
+        assertEquals(CALCULATED_LENGTH, binary.length, length);
+        assertTrue(NOT_FULLY_ENCODED, encoder.eof());
+        assertArrayEquals(NOT_ENCODED, binary, encoder.getData());
     }
 
     @Test
-    public void checkObjectIsDecoded() throws CoderException {
-        final SWFDecoder decoder = new SWFDecoder(din);
+    public void checkFrameLabelIsDecoded() throws CoderException {
+        final byte[] binary = new byte[] {(byte) 0xC7, 0x0A, 0x46, 0x72, 0x61,
+                0x6D, 0x65, 0x00, 0x01 };
+
+        final SWFDecoder decoder = new SWFDecoder(binary);
         final FrameLabel object = new FrameLabel(decoder);
 
-        assertTrue(decoder.eof());
-        assertEquals(anchor, object.isAnchor());
-        assertEquals(label, object.getLabel());
-    }
+        assertEquals(NOT_DECODED, "Frame", object.getLabel());
+        assertTrue(NOT_FULLY_DECODED, decoder.eof());
+   }
+
+    @Test
+    public void checkExtendedFrameLabelIsDecoded() throws CoderException {
+        final byte[] binary = new byte[] {(byte)0xFF, 0x0A, 0x07, 0x00, 0x00,
+                0x00, 0x46, 0x72, 0x61, 0x6D, 0x65, 0x00, 0x01 };
+
+        final SWFDecoder decoder = new SWFDecoder(binary);
+        final FrameLabel object = new FrameLabel(decoder);
+
+        assertEquals(NOT_DECODED, "Frame", object.getLabel());
+        assertTrue(NOT_FULLY_DECODED, decoder.eof());
+   }
 }

@@ -34,16 +34,9 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
-import org.yaml.snakeyaml.Yaml;
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
@@ -54,72 +47,57 @@ import com.flagstone.transform.datatype.Color;
 @RunWith(Parameterized.class)
 public final class BackgroundCodingTest {
 
-    private static final String RESOURCE =
-        "com/flagstone/transform/Background.yaml";
-
-    private static final String RED = "red";
-    private static final String GREEN = "green";
-    private static final String BLUE = "blue";
-    private static final String DIN = "din";
-    private static final String DOUT = "dout";
-
-    @Parameters
-    public static Collection<Object[]>  patterns() {
-
-        ClassLoader loader = BackgroundCodingTest.class.getClassLoader();
-        InputStream other = loader.getResourceAsStream(RESOURCE);
-        Yaml yaml = new Yaml();
-
-        Collection<Object[]> list = new ArrayList<Object[]>();
-
-        for (Object data : yaml.loadAll(other)) {
-            list.add(new Object[] {data });
-        }
-
-        return list;
-    }
-
-    private final transient Color color;
-    private final transient byte[] din;
-    private final transient byte[] dout;
-    private final transient Context context;
-
-    public BackgroundCodingTest(final Map<String, Object>values) {
-        final int red = (Integer) values.get(RED);
-        final int green = (Integer) values.get(GREEN);
-        final int blue = (Integer) values.get(BLUE);
-        color = new Color(red, green, blue);
-        din = (byte[]) values.get(DIN);
-        dout = (byte[]) values.get(DOUT);
-        context = new Context();
-    }
-
-    @Test
-    public void checkSizeMatchesEncodedSize() throws CoderException {
-        final Background object = new Background(color);
-        final SWFEncoder encoder = new SWFEncoder(dout.length);
-
-        assertEquals(dout.length, object.prepareToEncode(context));
-    }
+    private static final String CALCULATED_LENGTH =
+        "Incorrect calculated length";
+    private static final String NOT_FULLY_ENCODED =
+        "Data was not fully encoded";
+    private static final String NOT_FULLY_DECODED =
+        "Data was not fully decoded";
+    private static final String NOT_ENCODED =
+        "Object was not encoded properly";
+    private static final String NOT_DECODED =
+        "Object was not decoded properly";
 
     @Test
     public void checkBackgroundIsEncoded() throws CoderException {
-        final Background object = new Background(color);
-        final SWFEncoder encoder = new SWFEncoder(dout.length);
+        final Background object = new Background(new Color(1, 2, 3));
+        final byte[] binary = new byte[] { 0x43, 0x02, 0x01, 0x02, 0x03};
 
-        object.prepareToEncode(context);
+        final SWFEncoder encoder = new SWFEncoder(binary.length);
+        final Context context = new Context();
+
+        final int length = object.prepareToEncode(context);
         object.encode(encoder, context);
 
-        assertTrue(encoder.eof());
-        assertArrayEquals(dout, encoder.getData());
+        assertEquals(CALCULATED_LENGTH, binary.length, length);
+        assertTrue(NOT_FULLY_ENCODED, encoder.eof());
+        assertArrayEquals(NOT_ENCODED, binary, encoder.getData());
     }
 
     @Test
     public void checkBackgroundIsDecoded() throws CoderException {
-        final SWFDecoder decoder = new SWFDecoder(din);
-        final Background object = new Background(decoder, context);
+        final Color color = new Color(1, 2, 3);
+        final byte[] binary = new byte[] { 0x43, 0x02, 0x01, 0x02, 0x03};
 
-        assertTrue(decoder.eof());
-        assertEquals(color, object.getColor());
-    }
+        final SWFDecoder decoder = new SWFDecoder(binary);
+        final Context context = new Context();
+
+        assertEquals(NOT_DECODED, color,
+                new Background(decoder, context).getColor());
+        assertTrue(NOT_FULLY_DECODED, decoder.eof());
+   }
+
+    @Test
+    public void checkExtendedBackgroundIsDecoded() throws CoderException {
+        final Color color = new Color(1, 2, 3);
+        final byte[] binary = new byte[] {0x7F, 0x02, 0x03, 0x00, 0x00, 0x00,
+                0x01, 0x02, 0x03};
+
+        final SWFDecoder decoder = new SWFDecoder(binary);
+        final Context context = new Context();
+
+        assertEquals(NOT_DECODED, color,
+                new Background(decoder, context).getColor());
+        assertTrue(NOT_FULLY_DECODED, decoder.eof());
+   }
 }

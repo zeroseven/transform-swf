@@ -34,16 +34,9 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
-import org.yaml.snakeyaml.Yaml;
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
@@ -53,119 +46,130 @@ import com.flagstone.transform.coder.SWFEncoder;
 @RunWith(Parameterized.class)
 public final class CoordTransformCodingTest {
 
-    private static final String RESOURCE =
-        "com/flagstone/transform/datatype/CoordTransform.yaml";
+    private static final String CALCULATED_LENGTH =
+        "Incorrect calculated length";
+    private static final String NOT_FULLY_ENCODED =
+        "Data was not fully encoded";
+    private static final String NOT_FULLY_DECODED =
+        "Data was not fully decoded";
+    private static final String NOT_ENCODED =
+        "Object was not encoded properly";
+    private static final String NOT_DECODED =
+        "Object was not decoded properly";
 
-    private static final String XSCALE = "xscale";
-    private static final String YSCALE = "yscale";
-    private static final String XSHEAR = "xshear";
-    private static final String YSHEAR = "yshear";
-    private static final String XCOORD = "xcoord";
-    private static final String YCOORD = "ycoord";
-    private static final String DATA = "data";
+    @Test
+    public void checkScaleIsEncoded() throws CoderException {
+        final CoordTransform object = CoordTransform.scale(1.0f, 2.0f);
+        final byte[] binary = new byte[] {(byte) 0xCC, (byte) 0x80, 0x00, 0x20,
+                0x00, 0x00, 0x40 };
 
-    @Parameters
-    public static Collection<Object[]>  patterns() {
+        final SWFEncoder encoder = new SWFEncoder(binary.length);
+        final Context context = new Context();
 
-        ClassLoader loader = CoordTransformCodingTest.class.getClassLoader();
-        InputStream other = loader.getResourceAsStream(RESOURCE);
-        Yaml yaml = new Yaml();
+        final int length = object.prepareToEncode(context);
+        object.encode(encoder, context);
 
-        Collection<Object[]> list = new ArrayList<Object[]>();
-
-        for (Object data : yaml.loadAll(other)) {
-            list.add(new Object[] {data });
-        }
-
-        return list;
-    }
-
-    private final Double xscale;
-    private final Double yscale;
-    private final Double xshear;
-    private final Double yshear;
-    private final Integer xcoord;
-    private final Integer ycoord;
-    private final byte[] data;
-
-    private final Context context;
-
-    public CoordTransformCodingTest(final Map<String, Object>values) {
-        if (values.get(XSCALE) == null) {
-            xscale = new Double(CoordTransform.DEFAULT_SCALE);
-        } else {
-            xscale = (Double) values.get(XSCALE);
-        }
-        if (values.get(YSCALE) == null) {
-            yscale = new Double(CoordTransform.DEFAULT_SCALE);
-        } else {
-            yscale = (Double) values.get(YSCALE);
-        }
-        if (values.get(XSHEAR) == null) {
-            xshear = new Double(CoordTransform.DEFAULT_SHEAR);
-        } else {
-            xshear = (Double) values.get(XSHEAR);
-        }
-        if (values.get(YSHEAR) == null) {
-            yshear = new Double(CoordTransform.DEFAULT_SHEAR);
-        } else {
-            yshear = (Double) values.get(YSHEAR);
-        }
-        if (values.get(XCOORD) == null) {
-            xcoord = CoordTransform.DEFAULT_COORD;
-        } else {
-            xcoord = (Integer) values.get(XCOORD);
-        }
-        if (values.get(YCOORD) == null) {
-            ycoord = CoordTransform.DEFAULT_COORD;
-        } else {
-            ycoord = (Integer) values.get(YCOORD);
-        }
-        data = (byte[]) values.get(DATA);
-
-        context = new Context();
+        assertEquals(CALCULATED_LENGTH, binary.length, length);
+        assertTrue(NOT_FULLY_ENCODED, encoder.eof());
+        assertArrayEquals(NOT_ENCODED, binary, encoder.getData());
     }
 
     @Test
-    public void checkSizeMatchesEncodedSize() throws CoderException {
+    public void checkScaleIsDecoded() throws CoderException {
+        final CoordTransform object = CoordTransform.scale(1.0f, 2.0f);
+        final byte[] binary = new byte[] {(byte) 0xCC, (byte) 0x80, 0x00, 0x20,
+                0x00, 0x00, 0x40 };
 
-        final CoordTransform transform = new CoordTransform(
-                xscale.floatValue(), yscale.floatValue(),
-                xshear.floatValue(), yshear.floatValue(),
-                xcoord.intValue(), ycoord.intValue());
-        final SWFEncoder encoder = new SWFEncoder(data.length);
+        final SWFDecoder decoder = new SWFDecoder(binary);
 
-        assertEquals(data.length, transform.prepareToEncode(context));
+        assertEquals(NOT_DECODED, object, new CoordTransform(decoder));
+        assertTrue(NOT_FULLY_DECODED, decoder.eof());
+    }
+
+    @Test
+    public void checkShearIsEncoded() throws CoderException {
+        final CoordTransform object = CoordTransform.shear(1.0f, 2.0f);
+        final byte[] binary = new byte[] { 0x66, 0x40, 0x00, 0x10, 0x00,
+                0x00, 0x40 };
+
+        final SWFEncoder encoder = new SWFEncoder(binary.length);
+        final Context context = new Context();
+
+        final int length = object.prepareToEncode(context);
+        object.encode(encoder, context);
+
+        assertEquals(CALCULATED_LENGTH, binary.length, length);
+        assertTrue(NOT_FULLY_ENCODED, encoder.eof());
+        assertArrayEquals(NOT_ENCODED, binary, encoder.getData());
+    }
+
+    @Test
+    public void checkShearIsDecoded() throws CoderException {
+        final CoordTransform object = CoordTransform.shear(1.0f, 2.0f);
+        final byte[] binary = new byte[] { 0x66, 0x40, 0x00, 0x10, 0x00,
+                0x00, 0x40 };
+
+        final SWFDecoder decoder = new SWFDecoder(binary);
+
+        assertEquals(NOT_DECODED, object, new CoordTransform(decoder));
+        assertTrue(NOT_FULLY_DECODED, decoder.eof());
+    }
+
+    @Test
+    public void checkTranslationIsEncoded() throws CoderException {
+        final CoordTransform object = CoordTransform.translate(1, 2);
+        final byte[] binary = new byte[] { 0x06, 0x50 };
+
+        final SWFEncoder encoder = new SWFEncoder(binary.length);
+        final Context context = new Context();
+
+        final int length = object.prepareToEncode(context);
+        object.encode(encoder, context);
+
+        assertEquals(CALCULATED_LENGTH, binary.length, length);
+        assertTrue(NOT_FULLY_ENCODED, encoder.eof());
+        assertArrayEquals(NOT_ENCODED, binary, encoder.getData());
+    }
+
+    @Test
+    public void checkTranslationIsDecoded() throws CoderException {
+        final CoordTransform object = CoordTransform.translate(1, 2);
+        final byte[] binary = new byte[] { 0x06, 0x50 };
+
+        final SWFDecoder decoder = new SWFDecoder(binary);
+
+        assertEquals(NOT_DECODED, object, new CoordTransform(decoder));
+        assertTrue(NOT_FULLY_DECODED, decoder.eof());
     }
 
     @Test
     public void checkTransformIsEncoded() throws CoderException {
+        final CoordTransform object =
+            new CoordTransform(1.0f, 2.0f, 3.0f, 4.0f, 0, 0);
+        final byte[] binary = new byte[] {(byte) 0xCC, (byte) 0x80, 0x00, 0x20,
+                0x00, 0x0D, 0x0C, 0x00, 0x01, 0x00, 0x00, 0x02, 0x00 };
 
-        final CoordTransform transform = new CoordTransform(
-                xscale.floatValue(), yscale.floatValue(),
-                xshear.floatValue(), yshear.floatValue(),
-                xcoord.intValue(), ycoord.intValue());
-        final SWFEncoder encoder = new SWFEncoder(data.length);
+        final SWFEncoder encoder = new SWFEncoder(binary.length);
+        final Context context = new Context();
 
-        transform.prepareToEncode(context);
-        transform.encode(encoder, context);
+        final int length = object.prepareToEncode(context);
+        object.encode(encoder, context);
 
-        assertTrue(encoder.eof());
-        assertArrayEquals(data, encoder.getData());
+        assertEquals(CALCULATED_LENGTH, binary.length, length);
+        assertTrue(NOT_FULLY_ENCODED, encoder.eof());
+        assertArrayEquals(NOT_ENCODED, binary, encoder.getData());
     }
 
     @Test
-    public void checkTranformIsDecoded() throws CoderException {
+    public void checkTransformIsDecoded() throws CoderException {
+        final CoordTransform object =
+            new CoordTransform(1.0f, 2.0f, 3.0f, 4.0f, 0, 0);
+        final byte[] binary = new byte[] {(byte) 0xCC, (byte) 0x80, 0x00, 0x20,
+                0x00, 0x0D, 0x0C, 0x00, 0x01, 0x00, 0x00, 0x02, 0x00 };
 
-        final SWFDecoder decoder = new SWFDecoder(data);
-        final CoordTransform transform = new CoordTransform(decoder);
+        final SWFDecoder decoder = new SWFDecoder(binary);
 
-        assertTrue(decoder.eof());
-        assertEquals(xscale.floatValue(), transform.getScaleX(), 0.0);
-        assertEquals(yscale.floatValue(), transform.getScaleY(), 0.0);
-        assertEquals(xshear.floatValue(), transform.getShearX(), 0.0);
-        assertEquals(yshear.floatValue(), transform.getShearY(), 0.0);
-        assertEquals(xcoord.intValue(), transform.getTranslateX());
-        assertEquals(ycoord.intValue(), transform.getTranslateY());
-     }
+        assertEquals(NOT_DECODED, object, new CoordTransform(decoder));
+        assertTrue(NOT_FULLY_DECODED, decoder.eof());
+    }
 }

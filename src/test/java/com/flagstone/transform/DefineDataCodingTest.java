@@ -34,16 +34,9 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
-import org.yaml.snakeyaml.Yaml;
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
@@ -53,71 +46,61 @@ import com.flagstone.transform.coder.SWFEncoder;
 @RunWith(Parameterized.class)
 public final class DefineDataCodingTest {
 
-    private static final String RESOURCE =
-        "com/flagstone/transform/DefineData.yaml";
-
-    private static final String IDENTIFIER = "identifier";
-    private static final String BYTES = "bytes";
-    private static final String DIN = "din";
-    private static final String DOUT = "dout";
-
-    @Parameters
-    public static Collection<Object[]>  patterns() {
-
-        ClassLoader loader = DefineDataCodingTest.class.getClassLoader();
-        InputStream other = loader.getResourceAsStream(RESOURCE);
-        Yaml yaml = new Yaml();
-
-        Collection<Object[]> list = new ArrayList<Object[]>();
-
-        for (Object data : yaml.loadAll(other)) {
-            list.add(new Object[] {data });
-        }
-
-        return list;
-    }
-
-    private final transient int identifier;
-    private final transient byte[] bytes;
-    private final transient byte[] din;
-    private final transient byte[] dout;
-    private final transient Context context;
-
-    public DefineDataCodingTest(final Map<String, Object>values) {
-        identifier = (Integer) values.get(IDENTIFIER);
-        bytes = (byte[]) values.get(BYTES);
-        din = (byte[]) values.get(DIN);
-        dout = (byte[]) values.get(DOUT);
-        context = new Context();
-    }
+    private static final String CALCULATED_LENGTH =
+        "Incorrect calculated length";
+    private static final String NOT_FULLY_ENCODED =
+        "Data was not fully encoded";
+    private static final String NOT_FULLY_DECODED =
+        "Data was not fully decoded";
+    private static final String NOT_ENCODED =
+        "Object was not encoded properly";
+    private static final String NOT_DECODED =
+        "Object was not decoded properly";
 
     @Test
-    public void checkSizeMatchesEncodedSize() throws CoderException {
-        final DefineData object = new DefineData(identifier, bytes);
-        final SWFEncoder encoder = new SWFEncoder(dout.length);
+    public void checkDefineDataIsEncoded() throws CoderException {
+        final byte[] data = new byte[] {1, 2, 3, 4};
+        final DefineData object = new DefineData(1, data);
+        final byte[] binary = new byte[] {(byte) 0xCA, 0x15, 0x01, 0x00,
+                0x00, 0x00, 0x00, 0x00, 0x01, 0x02, 0x03, 0x04};
 
-        assertEquals(dout.length, object.prepareToEncode(context));
-    }
+        final SWFEncoder encoder = new SWFEncoder(binary.length);
+        final Context context = new Context();
 
-    @Test
-    public void checkObjectIsEncoded() throws CoderException {
-        final DefineData object = new DefineData(identifier, bytes);
-        final SWFEncoder encoder = new SWFEncoder(dout.length);
-
-        object.prepareToEncode(context);
+        final int length = object.prepareToEncode(context);
         object.encode(encoder, context);
 
-        assertTrue(encoder.eof());
-        assertArrayEquals(dout, encoder.getData());
+        assertEquals(CALCULATED_LENGTH, binary.length, length);
+        assertTrue(NOT_FULLY_ENCODED, encoder.eof());
+        assertArrayEquals(NOT_ENCODED, binary, encoder.getData());
     }
 
     @Test
-    public void checkObjectIsDecoded() throws CoderException {
-        final SWFDecoder decoder = new SWFDecoder(din);
+    public void checkDefineDataIsDecoded() throws CoderException {
+        final byte[] data = new byte[] {1, 2, 3, 4};
+        final byte[] binary = new byte[] {(byte) 0xCA, 0x15, 0x01, 0x00,
+                0x00, 0x00, 0x00, 0x00, 0x01, 0x02, 0x03, 0x04};
+
+        final SWFDecoder decoder = new SWFDecoder(binary);
         final DefineData object = new DefineData(decoder);
 
-        assertTrue(decoder.eof());
-        assertEquals(identifier, object.getIdentifier());
-        assertArrayEquals(bytes, object.getData());
-    }
+        assertEquals(NOT_DECODED, 1, object.getIdentifier());
+        assertEquals(NOT_DECODED, data, object.getData());
+        assertTrue(NOT_FULLY_DECODED, decoder.eof());
+   }
+
+    @Test
+    public void checkExtendedDefineDataIsDecoded() throws CoderException {
+        final byte[] data = new byte[] {1, 2, 3, 4};
+        final byte[] binary = new byte[] {(byte) 0xFF, 0x15,
+                0x0A, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00,
+                0x01, 0x02, 0x03, 0x04};
+
+        final SWFDecoder decoder = new SWFDecoder(binary);
+        final DefineData object = new DefineData(decoder);
+
+        assertEquals(NOT_DECODED, 1, object.getIdentifier());
+        assertEquals(NOT_DECODED, data, object.getData());
+        assertTrue(NOT_FULLY_DECODED, decoder.eof());
+   }
 }

@@ -34,97 +34,99 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
-
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
-import org.yaml.snakeyaml.Yaml;
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-@RunWith(Parameterized.class)
 public final class BoundsCodingTest {
 
-    private static final String RESOURCE =
-        "com/flagstone/transform/datatype/Bounds.yaml";
+    private static final String CALCULATED_LENGTH =
+        "Incorrect calculated length";
+    private static final String NOT_FULLY_ENCODED =
+        "Data was not fully encoded";
+    private static final String NOT_FULLY_DECODED =
+        "Data was not fully decoded";
+    private static final String NOT_ENCODED =
+        "Object was not encoded properly";
+    private static final String NOT_DECODED =
+        "Object was not decoded properly";
 
-    private static final String XMIN = "xMin";
-    private static final String YMIN = "yMin";
-    private static final String XMAX = "xMax";
-    private static final String YMAX = "yMax";
-    private static final String DATA = "data";
+    @Test
+    public void checkPositiveDimensionsAreEncoded() throws CoderException {
+        final Bounds object = new Bounds(1, 2, 3, 4);
+        final byte[] binary = new byte[] {0x20, (byte) 0x99, 0x20 };
+        final SWFEncoder encoder = new SWFEncoder(binary.length);
+        final Context context = new Context();
 
-    @Parameters
-    public static Collection<Object[]>  patterns() {
+        final int length = object.prepareToEncode(context);
+        object.encode(encoder, context);
 
-        ClassLoader loader = BoundsCodingTest.class.getClassLoader();
-        InputStream other = loader.getResourceAsStream(RESOURCE);
-        Yaml yaml = new Yaml();
-
-        Collection<Object[]> list = new ArrayList<Object[]>();
-
-        for (Object data : yaml.loadAll(other)) {
-            list.add(new Object[] {data });
-        }
-
-        return list;
-    }
-
-    private final Integer xMin;
-    private final Integer yMin;
-    private final Integer xMax;
-    private final Integer yMax;
-    private final byte[] data;
-
-    private final Context context;
-
-    public BoundsCodingTest(final Map<String, Object>values) {
-        xMin = (Integer) values.get(XMIN);
-        yMin = (Integer) values.get(YMIN);
-        xMax = (Integer) values.get(XMAX);
-        yMax = (Integer) values.get(YMAX);
-        data = (byte[]) values.get(DATA);
-
-        context = new Context();
+        assertEquals(CALCULATED_LENGTH, binary.length, length);
+        assertTrue(NOT_FULLY_ENCODED, encoder.eof());
+        assertArrayEquals(NOT_ENCODED, binary, encoder.getData());
     }
 
     @Test
-    public void checkSizeMatchesEncodedSize() throws CoderException {
-        final Bounds bounds = new Bounds(xMin, yMin, xMax, yMax);
-        final SWFEncoder encoder = new SWFEncoder(data.length);
+    public void checkPositiveDimensionsAreDecoded() throws CoderException {
+        final Bounds object = new Bounds(1, 2, 3, 4);
+        final byte[] binary = new byte[] {0x20, (byte) 0x99, 0x20 };
+        final SWFDecoder decoder = new SWFDecoder(binary);
 
-        assertEquals(data.length, bounds.prepareToEncode(context));
+        assertEquals(NOT_DECODED, object, new Bounds(decoder));
+        assertTrue(NOT_FULLY_DECODED, decoder.eof());
     }
 
     @Test
-    public void checkBoundsIsEncoded() throws CoderException {
-        final Bounds bounds = new Bounds(xMin, yMin, xMax, yMax);
-        final SWFEncoder encoder = new SWFEncoder(data.length);
+    public void checkZeroDimensionsAreEncoded() throws CoderException {
+        final Bounds object = new Bounds(0, 0, 0, 0);
+        final byte[] binary = new byte[] {0x08, 0x00 };
+        final SWFEncoder encoder = new SWFEncoder(binary.length);
+        final Context context = new Context();
 
-        bounds.prepareToEncode(context);
-        bounds.encode(encoder, context);
+        final int length = object.prepareToEncode(context);
+        object.encode(encoder, context);
 
-        assertTrue(encoder.eof());
-        assertArrayEquals(data, encoder.getData());
+        assertEquals(CALCULATED_LENGTH, binary.length, length);
+        assertTrue(NOT_FULLY_ENCODED, encoder.eof());
+        assertArrayEquals(NOT_ENCODED, binary, encoder.getData());
     }
 
     @Test
-    public void checkBoundsIsDecoded() throws CoderException {
-        final SWFDecoder decoder = new SWFDecoder(data);
-        final Bounds bounds = new Bounds(decoder);
+    public void checkZeroDimensionsAreDecoded() throws CoderException {
+        final Bounds object = new Bounds(0, 0, 0, 0);
+        final byte[] binary = new byte[] {0x08, 0x00 };
+        final SWFDecoder decoder = new SWFDecoder(binary);
 
-        assertTrue(decoder.eof());
-        assertEquals(xMin.intValue(), bounds.getMinX());
-        assertEquals(yMin.intValue(), bounds.getMinY());
-        assertEquals(xMax.intValue(), bounds.getMaxX());
-        assertEquals(yMax.intValue(), bounds.getMaxY());
+        assertEquals(NOT_DECODED, object, new Bounds(decoder));
+        assertTrue(NOT_FULLY_DECODED, decoder.eof());
+    }
+
+    @Test
+    public void checkNegativeMinimumIsEncoded() throws CoderException {
+        final Bounds object = new Bounds(-1, -1, 1, 1);
+        final byte[] binary = new byte[] {0x16, (byte) 0xE8 };
+
+        final SWFEncoder encoder = new SWFEncoder(binary.length);
+        final Context context = new Context();
+
+        final int length = object.prepareToEncode(context);
+        object.encode(encoder, context);
+
+        assertEquals(CALCULATED_LENGTH, binary.length, length);
+        assertTrue(NOT_FULLY_ENCODED, encoder.eof());
+        assertArrayEquals(NOT_ENCODED, binary, encoder.getData());
+    }
+
+    @Test
+    public void checkNegativeMinimumIsDecoded() throws CoderException {
+        final Bounds object = new Bounds(-1, -1, 1, 1);
+        final byte[] binary = new byte[] {0x16, (byte) 0xE8 };
+        final SWFDecoder decoder = new SWFDecoder(binary);
+
+        assertEquals(NOT_DECODED, object, new Bounds(decoder));
+        assertTrue(NOT_FULLY_DECODED, decoder.eof());
     }
 }

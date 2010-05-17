@@ -34,91 +34,87 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
-import org.yaml.snakeyaml.Yaml;
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-@RunWith(Parameterized.class)
 public final class ImportCodingTest {
 
-    private static final String RESOURCE =
-        "com/flagstone/transform/Import.yaml";
-
-    private static final String URL = "url";
-    private static final String TABLE = "table";
-    private static final String DIN = "din";
-    private static final String DOUT = "dout";
-
-    @Parameters
-    public static Collection<Object[]>  patterns() {
-
-        ClassLoader loader = DoActionCodingTest.class.getClassLoader();
-        InputStream other = loader.getResourceAsStream(RESOURCE);
-        Yaml yaml = new Yaml();
-
-        Collection<Object[]> list = new ArrayList<Object[]>();
-
-        for (Object data : yaml.loadAll(other)) {
-            list.add(new Object[] {data });
-        }
-
-        return list;
-    }
-
-    private final transient String url;
-    private final transient Map<Integer, String> table;
-    private final transient byte[] din;
-    private final transient byte[] dout;
-    private final transient Context context;
-
-    @SuppressWarnings("unchecked")
-    public ImportCodingTest(final Map<String, Object>values) {
-        url = (String) values.get(URL);
-        table = (Map<Integer, String>) values.get(TABLE);
-        din = (byte[]) values.get(DIN);
-        dout = (byte[]) values.get(DOUT);
-        context = new Context();
-    }
+    private static final String CALCULATED_LENGTH =
+        "Incorrect calculated length";
+    private static final String NOT_FULLY_ENCODED =
+        "Data was not fully encoded";
+    private static final String NOT_FULLY_DECODED =
+        "Data was not fully decoded";
+    private static final String NOT_ENCODED =
+        "Object was not encoded properly";
+    private static final String NOT_DECODED =
+        "Object was not decoded properly";
 
     @Test
-    public void checkSizeMatchesEncodedSize() throws CoderException {
-        final Import object = new Import(url, table);
-        final SWFEncoder encoder = new SWFEncoder(dout.length);
+    public void checkImportIsEncoded() throws CoderException {
+        final Map<Integer, String>map = new LinkedHashMap<Integer, String>();
+        map.put(1, "A");
+        map.put(2, "B");
+        map.put(2, "C");
 
-        assertEquals(dout.length, object.prepareToEncode(context));
-    }
+        final Import object = new Import("ABC", map);
+        final byte[] binary = new byte[] {0x52, 0x0E, 0x41, 0x42, 0x43, 0x00,
+                0x03, 0x00, 0x01, 0x00, 0x41, 0x00, 0x02, 0x00, 0x42,
+                0x00, 0x03, 0x00, 0x43, 0x00};
 
-    @Test
-    public void checkObjectIsEncoded() throws CoderException {
-        final Import object = new Import(url, table);
-        final SWFEncoder encoder = new SWFEncoder(dout.length);
+        final SWFEncoder encoder = new SWFEncoder(binary.length);
+        final Context context = new Context();
 
-        object.prepareToEncode(context);
+        final int length = object.prepareToEncode(context);
         object.encode(encoder, context);
 
-        assertTrue(encoder.eof());
-        assertArrayEquals(dout, encoder.getData());
+        assertEquals(CALCULATED_LENGTH, binary.length, length);
+        assertTrue(NOT_FULLY_ENCODED, encoder.eof());
+        assertArrayEquals(NOT_ENCODED, binary, encoder.getData());
     }
 
     @Test
-    public void checkObjectIsDecoded() throws CoderException {
-        final SWFDecoder decoder = new SWFDecoder(din);
+    public void checkImportIsDecoded() throws CoderException {
+        final Map<Integer, String>map = new LinkedHashMap<Integer, String>();
+        map.put(1, "A");
+        map.put(2, "B");
+        map.put(2, "C");
+
+        final byte[] binary = new byte[] {0x52, 0x0E, 0x41, 0x42, 0x43, 0x00,
+                0x03, 0x00, 0x01, 0x00, 0x41, 0x00, 0x02, 0x00, 0x42,
+                0x00, 0x03, 0x00, 0x43, 0x00};
+
+        final SWFDecoder decoder = new SWFDecoder(binary);
         final Import object = new Import(decoder);
 
-        assertTrue(decoder.eof());
-        assertEquals(url, object.getUrl());
-        assertEquals(table, object.getObjects());
-    }
+        assertEquals(NOT_DECODED, "ABC", object.getUrl());
+        assertEquals(NOT_DECODED, map, object.getObjects());
+        assertTrue(NOT_FULLY_DECODED, decoder.eof());
+   }
+
+    @Test
+    public void checkExtendedImportIsDecoded() throws CoderException {
+        final Map<Integer, String>map = new LinkedHashMap<Integer, String>();
+        map.put(1, "A");
+        map.put(2, "B");
+        map.put(2, "C");
+
+        final byte[] binary = new byte[] {0x7F, 0x0E, 0x12, 0x00, 0x00, 0x00,
+                0x41, 0x42, 0x43, 0x00, 0x03, 0x00, 0x01, 0x00, 0x41, 0x00,
+                0x02, 0x00, 0x42, 0x00, 0x03, 0x00, 0x43, 0x00};
+
+        final SWFDecoder decoder = new SWFDecoder(binary);
+        final Import object = new Import(decoder);
+
+        assertEquals(NOT_DECODED, "ABC", object.getUrl());
+        assertEquals(NOT_DECODED, map, object.getObjects());
+        assertTrue(NOT_FULLY_DECODED, decoder.eof());
+   }
 }

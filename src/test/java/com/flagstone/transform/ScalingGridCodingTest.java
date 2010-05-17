@@ -34,16 +34,9 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
-import org.yaml.snakeyaml.Yaml;
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
@@ -54,78 +47,60 @@ import com.flagstone.transform.datatype.Bounds;
 @RunWith(Parameterized.class)
 public final class ScalingGridCodingTest {
 
-    private static final String RESOURCE =
-        "com/flagstone/transform/ScalingGrid.yaml";
-
-    private static final String IDENTIFIER = "identifier";
-    private static final String XMIN = "xmin";
-    private static final String YMIN = "ymin";
-    private static final String XMAX = "xmax";
-    private static final String YMAX = "ymax";
-    private static final String DIN = "din";
-    private static final String DOUT = "dout";
-
-    @Parameters
-    public static Collection<Object[]>  patterns() {
-
-        ClassLoader loader = DoActionCodingTest.class.getClassLoader();
-        InputStream other = loader.getResourceAsStream(RESOURCE);
-        Yaml yaml = new Yaml();
-
-        Collection<Object[]> list = new ArrayList<Object[]>();
-
-        for (Object data : yaml.loadAll(other)) {
-            list.add(new Object[] {data });
-        }
-
-        return list;
-    }
-
-    private final transient int identifier;
-    private final transient Bounds bounds;
-    private final transient byte[] din;
-    private final transient byte[] dout;
-    private final transient Context context;
-
-    public ScalingGridCodingTest(final Map<String, Object>values) {
-        identifier = (Integer) values.get(IDENTIFIER);
-        bounds = new Bounds(
-                (Integer) values.get(XMIN),
-                (Integer) values.get(YMIN),
-                (Integer) values.get(XMAX),
-                (Integer) values.get(YMAX));
-        din = (byte[]) values.get(DIN);
-        dout = (byte[]) values.get(DOUT);
-        context = new Context();
-    }
+    private static final String CALCULATED_LENGTH =
+        "Incorrect calculated length";
+    private static final String NOT_FULLY_ENCODED =
+        "Data was not fully encoded";
+    private static final String NOT_FULLY_DECODED =
+        "Data was not fully decoded";
+    private static final String NOT_ENCODED =
+        "Object was not encoded properly";
+    private static final String NOT_DECODED =
+        "Object was not decoded properly";
 
     @Test
-    public void checkSizeMatchesEncodedSize() throws CoderException {
-        final ScalingGrid object = new ScalingGrid(identifier, bounds);
-        final SWFEncoder encoder = new SWFEncoder(dout.length);
+    public void checkScalingGridIsEncoded() throws CoderException {
+        final Bounds bounds = new Bounds(1, 2, 3, 4);
+        final ScalingGrid object = new ScalingGrid(1, bounds);
+        final byte[] binary = new byte[] {(byte) 0x85, 0x13, 0x01, 0x00, 0x20,
+                    (byte) 0x99, 0x20};
 
-        assertEquals(dout.length, object.prepareToEncode(context));
-    }
+        final SWFEncoder encoder = new SWFEncoder(binary.length);
+        final Context context = new Context();
 
-    @Test
-    public void checkObjectIsEncoded() throws CoderException {
-        final ScalingGrid object = new ScalingGrid(identifier, bounds);
-        final SWFEncoder encoder = new SWFEncoder(dout.length);
-
-        object.prepareToEncode(context);
+        final int length = object.prepareToEncode(context);
         object.encode(encoder, context);
 
-        assertTrue(encoder.eof());
-        assertArrayEquals(dout, encoder.getData());
+        assertEquals(CALCULATED_LENGTH, binary.length, length);
+        assertTrue(NOT_FULLY_ENCODED, encoder.eof());
+        assertArrayEquals(NOT_ENCODED, binary, encoder.getData());
     }
 
     @Test
-    public void checkObjectIsDecoded() throws CoderException {
-        final SWFDecoder decoder = new SWFDecoder(din);
+    public void checkScalingGridIsDecoded() throws CoderException {
+        final Bounds bounds = new Bounds(1, 2, 3, 4);
+        final byte[] binary = new byte[] {(byte) 0x85, 0x13, 0x01, 0x00, 0x20,
+                (byte) 0x99, 0x20};
+
+        final SWFDecoder decoder = new SWFDecoder(binary);
         final ScalingGrid object = new ScalingGrid(decoder);
 
-        assertTrue(decoder.eof());
-        assertEquals(identifier, object.getIdentifier());
-        assertEquals(bounds, object.getBounds());
-    }
+        assertEquals(NOT_DECODED, 1, object.getIdentifier());
+        assertEquals(NOT_DECODED, bounds, object.getBounds());
+        assertTrue(NOT_FULLY_DECODED, decoder.eof());
+   }
+
+    @Test
+    public void checkExtendedScalingGridIsDecoded() throws CoderException {
+        final Bounds bounds = new Bounds(1, 2, 3, 4);
+        final byte[] binary = new byte[] {(byte) 0xBF, 0x13, 0x05, 0x00, 0x00,
+                0x00, 0x01, 0x00, 0x20, (byte) 0x99, 0x20};
+
+        final SWFDecoder decoder = new SWFDecoder(binary);
+        final ScalingGrid object = new ScalingGrid(decoder);
+
+        assertEquals(NOT_DECODED, 1, object.getIdentifier());
+        assertEquals(NOT_DECODED, bounds, object.getBounds());
+        assertTrue(NOT_FULLY_DECODED, decoder.eof());
+   }
 }
