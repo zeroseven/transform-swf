@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.DataFormatException;
 
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.sound.DefineSound;
@@ -53,19 +54,28 @@ import com.flagstone.transform.sound.SoundStreamHead2;
 /**
  * Decoder for WAV sounds so they can be added to a flash file.
  */
-//TODO(class)
 public final class WAVDecoder implements SoundProvider, SoundDecoder {
 
+    /** The binary signature for xIFF files. */
     private static final int[] RIFF = {82, 73, 70, 70};
+    /** The binary signature for WAV files. */
     private static final int[] WAV = {87, 65, 86, 69};
+    /** The identifier of a format block. */
     private static final int FMT = 0x20746d66;
+    /** The identifier of a data block. */
     private static final int DATA = 0x61746164;
 
+    /** The sound format. */
     private transient SoundFormat format;
+    /** The number of sound channels: 1 - mono, 2 - stereo. */
     private transient int numberOfChannels;
+    /** The number of sound samples for each channel. */
     private transient int samplesPerChannel;
+    /** The rate at which the sound will be played. */
     private transient int sampleRate;
+    /** The number of bytes in each sample. */
     private transient int sampleSize;
+    /** The sound samples. */
     private transient byte[] sound = null;
 
     /** {@inheritDoc} */
@@ -179,7 +189,7 @@ public final class WAVDecoder implements SoundProvider, SoundDecoder {
 
         final SWFDecoder coder = new SWFDecoder(bytes);
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < RIFF.length; i++) {
             if (coder.readByte() != RIFF[i]) {
                 throw new DataFormatException("Unsupported format");
             }
@@ -187,7 +197,7 @@ public final class WAVDecoder implements SoundProvider, SoundDecoder {
 
         coder.readUI32();
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < WAV.length; i++) {
             if (coder.readByte() != WAV[i]) {
                 throw new DataFormatException("Unsupported format");
             }
@@ -210,15 +220,23 @@ public final class WAVDecoder implements SoundProvider, SoundDecoder {
                 decodeDATA(coder, length);
                 break;
             default:
-                coder.adjustPointer(length << 3);
+                coder.adjustPointer(length << Coder.BYTES_TO_BITS);
                 break;
             }
 
-            final int nextBlock = blockStart + (length << 3);
+            final int nextBlock = blockStart + (length << Coder.BYTES_TO_BITS);
             coder.setPointer(nextBlock);
         } while (!coder.eof());
     }
 
+    /**
+     * Decode the FMT block.
+     *
+     * @param coder an SWFDecoder containing the bytes to be decoded.
+     *
+     * @throws DataFormatException if the block is in a format not supported
+     * by this decoder.
+     */
     private void decodeFMT(final SWFDecoder coder) throws DataFormatException {
         format = SoundFormat.PCM;
 
@@ -230,9 +248,15 @@ public final class WAVDecoder implements SoundProvider, SoundDecoder {
         sampleRate = coder.readUI32();
         coder.readUI32(); // total data length
         coder.readUI16(); // total bytes per sample
-        sampleSize = coder.readUI16() / 8;
+        sampleSize = coder.readUI16() / Coder.BITS_PER_BYTE;
     }
 
+    /**
+     * Decode the Data block containing the sound samples.
+     *
+     * @param coder an SWFDecoder containing the bytes to be decoded.
+     * @param length the length of the block in bytes.
+     */
     private void decodeDATA(final SWFDecoder coder, final int length) {
         samplesPerChannel = length / (sampleSize * numberOfChannels);
 
