@@ -103,6 +103,7 @@ public final class ShapeStyle implements ShapeRecord {
      */
     private static final int EXTENDED = 255;
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "ShapeStyle: { move=(%d, %d);"
             + " fill=%d; alt=%d; line=%d; fillStyles=%s; lineStyles=%s }";
 

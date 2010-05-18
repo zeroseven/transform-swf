@@ -57,13 +57,16 @@ public final class FontAlignment implements MovieTag {
         THICK
     };
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "FontAlignment: { identifier=%d;"
     		+ " strokeWidth=%s; zones=%s }";
 
+    /** The unique identifier of the font that the alignment applies to. */
     private int identifier;
     private transient int hints;
     private List<GlyphAlignment> zones;
 
+    /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
 
     /**

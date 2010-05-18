@@ -71,11 +71,13 @@ import com.flagstone.transform.shape.ShapeData;
 //TODO(class)
 @SuppressWarnings({"PMD.TooManyFields", "PMD.TooManyMethods" })
 public final class DefineFont3 implements DefineTag {
+    /** Format string used in toString() method. */
     private static final String FORMAT = "DefineFont3: { identifier=%d;"
             + " encoding=%d; small=%b; italic=%b; bold=%b; language=%s;"
             + " name=%s; shapes=%s; codes=%s; ascent=%d; descent=%d;"
             + " leading=%d; advances=%s; bounds=%s; kernings=%s }";
 
+    /** The unique identifier for this object. */
     private int identifier;
     private int encoding;
     private boolean small;
@@ -92,6 +94,7 @@ public final class DefineFont3 implements DefineTag {
     private List<Bounds> bounds;
     private List<Kerning> kernings;
 
+    /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
     private transient boolean wideOffsets;
     private transient boolean wideCodes;

@@ -61,6 +61,8 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  */
 //TODO(class)
 public final class Kerning implements SWFEncodeable {
+
+    /** Format string used in toString() method. */
     private static final String FORMAT = "Kerning: { leftGlyph=%d;"
     		+ " rightGlyph=%d; adjustment=%d } ";
 

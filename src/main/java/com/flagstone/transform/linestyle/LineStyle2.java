@@ -46,6 +46,7 @@ import com.flagstone.transform.fillstyle.FillStyle;
 /** TODO(class). */
 public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "LineStyle2: { width=%d; color=%s;"
             + " fillStyle=%s; startCap=%s; endCap=%s; joinStyle=%s;"
             + " scaledHorizontally=%b; scaledVertically=%b;"

@@ -321,7 +321,7 @@ public final class NewFunction2 implements Action {
     /** The set of actions that make up the function body. */
     private final transient List<Action> actions;
 
-    /** The length of the encoded object. */
+    /** The length of the action, minus the header, when it is encoded. */
     private transient int length;
     /** The length of the encoded function body. */
     private transient int actionsLength;

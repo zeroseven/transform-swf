@@ -62,6 +62,8 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  */
 //TODO(class)
 public final class Curve implements ShapeRecord {
+
+    /** Format string used in toString() method. */
     private static final String FORMAT = "Curve: control=(%d,%d);"
     		+ " anchor=(%d,%d);";
 

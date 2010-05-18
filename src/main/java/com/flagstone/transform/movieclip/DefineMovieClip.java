@@ -69,6 +69,8 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  */
 //TODO(class)
 public final class DefineMovieClip implements DefineTag {
+
+    /** Format string used in toString() method. */
     private static final String FORMAT = "DefineMovieClip: { identifier=%d;"
     		+ " objects=%s }";
 
@@ -76,8 +78,10 @@ public final class DefineMovieClip implements DefineTag {
 
     private transient int frameCount;
 
+    /** The unique identifier for this object. */
     private int identifier;
 
+    /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
 
     /**
@@ -98,7 +102,7 @@ public final class DefineMovieClip implements DefineTag {
     // TODO(optimise)
     public DefineMovieClip(final SWFDecoder coder, final Context context)
             throws CoderException {
-//        final int start = coder.getPointer();
+        final int start = coder.getPointer();
         length = coder.readHeader();
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
@@ -121,11 +125,9 @@ public final class DefineMovieClip implements DefineTag {
         coder.adjustPointer(16);
 
         if (coder.getPointer() != end) {
-            coder.setPointer(end);
-            //TODO Fix Me
-//            throw new CoderException(getClass().getName(),
-//                     start >> Coder.BITS_TO_BYTES, length,
-//                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
+            throw new CoderException(getClass().getName(),
+                     start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 

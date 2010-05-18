@@ -40,6 +40,7 @@ import com.flagstone.transform.coder.SWFEncoder;
 /** TODO(class). */
 public final class ShapeData implements ShapeRecord {
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "ShapeData: { data[%d] }";
 
     private final transient byte[] data;

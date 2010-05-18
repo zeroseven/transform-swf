@@ -48,6 +48,7 @@ public final class CoderException extends IOException {
 
     private static final long serialVersionUID = 1;
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "CoderException: { "
             + "name=%s; location=%d; length=%d; delta=%d; message=%s }";
 

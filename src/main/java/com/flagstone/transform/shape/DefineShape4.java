@@ -66,10 +66,12 @@ public final class DefineShape4 implements DefineTag {
      */
     private static final int EXTENDED = 255;
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "DefineShape4: { identifier=%d;"
             + " shapeBounds=%s; edgeBounds=%s; fillStyles=%s; lineStyles=%s;"
             + " shape=%s }";
 
+    /** The unique identifier for this object. */
     private int identifier;
     private Bounds shapeBounds;
     private Bounds edgeBounds;
@@ -77,6 +79,7 @@ public final class DefineShape4 implements DefineTag {
     private List<LineStyle2> lineStyles;
     private Shape shape;
 
+    /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
     private transient int fillBits;
     private transient int lineBits;

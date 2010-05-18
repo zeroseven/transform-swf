@@ -124,6 +124,7 @@ public final class DropShadowFilter implements Filter {
      */
     private static final float SCALE_8 = 256.0f;
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "DropShadowFilter: {"
         + " shadow=%s; blurX=%f; blurY=%f"
         + " angle=%f; disance=%f, strength=%f; mode=%s; passes=%d}";

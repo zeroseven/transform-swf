@@ -55,6 +55,7 @@ public final class TabOrder implements MovieTag {
     /** The highest index when defining an objects tab order. */
     public static final int MAX_TAB = 65535;
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "TabOrder: { layer=%d; index=%d }";
 
     private int layer;

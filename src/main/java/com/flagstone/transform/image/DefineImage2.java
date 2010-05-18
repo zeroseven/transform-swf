@@ -76,16 +76,21 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  */
 public final class DefineImage2 implements ImageTag {
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "DefineImage2: { identifier=%d;"
             + " width=%d; height=%d; pixelSize=%d; tableSize=%d; image=%d }";
 
+    /** The unique identifier for this object. */
     private int identifier;
+    /** The width of the image in pixels. */
     private int width;
+    /** The height of the image in pixels. */
     private int height;
     private int pixelSize;
     private int tableSize;
     private byte[] image;
 
+    /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
     private transient boolean extendLength;
 

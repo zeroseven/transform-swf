@@ -45,18 +45,23 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 public final class DefineJPEGImage4 implements ImageTag {
 
-    private final static float SCALE_8 = 256.0f;
+    private static final float SCALE_8 = 256.0f;
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "DefineJPEGImage4: { identifier=%d;"
             + "deblocking=%f; image=%d; alpha=%d }";
 
+    /** The unique identifier for this object. */
     private int identifier;
     private int deblocking;
     private byte[] image;
     private byte[] alpha;
 
+    /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
+    /** The width of the image in pixels. */
     private transient int width;
+    /** The height of the image in pixels. */
     private transient int height;
 
     /**

@@ -68,14 +68,17 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  */
 public final class Place implements MovieTag {
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "Place: { layer=%d; identifier=%d;"
             + " transform=%s; colorTransform=%s }";
 
+    /** The unique identifier of the object that will be displayed. */
     private int identifier;
     private int layer;
     private CoordTransform transform;
     private ColorTransform colorTransform;
 
+    /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
 
     /**

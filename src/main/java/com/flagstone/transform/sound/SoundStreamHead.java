@@ -49,8 +49,8 @@ import com.flagstone.transform.exception.IllegalArgumentValueException;
  *
  * <p>
  * Sounds may be either mono or stereo and encoded using either NATIVE_PCM,
- * ADPCM, MP3 or NELLYMOSER formats and have sampling rates of SoundRate.KHZ_5K, SoundRate.KHZ_11K,
- * SoundRate.KHZ_22K or SoundRate.KHZ_44K Hertz.
+ * ADPCM, MP3 or NELLYMOSER formats and have sampling rates of 5512, 11025,
+ * 22050 or 44100 Hz.
  * </p>
  *
  * <p>
@@ -81,6 +81,8 @@ import com.flagstone.transform.exception.IllegalArgumentValueException;
  */
 //TODO(class)
 public final class SoundStreamHead implements MovieTag {
+
+    /** Format string used in toString() method. */
     private static final String FORMAT = "SoundStreamHead: { format=%s; "
             + "playbackRate=%d; playbackChannels=%d; playbackSampleSize=%d; "
             + "streamRate=%d; streamChannels=%d; streamSampleSize=%d; "
@@ -96,6 +98,7 @@ public final class SoundStreamHead implements MovieTag {
     private int streamSampleCount;
     private int latency;
 
+    /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
 
     /**
@@ -139,8 +142,8 @@ public final class SoundStreamHead implements MovieTag {
      * to define the sound.
      *
      * @param playbackRate
-     *            the recommended rate for playing the sound, either SoundRate.KHZ_5K,
-     *            SoundRate.KHZ_11K, SoundRate.KHZ_22K or SoundRate.KHZ_44K Hz.
+     *            the recommended rate for playing the sound, either 5512,
+     *            11025, 22050 or 44100 Hz.
      * @param playbackChannels
      *            The recommended number of playback channels: 1 = mono or 2 =
      *            stereo.
@@ -148,8 +151,8 @@ public final class SoundStreamHead implements MovieTag {
      *            the recommended uncompressed sample size for playing the
      *            sound, either 1 or 2 bytes.
      * @param streamingRate
-     *            the rate at which the sound was sampled, either SoundRate.KHZ_5K, SoundRate.KHZ_11K,
-     *            SoundRate.KHZ_22K or SoundRate.KHZ_44K Hz.
+     *            the rate at which the sound was sampled, either 5512, 11025,
+     *            22050 or 44100 Hz.
      * @param streamingChannels
      *            the number of channels: 1 = mono or 2 = stereo.
      * @param streamingSize
@@ -262,7 +265,7 @@ public final class SoundStreamHead implements MovieTag {
     }
 
     /**
-     * Returns the recommended playback rate: SoundRate.KHZ_5K, SoundRate.KHZ_11K, SoundRate.KHZ_22K or SoundRate.KHZ_44K Hertz.
+     * Returns the recommended playback rate: 5512, 11025, 22050 or 44100 Hz.
      */
     public int getPlayRate() {
         return playRate;
@@ -284,7 +287,7 @@ public final class SoundStreamHead implements MovieTag {
     }
 
     /**
-     * Returns the sample rate: SoundRate.KHZ_5K, SoundRate.KHZ_11K, SoundRate.KHZ_22K or SoundRate.KHZ_44K Hz in the streaming
+     * Returns the sample rate: 5512, 11025, 22050 or 44100 Hz in the streaming
      * sound.
      */
     public float getStreamRate() {
@@ -314,17 +317,18 @@ public final class SoundStreamHead implements MovieTag {
     }
 
     /**
-     * Sets the recommended playback rate in Hz. Must be either: SoundRate.KHZ_5K, SoundRate.KHZ_11K,
-     * SoundRate.KHZ_22K or SoundRate.KHZ_44K.
+     * Sets the recommended playback rate in Hz. Must be either: 5512, 11025,
+     * 22050 or 44100.
      *
      * @param rate
      *            the recommended rate for playing the sound.
      */
     public void setPlayRate(final int rate) {
-        if ((rate != SoundRate.KHZ_5K) && (rate != SoundRate.KHZ_11K) && (rate != SoundRate.KHZ_22K)
-                && (rate != SoundRate.KHZ_44K)) {
+        if ((rate != SoundRate.KHZ_5K) && (rate != SoundRate.KHZ_11K)
+                && (rate != SoundRate.KHZ_22K) && (rate != SoundRate.KHZ_44K)) {
             throw new IllegalArgumentValueException(
-                    new int[] {SoundRate.KHZ_5K, SoundRate.KHZ_11K, SoundRate.KHZ_22K, SoundRate.KHZ_44K}, rate);
+                    new int[] {SoundRate.KHZ_5K, SoundRate.KHZ_11K,
+                            SoundRate.KHZ_22K, SoundRate.KHZ_44K}, rate);
         }
         playRate = rate;
     }
@@ -357,17 +361,18 @@ public final class SoundStreamHead implements MovieTag {
     }
 
     /**
-     * Sets the sample rate in Hz for the streaming sound. Must be either: SoundRate.KHZ_5K,
-     * SoundRate.KHZ_11K, SoundRate.KHZ_22K or SoundRate.KHZ_44K.
+     * Sets the sample rate in Hz for the streaming sound. Must be either: 5512,
+     * 11025, 22050 or 44100.
      *
      * @param rate
      *            the rate at which the streaming sound was sampled.
      */
     public void setStreamRate(final int rate) {
-        if ((rate != SoundRate.KHZ_5K) && (rate != SoundRate.KHZ_11K) && (rate != SoundRate.KHZ_22K)
-                && (rate != SoundRate.KHZ_44K)) {
+        if ((rate != SoundRate.KHZ_5K) && (rate != SoundRate.KHZ_11K)
+                && (rate != SoundRate.KHZ_22K) && (rate != SoundRate.KHZ_44K)) {
             throw new IllegalArgumentValueException(
-                    new int[] {SoundRate.KHZ_5K, SoundRate.KHZ_11K, SoundRate.KHZ_22K, SoundRate.KHZ_44K}, rate);
+                    new int[] {SoundRate.KHZ_5K, SoundRate.KHZ_11K,
+                            SoundRate.KHZ_22K, SoundRate.KHZ_44K}, rate);
         }
         streamRate = rate;
     }

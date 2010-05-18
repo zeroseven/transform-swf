@@ -69,17 +69,21 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  */
 //TODO(class)
 public final class DefineText2 implements DefineTag {
+
+    /** Format string used in toString() method. */
     private static final String FORMAT = "DefineText2: { identifier=%d;"
     		+ " bounds=%s; transform=%s; objects=%s }";
 
+    /** The unique identifier for this object. */
+    private int identifier;
     private Bounds bounds;
     private CoordTransform transform;
     private List<TextSpan> objects;
 
+    /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
     private transient int glyphBits;
     private transient int advanceBits;
-    private int identifier;
 
     /**
      * Creates and initialises a DefineText2 object using values encoded

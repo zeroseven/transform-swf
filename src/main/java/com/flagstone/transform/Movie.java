@@ -105,6 +105,7 @@ public final class Movie {
        }
     }
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "Movie: { signature=%s; version=%d;"
             + " frameSize=%s; frameRate=%f; objects=%s }";
 
@@ -118,6 +119,7 @@ public final class Movie {
     private float frameRate;
     private List<MovieTag> objects;
 
+    /** The length of the object when it is encoded. */
     private transient int length;
     private transient int frameCount;
 

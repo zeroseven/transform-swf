@@ -84,6 +84,7 @@ public final class VideoData implements VideoTag {
 
     private static final String BAD_FORMAT = "Unsupported format";
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "VideoData: { codec=%s;"
     		+ " frameType=%s; data =%d }";
 
@@ -92,6 +93,7 @@ public final class VideoData implements VideoTag {
     private Frame frameType;
     private byte[] data;
 
+    /** The length of the object when it is encoded. */
     private transient int length;
 
     /**

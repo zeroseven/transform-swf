@@ -49,7 +49,7 @@ public final class GotoLabel implements Action {
     /** The frame label. */
     private final transient String label;
 
-    /** The length of the action when it is encoded. */
+    /** The length of the action, minus the header, when it is encoded. */
     private transient int length;
 
     /**

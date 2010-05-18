@@ -205,7 +205,8 @@ public final class ColorTransformCodingTest {
     }
 
     @Test
-    public void checkTransparentMultiplyTermsAreDefaults() throws CoderException {
+    public void checkTransparentMultiplyTermsAreDefaults()
+                throws CoderException {
         final byte[] binary = new byte[] { (byte) 0x90, 0x48, (byte) 0xD0 };
 
         final SWFDecoder decoder = new SWFDecoder(binary);
@@ -219,7 +220,8 @@ public final class ColorTransformCodingTest {
     }
 
     @Test
-    public void checkTransparentMultiplyTermsAreEncoded() throws CoderException {
+    public void checkTransparentMultiplyTermsAreEncoded()
+                throws CoderException {
         final ColorTransform object =
             new ColorTransform(1.0f, 2.0f, 3.0f, 4.0f);
         final byte[] binary =
@@ -237,7 +239,8 @@ public final class ColorTransformCodingTest {
     }
 
     @Test
-    public void checkTransparentMultiplyTermsAreDecoded() throws CoderException {
+    public void checkTransparentMultiplyTermsAreDecoded()
+                throws CoderException {
         final ColorTransform object =
             new ColorTransform(1.0f, 2.0f, 3.0f, 4.0f);
         final byte[] binary =
@@ -270,7 +273,7 @@ public final class ColorTransformCodingTest {
         final ColorTransform object =
             new ColorTransform(1, 2, 3, 4, 1.0f, 2.0f, 3.0f, 4.0f);
         final byte[] binary = new byte[] {(byte) 0xF0, 0x40, 0x08, 0x00,
-                (byte)0xC0, 0x10, 0x00, 0x00,
+                (byte) 0xC0, 0x10, 0x00, 0x00,
                 0x40, 0x08, 0x00, (byte) 0xC0, 0x10 };
 
         final SWFEncoder encoder = new SWFEncoder(binary.length);
@@ -289,7 +292,7 @@ public final class ColorTransformCodingTest {
         final ColorTransform object =
             new ColorTransform(1, 2, 3, 4, 1.0f, 2.0f, 3.0f, 4.0f);
         final byte[] binary = new byte[] {(byte) 0xF0, 0x40, 0x08, 0x00,
-                (byte)0xC0, 0x10, 0x00, 0x00,
+                (byte) 0xC0, 0x10, 0x00, 0x00,
                 0x40, 0x08, 0x00, (byte) 0xC0, 0x10 };
 
         final SWFDecoder decoder = new SWFDecoder(binary);

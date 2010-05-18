@@ -83,10 +83,13 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
 //TODO(class)
 public final class MorphBitmapFill implements FillStyle {
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "MorphBitmapFill: { identifier=%d;"
     		+ " start=%s; end=%s }";
 
+    /** Code used to identify the fill style when it is encoded. */
     private transient int type;
+    /** The unique identifier of hte image that will be displayed. */
     private int identifier;
     private CoordTransform startTransform;
     private CoordTransform endTransform;

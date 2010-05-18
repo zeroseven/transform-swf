@@ -74,15 +74,18 @@ import com.flagstone.transform.linestyle.LineStyle;
 //TODO(class)
 public final class DefineShape implements DefineTag {
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "DefineShape: { identifier=%d;"
             + " bounds=%s; fillStyles=%s; lineStyles=%s; shape=%s }";
 
+    /** The unique identifier for this object. */
     private int identifier;
     private Bounds bounds;
     private List<FillStyle> fillStyles;
     private List<LineStyle> lineStyles;
     private Shape shape;
 
+    /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
     private transient int fillBits;
     private transient int lineBits;

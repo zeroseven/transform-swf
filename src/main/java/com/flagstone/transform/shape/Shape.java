@@ -54,6 +54,8 @@ import com.flagstone.transform.coder.SWFEncoder;
  */
 // TODO(class)
 public final class Shape implements SWFEncodeable {
+
+    /** Format string used in toString() method. */
     private static final String FORMAT = "Shape: { records=%s }";
 
     private List<ShapeRecord> objects;

@@ -50,10 +50,12 @@ import com.flagstone.transform.coder.SWFEncoder;
  */
 public final class EnableDebugger implements MovieTag {
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "EnableDebugger: { password=%s }";
 
     private String password;
 
+    /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
 
     /**

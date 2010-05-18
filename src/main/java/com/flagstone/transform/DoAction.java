@@ -74,10 +74,12 @@ import com.flagstone.transform.coder.SWFFactory;
  */
 public final class DoAction implements MovieTag {
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "DoAction: { actions=%s }";
 
     private List<Action> actions;
 
+    /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
 
     /**

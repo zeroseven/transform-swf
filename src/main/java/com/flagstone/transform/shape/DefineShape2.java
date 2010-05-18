@@ -79,15 +79,18 @@ public final class DefineShape2 implements DefineTag {
      */
     private static final int EXTENDED = 255;
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "DefineShape2: { identifier=%d;"
             + " bounds=%s; fillStyles=%s; lineStyles=%s; shape=%s }";
 
+    /** The unique identifier for this object. */
     private int identifier;
     private Bounds bounds;
     private List<FillStyle> fillStyles;
     private List<LineStyle> lineStyles;
     private Shape shape;
 
+    /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
     private transient int fillBits;
     private transient int lineBits;

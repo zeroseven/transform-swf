@@ -53,6 +53,8 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  */
 //TODO(class)
 public final class MorphLineStyle implements SWFEncodeable {
+
+    /** Format string used in toString() method. */
     private static final String FORMAT = "MorphSolidLine: { startWidth=%d;"
     		+ " endWidth=%d; startColor=%s; endColor=%s }";
 

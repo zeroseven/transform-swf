@@ -56,16 +56,21 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  */
 public final class DefineJPEGImage3 implements ImageTag {
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "DefineJPEGImage3: { identifier=%d;"
             + "image=%d; alpha=%d }";
 
+    /** The unique identifier for this object. */
     private int identifier;
     private byte[] image;
     private byte[] alpha;
 
+    /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
+    /** The width of the image in pixels. */
     private transient int width;
-    private transient int height;
+    /** The height of the image in pixels. */
+   private transient int height;
 
     /**
      * Creates and initialises a DefineJPEGImage3 object using values encoded

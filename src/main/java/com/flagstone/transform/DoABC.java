@@ -52,6 +52,7 @@ import com.flagstone.transform.coder.SWFEncoder;
 //TODO(class)
 public final class DoABC implements MovieTag {
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "DoABC: { name=%s; deferred=%d;"
             + " actions=byte[%d] {...} }";
 
@@ -59,6 +60,7 @@ public final class DoABC implements MovieTag {
     private int deferred;
     private byte[] data;
 
+    /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
 
     /**

@@ -85,7 +85,7 @@ public final class FrameLabelCodingTest {
 
     @Test
     public void checkExtendedFrameLabelIsDecoded() throws CoderException {
-        final byte[] binary = new byte[] {(byte)0xFF, 0x0A, 0x07, 0x00, 0x00,
+        final byte[] binary = new byte[] {(byte) 0xFF, 0x0A, 0x07, 0x00, 0x00,
                 0x00, 0x46, 0x72, 0x61, 0x6D, 0x65, 0x00, 0x01 };
 
         final SWFDecoder decoder = new SWFDecoder(binary);

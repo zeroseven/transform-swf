@@ -43,12 +43,14 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
 /** TODO(class). */
 public final class ScalingGrid implements DefineTag {
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "ScalingGrid: { identifier=%d;"
             + " bounds=%s; }";
 
     private int identifier;
     private Bounds bounds;
 
+    /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
 
     /**

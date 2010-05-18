@@ -44,6 +44,7 @@ import com.flagstone.transform.coder.SWFEncoder;
 /** TODO(class). */
 public final class MovieAttributes implements MovieTag {
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "MovieAttributes: { attributes=%s }";
 
     private int attributes;

@@ -45,8 +45,10 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  */
 public final class Free implements MovieTag {
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "Free: { identifier=%d }";
 
+    /** The unique identifier of the object that will be deleted. */
     private int identifier;
 
     /**

@@ -78,6 +78,7 @@ public final class Gradient implements SWFEncodeable {
     /** Maximum ratio along the gradient square, range 0..255. */
     private static final int MAX_RATIO = 255;
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "Gradient: { ratio=%d; color=%s }";
 
     private final transient int ratio;

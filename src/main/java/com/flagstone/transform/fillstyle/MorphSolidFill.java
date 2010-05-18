@@ -45,6 +45,7 @@ import com.flagstone.transform.datatype.Color;
 //TODO(class)
 public final class MorphSolidFill implements FillStyle {
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "MorphSolidFill: { start=%s; end=%s}";
 
     private Color startColor;

@@ -72,6 +72,7 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
 //TODO(class)
 public final class SoundInfo implements SWFEncodeable {
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "SoundInfo: { identifier=%d; mode=%s;"
             + " inPoint=%d; outPoint=%d; loopCount=%d; envelopes=%s; }";
 
@@ -85,6 +86,7 @@ public final class SoundInfo implements SWFEncodeable {
         STOP;
     }
 
+    /** The unique identifier of the sound that this info applies to. */
     private int identifier;
     private int mode;
     private Integer inPoint;

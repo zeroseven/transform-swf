@@ -52,12 +52,14 @@ import com.flagstone.transform.coder.SWFEncoder;
 //TODO(class)
 public final class MovieObject implements MovieTag {
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "MovieObject: { type=%d;"
             + " data=byte[%d] {...} }";
 
     private final transient int type;
     private final transient byte[] data;
 
+    /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
 
     /**

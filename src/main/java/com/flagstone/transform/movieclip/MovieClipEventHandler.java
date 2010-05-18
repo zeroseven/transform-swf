@@ -124,6 +124,7 @@ import com.flagstone.transform.coder.SWFFactory;
 //TODO(class)
 public final class MovieClipEventHandler implements SWFEncodeable {
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "MovieClipEventHandler: { event=%d;"
             + " keyCode=%s; actions=%s }";
 
@@ -237,8 +238,7 @@ public final class MovieClipEventHandler implements SWFEncodeable {
      * @param anAction
      *            an action object. Must not be null.
      */
-    public MovieClipEventHandler add(final Action anAction)
-            throws CoderException {
+    public MovieClipEventHandler add(final Action anAction) {
         if (anAction == null) {
             throw new IllegalArgumentException();
         }

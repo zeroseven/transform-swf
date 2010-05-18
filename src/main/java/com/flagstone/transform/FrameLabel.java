@@ -59,11 +59,13 @@ import com.flagstone.transform.coder.SWFEncoder;
  */
 public final class FrameLabel implements MovieTag {
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "FrameLabel: { label=%s; anchor=%s}";
 
     private String label;
     private boolean anchor;
 
+    /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
 
     /**

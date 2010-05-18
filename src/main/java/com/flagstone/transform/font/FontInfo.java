@@ -80,9 +80,12 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  */
 //TODO(class)
 public final class FontInfo implements MovieTag {
+
+    /** Format string used in toString() method. */
     private static final String FORMAT = "FontInfo: { identifier=%d;"
             + " encoding=%s; small=%s; italic=%s; bold=%s; name=%s; codes=%s }";
 
+    /** The unique identifier of the font that the info applies to. */
     private int identifier;
     private String name;
     private int encoding;
@@ -91,6 +94,7 @@ public final class FontInfo implements MovieTag {
     private boolean bold;
     private List<Integer> codes;
 
+    /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
     private transient boolean wideCodes = false;
 

@@ -71,18 +71,21 @@ import com.flagstone.transform.exception.IllegalArgumentValueException;
  */
 public final class DefineSound implements DefineTag {
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "DefineSound: { identifier=%d;"
             + " format=%s; rate=%d; channelCount=%d; sampleSize=%d "
             + " sampleCount=%d }";
 
+    /** The unique identifier for this object. */
+    private int identifier;
     private int format;
     private int rate;
     private int channelCount;
     private int sampleSize;
     private int sampleCount;
     private byte[] sound;
-    private int identifier;
 
+    /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
 
     /**
@@ -148,7 +151,7 @@ public final class DefineSound implements DefineTag {
      *            later include MP3 and Flash 6 or later include NELLYMOSER.
      * @param playbackRate
      *            the number of samples per second that the sound is played at ,
-     *            either SoundRate.KHZ_5K, SoundRate.KHZ_11K, SoundRate.KHZ_22K or SoundRate.KHZ_44K.
+     *            either 5512, 11025, 22050 or 44100.
      * @param channels
      *            the number of channels in the sound, must be either 1 (Mono)
      *            or 2 (Stereo).
@@ -239,8 +242,8 @@ public final class DefineSound implements DefineTag {
     }
 
     /**
-     * Returns the rate at which the sound will be played, in Hz: SoundRate.KHZ_5K, SoundRate.KHZ_11K,
-     * SoundRate.KHZ_22K or SoundRate.KHZ_44K.
+     * Returns the rate at which the sound will be played, in Hz: 5512, 11025,
+     * 22050 or 44100.
      */
     public int getRate() {
         return rate;
@@ -313,7 +316,8 @@ public final class DefineSound implements DefineTag {
      *
      * @param samplingRate
      *            the rate at which the sounds is played in Hz. Must be one of:
-     *            SoundRate.KHZ_5K, SoundRate.KHZ_11K, SoundRate.KHZ_22K or SoundRate.KHZ_44K.
+     *            SoundRate.KHZ_5K, SoundRate.KHZ_11K, SoundRate.KHZ_22K or
+     *            SoundRate.KHZ_44K.
      */
     public void setRate(final int samplingRate) {
         if ((samplingRate != SoundRate.KHZ_5K)
@@ -321,7 +325,9 @@ public final class DefineSound implements DefineTag {
                 && (samplingRate != SoundRate.KHZ_22K)
                 && (samplingRate != SoundRate.KHZ_44K)) {
             throw new IllegalArgumentValueException(
-                    new int[] {SoundRate.KHZ_5K, SoundRate.KHZ_11K, SoundRate.KHZ_22K, SoundRate.KHZ_44K}, samplingRate);
+                    new int[] {SoundRate.KHZ_5K, SoundRate.KHZ_11K,
+                            SoundRate.KHZ_22K, SoundRate.KHZ_44K},
+                            samplingRate);
         }
         rate = samplingRate;
     }

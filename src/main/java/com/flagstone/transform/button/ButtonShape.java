@@ -88,11 +88,13 @@ import com.flagstone.transform.filter.Filter;
 //TODO(class)
 public final class ButtonShape implements SWFEncodeable {
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "ButtonShape: { state=%d;"
             + " identifier=%d; layer=%d; transform=%s; colorTransform=%s"
             + " blend=%s, filters=%s }";
 
     private int state;
+    /** The unique identifier of the shape that will be displayed. */
     private int identifier;
     private int layer;
     private CoordTransform transform;

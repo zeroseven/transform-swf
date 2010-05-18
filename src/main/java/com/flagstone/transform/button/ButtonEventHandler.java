@@ -211,6 +211,7 @@ public final class ButtonEventHandler implements SWFEncodeable {
     /** Bit mask for key field. */
     private static final int EVENT_MASK = 0x01FF;
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "ButtonEventHandler: { event=%s;"
     		+ " actions=%s }";
 
@@ -218,6 +219,7 @@ public final class ButtonEventHandler implements SWFEncodeable {
     private int key;
     private List<Action> actions;
 
+    /** The length of the object when it is encoded. */
     private transient int length;
 
     /**
@@ -288,7 +290,7 @@ public final class ButtonEventHandler implements SWFEncodeable {
      *            an object derived from the base class Action. Must not be
      *            null.
      */
-    public ButtonEventHandler add(final Action anAction) throws CoderException {
+    public ButtonEventHandler add(final Action anAction) {
         if (anAction == null) {
             throw new IllegalArgumentException();
         }
@@ -329,7 +331,7 @@ public final class ButtonEventHandler implements SWFEncodeable {
      * Returns the array of actions that are executed by the button in response
      * to specified event(s).
      */
-    public List<Action> getActions() throws CoderException {
+    public List<Action> getActions() {
         return actions;
     }
 

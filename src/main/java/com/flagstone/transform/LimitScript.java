@@ -58,6 +58,7 @@ public final class LimitScript implements MovieTag {
     /** Maximum timeout in seconds for function execution. */
     private static final int MAX_TIMEOUT = 65535;
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "LimitScript: { depth=%d;"
     		+ " timeout=%d }";
 

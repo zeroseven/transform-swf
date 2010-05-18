@@ -63,7 +63,7 @@ public final class Table implements Action {
     /** The list of strings stored in the table. */
     private List<String> values;
 
-    /** The length of the action when it is encoded. */
+    /** The length of the action, minus the header, when it is encoded. */
     private transient int length;
     /** The number of entries in the table. */
     private transient int tableSize;

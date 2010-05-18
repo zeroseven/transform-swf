@@ -94,7 +94,7 @@ public final class GotoFrame2 implements Action {
     /** The offset to the next frame. */
     private final transient int frameOffset;
 
-    /** The length of the action when it is encoded. */
+    /** The length of the action, minus the header, when it is encoded. */
     private transient int length;
     /** Flag used to indicate the action contains a frame offset. */
     private transient boolean hasOffset;

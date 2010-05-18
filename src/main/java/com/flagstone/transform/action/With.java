@@ -64,7 +64,7 @@ public final class With implements Action {
     /** The list of actions that will be executed. */
     private final transient List<Action> actions;
 
-    /** The length of the object when encoded. */
+    /** The length of the action, minus the header, when it is encoded. */
     private transient int length;
 
     /**

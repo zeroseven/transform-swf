@@ -188,7 +188,7 @@ public final class Push implements Action {
     /** The list of values that will be pushed onto the Flash Player's stack. */
     private final transient List<Object> values;
 
-    /** The length of the encoded object. */
+    /** The length of the action, minus the header, when it is encoded. */
     private transient int length;
 
     /**

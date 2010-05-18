@@ -98,11 +98,13 @@ public final class DefineMorphShape2 implements DefineTag {
      */
     private static final int EXTENDED = 255;
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "DefineMorphShape2: { identifier=%d;"
             + " startShapeBounds=%s; endShapeBounds=%s; "
             + " startEdgeBounds=%s; endEdgeBounds=%s;"
             + " fillStyles=%s; lineStyles=%s; startShape=%s; endShape=%s }";
 
+    /** The unique identifier for this object. */
     private int identifier;
     private Bounds startShapeBounds;
     private Bounds endShapeBounds;
@@ -115,6 +117,7 @@ public final class DefineMorphShape2 implements DefineTag {
     private Shape startShape;
     private Shape endShape;
 
+    /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
     private transient int fillBits;
     private transient int lineBits;

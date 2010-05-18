@@ -103,7 +103,7 @@ public final class GetUrl implements Action {
     /** Where the document returned by the URL will be displayed. */
     private final transient String target;
 
-    /** Length of the action when encoded. */
+    /** The length of the action, minus the header, when it is encoded. */
     private transient int length;
 
     /**

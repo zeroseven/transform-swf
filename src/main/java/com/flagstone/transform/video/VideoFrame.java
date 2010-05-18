@@ -58,13 +58,16 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
 //TODO(class)
 public final class VideoFrame implements MovieTag {
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "VideoFrame: { identifier=%d;"
             + " frameNumber=%d; data=%d }";
 
+    /** The unique identifier of the video that this frame belongs to. */
     private int identifier;
     private int frameNumber;
     private byte[] data;
 
+    /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
 
     /**

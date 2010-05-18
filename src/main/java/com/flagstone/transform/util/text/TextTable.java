@@ -48,10 +48,10 @@ import com.flagstone.transform.text.TextSpan;
 /** TODO(class). */
 public final class TextTable {
 
-    private transient final int size;
+    private final transient int size;
     private final transient int ascent;
     private final transient int descent;
-    private transient final int identifier;
+    private final transient int identifier;
 
     private final transient Map<Character, GlyphIndex> characters;
 

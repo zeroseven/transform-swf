@@ -206,6 +206,7 @@ public final class Place3 implements MovieTag {
         }
     }
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "PlaceObject3: { type=%s; layer=%d;"
             + " bitmapCache=%d; identifier=%d; transform=%s; "
             + " colorTransform=%s; ratio=%d; clippingDepth=%d; "
@@ -217,6 +218,7 @@ public final class Place3 implements MovieTag {
     private int layer;
     private String className;
     private Integer bitmapCache;
+    /** The unique identifier of the object that will be displayed. */
     private int identifier;
     private CoordTransform transform;
     private ColorTransform colorTransform;
@@ -227,6 +229,7 @@ public final class Place3 implements MovieTag {
     private Integer blend;
     private List<MovieClipEventHandler> events;
 
+    /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
     private transient boolean hasBlend;
     private transient boolean hasFilters;
@@ -656,8 +659,7 @@ public final class Place3 implements MovieTag {
      *
      *            throws NullPointerException of the clip event object is null
      */
-    public Place3 add(final MovieClipEventHandler aClipEvent)
-            throws CoderException {
+    public Place3 add(final MovieClipEventHandler aClipEvent) {
         if (aClipEvent == null) {
             throw new IllegalArgumentException();
         }
@@ -670,7 +672,7 @@ public final class Place3 implements MovieTag {
      * be executed in response to events that occur in the DefineMovieClip being
      * placed.
      */
-    public List<MovieClipEventHandler> getEvents() throws CoderException {
+    public List<MovieClipEventHandler> getEvents() {
         return events;
     }
 

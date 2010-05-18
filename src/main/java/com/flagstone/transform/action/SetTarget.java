@@ -53,7 +53,7 @@ public final class SetTarget implements Action {
     /** The name of the movie clip. */
     private final transient String target;
 
-    /** The length of the action when it is encoded. */
+    /** The length of the action, minus the header, when it is encoded. */
     private transient int length;
 
     /**

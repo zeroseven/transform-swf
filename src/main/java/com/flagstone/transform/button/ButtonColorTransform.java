@@ -62,12 +62,15 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
 //TODO(class)
 public final class ButtonColorTransform implements MovieTag {
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "ButtonColorTransform: {"
     		+ " identifier=%d; colorTransform=%s }";
 
+    /** The unique identifier of the button. */
     private int identifier;
     private ColorTransform colorTransform;
 
+    /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
 
     /**

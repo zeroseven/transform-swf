@@ -185,7 +185,7 @@ public final class ExceptionHandler implements Action {
     /** Final set of actions executed, whether or not an exception occurred. */
     private final transient List<Action> finalActions;
 
-    /** Holds the length of the action when it is encoded. */
+    /** The length of the action, minus the header, when it is encoded. */
     private transient int length;
     /** Holds the length of the try block when it is encoded. */
     private transient int tryLength;

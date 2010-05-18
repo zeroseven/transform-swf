@@ -47,6 +47,7 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  */
 public final class Remove2 implements MovieTag {
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "Remove2: { layer=%d }";
 
     private int layer;

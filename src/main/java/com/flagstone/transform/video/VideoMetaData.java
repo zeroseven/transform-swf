@@ -52,11 +52,14 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  */
 //TODO(class)
 public final class VideoMetaData implements VideoTag {
+
+    /** Format string used in toString() method. */
     private static final String FORMAT = "VideoMetaData: { data=%d }";
 
     private int timestamp;
     private byte[] data;
 
+    /** The length of the object when it is encoded. */
     private transient int length;
 
     /**

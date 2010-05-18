@@ -56,7 +56,7 @@ import com.flagstone.transform.image.ImageFormat;
 @SuppressWarnings("PMD.TooManyMethods")
 public final class BMPDecoder implements ImageProvider, ImageDecoder {
 
-    /** Level used to indicate an opaque colour */
+    /** Level used to indicate an opaque colour. */
     private static final int OPAQUE = 255;
     /** Mask for reading unsigned 8-bit values. */
     private static final int UNSIGNED_BYTE = 255;

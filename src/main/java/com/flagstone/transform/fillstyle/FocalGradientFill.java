@@ -46,9 +46,11 @@ public final class FocalGradientFill implements FillStyle {
     /** Scaling factor for saving floats as 8.8 fixed point numbers. */
     private static final float SCALE_8 = 256.0f;
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "FocalGradientFill: { spread=%s;"
             + " interpolation=%s; focalPoint=%f; transform=%s; gradients=%s }";
 
+    /** Code used to identify the fill style when it is encoded. */
     private final transient int type;
     private int spread;
     private int interpolation;

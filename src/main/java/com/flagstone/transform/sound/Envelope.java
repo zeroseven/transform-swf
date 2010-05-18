@@ -67,13 +67,14 @@ public final class Envelope implements SWFEncodeable {
      * playback data stream where the level information applies and <b>not</b>
      * the sample number in the original sound data. For example to set the
      * level 0.1 seconds into a sound that plays for 1 second the value for the
-     * mark attribute in the envelope object would be SoundRate.KHZ_44K * 0.1/1.0 = 4410.
+     * mark attribute in the envelope object would be 44100 * 0.1/1.0 = 4410.
      * </p>
      *
      * @see SoundInfo
      */
     public final class Level implements SWFEncodeable {
 
+        /** Format string used in toString() method. */
         private static final String FORMAT = "Envelope: { mark=%d; left=%d;"
         		+ " right=%d; }";
 

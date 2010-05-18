@@ -66,10 +66,12 @@ import com.flagstone.transform.coder.SWFEncoder;
  */
 public final class Protect implements MovieTag {
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "Protect: { password=%s }";
 
     private String password;
 
+    /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
 
     /**

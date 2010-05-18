@@ -48,6 +48,7 @@ public final class BlurFilter implements Filter {
     /** Maximum number of passes to blur an object. */
     private static final int MAX_BLUR_COUNT = 31;
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "BlurFilter: { blurX=%f; blurY=%f;"
             + " passes=%d }";
 

@@ -6,16 +6,16 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-public class CharacterSet {
+public final class CharacterSet {
 
     private final transient Set<Character>characters =
         new LinkedHashSet<Character>();
 
-    public void add(char character) {
+    public void add(final char character) {
         characters.add(character);
     }
 
-    public void add(String text) {
+    public void add(final String text) {
         for (int i = 0; i < text.length(); i++) {
             characters.add(text.charAt(i));
         }

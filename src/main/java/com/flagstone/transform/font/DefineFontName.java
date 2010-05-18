@@ -45,13 +45,16 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
 /** TODO(class). */
 public final class DefineFontName implements DefineTag {
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "DefineFontName: { identifier=%d;"
             + " name=%s; copyright=%s }";
 
+    /** The unique identifier for this object. */
     private int identifier;
     private String name;
     private String copyright;
 
+    /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
 
     /**

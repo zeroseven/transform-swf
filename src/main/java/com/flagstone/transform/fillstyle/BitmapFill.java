@@ -89,10 +89,13 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
 //TODO(class)
 public final class BitmapFill implements FillStyle {
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "BitmapFill: { identifier=%d;"
     		+ " transform=%s }";
 
+    /** Code used to identify the fill style when it is encoded. */
     private transient int type;
+    /** The unique identifier of the image that will be displayed. */
     private int identifier;
     private CoordTransform transform;
 

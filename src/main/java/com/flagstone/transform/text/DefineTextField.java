@@ -235,6 +235,7 @@ public final class DefineTextField implements DefineTag {
         JUSTIFY;
     }
 
+    /** The unique identifier for this object. */
     private int identifier;
     private Bounds bounds;
     private boolean wordWrapped;
@@ -261,6 +262,7 @@ public final class DefineTextField implements DefineTag {
     private String variableName;
     private String initialText;
 
+    /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
 
     /**

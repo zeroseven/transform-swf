@@ -60,12 +60,12 @@ public final class DefineData implements DefineTag {
     private static final String FORMAT = "DefineData: { identifier=%d;"
             + " data=byte[%d] {...} }";
 
-    /** Unique identifier for this definition. */
+    /** Unique identifier for this object. */
     private int identifier;
     /** Binary encoded data. */
     private byte[] data;
 
-    /** Length of the encoded object. */
+    /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
 
     /**

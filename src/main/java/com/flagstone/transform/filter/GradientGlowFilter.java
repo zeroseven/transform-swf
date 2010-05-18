@@ -133,6 +133,7 @@ public final class GradientGlowFilter implements Filter {
      */
     private static final float SCALE_8 = 256.0f;
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "GradientGlowFilter: { "
             + "gradients=%s; blurX=%f; blurY=%f; "
             + "angle=%f; disance=%f, strength=%f; mode=%s; passes=%d}";

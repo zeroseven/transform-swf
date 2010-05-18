@@ -85,7 +85,7 @@ public final class Context {
     /**
      * Returns character encoding scheme used when encoding or decoding strings.
      */
-    public final String getEncoding() {
+    public String getEncoding() {
         return encoding;
     }
 
@@ -100,7 +100,7 @@ public final class Context {
      * @param charSet
      *            the name of the character set used to encode strings.
      */
-    public final void setEncoding(final String charSet) {
+    public void setEncoding(final String charSet) {
         if (!Charset.isSupported(charSet)) {
             throw new UnsupportedCharsetException(charSet);
         }
@@ -118,7 +118,7 @@ public final class Context {
      *         terminating null character.
      */
 
-    public final int strlen(final String string) {
+    public int strlen(final String string) {
         try {
             return string.getBytes(encoding).length + 1;
         } catch (final UnsupportedEncodingException e) {

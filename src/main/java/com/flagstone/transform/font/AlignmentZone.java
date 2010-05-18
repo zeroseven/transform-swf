@@ -41,6 +41,7 @@ import com.flagstone.transform.coder.SWFEncoder;
 /** TODO(class). */
 public final class AlignmentZone implements SWFEncodeable {
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "AlignmentZone: {"
                 + " coordinate=%f; range=%f }";
 

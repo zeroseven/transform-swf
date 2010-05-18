@@ -66,14 +66,19 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  */
 public final class DefineJPEGImage implements ImageTag {
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "DefineJPEGImage: { identifier=%d;"
             + " image=%d; }";
 
+    /** The unique identifier for this object. */
     private int identifier;
     private byte[] image;
 
+    /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
+    /** The width of the image in pixels. */
     private transient int width;
+    /** The height of the image in pixels. */
     private transient int height;
 
     /**

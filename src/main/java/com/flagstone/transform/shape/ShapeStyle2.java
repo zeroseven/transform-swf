@@ -100,6 +100,8 @@ import com.flagstone.transform.linestyle.LineStyle2;
  */
 //TODO(class)
 public final class ShapeStyle2 implements ShapeRecord {
+
+    /** Format string used in toString() method. */
     private static final String FORMAT = "ShapeStyle2: { move=(%d, %d);"
             + " fill=%d; alt=%d; line=%d; fillStyles=%s; lineStyles=%s }";
 

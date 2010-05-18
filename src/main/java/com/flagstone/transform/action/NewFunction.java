@@ -141,7 +141,7 @@ public final class NewFunction implements Action {
     /** The actions that make up the function body. */
     private final transient List<Action> actions;
 
-    /** The length of the function when encoded. */
+    /** The length of the action, minus the header, when it is encoded. */
     private transient int length;
     /** The length of the actions when encoded. */
     private transient int actionsLength;

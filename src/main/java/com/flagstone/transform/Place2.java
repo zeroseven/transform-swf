@@ -204,12 +204,14 @@ public final class Place2 implements MovieTag {
         }
     }
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "Place2: { type=%s; layer=%d; "
             + "identifier=%d; transform=%s; colorTransform=%s; ratio=%d; "
             + "clippingDepth=%d; name=%s; clipEvents=%s}";
 
     private PlaceType type;
     private int layer;
+    /** The unique identifier of the object that will be displayed. */
     private int identifier;
     private CoordTransform transform;
     private ColorTransform colorTransform;
@@ -218,6 +220,7 @@ public final class Place2 implements MovieTag {
     private String name;
     private List<MovieClipEventHandler> events;
 
+    /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
 
     /**
@@ -363,8 +366,7 @@ public final class Place2 implements MovieTag {
      *
      *            throws NullPointerException of the clip event object is null
      */
-    public Place2 add(final MovieClipEventHandler aClipEvent)
-            throws CoderException {
+    public Place2 add(final MovieClipEventHandler aClipEvent) {
         if (aClipEvent == null) {
             throw new IllegalArgumentException();
         }
@@ -377,7 +379,7 @@ public final class Place2 implements MovieTag {
      * be executed in response to events that occur in the DefineMovieClip being
      * placed.
      */
-    public List<MovieClipEventHandler> getEvents() throws CoderException {
+    public List<MovieClipEventHandler> getEvents() {
         return events;
     }
 

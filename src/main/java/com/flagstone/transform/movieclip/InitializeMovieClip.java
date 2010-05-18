@@ -68,12 +68,15 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
 //TODO(class)
 public final class InitializeMovieClip implements MovieTag {
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "Initialize: { identifier=%d;"
                 + " actions=%s }";
 
+    /** The unique identifier of the movie clip that will be initialized. */
     private int identifier;
     private List<Action> actions;
 
+    /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
 
     /**

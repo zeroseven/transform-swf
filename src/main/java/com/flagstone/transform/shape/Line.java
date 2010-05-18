@@ -58,6 +58,7 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
 //TODO(class)
 public final class Line implements ShapeRecord {
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "Line: (%d, %d);";
 
     private transient int xCoord;

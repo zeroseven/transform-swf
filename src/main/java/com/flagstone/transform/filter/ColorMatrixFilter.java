@@ -42,6 +42,7 @@ import com.flagstone.transform.coder.SWFEncoder;
 public final class ColorMatrixFilter implements Filter {
 
     private static final String ROW_FORMAT = "[%f, %f, %f, %f, %f]";
+    /** Format string used in toString() method. */
     private static final String FORMAT = "ColorMatrix: { matrix=["
             + ROW_FORMAT + ROW_FORMAT + ROW_FORMAT + ROW_FORMAT
             + "]}";

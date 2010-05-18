@@ -81,14 +81,17 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
 //TODO(class)
 public final class DefineButton2 implements DefineTag {
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "DefineButton2: { identifier=%d;"
             + " buttonRecords=%s; handlers=%s }";
 
+    /** The unique identifier for this object. */
     private int identifier;
     private int type;
     private List<ButtonShape> shapes;
     private List<ButtonEventHandler> events;
 
+    /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
 
     /**
@@ -240,8 +243,7 @@ public final class DefineButton2 implements DefineTag {
      * @param obj
      *            a button event. Must not be null.
      */
-    public DefineButton2 add(final ButtonEventHandler obj)
-            throws CoderException {
+    public DefineButton2 add(final ButtonEventHandler obj) {
         if (obj == null) {
             throw new IllegalArgumentException();
         }
@@ -272,7 +274,7 @@ public final class DefineButton2 implements DefineTag {
     /**
      * Returns the array of button records defined for this button.
      */
-    public List<ButtonEventHandler> getEvents() throws CoderException {
+    public List<ButtonEventHandler> getEvents() {
         return events;
     }
 

@@ -57,6 +57,8 @@ public interface FLVEncodeable {
      * @param coder
      *            an Encoder object that is used to encode the object to its
      *            binary form.
+     *
+     * @throws CoderException if an error occurs while encoding the object.
      */
     void encode(FLVEncoder coder) throws CoderException;
 }

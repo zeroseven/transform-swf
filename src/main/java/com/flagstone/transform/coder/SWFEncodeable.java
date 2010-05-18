@@ -45,9 +45,6 @@ public interface SWFEncodeable {
      * objects that use bit fields such as shapes the methods will return the
      * size in bits.
      *
-     * @param coder
-     *            an SWFEncoder object.
-     *
      * @param context
      *            an Context that allows information to be passed between
      *            objects to control how they are initialised for encoding.
@@ -65,6 +62,8 @@ public interface SWFEncodeable {
      * @param context
      *            an Context that allows information to be passed between
      *            objects to control how they are initialised for encoding.
+     *
+     * @throws CoderException if an error occurs while encoding the object.
      */
     void encode(final SWFEncoder coder, final Context context)
             throws CoderException;

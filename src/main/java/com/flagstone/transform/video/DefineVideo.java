@@ -63,10 +63,12 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
 //TODO(class)
 public final class DefineVideo implements DefineTag {
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "DefineVideo: { identifier=%d;"
             + " frameCount=%d; width=%d; height=%d; deblocking=%s;"
             + " smoothing=%s; codec=%s }";
 
+    /** The unique identifier for this object. */
     private int identifier;
     private int frameCount;
     private int width;
@@ -75,6 +77,7 @@ public final class DefineVideo implements DefineTag {
     private boolean smoothed;
     private int codec;
 
+    /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
 
     /**

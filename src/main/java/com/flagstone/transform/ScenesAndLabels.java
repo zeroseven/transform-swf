@@ -46,12 +46,14 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
 /** TODO(class). */
 public final class ScenesAndLabels implements MovieTag {
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "ScenesAndLabels: { scenes=%s;"
             + " labels=%s }";
 
     private Map<Integer, String> scenes;
     private Map<Integer, String> labels;
 
+    /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
 
     /**

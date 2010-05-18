@@ -52,9 +52,11 @@ import com.flagstone.transform.datatype.CoordTransform;
 //TODO(class)
 public final class MorphGradientFill implements FillStyle {
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "MorphGradientFill: { start=%s;"
             + " end=%s; gradients=%s }";
 
+    /** Code used to identify the fill style when it is encoded. */
     private int type;
     private CoordTransform startTransform;
     private CoordTransform endTransform;

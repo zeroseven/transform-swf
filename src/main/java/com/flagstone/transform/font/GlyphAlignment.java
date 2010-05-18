@@ -43,6 +43,7 @@ import com.flagstone.transform.coder.SWFEncoder;
 /** TODO(class). */
 public final class GlyphAlignment implements SWFEncodeable {
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "GlyphAlignment: { alignments=%s;"
             + " alignX=%s; alignY=%s }";
 

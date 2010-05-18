@@ -63,6 +63,7 @@ import com.flagstone.transform.sound.SoundInfo;
 //TODO(class)
 public final class ButtonSound implements MovieTag {
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "ButtonSound: { identifier=%d;"
             + " table=%s }";
 
@@ -70,9 +71,11 @@ public final class ButtonSound implements MovieTag {
             ButtonEvent.ROLL_OUT, ButtonEvent.ROLL_OVER,
             ButtonEvent.PRESS, ButtonEvent.RELEASE);
 
+    /** The unique identifier of the button. */
     private int identifier;
     private transient Map<ButtonEvent, SoundInfo>table;
 
+    /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
 
     /**

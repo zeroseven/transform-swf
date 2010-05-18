@@ -87,6 +87,7 @@ public final class TextSettings implements MovieTag {
 
     private static final float SCALE_16 = 65536.0f;
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "TextSettings: { identifier=%d;"
             + " useAdvanced=%s, grid=%s, thickness=%f, sharpness=%f }";
 

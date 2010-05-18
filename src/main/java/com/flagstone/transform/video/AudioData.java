@@ -69,6 +69,7 @@ import com.flagstone.transform.sound.SoundRate;
 //TODO(class)
 public final class AudioData implements VideoTag {
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "AudioData: { timestamp=%d; format=%d;"
             + " rate=%d; channelCount=%d; sampleSize=%d; data=%d }";
 
@@ -79,6 +80,7 @@ public final class AudioData implements VideoTag {
     private int sampleSize;
     private byte[] data;
 
+    /** The length of the object when it is encoded. */
     private transient int length;
 
     /**

@@ -58,6 +58,7 @@ import com.flagstone.transform.coder.VideoTag;
 //TODO(class)
 public final class Video {
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "Video: { signature=%s; version=%d;"
             + " objects=%s }";
 

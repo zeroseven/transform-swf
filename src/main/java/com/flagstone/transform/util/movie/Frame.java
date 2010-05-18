@@ -39,7 +39,6 @@ import com.flagstone.transform.FrameLabel;
 import com.flagstone.transform.Movie;
 import com.flagstone.transform.ShowFrame;
 import com.flagstone.transform.action.Action;
-import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.DefineTag;
 import com.flagstone.transform.coder.MovieTag;
 
@@ -119,7 +118,7 @@ public final class Frame {
      *            an Movie object.
      * @return an array of Frame objects.
      */
-    public static List<Frame> split(final Movie aMovie) throws CoderException {
+    public static List<Frame> split(final Movie aMovie) {
         final ArrayList<Frame> frames = new ArrayList<Frame>();
         int index = 1;
         Frame currentFrame = new Frame();

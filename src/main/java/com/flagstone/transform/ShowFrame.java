@@ -60,6 +60,7 @@ import com.flagstone.transform.coder.SWFEncoder;
  */
 public final class ShowFrame implements MovieTag {
 
+    /** Format string used in toString() method. */
     private static final String FORMAT = "ShowFrame";
 
     private static final ShowFrame INSTANCE = new ShowFrame();
