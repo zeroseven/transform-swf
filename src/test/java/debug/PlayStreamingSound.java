@@ -40,6 +40,7 @@ import com.flagstone.transform.ShowFrame;
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.datatype.WebPalette;
+import com.flagstone.transform.util.sound.SoundFactory;
 
 /**
  * PlayStreamingSound generates a Flash file with a sound file encoded as a
@@ -66,9 +67,10 @@ public final class PlayStreamingSound {
             final float framesPerSecond = 12.0f;
 
             final Movie movie = new Movie();
-            final List<MovieTag> sound = null; // TODO(code)
-            // SoundFactory.streamSound((int)framesPerSecond,
-            // sourceFile);
+
+            final SoundFactory factory = new SoundFactory();
+            factory.read(sourceFile);
+            List<MovieTag> sound = factory.streamSound((int)framesPerSecond);
 
             movie.setFrameSize(new Bounds(0, 0, screenWidth, screenHeight));
             movie.setFrameRate(framesPerSecond);

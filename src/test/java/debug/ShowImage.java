@@ -59,8 +59,8 @@ public final class ShowImage {
 
         try {
             movie = new Movie();
-            factory = new ImageFactory();
 
+            factory = new ImageFactory();
             factory.read(new File(sourceFile));
 
             final ImageTag image = factory.defineImage(movie.nextId());
