@@ -43,22 +43,63 @@ import com.flagstone.transform.sound.DefineSound;
 
 /**
  * SoundDecoder is an interface that classes used to decode different sound
- * formats should implement in order to be registered with the Sound class.
- *
- * @see SoundFactory
- * @see WAVDecoder
- * @see MP3Decoder
+ * formats should implement in order to be registered with the SoundRegistry.
  */
 public interface SoundDecoder {
-
+    /**
+     * Read a sound from a file.
+     * @param file the path to the file.
+     * @throws IOException if there is an error reading the sound data.
+     * @throws DataFormatException if the file contains an unsupported format.
+     */
     void read(File file) throws IOException, DataFormatException;
-
+    /**
+     * Read a sound from a file referenced by a URL.
+     * @param url the reference to the file.
+     * @throws IOException if there is an error reading the sound data.
+     * @throws DataFormatException if the file contains an unsupported format.
+     */
     void read(URL url) throws IOException, DataFormatException;
-
+    /**
+     * Read a sound from an imput stream.
+     * @param stream the stream used to read the sound data.
+     * @throws IOException if there is an error reading the sound data.
+     * @throws DataFormatException if the file contains an unsupported format.
+     */
     void read(InputStream stream, int size)
             throws IOException, DataFormatException;
-
+    /**
+     * Define an event sound.
+     * @param identifier he unique identifier that will be used to reference the
+     * sound in a Movie.
+     * @return the definition used to add the sound to a Movie.
+     */
     DefineSound defineSound(int identifier);
-
+    /**
+     * Generate all the objects used to add a streaming sounds to a Movie. The
+     * returned list contains a SoundStreamHead2 object followed by one or more
+     * SoundStreamBlocks.
+     *
+     * @param frameRate the frame rate for the movie so the sound can be divided
+     * into sets of samples that can be played with each frame.
+     *
+     * @return a list containing the objects used to add the streaming sound to
+     * a Movie.
+     */
     List<MovieTag> streamSound(int frameRate);
+    /**
+     * Generate the objects used to add a streaming sounds to a Movie that will
+     * be played for a specified number of frames. This method can be used to
+     * limit the number of sound sample loaded, particularly when adding a
+     * soundtrack to a Movie.
+     *
+     * @param frameRate the frame rate for the movie so the sound can be divided
+     * into sets of samples that can be played with each frame.
+     *
+     * @param frameCount the number of frames that the sound will be played for.
+     *
+     * @return a list containing the objects used to add the streaming sound to
+     * a Movie.
+     */
+    List<MovieTag> streamSound(int frameRate, int frameCount);
 }

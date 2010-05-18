@@ -31,8 +31,16 @@
 
 package com.flagstone.transform.util.sound;
 
-/** TODO(class). */
+/**
+ * SoundProvider defines the interface that the SoundFactory uses to create
+ * instances of the SoundDecoder objects used to handle different sound formats.
+ */
 public interface SoundProvider {
-    
+    /**
+     * The method implemented by all SoundDecoders in order to be registered
+     * with the SoundRegistry and used by the SoundFactory to decode sounds.
+     *
+     * @return an object that implements the SoundDecoder interface.
+     */
     SoundDecoder newDecoder();
 }

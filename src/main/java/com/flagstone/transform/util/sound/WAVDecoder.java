@@ -68,17 +68,17 @@ public final class WAVDecoder implements SoundProvider, SoundDecoder {
     private transient int sampleSize;
     private transient byte[] sound = null;
 
-
+    /** {@inheritDoc} */
     public SoundDecoder newDecoder() {
         return new WAVDecoder();
     }
 
-
+    /** {@inheritDoc} */
     public void read(final File file) throws IOException, DataFormatException {
         read(new FileInputStream(file), (int) file.length());
     }
 
-
+    /** {@inheritDoc} */
     public void read(final URL url) throws IOException, DataFormatException {
         final URLConnection connection = url.openConnection();
 
@@ -90,34 +90,13 @@ public final class WAVDecoder implements SoundProvider, SoundDecoder {
         read(url.openStream(), fileSize);
     }
 
-    /**
-     * Create a definition for an event sound using the sound in the specified
-     * file.
-     *
-     * @param identifier
-     *            the unique identifier that will be used to refer to the sound
-     *            in the Flash file.
-     *
-     * @return a sound definition that can be added to a Movie.
-     */
+    /** {@inheritDoc} */
     public DefineSound defineSound(final int identifier) {
         return new DefineSound(identifier, format, sampleRate,
                 numberOfChannels, sampleSize, samplesPerChannel, sound);
     }
 
-    /**
-     * Generates all the objects required to generate a streaming sound from a
-     * URL reference.
-     *
-     * @param frameRate
-     *            the rate at which the movie is played. Sound are streamed with
-     *            one block of sound data per frame.
-     *
-     * @return an array where the first object is the SoundStreamHead2 object
-     *         that defines the streaming sound, followed by SoundStreamBlock
-     *         objects containing the sound samples that will be played in each
-     *         frame.
-     */
+    /** {@inheritDoc} */
     public List<MovieTag> streamSound(final int frameRate) {
         final ArrayList<MovieTag> array = new ArrayList<MovieTag>();
 
@@ -152,7 +131,43 @@ public final class WAVDecoder implements SoundProvider, SoundDecoder {
         return array;
     }
 
+    /** {@inheritDoc} */
+    public List<MovieTag> streamSound(final int rate, final int count) {
+        final ArrayList<MovieTag> array = new ArrayList<MovieTag>();
 
+        int firstSample = 0;
+        int firstSampleOffset = 0;
+        int bytesPerBlock = 0;
+        int bytesRemaining = 0;
+        int numberOfBytes = 0;
+        byte[] bytes = null;
+
+        final int samplesPerBlock = sampleRate / rate;
+        final int numberOfBlocks = Math.min(count,
+                samplesPerChannel / samplesPerBlock);
+
+        array.add(new SoundStreamHead2(format, sampleRate, numberOfChannels,
+                sampleSize, sampleRate, numberOfChannels, sampleSize,
+                samplesPerBlock));
+
+        for (int i = 0; i < numberOfBlocks; i++) {
+            firstSample = i * samplesPerBlock;
+            firstSampleOffset = firstSample * sampleSize * numberOfChannels;
+            bytesPerBlock = samplesPerBlock * sampleSize * numberOfChannels;
+            bytesRemaining = sound.length - firstSampleOffset;
+
+            numberOfBytes = (bytesRemaining < bytesPerBlock) ? bytesRemaining
+                    : bytesPerBlock;
+
+            bytes = new byte[numberOfBytes];
+            System.arraycopy(sound, firstSampleOffset, bytes, 0, numberOfBytes);
+
+            array.add(new SoundStreamBlock(bytes));
+        }
+        return array;
+    }
+
+    /** {@inheritDoc} */
     public void read(final InputStream stream, final int size)
                     throws IOException, DataFormatException {
 

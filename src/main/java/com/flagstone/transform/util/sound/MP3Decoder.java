@@ -87,16 +87,17 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
     private transient int[][] frameTable = null;
     private int samplesPerFrame = 0;
 
+    /** {@inheritDoc} */
     public SoundDecoder newDecoder() {
         return new MP3Decoder();
     }
 
-
+    /** {@inheritDoc} */
     public void read(final File file) throws IOException, DataFormatException {
         read(new FileInputStream(file), (int) file.length());
     }
 
-
+    /** {@inheritDoc} */
     public void read(final URL url) throws IOException, DataFormatException {
         final URLConnection connection = url.openConnection();
         final int fileSize = connection.getContentLength();
@@ -107,16 +108,7 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
         read(url.openStream(), fileSize);
     }
 
-    /**
-     * Create a definition for an event sound using the sound in the specified
-     * file.
-     *
-     * @param identifier
-     *            the unique identifier that will be used to refer to the sound
-     *            in the Flash file.
-     *
-     * @return a sound definition that can be added to a Movie.
-     */
+    /** {@inheritDoc} */
     public DefineSound defineSound(final int identifier) {
         final byte[] bytes = new byte[2 + sound.length];
         bytes[0] = 0;
@@ -127,6 +119,7 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
                 numberOfChannels, sampleSize, samplesPerChannel, bytes);
     }
 
+    /** {@inheritDoc} */
     public void read(final InputStream stream, final int size)
             throws IOException, DataFormatException {
 
@@ -138,18 +131,7 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
         decodeMP3(bytes);
     }
 
-    /**
-     * Generates all the objects required to stream a sound from a file.
-     *
-     * @param frameRate
-     *            the rate at which the movie is played. Sound are streamed with
-     *            one block of sound data per frame.
-     *
-     * @return an array where the first object is the SoundStreamHead2 object
-     *         that defines the streaming sound, followed by SoundStreamBlock
-     *         objects containing the sound samples that will be played in each
-     *         frame.
-     */
+    /** {@inheritDoc} */
     public List<MovieTag> streamSound(final int frameRate) {
         final ArrayList<MovieTag> array = new ArrayList<MovieTag>();
 
@@ -163,7 +145,28 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
                 sampleSize, sampleRate, numberOfChannels, sampleSize,
                 samplesPerBlock));
 
-        for (int i = 0; i< numberOfBlocks; i++) {
+        for (int i = 0; i < numberOfBlocks; i++) {
+            array.add(streamBlock(i, samplesPerBlock));
+        }
+        return array;
+    }
+
+    /** {@inheritDoc} */
+    public List<MovieTag> streamSound(final int frameRate, final int count) {
+        final ArrayList<MovieTag> array = new ArrayList<MovieTag>();
+
+        final int samplesPerBlock = sampleRate / frameRate;
+        final int numberOfBlocks = Math.min(count,
+                samplesPerChannel / samplesPerBlock);
+
+        int[][] frameTable = null;
+        final int samplesPerFrame = 0;
+
+        array.add(new SoundStreamHead2(format, sampleRate, numberOfChannels,
+                sampleSize, sampleRate, numberOfChannels, sampleSize,
+                samplesPerBlock));
+
+        for (int i = 0; i < numberOfBlocks; i++) {
             array.add(streamBlock(i, samplesPerBlock));
         }
         return array;
