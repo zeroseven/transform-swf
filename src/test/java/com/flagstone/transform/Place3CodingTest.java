@@ -64,8 +64,7 @@ public final class Place3CodingTest {
         final int layer = 2;
         final int xcoord = 1;
         final int ycoord = 2;
-        final Place3 object = new Place3.Builder().show(uid, layer,
-                xcoord, ycoord);
+        final Place3 object = Place3.show(uid, layer, xcoord, ycoord);
 
         final byte[] binary = new byte[] {(byte) 0x88, 0x11, 0x06, 0x00, 0x01,
                 0x00, 0x02, 0x00, 0x06, 0x50};

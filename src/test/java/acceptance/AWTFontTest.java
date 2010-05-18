@@ -126,7 +126,7 @@ public final class AWTFontTest {
             movie.add(new Background(WebPalette.LIGHT_BLUE.color()));
             movie.add(definition);
             movie.add(text);
-            movie.add(new Place2.Builder().show(text, 1, 0, 0));
+            movie.add(Place2.show(text, 1, 0, 0));
             movie.add(ShowFrame.getInstance());
             movie.encodeToFile(destFile);
 

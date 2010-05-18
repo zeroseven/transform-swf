@@ -84,7 +84,6 @@ public final class DefineTextTest {
         final int y = margin;
 
         final Movie movie = new Movie();
-        final Place2.Builder builder = new Place2.Builder();
 
         final int fontId = movie.nextId();
         final DefineFont2 definition = font.defineFont(fontId,
@@ -103,7 +102,7 @@ public final class DefineTextTest {
         final int textHeight = text.getBounds().getHeight();
 
         movie.add(text);
-        movie.add(builder.show(text.getIdentifier(), layer++, x, y));
+        movie.add(Place2.show(text.getIdentifier(), layer++, x, y));
         movie.add(ShowFrame.getInstance());
 
         movie.setFrameSize(new Bounds(0, 0, textWidth + 2 * margin, textHeight
@@ -114,7 +113,6 @@ public final class DefineTextTest {
     @Test
     public void bounds() throws IOException, DataFormatException {
         final File destFile = new File(destDir, "bounds.swf");
-        final Place2.Builder builder = new Place2.Builder();
 
         final String alphabet = "abcdefghijklmnopqrstuvwxyz";
 
@@ -156,7 +154,7 @@ public final class DefineTextTest {
             // definition, fontSize).getWidth() + 40;
 
             movie.add(text);
-            movie.add(builder.show(text.getIdentifier(), layer++, x, y));
+            movie.add(Place2.show(text.getIdentifier(), layer++, x, y));
 
             if (i % charsPerLine == charsPerLine - 1) {
                 maxWidth = x + advance + margin > maxWidth ? x + advance

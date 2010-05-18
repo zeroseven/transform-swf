@@ -251,8 +251,8 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
         while (!coder.eof()) {
             int header = coder.readWord(3, false);
             coder.adjustPointer(-24); // ID3 signature
-
-            if (header == 0x494433) {// ID3
+            if (header == 0x494433) {
+                // ID3
                 coder.adjustPointer(24); // ID3 signature
                 coder.adjustPointer(8); // version number
                 coder.adjustPointer(8); // revision number
@@ -272,9 +272,11 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
                 totalLength += coder.readWord(1, false);
 
                 coder.adjustPointer(totalLength << 3);
-            } else if (header == 0x544147) {// ID3 V1
+            } else if (header == 0x544147) {
+                // ID3 V1
                 coder.adjustPointer(128 << 3);
-            } else if ((header & 0x00FFFFFF) >>> 13 == 0x7FF) {// MP3 frame
+            } else if ((header & 0x00FFFFFF) >>> 13 == 0x7FF) {
+                // MP3 frame
                 if (numberOfFrames == 0) {
                     frameStart = coder.getPointer();
                 }

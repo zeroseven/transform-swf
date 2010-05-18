@@ -142,66 +142,62 @@ import com.flagstone.transform.movieclip.MovieClipEventHandler;
 @SuppressWarnings("PMD.TooManyMethods")
 public final class Place2 implements MovieTag {
 
-    public static final class Builder {
-
-        public Place2 show(final int identifier, final int layer,
-                final int xCoord, final int yCoord) {
-            final Place2 object = new Place2();
-            object.setType(PlaceType.NEW);
-            object.setLayer(layer);
-            object.setIdentifier(identifier);
-            object.setTransform(CoordTransform.translate(xCoord, yCoord));
-            return object;
-        }
+    public static Place2 show(final int identifier, final int layer,
+            final int xCoord, final int yCoord) {
+        final Place2 object = new Place2();
+        object.setType(PlaceType.NEW);
+        object.setLayer(layer);
+        object.setIdentifier(identifier);
+        object.setTransform(CoordTransform.translate(xCoord, yCoord));
+        return object;
+    }
 
 
-        public Place2 show(final DefineTag tag, final int layer,
-                final int xCoord, final int yCoord) {
-            final Place2 object = new Place2();
-            object.setType(PlaceType.NEW);
-            object.setLayer(layer);
-            object.setIdentifier(tag.getIdentifier());
-            object.setTransform(CoordTransform.translate(xCoord, yCoord));
-            return object;
-        }
+    public static Place2 show(final DefineTag tag, final int layer,
+            final int xCoord, final int yCoord) {
+        final Place2 object = new Place2();
+        object.setType(PlaceType.NEW);
+        object.setLayer(layer);
+        object.setIdentifier(tag.getIdentifier());
+        object.setTransform(CoordTransform.translate(xCoord, yCoord));
+        return object;
+    }
 
 
-        public Place2 modify(final int layer) {
-            final Place2 object = new Place2();
-            object.setType(PlaceType.MODIFY);
-            object.setLayer(layer);
-            return object;
-        }
+    public static Place2 modify(final int layer) {
+        final Place2 object = new Place2();
+        object.setType(PlaceType.MODIFY);
+        object.setLayer(layer);
+        return object;
+    }
 
 
-        public Place2 move(final int layer, final int xCoord,
-                final int yCoord) {
-            final Place2 object = new Place2();
-            object.setType(PlaceType.MODIFY);
-            object.setLayer(layer);
-            object.setTransform(CoordTransform.translate(xCoord, yCoord));
-            return object;
-        }
+    public static Place2 move(final int layer, final int xCoord,
+            final int yCoord) {
+        final Place2 object = new Place2();
+        object.setType(PlaceType.MODIFY);
+        object.setLayer(layer);
+        object.setTransform(CoordTransform.translate(xCoord, yCoord));
+        return object;
+    }
 
 
-        public Place2 replace(final int identifier, final int layer) {
-            final Place2 object = new Place2();
-            object.setType(PlaceType.REPLACE);
-            object.setLayer(layer);
-            object.setIdentifier(identifier);
-            return object;
-        }
+    public static Place2 replace(final int identifier, final int layer) {
+        final Place2 object = new Place2();
+        object.setType(PlaceType.REPLACE);
+        object.setLayer(layer);
+        object.setIdentifier(identifier);
+        return object;
+    }
 
-
-        public Place2 replace(final int identifier, final int layer,
-                final int xCoord, final int yCoord) {
-            final Place2 object = new Place2();
-            object.setType(PlaceType.REPLACE);
-            object.setLayer(layer);
-            object.setIdentifier(identifier);
-            object.setTransform(CoordTransform.translate(xCoord, yCoord));
-            return object;
-        }
+    public static Place2 replace(final int identifier, final int layer,
+            final int xCoord, final int yCoord) {
+        final Place2 object = new Place2();
+        object.setType(PlaceType.REPLACE);
+        object.setLayer(layer);
+        object.setIdentifier(identifier);
+        object.setTransform(CoordTransform.translate(xCoord, yCoord));
+        return object;
     }
 
     /** Format string used in toString() method. */

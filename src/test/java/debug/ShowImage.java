@@ -64,7 +64,6 @@ public final class ShowImage {
             factory.read(new File(sourceFile));
 
             final ImageTag image = factory.defineImage(movie.nextId());
-            final Place2.Builder builder = new Place2.Builder();
 
             final int imageWidth = image.getWidth();
             final int imageHeight = image.getHeight();
@@ -82,7 +81,7 @@ public final class ShowImage {
             movie.add(factory.defineEnclosingShape(shapeId,
                     image.getIdentifier(),
                     imageWidth / 2, imageHeight / 2, null));
-            movie.add(builder.show(shapeId, 1, 0, 0));
+            movie.add(Place2.show(shapeId, 1, 0, 0));
             movie.add(ShowFrame.getInstance());
 
             movie.encodeToFile(new File(destFile));

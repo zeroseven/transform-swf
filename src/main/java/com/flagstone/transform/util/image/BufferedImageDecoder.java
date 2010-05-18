@@ -892,8 +892,7 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
     }
 
     private void decodeColorTable(ColorModel model) {
-        if (model instanceof IndexColorModel)
-        {
+        if (model instanceof IndexColorModel) {
             IndexColorModel indexModel = (IndexColorModel)model;
 
             table = new byte[indexModel.getMapSize() * 4];
@@ -908,12 +907,12 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
 
             int index = 0;
 
-            for (int i=0; i<table.length; i+=4) {
+            for (int i = 0; i < table.length; i += 4) {
                 table[i] = reds[index];
                 table[i + 1] = greens[index];
                 table[i + 2] = blues[index];
                 table[i + 3] = -1;
-                index ++;
+                index++;
             }
         }
     }

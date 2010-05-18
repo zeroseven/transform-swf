@@ -64,7 +64,7 @@ public final class Place2CodingTest {
         final int layer = 2;
         final int xcoord = 1;
         final int ycoord = 2;
-        final Place2 object = new Place2.Builder().show(uid, layer,
+        final Place2 object = Place2.show(uid, layer,
                 xcoord, ycoord);
 
         final byte[] binary = new byte[] {(byte) 0x87, 0x06, 0x06, 0x01, 0x00,

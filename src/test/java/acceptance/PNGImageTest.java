@@ -95,7 +95,6 @@ public final class PNGImageTest {
 
         try {
             final Movie movie = new Movie();
-            final Place2.Builder builder = new Place2.Builder();
             final ImageFactory factory = new ImageFactory();
             factory.read(sourceFile);
             final int imageId = movie.nextId();
@@ -112,7 +111,7 @@ public final class PNGImageTest {
             movie.add(new Background(WebPalette.LIGHT_BLUE.color()));
             movie.add(image);
             movie.add(shape);
-            movie.add(builder.show(shape, 1, 0, 0));
+            movie.add(Place2.show(shape, 1, 0, 0));
             movie.add(ShowFrame.getInstance());
             movie.encodeToFile(destFile);
 

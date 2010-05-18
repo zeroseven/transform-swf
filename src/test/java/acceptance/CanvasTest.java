@@ -102,13 +102,12 @@ public final class CanvasTest {
     private void showShape(final DefineShape2 shape, final File file)
             throws DataFormatException, IOException {
         final Movie movie = new Movie();
-        final Place2.Builder builder = new Place2.Builder();
         movie.setFrameRate(1.0f);
         movie.setFrameSize(shape.getBounds());
         movie.add(new Background(WebPalette.LIGHT_BLUE.color()));
 
         movie.add(shape);
-        movie.add(builder.show(shape, 1, 0, 0));
+        movie.add(Place2.show(shape, 1, 0, 0));
         movie.add(ShowFrame.getInstance());
 
         movie.encodeToFile(file);
