@@ -146,11 +146,13 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
 
         switch (format) {
         case IDX8:
-            object = new DefineImage(identifier, width, height, table.length,
+            object = new DefineImage(identifier, width, height,
+                    table.length / 4,
                     zip(merge(adjustScan(width, height, image), table)));
             break;
         case IDXA:
-            object = new DefineImage2(identifier, width, height, table.length,
+            object = new DefineImage2(identifier, width, height,
+                    table.length / 4,
                     zip(mergeAlpha(adjustScan(width, height, image), table)));
             break;
         case RGB5:
@@ -804,30 +806,7 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
                 format = ImageFormat.IDX8;
                 image = new byte[height * width];
                 int depth = obj.getColorModel().getPixelSize();
-                ColorModel model = obj.getColorModel();
-                index = 0;
-
-                if (model instanceof IndexColorModel) {
-                    final IndexColorModel indexModel = (IndexColorModel) model;
-                    final int tableSize = indexModel.getMapSize();
-                    table = new byte[tableSize * BYTES_PER_PIXEL];
-
-                    final byte[] reds = new byte[tableSize];
-                    final byte[] blues = new byte[tableSize];
-                    final byte[] greens = new byte[tableSize];
-
-                    indexModel.getReds(reds);
-                    indexModel.getGreens(greens);
-                    indexModel.getBlues(blues);
-
-                    for (int i = 0; i < tableSize; i++) {
-                        table[index] = reds[i];
-                        table[index + GREEN] = greens[i];
-                        table[index + BLUE] = blues[i];
-                        table[index + ALPHA] = OPAQUE;
-                        index += BYTES_PER_PIXEL;
-                    }
-                }
+                decodeColorTable(obj.getColorModel());
 
                 index = 0;
                 final SWFDecoder coder = new SWFDecoder(pixels);
@@ -865,31 +844,7 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
                 format = ImageFormat.IDX8;
                 image = new byte[height * width];
                 depth = obj.getColorModel().getPixelSize();
-                model = obj.getColorModel();
-                index = 0;
-
-                if (model instanceof IndexColorModel) {
-                    final IndexColorModel indexModel = (IndexColorModel) model;
-                    final int tableSize = indexModel.getMapSize();
-
-                    table = new byte[tableSize * BYTES_PER_PIXEL];
-
-                    final byte[] reds = new byte[tableSize];
-                    final byte[] blues = new byte[tableSize];
-                    final byte[] greens = new byte[tableSize];
-
-                    indexModel.getReds(reds);
-                    indexModel.getGreens(greens);
-                    indexModel.getBlues(blues);
-
-                    for (int i = 0; i < tableSize; i++) {
-                        table[index] = reds[i];
-                        table[index + GREEN] = greens[i];
-                        table[index + BLUE] = blues[i];
-                        table[index + ALPHA] = OPAQUE;
-                        index += BYTES_PER_PIXEL;
-                    }
-                }
+                decodeColorTable(obj.getColorModel());
 
                 index = 0;
 
@@ -936,6 +891,33 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
         }
     }
 
+    private void decodeColorTable(ColorModel model) {
+        if (model instanceof IndexColorModel)
+        {
+            IndexColorModel indexModel = (IndexColorModel)model;
+
+            table = new byte[indexModel.getMapSize() * 4];
+
+            byte[] reds = new byte[indexModel.getMapSize()];
+            byte[] blues = new byte[indexModel.getMapSize()];
+            byte[] greens = new byte[indexModel.getMapSize()];
+
+            indexModel.getReds(reds);
+            indexModel.getGreens(greens);
+            indexModel.getBlues(blues);
+
+            int index = 0;
+
+            for (int i=0; i<table.length; i+=4) {
+                table[i] = reds[index];
+                table[i + 1] = greens[index];
+                table[i + 2] = blues[index];
+                table[i + 3] = -1;
+                index ++;
+            }
+        }
+    }
+
     private void orderAlpha(final byte[] img) {
         byte alpha;
 
@@ -955,9 +937,12 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
         for (int i = 0; i < img.length; i += BYTES_PER_PIXEL) {
             alpha = img[i + ALPHA] & MASK_8BIT;
 
-            img[i] = (byte) (((img[i] & MASK_8BIT) * alpha) / 255);
-            img[i + 1] = (byte) (((img[i + 1] & MASK_8BIT) * alpha) / 255);
-            img[i + 2] = (byte) (((img[i + 2] & 0xFf) * alpha) / 255);
+            img[i + 3] = (byte) (((img[i + 2] & MASK_8BIT) * alpha)
+                    / OPAQUE);
+            img[i + 2] = (byte) (((img[i + 1] & MASK_8BIT) * alpha)
+                    / OPAQUE);
+            img[i + 1] = (byte) (((img[i] & MASK_8BIT) * alpha) / OPAQUE);
+            img[i] = (byte) alpha;
         }
     }
 

@@ -84,6 +84,8 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
     private transient int sampleSize;
     private transient byte[] sound = null;
 
+    private transient int[][] frameTable = null;
+    private int samplesPerFrame = 0;
 
     public SoundDecoder newDecoder() {
         return new MP3Decoder();
@@ -97,7 +99,6 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
 
     public void read(final URL url) throws IOException, DataFormatException {
         final URLConnection connection = url.openConnection();
-
         final int fileSize = connection.getContentLength();
 
         if (fileSize < 0) {
@@ -126,6 +127,17 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
                 numberOfChannels, sampleSize, samplesPerChannel, bytes);
     }
 
+    public void read(final InputStream stream, final int size)
+            throws IOException, DataFormatException {
+
+        final byte[] bytes = new byte[size];
+        final BufferedInputStream buffer = new BufferedInputStream(stream);
+
+        buffer.read(bytes);
+        buffer.close();
+        decodeMP3(bytes);
+    }
+
     /**
      * Generates all the objects required to stream a sound from a file.
      *
@@ -151,22 +163,193 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
                 sampleSize, sampleRate, numberOfChannels, sampleSize,
                 samplesPerBlock));
 
+        for (int i = 0; i< numberOfBlocks; i++) {
+            array.add(streamBlock(i, samplesPerBlock));
+        }
+        return array;
+    }
+
+    private SoundStreamBlock streamBlock(int blockNumber, int samplesPerBlock)
+    {
+        int firstSample = 0;
+        int firstSampleOffset = 0;
+        int bytesPerBlock = 0;
+        int bytesRemaining = 0;
         int numberOfBytes = 0;
+
         int framesToSend = 0;
         int framesSent = 0;
         int frameCount = 0;
         int sampleCount = 0;
         int seek = 0;
 
-        final SWFDecoder coder = new SWFDecoder(sound);
+        byte[] bytes = null;
+
+        framesToSend = ((blockNumber+1) * samplesPerBlock) / samplesPerFrame;
+        framesSent = (blockNumber * samplesPerBlock) / samplesPerFrame;
+        frameCount = framesToSend - framesSent;
+        sampleCount = frameCount * samplesPerFrame;
+        seek = (blockNumber * samplesPerBlock) - (framesSent * samplesPerFrame);
+
+        numberOfBytes = 4;
+
+        for (int i=0, j=framesSent; i<frameCount; i++, j++)
+             numberOfBytes += frameTable[j][1];
+
+        bytes = new byte[numberOfBytes];
+
+        bytes[0] = (byte)sampleCount;
+        bytes[1] = (byte)(sampleCount >> 8);
+        bytes[2] = (byte)seek;
+        bytes[3] = (byte)(seek >> 8);
+
+        int offset = 4;
+
+        for (int i=0, j=framesSent; i<frameCount; i++, j++)
+        {
+            System.arraycopy(sound, frameTable[j][0], bytes, offset, frameTable[j][1]);
+            offset += frameTable[j][1];
+        }
+
+        if (bytes != null)
+            return new SoundStreamBlock(bytes);
+        else
+            return null;
+    }
+
+    private void decodeMP3(byte[] bytes) throws DataFormatException
+    {
+        FLVDecoder coder = new FLVDecoder(bytes);
+
+        int numberOfFrames = 0;
+        int frameStart = 0;
+
+        format = SoundFormat.MP3;
+        sampleSize = 2;
+
+        while (coder.eof() == false)
+        {
+            int header = coder.readWord(3, false);
+            coder.adjustPointer(-24); // ID3 signature
+
+            if (header == 0x494433) // ID3
+            {
+                coder.adjustPointer(24); // ID3 signature
+                coder.adjustPointer(8); // version number
+                coder.adjustPointer(8); // revision number
+
+                coder.adjustPointer(1); // unsynchronized
+                coder.adjustPointer(1); // extendedHeader
+                coder.adjustPointer(1); // experimental
+                int hasFooter = coder.readBits(1, false);
+
+                coder.adjustPointer(4);
+
+                int totalLength = (hasFooter == 1) ? 10 : 0;
+
+                totalLength += coder.readWord(1, false) << 21;
+                totalLength += coder.readWord(1, false) << 14;
+                totalLength += coder.readWord(1, false) << 7;
+                totalLength += coder.readWord(1, false);
+
+                coder.adjustPointer(totalLength<<3);
+            }
+            else if (header == 0x544147) // ID3 V1
+            {
+                coder.adjustPointer(128<<3);
+            }
+            else if ((header & 0x00FFFFFF) >>> 13 == 0x7FF) // MP3 frame
+            {
+                if (numberOfFrames == 0)
+                    frameStart = coder.getPointer();
+
+                coder.adjustPointer(MP3FrameSize(coder) << 3);
+                numberOfFrames++;
+            }
+            else
+            {
+                /*
+                 * If we get here it means we jumped into the middle of either
+                 * a frame or tag information. This appears to be a common
+                 * occurrence. Goto the end of the file so we can keep the
+                 * frames found so far.
+                 */
+                coder.setPointer(bytes.length<<3);
+            }
+        }
+
+        int dataLength = bytes.length - (frameStart >> 3);
+
+        sound = new byte[dataLength];
+
+        System.arraycopy(bytes, frameStart>>3, sound, 0, dataLength);
+
+        frameTable = new int[numberOfFrames][2];
+
+        for (int i=0; i<numberOfFrames; i++)
+        {
+            frameTable[i][0] = -1;
+            frameTable[i][1] = 0;
+        }
+
+        coder.setPointer(frameStart);
+
+        int frameNumber = 0;
+
+        while (coder.findBits(0x7FF, 11, 8))
+        {
+            frameTable[frameNumber][0] = (coder.getPointer()- frameStart) >> 3;
+
+            coder.adjustPointer(11); // skip start of frame marker
+
+            int version = coder.readBits(2, false);
+
+            samplesPerFrame = MP3_FRAME_SIZE[version];
+
+            if (coder.readBits(2, false) != 1)
+                throw new DataFormatException("Flash only supports MPEG Layer 3");
+
+            coder.readBits(1, false); // crc follows header
+
+            int bitRate = BIT_RATES[version][coder.readBits(4, false)];
+
+            if (bitRate == -1)
+                throw new DataFormatException("Unsupported Bit-rate");
+
+            sampleRate = SAMPLE_RATES[version][coder.readBits(2, false)];
+
+            if (sampleRate == -1)
+                throw new DataFormatException("Unsupported Sampling-rate");
+
+            int padding = coder.readBits(1, false);
+            coder.readBits(1, false); // reserved
+
+            numberOfChannels = CHANNEL_COUNT[coder.readBits(2, false)];
+
+            coder.adjustPointer(6); // skip modeExtension, copyright, original and emphasis
+
+            samplesPerChannel += samplesPerFrame;
+
+            int frameSize = (((version == MPEG1) ? 144 : 72) * bitRate*1000 / sampleRate + padding) - 4;
+
+            frameTable[frameNumber++][1] = 4 + frameSize;
+
+            coder.adjustPointer(frameSize << 3);
+        }
+    }
+
+    private void initFrameTable(byte[] bytes)
+    {
+        SWFDecoder coder = new SWFDecoder(bytes);
 
         coder.findBits(0x7FF, 11, 8);
 
-        final int frameStart = coder.getPointer();
+        int frameStart = coder.getPointer();
         int numberOfFrames = 0;
 
-        while (coder.findBits(0x7FF, 11, 8)) {
-            coder.adjustPointer(frameSize(coder) << 3);
+        while (coder.findBits(0x7FF, 11, 8))
+        {
+            coder.adjustPointer(MP3FrameSize(coder) << 3);
             numberOfFrames++;
         }
 
@@ -176,238 +359,246 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
 
         int frameNumber = 0;
 
-        while (coder.findBits(0x7FF, 11, 8)) {
-            frameTable[frameNumber][0] = (coder.getPointer()
-                    - frameStart + 16) >> 3;
+        while (coder.findBits(0x7FF, 11, 8))
+        {
+            frameTable[frameNumber][0] = (coder.getPointer()- frameStart) >> 3;
 
             coder.adjustPointer(11); // skip start of frame marker
 
-            final int version = coder.readBits(2, false);
+            int version = coder.readBits(2, false);
 
             coder.adjustPointer(3);
 
-            final int bitRate = BIT_RATES[version][coder.readBits(4, false)];
-            final int samplingRate = SAMPLE_RATES[version][coder.readBits(2,
-                    false)];
-            final int padding = coder.readBits(1, false);
+            int bitRate = BIT_RATES[version][coder.readBits(4, false)];
+            int samplingRate = SAMPLE_RATES[version][coder.readBits(2, false)];
+            int padding = coder.readBits(1, false);
 
-            frameTable[frameNumber++][1] = 4 + (((version == MPEG1) ? 144 : 72)
-                    * bitRate * 1000 / samplingRate + padding) - 4;
+            frameTable[frameNumber++][1] = 4 + (((version == MPEG1) ? 144 : 72) * bitRate*1000 / samplingRate + padding) - 4;
 
-            coder.adjustPointer((frameSize(coder) << 3) - 23);
+            coder.adjustPointer((MP3FrameSize(coder) << 3)-23);
         }
-
-        for (int i = 0; i < numberOfBlocks; i++) {
-            framesToSend = ((i + 1) * samplesPerBlock) / samplesPerFrame;
-            framesSent = (i * samplesPerBlock) / samplesPerFrame;
-            frameCount = framesToSend - framesSent;
-            sampleCount = frameCount * samplesPerFrame;
-            seek = (i * samplesPerBlock) - (framesSent * samplesPerFrame);
-
-            numberOfBytes = 4;
-
-            for (int j = 0, k = framesSent; j < frameCount; j++, k++) {
-                numberOfBytes += frameTable[k][1];
-            }
-
-            final byte[] bytes = new byte[numberOfBytes];
-
-            bytes[0] = (byte) sampleCount;
-            bytes[1] = (byte) (sampleCount >> 8);
-            bytes[2] = (byte) seek;
-            bytes[3] = (byte) (seek >> 8);
-
-            int offset = 4;
-
-            for (int j = 0, k = framesSent; j < frameCount; j++, k++) {
-                System.arraycopy(sound, frameTable[k][0], bytes, offset,
-                        frameTable[k][1]);
-                offset += frameTable[k][1];
-            }
-
-            array.add(new SoundStreamBlock(bytes));
-        }
-        return array;
     }
 
-    private int frameSize(final SWFDecoder coder) {
+    private int MP3FrameSize(FLVDecoder coder)
+    {
         int frameSize = 4;
 
         coder.adjustPointer(11);
 
-        final int version = coder.readBits(2, false);
+        int version = coder.readBits(2, false);
 
         coder.adjustPointer(3);
 
-        final int bitRate = BIT_RATES[version][coder.readBits(4, false)];
-        final int samplingRate = SAMPLE_RATES[version]
-                                              [coder.readBits(2, false)];
-        final int padding = coder.readBits(1, false);
+        int bitRate = BIT_RATES[version][coder.readBits(4, false)];
+        int samplingRate = SAMPLE_RATES[version][coder.readBits(2, false)];
+           int padding = coder.readBits(1, false);
 
         coder.adjustPointer(-23);
 
-        frameSize += (((version == MPEG1) ? 144 : 72) * bitRate * 1000
-                / samplingRate + padding) - 4;
+        frameSize += (((version == MPEG1) ? 144 : 72) * bitRate*1000 / samplingRate + padding) - 4;
 
         return frameSize;
     }
 
-
-    public void read(final InputStream stream, final int size)
-                    throws IOException, DataFormatException {
-
-        final byte[] bytes = new byte[size];
-        final BufferedInputStream buffer = new BufferedInputStream(stream);
-
-        buffer.read(bytes);
-        buffer.close();
-
-        final FLVDecoder coder = new FLVDecoder(bytes);
-
-        int numberOfFrames = 0;
-        int frameStart = 0;
-        int[][] frameTable = null;
-
-        format = SoundFormat.MP3;
-        sampleSize = 2;
-
-        int marker;
-
-        while (!coder.eof()) {
-            marker = coder.readWord(3, false);
-            coder.adjustPointer(-24);
-
-            if (marker == 0x494433) {
-                coder.adjustPointer(24); // ID3 signature
-                coder.adjustPointer(8); // version number
-                coder.adjustPointer(8); // revision number
-
-                coder.adjustPointer(1); // unsynchronized
-                coder.adjustPointer(1); // extendedHeader
-                coder.adjustPointer(1); // experimental
-                final int hasFooter = coder.readBits(1, false);
-
-                coder.adjustPointer(4);
-
-                int totalLength = (hasFooter == 1) ? 10 : 0;
-
-                totalLength += coder.readByte() << 21;
-                totalLength += coder.readByte() << 14;
-                totalLength += coder.readByte() << 7;
-                totalLength += coder.readByte();
-
-                coder.adjustPointer(totalLength << 3);
-            } else if (marker == 0x544147) {
-                // ID3 V1
-                coder.adjustPointer(128 << 3);
-            } else if (coder.readBits(11, false) == 0x7FF) {
-                // MP3 frame
-                coder.adjustPointer(-11);
-
-                if (numberOfFrames == 0) {
-                    frameStart = coder.getPointer();
-                }
-
-                coder.adjustPointer(frameSize(coder) << 3);
-                numberOfFrames++;
-            } else {
-                /*
-                 * If we get here it means we jumped into the middle of either a
-                 * frame or tag information. This appears to be a common
-                 * occurrence. Goto the end of the file so we can keep the
-                 * frames found so far.
-                 */
-                coder.setPointer(coder.getData().length << 3);
-            }
-        }
-
-        final int dataLength = coder.getData().length - (frameStart >> 3);
-
-        sound = new byte[dataLength];
-
-        System
-                .arraycopy(coder.getData(), frameStart >> 3, sound, 0,
-                        dataLength);
-
-        frameTable = new int[numberOfFrames][2];
-
-        for (int i = 0; i < numberOfFrames; i++) {
-            frameTable[i][0] = -1;
-            frameTable[i][1] = 0;
-        }
-
-        coder.setPointer(frameStart);
-
-        int frameNumber = 0;
-        int samplesPerFrame;
-        int version;
-
-        while (coder.findBits(0x7FF, 11, 8)) {
-            frameTable[frameNumber][0] = (coder.getPointer() - frameStart) >> 3;
-
-            coder.adjustPointer(11); // skip start of frame marker
-
-            version = coder.readBits(2, false);
-
-            samplesPerFrame = MP3_FRAME_SIZE[version];
-
-            if (coder.readBits(2, false) != 1) {
-                throw new DataFormatException(
-                        "Flash only supports MPEG Layer 3");
-            }
-
-            coder.readBits(1, false); // crc follows header
-
-            final int bitRate = BIT_RATES[version][coder.readBits(4, false)];
-
-            if (bitRate == -1) {
-                throw new DataFormatException("Unsupported Bit-rate");
-            }
-
-            sampleRate = SAMPLE_RATES[version][coder.readBits(2, false)];
-
-            if (sampleRate == -1) {
-                throw new DataFormatException("Unsupported Sampling-rate");
-            }
-
-            final int padding = coder.readBits(1, false);
-            coder.readBits(1, false); // reserved
-
-            numberOfChannels = CHANNEL_COUNT[coder.readBits(2, false)];
-
-            coder.adjustPointer(6); // skip modeExtension, copyright, original
-            // and emphasis
-
-            samplesPerChannel += samplesPerFrame;
-
-            final int frameSize = (((version == MPEG1) ? 144 : 72) * bitRate
-                    * 1000 / sampleRate + padding) - 4;
-
-            frameTable[frameNumber++][1] = 4 + frameSize;
-
-            coder.adjustPointer(frameSize << 3);
-        }
-    }
-
-    private int frameSize(final FLVDecoder coder) {
+    private int MP3FrameSize(SWFDecoder coder)
+    {
         int frameSize = 4;
 
         coder.adjustPointer(11);
 
-        final int version = coder.readBits(2, false);
+        int version = coder.readBits(2, false);
 
         coder.adjustPointer(3);
 
-        final int bitRate = BIT_RATES[version][coder.readBits(4, false)];
-        final int samplingRate = SAMPLE_RATES[version]
-                                              [coder.readBits(2, false)];
-        final int padding = coder.readBits(1, false);
+        int bitRate = BIT_RATES[version][coder.readBits(4, false)];
+        int samplingRate = SAMPLE_RATES[version][coder.readBits(2, false)];
+           int padding = coder.readBits(1, false);
 
         coder.adjustPointer(-23);
 
-        frameSize += (((version == MPEG1) ? 144 : 72) * bitRate * 1000
-                / samplingRate + padding) - 4;
+        frameSize += (((version == MPEG1) ? 144 : 72) * bitRate*1000 / samplingRate + padding) - 4;
 
         return frameSize;
     }
+
+//    private int frameSize(final SWFDecoder coder) {
+//        int frameSize = 4;
+//
+//        coder.adjustPointer(11);
+//
+//        final int version = coder.readBits(2, false);
+//
+//        coder.adjustPointer(3);
+//
+//        final int bitRate = BIT_RATES[version][coder.readBits(4, false)];
+//        final int samplingRate = SAMPLE_RATES[version]
+//                                              [coder.readBits(2, false)];
+//        final int padding = coder.readBits(1, false);
+//
+//        coder.adjustPointer(-23);
+//
+//        frameSize += (((version == MPEG1) ? 144 : 72) * bitRate * 1000
+//                / samplingRate + padding) - 4;
+//
+//        return frameSize;
+//    }
+//
+//
+//    public void read(final InputStream stream, final int size)
+//                    throws IOException, DataFormatException {
+//
+//        final byte[] bytes = new byte[size];
+//        final BufferedInputStream buffer = new BufferedInputStream(stream);
+//
+//        buffer.read(bytes);
+//        buffer.close();
+//
+//        final FLVDecoder coder = new FLVDecoder(bytes);
+//
+//        int numberOfFrames = 0;
+//        int frameStart = 0;
+//        int[][] frameTable = null;
+//
+//        format = SoundFormat.MP3;
+//        sampleSize = 2;
+//
+//        int marker;
+//
+//        while (!coder.eof()) {
+//            marker = coder.readWord(3, false);
+//            coder.adjustPointer(-24);
+//
+//            if (marker == 0x494433) {
+//                coder.adjustPointer(24); // ID3 signature
+//                coder.adjustPointer(8); // version number
+//                coder.adjustPointer(8); // revision number
+//
+//                coder.adjustPointer(1); // unsynchronized
+//                coder.adjustPointer(1); // extendedHeader
+//                coder.adjustPointer(1); // experimental
+//                final int hasFooter = coder.readBits(1, false);
+//
+//                coder.adjustPointer(4);
+//
+//                int totalLength = (hasFooter == 1) ? 10 : 0;
+//
+//                totalLength += coder.readByte() << 21;
+//                totalLength += coder.readByte() << 14;
+//                totalLength += coder.readByte() << 7;
+//                totalLength += coder.readByte();
+//
+//                coder.adjustPointer(totalLength << 3);
+//            } else if (marker == 0x544147) {
+//                // ID3 V1
+//                coder.adjustPointer(128 << 3);
+//            } else if (coder.readBits(11, false) == 0x7FF) {
+//                // MP3 frame
+//                coder.adjustPointer(-11);
+//
+//                if (numberOfFrames == 0) {
+//                    frameStart = coder.getPointer();
+//                }
+//
+//                coder.adjustPointer(frameSize(coder) << 3);
+//                numberOfFrames++;
+//            } else {
+//                /*
+//                 * If we get here it means we jumped into the middle of either a
+//                 * frame or tag information. This appears to be a common
+//                 * occurrence. Goto the end of the file so we can keep the
+//                 * frames found so far.
+//                 */
+//                coder.setPointer(coder.getData().length << 3);
+//            }
+//        }
+//
+//        final int dataLength = coder.getData().length - (frameStart >> 3);
+//
+//        sound = new byte[dataLength];
+//
+//        System
+//                .arraycopy(coder.getData(), frameStart >> 3, sound, 0,
+//                        dataLength);
+//
+//        frameTable = new int[numberOfFrames][2];
+//
+//        for (int i = 0; i < numberOfFrames; i++) {
+//            frameTable[i][0] = -1;
+//            frameTable[i][1] = 0;
+//        }
+//
+//        coder.setPointer(frameStart);
+//
+//        int frameNumber = 0;
+//        int samplesPerFrame;
+//        int version;
+//
+//        while (coder.findBits(0x7FF, 11, 8)) {
+//            frameTable[frameNumber][0] = (coder.getPointer() - frameStart) >> 3;
+//
+//            coder.adjustPointer(11); // skip start of frame marker
+//
+//            version = coder.readBits(2, false);
+//
+//            samplesPerFrame = MP3_FRAME_SIZE[version];
+//
+//            if (coder.readBits(2, false) != 1) {
+//                throw new DataFormatException(
+//                        "Flash only supports MPEG Layer 3");
+//            }
+//
+//            coder.readBits(1, false); // crc follows header
+//
+//            final int bitRate = BIT_RATES[version][coder.readBits(4, false)];
+//
+//            if (bitRate == -1) {
+//                throw new DataFormatException("Unsupported Bit-rate");
+//            }
+//
+//            sampleRate = SAMPLE_RATES[version][coder.readBits(2, false)];
+//
+//            if (sampleRate == -1) {
+//                throw new DataFormatException("Unsupported Sampling-rate");
+//            }
+//
+//            final int padding = coder.readBits(1, false);
+//            coder.readBits(1, false); // reserved
+//
+//            numberOfChannels = CHANNEL_COUNT[coder.readBits(2, false)];
+//
+//            coder.adjustPointer(6); // skip modeExtension, copyright, original
+//            // and emphasis
+//
+//            samplesPerChannel += samplesPerFrame;
+//
+//            final int frameSize = (((version == MPEG1) ? 144 : 72) * bitRate
+//                    * 1000 / sampleRate + padding) - 4;
+//
+//            frameTable[frameNumber++][1] = 4 + frameSize;
+//
+//            coder.adjustPointer(frameSize << 3);
+//        }
+//    }
+//
+//    private int frameSize(final FLVDecoder coder) {
+//        int frameSize = 4;
+//
+//        coder.adjustPointer(11);
+//
+//        final int version = coder.readBits(2, false);
+//
+//        coder.adjustPointer(3);
+//
+//        final int bitRate = BIT_RATES[version][coder.readBits(4, false)];
+//        final int samplingRate = SAMPLE_RATES[version]
+//                                              [coder.readBits(2, false)];
+//        final int padding = coder.readBits(1, false);
+//
+//        coder.adjustPointer(-23);
+//
+//        frameSize += (((version == MPEG1) ? 144 : 72) * bitRate * 1000
+//                / samplingRate + padding) - 4;
+//
+//        return frameSize;
+//    }
 }
