@@ -38,7 +38,8 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
     BMPImageTest.class,
     JPGImageTest.class,
-    PNGImageTest.class
+    PNGImageTest.class,
+    BufferedImageTest.class
 })
 public final class AllImageTests {
 }
