@@ -32,9 +32,7 @@
 package com.flagstone.transform.util.font;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.font.CharacterFormat;
@@ -110,10 +108,6 @@ public final class Font {
 
     private final transient List<Kerning> kernings = new ArrayList<Kerning>();
 
-//    private int scale;
-//    private int metrics;
-//    private int glyphOffset;
-
     /**
      * TODO(method).
      */
@@ -179,8 +173,10 @@ public final class Font {
     }
 
     public void setNumberOfGlyphs(final int count) {
-        glyphTable = new Glyph[count];
-        glyphToChar = new int[count];
+        glyphTable = new Glyph[65536];
+        glyphToChar = new int[65536];
+//TODO        glyphTable = new Glyph[count];
+//TODO        glyphToChar = new int[count];
         glyphIndex = 0;
     }
 
@@ -193,7 +189,8 @@ public final class Font {
 
     public void setHighestChar(final char highest) {
         highestChar = highest;
-        charToGlyph = new int[highest];
+        charToGlyph = new int[65536];
+//TODO        charToGlyph = new int[highest];
     }
 
 
@@ -232,19 +229,17 @@ public final class Font {
      *         the set of characters.
      */
     public DefineFont2 defineFont(final int identifier,
-            final Set<Character> characters) {
-        final List<Character> list = new ArrayList<Character>(characters);
-        Collections.sort(list);
+            final List<Character> characters) {
 
         DefineFont2 fontDefinition = null;
-        final int count = list.size();
+        final int count = characters.size();
 
         final ArrayList<Shape> glyphsArray = new ArrayList<Shape>(count);
         final ArrayList<Integer> codesArray = new ArrayList<Integer>(count);
         final ArrayList<Integer> advancesArray = new ArrayList<Integer>(count);
         final ArrayList<Bounds> boundsArray = new ArrayList<Bounds>(count);
 
-        for (final Character character : list) {
+        for (final Character character : characters) {
             final Glyph glyph = glyphTable[charToGlyph[character]];
 
             glyphsArray.add(glyph.getShape());

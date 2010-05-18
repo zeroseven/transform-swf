@@ -194,7 +194,7 @@ public final class Movie {
      * @return an unique identifier for objects that define shapes, sounds, etc.
      *         in a Flash file.
      */
-    public int nextIdentifier() {
+    public int nextId() {
         return ++identifier;
     }
 

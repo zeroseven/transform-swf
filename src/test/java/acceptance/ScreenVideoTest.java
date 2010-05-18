@@ -87,14 +87,14 @@ public final class ScreenVideoTest {
 
         final ImageFactory factory = new ImageFactory();
         factory.read(new File(files[0]));
-        final ImageTag image = factory.defineImage(movie.nextIdentifier());
+        final ImageTag image = factory.defineImage(movie.nextId());
         final Place2.Builder builder = new Place2.Builder();
 
         int screenWidth = image.getWidth();
         int screenHeight = image.getHeight();
 
         movie = new Movie();
-        identifier = movie.nextIdentifier();
+        identifier = movie.nextId();
 
         movie.setFrameSize(new Bounds(0, 0, screenWidth * 20,
                         screenHeight * 20));

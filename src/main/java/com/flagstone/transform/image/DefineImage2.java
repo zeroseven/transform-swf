@@ -343,8 +343,7 @@ public final class DefineImage2 implements ImageTag {
         length += (pixelSize == 8) ? 1 : 0;
         length += image.length;
 
-        return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH
-                : SWFEncoder.STD_LENGTH) + length;
+        return SWFEncoder.EXT_LENGTH + length;
     }
 
     /** {@inheritDoc} */

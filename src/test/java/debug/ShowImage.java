@@ -63,14 +63,14 @@ public final class ShowImage {
 
             factory.read(new File(sourceFile));
 
-            final ImageTag image = factory.defineImage(movie.nextIdentifier());
+            final ImageTag image = factory.defineImage(movie.nextId());
             final Place2.Builder builder = new Place2.Builder();
 
             final int imageWidth = image.getWidth();
             final int imageHeight = image.getHeight();
             final int screenWidth = imageWidth * 20;
             final int screenHeight = imageHeight * 20;
-            final int shapeId = movie.nextIdentifier();
+            final int shapeId = movie.nextId();
 
             movie.setFrameRate(1.0f);
             movie.setSignature(Movie.Signature.FWS);

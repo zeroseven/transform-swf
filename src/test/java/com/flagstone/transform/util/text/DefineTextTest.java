@@ -35,8 +35,6 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.LinkedHashSet;
-import java.util.Set;
 import java.util.zip.DataFormatException;
 
 import org.junit.BeforeClass;
@@ -73,15 +71,13 @@ public final class DefineTextTest {
     public void defineText() throws IOException, DataFormatException {
         final File destFile = new File(destDir, "defineText.swf");
 
-        final Set<Character> set = new LinkedHashSet<Character>();
         final String alphabet =
             "The quick brown, fox jumped over the lazy dog.";
-
-        for (int i = 0; i < alphabet.length(); i++) {
-            set.add(alphabet.charAt(i));
-        }
-
         final int fontSize = 280;
+
+        final CharacterSet set = new CharacterSet();
+        set.add(alphabet);
+
         final int margin = fontSize;
         int layer = 1;
         final int x = margin;
@@ -90,8 +86,9 @@ public final class DefineTextTest {
         final Movie movie = new Movie();
         final Place2.Builder builder = new Place2.Builder();
 
-        final int fontId = movie.nextIdentifier();
-        final DefineFont2 definition = font.defineFont(fontId, set);
+        final int fontId = movie.nextId();
+        final DefineFont2 definition = font.defineFont(fontId,
+                set.getCharacters());
 
         movie.setFrameRate(1.0f);
         movie.add(new Background(WebPalette.LIGHT_BLUE.color()));
@@ -119,12 +116,10 @@ public final class DefineTextTest {
         final File destFile = new File(destDir, "bounds.swf");
         final Place2.Builder builder = new Place2.Builder();
 
-        final Set<Character> set = new LinkedHashSet<Character>();
         final String alphabet = "abcdefghijklmnopqrstuvwxyz";
 
-        for (int i = 0; i < alphabet.length(); i++) {
-            set.add(alphabet.charAt(i));
-        }
+        final CharacterSet set = new CharacterSet();
+        set.add(alphabet);
 
         final int fontSize = 280;
         final int lineSpacing = fontSize;
@@ -138,8 +133,9 @@ public final class DefineTextTest {
         int x = margin;
         int y = margin;
 
-        final int fontId = movie.nextIdentifier();
-        final DefineFont2 definition = font.defineFont(fontId, set);
+        final int fontId = movie.nextId();
+        final DefineFont2 definition = font.defineFont(fontId,
+                set.getCharacters());
 
         movie.setFrameSize(new Bounds(0, 0, 0, 0));
         movie.setFrameRate(1.0f);

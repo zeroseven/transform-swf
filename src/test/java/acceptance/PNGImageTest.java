@@ -98,14 +98,14 @@ public final class PNGImageTest {
             final Place2.Builder builder = new Place2.Builder();
             final ImageFactory factory = new ImageFactory();
             factory.read(sourceFile);
-            final int imageId = movie.nextIdentifier();
+            final int imageId = movie.nextId();
             final ImageTag image = factory.defineImage(imageId);
 
             final int xOrigin = image.getWidth() / 2;
             final int yOrigin = image.getHeight() / 2;
 
             final DefineShape3 shape = factory.defineEnclosingShape(movie
-                    .nextIdentifier(), imageId, -xOrigin, -yOrigin, null);
+                    .nextId(), imageId, -xOrigin, -yOrigin, null);
 
             movie.setFrameRate(1.0f);
             movie.setFrameSize(shape.getBounds());

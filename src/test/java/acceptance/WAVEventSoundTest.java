@@ -104,7 +104,7 @@ public final class WAVEventSoundTest {
             final SoundFactory factory = new SoundFactory();
             factory.read(sourceFile);
             final DefineSound sound =
-                factory.defineSound(movie.nextIdentifier());
+                factory.defineSound(movie.nextId());
 
             movie.setFrameSize(new Bounds(0, 0, 8000, 4000));
             movie.setFrameRate(framesPerSecond);

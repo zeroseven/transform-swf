@@ -39,43 +39,18 @@ import com.flagstone.transform.shape.Shape;
  * box and advance for a glyph.
  */
 //TODO(class)
-public class Glyph {
+public class TrueTypeGlyph extends Glyph {
 
-    private Shape shape;
-    private Bounds bounds;
-    private int advance;
+    int[] xCoordinates = new int[]{};
+    int[] yCoordinates = new int[]{};
+    boolean[] onCurve = new boolean[]{};
+    int[] endPoints = new int[]{};
 
-    public Glyph(final Shape aShape, final Bounds box, final int dist) {
-        shape = aShape;
-        bounds = box;
-        advance = dist;
+    public TrueTypeGlyph(final Shape aShape, final Bounds box, final int dist) {
+        super(aShape, box, dist);
     }
 
-    public Glyph(final Shape aShape) {
-        shape = aShape;
-    }
-
-    public Shape getShape() {
-        return shape;
-    }
-
-    public void setShape(final Shape aShape) {
-        shape = aShape;
-    }
-
-    public Bounds getBounds() {
-        return bounds;
-    }
-
-    public void setBounds(final Bounds box) {
-        bounds = box;
-    }
-
-    public int getAdvance() {
-        return advance;
-    }
-
-    public void setAdvance(final int dist) {
-        advance = dist;
+    public TrueTypeGlyph(final Shape aShape) {
+        super(aShape);
     }
 }

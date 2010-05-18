@@ -35,13 +35,8 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.zip.DataFormatException;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -55,9 +50,11 @@ import com.flagstone.transform.ShowFrame;
 import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.datatype.WebPalette;
 import com.flagstone.transform.font.DefineFont2;
-import com.flagstone.transform.text.DefineTextField;
+import com.flagstone.transform.text.DefineText2;
 import com.flagstone.transform.util.font.Font;
-import com.flagstone.transform.util.font.FontFactory;
+import com.flagstone.transform.util.font.TTFDecoder;
+import com.flagstone.transform.util.text.CharacterSet;
+import com.flagstone.transform.util.text.TextTable;
 
 @RunWith(Parameterized.class)
 public final class TTFFontTest {
@@ -67,6 +64,10 @@ public final class TTFFontTest {
 
         final File srcDir = new File("test/data/ttf/reference");
         final File destDir = new File("test/results/acceptance/TTFFontTest");
+
+        if (!destDir.exists() && !destDir.mkdirs()) {
+            fail();
+        }
 
         final FilenameFilter filter = new FilenameFilter() {
             public boolean accept(final File directory, final String name) {
@@ -94,53 +95,39 @@ public final class TTFFontTest {
     }
 
     @Test
-    public void playSound() throws IOException, DataFormatException {
-
-        final int width = 8000;
-        final int height = 4000;
-        final int margin = 400;
-        final int fontSize = 280;
-
-        final int screenWidth = width + margin;
-        final int screenHeight = height + margin;
-
-        String alphabet = "abcdefghijklmnopqrstuvwxyz";
-        Set<Character> set = new LinkedHashSet<Character>();
-
-        for (int i = 0; i < alphabet.length(); i++) {
-            set.add(alphabet.charAt(i));
-        }
-
+    public void showFont() {
         try {
+            final int fontSize = 960;
+            String alphabet = "abcdefghijklmnopqrstuvwxyz";
+
+            final TTFDecoder fontDecoder = new TTFDecoder();
+            fontDecoder.read(sourceFile);
+            final Font font = fontDecoder.getFonts().get(0);
+
+            final CharacterSet set = new CharacterSet();
+            set.add(alphabet);
+
             final Movie movie = new Movie();
-            final Place2.Builder builder = new Place2.Builder();
-            final FontFactory factory = new FontFactory();
-            factory.read(sourceFile);
-            List<Font> fonts = factory.getFonts();
-            DefineFont2 font = fonts.get(0).defineFont(
-                    movie.nextIdentifier(), set);
 
-            final DefineTextField text = new DefineTextField(
-                    movie.nextIdentifier());
-            text.setBounds(new Bounds(0, 0, width, height));
-            text.setVariableName("var");
-            text.setInitialText(alphabet);
-            text.setEmbedded(true);
-            text.setFontIdentifier(font.getIdentifier());
-            text.setFontHeight(fontSize);
-            text.setColor(WebPalette.BLACK.color());
+            final DefineFont2 definition = font.defineFont(movie.nextId(),
+                    set.getCharacters());
+            final TextTable textTable = new TextTable(definition, fontSize);
+            final Bounds bounds = textTable.boundsForText(alphabet);
+            final DefineText2 text = textTable.defineText(movie.nextId(),
+                    alphabet, WebPalette.BLACK.color());
 
-            movie.setFrameSize(new Bounds(0, 0, screenWidth, screenHeight));
+            movie.setFrameSize(bounds);
             movie.setFrameRate(1.0f);
             movie.add(new Background(WebPalette.LIGHT_BLUE.color()));
-            movie.add(font);
+            movie.add(definition);
             movie.add(text);
-            movie.add(builder.show(text, 1, margin, margin));
+            movie.add(new Place2.Builder().show(text, 1, 0, 0));
             movie.add(ShowFrame.getInstance());
             movie.encodeToFile(destFile);
+
         } catch (Exception e) {
             e.printStackTrace();
-            fail(sourceFile.getPath());
+            fail(sourceFile.getName());
         }
     }
 }

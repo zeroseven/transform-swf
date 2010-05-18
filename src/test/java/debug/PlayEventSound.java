@@ -75,7 +75,7 @@ public final class PlayEventSound {
 
             movie.add(new Background(WebPalette.LIGHT_BLUE.color()));
 
-            final int soundId = movie.nextIdentifier();
+            final int soundId = movie.nextId();
 
             /*
              * Calculate the time it takes to play the sound and the number of

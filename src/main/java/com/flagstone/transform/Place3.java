@@ -207,7 +207,7 @@ public final class Place3 implements MovieTag {
     }
 
     private static final String FORMAT = "PlaceObject3: { type=%s; layer=%d;"
-            + " bitmapCached=%s; identifier=%d; transform=%s; "
+            + " bitmapCache=%d; identifier=%d; transform=%s; "
             + " colorTransform=%s; ratio=%d; clippingDepth=%d; "
             + " name=%s; className=%s; "
             + " filters=%s; blend=%s; clipEvents=%s}";
@@ -216,7 +216,7 @@ public final class Place3 implements MovieTag {
     private PlaceType type;
     private int layer;
     private String className;
-    private boolean bitmapCached;
+    private Integer bitmapCache;
     private int identifier;
     private CoordTransform transform;
     private ColorTransform colorTransform;
@@ -252,7 +252,7 @@ public final class Place3 implements MovieTag {
             throws CoderException {
         final Map<Integer, Integer> vars = context.getVariables();
         vars.put(Context.TRANSPARENT, 1);
-//        final int start = coder.getPointer();
+        final int start = coder.getPointer();
         length = coder.readHeader();
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
@@ -279,7 +279,7 @@ public final class Place3 implements MovieTag {
 
         hasImage = coder.readBits(1, false) != 0;
         final boolean hasClassName = coder.readBits(1, false) != 0;
-        bitmapCached = coder.readBits(1, false) != 0;
+        final boolean hasBitmapCache = coder.readBits(1, false) != 0;
         hasBlend = coder.readBits(1, false) != 0;
         hasFilters = coder.readBits(1, false) != 0;
 
@@ -337,6 +337,10 @@ public final class Place3 implements MovieTag {
             blend = coder.readByte();
         }
 
+        if (hasBitmapCache) {
+            bitmapCache = coder.readByte();
+        }
+
         events = new ArrayList<MovieClipEventHandler>();
 
         if (hasEvents) {
@@ -354,10 +358,10 @@ public final class Place3 implements MovieTag {
         vars.remove(Context.TRANSPARENT);
 
         if (coder.getPointer() != end) {
-//            throw new CoderException(getClass().getName(),
-//            start >> Coder.BITS_TO_BYTES, length,
-//                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
-            coder.setPointer(end);
+            throw new CoderException(getClass().getName(),
+            start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
+//            coder.setPointer(end);
         }
     }
 
@@ -380,7 +384,7 @@ public final class Place3 implements MovieTag {
     public Place3(final Place3 object) {
         type = object.type;
         layer = object.layer;
-        bitmapCached = object.bitmapCached;
+        bitmapCache = object.bitmapCache;
         className = object.className;
         identifier = object.identifier;
         if (object.transform != null) {
@@ -587,15 +591,15 @@ public final class Place3 implements MovieTag {
     /**
      * TODO(method).
      */
-    public boolean isBitmapCached() {
-        return bitmapCached;
+    public Integer getBitmapCache() {
+        return bitmapCache;
     }
 
     /**
      * TODO(method).
      */
-    public Place3 setBitmapCached(final boolean cached) {
-        bitmapCached = cached;
+    public Place3 setBitmapCache(final Integer cache) {
+        bitmapCache = cache;
         return this;
     }
 
@@ -705,7 +709,7 @@ public final class Place3 implements MovieTag {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        return String.format(FORMAT, type, layer, bitmapCached, identifier,
+        return String.format(FORMAT, type, layer, bitmapCache, identifier,
                 transform, colorTransform, ratio, depth, name, className,
                 filters, blend, events);
     }
@@ -738,6 +742,10 @@ public final class Place3 implements MovieTag {
         }
 
         if (hasBlend) {
+            length += 1;
+        }
+
+        if (bitmapCache != null) {
             length += 1;
         }
 
@@ -787,7 +795,7 @@ public final class Place3 implements MovieTag {
         coder.writeBits(0, 3);
         coder.writeBool(hasImage);
         coder.writeBool(className != null);
-        coder.writeBool(bitmapCached);
+        coder.writeBool(bitmapCache != null);
         coder.writeBool(hasBlend);
         coder.writeBool(hasFilters);
 
@@ -825,6 +833,10 @@ public final class Place3 implements MovieTag {
 
         if (hasBlend) {
             coder.writeByte(blend);
+        }
+
+        if (bitmapCache != null) {
+            coder.writeByte(bitmapCache);
         }
 
         if (!events.isEmpty()) {

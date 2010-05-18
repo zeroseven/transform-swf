@@ -48,22 +48,22 @@ import com.flagstone.transform.text.TextSpan;
 /** TODO(class). */
 public final class TextTable {
 
-    private transient int size;
+    private transient final int size;
     private final transient int ascent;
     private final transient int descent;
-    private transient int identifier;
+    private transient final int identifier;
 
     private final transient Map<Character, GlyphIndex> characters;
 
+    public TextTable(final DefineFont2 font, final int fontSize) {
 
-    public TextTable(final DefineFont2 font, final int tableSize) {
-
+        identifier = font.getIdentifier();
+        size = fontSize;
         characters = new LinkedHashMap<Character, GlyphIndex>();
 
         final List<Integer> codes = font.getCodes();
         final List<Integer> advances = font.getAdvances();
-
-        final float scale = tableSize / 1024.0f;
+        final float scale = fontSize / 1024.0f;
         final int count = codes.size();
 
         ascent = (int) (font.getAscent() * scale);
@@ -85,15 +85,11 @@ public final class TextTable {
      * @return the bounding box that completely encloses the text.
      */
     public Bounds boundsForText(final String text) {
-
         int total = 0;
-
         for (int i = 0; i < text.length(); i++) {
             total += characters.get(text.charAt(i)).getAdvance();
         }
-
-
-        return new Bounds(0, descent, total, ascent);
+        return new Bounds(0, -ascent, total, descent);
     }
 
     /**
@@ -106,12 +102,10 @@ public final class TextTable {
      *         DefineText2 object.
      */
     public List<GlyphIndex> charactersForText(final String text) {
-        final List<GlyphIndex> list = new ArrayList<GlyphIndex>(text
-                .length());
+        final List<GlyphIndex> list = new ArrayList<GlyphIndex>(text.length());
         for (int i = 0; i < text.length(); i++) {
             list.add(characters.get(text.charAt(i)));
         }
-
         return list;
     }
 
@@ -127,13 +121,9 @@ public final class TextTable {
      * @return a TextSpan object that can be added to a DefineText or
      *         DefineText2 object.
      */
-    public TextSpan defineSpan(final String text, final Color color) {
-        final float scale = size / 1024.0f;
-
-        final int xCoord = 0;
-        final int yCoord = (int) (ascent / scale);
-
-        return new TextSpan(identifier, size, color, xCoord, yCoord,
+    public TextSpan defineSpan(final String text, final Color color,
+            final int xCoord, final int yCoord) {
+         return new TextSpan(identifier, size, color, xCoord, yCoord,
                 charactersForText(text));
     }
 
@@ -155,12 +145,9 @@ public final class TextTable {
      */
     public DefineText2 defineText(final int uid, final String text,
             final Color color) {
-        final CoordTransform transform = new CoordTransform(1.0f, 1.0f, 0.0f,
-                0.0f, 0, 0);
+        final CoordTransform transform = CoordTransform.translate(0, 0);
         final ArrayList<TextSpan> spans = new ArrayList<TextSpan>();
-
-        spans.add(defineSpan(text, color));
-
+        spans.add(defineSpan(text, color, 0, 0));
         return new DefineText2(uid, boundsForText(text), transform, spans);
     }
 
@@ -182,17 +169,14 @@ public final class TextTable {
      */
     public DefineText2 defineTextBlock(final int uid, final List<String> lines,
             final Color color, final int lineSpacing) {
-        final CoordTransform transform = new CoordTransform(1.0f, 1.0f, 0.0f,
-                0.0f, 0, 0);
-        final float scale = size / 1024.0f;
-
+        final CoordTransform transform = CoordTransform.translate(0, 0);
         int xMin = 0;
         int yMin = 0;
         int xMax = 0;
         int yMax = 0;
 
         final int xOffset = 0;
-        int yOffset = (int) (ascent / scale);
+        int yOffset = ascent;
 
         final ArrayList<TextSpan> spans = new ArrayList<TextSpan>();
         String text;

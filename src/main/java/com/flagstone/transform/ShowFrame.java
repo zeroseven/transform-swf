@@ -57,13 +57,6 @@ import com.flagstone.transform.coder.SWFEncoder;
  * to be executed take effect when the Flash Player displays the frame. All the
  * objects displayed in a frame must be defined before they can be displayed.
  * </p>
- *
- * @see Place
- * @see Place2
- * @see Remove
- * @see Remove2
- * @see DoAction
- *
  */
 public final class ShowFrame implements MovieTag {
 
