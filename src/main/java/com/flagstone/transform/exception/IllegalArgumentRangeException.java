@@ -31,15 +31,30 @@
 
 package com.flagstone.transform.exception;
 
+/**
+ * IllegalArgumentValueException is thrown when a value is used that is not
+ * within a pre-defined range.
+ */
 public final class IllegalArgumentRangeException
         extends IllegalArgumentException {
 
+    /** Serial number identifying the version of the object. */
     private static final long serialVersionUID = -9208368642722953411L;
-
+    /** The lower value of the range. */
     private final transient int lower;
+    /** The upper value of the range. */
     private final transient int upper;
+    /** The actual value used. */
     private final transient int value;
 
+    /**
+     * Creates an IllegalArgumentRangeException with the range of expected
+     * values and the actual value used.
+     *
+     * @param start the start of the expected range.
+     * @param end the end of the expected range inclusive.
+     * @param actual the actual value used.
+     */
     public IllegalArgumentRangeException(final int start, final int end,
             final int actual) {
         super("Lower Bound: " + start + " Upper Bound: " + end
@@ -48,15 +63,24 @@ public final class IllegalArgumentRangeException
         upper = end;
         value = actual;
     }
-
+    /**
+     * Get the lower value of the expected range.
+     * @return the range's lower value.
+     */
     public int getLower() {
         return lower;
     }
-
+    /**
+     * Get the upper value of the expected range.
+     * @return the range's upper value.
+     */
     public int getUpper() {
         return upper;
     }
-
+    /**
+     * Get the actual value that triggered the exception.
+     * @return the actual value used.
+     */
     public int getValue() {
         return value;
     }

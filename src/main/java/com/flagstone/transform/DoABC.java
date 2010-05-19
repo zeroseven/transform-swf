@@ -148,8 +148,10 @@ public final class DoABC implements MovieTag {
     }
 
     /**
-     * Returns true is the script is loaded but not executed or false if it is
-     * loaded and executed.
+     * Is loading of the script deferred until it is called.
+     *
+     * @return true if loading of the script is deferred, false if it is loaded
+     * immeiately.
      */
     public boolean isDeferred() {
         return (deferred & 1) != 0;
@@ -171,7 +173,9 @@ public final class DoABC implements MovieTag {
     }
 
     /**
-     * Returns a copy of the array containing the Actionscript byte-codes.
+     * Get a copy of the array containing the Actionscript byte-codes.
+     *
+     * @return a copy of the encoded actionscript.
      */
     public byte[] getData() {
         return Arrays.copyOf(data, data.length);

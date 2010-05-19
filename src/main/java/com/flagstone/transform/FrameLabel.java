@@ -62,7 +62,9 @@ public final class FrameLabel implements MovieTag {
     /** Format string used in toString() method. */
     private static final String FORMAT = "FrameLabel: { label=%s; anchor=%s}";
 
+    /** The label for the frame. */
     private String label;
+    /** Whether the frame can be referenced by a URL. */
     private boolean anchor;
 
     /** The length of the object, minus the header, when it is encoded. */
@@ -130,7 +132,9 @@ public final class FrameLabel implements MovieTag {
     }
 
     /**
-     * Returns the label.
+     * Get the label for the frame.
+     *
+     * @return the string used to label the frame.
      */
     public String getLabel() {
         return label;
@@ -151,8 +155,11 @@ public final class FrameLabel implements MovieTag {
     }
 
     /**
-     * Returns the flag indicating whether the frame name is also used as an
-     * anchor so the frame can be referenced from outside of the movie.
+     * Is the frame name is also used as an anchor so the frame can be
+     * referenced from outside of the movie.
+     *
+     * @return true is the name can be used as an external reference to the
+     * frame.
      */
     public boolean isAnchor() {
         return anchor;

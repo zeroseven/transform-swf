@@ -54,7 +54,9 @@ public final class DefineJPEGImage4 implements ImageTag {
     /** The unique identifier for this object. */
     private int identifier;
     private int deblocking;
+    /** The JPEG encoded image. */
     private byte[] image;
+    /** The zlib compressed transparency values for the image. */
     private byte[] alpha;
 
     /** The length of the object, minus the header, when it is encoded. */

@@ -62,7 +62,9 @@ public final class LimitScript implements MovieTag {
     private static final String FORMAT = "LimitScript: { depth=%d;"
     		+ " timeout=%d }";
 
+    /** The maximum stack depth for nested functions. */
     private int depth;
+    /** The maximum execution time of a script. */
     private int timeout;
 
     /**
@@ -114,7 +116,9 @@ public final class LimitScript implements MovieTag {
     }
 
     /**
-     * Returns the maximum recursion level.
+     * Get the maximum stack depth for function execution.
+     *
+     * @ the maximum number of stack frames for recursive functions.
      */
     public int getDepth() {
         return depth;
@@ -135,9 +139,11 @@ public final class LimitScript implements MovieTag {
     }
 
     /**
-     * Returns the maximum time a sequence of actions will execute before the
+     * Get the maximum time a sequence of actions will execute before the
      * Flash Player present a dialog box asking whether the script should be
      * terminated.
+     *
+     * @return the maximum execution time of a script.
      */
     public int getTimeout() {
         return timeout;

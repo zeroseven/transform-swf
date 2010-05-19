@@ -105,18 +105,25 @@ public final class DefineMorphShape implements DefineTag {
 
     /** The unique identifier for this object. */
     private int identifier;
+    /** The bounding box for the shape at the start of the morphing process. */
     private Bounds startBounds;
+    /** The bounding box for the shape at the end of the morphing process. */
     private Bounds endBounds;
 
+    /** The list of fill styles for the shape. */
     private List<FillStyle> fillStyles;
+    /** The list of line styles for the shape. */
     private List<MorphLineStyle> lineStyles;
-
+    /** The shape at the start of the morphing process. */
     private Shape startShape;
+    /** The shape at the end of the morphing process. */
     private Shape endShape;
 
     /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
+    /** The number of bits to encode indices into the fill style array. */
     private transient int fillBits;
+    /** The number of bits to encode indices into the line style array. */
     private transient int lineBits;
 
     /**

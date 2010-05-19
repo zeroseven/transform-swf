@@ -74,13 +74,13 @@ public final class DefineMovieClip implements DefineTag {
     private static final String FORMAT = "DefineMovieClip: { identifier=%d;"
     		+ " objects=%s }";
 
-    private List<MovieTag> objects;
-
-    private transient int frameCount;
-
     /** The unique identifier for this object. */
     private int identifier;
+    /** The list of objects that describe how the movie clip is animated. */
+    private List<MovieTag> objects;
 
+    /** The number of frames in the movie clip, when it is encoded. */
+    private transient int frameCount;
     /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
 
@@ -182,6 +182,8 @@ public final class DefineMovieClip implements DefineTag {
      *
      * @param obj
      *            a Movie object. Must not be null
+     *
+     * @return this object.
      */
     public DefineMovieClip add(final MovieTag obj) {
         if (obj == null) {
@@ -192,7 +194,10 @@ public final class DefineMovieClip implements DefineTag {
     }
 
     /**
-     * Returns the array of movie objects.
+     * Get the array of movie objects that describe how the movie clip is
+     * animated.
+     *
+     * @return the list of objects for the movie clip.
      */
     public List<MovieTag> getObjects() {
         return objects;

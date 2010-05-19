@@ -58,7 +58,7 @@ public final class PathsArePostscript implements MovieTag {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "PathsArePostscript";
-
+    /** Singleton. */
     private static final PathsArePostscript INSTANCE = new PathsArePostscript();
 
     /**
@@ -70,6 +70,7 @@ public final class PathsArePostscript implements MovieTag {
         return INSTANCE;
     }
 
+    /** Private constructor used to create singleton.  */
     private PathsArePostscript() {
     }
 

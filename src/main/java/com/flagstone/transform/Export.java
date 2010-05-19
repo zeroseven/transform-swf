@@ -136,7 +136,9 @@ public final class Export implements MovieTag {
     }
 
     /**
-     * Returns the table of objects to be exported.
+     * Get the table of objects to be exported.
+     *
+     * @return the table of objects mapping identifiers to names.
      */
     public Map<Integer, String> getObjects() {
         return objects;

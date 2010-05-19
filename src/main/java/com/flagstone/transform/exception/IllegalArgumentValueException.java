@@ -33,24 +33,44 @@ package com.flagstone.transform.exception;
 
 import java.util.Arrays;
 
+/**
+ * IllegalArgumentValueException is thrown when a value is used that is not
+ * a member of the expected set.
+ */
 public final class IllegalArgumentValueException
             extends IllegalArgumentException {
 
+    /** Serial number identifying the version of the object. */
     private static final long serialVersionUID = 3748031731035981638L;
-
+    /** The set of expected values. */
     private final transient int[] expected;
+    /** The actual value used. */
     private final transient int actual;
 
+    /**
+     * Creates an IllegalArgumentValueException with the set of expected values
+     * and the actual value used.
+     *
+     * @param set the set of expected values.
+     * @param value the actual value used.
+     */
     public IllegalArgumentValueException(final int[] set, final int value) {
         super("Valid values: " + set + " Value: " + value);
         expected = Arrays.copyOf(set, set.length);
         actual = value;
     }
-
+    /**
+     * Get the set of expected values.
+     *
+     * @return a copy of the expected values.
+     */
     public int[] getExpected() {
         return Arrays.copyOf(expected, expected.length);
     }
-
+    /**
+     * Get the actual value that triggered the exception.
+     * @return the actual value used.
+     */
     public int getActual() {
         return actual;
     }

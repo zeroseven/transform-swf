@@ -111,15 +111,20 @@ public final class DefineMorphShape2 implements DefineTag {
     private Bounds startEdgeBounds;
     private Bounds endEdgeBounds;
 
+    /** The list of fill styles for the shape. */
     private List<FillStyle> fillStyles;
+    /** The list of line styles for the shape. */
     private List<MorphLineStyle2> lineStyles;
-
+    /** The shape at the start of the morphing process. */
     private Shape startShape;
+    /** The shape at the end of the morphing process. */
     private Shape endShape;
 
     /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
+    /** The number of bits to encode indices into the fill style array. */
     private transient int fillBits;
+    /** The number of bits to encode indices into the line style array. */
     private transient int lineBits;
     private transient boolean scaling;
 

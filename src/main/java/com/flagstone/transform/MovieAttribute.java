@@ -31,7 +31,7 @@
 package com.flagstone.transform;
 
 /**
- * FileAttr defines the set of attributes for a Movie (Flash 8+).
+ * MovieAttribute defines the set of attributes for a Movie (Flash 8+).
  */
 public enum MovieAttribute {
     /**

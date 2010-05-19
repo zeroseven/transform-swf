@@ -111,7 +111,12 @@ import com.flagstone.transform.shape.ShapeStyle;
 //TODO(class)
 @SuppressWarnings({"PMD.TooManyMethods", "PMD.TooManyFields" })
 public final class Canvas {
+    /**
+     * Value used in the algorithm to convert quadratio Bezier curves in to
+     * a set of straight lines that approximate the curve.
+     */
     private static final double FLATTEN_LIMIT = 0.25;
+    /** Number of twips in a pixel. */
     private static final int TWIPS_PER_PIXEL = 20;
 
     private final transient boolean arePixels;
@@ -125,8 +130,9 @@ public final class Canvas {
 
     private transient int currentX;
     private transient int currentY;
-
+    /** The x-coordinate for the last control point when drawing a curve. */
     private transient int controlX;
+    /** The y-coordinate for the last control point when drawing a curve. */
     private transient int controlY;
 
     private transient int minX;
@@ -212,7 +218,6 @@ public final class Canvas {
         for (final ShapeRecord record : objects) {
             array.add(record.copy());
         }
-
         return new Shape(array);
     }
 

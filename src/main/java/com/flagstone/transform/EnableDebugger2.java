@@ -60,7 +60,7 @@ public final class EnableDebugger2 implements MovieTag {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "EnableDebugger2: { password=%s }";
-
+    /** The MD5 hash of the password used to enable the debugger. */
     private String password;
 
     /** The length of the object, minus the header, when it is encoded. */
@@ -106,7 +106,9 @@ public final class EnableDebugger2 implements MovieTag {
     }
 
     /**
-     * Returns the MD5 encrypted password.
+     * Get the MD5 hashed password.
+     *
+     * @return the password hash.
      */
     public String getPassword() {
         return password;

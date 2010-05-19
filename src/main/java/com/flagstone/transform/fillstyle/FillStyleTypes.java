@@ -36,14 +36,23 @@ package com.flagstone.transform.fillstyle;
  * encoded according to the Flash file format specification.
  */
 public final class FillStyleTypes {
-
+    /** The type identifying a SolidFill object when it is encoded. */
     public static final int SOLID_COLOR = 0;
+    /** The type identifying a linear GradientFill object when it is encoded. */
     public static final int LINEAR_GRADIENT = 0x10;
+    /** The type identifying a radial GradientFill object when it is encoded. */
     public static final int RADIAL_GRADIENT = 0x12;
+    /** The type identifying a FocalGradientFill object when it is encoded. */
     public static final int FOCAL_GRADIENT = 0x13;
+    /** The type identifying a tiled BitmapFill object when it is encoded. */
     public static final int TILED_BITMAP = 0x40;
+    /** The type identifying a clipped BitmapFill object when it is encoded. */
     public static final int CLIPPED_BITMAP = 0x41;
+    /** The type identifying a unsmoothed tiled BitmapFill object
+     * when it is encoded. */
     public static final int UNSMOOTHED_TILED_BITMAP = 0x42;
+    /** The type identifying a unsmoothed clipped BitmapFill object
+     * when it is encoded. */
     public static final int UNSMOOTHED_CLIPPED_BITMAP = 0x43;
 
     /** FillTypes contains only constants. */

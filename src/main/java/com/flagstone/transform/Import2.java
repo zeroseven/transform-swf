@@ -150,6 +150,8 @@ public final class Import2 implements MovieTag {
      * @param aString
      *            the name of the imported object to allow it to be referenced.
      *            Must not be null or an empty string.
+     *
+     * @return this object.
      */
     public Import2 add(final int uid, final String aString) {
         if ((uid < 1) || (uid > SWF.MAX_IDENTIFIER)) {
@@ -164,9 +166,11 @@ public final class Import2 implements MovieTag {
     }
 
     /**
-     * Returns the URL of the file containing the object to be imported. Limited
+     * Get the URL of the file containing the object to be imported. Limited
      * security is provided by requiring that the URL must be in the same domain
      * or sub-domain as the URL of the movie which contains this object.
+     *
+     * @return the URL used to import the objects.
      */
     public String getUrl() {
         return url;
@@ -189,7 +193,10 @@ public final class Import2 implements MovieTag {
     }
 
     /**
-     * Returns the table of objects to be imported.
+     * Get the table of objects to be imported.
+     *
+     * @return the mapping of the names of the imported objects to unique
+     * identifiers in this movie.
      */
     public Map<Integer, String> getObjects() {
         return objects;

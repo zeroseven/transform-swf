@@ -155,6 +155,8 @@ public final class DoAction implements MovieTag {
      * @param anAction
      *            an object belonging to a class derived from Action. The
      *            argument cannot be null.
+     *
+     * @return this object.
      */
     public DoAction add(final Action anAction) {
         if (anAction == null) {

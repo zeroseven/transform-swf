@@ -62,7 +62,9 @@ public final class DefineJPEGImage3 implements ImageTag {
 
     /** The unique identifier for this object. */
     private int identifier;
+    /** The JPEG encoded image. */
     private byte[] image;
+    /** The zlib compressed transparency values for the image. */
     private byte[] alpha;
 
     /** The length of the object, minus the header, when it is encoded. */

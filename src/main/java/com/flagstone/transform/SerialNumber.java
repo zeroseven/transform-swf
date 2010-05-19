@@ -45,7 +45,7 @@ public final class SerialNumber implements MovieTag {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "SerialNumber: { number=%s }";
-
+    /** The serial number or identifying string. */
     private String number;
 
     /** The length of the object, minus the header, when it is encoded. */
@@ -91,7 +91,9 @@ public final class SerialNumber implements MovieTag {
     }
 
     /**
-     * Returns the serial number.
+     * Get the serial number.
+     *
+     * @return the string used to identify the movie.
      */
     public String getNumber() {
         return number;

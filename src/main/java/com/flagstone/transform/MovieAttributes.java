@@ -1,5 +1,5 @@
 /*
- * FileAttributes.java
+ * MovieAttributes.java
  * Transform
  *
  * Copyright (c) 2009-2010 Flagstone Software Ltd. All rights reserved.
@@ -46,11 +46,11 @@ public final class MovieAttributes implements MovieTag {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "MovieAttributes: { attributes=%s }";
-
+    /** The set of encoded attributes. */
     private int attributes;
 
     /**
-     * Creates and initialises a FileAttributes object using values encoded
+     * Creates and initialises a MovieAttributes object using values encoded
      * in the Flash binary format.
      *
      * @param coder
@@ -65,17 +65,23 @@ public final class MovieAttributes implements MovieTag {
         coder.adjustPointer(24);
     }
 
-
+    /**
+     * Creates and initialises a MovieAttributes object with a set of
+     * attribute values.
+     *
+     * @param set
+     *            the set of MovieAttribute values that describe the movie.
+     */
     public MovieAttributes(final Set<MovieAttribute>set) {
         setAttributes(set);
     }
 
     /**
-     * Creates and initialises a FileAttributes object using the values copied
-     * from another FileAttributes object.
+     * Creates and initialises a MovieAttributes object using the values copied
+     * from another MovieAttributes object.
      *
      * @param object
-     *            a FileAttributes object from which the values will be
+     *            a MovieAttributes object from which the values will be
      *            copied.
      */
     public MovieAttributes(final MovieAttributes object) {

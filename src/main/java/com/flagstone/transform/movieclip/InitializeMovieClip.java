@@ -74,6 +74,7 @@ public final class InitializeMovieClip implements MovieTag {
 
     /** The unique identifier of the movie clip that will be initialized. */
     private int identifier;
+    /** The actions used to initialize the movie clip. */
     private List<Action> actions;
 
     /** The length of the object, minus the header, when it is encoded. */
@@ -150,7 +151,9 @@ public final class InitializeMovieClip implements MovieTag {
     }
 
     /**
-     * Returns the identifier of the movie clip that will be initialised.
+     * Get the identifier of the movie clip that will be initialised.
+     *
+     * @return the movie clip identifier.
      */
     public int getIdentifier() {
         return identifier;
@@ -177,6 +180,7 @@ public final class InitializeMovieClip implements MovieTag {
      * @param anAction
      *            an object belonging to a class derived from Action. Must not
      *            be null.
+     * @return this object.
      */
     public InitializeMovieClip add(final Action anAction) {
         if (anAction == null) {
@@ -188,6 +192,8 @@ public final class InitializeMovieClip implements MovieTag {
 
     /**
      * Get the array of actions that are used to initialise the movie clip.
+     *
+     * @return the actions to initialize the movie clip.
      */
     public List<Action> getActions() {
         return actions;

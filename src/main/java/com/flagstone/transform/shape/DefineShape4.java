@@ -75,14 +75,20 @@ public final class DefineShape4 implements DefineTag {
     private int identifier;
     private Bounds shapeBounds;
     private Bounds edgeBounds;
+    /** The list of fill styles for the shape. */
     private List<FillStyle> fillStyles;
+    /** The list of line styles for the shape. */
     private List<LineStyle2> lineStyles;
+    /** The shape. */
     private Shape shape;
 
     /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
+    /** The number of bits to encode indices into the fill style array. */
     private transient int fillBits;
+    /** The number of bits to encode indices into the line style array. */
     private transient int lineBits;
+    /** The length of the object, minus the header, when it is encoded. */
     private transient boolean scaling;
 
     /**

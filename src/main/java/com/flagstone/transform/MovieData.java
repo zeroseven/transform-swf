@@ -54,9 +54,14 @@ public final class MovieData implements MovieTag {
     /** Format string used in toString() method. */
     private static final String FORMAT = "MovieData: { data[%d] }";
 
+    /** The encoded MovieTag objects. */
     private final transient byte[] data;
 
-
+    /**
+     * Create a MovieData object containing a block of encoded MovieTag objects.
+     *
+     * @param bytes the encoded MovieTag objects.
+     */
     public MovieData(final byte[] bytes) {
         if (bytes == null) {
             throw new IllegalArgumentException();
@@ -77,7 +82,9 @@ public final class MovieData implements MovieTag {
     }
 
     /**
-     * Returns a copy the encoded MovieTag objects.
+     * Get a copy the encoded MovieTag objects.
+     *
+     * @return a copy of the encoded objects.
      */
     public byte[] getData() {
         return Arrays.copyOf(data, data.length);

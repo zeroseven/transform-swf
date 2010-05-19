@@ -34,7 +34,10 @@ package com.flagstone.transform.button;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/** TODO(class). */
+/**
+ * ButtonKey is used to provide mapping from special keys to codes recognised
+ * by the Flash Player.
+ */
 public enum ButtonKey {
     /**
      * Code for the button event that occurs when the left arrow key is pressed

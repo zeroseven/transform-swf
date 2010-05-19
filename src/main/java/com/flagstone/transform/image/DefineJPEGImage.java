@@ -72,6 +72,7 @@ public final class DefineJPEGImage implements ImageTag {
 
     /** The unique identifier for this object. */
     private int identifier;
+    /** The JPEG encoded image. */
     private byte[] image;
 
     /** The length of the object, minus the header, when it is encoded. */

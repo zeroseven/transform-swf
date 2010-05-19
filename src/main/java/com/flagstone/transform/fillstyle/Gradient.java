@@ -80,8 +80,9 @@ public final class Gradient implements SWFEncodeable {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "Gradient: { ratio=%d; color=%s }";
-
+    /** The ratio across the gradient square. */
     private final transient int ratio;
+    /** The colour for gradient. */
     private final transient Color color;
 
     /**
@@ -127,16 +128,20 @@ public final class Gradient implements SWFEncodeable {
     }
 
     /**
-     * Returns the ratio that defines the relative point across the gradient
+     * Get the ratio that defines the relative point across the gradient
      * square.
+     *
+     * @return the ratio for the gradient in the range 0..255.
      */
     public int getRatio() {
         return ratio;
     }
 
     /**
-     * Returns the colour that is displayed at the control point across the
+     * Get the colour that is displayed at the control point across the
      * gradient square defined by the ratio.
+     *
+     * @return the colour for the gradient at the ratio point.
      */
     public Color getColor() {
         return color;

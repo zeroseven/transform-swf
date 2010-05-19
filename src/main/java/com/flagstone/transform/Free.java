@@ -88,7 +88,9 @@ public final class Free implements MovieTag {
     }
 
     /**
-     * Returns the identifier of the object to be deleted.
+     * Get the identifier of the object to be deleted.
+     *
+     * @return the object identifier.
      */
     public int getIdentifier() {
         return identifier;

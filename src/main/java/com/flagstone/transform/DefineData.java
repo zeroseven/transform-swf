@@ -136,8 +136,9 @@ public final class DefineData implements DefineTag {
     }
 
     /**
-     * Returns a copy of the array of bytes that will be embedded in the
-     * Flash file.
+     * Get the array of bytes that will be embedded in the Flash file.
+     *
+     * @return a copy of the data.
      */
     public byte[] getData() {
         return Arrays.copyOf(data, data.length);
