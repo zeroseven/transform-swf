@@ -101,19 +101,12 @@ import com.flagstone.transform.video.DefineVideo;
 import com.flagstone.transform.video.VideoFrame;
 
 /**
- * Factory is the default implementation of an SWFFactory which used to create
- * instances of Transform classes.
+ * MovieDecoder is used to decode the different types of data structure encoded
+ * in a movie.
  */
-//TODO(class)
 @SuppressWarnings("PMD")
 public final class MovieDecoder implements SWFFactory<MovieTag> {
-
     /** {@inheritDoc} */
-    public SWFFactory<MovieTag> copy() {
-        return new MovieDecoder();
-    }
-
-
     public MovieTag getObject(final SWFDecoder coder, final Context context)
             throws CoderException {
 

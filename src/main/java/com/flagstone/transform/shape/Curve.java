@@ -67,11 +67,16 @@ public final class Curve implements ShapeRecord {
     private static final String FORMAT = "Curve: control=(%d,%d);"
     		+ " anchor=(%d,%d);";
 
+    /** The x-coordinate of the control point. */
     private transient int controlX;
+    /** The y-coordinate of the control point. */
     private transient int controlY;
+    /** The x-coordinate of the anchor point. */
     private transient int anchorX;
+    /** The y-coordinate of the anchor point. */
     private transient int anchorY;
 
+    /** Variable used to record the number of bits for each coordinate. */
     private transient int size;
 
     /**
@@ -132,32 +137,40 @@ public final class Curve implements ShapeRecord {
     }
 
     /**
-     * Returns the x-coordinate of the control point relative to the current
+     * Get the x-coordinate of the control point relative to the current
      * drawing point.
+     *
+     * @return the x-coordinate of the control point.
      */
     public int getControlX() {
         return controlX;
     }
 
     /**
-     * Returns the y-coordinate of the control point relative to the current
+     * Get the y-coordinate of the control point relative to the current
      * drawing point.
+     *
+     * @return the y-coordinate of the control point.
      */
     public int getControlY() {
         return controlY;
     }
 
     /**
-     * Returns the x-coordinate of the anchor point relative to the control
+     * Get the x-coordinate of the anchor point relative to the control
      * point.
+     *
+     * @return the x-coordinate of the anchor point.
      */
     public int getAnchorX() {
         return anchorX;
     }
 
     /**
-     * Returns the y-coordinate of the anchor point relative to the control
+     * Get the y-coordinate of the anchor point relative to the control
      * point.
+     *
+     * @return the y-coordinate of the anchor point.
      */
     public int getAnchorY() {
         return anchorY;

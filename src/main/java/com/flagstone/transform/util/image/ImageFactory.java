@@ -59,16 +59,19 @@ import com.flagstone.transform.video.ImageBlock;
 
 /**
  * <p>
- * Image is used to generate an image definition object from an image stored in
- * a file. An plug-in architecture allows decoders to be registered to handle
- * different image formats.
+ * ImageFactory is used to generate an image definition object from an image
+ * stored in a file, references by a URL or read from an stream. An plug-in
+ * architecture allows decoders to be registered to handle different image
+ * formats. The ImageFactory provides a standard interface for using the
+ * decoders.
  * </p>
  *
  * <p>
- * Currently PNG, BMP and JPEG encoded images are supported using the classes
- * provided in the Transform framework. New decoders can be added by
- * implementing the ImageDecoder interface and registering them using the
- * registerDecoder() method.
+ * Currently PNG, BMP and JPEG encoded images are supported by dedicated
+ * decoders. The BufferedImageDecoder can be used to decode any format supported
+ * using Java's ImageIO, including PNG, BMP and JPG format images. New decoders
+ * can be added by implementing the ImageDecoder interface and registering them
+ * in the ImageRegistry.
  * </p>
  *
  * <P>
@@ -131,18 +134,9 @@ import com.flagstone.transform.video.ImageBlock;
  * centre of the shape. Other points may be defined to suit the alignment of the
  * shape when it is placed on the display list.
  * </P>
- *
- * <p>
- * Image also supports conversion of images to and from BufferedImage object
- * opening up a range of tools in the JDK for performing image processing.
- * </p>
- *
- * @see java.awt.image.BufferedImage
- * @see javax.imageio.ImageIO
  */
-//TODO(class)
 public final class ImageFactory {
-
+    /** The object used to decode the image. */
     private transient ImageDecoder decoder;
 
     /**
@@ -157,7 +151,7 @@ public final class ImageFactory {
      * @throws DataFormatException
      *             if there is a problem decoding the image, either it is in an
      *             unsupported format or an error occurred while decoding the
-     *             image.
+     *             image data.
      */
     public void read(final File file) throws IOException, DataFormatException {
 
@@ -186,7 +180,7 @@ public final class ImageFactory {
      * @throws DataFormatException
      *             if there is a problem decoding the image, either it is in an
      *             unsupported format or an error occurred while decoding the
-     *             image.
+     *             image data.
      */
     public void read(final URL url) throws IOException, DataFormatException {
 
@@ -207,7 +201,12 @@ public final class ImageFactory {
         decoder.read(url.openStream(), fileSize);
     }
 
-
+    /**
+     * Create a definition for the image so it can be added to a Flash movie.
+     * @param identifier the unique identifier for the image.
+     * @return an ImageTag representing one of the image definitions supported
+     * in Flash.
+     */
     public ImageTag defineImage(final int identifier) {
         return decoder.defineImage(identifier);
     }
@@ -242,6 +241,8 @@ public final class ImageFactory {
      * @param borderStyle
      *            the style drawn around the border of the image. May be null if
      *            no border is drawn.
+     *
+     * @return the shape that is used to display the image in a Flash movie.
      */
     public DefineShape3 defineEnclosingShape(final int shapeId,
             final int imageId, final int xOrigin, final int yOrigin,
@@ -357,6 +358,12 @@ public final class ImageFactory {
         }
     }
 
+    /**
+     * Compress the image using the ZIP format.
+     * @param image the image data.
+     * @param length the number of bytes from the image to compress.
+     * @return the compressed image.
+     */
     private byte[] zip(final byte[] image, final int length) {
         final Deflater deflater = new Deflater();
         deflater.setInput(image, 0, length);

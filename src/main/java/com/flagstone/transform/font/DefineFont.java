@@ -76,6 +76,7 @@ public final class DefineFont implements DefineTag {
 
     /** The unique identifier for this object. */
     private int identifier;
+    /** The set of glyphs for this font. */
     private List<Shape> shapes;
 
     /** The length of the object, minus the header, when it is encoded. */
@@ -182,6 +183,7 @@ public final class DefineFont implements DefineTag {
      *
      * @param obj
      *            a shape which must not be null.
+     * @return this object.
      */
     public DefineFont add(final Shape obj) {
         if (obj == null) {
@@ -192,7 +194,9 @@ public final class DefineFont implements DefineTag {
     }
 
     /**
-     * Returns the array of shapes that define the outline for each glyph.
+     * Get the array of shapes that define the outline for each glyph.
+     *
+     * @return the glyphs for this font.
      */
     public List<Shape> getShapes() {
         return shapes;

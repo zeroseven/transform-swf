@@ -40,14 +40,29 @@ import java.util.List;
 import java.util.zip.DataFormatException;
 
 /**
- * TODO(class).
+ * ImageFactory is used to generate an image definition object from an image
+ * stored in a file, references by a URL or read from an stream. An plug-in
+ * architecture allows decoders to be registered to handle different image
+ * formats. The ImageFactory provides a standard interface for using the
+ * decoders.
  */
 public final class FontFactory {
-
+    /** The object used to decode the font. */
     private transient FontDecoder decoder;
 
     /**
-     * TODO(method).
+     * Read a font stored in the specified file.
+     *
+     * @param file
+     *            a file containing the abstract path to the font.
+     *
+     * @throws IOException
+     *             if there is an error reading the file.
+     *
+     * @throws DataFormatException
+     *             if there is a problem decoding the font, either it is in an
+     *             unsupported format or an error occurred while decoding the
+     *             data.
      */
     public void read(final File file) throws IOException, DataFormatException {
 
@@ -66,7 +81,18 @@ public final class FontFactory {
     }
 
     /**
-      * TODO(method).
+     * Read a font referenced by a URL.
+     *
+     * @param url
+     *            the Uniform Resource Locator referencing the file.
+     *
+     * @throws IOException
+     *             if there is an error reading the file.
+     *
+     * @throws DataFormatException
+     *             if there is a problem decoding the font, either it is in an
+     *             unsupported format or an error occurred while decoding the
+     *             font data.
      */
     public void read(final URL url) throws IOException, DataFormatException {
 
@@ -88,8 +114,8 @@ public final class FontFactory {
     }
 
     /**
-     *
-     * @return
+     * Get the list of fonts decoded.
+     * @return a list containing a Font object for each font decoded.
      */
     public List<Font> getFonts() {
         return decoder.getFonts();

@@ -38,10 +38,9 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFFactory;
 
 /**
- * Factory is the default implementation of an SWFFactory which used to create
- * instances of Transform classes.
+ * FillStyleDecoder is used to decode the different type of fill style used
+ * in a Flash movie.
  */
-//TODO(class)
 public final class FillStyleDecoder implements SWFFactory<FillStyle> {
 
     /** Bit mask for extracting the spread field in gradient fills. */
@@ -55,13 +54,7 @@ public final class FillStyleDecoder implements SWFFactory<FillStyle> {
     /** Bit mask for smoothed or unsmoothed field in bitmap fills. */
     protected static final int SMOOTHED_MASK = 2;
 
-
     /** {@inheritDoc} */
-    public SWFFactory<FillStyle> copy() {
-        return new FillStyleDecoder();
-    }
-
-
     public FillStyle getObject(final SWFDecoder coder, final Context context)
             throws CoderException {
 

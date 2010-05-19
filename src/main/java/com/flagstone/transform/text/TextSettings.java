@@ -187,6 +187,9 @@ public final class TextSettings implements MovieTag {
     /**
      * Sets whether the advanced text rendering engine (true) or standard engine
      * (false) will be used to render the text.
+     *
+     * @param flag set true to select the advanced text rendering engine, false
+     * for the standard rendering engine.
      */
     public void useAdvanced(final boolean flag) {
         rendering |= 0x40;

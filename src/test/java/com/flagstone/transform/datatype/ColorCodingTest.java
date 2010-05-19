@@ -80,7 +80,7 @@ public final class ColorCodingTest {
 
         assertEquals(NOT_DECODED, object, new Color(decoder, context));
         assertTrue(NOT_FULLY_DECODED, decoder.eof());
-   }
+    }
 
     @Test
     public void checkTransparentColourIsEncoded() throws CoderException {
@@ -88,7 +88,7 @@ public final class ColorCodingTest {
         final byte[] binary = new byte[] {1, 2, 3, 4};
 
         final SWFEncoder encoder = new SWFEncoder(binary.length);
-        final Context context = new Context(Context.TRANSPARENT, 1);
+        final Context context = new Context().put(Context.TRANSPARENT, 1);
         final int length = object.prepareToEncode(context);
         object.encode(encoder, context);
 
@@ -103,7 +103,7 @@ public final class ColorCodingTest {
         final byte[] binary = new byte[] {1, 2, 3, 4};
 
         final SWFDecoder decoder = new SWFDecoder(binary);
-        final Context context = new Context(Context.TRANSPARENT, 1);
+        final Context context = new Context().put(Context.TRANSPARENT, 1);
 
         assertEquals(NOT_DECODED, object, new Color(decoder, context));
         assertTrue(NOT_FULLY_DECODED, decoder.eof());

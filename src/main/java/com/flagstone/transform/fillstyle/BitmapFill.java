@@ -41,7 +41,6 @@ import com.flagstone.transform.datatype.CoordTransform;
 import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 /**
- * <p>
  * BitmapFill is used to display an image inside a shape. An image cannot be
  * displayed directly, it must be displayed inside of a shape using this style.
  * The style controls how the image is displayed inside the shape. Images may be
@@ -49,7 +48,6 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  * they are too small. A coordinate transform can also be used to change its
  * size, location relative to the origin of the shape, orientation, etc., when
  * it is displayed. Four types of bitmap fill are supported:
- * </p>
  *
  * <ol>
  * <li>Clipped - If the image is larger than the shape then it will be clipped.
@@ -86,7 +84,6 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  * enclosing shape.
  * </p>
  */
-//TODO(class)
 public final class BitmapFill implements FillStyle {
 
     /** Format string used in toString() method. */
@@ -97,6 +94,7 @@ public final class BitmapFill implements FillStyle {
     private transient int type;
     /** The unique identifier of the image that will be displayed. */
     private int identifier;
+    /** The coordinate transform for scaling the image when it is displayed. */
     private CoordTransform transform;
 
     /**
@@ -155,12 +153,18 @@ public final class BitmapFill implements FillStyle {
         transform = object.transform;
     }
 
-
+    /**
+     * Is the image tiled across the area defined in the shape.
+     * @return true if the image is tiled, false otherwise.
+     */
     public boolean isTiled() {
         return (type & FillStyleDecoder.CLIPPED_MASK) != 0;
     }
 
-
+    /**
+     * Sets whether the image tiled across the area defined in the shape.
+     * @param tiled true if the image should be tiled, false if it is clipped.
+     */
     public void setTiled(final boolean tiled) {
         if (tiled) {
             type &= ~FillStyleDecoder.CLIPPED_MASK;
@@ -169,12 +173,19 @@ public final class BitmapFill implements FillStyle {
         }
     }
 
-
+    /**
+     * Is the image smoothed to increase quality.
+     * @return true if the image is smoothed, false otherwise.
+     */
     public boolean isSmoothed() {
         return (type & FillStyleDecoder.SMOOTHED_MASK) != 0;
     }
 
-
+    /**
+     * Sets whether the image smoothed when it is displayed.
+     * @param smoothed true if the image should be smoothed, false if no
+     * smoothing will be applied.
+     */
     public void setSmoothed(final boolean smoothed) {
         if (smoothed) {
             type &= ~FillStyleDecoder.SMOOTHED_MASK;
@@ -184,8 +195,10 @@ public final class BitmapFill implements FillStyle {
     }
 
     /**
-     * Returns the unique identifier of the object containing the image to be
+     * Get the unique identifier of the object containing the image to be
      * displayed.
+     *
+     * @return the unique identifier for the image to be displayed.
      */
     public int getIdentifier() {
         return identifier;
@@ -208,8 +221,10 @@ public final class BitmapFill implements FillStyle {
     }
 
     /**
-     * Returns the coordinate transform that will be applied to the image when
+     * Get the coordinate transform that will be applied to the image when
      * it is displayed.
+     *
+     * @return the coordinate transform applied to the image.
      */
     public CoordTransform getTransform() {
         return transform;

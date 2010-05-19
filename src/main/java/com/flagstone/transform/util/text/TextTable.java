@@ -118,6 +118,12 @@ public final class TextTable {
      * @param color
      *            the colour used to display the text.
      *
+     * @param xCoord
+     *            the x-coordinate for the origin of the text span.
+     *
+     * @param yCoord
+     *            the y-coordinate for the origin of the text span.
+     *
      * @return a TextSpan object that can be added to a DefineText or
      *         DefineText2 object.
      */
@@ -164,6 +170,9 @@ public final class TextTable {
      *
      * @param color
      *            the colour used to display the text.
+     *
+     * @param lineSpacing
+     *            the spearation between successive lines of text.
      *
      * @return a DefineText2 object that can be added to a Flash file.
      */

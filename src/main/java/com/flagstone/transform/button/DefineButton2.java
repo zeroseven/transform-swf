@@ -87,8 +87,11 @@ public final class DefineButton2 implements DefineTag {
 
     /** The unique identifier for this object. */
     private int identifier;
+    /** The button type: push or menu. */
     private int type;
+    /** The list of shapes used to draw the button. */
     private List<ButtonShape> shapes;
+    /** The list of handlers for different button events. */
     private List<ButtonEventHandler> events;
 
     /** The length of the object, minus the header, when it is encoded. */
@@ -228,6 +231,7 @@ public final class DefineButton2 implements DefineTag {
      *
      * @param obj
      *            a button shape object. Must not be null.
+     * @return this object.
      */
     public DefineButton2 add(final ButtonShape obj) {
         if (obj == null) {
@@ -242,6 +246,7 @@ public final class DefineButton2 implements DefineTag {
      *
      * @param obj
      *            a button event. Must not be null.
+     * @return this object.
      */
     public DefineButton2 add(final ButtonEventHandler obj) {
         if (obj == null) {
@@ -252,7 +257,9 @@ public final class DefineButton2 implements DefineTag {
     }
 
     /**
-     * Returns the button type - either PUSH or MENU.
+     * Get the button type - either PUSH or MENU.
+     *
+     * @return the type that identifies the button.
      */
     public ButtonType getType() {
         ButtonType value;
@@ -265,14 +272,18 @@ public final class DefineButton2 implements DefineTag {
     }
 
     /**
-     * Returns the array of button records defined for this button.
+     * Get the array of button records defined for this button.
+     *
+     * @return the list of shapes used to draw the button.
      */
     public List<ButtonShape> getShapes() {
         return shapes;
     }
 
     /**
-     * Returns the array of button records defined for this button.
+     * Get the array of event handlers defined for this button.
+     *
+     * @return the event handlers for the button.
      */
     public List<ButtonEventHandler> getEvents() {
         return events;

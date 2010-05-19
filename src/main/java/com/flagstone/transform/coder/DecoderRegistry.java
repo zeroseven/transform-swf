@@ -34,6 +34,7 @@ package com.flagstone.transform.coder;
 import com.flagstone.transform.action.Action;
 import com.flagstone.transform.fillstyle.FillStyle;
 import com.flagstone.transform.fillstyle.FillStyleDecoder;
+import com.flagstone.transform.fillstyle.MorphFillStyleDecoder;
 import com.flagstone.transform.filter.Filter;
 import com.flagstone.transform.shape.ShapeRecord;
 
@@ -82,13 +83,13 @@ public final class DecoderRegistry {
 
 
     public DecoderRegistry(final DecoderRegistry registry) {
-        filterDecoder = registry.filterDecoder.copy();
-        fillStyleDecoder = registry.fillStyleDecoder.copy();
-        morphStyleDecoder = registry.morphStyleDecoder.copy();
-        shapeDecoder = registry.shapeDecoder.copy();
-        actionDecoder = registry.actionDecoder.copy();
-        movieDecoder = registry.movieDecoder.copy();
-        videoDecoder = registry.videoDecoder.copy();
+        filterDecoder = registry.filterDecoder;
+        fillStyleDecoder = registry.fillStyleDecoder;
+        morphStyleDecoder = registry.morphStyleDecoder;
+        shapeDecoder = registry.shapeDecoder;
+        actionDecoder = registry.actionDecoder;
+        movieDecoder = registry.movieDecoder;
+        videoDecoder = registry.videoDecoder;
     }
 
     /** {@inheritDoc} */

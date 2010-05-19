@@ -50,6 +50,7 @@ public final class Remove2 implements MovieTag {
     /** Format string used in toString() method. */
     private static final String FORMAT = "Remove2: { layer=%d }";
 
+    /** The layer where the object is displayed. */
     private int layer;
 
     /**

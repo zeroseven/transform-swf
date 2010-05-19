@@ -119,6 +119,13 @@ public final class MorphBitmapFill implements FillStyle {
      * @param uid
      *            the unique identifier for the image. Must be in the range
      *            1..65535.
+     *
+     * @param tiled indicates whether the image will be tiled across the area
+     * defined by the shape.
+     *
+     * @param smoothed whether smoothing will be applied to the image to
+     * improve its appearance.
+     *
      * @param start
      *            the coordinate transform defining the appearance of the image
      *            at the start of the morphing process.

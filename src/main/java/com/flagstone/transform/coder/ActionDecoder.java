@@ -55,19 +55,12 @@ import com.flagstone.transform.action.WaitForFrame2;
 import com.flagstone.transform.action.With;
 
 /**
- * Factory is the default implementation of an SWFFactory which used to create
- * instances of Transform classes.
+ * ActionDecoder decodes the actions in the Flash movie.
  */
-//TODO(class)
 @SuppressWarnings("PMD.CyclomaticComplexity")
 public final class ActionDecoder implements SWFFactory<Action> {
 
     /** {@inheritDoc} */
-    public SWFFactory<Action> copy() {
-        return new ActionDecoder();
-    }
-
-
     public Action getObject(final SWFDecoder coder, final Context context)
             throws CoderException {
 

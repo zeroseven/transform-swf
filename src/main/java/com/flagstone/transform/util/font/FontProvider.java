@@ -31,8 +31,16 @@
 
 package com.flagstone.transform.util.font;
 
-/** TODO(class). */
+/**
+ * FontProvider defines the interface that the FontFactory uses to create
+ * instances of the FontDecoder objects used to handle different font formats.
+ */
 public interface FontProvider {
-    
+    /**
+     * The method implemented by all FontDecoders in order to be registered
+     * with the FontRegistry and used by the FontFactory to decode fonts.
+     *
+     * @return an object that implements the FontDecoder interface.
+     */
     FontDecoder newDecoder();
 }

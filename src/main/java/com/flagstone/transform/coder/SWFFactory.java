@@ -34,12 +34,18 @@ package com.flagstone.transform.coder;
 /**
  * The SWFFactory interface is used to generate objects when decoding a movie.
  *
- * @param T the decoded Flash object.
+ * @param <T> the type of Flash File object decoded by the decoder.
  */
 public interface SWFFactory<T> {
-
-    SWFFactory<T> copy();
-
+    /**
+     * Decode and return a Flash object.
+     *
+     * @param coder an decoder wrapping the binary encoded flash data.
+     * @param context a Context object used to share information between
+     * the code that decodes the different types of object.
+     * @return T the decoded Flash object.
+     * @throws CoderException if an error occurs decodng the object.
+     */
     T getObject(final SWFDecoder coder, final Context context)
             throws CoderException;
 }

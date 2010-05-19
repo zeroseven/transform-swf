@@ -56,8 +56,11 @@ public final class DoABC implements MovieTag {
     private static final String FORMAT = "DoABC: { name=%s; deferred=%d;"
             + " actions=byte[%d] {...} }";
 
+    /** The name of the script. */
     private String name;
+    /** Is loading deferred until the script is called. */
     private int deferred;
+    /** The encoded actionscript 3 bytes codes. */
     private byte[] data;
 
     /** The length of the object, minus the header, when it is encoded. */
@@ -122,7 +125,9 @@ public final class DoABC implements MovieTag {
     }
 
     /**
-     * Returns the name of the script.
+     * Get the name of the script.
+     *
+     * @return the name used to call the scipt.
      */
     public String getName() {
         return name;

@@ -48,13 +48,14 @@ import com.flagstone.transform.filter.GradientGlowFilter;
  */
 //TODO(class)
 public final class FilterDecoder implements SWFFactory<Filter> {
-
-    /** {@inheritDoc} */
-    public SWFFactory<Filter> copy() {
-        return new FilterDecoder();
-    }
-
-
+    /**
+     * Decode a filter.
+     *
+     * @param coder the decoder containing the encoded filter.
+     * @param context a Context used to pass information between objects.
+     * @return the Filter object.
+     * @throws CoderException if an error occurs during decoding.
+     */
     public Filter getObject(final SWFDecoder coder, final Context context)
             throws CoderException {
 

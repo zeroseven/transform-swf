@@ -69,6 +69,7 @@ public final class Protect implements MovieTag {
     /** Format string used in toString() method. */
     private static final String FORMAT = "Protect: { password=%s }";
 
+    /** The MD5 encoded password. */
     private String password;
 
     /** The length of the object, minus the header, when it is encoded. */

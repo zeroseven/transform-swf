@@ -69,8 +69,9 @@ public final class DefineButton implements DefineTag {
 
     /** The unique identifier for this object. */
     private int identifier;
-
+    /** The list of shapes used to draw the button. */
     private List<ButtonShape> shapes;
+    /** The actions executed when the button is clicked. */
     private List<Action> actions;
 
     /** The length of the object, minus the header, when it is encoded. */
@@ -186,6 +187,7 @@ public final class DefineButton implements DefineTag {
      *
      * @param obj
      *            an ButtonShape object. Must not be null.
+     * @return this object.
      */
     public DefineButton add(final ButtonShape obj) {
         if (obj == null) {
@@ -200,6 +202,7 @@ public final class DefineButton implements DefineTag {
      *
      * @param obj
      *            an action object. Must not be null.
+     * @return this object.
      */
     public DefineButton add(final Action obj) {
         if (obj == null) {
@@ -210,15 +213,19 @@ public final class DefineButton implements DefineTag {
     }
 
     /**
-     * Returns the array of button shapes.
+     * Get the array of button shapes.
+     *
+     * @return the list of shapes used to represent the button.
      */
     public List<ButtonShape> getShapes() {
         return shapes;
     }
 
     /**
-     * Returns the array of actions that will be executed when the button is
+     * Get the array of actions that will be executed when the button is
      * clicked and released.
+     *
+     * @return the actions executed when the button is clicked.
      */
     public List<Action> getActions() {
         return actions;

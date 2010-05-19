@@ -55,7 +55,7 @@ public final class Export implements MovieTag {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "Export: { objects=%s }";
-
+    /** Table containing the objects to export. */
     private Map<Integer, String> objects;
 
     /** The length of the object, minus the header, when it is encoded. */
@@ -120,6 +120,7 @@ public final class Export implements MovieTag {
      * @param aString
      *            the name of the exported object to allow it to be referenced.
      *            The name must not be null or an empty string.
+     * @return this object.
      */
     public Export add(final int uid, final String aString) {
         if ((uid < 1) || (uid > SWF.MAX_IDENTIFIER)) {

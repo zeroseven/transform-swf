@@ -37,26 +37,28 @@ import java.net.URL;
 import java.util.List;
 import java.util.zip.DataFormatException;
 
-/** TODO(class). */
+/**
+ * FontDecoder is an interface that classes used to decode different fonts
+ * formats should implement in order to be registered with the FontRegistry.
+ */
 public interface FontDecoder {
     /**
-     * Initialise this object with the font information decoded from a TrueType
-     * or OpenType font stored in a file.
-     *
-     * @param file
-     *            the File containing the abstract path to the file containing
-     *            the font.
-     *
-     * @throws IOException
-     *             if there is an error reading the file.
-     * @throws DataFormatException
-     *             if the there is an error decoding the font.
+     * Read an font from a file.
+     * @param file the path to the file.
+     * @throws IOException if there is an error reading the font data.
+     * @throws DataFormatException if the file contains an unsupported format.
      */
     void read(File file) throws IOException, DataFormatException;
-
-    
+    /**
+     * Read an font from a file referenced by a URL.
+     * @param url the reference to the file.
+     * @throws IOException if there is an error reading the font data.
+     * @throws DataFormatException if the file contains an unsupported format.
+     */
     void read(URL url) throws IOException, DataFormatException;
-
-    
+    /**
+     * Get the list of fonts decoded.
+     * @return a list of fonts.
+     */
     List<Font> getFonts();
 }

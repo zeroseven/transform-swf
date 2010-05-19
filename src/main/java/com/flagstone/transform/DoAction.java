@@ -76,7 +76,7 @@ public final class DoAction implements MovieTag {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "DoAction: { actions=%s }";
-
+    /** The actions executed when the current frame is displayed. */
     private List<Action> actions;
 
     /** The length of the object, minus the header, when it is encoded. */
@@ -88,7 +88,8 @@ public final class DoAction implements MovieTag {
      *
      * @param coder
      *            an SWFDecoder object that contains the encoded Flash data.
-     *
+     * @param context
+     *            a Context object used to pass values when decoding objects.
      * @throws CoderException
      *             if an error occurs while decoding the data.
      */

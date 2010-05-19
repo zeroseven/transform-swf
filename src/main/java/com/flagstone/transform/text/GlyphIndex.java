@@ -69,7 +69,9 @@ public final class GlyphIndex implements SWFEncodeable {
     private static final String FORMAT = "GlyphIndex: { glyphIndex=%d;"
     		+ " advance=%d }";
 
+    /** The index of the glyph to display. */
     private final transient int index;
+    /** The advance to the next glyph. */
     private final transient int advance;
 
     /**

@@ -33,14 +33,25 @@ package com.flagstone.transform.util.font;
 
 import com.flagstone.transform.Constants;
 
-/** TODO(class). */
+/**
+ * FontFace is a convenience class that can be used to create tables of
+ * fonts for use in an application.
+ */
 public final class FontFace {
-
+    /** The family name of the font. */
     private final transient String name;
+    /** Is the font bold. */
     private final transient boolean bold;
+    /** Is the font italicised. */
     private final transient boolean italic;
 
-
+    /**
+     * Create a new font face.
+     *
+     * @param fontName the family name of the font.
+     * @param isBold is the font bold.
+     * @param isItalic is the font italicised.
+     */
     public FontFace(final String fontName,
             final boolean isBold, final boolean isItalic) {
         name = fontName;
@@ -48,7 +59,13 @@ public final class FontFace {
         italic = isItalic;
     }
 
-
+    /**
+     * Create a new font face.
+     *
+     * @param fontName the family name of the font.
+     * @param style a java.awt.Font constant describing whether the font is
+     * normal, bold and/or italicised.
+     */
     public FontFace(final String fontName, final int style) {
         name = fontName;
         bold = (style & java.awt.Font.BOLD) != 0;
@@ -56,29 +73,36 @@ public final class FontFace {
     }
 
     /**
-     * Returns the (family) name of the font.
+     * Get the (family) name of the font.
+     * @return the family name of the font, e.g. Arial
      */
     public String getName() {
         return name;
     }
 
     /**
-     * Returns true if the font weight is bold or false if it is normal.
+     * Is the font bold or normal.
+     * @return true if the font is bold, false if the font has normal weight.
      */
     public boolean isBold() {
         return bold;
     }
 
     /**
-     * Returns true if the font style is italic or false if it is normal.
+     * Is the font italicised or normal.
+     *
+     * @return true if the font is italicised, false if the font has normal
+     * weight.
      */
     public boolean isItalic() {
         return italic;
     }
 
     /**
-     * Returns the code for the font style, as defined in the AWT Font class,
-     * either Font.PLAIN or a combination of Font.BOLD and Font.ITALIC.
+     * Get the font style, as defined in the AWT Font class, either Font.PLAIN
+     * or a combination of Font.BOLD and Font.ITALIC.
+     *
+     * @return the java.awt.Font constant defining the font style.
      */
     public int getStyle() {
         int style = java.awt.Font.PLAIN;
@@ -93,9 +117,11 @@ public final class FontFace {
     }
 
     /**
-     * Returns name of the font face which contains the name of the font
+     * Get name of the font face which contains the name of the font
      * followed by "Bold" for bold fonts and "Italic" for fonts with an italic
      * style.
+     *
+     * @return a human readable string describing the font.
      */
     @Override
     public String toString() {

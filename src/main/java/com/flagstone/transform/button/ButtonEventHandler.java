@@ -215,8 +215,11 @@ public final class ButtonEventHandler implements SWFEncodeable {
     private static final String FORMAT = "ButtonEventHandler: { event=%s;"
     		+ " actions=%s }";
 
+    /** The compound code that represents the events the button responds to. */
     private int event;
+    /** The keyboard short-cut used to click the button. */
     private int key;
+    /** The set of actions executed when the button event occurs. */
     private List<Action> actions;
 
     /** The length of the object when it is encoded. */
@@ -226,6 +229,7 @@ public final class ButtonEventHandler implements SWFEncodeable {
      * Creates and initialises a ButtonEventHandler object using values encoded
      * in the Flash binary format.
      *
+     * @param size the length, in bytes, of the encoded event handler.
      * @param coder
      *            an SWFDecoder object that contains the encoded Flash data.
      *

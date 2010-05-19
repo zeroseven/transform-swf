@@ -54,42 +54,8 @@ import com.flagstone.transform.font.FontInfo2;
 import com.flagstone.transform.shape.Shape;
 
 /**
- * <p>
- * Font is used to add embedded fonts to a movie.
- * </p>
- *
- * <p>
- * Flash supports two types of font definition: embedded fonts where the Flash
- * file contains the glyphs that are drawn to represents the text characters and
- * device fonts where the font is provided by the Flash Player showing the
- * movie. Embedded fonts are preferred since the movie will always look the same
- * regardless of where it is played - if a Flash Player does not contain a
- * device font it will substitute it with another.
- * </p>
- *
- * <p>
- * Device fonts can be added to a movie by simply creating a DefineFont or
- * DefineFont2 object which contain the name of the font. An embedded font must
- * contain all the information to draw and layout the glyphs representing the
- * text to be displayed. The Font class hides all this detail and makes it easy
- * to add embedded fonts to a movie.
- * <p>
- *
- * <p>
- * The Font class can be used to create embedded fonts in three ways:
- * </p>
- *
- * <ol>
- * <li>Using TrueType or OpenType font definition stored in a file.</li>
- * <li>Using an existing font definition from a flash file.</li>
- * <li>Using a given Java AWT font as a template.</li>
- * </ol>
- *
- * <P>
- * For OpenType or TrueType fonts, files with the extensions ".otf" or ".ttf"
- * may be used. Files containing collections of fonts ".otc" are not currently
- * supported.
- * </p>
+ * SWFFontDecoder decodes Flash movie Fonts so they can be re-used in a
+ * Flash file.
  *
  * <p>
  * Using an existing Flash font definition is the most interesting. Fonts can
@@ -100,21 +66,18 @@ import com.flagstone.transform.shape.Shape;
  * libraries of "pre-parsed" flash fonts is the preferred way of use fonts.
  * </p>
  */
-//TODO(class)
 public final class SWFFontDecoder implements FontProvider, FontDecoder {
 
-    private final transient Map<Integer, Font>fonts;
+    /** The table of fonts, indexed by unique identifier. */
+    private final transient Map<Integer, Font>fonts
+                = new LinkedHashMap<Integer, Font>();
 
-    public SWFFontDecoder() {
-        fonts = new LinkedHashMap<Integer, Font>();
-    }
-
-
+    /** {@inheritDoc} */
     public FontDecoder newDecoder() {
         return new SWFFontDecoder();
     }
 
-
+    /** {@inheritDoc} */
     public void read(final File file) throws IOException, DataFormatException {
         final FileInputStream stream = new FileInputStream(file);
         try {
@@ -124,7 +87,7 @@ public final class SWFFontDecoder implements FontProvider, FontDecoder {
         }
     }
 
-
+    /** {@inheritDoc} */
     public void read(final URL url) throws IOException, DataFormatException {
         final URLConnection connection = url.openConnection();
 
@@ -141,11 +104,17 @@ public final class SWFFontDecoder implements FontProvider, FontDecoder {
         }
     }
 
-
+    /** {@inheritDoc} */
     public List<Font> getFonts() {
         return new ArrayList<Font>(fonts.values());
     }
 
+    /**
+     * Decode a font from a stream.
+     * @param stream the stream containing the encoded font.
+     * @throws IOException if an error occurs while decoding the font data.
+     * @throws DataFormatException if the font is not in a supported format.
+     */
     private void decode(final InputStream stream)
             throws IOException, DataFormatException {
         final Movie movie = new Movie();

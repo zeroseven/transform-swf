@@ -34,32 +34,46 @@ package com.flagstone.transform.coder;
 import java.io.IOException;
 
 /**
- * <p>
- * This exception is thrown when errors occur while encoding or decoding
+ * CoderException is thrown when errors occur while encoding or decoding
  * objects. Errors are reported as either underflow or overflow errors
  * indicating that the class used to encode/decode a particular data structure
  * did not encode or decode the expected number of bytes. This allows the
  * majority of software errors and errors due to improperly encoded flash files
  * to be detected.
- * </p>
  */
-//TODO(class)
 public final class CoderException extends IOException {
 
+    /** Serial number identifying the version of the object. */
     private static final long serialVersionUID = 1;
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "CoderException: { "
             + "name=%s; location=%d; length=%d; delta=%d; message=%s }";
 
-
+    /**
+     * Message to report errors when the number of bytes read is less than the
+     * length indicated in the tag header.
+     */
     public static final String UNDERFLOW = "Underflow";
-
+    /**
+     * Message to report errors when the number of bytes read is more than the
+     * length indicated in the tag header.
+     */
     public static final String OVERFLOW = "Overflow";
 
+    /** The name of the class where the error occurred. */
     private final transient String name;
+    /**
+     * The location of the start of the object being encoded/decoded
+     * when the error occurred.
+     */
     private final transient int start;
+    /** The expected length of the encoded object. */
     private final transient int length;
+    /**
+     * The difference between the expected and actual number of bytes encoded
+     * or decoded.
+     */
     private final transient int delta;
 
     /**
@@ -130,37 +144,48 @@ public final class CoderException extends IOException {
     }
 
     /**
-     * Returns the name of the class of the object that caused the error.
+     * Get the name of the class of the object that caused the error.
+     *
+     * @return the name of the class that caused the error.
      */
     public String getName() {
         return name;
     }
 
     /**
-     * Returns the byte address of the start of the object that caused the
+     * Get the byte address of the start of the object that caused the
      * error.
+     *
+     * @return the location of the start of the encoded object when the error
+     * occurred.
      */
     public int getStart() {
         return start;
     }
 
     /**
-     * Returns number of bytes the object was expected to occupy when encoded.
+     * Get number of bytes the object was expected to occupy when encoded.
+     *
+     * @return get the number of bytes expected to be encoded or decoded.
      */
     public int getLength() {
         return length;
     }
 
     /**
-     * Returns the difference between the expected number of bytes and the
+     * Get the difference between the expected number of bytes and the
      * actual number of bytes encoded or decoded.
+     *
+     * @return the difference from the expected number of bytes.
      */
     public int getDelta() {
         return delta;
     }
 
     /**
-     * Return a string representation of the error.
+     * Get a string representation of the error.
+     *
+     * @return the string describing the error.
      */
     @Override
     public String toString() {

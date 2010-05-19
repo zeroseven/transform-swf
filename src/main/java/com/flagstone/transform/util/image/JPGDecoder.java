@@ -51,18 +51,22 @@ import com.flagstone.transform.image.DefineJPEGImage2;
  */
 public final class JPGDecoder implements ImageProvider, ImageDecoder {
 
+    /** Message used to signal that the image cannot be decoded. */
     private static final String BAD_FORMAT = "Unsupported format";
 
+    /** The width of the image in pixels. */
     private transient int width;
+    /** The height of the image in pixels. */
     private transient int height;
+    /** The image data. */
     private transient byte[] image;
 
-
+    /** {@inheritDoc} */
     public void read(final File file) throws IOException, DataFormatException {
         read(new FileInputStream(file), (int) file.length());
     }
 
-
+    /** {@inheritDoc} */
     public void read(final URL url) throws IOException, DataFormatException {
         final URLConnection connection = url.openConnection();
 
@@ -79,17 +83,17 @@ public final class JPGDecoder implements ImageProvider, ImageDecoder {
         read(url.openStream(), length);
     }
 
-
+    /** {@inheritDoc} */
     public ImageTag defineImage(final int identifier) {
         return new DefineJPEGImage2(identifier, image);
     }
 
-
+    /** {@inheritDoc} */
     public ImageDecoder newDecoder() {
         return new JPGDecoder();
     }
 
-
+    /** {@inheritDoc} */
      public void read(final InputStream stream, final int size)
                  throws DataFormatException, IOException {
 
@@ -105,21 +109,26 @@ public final class JPGDecoder implements ImageProvider, ImageDecoder {
 
     }
 
-
+     /** {@inheritDoc} */
     public int getWidth() {
         return width;
     }
 
-
+    /** {@inheritDoc} */
     public int getHeight() {
         return height;
     }
 
-
+    /** {@inheritDoc} */
     public byte[] getImage() {
         return Arrays.copyOf(image, image.length);
     }
 
+    /**
+     * Decode the width and height from a JPEG image.
+     * @return true if the image is in JPEG format and the width and height
+     * were decoded.
+     */
     private boolean jpegInfo() {
         final FLVDecoder coder = new FLVDecoder(image);
 

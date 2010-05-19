@@ -52,7 +52,6 @@ import com.flagstone.transform.image.ImageFormat;
 /**
  * BMPDecoder decodes Bitmap images (BMP) so they can be used in a Flash file.
  */
-//TODO(class)
 @SuppressWarnings("PMD.TooManyMethods")
 public final class BMPDecoder implements ImageProvider, ImageDecoder {
 
@@ -60,34 +59,47 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
     private static final int OPAQUE = 255;
     /** Mask for reading unsigned 8-bit values. */
     private static final int UNSIGNED_BYTE = 255;
-
+    /** Message used to signal that the image cannot be decoded. */
     private static final String BAD_FORMAT = "Unsupported Format";
-
+    /** The signature identifying BMP files. */
     private static final int[] SIGNATURE = {66, 77};
-
+    /** An uncompressed indexed image. */
     private static final int BI_RGB = 0;
+    /** A run-length compressed image with 8 bits per pixel. */
     private static final int BI_RLE8 = 1;
+    /** A run-length compressed image with 4 bits per pixel. */
     private static final int BI_RLE4 = 2;
+    /** A true-colour image. */
     private static final int BI_BITFIELDS = 3;
 
+    /** The format of the decoded image. */
     private transient ImageFormat format;
+    /** The width of the image in pixels. */
     private transient int width;
+    /** The height of the image in pixels. */
     private transient int height;
+    /** The colour table for indexed images. */
     private transient byte[] table;
+    /** The image data. */
     private transient byte[] image;
 
+    /** The number of bits per pixel. */
     private transient int bitDepth;
+    /** The method used to compress the image. */
     private transient int compressionMethod;
+    /** The bit mask used to extract the red channel from the pixel word. */
     private transient int redMask;
+    /** The bit mask used to extract the green channel from the pixel word. */
     private transient int greenMask;
+    /** The bit mask used to extract the blue channel from the pixel word. */
     private transient int blueMask;
 
-
+    /** {@inheritDoc} */
     public void read(final File file) throws IOException, DataFormatException {
         read(new FileInputStream(file), (int) file.length());
     }
 
-
+    /** {@inheritDoc} */
     public void read(final URL url) throws IOException, DataFormatException {
         final URLConnection connection = url.openConnection();
 
@@ -104,7 +116,7 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
         read(url.openStream(), length);
     }
 
-
+    /** {@inheritDoc} */
     public ImageTag defineImage(final int identifier) {
         ImageTag object = null;
 
@@ -137,27 +149,27 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
         return object;
     }
 
-
+    /** {@inheritDoc} */
     public ImageDecoder newDecoder() {
         return new BMPDecoder();
     }
 
-
+    /** {@inheritDoc} */
     public int getWidth() {
         return width;
     }
 
-
+    /** {@inheritDoc} */
     public int getHeight() {
         return height;
     }
 
-
+    /** {@inheritDoc} */
     public byte[] getImage() {
         return Arrays.copyOf(image, image.length);
     }
 
-
+    /** {@inheritDoc} */
     public void read(final InputStream stream, final int length)
                     throws DataFormatException, IOException {
 
@@ -309,6 +321,10 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
         }
     }
 
+    /**
+     * Decode the indexed image data block (IDX8).
+     * @param coder the decoder containing the image data.
+     */
     private void decodeIDX8(final SWFDecoder coder) {
         int bitsRead;
         int index = 0;
@@ -328,6 +344,10 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
         }
     }
 
+    /**
+     * Decode the run length encoded image data block (RLE4).
+     * @param coder the decoder containing the image data.
+     */
     private void decodeRLE4(final SWFDecoder coder) {
         int row = height - 1;
         int col = 0;
@@ -387,6 +407,10 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
         }
     }
 
+    /**
+     * Decode the run length encoded image data block (RLE8).
+     * @param coder the decoder containing the image data.
+     */
     private void decodeRLE8(final SWFDecoder coder) {
         int row = height - 1;
         int col = 0;
@@ -442,6 +466,10 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
         }
     }
 
+    /**
+     * Decode the true colour image with each colour channel taking 5-bits.
+     * @param coder the decoder containing the image data.
+     */
     private void decodeRGB5(final SWFDecoder coder) {
         int bitsRead = 0;
         int index = 0;
@@ -494,6 +522,10 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
 
     }
 
+    /**
+     * Decode the true colour image with each colour channel taking 8-bits.
+     * @param coder the decoder containing the image data.
+     */
     private void decodeRGB8(final SWFDecoder coder) {
         int bitsRead;
         int index = 0;
@@ -516,6 +548,11 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
         }
     }
 
+    /**
+     * Decode the true colour image with each colour channel and alpha taking
+     * 8-bits.
+     * @param coder the decoder containing the image data.
+     */
     private void decodeRGBA(final SWFDecoder coder) {
         int index = 0;
 
@@ -530,6 +567,11 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
         }
     }
 
+    /**
+     * Reorder the image pixels from RGBA to ARGB.
+     *
+     * @param img the image data.
+     */
     private void orderAlpha(final byte[] img) {
         byte alpha;
 
@@ -543,7 +585,12 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
         }
     }
 
-    private void applyAlpha(final byte[] img) {
+    /**
+     * Apply the level for the alpha channel to the red, green and blue colour
+     * channels for encoding the image so it can be added to a Flash movie.
+     * @param img the image data.
+     */
+   private void applyAlpha(final byte[] img) {
         int alpha;
 
         for (int i = 0; i < img.length; i += 4) {
@@ -557,6 +604,15 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
         }
     }
 
+   /**
+    * Concatenate the colour table and the image data together.
+    * @param img the image data.
+    * @param colors the colour table.
+    * @return a single array containing the red, green and blue (not alpha)
+    * entries from the colour table followed by the red, green, blue and
+    * alpha channels from the image. The alpha defaults to 255 for an opaque
+    * image.
+    */
     private byte[] merge(final byte[] img, final byte[] colors) {
         final byte[] merged = new byte[(colors.length / 4) * 3 + img.length];
         int dst = 0;
@@ -574,6 +630,13 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
         return merged;
     }
 
+    /**
+     * Concatenate the colour table and the image data together.
+     * @param img the image data.
+     * @param colors the colour table.
+     * @return a single array containing entries from the colour table followed
+     * by the image.
+     */
     private byte[] mergeAlpha(final byte[] img, final byte[] colors) {
         final byte[] merged = new byte[colors.length + img.length];
         int dst = 0;
@@ -588,6 +651,11 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
         return merged;
     }
 
+    /**
+     * Compress the image using the ZIP format.
+     * @param img the image data.
+     * @return the compressed image.
+     */
     private byte[] zip(final byte[] img) {
         final Deflater deflater = new Deflater();
         deflater.setInput(img);
@@ -600,6 +668,16 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
         return newData;
     }
 
+    /**
+     * Adjust the width of each row in an image so the data is aligned to a
+     * 16-bit word boundary when loaded in memory. The additional bytes are
+     * all set to zero and will not be displayed in the image.
+     *
+     * @param imgWidth the width of the image in pixels.
+     * @param imgHeight the height of the image in pixels.
+     * @param img the image data.
+     * @return the image data with each row aligned to a 16-bit boundary.
+     */
     private byte[] adjustScan(final int imgWidth, final int imgHeight,
             final byte[] img) {
         int src = 0;
@@ -626,6 +704,15 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
         return formattedImage;
     }
 
+    /**
+     * Convert an image with 32-bits for the red, green, blue and alpha channels
+     * to one where the channels each take 5-bits in a 16-bit word.
+     * @param imgWidth the width of the image in pixels.
+     * @param imgHeight the height of the image in pixels.
+     * @param img the image data.
+     * @return the image data with the red, green and blue channels packed into
+     * 16-bit words. Alpha is discarded.
+     */
     private byte[] packColours(final int imgWidth, final int imgHeight,
             final byte[] img) {
         int src = 0;

@@ -31,44 +31,66 @@
 
 package com.flagstone.transform.util.image;
 
-/** TODO(class). */
+/**
+ * ImageEncoding describes the different image formats that can be decoded and
+ * added to a Flash movie.
+ */
 public enum ImageEncoding {
-    /** TODO(doc). */
+    /** Windows Bitmap images. */
     BMP("image/bmp", new BMPDecoder()),
-    /** TODO(doc). */
+    /** Graphics Interchange Format images. */
     GIF("image/gif", new BufferedImageDecoder()),
-    /** TODO(doc). */
+    /** Interchange File Format images. */
     IFF("image/iff", new BufferedImageDecoder()),
-    /** TODO(doc). */
+    /** Joint Photographic Experts Group format images. */
     JPEG("image/jpeg", new JPGDecoder()),
-    /** TODO(doc). */
+    /** Portable Bitmap images. */
     PBM("image/x-portable-bitmap", new BufferedImageDecoder()),
-    /** TODO(doc). */
+    /** Pacific Exchange (ZSoft) images. */
     PCX("image/pcx", new BufferedImageDecoder()),
-    /** TODO(doc). */
+    /** Portable Gray Map images. */
     PGM("image/x-portable-pixmap", new BufferedImageDecoder()),
-    /** TODO(doc). */
+    /** Portable Network Graphics images. */
     PNG("image/png", new PNGDecoder()),
-    /** TODO(doc). */
+    /** Photoshop Document images. */
     PSD("image/psd", new BufferedImageDecoder()),
-    /** TODO(doc). */
+    /** Raster images. */
     RAS("image/ras", new BufferedImageDecoder());
 
+    /** The MIME type used to identify the image format. */
     private final String mimeType;
+    /** The ImageProvider that can be used to decode the image format. */
     private final ImageProvider provider;
 
+    /**
+     * Private constructor for the enum.
+     *
+     * @param type the string representing the mime-type.
+     * @param imageProvider the ImageProvider that can be used to decode the
+     * image format.
+     */
     private ImageEncoding(final String type,
             final ImageProvider imageProvider) {
         mimeType = type;
         provider = imageProvider;
     }
 
-
+    /**
+     * Get the mime-type used to represent the image format.
+     *
+     * @return the string identifying the image format.
+     */
     public String getMimeType() {
         return mimeType;
     }
 
-
+    /**
+     * Get the ImageProvider that can be registered in the ImageRegistry to
+     * decode the image.
+     *
+     * @return the ImageProvider that can be used to decode images of the given
+     * mime-type.
+     */
     public ImageProvider getProvider() {
         return provider;
     }

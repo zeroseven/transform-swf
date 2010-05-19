@@ -34,11 +34,16 @@ package com.flagstone.transform.coder;
 /**
  * The FLVFactory interface is used to generate objects when decoding a video.
  *
- * @param T the decoded Flash Video object.
+ * @param <T> the type of Flash Video object decoded by the decoder.
  */
 public interface FLVFactory<T> {
-
-    FLVFactory<T> copy();
-
+    /**
+     * Decode and return a Flash Video object.
+     *
+     * @param coder an decoder wrapping the binary encoded flash video data.
+     *
+     * @return T the decoded Flash Video object.
+     * @throws CoderException if an error occurs decoding the object.
+     */
     T getObject(final FLVDecoder coder) throws CoderException;
 }

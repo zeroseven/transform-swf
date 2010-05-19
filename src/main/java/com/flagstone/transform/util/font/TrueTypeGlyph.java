@@ -35,10 +35,8 @@ import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.shape.Shape;
 
 /**
- * Glyph is a simple container class used by Font to record the shape, bounding
- * box and advance for a glyph.
+ * TrueTypeGlyph is a simple container class used to decode TrueType glyphs.
  */
-//TODO(class)
 public class TrueTypeGlyph extends Glyph {
 
     int[] xCoordinates = new int[]{};
@@ -46,10 +44,22 @@ public class TrueTypeGlyph extends Glyph {
     boolean[] onCurve = new boolean[]{};
     int[] endPoints = new int[]{};
 
+    /**
+     * Create a TrueTypeGlyph with the specified outline, bounding box and
+     * advance.
+     * @param aShape the outline of the glyph.
+     * @param box the bounding box that encloses the glyph.
+     * @param dist the advance to the next glyph.
+     */
     public TrueTypeGlyph(final Shape aShape, final Bounds box, final int dist) {
         super(aShape, box, dist);
     }
 
+    /**
+     * Create a TrueTypeGlyph with the specified outline - the bounding box
+     * and advance default to zero.
+     * @param aShape the outline of the glyph.
+     */
     public TrueTypeGlyph(final Shape aShape) {
         super(aShape);
     }

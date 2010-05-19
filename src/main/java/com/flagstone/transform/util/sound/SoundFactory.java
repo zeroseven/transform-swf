@@ -40,19 +40,33 @@ import java.net.URLConnection;
 import java.util.List;
 import java.util.zip.DataFormatException;
 
-
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.sound.DefineSound;
 
 /**
- * TODO(class).
+ * SoundFactory is used to generate the objects representing an event or
+ * streaming sound from an sound stored in a file, references by a URL or read
+ * from an stream. An plug-in architecture allows decoders to be registered to
+ * handle different formats. The SoundFactory provides a standard interface
+ * for using the different decoders for each supported sound format.
  */
 public final class SoundFactory {
-
+    /** The object used to decode the sound. */
     private transient SoundDecoder decoder;
 
     /**
-     * TODO(method).
+     * Decode a sound located in the specified file.
+     *
+     * @param file
+     *            a file containing the abstract path to the sound.
+     *
+     * @throws IOException
+     *             if there is an error reading the file.
+     *
+     * @throws DataFormatException
+     *             if there is a problem decoding the sound, either it is in an
+     *             unsupported format or an error occurred while decoding the
+     *             sound data.
      */
     public void read(final File file) throws IOException, DataFormatException {
 
@@ -71,7 +85,18 @@ public final class SoundFactory {
     }
 
     /**
-      * TODO(method).
+     * Decode a sound referenced by a URL.
+     *
+     * @param url
+     *            the Uniform Resource Locator referencing the file.
+     *
+     * @throws IOException
+     *             if there is an error reading the file.
+     *
+     * @throws DataFormatException
+     *             if there is a problem decoding the sound, either it is in an
+     *             unsupported format or an error occurred while decoding the
+     *             sound data.
      */
     public void read(final URL url) throws IOException, DataFormatException {
 
@@ -93,17 +118,48 @@ public final class SoundFactory {
     }
 
     /**
-     * TODO(method).
+     * Create a definition for an event sound that can be added to a Flash
+     * movie.
+     *
+     * @param identifier the unique identifier for the sound.
+     *
+     * @return a DefineSound object containing the image definition.
      */
     public DefineSound defineSound(final int identifier) {
         return decoder.defineSound(identifier);
     }
 
     /**
-     * TODO(method).
+     * Generate all the objects used to add a streaming sounds to a Movie. The
+     * returned list contains a SoundStreamHead2 object followed by one or more
+     * SoundStreamBlocks.
+     *
+     * @param frameRate the frame rate for the movie so the sound can be divided
+     * into sets of samples that can be played with each frame.
+     *
+     * @return a list containing the objects used to add the streaming sound to
+     * a Movie.
      */
     public List<MovieTag> streamSound(final int frameRate) {
         return decoder.streamSound(frameRate);
 
+    }
+    /**
+     * Generate the objects used to add a streaming sounds to a Movie that will
+     * be played for a specified number of frames. This method can be used to
+     * limit the number of sound sample loaded, particularly when adding a
+     * soundtrack to a Movie.
+     *
+     * @param frameRate the frame rate for the movie so the sound can be divided
+     * into sets of samples that can be played with each frame.
+     *
+     * @param frameCount the number of frames that the sound will be played for.
+     *
+     * @return a list containing the objects used to add the streaming sound to
+     * a Movie.
+     */
+    public List<MovieTag> streamSound(final int frameRate,
+                final int frameCount) {
+        return decoder.streamSound(frameRate, frameCount);
     }
 }

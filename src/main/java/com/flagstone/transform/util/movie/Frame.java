@@ -160,6 +160,8 @@ public final class Frame {
     /**
      * Creates a empty frame with no label defined and the definitions, commands
      * and actions arrays empty.
+     *
+     * @param frame the frame number.
      */
     public Frame(final int frame) {
         setNumber(frame);

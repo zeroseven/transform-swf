@@ -186,7 +186,8 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
      * @param samplesPerBlock the number of samples to include.
      * @return a SoundStreamBlock containing the requested set of samples.
      */
-    private SoundStreamBlock streamBlock(int blockNumber, int samplesPerBlock) {
+    private SoundStreamBlock streamBlock(final int blockNumber,
+            final int samplesPerBlock) {
 //        int firstSample = 0;
 //        int firstSampleOffset = 0;
 //        int bytesPerBlock = 0;
@@ -240,7 +241,7 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
      * @param bytes the encoded MP3 sound.
      * @throws DataFormatException if the sound data is not in MP3 format.
      */
-    private void decodeMP3(byte[] bytes) throws DataFormatException {
+    private void decodeMP3(final byte[] bytes) throws DataFormatException {
         FLVDecoder coder = new FLVDecoder(bytes);
         int numberOfFrames = 0;
         int frameStart = 0;
@@ -361,7 +362,7 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
      * @param coder the decoder containing the sound data.
      * @return the length of the frame in bytes.
      */
-    private int frameSize(FLVDecoder coder) {
+    private int frameSize(final FLVDecoder coder) {
         int frameSize = 4;
 
         coder.adjustPointer(11);

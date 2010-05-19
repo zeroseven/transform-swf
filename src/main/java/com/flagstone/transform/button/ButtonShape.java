@@ -93,16 +93,24 @@ public final class ButtonShape implements SWFEncodeable {
             + " identifier=%d; layer=%d; transform=%s; colorTransform=%s"
             + " blend=%s, filters=%s }";
 
+    /** The button state that the shape represents. */
     private int state;
     /** The unique identifier of the shape that will be displayed. */
     private int identifier;
+    /** The layer on which the shape is displayed. */
     private int layer;
+    /** The coordinate transform used to position the shape. */
     private CoordTransform transform;
+    /** The colour transform applied to the shape. */
     private ColorTransform colorTransform;
+    /** The set of filters applied to the shape. */
     private List<Filter> filters;
+    /** The mode used to blend the shape with its background. */
     private Integer blend;
 
+    /** Flag used when encoded to identify whether the blend is set. */
     private transient boolean hasBlend;
+    /** Flag used when encoded to identify whether filters are defined. */
     private transient boolean hasFilters;
 
     /**
@@ -184,7 +192,6 @@ public final class ButtonShape implements SWFEncodeable {
         blend = object.blend;
     }
 
-
     public Set<ButtonState> getState() {
         final Set<ButtonState> set = EnumSet.noneOf(ButtonState.class);
 
@@ -227,7 +234,9 @@ public final class ButtonShape implements SWFEncodeable {
     }
 
     /**
-     * Return the unique identifier of the shape that this Button applies to.
+     * Get the unique identifier of the shape that this Button applies to.
+     *
+     * @return the unique identifier of the shape.
      */
     public int getIdentifier() {
         return identifier;
@@ -241,6 +250,7 @@ public final class ButtonShape implements SWFEncodeable {
      * @param uid
      *            the unique identifier of the shape object that defines the
      *            shape's appearance. Must be in the range 1..65535.
+     * @return this object.
      */
     public ButtonShape setIdentifier(final int uid) {
         if ((uid < SWF.MIN_IDENTIFIER) || (uid > SWF.MAX_IDENTIFIER)) {
@@ -264,6 +274,7 @@ public final class ButtonShape implements SWFEncodeable {
      * @param aNumber
      *            the number of the layer in the display list where the shape is
      *            drawn. Must be in the range 1..65535.
+     * @return this object.
      */
     public ButtonShape setLayer(final int aNumber) {
         if ((aNumber < 1) || (aNumber > SWF.MAX_LAYER)) {
@@ -287,6 +298,7 @@ public final class ButtonShape implements SWFEncodeable {
      * @param aTransform
      *            an CoordTransform object that will be applied to the shape.
      *            Must not be null.
+     * @return this object.
      */
     public ButtonShape setTransform(final CoordTransform aTransform) {
         if (aTransform == null) {
@@ -316,6 +328,7 @@ public final class ButtonShape implements SWFEncodeable {
      *            an ColorTransform object that will be applied to the shape.
      *            Must not be null, even if the ButtonShape will be added to a
      *            DefineButton object.
+     * @return this object.
      */
     public ButtonShape setColorTransform(final ColorTransform aTransform) {
         if (aTransform == null) {

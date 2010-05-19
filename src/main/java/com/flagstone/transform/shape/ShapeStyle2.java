@@ -137,8 +137,6 @@ public final class ShapeStyle2 implements ShapeRecord {
     // TODO(optimise)
     public ShapeStyle2(final SWFDecoder coder, final Context context)
             throws CoderException {
-        final int start = coder.getPointer();
-
         final Map<Integer, Integer> vars = context.getVariables();
         int numberOfFillBits = vars.get(Context.FILL_SIZE);
         int numberOfLineBits = vars.get(Context.LINE_SIZE);

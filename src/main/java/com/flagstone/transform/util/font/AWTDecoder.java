@@ -47,26 +47,38 @@ import com.flagstone.transform.font.CharacterFormat;
 import com.flagstone.transform.shape.Shape;
 import com.flagstone.transform.util.shape.Canvas;
 
-/** TODO(class). */
+/**
+ * AWTDecoder decodes Java AWT Fonts so they can be used in a Flash file.
+ */
 public final class AWTDecoder {
 
-    private final transient List<Font>fonts;
+    /** The list of fonts decoded. */
+    private final transient List<Font>fonts = new ArrayList<Font>();
 
-    public AWTDecoder() {
-        fonts = new ArrayList<Font>();
-    }
-
-
+    /**
+     * Decode an AWT Font.
+     * @param font an AWT Font object.
+     * @throws IOException if an error occurs decoding the font data.
+     * @throws DataFormatException if the font is in a format not supported by
+     * the decoder.
+     */
     public void read(final java.awt.Font font)
-        throws IOException, DataFormatException {
+            throws IOException, DataFormatException {
         decode(font);
     }
 
-
+    /**
+     * Get the list of fonts decoded.
+     * @return a list of fonts.
+     */
     public List<Font> getFonts() {
         return fonts;
     }
 
+    /**
+     * Decode the AWT font.
+     * @param aFont an AWT Font.
+     */
     private void decode(final java.awt.Font aFont) {
 
         final FontRenderContext fontContext = new FontRenderContext(
@@ -78,9 +90,6 @@ public final class AWTDecoder {
         font.setFace(new FontFace(awtFont.getName(),
                 awtFont.isBold(), awtFont.isItalic()));
         font.setEncoding(CharacterFormat.UCS2);
-
-        // TODO(code) still needed ? final Rectangle2D transform =
-        // transformToEMSquare(font, fontContext);
 
         final double scaleY = 1024.0;
         final double scaleX = scaleY;
@@ -167,44 +176,11 @@ public final class AWTDecoder {
         fonts.add(font);
     }
 
-//    private Rectangle2D transformToEMSquare(final java.awt.Font font,
-//            final FontRenderContext fontContext) {
-//        final int numGlyphs = font.getNumGlyphs();
-//        int characterCode = 0;
-//        int glyphIndex = 0;
-//
-//        double xCoord = 0.0;
-//        double yCoord = 0.0;
-//        double width = 0.0;
-//        double height = 0.0;
-//
-//        /*
-//         * Scan through all the glyphs looking for glyphs that will fall
-//         * outside the left or bottom side of the EM Square once the glyph
-//         * has been scaled.
-//         */
-//        while ((glyphIndex < numGlyphs) && (characterCode < 65536)) {
-//            final char currentChar = (char) characterCode;
-//
-//            if (font.canDisplay(currentChar)) {
-//                final GlyphVector glyphVector = font.createGlyphVector(
-//                        fontContext, new char[] {currentChar});
-//                final Rectangle2D bounds = glyphVector.getGlyphOutline(0)
-//                        .getBounds2D();
-//
-//                xCoord = Math.min(bounds.getX(), xCoord);
-//                yCoord = Math.min(bounds.getY(), yCoord);
-//
-//                width = Math.max(bounds.getWidth(), width);
-//                height = Math.max(bounds.getHeight(), height);
-//
-//                glyphIndex++;
-//            }
-//            characterCode++;
-//        }
-//        return new Rectangle2D.Double(xCoord, yCoord, width, height);
-//    }
-
+    /**
+     * Trace the outline of the glyph.
+     * @param glyph an AWT Shape.
+     * @return a Flash Shape.
+     */
     private Shape convertShape(final java.awt.Shape glyph) {
         final PathIterator pathIter = glyph.getPathIterator(null);
         final Canvas path = new Canvas(false);

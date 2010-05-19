@@ -38,44 +38,81 @@ import com.flagstone.transform.shape.Shape;
  * Glyph is a simple container class used by Font to record the shape, bounding
  * box and advance for a glyph.
  */
-//TODO(class)
 public class Glyph {
-
+    /** The outline of the glyph. */
     private Shape shape;
+    /** The bounding box that encloses the glyph. */
     private Bounds bounds;
+    /** The distance in twips to the next glyph. */
     private int advance;
 
+    /**
+     * Create a Glyph with the specified outline, bounding box and advance.
+     * @param aShape the outline of the glyph.
+     * @param box the bounding box that encloses the glyph.
+     * @param dist the advance to the next glyph.
+     */
     public Glyph(final Shape aShape, final Bounds box, final int dist) {
         shape = aShape;
         bounds = box;
         advance = dist;
     }
 
+    /**
+     * Create a Glyph with the specified outline - the bounding box and advance
+     * default to zero.
+     * @param aShape the outline of the glyph.
+     */
     public Glyph(final Shape aShape) {
         shape = aShape;
     }
 
-    public Shape getShape() {
+   /**
+    * Get the outline of the glyph.
+    *
+    * @return the Shape used to trace the outline of the glyph.
+    */
+    public final Shape getShape() {
         return shape;
     }
 
-    public void setShape(final Shape aShape) {
+    /**
+     * Set the outline of the glyph.
+     * @param aShape the Shape used to trace the outline of the glyph.
+     */
+    public final void setShape(final Shape aShape) {
         shape = aShape;
     }
 
-    public Bounds getBounds() {
+    /**
+     * Get the bounding box enclosing the glyph.
+     * @return the Bounds that encloses the outline of the glyph.
+     */
+    public final Bounds getBounds() {
         return bounds;
     }
 
-    public void setBounds(final Bounds box) {
+    /**
+     * Set the bounding box enclosing the glyph.
+     * @param box the Bounds that encloses the outline of the glyph.
+     */
+    public final void setBounds(final Bounds box) {
         bounds = box;
     }
 
-    public int getAdvance() {
+    /**
+     * Get the distance to the next glyph.
+     * @return the distance in twips from this glyph to the next.
+     */
+    public final int getAdvance() {
         return advance;
     }
 
-    public void setAdvance(final int dist) {
+    /**
+     * Set the distance to the next glyph.
+     * @param dist the distance in twips from this glyph to the next.
+     */
+    public final void setAdvance(final int dist) {
         advance = dist;
     }
 }

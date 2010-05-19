@@ -68,6 +68,7 @@ public final class ButtonColorTransform implements MovieTag {
 
     /** The unique identifier of the button. */
     private int identifier;
+    /** The colour transform that will be applied to the shape. */
     private ColorTransform colorTransform;
 
     /** The length of the object, minus the header, when it is encoded. */
@@ -134,14 +135,18 @@ public final class ButtonColorTransform implements MovieTag {
     }
 
     /**
-     * Returns the unique identifier of the button that this object applies to.
+     * Get the unique identifier of the button that this object applies to.
+     *
+     * @return the unique identifier of the button.
      */
     public int getIdentifier() {
         return identifier;
     }
 
     /**
-     * Returns the colour transform that will be applied to the button.
+     * Get the colour transform that will be applied to the button.
+     *
+     * @return the colour transform applied to the button.
      */
     public ColorTransform getColorTransform() {
         return colorTransform;

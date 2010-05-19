@@ -108,13 +108,15 @@ public final class DefineImage implements ImageTag {
     private int width;
     /** The height of the image in pixels. */
     private int height;
+    /** The size, in bits, of each pixel. */
     private int pixelSize;
+    /** The length, in bytes, of the colour table. */
     private int tableSize;
+    /** The compressed colour table and image data. */
     private byte[] image;
 
     /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
-    private transient boolean extendLength;
 
     /**
      * Creates and initialises a DefineImage object using values encoded
@@ -183,7 +185,6 @@ public final class DefineImage implements ImageTag {
      */
     public DefineImage(final int uid, final int imgWidth, final int imgHeight,
             final int size, final byte[] data) {
-        extendLength = true;
         setIdentifier(uid);
         setWidth(imgWidth);
         setHeight(imgHeight);
@@ -209,7 +210,6 @@ public final class DefineImage implements ImageTag {
      */
     public DefineImage(final int uid, final int imgWidth, final int imgHeight,
             final byte[] data, final int size) {
-        extendLength = true;
         setIdentifier(uid);
         setWidth(imgWidth);
         setHeight(imgHeight);
@@ -227,7 +227,6 @@ public final class DefineImage implements ImageTag {
      *            copied.
      */
     public DefineImage(final DefineImage object) {
-        extendLength = object.extendLength;
         identifier = object.identifier;
         width = object.width;
         height = object.height;
@@ -251,16 +250,18 @@ public final class DefineImage implements ImageTag {
     }
 
     /**
-     * Returns the width of the image in pixels (not twips).
+     * Get the width of the image in pixels (not twips).
+     *
+     * @return the width of the image.
      */
     public int getWidth() {
         return width;
     }
 
     /**
-     * Returns the height of the image in pixels (not twips).
+     * Get the height of the image in pixels (not twips).
      *
-     * @return the height of the image in pixels.
+     * @return the height of the image.
      */
     public int getHeight() {
         return height;
@@ -278,7 +279,7 @@ public final class DefineImage implements ImageTag {
     }
 
     /**
-     * Returns the number of entries in the colour table encoded the compressed
+     * Get the number of entries in the colour table encoded the compressed
      * image. For images where the colour is specified directly in the image
      * then the table size is zero.
      */
@@ -287,7 +288,7 @@ public final class DefineImage implements ImageTag {
     }
 
     /**
-     * Returns a copy of the compressed colour table and image.
+     * Get a copy of the compressed colour table and image.
      */
     public byte[] getImage() {
         return Arrays.copyOf(image, image.length);

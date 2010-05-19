@@ -31,28 +31,51 @@
 
 package com.flagstone.transform.util.font;
 
-/** TODO(class). */
+/**
+ * FontEncoding describes the different fonts that can be decoded from a file.
+ *
+ * Note: AWT fonts are not included as they are decoded directly from the AWT
+ * Font object and not from a file.
+ */
 enum FontEncoding {
-
-
+    /** Font definitions stored in a Flash (.swf) file. */
     SWF("swf", new SWFFontDecoder()),
-
+    /** Font definitions stored in a TrueType (.ttf) or OpenType (.otf) file. */
     TTF("ttf", new TTFDecoder());
 
-    private final String mimeType;
+    /** The identifier for the font format. */
+    private final String key;
+    /** The FontProvider that can be used to decode the font format. */
     private final FontProvider provider;
 
+    /**
+     * Private constructor for the enum.
+     *
+     * @param type the string representing the font format.
+     * @param fontProvider the FontProvider that can be used to decode the
+     * font format.
+     */
     private FontEncoding(final String type, final FontProvider fontProvider) {
-        mimeType = type;
+        key = type;
         provider = fontProvider;
     }
 
-
-    public String getMimeType() {
-        return mimeType;
+    /**
+     * Get the identifier for the font format.
+     *
+     * @return the string identify the font format.
+     */
+    public String getType() {
+        return key;
     }
 
-
+    /**
+     * Get the FontProvider that can be registered in the FontRegistry to
+     * decode the font.
+     *
+     * @return the FontProvider that can be used to decode font of the given
+     * format.
+     */
     public FontProvider getProvider() {
         return provider;
     }

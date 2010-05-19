@@ -33,27 +33,45 @@ package com.flagstone.transform.util.sound;
 
 /** TODO(class). */
 enum SoundEncoding {
-
-
+    /** MPEG Version 3 (MP3) format. */
     MP3("audio/mpeg", new MP3Decoder()),
-
+    /** Waveform Audio File Format. */
     WAV("audio/x-wav", new WAVDecoder());
 
+    /** The MIME type used to identify the sound format. */
     private final String mimeType;
+    /** The SoundProvider that can be used to decode the sound format. */
     private final SoundProvider provider;
 
+    /**
+     * Private constructor for the enum.
+     *
+     * @param type the string representing the mime-type.
+     * @param soundProvider the SoundProvider that can be used to decode the
+     * sound format.
+     */
     private SoundEncoding(final String type,
             final SoundProvider soundProvider) {
         mimeType = type;
         provider = soundProvider;
     }
 
-
+    /**
+     * Get the mime-type used to represent the sound format.
+     *
+     * @return the string identifying the sound format.
+     */
     public String getMimeType() {
         return mimeType;
     }
 
-
+    /**
+     * Get the SoundProvider that can be registered in the SoundRegistry to
+     * decode the sound.
+     *
+     * @return the SoundProvider that can be used to decode sounds of the given
+     * mime-type.
+     */
     public SoundProvider getProvider() {
         return provider;
     }

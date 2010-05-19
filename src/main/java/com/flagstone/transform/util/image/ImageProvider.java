@@ -31,8 +31,16 @@
 
 package com.flagstone.transform.util.image;
 
-/** TODO(class). */
+/**
+ * ImageProvider defines the interface that the ImageFactory uses to create
+ * instances of the ImageDecoder objects used to handle different image formats.
+ */
 public interface ImageProvider {
-    
+    /**
+     * The method implemented by all ImageDecoders in order to be registered
+     * with the ImageRegistry and used by the ImageFactory to decode images.
+     *
+     * @return an object that implements the FontDecoder interface.
+     */
     ImageDecoder newDecoder();
 }

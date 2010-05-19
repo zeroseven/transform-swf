@@ -38,7 +38,6 @@ import java.util.Map;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.DefineTag;
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -142,6 +141,14 @@ import com.flagstone.transform.movieclip.MovieClipEventHandler;
 @SuppressWarnings("PMD.TooManyMethods")
 public final class Place2 implements MovieTag {
 
+    /**
+     * Place a new object on the display list.
+     * @param identifier the unique identifier for the object.
+     * @param layer the layer where it will be displayed.
+     * @param xCoord the x-coordinate where the object's origin will be.
+     * @param yCoord the y-coordinate where the object's origin will be.
+     * @return the Place2 object to update the display list.
+     */
     public static Place2 show(final int identifier, final int layer,
             final int xCoord, final int yCoord) {
         final Place2 object = new Place2();
@@ -152,26 +159,14 @@ public final class Place2 implements MovieTag {
         return object;
     }
 
-
-    public static Place2 show(final DefineTag tag, final int layer,
-            final int xCoord, final int yCoord) {
-        final Place2 object = new Place2();
-        object.setType(PlaceType.NEW);
-        object.setLayer(layer);
-        object.setIdentifier(tag.getIdentifier());
-        object.setTransform(CoordTransform.translate(xCoord, yCoord));
-        return object;
-    }
-
-
-    public static Place2 modify(final int layer) {
-        final Place2 object = new Place2();
-        object.setType(PlaceType.MODIFY);
-        object.setLayer(layer);
-        return object;
-    }
-
-
+    /**
+     * Change the position of a displayed object.
+     *
+     * @param layer the display list layer where the object is displayed.
+     * @param xCoord the x-coordinate where the object's origin will be moved.
+     * @param yCoord the y-coordinate where the object's origin will be moved.
+     * @return the Place3 object to change the position of the object.
+     */
     public static Place2 move(final int layer, final int xCoord,
             final int yCoord) {
         final Place2 object = new Place2();
@@ -181,7 +176,13 @@ public final class Place2 implements MovieTag {
         return object;
     }
 
-
+    /**
+     * Replace an existing object with another.
+     *
+     * @param identifier the unique identifier of the new object.
+     * @param layer the display list layer of the existing object.
+     * @return the Place3 object to update the display list.
+     */
     public static Place2 replace(final int identifier, final int layer) {
         final Place2 object = new Place2();
         object.setType(PlaceType.REPLACE);
@@ -190,6 +191,15 @@ public final class Place2 implements MovieTag {
         return object;
     }
 
+    /**
+     * Replace an existing object with another.
+     *
+     * @param identifier the unique identifier of the new object.
+     * @param layer the display list layer of the existing object.
+     * @param xCoord the x-coordinate where the new object's origin will be.
+     * @param yCoord the y-coordinate where the new object's origin will be.
+     * @return the Place3 object to update the display list.
+     */
     public static Place2 replace(final int identifier, final int layer,
             final int xCoord, final int yCoord) {
         final Place2 object = new Place2();
@@ -205,15 +215,23 @@ public final class Place2 implements MovieTag {
             + "identifier=%d; transform=%s; colorTransform=%s; ratio=%d; "
             + "clippingDepth=%d; name=%s; clipEvents=%s}";
 
+    /** How the display list will be updated. */
     private PlaceType type;
+    /** The display list layer number. */
     private int layer;
     /** The unique identifier of the object that will be displayed. */
     private int identifier;
+    /** The coordinate transform applied to the displayed object. */
     private CoordTransform transform;
+    /** The color transform applied to the displayed object. */
     private ColorTransform colorTransform;
+    /** The progression of the morphing process. */
     private Integer ratio;
+    /** The number of layers to clip. */
     private Integer depth;
+    /** The name assigned to an object. */
     private String name;
+    /** The set of event handlers for movie clips. */
     private List<MovieClipEventHandler> events;
 
     /** The length of the object, minus the header, when it is encoded. */
@@ -360,7 +378,7 @@ public final class Place2 implements MovieTag {
      * @param aClipEvent
      *            a clip event object.
      *
-     *            throws NullPointerException of the clip event object is null
+     * @return this object.
      */
     public Place2 add(final MovieClipEventHandler aClipEvent) {
         if (aClipEvent == null) {
@@ -371,9 +389,11 @@ public final class Place2 implements MovieTag {
     }
 
     /**
-     * Returns the array of ClipEvent object that define the actions that will
-     * be executed in response to events that occur in the DefineMovieClip being
+     * Get the array of event handlers that define the actions that will
+     * be executed in response to events that occur in the movie clip being
      * placed.
+     *
+     * @return the set of event handlers for the movie clip.
      */
     public List<MovieClipEventHandler> getEvents() {
         return events;
@@ -398,66 +418,86 @@ public final class Place2 implements MovieTag {
     }
 
     /**
-     * Returns the type of place operation being performed.
+     * Get the type of place operation being performed, either adding a new
+     * object, replacing an existing one with another or modifying an existing
+     * object.
+     *
+     * @return the way the object will be placed.
      */
     public PlaceType getType() {
         return type;
     }
 
     /**
-     * Returns the Layer on which the object will be displayed in the display
+     * Get the Layer on which the object will be displayed in the display
      * list.
+     *
+     * @return the layer where the object will be displayed.
      */
     public int getLayer() {
         return layer;
     }
 
     /**
-     * Returns the identifier of the object to be placed. This is only required
+     * Get the identifier of the object to be placed. This is only required
      * when placing an object for the first time. Subsequent references to the
      * object on this layer can simply use the layer number.
+     *
+     * @return the unique identifier of the object to be displayed.
      */
     public int getIdentifier() {
         return identifier;
     }
 
     /**
-     * Returns the coordinate transform. May be null if no coordinate transform
+     * Get the coordinate transform. May be null if no coordinate transform
      * was defined.
+     *
+     * @return the coordinate transform that will be applied to the displayed
+     * object.
      */
     public CoordTransform getTransform() {
         return transform;
     }
 
     /**
-     * Returns the colour transform. May be null if no colour transform was
+     * Get the colour transform. May be null if no colour transform was
      * defined.
+     *
+     * @return the colour transform that will be applied to the displayed
+     * object.
      */
     public ColorTransform getColorTransform() {
         return colorTransform;
     }
 
     /**
-     * Returns the morph ratio, in the range 0..65535 that defines the progress
+     * Get the morph ratio, in the range 0..65535 that defines the progress
      * in the morphing process performed by the Flash Player from the defined
      * start and end shapes. A value of 0 indicates the start of the process and
      * 65535 the end. Returns null if no ratio was specified.
+     *
+     * @return the morphing ratio.
      */
     public Integer getRatio() {
         return ratio;
     }
 
     /**
-     * Returns the number of layers that will be clipped by the object placed on
+     * Get the number of layers that will be clipped by the object placed on
      * the layer specified in this object.
+     *
+     * @return the number of layers to be clipped.
      */
     public Integer getDepth() {
         return depth;
     }
 
     /**
-     * Returns the name of the object. May be null if a name was not assigned to
+     * Get the name of the object. May be null if a name was not assigned to
      * the object.
+     *
+     * @return the name of the object.
      */
     public String getName() {
         return name;
@@ -469,6 +509,8 @@ public final class Place2 implements MovieTag {
      * @param aType
      *            the type of operation to be performed, either New, Modify or
      *            Replace.
+     *
+     * @return this object.
      */
     public Place2 setType(final PlaceType aType) {
         type = aType;
@@ -481,6 +523,8 @@ public final class Place2 implements MovieTag {
      * @param aLayer
      *            the layer number on which the object is being displayed. Must
      *            be in the range 1..65535.
+     *
+     * @return this object.
      */
     public Place2 setLayer(final int aLayer) {
         if ((aLayer < 1) || (aLayer > SWF.MAX_LAYER)) {
@@ -496,6 +540,8 @@ public final class Place2 implements MovieTag {
      * @param uid
      *            the identifier of a new object to be displayed. Must be in the
      *            range 1..65535.
+     *
+     * @return this object.
      */
     public Place2 setIdentifier(final int uid) {
         if ((uid < SWF.MIN_IDENTIFIER) || (uid > SWF.MAX_IDENTIFIER)) {
@@ -514,6 +560,8 @@ public final class Place2 implements MovieTag {
      * @param aTransform
      *            an CoordTransform object that will be applied to the object
      *            displayed.
+     *
+     * @return this object.
      */
     public Place2 setTransform(final CoordTransform aTransform) {
         transform = aTransform;
@@ -542,6 +590,8 @@ public final class Place2 implements MovieTag {
      * @param aTransform
      *            an ColorTransform object that will be applied to the object
      *            displayed.
+     *
+     * @return this object.
      */
     public Place2 setColorTransform(final ColorTransform aTransform) {
         colorTransform = aTransform;
@@ -555,6 +605,8 @@ public final class Place2 implements MovieTag {
      *
      * @param aNumber
      *            the progress in the morphing process.
+     *
+     * @return this object.
      */
     public Place2 setRatio(final Integer aNumber) {
         if ((aNumber != null) && ((aNumber < 0) || (aNumber > SWF.MAX_MORPH))) {
@@ -570,6 +622,8 @@ public final class Place2 implements MovieTag {
      *
      * @param aNumber
      *            the number of layers clipped.
+     *
+     * @return this object.
      */
     public Place2 setDepth(final Integer aNumber) {
         if ((aNumber != null) && ((aNumber < 1) || (aNumber > SWF.MAX_LAYER))) {
@@ -586,6 +640,8 @@ public final class Place2 implements MovieTag {
      *
      * @param aString
      *            the name assigned to the object.
+     *
+     * @return this object.
      */
     public Place2 setName(final String aString) {
         name = aString;

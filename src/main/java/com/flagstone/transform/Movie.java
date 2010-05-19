@@ -157,7 +157,8 @@ public final class Movie {
      * Sets the registry containing the object used to decode the different
      * types of object found in a movie.
      *
-     * @param decoderRegistry
+     * @param decoderRegistry a central registry to decoders of different types
+     * of object.
      */
     public void setRegistry(final DecoderRegistry decoderRegistry) {
         registry = decoderRegistry;
@@ -177,6 +178,8 @@ public final class Movie {
     /**
      * Sets the encoding scheme for strings encoded and decoded from Flash
      * files.
+     *
+     * @param enc the character encoding used for strings.
      */
     public void setEncoding(final CharacterEncoding enc) {
         encoding = enc;
@@ -201,7 +204,10 @@ public final class Movie {
     }
 
     /**
-     * Returns the signature identifying that the movie contains Flash.
+     * Get the signature identifying that the movie contains Flash.
+     *
+     * @return the signature used to identify whether file contains compressed
+     * or uncompressed data.
      */
     public Signature getSignature() {
         return signature;
@@ -209,14 +215,19 @@ public final class Movie {
 
     /**
      * Sets the signature for the Flash data when it is encoded.
+     *
+     * @param sig the string signature used to identify whether the file
+     * contains compressed or uncompressed flash data.
      */
     public void setSignature(final Signature sig) {
         signature = sig;
     }
 
     /**
-     * Returns the number representing the version of Flash that the movie
+     * Get the number representing the version of Flash that the movie
      * represents.
+     *
+     * @return the version number of Flash that this movie contains.
      */
     public int getVersion() {
         return version;

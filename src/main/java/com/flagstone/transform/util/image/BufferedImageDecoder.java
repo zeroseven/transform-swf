@@ -62,17 +62,18 @@ import com.flagstone.transform.image.ImageFormat;
 
 /**
  * BufferedImageDecoder decodes BufferedImages so they can be used in a Flash
- * file.
+ * file. The class also provides a set of convenience methods for converting
+ * Flash images definitions into BufferedImages allowing the images to easily
+ * be extracted from a Flash movie.
  */
 @SuppressWarnings("PMD.TooManyMethods")
 public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
-
+    /** Message used to signal that the image cannot be decoded. */
     private static final String BAD_FORMAT = "Unsupported format";
-
+    /** The number of bytes per pixel in a RGBA format image. */
     private static final int BYTES_PER_PIXEL = 4;
-
+    /** The alpha channel level for an opaque pixel. */
     private static final int OPAQUE = -1;
-
     /** Position in 32-bit word of red channel. */
     private static final int RED = 0;
     /** Position in 32-bit word of green channel. */
@@ -81,12 +82,10 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
     private static final int BLUE = 2;
     /** Position in 32-bit word of alpha channel. */
     private static final int ALPHA = 3;
-
     /** Mask applied to extract 5-bit values. */
     private static final int MASK_5BIT = 0x001F;
     /** Mask applied to extract 8-bit values. */
     private static final int MASK_8BIT = 0x00FF;
-
     /**
      * Number of bits to shift when aligning to the second byte in a 16-bit
      * or 32-bit word. */
@@ -106,23 +105,28 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
      */
     private static final int WORD_ALIGN = 3;
 
+    /** The format of the decoded image. */
     private transient ImageFormat format;
+    /** The width of the image in pixels. */
     private transient int width;
+    /** The height of the image in pixels. */
     private transient int height;
+    /** The colour table for indexed images. */
     private transient byte[] table;
+    /** The image data. */
     private transient byte[] image;
 
-
+    /** {@inheritDoc} */
     public ImageDecoder newDecoder() {
         return new BufferedImageDecoder();
     }
 
-
+    /** {@inheritDoc} */
     public void read(final File file) throws IOException, DataFormatException {
          read(new FileInputStream(file), (int) file.length());
     }
 
-
+    /** {@inheritDoc} */
     public void read(final URL url) throws IOException, DataFormatException {
         final URLConnection connection = url.openConnection();
         final int fileSize = connection.getContentLength();
@@ -134,13 +138,13 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
         read(url.openStream(), fileSize);
     }
 
-
+    /** {@inheritDoc} */
     public void read(final InputStream stream, final int size)
             throws IOException, DataFormatException {
         read(ImageIO.read(stream));
     }
 
-
+    /** {@inheritDoc} */
     public ImageTag defineImage(final int identifier) {
         ImageTag object = null;
 
@@ -403,17 +407,17 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
         return bufferedImage;
     }
 
-
+    /** {@inheritDoc} */
     public int getWidth() {
         return width;
     }
 
-
+    /** {@inheritDoc} */
     public int getHeight() {
         return height;
     }
 
-
+    /** {@inheritDoc} */
     public byte[] getImage() {
         return Arrays.copyOf(image, image.length);
     }
@@ -632,7 +636,15 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
         return resized;
     }
 
-
+    /**
+     * Decode a BufferedImage.
+     *
+     * @param obj
+     *            a BufferedImage.
+     *
+     * @throws DataFormatException
+     *             if there is a problem decoding the BufferedImage.
+     */
     public void read(final BufferedImage obj) throws DataFormatException {
 
         final DataBuffer buffer = obj.getData().getDataBuffer();
@@ -891,9 +903,13 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
         }
     }
 
-    private void decodeColorTable(ColorModel model) {
+    /**
+     * Decode the ColourModel used for indexed images.
+     * @param model The ColorModel used by a BufferedImage.
+     */
+    private void decodeColorTable(final ColorModel model) {
         if (model instanceof IndexColorModel) {
-            IndexColorModel indexModel = (IndexColorModel)model;
+            IndexColorModel indexModel = (IndexColorModel) model;
 
             table = new byte[indexModel.getMapSize() * 4];
 
@@ -917,6 +933,11 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
         }
     }
 
+    /**
+     * Reorder the image pixels from RGBA to ARGB.
+     *
+     * @param img the image data.
+     */
     private void orderAlpha(final byte[] img) {
         byte alpha;
 
@@ -930,6 +951,11 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
         }
     }
 
+    /**
+     * Apply the level for the alpha channel to the red, green and blue colour
+     * channels for encoding the image so it can be added to a Flash movie.
+     * @param img the image data.
+     */
     private void applyAlpha(final byte[] img) {
         int alpha;
 
@@ -945,6 +971,15 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
         }
     }
 
+    /**
+     * Concatenate the colour table and the image data together.
+     * @param img the image data.
+     * @param colors the colour table.
+     * @return a single array containing the red, green and blue (not alpha)
+     * entries from the colour table followed by the red, green, blue and
+     * alpha channels from the image. The alpha defaults to 255 for an opaque
+     * image.
+     */
     private byte[] merge(final byte[] img, final byte[] colors) {
         final byte[] merged = new byte[(colors.length / BYTES_PER_PIXEL)
                                        * 3 + img.length];
@@ -963,6 +998,13 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
         return merged;
     }
 
+    /**
+     * Concatenate the colour table and the image data together.
+     * @param img the image data.
+     * @param colors the colour table.
+     * @return a single array containing entries from the colour table followed
+     * by the image.
+     */
     private byte[] mergeAlpha(final byte[] img, final byte[] colors) {
         final byte[] merged = new byte[colors.length + img.length];
         int dst = 0;
@@ -977,6 +1019,11 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
         return merged;
     }
 
+    /**
+     * Compress the image using the ZIP format.
+     * @param img the image data.
+     * @return the compressed image.
+     */
     private byte[] zip(final byte[] img) {
         final Deflater deflater = new Deflater();
         deflater.setInput(img);
@@ -989,6 +1036,16 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
         return newData;
     }
 
+    /**
+     * Adjust the width of each row in an image so the data is aligned to a
+     * 16-bit word boundary when loaded in memory. The additional bytes are
+     * all set to zero and will not be displayed in the image.
+     *
+     * @param imgWidth the width of the image in pixels.
+     * @param imgHeight the height of the image in pixels.
+     * @param img the image data.
+     * @return the image data with each row aligned to a 16-bit boundary.
+     */
     private byte[] adjustScan(final int imgWidth, final int imgHeight,
             final byte[] img) {
         int src = 0;
@@ -1015,6 +1072,15 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
         return formattedImage;
     }
 
+    /**
+     * Convert an image with 32-bits for the red, green, blue and alpha channels
+     * to one where the channels each take 5-bits in a 16-bit word.
+     * @param imgWidth the width of the image in pixels.
+     * @param imgHeight the height of the image in pixels.
+     * @param img the image data.
+     * @return the image data with the red, green and blue channels packed into
+     * 16-bit words. Alpha is discarded.
+     */
     private byte[] packColours(final int imgWidth, final int imgHeight,
             final byte[] img) {
         int src = 0;
@@ -1045,6 +1111,15 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
         return formattedImage;
     }
 
+    /**
+     * Uncompress the image using the ZIP format.
+     * @param bytes the compressed image data.
+     * @param imgWidth the width of the image in pixels.
+     * @param imgHeight the height of the image in pixels.
+     * @return the uncompressed image.
+     * @throws DataFormatException if the compressed image is not in the ZIP
+     * format or cannot be uncompressed.
+     */
     private byte[] unzip(final byte[] bytes, final int imgWidth,
             final int imgHeight) throws DataFormatException {
         final byte[] data = new byte[imgWidth * imgHeight * 8];

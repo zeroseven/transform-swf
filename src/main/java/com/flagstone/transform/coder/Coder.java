@@ -73,12 +73,18 @@ public class Coder {
     /** Number of bits to shift when aligning an int in a long value. */
     public static final int ALIGN_WORD = 32;
 
+    /** The character encoding used for strings. */
     protected String encoding;
+    /** The internal buffer containing data read from or written to a file. */
     protected byte[] data;
 
+    /** The index in bits to the current location in the buffer. */
     protected transient int pointer;
+    /** The index in bytes to the current location in the buffer. */
     protected transient int index;
+    /** The offset in bits to the location in the current byte. */
     protected transient int offset;
+    /** The last location in the buffer. */
     protected transient int end;
 
     /**
@@ -89,7 +95,9 @@ public class Coder {
     }
 
     /**
-     * Returns character encoding scheme used when encoding or decoding strings.
+     * Get character encoding scheme used when encoding or decoding strings.
+     *
+     * @return the character encoding used for strings.
      */
     public final String getEncoding() {
         return encoding;
@@ -133,7 +141,9 @@ public class Coder {
     }
 
     /**
-     * Returns the array of bytes containing the encoded data.
+     * Get the array of bytes containing the encoded data.
+     *
+     * @return a copy of the internal buffer.
      */
     public final byte[] getData() {
         return Arrays.copyOf(data, data.length);
@@ -169,8 +179,10 @@ public class Coder {
     }
 
     /**
-     * Returns the location, in bits, where the next value will be read or
+     * Get the location, in bits, where the next value will be read or
      * written.
+     *
+     * @return the location of the next bit to be accessed.
      */
     public final int getPointer() {
         return (index << 3) + offset;
@@ -210,7 +222,9 @@ public class Coder {
     }
 
     /**
-     * Returns true of the internal pointer is at the end of the buffer.
+     * Is the internal index at the end of the buffer.
+     *
+     * @return true if the internal pointer is at the end of the buffer.
      */
     public final boolean eof() {
         return (index == data.length) && (offset == 0);

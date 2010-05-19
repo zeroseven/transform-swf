@@ -34,13 +34,16 @@ package com.flagstone.transform.button;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/** TODO(class). */
+/**
+ * ButtonEvent is used to represent all the different types of event that a
+ * button responds to.
+ */
 public enum ButtonEvent {
 
     // Keep the order for ROLL_OUT and ROLL_OVER though the event codes are
     // not in the right order. A set of ButtonEvents are used for encoding
     // ButtonSounds and ROLL_OUT must be before ROLL_OVER so the correct
-    // natural order is used when creating an EnumSet,
+    // natural order is used when creating an EnumSet.
 
     /**
      * Code for the button event that occurs when the mouse cursor moves out of
@@ -90,6 +93,7 @@ public enum ButtonEvent {
      */
     MENU_DRAG_OUT(256);
 
+    /** Table for translating encoded values into ButtonEvents. */
     private static final Map<Integer, ButtonEvent> TABLE =
                 new LinkedHashMap<Integer, ButtonEvent>();
 
@@ -99,17 +103,31 @@ public enum ButtonEvent {
         }
     }
 
-    protected static ButtonEvent fromInt(final int type) {
-        return TABLE.get(type);
+    /**
+     * Get the ButtonEvent for a given encoded value.
+     * @param value the encoded event.
+     * @return the ButtonEvent corresponding to the encoded value.
+     */
+    protected static ButtonEvent fromInt(final int value) {
+        return TABLE.get(value);
     }
 
+    /** The value encoded for a ButtonEvent. */
     private final int value;
 
+    /**
+     * Private constructor for ButtonEvents.
+     * @param eventCode the value representing the encoded ButtonEvent.
+     */
     private ButtonEvent(final int eventCode) {
         value = eventCode;
     }
 
-    protected int getValue() {
+    /**
+     * Get the value representing the encoded ButtonEvent.
+     * @return the value used to encode the ButtonEvent.
+     */
+    public int getValue() {
         return value;
     }
 }

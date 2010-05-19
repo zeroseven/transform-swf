@@ -35,15 +35,12 @@ import com.flagstone.transform.video.AudioData;
 import com.flagstone.transform.video.VideoData;
 import com.flagstone.transform.video.VideoMetaData;
 
-/** TODO(class). */
+/**
+ * VideoDecoder is responsible for decoding the binary Flash Video data into
+ * the different instances of VideoTag objects.
+*/
 public final class VideoDecoder implements FLVFactory<VideoTag> {
-
     /** {@inheritDoc} */
-    public FLVFactory<VideoTag> copy() {
-        return new VideoDecoder();
-    }
-
-
     public VideoTag getObject(final FLVDecoder coder) throws CoderException {
 
         VideoTag object;

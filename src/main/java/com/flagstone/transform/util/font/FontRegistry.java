@@ -34,22 +34,25 @@ package com.flagstone.transform.util.font;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/** TODO(class). */
+/**
+ * FontRegistry is used to provide a directory for registering FontProviders
+ * that are used to decode different font formats.
+ */
 public final class FontRegistry {
 
+    /** The table of font providers used to decode each supported format. */
     private static Map<String, FontProvider> providers =
         new LinkedHashMap<String, FontProvider>();
 
     static {
         for (final FontEncoding encoding : FontEncoding.values()) {
-            registerProvider(encoding.getMimeType(), encoding.getProvider());
+            registerProvider(encoding.getType(), encoding.getProvider());
         }
     }
 
     /**
-     * Register an FontDecoder to handle images in the specified format. The
-     * image formats currently supported are defined in the {@link FontInfo}
-     * class.
+     * Register a FontDecoder to handle fonts in the specified format. Currently
+     * Java AWT, TrueType/OpenType and Flash fonts are supported.
      *
      * @param mimeType
      *            the string identifying the image format.
@@ -61,16 +64,22 @@ public final class FontRegistry {
         providers.put(mimeType, decoder);
     }
 
-    
-    public static FontDecoder getFontProvider(final String mimeType) {
+    /**
+     * Get the provider that can be used to decode a given font format.
+     * @param type string defined in FontEncoding identifying the font format.
+     * @return an object implementing the ImageDecoder interface that can be
+     * used to decode the image data.
+     */
+    public static FontDecoder getFontProvider(final String type) {
 
-        if (providers.containsKey(mimeType)) {
-            return providers.get(mimeType).newDecoder();
+        if (providers.containsKey(type)) {
+            return providers.get(type).newDecoder();
         } else {
             throw new IllegalArgumentException();
         }
     }
 
+    /** Private constructor for the image registry. */
     private FontRegistry() {
         // Registry is shared.
     }

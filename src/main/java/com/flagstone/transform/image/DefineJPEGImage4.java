@@ -100,6 +100,8 @@ public final class DefineJPEGImage4 implements ImageTag {
      * @param uid
      *            the unique identifier for this object. Must be in the range
      *            1..65535.
+     * @param level
+     *            the level of deblocking used for the image.
      * @param img
      *            the JPEG encoded image data. Must not be null.
      * @param transparency

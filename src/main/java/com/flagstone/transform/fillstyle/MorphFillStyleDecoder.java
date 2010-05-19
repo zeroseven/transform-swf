@@ -29,56 +29,48 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.flagstone.transform.coder;
+package com.flagstone.transform.fillstyle;
 
 
-import com.flagstone.transform.fillstyle.FillStyle;
-import com.flagstone.transform.fillstyle.MorphBitmapFill;
-import com.flagstone.transform.fillstyle.MorphFocalGradientFill;
-import com.flagstone.transform.fillstyle.MorphGradientFill;
-import com.flagstone.transform.fillstyle.MorphSolidFill;
+import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.Context;
+import com.flagstone.transform.coder.SWFDecoder;
+import com.flagstone.transform.coder.SWFFactory;
 
 /**
- * Factory is the default implementation of an SWFFactory which used to create
- * instances of Transform classes.
+ * MorphFillStyleDecoder is used to decode the different types of fill styles
+ * used in morphing shapes.
  */
-//TODO(class)
 public final class MorphFillStyleDecoder implements SWFFactory<FillStyle> {
-
     /** {@inheritDoc} */
-    public SWFFactory<FillStyle> copy() {
-        return new MorphFillStyleDecoder();
-    }
-
-
     public FillStyle getObject(final SWFDecoder coder, final Context context)
             throws CoderException {
 
         FillStyle style;
 
         switch (coder.scanByte()) {
-        case 0:
+        case FillStyleTypes.SOLID_COLOR:
             style = new MorphSolidFill(coder, context);
             break;
-        case 0x10:
+        case FillStyleTypes.LINEAR_GRADIENT:
             style = new MorphGradientFill(coder, context);
             break;
-        case 0x12:
+        case FillStyleTypes.RADIAL_GRADIENT:
             style = new MorphGradientFill(coder, context);
             break;
-        case 0x13:
+        case FillStyleTypes.FOCAL_GRADIENT:
             style = new MorphFocalGradientFill(coder, context);
             break;
-        case 0x40:
+        case FillStyleTypes.TILED_BITMAP:
             style = new MorphBitmapFill(coder);
             break;
-        case 0x41:
+        case FillStyleTypes.CLIPPED_BITMAP:
             style = new MorphBitmapFill(coder);
             break;
-        case 0x42:
+        case FillStyleTypes.UNSMOOTHED_TILED_BITMAP:
             style = new MorphBitmapFill(coder);
             break;
-        case 0x43:
+        case FillStyleTypes.UNSMOOTHED_CLIPPED_BITMAP:
             style = new MorphBitmapFill(coder);
             break;
         default:

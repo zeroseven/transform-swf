@@ -34,9 +34,13 @@ package com.flagstone.transform.util.image;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/** TODO(class). */
+/**
+ * ImageRegistry is used to provide a directory for registering ImageProviders
+ * that are used to decode different image formats.
+ */
 public final class ImageRegistry {
 
+    /** The table of image providers used to decode each supported format. */
     private static Map<String, ImageProvider> providers =
         new LinkedHashMap<String, ImageProvider>();
 
@@ -48,7 +52,7 @@ public final class ImageRegistry {
 
     /**
      * Register an ImageDecoder to handle images in the specified format. The
-     * image formats currently supported are defined in the {@link ImageInfo}
+     * image formats currently supported are defined in the ImageFormat
      * class.
      *
      * @param mimeType
@@ -61,7 +65,12 @@ public final class ImageRegistry {
         providers.put(mimeType, decoder);
     }
 
-    
+    /**
+     * Get the provider that can be used to decode a given image format.
+     * @param mimeType the MIME type identifying the image format.
+     * @return an object implementing the ImageDecoder interface that can be
+     * used to decode the image data.
+     */
     public static ImageDecoder getImageProvider(final String mimeType) {
 
         if (providers.containsKey(mimeType)) {
@@ -71,6 +80,7 @@ public final class ImageRegistry {
         }
     }
 
+    /** Private constructor for the image registry. */
     private ImageRegistry() {
         // Registry is shared.
     }

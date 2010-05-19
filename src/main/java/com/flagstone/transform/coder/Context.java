@@ -68,22 +68,24 @@ public final class Context {
     /** TODO(doc). */
     public static final int SHAPE_SIZE = 15;
 
+    /** The character encoding used for strings. */
     private String encoding;
+    /** The registry containing the objects that perform the decoding. */
     private DecoderRegistry registry;
+    /** A table of variables used to pass information between objects. */
     private Map<Integer, Integer> variables;
 
-
+    /**
+     * Create a Context object.
+     */
     public Context() {
         variables = new LinkedHashMap<Integer, Integer>();
     }
 
-    public Context(final Integer key, final Integer value) {
-        variables = new LinkedHashMap<Integer, Integer>();
-        variables.put(key, value);
-    }
-
     /**
-     * Returns character encoding scheme used when encoding or decoding strings.
+     * Get character encoding scheme used when encoding or decoding strings.
+     *
+     * @return the character encoding used for strings.
      */
     public String getEncoding() {
         return encoding;
@@ -126,26 +128,44 @@ public final class Context {
         }
     }
 
+    /**
+     * Get the registry containing the decoders for different types of objects.
+     * @return the decoder registry.
+     */
     public DecoderRegistry getRegistry() {
         return registry;
     }
 
-
+    /**
+     * Set the registry containing the decoders for different types of objects.
+     * @param decoderRegistry the registry containing decoder objects.
+     */
     public void setRegistry(final DecoderRegistry decoderRegistry) {
         registry = decoderRegistry;
     }
 
-
+    /**
+     * Get the table of variables used to exchange information between objects.
+     * @return the variable table.
+     */
     public Map<Integer, Integer> getVariables() {
         return variables;
     }
 
-
+    /**
+     * Set the table of variables used to exchange information between objects.
+     * @param map the variable table.
+     */
     public void setVariables(final Map<Integer, Integer> map) {
         variables = map;
     }
 
-
+    /**
+     * Set a variable.
+     * @param key the name of the variable.
+     * @param value the variable value.
+     * @return this object.
+     */
     public Context put(final Integer key, final Integer value) {
         variables.put(key, value);
         return this;

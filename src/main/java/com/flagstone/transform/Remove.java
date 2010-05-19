@@ -67,6 +67,7 @@ public final class Remove implements MovieTag {
 
     /** The unique identifier of the object on the display list. */
     private int identifier;
+    /** The layer where the object is displayed. */
     private int layer;
 
     /**

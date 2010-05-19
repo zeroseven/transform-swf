@@ -31,11 +31,15 @@
 
 package com.flagstone.transform.video;
 
+/**
+ * Deblocking is used to specify the whether deblocking is applied to video
+ * streams.
+ */
 public enum Deblocking {
-    /** TODO(doc). */
+    /** No deblocking. */
     OFF,
-    /** TODO(doc). */
+    /** Apply deblocking. */
     ON,
-    /** TODO(doc). */
+    /** Apply deblocking if it is specified in the video stream. */
     VIDEO
 }

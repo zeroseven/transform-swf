@@ -74,8 +74,11 @@ public final class Place implements MovieTag {
 
     /** The unique identifier of the object that will be displayed. */
     private int identifier;
+    /** The display list layer number. */
     private int layer;
+    /** The coordinate transform applied to the displayed object. */
     private CoordTransform transform;
+    /** The color transform applied to the displayed object. */
     private ColorTransform colorTransform;
 
     /** The length of the object, minus the header, when it is encoded. */
@@ -180,7 +183,11 @@ public final class Place implements MovieTag {
     }
 
     /**
-     * Returns the identifier of the object to add to the display list.
+     * Get the identifier of the object to be placed. This is only required
+     * when placing an object for the first time. Subsequent references to the
+     * object on this layer can simply use the layer number.
+     *
+     * @return the unique identifier of the object to be displayed.
      */
     public int getIdentifier() {
         return identifier;
@@ -192,6 +199,7 @@ public final class Place implements MovieTag {
      * @param uid
      *            the unique identifier for the object to the placed on the
      *            display list. Must be in the range 1..65535.
+     * @return this object.
      */
     public Place setIdentifier(final int uid) {
         if ((uid < SWF.MIN_IDENTIFIER) || (uid > SWF.MAX_IDENTIFIER)) {
@@ -203,7 +211,10 @@ public final class Place implements MovieTag {
     }
 
     /**
-     * Returns the layer that defines the order in which objects are displayed.
+     * Get the Layer on which the object will be displayed in the display
+     * list.
+     *
+     * @return the layer where the object will be displayed.
      */
     public int getLayer() {
         return layer;
@@ -215,6 +226,7 @@ public final class Place implements MovieTag {
      * @param aNumber
      *            the layer in the display list where the object will be placed.
      *            Must be in the range 1..65535.
+     * @return this object.
      */
     public Place setLayer(final int aNumber) {
         if ((aNumber < 1) || (aNumber > SWF.MAX_LAYER)) {
@@ -225,8 +237,11 @@ public final class Place implements MovieTag {
     }
 
     /**
-     * Returns the transform that defines the position where the object is
-     * displayed.
+     * Get the coordinate transform. May be null if no coordinate transform
+     * was defined.
+     *
+     * @return the coordinate transform that will be applied to the displayed
+     * object.
      */
     public CoordTransform getTransform() {
         return transform;
@@ -239,6 +254,7 @@ public final class Place implements MovieTag {
      * @param aTransform
      *            an CoordTransform object that defines the orientation, size
      *            and location of the object when it is drawn. Must not be null.
+     * @return this object.
      */
     public Place setTransform(final CoordTransform aTransform) {
         if (aTransform == null) {
@@ -249,8 +265,11 @@ public final class Place implements MovieTag {
     }
 
     /**
-     * Returns the colour transform that defines any colour effects applied when
-     * the object is displayed. May be null if no transform is defined.
+     * Get the colour transform. May be null if no colour transform was
+     * defined.
+     *
+     * @return the colour transform that will be applied to the displayed
+     * object.
      */
     public ColorTransform getColorTransform() {
         return colorTransform;
@@ -277,6 +296,7 @@ public final class Place implements MovieTag {
      * @param aColorTransform
      *            an ColorTransform object that defines the colour of the object
      *            when it is drawn. May be set to null.
+     * @return this object.
      */
     public Place setColorTransform(final ColorTransform aColorTransform) {
         colorTransform = aColorTransform;

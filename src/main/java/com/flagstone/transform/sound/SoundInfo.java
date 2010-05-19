@@ -143,6 +143,8 @@ public final class SoundInfo implements SWFEncodeable {
      * @param aCount
      *            the number of times the sound is repeated. May be set to zero
      *            if the sound will not be repeated.
+     * @param anEnvelope
+     *            the Envelope that control the levels the sound is played.
      */
     public SoundInfo(final int uid, final Mode aMode, final int aCount,
             final Envelope anEnvelope) {

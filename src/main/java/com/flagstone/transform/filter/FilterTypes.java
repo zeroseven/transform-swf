@@ -47,8 +47,9 @@ public final class FilterTypes {
     /** TODO(doc). */
     public static final int COLOR_MATRIX = 6;
     /** TODO(doc). */
-   public static final int GRADIENT_BEVEL = 7;
+    public static final int GRADIENT_BEVEL = 7;
 
+    /** Private constructor. */
     private FilterTypes() {
         // Class contains only constants
     }

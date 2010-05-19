@@ -352,6 +352,8 @@ public final class DefineTextField implements DefineTag {
 
     /**
      * Creates an DefineTextField object with the specified identifier.
+     *
+     * @param uid the unique identifier for the text field.
      */
     public DefineTextField(final int uid) {
         setIdentifier(uid);

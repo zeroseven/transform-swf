@@ -61,8 +61,9 @@ public interface SoundDecoder {
      */
     void read(URL url) throws IOException, DataFormatException;
     /**
-     * Read a sound from an imput stream.
+     * Read a sound from an input stream.
      * @param stream the stream used to read the sound data.
+     * @param size the length of the stream in bytes.
      * @throws IOException if there is an error reading the sound data.
      * @throws DataFormatException if the file contains an unsupported format.
      */

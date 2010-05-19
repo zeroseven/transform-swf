@@ -39,24 +39,56 @@ import java.util.zip.DataFormatException;
 
 import com.flagstone.transform.coder.ImageTag;
 
-/** TODO(class). */
+/**
+ * ImageDecoder is an interface that classes used to decode different image
+ * formats should implement in order to be registered with the ImageRegistry.
+ */
 public interface ImageDecoder {
-
-
+    /**
+     * Read an image from a file.
+     * @param file the path to the file.
+     * @throws IOException if there is an error reading the image data.
+     * @throws DataFormatException if the file contains an unsupported format.
+     */
     void read(File file) throws IOException, DataFormatException;
-
-
+    /**
+     * Read an image from a file referenced by a URL.
+     * @param url the reference to the file.
+     * @throws IOException if there is an error reading the image data.
+     * @throws DataFormatException if the file contains an unsupported format.
+     */
     void read(URL url) throws IOException, DataFormatException;
-
-
+    /**
+     * Read an image from an input stream.
+     * @param stream the stream used to read the image data.
+     * @param size the length of the stream in bytes.
+     * @throws IOException if there is an error reading the image data.
+     * @throws DataFormatException if the file contains an unsupported format.
+     */
     void read(InputStream stream, int size)
         throws IOException, DataFormatException;
-
+    /**
+     * Get the width of the image.
+     * @return the width of the image in pixels.
+     */
     int getWidth();
-
+    /**
+     * Get the height of the image.
+     * @return the height of the image in pixels.
+     */
     int getHeight();
-
+    /**
+     * Get the array of bytes that make up the image. This method is used by
+     * the ImageFactory to generate a list of blocks for encoding an image as
+     * ScreenVideo.
+     *
+     * @return the array of bytes representing the image.
+     */
     byte[] getImage();
-
+    /**
+     * Create the image definition so it can be added to a movie.
+     * @param identifier the unique identifier used to refer to the image.
+     * @return the image definition.
+     */
     ImageTag defineImage(int identifier);
 }
