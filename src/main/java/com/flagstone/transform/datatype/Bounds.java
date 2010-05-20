@@ -80,6 +80,40 @@ public final class Bounds implements SWFEncodeable {
      */
     private static final int FIELD_SIZE = 5;
 
+    /**
+     * Create a Bounds by applying a padding factor to all sides of the
+     * bounding box.
+     *
+     * @param bounds the Bounds to adjust.
+     * @param padding the margin to add to the coordinates of the bounds.
+     * @return the adjusted Bounds.
+     */
+    public static Bounds pad(final Bounds bounds, final int padding) {
+        return new Bounds(bounds.getMinX() - padding,
+                bounds.getMinY() - padding,
+                bounds.getMaxX() + padding,
+                bounds.getMaxY() + padding);
+    }
+
+    /**
+     * Create a Bounds by applying a padding factor to all sides of the
+     * bounding box.
+     *
+     * @param bounds the Bounds to adjust.
+     * @param top the to apply to the top of the bounding box.
+     * @param right the to apply to the right of the bounding box.
+     * @param bottom the to apply to the bottom of the bounding box.
+     * @param left the to apply to the left of the bounding box.
+     * @return the adjusted Bounds.
+     */
+    public static Bounds pad(final Bounds bounds, final int top,
+            final int right, final int bottom, final int left) {
+        return new Bounds(bounds.getMinX() - left,
+                bounds.getMinY() - top,
+                bounds.getMaxX() + right,
+                bounds.getMaxY() + bottom);
+    }
+
     /** X-coordinate of upper left corner of bounding box. */
     private final transient int minX;
     /** Y-coordinate of upper left corner of bounding box. */

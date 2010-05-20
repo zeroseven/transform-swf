@@ -104,7 +104,7 @@ public final class AWTFontTest {
         try {
             final int fontSize = 720;
             final int padding = 100;
-            String alphabet = "abc XYZ ɑ4ß2º € éêöã";
+            String alphabet = "abcXYZɑ4ßº€éêöã";
 
             final AWTDecoder fontDecoder = new AWTDecoder();
             fontDecoder.read(sourceFont);
@@ -126,7 +126,8 @@ public final class AWTFontTest {
             embeddedFont.setName("embedded");
 
             final TextTable textTable = new TextTable(embeddedFont, fontSize);
-            final Bounds bounds = textTable.boundsForText(alphabet, padding);
+            final Bounds bounds = Bounds.pad(textTable.boundsForText(alphabet),
+                    padding);
 
             // Create a text field that uses an embedded font.
             DefineTextField nativeField = new DefineTextField(movie.nextId());
@@ -150,9 +151,8 @@ public final class AWTFontTest {
             embeddedField.setWordWrapped(true);
             embeddedField.setInitialText(alphabet);
 
-            movie.setFrameSize(new Bounds(0, 0,
-                    bounds.getWidth() + padding * 2,
-                    bounds.getHeight() * 2 + padding * 6));
+            movie.setFrameSize(Bounds.pad(new Bounds(0, 0, bounds.getWidth(),
+                    bounds.getHeight() * 2), 0, padding * 2, padding * 6, 0));
             movie.setFrameRate(1.0f);
             movie.add(new Background(WebPalette.WHITE.color()));
             movie.add(nativeFont);
