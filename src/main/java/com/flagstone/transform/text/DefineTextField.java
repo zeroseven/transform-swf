@@ -259,8 +259,8 @@ public final class DefineTextField implements DefineTag {
     private Integer rightMargin;
     private Integer indent;
     private Integer leading;
-    private String variableName;
-    private String initialText;
+    private String variableName = "";
+    private String initialText = "";
 
     /** The length of the object, minus the header, when it is encoded. */
     private transient int length;

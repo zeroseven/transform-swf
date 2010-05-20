@@ -93,6 +93,27 @@ public final class TextTable {
     }
 
     /**
+     * Create a bound box that encloses the line of text when rendered using the
+     * specified font and size and including a margin.
+     *
+     * @param text
+     *            the string to be displayed.
+     * @param padding
+     *            the padding applied so the box is larger than the space
+     *            occupied by the glyphs.
+     *
+     * @return the bounding box that completely encloses the text.
+     */
+    public Bounds boundsForText(final String text, final int padding) {
+        int total = 0;
+        for (int i = 0; i < text.length(); i++) {
+            total += characters.get(text.charAt(i)).getAdvance();
+        }
+        return new Bounds(padding, -ascent - padding,
+                total + padding, descent + padding);
+    }
+
+    /**
      * Create an array of characters that can be added to a text span.
      *
      * @param text

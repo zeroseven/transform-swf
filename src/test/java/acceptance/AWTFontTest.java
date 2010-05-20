@@ -49,7 +49,7 @@ import com.flagstone.transform.ShowFrame;
 import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.datatype.WebPalette;
 import com.flagstone.transform.font.DefineFont2;
-import com.flagstone.transform.text.DefineText2;
+import com.flagstone.transform.text.DefineTextField;
 import com.flagstone.transform.util.font.AWTDecoder;
 import com.flagstone.transform.util.font.Font;
 import com.flagstone.transform.util.text.CharacterSet;
@@ -71,9 +71,9 @@ public final class AWTFontTest {
                 new java.awt.Font("Arial", java.awt.Font.PLAIN, 12),
                 new java.awt.Font("Arial", java.awt.Font.BOLD, 12),
                 new java.awt.Font("Arial", java.awt.Font.ITALIC, 12),
-                new java.awt.Font("Courier", java.awt.Font.PLAIN, 12),
-                new java.awt.Font("Courier", java.awt.Font.BOLD, 12),
-                new java.awt.Font("Courier", java.awt.Font.ITALIC, 12),
+                new java.awt.Font("Courier New", java.awt.Font.PLAIN, 12),
+                new java.awt.Font("Courier New", java.awt.Font.BOLD, 12),
+                new java.awt.Font("Courier New", java.awt.Font.ITALIC, 12),
                 new java.awt.Font("Times New Roman", java.awt.Font.PLAIN, 12),
                 new java.awt.Font("Times New Roman", java.awt.Font.BOLD, 12),
                 new java.awt.Font("Times New Roman", java.awt.Font.ITALIC, 12)
@@ -102,8 +102,9 @@ public final class AWTFontTest {
     @Test
     public void showFont() {
         try {
-            final int fontSize = 960;
-            String alphabet = "abcdefghijklmnopqrstuvwxyz";
+            final int fontSize = 720;
+            final int padding = 100;
+            String alphabet = "abc XYZ ɑ4ß2º € éêöã";
 
             final AWTDecoder fontDecoder = new AWTDecoder();
             fontDecoder.read(sourceFont);
@@ -114,19 +115,54 @@ public final class AWTFontTest {
 
             final Movie movie = new Movie();
 
-            final DefineFont2 definition = font.defineFont(movie.nextId(),
-                    set.getCharacters());
-            final TextTable textTable = new TextTable(definition, fontSize);
-            final Bounds bounds = textTable.boundsForText(alphabet);
-            final DefineText2 text = textTable.defineText(movie.nextId(),
-                    alphabet, WebPalette.BLACK.color());
+            final DefineFont2 nativeFont = new DefineFont2(movie.nextId(),
+                    sourceFont.getFontName());
+            nativeFont.setBold(sourceFont.isBold());
+            nativeFont.setItalic(sourceFont.isItalic());
 
-            movie.setFrameSize(bounds);
+            final DefineFont2 embeddedFont = font.defineFont(movie.nextId(),
+                    set.getCharacters());
+            // Two fonts cannot have the same name.
+            embeddedFont.setName("embedded");
+
+            final TextTable textTable = new TextTable(embeddedFont, fontSize);
+            final Bounds bounds = textTable.boundsForText(alphabet, padding);
+
+            // Create a text field that uses an embedded font.
+            DefineTextField nativeField = new DefineTextField(movie.nextId());
+            nativeField.setBounds(bounds);
+            nativeField.setAlignment(DefineTextField.Align.LEFT);
+            nativeField.setFontIdentifier(nativeFont.getIdentifier());
+            nativeField.setFontHeight(fontSize);
+            nativeField.setEmbedded(false);
+            nativeField.setMultiline(true);
+            nativeField.setWordWrapped(true);
+            nativeField.setInitialText(alphabet);
+
+            // Create a text field that uses an embedded font.
+            DefineTextField embeddedField = new DefineTextField(movie.nextId());
+            embeddedField.setBounds(bounds);
+            embeddedField.setAlignment(DefineTextField.Align.LEFT);
+            embeddedField.setFontIdentifier(embeddedFont.getIdentifier());
+            embeddedField.setFontHeight(fontSize);
+            embeddedField.setEmbedded(true);
+            embeddedField.setMultiline(true);
+            embeddedField.setWordWrapped(true);
+            embeddedField.setInitialText(alphabet);
+
+            movie.setFrameSize(new Bounds(0, 0,
+                    bounds.getWidth() + padding * 2,
+                    bounds.getHeight() * 2 + padding * 6));
             movie.setFrameRate(1.0f);
-            movie.add(new Background(WebPalette.LIGHT_BLUE.color()));
-            movie.add(definition);
-            movie.add(text);
-            movie.add(Place2.show(text.getIdentifier(), 1, 0, 0));
+            movie.add(new Background(WebPalette.WHITE.color()));
+            movie.add(nativeFont);
+            movie.add(nativeField);
+            movie.add(Place2.show(nativeField.getIdentifier(), 1, 0,
+                    bounds.getHeight()));
+            movie.add(embeddedFont);
+            movie.add(embeddedField);
+            movie.add(Place2.show(embeddedField.getIdentifier(), 2, 0,
+                    bounds.getHeight() * 2 + padding));
             movie.add(ShowFrame.getInstance());
             movie.encodeToFile(destFile);
 
