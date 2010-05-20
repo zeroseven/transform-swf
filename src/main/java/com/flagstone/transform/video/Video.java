@@ -87,8 +87,10 @@ public final class Video {
     }
 
     /**
-     * Returns the number representing the version of Flash Video that the video
+     * Get the number representing the version of Flash Video that the video
      * represents.
+     *
+     * @return the Flash Video version.
      */
     public int getVersion() {
         return version;
@@ -106,7 +108,9 @@ public final class Video {
     }
 
     /**
-     * Returns the array of video objects.
+     * Get the array of video objects.
+     *
+     * @return the list of objects for this video.
      */
     public List<VideoTag> getObjects() {
         return objects;
@@ -130,6 +134,7 @@ public final class Video {
      *
      * @param anObject
      *            the object to be added to the coder. Must not be null.
+     * @return this object.
      */
     public Video add(final VideoTag anObject) {
         if (anObject == null) {

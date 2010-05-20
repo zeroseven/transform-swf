@@ -173,8 +173,10 @@ public final class AudioData implements VideoTag {
     }
 
     /**
-     * Returns the timestamp, in milliseconds, relative to the start of the
+     * Get the timestamp, in milliseconds, relative to the start of the
      * file, when the audio or video will be played.
+     *
+     * @return the timestamp for the audio.
      */
     public int getTimestamp() {
         return timestamp;
@@ -301,8 +303,10 @@ public final class AudioData implements VideoTag {
     }
 
     /**
-     * Returns the number of channels in the sound, either 1 (Mono) or 2
+     * Get the number of channels in the sound, either 1 (Mono) or 2
      * (Stereo).
+     *
+     * @return the number of audio channels.
      */
     public int getChannelCount() {
         return channelCount;
@@ -326,8 +330,10 @@ public final class AudioData implements VideoTag {
     }
 
     /**
-     * Returns the size of an uncompressed sample in bytes, either 1 (8-bit) or
+     * Get the size of an uncompressed sample in bytes, either 1 (8-bit) or
      * 2 (16.-bit).
+     *
+     * @return the sample size in bytes.
      */
     public int getSampleSize() {
         return sampleSize;
@@ -349,7 +355,9 @@ public final class AudioData implements VideoTag {
     }
 
     /**
-     * Returns a copy of the sound data.
+     * Get a copy of the sound data.
+     *
+     * @return a copy of the sound.
      */
     public byte[] getData() {
         return Arrays.copyOf(data, data.length);
@@ -382,8 +390,9 @@ public final class AudioData implements VideoTag {
 
     /** {@inheritDoc} */
     public int prepareToEncode() {
+// CHECKSTYLE:OFF
         length = 12 + data.length;
-
+// CHECKSTYLE:ON
         return length;
     }
 

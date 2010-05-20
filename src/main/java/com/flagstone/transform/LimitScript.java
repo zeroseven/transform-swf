@@ -118,7 +118,7 @@ public final class LimitScript implements MovieTag {
     /**
      * Get the maximum stack depth for function execution.
      *
-     * @ the maximum number of stack frames for recursive functions.
+     * @return the maximum number of stack frames for recursive functions.
      */
     public int getDepth() {
         return depth;

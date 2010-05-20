@@ -113,7 +113,9 @@ public final class StartSound implements MovieTag {
     }
 
     /**
-     * Returns the Sound object describing how the sound will be played.
+     * Get the Sound object describing how the sound will be played.
+     *
+     * @return the SoundInfo object that controls the playback.
      */
     public SoundInfo getSound() {
         return sound;

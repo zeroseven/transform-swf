@@ -152,21 +152,27 @@ public final class DefineJPEGImage implements ImageTag {
     }
 
     /**
-     * Returns the width of the image in pixels.
+     * Get the width of the image in pixels.
+     *
+     * @return the image width.
      */
     public int getWidth() {
         return width;
     }
 
     /**
-     * Returns the height of the image in pixels.
+     * Get the height of the image in pixels (not twips).
+     *
+     * @return the height of the image.
      */
     public int getHeight() {
         return height;
     }
 
     /**
-     * Returns the image data.
+     * Get a copy of the image.
+     *
+     * @return  a copy of the data.
      */
     public byte[] getImage() {
         return Arrays.copyOf(image, image.length);

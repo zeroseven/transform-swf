@@ -190,23 +190,29 @@ public final class MorphBitmapFill implements FillStyle {
     }
 
     /**
-     * Returns the unique identifier of the bitmap image.
+     * Get the unique identifier of the bitmap image.
+     *
+     * @return the image identifier.
      */
     public int getIdentifier() {
         return identifier;
     }
 
     /**
-     * Returns the coordinate transform defining the appearance of the image at
+     * Get the coordinate transform defining the appearance of the image at
      * the start of the morphing process.
+     *
+     * @return the starting coordinate transform applied to the image.
      */
     public CoordTransform getStartTransform() {
         return startTransform;
     }
 
     /**
-     * Returns the coordinate transform defining the appearance of the image at
+     * Get the coordinate transform defining the appearance of the image at
      * the end of the morphing process.
+     *
+     * @return the final coordinate transform applied to the image.
      */
     public CoordTransform getEndTransform() {
         return endTransform;

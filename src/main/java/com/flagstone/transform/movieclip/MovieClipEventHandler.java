@@ -237,6 +237,7 @@ public final class MovieClipEventHandler implements SWFEncodeable {
      *
      * @param anAction
      *            an action object. Must not be null.
+     * @return this object.
      */
     public MovieClipEventHandler add(final Action anAction) {
         if (anAction == null) {
@@ -270,8 +271,10 @@ public final class MovieClipEventHandler implements SWFEncodeable {
     }
 
     /**
-     * Returns the code for the key that triggers the event when pressed. The
+     * Get the code for the key that triggers the event when pressed. The
      * code is typically the ASCII code for standard western keyboards.
+     *
+     * @return the ASCII code for the key that triggers the event.
      */
     public int getKeyCode() {
         return keyCode;
@@ -304,7 +307,9 @@ public final class MovieClipEventHandler implements SWFEncodeable {
     }
 
     /**
-     * Returns the array of actions that are executed by the movie clip.
+     * Get the array of actions that are executed by the movie clip.
+     *
+     * @return the actions executed by the handler.
      */
     public List<Action> getActions() {
         return actions;

@@ -133,8 +133,10 @@ public final class Protect implements MovieTag {
     }
 
     /**
-     * Returns the MD5 encrypted password. This may be null if the object was
+     * Get the MD5 password hash. This may be null if the object was
      * decoded from a file containing Flash version 2 or 3.
+     *
+     * @return the MD5 hash of the password used to protect the file.
      */
     public String getPassword() {
         return password;

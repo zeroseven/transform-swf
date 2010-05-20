@@ -218,14 +218,18 @@ public final class DefineText2 implements DefineTag {
     }
 
     /**
-     * Returns the width of the text block in twips.
+     * Get the width of the text block in twips.
+     *
+     * @return the width of the text.
      */
     public int getWidth() {
         return bounds.getWidth();
     }
 
     /**
-     * Returns the height of the text block in twips.
+     * Get the height of the text block in twips.
+     *
+     * @return the height of the text.
      */
     public int getHeight() {
         return bounds.getHeight();
@@ -236,6 +240,7 @@ public final class DefineText2 implements DefineTag {
      *
      * @param obj
      *            an TextSpan object. Must not be null.
+     * @return this object.
      */
     public DefineText2 add(final TextSpan obj) {
         if (obj == null) {
@@ -256,15 +261,19 @@ public final class DefineText2 implements DefineTag {
     }
 
     /**
-     * Returns the coordinate transform that controls how the text is displayed.
+     * Get the coordinate transform that controls the size, location and
+     * orientation of the text when it is displayed.
+     *
+     * @return the coordinate transform used to position the text.
      */
     public CoordTransform getTransform() {
         return transform;
     }
 
     /**
-     * Returns the array of text records that define the text to be displayed as
-     * its attributes.
+     * Get the array of text spans that define the text to be displayed.
+     *
+     * @return the list of text blocks.
      */
     public List<TextSpan> getObjects() {
         return objects;

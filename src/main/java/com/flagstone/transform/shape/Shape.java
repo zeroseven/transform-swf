@@ -154,6 +154,7 @@ public final class Shape implements SWFEncodeable {
      *
      * @param anObject
      *            an instance of ShapeStyle, Line or Curve. Must not be null.
+     * @return this object.
      */
     public Shape add(final ShapeRecord anObject) {
         if (anObject == null) {
@@ -164,7 +165,9 @@ public final class Shape implements SWFEncodeable {
     }
 
     /**
-     * Returns the array of shape records that define the shape.
+     * Get the array of shape records that define the shape.
+     *
+     * @return the list of shape records.
      */
     public List<ShapeRecord> getObjects() {
         return objects;

@@ -157,7 +157,9 @@ public final class ButtonSound implements MovieTag {
     }
 
     /**
-     * Returns the unique identifier of the button that this object applies to.
+     * Get the unique identifier of the button that this object applies to.
+     *
+     * @return the unique identifier of the sound.
      */
     public int getIdentifier() {
         return identifier;

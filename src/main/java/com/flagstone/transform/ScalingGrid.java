@@ -47,7 +47,9 @@ public final class ScalingGrid implements DefineTag {
     private static final String FORMAT = "ScalingGrid: { identifier=%d;"
             + " bounds=%s; }";
 
+    /** the unique identifier of the object. */
     private int identifier;
+    /** The box that defines the centre of the grid. */
     private Bounds bounds;
 
     /** The length of the object, minus the header, when it is encoded. */
@@ -69,7 +71,15 @@ public final class ScalingGrid implements DefineTag {
         bounds = new Bounds(coder);
     }
 
-
+    /**
+     * Creates and initialises a ScalingGrid with the specified object
+     * identifier and bounding box for the centre section.
+     *
+     * @param uid the unique identifier of the object to which the grid will be
+     * applied
+     * @param aBounds the bounding box that defines the coordinates of the
+     * centre section of the grid.
+     */
     public ScalingGrid(final int uid, final Bounds aBounds) {
         setIdentifier(uid);
         setBounds(aBounds);
@@ -88,12 +98,22 @@ public final class ScalingGrid implements DefineTag {
         bounds = object.bounds;
     }
 
-
+    /**
+     * Get the identifier of the object which the scaling grid will be applied
+     * to.
+     *
+     * @return the object identifier.
+     */
     public int getIdentifier() {
         return identifier;
     }
 
-
+    /**
+     * Set the identifier of the object which the scaling grid will be applied
+     * to.
+     *
+     * @param uid the unique identifier of the object.
+     */
     public void setIdentifier(final int uid) {
         if ((uid < SWF.MIN_IDENTIFIER) || (uid > SWF.MAX_IDENTIFIER)) {
             throw new IllegalArgumentRangeException(
@@ -102,12 +122,18 @@ public final class ScalingGrid implements DefineTag {
         identifier = uid;
     }
 
-
+    /**
+     * Get the bounding box that defined the centre section of the scaling grid.
+     * @return the box defining the centre of the grid.
+     */
     public Bounds getBounds() {
         return bounds;
     }
 
-
+    /**
+     * Set the bounding box that defined the centre section of the scaling grid.
+     * @param aBounds the box defining the centre of the grid.
+     */
     public void setBounds(final Bounds aBounds) {
         if (aBounds == null) {
             throw new IllegalArgumentException();

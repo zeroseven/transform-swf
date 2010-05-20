@@ -200,7 +200,7 @@ public final class Layer {
     }
 
     /**
-     * Return the layer number. The Flash Player assumes that there is only one
+     * Get the layer number. The Flash Player assumes that there is only one
      * object placed on each layer and so each must have a unique number.
      *
      * @return the layer number.
@@ -210,7 +210,9 @@ public final class Layer {
     }
 
     /**
-     * TODO(method).
+     * Get the list of frames.
+     *
+     * @return the Frames defined for the Layer.
      */
     public List<Frame> getFrames() {
         return frames;
@@ -221,6 +223,7 @@ public final class Layer {
      *
      * @param frame
      *            a Frame object.
+     * @return this object.
      */
     public Layer add(final Frame frame) {
         frames.add(frame);

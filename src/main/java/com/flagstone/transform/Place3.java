@@ -247,8 +247,11 @@ public final class Place3 implements MovieTag {
 
     /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
+    /** Indicates whether the encoded object contains a blend. */
     private transient boolean hasBlend;
+    /** Indicates whether the encoded object contains filters. */
     private transient boolean hasFilters;
+    /** Indicates whether the encoded object contains an image. */
     private transient boolean hasImage;
 
     /**
@@ -675,12 +678,20 @@ public final class Place3 implements MovieTag {
         return this;
     }
 
-
+    /**
+     * Get the list of filters that will be applied to the object when it is
+     * displayed as a bitmap.
+     * @return the list of bitmap filters.
+     */
     public List<Filter> getFilters() {
         return filters;
     }
 
-
+    /**
+     * Set the list of filters that will be applied to the object when it is
+     * displayed as a bitmap.
+     * @param array the list of bitmap filters.
+     */
     public void setFilters(final List<Filter> array) {
         if (array == null) {
             throw new IllegalArgumentException();

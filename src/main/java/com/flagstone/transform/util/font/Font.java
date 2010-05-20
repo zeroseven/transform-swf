@@ -34,7 +34,9 @@ package com.flagstone.transform.util.font;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.flagstone.transform.SWF;
 import com.flagstone.transform.datatype.Bounds;
+import com.flagstone.transform.exception.IllegalArgumentRangeException;
 import com.flagstone.transform.font.CharacterFormat;
 import com.flagstone.transform.font.DefineFont2;
 import com.flagstone.transform.font.Kerning;
@@ -93,9 +95,9 @@ public final class Font {
     private FontFace face;
     private CharacterFormat encoding;
 
-    private float ascent;
-    private float descent;
-    private float leading;
+    private int ascent;
+    private int descent;
+    private int leading;
 
     private transient int[] charToGlyph;
     private transient int[] glyphToChar;
@@ -108,9 +110,6 @@ public final class Font {
 
     private final transient List<Kerning> kernings = new ArrayList<Kerning>();
 
-    /**
-     * TODO(method).
-     */
     public FontFace getFace() {
         return face;
     }
@@ -120,58 +119,108 @@ public final class Font {
     }
 
     /**
-     * Returns the encoding scheme used for the character codes, either UCS2,
+     * Get the encoding scheme used for the character codes, either UCS2,
      * ANSI or SJIS.
+     *
+     * @return the encoding used for the character codes.
      */
     public CharacterFormat getEncoding() {
         return encoding;
     }
 
+    /**
+     * Set the encoding scheme used for the character codes, either UCS2,
+     * ANSI or SJIS.
+     *
+     * @param enc the encoding used for the character codes.
+     */
     public void setEncoding(final CharacterFormat enc) {
         encoding = enc;
     }
 
     /**
-     * Returns the ascent (maximum distance) above the baseline for the font.
+     * Get the ascent for the font in twips.
+     *
+     * @return the ascent for the font.
      */
-    public float getAscent() {
+    public int getAscent() {
         return ascent;
     }
 
-    public void setAscent(final float dist) {
+    /**
+     * Sets the ascent for the font in twips.
+     *
+     * @param dist
+     *            the ascent for the font in the range -32768..32767.
+     */
+    public void setAscent(final int dist) {
+        if ((dist < SWF.MIN_ASCENT) || (dist > SWF.MAX_ASCENT)) {
+            throw new IllegalArgumentRangeException(
+                    SWF.MIN_ASCENT, SWF.MAX_ASCENT, dist);
+        }
         ascent = dist;
     }
 
     /**
-     * Returns the descent (maximum distance) below the baseline for the font.
+     * Get the descent for the font in twips.
+     *
+     * @return the descent for the font.
      */
-    public float getDescent() {
+    public int getDescent() {
         return descent;
     }
 
-    public void setDescent(final float dist) {
+    /**
+     * Sets the descent for the font in twips.
+     *
+     * @param dist
+     *            the descent for the font in the range -32768..32767.
+     */
+    public void setDescent(final int dist) {
+        if ((dist < SWF.MIN_DESCENT) || (dist > SWF.MAX_DESCENT)) {
+            throw new IllegalArgumentRangeException(
+                    SWF.MIN_DESCENT, SWF.MAX_DESCENT, dist);
+        }
         descent = dist;
     }
 
     /**
-     * Returns the amount of space between lines.
+     * Returns the leading for the font in twips.
+     *
+     * @return the leading for the font.
      */
-    public float getLeading() {
+    public int getLeading() {
         return leading;
     }
 
-
-    public void setLeading(final float dist) {
+    /**
+     * Sets the leading for the font in twips.
+     *
+     * @param dist
+     *            the descent for the font in the range -32768..32767.
+     */
+    public void setLeading(final int dist) {
+        if ((dist < SWF.MIN_LEADING) || (dist > SWF.MAX_LEADING)) {
+            throw new IllegalArgumentRangeException(
+                    SWF.MIN_LEADING, SWF.MAX_LEADING, dist);
+        }
         leading = dist;
     }
 
     /**
-     * Returns the number of glyphs defined in the font.
+     * Get the number of glyphs defined in the font.
+     *
+     * @return the number of glyphs.
      */
     public int getNumberOfGlyphs() {
         return glyphCount;
     }
 
+    /**
+     * Set the number of glyphs defined in the font.
+     *
+     * @param count the number of glyphs.
+     */
     public void setNumberOfGlyphs(final int count) {
         glyphTable = new Glyph[65536];
         glyphToChar = new int[65536];
@@ -181,12 +230,19 @@ public final class Font {
     }
 
     /**
-     * Returns the highest character code defined in the font.
+     * Get the highest character code defined in the font.
+     *
+     * @return the character with the highest character code.
      */
     public char getHighestChar() {
         return highestChar;
     }
 
+    /**
+     * Set the highest character code defined in the font.
+     *
+     * @param highest the highest character code.
+     */
     public void setHighestChar(final char highest) {
         highestChar = highest;
         charToGlyph = new int[65536];
@@ -256,9 +312,9 @@ public final class Font {
         fontDefinition.setEncoding(encoding);
         fontDefinition.setItalic(face.isItalic());
         fontDefinition.setBold(face.isBold());
-        fontDefinition.setAscent((int) ascent);
-        fontDefinition.setDescent((int) descent);
-        fontDefinition.setLeading((int) leading);
+        fontDefinition.setAscent(ascent);
+        fontDefinition.setDescent(descent);
+        fontDefinition.setLeading(leading);
         fontDefinition.setShapes(glyphsArray);
         fontDefinition.setCodes(codesArray);
         fontDefinition.setAdvances(advancesArray);

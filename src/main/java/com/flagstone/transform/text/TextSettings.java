@@ -154,8 +154,10 @@ public final class TextSettings implements MovieTag {
     }
 
     /**
-     * Returns the unique identifier of the text definition that this object
+     * Get the unique identifier of the text definition that this object
      * applies to.
+     *
+     * @return the unique identifier of the text object.
      */
     public int getIdentifier() {
         return identifier;
@@ -177,8 +179,11 @@ public final class TextSettings implements MovieTag {
     }
 
     /**
-     * Returns true if the advanced text rendering engine, introduced in Flash 8
-     * will be used.
+     * Will the advanced text rendering engine, introduced in Flash 8
+     * be used.
+     *
+     * @return true if advanced text rendering is used, false if the standard
+     * rendering engine is used.
      */
     public boolean useAdvanced() {
         return (rendering & 0x40) != 0;
@@ -242,8 +247,10 @@ public final class TextSettings implements MovieTag {
     }
 
     /**
-     * Returns the value used to control the thickness of a line when rendered.
+     * Get the value used to control the thickness of a line when rendered.
      * May be set to 0.0 if the default anti-aliasing value will be used.
+     *
+     * @return the adjustment applied to the line thickness.
      */
     public float getThickness() {
         return thickness / SCALE_16;
@@ -262,8 +269,10 @@ public final class TextSettings implements MovieTag {
     }
 
     /**
-     * Returns the value used to control the sharpness of a line when rendered.
+     * Get the value used to control the sharpness of a line when rendered.
      * May be set to 0.0 if the default anti-aliasing value will be used.
+     *
+     * @return the adjustment applied to the line sharpness.
      */
     public float getSharpness() {
         return sharpness / SCALE_16;

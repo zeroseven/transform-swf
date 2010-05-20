@@ -61,6 +61,8 @@ public final class SWFDecoder extends Decoder {
 
     /**
      * Read an unsigned short integer without changing the internal pointer.
+     *
+     * @return a 16-bit unsigned value.
      */
     public int scanUnsignedShort() {
         return ((data[index + 1] & UNSIGNED_BYTE_MASK) << ALIGN_BYTE_1)

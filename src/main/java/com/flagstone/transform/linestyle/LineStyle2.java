@@ -156,7 +156,9 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
     }
 
     /**
-     * Returns the width of the line.
+     * Get the width of the line.
+     *
+     * @return the stroke width.
      */
     public int getWidth() {
         return width;
@@ -176,7 +178,9 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
     }
 
     /**
-     * Returns the colour of the line.
+     * Get the colour of the line.
+     *
+     * @return the line colour.
      */
     public Color getColor() {
         return color;

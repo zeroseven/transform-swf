@@ -213,14 +213,18 @@ public final class DefineShape implements DefineTag {
     }
 
     /**
-     * Returns the width of the shape in twips.
+     * Get the width of the shape in twips.
+     *
+     * @return the width of the shape.
      */
     public int getWidth() {
         return bounds.getWidth();
     }
 
     /**
-     * Returns the height of the shape in twips.
+     * Get the height of the shape in twips.
+     *
+     * @return the height of the shape.
      */
     public int getHeight() {
         return bounds.getHeight();
@@ -231,6 +235,8 @@ public final class DefineShape implements DefineTag {
      *
      * @param style
      *            and LineStyle object. Must not be null.
+     *
+     * @return this object.
      */
     public DefineShape add(final LineStyle style) {
         if (style == null) {
@@ -245,6 +251,8 @@ public final class DefineShape implements DefineTag {
      *
      * @param style
      *            and FillStyle object. Must not be null.
+     *
+     * @return this object.
      */
     public DefineShape add(final FillStyle style) {
         if (style == null) {
@@ -255,28 +263,36 @@ public final class DefineShape implements DefineTag {
     }
 
     /**
-     * Returns the bounding rectangle for the shape.
+     * Get the bounding rectangle for the shape.
+     *
+     * @return the Bounds that encloses the shape.
      */
     public Bounds getBounds() {
         return bounds;
     }
 
     /**
-     * Returns the array fill styles.
+     * Get the array fill styles.
+     *
+     * @return the list of fill styles used in the shape.
      */
     public List<FillStyle> getFillStyles() {
         return fillStyles;
     }
 
     /**
-     * Returns the array line styles.
+     * Get the array line styles.
+     *
+     * @return the list of line styles used in the shape.
      */
     public List<LineStyle> getLineStyles() {
         return lineStyles;
     }
 
     /**
-     * Returns the shape.
+     * Get the shape.
+     *
+     * @return the shape.
      */
     public Shape getShape() {
         return shape;

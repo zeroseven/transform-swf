@@ -155,28 +155,36 @@ public final class DefineJPEGImage3 implements ImageTag {
     }
 
     /**
-     * Returns the width of the image in pixels.
+     * Get the width of the image in pixels (not twips).
+     *
+     * @return the width of the image.
      */
     public int getWidth() {
         return width;
     }
 
     /**
-     * Returns the height of the image in pixels.
+     * Get the height of the image in pixels (not twips).
+     *
+     * @return the height of the image.
      */
     public int getHeight() {
         return height;
     }
 
     /**
-     * Returns a copy of the image data.
+     * Get a copy of the image.
+     *
+     * @return  a copy of the data.
      */
     public byte[] getImage() {
         return Arrays.copyOf(image, image.length);
     }
 
     /**
-     * Returns  a copy of the alpha channel data.
+     * Get a copy of the alpha channel.
+     *
+     * @return  a copy of the data.
      */
     public byte[] getAlpha() {
         return Arrays.copyOf(alpha, alpha.length);

@@ -128,22 +128,28 @@ public final class Envelope implements SWFEncodeable {
         }
 
         /**
-         * Returns the sample number in the 44.1KHz playback data stream where
+         * Get the sample number in the 44.1KHz playback data stream where
          * the level information is applied.
+         *
+         * @return the sample number where the sound levels will be applied.
          */
         public int getMark() {
             return mark;
         }
 
         /**
-         * Returns the level of the sound played in the left channel.
+         * Get the level of the sound played in the left channel.
+         *
+         * @return the sound level for the left channel.
          */
         public int getLeft() {
             return left;
         }
 
         /**
-         * Returns the level of the sound played in the right channel.
+         * Get the level of the sound played in the right channel.
+         *
+         * @return the sound level for the right channel.
          */
         public int getRight() {
             return right;
@@ -232,6 +238,7 @@ public final class Envelope implements SWFEncodeable {
      *
      * @param level
      *            a SoundLevel object. Must not be null.
+     * @return this object.
      */
     public Envelope add(final Level level) {
         if (level == null) {
@@ -242,7 +249,9 @@ public final class Envelope implements SWFEncodeable {
     }
 
     /**
-     * Returns the array of SoundLevels that control the volume of the sound.
+     * Get the array of Levels that control the volume of the sound.
+     *
+     * @return the Levels that define the envelope.
      */
     public List<Level> getLevels() {
         return levels;

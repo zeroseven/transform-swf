@@ -119,7 +119,9 @@ public final class JPEGEncodingTable implements MovieTag {
     }
 
     /**
-     * Returns a copy of the encoding table.
+     * Get a copy of the encoding table.
+     *
+     * @return a copy of the table data.
      */
     public byte[] getTable() {
         return Arrays.copyOf(table, table.length);

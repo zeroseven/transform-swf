@@ -48,12 +48,19 @@ public final class GradientGlowFilter implements Filter {
     /** TODO(class). */
     public static final class Builder {
         private final transient List<Gradient>gradients;
+        /** The horizontal blur amount. */
         private transient int blurX;
+        /** The vertical blur amount. */
         private transient int blurY;
+        /** Angle of gradient glow in radians. */
         private transient int angle;
+        /** The distance of the gradient glow. */
         private transient int distance;
+        /** The strength of the gradient glow. */
         private transient int strength;
+        /** Compositing mode. */
         private transient int mode;
+        /** The number of blur passes. */
         private transient int passes;
 
 
@@ -139,12 +146,19 @@ public final class GradientGlowFilter implements Filter {
             + "angle=%f; disance=%f, strength=%f; mode=%s; passes=%d}";
 
     private final transient List<Gradient> gradients;
+    /** The horizontal blur amount. */
     private final transient int blurX;
+    /** The vertical blur amount. */
     private final transient int blurY;
+    /** Angle of gradient glow in radians. */
     private final transient int angle;
+    /** Distance of the gradient glow. */
     private final transient int distance;
+    /** Strength of the gradient glow. */
     private final transient int strength;
+    /** Compositing mode. */
     private final transient int mode;
+    /** The number of blur passes. */
     private final transient int passes;
 
     public GradientGlowFilter(final Builder builder) {

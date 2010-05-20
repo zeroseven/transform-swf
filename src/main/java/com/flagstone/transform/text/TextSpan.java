@@ -221,37 +221,47 @@ public final class TextSpan implements SWFEncodeable {
     }
 
     /**
-     * Returns the identifier of the font in which the text will be displayed.
+     * Get the identifier of the font in which the text will be displayed.
+     *
+     * @return the unique identifier of the font.
      */
     public Integer getIdentifier() {
         return identifier;
     }
 
     /**
-     * Returns the colour of the font in which the text will be displayed.
+     * Get the colour used to display the text.
+     *
+     * @return the text colour.
      */
     public Color getColor() {
         return color;
     }
 
     /**
-     * Returns the location of the start of the text relative to the left edge
+     * Get the location of the start of the text relative to the left edge
      * of the bounding rectangle in twips.
+     *
+     * @return the left offset.
      */
     public Integer getOffsetX() {
         return offsetX;
     }
 
     /**
-     * Returns the location of the start of the text relative to the bottom edge
+     * Get the location of the start of the text relative to the bottom edge
      * of the bounding rectangle in twips.
+     *
+     * @return the top offset.
      */
     public Integer getOffsetY() {
         return offsetY;
     }
 
     /**
-     * Returns the height of the text.
+     * Get the height of the text.
+     *
+     * @return the size, in twips, of the font used to display the text.
      */
     public Integer getHeight() {
         return height;
@@ -340,6 +350,7 @@ public final class TextSpan implements SWFEncodeable {
      *
      * @param aCharacter
      *            an Character object. Must not be null.
+     * @return this object.
      */
     public TextSpan add(final GlyphIndex aCharacter) {
         characters.add(aCharacter);

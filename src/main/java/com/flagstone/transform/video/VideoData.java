@@ -166,8 +166,10 @@ public final class VideoData implements VideoTag {
     }
 
     /**
-     * Returns the timestamp, in milliseconds, relative to the start of the
+     * Get the timestamp, in milliseconds, relative to the start of the
      * file, when the audio or video will be played.
+     *
+     * @return the timestamp for the video.
      */
     public int getTimestamp() {
         return timestamp;

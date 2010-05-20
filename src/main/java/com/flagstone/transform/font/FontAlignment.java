@@ -124,8 +124,10 @@ public final class FontAlignment implements MovieTag {
     }
 
     /**
-     * Returns the unique identifier of the font definition that the alignment
+     * Get the unique identifier of the font definition that the alignment
      * information is for.
+     *
+     * @return the unique identifier of the font.
      */
     public int getIdentifier() {
         return identifier;

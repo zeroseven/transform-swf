@@ -125,14 +125,18 @@ public final class LineStyle implements SWFEncodeable, Copyable<LineStyle> {
     }
 
     /**
-     * Returns the width of the line.
+     * Get the width of the line.
+     *
+     * @return the stroke width.
      */
     public int getWidth() {
         return width;
     }
 
     /**
-     * Returns the colour of the line.
+     * Get the colour of the line.
+     *
+     * @return the line colour.
      */
     public Color getColor() {
         return color;
@@ -164,7 +168,7 @@ public final class LineStyle implements SWFEncodeable, Copyable<LineStyle> {
         color = aColor;
     }
 
-
+    /** {@inheritDoc} */
     public LineStyle copy() {
         return new LineStyle(this);
     }

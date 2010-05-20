@@ -57,8 +57,9 @@ public final class TabOrder implements MovieTag {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "TabOrder: { layer=%d; index=%d }";
-
+    /** The layer on which the object is displayed. */
     private int layer;
+    /** The order in which the object will received keyboard focus. */
     private int index;
 
     /**
@@ -107,8 +108,9 @@ public final class TabOrder implements MovieTag {
     }
 
     /**
-     * Returns the layer number which contains the object assigned to the
+     * Get the layer number which contains the object assigned to the
      * tabbing order.
+     * @return the layer number.
      */
     public int getLayer() {
         return layer;
@@ -129,7 +131,8 @@ public final class TabOrder implements MovieTag {
     }
 
     /**
-     * Returns the index of the object in the tabbing order.
+     * Get the index of the object in the tabbing order.
+     * @return the order in which the object will get keyboard focus.
      */
     public int getIndex() {
         return index;

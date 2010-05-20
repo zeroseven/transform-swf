@@ -282,6 +282,8 @@ public final class DefineImage implements ImageTag {
      * Get the number of entries in the colour table encoded the compressed
      * image. For images where the colour is specified directly in the image
      * then the table size is zero.
+     *
+     * @return the number of entries in the colour table.
      */
     public int getTableSize() {
         return tableSize;
@@ -289,6 +291,8 @@ public final class DefineImage implements ImageTag {
 
     /**
      * Get a copy of the compressed colour table and image.
+     *
+     * @return  a copy of the data.
      */
     public byte[] getImage() {
         return Arrays.copyOf(image, image.length);

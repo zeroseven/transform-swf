@@ -48,12 +48,19 @@ public final class GradientBevelFilter implements Filter {
     /** TODO(class). */
     public static final class Builder {
         private final transient List<Gradient>gradients;
+        /** The horizontal blur amount. */
         private transient int blurX;
+        /** The vertical blur amount. */
         private transient int blurY;
+        /** Angle of gradient bevel in radians. */
         private transient int angle;
+        /** Distance of the gradient bevel. */
         private transient int distance;
+        /** Strength of the gradient bevel. */
         private transient int strength;
+        /** Compositing mode. */
         private transient int mode;
+        /** The number of blur passes. */
         private transient int passes;
 
 
@@ -139,12 +146,19 @@ public final class GradientBevelFilter implements Filter {
             + "angle=%f; disance=%f, strength=%f; mode=%s; passes=%d}";
 
     private final transient List<Gradient> gradients;
+    /** The horizontal blur amount. */
     private final transient int blurX;
+    /** The vertical blur amount. */
     private final transient int blurY;
+    /** Angle of gradient bevel in radians. */
     private final transient int angle;
+    /** Distance of the gradient bevel. */
     private final transient int distance;
+    /** Strength of the gradient bevel. */
     private final transient int strength;
+    /** Compositing mode. */
     private final transient int mode;
+    /** The number of blur passes. */
     private final transient int passes;
 
     public GradientBevelFilter(final Builder builder) {

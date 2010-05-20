@@ -54,14 +54,23 @@ public final class BevelFilter implements Filter {
 
     /** TODO(class). */
     public static final class Builder {
+        /** The shadow colour. */
         private transient Color shadow;
+        /** The highlight colour. */
         private transient Color highlight;
+        /** The horizontal blur amount. */
         private transient int blurX;
+        /** The vertical blur amount. */
         private transient int blurY;
+        /** Angle of shadow in radians. */
         private transient int angle;
+        /** The distance of the drop shadow. */
         private transient int distance;
+        /** The strength of the drop shadow. */
         private transient int strength;
+        /** Compositing mode. */
         private transient int mode;
+        /** The number of blur passes. */
         private transient int passes;
 
 
@@ -136,14 +145,23 @@ public final class BevelFilter implements Filter {
             + " shadow=%s; highlight=%s; blurX=%f; blurY=%f"
             + " angle=%f; disance=%f, strength=%f; mode=%s; passes=%d}";
 
+    /** The shadow colour. */
     private final transient Color shadow;
+    /** The highlight colour. */
     private final transient Color highlight;
+    /** The horizontal blur amount. */
     private final transient int blurX;
+    /** The vertical blur amount. */
     private final transient int blurY;
+    /** Angle of shadow in radians. */
     private final transient int angle;
+    /** The distance of the drop shadow. */
     private final transient int distance;
+    /** The strength of the drop shadow. */
     private final transient int strength;
+    /** Compositing mode. */
     private final transient int mode;
+    /** The number of blur passes. */
     private final transient int passes;
 
     public BevelFilter(final Builder builder) {

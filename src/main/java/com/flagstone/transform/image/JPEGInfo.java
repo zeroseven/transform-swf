@@ -38,19 +38,24 @@ import com.flagstone.transform.coder.FLVDecoder;
  * JPEGInfo is used to extract the width and height from a JPEG encoded image.
  */
 public final class JPEGInfo {
-
+    /** The width of the image. */
     private transient int width;
+    /** The height of the image. */
     private transient int height;
 
     /**
-     * Return the width of the image.
+     * Get the width of the image in pixels, not twips.
+     *
+     * @return the width of the image
      */
     public int getWidth() {
         return width;
     }
 
     /**
-     * Return the height of the image.
+     * Return the height of the image in pixels, not twips.
+     *
+     * @return the height of the image
      */
     public int getHeight() {
         return height;

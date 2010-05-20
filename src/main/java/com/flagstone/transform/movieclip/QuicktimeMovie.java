@@ -102,7 +102,9 @@ public final class QuicktimeMovie implements MovieTag {
     }
 
     /**
-     * Returns the reference to the file containing the movie.
+     * Get the reference to the file containing the movie.
+     *
+     * @return the path to the Quicktime movie.
      */
     public String getPath() {
         return path;

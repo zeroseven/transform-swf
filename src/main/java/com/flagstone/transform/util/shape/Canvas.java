@@ -171,13 +171,17 @@ public final class Canvas {
 
     /**
      * Generates the bounding box that encloses the current path.
+     *
+     * @return the bounding box that encloses the current shape.
      */
     public Bounds getBounds() {
         return new Bounds(minX, minY, maxX, maxY);
     }
 
     /**
-     * Returns a copy of the array line styles.
+     * Get a copy of the array line styles.
+     *
+     * @return the list of line styles.
      */
     public List<LineStyle> getLineStyles() {
         final List<LineStyle> array = new ArrayList<LineStyle>(lineStyles
@@ -191,7 +195,9 @@ public final class Canvas {
     }
 
     /**
-     * Returns a copy of the array fill styles.
+     * Get a copy of the array fill styles.
+     *
+     * @return the list of fill styles.
      */
     public List<FillStyle> getFillStyles() {
         final List<FillStyle> array = new ArrayList<FillStyle>(fillStyles
@@ -285,6 +291,7 @@ public final class Canvas {
      *
      * @param identifier
      *            an unique identifier for the shape.
+     * @return this object.
      */
     public DefineShape2 defineShape(final int identifier) {
         return new DefineShape2(identifier, getBounds(), getFillStyles(),
@@ -300,6 +307,7 @@ public final class Canvas {
      *
      * @param identifier
      *            an unique identifier for the shape.
+     * @return this object.
      */
     public DefineShape3 defineTransparentShape(final int identifier) {
         return new DefineShape3(identifier, getBounds(), getFillStyles(),
@@ -358,7 +366,6 @@ public final class Canvas {
         setCurrent(pointX, pointY);
         setInitial(pointX, pointY);
     }
-
 
     public void moveForFont(final int xCoord, final int yCoord) {
         final int pointX = arePixels ? xCoord * TWIPS_PER_PIXEL : xCoord;
@@ -879,6 +886,18 @@ public final class Canvas {
         }
     }
 
+    /**
+     * Set the bounds for the shape being drawn.
+     *
+     * @param xmin
+     *            x-coordinate of the top left corner.
+     * @param ymin
+     *            y-coordinate of the top left corner.
+     * @param xmax
+     *            x-coordinate of bottom right corner.
+     * @param ymax
+     *            y-coordinate of bottom right corner.
+     */
     private void setBounds(final int xmin, final int ymin, final int xmax,
             final int ymax) {
         minX = xmin;
@@ -887,6 +906,9 @@ public final class Canvas {
         maxY = ymax;
     }
 
+    /**
+     * Flatten a cubic Bezier curve into a series of straight line segments.
+     */
     private void flatten() {
         final double[] quadX = {0.0, 0.0, 0.0, 0.0};
         final double[] quadY = {0.0, 0.0, 0.0, 0.0};

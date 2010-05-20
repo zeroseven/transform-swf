@@ -56,7 +56,9 @@ public final class MovieObject implements MovieTag {
     private static final String FORMAT = "MovieObject: { type=%d;"
             + " data=byte[%d] {...} }";
 
+    /** The type identifying the MovieTag. */
     private final transient int type;
+    /** The encoded data that make up the body of the tag. */
     private final transient byte[] data;
 
     /** The length of the object, minus the header, when it is encoded. */
@@ -78,7 +80,13 @@ public final class MovieObject implements MovieTag {
         data = coder.readBytes(new byte[length]);
     }
 
-
+    /**
+     * Creates and initialises a MovieObject object using the specified type
+     * and encoded data.
+     *
+     * @param aType the type that identifies the MovieTag when it is encoded.
+     * @param bytes the encoded bytes that form the body of the object.
+     */
     public MovieObject(final int aType, final byte[] bytes) {
         type = aType;
 
@@ -101,13 +109,17 @@ public final class MovieObject implements MovieTag {
         data = object.data;
     }
 
-
+    /**
+     * Get the type that identifies the object when it is encoded.
+     * @return the type that identifies the encoded data structure.
+     */
     public int getType() {
         return type;
     }
 
     /**
-     * Returns a copy of the encoded data for the movie tag object.
+     * Get a copy of the encoded data for the movie tag object.
+     * @return a copy of the encoded data.
      */
     public byte[] getData() {
         return Arrays.copyOf(data, data.length);

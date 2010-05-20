@@ -62,7 +62,7 @@ public final class ShowFrame implements MovieTag {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "ShowFrame";
-
+    /** Singleton. */
     private static final ShowFrame INSTANCE = new ShowFrame();
 
     /**
@@ -74,6 +74,7 @@ public final class ShowFrame implements MovieTag {
         return INSTANCE;
     }
 
+    /** Private constructor for the singleton. */
     private ShowFrame() {
     }
 

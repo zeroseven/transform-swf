@@ -114,8 +114,10 @@ public final class SoundStreamBlock implements MovieTag {
     }
 
     /**
-     * Returns a copy of the sound data in the format defined by a preceding
+     * Get a copy of the sound data in the format defined by a preceding
      * SoundStreamHead or SoundStreamHead2 object.
+     *
+     * @return a copy of the sound.
      */
     public byte[] getSound() {
         return Arrays.copyOf(sound, sound.length);

@@ -96,7 +96,9 @@ public final class SolidFill implements FillStyle {
     }
 
     /**
-     * Returns the colour of the fill style.
+     * Get the colour of the fill style.
+     *
+     * @return the fill colour
      */
     public Color getColor() {
         return color;

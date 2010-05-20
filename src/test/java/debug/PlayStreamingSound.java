@@ -70,7 +70,7 @@ public final class PlayStreamingSound {
 
             final SoundFactory factory = new SoundFactory();
             factory.read(sourceFile);
-            List<MovieTag> sound = factory.streamSound((int)framesPerSecond);
+            List<MovieTag> sound = factory.streamSound((int) framesPerSecond);
 
             movie.setFrameSize(new Bounds(0, 0, screenWidth, screenHeight));
             movie.setFrameRate(framesPerSecond);

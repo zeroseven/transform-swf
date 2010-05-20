@@ -179,6 +179,7 @@ public final class MorphFocalGradientFill implements FillStyle {
      *
      * @param aGradient
      *            an Gradient object. Must not be null.
+     * @return this object.
      */
     public MorphFocalGradientFill add(final MorphGradient aGradient) {
         if (aGradient == null) {
@@ -193,8 +194,10 @@ public final class MorphFocalGradientFill implements FillStyle {
     }
 
     /**
-     * Returns the array of Gradient objects defining the points for the
+     * Get the array of Gradient objects defining the points for the
      * gradient fill.
+     *
+     * @return the set of points that define the gradient.
      */
     public List<MorphGradient> getGradients() {
         return gradients;
@@ -221,16 +224,20 @@ public final class MorphFocalGradientFill implements FillStyle {
 
 
     /**
-     * Returns the coordinate transform mapping the gradient square onto
+     * Get the coordinate transform mapping the gradient square onto
      * physical coordinates at the start of the morphing process.
+     *
+     * @return the starting transform for the gradient.
      */
     public CoordTransform getStartTransform() {
         return startTransform;
     }
 
     /**
-     * Returns the coordinate transform mapping the gradient square onto
+     * Get the coordinate transform mapping the gradient square onto
      * physical coordinates at the end of the morphing process.
+     *
+     * @return the final transform for the gradient.
      */
     public CoordTransform getEndTransform() {
         return endTransform;

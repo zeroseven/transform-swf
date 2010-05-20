@@ -155,21 +155,27 @@ public final class MorphLineStyle2 implements SWFEncodeable,
     }
 
     /**
-     * Returns the width of the line at the start of the morphing process.
+     * Get the width of the line at the start of the morphing process.
+     *
+     * @return the starting stroke width.
      */
     public int getStartWidth() {
         return startWidth;
     }
 
     /**
-     * Returns the width of the line at the end of the morphing process.
+     * Get the width of the line at the end of the morphing process.
+     *
+     * @return the final stroke width.
      */
     public int getEndWidth() {
         return endWidth;
     }
 
     /**
-     * Returns the colour of the line at the start of the morphing process.
+     * Get the colour of the line at the start of the morphing process.
+     *
+     * @return the starting stroke colour.
      */
     public Color getStartColor() {
         return startColor;
@@ -177,6 +183,8 @@ public final class MorphLineStyle2 implements SWFEncodeable,
 
     /**
      * Returns the colour of the line at the end of the morphing process.
+     *
+     * @return the final stroke colour.
      */
     public Color getEndColor() {
         return endColor;

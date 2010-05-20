@@ -47,6 +47,9 @@ public final class ColorMatrixFilter implements Filter {
             + ROW_FORMAT + ROW_FORMAT + ROW_FORMAT + ROW_FORMAT
             + "]}";
 
+    /** The number of elements in the colour matrix. */
+    private static final int MATRIX_SIZE = 20;
+
     private final transient float[] matrix;
 
     /**
@@ -61,15 +64,15 @@ public final class ColorMatrixFilter implements Filter {
      */
     public ColorMatrixFilter(final SWFDecoder coder) throws CoderException {
         coder.readByte();
-        matrix = new float[20];
-        for (int i = 0; i < 20; i++) {
+        matrix = new float[MATRIX_SIZE];
+        for (int i = 0; i < MATRIX_SIZE; i++) {
             matrix[i] = coder.readFloat();
         }
     }
 
 
     public ColorMatrixFilter(final float[] aMatrix) {
-        if ((aMatrix == null) || (aMatrix.length != 20)) {
+        if ((aMatrix == null) || (aMatrix.length != MATRIX_SIZE)) {
             throw new IllegalArgumentException("Value not set");
         }
         matrix = Arrays.copyOf(aMatrix, aMatrix.length);

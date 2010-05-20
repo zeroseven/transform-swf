@@ -37,12 +37,16 @@ package com.flagstone.transform.coder;
  */
 public interface ImageTag extends DefineTag {
     /**
-     * Returns the width of an image in pixels.
+     * Get the width of an image in pixels.
+     *
+     * @return the width of the image.
      */
     int getWidth();
 
     /**
-     * Returns the height of an image in pixels.
+     * Get the height of an image in pixels.
+     *
+     * @return the height of the image.
      */
     int getHeight();
 }

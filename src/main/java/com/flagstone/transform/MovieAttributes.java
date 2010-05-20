@@ -88,7 +88,10 @@ public final class MovieAttributes implements MovieTag {
         attributes = object.attributes;
     }
 
-
+    /**
+     * Get the movie attributes.
+     * @return the set of MovieAttributes that describe the movie.
+     */
     public Set<MovieAttribute> getAttributes() {
         final Set<MovieAttribute>set = EnumSet.noneOf(MovieAttribute.class);
 
@@ -104,7 +107,10 @@ public final class MovieAttributes implements MovieTag {
         return set;
     }
 
-
+    /**
+     * Set the movie attributes.
+     * @param set the set of MovieAttributes that describe the movie.
+     */
     public void setAttributes(final Set<MovieAttribute>set) {
         attributes = 0;
 

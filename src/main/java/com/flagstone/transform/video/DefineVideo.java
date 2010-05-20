@@ -184,7 +184,9 @@ public final class DefineVideo implements DefineTag {
     }
 
     /**
-     * Returns the number of frames in the video.
+     * Get the number of frames in the video.
+     *
+     * @return the number of frames.
      */
     public int getFrameCount() {
         return frameCount;
@@ -204,7 +206,9 @@ public final class DefineVideo implements DefineTag {
     }
 
     /**
-     * Returns the width of each frame in pixels.
+     * Get the width of each frame in pixels.
+     *
+     * @return the frame width.
      */
     public int getWidth() {
         return width;
@@ -224,7 +228,9 @@ public final class DefineVideo implements DefineTag {
     }
 
     /**
-     * Returns the height of each frame in pixels.
+     * Get the height of each frame in pixels.
+     *
+     * @return the frame height.
      */
     public int getHeight() {
         return height;
@@ -244,8 +250,10 @@ public final class DefineVideo implements DefineTag {
     }
 
     /**
-     * Returns the method used to control the Flash Player's deblocking filter,
+     * Get the method used to control the Flash Player's deblocking filter,
      * either OFF, ON or USE_VIDEO.
+     *
+     * @return the deblocking applied to the frame.
      */
     public Deblocking getDeblocking() {
         Deblocking value;
@@ -288,8 +296,10 @@ public final class DefineVideo implements DefineTag {
     }
 
     /**
-     * Returns if the Flash Player will apply smoothing to the video when it is
+     * Will the Flash Player will apply smoothing to the video when it is
      * played.
+     *
+     * @return true if smoothing is applied.
      */
     public boolean isSmoothed() {
         return smoothed;
@@ -311,6 +321,8 @@ public final class DefineVideo implements DefineTag {
      * data encoded using the Sorenson modified H263 format or
      * VideoFormat.SCREEN (Flash 7 only) for data encoded using Macromedia's
      * Screen Video format.
+     *
+     * @return the format used to encode the video.
      */
     public VideoFormat getCodec() {
         VideoFormat value;

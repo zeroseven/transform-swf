@@ -66,7 +66,9 @@ public final class ShapeData implements ShapeRecord {
     }
 
     /**
-     * Returns a copy of the encoded data for the action.
+     * Get a copy of the encoded data for the action.
+     *
+     * @return a copy of the encoded shape.
      */
     public byte[] getData() {
         return Arrays.copyOf(data, data.length);

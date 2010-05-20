@@ -245,6 +245,7 @@ public final class ShapeStyle implements ShapeRecord {
      *
      * @param style
      *            and LineStyle object. Must not be null.
+     * @return this object.
      */
     public ShapeStyle add(final LineStyle style) {
         if (style == null) {
@@ -259,6 +260,7 @@ public final class ShapeStyle implements ShapeRecord {
      *
      * @param style
      *            and FillStyle object. Must not be null.
+     * @return this object.
      */
     public ShapeStyle add(final FillStyle style) {
         if (style == null) {
@@ -269,48 +271,60 @@ public final class ShapeStyle implements ShapeRecord {
     }
 
     /**
-     * Returns the x-coordinate of any relative move or null if no move is
+     * Get the x-coordinate of any relative move or null if no move is
      * specified.
+     *
+     * @return the relative move in the x direction.
      */
     public Integer getMoveX() {
         return moveX;
     }
 
     /**
-     * Returns the y-coordinate of any relative move or null if no move is
+     * Get the y-coordinate of any relative move or null if no move is
      * specified.
+     *
+     * @return the relative move in the y direction.
      */
     public Integer getMoveY() {
         return moveY;
     }
 
     /**
-     * Returns the index of the line style that will be applied to any line
+     * Get the index of the line style that will be applied to any line
      * drawn. Returns null if no line style is defined.
+     *
+     * @return the selected line style.
      */
     public Integer getLineStyle() {
         return lineStyle;
     }
 
     /**
-     * Returns the index of the fill style that will be applied to any area
+     * Get the index of the fill style that will be applied to any area
      * filled. Returns null if no fill style is defined.
+     *
+     * @return the selected fill style.
      */
     public Integer getFillStyle() {
         return fillStyle;
     }
 
     /**
-     * Returns the index of the fill style that will be applied to any
+     * Get the index of the fill style that will be applied to any
      * overlapping area filled. Returns null if no alternate fill style is
      * defined.
+     *
+     * @return the selected alternate fill style.
      */
     public Integer getAltFillStyle() {
         return altFillStyle;
     }
 
     /**
-     * Returns the array of new line styles.
+     * Get the array of new line styles.
+     *
+     * @return the array of line styles.
      */
     public List<LineStyle> getLineStyles() {
         return lineStyles;
@@ -318,6 +332,8 @@ public final class ShapeStyle implements ShapeRecord {
 
     /**
      * Returns the array of new fill styles.
+     *
+     * @return the array of fill styles.
      */
     public List<FillStyle> getFillStyles() {
         return fillStyles;
@@ -329,6 +345,7 @@ public final class ShapeStyle implements ShapeRecord {
      * @param coord
      *            move the current point by aNumber in the x direction. Must be
      *            in the range -65535..65535.
+     * @return this object.
      */
     public ShapeStyle setMoveX(final Integer coord) {
         if ((coord != null)
@@ -346,6 +363,7 @@ public final class ShapeStyle implements ShapeRecord {
      * @param coord
      *            move the current point by aNumber in the x direction. Must be
      *            in the range -65535..65535.
+     * @return this object.
      */
     public ShapeStyle setMoveY(final Integer coord) {
         if ((coord != null)
@@ -367,6 +385,7 @@ public final class ShapeStyle implements ShapeRecord {
      * @param yCoord
      *            move the current point by aNumber in the y direction. Must be
      *            in the range -65535..65535.
+     * @return this object.
      */
     public ShapeStyle setMove(final Integer xCoord, final Integer yCoord) {
         if (((xCoord == null) && (yCoord != null))
@@ -396,6 +415,7 @@ public final class ShapeStyle implements ShapeRecord {
      * @param anIndex
      *            selects the fill style at anIndex in the fill styles array of
      *            the parent Shape object.
+     * @return this object.
      */
     public ShapeStyle setFillStyle(final Integer anIndex) {
         fillStyle = anIndex;
@@ -410,6 +430,7 @@ public final class ShapeStyle implements ShapeRecord {
      * @param anIndex
      *            selects the alternate fill style at anIndex in the fill styles
      *            array of the parent Shape object.
+     * @return this object.
      */
     public ShapeStyle setAltFillStyle(final Integer anIndex) {
         altFillStyle = anIndex;
@@ -424,6 +445,7 @@ public final class ShapeStyle implements ShapeRecord {
      * @param anIndex
      *            selects the line style at anIndex in the line styles array of
      *            the parent Shape object.
+     * @return this object.
      */
     public ShapeStyle setLineStyle(final Integer anIndex) {
         lineStyle = anIndex;
@@ -436,6 +458,7 @@ public final class ShapeStyle implements ShapeRecord {
      *
      * @param anArray
      *            an array of LineStyle objects. Must not be null.
+     * @return this object.
      */
     public ShapeStyle setLineStyles(final List<LineStyle> anArray) {
         if (anArray == null) {
@@ -451,6 +474,7 @@ public final class ShapeStyle implements ShapeRecord {
      *
      * @param anArray
      *            an array of fill style objects. Must not be null.
+     * @return this object.
      */
     public ShapeStyle setFillStyles(final List<FillStyle> anArray) {
         if (anArray == null) {

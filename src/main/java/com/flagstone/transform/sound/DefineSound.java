@@ -208,7 +208,9 @@ public final class DefineSound implements DefineTag {
     }
 
     /**
-     * Returns the compression format used.
+     * Get the compression format used.
+     *
+     * @return the format for the sound data.
      */
     public SoundFormat getFormat() {
         SoundFormat value;
@@ -242,36 +244,46 @@ public final class DefineSound implements DefineTag {
     }
 
     /**
-     * Returns the rate at which the sound will be played, in Hz: 5512, 11025,
+     * Get the rate at which the sound will be played, in Hz: 5512, 11025,
      * 22050 or 44100.
+     *
+     * @return the playback rate in Hertz.
      */
     public int getRate() {
         return rate;
     }
 
     /**
-     * Returns the number of sound channels, 1 (Mono) or 2 (Stereo).
+     * Get the number of sound channels, 1 (Mono) or 2 (Stereo).
+     *
+     * @return the number of channels.
      */
     public int getChannelCount() {
         return channelCount;
     }
 
     /**
-     * Returns the size of an uncompressed sample in bytes.
+     * Get the size of an uncompressed sample in bytes.
+     *
+     * @return the number of bytes in each sample.
      */
     public int getSampleSize() {
         return sampleSize;
     }
 
     /**
-     * Returns the number of samples in the sound data.
+     * Get the number of samples in the sound data.
+     *
+     * @return the number of sound samples.
      */
     public int getSampleCount() {
         return sampleCount;
     }
 
     /**
-     * Returns a copy of the sound data.
+     * Get a copy of the sound data.
+     *
+     * @return a copy of the sound.
      */
     public byte[] getSound() {
         return Arrays.copyOf(sound, sound.length);

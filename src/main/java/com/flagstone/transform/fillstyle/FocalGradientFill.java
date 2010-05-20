@@ -159,6 +159,7 @@ public final class FocalGradientFill implements FillStyle {
      *
      * @param aGradient
      *            an Gradient object. Must not be null.
+     * @return this object.
      */
     public FocalGradientFill add(final Gradient aGradient) {
         if (aGradient == null) {
@@ -173,8 +174,10 @@ public final class FocalGradientFill implements FillStyle {
     }
 
     /**
-     * Returns the array of Gradient objects defining the points for the
+     * Get the array of Gradient objects defining the points for the
      * gradient fill.
+     *
+     * @return the array of points that define the gradient.
      */
     public List<Gradient> getGradients() {
         return gradients;
@@ -200,8 +203,10 @@ public final class FocalGradientFill implements FillStyle {
     }
 
     /**
-     * Returns the coordinate transform mapping the gradient square onto
+     * Get the coordinate transform mapping the gradient square onto
      * physical coordinates.
+     *
+     * @return the coordinate transform for defining the gradient.
      */
     public CoordTransform getTransform() {
         return transform;

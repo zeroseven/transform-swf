@@ -151,6 +151,7 @@ public final class ScreenPacket implements Cloneable {
      *
      * @param block
      *            an ImageBlock. Must not be null.
+     * @return this object.
      */
     public ScreenPacket add(final ImageBlock block) {
         imageBlocks.add(block);
@@ -158,7 +159,9 @@ public final class ScreenPacket implements Cloneable {
     }
 
     /**
-     * Returns true if the packet contains a key frame.
+     * Does the packet contains a key frame.
+     *
+     * @return true if the packet is a key frame.
      */
     public boolean isKeyFrame() {
         return keyFrame;
@@ -176,7 +179,9 @@ public final class ScreenPacket implements Cloneable {
     }
 
     /**
-     * Returns the width of the frame in pixels.
+     * Get the width of the frame in pixels.
+     *
+     * @return the frame width.
      */
     public int getImageWidth() {
         return imageWidth;
@@ -193,19 +198,27 @@ public final class ScreenPacket implements Cloneable {
     }
 
     /**
-     * Returns the height of the frame in pixels.
+     * Get the height of the frame in pixels.
+     *
+     * @return the image height.
      */
     public int getImageHeight() {
         return imageHeight;
     }
 
-
+    /**
+     * Set the height of the frame in pixels.
+     *
+     * @param height the image height.
+     */
     public void setImageHeight(final int height) {
         imageHeight = height;
     }
 
     /**
-     * Returns the width of the blocks in pixels.
+     * Get the width of the blocks in pixels.
+     *
+     * @return the block width.
      */
     public int getBlockWidth() {
         return blockWidth;
@@ -222,7 +235,9 @@ public final class ScreenPacket implements Cloneable {
     }
 
     /**
-     * Returns the height of the blocks in pixels.
+     * Get the height of the blocks in pixels.
+     *
+     * @return the block width.
      */
     public int getBlockHeight() {
         return blockHeight;
@@ -239,7 +254,9 @@ public final class ScreenPacket implements Cloneable {
     }
 
     /**
-     * Returns the image blocks that have changed in this frame.
+     * Get the image blocks that have changed in this frame.
+     *
+     * @return the list of image blocks that make up the frame.
      */
     public List<ImageBlock> getImageBlocks() {
         return imageBlocks;

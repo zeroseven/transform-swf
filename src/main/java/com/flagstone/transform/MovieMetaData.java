@@ -47,7 +47,7 @@ public final class MovieMetaData implements MovieTag {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "MetaData: { %s }";
-    /** The metadata for the movie. */
+    /** The meta-data for the movie. */
     private String metaData;
 
     /** The length of the object, minus the header, when it is encoded. */
@@ -94,18 +94,18 @@ public final class MovieMetaData implements MovieTag {
     }
 
     /**
-     * Get the metadata for the movie.
+     * Get the meta-data for the movie.
      *
-     * @return the string containing the metadata.
+     * @return the string containing the meta-data.
      */
     public String getMetaData() {
         return metaData;
     }
 
     /**
-     * Set the metadata for the movie.
+     * Set the meta-data for the movie.
      *
-     * @param aString a string containing the metadata.
+     * @param aString a string containing the meta-data.
      */
     public void setMetaData(final String aString) {
         if (aString == null) {

@@ -34,13 +34,18 @@ package com.flagstone.transform.coder;
 /** TODO(class). */
 public final class FLVDecoder extends Decoder {
 
-
+    /**
+     * Create a FLVDecoder initialised with the specified data.
+     * @param data the array of byes to decode.
+     */
     public FLVDecoder(final byte[] data) {
         super(data);
     }
 
     /**
      * Read an unsigned short integer without changing the internal pointer.
+     *
+     * @return an unsigned 16-bit value.
      */
     public int scanUnsignedShort() {
         return ((data[index] & 0x00FF) << Coder.BYTES_TO_BITS)

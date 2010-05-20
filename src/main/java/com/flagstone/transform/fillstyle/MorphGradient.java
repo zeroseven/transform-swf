@@ -122,16 +122,20 @@ public final class MorphGradient implements SWFEncodeable {
     }
 
     /**
-     * Returns the gradient containing the ratio and colour at the start of the
+     * Get the gradient containing the ratio and colour at the start of the
      * morphing process.
+     *
+     * @return the starting gradient.
      */
     public Gradient getStart() {
         return start;
     }
 
     /**
-     * Returns the gradient containing the ratio and colour at the end of the
+     * Get the gradient containing the ratio and colour at the end of the
      * morphing process.
+     *
+     * @return the final gradient.
      */
     public Gradient getEnd() {
         return end;

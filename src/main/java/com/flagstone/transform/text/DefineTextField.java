@@ -410,14 +410,18 @@ public final class DefineTextField implements DefineTag {
     }
 
     /**
-     * Returns the width of the text field in twips.
+     * Get the width of the text field in twips.
+     *
+     * @return the width of the text.
      */
     public int getWidth() {
         return bounds.getWidth();
     }
 
     /**
-     * Returns the width of the text field in twips.
+     * Get the height of the text field in twips.
+     *
+     * @return the height of the text.
      */
     public int getHeight() {
         return bounds.getHeight();
@@ -425,6 +429,8 @@ public final class DefineTextField implements DefineTag {
 
     /**
      * Returns the bounding rectangle that completely encloses the text field.
+     *
+     * @return the bounding rectangle of the text.
      */
     public Bounds getBounds() {
         return bounds;
@@ -432,6 +438,8 @@ public final class DefineTextField implements DefineTag {
 
     /**
      * Does the text field support word wrapping.
+     *
+     * @return true if the field will wrap the text.
      */
     public boolean isWordWrapped() {
         return wordWrapped;
@@ -439,6 +447,8 @@ public final class DefineTextField implements DefineTag {
 
     /**
      * Does the text field support multiple lines of text.
+     *
+     * @return true if the field contains more than one line.
      */
     public boolean isMultiline() {
         return multiline;
@@ -446,6 +456,8 @@ public final class DefineTextField implements DefineTag {
 
     /**
      * Does the text field protect passwords being entered.
+     *
+     * @return true if the field obscures the characters typed.
      */
     public boolean isPassword() {
         return password;
@@ -453,6 +465,8 @@ public final class DefineTextField implements DefineTag {
 
     /**
      * Is the text field read-only.
+     *
+     * @return true if the text cannot be edited.
      */
     public boolean isReadOnly() {
         return readOnly;
@@ -460,6 +474,8 @@ public final class DefineTextField implements DefineTag {
 
     /**
      * Is the text field selectable.
+     *
+     * @return true if the text can be selected with the mouse.
      */
     public boolean isSelectable() {
         return selectable;
@@ -467,6 +483,8 @@ public final class DefineTextField implements DefineTag {
 
     /**
      * Is the text field bordered.
+     *
+     * @return true if the field has a border.
      */
     public boolean isBordered() {
         return bordered;
@@ -474,6 +492,8 @@ public final class DefineTextField implements DefineTag {
 
     /**
      * Does the text field contain HTML.
+     *
+     * @return true if the field displays HTML.
      */
     public boolean isHtml() {
         return html;
@@ -481,17 +501,19 @@ public final class DefineTextField implements DefineTag {
 
     /**
      * Does the text field resize to fit the contents.
+     *
+     * @return true if the field will automatically resize to fit the text.
      */
     public boolean isAutoSize() {
         return autoSize;
     }
 
-    // End Flash 6
     /**
      * Sets whether the text field will resize to fit the contents.
      *
      * @param aFlag
      *            indicate whether the text field will resize automatically.
+     * @return this object.
      */
     public DefineTextField setAutoSize(final boolean aFlag) {
         autoSize = aFlag;
@@ -511,7 +533,9 @@ public final class DefineTextField implements DefineTag {
     }
 
     /**
-     * Returns the identifier of the font used to display the characters.
+     * Get the identifier of the font used to display the characters.
+     *
+     * @return the unique identifier of the font.
      */
     public int getFontIdentifier() {
         return fontIdentifier;
@@ -523,29 +547,37 @@ public final class DefineTextField implements DefineTag {
     }
 
     /**
-     * Returns the height of the characters.
+     * Get the size of the font used to display the text.
+     *
+     * @return the height of the font in twips.
      */
     public int getFontHeight() {
         return fontHeight;
     }
 
     /**
-     * Returns the text color.
+     * Get the text color.
+     *
+     * @return the colour used to display the text.
      */
     public Color getColor() {
         return color;
     }
 
     /**
-     * Returns the maximum number of characters displayed in the field.
+     * Get the maximum number of characters displayed in the field.
+     *
+     * @return the maximum number of characters displayed.
      */
     public int getMaxLength() {
         return maxLength;
     }
 
     /**
-     * Returns the alignment of the text, either AlignLeft, AlignRight,
+     * Get the alignment of the text, either AlignLeft, AlignRight,
      * AlignCenter or AlignJustify.
+     *
+     * @return the alignment of the text.
      */
     public Align getAlignment() {
         Align value;
@@ -569,43 +601,56 @@ public final class DefineTextField implements DefineTag {
     }
 
     /**
-     * Returns the left margin in twips.
+     * Get the left margin in twips.
+     *
+     * @return the padding between the text and the left edge of the field.
      */
     public int getLeftMargin() {
         return leftMargin;
     }
 
     /**
-     * Returns the right margin in twips.
+     * Get the right margin in twips.
+     *
+     * @return the padding between the text and the right edge of the field.
      */
     public int getRightMargin() {
         return rightMargin;
     }
 
     /**
-     * Returns the indentation of the first line of text in twips.
+     * Get the indentation of the first line of text in twips.
+     *
+     * @return the initial indent for the first line of text.
      */
     public int getIndent() {
         return indent;
     }
 
     /**
-     * Returns the leading in twips.
+     * Get the leading in twips.
+     *
+     * @return the spacing between lines.
      */
     public int getLeading() {
         return leading;
     }
 
     /**
-     * Returns the name of the variable the value in the text field will be
+     * Get the name of the variable the value in the text field will be
      * assigned to.
+     *
+     * @return the name of the actionscript variable that the field contents
+     * are assigned to.
      */
     public String getVariableName() {
         return variableName;
     }
 
     /**
-     * Returns the default text displayed in the field.
+     * Get the default text displayed in the field.
+     *
+     * @return the sting initially displayed in the field.
      */
     public String getInitialText() {
         return initialText;
@@ -617,6 +662,7 @@ public final class DefineTextField implements DefineTag {
      * @param aBounds
      *            the bounding rectangle enclosing the text field. Must not be
      *            null.
+     * @return this object.
      */
     public DefineTextField setBounds(final Bounds aBounds) {
         if (aBounds == null) {
@@ -631,6 +677,7 @@ public final class DefineTextField implements DefineTag {
      *
      * @param aFlag
      *            set whether the text field is word wrapped.
+     * @return this object.
      */
     public DefineTextField setWordWrapped(final boolean aFlag) {
         wordWrapped = aFlag;
@@ -642,6 +689,7 @@ public final class DefineTextField implements DefineTag {
      *
      * @param aFlag
      *            set whether the text field is multiline.
+     * @return this object.
      */
     public DefineTextField setMultiline(final boolean aFlag) {
         multiline = aFlag;
@@ -653,6 +701,7 @@ public final class DefineTextField implements DefineTag {
      *
      * @param aFlag
      *            set whether the text field is password protected.
+     * @return this object.
      */
     public DefineTextField setPassword(final boolean aFlag) {
         password = aFlag;
@@ -664,6 +713,7 @@ public final class DefineTextField implements DefineTag {
      *
      * @param aFlag
      *            set whether the text field is read-only.
+     * @return this object.
      */
     public DefineTextField setReadOnly(final boolean aFlag) {
         readOnly = aFlag;
@@ -675,6 +725,7 @@ public final class DefineTextField implements DefineTag {
      *
      * @param aFlag
      *            set whether the text field is selectable.
+     * @return this object.
      */
     public DefineTextField setSelectable(final boolean aFlag) {
         selectable = aFlag;
@@ -686,8 +737,9 @@ public final class DefineTextField implements DefineTag {
      *
      * @param aFlag
      *            set whether the text field is bordered.
+     * @return this object.
      */
-    public DefineTextField setBordered(final boolean aFlag) {
+   public DefineTextField setBordered(final boolean aFlag) {
         bordered = aFlag;
         return this;
     }
@@ -697,6 +749,7 @@ public final class DefineTextField implements DefineTag {
      *
      * @param aFlag
      *            set whether the text field contains HTML.
+     * @return this object.
      */
     public DefineTextField setHtml(final boolean aFlag) {
         html = aFlag;
@@ -712,6 +765,7 @@ public final class DefineTextField implements DefineTag {
      *            set whether the text field characters will be drawn using the
      *            font in the movie (true) or use a font loaded by the Flash
      *            Player (false).
+     * @return this object.
      */
     public DefineTextField setEmbedded(final boolean aFlag) {
         embedded = aFlag;
@@ -724,6 +778,7 @@ public final class DefineTextField implements DefineTag {
      * @param uid
      *            the identifier for the font that the text will be rendered in.
      *            Must be in the range 1..65535.
+     * @return this object.
      */
     public DefineTextField setFontIdentifier(final int uid) {
         if ((uid < 1) || (uid > SWF.MAX_IDENTIFIER)) {
@@ -747,6 +802,7 @@ public final class DefineTextField implements DefineTag {
      *
      * @param aNumber
      *            the height of the font. Must be in the range 0..65535.
+     * @return this object.
      */
     public DefineTextField setFontHeight(final int aNumber) {
         if ((aNumber < 0) || (aNumber > SWF.MAX_FONT_SIZE)) {
@@ -763,6 +819,7 @@ public final class DefineTextField implements DefineTag {
      *
      * @param aColor
      *            the colour object that defines the text colour.
+     * @return this object.
      */
     public DefineTextField setColor(final Color aColor) {
         if (aColor == null) {
@@ -780,6 +837,7 @@ public final class DefineTextField implements DefineTag {
      * @param aNumber
      *            the maximum number of characters displayed in the field. Must
      *            be in the range 0..65535.
+     * @return this object.
      */
     public DefineTextField setMaxLength(final int aNumber) {
         if ((aNumber < 0) || (aNumber > 65535)) {
@@ -796,6 +854,7 @@ public final class DefineTextField implements DefineTag {
      * @param align
      *            the type of alignment. Must be either ALIGN_LEFT, ALIGN_RIGHT
      *            or ALIGN_JUSTIFY.
+     * @return this object.
      */
     public DefineTextField setAlignment(final Align align) {
         switch(align) {
@@ -822,6 +881,7 @@ public final class DefineTextField implements DefineTag {
      *
      * @param aNumber
      *            the width of the left margin. Must be in the range 0..65535.
+     * @return this object.
      */
     public DefineTextField setLeftMargin(final Integer aNumber) {
         if ((aNumber != null) && ((aNumber < 0) || (aNumber > 65535))) {
@@ -836,6 +896,7 @@ public final class DefineTextField implements DefineTag {
      *
      * @param aNumber
      *            the width of the right margin. Must be in the range 0..65535.
+     * @return this object.
      */
     public DefineTextField setRightMargin(final Integer aNumber) {
         if ((aNumber != null) && ((aNumber < 0) || (aNumber > 65535))) {
@@ -851,6 +912,7 @@ public final class DefineTextField implements DefineTag {
      * @param aNumber
      *            the indentation for the first line. Must be in the range
      *            0..65535.
+     * @return this object.
      */
     public DefineTextField setIndent(final Integer aNumber) {
         if ((aNumber != null) && ((aNumber < 0) || (aNumber > 65535))) {
@@ -865,6 +927,7 @@ public final class DefineTextField implements DefineTag {
      *
      * @param aNumber
      *            the value for the leading. Must be in the range -32768..32767.
+     * @return this object.
      */
     public DefineTextField setLeading(final Integer aNumber) {
         if ((aNumber < SWF.MIN_LEADING) || (aNumber > SWF.MAX_LEADING)) {
@@ -881,6 +944,7 @@ public final class DefineTextField implements DefineTag {
      *
      * @param aString
      *            the name of the variable.
+     * @return this object.
      */
     public DefineTextField setVariableName(final String aString) {
         variableName = aString;
@@ -892,6 +956,7 @@ public final class DefineTextField implements DefineTag {
      *
      * @param aString
      *            the initial text displayed.
+     * @return this object.
      */
     public DefineTextField setInitialText(final String aString) {
         initialText = aString;
@@ -903,9 +968,7 @@ public final class DefineTextField implements DefineTag {
         return new DefineTextField(this);
     }
 
-    /**
-     * Returns a short description of this action.
-     */
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         final StringBuilder builder = new StringBuilder();

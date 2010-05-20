@@ -191,22 +191,29 @@ public final class FontInfo2 implements MovieTag {
     }
 
     /**
-     * Returns the identifier of the font that this font information is for.
+     * Get the unique identifier of the font definition that this font
+     * information is for.
+     *
+     * @return the unique identifier of the font.
      */
     public int getIdentifier() {
         return identifier;
     }
 
     /**
-     * Returns the name of the font family.
+     * Get the name of the font family.
+     *
+     * @return the font name.
      */
     public String getName() {
         return name;
     }
 
     /**
-     * Returns the encoding scheme used for characters rendered in the font,
+     * Get the encoding scheme used for characters rendered in the font,
      * either ASCII, SJIS or UCS2.
+     *
+     * @return the encoding used for the character codes.
      */
     public CharacterFormat getEncoding() {
         CharacterFormat value;
@@ -229,6 +236,8 @@ public final class FontInfo2 implements MovieTag {
     /**
      * Does the font have a small point size. This is used only with a Unicode
      * font encoding.
+     *
+     * @return true if the font is small.
      */
     public boolean isSmall() {
         return small;
@@ -246,30 +255,38 @@ public final class FontInfo2 implements MovieTag {
     }
 
     /**
-     * Is the font italics.
+     * Is the font style italics.
+     *
+     * @return true if the font is in italics.
      */
     public boolean isItalic() {
         return italic;
     }
 
     /**
-     * Is the font bold.
+     * Is the font weight bold.
+     *
+     * @return true if the font weight is bold.
      */
     public boolean isBold() {
         return bold;
     }
 
     /**
-     * Returns the language code identifying the type of spoken language for the
+     * Get the language code identifying the type of spoken language for the
      * font, either Constants.JAPANESE, Constants.KOREAN, Constants.LATIN,
      * Constants.SIMPLIFIED_CHINESE or Constants.TRADITIONAL_CHINESE.
+     *
+     * @return the spoken language for the text rendered by the font.
      */
     public int getLanguage() {
         return language;
     }
 
     /**
-     * Returns the array of character codes.
+     * Get the array of character codes.
+     *
+     * @return the array of character codes defined in the font.
      */
     public List<Integer> getCodes() {
         return codes;

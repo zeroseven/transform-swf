@@ -262,7 +262,9 @@ public final class ButtonShape implements SWFEncodeable {
     }
 
     /**
-     * Returns the layer that the button will be displayed on.
+     * Get the layer that the button will be displayed on.
+     *
+     * @return the layer that the shape is displayed on.
      */
     public int getLayer() {
         return layer;
@@ -285,7 +287,9 @@ public final class ButtonShape implements SWFEncodeable {
     }
 
     /**
-     * Returns the coordinate transform that will be applied to the button.
+     * Get the coordinate transform that will be applied to the button.
+     *
+     * @return the coordinate transform that is applied to the shape.
      */
     public CoordTransform getTransform() {
         return transform;
@@ -309,10 +313,12 @@ public final class ButtonShape implements SWFEncodeable {
     }
 
     /**
-     * Returns the colour transform that will be applied to the button.
+     * Get the colour transform that will be applied to the button.
      *
      * Note that the colour transform will only be used if the ButtonShape is
      * added to a DefineButton2 object.
+     *
+     * @return the colour transform that is applied to the shape.
      */
     public ColorTransform getColorTransform() {
         return colorTransform;
@@ -337,7 +343,6 @@ public final class ButtonShape implements SWFEncodeable {
         colorTransform = aTransform;
         return this;
     }
-
 
     public ButtonShape add(final Filter filter) {
         if (filter == null) {

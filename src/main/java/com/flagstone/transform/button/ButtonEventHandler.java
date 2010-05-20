@@ -293,6 +293,7 @@ public final class ButtonEventHandler implements SWFEncodeable {
      * @param anAction
      *            an object derived from the base class Action. Must not be
      *            null.
+     * @return this object.
      */
     public ButtonEventHandler add(final Action anAction) {
         if (anAction == null) {
@@ -303,8 +304,9 @@ public final class ButtonEventHandler implements SWFEncodeable {
     }
 
     /**
-     * Returns the compound event code that this ButtonEvent defines actions
-     * for.
+     * Get the set of events that this handler responds to.
+     *
+     * @return the set of handled events.
      */
     public Set<ButtonEvent> getEvent() {
         final Set<ButtonEvent> set = EnumSet.allOf(ButtonEvent.class);
@@ -323,6 +325,7 @@ public final class ButtonEventHandler implements SWFEncodeable {
      *
      * @param set
      *            the set of events.
+     * @return this object.
      */
     public ButtonEventHandler setEvent(final Set<ButtonEvent> set) {
         for (final ButtonEvent buttonEvent : set) {
@@ -332,22 +335,31 @@ public final class ButtonEventHandler implements SWFEncodeable {
     }
 
     /**
-     * Returns the array of actions that are executed by the button in response
+     * Get the array of actions that are executed by the button in response
      * to specified event(s).
+     *
+     * @return the actions executed by this handler.
      */
     public List<Action> getActions() {
         return actions;
     }
 
     /**
-     * TODO(method).
+     * Get the keyboard shortcut that triggers this handler.
+     *
+     * @return the keyboard shortcut that causes the handler actions to be
+     * executed.
      */
     public char getKey() {
         return (char) (key >>> KEY_OFFSET);
     }
 
     /**
-     * TODO(method).
+     * Set the keyboard shortcut that triggers this handler.
+     *
+     * @param buttonKey the keyboard shortcut that causes the handler
+     * actions to be executed.
+     * @return this object.
      */
     public ButtonEventHandler setKey(final ButtonKey buttonKey) {
         key = buttonKey.getChar() << KEY_OFFSET;
@@ -355,7 +367,11 @@ public final class ButtonEventHandler implements SWFEncodeable {
     }
 
     /**
-     * TODO(method).
+     * Set the keyboard shortcut that triggers this handler.
+     *
+     * @param character the keyboard character that causes the handler
+     * actions to be executed.
+     * @return this object.
      */
     public ButtonEventHandler setKey(final char character) {
         key = character << KEY_OFFSET;
@@ -370,6 +386,7 @@ public final class ButtonEventHandler implements SWFEncodeable {
      *            the array of action objects that will be executed when the
      *            specified event(s) occur. The array may be empty but must not
      *            be null.
+     * @return this object.
      */
     public ButtonEventHandler setActions(final List<Action> anArray) {
         if (anArray == null) {

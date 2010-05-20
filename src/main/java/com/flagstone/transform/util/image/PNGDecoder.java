@@ -599,6 +599,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
      * @param lower the current pixel.
      * @param upper the pixel on the previous row.
      * @param next the next pixel in current row.
+     * @return the decoded value.
      */
     private int paeth(final byte lower, final byte upper, final byte next) {
         final int left = UNSIGNED_BYTE & lower;

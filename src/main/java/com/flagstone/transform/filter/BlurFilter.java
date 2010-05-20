@@ -52,8 +52,11 @@ public final class BlurFilter implements Filter {
     private static final String FORMAT = "BlurFilter: { blurX=%f; blurY=%f;"
             + " passes=%d }";
 
+    /** The horizontal blur amount. */
     private final transient int blurX;
+    /** The vertical blur amount. */
     private final transient int blurY;
+    /** The number of blur passes. */
     private final transient int passes;
 
     /**

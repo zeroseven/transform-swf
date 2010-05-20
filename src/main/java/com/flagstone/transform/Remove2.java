@@ -93,8 +93,10 @@ public final class Remove2 implements MovieTag {
     }
 
     /**
-     * Returns the layer in the display list where the object to be removed is
+     * Get the layer in the display list where the object to be removed is
      * currently displayed.
+     *
+     * @return the layer number.
      */
     public int getLayer() {
         return layer;

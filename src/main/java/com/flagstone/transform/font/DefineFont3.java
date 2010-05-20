@@ -301,6 +301,7 @@ public final class DefineFont3 implements DefineTag {
      * @param obj
      *            the shape that represents the glyph displayed for the
      *            character code.
+     * @return this object.
      */
     public DefineFont3 addGlyph(final int code, final Shape obj) {
         if ((code < 0) || (code > SWF.MAX_CHARACTER)) {
@@ -323,6 +324,7 @@ public final class DefineFont3 implements DefineTag {
      *
      * @param anAdvance
      *            an advance for a glyph. Must be in the range -32768..32767.
+     * @return this object.
      */
     public DefineFont3 addAdvance(final int anAdvance) {
         if ((anAdvance < SWF.MIN_ADVANCE) || (anAdvance > SWF.MAX_ADVANCE)) {
@@ -340,6 +342,7 @@ public final class DefineFont3 implements DefineTag {
      *
      * @param obj
      *            an Bounds. Must not be null.
+     * @return this object.
      */
     public DefineFont3 add(final Bounds obj) {
         if (obj == null) {
@@ -354,6 +357,7 @@ public final class DefineFont3 implements DefineTag {
      *
      * @param anObject
      *            an Kerning. Must not be null.
+     * @return this object.
      */
     public DefineFont3 add(final Kerning anObject) {
         if (anObject == null) {
@@ -366,6 +370,8 @@ public final class DefineFont3 implements DefineTag {
     /**
      * Returns the encoding scheme used for characters rendered in the font,
      * either ASCII, SJIS or UCS2.
+     *
+     * @return the encoding used for character codes.
      */
     public CharacterFormat getEncoding() {
         CharacterFormat value;

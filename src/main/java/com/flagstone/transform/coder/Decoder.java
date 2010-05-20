@@ -108,6 +108,8 @@ public class Decoder extends Coder {
      *
      * The internal pointer must aligned on a byte boundary. The value returned
      * is equivalent to reading a 16-bit integer with big-ending byte ordering.
+     *
+     * @return a 16-bit value.
      */
     public final int readB16() {
         return ((data[index++] & UNSIGNED_BYTE_MASK) << ALIGN_BYTE_1)
@@ -116,6 +118,8 @@ public class Decoder extends Coder {
 
     /**
      * Read an unsigned byte without changing the internal pointer.
+     *
+     * @return an 8-bit unsigned value.
      */
     public final int scanByte() {
         return data[index] & UNSIGNED_BYTE_MASK;
@@ -123,6 +127,8 @@ public class Decoder extends Coder {
 
     /**
      * Read an unsigned byte.
+     *
+     * @return an 8-bit unsigned value.
      */
     public final int readByte() {
         return data[index++] & UNSIGNED_BYTE_MASK;

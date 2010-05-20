@@ -123,16 +123,20 @@ public final class GlyphIndex implements SWFEncodeable {
     }
 
     /**
-     * Returns the index of the glyph, in a font definition object, that will
+     * Get the index of the glyph, in a font definition object, that will
      * displayed to represent this character.
+     *
+     * @return the glyph index.
      */
     public int getGlyphIndex() {
         return index;
     }
 
     /**
-     * Returns the spacing in twips between the glyph representing this
+     * Get the spacing in twips between the glyph representing this
      * character and the next.
+     *
+     * @return the advance to the next character.
      */
     public int getAdvance() {
         return advance;

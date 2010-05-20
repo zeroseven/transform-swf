@@ -58,7 +58,7 @@ public final class SymbolClass implements MovieTag {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "SymbolClass: { objects=%s }";
-
+    /** Table mapping unique identifiers to actionscript 3 classes. */
     private Map<Integer, String> objects;
 
     /** The length of the object, minus the header, when it is encoded. */
@@ -123,7 +123,13 @@ public final class SymbolClass implements MovieTag {
         objects = new LinkedHashMap<Integer, String>(object.objects);
     }
 
-
+    /**
+     * Add a mapping for a unique identifier to an actionscript 3 class.
+     * @param uid the unique identifier for the object.
+     * @param aString the name of the actionscript 3 class that displays the
+     * object.
+     * @return this object.
+     */
     public SymbolClass add(final int uid, final String aString) {
         if ((uid < 1) || (uid > SWF.MAX_IDENTIFIER)) {
              throw new IllegalArgumentRangeException(
@@ -136,12 +142,18 @@ public final class SymbolClass implements MovieTag {
         return this;
     }
 
-
+    /**
+     * Get the table that maps identifiers to actionscript 3 classes.
+     * @return the table of identifiers and class names.
+     */
     public Map<Integer, String> getObjects() {
         return objects;
     }
 
-
+    /**
+     * Set the table that maps identifiers to actionscript 3 classes.
+     * @param aTable the table of identifiers and class names.
+     */
     public void setObjects(final Map<Integer, String> aTable) {
         if (aTable == null) {
             throw new IllegalArgumentException();

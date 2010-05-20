@@ -116,7 +116,9 @@ public final class Remove implements MovieTag {
     }
 
     /**
-     * Returns the identifier of the object to be removed from the display list.
+     * Get the identifier of the object to be removed from the display list.
+     *
+     * @return the identifier if the object to be removed.
      */
     public int getIdentifier() {
         return identifier;
@@ -138,7 +140,9 @@ public final class Remove implements MovieTag {
     }
 
     /**
-     * Returns the layer in the display list where the object will be displayed.
+     * Get the layer in the display list where the object will be displayed.
+     *
+     * @return the layer number.
      */
     public int getLayer() {
         return layer;

@@ -101,14 +101,18 @@ public final class MorphSolidFill implements FillStyle {
     }
 
     /**
-     * Returns the colour at the start of the morphing process.
+     * Get the colour at the start of the morphing process.
+     *
+     * @return the starting fill colour.
      */
     public Color getStartColor() {
         return startColor;
     }
 
     /**
-     * Returns the colour at the end of the morphing process.
+     * Get the colour at the end of the morphing process.
+     *
+     * @return the final fill colour.
      */
     public Color getEndColor() {
         return endColor;

@@ -91,6 +91,9 @@ public final class VideoMetaData implements VideoTag {
     /**
      * Constructs a new VideoMetaData object with the encoded data).
      *
+     * @param time
+     *            time in milliseconds from the start of the file where the
+     *            meta-data is applied.
      * @param metaData
      *            an array of bytes containing the encoded meta-data. Must not
      *            be null.
@@ -114,8 +117,10 @@ public final class VideoMetaData implements VideoTag {
     }
 
     /**
-     * Returns the timestamp, in milliseconds, relative to the start of the
-     * file, when the audio or video will be played.
+     * Get the timestamp, in milliseconds, relative to the start of the
+     * file, when the meta-data applies.
+     *
+     * @return the timestamp for the meta-data.
      */
     public int getTimestamp() {
         return timestamp;
@@ -137,8 +142,9 @@ public final class VideoMetaData implements VideoTag {
     }
 
     /**
-     * Get a copy of the encoded meta data that describes how the video stream
-     * should be played.
+     * Get a copy of the meta-data.
+     *
+     * @return a copy of the meta-data.
      */
     public byte[] getData() {
         return Arrays.copyOf(data, data.length);
@@ -164,10 +170,8 @@ public final class VideoMetaData implements VideoTag {
         return new VideoMetaData(this);
     }
 
-    /**
-     * Returns a short description of this action.
-     */
     @Override
+    /** {@inheritDoc} */
     public String toString() {
         return String.format(FORMAT, data.length);
     }

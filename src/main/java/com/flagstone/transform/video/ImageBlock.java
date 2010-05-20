@@ -88,25 +88,31 @@ public final class ImageBlock implements Copyable<ImageBlock> {
     }
 
     /**
-     * Return the width of the block. although the block size is specified in
+     * Get the width of the block. although the block size is specified in
      * parent ScreenVideoPacket object the actual block size used may vary if
      * the tiled array of blocks overlaps the edge of the image.
+     *
+     * @return the width of the block.
      */
     public int getWidth() {
         return width;
     }
 
     /**
-     * Return the height of the block. although the block size is specified in
+     * Get the height of the block. although the block size is specified in
      * parent ScreenVideoPacket object the actual block size used may vary if
      * the tiled array of blocks overlaps the edge of the image.
+     *
+     * @return the height of the block.
      */
     public int getHeight() {
         return height;
     }
 
     /**
-     * Returns the zipped image data for the block.
+     * Get the zipped image data for the block.
+     *
+     * @return a copy of the block data.
      */
     public byte[] getBlock() {
         return Arrays.copyOf(block, block.length);

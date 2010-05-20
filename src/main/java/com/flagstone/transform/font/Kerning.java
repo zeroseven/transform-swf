@@ -66,10 +66,14 @@ public final class Kerning implements SWFEncodeable {
     private static final String FORMAT = "Kerning: { leftGlyph=%d;"
     		+ " rightGlyph=%d; adjustment=%d } ";
 
+    /** The index of the left glyph in the font definition. */
     private final transient int leftGlyph;
+    /** The index of the right glyph in the font definition. */
     private final transient int rightGlyph;
+    /** The adjustment to the advance of the left glyph. */
     private final transient int adjustment;
 
+    /** The width of each index in bytes. */
     private transient int size;
 
     /**
@@ -131,21 +135,27 @@ public final class Kerning implements SWFEncodeable {
     }
 
     /**
-     * Returns the index of the left glyph in the kerning pair.
+     * Get the index of the left glyph in the kerning pair.
+     *
+     * @return the index of the left glyph.
      */
     public int getLeftGlyph() {
         return leftGlyph;
     }
 
     /**
-     * Returns the index of the right glyph in the kerning pair.
+     * Get the index of the right glyph in the kerning pair.
+     *
+     * @return the index of the right glyph.
      */
     public int getRightGlyph() {
         return rightGlyph;
     }
 
     /**
-     * Returns the adjustment, in twips, to the advance of the left glyph.
+     * Get the adjustment, in twips, to the advance of the left glyph.
+     *
+     * @return the adjustment to the glyph spacing.
      */
     public int getAdjustment() {
         return adjustment;

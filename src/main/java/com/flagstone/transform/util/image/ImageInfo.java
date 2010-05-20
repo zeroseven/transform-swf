@@ -36,10 +36,14 @@ import java.util.Vector;
  *     System.err.println(&quot;Not a supported image file format.&quot;);
  *     return;
  * }
- * System.out.println(ii.getFormatName() + &quot;, &quot; + ii.getMimeType() + &quot;, &quot;
- *         + ii.getWidth() + &quot; x &quot; + ii.getHeight() + &quot; pixels, &quot;
- *         + ii.getBitsPerPixel() + &quot; bits per pixel, &quot; + ii.getNumberOfImages()
- *         + &quot; image(s), &quot; + ii.getNumberOfComments() + &quot; comment(s).&quot;);
+ * System.out.println(ii.getFormatName() + &quot;, &quot; + ii.getMimeType()
+ *         + &quot;, &quot;
+ *         + ii.getWidth() + &quot; x &quot; + ii.getHeight()
+ *         + &quot; pixels, &quot;
+ *         + ii.getBitsPerPixel() + &quot; bits per pixel, &quot;
+ *         + ii.getNumberOfImages()
+ *         + &quot; image(s), &quot; + ii.getNumberOfComments()
+ *         + &quot; comment(s).&quot;);
  * // there are other properties, check out the API documentation
  * </pre>
  *
@@ -348,16 +352,16 @@ public final class ImageInfo {
     }
 
     private boolean checkGif() throws IOException {
-        final byte[] GIF_MAGIC_87A = { 0x46, 0x38, 0x37, 0x61 };
-        final byte[] GIF_MAGIC_89A = { 0x46, 0x38, 0x39, 0x61 };
+        final byte[] gifmagic87a = { 0x46, 0x38, 0x37, 0x61 };
+        final byte[] gifmagic89a = { 0x46, 0x38, 0x39, 0x61 };
         final byte[] a = new byte[11]; // 4 from the GIF signature + 7 from the
                                         // global
         // header
         if (read(a) != 11) {
             return false;
         }
-        if ((!equals(a, 0, GIF_MAGIC_89A, 0, 4))
-                && (!equals(a, 0, GIF_MAGIC_87A, 0, 4))) {
+        if ((!equals(a, 0, gifmagic89a, 0, 4))
+                && (!equals(a, 0, gifmagic87a, 0, 4))) {
             return false;
         }
         format = FORMAT_GIF;
@@ -377,11 +381,11 @@ public final class ImageInfo {
         }
         numberOfImages = 0;
         int blockType;
+        int n;
         do {
             blockType = read();
             switch (blockType) {
             case (0x2c): // image separator
-            {
                 if (read(a, 0, 9) != 9) {
                     return false;
                 }
@@ -400,7 +404,6 @@ public final class ImageInfo {
                     skip((1 << localBitsPerPixel) * 3);
                 }
                 skip(1); // initial code length
-                int n;
                 do {
                     n = read();
                     if (n > 0) {
@@ -411,13 +414,10 @@ public final class ImageInfo {
                 } while (n > 0);
                 numberOfImages++;
                 break;
-            }
             case (0x21): // extension
-            {
                 final int extensionType = read();
                 if (collectComments && (extensionType == 0xfe)) {
                     final StringBuilder sb = new StringBuilder();
-                    int n;
                     do {
                         n = read();
                         if (n == -1) {
@@ -434,7 +434,6 @@ public final class ImageInfo {
                         }
                     } while (n > 0);
                 } else {
-                    int n;
                     do {
                         n = read();
                         if (n > 0) {
@@ -445,14 +444,10 @@ public final class ImageInfo {
                     } while (n > 0);
                 }
                 break;
-            }
             case (0x3b): // end of file
-            {
                 break;
-            }
-            default: {
+            default:
                 return false;
-            }
             }
         } while (blockType != 0x3b);
         return true;
@@ -465,8 +460,8 @@ public final class ImageInfo {
         if (read(a, 0, 10) != 10) {
             return false;
         }
-        final byte[] IFF_RM = { 0x52, 0x4d };
-        if (!equals(a, 0, IFF_RM, 0, 2)) {
+        final byte[] iffrm = { 0x52, 0x4d };
+        if (!equals(a, 0, iffrm, 0, 2)) {
             return false;
         }
         final int type = getIntBigEndian(a, 6);
@@ -493,7 +488,8 @@ public final class ImageInfo {
                 width = getShortBigEndian(a, 0);
                 height = getShortBigEndian(a, 2);
                 bitsPerPixel = a[8] & 0xff;
-                return ((width > 0) && (height > 0) && (bitsPerPixel > 0) && (bitsPerPixel < 33));
+                return ((width > 0) && (height > 0)
+                        && (bitsPerPixel > 0) && (bitsPerPixel < 33));
             } else {
                 skip(size);
             }
@@ -520,8 +516,8 @@ public final class ImageInfo {
                 if (read(data, 0, 12) != 12) {
                     return false;
                 }
-                final byte[] APP0_ID = { 0x4a, 0x46, 0x49, 0x46, 0x00 };
-                if (equals(APP0_ID, 0, data, 0, 5)) {
+                final byte[] appoId = { 0x4a, 0x46, 0x49, 0x46, 0x00 };
+                if (equals(appoId, 0, data, 0, 5)) {
                     // System.out.println("data 7=" + data[7]);
                     if (data[7] == 1) {
                         setPhysicalWidthDpi(getShortBigEndian(data, 8));
@@ -534,7 +530,8 @@ public final class ImageInfo {
                     }
                 }
                 skip(size - 14);
-            } else if (collectComments && (size > 2) && (marker == 0xfffe)) { // comment
+            } else if (collectComments && (size > 2)
+                    && (marker == 0xfffe)) { // comment
                 size -= 2;
                 final byte[] chars = new byte[size];
                 if (read(chars, 0, size) != size) {
@@ -601,12 +598,12 @@ public final class ImageInfo {
     }
 
     private boolean checkPng() throws IOException {
-        final byte[] PNG_MAGIC = { 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a };
+        final byte[] pngmagic = { 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a };
         final byte[] a = new byte[27];
         if (read(a) != 27) {
             return false;
         }
-        if (!equals(a, 0, PNG_MAGIC, 0, 6)) {
+        if (!equals(a, 0, pngmagic, 0, 6)) {
             return false;
         }
         format = FORMAT_PNG;
@@ -626,8 +623,8 @@ public final class ImageInfo {
         if ((id < 1) || (id > 6)) {
             return false;
         }
-        final int[] PNM_FORMATS = { FORMAT_PBM, FORMAT_PGM, FORMAT_PPM };
-        format = PNM_FORMATS[(id - 1) % 3];
+        final int[] pnmformats = { FORMAT_PBM, FORMAT_PGM, FORMAT_PPM };
+        format = pnmformats[(id - 1) % 3];
         boolean hasPixelResolution = false;
         String s;
         while (true) {
@@ -699,8 +696,8 @@ public final class ImageInfo {
         if (read(a) != a.length) {
             return false;
         }
-        final byte[] PSD_MAGIC = { 0x50, 0x53 };
-        if (!equals(a, 0, PSD_MAGIC, 0, 2)) {
+        final byte[] psdmagic = { 0x50, 0x53 };
+        if (!equals(a, 0, psdmagic, 0, 2)) {
             return false;
         }
         format = FORMAT_PSD;
@@ -710,7 +707,8 @@ public final class ImageInfo {
         final int channels = getShortBigEndian(a, 10);
         final int depth = getShortBigEndian(a, 20);
         bitsPerPixel = channels * depth;
-        return ((width > 0) && (height > 0) && (bitsPerPixel > 0) && (bitsPerPixel <= 64));
+        return ((width > 0) && (height > 0)
+                && (bitsPerPixel > 0) && (bitsPerPixel <= 64));
     }
 
     private boolean checkRas() throws IOException {
@@ -718,8 +716,8 @@ public final class ImageInfo {
         if (read(a) != a.length) {
             return false;
         }
-        final byte[] RAS_MAGIC = { 0x6a, (byte) 0x95 };
-        if (!equals(a, 0, RAS_MAGIC, 0, 2)) {
+        final byte[] rasmagic = { 0x6a, (byte) 0x95 };
+        if (!equals(a, 0, rasmagic, 0, 2)) {
             return false;
         }
         format = FORMAT_RAS;
@@ -727,7 +725,8 @@ public final class ImageInfo {
         width = getIntBigEndian(a, 2);
         height = getIntBigEndian(a, 6);
         bitsPerPixel = getIntBigEndian(a, 10);
-        return ((width > 0) && (height > 0) && (bitsPerPixel > 0) && (bitsPerPixel <= 24));
+        return ((width > 0) && (height > 0)
+                && (bitsPerPixel > 0) && (bitsPerPixel <= 24));
     }
 
     /**
@@ -748,7 +747,8 @@ public final class ImageInfo {
         return true;
     }
 
-    private static boolean equals(final byte[] a1, final int offs1, final byte[] a2,
+    private static boolean equals(final byte[] a1,
+            final int offs1, final byte[] a2,
             final int offs2, final int num) {
         int index1 = offs1;
         int index2 = offs2;
@@ -799,7 +799,7 @@ public final class ImageInfo {
         return format;
     }
 
-    
+
     public ImageEncoding getImageFormat() {
         return imageFormat;
     }
@@ -1012,6 +1012,7 @@ public final class ImageInfo {
                             in.close();
                         }
                     } catch (final IOException ee) {
+                        // Swallow - BAD
                     }
                 }
             }
@@ -1071,7 +1072,8 @@ public final class ImageInfo {
 //        System.out.println(value);
 //    }
 
-//    private static void printVerbose(final String sourceName, final ImageInfo ii) {
+//    private static void printVerbose(final String
+//    sourceName, final ImageInfo ii) {
 //        printLine(0, null, sourceName);
 //        printLine(1, "File format: ", ii.getFormatName());
 //        printLine(1, "MIME type: ", ii.getMimeType());

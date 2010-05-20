@@ -169,9 +169,9 @@ public final class AWTDecoder {
 
             code++;
         }
-        font.setAscent(ascent);
-        font.setDescent(descent);
-        font.setLeading(leading);
+        font.setAscent((int) ascent);
+        font.setDescent((int) descent);
+        font.setLeading((int) leading);
 
         fonts.add(font);
     }

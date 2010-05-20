@@ -311,9 +311,9 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
 
         font.setFace(new FontFace(name, bold, italic));
         font.setEncoding(encoding);
-        font.setAscent(ascent);
-        font.setDescent(descent);
-        font.setLeading(leading);
+        font.setAscent((int) ascent);
+        font.setDescent((int) descent);
+        font.setLeading((int) leading);
         font.setNumberOfGlyphs(glyphCount);
         font.setMissingGlyph(missingGlyph);
         font.setHighestChar(maxChar);

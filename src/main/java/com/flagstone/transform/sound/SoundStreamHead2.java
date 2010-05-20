@@ -101,7 +101,7 @@ public final class SoundStreamHead2 implements MovieTag {
     /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
 
-    /*
+    /**
      * The following variable is used to preserve the value of a reserved field
      * when decoding then encoding an existing Flash file. Macromedia's file
      * file format specification states that this field is always zero - it is
@@ -209,7 +209,9 @@ public final class SoundStreamHead2 implements MovieTag {
     }
 
     /**
-     * Returns the streaming sound format.
+     * Get the compression format used.
+     *
+     * @return the format for the sound data.
      */
     public SoundFormat getFormat() {
         SoundFormat value;
@@ -276,51 +278,65 @@ public final class SoundStreamHead2 implements MovieTag {
 
     /**
      * Returns the recommended playback rate: 5512, 11025, 22050 or 44100 Hz.
+     *
+     * @return the playback rate in Hertz.
      */
     public int getPlayRate() {
         return playRate;
     }
 
     /**
-     * Returns the recommended number of playback channels = 1 = mono 2 =
+     * Get the recommended number of playback channels = 1 = mono 2 =
      * stereo.
+     *
+     * @return the number of channels.
      */
     public int getPlayChannels() {
         return playChannels;
     }
 
     /**
-     * Returns the recommended playback sample range in bytes: 1 or 2.
+     * Get the recommended playback sample range in bytes: 1 or 2.
+     *
+     * @return the number of bytes in each sample.
      */
     public int getPlaySampleSize() {
         return playSampleSize;
     }
 
     /**
-     * Returns the sample rate: 5512, 11025, 22050 or 44100 Hz in the streaming
+     * Get the sample rate: 5512, 11025, 22050 or 44100 Hz in the streaming
      * sound.
+     *
+     * @return the stream rate in Hertz.
      */
     public float getStreamRate() {
         return streamRate;
     }
 
     /**
-     * Returns the number of channels, 1 = mono 2 = stereo, in the streaming
+     * Get the number of channels, 1 = mono 2 = stereo, in the streaming
      * sound.
+     *
+     * @return the number of channels defined in the streaming sound.
      */
     public int getStreamChannels() {
         return streamChannels;
     }
 
     /**
-     * Returns the sample size in bytes: 1 or 2 in the streaming sound.
+     * Get the sample size in bytes: 1 or 2 in the streaming sound.
+     *
+     * @return the number of bytes per sample in the streaming sound.
      */
     public int getStreamSampleSize() {
         return streamSampleSize;
     }
 
     /**
-     * Returns the average number of samples in each stream block following.
+     * Get the average number of samples in each stream block following.
+     *
+     * @return the number of sample in each stream block.
      */
     public int getStreamSampleCount() {
         return streamSampleCount;

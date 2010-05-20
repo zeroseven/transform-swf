@@ -205,16 +205,20 @@ public final class GradientFill implements FillStyle {
     }
 
     /**
-     * Returns the coordinate transform mapping the gradient square onto
+     * Get the coordinate transform mapping the gradient square onto
      * physical coordinates.
+     *
+     * @return the coordinate transform that defines the gradient displayed.
      */
     public CoordTransform getTransform() {
         return transform;
     }
 
     /**
-     * Returns the array of Gradient objects defining the points for the
+     * Get the array of Gradient objects defining the points for the
      * gradient fill.
+     *
+     * @return the array of point defining the gradient.
      */
     public List<Gradient> getGradients() {
         return gradients;
@@ -260,6 +264,8 @@ public final class GradientFill implements FillStyle {
      *
      * @param aGradient
      *            an Gradient object. Must not be null.
+     *
+     * @return this object.
      */
     public GradientFill add(final Gradient aGradient) {
         if (aGradient == null) {

@@ -175,16 +175,20 @@ public final class SoundInfo implements SWFEncodeable {
     }
 
     /**
-     * Returns the identifier of the sound to the played.
+     * Get the identifier of the sound to the played.
+     *
+     * @return the unique identifier of the sound.
      */
     public int getIdentifier() {
         return identifier;
     }
 
     /**
-     * Returns the synchronisation mode: START - start playing the sound,
+     * Get the synchronisation mode: START - start playing the sound,
      * CONTINUE - do not play the sound if it is already playing and STOP - stop
      * playing the sound.
+     *
+     * @return the sound synchronisation mode.
      */
     public Mode getMode() {
         Mode value;
@@ -205,29 +209,37 @@ public final class SoundInfo implements SWFEncodeable {
     }
 
     /**
-     * Returns the sample number at which the sound reaches full volume when
+     * Get the sample number at which the sound reaches full volume when
      * fading in.
+     *
+     * @return the fade in point.
      */
     public Integer getInPoint() {
         return inPoint;
     }
 
     /**
-     * Returns the sample number at which the sound starts to fade.
+     * Get the sample number at which the sound starts to fade.
+     *
+     * @return the fade out point.
      */
     public Integer getOutPoint() {
         return outPoint;
     }
 
     /**
-     * Returns the number of times the sound will be repeated.
+     * Get the number of times the sound will be repeated.
+     *
+     * @return the number of loops.
      */
     public Integer getLoopCount() {
         return loopCount;
     }
 
     /**
-     * Returns the Envelope that control the levels the sound is played.
+     * Get the Envelope that control the levels the sound is played.
+     *
+     * @return the sound envelope.
      */
     public Envelope getEnvelope() {
         return envelope;

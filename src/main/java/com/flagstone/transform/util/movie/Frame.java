@@ -212,8 +212,10 @@ public final class Frame {
     }
 
     /**
-     * Returns the number of the frame.
-      */
+     * Get the number of the frame.
+     *
+     * @return the frame number.
+     */
     public int getNumber() {
         return number;
     }

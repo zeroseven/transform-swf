@@ -126,14 +126,18 @@ public final class Line implements ShapeRecord {
     }
 
     /**
-     * Returns the relative x-coordinate.
+     * Get the relative x-coordinate of the end-point of the line.
+     *
+     * @return the x-coordinate of the line end.
      */
     public int getX() {
         return xCoord;
     }
 
     /**
-     * Returns the relative y-coordinate.
+     * Get the relative y-coordinate of the end-point of the line.
+     *
+     * @return the y-coordinate of the line end.
      */
     public int getY() {
         return yCoord;

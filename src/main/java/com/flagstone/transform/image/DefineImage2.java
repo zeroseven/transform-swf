@@ -220,39 +220,49 @@ public final class DefineImage2 implements ImageTag {
     }
 
     /**
-     * Returns the width of the image in pixels.
+     * Get the width of the image in pixels (not twips).
+     *
+     * @return the width of the image.
      */
     public int getWidth() {
         return width;
     }
 
     /**
-     * Returns the height of the image in pixels.
+     * Get the height of the image in pixels (not twips).
+     *
+     * @return the height of the image.
      */
     public int getHeight() {
         return height;
     }
 
     /**
-     * Returns the number of bits used to represent each pixel. Either 8 or 32
+     * Get the number of bits used to represent each pixel. Either 8 or 32
      * bits. The pixel size is 8-bits for colour-mapped images and 32 bits for
      * images where the colour is specified directly.
+     *
+     * @return the number of bits for each pixel.
      */
     public int getPixelSize() {
         return pixelSize;
     }
 
     /**
-     * Returns the number of entries in the colour table encoded the compressed
+     * Get the number of entries in the colour table encoded the compressed
      * image. For images where the colour is specified directly in the image
      * then the table size is zero.
+     *
+     * @return the number of entries in the colour table.
      */
     public int getTableSize() {
         return tableSize;
     }
 
     /**
-     * Returns a copy the data containing the compressed colour table and image.
+     * Get a copy of the compressed colour table and image.
+     *
+     * @return  a copy of the data.
      */
     public byte[] getImage() {
         return Arrays.copyOf(image, image.length);

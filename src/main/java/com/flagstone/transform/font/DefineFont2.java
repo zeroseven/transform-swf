@@ -298,6 +298,7 @@ public final class DefineFont2 implements DefineTag {
      * @param obj
      *            the shape that represents the glyph displayed for the
      *            character code.
+     * @return this object.
      */
     public DefineFont2 addGlyph(final int code, final Shape obj) {
         if ((code < 0) || (code > SWF.MAX_CHARACTER)) {
@@ -320,6 +321,7 @@ public final class DefineFont2 implements DefineTag {
      *
      * @param anAdvance
      *            an advance for a glyph. Must be in the range -32768..32767.
+     * @return this object.
      */
     public DefineFont2 addAdvance(final int anAdvance) {
         if ((anAdvance < SWF.MIN_ADVANCE) || (anAdvance > SWF.MAX_ADVANCE)) {
@@ -337,6 +339,7 @@ public final class DefineFont2 implements DefineTag {
      *
      * @param obj
      *            an Bounds. Must not be null.
+     * @return this object.
      */
     public DefineFont2 add(final Bounds obj) {
         if (obj == null) {
@@ -351,6 +354,7 @@ public final class DefineFont2 implements DefineTag {
      *
      * @param anObject
      *            an Kerning. Must not be null.
+     * @return this object.
      */
     public DefineFont2 add(final Kerning anObject) {
         if (anObject == null) {
@@ -361,8 +365,10 @@ public final class DefineFont2 implements DefineTag {
     }
 
     /**
-     * Returns the encoding scheme used for characters rendered in the font,
+     * Get the encoding scheme used for characters rendered in the font,
      * either ASCII, SJIS or UCS2.
+     *
+     * @return the encoding used for character codes.
      */
     public CharacterFormat getEncoding() {
         CharacterFormat value;
@@ -488,7 +494,7 @@ public final class DefineFont2 implements DefineTag {
     }
 
     /**
-     * Returns the ascent for the font in twips.
+     * Get the ascent for the font in twips.
      *
      * @return the ascent for the font.
      */
@@ -497,7 +503,7 @@ public final class DefineFont2 implements DefineTag {
     }
 
     /**
-     * Returns the descent for the font in twips.
+     * Get the descent for the font in twips.
      *
      * @return the descent for the font.
      */

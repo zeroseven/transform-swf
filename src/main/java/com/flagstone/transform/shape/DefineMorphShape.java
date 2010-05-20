@@ -306,14 +306,18 @@ public final class DefineMorphShape implements DefineTag {
     }
 
     /**
-     * Returns the width of the shape at the start of the morphing process.
+     * Get the width of the shape at the start of the morphing process.
+     *
+     * @return the width of the starting shape.
      */
     public int getWidth() {
         return startBounds.getWidth();
     }
 
     /**
-     * Returns the height of the shape at the start of the morphing process.
+     * Get the height of the shape at the start of the morphing process.
+     *
+     * @return the height of the starting shape.
      */
     public int getHeight() {
         return startBounds.getHeight();
@@ -324,6 +328,8 @@ public final class DefineMorphShape implements DefineTag {
      *
      * @param aLineStyle
      *            and LineStyle object. Must not be null.
+     *
+     * @return this object.
      */
     public DefineMorphShape add(final MorphLineStyle aLineStyle) {
         lineStyles.add(aLineStyle);
@@ -335,6 +341,8 @@ public final class DefineMorphShape implements DefineTag {
      *
      * @param aFillStyle
      *            an FillStyle object. Must not be null.
+     *
+     * @return this object.
      */
     public DefineMorphShape add(final FillStyle aFillStyle) {
         fillStyles.add(aFillStyle);
@@ -342,45 +350,57 @@ public final class DefineMorphShape implements DefineTag {
     }
 
     /**
-     * Returns the Bounds object that defines the bounding rectangle enclosing
+     * Get the Bounds object that defines the bounding rectangle enclosing
      * the start shape.
+     *
+     * @return the bounding box for the starting shape.
      */
     public Bounds getStartBounds() {
         return startBounds;
     }
 
     /**
-     * Returns the Bounds object that defines the bounding rectangle enclosing
+     * Get the Bounds object that defines the bounding rectangle enclosing
      * the end shape.
+     *
+     * @return the bounding box for the final shape.
      */
     public Bounds getEndBounds() {
         return endBounds;
     }
 
     /**
-     * Returns the array of fill styles (MorphSolidFill, MorphBitmapFill and
+     * Get the array of fill styles (MorphSolidFill, MorphBitmapFill and
      * MorphGradientFill objects) for the shapes.
+     *
+     * @return the list of fill styles used in the shape.
      */
     public List<FillStyle> getFillStyles() {
         return fillStyles;
     }
 
     /**
-     * Returns the array of line styles (MorphLineStyle objects) for the shapes.
+     * Get the array of line styles (MorphLineStyle objects) for the shapes.
+     *
+     * @return the list of line styles used in the shape.
      */
     public List<MorphLineStyle> getLineStyles() {
         return lineStyles;
     }
 
     /**
-     * Returns the starting shape.
+     * Get shape displayed at the start of the morphing process.
+     *
+     * @return the starting shape.
      */
     public Shape getStartShape() {
         return startShape;
     }
 
     /**
-     * Returns the ending shape.
+     * Get shape displayed at the end of the morphing process.
+     *
+     * @return the final shape.
      */
     public Shape getEndShape() {
         return endShape;

@@ -80,75 +80,97 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  * does not conflict with an existing object.
  * </p>
  */
-//TODO(class)
 public final class Movie {
 
-    /** TODO(class). */
+    /**
+     * Signature provides a simple way of specifying the signature that
+     * identifies a Flash file.
+     */
    public enum Signature {
-
+       /** A "standard" uncompressed Flash file. */
        FWS(new byte[] { 0x46, 0x57, 0x53}),
-
+       /** A compressed Flash file. */
        CWS(new byte[] { 0x43, 0x57, 0x53});
-
+       /** An array holding the ASCII characters of the signature. */
        private byte[] bytes;
-
+       /**
+        * Private constructor for the enum.
+        * @param data the array of bytes representing the ASCII characters.
+        */
        private Signature(final byte[] data) {
            bytes = Arrays.copyOf(data, data.length);
        }
-
-       public boolean matches(final byte[] data) {
-           return Arrays.equals(bytes, data);
-       }
-
-       protected byte get(final int index) {
+       /**
+        * Get an ASCII character from the signature.
+        *
+        * @param index the index of the character.
+        * @return the byte for the selected character.
+        */
+       public byte get(final int index) {
            return bytes[index];
        }
     }
-
+   /** The version of Flash supported. */
+    public static final int VERSION = 10;
     /** Format string used in toString() method. */
     private static final String FORMAT = "Movie: { signature=%s; version=%d;"
             + " frameSize=%s; frameRate=%f; objects=%s }";
 
+    /** The registry for the different types of decoder. */
     private transient DecoderRegistry registry;
+    /** The character encoding used for strings. */
     private transient CharacterEncoding encoding;
+    /** The next available unique identifier. */
     private transient int identifier;
 
+    /** The signature identifying the type of Flash file. */
     private Signature signature;
+    /** The Flash version number. */
     private int version;
+    /** The Flash Player screen coordinates. */
     private Bounds frameSize;
+    /** The frame rate of the movie. */
     private float frameRate;
+    /** The list of objects that make up the movie. */
     private List<MovieTag> objects;
 
     /** The length of the object when it is encoded. */
     private transient int length;
+    /** The number of frames in the moviem when it is encoded. */
     private transient int frameCount;
 
-
+    /**
+     * Creates a new Movie.
+     */
     public Movie() {
         encoding = CharacterEncoding.UTF8;
         signature = Signature.CWS;
-        version = 9;
+        version = VERSION;
         objects = new ArrayList<MovieTag>();
     }
 
+    /**
+     * Creates a complete copy of this movie.
+     *
+     * @param movie the Movie to copy.
+     */
+    public Movie(final Movie movie) {
 
-    public Movie(final Movie object) {
-
-        if (object.registry != null) {
-            registry = object.registry.copy();
+        if (movie.registry != null) {
+            registry = movie.registry.copy();
         }
 
-        identifier = object.identifier;
-        encoding = object.encoding;
+        identifier = movie.identifier;
+        encoding = movie.encoding;
 
-        signature = object.signature;
-        version = object.version;
-        frameSize = object.frameSize;
-        frameRate = object.frameRate;
+        signature = movie.signature;
+        version = movie.version;
+        frameSize = movie.frameSize;
+        frameRate = movie.frameRate;
 
-        objects = new ArrayList<MovieTag>(object.objects.size());
+        objects = new ArrayList<MovieTag>(movie.objects.size());
 
-        for (final MovieTag tag : object.objects) {
+        for (final MovieTag tag : movie.objects) {
             objects.add(tag.copy());
         }
     }
@@ -252,8 +274,10 @@ public final class Movie {
     }
 
     /**
-     * Returns the bounding rectangle that defines the size of the player
+     * Get the bounding rectangle that defines the size of the player
      * screen.
+     *
+     * @return the bounding box that defines the screen.
      */
     public Bounds getFrameSize() {
         return frameSize;
@@ -280,8 +304,10 @@ public final class Movie {
     }
 
     /**
-     * Returns the number of frames played per second that the movie will be
+     * Get the number of frames played per second that the movie will be
      * displayed at.
+     *
+     * @return the movie frame rate.
      */
     public float getFrameRate() {
         return frameRate;
@@ -299,7 +325,9 @@ public final class Movie {
     }
 
     /**
-     * Returns the array of objects contained in the Movie.
+     * Get the array of objects contained in the Movie.
+     *
+     * @return the list of objects that make up the movie.
      */
     public List<MovieTag> getObjects() {
         return objects;
@@ -323,6 +351,7 @@ public final class Movie {
      *
      * @param anObject
      *            the object to be added to the movie. Must not be null.
+     * @return this object.
      */
     public Movie add(final MovieTag anObject) {
         if (anObject == null) {
@@ -389,9 +418,9 @@ public final class Movie {
 
         final byte[] sig = Arrays.copyOf(buffer, 3);
 
-        if (Signature.FWS.matches(sig)) {
+        if (Signature.FWS.equals(sig)) {
             signature = Signature.FWS;
-        } else if (Signature.CWS.matches(sig)) {
+        } else if (Signature.CWS.equals(sig)) {
             signature = Signature.CWS;
         } else {
             throw new DataFormatException("Not SWF Format");

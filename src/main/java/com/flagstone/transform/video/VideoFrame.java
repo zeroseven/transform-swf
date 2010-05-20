@@ -124,6 +124,8 @@ public final class VideoFrame implements MovieTag {
     /**
      * Get the identifier of the DefineVideo object where the frame will be
      * displayed.
+     *
+     * @return the unique identifier of the video.
      */
     public int getIdentifier() {
         return identifier;
@@ -146,7 +148,9 @@ public final class VideoFrame implements MovieTag {
     }
 
     /**
-     * Returns the number of the frame.
+     * Get the number of the frame.
+     *
+     * @return the frame number.
      */
     public int getFrameNumber() {
         return frameNumber;
@@ -166,9 +170,11 @@ public final class VideoFrame implements MovieTag {
     }
 
     /**
-     * Returns a copy ogf the encoded video data. In Flash 6 modified H263
+     * Get a copy of the encoded video data. In Flash 6 modified H263
      * encoded video is supported. Flash 7 supports both modified H263 and
      * ScreenVideo.
+     *
+     * @return a copy of the video data.
      */
     public byte[] getData() {
         return Arrays.copyOf(data, data.length);
@@ -203,7 +209,8 @@ public final class VideoFrame implements MovieTag {
     public int prepareToEncode(final Context context) {
         length = 4 + data.length;
 
-        return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH : SWFEncoder.STD_LENGTH) + length;
+        return (length > SWFEncoder.STD_LIMIT ?
+                SWFEncoder.EXT_LENGTH : SWFEncoder.STD_LENGTH) + length;
     }
 
     /** {@inheritDoc} */
