@@ -120,19 +120,48 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-gpg-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>sign-artifacts</id>
-						<phase>verify</phase>
- 						<goals>
-							<goal>sign</goal>
-						</goals>
-                        <configuration>
-                            <keyname>smackay</keyname>
-                        </configuration>
-					</execution>
-				</executions>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.4.2</version>
+		        <executions>
+		          <execution>
+		            <id>copy-resources</id>
+		            <phase>integration-test</phase>
+		            <goals>
+		              <goal>copy-resources</goal>
+		            </goals>
+		            <configuration>
+		              <outputDirectory>${basedir}/target</outputDirectory>
+		              <resources>          
+		                <resource>
+		                  <directory>${basedir}/src/test/reports</directory>
+	                      <includes>
+	                          <include>**/*.html</include>
+	                      </includes>
+		                  <filtering>false</filtering>
+		                </resource>
+		              </resources>              
+		            </configuration>            
+		          </execution>
+		        </executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<version>2.5</version>
+		        <executions>
+		          <execution>
+		            <id>integration-test</id>
+		            <goals>
+		              <goal>integration-test</goal>
+		            </goals>
+		          </execution>
+		          <execution>
+		            <id>verify</id>
+		            <goals>
+		              <goal>verify</goal>
+		            </goals>
+		          </execution>
+		        </executions>
 			</plugin>
 		</plugins>
 	</build>

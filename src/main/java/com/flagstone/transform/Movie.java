@@ -100,6 +100,11 @@ public final class Movie {
        private Signature(final byte[] data) {
            bytes = Arrays.copyOf(data, data.length);
        }
+
+       public boolean matches(final byte[] sig) {
+           return Arrays.equals(bytes, sig);
+       }
+
        /**
         * Get an ASCII character from the signature.
         *
@@ -418,9 +423,9 @@ public final class Movie {
 
         final byte[] sig = Arrays.copyOf(buffer, 3);
 
-        if (Signature.FWS.equals(sig)) {
+        if (Signature.FWS.matches(sig)) {
             signature = Signature.FWS;
-        } else if (Signature.CWS.equals(sig)) {
+        } else if (Signature.CWS.matches(sig)) {
             signature = Signature.CWS;
         } else {
             throw new DataFormatException("Not SWF Format");
