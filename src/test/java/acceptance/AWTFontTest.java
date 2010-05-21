@@ -61,7 +61,7 @@ public final class AWTFontTest {
     @Parameters
     public static Collection<Object[]> files() {
 
-        final File destDir = new File("test/results/acceptance/AWTFontTest");
+        final File destDir = new File("target/acceptance-test/AWTFontTest");
 
         if (!destDir.exists() && !destDir.mkdirs()) {
             fail();

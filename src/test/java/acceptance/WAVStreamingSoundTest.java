@@ -62,7 +62,7 @@ public final class WAVStreamingSoundTest {
 
         final File srcDir = new File("test/data/wav/reference");
         final File destDir = new File(
-                "test/results/acceptance/WAVStreamingSoundTest");
+                "target/acceptance-test/WAVStreamingSoundTest");
 
         if (!destDir.exists() && !destDir.mkdirs()) {
             fail();

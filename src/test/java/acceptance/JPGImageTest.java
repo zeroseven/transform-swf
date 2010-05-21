@@ -59,7 +59,7 @@ public final class JPGImageTest {
     public static Collection<Object[]> files() {
 
         final File srcDir = new File("test/data/jpg/reference");
-        final File destDir = new File("test/results/acceptance/JPGImageTest");
+        final File destDir = new File("target/acceptance-test/JPGImageTest");
 
         if (!destDir.exists() && !destDir.mkdirs()) {
             fail();

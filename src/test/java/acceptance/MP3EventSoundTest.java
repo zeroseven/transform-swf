@@ -63,7 +63,7 @@ public final class MP3EventSoundTest {
 
         final File srcDir = new File("test/data/mp3/reference");
         final File destDir =
-            new File("test/results/acceptance/MP3EventSoundTest");
+            new File("target/acceptance-test/MP3EventSoundTest");
 
         if (!destDir.exists() && !destDir.mkdirs()) {
             fail();

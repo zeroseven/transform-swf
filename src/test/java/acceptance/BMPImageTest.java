@@ -59,7 +59,7 @@ public final class BMPImageTest {
     public static Collection<Object[]> files() {
 
         final File srcDir = new File("test/data/bmp/reference");
-        final File destDir = new File("test/results/acceptance/BMPImageTest");
+        final File destDir = new File("target/acceptance-test/BMPImageTest");
 
         if (!destDir.exists() && !destDir.mkdirs()) {
             fail();

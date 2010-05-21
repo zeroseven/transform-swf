@@ -62,7 +62,7 @@ public final class ScreenVideoTest {
 
         final File sourceDir = new File("test/data/png-screenshots");
         final File destDir = new File(
-                "test/results/acceptance/ScreenVideoTest");
+                "target/acceptance-test/ScreenVideoTest");
 
         final FilenameFilter filter = new FilenameFilter() {
             public boolean accept(final File directory, final String name) {

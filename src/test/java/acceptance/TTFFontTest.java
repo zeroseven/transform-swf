@@ -63,7 +63,7 @@ public final class TTFFontTest {
     public static Collection<Object[]> files() {
 
         final File srcDir = new File("test/data/ttf/reference");
-        final File destDir = new File("test/results/acceptance/TTFFontTest");
+        final File destDir = new File("target/acceptance-test/TTFFontTest");
 
         if (!destDir.exists() && !destDir.mkdirs()) {
             fail();
@@ -97,8 +97,9 @@ public final class TTFFontTest {
     @Test
     public void showFont() {
         try {
-            final int fontSize = 960;
-            String alphabet = "abcdefghijklmnopqrstuvwxyz";
+            final int fontSize = 720;
+            final int padding = 100;
+            String alphabet = "abcXYZɑ4ßº€éêöã";
 
             final TTFDecoder fontDecoder = new TTFDecoder();
             fontDecoder.read(sourceFile);
@@ -112,13 +113,14 @@ public final class TTFFontTest {
             final DefineFont2 definition = font.defineFont(movie.nextId(),
                     set.getCharacters());
             final TextTable textTable = new TextTable(definition, fontSize);
-            final Bounds bounds = textTable.boundsForText(alphabet);
+            final Bounds bounds = Bounds.pad(
+                    textTable.boundsForText(alphabet), padding);
             final DefineText2 text = textTable.defineText(movie.nextId(),
                     alphabet, WebPalette.BLACK.color());
 
             movie.setFrameSize(bounds);
             movie.setFrameRate(1.0f);
-            movie.add(new Background(WebPalette.LIGHT_BLUE.color()));
+            movie.add(new Background(WebPalette.WHITE.color()));
             movie.add(definition);
             movie.add(text);
             movie.add(Place2.show(text.getIdentifier(), 1, 0, 0));

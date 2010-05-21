@@ -62,7 +62,7 @@ public final class CanvasTest {
     public static void initialize() {
         path = new Canvas(true);
 
-        resultDir = new File("test/results/acceptance/CanvasTest");
+        resultDir = new File("target/acceptance-test/CanvasTest");
 
         if (!resultDir.exists() && !resultDir.mkdirs()) {
             fail();

@@ -64,7 +64,7 @@ public final class BufferedImageTest {
         final File srcDir =
             new File("test/data/png/reference");
         final File destDir =
-            new File("test/results/acceptance/BufferedImageTest");
+            new File("target/acceptance-test/BufferedImageTest");
 
         if (!destDir.exists() && !destDir.mkdirs()) {
             fail();

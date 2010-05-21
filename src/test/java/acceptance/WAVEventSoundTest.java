@@ -63,7 +63,7 @@ public final class WAVEventSoundTest {
 
         final File srcDir = new File("test/data/wav/reference");
         final File destDir = new File(
-                "test/results/acceptance/WAVEventSoundTest");
+                "target/acceptance-test/WAVEventSoundTest");
 
         if (!destDir.exists() && !destDir.mkdirs()) {
             fail();
