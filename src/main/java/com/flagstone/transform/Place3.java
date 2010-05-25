@@ -31,6 +31,7 @@
 
 package com.flagstone.transform;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -266,26 +267,27 @@ public final class Place3 implements MovieTag {
      *            type of object and to pass information on how objects are
      *            decoded.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
     // TODO(optimise)
     public Place3(final SWFDecoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         final Map<Integer, Integer> vars = context.getVariables();
         vars.put(Context.TRANSPARENT, 1);
         final int start = coder.getPointer();
-        length = coder.readHeader();
+        length = coder.readLength();
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
-        final boolean hasEvents = coder.readBits(1, false) != 0;
-        final boolean hasDepth = coder.readBits(1, false) != 0;
-        final boolean hasName = coder.readBits(1, false) != 0;
-        final boolean hasRatio = coder.readBits(1, false) != 0;
-        final boolean hasColorTransform = coder.readBits(1, false) != 0;
-        final boolean hasTransform = coder.readBits(1, false) != 0;
+        coder.prefetchByte();
+        final boolean hasEvents = coder.getBool(SWFDecoder.BIT7);
+        final boolean hasDepth = coder.getBool(SWFDecoder.BIT6);
+        final boolean hasName = coder.getBool(SWFDecoder.BIT5);
+        final boolean hasRatio = coder.getBool(SWFDecoder.BIT4);
+        final boolean hasColorTransform = coder.getBool(SWFDecoder.BIT3);
+        final boolean hasTransform = coder.getBool(SWFDecoder.BIT2);
 
-        switch (coder.readBits(2, false)) {
+        switch ((coder.getBit(0x03))) {
         case 2:
             type = PlaceType.NEW;
             break;
@@ -297,13 +299,12 @@ public final class Place3 implements MovieTag {
             break;
         }
 
-        coder.readBits(3, false);
-
-        hasImage = coder.readBits(1, false) != 0;
-        final boolean hasClassName = coder.readBits(1, false) != 0;
-        final boolean hasBitmapCache = coder.readBits(1, false) != 0;
-        hasBlend = coder.readBits(1, false) != 0;
-        hasFilters = coder.readBits(1, false) != 0;
+        coder.prefetchByte();
+        hasImage = coder.getBool(SWFDecoder.BIT4);
+        final boolean hasClassName = coder.getBool(SWFDecoder.BIT3);
+        final boolean hasBitmapCache = coder.getBool(SWFDecoder.BIT2);
+        hasBlend = coder.getBool(SWFDecoder.BIT1);
+        hasFilters = coder.getBool(SWFDecoder.BIT0);
 
         layer = coder.readUI16();
 
@@ -366,16 +367,15 @@ public final class Place3 implements MovieTag {
         events = new ArrayList<MovieClipEventHandler>();
 
         if (hasEvents) {
+            int event;
             final int eventSize = vars.get(Context.VERSION) > SWF.SWF5 ? 4 : 2;
 
             coder.readUI16();
             coder.readWord(eventSize, false);
 
-            while (coder.readWord(eventSize, false) != 0) {
-                coder.adjustPointer(-(eventSize << 3));
-                events.add(new MovieClipEventHandler(coder, context));
+            while ((event = coder.readWord(eventSize, false)) != 0) {
+                events.add(new MovieClipEventHandler(event, coder, context));
             }
-
         }
         vars.remove(Context.TRANSPARENT);
 
@@ -383,7 +383,6 @@ public final class Place3 implements MovieTag {
             throw new CoderException(getClass().getName(),
             start >> Coder.BITS_TO_BYTES, length,
                     (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
-//            coder.setPointer(end);
         }
     }
 
@@ -835,7 +834,7 @@ public final class Place3 implements MovieTag {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         final int start = coder.getPointer();
         coder.writeHeader(MovieTypes.PLACE_3, length);
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);

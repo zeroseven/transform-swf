@@ -34,7 +34,7 @@ package com.flagstone.transform.action;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -75,11 +75,10 @@ public final class Table implements Action {
      * @param coder
      *            an SWFDecoder object that contains the encoded Flash data.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    public Table(final SWFDecoder coder) throws CoderException {
-        coder.readByte();
+    public Table(final SWFDecoder coder) throws IOException {
         length = coder.readUI16();
         tableSize = coder.readUI16();
         values = new ArrayList<String>(tableSize);
@@ -193,7 +192,7 @@ public final class Table implements Action {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         coder.writeByte(ActionTypes.TABLE);
         coder.writeI16(length);
         coder.writeI16(values.size());

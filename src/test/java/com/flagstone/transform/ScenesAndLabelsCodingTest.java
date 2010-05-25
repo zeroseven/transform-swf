@@ -41,7 +41,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -61,7 +61,7 @@ public final class ScenesAndLabelsCodingTest {
         "Object was not decoded properly";
 
     @Test
-    public void checkScenesAndLabelsIsEncoded() throws CoderException {
+    public void checkScenesAndLabelsIsEncoded() throws IOException {
         final Map<Integer, String>scenes = new LinkedHashMap<Integer, String>();
         scenes.put(1, "A");
         scenes.put(2, "B");
@@ -88,7 +88,7 @@ public final class ScenesAndLabelsCodingTest {
     }
 
     @Test
-    public void checkScenesAndLabelsIsDecoded() throws CoderException {
+    public void checkScenesAndLabelsIsDecoded() throws IOException {
         final Map<Integer, String>scenes = new LinkedHashMap<Integer, String>();
         scenes.put(1, "A");
         scenes.put(2, "B");
@@ -111,7 +111,7 @@ public final class ScenesAndLabelsCodingTest {
    }
 
     @Test
-    public void checkExtendedScenesAndLabelsIsDecoded() throws CoderException {
+    public void checkExtendedScenesAndLabelsIsDecoded() throws IOException {
         final Map<Integer, String>scenes = new LinkedHashMap<Integer, String>();
         scenes.put(1, "A");
         scenes.put(2, "B");

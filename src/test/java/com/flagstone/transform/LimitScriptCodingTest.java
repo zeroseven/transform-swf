@@ -38,7 +38,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -58,7 +58,7 @@ public final class LimitScriptCodingTest {
         "Object was not decoded properly";
 
     @Test
-    public void checkLimitScriptIsEncoded() throws CoderException {
+    public void checkLimitScriptIsEncoded() throws IOException {
         final LimitScript object = new LimitScript(1, 2);
         final byte[] binary = new byte[] {0x44, 0x10, 0x01, 0x00, 0x1E, 0x00};
 
@@ -74,7 +74,7 @@ public final class LimitScriptCodingTest {
     }
 
     @Test
-    public void checkLimitScriptIsDecoded() throws CoderException {
+    public void checkLimitScriptIsDecoded() throws IOException {
         final byte[] binary = new byte[] {0x44, 0x10, 0x01, 0x00, 0x1E, 0x00};
 
         final SWFDecoder decoder = new SWFDecoder(binary);
@@ -86,7 +86,7 @@ public final class LimitScriptCodingTest {
    }
 
     @Test
-    public void checkExtendedLimitScriptIsDecoded() throws CoderException {
+    public void checkExtendedLimitScriptIsDecoded() throws IOException {
         final byte[] binary = new byte[] {0x7F, 0x01, 0x04, 0x00, 0x00, 0x00,
                 0x01, 0x00, 0x1E, 0x00};
 

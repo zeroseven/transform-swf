@@ -38,7 +38,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -58,7 +58,7 @@ public final class FreeCodingTest {
         "Object was not decoded properly";
 
     @Test
-    public void checkFreeIsEncoded() throws CoderException {
+    public void checkFreeIsEncoded() throws IOException {
         final Free object = new Free(1);
         final byte[] binary = new byte[] {(byte) 0xC2, 0x00, 0x01, 0x00 };
 
@@ -74,7 +74,7 @@ public final class FreeCodingTest {
     }
 
     @Test
-    public void checkFreeIsDecoded() throws CoderException {
+    public void checkFreeIsDecoded() throws IOException {
         final byte[] binary = new byte[] {(byte) 0xC2, 0x00, 0x01, 0x00 };
 
         final SWFDecoder decoder = new SWFDecoder(binary);
@@ -85,7 +85,7 @@ public final class FreeCodingTest {
    }
 
     @Test
-    public void checkExtendedFreeIsDecoded() throws CoderException {
+    public void checkExtendedFreeIsDecoded() throws IOException {
         final byte[] binary = new byte[] {(byte) 0xFF, 0x00, 0x02, 0x00, 0x00,
                 0x00, 0x01, 0x00 };
 

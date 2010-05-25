@@ -34,7 +34,7 @@ package com.flagstone.transform;
 import java.util.EnumSet;
 import java.util.Set;
 
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.MovieTypes;
@@ -56,13 +56,14 @@ public final class MovieAttributes implements MovieTag {
      * @param coder
      *            an SWFDecoder object that contains the encoded Flash data.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    public MovieAttributes(final SWFDecoder coder) throws CoderException {
-        coder.readHeader();
+    public MovieAttributes(final SWFDecoder coder) throws IOException {
         attributes = coder.readByte();
-        coder.adjustPointer(24);
+        coder.readByte(); // reserved
+        coder.readByte(); // reserved
+        coder.readByte(); // reserved
     }
 
     /**
@@ -145,7 +146,7 @@ public final class MovieAttributes implements MovieTag {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         //CHECKSTYLE:OFF
         coder.writeHeader(MovieTypes.FILE_ATTRIBUTES, 4);
         //CHECKSTYLE:ON

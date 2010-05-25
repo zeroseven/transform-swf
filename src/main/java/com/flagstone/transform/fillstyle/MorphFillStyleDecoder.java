@@ -32,6 +32,8 @@
 package com.flagstone.transform.fillstyle;
 
 
+import java.io.IOException;
+
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -44,38 +46,39 @@ import com.flagstone.transform.coder.SWFFactory;
 public final class MorphFillStyleDecoder implements SWFFactory<FillStyle> {
     /** {@inheritDoc} */
     public FillStyle getObject(final SWFDecoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
 
         FillStyle style;
+        int type = coder.readByte();
 
-        switch (coder.scanByte()) {
+        switch (type) {
         case FillStyleTypes.SOLID_COLOR:
             style = new MorphSolidFill(coder, context);
             break;
         case FillStyleTypes.LINEAR_GRADIENT:
-            style = new MorphGradientFill(coder, context);
+            style = new MorphGradientFill(type, coder, context);
             break;
         case FillStyleTypes.RADIAL_GRADIENT:
-            style = new MorphGradientFill(coder, context);
+            style = new MorphGradientFill(type, coder, context);
             break;
         case FillStyleTypes.FOCAL_GRADIENT:
             style = new MorphFocalGradientFill(coder, context);
             break;
         case FillStyleTypes.TILED_BITMAP:
-            style = new MorphBitmapFill(coder);
+            style = new MorphBitmapFill(type, coder);
             break;
         case FillStyleTypes.CLIPPED_BITMAP:
-            style = new MorphBitmapFill(coder);
+            style = new MorphBitmapFill(type, coder);
             break;
         case FillStyleTypes.UNSMOOTHED_TILED_BITMAP:
-            style = new MorphBitmapFill(coder);
+            style = new MorphBitmapFill(type, coder);
             break;
         case FillStyleTypes.UNSMOOTHED_CLIPPED_BITMAP:
-            style = new MorphBitmapFill(coder);
+            style = new MorphBitmapFill(type, coder);
             break;
         default:
             throw new CoderException(getClass().getName(), coder.getPointer(),
-                    0, 0, "Unsupported MorphFillStyle");
+                    "Unsupported MorphFillStyle");
         }
         return style;
     }

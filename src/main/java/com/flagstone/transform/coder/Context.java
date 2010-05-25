@@ -48,7 +48,7 @@ public final class Context {
     /** TODO(doc). */
     public static final int TYPE = 2;
     /** TODO(doc). */
-   public static final int TRANSPARENT = 3;
+    public static final int TRANSPARENT = 3;
     /** TODO(doc). */
     public static final int WIDE_CODES = 4;
     /** TODO(doc). */

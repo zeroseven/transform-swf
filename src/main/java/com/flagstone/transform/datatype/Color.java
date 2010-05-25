@@ -32,7 +32,7 @@ package com.flagstone.transform.datatype;
 
 import com.flagstone.transform.Constants;
 
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
@@ -97,11 +97,11 @@ public final class Color implements SWFEncodeable {
      *            type of object and to pass information on how objects are
      *            decoded.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
     public Color(final SWFDecoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         red = coder.readByte();
         green = coder.readByte();
         blue = coder.readByte();
@@ -244,7 +244,7 @@ public final class Color implements SWFEncodeable {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         coder.writeByte(red);
         coder.writeByte(green);
         coder.writeByte(blue);

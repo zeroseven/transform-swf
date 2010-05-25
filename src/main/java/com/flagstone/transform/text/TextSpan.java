@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.flagstone.transform.SWF;
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.Encoder;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -131,18 +131,16 @@ public final class TextSpan implements SWFEncodeable {
      *            type of object and to pass information on how objects are
      *            decoded.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    public TextSpan(final SWFDecoder coder, final Context context)
-            throws CoderException {
-        /* type */coder.readBits(1, false);
-        /* reserved */coder.readBits(3, false);
+    public TextSpan(final SWFDecoder coder,
+            final Context context) throws IOException {
 
-        hasFont = coder.readBits(1, false) != 0;
-        hasColor = coder.readBits(1, false) != 0;
-        hasY = coder.readBits(1, false) != 0;
-        hasX = coder.readBits(1, false) != 0;
+        hasFont = coder.getBool(SWFDecoder.BIT3);
+        hasColor = coder.getBool(SWFDecoder.BIT2);
+        hasY = coder.getBool(SWFDecoder.BIT1);
+        hasX = coder.getBool(SWFDecoder.BIT0);
 
         if (hasFont) {
             identifier = coder.readUI16();
@@ -428,7 +426,7 @@ public final class TextSpan implements SWFEncodeable {
     // TODO(optimise)
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         coder.writeBits(1, 1);
         coder.writeBits(0, 3);
 

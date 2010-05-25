@@ -31,7 +31,7 @@
 package com.flagstone.transform.action;
 
 
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -59,11 +59,10 @@ public final class GotoLabel implements Action {
      * @param coder
      *            an SWFDecoder object that contains the encoded Flash data.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    public GotoLabel(final SWFDecoder coder) throws CoderException {
-        coder.readByte();
+    public GotoLabel(final SWFDecoder coder) throws IOException {
         length = coder.readUI16();
         label = coder.readString();
     }
@@ -123,7 +122,7 @@ public final class GotoLabel implements Action {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         coder.writeByte(ActionTypes.GOTO_LABEL);
         coder.writeI16(length);
         coder.writeString(label);

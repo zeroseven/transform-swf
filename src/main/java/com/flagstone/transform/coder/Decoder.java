@@ -32,8 +32,7 @@
 package com.flagstone.transform.coder;
 
 import java.nio.charset.UnsupportedCharsetException;
-
-
+import java.util.Arrays;
 
 /**
  * Decoder provides a set of method for decoding data that is not byte-ordered,
@@ -46,9 +45,14 @@ public class Decoder extends Coder {
      * @param data
      *            an array of bytes to be decoded.
      */
-    public Decoder(final byte[] data) {
+    public Decoder(final byte[] bytes) {
         super();
-        setData(data);
+        data = new byte[bytes.length];
+        index = 0;
+        offset = 0;
+        pointer = 0;
+        end = bytes.length << 3;
+        data = Arrays.copyOf(bytes, bytes.length);
     }
 
     /**
@@ -63,13 +67,9 @@ public class Decoder extends Coder {
      * @return the value read.
      */
     public final int readBits(final int numberOfBits, final boolean signed) {
-        pointer = (index << 3) + offset;
-
-        if (pointer + numberOfBits > end) {
-            throw new ArrayIndexOutOfBoundsException(index);
-        }
-
         int value = 0;
+
+        pointer = (index << 3) + offset;
 
         if (numberOfBits > 0) {
 
@@ -92,37 +92,6 @@ public class Decoder extends Coder {
         }
 
         return value;
-    }
-
-    /**
-     * Read a single bit and return a boolean value.
-     *
-     * @return true if the bit field was set, false otherwise.
-     */
-    public final boolean readBool() {
-        return readBits(1, false) == 1;
-    }
-
-    /**
-     * Read a 16-bit field.
-     *
-     * The internal pointer must aligned on a byte boundary. The value returned
-     * is equivalent to reading a 16-bit integer with big-ending byte ordering.
-     *
-     * @return a 16-bit value.
-     */
-    public final int readB16() {
-        return ((data[index++] & UNSIGNED_BYTE_MASK) << ALIGN_BYTE_1)
-                + (data[index++] & UNSIGNED_BYTE_MASK);
-    }
-
-    /**
-     * Read an unsigned byte without changing the internal pointer.
-     *
-     * @return an 8-bit unsigned value.
-     */
-    public final int scanByte() {
-        return data[index] & UNSIGNED_BYTE_MASK;
     }
 
     /**
@@ -157,26 +126,11 @@ public class Decoder extends Coder {
      * @return the decoded string.
      */
     public final String readString(final int numberOfBytes) {
-        return readString(numberOfBytes, encoding);
-    }
-
-    /**
-     * Read a string using the character set specified.
-     *
-     * @param numberOfBytes
-     *            the number of bytes to read.
-     * @param charset
-     *            the name of the character set used to encode the string.
-     *
-     * @return the decoded string.
-     */
-    public final String readString(final int numberOfBytes,
-            final String charset) {
         try {
             return new String(readBytes(new byte[numberOfBytes]), 0,
-                    numberOfBytes, charset);
+                    numberOfBytes, encoding);
         } catch (final java.io.UnsupportedEncodingException e) {
-            throw new UnsupportedCharsetException(charset); //NOPMD
+            throw new UnsupportedCharsetException(encoding); //NOPMD
         }
     }
 
@@ -196,7 +150,7 @@ public class Decoder extends Coder {
             length += 1;
         }
 
-        value = readString(length, encoding);
+        value = readString(length);
         index++;
 
         return value;

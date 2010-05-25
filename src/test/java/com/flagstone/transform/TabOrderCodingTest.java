@@ -36,7 +36,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -55,7 +55,7 @@ public final class TabOrderCodingTest {
         "Object was not decoded properly";
 
     @Test
-    public void checkTabOrderIsEncoded() throws CoderException {
+    public void checkTabOrderIsEncoded() throws IOException {
         final TabOrder object = new TabOrder(1, 2);
         final byte[] binary = new byte[] {(byte) 0x84, 0x10, 0x01, 0x00,
                 0x02, 0x00};
@@ -72,7 +72,7 @@ public final class TabOrderCodingTest {
     }
 
     @Test
-    public void checkTabOrderIsDecoded() throws CoderException {
+    public void checkTabOrderIsDecoded() throws IOException {
         final byte[] binary = new byte[] {(byte) 0x84, 0x10, 0x01, 0x00,
                 0x02, 0x00};
 
@@ -85,7 +85,7 @@ public final class TabOrderCodingTest {
    }
 
     @Test
-    public void checkExtendedTabOrderIsDecoded() throws CoderException {
+    public void checkExtendedTabOrderIsDecoded() throws IOException {
         final byte[] binary = new byte[] {(byte) 0xBF, 0x10, 0x04, 0x00, 0x00,
                 0x00, 0x01, 0x00, 0x02, 0x00};
 

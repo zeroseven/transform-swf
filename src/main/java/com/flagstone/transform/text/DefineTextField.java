@@ -31,6 +31,7 @@
 
 package com.flagstone.transform.text;
 
+import java.io.IOException;
 import java.util.Map;
 
 import com.flagstone.transform.SWF;
@@ -277,14 +278,14 @@ public final class DefineTextField implements DefineTag {
      *            type of object and to pass information on how objects are
      *            decoded.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
     // TODO(optimise)
     public DefineTextField(final SWFDecoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         final int start = coder.getPointer();
-        length = coder.readHeader();
+        length = coder.readLength();
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
         identifier = coder.readUI16();
@@ -293,22 +294,25 @@ public final class DefineTextField implements DefineTag {
 
         bounds = new Bounds(coder);
 
-        final boolean containsText = coder.readBits(1, false) != 0;
-        wordWrapped = coder.readBits(1, false) != 0;
-        multiline = coder.readBits(1, false) != 0;
-        password = coder.readBits(1, false) != 0;
-        readOnly = coder.readBits(1, false) != 0;
-        final boolean containsColor = coder.readBits(1, false) != 0;
-        final boolean containsMaxLength = coder.readBits(1, false) != 0;
-        final boolean containsFont = coder.readBits(1, false) != 0;
-        final boolean containsClass = coder.readBits(1, false) != 0;
-        autoSize = coder.readBits(1, false) != 0;
-        final boolean containsLayout = coder.readBits(1, false) != 0;
-        selectable = coder.readBits(1, false) != 0;
-        bordered = coder.readBits(1, false) != 0;
-        reserved2 = coder.readBits(1, false) != 0;
-        html = coder.readBits(1, false) != 0;
-        embedded = coder.readBits(1, false) != 0;
+        coder.prefetchByte();
+        final boolean containsText = coder.getBool(SWFDecoder.BIT7);
+        wordWrapped = coder.getBool(SWFDecoder.BIT6);
+        multiline = coder.getBool(SWFDecoder.BIT5);
+        password = coder.getBool(SWFDecoder.BIT4);
+        readOnly = coder.getBool(SWFDecoder.BIT3);
+        final boolean containsColor = coder.getBool(SWFDecoder.BIT2);
+        final boolean containsMaxLength = coder.getBool(SWFDecoder.BIT1);
+        final boolean containsFont = coder.getBool(SWFDecoder.BIT0);
+
+        coder.prefetchByte();
+        final boolean containsClass = coder.getBool(SWFDecoder.BIT7);
+        autoSize = coder.getBool(SWFDecoder.BIT6);
+        final boolean containsLayout = coder.getBool(SWFDecoder.BIT5);
+        selectable = coder.getBool(SWFDecoder.BIT4);
+        bordered = coder.getBool(SWFDecoder.BIT3);
+        reserved2 = coder.getBool(SWFDecoder.BIT2);
+        html = coder.getBool(SWFDecoder.BIT1);
+        embedded = coder.getBool(SWFDecoder.BIT0);
 
         if (containsFont) {
             fontIdentifier = coder.readUI16();
@@ -1024,7 +1028,7 @@ public final class DefineTextField implements DefineTag {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         final int start = coder.getPointer();
         coder.writeHeader(MovieTypes.DEFINE_TEXT_FIELD, length);
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);

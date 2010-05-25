@@ -33,7 +33,7 @@ package com.flagstone.transform.shape;
 
 
 import com.flagstone.transform.SWF;
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.Encoder;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -86,10 +86,10 @@ public final class Curve implements ShapeRecord {
      * @param coder
      *            an SWFDecoder object that contains the encoded Flash data.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
-   public Curve(final SWFDecoder coder) throws CoderException {
+   public Curve(final SWFDecoder coder) throws IOException {
         // skip over shapeType and edgeType
         coder.adjustPointer(2);
         size = coder.readBits(4, false) + 2;
@@ -242,7 +242,7 @@ public final class Curve implements ShapeRecord {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         coder.writeBits(2, 2); // shapeType, edgeType
         coder.writeBits(size - 2, 4);
         coder.writeBits(controlX, size);

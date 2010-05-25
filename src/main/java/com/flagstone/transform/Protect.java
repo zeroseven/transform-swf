@@ -31,7 +31,7 @@
 
 package com.flagstone.transform;
 
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.MovieTypes;
@@ -82,11 +82,11 @@ public final class Protect implements MovieTag {
      * @param coder
      *            an SWFDecoder object that contains the encoded Flash data.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    public Protect(final SWFDecoder coder) throws CoderException {
-        length = coder.readHeader();
+    public Protect(final SWFDecoder coder) throws IOException {
+        length = coder.readLength();
 
         /*
          * Force a read of the entire password field, including any zero bytes
@@ -94,7 +94,7 @@ public final class Protect implements MovieTag {
          */
         if (length > 0) {
             coder.readUI16();
-            password = coder.readString(length - 2, coder.getEncoding());
+            password = coder.readString(length - 2);
 
             while (password.charAt(password.length() - 1) == 0) {
                 password = password.substring(0, password.length() - 1);
@@ -179,7 +179,7 @@ public final class Protect implements MovieTag {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         coder.writeHeader(MovieTypes.PROTECT, length);
         if (password != null) {
             coder.writeI16(0);

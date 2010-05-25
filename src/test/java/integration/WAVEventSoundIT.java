@@ -100,11 +100,11 @@ public final class WAVEventSoundIT {
         try {
             final float framesPerSecond = 12.0f;
             final Movie movie = new Movie();
+            int uid = 1;
 
             final SoundFactory factory = new SoundFactory();
             factory.read(sourceFile);
-            final DefineSound sound =
-                factory.defineSound(movie.nextId());
+            final DefineSound sound = factory.defineSound(uid++);
 
             movie.setFrameSize(new Bounds(0, 0, 8000, 4000));
             movie.setFrameRate(framesPerSecond);

@@ -65,11 +65,12 @@ public final class PlayEventSound {
             }
 
             final Movie movie = new Movie();
+            int uid = 1;
 
             final SoundFactory factory = new SoundFactory();
             factory.read(sourceFile);
             final DefineSound sound =
-                factory.defineSound(movie.nextId());
+                factory.defineSound(uid++);
 
             final float framesPerSecond = 12.0f;
 
@@ -78,7 +79,7 @@ public final class PlayEventSound {
 
             movie.add(new Background(WebPalette.LIGHT_BLUE.color()));
 
-            final int soundId = movie.nextId();
+            final int soundId = uid++;
 
             /*
              * Calculate the time it takes to play the sound and the number of

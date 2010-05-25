@@ -31,7 +31,7 @@
 package com.flagstone.transform.action;
 
 
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -106,16 +106,15 @@ public final class GotoFrame2 implements Action {
      * @param coder
      *            an SWFDecoder object that contains the encoded Flash data.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    public GotoFrame2(final SWFDecoder coder) throws CoderException {
-        coder.readByte();
+    public GotoFrame2(final SWFDecoder coder) throws IOException {
         length = coder.readUI16();
 
-        final int flags = coder.readByte();
-        hasOffset = (flags & OFFSET_MASK) != 0;
-        play = (flags & PLAY_MASK) != 0;
+        coder.prefetchByte();
+        hasOffset = coder.getBool(SWFDecoder.BIT1);
+        play = coder.getBool(SWFDecoder.BIT0);
 
         if (hasOffset) {
             frameOffset = coder.readSI16();
@@ -215,7 +214,7 @@ public final class GotoFrame2 implements Action {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         coder.writeByte(ActionTypes.GOTO_FRAME_2);
         coder.writeI16(length);
 

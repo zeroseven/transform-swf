@@ -31,6 +31,8 @@
 
 package com.flagstone.transform.coder;
 
+import java.io.IOException;
+
 /**
  * The Encodeable interface defines the set of methods that all classes must
  * implement so they can be encoded to a Flash (SWF) file.
@@ -63,8 +65,8 @@ public interface SWFEncodeable {
      *            an Context that allows information to be passed between
      *            objects to control how they are initialised for encoding.
      *
-     * @throws CoderException if an error occurs while encoding the object.
+     * @throws IOException if an error occurs while encoding the object.
      */
     void encode(final SWFEncoder coder, final Context context)
-            throws CoderException;
+            throws IOException;
 }

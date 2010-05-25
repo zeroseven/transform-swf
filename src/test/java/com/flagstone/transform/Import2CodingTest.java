@@ -41,7 +41,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -61,7 +61,7 @@ public final class Import2CodingTest {
         "Object was not decoded properly";
 
     @Test
-    public void checkImport2IsEncoded() throws CoderException {
+    public void checkImport2IsEncoded() throws IOException {
         final Map<Integer, String>map = new LinkedHashMap<Integer, String>();
         map.put(1, "A");
         map.put(2, "B");
@@ -84,7 +84,7 @@ public final class Import2CodingTest {
     }
 
     @Test
-    public void checkImport2IsDecoded() throws CoderException {
+    public void checkImport2IsDecoded() throws IOException {
         final Map<Integer, String>map = new LinkedHashMap<Integer, String>();
         map.put(1, "A");
         map.put(2, "B");
@@ -103,7 +103,7 @@ public final class Import2CodingTest {
    }
 
     @Test
-    public void checkExtendedImport2IsDecoded() throws CoderException {
+    public void checkExtendedImport2IsDecoded() throws IOException {
         final Map<Integer, String>map = new LinkedHashMap<Integer, String>();
         map.put(1, "A");
         map.put(2, "B");

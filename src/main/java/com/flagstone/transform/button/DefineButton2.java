@@ -31,6 +31,7 @@
 
 package com.flagstone.transform.button;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -109,18 +110,18 @@ public final class DefineButton2 implements DefineTag {
      *            type of object and to pass information on how objects are
      *            decoded.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
     // TODO(optimise)
     public DefineButton2(final SWFDecoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         final Map<Integer, Integer> vars = context.getVariables();
         vars.put(Context.TYPE, MovieTypes.DEFINE_BUTTON_2);
         vars.put(Context.TRANSPARENT, 1);
 
         final int start = coder.getPointer();
-        length = coder.readHeader();
+        length = coder.readLength();
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
         identifier = coder.readUI16();
@@ -129,11 +130,9 @@ public final class DefineButton2 implements DefineTag {
 
         int offsetToNext = coder.readUI16();
 
-        while (coder.scanByte() != 0) {
+        while (coder.prefetchByte() != 0) {
             shapes.add(new ButtonShape(coder, context));
         }
-
-        coder.readByte();
 
         events = new ArrayList<ButtonEventHandler>();
 
@@ -368,7 +367,7 @@ public final class DefineButton2 implements DefineTag {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
 
         final Map<Integer, Integer> vars = context.getVariables();
         vars.put(Context.TYPE, MovieTypes.DEFINE_BUTTON_2);

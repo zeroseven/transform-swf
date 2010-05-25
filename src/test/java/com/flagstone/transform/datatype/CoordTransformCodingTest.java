@@ -38,7 +38,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -58,7 +58,7 @@ public final class CoordTransformCodingTest {
         "Object was not decoded properly";
 
     @Test
-    public void checkScaleIsEncoded() throws CoderException {
+    public void checkScaleIsEncoded() throws IOException {
         final CoordTransform object = CoordTransform.scale(1.0f, 2.0f);
         final byte[] binary = new byte[] {(byte) 0xCC, (byte) 0x80, 0x00, 0x20,
                 0x00, 0x00, 0x40 };
@@ -75,7 +75,7 @@ public final class CoordTransformCodingTest {
     }
 
     @Test
-    public void checkScaleIsDecoded() throws CoderException {
+    public void checkScaleIsDecoded() throws IOException {
         final CoordTransform object = CoordTransform.scale(1.0f, 2.0f);
         final byte[] binary = new byte[] {(byte) 0xCC, (byte) 0x80, 0x00, 0x20,
                 0x00, 0x00, 0x40 };
@@ -87,7 +87,7 @@ public final class CoordTransformCodingTest {
     }
 
     @Test
-    public void checkShearIsEncoded() throws CoderException {
+    public void checkShearIsEncoded() throws IOException {
         final CoordTransform object = CoordTransform.shear(1.0f, 2.0f);
         final byte[] binary = new byte[] { 0x66, 0x40, 0x00, 0x10, 0x00,
                 0x00, 0x40 };
@@ -104,7 +104,7 @@ public final class CoordTransformCodingTest {
     }
 
     @Test
-    public void checkShearIsDecoded() throws CoderException {
+    public void checkShearIsDecoded() throws IOException {
         final CoordTransform object = CoordTransform.shear(1.0f, 2.0f);
         final byte[] binary = new byte[] { 0x66, 0x40, 0x00, 0x10, 0x00,
                 0x00, 0x40 };
@@ -116,7 +116,7 @@ public final class CoordTransformCodingTest {
     }
 
     @Test
-    public void checkTranslationIsEncoded() throws CoderException {
+    public void checkTranslationIsEncoded() throws IOException {
         final CoordTransform object = CoordTransform.translate(1, 2);
         final byte[] binary = new byte[] { 0x06, 0x50 };
 
@@ -132,7 +132,7 @@ public final class CoordTransformCodingTest {
     }
 
     @Test
-    public void checkTranslationIsDecoded() throws CoderException {
+    public void checkTranslationIsDecoded() throws IOException {
         final CoordTransform object = CoordTransform.translate(1, 2);
         final byte[] binary = new byte[] { 0x06, 0x50 };
 
@@ -143,7 +143,7 @@ public final class CoordTransformCodingTest {
     }
 
     @Test
-    public void checkTransformIsEncoded() throws CoderException {
+    public void checkTransformIsEncoded() throws IOException {
         final CoordTransform object =
             new CoordTransform(1.0f, 2.0f, 3.0f, 4.0f, 0, 0);
         final byte[] binary = new byte[] {(byte) 0xCC, (byte) 0x80, 0x00, 0x20,
@@ -161,7 +161,7 @@ public final class CoordTransformCodingTest {
     }
 
     @Test
-    public void checkTransformIsDecoded() throws CoderException {
+    public void checkTransformIsDecoded() throws IOException {
         final CoordTransform object =
             new CoordTransform(1.0f, 2.0f, 3.0f, 4.0f, 0, 0);
         final byte[] binary = new byte[] {(byte) 0xCC, (byte) 0x80, 0x00, 0x20,

@@ -31,6 +31,8 @@
 
 package com.flagstone.transform.coder;
 
+import java.io.IOException;
+
 import com.flagstone.transform.filter.BevelFilter;
 import com.flagstone.transform.filter.BlurFilter;
 import com.flagstone.transform.filter.ColorMatrixFilter;
@@ -54,14 +56,14 @@ public final class FilterDecoder implements SWFFactory<Filter> {
      * @param coder the decoder containing the encoded filter.
      * @param context a Context used to pass information between objects.
      * @return the Filter object.
-     * @throws CoderException if an error occurs during decoding.
+     * @throws IOException if an error occurs during decoding.
      */
     public Filter getObject(final SWFDecoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
 
         Filter filter;
 
-        switch (coder.scanByte()) {
+        switch (coder.readByte()) {
         case FilterTypes.DROP_SHADOW:
             filter = new DropShadowFilter(coder, context);
             break;
@@ -88,7 +90,7 @@ public final class FilterDecoder implements SWFFactory<Filter> {
             break;
         default:
             throw new CoderException(getClass().getName(), coder.getPointer(),
-                    0, 0, "Unsupported Filter");
+                    "Unsupported Filter");
         }
         return filter;
     }

@@ -32,6 +32,8 @@
 package com.flagstone.transform.fillstyle;
 
 
+import java.io.IOException;
+
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -56,38 +58,39 @@ public final class FillStyleDecoder implements SWFFactory<FillStyle> {
 
     /** {@inheritDoc} */
     public FillStyle getObject(final SWFDecoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
 
         FillStyle style;
+        int type = coder.readByte();
 
-        switch (coder.scanByte()) {
+        switch (type) {
         case FillStyleTypes.SOLID_COLOR:
             style = new SolidFill(coder, context);
             break;
         case FillStyleTypes.LINEAR_GRADIENT:
-            style = new GradientFill(coder, context);
+            style = new GradientFill(type, coder, context);
             break;
         case FillStyleTypes.RADIAL_GRADIENT:
-            style = new GradientFill(coder, context);
+            style = new GradientFill(type, coder, context);
             break;
         case FillStyleTypes.FOCAL_GRADIENT:
             style = new FocalGradientFill(coder, context);
             break;
         case FillStyleTypes.TILED_BITMAP:
-            style = new BitmapFill(coder);
+            style = new BitmapFill(type, coder);
             break;
         case FillStyleTypes.CLIPPED_BITMAP:
-            style = new BitmapFill(coder);
+            style = new BitmapFill(type, coder);
             break;
         case FillStyleTypes.UNSMOOTHED_TILED_BITMAP:
-            style = new BitmapFill(coder);
+            style = new BitmapFill(type, coder);
             break;
         case FillStyleTypes.UNSMOOTHED_CLIPPED_BITMAP:
-            style = new BitmapFill(coder);
+            style = new BitmapFill(type, coder);
             break;
         default:
             throw new CoderException(getClass().getName(), coder.getPointer(),
-                    0, 0, "Unsupported FillStyle");
+                    "Unsupported FillStyle");
         }
         return style;
     }

@@ -31,6 +31,7 @@
 
 package com.flagstone.transform.text;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -97,17 +98,17 @@ public final class DefineText2 implements DefineTag {
      *            type of object and to pass information on how objects are
      *            decoded.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
     // TODO(optimise)
     public DefineText2(final SWFDecoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         final int start = coder.getPointer();
-        length = coder.readHeader();
+        length = coder.readLength();
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
-        identifier = coder.readSI16();
+        identifier = coder.readUI16();
         bounds = new Bounds(coder);
 
         // CHECKSTYLE:OFF This code is used to get round a bug in Flash -
@@ -119,15 +120,13 @@ public final class DefineText2 implements DefineTag {
         int count = 0;
 
         for (int i = 0; i < 16; i++) {
-            if (coder.readWord(1, false) == 0) {
+            if (coder.readByte() == 0) {
                 count += 1;
             }
         }
 
-        coder.setPointer(mark);
-
-        if (count == 16) {
-            coder.adjustPointer(128);
+        if (count != 16) {
+            coder.setPointer(mark);
         }
 
         // CHECKSTYLE:ON Back to reading the rest of the tag
@@ -144,11 +143,9 @@ public final class DefineText2 implements DefineTag {
 
         objects = new ArrayList<TextSpan>();
 
-        while (coder.scanByte() != 0) {
+        while (coder.prefetchByte() != 0) {
             objects.add(new TextSpan(coder, context));
         }
-
-        coder.readByte();
 
         vars.remove(Context.TRANSPARENT);
         vars.put(Context.GLYPH_SIZE, 0);
@@ -362,7 +359,7 @@ public final class DefineText2 implements DefineTag {
     // TODO(optimise)
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         final int start = coder.getPointer();
         coder.writeHeader(MovieTypes.DEFINE_TEXT_2, length);
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);

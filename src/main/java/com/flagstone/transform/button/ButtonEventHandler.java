@@ -40,7 +40,7 @@ import java.util.Set;
 import com.flagstone.transform.action.Action;
 import com.flagstone.transform.action.ActionData;
 import com.flagstone.transform.coder.Coder;
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
@@ -238,11 +238,11 @@ public final class ButtonEventHandler implements SWFEncodeable {
      *            type of object and to pass information on how objects are
      *            decoded.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
     public ButtonEventHandler(final int size, final SWFDecoder coder,
-            final Context context) throws CoderException {
+            final Context context) throws IOException {
         final int eventKey = coder.readUI16();
         event = eventKey & EVENT_MASK;
         key = eventKey & KEY_MASK;
@@ -420,7 +420,7 @@ public final class ButtonEventHandler implements SWFEncodeable {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         coder.writeWord(length + 2, 2);
         coder.writeWord(event | key, 2);
 

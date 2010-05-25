@@ -31,6 +31,7 @@
 
 package com.flagstone.transform;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -249,25 +250,27 @@ public final class Place2 implements MovieTag {
      *            type of object and to pass information on how objects are
      *            decoded.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
     // TODO(optimise)
     public Place2(final SWFDecoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         final Map<Integer, Integer> vars = context.getVariables();
         vars.put(Context.TRANSPARENT, 1);
-//        final int start = coder.getPointer();
-        length = coder.readHeader();
+        final int start = coder.getPointer();
+        length = coder.readLength();
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
-        final boolean hasEvents = coder.readBits(1, false) != 0;
-        final boolean hasDepth = coder.readBits(1, false) != 0;
-        final boolean hasName = coder.readBits(1, false) != 0;
-        final boolean hasRatio = coder.readBits(1, false) != 0;
-        final boolean hasColorTransform = coder.readBits(1, false) != 0;
-        final boolean hasTransform = coder.readBits(1, false) != 0;
 
-        switch (coder.readBits(2, false)) {
+        coder.prefetchByte();
+        final boolean hasEvents = coder.getBool(SWFDecoder.BIT7);
+        final boolean hasDepth = coder.getBool(SWFDecoder.BIT6);
+        final boolean hasName = coder.getBool(SWFDecoder.BIT5);
+        final boolean hasRatio = coder.getBool(SWFDecoder.BIT4);
+        final boolean hasColorTransform = coder.getBool(SWFDecoder.BIT3);
+        final boolean hasTransform = coder.getBool(SWFDecoder.BIT2);
+
+        switch ((coder.getBit(0x03))) {
         case 2:
             type = PlaceType.NEW;
             break;
@@ -307,6 +310,7 @@ public final class Place2 implements MovieTag {
         }
 
         if (hasEvents) {
+            int event;
             final int eventSize;
 
             if (vars.get(Context.VERSION) > SWF.SWF5) {
@@ -318,20 +322,16 @@ public final class Place2 implements MovieTag {
             coder.readUI16();
             coder.readWord(eventSize, false);
 
-            while (coder.readWord(eventSize, false) != 0) {
-                coder.adjustPointer(-(eventSize << Coder.BYTES_TO_BITS));
-                events.add(new MovieClipEventHandler(coder, context));
+            while ((event = coder.readWord(eventSize, false)) != 0) {
+                events.add(new MovieClipEventHandler(event, coder, context));
             }
-
         }
         vars.remove(Context.TRANSPARENT);
 
         if (coder.getPointer() != end) {
-            //TODO Fix me
-            coder.setPointer(end);
-//            throw new CoderException(getClass().getName(),
-//            start >> Coder.BITS_TO_BYTES, length,
-//                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
+            throw new CoderException(getClass().getName(),
+            start >> Coder.BITS_TO_BYTES, length,
+                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
         }
     }
 
@@ -708,7 +708,7 @@ public final class Place2 implements MovieTag {
     // TODO(optimise)
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         final Map<Integer, Integer> vars = context.getVariables();
         final int start = coder.getPointer();
         coder.writeHeader(MovieTypes.PLACE_2, length);
@@ -723,9 +723,6 @@ public final class Place2 implements MovieTag {
         coder.writeBits(transform == null ? 0 : 1, 1);
 
         switch (type) {
-        case MODIFY:
-            coder.writeBits(1, 2);
-            break;
         case NEW:
             coder.writeBits(2, 2);
             break;
@@ -733,9 +730,8 @@ public final class Place2 implements MovieTag {
             coder.writeBits(3, 2);
             break;
         default:
-            throw new CoderException(getClass().getName(),
-                    start >> Coder.BITS_TO_BYTES, length,
-                    0, "Unsupported format");
+            coder.writeBits(1, 2);
+            break;
         }
 
         coder.writeI16(layer);

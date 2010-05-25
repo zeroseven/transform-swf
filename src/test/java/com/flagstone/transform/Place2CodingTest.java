@@ -38,7 +38,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -59,7 +59,7 @@ public final class Place2CodingTest {
         "Object was not decoded properly";
 
     @Test
-    public void checkAddWithPositionIsEncoded() throws CoderException {
+    public void checkAddWithPositionIsEncoded() throws IOException {
         final int uid = 1;
         final int layer = 2;
         final int xcoord = 1;
@@ -82,7 +82,7 @@ public final class Place2CodingTest {
     }
 
     @Test
-    public void checkAddWithPositionIsDecoded() throws CoderException {
+    public void checkAddWithPositionIsDecoded() throws IOException {
         final int identifier = 1;
         final int layer = 2;
         final CoordTransform transform = CoordTransform.translate(1, 1);
@@ -102,7 +102,7 @@ public final class Place2CodingTest {
    }
 
     @Test
-    public void checkExtendedPlaceIsDecoded() throws CoderException {
+    public void checkExtendedPlaceIsDecoded() throws IOException {
         final int identifier = 1;
         final int layer = 2;
         final CoordTransform transform = CoordTransform.translate(1, 2);

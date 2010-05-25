@@ -51,7 +51,7 @@ public final class FLVEncoderTest {
     public void writeWordUnsigned() {
         data = new byte[] {1, 2, 3, 4 };
 
-        fixture.setData(new byte[data.length]);
+        fixture = new FLVEncoder(data.length);
         fixture.writeWord(0x01020304, data.length);
 
         assertArrayEquals(data, fixture.data);
@@ -62,7 +62,7 @@ public final class FLVEncoderTest {
     public void writeWordSigned() {
         data = new byte[] {-1, -128, 3, 4 };
 
-        fixture.setData(new byte[data.length]);
+        fixture = new FLVEncoder(data.length);
         fixture.writeWord(0xFF800304, data.length);
 
         assertArrayEquals(data, fixture.data);
@@ -74,7 +74,7 @@ public final class FLVEncoderTest {
         data = new byte[] {0x3F, (byte) 0xF0, 0x00, 0x00, 0x00, 0x00, 0x00,
                 0x00 };
 
-        fixture.setData(new byte[data.length]);
+        fixture = new FLVEncoder(data.length);
         fixture.writeDouble(1.0);
 
         assertArrayEquals(data, fixture.data);

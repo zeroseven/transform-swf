@@ -35,7 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.flagstone.transform.Constants;
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
@@ -89,10 +89,10 @@ public final class Envelope implements SWFEncodeable {
          * @param coder
          *            an SWFDecoder object that contains the encoded Flash data.
         *
-         * @throws CoderException
+         * @throws IOException
          *             if an error occurs while decoding the data.
          */
-       public Level(final SWFDecoder coder) throws CoderException {
+       public Level(final SWFDecoder coder) throws IOException {
             mark = coder.readUI32();
             left = coder.readUI16();
             right = coder.readUI16();
@@ -191,7 +191,7 @@ public final class Envelope implements SWFEncodeable {
 
         /** {@inheritDoc} */
         public void encode(final SWFEncoder coder, final Context context)
-                    throws CoderException {
+                    throws IOException {
             coder.writeI32(mark);
             coder.writeI16(left);
             coder.writeI16(right);
@@ -209,10 +209,10 @@ public final class Envelope implements SWFEncodeable {
      * @param coder
      *            an SWFDecoder object that contains the encoded Flash data.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    public Envelope(final SWFDecoder coder) throws CoderException {
+    public Envelope(final SWFDecoder coder) throws IOException {
         count = coder.readByte();
         levels = new ArrayList<Level>(count);
 
@@ -290,7 +290,7 @@ public final class Envelope implements SWFEncodeable {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         coder.writeByte(count);
 
         for (final Level level : levels) {

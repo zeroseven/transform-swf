@@ -39,7 +39,7 @@ import java.util.Set;
 
 import org.junit.Test;
 
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -58,7 +58,7 @@ public final class MovieAttributesCodingTest {
         "Object was not decoded properly";
 
     @Test
-    public void checkAllMovieAttributesAreEncoded() throws CoderException {
+    public void checkAllMovieAttributesAreEncoded() throws IOException {
         final Set<MovieAttribute>set = EnumSet.noneOf(MovieAttribute.class);
         final MovieAttributes object = new MovieAttributes(set);
         final byte[] binary = new byte[] {0x44, 0x11, 0x19, 0x00, 0x00, 0x00};
@@ -75,7 +75,7 @@ public final class MovieAttributesCodingTest {
     }
 
     @Test
-    public void checkAllAttributesAreDecoded() throws CoderException {
+    public void checkAllAttributesAreDecoded() throws IOException {
         final Set<MovieAttribute>set = EnumSet.allOf(MovieAttribute.class);
         final byte[] binary = new byte[] {0x44, 0x11, 0x19, 0x00, 0x00, 0x00};
 
@@ -87,7 +87,7 @@ public final class MovieAttributesCodingTest {
    }
 
     @Test
-    public void checkExtendedAllAttributesAreDecoded() throws CoderException {
+    public void checkExtendedAllAttributesAreDecoded() throws IOException {
         final Set<MovieAttribute>set = EnumSet.allOf(MovieAttribute.class);
         final byte[] binary = new byte[] {0x7F, 0x11, 0x04, 0x00, 0x00, 0x00,
                 0x19, 0x00, 0x00, 0x00 };
@@ -100,7 +100,7 @@ public final class MovieAttributesCodingTest {
    }
 
     @Test
-    public void checkNoMovieAttributesAreEncoded() throws CoderException {
+    public void checkNoMovieAttributesAreEncoded() throws IOException {
         final Set<MovieAttribute>set = EnumSet.noneOf(MovieAttribute.class);
         final MovieAttributes object = new MovieAttributes(set);
         final byte[] binary = new byte[] {0x44, 0x11, 0x00, 0x00, 0x00, 0x00};
@@ -117,7 +117,7 @@ public final class MovieAttributesCodingTest {
     }
 
     @Test
-    public void checkNoAttributesAreDecoded() throws CoderException {
+    public void checkNoAttributesAreDecoded() throws IOException {
         final Set<MovieAttribute>set = EnumSet.noneOf(MovieAttribute.class);
         final byte[] binary = new byte[] {0x44, 0x11, 0x00, 0x00, 0x00, 0x00};
 

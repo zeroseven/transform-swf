@@ -35,7 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.flagstone.transform.coder.Coder;
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -79,15 +79,14 @@ public final class With implements Action {
      *            type of object and to pass information on how objects are
      *            decoded.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
     public With(final SWFDecoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         final SWFFactory<Action> decoder = context.getRegistry()
                 .getActionDecoder();
 
-        coder.readByte();
         coder.readUI16();
         length = coder.readUI16();
         final int end = coder.getPointer() + (length << Coder.BITS_TO_BYTES);
@@ -157,7 +156,7 @@ public final class With implements Action {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         coder.writeByte(ActionTypes.WITH);
         coder.writeI16(2);
         coder.writeI16(length - 2);

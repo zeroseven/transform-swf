@@ -32,6 +32,8 @@
 package com.flagstone.transform.sound;
 
 
+import java.io.IOException;
+
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
@@ -74,16 +76,16 @@ public final class StartSound2 implements MovieTag {
      * @param coder
      *            an SWFDecoder object that contains the encoded Flash data.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    public StartSound2(final SWFDecoder coder) throws CoderException {
+    public StartSound2(final SWFDecoder coder) throws IOException {
         final int start = coder.getPointer();
-        length = coder.readHeader();
+        length = coder.readLength();
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
         soundClass = coder.readString();
-        sound = new SoundInfo(coder);
+        sound = new SoundInfo(coder.readUI16(), coder);
 
         if (coder.getPointer() != end) {
             throw new CoderException(getClass().getName(),
@@ -168,7 +170,7 @@ public final class StartSound2 implements MovieTag {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         final int start = coder.getPointer();
         coder.writeHeader(MovieTypes.START_SOUND_2, length);
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);

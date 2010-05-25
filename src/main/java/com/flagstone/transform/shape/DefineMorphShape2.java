@@ -31,6 +31,7 @@
 
 package com.flagstone.transform.shape;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -140,13 +141,13 @@ public final class DefineMorphShape2 implements DefineTag {
      *            type of object and to pass information on how objects are
      *            decoded.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
     public DefineMorphShape2(final SWFDecoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         final int start = coder.getPointer();
-        length = coder.readHeader();
+        length = coder.readLength();
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
         identifier = coder.readUI16();
 
@@ -164,8 +165,7 @@ public final class DefineMorphShape2 implements DefineTag {
         lineStyles = new ArrayList<MorphLineStyle2>();
         coder.readByte();
 
-        final int offset = coder.readUI32();
-        final int first = coder.getPointer();
+        final int shapeStart = coder.getPointer() + (coder.readUI32() << 3);
 
         int fillStyleCount = coder.readByte();
 
@@ -192,14 +192,16 @@ public final class DefineMorphShape2 implements DefineTag {
             lineStyles.add(new MorphLineStyle2(coder, context));
         }
 
+        final int bytesRead = (coder.getPointer() - start) >> 3;
+        final int endSize = (end - shapeStart) >> 3;
+        final int startSize = length - bytesRead - endSize;
+
         if (context.getRegistry().getShapeDecoder() == null) {
             startShape = new Shape();
-            startShape.add(new ShapeData(new byte[offset
-                    - ((coder.getPointer() - first) >> 3)]));
+            startShape.add(new ShapeData(new byte[startSize]));
 
             endShape = new Shape();
-            endShape.add(new ShapeData(new byte[length
-                    - ((coder.getPointer() - start) >> 3)]));
+            endShape.add(new ShapeData(new byte[endSize]));
         } else {
             startShape = new Shape(coder, context);
             endShape = new Shape(coder, context);
@@ -604,7 +606,7 @@ public final class DefineMorphShape2 implements DefineTag {
     // TODO(optimise)
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         final int start = coder.getPointer();
         coder.writeHeader(MovieTypes.DEFINE_MORPH_SHAPE_2, length);
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);

@@ -33,7 +33,7 @@ package com.flagstone.transform.filter;
 
 import java.util.Arrays;
 
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -59,11 +59,10 @@ public final class ColorMatrixFilter implements Filter {
      * @param coder
      *            an SWFDecoder object that contains the encoded Flash data.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    public ColorMatrixFilter(final SWFDecoder coder) throws CoderException {
-        coder.readByte();
+    public ColorMatrixFilter(final SWFDecoder coder) throws IOException {
         matrix = new float[MATRIX_SIZE];
         for (int i = 0; i < MATRIX_SIZE; i++) {
             matrix[i] = coder.readFloat();
@@ -127,7 +126,7 @@ public final class ColorMatrixFilter implements Filter {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         coder.writeByte(FilterTypes.COLOR_MATRIX);
         for (final float value : matrix) {
             coder.writeFloat(value);

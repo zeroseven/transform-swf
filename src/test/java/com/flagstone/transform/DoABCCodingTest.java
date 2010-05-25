@@ -38,7 +38,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -58,7 +58,7 @@ public final class DoABCCodingTest {
         "Object was not decoded properly";
 
     @Test
-    public void checkDoABCIsEncoded() throws CoderException {
+    public void checkDoABCIsEncoded() throws IOException {
         final byte[] data = new byte[] {1, 2, 3, 4};
         final DoABC object = new DoABC("script", true, data);
         final byte[] binary = new byte[] {(byte) 0x8F, 0x14, 0x00, 0x00, 0x00,
@@ -77,7 +77,7 @@ public final class DoABCCodingTest {
     }
 
     @Test
-    public void checkDoABCIsDecoded() throws CoderException {
+    public void checkDoABCIsDecoded() throws IOException {
         final byte[] data = new byte[] {1, 2, 3, 4};
         final byte[] binary = new byte[] {(byte) 0x8F, 0x14, 0x00, 0x00, 0x00,
                 0x01, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x00, 0x01, 0x02,
@@ -93,7 +93,7 @@ public final class DoABCCodingTest {
    }
 
     @Test
-    public void checkExtendedDoABCIsDecoded() throws CoderException {
+    public void checkExtendedDoABCIsDecoded() throws IOException {
         final byte[] data = new byte[] {1, 2, 3, 4};
         final byte[] binary = new byte[] {(byte) 0xBF, 0x14, 0x0F, 0x00, 0x00,
                 0x00, 0x00, 0x00, 0x00, 0x01, 0x73, 0x63, 0x72, 0x69, 0x70,

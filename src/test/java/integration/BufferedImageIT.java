@@ -104,17 +104,18 @@ public final class BufferedImageIT {
             ImageRegistry.registerProvider(mimeType, decoder);
 
             final Movie movie = new Movie();
+            int uid = 1;
 
             final ImageFactory factory = new ImageFactory();
             factory.read(sourceFile);
-            final int imageId = movie.nextId();
+            final int imageId = uid++;
             final ImageTag image = factory.defineImage(imageId);
 
             final int xOrigin = image.getWidth() / 2;
             final int yOrigin = image.getHeight() / 2;
 
-            final DefineShape3 shape = factory.defineEnclosingShape(movie
-                    .nextId(), imageId, -xOrigin, -yOrigin, null);
+            final DefineShape3 shape = factory.defineEnclosingShape(uid++,
+                    imageId, -xOrigin, -yOrigin, null);
 
             movie.setFrameRate(1.0f);
             movie.setFrameSize(shape.getBounds());

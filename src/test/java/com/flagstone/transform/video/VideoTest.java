@@ -34,7 +34,7 @@ package com.flagstone.transform.video;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 
 public final class VideoTest {
 
@@ -50,16 +50,16 @@ public final class VideoTest {
 
     @Test
     @Ignore //TODO(implement)
-    public void encodeCoordTransform() throws CoderException {
+    public void encodeCoordTransform() throws IOException {
     }
 
     @Test
     @Ignore //TODO(implement)
-    public void decode() throws CoderException {
+    public void decode() throws IOException {
     }
 
     @Test
     @Ignore //TODO(implement)
-    public void decodeExtended() throws CoderException {
+    public void decodeExtended() throws IOException {
     }
 }

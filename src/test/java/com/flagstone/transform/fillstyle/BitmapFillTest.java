@@ -38,7 +38,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -81,7 +81,7 @@ public final class BitmapFillTest {
     }
 
     @Test
-    public void encode() throws CoderException {
+    public void encode() throws IOException {
 
         final SWFEncoder encoder = new SWFEncoder(encoded.length);
         final Context context = new Context();
@@ -95,11 +95,11 @@ public final class BitmapFillTest {
     }
 
     @Test
-    public void decode() throws CoderException {
+    public void decode() throws IOException {
 
         final SWFDecoder decoder = new SWFDecoder(encoded);
 
-        fixture = new BitmapFill(decoder);
+        fixture = new BitmapFill(decoder.readByte(), decoder);
 
         assertTrue(decoder.eof());
         assertEquals(identifier, fixture.getIdentifier());

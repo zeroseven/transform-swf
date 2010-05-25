@@ -50,16 +50,9 @@ public final class CoderException extends IOException {
     private static final String FORMAT = "CoderException: { "
             + "name=%s; location=%d; length=%d; delta=%d; message=%s }";
 
-    /**
-     * Message to report errors when the number of bytes read is less than the
-     * length indicated in the tag header.
-     */
-    public static final String UNDERFLOW = "Underflow";
-    /**
-     * Message to report errors when the number of bytes read is more than the
-     * length indicated in the tag header.
-     */
-    public static final String OVERFLOW = "Overflow";
+    public static final String CODING_ERROR = "CodingError";
+
+    public static final String STREAM_ERROR = "StreamError";
 
     /** The name of the class where the error occurred. */
     private final transient String name;
@@ -76,6 +69,14 @@ public final class CoderException extends IOException {
      */
     private final transient int delta;
 
+    public CoderException(final String className, Exception cause) {
+        super(STREAM_ERROR, cause);
+        name = className;
+        start = 0;
+        length = 0;
+        delta = 0;
+    }
+
     /**
      * Creates a CoderException to report where a problem occurred when encoding
      * or decoding a Flash (.swf) file.
@@ -90,26 +91,16 @@ public final class CoderException extends IOException {
      *            decoded since the encoded file will not be written if an
      *            exception occurs.
      *
-     * @param size
-     *            the number of bytes that were expected to be encoded or
-     *            decoded.
-     *
-     * @param difference
-     *            the difference between the expected number of bytes and the
-     *            actual number encoded or decoded.
-     *
      * @param message
-     *            a message indicating type of object that caused the error and
-     *            and whether the difference was more (overflow) or less
-     *            (underflow) than expected.
+     *            a short description of the error.
      */
     public CoderException(final String className, final int location,
-            final int size, final int difference, final String message) {
+            final String message) {
         super(message);
         name = className;
         start = location;
-        length = size;
-        delta = difference;
+        length = 0;
+        delta = 0;
     }
 
     /**
@@ -136,7 +127,7 @@ public final class CoderException extends IOException {
      */
     public CoderException(final String className, final int location,
             final int size, final int difference) {
-        super(difference > 0 ? OVERFLOW : UNDERFLOW);
+        super(CODING_ERROR);
         name = className;
         start = location;
         length = size;

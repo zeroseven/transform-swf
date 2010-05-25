@@ -31,6 +31,7 @@
 
 package com.flagstone.transform.movieclip;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -96,38 +97,22 @@ public final class DefineMovieClip implements DefineTag {
      *            type of object and to pass information on how objects are
      *            decoded.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
     // TODO(optimise)
     public DefineMovieClip(final SWFDecoder coder, final Context context)
-            throws CoderException {
-        final int start = coder.getPointer();
-        length = coder.readHeader();
-        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
-
+            throws IOException {
+        length = coder.readLength();
         identifier = coder.readUI16();
         frameCount = coder.readUI16();
         objects = new ArrayList<MovieTag>();
 
-        int type;
         final SWFFactory<MovieTag> decoder = context.getRegistry()
                 .getMovieDecoder();
 
-        do {
-            type = coder.scanUnsignedShort() >>> 6;
-
-            if (type != 0) {
-                objects.add(decoder.getObject(coder, context));
-            }
-        } while (type != 0);
-
-        coder.adjustPointer(16);
-
-        if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(),
-                     start >> Coder.BITS_TO_BYTES, length,
-                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
+        while (coder.nextHeader() != MovieTypes.END) {
+           objects.add(decoder.getObject(coder, context));
         }
     }
 
@@ -245,7 +230,7 @@ public final class DefineMovieClip implements DefineTag {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         final int start = coder.getPointer();
         coder.writeHeader(MovieTypes.DEFINE_MOVIE_CLIP, length);
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);

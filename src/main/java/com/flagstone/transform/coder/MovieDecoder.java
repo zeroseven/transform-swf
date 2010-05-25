@@ -31,6 +31,8 @@
 
 package com.flagstone.transform.coder;
 
+import java.io.IOException;
+
 import com.flagstone.transform.Background;
 import com.flagstone.transform.DefineData;
 import com.flagstone.transform.DoABC;
@@ -108,14 +110,15 @@ import com.flagstone.transform.video.VideoFrame;
 public final class MovieDecoder implements SWFFactory<MovieTag> {
     /** {@inheritDoc} */
     public MovieTag getObject(final SWFDecoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
 
         MovieTag obj;
 
-        switch (coder.scanUnsignedShort() >>> 6) {
+        coder.fetchToDecode();
+
+        switch (coder.readType()) {
         case MovieTypes.SHOW_FRAME:
             obj = ShowFrame.getInstance();
-            coder.readHeader();
             break;
         case MovieTypes.DEFINE_SHAPE:
             obj = new DefineShape(coder, context);
@@ -221,7 +224,6 @@ public final class MovieDecoder implements SWFFactory<MovieTag> {
             break;
         case MovieTypes.PATHS_ARE_POSTSCRIPT:
             obj = PathsArePostscript.getInstance();
-            coder.readHeader();
             break;
         case MovieTypes.DEFINE_TEXT_FIELD:
             obj = new DefineTextField(coder, context);

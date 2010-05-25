@@ -52,13 +52,15 @@ public final class ScreenPacket implements Cloneable {
     public ScreenPacket(final byte[] data) {
         final SWFDecoder coder = new SWFDecoder(data);
 
-        keyFrame = coder.readBits(4, false) == 1;
-        coder.readBits(4, false); // codec = screen_video
+        int info = coder.readByte();
+        keyFrame = ((info & 0x00F0) >> 4) == 1;
 
-        blockWidth = (coder.readBits(4, false) + 1) * 16;
-        imageWidth = coder.readBits(12, false);
-        blockHeight = (coder.readBits(4, false) + 1) * 16;
-        imageHeight = coder.readBits(12, false);
+        info = (coder.readByte() << 8) + coder.readByte();
+        blockWidth = (((info & 0x00F000) >> 12) + 1) * 16;
+        imageWidth = info & 0x0FFF;
+        info = (coder.readByte() << 8) + coder.readByte();
+        blockHeight = (((info & 0x00F000) >> 12) + 1) * 16;
+        imageHeight = info & 0x0FFF;
 
         final int columns = imageWidth / blockWidth
                 + ((imageWidth % blockWidth > 0) ? 1 : 0);
@@ -73,7 +75,7 @@ public final class ScreenPacket implements Cloneable {
 
         for (int i = 0; i < rows; i++, height -= blockHeight) {
             for (int j = 0; j < columns; j++, width -= blockWidth) {
-                final int length = coder.readBits(16, false);
+                final int length = (coder.readByte() << 8) + coder.readByte();
 
                 if (length == 0) {
                     block = new ImageBlock(0, 0, null);

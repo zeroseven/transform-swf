@@ -31,6 +31,9 @@
 
 package com.flagstone.transform.coder;
 
+import java.io.IOException;
+
+
 /**
  * The SWFFactory interface is used to generate objects when decoding a movie.
  *
@@ -44,8 +47,8 @@ public interface SWFFactory<T> {
      * @param context a Context object used to share information between
      * the code that decodes the different types of object.
      * @return T the decoded Flash object.
-     * @throws CoderException if an error occurs decodng the object.
+     * @throws IOException if an error occurs decodng the object.
      */
     T getObject(final SWFDecoder coder, final Context context)
-            throws CoderException;
+            throws IOException;
 }

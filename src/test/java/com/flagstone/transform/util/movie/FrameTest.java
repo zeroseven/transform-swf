@@ -48,7 +48,7 @@ import com.flagstone.transform.ShowFrame;
 import com.flagstone.transform.action.Action;
 import com.flagstone.transform.action.GotoFrame2;
 import com.flagstone.transform.action.Push;
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.text.DefineTextField;
 
@@ -58,13 +58,12 @@ public final class FrameTest {
     @Before
     public void setUp() {
         movie = new Movie();
-        movie.setSignature(Movie.Signature.FWS);
         movie.setFrameSize(new Bounds(0, 0, 100, 100));
         movie.setFrameRate(1.0f);
     }
 
     @Test
-    public void frameLabel() throws CoderException {
+    public void frameLabel() throws IOException {
         final String label = "label";
 
         movie.add(new FrameLabel(label));
@@ -77,7 +76,7 @@ public final class FrameTest {
     }
 
     @Test
-    public void frameWithNoLabel() throws CoderException {
+    public void frameWithNoLabel() throws IOException {
         movie.add(ShowFrame.getInstance());
 
         final List<Frame> frames = Frame.split(movie);
@@ -87,7 +86,7 @@ public final class FrameTest {
     }
 
     @Test
-    public void frameWithCommand() throws CoderException {
+    public void frameWithCommand() throws IOException {
         final Place2 command = Place2.show(1, 1, 0, 0);
 
         movie.add(command);
@@ -101,7 +100,7 @@ public final class FrameTest {
     }
 
     @Test
-    public void frameWithNoCommand() throws CoderException {
+    public void frameWithNoCommand() throws IOException {
         movie.add(ShowFrame.getInstance());
 
         final List<Frame> frames = Frame.split(movie);
@@ -111,7 +110,7 @@ public final class FrameTest {
     }
 
     @Test
-    public void frameWithDefinition() throws CoderException {
+    public void frameWithDefinition() throws IOException {
         final DefineTextField field = new DefineTextField(1)
                 .setBounds(new Bounds(0, 0, 100, 100));
 
@@ -126,7 +125,7 @@ public final class FrameTest {
     }
 
     @Test
-    public void frameWithNoDefinition() throws CoderException {
+    public void frameWithNoDefinition() throws IOException {
         movie.add(ShowFrame.getInstance());
 
         final List<Frame> frames = Frame.split(movie);
@@ -136,7 +135,7 @@ public final class FrameTest {
     }
 
     @Test
-    public void frameWithActions() throws CoderException {
+    public void frameWithActions() throws IOException {
         List<Object>values = new ArrayList<Object>();
         values.add("label");
         final Push push = new Push(values);
@@ -156,7 +155,7 @@ public final class FrameTest {
     }
 
     @Test
-    public void frameWithNoActions() throws CoderException {
+    public void frameWithNoActions() throws IOException {
         movie.add(ShowFrame.getInstance());
 
         final List<Frame> frames = Frame.split(movie);
@@ -166,7 +165,7 @@ public final class FrameTest {
     }
 
     @Test
-    public void addFrameToMovie() throws CoderException {
+    public void addFrameToMovie() throws IOException {
         final Frame frame = new Frame();
         frame.setLabel("label");
         frame.addDefinition(new DefineTextField(1).setBounds(new Bounds(0, 0,
@@ -181,7 +180,7 @@ public final class FrameTest {
     }
 
     @Test
-    public void multipleFramesFromMovie() throws CoderException {
+    public void multipleFramesFromMovie() throws IOException {
         movie.add(ShowFrame.getInstance());
         movie.add(ShowFrame.getInstance());
 

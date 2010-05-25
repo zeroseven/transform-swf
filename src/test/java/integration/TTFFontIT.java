@@ -109,13 +109,14 @@ public final class TTFFontIT {
             set.add(alphabet);
 
             final Movie movie = new Movie();
+            int uid = 1;
 
-            final DefineFont2 definition = font.defineFont(movie.nextId(),
+            final DefineFont2 definition = font.defineFont(uid++,
                     set.getCharacters());
             final TextTable textTable = new TextTable(definition, fontSize);
             final Bounds bounds = Bounds.pad(
                     textTable.boundsForText(alphabet), padding);
-            final DefineText2 text = textTable.defineText(movie.nextId(),
+            final DefineText2 text = textTable.defineText(uid++,
                     alphabet, WebPalette.BLACK.color());
 
             movie.setFrameSize(bounds);

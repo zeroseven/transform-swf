@@ -34,7 +34,7 @@ package com.flagstone.transform.action;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -363,7 +363,7 @@ public enum BasicAction implements Action {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         coder.writeByte(type);
 
     }

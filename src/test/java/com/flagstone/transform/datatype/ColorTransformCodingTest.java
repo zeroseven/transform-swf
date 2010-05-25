@@ -36,7 +36,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -55,7 +55,7 @@ public final class ColorTransformCodingTest {
         "Object was not decoded properly";
 
     @Test
-    public void checkOpaqueAddTermsAreEncoded() throws CoderException {
+    public void checkOpaqueAddTermsAreEncoded() throws IOException {
         final ColorTransform object = new ColorTransform(1, 2, 3, 0);
         final byte[] binary = new byte[] { (byte) 0x8C, (byte) 0xA6 };
 
@@ -71,7 +71,7 @@ public final class ColorTransformCodingTest {
     }
 
     @Test
-    public void checkOpaqueAddTermsAreDecoded() throws CoderException {
+    public void checkOpaqueAddTermsAreDecoded() throws IOException {
         final ColorTransform object = new ColorTransform(1, 2, 3, 0);
         final byte[] binary = new byte[] { (byte) 0x8C, (byte) 0xA6 };
 
@@ -83,7 +83,7 @@ public final class ColorTransformCodingTest {
     }
 
     @Test
-    public void checkOpaqueMultiplyTermsAreDefaults() throws CoderException {
+    public void checkOpaqueMultiplyTermsAreDefaults() throws IOException {
         final byte[] binary = new byte[] { (byte) 0x8C, (byte) 0xA6 };
 
         final SWFDecoder decoder = new SWFDecoder(binary);
@@ -97,7 +97,7 @@ public final class ColorTransformCodingTest {
     }
 
     @Test
-    public void checkOpaqueMultiplyTermsAreEncoded() throws CoderException {
+    public void checkOpaqueMultiplyTermsAreEncoded() throws IOException {
         final ColorTransform object =
             new ColorTransform(1.0f, 2.0f, 3.0f, 0.0f);
         final byte[] binary =
@@ -115,7 +115,7 @@ public final class ColorTransformCodingTest {
     }
 
     @Test
-    public void checkOpaqueMultiplyTermsAreDecoded() throws CoderException {
+    public void checkOpaqueMultiplyTermsAreDecoded() throws IOException {
         final ColorTransform object =
             new ColorTransform(1.0f, 2.0f, 3.0f, 0.0f);
         final byte[] binary =
@@ -129,7 +129,7 @@ public final class ColorTransformCodingTest {
     }
 
     @Test
-    public void checkOpaqueAddTermsAreDefaults() throws CoderException {
+    public void checkOpaqueAddTermsAreDefaults() throws IOException {
         final byte[] binary =
             new byte[] { 0x6C, (byte) 0x80, 0x20, 0x06, 0x00 };
 
@@ -144,7 +144,7 @@ public final class ColorTransformCodingTest {
     }
 
     @Test
-    public void checkOpaqueTermsAreEncoded() throws CoderException {
+    public void checkOpaqueTermsAreEncoded() throws IOException {
         final ColorTransform object =
             new ColorTransform(1, 2, 3, 0, 1.0f, 2.0f, 3.0f, 1.0f);
         final byte[] binary = new byte[] {(byte) 0xEC, (byte) 0x80, 0x20, 0x06,
@@ -162,7 +162,7 @@ public final class ColorTransformCodingTest {
     }
 
     @Test
-    public void checkOpaqueTermsAreDecoded() throws CoderException {
+    public void checkOpaqueTermsAreDecoded() throws IOException {
         final ColorTransform object =
             new ColorTransform(1, 2, 3, 0, 1.0f, 2.0f, 3.0f, 1.0f);
         final byte[] binary = new byte[] {(byte) 0xEC, (byte) 0x80, 0x20, 0x06,
@@ -177,7 +177,7 @@ public final class ColorTransformCodingTest {
 
 
     @Test
-    public void checkTransparentAddTermsAreEncoded() throws CoderException {
+    public void checkTransparentAddTermsAreEncoded() throws IOException {
         final ColorTransform object = new ColorTransform(1, 2, 3, 4);
         final byte[] binary = new byte[] {(byte) 0x90, 0x48, (byte) 0xD0 };
 
@@ -193,7 +193,7 @@ public final class ColorTransformCodingTest {
     }
 
     @Test
-    public void checkTransparentAddTermsAreDecoded() throws CoderException {
+    public void checkTransparentAddTermsAreDecoded() throws IOException {
         final ColorTransform object = new ColorTransform(1, 2, 3, 4);
         final byte[] binary = new byte[] { (byte) 0x90, 0x48, (byte) 0xD0 };
 
@@ -206,7 +206,7 @@ public final class ColorTransformCodingTest {
 
     @Test
     public void checkTransparentMultiplyTermsAreDefaults()
-                throws CoderException {
+                throws IOException {
         final byte[] binary = new byte[] { (byte) 0x90, 0x48, (byte) 0xD0 };
 
         final SWFDecoder decoder = new SWFDecoder(binary);
@@ -221,7 +221,7 @@ public final class ColorTransformCodingTest {
 
     @Test
     public void checkTransparentMultiplyTermsAreEncoded()
-                throws CoderException {
+                throws IOException {
         final ColorTransform object =
             new ColorTransform(1.0f, 2.0f, 3.0f, 4.0f);
         final byte[] binary =
@@ -240,7 +240,7 @@ public final class ColorTransformCodingTest {
 
     @Test
     public void checkTransparentMultiplyTermsAreDecoded()
-                throws CoderException {
+                throws IOException {
         final ColorTransform object =
             new ColorTransform(1.0f, 2.0f, 3.0f, 4.0f);
         final byte[] binary =
@@ -254,7 +254,7 @@ public final class ColorTransformCodingTest {
     }
 
     @Test
-    public void checkTransparentAddTermsAreDefaults() throws CoderException {
+    public void checkTransparentAddTermsAreDefaults() throws IOException {
         final byte[] binary =
             new byte[] { 0x70, 0x40, 0x08, 0x00, (byte) 0xC0, 0x10, 0x00 };
 
@@ -269,7 +269,7 @@ public final class ColorTransformCodingTest {
     }
 
     @Test
-    public void checkTransparentTermsAreEncoded() throws CoderException {
+    public void checkTransparentTermsAreEncoded() throws IOException {
         final ColorTransform object =
             new ColorTransform(1, 2, 3, 4, 1.0f, 2.0f, 3.0f, 4.0f);
         final byte[] binary = new byte[] {(byte) 0xF0, 0x40, 0x08, 0x00,
@@ -288,7 +288,7 @@ public final class ColorTransformCodingTest {
     }
 
     @Test
-    public void checkTransparentTermsAreDecoded() throws CoderException {
+    public void checkTransparentTermsAreDecoded() throws IOException {
         final ColorTransform object =
             new ColorTransform(1, 2, 3, 4, 1.0f, 2.0f, 3.0f, 4.0f);
         final byte[] binary = new byte[] {(byte) 0xF0, 0x40, 0x08, 0x00,

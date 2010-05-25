@@ -73,6 +73,7 @@ public final class ScreenVideoIT {
         final String[] files = sourceDir.list(filter);
 
         Movie movie = new Movie();
+        int uid = 1;
 
         File destFile = null;
 
@@ -87,13 +88,13 @@ public final class ScreenVideoIT {
 
         final ImageFactory factory = new ImageFactory();
         factory.read(new File(files[0]));
-        final ImageTag image = factory.defineImage(movie.nextId());
+        final ImageTag image = factory.defineImage(uid++);
 
         int screenWidth = image.getWidth();
         int screenHeight = image.getHeight();
 
         movie = new Movie();
-        identifier = movie.nextId();
+        identifier = uid++;
 
         movie.setFrameSize(new Bounds(0, 0, screenWidth * 20,
                         screenHeight * 20));

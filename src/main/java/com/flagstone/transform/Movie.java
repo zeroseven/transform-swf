@@ -31,7 +31,6 @@
 
 package com.flagstone.transform;
 
-import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -39,7 +38,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
@@ -47,8 +45,8 @@ import java.util.zip.InflaterInputStream;
 
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.DecoderRegistry;
-import com.flagstone.transform.coder.DefineTag;
 import com.flagstone.transform.coder.MovieTag;
+import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.coder.SWFFactory;
@@ -82,75 +80,45 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  */
 public final class Movie {
 
-    /**
-     * Signature provides a simple way of specifying the signature that
-     * identifies a Flash file.
-     */
-   public enum Signature {
-       /** A "standard" uncompressed Flash file. */
-       FWS(new byte[] { 0x46, 0x57, 0x53}),
-       /** A compressed Flash file. */
-       CWS(new byte[] { 0x43, 0x57, 0x53});
-       /** An array holding the ASCII characters of the signature. */
-       private byte[] bytes;
-       /**
-        * Private constructor for the enum.
-        * @param data the array of bytes representing the ASCII characters.
-        */
-       private Signature(final byte[] data) {
-           bytes = Arrays.copyOf(data, data.length);
-       }
+    public static final int FWS = 0x465753;
+    public static final int CWS = 0x435753;
 
-       public boolean matches(final byte[] sig) {
-           return Arrays.equals(bytes, sig);
-       }
-
-       /**
-        * Get an ASCII character from the signature.
-        *
-        * @param index the index of the character.
-        * @return the byte for the selected character.
-        */
-       public byte get(final int index) {
-           return bytes[index];
-       }
-    }
-   /** The version of Flash supported. */
+    /** The version of Flash supported. */
     public static final int VERSION = 10;
     /** Format string used in toString() method. */
-    private static final String FORMAT = "Movie: { signature=%s; version=%d;"
+    private static final String FORMAT = "Movie: { compressed=%b; version=%d;"
             + " frameSize=%s; frameRate=%f; objects=%s }";
 
     /** The registry for the different types of decoder. */
     private transient DecoderRegistry registry;
     /** The character encoding used for strings. */
     private transient CharacterEncoding encoding;
-    /** The next available unique identifier. */
-    private transient int identifier;
 
-    /** The signature identifying the type of Flash file. */
-    private Signature signature;
+    private boolean compressed;
     /** The Flash version number. */
     private int version;
     /** The Flash Player screen coordinates. */
     private Bounds frameSize;
     /** The frame rate of the movie. */
-    private float frameRate;
+    private int frameRate;
     /** The list of objects that make up the movie. */
     private List<MovieTag> objects;
 
     /** The length of the object when it is encoded. */
     private transient int length;
-    /** The number of frames in the moviem when it is encoded. */
+    /** The number of frames in the movie when it is encoded. */
     private transient int frameCount;
 
     /**
      * Creates a new Movie.
      */
     public Movie() {
+        registry = DecoderRegistry.getDefault();
         encoding = CharacterEncoding.UTF8;
-        signature = Signature.CWS;
+        compressed = true;
         version = VERSION;
+        frameSize = new Bounds(0, 0, 0, 0);
+        frameRate = 0;
         objects = new ArrayList<MovieTag>();
     }
 
@@ -165,13 +133,11 @@ public final class Movie {
             registry = movie.registry.copy();
         }
 
-        identifier = movie.identifier;
-        encoding = movie.encoding;
-
-        signature = movie.signature;
+        compressed = movie.compressed;
         version = movie.version;
         frameSize = movie.frameSize;
         frameRate = movie.frameRate;
+        encoding = movie.encoding;
 
         objects = new ArrayList<MovieTag>(movie.objects.size());
 
@@ -192,17 +158,6 @@ public final class Movie {
     }
 
     /**
-     * Sets the initial value for the unique identifier assigned to definition
-     * objects.
-     *
-     * @param aValue
-     *            an initial value for the unique identifier.
-     */
-    public void setIdentifier(final int aValue) {
-        identifier = aValue;
-    }
-
-    /**
      * Sets the encoding scheme for strings encoded and decoded from Flash
      * files.
      *
@@ -212,42 +167,12 @@ public final class Movie {
         encoding = enc;
     }
 
-    /**
-     * Returns a unique identifier that will be assigned to definition objects.
-     * In order to reference objects that define items such as shapes, sounds,
-     * etc. each must be assigned an identifier that is unique for a given
-     * Movie.
-     *
-     * When binary data is decoded into a sequence of objects, the Movie class
-     * tracks each Define tag decoded, recording the highest value. If a new
-     * Define tag is added to the array of decoded objects the identifier
-     * assigned to the new tag will be guaranteed to be unique.
-     *
-     * @return an unique identifier for objects that define shapes, sounds, etc.
-     *         in a Flash file.
-     */
-    public int nextId() {
-        return ++identifier;
+    public boolean isCompressed() {
+        return compressed;
     }
 
-    /**
-     * Get the signature identifying that the movie contains Flash.
-     *
-     * @return the signature used to identify whether file contains compressed
-     * or uncompressed data.
-     */
-    public Signature getSignature() {
-        return signature;
-    }
-
-    /**
-     * Sets the signature for the Flash data when it is encoded.
-     *
-     * @param sig the string signature used to identify whether the file
-     * contains compressed or uncompressed flash data.
-     */
-    public void setSignature(final Signature sig) {
-        signature = sig;
+    public void setCompressed(final boolean compress) {
+        compressed = compress;
     }
 
     /**
@@ -315,18 +240,18 @@ public final class Movie {
      * @return the movie frame rate.
      */
     public float getFrameRate() {
-        return frameRate;
+        return frameRate / 256.0f;
     }
 
     /**
      * Sets the number of frames played per second that the Player will display
      * the coder.
      *
-     * @param aNumber
+     * @param rate
      *            the number of frames per second that the movie is played.
      */
-    public void setFrameRate(final float aNumber) {
-        frameRate = aNumber;
+    public void setFrameRate(final float rate) {
+        frameRate = (int) (rate * 256);
     }
 
     /**
@@ -374,8 +299,8 @@ public final class Movie {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        return String.format(FORMAT, signature, version, frameSize, frameRate,
-                objects);
+        return String.format(FORMAT, compressed, version, frameSize,
+                getFrameRate(), objects);
     }
 
     /**
@@ -418,97 +343,60 @@ public final class Movie {
     public void decodeFromStream(final InputStream stream)
             throws DataFormatException, IOException {
 
-        byte[] buffer = new byte[8];
-        int bytesRead = stream.read(buffer);
+        int word = stream.read() << 16;
+        word |= stream.read() << 8;
+        word |= stream.read();
 
-        final byte[] sig = Arrays.copyOf(buffer, 3);
-
-        if (Signature.FWS.matches(sig)) {
-            signature = Signature.FWS;
-        } else if (Signature.CWS.matches(sig)) {
-            signature = Signature.CWS;
+        if (word == 0x465753) {
+            compressed = false;
+        } else if (word == 0x435753) {
+            compressed = true;
         } else {
-            throw new DataFormatException("Not SWF Format");
+            throw new DataFormatException();
         }
 
-        version = buffer[3] & 0x00FF;
+        version = stream.read();
 
-        length = buffer[4] & 0x00FF;
-        length |= (buffer[5] & 0x00FF) << 8;
-        length |= (buffer[6] & 0x00FF) << 16;
-        length |= (buffer[7] & 0x00FF) << 24;
+        length = stream.read();
+        length |= stream.read() << 8;
+        length |= stream.read() << 16;
+        length |= stream.read() << 24;
 
         final InputStream streamIn;
 
-        if (signature == Signature.CWS) {
+        if (compressed) {
             streamIn = new InflaterInputStream(stream);
         } else {
-            streamIn = new DataInputStream(stream);
+            streamIn = stream;
         }
 
-        bytesRead += streamIn.read(buffer, 0, 2);
+        int value = streamIn.read();
+        int bitsToRead = ((value >> 3) << 2) - 3;
+        int bytesToRead = ((bitsToRead + 7) >> 3) + 4;
 
-        final int size = 2 + ((12 + ((buffer[0] & 0xF8) >> 1)) >>> 3);
+        byte[] buffer = new byte[bytesToRead + 1];
+        buffer[0] = (byte) value;
+        streamIn.read(buffer, 1, bytesToRead);
 
-        buffer = Arrays.copyOf(buffer, size + 2);
-        bytesRead += streamIn.read(buffer, 2, size);
-
-        final SWFDecoder decoder = new SWFDecoder(buffer);
-        final Context context = new Context().put(Context.VERSION, version);
-
-        if (registry == null) {
-            context.setRegistry(DecoderRegistry.getDefault());
-        } else {
-            context.setRegistry(registry);
-        }
-
+        SWFDecoder decoder = new SWFDecoder(buffer);
         frameSize = new Bounds(decoder);
-        frameRate = decoder.readSI16() / 256.0f;
+        frameRate = decoder.readUI16();
         frameCount = decoder.readUI16();
 
-        buffer = new byte[length - size - 10];
-        int read = 0;
-        int num = 0;
-
-        // Get number of bytes read first before adding to total reads since
-        // the actual size of the file may be less than the specified length
-
-        do {
-            num = streamIn.read(buffer, read, buffer.length - read);
-            if (num != -1) {
-                read += num;
-            }
-        } while (num != -1 && read < buffer.length);
-
-        if (read < buffer.length) {
-            decoder.setData(Arrays.copyOf(buffer, read));
-        } else {
-            decoder.setData(buffer);
-        }
+        decoder = new SWFDecoder(streamIn);
         decoder.setEncoding(encoding.toString());
 
-        final SWFFactory<MovieTag> factory =
-            context.getRegistry().getMovieDecoder();
+        final Context context = new Context();
+        context.setRegistry(registry);
+        context.setEncoding(encoding.toString());
+        context.put(Context.VERSION, version);
 
         objects.clear();
 
-        if (factory == null) {
-            objects.add(new MovieData(decoder.getData()));
-        } else {
-            MovieTag object;
+        final SWFFactory<MovieTag> factory = registry.getMovieDecoder();
 
-            while (!decoder.eof()) {
-
-                object = factory.getObject(decoder, context);
-
-                if (object instanceof DefineTag) {
-                    identifier = ((DefineTag) object).getIdentifier();
-                }
-
-                objects.add(object);
-            }
-            // Remove the last object which is the end of movie marker.
-            objects.remove(objects.size() - 1);
+        while (decoder.nextHeader() != MovieTypes.END) {
+            objects.add(factory.getObject(decoder, context));
         }
     }
 
@@ -551,10 +439,7 @@ public final class Movie {
     public void encodeToStream(final OutputStream stream)
             throws DataFormatException, IOException {
 
-        final SWFEncoder coder = new SWFEncoder(0);
         final Context context = new Context();
-
-        coder.setEncoding(encoding.toString());
         context.setEncoding(encoding.toString());
         context.getVariables().put(Context.VERSION, version);
 
@@ -570,15 +455,20 @@ public final class Movie {
             }
         }
 
-        coder.setData(length);
+        final SWFEncoder coder = new SWFEncoder(length);
+        coder.setEncoding(encoding.toString());
 
-        coder.writeByte(signature.get(0));
-        coder.writeByte(signature.get(1));
-        coder.writeByte(signature.get(2));
+        if (compressed) {
+            coder.writeByte(0x43);
+        } else {
+            coder.writeByte(0x46);
+        }
+        coder.writeByte(0x57);
+        coder.writeByte(0x53);
         coder.writeByte(version);
         coder.writeI32(length);
         frameSize.encode(coder, context);
-        coder.writeI16((int) (frameRate * 256));
+        coder.writeI16(frameRate);
         coder.writeI16(frameCount);
 
         for (final MovieTag tag : objects) {
@@ -588,7 +478,7 @@ public final class Movie {
 
         byte[] data = new byte[length];
 
-        if (signature == Signature.CWS) {
+        if (compressed) {
             data = zip(coder.getData(), length);
         } else {
             data = coder.getData();

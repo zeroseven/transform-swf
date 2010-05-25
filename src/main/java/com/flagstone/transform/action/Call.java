@@ -31,7 +31,7 @@
 
 package com.flagstone.transform.action;
 
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -71,7 +71,7 @@ public final class Call implements Action {
 
     /** {@inheritDoc} */
    public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         coder.writeByte(ActionTypes.CALL);
         coder.writeI16(0);
     }

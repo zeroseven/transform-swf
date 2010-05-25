@@ -35,7 +35,7 @@ import java.util.Map;
 
 import com.flagstone.transform.Constants;
 import com.flagstone.transform.SWF;
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
@@ -86,11 +86,11 @@ public final class GlyphIndex implements SWFEncodeable {
      *            type of object and to pass information on how objects are
      *            decoded.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
     public GlyphIndex(final SWFDecoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         final Map<Integer, Integer> vars = context.getVariables();
         index = coder.readBits(vars.get(Context.GLYPH_SIZE), false);
         advance = coder.readBits(vars.get(Context.ADVANCE_SIZE), true);
@@ -178,7 +178,7 @@ public final class GlyphIndex implements SWFEncodeable {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         final Map<Integer, Integer> vars = context.getVariables();
         coder.writeBits(index, vars.get(Context.GLYPH_SIZE));
         coder.writeBits(advance, vars.get(Context.ADVANCE_SIZE));

@@ -59,20 +59,20 @@ public final class ShowImage {
 
         try {
             movie = new Movie();
+            int uid = 1;
 
             factory = new ImageFactory();
             factory.read(new File(sourceFile));
 
-            final ImageTag image = factory.defineImage(movie.nextId());
+            final ImageTag image = factory.defineImage(uid++);
 
             final int imageWidth = image.getWidth();
             final int imageHeight = image.getHeight();
             final int screenWidth = imageWidth * 20;
             final int screenHeight = imageHeight * 20;
-            final int shapeId = movie.nextId();
+            final int shapeId = uid++;
 
             movie.setFrameRate(1.0f);
-            movie.setSignature(Movie.Signature.FWS);
             movie.setFrameSize(new Bounds(-screenWidth / 2, -screenHeight / 2,
                     screenWidth / 2, screenHeight / 2));
 

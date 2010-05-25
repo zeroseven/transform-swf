@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.flagstone.transform.SWF;
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.Encoder;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -131,12 +131,12 @@ public final class ShapeStyle2 implements ShapeRecord {
      *            type of object and to pass information on how objects are
      *            decoded.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
     // TODO(optimise)
     public ShapeStyle2(final SWFDecoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         final Map<Integer, Integer> vars = context.getVariables();
         int numberOfFillBits = vars.get(Context.FILL_SIZE);
         int numberOfLineBits = vars.get(Context.LINE_SIZE);
@@ -194,8 +194,9 @@ public final class ShapeStyle2 implements ShapeRecord {
                 lineStyles.add(new LineStyle2(coder, context));
             }
 
-            numberOfFillBits = coder.readBits(4, false);
-            numberOfLineBits = coder.readBits(4, false);
+            final int sizes = coder.readByte();
+            numberOfFillBits = (sizes & 0x00F0) >> 4;
+            numberOfLineBits = sizes & 0x000F;
 
             vars.put(Context.FILL_SIZE, numberOfFillBits);
             vars.put(Context.LINE_SIZE, numberOfLineBits);
@@ -569,7 +570,7 @@ public final class ShapeStyle2 implements ShapeRecord {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         coder.writeBits(0, 1);
         coder.writeBool(hasStyles);
         coder.writeBool(hasLine);

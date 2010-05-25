@@ -39,7 +39,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.flagstone.transform.coder.Coder;
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -353,22 +353,20 @@ public final class NewFunction2 implements Action {
      *            type of object and to pass information on how objects are
      *            decoded.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
     // TODO(optimise)
     public NewFunction2(final SWFDecoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         final SWFFactory<Action> decoder = context.getRegistry()
                 .getActionDecoder();
 
-        coder.readByte();
         length = coder.readUI16();
-
         name = coder.readString();
         final int argumentCount = coder.readUI16();
         registerCount = coder.readByte();
-        optimizations = coder.readBits(16, false);
+        optimizations = (coder.readByte() << 8) + coder.readByte();
 
         int index;
 
@@ -558,7 +556,7 @@ public final class NewFunction2 implements Action {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         coder.writeByte(ActionTypes.NEW_FUNCTION_2);
         coder.writeI16(length - actionsLength);
 

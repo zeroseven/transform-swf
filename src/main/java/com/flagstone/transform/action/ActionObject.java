@@ -33,7 +33,7 @@ package com.flagstone.transform.action;
 
 import java.util.Arrays;
 
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -59,14 +59,18 @@ public final class ActionObject implements Action {
      * Creates and initialises an ActionObject using values encoded in the Flash
      * binary format.
      *
+     * @param actionType the value that identifies the action when it is
+     * encoded.
+     *
      * @param coder
      *            an SWFDecoder object that contains the encoded Flash data.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    public ActionObject(final SWFDecoder coder) throws CoderException {
-        type = coder.readByte();
+    public ActionObject(final int actionType, final SWFDecoder coder)
+                throws IOException {
+        type = actionType;
 
         if (type > ActionTypes.HIGHEST_BYTE_CODE) {
             data = coder.readBytes(new byte[coder.readUI16()]);
@@ -156,7 +160,7 @@ public final class ActionObject implements Action {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         coder.writeByte(type);
 
         if (type > ActionTypes.HIGHEST_BYTE_CODE) {

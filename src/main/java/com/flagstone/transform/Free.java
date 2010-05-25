@@ -31,7 +31,7 @@
 
 package com.flagstone.transform;
 
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.MovieTypes;
@@ -58,11 +58,10 @@ public final class Free implements MovieTag {
      * @param coder
      *            an SWFDecoder object that contains the encoded Flash data.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    public Free(final SWFDecoder coder) throws CoderException {
-        coder.readHeader();
+    public Free(final SWFDecoder coder) throws IOException {
         identifier = coder.readUI16();
     }
 
@@ -131,7 +130,7 @@ public final class Free implements MovieTag {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         coder.writeHeader(MovieTypes.FREE, 2);
         coder.writeI16(identifier);
     }

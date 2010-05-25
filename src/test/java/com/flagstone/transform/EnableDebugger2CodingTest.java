@@ -36,7 +36,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -55,7 +55,7 @@ public final class EnableDebugger2CodingTest {
         "Object was not decoded properly";
 
     @Test
-    public void checkEnableDebugger2IsEncoded() throws CoderException {
+    public void checkEnableDebugger2IsEncoded() throws IOException {
         final EnableDebugger2 object = new EnableDebugger2("ABC123");
         final byte[] binary = new byte[] {0x09, 0x10, 0x00, 0x00, 0x41, 0x42,
                 0x43, 0x31, 0x32, 0x33, 0x00 };
@@ -72,7 +72,7 @@ public final class EnableDebugger2CodingTest {
     }
 
     @Test
-    public void checkEnableDebugger2IsDecoded() throws CoderException {
+    public void checkEnableDebugger2IsDecoded() throws IOException {
         final byte[] binary = new byte[] {0x09, 0x10, 0x00, 0x00, 0x41, 0x42,
                 0x43, 0x31, 0x32, 0x33, 0x00 };
 
@@ -84,7 +84,7 @@ public final class EnableDebugger2CodingTest {
    }
 
     @Test
-    public void checkExtendedEnableDebugger2IsDecoded() throws CoderException {
+    public void checkExtendedEnableDebugger2IsDecoded() throws IOException {
         final byte[] binary = new byte[] {0x3F, 0x10, 0x09, 0x00, 0x00, 0x00,
                 0x00, 0x00, 0x41, 0x42, 0x43, 0x31, 0x32, 0x33, 0x00 };
 

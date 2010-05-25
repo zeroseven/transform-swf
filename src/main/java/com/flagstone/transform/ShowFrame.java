@@ -31,7 +31,7 @@
 
 package com.flagstone.transform;
 
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.MovieTypes;
@@ -96,7 +96,7 @@ public final class ShowFrame implements MovieTag {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         coder.writeHeader(MovieTypes.SHOW_FRAME, 0);
     }
 }

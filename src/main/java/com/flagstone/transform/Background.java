@@ -31,7 +31,7 @@
 
 package com.flagstone.transform;
 
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.MovieTypes;
@@ -78,12 +78,11 @@ public final class Background implements MovieTag {
      *            type of object and to pass information on how objects are
      *            decoded.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
     public Background(final SWFDecoder coder, final Context context)
-            throws CoderException {
-        coder.readHeader();
+            throws IOException {
         color = new Color(coder, context);
     }
 
@@ -149,7 +148,7 @@ public final class Background implements MovieTag {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         coder.writeHeader(MovieTypes.SET_BACKGROUND_COLOR, Color.RGB);
         color.encode(coder, context);
     }

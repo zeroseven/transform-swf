@@ -51,7 +51,7 @@ public final class FLVDecoderTest {
     @Test
     public void readUnsignedShort() {
         data = new byte[] {-1, -1 };
-        fixture.setData(data);
+        fixture = new FLVDecoder(data);
 
         assertEquals(65535, fixture.scanUnsignedShort());
         assertEquals(0, fixture.getPointer());
@@ -61,7 +61,7 @@ public final class FLVDecoderTest {
     public void readUI16() {
         data = new byte[] {1, 2, 0, 0 };
 
-        fixture.setData(data);
+        fixture = new FLVDecoder(data);
 
         assertEquals(0x0102, fixture.readUI16());
         assertEquals(16, fixture.getPointer());
@@ -71,7 +71,7 @@ public final class FLVDecoderTest {
     public void testReadUI16DoesNotSignExtend() {
         data = new byte[] { -1, -1, 0, 0 };
 
-        fixture.setData(data);
+        fixture = new FLVDecoder(data);
 
         assertEquals(65535, fixture.readUI16());
         assertEquals(16, fixture.getPointer());
@@ -81,7 +81,7 @@ public final class FLVDecoderTest {
     public void readUI32() {
         data = new byte[] {1, 2, 3, 4, 0, 0, 0, 0 };
 
-        fixture.setData(data);
+        fixture = new FLVDecoder(data);
 
         assertEquals(0x01020304, fixture.readUI32());
         assertEquals(32, fixture.getPointer());
@@ -91,7 +91,7 @@ public final class FLVDecoderTest {
     public void testReadUI32DoesNotSignExtend() {
         data = new byte[] { 0, 0, 0, -1, 0, 0, 0, 0 };
 
-        fixture.setData(data);
+        fixture = new FLVDecoder(data);
 
         assertEquals(255, fixture.readUI32());
         assertEquals(32, fixture.getPointer());
@@ -100,7 +100,7 @@ public final class FLVDecoderTest {
     @Test
     public void readWordUnsigned() {
         data = new byte[] {1, 2, 3, 4 };
-        fixture.setData(data);
+        fixture = new FLVDecoder(data);
 
         assertEquals(0x01020304, fixture.readWord(data.length, false));
         assertEquals(data.length << 3, fixture.getPointer());
@@ -109,7 +109,7 @@ public final class FLVDecoderTest {
     @Test
     public void readWordSigned() {
         data = new byte[] {-1, -128, 3, 4 };
-        fixture.setData(data);
+        fixture = new FLVDecoder(data);
 
         assertEquals(0xFF800304, fixture.readWord(data.length, true));
         assertEquals(data.length << 3, fixture.getPointer());
@@ -118,7 +118,7 @@ public final class FLVDecoderTest {
     @Test
     public void readWordWithSignExtension() {
         data = new byte[] {-128, 3, 4 };
-        fixture.setData(data);
+        fixture = new FLVDecoder(data);
 
         assertEquals(0xFF800304, fixture.readWord(data.length, true));
         assertEquals(data.length << 3, fixture.getPointer());
@@ -128,7 +128,7 @@ public final class FLVDecoderTest {
     public void readDouble() {
         data = new byte[] {0x3F, (byte) 0xF0, 0x00, 0x00, 0x00, 0x00, 0x00,
                 0x00 };
-        fixture.setData(data);
+        fixture = new FLVDecoder(data);
 
         assertEquals(1.0, fixture.readDouble(), 0.0);
         assertEquals(64, fixture.getPointer());
@@ -137,7 +137,7 @@ public final class FLVDecoderTest {
     @Test
     public void findWordWithSuccess() {
         data = new byte[] {0x30, 0x30, 0x31 };
-        fixture.setData(data);
+        fixture = new FLVDecoder(data);
 
         assertTrue(fixture.findWord(0x3031, 2, 1));
         assertEquals(8, fixture.getPointer());
@@ -146,7 +146,7 @@ public final class FLVDecoderTest {
     @Test
     public void findWordWithoutSuccess() {
         data = new byte[] {0x30, 0x30, 0x31 };
-        fixture.setData(data);
+        fixture = new FLVDecoder(data);
         fixture.setPointer(8);
 
         assertFalse(fixture.findWord(0x41, 1, 1));

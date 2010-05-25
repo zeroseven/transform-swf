@@ -31,6 +31,7 @@
 
 package com.flagstone.transform.shape;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -108,13 +109,13 @@ public final class DefineShape implements DefineTag {
      *            type of object and to pass information on how objects are
      *            decoded.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
     public DefineShape(final SWFDecoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         final int start = coder.getPointer();
-        length = coder.readHeader();
+        length = coder.readLength();
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
         identifier = coder.readUI16();
@@ -141,7 +142,14 @@ public final class DefineShape implements DefineTag {
             lineStyles.add(new LineStyle(coder, context));
         }
 
-        shape = new Shape(coder, context);
+        int shapeLength = length - ((coder.getPointer() - start) >> 3);
+
+        if (context.getRegistry().getShapeDecoder() == null) {
+            shape = new Shape();
+            shape.add(new ShapeData(new byte[shapeLength]));
+        } else {
+            shape = new Shape(coder, context);
+        }
 
         vars.remove(Context.TYPE);
 
@@ -405,7 +413,7 @@ public final class DefineShape implements DefineTag {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         final int start = coder.getPointer();
         coder.writeHeader(MovieTypes.DEFINE_SHAPE, length);
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);

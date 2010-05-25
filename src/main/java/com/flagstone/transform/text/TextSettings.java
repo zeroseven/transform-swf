@@ -33,7 +33,7 @@ package com.flagstone.transform.text;
 
 
 import com.flagstone.transform.SWF;
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.MovieTypes;
@@ -103,11 +103,10 @@ public final class TextSettings implements MovieTag {
      * @param coder
      *            an SWFDecoder object that contains the encoded Flash data.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    public TextSettings(final SWFDecoder coder) throws CoderException {
-        coder.readHeader();
+    public TextSettings(final SWFDecoder coder) throws IOException {
         identifier = coder.readUI16();
         rendering = coder.readByte();
         thickness = coder.readUI32();
@@ -308,7 +307,7 @@ public final class TextSettings implements MovieTag {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         coder.writeWord((MovieTypes.TEXT_SETTINGS << 6) | 12, 2);
         coder.writeI16(identifier);
         coder.writeByte(rendering);

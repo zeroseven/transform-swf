@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.flagstone.transform.SWF;
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -125,17 +125,16 @@ public final class ButtonShape implements SWFEncodeable {
      *            type of object and to pass information on how objects are
      *            decoded.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    public ButtonShape(final SWFDecoder coder, final Context context)
-            throws CoderException {
+    public ButtonShape(final SWFDecoder coder,
+            final Context context) throws IOException {
 
-        coder.readBits(2, false); // reserved
-        hasBlend = coder.readBits(1, false) != 0;
-        hasFilters = coder.readBits(1, false) != 0;
+        hasBlend = coder.getBool(SWFDecoder.BIT5);
+        hasFilters = coder.getBool(SWFDecoder.BIT4);
+        state = coder.getBit(SWFDecoder.NIB0);
 
-        state = coder.readBits(4, false);
         identifier = coder.readUI16();
         layer = coder.readUI16();
         transform = new CoordTransform(coder);
@@ -418,7 +417,7 @@ public final class ButtonShape implements SWFEncodeable {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         coder.writeBits(0, 2);
         coder.writeBool(hasBlend);
         coder.writeBool(hasFilters);

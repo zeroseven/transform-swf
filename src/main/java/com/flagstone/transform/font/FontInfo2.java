@@ -31,6 +31,7 @@
 
 package com.flagstone.transform.font;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -102,19 +103,19 @@ public final class FontInfo2 implements MovieTag {
      * @param coder
      *            an SWFDecoder object that contains the encoded Flash data.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
     // TODO(optimise)
-    public FontInfo2(final SWFDecoder coder) throws CoderException {
+    public FontInfo2(final SWFDecoder coder) throws IOException {
         final int start = coder.getPointer();
-        length = coder.readHeader();
+        length = coder.readLength();
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
         codes = new ArrayList<Integer>();
 
         identifier = coder.readUI16();
         final int nameLength = coder.readByte();
-        name = coder.readString(nameLength, coder.getEncoding());
+        name = coder.readString(nameLength);
 
         if (name.length() > 0) {
             while (name.charAt(name.length() - 1) == 0) {
@@ -122,12 +123,11 @@ public final class FontInfo2 implements MovieTag {
             }
         }
 
-        /* reserved */coder.readBits(2, false);
-        small = coder.readBits(1, false) != 0;
-        encoding = coder.readBits(2, false);
-        italic = coder.readBits(1, false) != 0;
-        bold = coder.readBits(1, false) != 0;
-        /* containsWideCodes */coder.readBits(1, false);
+        coder.prefetchByte();
+        small = coder.getBool(SWFDecoder.BIT5);
+        encoding = coder.getBit(0x18);
+        italic = coder.getBool(SWFDecoder.BIT2);
+        bold = coder.getBool(SWFDecoder.BIT1);
 
         int bytesRead = 4 + nameLength + 1;
 
@@ -442,13 +442,13 @@ public final class FontInfo2 implements MovieTag {
     // TODO(optimise)
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         final int start = coder.getPointer();
         coder.writeHeader(MovieTypes.FONT_INFO_2, length);
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
         coder.writeI16(identifier);
-        coder.writeWord(coder.strlen(name) - 1, 1);
+        coder.writeWord(context.strlen(name) - 1, 1);
         coder.writeString(name);
         coder.adjustPointer(-8);
         coder.writeBits(0, 2);

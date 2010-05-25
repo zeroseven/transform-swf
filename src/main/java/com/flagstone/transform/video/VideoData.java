@@ -30,6 +30,7 @@
  */
 package com.flagstone.transform.video;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 import com.flagstone.transform.coder.Coder;
@@ -104,12 +105,11 @@ public final class VideoData implements VideoTag {
      *            an FLVDecoder object that contains the encoded Flash Video
      *            data.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    public VideoData(final FLVDecoder coder) throws CoderException {
+    public VideoData(final FLVDecoder coder) throws IOException {
         final int start = coder.getPointer();
-        coder.readByte();
         length = coder.readWord(3, false);
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
         timestamp = coder.readWord(3, false);
@@ -285,7 +285,7 @@ public final class VideoData implements VideoTag {
     }
 
     /** {@inheritDoc} */
-    public void encode(final FLVEncoder coder) throws CoderException {
+    public void encode(final FLVEncoder coder) throws IOException {
         final int start = coder.getPointer();
 
         coder.writeWord(VideoTypes.VIDEO_DATA, 1);
@@ -303,7 +303,7 @@ public final class VideoData implements VideoTag {
         }
     }
 
-    private byte pack() throws CoderException {
+    private byte pack() throws IOException {
         byte value = 0;
 
         switch (format) {
@@ -314,8 +314,7 @@ public final class VideoData implements VideoTag {
             value |= 0x30;
             break;
         default:
-            throw new CoderException(getClass().getName(), 0, 0, 0,
-                    BAD_FORMAT);
+            throw new CoderException(getClass().getName(), 0, BAD_FORMAT);
         }
 
         switch (frameType) {
@@ -329,14 +328,13 @@ public final class VideoData implements VideoTag {
             value |= 3;
             break;
         default:
-            throw new CoderException(getClass().getName(), 0, 0, 0,
-                    BAD_FORMAT);
+            throw new CoderException(getClass().getName(), 0, BAD_FORMAT);
         }
 
         return value;
     }
 
-    private void unpack(final int value) throws CoderException {
+    private void unpack(final int value) throws IOException {
 
         switch ((value >>> 4) & 0x0F0) {
         case 2:
@@ -346,8 +344,7 @@ public final class VideoData implements VideoTag {
             format = VideoFormat.SCREEN;
             break;
         default:
-            throw new CoderException(getClass().getName(), 0, 0, 0,
-                    BAD_FORMAT);
+            throw new CoderException(getClass().getName(), 0, BAD_FORMAT);
         }
 
         switch (value & 0x0F) {
@@ -361,8 +358,7 @@ public final class VideoData implements VideoTag {
             frameType = Frame.OPTIONAL;
             break;
         default:
-            throw new CoderException(getClass().getName(), 0, 0, 0,
-                    BAD_FORMAT);
+            throw new CoderException(getClass().getName(), 0, BAD_FORMAT);
         }
     }
 }

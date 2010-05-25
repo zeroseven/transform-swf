@@ -43,7 +43,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.DataFormatException;
 
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.FLVDecoder;
 import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.datatype.CoordTransform;
@@ -169,7 +169,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         return fonts;
     }
 
-    private void decode(final byte[] bytes) throws CoderException {
+    private void decode(final byte[] bytes) throws IOException {
         final FLVDecoder coder = new FLVDecoder(bytes);
 
         /* float version = */coder.readBits(32, true);
@@ -699,7 +699,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
     }
 
     private void decodeGlyphs(final FLVDecoder coder, final int glyfOffset)
-            throws CoderException {
+            throws IOException {
         int numberOfContours = 0;
 //        final int glyphStart = 0;
         final int start = coder.getPointer();
@@ -914,7 +914,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
     }
 
     private void decodeCompositeGlyph(final FLVDecoder coder,
-            final int glyphIndex) throws CoderException {
+            final int glyphIndex) throws IOException {
         final Shape shape = new Shape(new ArrayList<ShapeRecord>());
         CoordTransform transform = null;
 

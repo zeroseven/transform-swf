@@ -38,7 +38,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -59,7 +59,7 @@ public final class ScalingGridCodingTest {
         "Object was not decoded properly";
 
     @Test
-    public void checkScalingGridIsEncoded() throws CoderException {
+    public void checkScalingGridIsEncoded() throws IOException {
         final Bounds bounds = new Bounds(1, 2, 3, 4);
         final ScalingGrid object = new ScalingGrid(1, bounds);
         final byte[] binary = new byte[] {(byte) 0x85, 0x13, 0x01, 0x00, 0x20,
@@ -77,7 +77,7 @@ public final class ScalingGridCodingTest {
     }
 
     @Test
-    public void checkScalingGridIsDecoded() throws CoderException {
+    public void checkScalingGridIsDecoded() throws IOException {
         final Bounds bounds = new Bounds(1, 2, 3, 4);
         final byte[] binary = new byte[] {(byte) 0x85, 0x13, 0x01, 0x00, 0x20,
                 (byte) 0x99, 0x20};
@@ -91,7 +91,7 @@ public final class ScalingGridCodingTest {
    }
 
     @Test
-    public void checkExtendedScalingGridIsDecoded() throws CoderException {
+    public void checkExtendedScalingGridIsDecoded() throws IOException {
         final Bounds bounds = new Bounds(1, 2, 3, 4);
         final byte[] binary = new byte[] {(byte) 0xBF, 0x13, 0x05, 0x00, 0x00,
                 0x00, 0x01, 0x00, 0x20, (byte) 0x99, 0x20};

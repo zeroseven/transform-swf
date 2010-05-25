@@ -39,7 +39,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -58,7 +58,7 @@ public final class SymbolClassCodingTest {
         "Object was not decoded properly";
 
     @Test
-    public void checkSymbolClassIsEncoded() throws CoderException {
+    public void checkSymbolClassIsEncoded() throws IOException {
         final Map<Integer, String>map = new LinkedHashMap<Integer, String>();
         map.put(1, "A");
         map.put(2, "B");
@@ -80,7 +80,7 @@ public final class SymbolClassCodingTest {
     }
 
     @Test
-    public void checkSymbolClassIsDecoded() throws CoderException {
+    public void checkSymbolClassIsDecoded() throws IOException {
         final Map<Integer, String>map = new LinkedHashMap<Integer, String>();
         map.put(1, "A");
         map.put(2, "B");
@@ -97,7 +97,7 @@ public final class SymbolClassCodingTest {
    }
 
     @Test
-    public void checkExtendedSymbolClassIsDecoded() throws CoderException {
+    public void checkExtendedSymbolClassIsDecoded() throws IOException {
         final Map<Integer, String>map = new LinkedHashMap<Integer, String>();
         map.put(1, "A");
         map.put(2, "B");

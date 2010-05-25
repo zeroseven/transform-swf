@@ -31,6 +31,7 @@
 
 package com.flagstone.transform.font;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -111,13 +112,13 @@ public final class DefineFont3 implements DefineTag {
      *            type of object and to pass information on how objects are
      *            decoded.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
     public DefineFont3(final SWFDecoder coder, final Context context)
-            throws CoderException {
-//        final int start = coder.getPointer();
-        length = coder.readHeader();
+            throws IOException {
+        final int start = coder.getPointer();
+        length = coder.readLength();
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
         identifier = coder.readUI16();
@@ -127,8 +128,9 @@ public final class DefineFont3 implements DefineTag {
         bounds = new ArrayList<Bounds>();
         kernings = new ArrayList<Kerning>();
 
-        final boolean containsLayout = coder.readBits(1, false) != 0;
-        final int format = coder.readBits(3, false);
+        coder.prefetchByte();
+        final boolean containsLayout = coder.getBool(SWFDecoder.BIT7);
+        final int format = (coder.getBit(SWFDecoder.NIB1) & 0x70) >> 4;
 
         encoding = 0;
 
@@ -140,8 +142,10 @@ public final class DefineFont3 implements DefineTag {
             encoding = 2;
         }
 
-        wideOffsets = coder.readBits(1, false) != 0;
-        wideCodes = coder.readBits(1, false) != 0;
+        wideOffsets = coder.getBool(SWFDecoder.BIT3);
+        wideCodes = coder.getBool(SWFDecoder.BIT2);
+        italic = coder.getBool(SWFDecoder.BIT1);
+        bold = coder.getBool(SWFDecoder.BIT0);
 
         final Map<Integer, Integer> vars = context.getVariables();
 
@@ -149,11 +153,9 @@ public final class DefineFont3 implements DefineTag {
             vars.put(Context.WIDE_CODES, 1);
         }
 
-        italic = coder.readBits(1, false) != 0;
-        bold = coder.readBits(1, false) != 0;
-        language = coder.readBits(8, false);
+        language = coder.readByte();
         final int nameLength = coder.readByte();
-        name = coder.readString(nameLength, coder.getEncoding());
+        name = coder.readString(nameLength);
 
         if (name.length() > 0) {
             while (name.charAt(name.length() - 1) == 0) {
@@ -162,7 +164,6 @@ public final class DefineFont3 implements DefineTag {
         }
 
         final int glyphCount = coder.readUI16();
-        final int offsetStart = coder.getPointer();
         final int[] offset = new int[glyphCount + 1];
 
         for (int i = 0; i < glyphCount; i++) {
@@ -172,13 +173,12 @@ public final class DefineFont3 implements DefineTag {
         offset[glyphCount] = coder.readWord((wideOffsets) ? 4 : 2, false);
 
         Shape shape;
+        byte[] data;
 
         for (int i = 0; i < glyphCount; i++) {
-            coder.setPointer(offsetStart + (offset[i] << 3));
-
             shape = new Shape();
-            shape.add(new ShapeData(coder.readBytes(new byte[offset[i + 1]
-                    - offset[i]])));
+            data = new byte[offset[i + 1] - offset[i]];
+            shape.add(new ShapeData(coder.readBytes(data)));
             shapes.add(shape);
         }
 
@@ -209,7 +209,7 @@ public final class DefineFont3 implements DefineTag {
         vars.remove(Context.WIDE_CODES);
 
         if (coder.getPointer() != end) {
-            //TODO Fix Me
+            //TODO Fix
             coder.setPointer(end);
 //            throw new CoderException(getClass().getName(),
 //                    start >> Coder.BITS_TO_BYTES, length,
@@ -789,7 +789,7 @@ public final class DefineFont3 implements DefineTag {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         int format;
         final Map<Integer, Integer> vars = context.getVariables();
 
@@ -822,7 +822,7 @@ public final class DefineFont3 implements DefineTag {
         coder.writeBits(italic ? 1 : 0, 1);
         coder.writeBits(bold ? 1 : 0, 1);
         coder.writeWord(vars.get(Context.VERSION) > SWF.SWF5 ? language : 0, 1);
-        coder.writeWord(coder.strlen(name), 1);
+        coder.writeWord(context.strlen(name), 1);
 
         coder.writeString(name);
         coder.writeI16(shapes.size());

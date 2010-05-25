@@ -38,7 +38,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -59,7 +59,7 @@ public final class BackgroundCodingTest {
         "Object was not decoded properly";
 
     @Test
-    public void checkBackgroundIsEncoded() throws CoderException {
+    public void checkBackgroundIsEncoded() throws IOException {
         final Background object = new Background(new Color(1, 2, 3));
         final byte[] binary = new byte[] { 0x43, 0x02, 0x01, 0x02, 0x03};
 
@@ -75,7 +75,7 @@ public final class BackgroundCodingTest {
     }
 
     @Test
-    public void checkBackgroundIsDecoded() throws CoderException {
+    public void checkBackgroundIsDecoded() throws IOException {
         final Color color = new Color(1, 2, 3);
         final byte[] binary = new byte[] { 0x43, 0x02, 0x01, 0x02, 0x03};
 
@@ -88,7 +88,7 @@ public final class BackgroundCodingTest {
    }
 
     @Test
-    public void checkExtendedBackgroundIsDecoded() throws CoderException {
+    public void checkExtendedBackgroundIsDecoded() throws IOException {
         final Color color = new Color(1, 2, 3);
         final byte[] binary = new byte[] {0x7F, 0x02, 0x03, 0x00, 0x00, 0x00,
                 0x01, 0x02, 0x03};

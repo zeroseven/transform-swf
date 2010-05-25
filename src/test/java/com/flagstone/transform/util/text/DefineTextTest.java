@@ -84,8 +84,9 @@ public final class DefineTextTest {
         final int y = margin;
 
         final Movie movie = new Movie();
+        int uid = 1;
 
-        final int fontId = movie.nextId();
+        final int fontId = uid++;
         final DefineFont2 definition = font.defineFont(fontId,
                 set.getCharacters());
 
@@ -126,12 +127,12 @@ public final class DefineTextTest {
         int layer = 1;
 
         final Movie movie = new Movie();
-
+        int uid = 1;
         int maxWidth = 0;
         int x = margin;
         int y = margin;
 
-        final int fontId = movie.nextId();
+        final int fontId = uid++;
         final DefineFont2 definition = font.defineFont(fontId,
                 set.getCharacters());
 

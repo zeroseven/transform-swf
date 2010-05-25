@@ -36,7 +36,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -55,7 +55,7 @@ public final class MovieObjectCodingTest {
         "Object was not decoded properly";
 
     @Test
-    public void checkMovieObjectIsEncoded() throws CoderException {
+    public void checkMovieObjectIsEncoded() throws IOException {
         final byte[] data = new byte[] {1, 2, 3, 4};
         final MovieObject object = new MovieObject(1, data);
         final byte[] binary = new byte[] {0x44, 0x00, 0x01, 0x02, 0x03, 0x04};
@@ -72,7 +72,7 @@ public final class MovieObjectCodingTest {
     }
 
     @Test
-    public void checkMovieObjectIsDecoded() throws CoderException {
+    public void checkMovieObjectIsDecoded() throws IOException {
         final byte[] data = new byte[] {1, 2, 3, 4};
         final byte[] binary = new byte[] {0x44, 0x00, 0x01, 0x02, 0x03, 0x04};
 
@@ -84,7 +84,7 @@ public final class MovieObjectCodingTest {
    }
 
     @Test
-    public void checkExtendedMovieObjectIsDecoded() throws CoderException {
+    public void checkExtendedMovieObjectIsDecoded() throws IOException {
         final byte[] data = new byte[] {1, 2, 3, 4};
         final byte[] binary = new byte[] {0x7F, 0x00, 0x04, 0x00, 0x00, 0x00,
                 0x01, 0x02, 0x03, 0x04};

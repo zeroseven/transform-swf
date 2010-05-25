@@ -31,6 +31,7 @@
 
 package com.flagstone.transform.button;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -89,21 +90,21 @@ public final class DefineButton implements DefineTag {
      *            type of object and to pass information on how objects are
      *            decoded.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
     // TODO(optimise)
     public DefineButton(final SWFDecoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         final int start = coder.getPointer();
-        length = coder.readHeader();
+        length = coder.readLength();
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
         final int mark = coder.getPointer() - 16;
 
         shapes = new ArrayList<ButtonShape>();
 
-        while (coder.scanByte() != 0) {
+        while (coder.prefetchByte() != 0) {
             shapes.add(new ButtonShape(coder, context));
         }
 
@@ -116,8 +117,7 @@ public final class DefineButton implements DefineTag {
                 .getActionDecoder();
 
         if (decoder == null) {
-            actions
-                    .add(new ActionData(coder
+            actions.add(new ActionData(coder
                             .readBytes(new byte[actionsLength])));
         } else {
             while (coder.getPointer() < end) {
@@ -288,7 +288,7 @@ public final class DefineButton implements DefineTag {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         final int start = coder.getPointer();
         coder.writeHeader(MovieTypes.DEFINE_BUTTON, length);
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);

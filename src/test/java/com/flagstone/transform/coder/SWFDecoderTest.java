@@ -32,8 +32,6 @@
 package com.flagstone.transform.coder;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -49,19 +47,10 @@ public final class SWFDecoderTest {
     }
 
     @Test
-    public void readUnsignedShort() {
-        data = new byte[] {-1, -1 };
-        fixture.setData(data);
-
-        assertEquals(65535, fixture.scanUnsignedShort());
-        assertEquals(0, fixture.getPointer());
-    }
-
-    @Test
     public void readUI16() {
         data = new byte[] {2, 1, 0, 0 };
 
-        fixture.setData(data);
+        fixture = new SWFDecoder(data);
 
         assertEquals(0x0102, fixture.readUI16());
         assertEquals(16, fixture.getPointer());
@@ -71,7 +60,7 @@ public final class SWFDecoderTest {
     public void testReadUI16DoesNotSignExtend() {
         data = new byte[] { -1, 0, 0, 0 };
 
-        fixture.setData(data);
+        fixture = new SWFDecoder(data);
 
         assertEquals(255, fixture.readUI16());
         assertEquals(16, fixture.getPointer());
@@ -81,7 +70,7 @@ public final class SWFDecoderTest {
     public void readUI32() {
         data = new byte[] {4, 3, 2, 1, 0, 0, 0, 0 };
 
-        fixture.setData(data);
+        fixture = new SWFDecoder(data);
 
         assertEquals(0x01020304, fixture.readUI32());
         assertEquals(32, fixture.getPointer());
@@ -91,7 +80,7 @@ public final class SWFDecoderTest {
     public void testReadUI32DoesNotSignExtend() {
         data = new byte[] { -1, 0, 0, 0, 0, 0, 0, 0 };
 
-        fixture.setData(data);
+        fixture = new SWFDecoder(data);
 
         assertEquals(255, fixture.readUI32());
         assertEquals(32, fixture.getPointer());
@@ -101,7 +90,7 @@ public final class SWFDecoderTest {
     public void readWordUnsigned() {
         data = new byte[] {4, 3, 2, 1 };
 
-        fixture.setData(data);
+        fixture = new SWFDecoder(data);
 
         assertEquals(0x01020304, fixture.readWord(data.length, false));
         assertEquals(data.length << 3, fixture.getPointer());
@@ -111,7 +100,7 @@ public final class SWFDecoderTest {
     public void readWordSigned() {
         data = new byte[] {4, 3, -128, -1 };
 
-        fixture.setData(data);
+        fixture = new SWFDecoder(data);
 
         assertEquals(0xFF800304, fixture.readWord(data.length, true));
         assertEquals(data.length << 3, fixture.getPointer());
@@ -121,7 +110,7 @@ public final class SWFDecoderTest {
     public void readWordWithSignExtension() {
         data = new byte[] {4, 3, -128 };
 
-        fixture.setData(data);
+        fixture = new SWFDecoder(data);
 
         assertEquals(0xFF800304, fixture.readWord(data.length, true));
         assertEquals(data.length << 3, fixture.getPointer());
@@ -175,7 +164,7 @@ public final class SWFDecoderTest {
     @Test
     public void readNegativeHalf() {
         data = new byte[] {0x00, (byte) 0xC0 };
-        fixture.setData(data);
+        fixture = new SWFDecoder(data);
 
         assertEquals(-2.0, fixture.readHalf(), 0.0);
         assertEquals(16, fixture.getPointer());
@@ -184,7 +173,7 @@ public final class SWFDecoderTest {
     @Test
     public void readHalfFraction() {
         data = new byte[] {0x55, (byte) 0x35 };
-        fixture.setData(data);
+        fixture = new SWFDecoder(data);
 
         assertEquals(0.333251953125, fixture.readHalf(), 0.0);
         assertEquals(16, fixture.getPointer());
@@ -193,7 +182,7 @@ public final class SWFDecoderTest {
     @Test
     public void readFloat() {
         data = new byte[] {0x00, 0x00, 0x00, (byte) 0xC0 };
-        fixture.setData(data);
+        fixture = new SWFDecoder(data);
 
         assertEquals(-2.0, fixture.readFloat(), 0.0);
         assertEquals(32, fixture.getPointer());
@@ -203,28 +192,9 @@ public final class SWFDecoderTest {
     public void readDouble() {
         data = new byte[] {0x00, 0x00, (byte) 0xF0, 0x3F, 0x00, 0x00, 0x00,
                 0x00 };
-        fixture.setData(data);
+        fixture = new SWFDecoder(data);
 
         assertEquals(1.0, fixture.readDouble(), 0.0);
         assertEquals(64, fixture.getPointer());
-    }
-
-    @Test
-    public void findWordWithSuccess() {
-        data = new byte[] {0x30, 0x30, 0x31 };
-        fixture.setData(data);
-
-        assertTrue(fixture.findWord(0x3130, 2, 1));
-        assertEquals(8, fixture.getPointer());
-    }
-
-    @Test
-    public void findWordWithoutSuccess() {
-        data = new byte[] {0x30, 0x30, 0x31 };
-        fixture.setData(data);
-        fixture.setPointer(8);
-
-        assertFalse(fixture.findWord(0x41, 1, 1));
-        assertEquals(8, fixture.getPointer());
     }
 }

@@ -36,7 +36,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -50,7 +50,7 @@ public final class ShowFrameCodingTest {
         "Object was not encoded properly";
 
     @Test
-    public void checkShowFrameIsEncoded() throws CoderException {
+    public void checkShowFrameIsEncoded() throws IOException {
         final ShowFrame object = ShowFrame.getInstance();
         final byte[] binary = new byte[] {0x40, 0x00 };
 

@@ -33,7 +33,7 @@ package com.flagstone.transform.shape;
 
 import java.util.Arrays;
 
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -91,7 +91,7 @@ public final class ShapeData implements ShapeRecord {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         coder.writeBytes(data);
     }
 }

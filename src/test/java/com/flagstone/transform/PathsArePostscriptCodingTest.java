@@ -36,7 +36,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.shape.PathsArePostscript;
@@ -51,7 +51,7 @@ public final class PathsArePostscriptCodingTest {
         "Object was not encoded properly";
 
     @Test
-    public void checkPathsArePostscriptIsEncoded() throws CoderException {
+    public void checkPathsArePostscriptIsEncoded() throws IOException {
         final PathsArePostscript object = PathsArePostscript.getInstance();
         final byte[] binary = new byte[] {0x40, 0x06 };
 

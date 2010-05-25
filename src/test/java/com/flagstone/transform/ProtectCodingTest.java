@@ -36,7 +36,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -55,7 +55,7 @@ public final class ProtectCodingTest {
         "Object was not decoded properly";
 
     @Test
-    public void checkProtectIsEncoded() throws CoderException {
+    public void checkProtectIsEncoded() throws IOException {
         final Protect object = new Protect("ABC123");
         final byte[] binary = new byte[] {0x09, 0x06, 0x00, 0x00, 0x41, 0x42,
                 0x43, 0x31, 0x32, 0x33, 0x00 };
@@ -72,7 +72,7 @@ public final class ProtectCodingTest {
     }
 
     @Test
-    public void checkProtectIsDecoded() throws CoderException {
+    public void checkProtectIsDecoded() throws IOException {
         final byte[] binary = new byte[] {0x09, 0x06, 0x00, 0x00, 0x41, 0x42,
                 0x43, 0x31, 0x32, 0x33, 0x00 };
 
@@ -84,7 +84,7 @@ public final class ProtectCodingTest {
    }
 
     @Test
-    public void checkExtendedProtectIsDecoded() throws CoderException {
+    public void checkExtendedProtectIsDecoded() throws IOException {
         final byte[] binary = new byte[] {0x3F, 0x06, 0x09, 0x00, 0x00, 0x00,
                 0x00, 0x00, 0x41, 0x42, 0x43, 0x31, 0x32, 0x33, 0x00 };
 

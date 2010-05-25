@@ -33,7 +33,7 @@ package com.flagstone.transform.video;
 import java.util.Arrays;
 
 import com.flagstone.transform.SWF;
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.MovieTypes;
@@ -77,11 +77,11 @@ public final class VideoFrame implements MovieTag {
      * @param coder
      *            an SWFDecoder object that contains the encoded Flash data.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    public VideoFrame(final SWFDecoder coder) throws CoderException {
-        length = coder.readHeader();
+    public VideoFrame(final SWFDecoder coder) throws IOException {
+        length = coder.readLength();
         identifier = coder.readUI16();
         frameNumber = coder.readUI16();
         data = coder.readBytes(new byte[length - 4]);
@@ -215,7 +215,7 @@ public final class VideoFrame implements MovieTag {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         coder.writeHeader(MovieTypes.VIDEO_FRAME, length);
         coder.writeI16(identifier);
         coder.writeI16(frameNumber);

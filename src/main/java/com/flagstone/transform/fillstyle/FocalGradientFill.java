@@ -35,7 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.flagstone.transform.SWF;
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -50,8 +50,6 @@ public final class FocalGradientFill implements FillStyle {
     private static final String FORMAT = "FocalGradientFill: { spread=%s;"
             + " interpolation=%s; focalPoint=%f; transform=%s; gradients=%s }";
 
-    /** Code used to identify the fill style when it is encoded. */
-    private final transient int type;
     private int spread;
     private int interpolation;
     private int focalPoint;
@@ -72,12 +70,11 @@ public final class FocalGradientFill implements FillStyle {
      *            type of object and to pass information on how objects are
      *            decoded.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
     public FocalGradientFill(final SWFDecoder coder, final Context context)
-            throws CoderException {
-        type = coder.readByte();
+            throws IOException {
         transform = new CoordTransform(coder);
         count = coder.readByte();
         spread = count & FillStyleDecoder.SPREAD_MASK;
@@ -97,7 +94,6 @@ public final class FocalGradientFill implements FillStyle {
             final Interpolation anInterpolation,
             final CoordTransform aTransform,
             final List<Gradient> anArray, final float point) {
-        type = FillStyleTypes.FOCAL_GRADIENT;
         setSpread(spreadType);
         setInterpolation(anInterpolation);
         setTransform(aTransform);
@@ -114,7 +110,6 @@ public final class FocalGradientFill implements FillStyle {
      *            copied.
      */
     public FocalGradientFill(final FocalGradientFill object) {
-        type = object.type;
         spread = object.spread;
         interpolation = object.interpolation;
         focalPoint = object.focalPoint;
@@ -255,8 +250,8 @@ public final class FocalGradientFill implements FillStyle {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
-        coder.writeByte(type);
+            throws IOException {
+        coder.writeByte(FillStyleTypes.FOCAL_GRADIENT);
         transform.encode(coder, context);
         coder.writeWord(count | spread | interpolation, 1);
 

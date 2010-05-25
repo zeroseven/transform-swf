@@ -37,6 +37,8 @@ package com.flagstone.transform.coder;
  */
 @SuppressWarnings("PMD.LongVariable")
 public final class MovieTypes {
+    /** Marker for the end of a Movie. */
+    public static final int END = 0;
     /** Identifies ShowFrame objects when they are encoded. */
     public static final int SHOW_FRAME = 1;
     /** Identifies DefineShape objects when they are encoded. */

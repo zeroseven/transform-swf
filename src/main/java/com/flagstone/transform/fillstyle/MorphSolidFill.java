@@ -32,7 +32,7 @@
 package com.flagstone.transform.fillstyle;
 
 
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -63,12 +63,11 @@ public final class MorphSolidFill implements FillStyle {
      *            type of object and to pass information on how objects are
      *            decoded.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
     public MorphSolidFill(final SWFDecoder coder, final Context context)
-            throws CoderException {
-        coder.readByte(); // type
+            throws IOException {
         startColor = new Color(coder, context);
         endColor = new Color(coder, context);
     }
@@ -163,7 +162,7 @@ public final class MorphSolidFill implements FillStyle {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         coder.writeByte(FillStyleTypes.SOLID_COLOR);
         startColor.encode(coder, context);
         endColor.encode(coder, context);

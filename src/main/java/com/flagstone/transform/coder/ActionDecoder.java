@@ -31,6 +31,8 @@
 
 package com.flagstone.transform.coder;
 
+import java.io.IOException;
+
 import com.flagstone.transform.action.Action;
 import com.flagstone.transform.action.ActionObject;
 import com.flagstone.transform.action.ActionTypes;
@@ -62,14 +64,14 @@ public final class ActionDecoder implements SWFFactory<Action> {
 
     /** {@inheritDoc} */
     public Action getObject(final SWFDecoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
 
         Action action;
 
-        final int type = coder.scanByte();
+        final int type = coder.readByte();
 
         if (type <= ActionTypes.HIGHEST_BYTE_CODE) {
-            action = BasicAction.fromInt(coder.readByte());
+            action = BasicAction.fromInt(type);
         } else {
             switch (type) {
             case ActionTypes.GET_URL:
@@ -89,10 +91,10 @@ public final class ActionDecoder implements SWFFactory<Action> {
                 break;
             case ActionTypes.CALL:
                 action = Call.getInstance();
-                coder.adjustPointer(24);
+                coder.adjustPointer(16);
                 break;
             case ActionTypes.PUSH:
-                action = new Push(coder);
+                action = new Push(coder, context);
                 break;
             case ActionTypes.WAIT_FOR_FRAME_2:
                 action = new WaitForFrame2(coder);
@@ -128,7 +130,7 @@ public final class ActionDecoder implements SWFFactory<Action> {
                 action = new NewFunction2(coder, context);
                 break;
             default:
-                action = new ActionObject(coder);
+                action = new ActionObject(type, coder);
                 break;
             }
         }

@@ -32,7 +32,7 @@
 package com.flagstone.transform.filter;
 
 import com.flagstone.transform.Constants;
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -177,12 +177,11 @@ public final class DropShadowFilter implements Filter {
      *            type of object and to pass information on how objects are
      *            decoded.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
     public DropShadowFilter(final SWFDecoder coder, final Context context)
-            throws CoderException {
-        coder.adjustPointer(8);
+            throws IOException {
         shadow = new Color(coder, context);
         blurX = coder.readSI32();
         blurY = coder.readSI32();
@@ -295,7 +294,7 @@ public final class DropShadowFilter implements Filter {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         coder.writeByte(FilterTypes.DROP_SHADOW);
         shadow.encode(coder, context);
         coder.writeI32(blurX);

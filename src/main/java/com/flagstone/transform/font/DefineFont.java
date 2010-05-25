@@ -31,6 +31,7 @@
 
 package com.flagstone.transform.font;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -90,38 +91,35 @@ public final class DefineFont implements DefineTag {
      * @param coder
      *            an SWFDecoder object that contains the encoded Flash data.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    public DefineFont(final SWFDecoder coder) throws CoderException {
+    public DefineFont(final SWFDecoder coder) throws IOException {
         final int start = coder.getPointer();
-        length = coder.readHeader();
+        length = coder.readLength();
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
         identifier = coder.readUI16();
         shapes = new ArrayList<Shape>();
 
-        final int offsetStart = coder.getPointer();
-        final int shapeCount = coder.readUI16() / 2;
+        final int first = coder.readUI16();
+        final int count = first >> 1;
+        final int[] table = new int[count + 1];
 
-        coder.setPointer(offsetStart);
-
-        final int[] offset = new int[shapeCount + 1];
-
-        for (int i = 0; i < shapeCount; i++) {
-            offset[i] = coder.readUI16();
+        table[0] = first;
+        for (int i = 1; i < count; i++) {
+            table[i] = coder.readUI16();
         }
 
-        offset[shapeCount] = length - 2;
+        table[count] = length - 2;
 
         Shape shape;
+        byte[] data;
 
-        for (int i = 0; i < shapeCount; i++) {
-            coder.setPointer(offsetStart + (offset[i] << 3));
-
+        for (int i = 0; i < count; i++) {
             shape = new Shape();
-            shape.add(new ShapeData(coder.readBytes(new byte[offset[i + 1]
-                    - offset[i]])));
+            data = new byte[table[i + 1] - table[i]];
+            shape.add(new ShapeData(coder.readBytes(data)));
             shapes.add(shape);
         }
 
@@ -252,7 +250,7 @@ public final class DefineFont implements DefineTag {
     // TODO(optimise)
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         final int start = coder.getPointer();
         coder.writeHeader(MovieTypes.DEFINE_FONT, length);
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);

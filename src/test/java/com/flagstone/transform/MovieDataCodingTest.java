@@ -36,7 +36,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -50,7 +50,7 @@ public final class MovieDataCodingTest {
         "Object was not encoded properly";
 
     @Test
-    public void checkMovieDataIsEncoded() throws CoderException {
+    public void checkMovieDataIsEncoded() throws IOException {
         final byte[] data = new byte[] {0x40, 0x00, 0x40, 0x00, 0x40, 0x00};
         final MovieData object = new MovieData(data);
         final byte[] binary = new byte[] {0x40, 0x00, 0x40, 0x00, 0x40, 0x00};

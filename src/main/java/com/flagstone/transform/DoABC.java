@@ -31,6 +31,7 @@
 
 package com.flagstone.transform;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 import com.flagstone.transform.coder.Coder;
@@ -73,16 +74,16 @@ public final class DoABC implements MovieTag {
      * @param coder
      *            an SWFDecoder object that contains the encoded Flash data.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    public DoABC(final SWFDecoder coder) throws CoderException {
+    public DoABC(final SWFDecoder coder) throws IOException {
 
         final int start = coder.getPointer();
-        length = coder.readHeader();
+        length = coder.readLength();
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
-        deferred = coder.readBits(Coder.BITS_PER_INT, false);
+        deferred = coder.readUI32();
         name = coder.readString();
         data = coder.readBytes(new byte[(end - coder.getPointer())
                                         >>> Coder.BITS_TO_BYTES]);
@@ -216,13 +217,13 @@ public final class DoABC implements MovieTag {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
 
         final int start = coder.getPointer();
         coder.writeHeader(MovieTypes.DO_ABC, length);
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
-        coder.writeBits(deferred, Coder.BITS_PER_INT);
+        coder.writeI32(deferred);
         coder.writeString(name);
         coder.writeBytes(data);
 

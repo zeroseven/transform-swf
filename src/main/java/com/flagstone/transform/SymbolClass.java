@@ -31,6 +31,7 @@
 
 package com.flagstone.transform;
 
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -71,13 +72,13 @@ public final class SymbolClass implements MovieTag {
      * @param coder
      *            an SWFDecoder object that contains the encoded Flash data.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    public SymbolClass(final SWFDecoder coder) throws CoderException {
+    public SymbolClass(final SWFDecoder coder) throws IOException {
 
         final int start = coder.getPointer();
-        length = coder.readHeader();
+        length = coder.readLength();
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
         final int count = coder.readUI16();
@@ -187,7 +188,7 @@ public final class SymbolClass implements MovieTag {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
 
         final int start = coder.getPointer();
         coder.writeHeader(MovieTypes.SYMBOL, length);

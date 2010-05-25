@@ -31,6 +31,8 @@
 
 package com.flagstone.transform.video;
 
+import java.io.IOException;
+
 import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.CoderException;
@@ -87,24 +89,23 @@ public final class DefineVideo implements DefineTag {
      * @param coder
      *            an SWFDecoder object that contains the encoded Flash data.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    public DefineVideo(final SWFDecoder coder) throws CoderException {
+    public DefineVideo(final SWFDecoder coder) throws IOException {
 
         final int start = coder.getPointer();
-        length = coder.readHeader();
+        length = coder.readLength();
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
-        identifier = coder.readSI16();
+        identifier = coder.readUI16();
         frameCount = coder.readUI16();
         width = coder.readUI16();
         height = coder.readUI16();
 
-        coder.readBits(5, false);
-
-        deblocking = coder.readBits(2, false);
-        smoothed = coder.readBits(1, false) == 1;
+        final int info = coder.readByte();
+        deblocking = (info & 0x06) >> 1;
+        smoothed = (info & 0x01) == 1;
         codec = coder.readByte();
 
         if (coder.getPointer() != end) {
@@ -384,7 +385,7 @@ public final class DefineVideo implements DefineTag {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
 
         final int start = coder.getPointer();
         coder.writeHeader(MovieTypes.DEFINE_VIDEO, length);

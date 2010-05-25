@@ -32,7 +32,7 @@
 package com.flagstone.transform.fillstyle;
 
 
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
@@ -84,11 +84,11 @@ public final class MorphGradient implements SWFEncodeable {
      *            type of object and to pass information on how objects are
      *            decoded.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
     public MorphGradient(final SWFDecoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         start = new Gradient(coder, context);
         end = new Gradient(coder, context);
     }
@@ -189,7 +189,7 @@ public final class MorphGradient implements SWFEncodeable {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         start.encode(coder, context);
         end.encode(coder, context);
     }

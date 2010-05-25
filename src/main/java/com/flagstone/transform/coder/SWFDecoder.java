@@ -31,6 +31,9 @@
 
 package com.flagstone.transform.coder;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 
 /**
  * SWFDecoder extends LittleEndianDecoder by adding a context used to pass
@@ -49,6 +52,24 @@ public final class SWFDecoder extends Decoder {
      */
     private static final int IS_EXTENDED = 63;
 
+    public static final int BIT7 = 0x0080;
+    public static final int BIT6 = 0x0040;
+    public static final int BIT5 = 0x0020;
+    public static final int BIT4 = 0x0010;
+    public static final int BIT3 = 0x0008;
+    public static final int BIT2 = 0x0004;
+    public static final int BIT1 = 0x0002;
+    public static final int BIT0 = 0x0001;
+
+    public static final int NIB1 = 0x000C;
+    public static final int NIB0 = 0x0003;
+
+    private transient int type;
+    private transient int length;
+    private transient int bits;
+
+    private transient InputStream stream;
+
     /**
      * Creates a SWFDecoder object initialised with the data to be decoded.
      *
@@ -59,14 +80,22 @@ public final class SWFDecoder extends Decoder {
         super(data);
     }
 
-    /**
-     * Read an unsigned short integer without changing the internal pointer.
-     *
-     * @return a 16-bit unsigned value.
-     */
-    public int scanUnsignedShort() {
-        return ((data[index + 1] & UNSIGNED_BYTE_MASK) << ALIGN_BYTE_1)
-            + (data[index] & UNSIGNED_BYTE_MASK);
+    public SWFDecoder(final InputStream streamIn) {
+        super(new byte[100]);
+        stream = streamIn;
+    }
+
+    public int prefetchByte() {
+        bits = data[index++];
+        return bits;
+    }
+
+    public boolean getBool(final int mask) {
+        return (bits & mask) != 0;
+    }
+
+    public int getBit(final int mask) {
+        return bits & mask;
     }
 
     /**
@@ -249,59 +278,62 @@ public final class SWFDecoder extends Decoder {
         return Double.longBitsToDouble(longValue);
     }
 
+    public int nextHeader() throws IOException {
+        int value = stream.read();
+        value |= stream.read() << 8;
+
+        type = value >> 6;
+        length = value & LENGTH_FIELD;
+
+        if (length == IS_EXTENDED) {
+            length = stream.read();
+            length |= stream.read() << 8;
+            length |= stream.read() << 16;
+            length |= stream.read() << 24;
+        }
+        return type;
+    }
+
+    public void fetchToDecode() throws IOException {
+        index = 0;
+        offset = 0;
+        pointer = 0;
+
+        if (type == MovieTypes.DEFINE_MOVIE_CLIP) {
+            length = 4;
+        }
+
+        if (data.length < length) {
+            data = new byte[length];
+        }
+
+        fetchDirect(data, length);
+    }
+
+    public void fetchDirect(final byte[] bytes, final int len)
+                throws IOException {
+        int bytesRead = 0;
+
+        do {
+            bytesRead = stream.read(bytes, bytesRead, len);
+        } while (bytesRead != -1 && bytesRead < len);
+    }
+
+    /**
+     * Gets the type of the encoded object from the header fields.
+     *
+     * @return the value identifying the object when it is encoded.
+     */
+    public int readType() {
+        return type;
+    }
+
     /**
      * Gets the length of the encoded object from the header fields.
      *
      * @return the length of the encoded object in bytes.
      */
-    public int readHeader() {
-        int length = readUI16() & LENGTH_FIELD;
-        if (length == IS_EXTENDED) {
-            length = readUI32();
-        }
+    public int readLength() {
         return length;
-    }
-
-    /**
-     * Searches the internal buffer for a word and advances the pointer to the
-     * location where the word was found, returning true to signal a successful
-     * search. If word cannot be found then the method returns false and the
-     * position of the internal pointer is not changed.
-     *
-     * @param value
-     *            an integer containing the word to search for.
-     *
-     * @param numberOfBytes
-     *            least significant number of bytes from the value to search
-     *            for.
-     *
-     * @param step
-     *            the number of bytes to step between searches.
-     *
-     * @return true if the pattern was found, false otherwise.
-     */
-    public boolean findWord(final int value, final int numberOfBytes,
-            final int step) {
-        boolean found;
-
-        final int mark = getPointer();
-
-        while (index + numberOfBytes <= data.length) {
-
-            if (readWord(numberOfBytes, false) == value) {
-                index -= numberOfBytes;
-                break;
-            }
-            index = index - numberOfBytes + step;
-        }
-
-        if (index + numberOfBytes > data.length) {
-            found = false;
-            setPointer(mark);
-        } else {
-            found = true;
-        }
-
-        return found;
     }
 }

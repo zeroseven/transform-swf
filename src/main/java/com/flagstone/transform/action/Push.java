@@ -31,10 +31,10 @@
 
 package com.flagstone.transform.action;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -198,12 +198,17 @@ public final class Push implements Action {
      * @param coder
      *            an SWFDecoder object that contains the encoded Flash data.
      *
-     * @throws CoderException
+     * @param context
+     *            a Context object used to manage the decoders for different
+     *            type of object and to pass information on how objects are
+     *            decoded.
+     *
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    public Push(final SWFDecoder coder) throws CoderException {
+    public Push(final SWFDecoder coder, final Context context)
+                throws IOException {
 
-        coder.readByte();
         length = coder.readUI16();
         values = new ArrayList<Object>();
 
@@ -214,17 +219,9 @@ public final class Push implements Action {
 
             switch (dataType) {
             case TYPE_STRING:
-                final int start = coder.getPointer();
-                int strlen = 0;
-
-                while (coder.readWord(1, false) != 0) {
-                    strlen += 1;
-                }
-
-                coder.setPointer(start);
-                values.add(coder.readString(strlen));
-                coder.adjustPointer(Coder.BITS_PER_BYTE);
-                valuesLength -= strlen + 2;
+                String str = coder.readString();
+                values.add(str);
+                valuesLength -= 1 + context.strlen(str);
                 break;
             case TYPE_PROPERTY:
                 values.add(new Property(coder.readUI32()));
@@ -355,7 +352,7 @@ public final class Push implements Action {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
 
         coder.writeByte(ActionTypes.PUSH);
         coder.writeI16(length);
@@ -396,7 +393,7 @@ public final class Push implements Action {
                 coder.writeByte(TYPE_REGISTER);
                 coder.writeByte(((RegisterIndex) obj).getNumber());
             } else {
-                throw new CoderException(getClass().getName(), 0, 0, 0,
+                throw new CoderException(getClass().getName(), 0,
                         "Unsupported value");
             }
         }

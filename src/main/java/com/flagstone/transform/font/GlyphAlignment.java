@@ -34,7 +34,7 @@ package com.flagstone.transform.font;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
@@ -57,10 +57,10 @@ public final class GlyphAlignment implements SWFEncodeable {
      * @param coder
      *            an SWFDecoder object that contains the encoded Flash data.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    public GlyphAlignment(final SWFDecoder coder) throws CoderException {
+    public GlyphAlignment(final SWFDecoder coder) throws IOException {
         final int count = coder.readByte();
 
         alignments = new ArrayList<AlignmentZone>(count);
@@ -146,7 +146,7 @@ public final class GlyphAlignment implements SWFEncodeable {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         coder.writeByte(2);
 
         for (final AlignmentZone zone : alignments) {

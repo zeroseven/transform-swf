@@ -36,7 +36,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -55,7 +55,7 @@ public final class FrameLabelCodingTest {
         "Object was not decoded properly";
 
     @Test
-    public void checkFrameLabelIsEncoded() throws CoderException {
+    public void checkFrameLabelIsEncoded() throws IOException {
         final FrameLabel object = new FrameLabel("Frame");
         final byte[] binary = new byte[] {(byte) 0xC7, 0x0A, 0x46, 0x72, 0x61,
                 0x6D, 0x65, 0x00, 0x01 };
@@ -72,7 +72,7 @@ public final class FrameLabelCodingTest {
     }
 
     @Test
-    public void checkFrameLabelIsDecoded() throws CoderException {
+    public void checkFrameLabelIsDecoded() throws IOException {
         final byte[] binary = new byte[] {(byte) 0xC7, 0x0A, 0x46, 0x72, 0x61,
                 0x6D, 0x65, 0x00, 0x01 };
 
@@ -84,7 +84,7 @@ public final class FrameLabelCodingTest {
    }
 
     @Test
-    public void checkExtendedFrameLabelIsDecoded() throws CoderException {
+    public void checkExtendedFrameLabelIsDecoded() throws IOException {
         final byte[] binary = new byte[] {(byte) 0xFF, 0x0A, 0x07, 0x00, 0x00,
                 0x00, 0x46, 0x72, 0x61, 0x6D, 0x65, 0x00, 0x01 };
 

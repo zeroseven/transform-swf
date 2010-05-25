@@ -32,7 +32,7 @@
 package com.flagstone.transform.filter;
 
 import com.flagstone.transform.Constants;
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -137,12 +137,11 @@ public final class ConvolutionFilter implements Filter {
      *            type of object and to pass information on how objects are
      *            decoded.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
     public ConvolutionFilter(final SWFDecoder coder, final Context context)
-            throws CoderException {
-        coder.readByte();
+            throws IOException {
         cols = coder.readByte();
         rows = coder.readByte();
         divisor = coder.readFloat();
@@ -154,9 +153,9 @@ public final class ConvolutionFilter implements Filter {
             }
         }
         color = new Color(coder, context);
-        coder.adjustPointer(6);
-        clamp = coder.readBits(1, false) != 0;
-        alpha = coder.readBits(1, false) != 0;
+        coder.prefetchByte();
+        clamp = coder.getBool(SWFDecoder.BIT1);
+        alpha = coder.getBool(SWFDecoder.BIT0);
     }
 
 
@@ -236,7 +235,7 @@ public final class ConvolutionFilter implements Filter {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         coder.writeByte(FilterTypes.CONVOLUTION);
         coder.writeByte(cols);
         coder.writeByte(rows);

@@ -35,12 +35,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.coder.SWFFactory;
 
 /**
  * Shape is a container class for the shape objects (Line, Curve and ShapeStyle
@@ -58,6 +58,14 @@ public final class Shape implements SWFEncodeable {
     /** Format string used in toString() method. */
     private static final String FORMAT = "Shape: { records=%s }";
 
+    public static Shape shapeFromData(final ShapeData shapeData)
+                throws IOException {
+        byte[] data = shapeData.getData();
+        SWFDecoder coder = new SWFDecoder(data);
+        Context context = new Context();
+        return new Shape(coder, context);
+    }
+
     private List<ShapeRecord> objects;
 
     private transient boolean isEncoded;
@@ -74,50 +82,26 @@ public final class Shape implements SWFEncodeable {
      *            type of object and to pass information on how objects are
      *            decoded.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
     public Shape(final SWFDecoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         objects = new ArrayList<ShapeRecord>();
 
         final Map<Integer, Integer> vars = context.getVariables();
-        vars.put(Context.FILL_SIZE, coder.readBits(4, false));
-        vars.put(Context.LINE_SIZE, coder.readBits(4, false));
+        final int sizes = coder.readByte();
+        vars.put(Context.FILL_SIZE, (sizes & 0x00F0) >> 4);
+        vars.put(Context.LINE_SIZE, sizes & 0x000F);
 
-        int type;
-        int tag;
-        ShapeRecord shape;
+        final SWFFactory<ShapeRecord> decoder = context.getRegistry().getShapeDecoder();
+        ShapeRecord record = null;
 
-        do {
-            type = coder.readBits(6, false);
-
-            if (type != 0) {
-
-                coder.adjustPointer(-6);
-
-                if ((type & 0x20) > 0) {
-                    if ((type & 0x10) > 0) {
-                        shape = new Line(coder);
-                    } else {
-                        shape = new Curve(coder);
-                    }
-                } else {
-                    tag = vars.get(Context.TYPE);
-                    if (tag == MovieTypes.DEFINE_SHAPE_4
-                        || tag == MovieTypes.DEFINE_MORPH_SHAPE_2) {
-                        shape = new ShapeStyle2(coder, context);
-                    } else {
-                        shape = new ShapeStyle(coder, context);
-                    }
-                }
-                objects.add(shape);
-            }
-        } while (type != 0);
-
+        while ((record = decoder.getObject(coder, context)) != null) {
+            objects.add(record);
+        }
         coder.alignToByte();
     }
-
 
     public Shape() {
         objects = new ArrayList<ShapeRecord>();
@@ -221,7 +205,7 @@ public final class Shape implements SWFEncodeable {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
 
         if (isEncoded) {
             objects.get(0).encode(coder, context);

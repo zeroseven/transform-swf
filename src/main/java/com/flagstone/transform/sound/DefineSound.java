@@ -31,6 +31,7 @@
 
 package com.flagstone.transform.sound;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 import com.flagstone.transform.SWF;
@@ -95,19 +96,22 @@ public final class DefineSound implements DefineTag {
      * @param coder
      *            an SWFDecoder object that contains the encoded Flash data.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    public DefineSound(final SWFDecoder coder) throws CoderException {
+    public DefineSound(final SWFDecoder coder) throws IOException {
 
         final int start = coder.getPointer();
-        length = coder.readHeader();
+        length = coder.readLength();
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
         identifier = coder.readUI16();
-        format = coder.readBits(4, false);
 
-        switch (coder.readBits(2, false)) {
+        final int info = coder.readByte();
+
+        format = info & 0x00F0;
+
+        switch (info & 0x0C) {
         case 0:
             rate = SoundRate.KHZ_5K;
             break;
@@ -125,8 +129,8 @@ public final class DefineSound implements DefineTag {
             break;
         }
 
-        sampleSize = coder.readBits(1, false) + 1;
-        channelCount = coder.readBits(1, false) + 1;
+        sampleSize = (info & 0x02) + 1;
+        channelCount = (info & 0x01) + 1;
         sampleCount = coder.readUI32();
 
         sound = coder.readBytes(new byte[length - 7]);
@@ -421,7 +425,7 @@ public final class DefineSound implements DefineTag {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
 
         final int start = coder.getPointer();
         coder.writeHeader(MovieTypes.DEFINE_SOUND, length);

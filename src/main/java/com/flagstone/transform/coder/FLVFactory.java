@@ -31,6 +31,8 @@
 
 package com.flagstone.transform.coder;
 
+import java.io.IOException;
+
 /**
  * The FLVFactory interface is used to generate objects when decoding a video.
  *
@@ -43,7 +45,7 @@ public interface FLVFactory<T> {
      * @param coder an decoder wrapping the binary encoded flash video data.
      *
      * @return T the decoded Flash Video object.
-     * @throws CoderException if an error occurs decoding the object.
+     * @throws IOException if an error occurs decoding the object.
      */
-    T getObject(final FLVDecoder coder) throws CoderException;
+    T getObject(final FLVDecoder coder) throws IOException;
 }

@@ -31,6 +31,7 @@
 
 package com.flagstone.transform.video;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 import com.flagstone.transform.coder.Coder;
@@ -90,12 +91,11 @@ public final class AudioData implements VideoTag {
      * @param coder
      *            an FLVDecoder object that contains the encoded Flash data.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    public AudioData(final FLVDecoder coder) throws CoderException {
+    public AudioData(final FLVDecoder coder) throws IOException {
         final int start = coder.getPointer();
-        coder.readByte();
         length = coder.readWord(3, false);
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
         timestamp = coder.readWord(3, false);
@@ -397,7 +397,7 @@ public final class AudioData implements VideoTag {
     }
 
     /** {@inheritDoc} */
-    public void encode(final FLVEncoder coder) throws CoderException {
+    public void encode(final FLVEncoder coder) throws IOException {
         final int start = coder.getPointer();
 
         coder.writeWord(VideoTypes.VIDEO_DATA, 1);

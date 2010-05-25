@@ -33,7 +33,7 @@ package com.flagstone.transform;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.MovieTypes;
@@ -68,11 +68,11 @@ public final class Export implements MovieTag {
      * @param coder
      *            an SWFDecoder object that contains the encoded Flash data.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    public Export(final SWFDecoder coder) throws CoderException {
-        length = coder.readHeader();
+    public Export(final SWFDecoder coder) throws IOException {
+        length = coder.readLength();
         final int count = coder.readUI16();
         objects = new LinkedHashMap<Integer, String>();
 
@@ -181,7 +181,7 @@ public final class Export implements MovieTag {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         coder.writeHeader(MovieTypes.EXPORT, length);
         coder.writeI16(objects.size());
 

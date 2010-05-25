@@ -35,7 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.flagstone.transform.SWF;
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -52,8 +52,6 @@ public final class MorphFocalGradientFill implements FillStyle {
             + " interpolation=%s; startFocalPoint=%f; endFocalPoint=%f; "
             + " startTransform=%s; endTransform=%s; gradients=%s }";
 
-    /** Code used to identify the fill style when it is encoded. */
-    private final transient int type;
     private int spread;
     private int interpolation;
     private int startFocalPoint;
@@ -76,12 +74,11 @@ public final class MorphFocalGradientFill implements FillStyle {
      *            type of object and to pass information on how objects are
      *            decoded.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
     public MorphFocalGradientFill(final SWFDecoder coder, final Context context)
-            throws CoderException {
-        type = coder.readByte();
+            throws IOException {
         startTransform = new CoordTransform(coder);
         endTransform = new CoordTransform(coder);
         count = coder.readByte() & SWF.MAX_GRADIENTS;
@@ -104,7 +101,6 @@ public final class MorphFocalGradientFill implements FillStyle {
             final CoordTransform start, final CoordTransform end,
             final List<MorphGradient> anArray,
             final float startPoint, final float endPoint) {
-        type = FillStyleTypes.FOCAL_GRADIENT;
         setSpread(spreadType);
         setInterpolation(anInterpolation);
         setStartTransform(start);
@@ -123,7 +119,6 @@ public final class MorphFocalGradientFill implements FillStyle {
      *            copied.
      */
     public MorphFocalGradientFill(final MorphFocalGradientFill object) {
-        type = object.type;
         spread = object.spread;
         interpolation = object.interpolation;
         startTransform = object.startTransform;
@@ -302,8 +297,8 @@ public final class MorphFocalGradientFill implements FillStyle {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
-        coder.writeByte(type);
+            throws IOException {
+        coder.writeByte(FillStyleTypes.FOCAL_GRADIENT);
         startTransform.encode(coder, context);
         endTransform.encode(coder, context);
         coder.writeWord(count | spread | interpolation, 1);

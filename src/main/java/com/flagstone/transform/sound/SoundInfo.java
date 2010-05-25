@@ -32,7 +32,7 @@
 package com.flagstone.transform.sound;
 
 import com.flagstone.transform.SWF;
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
@@ -98,39 +98,41 @@ public final class SoundInfo implements SWFEncodeable {
      * Creates and initialises a SoundInfo object using values encoded
      * in the Flash binary format.
      *
+     * @param uid the unique identifier for the sound definition - decoded by
+     * the parent object.
+     *
      * @param coder
      *            an SWFDecoder object that contains the encoded Flash data.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    public SoundInfo(final SWFDecoder coder) throws CoderException {
-        identifier = coder.readUI16();
-        mode = coder.readBits(4, false);
-        final boolean hasEnvelope = coder.readBits(1, false) != 0;
-        final boolean hasLoopCount = coder.readBits(1, false) != 0;
-        final boolean hasOutPoint = coder.readBits(1, false) != 0;
-        final boolean hasInPoint = coder.readBits(1, false) != 0;
+    public SoundInfo(final int uid, final SWFDecoder coder)
+            throws IOException {
+        identifier = uid;
 
-        if (hasInPoint) {
+        final int info = coder.readByte();
+        mode = (info & 0x00F0);
+
+        if ((info & 0x01) != 0) {
             inPoint = coder.readUI32();
         }
 
-        if (hasOutPoint) {
+        if ((info & 0x02) != 0) {
             outPoint = coder.readUI32();
         }
 
-        if (hasLoopCount) {
+        if ((info & 0x04) != 0) {
             loopCount = coder.readUI16();
         }
 
-        if (hasEnvelope) {
+        if ((info & 0x08) != 0) {
             envelope = new Envelope(coder);
         }
     }
 
     /**
-     * Creates ad Sound object specifying how the sound is played and the number
+     * Creates a Sound object specifying how the sound is played and the number
      * of times the sound is repeated.
      *
      * @param uid
@@ -368,7 +370,7 @@ public final class SoundInfo implements SWFEncodeable {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         coder.writeI16(identifier);
         coder.writeBits(mode, 4);
         coder.writeBool(envelope != null);

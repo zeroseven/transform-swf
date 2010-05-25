@@ -41,7 +41,7 @@ import org.junit.Test;
 
 import com.flagstone.transform.action.Action;
 import com.flagstone.transform.action.BasicAction;
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -60,7 +60,7 @@ public final class DoActionCodingTest {
         "Object was not decoded properly";
 
     @Test
-    public void checkDoActionIsEncoded() throws CoderException {
+    public void checkDoActionIsEncoded() throws IOException {
         final List<Action>actions = new ArrayList<Action>();
         actions.add(BasicAction.NEXT_FRAME);
         actions.add(BasicAction.END);
@@ -80,7 +80,7 @@ public final class DoActionCodingTest {
     }
 
     @Test
-    public void checkDoActionIsDecoded() throws CoderException {
+    public void checkDoActionIsDecoded() throws IOException {
         final List<Action>actions = new ArrayList<Action>();
         actions.add(BasicAction.NEXT_FRAME);
         actions.add(BasicAction.END);
@@ -96,7 +96,7 @@ public final class DoActionCodingTest {
    }
 
     @Test
-    public void checkExtendedDoActionIsDecoded() throws CoderException {
+    public void checkExtendedDoActionIsDecoded() throws IOException {
         final List<Action>actions = new ArrayList<Action>();
         actions.add(BasicAction.NEXT_FRAME);
         actions.add(BasicAction.END);

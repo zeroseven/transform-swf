@@ -31,6 +31,7 @@
 
 package com.flagstone.transform.shape;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -138,14 +139,14 @@ public final class DefineMorphShape implements DefineTag {
      *            type of object and to pass information on how objects are
      *            decoded.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
     // TODO(optimise)
     public DefineMorphShape(final SWFDecoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         final int start = coder.getPointer();
-        length = coder.readHeader();
+        length = coder.readLength();
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
         final Map<Integer, Integer> vars = context.getVariables();
@@ -160,9 +161,7 @@ public final class DefineMorphShape implements DefineTag {
         fillStyles = new ArrayList<FillStyle>();
         lineStyles = new ArrayList<MorphLineStyle>();
 
-        // offset to the start of the second shape
-        coder.readUI32();
-        // final int first = coder.getPointer();
+        final int shapeStart = coder.getPointer() + (coder.readUI32() << 3);
 
         int fillStyleCount = coder.readByte();
 
@@ -174,20 +173,8 @@ public final class DefineMorphShape implements DefineTag {
         final SWFFactory<FillStyle> decoder = context.getRegistry()
                 .getMorphFillStyleDecoder();
 
-        FillStyle fillStyle;
-        int type;
-
         for (int i = 0; i < fillStyleCount; i++) {
-            type = coder.scanByte();
-            fillStyle = decoder.getObject(coder, context);
-
-            if (fillStyle == null) {
-                throw new CoderException(String.valueOf(type),
-                        start >> Coder.BITS_TO_BYTES, 0,
-                        0, "Unsupported FillStyle");
-            }
-
-            fillStyles.add(fillStyle);
+            fillStyles.add(decoder.getObject(coder, context));
         }
 
         int lineStyleCount = coder.readByte();
@@ -201,14 +188,16 @@ public final class DefineMorphShape implements DefineTag {
             lineStyles.add(new MorphLineStyle(coder, context));
         }
 
+        final int bytesRead = (coder.getPointer() - start) >> 3;
+        final int endSize = (end - shapeStart) >> 3;
+        final int startSize = length - bytesRead - endSize;
+
         if (context.getRegistry().getShapeDecoder() == null) {
             startShape = new Shape();
-            startShape.add(new ShapeData(new byte[length
-                    - ((coder.getPointer() - start) >> 3)]));
+            startShape.add(new ShapeData(new byte[startSize]));
 
             endShape = new Shape();
-            endShape.add(new ShapeData(new byte[length
-                    - ((coder.getPointer() - start) >> 3)]));
+            endShape.add(new ShapeData(new byte[endSize]));
         } else {
             startShape = new Shape(coder, context);
             endShape = new Shape(coder, context);
@@ -559,7 +548,7 @@ public final class DefineMorphShape implements DefineTag {
     // TODO(optimise)
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         final int start = coder.getPointer();
         coder.writeHeader(MovieTypes.DEFINE_MORPH_SHAPE, length);
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);

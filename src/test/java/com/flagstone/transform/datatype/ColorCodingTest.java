@@ -36,7 +36,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -55,7 +55,7 @@ public final class ColorCodingTest {
         "Object was not decoded properly";
 
     @Test
-    public void checkOpaqueColourIsEncoded() throws CoderException {
+    public void checkOpaqueColourIsEncoded() throws IOException {
         final Color object = new Color(1, 2, 3);
         final byte[] binary = new byte[] {1, 2, 3};
 
@@ -71,7 +71,7 @@ public final class ColorCodingTest {
     }
 
     @Test
-    public void checkOpaqueColourIsDecoded() throws CoderException {
+    public void checkOpaqueColourIsDecoded() throws IOException {
         final Color object = new Color(1, 2, 3);
         final byte[] binary = new byte[] {1, 2, 3};
 
@@ -83,7 +83,7 @@ public final class ColorCodingTest {
     }
 
     @Test
-    public void checkTransparentColourIsEncoded() throws CoderException {
+    public void checkTransparentColourIsEncoded() throws IOException {
         final Color object = new Color(1, 2, 3, 4);
         final byte[] binary = new byte[] {1, 2, 3, 4};
 
@@ -98,7 +98,7 @@ public final class ColorCodingTest {
     }
 
     @Test
-    public void checkTransparentColourIsDecoded() throws CoderException {
+    public void checkTransparentColourIsDecoded() throws IOException {
         final Color object = new Color(1, 2, 3, 4);
         final byte[] binary = new byte[] {1, 2, 3, 4};
 

@@ -42,7 +42,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.flagstone.transform.coder.ActionDecoder;
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.DecoderRegistry;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -75,7 +75,7 @@ public final class WithTest {
     }
 
     @Test
-    public void encode() throws CoderException {
+    public void encode() throws IOException {
         final SWFEncoder encoder = new SWFEncoder(encoded.length);
         final Context context = new Context();
 
@@ -88,7 +88,7 @@ public final class WithTest {
     }
 
     @Test
-    public void decode() throws CoderException {
+    public void decode() throws IOException {
         final SWFDecoder decoder = new SWFDecoder(encoded);
         final Context context = new Context();
         final DecoderRegistry registry = new DecoderRegistry();

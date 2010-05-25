@@ -31,6 +31,7 @@
 
 package com.flagstone.transform.button;
 
+import java.io.IOException;
 import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -85,12 +86,12 @@ public final class ButtonSound implements MovieTag {
      * @param coder
      *            an SWFDecoder object that contains the encoded Flash data.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    public ButtonSound(final SWFDecoder coder) throws CoderException {
+    public ButtonSound(final SWFDecoder coder) throws IOException {
         final int start = coder.getPointer();
-        length = coder.readHeader();
+        length = coder.readLength();
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
         identifier = coder.readUI16();
@@ -109,10 +110,12 @@ public final class ButtonSound implements MovieTag {
     }
 
     private void decodeInfo(final ButtonEvent event,
-            final SWFDecoder coder, final int end) throws CoderException {
-        if (coder.getPointer() != end && coder.readUI16() != 0) {
-            coder.adjustPointer(-16);
-            table.put(event, new SoundInfo(coder));
+            final SWFDecoder coder, final int end) throws IOException {
+        if (coder.getPointer() != end) {
+            int uid = coder.readUI16();
+            if (uid != 0) {
+                table.put(event, new SoundInfo(uid, coder));
+            }
         }
     }
 
@@ -240,7 +243,7 @@ public final class ButtonSound implements MovieTag {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         final int start = coder.getPointer();
         coder.writeHeader(MovieTypes.BUTTON_SOUND, length);
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);

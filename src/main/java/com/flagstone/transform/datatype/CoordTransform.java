@@ -32,7 +32,7 @@ package com.flagstone.transform.datatype;
 
 import com.flagstone.transform.Constants;
 import com.flagstone.transform.coder.Coder;
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.Encoder;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -245,10 +245,10 @@ public final class CoordTransform implements SWFEncodeable {
      * @param coder
      *            an SWFDecoder object that contains the encoded Flash data.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    public CoordTransform(final SWFDecoder coder) throws CoderException {
+    public CoordTransform(final SWFDecoder coder) throws IOException {
 
         coder.alignToByte();
 
@@ -462,7 +462,7 @@ public final class CoordTransform implements SWFEncodeable {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
 
         if (hasScale) {
             coder.writeBits(1, 1);

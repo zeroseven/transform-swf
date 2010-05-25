@@ -32,6 +32,8 @@
 package com.flagstone.transform.button;
 
 
+import java.io.IOException;
+
 import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.CoderException;
@@ -86,14 +88,14 @@ public final class ButtonColorTransform implements MovieTag {
      *            type of object and to pass information on how objects are
      *            decoded.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
     public ButtonColorTransform(final SWFDecoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
 
         final int start = coder.getPointer();
-        length = coder.readHeader();
+        length = coder.readLength();
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
         identifier = coder.readUI16();
@@ -202,7 +204,7 @@ public final class ButtonColorTransform implements MovieTag {
     /** {@inheritDoc} */
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
 
         final int start = coder.getPointer();
         coder.writeHeader(MovieTypes.BUTTON_COLOR_TRANSFORM, length);

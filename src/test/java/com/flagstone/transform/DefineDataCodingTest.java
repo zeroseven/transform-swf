@@ -38,7 +38,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -58,7 +58,7 @@ public final class DefineDataCodingTest {
         "Object was not decoded properly";
 
     @Test
-    public void checkDefineDataIsEncoded() throws CoderException {
+    public void checkDefineDataIsEncoded() throws IOException {
         final byte[] data = new byte[] {1, 2, 3, 4};
         final DefineData object = new DefineData(1, data);
         final byte[] binary = new byte[] {(byte) 0xCA, 0x15, 0x01, 0x00,
@@ -76,7 +76,7 @@ public final class DefineDataCodingTest {
     }
 
     @Test
-    public void checkDefineDataIsDecoded() throws CoderException {
+    public void checkDefineDataIsDecoded() throws IOException {
         final byte[] data = new byte[] {1, 2, 3, 4};
         final byte[] binary = new byte[] {(byte) 0xCA, 0x15, 0x01, 0x00,
                 0x00, 0x00, 0x00, 0x00, 0x01, 0x02, 0x03, 0x04};
@@ -90,7 +90,7 @@ public final class DefineDataCodingTest {
    }
 
     @Test
-    public void checkExtendedDefineDataIsDecoded() throws CoderException {
+    public void checkExtendedDefineDataIsDecoded() throws IOException {
         final byte[] data = new byte[] {1, 2, 3, 4};
         final byte[] binary = new byte[] {(byte) 0xFF, 0x15,
                 0x0A, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00,

@@ -32,7 +32,7 @@
 package com.flagstone.transform.filter;
 
 import com.flagstone.transform.Constants;
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -188,12 +188,11 @@ public final class BevelFilter implements Filter {
      *            type of object and to pass information on how objects are
      *            decoded.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
     public BevelFilter(final SWFDecoder coder, final Context context)
-            throws CoderException {
-        coder.adjustPointer(8);
+            throws IOException {
         shadow = new Color(coder, context);
         highlight = new Color(coder, context);
         blurX = coder.readSI32();
@@ -320,7 +319,7 @@ public final class BevelFilter implements Filter {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         coder.writeByte(FilterTypes.BEVEL);
         shadow.encode(coder, context);
         highlight.encode(coder, context);

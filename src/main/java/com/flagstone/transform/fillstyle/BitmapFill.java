@@ -33,7 +33,7 @@ package com.flagstone.transform.fillstyle;
 
 
 import com.flagstone.transform.SWF;
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -101,14 +101,18 @@ public final class BitmapFill implements FillStyle {
      * Creates and initialises a BitmapFill fill style using values encoded
      * in the Flash binary format.
      *
+     * @param fillType the value used to identify the fill style when it is
+     * encoded.
+     *
      * @param coder
      *            an SWFDecoder object that contains the encoded Flash data.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    public BitmapFill(final SWFDecoder coder) throws CoderException {
-        type = coder.readByte();
+    public BitmapFill(final int fillType, final SWFDecoder coder)
+                throws IOException {
+        type = fillType;
         identifier = coder.readUI16();
         transform = new CoordTransform(coder);
     }
@@ -265,7 +269,7 @@ public final class BitmapFill implements FillStyle {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         coder.writeByte(type);
         coder.writeI16(identifier);
         transform.encode(coder, context);

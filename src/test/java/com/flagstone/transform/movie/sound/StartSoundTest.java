@@ -37,7 +37,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.sound.StartSound;
@@ -64,7 +64,7 @@ public final class StartSoundTest {
 
     @Test
     @Ignore //TODO(implement)
-    public void encode() throws CoderException {
+    public void encode() throws IOException {
         final SWFEncoder encoder = new SWFEncoder(encoded.length);
         // Context context = new Context();
 
@@ -78,7 +78,7 @@ public final class StartSoundTest {
 
     @Test
     @Ignore //TODO(implement)
-    public void decode() throws CoderException {
+    public void decode() throws IOException {
         final SWFDecoder decoder = new SWFDecoder(encoded);
 
         // fixture = new StartSound(decoder, context);
@@ -88,7 +88,7 @@ public final class StartSoundTest {
 
     @Test
     @Ignore //TODO(implement)
-    public void decodeExtended() throws CoderException {
+    public void decodeExtended() throws IOException {
         final SWFDecoder decoder = new SWFDecoder(extended);
 
         // fixture = new StartSound(decoder, context);

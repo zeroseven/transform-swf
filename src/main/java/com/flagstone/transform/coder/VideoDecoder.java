@@ -31,6 +31,8 @@
 
 package com.flagstone.transform.coder;
 
+import java.io.IOException;
+
 import com.flagstone.transform.video.AudioData;
 import com.flagstone.transform.video.VideoData;
 import com.flagstone.transform.video.VideoMetaData;
@@ -41,11 +43,11 @@ import com.flagstone.transform.video.VideoMetaData;
 */
 public final class VideoDecoder implements FLVFactory<VideoTag> {
     /** {@inheritDoc} */
-    public VideoTag getObject(final FLVDecoder coder) throws CoderException {
+    public VideoTag getObject(final FLVDecoder coder) throws IOException {
 
         VideoTag object;
 
-        switch (coder.scanByte()) {
+        switch (coder.readByte()) {
         case VideoTypes.AUDIO_DATA:
             object = new AudioData(coder);
             break;

@@ -32,7 +32,7 @@
 package com.flagstone.transform.linestyle;
 
 
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.Copyable;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -86,14 +86,42 @@ public final class MorphLineStyle2 implements SWFEncodeable,
      *            type of object and to pass information on how objects are
      *            decoded.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
     public MorphLineStyle2(final SWFDecoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         startWidth = coder.readUI16();
         endWidth = coder.readUI16();
-        unpack(coder.readB16());
+
+        coder.prefetchByte();
+        if (coder.getBool(SWFDecoder.BIT6)) {
+            startCap = 1;
+        } else if (coder.getBool(SWFDecoder.BIT7)) {
+            startCap = 2;
+        } else {
+            startCap = 0;
+        }
+
+        if (coder.getBool(SWFDecoder.BIT4)) {
+            joinStyle = 1;
+            hasMiter = false;
+        } else if (coder.getBool(SWFDecoder.BIT5)) {
+            joinStyle = 2;
+            hasMiter = true;
+        } else {
+            joinStyle = 0;
+            hasMiter = false;
+        }
+
+        hasFillStyle = coder.getBool(SWFDecoder.BIT3);
+        horizontal = !coder.getBool(SWFDecoder.BIT2);
+        vertical = !coder.getBool(SWFDecoder.BIT1);
+        pixelAligned = coder.getBool(SWFDecoder.BIT0);
+
+        coder.prefetchByte();
+        lineClosed = !coder.getBool(SWFDecoder.BIT2);
+        endCap = coder.getBit(0x03);
 
         if (hasMiter) {
             coder.readUI16();
@@ -430,7 +458,7 @@ public final class MorphLineStyle2 implements SWFEncodeable,
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         coder.writeI16(startWidth);
         coder.writeI16(endWidth);
         coder.writeB16(pack());
@@ -472,37 +500,6 @@ public final class MorphLineStyle2 implements SWFEncodeable,
         value |= endCap;
 
         return value;
-// CHECKSTYLE:ON
-    }
-
-    //TODO Fix this to remove the magic numbers
-    private void unpack(final int value) {
-// CHECKSTYLE:OFF
-        if ((value & 0x00004000) > 0) {
-            startCap = 1;
-        } else if ((value & 0x00008000) > 0) {
-            startCap = 2;
-        } else {
-            startCap = 0;
-        }
-
-        if ((value & 0x00001000) > 0) {
-            joinStyle = 1;
-            hasMiter = false;
-        } else if ((value & 0x00002000) > 0) {
-            joinStyle = 2;
-            hasMiter = true;
-        } else {
-            joinStyle = 0;
-            hasMiter = false;
-        }
-
-        hasFillStyle = (value & 0x00000800) != 0;
-        horizontal = (value & 0x00000400) == 0;
-        vertical = (value & 0x00000200) == 0;
-        pixelAligned = (value & 0x00000100) != 0;
-        lineClosed = (value & 0x00000004) == 0;
-        endCap = value & 0x00000003;
 // CHECKSTYLE:ON
     }
 }

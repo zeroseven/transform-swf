@@ -34,7 +34,7 @@ package com.flagstone.transform.filter;
 
 import com.flagstone.transform.Constants;
 import com.flagstone.transform.coder.Coder;
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -66,12 +66,11 @@ public final class BlurFilter implements Filter {
      * @param coder
      *            an SWFDecoder object that contains the encoded Flash data.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
     public BlurFilter(final SWFDecoder coder)
-            throws CoderException {
-        coder.readByte();
+            throws IOException {
         blurX = coder.readSI32();
         blurY = coder.readSI32();
         passes = (coder.readByte() & Coder.UNSIGNED_BYTE_MASK) >>> 3;
@@ -141,7 +140,7 @@ public final class BlurFilter implements Filter {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         coder.writeByte(FilterTypes.BLUR);
         coder.writeI32(blurX);
         coder.writeI32(blurY);

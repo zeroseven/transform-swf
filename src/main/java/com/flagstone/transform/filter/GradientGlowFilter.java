@@ -35,7 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.flagstone.transform.Constants;
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -184,30 +184,25 @@ public final class GradientGlowFilter implements Filter {
      *            type of object and to pass information on how objects are
      *            decoded.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
     public GradientGlowFilter(final SWFDecoder coder, final Context context)
-            throws CoderException {
-        coder.adjustPointer(8);
+            throws IOException {
         final int count = coder.readByte();
-        gradients = new ArrayList<Gradient>(count);
-        Color color;
-        int ratio;
-
-        int colors = coder.getPointer();
-        int ratios = coder.getPointer() + (count << 5);
+        final Color[] colors = new Color[count];
+        final int[] ratioes = new int[count];
 
         for (int i = 0; i < count; i++) {
-            coder.setPointer(colors);
-            color = new Color(coder, context);
-            colors = coder.getPointer();
+            colors[i] = new Color(coder, context);
+        }
+        for (int i = 0; i < count; i++) {
+            ratioes[i] = coder.readByte();
+        }
 
-            coder.setPointer(ratios);
-            ratio = coder.readByte();
-            ratios = coder.getPointer();
-
-            gradients.add(new Gradient(ratio, color));
+        gradients = new ArrayList<Gradient>(count);
+        for (int i = 0; i < count; i++) {
+            gradients.add(new Gradient(ratioes[i], colors[i]));
         }
 
         blurX = coder.readSI32();
@@ -324,7 +319,7 @@ public final class GradientGlowFilter implements Filter {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         coder.writeByte(FilterTypes.GRADIENT_GLOW);
         coder.writeByte(gradients.size());
 

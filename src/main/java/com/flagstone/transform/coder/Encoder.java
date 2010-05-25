@@ -31,6 +31,7 @@
 
 package com.flagstone.transform.coder;
 
+
 /**
  * Encoder provides a set of method for encoding data that is not byte-ordered,
  * specifically bit fields and strings.
@@ -109,7 +110,11 @@ public class Encoder extends Coder {
      */
     public Encoder(final int size) {
         super();
-        setData(new byte[size]);
+        data = new byte[size];
+        index = 0;
+        offset = 0;
+        pointer = 0;
+        end = size << 3;
     }
 
     /**

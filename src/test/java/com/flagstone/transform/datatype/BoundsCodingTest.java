@@ -36,7 +36,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -55,7 +55,7 @@ public final class BoundsCodingTest {
         "Object was not decoded properly";
 
     @Test
-    public void checkPositiveDimensionsAreEncoded() throws CoderException {
+    public void checkPositiveDimensionsAreEncoded() throws IOException {
         final Bounds object = new Bounds(1, 2, 3, 4);
         final byte[] binary = new byte[] {0x20, (byte) 0x99, 0x20 };
         final SWFEncoder encoder = new SWFEncoder(binary.length);
@@ -70,7 +70,7 @@ public final class BoundsCodingTest {
     }
 
     @Test
-    public void checkPositiveDimensionsAreDecoded() throws CoderException {
+    public void checkPositiveDimensionsAreDecoded() throws IOException {
         final Bounds object = new Bounds(1, 2, 3, 4);
         final byte[] binary = new byte[] {0x20, (byte) 0x99, 0x20 };
         final SWFDecoder decoder = new SWFDecoder(binary);
@@ -80,7 +80,7 @@ public final class BoundsCodingTest {
     }
 
     @Test
-    public void checkZeroDimensionsAreEncoded() throws CoderException {
+    public void checkZeroDimensionsAreEncoded() throws IOException {
         final Bounds object = new Bounds(0, 0, 0, 0);
         final byte[] binary = new byte[] {0x08, 0x00 };
         final SWFEncoder encoder = new SWFEncoder(binary.length);
@@ -95,7 +95,7 @@ public final class BoundsCodingTest {
     }
 
     @Test
-    public void checkZeroDimensionsAreDecoded() throws CoderException {
+    public void checkZeroDimensionsAreDecoded() throws IOException {
         final Bounds object = new Bounds(0, 0, 0, 0);
         final byte[] binary = new byte[] {0x08, 0x00 };
         final SWFDecoder decoder = new SWFDecoder(binary);
@@ -105,7 +105,7 @@ public final class BoundsCodingTest {
     }
 
     @Test
-    public void checkNegativeMinimumIsEncoded() throws CoderException {
+    public void checkNegativeMinimumIsEncoded() throws IOException {
         final Bounds object = new Bounds(-1, -1, 1, 1);
         final byte[] binary = new byte[] {0x16, (byte) 0xE8 };
 
@@ -121,7 +121,7 @@ public final class BoundsCodingTest {
     }
 
     @Test
-    public void checkNegativeMinimumIsDecoded() throws CoderException {
+    public void checkNegativeMinimumIsDecoded() throws IOException {
         final Bounds object = new Bounds(-1, -1, 1, 1);
         final byte[] binary = new byte[] {0x16, (byte) 0xE8 };
         final SWFDecoder decoder = new SWFDecoder(binary);

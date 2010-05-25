@@ -30,6 +30,7 @@
  */
 package com.flagstone.transform;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -90,14 +91,14 @@ public final class DoAction implements MovieTag {
      *            an SWFDecoder object that contains the encoded Flash data.
      * @param context
      *            a Context object used to pass values when decoding objects.
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
     public DoAction(final SWFDecoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
 
         final int start = coder.getPointer();
-        length = coder.readHeader();
+        length = coder.readLength();
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
         actions = new ArrayList<Action>();
@@ -216,7 +217,7 @@ public final class DoAction implements MovieTag {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
 
         final int start = coder.getPointer();
         coder.writeHeader(MovieTypes.DO_ACTION, length);

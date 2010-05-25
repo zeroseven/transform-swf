@@ -32,7 +32,7 @@
 package com.flagstone.transform.font;
 
 import com.flagstone.transform.Constants;
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
@@ -55,10 +55,10 @@ public final class AlignmentZone implements SWFEncodeable {
      * @param coder
      *            an SWFDecoder object that contains the encoded Flash data.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    public AlignmentZone(final SWFDecoder coder) throws CoderException {
+    public AlignmentZone(final SWFDecoder coder) throws IOException {
         coordinate = coder.readHalf();
         range = coder.readHalf();
     }
@@ -115,7 +115,7 @@ public final class AlignmentZone implements SWFEncodeable {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         coder.writeHalf(coordinate);
         coder.writeHalf(range);
     }

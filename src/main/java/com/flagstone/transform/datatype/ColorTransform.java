@@ -32,7 +32,7 @@ package com.flagstone.transform.datatype;
 
 import com.flagstone.transform.Constants;
 import com.flagstone.transform.coder.Coder;
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
@@ -174,15 +174,15 @@ public final class ColorTransform implements SWFEncodeable {
      *            type of object and to pass information on how objects are
      *            decoded.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
     public ColorTransform(final SWFDecoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
 
-        hasAdd = coder.readBool();
-        hasMultiply = coder.readBool();
         hasAlpha = context.getVariables().containsKey(Context.TRANSPARENT);
+        hasAdd = coder.readBits(1, false) != 0;
+        hasMultiply = coder.readBits(1, false) != 0;
         size = coder.readBits(FIELD_SIZE, false);
 
         if (hasMultiply) {
@@ -473,7 +473,7 @@ public final class ColorTransform implements SWFEncodeable {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
 
         coder.writeBool(hasAdd);
         coder.writeBool(hasMultiply);

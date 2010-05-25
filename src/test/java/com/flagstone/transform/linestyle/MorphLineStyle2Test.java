@@ -40,7 +40,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -73,7 +73,7 @@ public final class MorphLineStyle2Test {
 
     @Test
     @Ignore //TODO(implement)
-    public void encode() throws CoderException {
+    public void encode() throws IOException {
         final SWFEncoder encoder = new SWFEncoder(encoded.length);
         final Context context = new Context();
         context.getVariables().put(Context.TRANSPARENT, 1);
@@ -89,7 +89,7 @@ public final class MorphLineStyle2Test {
 
     @Test
     @Ignore //TODO(implement)
-    public void decode() throws CoderException {
+    public void decode() throws IOException {
         final SWFDecoder decoder = new SWFDecoder(encoded);
         final Context context = new Context();
         context.getVariables().put(Context.TRANSPARENT, 1);

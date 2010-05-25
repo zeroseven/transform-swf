@@ -31,6 +31,8 @@
 
 package com.flagstone.transform.coder;
 
+import java.io.IOException;
+
 /**
  * The Codeable interfaces defines the set of methods that all classes must
  * implement in order to be encoded and decoded from Flash Video (FLV) files.
@@ -58,7 +60,7 @@ public interface FLVEncodeable {
      *            an Encoder object that is used to encode the object to its
      *            binary form.
      *
-     * @throws CoderException if an error occurs while encoding the object.
+     * @throws IOException if an error occurs while encoding the object.
      */
-    void encode(FLVEncoder coder) throws CoderException;
+    void encode(FLVEncoder coder) throws IOException;
 }

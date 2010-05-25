@@ -31,10 +31,13 @@
 
 package com.flagstone.transform.coder;
 
+import java.io.IOException;
+
 import com.flagstone.transform.shape.Curve;
 import com.flagstone.transform.shape.Line;
 import com.flagstone.transform.shape.ShapeRecord;
 import com.flagstone.transform.shape.ShapeStyle;
+import com.flagstone.transform.shape.ShapeStyle2;
 
 /**
  * Factory is the default implementation of an SWFFactory which used to create
@@ -43,18 +46,12 @@ import com.flagstone.transform.shape.ShapeStyle;
 //TODO(class)
 public final class ShapeDecoder implements SWFFactory<ShapeRecord> {
 
-    /** {@inheritDoc} */
-    public SWFFactory<ShapeRecord> copy() {
-        return new ShapeDecoder();
-    }
-
-
     public ShapeRecord getObject(final SWFDecoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
 
-        ShapeRecord record = null;
-
+        final int tag = context.getVariables().get(Context.TYPE);
         final int type = coder.readBits(6, false);
+        ShapeRecord record = null;
 
         if (type != 0) {
             coder.adjustPointer(-6);
@@ -66,10 +63,14 @@ public final class ShapeDecoder implements SWFFactory<ShapeRecord> {
                     record = new Curve(coder);
                 }
             } else {
-                record = new ShapeStyle(coder, context);
+                if (tag == MovieTypes.DEFINE_SHAPE_4
+                        || tag == MovieTypes.DEFINE_MORPH_SHAPE_2) {
+                    record = new ShapeStyle2(coder, context);
+                } else {
+                    record = new ShapeStyle(coder, context);
+                }
             }
         }
-
         return record;
     }
 }

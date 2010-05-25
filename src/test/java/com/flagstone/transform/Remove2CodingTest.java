@@ -38,7 +38,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -58,7 +58,7 @@ public final class Remove2CodingTest {
         "Object was not decoded properly";
 
     @Test
-    public void checkRemove2IsEncoded() throws CoderException {
+    public void checkRemove2IsEncoded() throws IOException {
         final Remove2 object = new Remove2(1);
         final byte[] binary = new byte[] {0x02, 0x07, 0x01, 0x00};
 
@@ -74,7 +74,7 @@ public final class Remove2CodingTest {
     }
 
     @Test
-    public void checkRemove2IsDecoded() throws CoderException {
+    public void checkRemove2IsDecoded() throws IOException {
         final byte[] binary = new byte[] {0x02, 0x07, 0x01, 0x00};
 
         final SWFDecoder decoder = new SWFDecoder(binary);
@@ -85,7 +85,7 @@ public final class Remove2CodingTest {
    }
 
     @Test
-    public void checkExtendedRemove2IsDecoded() throws CoderException {
+    public void checkExtendedRemove2IsDecoded() throws IOException {
         final byte[] binary = new byte[] {0x7F, 0x07, 0x02, 0x00, 0x00, 0x00,
                 0x01, 0x00};
 

@@ -38,7 +38,7 @@ import java.util.Set;
 
 import com.flagstone.transform.action.Action;
 import com.flagstone.transform.action.ActionData;
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
@@ -138,6 +138,10 @@ public final class MovieClipEventHandler implements SWFEncodeable {
      * Creates and initialises a MovieClipEventHandler object using values
      * encoded in the Flash binary format.
      *
+     * @param eventCode
+     *            the set of events that the handler responds to - decoded by
+     *            the parent object.
+     *
      * @param coder
      *            an SWFDecoder object that contains the encoded Flash data.
      *
@@ -146,20 +150,12 @@ public final class MovieClipEventHandler implements SWFEncodeable {
      *            type of object and to pass information on how objects are
      *            decoded.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    public MovieClipEventHandler(final SWFDecoder coder, final Context context)
-            throws CoderException {
-        final int eventSize;
-
-        if (context.getVariables().get(Context.VERSION) > 5) {
-            eventSize = 4;
-        } else {
-            eventSize = 2;
-        }
-
-        event = coder.readWord(eventSize, false);
+    public MovieClipEventHandler(final int eventCode, final SWFDecoder coder,
+            final Context context) throws IOException {
+        event = eventCode;
         offset = coder.readUI32();
 
         if ((event & 131072) != 0) {
@@ -349,7 +345,7 @@ public final class MovieClipEventHandler implements SWFEncodeable {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         final int eventSize;
         if (context.getVariables().get(Context.VERSION) > 5) {
             eventSize = 4;

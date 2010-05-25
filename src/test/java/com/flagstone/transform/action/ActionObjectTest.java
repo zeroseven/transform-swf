@@ -37,7 +37,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -59,7 +59,7 @@ public final class ActionObjectTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForDataWithNull() {
-        fixture = new ActionObject(TYPE, null);
+        fixture = new ActionObject(TYPE, (byte[]) null);
     }
 
     @Test
@@ -73,7 +73,7 @@ public final class ActionObjectTest {
     }
 
     @Test
-    public void encode() throws CoderException {
+    public void encode() throws IOException {
         final SWFEncoder encoder = new SWFEncoder(encoded.length);
         final Context context = new Context();
 
@@ -86,7 +86,7 @@ public final class ActionObjectTest {
     }
 
     @Test
-    public void encodeBasic() throws CoderException {
+    public void encodeBasic() throws IOException {
         final SWFEncoder encoder = new SWFEncoder(basic.length);
         final Context context = new Context();
 
@@ -99,7 +99,7 @@ public final class ActionObjectTest {
     }
 
     @Test
-    public void encodeEmpty() throws CoderException {
+    public void encodeEmpty() throws IOException {
         final SWFEncoder encoder = new SWFEncoder(empty.length);
         final Context context = new Context();
 
@@ -112,10 +112,10 @@ public final class ActionObjectTest {
     }
 
     @Test
-    public void decode() throws CoderException {
+    public void decode() throws IOException {
         final SWFDecoder decoder = new SWFDecoder(encoded);
 
-        fixture = new ActionObject(decoder);
+        fixture = new ActionObject(decoder.readByte(), decoder);
 
         assertTrue(decoder.eof());
         assertEquals(TYPE, fixture.getType());
@@ -123,10 +123,10 @@ public final class ActionObjectTest {
     }
 
     @Test
-    public void decodeBasic() throws CoderException {
+    public void decodeBasic() throws IOException {
         final SWFDecoder decoder = new SWFDecoder(basic);
 
-        fixture = new ActionObject(decoder);
+        fixture = new ActionObject(decoder.readByte(), decoder);
 
         assertTrue(decoder.eof());
         assertEquals(1, fixture.getType());
@@ -134,10 +134,10 @@ public final class ActionObjectTest {
     }
 
     @Test
-    public void decodeEmpty() throws CoderException {
+    public void decodeEmpty() throws IOException {
         final SWFDecoder decoder = new SWFDecoder(empty);
 
-        fixture = new ActionObject(decoder);
+        fixture = new ActionObject(decoder.readByte(), decoder);
 
         assertTrue(decoder.eof());
         assertEquals(TYPE, fixture.getType());

@@ -114,13 +114,14 @@ public final class AWTFontIT {
             set.add(alphabet);
 
             final Movie movie = new Movie();
+            int uid = 1;
 
-            final DefineFont2 nativeFont = new DefineFont2(movie.nextId(),
+            final DefineFont2 nativeFont = new DefineFont2(uid++,
                     sourceFont.getFontName());
             nativeFont.setBold(sourceFont.isBold());
             nativeFont.setItalic(sourceFont.isItalic());
 
-            final DefineFont2 embeddedFont = font.defineFont(movie.nextId(),
+            final DefineFont2 embeddedFont = font.defineFont(uid++,
                     set.getCharacters());
             // Two fonts cannot have the same name.
             embeddedFont.setName("embedded");
@@ -130,7 +131,7 @@ public final class AWTFontIT {
                     padding);
 
             // Create a text field that uses an embedded font.
-            DefineTextField nativeField = new DefineTextField(movie.nextId());
+            DefineTextField nativeField = new DefineTextField(uid++);
             nativeField.setBounds(bounds);
             nativeField.setAlignment(DefineTextField.Align.LEFT);
             nativeField.setFontIdentifier(nativeFont.getIdentifier());
@@ -141,7 +142,7 @@ public final class AWTFontIT {
             nativeField.setInitialText(alphabet);
 
             // Create a text field that uses an embedded font.
-            DefineTextField embeddedField = new DefineTextField(movie.nextId());
+            DefineTextField embeddedField = new DefineTextField(uid++);
             embeddedField.setBounds(bounds);
             embeddedField.setAlignment(DefineTextField.Align.LEFT);
             embeddedField.setFontIdentifier(embeddedFont.getIdentifier());

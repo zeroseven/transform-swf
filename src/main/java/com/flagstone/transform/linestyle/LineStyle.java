@@ -32,7 +32,7 @@
 package com.flagstone.transform.linestyle;
 
 
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.Copyable;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -89,11 +89,11 @@ public final class LineStyle implements SWFEncodeable, Copyable<LineStyle> {
      *            type of object and to pass information on how objects are
      *            decoded.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
     public LineStyle(final SWFDecoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         width = coder.readUI16();
         color = new Color(coder, context);
     }
@@ -191,7 +191,7 @@ public final class LineStyle implements SWFEncodeable, Copyable<LineStyle> {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         coder.writeI16(width);
         color.encode(coder, context);
     }

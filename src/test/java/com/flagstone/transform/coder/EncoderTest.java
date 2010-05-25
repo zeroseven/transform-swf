@@ -81,18 +81,8 @@ public final class EncoderTest {
     }
 
     @Test
-    public void sizeForString() {
-        assertEquals(4, fixture.strlen("abc"));
-    }
-
-    @Test
-    public void sizeForStringWithUnicodeChar() {
-        assertEquals(6, fixture.strlen("ab€"));
-    }
-
-    @Test
     public void writeBits() {
-        fixture.setData(new byte[1]);
+        fixture = new SWFEncoder(1);
         fixture.writeBits(3, 2);
 
         assertEquals(2, fixture.getPointer());
@@ -101,7 +91,7 @@ public final class EncoderTest {
 
     @Test
     public void writeBitsToEndOfBuffer() {
-        fixture.setData(new byte[1]);
+        fixture = new SWFEncoder(1);
         fixture.setPointer(4);
         fixture.writeBits(3, 4);
 
@@ -111,13 +101,13 @@ public final class EncoderTest {
 
     @Test(expected = ArrayIndexOutOfBoundsException.class)
     public void writeBitsBeyondEndOfBuffer() {
-        fixture.setData(new byte[1]);
+        fixture = new SWFEncoder(1);
         fixture.writeBits(3, 9);
     }
 
     @Test
     public void writeBitsAcrossByteBoundary() {
-        fixture.setData(new byte[2]);
+        fixture = new SWFEncoder(2);
         fixture.writeBits(15, 10);
 
         assertEquals(10, fixture.getPointer());
@@ -127,7 +117,7 @@ public final class EncoderTest {
 
     @Test
     public void writeBitsAcrossByteBoundaryWithOffset() {
-        fixture.setData(new byte[2]);
+        fixture = new SWFEncoder(2);
         fixture.setPointer(1);
         fixture.writeBits(1, 8);
 
@@ -138,7 +128,7 @@ public final class EncoderTest {
 
     @Test
     public void writeBitsAcrossShortBoundary() {
-        fixture.setData(new byte[3]);
+        fixture = new SWFEncoder(3);
         fixture.writeBits(15, 18);
 
         assertEquals(18, fixture.getPointer());
@@ -149,7 +139,7 @@ public final class EncoderTest {
 
     @Test
     public void writeBitsAcrossIntBoundary() {
-        fixture.setData(new byte[5]);
+        fixture = new SWFEncoder(5);
         fixture.setPointer(2);
         fixture.writeBits(15, 32);
 
@@ -162,7 +152,7 @@ public final class EncoderTest {
 
     @Test
     public void writeB16() {
-        fixture.setData(new byte[2]);
+        fixture = new SWFEncoder(2);
         fixture.writeB16(0x0102);
 
         assertEquals(16, fixture.getPointer());
@@ -172,7 +162,7 @@ public final class EncoderTest {
 
     @Test
     public void writeByte() {
-        fixture.setData(new byte[1]);
+        fixture = new SWFEncoder(1);
         fixture.writeByte(3);
 
         assertEquals(8, fixture.getPointer());
@@ -181,7 +171,7 @@ public final class EncoderTest {
 
     @Test(expected = ArrayIndexOutOfBoundsException.class)
     public void writeByteBeyondBufferBoundary() {
-        fixture.setData(new byte[1]);
+        fixture = new SWFEncoder(1);
         fixture.setPointer(8);
 
         fixture.writeByte(1);
@@ -190,7 +180,7 @@ public final class EncoderTest {
     @Test
     public void writeBytes() {
         data = new byte[] {1, 2, 3, 4, 5, 6, 7, 8 };
-        fixture.setData(new byte[data.length]);
+        fixture = new SWFEncoder(data.length);
 
         fixture.writeBytes(data);
 
@@ -200,7 +190,7 @@ public final class EncoderTest {
 
     @Test
     public void writeString() {
-        fixture.setData(new byte[4]);
+        fixture = new SWFEncoder(4);
         fixture.setEncoding("UTF-8");
 
         fixture.writeString("123");

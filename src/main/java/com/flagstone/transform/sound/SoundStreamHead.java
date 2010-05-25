@@ -32,6 +32,8 @@
 package com.flagstone.transform.sound;
 
 
+import java.io.IOException;
+
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
@@ -108,22 +110,24 @@ public final class SoundStreamHead implements MovieTag {
      * @param coder
      *            an SWFDecoder object that contains the encoded Flash data.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    public SoundStreamHead(final SWFDecoder coder) throws CoderException {
+    public SoundStreamHead(final SWFDecoder coder) throws IOException {
         final int start = coder.getPointer();
-        length = coder.readHeader();
+        length = coder.readLength();
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
-        coder.readBits(4, false);
-        playRate = readRate(coder);
-        playSampleSize = coder.readBits(1, false) + 1;
-        playChannels = coder.readBits(1, false) + 1;
-        format = coder.readBits(4, false);
-        streamRate = readRate(coder);
-        streamSampleSize = coder.readBits(1, false) + 1;
-        streamChannels = coder.readBits(1, false) + 1;
+        int info = coder.readByte();
+        playRate = readRate((info & 0x0C) >> 2);
+        playSampleSize = (info & 0x02) + 1;
+        playChannels = (info & 0x01) + 1;
+
+        info = coder.readByte();
+        format = (info & 0x00F0) >> 4;
+        streamRate = readRate((info & 0x0C) >> 2);
+        streamSampleSize = (info & 0x02) + 1;
+        streamChannels = (info & 0x01) + 1;
         streamSampleCount = coder.readUI16();
 
         if ((length == 6) && (format == 2)) {
@@ -482,7 +486,7 @@ public final class SoundStreamHead implements MovieTag {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         final int start = coder.getPointer();
         coder.writeHeader(MovieTypes.SOUND_STREAM_HEAD, length);
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
@@ -508,9 +512,9 @@ public final class SoundStreamHead implements MovieTag {
         }
     }
 
-    private int readRate(final SWFDecoder coder) {
+    private int readRate(final int value) {
         final int rate;
-        switch (coder.readBits(2, false)) {
+        switch (value) {
         case 0:
             rate = SoundRate.KHZ_5K;
             break;

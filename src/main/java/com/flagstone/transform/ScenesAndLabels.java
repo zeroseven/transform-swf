@@ -31,6 +31,7 @@
 
 package com.flagstone.transform;
 
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -63,13 +64,13 @@ public final class ScenesAndLabels implements MovieTag {
      * @param coder
      *            an SWFDecoder object that contains the encoded Flash data.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    public ScenesAndLabels(final SWFDecoder coder) throws CoderException {
+    public ScenesAndLabels(final SWFDecoder coder) throws IOException {
 
         final int start = coder.getPointer();
-        length = coder.readHeader();
+        length = coder.readLength();
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
         int count = coder.readVariableU32();
@@ -206,7 +207,7 @@ public final class ScenesAndLabels implements MovieTag {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
 
         final int start = coder.getPointer();
         coder.writeHeader(MovieTypes.SCENES_AND_LABELS, length);

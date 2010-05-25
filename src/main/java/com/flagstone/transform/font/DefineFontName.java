@@ -32,6 +32,8 @@
 package com.flagstone.transform.font;
 
 
+import java.io.IOException;
+
 import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.CoderException;
@@ -64,12 +66,12 @@ public final class DefineFontName implements DefineTag {
      * @param coder
      *            an SWFDecoder object that contains the encoded Flash data.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    public DefineFontName(final SWFDecoder coder) throws CoderException {
+    public DefineFontName(final SWFDecoder coder) throws IOException {
         final int start = coder.getPointer();
-        length = coder.readHeader();
+        length = coder.readLength();
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
         identifier = coder.readUI16();
@@ -175,7 +177,7 @@ public final class DefineFontName implements DefineTag {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         final int start = coder.getPointer();
         coder.writeHeader(MovieTypes.DEFINE_FONT_NAME, length);
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);

@@ -34,7 +34,7 @@ package com.flagstone.transform.font;
 
 import com.flagstone.transform.Constants;
 import com.flagstone.transform.SWF;
-import com.flagstone.transform.coder.CoderException;
+import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
@@ -88,11 +88,11 @@ public final class Kerning implements SWFEncodeable {
      *            type of object and to pass information on how objects are
      *            decoded.
      *
-     * @throws CoderException
+     * @throws IOException
      *             if an error occurs while decoding the data.
      */
     public Kerning(final SWFDecoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         size = context.getVariables().containsKey(Context.WIDE_CODES) ? 2 : 1;
         leftGlyph = coder.readWord(size, false);
         rightGlyph = coder.readWord(size, false);
@@ -201,7 +201,7 @@ public final class Kerning implements SWFEncodeable {
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
-            throws CoderException {
+            throws IOException {
         size = context.getVariables().containsKey(Context.WIDE_CODES) ? 2 : 1;
         coder.writeWord(leftGlyph, size);
         coder.writeWord(rightGlyph, size);
