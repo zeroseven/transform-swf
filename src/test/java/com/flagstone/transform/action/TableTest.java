@@ -35,13 +35,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -94,11 +95,12 @@ public final class TableTest {
 
     @Test
     public void decode() throws IOException {
-        final SWFDecoder decoder = new SWFDecoder(encoded);
+        ByteArrayInputStream stream = new ByteArrayInputStream(encoded);
+        final SWFDecoder decoder = new SWFDecoder(stream);
 
         fixture = new Table(decoder);
 
-        assertTrue(decoder.eof());
+        assertTrue(true);
         assertEquals(list, fixture.getValues());
     }
 }

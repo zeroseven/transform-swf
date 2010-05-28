@@ -34,9 +34,11 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+
 import org.junit.Test;
 
-import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -76,11 +78,11 @@ public final class FrameLabelCodingTest {
         final byte[] binary = new byte[] {(byte) 0xC7, 0x0A, 0x46, 0x72, 0x61,
                 0x6D, 0x65, 0x00, 0x01 };
 
-        final SWFDecoder decoder = new SWFDecoder(binary);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
+        final SWFDecoder decoder = new SWFDecoder(stream);
         final FrameLabel object = new FrameLabel(decoder);
 
         assertEquals(NOT_DECODED, "Frame", object.getLabel());
-        assertTrue(NOT_FULLY_DECODED, decoder.eof());
    }
 
     @Test
@@ -88,10 +90,10 @@ public final class FrameLabelCodingTest {
         final byte[] binary = new byte[] {(byte) 0xFF, 0x0A, 0x07, 0x00, 0x00,
                 0x00, 0x46, 0x72, 0x61, 0x6D, 0x65, 0x00, 0x01 };
 
-        final SWFDecoder decoder = new SWFDecoder(binary);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
+        final SWFDecoder decoder = new SWFDecoder(stream);
         final FrameLabel object = new FrameLabel(decoder);
 
         assertEquals(NOT_DECODED, "Frame", object.getLabel());
-        assertTrue(NOT_FULLY_DECODED, decoder.eof());
    }
 }

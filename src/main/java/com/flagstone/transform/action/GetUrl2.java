@@ -31,10 +31,10 @@
 
 package com.flagstone.transform.action;
 
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -224,7 +224,7 @@ public final class GetUrl2 implements Action {
      *             if an error occurs while decoding the data.
      */
     public GetUrl2(final SWFDecoder coder) throws IOException {
-        coder.readUI16();
+        coder.readUnsignedShort();
         request = coder.readByte();
     }
 

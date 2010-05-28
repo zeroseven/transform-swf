@@ -31,8 +31,8 @@
 
 package com.flagstone.transform.image;
 
+import com.flagstone.transform.coder.BigDecoder;
 import com.flagstone.transform.coder.Coder;
-import com.flagstone.transform.coder.FLVDecoder;
 
 /**
  * JPEGInfo is used to extract the width and height from a JPEG encoded image.
@@ -67,7 +67,7 @@ public final class JPEGInfo {
      * @param image the image data.
      */
     public void decode(final byte[] image) {
-        final FLVDecoder coder = new FLVDecoder(image);
+        final BigDecoder coder = new BigDecoder(image);
         int marker;
         int size;
         while (!coder.eof()) {

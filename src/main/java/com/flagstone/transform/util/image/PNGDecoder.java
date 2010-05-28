@@ -45,7 +45,7 @@ import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
-import com.flagstone.transform.coder.FLVDecoder;
+import com.flagstone.transform.coder.BigDecoder;
 import com.flagstone.transform.coder.ImageTag;
 import com.flagstone.transform.image.DefineImage;
 import com.flagstone.transform.image.DefineImage2;
@@ -246,7 +246,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
         buffer.read(bytes);
         buffer.close();
 
-        final FLVDecoder coder = new FLVDecoder(bytes);
+        final BigDecoder coder = new BigDecoder(bytes);
 
         int length = 0;
         int chunkType = 0;
@@ -313,7 +313,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
      * @param coder the decoder containing the image data.
      * @throws DataFormatException is the image contains an unsupported format.
      */
-    private void decodeIHDR(final FLVDecoder coder) throws DataFormatException {
+    private void decodeIHDR(final BigDecoder coder) throws DataFormatException {
         width = coder.readUI32();
         height = coder.readUI32();
         bitDepth = coder.readByte();
@@ -357,7 +357,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
      * @param coder the decoder containing the image data.
      * @param length the length of the block in bytes.
      */
-    private void decodePLTE(final FLVDecoder coder, final int length) {
+    private void decodePLTE(final BigDecoder coder, final int length) {
         if (colorType == 3) {
             final int paletteSize = length / 3;
             int index = 0;
@@ -381,7 +381,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
      * @param coder the decoder containing the image data.
      * @param length the length of the block in bytes.
      */
-    private void decodeTRNS(final FLVDecoder coder, final int length) {
+    private void decodeTRNS(final BigDecoder coder, final int length) {
         int index = 0;
 
         switch (colorType) {
@@ -416,7 +416,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
      * @param coder the decoder containing the image data.
      * @param length the length of the block in bytes.
      */
-    private void decodeIDAT(final FLVDecoder coder, final int length) {
+    private void decodeIDAT(final BigDecoder coder, final int length) {
         final int currentLength = chunkData.length;
         final int newLength = currentLength + length;
 
@@ -567,7 +567,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
 
                 System.arraycopy(current, 0, previous, 0, scanLength);
 
-                final FLVDecoder coder = new FLVDecoder(current);
+                final BigDecoder coder = new BigDecoder(current);
 
                 for (col = colStart; col < width; col += colInc) {
                     switch (colorType) {
@@ -644,7 +644,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
      * @param col the column number of the pixel in the image.
      * @throws DataFormatException if the pixel data cannot be decoded.
      */
-    private void decodeGreyscale(final FLVDecoder coder, final int row,
+    private void decodeGreyscale(final BigDecoder coder, final int row,
             final int col) throws DataFormatException {
         int pixel = 0;
         byte colour = 0;
@@ -689,7 +689,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
      * @param col the column number of the pixel in the image.
      * @throws DataFormatException if the pixel data cannot be decoded.
      */
-    private void decodeTrueColour(final FLVDecoder coder, final int row,
+    private void decodeTrueColour(final BigDecoder coder, final int row,
             final int col) throws DataFormatException {
         int pixel = 0;
         byte colour = 0;
@@ -719,7 +719,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
      * @param col the column number of the pixel in the image.
      * @throws DataFormatException if the pixel data cannot be decoded.
      */
-    private void decodeIndexedColour(final FLVDecoder coder, final int row,
+    private void decodeIndexedColour(final BigDecoder coder, final int row,
             final int col) throws DataFormatException {
         int index = 0;
 
@@ -752,7 +752,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
      * @param col the column number of the pixel in the image.
      * @throws DataFormatException if the pixel data cannot be decoded.
      */
-    private void decodeAlphaGreyscale(final FLVDecoder coder, final int row,
+    private void decodeAlphaGreyscale(final BigDecoder coder, final int row,
             final int col) throws DataFormatException {
         int pixel = 0;
         byte colour = 0;
@@ -803,7 +803,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
      * @param col the column number of the pixel in the image.
      * @throws DataFormatException if the pixel data cannot be decoded.
      */
-    private void decodeAlphaTrueColour(final FLVDecoder coder, final int row,
+    private void decodeAlphaTrueColour(final BigDecoder coder, final int row,
             final int col) throws DataFormatException {
         int pixel = 0;
         byte colour = 0;

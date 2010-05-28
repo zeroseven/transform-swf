@@ -146,10 +146,13 @@ public final class DefineMorphShape2 implements DefineTag {
      */
     public DefineMorphShape2(final SWFDecoder coder, final Context context)
             throws IOException {
-        final int start = coder.getPointer();
-        length = coder.readLength();
-        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
-        identifier = coder.readUI16();
+        length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
+        if (length == Coder.IS_EXTENDED) {
+            length = coder.readInt();
+        }
+        coder.mark();
+        coder.mark();
+        identifier = coder.readUnsignedShort();
 
         final Map<Integer, Integer> vars = context.getVariables();
         vars.put(Context.TRANSPARENT, 1);
@@ -165,13 +168,13 @@ public final class DefineMorphShape2 implements DefineTag {
         lineStyles = new ArrayList<MorphLineStyle2>();
         coder.readByte();
 
-        final int shapeStart = coder.getPointer() + (coder.readUI32() << 3);
+        final int offsetToEnd = coder.readInt();
 
         int fillStyleCount = coder.readByte();
 
         if (vars.containsKey(Context.ARRAY_EXTENDED)
                 && (fillStyleCount == EXTENDED)) {
-            fillStyleCount = coder.readUI16();
+            fillStyleCount = coder.readUnsignedShort();
         }
 
         final SWFFactory<FillStyle> decoder = context.getRegistry()
@@ -185,23 +188,25 @@ public final class DefineMorphShape2 implements DefineTag {
 
         if (vars.containsKey(Context.ARRAY_EXTENDED)
                 && (lineStyleCount == EXTENDED)) {
-            lineStyleCount = coder.readUI16();
+            lineStyleCount = coder.readUnsignedShort();
         }
 
         for (int i = 0; i < lineStyleCount; i++) {
             lineStyles.add(new MorphLineStyle2(coder, context));
         }
 
-        final int bytesRead = (coder.getPointer() - start) >> 3;
-        final int endSize = (end - shapeStart) >> 3;
-        final int startSize = length - bytesRead - endSize;
-
         if (context.getRegistry().getShapeDecoder() == null) {
+            int size = coder.bytesRead() - offsetToEnd;
+            coder.unmark();
+
             startShape = new Shape();
-            startShape.add(new ShapeData(new byte[startSize]));
+            startShape.add(new ShapeData(new byte[size]));
+
+            size = length - coder.bytesRead();
+            coder.unmark();
 
             endShape = new Shape();
-            endShape.add(new ShapeData(new byte[endSize]));
+            endShape.add(new ShapeData(new byte[size]));
         } else {
             startShape = new Shape(coder, context);
             endShape = new Shape(coder, context);
@@ -210,12 +215,7 @@ public final class DefineMorphShape2 implements DefineTag {
         vars.remove(Context.TRANSPARENT);
         vars.remove(Context.ARRAY_EXTENDED);
         vars.remove(Context.TYPE);
-
-        if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(),
-                    start >> Coder.BITS_TO_BYTES, length,
-                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
-        }
+        coder.unmark(length);
     }
 
     /**

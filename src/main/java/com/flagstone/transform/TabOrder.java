@@ -32,6 +32,7 @@
 package com.flagstone.transform;
 
 import java.io.IOException;
+
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.MovieTypes;
@@ -73,8 +74,9 @@ public final class TabOrder implements MovieTag {
      *             if an error occurs while decoding the data.
      */
     public TabOrder(final SWFDecoder coder) throws IOException {
-        layer = coder.readUI16();
-        index = coder.readUI16();
+        coder.readUnsignedShort();
+        layer = coder.readUnsignedShort();
+        index = coder.readUnsignedShort();
     }
 
     /**

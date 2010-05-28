@@ -30,8 +30,9 @@
  */
 package com.flagstone.transform;
 
-import com.flagstone.transform.coder.Coder;
 import java.io.IOException;
+
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.MovieTypes;
@@ -81,14 +82,16 @@ public final class FrameLabel implements MovieTag {
      *             if an error occurs while decoding the data.
      */
     public FrameLabel(final SWFDecoder coder) throws IOException {
-        length = coder.readLength();
-        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
-
+        length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
+        if (length == Coder.IS_EXTENDED) {
+            length = coder.readInt();
+        }
+        coder.mark();
         label = coder.readString();
-
-        if (coder.getPointer() < end) {
+        if (coder.bytesRead() < length) {
             anchor = coder.readByte() != 0;
         }
+        coder.unmark(length);
     }
 
     /**

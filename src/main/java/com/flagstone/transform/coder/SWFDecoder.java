@@ -33,143 +33,463 @@ package com.flagstone.transform.coder;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Stack;
 
 
 /**
- * SWFDecoder extends LittleEndianDecoder by adding a context used to pass
- * information between classes during decoding and a factory class for
- * generating instances of objects.
+ * SWFDecoder is used to decode the data from a Flash file.
  */
-//TODO(class)
-public final class SWFDecoder extends Decoder {
+@SuppressWarnings("PMD.TooManyMethods")
+public final class SWFDecoder {
+    /** The default size, in bytes, for the internal buffer. */
+    public static final int BUFFER_SIZE = 4096;
+    /** The default size, in bytes, for the reading strings. */
+    public static final int STR_BUFFER_SIZE = 1024;
+    /** The underlying input stream. */
+    private final transient InputStream stream;
+    /** The buffer for data read from the stream. */
+    private final transient byte[] buffer;
+    /** A buffer used for reading null terminated strings. */
+    private transient byte[] stringBuffer;
+    /** The character encoding used for strings. */
+    private transient String encoding;
+    /** Stack for storing file locations. */
+    private final transient Stack<Integer>locations;
+    /** The position of the buffer relative to the start of the stream. */
+    private transient int pos;
+    /** The position from the start of the buffer. */
+    private transient int index;
+    /** The offset in bits in the current buffer location. */
+    private transient int offset;
+    /** The number of bytes available in the current buffer. */
+    private transient int size;
 
     /**
-     * Bit mask for extracting the length field from the header word.
-     */
-    private static final int LENGTH_FIELD = 0x3F;
-    /**
-     * Reserved length indicating length is encoded in next 32-bit word.
-     */
-    private static final int IS_EXTENDED = 63;
-
-    public static final int BIT7 = 0x0080;
-    public static final int BIT6 = 0x0040;
-    public static final int BIT5 = 0x0020;
-    public static final int BIT4 = 0x0010;
-    public static final int BIT3 = 0x0008;
-    public static final int BIT2 = 0x0004;
-    public static final int BIT1 = 0x0002;
-    public static final int BIT0 = 0x0001;
-
-    public static final int NIB1 = 0x000C;
-    public static final int NIB0 = 0x0003;
-
-    private transient int type;
-    private transient int length;
-    private transient int bits;
-
-    private transient InputStream stream;
-
-    /**
-     * Creates a SWFDecoder object initialised with the data to be decoded.
+     * Create a new SWFDecoder for the underlying InputStream with the
+     * specified buffer size.
      *
-     * @param data
-     *            an array of bytes to be decoded.
+     * @param streamIn the stream from which data will be read.
+     * @param length the size in bytes of the buffer.
      */
-    public SWFDecoder(final byte[] data) {
-        super(data);
-    }
-
-    public SWFDecoder(final InputStream streamIn) {
-        super(new byte[100]);
+    public SWFDecoder(final InputStream streamIn, final int length) {
         stream = streamIn;
-    }
-
-    public int prefetchByte() {
-        bits = data[index++];
-        return bits;
-    }
-
-    public boolean getBool(final int mask) {
-        return (bits & mask) != 0;
-    }
-
-    public int getBit(final int mask) {
-        return bits & mask;
+        buffer = new byte[length];
+        stringBuffer = new byte[STR_BUFFER_SIZE];
+        encoding = "UTF-8";
+        locations = new Stack<Integer>();
+        pos = 0;
     }
 
     /**
-     * Read an unsigned 16-bit integer.
+     * Create a new SWFDecoder for the underlying InputStream using the
+     * default buffer size.
      *
-     * @return the value read.
+     * @param streamIn the stream from which data will be read.
      */
-    public int readUI16() {
-        int value = data[index++] & UNSIGNED_BYTE_MASK;
-        value |= (data[index++] & UNSIGNED_BYTE_MASK) << ALIGN_BYTE_1;
-        return value;
+    public SWFDecoder(final InputStream streamIn) {
+        stream = streamIn;
+        buffer = new byte[BUFFER_SIZE];
+        stringBuffer = new byte[BUFFER_SIZE];
+        encoding = "UTF-8";
+        locations = new Stack<Integer>();
+        pos = 0;
     }
 
     /**
-     * Read an unsigned 16-bit integer.
+     * Sets the character encoding scheme used when encoding or decoding
+     * strings.
      *
-     * @return the value read.
+     * @param charSet
+     *            the name of the character set used to encode strings.
      */
-    public int readSI16() {
-        int value = data[index++] & UNSIGNED_BYTE_MASK;
-        value |= data[index++] << ALIGN_BYTE_1;
-        return value;
+    public void setEncoding(final String charSet) {
+        encoding = charSet;
     }
 
     /**
-     * Read an unsigned 32-bit integer.
-     *
-     * @return the value read.
+     * Remember the current position.
      */
-    public int readUI32() {
-        int value = data[index++] & UNSIGNED_BYTE_MASK;
-        value |= (data[index++] & UNSIGNED_BYTE_MASK) << ALIGN_BYTE_1;
-        value |= (data[index++] & UNSIGNED_BYTE_MASK) << ALIGN_BYTE_2;
-        value |= (data[index++] & UNSIGNED_BYTE_MASK) << ALIGN_BYTE_3;
-        return value;
+    public void mark() {
+        locations.push(pos + index);
     }
 
     /**
-     * Read an unsigned 32-bit integer.
-     *
-     * @return the value read.
+     * Discard the last saved position.
      */
-    public int readSI32() {
-        int value = data[index++] & UNSIGNED_BYTE_MASK;
-        value |= (data[index++] & UNSIGNED_BYTE_MASK) << ALIGN_BYTE_1;
-        value |= (data[index++] & UNSIGNED_BYTE_MASK) << ALIGN_BYTE_2;
-        value |= data[index++] << ALIGN_BYTE_3;
-        return value;
+    public void unmark() {
+        locations.pop();
     }
 
     /**
-     * Read a word.
+     * Compare the number of bytes read since the last saved position. The last
+     * saved position is discarded.
      *
-     * @param numberOfBytes
-     *            the number of bytes read in the range 1..4.
+     * @param expected the expected number of bytes read.
+     *
+     * @throws IOException if the number of bytes read is different from the
+     * expected number.
+     */
+    public void unmark(final int expected) throws IOException {
+        if (bytesRead() != expected) {
+            throw new CoderException(locations.peek(), expected,
+                    bytesRead() - expected);
+        }
+        locations.pop();
+    }
+
+    /**
+     * Get the number of bytes read from the last saved position.
+     *
+     * @return the number of bytes read since the mark() method was last called.
+     */
+    public int bytesRead() {
+        int count;
+        if (pos == 0) {
+            count = index - locations.peek();
+        } else {
+            count = (pos + index) - locations.peek();
+        }
+        return count;
+    }
+
+    /**
+     * Skips over and discards n bytes of data.
+     *
+     * @param count the number of bytes to skip.
+     *
+     * @throws IOException if an error occurs reading from the underlying
+     * input stream.
+     */
+    public void skip(final int count) throws IOException {
+        final int diff = size - index;
+        if (count < diff) {
+            index += count;
+        } else {
+            final int bytesSkipped = diff;
+            stream.skip(count - bytesSkipped);
+            pos += count - bytesSkipped;
+            index = size;
+            fill();
+        }
+    }
+
+    /**
+     * Count the number of consecutive bytes from the current buffer position
+     * that match the specified value, up to the end of the buffer.
+     *
+     * This method is used when dealing with badly formed tags (DefineText,
+     * DefineText2) that often contain blocks of zeroes, but otherwise are
+     * valid.
+     *
+     * @param value the value to compare.
+     * @return the number of matching bytes.
+     *
+     * @throws IOException if an error occurs reading from the underlying
+     * input stream.
+     */
+    public int count(final int value) throws IOException {
+        int count = 0;
+        fill();
+        for (int i = index; i < size; i++) {
+            if ((buffer[index + i] & Coder.BYTE_MASK) == value) {
+                count++;
+            } else {
+                break;
+            }
+        }
+        return count;
+    }
+
+    /**
+     * Changes the location to the next byte boundary.
+     */
+    public void alignToByte() {
+        if (offset > 0) {
+            index += 1;
+            offset = 0;
+        }
+    }
+
+    /**
+     * Fill the internal buffer. Any unread bytes are copied to the start of
+     * the buffer and the remaining space is filled with data from the
+     * underlying stream.
+     *
+     * @throws IOException if an error occurs reading from the underlying
+     * input stream.
+     */
+    private void fill() throws IOException {
+        final int diff = size - index;
+        pos += index;
+
+        if (index < size) {
+            for (int i = 0; i < diff; i++) {
+                buffer[i] = buffer[index++];
+            }
+        }
+
+        int bytesRead = 0;
+        int bytesToRead = buffer.length - diff;
+
+        index = diff;
+        size = diff;
+
+        do {
+            bytesRead = stream.read(buffer, index, bytesToRead);
+            if (bytesRead == -1) {
+                bytesToRead = 0;
+            } else {
+                index += bytesRead;
+                size += bytesRead;
+                bytesToRead -= bytesRead;
+            }
+        } while (bytesToRead > 0);
+
+        index = 0;
+    }
+
+    /**
+     * Read a bit field.
+     *
+     * @param numberOfBits
+     *            the number of bits to read.
      *
      * @param signed
-     *            indicates whether the value read is signed (true) or unsigned
-     *            (false).
+     *            indicates whether the integer value read is signed.
      *
      * @return the value read.
+     *
+     * @throws IOException if an error occurs reading from the underlying
+     * input stream.
      */
-    public int readWord(final int numberOfBytes, final boolean signed) {
+    public int readBits(final int numberOfBits, final boolean signed)
+            throws IOException {
+
+        int pointer = (index << 3) + offset;
+
+        if (((size << 3) - pointer) < numberOfBits) {
+            fill();
+            pointer = (index << 3) + offset;
+        }
+
         int value = 0;
 
-        for (int i = 0; i < numberOfBytes; i++) {
-            value += (data[index++] & UNSIGNED_BYTE_MASK) << (i << 3);
+        if (numberOfBits > 0) {
+
+            for (int i = Coder.BITS_PER_INT; (i > 0)
+                    && (index < buffer.length); i -= 8) {
+                value |= (buffer[index++] & Coder.BYTE_MASK) << (i - 8);
+            }
+
+            value <<= offset;
+
+            if (signed) {
+                value >>= Coder.BITS_PER_INT - numberOfBits;
+            } else {
+                value >>>= Coder.BITS_PER_INT - numberOfBits;
+            }
+
+            pointer += numberOfBits;
+            index = pointer >>> Coder.BITS_TO_BYTES;
+            offset = pointer & 7;
         }
 
-        if (signed) {
-            value <<= 32 - (numberOfBytes << 3);
-            value >>= 32 - (numberOfBytes << 3);
-        }
+        return value;
+    }
 
+    /**
+     * Read an unsigned byte but do not advance the internal pointer.
+     *
+     * @return an 8-bit unsigned value.
+     *
+     * @throws IOException if an error occurs reading from the underlying
+     * input stream.
+     */
+    public int scanByte() throws IOException {
+        if (size - index < 1) {
+            fill();
+        }
+        return buffer[index] & Coder.BYTE_MASK;
+    }
+
+    /**
+     * Read an unsigned byte.
+     *
+     * @return an 8-bit unsigned value.
+     *
+     * @throws IOException if an error occurs reading from the underlying
+     * input stream.
+     */
+    public int readByte() throws IOException {
+        if (size - index < 1) {
+            fill();
+        }
+        return buffer[index++] & Coder.BYTE_MASK;
+    }
+
+    /**
+     * Reads an array of bytes.
+     *
+     * @param bytes
+     *            the array that will contain the bytes read.
+     *
+     * @return the array of bytes.
+     *
+     * @throws IOException if an error occurs reading from the underlying
+     * input stream.
+     */
+    public byte[] readBytes(final byte[] bytes) throws IOException {
+        final int wanted = bytes.length;
+        int dest = 0;
+        int read = 0;
+
+        int available;
+        int remaining;
+
+        while (read < wanted) {
+            available = size - index;
+            remaining = wanted - read;
+            if (available > remaining) {
+                available = remaining;
+            }
+            System.arraycopy(buffer, index, bytes, dest, available);
+            read += available;
+            index += available;
+            dest += available;
+
+            if (index == size) {
+                fill();
+            }
+        }
+        return bytes;
+    }
+
+    /**
+     * Read a string using the default character set defined in the decoder.
+     *
+     * @param length
+     *            the number of bytes to read.
+     *
+     * @return the decoded string.
+     *
+     * @throws IOException if an error occurs reading from the underlying
+     * input stream.
+     */
+    public String readString(final int length) throws IOException {
+        return new String(readBytes(new byte[length]), 0, length, encoding);
+    }
+
+    /**
+     * Read a null-terminated string using the default character set defined in
+     * the decoder.
+     *
+     * @return the decoded string.
+     *
+     * @throws IOException if an error occurs reading from the underlying
+     * input stream.
+     */
+    public String readString() throws IOException {
+        int start = index;
+        int length = 0;
+        int available;
+        int dest = 0;
+        boolean finished = false;
+        int count;
+
+        while (!finished) {
+            available = size - index;
+            if (available == 0) {
+                fill();
+                available = size - index;
+            }
+            start = index;
+            count = 0;
+            for (int i = 0; i < available; i++) {
+                if (buffer[index++] == 0) {
+                    finished = true;
+                    break;
+                } else {
+                    length++;
+                    count++;
+                }
+            }
+            if (stringBuffer.length < length) {
+                stringBuffer = Arrays.copyOf(stringBuffer, length << 2);
+            }
+            System.arraycopy(buffer, start, stringBuffer, dest, count);
+            dest += length;
+        }
+        return new String(stringBuffer, 0, length, encoding);
+    }
+
+    /**
+     * Read an unsigned 16-bit integer.
+     *
+     * @return the value read.
+     *
+     * @throws IOException if an error occurs reading from the underlying
+     * input stream.
+     */
+    public int scanUnsignedShort() throws IOException {
+        if (size - index < 2) {
+            fill();
+        }
+        int value = buffer[index] & Coder.BYTE_MASK;
+        value |= (buffer[index + 1] & Coder.BYTE_MASK) << Coder.BYTE1;
+        return value;
+    }
+
+    /**
+     * Read an unsigned 16-bit integer.
+     *
+     * @return the value read.
+     *
+     * @throws IOException if an error occurs reading from the underlying
+     * input stream.
+     */
+    public int readUnsignedShort() throws IOException {
+        if (size - index < 2) {
+            fill();
+        }
+        int value = buffer[index++] & Coder.BYTE_MASK;
+        value |= (buffer[index++] & Coder.BYTE_MASK) << Coder.BYTE1;
+        return value;
+    }
+
+    /**
+     * Read an unsigned 16-bit integer.
+     *
+     * @return the value read.
+     *
+     * @throws IOException if an error occurs reading from the underlying
+     * input stream.
+     */
+    public int readSignedShort() throws IOException {
+        if (size - index < 2) {
+            fill();
+        }
+        int value = buffer[index++] & Coder.BYTE_MASK;
+        value |= buffer[index++] << Coder.BYTE1;
+        return value;
+    }
+
+    /**
+     * Read an unsigned 32-bit integer.
+     *
+     * @return the value read.
+     *
+     * @throws IOException if an error occurs reading from the underlying
+     * input stream.
+     */
+    public int readInt() throws IOException {
+        if (size - index < 4) {
+            fill();
+        }
+        int value = buffer[index++] & Coder.BYTE_MASK;
+        value |= (buffer[index++] & Coder.BYTE_MASK) << Coder.BYTE1;
+        value |= (buffer[index++] & Coder.BYTE_MASK) << Coder.BYTE2;
+        value |= (buffer[index++] & Coder.BYTE_MASK) << Coder.BYTE3;
         return value;
     }
 
@@ -177,40 +497,27 @@ public final class SWFDecoder extends Decoder {
      * Read a 32-bit unsigned integer, encoded using a variable number of bytes.
      *
      * @return the value read.
+     *
+     * @throws IOException if an error occurs reading from the underlying
+     * input stream.
      */
-    public int readVariableU32() {
+    public int readVarInt() throws IOException {
 
-        int value = data[index++] & UNSIGNED_BYTE_MASK;
+        if (size - index < 5) {
+            fill();
+        }
 
-        final int mask = 0xFFFFFFFF;
-        int test = 0x00000080;
+        int value = buffer[index++] & Coder.BYTE_MASK;
+        final int mask = -1;
+        int test = Coder.BIT7;
         int step = 7;
 
         while ((value & test) != 0) {
-            value = ((data[index++] & UNSIGNED_BYTE_MASK) << step)
+            value = ((buffer[index++] & Coder.BYTE_MASK) << step)
                 + (value & mask >>> (32 - step));
             test <<= 7;
             step += 7;
         }
-//        if ((value & 0x00000080) != 0) {
-//            value = ((data[index++] & 0x000000FF) << 7)
-//        + (value & 0x0000007f);
-//
-//            if ((value & 0x00004000) != 0) {
-//                value = ((data[index++] & 0x000000FF) << 14)
-//                        + (value & 0x00003fff);
-//
-//                if ((value & 0x00200000) != 0) {
-//                    value = ((data[index++] & 0x000000FF) << 21)
-//                            + (value & 0x001fffff);
-//
-//                    if ((value & 0x10000000) != 0) {
-//                        value = ((data[index++] & 0x000000FF) << 28)
-//                                + (value & 0x0fffffff);
-//                    }
-//                }
-//            }
-//        }
         return value;
     }
 
@@ -218,9 +525,12 @@ public final class SWFDecoder extends Decoder {
      * Read a single-precision floating point number.
      *
      * @return the value.
+     *
+     * @throws IOException if an error occurs reading from the underlying
+     * input stream.
      */
-    public float readHalf() {
-        final int bits = readWord(2, false);
+    public float readHalf() throws IOException {
+        final int bits = readUnsignedShort();
         final int sign = (bits >> 15) & 0x00000001;
         int exp = (bits >> 10) & 0x0000001f;
         int mantissa = bits & 0x000003ff;
@@ -255,85 +565,5 @@ public final class SWFDecoder extends Decoder {
                     | (exp << 23) | mantissa);
         }
         return value;
-    }
-
-    /**
-     * Read a single-precision floating point number.
-     *
-     * @return the value.
-     */
-    public float readFloat() {
-        return Float.intBitsToFloat(readWord(4, false));
-    }
-
-    /**
-     * Read a double-precision floating point number.
-     *
-     * @return the value.
-     */
-    public double readDouble() {
-        long longValue = (long) readWord(4, false) << 32;
-        longValue |= readWord(4, false) & 0x00000000FFFFFFFFL;
-
-        return Double.longBitsToDouble(longValue);
-    }
-
-    public int nextHeader() throws IOException {
-        int value = stream.read();
-        value |= stream.read() << 8;
-
-        type = value >> 6;
-        length = value & LENGTH_FIELD;
-
-        if (length == IS_EXTENDED) {
-            length = stream.read();
-            length |= stream.read() << 8;
-            length |= stream.read() << 16;
-            length |= stream.read() << 24;
-        }
-        return type;
-    }
-
-    public void fetchToDecode() throws IOException {
-        index = 0;
-        offset = 0;
-        pointer = 0;
-
-        if (type == MovieTypes.DEFINE_MOVIE_CLIP) {
-            length = 4;
-        }
-
-        if (data.length < length) {
-            data = new byte[length];
-        }
-
-        fetchDirect(data, length);
-    }
-
-    public void fetchDirect(final byte[] bytes, final int len)
-                throws IOException {
-        int bytesRead = 0;
-
-        do {
-            bytesRead = stream.read(bytes, bytesRead, len);
-        } while (bytesRead != -1 && bytesRead < len);
-    }
-
-    /**
-     * Gets the type of the encoded object from the header fields.
-     *
-     * @return the value identifying the object when it is encoded.
-     */
-    public int readType() {
-        return type;
-    }
-
-    /**
-     * Gets the length of the encoded object from the header fields.
-     *
-     * @return the length of the encoded object in bytes.
-     */
-    public int readLength() {
-        return length;
     }
 }

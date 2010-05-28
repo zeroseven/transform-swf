@@ -79,8 +79,8 @@ public final class Table implements Action {
      *             if an error occurs while decoding the data.
      */
     public Table(final SWFDecoder coder) throws IOException {
-        length = coder.readUI16();
-        tableSize = coder.readUI16();
+        length = coder.readUnsignedShort();
+        tableSize = coder.readUnsignedShort();
         values = new ArrayList<String>(tableSize);
 
         if (tableSize > 0) {

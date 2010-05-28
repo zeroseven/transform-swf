@@ -31,9 +31,10 @@
 
 package com.flagstone.transform;
 
+import java.io.IOException;
 import java.util.Arrays;
 
-import java.io.IOException;
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -75,8 +76,11 @@ public final class MovieObject implements MovieTag {
      *             if an error occurs while decoding the data.
      */
     public MovieObject(final SWFDecoder coder) throws IOException {
-        type = coder.readType();
-        length = coder.readLength();
+        type = coder.scanUnsignedShort() >>> 6;
+        length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
+        if (length == Coder.IS_EXTENDED) {
+            length = coder.readInt();
+        }
         data = coder.readBytes(new byte[length]);
     }
 

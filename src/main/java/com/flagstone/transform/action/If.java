@@ -97,8 +97,8 @@ public final class If implements Action {
      *             if an error occurs while decoding the data.
      */
     public If(final SWFDecoder coder) throws IOException {
-        coder.readUI16();
-        offset = coder.readSI16();
+        coder.readUnsignedShort();
+        offset = coder.readSignedShort();
     }
 
     /**

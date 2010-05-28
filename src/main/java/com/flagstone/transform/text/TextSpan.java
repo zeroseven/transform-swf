@@ -31,12 +31,13 @@
 
 package com.flagstone.transform.text;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import com.flagstone.transform.SWF;
-import java.io.IOException;
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.Encoder;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -137,25 +138,26 @@ public final class TextSpan implements SWFEncodeable {
     public TextSpan(final SWFDecoder coder,
             final Context context) throws IOException {
 
-        hasFont = coder.getBool(SWFDecoder.BIT3);
-        hasColor = coder.getBool(SWFDecoder.BIT2);
-        hasY = coder.getBool(SWFDecoder.BIT1);
-        hasX = coder.getBool(SWFDecoder.BIT0);
+        final int bits = coder.readByte();
+        hasFont = (bits & Coder.BIT3) != 0;
+        hasColor = (bits & Coder.BIT2) != 0;
+        hasY = (bits & Coder.BIT1) != 0;
+        hasX = (bits & Coder.BIT0) != 0;
 
         if (hasFont) {
-            identifier = coder.readUI16();
+            identifier = coder.readUnsignedShort();
         }
         if (hasColor) {
             color = new Color(coder, context);
         }
         if (hasX) {
-            offsetX = coder.readSI16();
+            offsetX = coder.readSignedShort();
         }
         if (hasY) {
-            offsetY = coder.readSI16();
+            offsetY = coder.readSignedShort();
         }
         if (hasFont) {
-            height = coder.readSI16();
+            height = coder.readSignedShort();
         }
 
         final int charCount = coder.readByte();
@@ -427,13 +429,13 @@ public final class TextSpan implements SWFEncodeable {
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
-        coder.writeBits(1, 1);
-        coder.writeBits(0, 3);
 
-        coder.writeBool(hasFont);
-        coder.writeBool(hasColor);
-        coder.writeBool(hasY);
-        coder.writeBool(hasX);
+        int bits = Coder.BIT7;
+        bits |= hasFont ? Coder.BIT3 : 0;
+        bits |= hasColor ? Coder.BIT2 : 0;
+        bits |= hasY ? Coder.BIT1 : 0;
+        bits |= hasX ? Coder.BIT0 : 0;
+        coder.writeByte(bits);
 
         if (hasStyle) {
             if (hasFont) {

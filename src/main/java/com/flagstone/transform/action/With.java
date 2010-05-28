@@ -31,11 +31,10 @@
 
 package com.flagstone.transform.action;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.flagstone.transform.coder.Coder;
-import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -87,15 +86,14 @@ public final class With implements Action {
         final SWFFactory<Action> decoder = context.getRegistry()
                 .getActionDecoder();
 
-        coder.readUI16();
-        length = coder.readUI16();
-        final int end = coder.getPointer() + (length << Coder.BITS_TO_BYTES);
-
+        coder.readUnsignedShort();
+        length = coder.readUnsignedShort();
         actions = new ArrayList<Action>();
-
-        while (coder.getPointer() < end) {
+        coder.mark();
+        while (coder.bytesRead() < length) {
             actions.add(decoder.getObject(coder, context));
         }
+        coder.unmark();
     }
 
     /**

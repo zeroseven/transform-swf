@@ -32,13 +32,13 @@
 package com.flagstone.transform.coder;
 
 /** TODO(class). */
-public final class FLVDecoder extends Decoder {
+public final class BigDecoder extends Decoder {
 
     /**
      * Create a FLVDecoder initialised with the specified data.
      * @param data the array of byes to decode.
      */
-    public FLVDecoder(final byte[] data) {
+    public BigDecoder(final byte[] data) {
         super(data);
     }
 

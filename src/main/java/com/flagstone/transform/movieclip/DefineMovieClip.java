@@ -100,18 +100,20 @@ public final class DefineMovieClip implements DefineTag {
      * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    // TODO(optimise)
     public DefineMovieClip(final SWFDecoder coder, final Context context)
             throws IOException {
-        length = coder.readLength();
-        identifier = coder.readUI16();
-        frameCount = coder.readUI16();
+        length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
+        if (length == Coder.IS_EXTENDED) {
+            length = coder.readInt();
+        }
+        identifier = coder.readUnsignedShort();
+        frameCount = coder.readUnsignedShort();
         objects = new ArrayList<MovieTag>();
 
         final SWFFactory<MovieTag> decoder = context.getRegistry()
                 .getMovieDecoder();
 
-        while (coder.nextHeader() != MovieTypes.END) {
+        while (coder.scanUnsignedShort() >> 6 != MovieTypes.END) {
            objects.add(decoder.getObject(coder, context));
         }
     }
@@ -232,7 +234,16 @@ public final class DefineMovieClip implements DefineTag {
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
         final int start = coder.getPointer();
-        coder.writeHeader(MovieTypes.DEFINE_MOVIE_CLIP, length);
+
+        if (length > SWFEncoder.STD_LIMIT) {
+            coder.writeI16((MovieTypes.DEFINE_MOVIE_CLIP
+                    << 6) | Coder.IS_EXTENDED);
+            coder.writeI32(length);
+        } else {
+            coder.writeI16((MovieTypes.DEFINE_MOVIE_CLIP
+                    << 6) | length);
+        }
+
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
         coder.writeI16(identifier);

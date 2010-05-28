@@ -77,7 +77,7 @@ public final class MorphFillStyleDecoder implements SWFFactory<FillStyle> {
             style = new MorphBitmapFill(type, coder);
             break;
         default:
-            throw new CoderException(getClass().getName(), coder.getPointer(),
+            throw new CoderException(getClass().getName(), 0,
                     "Unsupported MorphFillStyle");
         }
         return style;

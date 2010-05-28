@@ -120,19 +120,22 @@ public final class DefineButton2 implements DefineTag {
         vars.put(Context.TYPE, MovieTypes.DEFINE_BUTTON_2);
         vars.put(Context.TRANSPARENT, 1);
 
-        final int start = coder.getPointer();
-        length = coder.readLength();
-        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
-
-        identifier = coder.readUI16();
+        length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
+        if (length == Coder.IS_EXTENDED) {
+            length = coder.readInt();
+        }
+        coder.mark();
+        identifier = coder.readUnsignedShort();
         type = coder.readByte();
         shapes = new ArrayList<ButtonShape>();
 
-        int offsetToNext = coder.readUI16();
+        int offsetToNext = coder.readUnsignedShort();
 
-        while (coder.prefetchByte() != 0) {
+        while (coder.scanByte() != 0) {
             shapes.add(new ButtonShape(coder, context));
         }
+
+        coder.readByte();
 
         events = new ArrayList<ButtonEventHandler>();
 
@@ -140,12 +143,11 @@ public final class DefineButton2 implements DefineTag {
             ButtonEventHandler event;
 
             do {
-                offsetToNext = coder.readUI16();
+                offsetToNext = coder.readUnsignedShort();
 
                 if (offsetToNext == 0) {
-                    event = new ButtonEventHandler(
-                            (end - coder.getPointer() - 16)
-                            >> Coder.BITS_TO_BYTES, coder, context);
+                    event = new ButtonEventHandler(length - coder.bytesRead()
+                            - 2, coder, context);
                 } else {
                     event = new ButtonEventHandler(offsetToNext - 4,
                             coder, context);
@@ -157,12 +159,7 @@ public final class DefineButton2 implements DefineTag {
 
         vars.remove(Context.TYPE);
         vars.remove(Context.TRANSPARENT);
-
-        if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(),
-                    start >> Coder.BITS_TO_BYTES, length,
-                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
-        }
+        coder.unmark(length);
     }
 
     /**

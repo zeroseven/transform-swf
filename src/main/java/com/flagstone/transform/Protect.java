@@ -32,6 +32,8 @@
 package com.flagstone.transform;
 
 import java.io.IOException;
+
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.MovieTypes;
@@ -86,20 +88,24 @@ public final class Protect implements MovieTag {
      *             if an error occurs while decoding the data.
      */
     public Protect(final SWFDecoder coder) throws IOException {
-        length = coder.readLength();
-
+        length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
+        if (length == Coder.IS_EXTENDED) {
+            length = coder.readInt();
+        }
+        coder.mark();
         /*
          * Force a read of the entire password field, including any zero bytes
          * that are encountered.
          */
         if (length > 0) {
-            coder.readUI16();
+            coder.readUnsignedShort();
             password = coder.readString(length - 2);
 
             while (password.charAt(password.length() - 1) == 0) {
                 password = password.substring(0, password.length() - 1);
             }
         }
+        coder.unmark(length);
     }
 
     /**

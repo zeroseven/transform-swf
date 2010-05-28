@@ -42,7 +42,7 @@ import java.net.URLConnection;
 import java.util.Arrays;
 import java.util.zip.DataFormatException;
 
-import com.flagstone.transform.coder.FLVDecoder;
+import com.flagstone.transform.coder.BigDecoder;
 import com.flagstone.transform.coder.ImageTag;
 import com.flagstone.transform.image.DefineJPEGImage2;
 
@@ -130,7 +130,7 @@ public final class JPGDecoder implements ImageProvider, ImageDecoder {
      * were decoded.
      */
     private boolean jpegInfo() {
-        final FLVDecoder coder = new FLVDecoder(image);
+        final BigDecoder coder = new BigDecoder(image);
 
         boolean result;
 

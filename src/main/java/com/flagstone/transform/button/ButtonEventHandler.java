@@ -31,6 +31,7 @@
 
 package com.flagstone.transform.button;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.Iterator;
@@ -39,8 +40,6 @@ import java.util.Set;
 
 import com.flagstone.transform.action.Action;
 import com.flagstone.transform.action.ActionData;
-import com.flagstone.transform.coder.Coder;
-import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
@@ -243,7 +242,7 @@ public final class ButtonEventHandler implements SWFEncodeable {
      */
     public ButtonEventHandler(final int size, final SWFDecoder coder,
             final Context context) throws IOException {
-        final int eventKey = coder.readUI16();
+        final int eventKey = coder.readUnsignedShort();
         event = eventKey & EVENT_MASK;
         key = eventKey & KEY_MASK;
         length = size;
@@ -258,12 +257,11 @@ public final class ButtonEventHandler implements SWFEncodeable {
                 actions.add(new ActionData(coder.readBytes(new byte[length])));
             }
         } else {
-            final int end = coder.getPointer()
-                    + (length << Coder.BYTES_TO_BITS);
-
-            while (coder.getPointer() < end) {
+            coder.mark();
+            while (coder.bytesRead() < length) {
                 actions.add(decoder.getObject(coder, context));
             }
+            coder.unmark();
         }
     }
 

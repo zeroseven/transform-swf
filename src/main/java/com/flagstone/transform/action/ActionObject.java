@@ -31,9 +31,9 @@
 
 package com.flagstone.transform.action;
 
+import java.io.IOException;
 import java.util.Arrays;
 
-import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -73,7 +73,7 @@ public final class ActionObject implements Action {
         type = actionType;
 
         if (type > ActionTypes.HIGHEST_BYTE_CODE) {
-            data = coder.readBytes(new byte[coder.readUI16()]);
+            data = coder.readBytes(new byte[coder.readUnsignedShort()]);
         } else {
             data = new byte[0];
         }

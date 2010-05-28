@@ -68,17 +68,13 @@ public final class QuicktimeMovie implements MovieTag {
      *             if an error occurs while decoding the data.
      */
     public QuicktimeMovie(final SWFDecoder coder) throws IOException {
-        final int start = coder.getPointer();
-        length = coder.readLength();
-        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
-
-        path = coder.readString();
-
-        if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(),
-                    start >> Coder.BITS_TO_BYTES, length,
-                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
+        length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
+        if (length == Coder.IS_EXTENDED) {
+            length = coder.readInt();
         }
+        coder.mark();
+        path = coder.readString(length);
+        coder.unmark(length);
     }
 
     /**

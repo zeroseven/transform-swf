@@ -103,23 +103,18 @@ public final class Place implements MovieTag {
      */
     public Place(final SWFDecoder coder, final Context context)
             throws IOException {
-        final int start = coder.getPointer();
-        length = coder.readLength();
-        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
-
-        identifier = coder.readUI16();
-        layer = coder.readUI16();
+        length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
+        if (length == Coder.IS_EXTENDED) {
+            length = coder.readInt();
+        }
+        coder.mark();
+        identifier = coder.readUnsignedShort();
+        layer = coder.readUnsignedShort();
         transform = new CoordTransform(coder);
-
-        if (coder.getPointer() < end) {
+        if (coder.bytesRead() < length) {
             colorTransform = new ColorTransform(coder, context);
         }
-
-        if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(),
-                    start >> Coder.BITS_TO_BYTES, length,
-                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
-        }
+        coder.unmark(length);
     }
 
     /**

@@ -93,9 +93,9 @@ public final class Envelope implements SWFEncodeable {
          *             if an error occurs while decoding the data.
          */
        public Level(final SWFDecoder coder) throws IOException {
-            mark = coder.readUI32();
-            left = coder.readUI16();
-            right = coder.readUI16();
+            mark = coder.readInt();
+            left = coder.readUnsignedShort();
+            right = coder.readUnsignedShort();
         }
 
         /**

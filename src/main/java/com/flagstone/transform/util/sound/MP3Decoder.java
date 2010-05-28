@@ -44,7 +44,7 @@ import java.util.List;
 import java.util.zip.DataFormatException;
 
 import com.flagstone.transform.coder.Coder;
-import com.flagstone.transform.coder.FLVDecoder;
+import com.flagstone.transform.coder.BigDecoder;
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.sound.DefineSound;
 import com.flagstone.transform.sound.SoundFormat;
@@ -242,7 +242,7 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
      * @throws DataFormatException if the sound data is not in MP3 format.
      */
     private void decodeMP3(final byte[] bytes) throws DataFormatException {
-        FLVDecoder coder = new FLVDecoder(bytes);
+        BigDecoder coder = new BigDecoder(bytes);
         int numberOfFrames = 0;
         int frameStart = 0;
 
@@ -362,7 +362,7 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
      * @param coder the decoder containing the sound data.
      * @return the length of the frame in bytes.
      */
-    private int frameSize(final FLVDecoder coder) {
+    private int frameSize(final BigDecoder coder) {
         int frameSize = 4;
 
         coder.adjustPointer(11);

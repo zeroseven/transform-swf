@@ -31,6 +31,7 @@
 
 package com.flagstone.transform.movieclip;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
@@ -38,7 +39,6 @@ import java.util.Set;
 
 import com.flagstone.transform.action.Action;
 import com.flagstone.transform.action.ActionData;
-import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
@@ -156,7 +156,7 @@ public final class MovieClipEventHandler implements SWFEncodeable {
     public MovieClipEventHandler(final int eventCode, final SWFDecoder coder,
             final Context context) throws IOException {
         event = eventCode;
-        offset = coder.readUI32();
+        offset = coder.readInt();
 
         if ((event & 131072) != 0) {
             keyCode = coder.readByte();
@@ -167,14 +167,15 @@ public final class MovieClipEventHandler implements SWFEncodeable {
 
         final SWFFactory<Action> decoder = context.getRegistry()
                 .getActionDecoder();
-        final int end = coder.getPointer() + (offset << 3);
 
         if (decoder == null) {
             actions.add(new ActionData(coder.readBytes(new byte[offset])));
         } else {
-            while (coder.getPointer() < end) {
+            coder.mark();
+            while (coder.bytesRead() < offset) {
                 actions.add(decoder.getObject(coder, context));
             }
+            coder.unmark();
         }
     }
 

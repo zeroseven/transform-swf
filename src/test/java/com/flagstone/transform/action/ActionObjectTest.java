@@ -35,9 +35,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+
 import org.junit.Test;
 
-import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -113,33 +115,33 @@ public final class ActionObjectTest {
 
     @Test
     public void decode() throws IOException {
-        final SWFDecoder decoder = new SWFDecoder(encoded);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(encoded);
+        final SWFDecoder decoder = new SWFDecoder(stream);
 
         fixture = new ActionObject(decoder.readByte(), decoder);
 
-        assertTrue(decoder.eof());
         assertEquals(TYPE, fixture.getType());
         assertArrayEquals(data, fixture.getData());
     }
 
     @Test
     public void decodeBasic() throws IOException {
-        final SWFDecoder decoder = new SWFDecoder(basic);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(basic);
+        final SWFDecoder decoder = new SWFDecoder(stream);
 
         fixture = new ActionObject(decoder.readByte(), decoder);
 
-        assertTrue(decoder.eof());
         assertEquals(1, fixture.getType());
         assertArrayEquals(null, fixture.getData());
     }
 
     @Test
     public void decodeEmpty() throws IOException {
-        final SWFDecoder decoder = new SWFDecoder(empty);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(empty);
+        final SWFDecoder decoder = new SWFDecoder(stream);
 
         fixture = new ActionObject(decoder.readByte(), decoder);
 
-        assertTrue(decoder.eof());
         assertEquals(TYPE, fixture.getType());
         assertArrayEquals(new byte[0], fixture.getData());
     }

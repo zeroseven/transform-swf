@@ -106,10 +106,12 @@ public final class DefineImage2 implements ImageTag {
      *             if an error occurs while decoding the data.
      */
     public DefineImage2(final SWFDecoder coder) throws IOException {
-        final int start = coder.getPointer();
-        length = coder.readLength();
-        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
-        identifier = coder.readUI16();
+        length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
+        if (length == Coder.IS_EXTENDED) {
+            length = coder.readInt();
+        }
+        coder.mark();
+        identifier = coder.readUnsignedShort();
 
         if (coder.readByte() == 3) {
             pixelSize = 8;
@@ -117,8 +119,8 @@ public final class DefineImage2 implements ImageTag {
             pixelSize = 32;
         }
 
-        width = coder.readUI16();
-        height = coder.readUI16();
+        width = coder.readUnsignedShort();
+        height = coder.readUnsignedShort();
 
         if (pixelSize == 8) {
             tableSize = coder.readByte() + 1;
@@ -126,12 +128,7 @@ public final class DefineImage2 implements ImageTag {
         } else {
             image = coder.readBytes(new byte[length - 7]);
         }
-
-        if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(),
-                    start >> Coder.BITS_TO_BYTES, length,
-                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
-        }
+        coder.unmark(length);
     }
 
     /**

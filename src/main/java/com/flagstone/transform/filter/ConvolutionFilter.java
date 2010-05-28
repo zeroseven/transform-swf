@@ -31,8 +31,10 @@
 
 package com.flagstone.transform.filter;
 
-import com.flagstone.transform.Constants;
 import java.io.IOException;
+
+import com.flagstone.transform.Constants;
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -144,18 +146,18 @@ public final class ConvolutionFilter implements Filter {
             throws IOException {
         cols = coder.readByte();
         rows = coder.readByte();
-        divisor = coder.readFloat();
-        bias = coder.readFloat();
+        divisor = Float.intBitsToFloat(coder.readInt());
+        bias = Float.intBitsToFloat(coder.readInt());
         matrix = new float[rows][cols];
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
-                matrix[i][j] = coder.readFloat();
+                matrix[i][j] = Float.intBitsToFloat(coder.readInt());
             }
         }
         color = new Color(coder, context);
-        coder.prefetchByte();
-        clamp = coder.getBool(SWFDecoder.BIT1);
-        alpha = coder.getBool(SWFDecoder.BIT0);
+        final int bits = coder.readByte();
+        clamp = (bits & Coder.BIT1) != 0;
+        alpha = (bits & Coder.BIT0) != 0;
     }
 
 
@@ -247,8 +249,9 @@ public final class ConvolutionFilter implements Filter {
             }
         }
         color.encode(coder, context);
-        coder.writeBits(0, 6);
-        coder.writeBits(clamp ? 1 : 0, 1);
-        coder.writeBits(alpha ? 1 : 0, 1);
+        int bits = 0;
+        bits |= clamp ? Coder.BIT1 : 0;
+        bits |= alpha ? Coder.BIT0 : 0;
+        coder.writeByte(bits);
     }
 }

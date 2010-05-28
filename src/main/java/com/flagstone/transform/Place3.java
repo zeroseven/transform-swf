@@ -275,19 +275,20 @@ public final class Place3 implements MovieTag {
             throws IOException {
         final Map<Integer, Integer> vars = context.getVariables();
         vars.put(Context.TRANSPARENT, 1);
-        final int start = coder.getPointer();
-        length = coder.readLength();
-        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
+        length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
+        if (length == Coder.IS_EXTENDED) {
+            length = coder.readInt();
+        }
+        coder.mark();
+        int bits = coder.readByte();
+        final boolean hasEvents = (bits & Coder.BIT7) != 0;
+        final boolean hasDepth = (bits & Coder.BIT6) != 0;
+        final boolean hasName = (bits & Coder.BIT5) != 0;
+        final boolean hasRatio = (bits & Coder.BIT4) != 0;
+        final boolean hasColorTransform = (bits & Coder.BIT3) != 0;
+        final boolean hasTransform = (bits & Coder.BIT2) != 0;
 
-        coder.prefetchByte();
-        final boolean hasEvents = coder.getBool(SWFDecoder.BIT7);
-        final boolean hasDepth = coder.getBool(SWFDecoder.BIT6);
-        final boolean hasName = coder.getBool(SWFDecoder.BIT5);
-        final boolean hasRatio = coder.getBool(SWFDecoder.BIT4);
-        final boolean hasColorTransform = coder.getBool(SWFDecoder.BIT3);
-        final boolean hasTransform = coder.getBool(SWFDecoder.BIT2);
-
-        switch ((coder.getBit(0x03))) {
+        switch (bits & 0x03) {
         case 2:
             type = PlaceType.NEW;
             break;
@@ -299,14 +300,14 @@ public final class Place3 implements MovieTag {
             break;
         }
 
-        coder.prefetchByte();
-        hasImage = coder.getBool(SWFDecoder.BIT4);
-        final boolean hasClassName = coder.getBool(SWFDecoder.BIT3);
-        final boolean hasBitmapCache = coder.getBool(SWFDecoder.BIT2);
-        hasBlend = coder.getBool(SWFDecoder.BIT1);
-        hasFilters = coder.getBool(SWFDecoder.BIT0);
+        bits = coder.readByte();
+        hasImage = (bits & Coder.BIT4) != 0;
+        final boolean hasClassName = (bits & Coder.BIT3) != 0;
+        final boolean hasBitmapCache = (bits & Coder.BIT2) != 0;
+        hasBlend = (bits & Coder.BIT1) != 0;
+        hasFilters = (bits & Coder.BIT0) != 0;
 
-        layer = coder.readUI16();
+        layer = coder.readUnsignedShort();
 
         /* The following line implements the logic as described in the SWF 9
          * specification but it appears to be incorrect. The class name is not
@@ -320,7 +321,7 @@ public final class Place3 implements MovieTag {
         }
 
         if ((type == PlaceType.NEW) || (type == PlaceType.REPLACE)) {
-            identifier = coder.readUI16();
+            identifier = coder.readUnsignedShort();
         }
 
         if (hasTransform) {
@@ -332,7 +333,7 @@ public final class Place3 implements MovieTag {
         }
 
         if (hasRatio) {
-            ratio = coder.readUI16();
+            ratio = coder.readUnsignedShort();
         }
 
         if (hasName) {
@@ -340,7 +341,7 @@ public final class Place3 implements MovieTag {
         }
 
         if (hasDepth) {
-            depth = coder.readUI16();
+            depth = coder.readUnsignedShort();
         }
 
         filters = new ArrayList<Filter>();
@@ -368,22 +369,27 @@ public final class Place3 implements MovieTag {
 
         if (hasEvents) {
             int event;
-            final int eventSize = vars.get(Context.VERSION) > SWF.SWF5 ? 4 : 2;
 
-            coder.readUI16();
-            coder.readWord(eventSize, false);
+            coder.readUnsignedShort();
 
-            while ((event = coder.readWord(eventSize, false)) != 0) {
-                events.add(new MovieClipEventHandler(event, coder, context));
+            if (vars.get(Context.VERSION) > SWF.SWF5) {
+                coder.readInt();
+
+                while ((event = coder.readInt()) != 0) {
+                    events.add(new MovieClipEventHandler(event,
+                            coder, context));
+                }
+            } else {
+                coder.readUnsignedShort();
+
+                while ((event = coder.readUnsignedShort()) != 0) {
+                    events.add(new MovieClipEventHandler(event,
+                            coder, context));
+                }
             }
         }
         vars.remove(Context.TRANSPARENT);
-
-        if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(),
-            start >> Coder.BITS_TO_BYTES, length,
-                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
-        }
+        coder.unmark(length);
     }
 
     /**
@@ -841,28 +847,34 @@ public final class Place3 implements MovieTag {
 
         final Map<Integer, Integer> vars = context.getVariables();
         vars.put(Context.TRANSPARENT, 1);
-        coder.writeBool(!events.isEmpty());
-        coder.writeBool(depth != null);
-        coder.writeBool(name != null);
-        coder.writeBool(ratio != null);
-        coder.writeBool(colorTransform != null);
-        coder.writeBool(transform != null);
+        int bits = 0;
+        bits |= events.isEmpty() ? 0 : Coder.BIT7;
+        bits |= depth == null ? 0 : Coder.BIT6;
+        bits |= name == null ? 0 : Coder.BIT5;
+        bits |= ratio == null ? 0 : Coder.BIT4;
+        bits |= colorTransform == null ? 0 : Coder.BIT3;
+        bits |= transform == null ? 0 : Coder.BIT2;
 
-        if (type == PlaceType.MODIFY) {
-            coder.writeBits(1, 2);
-        } else if (type == PlaceType.NEW) {
-            coder.writeBits(2, 2);
-        } else {
-            coder.writeBits(3, 2);
+        switch (type) {
+        case NEW:
+            bits |= 2;
+            break;
+        case REPLACE:
+            bits |= 3;
+            break;
+        default:
+            bits |= 1;
+            break;
         }
+        coder.writeByte(bits);
 
-        coder.writeBits(0, 3);
-        coder.writeBool(hasImage);
-        coder.writeBool(className != null);
-        coder.writeBool(bitmapCache != null);
-        coder.writeBool(hasBlend);
-        coder.writeBool(hasFilters);
-
+        bits = 0;
+        bits |= hasImage ? Coder.BIT4 : 0;
+        bits |= className == null ? 0 : Coder.BIT3;
+        bits |= bitmapCache == null ? 0 : Coder.BIT2;
+        bits |= hasBlend ? Coder.BIT1 : 0;
+        bits |= hasFilters ? Coder.BIT0 : 0;
+        coder.writeByte(bits);
         coder.writeI16(layer);
 
         if (className != null) {

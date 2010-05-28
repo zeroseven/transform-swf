@@ -30,6 +30,8 @@
  */
 package com.flagstone.transform.video;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,8 +51,9 @@ public final class ScreenPacket implements Cloneable {
     private List<ImageBlock> imageBlocks;
 
 
-    public ScreenPacket(final byte[] data) {
-        final SWFDecoder coder = new SWFDecoder(data);
+    public ScreenPacket(final byte[] data) throws IOException {
+        final ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        final SWFDecoder coder = new SWFDecoder(stream);
 
         int info = coder.readByte();
         keyFrame = ((info & 0x00F0) >> 4) == 1;
@@ -297,13 +300,19 @@ public final class ScreenPacket implements Cloneable {
     public byte[] encode() {
         final SWFEncoder coder = new SWFEncoder(length());
 
-        coder.writeBits(keyFrame ? 1 : 2, 4);
-        coder.writeBits(3, 4);
+        int bits = keyFrame ? 16 : 32;
+        bits |= 3;
+        coder.writeByte(bits);
 
-        coder.writeBits((blockWidth / 16) - 1, 4);
-        coder.writeBits(imageWidth, 12);
-        coder.writeBits((blockHeight / 16) - 1, 4);
-        coder.writeBits(imageHeight, 12);
+        int word = ((blockWidth / 16) - 1) << 4;
+        word |= imageWidth & 0x0FFF;
+        coder.writeByte(word >> 8);
+        coder.writeByte(word);
+
+        word = ((blockHeight / 16) - 1) << 4;
+        word |= imageHeight & 0x0FFF;
+        coder.writeByte(word >> 8);
+        coder.writeByte(word);
 
         byte[] blockData;
 
@@ -312,7 +321,8 @@ public final class ScreenPacket implements Cloneable {
                 coder.writeI16(0);
             } else {
                 blockData = block.getBlock();
-                coder.writeBits(blockData.length, 16);
+                coder.writeByte(blockData.length >> 8);
+                coder.writeByte(blockData.length);
                 coder.writeBytes(blockData);
             }
         }

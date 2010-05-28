@@ -112,12 +112,12 @@ public final class FontInfo implements MovieTag {
     // TODO(optimise)
     public FontInfo(final SWFDecoder coder) throws IOException {
         codes = new ArrayList<Integer>();
-
-        final int start = coder.getPointer();
-        length = coder.readLength();
-        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
-
-        identifier = coder.readUI16();
+        length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
+        if (length == Coder.IS_EXTENDED) {
+            length = coder.readInt();
+        }
+        coder.mark();
+        identifier = coder.readUnsignedShort();
         final int nameLength = coder.readByte();
         name = coder.readString(nameLength);
 
@@ -127,25 +127,26 @@ public final class FontInfo implements MovieTag {
             }
         }
 
-        coder.prefetchByte();
-        small = coder.getBool(SWFDecoder.BIT5);
-        encoding = coder.getBit(0x18);
-        italic = coder.getBool(SWFDecoder.BIT2);
-        bold = coder.getBool(SWFDecoder.BIT1);
-        wideCodes = coder.getBool(SWFDecoder.BIT0);
+        final int bits = coder.readByte();
+        small = (bits & Coder.BIT5) != 0;
+        encoding = bits & 0x18;
+        italic = (bits & Coder.BIT2) != 0;
+        bold = (bits & Coder.BIT1) != 0;
+        wideCodes = (bits & Coder.BIT0) != 0;
 
         int bytesRead = 3 + nameLength + 1;
 
-        while (bytesRead < length) {
-            codes.add(coder.readWord(wideCodes ? 2 : 1, false));
-            bytesRead += (wideCodes) ? 2 : 1;
+        if (wideCodes) {
+            while (bytesRead < length) {
+                codes.add(coder.readUnsignedShort());
+                bytesRead += 2;
+            }
+        } else {
+            while (bytesRead++ < length) {
+                codes.add(coder.readByte());
+            }
         }
-
-        if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(),
-                    start >> Coder.BITS_TO_BYTES, length,
-                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
-        }
+        coder.unmark(length);
     }
 
     /**
@@ -437,12 +438,13 @@ public final class FontInfo implements MovieTag {
         coder.writeWord(context.strlen(name) - 1, 1);
         coder.writeString(name);
         coder.adjustPointer(-8);
-        coder.writeBits(0, 2);
-        coder.writeBool(small);
-        coder.writeBits(encoding, 2);
-        coder.writeBool(italic);
-        coder.writeBool(bold);
-        coder.writeBool(wideCodes);
+        int bits = 0;
+        bits |= small ? Coder.BIT5 : 0;
+        bits |= encoding << 3;
+        bits |= italic ? Coder.BIT2 : 0;
+        bits |= bold ? Coder.BIT1 : 0;
+        bits |= wideCodes ? Coder.BIT0 : 0;
+        coder.writeByte(bits);
 
         for (final Integer code : codes) {
             coder.writeWord(code.intValue(), wideCodes ? 2 : 1);

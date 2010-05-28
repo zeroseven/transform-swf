@@ -91,8 +91,8 @@ public final class MorphFocalGradientFill implements FillStyle {
             gradients.add(new MorphGradient(coder, context));
         }
 
-        startFocalPoint = coder.readSI16();
-        endFocalPoint = coder.readSI16();
+        startFocalPoint = coder.readSignedShort();
+        endFocalPoint = coder.readSignedShort();
     }
 
 

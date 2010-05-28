@@ -32,8 +32,9 @@
 package com.flagstone.transform.shape;
 
 
-import com.flagstone.transform.SWF;
 import java.io.IOException;
+
+import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.Encoder;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -90,8 +91,6 @@ public final class Curve implements ShapeRecord {
      *             if an error occurs while decoding the data.
      */
    public Curve(final SWFDecoder coder) throws IOException {
-        // skip over shapeType and edgeType
-        coder.adjustPointer(2);
         size = coder.readBits(4, false) + 2;
         controlX = coder.readBits(size, true);
         controlY = coder.readBits(size, true);

@@ -32,6 +32,7 @@
 package com.flagstone.transform;
 
 import java.io.IOException;
+
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.MovieTypes;
@@ -62,7 +63,8 @@ public final class Free implements MovieTag {
      *             if an error occurs while decoding the data.
      */
     public Free(final SWFDecoder coder) throws IOException {
-        identifier = coder.readUI16();
+        coder.readUnsignedShort();
+        identifier = coder.readUnsignedShort();
     }
 
     /**

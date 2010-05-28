@@ -80,26 +80,21 @@ public final class FontAlignment implements MovieTag {
      * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    public FontAlignment(final SWFDecoder coder)
-            throws IOException {
-        final int start = coder.getPointer();
-        length = coder.readLength();
-        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
-
-        identifier = coder.readUI16();
+    public FontAlignment(final SWFDecoder coder) throws IOException {
+        length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
+        if (length == Coder.IS_EXTENDED) {
+            length = coder.readInt();
+        }
+        coder.mark();
+        identifier = coder.readUnsignedShort();
         hints = coder.readByte();
 
         zones = new ArrayList<GlyphAlignment>();
 
-        while (coder.getPointer() < end) {
+        while (coder.bytesRead() < length) {
             zones.add(new GlyphAlignment(coder));
         }
-
-        if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(),
-                    start >> Coder.BITS_TO_BYTES, length,
-                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
-        }
+        coder.unmark(length);
     }
 
 

@@ -73,24 +73,20 @@ public final class DefineFont4 implements DefineTag {
      */
     public DefineFont4(final SWFDecoder coder)
             throws IOException {
-        final int start = coder.getPointer();
-        length = coder.readLength();
-        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
-
-        identifier = coder.readUI16();
+        length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
+        if (length == Coder.IS_EXTENDED) {
+            length = coder.readInt();
+        }
+        coder.mark();
+        identifier = coder.readUnsignedShort();
 
         final int bits = coder.readByte();
 
         italic = (bits & 0x00000002) == 1;
         bold = (bits & 0x00000002) == 1;
         name = coder.readString();
-        data = coder.readBytes(new byte[(end - coder.getPointer()) >>> 3]);
-
-        if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(),
-                    start >> Coder.BITS_TO_BYTES, length,
-                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
-        }
+        data = coder.readBytes(new byte[length - coder.bytesRead()]);
+        coder.unmark(length);
     }
 
     public DefineFont4(final int uid, final String fontName,
@@ -233,10 +229,11 @@ public final class DefineFont4 implements DefineTag {
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
         coder.writeI16(identifier);
-        coder.writeBits(0, 5);
-        coder.writeBool(data.length > 0);
-        coder.writeBool(italic);
-        coder.writeBool(bold);
+        int bits = 0;
+        bits |= data.length > 0 ? Coder.BIT2 : 0;
+        bits |= italic ? Coder.BIT1 : 0;
+        bits |= bold ? Coder.BIT0 : 0;
+        coder.writeByte(bits);
         coder.writeString(name);
         coder.writeBytes(data);
 

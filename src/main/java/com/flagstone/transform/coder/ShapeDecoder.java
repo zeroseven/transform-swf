@@ -49,25 +49,23 @@ public final class ShapeDecoder implements SWFFactory<ShapeRecord> {
     public ShapeRecord getObject(final SWFDecoder coder, final Context context)
             throws IOException {
 
-        final int tag = context.getVariables().get(Context.TYPE);
-        final int type = coder.readBits(6, false);
+        int type = coder.readBits(2, false);
         ShapeRecord record = null;
 
-        if (type != 0) {
-            coder.adjustPointer(-6);
+        if (type == 2) {
+            record = new Curve(coder);
+        } else if (type == 3) {
+            record = new Line(coder);
+        } else {
+            int flags = (type << 4) + coder.readBits(4, false);
 
-            if ((type & 0x20) > 0) {
-                if ((type & 0x10) > 0) {
-                    record = new Line(coder);
-                } else {
-                    record = new Curve(coder);
-                }
-            } else {
+            if (flags != 0) {
+                final int tag = context.getVariables().get(Context.TYPE);
                 if (tag == MovieTypes.DEFINE_SHAPE_4
                         || tag == MovieTypes.DEFINE_MORPH_SHAPE_2) {
-                    record = new ShapeStyle2(coder, context);
+                    record = new ShapeStyle2(flags, coder, context);
                 } else {
-                    record = new ShapeStyle(coder, context);
+                    record = new ShapeStyle(flags, coder, context);
                 }
             }
         }

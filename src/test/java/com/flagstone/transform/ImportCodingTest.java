@@ -34,12 +34,13 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.junit.Test;
 
-import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -91,12 +92,12 @@ public final class ImportCodingTest {
                 0x03, 0x00, 0x01, 0x00, 0x41, 0x00, 0x02, 0x00, 0x42,
                 0x00, 0x03, 0x00, 0x43, 0x00};
 
-        final SWFDecoder decoder = new SWFDecoder(binary);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
+        final SWFDecoder decoder = new SWFDecoder(stream);
         final Import object = new Import(decoder);
 
         assertEquals(NOT_DECODED, "ABC", object.getUrl());
         assertEquals(NOT_DECODED, map, object.getObjects());
-        assertTrue(NOT_FULLY_DECODED, decoder.eof());
    }
 
     @Test
@@ -110,11 +111,11 @@ public final class ImportCodingTest {
                 0x41, 0x42, 0x43, 0x00, 0x03, 0x00, 0x01, 0x00, 0x41, 0x00,
                 0x02, 0x00, 0x42, 0x00, 0x03, 0x00, 0x43, 0x00};
 
-        final SWFDecoder decoder = new SWFDecoder(binary);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
+        final SWFDecoder decoder = new SWFDecoder(stream);
         final Import object = new Import(decoder);
 
         assertEquals(NOT_DECODED, "ABC", object.getUrl());
         assertEquals(NOT_DECODED, map, object.getObjects());
-        assertTrue(NOT_FULLY_DECODED, decoder.eof());
    }
 }

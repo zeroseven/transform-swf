@@ -30,9 +30,10 @@
  */
 package com.flagstone.transform.datatype;
 
+import java.io.IOException;
+
 import com.flagstone.transform.Constants;
 import com.flagstone.transform.coder.Coder;
-import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
@@ -475,8 +476,8 @@ public final class ColorTransform implements SWFEncodeable {
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
 
-        coder.writeBool(hasAdd);
-        coder.writeBool(hasMultiply);
+        coder.writeBits(hasAdd ? 1 : 0, 1);
+        coder.writeBits(hasMultiply ? 1 : 0, 1);
         coder.writeBits(size, FIELD_SIZE);
 
         if (hasMultiply) {

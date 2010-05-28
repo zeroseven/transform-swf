@@ -209,7 +209,7 @@ public final class Push implements Action {
     public Push(final SWFDecoder coder, final Context context)
                 throws IOException {
 
-        length = coder.readUI16();
+        length = coder.readUnsignedShort();
         values = new ArrayList<Object>();
 
         int valuesLength = length;
@@ -224,7 +224,7 @@ public final class Push implements Action {
                 valuesLength -= 1 + context.strlen(str);
                 break;
             case TYPE_PROPERTY:
-                values.add(new Property(coder.readUI32()));
+                values.add(new Property(coder.readInt()));
                 valuesLength -= LENGTH_PROPERTY;
                 break;
             case TYPE_NULL:
@@ -244,19 +244,21 @@ public final class Push implements Action {
                 valuesLength -= LENGTH_BOOLEAN;
                 break;
             case TYPE_DOUBLE:
-                values.add(coder.readDouble());
+                long longValue = (long) coder.readInt() << 32;
+                longValue |= coder.readInt() & 0x00000000FFFFFFFFL;
+                values.add(Double.longBitsToDouble(longValue));
                 valuesLength -= LENGTH_DOUBLE;
                 break;
             case TYPE_INTEGER:
-                values.add(coder.readSI32());
+                values.add(coder.readInt());
                 valuesLength -= LENGTH_INTEGER;
                 break;
             case TYPE_TINDEX:
-                values.add(new TableIndex(coder.readWord(1, false)));
+                values.add(new TableIndex(coder.readByte()));
                 valuesLength -= LENGTH_TINDEX;
                 break;
             case TYPE_LARGE_TINDEX:
-                values.add(new TableIndex(coder.readUI16()));
+                values.add(new TableIndex(coder.readUnsignedShort()));
                 valuesLength -= LENGTH_LTINDEX;
                 break;
             default:

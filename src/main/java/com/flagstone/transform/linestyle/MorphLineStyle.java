@@ -80,8 +80,8 @@ public final class MorphLineStyle implements SWFEncodeable {
      */
     public MorphLineStyle(final SWFDecoder coder, final Context context)
             throws IOException {
-        startWidth = coder.readUI16();
-        endWidth = coder.readUI16();
+        startWidth = coder.readUnsignedShort();
+        endWidth = coder.readUnsignedShort();
         startColor = new Color(coder, context);
         endColor = new Color(coder, context);
     }

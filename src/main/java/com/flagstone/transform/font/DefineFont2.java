@@ -116,21 +116,21 @@ public final class DefineFont2 implements DefineTag {
     // TODO(optimise)
     public DefineFont2(final SWFDecoder coder, final Context context)
             throws IOException {
-        final int start = coder.getPointer();
-        length = coder.readLength();
-        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
-
-        identifier = coder.readUI16();
-
+        length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
+        if (length == Coder.IS_EXTENDED) {
+            length = coder.readInt();
+        }
+        coder.mark();
+        identifier = coder.readUnsignedShort();
         shapes = new ArrayList<Shape>();
         codes = new ArrayList<Integer>();
         advances = new ArrayList<Integer>();
         bounds = new ArrayList<Bounds>();
         kernings = new ArrayList<Kerning>();
 
-        coder.prefetchByte();
-        final boolean containsLayout = coder.getBool(SWFDecoder.BIT7);
-        final int format = (coder.getBit(SWFDecoder.NIB1) & 0x70) >> 4;
+        final int bits = coder.readByte();
+        final boolean containsLayout = (bits & Coder.BIT7) != 0;
+        final int format = (bits & 0x70) >> 4;
 
         encoding = 0;
 
@@ -142,10 +142,10 @@ public final class DefineFont2 implements DefineTag {
             encoding = 2;
         }
 
-        wideOffsets = coder.getBool(SWFDecoder.BIT3);
-        wideCodes = coder.getBool(SWFDecoder.BIT2);
-        italic = coder.getBool(SWFDecoder.BIT1);
-        bold = coder.getBool(SWFDecoder.BIT0);
+        wideOffsets = (bits & Coder.BIT3) != 0;
+        wideCodes = (bits & Coder.BIT2) != 0;
+        italic = (bits & Coder.BIT1) != 0;
+        bold = (bits & Coder.BIT0) != 0;
 
         final Map<Integer, Integer> vars = context.getVariables();
 
@@ -163,14 +163,24 @@ public final class DefineFont2 implements DefineTag {
             }
         }
 
-        final int glyphCount = coder.readUI16();
+        final int glyphCount = coder.readUnsignedShort();
         final int[] offset = new int[glyphCount + 1];
 
-        for (int i = 0; i < glyphCount; i++) {
-            offset[i] = coder.readWord((wideOffsets) ? 4 : 2, false);
+        if (wideOffsets) {
+            for (int i = 0; i < glyphCount; i++) {
+                offset[i] = coder.readInt();
+            }
+        } else {
+            for (int i = 0; i < glyphCount; i++) {
+                offset[i] = coder.readUnsignedShort();
+            }
         }
 
-        offset[glyphCount] = coder.readWord((wideOffsets) ? 4 : 2, false);
+        if (wideOffsets) {
+            offset[glyphCount] = coder.readInt();
+        } else {
+            offset[glyphCount] = coder.readUnsignedShort();
+        }
 
         Shape shape;
         byte[] data;
@@ -182,24 +192,30 @@ public final class DefineFont2 implements DefineTag {
             shapes.add(shape);
         }
 
-        for (int i = 0; i < glyphCount; i++) {
-            codes.add(coder.readWord((wideCodes) ? 2 : 1, false));
+        if (wideCodes) {
+            for (int i = 0; i < glyphCount; i++) {
+                codes.add(coder.readUnsignedShort());
+            }
+        } else {
+            for (int i = 0; i < glyphCount; i++) {
+                codes.add(coder.readByte());
+            }
         }
 
         if (containsLayout) {
-            ascent = coder.readSI16();
-            descent = coder.readSI16();
-            leading = coder.readSI16();
+            ascent = coder.readSignedShort();
+            descent = coder.readSignedShort();
+            leading = coder.readSignedShort();
 
             for (int i = 0; i < glyphCount; i++) {
-                advances.add(coder.readSI16());
+                advances.add(coder.readSignedShort());
             }
 
             for (int i = 0; i < glyphCount; i++) {
                 bounds.add(new Bounds(coder));
             }
 
-            final int kerningCount = coder.readUI16();
+            final int kerningCount = coder.readUnsignedShort();
 
             for (int i = 0; i < kerningCount; i++) {
                 kernings.add(new Kerning(coder, context));
@@ -207,12 +223,7 @@ public final class DefineFont2 implements DefineTag {
         }
 
         vars.remove(Context.WIDE_CODES);
-
-        if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(),
-                    start >> Coder.BITS_TO_BYTES, length,
-                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
-        }
+        coder.unmark(length);
     }
 
     /**
@@ -816,12 +827,15 @@ public final class DefineFont2 implements DefineTag {
             vars.put(Context.WIDE_CODES, 1);
         }
 
-        coder.writeBits(containsLayoutInfo() ? 1 : 0, 1);
-        coder.writeBits(format, 3);
-        coder.writeBits(wideOffsets ? 1 : 0, 1);
-        coder.writeBits(wideCodes ? 1 : 0, 1);
-        coder.writeBits(italic ? 1 : 0, 1);
-        coder.writeBits(bold ? 1 : 0, 1);
+        int bits = 0;
+        bits |= containsLayoutInfo() ? Coder.BIT7 : 0;
+        bits |= format << 4;
+        bits |= wideOffsets ? Coder.BIT3 : 0;
+        bits |= wideCodes ? Coder.BIT2 : 0;
+        bits |= italic ? Coder.BIT1 : 0;
+        bits |= bold ? Coder.BIT0 : 0;
+        coder.writeByte(bits);
+
         coder.writeWord(vars.get(Context.VERSION) > SWF.SWF5 ? language : 0, 1);
         coder.writeWord(context.strlen(name), 1);
 

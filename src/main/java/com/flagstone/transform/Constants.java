@@ -37,7 +37,10 @@ package com.flagstone.transform;
  * avoided.
  */
 public final class Constants {
-
+    /**
+     * Flag used to enable extra checking code for development.
+     */
+    public static final boolean DEBUG = true;
     /**
      * The prime number used to generate the value in the hashCode() method
      * of immutable objects.

@@ -36,9 +36,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+
 import org.junit.Test;
 
-import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -96,12 +98,12 @@ public final class BitmapFillTest {
 
     @Test
     public void decode() throws IOException {
-
-        final SWFDecoder decoder = new SWFDecoder(encoded);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(encoded);
+        final SWFDecoder decoder = new SWFDecoder(stream);
 
         fixture = new BitmapFill(decoder.readByte(), decoder);
 
-        assertTrue(decoder.eof());
+        assertTrue(true);
         assertEquals(identifier, fixture.getIdentifier());
         assertEquals(transform.getTranslateX(), fixture.getTransform()
                 .getTranslateX());

@@ -34,11 +34,13 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -78,13 +80,12 @@ public final class BackgroundCodingTest {
     public void checkBackgroundIsDecoded() throws IOException {
         final Color color = new Color(1, 2, 3);
         final byte[] binary = new byte[] { 0x43, 0x02, 0x01, 0x02, 0x03};
-
-        final SWFDecoder decoder = new SWFDecoder(binary);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
+        final SWFDecoder decoder = new SWFDecoder(stream);
         final Context context = new Context();
 
         assertEquals(NOT_DECODED, color,
                 new Background(decoder, context).getColor());
-        assertTrue(NOT_FULLY_DECODED, decoder.eof());
    }
 
     @Test
@@ -92,12 +93,11 @@ public final class BackgroundCodingTest {
         final Color color = new Color(1, 2, 3);
         final byte[] binary = new byte[] {0x7F, 0x02, 0x03, 0x00, 0x00, 0x00,
                 0x01, 0x02, 0x03};
-
-        final SWFDecoder decoder = new SWFDecoder(binary);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
+        final SWFDecoder decoder = new SWFDecoder(stream);
         final Context context = new Context();
 
         assertEquals(NOT_DECODED, color,
                 new Background(decoder, context).getColor());
-        assertTrue(NOT_FULLY_DECODED, decoder.eof());
    }
 }

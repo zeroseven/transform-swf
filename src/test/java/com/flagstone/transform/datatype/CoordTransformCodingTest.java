@@ -34,11 +34,13 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -80,10 +82,10 @@ public final class CoordTransformCodingTest {
         final byte[] binary = new byte[] {(byte) 0xCC, (byte) 0x80, 0x00, 0x20,
                 0x00, 0x00, 0x40 };
 
-        final SWFDecoder decoder = new SWFDecoder(binary);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
+        final SWFDecoder decoder = new SWFDecoder(stream);
 
         assertEquals(NOT_DECODED, object, new CoordTransform(decoder));
-        assertTrue(NOT_FULLY_DECODED, decoder.eof());
     }
 
     @Test
@@ -109,10 +111,10 @@ public final class CoordTransformCodingTest {
         final byte[] binary = new byte[] { 0x66, 0x40, 0x00, 0x10, 0x00,
                 0x00, 0x40 };
 
-        final SWFDecoder decoder = new SWFDecoder(binary);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
+        final SWFDecoder decoder = new SWFDecoder(stream);
 
         assertEquals(NOT_DECODED, object, new CoordTransform(decoder));
-        assertTrue(NOT_FULLY_DECODED, decoder.eof());
     }
 
     @Test
@@ -136,10 +138,10 @@ public final class CoordTransformCodingTest {
         final CoordTransform object = CoordTransform.translate(1, 2);
         final byte[] binary = new byte[] { 0x06, 0x50 };
 
-        final SWFDecoder decoder = new SWFDecoder(binary);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
+        final SWFDecoder decoder = new SWFDecoder(stream);
 
         assertEquals(NOT_DECODED, object, new CoordTransform(decoder));
-        assertTrue(NOT_FULLY_DECODED, decoder.eof());
     }
 
     @Test
@@ -167,9 +169,9 @@ public final class CoordTransformCodingTest {
         final byte[] binary = new byte[] {(byte) 0xCC, (byte) 0x80, 0x00, 0x20,
                 0x00, 0x0D, 0x0C, 0x00, 0x01, 0x00, 0x00, 0x02, 0x00 };
 
-        final SWFDecoder decoder = new SWFDecoder(binary);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
+        final SWFDecoder decoder = new SWFDecoder(stream);
 
         assertEquals(NOT_DECODED, object, new CoordTransform(decoder));
-        assertTrue(NOT_FULLY_DECODED, decoder.eof());
     }
 }

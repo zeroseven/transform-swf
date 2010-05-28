@@ -33,6 +33,7 @@ package com.flagstone.transform.action;
 
 
 import java.io.IOException;
+
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -73,8 +74,8 @@ public final class GotoFrame implements Action {
      *             if an error occurs while decoding the data.
      */
     public GotoFrame(final SWFDecoder coder) throws IOException {
-        coder.readUI16();
-        frameNumber = coder.readUI16();
+        coder.readUnsignedShort();
+        frameNumber = coder.readUnsignedShort();
     }
 
     /**

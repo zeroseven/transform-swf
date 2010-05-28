@@ -31,11 +31,10 @@
 
 package com.flagstone.transform.action;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.flagstone.transform.coder.Coder;
-import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -226,16 +225,16 @@ public final class ExceptionHandler implements Action {
      */
     public ExceptionHandler(final SWFDecoder coder, final Context context)
             throws IOException {
-        length = coder.readUI16();
+        length = coder.readUnsignedShort();
 
         final int flags = coder.readByte();
         final boolean containsVariable = (flags & VARIABLE_MASK) == 1;
         final boolean containsFinal = (flags & FINAL_MASK) == 1;
         final boolean containsCatch = (flags & CATCH_MASK) == 1;
 
-        tryLength = coder.readUI16();
-        catchLength = coder.readUI16();
-        finalLength = coder.readUI16();
+        tryLength = coder.readUnsignedShort();
+        catchLength = coder.readUnsignedShort();
+        finalLength = coder.readUnsignedShort();
 
         if (length == EMPTY_LENGTH) {
             length += tryLength;
@@ -255,26 +254,29 @@ public final class ExceptionHandler implements Action {
         catchActions = new ArrayList<Action>();
         finalActions = new ArrayList<Action>();
 
-        int end = coder.getPointer() + (tryLength << Coder.BITS_TO_BYTES);
         final SWFFactory<Action> decoder = context.getRegistry()
                 .getActionDecoder();
 
-        while (coder.getPointer() < end) {
+        coder.mark();
+        while (coder.bytesRead() < tryLength) {
             tryActions.add(decoder.getObject(coder, context));
         }
+        coder.unmark();
 
         if (containsCatch) {
-            end = coder.getPointer() + (catchLength << Coder.BITS_TO_BYTES);
-            while (coder.getPointer() < end) {
+            coder.mark();
+            while (coder.bytesRead() < catchLength) {
                 catchActions.add(decoder.getObject(coder, context));
             }
+            coder.unmark();
         }
 
         if (containsFinal) {
-            end = coder.getPointer() + (finalLength << Coder.BITS_TO_BYTES);
-            while (coder.getPointer() < end) {
+            coder.mark();
+            while (coder.bytesRead() < finalLength) {
                 finalActions.add(decoder.getObject(coder, context));
             }
+            coder.unmark();
         }
     }
 

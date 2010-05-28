@@ -94,7 +94,7 @@ public final class LineStyle implements SWFEncodeable, Copyable<LineStyle> {
      */
     public LineStyle(final SWFDecoder coder, final Context context)
             throws IOException {
-        width = coder.readUI16();
+        width = coder.readUnsignedShort();
         color = new Color(coder, context);
     }
 

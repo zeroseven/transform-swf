@@ -34,9 +34,11 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+
 import org.junit.Test;
 
-import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -76,11 +78,11 @@ public final class MovieObjectCodingTest {
         final byte[] data = new byte[] {1, 2, 3, 4};
         final byte[] binary = new byte[] {0x44, 0x00, 0x01, 0x02, 0x03, 0x04};
 
-        final SWFDecoder decoder = new SWFDecoder(binary);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
+        final SWFDecoder decoder = new SWFDecoder(stream);
         final MovieObject object = new MovieObject(decoder);
 
         assertEquals(NOT_DECODED, data, object.getData());
-        assertTrue(NOT_FULLY_DECODED, decoder.eof());
    }
 
     @Test
@@ -89,10 +91,10 @@ public final class MovieObjectCodingTest {
         final byte[] binary = new byte[] {0x7F, 0x00, 0x04, 0x00, 0x00, 0x00,
                 0x01, 0x02, 0x03, 0x04};
 
-        final SWFDecoder decoder = new SWFDecoder(binary);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
+        final SWFDecoder decoder = new SWFDecoder(stream);
         final MovieObject object = new MovieObject(decoder);
 
         assertEquals(NOT_DECODED, data, object.getData());
-        assertTrue(NOT_FULLY_DECODED, decoder.eof());
    }
 }

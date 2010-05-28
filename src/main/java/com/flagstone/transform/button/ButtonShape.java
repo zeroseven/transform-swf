@@ -31,13 +31,14 @@
 
 package com.flagstone.transform.button;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
 import com.flagstone.transform.SWF;
-import java.io.IOException;
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -131,12 +132,13 @@ public final class ButtonShape implements SWFEncodeable {
     public ButtonShape(final SWFDecoder coder,
             final Context context) throws IOException {
 
-        hasBlend = coder.getBool(SWFDecoder.BIT5);
-        hasFilters = coder.getBool(SWFDecoder.BIT4);
-        state = coder.getBit(SWFDecoder.NIB0);
+        final int bits = coder.readByte();
+        hasBlend = (bits & Coder.BIT5) != 0;
+        hasFilters = (bits & Coder.BIT4) != 0;
+        state = bits & Coder.NIB0;
 
-        identifier = coder.readUI16();
-        layer = coder.readUI16();
+        identifier = coder.readUnsignedShort();
+        layer = coder.readUnsignedShort();
         transform = new CoordTransform(coder);
 
         if (context.getVariables().get(Context.TYPE)
@@ -418,10 +420,11 @@ public final class ButtonShape implements SWFEncodeable {
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
-        coder.writeBits(0, 2);
-        coder.writeBool(hasBlend);
-        coder.writeBool(hasFilters);
-        coder.writeBits(state, 4);
+        int bits = 0;
+        bits |= hasBlend ? Coder.BIT5 : 0;
+        bits |= hasFilters ? Coder.BIT4 : 0;
+        bits |= state;
+        coder.writeByte(bits);
         coder.writeI16(identifier);
         coder.writeI16(layer);
         transform.encode(coder, context);

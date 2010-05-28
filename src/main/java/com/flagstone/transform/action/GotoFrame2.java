@@ -32,6 +32,8 @@ package com.flagstone.transform.action;
 
 
 import java.io.IOException;
+
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -110,14 +112,14 @@ public final class GotoFrame2 implements Action {
      *             if an error occurs while decoding the data.
      */
     public GotoFrame2(final SWFDecoder coder) throws IOException {
-        length = coder.readUI16();
+        length = coder.readUnsignedShort();
 
-        coder.prefetchByte();
-        hasOffset = coder.getBool(SWFDecoder.BIT1);
-        play = coder.getBool(SWFDecoder.BIT0);
+        final int bits = coder.readByte();
+        hasOffset = (bits & Coder.BIT1) != 0;
+        play = (bits & Coder.BIT0) != 0;
 
         if (hasOffset) {
-            frameOffset = coder.readSI16();
+            frameOffset = coder.readSignedShort();
         } else {
             frameOffset = 0;
         }

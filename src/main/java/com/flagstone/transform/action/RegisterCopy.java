@@ -84,7 +84,7 @@ public final class RegisterCopy implements Action {
      *             if an error occurs while decoding the data.
      */
     public RegisterCopy(final SWFDecoder coder) throws IOException {
-        coder.readUI16();
+        coder.readUnsignedShort();
         number = coder.readByte();
     }
 

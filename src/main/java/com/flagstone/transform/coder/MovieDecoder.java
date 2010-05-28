@@ -114,11 +114,10 @@ public final class MovieDecoder implements SWFFactory<MovieTag> {
 
         MovieTag obj;
 
-        coder.fetchToDecode();
-
-        switch (coder.readType()) {
+        switch (coder.scanUnsignedShort() >> 6) {
         case MovieTypes.SHOW_FRAME:
             obj = ShowFrame.getInstance();
+            coder.readUnsignedShort();
             break;
         case MovieTypes.DEFINE_SHAPE:
             obj = new DefineShape(coder, context);
@@ -224,6 +223,7 @@ public final class MovieDecoder implements SWFFactory<MovieTag> {
             break;
         case MovieTypes.PATHS_ARE_POSTSCRIPT:
             obj = PathsArePostscript.getInstance();
+            coder.readUnsignedShort();
             break;
         case MovieTypes.DEFINE_TEXT_FIELD:
             obj = new DefineTextField(coder, context);

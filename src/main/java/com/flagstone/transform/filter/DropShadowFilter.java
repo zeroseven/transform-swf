@@ -31,8 +31,9 @@
 
 package com.flagstone.transform.filter;
 
-import com.flagstone.transform.Constants;
 import java.io.IOException;
+
+import com.flagstone.transform.Constants;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -183,11 +184,11 @@ public final class DropShadowFilter implements Filter {
     public DropShadowFilter(final SWFDecoder coder, final Context context)
             throws IOException {
         shadow = new Color(coder, context);
-        blurX = coder.readSI32();
-        blurY = coder.readSI32();
-        angle = coder.readSI32();
-        distance = coder.readSI32();
-        strength = coder.readSI16();
+        blurX = coder.readInt();
+        blurY = coder.readInt();
+        angle = coder.readInt();
+        distance = coder.readInt();
+        strength = coder.readSignedShort();
 
         final int value = coder.readByte();
 

@@ -33,7 +33,9 @@ package com.flagstone.transform.coder;
 
 import static org.junit.Assert.assertEquals;
 
-import org.junit.Before;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+
 import org.junit.Test;
 
 public final class SWFDecoderTest {
@@ -41,160 +43,102 @@ public final class SWFDecoderTest {
 
     private transient byte[] data;
 
-    @Before
-    public void setUp() {
-        fixture = new SWFDecoder(new byte[0]);
-    }
-
     @Test
-    public void readUI16() {
+    public void readUI16() throws IOException {
         data = new byte[] {2, 1, 0, 0 };
+        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        fixture = new SWFDecoder(stream);
 
-        fixture = new SWFDecoder(data);
-
-        assertEquals(0x0102, fixture.readUI16());
-        assertEquals(16, fixture.getPointer());
+        assertEquals(0x0102, fixture.readUnsignedShort());
     }
 
     @Test
-    public void testReadUI16DoesNotSignExtend() {
+    public void testReadUI16DoesNotSignExtend() throws IOException {
         data = new byte[] { -1, 0, 0, 0 };
+        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        fixture = new SWFDecoder(stream);
 
-        fixture = new SWFDecoder(data);
-
-        assertEquals(255, fixture.readUI16());
-        assertEquals(16, fixture.getPointer());
+        assertEquals(255, fixture.readUnsignedShort());
     }
 
     @Test
-    public void readUI32() {
+    public void readUI32() throws IOException {
         data = new byte[] {4, 3, 2, 1, 0, 0, 0, 0 };
+        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        fixture = new SWFDecoder(stream);
 
-        fixture = new SWFDecoder(data);
-
-        assertEquals(0x01020304, fixture.readUI32());
-        assertEquals(32, fixture.getPointer());
+        assertEquals(0x01020304, fixture.readInt());
     }
 
     @Test
-    public void testReadUI32DoesNotSignExtend() {
+    public void testReadUI32DoesNotSignExtend() throws IOException {
         data = new byte[] { -1, 0, 0, 0, 0, 0, 0, 0 };
+        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        fixture = new SWFDecoder(stream);
 
-        fixture = new SWFDecoder(data);
-
-        assertEquals(255, fixture.readUI32());
-        assertEquals(32, fixture.getPointer());
+        assertEquals(255, fixture.readInt());
     }
 
     @Test
-    public void readWordUnsigned() {
-        data = new byte[] {4, 3, 2, 1 };
-
-        fixture = new SWFDecoder(data);
-
-        assertEquals(0x01020304, fixture.readWord(data.length, false));
-        assertEquals(data.length << 3, fixture.getPointer());
-    }
-
-    @Test
-    public void readWordSigned() {
-        data = new byte[] {4, 3, -128, -1 };
-
-        fixture = new SWFDecoder(data);
-
-        assertEquals(0xFF800304, fixture.readWord(data.length, true));
-        assertEquals(data.length << 3, fixture.getPointer());
-    }
-
-    @Test
-    public void readWordWithSignExtension() {
-        data = new byte[] {4, 3, -128 };
-
-        fixture = new SWFDecoder(data);
-
-        assertEquals(0xFF800304, fixture.readWord(data.length, true));
-        assertEquals(data.length << 3, fixture.getPointer());
-    }
-
-    @Test
-    public void readVariableU32InOneByte() {
+    public void readVariableU32InOneByte() throws IOException {
         data = new byte[] {127 };
-        fixture.data = data;
+        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        fixture = new SWFDecoder(stream);
 
-        assertEquals(127, fixture.readVariableU32());
-        assertEquals(data.length << 3, fixture.getPointer());
+        assertEquals(127, fixture.readVarInt());
     }
 
     @Test
-    public void readVariableU32InTwoBytes() {
+    public void readVariableU32InTwoBytes() throws IOException {
         data = new byte[] {-1, 1 };
-        fixture.data = data;
+        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        fixture = new SWFDecoder(stream);
 
-        assertEquals(255, fixture.readVariableU32());
-        assertEquals(data.length << 3, fixture.getPointer());
+        assertEquals(255, fixture.readVarInt());
     }
 
     @Test
-    public void readVariableU32InThreeBytes() {
+    public void readVariableU32InThreeBytes() throws IOException {
         data = new byte[] {-1, -1, 3 };
-        fixture.data = data;
+        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        fixture = new SWFDecoder(stream);
 
-        assertEquals(65535, fixture.readVariableU32());
-        assertEquals(data.length << 3, fixture.getPointer());
+        assertEquals(65535, fixture.readVarInt());
     }
 
     @Test
-    public void readVariableU32InFourBytes() {
+    public void readVariableU32InFourBytes() throws IOException {
         data = new byte[] {-1, -1, -1, 7 };
-        fixture.data = data;
+        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        fixture = new SWFDecoder(stream);
 
-        assertEquals(16777215, fixture.readVariableU32());
-        assertEquals(data.length << 3, fixture.getPointer());
+        assertEquals(16777215, fixture.readVarInt());
     }
 
     @Test
-    public void readVariableU32InFiveBytes() {
+    public void readVariableU32InFiveBytes() throws IOException {
         data = new byte[] {-1, -1, -1, -1, 7 };
-        fixture.data = data;
+        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        fixture = new SWFDecoder(stream);
 
-        assertEquals(2147483647, fixture.readVariableU32());
-        assertEquals(data.length << 3, fixture.getPointer());
+        assertEquals(2147483647, fixture.readVarInt());
     }
 
     @Test
-    public void readNegativeHalf() {
+    public void readNegativeHalf() throws IOException {
         data = new byte[] {0x00, (byte) 0xC0 };
-        fixture = new SWFDecoder(data);
+        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        fixture = new SWFDecoder(stream);
 
         assertEquals(-2.0, fixture.readHalf(), 0.0);
-        assertEquals(16, fixture.getPointer());
     }
 
     @Test
-    public void readHalfFraction() {
+    public void readHalfFraction() throws IOException {
         data = new byte[] {0x55, (byte) 0x35 };
-        fixture = new SWFDecoder(data);
+        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        fixture = new SWFDecoder(stream);
 
         assertEquals(0.333251953125, fixture.readHalf(), 0.0);
-        assertEquals(16, fixture.getPointer());
-    }
-
-    @Test
-    public void readFloat() {
-        data = new byte[] {0x00, 0x00, 0x00, (byte) 0xC0 };
-        fixture = new SWFDecoder(data);
-
-        assertEquals(-2.0, fixture.readFloat(), 0.0);
-        assertEquals(32, fixture.getPointer());
-    }
-
-    @Test
-    public void readDouble() {
-        data = new byte[] {0x00, 0x00, (byte) 0xF0, 0x3F, 0x00, 0x00, 0x00,
-                0x00 };
-        fixture = new SWFDecoder(data);
-
-        assertEquals(1.0, fixture.readDouble(), 0.0);
-        assertEquals(64, fixture.getPointer());
     }
 }

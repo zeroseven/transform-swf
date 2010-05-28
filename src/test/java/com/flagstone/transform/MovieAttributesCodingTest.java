@@ -34,12 +34,13 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.EnumSet;
 import java.util.Set;
 
 import org.junit.Test;
 
-import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -79,11 +80,11 @@ public final class MovieAttributesCodingTest {
         final Set<MovieAttribute>set = EnumSet.allOf(MovieAttribute.class);
         final byte[] binary = new byte[] {0x44, 0x11, 0x19, 0x00, 0x00, 0x00};
 
-        final SWFDecoder decoder = new SWFDecoder(binary);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
+        final SWFDecoder decoder = new SWFDecoder(stream);
         final MovieAttributes object = new MovieAttributes(decoder);
 
         assertEquals(NOT_DECODED, set, object.getAttributes());
-        assertTrue(NOT_FULLY_DECODED, decoder.eof());
    }
 
     @Test
@@ -92,11 +93,11 @@ public final class MovieAttributesCodingTest {
         final byte[] binary = new byte[] {0x7F, 0x11, 0x04, 0x00, 0x00, 0x00,
                 0x19, 0x00, 0x00, 0x00 };
 
-        final SWFDecoder decoder = new SWFDecoder(binary);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
+        final SWFDecoder decoder = new SWFDecoder(stream);
         final MovieAttributes object = new MovieAttributes(decoder);
 
         assertEquals(NOT_DECODED, set, object.getAttributes());
-        assertTrue(NOT_FULLY_DECODED, decoder.eof());
    }
 
     @Test
@@ -121,10 +122,10 @@ public final class MovieAttributesCodingTest {
         final Set<MovieAttribute>set = EnumSet.noneOf(MovieAttribute.class);
         final byte[] binary = new byte[] {0x44, 0x11, 0x00, 0x00, 0x00, 0x00};
 
-        final SWFDecoder decoder = new SWFDecoder(binary);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
+        final SWFDecoder decoder = new SWFDecoder(stream);
         final MovieAttributes object = new MovieAttributes(decoder);
 
         assertEquals(NOT_DECODED, set, object.getAttributes());
-        assertTrue(NOT_FULLY_DECODED, decoder.eof());
    }
 }

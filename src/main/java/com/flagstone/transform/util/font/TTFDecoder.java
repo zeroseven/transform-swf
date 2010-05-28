@@ -44,7 +44,7 @@ import java.util.List;
 import java.util.zip.DataFormatException;
 
 import java.io.IOException;
-import com.flagstone.transform.coder.FLVDecoder;
+import com.flagstone.transform.coder.BigDecoder;
 import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.datatype.CoordTransform;
 import com.flagstone.transform.font.CharacterFormat;
@@ -170,7 +170,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
     }
 
     private void decode(final byte[] bytes) throws IOException {
-        final FLVDecoder coder = new FLVDecoder(bytes);
+        final BigDecoder coder = new BigDecoder(bytes);
 
         /* float version = */coder.readBits(32, true);
 
@@ -325,7 +325,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         fonts.add(font);
     }
 
-    private void decodeHEAD(final FLVDecoder coder) {
+    private void decodeHEAD(final BigDecoder coder) {
         final byte[] date = new byte[8];
 
         coder.readBits(32, true); // table version fixed 16
@@ -366,7 +366,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         coder.readSI16(); // glyph data format
     }
 
-    private void decodeHHEA(final FLVDecoder coder) {
+    private void decodeHHEA(final BigDecoder coder) {
         coder.readBits(32, true); // table version, fixed 16
 
         ascent = coder.readSI16() / scale;
@@ -391,7 +391,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         metrics = coder.readUI16();
     }
 
-    private void decodeOS2(final FLVDecoder coder) {
+    private void decodeOS2(final BigDecoder coder) {
         final byte[] panose = new byte[10];
         final int[] unicodeRange = new int[4];
         final byte[] vendor = new byte[4];
@@ -457,7 +457,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         }
     }
 
-    private void decodeNAME(final FLVDecoder coder) {
+    private void decodeNAME(final BigDecoder coder) {
         final int stringTableBase = coder.getPointer() >>> 3;
 
         /* final int format = */ coder.readUI16();
@@ -518,7 +518,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         }
     }
 
-    private void decodeMAXP(final FLVDecoder coder) {
+    private void decodeMAXP(final BigDecoder coder) {
         final float version = coder.readBits(32, true) / SCALE_16;
         glyphCount = coder.readUI16();
 
@@ -545,7 +545,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         }
     }
 
-    private void decodeHMTX(final FLVDecoder coder) {
+    private void decodeHMTX(final BigDecoder coder) {
         int index = 0;
 
         for (index = 0; index < metrics; index++) {
@@ -565,7 +565,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         }
     }
 
-    private void decodeCMAP(final FLVDecoder coder) {
+    private void decodeCMAP(final BigDecoder coder) {
         final int tableStart = coder.getPointer();
 
         /* final int version = */ coder.readUI16();
@@ -698,7 +698,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         encoding = CharacterFormat.SJIS;
     }
 
-    private void decodeGlyphs(final FLVDecoder coder, final int glyfOffset)
+    private void decodeGlyphs(final BigDecoder coder, final int glyfOffset)
             throws IOException {
         int numberOfContours = 0;
 //        final int glyphStart = 0;
@@ -756,7 +756,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         coder.setPointer(end);
     }
 
-    private void decodeSimpleGlyph(final FLVDecoder coder,
+    private void decodeSimpleGlyph(final BigDecoder coder,
             final int glyphIndex, final int numberOfContours) {
         final int xMin = coder.readSI16() / scale;
         final int yMin = coder.readSI16() / scale;
@@ -913,7 +913,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
          glyphTable[glyphIndex].endPoints = endPtsOfContours;
     }
 
-    private void decodeCompositeGlyph(final FLVDecoder coder,
+    private void decodeCompositeGlyph(final BigDecoder coder,
             final int glyphIndex) throws IOException {
         final Shape shape = new Shape(new ArrayList<ShapeRecord>());
         CoordTransform transform = null;

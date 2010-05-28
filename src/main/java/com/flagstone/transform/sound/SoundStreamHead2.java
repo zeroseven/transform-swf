@@ -123,32 +123,28 @@ public final class SoundStreamHead2 implements MovieTag {
      *             if an error occurs while decoding the data.
      */
     public SoundStreamHead2(final SWFDecoder coder) throws IOException {
-        final int start = coder.getPointer();
-        length = coder.readLength();
-        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
-
+        length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
+        if (length == Coder.IS_EXTENDED) {
+            length = coder.readInt();
+        }
+        coder.mark();
         int info = coder.readByte();
         reserved = (info & 0x00F0) >> 4;
         playRate = readRate((info & 0x0C) >> 2);
-        playSampleSize = (info & 0x02) + 1;
+        playSampleSize = ((info & 0x02) >> 1) + 1;
         playChannels = (info & 0x01) + 1;
 
         info = coder.readByte();
         format = (info & 0x00F0) >> 4;
         streamRate = readRate((info & 0x0C) >> 2);
-        streamSampleSize = (info & 0x02) + 1;
+        streamSampleSize = ((info & 0x02) >> 1) + 1;
         streamChannels = (info & 0x01) + 1;
-        streamSampleCount = coder.readUI16();
+        streamSampleCount = coder.readUnsignedShort();
 
         if ((length == 6) && (format == 2)) {
-            latency = coder.readSI16();
+            latency = coder.readSignedShort();
         }
-
-        if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(),
-                    start >> Coder.BITS_TO_BYTES, length,
-                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
-        }
+        coder.unmark(length);
     }
 
     /**
@@ -502,14 +498,17 @@ public final class SoundStreamHead2 implements MovieTag {
         coder.writeHeader(MovieTypes.SOUND_STREAM_HEAD_2, length);
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
-        coder.writeBits(reserved, 4);
-        writeRate(playRate, coder);
-        coder.writeBits(playSampleSize - 1, 1);
-        coder.writeBits(playChannels - 1, 1);
-        coder.writeBits(format, 4);
-        writeRate(streamRate, coder);
-        coder.writeBits(streamSampleSize - 1, 1);
-        coder.writeBits(streamChannels - 1, 1);
+        int bits = reserved << 4;
+        bits |= writeRate(playRate);
+        bits |= (playSampleSize - 1) << 1;
+        bits |= playChannels - 1;
+        coder.writeByte(bits);
+
+        bits = format << 4;
+        bits |= writeRate(streamRate);
+        bits |= (streamSampleSize - 1) << 1;
+        bits |= streamChannels - 1;
+        coder.writeByte(bits);
         coder.writeI16(streamSampleCount);
 
         if ((format == 2) && (latency > 0)) {
@@ -545,22 +544,22 @@ public final class SoundStreamHead2 implements MovieTag {
         return rate;
     }
 
-    private void writeRate(final int rate, final SWFEncoder coder) {
+    private int writeRate(final int rate) {
+        int value;
         switch (rate) {
-        case SoundRate.KHZ_5K:
-            coder.writeBits(0, 2);
-            break;
         case SoundRate.KHZ_11K:
-            coder.writeBits(1, 2);
+            value = 4;
             break;
         case SoundRate.KHZ_22K:
-            coder.writeBits(2, 2);
+            value = 8;
             break;
         case SoundRate.KHZ_44K:
-            coder.writeBits(3, 2);
+            value = 12;
             break;
         default:
+            value = 0;
             break;
         }
+        return value;
     }
 }

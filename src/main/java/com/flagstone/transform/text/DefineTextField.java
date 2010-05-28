@@ -284,43 +284,44 @@ public final class DefineTextField implements DefineTag {
     // TODO(optimise)
     public DefineTextField(final SWFDecoder coder, final Context context)
             throws IOException {
-        final int start = coder.getPointer();
-        length = coder.readLength();
-        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
-
-        identifier = coder.readUI16();
+        length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
+        if (length == Coder.IS_EXTENDED) {
+            length = coder.readInt();
+        }
+        coder.mark();
+        identifier = coder.readUnsignedShort();
         final Map<Integer, Integer> vars = context.getVariables();
         vars.put(Context.TRANSPARENT, 1);
 
         bounds = new Bounds(coder);
 
-        coder.prefetchByte();
-        final boolean containsText = coder.getBool(SWFDecoder.BIT7);
-        wordWrapped = coder.getBool(SWFDecoder.BIT6);
-        multiline = coder.getBool(SWFDecoder.BIT5);
-        password = coder.getBool(SWFDecoder.BIT4);
-        readOnly = coder.getBool(SWFDecoder.BIT3);
-        final boolean containsColor = coder.getBool(SWFDecoder.BIT2);
-        final boolean containsMaxLength = coder.getBool(SWFDecoder.BIT1);
-        final boolean containsFont = coder.getBool(SWFDecoder.BIT0);
+        int bits = coder.readByte();
+        final boolean containsText = (bits & Coder.BIT7) != 0;
+        wordWrapped = (bits & Coder.BIT6) != 0;
+        multiline = (bits & Coder.BIT5) != 0;
+        password = (bits & Coder.BIT4) != 0;
+        readOnly = (bits & Coder.BIT3) != 0;
+        final boolean containsColor = (bits & Coder.BIT2) != 0;
+        final boolean containsMaxLength = (bits & Coder.BIT1) != 0;
+        final boolean containsFont = (bits & Coder.BIT0) != 0;
 
-        coder.prefetchByte();
-        final boolean containsClass = coder.getBool(SWFDecoder.BIT7);
-        autoSize = coder.getBool(SWFDecoder.BIT6);
-        final boolean containsLayout = coder.getBool(SWFDecoder.BIT5);
-        selectable = coder.getBool(SWFDecoder.BIT4);
-        bordered = coder.getBool(SWFDecoder.BIT3);
-        reserved2 = coder.getBool(SWFDecoder.BIT2);
-        html = coder.getBool(SWFDecoder.BIT1);
-        embedded = coder.getBool(SWFDecoder.BIT0);
+        bits = coder.readByte();
+        final boolean containsClass = (bits & Coder.BIT7) != 0;
+        autoSize = (bits & Coder.BIT6) != 0;
+        final boolean containsLayout = (bits & Coder.BIT5) != 0;
+        selectable = (bits & Coder.BIT4) != 0;
+        bordered = (bits & Coder.BIT3) != 0;
+        reserved2 = (bits & Coder.BIT2) != 0;
+        html = (bits & Coder.BIT1) != 0;
+        embedded = (bits & Coder.BIT0) != 0;
 
         if (containsFont) {
-            fontIdentifier = coder.readUI16();
+            fontIdentifier = coder.readUnsignedShort();
 
             if (containsClass) {
                 fontClass = coder.readString();
             }
-            fontHeight = coder.readUI16();
+            fontHeight = coder.readUnsignedShort();
         }
 
         if (containsColor) {
@@ -328,15 +329,15 @@ public final class DefineTextField implements DefineTag {
         }
 
         if (containsMaxLength) {
-            maxLength = coder.readUI16();
+            maxLength = coder.readUnsignedShort();
         }
 
         if (containsLayout) {
             alignment = coder.readByte();
-            leftMargin = coder.readUI16();
-            rightMargin = coder.readUI16();
-            indent = coder.readUI16();
-            leading = coder.readSI16();
+            leftMargin = coder.readUnsignedShort();
+            rightMargin = coder.readUnsignedShort();
+            indent = coder.readUnsignedShort();
+            leading = coder.readSignedShort();
         }
 
         variableName = coder.readString();
@@ -346,12 +347,7 @@ public final class DefineTextField implements DefineTag {
         }
 
         vars.remove(Context.TRANSPARENT);
-
-        if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(),
-                    start >> Coder.BITS_TO_BYTES, length,
-                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
-        }
+        coder.unmark(length);
     }
 
     /**
@@ -1038,22 +1034,27 @@ public final class DefineTextField implements DefineTag {
 
         coder.writeI16(identifier);
         bounds.encode(coder, context);
-        coder.writeBool(initialText != null);
-        coder.writeBool(wordWrapped);
-        coder.writeBool(multiline);
-        coder.writeBool(password);
-        coder.writeBool(readOnly);
-        coder.writeBool(color != null);
-        coder.writeBool(maxLength > 0);
-        coder.writeBool(fontIdentifier != 0);
-        coder.writeBool(fontClass != null);
-        coder.writeBool(autoSize);
-        coder.writeBool(containsLayout());
-        coder.writeBool(selectable);
-        coder.writeBool(bordered);
-        coder.writeBits(0, 1);
-        coder.writeBool(html);
-        coder.writeBool(embedded);
+        int bits = 0;
+        bits |= initialText == null ? 0 : Coder.BIT7;
+        bits |= wordWrapped ? Coder.BIT6 : 0;
+        bits |= multiline ? Coder.BIT5 : 0;
+        bits |= password ? Coder.BIT4 : 0;
+        bits |= readOnly ? Coder.BIT3 : 0;
+        bits |= color == null ? 0 : Coder.BIT2;
+        bits |= maxLength > 0 ? Coder.BIT1 : 0;
+        bits |= fontIdentifier == 0 ? 0: Coder.BIT0;
+        coder.writeByte(bits);
+
+        bits = 0;
+        bits |= fontClass == null ? 0 : Coder.BIT7;
+        bits |= autoSize ? Coder.BIT6 : 0;
+        bits |= containsLayout() ? Coder.BIT5 : 0;
+        bits |= selectable ? Coder.BIT4 : 0;
+        bits |= bordered ? Coder.BIT3 : 0;
+        bits |= reserved2 ? Coder.BIT2 : 0;
+        bits |= html ? Coder.BIT1 : 0;
+        bits |= embedded ? Coder.BIT0 : 0;
+        coder.writeByte(bits);
 
         if (fontIdentifier != 0) {
             coder.writeI16(fontIdentifier);

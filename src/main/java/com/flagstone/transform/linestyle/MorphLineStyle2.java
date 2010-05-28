@@ -33,6 +33,8 @@ package com.flagstone.transform.linestyle;
 
 
 import java.io.IOException;
+
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.Copyable;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -91,22 +93,22 @@ public final class MorphLineStyle2 implements SWFEncodeable,
      */
     public MorphLineStyle2(final SWFDecoder coder, final Context context)
             throws IOException {
-        startWidth = coder.readUI16();
-        endWidth = coder.readUI16();
+        startWidth = coder.readUnsignedShort();
+        endWidth = coder.readUnsignedShort();
 
-        coder.prefetchByte();
-        if (coder.getBool(SWFDecoder.BIT6)) {
+        int bits = coder.readByte();
+        if ((bits & Coder.BIT6) != 0) {
             startCap = 1;
-        } else if (coder.getBool(SWFDecoder.BIT7)) {
+        } else if ((bits & Coder.BIT7) != 0) {
             startCap = 2;
         } else {
             startCap = 0;
         }
 
-        if (coder.getBool(SWFDecoder.BIT4)) {
+        if ((bits & Coder.BIT4) != 0) {
             joinStyle = 1;
             hasMiter = false;
-        } else if (coder.getBool(SWFDecoder.BIT5)) {
+        } else if ((bits & Coder.BIT5) != 0) {
             joinStyle = 2;
             hasMiter = true;
         } else {
@@ -114,17 +116,17 @@ public final class MorphLineStyle2 implements SWFEncodeable,
             hasMiter = false;
         }
 
-        hasFillStyle = coder.getBool(SWFDecoder.BIT3);
-        horizontal = !coder.getBool(SWFDecoder.BIT2);
-        vertical = !coder.getBool(SWFDecoder.BIT1);
-        pixelAligned = coder.getBool(SWFDecoder.BIT0);
+        hasFillStyle = (bits & Coder.BIT3) != 0;
+        horizontal = (bits & Coder.BIT2) == 0;
+        vertical = (bits & Coder.BIT1) == 0;
+        pixelAligned = (bits & Coder.BIT0) != 0;
 
-        coder.prefetchByte();
-        lineClosed = !coder.getBool(SWFDecoder.BIT2);
-        endCap = coder.getBit(0x03);
+        bits = coder.readByte();
+        lineClosed = (bits & Coder.BIT2) == 0;
+        endCap = bits & 0x03;
 
         if (hasMiter) {
-            coder.readUI16();
+            coder.readUnsignedShort();
         }
 
         if (hasFillStyle) {
@@ -461,7 +463,31 @@ public final class MorphLineStyle2 implements SWFEncodeable,
             throws IOException {
         coder.writeI16(startWidth);
         coder.writeI16(endWidth);
-        coder.writeB16(pack());
+
+        int value = 0;
+
+        if (startCap == 1) {
+            value |= 0x000040;
+        } else if (startCap == 2) {
+            value |= 0x000080;
+        }
+
+        if (joinStyle == 1) {
+            value |= 0x000010;
+        } else if (joinStyle == 2) {
+            value |= 0x000020;
+        }
+
+        value |= fillStyle == null ? 0 : 0x000008;
+        value |= horizontal ? 0 : 0x000004;
+        value |= vertical ? 0 : 0x000002;
+        value |= pixelAligned ? 0x000001 : 0;
+
+        coder.writeByte(value);
+
+        value = lineClosed ? 0 : 0x00000004;
+        value |= endCap;
+        coder.writeByte(value);
 
         if (hasMiter) {
             coder.writeI16(miterLimit);
@@ -473,33 +499,5 @@ public final class MorphLineStyle2 implements SWFEncodeable,
             startColor.encode(coder, context);
             endColor.encode(coder, context);
         }
-    }
-
-    //TODO Fix this to remove the magic numbers
-    private int pack() {
-// CHECKSTYLE:OFF
-        int value = 0;
-
-        if (startCap == 1) {
-            value |= 0x00004000;
-        } else if (startCap == 2) {
-            value |= 0x00008000;
-        }
-
-        if (joinStyle == 1) {
-            value |= 0x00001000;
-        } else if (joinStyle == 2) {
-            value |= 0x00002000;
-        }
-
-        value |= fillStyle == null ? 0 : 0x00000800;
-        value |= horizontal ? 0 : 0x00000400;
-        value |= vertical ? 0 : 0x00000200;
-        value |= pixelAligned ? 0x00000100 : 0;
-        value |= lineClosed ? 0 : 0x00000004;
-        value |= endCap;
-
-        return value;
-// CHECKSTYLE:ON
     }
 }

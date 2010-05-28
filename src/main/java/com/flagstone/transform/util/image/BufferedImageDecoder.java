@@ -55,7 +55,7 @@ import java.util.zip.Inflater;
 import javax.imageio.ImageIO;
 
 import com.flagstone.transform.coder.ImageTag;
-import com.flagstone.transform.coder.SWFDecoder;
+import com.flagstone.transform.coder.LittleDecoder;
 import com.flagstone.transform.image.DefineImage;
 import com.flagstone.transform.image.DefineImage2;
 import com.flagstone.transform.image.ImageFormat;
@@ -821,7 +821,7 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
                 decodeColorTable(obj.getColorModel());
 
                 index = 0;
-                final SWFDecoder coder = new SWFDecoder(pixels);
+                final LittleDecoder coder = new LittleDecoder(pixels);
 
                 for (int y = 0; y < height; y++) {
                     int bitsRead = 0;

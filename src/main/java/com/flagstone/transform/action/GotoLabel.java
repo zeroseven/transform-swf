@@ -32,6 +32,7 @@ package com.flagstone.transform.action;
 
 
 import java.io.IOException;
+
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -63,7 +64,7 @@ public final class GotoLabel implements Action {
      *             if an error occurs while decoding the data.
      */
     public GotoLabel(final SWFDecoder coder) throws IOException {
-        length = coder.readUI16();
+        length = coder.readUnsignedShort();
         label = coder.readString();
     }
 

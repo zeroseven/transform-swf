@@ -35,9 +35,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+
 import org.junit.Test;
 
-import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -120,33 +122,36 @@ public final class GotoFrame2Test {
 
     @Test
     public void decode() throws IOException {
-        final SWFDecoder decoder = new SWFDecoder(encoded);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(encoded);
+        final SWFDecoder decoder = new SWFDecoder(stream);
 
         fixture = new GotoFrame2(decoder);
 
-        assertTrue(decoder.eof());
+        assertTrue(true);
         assertEquals(offset, fixture.getFrameOffset());
         assertEquals(play, fixture.isPlay());
     }
 
     @Test
     public void decodeWithNoOffset() throws IOException {
-        final SWFDecoder decoder = new SWFDecoder(noOffset);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(noOffset);
+        final SWFDecoder decoder = new SWFDecoder(stream);
 
         fixture = new GotoFrame2(decoder);
 
-        assertTrue(decoder.eof());
+        assertTrue(true);
         assertEquals(0, fixture.getFrameOffset());
         assertEquals(play, fixture.isPlay());
     }
 
     @Test
     public void decodeWithPlaySetToFalse() throws IOException {
-        final SWFDecoder decoder = new SWFDecoder(stop);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(stop);
+        final SWFDecoder decoder = new SWFDecoder(stream);
 
         fixture = new GotoFrame2(decoder);
 
-        assertTrue(decoder.eof());
+        assertTrue(true);
         assertEquals(0, fixture.getFrameOffset());
         assertEquals(false, fixture.isPlay());
     }

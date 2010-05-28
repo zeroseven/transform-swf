@@ -44,7 +44,7 @@ import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 
 import com.flagstone.transform.coder.ImageTag;
-import com.flagstone.transform.coder.SWFDecoder;
+import com.flagstone.transform.coder.LittleDecoder;
 import com.flagstone.transform.image.DefineImage;
 import com.flagstone.transform.image.DefineImage2;
 import com.flagstone.transform.image.ImageFormat;
@@ -179,7 +179,7 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
         buffer.read(bytes);
         buffer.close();
 
-        final SWFDecoder coder = new SWFDecoder(bytes);
+        final LittleDecoder coder = new LittleDecoder(bytes);
 
         for (int i = 0; i < 2; i++) {
             if (coder.readByte() != SIGNATURE[i]) {
@@ -325,7 +325,7 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
      * Decode the indexed image data block (IDX8).
      * @param coder the decoder containing the image data.
      */
-    private void decodeIDX8(final SWFDecoder coder) {
+    private void decodeIDX8(final LittleDecoder coder) {
         int bitsRead;
         int index = 0;
 
@@ -348,7 +348,7 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
      * Decode the run length encoded image data block (RLE4).
      * @param coder the decoder containing the image data.
      */
-    private void decodeRLE4(final SWFDecoder coder) {
+    private void decodeRLE4(final LittleDecoder coder) {
         int row = height - 1;
         int col = 0;
         int index = 0;
@@ -411,7 +411,7 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
      * Decode the run length encoded image data block (RLE8).
      * @param coder the decoder containing the image data.
      */
-    private void decodeRLE8(final SWFDecoder coder) {
+    private void decodeRLE8(final LittleDecoder coder) {
         int row = height - 1;
         int col = 0;
         int index = 0;
@@ -470,7 +470,7 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
      * Decode the true colour image with each colour channel taking 5-bits.
      * @param coder the decoder containing the image data.
      */
-    private void decodeRGB5(final SWFDecoder coder) {
+    private void decodeRGB5(final LittleDecoder coder) {
         int bitsRead = 0;
         int index = 0;
 
@@ -526,7 +526,7 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
      * Decode the true colour image with each colour channel taking 8-bits.
      * @param coder the decoder containing the image data.
      */
-    private void decodeRGB8(final SWFDecoder coder) {
+    private void decodeRGB8(final LittleDecoder coder) {
         int bitsRead;
         int index = 0;
 
@@ -553,7 +553,7 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
      * 8-bits.
      * @param coder the decoder containing the image data.
      */
-    private void decodeRGBA(final SWFDecoder coder) {
+    private void decodeRGBA(final LittleDecoder coder) {
         int index = 0;
 
         for (int row = height - 1; row > 0; row--) {

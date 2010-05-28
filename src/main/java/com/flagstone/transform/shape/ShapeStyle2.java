@@ -31,12 +31,13 @@
 
 package com.flagstone.transform.shape;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import com.flagstone.transform.SWF;
-import java.io.IOException;
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.Encoder;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -135,18 +136,17 @@ public final class ShapeStyle2 implements ShapeRecord {
      *             if an error occurs while decoding the data.
      */
     // TODO(optimise)
-    public ShapeStyle2(final SWFDecoder coder, final Context context)
-            throws IOException {
+    public ShapeStyle2(final int flags, final SWFDecoder coder,
+            final Context context) throws IOException {
         final Map<Integer, Integer> vars = context.getVariables();
         int numberOfFillBits = vars.get(Context.FILL_SIZE);
         int numberOfLineBits = vars.get(Context.LINE_SIZE);
 
-        /* shapeType */coder.readBits(1, false);
-        hasStyles = coder.readBits(1, false) != 0;
-        hasLine = coder.readBits(1, false) != 0;
-        hasAlt = coder.readBits(1, false) != 0;
-        hasFill = coder.readBits(1, false) != 0;
-        hasMove = coder.readBits(1, false) != 0;
+        hasStyles = (flags & Coder.BIT4) != 0;
+        hasLine = (flags & Coder.BIT3) != 0;
+        hasAlt = (flags & Coder.BIT2) != 0;
+        hasFill = (flags & Coder.BIT1) != 0;
+        hasMove = (flags & Coder.BIT0) != 0;
 
         if (hasMove) {
             final int moveFieldSize = coder.readBits(5, false);
@@ -173,7 +173,7 @@ public final class ShapeStyle2 implements ShapeRecord {
 
             if (vars.containsKey(Context.ARRAY_EXTENDED)
                     && (fillStyleCount == 0xFF)) {
-                fillStyleCount = coder.readUI16();
+                fillStyleCount = coder.readUnsignedShort();
             }
 
             final SWFFactory<FillStyle> decoder = context.getRegistry()
@@ -187,7 +187,7 @@ public final class ShapeStyle2 implements ShapeRecord {
 
             if (vars.containsKey(Context.ARRAY_EXTENDED)
                     && (lineStyleCount == 0xFF)) {
-                lineStyleCount = coder.readUI16();
+                lineStyleCount = coder.readUnsignedShort();
             }
 
             for (int i = 0; i < lineStyleCount; i++) {
@@ -572,11 +572,11 @@ public final class ShapeStyle2 implements ShapeRecord {
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
         coder.writeBits(0, 1);
-        coder.writeBool(hasStyles);
-        coder.writeBool(hasLine);
-        coder.writeBool(hasAlt);
-        coder.writeBool(hasFill);
-        coder.writeBool(hasMove);
+        coder.writeBits(hasStyles ? 1 : 0, 1);
+        coder.writeBits(hasLine ? 1 : 0, 1);
+        coder.writeBits(hasAlt ? 1 : 0, 1);
+        coder.writeBits(hasFill ? 1 : 0, 1);
+        coder.writeBits(hasMove ? 1 : 0, 1);
 
         final Map<Integer, Integer> vars = context.getVariables();
 

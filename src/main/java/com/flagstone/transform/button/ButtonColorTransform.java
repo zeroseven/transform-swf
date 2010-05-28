@@ -93,19 +93,14 @@ public final class ButtonColorTransform implements MovieTag {
      */
     public ButtonColorTransform(final SWFDecoder coder, final Context context)
             throws IOException {
-
-        final int start = coder.getPointer();
-        length = coder.readLength();
-        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
-
-        identifier = coder.readUI16();
-        colorTransform = new ColorTransform(coder, context);
-
-        if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(),
-                    start >> Coder.BITS_TO_BYTES, length,
-                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
+        length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
+        if (length == Coder.IS_EXTENDED) {
+            length = coder.readInt();
         }
+        coder.mark();
+        identifier = coder.readUnsignedShort();
+        colorTransform = new ColorTransform(coder, context);
+        coder.unmark(length);
     }
 
     /**

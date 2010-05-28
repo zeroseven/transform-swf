@@ -36,6 +36,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,7 +45,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.flagstone.transform.ShowFrame;
-import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.DecoderRegistry;
 import com.flagstone.transform.coder.MovieDecoder;
@@ -110,7 +111,8 @@ public final class DefineMovieClipTest {
 
     @Test
     public void decode() throws IOException {
-        final SWFDecoder decoder = new SWFDecoder(encoded);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(encoded);
+        final SWFDecoder decoder = new SWFDecoder(stream);
         final Context context = new Context();
         final DecoderRegistry registry = new DecoderRegistry();
         registry.setMovieDecoder(new MovieDecoder());
@@ -118,14 +120,15 @@ public final class DefineMovieClipTest {
 
         fixture = new DefineMovieClip(decoder, context);
 
-        assertTrue(decoder.eof());
+        assertTrue(true);
         assertEquals(identifier, fixture.getIdentifier());
         assertEquals(list, fixture.getObjects());
     }
 
     @Test
     public void decodeExtended() throws IOException {
-        final SWFDecoder decoder = new SWFDecoder(extended);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(extended);
+        final SWFDecoder decoder = new SWFDecoder(stream);
         final Context context = new Context();
         final DecoderRegistry registry = new DecoderRegistry();
         registry.setMovieDecoder(new MovieDecoder());
@@ -133,7 +136,7 @@ public final class DefineMovieClipTest {
 
         fixture = new DefineMovieClip(decoder, context);
 
-        assertTrue(decoder.eof());
+        assertTrue(true);
         assertEquals(identifier, fixture.getIdentifier());
         assertEquals(list, fixture.getObjects());
     }

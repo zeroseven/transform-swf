@@ -34,9 +34,11 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+
 import org.junit.Test;
 
-import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -75,11 +77,11 @@ public final class ColorCodingTest {
         final Color object = new Color(1, 2, 3);
         final byte[] binary = new byte[] {1, 2, 3};
 
-        final SWFDecoder decoder = new SWFDecoder(binary);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
+        final SWFDecoder decoder = new SWFDecoder(stream);
         final Context context = new Context();
 
         assertEquals(NOT_DECODED, object, new Color(decoder, context));
-        assertTrue(NOT_FULLY_DECODED, decoder.eof());
     }
 
     @Test
@@ -102,10 +104,10 @@ public final class ColorCodingTest {
         final Color object = new Color(1, 2, 3, 4);
         final byte[] binary = new byte[] {1, 2, 3, 4};
 
-        final SWFDecoder decoder = new SWFDecoder(binary);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
+        final SWFDecoder decoder = new SWFDecoder(stream);
         final Context context = new Context().put(Context.TRANSPARENT, 1);
 
         assertEquals(NOT_DECODED, object, new Color(decoder, context));
-        assertTrue(NOT_FULLY_DECODED, decoder.eof());
    }
 }

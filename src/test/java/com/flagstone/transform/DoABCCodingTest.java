@@ -34,11 +34,13 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -83,13 +85,13 @@ public final class DoABCCodingTest {
                 0x01, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x00, 0x01, 0x02,
                 0x03, 0x04 };
 
-        final SWFDecoder decoder = new SWFDecoder(binary);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
+        final SWFDecoder decoder = new SWFDecoder(stream);
         final DoABC object = new DoABC(decoder);
 
         assertEquals(NOT_DECODED, "script", object.getName());
         assertEquals(NOT_DECODED, true, object.isDeferred());
         assertEquals(NOT_DECODED, data, object.getData());
-        assertTrue(NOT_FULLY_DECODED, decoder.eof());
    }
 
     @Test
@@ -99,12 +101,12 @@ public final class DoABCCodingTest {
                 0x00, 0x00, 0x00, 0x00, 0x01, 0x73, 0x63, 0x72, 0x69, 0x70,
                 0x74, 0x00, 0x01, 0x02, 0x03, 0x04 };
 
-        final SWFDecoder decoder = new SWFDecoder(binary);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
+        final SWFDecoder decoder = new SWFDecoder(stream);
         final DoABC object = new DoABC(decoder);
 
         assertEquals(NOT_DECODED, "script", object.getName());
         assertEquals(NOT_DECODED, true, object.isDeferred());
         assertEquals(NOT_DECODED, data, object.getData());
-        assertTrue(NOT_FULLY_DECODED, decoder.eof());
    }
 }

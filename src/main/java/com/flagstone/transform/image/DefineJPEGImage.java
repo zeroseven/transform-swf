@@ -94,19 +94,15 @@ public final class DefineJPEGImage implements ImageTag {
      *             if an error occurs while decoding the data.
      */
     public DefineJPEGImage(final SWFDecoder coder) throws IOException {
-        final int start = coder.getPointer();
-        length = coder.readLength();
-        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
-        identifier = coder.readUI16();
-        image = coder.readBytes(new byte[length - 2]);
-
-        decodeInfo();
-
-        if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(),
-                    start >> Coder.BITS_TO_BYTES, length,
-                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
+        length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
+        if (length == Coder.IS_EXTENDED) {
+            length = coder.readInt();
         }
+        coder.mark();
+        identifier = coder.readUnsignedShort();
+        image = coder.readBytes(new byte[length - 2]);
+        decodeInfo();
+        coder.unmark(length);
     }
 
     /**

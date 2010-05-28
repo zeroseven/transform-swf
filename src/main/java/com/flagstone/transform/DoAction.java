@@ -97,28 +97,24 @@ public final class DoAction implements MovieTag {
     public DoAction(final SWFDecoder coder, final Context context)
             throws IOException {
 
-        final int start = coder.getPointer();
-        length = coder.readLength();
-        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
-
+        final SWFFactory<Action> decoder = context.getRegistry()
+        .getActionDecoder();
         actions = new ArrayList<Action>();
 
-        final SWFFactory<Action> decoder = context.getRegistry()
-                .getActionDecoder();
+        length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
+        if (length == Coder.IS_EXTENDED) {
+            length = coder.readInt();
+        }
+        coder.mark();
 
         if (decoder == null) {
             actions.add(new ActionData(coder.readBytes(new byte[length])));
         } else {
-            while (coder.getPointer() < end) {
+            while (coder.bytesRead() < length) {
                 actions.add(decoder.getObject(coder, context));
             }
         }
-
-        if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(),
-                    start >> Coder.BITS_TO_BYTES, length,
-                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
-        }
+        coder.unmark(length);
     }
 
     /**

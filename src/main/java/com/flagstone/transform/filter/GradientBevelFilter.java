@@ -31,11 +31,11 @@
 
 package com.flagstone.transform.filter;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.flagstone.transform.Constants;
-import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -205,11 +205,11 @@ public final class GradientBevelFilter implements Filter {
             gradients.add(new Gradient(ratioes[i], colors[i]));
         }
 
-        blurX = coder.readSI32();
-        blurY = coder.readSI32();
-        angle = coder.readSI32();
-        distance = coder.readSI32();
-        strength = coder.readSI16();
+        blurX = coder.readInt();
+        blurY = coder.readInt();
+        angle = coder.readInt();
+        distance = coder.readInt();
+        strength = coder.readSignedShort();
 
         final int value = coder.readByte();
 

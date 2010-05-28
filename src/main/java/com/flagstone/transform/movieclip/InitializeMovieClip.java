@@ -98,11 +98,12 @@ public final class InitializeMovieClip implements MovieTag {
      */
     public InitializeMovieClip(final SWFDecoder coder, final Context context)
             throws IOException {
-        final int start = coder.getPointer();
-        length = coder.readLength();
-        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
-
-        identifier = coder.readUI16();
+        length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
+        if (length == Coder.IS_EXTENDED) {
+            length = coder.readInt();
+        }
+        coder.mark();
+        identifier = coder.readUnsignedShort();
         actions = new ArrayList<Action>();
 
         final SWFFactory<Action> decoder = context.getRegistry()
@@ -111,16 +112,11 @@ public final class InitializeMovieClip implements MovieTag {
         if (decoder == null) {
             actions.add(new ActionData(coder.readBytes(new byte[length - 2])));
         } else {
-            while (coder.getPointer() < end) {
+            while (coder.bytesRead() < length) {
                 actions.add(decoder.getObject(coder, context));
             }
         }
-
-        if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(),
-                    start >> Coder.BITS_TO_BYTES, length,
-                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
-        }
+        coder.unmark();
     }
 
     /**

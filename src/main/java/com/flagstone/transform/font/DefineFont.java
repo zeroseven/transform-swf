@@ -95,20 +95,21 @@ public final class DefineFont implements DefineTag {
      *             if an error occurs while decoding the data.
      */
     public DefineFont(final SWFDecoder coder) throws IOException {
-        final int start = coder.getPointer();
-        length = coder.readLength();
-        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
-
-        identifier = coder.readUI16();
+        length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
+        if (length == Coder.IS_EXTENDED) {
+            length = coder.readInt();
+        }
+        coder.mark();
+        identifier = coder.readUnsignedShort();
         shapes = new ArrayList<Shape>();
 
-        final int first = coder.readUI16();
+        final int first = coder.readUnsignedShort();
         final int count = first >> 1;
         final int[] table = new int[count + 1];
 
         table[0] = first;
         for (int i = 1; i < count; i++) {
-            table[i] = coder.readUI16();
+            table[i] = coder.readUnsignedShort();
         }
 
         table[count] = length - 2;
@@ -122,12 +123,7 @@ public final class DefineFont implements DefineTag {
             shape.add(new ShapeData(coder.readBytes(data)));
             shapes.add(shape);
         }
-
-        if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(),
-                    start >> Coder.BITS_TO_BYTES, length,
-                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
-        }
+        coder.unmark(length);
     }
 
     /**

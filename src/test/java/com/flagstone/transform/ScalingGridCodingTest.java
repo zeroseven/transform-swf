@@ -34,11 +34,13 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -82,12 +84,12 @@ public final class ScalingGridCodingTest {
         final byte[] binary = new byte[] {(byte) 0x85, 0x13, 0x01, 0x00, 0x20,
                 (byte) 0x99, 0x20};
 
-        final SWFDecoder decoder = new SWFDecoder(binary);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
+        final SWFDecoder decoder = new SWFDecoder(stream);
         final ScalingGrid object = new ScalingGrid(decoder);
 
         assertEquals(NOT_DECODED, 1, object.getIdentifier());
         assertEquals(NOT_DECODED, bounds, object.getBounds());
-        assertTrue(NOT_FULLY_DECODED, decoder.eof());
    }
 
     @Test
@@ -96,11 +98,11 @@ public final class ScalingGridCodingTest {
         final byte[] binary = new byte[] {(byte) 0xBF, 0x13, 0x05, 0x00, 0x00,
                 0x00, 0x01, 0x00, 0x20, (byte) 0x99, 0x20};
 
-        final SWFDecoder decoder = new SWFDecoder(binary);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
+        final SWFDecoder decoder = new SWFDecoder(stream);
         final ScalingGrid object = new ScalingGrid(decoder);
 
         assertEquals(NOT_DECODED, 1, object.getIdentifier());
         assertEquals(NOT_DECODED, bounds, object.getBounds());
-        assertTrue(NOT_FULLY_DECODED, decoder.eof());
    }
 }

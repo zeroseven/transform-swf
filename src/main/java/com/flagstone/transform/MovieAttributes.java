@@ -31,10 +31,10 @@
 
 package com.flagstone.transform;
 
+import java.io.IOException;
 import java.util.EnumSet;
 import java.util.Set;
 
-import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.MovieTypes;
@@ -60,10 +60,9 @@ public final class MovieAttributes implements MovieTag {
      *             if an error occurs while decoding the data.
      */
     public MovieAttributes(final SWFDecoder coder) throws IOException {
+        coder.readUnsignedShort();
         attributes = coder.readByte();
-        coder.readByte(); // reserved
-        coder.readByte(); // reserved
-        coder.readByte(); // reserved
+        coder.skip(3);
     }
 
     /**

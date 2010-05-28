@@ -34,6 +34,8 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,7 +43,6 @@ import org.junit.Test;
 
 import com.flagstone.transform.action.Action;
 import com.flagstone.transform.action.BasicAction;
-import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -87,12 +88,12 @@ public final class DoActionCodingTest {
 
         final byte[] binary = new byte[] {0x02, 0x03, 0x04, 0x00 };
 
-        final SWFDecoder decoder = new SWFDecoder(binary);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
+        final SWFDecoder decoder = new SWFDecoder(stream);
         final Context context = new Context();
         final DoAction object = new DoAction(decoder, context);
 
         assertEquals(NOT_DECODED, actions, object.getActions());
-        assertTrue(NOT_FULLY_DECODED, decoder.eof());
    }
 
     @Test
@@ -104,11 +105,11 @@ public final class DoActionCodingTest {
         final byte[] binary = new byte[] {0x3F, 0x03, 0x02, 0x00, 0x00, 0x00,
                 0x04, 0x00 };
 
-        final SWFDecoder decoder = new SWFDecoder(binary);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
+        final SWFDecoder decoder = new SWFDecoder(stream);
         final Context context = new Context();
         final DoAction object = new DoAction(decoder, context);
 
         assertEquals(NOT_DECODED, actions, object.getActions());
-        assertTrue(NOT_FULLY_DECODED, decoder.eof());
    }
 }

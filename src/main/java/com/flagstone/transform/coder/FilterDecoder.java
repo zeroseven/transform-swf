@@ -89,7 +89,7 @@ public final class FilterDecoder implements SWFFactory<Filter> {
             filter = new GradientBevelFilter(coder, context);
             break;
         default:
-            throw new CoderException(getClass().getName(), coder.getPointer(),
+            throw new CoderException(getClass().getName(), 0,
                     "Unsupported Filter");
         }
         return filter;

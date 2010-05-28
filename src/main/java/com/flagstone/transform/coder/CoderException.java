@@ -135,6 +135,32 @@ public final class CoderException extends IOException {
     }
 
     /**
+     * Creates a CoderException to report where a problem occurred when encoding
+     * or decoding a Flash (.swf) file.
+     *
+     * @param pos
+     *            the address in the file where the data structure being
+     *            encoded/decoded is located. This is only valid for files being
+     *            decoded since the encoded file will not be written if an
+     *            exception occurs.
+     *
+     * @param size
+     *            the number of bytes that were expected to be encoded or
+     *            decoded.
+     *
+     * @param diff
+     *            the difference between the expected number of bytes and the
+     *            actual number encoded or decoded.
+     */
+    public CoderException(final int pos, final int size, final int diff) {
+        super(CODING_ERROR);
+        name = "";
+        start = pos;
+        length = size;
+        delta = diff;
+    }
+
+    /**
      * Get the name of the class of the object that caused the error.
      *
      * @return the name of the class that caused the error.

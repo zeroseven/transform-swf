@@ -32,9 +32,10 @@
 package com.flagstone.transform.filter;
 
 
+import java.io.IOException;
+
 import com.flagstone.transform.Constants;
 import com.flagstone.transform.coder.Coder;
-import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -71,8 +72,8 @@ public final class BlurFilter implements Filter {
      */
     public BlurFilter(final SWFDecoder coder)
             throws IOException {
-        blurX = coder.readSI32();
-        blurY = coder.readSI32();
+        blurX = coder.readInt();
+        blurY = coder.readInt();
         passes = (coder.readByte() & Coder.UNSIGNED_BYTE_MASK) >>> 3;
     }
 

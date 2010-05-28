@@ -44,8 +44,8 @@ import java.util.List;
 import java.util.zip.DataFormatException;
 
 import com.flagstone.transform.coder.Coder;
+import com.flagstone.transform.coder.LittleDecoder;
 import com.flagstone.transform.coder.MovieTag;
-import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.sound.DefineSound;
 import com.flagstone.transform.sound.SoundFormat;
 import com.flagstone.transform.sound.SoundStreamBlock;
@@ -187,7 +187,7 @@ public final class WAVDecoder implements SoundProvider, SoundDecoder {
         buffer.read(bytes);
         buffer.close();
 
-        final SWFDecoder coder = new SWFDecoder(bytes);
+        final LittleDecoder coder = new LittleDecoder(bytes);
 
         for (int i = 0; i < RIFF.length; i++) {
             if (coder.readByte() != RIFF[i]) {
@@ -237,7 +237,7 @@ public final class WAVDecoder implements SoundProvider, SoundDecoder {
      * @throws DataFormatException if the block is in a format not supported
      * by this decoder.
      */
-    private void decodeFMT(final SWFDecoder coder) throws DataFormatException {
+    private void decodeFMT(final LittleDecoder coder) throws DataFormatException {
         format = SoundFormat.PCM;
 
         if (coder.readUI16() != 1) {
@@ -257,7 +257,7 @@ public final class WAVDecoder implements SoundProvider, SoundDecoder {
      * @param coder an SWFDecoder containing the bytes to be decoded.
      * @param length the length of the block in bytes.
      */
-    private void decodeDATA(final SWFDecoder coder, final int length) {
+    private void decodeDATA(final LittleDecoder coder, final int length) {
         samplesPerChannel = length / (sampleSize * numberOfChannels);
 
         sound = coder.readBytes(new byte[length]);

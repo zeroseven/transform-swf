@@ -31,11 +31,11 @@
 
 package com.flagstone.transform.fillstyle;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.flagstone.transform.SWF;
-import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;

@@ -85,8 +85,8 @@ public final class WaitForFrame implements Action {
      *             if an error occurs while decoding the data.
      */
     public WaitForFrame(final SWFDecoder coder) throws IOException {
-        coder.readUI16();
-        frameNumber = coder.readUI16();
+        coder.readUnsignedShort();
+        frameNumber = coder.readUnsignedShort();
         actionCount = coder.readByte();
     }
 

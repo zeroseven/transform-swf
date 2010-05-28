@@ -90,29 +90,24 @@ public final class ButtonSound implements MovieTag {
      *             if an error occurs while decoding the data.
      */
     public ButtonSound(final SWFDecoder coder) throws IOException {
-        final int start = coder.getPointer();
-        length = coder.readLength();
-        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
-
-        identifier = coder.readUI16();
-        table = new LinkedHashMap<ButtonEvent, SoundInfo>();
-
-        decodeInfo(ButtonEvent.ROLL_OUT, coder, end);
-        decodeInfo(ButtonEvent.ROLL_OVER, coder, end);
-        decodeInfo(ButtonEvent.PRESS, coder, end);
-        decodeInfo(ButtonEvent.RELEASE, coder, end);
-
-        if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(),
-                    start >> Coder.BITS_TO_BYTES, length,
-                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
+        length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
+        if (length == Coder.IS_EXTENDED) {
+            length = coder.readInt();
         }
+        coder.mark();
+        identifier = coder.readUnsignedShort();
+        table = new LinkedHashMap<ButtonEvent, SoundInfo>();
+        decodeInfo(ButtonEvent.ROLL_OUT, coder);
+        decodeInfo(ButtonEvent.ROLL_OVER, coder);
+        decodeInfo(ButtonEvent.PRESS, coder);
+        decodeInfo(ButtonEvent.RELEASE, coder);
+        coder.unmark(length);
     }
 
     private void decodeInfo(final ButtonEvent event,
-            final SWFDecoder coder, final int end) throws IOException {
-        if (coder.getPointer() != end) {
-            int uid = coder.readUI16();
+            final SWFDecoder coder) throws IOException {
+        if (coder.bytesRead() < length) {
+            int uid = coder.readUnsignedShort();
             if (uid != 0) {
                 table.put(event, new SoundInfo(uid, coder));
             }

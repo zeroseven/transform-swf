@@ -30,10 +30,11 @@
  */
 package com.flagstone.transform;
 
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import java.io.IOException;
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.MovieTypes;
@@ -72,13 +73,17 @@ public final class Export implements MovieTag {
      *             if an error occurs while decoding the data.
      */
     public Export(final SWFDecoder coder) throws IOException {
-        length = coder.readLength();
-        final int count = coder.readUI16();
-        objects = new LinkedHashMap<Integer, String>();
-
-        for (int i = 0; i < count; i++) {
-            add(coder.readUI16(), coder.readString());
+        length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
+        if (length == Coder.IS_EXTENDED) {
+            length = coder.readInt();
         }
+        coder.mark();
+        final int count = coder.readUnsignedShort();
+        objects = new LinkedHashMap<Integer, String>(count);
+        for (int i = 0; i < count; i++) {
+            objects.put(coder.readUnsignedShort(), coder.readString());
+        }
+        coder.unmark(length);
     }
 
     /**

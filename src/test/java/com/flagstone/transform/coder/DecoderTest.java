@@ -49,7 +49,7 @@ public final class DecoderTest {
 
     @Test
     public void readBitsForUnsignedNumber() {
-        fixture = new SWFDecoder(new byte[] {3 });
+        fixture = new Decoder(new byte[] {3 });
         fixture.setPointer(6);
 
         assertEquals(3, fixture.readBits(2, false));
@@ -58,7 +58,7 @@ public final class DecoderTest {
 
     @Test
     public void readBitsForSignedNumber() {
-        fixture = new SWFDecoder(new byte[] {3 });
+        fixture = new Decoder(new byte[] {3 });
         fixture.setPointer(6);
 
         assertEquals(-1, fixture.readBits(2, true));
@@ -67,7 +67,7 @@ public final class DecoderTest {
 
     @Test
     public void readBitsToEndOfBuffer() {
-        fixture = new SWFDecoder(new byte[] {3 });
+        fixture = new Decoder(new byte[] {3 });
         fixture.setPointer(6);
 
         assertEquals(3, fixture.readBits(2, false));
@@ -76,7 +76,7 @@ public final class DecoderTest {
 
     @Test(expected = ArrayIndexOutOfBoundsException.class)
     public void readBitsBeyondEndOfBuffer() {
-        fixture = new SWFDecoder(new byte[] {3 });
+        fixture = new Decoder(new byte[] {3 });
         fixture.setPointer(6);
 
         fixture.readBits(4, true);
@@ -84,7 +84,7 @@ public final class DecoderTest {
 
     @Test
     public void readBitsAcrossByteBoundary() {
-        fixture = new SWFDecoder(new byte[] {3, (byte) 0xC0 });
+        fixture = new Decoder(new byte[] {3, (byte) 0xC0 });
         fixture.setPointer(6);
 
         assertEquals(-1, fixture.readBits(4, true));
@@ -92,7 +92,7 @@ public final class DecoderTest {
 
     @Test
     public void readBitsAcrossIntBoundary() {
-        fixture = new SWFDecoder(new byte[] {0, 0, 0, 3, (byte) 0xC0 });
+        fixture = new Decoder(new byte[] {0, 0, 0, 3, (byte) 0xC0 });
         fixture.setPointer(30);
 
         assertEquals(-1, fixture.readBits(4, true));
@@ -100,7 +100,7 @@ public final class DecoderTest {
 
     @Test
     public void readZeroBits() {
-        fixture = new SWFDecoder(new byte[] {3 });
+        fixture = new Decoder(new byte[] {3 });
         fixture.setPointer(2);
 
         assertEquals(0, fixture.readBits(0, true));
@@ -109,7 +109,7 @@ public final class DecoderTest {
 
     @Test
     public void readByte() {
-        fixture = new SWFDecoder(new byte[] {1, 2 });
+        fixture = new Decoder(new byte[] {1, 2 });
 
         assertEquals(1, fixture.readByte());
         assertEquals(2, fixture.readByte());
@@ -117,7 +117,7 @@ public final class DecoderTest {
 
     @Test(expected = ArrayIndexOutOfBoundsException.class)
     public void readByteBeyondEndOfBuffer() {
-        fixture = new SWFDecoder(new byte[] {1, 2 });
+        fixture = new Decoder(new byte[] {1, 2 });
 
         fixture.readByte();
         fixture.readByte();
@@ -129,7 +129,7 @@ public final class DecoderTest {
         final byte[] data = new byte[] {1, 2, 3, 4, 5, 6, 7, 8 };
         final byte[] buffer = new byte[data.length];
 
-        fixture = new SWFDecoder(data);
+        fixture = new Decoder(data);
         fixture.readBytes(buffer);
 
         assertEquals(data.length << 3, fixture.getPointer());
@@ -138,7 +138,7 @@ public final class DecoderTest {
 
     @Test
     public void readNullTerminatedString() {
-        fixture = new SWFDecoder(new byte[] {0x31, 0x32, 0x33, 0x00 });
+        fixture = new Decoder(new byte[] {0x31, 0x32, 0x33, 0x00 });
         fixture.encoding = "UTF-8";
 
         assertEquals("123", fixture.readString());
@@ -147,7 +147,7 @@ public final class DecoderTest {
 
     @Test
     public void readStringWithLength() {
-        fixture = new SWFDecoder(new byte[] {0x31, 0x32, 0x33, 0x00 });
+        fixture = new Decoder(new byte[] {0x31, 0x32, 0x33, 0x00 });
         fixture.encoding = "UTF-8";
 
         assertEquals("123", fixture.readString(3));
@@ -156,7 +156,7 @@ public final class DecoderTest {
 
     @Test
     public void readNullTerminatedStringWithLength() {
-        fixture = new SWFDecoder(new byte[] {0x31, 0x32, 0x33, 0x00 });
+        fixture = new Decoder(new byte[] {0x31, 0x32, 0x33, 0x00 });
         fixture.encoding = "UTF-8";
 
         assertEquals("123\0", fixture.readString(4));
@@ -165,7 +165,7 @@ public final class DecoderTest {
 
     @Test
     public void findBitsWithSuccess() {
-        fixture = new SWFDecoder(new byte[] {0x30 });
+        fixture = new Decoder(new byte[] {0x30 });
 
         assertTrue(fixture.findBits(3, 2, 1));
         assertEquals(2, fixture.getPointer());
@@ -173,7 +173,7 @@ public final class DecoderTest {
 
     @Test
     public void findBitsWithoutSuccess() {
-        fixture = new SWFDecoder(new byte[] {0x0C });
+        fixture = new Decoder(new byte[] {0x0C });
         fixture.setPointer(2);
 
         assertFalse(fixture.findBits(5, 3, 1));
@@ -182,7 +182,7 @@ public final class DecoderTest {
 
     @Test
     public void findBitsWithSuccessAtEndOfBuffer() {
-        fixture = new SWFDecoder(new byte[] {0x05 });
+        fixture = new Decoder(new byte[] {0x05 });
 
         assertTrue(fixture.findBits(5, 3, 1));
         assertEquals(5, fixture.getPointer());

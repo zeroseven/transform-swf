@@ -87,8 +87,8 @@ public final class Jump implements Action {
      *             if an error occurs while decoding the data.
      */
     public Jump(final SWFDecoder coder) throws IOException {
-        coder.readUI16();
-        offset = coder.readSI16();
+        coder.readUnsignedShort();
+        offset = coder.readSignedShort();
     }
 
     /**

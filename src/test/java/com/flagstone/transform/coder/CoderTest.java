@@ -43,13 +43,13 @@ import org.junit.Before;
 import org.junit.Test;
 
 public final class CoderTest {
-    private transient Coder fixture;
+    private transient Decoder fixture;
 
     private transient byte[] data;
 
     @Before
     public void setUp() {
-        fixture = new Coder();
+        fixture = new Decoder(new byte[0]);
     }
 
     @Test
@@ -71,8 +71,7 @@ public final class CoderTest {
     @Test
     public void checkSetDataCreatesCopy() {
         data = new byte[] {1, 2, 3, 4, 5 };
-
-        fixture = new SWFDecoder(data);
+        fixture = new Decoder(data);
 
         assertNotSame(data, fixture.data);
         assertArrayEquals(data, fixture.data);
@@ -90,7 +89,8 @@ public final class CoderTest {
 
     @Test
     public void checkAccessorForPointer() {
-        fixture = new SWFDecoder(new byte[] {1, 2, 3, 4 });
+        data = new byte[] {1, 2, 3, 4 };
+        fixture = new Decoder(data);
         fixture.setPointer(8);
 
         assertEquals(8, fixture.getPointer());
@@ -98,7 +98,7 @@ public final class CoderTest {
 
     @Test
     public void checkSetPointerGoesToCorrectLocation() {
-        fixture = new SWFDecoder(new byte[] {1, 2, 3, 4 });
+        fixture = new Decoder(new byte[] {1, 2, 3, 4 });
         fixture.setPointer(8);
 
         assertEquals(fixture.data[1], fixture.data[fixture.index]);
@@ -106,7 +106,7 @@ public final class CoderTest {
 
     @Test
     public void checkAdjustPointerGoesToCorrectLocation() {
-        fixture = new SWFDecoder(new byte[] {1, 2, 3, 4 });
+        fixture = new Decoder(new byte[] {1, 2, 3, 4 });
 
         fixture.adjustPointer(8);
         assertEquals(8, fixture.getPointer());
@@ -117,7 +117,7 @@ public final class CoderTest {
 
     @Test
     public void checkAlignToByteOnByteBoundaryLeavesPointerUnchanged() {
-        fixture = new SWFDecoder(new byte[] {1, 2, 3, 4 });
+        fixture = new Decoder(new byte[] {1, 2, 3, 4 });
         fixture.setPointer(8);
         fixture.alignToByte();
 
@@ -126,7 +126,7 @@ public final class CoderTest {
 
     @Test
     public void checkAlignToByteOnBitBoundaryChangesPointer() {
-        fixture = new SWFDecoder(new byte[] {1, 2, 3, 4 });
+        fixture = new Decoder(new byte[] {1, 2, 3, 4 });
         fixture.setPointer(9);
         fixture.alignToByte();
 
@@ -135,7 +135,7 @@ public final class CoderTest {
 
     @Test
     public void checkPointerIsAtEndOfFile() {
-        fixture = new SWFDecoder(new byte[] {1, 2, 3, 4 });
+        fixture = new Decoder(new byte[] {1, 2, 3, 4 });
         fixture.setPointer(32);
 
         assertTrue(fixture.eof());

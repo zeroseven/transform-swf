@@ -151,16 +151,6 @@ public final class EncoderTest {
     }
 
     @Test
-    public void writeB16() {
-        fixture = new SWFEncoder(2);
-        fixture.writeB16(0x0102);
-
-        assertEquals(16, fixture.getPointer());
-        assertEquals(1, fixture.data[0]);
-        assertEquals(2, fixture.data[1]);
-    }
-
-    @Test
     public void writeByte() {
         fixture = new SWFEncoder(1);
         fixture.writeByte(3);

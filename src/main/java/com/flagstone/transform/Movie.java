@@ -370,21 +370,24 @@ public final class Movie {
             streamIn = stream;
         }
 
-        int value = streamIn.read();
-        int bitsToRead = ((value >> 3) << 2) - 3;
-        int bytesToRead = ((bitsToRead + 7) >> 3) + 4;
+        SWFDecoder decoder;
 
-        byte[] buffer = new byte[bytesToRead + 1];
-        buffer[0] = (byte) value;
-        streamIn.read(buffer, 1, bytesToRead);
+        /*
+         * If the file is shorter than the default buffer size then set the
+         * buffer size to be the file size - this gets around a bug in Java
+         * where the end of ZLIB streams are not detected correctly.
+         */
 
-        SWFDecoder decoder = new SWFDecoder(buffer);
+        if (length < SWFDecoder.BUFFER_SIZE) {
+            decoder = new SWFDecoder(streamIn, length - 8);
+        } else {
+            decoder = new SWFDecoder(streamIn);
+        }
+//FIX        decoder.setEncoding(encoding.toString());
+
         frameSize = new Bounds(decoder);
-        frameRate = decoder.readUI16();
-        frameCount = decoder.readUI16();
-
-        decoder = new SWFDecoder(streamIn);
-        decoder.setEncoding(encoding.toString());
+        frameRate = decoder.readUnsignedShort();
+        frameCount = decoder.readUnsignedShort();
 
         final Context context = new Context();
         context.setRegistry(registry);
@@ -395,7 +398,7 @@ public final class Movie {
 
         final SWFFactory<MovieTag> factory = registry.getMovieDecoder();
 
-        while (decoder.nextHeader() != MovieTypes.END) {
+        while (decoder.scanUnsignedShort() >>> 6 != MovieTypes.END) {
             objects.add(factory.getObject(decoder, context));
         }
     }

@@ -145,29 +145,32 @@ public final class DefineMorphShape implements DefineTag {
     // TODO(optimise)
     public DefineMorphShape(final SWFDecoder coder, final Context context)
             throws IOException {
-        final int start = coder.getPointer();
-        length = coder.readLength();
-        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
-
+        length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
+        if (length == Coder.IS_EXTENDED) {
+            length = coder.readInt();
+        }
+        coder.mark();
+        coder.mark();
         final Map<Integer, Integer> vars = context.getVariables();
         vars.put(Context.TRANSPARENT, 1);
         vars.put(Context.ARRAY_EXTENDED, 1);
         vars.put(Context.TYPE, MovieTypes.DEFINE_MORPH_SHAPE);
 
-        identifier = coder.readUI16();
+        identifier = coder.readUnsignedShort();
 
         startBounds = new Bounds(coder);
         endBounds = new Bounds(coder);
         fillStyles = new ArrayList<FillStyle>();
         lineStyles = new ArrayList<MorphLineStyle>();
 
-        final int shapeStart = coder.getPointer() + (coder.readUI32() << 3);
+        final int offsetToEnd = coder.readInt();
+        coder.mark();
 
         int fillStyleCount = coder.readByte();
 
         if (vars.containsKey(Context.ARRAY_EXTENDED)
                 && (fillStyleCount == EXTENDED)) {
-            fillStyleCount = coder.readUI16();
+            fillStyleCount = coder.readUnsignedShort();
         }
 
         final SWFFactory<FillStyle> decoder = context.getRegistry()
@@ -181,41 +184,38 @@ public final class DefineMorphShape implements DefineTag {
 
         if (vars.containsKey(Context.ARRAY_EXTENDED)
                 && (lineStyleCount == EXTENDED)) {
-            lineStyleCount = coder.readUI16();
+            lineStyleCount = coder.readUnsignedShort();
         }
 
         for (int i = 0; i < lineStyleCount; i++) {
             lineStyles.add(new MorphLineStyle(coder, context));
         }
 
-        final int bytesRead = (coder.getPointer() - start) >> 3;
-        final int endSize = (end - shapeStart) >> 3;
-        final int startSize = length - bytesRead - endSize;
-
         if (context.getRegistry().getShapeDecoder() == null) {
+            int size = coder.bytesRead() - offsetToEnd;
+            coder.unmark();
+
             startShape = new Shape();
-            startShape.add(new ShapeData(new byte[startSize]));
+            startShape.add(new ShapeData(new byte[size]));
+
+            size = length - coder.bytesRead();
+            coder.unmark();
 
             endShape = new Shape();
-            endShape.add(new ShapeData(new byte[endSize]));
+            endShape.add(new ShapeData(new byte[size]));
         } else {
             startShape = new Shape(coder, context);
             endShape = new Shape(coder, context);
+            coder.unmark();
+            coder.unmark();
         }
 
         vars.remove(Context.TRANSPARENT);
         vars.put(Context.ARRAY_EXTENDED, 1);
         vars.remove(Context.TYPE);
-
-        if (coder.getPointer() != end) {
-            final int delta = (coder.getPointer() - end) >> 3;
-            if (delta == -33) {
-                coder.setPointer(end);
-            } else {
-                throw new CoderException(getClass().getName(),
-                        start >> Coder.BITS_TO_BYTES, length,
-                        (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
-            }
+        // known bug - empty objects may be added to Flash file.
+        if (length - coder.bytesRead() != 33) {
+            coder.unmark(length);
         }
     }
 

@@ -31,8 +31,10 @@
 
 package com.flagstone.transform.sound;
 
-import com.flagstone.transform.SWF;
 import java.io.IOException;
+
+import com.flagstone.transform.SWF;
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
@@ -115,15 +117,15 @@ public final class SoundInfo implements SWFEncodeable {
         mode = (info & 0x00F0);
 
         if ((info & 0x01) != 0) {
-            inPoint = coder.readUI32();
+            inPoint = coder.readInt();
         }
 
         if ((info & 0x02) != 0) {
-            outPoint = coder.readUI32();
+            outPoint = coder.readInt();
         }
 
         if ((info & 0x04) != 0) {
-            loopCount = coder.readUI16();
+            loopCount = coder.readUnsignedShort();
         }
 
         if ((info & 0x08) != 0) {
@@ -372,11 +374,13 @@ public final class SoundInfo implements SWFEncodeable {
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
         coder.writeI16(identifier);
-        coder.writeBits(mode, 4);
-        coder.writeBool(envelope != null);
-        coder.writeBool(loopCount != null);
-        coder.writeBool(outPoint != null);
-        coder.writeBool(inPoint != null);
+
+        int bits = mode << 4;
+        bits |= envelope == null ? 0 : Coder.BIT3;
+        bits |= loopCount == null ? 0 : Coder.BIT2;
+        bits |= outPoint == null ? 0 : Coder.BIT1;
+        bits |= inPoint == null ? 0 : Coder.BIT0;
+        coder.writeByte(bits);
 
         if (inPoint != null) {
             coder.writeI32(inPoint);

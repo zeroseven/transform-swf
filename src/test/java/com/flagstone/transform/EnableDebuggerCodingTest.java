@@ -34,9 +34,11 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+
 import org.junit.Test;
 
-import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -76,11 +78,11 @@ public final class EnableDebuggerCodingTest {
         final byte[] binary = new byte[] {(byte) 0x89, 0x0E, 0x00, 0x00, 0x41,
                 0x42, 0x43, 0x31, 0x32, 0x33, 0x00 };
 
-        final SWFDecoder decoder = new SWFDecoder(binary);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
+        final SWFDecoder decoder = new SWFDecoder(stream);
         final EnableDebugger object = new EnableDebugger(decoder);
 
         assertEquals(NOT_DECODED, "ABC123", object.getPassword());
-        assertTrue(NOT_FULLY_DECODED, decoder.eof());
    }
 
     @Test
@@ -88,10 +90,10 @@ public final class EnableDebuggerCodingTest {
         final byte[] binary = new byte[] {(byte) 0xBF, 0x0E, 0x09, 0x00, 0x00,
                 0x00, 0x00, 0x00, 0x41, 0x42, 0x43, 0x31, 0x32, 0x33, 0x00 };
 
-        final SWFDecoder decoder = new SWFDecoder(binary);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
+        final SWFDecoder decoder = new SWFDecoder(stream);
         final EnableDebugger object = new EnableDebugger(decoder);
 
         assertEquals(NOT_DECODED, "ABC123", object.getPassword());
-        assertTrue(NOT_FULLY_DECODED, decoder.eof());
    }
 }

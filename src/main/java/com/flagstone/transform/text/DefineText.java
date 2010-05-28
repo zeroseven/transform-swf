@@ -106,32 +106,23 @@ public final class DefineText implements DefineTag {
     // TODO(optimise)
     public DefineText(final SWFDecoder coder, final Context context)
             throws IOException {
-        final int start = coder.getPointer();
-        length = coder.readLength();
-        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
-
-        identifier = coder.readUI16();
+        length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
+        if (length == Coder.IS_EXTENDED) {
+            length = coder.readInt();
+        }
+        coder.mark();
+        identifier = coder.readUnsignedShort();
         bounds = new Bounds(coder);
 
-        // CHECKSTYLE:OFF This code is used to get round a bug in Flash -
-        // sometimes 16, 8-bit zeroes are written out before the transform.
-        // The root cause in Flash is unknown but seems to be related to the
-        // bounds not being set - all values are zero.
-
-        final int mark = coder.getPointer();
-        int count = 0;
-
-        for (int i = 0; i < 16; i++) {
-            if (coder.readByte() == 0) {
-                count += 1;
-            }
+        /*
+         * This code is used to get round a bug in Flash - sometimes 16, 8-bit
+         * zeroes are written out before the transform. The root cause in Flash
+         * is unknown but seems to be related to the bounds not being set - all
+         * values are zero.
+         */
+        if (coder.count(0) == 16) {
+            coder.skip(16);
         }
-
-        if (count != 16) {
-            coder.setPointer(mark);
-        }
-
-        // CHECKSTYLE:ON Back to reading the rest of the tag
 
         transform = new CoordTransform(coder);
 
@@ -144,18 +135,15 @@ public final class DefineText implements DefineTag {
 
         objects = new ArrayList<TextSpan>();
 
-        while (coder.prefetchByte() != 0) {
+        while (coder.scanByte() != 0) {
             objects.add(new TextSpan(coder, context));
         }
 
+        coder.readByte();
+
         vars.put(Context.GLYPH_SIZE, 0);
         vars.put(Context.ADVANCE_SIZE, 0);
-
-        if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(),
-                    start >> Coder.BITS_TO_BYTES, length,
-                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
-        }
+        coder.unmark(length);
     }
 
     /**

@@ -91,7 +91,8 @@ public final class ActionDecoder implements SWFFactory<Action> {
                 break;
             case ActionTypes.CALL:
                 action = Call.getInstance();
-                coder.adjustPointer(16);
+                coder.readByte();
+                coder.readByte();
                 break;
             case ActionTypes.PUSH:
                 action = new Push(coder, context);

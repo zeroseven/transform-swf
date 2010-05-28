@@ -86,7 +86,7 @@ public final class FocalGradientFill implements FillStyle {
             gradients.add(new Gradient(coder, context));
         }
 
-        focalPoint = coder.readSI16();
+        focalPoint = coder.readSignedShort();
     }
 
 

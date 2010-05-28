@@ -32,8 +32,9 @@
 package com.flagstone.transform.fillstyle;
 
 
-import com.flagstone.transform.SWF;
 import java.io.IOException;
+
+import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -113,7 +114,7 @@ public final class BitmapFill implements FillStyle {
     public BitmapFill(final int fillType, final SWFDecoder coder)
                 throws IOException {
         type = fillType;
-        identifier = coder.readUI16();
+        identifier = coder.readUnsignedShort();
         transform = new CoordTransform(coder);
     }
 

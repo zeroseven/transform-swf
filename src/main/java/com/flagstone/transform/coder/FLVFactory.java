@@ -47,5 +47,5 @@ public interface FLVFactory<T> {
      * @return T the decoded Flash Video object.
      * @throws IOException if an error occurs decoding the object.
      */
-    T getObject(final FLVDecoder coder) throws IOException;
+    T getObject(final BigDecoder coder) throws IOException;
 }

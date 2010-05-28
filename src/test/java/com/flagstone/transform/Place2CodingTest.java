@@ -34,11 +34,13 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -90,7 +92,8 @@ public final class Place2CodingTest {
         final byte[] binary = new byte[] {(byte) 0x87, 0x06, 0x06, 0x01, 0x00,
                 0x02, 0x00, 0x06, 0x50};
 
-        final SWFDecoder decoder = new SWFDecoder(binary);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
+        final SWFDecoder decoder = new SWFDecoder(stream);
         final Context context = new Context();
         final Place2 object = new Place2(decoder, context);
 
@@ -98,7 +101,6 @@ public final class Place2CodingTest {
         assertEquals(NOT_DECODED, layer, object.getLayer());
         assertEquals(NOT_DECODED, transform, object.getTransform());
         assertEquals(NOT_DECODED, null, object.getColorTransform());
-        assertTrue(NOT_FULLY_DECODED, decoder.eof());
    }
 
     @Test
@@ -110,7 +112,8 @@ public final class Place2CodingTest {
         final byte[] binary = new byte[] {(byte) 0x8A, 0x06, 0x0E, 0x01, 0x00,
                 0x02, 0x00, 0x06, 0x50, (byte) 0x90, 0x48, (byte) 0xD0 };
 
-        final SWFDecoder decoder = new SWFDecoder(binary);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
+        final SWFDecoder decoder = new SWFDecoder(stream);
         final Context context = new Context();
         final Place2 object = new Place2(decoder, context);
 
@@ -118,6 +121,5 @@ public final class Place2CodingTest {
         assertEquals(NOT_DECODED, layer, object.getLayer());
         assertEquals(NOT_DECODED, transform, object.getTransform());
         assertEquals(NOT_DECODED, null, object.getColorTransform());
-        assertTrue(NOT_FULLY_DECODED, decoder.eof());
    }
 }

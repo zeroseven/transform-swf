@@ -100,28 +100,28 @@ public final class DefineSound implements DefineTag {
      *             if an error occurs while decoding the data.
      */
     public DefineSound(final SWFDecoder coder) throws IOException {
-
-        final int start = coder.getPointer();
-        length = coder.readLength();
-        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
-
-        identifier = coder.readUI16();
+        length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
+        if (length == Coder.IS_EXTENDED) {
+            length = coder.readInt();
+        }
+        coder.mark();
+        identifier = coder.readUnsignedShort();
 
         final int info = coder.readByte();
 
-        format = info & 0x00F0;
+        format = (info & 0x00F0) >> 4;
 
         switch (info & 0x0C) {
         case 0:
             rate = SoundRate.KHZ_5K;
             break;
-        case 1:
+        case 4:
             rate = SoundRate.KHZ_11K;
             break;
-        case 2:
+        case 8:
             rate = SoundRate.KHZ_22K;
             break;
-        case 3:
+        case 12:
             rate = SoundRate.KHZ_44K;
             break;
         default:
@@ -129,17 +129,12 @@ public final class DefineSound implements DefineTag {
             break;
         }
 
-        sampleSize = (info & 0x02) + 1;
+        sampleSize = ((info & 0x02) >> 1) + 1;
         channelCount = (info & 0x01) + 1;
-        sampleCount = coder.readUI32();
+        sampleCount = coder.readInt();
 
-        sound = coder.readBytes(new byte[length - 7]);
-
-        if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(),
-                    start >> Coder.BITS_TO_BYTES, length,
-                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
-        }
+        sound = coder.readBytes(new byte[length - coder.bytesRead()]);
+        coder.unmark();
     }
 
     /**
@@ -432,26 +427,26 @@ public final class DefineSound implements DefineTag {
         final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
         coder.writeI16(identifier);
-        coder.writeBits(format, 4);
+
+        int bits = format << 4;
 
         switch (rate) {
-        case SoundRate.KHZ_5K:
-            coder.writeBits(0, 2);
-            break;
         case SoundRate.KHZ_11K:
-            coder.writeBits(1, 2);
+            bits |= 4;
             break;
         case SoundRate.KHZ_22K:
-            coder.writeBits(2, 2);
+            bits |= 8;
             break;
         case SoundRate.KHZ_44K:
-            coder.writeBits(3, 2);
+            bits |= 12;
             break;
         default:
             break;
         }
-        coder.writeBits(sampleSize - 1, 1);
-        coder.writeBits(channelCount - 1, 1);
+        bits |= (sampleSize - 1) << 1;
+        bits |= channelCount - 1;
+        coder.writeByte(bits);
+
         coder.writeI32(sampleCount);
 
         coder.writeBytes(sound);

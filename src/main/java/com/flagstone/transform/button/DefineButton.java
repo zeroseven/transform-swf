@@ -96,20 +96,18 @@ public final class DefineButton implements DefineTag {
     // TODO(optimise)
     public DefineButton(final SWFDecoder coder, final Context context)
             throws IOException {
-        final int start = coder.getPointer();
-        length = coder.readLength();
-        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
-
-        final int mark = coder.getPointer() - 16;
-
+        length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
+        if (length == Coder.IS_EXTENDED) {
+            length = coder.readInt();
+        }
+        coder.mark();
         shapes = new ArrayList<ButtonShape>();
 
-        while (coder.prefetchByte() != 0) {
+        while (coder.scanByte() != 0) {
             shapes.add(new ButtonShape(coder, context));
         }
 
-        final int actionsLength = length - ((coder.getPointer() - mark)
-                >>> Coder.BITS_TO_BYTES);
+        coder.readByte();
 
         actions = new ArrayList<Action>();
 
@@ -118,18 +116,13 @@ public final class DefineButton implements DefineTag {
 
         if (decoder == null) {
             actions.add(new ActionData(coder
-                            .readBytes(new byte[actionsLength])));
+                            .readBytes(new byte[length - coder.bytesRead()])));
         } else {
-            while (coder.getPointer() < end) {
+            while (coder.bytesRead() < length) {
                 actions.add(decoder.getObject(coder, context));
             }
         }
-
-        if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(),
-                    start >> Coder.BITS_TO_BYTES, length,
-                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
-        }
+        coder.unmark(length);
     }
 
     /**

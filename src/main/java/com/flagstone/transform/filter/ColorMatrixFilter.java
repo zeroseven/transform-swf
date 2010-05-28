@@ -31,9 +31,9 @@
 
 package com.flagstone.transform.filter;
 
+import java.io.IOException;
 import java.util.Arrays;
 
-import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -65,7 +65,7 @@ public final class ColorMatrixFilter implements Filter {
     public ColorMatrixFilter(final SWFDecoder coder) throws IOException {
         matrix = new float[MATRIX_SIZE];
         for (int i = 0; i < MATRIX_SIZE; i++) {
-            matrix[i] = coder.readFloat();
+            matrix[i] = Float.intBitsToFloat(coder.readInt());
         }
     }
 

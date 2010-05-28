@@ -32,6 +32,8 @@
 package com.flagstone.transform;
 
 import java.io.IOException;
+
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.MovieTypes;
@@ -64,9 +66,14 @@ public final class MovieMetaData implements MovieTag {
      *             if an error occurs while decoding the data.
      */
     public MovieMetaData(final SWFDecoder coder) throws IOException {
-        length = coder.readLength();
+        length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
+        if (length == Coder.IS_EXTENDED) {
+            length = coder.readInt();
+        }
+        coder.mark();
         metaData = coder.readString(length - 1);
         coder.readByte();
+        coder.unmark(length);
     }
 
     /**

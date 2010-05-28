@@ -31,11 +31,12 @@
 
 package com.flagstone.transform.shape;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
@@ -61,7 +62,8 @@ public final class Shape implements SWFEncodeable {
     public static Shape shapeFromData(final ShapeData shapeData)
                 throws IOException {
         byte[] data = shapeData.getData();
-        SWFDecoder coder = new SWFDecoder(data);
+        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        SWFDecoder coder = new SWFDecoder(stream);
         Context context = new Context();
         return new Shape(coder, context);
     }
@@ -211,8 +213,9 @@ public final class Shape implements SWFEncodeable {
             objects.get(0).encode(coder, context);
         } else {
             final Map<Integer, Integer> vars = context.getVariables();
-            coder.writeBits(vars.get(Context.FILL_SIZE), 4);
-            coder.writeBits(vars.get(Context.LINE_SIZE), 4);
+            int bits = vars.get(Context.FILL_SIZE) << 4;
+            bits |= vars.get(Context.LINE_SIZE);
+            coder.writeByte(bits);
 
             for (final ShapeRecord record : objects) {
                 record.encode(coder, context);

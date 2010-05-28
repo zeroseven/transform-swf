@@ -31,6 +31,7 @@
 
 package com.flagstone.transform.action;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.LinkedHashMap;
@@ -38,8 +39,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.flagstone.transform.coder.Coder;
-import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -362,9 +361,9 @@ public final class NewFunction2 implements Action {
         final SWFFactory<Action> decoder = context.getRegistry()
                 .getActionDecoder();
 
-        length = coder.readUI16();
+        length = coder.readUnsignedShort();
         name = coder.readString();
-        final int argumentCount = coder.readUI16();
+        final int argumentCount = coder.readUnsignedShort();
         registerCount = coder.readByte();
         optimizations = (coder.readByte() << 8) + coder.readByte();
 
@@ -377,16 +376,15 @@ public final class NewFunction2 implements Action {
             arguments.put(coder.readString(), index);
         }
 
-        actionsLength = coder.readUI16();
+        actionsLength = coder.readUnsignedShort();
+        coder.mark();
         length += actionsLength;
-
-        final int end = coder.getPointer()
-            + (actionsLength << Coder.BITS_TO_BYTES);
         actions = new ArrayList<Action>();
 
-        while (coder.getPointer() < end) {
+        while (coder.bytesRead() < actionsLength) {
             actions.add(decoder.getObject(coder, context));
         }
+        coder.unmark(actionsLength);
     }
 
     /**
@@ -563,7 +561,8 @@ public final class NewFunction2 implements Action {
         coder.writeString(name);
         coder.writeI16(arguments.size());
         coder.writeByte(registerCount);
-        coder.writeBits(optimizations, 16);
+        coder.writeByte(optimizations >>> 8);
+        coder.writeByte(optimizations);
 
         for (final String arg : arguments.keySet()) {
             coder.writeByte(arguments.get(arg));

@@ -35,6 +35,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +44,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.flagstone.transform.coder.ActionDecoder;
-import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.DecoderRegistry;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -89,7 +90,8 @@ public final class WithTest {
 
     @Test
     public void decode() throws IOException {
-        final SWFDecoder decoder = new SWFDecoder(encoded);
+        ByteArrayInputStream stream = new ByteArrayInputStream(encoded);
+        final SWFDecoder decoder = new SWFDecoder(stream);
         final Context context = new Context();
         final DecoderRegistry registry = new DecoderRegistry();
         registry.setActionDecoder(new ActionDecoder());
@@ -97,7 +99,7 @@ public final class WithTest {
 
         fixture = new With(decoder, context);
 
-        assertTrue(decoder.eof());
+        assertTrue(true);
         assertEquals(list, fixture.getActions());
     }
 }

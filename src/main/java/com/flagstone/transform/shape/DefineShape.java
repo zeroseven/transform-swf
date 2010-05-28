@@ -114,11 +114,12 @@ public final class DefineShape implements DefineTag {
      */
     public DefineShape(final SWFDecoder coder, final Context context)
             throws IOException {
-        final int start = coder.getPointer();
-        length = coder.readLength();
-        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
-
-        identifier = coder.readUI16();
+        length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
+        if (length == Coder.IS_EXTENDED) {
+            length = coder.readInt();
+        }
+        coder.mark();
+        identifier = coder.readUnsignedShort();
         bounds = new Bounds(coder);
 
         fillStyles = new ArrayList<FillStyle>();
@@ -142,22 +143,15 @@ public final class DefineShape implements DefineTag {
             lineStyles.add(new LineStyle(coder, context));
         }
 
-        int shapeLength = length - ((coder.getPointer() - start) >> 3);
-
         if (context.getRegistry().getShapeDecoder() == null) {
             shape = new Shape();
-            shape.add(new ShapeData(new byte[shapeLength]));
+            shape.add(new ShapeData(new byte[length - coder.bytesRead()]));
         } else {
             shape = new Shape(coder, context);
         }
 
         vars.remove(Context.TYPE);
-
-        if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(),
-                    start >> Coder.BITS_TO_BYTES, length,
-                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
-        }
+        coder.unmark(length);
     }
 
     /**

@@ -68,30 +68,24 @@ public final class ScenesAndLabels implements MovieTag {
      *             if an error occurs while decoding the data.
      */
     public ScenesAndLabels(final SWFDecoder coder) throws IOException {
+        length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
+        if (length == Coder.IS_EXTENDED) {
+            length = coder.readInt();
+        }
+        coder.mark();
 
-        final int start = coder.getPointer();
-        length = coder.readLength();
-        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
-
-        int count = coder.readVariableU32();
-
-        scenes = new LinkedHashMap<Integer, String>();
-        labels = new LinkedHashMap<Integer, String>();
+        int count = coder.readVarInt();
+        scenes = new LinkedHashMap<Integer, String>(count);
         for (int i = 0; i < count; i++) {
-            scenes.put(coder.readVariableU32(), coder.readString());
+            scenes.put(coder.readVarInt(), coder.readString());
         }
 
-        count = coder.readVariableU32();
-
+        count = coder.readVarInt();
+        labels = new LinkedHashMap<Integer, String>(count);
         for (int i = 0; i < count; i++) {
-            labels.put(coder.readVariableU32(), coder.readString());
+            labels.put(coder.readVarInt(), coder.readString());
         }
-
-        if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(),
-                    start >> Coder.BITS_TO_BYTES, length,
-                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
-        }
+        coder.unmark(length);
     }
 
     /**

@@ -78,21 +78,15 @@ public final class DoABC implements MovieTag {
      *             if an error occurs while decoding the data.
      */
     public DoABC(final SWFDecoder coder) throws IOException {
-
-        final int start = coder.getPointer();
-        length = coder.readLength();
-        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
-
-        deferred = coder.readUI32();
-        name = coder.readString();
-        data = coder.readBytes(new byte[(end - coder.getPointer())
-                                        >>> Coder.BITS_TO_BYTES]);
-
-        if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(),
-                    start >> Coder.BITS_TO_BYTES, length,
-                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
+        length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
+        if (length == Coder.IS_EXTENDED) {
+            length = coder.readInt();
         }
+        coder.mark();
+        deferred = coder.readInt();
+        name = coder.readString();
+        data = coder.readBytes(new byte[length - coder.bytesRead()]);
+        coder.unmark(length);
     }
 
     /**
@@ -128,7 +122,7 @@ public final class DoABC implements MovieTag {
     /**
      * Get the name of the script.
      *
-     * @return the name used to call the scipt.
+     * @return the name used to call the script.
      */
     public String getName() {
         return name;

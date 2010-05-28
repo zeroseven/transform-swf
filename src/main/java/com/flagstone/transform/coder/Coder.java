@@ -45,6 +45,28 @@ import java.util.Arrays;
  * </p>
  */
 public class Coder {
+    /**
+     * Bit mask for extracting the length field from the header word.
+     */
+    public static final int LENGTH_FIELD = 0x3F;
+    /**
+     * Reserved length indicating length is encoded in next 32-bit word.
+     */
+    public static final int BYTE3 = 24;
+    public static final int BYTE2 = 16;
+    public static final int BYTE1 = 8;
+    public static final int NIB0 = 0x0003;
+    public static final int NIB1 = 0x000C;
+    public static final int BIT0 = 1;
+    public static final int BIT1 = 2;
+    public static final int BIT2 = 4;
+    public static final int BIT3 = 8;
+    public static final int BIT4 = 16;
+    public static final int BIT5 = 32;
+    public static final int BIT6 = 64;
+    public static final int BIT7 = 128;
+
+    public static final int IS_EXTENDED = 63;
     /** Number of bits in an int. */
     public static final int BITS_PER_INT = 32;
     /** Number of bits in a short integer. */
@@ -59,6 +81,8 @@ public class Coder {
     /** Left shift to convert number of bytes to number of bits. */
     public static final int BYTES_TO_BITS = 3;
 
+    /** Bit mask applied to bytes when converting to unsigned integers. */
+    public static final int BYTE_MASK = 255;
     /** Bit mask applied to bytes when converting to unsigned integers. */
     public static final int UNSIGNED_BYTE_MASK = 255;
     /** Bit mask with most significant bit of a 32-bit integer set. */

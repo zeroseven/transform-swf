@@ -35,11 +35,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 import org.junit.Test;
 
-import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -80,12 +80,11 @@ public final class ActionDataTest {
 
     @Test
     public void decode() throws IOException {
-
-        final SWFDecoder decoder = new SWFDecoder(data);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        final SWFDecoder decoder = new SWFDecoder(stream);
 
         fixture = new ActionData(decoder.readBytes(new byte[data.length]));
 
-        assertTrue(decoder.eof());
         assertArrayEquals(data, fixture.getData());
     }
 }

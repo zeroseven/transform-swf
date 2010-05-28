@@ -33,6 +33,7 @@ package com.flagstone.transform.action;
 
 
 import java.io.IOException;
+
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -67,8 +68,8 @@ public final class SetTarget implements Action {
      *             if an error occurs while decoding the data.
      */
     public SetTarget(final SWFDecoder coder) throws IOException {
-        length = coder.readUI16();
-        target = coder.readString();
+        length = coder.readUnsignedShort();
+        target = coder.readString(length);
     }
 
     /**

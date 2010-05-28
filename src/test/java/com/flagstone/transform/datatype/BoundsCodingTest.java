@@ -34,9 +34,11 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+
 import org.junit.Test;
 
-import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -73,10 +75,10 @@ public final class BoundsCodingTest {
     public void checkPositiveDimensionsAreDecoded() throws IOException {
         final Bounds object = new Bounds(1, 2, 3, 4);
         final byte[] binary = new byte[] {0x20, (byte) 0x99, 0x20 };
-        final SWFDecoder decoder = new SWFDecoder(binary);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
+        final SWFDecoder decoder = new SWFDecoder(stream);
 
         assertEquals(NOT_DECODED, object, new Bounds(decoder));
-        assertTrue(NOT_FULLY_DECODED, decoder.eof());
     }
 
     @Test
@@ -98,10 +100,10 @@ public final class BoundsCodingTest {
     public void checkZeroDimensionsAreDecoded() throws IOException {
         final Bounds object = new Bounds(0, 0, 0, 0);
         final byte[] binary = new byte[] {0x08, 0x00 };
-        final SWFDecoder decoder = new SWFDecoder(binary);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
+        final SWFDecoder decoder = new SWFDecoder(stream);
 
         assertEquals(NOT_DECODED, object, new Bounds(decoder));
-        assertTrue(NOT_FULLY_DECODED, decoder.eof());
     }
 
     @Test
@@ -124,9 +126,9 @@ public final class BoundsCodingTest {
     public void checkNegativeMinimumIsDecoded() throws IOException {
         final Bounds object = new Bounds(-1, -1, 1, 1);
         final byte[] binary = new byte[] {0x16, (byte) 0xE8 };
-        final SWFDecoder decoder = new SWFDecoder(binary);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
+        final SWFDecoder decoder = new SWFDecoder(stream);
 
         assertEquals(NOT_DECODED, object, new Bounds(decoder));
-        assertTrue(NOT_FULLY_DECODED, decoder.eof());
     }
 }

@@ -93,26 +93,21 @@ public final class DefineVideo implements DefineTag {
      *             if an error occurs while decoding the data.
      */
     public DefineVideo(final SWFDecoder coder) throws IOException {
-
-        final int start = coder.getPointer();
-        length = coder.readLength();
-        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
-
-        identifier = coder.readUI16();
-        frameCount = coder.readUI16();
-        width = coder.readUI16();
-        height = coder.readUI16();
+        length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
+        if (length == Coder.IS_EXTENDED) {
+            length = coder.readInt();
+        }
+        coder.mark();
+        identifier = coder.readUnsignedShort();
+        frameCount = coder.readUnsignedShort();
+        width = coder.readUnsignedShort();
+        height = coder.readUnsignedShort();
 
         final int info = coder.readByte();
         deblocking = (info & 0x06) >> 1;
         smoothed = (info & 0x01) == 1;
         codec = coder.readByte();
-
-        if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(),
-                    start >> Coder.BITS_TO_BYTES, length,
-                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
-        }
+        coder.unmark(length);
     }
 
     /**
@@ -395,9 +390,9 @@ public final class DefineVideo implements DefineTag {
         coder.writeI16(frameCount);
         coder.writeI16(width);
         coder.writeI16(height);
-        coder.writeBits(0, 5);
-        coder.writeBits(deblocking, 2);
-        coder.writeBits(smoothed ? 1 : 0, 1);
+        int bits = deblocking << 1;
+        bits |= smoothed ? Coder.BIT0 : 0;
+        coder.writeByte(bits);
         coder.writeByte(codec);
 
         if (coder.getPointer() != end) {

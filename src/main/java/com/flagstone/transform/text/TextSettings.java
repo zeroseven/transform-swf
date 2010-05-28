@@ -32,8 +32,9 @@
 package com.flagstone.transform.text;
 
 
-import com.flagstone.transform.SWF;
 import java.io.IOException;
+
+import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.MovieTypes;
@@ -89,7 +90,7 @@ public final class TextSettings implements MovieTag {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "TextSettings: { identifier=%d;"
-            + " useAdvanced=%s, grid=%s, thickness=%f, sharpness=%f }";
+            + " useAdvanced=%s; grid=%s; thickness=%f; sharpness=%f }";
 
     private transient int identifier;
     private transient int rendering;
@@ -107,10 +108,11 @@ public final class TextSettings implements MovieTag {
      *             if an error occurs while decoding the data.
      */
     public TextSettings(final SWFDecoder coder) throws IOException {
-        identifier = coder.readUI16();
+        coder.readUnsignedShort();
+        identifier = coder.readUnsignedShort();
         rendering = coder.readByte();
-        thickness = coder.readUI32();
-        sharpness = coder.readUI32();
+        thickness = coder.readInt();
+        sharpness = coder.readInt();
         coder.readByte();
     }
 
@@ -207,11 +209,11 @@ public final class TextSettings implements MovieTag {
     public Grid getGrid() {
         Grid alignment;
 
-        switch (rendering & 0x38) {
-        case 8:
+        switch ((rendering & 0x38) >> 3) {
+        case 1:
             alignment = Grid.PIXEL;
             break;
-        case 16:
+        case 2:
             alignment = Grid.SUBPIXEL;
             break;
         default:
@@ -231,7 +233,7 @@ public final class TextSettings implements MovieTag {
      */
     public void setGrid(final Grid alignment) {
 
-        rendering &= 0xC0;
+        rendering &= 0x78;
 
         switch (alignment) {
         case PIXEL:
@@ -252,7 +254,7 @@ public final class TextSettings implements MovieTag {
      * @return the adjustment applied to the line thickness.
      */
     public float getThickness() {
-        return thickness / SCALE_16;
+        return Float.intBitsToFloat(thickness);
     }
 
     /**
@@ -264,7 +266,7 @@ public final class TextSettings implements MovieTag {
      *            engine.
      */
     public void setThickness(final float level) {
-        thickness = (int) (level * SCALE_16);
+        thickness = Float.floatToIntBits(level);
     }
 
     /**
@@ -274,7 +276,7 @@ public final class TextSettings implements MovieTag {
      * @return the adjustment applied to the line sharpness.
      */
     public float getSharpness() {
-        return sharpness / SCALE_16;
+        return Float.intBitsToFloat(sharpness);
     }
 
     /**
@@ -286,7 +288,7 @@ public final class TextSettings implements MovieTag {
      *            engine.
      */
     public void setSharpness(final float level) {
-        this.sharpness = (int) (level * SCALE_16);
+        this.sharpness = Float.floatToIntBits(level);
     }
 
     /** {@inheritDoc} */

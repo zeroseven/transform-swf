@@ -31,11 +31,10 @@
 
 package com.flagstone.transform.action;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.flagstone.transform.coder.Coder;
-import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -176,10 +175,11 @@ public final class NewFunction implements Action {
      */
     public NewFunction(final SWFDecoder coder, final Context context)
             throws IOException {
-        length = coder.readUI16();
+        length = coder.readUnsignedShort();
+
         name = coder.readString();
 
-        final int argumentCount = coder.readUI16();
+        final int argumentCount = coder.readUnsignedShort();
 
         arguments = new ArrayList<String>(argumentCount);
 
@@ -189,17 +189,18 @@ public final class NewFunction implements Action {
             }
         }
 
-        actionsLength = coder.readUI16();
+        final SWFFactory<Action> decoder = context.getRegistry()
+        .getActionDecoder();
         actions = new ArrayList<Action>();
 
-        final int end = coder.getPointer()
-                + (actionsLength << Coder.BITS_TO_BYTES);
-        final SWFFactory<Action> decoder = context.getRegistry()
-                .getActionDecoder();
+        actionsLength = coder.readUnsignedShort();
+        coder.mark();
 
-        while (coder.getPointer() < end) {
+        while (coder.bytesRead() < actionsLength) {
             actions.add(decoder.getObject(coder, context));
         }
+
+        coder.unmark();
     }
 
     /**

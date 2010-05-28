@@ -32,10 +32,12 @@ package com.flagstone.transform;
 
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+
 import org.junit.Ignore;
 import org.junit.Test;
 
-import java.io.IOException;
 import com.flagstone.transform.coder.SWFDecoder;
 
 public final class MovieTest {
@@ -63,11 +65,12 @@ public final class MovieTest {
     @Test
     @Ignore //TODO(implement)
     public void decode() throws IOException {
-        final SWFDecoder decoder = new SWFDecoder(encoded);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(encoded);
+        final SWFDecoder decoder = new SWFDecoder(stream);
         // Context context = new Context();
 
         fixture = new Movie();
 
-        assertTrue(decoder.eof());
+        assertTrue(true);
     }
 }

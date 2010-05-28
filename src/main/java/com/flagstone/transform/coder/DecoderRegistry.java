@@ -53,7 +53,6 @@ public final class DecoderRegistry {
         defaultRegistry.setShapeDecoder(new ShapeDecoder());
         defaultRegistry.setActionDecoder(new ActionDecoder());
         defaultRegistry.setMovieDecoder(new MovieDecoder());
-        defaultRegistry.setVideoDecoder(new VideoDecoder());
     }
 
 
@@ -72,7 +71,6 @@ public final class DecoderRegistry {
     private transient SWFFactory<ShapeRecord> shapeDecoder;
     private transient SWFFactory<Action> actionDecoder;
     private transient SWFFactory<MovieTag> movieDecoder;
-    private transient FLVFactory<VideoTag> videoDecoder;
 
     /**
      * Creates a DecoderRegistry with no decoders yet registered.
@@ -89,7 +87,6 @@ public final class DecoderRegistry {
         shapeDecoder = registry.shapeDecoder;
         actionDecoder = registry.actionDecoder;
         movieDecoder = registry.movieDecoder;
-        videoDecoder = registry.videoDecoder;
     }
 
     /** {@inheritDoc} */
@@ -155,15 +152,5 @@ public final class DecoderRegistry {
 
     public void setMovieDecoder(final SWFFactory<MovieTag> factory) {
         movieDecoder = factory;
-    }
-
-
-    public FLVFactory<VideoTag> getVideoDecoder() {
-        return videoDecoder;
-    }
-
-
-    public void setVideoDecoder(final FLVFactory<VideoTag> factory) {
-        videoDecoder = factory;
     }
 }

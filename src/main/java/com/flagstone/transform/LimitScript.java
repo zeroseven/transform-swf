@@ -32,6 +32,7 @@
 package com.flagstone.transform;
 
 import java.io.IOException;
+
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.MovieTypes;
@@ -78,8 +79,9 @@ public final class LimitScript implements MovieTag {
      *             if an error occurs while decoding the data.
      */
     public LimitScript(final SWFDecoder coder) throws IOException {
-        depth = coder.readUI16();
-        timeout = coder.readUI16();
+        coder.readUnsignedShort();
+        depth = coder.readUnsignedShort();
+        timeout = coder.readUnsignedShort();
     }
 
     /**

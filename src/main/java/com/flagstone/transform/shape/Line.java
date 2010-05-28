@@ -31,10 +31,10 @@
 
 package com.flagstone.transform.shape;
 
+import java.io.IOException;
 import java.util.Map;
 
 import com.flagstone.transform.SWF;
-import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.Encoder;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -80,8 +80,6 @@ public final class Line implements ShapeRecord {
      */
     // TODO(optimise)
     public Line(final SWFDecoder coder) throws IOException {
-        coder.adjustPointer(2); // shape and edge
-
         size = coder.readBits(4, false) + 2;
 
         if (coder.readBits(1, false) == 0) {
