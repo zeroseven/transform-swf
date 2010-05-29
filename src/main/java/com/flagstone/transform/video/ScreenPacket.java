@@ -297,7 +297,7 @@ public final class ScreenPacket implements Cloneable {
     }
 
 
-    public byte[] encode() {
+    public byte[] encode() throws IOException {
         final SWFEncoder coder = new SWFEncoder(length());
 
         int bits = keyFrame ? 16 : 32;

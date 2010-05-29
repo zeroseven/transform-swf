@@ -37,7 +37,6 @@ import java.util.List;
 
 import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.Coder;
-import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.MovieTypes;
@@ -129,7 +128,7 @@ public final class FontInfo implements MovieTag {
 
         final int bits = coder.readByte();
         small = (bits & Coder.BIT5) != 0;
-        encoding = bits & 0x18;
+        encoding = (bits & 0x1C) >> 3;
         italic = (bits & Coder.BIT2) != 0;
         bold = (bits & Coder.BIT1) != 0;
         wideCodes = (bits & Coder.BIT0) != 0;
@@ -430,10 +429,9 @@ public final class FontInfo implements MovieTag {
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
-        final int start = coder.getPointer();
-        coder.writeHeader(MovieTypes.FONT_INFO, length);
-        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
+        coder.writeHeader(MovieTypes.FONT_INFO, length);
+        coder.mark();
         coder.writeI16(identifier);
         coder.writeWord(context.strlen(name) - 1, 1);
         coder.writeString(name);
@@ -449,11 +447,6 @@ public final class FontInfo implements MovieTag {
         for (final Integer code : codes) {
             coder.writeWord(code.intValue(), wideCodes ? 2 : 1);
         }
-
-        if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(),
-                    start >> Coder.BITS_TO_BYTES, length,
-                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
-        }
+        coder.unmark(length);
     }
 }

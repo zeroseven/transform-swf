@@ -39,7 +39,6 @@ import java.util.Map;
 import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.Encoder;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.coder.SWFFactory;
@@ -507,7 +506,7 @@ public final class ShapeStyle implements ShapeRecord {
         int numberOfBits = 6;
 
         if (hasMove) {
-            final int fieldSize = Math.max(Encoder.size(moveX), Encoder
+            final int fieldSize = Math.max(SWFEncoder.size(moveX), SWFEncoder
                     .size(moveY));
             numberOfBits += 5 + fieldSize * 2;
         }
@@ -521,8 +520,8 @@ public final class ShapeStyle implements ShapeRecord {
                 + numberOfBits);
 
         if (hasStyles) {
-            int numberOfFillBits = Encoder.unsignedSize(fillStyles.size());
-            int numberOfLineBits = Encoder.unsignedSize(lineStyles.size());
+            int numberOfFillBits = SWFEncoder.unsignedSize(fillStyles.size());
+            int numberOfLineBits = SWFEncoder.unsignedSize(lineStyles.size());
 
             if ((numberOfFillBits == 0)
                     && vars.containsKey(Context.POSTSCRIPT)) {
@@ -583,7 +582,7 @@ public final class ShapeStyle implements ShapeRecord {
         final Map<Integer, Integer> vars = context.getVariables();
 
         if (hasMove) {
-            final int fieldSize = Math.max(Encoder.size(moveX), Encoder
+            final int fieldSize = Math.max(SWFEncoder.size(moveX), SWFEncoder
                     .size(moveY));
 
             coder.writeBits(fieldSize, 5);
@@ -631,8 +630,8 @@ public final class ShapeStyle implements ShapeRecord {
                 style.encode(coder, context);
             }
 
-            int numberOfFillBits = Encoder.unsignedSize(fillStyles.size());
-            int numberOfLineBits = Encoder.unsignedSize(lineStyles.size());
+            int numberOfFillBits = SWFEncoder.unsignedSize(fillStyles.size());
+            int numberOfLineBits = SWFEncoder.unsignedSize(lineStyles.size());
 
             if (vars.containsKey(Context.POSTSCRIPT)) {
                 if (numberOfFillBits == 0) {

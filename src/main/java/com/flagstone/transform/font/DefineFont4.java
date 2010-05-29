@@ -36,7 +36,6 @@ import java.util.Arrays;
 
 import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.Coder;
-import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.DefineTag;
 import com.flagstone.transform.coder.MovieTypes;
@@ -224,10 +223,9 @@ public final class DefineFont4 implements DefineTag {
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
-        final int start = coder.getPointer();
-        coder.writeHeader(MovieTypes.DEFINE_FONT_4, length);
-        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
+        coder.writeHeader(MovieTypes.DEFINE_FONT_4, length);
+        coder.mark();
         coder.writeI16(identifier);
         int bits = 0;
         bits |= data.length > 0 ? Coder.BIT2 : 0;
@@ -236,11 +234,6 @@ public final class DefineFont4 implements DefineTag {
         coder.writeByte(bits);
         coder.writeString(name);
         coder.writeBytes(data);
-
-        if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(),
-                    start >> Coder.BITS_TO_BYTES, length,
-                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
-        }
+        coder.unmark(length);
     }
 }

@@ -36,7 +36,6 @@ import java.util.Map;
 
 import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.Encoder;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.exception.IllegalArgumentRangeException;
@@ -179,7 +178,7 @@ public final class Line implements ShapeRecord {
     public int prepareToEncode(final Context context) {
         vertical = xCoord == 0;
         general = (xCoord != 0) && (yCoord != 0);
-        size = Encoder.maxSize(xCoord, yCoord, 1);
+        size = SWFEncoder.maxSize(xCoord, yCoord, 1);
 
         int numberOfBits = 7;
 

@@ -38,7 +38,6 @@ import java.util.Map;
 
 import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.Coder;
-import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.DefineTag;
 import com.flagstone.transform.coder.MovieTypes;
@@ -97,6 +96,7 @@ public final class DefineButton2 implements DefineTag {
 
     /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
+    private transient int offset;
 
     /**
      * Creates and initialises a DefineButton2 object using values encoded
@@ -350,12 +350,26 @@ public final class DefineButton2 implements DefineTag {
             length += shape.prepareToEncode(context);
         }
 
-        for (final ButtonEventHandler handler : events) {
+        if (events.isEmpty()) {
+            offset = 0;
+        } else {
+            offset = length - 7;
+        }
+
+        ButtonEventHandler handler;
+        int count = events.size();
+
+        for (int i = 0; i < count; i++) {
+            handler = events.get(i);
+            if (i == count -1) {
+                vars.put(Context.LAST, 1);
+            }
             length += 2 + handler.prepareToEncode(context);
         }
 
         vars.remove(Context.TYPE);
         vars.remove(Context.TRANSPARENT);
+        vars.remove(Context.LAST);
 
         return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH
                 : SWFEncoder.STD_LENGTH) + length;
@@ -370,49 +384,23 @@ public final class DefineButton2 implements DefineTag {
         vars.put(Context.TYPE, MovieTypes.DEFINE_BUTTON_2);
         vars.put(Context.TRANSPARENT, 1);
 
-        final int start = coder.getPointer();
         coder.writeHeader(MovieTypes.DEFINE_BUTTON_2, length);
-        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
-
+        coder.mark();
         coder.writeI16(identifier);
         coder.writeByte(type);
-
-        int offsetStart = coder.getPointer();
-        coder.writeI16(0);
+        coder.writeI16(offset);
 
         for (final ButtonShape shape : shapes) {
             shape.encode(coder, context);
         }
-
         coder.writeByte(0);
 
-        // Write actions offset
-
-        int currentCursor = coder.getPointer();
-        final int offsetEnd = (currentCursor - offsetStart)
-                >> Coder.BITS_TO_BYTES;
-        coder.setPointer(offsetStart);
-        coder.writeI16(offsetEnd);
-        coder.setPointer(currentCursor);
-
         for (final ButtonEventHandler handler : events) {
-            offsetStart = coder.getPointer();
             handler.encode(coder, context);
         }
 
-        // Write offset of zero for last Action Condition
-        currentCursor = coder.getPointer();
-        coder.setPointer(offsetStart);
-        coder.writeI16(0);
-        coder.setPointer(currentCursor);
-
         vars.remove(Context.TYPE);
         vars.remove(Context.TRANSPARENT);
-
-        if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(),
-                    start >> Coder.BITS_TO_BYTES, length,
-                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
-        }
+        coder.unmark(length);
     }
 }

@@ -37,7 +37,6 @@ import java.util.List;
 import com.flagstone.transform.action.Action;
 import com.flagstone.transform.action.ActionData;
 import com.flagstone.transform.coder.Coder;
-import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.MovieTypes;
@@ -215,18 +214,11 @@ public final class DoAction implements MovieTag {
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
 
-        final int start = coder.getPointer();
         coder.writeHeader(MovieTypes.DO_ACTION, length);
-        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
-
+        coder.mark();
         for (final Action action : actions) {
             action.encode(coder, context);
         }
-
-        if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(),
-                    start >> Coder.BITS_TO_BYTES, length,
-                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
-        }
+        coder.unmark(length);
     }
 }

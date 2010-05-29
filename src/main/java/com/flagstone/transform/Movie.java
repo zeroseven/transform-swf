@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
+import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterInputStream;
 
 import com.flagstone.transform.coder.Context;
@@ -419,11 +420,13 @@ public final class Movie {
     public void encodeToFile(final File file) throws IOException,
             DataFormatException {
         final FileOutputStream stream = new FileOutputStream(file);
-
+        OutputStream actual = null;
         try {
-            encodeToStream(stream);
+            actual = encodeToStream(stream);
         } finally {
-            stream.close();
+            if (actual != null) {
+                actual.close();
+            }
         }
     }
 
@@ -439,7 +442,7 @@ public final class Movie {
      * @throws DataFormatException
      *             if an error occurs when compressing the flash file.
      */
-    public void encodeToStream(final OutputStream stream)
+    public OutputStream encodeToStream(final OutputStream stream)
             throws DataFormatException, IOException {
 
         final Context context = new Context();
@@ -458,7 +461,7 @@ public final class Movie {
             }
         }
 
-        final SWFEncoder coder = new SWFEncoder(length);
+        SWFEncoder coder = new SWFEncoder(stream);
         coder.setEncoding(encoding.toString());
 
         if (compressed) {
@@ -470,6 +473,18 @@ public final class Movie {
         coder.writeByte(0x53);
         coder.writeByte(version);
         coder.writeI32(length);
+        coder.flush();
+
+        OutputStream streamOut;
+
+        if (compressed) {
+            streamOut = new DeflaterOutputStream(stream);
+            coder = new SWFEncoder(streamOut);
+            coder.setEncoding(encoding.toString());
+        } else {
+            streamOut = stream;
+        }
+
         frameSize.encode(coder, context);
         coder.writeI16(frameRate);
         coder.writeI16(frameCount);
@@ -478,15 +493,16 @@ public final class Movie {
             tag.encode(coder, context);
         }
         coder.writeI16(0);
-
-        byte[] data = new byte[length];
-
-        if (compressed) {
-            data = zip(coder.getData(), length);
-        } else {
-            data = coder.getData();
-        }
-        stream.write(data);
+        coder.flush();
+//        byte[] data = new byte[length];
+//
+//        if (compressed) {
+//            data = zip(coder.getData(), length);
+//        } else {
+//            data = coder.getData();
+//        }
+//        stream.write(data);
+        return streamOut;
     }
 
     private byte[] zip(final byte[] bytes, final int len)

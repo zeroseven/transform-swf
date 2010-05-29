@@ -38,7 +38,6 @@ import java.util.Map;
 
 import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.Coder;
-import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.DefineTag;
 import com.flagstone.transform.coder.MovieTypes;
@@ -82,6 +81,7 @@ public final class DefineFont implements DefineTag {
 
     /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
+    private transient int[] table;
 
     // TODO(optimise)
     /**
@@ -230,10 +230,21 @@ public final class DefineFont implements DefineTag {
         vars.put(Context.LINE_SIZE, vars.containsKey(Context.POSTSCRIPT) ? 1
                 : 0);
 
-        length += shapes.size() * 2;
+        int index = 0;
+        int count = shapes.size();
+        int shapeLength;
+        int tableEntry = count << 1;
+        table = new int[count+1];
+
+        length += count << 1;
+
+        table[index++] = tableEntry;
 
         for (final Shape shape : shapes) {
-            length += shape.prepareToEncode(context);
+            shapeLength = shape.prepareToEncode(context);
+            tableEntry += shapeLength;
+            table[index++] = tableEntry;
+            length += shapeLength;
         }
 
         vars.put(Context.FILL_SIZE, 0);
@@ -247,9 +258,8 @@ public final class DefineFont implements DefineTag {
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
-        final int start = coder.getPointer();
         coder.writeHeader(MovieTypes.DEFINE_FONT, length);
-        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
+        coder.mark();
         coder.writeI16(identifier);
 
         final Map<Integer, Integer> vars = context.getVariables();
@@ -257,36 +267,16 @@ public final class DefineFont implements DefineTag {
         vars.put(Context.LINE_SIZE, vars.containsKey(Context.POSTSCRIPT) ? 1
                 : 0);
 
-        int currentLocation;
-        int offset;
-
-        final int tableStart = coder.getPointer();
-
-        for (int i = 0; i < shapes.size(); i++) {
-            coder.writeI16(0);
+        for (int i = 0; i < table.length - 1; i++) {
+            coder.writeI16(table[i]);
         }
 
-        int tableEntry = tableStart;
-
         for (final Shape shape : shapes) {
-            currentLocation = coder.getPointer();
-            offset = (coder.getPointer() - tableStart) >> 3;
-
-            coder.setPointer(tableEntry);
-            coder.writeI16(offset);
-            coder.setPointer(currentLocation);
-
             shape.encode(coder, context);
-            tableEntry += 16;
         }
 
         vars.put(Context.FILL_SIZE, 0);
         vars.put(Context.LINE_SIZE, 0);
-
-        if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(),
-                    start >> Coder.BITS_TO_BYTES, length,
-                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
-        }
+        coder.unmark(length);
     }
 }

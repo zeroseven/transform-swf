@@ -67,6 +67,8 @@ public final class Context {
     public static final int GLYPH_SIZE = 14;
     /** TODO(doc). */
     public static final int SHAPE_SIZE = 15;
+    /** TODO(doc). */
+    public static final int LAST = 16;
 
     /** The character encoding used for strings. */
     private String encoding;

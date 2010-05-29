@@ -413,7 +413,12 @@ public final class ButtonEventHandler implements SWFEncodeable {
             length += action.prepareToEncode(context);
         }
 
-        return length;
+        int len = length;
+        if (context.getVariables().containsKey(Context.LAST)) {
+            length = -2;
+        }
+
+        return len;
     }
 
     /** {@inheritDoc} */

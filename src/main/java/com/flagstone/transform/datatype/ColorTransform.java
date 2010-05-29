@@ -521,7 +521,7 @@ public final class ColorTransform implements SWFEncodeable {
      * @param coder the Coder used to encode the data.
      */
     private void encodeTerms(final int red, final int green, final int blue,
-            final int alpha, final SWFEncoder coder) {
+            final int alpha, final SWFEncoder coder) throws IOException {
         coder.writeBits(red, size);
         coder.writeBits(green, size);
         coder.writeBits(blue, size);

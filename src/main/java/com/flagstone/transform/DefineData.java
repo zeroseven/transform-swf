@@ -34,7 +34,6 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import com.flagstone.transform.coder.Coder;
-import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.DefineTag;
 import com.flagstone.transform.coder.MovieTypes;
@@ -177,18 +176,11 @@ public final class DefineData implements DefineTag {
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
 
-        final int start = coder.getPointer();
         coder.writeHeader(MovieTypes.DEFINE_BINARY_DATA, length);
-        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
-
+        coder.mark();
         coder.writeI16(identifier);
         coder.writeI32(0);
         coder.writeBytes(data);
-
-        if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(),
-                    start >> Coder.BITS_TO_BYTES, length,
-                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
-        }
+        coder.unmark(length);
     }
 }

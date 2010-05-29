@@ -38,10 +38,8 @@ import java.util.Map;
 
 import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.Coder;
-import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.DefineTag;
-import com.flagstone.transform.coder.Encoder;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -128,6 +126,7 @@ public final class DefineMorphShape2 implements DefineTag {
     /** The number of bits to encode indices into the line style array. */
     private transient int lineBits;
     private transient boolean scaling;
+    private transient int offset;
 
     /**
      * Creates and initialises a DefineMorphShape2 object using values encoded
@@ -544,8 +543,8 @@ public final class DefineMorphShape2 implements DefineTag {
     // TODO(optimise)
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
-        fillBits = Encoder.unsignedSize(fillStyles.size());
-        lineBits = Encoder.unsignedSize(lineStyles.size());
+        fillBits = SWFEncoder.unsignedSize(fillStyles.size());
+        lineBits = SWFEncoder.unsignedSize(lineStyles.size());
 
         final Map<Integer, Integer> vars = context.getVariables();
         if (vars.containsKey(Context.POSTSCRIPT)) {
@@ -566,6 +565,7 @@ public final class DefineMorphShape2 implements DefineTag {
         length += startEdgeBounds.prepareToEncode(context);
         length += endEdgeBounds.prepareToEncode(context);
         length += 4;
+        offset = length;
 
         length += (fillStyles.size() >= EXTENDED) ? 3 : 1;
 
@@ -588,7 +588,7 @@ public final class DefineMorphShape2 implements DefineTag {
         vars.put(Context.LINE_SIZE, lineBits);
 
         length += startShape.prepareToEncode(context);
-
+        offset = length - offset;
         // Number of Fill and Line bits is zero for end shape.
         vars.put(Context.FILL_SIZE, 0);
         vars.put(Context.LINE_SIZE, 0);
@@ -607,10 +607,9 @@ public final class DefineMorphShape2 implements DefineTag {
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
-        final int start = coder.getPointer();
-        coder.writeHeader(MovieTypes.DEFINE_MORPH_SHAPE_2, length);
-        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
+        coder.writeHeader(MovieTypes.DEFINE_MORPH_SHAPE_2, length);
+        coder.mark();
         coder.writeI16(identifier);
         final Map<Integer, Integer> vars = context.getVariables();
         vars.put(Context.TRANSPARENT, 1);
@@ -621,9 +620,7 @@ public final class DefineMorphShape2 implements DefineTag {
         endEdgeBounds.encode(coder, context);
 
         coder.writeByte(scaling ? 1 : 2);
-
-        final int offsetStart = coder.getPointer();
-        coder.writeI32(0);
+        coder.writeI32(offset);
 
         if (fillStyles.size() >= EXTENDED) {
             coder.writeWord(EXTENDED, 1);
@@ -653,13 +650,6 @@ public final class DefineMorphShape2 implements DefineTag {
 
         startShape.encode(coder, context);
 
-        final int offsetEnd = (coder.getPointer() - offsetStart) >> 3;
-        final int currentCursor = coder.getPointer();
-
-        coder.setPointer(offsetStart);
-        coder.writeWord(offsetEnd - 4, 4);
-        coder.setPointer(currentCursor);
-
         // Number of Fill and Line bits is zero for end shape.
 
         vars.put(Context.FILL_SIZE, 0);
@@ -669,11 +659,6 @@ public final class DefineMorphShape2 implements DefineTag {
 
         vars.remove(Context.ARRAY_EXTENDED);
         vars.remove(Context.TRANSPARENT);
-
-        if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(),
-                    start >> Coder.BITS_TO_BYTES, length,
-                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
-        }
+        coder.unmark(length);
     }
 }

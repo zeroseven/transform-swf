@@ -38,7 +38,6 @@ import java.util.Map;
 
 import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.Coder;
-import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.DefineTag;
 import com.flagstone.transform.coder.MovieTypes;
@@ -95,6 +94,7 @@ public final class DefineFont2 implements DefineTag {
 
     /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
+    private transient int[] table;
     private transient boolean wideOffsets;
     private transient boolean wideCodes;
 
@@ -761,11 +761,29 @@ public final class DefineFont2 implements DefineTag {
             vars.put(Context.WIDE_CODES, 1);
         }
 
+        int index = 0;
+        int count = shapes.size();
+        int tableEntry;
+        int shapeLength;
+
+        if (wideOffsets) {
+            tableEntry = (count << 2) + 4;
+        } else {
+            tableEntry = (count << 1) + 2;
+        }
+
+        table = new int[count + 1];
+
         int glyphLength = 0;
 
         for (final Shape shape : shapes) {
-            glyphLength += shape.prepareToEncode(context);
+            table[index++] = tableEntry;
+            shapeLength = shape.prepareToEncode(context);
+            glyphLength += shapeLength;
+            tableEntry += shapeLength;
         }
+
+        table[index++] = tableEntry;
 
         wideOffsets = (shapes.size() * 2 + glyphLength) > 65535;
 
@@ -814,10 +832,8 @@ public final class DefineFont2 implements DefineTag {
             format = 0;
         }
 
-        final int start = coder.getPointer();
         coder.writeHeader(MovieTypes.DEFINE_FONT_2, length);
-        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
-
+        coder.mark();
         coder.writeI16(identifier);
         vars.put(Context.FILL_SIZE, 1);
         vars.put(Context.LINE_SIZE, vars.containsKey(Context.POSTSCRIPT) ? 1
@@ -842,35 +858,19 @@ public final class DefineFont2 implements DefineTag {
         coder.writeString(name);
         coder.writeI16(shapes.size());
 
-        int currentLocation;
-        int offset;
-
-        final int tableStart = coder.getPointer();
-        int tableEntry = tableStart;
-        final int entrySize = wideOffsets ? 4 : 2;
-
-        for (int i = 0; i <= shapes.size(); i++) {
-            coder.writeWord(0, entrySize);
+        if (wideOffsets) {
+            for (int i = 0; i < table.length; i++) {
+                coder.writeI32(table[i]);
+            }
+        } else {
+            for (int i = 0; i < table.length; i++) {
+                coder.writeI16(table[i]);
+            }
         }
 
         for (final Shape shape : shapes) {
-            currentLocation = coder.getPointer();
-            offset = (coder.getPointer() - tableStart) >> 3;
-
-            coder.setPointer(tableEntry);
-            coder.writeWord(offset, entrySize);
-            coder.setPointer(currentLocation);
-
             shape.encode(coder, context);
-            tableEntry += entrySize << 3;
         }
-
-        currentLocation = coder.getPointer();
-        offset = (coder.getPointer() - tableStart) >> 3;
-
-        coder.setPointer(tableEntry);
-        coder.writeWord(offset, entrySize);
-        coder.setPointer(currentLocation);
 
         for (final Integer code : codes) {
             coder.writeWord(code.intValue(), wideCodes ? 2 : 1);
@@ -899,12 +899,7 @@ public final class DefineFont2 implements DefineTag {
         vars.put(Context.FILL_SIZE, 0);
         vars.put(Context.LINE_SIZE, 0);
         vars.remove(Context.WIDE_CODES);
-
-        if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(),
-                    start >> Coder.BITS_TO_BYTES, length,
-                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
-        }
+        coder.unmark(length);
     }
 
     private boolean containsLayoutInfo() {

@@ -36,7 +36,6 @@ import java.io.IOException;
 
 import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.Encoder;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.exception.IllegalArgumentRangeException;
@@ -229,7 +228,7 @@ public final class Curve implements ShapeRecord {
     public int prepareToEncode(final Context context) {
         int numberOfBits = 6;
 
-        size = Encoder.maxSize(controlX, controlY, anchorX, anchorY, 1);
+        size = SWFEncoder.maxSize(controlX, controlY, anchorX, anchorY, 1);
 
         numberOfBits += size << 2;
 

@@ -31,12 +31,172 @@
 
 package com.flagstone.transform.coder;
 
-/** TODO(class). */
-public final class FLVEncoder extends Encoder {
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
+import java.nio.charset.UnsupportedCharsetException;
+import java.util.Arrays;
 
+/** TODO(class). */
+public final class FLVEncoder {
+
+
+    /** The character encoding used for strings. */
+    protected String encoding;
+    /** The internal buffer containing data read from or written to a file. */
+    protected byte[] data;
+
+    /** The index in bits to the current location in the buffer. */
+    protected transient int pointer;
+    /** The index in bytes to the current location in the buffer. */
+    protected transient int index;
+    /** The offset in bits to the location in the current byte. */
+    protected transient int offset;
+    /** The last location in the buffer. */
+    protected transient int end;
 
     public FLVEncoder(final int size) {
-        super(size);
+        super();
+        data = new byte[size];
+        index = 0;
+        offset = 0;
+        pointer = 0;
+        end = size << 3;
+    }
+
+    /**
+     * Get character encoding scheme used when encoding or decoding strings.
+     *
+     * @return the character encoding used for strings.
+     */
+    public final String getEncoding() {
+        return encoding;
+    }
+
+    /**
+     * Sets the character encoding scheme used when encoding or decoding
+     * strings.
+     *
+     * If the character set encoding is not supported by the Java environment
+     * then an UnsupportedCharsetException will be thrown. If the character set
+     * cannot be identified then an IllegalCharsetNameException will be thrown.
+     *
+     * @param charSet
+     *            the name of the character set used to encode strings.
+     */
+    public final void setEncoding(final String charSet) {
+        if (!Charset.isSupported(charSet)) {
+            throw new UnsupportedCharsetException(charSet);
+        }
+        encoding = charSet;
+    }
+
+    /**
+     * Calculates the length of a string when encoded using the specified
+     * character set.
+     *
+     * @param string
+     *            the string to be encoded.
+     *
+     * @return the number of bytes required to encode the string plus 1 for a
+     *         terminating null character.
+     */
+
+    public final int strlen(final String string) {
+        try {
+            return string.getBytes(encoding).length + 1;
+        } catch (final UnsupportedEncodingException e) {
+            throw new AssertionError(e);
+        }
+    }
+
+    /**
+     * Get the array of bytes containing the encoded data.
+     *
+     * @return a copy of the internal buffer.
+     */
+    public final byte[] getData() {
+        return Arrays.copyOf(data, data.length);
+    }
+
+    /**
+     * Sets the array of bytes used for the encoded data.
+     *
+     * @param bytes
+     *            an array of bytes.
+     */
+    public final void setData(final byte[] bytes) {
+        data = new byte[bytes.length];
+        index = 0;
+        offset = 0;
+        pointer = 0;
+        end = bytes.length << 3;
+        data = Arrays.copyOf(bytes, bytes.length);
+    }
+
+    /**
+     * Sets the internal buffer used for encoding objects to the specified size.
+     *
+     * @param size
+     *            the size of the internal buffer in bytes.
+     */
+    public final void setData(final int size) {
+        data = new byte[size];
+        index = 0;
+        offset = 0;
+        pointer = 0;
+        end = data.length << 3;
+    }
+
+    /**
+     * Get the location, in bits, where the next value will be read or
+     * written.
+     *
+     * @return the location of the next bit to be accessed.
+     */
+    public final int getPointer() {
+        return (index << 3) + offset;
+    }
+
+    /**
+     * Sets the location, in bits, where the next value will be read or written.
+     *
+     * @param location
+     *            the offset in bits from the start of the array of bytes.
+     */
+    public final void setPointer(final int location) {
+        index = location >>> 3;
+        offset = location & 7;
+    }
+
+    /**
+     * Changes the location where the next value will be read or written by.
+     *
+     * @param numberOfBits
+     *            the number of bits to add to the current location.
+     */
+    public final void adjustPointer(final int numberOfBits) {
+        pointer = (index << 3) + offset + numberOfBits;
+        index = pointer >>> 3;
+        offset = pointer & 7;
+    }
+
+    /**
+     * Changes the location to the next byte boundary.
+     */
+    public final void alignToByte() {
+        if (offset > 0) {
+            index += 1;
+            offset = 0;
+        }
+    }
+
+    /**
+     * Is the internal index at the end of the buffer.
+     *
+     * @return true if the internal pointer is at the end of the buffer.
+     */
+    public final boolean eof() {
+        return (index == data.length) && (offset == 0);
     }
 
     /**

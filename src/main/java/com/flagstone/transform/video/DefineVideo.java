@@ -35,7 +35,6 @@ import java.io.IOException;
 
 import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.Coder;
-import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.DefineTag;
 import com.flagstone.transform.coder.MovieTypes;
@@ -382,10 +381,9 @@ public final class DefineVideo implements DefineTag {
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
 
-        final int start = coder.getPointer();
-        coder.writeHeader(MovieTypes.DEFINE_VIDEO, length);
-        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
+        coder.writeHeader(MovieTypes.DEFINE_VIDEO, length);
+        coder.mark();
         coder.writeI16(identifier);
         coder.writeI16(frameCount);
         coder.writeI16(width);
@@ -394,11 +392,6 @@ public final class DefineVideo implements DefineTag {
         bits |= smoothed ? Coder.BIT0 : 0;
         coder.writeByte(bits);
         coder.writeByte(codec);
-
-        if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(),
-                    start >> Coder.BITS_TO_BYTES, length,
-                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
-        }
+        coder.unmark(length);
     }
 }

@@ -38,10 +38,8 @@ import java.util.Map;
 
 import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.Coder;
-import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.DefineTag;
-import com.flagstone.transform.coder.Encoder;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -366,8 +364,8 @@ public final class DefineShape implements DefineTag {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
-        fillBits = Encoder.unsignedSize(fillStyles.size());
-        lineBits = Encoder.unsignedSize(lineStyles.size());
+        fillBits = SWFEncoder.unsignedSize(fillStyles.size());
+        lineBits = SWFEncoder.unsignedSize(lineStyles.size());
 
         final Map<Integer, Integer> vars = context.getVariables();
         if (vars.containsKey(Context.POSTSCRIPT)) {
@@ -408,10 +406,9 @@ public final class DefineShape implements DefineTag {
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
-        final int start = coder.getPointer();
-        coder.writeHeader(MovieTypes.DEFINE_SHAPE, length);
-        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
+        coder.writeHeader(MovieTypes.DEFINE_SHAPE, length);
+        coder.mark();
         coder.writeI16(identifier);
         bounds.encode(coder, context);
 
@@ -435,11 +432,6 @@ public final class DefineShape implements DefineTag {
 
         vars.put(Context.FILL_SIZE, 0);
         vars.put(Context.LINE_SIZE, 0);
-
-        if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(),
-                    start >> Coder.BITS_TO_BYTES, length,
-                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
-        }
+        coder.unmark(length);
     }
 }

@@ -37,7 +37,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.flagstone.transform.coder.Coder;
-import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.MovieTypes;
@@ -841,9 +840,8 @@ public final class Place3 implements MovieTag {
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
-        final int start = coder.getPointer();
         coder.writeHeader(MovieTypes.PLACE_3, length);
-        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
+        coder.mark();
 
         final Map<Integer, Integer> vars = context.getVariables();
         vars.put(Context.TRANSPARENT, 1);
@@ -934,11 +932,6 @@ public final class Place3 implements MovieTag {
             coder.writeWord(0, eventSize);
         }
         vars.remove(Context.TRANSPARENT);
-
-        if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(),
-                    start >> Coder.BITS_TO_BYTES, length,
-                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
-        }
+        coder.unmark(length);
     }
 }

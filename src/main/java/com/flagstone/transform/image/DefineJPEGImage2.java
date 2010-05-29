@@ -36,7 +36,6 @@ import java.util.Arrays;
 
 import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.Coder;
-import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.ImageTag;
 import com.flagstone.transform.coder.MovieTypes;
@@ -198,18 +197,12 @@ public final class DefineJPEGImage2 implements ImageTag {
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
-        final int start = coder.getPointer();
-        coder.writeHeader(MovieTypes.DEFINE_JPEG_IMAGE_2, length);
-        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
 
+        coder.writeHeader(MovieTypes.DEFINE_JPEG_IMAGE_2, length);
+        coder.mark();
         coder.writeI16(identifier);
         coder.writeBytes(image);
-
-        if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(),
-                    start >> Coder.BITS_TO_BYTES, length,
-                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
-        }
+        coder.unmark(length);
     }
 
     private void decodeInfo() {

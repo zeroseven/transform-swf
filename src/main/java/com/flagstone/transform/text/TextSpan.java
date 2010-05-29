@@ -39,7 +39,6 @@ import java.util.Map;
 import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.Encoder;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -472,7 +471,7 @@ public final class TextSpan implements SWFEncodeable {
         int numberOfBits = 0;
 
         for (final GlyphIndex index : characters) {
-            numberOfBits = Math.max(numberOfBits, Encoder.unsignedSize(index
+            numberOfBits = Math.max(numberOfBits, SWFEncoder.unsignedSize(index
                     .getGlyphIndex()));
         }
 
@@ -483,7 +482,7 @@ public final class TextSpan implements SWFEncodeable {
         int numberOfBits = 0;
 
         for (final GlyphIndex index : characters) {
-            numberOfBits = Math.max(numberOfBits, Encoder.size(index
+            numberOfBits = Math.max(numberOfBits, SWFEncoder.size(index
                     .getAdvance()));
         }
 

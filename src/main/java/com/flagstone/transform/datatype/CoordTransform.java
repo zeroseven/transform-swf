@@ -35,7 +35,6 @@ import java.io.IOException;
 import com.flagstone.transform.Constants;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.Encoder;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -440,7 +439,7 @@ public final class CoordTransform implements SWFEncodeable {
         hasShear = (shearX != 0) || (shearY != 0);
 
         if (hasScale || hasShear || ((translateX != 0) || (translateY != 0))) {
-            transSize = Math.max(Encoder.size(translateX), Encoder
+            transSize = Math.max(SWFEncoder.size(translateX), SWFEncoder
                     .size(translateY));
         } else {
             transSize = 0;
@@ -449,12 +448,14 @@ public final class CoordTransform implements SWFEncodeable {
         numberOfBits += transSize << 1;
 
         if (hasScale) {
-            scaleSize = Math.max(Encoder.size(scaleX), Encoder.size(scaleY));
+            scaleSize = Math.max(SWFEncoder.size(scaleX),
+                    SWFEncoder.size(scaleY));
             numberOfBits += FIELD_SIZE + (scaleSize << 1);
         }
 
         if (hasShear) {
-            shearSize = Math.max(Encoder.size(shearX), Encoder.size(shearY));
+            shearSize = Math.max(SWFEncoder.size(shearX),
+                    SWFEncoder.size(shearY));
             numberOfBits += FIELD_SIZE + (shearSize << 1);
         }
 

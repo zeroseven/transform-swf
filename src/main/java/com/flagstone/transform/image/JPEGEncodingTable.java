@@ -35,7 +35,6 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import com.flagstone.transform.coder.Coder;
-import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.MovieTypes;
@@ -160,16 +159,10 @@ public final class JPEGEncodingTable implements MovieTag {
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
-        final int start = coder.getPointer();
+
         coder.writeHeader(MovieTypes.JPEG_TABLES, length);
-        final int end = coder.getPointer() + (length << Coder.BYTES_TO_BITS);
-
+        coder.mark();
         coder.writeBytes(table);
-
-        if (coder.getPointer() != end) {
-            throw new CoderException(getClass().getName(),
-                    start >> Coder.BITS_TO_BYTES, length,
-                    (coder.getPointer() - end) >> Coder.BITS_TO_BYTES);
-        }
+        coder.unmark(length);
     }
 }
