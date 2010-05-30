@@ -68,6 +68,7 @@ import com.flagstone.transform.shape.ShapeData;
 //TODO(class)
 @SuppressWarnings({"PMD.TooManyFields", "PMD.TooManyMethods" })
 public final class DefineFont2 implements DefineTag {
+    private static final int LANGUAGE_VERSION = 5;
     /** Format string used in toString() method. */
     private static final String FORMAT = "DefineFont2: { identifier=%d;"
     		+ " encoding=%s; small=%s; italic=%s; bold=%s; language=%s;"
@@ -846,7 +847,8 @@ public final class DefineFont2 implements DefineTag {
         bits |= bold ? Coder.BIT0 : 0;
         coder.writeByte(bits);
 
-        coder.writeWord(context.get(Context.VERSION) > SWF.SWF5 ? language : 0, 1);
+        coder.writeByte(context.get(Context.VERSION)
+                > LANGUAGE_VERSION ? language : 0);
         coder.writeWord(context.strlen(name), 1);
 
         coder.writeString(name);

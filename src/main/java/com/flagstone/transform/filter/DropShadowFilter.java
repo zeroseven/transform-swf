@@ -33,7 +33,7 @@ package com.flagstone.transform.filter;
 
 import java.io.IOException;
 
-import com.flagstone.transform.Constants;
+import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -278,13 +278,13 @@ public final class DropShadowFilter implements Filter {
 
     @Override
     public int hashCode() {
-        return ((((((shadow.hashCode() * Constants.PRIME
-                + blurX) * Constants.PRIME
-                + blurY) * Constants.PRIME
-                + angle * Constants.PRIME)
-                + distance) * Constants.PRIME
-                + strength) * Constants.PRIME
-                + mode) * Constants.PRIME
+        return ((((((shadow.hashCode() * SWF.PRIME
+                + blurX) * SWF.PRIME
+                + blurY) * SWF.PRIME
+                + angle * SWF.PRIME)
+                + distance) * SWF.PRIME
+                + strength) * SWF.PRIME
+                + mode) * SWF.PRIME
                 + passes;
     }
 

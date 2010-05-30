@@ -32,7 +32,7 @@ package com.flagstone.transform.datatype;
 
 import java.io.IOException;
 
-import com.flagstone.transform.Constants;
+import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -424,9 +424,9 @@ public final class CoordTransform implements SWFEncodeable {
     /** {@inheritDoc} */
     @Override
     public int hashCode() {
-        return ((((scaleX * Constants.PRIME + scaleY)
-                * Constants.PRIME + shearX) * Constants.PRIME + shearY)
-                * Constants.PRIME + translateX) * Constants.PRIME + translateY;
+        return ((((scaleX * SWF.PRIME + scaleY)
+                * SWF.PRIME + shearX) * SWF.PRIME + shearY)
+                * SWF.PRIME + translateX) * SWF.PRIME + translateY;
     }
 
     /** {@inheritDoc} */

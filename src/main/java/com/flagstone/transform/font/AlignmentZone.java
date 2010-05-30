@@ -31,8 +31,9 @@
 
 package com.flagstone.transform.font;
 
-import com.flagstone.transform.Constants;
 import java.io.IOException;
+
+import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
@@ -104,7 +105,7 @@ public final class AlignmentZone implements SWFEncodeable {
 
     @Override
     public int hashCode() {
-        return (Float.floatToIntBits(coordinate) * Constants.PRIME)
+        return (Float.floatToIntBits(coordinate) * SWF.PRIME)
                 + Float.floatToIntBits(range);
     }
 

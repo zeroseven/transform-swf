@@ -32,7 +32,7 @@
 package com.flagstone.transform.fillstyle;
 
 
-import com.flagstone.transform.Constants;
+import com.flagstone.transform.SWF;
 import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -172,7 +172,7 @@ public final class Gradient implements SWFEncodeable {
 
     @Override
     public int hashCode() {
-        return (ratio * Constants.PRIME) + color.hashCode();
+        return (ratio * SWF.PRIME) + color.hashCode();
     }
 
     /** {@inheritDoc} */

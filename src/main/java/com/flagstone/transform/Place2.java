@@ -209,6 +209,8 @@ public final class Place2 implements MovieTag {
         return object;
     }
 
+    private static final int EXTENDED_EVENTS = 5;
+
     /** Format string used in toString() method. */
     private static final String FORMAT = "Place2: { type=%s; layer=%d; "
             + "identifier=%d; transform=%s; colorTransform=%s; ratio=%d; "
@@ -312,7 +314,7 @@ public final class Place2 implements MovieTag {
 
             coder.readUnsignedShort();
 
-            if (context.get(Context.VERSION) > SWF.SWF5) {
+            if (context.get(Context.VERSION) > EXTENDED_EVENTS) {
                 coder.readInt();
 
                 while ((event = coder.readInt()) != 0) {
@@ -679,7 +681,7 @@ public final class Place2 implements MovieTag {
         if (!events.isEmpty()) {
             final int eventSize;
 
-            if (context.get(Context.VERSION) > SWF.SWF5) {
+            if (context.get(Context.VERSION) > EXTENDED_EVENTS) {
                 eventSize = 4;
             } else {
                 eventSize = 2;
@@ -753,7 +755,7 @@ public final class Place2 implements MovieTag {
         if (!events.isEmpty()) {
             final int eventSize;
 
-            if (context.get(Context.VERSION) > SWF.SWF5) {
+            if (context.get(Context.VERSION) > EXTENDED_EVENTS) {
                 eventSize = 4;
             } else {
                 eventSize = 2;

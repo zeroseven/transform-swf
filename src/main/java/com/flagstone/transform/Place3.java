@@ -368,21 +368,11 @@ public final class Place3 implements MovieTag {
             int event;
 
             coder.readUnsignedShort();
+            coder.readInt();
 
-            if (context.get(Context.VERSION) > SWF.SWF5) {
-                coder.readInt();
-
-                while ((event = coder.readInt()) != 0) {
-                    events.add(new MovieClipEventHandler(event,
-                            coder, context));
-                }
-            } else {
-                coder.readUnsignedShort();
-
-                while ((event = coder.readUnsignedShort()) != 0) {
-                    events.add(new MovieClipEventHandler(event,
-                            coder, context));
-                }
+            while ((event = coder.readInt()) != 0) {
+                events.add(new MovieClipEventHandler(event,
+                        coder, context));
             }
         }
         context.remove(Context.TRANSPARENT);
@@ -816,15 +806,13 @@ public final class Place3 implements MovieTag {
         }
 
         if (!events.isEmpty()) {
-            final int eventSize = context.get(Context.VERSION) > SWF.SWF5 ? 4 : 2;
-
-            length += 2 + eventSize;
+            length += 6;
 
             for (final MovieClipEventHandler handler : events) {
                 length += handler.prepareToEncode(context);
             }
 
-            length += eventSize;
+            length += 6;
         }
 
         context.remove(Context.TRANSPARENT);
@@ -910,7 +898,6 @@ public final class Place3 implements MovieTag {
         }
 
         if (!events.isEmpty()) {
-            final int eventSize = context.get(Context.VERSION) > SWF.SWF5 ? 4 : 2;
             int eventMask = 0;
 
             coder.writeI16(0);
@@ -919,13 +906,13 @@ public final class Place3 implements MovieTag {
                 eventMask |= handler.getEventCode();
             }
 
-            coder.writeWord(eventMask, eventSize);
+            coder.writeI32(eventMask);
 
             for (final MovieClipEventHandler handler : events) {
                 handler.encode(coder, context);
             }
 
-            coder.writeWord(0, eventSize);
+            coder.writeI32(0);
         }
         context.remove(Context.TRANSPARENT);
         coder.unmark(length);

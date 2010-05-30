@@ -34,7 +34,7 @@ package com.flagstone.transform.font;
 
 import java.io.IOException;
 
-import com.flagstone.transform.Constants;
+import com.flagstone.transform.SWF;
 import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -193,8 +193,8 @@ public final class Kerning implements SWFEncodeable {
 
     @Override
     public int hashCode() {
-        return ((leftGlyph * Constants.PRIME)
-                + rightGlyph) * Constants.PRIME
+        return ((leftGlyph * SWF.PRIME)
+                + rightGlyph) * SWF.PRIME
                 + adjustment;
     }
 

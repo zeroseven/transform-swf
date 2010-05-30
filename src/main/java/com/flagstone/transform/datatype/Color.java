@@ -30,7 +30,7 @@
  */
 package com.flagstone.transform.datatype;
 
-import com.flagstone.transform.Constants;
+import com.flagstone.transform.SWF;
 
 import java.io.IOException;
 import com.flagstone.transform.coder.Context;
@@ -227,8 +227,8 @@ public final class Color implements SWFEncodeable {
     /** {@inheritDoc} */
     @Override
     public int hashCode() {
-        return ((red * Constants.PRIME + green) * Constants.PRIME + blue)
-            * Constants.PRIME + alpha;
+        return ((red * SWF.PRIME + green) * SWF.PRIME + blue)
+            * SWF.PRIME + alpha;
     }
 
     /** {@inheritDoc} */

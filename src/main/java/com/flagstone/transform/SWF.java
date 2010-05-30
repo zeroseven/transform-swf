@@ -35,7 +35,14 @@ package com.flagstone.transform;
  * SWF contains definitions of constants used throughout the framework.
  */
 public final class SWF {
-    /** The version of Flash supported. */
+    /**
+     * The prime number used to generate the value in the hashCode() method
+     * of immutable objects.
+     */
+    public static final int PRIME = 31;
+    /**
+     * The version of Flash supported.
+     */
     public static final int VERSION = 10;
     /**
      * The lowest value that can be used as a unique identifier.
@@ -150,11 +157,6 @@ public final class SWF {
      * Maximum number of gradient records.
      */
     public static final int MAX_GRADIENTS = 15;
-
-    /**
-     * Flash version 5.
-     */
-    public static final int SWF5 = 5;
 
     /** Class contains only constants. */
     private SWF() {

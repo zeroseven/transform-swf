@@ -844,7 +844,7 @@ public final class DefineFont3 implements DefineTag {
         bits |= bold ? Coder.BIT0 : 0;
         coder.writeByte(bits);
 
-        coder.writeWord(context.get(Context.VERSION) > SWF.SWF5 ? language : 0, 1);
+        coder.writeWord(language, 1);
         coder.writeWord(context.strlen(name), 1);
 
         coder.writeString(name);

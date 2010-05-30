@@ -31,7 +31,7 @@
 
 package com.flagstone.transform.util.font;
 
-import com.flagstone.transform.Constants;
+import com.flagstone.transform.SWF;
 
 /**
  * FontFace is a convenience class that can be used to create tables of
@@ -149,8 +149,8 @@ public final class FontFace {
 
     @Override
     public int hashCode() {
-        return (name.hashCode() * Constants.PRIME
-                + Boolean.valueOf(bold).hashCode()) * Constants.PRIME
+        return (name.hashCode() * SWF.PRIME
+                + Boolean.valueOf(bold).hashCode()) * SWF.PRIME
                 + Boolean.valueOf(italic).hashCode();
     }
 }

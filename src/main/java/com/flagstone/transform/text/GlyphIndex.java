@@ -33,7 +33,7 @@ package com.flagstone.transform.text;
 
 import java.io.IOException;
 
-import com.flagstone.transform.Constants;
+import com.flagstone.transform.SWF;
 import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -165,7 +165,7 @@ public final class GlyphIndex implements SWFEncodeable {
 
     @Override
     public int hashCode() {
-        return (index * Constants.PRIME) + advance;
+        return (index * SWF.PRIME) + advance;
     }
 
     /** {@inheritDoc} */

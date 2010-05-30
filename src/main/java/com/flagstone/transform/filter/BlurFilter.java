@@ -34,7 +34,7 @@ package com.flagstone.transform.filter;
 
 import java.io.IOException;
 
-import com.flagstone.transform.Constants;
+import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -129,7 +129,7 @@ public final class BlurFilter implements Filter {
 
     @Override
     public int hashCode() {
-        return ((blurX * Constants.PRIME) + blurY) * Constants.PRIME + passes;
+        return ((blurX * SWF.PRIME) + blurY) * SWF.PRIME + passes;
     }
 
     /** {@inheritDoc} */
