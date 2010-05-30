@@ -31,6 +31,8 @@
 
 package com.flagstone.transform.coder;
 
+import com.flagstone.transform.MovieTag;
+
 /**
  * The DefineTag interface is used to identify object that are used to add
  * definitions for shapes, images, sounds ,etc. to a Flash file.

@@ -43,9 +43,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.DataFormatException;
 
+import com.flagstone.transform.MovieTag;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.LittleDecoder;
-import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.sound.DefineSound;
 import com.flagstone.transform.sound.SoundFormat;
 import com.flagstone.transform.sound.SoundStreamBlock;

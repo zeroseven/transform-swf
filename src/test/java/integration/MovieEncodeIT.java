@@ -46,7 +46,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import com.flagstone.transform.Movie;
-import com.flagstone.transform.coder.MovieTag;
+import com.flagstone.transform.MovieTag;
 import com.flagstone.transform.tools.MovieWriter;
 
 @RunWith(Parameterized.class)

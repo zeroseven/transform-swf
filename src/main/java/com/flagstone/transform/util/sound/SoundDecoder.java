@@ -38,7 +38,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.zip.DataFormatException;
 
-import com.flagstone.transform.coder.MovieTag;
+import com.flagstone.transform.MovieTag;
 import com.flagstone.transform.sound.DefineSound;
 
 /**

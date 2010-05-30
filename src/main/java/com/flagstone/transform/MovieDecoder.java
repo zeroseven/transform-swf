@@ -38,7 +38,6 @@ import com.flagstone.transform.button.ButtonSound;
 import com.flagstone.transform.button.DefineButton;
 import com.flagstone.transform.button.DefineButton2;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFFactory;

@@ -35,7 +35,6 @@ import java.util.Arrays;
 
 import java.io.IOException;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.SWFEncoder;
 
 /**

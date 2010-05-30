@@ -32,6 +32,7 @@
 package com.flagstone.transform.coder;
 
 import com.flagstone.transform.MovieDecoder;
+import com.flagstone.transform.MovieTag;
 import com.flagstone.transform.action.Action;
 import com.flagstone.transform.action.ActionDecoder;
 import com.flagstone.transform.fillstyle.FillStyle;

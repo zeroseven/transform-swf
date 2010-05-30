@@ -28,7 +28,10 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.flagstone.transform.coder;
+package com.flagstone.transform;
+
+import com.flagstone.transform.coder.Copyable;
+import com.flagstone.transform.coder.SWFEncodeable;
 
 /**
  * MovieTag defines a type that is used to identify all the objects that can be

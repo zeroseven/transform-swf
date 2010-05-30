@@ -33,10 +33,10 @@ package com.flagstone.transform.video;
 import java.io.IOException;
 import java.util.Arrays;
 
+import com.flagstone.transform.MovieTag;
 import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
