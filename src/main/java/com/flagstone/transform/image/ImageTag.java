@@ -31,7 +31,7 @@
 
 package com.flagstone.transform.image;
 
-import com.flagstone.transform.coder.DefineTag;
+import com.flagstone.transform.DefineTag;
 
 /**
  * The ImageTag interface is implemented by all classes that define images in a

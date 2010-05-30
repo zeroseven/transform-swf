@@ -29,9 +29,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.flagstone.transform.coder;
+package com.flagstone.transform;
 
-import com.flagstone.transform.MovieTag;
 
 /**
  * The DefineTag interface is used to identify object that are used to add

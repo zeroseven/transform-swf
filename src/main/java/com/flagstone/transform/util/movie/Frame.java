@@ -34,13 +34,13 @@ package com.flagstone.transform.util.movie;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.flagstone.transform.DefineTag;
 import com.flagstone.transform.DoAction;
 import com.flagstone.transform.FrameLabel;
 import com.flagstone.transform.Movie;
 import com.flagstone.transform.MovieTag;
 import com.flagstone.transform.ShowFrame;
 import com.flagstone.transform.action.Action;
-import com.flagstone.transform.coder.DefineTag;
 
 /**
  * <p>
