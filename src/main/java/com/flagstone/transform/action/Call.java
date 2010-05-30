@@ -73,6 +73,6 @@ public final class Call implements Action {
    public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
         coder.writeByte(ActionTypes.CALL);
-        coder.writeI16(0);
+        coder.writeShort(0);
     }
 }

@@ -39,7 +39,7 @@ import com.flagstone.transform.MovieTag;
 import com.flagstone.transform.SWF;
 import com.flagstone.transform.action.Action;
 import com.flagstone.transform.action.ActionData;
-import com.flagstone.transform.coder.Coder;
+
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -97,8 +97,8 @@ public final class InitializeMovieClip implements MovieTag {
      */
     public InitializeMovieClip(final SWFDecoder coder, final Context context)
             throws IOException {
-        length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
-        if (length == Coder.IS_EXTENDED) {
+        length = coder.readUnsignedShort() & SWFDecoder.LENGTH_FIELD;
+        if (length == SWFDecoder.IS_EXTENDED) {
             length = coder.readInt();
         }
         coder.mark();
@@ -236,7 +236,7 @@ public final class InitializeMovieClip implements MovieTag {
 
         coder.writeHeader(MovieTypes.INITIALIZE, length);
         coder.mark();
-        coder.writeI16(identifier);
+        coder.writeShort(identifier);
         for (final Action action : actions) {
             action.encode(coder, context);
         }

@@ -164,7 +164,7 @@ public final class ActionObject implements Action {
         coder.writeByte(type);
 
         if (type > ActionTypes.HIGHEST_BYTE_CODE) {
-            coder.writeI16(data.length);
+            coder.writeShort(data.length);
             coder.writeBytes(data);
         }
     }

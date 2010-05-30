@@ -1,8 +1,8 @@
 /*
- * SWFDecoder.java
+ * LittleDecoder.java
  * Transform
  *
- * Copyright (c) 2001-2010 Flagstone Software Ltd. All rights reserved.
+ * Copyright (c) 2010 Flagstone Software Ltd. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -31,71 +31,160 @@
 
 package com.flagstone.transform.coder;
 
-import java.io.IOException;
-import java.io.InputStream;
-
+import java.util.Arrays;
 
 /**
- * SWFDecoder extends LittleEndianDecoder by adding a context used to pass
+ * LittleDecoder extends LittleEndianDecoder by adding a context used to pass
  * information between classes during decoding and a factory class for
  * generating instances of objects.
  */
 //TODO(class)
-public final class LittleDecoder extends Decoder {
+public final class LittleDecoder {
+    /** Bit mask applied to bytes when converting to unsigned integers. */
+    public static final int BYTE_MASK = 255;
+    /** Number of bits in an int. */
+    public static final int BITS_PER_INT = 32;
+    /** Number of bits in a byte. */
+    public static final int BITS_PER_BYTE = 8;
+    /** Left shift to convert number of bits to number of bytes. */
+    public static final int BITS_TO_BYTES = 3;
+    /** Right shift to convert number of bits to number of bytes. */
+    public static final int BYTES_TO_BITS = 3;
+    /** Number of bits to shift when aligning a value to the second byte. */
+    public static final int TO_BYTE1 = 8;
+    /** Number of bits to shift when aligning a value to the third byte. */
+    public static final int TO_BYTE2 = 16;
+    /** Number of bits to shift when aligning a value to the fourth byte. */
+    public static final int TO_BYTE3 = 24;
 
+    /** The internal buffer containing data read from or written to a file. */
+    private byte[] data;
+    /** The index in bits to the current location in the buffer. */
+    private transient int pointer;
+    /** The index in bytes to the current location in the buffer. */
+    private transient int index;
+    /** The offset in bits to the location in the current byte. */
+    private transient int offset;
+    /** The last location in the buffer. */
+    private transient final int end;
     /**
-     * Bit mask for extracting the length field from the header word.
-     */
-    private static final int LENGTH_FIELD = 0x3F;
-    /**
-     * Reserved length indicating length is encoded in next 32-bit word.
-     */
-    private static final int IS_EXTENDED = 63;
-
-    public static final int BIT7 = 0x0080;
-    public static final int BIT6 = 0x0040;
-    public static final int BIT5 = 0x0020;
-    public static final int BIT4 = 0x0010;
-    public static final int BIT3 = 0x0008;
-    public static final int BIT2 = 0x0004;
-    public static final int BIT1 = 0x0002;
-    public static final int BIT0 = 0x0001;
-
-    public static final int NIB1 = 0x000C;
-    public static final int NIB0 = 0x0003;
-
-    private transient int type;
-    private transient int length;
-    private transient int bits;
-
-    private transient InputStream stream;
-
-    /**
-     * Creates a SWFDecoder object initialised with the data to be decoded.
+     * Creates a LittleDecoder object initialised with the data to be decoded.
      *
-     * @param data
+     * @param bytes
      *            an array of bytes to be decoded.
      */
-    public LittleDecoder(final byte[] data) {
-        super(data);
+    public LittleDecoder(final byte[] bytes) {
+        super();
+        data = new byte[bytes.length];
+        index = 0;
+        offset = 0;
+        pointer = 0;
+        end = bytes.length << 3;
+        data = Arrays.copyOf(bytes, bytes.length);
     }
 
-    public LittleDecoder(final InputStream streamIn) {
-        super(new byte[100]);
-        stream = streamIn;
+    /**
+     * Get the location, in bits, where the next value will be read or
+     * written.
+     *
+     * @return the location of the next bit to be accessed.
+     */
+    public int getPointer() {
+        return (index << 3) + offset;
     }
 
-    public int prefetchByte() {
-        bits = data[index++];
-        return bits;
+    /**
+     * Sets the location, in bits, where the next value will be read or written.
+     *
+     * @param location
+     *            the offset in bits from the start of the array of bytes.
+     */
+    public void setPointer(final int location) {
+        index = location >>> 3;
+        offset = location & 7;
     }
 
-    public boolean getBool(final int mask) {
-        return (bits & mask) != 0;
+    /**
+     * Changes the location where the next value will be read or written by.
+     *
+     * @param numberOfBits
+     *            the number of bits to add to the current location.
+     */
+    public void adjustPointer(final int numberOfBits) {
+        pointer = (index << 3) + offset + numberOfBits;
+        index = pointer >>> 3;
+        offset = pointer & 7;
     }
 
-    public int getBit(final int mask) {
-        return bits & mask;
+    /**
+     * Is the internal index at the end of the buffer.
+     *
+     * @return true if the internal pointer is at the end of the buffer.
+     */
+    public boolean eof() {
+        return (index == data.length) && (offset == 0);
+    }
+
+    /**
+     * Read a bit field.
+     *
+     * @param numberOfBits
+     *            the number of bits to read.
+     *
+     * @param signed
+     *            indicates whether the integer value read is signed.
+     *
+     * @return the value read.
+     */
+    public int readBits(final int numberOfBits, final boolean signed) {
+        int value = 0;
+
+        pointer = (index << 3) + offset;
+
+        if (numberOfBits > 0) {
+
+            for (int i = BITS_PER_INT; (i > 0)
+                    && (index < data.length); i -= 8) {
+                value |= (data[index++] & BYTE_MASK) << (i - 8);
+            }
+
+            value <<= offset;
+
+            if (signed) {
+                value >>= BITS_PER_INT - numberOfBits;
+            } else {
+                value >>>= BITS_PER_INT - numberOfBits;
+            }
+
+            pointer += numberOfBits;
+            index = pointer >>> BITS_TO_BYTES;
+            offset = pointer & 7;
+        }
+
+        return value;
+    }
+
+    /**
+     * Read an unsigned byte.
+     *
+     * @return an 8-bit unsigned value.
+     */
+    public int readByte() {
+        return data[index++] & BYTE_MASK;
+    }
+
+    /**
+     * Reads an array of bytes.
+     *
+     * @param bytes
+     *            the array that will contain the bytes read.
+     *
+     * @return the array of bytes.
+     */
+    public byte[] readBytes(final byte[] bytes) {
+        System.arraycopy(data, index, bytes, 0, bytes.length);
+        index += bytes.length;
+        return bytes;
     }
 
     /**
@@ -104,8 +193,8 @@ public final class LittleDecoder extends Decoder {
      * @return the value read.
      */
     public int readUI16() {
-        int value = data[index++] & UNSIGNED_BYTE_MASK;
-        value |= (data[index++] & UNSIGNED_BYTE_MASK) << ALIGN_BYTE_1;
+        int value = data[index++] & BYTE_MASK;
+        value |= (data[index++] & BYTE_MASK) << TO_BYTE1;
         return value;
     }
 
@@ -115,8 +204,8 @@ public final class LittleDecoder extends Decoder {
      * @return the value read.
      */
     public int readSI16() {
-        int value = data[index++] & UNSIGNED_BYTE_MASK;
-        value |= data[index++] << ALIGN_BYTE_1;
+        int value = data[index++] & BYTE_MASK;
+        value |= data[index++] << TO_BYTE1;
         return value;
     }
 
@@ -126,214 +215,10 @@ public final class LittleDecoder extends Decoder {
      * @return the value read.
      */
     public int readUI32() {
-        int value = data[index++] & UNSIGNED_BYTE_MASK;
-        value |= (data[index++] & UNSIGNED_BYTE_MASK) << ALIGN_BYTE_1;
-        value |= (data[index++] & UNSIGNED_BYTE_MASK) << ALIGN_BYTE_2;
-        value |= (data[index++] & UNSIGNED_BYTE_MASK) << ALIGN_BYTE_3;
+        int value = data[index++] & BYTE_MASK;
+        value |= (data[index++] & BYTE_MASK) << TO_BYTE1;
+        value |= (data[index++] & BYTE_MASK) << TO_BYTE2;
+        value |= (data[index++] & BYTE_MASK) << TO_BYTE3;
         return value;
-    }
-
-    /**
-     * Read an unsigned 32-bit integer.
-     *
-     * @return the value read.
-     */
-    public int readSI32() {
-        int value = data[index++] & UNSIGNED_BYTE_MASK;
-        value |= (data[index++] & UNSIGNED_BYTE_MASK) << ALIGN_BYTE_1;
-        value |= (data[index++] & UNSIGNED_BYTE_MASK) << ALIGN_BYTE_2;
-        value |= data[index++] << ALIGN_BYTE_3;
-        return value;
-    }
-
-    /**
-     * Read a word.
-     *
-     * @param numberOfBytes
-     *            the number of bytes read in the range 1..4.
-     *
-     * @param signed
-     *            indicates whether the value read is signed (true) or unsigned
-     *            (false).
-     *
-     * @return the value read.
-     */
-    public int readWord(final int numberOfBytes, final boolean signed) {
-        int value = 0;
-
-        for (int i = 0; i < numberOfBytes; i++) {
-            value += (data[index++] & UNSIGNED_BYTE_MASK) << (i << 3);
-        }
-
-        if (signed) {
-            value <<= 32 - (numberOfBytes << 3);
-            value >>= 32 - (numberOfBytes << 3);
-        }
-
-        return value;
-    }
-
-    /**
-     * Read a 32-bit unsigned integer, encoded using a variable number of bytes.
-     *
-     * @return the value read.
-     */
-    public int readVariableU32() {
-
-        int value = data[index++] & UNSIGNED_BYTE_MASK;
-
-        final int mask = 0xFFFFFFFF;
-        int test = 0x00000080;
-        int step = 7;
-
-        while ((value & test) != 0) {
-            value = ((data[index++] & UNSIGNED_BYTE_MASK) << step)
-                + (value & mask >>> (32 - step));
-            test <<= 7;
-            step += 7;
-        }
-//        if ((value & 0x00000080) != 0) {
-//            value = ((data[index++] & 0x000000FF) << 7)
-//        + (value & 0x0000007f);
-//
-//            if ((value & 0x00004000) != 0) {
-//                value = ((data[index++] & 0x000000FF) << 14)
-//                        + (value & 0x00003fff);
-//
-//                if ((value & 0x00200000) != 0) {
-//                    value = ((data[index++] & 0x000000FF) << 21)
-//                            + (value & 0x001fffff);
-//
-//                    if ((value & 0x10000000) != 0) {
-//                        value = ((data[index++] & 0x000000FF) << 28)
-//                                + (value & 0x0fffffff);
-//                    }
-//                }
-//            }
-//        }
-        return value;
-    }
-
-    /**
-     * Read a single-precision floating point number.
-     *
-     * @return the value.
-     */
-    public float readHalf() {
-        final int bits = readWord(2, false);
-        final int sign = (bits >> 15) & 0x00000001;
-        int exp = (bits >> 10) & 0x0000001f;
-        int mantissa = bits & 0x000003ff;
-        float value;
-
-        if (exp == 0) {
-            if (mantissa == 0) { // Plus or minus zero
-                value = Float.intBitsToFloat(sign << 31);
-            } else { // Denormalized number -- renormalize it
-                while ((mantissa & 0x00000400) == 0) {
-                    mantissa <<= 1;
-                    exp -=  1;
-                }
-                exp += 1;
-                exp = exp + (127 - 15);
-                mantissa &= ~0x00000400;
-                mantissa = mantissa << 13;
-                value = Float.intBitsToFloat((sign << 31)
-                        | (exp << 23) | mantissa);
-            }
-        } else if (exp == 31) {
-            if (mantissa == 0) { // Inf
-                value = Float.intBitsToFloat((sign << 31) | 0x7f800000);
-            } else { // NaN
-                value = Float.intBitsToFloat((sign << 31)
-                        | 0x7f800000 | (mantissa << 13));
-            }
-        } else {
-            exp = exp + (127 - 15);
-            mantissa = mantissa << 13;
-            value = Float.intBitsToFloat((sign << 31)
-                    | (exp << 23) | mantissa);
-        }
-        return value;
-    }
-
-    /**
-     * Read a single-precision floating point number.
-     *
-     * @return the value.
-     */
-    public float readFloat() {
-        return Float.intBitsToFloat(readWord(4, false));
-    }
-
-    /**
-     * Read a double-precision floating point number.
-     *
-     * @return the value.
-     */
-    public double readDouble() {
-        long longValue = (long) readWord(4, false) << 32;
-        longValue |= readWord(4, false) & 0x00000000FFFFFFFFL;
-
-        return Double.longBitsToDouble(longValue);
-    }
-
-    public int nextHeader() throws IOException {
-        int value = stream.read();
-        value |= stream.read() << 8;
-
-        type = value >> 6;
-        length = value & LENGTH_FIELD;
-
-        if (length == IS_EXTENDED) {
-            length = stream.read();
-            length |= stream.read() << 8;
-            length |= stream.read() << 16;
-            length |= stream.read() << 24;
-        }
-        return type;
-    }
-
-    public void fetchToDecode() throws IOException {
-        index = 0;
-        offset = 0;
-        pointer = 0;
-
-        if (type == MovieTypes.DEFINE_MOVIE_CLIP) {
-            length = 4;
-        }
-
-        if (data.length < length) {
-            data = new byte[length];
-        }
-
-        fetchDirect(data, length);
-    }
-
-    public void fetchDirect(final byte[] bytes, final int len)
-                throws IOException {
-        int bytesRead = 0;
-
-        do {
-            bytesRead = stream.read(bytes, bytesRead, len);
-        } while (bytesRead != -1 && bytesRead < len);
-    }
-
-    /**
-     * Gets the type of the encoded object from the header fields.
-     *
-     * @return the value identifying the object when it is encoded.
-     */
-    public int readType() {
-        return type;
-    }
-
-    /**
-     * Gets the length of the encoded object from the header fields.
-     *
-     * @return the length of the encoded object in bytes.
-     */
-    public int readLength() {
-        return length;
     }
 }

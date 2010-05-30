@@ -37,7 +37,7 @@ import java.util.List;
 
 import com.flagstone.transform.DefineTag;
 import com.flagstone.transform.SWF;
-import com.flagstone.transform.coder.Coder;
+
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -102,8 +102,8 @@ public final class DefineText2 implements DefineTag {
     // TODO(optimise)
     public DefineText2(final SWFDecoder coder, final Context context)
             throws IOException {
-        length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
-        if (length == Coder.IS_EXTENDED) {
+        length = coder.readUnsignedShort() & SWFDecoder.LENGTH_FIELD;
+        if (length == SWFDecoder.IS_EXTENDED) {
             length = coder.readInt();
         }
         coder.mark();
@@ -347,7 +347,7 @@ public final class DefineText2 implements DefineTag {
 
         coder.writeHeader(MovieTypes.DEFINE_TEXT_2, length);
         coder.mark();
-        coder.writeI16(identifier);
+        coder.writeShort(identifier);
         context.put(Context.TRANSPARENT, 1);
         context.put(Context.GLYPH_SIZE, glyphBits);
         context.put(Context.ADVANCE_SIZE, advanceBits);
@@ -362,7 +362,7 @@ public final class DefineText2 implements DefineTag {
             span.encode(coder, context);
         }
 
-        coder.writeWord(0, 1);
+        coder.writeByte(0);
 
         context.remove(Context.TRANSPARENT);
         context.put(Context.GLYPH_SIZE, 0);

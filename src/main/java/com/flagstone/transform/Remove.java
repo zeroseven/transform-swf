@@ -186,7 +186,7 @@ public final class Remove implements MovieTag {
         //CHECKSTYLE:OFF
         coder.writeHeader(MovieTypes.REMOVE, 4);
         //CHECKSTYLE:ON
-        coder.writeI16(identifier);
-        coder.writeI16(layer);
+        coder.writeShort(identifier);
+        coder.writeShort(layer);
     }
 }

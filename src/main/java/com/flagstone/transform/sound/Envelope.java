@@ -192,9 +192,9 @@ public final class Envelope implements SWFEncodeable {
         /** {@inheritDoc} */
         public void encode(final SWFEncoder coder, final Context context)
                     throws IOException {
-            coder.writeI32(mark);
-            coder.writeI16(left);
-            coder.writeI16(right);
+            coder.writeInt(mark);
+            coder.writeShort(left);
+            coder.writeShort(right);
         }
     }
 

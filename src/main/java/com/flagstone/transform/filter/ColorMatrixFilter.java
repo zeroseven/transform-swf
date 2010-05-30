@@ -129,7 +129,7 @@ public final class ColorMatrixFilter implements Filter {
             throws IOException {
         coder.writeByte(FilterTypes.COLOR_MATRIX);
         for (final float value : matrix) {
-            coder.writeFloat(value);
+            coder.writeInt(Float.floatToIntBits(value));
         }
     }
 }

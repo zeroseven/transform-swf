@@ -357,7 +357,7 @@ public final class Push implements Action {
             throws IOException {
 
         coder.writeByte(ActionTypes.PUSH);
-        coder.writeI16(length);
+        coder.writeShort(length);
 
         for (final Object obj : values) {
             if (obj instanceof Boolean) {
@@ -369,13 +369,16 @@ public final class Push implements Action {
                 }
             } else if (obj instanceof Integer) {
                 coder.writeByte(TYPE_INTEGER);
-                coder.writeI32(((Integer) obj).intValue());
+                coder.writeInt(((Integer) obj).intValue());
             } else if (obj instanceof Property) {
                 coder.writeByte(TYPE_PROPERTY);
-                coder.writeI32(((Property) obj).getValue());
+                coder.writeInt(((Property) obj).getValue());
             } else if (obj instanceof Double) {
                 coder.writeByte(TYPE_DOUBLE);
-                coder.writeDouble(((Double) obj).doubleValue());
+                final long longValue = Double.doubleToLongBits(
+                        ((Double) obj).doubleValue());
+                coder.writeInt((int) (longValue >> SWFEncoder.BITS_PER_INT));
+                coder.writeInt((int) longValue);
             } else if (obj instanceof String) {
                 coder.writeByte(TYPE_STRING);
                 coder.writeString(obj.toString());
@@ -389,7 +392,7 @@ public final class Push implements Action {
                     coder.writeByte(((TableIndex) obj).getIndex());
                 } else {
                     coder.writeByte(TYPE_LARGE_TINDEX);
-                    coder.writeI16(((TableIndex) obj).getIndex());
+                    coder.writeShort(((TableIndex) obj).getIndex());
                 }
             } else if (obj instanceof RegisterIndex) {
                 coder.writeByte(TYPE_REGISTER);

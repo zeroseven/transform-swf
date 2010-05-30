@@ -37,7 +37,7 @@ import java.util.List;
 
 import com.flagstone.transform.DefineTag;
 import com.flagstone.transform.SWF;
-import com.flagstone.transform.coder.Coder;
+
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -111,8 +111,8 @@ public final class DefineShape implements DefineTag {
      */
     public DefineShape(final SWFDecoder coder, final Context context)
             throws IOException {
-        length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
-        if (length == Coder.IS_EXTENDED) {
+        length = coder.readUnsignedShort() & SWFDecoder.LENGTH_FIELD;
+        if (length == SWFDecoder.IS_EXTENDED) {
             length = coder.readInt();
         }
         coder.mark();
@@ -406,16 +406,16 @@ public final class DefineShape implements DefineTag {
 
         coder.writeHeader(MovieTypes.DEFINE_SHAPE, length);
         coder.mark();
-        coder.writeI16(identifier);
+        coder.writeShort(identifier);
         bounds.encode(coder, context);
 
-        coder.writeWord(fillStyles.size(), 1);
+        coder.writeByte(fillStyles.size());
 
         for (final FillStyle style : fillStyles) {
             style.encode(coder, context);
         }
 
-        coder.writeWord(lineStyles.size(), 1);
+        coder.writeByte(lineStyles.size());
 
         for (final LineStyle style : lineStyles) {
             style.encode(coder, context);

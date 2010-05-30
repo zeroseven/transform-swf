@@ -36,7 +36,7 @@ import java.util.Arrays;
 
 import com.flagstone.transform.DefineTag;
 import com.flagstone.transform.SWF;
-import com.flagstone.transform.coder.Coder;
+
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -99,8 +99,8 @@ public final class DefineSound implements DefineTag {
      *             if an error occurs while decoding the data.
      */
     public DefineSound(final SWFDecoder coder) throws IOException {
-        length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
-        if (length == Coder.IS_EXTENDED) {
+        length = coder.readUnsignedShort() & SWFDecoder.LENGTH_FIELD;
+        if (length == SWFDecoder.IS_EXTENDED) {
             length = coder.readInt();
         }
         coder.mark();
@@ -423,7 +423,7 @@ public final class DefineSound implements DefineTag {
 
         coder.writeHeader(MovieTypes.DEFINE_SOUND, length);
         coder.mark();
-        coder.writeI16(identifier);
+        coder.writeShort(identifier);
 
         int bits = format << 4;
 
@@ -443,7 +443,7 @@ public final class DefineSound implements DefineTag {
         bits |= (sampleSize - 1) << 1;
         bits |= channelCount - 1;
         coder.writeByte(bits);
-        coder.writeI32(sampleCount);
+        coder.writeInt(sampleCount);
         coder.writeBytes(sound);
         coder.unmark(length);
     }

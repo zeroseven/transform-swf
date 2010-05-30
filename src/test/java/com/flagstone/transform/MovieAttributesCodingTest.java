@@ -57,8 +57,8 @@ public final class MovieAttributesCodingTest {
 //        object.encode(encoder, context);
 //
 //        assertEquals(CALCULATED_LENGTH, binary.length, length);
-//        assertTrue(NOT_FULLY_ENCODED, encoder.eof());
-//        assertArrayEquals(NOT_ENCODED, binary, encoder.getData());
+//
+//        assertArrayEquals(NOT_ENCODED, binary, stream.toByteArray());
 //    }
 //
 //    @Test
@@ -99,8 +99,8 @@ public final class MovieAttributesCodingTest {
 //        object.encode(encoder, context);
 //
 //        assertEquals(CALCULATED_LENGTH, binary.length, length);
-//        assertTrue(NOT_FULLY_ENCODED, encoder.eof());
-//        assertArrayEquals(NOT_ENCODED, binary, encoder.getData());
+//
+//        assertArrayEquals(NOT_ENCODED, binary, stream.toByteArray());
 //    }
 //
 //    @Test

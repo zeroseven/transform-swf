@@ -37,7 +37,6 @@ import java.util.List;
 
 import com.flagstone.transform.DefineTag;
 import com.flagstone.transform.SWF;
-import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -116,8 +115,8 @@ public final class DefineFont3 implements DefineTag {
      */
     public DefineFont3(final SWFDecoder coder, final Context context)
             throws IOException {
-        length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
-        if (length == Coder.IS_EXTENDED) {
+        length = coder.readUnsignedShort() & SWFDecoder.LENGTH_FIELD;
+        if (length == SWFDecoder.IS_EXTENDED) {
             length = coder.readInt();
         }
         coder.mark();
@@ -129,7 +128,7 @@ public final class DefineFont3 implements DefineTag {
         kernings = new ArrayList<Kerning>();
 
         final int bits = coder.readByte();
-        final boolean containsLayout = (bits & Coder.BIT7) != 0;
+        final boolean containsLayout = (bits & SWFDecoder.BIT7) != 0;
         final int format = (bits & 0x70) >> 4;
 
         encoding = 0;
@@ -142,10 +141,10 @@ public final class DefineFont3 implements DefineTag {
             encoding = 2;
         }
 
-        wideOffsets = (bits & Coder.BIT3) != 0;
-        wideCodes = (bits & Coder.BIT2) != 0;
-        italic = (bits & Coder.BIT1) != 0;
-        bold = (bits & Coder.BIT0) != 0;
+        wideOffsets = (bits & SWFDecoder.BIT3) != 0;
+        wideCodes = (bits & SWFDecoder.BIT2) != 0;
+        italic = (bits & SWFDecoder.BIT1) != 0;
+        bold = (bits & SWFDecoder.BIT0) != 0;
 
         if (wideCodes) {
             context.put(Context.WIDE_CODES, 1);
@@ -827,7 +826,7 @@ public final class DefineFont3 implements DefineTag {
 
         coder.writeHeader(MovieTypes.DEFINE_FONT_3, length);
         coder.mark();
-        coder.writeI16(identifier);
+        coder.writeShort(identifier);
         context.put(Context.FILL_SIZE, 1);
         context.put(Context.LINE_SIZE, context.contains(Context.POSTSCRIPT) ? 1
                 : 0);
@@ -836,27 +835,27 @@ public final class DefineFont3 implements DefineTag {
         }
 
         int bits = 0;
-        bits |= containsLayoutInfo() ? Coder.BIT7 : 0;
+        bits |= containsLayoutInfo() ? SWFEncoder.BIT7 : 0;
         bits |= format << 4;
-        bits |= wideOffsets ? Coder.BIT3 : 0;
-        bits |= wideCodes ? Coder.BIT2 : 0;
-        bits |= italic ? Coder.BIT1 : 0;
-        bits |= bold ? Coder.BIT0 : 0;
+        bits |= wideOffsets ? SWFEncoder.BIT3 : 0;
+        bits |= wideCodes ? SWFEncoder.BIT2 : 0;
+        bits |= italic ? SWFEncoder.BIT1 : 0;
+        bits |= bold ? SWFEncoder.BIT0 : 0;
         coder.writeByte(bits);
 
-        coder.writeWord(language, 1);
-        coder.writeWord(context.strlen(name), 1);
+        coder.writeByte(language);
+        coder.writeByte(context.strlen(name));
 
         coder.writeString(name);
-        coder.writeI16(shapes.size());
+        coder.writeShort(shapes.size());
 
         if (wideOffsets) {
             for (int i = 0; i < table.length; i++) {
-                coder.writeI32(table[i]);
+                coder.writeInt(table[i]);
             }
         } else {
             for (int i = 0; i < table.length; i++) {
-                coder.writeI16(table[i]);
+                coder.writeShort(table[i]);
             }
         }
 
@@ -864,24 +863,30 @@ public final class DefineFont3 implements DefineTag {
             shape.encode(coder, context);
         }
 
-        for (final Integer code : codes) {
-            coder.writeWord(code.intValue(), wideCodes ? 2 : 1);
+        if (wideCodes) {
+            for (final Integer code : codes) {
+                coder.writeShort(code.intValue());
+            }
+        } else {
+            for (final Integer code : codes) {
+                coder.writeByte(code.intValue());
+            }
         }
 
         if (containsLayoutInfo()) {
-            coder.writeI16(ascent);
-            coder.writeI16(descent);
-            coder.writeI16(leading);
+            coder.writeShort(ascent);
+            coder.writeShort(descent);
+            coder.writeShort(leading);
 
             for (final Integer advance : advances) {
-                coder.writeI16(advance.intValue());
+                coder.writeShort(advance.intValue());
             }
 
             for (final Bounds bound : bounds) {
                 bound.encode(coder, context);
             }
 
-            coder.writeI16(kernings.size());
+            coder.writeShort(kernings.size());
 
             for (final Kerning kerning : kernings) {
                 kerning.encode(coder, context);

@@ -261,9 +261,9 @@ public final class GlowFilter implements Filter {
             throws IOException {
         coder.writeByte(FilterTypes.GLOW);
         color.encode(coder, context);
-        coder.writeI32(blurX);
-        coder.writeI32(blurY);
-        coder.writeI16(strength);
+        coder.writeInt(blurX);
+        coder.writeInt(blurY);
+        coder.writeShort(strength);
         coder.writeByte(mode | passes);
     }
 }

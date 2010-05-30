@@ -175,7 +175,7 @@ public final class TabOrder implements MovieTag {
         // CHECKSTYLE:OFF
         coder.writeHeader(MovieTypes.TAB_ORDER, 4);
         // CHECKSTYLE:ON
-        coder.writeI16(layer);
-        coder.writeI16(index);
+        coder.writeShort(layer);
+        coder.writeShort(index);
     }
 }

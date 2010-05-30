@@ -37,7 +37,6 @@ import java.util.List;
 
 import com.flagstone.transform.MovieTag;
 import com.flagstone.transform.SWF;
-import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -111,8 +110,8 @@ public final class FontInfo implements MovieTag {
     // TODO(optimise)
     public FontInfo(final SWFDecoder coder) throws IOException {
         codes = new ArrayList<Integer>();
-        length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
-        if (length == Coder.IS_EXTENDED) {
+        length = coder.readUnsignedShort() & SWFDecoder.LENGTH_FIELD;
+        if (length == SWFDecoder.IS_EXTENDED) {
             length = coder.readInt();
         }
         coder.mark();
@@ -127,11 +126,11 @@ public final class FontInfo implements MovieTag {
         }
 
         final int bits = coder.readByte();
-        small = (bits & Coder.BIT5) != 0;
+        small = (bits & SWFDecoder.BIT5) != 0;
         encoding = (bits & 0x1C) >> 3;
-        italic = (bits & Coder.BIT2) != 0;
-        bold = (bits & Coder.BIT1) != 0;
-        wideCodes = (bits & Coder.BIT0) != 0;
+        italic = (bits & SWFDecoder.BIT2) != 0;
+        bold = (bits & SWFDecoder.BIT1) != 0;
+        wideCodes = (bits & SWFDecoder.BIT0) != 0;
 
         int bytesRead = 3 + nameLength + 1;
 
@@ -407,7 +406,7 @@ public final class FontInfo implements MovieTag {
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
         // CHECKSTYLE:OFF
-        length = 3;
+        length = 4;
         length += context.strlen(name);
 
         wideCodes = false;
@@ -432,20 +431,25 @@ public final class FontInfo implements MovieTag {
 
         coder.writeHeader(MovieTypes.FONT_INFO, length);
         coder.mark();
-        coder.writeI16(identifier);
-        coder.writeWord(context.strlen(name) - 1, 1);
+        coder.writeShort(identifier);
+        coder.writeByte(context.strlen(name));
         coder.writeString(name);
-        coder.adjustPointer(-8);
         int bits = 0;
-        bits |= small ? Coder.BIT5 : 0;
+        bits |= small ? SWFEncoder.BIT5 : 0;
         bits |= encoding << 3;
-        bits |= italic ? Coder.BIT2 : 0;
-        bits |= bold ? Coder.BIT1 : 0;
-        bits |= wideCodes ? Coder.BIT0 : 0;
+        bits |= italic ? SWFEncoder.BIT2 : 0;
+        bits |= bold ? SWFEncoder.BIT1 : 0;
+        bits |= wideCodes ? SWFEncoder.BIT0 : 0;
         coder.writeByte(bits);
 
-        for (final Integer code : codes) {
-            coder.writeWord(code.intValue(), wideCodes ? 2 : 1);
+        if (wideCodes) {
+            for (final Integer code : codes) {
+                coder.writeShort(code.intValue());
+            }
+        } else {
+            for (final Integer code : codes) {
+                coder.writeByte(code.intValue());
+            }
         }
         coder.unmark(length);
     }

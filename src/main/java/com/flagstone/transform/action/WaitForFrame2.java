@@ -140,7 +140,7 @@ public final class WaitForFrame2 implements Action {
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
         coder.writeByte(ActionTypes.WAIT_FOR_FRAME_2);
-        coder.writeI16(1);
+        coder.writeShort(1);
         coder.writeByte(actionCount);
     }
 }

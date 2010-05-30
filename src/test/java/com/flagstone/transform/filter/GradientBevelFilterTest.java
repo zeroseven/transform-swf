@@ -35,6 +35,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import org.junit.Ignore;
@@ -57,14 +58,15 @@ public final class GradientBevelFilterTest {
     @Test
     @Ignore //TODO(implement)
     public void encodeCoordTransform() throws IOException {
-        final SWFEncoder encoder = new SWFEncoder(encoded.length);
+        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        final SWFEncoder encoder = new SWFEncoder(stream);
         final Context context = new Context();
 
         // fixture = new GradientBevelFilter(identifier, layer, transform);
         assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
 
-        assertTrue(encoder.eof());
+
     }
 
     @Test

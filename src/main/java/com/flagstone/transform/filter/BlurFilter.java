@@ -35,7 +35,6 @@ package com.flagstone.transform.filter;
 import java.io.IOException;
 
 import com.flagstone.transform.SWF;
-import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -74,7 +73,7 @@ public final class BlurFilter implements Filter {
             throws IOException {
         blurX = coder.readInt();
         blurY = coder.readInt();
-        passes = (coder.readByte() & Coder.UNSIGNED_BYTE_MASK) >>> 3;
+        passes = coder.readByte() >>> 3;
     }
 
 
@@ -143,8 +142,8 @@ public final class BlurFilter implements Filter {
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
         coder.writeByte(FilterTypes.BLUR);
-        coder.writeI32(blurX);
-        coder.writeI32(blurY);
+        coder.writeInt(blurX);
+        coder.writeInt(blurY);
         coder.writeByte(passes << 3);
 
     }

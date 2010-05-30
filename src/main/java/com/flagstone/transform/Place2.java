@@ -35,7 +35,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -256,18 +255,18 @@ public final class Place2 implements MovieTag {
     public Place2(final SWFDecoder coder, final Context context)
             throws IOException {
         context.put(Context.TRANSPARENT, 1);
-        length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
-        if (length == Coder.IS_EXTENDED) {
+        length = coder.readUnsignedShort() & SWFDecoder.LENGTH_FIELD;
+        if (length == SWFDecoder.IS_EXTENDED) {
             length = coder.readInt();
         }
         coder.mark();
         int bits = coder.readByte();
-        final boolean hasEvents = (bits & Coder.BIT7) != 0;
-        final boolean hasDepth = (bits & Coder.BIT6) != 0;
-        final boolean hasName = (bits & Coder.BIT5) != 0;
-        final boolean hasRatio = (bits & Coder.BIT4) != 0;
-        final boolean hasColorTransform = (bits & Coder.BIT3) != 0;
-        final boolean hasTransform = (bits & Coder.BIT2) != 0;
+        final boolean hasEvents = (bits & SWFDecoder.BIT7) != 0;
+        final boolean hasDepth = (bits & SWFDecoder.BIT6) != 0;
+        final boolean hasName = (bits & SWFDecoder.BIT5) != 0;
+        final boolean hasRatio = (bits & SWFDecoder.BIT4) != 0;
+        final boolean hasColorTransform = (bits & SWFDecoder.BIT3) != 0;
+        final boolean hasTransform = (bits & SWFDecoder.BIT2) != 0;
 
         switch (bits & 0x03) {
         case 2:
@@ -710,12 +709,12 @@ public final class Place2 implements MovieTag {
         coder.mark();
         context.put(Context.TRANSPARENT, 1);
         int bits = 0;
-        bits |= events.isEmpty() ? 0 : Coder.BIT7;
-        bits |= depth == null ? 0 : Coder.BIT6;
-        bits |= name == null ? 0 : Coder.BIT5;
-        bits |= ratio == null ? 0 : Coder.BIT4;
-        bits |= colorTransform == null ? 0 : Coder.BIT3;
-        bits |= transform == null ? 0 : Coder.BIT2;
+        bits |= events.isEmpty() ? 0 : SWFEncoder.BIT7;
+        bits |= depth == null ? 0 : SWFEncoder.BIT6;
+        bits |= name == null ? 0 : SWFEncoder.BIT5;
+        bits |= ratio == null ? 0 : SWFEncoder.BIT4;
+        bits |= colorTransform == null ? 0 : SWFEncoder.BIT3;
+        bits |= transform == null ? 0 : SWFEncoder.BIT2;
 
         switch (type) {
         case NEW:
@@ -729,10 +728,10 @@ public final class Place2 implements MovieTag {
             break;
         }
         coder.writeByte(bits);
-        coder.writeI16(layer);
+        coder.writeShort(layer);
 
         if ((type == PlaceType.NEW) || (type == PlaceType.REPLACE)) {
-            coder.writeI16(identifier);
+            coder.writeShort(identifier);
         }
         if (transform != null) {
             transform.encode(coder, context);
@@ -741,39 +740,36 @@ public final class Place2 implements MovieTag {
             colorTransform.encode(coder, context);
         }
         if (ratio != null) {
-            coder.writeI16(ratio);
+            coder.writeShort(ratio);
         }
         if (name != null) {
             coder.writeString(name);
         }
 
         if (depth != null) {
-            coder.writeI16(depth);
+            coder.writeShort(depth);
         }
 
         if (!events.isEmpty()) {
-            final int eventSize;
-
-            if (context.get(Context.VERSION) > EXTENDED_EVENTS) {
-                eventSize = 4;
-            } else {
-                eventSize = 2;
-            }
             int eventMask = 0;
-
-            coder.writeI16(0);
 
             for (final MovieClipEventHandler handler : events) {
                 eventMask |= handler.getEventCode();
             }
 
-            coder.writeWord(eventMask, eventSize);
-
-            for (final MovieClipEventHandler handler : events) {
-                handler.encode(coder, context);
+            if (context.get(Context.VERSION) > EXTENDED_EVENTS) {
+                coder.writeInt(eventMask);
+                for (final MovieClipEventHandler handler : events) {
+                    handler.encode(coder, context);
+                }
+                coder.writeInt(0);
+            } else {
+                coder.writeShort(eventMask);
+                for (final MovieClipEventHandler handler : events) {
+                    handler.encode(coder, context);
+                }
+                coder.writeShort(0);
             }
-
-            coder.writeWord(0, eventSize);
         }
 
         context.remove(Context.TRANSPARENT);

@@ -33,9 +33,9 @@ package com.flagstone.transform.action;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import org.junit.Test;
@@ -76,41 +76,44 @@ public final class ActionObjectTest {
 
     @Test
     public void encode() throws IOException {
-        final SWFEncoder encoder = new SWFEncoder(encoded.length);
+        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        final SWFEncoder encoder = new SWFEncoder(stream);
         final Context context = new Context();
 
         fixture = new ActionObject(TYPE, data);
         assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
 
-        assertTrue(encoder.eof());
-        assertArrayEquals(encoded, encoder.getData());
+
+        assertArrayEquals(encoded, stream.toByteArray());
     }
 
     @Test
     public void encodeBasic() throws IOException {
-        final SWFEncoder encoder = new SWFEncoder(basic.length);
+        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        final SWFEncoder encoder = new SWFEncoder(stream);
         final Context context = new Context();
 
         fixture = new ActionObject(1);
         assertEquals(basic.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
 
-        assertTrue(encoder.eof());
-        assertArrayEquals(basic, encoder.getData());
+
+        assertArrayEquals(basic, stream.toByteArray());
     }
 
     @Test
     public void encodeEmpty() throws IOException {
-        final SWFEncoder encoder = new SWFEncoder(empty.length);
+        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        final SWFEncoder encoder = new SWFEncoder(stream);
         final Context context = new Context();
 
         fixture = new ActionObject(TYPE, new byte[0]);
         assertEquals(empty.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
 
-        assertTrue(encoder.eof());
-        assertArrayEquals(empty, encoder.getData());
+
+        assertArrayEquals(empty, stream.toByteArray());
     }
 
     @Test

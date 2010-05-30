@@ -37,6 +37,7 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import org.junit.Test;
@@ -84,16 +85,16 @@ public final class BitmapFillTest {
 
     @Test
     public void encode() throws IOException {
-
-        final SWFEncoder encoder = new SWFEncoder(encoded.length);
+        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        final SWFEncoder encoder = new SWFEncoder(stream);
         final Context context = new Context();
 
         fixture = new BitmapFill(tiled, smoothed, identifier, transform);
         assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
 
-        assertTrue(encoder.eof());
-        assertArrayEquals(encoded, encoder.getData());
+
+        assertArrayEquals(encoded, stream.toByteArray());
     }
 
     @Test

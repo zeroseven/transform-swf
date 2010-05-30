@@ -133,6 +133,6 @@ public final class Free implements MovieTag {
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
         coder.writeHeader(MovieTypes.FREE, 2);
-        coder.writeI16(identifier);
+        coder.writeShort(identifier);
     }
 }

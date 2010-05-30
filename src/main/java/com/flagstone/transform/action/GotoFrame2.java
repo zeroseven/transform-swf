@@ -33,7 +33,6 @@ package com.flagstone.transform.action;
 
 import java.io.IOException;
 
-import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -115,8 +114,8 @@ public final class GotoFrame2 implements Action {
         length = coder.readUnsignedShort();
 
         final int bits = coder.readByte();
-        hasOffset = (bits & Coder.BIT1) != 0;
-        play = (bits & Coder.BIT0) != 0;
+        hasOffset = (bits & SWFDecoder.BIT1) != 0;
+        play = (bits & SWFDecoder.BIT0) != 0;
 
         if (hasOffset) {
             frameOffset = coder.readSignedShort();
@@ -218,7 +217,7 @@ public final class GotoFrame2 implements Action {
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
         coder.writeByte(ActionTypes.GOTO_FRAME_2);
-        coder.writeI16(length);
+        coder.writeShort(length);
 
         int flags = 0;
         if (hasOffset) {
@@ -230,7 +229,7 @@ public final class GotoFrame2 implements Action {
         coder.writeByte(flags);
 
         if (hasOffset) {
-            coder.writeI16(frameOffset);
+            coder.writeShort(frameOffset);
         }
     }
 }

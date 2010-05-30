@@ -381,7 +381,7 @@ public final class Movie {
             for (final MovieTag tag : objects) {
                 tag.encode(coder, context);
             }
-            coder.writeI16(0);
+            coder.writeShort(0);
             coder.flush();
         } finally {
             if (streamOut != null) {

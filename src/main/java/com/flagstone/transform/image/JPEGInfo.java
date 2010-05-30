@@ -32,7 +32,6 @@
 package com.flagstone.transform.image;
 
 import com.flagstone.transform.coder.BigDecoder;
-import com.flagstone.transform.coder.Coder;
 
 /**
  * JPEGInfo is used to extract the width and height from a JPEG encoded image.
@@ -83,7 +82,7 @@ public final class JPEGInfo {
                 width = coder.readUI16();
                 return;
             } else {
-                coder.adjustPointer((size - 2) << Coder.BYTES_TO_BITS);
+                coder.adjustPointer((size - 2) << BigDecoder.BYTES_TO_BITS);
             }
         }
     }

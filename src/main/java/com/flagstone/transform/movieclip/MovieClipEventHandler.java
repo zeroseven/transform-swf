@@ -347,15 +347,13 @@ public final class MovieClipEventHandler implements SWFEncodeable {
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
-        final int eventSize;
         if (context.get(Context.VERSION) > 5) {
-            eventSize = 4;
+            coder.writeInt(event);
         } else {
-            eventSize = 2;
+            coder.writeShort(event);
         }
 
-        coder.writeWord(event, eventSize);
-        coder.writeI32(offset);
+        coder.writeInt(offset);
 
         if ((event & 131072) != 0) {
             coder.writeByte(keyCode);

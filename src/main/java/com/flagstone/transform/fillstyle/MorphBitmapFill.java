@@ -289,7 +289,7 @@ public final class MorphBitmapFill implements FillStyle {
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
         coder.writeByte(type);
-        coder.writeI16(identifier);
+        coder.writeShort(identifier);
         startTransform.encode(coder, context);
         endTransform.encode(coder, context);
     }

@@ -36,7 +36,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.flagstone.transform.SWF;
-import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -141,11 +140,11 @@ public final class ShapeStyle implements ShapeRecord {
         int numberOfFillBits = context.get(Context.FILL_SIZE);
         int numberOfLineBits = context.get(Context.LINE_SIZE);
 
-        hasStyles = (flags & Coder.BIT4) != 0;
-        hasLine = (flags & Coder.BIT3) != 0;
-        hasAlt = (flags & Coder.BIT2) != 0;
-        hasFill = (flags & Coder.BIT1) != 0;
-        hasMove = (flags & Coder.BIT0) != 0;
+        hasStyles = (flags & SWFDecoder.BIT4) != 0;
+        hasLine = (flags & SWFDecoder.BIT3) != 0;
+        hasAlt = (flags & SWFDecoder.BIT2) != 0;
+        hasFill = (flags & SWFDecoder.BIT1) != 0;
+        hasMove = (flags & SWFDecoder.BIT0) != 0;
 
         if (hasMove) {
             final int moveFieldSize = coder.readBits(5, false);
@@ -605,7 +604,7 @@ public final class ShapeStyle implements ShapeRecord {
 
             if (countExtended && (fillStyles.size() >= EXTENDED)) {
                 coder.writeByte(EXTENDED);
-                coder.writeI16(fillStyles.size());
+                coder.writeShort(fillStyles.size());
             } else {
                 coder.writeByte(fillStyles.size());
             }
@@ -616,7 +615,7 @@ public final class ShapeStyle implements ShapeRecord {
 
             if (countExtended && (lineStyles.size() >= EXTENDED)) {
                 coder.writeByte(EXTENDED);
-                coder.writeI16(lineStyles.size());
+                coder.writeShort(lineStyles.size());
             } else {
                 coder.writeByte(lineStyles.size());
             }

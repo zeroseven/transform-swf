@@ -32,9 +32,9 @@ package com.flagstone.transform.datatype;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import org.junit.Test;
@@ -60,15 +60,16 @@ public final class BoundsCodingTest {
     public void checkPositiveDimensionsAreEncoded() throws IOException {
         final Bounds object = new Bounds(1, 2, 3, 4);
         final byte[] binary = new byte[] {0x20, (byte) 0x99, 0x20 };
-        final SWFEncoder encoder = new SWFEncoder(binary.length);
+        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        final SWFEncoder encoder = new SWFEncoder(stream);
         final Context context = new Context();
 
         final int length = object.prepareToEncode(context);
         object.encode(encoder, context);
 
         assertEquals(CALCULATED_LENGTH, binary.length, length);
-        assertTrue(NOT_FULLY_ENCODED, encoder.eof());
-        assertArrayEquals(NOT_ENCODED, binary, encoder.getData());
+
+        assertArrayEquals(NOT_ENCODED, binary, stream.toByteArray());
     }
 
     @Test
@@ -85,15 +86,16 @@ public final class BoundsCodingTest {
     public void checkZeroDimensionsAreEncoded() throws IOException {
         final Bounds object = new Bounds(0, 0, 0, 0);
         final byte[] binary = new byte[] {0x08, 0x00 };
-        final SWFEncoder encoder = new SWFEncoder(binary.length);
+        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        final SWFEncoder encoder = new SWFEncoder(stream);
         final Context context = new Context();
 
         final int length = object.prepareToEncode(context);
         object.encode(encoder, context);
 
         assertEquals(CALCULATED_LENGTH, binary.length, length);
-        assertTrue(NOT_FULLY_ENCODED, encoder.eof());
-        assertArrayEquals(NOT_ENCODED, binary, encoder.getData());
+
+        assertArrayEquals(NOT_ENCODED, binary, stream.toByteArray());
     }
 
     @Test
@@ -111,15 +113,16 @@ public final class BoundsCodingTest {
         final Bounds object = new Bounds(-1, -1, 1, 1);
         final byte[] binary = new byte[] {0x16, (byte) 0xE8 };
 
-        final SWFEncoder encoder = new SWFEncoder(binary.length);
+        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        final SWFEncoder encoder = new SWFEncoder(stream);
         final Context context = new Context();
 
         final int length = object.prepareToEncode(context);
         object.encode(encoder, context);
 
         assertEquals(CALCULATED_LENGTH, binary.length, length);
-        assertTrue(NOT_FULLY_ENCODED, encoder.eof());
-        assertArrayEquals(NOT_ENCODED, binary, encoder.getData());
+
+        assertArrayEquals(NOT_ENCODED, binary, stream.toByteArray());
     }
 
     @Test

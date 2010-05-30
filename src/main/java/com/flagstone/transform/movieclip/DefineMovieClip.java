@@ -39,7 +39,7 @@ import com.flagstone.transform.DefineTag;
 import com.flagstone.transform.MovieTag;
 import com.flagstone.transform.SWF;
 import com.flagstone.transform.ShowFrame;
-import com.flagstone.transform.coder.Coder;
+
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -101,8 +101,8 @@ public final class DefineMovieClip implements DefineTag {
      */
     public DefineMovieClip(final SWFDecoder coder, final Context context)
             throws IOException {
-        length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
-        if (length == Coder.IS_EXTENDED) {
+        length = coder.readUnsignedShort() & SWFDecoder.LENGTH_FIELD;
+        if (length == SWFDecoder.IS_EXTENDED) {
             length = coder.readInt();
         }
         identifier = coder.readUnsignedShort();
@@ -235,13 +235,13 @@ public final class DefineMovieClip implements DefineTag {
 
         coder.writeHeader(MovieTypes.DEFINE_MOVIE_CLIP, length);
         coder.mark();
-        coder.writeI16(identifier);
-        coder.writeI16(frameCount);
+        coder.writeShort(identifier);
+        coder.writeShort(frameCount);
 
         for (final MovieTag object : objects) {
             object.encode(coder, context);
         }
-        coder.writeI16(0);
+        coder.writeShort(0);
         coder.unmark(length);
     }
 }

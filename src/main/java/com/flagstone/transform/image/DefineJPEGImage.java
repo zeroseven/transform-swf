@@ -34,7 +34,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import com.flagstone.transform.SWF;
-import com.flagstone.transform.coder.Coder;
+
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -92,8 +92,8 @@ public final class DefineJPEGImage implements ImageTag {
      *             if an error occurs while decoding the data.
      */
     public DefineJPEGImage(final SWFDecoder coder) throws IOException {
-        length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
-        if (length == Coder.IS_EXTENDED) {
+        length = coder.readUnsignedShort() & SWFDecoder.LENGTH_FIELD;
+        if (length == SWFDecoder.IS_EXTENDED) {
             length = coder.readInt();
         }
         coder.mark();
@@ -216,7 +216,7 @@ public final class DefineJPEGImage implements ImageTag {
 
         coder.writeHeader(MovieTypes.DEFINE_JPEG_IMAGE, length);
         coder.mark();
-        coder.writeI16(identifier);
+        coder.writeShort(identifier);
         coder.writeBytes(image);
         coder.unmark(length);
     }

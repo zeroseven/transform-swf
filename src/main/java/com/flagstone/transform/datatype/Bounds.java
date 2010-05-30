@@ -33,7 +33,6 @@ package com.flagstone.transform.datatype;
 import java.io.IOException;
 
 import com.flagstone.transform.SWF;
-import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
@@ -263,8 +262,8 @@ public final class Bounds implements SWFEncodeable {
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
         size = SWFEncoder.maxSize(minX, minY, maxX, maxY);
-        return (FIELD_SIZE + Coder.ROUND_TO_BYTES
-                    + (size << 2)) >> Coder.BITS_TO_BYTES;
+        return (FIELD_SIZE + SWFEncoder.ROUND_TO_BYTES
+                    + (size << 2)) >> SWFEncoder.BITS_TO_BYTES;
     }
 
     /** {@inheritDoc} */

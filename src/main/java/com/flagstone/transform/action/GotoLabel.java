@@ -125,7 +125,7 @@ public final class GotoLabel implements Action {
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
         coder.writeByte(ActionTypes.GOTO_LABEL);
-        coder.writeI16(length);
+        coder.writeShort(length);
         coder.writeString(label);
     }
 }

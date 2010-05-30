@@ -160,7 +160,7 @@ public final class If implements Action {
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
         coder.writeByte(ActionTypes.IF);
-        coder.writeI16(2);
-        coder.writeI16(offset);
+        coder.writeShort(2);
+        coder.writeShort(offset);
     }
 }

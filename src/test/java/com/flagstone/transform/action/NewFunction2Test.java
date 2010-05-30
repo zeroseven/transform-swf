@@ -36,6 +36,7 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -90,7 +91,8 @@ public final class NewFunction2Test {
 
     @Test
     public void encode() throws IOException {
-        final SWFEncoder encoder = new SWFEncoder(encoded.length);
+        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        final SWFEncoder encoder = new SWFEncoder(stream);
         final Context context = new Context();
 
         fixture = new NewFunction2(name, registers, optimizations,
@@ -98,8 +100,8 @@ public final class NewFunction2Test {
         assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
 
-        assertTrue(encoder.eof());
-        assertArrayEquals(encoded, encoder.getData());
+
+        assertArrayEquals(encoded, stream.toByteArray());
     }
 
     @Test

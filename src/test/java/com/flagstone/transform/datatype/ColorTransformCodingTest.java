@@ -32,9 +32,9 @@ package com.flagstone.transform.datatype;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import org.junit.Test;
@@ -61,15 +61,16 @@ public final class ColorTransformCodingTest {
         final ColorTransform object = new ColorTransform(1, 2, 3, 0);
         final byte[] binary = new byte[] { (byte) 0x8C, (byte) 0xA6 };
 
-        final SWFEncoder encoder = new SWFEncoder(binary.length);
+        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        final SWFEncoder encoder = new SWFEncoder(stream);
         final Context context = new Context();
 
         final int length = object.prepareToEncode(context);
         object.encode(encoder, context);
 
         assertEquals(CALCULATED_LENGTH, binary.length, length);
-        assertTrue(NOT_FULLY_ENCODED, encoder.eof());
-        assertArrayEquals(NOT_ENCODED, binary, encoder.getData());
+
+        assertArrayEquals(NOT_ENCODED, binary, stream.toByteArray());
     }
 
     @Test
@@ -106,15 +107,16 @@ public final class ColorTransformCodingTest {
         final byte[] binary =
             new byte[] { 0x6C, (byte) 0x80, 0x20, 0x06, 0x00 };
 
-        final SWFEncoder encoder = new SWFEncoder(binary.length);
+        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        final SWFEncoder encoder = new SWFEncoder(stream);
         final Context context = new Context();
 
         final int length = object.prepareToEncode(context);
         object.encode(encoder, context);
 
         assertEquals(CALCULATED_LENGTH, binary.length, length);
-        assertTrue(NOT_FULLY_ENCODED, encoder.eof());
-        assertArrayEquals(NOT_ENCODED, binary, encoder.getData());
+
+        assertArrayEquals(NOT_ENCODED, binary, stream.toByteArray());
     }
 
     @Test
@@ -154,15 +156,16 @@ public final class ColorTransformCodingTest {
         final byte[] binary = new byte[] {(byte) 0xEC, (byte) 0x80, 0x20, 0x06,
                 0x00, 0x00, 0x40, 0x10, 0x03 };
 
-        final SWFEncoder encoder = new SWFEncoder(binary.length);
+        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        final SWFEncoder encoder = new SWFEncoder(stream);
         final Context context = new Context();
 
         final int length = object.prepareToEncode(context);
         object.encode(encoder, context);
 
         assertEquals(CALCULATED_LENGTH, binary.length, length);
-        assertTrue(NOT_FULLY_ENCODED, encoder.eof());
-        assertArrayEquals(NOT_ENCODED, binary, encoder.getData());
+
+        assertArrayEquals(NOT_ENCODED, binary, stream.toByteArray());
     }
 
     @Test
@@ -185,15 +188,16 @@ public final class ColorTransformCodingTest {
         final ColorTransform object = new ColorTransform(1, 2, 3, 4);
         final byte[] binary = new byte[] {(byte) 0x90, 0x48, (byte) 0xD0 };
 
-        final SWFEncoder encoder = new SWFEncoder(binary.length);
+        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        final SWFEncoder encoder = new SWFEncoder(stream);
         final Context context = new Context();
 
         final int length = object.prepareToEncode(context);
         object.encode(encoder, context);
 
         assertEquals(CALCULATED_LENGTH, binary.length, length);
-        assertTrue(NOT_FULLY_ENCODED, encoder.eof());
-        assertArrayEquals(NOT_ENCODED, binary, encoder.getData());
+
+        assertArrayEquals(NOT_ENCODED, binary, stream.toByteArray());
     }
 
     @Test
@@ -232,15 +236,16 @@ public final class ColorTransformCodingTest {
         final byte[] binary =
             new byte[] { 0x70, 0x40, 0x08, 0x00, (byte) 0xC0, 0x10, 0x00 };
 
-        final SWFEncoder encoder = new SWFEncoder(binary.length);
+        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        final SWFEncoder encoder = new SWFEncoder(stream);
         final Context context = new Context();
 
         final int length = object.prepareToEncode(context);
         object.encode(encoder, context);
 
         assertEquals(CALCULATED_LENGTH, binary.length, length);
-        assertTrue(NOT_FULLY_ENCODED, encoder.eof());
-        assertArrayEquals(NOT_ENCODED, binary, encoder.getData());
+
+        assertArrayEquals(NOT_ENCODED, binary, stream.toByteArray());
     }
 
     @Test
@@ -282,15 +287,16 @@ public final class ColorTransformCodingTest {
                 (byte) 0xC0, 0x10, 0x00, 0x00,
                 0x40, 0x08, 0x00, (byte) 0xC0, 0x10 };
 
-        final SWFEncoder encoder = new SWFEncoder(binary.length);
+        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        final SWFEncoder encoder = new SWFEncoder(stream);
         final Context context = new Context();
 
         final int length = object.prepareToEncode(context);
         object.encode(encoder, context);
 
         assertEquals(CALCULATED_LENGTH, binary.length, length);
-        assertTrue(NOT_FULLY_ENCODED, encoder.eof());
-        assertArrayEquals(NOT_ENCODED, binary, encoder.getData());
+
+        assertArrayEquals(NOT_ENCODED, binary, stream.toByteArray());
     }
 
     @Test

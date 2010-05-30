@@ -37,6 +37,7 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 
@@ -96,21 +97,23 @@ public final class DefineFontNameTest {
 
     @Test
     public void encode() throws IOException {
-        final SWFEncoder encoder = new SWFEncoder(encoded.length);
+        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        final SWFEncoder encoder = new SWFEncoder(stream);
         final Context context = new Context();
 
         fixture = new DefineFontName(identifier, name, copyright);
         assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
 
-        assertTrue(encoder.eof());
-        assertArrayEquals(encoded, encoder.getData());
+
+        assertArrayEquals(encoded, stream.toByteArray());
     }
 
     @Test
     public void encodeExtended() throws IOException {
 
-        final SWFEncoder encoder = new SWFEncoder(114);
+        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        final SWFEncoder encoder = new SWFEncoder(stream);
         final Context context = new Context();
 
         final char[] chars = new char[100];
@@ -120,7 +123,7 @@ public final class DefineFontNameTest {
         assertEquals(114, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
 
-        assertTrue(encoder.eof());
+
     }
 
     @Test

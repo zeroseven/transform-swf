@@ -37,7 +37,7 @@ import java.util.List;
 
 import com.flagstone.transform.DefineTag;
 import com.flagstone.transform.SWF;
-import com.flagstone.transform.coder.Coder;
+
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -144,8 +144,8 @@ public final class DefineMorphShape2 implements DefineTag {
      */
     public DefineMorphShape2(final SWFDecoder coder, final Context context)
             throws IOException {
-        length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
-        if (length == Coder.IS_EXTENDED) {
+        length = coder.readUnsignedShort() & SWFDecoder.LENGTH_FIELD;
+        if (length == SWFDecoder.IS_EXTENDED) {
             length = coder.readInt();
         }
         coder.mark();
@@ -607,7 +607,7 @@ public final class DefineMorphShape2 implements DefineTag {
 
         coder.writeHeader(MovieTypes.DEFINE_MORPH_SHAPE_2, length);
         coder.mark();
-        coder.writeI16(identifier);
+        coder.writeShort(identifier);
         context.put(Context.TRANSPARENT, 1);
 
         startShapeBounds.encode(coder, context);
@@ -616,13 +616,13 @@ public final class DefineMorphShape2 implements DefineTag {
         endEdgeBounds.encode(coder, context);
 
         coder.writeByte(scaling ? 1 : 2);
-        coder.writeI32(offset);
+        coder.writeInt(offset);
 
         if (fillStyles.size() >= EXTENDED) {
-            coder.writeWord(EXTENDED, 1);
-            coder.writeI16(fillStyles.size());
+            coder.writeByte(EXTENDED);
+            coder.writeShort(fillStyles.size());
         } else {
-            coder.writeWord(fillStyles.size(), 1);
+            coder.writeByte(fillStyles.size());
         }
 
         for (final FillStyle style : fillStyles) {
@@ -630,10 +630,10 @@ public final class DefineMorphShape2 implements DefineTag {
         }
 
         if (lineStyles.size() >= EXTENDED) {
-            coder.writeWord(EXTENDED, 1);
-            coder.writeI16(lineStyles.size());
+            coder.writeByte(EXTENDED);
+            coder.writeShort(lineStyles.size());
         } else {
-            coder.writeWord(lineStyles.size(), 1);
+            coder.writeByte(lineStyles.size());
         }
 
         for (final MorphLineStyle2 style : lineStyles) {

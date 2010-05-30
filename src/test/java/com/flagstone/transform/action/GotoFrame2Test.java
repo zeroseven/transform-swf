@@ -36,6 +36,7 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import org.junit.Test;
@@ -82,20 +83,22 @@ public final class GotoFrame2Test {
 
     @Test
     public void encode() throws IOException {
-        final SWFEncoder encoder = new SWFEncoder(encoded.length);
+        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        final SWFEncoder encoder = new SWFEncoder(stream);
         final Context context = new Context();
 
         fixture = new GotoFrame2(offset, play);
         assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
 
-        assertTrue(encoder.eof());
-        assertArrayEquals(encoded, encoder.getData());
+
+        assertArrayEquals(encoded, stream.toByteArray());
     }
 
     @Test
     public void encodeWithNoOffset() throws IOException {
-        final SWFEncoder encoder = new SWFEncoder(noOffset.length);
+        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        final SWFEncoder encoder = new SWFEncoder(stream);
         final Context context = new Context();
 
         fixture = new GotoFrame2(0, play);
@@ -103,21 +106,22 @@ public final class GotoFrame2Test {
                 fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
 
-        assertTrue(encoder.eof());
-        assertArrayEquals(noOffset, encoder.getData());
+
+        assertArrayEquals(noOffset, stream.toByteArray());
     }
 
     @Test
     public void encodeWithPlaySetToFalse() throws IOException {
-        final SWFEncoder encoder = new SWFEncoder(stop.length);
+        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        final SWFEncoder encoder = new SWFEncoder(stream);
         final Context context = new Context();
 
         fixture = new GotoFrame2(0, false);
         assertEquals(stop.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
 
-        assertTrue(encoder.eof());
-        assertArrayEquals(stop, encoder.getData());
+
+        assertArrayEquals(stop, stream.toByteArray());
     }
 
     @Test

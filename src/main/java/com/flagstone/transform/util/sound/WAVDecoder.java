@@ -44,7 +44,6 @@ import java.util.List;
 import java.util.zip.DataFormatException;
 
 import com.flagstone.transform.MovieTag;
-import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.LittleDecoder;
 import com.flagstone.transform.sound.DefineSound;
 import com.flagstone.transform.sound.SoundFormat;
@@ -220,11 +219,12 @@ public final class WAVDecoder implements SoundProvider, SoundDecoder {
                 decodeDATA(coder, length);
                 break;
             default:
-                coder.adjustPointer(length << Coder.BYTES_TO_BITS);
+                coder.adjustPointer(length << LittleDecoder.BYTES_TO_BITS);
                 break;
             }
 
-            final int nextBlock = blockStart + (length << Coder.BYTES_TO_BITS);
+            final int nextBlock = blockStart + (length
+                    << LittleDecoder.BYTES_TO_BITS);
             coder.setPointer(nextBlock);
         } while (!coder.eof());
     }
@@ -248,7 +248,7 @@ public final class WAVDecoder implements SoundProvider, SoundDecoder {
         sampleRate = coder.readUI32();
         coder.readUI32(); // total data length
         coder.readUI16(); // total bytes per sample
-        sampleSize = coder.readUI16() / Coder.BITS_PER_BYTE;
+        sampleSize = coder.readUI16() / LittleDecoder.BITS_PER_BYTE;
     }
 
     /**

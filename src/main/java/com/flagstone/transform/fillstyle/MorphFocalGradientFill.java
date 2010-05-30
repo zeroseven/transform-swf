@@ -31,11 +31,11 @@
 
 package com.flagstone.transform.fillstyle;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.flagstone.transform.SWF;
-import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -301,13 +301,13 @@ public final class MorphFocalGradientFill implements FillStyle {
         coder.writeByte(FillStyleTypes.FOCAL_GRADIENT);
         startTransform.encode(coder, context);
         endTransform.encode(coder, context);
-        coder.writeWord(count | spread | interpolation, 1);
+        coder.writeByte(count | spread | interpolation);
 
         for (final MorphGradient gradient : gradients) {
             gradient.encode(coder, context);
         }
 
-        coder.writeI16(startFocalPoint);
-        coder.writeI16(endFocalPoint);
+        coder.writeShort(startFocalPoint);
+        coder.writeShort(endFocalPoint);
     }
 }

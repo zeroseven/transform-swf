@@ -33,7 +33,6 @@ package com.flagstone.transform.datatype;
 import java.io.IOException;
 
 import com.flagstone.transform.SWF;
-import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
@@ -432,7 +431,7 @@ public final class CoordTransform implements SWFEncodeable {
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
 
-        int numberOfBits = 2 + FIELD_SIZE + Coder.ROUND_TO_BYTES;
+        int numberOfBits = 2 + FIELD_SIZE + SWFEncoder.ROUND_TO_BYTES;
 
         hasScale = (scaleX != DEFAULT_INT_SCALE)
                 || (scaleY != DEFAULT_INT_SCALE);
@@ -459,7 +458,7 @@ public final class CoordTransform implements SWFEncodeable {
             numberOfBits += FIELD_SIZE + (shearSize << 1);
         }
 
-        return numberOfBits >> Coder.BITS_TO_BYTES;
+        return numberOfBits >> SWFEncoder.BITS_TO_BYTES;
     }
 
     /** {@inheritDoc} */

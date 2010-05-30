@@ -194,8 +194,8 @@ public final class Table implements Action {
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
         coder.writeByte(ActionTypes.TABLE);
-        coder.writeI16(length);
-        coder.writeI16(values.size());
+        coder.writeShort(length);
+        coder.writeShort(values.size());
 
         for (final String str : values) {
             coder.writeString(str);

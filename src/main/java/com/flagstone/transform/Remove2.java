@@ -140,6 +140,6 @@ public final class Remove2 implements MovieTag {
         // CHECKSTYLE:OFF
         coder.writeHeader(MovieTypes.REMOVE_2, 2);
         // CHECKSTYLE:ON
-        coder.writeI16(layer);
+        coder.writeShort(layer);
     }
 }

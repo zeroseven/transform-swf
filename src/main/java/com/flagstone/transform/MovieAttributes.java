@@ -245,8 +245,8 @@ public final class MovieAttributes implements MovieTag {
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
         frameSize.encode(coder, context);
-        coder.writeI16(frameRate);
-        coder.writeI16(frameCount);
+        coder.writeShort(frameRate);
+        coder.writeShort(frameCount);
 
         if (version > 7) {
             coder.writeHeader(MovieTypes.FILE_ATTRIBUTES, 4);

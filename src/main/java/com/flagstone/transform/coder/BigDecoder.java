@@ -31,25 +31,192 @@
 
 package com.flagstone.transform.coder;
 
-/** TODO(class). */
-public final class BigDecoder extends Decoder {
+import java.util.Arrays;
 
+/** TODO(class). */
+public final class BigDecoder {
+    /** Bit mask applied to bytes when converting to unsigned integers. */
+    public static final int BYTE_MASK = 255;
+    /** Number of bits in an int. */
+    public static final int BITS_PER_INT = 32;
+    /** Number of bits in a byte. */
+    public static final int BITS_PER_BYTE = 8;
+    /** Left shift to convert number of bits to number of bytes. */
+    public static final int BITS_TO_BYTES = 3;
+    /** Right shift to convert number of bits to number of bytes. */
+    public static final int BYTES_TO_BITS = 3;
+    /** Number of bits to shift when aligning a value to the second byte. */
+    public static final int TO_BYTE1 = 8;
+    /** Number of bits to shift when aligning a value to the third byte. */
+    public static final int TO_BYTE2 = 16;
+    /** Number of bits to shift when aligning a value to the fourth byte. */
+    public static final int TO_BYTE3 = 24;
+
+    /** The internal buffer containing data read from or written to a file. */
+    private byte[] data;
+    /** The index in bits to the current location in the buffer. */
+    private transient int pointer;
+    /** The index in bytes to the current location in the buffer. */
+    private transient int index;
+    /** The offset in bits to the location in the current byte. */
+    private transient int offset;
+    /** The last location in the buffer. */
+    private final transient int end;
     /**
      * Create a FLVDecoder initialised with the specified data.
-     * @param data the array of byes to decode.
+     * @param bytes the array of byes to decode.
      */
-    public BigDecoder(final byte[] data) {
-        super(data);
+    public BigDecoder(final byte[] bytes) {
+        super();
+        data = new byte[bytes.length];
+        index = 0;
+        offset = 0;
+        pointer = 0;
+        end = bytes.length << 3;
+        data = Arrays.copyOf(bytes, bytes.length);
     }
 
     /**
-     * Read an unsigned short integer without changing the internal pointer.
+     * Get the location, in bits, where the next value will be read or
+     * written.
      *
-     * @return an unsigned 16-bit value.
+     * @return the location of the next bit to be accessed.
      */
-    public int scanUnsignedShort() {
-        return ((data[index] & 0x00FF) << Coder.BYTES_TO_BITS)
-                + (data[index + 1] & Coder.UNSIGNED_BYTE_MASK);
+    public int getPointer() {
+        return (index << 3) + offset;
+    }
+
+    /**
+     * Sets the location, in bits, where the next value will be read or written.
+     *
+     * @param location
+     *            the offset in bits from the start of the array of bytes.
+     */
+    public void setPointer(final int location) {
+        index = location >>> 3;
+        offset = location & 7;
+    }
+
+    /**
+     * Changes the location where the next value will be read or written by.
+     *
+     * @param numberOfBits
+     *            the number of bits to add to the current location.
+     */
+    public void adjustPointer(final int numberOfBits) {
+        pointer = (index << 3) + offset + numberOfBits;
+        index = pointer >>> 3;
+        offset = pointer & 7;
+    }
+
+    /**
+     * Is the internal index at the end of the buffer.
+     *
+     * @return true if the internal pointer is at the end of the buffer.
+     */
+    public boolean eof() {
+        return (index == data.length) && (offset == 0);
+    }
+
+    /**
+     * Read a bit field.
+     *
+     * @param numberOfBits
+     *            the number of bits to read.
+     *
+     * @param signed
+     *            indicates whether the integer value read is signed.
+     *
+     * @return the value read.
+     */
+    public int readBits(final int numberOfBits, final boolean signed) {
+        int value = 0;
+
+        pointer = (index << 3) + offset;
+
+        if (numberOfBits > 0) {
+
+            for (int i = BITS_PER_INT; (i > 0)
+                    && (index < data.length); i -= 8) {
+                value |= (data[index++] & BYTE_MASK) << (i - 8);
+            }
+
+            value <<= offset;
+
+            if (signed) {
+                value >>= BITS_PER_INT - numberOfBits;
+            } else {
+                value >>>= BITS_PER_INT - numberOfBits;
+            }
+
+            pointer += numberOfBits;
+            index = pointer >>> BITS_TO_BYTES;
+            offset = pointer & 7;
+        }
+
+        return value;
+    }
+
+    /**
+     * Read an unsigned byte.
+     *
+     * @return an 8-bit unsigned value.
+     */
+    public int readByte() {
+        return data[index++] & BYTE_MASK;
+    }
+
+    /**
+     * Reads an array of bytes.
+     *
+     * @param bytes
+     *            the array that will contain the bytes read.
+     *
+     * @return the array of bytes.
+     */
+    public byte[] readBytes(final byte[] bytes) {
+        System.arraycopy(data, index, bytes, 0, bytes.length);
+        index += bytes.length;
+        return bytes;
+    }
+
+    /**
+     * Searches for a bit pattern, returning true and advancing the pointer to
+     * the location if a match was found. If the bit pattern cannot be found
+     * then the method returns false and the position of the internal pointer is
+     * not changed.
+     *
+     * @param value
+     *            an integer containing the bit patter to search for.
+     * @param numberOfBits
+     *            least significant n bits in the value to search for.
+     * @param step
+     *            the increment in bits to add to the internal pointer as the
+     *            buffer is searched.
+     *
+     * @return true if the pattern was found, false otherwise.
+     */
+    public boolean findBits(final int value, final int numberOfBits,
+            final int step) {
+        boolean found;
+        final int mark = getPointer();
+
+        while (getPointer() + numberOfBits <= end) {
+            if (readBits(numberOfBits, false) == value) {
+                adjustPointer(-numberOfBits);
+                break;
+            }
+            adjustPointer(step - numberOfBits);
+        }
+
+        if (getPointer() + numberOfBits > end) {
+            found = false;
+            setPointer(mark);
+        } else {
+            found = true;
+        }
+
+        return found;
     }
 
     /**
@@ -58,9 +225,8 @@ public final class BigDecoder extends Decoder {
      * @return the value read.
      */
     public int readUI16() {
-        int value = (data[index++] & Coder.UNSIGNED_BYTE_MASK)
-                << Coder.ALIGN_BYTE_1;
-        value |= data[index++] & Coder.UNSIGNED_BYTE_MASK;
+        int value = (data[index++] & BYTE_MASK) << TO_BYTE1;
+        value |= data[index++] & BYTE_MASK;
         return value;
     }
 
@@ -70,8 +236,8 @@ public final class BigDecoder extends Decoder {
      * @return the value read.
      */
     public int readSI16() {
-        int value = data[index++] << Coder.ALIGN_BYTE_1;
-        value |= data[index++] & Coder.UNSIGNED_BYTE_MASK;
+        int value = data[index++] << TO_BYTE1;
+        value |= data[index++] & BYTE_MASK;
         return value;
     }
 
@@ -81,28 +247,10 @@ public final class BigDecoder extends Decoder {
      * @return the value read.
      */
     public int readUI32() {
-        int value = (data[index++] & Coder.UNSIGNED_BYTE_MASK)
-                << Coder.ALIGN_BYTE_3;
-        value |= (data[index++] & Coder.UNSIGNED_BYTE_MASK)
-                << Coder.ALIGN_BYTE_2;
-        value |= (data[index++] & Coder.UNSIGNED_BYTE_MASK)
-                << Coder.ALIGN_BYTE_1;
-        value |= data[index++] & Coder.UNSIGNED_BYTE_MASK;
-        return value;
-    }
-
-    /**
-     * Read a signed 32-bit integer.
-     *
-     * @return the value read.
-     */
-    public int readSI32() {
-        int value = data[index++] << Coder.ALIGN_BYTE_3;
-        value |= (data[index++] & Coder.UNSIGNED_BYTE_MASK)
-                << Coder.ALIGN_BYTE_2;
-        value |= (data[index++] & Coder.UNSIGNED_BYTE_MASK)
-                << Coder.ALIGN_BYTE_1;
-        value |= data[index++] & Coder.UNSIGNED_BYTE_MASK;
+        int value = (data[index++] & BYTE_MASK) << TO_BYTE3;
+        value |= (data[index++] & BYTE_MASK) << TO_BYTE2;
+        value |= (data[index++] & BYTE_MASK) << TO_BYTE1;
+        value |= data[index++] & BYTE_MASK;
         return value;
     }
 
@@ -123,29 +271,17 @@ public final class BigDecoder extends Decoder {
 
         for (int i = 0; i < numberOfBytes; i++) {
             value <<= 8;
-            value += data[index++] & Coder.UNSIGNED_BYTE_MASK;
+            value += data[index++] & BYTE_MASK;
         }
 
         if (signed) {
-            value <<= Coder.BITS_PER_INT
-                        - (numberOfBytes << Coder.BYTES_TO_BITS);
-            value >>= Coder.BITS_PER_INT
-                        - (numberOfBytes << Coder.BYTES_TO_BITS);
+            value <<= BITS_PER_INT
+                        - (numberOfBytes << BYTES_TO_BITS);
+            value >>= BITS_PER_INT
+                        - (numberOfBytes << BYTES_TO_BITS);
         }
 
         return value;
-    }
-
-    /**
-     * Read a double-precision floating point number.
-     *
-     * @return the decoded value.
-     */
-    public double readDouble() {
-        long longValue = (long) readWord(4, false) << Coder.ALIGN_WORD;
-        longValue |= readWord(4, false) & 0x00000000FFFFFFFFL;
-
-        return Double.longBitsToDouble(longValue);
     }
 
     /**

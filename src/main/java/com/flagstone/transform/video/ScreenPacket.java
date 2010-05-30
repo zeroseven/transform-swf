@@ -31,6 +31,7 @@
 package com.flagstone.transform.video;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -298,7 +299,8 @@ public final class ScreenPacket implements Cloneable {
 
 
     public byte[] encode() throws IOException {
-        final SWFEncoder coder = new SWFEncoder(length());
+        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        final SWFEncoder coder = new SWFEncoder(stream);
 
         int bits = keyFrame ? 16 : 32;
         bits |= 3;
@@ -318,7 +320,7 @@ public final class ScreenPacket implements Cloneable {
 
         for (final ImageBlock block : imageBlocks) {
             if (block.isEmpty()) {
-                coder.writeI16(0);
+                coder.writeShort(0);
             } else {
                 blockData = block.getBlock();
                 coder.writeByte(blockData.length >> 8);
@@ -327,6 +329,6 @@ public final class ScreenPacket implements Cloneable {
             }
         }
 
-        return coder.getData();
+        return stream.toByteArray();
     }
 }

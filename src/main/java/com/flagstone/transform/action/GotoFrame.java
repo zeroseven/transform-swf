@@ -133,7 +133,7 @@ public final class GotoFrame implements Action {
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
         coder.writeByte(ActionTypes.GOTO_FRAME);
-        coder.writeI16(2);
-        coder.writeI16(frameNumber);
+        coder.writeShort(2);
+        coder.writeShort(frameNumber);
     }
 }

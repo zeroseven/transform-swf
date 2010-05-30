@@ -231,8 +231,8 @@ public final class MorphLineStyle implements SWFEncodeable {
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
-        coder.writeI16(startWidth);
-        coder.writeI16(endWidth);
+        coder.writeShort(startWidth);
+        coder.writeShort(endWidth);
         startColor.encode(coder, context);
         endColor.encode(coder, context);
     }

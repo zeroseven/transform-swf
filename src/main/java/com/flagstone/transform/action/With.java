@@ -156,8 +156,8 @@ public final class With implements Action {
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
         coder.writeByte(ActionTypes.WITH);
-        coder.writeI16(2);
-        coder.writeI16(length - 2);
+        coder.writeShort(2);
+        coder.writeShort(length - 2);
 
         for (final Action action : actions) {
             action.encode(coder, context);

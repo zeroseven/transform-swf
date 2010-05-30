@@ -38,7 +38,7 @@ import java.util.Map;
 
 import com.flagstone.transform.MovieTag;
 import com.flagstone.transform.SWF;
-import com.flagstone.transform.coder.Coder;
+
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -89,8 +89,8 @@ public final class ButtonSound implements MovieTag {
      *             if an error occurs while decoding the data.
      */
     public ButtonSound(final SWFDecoder coder) throws IOException {
-        length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
-        if (length == Coder.IS_EXTENDED) {
+        length = coder.readUnsignedShort() & SWFDecoder.LENGTH_FIELD;
+        if (length == SWFDecoder.IS_EXTENDED) {
             length = coder.readInt();
         }
         coder.mark();
@@ -241,13 +241,13 @@ public final class ButtonSound implements MovieTag {
 
         coder.writeHeader(MovieTypes.BUTTON_SOUND, length);
         coder.mark();
-        coder.writeI16(identifier);
+        coder.writeShort(identifier);
 
         for (ButtonEvent event : EVENTS) {
             if (table.containsKey(event)) {
                 table.get(event).encode(coder, context);
             } else {
-                coder.writeI16(0);
+                coder.writeShort(0);
             }
         }
         coder.unmark(length);

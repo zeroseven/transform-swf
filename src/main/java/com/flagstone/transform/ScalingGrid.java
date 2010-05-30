@@ -33,7 +33,7 @@ package com.flagstone.transform;
 
 import java.io.IOException;
 
-import com.flagstone.transform.coder.Coder;
+
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -67,7 +67,7 @@ public final class ScalingGrid implements DefineTag {
      *             if an error occurs while decoding the data.
      */
     public ScalingGrid(final SWFDecoder coder) throws IOException {
-        length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
+        length = coder.readUnsignedShort() & SWFDecoder.LENGTH_FIELD;
         identifier = coder.readUnsignedShort();
         bounds = new Bounds(coder);
     }
@@ -164,7 +164,7 @@ public final class ScalingGrid implements DefineTag {
             throws IOException {
 
         coder.writeHeader(MovieTypes.DEFINE_SCALING_GRID, length);
-        coder.writeI16(identifier);
+        coder.writeShort(identifier);
         bounds.encode(coder, context);
     }
 }

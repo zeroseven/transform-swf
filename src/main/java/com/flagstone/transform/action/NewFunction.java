@@ -327,17 +327,17 @@ public final class NewFunction implements Action {
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
         coder.writeByte(ActionTypes.NEW_FUNCTION);
-        coder.writeI16(length);
+        coder.writeShort(length);
 
         coder.writeString(name);
 
-        coder.writeI16(arguments.size());
+        coder.writeShort(arguments.size());
 
         for (final String argument : arguments) {
             coder.writeString(argument);
         }
 
-        coder.writeI16(actionsLength);
+        coder.writeShort(actionsLength);
 
         for (final Action action : actions) {
             action.encode(coder, context);

@@ -310,11 +310,11 @@ public final class TextSettings implements MovieTag {
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
-        coder.writeWord((MovieTypes.TEXT_SETTINGS << 6) | 12, 2);
-        coder.writeI16(identifier);
+        coder.writeShort((MovieTypes.TEXT_SETTINGS << 6) | 12);
+        coder.writeShort(identifier);
         coder.writeByte(rendering);
-        coder.writeI32(thickness);
-        coder.writeI32(sharpness);
+        coder.writeInt(thickness);
+        coder.writeInt(sharpness);
         coder.writeByte(0);
     }
 }

@@ -331,11 +331,11 @@ public final class GradientBevelFilter implements Filter {
             coder.writeByte(gradient.getRatio());
         }
 
-        coder.writeI32(blurX);
-        coder.writeI32(blurY);
-        coder.writeI32(angle);
-        coder.writeI32(distance);
-        coder.writeI16(strength);
+        coder.writeInt(blurX);
+        coder.writeInt(blurY);
+        coder.writeInt(angle);
+        coder.writeInt(distance);
+        coder.writeShort(strength);
         coder.writeByte(mode | passes);
     }
 }

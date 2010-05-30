@@ -192,7 +192,7 @@ public final class LineStyle implements SWFEncodeable, Copyable<LineStyle> {
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
-        coder.writeI16(width);
+        coder.writeShort(width);
         color.encode(coder, context);
     }
 }

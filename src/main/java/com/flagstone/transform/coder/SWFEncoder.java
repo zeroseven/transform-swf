@@ -36,7 +36,6 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
-import java.util.Arrays;
 import java.util.Stack;
 
 /**
@@ -45,10 +44,8 @@ import java.util.Stack;
  */
 //TODO(class)
 public final class SWFEncoder {
-
     /** The default size, in bytes, for the internal buffer. */
     public static final int BUFFER_SIZE = 4096;
-
     /**
      * The maximum length in bytes of an encoded object before the length must
      * be encoded using a 32-bit integer.
@@ -64,44 +61,50 @@ public final class SWFEncoder {
      * object is greater than 62 bytes.
      */
     public static final int EXT_LENGTH = 6;
-
     /**
      * Length, in bytes, of type and length fields of an encoded action.
      */
     public static final int ACTION_HEADER = 3;
+
+
     /**
      * The number of bits used to encode the length field when the length is
      * less than the maximum length of 62.
      */
     private static final int LENGTH_FIELD_SIZE = 6;
+
+    /** Bit mask applied to bytes when converting to unsigned integers. */
+    private static final int BYTE_MASK = 255;
     /**
      * Values used to indicate that the length of an object has been encoded
      * as a 32-bit integer following the header for the MovieTag.
      */
     private static final int IS_EXTENDED = 0x3F;
-
     /** Number of bits in an int. */
     public static final int BITS_PER_INT = 32;
     /** Bit mask with most significant bit of a 32-bit integer set. */
-    public static final int MSB_INT = 0x80000000;
-    /** Number of bits to shift when aligning a value to the second byte. */
-    public static final int ALIGN_BYTE_1 = 8;
-    /** Number of bits to shift when aligning a value to the third byte. */
-    public static final int ALIGN_BYTE_2 = 16;
-    /** Number of bits to shift when aligning a value to the fourth byte. */
-    public static final int ALIGN_BYTE_3 = 24;
-    /** Number of bits to shift when aligning an int in a long value. */
-    public static final int ALIGN_WORD = 32;
+    private static final int MSB_MASK = 0x80000000;
     /** Offset to add to number of bits when calculating number of bytes. */
     public static final int ROUND_TO_BYTES = 7;
     /** Right shift to convert number of bits to number of bytes. */
     public static final int BITS_TO_BYTES = 3;
     /** Left shift to convert number of bytes to number of bits. */
-    public static final int BYTES_TO_BITS = 3;
-    /** Bit mask applied to bytes when converting to unsigned integers. */
-    public static final int BYTE_MASK = 255;
-    /** Bit mask applied to bytes when converting to unsigned integers. */
-    public static final int UNSIGNED_BYTE_MASK = 255;
+    private static final int BYTES_TO_BITS = 3;
+    /** Number of bits to shift when aligning a value to the second byte. */
+    private static final int TO_BYTE1 = 8;
+    /** Number of bits to shift when aligning a value to the third byte. */
+    private static final int TO_BYTE2 = 16;
+    /** Number of bits to shift when aligning a value to the fourth byte. */
+    private static final int TO_BYTE3 = 24;
+
+    public static final int BIT0 = 1;
+    public static final int BIT1 = 2;
+    public static final int BIT2 = 4;
+    public static final int BIT3 = 8;
+    public static final int BIT4 = 16;
+    public static final int BIT5 = 32;
+    public static final int BIT6 = 64;
+    public static final int BIT7 = 128;
 
     /**
      * Calculates the minimum number of bits required to encoded an unsigned
@@ -116,7 +119,7 @@ public final class SWFEncoder {
 
         final int val = (value < 0) ? -value - 1 : value;
         int counter = BITS_PER_INT;
-        int mask = MSB_INT;
+        int mask = MSB_MASK;
 
         while (((val & mask) == 0) && (counter > 0)) {
             mask >>>= 1;
@@ -136,7 +139,7 @@ public final class SWFEncoder {
      */
     public static int size(final int value) {
         int counter = BITS_PER_INT;
-        int mask = MSB_INT;
+        int mask = MSB_MASK;
         final int val = (value < 0) ? -value - 1 : value;
 
         while (((val & mask) == 0) && (counter > 0)) {
@@ -167,18 +170,38 @@ public final class SWFEncoder {
         return max;
     }
 
+    /**
+     * Calculate minimum number of bytes a 32-bit unsigned integer can be
+     * encoded in.
+     *
+     * @param value
+     *            an integer containing the value to be written.
+     * @return the number of bytes required to encode the integer.
+     */
+    public static int sizeVariableU32(final int value) {
+
+        int val = value;
+        int size = 1;
+
+        while (val > 127) {
+            size += 1;
+            val = val >>> 7;
+        }
+        return size;
+    }
+
     /** The underlying input stream. */
     private final transient OutputStream stream;
     /** The buffer for data read from the stream. */
     private final transient byte[] buffer;
     /** The index in bits to the current location in the buffer. */
-    protected transient int pointer;
+    private transient int pointer;
     /** The index in bytes to the current location in the buffer. */
-    protected transient int index;
+    private transient int index;
     /** The offset in bits to the location in the current byte. */
-    protected transient int offset;
+    private transient int offset;
     /** The last location in the buffer. */
-    protected transient int end;
+    private transient int end;
     /** The character encoding used for strings. */
     private transient String encoding;
     /** Stack for storing file locations. */
@@ -187,10 +210,10 @@ public final class SWFEncoder {
     private transient int pos;
 
     /**
-     * Create a new SWFDecoder for the underlying InputStream with the
+     * Create a new SWFEncoder for the underlying InputStream with the
      * specified buffer size.
      *
-     * @param streamIn the stream from which data will be read.
+     * @param streamOut the stream from which data will be written.
      * @param length the size in bytes of the buffer.
      */
     public SWFEncoder(final OutputStream streamOut, final int length) {
@@ -202,10 +225,10 @@ public final class SWFEncoder {
     }
 
     /**
-     * Create a new SWFDecoder for the underlying InputStream using the
+     * Create a new SWFEncoder for the underlying InputStream using the
      * default buffer size.
      *
-     * @param streamIn the stream from which data will be read.
+     * @param streamOut the stream from which data will be written.
      */
     public SWFEncoder(final OutputStream streamOut) {
         stream = streamOut;
@@ -213,24 +236,6 @@ public final class SWFEncoder {
         encoding = "UTF-8";
         locations = new Stack<Integer>();
         pos = 0;
-    }
-
-    /**
-     * Creates an Encoder with the buffer used to encode data set to the
-     * specified size.
-     *
-     * @param size
-     *            the number of bytes in the internal buffer.
-     */
-    public SWFEncoder(final int size) {
-        super();
-        stream = null;
-        buffer = new byte[BUFFER_SIZE];
-        index = 0;
-        offset = 0;
-        locations = new Stack<Integer>();
-        pointer = 0;
-        end = size << 3;
     }
 
     public void flush() throws IOException {
@@ -277,9 +282,9 @@ public final class SWFEncoder {
      * expected number.
      */
     public void unmark(final int expected) throws IOException {
-        if (bytesRead() != expected) {
+        if (bytesWritten() != expected) {
             throw new CoderException(locations.peek(), expected,
-                    bytesRead() - expected);
+                    bytesWritten() - expected);
         }
         locations.pop();
     }
@@ -289,7 +294,7 @@ public final class SWFEncoder {
      *
      * @return the number of bytes read since the mark() method was last called.
      */
-    public int bytesRead() {
+    public int bytesWritten() {
         int count;
         if (pos == 0) {
             count = index - locations.peek();
@@ -310,7 +315,7 @@ public final class SWFEncoder {
      * @param charSet
      *            the name of the character set used to encode strings.
      */
-    public final void setEncoding(final String charSet) {
+    public void setEncoding(final String charSet) {
         if (!Charset.isSupported(charSet)) {
             throw new UnsupportedCharsetException(charSet);
         }
@@ -328,54 +333,12 @@ public final class SWFEncoder {
      *         terminating null character.
      */
 
-    public final int strlen(final String string) {
+    public int strlen(final String string) {
         try {
             return string.getBytes(encoding).length + 1;
         } catch (final UnsupportedEncodingException e) {
             throw new AssertionError(e);
         }
-    }
-
-    /**
-     * Get the array of bytes containing the encoded data.
-     *
-     * @return a copy of the internal buffer.
-     */
-    public final byte[] getData() {
-        return Arrays.copyOf(buffer, buffer.length);
-    }
-
-    /**
-     * Get the location, in bits, where the next value will be read or
-     * written.
-     *
-     * @return the location of the next bit to be accessed.
-     */
-    public final int getPointer() {
-        return ((pos + index) << 3) + offset;
-    }
-
-    /**
-     * Sets the location, in bits, where the next value will be read or written.
-     *
-     * @param location
-     *            the offset in bits from the start of the array of bytes.
-     */
-    public final void setPointer(final int location) {
-        index = location >>> 3;
-        offset = location & 7;
-    }
-
-    /**
-     * Changes the location where the next value will be read or written by.
-     *
-     * @param numberOfBits
-     *            the number of bits to add to the current location.
-     */
-    public final void adjustPointer(final int numberOfBits) {
-        pointer = (index << 3) + offset + numberOfBits;
-        index = pointer >>> 3;
-        offset = pointer & 7;
     }
 
     /**
@@ -386,15 +349,6 @@ public final class SWFEncoder {
             index += 1;
             offset = 0;
         }
-    }
-
-    /**
-     * Is the internal index at the end of the buffer.
-     *
-     * @return true if the internal pointer is at the end of the buffer.
-     */
-    public final boolean eof() {
-        return (index == buffer.length) && (offset == 0);
     }
 
     /**
@@ -415,7 +369,7 @@ public final class SWFEncoder {
         }
 
         final int val = ((value << (BITS_PER_INT - numberOfBits)) >>> offset)
-                | (buffer[index] << ALIGN_BYTE_3);
+                | (buffer[index] << TO_BYTE3);
         int base = BITS_PER_INT - (((offset + numberOfBits
                 + ROUND_TO_BYTES) >>> BITS_TO_BYTES) << BYTES_TO_BITS);
         base = base < 0 ? 0 : base;
@@ -432,55 +386,8 @@ public final class SWFEncoder {
         }
 
         pointer += numberOfBits;
-        index = pointer >>> Coder.BITS_TO_BYTES;
+        index = pointer >>> BITS_TO_BYTES;
         offset = pointer & 7;
-    }
-
-    /**
-     * Write a boolean value as a single bit.
-     *
-     * @param value the boolean flag to write.
-     */
-    public final void writeBool(final boolean value) throws IOException {
-        writeBits(value ? 1 : 0, 1);
-    }
-
-    /**
-     * Write a 16-bit field.
-     *
-     * The internal pointer must aligned on a byte boundary. The value is
-     * written as if it was a 16-bit integer with big-ending byte ordering.
-     *
-     * @param value
-     *            the value to be written - only the least significant 16-bits
-     *            will be written.
-     */
-    public final void writeB16(final int value) throws IOException {
-        if (index + 2 > buffer.length) {
-            flush();
-        }
-        buffer[index++] = (byte) (value >>> ALIGN_BYTE_1);
-        buffer[index++] = (byte) value;
-    }
-
-    /**
-     * Calculate minimum number of bytes a 32-bit unsigned integer can be
-     * encoded in.
-     *
-     * @param value
-     *            an integer containing the value to be written.
-     * @return the number of bytes required to encode the integer.
-     */
-    public static int sizeVariableU32(final int value) {
-
-        int val = value;
-        int size = 1;
-
-        while (val > 127) {
-            size += 1;
-            val = val >>> 7;
-        }
-        return size;
     }
 
     /**
@@ -538,12 +445,12 @@ public final class SWFEncoder {
      * @param value
      *            an integer containing the value to be written.
      */
-    public void writeI16(final int value) throws IOException {
+    public void writeShort(final int value) throws IOException {
         if (index + 2 > buffer.length) {
             flush();
         }
         buffer[index++] = (byte) value;
-        buffer[index++] = (byte) (value >>> ALIGN_BYTE_1);
+        buffer[index++] = (byte) (value >>> TO_BYTE1);
     }
 
     /**
@@ -552,34 +459,14 @@ public final class SWFEncoder {
      * @param value
      *            an integer containing the value to be written.
      */
-    public void writeI32(final int value) throws IOException {
+    public void writeInt(final int value) throws IOException {
         if (index + 4 > buffer.length) {
             flush();
         }
         buffer[index++] = (byte) value;
-        buffer[index++] = (byte) (value >>> ALIGN_BYTE_1);
-        buffer[index++] = (byte) (value >>> ALIGN_BYTE_2);
-        buffer[index++] = (byte) (value >>> ALIGN_BYTE_3);
-    }
-
-    /**
-     * Write a word.
-     *
-     * @param value
-     *            an integer containing the value to be written.
-     *
-     * @param numberOfBytes
-     *            the (least significant) number of bytes from the value that
-     *            will be written.
-     */
-    public void writeWord(final int value, final int numberOfBytes)
-            throws IOException {
-        if (index + 4 > buffer.length) {
-            flush();
-        }
-        for (int i = 0; i < numberOfBytes; i++) {
-            buffer[index++] = (byte) (value >>> (i << 3));
-        }
+        buffer[index++] = (byte) (value >>> TO_BYTE1);
+        buffer[index++] = (byte) (value >>> TO_BYTE2);
+        buffer[index++] = (byte) (value >>> TO_BYTE3);
     }
 
     /**
@@ -588,44 +475,20 @@ public final class SWFEncoder {
      * @param value
      *            an integer containing the value to be written.
      */
-    public void writeVariableU32(final int value) throws IOException {
+    public void writeVarInt(final int value) throws IOException {
         if (index + 5 > buffer.length) {
             flush();
         }
 
-        //CHECKSTYLE:OFF
         int val = value;
-
         if (val > 127) {
-            buffer[index++] = (byte) ((val & 0x007F) | 0x0080);
-            val = val >>> 7;
-
-            if (val > 127) {
+            while (val > 127) {
                 buffer[index++] = (byte) ((val & 0x007F) | 0x0080);
                 val = val >>> 7;
-
-                if (val > 127) {
-                    buffer[index++] = (byte) ((val & 0x007F) | 0x0080);
-                    val = val >>> 7;
-
-                    if (val > 127) {
-                        buffer[index++] = (byte) ((val & 0x007F) | 0x0080);
-                        val = val >>> 7;
-
-                        buffer[index++] = (byte) (val & 0x007F);
-                    } else {
-                        buffer[index++] = (byte) (val & 0x007F);
-                    }
-                } else {
-                    buffer[index++] = (byte) (val & 0x007F);
-                }
-            } else {
-                buffer[index++] = (byte) (val & 0x007F);
             }
         } else {
             buffer[index++] = (byte) (value & 0x007F);
         }
-        //CHECKSTYLE:ON
     }
 
     /**
@@ -638,56 +501,33 @@ public final class SWFEncoder {
         //CHECKSTYLE:OFF
         final int intValue = Float.floatToIntBits(value);
         final int sign = (intValue >> 16) & 0x00008000;
-        final int exponent = ((intValue >> 23) & UNSIGNED_BYTE_MASK)
+        final int exponent = ((intValue >> 23) & BYTE_MASK)
                         - (127 - 15);
         int mantissa = intValue & 0x007fffff;
 
         if (exponent <= 0) {
             if (exponent < -10) {
-                writeI16(0);
+                writeShort(0);
             } else {
                 mantissa = (mantissa | 0x00800000) >> (1 - exponent);
-                writeI16((sign | (mantissa >> 13)));
+                writeShort((sign | (mantissa >> 13)));
             }
         } else if (exponent == 0xff - (127 - 15)) {
             if (mantissa == 0) { // Inf
-                writeI16(sign | 0x7c00);
+                writeShort(sign | 0x7c00);
             } else { // NAN
                 mantissa >>= 13;
-                writeI16((sign | 0x7c00 | mantissa
+                writeShort((sign | 0x7c00 | mantissa
                         | ((mantissa == 0) ? 1 : 0)));
             }
         } else {
             if (exponent > 30) { // Overflow
-                writeI16((sign | 0x7c00));
+                writeShort((sign | 0x7c00));
             } else {
-                writeI16((sign | (exponent << 10) | (mantissa >> 13)));
+                writeShort((sign | (exponent << 10) | (mantissa >> 13)));
             }
         }
         //CHECKSTYLE:ON
-    }
-
-    /**
-     * Write a single-precision floating point number.
-     *
-     * @param value
-     *            the value to be written.
-     */
-    public void writeFloat(final float value) throws IOException {
-        writeI32(Float.floatToIntBits(value));
-    }
-
-    /**
-     * Write a double-precision floating point number.
-     *
-     * @param value
-     *            the value to be written.
-     */
-    public void writeDouble(final double value) throws IOException {
-        final long longValue = Double.doubleToLongBits(value);
-
-        writeI32((int) (longValue >> ALIGN_WORD));
-        writeI32((int) longValue);
     }
 
     /**
@@ -700,12 +540,13 @@ public final class SWFEncoder {
      * @param type used to identify the object when decoding.
      * @param length the length in bytes of the encoded object.
      */
-    public void writeHeader(final int type, final int length) throws IOException {
+    public void writeHeader(final int type, final int length)
+            throws IOException {
         if (length > STD_LIMIT) {
-            writeI16((type << LENGTH_FIELD_SIZE) | IS_EXTENDED);
-            writeI32(length);
+            writeShort((type << LENGTH_FIELD_SIZE) | IS_EXTENDED);
+            writeInt(length);
         } else {
-            writeI16((type << LENGTH_FIELD_SIZE) | length);
+            writeShort((type << LENGTH_FIELD_SIZE) | length);
         }
     }
 }

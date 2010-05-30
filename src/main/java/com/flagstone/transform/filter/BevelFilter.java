@@ -324,11 +324,11 @@ public final class BevelFilter implements Filter {
         coder.writeByte(FilterTypes.BEVEL);
         shadow.encode(coder, context);
         highlight.encode(coder, context);
-        coder.writeI32(blurX);
-        coder.writeI32(blurY);
-        coder.writeI32(angle);
-        coder.writeI32(distance);
-        coder.writeI16(strength);
+        coder.writeInt(blurX);
+        coder.writeInt(blurY);
+        coder.writeInt(angle);
+        coder.writeInt(distance);
+        coder.writeShort(strength);
         coder.writeByte(mode | passes);
     }
 }

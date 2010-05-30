@@ -424,8 +424,8 @@ public final class ButtonEventHandler implements SWFEncodeable {
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
-        coder.writeWord(length + 2, 2);
-        coder.writeWord(event | key, 2);
+        coder.writeShort(length + 2);
+        coder.writeShort(event | key);
 
         for (final Action action : actions) {
             action.encode(coder, context);

@@ -35,7 +35,6 @@ import java.io.IOException;
 
 import com.flagstone.transform.DefineTag;
 import com.flagstone.transform.SWF;
-import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -282,8 +281,8 @@ public final class DefineTextField implements DefineTag {
     // TODO(optimise)
     public DefineTextField(final SWFDecoder coder, final Context context)
             throws IOException {
-        length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
-        if (length == Coder.IS_EXTENDED) {
+        length = coder.readUnsignedShort() & SWFDecoder.LENGTH_FIELD;
+        if (length == SWFDecoder.IS_EXTENDED) {
             length = coder.readInt();
         }
         coder.mark();
@@ -293,24 +292,24 @@ public final class DefineTextField implements DefineTag {
         bounds = new Bounds(coder);
 
         int bits = coder.readByte();
-        final boolean containsText = (bits & Coder.BIT7) != 0;
-        wordWrapped = (bits & Coder.BIT6) != 0;
-        multiline = (bits & Coder.BIT5) != 0;
-        password = (bits & Coder.BIT4) != 0;
-        readOnly = (bits & Coder.BIT3) != 0;
-        final boolean containsColor = (bits & Coder.BIT2) != 0;
-        final boolean containsMaxLength = (bits & Coder.BIT1) != 0;
-        final boolean containsFont = (bits & Coder.BIT0) != 0;
+        final boolean containsText = (bits & SWFDecoder.BIT7) != 0;
+        wordWrapped = (bits & SWFDecoder.BIT6) != 0;
+        multiline = (bits & SWFDecoder.BIT5) != 0;
+        password = (bits & SWFDecoder.BIT4) != 0;
+        readOnly = (bits & SWFDecoder.BIT3) != 0;
+        final boolean containsColor = (bits & SWFDecoder.BIT2) != 0;
+        final boolean containsMaxLength = (bits & SWFDecoder.BIT1) != 0;
+        final boolean containsFont = (bits & SWFDecoder.BIT0) != 0;
 
         bits = coder.readByte();
-        final boolean containsClass = (bits & Coder.BIT7) != 0;
-        autoSize = (bits & Coder.BIT6) != 0;
-        final boolean containsLayout = (bits & Coder.BIT5) != 0;
-        selectable = (bits & Coder.BIT4) != 0;
-        bordered = (bits & Coder.BIT3) != 0;
-        reserved2 = (bits & Coder.BIT2) != 0;
-        html = (bits & Coder.BIT1) != 0;
-        embedded = (bits & Coder.BIT0) != 0;
+        final boolean containsClass = (bits & SWFDecoder.BIT7) != 0;
+        autoSize = (bits & SWFDecoder.BIT6) != 0;
+        final boolean containsLayout = (bits & SWFDecoder.BIT5) != 0;
+        selectable = (bits & SWFDecoder.BIT4) != 0;
+        bordered = (bits & SWFDecoder.BIT3) != 0;
+        reserved2 = (bits & SWFDecoder.BIT2) != 0;
+        html = (bits & SWFDecoder.BIT1) != 0;
+        embedded = (bits & SWFDecoder.BIT0) != 0;
 
         if (containsFont) {
             fontIdentifier = coder.readUnsignedShort();
@@ -1026,36 +1025,36 @@ public final class DefineTextField implements DefineTag {
         coder.mark();
         context.put(Context.TRANSPARENT, 1);
 
-        coder.writeI16(identifier);
+        coder.writeShort(identifier);
         bounds.encode(coder, context);
         int bits = 0;
-        bits |= initialText == null ? 0 : Coder.BIT7;
-        bits |= wordWrapped ? Coder.BIT6 : 0;
-        bits |= multiline ? Coder.BIT5 : 0;
-        bits |= password ? Coder.BIT4 : 0;
-        bits |= readOnly ? Coder.BIT3 : 0;
-        bits |= color == null ? 0 : Coder.BIT2;
-        bits |= maxLength > 0 ? Coder.BIT1 : 0;
-        bits |= fontIdentifier == 0 ? 0: Coder.BIT0;
+        bits |= initialText == null ? 0 : SWFEncoder.BIT7;
+        bits |= wordWrapped ? SWFEncoder.BIT6 : 0;
+        bits |= multiline ? SWFEncoder.BIT5 : 0;
+        bits |= password ? SWFEncoder.BIT4 : 0;
+        bits |= readOnly ? SWFEncoder.BIT3 : 0;
+        bits |= color == null ? 0 : SWFEncoder.BIT2;
+        bits |= maxLength > 0 ? SWFEncoder.BIT1 : 0;
+        bits |= fontIdentifier == 0 ? 0: SWFEncoder.BIT0;
         coder.writeByte(bits);
 
         bits = 0;
-        bits |= fontClass == null ? 0 : Coder.BIT7;
-        bits |= autoSize ? Coder.BIT6 : 0;
-        bits |= containsLayout() ? Coder.BIT5 : 0;
-        bits |= selectable ? Coder.BIT4 : 0;
-        bits |= bordered ? Coder.BIT3 : 0;
-        bits |= reserved2 ? Coder.BIT2 : 0;
-        bits |= html ? Coder.BIT1 : 0;
-        bits |= embedded ? Coder.BIT0 : 0;
+        bits |= fontClass == null ? 0 : SWFEncoder.BIT7;
+        bits |= autoSize ? SWFEncoder.BIT6 : 0;
+        bits |= containsLayout() ? SWFEncoder.BIT5 : 0;
+        bits |= selectable ? SWFEncoder.BIT4 : 0;
+        bits |= bordered ? SWFEncoder.BIT3 : 0;
+        bits |= reserved2 ? SWFEncoder.BIT2 : 0;
+        bits |= html ? SWFEncoder.BIT1 : 0;
+        bits |= embedded ? SWFEncoder.BIT0 : 0;
         coder.writeByte(bits);
 
         if (fontIdentifier != 0) {
-            coder.writeI16(fontIdentifier);
-            coder.writeI16(fontHeight);
+            coder.writeShort(fontIdentifier);
+            coder.writeShort(fontHeight);
         } else if (fontClass != null) {
             coder.writeString(fontClass);
-            coder.writeI16(fontHeight);
+            coder.writeShort(fontHeight);
         }
 
         if (color != null)  {
@@ -1063,15 +1062,15 @@ public final class DefineTextField implements DefineTag {
         }
 
         if (maxLength > 0) {
-            coder.writeI16(maxLength);
+            coder.writeShort(maxLength);
         }
 
         if (containsLayout()) {
-            coder.writeWord(alignment, 1);
-            coder.writeWord(leftMargin == null ? 0 : leftMargin, 2);
-            coder.writeWord(rightMargin == null ? 0 : rightMargin, 2);
-            coder.writeWord(indent == null ? 0 : indent, 2);
-            coder.writeWord(leading == null ? 0 : leading, 2);
+            coder.writeByte(alignment);
+            coder.writeShort(leftMargin == null ? 0 : leftMargin);
+            coder.writeShort(rightMargin == null ? 0 : rightMargin);
+            coder.writeShort(indent == null ? 0 : indent);
+            coder.writeShort(leading == null ? 0 : leading);
         }
 
         coder.writeString(variableName);

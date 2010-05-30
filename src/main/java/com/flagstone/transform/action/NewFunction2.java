@@ -556,10 +556,10 @@ public final class NewFunction2 implements Action {
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
         coder.writeByte(ActionTypes.NEW_FUNCTION_2);
-        coder.writeI16(length - actionsLength);
+        coder.writeShort(length - actionsLength);
 
         coder.writeString(name);
-        coder.writeI16(arguments.size());
+        coder.writeShort(arguments.size());
         coder.writeByte(registerCount);
         coder.writeByte(optimizations >>> 8);
         coder.writeByte(optimizations);
@@ -569,7 +569,7 @@ public final class NewFunction2 implements Action {
             coder.writeString(arg);
         }
 
-        coder.writeI16(actionsLength);
+        coder.writeShort(actionsLength);
 
         for (final Action action : actions) {
             action.encode(coder, context);

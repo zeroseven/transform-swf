@@ -38,7 +38,6 @@ import java.util.List;
 import java.util.Set;
 
 import com.flagstone.transform.SWF;
-import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -133,9 +132,9 @@ public final class ButtonShape implements SWFEncodeable {
             final Context context) throws IOException {
 
         final int bits = coder.readByte();
-        hasBlend = (bits & Coder.BIT5) != 0;
-        hasFilters = (bits & Coder.BIT4) != 0;
-        state = bits & Coder.NIB0;
+        hasBlend = (bits & SWFDecoder.BIT5) != 0;
+        hasFilters = (bits & SWFDecoder.BIT4) != 0;
+        state = bits & 0x0F;
 
         identifier = coder.readUnsignedShort();
         layer = coder.readUnsignedShort();
@@ -421,12 +420,12 @@ public final class ButtonShape implements SWFEncodeable {
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
         int bits = 0;
-        bits |= hasBlend ? Coder.BIT5 : 0;
-        bits |= hasFilters ? Coder.BIT4 : 0;
+        bits |= hasBlend ? SWFEncoder.BIT5 : 0;
+        bits |= hasFilters ? SWFEncoder.BIT4 : 0;
         bits |= state;
         coder.writeByte(bits);
-        coder.writeI16(identifier);
-        coder.writeI16(layer);
+        coder.writeShort(identifier);
+        coder.writeShort(layer);
         transform.encode(coder, context);
 
         if (context.get(Context.TYPE)

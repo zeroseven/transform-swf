@@ -167,9 +167,9 @@ public final class WaitForFrame implements Action {
             throws IOException {
         coder.writeByte(ActionTypes.WAIT_FOR_FRAME);
         //CHECKSTYLE:OFF - Fixed length when encoded.
-        coder.writeI16(3);
+        coder.writeShort(3);
         //CHECKSTYLE:ON
-        coder.writeI16(frameNumber);
+        coder.writeShort(frameNumber);
         coder.writeByte(actionCount);
     }
 }

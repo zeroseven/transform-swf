@@ -35,7 +35,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import com.flagstone.transform.SWF;
-import com.flagstone.transform.coder.Coder;
+
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -104,8 +104,8 @@ public final class DefineImage2 implements ImageTag {
      *             if an error occurs while decoding the data.
      */
     public DefineImage2(final SWFDecoder coder) throws IOException {
-        length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
-        if (length == Coder.IS_EXTENDED) {
+        length = coder.readUnsignedShort() & SWFDecoder.LENGTH_FIELD;
+        if (length == SWFDecoder.IS_EXTENDED) {
             length = coder.readInt();
         }
         coder.mark();
@@ -361,22 +361,22 @@ public final class DefineImage2 implements ImageTag {
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
 
-        coder.writeWord((MovieTypes.DEFINE_IMAGE_2 << 6) | 0x3F, 2);
-        coder.writeI32(length);
+        coder.writeShort((MovieTypes.DEFINE_IMAGE_2 << 6) | 0x3F);
+        coder.writeInt(length);
         coder.mark();
-        coder.writeI16(identifier);
+        coder.writeShort(identifier);
 
         if (pixelSize == 8) {
-            coder.writeWord(3, 1);
+            coder.writeByte(3);
         } else { // 32
-            coder.writeWord(5, 1);
+            coder.writeByte(5);
         }
 
-        coder.writeI16(width);
-        coder.writeI16(height);
+        coder.writeShort(width);
+        coder.writeShort(height);
 
         if (pixelSize == 8) {
-            coder.writeWord(tableSize - 1, 1);
+            coder.writeByte(tableSize - 1);
         }
 
         coder.writeBytes(image);

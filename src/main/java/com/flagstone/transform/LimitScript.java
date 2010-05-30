@@ -189,7 +189,7 @@ public final class LimitScript implements MovieTag {
         // CHECKSTYLE:OFF
         coder.writeHeader(MovieTypes.LIMIT_SCRIPT, 4);
         // CHECKSTYLE:OFF
-        coder.writeI16(depth);
-        coder.writeI16(timeout);
+        coder.writeShort(depth);
+        coder.writeShort(timeout);
     }
 }

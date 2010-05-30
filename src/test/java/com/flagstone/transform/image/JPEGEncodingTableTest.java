@@ -35,6 +35,7 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import org.junit.Ignore;
@@ -66,14 +67,15 @@ public final class JPEGEncodingTableTest {
     @Test
     @Ignore //TODO(implement)
     public void encode() throws IOException {
-        final SWFEncoder encoder = new SWFEncoder(encoded.length);
+        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        final SWFEncoder encoder = new SWFEncoder(stream);
 
         // fixture = new JPEGEncodingTable(identifier, layer, transform);
         // assertEquals(encoded.length, fixture.prepareToEncode(encoder,
         // context));
         // fixture.encode(encoder, context);
 
-        assertTrue(encoder.eof());
+
     }
 
     @Test

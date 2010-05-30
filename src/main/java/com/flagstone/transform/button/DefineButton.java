@@ -39,7 +39,7 @@ import com.flagstone.transform.DefineTag;
 import com.flagstone.transform.SWF;
 import com.flagstone.transform.action.Action;
 import com.flagstone.transform.action.ActionData;
-import com.flagstone.transform.coder.Coder;
+
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -95,8 +95,8 @@ public final class DefineButton implements DefineTag {
     // TODO(optimise)
     public DefineButton(final SWFDecoder coder, final Context context)
             throws IOException {
-        length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
-        if (length == Coder.IS_EXTENDED) {
+        length = coder.readUnsignedShort() & SWFDecoder.LENGTH_FIELD;
+        if (length == SWFDecoder.IS_EXTENDED) {
             length = coder.readInt();
         }
         coder.mark();
@@ -283,13 +283,13 @@ public final class DefineButton implements DefineTag {
             throws IOException {
         coder.writeHeader(MovieTypes.DEFINE_BUTTON, length);
         coder.mark();
-        coder.writeI16(identifier);
+        coder.writeShort(identifier);
 
         for (final ButtonShape shape : shapes) {
             shape.encode(coder, context);
         }
 
-        coder.writeWord(0, 1);
+        coder.writeByte(0);
 
         for (final Action action : actions) {
             action.encode(coder, context);

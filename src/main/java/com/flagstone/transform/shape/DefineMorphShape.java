@@ -37,7 +37,7 @@ import java.util.List;
 
 import com.flagstone.transform.DefineTag;
 import com.flagstone.transform.SWF;
-import com.flagstone.transform.coder.Coder;
+
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -143,8 +143,8 @@ public final class DefineMorphShape implements DefineTag {
     // TODO(optimise)
     public DefineMorphShape(final SWFDecoder coder, final Context context)
             throws IOException {
-        length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
-        if (length == Coder.IS_EXTENDED) {
+        length = coder.readUnsignedShort() & SWFDecoder.LENGTH_FIELD;
+        if (length == SWFDecoder.IS_EXTENDED) {
             length = coder.readInt();
         }
         coder.mark();
@@ -548,16 +548,16 @@ public final class DefineMorphShape implements DefineTag {
 
         coder.writeHeader(MovieTypes.DEFINE_MORPH_SHAPE, length);
         coder.mark();
-        coder.writeI16(identifier);
+        coder.writeShort(identifier);
         context.put(Context.TRANSPARENT, 1);
 
         startBounds.encode(coder, context);
         endBounds.encode(coder, context);
-        coder.writeI32(offset);
+        coder.writeInt(offset);
 
         if (fillStyles.size() >= EXTENDED) {
             coder.writeByte(EXTENDED);
-            coder.writeI16(fillStyles.size());
+            coder.writeShort(fillStyles.size());
         } else {
             coder.writeByte(fillStyles.size());
         }
@@ -568,7 +568,7 @@ public final class DefineMorphShape implements DefineTag {
 
         if (lineStyles.size() >= EXTENDED) {
             coder.writeByte(EXTENDED);
-            coder.writeI16(lineStyles.size());
+            coder.writeShort(lineStyles.size());
         } else {
             coder.writeByte(lineStyles.size());
         }

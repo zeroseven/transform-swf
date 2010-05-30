@@ -32,9 +32,9 @@ package com.flagstone.transform;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import org.junit.Test;
@@ -65,15 +65,16 @@ public final class SerialNumberCodingTest {
         final byte[] binary = new byte[] {0x47, 0x0A, 0x41, 0x42, 0x43, 0x31,
                 0x32, 0x33, 0x00  };
 
-        final SWFEncoder encoder = new SWFEncoder(binary.length);
+        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        final SWFEncoder encoder = new SWFEncoder(stream);
         final Context context = new Context();
 
         final int length = object.prepareToEncode(context);
         object.encode(encoder, context);
 
         assertEquals(CALCULATED_LENGTH, binary.length, length);
-        assertTrue(NOT_FULLY_ENCODED, encoder.eof());
-        assertArrayEquals(NOT_ENCODED, binary, encoder.getData());
+
+        assertArrayEquals(NOT_ENCODED, binary, stream.toByteArray());
     }
 
     @Test

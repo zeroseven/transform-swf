@@ -148,7 +148,7 @@ public final class Jump implements Action {
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
         coder.writeByte(ActionTypes.JUMP);
-        coder.writeI16(2);
-        coder.writeI16(offset);
+        coder.writeShort(2);
+        coder.writeShort(offset);
     }
 }

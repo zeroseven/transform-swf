@@ -46,6 +46,34 @@ public final class SWFDecoder {
     public static final int BUFFER_SIZE = 4096;
     /** The default size, in bytes, for the reading strings. */
     public static final int STR_BUFFER_SIZE = 1024;
+    /** Bit mask applied to bytes when converting to unsigned integers. */
+    public static final int BYTE_MASK = 255;
+    /** Number of bits to shift when aligning a value to the second byte. */
+    public static final int TO_BYTE1 = 8;
+    /** Number of bits to shift when aligning a value to the third byte. */
+    public static final int TO_BYTE2 = 16;
+    /** Number of bits to shift when aligning a value to the fourth byte. */
+    public static final int TO_BYTE3 = 24;
+    /** Number of bits in an int. */
+    public static final int BITS_PER_INT = 32;
+    /** Number of bits in a byte. */
+    public static final int BITS_TO_BYTES = 3;
+
+    public static final int BIT0 = 1;
+    public static final int BIT1 = 2;
+    public static final int BIT2 = 4;
+    public static final int BIT3 = 8;
+    public static final int BIT4 = 16;
+    public static final int BIT5 = 32;
+    public static final int BIT6 = 64;
+    public static final int BIT7 = 128;
+
+    /**
+     * Bit mask for extracting the length field from the header word.
+     */
+    public static final int LENGTH_FIELD = 0x3F;
+    public static final int IS_EXTENDED = 63;
+
     /** The underlying input stream. */
     private final transient InputStream stream;
     /** The buffer for data read from the stream. */
@@ -192,7 +220,7 @@ public final class SWFDecoder {
         int count = 0;
         fill();
         for (int i = index; i < size; i++) {
-            if ((buffer[index + i] & Coder.BYTE_MASK) == value) {
+            if ((buffer[index + i] & BYTE_MASK) == value) {
                 count++;
             } else {
                 break;
@@ -277,21 +305,21 @@ public final class SWFDecoder {
 
         if (numberOfBits > 0) {
 
-            for (int i = Coder.BITS_PER_INT; (i > 0)
+            for (int i = BITS_PER_INT; (i > 0)
                     && (index < buffer.length); i -= 8) {
-                value |= (buffer[index++] & Coder.BYTE_MASK) << (i - 8);
+                value |= (buffer[index++] & BYTE_MASK) << (i - 8);
             }
 
             value <<= offset;
 
             if (signed) {
-                value >>= Coder.BITS_PER_INT - numberOfBits;
+                value >>= BITS_PER_INT - numberOfBits;
             } else {
-                value >>>= Coder.BITS_PER_INT - numberOfBits;
+                value >>>= BITS_PER_INT - numberOfBits;
             }
 
             pointer += numberOfBits;
-            index = pointer >>> Coder.BITS_TO_BYTES;
+            index = pointer >>> BITS_TO_BYTES;
             offset = pointer & 7;
         }
 
@@ -310,7 +338,7 @@ public final class SWFDecoder {
         if (size - index < 1) {
             fill();
         }
-        return buffer[index] & Coder.BYTE_MASK;
+        return buffer[index] & BYTE_MASK;
     }
 
     /**
@@ -325,7 +353,7 @@ public final class SWFDecoder {
         if (size - index < 1) {
             fill();
         }
-        return buffer[index++] & Coder.BYTE_MASK;
+        return buffer[index++] & BYTE_MASK;
     }
 
     /**
@@ -435,8 +463,8 @@ public final class SWFDecoder {
         if (size - index < 2) {
             fill();
         }
-        int value = buffer[index] & Coder.BYTE_MASK;
-        value |= (buffer[index + 1] & Coder.BYTE_MASK) << Coder.BYTE1;
+        int value = buffer[index] & BYTE_MASK;
+        value |= (buffer[index + 1] & BYTE_MASK) << TO_BYTE1;
         return value;
     }
 
@@ -452,8 +480,8 @@ public final class SWFDecoder {
         if (size - index < 2) {
             fill();
         }
-        int value = buffer[index++] & Coder.BYTE_MASK;
-        value |= (buffer[index++] & Coder.BYTE_MASK) << Coder.BYTE1;
+        int value = buffer[index++] & BYTE_MASK;
+        value |= (buffer[index++] & BYTE_MASK) << TO_BYTE1;
         return value;
     }
 
@@ -469,8 +497,8 @@ public final class SWFDecoder {
         if (size - index < 2) {
             fill();
         }
-        int value = buffer[index++] & Coder.BYTE_MASK;
-        value |= buffer[index++] << Coder.BYTE1;
+        int value = buffer[index++] & BYTE_MASK;
+        value |= buffer[index++] << TO_BYTE1;
         return value;
     }
 
@@ -486,10 +514,10 @@ public final class SWFDecoder {
         if (size - index < 4) {
             fill();
         }
-        int value = buffer[index++] & Coder.BYTE_MASK;
-        value |= (buffer[index++] & Coder.BYTE_MASK) << Coder.BYTE1;
-        value |= (buffer[index++] & Coder.BYTE_MASK) << Coder.BYTE2;
-        value |= (buffer[index++] & Coder.BYTE_MASK) << Coder.BYTE3;
+        int value = buffer[index++] & BYTE_MASK;
+        value |= (buffer[index++] & BYTE_MASK) << TO_BYTE1;
+        value |= (buffer[index++] & BYTE_MASK) << TO_BYTE2;
+        value |= (buffer[index++] & BYTE_MASK) << TO_BYTE3;
         return value;
     }
 
@@ -507,13 +535,13 @@ public final class SWFDecoder {
             fill();
         }
 
-        int value = buffer[index++] & Coder.BYTE_MASK;
+        int value = buffer[index++] & BYTE_MASK;
         final int mask = -1;
-        int test = Coder.BIT7;
+        int test = BIT7;
         int step = 7;
 
         while ((value & test) != 0) {
-            value = ((buffer[index++] & Coder.BYTE_MASK) << step)
+            value = ((buffer[index++] & BYTE_MASK) << step)
                 + (value & mask >>> (32 - step));
             test <<= 7;
             step += 7;

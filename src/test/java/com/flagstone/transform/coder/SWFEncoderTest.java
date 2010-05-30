@@ -43,7 +43,7 @@ public final class SWFEncoderTest {
 
     @Before
     public void setUp() {
-        fixture = new SWFEncoder(0);
+
     }
 
     @Test
