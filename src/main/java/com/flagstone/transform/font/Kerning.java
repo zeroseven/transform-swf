@@ -94,7 +94,7 @@ public final class Kerning implements SWFEncodeable {
      */
     public Kerning(final SWFDecoder coder, final Context context)
             throws IOException {
-        if (context.getVariables().containsKey(Context.WIDE_CODES)) {
+        if (context.contains(Context.WIDE_CODES)) {
             leftGlyph = coder.readSignedShort();
             rightGlyph = coder.readSignedShort();
         } else {
@@ -200,14 +200,14 @@ public final class Kerning implements SWFEncodeable {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
-        size = context.getVariables().containsKey(Context.WIDE_CODES) ? 2 : 1;
+        size = context.contains(Context.WIDE_CODES) ? 2 : 1;
         return (size << 1) + 2;
     }
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
-        size = context.getVariables().containsKey(Context.WIDE_CODES) ? 2 : 1;
+        size = context.contains(Context.WIDE_CODES) ? 2 : 1;
         coder.writeWord(leftGlyph, size);
         coder.writeWord(rightGlyph, size);
         coder.writeI16(adjustment);

@@ -34,7 +34,6 @@ package com.flagstone.transform.shape;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.Coder;
@@ -113,9 +112,8 @@ public final class DefineShape4 implements DefineTag {
         }
         coder.mark();
         identifier = coder.readUnsignedShort();
-        final Map<Integer, Integer> vars = context.getVariables();
-        vars.put(Context.TRANSPARENT, 1);
-        vars.put(Context.TYPE, MovieTypes.DEFINE_SHAPE_4);
+        context.put(Context.TRANSPARENT, 1);
+        context.put(Context.TYPE, MovieTypes.DEFINE_SHAPE_4);
 
         shapeBounds = new Bounds(coder);
         edgeBounds = new Bounds(coder);
@@ -147,7 +145,7 @@ public final class DefineShape4 implements DefineTag {
             lineStyles.add(new LineStyle2(coder, context));
         }
 
-        vars.put(Context.ARRAY_EXTENDED, 1);
+        context.put(Context.ARRAY_EXTENDED, 1);
 
         if (context.getRegistry().getShapeDecoder() == null) {
             shape = new Shape();
@@ -156,9 +154,9 @@ public final class DefineShape4 implements DefineTag {
             shape = new Shape(coder, context);
         }
 
-        vars.remove(Context.TRANSPARENT);
-        vars.remove(Context.ARRAY_EXTENDED);
-        vars.remove(Context.TYPE);
+        context.remove(Context.TRANSPARENT);
+        context.remove(Context.ARRAY_EXTENDED);
+        context.remove(Context.TYPE);
         coder.unmark(length);
     }
 
@@ -402,8 +400,7 @@ public final class DefineShape4 implements DefineTag {
         fillBits = SWFEncoder.unsignedSize(fillStyles.size());
         lineBits = SWFEncoder.unsignedSize(lineStyles.size());
 
-        final Map<Integer, Integer> vars = context.getVariables();
-        if (vars.containsKey(Context.POSTSCRIPT)) {
+        if (context.contains(Context.POSTSCRIPT)) {
             if (fillBits == 0) {
                 fillBits = 1;
             }
@@ -413,7 +410,7 @@ public final class DefineShape4 implements DefineTag {
             }
         }
 
-        vars.put(Context.TRANSPARENT, 1);
+        context.put(Context.TRANSPARENT, 1);
 
         length = 3;
         length += shapeBounds.prepareToEncode(context);
@@ -425,7 +422,7 @@ public final class DefineShape4 implements DefineTag {
             length += style.prepareToEncode(context);
         }
 
-        vars.remove(Context.SCALING_STROKE);
+        context.remove(Context.SCALING_STROKE);
 
         length += (lineStyles.size() >= EXTENDED) ? 3 : 1;
 
@@ -433,19 +430,19 @@ public final class DefineShape4 implements DefineTag {
             length += style.prepareToEncode(context);
         }
 
-        scaling = vars.containsKey(Context.SCALING_STROKE);
+        scaling = context.contains(Context.SCALING_STROKE);
 
-        vars.put(Context.ARRAY_EXTENDED, 1);
-        vars.put(Context.FILL_SIZE, fillBits);
-        vars.put(Context.LINE_SIZE, lineBits);
+        context.put(Context.ARRAY_EXTENDED, 1);
+        context.put(Context.FILL_SIZE, fillBits);
+        context.put(Context.LINE_SIZE, lineBits);
 
         length += shape.prepareToEncode(context);
 
-        vars.remove(Context.ARRAY_EXTENDED);
-        vars.put(Context.FILL_SIZE, 0);
-        vars.put(Context.LINE_SIZE, 0);
-        vars.remove(Context.TRANSPARENT);
-        vars.remove(Context.SCALING_STROKE);
+        context.remove(Context.ARRAY_EXTENDED);
+        context.put(Context.FILL_SIZE, 0);
+        context.put(Context.LINE_SIZE, 0);
+        context.remove(Context.TRANSPARENT);
+        context.remove(Context.SCALING_STROKE);
 
         return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH
                 : SWFEncoder.STD_LENGTH) + length;
@@ -454,8 +451,7 @@ public final class DefineShape4 implements DefineTag {
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
-        final Map<Integer, Integer> vars = context.getVariables();
-        vars.put(Context.TRANSPARENT, 1);
+        context.put(Context.TRANSPARENT, 1);
 
         coder.writeHeader(MovieTypes.DEFINE_SHAPE_4, length);
         coder.mark();
@@ -488,16 +484,16 @@ public final class DefineShape4 implements DefineTag {
             style.encode(coder, context);
         }
 
-        vars.put(Context.ARRAY_EXTENDED, 1);
-        vars.put(Context.FILL_SIZE, fillBits);
-        vars.put(Context.LINE_SIZE, lineBits);
+        context.put(Context.ARRAY_EXTENDED, 1);
+        context.put(Context.FILL_SIZE, fillBits);
+        context.put(Context.LINE_SIZE, lineBits);
 
         shape.encode(coder, context);
 
-        vars.remove(Context.ARRAY_EXTENDED);
-        vars.put(Context.FILL_SIZE, 0);
-        vars.put(Context.LINE_SIZE, 0);
-        vars.remove(Context.TRANSPARENT);
+        context.remove(Context.ARRAY_EXTENDED);
+        context.put(Context.FILL_SIZE, 0);
+        context.put(Context.LINE_SIZE, 0);
+        context.remove(Context.TRANSPARENT);
         coder.unmark(length);
     }
 }

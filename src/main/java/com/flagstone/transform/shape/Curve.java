@@ -232,8 +232,8 @@ public final class Curve implements ShapeRecord {
 
         numberOfBits += size << 2;
 
-        context.getVariables().put(Context.SHAPE_SIZE,
-                context.getVariables().get(Context.SHAPE_SIZE) + numberOfBits);
+        context.put(Context.SHAPE_SIZE,
+                context.get(Context.SHAPE_SIZE) + numberOfBits);
 
         return numberOfBits;
     }

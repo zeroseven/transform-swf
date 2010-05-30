@@ -32,9 +32,11 @@
 package com.flagstone.transform.shape;
 
 import java.io.IOException;
+
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.MovieTypes;
+import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
 /**
@@ -70,6 +72,26 @@ public final class PathsArePostscript implements MovieTag {
         return INSTANCE;
     }
 
+    /**
+     * Returns a singleton.
+     *
+     * @param coder
+     *            an SWFEncoder object.
+     *
+     * @param context a Context object used to obtain the total number of
+     * frames in a movie.
+     *
+     * @return an object that can safely be shared among objects.
+     *
+     * @throws IOException if an error occurs while encoding the object.
+     */
+    public static PathsArePostscript getInstance(final SWFDecoder coder,
+            final Context context) throws IOException {
+        context.put(Context.POSTSCRIPT, 1);
+        coder.readUnsignedShort();
+        return INSTANCE;
+    }
+
     /** Private constructor used to create singleton.  */
     private PathsArePostscript() {
     }
@@ -87,7 +109,7 @@ public final class PathsArePostscript implements MovieTag {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
-        context.getVariables().put(Context.POSTSCRIPT, 1);
+        context.put(Context.POSTSCRIPT, 1);
         return 2;
     }
 

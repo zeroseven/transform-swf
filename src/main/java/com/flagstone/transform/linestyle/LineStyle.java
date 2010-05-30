@@ -183,7 +183,7 @@ public final class LineStyle implements SWFEncodeable, Copyable<LineStyle> {
     public int prepareToEncode(final Context context) {
         int length = 2;
 
-        length += context.getVariables().containsKey(Context.TRANSPARENT) ? 4
+        length += context.contains(Context.TRANSPARENT) ? 4
                 : 3;
 
         return length;

@@ -60,7 +60,7 @@ public final class ShapeDecoder implements SWFFactory<ShapeRecord> {
             int flags = (type << 4) + coder.readBits(4, false);
 
             if (flags != 0) {
-                final int tag = context.getVariables().get(Context.TYPE);
+                final int tag = context.get(Context.TYPE);
                 if (tag == MovieTypes.DEFINE_SHAPE_4
                         || tag == MovieTypes.DEFINE_MORPH_SHAPE_2) {
                     record = new ShapeStyle2(flags, coder, context);

@@ -42,6 +42,7 @@ import org.junit.Test;
 
 import com.flagstone.transform.Background;
 import com.flagstone.transform.Movie;
+import com.flagstone.transform.MovieAttributes;
 import com.flagstone.transform.Place2;
 import com.flagstone.transform.ShowFrame;
 import com.flagstone.transform.coder.ImageTag;
@@ -96,9 +97,12 @@ public final class ScreenVideoIT {
         movie = new Movie();
         identifier = uid++;
 
-        movie.setFrameSize(new Bounds(0, 0, screenWidth * 20,
+        MovieAttributes attrs = new MovieAttributes();
+        attrs.setFrameSize(new Bounds(0, 0, screenWidth * 20,
                         screenHeight * 20));
-        movie.setFrameRate(4.0f);
+        attrs.setFrameRate(4.0f);
+
+        movie.add(attrs);
         movie.add(new Background(WebPalette.ALICE_BLUE.color()));
 
         movie.add(new DefineVideo(identifier, numberOfFrames, screenWidth,

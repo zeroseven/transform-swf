@@ -34,7 +34,6 @@ package com.flagstone.transform.button;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.Coder;
@@ -116,9 +115,8 @@ public final class DefineButton2 implements DefineTag {
     // TODO(optimise)
     public DefineButton2(final SWFDecoder coder, final Context context)
             throws IOException {
-        final Map<Integer, Integer> vars = context.getVariables();
-        vars.put(Context.TYPE, MovieTypes.DEFINE_BUTTON_2);
-        vars.put(Context.TRANSPARENT, 1);
+        context.put(Context.TYPE, MovieTypes.DEFINE_BUTTON_2);
+        context.put(Context.TRANSPARENT, 1);
 
         length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
         if (length == Coder.IS_EXTENDED) {
@@ -157,8 +155,8 @@ public final class DefineButton2 implements DefineTag {
             } while (offsetToNext != 0);
         }
 
-        vars.remove(Context.TYPE);
-        vars.remove(Context.TRANSPARENT);
+        context.remove(Context.TYPE);
+        context.remove(Context.TRANSPARENT);
         coder.unmark(length);
     }
 
@@ -340,9 +338,8 @@ public final class DefineButton2 implements DefineTag {
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
         // CHECKSTYLE:OFF - Fixed length when encoded.
-        final Map<Integer, Integer> vars = context.getVariables();
-        vars.put(Context.TYPE, MovieTypes.DEFINE_BUTTON_2);
-        vars.put(Context.TRANSPARENT, 1);
+        context.put(Context.TYPE, MovieTypes.DEFINE_BUTTON_2);
+        context.put(Context.TRANSPARENT, 1);
 
         length = 6;
 
@@ -362,14 +359,14 @@ public final class DefineButton2 implements DefineTag {
         for (int i = 0; i < count; i++) {
             handler = events.get(i);
             if (i == count -1) {
-                vars.put(Context.LAST, 1);
+                context.put(Context.LAST, 1);
             }
             length += 2 + handler.prepareToEncode(context);
         }
 
-        vars.remove(Context.TYPE);
-        vars.remove(Context.TRANSPARENT);
-        vars.remove(Context.LAST);
+        context.remove(Context.TYPE);
+        context.remove(Context.TRANSPARENT);
+        context.remove(Context.LAST);
 
         return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH
                 : SWFEncoder.STD_LENGTH) + length;
@@ -380,9 +377,8 @@ public final class DefineButton2 implements DefineTag {
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
 
-        final Map<Integer, Integer> vars = context.getVariables();
-        vars.put(Context.TYPE, MovieTypes.DEFINE_BUTTON_2);
-        vars.put(Context.TRANSPARENT, 1);
+        context.put(Context.TYPE, MovieTypes.DEFINE_BUTTON_2);
+        context.put(Context.TRANSPARENT, 1);
 
         coder.writeHeader(MovieTypes.DEFINE_BUTTON_2, length);
         coder.mark();
@@ -399,8 +395,8 @@ public final class DefineButton2 implements DefineTag {
             handler.encode(coder, context);
         }
 
-        vars.remove(Context.TYPE);
-        vars.remove(Context.TRANSPARENT);
+        context.remove(Context.TYPE);
+        context.remove(Context.TRANSPARENT);
         coder.unmark(length);
     }
 }

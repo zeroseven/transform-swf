@@ -95,7 +95,7 @@ public final class MorphGradientFillTest {
     public void encode() throws IOException {
         final SWFEncoder encoder = new SWFEncoder(encoded.length);
         final Context context = new Context();
-        context.getVariables().put(Context.TRANSPARENT, 1);
+        context.put(Context.TRANSPARENT, 1);
 
         fixture = new MorphGradientFill(radial, start, end, list);
         assertEquals(encoded.length, fixture.prepareToEncode(context));
@@ -110,7 +110,7 @@ public final class MorphGradientFillTest {
         final ByteArrayInputStream stream = new ByteArrayInputStream(encoded);
         final SWFDecoder decoder = new SWFDecoder(stream);
         final Context context = new Context();
-        context.getVariables().put(Context.TRANSPARENT, 1);
+        context.put(Context.TRANSPARENT, 1);
 
         fixture = new MorphGradientFill(decoder.readByte(), decoder, context);
 

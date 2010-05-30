@@ -30,25 +30,19 @@
  */
 package com.flagstone.transform;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.EnumSet;
-import java.util.Set;
-
-import org.junit.Test;
 
 public final class MovieAttributesTest {
 
-    private final transient Set<MovieAttribute> attributes =
-        EnumSet.allOf(MovieAttribute.class);
-
-    private transient MovieAttributes fixture;
-
-    @Test
-    public void checkCopy() {
-        fixture = new MovieAttributes(attributes);
-        final MovieAttributes copy = fixture.copy();
-
-        assertEquals(fixture.toString(), copy.toString());
-    }
+//    private final transient Set<MovieAttribute> attributes =
+//        EnumSet.allOf(MovieAttribute.class);
+//
+//    private transient MovieAttributes fixture;
+//
+//    @Test
+//    public void checkCopy() {
+//        fixture = new MovieAttributes(attributes);
+//        final MovieAttributes copy = fixture.copy();
+//
+//        assertEquals(fixture.toString(), copy.toString());
+//    }
 }

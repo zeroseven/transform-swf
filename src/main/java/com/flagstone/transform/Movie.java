@@ -33,14 +33,17 @@ package com.flagstone.transform;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.zip.DataFormatException;
-import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterInputStream;
 
@@ -51,8 +54,6 @@ import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.coder.SWFFactory;
-import com.flagstone.transform.datatype.Bounds;
-import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 /**
  * Movie is a container class for the objects that represents the data
@@ -81,34 +82,17 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  */
 public final class Movie {
 
-    public static final int FWS = 0x465753;
-    public static final int CWS = 0x435753;
+    public static final byte[] FWS = new byte[] { 0x46, 0x57, 0x53 };
+    public static final byte[] CWS = new byte[] { 0x43, 0x57, 0x53 };
 
-    /** The version of Flash supported. */
-    public static final int VERSION = 10;
     /** Format string used in toString() method. */
-    private static final String FORMAT = "Movie: { compressed=%b; version=%d;"
-            + " frameSize=%s; frameRate=%f; objects=%s }";
-
+    private static final String FORMAT = "Movie: { objects=%s }";
     /** The registry for the different types of decoder. */
     private transient DecoderRegistry registry;
     /** The character encoding used for strings. */
     private transient CharacterEncoding encoding;
-
-    private boolean compressed;
-    /** The Flash version number. */
-    private int version;
-    /** The Flash Player screen coordinates. */
-    private Bounds frameSize;
-    /** The frame rate of the movie. */
-    private int frameRate;
     /** The list of objects that make up the movie. */
     private List<MovieTag> objects;
-
-    /** The length of the object when it is encoded. */
-    private transient int length;
-    /** The number of frames in the movie when it is encoded. */
-    private transient int frameCount;
 
     /**
      * Creates a new Movie.
@@ -116,10 +100,6 @@ public final class Movie {
     public Movie() {
         registry = DecoderRegistry.getDefault();
         encoding = CharacterEncoding.UTF8;
-        compressed = true;
-        version = VERSION;
-        frameSize = new Bounds(0, 0, 0, 0);
-        frameRate = 0;
         objects = new ArrayList<MovieTag>();
     }
 
@@ -129,15 +109,9 @@ public final class Movie {
      * @param movie the Movie to copy.
      */
     public Movie(final Movie movie) {
-
         if (movie.registry != null) {
             registry = movie.registry.copy();
         }
-
-        compressed = movie.compressed;
-        version = movie.version;
-        frameSize = movie.frameSize;
-        frameRate = movie.frameRate;
         encoding = movie.encoding;
 
         objects = new ArrayList<MovieTag>(movie.objects.size());
@@ -166,93 +140,6 @@ public final class Movie {
      */
     public void setEncoding(final CharacterEncoding enc) {
         encoding = enc;
-    }
-
-    public boolean isCompressed() {
-        return compressed;
-    }
-
-    public void setCompressed(final boolean compress) {
-        compressed = compress;
-    }
-
-    /**
-     * Get the number representing the version of Flash that the movie
-     * represents.
-     *
-     * @return the version number of Flash that this movie contains.
-     */
-    public int getVersion() {
-        return version;
-    }
-
-    /**
-     * Sets the Flash version supported in this Movie. Note that there are no
-     * restrictions on the objects that can be used in a coder. Using objects
-     * that are not supported by an earlier version of the Flash file format may
-     * cause the Player to not display the movie correctly or even crash the
-     * Player.
-     *
-     * @param aNumber
-     *            the version of the Flash file format that this movie utilises.
-     */
-    public void setVersion(final int aNumber) {
-        if (aNumber < 0) {
-            throw new IllegalArgumentRangeException(
-                    0, Integer.MAX_VALUE, aNumber);
-        }
-        version = aNumber;
-    }
-
-    /**
-     * Get the bounding rectangle that defines the size of the player
-     * screen.
-     *
-     * @return the bounding box that defines the screen.
-     */
-    public Bounds getFrameSize() {
-        return frameSize;
-    }
-
-    /**
-     * Sets the bounding rectangle that defines the size of the player screen.
-     * The coordinates of the bounding rectangle are also used to define the
-     * coordinate range. For example if a 400 x 400 pixel rectangle is defined,
-     * specifying the values for the x and y coordinates the range -200 to 200
-     * sets the centre of the screen at (0,0), if the x and y coordinates are
-     * specified in the range 0 to 400 then the centre of the screen will be at
-     * (200, 200).
-     *
-     * @param aBounds
-     *            the Bounds object that defines the frame size. Must not be
-     *            null.
-     */
-    public void setFrameSize(final Bounds aBounds) {
-        if (aBounds == null) {
-            throw new IllegalArgumentException();
-        }
-        frameSize = aBounds;
-    }
-
-    /**
-     * Get the number of frames played per second that the movie will be
-     * displayed at.
-     *
-     * @return the movie frame rate.
-     */
-    public float getFrameRate() {
-        return frameRate / 256.0f;
-    }
-
-    /**
-     * Sets the number of frames played per second that the Player will display
-     * the coder.
-     *
-     * @param rate
-     *            the number of frames per second that the movie is played.
-     */
-    public void setFrameRate(final float rate) {
-        frameRate = (int) (rate * 256);
     }
 
     /**
@@ -300,15 +187,11 @@ public final class Movie {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        return String.format(FORMAT, compressed, version, frameSize,
-                getFrameRate(), objects);
+        return String.format(FORMAT, objects);
     }
 
     /**
-     * Decodes the contents of the specified file. An object for each tag
-     * decoded from the file is placed in the Movie's object array in the order
-     * they were decoded from the file. If an error occurs while reading and
-     * parsing the file then an exception is thrown.
+     * Decodes the contents of the specified file.
      *
      * @param file
      *            the Flash file that will be parsed.
@@ -319,13 +202,30 @@ public final class Movie {
      */
     public void decodeFromFile(final File file) throws DataFormatException,
             IOException {
-        final FileInputStream stream = new FileInputStream(file);
+        decodeFromStream(new FileInputStream(file));
+    }
 
-        try {
-            decodeFromStream(stream);
-        } finally {
-            stream.close();
+    /**
+     * Decodes a Flash file referenced by a URL.
+     *
+     * @param url
+     *            the Uniform Resource Locator referencing the file.
+     *
+     * @throws IOException
+     *             if there is an error reading the file.
+     *
+     * @throws DataFormatException
+     *             if there is a problem decoding the font, either it is in an
+     *             unsupported format or an error occurred while decoding the
+     *             font data.
+     */
+    public void decodeFromUrl(final URL url) throws DataFormatException,
+            IOException {
+        final URLConnection connection = url.openConnection();
+        if (connection.getContentLength() < 0) {
+            throw new FileNotFoundException(url.getFile());
         }
+        decodeFromStream(connection.getInputStream());
     }
 
     /**
@@ -341,66 +241,68 @@ public final class Movie {
      * @throws IOException
      *             if an I/O error occurs while reading the file.
      */
-    public void decodeFromStream(final InputStream stream)
+    private void decodeFromStream(final InputStream stream)
             throws DataFormatException, IOException {
 
-        int word = stream.read() << 16;
-        word |= stream.read() << 8;
-        word |= stream.read();
+        InputStream streamIn = null;
 
-        if (word == 0x465753) {
-            compressed = false;
-        } else if (word == 0x435753) {
-            compressed = true;
-        } else {
-            throw new DataFormatException();
-        }
+        try {
+            final Context context = new Context();
+            context.setRegistry(registry);
+            context.setEncoding(encoding.toString());
+            context.put(Context.FRAMES, 0);
 
-        version = stream.read();
+            byte[] signature = new byte[3];
+            stream.read(signature);
 
-        length = stream.read();
-        length |= stream.read() << 8;
-        length |= stream.read() << 16;
-        length |= stream.read() << 24;
+            if (Arrays.equals(CWS, signature)) {
+                streamIn = new InflaterInputStream(stream);
+                context.put(Context.COMPRESSED, 1);
+            } else if (Arrays.equals(FWS, signature)) {
+                streamIn = stream;
+            } else {
+                throw new DataFormatException();
+            }
 
-        final InputStream streamIn;
+            context.put(Context.VERSION, stream.read());
 
-        if (compressed) {
-            streamIn = new InflaterInputStream(stream);
-        } else {
-            streamIn = stream;
-        }
+            int length = stream.read();
+            length |= stream.read() << 8;
+            length |= stream.read() << 16;
+            length |= stream.read() << 24;
 
-        SWFDecoder decoder;
+            /*
+             * If the file is shorter than the default buffer size then set the
+             * buffer size to be the file size - this gets around a bug in Java
+             * where the end of ZLIB streams are not detected correctly.
+             */
+            SWFDecoder decoder;
 
-        /*
-         * If the file is shorter than the default buffer size then set the
-         * buffer size to be the file size - this gets around a bug in Java
-         * where the end of ZLIB streams are not detected correctly.
-         */
+            if (length < SWFDecoder.BUFFER_SIZE) {
+                decoder = new SWFDecoder(streamIn, length - 8);
+            } else {
+                decoder = new SWFDecoder(streamIn);
+            }
 
-        if (length < SWFDecoder.BUFFER_SIZE) {
-            decoder = new SWFDecoder(streamIn, length - 8);
-        } else {
-            decoder = new SWFDecoder(streamIn);
-        }
-//FIX        decoder.setEncoding(encoding.toString());
+            decoder.setEncoding(encoding.toString());
 
-        frameSize = new Bounds(decoder);
-        frameRate = decoder.readUnsignedShort();
-        frameCount = decoder.readUnsignedShort();
+            objects.clear();
 
-        final Context context = new Context();
-        context.setRegistry(registry);
-        context.setEncoding(encoding.toString());
-        context.put(Context.VERSION, version);
+            final SWFFactory<MovieTag> factory = registry.getMovieDecoder();
+            objects.add(new MovieAttributes(decoder));
 
-        objects.clear();
+            while (decoder.scanUnsignedShort() >>> 6 != MovieTypes.END) {
+                objects.add(factory.getObject(decoder, context));
+            }
 
-        final SWFFactory<MovieTag> factory = registry.getMovieDecoder();
+            MovieAttributes attrs = (MovieAttributes) objects.get(0);
+            attrs.setVersion(context.get(Context.VERSION));
+            attrs.setFrameCount(context.get(Context.FRAMES));
 
-        while (decoder.scanUnsignedShort() >>> 6 != MovieTypes.END) {
-            objects.add(factory.getObject(decoder, context));
+        } finally {
+            if (streamIn != null) {
+                streamIn.close();
+            }
         }
     }
 
@@ -419,15 +321,7 @@ public final class Movie {
     /** {@inheritDoc} */
     public void encodeToFile(final File file) throws IOException,
             DataFormatException {
-        final FileOutputStream stream = new FileOutputStream(file);
-        OutputStream actual = null;
-        try {
-            actual = encodeToStream(stream);
-        } finally {
-            if (actual != null) {
-                actual.close();
-            }
-        }
+        encodeToStream(new FileOutputStream(file));
     }
 
     /**
@@ -442,83 +336,58 @@ public final class Movie {
      * @throws DataFormatException
      *             if an error occurs when compressing the flash file.
      */
-    public OutputStream encodeToStream(final OutputStream stream)
+    private void encodeToStream(final OutputStream stream)
             throws DataFormatException, IOException {
 
-        final Context context = new Context();
-        context.setEncoding(encoding.toString());
-        context.getVariables().put(Context.VERSION, version);
+        OutputStream streamOut = null;
 
-        frameCount = 0;
+        try {
+            MovieAttributes attrs = (MovieAttributes) objects.get(0);
 
-        length = 14; // Includes End
-        length += frameSize.prepareToEncode(context);
+            final Context context = new Context();
+            context.setEncoding(encoding.toString());
+            context.put(Context.VERSION, attrs.getVersion());
+            context.put(Context.FRAMES, 0);
 
-        for (final MovieTag tag : objects) {
-            length += tag.prepareToEncode(context);
-            if (tag instanceof ShowFrame) {
-                frameCount += 1;
+            // length of signature, version, length and end
+            int length = 10;
+
+            for (final MovieTag tag : objects) {
+                length += tag.prepareToEncode(context);
+            }
+
+            attrs.setFrameCount(context.get(Context.FRAMES));
+
+            if (attrs.isCompressed()) {
+                stream.write(CWS);
+            } else {
+                stream.write(FWS);
+            }
+
+            stream.write(attrs.getVersion());
+            stream.write(length);
+            stream.write(length >>> 8);
+            stream.write(length >>> 16);
+            stream.write(length >>> 24);
+
+            if (attrs.isCompressed()) {
+                streamOut = new DeflaterOutputStream(stream);
+            } else {
+                streamOut = stream;
+            }
+
+            SWFEncoder coder = new SWFEncoder(streamOut);
+            coder.setEncoding(encoding.toString());
+
+            for (final MovieTag tag : objects) {
+                tag.encode(coder, context);
+            }
+            coder.writeI16(0);
+            coder.flush();
+        } finally {
+            if (streamOut != null) {
+                streamOut.close();
             }
         }
-
-        SWFEncoder coder = new SWFEncoder(stream);
-        coder.setEncoding(encoding.toString());
-
-        if (compressed) {
-            coder.writeByte(0x43);
-        } else {
-            coder.writeByte(0x46);
-        }
-        coder.writeByte(0x57);
-        coder.writeByte(0x53);
-        coder.writeByte(version);
-        coder.writeI32(length);
-        coder.flush();
-
-        OutputStream streamOut;
-
-        if (compressed) {
-            streamOut = new DeflaterOutputStream(stream);
-            coder = new SWFEncoder(streamOut);
-            coder.setEncoding(encoding.toString());
-        } else {
-            streamOut = stream;
-        }
-
-        frameSize.encode(coder, context);
-        coder.writeI16(frameRate);
-        coder.writeI16(frameCount);
-
-        for (final MovieTag tag : objects) {
-            tag.encode(coder, context);
-        }
-        coder.writeI16(0);
-        coder.flush();
-//        byte[] data = new byte[length];
-//
-//        if (compressed) {
-//            data = zip(coder.getData(), length);
-//        } else {
-//            data = coder.getData();
-//        }
-//        stream.write(data);
-        return streamOut;
-    }
-
-    private byte[] zip(final byte[] bytes, final int len)
-            throws DataFormatException {
-        final Deflater deflater = new Deflater();
-        final byte[] data = new byte[len];
-
-        deflater.setInput(bytes, 8, len - 8);
-        deflater.finish();
-
-        final int bytesCompressed = deflater.deflate(data);
-        final byte[] compressedData = new byte[8 + bytesCompressed];
-
-        System.arraycopy(bytes, 0, compressedData, 0, 8);
-        System.arraycopy(data, 0, compressedData, 8, bytesCompressed);
-
-        return compressedData;
     }
 }

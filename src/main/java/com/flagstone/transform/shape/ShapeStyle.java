@@ -34,7 +34,6 @@ package com.flagstone.transform.shape;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.Coder;
@@ -139,9 +138,8 @@ public final class ShapeStyle implements ShapeRecord {
     // TODO(optimise)
     public ShapeStyle(final int flags, final SWFDecoder coder,
             final Context context) throws IOException {
-        final Map<Integer, Integer> vars = context.getVariables();
-        int numberOfFillBits = vars.get(Context.FILL_SIZE);
-        int numberOfLineBits = vars.get(Context.LINE_SIZE);
+        int numberOfFillBits = context.get(Context.FILL_SIZE);
+        int numberOfLineBits = context.get(Context.LINE_SIZE);
 
         hasStyles = (flags & Coder.BIT4) != 0;
         hasLine = (flags & Coder.BIT3) != 0;
@@ -172,7 +170,7 @@ public final class ShapeStyle implements ShapeRecord {
 
             int fillStyleCount = coder.readByte();
 
-            if (vars.containsKey(Context.ARRAY_EXTENDED)
+            if (context.contains(Context.ARRAY_EXTENDED)
                     && (fillStyleCount == EXTENDED)) {
                 fillStyleCount = coder.readUnsignedShort();
             }
@@ -186,7 +184,7 @@ public final class ShapeStyle implements ShapeRecord {
 
             int lineStyleCount = coder.readByte();
 
-            if (vars.containsKey(Context.ARRAY_EXTENDED)
+            if (context.contains(Context.ARRAY_EXTENDED)
                     && (lineStyleCount == EXTENDED)) {
                 lineStyleCount = coder.readUnsignedShort();
             }
@@ -199,8 +197,8 @@ public final class ShapeStyle implements ShapeRecord {
             numberOfFillBits = (sizes & 0x00F0) >> 4;
             numberOfLineBits = sizes & 0x000F;
 
-            vars.put(Context.FILL_SIZE, numberOfFillBits);
-            vars.put(Context.LINE_SIZE, numberOfLineBits);
+            context.put(Context.FILL_SIZE, numberOfFillBits);
+            context.put(Context.LINE_SIZE, numberOfLineBits);
         }
     }
 
@@ -511,12 +509,11 @@ public final class ShapeStyle implements ShapeRecord {
             numberOfBits += 5 + fieldSize * 2;
         }
 
-        final Map<Integer, Integer> vars = context.getVariables();
-        numberOfBits += hasFill ? vars.get(Context.FILL_SIZE) : 0;
-        numberOfBits += hasAlt ? vars.get(Context.FILL_SIZE) : 0;
-        numberOfBits += (hasLine) ? vars.get(Context.LINE_SIZE) : 0;
+        numberOfBits += hasFill ? context.get(Context.FILL_SIZE) : 0;
+        numberOfBits += hasAlt ? context.get(Context.FILL_SIZE) : 0;
+        numberOfBits += (hasLine) ? context.get(Context.LINE_SIZE) : 0;
 
-        vars.put(Context.SHAPE_SIZE, vars.get(Context.SHAPE_SIZE)
+        context.put(Context.SHAPE_SIZE, context.get(Context.SHAPE_SIZE)
                 + numberOfBits);
 
         if (hasStyles) {
@@ -524,20 +521,20 @@ public final class ShapeStyle implements ShapeRecord {
             int numberOfLineBits = SWFEncoder.unsignedSize(lineStyles.size());
 
             if ((numberOfFillBits == 0)
-                    && vars.containsKey(Context.POSTSCRIPT)) {
+                    && context.contains(Context.POSTSCRIPT)) {
                 numberOfFillBits = 1;
             }
 
             if ((numberOfLineBits == 0)
-                    && vars.containsKey(Context.POSTSCRIPT)) {
+                    && context.contains(Context.POSTSCRIPT)) {
                 numberOfLineBits = 1;
             }
 
-            final boolean countExtended = vars
-                    .containsKey(Context.ARRAY_EXTENDED);
+            final boolean countExtended = context
+                    .contains(Context.ARRAY_EXTENDED);
 
             int numberOfStyleBits = 0;
-            final int flushBits = vars.get(Context.SHAPE_SIZE);
+            final int flushBits = context.get(Context.SHAPE_SIZE);
 
             numberOfStyleBits += (flushBits % 8 > 0)
                     ? 8 - (flushBits % 8) : 0;
@@ -559,9 +556,9 @@ public final class ShapeStyle implements ShapeRecord {
 
             numberOfStyleBits += 8;
 
-            vars.put(Context.FILL_SIZE, numberOfFillBits);
-            vars.put(Context.LINE_SIZE, numberOfLineBits);
-            vars.put(Context.SHAPE_SIZE, vars.get(Context.SHAPE_SIZE)
+            context.put(Context.FILL_SIZE, numberOfFillBits);
+            context.put(Context.LINE_SIZE, numberOfLineBits);
+            context.put(Context.SHAPE_SIZE, context.get(Context.SHAPE_SIZE)
                     + numberOfStyleBits);
 
             numberOfBits += numberOfStyleBits;
@@ -579,8 +576,6 @@ public final class ShapeStyle implements ShapeRecord {
         coder.writeBits(hasFill ? 1 : 0, 1);
         coder.writeBits(hasMove ? 1 : 0, 1);
 
-        final Map<Integer, Integer> vars = context.getVariables();
-
         if (hasMove) {
             final int fieldSize = Math.max(SWFEncoder.size(moveX), SWFEncoder
                     .size(moveY));
@@ -591,20 +586,20 @@ public final class ShapeStyle implements ShapeRecord {
         }
 
         if (hasFill) {
-            coder.writeBits(fillStyle, vars.get(Context.FILL_SIZE));
+            coder.writeBits(fillStyle, context.get(Context.FILL_SIZE));
         }
 
         if (hasAlt) {
-            coder.writeBits(altFillStyle, vars.get(Context.FILL_SIZE));
+            coder.writeBits(altFillStyle, context.get(Context.FILL_SIZE));
         }
 
         if (hasLine) {
-            coder.writeBits(lineStyle, vars.get(Context.LINE_SIZE));
+            coder.writeBits(lineStyle, context.get(Context.LINE_SIZE));
         }
 
         if (hasStyles) {
-            final boolean countExtended = vars
-                    .containsKey(Context.ARRAY_EXTENDED);
+            final boolean countExtended = context
+                    .contains(Context.ARRAY_EXTENDED);
 
             coder.alignToByte();
 
@@ -633,7 +628,7 @@ public final class ShapeStyle implements ShapeRecord {
             int numberOfFillBits = SWFEncoder.unsignedSize(fillStyles.size());
             int numberOfLineBits = SWFEncoder.unsignedSize(lineStyles.size());
 
-            if (vars.containsKey(Context.POSTSCRIPT)) {
+            if (context.contains(Context.POSTSCRIPT)) {
                 if (numberOfFillBits == 0) {
                     numberOfFillBits = 1;
                 }
@@ -647,8 +642,8 @@ public final class ShapeStyle implements ShapeRecord {
             coder.writeBits(numberOfLineBits, 4);
 
             // Update the stream with the new numbers of line and fill bits
-            vars.put(Context.FILL_SIZE, numberOfFillBits);
-            vars.put(Context.LINE_SIZE, numberOfLineBits);
+            context.put(Context.FILL_SIZE, numberOfFillBits);
+            context.put(Context.LINE_SIZE, numberOfLineBits);
         }
     }
 }

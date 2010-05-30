@@ -32,7 +32,6 @@
 package com.flagstone.transform.shape;
 
 import java.io.IOException;
-import java.util.Map;
 
 import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.Context;
@@ -188,8 +187,7 @@ public final class Line implements ShapeRecord {
             numberOfBits += 1 + size;
         }
 
-        final Map<Integer, Integer> vars = context.getVariables();
-        vars.put(Context.SHAPE_SIZE, vars.get(Context.SHAPE_SIZE)
+        context.put(Context.SHAPE_SIZE, context.get(Context.SHAPE_SIZE)
                 + numberOfBits);
 
         return numberOfBits;

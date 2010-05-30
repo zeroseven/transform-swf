@@ -32,22 +32,41 @@
 package com.flagstone.transform;
 
 import java.io.IOException;
-import java.util.EnumSet;
-import java.util.Set;
 
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.datatype.Bounds;
+import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 /** TODO(class). */
 public final class MovieAttributes implements MovieTag {
 
     /** Format string used in toString() method. */
-    private static final String FORMAT = "MovieAttributes: { attributes=%s }";
+    private static final String FORMAT = "MovieAttributes: { version=%d; "
+    		+ " frameSize=%s; frameRate=%f; frameCount=%d; "
+    		+ " compressed=%b;  metadata=%b;  as3=%b;  network=%b;}";
     /** The set of encoded attributes. */
     private int attributes;
+
+    /** The Flash version number. */
+    private int version;
+    /** The Flash Player screen coordinates. */
+    private Bounds frameSize;
+    /** The frame rate of the movie. */
+    private int frameRate;
+    /** The number of frames in the movie. */
+    private int frameCount;
+    private boolean compressed;
+    private boolean metadata;
+    private boolean actionscript3;
+    private boolean network;
+
+    public MovieAttributes() {
+        version = SWF.VERSION;
+    }
 
     /**
      * Creates and initialises a MovieAttributes object using values encoded
@@ -60,20 +79,17 @@ public final class MovieAttributes implements MovieTag {
      *             if an error occurs while decoding the data.
      */
     public MovieAttributes(final SWFDecoder coder) throws IOException {
-        coder.readUnsignedShort();
-        attributes = coder.readByte();
-        coder.skip(3);
-    }
-
-    /**
-     * Creates and initialises a MovieAttributes object with a set of
-     * attribute values.
-     *
-     * @param set
-     *            the set of MovieAttribute values that describe the movie.
-     */
-    public MovieAttributes(final Set<MovieAttribute>set) {
-        setAttributes(set);
+        frameSize = new Bounds(coder);
+        frameRate = coder.readUnsignedShort();
+        frameCount = coder.readUnsignedShort();
+        if (version > 7) {
+            coder.readUnsignedShort();
+            int flags = coder.readByte();
+            network = (flags & 1) != 0;
+            actionscript3 = (flags & 8) != 0;
+            metadata = (flags & 16) != 0;
+            coder.skip(3);
+        }
     }
 
     /**
@@ -89,40 +105,122 @@ public final class MovieAttributes implements MovieTag {
     }
 
     /**
-     * Get the movie attributes.
-     * @return the set of MovieAttributes that describe the movie.
+     * Get the number representing the version of Flash that the movie
+     * represents.
+     *
+     * @return the version number of Flash that this movie contains.
      */
-    public Set<MovieAttribute> getAttributes() {
-        final Set<MovieAttribute>set = EnumSet.noneOf(MovieAttribute.class);
-
-        if ((attributes & 1) != 0) {
-            set.add(MovieAttribute.NETWORK_ACCESS);
-        }
-        if ((attributes & 8) != 0) {
-            set.add(MovieAttribute.ACTIONSCRIPT_3);
-        }
-        if ((attributes & 16) != 0) {
-            set.add(MovieAttribute.METADATA);
-        }
-        return set;
+    public int getVersion() {
+        return version;
     }
 
     /**
-     * Set the movie attributes.
-     * @param set the set of MovieAttributes that describe the movie.
+     * Sets the Flash version supported in this Movie. Note that there are no
+     * restrictions on the objects that can be used in a coder. Using objects
+     * that are not supported by an earlier version of the Flash file format may
+     * cause the Player to not display the movie correctly or even crash the
+     * Player.
+     *
+     * @param aNumber
+     *            the version of the Flash file format that this movie utilises.
      */
-    public void setAttributes(final Set<MovieAttribute>set) {
-        attributes = 0;
+    public void setVersion(final int aNumber) {
+        if (aNumber < 0) {
+            throw new IllegalArgumentRangeException(
+                    0, Integer.MAX_VALUE, aNumber);
+        }
+        version = aNumber;
+    }
 
-        if (set.contains(MovieAttribute.NETWORK_ACCESS)) {
-            attributes |= 1;
+    /**
+     * Get the bounding rectangle that defines the size of the player
+     * screen.
+     *
+     * @return the bounding box that defines the screen.
+     */
+    public Bounds getFrameSize() {
+        return frameSize;
+    }
+
+    /**
+     * Sets the bounding rectangle that defines the size of the player screen.
+     * The coordinates of the bounding rectangle are also used to define the
+     * coordinate range. For example if a 400 x 400 pixel rectangle is defined,
+     * specifying the values for the x and y coordinates the range -200 to 200
+     * sets the centre of the screen at (0,0), if the x and y coordinates are
+     * specified in the range 0 to 400 then the centre of the screen will be at
+     * (200, 200).
+     *
+     * @param aBounds
+     *            the Bounds object that defines the frame size. Must not be
+     *            null.
+     */
+    public void setFrameSize(final Bounds aBounds) {
+        if (aBounds == null) {
+            throw new IllegalArgumentException();
         }
-        if (set.contains(MovieAttribute.ACTIONSCRIPT_3)) {
-            attributes |= 8;
-        }
-        if (set.contains(MovieAttribute.METADATA)) {
-            attributes |= 16;
-        }
+        frameSize = aBounds;
+    }
+
+    /**
+     * Get the number of frames played per second that the movie will be
+     * displayed at.
+     *
+     * @return the movie frame rate.
+     */
+    public float getFrameRate() {
+        return frameRate / 256.0f;
+    }
+
+    /**
+     * Sets the number of frames played per second that the Player will display
+     * the coder.
+     *
+     * @param rate
+     *            the number of frames per second that the movie is played.
+     */
+    public void setFrameRate(final float rate) {
+        frameRate = (int) (rate * 256);
+    }
+
+    public float getFrameCount() {
+        return frameCount;
+    }
+
+    public void setFrameCount(final int count) {
+        frameCount = count;
+    }
+
+    public boolean isCompressed() {
+        return compressed;
+    }
+
+    public void setCompressed(final boolean compress) {
+        compressed = compress;
+    }
+
+    public boolean hasMetaData() {
+        return metadata;
+    }
+
+    public void setMetaData(final boolean hasMeta) {
+        metadata = hasMeta;
+    }
+
+    public boolean hasActionscript3() {
+        return actionscript3;
+    }
+
+    public void setActionscript3(final boolean hasActionscript) {
+        actionscript3 = hasActionscript;
+    }
+
+    public boolean usesNetwork() {
+        return network;
+    }
+
+    public void setUsesNetwork(final boolean usesNetwork) {
+        network = usesNetwork;
     }
 
     /** {@inheritDoc} */
@@ -133,7 +231,8 @@ public final class MovieAttributes implements MovieTag {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        return String.format(FORMAT, attributes);
+        return String.format(FORMAT, version, frameSize, getFrameRate(),
+                frameCount, compressed, metadata, actionscript3, network);
     }
 
     /** {@inheritDoc} */
@@ -146,12 +245,20 @@ public final class MovieAttributes implements MovieTag {
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
-        //CHECKSTYLE:OFF
-        coder.writeHeader(MovieTypes.FILE_ATTRIBUTES, 4);
-        //CHECKSTYLE:ON
-        coder.writeByte(attributes);
-        coder.writeByte(0);
-        coder.writeByte(0);
-        coder.writeByte(0);
+        frameSize.encode(coder, context);
+        coder.writeI16(frameRate);
+        coder.writeI16(frameCount);
+
+        if (version > 7) {
+            coder.writeHeader(MovieTypes.FILE_ATTRIBUTES, 4);
+            int flags = 0;
+            flags |= network ? 1 : 0;
+            flags |= actionscript3 ? 8 : 0;
+            flags |= metadata ? 16 : 0;
+            coder.writeByte(flags);
+            coder.writeByte(0);
+            coder.writeByte(0);
+            coder.writeByte(0);
+        }
     }
 }

@@ -45,6 +45,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 import com.flagstone.transform.Background;
 import com.flagstone.transform.Movie;
+import com.flagstone.transform.MovieAttributes;
 import com.flagstone.transform.Place2;
 import com.flagstone.transform.ShowFrame;
 import com.flagstone.transform.coder.ImageTag;
@@ -107,8 +108,11 @@ public final class PNGImageIT {
             final DefineShape3 shape = factory.defineEnclosingShape(uid++,
                     imageId, -xOrigin, -yOrigin, null);
 
-            movie.setFrameRate(1.0f);
-            movie.setFrameSize(shape.getBounds());
+            MovieAttributes attrs = new MovieAttributes();
+            attrs.setFrameRate(1.0f);
+            attrs.setFrameSize(shape.getBounds());
+
+            movie.add(attrs);
             movie.add(new Background(WebPalette.LIGHT_BLUE.color()));
             movie.add(image);
             movie.add(shape);

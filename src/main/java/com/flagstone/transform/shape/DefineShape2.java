@@ -34,7 +34,6 @@ package com.flagstone.transform.shape;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.Coder;
@@ -127,9 +126,8 @@ public final class DefineShape2 implements DefineTag {
 
         fillStyles = new ArrayList<FillStyle>();
         lineStyles = new ArrayList<LineStyle>();
-        final Map<Integer, Integer> vars = context.getVariables();
-        vars.put(Context.ARRAY_EXTENDED, 1);
-        vars.put(Context.TYPE, MovieTypes.DEFINE_SHAPE_2);
+        context.put(Context.ARRAY_EXTENDED, 1);
+        context.put(Context.TYPE, MovieTypes.DEFINE_SHAPE_2);
 
         int fillStyleCount = coder.readByte();
 
@@ -160,8 +158,8 @@ public final class DefineShape2 implements DefineTag {
             shape = new Shape(coder, context);
         }
 
-        vars.remove(Context.ARRAY_EXTENDED);
-        vars.remove(Context.TYPE);
+        context.remove(Context.ARRAY_EXTENDED);
+        context.remove(Context.TYPE);
         coder.unmark(length);
     }
 
@@ -380,8 +378,7 @@ public final class DefineShape2 implements DefineTag {
         fillBits = SWFEncoder.unsignedSize(fillStyles.size());
         lineBits = SWFEncoder.unsignedSize(lineStyles.size());
 
-        final Map<Integer, Integer> vars = context.getVariables();
-        if (vars.containsKey(Context.POSTSCRIPT)) {
+        if (context.contains(Context.POSTSCRIPT)) {
             if (fillBits == 0) {
                 fillBits = 1;
             }
@@ -404,15 +401,15 @@ public final class DefineShape2 implements DefineTag {
             length += style.prepareToEncode(context);
         }
 
-        vars.put(Context.ARRAY_EXTENDED, 1);
-        vars.put(Context.FILL_SIZE, fillBits);
-        vars.put(Context.LINE_SIZE, lineBits);
+        context.put(Context.ARRAY_EXTENDED, 1);
+        context.put(Context.FILL_SIZE, fillBits);
+        context.put(Context.LINE_SIZE, lineBits);
 
         length += shape.prepareToEncode(context);
 
-        vars.remove(Context.ARRAY_EXTENDED);
-        vars.put(Context.FILL_SIZE, 0);
-        vars.put(Context.LINE_SIZE, 0);
+        context.remove(Context.ARRAY_EXTENDED);
+        context.put(Context.FILL_SIZE, 0);
+        context.put(Context.LINE_SIZE, 0);
 
         return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH
                 : SWFEncoder.STD_LENGTH) + length;
@@ -449,16 +446,15 @@ public final class DefineShape2 implements DefineTag {
             style.encode(coder, context);
         }
 
-        final Map<Integer, Integer> vars = context.getVariables();
-        vars.put(Context.ARRAY_EXTENDED, 1);
-        vars.put(Context.FILL_SIZE, fillBits);
-        vars.put(Context.LINE_SIZE, lineBits);
+        context.put(Context.ARRAY_EXTENDED, 1);
+        context.put(Context.FILL_SIZE, fillBits);
+        context.put(Context.LINE_SIZE, lineBits);
 
         shape.encode(coder, context);
 
-        vars.remove(Context.ARRAY_EXTENDED);
-        vars.put(Context.FILL_SIZE, 0);
-        vars.put(Context.LINE_SIZE, 0);
+        context.remove(Context.ARRAY_EXTENDED);
+        context.put(Context.FILL_SIZE, 0);
+        context.put(Context.LINE_SIZE, 0);
         coder.unmark(length);
     }
 }

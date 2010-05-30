@@ -32,7 +32,6 @@ package com.flagstone.transform.shape;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.Coder;
@@ -108,9 +107,8 @@ public final class DefineShape3 implements DefineTag {
         }
         coder.mark();
         identifier = coder.readUnsignedShort();
-        final Map<Integer, Integer> vars = context.getVariables();
-        vars.put(Context.TRANSPARENT, 1);
-        vars.put(Context.TYPE, MovieTypes.DEFINE_SHAPE_3);
+        context.put(Context.TRANSPARENT, 1);
+        context.put(Context.TYPE, MovieTypes.DEFINE_SHAPE_3);
 
         bounds = new Bounds(coder);
 
@@ -139,7 +137,7 @@ public final class DefineShape3 implements DefineTag {
             lineStyles.add(new LineStyle(coder, context));
         }
 
-        vars.put(Context.ARRAY_EXTENDED, 1);
+        context.put(Context.ARRAY_EXTENDED, 1);
 
         if (context.getRegistry().getShapeDecoder() == null) {
             shape = new Shape();
@@ -148,9 +146,9 @@ public final class DefineShape3 implements DefineTag {
             shape = new Shape(coder, context);
         }
 
-        vars.remove(Context.TRANSPARENT);
-        vars.remove(Context.ARRAY_EXTENDED);
-        vars.remove(Context.TYPE);
+        context.remove(Context.TRANSPARENT);
+        context.remove(Context.ARRAY_EXTENDED);
+        context.remove(Context.TYPE);
         coder.unmark(length);
     }
 
@@ -369,8 +367,7 @@ public final class DefineShape3 implements DefineTag {
         fillBits = SWFEncoder.unsignedSize(fillStyles.size());
         lineBits = SWFEncoder.unsignedSize(lineStyles.size());
 
-        final Map<Integer, Integer> vars = context.getVariables();
-        if (vars.containsKey(Context.POSTSCRIPT)) {
+        if (context.contains(Context.POSTSCRIPT)) {
             if (fillBits == 0) {
                 fillBits = 1;
             }
@@ -380,7 +377,7 @@ public final class DefineShape3 implements DefineTag {
             }
         }
 
-        vars.put(Context.TRANSPARENT, 1);
+        context.put(Context.TRANSPARENT, 1);
 
         length = 2 + bounds.prepareToEncode(context);
 
@@ -396,16 +393,16 @@ public final class DefineShape3 implements DefineTag {
             length += style.prepareToEncode(context);
         }
 
-        vars.put(Context.ARRAY_EXTENDED, 1);
-        vars.put(Context.FILL_SIZE, fillBits);
-        vars.put(Context.LINE_SIZE, lineBits);
+        context.put(Context.ARRAY_EXTENDED, 1);
+        context.put(Context.FILL_SIZE, fillBits);
+        context.put(Context.LINE_SIZE, lineBits);
 
         length += shape.prepareToEncode(context);
 
-        vars.remove(Context.ARRAY_EXTENDED);
-        vars.put(Context.FILL_SIZE, 0);
-        vars.put(Context.LINE_SIZE, 0);
-        vars.remove(Context.TRANSPARENT);
+        context.remove(Context.ARRAY_EXTENDED);
+        context.put(Context.FILL_SIZE, 0);
+        context.put(Context.LINE_SIZE, 0);
+        context.remove(Context.TRANSPARENT);
 
         return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH
                 : SWFEncoder.STD_LENGTH) + length;
@@ -418,8 +415,7 @@ public final class DefineShape3 implements DefineTag {
         coder.writeHeader(MovieTypes.DEFINE_SHAPE_3, length);
         coder.mark();
         coder.writeI16(identifier);
-        final Map<Integer, Integer> vars = context.getVariables();
-        vars.put(Context.TRANSPARENT, 1);
+        context.put(Context.TRANSPARENT, 1);
 
         bounds.encode(coder, context);
 
@@ -445,16 +441,16 @@ public final class DefineShape3 implements DefineTag {
             style.encode(coder, context);
         }
 
-        vars.put(Context.ARRAY_EXTENDED, 1);
-        vars.put(Context.FILL_SIZE, fillBits);
-        vars.put(Context.LINE_SIZE, lineBits);
+        context.put(Context.ARRAY_EXTENDED, 1);
+        context.put(Context.FILL_SIZE, fillBits);
+        context.put(Context.LINE_SIZE, lineBits);
 
         shape.encode(coder, context);
 
-        vars.remove(Context.ARRAY_EXTENDED);
-        vars.put(Context.FILL_SIZE, 0);
-        vars.put(Context.LINE_SIZE, 0);
-        vars.remove(Context.TRANSPARENT);
+        context.remove(Context.ARRAY_EXTENDED);
+        context.put(Context.FILL_SIZE, 0);
+        context.put(Context.LINE_SIZE, 0);
+        context.remove(Context.TRANSPARENT);
         coder.unmark(length);
     }
 }

@@ -34,7 +34,6 @@ package com.flagstone.transform.shape;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.Coder;
@@ -150,10 +149,9 @@ public final class DefineMorphShape implements DefineTag {
         }
         coder.mark();
         coder.mark();
-        final Map<Integer, Integer> vars = context.getVariables();
-        vars.put(Context.TRANSPARENT, 1);
-        vars.put(Context.ARRAY_EXTENDED, 1);
-        vars.put(Context.TYPE, MovieTypes.DEFINE_MORPH_SHAPE);
+        context.put(Context.TRANSPARENT, 1);
+        context.put(Context.ARRAY_EXTENDED, 1);
+        context.put(Context.TYPE, MovieTypes.DEFINE_MORPH_SHAPE);
 
         identifier = coder.readUnsignedShort();
 
@@ -167,7 +165,7 @@ public final class DefineMorphShape implements DefineTag {
 
         int fillStyleCount = coder.readByte();
 
-        if (vars.containsKey(Context.ARRAY_EXTENDED)
+        if (context.contains(Context.ARRAY_EXTENDED)
                 && (fillStyleCount == EXTENDED)) {
             fillStyleCount = coder.readUnsignedShort();
         }
@@ -181,7 +179,7 @@ public final class DefineMorphShape implements DefineTag {
 
         int lineStyleCount = coder.readByte();
 
-        if (vars.containsKey(Context.ARRAY_EXTENDED)
+        if (context.contains(Context.ARRAY_EXTENDED)
                 && (lineStyleCount == EXTENDED)) {
             lineStyleCount = coder.readUnsignedShort();
         }
@@ -209,9 +207,9 @@ public final class DefineMorphShape implements DefineTag {
             coder.unmark();
         }
 
-        vars.remove(Context.TRANSPARENT);
-        vars.put(Context.ARRAY_EXTENDED, 1);
-        vars.remove(Context.TYPE);
+        context.remove(Context.TRANSPARENT);
+        context.put(Context.ARRAY_EXTENDED, 1);
+        context.remove(Context.TYPE);
         // known bug - empty objects may be added to Flash file.
         if (length - coder.bytesRead() != 33) {
             coder.unmark(length);
@@ -495,9 +493,7 @@ public final class DefineMorphShape implements DefineTag {
         fillBits = SWFEncoder.unsignedSize(fillStyles.size());
         lineBits = SWFEncoder.unsignedSize(lineStyles.size());
 
-        final Map<Integer, Integer> vars = context.getVariables();
-
-        if (vars.containsKey(Context.POSTSCRIPT)) {
+        if (context.contains(Context.POSTSCRIPT)) {
             if (fillBits == 0) {
                 fillBits = 1;
             }
@@ -507,7 +503,7 @@ public final class DefineMorphShape implements DefineTag {
             }
         }
 
-        vars.put(Context.TRANSPARENT, 1);
+        context.put(Context.TRANSPARENT, 1);
 
         length = 2 + startBounds.prepareToEncode(context);
         length += endBounds.prepareToEncode(context);
@@ -526,20 +522,20 @@ public final class DefineMorphShape implements DefineTag {
             length += style.prepareToEncode(context);
         }
 
-        vars.put(Context.ARRAY_EXTENDED, 1);
-        vars.put(Context.FILL_SIZE, fillBits);
-        vars.put(Context.LINE_SIZE, lineBits);
+        context.put(Context.ARRAY_EXTENDED, 1);
+        context.put(Context.FILL_SIZE, fillBits);
+        context.put(Context.LINE_SIZE, lineBits);
 
         length += startShape.prepareToEncode(context);
         offset = length - offset;
         // Number of Fill and Line bits is zero for end shape.
-        vars.put(Context.FILL_SIZE, 0);
-        vars.put(Context.LINE_SIZE, 0);
+        context.put(Context.FILL_SIZE, 0);
+        context.put(Context.LINE_SIZE, 0);
 
         length += endShape.prepareToEncode(context);
 
-        vars.remove(Context.ARRAY_EXTENDED);
-        vars.remove(Context.TRANSPARENT);
+        context.remove(Context.ARRAY_EXTENDED);
+        context.remove(Context.TRANSPARENT);
 
         return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH
                 : SWFEncoder.STD_LENGTH) + length;
@@ -553,8 +549,7 @@ public final class DefineMorphShape implements DefineTag {
         coder.writeHeader(MovieTypes.DEFINE_MORPH_SHAPE, length);
         coder.mark();
         coder.writeI16(identifier);
-        final Map<Integer, Integer> vars = context.getVariables();
-        vars.put(Context.TRANSPARENT, 1);
+        context.put(Context.TRANSPARENT, 1);
 
         startBounds.encode(coder, context);
         endBounds.encode(coder, context);
@@ -582,20 +577,20 @@ public final class DefineMorphShape implements DefineTag {
             style.encode(coder, context);
         }
 
-        vars.put(Context.ARRAY_EXTENDED, 1);
-        vars.put(Context.FILL_SIZE, fillBits);
-        vars.put(Context.LINE_SIZE, lineBits);
+        context.put(Context.ARRAY_EXTENDED, 1);
+        context.put(Context.FILL_SIZE, fillBits);
+        context.put(Context.LINE_SIZE, lineBits);
 
         startShape.encode(coder, context);
 
         // Number of Fill and Line bits is zero for end shape.
-        vars.put(Context.FILL_SIZE, 0);
-        vars.put(Context.LINE_SIZE, 0);
+        context.put(Context.FILL_SIZE, 0);
+        context.put(Context.LINE_SIZE, 0);
 
         endShape.encode(coder, context);
 
-        vars.remove(Context.ARRAY_EXTENDED);
-        vars.remove(Context.TRANSPARENT);
+        context.remove(Context.ARRAY_EXTENDED);
+        context.remove(Context.TRANSPARENT);
         coder.unmark(length);
     }
 }

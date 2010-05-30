@@ -34,7 +34,6 @@ package com.flagstone.transform.font;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.Coder;
@@ -147,10 +146,8 @@ public final class DefineFont2 implements DefineTag {
         italic = (bits & Coder.BIT1) != 0;
         bold = (bits & Coder.BIT0) != 0;
 
-        final Map<Integer, Integer> vars = context.getVariables();
-
         if (wideCodes) {
-            vars.put(Context.WIDE_CODES, 1);
+            context.put(Context.WIDE_CODES, 1);
         }
 
         language = coder.readByte();
@@ -222,7 +219,7 @@ public final class DefineFont2 implements DefineTag {
             }
         }
 
-        vars.remove(Context.WIDE_CODES);
+        context.remove(Context.WIDE_CODES);
         coder.unmark(length);
     }
 
@@ -749,16 +746,15 @@ public final class DefineFont2 implements DefineTag {
     // TODO(optimise)
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
-        wideCodes = (context.getVariables().get(Context.VERSION) > 5)
+        wideCodes = (context.get(Context.VERSION) > 5)
                 || encoding != 1;
 
-        final Map<Integer, Integer> vars = context.getVariables();
-        vars.put(Context.FILL_SIZE, 1);
-        vars.put(Context.LINE_SIZE, vars.containsKey(Context.POSTSCRIPT) ? 1
+        context.put(Context.FILL_SIZE, 1);
+        context.put(Context.LINE_SIZE, context.contains(Context.POSTSCRIPT) ? 1
                 : 0);
 
         if (wideCodes) {
-            vars.put(Context.WIDE_CODES, 1);
+            context.put(Context.WIDE_CODES, 1);
         }
 
         int index = 0;
@@ -807,9 +803,9 @@ public final class DefineFont2 implements DefineTag {
             length += kernings.size() * (wideCodes ? 6 : 4);
         }
 
-        vars.put(Context.FILL_SIZE, 0);
-        vars.put(Context.LINE_SIZE, 0);
-        vars.remove(Context.WIDE_CODES);
+        context.put(Context.FILL_SIZE, 0);
+        context.put(Context.LINE_SIZE, 0);
+        context.remove(Context.WIDE_CODES);
 
         return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH
                 : SWFEncoder.STD_LENGTH) + length;
@@ -820,8 +816,6 @@ public final class DefineFont2 implements DefineTag {
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
         int format;
-        final Map<Integer, Integer> vars = context.getVariables();
-
         if (encoding == 1) {
             format = 1;
         } else if (small) {
@@ -835,12 +829,12 @@ public final class DefineFont2 implements DefineTag {
         coder.writeHeader(MovieTypes.DEFINE_FONT_2, length);
         coder.mark();
         coder.writeI16(identifier);
-        vars.put(Context.FILL_SIZE, 1);
-        vars.put(Context.LINE_SIZE, vars.containsKey(Context.POSTSCRIPT) ? 1
+        context.put(Context.FILL_SIZE, 1);
+        context.put(Context.LINE_SIZE, context.contains(Context.POSTSCRIPT) ? 1
                 : 0);
 
         if (wideCodes) {
-            vars.put(Context.WIDE_CODES, 1);
+            context.put(Context.WIDE_CODES, 1);
         }
 
         int bits = 0;
@@ -852,7 +846,7 @@ public final class DefineFont2 implements DefineTag {
         bits |= bold ? Coder.BIT0 : 0;
         coder.writeByte(bits);
 
-        coder.writeWord(vars.get(Context.VERSION) > SWF.SWF5 ? language : 0, 1);
+        coder.writeWord(context.get(Context.VERSION) > SWF.SWF5 ? language : 0, 1);
         coder.writeWord(context.strlen(name), 1);
 
         coder.writeString(name);
@@ -896,9 +890,9 @@ public final class DefineFont2 implements DefineTag {
             }
         }
 
-        vars.put(Context.FILL_SIZE, 0);
-        vars.put(Context.LINE_SIZE, 0);
-        vars.remove(Context.WIDE_CODES);
+        context.put(Context.FILL_SIZE, 0);
+        context.put(Context.LINE_SIZE, 0);
+        context.remove(Context.WIDE_CODES);
         coder.unmark(length);
     }
 

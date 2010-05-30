@@ -106,7 +106,7 @@ public final class Color implements SWFEncodeable {
         green = coder.readByte();
         blue = coder.readByte();
 
-        if (context.getVariables().containsKey(Context.TRANSPARENT)) {
+        if (context.contains(Context.TRANSPARENT)) {
             alpha = coder.readByte();
         } else {
             alpha = MAX_LEVEL;
@@ -234,7 +234,7 @@ public final class Color implements SWFEncodeable {
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
         int size;
-        if (context.getVariables().containsKey(Context.TRANSPARENT)) {
+        if (context.contains(Context.TRANSPARENT)) {
             size = RGBA;
         } else {
             size = RGB;
@@ -249,7 +249,7 @@ public final class Color implements SWFEncodeable {
         coder.writeByte(green);
         coder.writeByte(blue);
 
-        if (context.getVariables().containsKey(Context.TRANSPARENT)) {
+        if (context.contains(Context.TRANSPARENT)) {
             coder.writeByte(alpha);
         }
     }

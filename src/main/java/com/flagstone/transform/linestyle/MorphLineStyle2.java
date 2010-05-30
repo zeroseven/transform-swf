@@ -452,7 +452,7 @@ public final class MorphLineStyle2 implements SWFEncodeable,
         }
 
         if (horizontal || vertical) {
-            context.getVariables().put(Context.SCALING_STROKE, 1);
+            context.put(Context.SCALING_STROKE, 1);
         }
 
         return length;

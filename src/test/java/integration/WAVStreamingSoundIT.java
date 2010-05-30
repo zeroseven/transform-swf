@@ -48,6 +48,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 import com.flagstone.transform.Background;
 import com.flagstone.transform.Movie;
+import com.flagstone.transform.MovieAttributes;
 import com.flagstone.transform.ShowFrame;
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.datatype.Bounds;
@@ -105,8 +106,11 @@ public final class WAVStreamingSoundIT {
             final List<MovieTag> stream = factory.streamSound(
                     (int) framesPerSecond);
 
-            movie.setFrameSize(new Bounds(0, 0, 8000, 4000));
-            movie.setFrameRate(framesPerSecond);
+            MovieAttributes attrs = new MovieAttributes();
+            attrs.setFrameSize(new Bounds(0, 0, 8000, 4000));
+            attrs.setFrameRate(framesPerSecond);
+
+            movie.add(attrs);
             movie.add(new Background(WebPalette.LIGHT_BLUE.color()));
 
             movie.add(stream.remove(0));

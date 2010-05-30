@@ -31,11 +31,10 @@
 
 package com.flagstone.transform.text;
 
-import java.util.Map;
+import java.io.IOException;
 
 import com.flagstone.transform.Constants;
 import com.flagstone.transform.SWF;
-import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
@@ -91,9 +90,8 @@ public final class GlyphIndex implements SWFEncodeable {
      */
     public GlyphIndex(final SWFDecoder coder, final Context context)
             throws IOException {
-        final Map<Integer, Integer> vars = context.getVariables();
-        index = coder.readBits(vars.get(Context.GLYPH_SIZE), false);
-        advance = coder.readBits(vars.get(Context.ADVANCE_SIZE), true);
+        index = coder.readBits(context.get(Context.GLYPH_SIZE), false);
+        advance = coder.readBits(context.get(Context.ADVANCE_SIZE), true);
     }
 
     /**
@@ -172,15 +170,13 @@ public final class GlyphIndex implements SWFEncodeable {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
-        final Map<Integer, Integer> vars = context.getVariables();
-        return vars.get(Context.GLYPH_SIZE) + vars.get(Context.ADVANCE_SIZE);
+        return context.get(Context.GLYPH_SIZE) + context.get(Context.ADVANCE_SIZE);
     }
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
-        final Map<Integer, Integer> vars = context.getVariables();
-        coder.writeBits(index, vars.get(Context.GLYPH_SIZE));
-        coder.writeBits(advance, vars.get(Context.ADVANCE_SIZE));
+        coder.writeBits(index, context.get(Context.GLYPH_SIZE));
+        coder.writeBits(advance, context.get(Context.ADVANCE_SIZE));
     }
 }

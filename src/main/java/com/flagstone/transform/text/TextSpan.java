@@ -34,7 +34,6 @@ package com.flagstone.transform.text;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.Coder;
@@ -399,11 +398,9 @@ public final class TextSpan implements SWFEncodeable {
         hasStyle = hasFont || hasColor || hasX || hasY;
 
         int length = 1;
-        final Map<Integer, Integer> vars = context.getVariables();
-
         if (hasStyle) {
             length += (hasFont) ? 2 : 0;
-            length += (hasColor) ? (vars.containsKey(Context.TRANSPARENT) ? 4
+            length += (hasColor) ? (context.contains(Context.TRANSPARENT) ? 4
                     : 3) : 0;
             length += (hasY) ? 2 : 0;
             length += (hasX) ? 2 : 0;
@@ -413,8 +410,8 @@ public final class TextSpan implements SWFEncodeable {
         length += 1;
 
         if (!characters.isEmpty()) {
-            final int glyphSize = vars.get(Context.GLYPH_SIZE);
-            final int advanceSize = vars.get(Context.ADVANCE_SIZE);
+            final int glyphSize = context.get(Context.GLYPH_SIZE);
+            final int advanceSize = context.get(Context.ADVANCE_SIZE);
 
             int numberOfBits = (glyphSize + advanceSize) * characters.size();
             numberOfBits += (numberOfBits % 8 > 0) ? 8 - (numberOfBits % 8) : 0;

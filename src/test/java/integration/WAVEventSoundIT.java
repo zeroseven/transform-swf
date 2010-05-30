@@ -47,6 +47,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 import com.flagstone.transform.Background;
 import com.flagstone.transform.Movie;
+import com.flagstone.transform.MovieAttributes;
 import com.flagstone.transform.ShowFrame;
 import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.datatype.WebPalette;
@@ -106,8 +107,11 @@ public final class WAVEventSoundIT {
             factory.read(sourceFile);
             final DefineSound sound = factory.defineSound(uid++);
 
-            movie.setFrameSize(new Bounds(0, 0, 8000, 4000));
-            movie.setFrameRate(framesPerSecond);
+            MovieAttributes attrs = new MovieAttributes();
+            attrs.setFrameSize(new Bounds(0, 0, 8000, 4000));
+            attrs.setFrameRate(framesPerSecond);
+
+            movie.add(attrs);
             movie.add(new Background(WebPalette.LIGHT_BLUE.color()));
 
             final float duration = ((float) sound.getSampleCount()

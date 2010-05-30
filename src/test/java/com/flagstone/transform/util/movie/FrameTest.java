@@ -34,6 +34,7 @@ package com.flagstone.transform.util.movie;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,12 +44,12 @@ import org.junit.Test;
 import com.flagstone.transform.DoAction;
 import com.flagstone.transform.FrameLabel;
 import com.flagstone.transform.Movie;
+import com.flagstone.transform.MovieAttributes;
 import com.flagstone.transform.Place2;
 import com.flagstone.transform.ShowFrame;
 import com.flagstone.transform.action.Action;
 import com.flagstone.transform.action.GotoFrame2;
 import com.flagstone.transform.action.Push;
-import java.io.IOException;
 import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.text.DefineTextField;
 
@@ -58,8 +59,10 @@ public final class FrameTest {
     @Before
     public void setUp() {
         movie = new Movie();
-        movie.setFrameSize(new Bounds(0, 0, 100, 100));
-        movie.setFrameRate(1.0f);
+        MovieAttributes attrs = new MovieAttributes();
+        attrs.setFrameSize(new Bounds(0, 0, 100, 100));
+        attrs.setFrameRate(1.0f);
+        movie.add(attrs);
     }
 
     @Test

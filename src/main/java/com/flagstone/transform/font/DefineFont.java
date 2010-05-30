@@ -34,7 +34,6 @@ package com.flagstone.transform.font;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.Coder;
@@ -225,9 +224,8 @@ public final class DefineFont implements DefineTag {
     public int prepareToEncode(final Context context) {
         length = 2;
 
-        final Map<Integer, Integer> vars = context.getVariables();
-        vars.put(Context.FILL_SIZE, 1);
-        vars.put(Context.LINE_SIZE, vars.containsKey(Context.POSTSCRIPT) ? 1
+        context.put(Context.FILL_SIZE, 1);
+        context.put(Context.LINE_SIZE, context.contains(Context.POSTSCRIPT) ? 1
                 : 0);
 
         int index = 0;
@@ -247,8 +245,8 @@ public final class DefineFont implements DefineTag {
             length += shapeLength;
         }
 
-        vars.put(Context.FILL_SIZE, 0);
-        vars.put(Context.LINE_SIZE, 0);
+        context.put(Context.FILL_SIZE, 0);
+        context.put(Context.LINE_SIZE, 0);
 
         return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH
                 : SWFEncoder.STD_LENGTH) + length;
@@ -262,9 +260,8 @@ public final class DefineFont implements DefineTag {
         coder.mark();
         coder.writeI16(identifier);
 
-        final Map<Integer, Integer> vars = context.getVariables();
-        vars.put(Context.FILL_SIZE, 1);
-        vars.put(Context.LINE_SIZE, vars.containsKey(Context.POSTSCRIPT) ? 1
+        context.put(Context.FILL_SIZE, 1);
+        context.put(Context.LINE_SIZE, context.contains(Context.POSTSCRIPT) ? 1
                 : 0);
 
         for (int i = 0; i < table.length - 1; i++) {
@@ -275,8 +272,8 @@ public final class DefineFont implements DefineTag {
             shape.encode(coder, context);
         }
 
-        vars.put(Context.FILL_SIZE, 0);
-        vars.put(Context.LINE_SIZE, 0);
+        context.put(Context.FILL_SIZE, 0);
+        context.put(Context.LINE_SIZE, 0);
         coder.unmark(length);
     }
 }

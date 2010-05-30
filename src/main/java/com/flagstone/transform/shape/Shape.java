@@ -35,7 +35,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -91,10 +90,9 @@ public final class Shape implements SWFEncodeable {
             throws IOException {
         objects = new ArrayList<ShapeRecord>();
 
-        final Map<Integer, Integer> vars = context.getVariables();
         final int sizes = coder.readByte();
-        vars.put(Context.FILL_SIZE, (sizes & 0x00F0) >> 4);
-        vars.put(Context.LINE_SIZE, sizes & 0x000F);
+        context.put(Context.FILL_SIZE, (sizes & 0x00F0) >> 4);
+        context.put(Context.LINE_SIZE, sizes & 0x000F);
 
         final SWFFactory<ShapeRecord> decoder = context.getRegistry().getShapeDecoder();
         ShapeRecord record = null;
@@ -192,7 +190,7 @@ public final class Shape implements SWFEncodeable {
         if (isEncoded) {
             length += objects.get(0).prepareToEncode(context);
         } else {
-            context.getVariables().put(Context.SHAPE_SIZE, 0);
+            context.put(Context.SHAPE_SIZE, 0);
 
             int numberOfBits = 8;
 
@@ -212,9 +210,8 @@ public final class Shape implements SWFEncodeable {
         if (isEncoded) {
             objects.get(0).encode(coder, context);
         } else {
-            final Map<Integer, Integer> vars = context.getVariables();
-            int bits = vars.get(Context.FILL_SIZE) << 4;
-            bits |= vars.get(Context.LINE_SIZE);
+            int bits = context.get(Context.FILL_SIZE) << 4;
+            bits |= context.get(Context.LINE_SIZE);
             coder.writeByte(bits);
 
             for (final ShapeRecord record : objects) {

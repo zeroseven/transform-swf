@@ -35,6 +35,8 @@ package com.flagstone.transform;
  * SWF contains definitions of constants used throughout the framework.
  */
 public final class SWF {
+    /** The version of Flash supported. */
+    public static final int VERSION = 10;
     /**
      * The lowest value that can be used as a unique identifier.
      */

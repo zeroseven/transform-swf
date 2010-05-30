@@ -299,7 +299,7 @@ public final class GradientFill implements FillStyle {
         count = gradients.size();
         return 2
                 + transform.prepareToEncode(context)
-                + (count * (context.getVariables().containsKey(
+                + (count * (context.contains(
                         Context.TRANSPARENT) ? 5 : 4));
         // CHECKSTYLE:ON
     }

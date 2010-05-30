@@ -92,7 +92,7 @@ public final class MorphGradientTest {
     public void encode() throws IOException {
         final SWFEncoder encoder = new SWFEncoder(encoded.length);
         final Context context = new Context();
-        context.getVariables().put(Context.TRANSPARENT, 1);
+        context.put(Context.TRANSPARENT, 1);
 
         fixture = new MorphGradient(new Gradient(startRatio, startColor),
                 new Gradient(endRatio, endColor));
@@ -108,7 +108,7 @@ public final class MorphGradientTest {
         final ByteArrayInputStream stream = new ByteArrayInputStream(encoded);
         final SWFDecoder decoder = new SWFDecoder(stream);
         final Context context = new Context();
-        context.getVariables().put(Context.TRANSPARENT, 1);
+        context.put(Context.TRANSPARENT, 1);
 
         fixture = new MorphGradient(decoder, context);
 

@@ -69,13 +69,17 @@ public final class Context {
     public static final int SHAPE_SIZE = 15;
     /** TODO(doc). */
     public static final int LAST = 16;
+    /** TODO(doc). */
+    public static final int COMPRESSED = 17;
+    /** TODO(doc). */
+    public static final int FRAMES = 18;
 
     /** The character encoding used for strings. */
     private String encoding;
     /** The registry containing the objects that perform the decoding. */
     private DecoderRegistry registry;
     /** A table of variables used to pass information between objects. */
-    private Map<Integer, Integer> variables;
+    private final Map<Integer, Integer> variables;
 
     /**
      * Create a Context object.
@@ -147,19 +151,25 @@ public final class Context {
     }
 
     /**
-     * Get the table of variables used to exchange information between objects.
-     * @return the variable table.
+     * Is a variable set.
+     * @param key the name of the variable.
+     * @return true if the variable is set, false if not.
      */
-    public Map<Integer, Integer> getVariables() {
-        return variables;
+    public boolean contains(final Integer key) {
+        return variables.containsKey(key);
+    }
+
+    public void remove(final Integer key) {
+        variables.remove(key);
     }
 
     /**
-     * Set the table of variables used to exchange information between objects.
-     * @param map the variable table.
+     * Get the value of a variable.
+     * @param key the name of the variable.
+     * @return the variable value.
      */
-    public void setVariables(final Map<Integer, Integer> map) {
-        variables = map;
+    public Integer get(final Integer key) {
+        return variables.get(key);
     }
 
     /**

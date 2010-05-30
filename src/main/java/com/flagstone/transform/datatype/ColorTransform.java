@@ -181,7 +181,7 @@ public final class ColorTransform implements SWFEncodeable {
     public ColorTransform(final SWFDecoder coder, final Context context)
             throws IOException {
 
-        hasAlpha = context.getVariables().containsKey(Context.TRANSPARENT);
+        hasAlpha = context.contains(Context.TRANSPARENT);
         hasAdd = coder.readBits(1, false) != 0;
         hasMultiply = coder.readBits(1, false) != 0;
         size = coder.readBits(FIELD_SIZE, false);
@@ -442,7 +442,7 @@ public final class ColorTransform implements SWFEncodeable {
 
         int numberOfBits = 2 + FIELD_SIZE + Coder.ROUND_TO_BYTES;
 
-        hasAlpha = context.getVariables().containsKey(Context.TRANSPARENT);
+        hasAlpha = context.contains(Context.TRANSPARENT);
         size = 0;
 
         int numberOfBytes;

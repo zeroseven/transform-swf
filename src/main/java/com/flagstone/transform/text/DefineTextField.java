@@ -32,7 +32,6 @@
 package com.flagstone.transform.text;
 
 import java.io.IOException;
-import java.util.Map;
 
 import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.Coder;
@@ -289,8 +288,7 @@ public final class DefineTextField implements DefineTag {
         }
         coder.mark();
         identifier = coder.readUnsignedShort();
-        final Map<Integer, Integer> vars = context.getVariables();
-        vars.put(Context.TRANSPARENT, 1);
+        context.put(Context.TRANSPARENT, 1);
 
         bounds = new Bounds(coder);
 
@@ -345,7 +343,7 @@ public final class DefineTextField implements DefineTag {
             initialText = coder.readString();
         }
 
-        vars.remove(Context.TRANSPARENT);
+        context.remove(Context.TRANSPARENT);
         coder.unmark(length);
     }
 
@@ -1002,8 +1000,7 @@ public final class DefineTextField implements DefineTag {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
-        final Map<Integer, Integer> vars = context.getVariables();
-        vars.put(Context.TRANSPARENT, 1);
+        context.put(Context.TRANSPARENT, 1);
 
         length = 2 + bounds.prepareToEncode(context);
         length += 2;
@@ -1015,7 +1012,7 @@ public final class DefineTextField implements DefineTag {
         length += context.strlen(variableName);
         length += (initialText == null) ? 0 : context.strlen(initialText);
 
-        vars.remove(Context.TRANSPARENT);
+        context.remove(Context.TRANSPARENT);
 
         return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH
                 : SWFEncoder.STD_LENGTH) + length;
@@ -1027,8 +1024,7 @@ public final class DefineTextField implements DefineTag {
 
         coder.writeHeader(MovieTypes.DEFINE_TEXT_FIELD, length);
         coder.mark();
-        final Map<Integer, Integer> vars = context.getVariables();
-        vars.put(Context.TRANSPARENT, 1);
+        context.put(Context.TRANSPARENT, 1);
 
         coder.writeI16(identifier);
         bounds.encode(coder, context);
@@ -1083,7 +1079,7 @@ public final class DefineTextField implements DefineTag {
         if (initialText != null) {
             coder.writeString(initialText);
         }
-        vars.remove(Context.TRANSPARENT);
+        context.remove(Context.TRANSPARENT);
         coder.unmark(length);
     }
 

@@ -325,7 +325,7 @@ public final class MovieClipEventHandler implements SWFEncodeable {
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
         final int eventSize;
-        if (context.getVariables().get(Context.VERSION) > 5) {
+        if (context.get(Context.VERSION) > 5) {
             eventSize = 4;
         } else {
             eventSize = 2;
@@ -348,7 +348,7 @@ public final class MovieClipEventHandler implements SWFEncodeable {
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
         final int eventSize;
-        if (context.getVariables().get(Context.VERSION) > 5) {
+        if (context.get(Context.VERSION) > 5) {
             eventSize = 4;
         } else {
             eventSize = 2;

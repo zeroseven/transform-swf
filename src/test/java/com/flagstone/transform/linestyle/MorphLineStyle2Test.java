@@ -78,7 +78,7 @@ public final class MorphLineStyle2Test {
     public void encode() throws IOException {
         final SWFEncoder encoder = new SWFEncoder(encoded.length);
         final Context context = new Context();
-        context.getVariables().put(Context.TRANSPARENT, 1);
+        context.put(Context.TRANSPARENT, 1);
 
         fixture = new MorphLineStyle2(startWidth, endWidth, startColor,
                 endColor);
@@ -95,7 +95,7 @@ public final class MorphLineStyle2Test {
         final ByteArrayInputStream stream = new ByteArrayInputStream(encoded);
         final SWFDecoder decoder = new SWFDecoder(stream);
         final Context context = new Context();
-        context.getVariables().put(Context.TRANSPARENT, 1);
+        context.put(Context.TRANSPARENT, 1);
 
         fixture = new MorphLineStyle2(decoder, context);
 

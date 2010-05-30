@@ -35,6 +35,7 @@ import java.io.File;
 
 import com.flagstone.transform.Background;
 import com.flagstone.transform.Movie;
+import com.flagstone.transform.MovieAttributes;
 import com.flagstone.transform.ShowFrame;
 import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.datatype.WebPalette;
@@ -74,9 +75,11 @@ public final class PlayEventSound {
 
             final float framesPerSecond = 12.0f;
 
-            movie.setFrameSize(new Bounds(0, 0, screenWidth, screenHeight));
-            movie.setFrameRate(framesPerSecond);
+            MovieAttributes attrs = new MovieAttributes();
+            attrs.setFrameSize(new Bounds(0, 0, screenWidth, screenHeight));
+            attrs.setFrameRate(framesPerSecond);
 
+            movie.add(attrs);
             movie.add(new Background(WebPalette.LIGHT_BLUE.color()));
 
             final int soundId = uid++;

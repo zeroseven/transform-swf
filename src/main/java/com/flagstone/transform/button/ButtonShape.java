@@ -141,7 +141,7 @@ public final class ButtonShape implements SWFEncodeable {
         layer = coder.readUnsignedShort();
         transform = new CoordTransform(coder);
 
-        if (context.getVariables().get(Context.TYPE)
+        if (context.get(Context.TYPE)
                 == MovieTypes.DEFINE_BUTTON_2) {
             colorTransform = new ColorTransform(coder, context);
         }
@@ -398,7 +398,7 @@ public final class ButtonShape implements SWFEncodeable {
 
         int length = 5 + transform.prepareToEncode(context);
 
-        if (context.getVariables().get(Context.TYPE)
+        if (context.get(Context.TYPE)
                 == MovieTypes.DEFINE_BUTTON_2) {
             length += colorTransform.prepareToEncode(context);
         }
@@ -429,7 +429,7 @@ public final class ButtonShape implements SWFEncodeable {
         coder.writeI16(layer);
         transform.encode(coder, context);
 
-        if (context.getVariables().get(Context.TYPE)
+        if (context.get(Context.TYPE)
                 == MovieTypes.DEFINE_BUTTON_2) {
             colorTransform.encode(coder, context);
         }

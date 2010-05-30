@@ -32,9 +32,11 @@
 package com.flagstone.transform;
 
 import java.io.IOException;
+
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.MovieTypes;
+import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
 /**
@@ -74,6 +76,27 @@ public final class ShowFrame implements MovieTag {
         return INSTANCE;
     }
 
+    /**
+     * Returns a shared ShowFrame object.
+     *
+     * @param coder
+     *            an SWFEncoder object.
+
+     * @param context a Context object used to obtain the total number of
+     * frames in a movie.
+     *
+     * @return an object that can safely be shared among objects.
+     *
+     * @throws IOException if an error occurs while encoding the object.
+     */
+    public static ShowFrame getInstance(final SWFDecoder coder,
+            final Context context) throws IOException {
+        int count = context.get(Context.FRAMES);
+        context.put(Context.FRAMES, count + 1);
+        coder.readUnsignedShort();
+        return INSTANCE;
+    }
+
     /** Private constructor for the singleton. */
     private ShowFrame() {
     }
@@ -91,6 +114,8 @@ public final class ShowFrame implements MovieTag {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
+        int count = context.get(Context.FRAMES);
+        context.put(Context.FRAMES, count + 1);
         return 2;
     }
 

@@ -34,7 +34,6 @@ package com.flagstone.transform;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
@@ -272,8 +271,7 @@ public final class Place3 implements MovieTag {
     // TODO(optimise)
     public Place3(final SWFDecoder coder, final Context context)
             throws IOException {
-        final Map<Integer, Integer> vars = context.getVariables();
-        vars.put(Context.TRANSPARENT, 1);
+        context.put(Context.TRANSPARENT, 1);
         length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
         if (length == Coder.IS_EXTENDED) {
             length = coder.readInt();
@@ -371,7 +369,7 @@ public final class Place3 implements MovieTag {
 
             coder.readUnsignedShort();
 
-            if (vars.get(Context.VERSION) > SWF.SWF5) {
+            if (context.get(Context.VERSION) > SWF.SWF5) {
                 coder.readInt();
 
                 while ((event = coder.readInt()) != 0) {
@@ -387,7 +385,7 @@ public final class Place3 implements MovieTag {
                 }
             }
         }
-        vars.remove(Context.TRANSPARENT);
+        context.remove(Context.TRANSPARENT);
         coder.unmark(length);
     }
 
@@ -786,8 +784,7 @@ public final class Place3 implements MovieTag {
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
         // CHECKSTYLE:OFF
-        final Map<Integer, Integer> vars = context.getVariables();
-        vars.put(Context.TRANSPARENT, 1);
+        context.put(Context.TRANSPARENT, 1);
 
         hasBlend = blend != null;
         hasFilters ^= filters.isEmpty();
@@ -819,7 +816,7 @@ public final class Place3 implements MovieTag {
         }
 
         if (!events.isEmpty()) {
-            final int eventSize = vars.get(Context.VERSION) > SWF.SWF5 ? 4 : 2;
+            final int eventSize = context.get(Context.VERSION) > SWF.SWF5 ? 4 : 2;
 
             length += 2 + eventSize;
 
@@ -830,7 +827,7 @@ public final class Place3 implements MovieTag {
             length += eventSize;
         }
 
-        vars.remove(Context.TRANSPARENT);
+        context.remove(Context.TRANSPARENT);
 
         return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH
                 : SWFEncoder.STD_LENGTH) + length;
@@ -843,8 +840,7 @@ public final class Place3 implements MovieTag {
         coder.writeHeader(MovieTypes.PLACE_3, length);
         coder.mark();
 
-        final Map<Integer, Integer> vars = context.getVariables();
-        vars.put(Context.TRANSPARENT, 1);
+        context.put(Context.TRANSPARENT, 1);
         int bits = 0;
         bits |= events.isEmpty() ? 0 : Coder.BIT7;
         bits |= depth == null ? 0 : Coder.BIT6;
@@ -914,7 +910,7 @@ public final class Place3 implements MovieTag {
         }
 
         if (!events.isEmpty()) {
-            final int eventSize = vars.get(Context.VERSION) > SWF.SWF5 ? 4 : 2;
+            final int eventSize = context.get(Context.VERSION) > SWF.SWF5 ? 4 : 2;
             int eventMask = 0;
 
             coder.writeI16(0);
@@ -931,7 +927,7 @@ public final class Place3 implements MovieTag {
 
             coder.writeWord(0, eventSize);
         }
-        vars.remove(Context.TRANSPARENT);
+        context.remove(Context.TRANSPARENT);
         coder.unmark(length);
     }
 }

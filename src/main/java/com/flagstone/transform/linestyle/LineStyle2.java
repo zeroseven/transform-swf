@@ -407,7 +407,7 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
         }
 
         if (horizontal || vertical) {
-            context.getVariables().put(Context.SCALING_STROKE, 1);
+            context.put(Context.SCALING_STROKE, 1);
         }
 
         return length;

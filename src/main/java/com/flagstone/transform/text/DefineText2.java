@@ -34,7 +34,6 @@ package com.flagstone.transform.text;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.Coder;
@@ -126,10 +125,9 @@ public final class DefineText2 implements DefineTag {
         glyphBits = coder.readByte();
         advanceBits = coder.readByte();
 
-        final Map<Integer, Integer> vars = context.getVariables();
-        vars.put(Context.TRANSPARENT, 1);
-        vars.put(Context.GLYPH_SIZE, glyphBits);
-        vars.put(Context.ADVANCE_SIZE, advanceBits);
+        context.put(Context.TRANSPARENT, 1);
+        context.put(Context.GLYPH_SIZE, glyphBits);
+        context.put(Context.ADVANCE_SIZE, advanceBits);
 
         objects = new ArrayList<TextSpan>();
 
@@ -139,9 +137,9 @@ public final class DefineText2 implements DefineTag {
 
         coder.readByte();
 
-        vars.remove(Context.TRANSPARENT);
-        vars.put(Context.GLYPH_SIZE, 0);
-        vars.put(Context.ADVANCE_SIZE, 0);
+        context.remove(Context.TRANSPARENT);
+        context.put(Context.GLYPH_SIZE, 0);
+        context.put(Context.ADVANCE_SIZE, 0);
         coder.unmark(length);
     }
 
@@ -320,10 +318,9 @@ public final class DefineText2 implements DefineTag {
         glyphBits = calculateSizeForGlyphs();
         advanceBits = calculateSizeForAdvances();
 
-        final Map<Integer, Integer> vars = context.getVariables();
-        vars.put(Context.TRANSPARENT, 1);
-        vars.put(Context.GLYPH_SIZE, glyphBits);
-        vars.put(Context.ADVANCE_SIZE, advanceBits);
+        context.put(Context.TRANSPARENT, 1);
+        context.put(Context.GLYPH_SIZE, glyphBits);
+        context.put(Context.ADVANCE_SIZE, advanceBits);
 
         length = 2 + bounds.prepareToEncode(context);
         length += transform.prepareToEncode(context);
@@ -335,9 +332,9 @@ public final class DefineText2 implements DefineTag {
 
         length += 1;
 
-        vars.remove(Context.TRANSPARENT);
-        vars.put(Context.GLYPH_SIZE, 0);
-        vars.put(Context.ADVANCE_SIZE, 0);
+        context.remove(Context.TRANSPARENT);
+        context.put(Context.GLYPH_SIZE, 0);
+        context.put(Context.ADVANCE_SIZE, 0);
 
         return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH
                 : SWFEncoder.STD_LENGTH) + length;
@@ -351,10 +348,9 @@ public final class DefineText2 implements DefineTag {
         coder.writeHeader(MovieTypes.DEFINE_TEXT_2, length);
         coder.mark();
         coder.writeI16(identifier);
-        final Map<Integer, Integer> vars = context.getVariables();
-        vars.put(Context.TRANSPARENT, 1);
-        vars.put(Context.GLYPH_SIZE, glyphBits);
-        vars.put(Context.ADVANCE_SIZE, advanceBits);
+        context.put(Context.TRANSPARENT, 1);
+        context.put(Context.GLYPH_SIZE, glyphBits);
+        context.put(Context.ADVANCE_SIZE, advanceBits);
 
         bounds.encode(coder, context);
         transform.encode(coder, context);
@@ -368,9 +364,9 @@ public final class DefineText2 implements DefineTag {
 
         coder.writeWord(0, 1);
 
-        vars.remove(Context.TRANSPARENT);
-        vars.put(Context.GLYPH_SIZE, 0);
-        vars.put(Context.ADVANCE_SIZE, 0);
+        context.remove(Context.TRANSPARENT);
+        context.put(Context.GLYPH_SIZE, 0);
+        context.put(Context.ADVANCE_SIZE, 0);
         coder.unmark(length);
     }
 

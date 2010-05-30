@@ -116,8 +116,7 @@ public final class MovieDecoder implements SWFFactory<MovieTag> {
 
         switch (coder.scanUnsignedShort() >> 6) {
         case MovieTypes.SHOW_FRAME:
-            obj = ShowFrame.getInstance();
-            coder.readUnsignedShort();
+            obj = ShowFrame.getInstance(coder, context);
             break;
         case MovieTypes.DEFINE_SHAPE:
             obj = new DefineShape(coder, context);
@@ -222,8 +221,7 @@ public final class MovieDecoder implements SWFFactory<MovieTag> {
             obj = new DefineFont2(coder, context);
             break;
         case MovieTypes.PATHS_ARE_POSTSCRIPT:
-            obj = PathsArePostscript.getInstance();
-            coder.readUnsignedShort();
+            obj = PathsArePostscript.getInstance(coder, context);
             break;
         case MovieTypes.DEFINE_TEXT_FIELD:
             obj = new DefineTextField(coder, context);

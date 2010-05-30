@@ -32,12 +32,8 @@
 package com.flagstone.transform.util.font;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -79,29 +75,16 @@ public final class SWFFontDecoder implements FontProvider, FontDecoder {
 
     /** {@inheritDoc} */
     public void read(final File file) throws IOException, DataFormatException {
-        final FileInputStream stream = new FileInputStream(file);
-        try {
-            decode(stream);
-        } finally {
-            stream.close();
-        }
+        Movie movie = new Movie();
+        movie.decodeFromFile(file);
+        decode(movie);
     }
 
     /** {@inheritDoc} */
     public void read(final URL url) throws IOException, DataFormatException {
-        final URLConnection connection = url.openConnection();
-
-        if (connection.getContentLength() < 0) {
-            throw new FileNotFoundException(url.getFile());
-        }
-
-        final InputStream stream = connection.getInputStream();
-
-        try {
-            decode(stream);
-        } finally {
-            stream.close();
-        }
+        Movie movie = new Movie();
+        movie.decodeFromUrl(url);
+        decode(movie);
     }
 
     /** {@inheritDoc} */
@@ -115,10 +98,8 @@ public final class SWFFontDecoder implements FontProvider, FontDecoder {
      * @throws IOException if an error occurs while decoding the font data.
      * @throws DataFormatException if the font is not in a supported format.
      */
-    private void decode(final InputStream stream)
+    private void decode(final Movie movie)
             throws IOException, DataFormatException {
-        final Movie movie = new Movie();
-        movie.decodeFromStream(stream);
 
         fonts.clear();
 
