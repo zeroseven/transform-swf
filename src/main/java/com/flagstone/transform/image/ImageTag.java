@@ -29,7 +29,9 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.flagstone.transform.coder;
+package com.flagstone.transform.image;
+
+import com.flagstone.transform.coder.DefineTag;
 
 /**
  * The ImageTag interface is implemented by all classes that define images in a

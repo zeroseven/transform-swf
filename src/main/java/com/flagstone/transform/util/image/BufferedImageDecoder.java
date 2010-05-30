@@ -54,11 +54,11 @@ import java.util.zip.Inflater;
 
 import javax.imageio.ImageIO;
 
-import com.flagstone.transform.coder.ImageTag;
 import com.flagstone.transform.coder.LittleDecoder;
 import com.flagstone.transform.image.DefineImage;
 import com.flagstone.transform.image.DefineImage2;
 import com.flagstone.transform.image.ImageFormat;
+import com.flagstone.transform.image.ImageTag;
 
 /**
  * BufferedImageDecoder decodes BufferedImages so they can be used in a Flash

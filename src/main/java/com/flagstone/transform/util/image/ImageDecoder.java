@@ -37,7 +37,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.zip.DataFormatException;
 
-import com.flagstone.transform.coder.ImageTag;
+import com.flagstone.transform.image.ImageTag;
 
 /**
  * ImageDecoder is an interface that classes used to decode different image

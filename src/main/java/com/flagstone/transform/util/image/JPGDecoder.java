@@ -43,8 +43,8 @@ import java.util.Arrays;
 import java.util.zip.DataFormatException;
 
 import com.flagstone.transform.coder.BigDecoder;
-import com.flagstone.transform.coder.ImageTag;
 import com.flagstone.transform.image.DefineJPEGImage2;
+import com.flagstone.transform.image.ImageTag;
 
 /**
  * JPGDecoder decodes JPEG images so they can be used in a Flash file.

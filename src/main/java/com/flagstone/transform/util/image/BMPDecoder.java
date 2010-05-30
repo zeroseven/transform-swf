@@ -43,11 +43,11 @@ import java.util.Arrays;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 
-import com.flagstone.transform.coder.ImageTag;
 import com.flagstone.transform.coder.LittleDecoder;
 import com.flagstone.transform.image.DefineImage;
 import com.flagstone.transform.image.DefineImage2;
 import com.flagstone.transform.image.ImageFormat;
+import com.flagstone.transform.image.ImageTag;
 
 /**
  * BMPDecoder decodes Bitmap images (BMP) so they can be used in a Flash file.

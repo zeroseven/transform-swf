@@ -44,11 +44,11 @@ import java.util.List;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 
-import com.flagstone.transform.coder.ImageTag;
 import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.datatype.CoordTransform;
 import com.flagstone.transform.fillstyle.BitmapFill;
 import com.flagstone.transform.fillstyle.FillStyle;
+import com.flagstone.transform.image.ImageTag;
 import com.flagstone.transform.linestyle.LineStyle;
 import com.flagstone.transform.shape.DefineShape3;
 import com.flagstone.transform.shape.Line;

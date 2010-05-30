@@ -38,9 +38,9 @@ import com.flagstone.transform.Movie;
 import com.flagstone.transform.MovieAttributes;
 import com.flagstone.transform.Place2;
 import com.flagstone.transform.ShowFrame;
-import com.flagstone.transform.coder.ImageTag;
 import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.datatype.WebPalette;
+import com.flagstone.transform.image.ImageTag;
 import com.flagstone.transform.util.image.ImageFactory;
 
 /**

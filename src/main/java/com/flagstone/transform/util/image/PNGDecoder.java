@@ -46,10 +46,10 @@ import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
 import com.flagstone.transform.coder.BigDecoder;
-import com.flagstone.transform.coder.ImageTag;
 import com.flagstone.transform.image.DefineImage;
 import com.flagstone.transform.image.DefineImage2;
 import com.flagstone.transform.image.ImageFormat;
+import com.flagstone.transform.image.ImageTag;
 
 /**
  * PNGDecoder decodes Portable Network Graphics (PNG) format images so they can
