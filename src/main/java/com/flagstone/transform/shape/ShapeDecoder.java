@@ -29,15 +29,14 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.flagstone.transform.coder;
+package com.flagstone.transform.shape;
 
 import java.io.IOException;
 
-import com.flagstone.transform.shape.Curve;
-import com.flagstone.transform.shape.Line;
-import com.flagstone.transform.shape.ShapeRecord;
-import com.flagstone.transform.shape.ShapeStyle;
-import com.flagstone.transform.shape.ShapeStyle2;
+import com.flagstone.transform.coder.Context;
+import com.flagstone.transform.coder.MovieTypes;
+import com.flagstone.transform.coder.SWFDecoder;
+import com.flagstone.transform.coder.SWFFactory;
 
 /**
  * Factory is the default implementation of an SWFFactory which used to create

@@ -29,32 +29,13 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.flagstone.transform.coder;
+package com.flagstone.transform.action;
 
 import java.io.IOException;
 
-import com.flagstone.transform.action.Action;
-import com.flagstone.transform.action.ActionObject;
-import com.flagstone.transform.action.ActionTypes;
-import com.flagstone.transform.action.BasicAction;
-import com.flagstone.transform.action.Call;
-import com.flagstone.transform.action.ExceptionHandler;
-import com.flagstone.transform.action.GetUrl;
-import com.flagstone.transform.action.GetUrl2;
-import com.flagstone.transform.action.GotoFrame;
-import com.flagstone.transform.action.GotoFrame2;
-import com.flagstone.transform.action.GotoLabel;
-import com.flagstone.transform.action.If;
-import com.flagstone.transform.action.Jump;
-import com.flagstone.transform.action.NewFunction;
-import com.flagstone.transform.action.NewFunction2;
-import com.flagstone.transform.action.Push;
-import com.flagstone.transform.action.RegisterCopy;
-import com.flagstone.transform.action.SetTarget;
-import com.flagstone.transform.action.Table;
-import com.flagstone.transform.action.WaitForFrame;
-import com.flagstone.transform.action.WaitForFrame2;
-import com.flagstone.transform.action.With;
+import com.flagstone.transform.coder.Context;
+import com.flagstone.transform.coder.SWFDecoder;
+import com.flagstone.transform.coder.SWFFactory;
 
 /**
  * ActionDecoder decodes the actions in the Flash movie.

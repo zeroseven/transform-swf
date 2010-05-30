@@ -29,20 +29,14 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.flagstone.transform.coder;
+package com.flagstone.transform.filter;
 
 import java.io.IOException;
 
-import com.flagstone.transform.filter.BevelFilter;
-import com.flagstone.transform.filter.BlurFilter;
-import com.flagstone.transform.filter.ColorMatrixFilter;
-import com.flagstone.transform.filter.ConvolutionFilter;
-import com.flagstone.transform.filter.DropShadowFilter;
-import com.flagstone.transform.filter.Filter;
-import com.flagstone.transform.filter.FilterTypes;
-import com.flagstone.transform.filter.GlowFilter;
-import com.flagstone.transform.filter.GradientBevelFilter;
-import com.flagstone.transform.filter.GradientGlowFilter;
+import com.flagstone.transform.coder.CoderException;
+import com.flagstone.transform.coder.Context;
+import com.flagstone.transform.coder.SWFDecoder;
+import com.flagstone.transform.coder.SWFFactory;
 
 /**
  * Factory is the default implementation of an SWFFactory which used to create

@@ -44,9 +44,9 @@ import java.util.List;
 import org.junit.Test;
 
 import com.flagstone.transform.action.Action;
+import com.flagstone.transform.action.ActionDecoder;
 import com.flagstone.transform.action.ActionTypes;
 import com.flagstone.transform.action.BasicAction;
-import com.flagstone.transform.coder.ActionDecoder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.DecoderRegistry;
 import com.flagstone.transform.coder.SWFDecoder;

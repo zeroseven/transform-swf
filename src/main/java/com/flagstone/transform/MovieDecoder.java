@@ -29,41 +29,19 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.flagstone.transform.coder;
+package com.flagstone.transform;
 
 import java.io.IOException;
 
-import com.flagstone.transform.Background;
-import com.flagstone.transform.DefineData;
-import com.flagstone.transform.DoABC;
-import com.flagstone.transform.DoAction;
-import com.flagstone.transform.EnableDebugger;
-import com.flagstone.transform.EnableDebugger2;
-import com.flagstone.transform.Export;
-import com.flagstone.transform.FrameLabel;
-import com.flagstone.transform.Free;
-import com.flagstone.transform.Import;
-import com.flagstone.transform.Import2;
-import com.flagstone.transform.LimitScript;
-import com.flagstone.transform.MovieAttributes;
-import com.flagstone.transform.MovieMetaData;
-import com.flagstone.transform.MovieObject;
-import com.flagstone.transform.Place;
-import com.flagstone.transform.Place2;
-import com.flagstone.transform.Place3;
-import com.flagstone.transform.Protect;
-import com.flagstone.transform.Remove;
-import com.flagstone.transform.Remove2;
-import com.flagstone.transform.ScalingGrid;
-import com.flagstone.transform.ScenesAndLabels;
-import com.flagstone.transform.SerialNumber;
-import com.flagstone.transform.ShowFrame;
-import com.flagstone.transform.SymbolClass;
-import com.flagstone.transform.TabOrder;
 import com.flagstone.transform.button.ButtonColorTransform;
 import com.flagstone.transform.button.ButtonSound;
 import com.flagstone.transform.button.DefineButton;
 import com.flagstone.transform.button.DefineButton2;
+import com.flagstone.transform.coder.Context;
+import com.flagstone.transform.coder.MovieTag;
+import com.flagstone.transform.coder.MovieTypes;
+import com.flagstone.transform.coder.SWFDecoder;
+import com.flagstone.transform.coder.SWFFactory;
 import com.flagstone.transform.font.DefineFont;
 import com.flagstone.transform.font.DefineFont2;
 import com.flagstone.transform.font.DefineFont3;

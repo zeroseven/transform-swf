@@ -31,11 +31,15 @@
 
 package com.flagstone.transform.coder;
 
+import com.flagstone.transform.MovieDecoder;
 import com.flagstone.transform.action.Action;
+import com.flagstone.transform.action.ActionDecoder;
 import com.flagstone.transform.fillstyle.FillStyle;
 import com.flagstone.transform.fillstyle.FillStyleDecoder;
 import com.flagstone.transform.fillstyle.MorphFillStyleDecoder;
 import com.flagstone.transform.filter.Filter;
+import com.flagstone.transform.filter.FilterDecoder;
+import com.flagstone.transform.shape.ShapeDecoder;
 import com.flagstone.transform.shape.ShapeRecord;
 
 

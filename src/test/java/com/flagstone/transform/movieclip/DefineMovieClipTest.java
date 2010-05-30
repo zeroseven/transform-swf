@@ -44,10 +44,10 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.flagstone.transform.MovieDecoder;
 import com.flagstone.transform.ShowFrame;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.DecoderRegistry;
-import com.flagstone.transform.coder.MovieDecoder;
 import com.flagstone.transform.coder.MovieTag;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
