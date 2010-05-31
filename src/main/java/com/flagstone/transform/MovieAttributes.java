@@ -237,9 +237,11 @@ public final class MovieAttributes implements MovieTag {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
-        //CHECKSTYLE:OFF
-        return 6;
-        //CHECKSTYLE:ON
+        int length = 4 + frameSize.prepareToEncode(context);
+        if (version > 7) {
+            length += 6;
+        }
+        return length;
     }
 
     /** {@inheritDoc} */
