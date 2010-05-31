@@ -48,27 +48,27 @@ public final class SWFEncoderTest {
 
     @Test
     public void sizeVariableU32InOneByte() {
-        assertEquals(1, SWFEncoder.sizeVariableU32(127));
+        assertEquals(1, Coder.sizeVariableU32(127));
     }
 
     @Test
     public void sizeVariableU32InTwoBytes() {
-        assertEquals(2, SWFEncoder.sizeVariableU32(255));
+        assertEquals(2, Coder.sizeVariableU32(255));
     }
 
     @Test
     public void sizeVariableU32InThreeBytes() {
-        assertEquals(3, SWFEncoder.sizeVariableU32(65535));
+        assertEquals(3, Coder.sizeVariableU32(65535));
     }
 
     @Test
     public void sizeVariableU32InFourBytes() {
-        assertEquals(4, SWFEncoder.sizeVariableU32(16777215));
+        assertEquals(4, Coder.sizeVariableU32(16777215));
     }
 
     @Test
     public void sizeVariableU32InFiveBytes() {
-        assertEquals(5, SWFEncoder.sizeVariableU32(2147483647));
+        assertEquals(5, Coder.sizeVariableU32(2147483647));
     }
 
 //    @Test

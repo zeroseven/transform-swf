@@ -33,6 +33,7 @@ package com.flagstone.transform;
 
 import java.io.IOException;
 
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -183,9 +184,8 @@ public final class Remove implements MovieTag {
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
-        //CHECKSTYLE:OFF
-        coder.writeHeader(MovieTypes.REMOVE, 4);
-        //CHECKSTYLE:ON
+        coder.writeShort((MovieTypes.REMOVE
+                << Coder.LENGTH_FIELD_SIZE) | 4);
         coder.writeShort(identifier);
         coder.writeShort(layer);
     }

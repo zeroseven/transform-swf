@@ -44,35 +44,21 @@ import java.util.Stack;
 public final class SWFDecoder {
     /** The default size, in bytes, for the internal buffer. */
     public static final int BUFFER_SIZE = 4096;
+
     /** The default size, in bytes, for the reading strings. */
-    public static final int STR_BUFFER_SIZE = 1024;
+    private static final int STR_BUFFER_SIZE = 1024;
     /** Bit mask applied to bytes when converting to unsigned integers. */
-    public static final int BYTE_MASK = 255;
+    private static final int BYTE_MASK = 255;
     /** Number of bits to shift when aligning a value to the second byte. */
-    public static final int TO_BYTE1 = 8;
+    private static final int TO_BYTE1 = 8;
     /** Number of bits to shift when aligning a value to the third byte. */
-    public static final int TO_BYTE2 = 16;
+    private static final int TO_BYTE2 = 16;
     /** Number of bits to shift when aligning a value to the fourth byte. */
-    public static final int TO_BYTE3 = 24;
+    private static final int TO_BYTE3 = 24;
     /** Number of bits in an int. */
-    public static final int BITS_PER_INT = 32;
+    private static final int BITS_PER_INT = 32;
     /** Number of bits in a byte. */
-    public static final int BITS_TO_BYTES = 3;
-
-    public static final int BIT0 = 1;
-    public static final int BIT1 = 2;
-    public static final int BIT2 = 4;
-    public static final int BIT3 = 8;
-    public static final int BIT4 = 16;
-    public static final int BIT5 = 32;
-    public static final int BIT6 = 64;
-    public static final int BIT7 = 128;
-
-    /**
-     * Bit mask for extracting the length field from the header word.
-     */
-    public static final int LENGTH_FIELD = 0x3F;
-    public static final int IS_EXTENDED = 63;
+    private static final int BITS_TO_BYTES = 3;
 
     /** The underlying input stream. */
     private final transient InputStream stream;
@@ -537,7 +523,7 @@ public final class SWFDecoder {
 
         int value = buffer[index++] & BYTE_MASK;
         final int mask = -1;
-        int test = BIT7;
+        int test = 0x80;
         int step = 7;
 
         while ((value & test) != 0) {

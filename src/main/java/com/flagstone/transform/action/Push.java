@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -108,6 +109,8 @@ import com.flagstone.transform.coder.SWFEncoder;
  */
 public final class Push implements Action {
 
+    /** Number of bits in an int. */
+    private static final int BITS_PER_INT = 32;
     /** Number of last internal register in the Flash Player. */
     private static final int LAST_REGISTER = 255;
 
@@ -349,7 +352,7 @@ public final class Push implements Action {
             }
         }
 
-        return SWFEncoder.ACTION_HEADER + length;
+        return Coder.ACTION_HEADER + length;
     }
 
     /** {@inheritDoc} */
@@ -377,7 +380,7 @@ public final class Push implements Action {
                 coder.writeByte(TYPE_DOUBLE);
                 final long longValue = Double.doubleToLongBits(
                         ((Double) obj).doubleValue());
-                coder.writeInt((int) (longValue >> SWFEncoder.BITS_PER_INT));
+                coder.writeInt((int) (longValue >> BITS_PER_INT));
                 coder.writeInt((int) longValue);
             } else if (obj instanceof String) {
                 coder.writeByte(TYPE_STRING);

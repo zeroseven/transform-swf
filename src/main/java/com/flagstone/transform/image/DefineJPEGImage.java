@@ -34,7 +34,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import com.flagstone.transform.SWF;
-
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -92,8 +92,8 @@ public final class DefineJPEGImage implements ImageTag {
      *             if an error occurs while decoding the data.
      */
     public DefineJPEGImage(final SWFDecoder coder) throws IOException {
-        length = coder.readUnsignedShort() & SWFDecoder.LENGTH_FIELD;
-        if (length == SWFDecoder.IS_EXTENDED) {
+        length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
+        if (length == Coder.IS_EXTENDED) {
             length = coder.readInt();
         }
         coder.mark();
@@ -206,15 +206,22 @@ public final class DefineJPEGImage implements ImageTag {
     public int prepareToEncode(final Context context) {
         length = 2 + image.length;
 
-        return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH
-                : SWFEncoder.STD_LENGTH) + length;
+        return (length > Coder.SHORT_HEADER_LIMIT ? Coder.LONG_HEADER
+                : Coder.SHORT_HEADER) + length;
     }
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
 
-        coder.writeHeader(MovieTypes.DEFINE_JPEG_IMAGE, length);
+        if (length > Coder.SHORT_HEADER_LIMIT) {
+            coder.writeShort((MovieTypes.DEFINE_JPEG_IMAGE
+                    << Coder.LENGTH_FIELD_SIZE) | Coder.IS_EXTENDED);
+            coder.writeInt(length);
+        } else {
+            coder.writeShort((MovieTypes.DEFINE_JPEG_IMAGE
+                    << Coder.LENGTH_FIELD_SIZE) | length);
+        }
         coder.mark();
         coder.writeShort(identifier);
         coder.writeBytes(image);

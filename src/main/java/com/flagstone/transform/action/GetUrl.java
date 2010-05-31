@@ -34,6 +34,7 @@ package com.flagstone.transform.action;
 
 import java.io.IOException;
 
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -204,7 +205,7 @@ public final class GetUrl implements Action {
         length = context.strlen(url);
         length += context.strlen(target);
 
-        return SWFEncoder.ACTION_HEADER + length;
+        return Coder.ACTION_HEADER + length;
     }
 
     /** {@inheritDoc} */

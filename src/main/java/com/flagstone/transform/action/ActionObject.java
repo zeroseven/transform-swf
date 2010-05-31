@@ -34,6 +34,7 @@ package com.flagstone.transform.action;
 import java.io.IOException;
 import java.util.Arrays;
 
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -151,7 +152,7 @@ public final class ActionObject implements Action {
         final int length;
 
         if (type > ActionTypes.HIGHEST_BYTE_CODE) {
-            length = SWFEncoder.ACTION_HEADER + data.length;
+            length = Coder.ACTION_HEADER + data.length;
         } else {
             length = 1;
         }

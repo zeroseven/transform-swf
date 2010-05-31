@@ -36,6 +36,7 @@ import java.util.Arrays;
 
 import com.flagstone.transform.DefineTag;
 import com.flagstone.transform.SWF;
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -71,8 +72,8 @@ public final class DefineFont4 implements DefineTag {
      */
     public DefineFont4(final SWFDecoder coder)
             throws IOException {
-        length = coder.readUnsignedShort() & SWFDecoder.LENGTH_FIELD;
-        if (length == SWFDecoder.IS_EXTENDED) {
+        length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
+        if (length == Coder.IS_EXTENDED) {
             length = coder.readInt();
         }
         coder.mark();
@@ -215,21 +216,28 @@ public final class DefineFont4 implements DefineTag {
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
         length = 3 + context.strlen(name) + data.length;
-        return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH
-                : SWFEncoder.STD_LENGTH) + length;
+        return (length > Coder.SHORT_HEADER_LIMIT ? Coder.LONG_HEADER
+                : Coder.SHORT_HEADER) + length;
     }
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
 
-        coder.writeHeader(MovieTypes.DEFINE_FONT_4, length);
+        if (length > Coder.SHORT_HEADER_LIMIT) {
+            coder.writeShort((MovieTypes.DEFINE_FONT_4
+                    << Coder.LENGTH_FIELD_SIZE) | Coder.IS_EXTENDED);
+            coder.writeInt(length);
+        } else {
+            coder.writeShort((MovieTypes.DEFINE_FONT_4
+                    << Coder.LENGTH_FIELD_SIZE) | length);
+        }
         coder.mark();
         coder.writeShort(identifier);
         int bits = 0;
-        bits |= data.length > 0 ? SWFEncoder.BIT2 : 0;
-        bits |= italic ? SWFEncoder.BIT1 : 0;
-        bits |= bold ? SWFEncoder.BIT0 : 0;
+        bits |= data.length > 0 ? Coder.BIT2 : 0;
+        bits |= italic ? Coder.BIT1 : 0;
+        bits |= bold ? Coder.BIT0 : 0;
         coder.writeByte(bits);
         coder.writeString(name);
         coder.writeBytes(data);

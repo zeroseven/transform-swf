@@ -34,6 +34,7 @@ package com.flagstone.transform.shape;
 import java.io.IOException;
 
 import com.flagstone.transform.MovieTag;
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -116,6 +117,7 @@ public final class PathsArePostscript implements MovieTag {
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
-        coder.writeHeader(MovieTypes.PATHS_ARE_POSTSCRIPT, 0);
+        coder.writeShort(MovieTypes.PATHS_ARE_POSTSCRIPT
+                << Coder.LENGTH_FIELD_SIZE);
    }
 }

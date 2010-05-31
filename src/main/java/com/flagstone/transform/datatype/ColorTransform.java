@@ -33,6 +33,7 @@ package com.flagstone.transform.datatype;
 import java.io.IOException;
 
 import com.flagstone.transform.SWF;
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
@@ -95,7 +96,10 @@ import com.flagstone.transform.coder.SWFEncoder;
  *
  */
 public final class ColorTransform implements SWFEncodeable {
-
+    /** Offset to add to number of bits when calculating number of bytes. */
+    private static final int ROUND_TO_BYTES = 7;
+    /** Right shift to convert number of bits to number of bytes. */
+    private static final int BITS_TO_BYTES = 3;
     /** Format used by toString() to display object representation. */
     private static final String FORMAT = "ColorTransform: { "
             + "multiply=[%f, %f, %f, %f]; add=[%d, %d, %d, %d] }";
@@ -439,7 +443,7 @@ public final class ColorTransform implements SWFEncodeable {
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
 
-        int numberOfBits = 2 + FIELD_SIZE + SWFEncoder.ROUND_TO_BYTES;
+        int numberOfBits = 2 + FIELD_SIZE + ROUND_TO_BYTES;
 
         hasAlpha = context.contains(Context.TRANSPARENT);
         size = 0;
@@ -468,7 +472,7 @@ public final class ColorTransform implements SWFEncodeable {
             numberOfBits += size * numberOfBytes;
         }
 
-        return numberOfBits >> SWFEncoder.BITS_TO_BYTES;
+        return numberOfBits >> BITS_TO_BYTES;
     }
 
     /** {@inheritDoc} */
@@ -501,12 +505,12 @@ public final class ColorTransform implements SWFEncodeable {
      */
     private void sizeTerms(final int red, final int green, final int blue,
             final int alpha) {
-        size = Math.max(size, SWFEncoder.size(red));
-        size = Math.max(size, SWFEncoder.size(green));
-        size = Math.max(size, SWFEncoder.size(blue));
+        size = Math.max(size, Coder.size(red));
+        size = Math.max(size, Coder.size(green));
+        size = Math.max(size, Coder.size(blue));
 
         if (hasAlpha) {
-            size = Math.max(size, SWFEncoder.size(alpha));
+            size = Math.max(size, Coder.size(alpha));
         }
     }
 

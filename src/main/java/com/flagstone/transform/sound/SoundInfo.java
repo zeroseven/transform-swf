@@ -34,6 +34,7 @@ package com.flagstone.transform.sound;
 import java.io.IOException;
 
 import com.flagstone.transform.SWF;
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
@@ -375,10 +376,10 @@ public final class SoundInfo implements SWFEncodeable {
         coder.writeShort(identifier);
 
         int bits = mode << 4;
-        bits |= envelope == null ? 0 : SWFEncoder.BIT3;
-        bits |= loopCount == null ? 0 : SWFEncoder.BIT2;
-        bits |= outPoint == null ? 0 : SWFEncoder.BIT1;
-        bits |= inPoint == null ? 0 : SWFEncoder.BIT0;
+        bits |= envelope == null ? 0 : Coder.BIT3;
+        bits |= loopCount == null ? 0 : Coder.BIT2;
+        bits |= outPoint == null ? 0 : Coder.BIT1;
+        bits |= inPoint == null ? 0 : Coder.BIT0;
         coder.writeByte(bits);
 
         if (inPoint != null) {

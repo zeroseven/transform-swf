@@ -36,7 +36,7 @@ import java.io.IOException;
 
 import com.flagstone.transform.MovieTag;
 import com.flagstone.transform.SWF;
-
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -92,8 +92,8 @@ public final class ButtonColorTransform implements MovieTag {
      */
     public ButtonColorTransform(final SWFDecoder coder, final Context context)
             throws IOException {
-        length = coder.readUnsignedShort() & SWFDecoder.LENGTH_FIELD;
-        if (length == SWFDecoder.IS_EXTENDED) {
+        length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
+        if (length == Coder.IS_EXTENDED) {
             length = coder.readInt();
         }
         coder.mark();
@@ -190,8 +190,8 @@ public final class ButtonColorTransform implements MovieTag {
     public int prepareToEncode(final Context context) {
         // CHECKSTYLE:OFF
         length = 4 + colorTransform.prepareToEncode(context);
-        return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH
-                : SWFEncoder.STD_LENGTH) + length;
+        return (length > Coder.SHORT_HEADER_LIMIT ? Coder.LONG_HEADER
+                : Coder.SHORT_HEADER) + length;
         // CHECKSTYLE:ON
     }
 
@@ -200,7 +200,14 @@ public final class ButtonColorTransform implements MovieTag {
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
 
-        coder.writeHeader(MovieTypes.BUTTON_COLOR_TRANSFORM, length);
+        if (length > Coder.SHORT_HEADER_LIMIT) {
+            coder.writeShort((MovieTypes.BUTTON_COLOR_TRANSFORM
+                    << Coder.LENGTH_FIELD_SIZE) | Coder.IS_EXTENDED);
+            coder.writeInt(length);
+        } else {
+            coder.writeShort((MovieTypes.BUTTON_COLOR_TRANSFORM
+                    << Coder.LENGTH_FIELD_SIZE) | length);
+        }
         coder.mark();
         coder.writeShort(identifier);
         colorTransform.encode(coder, context);

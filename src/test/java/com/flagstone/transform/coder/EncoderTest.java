@@ -50,35 +50,35 @@ public final class EncoderTest {
 
     @Test
     public void sizeForSignedByte() {
-        assertEquals(8, SWFEncoder.size(-128));
-        assertEquals(8, SWFEncoder.size(127));
+        assertEquals(8, Coder.size(-128));
+        assertEquals(8, Coder.size(127));
     }
 
     @Test
     public void sizeForSignedShort() {
-        assertEquals(16, SWFEncoder.size(-32768));
-        assertEquals(16, SWFEncoder.size(32767));
+        assertEquals(16, Coder.size(-32768));
+        assertEquals(16, Coder.size(32767));
     }
 
     @Test
     public void sizeForSignedInt() {
-        assertEquals(32, SWFEncoder.size(-2147483648));
-        assertEquals(32, SWFEncoder.size(2147483647));
+        assertEquals(32, Coder.size(-2147483648));
+        assertEquals(32, Coder.size(2147483647));
     }
 
     @Test
     public void sizeForUnsignedByte() {
-        assertEquals(8, SWFEncoder.unsignedSize(255));
+        assertEquals(8, Coder.unsignedSize(255));
     }
 
     @Test
     public void sizeForUnsignedShort() {
-        assertEquals(16, SWFEncoder.unsignedSize(32768));
+        assertEquals(16, Coder.unsignedSize(32768));
     }
 
     @Test
     public void sizeForUnsignedInt() {
-        assertEquals(31, SWFEncoder.unsignedSize(2147483647));
+        assertEquals(31, Coder.unsignedSize(2147483647));
     }
 
     @Test

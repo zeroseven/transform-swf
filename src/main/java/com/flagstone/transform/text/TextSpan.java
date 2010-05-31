@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.flagstone.transform.SWF;
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
@@ -136,10 +137,10 @@ public final class TextSpan implements SWFEncodeable {
             final Context context) throws IOException {
 
         final int bits = coder.readByte();
-        hasFont = (bits & SWFDecoder.BIT3) != 0;
-        hasColor = (bits & SWFDecoder.BIT2) != 0;
-        hasY = (bits & SWFDecoder.BIT1) != 0;
-        hasX = (bits & SWFDecoder.BIT0) != 0;
+        hasFont = (bits & Coder.BIT3) != 0;
+        hasColor = (bits & Coder.BIT2) != 0;
+        hasY = (bits & Coder.BIT1) != 0;
+        hasX = (bits & Coder.BIT0) != 0;
 
         if (hasFont) {
             identifier = coder.readUnsignedShort();
@@ -425,11 +426,11 @@ public final class TextSpan implements SWFEncodeable {
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
 
-        int bits = SWFEncoder.BIT7;
-        bits |= hasFont ? SWFEncoder.BIT3 : 0;
-        bits |= hasColor ? SWFEncoder.BIT2 : 0;
-        bits |= hasY ? SWFEncoder.BIT1 : 0;
-        bits |= hasX ? SWFEncoder.BIT0 : 0;
+        int bits = Coder.BIT7;
+        bits |= hasFont ? Coder.BIT3 : 0;
+        bits |= hasColor ? Coder.BIT2 : 0;
+        bits |= hasY ? Coder.BIT1 : 0;
+        bits |= hasX ? Coder.BIT0 : 0;
         coder.writeByte(bits);
 
         if (hasStyle) {
@@ -467,7 +468,7 @@ public final class TextSpan implements SWFEncodeable {
         int numberOfBits = 0;
 
         for (final GlyphIndex index : characters) {
-            numberOfBits = Math.max(numberOfBits, SWFEncoder.unsignedSize(index
+            numberOfBits = Math.max(numberOfBits, Coder.unsignedSize(index
                     .getGlyphIndex()));
         }
 
@@ -478,7 +479,7 @@ public final class TextSpan implements SWFEncodeable {
         int numberOfBits = 0;
 
         for (final GlyphIndex index : characters) {
-            numberOfBits = Math.max(numberOfBits, SWFEncoder.size(index
+            numberOfBits = Math.max(numberOfBits, Coder.size(index
                     .getAdvance()));
         }
 

@@ -46,48 +46,15 @@ import java.util.Stack;
 public final class SWFEncoder {
     /** The default size, in bytes, for the internal buffer. */
     public static final int BUFFER_SIZE = 4096;
-    /**
-     * The maximum length in bytes of an encoded object before the length must
-     * be encoded using a 32-bit integer.
-     */
-    public static final int STD_LIMIT = 62;
-    /**
-     * Number of bytes occupied by the header when the size of the encoded
-     * object is 62 bytes or less.
-     */
-    public static final int STD_LENGTH = 2;
-    /**
-     * Number of bytes occupied by the header when the size of the encoded
-     * object is greater than 62 bytes.
-     */
-    public static final int EXT_LENGTH = 6;
-    /**
-     * Length, in bytes, of type and length fields of an encoded action.
-     */
-    public static final int ACTION_HEADER = 3;
-
-
-    /**
-     * The number of bits used to encode the length field when the length is
-     * less than the maximum length of 62.
-     */
-    private static final int LENGTH_FIELD_SIZE = 6;
 
     /** Bit mask applied to bytes when converting to unsigned integers. */
     private static final int BYTE_MASK = 255;
-    /**
-     * Values used to indicate that the length of an object has been encoded
-     * as a 32-bit integer following the header for the MovieTag.
-     */
-    private static final int IS_EXTENDED = 0x3F;
     /** Number of bits in an int. */
-    public static final int BITS_PER_INT = 32;
-    /** Bit mask with most significant bit of a 32-bit integer set. */
-    private static final int MSB_MASK = 0x80000000;
+    private static final int BITS_PER_INT = 32;
     /** Offset to add to number of bits when calculating number of bytes. */
-    public static final int ROUND_TO_BYTES = 7;
+    private static final int ROUND_TO_BYTES = 7;
     /** Right shift to convert number of bits to number of bytes. */
-    public static final int BITS_TO_BYTES = 3;
+    private static final int BITS_TO_BYTES = 3;
     /** Left shift to convert number of bytes to number of bits. */
     private static final int BYTES_TO_BITS = 3;
     /** Number of bits to shift when aligning a value to the second byte. */
@@ -97,111 +64,15 @@ public final class SWFEncoder {
     /** Number of bits to shift when aligning a value to the fourth byte. */
     private static final int TO_BYTE3 = 24;
 
-    public static final int BIT0 = 1;
-    public static final int BIT1 = 2;
-    public static final int BIT2 = 4;
-    public static final int BIT3 = 8;
-    public static final int BIT4 = 16;
-    public static final int BIT5 = 32;
-    public static final int BIT6 = 64;
-    public static final int BIT7 = 128;
-
-    /**
-     * Calculates the minimum number of bits required to encoded an unsigned
-     * integer in a bit field.
-     *
-     * @param value
-     *            the unsigned value to be encoded.
-     *
-     * @return the number of bits required to encode the value.
-     */
-    public static int unsignedSize(final int value) {
-
-        final int val = (value < 0) ? -value - 1 : value;
-        int counter = BITS_PER_INT;
-        int mask = MSB_MASK;
-
-        while (((val & mask) == 0) && (counter > 0)) {
-            mask >>>= 1;
-            counter -= 1;
-        }
-        return counter;
-    }
-
-    /**
-     * Calculates the minimum number of bits required to encoded a signed
-     * integer in a bit field.
-     *
-     * @param value
-     *            the signed value to be encoded.
-     *
-     * @return the number of bits required to encode the value.
-     */
-    public static int size(final int value) {
-        int counter = BITS_PER_INT;
-        int mask = MSB_MASK;
-        final int val = (value < 0) ? -value - 1 : value;
-
-        while (((val & mask) == 0) && (counter > 0)) {
-            mask >>>= 1;
-            counter -= 1;
-        }
-        return counter + 1;
-    }
-
-    /**
-     * Returns the minimum number of bits required to encode all the signed
-     * values in an array as a set of bit fields with the same size.
-     *
-     * @param values
-     *            an array of signed integers.
-     *
-     * @return the minimum number of bits required to encode each of the values.
-     */
-    public static int maxSize(final int... values) {
-
-        int max = 0;
-        int size;
-
-        for (final int value : values) {
-            size = size(value);
-            max = (max > size) ? max : size;
-        }
-        return max;
-    }
-
-    /**
-     * Calculate minimum number of bytes a 32-bit unsigned integer can be
-     * encoded in.
-     *
-     * @param value
-     *            an integer containing the value to be written.
-     * @return the number of bytes required to encode the integer.
-     */
-    public static int sizeVariableU32(final int value) {
-
-        int val = value;
-        int size = 1;
-
-        while (val > 127) {
-            size += 1;
-            val = val >>> 7;
-        }
-        return size;
-    }
 
     /** The underlying input stream. */
     private final transient OutputStream stream;
     /** The buffer for data read from the stream. */
     private final transient byte[] buffer;
-    /** The index in bits to the current location in the buffer. */
-    private transient int pointer;
     /** The index in bytes to the current location in the buffer. */
     private transient int index;
     /** The offset in bits to the location in the current byte. */
     private transient int offset;
-    /** The last location in the buffer. */
-    private transient int end;
     /** The character encoding used for strings. */
     private transient String encoding;
     /** Stack for storing file locations. */
@@ -528,25 +399,5 @@ public final class SWFEncoder {
             }
         }
         //CHECKSTYLE:ON
-    }
-
-    /**
-     * Write the header fields containing type and length of the object.
-     *
-     * Normally objects are encoded with a 2-byte header however if the length
-     * is greater than 62 then the size of the header is extended to 6 bytes
-     * and length is written as a 32-bit integer.
-     *
-     * @param type used to identify the object when decoding.
-     * @param length the length in bytes of the encoded object.
-     */
-    public void writeHeader(final int type, final int length)
-            throws IOException {
-        if (length > STD_LIMIT) {
-            writeShort((type << LENGTH_FIELD_SIZE) | IS_EXTENDED);
-            writeInt(length);
-        } else {
-            writeShort((type << LENGTH_FIELD_SIZE) | length);
-        }
     }
 }

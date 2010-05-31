@@ -34,6 +34,7 @@ package com.flagstone.transform.shape;
 import java.io.IOException;
 
 import com.flagstone.transform.SWF;
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -177,7 +178,7 @@ public final class Line implements ShapeRecord {
     public int prepareToEncode(final Context context) {
         vertical = xCoord == 0;
         general = (xCoord != 0) && (yCoord != 0);
-        size = SWFEncoder.maxSize(xCoord, yCoord, 1);
+        size = Coder.maxSize(xCoord, yCoord, 1);
 
         int numberOfBits = 7;
 

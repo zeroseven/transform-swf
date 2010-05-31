@@ -34,6 +34,7 @@ package com.flagstone.transform.filter;
 import java.io.IOException;
 
 import com.flagstone.transform.SWF;
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -155,8 +156,8 @@ public final class ConvolutionFilter implements Filter {
         }
         color = new Color(coder, context);
         final int bits = coder.readByte();
-        clamp = (bits & SWFDecoder.BIT1) != 0;
-        alpha = (bits & SWFDecoder.BIT0) != 0;
+        clamp = (bits & Coder.BIT1) != 0;
+        alpha = (bits & Coder.BIT0) != 0;
     }
 
 
@@ -249,8 +250,8 @@ public final class ConvolutionFilter implements Filter {
         }
         color.encode(coder, context);
         int bits = 0;
-        bits |= clamp ? SWFEncoder.BIT1 : 0;
-        bits |= alpha ? SWFEncoder.BIT0 : 0;
+        bits |= clamp ? Coder.BIT1 : 0;
+        bits |= alpha ? Coder.BIT0 : 0;
         coder.writeByte(bits);
     }
 }

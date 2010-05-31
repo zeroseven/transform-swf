@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.flagstone.transform.SWF;
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -138,11 +139,11 @@ public final class ShapeStyle2 implements ShapeRecord {
         int numberOfFillBits = context.get(Context.FILL_SIZE);
         int numberOfLineBits = context.get(Context.LINE_SIZE);
 
-        hasStyles = (flags & SWFDecoder.BIT4) != 0;
-        hasLine = (flags & SWFDecoder.BIT3) != 0;
-        hasAlt = (flags & SWFDecoder.BIT2) != 0;
-        hasFill = (flags & SWFDecoder.BIT1) != 0;
-        hasMove = (flags & SWFDecoder.BIT0) != 0;
+        hasStyles = (flags & Coder.BIT4) != 0;
+        hasLine = (flags & Coder.BIT3) != 0;
+        hasAlt = (flags & Coder.BIT2) != 0;
+        hasFill = (flags & Coder.BIT1) != 0;
+        hasMove = (flags & Coder.BIT0) != 0;
 
         if (hasMove) {
             final int moveFieldSize = coder.readBits(5, false);
@@ -501,7 +502,7 @@ public final class ShapeStyle2 implements ShapeRecord {
         int numberOfBits = 6;
 
         if (hasMove) {
-            final int fieldSize = Math.max(SWFEncoder.size(moveX), SWFEncoder
+            final int fieldSize = Math.max(Coder.size(moveX), Coder
                     .size(moveY));
             numberOfBits += 5 + fieldSize * 2;
         }
@@ -514,8 +515,8 @@ public final class ShapeStyle2 implements ShapeRecord {
                 + numberOfBits);
 
         if (hasStyles) {
-            int numberOfFillBits = SWFEncoder.unsignedSize(fillStyles.size());
-            int numberOfLineBits = SWFEncoder.unsignedSize(lineStyles.size());
+            int numberOfFillBits = Coder.unsignedSize(fillStyles.size());
+            int numberOfLineBits = Coder.unsignedSize(lineStyles.size());
 
             if ((numberOfFillBits == 0)
                     && context.contains(Context.POSTSCRIPT)) {
@@ -574,7 +575,7 @@ public final class ShapeStyle2 implements ShapeRecord {
         coder.writeBits(hasMove ? 1 : 0, 1);
 
         if (hasMove) {
-            final int fieldSize = Math.max(SWFEncoder.size(moveX), SWFEncoder
+            final int fieldSize = Math.max(Coder.size(moveX), Coder
                     .size(moveY));
 
             coder.writeBits(fieldSize, 5);
@@ -622,8 +623,8 @@ public final class ShapeStyle2 implements ShapeRecord {
                 style.encode(coder, context);
             }
 
-            int numberOfFillBits = SWFEncoder.unsignedSize(fillStyles.size());
-            int numberOfLineBits = SWFEncoder.unsignedSize(lineStyles.size());
+            int numberOfFillBits = Coder.unsignedSize(fillStyles.size());
+            int numberOfLineBits = Coder.unsignedSize(lineStyles.size());
 
             if (context.contains(Context.POSTSCRIPT)) {
                 if (numberOfFillBits == 0) {

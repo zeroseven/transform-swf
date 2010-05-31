@@ -32,7 +32,7 @@ package com.flagstone.transform;
 
 import java.io.IOException;
 
-
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -101,8 +101,8 @@ public final class Place implements MovieTag {
      */
     public Place(final SWFDecoder coder, final Context context)
             throws IOException {
-        length = coder.readUnsignedShort() & SWFDecoder.LENGTH_FIELD;
-        if (length == SWFDecoder.IS_EXTENDED) {
+        length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
+        if (length == Coder.IS_EXTENDED) {
             length = coder.readInt();
         }
         coder.mark();
@@ -326,7 +326,14 @@ public final class Place implements MovieTag {
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
-        coder.writeHeader(MovieTypes.PLACE, length);
+        if (length > Coder.SHORT_HEADER_LIMIT) {
+            coder.writeShort((MovieTypes.PLACE
+                    << Coder.LENGTH_FIELD_SIZE) | Coder.IS_EXTENDED);
+            coder.writeInt(length);
+        } else {
+            coder.writeShort((MovieTypes.PLACE
+                    << Coder.LENGTH_FIELD_SIZE) | length);
+        }
         coder.mark();
         coder.writeShort(identifier);
         coder.writeShort(layer);

@@ -34,6 +34,7 @@ package com.flagstone.transform.linestyle;
 
 import java.io.IOException;
 
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.Copyable;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -92,18 +93,18 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
         width = coder.readUnsignedShort();
 
         int bits = coder.readByte();
-        if ((bits & SWFDecoder.BIT6) != 0) {
+        if ((bits & Coder.BIT6) != 0) {
             startCap = 1;
-        } else if ((bits & SWFDecoder.BIT7) != 0) {
+        } else if ((bits & Coder.BIT7) != 0) {
             startCap = 2;
         } else {
             startCap = 0;
         }
 
-        if ((bits & SWFDecoder.BIT4) != 0) {
+        if ((bits & Coder.BIT4) != 0) {
             joinStyle = 1;
             hasMiter = false;
-        } else if ((bits & SWFDecoder.BIT5) != 0) {
+        } else if ((bits & Coder.BIT5) != 0) {
             joinStyle = 2;
             hasMiter = true;
         } else {
@@ -111,13 +112,13 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
             hasMiter = false;
         }
 
-        hasFillStyle = (bits & SWFDecoder.BIT3) != 0;
-        horizontal = (bits & SWFDecoder.BIT2) == 0;
-        vertical = (bits & SWFDecoder.BIT1) == 0;
-        pixelAligned = (bits & SWFDecoder.BIT0) != 0;
+        hasFillStyle = (bits & Coder.BIT3) != 0;
+        horizontal = (bits & Coder.BIT2) == 0;
+        vertical = (bits & Coder.BIT1) == 0;
+        pixelAligned = (bits & Coder.BIT0) != 0;
 
         bits = coder.readByte();
-        lineClosed = (bits & SWFDecoder.BIT2) == 0;
+        lineClosed = (bits & Coder.BIT2) == 0;
         endCap = bits & 0x03;
 
         if (hasMiter) {

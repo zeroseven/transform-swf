@@ -215,9 +215,9 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
         bytes = new byte[numberOfBytes];
 
         bytes[0] = (byte) sampleCount;
-        bytes[1] = (byte) (sampleCount >> BigDecoder.BITS_PER_BYTE);
+        bytes[1] = (byte) (sampleCount >> 8);
         bytes[2] = (byte) seek;
-        bytes[3] = (byte) (seek >> BigDecoder.BITS_PER_BYTE);
+        bytes[3] = (byte) (seek >> 8);
 
         int offset = 4;
 
@@ -289,7 +289,7 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
                  * occurrence. Goto the end of the file so we can keep the
                  * frames found so far.
                  */
-                coder.setPointer(bytes.length << BigDecoder.BITS_TO_BYTES);
+                coder.setPointer(bytes.length << 3);
             }
         }
 
@@ -297,7 +297,7 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
 
         sound = new byte[dataLength];
 
-        System.arraycopy(bytes, frameStart >> BigDecoder.BITS_TO_BYTES,
+        System.arraycopy(bytes, frameStart >> 3,
                 sound, 0, dataLength);
 
         frameTable = new int[numberOfFrames][2];
@@ -313,7 +313,7 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
 
         while (coder.findBits(0x7FF, 11, 8)) {
             frameTable[frameNumber][0] = (coder.getPointer()
-                    - frameStart) >> BigDecoder.BITS_TO_BYTES;
+                    - frameStart) >> 3;
 
             coder.adjustPointer(11); // skip start of frame marker
 
@@ -351,7 +351,7 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
 
             frameTable[frameNumber++][1] = 4 + frameSize;
 
-            coder.adjustPointer(frameSize << BigDecoder.BYTES_TO_BITS);
+            coder.adjustPointer(frameSize << 3);
         }
     }
 

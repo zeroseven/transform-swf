@@ -33,6 +33,8 @@ package com.flagstone.transform.action;
 
 
 import java.io.IOException;
+
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -158,7 +160,7 @@ public final class WaitForFrame implements Action {
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
         //CHECKSTYLE:OFF - Fixed length when encoded.
-        return SWFEncoder.ACTION_HEADER + 3;
+        return Coder.ACTION_HEADER + 3;
         //CHECKSTYLE:ON
     }
 

@@ -39,7 +39,7 @@ import com.flagstone.transform.DefineTag;
 import com.flagstone.transform.MovieTag;
 import com.flagstone.transform.SWF;
 import com.flagstone.transform.ShowFrame;
-
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -101,8 +101,8 @@ public final class DefineMovieClip implements DefineTag {
      */
     public DefineMovieClip(final SWFDecoder coder, final Context context)
             throws IOException {
-        length = coder.readUnsignedShort() & SWFDecoder.LENGTH_FIELD;
-        if (length == SWFDecoder.IS_EXTENDED) {
+        length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
+        if (length == Coder.IS_EXTENDED) {
             length = coder.readInt();
         }
         identifier = coder.readUnsignedShort();
@@ -225,15 +225,22 @@ public final class DefineMovieClip implements DefineTag {
                 frameCount += 1;
             }
         }
-        return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH
-                : SWFEncoder.STD_LENGTH) + length;
+        return (length > Coder.SHORT_HEADER_LIMIT ? Coder.LONG_HEADER
+                : Coder.SHORT_HEADER) + length;
     }
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
 
-        coder.writeHeader(MovieTypes.DEFINE_MOVIE_CLIP, length);
+        if (length > Coder.SHORT_HEADER_LIMIT) {
+            coder.writeShort((MovieTypes.DEFINE_MOVIE_CLIP
+                    << Coder.LENGTH_FIELD_SIZE) | Coder.IS_EXTENDED);
+            coder.writeInt(length);
+        } else {
+            coder.writeShort((MovieTypes.DEFINE_MOVIE_CLIP
+                    << Coder.LENGTH_FIELD_SIZE) | length);
+        }
         coder.mark();
         coder.writeShort(identifier);
         coder.writeShort(frameCount);

@@ -33,7 +33,7 @@ package com.flagstone.transform;
 
 import java.io.IOException;
 
-
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -84,7 +84,7 @@ public final class Background implements MovieTag {
      */
     public Background(final SWFDecoder coder, final Context context)
             throws IOException {
-        int length = coder.readUnsignedShort() & SWFDecoder.LENGTH_FIELD;
+        int length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
         coder.mark();
         color = new Color(coder, context);
         coder.unmark(length);
@@ -153,7 +153,8 @@ public final class Background implements MovieTag {
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
-        coder.writeHeader(MovieTypes.SET_BACKGROUND_COLOR, Color.RGB);
+        coder.writeShort((MovieTypes.SET_BACKGROUND_COLOR
+                << Coder.LENGTH_FIELD_SIZE) | Color.RGB);
         color.encode(coder, context);
     }
 }

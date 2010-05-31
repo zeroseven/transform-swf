@@ -41,21 +41,17 @@ import java.util.Arrays;
 //TODO(class)
 public final class LittleDecoder {
     /** Bit mask applied to bytes when converting to unsigned integers. */
-    public static final int BYTE_MASK = 255;
+    private static final int BYTE_MASK = 255;
     /** Number of bits in an int. */
-    public static final int BITS_PER_INT = 32;
-    /** Number of bits in a byte. */
-    public static final int BITS_PER_BYTE = 8;
+    private static final int BITS_PER_INT = 32;
     /** Left shift to convert number of bits to number of bytes. */
-    public static final int BITS_TO_BYTES = 3;
-    /** Right shift to convert number of bits to number of bytes. */
-    public static final int BYTES_TO_BITS = 3;
+    private static final int BITS_TO_BYTES = 3;
     /** Number of bits to shift when aligning a value to the second byte. */
-    public static final int TO_BYTE1 = 8;
+    private static final int TO_BYTE1 = 8;
     /** Number of bits to shift when aligning a value to the third byte. */
-    public static final int TO_BYTE2 = 16;
+    private static final int TO_BYTE2 = 16;
     /** Number of bits to shift when aligning a value to the fourth byte. */
-    public static final int TO_BYTE3 = 24;
+    private static final int TO_BYTE3 = 24;
 
     /** The internal buffer containing data read from or written to a file. */
     private byte[] data;
@@ -66,7 +62,7 @@ public final class LittleDecoder {
     /** The offset in bits to the location in the current byte. */
     private transient int offset;
     /** The last location in the buffer. */
-    private transient final int end;
+    private final transient int end;
     /**
      * Creates a LittleDecoder object initialised with the data to be decoded.
      *

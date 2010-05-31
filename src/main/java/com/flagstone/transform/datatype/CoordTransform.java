@@ -33,6 +33,7 @@ package com.flagstone.transform.datatype;
 import java.io.IOException;
 
 import com.flagstone.transform.SWF;
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
@@ -62,7 +63,10 @@ import com.flagstone.transform.coder.SWFEncoder;
  * </p>
  */
 public final class CoordTransform implements SWFEncodeable {
-
+    /** Offset to add to number of bits when calculating number of bytes. */
+    private static final int ROUND_TO_BYTES = 7;
+    /** Right shift to convert number of bits to number of bytes. */
+    private static final int BITS_TO_BYTES = 3;
     /** Format used by toString() to display object representation. */
     private static final String FORMAT = "CoordTransform: { scaleX=%f;"
             + " scaleY=%f; shearX=%f; shearY=%f; transX=%d; transY=%d }";
@@ -431,15 +435,15 @@ public final class CoordTransform implements SWFEncodeable {
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
 
-        int numberOfBits = 2 + FIELD_SIZE + SWFEncoder.ROUND_TO_BYTES;
+        int numberOfBits = 2 + FIELD_SIZE + ROUND_TO_BYTES;
 
         hasScale = (scaleX != DEFAULT_INT_SCALE)
                 || (scaleY != DEFAULT_INT_SCALE);
         hasShear = (shearX != 0) || (shearY != 0);
 
         if (hasScale || hasShear || ((translateX != 0) || (translateY != 0))) {
-            transSize = Math.max(SWFEncoder.size(translateX), SWFEncoder
-                    .size(translateY));
+            transSize = Math.max(Coder.size(translateX),
+                    Coder.size(translateY));
         } else {
             transSize = 0;
         }
@@ -447,18 +451,18 @@ public final class CoordTransform implements SWFEncodeable {
         numberOfBits += transSize << 1;
 
         if (hasScale) {
-            scaleSize = Math.max(SWFEncoder.size(scaleX),
-                    SWFEncoder.size(scaleY));
+            scaleSize = Math.max(Coder.size(scaleX),
+                    Coder.size(scaleY));
             numberOfBits += FIELD_SIZE + (scaleSize << 1);
         }
 
         if (hasShear) {
-            shearSize = Math.max(SWFEncoder.size(shearX),
-                    SWFEncoder.size(shearY));
+            shearSize = Math.max(Coder.size(shearX),
+                    Coder.size(shearY));
             numberOfBits += FIELD_SIZE + (shearSize << 1);
         }
 
-        return numberOfBits >> SWFEncoder.BITS_TO_BYTES;
+        return numberOfBits >> BITS_TO_BYTES;
     }
 
     /** {@inheritDoc} */

@@ -33,6 +33,7 @@ package com.flagstone.transform;
 
 import java.io.IOException;
 
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -186,9 +187,8 @@ public final class LimitScript implements MovieTag {
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
-        // CHECKSTYLE:OFF
-        coder.writeHeader(MovieTypes.LIMIT_SCRIPT, 4);
-        // CHECKSTYLE:OFF
+        coder.writeShort((MovieTypes.LIMIT_SCRIPT
+                << Coder.LENGTH_FIELD_SIZE) | 4);
         coder.writeShort(depth);
         coder.writeShort(timeout);
     }

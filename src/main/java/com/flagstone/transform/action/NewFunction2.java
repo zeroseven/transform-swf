@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -549,7 +550,7 @@ public final class NewFunction2 implements Action {
 
         length += actionsLength;
 
-        return SWFEncoder.ACTION_HEADER + length;
+        return Coder.ACTION_HEADER + length;
     }
 
     /** {@inheritDoc} */

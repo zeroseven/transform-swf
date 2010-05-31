@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -272,7 +273,7 @@ public final class GetUrl2 implements Action {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
-        return SWFEncoder.ACTION_HEADER + 1;
+        return Coder.ACTION_HEADER + 1;
     }
 
     /** {@inheritDoc} */

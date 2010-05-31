@@ -82,7 +82,7 @@ public final class JPEGInfo {
                 width = coder.readUI16();
                 return;
             } else {
-                coder.adjustPointer((size - 2) << BigDecoder.BYTES_TO_BITS);
+                coder.adjustPointer((size - 2) << 3);
             }
         }
     }

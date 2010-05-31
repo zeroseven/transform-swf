@@ -33,6 +33,7 @@ package com.flagstone.transform;
 
 import java.io.IOException;
 
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -249,7 +250,8 @@ public final class MovieAttributes implements MovieTag {
         coder.writeShort(frameCount);
 
         if (version > 7) {
-            coder.writeHeader(MovieTypes.FILE_ATTRIBUTES, 4);
+            coder.writeShort((MovieTypes.FILE_ATTRIBUTES
+                    << Coder.LENGTH_FIELD_SIZE) | 4);
             int flags = 0;
             flags |= network ? 1 : 0;
             flags |= actionscript3 ? 8 : 0;

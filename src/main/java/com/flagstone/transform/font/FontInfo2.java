@@ -37,6 +37,7 @@ import java.util.List;
 
 import com.flagstone.transform.MovieTag;
 import com.flagstone.transform.SWF;
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -106,8 +107,8 @@ public final class FontInfo2 implements MovieTag {
      */
     // TODO(optimise)
     public FontInfo2(final SWFDecoder coder) throws IOException {
-        length = coder.readUnsignedShort() & SWFDecoder.LENGTH_FIELD;
-        if (length == SWFDecoder.IS_EXTENDED) {
+        length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
+        if (length == Coder.IS_EXTENDED) {
             length = coder.readInt();
         }
         coder.mark();
@@ -124,10 +125,10 @@ public final class FontInfo2 implements MovieTag {
         }
 
         final int bits = coder.readByte();
-        small = (bits & SWFDecoder.BIT5) != 0;
+        small = (bits & Coder.BIT5) != 0;
         encoding = (bits & 0x1C) >> 3;
-        italic = (bits & SWFDecoder.BIT2) != 0;
-        bold = (bits & SWFDecoder.BIT1) != 0;
+        italic = (bits & Coder.BIT2) != 0;
+        bold = (bits & Coder.BIT1) != 0;
 
         int bytesRead = 4 + nameLength + 1;
 
@@ -429,8 +430,8 @@ public final class FontInfo2 implements MovieTag {
         length += context.strlen(name);
         length += codes.size() * 2;
 
-        return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH
-                : SWFEncoder.STD_LENGTH) + length;
+        return (length > Coder.SHORT_HEADER_LIMIT ? Coder.LONG_HEADER
+                : Coder.SHORT_HEADER) + length;
         // CHECKSTYLE:ON
     }
 
@@ -439,16 +440,23 @@ public final class FontInfo2 implements MovieTag {
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
 
-        coder.writeHeader(MovieTypes.FONT_INFO_2, length);
+        if (length > Coder.SHORT_HEADER_LIMIT) {
+            coder.writeShort((MovieTypes.FONT_INFO_2
+                    << Coder.LENGTH_FIELD_SIZE) | Coder.IS_EXTENDED);
+            coder.writeInt(length);
+        } else {
+            coder.writeShort((MovieTypes.FONT_INFO_2
+                    << Coder.LENGTH_FIELD_SIZE) | length);
+        }
         coder.mark();
         coder.writeShort(identifier);
         coder.writeByte(context.strlen(name));
         coder.writeString(name);
         int bits = 1;
-        bits |= small ? SWFEncoder.BIT5 : 0;
+        bits |= small ? Coder.BIT5 : 0;
         bits |= encoding << 3;
-        bits |= italic ? SWFEncoder.BIT2 : 0;
-        bits |= bold ? SWFEncoder.BIT1 : 0;
+        bits |= italic ? Coder.BIT2 : 0;
+        bits |= bold ? Coder.BIT1 : 0;
         coder.writeByte(bits);
         coder.writeByte(language);
 

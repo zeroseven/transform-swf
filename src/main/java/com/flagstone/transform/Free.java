@@ -33,6 +33,7 @@ package com.flagstone.transform;
 
 import java.io.IOException;
 
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -132,7 +133,8 @@ public final class Free implements MovieTag {
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
-        coder.writeHeader(MovieTypes.FREE, 2);
+        coder.writeShort((MovieTypes.FREE
+                << Coder.LENGTH_FIELD_SIZE) | 2);
         coder.writeShort(identifier);
     }
 }

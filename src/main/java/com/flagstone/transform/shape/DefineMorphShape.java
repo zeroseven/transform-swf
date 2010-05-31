@@ -37,7 +37,7 @@ import java.util.List;
 
 import com.flagstone.transform.DefineTag;
 import com.flagstone.transform.SWF;
-
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -143,8 +143,8 @@ public final class DefineMorphShape implements DefineTag {
     // TODO(optimise)
     public DefineMorphShape(final SWFDecoder coder, final Context context)
             throws IOException {
-        length = coder.readUnsignedShort() & SWFDecoder.LENGTH_FIELD;
-        if (length == SWFDecoder.IS_EXTENDED) {
+        length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
+        if (length == Coder.IS_EXTENDED) {
             length = coder.readInt();
         }
         coder.mark();
@@ -490,8 +490,8 @@ public final class DefineMorphShape implements DefineTag {
     // TODO(optimise)
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
-        fillBits = SWFEncoder.unsignedSize(fillStyles.size());
-        lineBits = SWFEncoder.unsignedSize(lineStyles.size());
+        fillBits = Coder.unsignedSize(fillStyles.size());
+        lineBits = Coder.unsignedSize(lineStyles.size());
 
         if (context.contains(Context.POSTSCRIPT)) {
             if (fillBits == 0) {
@@ -537,8 +537,8 @@ public final class DefineMorphShape implements DefineTag {
         context.remove(Context.ARRAY_EXTENDED);
         context.remove(Context.TRANSPARENT);
 
-        return (length > SWFEncoder.STD_LIMIT ? SWFEncoder.EXT_LENGTH
-                : SWFEncoder.STD_LENGTH) + length;
+        return (length > Coder.SHORT_HEADER_LIMIT ? Coder.LONG_HEADER
+                : Coder.SHORT_HEADER) + length;
     }
 
     // TODO(optimise)
@@ -546,7 +546,14 @@ public final class DefineMorphShape implements DefineTag {
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
 
-        coder.writeHeader(MovieTypes.DEFINE_MORPH_SHAPE, length);
+        if (length > Coder.SHORT_HEADER_LIMIT) {
+            coder.writeShort((MovieTypes.DEFINE_MORPH_SHAPE
+                    << Coder.LENGTH_FIELD_SIZE) | Coder.IS_EXTENDED);
+            coder.writeInt(length);
+        } else {
+            coder.writeShort((MovieTypes.DEFINE_MORPH_SHAPE
+                    << Coder.LENGTH_FIELD_SIZE) | length);
+        }
         coder.mark();
         coder.writeShort(identifier);
         context.put(Context.TRANSPARENT, 1);
