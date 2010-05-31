@@ -64,7 +64,7 @@ public final class BasicActionTest {
 
         assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
-
+        encoder.flush();
 
         assertArrayEquals(encoded, stream.toByteArray());
     }

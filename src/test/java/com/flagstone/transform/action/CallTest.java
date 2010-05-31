@@ -65,7 +65,7 @@ public final class CallTest {
         fixture = Call.getInstance();
         assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
-
+        encoder.flush();
 
         assertArrayEquals(encoded, stream.toByteArray());
     }

@@ -99,6 +99,7 @@ public final class FocalGradientFillTest {
         final SWFDecoder decoder = new SWFDecoder(stream);
         final Context context = new Context();
 
+        decoder.readByte();
         fixture = new FocalGradientFill(decoder, context);
 
         assertTrue(true);

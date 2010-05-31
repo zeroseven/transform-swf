@@ -115,7 +115,7 @@ public final class PropertyTest {
         for (final Property property : table.keySet()) {
             assertEquals(String.format(VALUE_MISMATCH, property),
                     table.get(property).intValue(),
-                    property.getValue(flashVersion));
+                    property.getValue(flashVersion), 0.0);
         }
     }
 }

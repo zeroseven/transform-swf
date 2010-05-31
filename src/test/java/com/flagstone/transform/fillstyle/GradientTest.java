@@ -80,7 +80,7 @@ public final class GradientTest {
         fixture = new Gradient(ratio, color);
         assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
-
+        encoder.flush();
 
         assertArrayEquals(encoded, stream.toByteArray());
     }

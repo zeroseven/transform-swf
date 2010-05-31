@@ -90,7 +90,7 @@ public final class TableTest {
         fixture = new Table(list);
         assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
-
+        encoder.flush();
 
         assertArrayEquals(encoded, stream.toByteArray());
     }
@@ -100,6 +100,7 @@ public final class TableTest {
         ByteArrayInputStream stream = new ByteArrayInputStream(encoded);
         final SWFDecoder decoder = new SWFDecoder(stream);
 
+        decoder.readByte();
         fixture = new Table(decoder);
 
         assertTrue(true);

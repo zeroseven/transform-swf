@@ -227,8 +227,13 @@ public final class Push implements Action {
                 valuesLength -= 1 + context.strlen(str);
                 break;
             case TYPE_PROPERTY:
-                values.add(new Property(coder.readInt()));
-                valuesLength -= LENGTH_PROPERTY;
+                if (context.get(Context.VERSION) < 5) {
+                    values.add(new Property(
+                            (int) Float.intBitsToFloat(coder.readInt())));
+                } else {
+                    values.add(new Property(coder.readInt()));
+                }
+                 valuesLength -= LENGTH_PROPERTY;
                 break;
             case TYPE_NULL:
                 values.add(Null.getInstance());
@@ -375,7 +380,8 @@ public final class Push implements Action {
                 coder.writeInt(((Integer) obj).intValue());
             } else if (obj instanceof Property) {
                 coder.writeByte(TYPE_PROPERTY);
-                coder.writeInt(((Property) obj).getValue());
+                coder.writeInt(((Property) obj).getValue(
+                        context.get(Context.VERSION)));
             } else if (obj instanceof Double) {
                 coder.writeByte(TYPE_DOUBLE);
                 final long longValue = Double.doubleToLongBits(

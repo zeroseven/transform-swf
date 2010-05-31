@@ -231,7 +231,13 @@ public final class Property {
      * @return the value the Property will be encoded as.
      */
     public int getValue(final int version) {
-        return value;
+        final int val;
+        if (version < 5) {
+            val = Float.floatToIntBits(value);
+        } else {
+            val = value;
+        }
+        return val;
     }
 
     /** {@inheritDoc} */

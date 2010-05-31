@@ -52,7 +52,7 @@ public final class ActionDataTest {
 
     private final transient byte[] encoded = new byte[] {1, 2, 0 };
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void checkAccessorForDataWithNull() {
         fixture = new ActionData((byte[]) null);
     }
@@ -73,7 +73,7 @@ public final class ActionDataTest {
         fixture = new ActionData(data);
         assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
-
+        encoder.flush();
 
         assertArrayEquals(encoded, stream.toByteArray());
     }

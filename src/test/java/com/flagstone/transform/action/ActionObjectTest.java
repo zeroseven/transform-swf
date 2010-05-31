@@ -32,7 +32,7 @@ package com.flagstone.transform.action;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -59,7 +59,7 @@ public final class ActionObjectTest {
     private final transient byte[] encoded = new byte[] {(byte) 0x80, 0x04,
             0x00, 0x01, 0x02, 0x03, 0x04 };
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void checkAccessorForDataWithNull() {
         fixture = new ActionObject(TYPE, (byte[]) null);
     }
@@ -69,8 +69,8 @@ public final class ActionObjectTest {
         fixture = new ActionObject(TYPE, data);
         final ActionObject copy = fixture.copy();
 
-        assertNotSame(fixture, copy);
-        assertNotSame(fixture.getData(), copy.getData());
+        assertSame(fixture, copy);
+        assertArrayEquals(fixture.getData(), copy.getData());
         assertEquals(fixture.toString(), copy.toString());
     }
 
@@ -83,7 +83,7 @@ public final class ActionObjectTest {
         fixture = new ActionObject(TYPE, data);
         assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
-
+        encoder.flush();
 
         assertArrayEquals(encoded, stream.toByteArray());
     }
@@ -97,7 +97,7 @@ public final class ActionObjectTest {
         fixture = new ActionObject(1);
         assertEquals(basic.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
-
+        encoder.flush();
 
         assertArrayEquals(basic, stream.toByteArray());
     }
@@ -111,7 +111,7 @@ public final class ActionObjectTest {
         fixture = new ActionObject(TYPE, new byte[0]);
         assertEquals(empty.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
-
+        encoder.flush();
 
         assertArrayEquals(empty, stream.toByteArray());
     }
@@ -135,7 +135,7 @@ public final class ActionObjectTest {
         fixture = new ActionObject(decoder.readByte(), decoder);
 
         assertEquals(1, fixture.getType());
-        assertArrayEquals(null, fixture.getData());
+        assertArrayEquals(new byte[0], fixture.getData());
     }
 
     @Test

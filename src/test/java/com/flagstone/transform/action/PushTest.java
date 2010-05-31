@@ -95,7 +95,7 @@ public final class PushTest {
         fixture = new Push(values);
         assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
-
+        encoder.flush();
 
         assertArrayEquals(encoded, stream.toByteArray());
     }
@@ -107,9 +107,10 @@ public final class PushTest {
         final Context context = new Context();
         context.put(Context.VERSION, 4);
 
+        decoder.readByte();
         fixture = new Push(decoder, context);
 
         assertTrue(true);
-        assertEquals(values, fixture.getValues());
+        assertEquals(values.toString(), fixture.getValues().toString());
     }
 }

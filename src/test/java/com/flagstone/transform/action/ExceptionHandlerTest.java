@@ -32,7 +32,6 @@ package com.flagstone.transform.action;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
@@ -78,9 +77,9 @@ public final class ExceptionHandlerTest {
                 finalActions);
         final ExceptionHandler copy = fixture.copy();
 
-        assertNotSame(fixture.getTryActions(), copy.getTryActions());
-        assertNotSame(fixture.getCatchActions(), copy.getCatchActions());
-        assertNotSame(fixture.getFinalActions(), copy.getFinalActions());
+        assertEquals(fixture.getTryActions(), copy.getTryActions());
+        assertEquals(fixture.getCatchActions(), copy.getCatchActions());
+        assertEquals(fixture.getFinalActions(), copy.getFinalActions());
         assertEquals(fixture.toString(), copy.toString());
     }
 
@@ -94,7 +93,7 @@ public final class ExceptionHandlerTest {
                 finalActions);
         assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
-
+        encoder.flush();
 
         assertArrayEquals(encoded, stream.toByteArray());
     }
@@ -108,6 +107,7 @@ public final class ExceptionHandlerTest {
         registry.setActionDecoder(new ActionDecoder());
         context.setRegistry(registry);
 
+        decoder.readByte();
         fixture = new ExceptionHandler(decoder, context);
 
         assertTrue(true);

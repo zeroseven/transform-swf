@@ -88,7 +88,7 @@ public final class MorphSolidFillTest {
         fixture = new MorphSolidFill(startColor, endColor);
         assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
-
+        encoder.flush();
 
         assertArrayEquals(encoded, stream.toByteArray());
     }
@@ -100,6 +100,7 @@ public final class MorphSolidFillTest {
         final Context context = new Context();
         context.put(Context.TRANSPARENT, 1);
 
+        decoder.readByte();
         fixture = new MorphSolidFill(decoder, context);
 
         assertTrue(true);

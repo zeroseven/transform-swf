@@ -32,7 +32,7 @@ package com.flagstone.transform.action;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
@@ -52,7 +52,7 @@ public final class RegisterCopyTest {
 
     private transient RegisterCopy fixture;
 
-    private final transient byte[] encoded = new byte[] {(byte) type, 0x02,
+    private final transient byte[] encoded = new byte[] {(byte) type, 0x01,
             0x00, 0x01 };
 
     @Test(expected = IllegalArgumentException.class)
@@ -70,7 +70,7 @@ public final class RegisterCopyTest {
         fixture = new RegisterCopy(number);
         final RegisterCopy copy = fixture.copy();
 
-        assertNotSame(fixture, copy);
+        assertSame(fixture, copy);
         assertEquals(fixture.toString(), copy.toString());
     }
 
@@ -83,7 +83,7 @@ public final class RegisterCopyTest {
         fixture = new RegisterCopy(number);
         assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
-
+        encoder.flush();
 
         assertArrayEquals(encoded, stream.toByteArray());
     }
@@ -93,6 +93,7 @@ public final class RegisterCopyTest {
         final ByteArrayInputStream stream = new ByteArrayInputStream(encoded);
         final SWFDecoder decoder = new SWFDecoder(stream);
 
+        decoder.readByte();
         fixture = new RegisterCopy(decoder);
 
         assertTrue(true);

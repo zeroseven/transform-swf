@@ -92,7 +92,7 @@ public final class BitmapFillTest {
         fixture = new BitmapFill(tiled, smoothed, identifier, transform);
         assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
-
+        encoder.flush();
 
         assertArrayEquals(encoded, stream.toByteArray());
     }

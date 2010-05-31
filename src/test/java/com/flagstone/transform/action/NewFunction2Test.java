@@ -99,7 +99,7 @@ public final class NewFunction2Test {
                 args, actions);
         assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
-
+        encoder.flush();
 
         assertArrayEquals(encoded, stream.toByteArray());
     }
@@ -113,6 +113,7 @@ public final class NewFunction2Test {
         registry.setActionDecoder(new ActionDecoder());
         context.setRegistry(registry);
 
+        decoder.readByte();
         fixture = new NewFunction2(decoder, context);
 
         assertTrue(true);

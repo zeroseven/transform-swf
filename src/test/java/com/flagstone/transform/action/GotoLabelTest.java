@@ -76,7 +76,7 @@ public final class GotoLabelTest {
         fixture = new GotoLabel(label);
         assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
-
+        encoder.flush();
 
         assertArrayEquals(encoded, stream.toByteArray());
     }
@@ -86,6 +86,7 @@ public final class GotoLabelTest {
         final ByteArrayInputStream stream = new ByteArrayInputStream(encoded);
         final SWFDecoder decoder = new SWFDecoder(stream);
 
+        decoder.readByte();
         fixture = new GotoLabel(decoder);
 
         assertTrue(true);

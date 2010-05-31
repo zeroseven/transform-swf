@@ -88,13 +88,13 @@ public final class NewFunctionTest {
         fixture = new NewFunction(name, args, actions);
         assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
-
+        encoder.flush();
 
         assertArrayEquals(encoded, stream.toByteArray());
     }
 
     @Test
-    public void decode() throws IOException {
+     public void decode() throws IOException {
         final ByteArrayInputStream stream = new ByteArrayInputStream(encoded);
         final SWFDecoder decoder = new SWFDecoder(stream);
         final Context context = new Context();
@@ -102,6 +102,7 @@ public final class NewFunctionTest {
         registry.setActionDecoder(new ActionDecoder());
         context.setRegistry(registry);
 
+        decoder.readByte();
         fixture = new NewFunction(decoder, context);
 
         assertTrue(true);

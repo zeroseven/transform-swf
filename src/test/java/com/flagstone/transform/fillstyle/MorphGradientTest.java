@@ -100,7 +100,7 @@ public final class MorphGradientTest {
                 new Gradient(endRatio, endColor));
         assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
-
+        encoder.flush();
 
         assertArrayEquals(encoded, stream.toByteArray());
     }

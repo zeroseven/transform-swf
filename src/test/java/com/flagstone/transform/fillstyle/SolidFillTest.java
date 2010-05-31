@@ -81,7 +81,7 @@ public final class SolidFillTest {
         fixture = new SolidFill(color);
         assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
-
+        encoder.flush();
 
         assertArrayEquals(encoded, stream.toByteArray());
     }
@@ -92,6 +92,7 @@ public final class SolidFillTest {
         final SWFDecoder decoder = new SWFDecoder(stream);
         final Context context = new Context();
 
+        decoder.readByte();
         fixture = new SolidFill(decoder, context);
 
         assertTrue(true);

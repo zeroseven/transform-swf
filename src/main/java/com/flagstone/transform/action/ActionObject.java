@@ -138,7 +138,7 @@ public final class ActionObject implements Action {
 
     /** {@inheritDoc} */
     public ActionObject copy() {
-        return new ActionObject(this);
+        return this;
     }
 
     /** {@inheritDoc} */

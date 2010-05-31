@@ -32,7 +32,7 @@ package com.flagstone.transform.action;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
@@ -77,7 +77,7 @@ public final class GotoFrame2Test {
         fixture = new GotoFrame2(offset, play);
         final GotoFrame2 copy = fixture.copy();
 
-        assertNotSame(fixture, copy);
+        assertSame(fixture, copy);
         assertEquals(fixture.toString(), copy.toString());
     }
 
@@ -90,7 +90,7 @@ public final class GotoFrame2Test {
         fixture = new GotoFrame2(offset, play);
         assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
-
+        encoder.flush();
 
         assertArrayEquals(encoded, stream.toByteArray());
     }
@@ -105,7 +105,7 @@ public final class GotoFrame2Test {
         assertEquals(noOffset.length,
                 fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
-
+        encoder.flush();
 
         assertArrayEquals(noOffset, stream.toByteArray());
     }
@@ -119,7 +119,7 @@ public final class GotoFrame2Test {
         fixture = new GotoFrame2(0, false);
         assertEquals(stop.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
-
+        encoder.flush();
 
         assertArrayEquals(stop, stream.toByteArray());
     }
@@ -129,6 +129,7 @@ public final class GotoFrame2Test {
         final ByteArrayInputStream stream = new ByteArrayInputStream(encoded);
         final SWFDecoder decoder = new SWFDecoder(stream);
 
+        decoder.readByte();
         fixture = new GotoFrame2(decoder);
 
         assertTrue(true);
@@ -141,6 +142,7 @@ public final class GotoFrame2Test {
         final ByteArrayInputStream stream = new ByteArrayInputStream(noOffset);
         final SWFDecoder decoder = new SWFDecoder(stream);
 
+        decoder.readByte();
         fixture = new GotoFrame2(decoder);
 
         assertTrue(true);
@@ -153,6 +155,7 @@ public final class GotoFrame2Test {
         final ByteArrayInputStream stream = new ByteArrayInputStream(stop);
         final SWFDecoder decoder = new SWFDecoder(stream);
 
+        decoder.readByte();
         fixture = new GotoFrame2(decoder);
 
         assertTrue(true);

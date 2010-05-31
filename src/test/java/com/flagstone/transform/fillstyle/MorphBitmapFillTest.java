@@ -102,7 +102,7 @@ public final class MorphBitmapFillTest {
         fixture = new MorphBitmapFill(tiled, smoothed, identifier, start, end);
         assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
-
+        encoder.flush();
 
         assertArrayEquals(encoded, stream.toByteArray());
     }

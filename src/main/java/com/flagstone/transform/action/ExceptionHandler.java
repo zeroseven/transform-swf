@@ -229,8 +229,8 @@ public final class ExceptionHandler implements Action {
         length = coder.readUnsignedShort();
 
         final int flags = coder.readByte();
-        final boolean containsVariable = (flags & VARIABLE_MASK) == 1;
-        final boolean containsFinal = (flags & FINAL_MASK) == 1;
+        final boolean containsVariable = (flags & VARIABLE_MASK) >> 2 == 1;
+        final boolean containsFinal = (flags & FINAL_MASK) >> 1 == 1;
         final boolean containsCatch = (flags & CATCH_MASK) == 1;
 
         tryLength = coder.readUnsignedShort();
@@ -451,7 +451,7 @@ public final class ExceptionHandler implements Action {
     public int prepareToEncode(final Context context) {
         length = EMPTY_LENGTH; // assume thrown object is stored in register.
 
-        if (register != 0) {
+        if (register == 0) {
             length += context.strlen(variable) - 1;
         }
 

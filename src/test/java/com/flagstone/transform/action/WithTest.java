@@ -84,7 +84,7 @@ public final class WithTest {
         fixture = new With(list);
         assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
-
+        encoder.flush();
 
         assertArrayEquals(encoded, stream.toByteArray());
     }
@@ -98,6 +98,7 @@ public final class WithTest {
         registry.setActionDecoder(new ActionDecoder());
         context.setRegistry(registry);
 
+        decoder.readByte();
         fixture = new With(decoder, context);
 
         assertTrue(true);

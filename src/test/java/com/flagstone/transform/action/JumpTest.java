@@ -32,7 +32,7 @@ package com.flagstone.transform.action;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
@@ -70,7 +70,7 @@ public final class JumpTest {
         fixture = new Jump(offset);
         final Jump copy = fixture.copy();
 
-        assertNotSame(fixture, copy);
+        assertSame(fixture, copy);
         assertEquals(fixture.toString(), copy.toString());
     }
 
@@ -83,7 +83,7 @@ public final class JumpTest {
         fixture = new Jump(offset);
         assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
-
+        encoder.flush();
 
         assertArrayEquals(encoded, stream.toByteArray());
     }
@@ -93,6 +93,7 @@ public final class JumpTest {
         final ByteArrayInputStream stream = new ByteArrayInputStream(encoded);
         final SWFDecoder decoder = new SWFDecoder(stream);
 
+        decoder.readByte();
         fixture = new Jump(decoder);
 
         assertTrue(true);
