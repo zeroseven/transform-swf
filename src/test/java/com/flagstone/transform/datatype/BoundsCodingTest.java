@@ -60,12 +60,14 @@ public final class BoundsCodingTest {
     public void checkPositiveDimensionsAreEncoded() throws IOException {
         final Bounds object = new Bounds(1, 2, 3, 4);
         final byte[] binary = new byte[] {0x20, (byte) 0x99, 0x20 };
+
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         final SWFEncoder encoder = new SWFEncoder(stream);
         final Context context = new Context();
 
         final int length = object.prepareToEncode(context);
         object.encode(encoder, context);
+        encoder.flush();
 
         assertEquals(CALCULATED_LENGTH, binary.length, length);
 
@@ -92,6 +94,7 @@ public final class BoundsCodingTest {
 
         final int length = object.prepareToEncode(context);
         object.encode(encoder, context);
+        encoder.flush();
 
         assertEquals(CALCULATED_LENGTH, binary.length, length);
 
@@ -119,6 +122,7 @@ public final class BoundsCodingTest {
 
         final int length = object.prepareToEncode(context);
         object.encode(encoder, context);
+        encoder.flush();
 
         assertEquals(CALCULATED_LENGTH, binary.length, length);
 

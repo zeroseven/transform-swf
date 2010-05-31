@@ -54,13 +54,13 @@ public final class DoActionTest {
         ACTIONS.add(BasicAction.END);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForActionsWithNull() {
         fixture = new DoAction();
         fixture.setActions(null);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void checkAddNullAction() {
         fixture = new DoAction();
         fixture.add(null);

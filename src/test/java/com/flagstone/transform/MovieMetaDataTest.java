@@ -40,7 +40,7 @@ public final class MovieMetaDataTest {
 
     private transient MovieMetaData fixture;
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForMetaDataWithNull() {
         fixture = new MovieMetaData((String) null);
     }

@@ -85,7 +85,7 @@ public final class ColorTest {
         new Color(0, 0, 256);
     }
 
-    @Test(expected = IllegalArgumentRangeException.class)
+    @Test
     public void checkColorIsOpaque() {
         assertEquals(255, new Color(0, 0, 0).getAlpha());
     }

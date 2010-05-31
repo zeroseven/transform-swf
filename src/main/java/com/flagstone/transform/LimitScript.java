@@ -79,7 +79,10 @@ public final class LimitScript implements MovieTag {
      *             if an error occurs while decoding the data.
      */
     public LimitScript(final SWFDecoder coder) throws IOException {
-        coder.readUnsignedShort();
+        int length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
+        if (length == Coder.IS_EXTENDED) {
+            length = coder.readInt();
+        }
         depth = coder.readUnsignedShort();
         timeout = coder.readUnsignedShort();
     }

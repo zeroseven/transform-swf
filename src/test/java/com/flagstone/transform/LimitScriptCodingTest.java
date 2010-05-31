@@ -38,14 +38,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-@RunWith(Parameterized.class)
 public final class LimitScriptCodingTest {
 
     private static final String CALCULATED_LENGTH =
@@ -61,7 +58,7 @@ public final class LimitScriptCodingTest {
 
     @Test
     public void checkLimitScriptIsEncoded() throws IOException {
-        final LimitScript object = new LimitScript(1, 2);
+        final LimitScript object = new LimitScript(1, 30);
         final byte[] binary = new byte[] {0x44, 0x10, 0x01, 0x00, 0x1E, 0x00};
 
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -70,6 +67,7 @@ public final class LimitScriptCodingTest {
 
         final int length = object.prepareToEncode(context);
         object.encode(encoder, context);
+        encoder.flush();
 
         assertEquals(CALCULATED_LENGTH, binary.length, length);
 

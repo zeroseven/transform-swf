@@ -68,6 +68,7 @@ public final class EnableDebuggerCodingTest {
 
         final int length = object.prepareToEncode(context);
         object.encode(encoder, context);
+        encoder.flush();
 
         assertEquals(CALCULATED_LENGTH, binary.length, length);
 

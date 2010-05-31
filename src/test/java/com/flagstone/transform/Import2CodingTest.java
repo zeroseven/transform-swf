@@ -40,14 +40,11 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-@RunWith(Parameterized.class)
 public final class Import2CodingTest {
 
     private static final String CALCULATED_LENGTH =
@@ -66,7 +63,7 @@ public final class Import2CodingTest {
         final Map<Integer, String>map = new LinkedHashMap<Integer, String>();
         map.put(1, "A");
         map.put(2, "B");
-        map.put(2, "C");
+        map.put(3, "C");
 
         final Import2 object = new Import2("ABC", map);
         final byte[] binary = new byte[] {(byte) 0xD4, 0x11, 0x41, 0x42, 0x43,
@@ -79,6 +76,7 @@ public final class Import2CodingTest {
 
         final int length = object.prepareToEncode(context);
         object.encode(encoder, context);
+        encoder.flush();
 
         assertEquals(CALCULATED_LENGTH, binary.length, length);
 
@@ -90,7 +88,7 @@ public final class Import2CodingTest {
         final Map<Integer, String>map = new LinkedHashMap<Integer, String>();
         map.put(1, "A");
         map.put(2, "B");
-        map.put(2, "C");
+        map.put(3, "C");
 
         final byte[] binary = new byte[] {(byte) 0xD4, 0x11, 0x41, 0x42, 0x43,
                 0x00, 0x01, 0x00, 0x03, 0x00, 0x01, 0x00, 0x41, 0x00, 0x02,
@@ -109,7 +107,7 @@ public final class Import2CodingTest {
         final Map<Integer, String>map = new LinkedHashMap<Integer, String>();
         map.put(1, "A");
         map.put(2, "B");
-        map.put(2, "C");
+        map.put(3, "C");
 
         final byte[] binary = new byte[] {(byte) 0xFF, 0x11, 0x14, 0x00, 0x00,
                 0x00, 0x41, 0x42, 0x43, 0x00, 0x01, 0x00, 0x03, 0x00, 0x01,

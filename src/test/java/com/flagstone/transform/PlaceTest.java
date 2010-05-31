@@ -70,7 +70,7 @@ public final class PlaceTest {
         fixture = new Place(identifier, 65536, transform);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForCoordTransformWithNull() {
         fixture = new Place(identifier, layer, null);
     }

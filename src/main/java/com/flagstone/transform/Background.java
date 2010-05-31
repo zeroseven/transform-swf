@@ -85,6 +85,9 @@ public final class Background implements MovieTag {
     public Background(final SWFDecoder coder, final Context context)
             throws IOException {
         int length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
+        if (length == Coder.IS_EXTENDED) {
+            length = coder.readInt();
+        }
         coder.mark();
         color = new Color(coder, context);
         coder.unmark(length);

@@ -44,7 +44,7 @@ public final class DoABCTest {
 
     private transient DoABC fixture;
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForNameWithNull() {
         fixture = new DoABC(null, defer, data);
     }
@@ -54,12 +54,12 @@ public final class DoABCTest {
         fixture = new DoABC("", defer, data);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForDataWithNull() {
         fixture = new DoABC(name, defer, null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void checkAccessorForDataWithEmpty() {
         fixture = new DoABC(name, defer, new byte[0]);
     }

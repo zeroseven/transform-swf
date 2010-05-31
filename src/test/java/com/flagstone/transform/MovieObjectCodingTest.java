@@ -47,10 +47,6 @@ public final class MovieObjectCodingTest {
 
     private static final String CALCULATED_LENGTH =
         "Incorrect calculated length";
-    private static final String NOT_FULLY_ENCODED =
-        "Data was not fully encoded";
-    private static final String NOT_FULLY_DECODED =
-        "Data was not fully decoded";
     private static final String NOT_ENCODED =
         "Object was not encoded properly";
     private static final String NOT_DECODED =
@@ -68,6 +64,7 @@ public final class MovieObjectCodingTest {
 
         final int length = object.prepareToEncode(context);
         object.encode(encoder, context);
+        encoder.flush();
 
         assertEquals(CALCULATED_LENGTH, binary.length, length);
 
@@ -83,7 +80,7 @@ public final class MovieObjectCodingTest {
         final SWFDecoder decoder = new SWFDecoder(stream);
         final MovieObject object = new MovieObject(decoder);
 
-        assertEquals(NOT_DECODED, data, object.getData());
+        assertArrayEquals(NOT_DECODED, data, object.getData());
    }
 
     @Test
@@ -96,6 +93,6 @@ public final class MovieObjectCodingTest {
         final SWFDecoder decoder = new SWFDecoder(stream);
         final MovieObject object = new MovieObject(decoder);
 
-        assertEquals(NOT_DECODED, data, object.getData());
+        assertArrayEquals(NOT_DECODED, data, object.getData());
    }
 }

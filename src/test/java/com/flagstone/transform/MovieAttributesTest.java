@@ -30,19 +30,19 @@
  */
 package com.flagstone.transform;
 
+import org.junit.Ignore;
+import org.junit.Test;
+
 
 public final class MovieAttributesTest {
 
-//    private final transient Set<MovieAttribute> attributes =
-//        EnumSet.allOf(MovieAttribute.class);
-//
-//    private transient MovieAttributes fixture;
-//
-//    @Test
-//    public void checkCopy() {
+    private transient MovieAttributes fixture;
+
+    @Test @Ignore
+    public void checkCopy() {
 //        fixture = new MovieAttributes(attributes);
 //        final MovieAttributes copy = fixture.copy();
 //
 //        assertEquals(fixture.toString(), copy.toString());
-//    }
+    }
 }

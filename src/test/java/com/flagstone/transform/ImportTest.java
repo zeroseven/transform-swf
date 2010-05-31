@@ -53,7 +53,7 @@ public final class ImportTest {
 
     private transient Import fixture;
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForUrlWithNull() {
         fixture = new Import(null, table);
     }
@@ -75,7 +75,7 @@ public final class ImportTest {
         fixture.add(65536, "A");
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForNameWithNull() {
         fixture = new Import(url, table);
         fixture.add(1, null);

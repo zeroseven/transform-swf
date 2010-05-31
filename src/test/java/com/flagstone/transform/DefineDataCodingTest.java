@@ -38,22 +38,15 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-@RunWith(Parameterized.class)
 public final class DefineDataCodingTest {
 
     private static final String CALCULATED_LENGTH =
         "Incorrect calculated length";
-    private static final String NOT_FULLY_ENCODED =
-        "Data was not fully encoded";
-    private static final String NOT_FULLY_DECODED =
-        "Data was not fully decoded";
     private static final String NOT_ENCODED =
         "Object was not encoded properly";
     private static final String NOT_DECODED =
@@ -72,6 +65,7 @@ public final class DefineDataCodingTest {
 
         final int length = object.prepareToEncode(context);
         object.encode(encoder, context);
+        encoder.flush();
 
         assertEquals(CALCULATED_LENGTH, binary.length, length);
 
@@ -89,7 +83,7 @@ public final class DefineDataCodingTest {
         final DefineData object = new DefineData(decoder);
 
         assertEquals(NOT_DECODED, 1, object.getIdentifier());
-        assertEquals(NOT_DECODED, data, object.getData());
+        assertArrayEquals(NOT_DECODED, data, object.getData());
    }
 
     @Test
@@ -104,6 +98,6 @@ public final class DefineDataCodingTest {
         final DefineData object = new DefineData(decoder);
 
         assertEquals(NOT_DECODED, 1, object.getIdentifier());
-        assertEquals(NOT_DECODED, data, object.getData());
+        assertArrayEquals(NOT_DECODED, data, object.getData());
    }
 }

@@ -41,7 +41,7 @@ public final class FrameLabelTest {
 
     private transient FrameLabel fixture;
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForLabelWithNull() {
         fixture = new FrameLabel((String) null);
     }

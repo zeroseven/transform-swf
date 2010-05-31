@@ -52,7 +52,7 @@ public final class DefineDataTest {
         fixture = new DefineData(65536, data);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForDataWithNull() {
         fixture = new DefineData(1, null);
     }

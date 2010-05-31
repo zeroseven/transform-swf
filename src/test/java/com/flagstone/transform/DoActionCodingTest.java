@@ -44,6 +44,7 @@ import org.junit.Test;
 import com.flagstone.transform.action.Action;
 import com.flagstone.transform.action.BasicAction;
 import com.flagstone.transform.coder.Context;
+import com.flagstone.transform.coder.DecoderRegistry;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -75,6 +76,7 @@ public final class DoActionCodingTest {
 
         final int length = object.prepareToEncode(context);
         object.encode(encoder, context);
+        encoder.flush();
 
         assertEquals(CALCULATED_LENGTH, binary.length, length);
 
@@ -92,6 +94,7 @@ public final class DoActionCodingTest {
         final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
         final SWFDecoder decoder = new SWFDecoder(stream);
         final Context context = new Context();
+        context.setRegistry(DecoderRegistry.getDefault());
         final DoAction object = new DoAction(decoder, context);
 
         assertEquals(NOT_DECODED, actions, object.getActions());
@@ -109,6 +112,7 @@ public final class DoActionCodingTest {
         final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
         final SWFDecoder decoder = new SWFDecoder(stream);
         final Context context = new Context();
+        context.setRegistry(DecoderRegistry.getDefault());
         final DoAction object = new DoAction(decoder, context);
 
         assertEquals(NOT_DECODED, actions, object.getActions());

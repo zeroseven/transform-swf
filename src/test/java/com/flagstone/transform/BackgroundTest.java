@@ -42,7 +42,7 @@ public final class BackgroundTest {
     private static final transient Color COLOR = new Color(1, 2, 3);
     private transient Background fixture;
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForColorWithNull() {
         fixture = new Background((Color) null);
     }

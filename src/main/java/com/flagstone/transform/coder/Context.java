@@ -37,12 +37,13 @@ import java.nio.charset.UnsupportedCharsetException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.flagstone.transform.CharacterEncoding;
+
 /**
  * Contexts are used to pass information between objects when they are being
  * encoded or decoded.
  */
 public final class Context {
-
     /** TODO(doc). */
     public static final int VERSION = 1;
     /** TODO(doc). */
@@ -85,6 +86,7 @@ public final class Context {
      * Create a Context object.
      */
     public Context() {
+        encoding = CharacterEncoding.UTF8.toString();
         variables = new LinkedHashMap<Integer, Integer>();
     }
 

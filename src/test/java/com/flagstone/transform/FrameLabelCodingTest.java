@@ -59,6 +59,8 @@ public final class FrameLabelCodingTest {
     @Test
     public void checkFrameLabelIsEncoded() throws IOException {
         final FrameLabel object = new FrameLabel("Frame");
+        object.setAnchor(true);
+
         final byte[] binary = new byte[] {(byte) 0xC7, 0x0A, 0x46, 0x72, 0x61,
                 0x6D, 0x65, 0x00, 0x01 };
 
@@ -68,6 +70,7 @@ public final class FrameLabelCodingTest {
 
         final int length = object.prepareToEncode(context);
         object.encode(encoder, context);
+        encoder.flush();
 
         assertEquals(CALCULATED_LENGTH, binary.length, length);
 

@@ -67,6 +67,7 @@ public final class ColorTransformCodingTest {
 
         final int length = object.prepareToEncode(context);
         object.encode(encoder, context);
+        encoder.flush();
 
         assertEquals(CALCULATED_LENGTH, binary.length, length);
 
@@ -113,6 +114,7 @@ public final class ColorTransformCodingTest {
 
         final int length = object.prepareToEncode(context);
         object.encode(encoder, context);
+        encoder.flush();
 
         assertEquals(CALCULATED_LENGTH, binary.length, length);
 
@@ -122,7 +124,7 @@ public final class ColorTransformCodingTest {
     @Test
     public void checkOpaqueMultiplyTermsAreDecoded() throws IOException {
         final ColorTransform object =
-            new ColorTransform(1.0f, 2.0f, 3.0f, 0.0f);
+            new ColorTransform(1.0f, 2.0f, 3.0f, 1.0f);
         final byte[] binary =
             new byte[] { 0x6C, (byte) 0x80, 0x20, 0x06, 0x00 };
 
@@ -162,6 +164,7 @@ public final class ColorTransformCodingTest {
 
         final int length = object.prepareToEncode(context);
         object.encode(encoder, context);
+        encoder.flush();
 
         assertEquals(CALCULATED_LENGTH, binary.length, length);
 
@@ -191,9 +194,11 @@ public final class ColorTransformCodingTest {
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         final SWFEncoder encoder = new SWFEncoder(stream);
         final Context context = new Context();
+        context.put(Context.TRANSPARENT, 1);
 
         final int length = object.prepareToEncode(context);
         object.encode(encoder, context);
+        encoder.flush();
 
         assertEquals(CALCULATED_LENGTH, binary.length, length);
 
@@ -208,6 +213,7 @@ public final class ColorTransformCodingTest {
         final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
         final SWFDecoder decoder = new SWFDecoder(stream);
         final Context context = new Context();
+        context.put(Context.TRANSPARENT, 1);
 
         assertEquals(NOT_DECODED, object, new ColorTransform(decoder, context));
     }
@@ -239,9 +245,11 @@ public final class ColorTransformCodingTest {
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         final SWFEncoder encoder = new SWFEncoder(stream);
         final Context context = new Context();
+        context.put(Context.TRANSPARENT, 1);
 
         final int length = object.prepareToEncode(context);
         object.encode(encoder, context);
+        encoder.flush();
 
         assertEquals(CALCULATED_LENGTH, binary.length, length);
 
@@ -259,6 +267,7 @@ public final class ColorTransformCodingTest {
         final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
         final SWFDecoder decoder = new SWFDecoder(stream);
         final Context context = new Context();
+        context.put(Context.TRANSPARENT, 1);
 
         assertEquals(NOT_DECODED, object, new ColorTransform(decoder, context));
     }
@@ -290,9 +299,11 @@ public final class ColorTransformCodingTest {
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         final SWFEncoder encoder = new SWFEncoder(stream);
         final Context context = new Context();
+        context.put(Context.TRANSPARENT, 1);
 
         final int length = object.prepareToEncode(context);
         object.encode(encoder, context);
+        encoder.flush();
 
         assertEquals(CALCULATED_LENGTH, binary.length, length);
 
@@ -310,6 +321,7 @@ public final class ColorTransformCodingTest {
         final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
         final SWFDecoder decoder = new SWFDecoder(stream);
         final Context context = new Context();
+        context.put(Context.TRANSPARENT, 1);
 
         assertEquals(NOT_DECODED, object, new ColorTransform(decoder, context));
     }

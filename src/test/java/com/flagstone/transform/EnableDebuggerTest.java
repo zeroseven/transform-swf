@@ -40,7 +40,7 @@ public final class EnableDebuggerTest {
 
     private transient EnableDebugger fixture;
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForPasswordWithNull() {
         fixture = new EnableDebugger((String) null);
     }

@@ -144,7 +144,7 @@ public final class DoABC implements MovieTag {
      * Is loading of the script deferred until it is called.
      *
      * @return true if loading of the script is deferred, false if it is loaded
-     * immeiately.
+     * immediately.
      */
     public boolean isDeferred() {
         return (deferred & 1) != 0;

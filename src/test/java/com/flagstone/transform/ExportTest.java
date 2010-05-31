@@ -65,7 +65,7 @@ public final class ExportTest {
         fixture.add(65536, "A");
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForNameWithNull() {
         fixture = new Export(table);
         fixture.add(1, null);

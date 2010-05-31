@@ -40,22 +40,15 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-@RunWith(Parameterized.class)
 public final class ScenesAndLabelsCodingTest {
 
     private static final String CALCULATED_LENGTH =
         "Incorrect calculated length";
-    private static final String NOT_FULLY_ENCODED =
-        "Data was not fully encoded";
-    private static final String NOT_FULLY_DECODED =
-        "Data was not fully decoded";
     private static final String NOT_ENCODED =
         "Object was not encoded properly";
     private static final String NOT_DECODED =
@@ -66,11 +59,11 @@ public final class ScenesAndLabelsCodingTest {
         final Map<Integer, String>scenes = new LinkedHashMap<Integer, String>();
         scenes.put(1, "A");
         scenes.put(2, "B");
-        scenes.put(2, "C");
+        scenes.put(3, "C");
         final Map<Integer, String>labels = new LinkedHashMap<Integer, String>();
-        scenes.put(4, "D");
-        scenes.put(5, "E");
-        scenes.put(6, "F");
+        labels.put(4, "D");
+        labels.put(5, "E");
+        labels.put(6, "F");
 
         final ScenesAndLabels object = new ScenesAndLabels(scenes, labels);
         final byte[] binary = new byte[] {(byte) 0x094, 0x15, 0x03, 0x01, 0x41,
@@ -83,6 +76,7 @@ public final class ScenesAndLabelsCodingTest {
 
         final int length = object.prepareToEncode(context);
         object.encode(encoder, context);
+        encoder.flush();
 
         assertEquals(CALCULATED_LENGTH, binary.length, length);
 
@@ -94,11 +88,11 @@ public final class ScenesAndLabelsCodingTest {
         final Map<Integer, String>scenes = new LinkedHashMap<Integer, String>();
         scenes.put(1, "A");
         scenes.put(2, "B");
-        scenes.put(2, "C");
+        scenes.put(3, "C");
         final Map<Integer, String>labels = new LinkedHashMap<Integer, String>();
-        scenes.put(4, "D");
-        scenes.put(5, "E");
-        scenes.put(6, "F");
+        labels.put(4, "D");
+        labels.put(5, "E");
+        labels.put(6, "F");
 
         final byte[] binary = new byte[] {(byte) 0x094, 0x15, 0x03, 0x01, 0x41,
                 0x00, 0x02, 0x42, 0x00, 0x03, 0x43, 0x00, 0x03, 0x04, 0x44,
@@ -117,11 +111,11 @@ public final class ScenesAndLabelsCodingTest {
         final Map<Integer, String>scenes = new LinkedHashMap<Integer, String>();
         scenes.put(1, "A");
         scenes.put(2, "B");
-        scenes.put(2, "C");
+        scenes.put(3, "C");
         final Map<Integer, String>labels = new LinkedHashMap<Integer, String>();
-        scenes.put(4, "D");
-        scenes.put(5, "E");
-        scenes.put(6, "F");
+        labels.put(4, "D");
+        labels.put(5, "E");
+        labels.put(6, "F");
 
         final byte[] binary = new byte[] {(byte) 0xBF, 0x15, 0x14, 0x00, 0x00,
                 0x00, 0x03, 0x01, 0x41, 0x00, 0x02, 0x42, 0x00, 0x03, 0x43,

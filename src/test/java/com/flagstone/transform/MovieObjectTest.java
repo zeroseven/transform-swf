@@ -42,7 +42,7 @@ public final class MovieObjectTest {
 
     private transient MovieObject fixture;
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForDataWithNull() {
         fixture = new MovieObject(TYPE, null);
     }

@@ -40,7 +40,7 @@ public final class ProtectTest {
 
     private transient Protect fixture;
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForPasswordWithNull() {
         fixture = new Protect((String) null);
     }

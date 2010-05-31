@@ -30,6 +30,11 @@
  */
 package com.flagstone.transform;
 
+import java.io.IOException;
+
+import org.junit.Ignore;
+import org.junit.Test;
+
 
 public final class MovieAttributesCodingTest {
 
@@ -44,8 +49,8 @@ public final class MovieAttributesCodingTest {
     private static final String NOT_DECODED =
         "Object was not decoded properly";
 
-//    @Test
-//    public void checkAllMovieAttributesAreEncoded() throws IOException {
+    @Test @Ignore
+    public void checkAllMovieAttributesAreEncoded() throws IOException {
 //        final Set<MovieAttribute>set = EnumSet.noneOf(MovieAttribute.class);
 //        final MovieAttributes object = new MovieAttributes(set);
 //        final byte[] binary = new byte[] {0x44, 0x11, 0x19, 0x00, 0x00, 0x00};
@@ -59,7 +64,7 @@ public final class MovieAttributesCodingTest {
 //        assertEquals(CALCULATED_LENGTH, binary.length, length);
 //
 //        assertArrayEquals(NOT_ENCODED, binary, stream.toByteArray());
-//    }
+    }
 //
 //    @Test
 //    public void checkAllAttributesAreDecoded() throws IOException {

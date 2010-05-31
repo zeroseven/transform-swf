@@ -38,23 +38,17 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.datatype.ColorTransform;
 import com.flagstone.transform.datatype.CoordTransform;
 
-@RunWith(Parameterized.class)
 public final class PlaceCodingTest {
 
     private static final String CALCULATED_LENGTH =
         "Incorrect calculated length";
-    private static final String NOT_FULLY_ENCODED =
-        "Data was not fully encoded";
-    private static final String NOT_FULLY_DECODED =
-        "Data was not fully decoded";
     private static final String NOT_ENCODED =
         "Object was not encoded properly";
     private static final String NOT_DECODED =
@@ -76,6 +70,7 @@ public final class PlaceCodingTest {
 
         final int length = object.prepareToEncode(context);
         object.encode(encoder, context);
+        encoder.flush();
 
         assertEquals(CALCULATED_LENGTH, binary.length, length);
 
@@ -103,10 +98,11 @@ public final class PlaceCodingTest {
    }
 
     @Test
-    public void checkExtendedPlaceIsDecoded() throws IOException {
+    public void checkPlaceWithColorIsDecoded() throws IOException {
         final int identifier = 1;
         final int layer = 2;
         final CoordTransform transform = CoordTransform.translate(1, 2);
+        final ColorTransform color = new ColorTransform(1,2,3,0);
 
         final byte[] binary = new byte[] {0x08, 0x01, 0x01, 0x00, 0x02, 0x00,
                 0x06, 0x50, (byte) 0x8C, (byte) 0xA6 };
@@ -119,6 +115,6 @@ public final class PlaceCodingTest {
         assertEquals(NOT_DECODED, identifier, object.getIdentifier());
         assertEquals(NOT_DECODED, layer, object.getLayer());
         assertEquals(NOT_DECODED, transform, object.getTransform());
-        assertEquals(NOT_DECODED, null, object.getColorTransform());
+        assertEquals(NOT_DECODED, color, object.getColorTransform());
    }
 }

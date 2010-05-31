@@ -38,22 +38,15 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-@RunWith(Parameterized.class)
 public final class DoABCCodingTest {
 
     private static final String CALCULATED_LENGTH =
         "Incorrect calculated length";
-    private static final String NOT_FULLY_ENCODED =
-        "Data was not fully encoded";
-    private static final String NOT_FULLY_DECODED =
-        "Data was not fully decoded";
     private static final String NOT_ENCODED =
         "Object was not encoded properly";
     private static final String NOT_DECODED =
@@ -63,8 +56,8 @@ public final class DoABCCodingTest {
     public void checkDoABCIsEncoded() throws IOException {
         final byte[] data = new byte[] {1, 2, 3, 4};
         final DoABC object = new DoABC("script", true, data);
-        final byte[] binary = new byte[] {(byte) 0x8F, 0x14, 0x00, 0x00, 0x00,
-                0x01, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x00, 0x01, 0x02,
+        final byte[] binary = new byte[] {(byte) 0x8F, 0x14, 0x01, 0x00, 0x00,
+                0x00, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x00, 0x01, 0x02,
                 0x03, 0x04 };
 
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -73,6 +66,7 @@ public final class DoABCCodingTest {
 
         final int length = object.prepareToEncode(context);
         object.encode(encoder, context);
+        encoder.flush();
 
         assertEquals(CALCULATED_LENGTH, binary.length, length);
 
@@ -82,8 +76,8 @@ public final class DoABCCodingTest {
     @Test
     public void checkDoABCIsDecoded() throws IOException {
         final byte[] data = new byte[] {1, 2, 3, 4};
-        final byte[] binary = new byte[] {(byte) 0x8F, 0x14, 0x00, 0x00, 0x00,
-                0x01, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x00, 0x01, 0x02,
+        final byte[] binary = new byte[] {(byte) 0x8F, 0x14, 0x01, 0x00, 0x00,
+                0x00, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x00, 0x01, 0x02,
                 0x03, 0x04 };
 
         final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
@@ -92,14 +86,14 @@ public final class DoABCCodingTest {
 
         assertEquals(NOT_DECODED, "script", object.getName());
         assertEquals(NOT_DECODED, true, object.isDeferred());
-        assertEquals(NOT_DECODED, data, object.getData());
+        assertArrayEquals(NOT_DECODED, data, object.getData());
    }
 
     @Test
     public void checkExtendedDoABCIsDecoded() throws IOException {
         final byte[] data = new byte[] {1, 2, 3, 4};
         final byte[] binary = new byte[] {(byte) 0xBF, 0x14, 0x0F, 0x00, 0x00,
-                0x00, 0x00, 0x00, 0x00, 0x01, 0x73, 0x63, 0x72, 0x69, 0x70,
+                0x00, 0x01, 0x00, 0x00, 0x00, 0x73, 0x63, 0x72, 0x69, 0x70,
                 0x74, 0x00, 0x01, 0x02, 0x03, 0x04 };
 
         final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
@@ -108,6 +102,6 @@ public final class DoABCCodingTest {
 
         assertEquals(NOT_DECODED, "script", object.getName());
         assertEquals(NOT_DECODED, true, object.isDeferred());
-        assertEquals(NOT_DECODED, data, object.getData());
+        assertArrayEquals(NOT_DECODED, data, object.getData());
    }
 }

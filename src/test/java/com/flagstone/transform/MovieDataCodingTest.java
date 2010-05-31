@@ -45,8 +45,6 @@ public final class MovieDataCodingTest {
 
     private static final String CALCULATED_LENGTH =
         "Incorrect calculated length";
-    private static final String NOT_FULLY_ENCODED =
-        "Data was not fully encoded";
     private static final String NOT_ENCODED =
         "Object was not encoded properly";
 
@@ -62,6 +60,7 @@ public final class MovieDataCodingTest {
 
         final int length = object.prepareToEncode(context);
         object.encode(encoder, context);
+        encoder.flush();
 
         assertEquals(CALCULATED_LENGTH, binary.length, length);
 

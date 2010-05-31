@@ -41,7 +41,7 @@ public final class MovieDataTest {
 
     private transient MovieData fixture;
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForDataWithNull() {
         fixture = new MovieData((byte[]) null);
     }

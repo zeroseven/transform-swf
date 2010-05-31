@@ -67,6 +67,7 @@ public final class ColorCodingTest {
 
         final int length = object.prepareToEncode(context);
         object.encode(encoder, context);
+        encoder.flush();
 
         assertEquals(CALCULATED_LENGTH, binary.length, length);
 
@@ -95,6 +96,7 @@ public final class ColorCodingTest {
         final Context context = new Context().put(Context.TRANSPARENT, 1);
         final int length = object.prepareToEncode(context);
         object.encode(encoder, context);
+        encoder.flush();
 
         assertEquals(CALCULATED_LENGTH, binary.length, length);
 

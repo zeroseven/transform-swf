@@ -68,6 +68,9 @@ public final class ScalingGrid implements DefineTag {
      */
     public ScalingGrid(final SWFDecoder coder) throws IOException {
         length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
+        if (length == Coder.IS_EXTENDED) {
+            length = coder.readInt();
+        }
         identifier = coder.readUnsignedShort();
         bounds = new Bounds(coder);
     }

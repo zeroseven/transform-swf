@@ -38,23 +38,17 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
+import com.flagstone.transform.datatype.ColorTransform;
 import com.flagstone.transform.datatype.CoordTransform;
 
-@RunWith(Parameterized.class)
 public final class Place3CodingTest {
 
     private static final String CALCULATED_LENGTH =
         "Incorrect calculated length";
-    private static final String NOT_FULLY_ENCODED =
-        "Data was not fully encoded";
-    private static final String NOT_FULLY_DECODED =
-        "Data was not fully decoded";
     private static final String NOT_ENCODED =
         "Object was not encoded properly";
     private static final String NOT_DECODED =
@@ -62,11 +56,11 @@ public final class Place3CodingTest {
 
     @Test
     public void checkAddWithPositionIsEncoded() throws IOException {
-        final int uid = 1;
-        final int layer = 2;
+        final int layer = 1;
+        final int identifier = 2;
         final int xcoord = 1;
         final int ycoord = 2;
-        final Place3 object = Place3.show(uid, layer, xcoord, ycoord);
+        final Place3 object = Place3.show(identifier, layer, xcoord, ycoord);
 
         final byte[] binary = new byte[] {(byte) 0x88, 0x11, 0x06, 0x00, 0x01,
                 0x00, 0x02, 0x00, 0x06, 0x50};
@@ -77,6 +71,7 @@ public final class Place3CodingTest {
 
         final int length = object.prepareToEncode(context);
         object.encode(encoder, context);
+        encoder.flush();
 
         assertEquals(CALCULATED_LENGTH, binary.length, length);
 
@@ -85,9 +80,9 @@ public final class Place3CodingTest {
 
     @Test
     public void checkAddWithPositionIsDecoded() throws IOException {
-        final int identifier = 1;
-        final int layer = 2;
-        final CoordTransform transform = CoordTransform.translate(1, 1);
+        final int layer = 1;
+        final int identifier = 2;
+        final CoordTransform transform = CoordTransform.translate(1, 2);
 
         final byte[] binary = new byte[] {(byte) 0x88, 0x11, 0x06, 0x00, 0x01,
                 0x00, 0x02, 0x00, 0x06, 0x50};
@@ -104,10 +99,11 @@ public final class Place3CodingTest {
    }
 
     @Test
-    public void checkExtendedPlaceIsDecoded() throws IOException {
-        final int identifier = 1;
-        final int layer = 2;
-        final CoordTransform transform = CoordTransform.translate(1, 2);
+    public void checkPlaceWithColorIsDecoded() throws IOException {
+        final int layer = 1;
+        final int identifier = 2;
+        final CoordTransform position = CoordTransform.translate(1, 2);
+        final ColorTransform color = new ColorTransform(1,2,3,4);
 
         final byte[] binary = new byte[] {(byte) 0x8B, 0x11, 0x0E, 0x00, 0x01,
                 0x00, 0x02, 0x00, 0x06, 0x50, (byte) 0x90, 0x48, (byte) 0xD0 };
@@ -119,7 +115,7 @@ public final class Place3CodingTest {
 
         assertEquals(NOT_DECODED, identifier, object.getIdentifier());
         assertEquals(NOT_DECODED, layer, object.getLayer());
-        assertEquals(NOT_DECODED, transform, object.getTransform());
-        assertEquals(NOT_DECODED, null, object.getColorTransform());
+        assertEquals(NOT_DECODED, position, object.getTransform());
+        assertEquals(NOT_DECODED, color, object.getColorTransform());
    }
 }

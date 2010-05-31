@@ -82,7 +82,10 @@ public final class Remove implements MovieTag {
      *             if an error occurs while decoding the data.
      */
     public Remove(final SWFDecoder coder) throws IOException {
-        coder.readUnsignedShort();
+        int length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
+        if (length == Coder.IS_EXTENDED) {
+            length = coder.readInt();
+        }
         identifier = coder.readUnsignedShort();
         layer = coder.readUnsignedShort();
     }

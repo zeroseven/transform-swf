@@ -63,7 +63,7 @@ public final class ImportCodingTest {
         final Map<Integer, String>map = new LinkedHashMap<Integer, String>();
         map.put(1, "A");
         map.put(2, "B");
-        map.put(2, "C");
+        map.put(3, "C");
 
         final Import object = new Import("ABC", map);
         final byte[] binary = new byte[] {0x52, 0x0E, 0x41, 0x42, 0x43, 0x00,
@@ -76,6 +76,7 @@ public final class ImportCodingTest {
 
         final int length = object.prepareToEncode(context);
         object.encode(encoder, context);
+        encoder.flush();
 
         assertEquals(CALCULATED_LENGTH, binary.length, length);
 
@@ -87,7 +88,7 @@ public final class ImportCodingTest {
         final Map<Integer, String>map = new LinkedHashMap<Integer, String>();
         map.put(1, "A");
         map.put(2, "B");
-        map.put(2, "C");
+        map.put(3, "C");
 
         final byte[] binary = new byte[] {0x52, 0x0E, 0x41, 0x42, 0x43, 0x00,
                 0x03, 0x00, 0x01, 0x00, 0x41, 0x00, 0x02, 0x00, 0x42,
@@ -106,7 +107,7 @@ public final class ImportCodingTest {
         final Map<Integer, String>map = new LinkedHashMap<Integer, String>();
         map.put(1, "A");
         map.put(2, "B");
-        map.put(2, "C");
+        map.put(3, "C");
 
         final byte[] binary = new byte[] {0x7F, 0x0E, 0x12, 0x00, 0x00, 0x00,
                 0x41, 0x42, 0x43, 0x00, 0x03, 0x00, 0x01, 0x00, 0x41, 0x00,

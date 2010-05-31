@@ -71,7 +71,7 @@ public final class ScenesAndLabelsTest {
         fixture.addScene(65536, "A");
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForSceneNameWithNull() {
         fixture = new ScenesAndLabels(scenes, labels);
         fixture.addScene(1, null);
@@ -95,7 +95,7 @@ public final class ScenesAndLabelsTest {
         fixture.addLabel(65536, "A");
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForLabelNameWithNull() {
         fixture = new ScenesAndLabels(scenes, labels);
         fixture.addLabel(1, null);

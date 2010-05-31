@@ -74,7 +74,10 @@ public final class TabOrder implements MovieTag {
      *             if an error occurs while decoding the data.
      */
     public TabOrder(final SWFDecoder coder) throws IOException {
-        coder.readUnsignedShort();
+        int length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
+        if (length == Coder.IS_EXTENDED) {
+            length = coder.readInt();
+        }
         layer = coder.readUnsignedShort();
         index = coder.readUnsignedShort();
     }
