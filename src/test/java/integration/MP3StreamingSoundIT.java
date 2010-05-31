@@ -47,10 +47,12 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import com.flagstone.transform.Background;
+import com.flagstone.transform.DoAction;
 import com.flagstone.transform.Movie;
 import com.flagstone.transform.MovieAttributes;
 import com.flagstone.transform.MovieTag;
 import com.flagstone.transform.ShowFrame;
+import com.flagstone.transform.action.BasicAction;
 import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.datatype.WebPalette;
 import com.flagstone.transform.util.sound.SoundFactory;
@@ -61,7 +63,7 @@ public final class MP3StreamingSoundIT {
     @Parameters
     public static Collection<Object[]> files() {
 
-        final File srcDir = new File("test/data/mp3/reference");
+        final File srcDir = new File("src/test/resources/mp3-reference");
         final File destDir =
             new File("target/integration-results/MP3StreamingSound");
 
@@ -119,6 +121,12 @@ public final class MP3StreamingSoundIT {
                 movie.add(movieTag);
                 movie.add(ShowFrame.getInstance());
             }
+
+            DoAction action = new DoAction();
+            action.add(BasicAction.STOP);
+
+            movie.add(action);
+            movie.add(ShowFrame.getInstance());
 
             movie.encodeToFile(destFile);
 

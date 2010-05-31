@@ -65,7 +65,7 @@ public final class MovieEncodeIT {
             srcDir = new File(System.getProperty("test.suite"));
         }
 
-        destDir = new File("test/results/acceptance", "MovieEncodeTest");
+        destDir = new File("target/integration-results/", "MovieEncodeTest");
 
         if (!destDir.exists() && !destDir.mkdirs()) {
             fail();
