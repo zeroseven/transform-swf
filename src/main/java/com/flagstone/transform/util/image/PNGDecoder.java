@@ -899,6 +899,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
         int dst = 0;
 
         for (int i = 0; i < colors.length; i += 4) {
+            merged[dst++] = colors[i + 2]; // B
             merged[dst++] = colors[i + 1]; // G
             merged[dst++] = colors[i]; // R
         }

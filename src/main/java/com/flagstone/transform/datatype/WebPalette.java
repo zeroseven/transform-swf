@@ -44,7 +44,7 @@ package com.flagstone.transform.datatype;
  */
 public enum WebPalette {
     /** <p class="color" style="background-color:#F0F8FF;">0xF0F8FF</p>. */
-    ALICE_BLUE(0xF0, 0xF8, 0xFf),
+    ALICE_BLUE(0xF0, 0xF8, 0xFF),
     /** <p class="color" style="background-color:#FAEBD7;">0xFAEBD7</p>. */
     ANTIQUE_WHITE(0xFA, 0xEB, 0xD7),
     /** <p class="color" style="background-color:#00FFFF;">0x00FFFF</p>. */
@@ -82,7 +82,7 @@ public enum WebPalette {
     /** <p class="color" style="background-color:#FFF8DC;">0xFFF8DC</p>. */
     CORNSILK(0xFF, 0xF8, 0xDC),
     /** <p class="color" style="background-color:#DC143C;">0xDC143C</p>. */
-    CRIMSON(0xDC, 0x14, 0x3C3C),
+    CRIMSON(0xDC, 0x14, 0x3C),
     /** <p class="color" style="background-color:#00FFFF;">0x00FFFF</p>. */
     CYAN(0x00, 0xFF, 0xFF),
     /** <p class="color" style="background-color:#00008B;">0x00008B</p>. */
