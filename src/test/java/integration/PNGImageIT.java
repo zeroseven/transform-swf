@@ -113,7 +113,7 @@ public final class PNGImageIT {
             attrs.setFrameSize(shape.getBounds());
 
             movie.add(attrs);
-            movie.add(new Background(WebPalette.LIGHT_BLUE.color()));
+            movie.add(new Background(WebPalette.WHITE.color()));
             movie.add(image);
             movie.add(shape);
             movie.add(Place2.show(shape.getIdentifier(), 1, 0, 0));
