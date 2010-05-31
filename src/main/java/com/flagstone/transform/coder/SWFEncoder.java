@@ -39,10 +39,10 @@ import java.nio.charset.UnsupportedCharsetException;
 import java.util.Stack;
 
 /**
- * SWFEncoder extends LittleEndianEncoder by adding a context used to pass
- * information between classes during encoding.
+ * SWFEncoder wraps an OutputStream with a buffer to reduce the amount of
+ * memory required to encode a movie and to improve efficiency by writing
+ * data to a file or external source in blocks.
  */
-//TODO(class)
 public final class SWFEncoder {
     /** The default size, in bytes, for the internal buffer. */
     public static final int BUFFER_SIZE = 4096;
@@ -109,6 +109,11 @@ public final class SWFEncoder {
         pos = 0;
     }
 
+    /**
+     * Write the data currently stored in the buffer to the underlying stream.
+     * @throws IOException if an error occurs while writing the data to the
+     * stream.
+     */
     public void flush() throws IOException {
         stream.write(buffer, 0, index);
         stream.flush();
@@ -215,7 +220,7 @@ public final class SWFEncoder {
     /**
      * Changes the location to the next byte boundary.
      */
-    public final void alignToByte() {
+    public void alignToByte() {
         if (offset > 0) {
             index += 1;
             offset = 0;
@@ -229,8 +234,10 @@ public final class SWFEncoder {
      *            the value.
      * @param numberOfBits
      *            the (least significant) number of bits that will be written.
+     * @throws IOException if there is an error writing data to the underlying
+     * stream.
      */
-    public final void writeBits(final int value, final int numberOfBits)
+    public void writeBits(final int value, final int numberOfBits)
                 throws IOException {
 
         int ptr = (index << 3) + offset + numberOfBits;
@@ -267,8 +274,10 @@ public final class SWFEncoder {
      * @param value
      *            the value to be written - only the least significant byte will
      *            be written.
+     * @throws IOException if there is an error writing data to the underlying
+     * stream.
      */
-    public final void writeByte(final int value) throws IOException {
+    public void writeByte(final int value) throws IOException {
         if (index == buffer.length) {
             flush();
         }
@@ -282,8 +291,10 @@ public final class SWFEncoder {
      *            the array to be written.
      *
      * @return the number of bytes written.
+     * @throws IOException if there is an error reading data from the underlying
+     * stream.
      */
-    public final int writeBytes(final byte[] bytes) throws IOException {
+    public int writeBytes(final byte[] bytes) throws IOException {
         if (index + bytes.length < buffer.length) {
             System.arraycopy(bytes, 0, buffer, index, bytes.length);
             index += bytes.length;
@@ -300,8 +311,10 @@ public final class SWFEncoder {
      *
      * @param str
      *            the string.
+     * @throws IOException if there is an error reading data from the underlying
+     * stream.
      */
-    public final void writeString(final String str) throws IOException {
+    public void writeString(final String str) throws IOException {
         try {
             writeBytes(str.getBytes(encoding));
             buffer[index++] = 0;
@@ -315,6 +328,8 @@ public final class SWFEncoder {
      *
      * @param value
      *            an integer containing the value to be written.
+     * @throws IOException if there is an error reading data from the underlying
+     * stream.
      */
     public void writeShort(final int value) throws IOException {
         if (index + 2 > buffer.length) {
@@ -329,6 +344,8 @@ public final class SWFEncoder {
      *
      * @param value
      *            an integer containing the value to be written.
+     * @throws IOException if there is an error reading data from the underlying
+     * stream.
      */
     public void writeInt(final int value) throws IOException {
         if (index + 4 > buffer.length) {
@@ -345,6 +362,8 @@ public final class SWFEncoder {
      *
      * @param value
      *            an integer containing the value to be written.
+     * @throws IOException if there is an error reading data from the underlying
+     * stream.
      */
     public void writeVarInt(final int value) throws IOException {
         if (index + 5 > buffer.length) {
@@ -367,6 +386,8 @@ public final class SWFEncoder {
      *
      * @param value
      *            the value to be written.
+     * @throws IOException if there is an error reading data from the underlying
+     * stream.
      */
     public void writeHalf(final float value) throws IOException {
         //CHECKSTYLE:OFF

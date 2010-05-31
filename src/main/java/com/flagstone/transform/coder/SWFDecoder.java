@@ -38,7 +38,9 @@ import java.util.Stack;
 
 
 /**
- * SWFDecoder is used to decode the data from a Flash file.
+ * SWFDecoder wraps an InputStream with a buffer to reduce the amount of
+ * memory required to decode a movie and to improve efficiency by reading
+ * data from a file or external source in blocks.
  */
 @SuppressWarnings("PMD.TooManyMethods")
 public final class SWFDecoder {

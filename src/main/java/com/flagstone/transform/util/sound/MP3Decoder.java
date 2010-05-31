@@ -257,13 +257,11 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
                 coder.adjustPointer(8); // version number
                 coder.adjustPointer(8); // revision number
 
-                coder.adjustPointer(1); // unsynchronized
-                coder.adjustPointer(1); // extendedHeader
-                coder.adjustPointer(1); // experimental
-                int hasFooter = coder.readBits(1, false);
-
-                coder.adjustPointer(4);
-
+                int flags = coder.readByte();
+                // bit 7: unsynchronized
+                // bit 6: extendedHeader
+                // bit 5: experimental
+                int hasFooter = (flags & 0x10) >> 4;
                 int totalLength = (hasFooter == 1) ? 10 : 0;
 
                 totalLength += coder.readWord(1, false) << 21;

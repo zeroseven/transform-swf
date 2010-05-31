@@ -43,7 +43,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.DataFormatException;
 
-import java.io.IOException;
 import com.flagstone.transform.coder.BigDecoder;
 import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.datatype.CoordTransform;
@@ -172,7 +171,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
     private void decode(final byte[] bytes) throws IOException {
         final BigDecoder coder = new BigDecoder(bytes);
 
-        /* float version = */coder.readBits(32, true);
+        /* float version = */coder.readUI32();
 
         final int tableCount = coder.readUI16();
         /* int searchRange = */coder.readUI16();
@@ -207,7 +206,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         for (int i = 0; i < tableCount; i++) {
             chunkType = coder.readUI32();
             /* checksum = */ coder.readUI32();
-            offset = coder.readWord(4, false) << 3;
+            offset = coder.readUI32() << 3;
             /* length = */ coder.readUI32();
 
             /*
@@ -328,16 +327,17 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
     private void decodeHEAD(final BigDecoder coder) {
         final byte[] date = new byte[8];
 
-        coder.readBits(32, true); // table version fixed 16
-        coder.readBits(32, true); // font version fixed 16
+        coder.readUI32(); // table version fixed 16
+        coder.readUI32(); // font version fixed 16
         coder.readUI32(); // checksum adjustment
         coder.readUI32(); // magic number
-        coder.readBits(1, false); // baseline at y=0
-        coder.readBits(1, false); // side bearing at x=0;
-        coder.readBits(1, false); // instructions depend on point size
-        coder.readBits(1, false); // force ppem to integer values
-        coder.readBits(1, false); // instructions may alter advance
-        coder.readBits(11, false);
+        coder.readUI16(); // See following comments
+        // bit15: baseline at y=0
+        // bit14: side bearing at x=0;
+        // bit13: instructions depend on point size
+        // bit12: force ppem to integer values
+        // bit11: instructions may alter advance
+        // bits 10-0: unused.
         scale = coder.readUI16() / 1024; // units per em
 
         if (scale == 0) {
@@ -356,9 +356,9 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
          * Next two byte define font appearance on Macs, values are specified in
          * the OS/2 table
          */
-        bold = coder.readBits(1, false) != 0;
-        italic = coder.readBits(1, false) != 0;
-        coder.readBits(14, false); //
+        int flags = coder.readUI16();
+        bold = (flags & 0x008000) != 0;
+        italic = (flags & 0x004000) != 0;
 
         coder.readUI16(); // smallest readable size in pixels
         coder.readSI16(); // font direction hint
@@ -367,7 +367,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
     }
 
     private void decodeHHEA(final BigDecoder coder) {
-        coder.readBits(32, true); // table version, fixed 16
+        coder.readUI32(); // table version, fixed 16
 
         ascent = coder.readSI16() / scale;
         descent = -(coder.readSI16() / scale);
@@ -427,11 +427,9 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         }
 
         coder.readBytes(vendor); // font vendor identification
-
-        italic = coder.readBits(1, false) != 0;
-        coder.readBits(4, false);
-        bold = coder.readBits(1, false) != 0;
-        coder.readBits(10, false);
+        int flags = coder.readUI16();
+        italic = (flags & 0x008000) != 0;
+        bold = (flags & 0x000400) != 0;
 
         coder.readUI16(); // first unicode character code
         coder.readUI16(); // last unicode character code
@@ -519,28 +517,22 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
     }
 
     private void decodeMAXP(final BigDecoder coder) {
-        final float version = coder.readBits(32, true) / SCALE_16;
+        final float version = coder.readUI32() / SCALE_16;
         glyphCount = coder.readUI16();
 
-        if (version == 1.0) {
-            coder.readUI16(); // maximum number of points in a simple
-            // glyph
-            coder.readUI16(); // maximum number of contours in a simple
-            // glyph
-            coder.readUI16(); // maximum number of points in a composite
-            // glyph
-            coder.readUI16(); // maximum number of contours in a
-            // composite glyph
+        if (version == 1.0f) {
+            coder.readUI16(); // maximum number of points in a simple glyph
+            coder.readUI16(); // maximum number of contours in a simple glyph
+            coder.readUI16(); // maximum number of points in a composite glyph
+            coder.readUI16(); // maximum number of contours in a composite glyph
             coder.readUI16(); // maximum number of zones
             coder.readUI16(); // maximum number of point in Z0
             coder.readUI16(); // number of storage area locations
             coder.readUI16(); // maximum number of FDEFs
             coder.readUI16(); // maximum number of IDEFs
             coder.readUI16(); // maximum stack depth
-            coder.readUI16(); // maximum byte count for glyph
-            // instructions
-            coder.readUI16(); // maximum number of components for
-            // composite glyphs
+            coder.readUI16(); // maximum byte count for glyph instructions
+            coder.readUI16(); // maximum no. of components for composite glyphs
             coder.readUI16(); // maximum level of recursion
         }
     }
@@ -1012,19 +1004,19 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
            }
 
             if ((flags & HAVE_SCALE) > 0) {
-                final float scaleXY = coder.readBits(16, true) / SCALE_14;
+                final float scaleXY = coder.readSI16() / SCALE_14;
                 transform = new CoordTransform(scaleXY, scaleXY, 0, 0, xOffset,
                         yOffset);
             } else if ((flags & HAVE_XYSCALE) > 0) {
-                final float scaleX = coder.readBits(16, true) / SCALE_14;
-                final float scaleY = coder.readBits(16, true) / SCALE_14;
+                final float scaleX = coder.readSI16() / SCALE_14;
+                final float scaleY = coder.readSI16() / SCALE_14;
                 transform = new CoordTransform(scaleX, scaleY, 0, 0, xOffset,
                         yOffset);
             } else if ((flags & HAVE_2X2) > 0) {
-                final float scaleX = coder.readBits(16, true) / SCALE_14;
-                final float scale01 = coder.readBits(16, true) / SCALE_14;
-                final float scale10 = coder.readBits(16, true) / SCALE_14;
-                final float scaleY = coder.readBits(16, true) / SCALE_14;
+                final float scaleX = coder.readSI16() / SCALE_14;
+                final float scale01 = coder.readSI16() / SCALE_14;
+                final float scale10 = coder.readSI16() / SCALE_14;
+                final float scaleY = coder.readSI16() / SCALE_14;
 
                 transform = new CoordTransform(scaleX, scaleY, scale01,
                         scale10, xOffset, yOffset);

@@ -34,11 +34,12 @@ package com.flagstone.transform.coder;
 import java.util.Arrays;
 
 /**
- * LittleDecoder extends LittleEndianDecoder by adding a context used to pass
- * information between classes during decoding and a factory class for
- * generating instances of objects.
+ * LittleDecoder wraps an InputStream with a buffer to reduce the amount of
+ * memory required to decode an image or sound and to improve efficiency by
+ * reading data from a file or external source in blocks. Word data - shorts
+ * and ints - are read in Little-Endian format with the least significant byte
+ * decoded first.
  */
-//TODO(class)
 public final class LittleDecoder {
     /** Bit mask applied to bytes when converting to unsigned integers. */
     private static final int BYTE_MASK = 255;

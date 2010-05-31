@@ -352,6 +352,7 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
         int row = height - 1;
         int col = 0;
         int index = 0;
+        int value;
 
         boolean hasMore = true;
 
@@ -373,10 +374,10 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
                     col += coder.readUI16();
                     row -= coder.readUI16();
                     index = row * width + col;
-
                     for (int i = 0; i < code; i += 2) {
-                        image[index++] = (byte) coder.readBits(4, false);
-                        image[index++] = (byte) coder.readBits(4, false);
+                        value = coder.readByte();
+                        image[index++] = (byte) (value >>> 4);
+                        image[index++] = (byte) (value & 0x0F);
                     }
 
                     if ((code & 2) == 2) {
@@ -386,8 +387,9 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
                 default:
                     index = row * width + col;
                     for (int i = 0; i < code; i += 2) {
-                        image[index++] = (byte) coder.readBits(4, false);
-                        image[index++] = (byte) coder.readBits(4, false);
+                        value = coder.readByte();
+                        image[index++] = (byte) (value >>> 4);
+                        image[index++] = (byte) (value & 0x0F);
                     }
 
                     if ((code & 2) == 2) {
@@ -396,8 +398,9 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
                     break;
                 }
             } else {
-                final byte indexA = (byte) coder.readBits(4, false);
-                final byte indexB = (byte) coder.readBits(4, false);
+                value = coder.readByte();
+                final byte indexA = (byte) (value >>> 4);
+                final byte indexB = (byte) (value & 0x0F);
                 index = row * width + col;
 
                 for (int i = 0; (i < count) && (col < width); i++, col++) {

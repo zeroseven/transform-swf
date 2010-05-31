@@ -1,8 +1,8 @@
 /*
- * FLVDecoder.java
+ * BigDecoder.java
  * Transform
  *
- * Copyright (c) 2009-2010 Flagstone Software Ltd. All rights reserved.
+ * Copyright (c) 2010 Flagstone Software Ltd. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -33,7 +33,13 @@ package com.flagstone.transform.coder;
 
 import java.util.Arrays;
 
-/** TODO(class). */
+/**
+ * BigDecoder wraps an InputStream with a buffer to reduce the amount of
+ * memory required to decode an image or sound and to improve efficiency by
+ * reading data from a file or external source in blocks. Word data - shorts
+ * and ints - are read in Big-Endian format with the most significant byte
+ * decoded first.
+ */
 public final class BigDecoder {
     /** Bit mask applied to bytes when converting to unsigned integers. */
     private static final int BYTE_MASK = 255;
