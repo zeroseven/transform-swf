@@ -31,7 +31,6 @@
 
 package com.flagstone.transform.util.image;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -72,6 +71,47 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
     /** A true-colour image. */
     private static final int BI_BITFIELDS = 3;
 
+    /** Size of each colour table entry or pixel in a true colour image. */
+    private static final int COLOUR_CHANNELS = 4;
+    /** Size of a pixel in a RGB555 true colour image. */
+    private static final int RGB555_SIZE = 16;
+    /** Size of a pixel in a RGB8 true colour image. */
+    private static final int RGB8_SIZE = 24;
+
+    /** Byte offset to red channel. */
+    private static final int RED = 0;
+    /** Byte offset to red channel. */
+    private static final int GREEN = 1;
+    /** Byte offset to blue channel. */
+    private static final int BLUE = 2;
+    /** Byte offset to alpha channel. */
+    private static final int ALPHA = 3;
+
+    /** Mask used to extract red channel from a 16-bit RGB555 pixel. */
+    private static final int RGB555_RED_MASK = 0x7C00;
+    /** Mask used to extract green channel from a 16-bit RGB555 pixel. */
+    private static final int RGB555_GREEN_MASK = 0x03E0;
+    /** Mask used to extract blue channel from a 16-bit RGB555 pixel. */
+    private static final int RGB555_BLUE_MASK = 0x001F;
+    /** Shift used to align the RGB555 red channel to a 8-bit pixel. */
+    private static final int RGB555_RED_SHIFT = 7;
+    /** Shift used to align the RGB555 green channel to a 8-bit pixel. */
+    private static final int RGB555_GREEN_SHIFT = 2;
+    /** Shift used to align the RGB555 blue channel to a 8-bit pixel. */
+    private static final int RGB555_BLUE_SHIFT = 3;
+    /** Mask used to extract red channel from a 16-bit RGB565 pixel. */
+    private static final int RGB565_RED_MASK = 0x7C00;
+    /** Mask used to extract green channel from a 16-bit RGB565 pixel. */
+    private static final int RGB565_GREEN_MASK = 0x03E0;
+    /** Mask used to extract blue channel from a 16-bit RGB565 pixel. */
+    private static final int RGB565_BLUE_MASK = 0x001F;
+    /** Shift used to align the RGB565 red channel to a 8-bit pixel. */
+    private static final int RGB565_RED_SHIFT = 8;
+    /** Shift used to align the RGB565 green channel to a 8-bit pixel. */
+    private static final int RGB565_GREEN_SHIFT = 3;
+    /** Shift used to align the RGB565 blue channel to a 8-bit pixel. */
+    private static final int RGB565_BLUE_SHIFT = 3;
+
     /** The format of the decoded image. */
     private transient ImageFormat format;
     /** The width of the image in pixels. */
@@ -89,14 +129,21 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
     private transient int compressionMethod;
     /** The bit mask used to extract the red channel from the pixel word. */
     private transient int redMask;
+    /** Shift for the red pixel to convert to an 8-bit colour. */
+    private transient int redShift;
     /** The bit mask used to extract the green channel from the pixel word. */
     private transient int greenMask;
+    /** Shift for the green pixel to convert to an 8-bit colour. */
+    private transient int greenShift;
     /** The bit mask used to extract the blue channel from the pixel word. */
     private transient int blueMask;
+    /** Shift for the blue pixel to convert to an 8-bit colour. */
+    private transient int blueShift;
+
 
     /** {@inheritDoc} */
     public void read(final File file) throws IOException, DataFormatException {
-        read(new FileInputStream(file), (int) file.length());
+        read(new FileInputStream(file));
     }
 
     /** {@inheritDoc} */
@@ -113,7 +160,7 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
             throw new FileNotFoundException(url.getFile());
         }
 
-        read(url.openStream(), length);
+        read(url.openStream());
     }
 
     /** {@inheritDoc} */
@@ -123,12 +170,12 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
         switch (format) {
         case IDX8:
             object = new DefineImage(identifier, width, height,
-                    table.length / 4,
+                    table.length / COLOUR_CHANNELS,
                     zip(merge(adjustScan(width, height, image), table)));
             break;
         case IDXA:
             object = new DefineImage2(identifier, width, height,
-                    table.length / 4,
+                    table.length / COLOUR_CHANNELS,
                     zip(mergeAlpha(adjustScan(width, height, image), table)));
             break;
         case RGB5:
@@ -170,16 +217,11 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
     }
 
     /** {@inheritDoc} */
-    public void read(final InputStream stream, final int length)
+    public void read(final InputStream stream)
                     throws DataFormatException, IOException {
 
-        final byte[] bytes = new byte[length];
-        final BufferedInputStream buffer = new BufferedInputStream(stream);
-
-        buffer.read(bytes);
-        buffer.close();
-
-        final LittleDecoder coder = new LittleDecoder(bytes);
+        final LittleDecoder coder = new LittleDecoder(stream);
+        coder.mark();
 
         for (int i = 0; i < 2; i++) {
             if (coder.readByte() != SIGNATURE[i]) {
@@ -226,6 +268,24 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
             redMask = coder.readUI32();
             greenMask = coder.readUI32();
             blueMask = coder.readUI32();
+
+            if (redMask == RGB555_RED_MASK) {
+                redShift = RGB555_RED_SHIFT;
+            } else if (redMask == RGB565_RED_MASK) {
+                redShift = RGB565_RED_SHIFT;
+            }
+
+            if (greenMask == RGB555_GREEN_MASK) {
+                greenShift = RGB555_GREEN_SHIFT;
+            } else if (greenMask == RGB565_GREEN_MASK) {
+                greenShift = RGB565_GREEN_SHIFT;
+            }
+
+            if (blueMask == RGB555_BLUE_MASK) {
+                blueShift = RGB555_BLUE_SHIFT;
+            } else if (blueMask == RGB565_BLUE_MASK) {
+                blueShift = RGB565_BLUE_SHIFT;
+            }
         }
 
         switch (bitsPerPixel) {
@@ -263,29 +323,30 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
 
         if (format == ImageFormat.IDX8) {
             coloursUsed = 1 << bitsPerPixel;
-            table = new byte[coloursUsed * 4];
+            table = new byte[coloursUsed * COLOUR_CHANNELS];
             image = new byte[height * width];
 
             int index = 0;
 
             if (headerSize == 12) {
-                for (int i = 0; i < coloursUsed; i++, index += 4) {
-                    table[index + 3] = (byte) OPAQUE;
-                    table[index + 2] = (byte) coder.readByte();
-                    table[index + 1] = (byte) coder.readByte();
-                    table[index] = (byte) coder.readByte();
+                for (int i = 0; i < coloursUsed; i++) {
+                    table[index + ALPHA] = (byte) OPAQUE;
+                    table[index + BLUE] = (byte) coder.readByte();
+                    table[index + GREEN] = (byte) coder.readByte();
+                    table[index + RED] = (byte) coder.readByte();
+                    index += COLOUR_CHANNELS;
                 }
             } else {
-                for (int i = 0; i < coloursUsed; i++, index += 4) {
-                    table[index] = (byte) coder.readByte();
-                    table[index + 1] = (byte) coder.readByte();
-                    table[index + 2] = (byte) coder.readByte();
-                    table[index + 3] = (byte) (coder.readByte()
-                            | UNSIGNED_BYTE);
+                for (int i = 0; i < coloursUsed; i++) {
+                    table[index + RED] = (byte) coder.readByte();
+                    table[index + GREEN] = (byte) coder.readByte();
+                    table[index + BLUE] = (byte) coder.readByte();
+                    table[index + ALPHA] = (byte) coder.readByte();
+                    index += COLOUR_CHANNELS;
                 }
             }
 
-            coder.setPointer(offset << 3);
+            coder.skip(offset - coder.bytesRead());
 
             switch (compressionMethod) {
             case BI_RGB:
@@ -301,9 +362,9 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
                 throw new DataFormatException(BAD_FORMAT);
             }
         } else {
-            image = new byte[height * width * 4];
+            image = new byte[height * width * COLOUR_CHANNELS];
 
-            coder.setPointer(offset << 3);
+            coder.skip(offset - coder.bytesRead());
 
             switch (format) {
             case RGB5:
@@ -325,22 +386,18 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
      * Decode the indexed image data block (IDX8).
      * @param coder the decoder containing the image data.
      */
-    private void decodeIDX8(final LittleDecoder coder) {
-        int bitsRead;
+    private void decodeIDX8(final LittleDecoder coder) throws IOException {
         int index = 0;
 
         for (int row = height - 1; row > 0; row--) {
-            bitsRead = 0;
+            coder.mark();
             index = row * width;
 
             for (int col = 0; col < width; col++) {
                 image[index++] = (byte) coder.readBits(bitDepth, false);
-                bitsRead += bitDepth;
             }
-
-            if (bitsRead % 32 > 0) {
-                coder.adjustPointer(32 - (bitsRead % 32));
-            }
+            coder.alignToWord();
+            coder.unmark();
         }
     }
 
@@ -348,7 +405,7 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
      * Decode the run length encoded image data block (RLE4).
      * @param coder the decoder containing the image data.
      */
-    private void decodeRLE4(final LittleDecoder coder) {
+    private void decodeRLE4(final LittleDecoder coder) throws IOException {
         int row = height - 1;
         int col = 0;
         int index = 0;
@@ -414,7 +471,7 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
      * Decode the run length encoded image data block (RLE8).
      * @param coder the decoder containing the image data.
      */
-    private void decodeRLE8(final LittleDecoder coder) {
+    private void decodeRLE8(final LittleDecoder coder) throws IOException {
         int row = height - 1;
         int col = 0;
         int index = 0;
@@ -473,81 +530,45 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
      * Decode the true colour image with each colour channel taking 5-bits.
      * @param coder the decoder containing the image data.
      */
-    private void decodeRGB5(final LittleDecoder coder) {
-        int bitsRead = 0;
+    private void decodeRGB5(final LittleDecoder coder) throws IOException {
         int index = 0;
+        int colour;
 
-        if (compressionMethod == BI_RGB) {
-            for (int row = height - 1; row > 0; row--) {
-                bitsRead = 0;
-
-                for (int col = 0; col < width; col++, index += 4) {
-                    final int colour = coder.readUI16() & 0xFFFF;
-
-                    image[index] = (byte) ((colour & 0x7C00) >> 7);
-                    image[index + 1] = (byte) ((colour & 0x03E0) >> 2);
-                    image[index + 2] = (byte) ((colour & 0x001F) << 3);
-                    image[index + 3] = (byte) OPAQUE;
-
-                    bitsRead += 16;
-                }
-                if (bitsRead % 32 > 0) {
-                    coder.adjustPointer(32 - (bitsRead % 32));
-                }
+        for (int row = height - 1; row > 0; row--) {
+            coder.mark();
+            for (int col = 0; col < width; col++) {
+                colour = coder.readUI16();
+                image[index + RED] = (byte) ((colour & redMask)
+                        >> redShift);
+                image[index + GREEN] = (byte) ((colour & greenMask)
+                        >> greenShift);
+                image[index + BLUE] = (byte) ((colour & blueMask)
+                        << blueShift);
+                image[index + ALPHA] = (byte) OPAQUE;
+                index += COLOUR_CHANNELS;
             }
-        } else {
-            for (int row = height - 1; row > 0; row--) {
-                bitsRead = 0;
-
-                for (int col = 0; col < width; col++, index += 4) {
-                    final int colour = coder.readUI16() & 0xFFFF;
-
-                    if ((redMask == 0x7C00) && (greenMask == 0x03E0)
-                            && (blueMask == 0x001F)) {
-                        image[index] = (byte) ((colour & 0x7C00) >> 7);
-                        image[index + 1] = (byte) ((colour & 0x03E0) >> 2);
-                        image[index + 2] = (byte) ((colour & 0x001F) << 3);
-                        image[index + 3] = (byte) 0xFF;
-                    } else if ((redMask == 0xF800) && (greenMask == 0x07E0)
-                            && (blueMask == 0x001F)) {
-                        image[index] = (byte) ((colour & 0xF800) >> 8);
-                        image[index + 1] = (byte) ((colour & 0x07E0) >> 3);
-                        image[index + 2] = (byte) ((colour & 0x001F) << 3);
-                        image[index + 3] = (byte) OPAQUE;
-                    }
-                    bitsRead += 16;
-                }
-                if (bitsRead % 32 > 0) {
-                    coder.adjustPointer(32 - (bitsRead % 32));
-                }
-            }
+            coder.alignToWord();
+            coder.unmark();
         }
-
     }
 
     /**
      * Decode the true colour image with each colour channel taking 8-bits.
      * @param coder the decoder containing the image data.
      */
-    private void decodeRGB8(final LittleDecoder coder) {
-        int bitsRead;
+    private void decodeRGB8(final LittleDecoder coder) throws IOException {
         int index = 0;
-
         for (int row = height - 1; row > 0; row--) {
-            bitsRead = 0;
-
-            for (int col = 0; col < width; col++, index += 4) {
-                image[index] = (byte) coder.readBits(bitDepth, false);
-                image[index + 1] = (byte) coder.readBits(bitDepth, false);
-                image[index + 2] = (byte) coder.readBits(bitDepth, false);
-                image[index + 3] = (byte) OPAQUE;
-
-                bitsRead += 24;
+            coder.mark();
+            for (int col = 0; col < width; col++) {
+                image[index + RED] = (byte) coder.readByte();
+                image[index + GREEN] = (byte) coder.readByte();
+                image[index + BLUE] = (byte) coder.readByte();
+                image[index + ALPHA] = (byte) OPAQUE;
+                index += COLOUR_CHANNELS;
             }
-
-            if (bitsRead % 32 > 0) {
-                coder.adjustPointer(32 - (bitsRead % 32));
-            }
+            coder.alignToWord();
+            coder.unmark();
         }
     }
 
@@ -556,16 +577,18 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
      * 8-bits.
      * @param coder the decoder containing the image data.
      */
-    private void decodeRGBA(final LittleDecoder coder) {
+    private void decodeRGBA(final LittleDecoder coder) throws IOException {
         int index = 0;
 
         for (int row = height - 1; row > 0; row--) {
-            for (int col = 0; col < width; col++, index += 4) {
-                image[index + 2] = (byte) coder.readByte();
-                image[index + 1] = (byte) coder.readByte();
-                image[index] = (byte) coder.readByte();
-                image[index + 3] = (byte) coder.readByte();
-                image[index + 3] = (byte) OPAQUE;
+            for (int col = 0; col < width; col++) {
+                image[index + BLUE] = (byte) coder.readByte();
+                image[index + GREEN] = (byte) coder.readByte();
+                image[index + RED] = (byte) coder.readByte();
+                // force alpha channel to be opaque
+                image[index + ALPHA] = (byte) coder.readByte();
+                image[index + ALPHA] = (byte) OPAQUE;
+                index += COLOUR_CHANNELS;
             }
         }
     }
@@ -578,13 +601,12 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
     private void orderAlpha(final byte[] img) {
         byte alpha;
 
-        for (int i = 0; i < img.length; i += 4) {
-            alpha = img[i + 3];
-
-            img[i + 3] = img[i + 2];
-            img[i + 2] = img[i + 1];
-            img[i + 1] = img[i];
-            img[i] = alpha;
+        for (int i = 0; i < img.length; i += COLOUR_CHANNELS) {
+            alpha = img[i + ALPHA];
+            img[i + ALPHA] = img[i + BLUE];
+            img[i + BLUE] = img[i + GREEN];
+            img[i + GREEN] = img[i + RED];
+            img[i + RED] = alpha;
         }
     }
 
@@ -596,14 +618,15 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
    private void applyAlpha(final byte[] img) {
         int alpha;
 
-        for (int i = 0; i < img.length; i += 4) {
-            alpha = img[i + 3] & 0xFF;
+        for (int i = 0; i < img.length; i += COLOUR_CHANNELS) {
+            alpha = img[i + ALPHA] & UNSIGNED_BYTE;
 
-            img[i] = (byte) (((img[i] & UNSIGNED_BYTE) * alpha) / OPAQUE);
-            img[i + 1] = (byte) (((img[i + 1] & UNSIGNED_BYTE) * alpha)
-                    / OPAQUE);
-            img[i + 2] = (byte) (((img[i + 2] & UNSIGNED_BYTE) * alpha)
-                    / OPAQUE);
+            img[i + RED] = (byte) (((img[i + RED] & UNSIGNED_BYTE)
+                    * alpha) / OPAQUE);
+            img[i + GREEN] = (byte) (((img[i + GREEN] & UNSIGNED_BYTE)
+                    * alpha) / OPAQUE);
+            img[i + BLUE] = (byte) (((img[i + BLUE] & UNSIGNED_BYTE)
+                    * alpha) / OPAQUE);
         }
     }
 
@@ -617,13 +640,15 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
     * image.
     */
     private byte[] merge(final byte[] img, final byte[] colors) {
-        final byte[] merged = new byte[(colors.length / 4) * 3 + img.length];
+        final int entries = colors.length / COLOUR_CHANNELS;
+        final byte[] merged = new byte[entries * 3 + img.length];
         int dst = 0;
 
-        for (int i = 0; i < colors.length; i += 4) {
-            merged[dst++] = colors[i + 2]; // R
-            merged[dst++] = colors[i + 1]; // G
-            merged[dst++] = colors[i]; // B
+        // Remap RGBA colours from table to BGR in encoded image
+        for (int i = 0; i < colors.length; i += COLOUR_CHANNELS) {
+            merged[dst++] = colors[i + BLUE];
+            merged[dst++] = colors[i + GREEN];
+            merged[dst++] = colors[i + RED];
         }
 
         for (final byte element : img) {

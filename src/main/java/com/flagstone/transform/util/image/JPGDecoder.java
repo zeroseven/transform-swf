@@ -31,7 +31,7 @@
 
 package com.flagstone.transform.util.image;
 
-import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -59,11 +59,11 @@ public final class JPGDecoder implements ImageProvider, ImageDecoder {
     /** The height of the image in pixels. */
     private transient int height;
     /** The image data. */
-    private transient byte[] image;
+    private transient byte[] image = new byte[0];
 
     /** {@inheritDoc} */
     public void read(final File file) throws IOException, DataFormatException {
-        read(new FileInputStream(file), (int) file.length());
+        read(new FileInputStream(file));
     }
 
     /** {@inheritDoc} */
@@ -80,7 +80,7 @@ public final class JPGDecoder implements ImageProvider, ImageDecoder {
             throw new FileNotFoundException(url.getFile());
         }
 
-        read(url.openStream(), length);
+        read(url.openStream());
     }
 
     /** {@inheritDoc} */
@@ -94,20 +94,71 @@ public final class JPGDecoder implements ImageProvider, ImageDecoder {
     }
 
     /** {@inheritDoc} */
-     public void read(final InputStream stream, final int size)
+     public void read(final InputStream stream)
                  throws DataFormatException, IOException {
 
-        image = new byte[size];
-        final BufferedInputStream buffer = new BufferedInputStream(stream);
+         BigDecoder coder = new BigDecoder(stream);
 
-        buffer.read(image);
-        buffer.close();
+         int marker;
+         int length;
 
-        if (!jpegInfo()) {
-            throw new DataFormatException(BAD_FORMAT);
-        }
+         do {
+             marker = coder.readUI16();
+             if (marker == 0xFFD8) {
+                 copyTag(marker, 0, coder);
+             } else if (marker == 0xFFC0) {
+                 length = coder.readUI16();
+                 copyTag(marker, length, coder);
+             } else if (marker == 0xFFC2) {
+                 length = coder.readUI16();
+                 copyTag(marker, length, coder);
+             } else if (marker == 0xFFC4) {
+                 length = coder.readUI16();
+                 copyTag(marker, length, coder);
+             } else if (marker == 0xFFDB) {
+                 length = coder.readUI16();
+                 copyTag(marker, length, coder);
+             } else if (marker == 0xFFDD) {
+                 length = coder.readUI16();
+                 copyTag(marker, length, coder);
+             } else if (marker == 0xFFDA) {
+                 length = coder.readUI16();
+                 copyTag(marker, length, coder);
+             } else if (marker == 0xFFD9) {
+                 copyTag(marker, 0, coder);
+             } else if ((marker & 0xFFE0) == 0xFFE0) {
+                 length = coder.readUI16();
+                 copyTag(marker, length, coder);
+             } else {
+                 copyTag(marker, 0, coder);
+             }
+         } while (marker != 0xFFD9);
 
+         if (!jpegInfo()) {
+             throw new DataFormatException(BAD_FORMAT);
+         }
     }
+
+     private void copyTag(final int marker, final int length,
+             final BigDecoder coder) throws IOException {
+         byte[] bytes;
+         if (length > 0) {
+             bytes = new byte[length+2];
+         } else {
+             bytes = new byte[2];
+         }
+         bytes[0] = (byte) (marker >> 8);
+         bytes[1] = (byte) marker;
+
+         if (length > 0) {
+             bytes[2] = (byte) (length >> 8);
+             bytes[3] = (byte) length;
+             coder.readBytes(bytes, 4, length-2);
+         }
+         int imgLength = image.length;
+         image = Arrays.copyOf(image, imgLength + bytes.length);
+         System.arraycopy(bytes, 0, image, imgLength, bytes.length);
+     }
 
      /** {@inheritDoc} */
     public int getWidth() {
@@ -130,32 +181,35 @@ public final class JPGDecoder implements ImageProvider, ImageDecoder {
      * were decoded.
      */
     private boolean jpegInfo() {
-        final BigDecoder coder = new BigDecoder(image);
-
+        ByteArrayInputStream stream = new ByteArrayInputStream(image);
+        final BigDecoder coder = new BigDecoder(stream);
         boolean result;
+        try {
+            if (coder.readUI16() == 0xffd8) {
+                int marker;
 
-        if (coder.readUI16() == 0xffd8) {
-            int marker;
+                do {
+                    marker = coder.readUI16();
 
-            do {
-                marker = coder.readUI16();
-
-                if ((marker & 0xff00) == 0xff00) {
-                    if ((marker >= 0xffc0) && (marker <= 0xffcf)
-                            && (marker != 0xffc4) && (marker != 0xffc8)) {
-                        coder.adjustPointer(24);
-                        height = coder.readUI16();
-                        width = coder.readUI16();
-                        break;
-                    } else {
-                        coder.adjustPointer((coder.readUI16() - 2) << 3);
+                    if ((marker & 0xff00) == 0xff00) {
+                        if ((marker >= 0xffc0) && (marker <= 0xffcf)
+                                && (marker != 0xffc4) && (marker != 0xffc8)) {
+                            coder.adjustPointer(24);
+                            height = coder.readUI16();
+                            width = coder.readUI16();
+                            break;
+                        } else {
+                            coder.adjustPointer((coder.readUI16() - 2) << 3);
+                        }
                     }
-                }
 
-            } while ((marker & 0xff00) == 0xff00);
+                } while ((marker & 0xff00) == 0xff00);
 
-            result = true;
-        } else {
+                result = true;
+            } else {
+                result = false;
+            }
+        } catch (IOException e) {
             result = false;
         }
         return result;

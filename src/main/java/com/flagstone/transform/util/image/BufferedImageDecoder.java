@@ -40,6 +40,7 @@ import java.awt.image.DataBufferByte;
 import java.awt.image.DataBufferInt;
 import java.awt.image.DataBufferUShort;
 import java.awt.image.IndexColorModel;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -123,7 +124,7 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
 
     /** {@inheritDoc} */
     public void read(final File file) throws IOException, DataFormatException {
-         read(new FileInputStream(file), (int) file.length());
+         read(new FileInputStream(file));
     }
 
     /** {@inheritDoc} */
@@ -135,11 +136,11 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
             throw new FileNotFoundException(url.getFile());
         }
 
-        read(url.openStream(), fileSize);
+        read(url.openStream());
     }
 
     /** {@inheritDoc} */
-    public void read(final InputStream stream, final int size)
+    public void read(final InputStream stream)
             throws IOException, DataFormatException {
         read(ImageIO.read(stream));
     }
@@ -821,18 +822,21 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
                 decodeColorTable(obj.getColorModel());
 
                 index = 0;
-                final LittleDecoder coder = new LittleDecoder(pixels);
+                final ByteArrayInputStream stream =
+                    new ByteArrayInputStream(pixels);
+                final LittleDecoder coder = new LittleDecoder(stream);
 
-                for (int y = 0; y < height; y++) {
-                    int bitsRead = 0;
-
-                    for (int x = 0; x < width; x++, index++) {
-                        image[index] = (byte) coder.readBits(depth, false);
-                        bitsRead += depth;
+                try {
+                    for (int y = 0; y < height; y++) {
+                        coder.mark();
+                        for (int x = 0; x < width; x++, index++) {
+                            image[index] = (byte) coder.readBits(depth, false);
+                        }
+                        coder.alignToWord();
+                        coder.unmark();
                     }
-                    if (bitsRead % 32 > 0) {
-                        coder.adjustPointer(32 - (bitsRead % 32));
-                    }
+                } catch (IOException e) {
+                    throw new DataFormatException();
                 }
                 break;
             case BufferedImage.TYPE_BYTE_GRAY:

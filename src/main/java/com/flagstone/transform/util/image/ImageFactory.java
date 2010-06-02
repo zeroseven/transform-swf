@@ -35,6 +35,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.net.URL;
 import java.net.URLConnection;
@@ -165,7 +166,7 @@ public final class ImageFactory {
 
         decoder = ImageRegistry.getImageProvider(
                 info.getImageFormat().getMimeType());
-        decoder.read(new FileInputStream(file), (int) file.length());
+        decoder.read(new FileInputStream(file));
     }
 
     /**
@@ -198,7 +199,25 @@ public final class ImageFactory {
             throw new DataFormatException("Unsupported format");
         }
 
-        decoder.read(url.openStream(), fileSize);
+        decoder.read(url.openStream());
+    }
+
+    /**
+     * Create an image definition for an image read from a stream.
+     *
+     * @param stream
+     *            the InputStream containing the image data.
+     *
+     * @throws IOException
+     *             if there is an error reading the stream.
+     *
+     * @throws DataFormatException
+     *             if there is a problem decoding the image, either it is in an
+     *             unsupported format or an error occurred while decoding the
+     *             image data.
+     */
+    public void read(final InputStream stream) throws IOException, DataFormatException {
+        decoder.read(stream);
     }
 
     /**

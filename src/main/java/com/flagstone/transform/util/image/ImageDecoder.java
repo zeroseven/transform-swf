@@ -61,11 +61,10 @@ public interface ImageDecoder {
     /**
      * Read an image from an input stream.
      * @param stream the stream used to read the image data.
-     * @param size the length of the stream in bytes.
      * @throws IOException if there is an error reading the image data.
      * @throws DataFormatException if the file contains an unsupported format.
      */
-    void read(InputStream stream, int size)
+    void read(InputStream stream)
         throws IOException, DataFormatException;
     /**
      * Get the width of the image.

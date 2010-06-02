@@ -31,7 +31,7 @@
 
 package com.flagstone.transform.util.image;
 
-import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -188,7 +188,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
             throw new DataFormatException(BAD_FORMAT);
         }
 
-        read(new FileInputStream(file), (int) file.length());
+        read(new FileInputStream(file));
     }
 
     /** {@inheritDoc} */
@@ -200,7 +200,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
             throw new FileNotFoundException(url.getFile());
         }
 
-        read(url.openStream(), length);
+        read(url.openStream());
     }
 
     /** {@inheritDoc} */
@@ -237,16 +237,10 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
     }
 
     /** {@inheritDoc} */
-    public void read(final InputStream stream, final int size)
+    public void read(final InputStream stream)
             throws DataFormatException, IOException {
 
-        final byte[] bytes = new byte[size];
-        final BufferedInputStream buffer = new BufferedInputStream(stream);
-
-        buffer.read(bytes);
-        buffer.close();
-
-        final BigDecoder coder = new BigDecoder(bytes);
+        final BigDecoder coder = new BigDecoder(stream);
 
         int length = 0;
         int chunkType = 0;
@@ -273,10 +267,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
         while (moreChunks) {
             length = coder.readUI32();
             chunkType = coder.readUI32();
-
-            final int current = coder.getPointer();
-            final int next = current + ((length + 4) << 3);
-
+            coder.mark();
             switch (chunkType) {
             case IHDR:
                 decodeIHDR(coder);
@@ -292,17 +283,11 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
                 break;
             case IEND:
                 moreChunks = false;
-                coder.adjustPointer(32);
+                coder.skip(length + 4);
                 break;
             default:
-                coder.adjustPointer((length + 4) << 3);
+                coder.skip(length + 4);
                 break;
-            }
-            length += 4; // include CRC at end of chunk
-            coder.setPointer(next);
-
-            if (coder.eof()) {
-                moreChunks = false;
             }
         }
         decodeImage();
@@ -313,7 +298,8 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
      * @param coder the decoder containing the image data.
      * @throws DataFormatException is the image contains an unsupported format.
      */
-    private void decodeIHDR(final BigDecoder coder) throws DataFormatException {
+    private void decodeIHDR(final BigDecoder coder)
+            throws IOException, DataFormatException {
         width = coder.readUI32();
         height = coder.readUI32();
         bitDepth = coder.readByte();
@@ -357,7 +343,8 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
      * @param coder the decoder containing the image data.
      * @param length the length of the block in bytes.
      */
-    private void decodePLTE(final BigDecoder coder, final int length) {
+    private void decodePLTE(final BigDecoder coder, final int length)
+            throws IOException {
         if (colorType == 3) {
             final int paletteSize = length / 3;
             int index = 0;
@@ -381,7 +368,8 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
      * @param coder the decoder containing the image data.
      * @param length the length of the block in bytes.
      */
-    private void decodeTRNS(final BigDecoder coder, final int length) {
+    private void decodeTRNS(final BigDecoder coder, final int length)
+            throws IOException {
         int index = 0;
 
         switch (colorType) {
@@ -416,7 +404,8 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
      * @param coder the decoder containing the image data.
      * @param length the length of the block in bytes.
      */
-    private void decodeIDAT(final BigDecoder coder, final int length) {
+    private void decodeIDAT(final BigDecoder coder, final int length)
+            throws IOException {
         final int currentLength = chunkData.length;
         final int newLength = currentLength + length;
 
@@ -437,7 +426,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
      * Decode a PNG encoded image.
      * @throws DataFormatException if hte image cannot be decoded.
      */
-    private void decodeImage() throws DataFormatException {
+    private void decodeImage() throws IOException, DataFormatException {
         if ((format == ImageFormat.RGB8) && (bitDepth <= 5)) {
             format = ImageFormat.RGB5;
         }
@@ -566,8 +555,8 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
                 }
 
                 System.arraycopy(current, 0, previous, 0, scanLength);
-
-                final BigDecoder coder = new BigDecoder(current);
+                ByteArrayInputStream stream = new ByteArrayInputStream(current);
+                final BigDecoder coder = new BigDecoder(stream);
 
                 for (col = colStart; col < width; col += colInc) {
                     switch (colorType) {
@@ -645,7 +634,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
      * @throws DataFormatException if the pixel data cannot be decoded.
      */
     private void decodeGreyscale(final BigDecoder coder, final int row,
-            final int col) throws DataFormatException {
+            final int col) throws IOException, DataFormatException {
         int pixel = 0;
         byte colour = 0;
 
@@ -690,7 +679,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
      * @throws DataFormatException if the pixel data cannot be decoded.
      */
     private void decodeTrueColour(final BigDecoder coder, final int row,
-            final int col) throws DataFormatException {
+            final int col) throws IOException, DataFormatException {
         int pixel = 0;
         byte colour = 0;
 
@@ -720,7 +709,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
      * @throws DataFormatException if the pixel data cannot be decoded.
      */
     private void decodeIndexedColour(final BigDecoder coder, final int row,
-            final int col) throws DataFormatException {
+            final int col) throws IOException, DataFormatException {
         int index = 0;
 
         switch (bitDepth) {
@@ -753,7 +742,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
      * @throws DataFormatException if the pixel data cannot be decoded.
      */
     private void decodeAlphaGreyscale(final BigDecoder coder, final int row,
-            final int col) throws DataFormatException {
+            final int col) throws IOException, DataFormatException {
         int pixel = 0;
         byte colour = 0;
         int alpha = 0;
@@ -804,7 +793,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
      * @throws DataFormatException if the pixel data cannot be decoded.
      */
     private void decodeAlphaTrueColour(final BigDecoder coder, final int row,
-            final int col) throws DataFormatException {
+            final int col) throws IOException, DataFormatException {
         int pixel = 0;
         byte colour = 0;
 
