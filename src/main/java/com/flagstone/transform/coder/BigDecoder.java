@@ -31,7 +31,9 @@
 
 package com.flagstone.transform.coder;
 
-import java.util.Arrays;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Stack;
 
 /**
  * BigDecoder wraps an InputStream with a buffer to reduce the amount of
@@ -41,6 +43,9 @@ import java.util.Arrays;
  * decoded first.
  */
 public final class BigDecoder {
+    /** The default size, in bytes, for the internal buffer. */
+    public static final int BUFFER_SIZE = 4096;
+
     /** Bit mask applied to bytes when converting to unsigned integers. */
     private static final int BYTE_MASK = 255;
     /** Number of bits in an int. */
@@ -56,28 +61,119 @@ public final class BigDecoder {
     /** Number of bits to shift when aligning a value to the fourth byte. */
     private static final int TO_BYTE3 = 24;
 
+    /** The underlying input stream. */
+    private final transient InputStream stream;
+    /** The buffer for data read from the stream. */
+    private final transient byte[] buffer;
+    /** Stack for storing file locations. */
+    private final transient Stack<Integer>locations;
+    /** The position of the buffer relative to the start of the stream. */
+    private transient int pos;
+    /** The position from the start of the buffer. */
+    private transient int index;
+    /** The offset in bits in the current buffer location. */
+    private transient int offset;
+    /** The number of bytes available in the current buffer. */
+    private transient int size;
+    private transient boolean eof;
+
     /** The internal buffer containing data read from or written to a file. */
     private byte[] data;
     /** The index in bits to the current location in the buffer. */
     private transient int pointer;
-    /** The index in bytes to the current location in the buffer. */
-    private transient int index;
-    /** The offset in bits to the location in the current byte. */
-    private transient int offset;
-    /** The last location in the buffer. */
-    private final transient int end;
     /**
-     * Create a FLVDecoder initialised with the specified data.
-     * @param bytes the array of byes to decode.
+     * Create a new BigDecoder for the underlying InputStream with the
+     * specified buffer size.
+     *
+     * @param streamIn the stream from which data will be read.
+     * @param length the size in bytes of the buffer.
      */
-    public BigDecoder(final byte[] bytes) {
-        super();
-        data = new byte[bytes.length];
-        index = 0;
-        offset = 0;
-        pointer = 0;
-        end = bytes.length << 3;
-        data = Arrays.copyOf(bytes, bytes.length);
+    public BigDecoder(final InputStream streamIn, final int length) {
+        stream = streamIn;
+        buffer = new byte[length];
+        locations = new Stack<Integer>();
+        pos = 0;
+        eof = false;
+    }
+
+    /**
+     * Create a new BigDecoder for the underlying InputStream using the
+     * default buffer size.
+     *
+     * @param streamIn the stream from which data will be read.
+     */
+    public BigDecoder(final InputStream streamIn) {
+        stream = streamIn;
+        buffer = new byte[BUFFER_SIZE];
+        locations = new Stack<Integer>();
+        pos = 0;
+    }
+
+    /**
+     * Remember the current position.
+     */
+    public void mark() {
+        locations.push(pos + index);
+    }
+
+    /**
+     * Discard the last saved position.
+     */
+    public void unmark() {
+        locations.pop();
+    }
+
+    /**
+     * Compare the number of bytes read since the last saved position. The last
+     * saved position is discarded.
+     *
+     * @param expected the expected number of bytes read.
+     *
+     * @throws IOException if the number of bytes read is different from the
+     * expected number.
+     */
+    public void unmark(final int expected) throws IOException {
+        if (bytesRead() != expected) {
+            throw new CoderException(locations.peek(), expected,
+                    bytesRead() - expected);
+        }
+        locations.pop();
+    }
+
+    /**
+     * Get the number of bytes read from the last saved position.
+     *
+     * @return the number of bytes read since the mark() method was last called.
+     */
+    public int bytesRead() {
+        int count;
+        if (pos == 0) {
+            count = index - locations.peek();
+        } else {
+            count = (pos + index) - locations.peek();
+        }
+        return count;
+    }
+
+    /**
+     * Skips over and discards n bytes of data.
+     *
+     * @param count the number of bytes to skip.
+     *
+     * @throws IOException if an error occurs reading from the underlying
+     * input stream.
+     */
+    public void skip(final int count) throws IOException {
+        final int diff = size - index;
+        if (count < diff) {
+            index += count;
+        } else {
+            final int bytesSkipped = diff;
+            stream.skip(count - bytesSkipped);
+            pos += count - bytesSkipped;
+            index = size;
+            fill();
+        }
     }
 
     /**
@@ -114,12 +210,64 @@ public final class BigDecoder {
     }
 
     /**
-     * Is the internal index at the end of the buffer.
+     * Is there any more data to read.
      *
-     * @return true if the internal pointer is at the end of the buffer.
+     * @return true there is no more data to read from the stream.
      */
-    public boolean eof() {
-        return (index == data.length) && (offset == 0);
+    public boolean eof() throws IOException {
+        if (size - index == 0) {
+            fill();
+        }
+        eof = size - index == 0;
+        return eof;
+    }
+
+    /**
+     * Changes the location to the next byte boundary.
+     */
+    public void alignToByte() {
+        if (offset > 0) {
+            index += 1;
+            offset = 0;
+        }
+    }
+
+    /**
+     * Fill the internal buffer. Any unread bytes are copied to the start of
+     * the buffer and the remaining space is filled with data from the
+     * underlying stream.
+     *
+     * @throws IOException if an error occurs reading from the underlying
+     * input stream.
+     */
+    private void fill() throws IOException {
+        final int diff = size - index;
+        pos += index;
+
+        if (index < size) {
+            for (int i = 0; i < diff; i++) {
+                buffer[i] = buffer[index++];
+            }
+        }
+
+        int bytesRead = 0;
+        int bytesToRead = buffer.length - diff;
+
+        index = diff;
+        size = diff;
+
+        do {
+            bytesRead = stream.read(buffer, index, bytesToRead);
+            if (bytesRead == -1) {
+                bytesToRead = 0;
+            } else {
+                index += bytesRead;
+                size += bytesRead;
+                bytesToRead -= bytesRead;
+            }
+        } while (bytesToRead > 0);
+
+        index = 0;
     }
 
     /**
@@ -132,17 +280,27 @@ public final class BigDecoder {
      *            indicates whether the integer value read is signed.
      *
      * @return the value read.
+     *
+     * @throws IOException if an error occurs reading from the underlying
+     * input stream.
      */
-    public int readBits(final int numberOfBits, final boolean signed) {
-        int value = 0;
+    public int readBits(final int numberOfBits, final boolean signed)
+            throws IOException {
 
-        pointer = (index << 3) + offset;
+        int pointer = (index << 3) + offset;
+
+        if (((size << 3) - pointer) < numberOfBits) {
+            fill();
+            pointer = (index << 3) + offset;
+        }
+
+        int value = 0;
 
         if (numberOfBits > 0) {
 
             for (int i = BITS_PER_INT; (i > 0)
-                    && (index < data.length); i -= 8) {
-                value |= (data[index++] & BYTE_MASK) << (i - 8);
+                    && (index < buffer.length); i -= 8) {
+                value |= (buffer[index++] & BYTE_MASK) << (i - 8);
             }
 
             value <<= offset;
@@ -165,9 +323,15 @@ public final class BigDecoder {
      * Read an unsigned byte.
      *
      * @return an 8-bit unsigned value.
+     *
+     * @throws IOException if an error occurs reading from the underlying
+     * input stream.
      */
-    public int readByte() {
-        return data[index++] & BYTE_MASK;
+    public int readByte() throws IOException {
+        if (size - index < 1) {
+            fill();
+        }
+        return buffer[index++] & BYTE_MASK;
     }
 
     /**
@@ -177,60 +341,88 @@ public final class BigDecoder {
      *            the array that will contain the bytes read.
      *
      * @return the array of bytes.
+     *
+     * @throws IOException if an error occurs reading from the underlying
+     * input stream.
      */
-    public byte[] readBytes(final byte[] bytes) {
-        System.arraycopy(data, index, bytes, 0, bytes.length);
-        index += bytes.length;
+    public byte[] readBytes(final byte[] bytes) throws IOException {
+        final int wanted = bytes.length;
+        int dest = 0;
+        int read = 0;
+
+        int available;
+        int remaining;
+
+        while (read < wanted) {
+            available = size - index;
+            remaining = wanted - read;
+            if (available > remaining) {
+                available = remaining;
+            }
+            System.arraycopy(buffer, index, bytes, dest, available);
+            read += available;
+            index += available;
+            dest += available;
+
+            if (index == size) {
+                fill();
+            }
+        }
         return bytes;
     }
 
     /**
-     * Searches for a bit pattern, returning true and advancing the pointer to
-     * the location if a match was found. If the bit pattern cannot be found
-     * then the method returns false and the position of the internal pointer is
-     * not changed.
+     * Reads an array of bytes.
      *
-     * @param value
-     *            an integer containing the bit patter to search for.
-     * @param numberOfBits
-     *            least significant n bits in the value to search for.
-     * @param step
-     *            the increment in bits to add to the internal pointer as the
-     *            buffer is searched.
+     * @param bytes
+     *            the array that will contain the bytes read.
      *
-     * @return true if the pattern was found, false otherwise.
+     * @return the array of bytes.
+     *
+     * @throws IOException if an error occurs reading from the underlying
+     * input stream.
      */
-    public boolean findBits(final int value, final int numberOfBits,
-            final int step) {
-        boolean found;
-        final int mark = getPointer();
+    public byte[] readBytes(final byte[] bytes, final int offset,
+             final int length) throws IOException {
+        final int wanted = length;
+        int dest = offset;
+        int read = 0;
 
-        while (getPointer() + numberOfBits <= end) {
-            if (readBits(numberOfBits, false) == value) {
-                adjustPointer(-numberOfBits);
-                break;
+        int available;
+        int remaining;
+
+        while (read < wanted) {
+            available = size - index;
+            remaining = wanted - read;
+            if (available > remaining) {
+                available = remaining;
             }
-            adjustPointer(step - numberOfBits);
-        }
+            System.arraycopy(buffer, index, bytes, dest, available);
+            read += available;
+            index += available;
+            dest += available;
 
-        if (getPointer() + numberOfBits > end) {
-            found = false;
-            setPointer(mark);
-        } else {
-            found = true;
+            if (index == size) {
+                fill();
+            }
         }
-
-        return found;
+        return bytes;
     }
 
     /**
      * Read an unsigned 16-bit integer.
      *
      * @return the value read.
+     *
+     * @throws IOException if an error occurs reading from the underlying
+     * input stream.
      */
-    public int readUI16() {
-        int value = (data[index++] & BYTE_MASK) << TO_BYTE1;
-        value |= data[index++] & BYTE_MASK;
+    public int readUI16() throws IOException {
+        if (size - index < 2) {
+            fill();
+        }
+        int value = (buffer[index++] & BYTE_MASK) << TO_BYTE1;
+        value |= buffer[index++] & BYTE_MASK;
         return value;
     }
 
@@ -238,95 +430,54 @@ public final class BigDecoder {
      * Read a signed 16-bit integer.
      *
      * @return the value read.
+     *
+     * @throws IOException if an error occurs reading from the underlying
+     * input stream.
      */
-    public int readSI16() {
-        int value = data[index++] << TO_BYTE1;
-        value |= data[index++] & BYTE_MASK;
+    public int readSI16() throws IOException {
+        if (size - index < 2) {
+            fill();
+        }
+        int value = buffer[index++] << TO_BYTE1;
+        value |= buffer[index++] & BYTE_MASK;
         return value;
     }
 
     /**
      * Read an unsigned 32-bit integer.
      *
+     *
+     * @throws IOException if an error occurs reading from the underlying
+     * input stream.
      * @return the value read.
      */
-    public int readUI32() {
-        int value = (data[index++] & BYTE_MASK) << TO_BYTE3;
-        value |= (data[index++] & BYTE_MASK) << TO_BYTE2;
-        value |= (data[index++] & BYTE_MASK) << TO_BYTE1;
-        value |= data[index++] & BYTE_MASK;
+    public int scanUI32() throws IOException {
+        if (size - index < 2) {
+            fill();
+        }
+        int value = (buffer[index] & BYTE_MASK) << TO_BYTE3;
+        value |= (buffer[index + 1] & BYTE_MASK) << TO_BYTE2;
+        value |= (buffer[index + 2] & BYTE_MASK) << TO_BYTE1;
+        value |= buffer[index + 3] & BYTE_MASK;
         return value;
     }
 
     /**
-     * Read a word.
+     * Read an unsigned 32-bit integer.
      *
-     * @param numberOfBytes
-     *            the number of bytes read in the range 1..4.
      *
-     * @param signed
-     *            indicates whether the value read is signed (true) or unsigned
-     *            (false).
-     *
-     * @return the decoded value.
+     * @throws IOException if an error occurs reading from the underlying
+     * input stream.
+     * @return the value read.
      */
-    public int readWord(final int numberOfBytes, final boolean signed) {
-        int value = 0;
-
-        for (int i = 0; i < numberOfBytes; i++) {
-            value <<= 8;
-            value += data[index++] & BYTE_MASK;
+    public int readUI32() throws IOException {
+        if (size - index < 2) {
+            fill();
         }
-
-        if (signed) {
-            value <<= BITS_PER_INT
-                        - (numberOfBytes << BYTES_TO_BITS);
-            value >>= BITS_PER_INT
-                        - (numberOfBytes << BYTES_TO_BITS);
-        }
-
+        int value = (buffer[index++] & BYTE_MASK) << TO_BYTE3;
+        value |= (buffer[index++] & BYTE_MASK) << TO_BYTE2;
+        value |= (buffer[index++] & BYTE_MASK) << TO_BYTE1;
+        value |= buffer[index++] & BYTE_MASK;
         return value;
-    }
-
-    /**
-     * Searches for a word and advances the pointer to the location where it was
-     * found, returning true to signal a successful search. If word cannot be
-     * found then the method returns false and the position of the internal
-     * pointer is not changed.
-     *
-     * @param value
-     *            the value to search for.
-     *
-     * @param numberOfBytes
-     *            the number of bytes from the value to compare.
-     *
-     * @param step
-     *            the number of bytes to step between searches.
-     *
-     * @return true if the pattern was found, false otherwise.
-     */
-    public boolean findWord(final int value, final int numberOfBytes,
-            final int step) {
-
-        boolean found;
-        final int mark = getPointer();
-
-        while (index + numberOfBytes <= data.length) {
-
-            if (readWord(numberOfBytes, false) == value) {
-                index -= numberOfBytes;
-                break;
-            }
-            index = index - numberOfBytes + step;
-        }
-
-        if (index + numberOfBytes > data.length) {
-            found = false;
-            setPointer(mark);
-        } else {
-            found = true;
-        }
-
-        return found;
     }
 }

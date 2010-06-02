@@ -31,7 +31,9 @@
 
 package com.flagstone.transform.coder;
 
-import java.util.Arrays;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Stack;
 
 /**
  * LittleDecoder wraps an InputStream with a buffer to reduce the amount of
@@ -41,6 +43,9 @@ import java.util.Arrays;
  * decoded first.
  */
 public final class LittleDecoder {
+    /** The default size, in bytes, for the internal buffer. */
+    public static final int BUFFER_SIZE = 4096;
+
     /** Bit mask applied to bytes when converting to unsigned integers. */
     private static final int BYTE_MASK = 255;
     /** Number of bits in an int. */
@@ -54,72 +59,162 @@ public final class LittleDecoder {
     /** Number of bits to shift when aligning a value to the fourth byte. */
     private static final int TO_BYTE3 = 24;
 
-    /** The internal buffer containing data read from or written to a file. */
-    private byte[] data;
-    /** The index in bits to the current location in the buffer. */
-    private transient int pointer;
-    /** The index in bytes to the current location in the buffer. */
+    /** The underlying input stream. */
+    private final transient InputStream stream;
+    /** The buffer for data read from the stream. */
+    private final transient byte[] buffer;
+    /** Stack for storing file locations. */
+    private final transient Stack<Integer>locations;
+    /** The position of the buffer relative to the start of the stream. */
+    private transient int pos;
+    /** The position from the start of the buffer. */
     private transient int index;
-    /** The offset in bits to the location in the current byte. */
+    /** The offset in bits in the current buffer location. */
     private transient int offset;
-    /** The last location in the buffer. */
-    private final transient int end;
+    /** The number of bytes available in the current buffer. */
+    private transient int size;
+
     /**
-     * Creates a LittleDecoder object initialised with the data to be decoded.
+     * Create a new LittleDecoder for the underlying InputStream with the
+     * specified buffer size.
      *
-     * @param bytes
-     *            an array of bytes to be decoded.
+     * @param streamIn the stream from which data will be read.
+     * @param length the size in bytes of the buffer.
      */
-    public LittleDecoder(final byte[] bytes) {
-        super();
-        data = new byte[bytes.length];
+    public LittleDecoder(final InputStream streamIn, final int length) {
+        stream = streamIn;
+        buffer = new byte[length];
+        locations = new Stack<Integer>();
+        pos = 0;
+    }
+
+    /**
+     * Create a new LittleDecoder for the underlying InputStream using the
+     * default buffer size.
+     *
+     * @param streamIn the stream from which data will be read.
+     */
+    public LittleDecoder(final InputStream streamIn) {
+        stream = streamIn;
+        buffer = new byte[BUFFER_SIZE];
+        locations = new Stack<Integer>();
+        pos = 0;
+    }
+
+    /**
+     * Remember the current position.
+     */
+    public void mark() {
+        locations.push(pos + index);
+    }
+
+    /**
+     * Discard the last saved position.
+     */
+    public void unmark() {
+        locations.pop();
+    }
+
+    /**
+     * Get the number of bytes read from the last saved position.
+     *
+     * @return the number of bytes read since the mark() method was last called.
+     */
+    public int bytesRead() {
+        int count;
+        if (pos == 0) {
+            count = index - locations.peek();
+        } else {
+            count = (pos + index) - locations.peek();
+        }
+        return count;
+    }
+
+    /**
+     * Skips over and discards n bytes of data.
+     *
+     * @param count the number of bytes to skip.
+     *
+     * @throws IOException if an error occurs reading from the underlying
+     * input stream.
+     */
+    public void skip(final int count) throws IOException {
+        final int diff = size - index;
+        if (count < diff) {
+            index += count;
+        } else {
+            final int bytesSkipped = diff;
+            stream.skip(count - bytesSkipped);
+            pos += count - bytesSkipped;
+            index = size;
+            fill();
+        }
+    }
+
+    /**
+     * Changes the location to the next byte boundary.
+     */
+    public void alignToByte() {
+        if (offset > 0) {
+            index += 1;
+            offset = 0;
+        }
+    }
+
+    /**
+     * Checks the number of bytes read since the last mark and moves to the
+     * next word (32-bit) aligned boundary.
+     *
+     * @throws IOException if an error occurs reading from the underlying
+     * input stream.
+     */
+    public void alignToWord() throws IOException {
+        if (size - index < 4) {
+            fill();
+        }
+        int diff = bytesRead() % 4;
+        if (diff > 0) {
+            index += 4 - diff;
+            offset = 0;
+        }
+    }
+
+    /**
+     * Fill the internal buffer. Any unread bytes are copied to the start of
+     * the buffer and the remaining space is filled with data from the
+     * underlying stream.
+     *
+     * @throws IOException if an error occurs reading from the underlying
+     * input stream.
+     */
+    private void fill() throws IOException {
+        final int diff = size - index;
+        pos += index;
+
+        if (index < size) {
+            for (int i = 0; i < diff; i++) {
+                buffer[i] = buffer[index++];
+            }
+        }
+
+        int bytesRead = 0;
+        int bytesToRead = buffer.length - diff;
+
+        index = diff;
+        size = diff;
+
+        do {
+            bytesRead = stream.read(buffer, index, bytesToRead);
+            if (bytesRead == -1) {
+                bytesToRead = 0;
+            } else {
+                index += bytesRead;
+                size += bytesRead;
+                bytesToRead -= bytesRead;
+            }
+        } while (bytesToRead > 0);
+
         index = 0;
-        offset = 0;
-        pointer = 0;
-        end = bytes.length << 3;
-        data = Arrays.copyOf(bytes, bytes.length);
-    }
-
-    /**
-     * Get the location, in bits, where the next value will be read or
-     * written.
-     *
-     * @return the location of the next bit to be accessed.
-     */
-    public int getPointer() {
-        return (index << 3) + offset;
-    }
-
-    /**
-     * Sets the location, in bits, where the next value will be read or written.
-     *
-     * @param location
-     *            the offset in bits from the start of the array of bytes.
-     */
-    public void setPointer(final int location) {
-        index = location >>> 3;
-        offset = location & 7;
-    }
-
-    /**
-     * Changes the location where the next value will be read or written by.
-     *
-     * @param numberOfBits
-     *            the number of bits to add to the current location.
-     */
-    public void adjustPointer(final int numberOfBits) {
-        pointer = (index << 3) + offset + numberOfBits;
-        index = pointer >>> 3;
-        offset = pointer & 7;
-    }
-
-    /**
-     * Is the internal index at the end of the buffer.
-     *
-     * @return true if the internal pointer is at the end of the buffer.
-     */
-    public boolean eof() {
-        return (index == data.length) && (offset == 0);
     }
 
     /**
@@ -133,16 +228,22 @@ public final class LittleDecoder {
      *
      * @return the value read.
      */
-    public int readBits(final int numberOfBits, final boolean signed) {
-        int value = 0;
+    public int readBits(final int numberOfBits, final boolean signed)
+            throws IOException {
+        int pointer = (index << 3) + offset;
 
-        pointer = (index << 3) + offset;
+        if (((size << 3) - pointer) < numberOfBits) {
+            fill();
+            pointer = (index << 3) + offset;
+        }
+
+        int value = 0;
 
         if (numberOfBits > 0) {
 
             for (int i = BITS_PER_INT; (i > 0)
-                    && (index < data.length); i -= 8) {
-                value |= (data[index++] & BYTE_MASK) << (i - 8);
+                    && (index < buffer.length); i -= 8) {
+                value |= (buffer[index++] & BYTE_MASK) << (i - 8);
             }
 
             value <<= offset;
@@ -165,9 +266,15 @@ public final class LittleDecoder {
      * Read an unsigned byte.
      *
      * @return an 8-bit unsigned value.
+     *
+     * @throws IOException if an error occurs reading from the underlying
+     * input stream.
      */
-    public int readByte() {
-        return data[index++] & BYTE_MASK;
+    public int readByte() throws IOException {
+        if (size - index < 1) {
+            fill();
+        }
+        return buffer[index++] & BYTE_MASK;
     }
 
     /**
@@ -177,10 +284,33 @@ public final class LittleDecoder {
      *            the array that will contain the bytes read.
      *
      * @return the array of bytes.
+     *
+     * @throws IOException if an error occurs reading from the underlying
+     * input stream.
      */
-    public byte[] readBytes(final byte[] bytes) {
-        System.arraycopy(data, index, bytes, 0, bytes.length);
-        index += bytes.length;
+    public byte[] readBytes(final byte[] bytes) throws IOException {
+        final int wanted = bytes.length;
+        int dest = 0;
+        int read = 0;
+
+        int available;
+        int remaining;
+
+        while (read < wanted) {
+            available = size - index;
+            remaining = wanted - read;
+            if (available > remaining) {
+                available = remaining;
+            }
+            System.arraycopy(buffer, index, bytes, dest, available);
+            read += available;
+            index += available;
+            dest += available;
+
+            if (index == size) {
+                fill();
+            }
+        }
         return bytes;
     }
 
@@ -188,10 +318,16 @@ public final class LittleDecoder {
      * Read an unsigned 16-bit integer.
      *
      * @return the value read.
+     *
+     * @throws IOException if an error occurs reading from the underlying
+     * input stream.
      */
-    public int readUI16() {
-        int value = data[index++] & BYTE_MASK;
-        value |= (data[index++] & BYTE_MASK) << TO_BYTE1;
+    public int readUI16() throws IOException {
+        if (size - index < 2) {
+            fill();
+        }
+        int value = buffer[index++] & BYTE_MASK;
+        value |= (buffer[index++] & BYTE_MASK) << TO_BYTE1;
         return value;
     }
 
@@ -199,10 +335,16 @@ public final class LittleDecoder {
      * Read an unsigned 16-bit integer.
      *
      * @return the value read.
+     *
+     * @throws IOException if an error occurs reading from the underlying
+     * input stream.
      */
-    public int readSI16() {
-        int value = data[index++] & BYTE_MASK;
-        value |= data[index++] << TO_BYTE1;
+    public int readSI16() throws IOException {
+        if (size - index < 2) {
+            fill();
+        }
+        int value = buffer[index++] & BYTE_MASK;
+        value |= buffer[index++] << TO_BYTE1;
         return value;
     }
 
@@ -210,12 +352,18 @@ public final class LittleDecoder {
      * Read an unsigned 32-bit integer.
      *
      * @return the value read.
+     *
+     * @throws IOException if an error occurs reading from the underlying
+     * input stream.
      */
-    public int readUI32() {
-        int value = data[index++] & BYTE_MASK;
-        value |= (data[index++] & BYTE_MASK) << TO_BYTE1;
-        value |= (data[index++] & BYTE_MASK) << TO_BYTE2;
-        value |= (data[index++] & BYTE_MASK) << TO_BYTE3;
+    public int readUI32() throws IOException {
+        if (size - index < 4) {
+            fill();
+        }
+        int value = buffer[index++] & BYTE_MASK;
+        value |= (buffer[index++] & BYTE_MASK) << TO_BYTE1;
+        value |= (buffer[index++] & BYTE_MASK) << TO_BYTE2;
+        value |= (buffer[index++] & BYTE_MASK) << TO_BYTE3;
         return value;
     }
 }
