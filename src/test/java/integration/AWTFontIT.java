@@ -59,6 +59,8 @@ import com.flagstone.transform.util.text.TextTable;
 @RunWith(Parameterized.class)
 public final class AWTFontIT {
 
+    private static final int DEFAULT_FONT_SIZE = 12;
+
     @Parameters
     public static Collection<Object[]> files() {
 
@@ -69,15 +71,24 @@ public final class AWTFontIT {
         }
 
         java.awt.Font[] fonts = new java.awt.Font[] {
-                new java.awt.Font("Arial", java.awt.Font.PLAIN, 12),
-                new java.awt.Font("Arial", java.awt.Font.BOLD, 12),
-                new java.awt.Font("Arial", java.awt.Font.ITALIC, 12),
-                new java.awt.Font("Courier New", java.awt.Font.PLAIN, 12),
-                new java.awt.Font("Courier New", java.awt.Font.BOLD, 12),
-                new java.awt.Font("Courier New", java.awt.Font.ITALIC, 12),
-                new java.awt.Font("Times New Roman", java.awt.Font.PLAIN, 12),
-                new java.awt.Font("Times New Roman", java.awt.Font.BOLD, 12),
-                new java.awt.Font("Times New Roman", java.awt.Font.ITALIC, 12)
+                new java.awt.Font("Arial",
+                        java.awt.Font.PLAIN, DEFAULT_FONT_SIZE),
+                new java.awt.Font("Arial",
+                        java.awt.Font.BOLD, DEFAULT_FONT_SIZE),
+                new java.awt.Font("Arial",
+                        java.awt.Font.ITALIC, DEFAULT_FONT_SIZE),
+                new java.awt.Font("Courier New",
+                        java.awt.Font.PLAIN, DEFAULT_FONT_SIZE),
+                new java.awt.Font("Courier New",
+                        java.awt.Font.BOLD, DEFAULT_FONT_SIZE),
+                new java.awt.Font("Courier New",
+                        java.awt.Font.ITALIC, DEFAULT_FONT_SIZE),
+                new java.awt.Font("Times New Roman",
+                        java.awt.Font.PLAIN, DEFAULT_FONT_SIZE),
+                new java.awt.Font("Times New Roman",
+                        java.awt.Font.BOLD, DEFAULT_FONT_SIZE),
+                new java.awt.Font("Times New Roman",
+                        java.awt.Font.ITALIC, DEFAULT_FONT_SIZE)
         };
 
         Object[][] collection = new Object[fonts.length][2];
