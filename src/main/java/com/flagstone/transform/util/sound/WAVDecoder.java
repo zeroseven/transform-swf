@@ -31,7 +31,6 @@
 
 package com.flagstone.transform.util.sound;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -39,8 +38,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.zip.DataFormatException;
 
 import com.flagstone.transform.MovieTag;
@@ -77,6 +74,9 @@ public final class WAVDecoder implements SoundProvider, SoundDecoder {
     /** The sound samples. */
     private transient byte[] sound = null;
 
+    private transient float movieRate;
+    private transient int bytesSent;
+
     /** {@inheritDoc} */
     public SoundDecoder newDecoder() {
         return new WAVDecoder();
@@ -84,7 +84,7 @@ public final class WAVDecoder implements SoundProvider, SoundDecoder {
 
     /** {@inheritDoc} */
     public void read(final File file) throws IOException, DataFormatException {
-        read(new FileInputStream(file), (int) file.length());
+        read(new FileInputStream(file));
     }
 
     /** {@inheritDoc} */
@@ -96,7 +96,7 @@ public final class WAVDecoder implements SoundProvider, SoundDecoder {
         if (fileSize < 0) {
             throw new FileNotFoundException(url.getFile());
         }
-        read(url.openStream(), fileSize);
+        read(url.openStream());
     }
 
     /** {@inheritDoc} */
@@ -106,87 +106,47 @@ public final class WAVDecoder implements SoundProvider, SoundDecoder {
     }
 
     /** {@inheritDoc} */
-    public List<MovieTag> streamSound(final int frameRate) {
-        final ArrayList<MovieTag> array = new ArrayList<MovieTag>();
-
-        int firstSample = 0;
-        int firstSampleOffset = 0;
-        int bytesPerBlock = 0;
-        int bytesRemaining = 0;
-        int numberOfBytes = 0;
-        byte[] bytes = null;
-
-        final int samplesPerBlock = sampleRate / frameRate;
-        final int numberOfBlocks = samplesPerChannel / samplesPerBlock;
-
-        array.add(new SoundStreamHead2(format, sampleRate, numberOfChannels,
-                sampleSize, sampleRate, numberOfChannels, sampleSize,
-                samplesPerBlock));
-
-        for (int i = 0; i < numberOfBlocks; i++) {
-            firstSample = i * samplesPerBlock;
-            firstSampleOffset = firstSample * sampleSize * numberOfChannels;
-            bytesPerBlock = samplesPerBlock * sampleSize * numberOfChannels;
-            bytesRemaining = sound.length - firstSampleOffset;
-
-            numberOfBytes = (bytesRemaining < bytesPerBlock) ? bytesRemaining
-                    : bytesPerBlock;
-
-            bytes = new byte[numberOfBytes];
-            System.arraycopy(sound, firstSampleOffset, bytes, 0, numberOfBytes);
-
-            array.add(new SoundStreamBlock(bytes));
-        }
-        return array;
+    public DefineSound defineSound(final int identifier, final float duration) {
+        return new DefineSound(identifier, format, sampleRate,
+                numberOfChannels, sampleSize, samplesPerChannel, sound);
     }
 
     /** {@inheritDoc} */
-    public List<MovieTag> streamSound(final int rate, final int count) {
-        final ArrayList<MovieTag> array = new ArrayList<MovieTag>();
-
-        int firstSample = 0;
-        int firstSampleOffset = 0;
-        int bytesPerBlock = 0;
-        int bytesRemaining = 0;
-        int numberOfBytes = 0;
-        byte[] bytes = null;
-
-        final int samplesPerBlock = sampleRate / rate;
-        final int numberOfBlocks = Math.min(count,
-                samplesPerChannel / samplesPerBlock);
-
-        array.add(new SoundStreamHead2(format, sampleRate, numberOfChannels,
+    public MovieTag streamHeader(final float frameRate) {
+        movieRate = frameRate;
+        return new SoundStreamHead2(format, sampleRate, numberOfChannels,
                 sampleSize, sampleRate, numberOfChannels, sampleSize,
-                samplesPerBlock));
-
-        for (int i = 0; i < numberOfBlocks; i++) {
-            firstSample = i * samplesPerBlock;
-            firstSampleOffset = firstSample * sampleSize * numberOfChannels;
-            bytesPerBlock = samplesPerBlock * sampleSize * numberOfChannels;
-            bytesRemaining = sound.length - firstSampleOffset;
-
-            numberOfBytes = (bytesRemaining < bytesPerBlock) ? bytesRemaining
-                    : bytesPerBlock;
-
-            bytes = new byte[numberOfBytes];
-            System.arraycopy(sound, firstSampleOffset, bytes, 0, numberOfBytes);
-
-            array.add(new SoundStreamBlock(bytes));
-        }
-        return array;
+                (int) (sampleRate / frameRate));
     }
 
     /** {@inheritDoc} */
-    public void read(final InputStream stream, final int size)
+    public MovieTag streamSound() {
+        final int samplesPerBlock = (int) (sampleRate / movieRate);
+        final int bytesPerBlock = samplesPerBlock * sampleSize
+                * numberOfChannels;
+
+        SoundStreamBlock block = null;
+
+        if (bytesSent < sound.length) {
+            int bytesRemaining = sound.length - bytesSent;
+            int numberOfBytes = (bytesRemaining < bytesPerBlock)
+                    ? bytesRemaining
+                    : bytesPerBlock;
+
+            byte[] bytes = new byte[numberOfBytes];
+            System.arraycopy(sound, bytesSent, bytes, 0, numberOfBytes);
+
+            block = new SoundStreamBlock(bytes);
+            bytesSent += numberOfBytes;
+        }
+        return block;
+    }
+
+    /** {@inheritDoc} */
+    public void read(final InputStream stream)
                     throws IOException, DataFormatException {
 
-        final byte[] bytes = new byte[size];
-        final BufferedInputStream buffer = new BufferedInputStream(stream);
-
-        buffer.read(bytes);
-        buffer.close();
-
-        final LittleDecoder coder = new LittleDecoder(bytes);
+        final LittleDecoder coder = new LittleDecoder(stream);
 
         for (int i = 0; i < RIFF.length; i++) {
             if (coder.readByte() != RIFF[i]) {
@@ -205,27 +165,27 @@ public final class WAVDecoder implements SoundProvider, SoundDecoder {
         int chunkType;
         int length;
 
+        boolean readFMT = false;
+        boolean readDATA = false;
+
         do {
             chunkType = coder.readUI32();
             length = coder.readUI32();
 
-            final int blockStart = coder.getPointer();
-
             switch (chunkType) {
             case FMT:
                 decodeFMT(coder);
+                readFMT = true;
                 break;
             case DATA:
                 decodeDATA(coder, length);
+                readDATA = true;
                 break;
             default:
-                coder.adjustPointer(length << 3);
+                coder.skip(length);
                 break;
             }
-
-            final int nextBlock = blockStart + (length << 3);
-            coder.setPointer(nextBlock);
-        } while (!coder.eof());
+        } while (!(readFMT && readDATA));
     }
 
     /**
@@ -236,7 +196,8 @@ public final class WAVDecoder implements SoundProvider, SoundDecoder {
      * @throws DataFormatException if the block is in a format not supported
      * by this decoder.
      */
-    private void decodeFMT(final LittleDecoder coder) throws DataFormatException {
+    private void decodeFMT(final LittleDecoder coder)
+            throws IOException, DataFormatException {
         format = SoundFormat.PCM;
 
         if (coder.readUI16() != 1) {
@@ -256,7 +217,8 @@ public final class WAVDecoder implements SoundProvider, SoundDecoder {
      * @param coder an SWFDecoder containing the bytes to be decoded.
      * @param length the length of the block in bytes.
      */
-    private void decodeDATA(final LittleDecoder coder, final int length) {
+    private void decodeDATA(final LittleDecoder coder, final int length)
+            throws IOException {
         samplesPerChannel = length / (sampleSize * numberOfChannels);
 
         sound = coder.readBytes(new byte[length]);

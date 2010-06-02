@@ -35,7 +35,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.List;
 import java.util.zip.DataFormatException;
 
 import com.flagstone.transform.MovieTag;
@@ -63,44 +62,50 @@ public interface SoundDecoder {
     /**
      * Read a sound from an input stream.
      * @param stream the stream used to read the sound data.
-     * @param size the length of the stream in bytes.
      * @throws IOException if there is an error reading the sound data.
      * @throws DataFormatException if the file contains an unsupported format.
      */
-    void read(InputStream stream, int size)
+    void read(InputStream stream)
             throws IOException, DataFormatException;
     /**
      * Define an event sound.
      * @param identifier he unique identifier that will be used to reference the
      * sound in a Movie.
      * @return the definition used to add the sound to a Movie.
+     * @throws IOException if there is an error reading the sound data.
+     * @throws DataFormatException if the file contains an unsupported format.
      */
-    DefineSound defineSound(int identifier);
+    DefineSound defineSound(int identifier)
+            throws IOException, DataFormatException;
     /**
-     * Generate all the objects used to add a streaming sounds to a Movie. The
-     * returned list contains a SoundStreamHead2 object followed by one or more
-     * SoundStreamBlocks.
+     * Define an event sound.
+     * @param identifier the unique identifier that will be used to reference
+     * the sound in a Movie.
+     * @param duration the number of seconds to play the sound for.
+     * @return the definition used to add the sound to a Movie.
+     * @throws IOException if there is an error reading the sound data.
+     * @throws DataFormatException if the file contains an unsupported format.
+     */
+    DefineSound defineSound(int identifier, float duration)
+            throws IOException, DataFormatException;
+    /**
+     * Generate the header for a streaming sound.
      *
      * @param frameRate the frame rate for the movie so the sound can be divided
      * into sets of samples that can be played with each frame.
      *
-     * @return a list containing the objects used to add the streaming sound to
-     * a Movie.
+     * @return the stream header object that contains information about the
+     * sound.
      */
-    List<MovieTag> streamSound(int frameRate);
+    MovieTag streamHeader(float frameRate);
+
     /**
-     * Generate the objects used to add a streaming sounds to a Movie that will
-     * be played for a specified number of frames. This method can be used to
-     * limit the number of sound sample loaded, particularly when adding a
-     * soundtrack to a Movie.
+     * Generate a SoundStreamBlock with next set of sound samples.
      *
-     * @param frameRate the frame rate for the movie so the sound can be divided
-     * into sets of samples that can be played with each frame.
-     *
-     * @param frameCount the number of frames that the sound will be played for.
-     *
-     * @return a list containing the objects used to add the streaming sound to
-     * a Movie.
+     * @return a SoundStreamBlock containing the sound samples or null if there
+     * are no more samples to available.
+     * @throws IOException if there is an error reading the sound data.
+     * @throws DataFormatException if the file contains an unsupported format.
      */
-    List<MovieTag> streamSound(int frameRate, int frameCount);
+    MovieTag streamSound() throws IOException, DataFormatException;
 }

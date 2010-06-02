@@ -31,7 +31,6 @@
 
 package com.flagstone.transform.util.sound;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -39,8 +38,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 import java.util.zip.DataFormatException;
 
 import com.flagstone.transform.MovieTag;
@@ -81,24 +79,29 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
         // MPEG 3.0
         {44100, -1, -1, -1}
     };
+    /** The number of bytes in each sample. */
+    private static final int SAMPLE_SIZE = 2;
 
-    /** The sound format. */
-    private transient SoundFormat format;
+    private transient float movieRate;
     /** The number of sound channels: 1 - mono, 2 - stereo. */
     private transient int numberOfChannels;
     /** The number of sound samples for each channel. */
     private transient int samplesPerChannel;
     /** The rate at which the sound will be played. */
     private transient int sampleRate;
-    /** The number of bytes in each sample. */
-    private transient int sampleSize;
     /** The sound samples. */
-    private transient byte[] sound = null;
+    private transient byte[] sound;
 
-    /** Table to track the number of samples included in each stream block. */
-    private transient int[][] frameTable = null;
+    /** The decoder used to read the MP3 frames. */
+    private transient BigDecoder coder;
+
     /** The number of sound samples in each frame. */
     private int samplesPerFrame = 0;
+    /** The contents of the current MP3 frame. */
+    private byte[] frame;
+
+    private int actualSamples;
+    private int expectedSamples;
 
     /** {@inheritDoc} */
     public SoundDecoder newDecoder() {
@@ -107,7 +110,14 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
 
     /** {@inheritDoc} */
     public void read(final File file) throws IOException, DataFormatException {
-        read(new FileInputStream(file), (int) file.length());
+        FileInputStream stream = new FileInputStream(file);
+        try {
+            read(stream);
+        } finally {
+            if (stream != null) {
+                stream.close();
+            }
+        }
     }
 
     /** {@inheritDoc} */
@@ -118,239 +128,103 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
         if (fileSize < 0) {
             throw new FileNotFoundException(url.getFile());
         }
-        read(url.openStream(), fileSize);
+
+        InputStream stream = url.openStream();
+
+        try {
+            read(stream);
+        } finally {
+            if (stream != null) {
+                stream.close();
+            }
+        }
     }
 
     /** {@inheritDoc} */
-    public DefineSound defineSound(final int identifier) {
-        final byte[] bytes = new byte[2 + sound.length];
-        bytes[0] = 0;
-        bytes[1] = 0;
-        System.arraycopy(sound, 0, bytes, 2, sound.length);
-
-        return new DefineSound(identifier, format, sampleRate,
-                numberOfChannels, sampleSize, samplesPerChannel, bytes);
+    public void read(final InputStream stream)
+            throws IOException, DataFormatException {
+        coder = new BigDecoder(stream);
+        readFrame();
+        actualSamples += samplesPerFrame;
     }
 
     /** {@inheritDoc} */
-    public void read(final InputStream stream, final int size)
+    public DefineSound defineSound(final int identifier)
             throws IOException, DataFormatException {
 
-        final byte[] bytes = new byte[size];
-        final BufferedInputStream buffer = new BufferedInputStream(stream);
+        int length;
+        sound = new byte[2];
 
-        buffer.read(bytes);
-        buffer.close();
-        decodeMP3(bytes);
+        do {
+            length = sound.length;
+            sound = Arrays.copyOf(sound, length + frame.length);
+            System.arraycopy(frame, 0, sound, length, frame.length);
+        } while (readFrame());
+
+        return new DefineSound(identifier, SoundFormat.MP3, sampleRate,
+                numberOfChannels, SAMPLE_SIZE, samplesPerChannel, sound);
     }
 
     /** {@inheritDoc} */
-    public List<MovieTag> streamSound(final int frameRate) {
-        final ArrayList<MovieTag> array = new ArrayList<MovieTag>();
+    public DefineSound defineSound(final int identifier, final float duration)
+            throws IOException, DataFormatException {
 
-        final int samplesPerBlock = sampleRate / frameRate;
-        final int numberOfBlocks = samplesPerChannel / samplesPerBlock;
+        sound = new byte[2];
+        float played = 0;
+        int length;
 
-        array.add(new SoundStreamHead2(format, sampleRate, numberOfChannels,
-                sampleSize, sampleRate, numberOfChannels, sampleSize,
-                samplesPerBlock));
-
-        for (int i = 0; i < numberOfBlocks; i++) {
-            array.add(streamBlock(i, samplesPerBlock));
+        while (played < duration) {
+            length = sound.length;
+            sound = Arrays.copyOf(sound, length + frame.length);
+            System.arraycopy(frame, 0, sound, length, frame.length);
+            played += (float) samplesPerFrame / (float) sampleRate;
+            if (!readFrame()) {
+                break;
+            }
         }
-        return array;
+
+        return new DefineSound(identifier, SoundFormat.MP3, sampleRate,
+                numberOfChannels, SAMPLE_SIZE, samplesPerChannel, sound);
     }
 
     /** {@inheritDoc} */
-    public List<MovieTag> streamSound(final int frameRate, final int count) {
-        final ArrayList<MovieTag> array = new ArrayList<MovieTag>();
-
-        final int samplesPerBlock = sampleRate / frameRate;
-        final int numberOfBlocks = Math.min(count,
-                samplesPerChannel / samplesPerBlock);
-
-        array.add(new SoundStreamHead2(format, sampleRate, numberOfChannels,
-                sampleSize, sampleRate, numberOfChannels, sampleSize,
-                samplesPerBlock));
-
-        for (int i = 0; i < numberOfBlocks; i++) {
-            array.add(streamBlock(i, samplesPerBlock));
-        }
-        return array;
+    public MovieTag streamHeader(final float frameRate) {
+        movieRate = frameRate;
+        return new SoundStreamHead2(SoundFormat.MP3, sampleRate,
+                numberOfChannels, SAMPLE_SIZE, sampleRate, numberOfChannels,
+                SAMPLE_SIZE, (int) (sampleRate / frameRate));
     }
 
-    /**
-     * Get the nth block to be streamed.
-     * @param blockNumber the number of the block to stream.
-     * @param samplesPerBlock the number of samples to include.
-     * @return a SoundStreamBlock containing the requested set of samples.
-     */
-    private SoundStreamBlock streamBlock(final int blockNumber,
-            final int samplesPerBlock) {
-//        int firstSample = 0;
-//        int firstSampleOffset = 0;
-//        int bytesPerBlock = 0;
-//        int bytesRemaining = 0;
-        int numberOfBytes = 0;
+    /** {@inheritDoc} */
+    public MovieTag streamSound() throws IOException, DataFormatException {
+        int seek = expectedSamples > 0 ?  actualSamples - expectedSamples : 0;
 
-        int framesToSend = 0;
-        int framesSent = 0;
-        int frameCount = 0;
+        expectedSamples += sampleRate / movieRate;
+        sound = new byte[4];
         int sampleCount = 0;
-        int seek = 0;
-
-        byte[] bytes = null;
-
-        framesToSend = ((blockNumber + 1) * samplesPerBlock) / samplesPerFrame;
-        framesSent = (blockNumber * samplesPerBlock) / samplesPerFrame;
-        frameCount = framesToSend - framesSent;
-        sampleCount = frameCount * samplesPerFrame;
-        seek = (blockNumber * samplesPerBlock) - (framesSent * samplesPerFrame);
-
-        numberOfBytes = 4;
-
-        for (int i = 0, j = framesSent; i < frameCount; i++, j++) {
-             numberOfBytes += frameTable[j][1];
-        }
-        bytes = new byte[numberOfBytes];
-
-        bytes[0] = (byte) sampleCount;
-        bytes[1] = (byte) (sampleCount >> 8);
-        bytes[2] = (byte) seek;
-        bytes[3] = (byte) (seek >> 8);
-
-        int offset = 4;
-
-        for (int i = 0, j = framesSent; i < frameCount; i++, j++) {
-            System.arraycopy(sound, frameTable[j][0], bytes, offset,
-                    frameTable[j][1]);
-            offset += frameTable[j][1];
-        }
+        boolean hasFrames = true;
+        do {
+            int length = sound.length;
+            sound = Arrays.copyOf(sound, length + frame.length);
+            System.arraycopy(frame, 0, sound, length, frame.length);
+            sampleCount += samplesPerFrame;
+            hasFrames = readFrame();
+            actualSamples += samplesPerFrame;
+       } while (hasFrames && (actualSamples < expectedSamples));
 
         SoundStreamBlock block = null;
 
-        if (bytes != null) {
-            block = new SoundStreamBlock(bytes);
+        if (hasFrames) {
+            sound[0] = (byte) sampleCount;
+            sound[1] = (byte) (sampleCount >> 8);
+            sound[2] = (byte) seek;
+            sound[3] = (byte) (seek >> 8);
+
+            if (sound != null) {
+                block = new SoundStreamBlock(sound);
+            }
         }
         return block;
-    }
-
-    /**
-     * Decode the MP3 sound.
-     * @param bytes the encoded MP3 sound.
-     * @throws DataFormatException if the sound data is not in MP3 format.
-     */
-    private void decodeMP3(final byte[] bytes) throws DataFormatException {
-        BigDecoder coder = new BigDecoder(bytes);
-        int numberOfFrames = 0;
-        int frameStart = 0;
-
-        format = SoundFormat.MP3;
-        sampleSize = 2;
-
-        while (!coder.eof()) {
-            int header = coder.readWord(3, false);
-            coder.adjustPointer(-24); // ID3 signature
-            if (header == 0x494433) {
-                // ID3
-                coder.adjustPointer(24); // ID3 signature
-                coder.adjustPointer(8); // version number
-                coder.adjustPointer(8); // revision number
-
-                int flags = coder.readByte();
-                // bit 7: unsynchronized
-                // bit 6: extendedHeader
-                // bit 5: experimental
-                int hasFooter = (flags & 0x10) >> 4;
-                int totalLength = (hasFooter == 1) ? 10 : 0;
-
-                totalLength += coder.readWord(1, false) << 21;
-                totalLength += coder.readWord(1, false) << 14;
-                totalLength += coder.readWord(1, false) << 7;
-                totalLength += coder.readWord(1, false);
-
-                coder.adjustPointer(totalLength << 3);
-            } else if (header == 0x544147) {
-                // ID3 V1
-                coder.adjustPointer(128 << 3);
-            } else if ((header & 0x00FFFFFF) >>> 13 == 0x7FF) {
-                // MP3 frame
-                if (numberOfFrames == 0) {
-                    frameStart = coder.getPointer();
-                }
-                coder.adjustPointer(frameSize(coder) << 3);
-                numberOfFrames++;
-            } else {
-                /*
-                 * If we get here it means we jumped into the middle of either
-                 * a frame or tag information. This appears to be a common
-                 * occurrence. Goto the end of the file so we can keep the
-                 * frames found so far.
-                 */
-                coder.setPointer(bytes.length << 3);
-            }
-        }
-
-        int dataLength = bytes.length - (frameStart >> 3);
-
-        sound = new byte[dataLength];
-
-        System.arraycopy(bytes, frameStart >> 3,
-                sound, 0, dataLength);
-
-        frameTable = new int[numberOfFrames][2];
-
-        for (int i = 0; i < numberOfFrames; i++) {
-            frameTable[i][0] = -1;
-            frameTable[i][1] = 0;
-        }
-
-        coder.setPointer(frameStart);
-
-        int frameNumber = 0;
-
-        while (coder.findBits(0x7FF, 11, 8)) {
-            frameTable[frameNumber][0] = (coder.getPointer()
-                    - frameStart) >> 3;
-
-            coder.adjustPointer(11); // skip start of frame marker
-
-            int version = coder.readBits(2, false);
-
-            samplesPerFrame = MP3_FRAME_SIZE[version];
-
-            if (coder.readBits(2, false) != 1) {
-                throw new DataFormatException(
-                        "Flash only supports MPEG Layer 3");
-            }
-            coder.readBits(1, false); // crc follows header
-
-            int bitRate = BIT_RATES[version][coder.readBits(4, false)];
-
-            if (bitRate == -1) {
-                throw new DataFormatException("Unsupported Bit-rate");
-            }
-            sampleRate = SAMPLE_RATES[version][coder.readBits(2, false)];
-
-            if (sampleRate == -1) {
-                throw new DataFormatException("Unsupported Sampling-rate");
-            }
-            int padding = coder.readBits(1, false);
-            coder.readBits(1, false); // reserved
-
-            numberOfChannels = CHANNEL_COUNT[coder.readBits(2, false)];
-            // skip modeExtension, copyright, original and emphasis
-            coder.adjustPointer(6);
-
-            samplesPerChannel += samplesPerFrame;
-
-            int frameSize = (((version == MPEG1) ? 144 : 72)
-                    * bitRate * 1000 / sampleRate + padding) - 4;
-
-            frameTable[frameNumber++][1] = 4 + frameSize;
-
-            coder.adjustPointer(frameSize << 3);
-        }
     }
 
     /**
@@ -359,7 +233,7 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
      * @param coder the decoder containing the sound data.
      * @return the length of the frame in bytes.
      */
-    private int frameSize(final BigDecoder coder) {
+    private int frameSize(final BigDecoder coder) throws IOException {
         int frameSize = 4;
 
         coder.adjustPointer(11);
@@ -378,5 +252,95 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
                 * bitRate * 1000 / samplingRate + padding) - 4;
 
         return frameSize;
+    }
+
+    private void readAll() throws IOException, DataFormatException {
+        int length;
+        do {
+            length = sound.length;
+            sound = Arrays.copyOf(sound, length + frame.length);
+            System.arraycopy(frame, 0, sound, length, frame.length);
+        } while (readFrame());
+    }
+
+    private boolean readFrame() throws IOException, DataFormatException {
+        boolean hasFrame = false;
+        boolean frameRead = false;
+        while ((hasFrame = !coder.eof()) && !frameRead) {
+            int header = coder.scanUI32();
+            if (header == -1) {
+                coder.readUI16();
+            } else if ((header & 0xFFFFFF00) == 0x54414700) {
+                readID3V1(coder);
+            } else if ((header & 0xFFFFFF00) == 0x49443300) {
+                readID3V2(coder);
+            } else if ((header & 0xFFE00000) == 0xFFE00000) {
+                readFrame(header, coder);
+                frameRead = true;
+            } else if ((header & 0xFFF00000) == 0xFFF00000) {
+                readFrame(header, coder);
+                frameRead = true;
+            } else {
+                coder.readUI16();
+            }
+        }
+        return hasFrame;
+    }
+
+    private void readID3V1(BigDecoder coder)
+            throws IOException, DataFormatException {
+        coder.skip(128);
+    }
+
+    private void readID3V2(BigDecoder coder)
+            throws IOException, DataFormatException {
+        coder.readByte(); // I
+        coder.readByte(); // D
+        coder.readByte(); // 3
+        coder.readByte(); // major version
+        coder.readByte(); // minor version
+        int flags = coder.readByte();
+        int length = 0;
+        if (((flags & 0x10) >> 4) == 1) {
+            length += 10; // has footer
+        }
+        length += coder.readByte() << 21;
+        length += coder.readByte() << 14;
+        length += coder.readByte() << 7;
+        length += coder.readByte();
+        coder.skip(length);
+    }
+
+    private void readFrame(int header, BigDecoder coder)
+            throws IOException, DataFormatException {
+
+        int version = (header & 0x180000) >> 19;
+        int layer = (header & 0x060000) >> 17;
+        boolean hasCRC = (header & 0x010000) != 0;
+        samplesPerFrame = MP3_FRAME_SIZE[version];
+        int bitRate = BIT_RATES[version][(header & 0x00F000) >> 12];
+        sampleRate = SAMPLE_RATES[version][(header & 0x0C00) >> 10];
+        int padding = (header & 0x0200) >> 9;
+        int reserved = (header & 0x0100) >> 8;
+
+        if (layer != 1) {
+            throw new DataFormatException("Flash only supports MPEG Layer 3");
+        }
+
+        if (bitRate == -1) {
+            throw new DataFormatException("Unsupported Bit-rate");
+        }
+
+        if (sampleRate == -1) {
+            throw new DataFormatException("Unsupported Sampling-rate");
+        }
+
+        numberOfChannels = CHANNEL_COUNT[(header & 0x00C0) >> 6];
+        samplesPerChannel += samplesPerFrame;
+
+        int frameSize = 4 + (((version == MPEG1) ? 144 : 72)
+                * bitRate * 1000 / sampleRate + padding) - 4;
+
+        frame = coder.readBytes(new byte[frameSize]);
     }
 }
