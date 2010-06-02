@@ -33,6 +33,7 @@ package com.flagstone.transform.util.font;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -84,6 +85,14 @@ public final class SWFFontDecoder implements FontProvider, FontDecoder {
     public void read(final URL url) throws IOException, DataFormatException {
         Movie movie = new Movie();
         movie.decodeFromUrl(url);
+        decode(movie);
+    }
+
+    /** {@inheritDoc} */
+    public void read(final InputStream stream)
+            throws IOException, DataFormatException {
+        Movie movie = new Movie();
+        movie.decodeFromStream(stream);
         decode(movie);
     }
 

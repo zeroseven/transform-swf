@@ -51,6 +51,32 @@ import com.flagstone.transform.util.shape.Canvas;
  * AWTDecoder decodes Java AWT Fonts so they can be used in a Flash file.
  */
 public final class AWTDecoder {
+    /** Number of edge points from a PathIterator segment. */
+    private static final int SEGMENT_COUNT = 6;
+    /** x-coordinate of the end point of a move or line. */
+    private static final int XCOORD = 0;
+    /** y-coordinate of the end point of a move or line. */
+    private static final int YCOORD = 1;
+    /** x-coordinate of the control point for a quadratic curve. */
+    private static final int QUAD_CTRLX = 0;
+    /** y-coordinate of the control point for a quadratic curve. */
+    private static final int QUAD_CTRLY = 1;
+    /** x-coordinate of the anchor point for a quadratic curve. */
+    private static final int QUAD_ANCHORX = 2;
+    /** y-coordinate of the anchor point for a quadratic curve. */
+    private static final int QUAD_ANCHORY = 3;
+    /** x-coordinate of the first control point for a cubic curve. */
+    private static final int CUBE_CTRL1_X = 0;
+    /** y-coordinate of the first control point for a cubic curve. */
+    private static final int CUBE_CTRL1_Y = 1;
+    /** x-coordinate of the second control point for a cubic curve. */
+    private static final int CUBE_CTRL2_X = 2;
+    /** y-coordinate of the second control point for a cubic curve. */
+    private static final int CUBE_CTRL2_Y = 3;
+    /** x-coordinate of the anchor point for a cubic curve. */
+    private static final int CUBE_ANCHORX = 4;
+    /** y-coordinate of the anchor point for a cubic curve. */
+    private static final int CUBE_ANCHORY = 5;
 
     /** The list of fonts decoded. */
     private final transient List<Font>fonts = new ArrayList<Font>();
@@ -185,31 +211,26 @@ public final class AWTDecoder {
         final PathIterator pathIter = glyph.getPathIterator(null);
         final Canvas path = new Canvas(false);
 
-        final double[] coords = new double[6];
+        final double[] coords = new double[SEGMENT_COUNT];
 
         while (!pathIter.isDone()) {
-            final int segmentType = pathIter.currentSegment(coords);
-
-            final int point1 = (int) (coords[0]);
-            final int point2 = (int) (coords[1]);
-            final int point3 = (int) (coords[2]);
-            final int point4 = (int) (coords[3]);
-            final int point5 = (int) (coords[4]);
-            final int point6 = (int) (coords[5]);
-
-            switch (segmentType) {
+            switch (pathIter.currentSegment(coords)) {
             case PathIterator.SEG_MOVETO:
                 path.close();
-                path.moveForFont(point1, point2);
+                path.moveForFont((int) coords[XCOORD], (int) coords[YCOORD]);
                 break;
             case PathIterator.SEG_LINETO:
-                path.line(point1, point2);
+                path.line((int) coords[XCOORD], (int) coords[YCOORD]);
                 break;
             case PathIterator.SEG_QUADTO:
-                path.curve(point1, point2, point3, point4);
+                path.curve((int) coords[QUAD_CTRLX], (int) coords[QUAD_CTRLY],
+                        (int) coords[QUAD_ANCHORX], (int) coords[QUAD_ANCHORY]);
                 break;
             case PathIterator.SEG_CUBICTO:
-                path.curve(point1, point2, point3, point4, point5, point6);
+                path.curve(
+                        (int) coords[CUBE_CTRL1_X], (int) coords[CUBE_CTRL1_Y],
+                        (int) coords[CUBE_CTRL2_X], (int) coords[CUBE_CTRL2_Y],
+                        (int) coords[CUBE_ANCHORX], (int) coords[CUBE_ANCHORY]);
                 break;
             case PathIterator.SEG_CLOSE:
                 path.close();

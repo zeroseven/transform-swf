@@ -33,6 +33,7 @@ package com.flagstone.transform.util.font;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
 import java.util.zip.DataFormatException;
@@ -43,19 +44,27 @@ import java.util.zip.DataFormatException;
  */
 public interface FontDecoder {
     /**
-     * Read an font from a file.
+     * Read a font from a file.
      * @param file the path to the file.
      * @throws IOException if there is an error reading the font data.
      * @throws DataFormatException if the file contains an unsupported format.
      */
     void read(File file) throws IOException, DataFormatException;
     /**
-     * Read an font from a file referenced by a URL.
+     * Read a font from a file referenced by a URL.
      * @param url the reference to the file.
      * @throws IOException if there is an error reading the font data.
      * @throws DataFormatException if the file contains an unsupported format.
      */
     void read(URL url) throws IOException, DataFormatException;
+    /**
+     * Read a font from an input stream.
+     * @param stream the stream used to read the font data.
+     * @throws IOException if there is an error reading the font data.
+     * @throws DataFormatException if the file contains an unsupported format.
+     */
+    void read(InputStream stream)
+        throws IOException, DataFormatException;
     /**
      * Get the list of fonts decoded.
      * @return a list of fonts.

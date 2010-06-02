@@ -34,6 +34,7 @@ package com.flagstone.transform.util.font;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.List;
@@ -111,6 +112,25 @@ public final class FontFactory {
         }
 
         decoder.read(url);
+    }
+
+    /**
+     * Read a font from an InputStream.
+     *
+     * @param url
+     *            the Uniform Resource Locator referencing the file.
+     *
+     * @throws IOException
+     *             if there is an error reading the file.
+     *
+     * @throws DataFormatException
+     *             if there is a problem decoding the font, either it is in an
+     *             unsupported format or an error occurred while decoding the
+     *             font data.
+     */
+    public void read(final InputStream stream)
+            throws IOException, DataFormatException {
+        decoder.read(stream);
     }
 
     /**
