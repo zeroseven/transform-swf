@@ -38,7 +38,6 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 import java.util.zip.DataFormatException;
 
 import org.junit.Test;
@@ -105,8 +104,6 @@ public final class MP3StreamingSoundIT {
 
             final SoundFactory factory = new SoundFactory();
             factory.read(sourceFile);
-            final List<MovieTag> stream =
-                factory.streamSound((int) framesPerSecond);
 
             MovieAttributes attrs = new MovieAttributes();
             attrs.setFrameSize(new Bounds(0, 0, 8000, 4000));
@@ -115,10 +112,12 @@ public final class MP3StreamingSoundIT {
             movie.add(attrs);
             movie.add(new Background(WebPalette.LIGHT_BLUE.color()));
 
-            movie.add(stream.remove(0));
+            movie.add(factory.streamHeader(framesPerSecond));
 
-            for (final MovieTag movieTag : stream) {
-                movie.add(movieTag);
+            MovieTag block;
+
+            while ((block = factory.streamSound()) != null) {
+                movie.add(block);
                 movie.add(ShowFrame.getInstance());
             }
 
