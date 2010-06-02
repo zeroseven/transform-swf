@@ -31,6 +31,9 @@
 
 package com.flagstone.transform.image;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+
 import com.flagstone.transform.coder.BigDecoder;
 
 /**
@@ -66,24 +69,29 @@ public final class JPEGInfo {
      * @param image the image data.
      */
     public void decode(final byte[] image) {
-        final BigDecoder coder = new BigDecoder(image);
+        ByteArrayInputStream stream = new ByteArrayInputStream(image);
+        final BigDecoder coder = new BigDecoder(stream);
         int marker;
         int size;
-        while (!coder.eof()) {
-            marker = coder.readUI16();
-            if (marker == 0xffd8 || marker == 0xffd9) {
-                continue;
+        try {
+            while (!coder.eof()) {
+                marker = coder.readUI16();
+                if (marker == 0xffd8 || marker == 0xffd9) {
+                    continue;
+                }
+                size = coder.readUI16();
+                if (marker >= 0xffc0 && marker <= 0xffcf
+                        && marker != 0xffc4 && marker != 0xffc8) {
+                    coder.readByte();
+                    height = coder.readUI16();
+                    width = coder.readUI16();
+                    return;
+                } else {
+                    coder.adjustPointer((size - 2) << 3);
+                }
             }
-            size = coder.readUI16();
-            if (marker >= 0xffc0 && marker <= 0xffcf
-                    && marker != 0xffc4 && marker != 0xffc8) {
-                coder.readWord(1, false);
-                height = coder.readUI16();
-                width = coder.readUI16();
-                return;
-            } else {
-                coder.adjustPointer((size - 2) << 3);
-            }
+        } catch (IOException e) {
+            //TODO FIX
         }
     }
 }
