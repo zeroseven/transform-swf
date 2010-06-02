@@ -240,7 +240,7 @@ public final class Movie {
      * @throws IOException
      *             if an I/O error occurs while reading the file.
      */
-    private void decodeFromStream(final InputStream stream)
+    public void decodeFromStream(final InputStream stream)
             throws DataFormatException, IOException {
 
         InputStream streamIn = null;
