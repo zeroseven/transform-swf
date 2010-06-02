@@ -57,7 +57,7 @@ public final class DefineTextTest {
 
     @BeforeClass
     public static void initialize() {
-        destDir = new File("test/results/DefineTextTest");
+        destDir = new File("target/integration-results/Text");
 
         if (!destDir.mkdirs()) {
             fail();

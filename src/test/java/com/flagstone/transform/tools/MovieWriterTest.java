@@ -66,7 +66,7 @@ public final class MovieWriterTest {
             }
         };
 
-        destDir = new File("test/results/tools", "MovieWriterTest");
+        destDir = new File("target/integration-results", "MovieWriterTest");
 
         if (!destDir.exists() && !destDir.mkdirs()) {
             fail();
