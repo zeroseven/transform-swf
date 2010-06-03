@@ -35,7 +35,7 @@ import java.io.File;
 
 import com.flagstone.transform.Background;
 import com.flagstone.transform.Movie;
-import com.flagstone.transform.MovieAttributes;
+import com.flagstone.transform.MovieHeader;
 import com.flagstone.transform.MovieTag;
 import com.flagstone.transform.ShowFrame;
 import com.flagstone.transform.datatype.Bounds;
@@ -71,11 +71,11 @@ public final class PlayStreamingSound {
             final SoundFactory factory = new SoundFactory();
             factory.read(sourceFile);
 
-            MovieAttributes attrs = new MovieAttributes();
-            attrs.setFrameSize(new Bounds(0, 0, screenWidth, screenHeight));
-            attrs.setFrameRate(framesPerSecond);
+            MovieHeader header = new MovieHeader();
+            header.setFrameSize(new Bounds(0, 0, screenWidth, screenHeight));
+            header.setFrameRate(framesPerSecond);
 
-            movie.add(attrs);
+            movie.add(header);
             movie.add(new Background(WebPalette.LIGHT_BLUE.color()));
             movie.add(factory.streamHeader(framesPerSecond));
 

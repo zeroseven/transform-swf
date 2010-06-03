@@ -38,34 +38,20 @@ import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.datatype.Bounds;
-import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 /** TODO(class). */
 public final class MovieAttributes implements MovieTag {
 
     /** Format string used in toString() method. */
-    private static final String FORMAT = "MovieAttributes: { version=%d; "
-    		+ " frameSize=%s; frameRate=%f; frameCount=%d; "
-    		+ " compressed=%b;  metadata=%b;  as3=%b;  network=%b;}";
+    private static final String FORMAT = "MovieAttributes: {"
+    		+ " metadata=%b;  as3=%b;  network=%b;}";
     /** The set of encoded attributes. */
     private int attributes;
 
-    /** The Flash version number. */
-    private int version;
-    /** The Flash Player screen coordinates. */
-    private Bounds frameSize;
-    /** The frame rate of the movie. */
-    private int frameRate;
-    /** The number of frames in the movie. */
-    private int frameCount;
-    private boolean compressed;
-    private boolean metadata;
-    private boolean actionscript3;
-    private boolean network;
-
+    /**
+     * Creates a new MovieAttributes object.
+     */
     public MovieAttributes() {
-        version = SWF.VERSION;
     }
 
     /**
@@ -78,19 +64,14 @@ public final class MovieAttributes implements MovieTag {
      * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    public MovieAttributes(final SWFDecoder coder, Context context) throws IOException {
-        version = context.get(Context.VERSION);
-        frameSize = new Bounds(coder);
-        frameRate = coder.readUnsignedShort();
-        frameCount = coder.readUnsignedShort();
-        if (version > 7) {
-            coder.readUnsignedShort();
-            int flags = coder.readByte();
-            network = (flags & 1) != 0;
-            actionscript3 = (flags & 8) != 0;
-            metadata = (flags & 16) != 0;
-            coder.skip(3);
+    public MovieAttributes(final SWFDecoder coder, final Context context)
+            throws IOException {
+        int length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
+        if (length == Coder.IS_EXTENDED) {
+            length = coder.readInt();
         }
+        attributes = coder.readByte();
+        coder.skip(3);
     }
 
     /**
@@ -106,122 +87,94 @@ public final class MovieAttributes implements MovieTag {
     }
 
     /**
-     * Get the number representing the version of Flash that the movie
-     * represents.
+     * Does the Movie contain Actionscript 3 code.
      *
-     * @return the version number of Flash that this movie contains.
+     * @return true if the movie contains at least one DoABC tag
+     * containing Actionscript 3 byte-codes.
      */
-    public int getVersion() {
-        return version;
-    }
-
-    /**
-     * Sets the Flash version supported in this Movie. Note that there are no
-     * restrictions on the objects that can be used in a coder. Using objects
-     * that are not supported by an earlier version of the Flash file format may
-     * cause the Player to not display the movie correctly or even crash the
-     * Player.
-     *
-     * @param aNumber
-     *            the version of the Flash file format that this movie utilises.
-     */
-    public void setVersion(final int aNumber) {
-        if (aNumber < 0) {
-            throw new IllegalArgumentRangeException(
-                    0, Integer.MAX_VALUE, aNumber);
-        }
-        version = aNumber;
-    }
-
-    /**
-     * Get the bounding rectangle that defines the size of the player
-     * screen.
-     *
-     * @return the bounding box that defines the screen.
-     */
-    public Bounds getFrameSize() {
-        return frameSize;
-    }
-
-    /**
-     * Sets the bounding rectangle that defines the size of the player screen.
-     * The coordinates of the bounding rectangle are also used to define the
-     * coordinate range. For example if a 400 x 400 pixel rectangle is defined,
-     * specifying the values for the x and y coordinates the range -200 to 200
-     * sets the centre of the screen at (0,0), if the x and y coordinates are
-     * specified in the range 0 to 400 then the centre of the screen will be at
-     * (200, 200).
-     *
-     * @param aBounds
-     *            the Bounds object that defines the frame size. Must not be
-     *            null.
-     */
-    public void setFrameSize(final Bounds aBounds) {
-        if (aBounds == null) {
-            throw new IllegalArgumentException();
-        }
-        frameSize = aBounds;
-    }
-
-    /**
-     * Get the number of frames played per second that the movie will be
-     * displayed at.
-     *
-     * @return the movie frame rate.
-     */
-    public float getFrameRate() {
-        return frameRate / 256.0f;
-    }
-
-    /**
-     * Sets the number of frames played per second that the Player will display
-     * the coder.
-     *
-     * @param rate
-     *            the number of frames per second that the movie is played.
-     */
-    public void setFrameRate(final float rate) {
-        frameRate = (int) (rate * 256);
-    }
-
-    public float getFrameCount() {
-        return frameCount;
-    }
-
-    public void setFrameCount(final int count) {
-        frameCount = count;
-    }
-
-    public boolean isCompressed() {
-        return compressed;
-    }
-
-    public void setCompressed(final boolean compress) {
-        compressed = compress;
-    }
-
     public boolean hasMetaData() {
-        return metadata;
+        return (attributes & 0x10) != 0;
     }
 
-    public void setMetaData(final boolean hasMeta) {
-        metadata = hasMeta;
+    /**
+     * Does the Movie contain meta-data.
+     *
+     * @return true if the movie contains a MovieMetaData tag.
+     */
+    public boolean hasAS3() {
+        return (attributes & 0x08) != 0;
     }
 
-    public boolean hasActionscript3() {
-        return actionscript3;
+    /**
+     * Does the Flash Player use direct bit block transfer to accelerate
+     * graphics.
+     *
+     * @return true if the Flash Player will use direct bit block transfer.
+     */
+    public boolean useDirectBlit() {
+        return (attributes & 0x40) != 0;
     }
 
-    public void setActionscript3(final boolean hasActionscript) {
-        actionscript3 = hasActionscript;
+    /**
+     * Instruct the Flash Player to use direct bit block transfer to accelerate
+     * graphics.
+     *
+     * @param useBlit use graphics hardware accelerations.
+     */
+    public void setUseDirectBlit(final boolean useBlit) {
+        if (useBlit) {
+            attributes |= 0x40;
+        } else {
+            attributes &= ~0x40;
+        }
     }
 
-    public boolean usesNetwork() {
-        return network;
+    /**
+     * Does the Flash Player use the graphics processor to accelerate
+     * compositing - if available.
+     *
+     * @return true if the Flash Player will use the graphics process for
+     * compositing.
+     */
+    public boolean useGPU() {
+        return (attributes & 0x20) != 0;
     }
 
-    public void setUsesNetwork(final boolean usesNetwork) {
-        network = usesNetwork;
+    /**
+     * Instruct the Flash Player to use the graphics processor to accelerate
+     * compositing - if available.
+     *
+     * @param useGPU use graphics processor for compositing.
+     */
+    public void setUseGPU(final boolean useGPU) {
+        if (useGPU) {
+            attributes |= 0x20;
+        } else {
+            attributes &= ~0x20;
+        }
+    }
+
+    /**
+     * Does the Flash Player use the network for loading resources even if the
+     * movie is loaded from the local file system.
+     * @return true if the network will be used even if the movie is loaded
+     * locally, false otherwise.
+     */
+    public boolean useNetwork() {
+        return (attributes & 0x01) != 0;
+    }
+
+    /**
+     * Instructor the Flash Player use the network for loading resources even
+     * if the movie is loaded from the local file system.
+     * @param useNetwork use the network even if the movie is loaded locally.
+     */
+    public void setUseNetwork(final boolean useNetwork) {
+        if (useNetwork) {
+            attributes |= 0x01;
+        } else {
+            attributes &= ~0x01;
+        }
     }
 
     /** {@inheritDoc} */
@@ -232,37 +185,22 @@ public final class MovieAttributes implements MovieTag {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        return String.format(FORMAT, version, frameSize, getFrameRate(),
-                frameCount, compressed, metadata, actionscript3, network);
+        return String.format(FORMAT, hasMetaData(), hasAS3(), useNetwork());
     }
 
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
-        int length = 4 + frameSize.prepareToEncode(context);
-        if (version > 7) {
-            length += 6;
-        }
-        return length;
+        return 6;
     }
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
-        frameSize.encode(coder, context);
-        coder.writeShort(frameRate);
-        coder.writeShort(frameCount);
-
-        if (version > 7) {
-            coder.writeShort((MovieTypes.FILE_ATTRIBUTES
-                    << Coder.LENGTH_FIELD_SIZE) | 4);
-            int flags = 0;
-            flags |= network ? 1 : 0;
-            flags |= actionscript3 ? 8 : 0;
-            flags |= metadata ? 16 : 0;
-            coder.writeByte(flags);
-            coder.writeByte(0);
-            coder.writeByte(0);
-            coder.writeByte(0);
-        }
+        coder.writeShort((MovieTypes.FILE_ATTRIBUTES
+                << Coder.LENGTH_FIELD_SIZE) | 4);
+        coder.writeByte(attributes);
+        coder.writeByte(0);
+        coder.writeByte(0);
+        coder.writeByte(0);
     }
 }

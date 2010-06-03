@@ -45,7 +45,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 import com.flagstone.transform.Background;
 import com.flagstone.transform.Movie;
-import com.flagstone.transform.MovieAttributes;
+import com.flagstone.transform.MovieHeader;
 import com.flagstone.transform.Place2;
 import com.flagstone.transform.ShowFrame;
 import com.flagstone.transform.datatype.Bounds;
@@ -120,7 +120,7 @@ public final class TTFFontIT {
             final DefineText2 text = textTable.defineText(uid++,
                     alphabet, WebPalette.BLACK.color());
 
-            MovieAttributes attrs = new MovieAttributes();
+            MovieHeader attrs = new MovieHeader();
             attrs.setFrameSize(bounds);
             attrs.setFrameRate(1.0f);
 

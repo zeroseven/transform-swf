@@ -45,7 +45,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 import com.flagstone.transform.Background;
 import com.flagstone.transform.Movie;
-import com.flagstone.transform.MovieAttributes;
+import com.flagstone.transform.MovieHeader;
 import com.flagstone.transform.Place2;
 import com.flagstone.transform.ShowFrame;
 import com.flagstone.transform.datatype.WebPalette;
@@ -108,7 +108,7 @@ public final class JPGImageIT {
             final DefineShape3 shape = factory.defineEnclosingShape(uid++,
                     imageId, -xOrigin, -yOrigin, null);
 
-            MovieAttributes attrs = new MovieAttributes();
+            MovieHeader attrs = new MovieHeader();
             attrs.setFrameRate(1.0f);
             attrs.setFrameSize(shape.getBounds());
 

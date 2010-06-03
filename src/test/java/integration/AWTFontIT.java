@@ -44,7 +44,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 import com.flagstone.transform.Background;
 import com.flagstone.transform.Movie;
-import com.flagstone.transform.MovieAttributes;
+import com.flagstone.transform.MovieHeader;
 import com.flagstone.transform.Place2;
 import com.flagstone.transform.ShowFrame;
 import com.flagstone.transform.datatype.Bounds;
@@ -164,7 +164,7 @@ public final class AWTFontIT {
             embeddedField.setWordWrapped(true);
             embeddedField.setInitialText(alphabet);
 
-            MovieAttributes attrs = new MovieAttributes();
+            MovieHeader attrs = new MovieHeader();
             attrs.setFrameSize(Bounds.pad(new Bounds(0, 0, bounds.getWidth(),
                     bounds.getHeight() * 2), 0, padding * 2, padding * 6, 0));
             attrs.setFrameRate(1.0f);

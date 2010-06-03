@@ -48,7 +48,7 @@ import org.junit.runners.Parameterized.Parameters;
 import com.flagstone.transform.Background;
 import com.flagstone.transform.DoAction;
 import com.flagstone.transform.Movie;
-import com.flagstone.transform.MovieAttributes;
+import com.flagstone.transform.MovieHeader;
 import com.flagstone.transform.ShowFrame;
 import com.flagstone.transform.action.BasicAction;
 import com.flagstone.transform.datatype.Bounds;
@@ -109,7 +109,7 @@ public final class MP3EventSoundIT {
             factory.read(sourceFile);
             final DefineSound sound = factory.defineSound(uid++);
 
-            MovieAttributes attrs = new MovieAttributes();
+            MovieHeader attrs = new MovieHeader();
             attrs.setFrameSize(new Bounds(0, 0, 8000, 4000));
             attrs.setFrameRate(framesPerSecond);
 

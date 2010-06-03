@@ -42,7 +42,7 @@ import org.junit.Test;
 
 import com.flagstone.transform.Background;
 import com.flagstone.transform.Movie;
-import com.flagstone.transform.MovieAttributes;
+import com.flagstone.transform.MovieHeader;
 import com.flagstone.transform.Place2;
 import com.flagstone.transform.ShowFrame;
 import com.flagstone.transform.datatype.Bounds;
@@ -91,10 +91,10 @@ public final class DefineTextTest {
         final DefineFont2 definition = font.defineFont(fontId,
                 set.getCharacters());
 
-        MovieAttributes attrs = new MovieAttributes();
-        attrs.setFrameRate(1.0f);
+        MovieHeader header = new MovieHeader();
+        header.setFrameRate(1.0f);
 
-        movie.add(attrs);
+        movie.add(header);
         movie.add(new Background(WebPalette.LIGHT_BLUE.color()));
         movie.add(definition);
 
@@ -110,7 +110,7 @@ public final class DefineTextTest {
         movie.add(Place2.show(text.getIdentifier(), layer++, x, y));
         movie.add(ShowFrame.getInstance());
 
-        attrs.setFrameSize(new Bounds(0, 0, textWidth + 2 * margin, textHeight
+        header.setFrameSize(new Bounds(0, 0, textWidth + 2 * margin, textHeight
                 + 2 * margin));
         movie.encodeToFile(destFile);
     }
@@ -140,11 +140,11 @@ public final class DefineTextTest {
         final DefineFont2 definition = font.defineFont(fontId,
                 set.getCharacters());
 
-        MovieAttributes attrs = new MovieAttributes();
-        attrs.setFrameSize(new Bounds(0, 0, 0, 0));
-        attrs.setFrameRate(1.0f);
+        MovieHeader header = new MovieHeader();
+        header.setFrameSize(new Bounds(0, 0, 0, 0));
+        header.setFrameRate(1.0f);
 
-        movie.add(attrs);
+        movie.add(header);
         movie.add(new Background(WebPalette.LIGHT_BLUE.color()));
         movie.add(definition);
 
@@ -174,7 +174,7 @@ public final class DefineTextTest {
                 x += advance;
             }
         }
-        attrs.setFrameSize(new Bounds(0, 0, maxWidth, y + margin));
+        header.setFrameSize(new Bounds(0, 0, maxWidth, y + margin));
 
         movie.add(ShowFrame.getInstance());
         movie.encodeToFile(destFile);

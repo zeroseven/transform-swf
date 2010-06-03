@@ -43,7 +43,7 @@ import org.junit.Test;
 
 import com.flagstone.transform.Background;
 import com.flagstone.transform.Movie;
-import com.flagstone.transform.MovieAttributes;
+import com.flagstone.transform.MovieHeader;
 import com.flagstone.transform.Place2;
 import com.flagstone.transform.ShowFrame;
 import com.flagstone.transform.datatype.WebPalette;
@@ -103,7 +103,7 @@ public final class CanvasIT {
     private void showShape(final DefineShape2 shape, final File file)
             throws DataFormatException, IOException {
         final Movie movie = new Movie();
-        MovieAttributes attrs = new MovieAttributes();
+        MovieHeader attrs = new MovieHeader();
         attrs.setFrameRate(1.0f);
         attrs.setFrameSize(shape.getBounds());
 

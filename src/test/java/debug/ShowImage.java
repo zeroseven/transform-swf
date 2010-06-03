@@ -35,7 +35,7 @@ import java.io.File;
 
 import com.flagstone.transform.Background;
 import com.flagstone.transform.Movie;
-import com.flagstone.transform.MovieAttributes;
+import com.flagstone.transform.MovieHeader;
 import com.flagstone.transform.Place2;
 import com.flagstone.transform.ShowFrame;
 import com.flagstone.transform.datatype.Bounds;
@@ -73,12 +73,12 @@ public final class ShowImage {
             final int screenHeight = imageHeight * 20;
             final int shapeId = uid++;
 
-            MovieAttributes attrs = new MovieAttributes();
-            attrs.setFrameRate(1.0f);
-            attrs.setFrameSize(new Bounds(-screenWidth / 2, -screenHeight / 2,
+            MovieHeader header = new MovieHeader();
+            header.setFrameRate(1.0f);
+            header.setFrameSize(new Bounds(-screenWidth / 2, -screenHeight / 2,
                     screenWidth / 2, screenHeight / 2));
 
-            movie.add(attrs);
+            movie.add(header);
             movie.add(new Background(WebPalette.LIGHT_BLUE.color()));
             movie.add(image);
             movie.add(factory.defineEnclosingShape(shapeId,

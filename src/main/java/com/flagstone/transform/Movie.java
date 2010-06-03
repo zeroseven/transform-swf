@@ -288,15 +288,19 @@ public final class Movie {
             objects.clear();
 
             final SWFFactory<MovieTag> factory = registry.getMovieDecoder();
-            objects.add(new MovieAttributes(decoder, context));
+
+            MovieHeader header = new MovieHeader(decoder, context);
+            objects.add(header);
 
             while (decoder.scanUnsignedShort() >>> 6 != MovieTypes.END) {
                 objects.add(factory.getObject(decoder, context));
             }
 
-            MovieAttributes attrs = (MovieAttributes) objects.get(0);
-            attrs.setVersion(context.get(Context.VERSION));
-            attrs.setFrameCount(context.get(Context.FRAMES));
+            decoder.readUnsignedShort();
+
+            header.setVersion(context.get(Context.VERSION));
+            header.setFrameCount(context.get(Context.FRAMES));
+            header.setCompressed(context.get(Context.COMPRESSED) == 1);
 
         } finally {
             if (streamIn != null) {
@@ -341,11 +345,11 @@ public final class Movie {
         OutputStream streamOut = null;
 
         try {
-            MovieAttributes attrs = (MovieAttributes) objects.get(0);
+            MovieHeader header = (MovieHeader) objects.get(0);
 
             final Context context = new Context();
             context.setEncoding(encoding.toString());
-            context.put(Context.VERSION, attrs.getVersion());
+            context.put(Context.VERSION, header.getVersion());
             context.put(Context.FRAMES, 0);
 
             // length of signature, version, length and end
@@ -355,21 +359,21 @@ public final class Movie {
                 length += tag.prepareToEncode(context);
             }
 
-            attrs.setFrameCount(context.get(Context.FRAMES));
+            header.setFrameCount(context.get(Context.FRAMES));
 
-            if (attrs.isCompressed()) {
+            if (header.isCompressed()) {
                 stream.write(CWS);
             } else {
                 stream.write(FWS);
             }
 
-            stream.write(attrs.getVersion());
+            stream.write(header.getVersion());
             stream.write(length);
             stream.write(length >>> 8);
             stream.write(length >>> 16);
             stream.write(length >>> 24);
 
-            if (attrs.isCompressed()) {
+            if (header.isCompressed()) {
                 streamOut = new DeflaterOutputStream(stream);
             } else {
                 streamOut = stream;
