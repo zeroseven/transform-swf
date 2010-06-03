@@ -288,7 +288,7 @@ public final class Movie {
             objects.clear();
 
             final SWFFactory<MovieTag> factory = registry.getMovieDecoder();
-            objects.add(new MovieAttributes(decoder));
+            objects.add(new MovieAttributes(decoder, context));
 
             while (decoder.scanUnsignedShort() >>> 6 != MovieTypes.END) {
                 objects.add(factory.getObject(decoder, context));

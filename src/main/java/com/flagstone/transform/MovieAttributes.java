@@ -78,7 +78,8 @@ public final class MovieAttributes implements MovieTag {
      * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    public MovieAttributes(final SWFDecoder coder) throws IOException {
+    public MovieAttributes(final SWFDecoder coder, Context context) throws IOException {
+        version = context.get(Context.VERSION);
         frameSize = new Bounds(coder);
         frameRate = coder.readUnsignedShort();
         frameCount = coder.readUnsignedShort();

@@ -240,7 +240,7 @@ public final class MovieDecoder implements SWFFactory<MovieTag> {
             obj = new TabOrder(coder);
             break;
         case MovieTypes.FILE_ATTRIBUTES:
-            obj = new MovieAttributes(coder);
+            obj = new MovieAttributes(coder, context);
             break;
         case MovieTypes.PLACE_3:
             obj = new Place3(coder, context);
