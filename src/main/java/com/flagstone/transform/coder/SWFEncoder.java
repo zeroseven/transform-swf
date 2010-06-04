@@ -371,14 +371,11 @@ public final class SWFEncoder {
         }
 
         int val = value;
-        if (val > 127) {
-            while (val > 127) {
-                buffer[index++] = (byte) ((val & 0x007F) | 0x0080);
-                val = val >>> 7;
-            }
-        } else {
-            buffer[index++] = (byte) (value & 0x007F);
+        while (val > 127) {
+            buffer[index++] = (byte) ((val & 0x007F) | 0x0080);
+            val = val >>> 7;
         }
+        buffer[index++] = (byte) (val & 0x007F);
     }
 
     /**
