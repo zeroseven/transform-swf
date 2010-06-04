@@ -200,7 +200,7 @@ public final class DefineFont3 implements DefineTag {
             }
         }
 
-        if (containsLayout) {
+        if (containsLayout || coder.bytesRead() < length) {
             ascent = coder.readSignedShort();
             descent = coder.readSignedShort();
             leading = coder.readSignedShort();
