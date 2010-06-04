@@ -33,26 +33,27 @@ package com.flagstone.transform;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import org.junit.Test;
 
-import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.SWFDecoder;
-import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.ColorTransform;
 import com.flagstone.transform.datatype.CoordTransform;
 
-public final class PlaceCodingTest {
+public final class PlaceCodingTest extends AbstractCodingTest {
 
-    private static final String CALCULATED_LENGTH =
-        "Incorrect calculated length";
-    private static final String NOT_ENCODED =
-        "Object was not encoded properly";
-    private static final String NOT_DECODED =
-        "Object was not decoded properly";
+    @Test
+    public void checkPlaceWithPositionLengthForEncoding() throws IOException {
+        final int uid = 1;
+        final int layer = 2;
+        final CoordTransform transform = CoordTransform.translate(1, 2);
+        final Place object = new Place(uid, layer, transform);
+
+        final byte[] binary = new byte[] {0x06, 0x01, 0x01, 0x00, 0x02, 0x00,
+                0x06, 0x50 };
+
+        assertEquals(CALCULATED_LENGTH, binary.length, prepare(object));
+    }
 
     @Test
     public void checkPlaceWithPositionIsEncoded() throws IOException {
@@ -64,17 +65,7 @@ public final class PlaceCodingTest {
         final byte[] binary = new byte[] {0x06, 0x01, 0x01, 0x00, 0x02, 0x00,
                 0x06, 0x50 };
 
-        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        final SWFEncoder encoder = new SWFEncoder(stream);
-        final Context context = new Context();
-
-        final int length = object.prepareToEncode(context);
-        object.encode(encoder, context);
-        encoder.flush();
-
-        assertEquals(CALCULATED_LENGTH, binary.length, length);
-
-        assertArrayEquals(NOT_ENCODED, binary, stream.toByteArray());
+        assertArrayEquals(NOT_ENCODED, binary, encode(object));
     }
 
     @Test
@@ -86,11 +77,7 @@ public final class PlaceCodingTest {
         final byte[] binary = new byte[] {0x06, 0x01, 0x01, 0x00, 0x02, 0x00,
                 0x06, 0x50 };
 
-        final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
-        final SWFDecoder decoder = new SWFDecoder(stream);
-        final Context context = new Context();
-        final Place object = new Place(decoder, context);
-
+        Place object = (Place) decodeMovieTag(binary);
         assertEquals(NOT_DECODED, identifier, object.getIdentifier());
         assertEquals(NOT_DECODED, layer, object.getLayer());
         assertEquals(NOT_DECODED, transform, object.getTransform());
@@ -107,11 +94,7 @@ public final class PlaceCodingTest {
         final byte[] binary = new byte[] {0x08, 0x01, 0x01, 0x00, 0x02, 0x00,
                 0x06, 0x50, (byte) 0x8C, (byte) 0xA6 };
 
-        final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
-        final SWFDecoder decoder = new SWFDecoder(stream);
-        final Context context = new Context();
-        final Place object = new Place(decoder, context);
-
+        Place object = (Place) decodeMovieTag(binary);
         assertEquals(NOT_DECODED, identifier, object.getIdentifier());
         assertEquals(NOT_DECODED, layer, object.getLayer());
         assertEquals(NOT_DECODED, transform, object.getTransform());

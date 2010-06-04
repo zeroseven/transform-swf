@@ -33,8 +33,6 @@ package com.flagstone.transform;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,12 +41,8 @@ import org.junit.Test;
 
 import com.flagstone.transform.action.Action;
 import com.flagstone.transform.action.BasicAction;
-import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.DecoderRegistry;
-import com.flagstone.transform.coder.SWFDecoder;
-import com.flagstone.transform.coder.SWFEncoder;
 
-public final class DoActionCodingTest {
+public final class DoActionCodingTest extends AbstractCodingTest {
 
     private static final String CALCULATED_LENGTH =
         "Incorrect calculated length";
@@ -62,6 +56,18 @@ public final class DoActionCodingTest {
         "Object was not decoded properly";
 
     @Test
+    public void checkDoActionLengthForEncoding() throws IOException {
+        final List<Action>actions = new ArrayList<Action>();
+        actions.add(BasicAction.NEXT_FRAME);
+        actions.add(BasicAction.END);
+
+        final DoAction object = new DoAction(actions);
+        final byte[] binary = new byte[] {0x02, 0x03, 0x04, 0x00 };
+
+        assertEquals(CALCULATED_LENGTH, binary.length, prepare(object));
+    }
+
+    @Test
     public void checkDoActionIsEncoded() throws IOException {
         final List<Action>actions = new ArrayList<Action>();
         actions.add(BasicAction.NEXT_FRAME);
@@ -70,17 +76,7 @@ public final class DoActionCodingTest {
         final DoAction object = new DoAction(actions);
         final byte[] binary = new byte[] {0x02, 0x03, 0x04, 0x00 };
 
-        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        final SWFEncoder encoder = new SWFEncoder(stream);
-        final Context context = new Context();
-
-        final int length = object.prepareToEncode(context);
-        object.encode(encoder, context);
-        encoder.flush();
-
-        assertEquals(CALCULATED_LENGTH, binary.length, length);
-
-        assertArrayEquals(NOT_ENCODED, binary, stream.toByteArray());
+        assertArrayEquals(NOT_ENCODED, binary, encode(object));
     }
 
     @Test
@@ -91,12 +87,7 @@ public final class DoActionCodingTest {
 
         final byte[] binary = new byte[] {0x02, 0x03, 0x04, 0x00 };
 
-        final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
-        final SWFDecoder decoder = new SWFDecoder(stream);
-        final Context context = new Context();
-        context.setRegistry(DecoderRegistry.getDefault());
-        final DoAction object = new DoAction(decoder, context);
-
+        DoAction object = (DoAction) decodeMovieTag(binary);
         assertEquals(NOT_DECODED, actions, object.getActions());
    }
 
@@ -109,12 +100,7 @@ public final class DoActionCodingTest {
         final byte[] binary = new byte[] {0x3F, 0x03, 0x02, 0x00, 0x00, 0x00,
                 0x04, 0x00 };
 
-        final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
-        final SWFDecoder decoder = new SWFDecoder(stream);
-        final Context context = new Context();
-        context.setRegistry(DecoderRegistry.getDefault());
-        final DoAction object = new DoAction(decoder, context);
-
+        DoAction object = (DoAction) decodeMovieTag(binary);
         assertEquals(NOT_DECODED, actions, object.getActions());
    }
 }

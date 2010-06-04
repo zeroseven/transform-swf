@@ -33,28 +33,20 @@ package com.flagstone.transform;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import org.junit.Test;
 
-import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.SWFDecoder;
-import com.flagstone.transform.coder.SWFEncoder;
+public final class EnableDebuggerCodingTest extends AbstractCodingTest {
 
-public final class EnableDebuggerCodingTest {
+    @Test
+    public void checkEnableDebuggerLengthForEncoding() throws IOException {
+        final EnableDebugger object = new EnableDebugger("ABC123");
+        final byte[] binary = new byte[] {(byte) 0x89, 0x0E, 0x00, 0x00, 0x41,
+                0x42, 0x43, 0x31, 0x32, 0x33, 0x00 };
 
-    private static final String CALCULATED_LENGTH =
-        "Incorrect calculated length";
-    private static final String NOT_FULLY_ENCODED =
-        "Data was not fully encoded";
-    private static final String NOT_FULLY_DECODED =
-        "Data was not fully decoded";
-    private static final String NOT_ENCODED =
-        "Object was not encoded properly";
-    private static final String NOT_DECODED =
-        "Object was not decoded properly";
+        assertEquals(CALCULATED_LENGTH, binary.length, prepare(object));
+    }
 
     @Test
     public void checkEnableDebuggerIsEncoded() throws IOException {
@@ -62,17 +54,7 @@ public final class EnableDebuggerCodingTest {
         final byte[] binary = new byte[] {(byte) 0x89, 0x0E, 0x00, 0x00, 0x41,
                 0x42, 0x43, 0x31, 0x32, 0x33, 0x00 };
 
-        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        final SWFEncoder encoder = new SWFEncoder(stream);
-        final Context context = new Context();
-
-        final int length = object.prepareToEncode(context);
-        object.encode(encoder, context);
-        encoder.flush();
-
-        assertEquals(CALCULATED_LENGTH, binary.length, length);
-
-        assertArrayEquals(NOT_ENCODED, binary, stream.toByteArray());
+        assertArrayEquals(NOT_ENCODED, binary, encode(object));
     }
 
     @Test
@@ -80,10 +62,7 @@ public final class EnableDebuggerCodingTest {
         final byte[] binary = new byte[] {(byte) 0x89, 0x0E, 0x00, 0x00, 0x41,
                 0x42, 0x43, 0x31, 0x32, 0x33, 0x00 };
 
-        final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
-        final SWFDecoder decoder = new SWFDecoder(stream);
-        final EnableDebugger object = new EnableDebugger(decoder);
-
+        EnableDebugger object = (EnableDebugger) decodeMovieTag(binary);
         assertEquals(NOT_DECODED, "ABC123", object.getPassword());
    }
 
@@ -92,10 +71,7 @@ public final class EnableDebuggerCodingTest {
         final byte[] binary = new byte[] {(byte) 0xBF, 0x0E, 0x09, 0x00, 0x00,
                 0x00, 0x00, 0x00, 0x41, 0x42, 0x43, 0x31, 0x32, 0x33, 0x00 };
 
-        final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
-        final SWFDecoder decoder = new SWFDecoder(stream);
-        final EnableDebugger object = new EnableDebugger(decoder);
-
+        EnableDebugger object = (EnableDebugger) decodeMovieTag(binary);
         assertEquals(NOT_DECODED, "ABC123", object.getPassword());
    }
 }

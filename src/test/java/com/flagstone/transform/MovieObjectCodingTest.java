@@ -33,24 +33,20 @@ package com.flagstone.transform;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import org.junit.Test;
 
-import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.SWFDecoder;
-import com.flagstone.transform.coder.SWFEncoder;
+public final class MovieObjectCodingTest extends AbstractCodingTest {
 
-public final class MovieObjectCodingTest {
+    @Test
+    public void checkMovieObjectLengthForEncoding() throws IOException {
+        final byte[] data = new byte[] {1, 2, 3, 4};
+        final MovieObject object = new MovieObject(1, data);
+        final byte[] binary = new byte[] {0x44, 0x00, 0x01, 0x02, 0x03, 0x04};
 
-    private static final String CALCULATED_LENGTH =
-        "Incorrect calculated length";
-    private static final String NOT_ENCODED =
-        "Object was not encoded properly";
-    private static final String NOT_DECODED =
-        "Object was not decoded properly";
+        assertEquals(CALCULATED_LENGTH, binary.length, prepare(object));
+    }
 
     @Test
     public void checkMovieObjectIsEncoded() throws IOException {
@@ -58,41 +54,25 @@ public final class MovieObjectCodingTest {
         final MovieObject object = new MovieObject(1, data);
         final byte[] binary = new byte[] {0x44, 0x00, 0x01, 0x02, 0x03, 0x04};
 
-        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        final SWFEncoder encoder = new SWFEncoder(stream);
-        final Context context = new Context();
-
-        final int length = object.prepareToEncode(context);
-        object.encode(encoder, context);
-        encoder.flush();
-
-        assertEquals(CALCULATED_LENGTH, binary.length, length);
-
-        assertArrayEquals(NOT_ENCODED, binary, stream.toByteArray());
+        assertArrayEquals(NOT_ENCODED, binary, encode(object));
     }
 
     @Test
     public void checkMovieObjectIsDecoded() throws IOException {
         final byte[] data = new byte[] {1, 2, 3, 4};
-        final byte[] binary = new byte[] {0x44, 0x00, 0x01, 0x02, 0x03, 0x04};
+        final byte[] binary = new byte[] {0x04, 0x00, 0x01, 0x02, 0x03, 0x04};
 
-        final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
-        final SWFDecoder decoder = new SWFDecoder(stream);
-        final MovieObject object = new MovieObject(decoder);
-
+        MovieObject object = (MovieObject) decodeMovieTag(binary);
         assertArrayEquals(NOT_DECODED, data, object.getData());
    }
 
     @Test
     public void checkExtendedMovieObjectIsDecoded() throws IOException {
         final byte[] data = new byte[] {1, 2, 3, 4};
-        final byte[] binary = new byte[] {0x7F, 0x00, 0x04, 0x00, 0x00, 0x00,
+        final byte[] binary = new byte[] {0x3F, 0x00, 0x04, 0x00, 0x00, 0x00,
                 0x01, 0x02, 0x03, 0x04};
 
-        final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
-        final SWFDecoder decoder = new SWFDecoder(stream);
-        final MovieObject object = new MovieObject(decoder);
-
+        MovieObject object = (MovieObject) decodeMovieTag(binary);
         assertArrayEquals(NOT_DECODED, data, object.getData());
    }
 }

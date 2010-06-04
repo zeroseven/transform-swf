@@ -33,54 +33,37 @@ package com.flagstone.transform;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import org.junit.Test;
 
-import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.SWFDecoder;
-import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.Color;
 
-public final class BackgroundCodingTest {
+public final class BackgroundCodingTest extends AbstractCodingTest {
 
-    private static final String CALCULATED_LENGTH =
-        "Incorrect calculated length";
-    private static final String NOT_ENCODED =
-        "Object was not encoded properly";
-    private static final String NOT_DECODED =
-        "Object was not decoded properly";
+    @Test
+    public void checkBackgroundLengthForEncoding() throws IOException {
+        final Background object = new Background(new Color(1, 2, 3));
+        final byte[] binary = new byte[] { 0x43, 0x02, 0x01, 0x02, 0x03};
+
+        assertEquals(CALCULATED_LENGTH, binary.length, prepare(object));
+    }
 
     @Test
     public void checkBackgroundIsEncoded() throws IOException {
         final Background object = new Background(new Color(1, 2, 3));
         final byte[] binary = new byte[] { 0x43, 0x02, 0x01, 0x02, 0x03};
 
-        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        final SWFEncoder encoder = new SWFEncoder(stream);
-        final Context context = new Context();
-
-        final int length = object.prepareToEncode(context);
-        object.encode(encoder, context);
-        encoder.flush();
-
-        assertEquals(CALCULATED_LENGTH, binary.length, length);
-
-        assertArrayEquals(NOT_ENCODED, binary, stream.toByteArray());
+        assertArrayEquals(NOT_ENCODED, binary, encode(object));
     }
 
     @Test
     public void checkBackgroundIsDecoded() throws IOException {
         final Color color = new Color(1, 2, 3);
         final byte[] binary = new byte[] { 0x43, 0x02, 0x01, 0x02, 0x03};
-        final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
-        final SWFDecoder decoder = new SWFDecoder(stream);
-        final Context context = new Context();
 
-        assertEquals(NOT_DECODED, color,
-                new Background(decoder, context).getColor());
+        Background object = (Background) decodeMovieTag(binary);
+        assertEquals(NOT_DECODED, color, object.getColor());
    }
 
     @Test
@@ -88,11 +71,8 @@ public final class BackgroundCodingTest {
         final Color color = new Color(1, 2, 3);
         final byte[] binary = new byte[] {0x7F, 0x02, 0x03, 0x00, 0x00, 0x00,
                 0x01, 0x02, 0x03};
-        final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
-        final SWFDecoder decoder = new SWFDecoder(stream);
-        final Context context = new Context();
 
-        assertEquals(NOT_DECODED, color,
-                new Background(decoder, context).getColor());
+        Background object = (Background) decodeMovieTag(binary);
+        assertEquals(NOT_DECODED, color, object.getColor());
    }
 }

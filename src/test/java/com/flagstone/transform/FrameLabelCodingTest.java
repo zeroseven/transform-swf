@@ -33,28 +33,22 @@ package com.flagstone.transform;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import org.junit.Test;
 
-import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.SWFDecoder;
-import com.flagstone.transform.coder.SWFEncoder;
+public final class FrameLabelCodingTest extends AbstractCodingTest {
 
-public final class FrameLabelCodingTest {
+    @Test
+    public void checkFrameLabelLengthForEncoding() throws IOException {
+        final FrameLabel object = new FrameLabel("Frame");
+        object.setAnchor(true);
 
-    private static final String CALCULATED_LENGTH =
-        "Incorrect calculated length";
-    private static final String NOT_FULLY_ENCODED =
-        "Data was not fully encoded";
-    private static final String NOT_FULLY_DECODED =
-        "Data was not fully decoded";
-    private static final String NOT_ENCODED =
-        "Object was not encoded properly";
-    private static final String NOT_DECODED =
-        "Object was not decoded properly";
+        final byte[] binary = new byte[] {(byte) 0xC7, 0x0A, 0x46, 0x72, 0x61,
+                0x6D, 0x65, 0x00, 0x01 };
+
+        assertEquals(CALCULATED_LENGTH, binary.length, prepare(object));
+    }
 
     @Test
     public void checkFrameLabelIsEncoded() throws IOException {
@@ -64,17 +58,7 @@ public final class FrameLabelCodingTest {
         final byte[] binary = new byte[] {(byte) 0xC7, 0x0A, 0x46, 0x72, 0x61,
                 0x6D, 0x65, 0x00, 0x01 };
 
-        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        final SWFEncoder encoder = new SWFEncoder(stream);
-        final Context context = new Context();
-
-        final int length = object.prepareToEncode(context);
-        object.encode(encoder, context);
-        encoder.flush();
-
-        assertEquals(CALCULATED_LENGTH, binary.length, length);
-
-        assertArrayEquals(NOT_ENCODED, binary, stream.toByteArray());
+        assertArrayEquals(NOT_ENCODED, binary, encode(object));
     }
 
     @Test
@@ -82,22 +66,16 @@ public final class FrameLabelCodingTest {
         final byte[] binary = new byte[] {(byte) 0xC7, 0x0A, 0x46, 0x72, 0x61,
                 0x6D, 0x65, 0x00, 0x01 };
 
-        final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
-        final SWFDecoder decoder = new SWFDecoder(stream);
-        final FrameLabel object = new FrameLabel(decoder);
-
+        FrameLabel object = (FrameLabel) decodeMovieTag(binary);
         assertEquals(NOT_DECODED, "Frame", object.getLabel());
-   }
+    }
 
     @Test
     public void checkExtendedFrameLabelIsDecoded() throws IOException {
         final byte[] binary = new byte[] {(byte) 0xFF, 0x0A, 0x07, 0x00, 0x00,
                 0x00, 0x46, 0x72, 0x61, 0x6D, 0x65, 0x00, 0x01 };
 
-        final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
-        final SWFDecoder decoder = new SWFDecoder(stream);
-        final FrameLabel object = new FrameLabel(decoder);
-
+        FrameLabel object = (FrameLabel) decodeMovieTag(binary);
         assertEquals(NOT_DECODED, "Frame", object.getLabel());
    }
 }

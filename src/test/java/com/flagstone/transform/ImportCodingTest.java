@@ -33,30 +33,28 @@ package com.flagstone.transform;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.junit.Test;
 
-import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.SWFDecoder;
-import com.flagstone.transform.coder.SWFEncoder;
+public final class ImportCodingTest extends AbstractCodingTest {
 
-public final class ImportCodingTest {
+    @Test
+    public void checkImportLengthForEncoding() throws IOException {
+        final Map<Integer, String>map = new LinkedHashMap<Integer, String>();
+        map.put(1, "A");
+        map.put(2, "B");
+        map.put(3, "C");
 
-    private static final String CALCULATED_LENGTH =
-        "Incorrect calculated length";
-    private static final String NOT_FULLY_ENCODED =
-        "Data was not fully encoded";
-    private static final String NOT_FULLY_DECODED =
-        "Data was not fully decoded";
-    private static final String NOT_ENCODED =
-        "Object was not encoded properly";
-    private static final String NOT_DECODED =
-        "Object was not decoded properly";
+        final Import object = new Import("ABC", map);
+        final byte[] binary = new byte[] {0x52, 0x0E, 0x41, 0x42, 0x43, 0x00,
+                0x03, 0x00, 0x01, 0x00, 0x41, 0x00, 0x02, 0x00, 0x42,
+                0x00, 0x03, 0x00, 0x43, 0x00};
+
+        assertEquals(CALCULATED_LENGTH, binary.length, prepare(object));
+    }
 
     @Test
     public void checkImportIsEncoded() throws IOException {
@@ -70,17 +68,7 @@ public final class ImportCodingTest {
                 0x03, 0x00, 0x01, 0x00, 0x41, 0x00, 0x02, 0x00, 0x42,
                 0x00, 0x03, 0x00, 0x43, 0x00};
 
-        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        final SWFEncoder encoder = new SWFEncoder(stream);
-        final Context context = new Context();
-
-        final int length = object.prepareToEncode(context);
-        object.encode(encoder, context);
-        encoder.flush();
-
-        assertEquals(CALCULATED_LENGTH, binary.length, length);
-
-        assertArrayEquals(NOT_ENCODED, binary, stream.toByteArray());
+        assertArrayEquals(NOT_ENCODED, binary, encode(object));
     }
 
     @Test
@@ -94,10 +82,7 @@ public final class ImportCodingTest {
                 0x03, 0x00, 0x01, 0x00, 0x41, 0x00, 0x02, 0x00, 0x42,
                 0x00, 0x03, 0x00, 0x43, 0x00};
 
-        final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
-        final SWFDecoder decoder = new SWFDecoder(stream);
-        final Import object = new Import(decoder);
-
+        Import object = (Import) decodeMovieTag(binary);
         assertEquals(NOT_DECODED, "ABC", object.getUrl());
         assertEquals(NOT_DECODED, map, object.getObjects());
    }
@@ -113,10 +98,7 @@ public final class ImportCodingTest {
                 0x41, 0x42, 0x43, 0x00, 0x03, 0x00, 0x01, 0x00, 0x41, 0x00,
                 0x02, 0x00, 0x42, 0x00, 0x03, 0x00, 0x43, 0x00};
 
-        final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
-        final SWFDecoder decoder = new SWFDecoder(stream);
-        final Import object = new Import(decoder);
-
+        Import object = (Import) decodeMovieTag(binary);
         assertEquals(NOT_DECODED, "ABC", object.getUrl());
         assertEquals(NOT_DECODED, map, object.getObjects());
    }

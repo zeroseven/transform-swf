@@ -33,63 +33,42 @@ package com.flagstone.transform;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import org.junit.Test;
 
-import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.SWFDecoder;
-import com.flagstone.transform.coder.SWFEncoder;
+public final class FreeCodingTest extends AbstractCodingTest {
 
-public final class FreeCodingTest {
+    @Test
+    public void checkFreeLengthForEncoding() throws IOException {
+        final Free object = new Free(1);
+        final byte[] binary = new byte[] {(byte) 0xC2, 0x00, 0x01, 0x00 };
 
-    private static final String CALCULATED_LENGTH =
-        "Incorrect calculated length";
-    private static final String NOT_ENCODED =
-        "Object was not encoded properly";
-    private static final String NOT_DECODED =
-        "Object was not decoded properly";
+        assertEquals(CALCULATED_LENGTH, binary.length, prepare(object));
+    }
 
     @Test
     public void checkFreeIsEncoded() throws IOException {
         final Free object = new Free(1);
         final byte[] binary = new byte[] {(byte) 0xC2, 0x00, 0x01, 0x00 };
 
-        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        final SWFEncoder encoder = new SWFEncoder(stream);
-        final Context context = new Context();
-
-        final int length = object.prepareToEncode(context);
-        object.encode(encoder, context);
-        encoder.flush();
-
-        assertEquals(CALCULATED_LENGTH, binary.length, length);
-
-        assertArrayEquals(NOT_ENCODED, binary, stream.toByteArray());
+        assertArrayEquals(NOT_ENCODED, binary, encode(object));
     }
 
     @Test
     public void checkFreeIsDecoded() throws IOException {
         final byte[] binary = new byte[] {(byte) 0xC2, 0x00, 0x01, 0x00 };
 
-        final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
-        final SWFDecoder decoder = new SWFDecoder(stream);
-        final Free object = new Free(decoder);
-
-        assertEquals(NOT_DECODED, 1, object.getIdentifier());
-   }
+       Free object = (Free) decodeMovieTag(binary);
+       assertEquals(NOT_DECODED, 1, object.getIdentifier());
+    }
 
     @Test
     public void checkExtendedFreeIsDecoded() throws IOException {
         final byte[] binary = new byte[] {(byte) 0xFF, 0x00, 0x02, 0x00, 0x00,
                 0x00, 0x01, 0x00 };
 
-        final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
-        final SWFDecoder decoder = new SWFDecoder(stream);
-        final Free object = new Free(decoder);
-
+        Free object = (Free) decodeMovieTag(binary);
         assertEquals(NOT_DECODED, 1, object.getIdentifier());
    }
 }

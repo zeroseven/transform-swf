@@ -33,37 +33,41 @@ package com.flagstone.transform;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import org.junit.Test;
 
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.SWFEncoder;
 
-public final class ShowFrameCodingTest {
+public final class ShowFrameCodingTest extends AbstractCodingTest {
 
-    private static final String CALCULATED_LENGTH =
-        "Incorrect calculated length";
-    private static final String NOT_ENCODED =
-        "Object was not encoded properly";
+    @Test
+    public void checkShowFrameLengthForEncoding() throws IOException {
+        final ShowFrame object = ShowFrame.getInstance();
+        final byte[] binary = new byte[] {0x40, 0x00 };
+
+        assertEquals(CALCULATED_LENGTH, binary.length, prepare(object));
+    }
 
     @Test
     public void checkShowFrameIsEncoded() throws IOException {
         final ShowFrame object = ShowFrame.getInstance();
         final byte[] binary = new byte[] {0x40, 0x00 };
 
-        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        final SWFEncoder encoder = new SWFEncoder(stream);
         final Context context = new Context();
         context.put(Context.FRAMES, 0);
 
-        final int length = object.prepareToEncode(context);
-        object.encode(encoder, context);
-        encoder.flush();
+        assertArrayEquals(NOT_ENCODED, binary, encode(object, context));
+    }
 
-        assertEquals(CALCULATED_LENGTH, binary.length, length);
+    @Test
+    public void checkShowFrameIncrements() throws IOException {
+        final ShowFrame object = ShowFrame.getInstance();
+        final Context context = new Context();
+        context.put(Context.FRAMES, 0);
 
-        assertArrayEquals(NOT_ENCODED, binary, stream.toByteArray());
+        encode(object, context);
+
+        assertEquals(NOT_ENCODED, 1, context.get(Context.FRAMES).intValue());
     }
 }

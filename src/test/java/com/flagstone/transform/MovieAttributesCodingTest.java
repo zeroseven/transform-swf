@@ -30,93 +30,48 @@
  */
 package com.flagstone.transform;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+
 import java.io.IOException;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
+public final class MovieAttributesCodingTest extends AbstractCodingTest {
 
-public final class MovieAttributesCodingTest {
+    @Test
+    public void checkAllMovieAttributesLengthForEncoding() throws IOException {
+        final MovieAttributes object = new MovieAttributes();
+        object.setUseNetwork(true);
 
-    private static final String CALCULATED_LENGTH =
-        "Incorrect calculated length";
-    private static final String NOT_FULLY_ENCODED =
-        "Data was not fully encoded";
-    private static final String NOT_FULLY_DECODED =
-        "Data was not fully decoded";
-    private static final String NOT_ENCODED =
-        "Object was not encoded properly";
-    private static final String NOT_DECODED =
-        "Object was not decoded properly";
+        final byte[] binary = new byte[] {0x44, 0x11, 0x19, 0x00, 0x00, 0x00};
 
-    @Test @Ignore
-    public void checkAllMovieAttributesAreEncoded() throws IOException {
-//        final Set<MovieAttribute>set = EnumSet.noneOf(MovieAttribute.class);
-//        final MovieAttributes object = new MovieAttributes(set);
-//        final byte[] binary = new byte[] {0x44, 0x11, 0x19, 0x00, 0x00, 0x00};
-//
-//        final SWFEncoder encoder = new SWFEncoder(binary.length);
-//        final Context context = new Context();
-//
-//        final int length = object.prepareToEncode(context);
-//        object.encode(encoder, context);
-//
-//        assertEquals(CALCULATED_LENGTH, binary.length, length);
-//
-//        assertArrayEquals(NOT_ENCODED, binary, stream.toByteArray());
+        assertEquals(CALCULATED_LENGTH, binary.length, prepare(object));
     }
-//
-//    @Test
-//    public void checkAllAttributesAreDecoded() throws IOException {
-//        final Set<MovieAttribute>set = EnumSet.allOf(MovieAttribute.class);
-//        final byte[] binary = new byte[] {0x44, 0x11, 0x19, 0x00, 0x00, 0x00};
-//
-//        final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
-//        final SWFDecoder decoder = new SWFDecoder(stream);
-//        final MovieAttributes object = new MovieAttributes(decoder);
-//
-//        assertEquals(NOT_DECODED, set, object.getAttributes());
-//   }
-//
-//    @Test
-//    public void checkExtendedAllAttributesAreDecoded() throws IOException {
-//        final Set<MovieAttribute>set = EnumSet.allOf(MovieAttribute.class);
-//        final byte[] binary = new byte[] {0x7F, 0x11, 0x04, 0x00, 0x00, 0x00,
-//                0x19, 0x00, 0x00, 0x00 };
-//
-//        final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
-//        final SWFDecoder decoder = new SWFDecoder(stream);
-//        final MovieAttributes object = new MovieAttributes(decoder);
-//
-//        assertEquals(NOT_DECODED, set, object.getAttributes());
-//   }
-//
-//    @Test
-//    public void checkNoMovieAttributesAreEncoded() throws IOException {
-//        final Set<MovieAttribute>set = EnumSet.noneOf(MovieAttribute.class);
-//        final MovieAttributes object = new MovieAttributes(set);
-//        final byte[] binary = new byte[] {0x44, 0x11, 0x00, 0x00, 0x00, 0x00};
-//
-//        final SWFEncoder encoder = new SWFEncoder(binary.length);
-//        final Context context = new Context();
-//
-//        final int length = object.prepareToEncode(context);
-//        object.encode(encoder, context);
-//
-//        assertEquals(CALCULATED_LENGTH, binary.length, length);
-//
-//        assertArrayEquals(NOT_ENCODED, binary, stream.toByteArray());
-//    }
-//
-//    @Test
-//    public void checkNoAttributesAreDecoded() throws IOException {
-//        final Set<MovieAttribute>set = EnumSet.noneOf(MovieAttribute.class);
-//        final byte[] binary = new byte[] {0x44, 0x11, 0x00, 0x00, 0x00, 0x00};
-//
-//        final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
-//        final SWFDecoder decoder = new SWFDecoder(stream);
-//        final MovieAttributes object = new MovieAttributes(decoder);
-//
-//        assertEquals(NOT_DECODED, set, object.getAttributes());
-//   }
+
+    @Test
+    public void checkAllMovieAttributesAreEncoded() throws IOException {
+        final MovieAttributes object = new MovieAttributes();
+        object.setUseNetwork(true);
+        final byte[] binary = new byte[] {0x44, 0x11, 0x01, 0x00, 0x00, 0x00};
+
+        assertArrayEquals(NOT_ENCODED, binary, encode(object));
+    }
+
+    @Test
+    public void checkAllAttributesAreDecoded() throws IOException {
+        final byte[] binary = new byte[] {0x44, 0x11, 0x19, 0x00, 0x00, 0x00};
+
+        MovieAttributes object = (MovieAttributes) decodeMovieTag(binary);
+        assertEquals(NOT_DECODED, true, object.useNetwork());
+   }
+
+    @Test
+    public void checkExtendedAllAttributesAreDecoded() throws IOException {
+        final byte[] binary = new byte[] {0x7F, 0x11, 0x04, 0x00, 0x00, 0x00,
+                0x19, 0x00, 0x00, 0x00 };
+
+        MovieAttributes object = (MovieAttributes) decodeMovieTag(binary);
+        assertEquals(NOT_DECODED, true, object.useNetwork());
+   }
 }

@@ -33,29 +33,23 @@ package com.flagstone.transform;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import org.junit.Test;
 
-import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.SWFDecoder;
-import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.Bounds;
 
-public final class ScalingGridCodingTest {
+public final class ScalingGridCodingTest extends AbstractCodingTest {
 
-    private static final String CALCULATED_LENGTH =
-        "Incorrect calculated length";
-    private static final String NOT_FULLY_ENCODED =
-        "Data was not fully encoded";
-    private static final String NOT_FULLY_DECODED =
-        "Data was not fully decoded";
-    private static final String NOT_ENCODED =
-        "Object was not encoded properly";
-    private static final String NOT_DECODED =
-        "Object was not decoded properly";
+    @Test
+    public void checkScalingGridLengthForEncoding() throws IOException {
+        final Bounds bounds = new Bounds(1, 2, 3, 4);
+        final ScalingGrid object = new ScalingGrid(1, bounds);
+        final byte[] binary = new byte[] {(byte) 0x85, 0x13, 0x01, 0x00, 0x20,
+                    (byte) 0x99, 0x20};
+
+        assertEquals(CALCULATED_LENGTH, binary.length, prepare(object));
+    }
 
     @Test
     public void checkScalingGridIsEncoded() throws IOException {
@@ -64,17 +58,7 @@ public final class ScalingGridCodingTest {
         final byte[] binary = new byte[] {(byte) 0x85, 0x13, 0x01, 0x00, 0x20,
                     (byte) 0x99, 0x20};
 
-        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        final SWFEncoder encoder = new SWFEncoder(stream);
-        final Context context = new Context();
-
-        final int length = object.prepareToEncode(context);
-        object.encode(encoder, context);
-        encoder.flush();
-
-        assertEquals(CALCULATED_LENGTH, binary.length, length);
-
-        assertArrayEquals(NOT_ENCODED, binary, stream.toByteArray());
+        assertArrayEquals(NOT_ENCODED, binary, encode(object));
     }
 
     @Test
@@ -83,10 +67,7 @@ public final class ScalingGridCodingTest {
         final byte[] binary = new byte[] {(byte) 0x85, 0x13, 0x01, 0x00, 0x20,
                 (byte) 0x99, 0x20};
 
-        final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
-        final SWFDecoder decoder = new SWFDecoder(stream);
-        final ScalingGrid object = new ScalingGrid(decoder);
-
+        ScalingGrid object = (ScalingGrid) decodeMovieTag(binary);
         assertEquals(NOT_DECODED, 1, object.getIdentifier());
         assertEquals(NOT_DECODED, bounds, object.getBounds());
    }
@@ -97,10 +78,7 @@ public final class ScalingGridCodingTest {
         final byte[] binary = new byte[] {(byte) 0xBF, 0x13, 0x05, 0x00, 0x00,
                 0x00, 0x01, 0x00, 0x20, (byte) 0x99, 0x20};
 
-        final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
-        final SWFDecoder decoder = new SWFDecoder(stream);
-        final ScalingGrid object = new ScalingGrid(decoder);
-
+        ScalingGrid object = (ScalingGrid) decodeMovieTag(binary);
         assertEquals(NOT_DECODED, 1, object.getIdentifier());
         assertEquals(NOT_DECODED, bounds, object.getBounds());
    }

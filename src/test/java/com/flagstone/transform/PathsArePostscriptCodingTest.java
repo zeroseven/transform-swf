@@ -33,37 +33,27 @@ package com.flagstone.transform;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import org.junit.Test;
 
-import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.shape.PathsArePostscript;
 
-public final class PathsArePostscriptCodingTest {
+public final class PathsArePostscriptCodingTest extends AbstractCodingTest {
 
-    private static final String CALCULATED_LENGTH =
-        "Incorrect calculated length";
-    private static final String NOT_ENCODED =
-        "Object was not encoded properly";
+    @Test
+    public void checkPathsArePostscriptLengthForEncoding() throws IOException {
+        final PathsArePostscript object = PathsArePostscript.getInstance();
+        final byte[] binary = new byte[] {0x40, 0x06 };
+
+        assertEquals(CALCULATED_LENGTH, binary.length, prepare(object));
+    }
 
     @Test
     public void checkPathsArePostscriptIsEncoded() throws IOException {
         final PathsArePostscript object = PathsArePostscript.getInstance();
         final byte[] binary = new byte[] {0x40, 0x06 };
 
-        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        final SWFEncoder encoder = new SWFEncoder(stream);
-        final Context context = new Context();
-
-        final int length = object.prepareToEncode(context);
-        object.encode(encoder, context);
-        encoder.flush();
-
-        assertEquals(CALCULATED_LENGTH, binary.length, length);
-
-        assertArrayEquals(NOT_ENCODED, binary, stream.toByteArray());
+        assertArrayEquals(NOT_ENCODED, binary, encode(object));
     }
 }

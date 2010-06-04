@@ -33,69 +33,44 @@ package com.flagstone.transform;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import org.junit.Test;
 
-import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.SWFDecoder;
-import com.flagstone.transform.coder.SWFEncoder;
+public final class RemoveCodingTest extends AbstractCodingTest {
 
-public final class RemoveCodingTest {
+    @Test
+    public void checkRemoveLengthForEncoding() throws IOException {
+        final Remove object = new Remove(1, 2);
+        final byte[] binary = new byte[] {0x44, 0x01, 0x01, 0x00, 0x02, 0x00};
 
-    private static final String CALCULATED_LENGTH =
-        "Incorrect calculated length";
-    private static final String NOT_FULLY_ENCODED =
-        "Data was not fully encoded";
-    private static final String NOT_FULLY_DECODED =
-        "Data was not fully decoded";
-    private static final String NOT_ENCODED =
-        "Object was not encoded properly";
-    private static final String NOT_DECODED =
-        "Object was not decoded properly";
+        assertEquals(CALCULATED_LENGTH, binary.length, prepare(object));
+    }
 
     @Test
     public void checkRemoveIsEncoded() throws IOException {
         final Remove object = new Remove(1, 2);
         final byte[] binary = new byte[] {0x44, 0x01, 0x01, 0x00, 0x02, 0x00};
 
-        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        final SWFEncoder encoder = new SWFEncoder(stream);
-        final Context context = new Context();
-
-        final int length = object.prepareToEncode(context);
-        object.encode(encoder, context);
-        encoder.flush();
-
-        assertEquals(CALCULATED_LENGTH, binary.length, length);
-
-        assertArrayEquals(NOT_ENCODED, binary, stream.toByteArray());
+        assertArrayEquals(NOT_ENCODED, binary, encode(object));
     }
 
     @Test
     public void checkRemoveIsDecoded() throws IOException {
         final byte[] binary = new byte[] {0x44, 0x01, 0x01, 0x00, 0x02, 0x00};
 
-        final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
-        final SWFDecoder decoder = new SWFDecoder(stream);
-        final Remove object = new Remove(decoder);
-
+        Remove object = (Remove) decodeMovieTag(binary);
         assertEquals(NOT_DECODED, 1, object.getIdentifier());
         assertEquals(NOT_DECODED, 2, object.getLayer());
-   }
+    }
 
     @Test
     public void checkExtendedRemoveIsDecoded() throws IOException {
         final byte[] binary = new byte[] {0x7F, 0x01, 0x04, 0x00, 0x00, 0x00,
                 0x01, 0x00, 0x02, 0x00};
 
-        final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
-        final SWFDecoder decoder = new SWFDecoder(stream);
-        final Remove object = new Remove(decoder);
-
+        Remove object = (Remove) decodeMovieTag(binary);
         assertEquals(NOT_DECODED, 1, object.getIdentifier());
         assertEquals(NOT_DECODED, 2, object.getLayer());
-   }
+    }
 }

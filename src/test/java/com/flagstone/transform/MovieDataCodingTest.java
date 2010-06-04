@@ -33,20 +33,20 @@ package com.flagstone.transform;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import org.junit.Test;
 
-import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.SWFEncoder;
+public final class MovieDataCodingTest extends AbstractCodingTest {
 
-public final class MovieDataCodingTest {
+    @Test
+    public void checkMovieDataLengthForEncoding() throws IOException {
+        final byte[] data = new byte[] {0x40, 0x00, 0x40, 0x00, 0x40, 0x00};
+        final MovieData object = new MovieData(data);
+        final byte[] binary = new byte[] {0x40, 0x00, 0x40, 0x00, 0x40, 0x00};
 
-    private static final String CALCULATED_LENGTH =
-        "Incorrect calculated length";
-    private static final String NOT_ENCODED =
-        "Object was not encoded properly";
+        assertEquals(CALCULATED_LENGTH, binary.length, prepare(object));
+    }
 
     @Test
     public void checkMovieDataIsEncoded() throws IOException {
@@ -54,16 +54,6 @@ public final class MovieDataCodingTest {
         final MovieData object = new MovieData(data);
         final byte[] binary = new byte[] {0x40, 0x00, 0x40, 0x00, 0x40, 0x00};
 
-        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        final SWFEncoder encoder = new SWFEncoder(stream);
-        final Context context = new Context();
-
-        final int length = object.prepareToEncode(context);
-        object.encode(encoder, context);
-        encoder.flush();
-
-        assertEquals(CALCULATED_LENGTH, binary.length, length);
-
-        assertArrayEquals(NOT_ENCODED, binary, stream.toByteArray());
+        assertArrayEquals(NOT_ENCODED, binary, encode(object));
     }
 }

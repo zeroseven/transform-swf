@@ -39,11 +39,12 @@ import java.io.IOException;
 
 import org.junit.Test;
 
+import com.flagstone.transform.AbstractCodingTest;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-public final class ColorTransformCodingTest {
+public final class ColorTransformCodingTest extends AbstractCodingTest {
 
     private static final String CALCULATED_LENGTH =
         "Incorrect calculated length";
