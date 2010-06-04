@@ -259,6 +259,7 @@ public final class Movie {
                 context.put(Context.COMPRESSED, 1);
             } else if (Arrays.equals(FWS, signature)) {
                 streamIn = stream;
+                context.put(Context.COMPRESSED, 0);
             } else {
                 throw new DataFormatException();
             }
