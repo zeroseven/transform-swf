@@ -38,24 +38,10 @@ package com.flagstone.transform.util.image;
 public enum ImageEncoding {
     /** Windows Bitmap images. */
     BMP("image/bmp", new BMPDecoder()),
-    /** Graphics Interchange Format images. */
-    GIF("image/gif", new BufferedImageDecoder()),
-    /** Interchange File Format images. */
-    IFF("image/iff", new BufferedImageDecoder()),
     /** Joint Photographic Experts Group format images. */
     JPEG("image/jpeg", new JPGDecoder()),
-    /** Portable Bitmap images. */
-    PBM("image/x-portable-bitmap", new BufferedImageDecoder()),
-    /** Pacific Exchange (ZSoft) images. */
-    PCX("image/pcx", new BufferedImageDecoder()),
-    /** Portable Gray Map images. */
-    PGM("image/x-portable-pixmap", new BufferedImageDecoder()),
     /** Portable Network Graphics images. */
-    PNG("image/png", new PNGDecoder()),
-    /** Photoshop Document images. */
-    PSD("image/psd", new BufferedImageDecoder()),
-    /** Raster images. */
-    RAS("image/ras", new BufferedImageDecoder());
+    PNG("image/png", new PNGDecoder());
 
     /** The MIME type used to identify the image format. */
     private final String mimeType;

@@ -297,7 +297,7 @@ public final class ImageInfo {
             final int b1 = read() & 0xff;
             final int b2 = read() & 0xff;
             if ((b1 == 0x47) && (b2 == 0x49)) {
-                return checkGif();
+                return false; //checkGif();
             } else if ((b1 == 0x89) && (b2 == 0x50)) {
                 return checkPng();
             } else if ((b1 == 0xff) && (b2 == 0xd8)) {
@@ -305,15 +305,15 @@ public final class ImageInfo {
             } else if ((b1 == 0x42) && (b2 == 0x4d)) {
                 return checkBmp();
             } else if ((b1 == 0x0a) && (b2 < 0x06)) {
-                return checkPcx();
+                return false; //checkPcx();
             } else if ((b1 == 0x46) && (b2 == 0x4f)) {
-                return checkIff();
+                return false; //checkIff();
             } else if ((b1 == 0x59) && (b2 == 0xa6)) {
-                return checkRas();
+                return false; //checkRas();
             } else if ((b1 == 0x50) && (b2 >= 0x31) && (b2 <= 0x36)) {
-                return checkPnm(b2 - '0');
+                return false; //checkPnm(b2 - '0');
             } else if ((b1 == 0x38) && (b2 == 0x42)) {
-                return checkPsd();
+                return false; //checkPsd();
             } else {
                 return false;
             }
@@ -351,150 +351,150 @@ public final class ImageInfo {
         return true;
     }
 
-    private boolean checkGif() throws IOException {
-        final byte[] gifmagic87a = { 0x46, 0x38, 0x37, 0x61 };
-        final byte[] gifmagic89a = { 0x46, 0x38, 0x39, 0x61 };
-        final byte[] a = new byte[11]; // 4 from the GIF signature + 7 from the
-                                        // global
-        // header
-        if (read(a) != 11) {
-            return false;
-        }
-        if ((!equals(a, 0, gifmagic89a, 0, 4))
-                && (!equals(a, 0, gifmagic87a, 0, 4))) {
-            return false;
-        }
-        format = FORMAT_GIF;
-        imageFormat = ImageEncoding.GIF;
-        width = getShortLittleEndian(a, 4);
-        height = getShortLittleEndian(a, 6);
-        int flags = a[8] & 0xff;
-        bitsPerPixel = ((flags >> 4) & 0x07) + 1;
-        // progressive = (flags & 0x02) != 0;
-        if (!determineNumberOfImages) {
-            return true;
-        }
-        // skip global color palette
-        if ((flags & 0x80) != 0) {
-            final int tableSize = (1 << ((flags & 7) + 1)) * 3;
-            skip(tableSize);
-        }
-        numberOfImages = 0;
-        int blockType;
-        int n;
-        do {
-            blockType = read();
-            switch (blockType) {
-            case (0x2c): // image separator
-                if (read(a, 0, 9) != 9) {
-                    return false;
-                }
-                flags = a[8] & 0xff;
-                progressive = (flags & 0x40) != 0;
-                /*
-                 * int locWidth = getShortLittleEndian(a, 4); int locHeight =
-                 * getShortLittleEndian(a, 6); System.out.println("LOCAL: " +
-                 * locWidth + " x " + locHeight);
-                 */
-                final int localBitsPerPixel = (flags & 0x07) + 1;
-                if (localBitsPerPixel > bitsPerPixel) {
-                    bitsPerPixel = localBitsPerPixel;
-                }
-                if ((flags & 0x80) != 0) {
-                    skip((1 << localBitsPerPixel) * 3);
-                }
-                skip(1); // initial code length
-                do {
-                    n = read();
-                    if (n > 0) {
-                        skip(n);
-                    } else if (n == -1) {
-                        return false;
-                    }
-                } while (n > 0);
-                numberOfImages++;
-                break;
-            case (0x21): // extension
-                final int extensionType = read();
-                if (collectComments && (extensionType == 0xfe)) {
-                    final StringBuilder sb = new StringBuilder();
-                    do {
-                        n = read();
-                        if (n == -1) {
-                            return false;
-                        }
-                        if (n > 0) {
-                            for (int i = 0; i < n; i++) {
-                                final int ch = read();
-                                if (ch == -1) {
-                                    return false;
-                                }
-                                sb.append((char) ch);
-                            }
-                        }
-                    } while (n > 0);
-                } else {
-                    do {
-                        n = read();
-                        if (n > 0) {
-                            skip(n);
-                        } else if (n == -1) {
-                            return false;
-                        }
-                    } while (n > 0);
-                }
-                break;
-            case (0x3b): // end of file
-                break;
-            default:
-                return false;
-            }
-        } while (blockType != 0x3b);
-        return true;
-    }
+//    private boolean checkGif() throws IOException {
+//        final byte[] gifmagic87a = { 0x46, 0x38, 0x37, 0x61 };
+//        final byte[] gifmagic89a = { 0x46, 0x38, 0x39, 0x61 };
+//        final byte[] a = new byte[11]; // 4 from the GIF signature + 7 from the
+//                                        // global
+//        // header
+//        if (read(a) != 11) {
+//            return false;
+//        }
+//        if ((!equals(a, 0, gifmagic89a, 0, 4))
+//                && (!equals(a, 0, gifmagic87a, 0, 4))) {
+//            return false;
+//        }
+//        format = FORMAT_GIF;
+//        imageFormat = ImageEncoding.GIF;
+//        width = getShortLittleEndian(a, 4);
+//        height = getShortLittleEndian(a, 6);
+//        int flags = a[8] & 0xff;
+//        bitsPerPixel = ((flags >> 4) & 0x07) + 1;
+//        // progressive = (flags & 0x02) != 0;
+//        if (!determineNumberOfImages) {
+//            return true;
+//        }
+//        // skip global color palette
+//        if ((flags & 0x80) != 0) {
+//            final int tableSize = (1 << ((flags & 7) + 1)) * 3;
+//            skip(tableSize);
+//        }
+//        numberOfImages = 0;
+//        int blockType;
+//        int n;
+//        do {
+//            blockType = read();
+//            switch (blockType) {
+//            case (0x2c): // image separator
+//                if (read(a, 0, 9) != 9) {
+//                    return false;
+//                }
+//                flags = a[8] & 0xff;
+//                progressive = (flags & 0x40) != 0;
+//                /*
+//                 * int locWidth = getShortLittleEndian(a, 4); int locHeight =
+//                 * getShortLittleEndian(a, 6); System.out.println("LOCAL: " +
+//                 * locWidth + " x " + locHeight);
+//                 */
+//                final int localBitsPerPixel = (flags & 0x07) + 1;
+//                if (localBitsPerPixel > bitsPerPixel) {
+//                    bitsPerPixel = localBitsPerPixel;
+//                }
+//                if ((flags & 0x80) != 0) {
+//                    skip((1 << localBitsPerPixel) * 3);
+//                }
+//                skip(1); // initial code length
+//                do {
+//                    n = read();
+//                    if (n > 0) {
+//                        skip(n);
+//                    } else if (n == -1) {
+//                        return false;
+//                    }
+//                } while (n > 0);
+//                numberOfImages++;
+//                break;
+//            case (0x21): // extension
+//                final int extensionType = read();
+//                if (collectComments && (extensionType == 0xfe)) {
+//                    final StringBuilder sb = new StringBuilder();
+//                    do {
+//                        n = read();
+//                        if (n == -1) {
+//                            return false;
+//                        }
+//                        if (n > 0) {
+//                            for (int i = 0; i < n; i++) {
+//                                final int ch = read();
+//                                if (ch == -1) {
+//                                    return false;
+//                                }
+//                                sb.append((char) ch);
+//                            }
+//                        }
+//                    } while (n > 0);
+//                } else {
+//                    do {
+//                        n = read();
+//                        if (n > 0) {
+//                            skip(n);
+//                        } else if (n == -1) {
+//                            return false;
+//                        }
+//                    } while (n > 0);
+//                }
+//                break;
+//            case (0x3b): // end of file
+//                break;
+//            default:
+//                return false;
+//            }
+//        } while (blockType != 0x3b);
+//        return true;
+//    }
 
-    private boolean checkIff() throws IOException {
-        final byte[] a = new byte[10];
-        // read remaining 2 bytes of file id, 4 bytes file size
-        // and 4 bytes IFF subformat
-        if (read(a, 0, 10) != 10) {
-            return false;
-        }
-        final byte[] iffrm = { 0x52, 0x4d };
-        if (!equals(a, 0, iffrm, 0, 2)) {
-            return false;
-        }
-        final int type = getIntBigEndian(a, 6);
-        if ((type != 0x494c424d) && // type must be ILBM...
-                (type != 0x50424d20)) { // ...or PBM
-            return false;
-        }
-        // loop chunks to find BMHD chunk
-        do {
-            if (read(a, 0, 8) != 8) {
-                return false;
-            }
-            final int chunkId = getIntBigEndian(a, 0);
-            int size = getIntBigEndian(a, 4);
-            if ((size & 1) == 1) {
-                size++;
-            }
-            if (chunkId == 0x424d4844) { // BMHD chunk
-                if (read(a, 0, 9) != 9) {
-                    return false;
-                }
-                format = FORMAT_IFF;
-                imageFormat = ImageEncoding.IFF;
-                width = getShortBigEndian(a, 0);
-                height = getShortBigEndian(a, 2);
-                bitsPerPixel = a[8] & 0xff;
-                return ((width > 0) && (height > 0)
-                        && (bitsPerPixel > 0) && (bitsPerPixel < 33));
-            } else {
-                skip(size);
-            }
-        } while (true);
-    }
+//    private boolean checkIff() throws IOException {
+//        final byte[] a = new byte[10];
+//        // read remaining 2 bytes of file id, 4 bytes file size
+//        // and 4 bytes IFF subformat
+//        if (read(a, 0, 10) != 10) {
+//            return false;
+//        }
+//        final byte[] iffrm = { 0x52, 0x4d };
+//        if (!equals(a, 0, iffrm, 0, 2)) {
+//            return false;
+//        }
+//        final int type = getIntBigEndian(a, 6);
+//        if ((type != 0x494c424d) && // type must be ILBM...
+//                (type != 0x50424d20)) { // ...or PBM
+//            return false;
+//        }
+//        // loop chunks to find BMHD chunk
+//        do {
+//            if (read(a, 0, 8) != 8) {
+//                return false;
+//            }
+//            final int chunkId = getIntBigEndian(a, 0);
+//            int size = getIntBigEndian(a, 4);
+//            if ((size & 1) == 1) {
+//                size++;
+//            }
+//            if (chunkId == 0x424d4844) { // BMHD chunk
+//                if (read(a, 0, 9) != 9) {
+//                    return false;
+//                }
+//                format = FORMAT_IFF;
+//                imageFormat = ImageEncoding.IFF;
+//                width = getShortBigEndian(a, 0);
+//                height = getShortBigEndian(a, 2);
+//                bitsPerPixel = a[8] & 0xff;
+//                return ((width > 0) && (height > 0)
+//                        && (bitsPerPixel > 0) && (bitsPerPixel < 33));
+//            } else {
+//                skip(size);
+//            }
+//        } while (true);
+//    }
 
     private boolean checkJpeg() throws IOException {
         final byte[] data = new byte[12];
@@ -559,43 +559,43 @@ public final class ImageInfo {
         }
     }
 
-    private boolean checkPcx() throws IOException {
-        final byte[] a = new byte[64];
-        if (read(a) != a.length) {
-            return false;
-        }
-        if (a[0] != 1) { // encoding, 1=RLE is only valid value
-            return false;
-        }
-        // width / height
-        final int x1 = getShortLittleEndian(a, 2);
-        final int y1 = getShortLittleEndian(a, 4);
-        final int x2 = getShortLittleEndian(a, 6);
-        final int y2 = getShortLittleEndian(a, 8);
-        if ((x1 < 0) || (x2 < x1) || (y1 < 0) || (y2 < y1)) {
-            return false;
-        }
-        width = x2 - x1 + 1;
-        height = y2 - y1 + 1;
-        // color depth
-        final int bits = a[1];
-        final int planes = a[63];
-        if ((planes == 1)
-                && ((bits == 1) || (bits == 2) || (bits == 4) || (bits == 8))) {
-            // paletted
-            bitsPerPixel = bits;
-        } else if ((planes == 3) && (bits == 8)) {
-            // RGB truecolor
-            bitsPerPixel = 24;
-        } else {
-            return false;
-        }
-        setPhysicalWidthDpi(getShortLittleEndian(a, 10));
-        setPhysicalHeightDpi(getShortLittleEndian(a, 10));
-        format = FORMAT_PCX;
-        imageFormat = ImageEncoding.PCX;
-        return true;
-    }
+//    private boolean checkPcx() throws IOException {
+//        final byte[] a = new byte[64];
+//        if (read(a) != a.length) {
+//            return false;
+//        }
+//        if (a[0] != 1) { // encoding, 1=RLE is only valid value
+//            return false;
+//        }
+//        // width / height
+//        final int x1 = getShortLittleEndian(a, 2);
+//        final int y1 = getShortLittleEndian(a, 4);
+//        final int x2 = getShortLittleEndian(a, 6);
+//        final int y2 = getShortLittleEndian(a, 8);
+//        if ((x1 < 0) || (x2 < x1) || (y1 < 0) || (y2 < y1)) {
+//            return false;
+//        }
+//        width = x2 - x1 + 1;
+//        height = y2 - y1 + 1;
+//        // color depth
+//        final int bits = a[1];
+//        final int planes = a[63];
+//        if ((planes == 1)
+//                && ((bits == 1) || (bits == 2) || (bits == 4) || (bits == 8))) {
+//            // paletted
+//            bitsPerPixel = bits;
+//        } else if ((planes == 3) && (bits == 8)) {
+//            // RGB truecolor
+//            bitsPerPixel = 24;
+//        } else {
+//            return false;
+//        }
+//        setPhysicalWidthDpi(getShortLittleEndian(a, 10));
+//        setPhysicalHeightDpi(getShortLittleEndian(a, 10));
+//        format = FORMAT_PCX;
+//        imageFormat = ImageEncoding.PCX;
+//        return true;
+//    }
 
     private boolean checkPng() throws IOException {
         final byte[] pngmagic = { 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a };
@@ -619,115 +619,115 @@ public final class ImageInfo {
         return true;
     }
 
-    private boolean checkPnm(final int id) throws IOException {
-        if ((id < 1) || (id > 6)) {
-            return false;
-        }
-        final int[] pnmformats = { FORMAT_PBM, FORMAT_PGM, FORMAT_PPM };
-        format = pnmformats[(id - 1) % 3];
-        boolean hasPixelResolution = false;
-        String s;
-        while (true) {
-            s = readLine();
-            if (s != null) {
-                s = s.trim();
-            }
-            if ((s == null) || (s.length() < 1)) {
-                continue;
-            }
-            if (s.charAt(0) == '#') { // comment
-                if (collectComments && (s.length() > 1)) {
-                    addComment(s.substring(1));
-                }
-                continue;
-            }
-            if (!hasPixelResolution) { // split "343 966" into width=343,
-                // height=966
-                int spaceIndex = s.indexOf(' ');
-                if (spaceIndex == -1) {
-                    return false;
-                }
-                final String widthString = s.substring(0, spaceIndex);
-                spaceIndex = s.lastIndexOf(' ');
-                if (spaceIndex == -1) {
-                    return false;
-                }
-                final String heightString = s.substring(spaceIndex + 1);
-                try {
-                    width = Integer.parseInt(widthString);
-                    height = Integer.parseInt(heightString);
-                } catch (final NumberFormatException nfe) {
-                    return false;
-                }
-                if ((width < 1) || (height < 1)) {
-                    return false;
-                }
-                if (format == FORMAT_PBM) {
-                    bitsPerPixel = 1;
-                    return true;
-                }
-                hasPixelResolution = true;
-            } else {
-                int maxSample;
-                try {
-                    maxSample = Integer.parseInt(s);
-                } catch (final NumberFormatException nfe) {
-                    return false;
-                }
-                if (maxSample < 0) {
-                    return false;
-                }
-                for (int i = 0; i < 25; i++) {
-                    if (maxSample < (1 << (i + 1))) {
-                        bitsPerPixel = i + 1;
-                        if (format == FORMAT_PPM) {
-                            bitsPerPixel *= 3;
-                        }
-                        return true;
-                    }
-                }
-                return false;
-            }
-        }
-    }
+//    private boolean checkPnm(final int id) throws IOException {
+//        if ((id < 1) || (id > 6)) {
+//            return false;
+//        }
+//        final int[] pnmformats = { FORMAT_PBM, FORMAT_PGM, FORMAT_PPM };
+//        format = pnmformats[(id - 1) % 3];
+//        boolean hasPixelResolution = false;
+//        String s;
+//        while (true) {
+//            s = readLine();
+//            if (s != null) {
+//                s = s.trim();
+//            }
+//            if ((s == null) || (s.length() < 1)) {
+//                continue;
+//            }
+//            if (s.charAt(0) == '#') { // comment
+//                if (collectComments && (s.length() > 1)) {
+//                    addComment(s.substring(1));
+//                }
+//                continue;
+//            }
+//            if (!hasPixelResolution) { // split "343 966" into width=343,
+//                // height=966
+//                int spaceIndex = s.indexOf(' ');
+//                if (spaceIndex == -1) {
+//                    return false;
+//                }
+//                final String widthString = s.substring(0, spaceIndex);
+//                spaceIndex = s.lastIndexOf(' ');
+//                if (spaceIndex == -1) {
+//                    return false;
+//                }
+//                final String heightString = s.substring(spaceIndex + 1);
+//                try {
+//                    width = Integer.parseInt(widthString);
+//                    height = Integer.parseInt(heightString);
+//                } catch (final NumberFormatException nfe) {
+//                    return false;
+//                }
+//                if ((width < 1) || (height < 1)) {
+//                    return false;
+//                }
+//                if (format == FORMAT_PBM) {
+//                    bitsPerPixel = 1;
+//                    return true;
+//                }
+//                hasPixelResolution = true;
+//            } else {
+//                int maxSample;
+//                try {
+//                    maxSample = Integer.parseInt(s);
+//                } catch (final NumberFormatException nfe) {
+//                    return false;
+//                }
+//                if (maxSample < 0) {
+//                    return false;
+//                }
+//                for (int i = 0; i < 25; i++) {
+//                    if (maxSample < (1 << (i + 1))) {
+//                        bitsPerPixel = i + 1;
+//                        if (format == FORMAT_PPM) {
+//                            bitsPerPixel *= 3;
+//                        }
+//                        return true;
+//                    }
+//                }
+//                return false;
+//            }
+//        }
+//    }
 
-    private boolean checkPsd() throws IOException {
-        final byte[] a = new byte[24];
-        if (read(a) != a.length) {
-            return false;
-        }
-        final byte[] psdmagic = { 0x50, 0x53 };
-        if (!equals(a, 0, psdmagic, 0, 2)) {
-            return false;
-        }
-        format = FORMAT_PSD;
-        imageFormat = ImageEncoding.PSD;
-        width = getIntBigEndian(a, 16);
-        height = getIntBigEndian(a, 12);
-        final int channels = getShortBigEndian(a, 10);
-        final int depth = getShortBigEndian(a, 20);
-        bitsPerPixel = channels * depth;
-        return ((width > 0) && (height > 0)
-                && (bitsPerPixel > 0) && (bitsPerPixel <= 64));
-    }
+//    private boolean checkPsd() throws IOException {
+//        final byte[] a = new byte[24];
+//        if (read(a) != a.length) {
+//            return false;
+//        }
+//        final byte[] psdmagic = { 0x50, 0x53 };
+//        if (!equals(a, 0, psdmagic, 0, 2)) {
+//            return false;
+//        }
+//        format = FORMAT_PSD;
+//        imageFormat = ImageEncoding.PSD;
+//        width = getIntBigEndian(a, 16);
+//        height = getIntBigEndian(a, 12);
+//        final int channels = getShortBigEndian(a, 10);
+//        final int depth = getShortBigEndian(a, 20);
+//        bitsPerPixel = channels * depth;
+//        return ((width > 0) && (height > 0)
+//                && (bitsPerPixel > 0) && (bitsPerPixel <= 64));
+//    }
 
-    private boolean checkRas() throws IOException {
-        final byte[] a = new byte[14];
-        if (read(a) != a.length) {
-            return false;
-        }
-        final byte[] rasmagic = { 0x6a, (byte) 0x95 };
-        if (!equals(a, 0, rasmagic, 0, 2)) {
-            return false;
-        }
-        format = FORMAT_RAS;
-        imageFormat = ImageEncoding.RAS;
-        width = getIntBigEndian(a, 2);
-        height = getIntBigEndian(a, 6);
-        bitsPerPixel = getIntBigEndian(a, 10);
-        return ((width > 0) && (height > 0)
-                && (bitsPerPixel > 0) && (bitsPerPixel <= 24));
-    }
+//    private boolean checkRas() throws IOException {
+//        final byte[] a = new byte[14];
+//        if (read(a) != a.length) {
+//            return false;
+//        }
+//        final byte[] rasmagic = { 0x6a, (byte) 0x95 };
+//        if (!equals(a, 0, rasmagic, 0, 2)) {
+//            return false;
+//        }
+//        format = FORMAT_RAS;
+//        imageFormat = ImageEncoding.RAS;
+//        width = getIntBigEndian(a, 2);
+//        height = getIntBigEndian(a, 6);
+//        bitsPerPixel = getIntBigEndian(a, 10);
+//        return ((width > 0) && (height > 0)
+//                && (bitsPerPixel > 0) && (bitsPerPixel <= 24));
+//    }
 
     /**
      * Run over String list, return false iff at least one of the arguments
