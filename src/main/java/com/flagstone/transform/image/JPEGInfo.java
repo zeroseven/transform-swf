@@ -31,10 +31,6 @@
 
 package com.flagstone.transform.image;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-
-import com.flagstone.transform.coder.BigDecoder;
 
 /**
  * JPEGInfo is used to extract the width and height from a JPEG encoded image.
@@ -69,29 +65,33 @@ public final class JPEGInfo {
      * @param image the image data.
      */
     public void decode(final byte[] image) {
-        ByteArrayInputStream stream = new ByteArrayInputStream(image);
-        final BigDecoder coder = new BigDecoder(stream);
         int marker;
-        int size;
-        try {
-            while (!coder.eof()) {
-                marker = coder.readUI16();
-                if (marker == 0xffd8 || marker == 0xffd9) {
-                    continue;
-                }
-                size = coder.readUI16();
-                if (marker >= 0xffc0 && marker <= 0xffcf
-                        && marker != 0xffc4 && marker != 0xffc8) {
-                    coder.readByte();
-                    height = coder.readUI16();
-                    width = coder.readUI16();
-                    return;
-                } else {
-                    coder.adjustPointer((size - 2) << 3);
-                }
+        int length;
+        int limit = image.length - 2;
+        int index = 0;
+
+        while (index < limit) {
+            marker = ((image[index++] & 0x00FF) << 8)
+                | (image[index++] & 0x00FF);
+
+            if (marker == 0xffd8 || marker == 0xffd9) {
+                continue;
             }
-        } catch (IOException e) {
-            //TODO FIX
+
+            length = ((image[index++] & 0x00FF) << 8)
+                | (image[index++] & 0x00FF);
+
+            if (marker >= 0xffc0 && marker <= 0xffcf
+                    && marker != 0xffc4 && marker != 0xffc8) {
+                index++;
+                height = ((image[index++] & 0x00FF) << 8)
+                    | (image[index++] & 0x00FF);
+                width = ((image[index++] & 0x00FF) << 8)
+                    | (image[index++] & 0x00FF);
+                break;
+            } else {
+                index += length - 2;
+            }
         }
     }
 }

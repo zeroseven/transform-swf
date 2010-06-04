@@ -31,7 +31,6 @@
 
 package com.flagstone.transform.util.image;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -45,6 +44,7 @@ import java.util.zip.DataFormatException;
 import com.flagstone.transform.coder.BigDecoder;
 import com.flagstone.transform.image.DefineJPEGImage2;
 import com.flagstone.transform.image.ImageTag;
+import com.flagstone.transform.image.JPEGInfo;
 
 /**
  * JPGDecoder decodes JPEG images so they can be used in a Flash file.
@@ -134,9 +134,10 @@ public final class JPGDecoder implements ImageProvider, ImageDecoder {
              }
          } while (marker != 0xFFD9);
 
-         if (!jpegInfo()) {
-             throw new DataFormatException(BAD_FORMAT);
-         }
+         final JPEGInfo info = new JPEGInfo();
+         info.decode(image);
+         width = info.getWidth();
+         height = info.getHeight();
     }
 
      private void copyTag(final int marker, final int length,
@@ -173,45 +174,5 @@ public final class JPGDecoder implements ImageProvider, ImageDecoder {
     /** {@inheritDoc} */
     public byte[] getImage() {
         return Arrays.copyOf(image, image.length);
-    }
-
-    /**
-     * Decode the width and height from a JPEG image.
-     * @return true if the image is in JPEG format and the width and height
-     * were decoded.
-     */
-    private boolean jpegInfo() {
-        ByteArrayInputStream stream = new ByteArrayInputStream(image);
-        final BigDecoder coder = new BigDecoder(stream);
-        boolean result;
-        try {
-            if (coder.readUI16() == 0xffd8) {
-                int marker;
-
-                do {
-                    marker = coder.readUI16();
-
-                    if ((marker & 0xff00) == 0xff00) {
-                        if ((marker >= 0xffc0) && (marker <= 0xffcf)
-                                && (marker != 0xffc4) && (marker != 0xffc8)) {
-                            coder.adjustPointer(24);
-                            height = coder.readUI16();
-                            width = coder.readUI16();
-                            break;
-                        } else {
-                            coder.adjustPointer((coder.readUI16() - 2) << 3);
-                        }
-                    }
-
-                } while ((marker & 0xff00) == 0xff00);
-
-                result = true;
-            } else {
-                result = false;
-            }
-        } catch (IOException e) {
-            result = false;
-        }
-        return result;
     }
 }
