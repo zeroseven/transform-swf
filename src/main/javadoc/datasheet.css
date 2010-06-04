@@ -1,0 +1,73 @@
+/* 
+ * Stylesheet for javadoc generated datasheets of each of the classes
+ * in Transform SWF.
+ */
+ 
+body {
+    font-size: 12px;
+    font-family: "Lucida Grande", Verdana, Geneva, Arial, sans-serif;
+    background: white;
+    color: black;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+a       { font-weight: bold; color: #9A1F31; text-decoration: none; }
+a:hover { font-weight: bold; color: black; text-decoration: none; }
+
+
+h1 { font-size: 140%; font-weight: bold; color: #C43F52; }
+h2 { font-size: 130%; font-weight: bold; color: black; }
+h3 { font-size: 120%; font-weight: bold; color: black; }
+
+/* Table colors */
+.TableHeadingColor     { background: #C43F52 }
+.TableSubHeadingColor  { background: #C43F52 }
+.TableRowColor         { background: #FFFFFF }
+
+/* Navigation bar fonts and colors */
+.NavBarCell1    { background-color:#CCCCCC;}
+.NavBarCell1Rev { background-color:#999999;}
+.NavBarFont1    { color:#000000;}
+.NavBarFont1Rev { color:#FFFFFF;}
+
+.NavBarCell2    { background-color:#FFFFFF;}
+
+table { border-collapse: collapse; }
+
+table td { padding: 3px; vertical-align: top; }
+
+table.datasheet { border: thin #9A1F31 solid; }
+table.actions { border: thin #9A1F31 solid; }
+
+table.datasheet th { background-color: #C43F52; color: white; font-weight: bold; padding: 5px; }
+table.actions   th { background-color: #C43F52; color: white; font-weight: bold; padding: 5px; }
+
+div.header { background-color: #9A1F31; }
+
+div.code {
+    font-size: 12px;
+    color: black;
+    width: 98%;
+    border: 1px solid #CCCCCC;
+    background-color: #f5f5f5;
+    padding: 10px;
+}
+
+pre {
+    font-size: 12px;
+    color: black;
+    width: 98%;
+    border: 1px solid #CCCCCC;
+    background-color: #f5f5f5;
+    padding: 10px;
+}
+
+caption { font-weight: bold; }
+
+p.footer {
+    margin-top: 2px;
+    font-size: 10px;
+    text-align: center;
+}
+
