@@ -114,7 +114,7 @@ public final class SoundInfo implements SWFEncodeable {
         identifier = uid;
 
         final int info = coder.readByte();
-        mode = (info & 0x00F0);
+        mode = (info & 0x00F0) >> 4;
 
         if ((info & 0x01) != 0) {
             inPoint = coder.readInt();
