@@ -43,7 +43,6 @@ import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.ColorTransform;
 import com.flagstone.transform.datatype.CoordTransform;
 import com.flagstone.transform.exception.IllegalArgumentRangeException;
-import com.flagstone.transform.movieclip.MovieClipEventHandler;
 
 //TOD0(doc) Review
 /**
@@ -232,7 +231,7 @@ public final class Place2 implements MovieTag {
     /** The name assigned to an object. */
     private String name;
     /** The set of event handlers for movie clips. */
-    private List<MovieClipEventHandler> events;
+    private List<EventHandler> events;
 
     /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
@@ -282,7 +281,7 @@ public final class Place2 implements MovieTag {
         }
 
         layer = coder.readUnsignedShort();
-        events = new ArrayList<MovieClipEventHandler>();
+        events = new ArrayList<EventHandler>();
 
         if ((type == PlaceType.NEW) || (type == PlaceType.REPLACE)) {
             identifier = coder.readUnsignedShort();
@@ -317,14 +316,14 @@ public final class Place2 implements MovieTag {
                 coder.readInt();
 
                 while ((event = coder.readInt()) != 0) {
-                    events.add(new MovieClipEventHandler(event,
+                    events.add(new EventHandler(event,
                             coder, context));
                 }
             } else {
                 coder.readUnsignedShort();
 
                 while ((event = coder.readUnsignedShort()) != 0) {
-                    events.add(new MovieClipEventHandler(event,
+                    events.add(new EventHandler(event,
                             coder, context));
                 }
             }
@@ -337,7 +336,7 @@ public final class Place2 implements MovieTag {
      * Creates an uninitialised Place2 object.
      */
     public Place2() {
-        events = new ArrayList<MovieClipEventHandler>();
+        events = new ArrayList<EventHandler>();
     }
 
     /**
@@ -363,9 +362,9 @@ public final class Place2 implements MovieTag {
         depth = object.depth;
         name = object.name;
 
-        events = new ArrayList<MovieClipEventHandler>(object.events.size());
+        events = new ArrayList<EventHandler>(object.events.size());
 
-        for (final MovieClipEventHandler event : object.events) {
+        for (final EventHandler event : object.events) {
             events.add(event.copy());
         }
     }
@@ -378,7 +377,7 @@ public final class Place2 implements MovieTag {
      *
      * @return this object.
      */
-    public Place2 add(final MovieClipEventHandler aClipEvent) {
+    public Place2 add(final EventHandler aClipEvent) {
         if (aClipEvent == null) {
             throw new IllegalArgumentException();
         }
@@ -393,7 +392,7 @@ public final class Place2 implements MovieTag {
      *
      * @return the set of event handlers for the movie clip.
      */
-    public List<MovieClipEventHandler> getEvents() {
+    public List<EventHandler> getEvents() {
         return events;
     }
 
@@ -408,7 +407,7 @@ public final class Place2 implements MovieTag {
      * @param anArray
      *            an array of ClipEvent objects.
      */
-    public void setEvents(final List<MovieClipEventHandler> anArray) {
+    public void setEvents(final List<EventHandler> anArray) {
         if (anArray == null) {
             throw new IllegalArgumentException();
         }
@@ -688,7 +687,7 @@ public final class Place2 implements MovieTag {
 
             length += 2 + eventSize;
 
-            for (final MovieClipEventHandler handler : events) {
+            for (final EventHandler handler : events) {
                 length += handler.prepareToEncode(context);
             }
 
@@ -761,19 +760,21 @@ public final class Place2 implements MovieTag {
         if (!events.isEmpty()) {
             int eventMask = 0;
 
-            for (final MovieClipEventHandler handler : events) {
+            for (final EventHandler handler : events) {
                 eventMask |= handler.getEventCode();
             }
 
+            coder.writeShort(0);
+
             if (context.get(Context.VERSION) > EXTENDED_EVENTS) {
                 coder.writeInt(eventMask);
-                for (final MovieClipEventHandler handler : events) {
+                for (final EventHandler handler : events) {
                     handler.encode(coder, context);
                 }
                 coder.writeInt(0);
             } else {
                 coder.writeShort(eventMask);
-                for (final MovieClipEventHandler handler : events) {
+                for (final EventHandler handler : events) {
                     handler.encode(coder, context);
                 }
                 coder.writeShort(0);

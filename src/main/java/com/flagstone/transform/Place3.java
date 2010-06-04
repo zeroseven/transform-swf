@@ -46,7 +46,6 @@ import com.flagstone.transform.datatype.ColorTransform;
 import com.flagstone.transform.datatype.CoordTransform;
 import com.flagstone.transform.exception.IllegalArgumentRangeException;
 import com.flagstone.transform.filter.Filter;
-import com.flagstone.transform.movieclip.MovieClipEventHandler;
 
 /**
  * PlaceObject2 is used to add and manipulate objects (shape, button, etc.) on
@@ -241,7 +240,7 @@ public final class Place3 implements MovieTag {
     /** How the object is blended with its background. */
     private Integer blend;
     /** The set of event handlers for movie clips. */
-    private List<MovieClipEventHandler> events;
+    private List<EventHandler> events;
 
     /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
@@ -361,7 +360,7 @@ public final class Place3 implements MovieTag {
             bitmapCache = coder.readByte();
         }
 
-        events = new ArrayList<MovieClipEventHandler>();
+        events = new ArrayList<EventHandler>();
 
         if (hasEvents) {
             int event;
@@ -370,7 +369,7 @@ public final class Place3 implements MovieTag {
             coder.readInt();
 
             while ((event = coder.readInt()) != 0) {
-                events.add(new MovieClipEventHandler(event,
+                events.add(new EventHandler(event,
                         coder, context));
             }
         }
@@ -383,7 +382,7 @@ public final class Place3 implements MovieTag {
      */
     public Place3() {
         filters = new ArrayList<Filter>();
-        events = new ArrayList<MovieClipEventHandler>();
+        events = new ArrayList<EventHandler>();
     }
 
     /**
@@ -412,9 +411,9 @@ public final class Place3 implements MovieTag {
 
         filters = new ArrayList<Filter>(object.filters);
         blend = object.blend;
-        events = new ArrayList<MovieClipEventHandler>(object.events.size());
+        events = new ArrayList<EventHandler>(object.events.size());
 
-        for (final MovieClipEventHandler event : object.events) {
+        for (final EventHandler event : object.events) {
             events.add(event.copy());
         }
 
@@ -711,7 +710,7 @@ public final class Place3 implements MovieTag {
      *
      * @return this object.
      */
-    public Place3 add(final MovieClipEventHandler aClipEvent) {
+    public Place3 add(final EventHandler aClipEvent) {
         if (aClipEvent == null) {
             throw new IllegalArgumentException();
         }
@@ -726,7 +725,7 @@ public final class Place3 implements MovieTag {
      *
      * @return the set of event handlers for the movie clip.
      */
-    public List<MovieClipEventHandler> getEvents() {
+    public List<EventHandler> getEvents() {
         return events;
     }
 
@@ -741,7 +740,7 @@ public final class Place3 implements MovieTag {
      * @param anArray
      *            an array of ClipEvent objects.
      */
-    public void setEvents(final List<MovieClipEventHandler> anArray) {
+    public void setEvents(final List<EventHandler> anArray) {
         if (anArray == null) {
             throw new IllegalArgumentException();
         }
@@ -807,11 +806,11 @@ public final class Place3 implements MovieTag {
         if (!events.isEmpty()) {
             length += 6;
 
-            for (final MovieClipEventHandler handler : events) {
+            for (final EventHandler handler : events) {
                 length += handler.prepareToEncode(context);
             }
 
-            length += 6;
+            length += 4;
         }
 
         context.remove(Context.TRANSPARENT);
@@ -908,13 +907,13 @@ public final class Place3 implements MovieTag {
 
             coder.writeShort(0);
 
-            for (final MovieClipEventHandler handler : events) {
+            for (final EventHandler handler : events) {
                 eventMask |= handler.getEventCode();
             }
 
             coder.writeInt(eventMask);
 
-            for (final MovieClipEventHandler handler : events) {
+            for (final EventHandler handler : events) {
                 handler.encode(coder, context);
             }
 

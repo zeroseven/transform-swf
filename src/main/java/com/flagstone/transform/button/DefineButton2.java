@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.flagstone.transform.DefineTag;
+import com.flagstone.transform.EventHandler;
 import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
@@ -75,7 +76,7 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  * </p>
  *
  * @see ButtonShape
- * @see ButtonEventHandler
+ * @see EventHandler
  */
 //TODO(class)
 public final class DefineButton2 implements DefineTag {
@@ -91,7 +92,7 @@ public final class DefineButton2 implements DefineTag {
     /** The list of shapes used to draw the button. */
     private List<ButtonShape> shapes;
     /** The list of handlers for different button events. */
-    private List<ButtonEventHandler> events;
+    private List<EventHandler> events;
 
     /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
@@ -135,25 +136,31 @@ public final class DefineButton2 implements DefineTag {
 
         coder.readByte();
 
-        events = new ArrayList<ButtonEventHandler>();
+        events = new ArrayList<EventHandler>();
 
         if (offsetToNext != 0) {
-            ButtonEventHandler event;
+            EventHandler event;
+
+            if (type == 1) {
+                context.put(Context.MENU_BUTTON, 1);
+            }
 
             do {
                 offsetToNext = coder.readUnsignedShort();
 
                 if (offsetToNext == 0) {
-                    event = new ButtonEventHandler(length - coder.bytesRead()
+                    event = new EventHandler(length - coder.bytesRead()
                             - 2, coder, context);
                 } else {
-                    event = new ButtonEventHandler(offsetToNext - 4,
+                    event = new EventHandler(offsetToNext - 4,
                             coder, context);
                 }
                 events.add(event);
 
             } while (offsetToNext != 0);
-        }
+
+            context.remove(Context.MENU_BUTTON);
+       }
 
         context.remove(Context.TYPE);
         context.remove(Context.TRANSPARENT);
@@ -178,7 +185,7 @@ public final class DefineButton2 implements DefineTag {
      */
     public DefineButton2(final int uid, final ButtonType buttonType,
             final List<ButtonShape> buttonShapes,
-            final List<ButtonEventHandler> handlers) {
+            final List<EventHandler> handlers) {
         setIdentifier(uid);
         setType(buttonType);
         setShapes(buttonShapes);
@@ -200,8 +207,8 @@ public final class DefineButton2 implements DefineTag {
         for (final ButtonShape shape : object.shapes) {
             shapes.add(shape.copy());
         }
-        events = new ArrayList<ButtonEventHandler>(object.events.size());
-        for (final ButtonEventHandler event : object.events) {
+        events = new ArrayList<EventHandler>(object.events.size());
+        for (final EventHandler event : object.events) {
             events.add(event.copy());
         }
     }
@@ -242,7 +249,7 @@ public final class DefineButton2 implements DefineTag {
      *            a button event. Must not be null.
      * @return this object.
      */
-    public DefineButton2 add(final ButtonEventHandler obj) {
+    public DefineButton2 add(final EventHandler obj) {
         if (obj == null) {
             throw new IllegalArgumentException();
         }
@@ -279,7 +286,7 @@ public final class DefineButton2 implements DefineTag {
      *
      * @return the event handlers for the button.
      */
-    public List<ButtonEventHandler> getEvents() {
+    public List<EventHandler> getEvents() {
         return events;
     }
 
@@ -317,7 +324,7 @@ public final class DefineButton2 implements DefineTag {
      * @param anArray
      *            and array of ButtonEvent objects. Must not be null.
      */
-    public void setEvents(final List<ButtonEventHandler> anArray) {
+    public void setEvents(final List<EventHandler> anArray) {
         if (anArray == null) {
             throw new IllegalArgumentException();
         }
@@ -353,20 +360,25 @@ public final class DefineButton2 implements DefineTag {
             offset = length - 7;
         }
 
-        ButtonEventHandler handler;
+        EventHandler handler;
         int count = events.size();
+
+        if (type == 1) {
+            context.put(Context.MENU_BUTTON, 1);
+        }
 
         for (int i = 0; i < count; i++) {
             handler = events.get(i);
             if (i == count -1) {
                 context.put(Context.LAST, 1);
             }
-            length += 2 + handler.prepareToEncode(context);
+            length += handler.prepareToEncode(context);
         }
 
         context.remove(Context.TYPE);
         context.remove(Context.TRANSPARENT);
         context.remove(Context.LAST);
+        context.remove(Context.MENU_BUTTON);
 
         return (length > Coder.SHORT_HEADER_LIMIT ? Coder.LONG_HEADER
                 : Coder.SHORT_HEADER) + length;
@@ -398,12 +410,17 @@ public final class DefineButton2 implements DefineTag {
         }
         coder.writeByte(0);
 
-        for (final ButtonEventHandler handler : events) {
+        if (type == 1) {
+            context.put(Context.MENU_BUTTON, 1);
+        }
+
+        for (final EventHandler handler : events) {
             handler.encode(coder, context);
         }
 
         context.remove(Context.TYPE);
         context.remove(Context.TRANSPARENT);
+        context.remove(Context.MENU_BUTTON);
         coder.unmark(length);
     }
 }

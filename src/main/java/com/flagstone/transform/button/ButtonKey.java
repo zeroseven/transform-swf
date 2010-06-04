@@ -129,7 +129,7 @@ public enum ButtonKey {
         value = keyCode;
     }
 
-    public char getChar() {
-        return (char) value;
+    public int getValue() {
+        return value;
     }
 }

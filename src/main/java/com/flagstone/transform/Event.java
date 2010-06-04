@@ -1,5 +1,5 @@
 /*
- * ButtonEvent.java
+ * Event.java
  * Transform
  *
  * Copyright (c) 2001-2010 Flagstone Software Ltd. All rights reserved.
@@ -29,105 +29,77 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.flagstone.transform.button;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
+package com.flagstone.transform;
 
 /**
- * ButtonEvent is used to represent all the different types of event that a
- * button responds to.
+ * Event is used to represent all the different types of event that a
+ * button or movie clips responds to.
  */
-public enum ButtonEvent {
+public enum Event {
 
-    // Keep the order for ROLL_OUT and ROLL_OVER though the event codes are
-    // not in the right order. A set of ButtonEvents are used for encoding
-    // ButtonSounds and ROLL_OUT must be before ROLL_OVER so the correct
-    // natural order is used when creating an EnumSet.
+    // Keep the order for ROLL_OUT and ROLL_OVER. A set of Events are used for
+    // encoding ButtonSounds and ROLL_OUT must be before ROLL_OVER so the
+    // correct natural order is used when creating an EnumSet.
 
     /**
      * Code for the button event that occurs when the mouse cursor moves out of
      * the active area of a button.
      */
-    ROLL_OUT(2),
+    ROLL_OUT,
     /**
      * Code for the button event that occurs when the mouse cursor moves over
      * the active area of a button.
      */
-    ROLL_OVER(1),
+    ROLL_OVER,
     /**
      * Code for the button event that occurs when the mouse button is clicked
      * while the mouse cursor is over the active area of the button.
      */
-    PRESS(4),
+    PRESS,
     /**
      * Code for the button event that occurs when the mouse button is clicked
      * and released while the mouse cursor is over the active area of the
      * button.
      */
-    RELEASE(8),
+    RELEASE,
     /**
      * Code for the button event that occurs when the mouse button is clicked
      * and the mouse cursor is dragged out of the active area of the button.
      */
-    DRAG_OUT(16),
+    DRAG_OUT,
     /**
      * Code for the button event that occurs when the mouse button is clicked
      * and the mouse cursor is dragged into the active area of the button.
      */
-    DRAG_OVER(32),
+    DRAG_OVER,
     /**
      * Code for the button event that occurs when the mouse button is clicked,
      * the mouse cursor is dragged into the active area of the button and the
      * mouse button is released.
      */
-    RELEASE_OUT(64),
-    /**
-     * Code for the button event that occurs when the mouse button is clicked
-     * and the mouse cursor is dragged into the active area of the menu item.
-     */
-    MENU_DRAG_OVER(128),
-    /**
-     * Code for the button event that occurs when the mouse button is clicked
-     * and the mouse cursor is dragged out of the active area of the menu item.
-     */
-    MENU_DRAG_OUT(256);
-
-    /** Table for translating encoded values into ButtonEvents. */
-    private static final Map<Integer, ButtonEvent> TABLE =
-                new LinkedHashMap<Integer, ButtonEvent>();
-
-    static {
-        for (final ButtonEvent type : values()) {
-            TABLE.put(type.value, type);
-        }
-    }
-
-    /**
-     * Get the ButtonEvent for a given encoded value.
-     * @param value the encoded event.
-     * @return the ButtonEvent corresponding to the encoded value.
-     */
-    protected static ButtonEvent fromInt(final int value) {
-        return TABLE.get(value);
-    }
-
-    /** The value encoded for a ButtonEvent. */
-    private final int value;
-
-    /**
-     * Private constructor for ButtonEvents.
-     * @param eventCode the value representing the encoded ButtonEvent.
-     */
-    private ButtonEvent(final int eventCode) {
-        value = eventCode;
-    }
-
-    /**
-     * Get the value representing the encoded ButtonEvent.
-     * @return the value used to encode the ButtonEvent.
-     */
-    public int getValue() {
-        return value;
-    }
+    RELEASE_OUT,
+    /** Code for a load event. */
+    LOAD,
+    /** Code for an enter frame event. */
+    ENTER_FRAME,
+    /** Code for an unload event. */
+    UNLOAD,
+    /** Code for a mouse move event. */
+    MOUSE_MOVE,
+    /** Code for a mouse down event. */
+    MOUSE_DOWN,
+    /** Code for a mouse up event. */
+    MOUSE_UP,
+    /** Code for a key down event. */
+    KEY_DOWN,
+    /** Code for a key up event. */
+    KEY_UP,
+    /** Code for a data event. */
+    DATA,
+    /** Code for an initialise event. */
+    INITIALIZE,
+    /** Code for a key press event, where the code for the key is specified. */
+    KEY_PRESS,
+    /** Code for a construct event. */
+    CONSTRUCT;
 }

@@ -74,6 +74,8 @@ public final class Context {
     public static final int COMPRESSED = 17;
     /** TODO(doc). */
     public static final int FRAMES = 18;
+    /** TODO(doc). */
+    public static final int MENU_BUTTON = 19;
 
     /** The character encoding used for strings. */
     private String encoding;

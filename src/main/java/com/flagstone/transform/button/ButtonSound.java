@@ -36,6 +36,7 @@ import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.flagstone.transform.Event;
 import com.flagstone.transform.MovieTag;
 import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.Coder;
@@ -67,13 +68,13 @@ public final class ButtonSound implements MovieTag {
     private static final String FORMAT = "ButtonSound: { identifier=%d;"
             + " table=%s }";
 
-    private static final EnumSet<ButtonEvent>EVENTS = EnumSet.of(
-            ButtonEvent.ROLL_OUT, ButtonEvent.ROLL_OVER,
-            ButtonEvent.PRESS, ButtonEvent.RELEASE);
+    private static final EnumSet<Event>EVENTS = EnumSet.of(
+            Event.ROLL_OUT, Event.ROLL_OVER,
+            Event.PRESS, Event.RELEASE);
 
     /** The unique identifier of the button. */
     private int identifier;
-    private transient Map<ButtonEvent, SoundInfo>table;
+    private transient Map<Event, SoundInfo>table;
 
     /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
@@ -95,15 +96,15 @@ public final class ButtonSound implements MovieTag {
         }
         coder.mark();
         identifier = coder.readUnsignedShort();
-        table = new LinkedHashMap<ButtonEvent, SoundInfo>();
-        decodeInfo(ButtonEvent.ROLL_OUT, coder);
-        decodeInfo(ButtonEvent.ROLL_OVER, coder);
-        decodeInfo(ButtonEvent.PRESS, coder);
-        decodeInfo(ButtonEvent.RELEASE, coder);
+        table = new LinkedHashMap<Event, SoundInfo>();
+        decodeInfo(Event.ROLL_OUT, coder);
+        decodeInfo(Event.ROLL_OVER, coder);
+        decodeInfo(Event.PRESS, coder);
+        decodeInfo(Event.RELEASE, coder);
         coder.unmark(length);
     }
 
-    private void decodeInfo(final ButtonEvent event,
+    private void decodeInfo(final Event event,
             final SWFDecoder coder) throws IOException {
         if (coder.bytesRead() < length) {
             int uid = coder.readUnsignedShort();
@@ -122,14 +123,14 @@ public final class ButtonSound implements MovieTag {
      *            object that defines the button. Must be in the range 1..65535.
      * @param eventCode
      *            the event that identifies when the sound id played, must be
-     *            either ButtonEvent.EventType.rollOver,
-     *            ButtonEvent.EventType.rollOut, ButtonEvent.EventType.press or
-     *            ButtonEvent.EventType.release.
+     *            either Event.EventType.rollOver,
+     *            Event.EventType.rollOut, Event.EventType.press or
+     *            Event.EventType.release.
      * @param aSound
      *            an SoundInfo object that identifies a sound and controls how
      *            it is played.
      */
-    public ButtonSound(final int uid, final ButtonEvent eventCode,
+    public ButtonSound(final int uid, final Event eventCode,
             final SoundInfo aSound) {
         setIdentifier(uid);
         setSoundInfo(eventCode, aSound);
@@ -146,9 +147,9 @@ public final class ButtonSound implements MovieTag {
     public ButtonSound(final ButtonSound object) {
 
         identifier = object.identifier;
-        table = new LinkedHashMap<ButtonEvent, SoundInfo>();
+        table = new LinkedHashMap<Event, SoundInfo>();
 
-        for (ButtonEvent event : object.table.keySet()) {
+        for (Event event : object.table.keySet()) {
             table.put(event, object.table.get(event).copy());
         }
     }
@@ -167,13 +168,13 @@ public final class ButtonSound implements MovieTag {
      * there is no SoundInfo object defined for the event code.
      *
      * @param event
-     *            The button event, must be one of ButtonEvent.ROLL_OVER,
-     *            ButtonEvent.ROLL_OUT, ButtonEvent.PRESS, ButtonEvent.RELEASE.
+     *            The button event, must be one of Event.ROLL_OVER,
+     *            Event.ROLL_OUT, Event.PRESS, Event.RELEASE.
      * @return the SoundInfo that identifies and controls the sound that will be
      *            played for the event or null if not SoundInfo is defined for
      *            the event.
      */
-    public SoundInfo getSoundInfo(final ButtonEvent event) {
+    public SoundInfo getSoundInfo(final Event event) {
          return table.get(event);
     }
 
@@ -199,13 +200,13 @@ public final class ButtonSound implements MovieTag {
      *
      * @param event
      *            the code representing the button event, must be either
-     *            ButtonEvent.EventType.RollOver, ButtonEvent.EventType.RollOut,
-     *            ButtonEvent.EventType.Press or ButtonEvent.EventType.Release.
+     *            Event.EventType.RollOver, Event.EventType.RollOut,
+     *            Event.EventType.Press or Event.EventType.Release.
      * @param info
      *            an SoundInfo object that identifies and controls how the sound
      *            is played.
      */
-    public void setSoundInfo(final ButtonEvent event, final SoundInfo info) {
+    public void setSoundInfo(final Event event, final SoundInfo info) {
         table.put(event, info);
     }
 
@@ -224,7 +225,7 @@ public final class ButtonSound implements MovieTag {
     public int prepareToEncode(final Context context) {
         length = 2;
 
-        for (ButtonEvent event : EVENTS) {
+        for (Event event : EVENTS) {
             if (table.containsKey(event)) {
                 length += table.get(event).prepareToEncode(context);
             } else {
@@ -250,7 +251,7 @@ public final class ButtonSound implements MovieTag {
         coder.mark();
         coder.writeShort(identifier);
 
-        for (ButtonEvent event : EVENTS) {
+        for (Event event : EVENTS) {
             if (table.containsKey(event)) {
                 table.get(event).encode(coder, context);
             } else {
