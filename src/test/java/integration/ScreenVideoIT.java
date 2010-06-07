@@ -31,6 +31,8 @@
 
 package integration;
 
+import static org.junit.Assert.fail;
+
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -61,9 +63,13 @@ public final class ScreenVideoIT {
     @Test
     public void showPNG() throws IOException, DataFormatException {
 
-        final File sourceDir = new File("test/data/png-screenshots");
+        final File sourceDir = new File("src/test/resources/png-screenshots");
         final File destDir = new File(
                 "target/integration-results/ScreenVideo");
+
+        if (!destDir.exists() && !destDir.mkdirs()) {
+            fail();
+        }
 
         final FilenameFilter filter = new FilenameFilter() {
             public boolean accept(final File directory, final String name) {
@@ -88,7 +94,7 @@ public final class ScreenVideoIT {
         int identifier;
 
         final ImageFactory factory = new ImageFactory();
-        factory.read(new File(files[0]));
+        factory.read(new File(sourceDir, files[0]));
         final ImageTag image = factory.defineImage(uid++);
 
         int screenWidth = image.getWidth();
@@ -118,7 +124,7 @@ public final class ScreenVideoIT {
                 blockWidth, blockHeight, prev);
 
         movie.add(Place2.show(identifier, 1, 0, 0));
-        movie.add(new VideoFrame(identifier, 0, packet.encode()));
+        movie.add(new VideoFrame(identifier, 1, packet.encode()));
         movie.add(ShowFrame.getInstance());
 
         Place2 place;
@@ -145,7 +151,7 @@ public final class ScreenVideoIT {
             place.setRatio(i);
 
             movie.add(place);
-            movie.add(new VideoFrame(identifier, i, packet.encode()));
+            movie.add(new VideoFrame(identifier, i + 1, packet.encode()));
             movie.add(ShowFrame.getInstance());
         }
 
