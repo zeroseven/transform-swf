@@ -31,7 +31,9 @@
         
         debug      used to create a debug version of Transform. Debug flags
                    in the source code are enabled and the classes are compiled
-                   with debug information and unoptimised.
+                   with debug information and unoptimised. To build a jar file
+				   execute the targets: clean, debug, jar separately in that 
+				   order.
         
 
     </description>
@@ -43,11 +45,13 @@
 	<property name="package.name" value="transform" />
 	<property name="package.dir" value="com/flagstone/${package.name}" />
 
+    <property name="version" value="3.0" />
+
 	<!-- **********************************************************
          Major targets for compiling and packaging the classes.
      ********************************************************** -->
 
-	<target name="build" depends="clean,classes,jar" 
+	<target name="build" depends="clean,compile,jar" 
 		description="Compile optimized versions for deployment" />
 
 	<!-- *******************************************************************
@@ -65,28 +69,26 @@
 
 		<javac srcdir="${src.dir}" destdir="${build.dir}" 
 			debug="on" optimize="off" source="1.6">
-			<include name="${package.dir}/*.java" />
-			<include name="${package.dir}/util/*.java" />
+			<include name="${package.dir}/**" />
 		</javac>
 
 	</target>
 
-	<target name="classes" 
+	<target name="compile" 
 		description="Compile the transform and utilities classes">
 
 		<mkdir dir="${build.dir}" />
 
 		<javac srcdir="${src.dir}" destdir="${build.dir}" 
 			debug="off" optimize="on" source="1.6">
-			<include name="${package.dir}/*.java" />
-			<include name="${package.dir}/util/*.java" />
+			<include name="${package.dir}/**" />
 		</javac>
 
 	</target>
 
 	<target name="jar" description="Package all of the classes in a JAR file">
 
-		<jar jarfile="${package.name}.jar">
+		<jar jarfile="${package.name}-${version}.jar">
 			<fileset dir="${build.dir}">
 				<include name="${package.dir}/**" />
 			</fileset>
