@@ -125,7 +125,9 @@ public final class PNGImageIT {
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
-            fail(sourceFile.getPath());
+            if (!sourceFile.getName().startsWith("x")) {
+                fail(sourceFile.getPath());
+            }
         }
     }
 }
