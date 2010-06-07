@@ -185,6 +185,15 @@
                   <stylesheetfile>${basedir}/src/main/javadoc/datasheet.css</stylesheetfile>
                   <show>public</show>
 		        </configuration>
+                <executions>
+                  <execution>
+                    <id>generate-datasheets</id>
+                    <phase>verify</phase>
+                    <goals>
+                      <goal>jar</goal>
+                    </goals>
+                  </execution>
+                </executions>
 		    </plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
