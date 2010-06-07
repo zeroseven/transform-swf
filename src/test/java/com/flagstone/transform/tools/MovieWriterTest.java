@@ -55,7 +55,7 @@ public final class MovieWriterTest {
     @BeforeClass
     public static void setUp() {
         if (System.getProperty("test.suite") == null) {
-            srcDir = new File("test/data/swf/reference");
+            srcDir = new File("src/test/resources/swf-reference");
         } else {
             srcDir = new File(System.getProperty("test.suite"));
         }

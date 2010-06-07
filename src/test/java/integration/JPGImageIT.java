@@ -37,6 +37,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.zip.DataFormatException;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -120,6 +121,8 @@ public final class JPGImageIT {
             movie.add(ShowFrame.getInstance());
             movie.encodeToFile(destFile);
 
+        } catch (DataFormatException e) {
+            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
             fail(sourceFile.getPath());

@@ -113,7 +113,7 @@ public final class MorphLineStyleTest {
                 startColor, endColor);
         assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
-
+        encoder.flush();
 
         assertArrayEquals(encoded, stream.toByteArray());
     }

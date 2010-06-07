@@ -38,6 +38,7 @@ import java.io.IOException;
 import java.util.zip.DataFormatException;
 
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.flagstone.transform.Background;
@@ -59,7 +60,7 @@ public final class DefineTextTest {
     public static void initialize() {
         destDir = new File("target/integration-results/Text");
 
-        if (!destDir.mkdirs()) {
+        if (!destDir.exists() && !destDir.mkdirs()) {
             fail();
         }
 
@@ -68,7 +69,7 @@ public final class DefineTextTest {
         //     java.awt.Font.PLAIN, 12));
     }
 
-    @Test
+    @Test @Ignore
     public void defineText() throws IOException, DataFormatException {
         final File destFile = new File(destDir, "defineText.swf");
 
@@ -115,7 +116,7 @@ public final class DefineTextTest {
         movie.encodeToFile(destFile);
     }
 
-    @Test
+    @Test @Ignore
     public void bounds() throws IOException, DataFormatException {
         final File destFile = new File(destDir, "bounds.swf");
 

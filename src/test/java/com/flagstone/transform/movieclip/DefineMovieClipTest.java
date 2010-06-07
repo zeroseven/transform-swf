@@ -102,11 +102,12 @@ public final class DefineMovieClipTest {
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         final SWFEncoder encoder = new SWFEncoder(stream);
         final Context context = new Context();
+        context.put(Context.FRAMES, 0);
 
         fixture = new DefineMovieClip(identifier, list);
         assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
-
+        encoder.flush();
 
         assertArrayEquals(encoded, stream.toByteArray());
     }
@@ -119,6 +120,7 @@ public final class DefineMovieClipTest {
         final DecoderRegistry registry = new DecoderRegistry();
         registry.setMovieDecoder(new MovieDecoder());
         context.setRegistry(registry);
+        context.put(Context.FRAMES, 0);
 
         fixture = new DefineMovieClip(decoder, context);
 
@@ -135,6 +137,7 @@ public final class DefineMovieClipTest {
         final DecoderRegistry registry = new DecoderRegistry();
         registry.setMovieDecoder(new MovieDecoder());
         context.setRegistry(registry);
+        context.put(Context.FRAMES, 0);
 
         fixture = new DefineMovieClip(decoder, context);
 

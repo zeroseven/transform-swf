@@ -37,6 +37,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.zip.DataFormatException;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -63,7 +64,7 @@ public final class BufferedImageIT {
     public static Collection<Object[]> files() {
 
         final File srcDir =
-            new File("src/test/resources/png-reference");
+            new File("src/test/resources/bmp-reference");
         final File destDir =
             new File("target/integration-results/BufferedImage");
 
@@ -73,7 +74,7 @@ public final class BufferedImageIT {
 
         final FilenameFilter filter = new FilenameFilter() {
             public boolean accept(final File directory, final String name) {
-                return name.endsWith(".png");
+                return name.endsWith(".bmp");
             }
         };
 
@@ -130,6 +131,8 @@ public final class BufferedImageIT {
             movie.add(ShowFrame.getInstance());
             movie.encodeToFile(destFile);
 
+        } catch (DataFormatException e) {
+            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
             fail(sourceFile.getPath());

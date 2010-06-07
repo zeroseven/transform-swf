@@ -92,7 +92,7 @@ public final class LineStyleTest {
         fixture = new LineStyle(WIDTH, color);
         assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
-
+        encoder.flush();
 
         assertArrayEquals(encoded, stream.toByteArray());
     }

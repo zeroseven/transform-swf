@@ -828,12 +828,12 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
 
                 try {
                     for (int y = 0; y < height; y++) {
-                        coder.mark();
+//                        coder.mark();
                         for (int x = 0; x < width; x++, index++) {
                             image[index] = (byte) coder.readBits(depth, false);
                         }
-                        coder.alignToWord();
-                        coder.unmark();
+//                        coder.alignToWord();
+//                        coder.unmark();
                     }
                 } catch (IOException e) {
                     throw new DataFormatException();

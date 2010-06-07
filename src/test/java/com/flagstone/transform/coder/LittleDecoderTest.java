@@ -1,5 +1,5 @@
 /*
- * DecoderTest.java
+ * LittleDecoderTest.java
  * Transform
  *
  * Copyright (c) 2001-2010 Flagstone Software Ltd. All rights reserved.
@@ -31,126 +31,123 @@
 
 package com.flagstone.transform.coder;
 
+import org.junit.Ignore;
+import org.junit.Test;
 
-public final class DecoderTest {
-//    private transient Decoder fixture;
-//
-//    @Before
-//    public void setUp() {
-//        fixture = new Decoder(new byte[0]);
-//    }
-//
-//    @Test
-//    public void readBitsForUnsignedNumber() {
-//        fixture = new Decoder(new byte[] {3 });
+public final class LittleDecoderTest {
+    private transient LittleDecoder fixture;
+
+    @Test @Ignore
+    public void readBitsForUnsignedNumber() {
+//        fixture = new LittleDecoder(new byte[] {3 });
 //        fixture.setPointer(6);
 //
 //        assertEquals(3, fixture.readBits(2, false));
 //        assertEquals(8, fixture.getPointer());
-//    }
-//
-//    @Test
-//    public void readBitsForSignedNumber() {
-//        fixture = new Decoder(new byte[] {3 });
+    }
+
+    @Test @Ignore
+    public void readBitsForSignedNumber() {
+//        fixture = new LittleDecoder(new byte[] {3 });
 //        fixture.setPointer(6);
 //
 //        assertEquals(-1, fixture.readBits(2, true));
 //        assertEquals(8, fixture.getPointer());
-//    }
-//
-//    @Test
-//    public void readBitsToEndOfBuffer() {
-//        fixture = new Decoder(new byte[] {3 });
+    }
+
+    @Test @Ignore
+    public void readBitsToEndOfBuffer() {
+//        fixture = new LittleDecoder(new byte[] {3 });
 //        fixture.setPointer(6);
 //
 //        assertEquals(3, fixture.readBits(2, false));
 //        assertEquals(8, fixture.getPointer());
-//    }
-//
-//    @Test(expected = ArrayIndexOutOfBoundsException.class)
-//    public void readBitsBeyondEndOfBuffer() {
-//        fixture = new Decoder(new byte[] {3 });
+    }
+
+    @Test(expected = ArrayIndexOutOfBoundsException.class)  @Ignore
+    public void readBitsBeyondEndOfBuffer() {
+//        fixture = new LittleDecoder(new byte[] {3 });
 //        fixture.setPointer(6);
 //
 //        fixture.readBits(4, true);
-//    }
-//
-//    @Test
-//    public void readBitsAcrossByteBoundary() {
-//        fixture = new Decoder(new byte[] {3, (byte) 0xC0 });
+    }
+
+    @Test @Ignore
+    public void readBitsAcrossByteBoundary() {
+//        fixture = new LittleDecoder(new byte[] {3, (byte) 0xC0 });
 //        fixture.setPointer(6);
 //
 //        assertEquals(-1, fixture.readBits(4, true));
-//    }
-//
-//    @Test
-//    public void readBitsAcrossIntBoundary() {
-//        fixture = new Decoder(new byte[] {0, 0, 0, 3, (byte) 0xC0 });
+    }
+
+    @Test @Ignore
+    public void readBitsAcrossIntBoundary() {
+//        fixture = new LittleDecoder(new byte[] {0, 0, 0, 3, (byte) 0xC0 });
 //        fixture.setPointer(30);
 //
 //        assertEquals(-1, fixture.readBits(4, true));
-//    }
-//
-//    @Test
-//    public void readZeroBits() {
-//        fixture = new Decoder(new byte[] {3 });
+    }
+
+    @Test @Ignore
+    public void readZeroBits() {
+//        fixture = new LittleDecoder(new byte[] {3 });
 //        fixture.setPointer(2);
 //
 //        assertEquals(0, fixture.readBits(0, true));
 //        assertEquals(2, fixture.getPointer());
-//    }
-//
-//    @Test
-//    public void readByte() {
-//        fixture = new Decoder(new byte[] {1, 2 });
+    }
+
+    @Test @Ignore
+    public void readByte() {
+//        fixture = new LittleDecoder(new byte[] {1, 2 });
 //
 //        assertEquals(1, fixture.readByte());
 //        assertEquals(2, fixture.readByte());
-//    }
-//
-//    @Test(expected = ArrayIndexOutOfBoundsException.class)
-//    public void readByteBeyondEndOfBuffer() {
-//        fixture = new Decoder(new byte[] {1, 2 });
+    }
+
+    @Test(expected = ArrayIndexOutOfBoundsException.class) @Ignore
+    public void readByteBeyondEndOfBuffer() {
+//        fixture = new LittleDecoder(new byte[] {1, 2 });
 //
 //        fixture.readByte();
 //        fixture.readByte();
 //        fixture.readByte();
-//    }
-//
-//    @Test
-//    public void readBytes() {
+    }
+
+    @Test @Ignore
+    public void readBytes() {
 //        final byte[] data = new byte[] {1, 2, 3, 4, 5, 6, 7, 8 };
 //        final byte[] buffer = new byte[data.length];
 //
-//        fixture = new Decoder(data);
+//        fixture = new LittleDecoder(data);
 //        fixture.readBytes(buffer);
 //
 //        assertEquals(data.length << 3, fixture.getPointer());
 //        assertArrayEquals(data, buffer);
-//    }
-//
-//    @Test
-//    public void findBitsWithSuccess() {
-//        fixture = new Decoder(new byte[] {0x30 });
+    }
+
+    @Test @Ignore
+    public void findBitsWithSuccess() {
+//        fixture = new LittleDecoder(new byte[] {0x30 });
 //
 //        assertTrue(fixture.findBits(3, 2, 1));
 //        assertEquals(2, fixture.getPointer());
-//    }
-//
-//    @Test
-//    public void findBitsWithoutSuccess() {
-//        fixture = new Decoder(new byte[] {0x0C });
+    }
+
+    @Test @Ignore
+    public void findBitsWithoutSuccess() {
+//        fixture = new LittleDecoder(new byte[] {0x0C });
 //        fixture.setPointer(2);
 //
 //        assertFalse(fixture.findBits(5, 3, 1));
 //        assertEquals(2, fixture.getPointer());
-//    }
-//
-//    @Test
-//    public void findBitsWithSuccessAtEndOfBuffer() {
-//        fixture = new Decoder(new byte[] {0x05 });
+    }
+
+    @Test @Ignore
+    public void findBitsWithSuccessAtEndOfBuffer() {
+//        fixture = new LittleDecoder(new byte[] {0x05 });
 //
 //        assertTrue(fixture.findBits(5, 3, 1));
 //        assertEquals(5, fixture.getPointer());
-//    }
+    }
 }

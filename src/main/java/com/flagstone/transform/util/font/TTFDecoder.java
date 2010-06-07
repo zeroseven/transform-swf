@@ -142,7 +142,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
     public void read(final File file) throws IOException, DataFormatException {
         FileInputStream stream = new FileInputStream(file);
         try {
-            read(stream);
+            read(stream, (int)file.length());
         } finally {
             if (stream != null) {
                 stream.close();
@@ -162,7 +162,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         final InputStream stream = connection.getInputStream();
 
         try {
-            read(stream);
+            read(stream, contentLength);
         } finally {
             if (stream != null) {
                 stream.close();
@@ -175,8 +175,8 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         return fonts;
     }
 
-    public void read(final InputStream stream) throws IOException {
-        final BigDecoder coder = new BigDecoder(stream);
+    public void read(final InputStream stream, final int length) throws IOException {
+        final BigDecoder coder = new BigDecoder(stream, length);
 
         /* float version = */coder.readUI32();
 

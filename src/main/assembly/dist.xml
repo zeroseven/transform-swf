@@ -31,7 +31,7 @@
       </includes>
     </fileSet>
     <fileSet>
-      <directory>${project.build.directory}/site/apidocs</directory>
+      <directory>${project.build.directory}/apidocs</directory>
 	  <outputDirectory>/doc/api</outputDirectory>
       <includes>
         <include>**</include>

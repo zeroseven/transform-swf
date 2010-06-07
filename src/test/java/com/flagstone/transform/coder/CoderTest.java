@@ -31,71 +31,66 @@
 
 package com.flagstone.transform.coder;
 
+import org.junit.Ignore;
+import org.junit.Test;
+
 
 public final class CoderTest {
-//    private transient Decoder fixture;
-//
-//    private transient byte[] data;
-//
-//    @Before
-//    public void setUp() {
-//        fixture = new Decoder(new byte[0]);
-//    }
-//
-//    @Test
-//    public void setStringEncodingToValidCharacterSet() {
+
+    @Test
+    public void setStringEncodingToValidCharacterSet() {
 //        fixture.setEncoding("UTF-8");
 //        assertEquals("UTF-8", fixture.getEncoding());
-//    }
-//
+    }
+
 //    @Test(expected = UnsupportedCharsetException.class)
 //    public void setStringEncodingToInvalidCharacterSet() {
 //        fixture.setEncoding("null");
 //    }
-//
+
 //    @Test(expected = IllegalCharsetNameException.class)
 //    public void setStringEncodingWithEmptyString() {
 //        fixture.setEncoding("");
 //    }
-//
-//    @Test
-//    public void checkSetDataCreatesCopy() {
+
+    @Test @Ignore
+    public void checkSetDataCreatesCopy() {
 //        data = new byte[] {1, 2, 3, 4, 5 };
 //        fixture = new Decoder(data);
 //
 //        assertNotSame(data, fixture.data);
 //        assertArrayEquals(data, fixture.data);
-//    }
-//
-//    @Test
-//    public void checkGetDataCreatesCopy() {
+    }
+
+    @Test @Ignore
+    public void checkGetDataCreatesCopy() {
 //        data = new byte[] {1, 2, 3, 4, 5 };
 //
 //        fixture.data = data;
 //
 //        assertNotSame(data, fixture.getData());
 //        assertArrayEquals(data, fixture.getData());
-//    }
-//
-//    @Test
-//    public void checkAccessorForPointer() {
+    }
+
+    @Test @Ignore
+    public void checkAccessorForPointer() {
 //        data = new byte[] {1, 2, 3, 4 };
 //        fixture = new Decoder(data);
 //        fixture.setPointer(8);
 //
 //        assertEquals(8, fixture.getPointer());
-//    }
-//
-//    @Test
-//    public void checkSetPointerGoesToCorrectLocation() {
+    }
+
+    @Test @Ignore
+    public void checkSetPointerGoesToCorrectLocation() {
 //        fixture = new Decoder(new byte[] {1, 2, 3, 4 });
 //        fixture.setPointer(8);
 //
 //        assertEquals(fixture.data[1], fixture.data[fixture.index]);
-//    }
-//
-//    @Test
-//    public void checkAdjustPointerGoesToCorrectLocation() {
+    }
+
+    @Test @Ignore
+    public void checkAdjustPointerGoesToCorrectLocation() {
 //        fixture = new Decoder(new byte[] {1, 2, 3, 4 });
 //
 //        fixture.adjustPointer(8);
@@ -103,31 +98,31 @@ public final class CoderTest {
 //
 //        fixture.adjustPointer(-8);
 //        assertEquals(0, fixture.getPointer());
-//    }
-//
-//    @Test
-//    public void checkAlignToByteOnByteBoundaryLeavesPointerUnchanged() {
+    }
+
+    @Test @Ignore
+    public void checkAlignToByteOnByteBoundaryLeavesPointerUnchanged() {
 //        fixture = new Decoder(new byte[] {1, 2, 3, 4 });
 //        fixture.setPointer(8);
 //        fixture.alignToByte();
 //
 //        assertEquals(8, fixture.getPointer());
-//    }
-//
-//    @Test
-//    public void checkAlignToByteOnBitBoundaryChangesPointer() {
+    }
+
+    @Test @Ignore
+    public void checkAlignToByteOnBitBoundaryChangesPointer() {
 //        fixture = new Decoder(new byte[] {1, 2, 3, 4 });
 //        fixture.setPointer(9);
 //        fixture.alignToByte();
 //
 //        assertEquals(16, fixture.getPointer());
-//    }
-//
-//    @Test
-//    public void checkPointerIsAtEndOfFile() {
+    }
+
+    @Test @Ignore
+    public void checkPointerIsAtEndOfFile() {
 //        fixture = new Decoder(new byte[] {1, 2, 3, 4 });
 //        fixture.setPointer(32);
 //
 //        assertTrue(fixture.eof());
-//    }
+    }
 }

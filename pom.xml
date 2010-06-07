@@ -7,7 +7,7 @@
 	<version>3.0</version>
 
 	<name>transform</name>
-	<description>Transform is an Open Source framework for reading and writing Flash (.swf) and Flash Video (.flv) files. The API gives you complete control over how files are created with access to all the features supported by the Flash Player but yet is still intuitive and easy to use.</description>
+	<description>Transform is an Open Source framework for reading and writing Flash (.swf) files. The API gives you complete control over how files are created with access to all the features supported by the Flash Player but yet is still intuitive and easy to use.</description>
 	<url>http://www.flagstonesoftware.com/transform/</url>
 	<inceptionYear>2002</inceptionYear>
 
@@ -103,7 +103,7 @@
 				<executions>
 					<execution>
 						<id>create-distribution</id>
-						<phase>package</phase>
+						<phase>install</phase>
 						<goals>
 							<goal>single</goal>
 						</goals>
@@ -186,6 +186,19 @@
                   <show>public</show>
 		        </configuration>
 		    </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-gpg-plugin</artifactId>
+				<executions>
+				  <execution>
+					<id>sign-artifacts</id>
+					<phase>verify</phase>
+					<goals>
+					  <goal>sign</goal>
+					</goals>
+				  </execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 
