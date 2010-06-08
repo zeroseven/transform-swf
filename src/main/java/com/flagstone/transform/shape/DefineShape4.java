@@ -36,7 +36,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.flagstone.transform.DefineTag;
-import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
@@ -63,6 +62,8 @@ public final class DefineShape4 implements DefineTag {
      * or fill styles is encoded in the next 16-bit word.
      */
     private static final int EXTENDED = 255;
+    /** Number of bytes used to encode the number of styles. */
+    private static final int EXTENDED_LENGTH = 3;
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "DefineShape4: { identifier=%d;"
@@ -214,9 +215,9 @@ public final class DefineShape4 implements DefineTag {
 
     /** {@inheritDoc} */
     public void setIdentifier(final int uid) {
-        if ((uid < SWF.MIN_IDENTIFIER) || (uid > SWF.MAX_IDENTIFIER)) {
+        if ((uid < 1) || (uid > Coder.UNSIGNED_SHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    SWF.MIN_IDENTIFIER, SWF.MAX_IDENTIFIER, uid);
+                    1, Coder.UNSIGNED_SHORT_MAX, uid);
         }
         identifier = uid;
     }
@@ -411,12 +412,12 @@ public final class DefineShape4 implements DefineTag {
         }
 
         context.put(Context.TRANSPARENT, 1);
-
+        // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
         length = 3;
         length += shapeBounds.prepareToEncode(context);
         length += edgeBounds.prepareToEncode(context);
 
-        length += (fillStyles.size() >= EXTENDED) ? 3 : 1;
+        length += (fillStyles.size() >= EXTENDED) ? EXTENDED_LENGTH : 1;
 
         for (final FillStyle style : fillStyles) {
             length += style.prepareToEncode(context);
@@ -424,7 +425,7 @@ public final class DefineShape4 implements DefineTag {
 
         context.remove(Context.SCALING_STROKE);
 
-        length += (lineStyles.size() >= EXTENDED) ? 3 : 1;
+        length += (lineStyles.size() >= EXTENDED) ? EXTENDED_LENGTH : 1;
 
         for (final LineStyle2 style : lineStyles) {
             length += style.prepareToEncode(context);

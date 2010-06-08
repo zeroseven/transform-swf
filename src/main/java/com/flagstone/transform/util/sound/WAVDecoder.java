@@ -41,6 +41,7 @@ import java.net.URLConnection;
 import java.util.zip.DataFormatException;
 
 import com.flagstone.transform.MovieTag;
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.LittleDecoder;
 import com.flagstone.transform.sound.DefineSound;
 import com.flagstone.transform.sound.SoundFormat;
@@ -193,6 +194,7 @@ public final class WAVDecoder implements SoundProvider, SoundDecoder {
      *
      * @param coder an SWFDecoder containing the bytes to be decoded.
      *
+     * @throws IOException if there is an error decoding the data.
      * @throws DataFormatException if the block is in a format not supported
      * by this decoder.
      */
@@ -208,7 +210,7 @@ public final class WAVDecoder implements SoundProvider, SoundDecoder {
         sampleRate = coder.readUI32();
         coder.readUI32(); // total data length
         coder.readUI16(); // total bytes per sample
-        sampleSize = coder.readUI16() >> 3;
+        sampleSize = coder.readUI16() >> Coder.BITS_TO_BYTES;
     }
 
     /**
@@ -216,6 +218,7 @@ public final class WAVDecoder implements SoundProvider, SoundDecoder {
      *
      * @param coder an SWFDecoder containing the bytes to be decoded.
      * @param length the length of the block in bytes.
+     * @throws IOException if there is an error decoding the data.
      */
     private void decodeDATA(final LittleDecoder coder, final int length)
             throws IOException {

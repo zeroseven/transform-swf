@@ -36,7 +36,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.flagstone.transform.DefineTag;
-import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
@@ -130,7 +129,7 @@ public final class DefineFont2 implements DefineTag {
 
         final int bits = coder.readByte();
         final boolean containsLayout = (bits & Coder.BIT7) != 0;
-        final int format = (bits & 0x70) >> 4;
+        final int format = (bits >> Coder.TO_LOWER_NIB) & Coder.LOWEST3;
 
         encoding = 0;
 
@@ -138,6 +137,7 @@ public final class DefineFont2 implements DefineTag {
             encoding = 1;
         } else if (format == 2) {
             small = true;
+            // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
         } else if (format == 4) {
             encoding = 2;
         }
@@ -291,9 +291,9 @@ public final class DefineFont2 implements DefineTag {
 
     /** {@inheritDoc} */
     public void setIdentifier(final int uid) {
-        if ((uid < SWF.MIN_IDENTIFIER) || (uid > SWF.MAX_IDENTIFIER)) {
+        if ((uid < 1) || (uid > Coder.UNSIGNED_SHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    SWF.MIN_IDENTIFIER, SWF.MAX_IDENTIFIER, uid);
+                    1, Coder.UNSIGNED_SHORT_MAX, uid);
         }
         identifier = uid;
     }
@@ -310,8 +310,9 @@ public final class DefineFont2 implements DefineTag {
      * @return this object.
      */
     public DefineFont2 addGlyph(final int code, final Shape obj) {
-        if ((code < 0) || (code > SWF.MAX_CHARACTER)) {
-            throw new IllegalArgumentRangeException(0, SWF.MAX_CHARACTER, code);
+        if ((code < 0) || (code > Coder.UNSIGNED_SHORT_MAX)) {
+            throw new IllegalArgumentRangeException(
+                    0, Coder.UNSIGNED_SHORT_MAX, code);
         }
         codes.add(code);
 
@@ -333,9 +334,10 @@ public final class DefineFont2 implements DefineTag {
      * @return this object.
      */
     public DefineFont2 addAdvance(final int anAdvance) {
-        if ((anAdvance < SWF.MIN_ADVANCE) || (anAdvance > SWF.MAX_ADVANCE)) {
+        if ((anAdvance < Coder.SIGNED_SHORT_MIN)
+                || (anAdvance > Coder.SIGNED_SHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    SWF.MIN_ADVANCE, SWF.MAX_ADVANCE, anAdvance);
+                    Coder.SIGNED_SHORT_MIN, Coder.SIGNED_SHORT_MAX, anAdvance);
         }
         advances.add(anAdvance);
         return this;
@@ -655,9 +657,10 @@ public final class DefineFont2 implements DefineTag {
      *            the ascent for the font in the range -32768..32767.
      */
     public void setAscent(final int aNumber) {
-        if ((aNumber < SWF.MIN_ASCENT) || (aNumber > SWF.MAX_ASCENT)) {
+        if ((aNumber < Coder.SIGNED_SHORT_MIN)
+                || (aNumber > Coder.SIGNED_SHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    SWF.MIN_ASCENT, SWF.MAX_ASCENT, aNumber);
+                    Coder.SIGNED_SHORT_MIN, Coder.SIGNED_SHORT_MAX, aNumber);
         }
         ascent = aNumber;
     }
@@ -669,9 +672,10 @@ public final class DefineFont2 implements DefineTag {
      *            the descent for the font in the range -32768..32767.
      */
     public void setDescent(final int aNumber) {
-        if ((aNumber < SWF.MIN_DESCENT) || (aNumber > SWF.MAX_DESCENT)) {
+        if ((aNumber < Coder.SIGNED_SHORT_MIN)
+                || (aNumber > Coder.SIGNED_SHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    SWF.MIN_DESCENT, SWF.MAX_DESCENT, aNumber);
+                    Coder.SIGNED_SHORT_MIN, Coder.SIGNED_SHORT_MAX, aNumber);
         }
         descent = aNumber;
     }
@@ -683,9 +687,10 @@ public final class DefineFont2 implements DefineTag {
      *            the descent for the font in the range -32768..32767.
      */
     public void setLeading(final int aNumber) {
-        if ((aNumber < SWF.MIN_LEADING) || (aNumber > SWF.MAX_LEADING)) {
+        if ((aNumber < Coder.SIGNED_SHORT_MIN)
+                || (aNumber > Coder.SIGNED_SHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    SWF.MIN_LEADING, SWF.MAX_LEADING, aNumber);
+                    Coder.SIGNED_SHORT_MIN, Coder.SIGNED_SHORT_MAX, aNumber);
         }
         leading = aNumber;
     }
@@ -747,6 +752,7 @@ public final class DefineFont2 implements DefineTag {
     // TODO(optimise)
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
+        // CHECKSTYLE:OFF
         wideCodes = (context.get(Context.VERSION) > 5)
                 || encoding != 1;
 
@@ -782,7 +788,8 @@ public final class DefineFont2 implements DefineTag {
 
         table[index++] = tableEntry;
 
-        wideOffsets = (shapes.size() * 2 + glyphLength) > 65535;
+        wideOffsets = (shapes.size() * 2 + glyphLength)
+                > Coder.UNSIGNED_SHORT_MAX;
 
         length = 5;
         length += context.strlen(name);
@@ -810,6 +817,7 @@ public final class DefineFont2 implements DefineTag {
 
         return (length > Coder.SHORT_HEADER_LIMIT ? Coder.LONG_HEADER
                 : Coder.SHORT_HEADER) + length;
+        // CHECKSTYLE:ON
     }
 
     // TODO(optimise)
@@ -822,6 +830,7 @@ public final class DefineFont2 implements DefineTag {
         } else if (small) {
             format = 2;
         } else if (encoding == 2) {
+            // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
             format = 4;
         } else {
             format = 0;
@@ -847,7 +856,7 @@ public final class DefineFont2 implements DefineTag {
 
         int bits = 0;
         bits |= containsLayoutInfo() ? Coder.BIT7 : 0;
-        bits |= format << 4;
+        bits |= format << Coder.TO_UPPER_NIB;
         bits |= wideOffsets ? Coder.BIT3 : 0;
         bits |= wideCodes ? Coder.BIT2 : 0;
         bits |= italic ? Coder.BIT1 : 0;

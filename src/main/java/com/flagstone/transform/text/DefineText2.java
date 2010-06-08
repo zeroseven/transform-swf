@@ -36,7 +36,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.flagstone.transform.DefineTag;
-import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
@@ -116,7 +115,9 @@ public final class DefineText2 implements DefineTag {
          * is unknown but seems to be related to the bounds not being set - all
          * values are zero.
          */
-        if (coder.count(0) == 16) {
+
+        // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 2 LINES
+        if (coder.count(0) >= 16) {
             coder.skip(16);
         }
 
@@ -192,9 +193,9 @@ public final class DefineText2 implements DefineTag {
 
     /** {@inheritDoc} */
     public void setIdentifier(final int uid) {
-        if ((uid < SWF.MIN_IDENTIFIER) || (uid > SWF.MAX_IDENTIFIER)) {
+        if ((uid < 1) || (uid > Coder.UNSIGNED_SHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    SWF.MIN_IDENTIFIER, SWF.MAX_IDENTIFIER, uid);
+                    1, Coder.UNSIGNED_SHORT_MAX, uid);
         }
         identifier = uid;
     }

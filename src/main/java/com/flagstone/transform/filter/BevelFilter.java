@@ -34,6 +34,7 @@ package com.flagstone.transform.filter;
 import java.io.IOException;
 
 import com.flagstone.transform.SWF;
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -52,6 +53,8 @@ public final class BevelFilter implements Filter {
      * fixed point values..
      */
     private static final float SCALE_8 = 256.0f;
+
+    private static final int MODE_MASK = 0x00D0;
 
     /** TODO(class). */
     public static final class Builder {
@@ -97,13 +100,13 @@ public final class BevelFilter implements Filter {
         public Builder setMode(final FilterMode filterMode) {
             switch (filterMode) {
             case TOP:
-                 mode = 0x0030;
+                 mode = Coder.BIT4;
                 break;
             case KNOCKOUT:
-                mode = 0x0060;
+                mode = Coder.BIT6;
                 break;
             case INNER:
-                mode = 0x00A0;
+                mode = Coder.BIT7;
                 break;
             default:
                 throw new IllegalArgumentException();
@@ -143,8 +146,8 @@ public final class BevelFilter implements Filter {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "BevelFilter: {"
-            + " shadow=%s; highlight=%s; blurX=%f; blurY=%f"
-            + " angle=%f; disance=%f, strength=%f; mode=%s; passes=%d}";
+            + " shadow=%s; highlight=%s; blurX=%f; blurY=%f;"
+            + " angle=%f; distance=%f; strength=%f; mode=%s; passes=%d;}";
 
     /** The shadow colour. */
     private final transient Color shadow;
@@ -204,8 +207,8 @@ public final class BevelFilter implements Filter {
 
         final int value = coder.readByte();
 
-        passes = value & 0x0F;
-        mode = (value & 0x0D) >>> 4;
+        passes = value & Coder.NIB0;
+        mode = value & MODE_MASK;
     }
 
 
@@ -247,13 +250,13 @@ public final class BevelFilter implements Filter {
     public FilterMode getMode() {
         FilterMode value;
         switch (mode) {
-        case 0x0030:
+        case Coder.BIT4:
             value = FilterMode.TOP;
             break;
-        case 0x0060:
+        case Coder.BIT6:
             value = FilterMode.KNOCKOUT;
             break;
-        case 0x00A0:
+        case Coder.BIT7:
             value = FilterMode.INNER;
             break;
         default:
@@ -315,6 +318,7 @@ public final class BevelFilter implements Filter {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
+        // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
         return 28;
     }
 
@@ -329,6 +333,6 @@ public final class BevelFilter implements Filter {
         coder.writeInt(angle);
         coder.writeInt(distance);
         coder.writeShort(strength);
-        coder.writeByte(mode | passes);
+        coder.writeByte(Coder.BIT5 | mode | passes);
     }
 }

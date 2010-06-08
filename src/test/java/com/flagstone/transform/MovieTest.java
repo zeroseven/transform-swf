@@ -30,21 +30,16 @@
  */
 package com.flagstone.transform;
 
-import static org.junit.Assert.assertTrue;
-
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.flagstone.transform.coder.SWFDecoder;
-
 public final class MovieTest {
 
-    private transient Movie fixture;
-
-    private final transient byte[] encoded = new byte[] {};
+//    private transient Movie fixture;
+//
+//    private final transient byte[] encoded = new byte[] {};
 
     @Test
     @Ignore //TODO(implement)
@@ -59,18 +54,18 @@ public final class MovieTest {
         // SWFEncoder encoder = new SWFEncoder(encoded.length);
         // Context context = new Context();
 
-        fixture = new Movie();
+//        fixture = new Movie();
     }
 
     @Test
     @Ignore //TODO(implement)
     public void decode() throws IOException {
-        final ByteArrayInputStream stream = new ByteArrayInputStream(encoded);
-        final SWFDecoder decoder = new SWFDecoder(stream);
-        // Context context = new Context();
-
-        fixture = new Movie();
-
-        assertTrue(true);
+//        final ByteArrayInputStream stream = new ByteArrayInputStream(encoded);
+//        final SWFDecoder decoder = new SWFDecoder(stream);
+//        // Context context = new Context();
+//
+//        fixture = new Movie();
+//
+//        assertTrue(true);
     }
 }

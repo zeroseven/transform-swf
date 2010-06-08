@@ -91,7 +91,7 @@ public final class Place2CodingTest extends AbstractCodingTest {
         final int layer = 1;
         final int identifier = 2;
         final CoordTransform position = CoordTransform.translate(1, 2);
-        final ColorTransform color = new ColorTransform(1,2,3,4);
+        final ColorTransform color = new ColorTransform(1, 2, 3, 4);
 
         final byte[] binary = new byte[] {(byte) 0x8A, 0x06, 0x0E, 0x01, 0x00,
                 0x02, 0x00, 0x06, 0x50, (byte) 0x90, 0x48, (byte) 0xD0 };

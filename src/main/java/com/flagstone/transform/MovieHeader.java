@@ -46,6 +46,8 @@ public final class MovieHeader implements MovieTag {
     private static final String FORMAT = "Header: { version=%d; compressed=%b;"
     		+ " frameSize=%s; frameRate=%f; frameCount=%d; }";
 
+    private static final float SCALE_8 = 256.0f;
+
     /** The Flash version number. */
     private int version;
     /** The Flash Player screen coordinates. */
@@ -68,10 +70,15 @@ public final class MovieHeader implements MovieTag {
      * @param coder
      *            an SWFDecoder object that contains the encoded Flash data.
      *
+     * @param context
+     *            a Context object used to manage the decoders for different
+     *            type of object and to pass information on how objects are
+     *            decoded.
+     *
      * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    public MovieHeader(final SWFDecoder coder, Context context)
+    public MovieHeader(final SWFDecoder coder, final Context context)
             throws IOException {
         version = context.get(Context.VERSION);
         compressed = context.get(Context.COMPRESSED) == 1;
@@ -161,7 +168,7 @@ public final class MovieHeader implements MovieTag {
      * @return the movie frame rate.
      */
     public float getFrameRate() {
-        return frameRate / 256.0f;
+        return frameRate / SCALE_8;
     }
 
     /**
@@ -172,7 +179,7 @@ public final class MovieHeader implements MovieTag {
      *            the number of frames per second that the movie is played.
      */
     public void setFrameRate(final float rate) {
-        frameRate = (int) (rate * 256);
+        frameRate = (int) (rate * SCALE_8);
     }
 
     public float getFrameCount() {
@@ -205,6 +212,7 @@ public final class MovieHeader implements MovieTag {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
+        // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
         return 4 + frameSize.prepareToEncode(context);
     }
 

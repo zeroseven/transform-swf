@@ -36,7 +36,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.flagstone.transform.MovieTag;
-import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
@@ -128,20 +127,18 @@ public final class FontInfo implements MovieTag {
 
         final int bits = coder.readByte();
         small = (bits & Coder.BIT5) != 0;
-        encoding = (bits & 0x1C) >> 3;
+        // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
+        encoding = (bits >> 3) & Coder.LOWEST3;
         italic = (bits & Coder.BIT2) != 0;
         bold = (bits & Coder.BIT1) != 0;
         wideCodes = (bits & Coder.BIT0) != 0;
 
-        int bytesRead = 3 + nameLength + 1;
-
         if (wideCodes) {
-            while (bytesRead < length) {
+            while (coder.bytesRead() < length) {
                 codes.add(coder.readUnsignedShort());
-                bytesRead += 2;
             }
         } else {
-            while (bytesRead++ < length) {
+            while (coder.bytesRead() < length) {
                 codes.add(coder.readByte());
             }
         }
@@ -292,9 +289,9 @@ public final class FontInfo implements MovieTag {
      *            glyphs for the font. Must be in the range 1..65535.
      */
     public void setIdentifier(final int uid) {
-        if ((uid < SWF.MIN_IDENTIFIER) || (uid > SWF.MAX_IDENTIFIER)) {
+        if ((uid < 1) || (uid > Coder.UNSIGNED_SHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    SWF.MIN_IDENTIFIER, SWF.MAX_IDENTIFIER, uid);
+                    1, Coder.UNSIGNED_SHORT_MAX, uid);
         }
         identifier = uid;
     }
@@ -369,9 +366,9 @@ public final class FontInfo implements MovieTag {
      *            a code for a glyph. Must be in the range 0..65535.
      */
     public void addCode(final int aCode) {
-        if ((aCode < 0) || (aCode > SWF.MAX_CHARACTER)) {
+        if ((aCode < 0) || (aCode > Coder.UNSIGNED_SHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    0, SWF.MAX_CHARACTER, aCode);
+                    0, Coder.UNSIGNED_SHORT_MAX, aCode);
         }
         codes.add(aCode);
     }
@@ -444,6 +441,7 @@ public final class FontInfo implements MovieTag {
         coder.writeString(name);
         int bits = 0;
         bits |= small ? Coder.BIT5 : 0;
+        // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
         bits |= encoding << 3;
         bits |= italic ? Coder.BIT2 : 0;
         bits |= bold ? Coder.BIT1 : 0;

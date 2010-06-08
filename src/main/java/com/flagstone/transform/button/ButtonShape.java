@@ -37,7 +37,6 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
-import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
@@ -135,7 +134,7 @@ public final class ButtonShape implements SWFEncodeable {
         final int bits = coder.readByte();
         hasBlend = (bits & Coder.BIT5) != 0;
         hasFilters = (bits & Coder.BIT4) != 0;
-        state = bits & 0x0F;
+        state = bits & Coder.NIB0;
 
         identifier = coder.readUnsignedShort();
         layer = coder.readUnsignedShort();
@@ -196,16 +195,16 @@ public final class ButtonShape implements SWFEncodeable {
     public Set<ButtonState> getState() {
         final Set<ButtonState> set = EnumSet.noneOf(ButtonState.class);
 
-        if ((state & 0x01) != 0) {
+        if ((state & Coder.BIT0) != 0) {
             set.add(ButtonState.UP);
         }
-        if ((state & 0x02) != 0) {
+        if ((state & Coder.BIT1) != 0) {
             set.add(ButtonState.OVER);
         }
-        if ((state & 0x04) != 0) {
+        if ((state & Coder.BIT2) != 0) {
             set.add(ButtonState.DOWN);
         }
-        if ((state & 0x08) != 0) {
+        if ((state & Coder.BIT3) != 0) {
             set.add(ButtonState.ACTIVE);
         }
         return set;
@@ -216,16 +215,16 @@ public final class ButtonShape implements SWFEncodeable {
         for (final ButtonState buttonState : states) {
             switch (buttonState) {
             case UP:
-                state |= 1;
+                state |= Coder.BIT0;
                 break;
             case OVER:
-                state |= 2;
+                state |= Coder.BIT2;
                 break;
             case DOWN:
-                state |= 4;
+                state |= Coder.BIT3;
                 break;
             case ACTIVE:
-                state |= 8;
+                state |= Coder.BIT4;
                 break;
             default:
                 throw new IllegalArgumentException();
@@ -254,9 +253,9 @@ public final class ButtonShape implements SWFEncodeable {
      * @return this object.
      */
     public ButtonShape setIdentifier(final int uid) {
-        if ((uid < SWF.MIN_IDENTIFIER) || (uid > SWF.MAX_IDENTIFIER)) {
+        if ((uid < 1) || (uid > Coder.UNSIGNED_SHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    SWF.MIN_IDENTIFIER, SWF.MAX_IDENTIFIER, uid);
+                    1, Coder.UNSIGNED_SHORT_MAX, uid);
         }
         identifier = uid;
         return this;
@@ -280,8 +279,9 @@ public final class ButtonShape implements SWFEncodeable {
      * @return this object.
      */
     public ButtonShape setLayer(final int aNumber) {
-        if ((aNumber < 1) || (aNumber > SWF.MAX_LAYER)) {
-            throw new IllegalArgumentRangeException(1, SWF.MAX_LAYER, aNumber);
+        if ((aNumber < 1) || (aNumber > Coder.UNSIGNED_SHORT_MAX)) {
+            throw new IllegalArgumentRangeException(
+                    1, Coder.UNSIGNED_SHORT_MAX, aNumber);
         }
         layer = aNumber;
         return this;
@@ -396,6 +396,7 @@ public final class ButtonShape implements SWFEncodeable {
         hasBlend = blend != 0;
         hasFilters ^= filters.isEmpty();
 
+        // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
         int length = 5 + transform.prepareToEncode(context);
 
         if (context.get(Context.TYPE)

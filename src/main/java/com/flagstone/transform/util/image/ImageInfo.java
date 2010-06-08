@@ -264,7 +264,7 @@ public final class ImageInfo {
     private DataInput din;
     private boolean collectComments = true;
     private Vector<String> comments;
-    private boolean determineNumberOfImages;
+//    private boolean determineNumberOfImages;
     private int numberOfImages;
     private int physicalHeightDpi;
     private int physicalWidthDpi;
@@ -304,7 +304,7 @@ public final class ImageInfo {
                 return checkJpeg();
             } else if ((b1 == 0x42) && (b2 == 0x4d)) {
                 return checkBmp();
-            } else if ((b1 == 0x0a) && (b2 < 0x06)) {
+                /* } else if ((b1 == 0x0a) && (b2 < 0x06)) {
                 return false; //checkPcx();
             } else if ((b1 == 0x46) && (b2 == 0x4f)) {
                 return false; //checkIff();
@@ -313,7 +313,7 @@ public final class ImageInfo {
             } else if ((b1 == 0x50) && (b2 >= 0x31) && (b2 <= 0x36)) {
                 return false; //checkPnm(b2 - '0');
             } else if ((b1 == 0x38) && (b2 == 0x42)) {
-                return false; //checkPsd();
+                return false; //checkPsd();  */
             } else {
                 return false;
             }
@@ -354,8 +354,8 @@ public final class ImageInfo {
 //    private boolean checkGif() throws IOException {
 //        final byte[] gifmagic87a = { 0x46, 0x38, 0x37, 0x61 };
 //        final byte[] gifmagic89a = { 0x46, 0x38, 0x39, 0x61 };
-//        final byte[] a = new byte[11]; // 4 from the GIF signature + 7 from the
-//                                        // global
+//        final byte[] a = new byte[11]; // 4 from the GIF signature + 7 from
+//                                        // the global
 //        // header
 //        if (read(a) != 11) {
 //            return false;
@@ -581,7 +581,8 @@ public final class ImageInfo {
 //        final int bits = a[1];
 //        final int planes = a[63];
 //        if ((planes == 1)
-//                && ((bits == 1) || (bits == 2) || (bits == 4) || (bits == 8))) {
+//                && ((bits == 1) || (bits == 2)
+//                  || (bits == 4) || (bits == 8))) {
 //            // paletted
 //            bitsPerPixel = bits;
 //        } else if ((planes == 3) && (bits == 8)) {
@@ -987,7 +988,7 @@ public final class ImageInfo {
      */
     public static void main(final String[] args) {
         final ImageInfo imageInfo = new ImageInfo();
-        imageInfo.setDetermineImageNumber(true);
+//        imageInfo.setDetermineImageNumber(true);
         final boolean verbose = determineVerbosity(args);
         if (args.length == 0) {
             run(null, System.in, imageInfo, verbose);
@@ -1012,7 +1013,8 @@ public final class ImageInfo {
                             in.close();
                         }
                     } catch (final IOException ee) {
-                        // Swallow - BAD
+                        //TODO Fix
+                        ee.printStackTrace();
                     }
                 }
             }
@@ -1124,26 +1126,26 @@ public final class ImageInfo {
         }
     }
 
-    private String readLine() throws IOException {
-        return readLine(new StringBuilder());
-    }
+//    private String readLine() throws IOException {
+//        return readLine(new StringBuilder());
+//    }
 
-    private String readLine(final StringBuilder sb) throws IOException {
-        boolean finished;
-        do {
-            final int value = read();
-            finished = ((value == -1) || (value == 10));
-            if (!finished) {
-                sb.append((char) value);
-            }
-        } while (!finished);
-        return sb.toString();
-    }
+//    private String readLine(final StringBuilder sb) throws IOException {
+//        boolean finished;
+//        do {
+//            final int value = read();
+//            finished = ((value == -1) || (value == 10));
+//            if (!finished) {
+//                sb.append((char) value);
+//            }
+//        } while (!finished);
+//        return sb.toString();
+//    }
 
     private static void run(final String sourceName, final InputStream in,
             final ImageInfo imageInfo, final boolean verbose) {
         imageInfo.setInput(in);
-        imageInfo.setDetermineImageNumber(true);
+//        imageInfo.setDetermineImageNumber(true);
         imageInfo.setCollectComments(verbose);
 //        if (imageInfo.check()) {
 //            print(sourceName, imageInfo, verbose);
@@ -1177,9 +1179,9 @@ public final class ImageInfo {
      *            will the number of images be determined?
      * @see #getNumberOfImages
      */
-    public void setDetermineImageNumber(final boolean newValue) {
-        determineNumberOfImages = newValue;
-    }
+//    public void setDetermineImageNumber(final boolean newValue) {
+//        determineNumberOfImages = newValue;
+//    }
 
     /**
      * Set the input stream to the argument stream (or file). Note that

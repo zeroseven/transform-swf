@@ -32,9 +32,7 @@
 package com.flagstone.transform.filter;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
@@ -42,7 +40,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
 public final class ColorMatrixFilterTest {
@@ -52,8 +49,8 @@ public final class ColorMatrixFilterTest {
     private final transient byte[] encoded = new byte[] {0x06, 0x01, 0x01,
             0x00, 0x02, 0x00, 0x06, 0x50 };
 
-    private final transient byte[] extended = new byte[] {0x7F, 0x01, 0x06,
-            0x00, 0x00, 0x00, 0x01, 0x00, 0x02, 0x00, 0x06, 0x50 };
+//    private final transient byte[] extended = new byte[] {0x7F, 0x01, 0x06,
+//            0x00, 0x00, 0x00, 0x01, 0x00, 0x02, 0x00, 0x06, 0x50 };
 
     @Test
     @Ignore //TODO(implement)
@@ -72,25 +69,26 @@ public final class ColorMatrixFilterTest {
     @Test
     @Ignore //TODO(implement)
     public void decode() throws IOException {
-        final ByteArrayInputStream stream = new ByteArrayInputStream(encoded);
-        final SWFDecoder decoder = new SWFDecoder(stream);
-
-        // Context context = new Context();
-
-        // fixture = new ColorMatrixFilter(decoder, context);
-
-        assertTrue(true);
+//        final ByteArrayInputStream stream = new ByteArrayInputStream(encoded);
+//        final SWFDecoder decoder = new SWFDecoder(stream);
+//
+//        // Context context = new Context();
+//
+//        // fixture = new ColorMatrixFilter(decoder, context);
+//
+//        assertTrue(true);
     }
 
     @Test
     @Ignore //TODO(implement)
     public void decodeExtended() throws IOException {
-        final ByteArrayInputStream stream = new ByteArrayInputStream(extended);
-        final SWFDecoder decoder = new SWFDecoder(stream);
-        // Context context = new Context();
-
-        // fixture = new ColorMatrixFilter(decoder, context);
-
-        assertTrue(true);
+//        final ByteArrayInputStream stream =
+//               new ByteArrayInputStream(extended);
+//        final SWFDecoder decoder = new SWFDecoder(stream);
+//        // Context context = new Context();
+//
+//        // fixture = new ColorMatrixFilter(decoder, context);
+//
+//        assertTrue(true);
     }
 }

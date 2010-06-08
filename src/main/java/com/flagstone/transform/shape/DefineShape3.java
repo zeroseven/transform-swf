@@ -34,7 +34,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.flagstone.transform.DefineTag;
-import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
@@ -61,6 +60,8 @@ public final class DefineShape3 implements DefineTag {
      * or fill styles is encoded in the next 16-bit word.
      */
     private static final int EXTENDED = 255;
+    /** Number of bytes used to encode the number of styles. */
+    private static final int EXTENDED_LENGTH = 3;
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "DefineShape3: { identifier=%d;"
@@ -205,9 +206,9 @@ public final class DefineShape3 implements DefineTag {
 
     /** {@inheritDoc} */
     public void setIdentifier(final int uid) {
-        if ((uid < SWF.MIN_IDENTIFIER) || (uid > SWF.MAX_IDENTIFIER)) {
+        if ((uid < 1) || (uid > Coder.UNSIGNED_SHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    SWF.MIN_IDENTIFIER, SWF.MAX_IDENTIFIER, uid);
+                    1, Coder.UNSIGNED_SHORT_MAX, uid);
         }
         identifier = uid;
     }
@@ -381,13 +382,13 @@ public final class DefineShape3 implements DefineTag {
 
         length = 2 + bounds.prepareToEncode(context);
 
-        length += (fillStyles.size() >= EXTENDED) ? 3 : 1;
+        length += (fillStyles.size() >= EXTENDED) ? EXTENDED_LENGTH : 1;
 
         for (final FillStyle style : fillStyles) {
             length += style.prepareToEncode(context);
         }
 
-        length += (lineStyles.size() >= EXTENDED) ? 3 : 1;
+        length += (lineStyles.size() >= EXTENDED) ? EXTENDED_LENGTH : 1;
 
         for (final LineStyle style : lineStyles) {
             length += style.prepareToEncode(context);
@@ -437,7 +438,7 @@ public final class DefineShape3 implements DefineTag {
             style.encode(coder, context);
         }
 
-        if (lineStyles.size() >= 255) {
+        if (lineStyles.size() >= EXTENDED) {
             coder.writeByte(EXTENDED);
             coder.writeShort(lineStyles.size());
         } else {

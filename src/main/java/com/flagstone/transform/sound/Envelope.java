@@ -31,11 +31,12 @@
 
 package com.flagstone.transform.sound;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.flagstone.transform.SWF;
-import java.io.IOException;
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
@@ -116,13 +117,15 @@ public final class Envelope implements SWFEncodeable {
 
             mark = markValue;
 
-            if ((leftValue < 0) || (leftValue > 65535)) {
-                throw new IllegalArgumentRangeException(0, 65535, leftValue);
+            if ((leftValue < 0) || (leftValue > Coder.UNSIGNED_SHORT_MAX)) {
+                throw new IllegalArgumentRangeException(0,
+                        Coder.UNSIGNED_SHORT_MAX, leftValue);
             }
             left = leftValue;
 
-            if ((rightValue < 0) || (rightValue > 65535)) {
-                throw new IllegalArgumentRangeException(0, 65535, rightValue);
+            if ((rightValue < 0) || (rightValue > Coder.UNSIGNED_SHORT_MAX)) {
+                throw new IllegalArgumentRangeException(0,
+                        Coder.UNSIGNED_SHORT_MAX, rightValue);
             }
             right = rightValue;
         }
@@ -186,6 +189,7 @@ public final class Envelope implements SWFEncodeable {
 
         /** {@inheritDoc} */
         public int prepareToEncode(final Context context) {
+            // CHECKSTYLE IGNORE MagciNumberCheck FOR NEXT 1 LINES
             return 8;
         }
 
@@ -284,6 +288,7 @@ public final class Envelope implements SWFEncodeable {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
+        // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 2 LINES
         count = levels.size();
         return 1 + (count << 3);
     }

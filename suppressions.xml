@@ -14,6 +14,16 @@
     <suppress checks="MagicNumberCheck"
               files="ImageInfo.java"/>
     <suppress checks="JavadocPackageCheck"
+              files=".*IT\.java"/>
+    <suppress checks="JavadocTypeCheck"
+              files=".*IT\.java"/>
+    <suppress checks="JavadocMethodCheck"
+              files=".*IT\.java"/>
+    <suppress checks="JavadocVariableCheck"
+              files=".*IT\.java"/>
+    <suppress checks="MagicNumberCheck"
+              files=".*IT\.java"/>
+    <suppress checks="JavadocPackageCheck"
               files=".*Tests?\.java"/>
     <suppress checks="JavadocTypeCheck"
               files=".*Tests?\.java"/>

@@ -34,6 +34,7 @@ package com.flagstone.transform.filter;
 import java.io.IOException;
 
 import com.flagstone.transform.SWF;
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -73,14 +74,11 @@ public final class GlowFilter implements Filter {
 
         public Builder setMode(final FilterMode filterMode) {
             switch (filterMode) {
-            case TOP:
-                 mode = 0x0030;
-                break;
             case KNOCKOUT:
-                mode = 0x0060;
+                mode = Coder.BIT6;
                 break;
             case INNER:
-                mode = 0x00A0;
+                mode = Coder.BIT7;
                 break;
             default:
                 throw new IllegalArgumentException();
@@ -116,6 +114,8 @@ public final class GlowFilter implements Filter {
      * fixed point values..
      */
     private static final float SCALE_8 = 256.0f;
+
+    private static final int MODE_MASK = 0x00E0;
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "GlowFilter: { "
@@ -165,11 +165,9 @@ public final class GlowFilter implements Filter {
         blurX = coder.readInt();
         blurY = coder.readInt();
         strength = coder.readSignedShort();
-
         final int value = coder.readByte();
-
-        passes = value & 0x0F;
-        mode = (value & 0x0D) >>> 4;
+        passes = value & Coder.LOWEST5;
+        mode = value & MODE_MASK;
     }
 
 
@@ -196,10 +194,10 @@ public final class GlowFilter implements Filter {
     public FilterMode getMode() {
         FilterMode value;
         switch (mode) {
-        case 0x0060:
+        case Coder.BIT6:
             value = FilterMode.KNOCKOUT;
             break;
-        case 0x00A0:
+        case Coder.BIT7:
             value = FilterMode.INNER;
             break;
         default:
@@ -251,9 +249,8 @@ public final class GlowFilter implements Filter {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
-// CHECKSTYLE:OFF
+        // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
         return 16;
-// CHECKSTYLE:ON
     }
 
     /** {@inheritDoc} */
@@ -264,6 +261,6 @@ public final class GlowFilter implements Filter {
         coder.writeInt(blurX);
         coder.writeInt(blurY);
         coder.writeShort(strength);
-        coder.writeByte(mode | passes);
+        coder.writeByte(Coder.BIT5 | mode | passes);
     }
 }

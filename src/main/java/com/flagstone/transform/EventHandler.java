@@ -131,6 +131,9 @@ public final class EventHandler implements SWFEncodeable {
     private static final String FORMAT = "EventHandler: { events=%s;"
             + " key=%s; actions=%s }";
 
+    /** Version og Flash that supports the extended event model. */
+    private static final int VERSION_WITH_EXT_EVENTS = 6;
+
     /** Number of bits to shift key code for encoding with event flags. */
     private static final int KEY_OFFSET = 9;
     /** Bit mask for key field. */
@@ -138,92 +141,115 @@ public final class EventHandler implements SWFEncodeable {
     /** Bit mask for key field. */
     private static final int EVENT_MASK = 0x01FF;
 
-    private static final Map<Event,Integer>clipCodes;
-    private static final Map<Event,Integer>buttonCodes;
-    private static final Map<Event,Integer>menuCodes;
+    private static final int NUM_BUTTON_EVENTS = 9;
+    private static final int NUM_CLIP_EVENTS = 19;
 
-    private static final Map<Integer, Event>clipEvents;
-    private static final Map<Integer, Event>buttonEvents;
-    private static final Map<Integer, Event>menuEvents;
+    private static final int BIT0 = 1;
+    private static final int BIT1 = 2;
+    private static final int BIT2 = 4;
+    private static final int BIT3 = 8;
+    private static final int BIT4 = 16;
+    private static final int BIT5 = 32;
+    private static final int BIT6 = 64;
+    private static final int BIT7 = 128;
+    private static final int BIT8 = 256;
+    private static final int BIT9 = 512;
+    private static final int BIT10 = 1024;
+    private static final int BIT11 = 2048;
+    private static final int BIT12 = 4096;
+    private static final int BIT13 = 8192;
+    private static final int BIT14 = 16384;
+    private static final int BIT15 = 32768;
+    private static final int BIT16 = 65536;
+    private static final int BIT17 = 131072;
+    private static final int BIT18 = 262144;
+
+    private static final Map<Event, Integer> CLIP_CODES;
+    private static final Map<Event, Integer> BUTTON_CODES;
+    private static final Map<Event, Integer> MENU_CODES;
+
+    private static final Map<Integer, Event> CLIP_EVENTS;
+    private static final Map<Integer, Event> BUTTON_EVENTS;
+    private static final Map<Integer, Event> MENU_EVENTS;
 
     static {
-        clipCodes = new LinkedHashMap<Event, Integer>();
-        clipCodes.put(Event.LOAD, 1);
-        clipCodes.put(Event.ENTER_FRAME, 2);
-        clipCodes.put(Event.UNLOAD, 4);
-        clipCodes.put(Event.MOUSE_MOVE, 8);
-        clipCodes.put(Event.MOUSE_DOWN, 16);
-        clipCodes.put(Event.MOUSE_UP, 32);
-        clipCodes.put(Event.KEY_DOWN, 64);
-        clipCodes.put(Event.KEY_UP, 128);
-        clipCodes.put(Event.DATA, 256);
-        clipCodes.put(Event.INITIALIZE, 512);
-        clipCodes.put(Event.PRESS, 1024);
-        clipCodes.put(Event.RELEASE, 2048);
-        clipCodes.put(Event.RELEASE_OUT, 4096);
-        clipCodes.put(Event.ROLL_OVER, 8192);
-        clipCodes.put(Event.ROLL_OUT, 16384);
-        clipCodes.put(Event.DRAG_OVER, 32768);
-        clipCodes.put(Event.DRAG_OUT, 65536);
-        clipCodes.put(Event.KEY_PRESS, 131072);
-        clipCodes.put(Event.CONSTRUCT, 262144);
+        CLIP_CODES = new LinkedHashMap<Event, Integer>();
+        CLIP_CODES.put(Event.LOAD, BIT0);
+        CLIP_CODES.put(Event.ENTER_FRAME, BIT1);
+        CLIP_CODES.put(Event.UNLOAD, BIT2);
+        CLIP_CODES.put(Event.MOUSE_MOVE, BIT3);
+        CLIP_CODES.put(Event.MOUSE_DOWN, BIT4);
+        CLIP_CODES.put(Event.MOUSE_UP, BIT5);
+        CLIP_CODES.put(Event.KEY_DOWN, BIT6);
+        CLIP_CODES.put(Event.KEY_UP, BIT7);
+        CLIP_CODES.put(Event.DATA, BIT8);
+        CLIP_CODES.put(Event.INITIALIZE, BIT9);
+        CLIP_CODES.put(Event.PRESS, BIT10);
+        CLIP_CODES.put(Event.RELEASE, BIT11);
+        CLIP_CODES.put(Event.RELEASE_OUT, BIT12);
+        CLIP_CODES.put(Event.ROLL_OVER, BIT13);
+        CLIP_CODES.put(Event.ROLL_OUT, BIT14);
+        CLIP_CODES.put(Event.DRAG_OVER, BIT15);
+        CLIP_CODES.put(Event.DRAG_OUT, BIT16);
+        CLIP_CODES.put(Event.KEY_PRESS, BIT17);
+        CLIP_CODES.put(Event.CONSTRUCT, BIT18);
 
-        clipEvents = new LinkedHashMap<Integer, Event>();
-        clipEvents.put(1, Event.LOAD);
-        clipEvents.put(2, Event.ENTER_FRAME);
-        clipEvents.put(4, Event.UNLOAD);
-        clipEvents.put(8, Event.MOUSE_MOVE);
-        clipEvents.put(16, Event.MOUSE_DOWN);
-        clipEvents.put(32, Event.MOUSE_UP);
-        clipEvents.put(64, Event.KEY_DOWN);
-        clipEvents.put(128, Event.KEY_UP);
-        clipEvents.put(256, Event.DATA);
-        clipEvents.put(512, Event.INITIALIZE);
-        clipEvents.put(1024, Event.PRESS);
-        clipEvents.put(2048, Event.RELEASE);
-        clipEvents.put(4096, Event.RELEASE_OUT);
-        clipEvents.put(8192, Event.ROLL_OVER);
-        clipEvents.put(16384, Event.ROLL_OUT);
-        clipEvents.put(32768, Event.DRAG_OVER);
-        clipEvents.put(65536, Event.DRAG_OUT);
-        clipEvents.put(131072, Event.KEY_PRESS);
-        clipEvents.put(262144, Event.CONSTRUCT);
+        CLIP_EVENTS = new LinkedHashMap<Integer, Event>();
+        CLIP_EVENTS.put(BIT0, Event.LOAD);
+        CLIP_EVENTS.put(BIT1, Event.ENTER_FRAME);
+        CLIP_EVENTS.put(BIT2, Event.UNLOAD);
+        CLIP_EVENTS.put(BIT3, Event.MOUSE_MOVE);
+        CLIP_EVENTS.put(BIT4, Event.MOUSE_DOWN);
+        CLIP_EVENTS.put(BIT5, Event.MOUSE_UP);
+        CLIP_EVENTS.put(BIT6, Event.KEY_DOWN);
+        CLIP_EVENTS.put(BIT7, Event.KEY_UP);
+        CLIP_EVENTS.put(BIT8, Event.DATA);
+        CLIP_EVENTS.put(BIT9, Event.INITIALIZE);
+        CLIP_EVENTS.put(BIT10, Event.PRESS);
+        CLIP_EVENTS.put(BIT11, Event.RELEASE);
+        CLIP_EVENTS.put(BIT12, Event.RELEASE_OUT);
+        CLIP_EVENTS.put(BIT13, Event.ROLL_OVER);
+        CLIP_EVENTS.put(BIT14, Event.ROLL_OUT);
+        CLIP_EVENTS.put(BIT15, Event.DRAG_OVER);
+        CLIP_EVENTS.put(BIT16, Event.DRAG_OUT);
+        CLIP_EVENTS.put(BIT17, Event.KEY_PRESS);
+        CLIP_EVENTS.put(BIT18, Event.CONSTRUCT);
 
-        buttonCodes = new LinkedHashMap<Event, Integer>();
-        buttonCodes.put(Event.ROLL_OVER, 1);
-        buttonCodes.put(Event.ROLL_OUT, 2);
-        buttonCodes.put(Event.PRESS, 4);
-        buttonCodes.put(Event.RELEASE, 8);
-        buttonCodes.put(Event.DRAG_OUT, 16);
-        buttonCodes.put(Event.DRAG_OVER, 32);
-        buttonCodes.put(Event.RELEASE_OUT, 64);
+        BUTTON_CODES = new LinkedHashMap<Event, Integer>();
+        BUTTON_CODES.put(Event.ROLL_OVER, BIT0);
+        BUTTON_CODES.put(Event.ROLL_OUT, BIT1);
+        BUTTON_CODES.put(Event.PRESS, BIT2);
+        BUTTON_CODES.put(Event.RELEASE, BIT3);
+        BUTTON_CODES.put(Event.DRAG_OUT, BIT4);
+        BUTTON_CODES.put(Event.DRAG_OVER, BIT5);
+        BUTTON_CODES.put(Event.RELEASE_OUT, BIT6);
 
-        buttonEvents = new LinkedHashMap<Integer, Event>();
-        buttonEvents.put(1, Event.ROLL_OVER);
-        buttonEvents.put(2, Event.ROLL_OUT);
-        buttonEvents.put(4, Event.PRESS);
-        buttonEvents.put(8, Event.RELEASE);
-        buttonEvents.put(16, Event.DRAG_OUT);
-        buttonEvents.put(32, Event.DRAG_OVER);
-        buttonEvents.put(64, Event.RELEASE_OUT);
+        BUTTON_EVENTS = new LinkedHashMap<Integer, Event>();
+        BUTTON_EVENTS.put(BIT0, Event.ROLL_OVER);
+        BUTTON_EVENTS.put(BIT1, Event.ROLL_OUT);
+        BUTTON_EVENTS.put(BIT2, Event.PRESS);
+        BUTTON_EVENTS.put(BIT3, Event.RELEASE);
+        BUTTON_EVENTS.put(BIT4, Event.DRAG_OUT);
+        BUTTON_EVENTS.put(BIT5, Event.DRAG_OVER);
+        BUTTON_EVENTS.put(BIT6, Event.RELEASE_OUT);
 
-        menuCodes = new LinkedHashMap<Event, Integer>();
-        menuCodes.put(Event.ROLL_OVER, 1);
-        menuCodes.put(Event.ROLL_OUT, 2);
-        menuCodes.put(Event.PRESS, 4);
-        menuCodes.put(Event.RELEASE, 8);
-        menuCodes.put(Event.RELEASE_OUT, 64);
-        menuCodes.put(Event.DRAG_OVER, 128);
-        menuCodes.put(Event.DRAG_OUT, 256);
+        MENU_CODES = new LinkedHashMap<Event, Integer>();
+        MENU_CODES.put(Event.ROLL_OVER, BIT0);
+        MENU_CODES.put(Event.ROLL_OUT, BIT1);
+        MENU_CODES.put(Event.PRESS, BIT2);
+        MENU_CODES.put(Event.RELEASE, BIT3);
+        MENU_CODES.put(Event.RELEASE_OUT, BIT4);
+        MENU_CODES.put(Event.DRAG_OVER, BIT7);
+        MENU_CODES.put(Event.DRAG_OUT, BIT8);
 
-        menuEvents = new LinkedHashMap<Integer, Event>();
-        menuEvents.put(1, Event.ROLL_OVER);
-        menuEvents.put(2, Event.ROLL_OUT);
-        menuEvents.put(4, Event.PRESS);
-        menuEvents.put(8, Event.RELEASE);
-        menuEvents.put(64, Event.RELEASE_OUT);
-        menuEvents.put(128, Event.DRAG_OVER);
-        menuEvents.put(256, Event.DRAG_OUT);
+        MENU_EVENTS = new LinkedHashMap<Integer, Event>();
+        MENU_EVENTS.put(BIT0, Event.ROLL_OVER);
+        MENU_EVENTS.put(BIT1, Event.ROLL_OUT);
+        MENU_EVENTS.put(BIT2, Event.PRESS);
+        MENU_EVENTS.put(BIT3, Event.RELEASE);
+        MENU_EVENTS.put(BIT4, Event.RELEASE_OUT);
+        MENU_EVENTS.put(BIT7, Event.DRAG_OVER);
+        MENU_EVENTS.put(BIT8, Event.DRAG_OUT);
     }
 
     /** The events that the handler responds to. */
@@ -276,31 +302,31 @@ public final class EventHandler implements SWFEncodeable {
             key = (eventKey & KEY_MASK) >> KEY_OFFSET;
 
             if (context.contains(Context.MENU_BUTTON)) {
-                for (int i = 0; i < 9; i++) {
+                for (int i = 0; i < NUM_BUTTON_EVENTS; i++) {
                     field = eventCode & (mask << i);
-                    if (field != 0 && buttonEvents.containsKey(field)) {
-                        events.add(buttonEvents.get(field));
+                    if (MENU_EVENTS.containsKey(field)) {
+                        events.add(MENU_EVENTS.get(field));
                     }
                 }
             } else {
-                for (int i = 0; i < 9; i++) {
+                for (int i = 0; i < NUM_BUTTON_EVENTS; i++) {
                     field = eventCode & (mask << i);
-                    if (menuEvents.containsKey(field)) {
-                        events.add(menuEvents.get(field));
+                    if (field != 0 && BUTTON_EVENTS.containsKey(field)) {
+                        events.add(BUTTON_EVENTS.get(field));
                     }
                 }
             }
          } else {
             eventCode = value;
             length = coder.readInt();
-            if ((eventCode & clipCodes.get(Event.KEY_PRESS)) != 0) {
+            if ((eventCode & CLIP_CODES.get(Event.KEY_PRESS)) != 0) {
                 key = coder.readByte();
                 length -= 1;
             }
-            for (int i = 0; i < 32; i++) {
+            for (int i = 0; i < NUM_CLIP_EVENTS; i++) {
                 field = eventCode & (mask << i);
-                if (field != 0 && clipEvents.containsKey(field)) {
-                    events.add(clipEvents.get(field));
+                if (field != 0 && CLIP_EVENTS.containsKey(field)) {
+                    events.add(CLIP_EVENTS.get(field));
                 }
             }
         }
@@ -473,18 +499,18 @@ public final class EventHandler implements SWFEncodeable {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
-
+        //CHECKSTYLE:OFF
         eventCode = 0;
 
         if (context.contains(Context.TYPE)
                 && context.get(Context.TYPE) == MovieTypes.DEFINE_BUTTON_2) {
             if (context.contains(Context.MENU_BUTTON)) {
                 for (Event event : events) {
-                    eventCode |= menuCodes.get(event);
+                    eventCode |= MENU_CODES.get(event);
                 }
             } else {
                 for (Event event : events) {
-                    eventCode |= buttonCodes.get(event);
+                    eventCode |= BUTTON_CODES.get(event);
                 }
             }
 
@@ -499,15 +525,15 @@ public final class EventHandler implements SWFEncodeable {
             }
         } else {
             for (Event event : events) {
-                eventCode |= clipCodes.get(event);
+                eventCode |= CLIP_CODES.get(event);
             }
 
-            if (context.get(Context.VERSION) > 5) {
+            if (context.get(Context.VERSION) >= VERSION_WITH_EXT_EVENTS) {
                 length = 8;
             } else {
                 length = 6;
             }
-            offset = (eventCode & clipCodes.get(Event.KEY_PRESS)) == 0 ? 0 : 1;
+            offset = (eventCode & CLIP_CODES.get(Event.KEY_PRESS)) == 0 ? 0 : 1;
 
             for (final Action action : actions) {
                 offset += action.prepareToEncode(context);
@@ -516,6 +542,7 @@ public final class EventHandler implements SWFEncodeable {
             length += offset;
         }
         return length;
+        //CHECKSTYLE:ON
     }
 
     /** {@inheritDoc} */
@@ -527,7 +554,7 @@ public final class EventHandler implements SWFEncodeable {
             coder.writeShort(offset + 2);
             coder.writeShort((key << KEY_OFFSET) | eventCode);
         } else {
-            if (context.get(Context.VERSION) > 5) {
+            if (context.get(Context.VERSION) >= VERSION_WITH_EXT_EVENTS) {
                 coder.writeInt(eventCode);
             } else {
                 coder.writeShort(eventCode);
@@ -535,7 +562,7 @@ public final class EventHandler implements SWFEncodeable {
 
             coder.writeInt(offset);
 
-            if ((eventCode & clipCodes.get(Event.KEY_PRESS)) != 0) {
+            if ((eventCode & CLIP_CODES.get(Event.KEY_PRESS)) != 0) {
                 coder.writeByte(key);
             }
         }

@@ -46,17 +46,6 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 public final class ColorTransformCodingTest extends AbstractCodingTest {
 
-    private static final String CALCULATED_LENGTH =
-        "Incorrect calculated length";
-    private static final String NOT_FULLY_ENCODED =
-        "Data was not fully encoded";
-    private static final String NOT_FULLY_DECODED =
-        "Data was not fully decoded";
-    private static final String NOT_ENCODED =
-        "Object was not encoded properly";
-    private static final String NOT_DECODED =
-        "Object was not decoded properly";
-
     @Test
     public void checkOpaqueAddTermsAreEncoded() throws IOException {
         final ColorTransform object = new ColorTransform(1, 2, 3, 0);

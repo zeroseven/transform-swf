@@ -34,7 +34,6 @@ package com.flagstone.transform.image;
 import java.io.IOException;
 import java.util.Arrays;
 
-import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
@@ -92,6 +91,7 @@ public final class DefineJPEGImage3 implements ImageTag {
         identifier = coder.readUnsignedShort();
         final int offset = coder.readInt();
         image = coder.readBytes(new byte[offset]);
+        // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
         alpha = coder.readBytes(new byte[length - offset - 6]);
         decodeInfo();
         coder.unmark(length);
@@ -140,9 +140,9 @@ public final class DefineJPEGImage3 implements ImageTag {
 
     /** {@inheritDoc} */
     public void setIdentifier(final int uid) {
-        if ((uid < SWF.MIN_IDENTIFIER) || (uid > SWF.MAX_IDENTIFIER)) {
+        if ((uid < 1) || (uid > Coder.UNSIGNED_SHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    SWF.MIN_IDENTIFIER, SWF.MAX_IDENTIFIER, uid);
+                    1, Coder.UNSIGNED_SHORT_MAX, uid);
         }
         identifier = uid;
     }
@@ -219,6 +219,7 @@ public final class DefineJPEGImage3 implements ImageTag {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
+        // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
         length = 6;
         length += image.length;
         length += alpha.length;

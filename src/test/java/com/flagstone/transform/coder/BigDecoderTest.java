@@ -35,7 +35,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 public final class BigDecoderTest {
-    private transient BigDecoder fixture;
 
     @Test @Ignore
     public void readBitsForUnsignedNumber() {

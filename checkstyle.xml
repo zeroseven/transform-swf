@@ -99,8 +99,11 @@
     <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
   </module>
   <module name="SuppressionCommentFilter"/>
-  <module name="SuppressWithNearbyCommentFilter"/>
+  <module name="SuppressWithNearbyCommentFilter">
+    <property name="commentFormat" value="CHECKSTYLE IGNORE (\w+) FOR NEXT (\d+) LINES"/>
+    <property name="influenceFormat" value="$2"/>
+  </module>
   <module name="SuppressionFilter">
-    <property name="file" value="D:/Users/Stuart/Documents/Flagstone/Development/Java/transform-java-3-0/suppressions.xml"/>
+    <property name="file" value="${project_loc}/suppressions.xml"/>
   </module>
 </module>

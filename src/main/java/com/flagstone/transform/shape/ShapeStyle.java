@@ -124,6 +124,9 @@ public final class ShapeStyle implements ShapeRecord {
      * Creates and initialises a ShapeStyle object using values encoded
      * in the Flash binary format.
      *
+     * @param flags
+     *            contains fields identifying which fields are optionally
+     *            encoded in the data - decoded by parent object.
      * @param coder
      *            an SWFDecoder object that contains the encoded Flash data.
      *
@@ -194,8 +197,8 @@ public final class ShapeStyle implements ShapeRecord {
             }
 
             final int sizes = coder.readByte();
-            numberOfFillBits = (sizes & 0x00F0) >> 4;
-            numberOfLineBits = sizes & 0x000F;
+            numberOfFillBits = (sizes & Coder.NIB1) >> Coder.TO_LOWER_NIB;
+            numberOfLineBits = sizes & Coder.NIB0;
 
             context.put(Context.FILL_SIZE, numberOfFillBits);
             context.put(Context.LINE_SIZE, numberOfLineBits);
@@ -495,6 +498,7 @@ public final class ShapeStyle implements ShapeRecord {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
+        // CHECKSTYLE:OFF
         hasLine = lineStyle != null;
         hasFill = fillStyle != null;
         hasAlt = altFillStyle != null;
@@ -539,19 +543,17 @@ public final class ShapeStyle implements ShapeRecord {
             numberOfStyleBits += (flushBits % 8 > 0)
                     ? 8 - (flushBits % 8) : 0;
             numberOfStyleBits += (countExtended
-                    && (fillStyles.size() >= EXTENDED)) ? 24
-                    : 8;
+                    && (fillStyles.size() >= EXTENDED)) ? 24 : 8;
 
             for (final FillStyle style : fillStyles) {
-                numberOfStyleBits += style.prepareToEncode(context) * 8;
+                numberOfStyleBits += style.prepareToEncode(context) << 3;
             }
 
             numberOfStyleBits += (countExtended
-                    && (lineStyles.size() >= EXTENDED)) ? 24
-                    : 8;
+                    && (lineStyles.size() >= EXTENDED)) ? 24 : 8;
 
             for (final LineStyle style : lineStyles) {
-                numberOfStyleBits += style.prepareToEncode(context) * 8;
+                numberOfStyleBits += style.prepareToEncode(context) << 3;
             }
 
             numberOfStyleBits += 8;
@@ -564,7 +566,8 @@ public final class ShapeStyle implements ShapeRecord {
             numberOfBits += numberOfStyleBits;
         }
         return numberOfBits;
-    }
+        // CHECKSTYLE:ON
+   }
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
@@ -580,6 +583,7 @@ public final class ShapeStyle implements ShapeRecord {
             final int fieldSize = Math.max(Coder.size(moveX), Coder
                     .size(moveY));
 
+            // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
             coder.writeBits(fieldSize, 5);
             coder.writeBits(moveX, fieldSize);
             coder.writeBits(moveY, fieldSize);
@@ -638,8 +642,8 @@ public final class ShapeStyle implements ShapeRecord {
                 }
             }
 
-            coder.writeBits(numberOfFillBits, 4);
-            coder.writeBits(numberOfLineBits, 4);
+            coder.writeByte((numberOfFillBits << Coder.TO_UPPER_NIB)
+                    | numberOfLineBits);
 
             // Update the stream with the new numbers of line and fill bits
             context.put(Context.FILL_SIZE, numberOfFillBits);

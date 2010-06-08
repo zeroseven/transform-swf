@@ -5,22 +5,87 @@ package com.flagstone.transform.coder;
  * for encoding and decoding.
  */
 public final class Coder {
-    /** Mask for getting and setting bit 0 of a byte. */
-    public static final int BIT0 = 1;
-    /** Mask for getting and setting bit 1 of a byte. */
-    public static final int BIT1 = 2;
-    /** Mask for getting and setting bit 2 of a byte. */
-    public static final int BIT2 = 4;
-    /** Mask for getting and setting bit 3 of a byte. */
-    public static final int BIT3 = 8;
-    /** Mask for getting and setting bit 4 of a byte. */
-    public static final int BIT4 = 16;
-    /** Mask for getting and setting bit 5 of a byte. */
-    public static final int BIT5 = 32;
-    /** Mask for getting and setting bit 6 of a byte. */
-    public static final int BIT6 = 64;
-    /** Mask for getting and setting bit 7 of a byte. */
-    public static final int BIT7 = 128;
+    /** Mask for getting and setting bit 0 of a word. */
+    public static final int BIT0 = 0x00000001;
+    /** Mask for getting and setting bit 1 of a word. */
+    public static final int BIT1 = 0x00000002;
+    /** Mask for getting and setting bit 2 of a word. */
+    public static final int BIT2 = 0x00000004;
+    /** Mask for getting and setting bit 3 of a word. */
+    public static final int BIT3 = 0x00000008;
+    /** Mask for getting and setting bit 4 of a word. */
+    public static final int BIT4 = 0x00000010;
+    /** Mask for getting and setting bit 5 of a word. */
+    public static final int BIT5 = 0x00000020;
+    /** Mask for getting and setting bit 6 of a word. */
+    public static final int BIT6 = 0x00000040;
+    /** Mask for getting and setting bit 7 of a word. */
+    public static final int BIT7 = 0x00000080;
+    /** Mask for getting and setting bit 10 of a word. */
+    public static final int BIT10 = 0x00000400;
+    /** Mask for getting and setting bit 15 of a word. */
+    public static final int BIT15 = 0x00008000;
+
+    /** Mask for accessing bits 0-3 of a word. */
+    public static final int NIB0 = 0x0000000F;
+    /** Mask for accessing bits 4-7 of a word. */
+    public static final int NIB1 = 0x000000F0;
+    /** Mask for accessing bits 8-11 of a word. */
+    public static final int NIB3 = 0x00000F00;
+    /** Mask for accessing bits 12-15 of a word. */
+    public static final int NIB4 = 0x0000F000;
+
+    /** Mask for accessing bits 0 & 1 of a byte. */
+    public static final int PAIR0 = 0x0003;
+    /** Mask for accessing bits 2 & 3 of a byte. */
+    public static final int PAIR1 = 0x000C;
+    /** Mask for accessing bits 0 & 1 of a byte. */
+    public static final int PAIR2 = 0x0030;
+    /** Mask for accessing bits 2 & 3 of a byte. */
+    public static final int PAIR3 = 0x00C0;
+
+    /** Bit mask for the lowest 5 bits in a word. */
+    public static final int LOWEST3 = 0x0007;
+    /** Bit mask for the lowest 5 bits in a word. */
+    public static final int LOWEST5 = 0x001F;
+    /** Bit mask for the lowest 5 bits in a word. */
+    public static final int LOWEST7 = 0x007F;
+    /** Bit mask for the lowest 5 bits in a word. */
+    public static final int LOWEST10 = 0x03FF;
+    /** Bit mask for the lowest 5 bits in a word. */
+    public static final int LOWEST12 = 0x0FFF;
+    /** Bit mask for the lowest 5 bits in a word. */
+    public static final int LOWEST15 = 0x7FFF;
+
+    /** Right shift to move upper byte of 16-bit word to lower. */
+    public static final int TO_LOWER_BYTE = 8;
+    /** Left shift to move lower byte of 16-bit word to upper. */
+    public static final int TO_UPPER_BYTE = 8;
+
+    /** Right shift to move upper byte of 16-bit word to lower. */
+    public static final int TO_LOWER_NIB = 4;
+    /** Left shift to move lower byte of 16-bit word to upper. */
+    public static final int TO_UPPER_NIB = 4;
+
+    /** Maximum value that can be stored in a 16-bit unsigned field. */
+    public static final int UNSIGNED_SHORT_MAX = 65535;
+    /** Minimum value that can be stored in a 16-bit signed field. */
+    public static final int SIGNED_SHORT_MIN = -32768;
+    /** Maximum value that can be stored in a 16-bit signed field. */
+    public static final int SIGNED_SHORT_MAX = 32767;
+
+    /** Number of bits to shift when aligning a value to the second byte. */
+    public static final int ALIGN_BYTE1 = 8;
+    /** Number of bits to shift when aligning a value to the third byte. */
+    public static final int ALIGN_BYTE2 = 16;
+    /** Number of bits to shift when aligning a value to the fourth byte. */
+    public static final int ALIGN_BYTE3 = 24;
+
+    /** The maximum value for each byte in a variable length integer. */
+    public static final int VAR_INT_MAX = 127;
+    /** Shift when converting to a variable length integer. */
+    public static final int VAR_INT_SHIFT = 7;
+
     /**
      * Bit mask for extracting the length field from the header word.
      */
@@ -60,6 +125,7 @@ public final class Coder {
     private static final int BITS_PER_INT = 32;
     /** Bit mask with most significant bit of a 32-bit integer set. */
     private static final int MSB_MASK = 0x80000000;
+    public static final int BITS_TO_BYTES = 3;
 
     /**
      * Calculates the minimum number of bits required to encoded an unsigned
@@ -138,9 +204,9 @@ public final class Coder {
         int val = value;
         int size = 1;
 
-        while (val > 127) {
+        while (val > VAR_INT_MAX) {
             size += 1;
-            val = val >>> 7;
+            val = val >>> VAR_INT_SHIFT;
         }
         return size;
     }

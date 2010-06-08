@@ -522,6 +522,9 @@ public final class ColorTransform implements SWFEncodeable {
      * @param blue the term for the blue channel.
      * @param alpha the term for the alpha channel.
      * @param coder the Coder used to encode the data.
+     *
+     * @throws IOException if there is an error writing to the underlying
+     * stream.
      */
     private void encodeTerms(final int red, final int green, final int blue,
             final int alpha, final SWFEncoder coder) throws IOException {

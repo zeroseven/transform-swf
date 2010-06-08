@@ -50,6 +50,8 @@ public final class BigDecoder {
     private static final int BYTE_MASK = 255;
     /** Number of bits in an int. */
     private static final int BITS_PER_INT = 32;
+    /** Number of bits in a byte. */
+    private static final int BITS_PER_BYTE = 8;
     /** Left shift to convert number of bits to number of bytes. */
     private static final int BITS_TO_BYTES = 3;
     /** Right shift to convert number of bits to number of bytes. */
@@ -78,7 +80,7 @@ public final class BigDecoder {
     private transient boolean eof;
 
     /** The internal buffer containing data read from or written to a file. */
-    private byte[] data;
+//    private byte[] data;
     /** The index in bits to the current location in the buffer. */
     private transient int pointer;
     /**
@@ -183,7 +185,7 @@ public final class BigDecoder {
      * @return the location of the next bit to be accessed.
      */
     public int getPointer() {
-        return (index << 3) + offset;
+        return (index << BYTES_TO_BITS) + offset;
     }
 
     /**
@@ -193,8 +195,8 @@ public final class BigDecoder {
      *            the offset in bits from the start of the array of bytes.
      */
     public void setPointer(final int location) {
-        index = location >>> 3;
-        offset = location & 7;
+        index = location >>> BITS_TO_BYTES;
+        offset = location & Coder.LOWEST3;
     }
 
     /**
@@ -204,15 +206,17 @@ public final class BigDecoder {
      *            the number of bits to add to the current location.
      */
     public void adjustPointer(final int numberOfBits) {
-        pointer = (index << 3) + offset + numberOfBits;
-        index = pointer >>> 3;
-        offset = pointer & 7;
+        pointer = (index << BYTES_TO_BITS) + offset + numberOfBits;
+        index = pointer >>> BITS_TO_BYTES;
+        offset = pointer & Coder.LOWEST3;
     }
 
     /**
      * Is there any more data to read.
      *
      * @return true there is no more data to read from the stream.
+     *
+     * @throws IOException if an error from the underlying input stream.
      */
     public boolean eof() throws IOException {
         if (size - index == 0) {
@@ -287,11 +291,11 @@ public final class BigDecoder {
     public int readBits(final int numberOfBits, final boolean signed)
             throws IOException {
 
-        int pointer = (index << 3) + offset;
+        pointer = (index << BYTES_TO_BITS) + offset;
 
-        if (((size << 3) - pointer) < numberOfBits) {
+        if (((size << BYTES_TO_BITS) - pointer) < numberOfBits) {
             fill();
-            pointer = (index << 3) + offset;
+            pointer = (index << BYTES_TO_BITS) + offset;
         }
 
         int value = 0;
@@ -299,8 +303,8 @@ public final class BigDecoder {
         if (numberOfBits > 0) {
 
             for (int i = BITS_PER_INT; (i > 0)
-                    && (index < buffer.length); i -= 8) {
-                value |= (buffer[index++] & BYTE_MASK) << (i - 8);
+                    && (index < buffer.length); i -= BITS_PER_BYTE) {
+                value |= (buffer[index++] & BYTE_MASK) << (i - BITS_PER_BYTE);
             }
 
             value <<= offset;
@@ -313,7 +317,7 @@ public final class BigDecoder {
 
             pointer += numberOfBits;
             index = pointer >>> BITS_TO_BYTES;
-            offset = pointer & 7;
+            offset = pointer & Coder.LOWEST3;
         }
 
         return value;
@@ -374,18 +378,19 @@ public final class BigDecoder {
     /**
      * Reads an array of bytes.
      *
-     * @param bytes
-     *            the array that will contain the bytes read.
-     *
+     * @param bytes the array that will contain the bytes read.
+     * @param start the offset from the start of the array of bytes where
+     * the data will be written.
+     * @param length the number of bytes to write to the array.
      * @return the array of bytes.
      *
      * @throws IOException if an error occurs reading from the underlying
      * input stream.
      */
-    public byte[] readBytes(final byte[] bytes, final int offset,
+    public byte[] readBytes(final byte[] bytes, final int start,
              final int length) throws IOException {
         final int wanted = length;
-        int dest = offset;
+        int dest = start;
         int read = 0;
 
         int available;
@@ -455,10 +460,11 @@ public final class BigDecoder {
         if (size - index < 2) {
             fill();
         }
-        int value = (buffer[index] & BYTE_MASK) << TO_BYTE3;
-        value |= (buffer[index + 1] & BYTE_MASK) << TO_BYTE2;
-        value |= (buffer[index + 2] & BYTE_MASK) << TO_BYTE1;
-        value |= buffer[index + 3] & BYTE_MASK;
+        int addr = index;
+        int value = (buffer[addr++] & BYTE_MASK) << TO_BYTE3;
+        value |= (buffer[addr++] & BYTE_MASK) << TO_BYTE2;
+        value |= (buffer[addr++] & BYTE_MASK) << TO_BYTE1;
+        value |= buffer[addr] & BYTE_MASK;
         return value;
     }
 

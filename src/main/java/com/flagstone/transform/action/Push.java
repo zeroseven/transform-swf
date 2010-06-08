@@ -114,6 +114,9 @@ public final class Push implements Action {
     /** Number of last internal register in the Flash Player. */
     private static final int LAST_REGISTER = 255;
 
+    private static final long MASK_32 = 0x00000000FFFFFFFFL;
+    private static final long WORD_ALIGN = 32;
+
     /**
      * The Builder class is used to generate a new Push object.
      */
@@ -227,7 +230,7 @@ public final class Push implements Action {
                 valuesLength -= 1 + context.strlen(str);
                 break;
             case TYPE_PROPERTY:
-                if (context.get(Context.VERSION) < 5) {
+                if (context.get(Context.VERSION) < Property.VERSION_WITH_INTS) {
                     values.add(new Property(
                             (int) Float.intBitsToFloat(coder.readInt())));
                 } else {
@@ -252,8 +255,8 @@ public final class Push implements Action {
                 valuesLength -= LENGTH_BOOLEAN;
                 break;
             case TYPE_DOUBLE:
-                long longValue = (long) coder.readInt() << 32;
-                longValue |= coder.readInt() & 0x00000000FFFFFFFFL;
+                long longValue = (long) coder.readInt() << WORD_ALIGN;
+                longValue |= coder.readInt() & MASK_32;
                 values.add(Double.longBitsToDouble(longValue));
                 valuesLength -= LENGTH_DOUBLE;
                 break;

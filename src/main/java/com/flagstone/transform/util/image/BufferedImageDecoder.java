@@ -55,6 +55,7 @@ import java.util.zip.Inflater;
 
 import javax.imageio.ImageIO;
 
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.LittleDecoder;
 import com.flagstone.transform.image.DefineImage;
 import com.flagstone.transform.image.DefineImage2;
@@ -106,6 +107,26 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
      */
     private static final int WORD_ALIGN = 3;
 
+    /** Size of each colour table entry or pixel in a true colour image. */
+    private static final int COLOUR_CHANNELS = 4;
+    /** Size of each colour table entry or pixel in a RGB image. */
+    private static final int RGB_CHANNELS = 3;
+
+    /** Size of a pixel in a RGB555 true colour image. */
+    private static final int RGB5_SIZE = 16;
+    /** Size of a pixel in a RGB8 true colour image. */
+    private static final int RGB8_SIZE = 24;
+
+    /** Shift used to align the RGB555 red channel to a 8-bit pixel. */
+    private static final int RGB5_MSB_MASK = 0x00F8;
+    /** Shift used to align the RGB555 red channel to a 8-bit pixel. */
+    private static final int RGB5_RED_SHIFT = 7;
+    /** Shift used to align the RGB555 green channel to a 8-bit pixel. */
+    private static final int RGB5_GREEN_SHIFT = 2;
+    /** Shift used to align the RGB555 blue channel to a 8-bit pixel. */
+    private static final int RGB5_BLUE_SHIFT = 3;
+
+
     /** The format of the decoded image. */
     private transient ImageFormat format;
     /** The width of the image in pixels. */
@@ -152,21 +173,22 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
         switch (format) {
         case IDX8:
             object = new DefineImage(identifier, width, height,
-                    table.length / 4,
+                    table.length / COLOUR_CHANNELS,
                     zip(merge(adjustScan(width, height, image), table)));
             break;
         case IDXA:
             object = new DefineImage2(identifier, width, height,
-                    table.length / 4,
+                    table.length / COLOUR_CHANNELS,
                     zip(mergeAlpha(adjustScan(width, height, image), table)));
             break;
         case RGB5:
             object = new DefineImage(identifier, width, height,
-                    zip(packColours(width, height, image)), 16);
+                    zip(packColours(width, height, image)), RGB5_SIZE);
             break;
         case RGB8:
             orderAlpha(image);
-            object = new DefineImage(identifier, width, height, zip(image), 24);
+            object = new DefineImage(identifier, width, height, zip(image),
+                    RGB8_SIZE);
             break;
         case RGBA:
             applyAlpha(image);
@@ -212,11 +234,12 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
             break;
         case RGB5:
             object = new DefineImage(identifier, width, height,
-                    zip(packColours(width, height, image)), 16);
+                    zip(packColours(width, height, image)), RGB5_SIZE);
             break;
         case RGB8:
             orderAlpha(image);
-            object = new DefineImage(identifier, width, height, zip(image), 24);
+            object = new DefineImage(identifier, width, height, zip(image),
+                    RGB8_SIZE);
             break;
         case RGBA:
             applyAlpha(image);
@@ -293,11 +316,11 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
             colorImage = new byte[imageHeight * imageWidth * BYTES_PER_PIXEL];
             index = 0;
 
-            if (pixelLength == 16) {
+            if (pixelLength == RGB5_SIZE) {
                 for (int h = 0; h < imageHeight; h++) {
                     for (int w = 0; w < imageWidth; w++) {
                         final int color = (data[pos++] << ALIGN_BYTE2
-                                | (data[pos++] & MASK_8BIT)) & 0x7FFF;
+                                | (data[pos++] & MASK_8BIT)) & Coder.LOWEST15;
 
                         colorImage[index + ALPHA] = OPAQUE;
                         colorImage[index + RED] = (byte) (color >> 10);
@@ -617,8 +640,8 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
         final int imageWidth = (int) (bufferedImg.getWidth() / ratio);
         final int imageHeight = (int) (bufferedImg.getHeight() / ratio);
 
-        final int xCoord = (imgWidth - imageWidth) / 2;
-        final int yCoord = (imgHeight - imageHeight) / 2;
+        final int xCoord = (imgWidth - imageWidth) >> 1;
+        final int yCoord = (imgHeight - imageHeight) >> 1;
 
         final Graphics2D graphics = resized.createGraphics();
         graphics.setColor(new Color(0.0f, 0.0f, 0.0f, 0.0f));
@@ -748,7 +771,7 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
                 }
                 break;
             case BufferedImage.TYPE_CUSTOM:
-                if (width * height * 3 == pixels.length) {
+                if (width * height * RGB_CHANNELS == pixels.length) {
                     format = ImageFormat.RGBA;
                     image = new byte[height * width * BYTES_PER_PIXEL];
                     index = 0;
@@ -915,7 +938,7 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
         if (model instanceof IndexColorModel) {
             IndexColorModel indexModel = (IndexColorModel) model;
 
-            table = new byte[indexModel.getMapSize() * 4];
+            table = new byte[indexModel.getMapSize() * COLOUR_CHANNELS];
 
             byte[] reds = new byte[indexModel.getMapSize()];
             byte[] blues = new byte[indexModel.getMapSize()];
@@ -927,11 +950,11 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
 
             int index = 0;
 
-            for (int i = 0; i < table.length; i += 4) {
-                table[i] = reds[index];
-                table[i + 1] = greens[index];
-                table[i + 2] = blues[index];
-                table[i + 3] = -1;
+            for (int i = 0; i < table.length; i += COLOUR_CHANNELS) {
+                table[i + RED] = reds[index];
+                table[i + GREEN] = greens[index];
+                table[i + BLUE] = blues[index];
+                table[i + ALPHA] = -1;
                 index++;
             }
         }
@@ -966,12 +989,13 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
         for (int i = 0; i < img.length; i += BYTES_PER_PIXEL) {
             alpha = img[i + ALPHA] & MASK_8BIT;
 
-            img[i + 3] = (byte) (((img[i + 2] & MASK_8BIT) * alpha)
+            img[i + ALPHA] = (byte) (((img[i + BLUE] & MASK_8BIT) * alpha)
                     / OPAQUE);
-            img[i + 2] = (byte) (((img[i + 1] & MASK_8BIT) * alpha)
+            img[i + BLUE] = (byte) (((img[i + GREEN] & MASK_8BIT) * alpha)
                     / OPAQUE);
-            img[i + 1] = (byte) (((img[i] & MASK_8BIT) * alpha) / OPAQUE);
-            img[i] = (byte) alpha;
+            img[i + GREEN] = (byte) (((img[i + RED] & MASK_8BIT) * alpha)
+                    / OPAQUE);
+            img[i + RED] = (byte) alpha;
         }
     }
 
@@ -986,13 +1010,13 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
      */
     private byte[] merge(final byte[] img, final byte[] colors) {
         final byte[] merged = new byte[(colors.length / BYTES_PER_PIXEL)
-                                       * 3 + img.length];
+                                       * RGB_CHANNELS + img.length];
         int dst = 0;
 
         for (int i = 0; i < colors.length; i += BYTES_PER_PIXEL) {
-            merged[dst++] = colors[i]; // R
-            merged[dst++] = colors[i + 1]; // G
-            merged[dst++] = colors[i + 2]; // B
+            merged[dst++] = colors[i + RED];
+            merged[dst++] = colors[i + GREEN];
+            merged[dst++] = colors[i + BLUE];
         }
 
         for (final byte element : img) {
@@ -1097,10 +1121,13 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
 
         for (row = 0; row < imgHeight; row++) {
             for (col = 0; col < imgWidth; col++, src++) {
-                final int red = (img[src++] & 0xF8) << 7;
-                final int green = (img[src++] & 0xF8) << 2;
-                final int blue = (img[src++] & 0xF8) >> 3;
-                final int colour = (red | green | blue) & 0x7FFF;
+                final int red = (img[src++] & RGB5_MSB_MASK)
+                        << RGB5_RED_SHIFT;
+                final int green = (img[src++] & RGB5_MSB_MASK)
+                        << RGB5_GREEN_SHIFT;
+                final int blue = (img[src++] & RGB5_MSB_MASK)
+                        >> RGB5_BLUE_SHIFT;
+                final int colour = (red | green | blue) & Coder.LOWEST15;
 
                 formattedImage[dst++] = (byte) (colour >> ALIGN_BYTE2);
                 formattedImage[dst++] = (byte) colour;

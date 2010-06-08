@@ -42,6 +42,7 @@ import java.util.Arrays;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.LittleDecoder;
 import com.flagstone.transform.image.DefineImage;
 import com.flagstone.transform.image.DefineImage2;
@@ -74,7 +75,7 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
     /** Size of each colour table entry or pixel in a true colour image. */
     private static final int COLOUR_CHANNELS = 4;
     /** Size of a pixel in a RGB555 true colour image. */
-    private static final int RGB555_SIZE = 16;
+    private static final int RGB5_SIZE = 16;
     /** Size of a pixel in a RGB8 true colour image. */
     private static final int RGB8_SIZE = 24;
 
@@ -87,6 +88,8 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
     /** Byte offset to alpha channel. */
     private static final int ALPHA = 3;
 
+    /** Shift used to align the RGB555 red channel to a 8-bit pixel. */
+    private static final int RGB5_MSB_MASK = 0x00F8;
     /** Mask used to extract red channel from a 16-bit RGB555 pixel. */
     private static final int RGB555_RED_MASK = 0x7C00;
     /** Mask used to extract green channel from a 16-bit RGB555 pixel. */
@@ -180,11 +183,12 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
             break;
         case RGB5:
             object = new DefineImage(identifier, width, height,
-                    zip(packColours(width, height, image)), 16);
+                    zip(packColours(width, height, image)), RGB5_SIZE);
             break;
         case RGB8:
             orderAlpha(image);
-            object = new DefineImage(identifier, width, height, zip(image), 24);
+            object = new DefineImage(identifier, width, height, zip(image),
+                    RGB8_SIZE);
             break;
         case RGBA:
             applyAlpha(image);
@@ -385,6 +389,7 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
     /**
      * Decode the indexed image data block (IDX8).
      * @param coder the decoder containing the image data.
+     * @throws IOException is there is an error decoding the data.
      */
     private void decodeIDX8(final LittleDecoder coder) throws IOException {
         int index = 0;
@@ -404,6 +409,7 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
     /**
      * Decode the run length encoded image data block (RLE4).
      * @param coder the decoder containing the image data.
+     * @throws IOException is there is an error decoding the data.
      */
     private void decodeRLE4(final LittleDecoder coder) throws IOException {
         int row = height - 1;
@@ -433,8 +439,8 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
                     index = row * width + col;
                     for (int i = 0; i < code; i += 2) {
                         value = coder.readByte();
-                        image[index++] = (byte) (value >>> 4);
-                        image[index++] = (byte) (value & 0x0F);
+                        image[index++] = (byte) (value >>> Coder.TO_LOWER_NIB);
+                        image[index++] = (byte) (value & Coder.NIB0);
                     }
 
                     if ((code & 2) == 2) {
@@ -445,8 +451,8 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
                     index = row * width + col;
                     for (int i = 0; i < code; i += 2) {
                         value = coder.readByte();
-                        image[index++] = (byte) (value >>> 4);
-                        image[index++] = (byte) (value & 0x0F);
+                        image[index++] = (byte) (value >>> Coder.TO_LOWER_NIB);
+                        image[index++] = (byte) (value & Coder.NIB0);
                     }
 
                     if ((code & 2) == 2) {
@@ -456,8 +462,8 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
                 }
             } else {
                 value = coder.readByte();
-                final byte indexA = (byte) (value >>> 4);
-                final byte indexB = (byte) (value & 0x0F);
+                final byte indexA = (byte) (value >>> Coder.TO_LOWER_NIB);
+                final byte indexB = (byte) (value & Coder.NIB0);
                 index = row * width + col;
 
                 for (int i = 0; (i < count) && (col < width); i++, col++) {
@@ -470,6 +476,7 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
     /**
      * Decode the run length encoded image data block (RLE8).
      * @param coder the decoder containing the image data.
+     * @throws IOException is there is an error decoding the data.
      */
     private void decodeRLE8(final LittleDecoder coder) throws IOException {
         int row = height - 1;
@@ -529,6 +536,7 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
     /**
      * Decode the true colour image with each colour channel taking 5-bits.
      * @param coder the decoder containing the image data.
+     * @throws IOException is there is an error decoding the data.
      */
     private void decodeRGB5(final LittleDecoder coder) throws IOException {
         int index = 0;
@@ -555,6 +563,7 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
     /**
      * Decode the true colour image with each colour channel taking 8-bits.
      * @param coder the decoder containing the image data.
+     * @throws IOException is there is an error decoding the data.
      */
     private void decodeRGB8(final LittleDecoder coder) throws IOException {
         int index = 0;
@@ -576,6 +585,7 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
      * Decode the true colour image with each colour channel and alpha taking
      * 8-bits.
      * @param coder the decoder containing the image data.
+     * @throws IOException is there is an error decoding the data.
      */
     private void decodeRGBA(final LittleDecoder coder) throws IOException {
         int index = 0;
@@ -641,7 +651,8 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
     */
     private byte[] merge(final byte[] img, final byte[] colors) {
         final int entries = colors.length / COLOUR_CHANNELS;
-        final byte[] merged = new byte[entries * 3 + img.length];
+        final byte[] merged = new byte[entries * (COLOUR_CHANNELS - 1)
+                                       + img.length];
         int dst = 0;
 
         // Remap RGBA colours from table to BGR in encoded image
@@ -753,10 +764,13 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
 
         for (row = 0; row < imgHeight; row++) {
             for (col = 0; col < imgWidth; col++, src++) {
-                final int red = (img[src++] & 0xF8) << 7;
-                final int green = (img[src++] & 0xF8) << 2;
-                final int blue = (img[src++] & 0xF8) >> 3;
-                final int colour = (red | green | blue) & 0x7FFF;
+                final int red = (img[src++] & RGB5_MSB_MASK)
+                        << RGB555_RED_SHIFT;
+                final int green = (img[src++] & RGB5_MSB_MASK)
+                        << RGB555_GREEN_SHIFT;
+                final int blue = (img[src++] & RGB5_MSB_MASK)
+                        >> RGB555_BLUE_SHIFT;
+                final int colour = (red | green | blue) & Coder.LOWEST15;
 
                 formattedImage[dst++] = (byte) (colour >> 8);
                 formattedImage[dst++] = (byte) colour;

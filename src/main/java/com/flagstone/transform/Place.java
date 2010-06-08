@@ -197,9 +197,9 @@ public final class Place implements MovieTag {
      * @return this object.
      */
     public Place setIdentifier(final int uid) {
-        if ((uid < SWF.MIN_IDENTIFIER) || (uid > SWF.MAX_IDENTIFIER)) {
+        if ((uid < 1) || (uid > Coder.UNSIGNED_SHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    SWF.MIN_IDENTIFIER, SWF.MAX_IDENTIFIER, uid);
+                    1, Coder.UNSIGNED_SHORT_MAX, uid);
         }
         identifier = uid;
         return this;
@@ -224,8 +224,9 @@ public final class Place implements MovieTag {
      * @return this object.
      */
     public Place setLayer(final int aNumber) {
-        if ((aNumber < 1) || (aNumber > SWF.MAX_LAYER)) {
-            throw new IllegalArgumentRangeException(1, SWF.MAX_LAYER, aNumber);
+        if ((aNumber < 1) || (aNumber > Coder.UNSIGNED_SHORT_MAX)) {
+            throw new IllegalArgumentRangeException(
+                    1, Coder.UNSIGNED_SHORT_MAX, aNumber);
         }
         layer = aNumber;
         return this;

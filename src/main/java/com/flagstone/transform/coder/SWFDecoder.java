@@ -60,7 +60,11 @@ public final class SWFDecoder {
     /** Number of bits in an int. */
     private static final int BITS_PER_INT = 32;
     /** Number of bits in a byte. */
+    private static final int BITS_PER_BYTE = 8;
+    /** Right shift to convert number of bits to number of bytes. */
     private static final int BITS_TO_BYTES = 3;
+    /** Left shift to convert number of bytes to number of bits. */
+    private static final int BYTES_TO_BITS = 3;
 
     /** The underlying input stream. */
     private final transient InputStream stream;
@@ -282,11 +286,11 @@ public final class SWFDecoder {
     public int readBits(final int numberOfBits, final boolean signed)
             throws IOException {
 
-        int pointer = (index << 3) + offset;
+        int pointer = (index << BYTES_TO_BITS) + offset;
 
-        if (((size << 3) - pointer) < numberOfBits) {
+        if (((size << BYTES_TO_BITS) - pointer) < numberOfBits) {
             fill();
-            pointer = (index << 3) + offset;
+            pointer = (index << BYTES_TO_BITS) + offset;
         }
 
         int value = 0;
@@ -294,8 +298,8 @@ public final class SWFDecoder {
         if (numberOfBits > 0) {
 
             for (int i = BITS_PER_INT; (i > 0)
-                    && (index < buffer.length); i -= 8) {
-                value |= (buffer[index++] & BYTE_MASK) << (i - 8);
+                    && (index < buffer.length); i -= BITS_PER_BYTE) {
+                value |= (buffer[index++] & BYTE_MASK) << (i - BITS_PER_BYTE);
             }
 
             value <<= offset;
@@ -308,7 +312,7 @@ public final class SWFDecoder {
 
             pointer += numberOfBits;
             index = pointer >>> BITS_TO_BYTES;
-            offset = pointer & 7;
+            offset = pointer & Coder.LOWEST3;
         }
 
         return value;
@@ -396,7 +400,7 @@ public final class SWFDecoder {
         byte[] bytes = new byte[length];
         readBytes(bytes);
         final int len;
-        if (bytes[length-1] == 0) {
+        if (bytes[length - 1] == 0) {
             len = length - 1;
         } else {
             len = length;
@@ -533,17 +537,28 @@ public final class SWFDecoder {
 
         int value = buffer[index++] & BYTE_MASK;
         final int mask = -1;
-        int test = 0x80;
-        int step = 7;
+        int test = Coder.BIT7;
+        int step = Coder.VAR_INT_SHIFT;
 
         while ((value & test) != 0) {
             value = ((buffer[index++] & BYTE_MASK) << step)
                 + (value & mask >>> (32 - step));
-            test <<= 7;
-            step += 7;
+            test <<= Coder.VAR_INT_SHIFT;
+            step += Coder.VAR_INT_SHIFT;
         }
         return value;
     }
+
+    private static final int HALF_SIGN_SHIFT = 15;
+    private static final int HALF_EXP_SHIFT = 10;
+    private static final int HALF_EXP_OFFSET = 15;
+    private static final int HALF_EXP_MAX = 31;
+
+    private static final int SIGN_SHIFT = 31;
+    private static final int EXP_SHIFT = 23;
+    private static final int EXP_MAX = 127;
+    private static final int MANT_SHIFT = 13;
+    private static final int INFINITY = 0x7f800000;
 
     /**
      * Read a single-precision floating point number.
@@ -555,38 +570,38 @@ public final class SWFDecoder {
      */
     public float readHalf() throws IOException {
         final int bits = readUnsignedShort();
-        final int sign = (bits >> 15) & 0x00000001;
-        int exp = (bits >> 10) & 0x0000001f;
-        int mantissa = bits & 0x000003ff;
+        final int sign = (bits >> HALF_SIGN_SHIFT) & Coder.BIT0;
+        int exp = (bits >> HALF_EXP_SHIFT) & Coder.LOWEST5;
+        int mantissa = bits & Coder.LOWEST10;
         float value;
 
         if (exp == 0) {
             if (mantissa == 0) { // Plus or minus zero
-                value = Float.intBitsToFloat(sign << 31);
+                value = Float.intBitsToFloat(sign << SIGN_SHIFT);
             } else { // Denormalized number -- renormalize it
-                while ((mantissa & 0x00000400) == 0) {
+                while ((mantissa & Coder.BIT10) == 0) {
                     mantissa <<= 1;
                     exp -=  1;
                 }
                 exp += 1;
-                exp = exp + (127 - 15);
-                mantissa &= ~0x00000400;
-                mantissa = mantissa << 13;
-                value = Float.intBitsToFloat((sign << 31)
-                        | (exp << 23) | mantissa);
+                exp = exp + (EXP_MAX - HALF_EXP_OFFSET);
+                mantissa &= ~Coder.BIT10;
+                mantissa = mantissa << MANT_SHIFT;
+                value = Float.intBitsToFloat((sign << SIGN_SHIFT)
+                        | (exp << EXP_SHIFT) | mantissa);
             }
-        } else if (exp == 31) {
+        } else if (exp == HALF_EXP_MAX) {
             if (mantissa == 0) { // Inf
-                value = Float.intBitsToFloat((sign << 31) | 0x7f800000);
+                value = Float.intBitsToFloat((sign << SIGN_SHIFT) | INFINITY);
             } else { // NaN
-                value = Float.intBitsToFloat((sign << 31)
-                        | 0x7f800000 | (mantissa << 13));
+                value = Float.intBitsToFloat((sign << SIGN_SHIFT)
+                        | INFINITY | (mantissa << MANT_SHIFT));
             }
         } else {
-            exp = exp + (127 - 15);
-            mantissa = mantissa << 13;
-            value = Float.intBitsToFloat((sign << 31)
-                    | (exp << 23) | mantissa);
+            exp = exp + (EXP_MAX - HALF_EXP_OFFSET);
+            mantissa = mantissa << MANT_SHIFT;
+            value = Float.intBitsToFloat((sign << SIGN_SHIFT)
+                    | (exp << EXP_SHIFT) | mantissa);
         }
         return value;
     }

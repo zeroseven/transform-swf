@@ -42,6 +42,7 @@ import java.util.Arrays;
 import java.util.zip.DataFormatException;
 
 import com.flagstone.transform.coder.BigDecoder;
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.image.DefineJPEGImage2;
 import com.flagstone.transform.image.ImageTag;
 import com.flagstone.transform.image.JPEGInfo;
@@ -104,35 +105,35 @@ public final class JPGDecoder implements ImageProvider, ImageDecoder {
 
          do {
              marker = coder.readUI16();
-             if (marker == 0xFFD8) {
+             if (marker == JPEGInfo.SOI) {
                  copyTag(marker, 0, coder);
-             } else if (marker == 0xFFC0) {
+             } else if (marker == JPEGInfo.SOF0) {
                  length = coder.readUI16();
                  copyTag(marker, length, coder);
-             } else if (marker == 0xFFC2) {
+             } else if (marker == JPEGInfo.SOF2) {
                  length = coder.readUI16();
                  copyTag(marker, length, coder);
-             } else if (marker == 0xFFC4) {
+             } else if (marker == JPEGInfo.DHT) {
                  length = coder.readUI16();
                  copyTag(marker, length, coder);
-             } else if (marker == 0xFFDB) {
+             } else if (marker == JPEGInfo.DQT) {
                  length = coder.readUI16();
                  copyTag(marker, length, coder);
-             } else if (marker == 0xFFDD) {
+             } else if (marker == JPEGInfo.DRI) {
                  length = coder.readUI16();
                  copyTag(marker, length, coder);
-             } else if (marker == 0xFFDA) {
+             } else if (marker == JPEGInfo.SOS) {
                  length = coder.readUI16();
                  copyTag(marker, length, coder);
-             } else if (marker == 0xFFD9) {
+             } else if (marker == JPEGInfo.EOI) {
                  copyTag(marker, 0, coder);
-             } else if ((marker & 0xFFE0) == 0xFFE0) {
+             } else if ((marker & JPEGInfo.APP) == JPEGInfo.APP) {
                  length = coder.readUI16();
                  copyTag(marker, length, coder);
              } else {
                  copyTag(marker, 0, coder);
              }
-         } while (marker != 0xFFD9);
+         } while (marker != JPEGInfo.EOI);
 
          final JPEGInfo info = new JPEGInfo();
          info.decode(image);
@@ -140,26 +141,26 @@ public final class JPGDecoder implements ImageProvider, ImageDecoder {
          height = info.getHeight();
     }
 
-     private void copyTag(final int marker, final int length,
-             final BigDecoder coder) throws IOException {
-         byte[] bytes;
-         if (length > 0) {
-             bytes = new byte[length+2];
-         } else {
-             bytes = new byte[2];
-         }
-         bytes[0] = (byte) (marker >> 8);
-         bytes[1] = (byte) marker;
+    private void copyTag(final int marker, final int length,
+            final BigDecoder coder) throws IOException {
+        byte[] bytes;
+        if (length > 0) {
+            bytes = new byte[length + 2];
+        } else {
+            bytes = new byte[2];
+        }
+        bytes[0] = (byte) (marker >> Coder.TO_LOWER_BYTE);
+        bytes[1] = (byte) marker;
 
-         if (length > 0) {
-             bytes[2] = (byte) (length >> 8);
-             bytes[3] = (byte) length;
-             coder.readBytes(bytes, 4, length-2);
-         }
-         int imgLength = image.length;
-         image = Arrays.copyOf(image, imgLength + bytes.length);
-         System.arraycopy(bytes, 0, image, imgLength, bytes.length);
-     }
+        if (length > 0) {
+            bytes[2] = (byte) (length >> Coder.TO_LOWER_BYTE);
+            bytes[3] = (byte) length;
+            coder.readBytes(bytes, 4, length - 2);
+        }
+        int imgLength = image.length;
+        image = Arrays.copyOf(image, imgLength + bytes.length);
+        System.arraycopy(bytes, 0, image, imgLength, bytes.length);
+    }
 
      /** {@inheritDoc} */
     public int getWidth() {

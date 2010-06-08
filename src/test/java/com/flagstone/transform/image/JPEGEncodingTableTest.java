@@ -31,44 +31,36 @@
 
 package com.flagstone.transform.image;
 
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.flagstone.transform.coder.SWFDecoder;
-import com.flagstone.transform.coder.SWFEncoder;
-
 public final class JPEGEncodingTableTest {
 
-    private transient JPEGEncodingTable fixture;
-
-    private final transient byte[] encoded = new byte[] {0x06, 0x01, 0x01,
-            0x00, 0x02, 0x00, 0x06, 0x50 };
-
-    private final transient byte[] extended = new byte[] {0x7F, 0x01, 0x06,
-            0x00, 0x00, 0x00, 0x01, 0x00, 0x02, 0x00, 0x06, 0x50 };
+//    private transient JPEGEncodingTable fixture;
+//
+//    private final transient byte[] encoded = new byte[] {0x06, 0x01, 0x01,
+//            0x00, 0x02, 0x00, 0x06, 0x50 };
+//
+//    private final transient byte[] extended = new byte[] {0x7F, 0x01, 0x06,
+//            0x00, 0x00, 0x00, 0x01, 0x00, 0x02, 0x00, 0x06, 0x50 };
 
     @Test
     @Ignore //TODO(implement)
     public void checkCopy() {
-        // fixture = new JPEGEncodingTable(identifier, layer, transform,
-        // colorTransform);
-        final JPEGEncodingTable copy = fixture.copy();
-
-        assertNotSame(fixture, copy);
+//        // fixture = new JPEGEncodingTable(identifier, layer, transform,
+//        // colorTransform);
+//        final JPEGEncodingTable copy = fixture.copy();
+//
+//        assertNotSame(fixture, copy);
     }
 
     @Test
     @Ignore //TODO(implement)
     public void encode() throws IOException {
-        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        final SWFEncoder encoder = new SWFEncoder(stream);
+//        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+//        final SWFEncoder encoder = new SWFEncoder(stream);
 
         // fixture = new JPEGEncodingTable(identifier, layer, transform);
         // assertEquals(encoded.length, fixture.prepareToEncode(encoder,
@@ -81,22 +73,22 @@ public final class JPEGEncodingTableTest {
     @Test
     @Ignore //TODO(implement)
     public void decode() throws IOException {
-        final ByteArrayInputStream stream = new ByteArrayInputStream(encoded);
-        final SWFDecoder decoder = new SWFDecoder(stream);
-
-        // fixture = new JPEGEncodingTable(decoder, context);
-
-        assertTrue(true);
+//        final ByteArrayInputStream stream = new ByteArrayInputStream(encoded);
+//        final SWFDecoder decoder = new SWFDecoder(stream);
+//
+//        // fixture = new JPEGEncodingTable(decoder, context);
+//
+//        assertTrue(true);
     }
 
     @Test
     @Ignore //TODO(implement)
     public void decodeExtended() throws IOException {
-        final ByteArrayInputStream stream = new ByteArrayInputStream(extended);
-        final SWFDecoder decoder = new SWFDecoder(stream);
-
-        // fixture = new JPEGEncodingTable(decoder, context);
-
-        assertTrue(true);
+//       final ByteArrayInputStream stream = new ByteArrayInputStream(extended);
+//        final SWFDecoder decoder = new SWFDecoder(stream);
+//
+//        // fixture = new JPEGEncodingTable(decoder, context);
+//
+//        assertTrue(true);
     }
 }

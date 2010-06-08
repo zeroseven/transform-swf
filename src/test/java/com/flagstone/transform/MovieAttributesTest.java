@@ -36,7 +36,7 @@ import org.junit.Test;
 
 public final class MovieAttributesTest {
 
-    private transient MovieAttributes fixture;
+//    private transient MovieAttributes fixture;
 
     @Test @Ignore
     public void checkCopy() {

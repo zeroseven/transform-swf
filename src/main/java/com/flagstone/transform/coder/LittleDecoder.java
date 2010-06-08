@@ -50,7 +50,14 @@ public final class LittleDecoder {
     private static final int BYTE_MASK = 255;
     /** Number of bits in an int. */
     private static final int BITS_PER_INT = 32;
-    /** Left shift to convert number of bits to number of bytes. */
+    /** Number of bits in a byte. */
+    private static final int BITS_PER_BYTE = 8;
+    /** Number of bytes in an int. */
+    private static final int BYTES_PER_INT = 4;
+
+    /** Left shift to convert number of bytes to number of bits. */
+    private static final int BYTES_TO_BITS = 3;
+    /** Right shift to convert number of bits to number of bytes. */
     private static final int BITS_TO_BYTES = 3;
     /** Number of bits to shift when aligning a value to the second byte. */
     private static final int TO_BYTE1 = 8;
@@ -169,12 +176,12 @@ public final class LittleDecoder {
      * input stream.
      */
     public void alignToWord() throws IOException {
-        if (size - index < 4) {
+        if (size - index < BYTES_PER_INT) {
             fill();
         }
-        int diff = bytesRead() % 4;
+        int diff = bytesRead() % BYTES_PER_INT;
         if (diff > 0) {
-            index += 4 - diff;
+            index += BYTES_PER_INT - diff;
             offset = 0;
         }
     }
@@ -227,14 +234,17 @@ public final class LittleDecoder {
      *            indicates whether the integer value read is signed.
      *
      * @return the value read.
+     *
+     * @throws IOException if there is an error reading data from the
+     * underlying stream.
      */
     public int readBits(final int numberOfBits, final boolean signed)
             throws IOException {
-        int pointer = (index << 3) + offset;
+        int pointer = (index << BYTES_TO_BITS) + offset;
 
-        if (((size << 3) - pointer) < numberOfBits) {
+        if (((size << BYTES_TO_BITS) - pointer) < numberOfBits) {
             fill();
-            pointer = (index << 3) + offset;
+            pointer = (index << BYTES_TO_BITS) + offset;
         }
 
         int value = 0;
@@ -242,8 +252,8 @@ public final class LittleDecoder {
         if (numberOfBits > 0) {
 
             for (int i = BITS_PER_INT; (i > 0)
-                    && (index < buffer.length); i -= 8) {
-                value |= (buffer[index++] & BYTE_MASK) << (i - 8);
+                    && (index < buffer.length); i -= BITS_PER_BYTE) {
+                value |= (buffer[index++] & BYTE_MASK) << (i - BITS_PER_BYTE);
             }
 
             value <<= offset;
@@ -256,7 +266,7 @@ public final class LittleDecoder {
 
             pointer += numberOfBits;
             index = pointer >>> BITS_TO_BYTES;
-            offset = pointer & 7;
+            offset = pointer & Coder.LOWEST3;
         }
 
         return value;
@@ -357,7 +367,7 @@ public final class LittleDecoder {
      * input stream.
      */
     public int readUI32() throws IOException {
-        if (size - index < 4) {
+        if (size - index < BYTES_PER_INT) {
             fill();
         }
         int value = buffer[index++] & BYTE_MASK;

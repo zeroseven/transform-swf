@@ -34,6 +34,7 @@ package com.flagstone.transform.filter;
 import java.io.IOException;
 
 import com.flagstone.transform.SWF;
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -77,14 +78,11 @@ public final class DropShadowFilter implements Filter {
 
         public Builder setMode(final FilterMode filterMode) {
             switch (filterMode) {
-            case TOP:
-                 mode = 0x0030;
-                break;
             case KNOCKOUT:
-                mode = 0x0060;
+                mode = Coder.BIT6;
                 break;
             case INNER:
-                mode = 0x00A0;
+                mode = Coder.BIT7;
                 break;
             default:
                 throw new IllegalArgumentException();
@@ -133,10 +131,12 @@ public final class DropShadowFilter implements Filter {
      */
     private static final float SCALE_8 = 256.0f;
 
+    private static final int MODE_MASK = 0x00C0;
+
     /** Format string used in toString() method. */
     private static final String FORMAT = "DropShadowFilter: {"
         + " shadow=%s; blurX=%f; blurY=%f"
-        + " angle=%f; disance=%f, strength=%f; mode=%s; passes=%d}";
+        + " angle=%f; distance=%f, strength=%f; mode=%s; passes=%d}";
 
     /** The shadow colour. */
     private final transient Color shadow;
@@ -191,9 +191,8 @@ public final class DropShadowFilter implements Filter {
         strength = coder.readSignedShort();
 
         final int value = coder.readByte();
-
-        passes = value & 0x0F;
-        mode = (value & 0x0D) >>> 4;
+        passes = value & Coder.LOWEST5;
+        mode = value & MODE_MASK;
     }
 
 
@@ -230,10 +229,10 @@ public final class DropShadowFilter implements Filter {
     public FilterMode getMode() {
         FilterMode value;
         switch (mode) {
-        case 0x0060:
+        case Coder.BIT6:
             value = FilterMode.KNOCKOUT;
             break;
-        case 0x00A0:
+        case Coder.BIT7:
             value = FilterMode.INNER;
             break;
         default:
@@ -290,6 +289,7 @@ public final class DropShadowFilter implements Filter {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
+        // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
         return 24;
     }
 
@@ -303,6 +303,6 @@ public final class DropShadowFilter implements Filter {
         coder.writeInt(angle);
         coder.writeInt(distance);
         coder.writeShort(strength);
-        coder.writeByte(mode | passes);
+        coder.writeByte(Coder.BIT5 | mode | passes);
     }
 }

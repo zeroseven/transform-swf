@@ -127,9 +127,9 @@ public final class Export implements MovieTag {
      * @return this object.
      */
     public Export add(final int uid, final String aString) {
-        if ((uid < 1) || (uid > SWF.MAX_IDENTIFIER)) {
+        if ((uid < 1) || (uid > Coder.UNSIGNED_SHORT_MAX)) {
              throw new IllegalArgumentRangeException(
-                     1, SWF.MAX_IDENTIFIER, uid);
+                     1, Coder.UNSIGNED_SHORT_MAX, uid);
         }
         if (aString == null || aString.length() == 0) {
             throw new IllegalArgumentException();

@@ -49,21 +49,21 @@ public abstract class AbstractCodingTest {
     protected static final String NOT_DECODED =
         "Object was not decoded properly";
 
-    private transient final DecoderRegistry registry =
+    private final transient DecoderRegistry registry =
         DecoderRegistry.getDefault();
 
-    protected int prepare(final MovieTag object) throws IOException {
+    protected final int prepare(final MovieTag object) throws IOException {
         final Context context = new Context();
         context.put(Context.FRAMES, 0);
         return object.prepareToEncode(context);
     }
 
-    protected int prepare(final MovieTag object, final Context context)
+    protected final int prepare(final MovieTag object, final Context context)
             throws IOException {
          return object.prepareToEncode(context);
     }
 
-    protected byte[] encode(final MovieTag object) throws IOException {
+    protected final byte[] encode(final MovieTag object) throws IOException {
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         final SWFEncoder encoder = new SWFEncoder(stream);
         final Context context = new Context();
@@ -73,7 +73,7 @@ public abstract class AbstractCodingTest {
         return stream.toByteArray();
     }
 
-    protected byte[] encode(final MovieTag object, final Context context)
+    protected final byte[] encode(final MovieTag object, final Context context)
             throws IOException {
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         final SWFEncoder encoder = new SWFEncoder(stream);
@@ -84,7 +84,8 @@ public abstract class AbstractCodingTest {
         return stream.toByteArray();
     }
 
-    protected MovieTag decodeMovieTag(final byte[] bytes) throws IOException {
+    protected final MovieTag decodeMovieTag(final byte[] bytes)
+            throws IOException {
         final SWFFactory<MovieTag> factory = registry.getMovieDecoder();
         final ByteArrayInputStream stream = new ByteArrayInputStream(bytes);
         final SWFDecoder decoder = new SWFDecoder(stream);

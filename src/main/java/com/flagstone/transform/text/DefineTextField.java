@@ -34,7 +34,6 @@ package com.flagstone.transform.text;
 import java.io.IOException;
 
 import com.flagstone.transform.DefineTag;
-import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
@@ -223,6 +222,8 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
 @SuppressWarnings({"PMD.TooManyFields", "PMD.TooManyMethods" })
 public final class DefineTextField implements DefineTag {
 
+    private static final int MAX_SPACE = 65535;
+
     public enum Align {
         /** The text displayed in a text field is left aligned. */
         LEFT,
@@ -399,9 +400,9 @@ public final class DefineTextField implements DefineTag {
 
     /** {@inheritDoc} */
     public void setIdentifier(final int uid) {
-        if ((uid < SWF.MIN_IDENTIFIER) || (uid > SWF.MAX_IDENTIFIER)) {
+        if ((uid < 1) || (uid > Coder.UNSIGNED_SHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    SWF.MIN_IDENTIFIER, SWF.MAX_IDENTIFIER, uid);
+                    1, Coder.UNSIGNED_SHORT_MAX, uid);
         }
         identifier = uid;
     }
@@ -582,13 +583,13 @@ public final class DefineTextField implements DefineTag {
         case 0:
             value = Align.LEFT;
             break;
-        case 1:
+        case Coder.BIT0:
             value = Align.RIGHT;
             break;
-        case 2:
+        case Coder.BIT1:
             value = Align.CENTER;
             break;
-        case 3:
+        case Coder.BIT0 | Coder.BIT1:
             value = Align.JUSTIFY;
             break;
         default:
@@ -778,9 +779,9 @@ public final class DefineTextField implements DefineTag {
      * @return this object.
      */
     public DefineTextField setFontIdentifier(final int uid) {
-        if ((uid < 1) || (uid > SWF.MAX_IDENTIFIER)) {
+        if ((uid < 1) || (uid > Coder.UNSIGNED_SHORT_MAX)) {
              throw new IllegalArgumentRangeException(
-                     1, SWF.MAX_IDENTIFIER, uid);
+                     1, Coder.UNSIGNED_SHORT_MAX, uid);
         }
         fontIdentifier = uid;
         fontClass = null;  //NOPMD
@@ -802,9 +803,9 @@ public final class DefineTextField implements DefineTag {
      * @return this object.
      */
     public DefineTextField setFontHeight(final int aNumber) {
-        if ((aNumber < 0) || (aNumber > SWF.MAX_FONT_SIZE)) {
+        if ((aNumber < 0) || (aNumber > Coder.UNSIGNED_SHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    0, SWF.MAX_FONT_SIZE, aNumber);
+                    0, Coder.UNSIGNED_SHORT_MAX, aNumber);
         }
         fontHeight = aNumber;
         return this;
@@ -837,8 +838,8 @@ public final class DefineTextField implements DefineTag {
      * @return this object.
      */
     public DefineTextField setMaxLength(final int aNumber) {
-        if ((aNumber < 0) || (aNumber > 65535)) {
-            throw new IllegalArgumentRangeException(0, 65535, aNumber);
+        if ((aNumber < 0) || (aNumber > MAX_SPACE)) {
+            throw new IllegalArgumentRangeException(0, MAX_SPACE, aNumber);
         }
         maxLength = aNumber;
         return this;
@@ -859,13 +860,13 @@ public final class DefineTextField implements DefineTag {
             alignment = 0;
             break;
         case RIGHT:
-            alignment = 1;
+            alignment = Coder.BIT0;
             break;
         case CENTER:
-            alignment = 2;
+            alignment = Coder.BIT1;
             break;
         case JUSTIFY:
-            alignment = 3;
+            alignment = Coder.BIT0 | Coder.BIT1;
             break;
         default:
             throw new IllegalArgumentException();
@@ -881,8 +882,8 @@ public final class DefineTextField implements DefineTag {
      * @return this object.
      */
     public DefineTextField setLeftMargin(final Integer aNumber) {
-        if ((aNumber != null) && ((aNumber < 0) || (aNumber > 65535))) {
-            throw new IllegalArgumentRangeException(0, 65535, aNumber);
+        if ((aNumber != null) && ((aNumber < 0) || (aNumber > MAX_SPACE))) {
+            throw new IllegalArgumentRangeException(0, MAX_SPACE, aNumber);
         }
         leftMargin = aNumber;
         return this;
@@ -896,8 +897,8 @@ public final class DefineTextField implements DefineTag {
      * @return this object.
      */
     public DefineTextField setRightMargin(final Integer aNumber) {
-        if ((aNumber != null) && ((aNumber < 0) || (aNumber > 65535))) {
-            throw new IllegalArgumentRangeException(0, 65535, aNumber);
+        if ((aNumber != null) && ((aNumber < 0) || (aNumber > MAX_SPACE))) {
+            throw new IllegalArgumentRangeException(0, MAX_SPACE, aNumber);
         }
         rightMargin = aNumber;
         return this;
@@ -912,8 +913,8 @@ public final class DefineTextField implements DefineTag {
      * @return this object.
      */
     public DefineTextField setIndent(final Integer aNumber) {
-        if ((aNumber != null) && ((aNumber < 0) || (aNumber > 65535))) {
-            throw new IllegalArgumentRangeException(0, 65535, aNumber);
+        if ((aNumber != null) && ((aNumber < 0) || (aNumber > MAX_SPACE))) {
+            throw new IllegalArgumentRangeException(0, MAX_SPACE, aNumber);
         }
         indent = aNumber;
         return this;
@@ -927,9 +928,10 @@ public final class DefineTextField implements DefineTag {
      * @return this object.
      */
     public DefineTextField setLeading(final Integer aNumber) {
-        if ((aNumber < SWF.MIN_LEADING) || (aNumber > SWF.MAX_LEADING)) {
+        if ((aNumber < Coder.SIGNED_SHORT_MIN)
+                || (aNumber > Coder.SIGNED_SHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    SWF.MIN_LEADING, SWF.MAX_LEADING, aNumber);
+                    Coder.SIGNED_SHORT_MIN, Coder.SIGNED_SHORT_MAX, aNumber);
         }
         leading = aNumber;
         return this;
@@ -1000,6 +1002,7 @@ public final class DefineTextField implements DefineTag {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
+        // CHECKSTYLE:OFF
         context.put(Context.TRANSPARENT, 1);
 
         length = 2 + bounds.prepareToEncode(context);
@@ -1016,6 +1019,7 @@ public final class DefineTextField implements DefineTag {
 
         return (length > Coder.SHORT_HEADER_LIMIT ? Coder.LONG_HEADER
                 : Coder.SHORT_HEADER) + length;
+        // CHECKSTYLE:ON
     }
 
     /** {@inheritDoc} */
@@ -1043,7 +1047,7 @@ public final class DefineTextField implements DefineTag {
         bits |= readOnly ? Coder.BIT3 : 0;
         bits |= color == null ? 0 : Coder.BIT2;
         bits |= maxLength > 0 ? Coder.BIT1 : 0;
-        bits |= fontIdentifier == 0 ? 0: Coder.BIT0;
+        bits |= fontIdentifier == 0 ? 0 : Coder.BIT0;
         coder.writeByte(bits);
 
         bits = 0;

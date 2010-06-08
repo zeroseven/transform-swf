@@ -49,13 +49,12 @@ import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.Color;
-import com.flagstone.transform.datatype.CoordTransform;
 
 public final class FocalGradientFillTest {
 
-    private static transient boolean radial = false;
-    private static transient CoordTransform transform = CoordTransform
-            .translate(1, 2);
+//    private static transient boolean radial = false;
+//    private static transient CoordTransform transform = CoordTransform
+//            .translate(1, 2);
     private static transient List<Gradient> list = new ArrayList<Gradient>();
 
     static {

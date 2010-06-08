@@ -33,18 +33,9 @@ package com.flagstone.transform.coder;
 
 import static org.junit.Assert.assertEquals;
 
-import org.junit.Before;
 import org.junit.Test;
 
 public final class SWFEncoderTest {
-    private transient SWFEncoder fixture;
-
-    private transient byte[] data;
-
-    @Before
-    public void setUp() {
-
-    }
 
     @Test
     public void sizeVariableU32InOneByte() {

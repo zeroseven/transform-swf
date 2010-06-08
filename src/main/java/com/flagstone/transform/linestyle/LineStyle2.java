@@ -119,7 +119,7 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
 
         bits = coder.readByte();
         lineClosed = (bits & Coder.BIT2) == 0;
-        endCap = bits & 0x03;
+        endCap = bits & Coder.PAIR0;
 
         if (hasMiter) {
             coder.readUnsignedShort();
@@ -201,8 +201,9 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
      *            the width of the line. Must be in the range 0..65535.
      */
     public void setWidth(final int thickness) {
-        if ((thickness < 0) || (thickness > 65535)) {
-            throw new IllegalArgumentRangeException(0, 65535, thickness);
+        if ((thickness < 0) || (thickness > Coder.UNSIGNED_SHORT_MAX)) {
+            throw new IllegalArgumentRangeException(0,
+                    Coder.UNSIGNED_SHORT_MAX, thickness);
         }
         width = thickness;
     }
@@ -360,8 +361,9 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
 
 
     public void setMiterLimit(final int limit) {
-        if ((limit < 0) || (limit > 65535)) {
-            throw new IllegalArgumentRangeException(0, 65535, limit);
+        if ((limit < 0) || (limit > Coder.UNSIGNED_SHORT_MAX)) {
+            throw new IllegalArgumentRangeException(
+                    0, Coder.UNSIGNED_SHORT_MAX, limit);
         }
         miterLimit = limit;
     }
@@ -390,7 +392,7 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
-
+        // CHECKSTYLE:OFF
         hasFillStyle = fillStyle != null;
         hasMiter = joinStyle == 2;
 
@@ -411,6 +413,7 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
         }
 
         return length;
+        // CHECKSTYLE:ON
     }
 
     /** {@inheritDoc} */
@@ -421,25 +424,25 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
         int value = 0;
 
         if (startCap == 1) {
-            value |= 0x000040;
+            value |= Coder.BIT6;
         } else if (startCap == 2) {
-            value |= 0x000080;
+            value |= Coder.BIT7;
         }
 
         if (joinStyle == 1) {
-            value |= 0x000010;
+            value |= Coder.BIT4;
         } else if (joinStyle == 2) {
-            value |= 0x000020;
+            value |= Coder.BIT5;
         }
 
-        value |= fillStyle == null ? 0 : 0x000008;
-        value |= horizontal ? 0 : 0x000004;
-        value |= vertical ? 0 : 0x000002;
-        value |= pixelAligned ? 0x000001 : 0;
+        value |= fillStyle == null ? 0 : Coder.BIT3;
+        value |= horizontal ? 0 : Coder.BIT2;
+        value |= vertical ? 0 : Coder.BIT1;
+        value |= pixelAligned ? Coder.BIT0 : 0;
 
         coder.writeByte(value);
 
-        value = lineClosed ? 0 : 0x00000004;
+        value = lineClosed ? 0 : Coder.BIT2;
         value |= endCap;
         coder.writeByte(value);
 

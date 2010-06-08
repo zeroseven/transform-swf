@@ -136,9 +136,9 @@ public final class Remove implements MovieTag {
      *            list. Must be in the range 1.65535.
      */
     public void setIdentifier(final int uid) {
-        if ((uid < SWF.MIN_IDENTIFIER) || (uid > SWF.MAX_IDENTIFIER)) {
+        if ((uid < 1) || (uid > Coder.UNSIGNED_SHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    SWF.MIN_IDENTIFIER, SWF.MAX_IDENTIFIER, uid);
+                    1, Coder.UNSIGNED_SHORT_MAX, uid);
         }
         identifier = uid;
     }
@@ -160,8 +160,9 @@ public final class Remove implements MovieTag {
      *            displayed. Must be in the range 1.65535.
      */
     public void setLayer(final int aLayer) {
-        if ((aLayer < 1) || (aLayer > SWF.MAX_LAYER)) {
-            throw new IllegalArgumentRangeException(1, SWF.MAX_LAYER, aLayer);
+        if ((aLayer < 1) || (aLayer > Coder.UNSIGNED_SHORT_MAX)) {
+            throw new IllegalArgumentRangeException(
+                    1, Coder.UNSIGNED_SHORT_MAX, aLayer);
         }
         layer = aLayer;
     }
@@ -179,16 +180,15 @@ public final class Remove implements MovieTag {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
-        //CHECKSTYLE:OFF
+        // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
         return 6;
-        //CHECKSTYLE:ON
     }
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
-        coder.writeShort((MovieTypes.REMOVE
-                << Coder.LENGTH_FIELD_SIZE) | 4);
+        // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
+        coder.writeShort((MovieTypes.REMOVE << Coder.LENGTH_FIELD_SIZE) | 4);
         coder.writeShort(identifier);
         coder.writeShort(layer);
     }

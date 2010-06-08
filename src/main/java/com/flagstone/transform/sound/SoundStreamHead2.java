@@ -128,18 +128,19 @@ public final class SoundStreamHead2 implements MovieTag {
         }
         coder.mark();
         int info = coder.readByte();
-        reserved = (info & 0x00F0) >> 4;
-        playRate = readRate((info & 0x0C) >> 2);
-        playSampleSize = ((info & 0x02) >> 1) + 1;
-        playChannels = (info & 0x01) + 1;
+        reserved = (info & Coder.NIB1) >> Coder.TO_LOWER_NIB;
+        playRate = readRate(info & Coder.PAIR1);
+        playSampleSize = ((info & Coder.BIT1) >> 1) + 1;
+        playChannels = (info & Coder.BIT0) + 1;
 
         info = coder.readByte();
-        format = (info & 0x00F0) >> 4;
-        streamRate = readRate((info & 0x0C) >> 2);
-        streamSampleSize = ((info & 0x02) >> 1) + 1;
-        streamChannels = (info & 0x01) + 1;
+        format = (info & Coder.NIB1) >> Coder.TO_LOWER_NIB;
+        streamRate = readRate(info & Coder.PAIR1);
+        streamSampleSize = ((info & Coder.BIT1) >> 1) + 1;
+        streamChannels = (info & Coder.BIT0) + 1;
         streamSampleCount = coder.readUnsignedShort();
 
+        // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
         if ((length == 6) && (format == 2)) {
             latency = coder.readSignedShort();
         }
@@ -214,34 +215,7 @@ public final class SoundStreamHead2 implements MovieTag {
      * @return the format for the sound data.
      */
     public SoundFormat getFormat() {
-        SoundFormat value;
-
-        switch (format) {
-        case 0:
-            value = SoundFormat.NATIVE_PCM;
-            break;
-        case 1:
-            value = SoundFormat.ADPCM;
-            break;
-        case 2:
-            value = SoundFormat.MP3;
-            break;
-        case 3:
-            value = SoundFormat.PCM;
-            break;
-        case 5:
-            value = SoundFormat.NELLYMOSER_8K;
-            break;
-        case 6:
-            value = SoundFormat.NELLYMOSER;
-            break;
-        case 11:
-            value = SoundFormat.SPEEX;
-            break;
-        default:
-            throw new IllegalStateException("Unsupported sound format.");
-        }
-        return value;
+        return SoundFormat.fromInt(format);
     }
 
     /**
@@ -252,28 +226,7 @@ public final class SoundStreamHead2 implements MovieTag {
      *            NATIVE_PCM, ADPCM, MP3, PCM or NELLYMOSER from SoundFormat.
      */
     public void setFormat(final SoundFormat encoding) {
-        switch (encoding) {
-        case NATIVE_PCM:
-            format = 0;
-            break;
-        case ADPCM:
-            format = 1;
-            break;
-        case MP3:
-            format = 2;
-            break;
-        case PCM:
-            format = 3;
-            break;
-        case NELLYMOSER:
-            format = 6;
-            break;
-        case SPEEX:
-            format = 11;
-            break;
-        default:
-            throw new IllegalArgumentException("Unsupported sound format.");
-        }
+        format = encoding.getValue();
     }
 
     /**
@@ -481,6 +434,7 @@ public final class SoundStreamHead2 implements MovieTag {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
+        // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
         length = 4;
 
         if ((format == 2) && (latency > 0)) {
@@ -503,13 +457,13 @@ public final class SoundStreamHead2 implements MovieTag {
                     << Coder.LENGTH_FIELD_SIZE) | length);
         }
         coder.mark();
-        int bits = reserved << 4;
+        int bits = reserved << Coder.TO_UPPER_NIB;
         bits |= writeRate(playRate);
         bits |= (playSampleSize - 1) << 1;
         bits |= playChannels - 1;
         coder.writeByte(bits);
 
-        bits = format << 4;
+        bits = format << Coder.TO_UPPER_NIB;
         bits |= writeRate(streamRate);
         bits |= (streamSampleSize - 1) << 1;
         bits |= streamChannels - 1;
@@ -528,13 +482,13 @@ public final class SoundStreamHead2 implements MovieTag {
         case 0:
             rate = SoundRate.KHZ_5K;
             break;
-        case 1:
+        case Coder.BIT2:
             rate = SoundRate.KHZ_11K;
             break;
-        case 2:
+        case Coder.BIT3:
             rate = SoundRate.KHZ_22K;
             break;
-        case 3:
+        case Coder.BIT2 | Coder.BIT3:
             rate = SoundRate.KHZ_44K;
             break;
         default:
@@ -548,13 +502,13 @@ public final class SoundStreamHead2 implements MovieTag {
         int value;
         switch (rate) {
         case SoundRate.KHZ_11K:
-            value = 4;
+            value = Coder.BIT2;
             break;
         case SoundRate.KHZ_22K:
-            value = 8;
+            value = Coder.BIT3;
             break;
         case SoundRate.KHZ_44K:
-            value = 12;
+            value = Coder.BIT2 | Coder.BIT3;
             break;
         default:
             value = 0;

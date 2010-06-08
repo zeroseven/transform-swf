@@ -119,11 +119,20 @@ public final class Canvas {
     /** Number of twips in a pixel. */
     private static final int TWIPS_PER_PIXEL = 20;
 
+    private static final int START = 0;
+    private static final int CTRLA = 1;
+    private static final int CTRLB = 2;
+    private static final int ANCHOR = 3;
+    private static final int MID = 2;
+    private static final int CUBIC_POINTS = 4;
+    private static final double CTRL_AVG = 2.0;
+    private static final double ANCHOR_AVG = 3.0;
+
     private final transient boolean arePixels;
     private transient boolean pathInProgress = false;
 
-    private final transient double[] cubicX = new double[4];
-    private final transient double[] cubicY = new double[4];
+    private final transient double[] cubicX = new double[CUBIC_POINTS];
+    private final transient double[] cubicY = new double[CUBIC_POINTS];
 
     private transient int initialX;
     private transient int initialY;
@@ -564,19 +573,19 @@ public final class Canvas {
         cubicY[0] = currentY;
 
         if (arePixels) {
-            cubicX[1] = cax * TWIPS_PER_PIXEL;
-            cubicY[1] = cay * TWIPS_PER_PIXEL;
-            cubicX[2] = cbx * TWIPS_PER_PIXEL;
-            cubicY[2] = cby * TWIPS_PER_PIXEL;
-            cubicX[3] = anx * TWIPS_PER_PIXEL;
-            cubicY[3] = any * TWIPS_PER_PIXEL;
+            cubicX[CTRLA] = cax * TWIPS_PER_PIXEL;
+            cubicY[CTRLA] = cay * TWIPS_PER_PIXEL;
+            cubicX[CTRLB] = cbx * TWIPS_PER_PIXEL;
+            cubicY[CTRLB] = cby * TWIPS_PER_PIXEL;
+            cubicX[ANCHOR] = anx * TWIPS_PER_PIXEL;
+            cubicY[ANCHOR] = any * TWIPS_PER_PIXEL;
         } else {
-            cubicX[1] = cax;
-            cubicY[1] = cay;
-            cubicX[2] = cbx;
-            cubicY[2] = cby;
-            cubicX[3] = anx;
-            cubicY[3] = any;
+            cubicX[CTRLA] = cax;
+            cubicY[CTRLA] = cay;
+            cubicX[CTRLB] = cbx;
+            cubicY[CTRLB] = cby;
+            cubicX[ANCHOR] = anx;
+            cubicY[ANCHOR] = any;
         }
         flatten();
     }
@@ -614,19 +623,19 @@ public final class Canvas {
         cubicY[0] = currentY;
 
         if (arePixels) {
-            cubicX[1] = currentX + controlAX * TWIPS_PER_PIXEL;
-            cubicY[1] = currentY + controlAY * TWIPS_PER_PIXEL;
-            cubicX[2] = currentX + controlBX * TWIPS_PER_PIXEL;
-            cubicY[2] = currentY + controlBY * TWIPS_PER_PIXEL;
-            cubicX[3] = currentX + anchorX * TWIPS_PER_PIXEL;
-            cubicY[3] = currentY + anchorY * TWIPS_PER_PIXEL;
+            cubicX[CTRLA] = currentX + controlAX * TWIPS_PER_PIXEL;
+            cubicY[CTRLA] = currentY + controlAY * TWIPS_PER_PIXEL;
+            cubicX[CTRLB] = currentX + controlBX * TWIPS_PER_PIXEL;
+            cubicY[CTRLB] = currentY + controlBY * TWIPS_PER_PIXEL;
+            cubicX[ANCHOR] = currentX + anchorX * TWIPS_PER_PIXEL;
+            cubicY[ANCHOR] = currentY + anchorY * TWIPS_PER_PIXEL;
         } else {
-            cubicX[1] = currentX + controlAX;
-            cubicY[1] = currentY + controlAY;
-            cubicX[2] = currentX + controlBX;
-            cubicY[2] = currentY + controlBY;
-            cubicX[3] = currentX + anchorX;
-            cubicY[3] = currentY + anchorY;
+            cubicX[CTRLA] = currentX + controlAX;
+            cubicY[CTRLA] = currentY + controlAY;
+            cubicX[CTRLB] = currentX + controlBX;
+            cubicY[CTRLB] = currentY + controlBY;
+            cubicX[ANCHOR] = currentX + anchorX;
+            cubicY[ANCHOR] = currentY + anchorY;
         }
 
         flatten();
@@ -920,18 +929,26 @@ public final class Canvas {
         double pointBY;
 
         while (true) {
-            pointAX = 2.0 * cubicX[0] + cubicX[3] - 3.0 * cubicX[1];
+            pointAX = CTRL_AVG * cubicX[START]
+                                        + cubicX[ANCHOR] - ANCHOR_AVG
+                                        * cubicX[CTRLA];
             pointAX *= pointAX;
-            pointBX = 2.0 * cubicX[3] + cubicX[0] - 3.0 * cubicX[2];
+            pointBX = CTRL_AVG * cubicX[ANCHOR]
+                                   + cubicX[START] - ANCHOR_AVG
+                                   * cubicX[CTRLB];
             pointBX *= pointBX;
 
             if (pointAX < pointBX) {
                 pointAX = pointBX;
             }
 
-            pointAY = 2.0 * cubicY[0] + cubicY[3] - 3.0 * cubicY[1];
+            pointAY = CTRL_AVG * cubicY[START]
+                                        + cubicY[ANCHOR] - ANCHOR_AVG
+                                        * cubicY[CTRLA];
             pointAY *= pointAY;
-            pointBY = 2.0 * cubicY[3] + cubicY[0] - 3.0 * cubicY[2];
+            pointBY = CTRL_AVG * cubicY[ANCHOR]
+                                        + cubicY[START] - ANCHOR_AVG
+                                        * cubicY[CTRLB];
             pointBY *= pointBY;
 
             if (pointAY < pointBY) {
@@ -939,41 +956,41 @@ public final class Canvas {
             }
 
             if ((pointAX + pointAY) < FLATTEN_LIMIT) {
-                objects.add(new Line((int) (cubicX[3]) - currentX,
-                        (int) (cubicY[3]) - currentY));
-                setControl((int) (cubicX[1]), (int) (cubicY[1]));
-                setControl((int) (cubicX[2]), (int) (cubicY[2]));
-                setCurrent((int) (cubicX[3]), (int) (cubicY[3]));
+                objects.add(new Line((int) (cubicX[ANCHOR]) - currentX,
+                        (int) (cubicY[ANCHOR]) - currentY));
+                setControl((int) cubicX[CTRLA], (int) cubicY[CTRLA]);
+                setControl((int) cubicX[CTRLB], (int) cubicY[CTRLB]);
+                setCurrent((int) cubicX[ANCHOR], (int) cubicY[ANCHOR]);
                 break;
             } else {
-                quadX[3] = cubicX[3];
-                delta = (cubicX[1] + cubicX[2]) / 2;
-                cubicX[1] = (cubicX[0] + cubicX[1]) / 2;
-                quadX[2] = (cubicX[2] + cubicX[3]) / 2;
-                cubicX[2] = (cubicX[1] + delta) / 2;
-                quadX[1] = (delta + quadX[2]) / 2;
-                cubicX[3] = (cubicX[2] + quadX[1]) / 2;
-                quadX[0] = (cubicX[2] + quadX[1]) / 2;
+                quadX[ANCHOR] = cubicX[ANCHOR];
+                delta = (cubicX[CTRLA] + cubicX[CTRLB]) / MID;
+                cubicX[1] = (cubicX[START] + cubicX[CTRLA]) / MID;
+                quadX[2] = (cubicX[CTRLB] + cubicX[ANCHOR]) / MID;
+                cubicX[2] = (cubicX[CTRLA] + delta) / MID;
+                quadX[1] = (delta + quadX[CTRLB]) / MID;
+                cubicX[ANCHOR] = (cubicX[CTRLB] + quadX[CTRLA]) / MID;
+                quadX[0] = (cubicX[CTRLB] + quadX[CTRLA]) / MID;
 
-                quadY[3] = cubicY[3];
-                delta = (cubicY[1] + cubicY[2]) / 2;
-                cubicY[1] = (cubicY[0] + cubicY[1]) / 2;
-                quadY[2] = (cubicY[2] + cubicY[3]) / 2;
-                cubicY[2] = (cubicY[1] + delta) / 2;
-                quadY[1] = (delta + quadY[2]) / 2;
-                cubicY[3] = (cubicY[2] + quadY[1]) / 2;
-                quadY[0] = (cubicY[2] + quadY[1]) / 2;
+                quadY[ANCHOR] = cubicY[ANCHOR];
+                delta = (cubicY[CTRLA] + cubicY[CTRLB]) / MID;
+                cubicY[1] = (cubicY[START] + cubicY[CTRLA]) / MID;
+                quadY[2] = (cubicY[CTRLB] + cubicY[ANCHOR]) / MID;
+                cubicY[2] = (cubicY[CTRLA] + delta) / MID;
+                quadY[1] = (delta + quadY[CTRLB]) / MID;
+                cubicY[ANCHOR] = (cubicY[CTRLB] + quadY[CTRLA]) / MID;
+                quadY[0] = (cubicY[CTRLB] + quadY[CTRLA]) / MID;
 
                 flatten();
 
-                cubicX[0] = quadX[0];
-                cubicY[0] = quadY[0];
-                cubicX[1] = quadX[1];
-                cubicY[1] = quadY[1];
-                cubicX[2] = quadX[2];
-                cubicY[2] = quadY[2];
-                cubicX[3] = quadX[3];
-                cubicY[3] = quadY[3];
+                cubicX[START] = quadX[START];
+                cubicY[START] = quadY[START];
+                cubicX[CTRLA] = quadX[CTRLA];
+                cubicY[CTRLA] = quadY[CTRLA];
+                cubicX[CTRLB] = quadX[CTRLB];
+                cubicY[CTRLB] = quadY[CTRLB];
+                cubicX[ANCHOR] = quadX[ANCHOR];
+                cubicY[ANCHOR] = quadY[ANCHOR];
             }
         }
     }

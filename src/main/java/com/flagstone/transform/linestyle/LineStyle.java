@@ -33,6 +33,8 @@ package com.flagstone.transform.linestyle;
 
 
 import java.io.IOException;
+
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.Copyable;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -149,8 +151,9 @@ public final class LineStyle implements SWFEncodeable, Copyable<LineStyle> {
      *            the width of the line. Must be in the range 0..65535.
      */
     public void setWidth(final int aNumber) {
-        if ((aNumber < 0) || (aNumber > 65535)) {
-            throw new IllegalArgumentRangeException(0, 65535, aNumber);
+        if ((aNumber < 0) || (aNumber > Coder.UNSIGNED_SHORT_MAX)) {
+            throw new IllegalArgumentRangeException(
+                    0, Coder.UNSIGNED_SHORT_MAX, aNumber);
         }
         width = aNumber;
     }
@@ -181,12 +184,8 @@ public final class LineStyle implements SWFEncodeable, Copyable<LineStyle> {
     // TODO(optimise)
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
-        int length = 2;
-
-        length += context.contains(Context.TRANSPARENT) ? 4
-                : 3;
-
-        return length;
+        // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
+        return 2 + (context.contains(Context.TRANSPARENT) ? 4 : 3);
     }
 
     /** {@inheritDoc} */

@@ -51,6 +51,8 @@ public final class SWFEncoder {
     private static final int BYTE_MASK = 255;
     /** Number of bits in an int. */
     private static final int BITS_PER_INT = 32;
+    /** Number of bits in a byte. */
+    private static final int BITS_PER_BYTE = 8;
     /** Offset to add to number of bits when calculating number of bytes. */
     private static final int ROUND_TO_BYTES = 7;
     /** Right shift to convert number of bits to number of bytes. */
@@ -240,9 +242,9 @@ public final class SWFEncoder {
     public void writeBits(final int value, final int numberOfBits)
                 throws IOException {
 
-        int ptr = (index << 3) + offset + numberOfBits;
+        int ptr = (index << BYTES_TO_BITS) + offset + numberOfBits;
 
-        if (ptr >= (buffer.length << 3)) {
+        if (ptr >= (buffer.length << BYTES_TO_BITS)) {
             flush();
         }
 
@@ -252,20 +254,20 @@ public final class SWFEncoder {
                 + ROUND_TO_BYTES) >>> BITS_TO_BYTES) << BYTES_TO_BITS);
         base = base < 0 ? 0 : base;
 
-        int pointer = (index << 3) + offset;
+        int pointer = (index << BYTES_TO_BITS) + offset;
 
-        for (int i = 24; i >= base; i -= 8) {
+        for (int i = 24; i >= base; i -= BITS_PER_BYTE) {
             buffer[index++] = (byte) (val >>> i);
         }
 
         if (offset + numberOfBits > BITS_PER_INT) {
-            buffer[index] = (byte) (value
-                    << (8 - (offset + numberOfBits - BITS_PER_INT)));
+            buffer[index] = (byte) (value << (BITS_PER_BYTE
+                    - (offset + numberOfBits - BITS_PER_INT)));
         }
 
         pointer += numberOfBits;
         index = pointer >>> BITS_TO_BYTES;
-        offset = pointer & 7;
+        offset = pointer & Coder.LOWEST3;
     }
 
     /**
@@ -371,12 +373,23 @@ public final class SWFEncoder {
         }
 
         int val = value;
-        while (val > 127) {
-            buffer[index++] = (byte) ((val & 0x007F) | 0x0080);
-            val = val >>> 7;
+        while (val > Coder.VAR_INT_MAX) {
+            buffer[index++] = (byte) ((val & Coder.LOWEST7) | Coder.BIT7);
+            val = val >>> Coder.VAR_INT_SHIFT;
         }
-        buffer[index++] = (byte) (val & 0x007F);
+        buffer[index++] = (byte) (val & Coder.LOWEST7);
     }
+
+    private static final int HALF_EXP_SHIFT = 10;
+    private static final int HALF_EXP_OFFSET = 15;
+    private static final int HALF_EXP_MAX = 31;
+    private static final int HALF_INF = 0x7C00;
+
+    private static final int EXP_SHIFT = 23;
+    private static final int EXP_MAX = 127;
+    private static final int MANT_SHIFT = 13;
+    private static final int LOWEST23 = 0x007fffff;
+    private static final int BIT23 = 0x00800000;
 
     /**
      * Write a single-precision floating point number.
@@ -387,35 +400,35 @@ public final class SWFEncoder {
      * stream.
      */
     public void writeHalf(final float value) throws IOException {
-        //CHECKSTYLE:OFF
         final int intValue = Float.floatToIntBits(value);
-        final int sign = (intValue >> 16) & 0x00008000;
-        final int exponent = ((intValue >> 23) & BYTE_MASK)
-                        - (127 - 15);
-        int mantissa = intValue & 0x007fffff;
+        final int sign = (intValue >> Coder.ALIGN_BYTE2) & Coder.BIT15;
+        final int exponent = ((intValue >> EXP_SHIFT) & BYTE_MASK)
+                        - (EXP_MAX - HALF_EXP_OFFSET);
+        int mantissa = intValue & LOWEST23;
 
         if (exponent <= 0) {
             if (exponent < -10) {
                 writeShort(0);
             } else {
-                mantissa = (mantissa | 0x00800000) >> (1 - exponent);
-                writeShort((sign | (mantissa >> 13)));
+                mantissa = (mantissa | BIT23) >> (1 - exponent);
+                writeShort((sign | (mantissa >> MANT_SHIFT)));
             }
-        } else if (exponent == 0xff - (127 - 15)) {
+        } else if (exponent == 0xff - (EXP_MAX - HALF_EXP_OFFSET)) {
             if (mantissa == 0) { // Inf
-                writeShort(sign | 0x7c00);
+                writeShort(sign | HALF_INF);
             } else { // NAN
-                mantissa >>= 13;
-                writeShort((sign | 0x7c00 | mantissa
+                mantissa >>= MANT_SHIFT;
+                writeShort((sign | HALF_INF | mantissa
                         | ((mantissa == 0) ? 1 : 0)));
             }
         } else {
-            if (exponent > 30) { // Overflow
-                writeShort((sign | 0x7c00));
+            if (exponent >= HALF_EXP_MAX) { // Overflow
+                writeShort((sign | HALF_INF));
             } else {
-                writeShort((sign | (exponent << 10) | (mantissa >> 13)));
+                writeShort((sign
+                        | (exponent << HALF_EXP_SHIFT)
+                        | (mantissa >> MANT_SHIFT)));
             }
         }
-        //CHECKSTYLE:ON
     }
 }

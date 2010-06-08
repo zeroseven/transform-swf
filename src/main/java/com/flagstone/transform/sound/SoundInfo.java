@@ -33,7 +33,6 @@ package com.flagstone.transform.sound;
 
 import java.io.IOException;
 
-import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -114,21 +113,21 @@ public final class SoundInfo implements SWFEncodeable {
         identifier = uid;
 
         final int info = coder.readByte();
-        mode = (info & 0x00F0) >> 4;
+        mode = info & Coder.NIB1;
 
-        if ((info & 0x01) != 0) {
+        if ((info & Coder.BIT0) != 0) {
             inPoint = coder.readInt();
         }
 
-        if ((info & 0x02) != 0) {
+        if ((info & Coder.BIT1) != 0) {
             outPoint = coder.readInt();
         }
 
-        if ((info & 0x04) != 0) {
+        if ((info & Coder.BIT2) != 0) {
             loopCount = coder.readUnsignedShort();
         }
 
-        if ((info & 0x08) != 0) {
+        if ((info & Coder.BIT3) != 0) {
             envelope = new Envelope(coder);
         }
     }
@@ -200,10 +199,10 @@ public final class SoundInfo implements SWFEncodeable {
         case 0:
             value = Mode.START;
             break;
-        case 1:
+        case Coder.BIT4:
             value = Mode.CONTINUE;
             break;
-        case 2:
+        case Coder.BIT5:
             value = Mode.STOP;
             break;
         default:
@@ -257,9 +256,9 @@ public final class SoundInfo implements SWFEncodeable {
      *            range 1..65535.
      */
     public void setIdentifier(final int uid) {
-        if ((uid < SWF.MIN_IDENTIFIER) || (uid > SWF.MAX_IDENTIFIER)) {
+        if ((uid < 1) || (uid > Coder.UNSIGNED_SHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    SWF.MIN_IDENTIFIER, SWF.MAX_IDENTIFIER, uid);
+                    1, Coder.UNSIGNED_SHORT_MAX, uid);
         }
         identifier = uid;
     }
@@ -278,10 +277,10 @@ public final class SoundInfo implements SWFEncodeable {
             mode = 0;
             break;
         case CONTINUE:
-            mode = 1;
+            mode = Coder.BIT4;
             break;
         case STOP:
-            mode = 2;
+            mode = Coder.BIT5;
             break;
         default:
             throw new IllegalArgumentException();
@@ -296,8 +295,10 @@ public final class SoundInfo implements SWFEncodeable {
      *            the sample number which the sound fades in to.
      */
     public void setInPoint(final Integer aNumber) {
-        if ((aNumber != null) && ((aNumber < 0) || (aNumber > 65535))) {
-            throw new IllegalArgumentRangeException(0, 65535, aNumber);
+        if ((aNumber != null)
+                && ((aNumber < 0) || (aNumber > Coder.UNSIGNED_SHORT_MAX))) {
+            throw new IllegalArgumentRangeException(0,
+                    Coder.UNSIGNED_SHORT_MAX, aNumber);
         }
         inPoint = aNumber;
     }
@@ -310,8 +311,10 @@ public final class SoundInfo implements SWFEncodeable {
      *            the sample number at which the sound starts to fade.
      */
     public void setOutPoint(final Integer aNumber) {
-        if ((aNumber != null) && ((aNumber < 0) || (aNumber > 65535))) {
-            throw new IllegalArgumentRangeException(0, 65535, aNumber);
+        if ((aNumber != null)
+                && ((aNumber < 0) || (aNumber > Coder.UNSIGNED_SHORT_MAX))) {
+            throw new IllegalArgumentRangeException(0,
+                    Coder.UNSIGNED_SHORT_MAX, aNumber);
         }
         outPoint = aNumber;
     }
@@ -324,8 +327,10 @@ public final class SoundInfo implements SWFEncodeable {
      *            the number of times the sound is repeated.
      */
     public void setLoopCount(final Integer aNumber) {
-        if ((aNumber != null) && ((aNumber < 0) || (aNumber > 65535))) {
-            throw new IllegalArgumentRangeException(0, 65535, aNumber);
+        if ((aNumber != null)
+                && ((aNumber < 0) || (aNumber > Coder.UNSIGNED_SHORT_MAX))) {
+            throw new IllegalArgumentRangeException(0,
+                    Coder.UNSIGNED_SHORT_MAX, aNumber);
        }
         loopCount = aNumber;
     }
@@ -354,6 +359,7 @@ public final class SoundInfo implements SWFEncodeable {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
+        // CHECKSTYLE:OFF
         int length = 3;
         if (inPoint != null) {
             length += 4;
@@ -368,6 +374,7 @@ public final class SoundInfo implements SWFEncodeable {
             length += envelope.prepareToEncode(context);
         }
         return length;
+        // CHECKSTYLE:ON
     }
 
     /** {@inheritDoc} */
@@ -375,7 +382,7 @@ public final class SoundInfo implements SWFEncodeable {
             throws IOException {
         coder.writeShort(identifier);
 
-        int bits = mode << 4;
+        int bits = mode;
         bits |= envelope == null ? 0 : Coder.BIT3;
         bits |= loopCount == null ? 0 : Coder.BIT2;
         bits |= outPoint == null ? 0 : Coder.BIT1;

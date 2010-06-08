@@ -73,6 +73,7 @@ public final class BlurFilter implements Filter {
             throws IOException {
         blurX = coder.readInt();
         blurY = coder.readInt();
+        // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
         passes = coder.readByte() >>> 3;
     }
 
@@ -133,9 +134,8 @@ public final class BlurFilter implements Filter {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
-        // CHECKSTYLE:OFF
+        // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
         return 10;
-        //CHECKSTYLE:ON
     }
 
     /** {@inheritDoc} */
@@ -144,6 +144,7 @@ public final class BlurFilter implements Filter {
         coder.writeByte(FilterTypes.BLUR);
         coder.writeInt(blurX);
         coder.writeInt(blurY);
+        // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
         coder.writeByte(passes << 3);
 
     }

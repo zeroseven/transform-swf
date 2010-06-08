@@ -99,10 +99,10 @@ public final class DefineTextTest {
         movie.add(new Background(WebPalette.LIGHT_BLUE.color()));
         movie.add(definition);
 
-        final DefineText2 text = null; // TODO(code)
-        // TextTable.defineText(movie.newIdentifier(),
-        // alphabet, definition, fontSize,
-        // ColorTable.black());
+        TextTable factory = new TextTable(definition, fontSize);
+
+        final DefineText2 text = factory.defineText(uid++, alphabet,
+                WebPalette.BLACK.color());
 
         final int textWidth = text.getBounds().getWidth();
         final int textHeight = text.getBounds().getHeight();
@@ -149,30 +149,21 @@ public final class DefineTextTest {
         movie.add(new Background(WebPalette.LIGHT_BLUE.color()));
         movie.add(definition);
 
-        for (int i = 0; i < alphabet.length(); i++) {
-            final DefineText2 text = null; // TODO(code)
-            // TextFactory.defineText(movie.newIdentifier(),
-            // alphabet.substring(i,i+1),
-            // definition, fontSize,
-            // ColorTable.black());
+        TextTable factory = new TextTable(definition, fontSize);
 
-            final int textWidth = text.getBounds().getWidth();
-            final int textHeight = text.getBounds().getHeight();
-            final int advance = 0; // TODO(code)
-            // TextFactory.boundsForText(alphabet.substring(i,i+1),
-            // definition, fontSize).getWidth() + 40;
+        for (int i = 0; i < alphabet.length(); i++) {
+            final DefineText2 text = factory.defineText(uid++,
+             alphabet.substring(i, i + 1),
+             WebPalette.BLACK.color());
 
             movie.add(text);
             movie.add(Place2.show(text.getIdentifier(), layer++, x, y));
 
             if (i % charsPerLine == charsPerLine - 1) {
-                maxWidth = x + advance + margin > maxWidth ? x + advance
-                        + margin : maxWidth;
+                maxWidth = x + margin > maxWidth ? x + margin : maxWidth;
 
                 x = margin;
                 y += lineSpacing;
-            } else {
-                x += advance;
             }
         }
         header.setFrameSize(new Bounds(0, 0, maxWidth, y + margin));

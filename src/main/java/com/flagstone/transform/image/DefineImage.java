@@ -34,8 +34,6 @@ package com.flagstone.transform.image;
 import java.io.IOException;
 import java.util.Arrays;
 
-import com.flagstone.transform.SWF;
-
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
@@ -102,6 +100,15 @@ public final class DefineImage implements ImageTag {
     private static final String FORMAT = "DefineImage: { identifier=%d;"
             + " pixelSize=%d; width=%d; height=%d; tableSize=%d; image=%d }";
 
+    private static final int IDX_FORMAT = 3;
+    private static final int RGB5_FORMAT = 4;
+    private static final int RGB8_FORMAT = 5;
+
+    private static final int IDX_SIZE = 8;
+    private static final int RGB5_SIZE = 16;
+    private static final int RGB8_SIZE = 24;
+    private static final int TABLE_SIZE = 256;
+
     /** The unique identifier for this object. */
     private int identifier;
     /** The width of the image in pixels. */
@@ -137,14 +144,14 @@ public final class DefineImage implements ImageTag {
         identifier = coder.readUnsignedShort();
 
         switch (coder.readByte()) {
-        case 3:
-            pixelSize = 8;
+        case IDX_FORMAT:
+            pixelSize = IDX_SIZE;
             break;
-        case 4:
-            pixelSize = 16;
+        case RGB5_FORMAT:
+            pixelSize = RGB5_SIZE;
             break;
-        case 5:
-            pixelSize = 24;
+        case RGB8_FORMAT:
+            pixelSize = RGB8_SIZE;
             break;
         default:
             pixelSize = 0;
@@ -154,10 +161,12 @@ public final class DefineImage implements ImageTag {
         width = coder.readUnsignedShort();
         height = coder.readUnsignedShort();
 
-        if (pixelSize == 8) {
+        if (pixelSize == IDX_SIZE) {
             tableSize = coder.readByte() + 1;
+            // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
             image = coder.readBytes(new byte[length - 8]);
         } else {
+            // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
             image = coder.readBytes(new byte[length - 7]);
         }
         coder.unmark(length);
@@ -184,7 +193,7 @@ public final class DefineImage implements ImageTag {
         setIdentifier(uid);
         setWidth(imgWidth);
         setHeight(imgHeight);
-        setPixelSize(8);
+        setPixelSize(IDX_SIZE);
         setTableSize(size);
         setImage(data);
     }
@@ -238,9 +247,9 @@ public final class DefineImage implements ImageTag {
 
     /** {@inheritDoc} */
     public void setIdentifier(final int uid) {
-        if ((uid < SWF.MIN_IDENTIFIER) || (uid > SWF.MAX_IDENTIFIER)) {
+        if ((uid < 1) || (uid > Coder.UNSIGNED_SHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    SWF.MIN_IDENTIFIER, SWF.MAX_IDENTIFIER, uid);
+                    1, Coder.UNSIGNED_SHORT_MAX, uid);
         }
         identifier = uid;
     }
@@ -301,8 +310,9 @@ public final class DefineImage implements ImageTag {
      *            the width of the image. Must be in the range 0..65535.
      */
     public void setWidth(final int aNumber) {
-        if ((aNumber < 0) || (aNumber > SWF.MAX_WIDTH)) {
-            throw new IllegalArgumentRangeException(0, SWF.MAX_WIDTH, aNumber);
+        if ((aNumber < 0) || (aNumber > Coder.UNSIGNED_SHORT_MAX)) {
+            throw new IllegalArgumentRangeException(
+                    0, Coder.UNSIGNED_SHORT_MAX, aNumber);
         }
         width = aNumber;
     }
@@ -315,8 +325,9 @@ public final class DefineImage implements ImageTag {
      *            0..65535.
      */
     public void setHeight(final int aNumber) {
-        if ((aNumber < 0) || (aNumber > SWF.MAX_HEIGHT)) {
-            throw new IllegalArgumentRangeException(0, SWF.MAX_HEIGHT, aNumber);
+        if ((aNumber < 0) || (aNumber > Coder.UNSIGNED_SHORT_MAX)) {
+            throw new IllegalArgumentRangeException(
+                    0, Coder.UNSIGNED_SHORT_MAX, aNumber);
         }
         height = aNumber;
     }
@@ -330,7 +341,7 @@ public final class DefineImage implements ImageTag {
      *            the size of each pixel in bits. Must be either 8, 16 or 24.
      */
     public void setPixelSize(final int size) {
-        if ((size != 8) && (size != 16) && (size != 24)) {
+        if ((size != IDX_SIZE) && (size != RGB5_SIZE) && (size != RGB8_SIZE)) {
             throw new IllegalArgumentException(
                     "Pixel size must be either 8, 16 or 24.");
         }
@@ -347,7 +358,7 @@ public final class DefineImage implements ImageTag {
      *            image, in the range 1..256.
      */
     public void setTableSize(final int size) {
-        if ((size < 1) || (size > 256)) {
+        if ((size < 1) || (size > TABLE_SIZE)) {
             throw new IllegalArgumentException(
                     "Colour table size must be in the range 1..256.");
         }
@@ -382,8 +393,9 @@ public final class DefineImage implements ImageTag {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
+        // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
         length = 7;
-        length += (pixelSize == 8) ? 1 : 0;
+        length += (pixelSize == IDX_SIZE) ? 1 : 0;
         length += image.length;
 
         return Coder.LONG_HEADER + length;
@@ -393,20 +405,21 @@ public final class DefineImage implements ImageTag {
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
 
-        coder.writeShort((MovieTypes.DEFINE_IMAGE << 6) | 0x3F);
+        coder.writeShort((MovieTypes.DEFINE_IMAGE << Coder.LENGTH_FIELD_SIZE)
+                | Coder.IS_EXTENDED);
         coder.writeInt(length);
         coder.mark();
         coder.writeShort(identifier);
 
         switch (pixelSize) {
-        case 8:
-            coder.writeByte(3);
+        case IDX_SIZE:
+            coder.writeByte(IDX_FORMAT);
             break;
-        case 16:
-            coder.writeByte(4);
+        case RGB5_SIZE:
+            coder.writeByte(RGB5_FORMAT);
             break;
-        case 24:
-            coder.writeByte(5);
+        case RGB8_SIZE:
+            coder.writeByte(RGB8_FORMAT);
             break;
         default:
             break;
@@ -415,7 +428,7 @@ public final class DefineImage implements ImageTag {
         coder.writeShort(width);
         coder.writeShort(height);
 
-        if (pixelSize == 8) {
+        if (pixelSize == IDX_SIZE) {
             coder.writeByte(tableSize - 1);
         }
 

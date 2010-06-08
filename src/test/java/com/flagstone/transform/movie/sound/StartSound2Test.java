@@ -31,45 +31,36 @@
 
 package com.flagstone.transform.movie.sound;
 
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.flagstone.transform.coder.SWFDecoder;
-import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.sound.StartSound2;
-
 public final class StartSound2Test {
 
-    private transient StartSound2 fixture;
-
-    private final transient byte[] encoded = new byte[] {0x06, 0x01, 0x01,
-            0x00, 0x02, 0x00, 0x06, 0x50 };
-
-    private final transient byte[] extended = new byte[] {0x7F, 0x01, 0x06,
-            0x00, 0x00, 0x00, 0x01, 0x00, 0x02, 0x00, 0x06, 0x50 };
+//    private transient StartSound2 fixture;
+//
+//    private final transient byte[] encoded = new byte[] {0x06, 0x01, 0x01,
+//            0x00, 0x02, 0x00, 0x06, 0x50 };
+//
+//    private final transient byte[] extended = new byte[] {0x7F, 0x01, 0x06,
+//            0x00, 0x00, 0x00, 0x01, 0x00, 0x02, 0x00, 0x06, 0x50 };
 
     @Test
     @Ignore //TODO(implement)
     public void checkCopy() {
-        // fixture = new StartSound2(identifier, layer, transform,
-        // colorTransform);
-        final StartSound2 copy = fixture.copy();
-
-        assertNotSame(fixture, copy);
+//        // fixture = new StartSound2(identifier, layer, transform,
+//        // colorTransform);
+//        final StartSound2 copy = fixture.copy();
+//
+//        assertNotSame(fixture, copy);
     }
 
     @Test
     @Ignore //TODO(implement)
     public void encode() throws IOException {
-        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        final SWFEncoder encoder = new SWFEncoder(stream);
+//        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+//        final SWFEncoder encoder = new SWFEncoder(stream);
         // Context context = new Context();
 
         // fixture = new StartSound2(identifier, layer, transform);
@@ -83,22 +74,22 @@ public final class StartSound2Test {
     @Test
     @Ignore //TODO(implement)
     public void decode() throws IOException {
-        final ByteArrayInputStream stream = new ByteArrayInputStream(encoded);
-        final SWFDecoder decoder = new SWFDecoder(stream);
+//        final ByteArrayInputStream stream = new ByteArrayInputStream(encoded);
+//        final SWFDecoder decoder = new SWFDecoder(stream);
 
         // fixture = new StartSound2(decoder, context);
 
-        assertTrue(true);
+//        assertTrue(true);
     }
 
     @Test
     @Ignore //TODO(implement)
     public void decodeExtended() throws IOException {
-        final ByteArrayInputStream stream = new ByteArrayInputStream(extended);
-        final SWFDecoder decoder = new SWFDecoder(stream);
-
-        // fixture = new StartSound2(decoder, context);
-
-        assertTrue(true);
+//      final ByteArrayInputStream stream = new ByteArrayInputStream(extended);
+//        final SWFDecoder decoder = new SWFDecoder(stream);
+//
+//        // fixture = new StartSound2(decoder, context);
+//
+//        assertTrue(true);
     }
 }

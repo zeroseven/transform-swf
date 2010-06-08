@@ -68,6 +68,9 @@ public final class Curve implements ShapeRecord {
     private static final String FORMAT = "Curve: control=(%d,%d);"
     		+ " anchor=(%d,%d);";
 
+    /** Number of bits used to encode the size field. */
+    private static final int SIZE_WIDTH = 4;
+
     /** The x-coordinate of the control point. */
     private transient int controlX;
     /** The y-coordinate of the control point. */
@@ -91,7 +94,7 @@ public final class Curve implements ShapeRecord {
      *             if an error occurs while decoding the data.
      */
    public Curve(final SWFDecoder coder) throws IOException {
-        size = coder.readBits(4, false) + 2;
+        size = coder.readBits(SIZE_WIDTH, false) + 2;
         controlX = coder.readBits(size, true);
         controlY = coder.readBits(size, true);
         anchorX = coder.readBits(size, true);
@@ -227,6 +230,7 @@ public final class Curve implements ShapeRecord {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
+        // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
         int numberOfBits = 6;
 
         size = Coder.maxSize(controlX, controlY, anchorX, anchorY, 1);
@@ -243,7 +247,7 @@ public final class Curve implements ShapeRecord {
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
         coder.writeBits(2, 2); // shapeType, edgeType
-        coder.writeBits(size - 2, 4);
+        coder.writeBits(size - 2, SIZE_WIDTH);
         coder.writeBits(controlX, size);
         coder.writeBits(controlY, size);
         coder.writeBits(anchorX, size);

@@ -48,6 +48,8 @@ import com.flagstone.transform.text.TextSpan;
 /** TODO(class). */
 public final class TextTable {
 
+    private static final float EMSQUARE = 1024.0f;
+
     private final transient int size;
     private final transient int ascent;
     private final transient int descent;
@@ -63,7 +65,7 @@ public final class TextTable {
 
         final List<Integer> codes = font.getCodes();
         final List<Integer> advances = font.getAdvances();
-        final float scale = fontSize / 1024.0f;
+        final float scale = fontSize / EMSQUARE;
         final int count = codes.size();
 
         ascent = (int) (font.getAscent() * scale);

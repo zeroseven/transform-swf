@@ -283,15 +283,18 @@ public final class Place3 implements MovieTag {
         final boolean hasColorTransform = (bits & Coder.BIT3) != 0;
         final boolean hasTransform = (bits & Coder.BIT2) != 0;
 
-        switch (bits & 0x03) {
+        switch (bits & Coder.PAIR0) {
+        case 0:
+            type = PlaceType.MODIFY;
+            break;
+        case 1:
+            type = PlaceType.MODIFY;
+            break;
         case 2:
             type = PlaceType.NEW;
             break;
-        case 3:
+        default:
             type = PlaceType.REPLACE;
-            break;
-        default: // 0,1
-            type = PlaceType.MODIFY;
             break;
         }
 
@@ -464,8 +467,9 @@ public final class Place3 implements MovieTag {
      * @return this object.
      */
     public Place3 setLayer(final int aLayer) {
-        if ((aLayer < 1) || (aLayer > SWF.MAX_LAYER)) {
-            throw new IllegalArgumentRangeException(1, SWF.MAX_LAYER, aLayer);
+        if ((aLayer < 1) || (aLayer > Coder.UNSIGNED_SHORT_MAX)) {
+            throw new IllegalArgumentRangeException(1,
+                    Coder.UNSIGNED_SHORT_MAX, aLayer);
         }
         layer = aLayer;
         return this;
@@ -492,9 +496,9 @@ public final class Place3 implements MovieTag {
      * @return this object.
      */
     public Place3 setIdentifier(final int uid) {
-        if ((uid < SWF.MIN_IDENTIFIER) || (uid > SWF.MAX_IDENTIFIER)) {
+        if ((uid < 1) || (uid > Coder.UNSIGNED_SHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    SWF.MIN_IDENTIFIER, SWF.MAX_IDENTIFIER, uid);
+                    1, Coder.UNSIGNED_SHORT_MAX, uid);
         }
         identifier = uid;
         return this;
@@ -577,8 +581,10 @@ public final class Place3 implements MovieTag {
      * @return this object.
      */
     public Place3 setRatio(final Integer aNumber) {
-        if ((aNumber != null) && ((aNumber < 0) || (aNumber > SWF.MAX_MORPH))) {
-            throw new IllegalArgumentRangeException(1, SWF.MAX_MORPH, aNumber);
+        if ((aNumber != null) && ((aNumber < 0)
+                || (aNumber > Coder.UNSIGNED_SHORT_MAX))) {
+            throw new IllegalArgumentRangeException(
+                    1, Coder.UNSIGNED_SHORT_MAX, aNumber);
         }
         ratio = aNumber;
         return this;
@@ -604,8 +610,10 @@ public final class Place3 implements MovieTag {
      * @return this object.
      */
     public Place3 setDepth(final Integer aNumber) {
-        if ((aNumber != null) && ((aNumber < 1) || (aNumber > SWF.MAX_LAYER))) {
-             throw new IllegalArgumentRangeException(1, SWF.MAX_LAYER, aNumber);
+        if ((aNumber != null) && ((aNumber < 1)
+                || (aNumber > Coder.UNSIGNED_SHORT_MAX))) {
+             throw new IllegalArgumentRangeException(
+                     1, Coder.UNSIGNED_SHORT_MAX, aNumber);
         }
         depth = aNumber;
         return this;
@@ -843,14 +851,15 @@ public final class Place3 implements MovieTag {
         bits |= transform == null ? 0 : Coder.BIT2;
 
         switch (type) {
-        case NEW:
-            bits |= 2;
+        case MODIFY:
+            bits |= Coder.BIT0;
             break;
-        case REPLACE:
-            bits |= 3;
+        case NEW:
+            bits |= Coder.BIT1;
             break;
         default:
-            bits |= 1;
+            bits |= Coder.BIT0;
+            bits |= Coder.BIT1;
             break;
         }
         coder.writeByte(bits);

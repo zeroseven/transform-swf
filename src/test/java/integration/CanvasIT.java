@@ -53,11 +53,9 @@ import com.flagstone.transform.shape.DefineShape2;
 import com.flagstone.transform.util.shape.Canvas;
 
 public final class CanvasIT {
+
     private static File resultDir;
     private static Canvas path;
-
-    private static int width;
-    private static int height;
 
     @BeforeClass
     public static void initialize() {
@@ -68,9 +66,6 @@ public final class CanvasIT {
         if (!resultDir.exists() && !resultDir.mkdirs()) {
             fail();
         }
-
-        width = 150;
-        height = 100;
     }
 
     @Before

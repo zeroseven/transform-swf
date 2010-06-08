@@ -128,8 +128,9 @@ public final class TabOrder implements MovieTag {
      *            the layer number. Must be in the range 1..65535.
      */
     public void setLayer(final int level) {
-        if ((level < 1) || (level > SWF.MAX_LAYER)) {
-            throw new IllegalArgumentRangeException(1, SWF.MAX_LAYER, level);
+        if ((level < 1) || (level > Coder.UNSIGNED_SHORT_MAX)) {
+            throw new IllegalArgumentRangeException(
+                    1, Coder.UNSIGNED_SHORT_MAX, level);
         }
         layer = level;
     }
@@ -168,16 +169,15 @@ public final class TabOrder implements MovieTag {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
-        // CHECKSTYLE:OFF
+        // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
         return 6;
-        // CHECKSTYLE:ON
     }
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
-        coder.writeShort((MovieTypes.TAB_ORDER
-                << Coder.LENGTH_FIELD_SIZE) | 4);
+        // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
+        coder.writeShort((MovieTypes.TAB_ORDER << Coder.LENGTH_FIELD_SIZE) | 4);
         coder.writeShort(layer);
         coder.writeShort(index);
     }

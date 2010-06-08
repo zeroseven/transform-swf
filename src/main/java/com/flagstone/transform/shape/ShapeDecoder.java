@@ -33,6 +33,7 @@ package com.flagstone.transform.shape;
 
 import java.io.IOException;
 
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -51,12 +52,13 @@ public final class ShapeDecoder implements SWFFactory<ShapeRecord> {
         int type = coder.readBits(2, false);
         ShapeRecord record = null;
 
-        if (type == 2) {
+        if (type == Coder.BIT1) {
             record = new Curve(coder);
-        } else if (type == 3) {
+        } else if (type == (Coder.BIT0 | Coder.BIT1)) {
             record = new Line(coder);
         } else {
-            int flags = (type << 4) + coder.readBits(4, false);
+            // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
+            int flags = (type << Coder.TO_UPPER_NIB) + coder.readBits(4, false);
 
             if (flags != 0) {
                 final int tag = context.get(Context.TYPE);

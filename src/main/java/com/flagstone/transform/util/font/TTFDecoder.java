@@ -44,6 +44,7 @@ import java.util.List;
 import java.util.zip.DataFormatException;
 
 import com.flagstone.transform.coder.BigDecoder;
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.datatype.CoordTransform;
 import com.flagstone.transform.font.CharacterFormat;
@@ -68,6 +69,8 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
      * 16.16 fixed-point values.
      */
     private static final float SCALE_16 = 65536.0f;
+
+    private static final int SIGN_EXTEND = 24;
 
     private static final int OS_2 = 0x4F532F32;
     private static final int HEAD = 0x68656164;
@@ -142,7 +145,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
     public void read(final File file) throws IOException, DataFormatException {
         FileInputStream stream = new FileInputStream(file);
         try {
-            read(stream, (int)file.length());
+            read(stream, (int) file.length());
         } finally {
             if (stream != null) {
                 stream.close();
@@ -175,7 +178,8 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         return fonts;
     }
 
-    public void read(final InputStream stream, final int length) throws IOException {
+    public void read(final InputStream stream, final int length)
+            throws IOException {
         final BigDecoder coder = new BigDecoder(stream, length);
 
         /* float version = */coder.readUI32();
@@ -293,7 +297,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         }
 
         glyphTable = new TrueTypeGlyph[glyphCount];
-        charToGlyph = new int[65536];
+        charToGlyph = new int[Coder.UNSIGNED_SHORT_MAX + 1];
         glyphToChar = new int[glyphCount];
 
         // Decode glyphs first so objects will be created.
@@ -364,8 +368,8 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
          * the OS/2 table
          */
         int flags = coder.readUI16();
-        bold = (flags & 0x008000) != 0;
-        italic = (flags & 0x004000) != 0;
+        bold = (flags & Coder.BIT15) != 0;
+        italic = (flags & Coder.BIT10) != 0;
 
         coder.readUI16(); // smallest readable size in pixels
         coder.readSI16(); // font direction hint
@@ -435,8 +439,8 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
 
         coder.readBytes(vendor); // font vendor identification
         int flags = coder.readUI16();
-        italic = (flags & 0x008000) != 0;
-        bold = (flags & 0x000400) != 0;
+        italic = (flags & Coder.BIT15) != 0;
+        bold = (flags & Coder.BIT10) != 0;
 
         coder.readUI16(); // first unicode character code
         coder.readUI16(); // last unicode character code
@@ -668,7 +672,8 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
                     for (int code = startCount[index];
                     code <= endCount[index]; code++) {
                         if (range[index] == 0) {
-                            glyphIndex = (delta[index] + code) % 65536;
+                            glyphIndex = (delta[index] + code)
+                                    % Coder.UNSIGNED_SHORT_MAX;
                         } else {
                             location = rangeAdr[index] + range[index]
                                     + ((code - startCount[index]) << 1);
@@ -676,8 +681,8 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
                             glyphIndex = coder.readUI16();
 
                             if (glyphIndex != 0) {
-                                glyphIndex = (glyphIndex
-                                        + delta[index]) % 65536;
+                                glyphIndex = (glyphIndex + delta[index])
+                                        % Coder.UNSIGNED_SHORT_MAX;
                             }
                         }
 
@@ -906,11 +911,9 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
 
         glyphTable[glyphIndex] = new TrueTypeGlyph(path.getShape(),
                 new Bounds(xMin, -yMax, xMax, -yMin), 0);
-
-         glyphTable[glyphIndex].xCoordinates = xCoordinates;
-         glyphTable[glyphIndex].yCoordinates = yCoordinates;
-         glyphTable[glyphIndex].onCurve = onCurve;
-         glyphTable[glyphIndex].endPoints = endPtsOfContours;
+        glyphTable[glyphIndex].setCoordinates(xCoordinates, yCoordinates);
+        glyphTable[glyphIndex].setOnCurve(onCurve);
+        glyphTable[glyphIndex].setEnds(endPtsOfContours);
     }
 
     private void decodeCompositeGlyph(final BigDecoder coder,
@@ -938,8 +941,8 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         int xOffset = 0;
         int yOffset = 0;
 
-        int sourceIndex = 0;
-        int destIndex = 0;
+//        int sourceIndex = 0;
+//        int destIndex = 0;
 
         do {
             flags = coder.readUI16();
@@ -953,37 +956,24 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
             }
 
             points = glyphTable[sourceGlyph];
-            numberOfPoints = points.xCoordinates.length;
+            numberOfPoints = points.numberOfPoints();
 
-            endPtsOfContours = new int[points.endPoints.length];
+            endPtsOfContours = new int[points.numberOfContours()];
+            points.getEnd(endPtsOfContours);
 
+            xCoordinates = new int[numberOfPoints];
+            points.getXCoordinates(xCoordinates);
 
-             for (int i = 0; i < endPtsOfContours.length; i++) {
-                 endPtsOfContours[i] = points.endPoints[i];
-             }
+            yCoordinates = new int[numberOfPoints];
+            points.getYCoordinates(yCoordinates);
 
-             xCoordinates = new int[numberOfPoints];
-
-             for (int i = 0; i < numberOfPoints; i++) {
-                 xCoordinates[i] = points.xCoordinates[i];
-             }
-
-             yCoordinates = new int[numberOfPoints];
-
-             for (int i = 0; i < numberOfPoints; i++) {
-                 yCoordinates[i] = points.yCoordinates[i];
-             }
-
-             onCurve = new boolean[numberOfPoints];
-
-             for (int i = 0; i < numberOfPoints; i++) {
-                 onCurve[i] = points.onCurve[i];
-             }
+            onCurve = new boolean[numberOfPoints];
+            points.getCurve(onCurve);
 
             if (((flags & ARGS_ARE_WORDS) == 0)
                     && ((flags & ARGS_ARE_XY) == 0)) {
-                destIndex = coder.readByte();
-                sourceIndex = coder.readByte();
+                /* destIndex = */ coder.readByte();
+                /* sourceIndex = */ coder.readByte();
 
                 //xCoordinates[destIndex] =
                 //glyphTable[sourceGlyph].xCoordinates[sourceIndex];
@@ -992,13 +982,13 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
                 transform = CoordTransform.translate(0, 0);
             } else if (((flags & ARGS_ARE_WORDS) == 0)
                     && ((flags & ARGS_ARE_XY) > 0)) {
-                xOffset = (coder.readByte() << 24) >> 24;
-                yOffset = (coder.readByte() << 24) >> 24;
+                xOffset = (coder.readByte() << SIGN_EXTEND) >> SIGN_EXTEND;
+                yOffset = (coder.readByte() << SIGN_EXTEND) >> SIGN_EXTEND;
                 transform = CoordTransform.translate(xOffset, yOffset);
             } else if (((flags & ARGS_ARE_WORDS) > 0)
                     && ((flags & ARGS_ARE_XY) == 0)) {
-                destIndex = coder.readUI16();
-                sourceIndex = coder.readUI16();
+                /* destIndex = */ coder.readUI16();
+                /* sourceIndex = */ coder.readUI16();
 
                 //xCoordinates[destIndex] =
                 //glyphTable[sourceGlyph].xCoordinates[sourceIndex];
@@ -1105,9 +1095,8 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         glyphTable[glyphIndex] = new TrueTypeGlyph(shape,
                 new Bounds(xMin, yMin, xMax, yMax), 0);
 
-        glyphTable[glyphIndex].xCoordinates = xCoordinates;
-        glyphTable[glyphIndex].yCoordinates = yCoordinates;
-        glyphTable[glyphIndex].onCurve = onCurve;
-        glyphTable[glyphIndex].endPoints = endPtsOfContours;
+        glyphTable[glyphIndex].setCoordinates(xCoordinates, yCoordinates);
+        glyphTable[glyphIndex].setOnCurve(onCurve);
+        glyphTable[glyphIndex].setEnds(endPtsOfContours);
     }
 }

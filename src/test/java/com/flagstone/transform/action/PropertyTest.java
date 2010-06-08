@@ -41,8 +41,6 @@ public final class PropertyTest {
 
     private static final String VALUE_MISMATCH =
         "Values do not match for %s";
-    private static final String NO_SUCH_PROPERTY =
-        "Cannot look up property for %d";
 
     private transient int flashVersion;
 

@@ -137,6 +137,12 @@ import com.flagstone.transform.video.ImageBlock;
  * </P>
  */
 public final class ImageFactory {
+
+    private static final int TWIPS_PER_PIXEL = 20;
+
+    private static final int RGBA_CHANNELS = 4;
+    private static final int RGB_CHANNELS = 3;
+
     /** The object used to decode the image. */
     private transient ImageDecoder decoder;
 
@@ -158,7 +164,7 @@ public final class ImageFactory {
 
         final ImageInfo info = new ImageInfo();
         info.setInput(new RandomAccessFile(file, "r"));
-        info.setDetermineImageNumber(true);
+//        info.setDetermineImageNumber(true);
 
         if (!info.check()) {
             throw new DataFormatException("Unsupported format");
@@ -216,7 +222,8 @@ public final class ImageFactory {
      *             unsupported format or an error occurred while decoding the
      *             image data.
      */
-    public void read(final InputStream stream) throws IOException, DataFormatException {
+    public void read(final InputStream stream)
+            throws IOException, DataFormatException {
         decoder.read(stream);
     }
 
@@ -273,26 +280,28 @@ public final class ImageFactory {
             lineWidth = borderStyle.getWidth() / 2;
         }
 
-        final Bounds bounds = new Bounds(-xOrigin * 20 - lineWidth, -yOrigin
-                * 20 - lineWidth, (decoder.getWidth() - xOrigin)
-                * 20 + lineWidth,
-                (decoder.getHeight() - yOrigin) * 20 + lineWidth);
+        final Bounds bounds = new Bounds(
+                -xOrigin * TWIPS_PER_PIXEL - lineWidth,
+                -yOrigin * TWIPS_PER_PIXEL - lineWidth,
+                (decoder.getWidth() - xOrigin) * TWIPS_PER_PIXEL + lineWidth,
+                (decoder.getHeight() - yOrigin) * TWIPS_PER_PIXEL + lineWidth);
 
         final Shape shape = new Shape(new ArrayList<ShapeRecord>());
         final ShapeStyle style = new ShapeStyle().setLineStyle(
                 borderStyle == null ? 0 : 1).setFillStyle(1);
-        style.setMove(-xOrigin * 20, -yOrigin * 20);
+        style.setMove(-xOrigin * TWIPS_PER_PIXEL, -yOrigin * TWIPS_PER_PIXEL);
 
         shape.add(style);
-        shape.add(new Line(decoder.getWidth() * 20, 0));
-        shape.add(new Line(0, decoder.getHeight() * 20));
-        shape.add(new Line(-decoder.getWidth() * 20, 0));
-        shape.add(new Line(0, -decoder.getHeight() * 20));
+        shape.add(new Line(decoder.getWidth() * TWIPS_PER_PIXEL, 0));
+        shape.add(new Line(0, decoder.getHeight() * TWIPS_PER_PIXEL));
+        shape.add(new Line(-decoder.getWidth() * TWIPS_PER_PIXEL, 0));
+        shape.add(new Line(0, -decoder.getHeight() * TWIPS_PER_PIXEL));
 
         final DefineShape3 definition = new DefineShape3(shapeId, bounds,
                 new ArrayList<FillStyle>(), new ArrayList<LineStyle>(), shape);
-        final CoordTransform transform = new CoordTransform(20.0f, 20.0f, 0, 0,
-                -xOrigin * 20, -yOrigin * 20);
+        final CoordTransform transform = new CoordTransform(
+                TWIPS_PER_PIXEL, TWIPS_PER_PIXEL, 0, 0,
+                -xOrigin * TWIPS_PER_PIXEL, -yOrigin * TWIPS_PER_PIXEL);
 
         if (borderStyle != null) {
             definition.add(borderStyle);
@@ -331,12 +340,12 @@ public final class ImageFactory {
         final int width = decoder.getWidth();
         final int height = decoder.getHeight();
 
-        final byte[] formattedImage = new byte[width * height * 3];
+        final byte[] formattedImage = new byte[width * height * RGB_CHANNELS];
 
         for (row = height - 1; row >= 0; row--) {
             src = row * width;
 
-            for (col = 0; col < width; col++, src += 4) {
+            for (col = 0; col < width; col++, src += RGBA_CHANNELS) {
                 formattedImage[dst++] = image[src + 2];
                 formattedImage[dst++] = image[src + 1];
                 formattedImage[dst++] = image[src];
@@ -346,7 +355,8 @@ public final class ImageFactory {
         final int columns = (width + blockWidth - 1) / blockWidth;
         final int rows = (height + blockHeight - 1) / blockHeight;
 
-        final byte[] blockData = new byte[blockHeight * blockWidth * 3];
+        final byte[] blockData = new byte[blockHeight * blockWidth
+                                          * RGB_CHANNELS];
 
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
@@ -362,8 +372,9 @@ public final class ImageFactory {
                 int idx;
 
                 for (int k = 0; k < ySpan; k++) {
-                    for (int l = 0; l < xSpan; l++, offset += 3) {
-                        idx = (yOffset + k) * (width * 3) + (xOffset + l) * 3;
+                    for (int l = 0; l < xSpan; l++, offset += RGB_CHANNELS) {
+                        idx = (yOffset + k) * (width * RGB_CHANNELS)
+                                + (xOffset + l) * RGB_CHANNELS;
 
                         blockData[offset] = formattedImage[idx];
                         blockData[offset + 1] = formattedImage[idx + 1];

@@ -34,7 +34,6 @@ package com.flagstone.transform.video;
 import java.io.IOException;
 
 import com.flagstone.transform.DefineTag;
-import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
@@ -171,9 +170,9 @@ public final class DefineVideo implements DefineTag {
 
     /** {@inheritDoc} */
     public void setIdentifier(final int uid) {
-        if ((uid < SWF.MIN_IDENTIFIER) || (uid > SWF.MAX_IDENTIFIER)) {
+        if ((uid < 1) || (uid > Coder.UNSIGNED_SHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    SWF.MIN_IDENTIFIER, SWF.MAX_IDENTIFIER, uid);
+                    1, Coder.UNSIGNED_SHORT_MAX, uid);
         }
         identifier = uid;
     }
@@ -194,8 +193,9 @@ public final class DefineVideo implements DefineTag {
      *            the number of video frames. Must be in the range 0..65535.
      */
     public void setFrameCount(final int count) {
-        if ((count < 0) || (count > 65535)) {
-            throw new IllegalArgumentRangeException(0, 65535, count);
+        if ((count < 0) || (count > Coder.UNSIGNED_SHORT_MAX)) {
+            throw new IllegalArgumentRangeException(
+                    0, Coder.UNSIGNED_SHORT_MAX, count);
         }
         frameCount = count;
     }
@@ -216,8 +216,9 @@ public final class DefineVideo implements DefineTag {
      *            the width of the frame. Must be in the range 0..65535.
      */
     public void setWidth(final int size) {
-        if ((size < 0) || (size > 65535)) {
-            throw new IllegalArgumentRangeException(0, 65535, size);
+        if ((size < 0) || (size > Coder.UNSIGNED_SHORT_MAX)) {
+            throw new IllegalArgumentRangeException(
+                    0, Coder.UNSIGNED_SHORT_MAX, size);
         }
         width = size;
     }
@@ -238,8 +239,9 @@ public final class DefineVideo implements DefineTag {
      *            the height of the frame. Must be in the range 0..65535.
      */
     public void setHeight(final int size) {
-        if ((size < 0) || (size > 65535)) {
-            throw new IllegalArgumentRangeException(0, 65535, size);
+        if ((size < 0) || (size > Coder.UNSIGNED_SHORT_MAX)) {
+            throw new IllegalArgumentRangeException(
+                    0, Coder.UNSIGNED_SHORT_MAX, size);
         }
         height = size;
     }
@@ -322,10 +324,10 @@ public final class DefineVideo implements DefineTag {
     public VideoFormat getCodec() {
         VideoFormat value;
         switch (codec) {
-        case 2:
+        case Coder.BIT1:
             value = VideoFormat.H263;
             break;
-        case 3:
+        case Coder.BIT0 | Coder.BIT1:
             value = VideoFormat.SCREEN;
             break;
         default:
@@ -347,10 +349,10 @@ public final class DefineVideo implements DefineTag {
     public void setCodec(final VideoFormat format) {
         switch (format) {
         case H263:
-            codec = 2;
+            codec = Coder.BIT1;
             break;
         case SCREEN:
-            codec = 3;
+            codec = Coder.BIT0 | Coder.BIT1;
             break;
         default:
             throw new IllegalArgumentException();
@@ -371,10 +373,9 @@ public final class DefineVideo implements DefineTag {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
-
+        // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
         length = 10;
-
-        return 12;
+        return Coder.SHORT_HEADER + length;
     }
 
     /** {@inheritDoc} */

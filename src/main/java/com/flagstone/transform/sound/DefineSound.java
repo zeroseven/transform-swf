@@ -35,7 +35,6 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import com.flagstone.transform.DefineTag;
-import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
@@ -108,19 +107,19 @@ public final class DefineSound implements DefineTag {
 
         final int info = coder.readByte();
 
-        format = (info & 0x00F0) >> 4;
+        format = (info & Coder.NIB1) >> Coder.TO_LOWER_NIB;
 
-        switch (info & 0x0C) {
+        switch (info & Coder.PAIR1) {
         case 0:
             rate = SoundRate.KHZ_5K;
             break;
-        case 4:
+        case Coder.BIT2:
             rate = SoundRate.KHZ_11K;
             break;
-        case 8:
+        case Coder.BIT3:
             rate = SoundRate.KHZ_22K;
             break;
-        case 12:
+        case (Coder.BIT2 | Coder.BIT3):
             rate = SoundRate.KHZ_44K;
             break;
         default:
@@ -198,9 +197,9 @@ public final class DefineSound implements DefineTag {
 
     /** {@inheritDoc} */
     public void setIdentifier(final int uid) {
-        if ((uid < SWF.MIN_IDENTIFIER) || (uid > SWF.MAX_IDENTIFIER)) {
+        if ((uid < 1) || (uid > Coder.UNSIGNED_SHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    SWF.MIN_IDENTIFIER, SWF.MAX_IDENTIFIER, uid);
+                    1, Coder.UNSIGNED_SHORT_MAX, uid);
         }
         identifier = uid;
     }
@@ -211,34 +210,7 @@ public final class DefineSound implements DefineTag {
      * @return the format for the sound data.
      */
     public SoundFormat getFormat() {
-        SoundFormat value;
-
-        switch (format) {
-        case 0:
-            value = SoundFormat.NATIVE_PCM;
-            break;
-        case 1:
-            value = SoundFormat.ADPCM;
-            break;
-        case 2:
-            value = SoundFormat.MP3;
-            break;
-        case 3:
-            value = SoundFormat.PCM;
-            break;
-        case 5:
-            value = SoundFormat.NELLYMOSER_8K;
-            break;
-        case 6:
-            value = SoundFormat.NELLYMOSER;
-            break;
-        case 11:
-            value = SoundFormat.SPEEX;
-            break;
-        default:
-            throw new IllegalStateException("Unsupported sound format.");
-        }
-        return value;
+        return SoundFormat.fromInt(format);
     }
 
     /**
@@ -294,31 +266,7 @@ public final class DefineSound implements DefineTag {
      *            the format for the sound.
      */
     public void setFormat(final SoundFormat encoding) {
-        switch (encoding) {
-        case NATIVE_PCM:
-            format = 0;
-            break;
-        case ADPCM:
-            format = 1;
-            break;
-        case MP3:
-            format = 2;
-            break;
-        case PCM:
-            format = 3;
-            break;
-        case NELLYMOSER_8K:
-            format = 5;
-            break;
-        case NELLYMOSER:
-            format = 6;
-            break;
-        case SPEEX:
-            format = 11;
-            break;
-        default:
-            throw new IllegalArgumentException("Unsupported sound format.");
-        }
+        format = encoding.getValue();
     }
 
     /**
@@ -410,6 +358,7 @@ public final class DefineSound implements DefineTag {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
+        // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
         length = 7;
         length += sound.length;
 
@@ -432,17 +381,18 @@ public final class DefineSound implements DefineTag {
         coder.mark();
         coder.writeShort(identifier);
 
-        int bits = format << 4;
+        int bits = format << Coder.TO_UPPER_NIB;
 
         switch (rate) {
         case SoundRate.KHZ_11K:
-            bits |= 4;
+            bits |= Coder.BIT2;
             break;
         case SoundRate.KHZ_22K:
-            bits |= 8;
+            bits |= Coder.BIT3;
             break;
         case SoundRate.KHZ_44K:
-            bits |= 12;
+            bits |= Coder.BIT2;
+            bits |= Coder.BIT3;
             break;
         default:
             break;

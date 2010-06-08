@@ -47,6 +47,7 @@ import java.util.zip.DataFormatException;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterInputStream;
 
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.DecoderRegistry;
 import com.flagstone.transform.coder.MovieTypes;
@@ -80,6 +81,9 @@ import com.flagstone.transform.coder.SWFFactory;
  * </p>
  */
 public final class Movie {
+
+    private static final int SIGNATURE_LENGTH = 3;
+    private static final int HEADER_LENGTH = 8;
 
     public static final byte[] FWS = new byte[] { 0x46, 0x57, 0x53 };
     public static final byte[] CWS = new byte[] { 0x43, 0x57, 0x53 };
@@ -251,7 +255,7 @@ public final class Movie {
             context.setEncoding(encoding.toString());
             context.put(Context.FRAMES, 0);
 
-            byte[] signature = new byte[3];
+            byte[] signature = new byte[SIGNATURE_LENGTH];
             stream.read(signature);
 
             if (Arrays.equals(CWS, signature)) {
@@ -267,9 +271,9 @@ public final class Movie {
             context.put(Context.VERSION, stream.read());
 
             int length = stream.read();
-            length |= stream.read() << 8;
-            length |= stream.read() << 16;
-            length |= stream.read() << 24;
+            length |= stream.read() << Coder.ALIGN_BYTE1;
+            length |= stream.read() << Coder.ALIGN_BYTE2;
+            length |= stream.read() << Coder.ALIGN_BYTE3;
 
             /*
              * If the file is shorter than the default buffer size then set the
@@ -279,7 +283,7 @@ public final class Movie {
             SWFDecoder decoder;
 
             if (length < SWFDecoder.BUFFER_SIZE) {
-                decoder = new SWFDecoder(streamIn, length - 8);
+                decoder = new SWFDecoder(streamIn, length - HEADER_LENGTH);
             } else {
                 decoder = new SWFDecoder(streamIn);
             }
@@ -293,7 +297,8 @@ public final class Movie {
             MovieHeader header = new MovieHeader(decoder, context);
             objects.add(header);
 
-            while (decoder.scanUnsignedShort() >>> 6 != MovieTypes.END) {
+            while (decoder.scanUnsignedShort() >>> Coder.LENGTH_FIELD_SIZE
+                    != MovieTypes.END) {
                 objects.add(factory.getObject(decoder, context));
             }
 
@@ -354,6 +359,7 @@ public final class Movie {
             context.put(Context.FRAMES, 0);
 
             // length of signature, version, length and end
+            // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
             int length = 10;
 
             for (final MovieTag tag : objects) {
@@ -370,9 +376,9 @@ public final class Movie {
 
             stream.write(header.getVersion());
             stream.write(length);
-            stream.write(length >>> 8);
-            stream.write(length >>> 16);
-            stream.write(length >>> 24);
+            stream.write(length >>> Coder.ALIGN_BYTE1);
+            stream.write(length >>> Coder.ALIGN_BYTE2);
+            stream.write(length >>> Coder.ALIGN_BYTE3);
 
             if (header.isCompressed()) {
                 streamOut = new DeflaterOutputStream(stream);

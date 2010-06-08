@@ -37,17 +37,14 @@ import static org.junit.Assert.assertSame;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.flagstone.transform.datatype.ColorTransform;
-import com.flagstone.transform.datatype.CoordTransform;
-
 public final class Place3Test {
 
-    private final transient int identifier = 1;
-    private final transient int layer = 2;
-    private final transient CoordTransform transform = CoordTransform
-            .translate(1, 2);
-    private final transient ColorTransform colorTransform = new ColorTransform(
-            1, 2, 3, 4);
+//    private final transient int identifier = 1;
+//    private final transient int layer = 2;
+//    private final transient CoordTransform transform = CoordTransform
+//            .translate(1, 2);
+//    private final transient ColorTransform colorTransform
+//            = new ColorTransform(1, 2, 3, 4);
 
     private transient Place3 fixture;
 

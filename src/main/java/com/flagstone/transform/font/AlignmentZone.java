@@ -111,7 +111,8 @@ public final class AlignmentZone implements SWFEncodeable {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
-        return 4; // SUPPRESS CHECKSTYLE
+        // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
+        return 4;
     }
 
     /** {@inheritDoc} */

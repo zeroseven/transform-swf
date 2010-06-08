@@ -37,7 +37,6 @@ import java.util.List;
 
 import com.flagstone.transform.DefineTag;
 import com.flagstone.transform.MovieTag;
-import com.flagstone.transform.SWF;
 import com.flagstone.transform.ShowFrame;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
@@ -112,7 +111,8 @@ public final class DefineMovieClip implements DefineTag {
         final SWFFactory<MovieTag> decoder = context.getRegistry()
                 .getMovieDecoder();
 
-        while (coder.scanUnsignedShort() >> 6 != MovieTypes.END) {
+        while (coder.scanUnsignedShort() >> Coder.LENGTH_FIELD_SIZE
+                != MovieTypes.END) {
            objects.add(decoder.getObject(coder, context));
         }
         coder.readUnsignedShort(); // END
@@ -156,9 +156,9 @@ public final class DefineMovieClip implements DefineTag {
 
     /** {@inheritDoc} */
     public void setIdentifier(final int uid) {
-        if ((uid < SWF.MIN_IDENTIFIER) || (uid > SWF.MAX_IDENTIFIER)) {
+        if ((uid < 1) || (uid > Coder.UNSIGNED_SHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    SWF.MIN_IDENTIFIER, SWF.MAX_IDENTIFIER, uid);
+                    1, Coder.UNSIGNED_SHORT_MAX, uid);
         }
         identifier = uid;
     }
@@ -217,6 +217,7 @@ public final class DefineMovieClip implements DefineTag {
     public int prepareToEncode(final Context context) {
 
         frameCount = 0;
+        // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
         length = 6;
 
         for (final MovieTag object : objects) {

@@ -34,7 +34,6 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import com.flagstone.transform.MovieTag;
-import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
@@ -88,6 +87,7 @@ public final class VideoFrame implements MovieTag {
         }
         identifier = coder.readUnsignedShort();
         frameNumber = coder.readUnsignedShort();
+        // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
         data = coder.readBytes(new byte[length - 4]);
     }
 
@@ -144,9 +144,9 @@ public final class VideoFrame implements MovieTag {
      *            the range 1..65535.
      */
     public void setIdentifier(final int uid) {
-        if ((uid < SWF.MIN_IDENTIFIER) || (uid > SWF.MAX_IDENTIFIER)) {
+        if ((uid < 1) || (uid > Coder.UNSIGNED_SHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    SWF.MIN_IDENTIFIER, SWF.MAX_IDENTIFIER, uid);
+                    1, Coder.UNSIGNED_SHORT_MAX, uid);
         }
         identifier = uid;
     }
@@ -167,8 +167,9 @@ public final class VideoFrame implements MovieTag {
      *            the frame number. Must be in the range 1..65535.
      */
     public void setFrameNumber(final int number) {
-        if ((number < 1) || (number > 65535)) {
-            throw new IllegalArgumentRangeException(1, 65535, number);
+        if ((number < 1) || (number > Coder.UNSIGNED_SHORT_MAX)) {
+            throw new IllegalArgumentRangeException(
+                    1, Coder.UNSIGNED_SHORT_MAX, number);
         }
         frameNumber = number;
     }
@@ -211,10 +212,11 @@ public final class VideoFrame implements MovieTag {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
+        // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
         length = 4 + data.length;
 
-        return (length > Coder.SHORT_HEADER_LIMIT ?
-                Coder.LONG_HEADER : Coder.SHORT_HEADER) + length;
+        return (length > Coder.SHORT_HEADER_LIMIT
+                ? Coder.LONG_HEADER : Coder.SHORT_HEADER) + length;
     }
 
     /** {@inheritDoc} */

@@ -40,6 +40,8 @@ public final class Property {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "Property: { value=%d }";
+    /** The first version of Flash that uses integers values for properties. */
+    public static final int VERSION_WITH_INTS = 5;
 
     /** Value used to identify an X Property when it is encoded. */
     private static final int XCOORD_VAL = 0;
@@ -232,7 +234,7 @@ public final class Property {
      */
     public int getValue(final int version) {
         final int val;
-        if (version < 5) {
+        if (version < VERSION_WITH_INTS) {
             val = Float.floatToIntBits(value);
         } else {
             val = value;

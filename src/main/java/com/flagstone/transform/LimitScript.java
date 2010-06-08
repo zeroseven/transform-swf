@@ -182,14 +182,14 @@ public final class LimitScript implements MovieTag {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
-        // CHECKSTYLE:OFF
+        // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
         return 6;
-        // CHECKSTYLE:ON
     }
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
+        // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 2 LINES
         coder.writeShort((MovieTypes.LIMIT_SCRIPT
                 << Coder.LENGTH_FIELD_SIZE) | 4);
         coder.writeShort(depth);

@@ -36,7 +36,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.flagstone.transform.MovieTag;
-import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
@@ -136,9 +135,9 @@ public final class FontAlignment implements MovieTag {
      *            glyphs for the font. Must be in the range 1..65535.
      */
     public void setIdentifier(final int uid) {
-        if ((uid < SWF.MIN_IDENTIFIER) || (uid > SWF.MAX_IDENTIFIER)) {
+        if ((uid < 1) || (uid > Coder.UNSIGNED_SHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    SWF.MIN_IDENTIFIER, SWF.MAX_IDENTIFIER, uid);
+                    1, Coder.UNSIGNED_SHORT_MAX, uid);
         }
         identifier = uid;
     }
@@ -147,10 +146,10 @@ public final class FontAlignment implements MovieTag {
     public StrokeWidth getStrokeWidth() {
         StrokeWidth stroke;
         switch (hints) {
-        case 0x40:
+        case Coder.BIT6:
             stroke = StrokeWidth.MEDIUM;
             break;
-        case 0x80:
+        case Coder.BIT7:
             stroke = StrokeWidth.THICK;
             break;
         default:
@@ -164,10 +163,10 @@ public final class FontAlignment implements MovieTag {
     public void setStrokeWidth(final StrokeWidth stroke) {
         switch (stroke) {
         case MEDIUM:
-            hints = 0x80;
+            hints = Coder.BIT6;
             break;
         case THICK:
-            hints = 0x40;
+            hints = Coder.BIT7;
             break;
         default:
             hints = 0x00;
@@ -209,6 +208,7 @@ public final class FontAlignment implements MovieTag {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
+        // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
         length = 3;
 
         for (final GlyphAlignment zone : zones) {

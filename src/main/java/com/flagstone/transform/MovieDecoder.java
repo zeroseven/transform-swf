@@ -37,6 +37,7 @@ import com.flagstone.transform.button.ButtonColorTransform;
 import com.flagstone.transform.button.ButtonSound;
 import com.flagstone.transform.button.DefineButton;
 import com.flagstone.transform.button.DefineButton2;
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -91,7 +92,7 @@ public final class MovieDecoder implements SWFFactory<MovieTag> {
 
         MovieTag obj;
 
-        switch (coder.scanUnsignedShort() >> 6) {
+        switch (coder.scanUnsignedShort() >> Coder.LENGTH_FIELD_SIZE) {
         case MovieTypes.SHOW_FRAME:
             obj = ShowFrame.getInstance(coder, context);
             break;
@@ -240,7 +241,7 @@ public final class MovieDecoder implements SWFFactory<MovieTag> {
             obj = new TabOrder(coder);
             break;
         case MovieTypes.FILE_ATTRIBUTES:
-            obj = new MovieAttributes(coder, context);
+            obj = new MovieAttributes(coder);
             break;
         case MovieTypes.PLACE_3:
             obj = new Place3(coder, context);

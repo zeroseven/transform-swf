@@ -163,6 +163,11 @@ public final class Context {
         return variables.containsKey(key);
     }
 
+    /**
+     * Delete the context variable.
+     *
+     * @param key the identifier for the variable.
+     */
     public void remove(final Integer key) {
         variables.remove(key);
     }

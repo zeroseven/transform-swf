@@ -35,7 +35,6 @@ package com.flagstone.transform.button;
 import java.io.IOException;
 
 import com.flagstone.transform.MovieTag;
-import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
@@ -156,9 +155,9 @@ public final class ButtonColorTransform implements MovieTag {
      *            will be applied to. Must be in the range 1..65535.
      */
     public void setIdentifier(final int uid) {
-        if ((uid < SWF.MIN_IDENTIFIER) || (uid > SWF.MAX_IDENTIFIER)) {
+        if ((uid < 1) || (uid > Coder.UNSIGNED_SHORT_MAX)) {
              throw new IllegalArgumentRangeException(
-                     SWF.MIN_IDENTIFIER, SWF.MAX_IDENTIFIER, uid);
+                     1, Coder.UNSIGNED_SHORT_MAX, uid);
         }
         identifier = uid;
     }

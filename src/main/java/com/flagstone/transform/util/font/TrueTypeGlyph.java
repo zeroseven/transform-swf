@@ -31,18 +31,20 @@
 
 package com.flagstone.transform.util.font;
 
+import java.util.Arrays;
+
 import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.shape.Shape;
 
 /**
  * TrueTypeGlyph is a simple container class used to decode TrueType glyphs.
  */
-public class TrueTypeGlyph extends Glyph {
+public final class TrueTypeGlyph extends Glyph {
 
-    int[] xCoordinates = new int[]{};
-    int[] yCoordinates = new int[]{};
-    boolean[] onCurve = new boolean[]{};
-    int[] endPoints = new int[]{};
+    private transient int[] xCoordinates = new int[]{};
+    private transient int[] yCoordinates = new int[]{};
+    private transient boolean[] onCurve = new boolean[]{};
+    private transient int[] endPoints = new int[]{};
 
     /**
      * Create a TrueTypeGlyph with the specified outline, bounding box and
@@ -62,5 +64,54 @@ public class TrueTypeGlyph extends Glyph {
      */
     public TrueTypeGlyph(final Shape aShape) {
         super(aShape);
+    }
+
+    public void getXCoordinates(final int[] array) {
+        final int count = xCoordinates.length;
+        for (int i = 0; i < count; i++) {
+            array[i] = xCoordinates[i];
+        }
+    }
+
+    public void getYCoordinates(final int[] array) {
+        final int count = yCoordinates.length;
+        for (int i = 0; i < count; i++) {
+            array[i] = yCoordinates[i];
+        }
+    }
+
+    public void getEnd(final int[] array) {
+        final int count = endPoints.length;
+        for (int i = 0; i < count; i++) {
+            array[i] = endPoints[i];
+        }
+    }
+
+    public void getCurve(final boolean[] array) {
+        final int count = onCurve.length;
+        for (int i = 0; i < count; i++) {
+            array[i] = onCurve[i];
+        }
+    }
+
+    public void setCoordinates(final int[] xcoords, final int[] ycoords) {
+        xCoordinates = Arrays.copyOf(xcoords, xcoords.length);
+        yCoordinates = Arrays.copyOf(ycoords, ycoords.length);
+    }
+
+    public void setOnCurve(final boolean[] array) {
+        onCurve = Arrays.copyOf(array, array.length);
+    }
+
+    public void setEnds(final int[] array) {
+        endPoints = Arrays.copyOf(array, array.length);
+    }
+
+    public int numberOfPoints() {
+        return xCoordinates.length;
+    }
+
+    public int numberOfContours() {
+        return endPoints.length;
     }
 }

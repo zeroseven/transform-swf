@@ -34,7 +34,7 @@ package com.flagstone.transform.util.font;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.flagstone.transform.SWF;
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.exception.IllegalArgumentRangeException;
 import com.flagstone.transform.font.CharacterFormat;
@@ -154,9 +154,10 @@ public final class Font {
      *            the ascent for the font in the range -32768..32767.
      */
     public void setAscent(final int dist) {
-        if ((dist < SWF.MIN_ASCENT) || (dist > SWF.MAX_ASCENT)) {
+        if ((dist < Coder.SIGNED_SHORT_MIN)
+                || (dist > Coder.SIGNED_SHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    SWF.MIN_ASCENT, SWF.MAX_ASCENT, dist);
+                    Coder.SIGNED_SHORT_MIN, Coder.SIGNED_SHORT_MAX, dist);
         }
         ascent = dist;
     }
@@ -177,9 +178,10 @@ public final class Font {
      *            the descent for the font in the range -32768..32767.
      */
     public void setDescent(final int dist) {
-        if ((dist < SWF.MIN_DESCENT) || (dist > SWF.MAX_DESCENT)) {
+        if ((dist < Coder.SIGNED_SHORT_MIN)
+                || (dist > Coder.SIGNED_SHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    SWF.MIN_DESCENT, SWF.MAX_DESCENT, dist);
+                    Coder.SIGNED_SHORT_MIN, Coder.SIGNED_SHORT_MAX, dist);
         }
         descent = dist;
     }
@@ -200,9 +202,10 @@ public final class Font {
      *            the descent for the font in the range -32768..32767.
      */
     public void setLeading(final int dist) {
-        if ((dist < SWF.MIN_LEADING) || (dist > SWF.MAX_LEADING)) {
+        if ((dist < Coder.SIGNED_SHORT_MIN)
+                || (dist > Coder.SIGNED_SHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    SWF.MIN_LEADING, SWF.MAX_LEADING, dist);
+                    Coder.SIGNED_SHORT_MIN, Coder.SIGNED_SHORT_MAX, dist);
         }
         leading = dist;
     }
@@ -222,8 +225,8 @@ public final class Font {
      * @param count the number of glyphs.
      */
     public void setNumberOfGlyphs(final int count) {
-        glyphTable = new Glyph[65536];
-        glyphToChar = new int[65536];
+        glyphTable = new Glyph[Coder.UNSIGNED_SHORT_MAX + 1];
+        glyphToChar = new int[Coder.UNSIGNED_SHORT_MAX + 1];
 //TODO        glyphTable = new Glyph[count];
 //TODO        glyphToChar = new int[count];
         glyphIndex = 0;
@@ -245,7 +248,7 @@ public final class Font {
      */
     public void setHighestChar(final char highest) {
         highestChar = highest;
-        charToGlyph = new int[65536];
+        charToGlyph = new int[Coder.UNSIGNED_SHORT_MAX + 1];
 //TODO        charToGlyph = new int[highest];
     }
 

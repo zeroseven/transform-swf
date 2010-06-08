@@ -64,14 +64,14 @@ public final class MovieAttributes implements MovieTag {
      * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    public MovieAttributes(final SWFDecoder coder, final Context context)
+    public MovieAttributes(final SWFDecoder coder)
             throws IOException {
         int length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
         if (length == Coder.IS_EXTENDED) {
             length = coder.readInt();
         }
         attributes = coder.readByte();
-        coder.skip(3);
+        coder.skip(length - 1);
     }
 
     /**
@@ -93,7 +93,7 @@ public final class MovieAttributes implements MovieTag {
      * containing Actionscript 3 byte-codes.
      */
     public boolean hasMetaData() {
-        return (attributes & 0x10) != 0;
+        return (attributes & Coder.BIT4) != 0;
     }
 
     /**
@@ -102,7 +102,7 @@ public final class MovieAttributes implements MovieTag {
      * @return true if the movie contains a MovieMetaData tag.
      */
     public boolean hasAS3() {
-        return (attributes & 0x08) != 0;
+        return (attributes & Coder.BIT3) != 0;
     }
 
     /**
@@ -112,7 +112,7 @@ public final class MovieAttributes implements MovieTag {
      * @return true if the Flash Player will use direct bit block transfer.
      */
     public boolean useDirectBlit() {
-        return (attributes & 0x40) != 0;
+        return (attributes & Coder.BIT6) != 0;
     }
 
     /**
@@ -123,9 +123,9 @@ public final class MovieAttributes implements MovieTag {
      */
     public void setUseDirectBlit(final boolean useBlit) {
         if (useBlit) {
-            attributes |= 0x40;
+            attributes |= Coder.BIT6;
         } else {
-            attributes &= ~0x40;
+            attributes &= ~Coder.BIT6;
         }
     }
 
@@ -137,7 +137,7 @@ public final class MovieAttributes implements MovieTag {
      * compositing.
      */
     public boolean useGPU() {
-        return (attributes & 0x20) != 0;
+        return (attributes & Coder.BIT5) != 0;
     }
 
     /**
@@ -148,9 +148,9 @@ public final class MovieAttributes implements MovieTag {
      */
     public void setUseGPU(final boolean useGPU) {
         if (useGPU) {
-            attributes |= 0x20;
+            attributes |= Coder.BIT5;
         } else {
-            attributes &= ~0x20;
+            attributes &= ~Coder.BIT5;
         }
     }
 
@@ -161,7 +161,7 @@ public final class MovieAttributes implements MovieTag {
      * locally, false otherwise.
      */
     public boolean useNetwork() {
-        return (attributes & 0x01) != 0;
+        return (attributes & Coder.BIT0) != 0;
     }
 
     /**
@@ -171,9 +171,9 @@ public final class MovieAttributes implements MovieTag {
      */
     public void setUseNetwork(final boolean useNetwork) {
         if (useNetwork) {
-            attributes |= 0x01;
+            attributes |= Coder.BIT0;
         } else {
-            attributes &= ~0x01;
+            attributes &= ~Coder.BIT0;
         }
     }
 
@@ -190,12 +190,14 @@ public final class MovieAttributes implements MovieTag {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
+        // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
         return 6;
     }
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
+        // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 2 LINES
         coder.writeShort((MovieTypes.FILE_ATTRIBUTES
                 << Coder.LENGTH_FIELD_SIZE) | 4);
         coder.writeByte(attributes);

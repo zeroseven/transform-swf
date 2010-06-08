@@ -94,7 +94,7 @@ public final class SWFFontDecoder implements FontProvider, FontDecoder {
 
     /**
      * Decode a font from a stream.
-     * @param stream the stream containing the encoded font.
+     * @param movie the Flash movie containing the encoded font.
      * @throws IOException if an error occurs while decoding the font data.
      * @throws DataFormatException if the font is not in a supported format.
      */

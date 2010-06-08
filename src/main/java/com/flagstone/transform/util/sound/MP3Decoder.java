@@ -43,6 +43,7 @@ import java.util.zip.DataFormatException;
 
 import com.flagstone.transform.MovieTag;
 import com.flagstone.transform.coder.BigDecoder;
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.sound.DefineSound;
 import com.flagstone.transform.sound.SoundFormat;
 import com.flagstone.transform.sound.SoundStreamBlock;
@@ -52,6 +53,13 @@ import com.flagstone.transform.sound.SoundStreamHead2;
  * Decoder for MP3 sounds so they can be added to a flash file.
  */
 public final class MP3Decoder implements SoundProvider, SoundDecoder {
+
+    private static final int ID3_MASK = 0xFFFFFF00;
+    private static final int ID3_V1 = 0x54414700;
+    private static final int ID3_V1_LENGTH = 128;
+    private static final int ID3_V2 = 0x49443300;
+    private static final int ID3_V2_FOOTER_LENGTH = 10;
+    private static final int MP3_SYNC = 0xFFE00000;
 
     /** The version number of the MPEG sound format. In this case 3 for MP3. */
     private static final int MPEG1 = 3;
@@ -216,9 +224,9 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
 
         if (hasFrames) {
             sound[0] = (byte) sampleCount;
-            sound[1] = (byte) (sampleCount >> 8);
+            sound[1] = (byte) (sampleCount >> Coder.TO_LOWER_BYTE);
             sound[2] = (byte) seek;
-            sound[3] = (byte) (seek >> 8);
+            sound[3] = (byte) (seek >> Coder.TO_LOWER_BYTE);
 
             if (sound != null) {
                 block = new SoundStreamBlock(sound);
@@ -227,82 +235,46 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
         return block;
     }
 
-    /**
-     * Get the size of the next frame.
-     *
-     * @param coder the decoder containing the sound data.
-     * @return the length of the frame in bytes.
-     */
-    private int frameSize(final BigDecoder coder) throws IOException {
-        int frameSize = 4;
-
-        coder.adjustPointer(11);
-
-        int version = coder.readBits(2, false);
-
-        coder.adjustPointer(3);
-
-        int bitRate = BIT_RATES[version][coder.readBits(4, false)];
-        int samplingRate = SAMPLE_RATES[version][coder.readBits(2, false)];
-           int padding = coder.readBits(1, false);
-
-        coder.adjustPointer(-23);
-
-        frameSize += (((version == MPEG1) ? 144 : 72)
-                * bitRate * 1000 / samplingRate + padding) - 4;
-
-        return frameSize;
-    }
-
-    private void readAll() throws IOException, DataFormatException {
-        int length;
-        do {
-            length = sound.length;
-            sound = Arrays.copyOf(sound, length + frame.length);
-            System.arraycopy(frame, 0, sound, length, frame.length);
-        } while (readFrame());
-    }
-
     private boolean readFrame() throws IOException, DataFormatException {
-        boolean hasFrame = false;
         boolean frameRead = false;
-        while ((hasFrame = !coder.eof()) && !frameRead) {
+        while ((!coder.eof()) && !frameRead) {
             int header = coder.scanUI32();
             if (header == -1) {
                 coder.readUI16();
-            } else if ((header & 0xFFFFFF00) == 0x54414700) {
-                readID3V1(coder);
-            } else if ((header & 0xFFFFFF00) == 0x49443300) {
-                readID3V2(coder);
-            } else if ((header & 0xFFE00000) == 0xFFE00000) {
-                readFrame(header, coder);
-                frameRead = true;
-            } else if ((header & 0xFFF00000) == 0xFFF00000) {
-                readFrame(header, coder);
+            } else if ((header & ID3_MASK) == ID3_V1) {
+                readID3V1();
+            } else if ((header & ID3_MASK) == ID3_V2) {
+                readID3V2();
+            } else if ((header & MP3_SYNC) == MP3_SYNC) {
+                readFrame(header);
                 frameRead = true;
             } else {
                 coder.readUI16();
             }
         }
-        return hasFrame;
+        return !coder.eof();
     }
 
-    private void readID3V1(BigDecoder coder)
+    private void readID3V1()
             throws IOException, DataFormatException {
-        coder.skip(128);
+        coder.skip(ID3_V1_LENGTH);
     }
 
-    private void readID3V2(BigDecoder coder)
+    private void readID3V2()
             throws IOException, DataFormatException {
         coder.readByte(); // I
         coder.readByte(); // D
         coder.readByte(); // 3
         coder.readByte(); // major version
         coder.readByte(); // minor version
+
+        int length;
         int flags = coder.readByte();
-        int length = 0;
-        if (((flags & 0x10) >> 4) == 1) {
-            length += 10; // has footer
+
+        if ((flags & Coder.BIT4) != 0) {
+            length = ID3_V2_FOOTER_LENGTH;
+        } else  {
+            length = 0;
         }
         length += coder.readByte() << 21;
         length += coder.readByte() << 14;
@@ -311,17 +283,17 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
         coder.skip(length);
     }
 
-    private void readFrame(int header, BigDecoder coder)
+    private void readFrame(final int header)
             throws IOException, DataFormatException {
 
         int version = (header & 0x180000) >> 19;
         int layer = (header & 0x060000) >> 17;
-        boolean hasCRC = (header & 0x010000) != 0;
+        //boolean hasCRC = (header & 0x010000) != 0;
         samplesPerFrame = MP3_FRAME_SIZE[version];
-        int bitRate = BIT_RATES[version][(header & 0x00F000) >> 12];
+        int bitRate = BIT_RATES[version][(header & Coder.NIB4) >> 12];
         sampleRate = SAMPLE_RATES[version][(header & 0x0C00) >> 10];
         int padding = (header & 0x0200) >> 9;
-        int reserved = (header & 0x0100) >> 8;
+        //int reserved = (header & 0x0100) >> 8;
 
         if (layer != 1) {
             throw new DataFormatException("Flash only supports MPEG Layer 3");
@@ -335,7 +307,7 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
             throw new DataFormatException("Unsupported Sampling-rate");
         }
 
-        numberOfChannels = CHANNEL_COUNT[(header & 0x00C0) >> 6];
+        numberOfChannels = CHANNEL_COUNT[(header & Coder.PAIR3) >> 6];
         samplesPerChannel += samplesPerFrame;
 
         int frameSize = 4 + (((version == MPEG1) ? 144 : 72)

@@ -31,11 +31,41 @@
 
 package com.flagstone.transform.image;
 
+import com.flagstone.transform.coder.Coder;
+
 
 /**
  * JPEGInfo is used to extract the width and height from a JPEG encoded image.
  */
 public final class JPEGInfo {
+
+    private static final int BYTE_MASK = 255;
+
+    /** Marks the start of an image. */
+    public static final int SOI = 0xFFD8;
+    /** Marks the end of an image. */
+    public static final int EOI = 0xFFD9;
+    /** Marks the start of a frame - baseline DCT. */
+    public static final int SOF0 = 0xFFC0;
+    /** Marks the start of a frame - progressive DCT. */
+    public static final int SOF2 = 0xFFC2;
+    /** Marks the start of a JPG block. */
+    public static final int JPG = 0xFFC8;
+    /** Marks the start of a JPG block. */
+    public static final int SOFF = 0xFFCF;
+    /** Marks the Huffman table. */
+    public static final int DHT = 0xFFC4;
+    /** Marks the quantization table. */
+    public static final int DQT = 0xFFDB;
+    /** Marks the restart interval. */
+    public static final int DRI = 0xFFDD;
+    /** Marks the start of scan. */
+    public static final int SOS = 0xFFDA;
+    /** Marks a restart. */
+    public static final int RST = 0xFFD0;
+    /** Marks the start of an application specific block. */
+    public static final int APP = 0xFFE0;
+
     /** The width of the image. */
     private transient int width;
     /** The height of the image. */
@@ -71,23 +101,23 @@ public final class JPEGInfo {
         int index = 0;
 
         while (index < limit) {
-            marker = ((image[index++] & 0x00FF) << 8)
-                | (image[index++] & 0x00FF);
+            marker = ((image[index++] & BYTE_MASK) << Coder.TO_UPPER_BYTE)
+                | (image[index++] & BYTE_MASK);
 
-            if (marker == 0xffd8 || marker == 0xffd9) {
+            if (marker == SOI || marker == EOI) {
                 continue;
             }
 
-            length = ((image[index++] & 0x00FF) << 8)
-                | (image[index++] & 0x00FF);
+            length = ((image[index++] & BYTE_MASK) << Coder.TO_UPPER_BYTE)
+                | (image[index++] & BYTE_MASK);
 
-            if (marker >= 0xffc0 && marker <= 0xffcf
-                    && marker != 0xffc4 && marker != 0xffc8) {
+            if (marker >= SOF0 && marker <= SOFF
+                    && marker != DHT && marker != JPG) {
                 index++;
-                height = ((image[index++] & 0x00FF) << 8)
-                    | (image[index++] & 0x00FF);
-                width = ((image[index++] & 0x00FF) << 8)
-                    | (image[index++] & 0x00FF);
+                height = ((image[index++] & BYTE_MASK) << Coder.TO_UPPER_BYTE)
+                    | (image[index++] & BYTE_MASK);
+                width = ((image[index++] & BYTE_MASK) << Coder.TO_UPPER_BYTE)
+                    | (image[index++] & BYTE_MASK);
                 break;
             } else {
                 index += length - 2;

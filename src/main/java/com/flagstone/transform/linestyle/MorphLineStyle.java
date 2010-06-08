@@ -33,6 +33,8 @@ package com.flagstone.transform.linestyle;
 
 
 import java.io.IOException;
+
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
@@ -167,8 +169,9 @@ public final class MorphLineStyle implements SWFEncodeable {
      *            the starting width of the line. Must be in the range 0..65535.
      */
     public void setStartWidth(final int aNumber) {
-        if ((aNumber < 0) || (aNumber > 65535)) {
-            throw new IllegalArgumentRangeException(0, 65535, aNumber);
+        if ((aNumber < 0) || (aNumber > Coder.UNSIGNED_SHORT_MAX)) {
+            throw new IllegalArgumentRangeException(
+                    0, Coder.UNSIGNED_SHORT_MAX, aNumber);
         }
         startWidth = aNumber;
     }
@@ -180,8 +183,9 @@ public final class MorphLineStyle implements SWFEncodeable {
      *            the ending width of the line. Must be in the range 0..65535.
      */
     public void setEndWidth(final int aNumber) {
-        if ((aNumber < 0) || (aNumber > 65535)) {
-            throw new IllegalArgumentRangeException(0, 65535, aNumber);
+        if ((aNumber < 0) || (aNumber > Coder.UNSIGNED_SHORT_MAX)) {
+            throw new IllegalArgumentRangeException(
+                    0, Coder.UNSIGNED_SHORT_MAX, aNumber);
         }
         endWidth = aNumber;
     }
@@ -225,6 +229,7 @@ public final class MorphLineStyle implements SWFEncodeable {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
+        // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
         return 12;
     }
 

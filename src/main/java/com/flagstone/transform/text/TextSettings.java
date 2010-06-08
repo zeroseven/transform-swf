@@ -35,7 +35,7 @@ package com.flagstone.transform.text;
 import java.io.IOException;
 
 import com.flagstone.transform.MovieTag;
-import com.flagstone.transform.SWF;
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -172,9 +172,9 @@ public final class TextSettings implements MovieTag {
      *            DefineTextField object. Must be in the range 1..65535.
      */
     public void setIdentifier(final int uid) {
-        if ((uid < SWF.MIN_IDENTIFIER) || (uid > SWF.MAX_IDENTIFIER)) {
+        if ((uid < 1) || (uid > Coder.UNSIGNED_SHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    SWF.MIN_IDENTIFIER, SWF.MAX_IDENTIFIER, uid);
+                    1, Coder.UNSIGNED_SHORT_MAX, uid);
         }
         identifier = uid;
     }
@@ -187,7 +187,7 @@ public final class TextSettings implements MovieTag {
      * rendering engine is used.
      */
     public boolean useAdvanced() {
-        return (rendering & 0x40) != 0;
+        return (rendering & Coder.BIT6) != 0;
     }
 
     /**
@@ -198,7 +198,7 @@ public final class TextSettings implements MovieTag {
      * for the standard rendering engine.
      */
     public void useAdvanced(final boolean flag) {
-        rendering |= 0x40;
+        rendering |= Coder.BIT6;
     }
 
     /**
@@ -209,16 +209,12 @@ public final class TextSettings implements MovieTag {
     public Grid getGrid() {
         Grid alignment;
 
-        switch ((rendering & 0x38) >> 3) {
-        case 1:
-            alignment = Grid.PIXEL;
-            break;
-        case 2:
+        if ((rendering & Coder.BIT4) != 0) {
             alignment = Grid.SUBPIXEL;
-            break;
-        default:
+        } else if ((rendering & Coder.BIT3) != 0) {
+            alignment = Grid.PIXEL;
+        } else {
             alignment = Grid.NONE;
-            break;
         }
         return alignment;
     }
@@ -233,14 +229,14 @@ public final class TextSettings implements MovieTag {
      */
     public void setGrid(final Grid alignment) {
 
-        rendering &= 0x78;
+        rendering &= ~(Coder.BIT3 | Coder.BIT4 | Coder.BIT5 | Coder.BIT6);
 
         switch (alignment) {
         case PIXEL:
-            rendering |= 0x40;
+            rendering |= Coder.BIT3;
             break;
         case SUBPIXEL:
-            rendering |= 0x40;
+            rendering |= Coder.BIT4;
             break;
         default:
             break;
@@ -304,13 +300,16 @@ public final class TextSettings implements MovieTag {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
+        // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
         return 14;
     }
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
-        coder.writeShort((MovieTypes.TEXT_SETTINGS << 6) | 12);
+        // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 2 LINES
+        coder.writeShort((MovieTypes.TEXT_SETTINGS << Coder.LENGTH_FIELD_SIZE)
+                | 12);
         coder.writeShort(identifier);
         coder.writeByte(rendering);
         coder.writeInt(thickness);

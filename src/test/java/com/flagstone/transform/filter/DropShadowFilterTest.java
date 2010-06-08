@@ -31,35 +31,27 @@
 
 package com.flagstone.transform.filter;
 
-import static org.junit.Assert.assertTrue;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.SWFDecoder;
-import com.flagstone.transform.coder.SWFEncoder;
-
 public final class DropShadowFilterTest {
 
-    private transient DropShadowFilter fixture;
-
-    private final transient byte[] encoded = new byte[] {0x06, 0x01, 0x01,
-            0x00, 0x02, 0x00, 0x06, 0x50 };
-
-    private final transient byte[] extended = new byte[] {0x7F, 0x01, 0x06,
-            0x00, 0x00, 0x00, 0x01, 0x00, 0x02, 0x00, 0x06, 0x50 };
+//    private transient DropShadowFilter fixture;
+//
+//    private final transient byte[] encoded = new byte[] {0x06, 0x01, 0x01,
+//            0x00, 0x02, 0x00, 0x06, 0x50 };
+//
+//    private final transient byte[] extended = new byte[] {0x7F, 0x01, 0x06,
+//            0x00, 0x00, 0x00, 0x01, 0x00, 0x02, 0x00, 0x06, 0x50 };
 
     @Test
     @Ignore //TODO(implement)
     public void encodeCoordTransform() throws IOException {
-        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        final SWFEncoder encoder = new SWFEncoder(stream);
-        final Context context = new Context();
+//        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+//        final SWFEncoder encoder = new SWFEncoder(stream);
+//        final Context context = new Context();
 
         // fixture = new DropShadowFilter(identifier, layer, transform);
         // assertEquals(encoded.length, fixture.prepareToEncode(encoder,
@@ -72,24 +64,24 @@ public final class DropShadowFilterTest {
     @Test
     @Ignore //TODO(implement)
     public void decode() throws IOException {
-        final ByteArrayInputStream stream = new ByteArrayInputStream(encoded);
-        final SWFDecoder decoder = new SWFDecoder(stream);
-        final Context context = new Context();
+//        final ByteArrayInputStream stream = new ByteArrayInputStream(encoded);
+//        final SWFDecoder decoder = new SWFDecoder(stream);
+//        final Context context = new Context();
 
         // fixture = new DropShadowFilter(decoder, context);
 
-        assertTrue(true);
+//        assertTrue(true);
     }
 
     @Test
     @Ignore //TODO(implement)
     public void decodeExtended() throws IOException {
-        final ByteArrayInputStream stream = new ByteArrayInputStream(extended);
-        final SWFDecoder decoder = new SWFDecoder(stream);
-        final Context context = new Context();
+//        final ByteArrayInputStream stream = new ByteArrayInputStream(etended);
+//        final SWFDecoder decoder = new SWFDecoder(stream);
+//        final Context context = new Context();
 
         // fixture = new DropShadowFilter(decoder, context);
 
-        assertTrue(true);
+//        assertTrue(true);
     }
 }

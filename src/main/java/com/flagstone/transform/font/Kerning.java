@@ -35,6 +35,7 @@ package com.flagstone.transform.font;
 import java.io.IOException;
 
 import com.flagstone.transform.SWF;
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
@@ -119,21 +120,22 @@ public final class Kerning implements SWFEncodeable {
      */
     public Kerning(final int leftIndex, final int rightIndex,
             final int adjust) {
-        if ((leftIndex < 0) || (leftIndex >= SWF.MAX_GLYPHS)) {
+        if ((leftIndex < 0) || (leftIndex >= Coder.UNSIGNED_SHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    0, SWF.MAX_GLYPHS - 1, leftIndex);
+                    0, Coder.UNSIGNED_SHORT_MAX - 1, leftIndex);
         }
         leftGlyph = leftIndex;
 
-        if ((rightIndex < 0) || (rightIndex >= SWF.MAX_GLYPHS)) {
+        if ((rightIndex < 0) || (rightIndex >= Coder.UNSIGNED_SHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    0, SWF.MAX_GLYPHS - 1, rightIndex);
+                    0, Coder.UNSIGNED_SHORT_MAX - 1, rightIndex);
         }
         rightGlyph = rightIndex;
 
-        if ((adjust < SWF.MIN_KERNING) || (adjust > SWF.MAX_KERNING)) {
+        if ((adjust < Coder.SIGNED_SHORT_MIN)
+                || (adjust > Coder.SIGNED_SHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    SWF.MIN_KERNING, SWF.MAX_KERNING, adjust);
+                    Coder.SIGNED_SHORT_MIN, Coder.SIGNED_SHORT_MAX, adjust);
         }
         adjustment = adjust;
     }

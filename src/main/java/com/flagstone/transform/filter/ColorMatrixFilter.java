@@ -69,7 +69,6 @@ public final class ColorMatrixFilter implements Filter {
         }
     }
 
-
     public ColorMatrixFilter(final float[] aMatrix) {
         if ((aMatrix == null) || (aMatrix.length != MATRIX_SIZE)) {
             throw new IllegalArgumentException("Value not set");
@@ -119,9 +118,8 @@ public final class ColorMatrixFilter implements Filter {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
-// CHECKSTYLE:OFF - Fixed length when encoded
+        // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
         return 81;
-// CHECKSTYLE:ON
     }
 
     /** {@inheritDoc} */

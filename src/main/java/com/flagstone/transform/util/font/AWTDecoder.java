@@ -41,7 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.DataFormatException;
 
-import com.flagstone.transform.SWF;
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.font.CharacterFormat;
 import com.flagstone.transform.shape.Shape;
@@ -138,7 +138,7 @@ public final class AWTDecoder {
 
         font.setMissingGlyph(missingGlyph);
         font.setNumberOfGlyphs(count);
-        font.setHighestChar((char) SWF.MAX_CHARACTER);
+        font.setHighestChar((char) Coder.UNSIGNED_SHORT_MAX);
 
         int index = 0;
         int code = 0;
@@ -164,7 +164,7 @@ public final class AWTDecoder {
          * Run through all the unicode character codes looking for a
          * corresponding glyph.
          */
-        while ((index < count) && (code < SWF.MAX_CHARACTER)) {
+        while ((index < count) && (code < Coder.UNSIGNED_SHORT_MAX)) {
             if (awtFont.canDisplay(code)) {
                 character = (char) code;
             } else {

@@ -366,7 +366,8 @@ public final class NewFunction2 implements Action {
         name = coder.readString();
         final int argumentCount = coder.readUnsignedShort();
         registerCount = coder.readByte();
-        optimizations = (coder.readByte() << 8) + coder.readByte();
+        optimizations = (coder.readByte() << Coder.TO_UPPER_BYTE)
+            + coder.readByte();
 
         int index;
 
@@ -562,7 +563,7 @@ public final class NewFunction2 implements Action {
         coder.writeString(name);
         coder.writeShort(arguments.size());
         coder.writeByte(registerCount);
-        coder.writeByte(optimizations >>> 8);
+        coder.writeByte(optimizations >>> Coder.TO_LOWER_BYTE);
         coder.writeByte(optimizations);
 
         for (final String arg : arguments.keySet()) {

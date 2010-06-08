@@ -36,7 +36,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.flagstone.transform.DefineTag;
-import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
@@ -95,6 +94,9 @@ public final class DefineMorphShape implements DefineTag {
      * or fill styles is encoded in the next 16-bit word.
      */
     private static final int EXTENDED = 255;
+    /** Number of bytes used to encode the number of styles. */
+    private static final int EXTENDED_LENGTH = 3;
+
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "DefineMorphShape: { identifier=%d;"
@@ -210,7 +212,9 @@ public final class DefineMorphShape implements DefineTag {
         context.remove(Context.TRANSPARENT);
         context.put(Context.ARRAY_EXTENDED, 1);
         context.remove(Context.TYPE);
+
         // known bug - empty objects may be added to Flash file.
+        // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
         if (length - coder.bytesRead() != 33) {
             coder.unmark(length);
         }
@@ -284,9 +288,9 @@ public final class DefineMorphShape implements DefineTag {
 
     /** {@inheritDoc} */
     public void setIdentifier(final int uid) {
-        if ((uid < SWF.MIN_IDENTIFIER) || (uid > SWF.MAX_IDENTIFIER)) {
+        if ((uid < 1) || (uid > Coder.UNSIGNED_SHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    SWF.MIN_IDENTIFIER, SWF.MAX_IDENTIFIER, uid);
+                    1, Coder.UNSIGNED_SHORT_MAX, uid);
         }
         identifier = uid;
     }
@@ -505,18 +509,18 @@ public final class DefineMorphShape implements DefineTag {
 
         context.put(Context.TRANSPARENT, 1);
 
-        length = 2 + startBounds.prepareToEncode(context);
+        // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
+        length = 6 + startBounds.prepareToEncode(context);
         length += endBounds.prepareToEncode(context);
         offset = length;
-        length += 4;
 
-        length += (fillStyles.size() >= EXTENDED) ? 3 : 1;
+        length += (fillStyles.size() >= EXTENDED) ? EXTENDED_LENGTH : 1;
 
         for (final FillStyle style : fillStyles) {
             length += style.prepareToEncode(context);
         }
 
-        length += (lineStyles.size() >= EXTENDED) ? 3 : 1;
+        length += (lineStyles.size() >= EXTENDED) ? EXTENDED_LENGTH : 1;
 
         for (final MorphLineStyle style : lineStyles) {
             length += style.prepareToEncode(context);

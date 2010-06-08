@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
@@ -91,10 +92,12 @@ public final class Shape implements SWFEncodeable {
         objects = new ArrayList<ShapeRecord>();
 
         final int sizes = coder.readByte();
-        context.put(Context.FILL_SIZE, (sizes & 0x00F0) >> 4);
-        context.put(Context.LINE_SIZE, sizes & 0x000F);
+        context.put(Context.FILL_SIZE, (sizes & Coder.NIB1)
+                >> Coder.TO_LOWER_NIB);
+        context.put(Context.LINE_SIZE, sizes & Coder.NIB0);
 
-        final SWFFactory<ShapeRecord> decoder = context.getRegistry().getShapeDecoder();
+        final SWFFactory<ShapeRecord> decoder = context.getRegistry()
+            .getShapeDecoder();
         ShapeRecord record = null;
 
         while ((record = decoder.getObject(coder, context)) != null) {
@@ -192,13 +195,13 @@ public final class Shape implements SWFEncodeable {
         } else {
             context.put(Context.SHAPE_SIZE, 0);
 
-            int numberOfBits = 8;
+            // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
+            int numberOfBits = 21; // Includes end of shape and align to byte
 
             for (final ShapeRecord record : objects) {
                 numberOfBits += record.prepareToEncode(context);
             }
-            numberOfBits += 13; // Add size of end of shape and align to byte
-            length += (numberOfBits >>> 3);
+            length += (numberOfBits >>> Coder.BITS_TO_BYTES);
         }
         return length;
     }
@@ -210,13 +213,14 @@ public final class Shape implements SWFEncodeable {
         if (isEncoded) {
             objects.get(0).encode(coder, context);
         } else {
-            int bits = context.get(Context.FILL_SIZE) << 4;
+            int bits = context.get(Context.FILL_SIZE) << Coder.TO_UPPER_NIB;
             bits |= context.get(Context.LINE_SIZE);
             coder.writeByte(bits);
 
             for (final ShapeRecord record : objects) {
                 record.encode(coder, context);
             }
+            // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
             coder.writeBits(0, 6); // End of shape
             coder.alignToByte();
       }

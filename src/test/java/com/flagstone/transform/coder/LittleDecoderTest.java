@@ -35,7 +35,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 public final class LittleDecoderTest {
-    private transient LittleDecoder fixture;
+//    private transient LittleDecoder fixture;
 
     @Test @Ignore
     public void readBitsForUnsignedNumber() {

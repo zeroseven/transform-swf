@@ -48,7 +48,7 @@ public final class CoderException extends IOException {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "CoderException: { "
-            + "name=%s; location=%d; length=%d; delta=%d; message=%s }";
+            + "name=%s; location=%s; length=%d; delta=%d; message=%s }";
 
     public static final String CODING_ERROR = "CodingError";
 
@@ -69,7 +69,7 @@ public final class CoderException extends IOException {
      */
     private final transient int delta;
 
-    public CoderException(final String className, Exception cause) {
+    public CoderException(final String className, final Exception cause) {
         super(STREAM_ERROR, cause);
         name = className;
         start = 0;
@@ -206,6 +206,7 @@ public final class CoderException extends IOException {
      */
     @Override
     public String toString() {
-        return String.format(FORMAT, name, start, length, delta, getMessage());
+        return String.format(FORMAT, name,
+                Integer.toHexString(start), length, delta, getMessage());
     }
 }

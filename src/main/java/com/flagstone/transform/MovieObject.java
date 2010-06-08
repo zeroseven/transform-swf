@@ -75,7 +75,7 @@ public final class MovieObject implements MovieTag {
      *             if an error occurs while decoding the data.
      */
     public MovieObject(final SWFDecoder coder) throws IOException {
-        type = coder.scanUnsignedShort() >>> 6;
+        type = coder.scanUnsignedShort() >>> Coder.LENGTH_FIELD_SIZE;
         length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
         if (length == Coder.IS_EXTENDED) {
             length = coder.readInt();

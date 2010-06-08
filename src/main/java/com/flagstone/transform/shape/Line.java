@@ -79,6 +79,7 @@ public final class Line implements ShapeRecord {
      */
     // TODO(optimise)
     public Line(final SWFDecoder coder) throws IOException {
+        // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
         size = coder.readBits(4, false) + 2;
 
         if (coder.readBits(1, false) == 0) {
@@ -180,6 +181,7 @@ public final class Line implements ShapeRecord {
         general = (xCoord != 0) && (yCoord != 0);
         size = Coder.maxSize(xCoord, yCoord, 1);
 
+        // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
         int numberOfBits = 7;
 
         if (general) {
@@ -197,6 +199,7 @@ public final class Line implements ShapeRecord {
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
+        // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 2 LINES
         coder.writeBits(3, 2);
         coder.writeBits(size - 2, 4);
         coder.writeBits(general ? 1 : 0, 1);

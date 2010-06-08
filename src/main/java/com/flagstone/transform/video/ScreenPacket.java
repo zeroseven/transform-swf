@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -44,6 +45,9 @@ import com.flagstone.transform.coder.SWFEncoder;
  * using Macromedia's ScreenVideo format.
  */
 public final class ScreenPacket implements Cloneable {
+
+    private static final int PIXELS_PER_BLOCK = 16;
+
     private boolean keyFrame;
     private int blockWidth;
     private int blockHeight;
@@ -51,20 +55,19 @@ public final class ScreenPacket implements Cloneable {
     private int imageHeight;
     private List<ImageBlock> imageBlocks;
 
-
     public ScreenPacket(final byte[] data) throws IOException {
         final ByteArrayInputStream stream = new ByteArrayInputStream(data);
         final SWFDecoder coder = new SWFDecoder(stream);
 
         int info = coder.readByte();
-        keyFrame = ((info & 0x00F0) >> 4) == 1;
+        keyFrame = (info & Coder.NIB1) != 0;
 
-        info = (coder.readByte() << 8) + coder.readByte();
-        blockWidth = (((info & 0x00F000) >> 12) + 1) * 16;
-        imageWidth = info & 0x0FFF;
-        info = (coder.readByte() << 8) + coder.readByte();
-        blockHeight = (((info & 0x00F000) >> 12) + 1) * 16;
-        imageHeight = info & 0x0FFF;
+        info = (coder.readByte() << Coder.TO_UPPER_BYTE) + coder.readByte();
+        blockWidth = (((info & Coder.NIB4) >> 12) + 1) * PIXELS_PER_BLOCK;
+        imageWidth = info & Coder.LOWEST12;
+        info = (coder.readByte() << Coder.TO_UPPER_BYTE) + coder.readByte();
+        blockHeight = (((info & Coder.NIB4) >> 12) + 1) * PIXELS_PER_BLOCK;
+        imageHeight = info & Coder.LOWEST12;
 
         final int columns = imageWidth / blockWidth
                 + ((imageWidth % blockWidth > 0) ? 1 : 0);
@@ -77,9 +80,12 @@ public final class ScreenPacket implements Cloneable {
         imageBlocks.clear();
         ImageBlock block;
 
+        int length;
+
         for (int i = 0; i < rows; i++, height -= blockHeight) {
             for (int j = 0; j < columns; j++, width -= blockWidth) {
-                final int length = (coder.readByte() << 8) + coder.readByte();
+                length = (coder.readByte() << Coder.TO_UPPER_BYTE)
+                        + coder.readByte();
 
                 if (length == 0) {
                     block = new ImageBlock(0, 0, null);
@@ -284,36 +290,22 @@ public final class ScreenPacket implements Cloneable {
         return new ScreenPacket(this);
     }
 
-    private int length() {
-        int length = 5;
-
-        for (final ImageBlock block : imageBlocks) {
-            length += 2;
-
-            if (!block.isEmpty()) {
-                length += block.getBlock().length;
-            }
-        }
-        return length;
-    }
-
-
     public byte[] encode() throws IOException {
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         final SWFEncoder coder = new SWFEncoder(stream);
 
-        int bits = keyFrame ? 16 : 32;
-        bits |= 3;
+        int bits = keyFrame ? Coder.BIT4 : Coder.BIT5;
+        bits |= Coder.BIT0 | Coder.BIT1;
         coder.writeByte(bits);
 
-        int word = ((blockWidth / 16) - 1) << 4;
-        word |= imageWidth & 0x0FFF;
-        coder.writeByte(word >> 8);
+        int word = ((blockWidth / PIXELS_PER_BLOCK) - 1) << Coder.TO_UPPER_NIB;
+        word |= imageWidth & Coder.LOWEST12;
+        coder.writeByte(word >> Coder.TO_LOWER_BYTE);
         coder.writeByte(word);
 
-        word = ((blockHeight / 16) - 1) << 4;
-        word |= imageHeight & 0x0FFF;
-        coder.writeByte(word >> 8);
+        word = ((blockHeight / PIXELS_PER_BLOCK) - 1) << Coder.TO_UPPER_NIB;
+        word |= imageHeight & Coder.LOWEST12;
+        coder.writeByte(word >> Coder.TO_LOWER_BYTE);
         coder.writeByte(word);
 
         byte[] blockData;
@@ -323,7 +315,7 @@ public final class ScreenPacket implements Cloneable {
                 coder.writeShort(0);
             } else {
                 blockData = block.getBlock();
-                coder.writeByte(blockData.length >> 8);
+                coder.writeByte(blockData.length >> Coder.TO_LOWER_BYTE);
                 coder.writeByte(blockData.length);
                 coder.writeBytes(blockData);
             }

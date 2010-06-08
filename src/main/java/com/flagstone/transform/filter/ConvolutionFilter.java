@@ -231,7 +231,7 @@ public final class ConvolutionFilter implements Filter {
     public int prepareToEncode(final Context context) {
         rows = matrix.length;
         cols = matrix[0].length;
-
+        // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
         return 16 + rows * cols * 4;
     }
 

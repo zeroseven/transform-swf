@@ -37,7 +37,6 @@ import java.util.List;
 
 import com.flagstone.transform.DefineTag;
 import com.flagstone.transform.EventHandler;
-import com.flagstone.transform.SWF;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
@@ -82,8 +81,8 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
 public final class DefineButton2 implements DefineTag {
 
     /** Format string used in toString() method. */
-    private static final String FORMAT = "DefineButton2: { identifier=%d;"
-            + " buttonRecords=%s; handlers=%s }";
+    private static final String FORMAT = "DefineButton2: { type=%s;"
+    		+ " identifier=%d; buttonRecords=%s; handlers=%s }";
 
     /** The unique identifier for this object. */
     private int identifier;
@@ -139,7 +138,7 @@ public final class DefineButton2 implements DefineTag {
         events = new ArrayList<EventHandler>();
 
         if (offsetToNext != 0) {
-            EventHandler event;
+            int size;
 
             if (type == 1) {
                 context.put(Context.MENU_BUTTON, 1);
@@ -149,13 +148,12 @@ public final class DefineButton2 implements DefineTag {
                 offsetToNext = coder.readUnsignedShort();
 
                 if (offsetToNext == 0) {
-                    event = new EventHandler(length - coder.bytesRead()
-                            - 2, coder, context);
-                } else {
-                    event = new EventHandler(offsetToNext - 4,
-                            coder, context);
+                    size = length - coder.bytesRead() - 2;
+                 } else {
+                     // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
+                     size = offsetToNext - 4;
                 }
-                events.add(event);
+                events.add(new EventHandler(size, coder, context));
 
             } while (offsetToNext != 0);
 
@@ -220,9 +218,9 @@ public final class DefineButton2 implements DefineTag {
 
     /** {@inheritDoc} */
     public void setIdentifier(final int uid) {
-        if ((uid < SWF.MIN_IDENTIFIER) || (uid > SWF.MAX_IDENTIFIER)) {
+        if ((uid < 1) || (uid > Coder.UNSIGNED_SHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    SWF.MIN_IDENTIFIER, SWF.MAX_IDENTIFIER, uid);
+                    1, Coder.UNSIGNED_SHORT_MAX, uid);
         }
         identifier = uid;
     }
@@ -339,7 +337,7 @@ public final class DefineButton2 implements DefineTag {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        return String.format(FORMAT, identifier, shapes, events);
+        return String.format(FORMAT, getType(), identifier, shapes, events);
     }
 
     /** {@inheritDoc} */

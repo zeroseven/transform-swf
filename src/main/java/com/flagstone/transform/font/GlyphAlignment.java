@@ -31,10 +31,11 @@
 
 package com.flagstone.transform.font;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import java.io.IOException;
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
@@ -99,22 +100,22 @@ public final class GlyphAlignment implements SWFEncodeable {
 
 
     public void setAlignmentX(final boolean hasAlign) {
-        masks &= 0xFE;
+        masks &= ~Coder.BIT0;
         if (hasAlign) {
-            masks |= 1;
+            masks |= Coder.BIT0;
         }
     }
 
 
     public boolean alignmentY() {
-        return (masks & 0x02) != 0;
+        return (masks & Coder.BIT1) != 0;
     }
 
 
     public void setAlignmentY(final boolean hasAlign) {
-        masks &= 0xFD;
+        masks &= ~Coder.BIT1;
         if (hasAlign) {
-            masks |= 2;
+            masks |= Coder.BIT1;
         }
     }
 
@@ -141,6 +142,7 @@ public final class GlyphAlignment implements SWFEncodeable {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
+        // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
         return 10;
     }
 

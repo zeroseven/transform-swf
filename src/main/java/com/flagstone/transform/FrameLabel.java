@@ -203,8 +203,14 @@ public final class FrameLabel implements MovieTag {
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
 
-        coder.writeShort((MovieTypes.FRAME_LABEL
-                << Coder.LENGTH_FIELD_SIZE) | length);
+        if (length > Coder.SHORT_HEADER_LIMIT) {
+            coder.writeShort((MovieTypes.FRAME_LABEL
+                    << Coder.LENGTH_FIELD_SIZE) | Coder.IS_EXTENDED);
+            coder.writeInt(length);
+        } else {
+            coder.writeShort((MovieTypes.FRAME_LABEL
+                    << Coder.LENGTH_FIELD_SIZE) | length);
+        }
         coder.writeString(label);
 
         if (anchor) {

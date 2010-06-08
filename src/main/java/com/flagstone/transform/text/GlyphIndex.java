@@ -34,7 +34,7 @@ package com.flagstone.transform.text;
 import java.io.IOException;
 
 import com.flagstone.transform.SWF;
-import com.flagstone.transform.SWF;
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
@@ -108,13 +108,14 @@ public final class GlyphIndex implements SWFEncodeable {
      *            representing this character to the next glyph to be displayed.
      */
     public GlyphIndex(final int anIndex, final int anAdvance) {
-        if (anIndex < 0 || anIndex > SWF.MAX_GLYPHS) {
+        if (anIndex < 0 || anIndex > Coder.UNSIGNED_SHORT_MAX) {
             throw new IllegalArgumentRangeException(
-                    0, SWF.MAX_GLYPHS, anIndex);
+                    0, Coder.UNSIGNED_SHORT_MAX, anIndex);
         }
-        if (anAdvance <  SWF.MIN_ADVANCE || anAdvance > SWF.MAX_ADVANCE) {
+        if (anAdvance <  Coder.SIGNED_SHORT_MIN
+                || anAdvance > Coder.SIGNED_SHORT_MAX) {
             throw new IllegalArgumentRangeException(
-                    SWF.MIN_ADVANCE, SWF.MAX_ADVANCE, anAdvance);
+                    Coder.SIGNED_SHORT_MIN, Coder.SIGNED_SHORT_MAX, anAdvance);
         }
         index = anIndex;
         advance = anAdvance;
@@ -170,7 +171,8 @@ public final class GlyphIndex implements SWFEncodeable {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
-        return context.get(Context.GLYPH_SIZE) + context.get(Context.ADVANCE_SIZE);
+        return context.get(Context.GLYPH_SIZE)
+                + context.get(Context.ADVANCE_SIZE);
     }
 
     /** {@inheritDoc} */

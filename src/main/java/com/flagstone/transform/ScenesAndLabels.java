@@ -117,8 +117,9 @@ public final class ScenesAndLabels implements MovieTag {
 
 
     public ScenesAndLabels addScene(final int offset, final String name) {
-        if ((offset < 0) || (offset > SWF.MAX_FRAME)) {
-            throw new IllegalArgumentRangeException(0, SWF.MAX_FRAME, offset);
+        if ((offset < 0) || (offset > Coder.UNSIGNED_SHORT_MAX)) {
+            throw new IllegalArgumentRangeException(
+                    0, Coder.UNSIGNED_SHORT_MAX, offset);
         }
         if (name == null || name.length() == 0) {
             throw new IllegalArgumentException();
@@ -142,8 +143,9 @@ public final class ScenesAndLabels implements MovieTag {
 
 
     public ScenesAndLabels addLabel(final int offset, final String name) {
-        if ((offset < 0) || (offset > SWF.MAX_FRAME)) {
-            throw new IllegalArgumentRangeException(0, SWF.MAX_FRAME, offset);
+        if ((offset < 0) || (offset > Coder.UNSIGNED_SHORT_MAX)) {
+            throw new IllegalArgumentRangeException(
+                    0, Coder.UNSIGNED_SHORT_MAX, offset);
         }
         if (name == null || name.length() == 0) {
             throw new IllegalArgumentException();
