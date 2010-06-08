@@ -67,6 +67,9 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
 
     /** Size of each colour table entry or pixel in a true colour image. */
     private static final int COLOUR_CHANNELS = 4;
+    /** Size of each colour table entry or pixel in a true colour image. */
+    private static final int RGB_CHANNELS = 3;
+
     /** Size of a pixel in a RGB555 true colour image. */
     private static final int RGB5_SIZE = 16;
     /** Size of a pixel in a RGB8 true colour image. */
@@ -80,6 +83,13 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
     private static final int BLUE = 2;
     /** Byte offset to alpha channel. */
     private static final int ALPHA = 3;
+
+    private static final int DEPTH_1 = 1;
+    private static final int DEPTH_2 = 2;
+    private static final int DEPTH_4 = 4;
+    private static final int DEPTH_8 = 8;
+    private static final int DEPTH_16 = 16;
+
 
     /** Shift used to align the RGB555 red channel to a 8-bit pixel. */
     private static final int RGB5_MSB_MASK = 0x00F8;
@@ -348,7 +358,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
         case TRUE_COLOUR:
             format = (transparentRed == -1) ? ImageFormat.RGB8
                     : ImageFormat.RGBA;
-            colorComponents = 3;
+            colorComponents = RGB_CHANNELS;
             break;
         case INDEXED_COLOUR:
             format = ImageFormat.IDX8;
@@ -360,7 +370,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
             break;
         case ALPHA_TRUECOLOUR:
             format = ImageFormat.RGBA;
-            colorComponents = 4;
+            colorComponents = COLOUR_CHANNELS;
             break;
         default:
             throw new DataFormatException(BAD_FORMAT);
@@ -375,20 +385,20 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
      */
     private void decodePLTE(final BigDecoder coder, final int length)
             throws IOException {
-        if (colorType == 3) {
-            final int paletteSize = length / 3;
+        if (colorType == RGB_CHANNELS) {
+            final int paletteSize = length / RGB_CHANNELS;
             int index = 0;
 
-            table = new byte[paletteSize * 4];
+            table = new byte[paletteSize * COLOUR_CHANNELS];
 
-            for (int i = 0; i < paletteSize; i++, index += 4) {
+            for (int i = 0; i < paletteSize; i++, index += COLOUR_CHANNELS) {
                 table[index + ALPHA] = (byte) OPAQUE;
                 table[index + BLUE] = (byte) coder.readByte();
                 table[index + GREEN] = (byte) coder.readByte();
                 table[index + RED] = (byte) coder.readByte();
             }
         } else {
-            coder.adjustPointer(length << 3);
+            coder.adjustPointer(length << Coder.BYTES_TO_BITS);
         }
         coder.readUI32(); // crc
     }
@@ -414,8 +424,8 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
             break;
         case INDEXED_COLOUR:
             format = ImageFormat.IDXA;
-            for (int i = 0; i < length; i++, index += 4) {
-                table[index + 3] = (byte) coder.readByte();
+            for (int i = 0; i < length; i++, index += COLOUR_CHANNELS) {
+                table[index + ALPHA] = (byte) coder.readByte();
 
                 if (table[index + ALPHA] == 0) {
                     table[index + RED] = 0;
@@ -466,7 +476,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
 
         if ((format == ImageFormat.RGB5) || (format == ImageFormat.RGB8)
                 || (format == ImageFormat.RGBA)) {
-            image = new byte[height * width * 4];
+            image = new byte[height * width * COLOUR_CHANNELS];
         }
 
         if ((format == ImageFormat.IDX8) || (format == ImageFormat.IDXA)) {
@@ -478,7 +488,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
         final int bitsPerPixel = bitDepth
                 * colorComponents;
         final int bitsPerRow = width * bitsPerPixel;
-        final int rowWidth = (bitsPerRow + 7) >> 3;
+        final int rowWidth = (bitsPerRow + 7) >> Coder.BITS_TO_BYTES;
         final int bytesPerPixel = (bitsPerPixel < 8) ? 1 : bitsPerPixel / 8;
 
         final byte[] current = new byte[rowWidth];
@@ -527,7 +537,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
                     scanBits += bitsPerPixel;
                 }
 
-                scanLength = (scanBits + 7) >> 3;
+                scanLength = (scanBits + 7) >> Coder.BITS_TO_BYTES;
                 filter = encodedImage[imageIndex++];
 
                 for (int i = 0; i < scanLength; i++, imageIndex++) {
@@ -670,23 +680,23 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
         byte colour = 0;
 
         switch (bitDepth) {
-        case 1:
+        case DEPTH_1:
             pixel = coder.readBits(bitDepth, false);
             colour = (byte) MONOCHROME[pixel];
             break;
-        case 2:
+        case DEPTH_2:
             pixel = coder.readBits(bitDepth, false);
             colour = (byte) GREYCSALE2[pixel];
             break;
-        case 4:
+        case DEPTH_4:
             pixel = coder.readBits(bitDepth, false);
             colour = (byte) GREYCSALE4[pixel];
             break;
-        case 8:
+        case DEPTH_8:
             pixel = coder.readByte();
             colour = (byte) pixel;
             break;
-        case 16:
+        case DEPTH_16:
             pixel = coder.readUI16();
             colour = (byte) (pixel >> Coder.TO_LOWER_BYTE);
             break;
@@ -718,10 +728,10 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
         int index = row * (width << 2) + (col << 2);
 
         for (int i = 0; i < colorComponents; i++) {
-            if (bitDepth == 8) {
+            if (bitDepth == DEPTH_8) {
                 pixel = coder.readByte();
                 colour = (byte) pixel;
-            } else if (bitDepth == 16) {
+            } else if (bitDepth == DEPTH_16) {
                 pixel = coder.readUI16();
                 colour = (byte) (pixel >> Coder.TO_LOWER_BYTE);
             } else {
@@ -730,7 +740,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
 
             image[index + i] = colour;
         }
-        image[index + 3] = (byte) transparentRed;
+        image[index + ALPHA] = (byte) transparentRed;
     }
 
     /**
@@ -746,19 +756,19 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
         int index = 0;
 
         switch (bitDepth) {
-        case 1:
+        case DEPTH_1:
             index = coder.readBits(bitDepth, false);
             break;
-        case 2:
+        case DEPTH_2:
             index = coder.readBits(bitDepth, false);
             break;
-        case 4:
+        case DEPTH_4:
             index = coder.readBits(bitDepth, false);
             break;
-        case 8:
+        case DEPTH_8:
             index = coder.readByte();
             break;
-        case 16:
+        case DEPTH_16:
             index = coder.readUI16();
             break;
         default:
@@ -782,27 +792,27 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
         int alpha = 0;
 
         switch (bitDepth) {
-        case 1:
+        case DEPTH_1:
             pixel = coder.readBits(bitDepth, false);
             colour = (byte) MONOCHROME[pixel];
             alpha = coder.readBits(bitDepth, false);
             break;
-        case 2:
+        case DEPTH_2:
             pixel = coder.readBits(bitDepth, false);
             colour = (byte) GREYCSALE2[pixel];
             alpha = coder.readBits(bitDepth, false);
             break;
-        case 4:
+        case DEPTH_4:
             pixel = coder.readBits(bitDepth, false);
             colour = (byte) GREYCSALE4[pixel];
             alpha = coder.readBits(bitDepth, false);
             break;
-        case 8:
+        case DEPTH_8:
             pixel = coder.readByte();
             colour = (byte) pixel;
             alpha = coder.readByte();
             break;
-        case 16:
+        case DEPTH_16:
             pixel = coder.readUI16();
             colour = (byte) (pixel >> Coder.TO_LOWER_BYTE);
             alpha = coder.readUI16() >> Coder.TO_LOWER_BYTE;
@@ -835,10 +845,10 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
         int index = row * (width << 2) + (col << 2);
 
         for (int i = 0; i < colorComponents; i++) {
-            if (bitDepth == 8) {
+            if (bitDepth == DEPTH_8) {
                 pixel = coder.readByte();
                 colour = (byte) pixel;
-            } else if (bitDepth == 16) {
+            } else if (bitDepth == DEPTH_16) {
                 pixel = coder.readUI16();
                 colour = (byte) (pixel >> Coder.TO_LOWER_BYTE);
             } else {
@@ -921,7 +931,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
      */
     private byte[] merge(final byte[] img, final byte[] colors) {
         final byte[] merged = new byte[(colors.length / COLOUR_CHANNELS)
-                                       * 3 + img.length];
+                                       * RGB_CHANNELS + img.length];
         int dst = 0;
 
         for (int i = 0; i < colors.length; i += COLOUR_CHANNELS) {

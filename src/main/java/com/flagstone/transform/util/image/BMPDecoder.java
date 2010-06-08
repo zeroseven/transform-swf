@@ -72,12 +72,30 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
     /** A true-colour image. */
     private static final int BI_BITFIELDS = 3;
 
+    private static final int UNCOMPRESSED_LENGTH = 12;
+    private static final int COMPRESSED_LENGTH  = 40;
+
     /** Size of each colour table entry or pixel in a true colour image. */
     private static final int COLOUR_CHANNELS = 4;
-    /** Size of a pixel in a RGB555 true colour image. */
+    /** Size of a pixel in an indexed image with 1 bit per pixel. */
+    private static final int IDX_1 = 1;
+    /** Size of a pixel in an indexed image with 2 bits per pixel. */
+    private static final int IDX_2 = 2;
+    /** Size of a pixel in an indexed image with 4 bits per pixel. */
+    private static final int IDX_4 = 4;
+    /** Size of a pixel in an indexed image with 8 bits per pixel. */
+    private static final int IDX_8 = 8;
+   /** Size of a pixel in a RGB555 true colour image. */
     private static final int RGB5_SIZE = 16;
     /** Size of a pixel in a RGB8 true colour image. */
     private static final int RGB8_SIZE = 24;
+    /** Size of a pixel in a RGB8 true colour image. */
+    private static final int RGBA_SIZE = 32;
+
+    /** Number of bits for each colour channel in a RGB555 pixel. */
+    private static final int RGB5_DEPTH = 5;
+    /** Number of bits for each colour channel in a RGB8 pixel. */
+    private static final int RGB8_DEPTH = 8;
 
     /** Byte offset to red channel. */
     private static final int RED = 0;
@@ -243,14 +261,14 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
         int coloursUsed;
 
         switch (headerSize) {
-        case 12:
+        case UNCOMPRESSED_LENGTH:
             width = coder.readUI16();
             height = coder.readUI16();
             coder.readUI16(); // bitPlanes
             bitsPerPixel = coder.readUI16();
             coloursUsed = 0;
             break;
-        case 40:
+        case COMPRESSED_LENGTH:
             width = coder.readUI32();
             height = coder.readUI32();
             coder.readUI16(); // bitPlanes
@@ -293,33 +311,33 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
         }
 
         switch (bitsPerPixel) {
-        case 1:
+        case IDX_1:
             format = ImageFormat.IDX8;
-            bitDepth = 1;
+            bitDepth = bitsPerPixel;
             break;
-        case 2:
+        case IDX_2:
             format = ImageFormat.IDX8;
-            bitDepth = 2;
+            bitDepth = bitsPerPixel;
             break;
-        case 4:
+        case IDX_4:
             format = ImageFormat.IDX8;
-            bitDepth = 4;
+            bitDepth = bitsPerPixel;
             break;
-        case 8:
+        case IDX_8:
             format = ImageFormat.IDX8;
-            bitDepth = 8;
+            bitDepth = bitsPerPixel;
             break;
-        case 16:
+        case RGB5_SIZE:
             format = ImageFormat.RGB5;
-            bitDepth = 5;
+            bitDepth = RGB5_DEPTH;
             break;
-        case 24:
+        case RGB8_SIZE:
             format = ImageFormat.RGB8;
-            bitDepth = 8;
+            bitDepth = RGB8_DEPTH;
             break;
-        case 32:
+        case RGBA_SIZE:
             format = ImageFormat.RGBA;
-            bitDepth = 8;
+            bitDepth = RGB8_DEPTH;
             break;
         default:
             throw new DataFormatException(BAD_FORMAT);
@@ -332,7 +350,7 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
 
             int index = 0;
 
-            if (headerSize == 12) {
+            if (headerSize == UNCOMPRESSED_LENGTH) {
                 for (int i = 0; i < coloursUsed; i++) {
                     table[index + ALPHA] = (byte) OPAQUE;
                     table[index + BLUE] = (byte) coder.readByte();

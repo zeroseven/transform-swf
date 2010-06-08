@@ -31,9 +31,9 @@ public final class Coder {
     /** Mask for accessing bits 4-7 of a word. */
     public static final int NIB1 = 0x000000F0;
     /** Mask for accessing bits 8-11 of a word. */
-    public static final int NIB3 = 0x00000F00;
+    public static final int NIB2 = 0x00000F00;
     /** Mask for accessing bits 12-15 of a word. */
-    public static final int NIB4 = 0x0000F000;
+    public static final int NIB3 = 0x0000F000;
 
     /** Mask for accessing bits 0 & 1 of a byte. */
     public static final int PAIR0 = 0x0003;
@@ -81,6 +81,13 @@ public final class Coder {
     /** Number of bits to shift when aligning a value to the fourth byte. */
     public static final int ALIGN_BYTE3 = 24;
 
+    /** Number of bits to shift when aligning bits 4-7 to positions 0-3. */
+    public static final int ALIGN_NIB1 = 4;
+    /** Number of bits to shift when aligning bits 8-11 to positions 0-3. */
+    public static final int ALIGN_NIB2 = 8;
+    /** Number of bits to shift when aligning bits 12-15 to positions 0-3. */
+    public static final int ALIGN_NIB3 = 12;
+
     /** The maximum value for each byte in a variable length integer. */
     public static final int VAR_INT_MAX = 127;
     /** Shift when converting to a variable length integer. */
@@ -125,6 +132,8 @@ public final class Coder {
     private static final int BITS_PER_INT = 32;
     /** Bit mask with most significant bit of a 32-bit integer set. */
     private static final int MSB_MASK = 0x80000000;
+
+    public static final int BYTES_TO_BITS = 3;
     public static final int BITS_TO_BYTES = 3;
 
     /**

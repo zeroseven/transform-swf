@@ -63,10 +63,13 @@ public final class ScreenPacket implements Cloneable {
         keyFrame = (info & Coder.NIB1) != 0;
 
         info = (coder.readByte() << Coder.TO_UPPER_BYTE) + coder.readByte();
-        blockWidth = (((info & Coder.NIB4) >> 12) + 1) * PIXELS_PER_BLOCK;
+        blockWidth = (((info & Coder.NIB3) >> Coder.ALIGN_NIB3) + 1)
+                    * PIXELS_PER_BLOCK;
         imageWidth = info & Coder.LOWEST12;
+
         info = (coder.readByte() << Coder.TO_UPPER_BYTE) + coder.readByte();
-        blockHeight = (((info & Coder.NIB4) >> 12) + 1) * PIXELS_PER_BLOCK;
+        blockHeight = (((info & Coder.NIB3) >> Coder.ALIGN_NIB3) + 1)
+                    * PIXELS_PER_BLOCK;
         imageHeight = info & Coder.LOWEST12;
 
         final int columns = imageWidth / blockWidth

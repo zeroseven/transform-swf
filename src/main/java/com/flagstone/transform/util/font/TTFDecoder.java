@@ -217,7 +217,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         for (int i = 0; i < tableCount; i++) {
             chunkType = coder.readUI32();
             /* checksum = */ coder.readUI32();
-            offset = coder.readUI32() << 3;
+            offset = coder.readUI32() << Coder.BYTES_TO_BITS;
             /* length = */ coder.readUI32();
 
             /*
@@ -467,7 +467,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
     }
 
     private void decodeNAME(final BigDecoder coder) throws IOException {
-        final int stringTableBase = coder.getPointer() >>> 3;
+        final int stringTableBase = coder.getPointer() >>> Coder.BITS_TO_BYTES;
 
         /* final int format = */ coder.readUI16();
         final int names = coder.readUI16();
@@ -484,7 +484,8 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
 
             final int current = coder.getPointer();
 
-            coder.setPointer((stringTable + stringOffset) << 3);
+            coder.setPointer((stringTable + stringOffset)
+                    << Coder.BYTES_TO_BITS);
             final byte[] bytes = new byte[stringLength];
             coder.readBytes(bytes);
 
@@ -596,7 +597,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         for (tableCount = 0; tableCount < numberOfTables; tableCount++) {
             platformId = coder.readUI16();
             encodingId = coder.readUI16();
-            offset = coder.readUI32() << 3;
+            offset = coder.readUI32() << Coder.BYTES_TO_BITS;
             current = coder.getPointer();
 
             if (platformId == 0) {
@@ -661,7 +662,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
                 }
 
                 for (index = 0; index < segmentCount; index++) {
-                    rangeAdr[index] = coder.getPointer() >> 3;
+                    rangeAdr[index] = coder.getPointer() >> Coder.BITS_TO_BYTES;
                     range[index] = coder.readSI16();
                 }
 
@@ -677,7 +678,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
                         } else {
                             location = rangeAdr[index] + range[index]
                                     + ((code - startCount[index]) << 1);
-                            coder.setPointer(location << 3);
+                            coder.setPointer(location << Coder.BYTES_TO_BITS);
                             glyphIndex = coder.readUI16();
 
                             if (glyphIndex != 0) {
@@ -711,16 +712,20 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         final int[] offsets = new int[glyphCount];
 
         if (glyphOffset == ITLF_SHORT) {
-            offsets[0] = glyfOffset + (coder.readUI16() * 2 << 3);
+            offsets[0] = glyfOffset + (coder.readUI16() * 2
+                    << Coder.BYTES_TO_BITS);
         } else {
-            offsets[0] = glyfOffset + (coder.readUI32() << 3);
+            offsets[0] = glyfOffset + (coder.readUI32()
+                    << Coder.BYTES_TO_BITS);
         }
 
         for (int i = 1; i < glyphCount; i++) {
             if (glyphOffset == ITLF_SHORT) {
-                offsets[i] = glyfOffset + (coder.readUI16() * 2 << 3);
+                offsets[i] = glyfOffset + (coder.readUI16() * 2
+                        << Coder.BYTES_TO_BITS);
             } else {
-                offsets[i] = glyfOffset + (coder.readUI32() << 3);
+                offsets[i] = glyfOffset + (coder.readUI32()
+                        << Coder.BYTES_TO_BITS);
             }
 
             if (offsets[i] == offsets[i - 1]) {

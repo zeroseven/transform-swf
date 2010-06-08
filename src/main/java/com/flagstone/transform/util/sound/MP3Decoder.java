@@ -290,7 +290,8 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
         int layer = (header & 0x060000) >> 17;
         //boolean hasCRC = (header & 0x010000) != 0;
         samplesPerFrame = MP3_FRAME_SIZE[version];
-        int bitRate = BIT_RATES[version][(header & Coder.NIB4) >> 12];
+        int bitRate = BIT_RATES[version][(header & Coder.NIB3)
+                                         >> Coder.ALIGN_NIB3];
         sampleRate = SAMPLE_RATES[version][(header & 0x0C00) >> 10];
         int padding = (header & 0x0200) >> 9;
         //int reserved = (header & 0x0100) >> 8;
