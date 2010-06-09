@@ -56,8 +56,9 @@ public final class FilterDecoder implements SWFFactory<Filter> {
             throws IOException {
 
         Filter filter;
+        int type = coder.readByte();
 
-        switch (coder.readByte()) {
+        switch (type) {
         case FilterTypes.DROP_SHADOW:
             filter = new DropShadowFilter(coder, context);
             break;
@@ -83,8 +84,8 @@ public final class FilterDecoder implements SWFFactory<Filter> {
             filter = new GradientBevelFilter(coder, context);
             break;
         default:
-            throw new CoderException(getClass().getName(), 0,
-                    "Unsupported Filter");
+            throw new CoderException(coder.mark(),
+                    "Unsupported Filter: " + type);
         }
         return filter;
     }

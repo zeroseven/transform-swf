@@ -89,8 +89,8 @@ public final class FillStyleDecoder implements SWFFactory<FillStyle> {
             style = new BitmapFill(type, coder);
             break;
         default:
-            throw new CoderException(getClass().getName(), 0,
-                    "Unsupported FillStyle");
+            throw new CoderException(coder.mark(),
+                    "Unsupported FillStyle: " + type);
         }
         return style;
     }

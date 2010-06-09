@@ -410,8 +410,8 @@ public final class Push implements Action {
                 coder.writeByte(TYPE_REGISTER);
                 coder.writeByte(((RegisterIndex) obj).getNumber());
             } else {
-                throw new CoderException(getClass().getName(), 0,
-                        "Unsupported value");
+                throw new CoderException(0, "Unsupported type: " +
+                        obj.getClass().getName());
             }
         }
     }

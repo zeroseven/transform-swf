@@ -48,14 +48,8 @@ public final class CoderException extends IOException {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "CoderException: { "
-            + "name=%s; location=%s; length=%d; delta=%d; message=%s}";
+            + "location=%s; length=%d; delta=%d; message=%s}";
 
-    public static final String CODING_ERROR = "CodingError";
-
-    public static final String STREAM_ERROR = "StreamError";
-
-    /** The name of the class where the error occurred. */
-    private final transient String name;
     /**
      * The location of the start of the object being encoded/decoded
      * when the error occurred.
@@ -69,21 +63,9 @@ public final class CoderException extends IOException {
      */
     private final transient int delta;
 
-    public CoderException(final String className, final Exception cause) {
-        super(STREAM_ERROR, cause);
-        name = className;
-        start = 0;
-        length = 0;
-        delta = 0;
-    }
-
     /**
      * Creates a CoderException to report where a problem occurred when encoding
      * or decoding a Flash (.swf) file.
-     *
-     * @param className
-     *            the name of the object or action that was being encoded or
-     *            decoded when the problem occurred.
      *
      * @param location
      *            the address in the file where the data structure being
@@ -94,10 +76,8 @@ public final class CoderException extends IOException {
      * @param message
      *            a short description of the error.
      */
-    public CoderException(final String className, final int location,
-            final String message) {
+    public CoderException(final int location, final String message) {
         super(message);
-        name = className;
         start = location;
         length = 0;
         delta = 0;
@@ -106,10 +86,6 @@ public final class CoderException extends IOException {
     /**
      * Creates a CoderException to report where a problem occurred when encoding
      * or decoding a Flash (.swf) file.
-     *
-     * @param className
-     *            the name of the object or action that was being encoded or
-     *            decoded when the problem occurred.
      *
      * @param location
      *            the address in the file where the data structure being
@@ -125,48 +101,12 @@ public final class CoderException extends IOException {
      *            the difference between the expected number of bytes and the
      *            actual number encoded or decoded.
      */
-    public CoderException(final String className, final int location,
-            final int size, final int difference) {
-        super(CODING_ERROR);
-        name = className;
+    public CoderException(final int location, final int size,
+            final int difference) {
+        super();
         start = location;
         length = size;
         delta = difference;
-    }
-
-    /**
-     * Creates a CoderException to report where a problem occurred when encoding
-     * or decoding a Flash (.swf) file.
-     *
-     * @param pos
-     *            the address in the file where the data structure being
-     *            encoded/decoded is located. This is only valid for files being
-     *            decoded since the encoded file will not be written if an
-     *            exception occurs.
-     *
-     * @param size
-     *            the number of bytes that were expected to be encoded or
-     *            decoded.
-     *
-     * @param diff
-     *            the difference between the expected number of bytes and the
-     *            actual number encoded or decoded.
-     */
-    public CoderException(final int pos, final int size, final int diff) {
-        super(CODING_ERROR);
-        name = "";
-        start = pos;
-        length = size;
-        delta = diff;
-    }
-
-    /**
-     * Get the name of the class of the object that caused the error.
-     *
-     * @return the name of the class that caused the error.
-     */
-    public String getName() {
-        return name;
     }
 
     /**
@@ -206,7 +146,7 @@ public final class CoderException extends IOException {
      */
     @Override
     public String toString() {
-        return String.format(FORMAT, name,
-                Integer.toHexString(start), length, delta, getMessage());
+        return String.format(FORMAT, Integer.toHexString(start),
+                length, delta, getMessage());
     }
 }

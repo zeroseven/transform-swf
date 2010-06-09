@@ -130,8 +130,8 @@ public final class SWFDecoder {
     /**
      * Remember the current position.
      */
-    public void mark() {
-        locations.push(pos + index);
+    public int mark() {
+        return locations.push(pos + index);
     }
 
     /**
