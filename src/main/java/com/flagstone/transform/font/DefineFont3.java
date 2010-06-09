@@ -174,10 +174,15 @@ public final class DefineFont3 implements DefineTag {
             }
         }
 
-        if (wideOffsets) {
-            offset[glyphCount] = coder.readInt();
-        } else {
-            offset[glyphCount] = coder.readUnsignedShort();
+        // A device font may omit the offset to the start of the glyphs
+        // when no layout information is included.
+
+        if (coder.bytesRead() < length) {
+            if (wideOffsets) {
+                offset[glyphCount] = coder.readInt();
+            } else {
+                offset[glyphCount] = coder.readUnsignedShort();
+            }
         }
 
         Shape shape;
