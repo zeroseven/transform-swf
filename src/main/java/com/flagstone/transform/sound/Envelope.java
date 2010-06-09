@@ -35,7 +35,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.flagstone.transform.SWF;
+import com.flagstone.transform.Constants;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -184,7 +184,7 @@ public final class Envelope implements SWFEncodeable {
 
         @Override
         public int hashCode() {
-            return ((mark * SWF.PRIME) + left) * SWF.PRIME + right;
+            return ((mark * Constants.PRIME) + left) * Constants.PRIME + right;
         }
 
         /** {@inheritDoc} */

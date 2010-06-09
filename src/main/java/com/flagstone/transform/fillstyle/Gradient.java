@@ -32,8 +32,9 @@
 package com.flagstone.transform.fillstyle;
 
 
-import com.flagstone.transform.SWF;
 import java.io.IOException;
+
+import com.flagstone.transform.Constants;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
@@ -75,6 +76,8 @@ import com.flagstone.transform.font.Kerning;
 //TODO(class)
 public final class Gradient implements SWFEncodeable {
 
+    /** Maximum number of gradient records. */
+    public static final int MAX_GRADIENTS = 15;
     /** Maximum ratio along the gradient square, range 0..255. */
     private static final int MAX_RATIO = 255;
 
@@ -172,7 +175,7 @@ public final class Gradient implements SWFEncodeable {
 
     @Override
     public int hashCode() {
-        return (ratio * SWF.PRIME) + color.hashCode();
+        return (ratio * Constants.PRIME) + color.hashCode();
     }
 
     /** {@inheritDoc} */

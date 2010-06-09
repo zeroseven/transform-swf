@@ -32,7 +32,7 @@ package com.flagstone.transform.datatype;
 
 import java.io.IOException;
 
-import com.flagstone.transform.SWF;
+import com.flagstone.transform.Constants;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -259,8 +259,8 @@ public final class Bounds implements SWFEncodeable {
     /** {@inheritDoc} */
     @Override
     public int hashCode() {
-        return ((minX * SWF.PRIME + minY) * SWF.PRIME + maxX)
-            * SWF.PRIME + maxY;
+        return ((minX * Constants.PRIME + minY) * Constants.PRIME + maxX)
+            * Constants.PRIME + maxY;
     }
 
     /** {@inheritDoc} */

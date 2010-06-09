@@ -60,7 +60,7 @@ public final class MovieHeader implements MovieTag {
     private boolean compressed;
 
     public MovieHeader() {
-        version = SWF.VERSION;
+        version = Movie.VERSION;
     }
 
     /**

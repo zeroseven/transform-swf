@@ -34,31 +34,15 @@ package com.flagstone.transform;
 /**
  * SWF contains definitions of constants used throughout the framework.
  */
-public final class SWF {
+public final class Constants {
     /**
      * The prime number used to generate the value in the hashCode() method
      * of immutable objects.
      */
     public static final int PRIME = 31;
-    /**
-     * The version of Flash supported.
-     */
-    public static final int VERSION = 10;
-    /**
-     * The minimum coordinate in along the x or y axes.
-     */
-    public static final int MIN_COORD = -65536;
-    /**
-     * The maximum coordinate in along the x or y axes.
-     */
-    public static final int MAX_COORD = 65535;
-    /**
-     * Maximum number of gradient records.
-     */
-    public static final int MAX_GRADIENTS = 15;
 
     /** Class contains only constants. */
-    private SWF() {
+    private Constants() {
         // This class only contains constants.
     }
 

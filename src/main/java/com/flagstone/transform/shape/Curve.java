@@ -34,7 +34,7 @@ package com.flagstone.transform.shape;
 
 import java.io.IOException;
 
-import com.flagstone.transform.SWF;
+import com.flagstone.transform.Constants;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -193,27 +193,27 @@ public final class Curve implements ShapeRecord {
      */
     public void setPoints(final int xControl, final int yControl,
             final int xAnchor, final int yAnchor) {
-        if ((xControl < SWF.MIN_COORD) || (xControl > SWF.MAX_COORD)) {
+        if ((xControl < Shape.MIN_COORD) || (xControl > Shape.MAX_COORD)) {
             throw new IllegalArgumentRangeException(
-                    SWF.MIN_COORD, SWF.MAX_COORD, xControl);
+                    Shape.MIN_COORD, Shape.MAX_COORD, xControl);
         }
         controlX = xControl;
 
-        if ((yControl < SWF.MIN_COORD) || (yControl > SWF.MAX_COORD)) {
+        if ((yControl < Shape.MIN_COORD) || (yControl > Shape.MAX_COORD)) {
             throw new IllegalArgumentRangeException(
-                    SWF.MIN_COORD, SWF.MAX_COORD, yControl);
+                    Shape.MIN_COORD, Shape.MAX_COORD, yControl);
         }
         controlY = yControl;
 
-        if ((xAnchor < SWF.MIN_COORD) || (xAnchor > SWF.MAX_COORD)) {
+        if ((xAnchor < Shape.MIN_COORD) || (xAnchor > Shape.MAX_COORD)) {
             throw new IllegalArgumentRangeException(
-                    SWF.MIN_COORD, SWF.MAX_COORD, xAnchor);
+                    Shape.MIN_COORD, Shape.MAX_COORD, xAnchor);
         }
         anchorX = xAnchor;
 
-        if ((yAnchor < SWF.MIN_COORD) || (yAnchor > SWF.MAX_COORD)) {
+        if ((yAnchor < Shape.MIN_COORD) || (yAnchor > Shape.MAX_COORD)) {
             throw new IllegalArgumentRangeException(
-                    SWF.MIN_COORD, SWF.MAX_COORD, yAnchor);
+                    Shape.MIN_COORD, Shape.MAX_COORD, yAnchor);
         }
         anchorY = yAnchor;
     }

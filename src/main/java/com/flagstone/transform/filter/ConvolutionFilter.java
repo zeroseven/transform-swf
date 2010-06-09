@@ -33,7 +33,7 @@ package com.flagstone.transform.filter;
 
 import java.io.IOException;
 
-import com.flagstone.transform.SWF;
+import com.flagstone.transform.Constants;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -219,11 +219,11 @@ public final class ConvolutionFilter implements Filter {
 
     @Override
     public int hashCode() {
-        return ((((matrix.hashCode() * SWF.PRIME
-                + Float.floatToIntBits(divisor)) * SWF.PRIME
-                + Float.floatToIntBits(bias)) * SWF.PRIME
-                + color.hashCode()) * SWF.PRIME
-                + Boolean.valueOf(clamp).hashCode()) * SWF.PRIME
+        return ((((matrix.hashCode() * Constants.PRIME
+                + Float.floatToIntBits(divisor)) * Constants.PRIME
+                + Float.floatToIntBits(bias)) * Constants.PRIME
+                + color.hashCode()) * Constants.PRIME
+                + Boolean.valueOf(clamp).hashCode()) * Constants.PRIME
                 + Boolean.valueOf(alpha).hashCode();
     }
 

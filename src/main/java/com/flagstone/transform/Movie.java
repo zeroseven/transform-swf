@@ -82,6 +82,9 @@ import com.flagstone.transform.coder.SWFFactory;
  */
 public final class Movie {
 
+    /** The version of Flash supported. */
+    public static final int VERSION = 10;
+
     private static final int SIGNATURE_LENGTH = 3;
     private static final int HEADER_LENGTH = 8;
 

@@ -33,7 +33,7 @@ package com.flagstone.transform.filter;
 
 import java.io.IOException;
 
-import com.flagstone.transform.SWF;
+import com.flagstone.transform.Constants;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -239,11 +239,11 @@ public final class GlowFilter implements Filter {
 
     @Override
     public int hashCode() {
-        return (((((color.hashCode() * SWF.PRIME)
-                + blurX) * SWF.PRIME
-                + blurY) * SWF.PRIME
-                + strength) * SWF.PRIME
-                + mode) * SWF.PRIME
+        return (((((color.hashCode() * Constants.PRIME)
+                + blurX) * Constants.PRIME
+                + blurY) * Constants.PRIME
+                + strength) * Constants.PRIME
+                + mode) * Constants.PRIME
                 + passes;
     }
 

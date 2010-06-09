@@ -35,7 +35,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.flagstone.transform.SWF;
+import com.flagstone.transform.Constants;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -160,7 +160,7 @@ public final class FocalGradientFill implements FillStyle {
         if (aGradient == null) {
             throw new IllegalArgumentException();
         }
-        if (gradients.size() == SWF.MAX_GRADIENTS) {
+        if (gradients.size() == Gradient.MAX_GRADIENTS) {
             throw new IllegalStateException(
                     "Maximum number of gradients exceeded.");
         }
@@ -190,7 +190,7 @@ public final class FocalGradientFill implements FillStyle {
         if (anArray == null) {
             throw new IllegalArgumentException();
         }
-        if (gradients.size() > SWF.MAX_GRADIENTS) {
+        if (gradients.size() > Gradient.MAX_GRADIENTS) {
             throw new IllegalStateException(
                     "Maximum number of gradients exceeded.");
         }

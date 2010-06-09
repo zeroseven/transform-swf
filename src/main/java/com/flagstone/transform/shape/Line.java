@@ -33,7 +33,7 @@ package com.flagstone.transform.shape;
 
 import java.io.IOException;
 
-import com.flagstone.transform.SWF;
+import com.flagstone.transform.Constants;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -152,15 +152,15 @@ public final class Line implements ShapeRecord {
      *            -65536..65535.
      */
     public void setPoint(final int coordX, final int coordY) {
-        if ((coordX < SWF.MIN_COORD) || (coordX > SWF.MAX_COORD)) {
+        if ((coordX < Shape.MIN_COORD) || (coordX > Shape.MAX_COORD)) {
             throw new IllegalArgumentRangeException(
-                    SWF.MIN_COORD, SWF.MAX_COORD, coordX);
+                    Shape.MIN_COORD, Shape.MAX_COORD, coordX);
         }
         xCoord = coordX;
 
-        if ((coordY < SWF.MIN_COORD) || (coordY > SWF.MAX_COORD)) {
+        if ((coordY < Shape.MIN_COORD) || (coordY > Shape.MAX_COORD)) {
             throw new IllegalArgumentRangeException(
-                    SWF.MIN_COORD, SWF.MAX_COORD, coordY);
+                    Shape.MIN_COORD, Shape.MAX_COORD, coordY);
         }
        yCoord = coordY;
     }

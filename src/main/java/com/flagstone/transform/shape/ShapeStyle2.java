@@ -35,7 +35,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.flagstone.transform.SWF;
+import com.flagstone.transform.Constants;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -355,9 +355,9 @@ public final class ShapeStyle2 implements ShapeRecord {
      */
     public ShapeStyle2 setMoveX(final Integer coord) {
         if ((coord != null)
-                && ((coord < SWF.MIN_COORD) || (coord > SWF.MAX_COORD))) {
+                && ((coord < Shape.MIN_COORD) || (coord > Shape.MAX_COORD))) {
             throw new IllegalArgumentRangeException(
-                    SWF.MIN_COORD, SWF.MAX_COORD, coord);
+                    Shape.MIN_COORD, Shape.MAX_COORD, coord);
         }
         moveX = coord;
         return this;
@@ -373,9 +373,9 @@ public final class ShapeStyle2 implements ShapeRecord {
      */
     public ShapeStyle2 setMoveY(final Integer coord) {
         if ((coord != null)
-                && ((coord < SWF.MIN_COORD) || (coord > SWF.MAX_COORD))) {
+                && ((coord < Shape.MIN_COORD) || (coord > Shape.MAX_COORD))) {
             throw new IllegalArgumentRangeException(
-                    SWF.MIN_COORD, SWF.MAX_COORD, coord);
+                    Shape.MIN_COORD, Shape.MAX_COORD, coord);
         }
         moveY = coord;
         return this;
@@ -399,14 +399,14 @@ public final class ShapeStyle2 implements ShapeRecord {
             throw new IllegalArgumentException();
         }
         if ((xCoord != null)
-                && ((xCoord < SWF.MIN_COORD) || (xCoord > SWF.MAX_COORD))) {
+                && ((xCoord < Shape.MIN_COORD) || (xCoord > Shape.MAX_COORD))) {
             throw new IllegalArgumentRangeException(
-                    SWF.MIN_COORD, SWF.MAX_COORD, xCoord);
+                    Shape.MIN_COORD, Shape.MAX_COORD, xCoord);
         }
         if ((yCoord != null)
-                && ((yCoord < SWF.MIN_COORD) || (yCoord > SWF.MAX_COORD))) {
+                && ((yCoord < Shape.MIN_COORD) || (yCoord > Shape.MAX_COORD))) {
             throw new IllegalArgumentRangeException(
-                    SWF.MIN_COORD, SWF.MAX_COORD, yCoord);
+                    Shape.MIN_COORD, Shape.MAX_COORD, yCoord);
         }
         moveX = xCoord;
         moveY = yCoord;

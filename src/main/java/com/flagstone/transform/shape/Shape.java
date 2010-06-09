@@ -56,6 +56,15 @@ import com.flagstone.transform.coder.SWFFactory;
 // TODO(class)
 public final class Shape implements SWFEncodeable {
 
+    /**
+     * The minimum coordinate in along the x or y axes.
+     */
+    public static final int MIN_COORD = -65536;
+    /**
+     * The maximum coordinate in along the x or y axes.
+     */
+    public static final int MAX_COORD = 65535;
+
     /** Format string used in toString() method. */
     private static final String FORMAT = "Shape: { records=%s }";
 
