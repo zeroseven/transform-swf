@@ -82,7 +82,7 @@ public final class DefineButton2 implements DefineTag {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "DefineButton2: { type=%s;"
-    		+ " identifier=%d; buttonRecords=%s; handlers=%s }";
+    		+ " identifier=%d; buttonRecords=%s; handlers=%s}";
 
     /** The unique identifier for this object. */
     private int identifier;

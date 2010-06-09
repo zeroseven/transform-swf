@@ -66,7 +66,7 @@ public final class Color implements SWFEncodeable {
 
     /** Format used by toString() to display object representation. */
     private static final String FORMAT = "Color: {"
-            + " red=%d; green=%d; blue=%d; alpha=%d }";
+            + " red=%d; green=%d; blue=%d; alpha=%d}";
 
     /** The minimum value that can be assigned to a colour channel. */
     public static final int MIN_LEVEL = 0;

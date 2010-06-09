@@ -47,7 +47,7 @@ public final class DefineJPEGImage4 implements ImageTag {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "DefineJPEGImage4: { identifier=%d;"
-            + "deblocking=%f; image=%d; alpha=%d }";
+            + "deblocking=%f; image=byte<%d> ...; alpha=byte<%d> ...}";
 
     /** The unique identifier for this object. */
     private int identifier;

@@ -64,7 +64,7 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
 public final class WaitForFrame2 implements Action {
 
     /** Format string used in toString() method. */
-    private static final String FORMAT = "WaitForFrame2: { actionCount=%d }";
+    private static final String FORMAT = "WaitForFrame2: { actionCount=%d}";
 
     /** The highest number of actions that can be executed. */
     private static final int MAX_COUNT = 255;

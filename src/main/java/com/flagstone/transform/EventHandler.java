@@ -129,7 +129,7 @@ public final class EventHandler implements SWFEncodeable {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "EventHandler: { events=%s;"
-            + " key=%s; actions=%s }";
+            + " key=%s; actions=%s}";
 
     /** Version og Flash that supports the extended event model. */
     private static final int VERSION_WITH_EXT_EVENTS = 6;

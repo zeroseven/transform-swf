@@ -161,7 +161,7 @@ public final class ExceptionHandler implements Action {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "ExceptionHandler: { variable=%s;"
-            + " register=%d try=%s; catch=%s; final=%s }";
+            + " register=%d try=%s; catch=%s; final=%s}";
 
     /** Bit mask used to read the containsVariable field. */
     private static final int VARIABLE_MASK = 0x04;

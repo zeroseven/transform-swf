@@ -35,7 +35,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.flagstone.transform.Constants;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -104,7 +103,7 @@ public final class ShapeStyle implements ShapeRecord {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "ShapeStyle: { move=(%d, %d);"
-            + " fill=%d; alt=%d; line=%d; fillStyles=%s; lineStyles=%s }";
+            + " fill=%d; alt=%d; line=%d; fillStyles=%s; lineStyles=%s}";
 
     private Integer moveX;
     private Integer moveY;

@@ -48,7 +48,7 @@ public final class CoderException extends IOException {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "CoderException: { "
-            + "name=%s; location=%s; length=%d; delta=%d; message=%s }";
+            + "name=%s; location=%s; length=%d; delta=%d; message=%s}";
 
     public static final String CODING_ERROR = "CodingError";
 

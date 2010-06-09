@@ -98,7 +98,8 @@ public final class DefineImage implements ImageTag {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "DefineImage: { identifier=%d;"
-            + " pixelSize=%d; width=%d; height=%d; tableSize=%d; image=%d }";
+            + " pixelSize=%d; width=%d; height=%d; tableSize=%d;"
+            + " image=byte<%d> ...}";
 
     private static final int IDX_FORMAT = 3;
     private static final int RGB5_FORMAT = 4;

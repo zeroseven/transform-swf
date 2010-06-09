@@ -75,7 +75,7 @@ public final class SoundInfo implements SWFEncodeable {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "SoundInfo: { identifier=%d; mode=%s;"
-            + " inPoint=%d; outPoint=%d; loopCount=%d; envelopes=%s; }";
+            + " inPoint=%d; outPoint=%d; loopCount=%d; envelopes=%s}";
 
     /** TODO(class). */
     public enum Mode {

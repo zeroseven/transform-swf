@@ -46,7 +46,7 @@ public final class GlyphAlignment implements SWFEncodeable {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "GlyphAlignment: { alignments=%s;"
-            + " alignX=%s; alignY=%s }";
+            + " alignX=%s; alignY=%s}";
 
     private List<AlignmentZone> alignments;
     private transient int masks;

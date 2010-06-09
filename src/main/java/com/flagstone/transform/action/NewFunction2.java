@@ -252,7 +252,7 @@ public final class NewFunction2 implements Action {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "NewFunction2: { name=%s; "
-            + "registerCount=%d; optimizations=%s; arguments=%s; actions=%s }";
+            + "registerCount=%d; optimizations=%s; arguments=%s; actions=%s}";
 
 
     public enum Optimization {

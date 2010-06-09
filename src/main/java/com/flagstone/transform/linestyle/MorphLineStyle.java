@@ -58,7 +58,7 @@ public final class MorphLineStyle implements SWFEncodeable {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "MorphSolidLine: { startWidth=%d;"
-    		+ " endWidth=%d; startColor=%s; endColor=%s }";
+    		+ " endWidth=%d; startColor=%s; endColor=%s}";
 
     private int startWidth;
     private int endWidth;

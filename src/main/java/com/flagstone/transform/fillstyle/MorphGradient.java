@@ -67,7 +67,7 @@ import com.flagstone.transform.coder.SWFEncoder;
 public final class MorphGradient implements SWFEncodeable {
 
     /** Format string used in toString() method. */
-    private static final String FORMAT = "MorphGradient: { start=%s; end=%s }";
+    private static final String FORMAT = "MorphGradient: { start=%s; end=%s}";
 
     private Gradient start;
     private Gradient end;

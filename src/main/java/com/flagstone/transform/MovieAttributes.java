@@ -44,7 +44,7 @@ public final class MovieAttributes implements MovieTag {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "MovieAttributes: {"
-    		+ " metadata=%b;  as3=%b;  network=%b;}";
+    		+ " metadata=%b;  as3=%b;  network=%b; gpu=%b; directBlit=%b}";
     /** The set of encoded attributes. */
     private int attributes;
 
@@ -185,7 +185,8 @@ public final class MovieAttributes implements MovieTag {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        return String.format(FORMAT, hasMetaData(), hasAS3(), useNetwork());
+        return String.format(FORMAT, hasMetaData(), hasAS3(), useNetwork(),
+                useGPU(), useDirectBlit());
     }
 
     /** {@inheritDoc} */

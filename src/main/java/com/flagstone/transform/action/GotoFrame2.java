@@ -78,7 +78,7 @@ public final class GotoFrame2 implements Action {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "Gotoframe2: { playFrame=%s;"
-            + " frameOffset=%d }";
+            + " frameOffset=%d}";
 
     /** The maximum offset to the next frame. */
     private static final int MAX_FRAME_OFFSET = 65535;

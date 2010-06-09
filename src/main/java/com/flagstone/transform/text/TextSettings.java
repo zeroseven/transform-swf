@@ -90,7 +90,7 @@ public final class TextSettings implements MovieTag {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "TextSettings: { identifier=%d;"
-            + " useAdvanced=%s; grid=%s; thickness=%f; sharpness=%f }";
+            + " useAdvanced=%s; grid=%s; thickness=%f; sharpness=%f}";
 
     private transient int identifier;
     private transient int rendering;

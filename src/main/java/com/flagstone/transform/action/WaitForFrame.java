@@ -64,7 +64,7 @@ public final class WaitForFrame implements Action {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "WaitForFrame: { frameNumber=%d;"
-            + " actionCount=%d }";
+            + " actionCount=%d}";
 
     /** The maximum offset to the next frame. */
     private static final int MAX_FRAME_OFFSET = 65535;

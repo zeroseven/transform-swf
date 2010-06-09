@@ -58,7 +58,7 @@ public final class FontAlignment implements MovieTag {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "FontAlignment: { identifier=%d;"
-    		+ " strokeWidth=%s; zones=%s }";
+    		+ " strokeWidth=%s; zones=%s}";
 
     /** The unique identifier of the font that the alignment applies to. */
     private int identifier;

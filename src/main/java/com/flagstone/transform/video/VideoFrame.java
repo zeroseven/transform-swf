@@ -60,7 +60,7 @@ public final class VideoFrame implements MovieTag {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "VideoFrame: { identifier=%d;"
-            + " frameNumber=%d; data=%d }";
+            + " frameNumber=%d; data=%d}";
 
     /** The unique identifier of the video that this frame belongs to. */
     private int identifier;

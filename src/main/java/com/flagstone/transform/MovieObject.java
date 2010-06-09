@@ -54,7 +54,7 @@ public final class MovieObject implements MovieTag {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "MovieObject: { type=%d;"
-            + " data=byte[%d] {...} }";
+            + " data=byte<%d> ...}";
 
     /** The type identifying the MovieTag. */
     private final transient int type;

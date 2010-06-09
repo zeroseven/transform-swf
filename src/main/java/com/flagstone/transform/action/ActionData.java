@@ -31,9 +31,9 @@
 
 package com.flagstone.transform.action;
 
+import java.io.IOException;
 import java.util.Arrays;
 
-import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -52,7 +52,7 @@ import com.flagstone.transform.coder.SWFEncoder;
 public final class ActionData implements Action {
 
     /** Format string used in toString() method. */
-    private static final String FORMAT = "ActionData: { data=byte[%d] }";
+    private static final String FORMAT = "ActionData: { data=byte<%d> ...}";
 
     /** Encoded actions. */
     private final transient byte[] data;

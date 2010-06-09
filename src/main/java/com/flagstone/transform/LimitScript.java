@@ -61,7 +61,7 @@ public final class LimitScript implements MovieTag {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "LimitScript: { depth=%d;"
-    		+ " timeout=%d }";
+    		+ " timeout=%d}";
 
     /** The maximum stack depth for nested functions. */
     private int depth;

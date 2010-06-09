@@ -135,8 +135,8 @@ public final class DropShadowFilter implements Filter {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "DropShadowFilter: {"
-        + " shadow=%s; blurX=%f; blurY=%f"
-        + " angle=%f; distance=%f, strength=%f; mode=%s; passes=%d}";
+        + " shadow=%s; blurX=%f; blurY=%f;"
+        + " angle=%f; distance=%f; strength=%f; mode=%s; passes=%d}";
 
     /** The shadow colour. */
     private final transient Color shadow;

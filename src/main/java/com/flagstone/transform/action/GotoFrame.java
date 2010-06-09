@@ -57,7 +57,7 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
 public final class GotoFrame implements Action {
 
     /** Format string used in toString() method. */
-    private static final String FORMAT = "GotoFrame: { frameNumber=%d }";
+    private static final String FORMAT = "GotoFrame: { frameNumber=%d}";
     /** The maximum offset to the next frame. */
     private static final int MAX_FRAME_OFFSET = 65535;
 

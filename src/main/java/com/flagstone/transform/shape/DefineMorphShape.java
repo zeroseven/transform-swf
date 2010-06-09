@@ -101,7 +101,7 @@ public final class DefineMorphShape implements DefineTag {
     /** Format string used in toString() method. */
     private static final String FORMAT = "DefineMorphShape: { identifier=%d;"
             + " startBounds=%s; endBounds=%s; fillStyles=%s; lineStyles=%s;"
-            + " startShape=%s; endShape=%s }";
+            + " startShape=%s; endShape=%s}";
 
     /** The unique identifier for this object. */
     private int identifier;

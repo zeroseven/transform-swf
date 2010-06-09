@@ -68,7 +68,7 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
 public final class RegisterCopy implements Action {
 
     /** Format string used in toString() method. */
-    private static final String FORMAT = "RegisterCopy: { number=%d }";
+    private static final String FORMAT = "RegisterCopy: { number=%d}";
     /** Number of last internal register in the Flash Player. */
     private static final int LAST_REGISTER = 255;
 

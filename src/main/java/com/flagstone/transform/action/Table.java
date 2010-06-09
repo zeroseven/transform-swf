@@ -60,7 +60,7 @@ import com.flagstone.transform.coder.SWFEncoder;
 public final class Table implements Action {
 
     /** Format string used in toString() method. */
-    private static final String FORMAT = "Table: { values=%s }";
+    private static final String FORMAT = "Table: { values=%s}";
 
     /** The list of strings stored in the table. */
     private List<String> values;

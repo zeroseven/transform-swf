@@ -52,7 +52,7 @@ public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
     private static final String FORMAT = "LineStyle2: { width=%d; color=%s;"
             + " fillStyle=%s; startCap=%s; endCap=%s; joinStyle=%s;"
             + " scaledHorizontally=%b; scaledVertically=%b;"
-            + " pixelAligned=%b; lineClosed=%b; miterLimit=%d }";
+            + " pixelAligned=%b; lineClosed=%b; miterLimit=%d}";
 
     private int width;
     private Color color;

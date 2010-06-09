@@ -72,7 +72,7 @@ public final class DefineText implements DefineTag {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "DefineText: { identifier=%d;"
-    		+ " bounds=%s; transform=%s; objects=%s }";
+    		+ " bounds=%s; transform=%s; objects=%s}";
 
     /** The unique identifier for this object. */
     private int identifier;

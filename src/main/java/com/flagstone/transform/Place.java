@@ -70,7 +70,7 @@ public final class Place implements MovieTag {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "Place: { layer=%d; identifier=%d;"
-            + " transform=%s; colorTransform=%s }";
+            + " transform=%s; colorTransform=%s}";
 
     /** The unique identifier of the object that will be displayed. */
     private int identifier;

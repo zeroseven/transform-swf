@@ -150,7 +150,7 @@ public final class Push implements Action {
     }
 
     /** Format string used in toString() method. */
-    private static final String FORMAT = "Push: { values=%s }";
+    private static final String FORMAT = "Push: %s";
     /** Type identifying Strings. */
     private static final int TYPE_STRING = 0;
     /** Type identifying Properties. */

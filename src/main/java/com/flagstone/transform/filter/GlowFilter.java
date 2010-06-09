@@ -118,9 +118,9 @@ public final class GlowFilter implements Filter {
     private static final int MODE_MASK = 0x00E0;
 
     /** Format string used in toString() method. */
-    private static final String FORMAT = "GlowFilter: { "
-            + "color=%s; blurX=%f; blurY=%f; "
-            + "strength=%f; mode=%s; passes=%d}";
+    private static final String FORMAT = "GlowFilter: {"
+            + " color=%s; blurX=%f; blurY=%f;"
+            + " strength=%f; mode=%s; passes=%d}";
 
     /** The glow colour. */
     private final transient Color color;

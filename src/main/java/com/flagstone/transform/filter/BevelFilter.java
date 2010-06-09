@@ -147,7 +147,7 @@ public final class BevelFilter implements Filter {
     /** Format string used in toString() method. */
     private static final String FORMAT = "BevelFilter: {"
             + " shadow=%s; highlight=%s; blurX=%f; blurY=%f;"
-            + " angle=%f; distance=%f; strength=%f; mode=%s; passes=%d;}";
+            + " angle=%f; distance=%f; strength=%f; mode=%s; passes=%d}";
 
     /** The shadow colour. */
     private final transient Color shadow;

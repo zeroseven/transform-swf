@@ -33,6 +33,7 @@ package com.flagstone.transform.fillstyle;
 
 
 import java.io.IOException;
+
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -46,7 +47,8 @@ import com.flagstone.transform.datatype.Color;
 public final class MorphSolidFill implements FillStyle {
 
     /** Format string used in toString() method. */
-    private static final String FORMAT = "MorphSolidFill: { start=%s; end=%s}";
+    private static final String FORMAT = "MorphSolidFill: { start=%s;"
+    		+ " end=%s}";
 
     private Color startColor;
     private Color endColor;

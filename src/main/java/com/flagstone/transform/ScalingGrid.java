@@ -46,7 +46,7 @@ public final class ScalingGrid implements DefineTag {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "ScalingGrid: { identifier=%d;"
-            + " bounds=%s; }";
+            + " bounds=%s}";
 
     /** the unique identifier of the object. */
     private int identifier;

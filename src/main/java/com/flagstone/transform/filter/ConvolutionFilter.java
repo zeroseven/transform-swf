@@ -106,7 +106,7 @@ public final class ConvolutionFilter implements Filter {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "ConvolutionFilter: { matrix=%s;"
-            + " divisor=%d; bias=%d; color=%s; clamp=%s; alpha=%s }";
+            + " divisor=%d; bias=%d; color=%s; clamp=%s; alpha=%s}";
 
     private final transient float[][] matrix;
     private final transient float divisor;

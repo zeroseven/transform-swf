@@ -86,7 +86,7 @@ public final class GradientFill implements FillStyle {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "GradientFill: { transform=%s;"
-            + " gradients=%s }";
+            + " gradients=%s}";
 
     /** Code used to identify the fill style when it is encoded. */
     private transient int type;

@@ -47,7 +47,7 @@ import com.flagstone.transform.coder.SWFEncoder;
 public final class MovieMetaData implements MovieTag {
 
     /** Format string used in toString() method. */
-    private static final String FORMAT = "MetaData: { %s }";
+    private static final String FORMAT = "MetaData: { metadata=%s}";
     /** The meta-data for the movie. */
     private String metaData;
 

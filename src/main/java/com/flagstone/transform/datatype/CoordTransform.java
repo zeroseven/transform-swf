@@ -69,7 +69,7 @@ public final class CoordTransform implements SWFEncodeable {
     private static final int BITS_TO_BYTES = 3;
     /** Format used by toString() to display object representation. */
     private static final String FORMAT = "CoordTransform: { scaleX=%f;"
-            + " scaleY=%f; shearX=%f; shearY=%f; transX=%d; transY=%d }";
+            + " scaleY=%f; shearX=%f; shearY=%f; transX=%d; transY=%d}";
 
     /**
      * The default value used for the scaling terms when a translation or

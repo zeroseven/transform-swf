@@ -86,7 +86,7 @@ public final class MorphBitmapFill implements FillStyle {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "MorphBitmapFill: { identifier=%d;"
-    		+ " start=%s; end=%s }";
+    		+ " start=%s; end=%s}";
 
     /** Code used to identify the fill style when it is encoded. */
     private transient int type;

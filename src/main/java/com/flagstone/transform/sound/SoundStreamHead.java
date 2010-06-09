@@ -84,10 +84,10 @@ import com.flagstone.transform.exception.IllegalArgumentValueException;
 public final class SoundStreamHead implements MovieTag {
 
     /** Format string used in toString() method. */
-    private static final String FORMAT = "SoundStreamHead: { format=%s; "
-            + "playbackRate=%d; playbackChannels=%d; playbackSampleSize=%d; "
-            + "streamRate=%d; streamChannels=%d; streamSampleSize=%d; "
-            + "streamSampleCount=%d; latency=%d}";
+    private static final String FORMAT = "SoundStreamHead: { format=%s;"
+            + " playbackRate=%d; playbackChannels=%d; playbackSampleSize=%d;"
+            + " streamRate=%d; streamChannels=%d; streamSampleSize=%d;"
+            + " streamSampleCount=%d; latency=%d}";
 
     private int format;
     private int playRate;

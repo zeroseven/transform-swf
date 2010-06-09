@@ -74,7 +74,7 @@ import com.flagstone.transform.coder.SWFFactory;
 public final class DoAction implements MovieTag {
 
     /** Format string used in toString() method. */
-    private static final String FORMAT = "DoAction: { actions=%s }";
+    private static final String FORMAT = "DoAction: { actions=%s}";
     /** The actions executed when the current frame is displayed. */
     private List<Action> actions;
 

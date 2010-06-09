@@ -64,7 +64,7 @@ public final class ButtonColorTransform implements MovieTag {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "ButtonColorTransform: {"
-    		+ " identifier=%d; colorTransform=%s }";
+    		+ " identifier=%d; colorTransform=%s}";
 
     /** The unique identifier of the button. */
     private int identifier;

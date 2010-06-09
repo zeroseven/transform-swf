@@ -110,7 +110,7 @@ import com.flagstone.transform.coder.SWFEncoder;
 public final class GetUrl2 implements Action {
 
     /** Format string used in toString() method. */
-    private static final String FORMAT = "GetUrl2: { requestType=%s }";
+    private static final String FORMAT = "GetUrl2: { requestType=%s}";
 
     /** The encoded value for a MOVIE_TO_LEVEL request. */
     private static final int MOVIE_LEVEL = 0;

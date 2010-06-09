@@ -46,8 +46,8 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
 public final class DefineFont4 implements DefineTag {
 
     /** Format string used in toString() method. */
-    private static final String FORMAT = "DefineFont4: { identifier=%d; "
-    		+ "italic=%d; bold=%d; name=%s; data=[%s] }";
+    private static final String FORMAT = "DefineFont4: { identifier=%d;"
+    		+ " italic=%d; bold=%d; name=%s; data=byte<%d> ...}";
 
     /** The unique identifier for this object. */
     private int identifier;

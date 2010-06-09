@@ -66,7 +66,7 @@ public final class DefineVideo implements DefineTag {
     /** Format string used in toString() method. */
     private static final String FORMAT = "DefineVideo: { identifier=%d;"
             + " frameCount=%d; width=%d; height=%d; deblocking=%s;"
-            + " smoothing=%s; codec=%s }";
+            + " smoothing=%s; codec=%s}";
 
     /** The unique identifier for this object. */
     private int identifier;

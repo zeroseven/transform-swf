@@ -50,7 +50,7 @@ import com.flagstone.transform.coder.SWFEncoder;
 public final class SetTarget implements Action {
 
     /** Format string used in toString() method. */
-    private static final String FORMAT = "SetTarget: { target=%s }";
+    private static final String FORMAT = "SetTarget: { target=%s}";
 
     /** The name of the movie clip. */
     private final transient String target;

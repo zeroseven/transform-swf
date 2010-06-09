@@ -34,7 +34,6 @@ package com.flagstone.transform.shape;
 
 import java.io.IOException;
 
-import com.flagstone.transform.Constants;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -65,8 +64,7 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
 public final class Curve implements ShapeRecord {
 
     /** Format string used in toString() method. */
-    private static final String FORMAT = "Curve: control=(%d,%d);"
-    		+ " anchor=(%d,%d);";
+    private static final String FORMAT = "Curve: (%d, %d) (%d, %d)";
 
     /** Number of bits used to encode the size field. */
     private static final int SIZE_WIDTH = 4;

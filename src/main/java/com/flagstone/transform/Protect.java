@@ -68,7 +68,7 @@ import com.flagstone.transform.coder.SWFEncoder;
 public final class Protect implements MovieTag {
 
     /** Format string used in toString() method. */
-    private static final String FORMAT = "Protect: { password=%s }";
+    private static final String FORMAT = "Protect: { password=%s}";
 
     /** The MD5 encoded password. */
     private String password;

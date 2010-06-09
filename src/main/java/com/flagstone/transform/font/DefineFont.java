@@ -70,7 +70,7 @@ public final class DefineFont implements DefineTag {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "DefineFont: { identifier=%d;"
-    		+ " shapes=%s }";
+    		+ " shapes=%s}";
 
     /** The unique identifier for this object. */
     private int identifier;

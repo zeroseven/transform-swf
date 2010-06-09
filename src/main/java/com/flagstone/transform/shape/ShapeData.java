@@ -31,9 +31,9 @@
 
 package com.flagstone.transform.shape;
 
+import java.io.IOException;
 import java.util.Arrays;
 
-import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -41,7 +41,7 @@ import com.flagstone.transform.coder.SWFEncoder;
 public final class ShapeData implements ShapeRecord {
 
     /** Format string used in toString() method. */
-    private static final String FORMAT = "ShapeData: { data[%d] }";
+    private static final String FORMAT = "ShapeData: byte<%d> ...";
 
     private final transient byte[] data;
 

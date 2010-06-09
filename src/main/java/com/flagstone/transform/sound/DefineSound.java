@@ -72,8 +72,8 @@ public final class DefineSound implements DefineTag {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "DefineSound: { identifier=%d;"
-            + " format=%s; rate=%d; channelCount=%d; sampleSize=%d "
-            + " sampleCount=%d }";
+            + " format=%s; rate=%d; channelCount=%d; sampleSize=%d;"
+            + " sampleCount=%d}";
 
     /** The unique identifier for this object. */
     private int identifier;

@@ -44,7 +44,7 @@ public final class MovieHeader implements MovieTag {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "Header: { version=%d; compressed=%b;"
-    		+ " frameSize=%s; frameRate=%f; frameCount=%d; }";
+    		+ " frameSize=%s; frameRate=%f; frameCount=%d}";
 
     private static final float SCALE_8 = 256.0f;
 

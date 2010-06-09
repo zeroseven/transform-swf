@@ -54,7 +54,7 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
 public final class Export implements MovieTag {
 
     /** Format string used in toString() method. */
-    private static final String FORMAT = "Export: { objects=%s }";
+    private static final String FORMAT = "Export: { objects=%s}";
     /** Table containing the objects to export. */
     private Map<Integer, String> objects;
 

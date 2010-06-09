@@ -65,7 +65,7 @@ public final class Kerning implements SWFEncodeable {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "Kerning: { leftGlyph=%d;"
-    		+ " rightGlyph=%d; adjustment=%d } ";
+    		+ " rightGlyph=%d; adjustment=%d}";
 
     /** The index of the left glyph in the font definition. */
     private final transient int leftGlyph;

@@ -144,9 +144,9 @@ public final class GradientGlowFilter implements Filter {
     private static final int MODE_MASK = 0x00D0;
 
     /** Format string used in toString() method. */
-    private static final String FORMAT = "GradientGlowFilter: { "
-            + "gradients=%s; blurX=%f; blurY=%f; "
-            + "angle=%f; distance=%f, strength=%f; mode=%s; passes=%d}";
+    private static final String FORMAT = "GradientGlowFilter: {"
+            + " gradients=%s; blurX=%f; blurY=%f;"
+            + " angle=%f; distance=%f; strength=%f; mode=%s; passes=%d}";
 
     private final transient List<Gradient> gradients;
     /** The horizontal blur amount. */

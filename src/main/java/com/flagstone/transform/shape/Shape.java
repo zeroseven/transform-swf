@@ -66,7 +66,7 @@ public final class Shape implements SWFEncodeable {
     public static final int MAX_COORD = 65535;
 
     /** Format string used in toString() method. */
-    private static final String FORMAT = "Shape: { records=%s }";
+    private static final String FORMAT = "Shape: { records=%s}";
 
     public static Shape shapeFromData(final ShapeData shapeData)
                 throws IOException {

@@ -59,7 +59,7 @@ import com.flagstone.transform.coder.SWFEncoder;
 public final class StartSound implements MovieTag {
 
     /** Format string used in toString() method. */
-    private static final String FORMAT = "StartSound: { sound=%s }";
+    private static final String FORMAT = "StartSound: { sound=%s}";
 
     private SoundInfo sound;
 

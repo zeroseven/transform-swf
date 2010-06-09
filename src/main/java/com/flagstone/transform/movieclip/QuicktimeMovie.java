@@ -48,7 +48,7 @@ import com.flagstone.transform.coder.SWFEncoder;
 public final class QuicktimeMovie implements MovieTag {
 
     /** Format string used in toString() method. */
-    private static final String FORMAT = "QuicktimeMovie: { name=%s }";
+    private static final String FORMAT = "QuicktimeMovie: { name=%s}";
 
     /** The path to the Quicktime file. */
     private String path;

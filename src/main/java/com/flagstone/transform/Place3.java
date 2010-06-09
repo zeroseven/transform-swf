@@ -211,9 +211,9 @@ public final class Place3 implements MovieTag {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "PlaceObject3: { type=%s; layer=%d;"
-            + " bitmapCache=%d; identifier=%d; transform=%s; "
-            + " colorTransform=%s; ratio=%d; clippingDepth=%d; "
-            + " name=%s; className=%s; "
+            + " bitmapCache=%d; identifier=%d; transform=%s;"
+            + " colorTransform=%s; ratio=%d; clippingDepth=%d;"
+            + " name=%s; className=%s;"
             + " filters=%s; blend=%s; clipEvents=%s}";
 
     /** How the display list will be updated. */

@@ -48,7 +48,7 @@ public final class FocalGradientFill implements FillStyle {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "FocalGradientFill: { spread=%s;"
-            + " interpolation=%s; focalPoint=%f; transform=%s; gradients=%s }";
+            + " interpolation=%s; focalPoint=%f; transform=%s; gradients=%s}";
 
     private int spread;
     private int interpolation;

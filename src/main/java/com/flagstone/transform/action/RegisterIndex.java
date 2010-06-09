@@ -44,7 +44,7 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
 public final class RegisterIndex {
 
     /** Format string used in toString() method. */
-    private static final String FORMAT = "Register: { number=%d }";
+    private static final String FORMAT = "Register: { number=%d}";
     /** Number of last internal register in the Flash Player. */
     private static final int LAST_REGISTER = 255;
 

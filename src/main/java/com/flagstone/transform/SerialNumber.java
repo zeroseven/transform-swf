@@ -45,7 +45,7 @@ import com.flagstone.transform.coder.SWFEncoder;
 public final class SerialNumber implements MovieTag {
 
     /** Format string used in toString() method. */
-    private static final String FORMAT = "SerialNumber: { number=%s }";
+    private static final String FORMAT = "SerialNumber: { number=%s}";
     /** The serial number or identifying string. */
     private String number;
 

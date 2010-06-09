@@ -44,7 +44,7 @@ public final class AlignmentZone implements SWFEncodeable {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "AlignmentZone: {"
-                + " coordinate=%f; range=%f }";
+                + " coordinate=%f; range=%f}";
 
     private final transient float coordinate;
     private final transient float range;

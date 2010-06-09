@@ -65,7 +65,7 @@ public final class ButtonSound implements MovieTag {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "ButtonSound: { identifier=%d;"
-            + " table=%s }";
+            + " table=%s}";
 
     private static final EnumSet<Event>EVENTS = EnumSet.of(
             Event.ROLL_OUT, Event.ROLL_OVER,

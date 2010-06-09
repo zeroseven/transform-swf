@@ -73,7 +73,7 @@ public final class DefineFont3 implements DefineTag {
     private static final String FORMAT = "DefineFont3: { identifier=%d;"
             + " encoding=%d; small=%b; italic=%b; bold=%b; language=%s;"
             + " name=%s; shapes=%s; codes=%s; ascent=%d; descent=%d;"
-            + " leading=%d; advances=%s; bounds=%s; kernings=%s }";
+            + " leading=%d; advances=%s; bounds=%s; kernings=%s}";
 
     /** The unique identifier for this object. */
     private int identifier;

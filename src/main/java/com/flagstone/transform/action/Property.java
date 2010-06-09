@@ -39,7 +39,7 @@ package com.flagstone.transform.action;
 public final class Property {
 
     /** Format string used in toString() method. */
-    private static final String FORMAT = "Property: { value=%d }";
+    private static final String FORMAT = "Property: { value=%d}";
     /** The first version of Flash that uses integers values for properties. */
     public static final int VERSION_WITH_INTS = 5;
 

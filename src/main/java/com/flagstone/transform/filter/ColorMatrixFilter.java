@@ -41,11 +41,11 @@ import com.flagstone.transform.coder.SWFEncoder;
 /** TODO(class). */
 public final class ColorMatrixFilter implements Filter {
 
-    private static final String ROW_FORMAT = "[%f, %f, %f, %f, %f]";
+    private static final String ROW_FORMAT = "[%f %f %f %f %f];";
     /** Format string used in toString() method. */
     private static final String FORMAT = "ColorMatrix: { matrix=["
             + ROW_FORMAT + ROW_FORMAT + ROW_FORMAT + ROW_FORMAT
-            + "]}";
+            + "]; }";
 
     /** The number of elements in the colour matrix. */
     private static final int MATRIX_SIZE = 20;

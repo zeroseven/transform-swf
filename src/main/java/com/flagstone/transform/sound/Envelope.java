@@ -77,7 +77,7 @@ public final class Envelope implements SWFEncodeable {
 
         /** Format string used in toString() method. */
         private static final String FORMAT = "Envelope: { mark=%d; left=%d;"
-        		+ " right=%d; }";
+        		+ " right=%d}";
 
         private final transient int mark;
         private final transient int left;

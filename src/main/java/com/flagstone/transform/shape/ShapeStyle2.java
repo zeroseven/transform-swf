@@ -102,7 +102,7 @@ public final class ShapeStyle2 implements ShapeRecord {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "ShapeStyle2: { move=(%d, %d);"
-            + " fill=%d; alt=%d; line=%d; fillStyles=%s; lineStyles=%s }";
+            + " fill=%d; alt=%d; line=%d; fillStyles=%s; lineStyles=%s}";
 
     /**
      * Reserved length for style counts indicated that the number of line

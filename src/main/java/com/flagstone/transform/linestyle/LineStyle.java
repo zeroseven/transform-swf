@@ -74,7 +74,7 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
 public final class LineStyle implements SWFEncodeable, Copyable<LineStyle> {
 
     /** Format string used in toString() method. */
-    private static final String FORMAT = "LineStyle : { width=%d; color=%s }";
+    private static final String FORMAT = "LineStyle : { width=%d; color=%s}";
 
     private int width;
     private Color color;

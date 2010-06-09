@@ -101,8 +101,8 @@ public final class ColorTransform implements SWFEncodeable {
     /** Right shift to convert number of bits to number of bytes. */
     private static final int BITS_TO_BYTES = 3;
     /** Format used by toString() to display object representation. */
-    private static final String FORMAT = "ColorTransform: { "
-            + "multiply=[%f, %f, %f, %f]; add=[%d, %d, %d, %d] }";
+    private static final String FORMAT = "ColorTransform: {"
+            + "multiply=[%f, %f, %f, %f]; add=[%d, %d, %d, %d]}";
 
     /**
      * Size of bit-field used to specify the number of bits representing

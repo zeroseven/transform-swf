@@ -64,7 +64,8 @@ import com.flagstone.transform.coder.SWFEncoder;
 public final class JPEGEncodingTable implements MovieTag {
 
     /** Format string used in toString() method. */
-    private static final String FORMAT = "JPEGEncodingTable: { table=%d }";
+    private static final String FORMAT = "JPEGEncodingTable: {"
+                + " table=byte<%d> ...}";
 
     private byte[] table;
 

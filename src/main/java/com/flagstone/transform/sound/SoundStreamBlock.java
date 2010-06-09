@@ -59,7 +59,8 @@ import com.flagstone.transform.coder.SWFEncoder;
 public final class SoundStreamBlock implements MovieTag {
 
     /** Format string used in toString() method. */
-    private static final String FORMAT = "SoundStreamBlock: { sound=%d }";
+    private static final String FORMAT = "SoundStreamBlock: {"
+                + "sound=byte<%d> ...}";
 
     private byte[] sound;
 

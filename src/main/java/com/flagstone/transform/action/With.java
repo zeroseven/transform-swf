@@ -59,7 +59,7 @@ import com.flagstone.transform.coder.SWFFactory;
 public final class With implements Action {
 
     /** Format string used in toString() method. */
-    private static final String FORMAT = "With: { actions=%s }";
+    private static final String FORMAT = "With: { actions=%s}";
 
     /** The list of actions that will be executed. */
     private final transient List<Action> actions;

@@ -43,7 +43,7 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
 public final class TableIndex {
 
     /** Format string used in toString() method. */
-    private static final String FORMAT = "TableIndex: { index=%d }";
+    private static final String FORMAT = "TableIndex: { index=%d}";
 
     /** The highest index number supported. */
     private static final int LAST_INDEX = 65535;

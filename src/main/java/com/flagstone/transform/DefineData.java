@@ -57,7 +57,7 @@ public final class DefineData implements DefineTag {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "DefineData: { identifier=%d;"
-            + " data=byte[%d] {...} }";
+            + " data=byte<%d> ...}";
 
     /** Unique identifier for this object. */
     private int identifier;

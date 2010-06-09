@@ -35,7 +35,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.flagstone.transform.Constants;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -49,8 +48,8 @@ public final class MorphFocalGradientFill implements FillStyle {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "MorphFocalGradientFill: { spread=%s;"
-            + " interpolation=%s; startFocalPoint=%f; endFocalPoint=%f; "
-            + " startTransform=%s; endTransform=%s; gradients=%s }";
+            + " interpolation=%s; startFocalPoint=%f; endFocalPoint=%f;"
+            + " startTransform=%s; endTransform=%s; gradients=%s}";
 
     private int spread;
     private int interpolation;

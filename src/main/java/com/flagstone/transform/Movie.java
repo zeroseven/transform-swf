@@ -92,7 +92,7 @@ public final class Movie {
     public static final byte[] CWS = new byte[] { 0x43, 0x57, 0x53 };
 
     /** Format string used in toString() method. */
-    private static final String FORMAT = "Movie: { objects=%s }";
+    private static final String FORMAT = "Movie: { objects=%s}";
     /** The registry for the different types of decoder. */
     private transient DecoderRegistry registry;
     /** The character encoding used for strings. */

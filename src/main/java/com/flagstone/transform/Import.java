@@ -66,7 +66,7 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
 public final class Import implements MovieTag {
 
     /** Format string used in toString() method. */
-    private static final String FORMAT = "Import: { url=%s; objects=%s }";
+    private static final String FORMAT = "Import: { url=%s; objects=%s}";
 
     /** The URL referencing the file to import. */
     private String url;

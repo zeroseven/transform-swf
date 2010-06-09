@@ -46,7 +46,7 @@ import com.flagstone.transform.coder.SWFEncoder;
 public final class GotoLabel implements Action {
 
     /** Format string used in toString() method. */
-    private static final String FORMAT = "GotoLabel: { label=%s }";
+    private static final String FORMAT = "GotoLabel: { label=%s}";
 
     /** The frame label. */
     private final transient String label;

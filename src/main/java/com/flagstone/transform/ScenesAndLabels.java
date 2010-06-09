@@ -47,7 +47,7 @@ public final class ScenesAndLabels implements MovieTag {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "ScenesAndLabels: { scenes=%s;"
-            + " labels=%s }";
+            + " labels=%s}";
 
     private Map<Integer, String> scenes;
     private Map<Integer, String> labels;

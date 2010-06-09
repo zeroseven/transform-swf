@@ -50,7 +50,7 @@ public final class BlurFilter implements Filter {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "BlurFilter: { blurX=%f; blurY=%f;"
-            + " passes=%d }";
+            + " passes=%d}";
 
     /** The horizontal blur amount. */
     private final transient int blurX;

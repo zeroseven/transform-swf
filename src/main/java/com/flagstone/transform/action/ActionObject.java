@@ -49,7 +49,7 @@ public final class ActionObject implements Action {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "ActionObject: {"
-        + "type=%d; data=byte[%s] }";
+        + "type=%d; data=byte[%s] {...} }";
 
     /** The type used to identify the action. */
     private final transient int type;

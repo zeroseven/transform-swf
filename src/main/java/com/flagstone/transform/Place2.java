@@ -210,9 +210,9 @@ public final class Place2 implements MovieTag {
     private static final int EXTENDED_EVENTS = 5;
 
     /** Format string used in toString() method. */
-    private static final String FORMAT = "Place2: { type=%s; layer=%d; "
-            + "identifier=%d; transform=%s; colorTransform=%s; ratio=%d; "
-            + "clippingDepth=%d; name=%s; clipEvents=%s}";
+    private static final String FORMAT = "Place2: { type=%s; layer=%d;"
+            + " identifier=%d; transform=%s; colorTransform=%s; ratio=%d;"
+            + " clippingDepth=%d; name=%s; clipEvents=%s}";
 
     /** How the display list will be updated. */
     private PlaceType type;

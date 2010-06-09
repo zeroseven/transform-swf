@@ -33,7 +33,6 @@ package com.flagstone.transform.shape;
 
 import java.io.IOException;
 
-import com.flagstone.transform.Constants;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -58,7 +57,7 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
 public final class Line implements ShapeRecord {
 
     /** Format string used in toString() method. */
-    private static final String FORMAT = "Line: (%d, %d);";
+    private static final String FORMAT = "Line: (%d, %d)";
 
     private transient int xCoord;
     private transient int yCoord;

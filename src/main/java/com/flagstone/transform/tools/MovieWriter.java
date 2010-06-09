@@ -59,6 +59,7 @@ public final class MovieWriter {
 
         int level = 0;
         boolean start = false;
+        boolean coord = false;
 
         final String str = tag.toString();
 
@@ -66,9 +67,16 @@ public final class MovieWriter {
 
             if (c == '{') {
                 writer.append(c).append('\n');
-                indent(writer, level++);
+                indent(writer, ++level);
                 start = true;
             } else if (c == '}') {
+                writer.append(';').append('\n');
+                indent(writer, --level);
+                writer.append(c);
+            } else if (c == '[') {
+                writer.append(c).append('\n');
+                indent(writer, ++level);
+            } else if (c == ']') {
                 writer.append('\n');
                 indent(writer, --level);
                 writer.append(c);
@@ -76,6 +84,23 @@ public final class MovieWriter {
                 writer.append(c).append('\n');
                 indent(writer, level);
                 start = true;
+            } else if (c == ',') {
+                writer.append(c);
+                if (!coord) {
+                    writer.append('\n');
+                    indent(writer, level);
+                    start = true;
+                }
+            } else if (c == '<') {
+                writer.append('[');
+            } else if (c == '>') {
+                writer.append(']');
+            } else if (c == '(') {
+                writer.append(c);
+                coord = true;
+            } else if (c == ')') {
+                writer.append(c);
+                coord = false;
             } else if (c == '=') {
                 writer.append(' ').append('=').append(' ');
             } else if (c == ' ') {
@@ -87,9 +112,10 @@ public final class MovieWriter {
                 start = false;
             }
         }
+        writer.append(',').append('\n');
         writer.flush();
     }
-    
+
     private void indent(final Writer writer, final int level)
             throws IOException {
         for (int i = 0; i < level; i++) {

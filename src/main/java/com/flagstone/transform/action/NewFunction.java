@@ -132,7 +132,7 @@ public final class NewFunction implements Action {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "NewFunction: { name=%s;"
-            + " arguments=%s; actions=%s }";
+            + " arguments=%s; actions=%s}";
 
     /** The name of the function or an empty string if a method. */
     private final transient String name;

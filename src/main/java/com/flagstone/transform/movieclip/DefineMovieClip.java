@@ -71,7 +71,7 @@ public final class DefineMovieClip implements DefineTag {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "DefineMovieClip: { identifier=%d;"
-    		+ " objects=%s }";
+    		+ " objects=%s}";
 
     /** The unique identifier for this object. */
     private int identifier;

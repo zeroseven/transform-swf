@@ -89,7 +89,7 @@ public final class BitmapFill implements FillStyle {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "BitmapFill: { identifier=%d;"
-    		+ " transform=%s }";
+    		+ " transform=%s}";
 
     /** Code used to identify the fill style when it is encoded. */
     private transient int type;

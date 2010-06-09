@@ -90,8 +90,8 @@ public final class ButtonShape implements SWFEncodeable {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "ButtonShape: { state=%d;"
-            + " identifier=%d; layer=%d; transform=%s; colorTransform=%s"
-            + " blend=%s, filters=%s }";
+            + " identifier=%d; layer=%d; transform=%s; colorTransform=%s;"
+            + " blend=%s; filters=%s}";
 
     /** The button state that the shape represents. */
     private int state;

@@ -66,7 +66,7 @@ public final class DefineJPEGImage implements ImageTag {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "DefineJPEGImage: { identifier=%d;"
-            + " image=%d; }";
+            + " image=byte<%d> ...}";
 
     /** The unique identifier for this object. */
     private int identifier;

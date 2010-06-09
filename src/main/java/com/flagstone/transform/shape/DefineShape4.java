@@ -68,7 +68,7 @@ public final class DefineShape4 implements DefineTag {
     /** Format string used in toString() method. */
     private static final String FORMAT = "DefineShape4: { identifier=%d;"
             + " shapeBounds=%s; edgeBounds=%s; fillStyles=%s; lineStyles=%s;"
-            + " shape=%s }";
+            + " shape=%s}";
 
     /** The unique identifier for this object. */
     private int identifier;

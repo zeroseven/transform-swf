@@ -101,7 +101,7 @@ public final class TextSpan implements SWFEncodeable {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "TextSpan: { identifier=%d; color=%s;"
-            + " offsetX=%d; offsetY=%d; height=%d; characters=%s }";
+            + " offsetX=%d; offsetY=%d; height=%d; characters=%s}";
 
     private Color color;
     private Integer offsetX;

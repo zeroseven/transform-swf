@@ -69,7 +69,7 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
 public final class Jump implements Action {
 
     /** Format string used in toString() method. */
-    private static final String FORMAT = "Jump: { offset=%d }";
+    private static final String FORMAT = "Jump: { offset=%d}";
     /** Minimum coder pointer offset. */
     private static final int MIN_CODE_JUMP = -32768;
     /** Maximum coder pointer offset. */

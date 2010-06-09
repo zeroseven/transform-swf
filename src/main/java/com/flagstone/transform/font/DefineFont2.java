@@ -72,7 +72,7 @@ public final class DefineFont2 implements DefineTag {
     private static final String FORMAT = "DefineFont2: { identifier=%d;"
     		+ " encoding=%s; small=%s; italic=%s; bold=%s; language=%s;"
     	    + " name=%s; shapes=%s; codes=%s; ascent=%d; descent=%d;"
-    	    + " leading=%d; advances=%s; bounds=%s; kernings=%s }";
+    	    + " leading=%d; advances=%s; bounds=%s; kernings=%s}";
 
     /** The unique identifier for this object. */
     private int identifier;

@@ -62,7 +62,7 @@ import com.flagstone.transform.datatype.Color;
 public final class Background implements MovieTag {
 
     /** Format string used in toString() method. */
-    private static final String FORMAT = "Background: { color=%s }";
+    private static final String FORMAT = "Background: { color=%s}";
 
     /** The colour that will be displayed on the screen background. */
     private Color color;

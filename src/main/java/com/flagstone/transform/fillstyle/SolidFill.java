@@ -47,7 +47,7 @@ import com.flagstone.transform.datatype.Color;
 public final class SolidFill implements FillStyle {
 
     /** Format string used in toString() method. */
-    private static final String FORMAT = "SolidFill: { color=%s }";
+    private static final String FORMAT = "SolidFill: { color=%s}";
 
     private Color color;
 

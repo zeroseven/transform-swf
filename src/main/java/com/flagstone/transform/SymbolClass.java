@@ -56,7 +56,7 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
 public final class SymbolClass implements MovieTag {
 
     /** Format string used in toString() method. */
-    private static final String FORMAT = "SymbolClass: { objects=%s }";
+    private static final String FORMAT = "SymbolClass: { objects=%s}";
     /** Table mapping unique identifiers to actionscript 3 classes. */
     private Map<Integer, String> objects;
 

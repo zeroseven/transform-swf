@@ -57,7 +57,7 @@ public final class TabOrder implements MovieTag {
     public static final int MAX_TAB = 65535;
 
     /** Format string used in toString() method. */
-    private static final String FORMAT = "TabOrder: { layer=%d; index=%d }";
+    private static final String FORMAT = "TabOrder: { layer=%d; index=%d}";
     /** The layer on which the object is displayed. */
     private int layer;
     /** The order in which the object will received keyboard focus. */

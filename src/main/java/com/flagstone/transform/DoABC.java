@@ -53,7 +53,7 @@ public final class DoABC implements MovieTag {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "DoABC: { name=%s; deferred=%d;"
-            + " actions=byte[%d] {...} }";
+            + " actions=byte<%d> ...}";
 
     /** The name of the script. */
     private String name;

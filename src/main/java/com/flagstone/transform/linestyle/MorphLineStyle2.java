@@ -54,7 +54,7 @@ public final class MorphLineStyle2 implements SWFEncodeable,
             + " startWidth=%d; endWidth=%d; startColor=%s; endColor=%s;"
             + " fillStyle=%s; startCap=%s; endCap=%s; joinStyle=%s;"
             + " scaledHorizontally=%b; scaledVertically=%b;"
-            + " pixelAligned=%b; lineClosed=%b; miterLimit=%d }";
+            + " pixelAligned=%b; lineClosed=%b; miterLimit=%d}";
 
     private int startWidth;
     private int endWidth;
