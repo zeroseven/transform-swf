@@ -35,7 +35,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.flagstone.transform.DefineTag;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
@@ -68,7 +67,7 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  * @see DefineText2
  */
 //TODO(class)
-public final class DefineText implements DefineTag {
+public final class DefineText implements StaticTextTag {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "DefineText: { identifier=%d;"
@@ -165,7 +164,7 @@ public final class DefineText implements DefineTag {
         setIdentifier(uid);
         setBounds(aBounds);
         setTransform(aTransform);
-        setObjects(array);
+        setSpans(array);
     }
 
     /**
@@ -258,7 +257,7 @@ public final class DefineText implements DefineTag {
      *
      * @return the list of text blocks.
      */
-    public List<TextSpan> getObjects() {
+    public List<TextSpan> getSpans() {
         return objects;
     }
 
@@ -297,7 +296,7 @@ public final class DefineText implements DefineTag {
      *            an array of TextSpan objects that define the text to be
      *            displayed. Must not be null.
      */
-    public void setObjects(final List<TextSpan> array) {
+    public void setSpans(final List<TextSpan> array) {
         if (array == null) {
             throw new IllegalArgumentException();
         }
