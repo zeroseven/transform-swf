@@ -42,7 +42,7 @@ import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.coder.SWFFactory;
 import com.flagstone.transform.exception.IllegalArgumentRangeException;
 import com.flagstone.transform.fillstyle.FillStyle;
-import com.flagstone.transform.linestyle.LineStyle;
+import com.flagstone.transform.linestyle.LineStyle1;
 
 /**
  * ShapeStyle is used to change the drawing environment when a shape is drawn.
@@ -111,7 +111,7 @@ public final class ShapeStyle implements ShapeRecord {
     private Integer altFillStyle;
     private Integer lineStyle;
     private List<FillStyle> fillStyles;
-    private List<LineStyle> lineStyles;
+    private List<LineStyle1> lineStyles;
 
     private transient boolean hasStyles;
     private transient boolean hasLine;
@@ -155,7 +155,7 @@ public final class ShapeStyle implements ShapeRecord {
             moveY = coder.readBits(moveFieldSize, true);
         }
         fillStyles = new ArrayList<FillStyle>();
-        lineStyles = new ArrayList<LineStyle>();
+        lineStyles = new ArrayList<LineStyle1>();
 
         if (hasFill) {
             fillStyle = coder.readBits(numberOfFillBits, false);
@@ -192,7 +192,7 @@ public final class ShapeStyle implements ShapeRecord {
             }
 
             for (int i = 0; i < lineStyleCount; i++) {
-                lineStyles.add(new LineStyle(coder, context));
+                lineStyles.add(new LineStyle1(coder, context));
             }
 
             final int sizes = coder.readByte();
@@ -209,7 +209,7 @@ public final class ShapeStyle implements ShapeRecord {
      */
     public ShapeStyle() {
         fillStyles = new ArrayList<FillStyle>();
-        lineStyles = new ArrayList<LineStyle>();
+        lineStyles = new ArrayList<LineStyle1>();
     }
 
     /**
@@ -227,9 +227,9 @@ public final class ShapeStyle implements ShapeRecord {
         fillStyle = object.fillStyle;
         altFillStyle = object.altFillStyle;
 
-        lineStyles = new ArrayList<LineStyle>(object.lineStyles.size());
+        lineStyles = new ArrayList<LineStyle1>(object.lineStyles.size());
 
-        for (final LineStyle style : object.lineStyles) {
+        for (final LineStyle1 style : object.lineStyles) {
             lineStyles.add(style.copy());
         }
 
@@ -247,7 +247,7 @@ public final class ShapeStyle implements ShapeRecord {
      *            and LineStyle object. Must not be null.
      * @return this object.
      */
-    public ShapeStyle add(final LineStyle style) {
+    public ShapeStyle add(final LineStyle1 style) {
         if (style == null) {
             throw new IllegalArgumentException();
         }
@@ -326,7 +326,7 @@ public final class ShapeStyle implements ShapeRecord {
      *
      * @return the array of line styles.
      */
-    public List<LineStyle> getLineStyles() {
+    public List<LineStyle1> getLineStyles() {
         return lineStyles;
     }
 
@@ -460,7 +460,7 @@ public final class ShapeStyle implements ShapeRecord {
      *            an array of LineStyle objects. Must not be null.
      * @return this object.
      */
-    public ShapeStyle setLineStyles(final List<LineStyle> anArray) {
+    public ShapeStyle setLineStyles(final List<LineStyle1> anArray) {
         if (anArray == null) {
             throw new IllegalArgumentException();
         }
@@ -551,7 +551,7 @@ public final class ShapeStyle implements ShapeRecord {
             numberOfStyleBits += (countExtended
                     && (lineStyles.size() >= EXTENDED)) ? 24 : 8;
 
-            for (final LineStyle style : lineStyles) {
+            for (final LineStyle1 style : lineStyles) {
                 numberOfStyleBits += style.prepareToEncode(context) << 3;
             }
 
@@ -624,7 +624,7 @@ public final class ShapeStyle implements ShapeRecord {
                 coder.writeByte(lineStyles.size());
             }
 
-            for (final LineStyle style : lineStyles) {
+            for (final LineStyle1 style : lineStyles) {
                 style.encode(coder, context);
             }
 

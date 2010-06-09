@@ -33,7 +33,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.flagstone.transform.DefineTag;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
@@ -44,6 +43,7 @@ import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.exception.IllegalArgumentRangeException;
 import com.flagstone.transform.fillstyle.FillStyle;
 import com.flagstone.transform.linestyle.LineStyle;
+import com.flagstone.transform.linestyle.LineStyle1;
 
 /**
  * DefineShape3 defines a transparent shape to be displayed. It extends the
@@ -53,7 +53,7 @@ import com.flagstone.transform.linestyle.LineStyle;
  * @see DefineShape2
  */
 //TODO(class)
-public final class DefineShape3 implements DefineTag {
+public final class DefineShape3 implements ShapeTag {
 
     /**
      * Reserved length for style counts indicated that the number of line
@@ -135,7 +135,7 @@ public final class DefineShape3 implements DefineTag {
         }
 
         for (int i = 0; i < lineStyleCount; i++) {
-            lineStyles.add(new LineStyle(coder, context));
+            lineStyles.add(new LineStyle1(coder, context));
         }
 
         context.put(Context.ARRAY_EXTENDED, 1);
@@ -232,14 +232,14 @@ public final class DefineShape3 implements DefineTag {
     }
 
     /**
-     * Add a LineStyle to the array of line styles.
+     * Add a LineStyle1 to the array of line styles.
      *
      * @param style
-     *            and LineStyle object. Must not be null.
+     *            and LineStyle1 object. Must not be null.
      *
      * @return this object.
      */
-    public DefineShape3 add(final LineStyle style) {
+    public DefineShape3 add(final LineStyle1 style) {
         if (style == null) {
             throw new IllegalArgumentException();
         }

@@ -48,7 +48,7 @@ import com.flagstone.transform.Place2;
 import com.flagstone.transform.ShowFrame;
 import com.flagstone.transform.datatype.WebPalette;
 import com.flagstone.transform.fillstyle.SolidFill;
-import com.flagstone.transform.linestyle.LineStyle;
+import com.flagstone.transform.linestyle.LineStyle1;
 import com.flagstone.transform.shape.DefineShape2;
 import com.flagstone.transform.util.shape.Canvas;
 
@@ -71,7 +71,7 @@ public final class CanvasIT {
     @Before
     public void setUp() throws DataFormatException, IOException {
         path.clear();
-        path.setLineStyle(new LineStyle(20, WebPalette.BLACK.color()));
+        path.setLineStyle(new LineStyle1(20, WebPalette.BLACK.color()));
         path.setFillStyle(new SolidFill(WebPalette.RED.color()));
     }
 

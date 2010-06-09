@@ -53,30 +53,30 @@ public final class LineStyleTest {
     private static final transient int WIDTH = 1;
     private final transient Color color = new Color(2, 3, 4);
 
-    private transient LineStyle fixture;
+    private transient LineStyle1 fixture;
 
     private final transient byte[] encoded = new byte[] {0x01, 0x00, 0x02,
             0x03, 0x04 };
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForWidthWithLowerBound() {
-        fixture = new LineStyle(-1, color);
+        fixture = new LineStyle1(-1, color);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForWidthWithUpperBound() {
-        fixture = new LineStyle(65536, color);
+        fixture = new LineStyle1(65536, color);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForColorWithNull() {
-        fixture = new LineStyle(1, null);
+        fixture = new LineStyle1(1, null);
     }
 
     @Test
     public void checkCopy() {
-        fixture = new LineStyle(WIDTH, color);
-        final LineStyle copy = fixture.copy();
+        fixture = new LineStyle1(WIDTH, color);
+        final LineStyle1 copy = fixture.copy();
 
         assertNotSame(fixture, copy);
         assertSame(fixture.getColor(), copy.getColor());
@@ -89,7 +89,7 @@ public final class LineStyleTest {
         final SWFEncoder encoder = new SWFEncoder(stream);
         final Context context = new Context();
 
-        fixture = new LineStyle(WIDTH, color);
+        fixture = new LineStyle1(WIDTH, color);
         assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
         encoder.flush();
@@ -103,7 +103,7 @@ public final class LineStyleTest {
         final SWFDecoder decoder = new SWFDecoder(stream);
         final Context context = new Context();
 
-        fixture = new LineStyle(decoder, context);
+        fixture = new LineStyle1(decoder, context);
 
         assertTrue(true);
         assertEquals(WIDTH, fixture.getWidth());

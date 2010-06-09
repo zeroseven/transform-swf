@@ -37,7 +37,6 @@ import java.io.IOException;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
-import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.Color;
 import com.flagstone.transform.exception.IllegalArgumentRangeException;
@@ -54,7 +53,7 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  * </p>
  */
 //TODO(class)
-public final class MorphLineStyle implements SWFEncodeable {
+public final class MorphLineStyle implements LineStyle {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "MorphSolidLine: { startWidth=%d;"

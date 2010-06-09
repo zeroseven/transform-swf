@@ -35,7 +35,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.flagstone.transform.DefineTag;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
@@ -45,6 +44,7 @@ import com.flagstone.transform.coder.SWFFactory;
 import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.exception.IllegalArgumentRangeException;
 import com.flagstone.transform.fillstyle.FillStyle;
+import com.flagstone.transform.linestyle.LineStyle;
 import com.flagstone.transform.linestyle.MorphLineStyle;
 
 /**
@@ -87,7 +87,7 @@ import com.flagstone.transform.linestyle.MorphLineStyle;
  *
  */
 //TODO(class)
-public final class DefineMorphShape implements DefineTag {
+public final class DefineMorphShape implements ShapeTag {
 
     /**
      * Reserved length for style counts indicated that the number of line
@@ -106,16 +106,16 @@ public final class DefineMorphShape implements DefineTag {
     /** The unique identifier for this object. */
     private int identifier;
     /** The bounding box for the shape at the start of the morphing process. */
-    private Bounds startBounds;
+    private Bounds bounds;
     /** The bounding box for the shape at the end of the morphing process. */
     private Bounds endBounds;
 
     /** The list of fill styles for the shape. */
     private List<FillStyle> fillStyles;
     /** The list of line styles for the shape. */
-    private List<MorphLineStyle> lineStyles;
+    private List<LineStyle> lineStyles;
     /** The shape at the start of the morphing process. */
-    private Shape startShape;
+    private Shape shape;
     /** The shape at the end of the morphing process. */
     private Shape endShape;
 
@@ -157,10 +157,10 @@ public final class DefineMorphShape implements DefineTag {
 
         identifier = coder.readUnsignedShort();
 
-        startBounds = new Bounds(coder);
+        bounds = new Bounds(coder);
         endBounds = new Bounds(coder);
         fillStyles = new ArrayList<FillStyle>();
-        lineStyles = new ArrayList<MorphLineStyle>();
+        lineStyles = new ArrayList<LineStyle>();
 
         final int offsetToEnd = coder.readInt();
         coder.mark();
@@ -194,8 +194,8 @@ public final class DefineMorphShape implements DefineTag {
             int size = coder.bytesRead() - offsetToEnd;
             coder.unmark();
 
-            startShape = new Shape();
-            startShape.add(new ShapeData(new byte[size]));
+            shape = new Shape();
+            shape.add(new ShapeData(new byte[size]));
 
             size = length - coder.bytesRead();
             coder.unmark();
@@ -203,7 +203,7 @@ public final class DefineMorphShape implements DefineTag {
             endShape = new Shape();
             endShape.add(new ShapeData(new byte[size]));
         } else {
-            startShape = new Shape(coder, context);
+            shape = new Shape(coder, context);
             endShape = new Shape(coder, context);
             coder.unmark();
             coder.unmark();
@@ -246,14 +246,14 @@ public final class DefineMorphShape implements DefineTag {
      */
     public DefineMorphShape(final int uid, final Bounds initialBounds,
             final Bounds finalBounds, final List<FillStyle> fills,
-            final List<MorphLineStyle> lines, final Shape initialShape,
+            final List<LineStyle> lines, final Shape initialShape,
             final Shape finalShape) {
         setIdentifier(uid);
-        setStartBounds(initialBounds);
+        setBounds(initialBounds);
         setEndBounds(finalBounds);
         setFillStyles(fills);
         setLineStyles(lines);
-        setStartShape(initialShape);
+        setShape(initialShape);
         setEndShape(finalShape);
     }
 
@@ -267,17 +267,17 @@ public final class DefineMorphShape implements DefineTag {
      */
     public DefineMorphShape(final DefineMorphShape object) {
         identifier = object.identifier;
-        startBounds = object.startBounds;
+        bounds = object.bounds;
         endBounds = object.endBounds;
         fillStyles = new ArrayList<FillStyle>(object.fillStyles.size());
         for (final FillStyle style : object.fillStyles) {
             fillStyles.add(style.copy());
         }
-        lineStyles = new ArrayList<MorphLineStyle>(object.lineStyles.size());
-        for (final MorphLineStyle style : object.lineStyles) {
+        lineStyles = new ArrayList<LineStyle>(object.lineStyles.size());
+        for (final LineStyle style : object.lineStyles) {
             lineStyles.add(style.copy());
         }
-        startShape = object.startShape.copy();
+        shape = object.shape.copy();
         endShape = object.endShape.copy();
     }
 
@@ -301,7 +301,7 @@ public final class DefineMorphShape implements DefineTag {
      * @return the width of the starting shape.
      */
     public int getWidth() {
-        return startBounds.getWidth();
+        return bounds.getWidth();
     }
 
     /**
@@ -310,7 +310,7 @@ public final class DefineMorphShape implements DefineTag {
      * @return the height of the starting shape.
      */
     public int getHeight() {
-        return startBounds.getHeight();
+        return bounds.getHeight();
     }
 
     /**
@@ -345,8 +345,8 @@ public final class DefineMorphShape implements DefineTag {
      *
      * @return the bounding box for the starting shape.
      */
-    public Bounds getStartBounds() {
-        return startBounds;
+    public Bounds getBounds() {
+        return bounds;
     }
 
     /**
@@ -374,7 +374,7 @@ public final class DefineMorphShape implements DefineTag {
      *
      * @return the list of line styles used in the shape.
      */
-    public List<MorphLineStyle> getLineStyles() {
+    public List<LineStyle> getLineStyles() {
         return lineStyles;
     }
 
@@ -383,8 +383,8 @@ public final class DefineMorphShape implements DefineTag {
      *
      * @return the starting shape.
      */
-    public Shape getStartShape() {
-        return startShape;
+    public Shape getShape() {
+        return shape;
     }
 
     /**
@@ -403,11 +403,11 @@ public final class DefineMorphShape implements DefineTag {
      *            the bounding rectangle enclosing the start shape. Must not be
      *            null.
      */
-    public void setStartBounds(final Bounds aBounds) {
+    public void setBounds(final Bounds aBounds) {
         if (aBounds == null) {
             throw new IllegalArgumentException();
         }
-        startBounds = aBounds;
+        bounds = aBounds;
     }
 
     /**
@@ -444,7 +444,7 @@ public final class DefineMorphShape implements DefineTag {
      * @param anArray
      *            an array of MorphLineStyle objects. Must not be null.
      */
-    public void setLineStyles(final List<MorphLineStyle> anArray) {
+    public void setLineStyles(final List<LineStyle> anArray) {
         if (anArray == null) {
             throw new IllegalArgumentException();
         }
@@ -459,11 +459,11 @@ public final class DefineMorphShape implements DefineTag {
      *            the shape at the start of the morphing process. Must not be
      *            null.
      */
-    public void setStartShape(final Shape aShape) {
+    public void setShape(final Shape aShape) {
         if (aShape == null) {
             throw new IllegalArgumentException();
         }
-        startShape = aShape;
+        shape = aShape;
     }
 
     /**
@@ -487,8 +487,8 @@ public final class DefineMorphShape implements DefineTag {
 
     @Override
     public String toString() {
-        return String.format(FORMAT, identifier, startBounds, endBounds,
-                fillStyles, lineStyles, startShape, endShape);
+        return String.format(FORMAT, identifier, bounds, endBounds,
+                fillStyles, lineStyles, shape, endShape);
     }
 
     // TODO(optimise)
@@ -510,7 +510,7 @@ public final class DefineMorphShape implements DefineTag {
         context.put(Context.TRANSPARENT, 1);
 
         // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
-        length = 6 + startBounds.prepareToEncode(context);
+        length = 6 + bounds.prepareToEncode(context);
         length += endBounds.prepareToEncode(context);
         offset = length;
 
@@ -522,7 +522,7 @@ public final class DefineMorphShape implements DefineTag {
 
         length += (lineStyles.size() >= EXTENDED) ? EXTENDED_LENGTH : 1;
 
-        for (final MorphLineStyle style : lineStyles) {
+        for (final LineStyle style : lineStyles) {
             length += style.prepareToEncode(context);
         }
 
@@ -530,7 +530,7 @@ public final class DefineMorphShape implements DefineTag {
         context.put(Context.FILL_SIZE, fillBits);
         context.put(Context.LINE_SIZE, lineBits);
 
-        length += startShape.prepareToEncode(context);
+        length += shape.prepareToEncode(context);
         offset = length - offset;
         // Number of Fill and Line bits is zero for end shape.
         context.put(Context.FILL_SIZE, 0);
@@ -562,7 +562,7 @@ public final class DefineMorphShape implements DefineTag {
         coder.writeShort(identifier);
         context.put(Context.TRANSPARENT, 1);
 
-        startBounds.encode(coder, context);
+        bounds.encode(coder, context);
         endBounds.encode(coder, context);
         coder.writeInt(offset);
 
@@ -584,7 +584,7 @@ public final class DefineMorphShape implements DefineTag {
             coder.writeByte(lineStyles.size());
         }
 
-        for (final MorphLineStyle style : lineStyles) {
+        for (final LineStyle style : lineStyles) {
             style.encode(coder, context);
         }
 
@@ -592,7 +592,7 @@ public final class DefineMorphShape implements DefineTag {
         context.put(Context.FILL_SIZE, fillBits);
         context.put(Context.LINE_SIZE, lineBits);
 
-        startShape.encode(coder, context);
+        shape.encode(coder, context);
 
         // Number of Fill and Line bits is zero for end shape.
         context.put(Context.FILL_SIZE, 0);

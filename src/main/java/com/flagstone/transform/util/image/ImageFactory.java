@@ -51,6 +51,7 @@ import com.flagstone.transform.fillstyle.BitmapFill;
 import com.flagstone.transform.fillstyle.FillStyle;
 import com.flagstone.transform.image.ImageTag;
 import com.flagstone.transform.linestyle.LineStyle;
+import com.flagstone.transform.linestyle.LineStyle1;
 import com.flagstone.transform.shape.DefineShape3;
 import com.flagstone.transform.shape.Line;
 import com.flagstone.transform.shape.Shape;
@@ -272,7 +273,7 @@ public final class ImageFactory {
      */
     public DefineShape3 defineEnclosingShape(final int shapeId,
             final int imageId, final int xOrigin, final int yOrigin,
-            final LineStyle borderStyle) {
+            final LineStyle1 borderStyle) {
 
         int lineWidth = 0;
 

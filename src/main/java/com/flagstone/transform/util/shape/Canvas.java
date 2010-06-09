@@ -37,6 +37,7 @@ import java.util.List;
 import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.fillstyle.FillStyle;
 import com.flagstone.transform.linestyle.LineStyle;
+import com.flagstone.transform.linestyle.LineStyle1;
 import com.flagstone.transform.shape.Curve;
 import com.flagstone.transform.shape.DefineShape2;
 import com.flagstone.transform.shape.DefineShape3;
@@ -242,7 +243,7 @@ public final class Canvas {
      * @param style
      *            a line style.
      */
-    public void setLineStyle(final LineStyle style) {
+    public void setLineStyle(final LineStyle1 style) {
         int index;
 
         if (lineStyles.contains(style)) {

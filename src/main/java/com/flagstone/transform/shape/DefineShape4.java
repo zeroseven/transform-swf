@@ -35,7 +35,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.flagstone.transform.DefineTag;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
@@ -45,6 +44,7 @@ import com.flagstone.transform.coder.SWFFactory;
 import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.exception.IllegalArgumentRangeException;
 import com.flagstone.transform.fillstyle.FillStyle;
+import com.flagstone.transform.linestyle.LineStyle;
 import com.flagstone.transform.linestyle.LineStyle2;
 
 /**
@@ -55,7 +55,7 @@ import com.flagstone.transform.linestyle.LineStyle2;
  * @see DefineShape2
  */
 //TODO(class)
-public final class DefineShape4 implements DefineTag {
+public final class DefineShape4 implements ShapeTag {
 
     /**
      * Reserved length for style counts indicated that the number of line
@@ -77,7 +77,7 @@ public final class DefineShape4 implements DefineTag {
     /** The list of fill styles for the shape. */
     private List<FillStyle> fillStyles;
     /** The list of line styles for the shape. */
-    private List<LineStyle2> lineStyles;
+    private List<LineStyle> lineStyles;
     /** The shape. */
     private Shape shape;
 
@@ -127,7 +127,7 @@ public final class DefineShape4 implements DefineTag {
             fillStyleCount = coder.readUnsignedShort();
         }
         fillStyles = new ArrayList<FillStyle>();
-        lineStyles = new ArrayList<LineStyle2>();
+        lineStyles = new ArrayList<LineStyle>();
 
         final SWFFactory<FillStyle> decoder = context.getRegistry()
                 .getFillStyleDecoder();
@@ -177,9 +177,9 @@ public final class DefineShape4 implements DefineTag {
      */
     public DefineShape4(final int uid, final Bounds aBounds,
             final List<FillStyle> fillStyleArray,
-            final List<LineStyle2> lineStyleArray, final Shape aShape) {
+            final List<LineStyle> lineStyleArray, final Shape aShape) {
         setIdentifier(uid);
-        setShapeBounds(aBounds);
+        setBounds(aBounds);
         setFillStyles(fillStyleArray);
         setLineStyles(lineStyleArray);
         setShape(aShape);
@@ -201,8 +201,8 @@ public final class DefineShape4 implements DefineTag {
         for (final FillStyle style : object.fillStyles) {
             fillStyles.add(style.copy());
         }
-        lineStyles = new ArrayList<LineStyle2>(object.lineStyles.size());
-        for (final LineStyle2 style : object.lineStyles) {
+        lineStyles = new ArrayList<LineStyle>(object.lineStyles.size());
+        for (final LineStyle style : object.lineStyles) {
             lineStyles.add(style.copy());
         }
         shape = object.shape.copy();
@@ -227,7 +227,7 @@ public final class DefineShape4 implements DefineTag {
      *
      * @return the Bounds that encloses the shape
      */
-    public Bounds getShapeBounds() {
+    public Bounds getBounds() {
         return shapeBounds;
     }
 
@@ -237,7 +237,7 @@ public final class DefineShape4 implements DefineTag {
      * @param aBounds
      *            set the bounding rectangle for the shape. Must not be null.
      */
-    public void setShapeBounds(final Bounds aBounds) {
+    public void setBounds(final Bounds aBounds) {
         if (aBounds == null) {
             throw new IllegalArgumentException();
         }
@@ -332,7 +332,7 @@ public final class DefineShape4 implements DefineTag {
      *
      * @return the list of line styles used in the shape.
      */
-    public List<LineStyle2> getLineStyles() {
+    public List<LineStyle> getLineStyles() {
         return lineStyles;
     }
 
@@ -365,7 +365,7 @@ public final class DefineShape4 implements DefineTag {
      * @param anArray
      *            set the line styles for the shape. Must not be null.
      */
-    public void setLineStyles(final List<LineStyle2> anArray) {
+    public void setLineStyles(final List<LineStyle> anArray) {
         if (anArray == null) {
             throw new IllegalArgumentException();
         }
@@ -427,7 +427,7 @@ public final class DefineShape4 implements DefineTag {
 
         length += (lineStyles.size() >= EXTENDED) ? EXTENDED_LENGTH : 1;
 
-        for (final LineStyle2 style : lineStyles) {
+        for (final LineStyle style : lineStyles) {
             length += style.prepareToEncode(context);
         }
 
@@ -488,7 +488,7 @@ public final class DefineShape4 implements DefineTag {
             coder.writeByte(lineStyles.size());
         }
 
-        for (final LineStyle2 style : lineStyles) {
+        for (final LineStyle style : lineStyles) {
             style.encode(coder, context);
         }
 

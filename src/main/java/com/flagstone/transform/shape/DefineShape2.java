@@ -35,7 +35,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.flagstone.transform.DefineTag;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
@@ -46,6 +45,7 @@ import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.exception.IllegalArgumentRangeException;
 import com.flagstone.transform.fillstyle.FillStyle;
 import com.flagstone.transform.linestyle.LineStyle;
+import com.flagstone.transform.linestyle.LineStyle1;
 
 /**
  * DefineShape2 defines a shape to be displayed with an extended set of fill
@@ -68,7 +68,7 @@ import com.flagstone.transform.linestyle.LineStyle;
  * @see DefineShape3
  */
 //TODO(class)
-public final class DefineShape2 implements DefineTag {
+public final class DefineShape2 implements ShapeTag {
 
     /**
      * Reserved length for style counts indicated that the number of line
@@ -149,7 +149,7 @@ public final class DefineShape2 implements DefineTag {
         }
 
         for (int i = 0; i < lineStyleCount; i++) {
-            lineStyles.add(new LineStyle(coder, context));
+            lineStyles.add(new LineStyle1(coder, context));
         }
 
         if (context.getRegistry().getShapeDecoder() == null) {
@@ -250,7 +250,7 @@ public final class DefineShape2 implements DefineTag {
      *
      * @return this object.
      */
-    public DefineShape2 add(final LineStyle style) {
+    public DefineShape2 add(final LineStyle1 style) {
         if (style == null) {
             throw new IllegalArgumentException();
         }

@@ -36,9 +36,7 @@ import java.io.IOException;
 
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.Copyable;
 import com.flagstone.transform.coder.SWFDecoder;
-import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.coder.SWFFactory;
 import com.flagstone.transform.datatype.Color;
@@ -46,7 +44,7 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
 import com.flagstone.transform.fillstyle.FillStyle;
 
 /** TODO(class). */
-public final class LineStyle2 implements SWFEncodeable, Copyable<LineStyle2> {
+public final class LineStyle2 implements LineStyle {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "LineStyle2: { width=%d; color=%s;"
