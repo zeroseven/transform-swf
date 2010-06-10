@@ -571,7 +571,7 @@ public final class DefineMorphShape2 implements ShapeTag {
             length += style.prepareToEncode(context);
         }
 
-        context.remove(Context.SCALING_STROKE);
+        context.put(Context.SCALING_STROKE, 0);
 
         length += (lineStyles.size() >= EXTENDED) ? EXTENDED_LENGTH : 1;
 

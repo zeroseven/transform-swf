@@ -406,9 +406,14 @@ public final class LineStyle2 implements LineStyle {
             length += 4;
         }
 
+        int scaling = context.get(Context.SCALING_STROKE);
+
         if (horizontal || vertical) {
-            context.put(Context.SCALING_STROKE, 1);
+            scaling |= Coder.BIT1;
+        } else {
+            scaling |= Coder.BIT0;
         }
+        context.put(Context.SCALING_STROKE, scaling);
 
         return length;
         // CHECKSTYLE:ON

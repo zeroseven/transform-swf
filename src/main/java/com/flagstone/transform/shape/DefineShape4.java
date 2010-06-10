@@ -68,7 +68,7 @@ public final class DefineShape4 implements ShapeTag {
     /** Format string used in toString() method. */
     private static final String FORMAT = "DefineShape4: { identifier=%d;"
             + " shapeBounds=%s; edgeBounds=%s; fillStyles=%s; lineStyles=%s;"
-            + " shape=%s}";
+            + " winding=%b; shape=%s}";
 
     /** The unique identifier for this object. */
     private int identifier;
@@ -81,14 +81,15 @@ public final class DefineShape4 implements ShapeTag {
     /** The shape. */
     private Shape shape;
 
+    private transient int winding;
+    private transient int scaling;
+
     /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
     /** The number of bits to encode indices into the fill style array. */
     private transient int fillBits;
     /** The number of bits to encode indices into the line style array. */
     private transient int lineBits;
-    /** The length of the object, minus the header, when it is encoded. */
-    private transient boolean scaling;
 
     /**
      * Creates and initialises a DefineShape4 object using values encoded
@@ -119,7 +120,8 @@ public final class DefineShape4 implements ShapeTag {
         shapeBounds = new Bounds(coder);
         edgeBounds = new Bounds(coder);
 
-        coder.readByte(); // scaling hints
+        // scaling hints are implied by the line styles used
+        winding = coder.readByte() & Coder.BIT2;
 
         int fillStyleCount = coder.readByte();
 
@@ -385,6 +387,18 @@ public final class DefineShape4 implements ShapeTag {
         shape = aShape;
     }
 
+    public boolean useWinding() {
+        return winding != 0;
+    }
+
+    public void setWinding(boolean use) {
+        if (use) {
+            winding = Coder.BIT2;
+        } else {
+            winding = 0;
+        }
+    }
+
     /** {@inheritDoc} */
     public DefineShape4 copy() {
         return new DefineShape4(this);
@@ -393,7 +407,7 @@ public final class DefineShape4 implements ShapeTag {
     @Override
     public String toString() {
         return String.format(FORMAT, identifier, shapeBounds, edgeBounds,
-                fillStyles, lineStyles, shape);
+                fillStyles, lineStyles, useWinding(), shape);
     }
 
     /** {@inheritDoc} */
@@ -423,7 +437,7 @@ public final class DefineShape4 implements ShapeTag {
             length += style.prepareToEncode(context);
         }
 
-        context.remove(Context.SCALING_STROKE);
+        context.put(Context.SCALING_STROKE, 0);
 
         length += (lineStyles.size() >= EXTENDED) ? EXTENDED_LENGTH : 1;
 
@@ -431,7 +445,7 @@ public final class DefineShape4 implements ShapeTag {
             length += style.prepareToEncode(context);
         }
 
-        scaling = context.contains(Context.SCALING_STROKE);
+        scaling = context.get(Context.SCALING_STROKE);
 
         context.put(Context.ARRAY_EXTENDED, 1);
         context.put(Context.FILL_SIZE, fillBits);
@@ -468,7 +482,7 @@ public final class DefineShape4 implements ShapeTag {
         shapeBounds.encode(coder, context);
         edgeBounds.encode(coder, context);
 
-        coder.writeByte(scaling ? 1 : 2);
+        coder.writeByte(winding | scaling);
 
         if (fillStyles.size() >= EXTENDED) {
             coder.writeByte(EXTENDED);
