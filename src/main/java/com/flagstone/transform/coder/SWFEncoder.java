@@ -34,9 +34,9 @@ package com.flagstone.transform.coder;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
-import java.nio.charset.UnsupportedCharsetException;
 import java.util.Stack;
+
+import com.flagstone.transform.CharacterEncoding;
 
 /**
  * SWFEncoder wraps an OutputStream with a buffer to reduce the amount of
@@ -92,7 +92,7 @@ public final class SWFEncoder {
     public SWFEncoder(final OutputStream streamOut, final int length) {
         stream = streamOut;
         buffer = new byte[length];
-        encoding = "UTF-8";
+        encoding = CharacterEncoding.UTF8.getEncoding();
         locations = new Stack<Integer>();
         pos = 0;
     }
@@ -106,7 +106,7 @@ public final class SWFEncoder {
     public SWFEncoder(final OutputStream streamOut) {
         stream = streamOut;
         buffer = new byte[BUFFER_SIZE];
-        encoding = "UTF-8";
+        encoding = CharacterEncoding.UTF8.getEncoding();
         locations = new Stack<Integer>();
         pos = 0;
     }
@@ -186,18 +186,11 @@ public final class SWFEncoder {
      * Sets the character encoding scheme used when encoding or decoding
      * strings.
      *
-     * If the character set encoding is not supported by the Java environment
-     * then an UnsupportedCharsetException will be thrown. If the character set
-     * cannot be identified then an IllegalCharsetNameException will be thrown.
-     *
-     * @param charSet
-     *            the name of the character set used to encode strings.
+     * @param enc
+     *            the CharacterEncoding that identifies how strings are encoded.
      */
-    public void setEncoding(final String charSet) {
-        if (!Charset.isSupported(charSet)) {
-            throw new UnsupportedCharsetException(charSet);
-        }
-        encoding = charSet;
+    public void setEncoding(final CharacterEncoding enc) {
+        encoding = enc.getEncoding();
     }
 
     /**

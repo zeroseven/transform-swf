@@ -36,6 +36,8 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Stack;
 
+import com.flagstone.transform.CharacterEncoding;
+
 
 /**
  * SWFDecoder wraps an InputStream with a buffer to reduce the amount of
@@ -96,7 +98,7 @@ public final class SWFDecoder {
         stream = streamIn;
         buffer = new byte[length];
         stringBuffer = new byte[STR_BUFFER_SIZE];
-        encoding = "UTF-8";
+        encoding = CharacterEncoding.UTF8.getEncoding();
         locations = new Stack<Integer>();
         pos = 0;
     }
@@ -111,7 +113,7 @@ public final class SWFDecoder {
         stream = streamIn;
         buffer = new byte[BUFFER_SIZE];
         stringBuffer = new byte[BUFFER_SIZE];
-        encoding = "UTF-8";
+        encoding = CharacterEncoding.UTF8.getEncoding();
         locations = new Stack<Integer>();
         pos = 0;
     }
@@ -120,11 +122,11 @@ public final class SWFDecoder {
      * Sets the character encoding scheme used when encoding or decoding
      * strings.
      *
-     * @param charSet
-     *            the name of the character set used to encode strings.
+     * @param enc
+     *            the CharacterEncoding that identifies how strings are encoded.
      */
-    public void setEncoding(final String charSet) {
-        encoding = charSet;
+    public void setEncoding(final CharacterEncoding enc) {
+        encoding = enc.getEncoding();
     }
 
     /**

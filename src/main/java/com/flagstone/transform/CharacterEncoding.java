@@ -40,15 +40,35 @@ public enum CharacterEncoding {
      * Defines that the characters in a font or string are encoded using SJIS
      * standard for representing Kanji characters.
      */
-    SJIS,
+    SJIS("Shift-JIS"),
     /**
      * Defines that the characters in a font or string are encoded using the
      * ANSI (ASCII) standard.
      */
-    ANSI,
+    ANSI("ASCII"),
     /**
      * Defines that the characters in a font or string are encoded using
      * Unicode (UTF-8).
      */
-    UTF8;
+    UTF8("UTF8");
+
+    /** Holds character set encoding name used in Java. */
+    private String encoding;
+
+    /**
+     * Private constructor used for enum values.
+     * @param enc the name representing the character encoding.
+     */
+    private CharacterEncoding(final String enc) {
+        encoding = enc;
+    }
+
+    /**
+     * Get the string used by Java to identify the character encoding.
+     *
+     * @return the name commonly used to represent the character encoding.
+     */
+    public String getEncoding() {
+        return encoding;
+    }
 }

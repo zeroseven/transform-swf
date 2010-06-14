@@ -291,7 +291,7 @@ public final class Movie {
                 decoder = new SWFDecoder(streamIn);
             }
 
-            decoder.setEncoding(encoding.toString());
+            decoder.setEncoding(encoding);
 
             objects.clear();
 
@@ -390,7 +390,7 @@ public final class Movie {
             }
 
             SWFEncoder coder = new SWFEncoder(streamOut);
-            coder.setEncoding(encoding.toString());
+            coder.setEncoding(encoding);
 
             for (final MovieTag tag : objects) {
                 tag.encode(coder, context);
