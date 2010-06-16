@@ -297,24 +297,6 @@ public final class DefineMorphShape2 implements ShapeTag {
     }
 
     /**
-     * Get the width of the shape at the start of the morphing process.
-     *
-     * @return the width of the starting shape.
-     */
-    public int getWidth() {
-        return bounds.getWidth();
-    }
-
-    /**
-     * Get the height of the shape at the start of the morphing process.
-     *
-     * @return the height of the starting shape.
-     */
-    public int getHeight() {
-        return bounds.getHeight();
-    }
-
-    /**
      * Add a LineStyle object to the list of line styles.
      *
      * @param aLineStyle

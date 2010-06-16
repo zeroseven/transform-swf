@@ -216,24 +216,6 @@ public final class DefineShape3 implements ShapeTag {
     }
 
     /**
-     * Get the width of the shape in twips.
-     *
-     * @return the width of the shape.
-     */
-    public int getWidth() {
-        return bounds.getWidth();
-    }
-
-    /**
-     * Get the height of the shape in twips.
-     *
-     * @return the height of the shape.
-     */
-    public int getHeight() {
-        return bounds.getHeight();
-    }
-
-    /**
      * Add a LineStyle1 to the list of line styles.
      *
      * @param style

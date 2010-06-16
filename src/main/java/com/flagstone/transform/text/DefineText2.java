@@ -209,24 +209,6 @@ public final class DefineText2 implements StaticTextTag {
     }
 
     /**
-     * Get the width of the text block in twips.
-     *
-     * @return the width of the text.
-     */
-    public int getWidth() {
-        return bounds.getWidth();
-    }
-
-    /**
-     * Get the height of the text block in twips.
-     *
-     * @return the height of the text.
-     */
-    public int getHeight() {
-        return bounds.getHeight();
-    }
-
-    /**
      * Add a TextSpan object to the list of text spans.
      *
      * @param obj

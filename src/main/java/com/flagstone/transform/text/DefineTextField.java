@@ -410,24 +410,6 @@ public final class DefineTextField implements DefineTag {
     }
 
     /**
-     * Get the width of the text field in twips.
-     *
-     * @return the width of the text.
-     */
-    public int getWidth() {
-        return bounds.getWidth();
-    }
-
-    /**
-     * Get the height of the text field in twips.
-     *
-     * @return the height of the text.
-     */
-    public int getHeight() {
-        return bounds.getHeight();
-    }
-
-    /**
      * Returns the bounding rectangle that completely encloses the text field.
      *
      * @return the bounding rectangle of the text.
