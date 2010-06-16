@@ -45,5 +45,13 @@ public enum VideoFormat {
      * of screen shots where only the differences between successive frames are
      * encoded.
      */
-    SCREEN
+    SCREEN,
+    /**
+     * Truemotion VP6 developed by On2 (now Google).
+     */
+    VP6,
+    /**
+     * Truemotion VP6 with transparency.
+     */
+    VP6ALPHA
 }

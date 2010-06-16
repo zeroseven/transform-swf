@@ -263,6 +263,15 @@ public final class DefineVideo implements DefineTag {
         case 2:
             value = Deblocking.ON;
             break;
+        case 3:
+            value = Deblocking.LEVEL2;
+            break;
+        case 4:
+            value = Deblocking.LEVEL3;
+            break;
+        case 5:
+            value = Deblocking.LEVEL4;
+            break;
         default:
             value = Deblocking.VIDEO;
             break;
@@ -288,6 +297,15 @@ public final class DefineVideo implements DefineTag {
             break;
         case ON:
             deblocking = 2;
+            break;
+        case LEVEL2:
+            deblocking = 3;
+            break;
+        case LEVEL3:
+            deblocking = 4;
+            break;
+        case LEVEL4:
+            deblocking = 5;
             break;
         default:
             throw new IllegalArgumentException();
@@ -316,16 +334,19 @@ public final class DefineVideo implements DefineTag {
     }
 
     /**
-     * Get the format used to encode the video data, either VideoFormat.H263 for
-     * data encoded using the Sorenson modified H263 format or
-     * VideoFormat.SCREEN (Flash 7 only) for data encoded using Macromedia's
-     * Screen Video format.
+     * Get the format used to encode the video data.
      *
      * @return the format used to encode the video.
      */
     public VideoFormat getCodec() {
         VideoFormat value;
         switch (codec) {
+        case Coder.BIT2 | Coder.BIT0:
+            value = VideoFormat.VP6ALPHA;
+            break;
+        case Coder.BIT2:
+            value = VideoFormat.VP6;
+            break;
         case Coder.BIT1:
             value = VideoFormat.H263;
             break;
@@ -339,14 +360,11 @@ public final class DefineVideo implements DefineTag {
     }
 
     /**
-     * Set the format used to encode the video data, either DefineVideo.H263 for
-     * data encoded using the Sorenson modified H263 format or
-     * DefineVideo.ScreenVideo (Flash 7 only) for data encoded using
-     * Macromedia's Screen Video format.
+     * Set the format used to encode the video data.
      *
      * @param format
-     *            the format used encode the video, either VideoFormat.H263 or
-     *            VideoFormat.SCREEN.
+     *            the format used encode the video, either VideoFormat.H263,
+     *            VideoFormat.SCREEN, VideoFormat.VP6 or VideoFormat.VP6ALPHA.
      */
     public void setCodec(final VideoFormat format) {
         switch (format) {
@@ -356,6 +374,11 @@ public final class DefineVideo implements DefineTag {
         case SCREEN:
             codec = Coder.BIT0 | Coder.BIT1;
             break;
+        case VP6:
+            codec = Coder.BIT2;
+            break;
+        case VP6ALPHA:
+            codec = Coder.BIT2 | Coder.BIT0;
         default:
             throw new IllegalArgumentException();
         }

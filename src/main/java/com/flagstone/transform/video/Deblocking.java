@@ -41,5 +41,11 @@ public enum Deblocking {
     /** Apply deblocking. */
     ON,
     /** Apply deblocking if it is specified in the video stream. */
-    VIDEO
+    VIDEO,
+    /** Apply deblocking for VP6 only. */
+    LEVEL2,
+    /** Apply deblocking and fast deringing for VP6 only. */
+    LEVEL3,
+    /** Apply deblocking and better deringing for VP6 only. */
+    LEVEL4
 }
