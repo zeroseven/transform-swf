@@ -34,6 +34,7 @@ package com.flagstone.transform.font;
 
 import java.io.IOException;
 
+import com.flagstone.transform.Constants;
 import com.flagstone.transform.DefineTag;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
@@ -76,7 +77,8 @@ public final class DefineFontName implements DefineTag {
         identifier = coder.readUnsignedShort();
         name = coder.readString();
         copyright = coder.readString();
-        coder.unmark(length);
+        coder.check(length);
+        coder.unmark();
     }
 
 
@@ -181,10 +183,15 @@ public final class DefineFontName implements DefineTag {
             coder.writeShort((MovieTypes.DEFINE_FONT_NAME
                     << Coder.LENGTH_FIELD_SIZE) | length);
         }
-        coder.mark();
+        if (Constants.DEBUG) {
+            coder.mark();
+        }
         coder.writeShort(identifier);
         coder.writeString(name);
         coder.writeString(copyright);
-        coder.unmark(length);
+        if (Constants.DEBUG) {
+            coder.check(length);
+            coder.unmark();
+        }
     }
 }

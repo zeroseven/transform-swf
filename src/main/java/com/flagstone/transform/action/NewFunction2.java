@@ -386,7 +386,8 @@ public final class NewFunction2 implements Action {
         while (coder.bytesRead() < actionsLength) {
             actions.add(decoder.getObject(coder, context));
         }
-        coder.unmark(actionsLength);
+        coder.check(actionsLength);
+        coder.unmark();
     }
 
     /**

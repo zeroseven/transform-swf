@@ -251,34 +251,34 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
             }
         }
 
-        coder.readUI32(); // fileSize
-        coder.readUI32(); // reserved
+        coder.readInt(); // fileSize
+        coder.readInt(); // reserved
 
-        final int offset = coder.readUI32();
-        final int headerSize = coder.readUI32();
+        final int offset = coder.readInt();
+        final int headerSize = coder.readInt();
 
         int bitsPerPixel;
         int coloursUsed;
 
         switch (headerSize) {
         case UNCOMPRESSED_LENGTH:
-            width = coder.readUI16();
-            height = coder.readUI16();
-            coder.readUI16(); // bitPlanes
-            bitsPerPixel = coder.readUI16();
+            width = coder.readUnsignedShort();
+            height = coder.readUnsignedShort();
+            coder.readUnsignedShort(); // bitPlanes
+            bitsPerPixel = coder.readUnsignedShort();
             coloursUsed = 0;
             break;
         case COMPRESSED_LENGTH:
-            width = coder.readUI32();
-            height = coder.readUI32();
-            coder.readUI16(); // bitPlanes
-            bitsPerPixel = coder.readUI16();
-            compressionMethod = coder.readUI32();
-            coder.readUI32(); // imageSize
-            coder.readUI32(); // horizontalResolution
-            coder.readUI32(); // verticalResolution
-            coloursUsed = coder.readUI32();
-            coder.readUI32(); // importantColours
+            width = coder.readInt();
+            height = coder.readInt();
+            coder.readUnsignedShort(); // bitPlanes
+            bitsPerPixel = coder.readUnsignedShort();
+            compressionMethod = coder.readInt();
+            coder.readInt(); // imageSize
+            coder.readInt(); // horizontalResolution
+            coder.readInt(); // verticalResolution
+            coloursUsed = coder.readInt();
+            coder.readInt(); // importantColours
             break;
         default:
             bitsPerPixel = 0;
@@ -287,9 +287,9 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
         }
 
         if (compressionMethod == BI_BITFIELDS) {
-            redMask = coder.readUI32();
-            greenMask = coder.readUI32();
-            blueMask = coder.readUI32();
+            redMask = coder.readInt();
+            greenMask = coder.readInt();
+            blueMask = coder.readInt();
 
             if (redMask == RGB555_RED_MASK) {
                 redShift = RGB555_RED_SHIFT;
@@ -452,8 +452,8 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
                     hasMore = false;
                     break;
                 case 2:
-                    col += coder.readUI16();
-                    row -= coder.readUI16();
+                    col += coder.readUnsignedShort();
+                    row -= coder.readUnsignedShort();
                     index = row * width + col;
                     for (int i = 0; i < code; i += 2) {
                         value = coder.readByte();
@@ -518,8 +518,8 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
                     hasMore = false;
                     break;
                 case 2:
-                    col += coder.readUI16();
-                    row -= coder.readUI16();
+                    col += coder.readUnsignedShort();
+                    row -= coder.readUnsignedShort();
                     index = row * width + col;
                     for (int i = 0; i < code; i++) {
                         image[index++] = (byte) coder.readByte();
@@ -563,7 +563,7 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
         for (int row = height - 1; row > 0; row--) {
             coder.mark();
             for (int col = 0; col < width; col++) {
-                colour = coder.readUI16();
+                colour = coder.readUnsignedShort();
                 image[index + RED] = (byte) ((colour & redMask)
                         >> redShift);
                 image[index + GREEN] = (byte) ((colour & greenMask)

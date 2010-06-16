@@ -85,7 +85,8 @@ public final class EnableDebugger2 implements MovieTag {
         coder.mark();
         coder.readUnsignedShort();
         password = coder.readString();
-        coder.unmark(length);
+        coder.check(length);
+        coder.unmark();
     }
 
     /**

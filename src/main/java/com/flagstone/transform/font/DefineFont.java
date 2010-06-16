@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.flagstone.transform.Constants;
 import com.flagstone.transform.DefineTag;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
@@ -121,7 +122,8 @@ public final class DefineFont implements DefineTag {
             shape.add(new ShapeData(coder.readBytes(data)));
             shapes.add(shape);
         }
-        coder.unmark(length);
+        coder.check(length);
+        coder.unmark();
     }
 
     /**
@@ -263,7 +265,9 @@ public final class DefineFont implements DefineTag {
             coder.writeShort((MovieTypes.DEFINE_FONT
                     << Coder.LENGTH_FIELD_SIZE) | length);
         }
-        coder.mark();
+        if (Constants.DEBUG) {
+            coder.mark();
+        }
         coder.writeShort(identifier);
 
         context.put(Context.FILL_SIZE, 1);
@@ -280,6 +284,9 @@ public final class DefineFont implements DefineTag {
 
         context.put(Context.FILL_SIZE, 0);
         context.put(Context.LINE_SIZE, 0);
-        coder.unmark(length);
+        if (Constants.DEBUG) {
+            coder.check(length);
+            coder.unmark();
+        }
     }
 }

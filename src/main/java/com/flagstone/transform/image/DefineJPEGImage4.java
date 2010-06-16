@@ -34,6 +34,7 @@ package com.flagstone.transform.image;
 import java.io.IOException;
 import java.util.Arrays;
 
+import com.flagstone.transform.Constants;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
@@ -87,7 +88,8 @@ public final class DefineJPEGImage4 implements ImageTag {
         // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
         alpha = coder.readBytes(new byte[length - size - 8]);
         decodeInfo();
-        coder.unmark(length);
+        coder.check(length);
+        coder.unmark();
     }
 
     /**
@@ -245,13 +247,18 @@ public final class DefineJPEGImage4 implements ImageTag {
             coder.writeShort((MovieTypes.DEFINE_JPEG_IMAGE_4
                     << Coder.LENGTH_FIELD_SIZE) | length);
         }
-        coder.mark();
+        if (Constants.DEBUG) {
+            coder.mark();
+        }
         coder.writeShort(identifier);
         coder.writeInt(image.length);
         coder.writeShort(deblocking);
         coder.writeBytes(image);
         coder.writeBytes(alpha);
-        coder.unmark(length);
+        if (Constants.DEBUG) {
+            coder.check(length);
+            coder.unmark();
+        }
     }
 
     private void decodeInfo() {

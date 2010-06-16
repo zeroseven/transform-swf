@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.flagstone.transform.Constants;
 import com.flagstone.transform.DefineTag;
 import com.flagstone.transform.action.Action;
 import com.flagstone.transform.action.ActionData;
@@ -120,7 +121,8 @@ public final class DefineButton implements DefineTag {
                 actions.add(decoder.getObject(coder, context));
             }
         }
-        coder.unmark(length);
+        coder.check(length);
+        coder.unmark();
     }
 
     /**
@@ -288,7 +290,9 @@ public final class DefineButton implements DefineTag {
             coder.writeShort((MovieTypes.DEFINE_BUTTON
                     << Coder.LENGTH_FIELD_SIZE) | length);
         }
-        coder.mark();
+        if (Constants.DEBUG) {
+            coder.mark();
+        }
         coder.writeShort(identifier);
 
         for (final ButtonShape shape : shapes) {
@@ -300,6 +304,9 @@ public final class DefineButton implements DefineTag {
         for (final Action action : actions) {
             action.encode(coder, context);
         }
-        coder.unmark(length);
+        if (Constants.DEBUG) {
+            coder.check(length);
+            coder.unmark();
+        }
     }
 }

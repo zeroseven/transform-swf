@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.flagstone.transform.Constants;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
@@ -213,7 +214,8 @@ public final class DefineMorphShape2 implements ShapeTag {
         context.remove(Context.TRANSPARENT);
         context.remove(Context.ARRAY_EXTENDED);
         context.remove(Context.TYPE);
-        coder.unmark(length);
+        coder.check(length);
+        coder.unmark();
     }
 
     /**
@@ -614,7 +616,9 @@ public final class DefineMorphShape2 implements ShapeTag {
             coder.writeShort((MovieTypes.DEFINE_MORPH_SHAPE_2
                     << Coder.LENGTH_FIELD_SIZE) | length);
         }
-        coder.mark();
+        if (Constants.DEBUG) {
+            coder.mark();
+        }
         coder.writeShort(identifier);
         context.put(Context.TRANSPARENT, 1);
 
@@ -663,6 +667,9 @@ public final class DefineMorphShape2 implements ShapeTag {
 
         context.remove(Context.ARRAY_EXTENDED);
         context.remove(Context.TRANSPARENT);
-        coder.unmark(length);
+        if (Constants.DEBUG) {
+            coder.check(length);
+            coder.unmark();
+        }
     }
 }

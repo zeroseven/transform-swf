@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.flagstone.transform.Constants;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
@@ -216,8 +217,9 @@ public final class DefineMorphShape implements ShapeTag {
         // known bug - empty objects may be added to Flash file.
         // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
         if (length - coder.bytesRead() != 33) {
-            coder.unmark(length);
+            coder.check(length);
         }
+        coder.unmark();
     }
 
     /**
@@ -558,7 +560,9 @@ public final class DefineMorphShape implements ShapeTag {
             coder.writeShort((MovieTypes.DEFINE_MORPH_SHAPE
                     << Coder.LENGTH_FIELD_SIZE) | length);
         }
-        coder.mark();
+        if (Constants.DEBUG) {
+            coder.mark();
+        }
         coder.writeShort(identifier);
         context.put(Context.TRANSPARENT, 1);
 
@@ -602,6 +606,9 @@ public final class DefineMorphShape implements ShapeTag {
 
         context.remove(Context.ARRAY_EXTENDED);
         context.remove(Context.TRANSPARENT);
-        coder.unmark(length);
+        if (Constants.DEBUG) {
+            coder.check(length);
+            coder.unmark();
+        }
     }
 }

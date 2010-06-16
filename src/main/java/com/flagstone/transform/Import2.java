@@ -106,7 +106,8 @@ public final class Import2 implements MovieTag {
         for (int i = 0; i < count; i++) {
             objects.put(coder.readUnsignedShort(), coder.readString());
         }
-        coder.unmark(length);
+        coder.check(length);
+        coder.unmark();
     }
 
     /**

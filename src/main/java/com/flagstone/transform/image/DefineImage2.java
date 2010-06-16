@@ -34,6 +34,7 @@ package com.flagstone.transform.image;
 import java.io.IOException;
 import java.util.Arrays;
 
+import com.flagstone.transform.Constants;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
@@ -135,7 +136,8 @@ public final class DefineImage2 implements ImageTag {
             // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
             image = coder.readBytes(new byte[length - 7]);
         }
-        coder.unmark(length);
+        coder.check(length);
+        coder.unmark();
     }
 
     /**
@@ -376,7 +378,9 @@ public final class DefineImage2 implements ImageTag {
         coder.writeShort((MovieTypes.DEFINE_IMAGE_2 << Coder.LENGTH_FIELD_SIZE)
                 | Coder.IS_EXTENDED);
         coder.writeInt(length);
-        coder.mark();
+        if (Constants.DEBUG) {
+            coder.mark();
+        }
         coder.writeShort(identifier);
 
         if (pixelSize == IDX_SIZE) {
@@ -393,6 +397,9 @@ public final class DefineImage2 implements ImageTag {
         }
 
         coder.writeBytes(image);
-        coder.unmark(length);
+        if (Constants.DEBUG) {
+            coder.check(length);
+            coder.unmark();
+        }
     }
 }

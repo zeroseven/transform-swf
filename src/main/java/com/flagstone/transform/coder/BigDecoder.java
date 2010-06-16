@@ -38,9 +38,8 @@ import java.util.Stack;
 /**
  * BigDecoder wraps an InputStream with a buffer to reduce the amount of
  * memory required to decode an image or sound and to improve efficiency by
- * reading data from a file or external source in blocks. Word data - shorts
- * and ints - are read in Big-Endian format with the most significant byte
- * decoded first.
+ * reading data from a file or external source in blocks. Word values are
+ * read in Big-Endian format with the most significant byte decoded first.
  */
 public final class BigDecoder {
     /** The default size, in bytes, for the internal buffer. */
@@ -77,12 +76,7 @@ public final class BigDecoder {
     private transient int offset;
     /** The number of bytes available in the current buffer. */
     private transient int size;
-    private transient boolean eof;
 
-    /** The internal buffer containing data read from or written to a file. */
-//    private byte[] data;
-    /** The index in bits to the current location in the buffer. */
-    private transient int pointer;
     /**
      * Create a new BigDecoder for the underlying InputStream with the
      * specified buffer size.
@@ -94,8 +88,6 @@ public final class BigDecoder {
         stream = streamIn;
         buffer = new byte[length];
         locations = new Stack<Integer>();
-        pos = 0;
-        eof = false;
     }
 
     /**
@@ -108,132 +100,6 @@ public final class BigDecoder {
         stream = streamIn;
         buffer = new byte[BUFFER_SIZE];
         locations = new Stack<Integer>();
-        pos = 0;
-    }
-
-    /**
-     * Remember the current position.
-     */
-    public void mark() {
-        locations.push(pos + index);
-    }
-
-    /**
-     * Discard the last saved position.
-     */
-    public void unmark() {
-        locations.pop();
-    }
-
-    /**
-     * Compare the number of bytes read since the last saved position. The last
-     * saved position is discarded.
-     *
-     * @param expected the expected number of bytes read.
-     *
-     * @throws IOException if the number of bytes read is different from the
-     * expected number.
-     */
-    public void unmark(final int expected) throws IOException {
-        if (bytesRead() != expected) {
-            throw new CoderException(locations.peek(), expected,
-                    bytesRead() - expected);
-        }
-        locations.pop();
-    }
-
-    /**
-     * Get the number of bytes read from the last saved position.
-     *
-     * @return the number of bytes read since the mark() method was last called.
-     */
-    public int bytesRead() {
-        int count;
-        if (pos == 0) {
-            count = index - locations.peek();
-        } else {
-            count = (pos + index) - locations.peek();
-        }
-        return count;
-    }
-
-    /**
-     * Skips over and discards n bytes of data.
-     *
-     * @param count the number of bytes to skip.
-     *
-     * @throws IOException if an error occurs reading from the underlying
-     * input stream.
-     */
-    public void skip(final int count) throws IOException {
-        final int diff = size - index;
-        if (count < diff) {
-            index += count;
-        } else {
-            final int bytesSkipped = diff;
-            stream.skip(count - bytesSkipped);
-            pos += count - bytesSkipped;
-            index = size;
-            fill();
-        }
-    }
-
-    /**
-     * Get the location, in bits, where the next value will be read or
-     * written.
-     *
-     * @return the location of the next bit to be accessed.
-     */
-    public int getPointer() {
-        return (index << BYTES_TO_BITS) + offset;
-    }
-
-    /**
-     * Sets the location, in bits, where the next value will be read or written.
-     *
-     * @param location
-     *            the offset in bits from the start of the array of bytes.
-     */
-    public void setPointer(final int location) {
-        index = location >>> BITS_TO_BYTES;
-        offset = location & Coder.LOWEST3;
-    }
-
-    /**
-     * Changes the location where the next value will be read or written by.
-     *
-     * @param numberOfBits
-     *            the number of bits to add to the current location.
-     */
-    public void adjustPointer(final int numberOfBits) {
-        pointer = (index << BYTES_TO_BITS) + offset + numberOfBits;
-        index = pointer >>> BITS_TO_BYTES;
-        offset = pointer & Coder.LOWEST3;
-    }
-
-    /**
-     * Is there any more data to read.
-     *
-     * @return true there is no more data to read from the stream.
-     *
-     * @throws IOException if an error from the underlying input stream.
-     */
-    public boolean eof() throws IOException {
-        if (size - index == 0) {
-            fill();
-        }
-        eof = size - index == 0;
-        return eof;
-    }
-
-    /**
-     * Changes the location to the next byte boundary.
-     */
-    public void alignToByte() {
-        if (offset > 0) {
-            index += 1;
-            offset = 0;
-        }
     }
 
     /**
@@ -244,7 +110,7 @@ public final class BigDecoder {
      * @throws IOException if an error occurs reading from the underlying
      * input stream.
      */
-    private void fill() throws IOException {
+    public void fill() throws IOException {
         final int diff = size - index;
         pos += index;
 
@@ -275,6 +141,129 @@ public final class BigDecoder {
     }
 
     /**
+     * Mark the current position.
+     * @return the current position.
+     */
+    public int mark() {
+        return locations.push(pos + index);
+    }
+
+    /**
+     * Discard the last saved position.
+     */
+    public void unmark() {
+        locations.pop();
+    }
+
+    /**
+     * Reposition the decoder to the point recorded by the last call to the
+     * mark() method.
+     *
+     * @throws IOException if the internal buffer was filled after mark() was
+     * called.
+     */
+    public void reset() throws IOException {
+        int location;
+
+        if (locations.isEmpty()) {
+            location = 0;
+        } else {
+            location = locations.peek();
+        }
+        if (location - pos < 0) {
+            throw new IOException();
+        }
+        index = location - pos;
+    }
+
+    /**
+     * Change the position of the decoder within the internal buffer.
+     *
+     * @param location
+     *            the offset in bytes from the start of the internal buffer.
+     *
+     * @throws IOException if the internal buffer was filled after mark() was
+     * called.
+     */
+    public void move(final int location) throws IOException {
+        if (size - index == 0) {
+            fill();
+        }
+        if (location < 0 || location > size) {
+            throw new ArrayIndexOutOfBoundsException();
+        }
+        index = location;
+        offset = 0;
+    }
+
+    /**
+     * Get the number of bytes read from the last saved position.
+     *
+     * @return the number of bytes read since the mark() method was last called.
+     */
+    public int bytesRead() {
+        return (pos + index) - locations.peek();
+    }
+
+    /**
+     * Changes the location to the next byte boundary.
+     */
+    public void alignToByte() {
+        if (offset > 0) {
+            index += 1;
+            offset = 0;
+        }
+    }
+
+    /**
+     * Skips over and discards n bytes of data.
+     *
+     * @param count the number of bytes to skip.
+     *
+     * @throws IOException if an error occurs reading from the underlying
+     * input stream.
+     */
+    public void skip(final int count) throws IOException {
+        if (size - index == 0) {
+            fill();
+        }
+        if (count < size - index) {
+            index += count;
+        } else {
+            int toSkip = count;
+            int diff;
+            while (toSkip > 0) {
+                diff = size - index;
+                if (toSkip < diff) {
+                    index += toSkip;
+                    toSkip = 0;
+                } else {
+                    index += diff;
+                    toSkip -= diff;
+                    fill();
+                    if (size - index == 0) {
+                        throw new ArrayIndexOutOfBoundsException();
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Is there any more data to read.
+     *
+     * @return true there is no more data to read from the stream.
+     *
+     * @throws IOException if an error from the underlying input stream.
+     */
+    public boolean eof() throws IOException {
+        if (size - index == 0) {
+            fill();
+        }
+        return size - index == 0;
+    }
+
+    /**
      * Read a bit field.
      *
      * @param numberOfBits
@@ -291,7 +280,7 @@ public final class BigDecoder {
     public int readBits(final int numberOfBits, final boolean signed)
             throws IOException {
 
-        pointer = (index << BYTES_TO_BITS) + offset;
+        int pointer = (index << BYTES_TO_BITS) + offset;
 
         if (((size << BYTES_TO_BITS) - pointer) < numberOfBits) {
             fill();
@@ -301,6 +290,10 @@ public final class BigDecoder {
         int value = 0;
 
         if (numberOfBits > 0) {
+
+            if (pointer + numberOfBits > (size << BYTES_TO_BITS)) {
+                throw new ArrayIndexOutOfBoundsException();
+            }
 
             for (int i = BITS_PER_INT; (i > 0)
                     && (index < buffer.length); i -= BITS_PER_BYTE) {
@@ -335,6 +328,9 @@ public final class BigDecoder {
         if (size - index < 1) {
             fill();
         }
+        if (index + 1 > size) {
+            throw new ArrayIndexOutOfBoundsException();
+        }
         return buffer[index++] & BYTE_MASK;
     }
 
@@ -368,7 +364,7 @@ public final class BigDecoder {
             index += available;
             dest += available;
 
-            if (index == size) {
+            if (read < wanted && index == size) {
                 fill();
             }
         }
@@ -422,9 +418,12 @@ public final class BigDecoder {
      * @throws IOException if an error occurs reading from the underlying
      * input stream.
      */
-    public int readUI16() throws IOException {
+    public int readUnsignedShort() throws IOException {
         if (size - index < 2) {
             fill();
+        }
+        if (index + 2 > size) {
+            throw new ArrayIndexOutOfBoundsException();
         }
         int value = (buffer[index++] & BYTE_MASK) << TO_BYTE1;
         value |= buffer[index++] & BYTE_MASK;
@@ -439,9 +438,12 @@ public final class BigDecoder {
      * @throws IOException if an error occurs reading from the underlying
      * input stream.
      */
-    public int readSI16() throws IOException {
+    public int readShort() throws IOException {
         if (size - index < 2) {
             fill();
+        }
+        if (index + 2 > size) {
+            throw new ArrayIndexOutOfBoundsException();
         }
         int value = buffer[index++] << TO_BYTE1;
         value |= buffer[index++] & BYTE_MASK;
@@ -456,9 +458,12 @@ public final class BigDecoder {
      * input stream.
      * @return the value read.
      */
-    public int scanUI32() throws IOException {
+    public int scanInt() throws IOException {
         if (size - index < 2) {
             fill();
+        }
+        if (index + 4 > size) {
+            throw new ArrayIndexOutOfBoundsException();
         }
         int addr = index;
         int value = (buffer[addr++] & BYTE_MASK) << TO_BYTE3;
@@ -476,9 +481,12 @@ public final class BigDecoder {
      * input stream.
      * @return the value read.
      */
-    public int readUI32() throws IOException {
+    public int readInt() throws IOException {
         if (size - index < 2) {
             fill();
+        }
+        if (index + 4 > size) {
+            throw new ArrayIndexOutOfBoundsException();
         }
         int value = (buffer[index++] & BYTE_MASK) << TO_BYTE3;
         value |= (buffer[index++] & BYTE_MASK) << TO_BYTE2;

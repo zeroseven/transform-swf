@@ -86,7 +86,8 @@ public final class DefineData implements DefineTag {
         identifier = coder.readUnsignedShort();
         coder.readInt(); // always zero
         data = coder.readBytes(new byte[length - coder.bytesRead()]);
-        coder.unmark(length);
+        coder.check(length);
+        coder.unmark();
     }
 
     /**
@@ -183,10 +184,15 @@ public final class DefineData implements DefineTag {
             coder.writeShort((MovieTypes.DEFINE_BINARY_DATA
                     << Coder.LENGTH_FIELD_SIZE) | length);
         }
-        coder.mark();
+        if (Constants.DEBUG) {
+            coder.mark();
+        }
         coder.writeShort(identifier);
         coder.writeInt(0);
         coder.writeBytes(data);
-        coder.unmark(length);
+        if (Constants.DEBUG) {
+            coder.check(length);
+            coder.unmark();
+        }
     }
 }

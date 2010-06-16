@@ -34,6 +34,7 @@ package com.flagstone.transform.button;
 
 import java.io.IOException;
 
+import com.flagstone.transform.Constants;
 import com.flagstone.transform.MovieTag;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
@@ -98,7 +99,8 @@ public final class ButtonColorTransform implements MovieTag {
         coder.mark();
         identifier = coder.readUnsignedShort();
         colorTransform = new ColorTransform(coder, context);
-        coder.unmark(length);
+        coder.check(length);
+        coder.unmark();
     }
 
     /**
@@ -207,9 +209,14 @@ public final class ButtonColorTransform implements MovieTag {
             coder.writeShort((MovieTypes.BUTTON_COLOR_TRANSFORM
                     << Coder.LENGTH_FIELD_SIZE) | length);
         }
-        coder.mark();
+        if (Constants.DEBUG) {
+            coder.mark();
+        }
         coder.writeShort(identifier);
         colorTransform.encode(coder, context);
-        coder.unmark(length);
+        if (Constants.DEBUG) {
+            coder.check(length);
+            coder.unmark();
+        }
     }
 }

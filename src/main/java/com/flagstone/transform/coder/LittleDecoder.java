@@ -109,84 +109,6 @@ public final class LittleDecoder {
     }
 
     /**
-     * Remember the current position.
-     */
-    public void mark() {
-        locations.push(pos + index);
-    }
-
-    /**
-     * Discard the last saved position.
-     */
-    public void unmark() {
-        locations.pop();
-    }
-
-    /**
-     * Get the number of bytes read from the last saved position.
-     *
-     * @return the number of bytes read since the mark() method was last called.
-     */
-    public int bytesRead() {
-        int count;
-        if (pos == 0) {
-            count = index - locations.peek();
-        } else {
-            count = (pos + index) - locations.peek();
-        }
-        return count;
-    }
-
-    /**
-     * Skips over and discards n bytes of data.
-     *
-     * @param count the number of bytes to skip.
-     *
-     * @throws IOException if an error occurs reading from the underlying
-     * input stream.
-     */
-    public void skip(final int count) throws IOException {
-        final int diff = size - index;
-        if (count < diff) {
-            index += count;
-        } else {
-            final int bytesSkipped = diff;
-            stream.skip(count - bytesSkipped);
-            pos += count - bytesSkipped;
-            index = size;
-            fill();
-        }
-    }
-
-    /**
-     * Changes the location to the next byte boundary.
-     */
-    public void alignToByte() {
-        if (offset > 0) {
-            index += 1;
-            offset = 0;
-        }
-    }
-
-    /**
-     * Checks the number of bytes read since the last mark and moves to the
-     * next word (32-bit) aligned boundary.
-     *
-     * @throws IOException if an error occurs reading from the underlying
-     * input stream.
-     */
-    public void alignToWord() throws IOException {
-        if (size - index < BYTES_PER_INT) {
-            fill();
-        }
-        int diff = bytesRead() % BYTES_PER_INT;
-        if (diff > 0) {
-            index += BYTES_PER_INT - diff;
-            offset = 0;
-        }
-    }
-
-    /**
      * Fill the internal buffer. Any unread bytes are copied to the start of
      * the buffer and the remaining space is filled with data from the
      * underlying stream.
@@ -194,7 +116,7 @@ public final class LittleDecoder {
      * @throws IOException if an error occurs reading from the underlying
      * input stream.
      */
-    private void fill() throws IOException {
+    public void fill() throws IOException {
         final int diff = size - index;
         pos += index;
 
@@ -225,6 +147,117 @@ public final class LittleDecoder {
     }
 
     /**
+     * Mark the current position.
+     * @return the current position.
+     */
+    public int mark() {
+        return locations.push(pos + index);
+    }
+
+    /**
+     * Discard the last saved position.
+     */
+    public void unmark() {
+        locations.pop();
+    }
+
+    /**
+     * Reposition the decoder to the point recorded by the last call to the
+     * mark() method.
+     *
+     * @throws IOException if the internal buffer was filled after mark() was
+     * called.
+     */
+    public void reset() throws IOException {
+        int location;
+
+        if (locations.isEmpty()) {
+            location = 0;
+        } else {
+            location = locations.peek();
+        }
+        if (location - pos < 0) {
+            throw new IOException();
+        }
+        index = location - pos;
+    }
+
+    /**
+     * Get the number of bytes read from the last saved position.
+     *
+     * @return the number of bytes read since the mark() method was last called.
+     */
+    public int bytesRead() {
+        return pos + index - locations.peek();
+    }
+
+    /**
+     * Changes the location to the next byte boundary.
+     */
+    public void alignToByte() {
+        if (offset > 0) {
+            index += 1;
+            offset = 0;
+        }
+    }
+
+    /**
+     * Skips over and discards n bytes of data.
+     *
+     * @param count the number of bytes to skip.
+     *
+     * @throws IOException if an error occurs reading from the underlying
+     * input stream.
+     */
+    public void skip(final int count) throws IOException {
+        if (size - index == 0) {
+            fill();
+        }
+        if (count < size - index) {
+            index += count;
+        } else {
+            int toSkip = count;
+            int diff;
+            while (toSkip > 0) {
+                diff = size - index;
+                if (toSkip < diff) {
+                    index += toSkip;
+                    toSkip = 0;
+                } else {
+                    index += diff;
+                    toSkip -= diff;
+                    fill();
+                    if (size - index == 0) {
+                        throw new ArrayIndexOutOfBoundsException();
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Checks the number of bytes read since the last mark and moves to the
+     * next word (32-bit) aligned boundary.
+     *
+     * @throws IOException if an error occurs reading from the underlying
+     * input stream.
+     */
+    public void alignToWord() throws IOException {
+        if (size - index < BYTES_PER_INT) {
+            fill();
+        }
+        int diff = (pos + index) % BYTES_PER_INT;
+
+        if (diff > 0) {
+            index += BYTES_PER_INT - diff;
+            offset = 0;
+        } else if (offset > 0) {
+            index += BYTES_PER_INT;
+            offset = 0;
+        }
+    }
+
+    /**
      * Read a bit field.
      *
      * @param numberOfBits
@@ -250,6 +283,10 @@ public final class LittleDecoder {
         int value = 0;
 
         if (numberOfBits > 0) {
+
+            if (pointer + numberOfBits > (size << BYTES_TO_BITS)) {
+                throw new ArrayIndexOutOfBoundsException();
+            }
 
             for (int i = BITS_PER_INT; (i > 0)
                     && (index < buffer.length); i -= BITS_PER_BYTE) {
@@ -283,6 +320,9 @@ public final class LittleDecoder {
     public int readByte() throws IOException {
         if (size - index < 1) {
             fill();
+        }
+        if (index + 1 > size) {
+            throw new ArrayIndexOutOfBoundsException();
         }
         return buffer[index++] & BYTE_MASK;
     }
@@ -332,9 +372,12 @@ public final class LittleDecoder {
      * @throws IOException if an error occurs reading from the underlying
      * input stream.
      */
-    public int readUI16() throws IOException {
+    public int readUnsignedShort() throws IOException {
         if (size - index < 2) {
             fill();
+        }
+        if (index + 2 > size) {
+            throw new ArrayIndexOutOfBoundsException();
         }
         int value = buffer[index++] & BYTE_MASK;
         value |= (buffer[index++] & BYTE_MASK) << TO_BYTE1;
@@ -342,16 +385,19 @@ public final class LittleDecoder {
     }
 
     /**
-     * Read an unsigned 16-bit integer.
+     * Read an signed 16-bit integer.
      *
      * @return the value read.
      *
      * @throws IOException if an error occurs reading from the underlying
      * input stream.
      */
-    public int readSI16() throws IOException {
+    public int readShort() throws IOException {
         if (size - index < 2) {
             fill();
+        }
+        if (index + 2 > size) {
+            throw new ArrayIndexOutOfBoundsException();
         }
         int value = buffer[index++] & BYTE_MASK;
         value |= buffer[index++] << TO_BYTE1;
@@ -366,9 +412,12 @@ public final class LittleDecoder {
      * @throws IOException if an error occurs reading from the underlying
      * input stream.
      */
-    public int readUI32() throws IOException {
+    public int readInt() throws IOException {
         if (size - index < BYTES_PER_INT) {
             fill();
+        }
+        if (index + 4 > size) {
+            throw new ArrayIndexOutOfBoundsException();
         }
         int value = buffer[index++] & BYTE_MASK;
         value |= (buffer[index++] & BYTE_MASK) << TO_BYTE1;

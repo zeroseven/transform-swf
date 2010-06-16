@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.flagstone.transform.Constants;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.MovieTypes;
@@ -117,10 +118,17 @@ public final class DefineText implements StaticTextTag {
          * values are zero.
          */
 
-        // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 2 LINES
-        if (coder.count(0) >= 16) {
-            coder.skip(16);
+        coder.fill();
+        coder.mark();
+        int sum = 0;
+        // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
+        for (int i = 0; i < 16; i++) {
+            sum += coder.readByte();
         }
+        if (sum != 0) {
+            coder.reset();
+        }
+        coder.unmark();
 
         transform = new CoordTransform(coder);
 
@@ -140,7 +148,8 @@ public final class DefineText implements StaticTextTag {
 
         context.put(Context.GLYPH_SIZE, 0);
         context.put(Context.ADVANCE_SIZE, 0);
-        coder.unmark(length);
+        coder.check(length);
+        coder.unmark();
     }
 
     /**
@@ -351,7 +360,9 @@ public final class DefineText implements StaticTextTag {
             coder.writeShort((MovieTypes.DEFINE_TEXT
                     << Coder.LENGTH_FIELD_SIZE) | length);
         }
-        coder.mark();
+        if (Constants.DEBUG) {
+            coder.mark();
+        }
         coder.writeShort(identifier);
 
         context.put(Context.GLYPH_SIZE, glyphBits);
@@ -371,7 +382,10 @@ public final class DefineText implements StaticTextTag {
 
         context.put(Context.GLYPH_SIZE, 0);
         context.put(Context.ADVANCE_SIZE, 0);
-        coder.unmark(length);
+        if (Constants.DEBUG) {
+            coder.check(length);
+            coder.unmark();
+        }
     }
 
     private int calculateSizeForGlyphs() {

@@ -377,7 +377,8 @@ public final class Place3 implements MovieTag {
             }
         }
         context.remove(Context.TRANSPARENT);
-        coder.unmark(length);
+        coder.check(length);
+        coder.unmark();
     }
 
     /**
@@ -839,7 +840,9 @@ public final class Place3 implements MovieTag {
             coder.writeShort((MovieTypes.PLACE_3
                     << Coder.LENGTH_FIELD_SIZE) | length);
         }
-        coder.mark();
+        if (Constants.DEBUG) {
+            coder.mark();
+        }
 
         context.put(Context.TRANSPARENT, 1);
         int bits = 0;
@@ -929,6 +932,9 @@ public final class Place3 implements MovieTag {
             coder.writeInt(0);
         }
         context.remove(Context.TRANSPARENT);
-        coder.unmark(length);
+        if (Constants.DEBUG) {
+            coder.check(length);
+            coder.unmark();
+        }
     }
 }

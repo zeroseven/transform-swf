@@ -31,98 +31,78 @@
 
 package com.flagstone.transform.coder;
 
-import org.junit.Ignore;
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 
 
 public final class CoderTest {
 
     @Test
-    public void setStringEncodingToValidCharacterSet() {
-//        fixture.setEncoding("UTF-8");
-//        assertEquals("UTF-8", fixture.getEncoding());
+    public void sizeForSignedByte() {
+        assertEquals(8, Coder.size(-128));
+        assertEquals(8, Coder.size(127));
     }
 
-//    @Test(expected = UnsupportedCharsetException.class)
-//    public void setStringEncodingToInvalidCharacterSet() {
-//        fixture.setEncoding("null");
-//    }
-
-//    @Test(expected = IllegalCharsetNameException.class)
-//    public void setStringEncodingWithEmptyString() {
-//        fixture.setEncoding("");
-//    }
-
-    @Test @Ignore
-    public void checkSetDataCreatesCopy() {
-//        data = new byte[] {1, 2, 3, 4, 5 };
-//        fixture = new Decoder(data);
-//
-//        assertNotSame(data, fixture.data);
-//        assertArrayEquals(data, fixture.data);
+    @Test
+    public void sizeForSignedShort() {
+        assertEquals(16, Coder.size(-32768));
+        assertEquals(16, Coder.size(32767));
     }
 
-    @Test @Ignore
-    public void checkGetDataCreatesCopy() {
-//        data = new byte[] {1, 2, 3, 4, 5 };
-//
-//        fixture.data = data;
-//
-//        assertNotSame(data, fixture.getData());
-//        assertArrayEquals(data, fixture.getData());
+    @Test
+    public void sizeForSignedInt() {
+        assertEquals(32, Coder.size(-2147483648));
+        assertEquals(32, Coder.size(2147483647));
     }
 
-    @Test @Ignore
-    public void checkAccessorForPointer() {
-//        data = new byte[] {1, 2, 3, 4 };
-//        fixture = new Decoder(data);
-//        fixture.setPointer(8);
-//
-//        assertEquals(8, fixture.getPointer());
+    @Test
+    public void maxSizeForSignedInts() {
+        assertEquals(3, Coder.maxSize(-1, 2, 1, 3));
     }
 
-    @Test @Ignore
-    public void checkSetPointerGoesToCorrectLocation() {
-//        fixture = new Decoder(new byte[] {1, 2, 3, 4 });
-//        fixture.setPointer(8);
-//
-//        assertEquals(fixture.data[1], fixture.data[fixture.index]);
+    @Test
+    public void sizeForNegativeByte() {
+        assertEquals(8, Coder.unsignedSize(-255));
     }
 
-    @Test @Ignore
-    public void checkAdjustPointerGoesToCorrectLocation() {
-//        fixture = new Decoder(new byte[] {1, 2, 3, 4 });
-//
-//        fixture.adjustPointer(8);
-//        assertEquals(8, fixture.getPointer());
-//
-//        fixture.adjustPointer(-8);
-//        assertEquals(0, fixture.getPointer());
+    @Test
+    public void sizeForPositiveByte() {
+        assertEquals(8, Coder.unsignedSize(255));
     }
 
-    @Test @Ignore
-    public void checkAlignToByteOnByteBoundaryLeavesPointerUnchanged() {
-//        fixture = new Decoder(new byte[] {1, 2, 3, 4 });
-//        fixture.setPointer(8);
-//        fixture.alignToByte();
-//
-//        assertEquals(8, fixture.getPointer());
+    @Test
+    public void sizeForUnsignedShort() {
+        assertEquals(16, Coder.unsignedSize(32768));
     }
 
-    @Test @Ignore
-    public void checkAlignToByteOnBitBoundaryChangesPointer() {
-//        fixture = new Decoder(new byte[] {1, 2, 3, 4 });
-//        fixture.setPointer(9);
-//        fixture.alignToByte();
-//
-//        assertEquals(16, fixture.getPointer());
+    @Test
+    public void sizeForUnsignedInt() {
+        assertEquals(31, Coder.unsignedSize(2147483647));
     }
 
-    @Test @Ignore
-    public void checkPointerIsAtEndOfFile() {
-//        fixture = new Decoder(new byte[] {1, 2, 3, 4 });
-//        fixture.setPointer(32);
-//
-//        assertTrue(fixture.eof());
+    @Test
+    public void sizeVariableU32InOneByte() {
+        assertEquals(1, Coder.sizeVariableU32(127));
+    }
+
+    @Test
+    public void sizeVariableU32InTwoBytes() {
+        assertEquals(2, Coder.sizeVariableU32(255));
+    }
+
+    @Test
+    public void sizeVariableU32InThreeBytes() {
+        assertEquals(3, Coder.sizeVariableU32(65535));
+    }
+
+    @Test
+    public void sizeVariableU32InFourBytes() {
+        assertEquals(4, Coder.sizeVariableU32(16777215));
+    }
+
+    @Test
+    public void sizeVariableU32InFiveBytes() {
+        assertEquals(5, Coder.sizeVariableU32(2147483647));
     }
 }

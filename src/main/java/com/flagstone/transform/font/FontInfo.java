@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.flagstone.transform.Constants;
 import com.flagstone.transform.MovieTag;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
@@ -143,7 +144,8 @@ public final class FontInfo implements MovieTag {
                 codes.add(coder.readByte());
             }
         }
-        coder.unmark(length);
+        coder.check(length);
+        coder.unmark();
     }
 
     /**
@@ -436,7 +438,9 @@ public final class FontInfo implements MovieTag {
             coder.writeShort((MovieTypes.FONT_INFO
                     << Coder.LENGTH_FIELD_SIZE) | length);
         }
-        coder.mark();
+        if (Constants.DEBUG) {
+            coder.mark();
+        }
         coder.writeShort(identifier);
         coder.writeByte(context.strlen(name));
         coder.writeString(name);
@@ -458,6 +462,9 @@ public final class FontInfo implements MovieTag {
                 coder.writeByte(code.intValue());
             }
         }
-        coder.unmark(length);
+        if (Constants.DEBUG) {
+            coder.check(length);
+            coder.unmark();
+        }
     }
 }

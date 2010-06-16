@@ -112,7 +112,8 @@ public final class DoAction implements MovieTag {
                 actions.add(decoder.getObject(coder, context));
             }
         }
-        coder.unmark(length);
+        coder.check(length);
+        coder.unmark();
     }
 
     /**
@@ -221,10 +222,15 @@ public final class DoAction implements MovieTag {
             coder.writeShort((MovieTypes.DO_ACTION
                     << Coder.LENGTH_FIELD_SIZE) | length);
         }
-        coder.mark();
+        if (Constants.DEBUG) {
+            coder.mark();
+        }
         for (final Action action : actions) {
             action.encode(coder, context);
         }
-        coder.unmark(length);
+        if (Constants.DEBUG) {
+            coder.check(length);
+            coder.unmark();
+        }
     }
 }

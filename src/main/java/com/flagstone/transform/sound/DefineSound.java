@@ -34,6 +34,7 @@ package com.flagstone.transform.sound;
 import java.io.IOException;
 import java.util.Arrays;
 
+import com.flagstone.transform.Constants;
 import com.flagstone.transform.DefineTag;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
@@ -378,7 +379,9 @@ public final class DefineSound implements DefineTag {
             coder.writeShort((MovieTypes.DEFINE_SOUND
                     << Coder.LENGTH_FIELD_SIZE) | length);
         }
-        coder.mark();
+        if (Constants.DEBUG) {
+            coder.mark();
+        }
         coder.writeShort(identifier);
 
         int bits = format << Coder.TO_UPPER_NIB;
@@ -402,6 +405,9 @@ public final class DefineSound implements DefineTag {
         coder.writeByte(bits);
         coder.writeInt(sampleCount);
         coder.writeBytes(sound);
-        coder.unmark(length);
+        if (Constants.DEBUG) {
+            coder.check(length);
+            coder.unmark();
+        }
     }
 }

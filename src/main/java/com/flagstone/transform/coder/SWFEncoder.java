@@ -33,7 +33,6 @@ package com.flagstone.transform.coder;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.Stack;
 
 import com.flagstone.transform.CharacterEncoding;
@@ -94,7 +93,6 @@ public final class SWFEncoder {
         buffer = new byte[length];
         encoding = CharacterEncoding.UTF8.getEncoding();
         locations = new Stack<Integer>();
-        pos = 0;
     }
 
     /**
@@ -108,7 +106,59 @@ public final class SWFEncoder {
         buffer = new byte[BUFFER_SIZE];
         encoding = CharacterEncoding.UTF8.getEncoding();
         locations = new Stack<Integer>();
-        pos = 0;
+    }
+
+    /**
+     * Sets the character encoding scheme used when encoding or decoding
+     * strings.
+     *
+     * @param enc
+     *            the CharacterEncoding that identifies how strings are encoded.
+     */
+    public void setEncoding(final CharacterEncoding enc) {
+        encoding = enc.getEncoding();
+    }
+
+    /**
+     * Remember the current position.
+     * @return the current position.
+     */
+    public int mark() {
+        return locations.push(pos + index);
+    }
+
+    /**
+     * Discard the last saved position.
+     */
+    public void unmark() {
+        locations.pop();
+    }
+
+    /**
+     * Compare the number of bytes read with the expected number and throw an
+     * exception if there is a difference.
+     *
+     * @param expected the expected number of bytes read.
+     *
+     * @throws CoderException if the number of bytes read is different from the
+     * expected number.
+     */
+    public void check(final int expected) throws CoderException {
+        int actual = (pos + index) - locations.peek();
+        if (actual != expected) {
+            throw new CoderException(locations.peek(), expected,
+                    actual - expected);
+        }
+    }
+
+    /**
+     * Changes the location to the next byte boundary.
+     */
+    public void alignToByte() {
+        if (offset > 0) {
+            index += 1;
+            offset = 0;
+        }
     }
 
     /**
@@ -134,92 +184,6 @@ public final class SWFEncoder {
 
         pos += index;
         index = 0;
-    }
-
-    /**
-     * Remember the current position.
-     */
-    public void mark() {
-        locations.push(pos + index);
-    }
-
-    /**
-     * Discard the last saved position.
-     */
-    public void unmark() {
-        locations.pop();
-    }
-
-    /**
-     * Compare the number of bytes read since the last saved position. The last
-     * saved position is discarded.
-     *
-     * @param expected the expected number of bytes read.
-     *
-     * @throws IOException if the number of bytes read is different from the
-     * expected number.
-     */
-    public void unmark(final int expected) throws IOException {
-        if (bytesWritten() != expected) {
-            throw new CoderException(locations.peek(), expected,
-                    bytesWritten() - expected);
-        }
-        locations.pop();
-    }
-
-    /**
-     * Get the number of bytes read from the last saved position.
-     *
-     * @return the number of bytes read since the mark() method was last called.
-     */
-    public int bytesWritten() {
-        int count;
-        if (pos == 0) {
-            count = index - locations.peek();
-        } else {
-            count = (pos + index) - locations.peek();
-        }
-        return count;
-    }
-
-    /**
-     * Sets the character encoding scheme used when encoding or decoding
-     * strings.
-     *
-     * @param enc
-     *            the CharacterEncoding that identifies how strings are encoded.
-     */
-    public void setEncoding(final CharacterEncoding enc) {
-        encoding = enc.getEncoding();
-    }
-
-    /**
-     * Calculates the length of a string when encoded using the specified
-     * character set.
-     *
-     * @param string
-     *            the string to be encoded.
-     *
-     * @return the number of bytes required to encode the string plus 1 for a
-     *         terminating null character.
-     */
-
-    public int strlen(final String string) {
-        try {
-            return string.getBytes(encoding).length + 1;
-        } catch (final UnsupportedEncodingException e) {
-            throw new AssertionError(e);
-        }
-    }
-
-    /**
-     * Changes the location to the next byte boundary.
-     */
-    public void alignToByte() {
-        if (offset > 0) {
-            index += 1;
-            offset = 0;
-        }
     }
 
     /**

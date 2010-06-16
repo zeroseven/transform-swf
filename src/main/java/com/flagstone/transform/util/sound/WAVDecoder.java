@@ -155,7 +155,7 @@ public final class WAVDecoder implements SoundProvider, SoundDecoder {
             }
         }
 
-        coder.readUI32();
+        coder.readInt();
 
         for (int i = 0; i < WAV.length; i++) {
             if (coder.readByte() != WAV[i]) {
@@ -170,8 +170,8 @@ public final class WAVDecoder implements SoundProvider, SoundDecoder {
         boolean readDATA = false;
 
         do {
-            chunkType = coder.readUI32();
-            length = coder.readUI32();
+            chunkType = coder.readInt();
+            length = coder.readInt();
 
             switch (chunkType) {
             case FMT:
@@ -202,15 +202,15 @@ public final class WAVDecoder implements SoundProvider, SoundDecoder {
             throws IOException, DataFormatException {
         format = SoundFormat.PCM;
 
-        if (coder.readUI16() != 1) {
+        if (coder.readUnsignedShort() != 1) {
             throw new DataFormatException("Unsupported format");
         }
 
-        numberOfChannels = coder.readUI16();
-        sampleRate = coder.readUI32();
-        coder.readUI32(); // total data length
-        coder.readUI16(); // total bytes per sample
-        sampleSize = coder.readUI16() >> Coder.BITS_TO_BYTES;
+        numberOfChannels = coder.readUnsignedShort();
+        sampleRate = coder.readInt();
+        coder.readInt(); // total data length
+        coder.readUnsignedShort(); // total bytes per sample
+        sampleSize = coder.readUnsignedShort() >> Coder.BITS_TO_BYTES;
     }
 
     /**

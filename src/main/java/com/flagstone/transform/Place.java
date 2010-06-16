@@ -112,7 +112,8 @@ public final class Place implements MovieTag {
         if (coder.bytesRead() < length) {
             colorTransform = new ColorTransform(coder, context);
         }
-        coder.unmark(length);
+        coder.check(length);
+        coder.unmark();
     }
 
     /**
@@ -335,13 +336,18 @@ public final class Place implements MovieTag {
             coder.writeShort((MovieTypes.PLACE
                     << Coder.LENGTH_FIELD_SIZE) | length);
         }
-        coder.mark();
+        if (Constants.DEBUG) {
+            coder.mark();
+        }
         coder.writeShort(identifier);
         coder.writeShort(layer);
         transform.encode(coder, context);
         if (colorTransform != null) {
             colorTransform.encode(coder, context);
         }
-        coder.unmark(length);
+        if (Constants.DEBUG) {
+            coder.check(length);
+            coder.unmark();
+        }
     }
 }

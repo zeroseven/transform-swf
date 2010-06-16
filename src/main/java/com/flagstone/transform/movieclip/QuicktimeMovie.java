@@ -34,6 +34,7 @@ package com.flagstone.transform.movieclip;
 
 import java.io.IOException;
 
+import com.flagstone.transform.Constants;
 import com.flagstone.transform.MovieTag;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
@@ -73,7 +74,8 @@ public final class QuicktimeMovie implements MovieTag {
         }
         coder.mark();
         path = coder.readString(length);
-        coder.unmark(length);
+        coder.check(length);
+        coder.unmark();
     }
 
     /**
@@ -150,8 +152,13 @@ public final class QuicktimeMovie implements MovieTag {
             coder.writeShort((MovieTypes.QUICKTIME_MOVIE
                     << Coder.LENGTH_FIELD_SIZE) | length);
         }
-        coder.mark();
+        if (Constants.DEBUG) {
+            coder.mark();
+        }
         coder.writeString(path);
-        coder.unmark(length);
+        if (Constants.DEBUG) {
+            coder.check(length);
+            coder.unmark();
+        }
     }
 }

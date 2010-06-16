@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.flagstone.transform.Constants;
 import com.flagstone.transform.MovieTag;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
@@ -92,7 +93,8 @@ public final class FontAlignment implements MovieTag {
         while (coder.bytesRead() < length) {
             zones.add(new GlyphAlignment(coder));
         }
-        coder.unmark(length);
+        coder.check(length);
+        coder.unmark();
     }
 
 
@@ -231,13 +233,18 @@ public final class FontAlignment implements MovieTag {
             coder.writeShort((MovieTypes.FONT_ALIGNMENT
                     << Coder.LENGTH_FIELD_SIZE) | length);
         }
-        coder.mark();
+        if (Constants.DEBUG) {
+            coder.mark();
+        }
         coder.writeShort(identifier);
         coder.writeByte(hints);
 
         for (final GlyphAlignment zone : zones) {
             zone.encode(coder, context);
         }
-        coder.unmark(length);
+        if (Constants.DEBUG) {
+            coder.check(length);
+            coder.unmark();
+        }
     }
 }

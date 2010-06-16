@@ -90,7 +90,8 @@ public final class FrameLabel implements MovieTag {
         if (coder.bytesRead() < length) {
             anchor = coder.readByte() != 0;
         }
-        coder.unmark(length);
+        coder.check(length);
+        coder.unmark();
     }
 
     /**

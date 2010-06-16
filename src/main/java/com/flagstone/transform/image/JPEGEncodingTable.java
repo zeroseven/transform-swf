@@ -34,6 +34,7 @@ package com.flagstone.transform.image;
 import java.io.IOException;
 import java.util.Arrays;
 
+import com.flagstone.transform.Constants;
 import com.flagstone.transform.MovieTag;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
@@ -89,7 +90,8 @@ public final class JPEGEncodingTable implements MovieTag {
         }
         coder.mark();
         table = coder.readBytes(new byte[length]);
-        coder.unmark(length);
+        coder.check(length);
+        coder.unmark();
     }
 
     /**
@@ -169,8 +171,13 @@ public final class JPEGEncodingTable implements MovieTag {
             coder.writeShort((MovieTypes.JPEG_TABLES
                     << Coder.LENGTH_FIELD_SIZE) | length);
         }
-        coder.mark();
+        if (Constants.DEBUG) {
+            coder.mark();
+        }
         coder.writeBytes(table);
-        coder.unmark(length);
+        if (Constants.DEBUG) {
+            coder.check(length);
+            coder.unmark();
+        }
     }
 }

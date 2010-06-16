@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.flagstone.transform.Constants;
 import com.flagstone.transform.MovieTag;
 import com.flagstone.transform.action.Action;
 import com.flagstone.transform.action.ActionData;
@@ -241,11 +242,16 @@ public final class InitializeMovieClip implements MovieTag {
             coder.writeShort((MovieTypes.INITIALIZE
                     << Coder.LENGTH_FIELD_SIZE) | length);
         }
-        coder.mark();
+        if (Constants.DEBUG) {
+            coder.mark();
+        }
         coder.writeShort(identifier);
         for (final Action action : actions) {
             action.encode(coder, context);
         }
-        coder.unmark(length);
+        if (Constants.DEBUG) {
+            coder.check(length);
+            coder.unmark();
+        }
     }
 }

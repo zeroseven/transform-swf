@@ -84,7 +84,8 @@ public final class DoABC implements MovieTag {
         deferred = coder.readInt();
         name = coder.readString();
         data = coder.readBytes(new byte[length - coder.bytesRead()]);
-        coder.unmark(length);
+        coder.check(length);
+        coder.unmark();
     }
 
     /**
@@ -219,10 +220,15 @@ public final class DoABC implements MovieTag {
             coder.writeShort((MovieTypes.DO_ABC
                     << Coder.LENGTH_FIELD_SIZE) | length);
         }
-        coder.mark();
+        if (Constants.DEBUG) {
+            coder.mark();
+        }
         coder.writeInt(deferred);
         coder.writeString(name);
         coder.writeBytes(data);
-        coder.unmark(length);
+        if (Constants.DEBUG) {
+            coder.check(length);
+            coder.unmark();
+        }
     }
 }

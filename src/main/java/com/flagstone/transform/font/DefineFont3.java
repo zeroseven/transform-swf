@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.flagstone.transform.Constants;
 import com.flagstone.transform.DefineTag;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
@@ -226,7 +227,8 @@ public final class DefineFont3 implements DefineTag {
         }
 
         context.remove(Context.WIDE_CODES);
-        coder.unmark(length);
+        coder.check(length);
+        coder.unmark();
     }
 
     /**
@@ -847,7 +849,9 @@ public final class DefineFont3 implements DefineTag {
             coder.writeShort((MovieTypes.DEFINE_FONT_3
                     << Coder.LENGTH_FIELD_SIZE) | length);
         }
-        coder.mark();
+        if (Constants.DEBUG) {
+            coder.mark();
+        }
         coder.writeShort(identifier);
         context.put(Context.FILL_SIZE, 1);
         context.put(Context.LINE_SIZE, context.contains(Context.POSTSCRIPT) ? 1
@@ -918,7 +922,10 @@ public final class DefineFont3 implements DefineTag {
         context.put(Context.FILL_SIZE, 0);
         context.put(Context.LINE_SIZE, 0);
         context.remove(Context.WIDE_CODES);
-        coder.unmark(length);
+        if (Constants.DEBUG) {
+            coder.check(length);
+            coder.unmark();
+        }
     }
 
     private boolean containsLayoutInfo() {

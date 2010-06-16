@@ -238,9 +238,9 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
     private boolean readFrame() throws IOException, DataFormatException {
         boolean frameRead = false;
         while ((!coder.eof()) && !frameRead) {
-            int header = coder.scanUI32();
+            int header = coder.scanInt();
             if (header == -1) {
-                coder.readUI16();
+                coder.readUnsignedShort();
             } else if ((header & ID3_MASK) == ID3_V1) {
                 readID3V1();
             } else if ((header & ID3_MASK) == ID3_V2) {
@@ -249,7 +249,7 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
                 readFrame(header);
                 frameRead = true;
             } else {
-                coder.readUI16();
+                coder.readUnsignedShort();
             }
         }
         return !coder.eof();

@@ -83,7 +83,8 @@ public final class ScenesAndLabels implements MovieTag {
         for (int i = 0; i < count; i++) {
             labels.put(coder.readVarInt(), coder.readString());
         }
-        coder.unmark(length);
+        coder.check(length);
+        coder.unmark();
     }
 
     /**
@@ -211,7 +212,9 @@ public final class ScenesAndLabels implements MovieTag {
             coder.writeShort((MovieTypes.SCENES_AND_LABELS
                     << Coder.LENGTH_FIELD_SIZE) | length);
         }
-        coder.mark();
+        if (Constants.DEBUG) {
+            coder.mark();
+        }
         coder.writeVarInt(scenes.size());
 
         for (final Integer identifier : scenes.keySet()) {
@@ -225,6 +228,9 @@ public final class ScenesAndLabels implements MovieTag {
             coder.writeVarInt(identifier.intValue());
             coder.writeString(labels.get(identifier));
         }
-        coder.unmark(length);
+        if (Constants.DEBUG) {
+            coder.check(length);
+            coder.unmark();
+        }
     }
 }

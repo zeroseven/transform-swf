@@ -548,7 +548,9 @@ public final class EventHandler implements SWFEncodeable {
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
-        coder.mark();
+        if (Constants.DEBUG) {
+            coder.mark();
+        }
         if (context.contains(Context.TYPE)
                 && context.get(Context.TYPE) == MovieTypes.DEFINE_BUTTON_2) {
             coder.writeShort(offset + 2);
@@ -570,6 +572,9 @@ public final class EventHandler implements SWFEncodeable {
         for (final Action action : actions) {
             action.encode(coder, context);
         }
-        coder.unmark(length);
+        if (Constants.DEBUG) {
+            coder.check(length);
+            coder.unmark();
+        }
     }
 }

@@ -303,8 +303,8 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
         }
 
         while (moreChunks) {
-            length = coder.readUI32();
-            chunkType = coder.readUI32();
+            length = coder.readInt();
+            chunkType = coder.readInt();
             coder.mark();
             switch (chunkType) {
             case IHDR:
@@ -339,15 +339,15 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
      */
     private void decodeIHDR(final BigDecoder coder)
             throws IOException, DataFormatException {
-        width = coder.readUI32();
-        height = coder.readUI32();
+        width = coder.readInt();
+        height = coder.readInt();
         bitDepth = coder.readByte();
         colorType = coder.readByte();
         /* compression = */ coder.readByte();
         /* filterMethod = */ coder.readByte();
         interlaceMethod = coder.readByte();
 
-        coder.readUI32(); // crc
+        coder.readInt(); // crc
 
         switch (colorType) {
         case GREYSCALE:
@@ -398,9 +398,9 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
                 table[index + RED] = (byte) coder.readByte();
             }
         } else {
-            coder.adjustPointer(length << Coder.BYTES_TO_BITS);
+            coder.skip(length);
         }
-        coder.readUI32(); // crc
+        coder.readInt(); // crc
     }
 
     /**
@@ -415,12 +415,12 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
 
         switch (colorType) {
         case GREYSCALE:
-            transparentGrey = coder.readUI16();
+            transparentGrey = coder.readUnsignedShort();
             break;
         case TRUE_COLOUR:
-            transparentRed = coder.readUI16();
-            /* transparentGreen = */ coder.readUI16();
-            /* transparentBlue = */ coder.readUI16();
+            transparentRed = coder.readUnsignedShort();
+            /* transparentGreen = */ coder.readUnsignedShort();
+            /* transparentBlue = */ coder.readUnsignedShort();
             break;
         case INDEXED_COLOUR:
             format = ImageFormat.IDXA;
@@ -437,7 +437,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
         default:
             break;
         }
-        coder.readUI32(); // crc
+        coder.readInt(); // crc
     }
 
     /**
@@ -461,7 +461,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
 
         chunkData = data;
 
-        coder.readUI32(); // crc
+        coder.readInt(); // crc
     }
 
     /**
@@ -697,7 +697,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
             colour = (byte) pixel;
             break;
         case DEPTH_16:
-            pixel = coder.readUI16();
+            pixel = coder.readUnsignedShort();
             colour = (byte) (pixel >> Coder.TO_LOWER_BYTE);
             break;
         default:
@@ -732,7 +732,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
                 pixel = coder.readByte();
                 colour = (byte) pixel;
             } else if (bitDepth == DEPTH_16) {
-                pixel = coder.readUI16();
+                pixel = coder.readUnsignedShort();
                 colour = (byte) (pixel >> Coder.TO_LOWER_BYTE);
             } else {
                 throw new DataFormatException(BAD_FORMAT);
@@ -769,7 +769,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
             index = coder.readByte();
             break;
         case DEPTH_16:
-            index = coder.readUI16();
+            index = coder.readUnsignedShort();
             break;
         default:
             throw new DataFormatException(BAD_FORMAT);
@@ -813,9 +813,9 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
             alpha = coder.readByte();
             break;
         case DEPTH_16:
-            pixel = coder.readUI16();
+            pixel = coder.readUnsignedShort();
             colour = (byte) (pixel >> Coder.TO_LOWER_BYTE);
-            alpha = coder.readUI16() >> Coder.TO_LOWER_BYTE;
+            alpha = coder.readUnsignedShort() >> Coder.TO_LOWER_BYTE;
             break;
         default:
             throw new DataFormatException(BAD_FORMAT);
@@ -849,7 +849,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
                 pixel = coder.readByte();
                 colour = (byte) pixel;
             } else if (bitDepth == DEPTH_16) {
-                pixel = coder.readUI16();
+                pixel = coder.readUnsignedShort();
                 colour = (byte) (pixel >> Coder.TO_LOWER_BYTE);
             } else {
                 throw new DataFormatException(BAD_FORMAT);

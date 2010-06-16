@@ -90,7 +90,8 @@ public final class Background implements MovieTag {
         }
         coder.mark();
         color = new Color(coder, context);
-        coder.unmark(length);
+        coder.check(length);
+        coder.unmark();
     }
 
     /**

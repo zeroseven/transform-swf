@@ -36,6 +36,7 @@ import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.flagstone.transform.Constants;
 import com.flagstone.transform.Event;
 import com.flagstone.transform.MovieTag;
 import com.flagstone.transform.coder.Coder;
@@ -100,7 +101,8 @@ public final class ButtonSound implements MovieTag {
         decodeInfo(Event.ROLL_OVER, coder);
         decodeInfo(Event.PRESS, coder);
         decodeInfo(Event.RELEASE, coder);
-        coder.unmark(length);
+        coder.check(length);
+        coder.unmark();
     }
 
     private void decodeInfo(final Event event,
@@ -247,7 +249,9 @@ public final class ButtonSound implements MovieTag {
             coder.writeShort((MovieTypes.BUTTON_SOUND
                     << Coder.LENGTH_FIELD_SIZE) | length);
         }
-        coder.mark();
+        if (Constants.DEBUG) {
+            coder.mark();
+        }
         coder.writeShort(identifier);
 
         for (Event event : EVENTS) {
@@ -257,6 +261,9 @@ public final class ButtonSound implements MovieTag {
                 coder.writeShort(0);
             }
         }
-        coder.unmark(length);
+        if (Constants.DEBUG) {
+            coder.check(length);
+            coder.unmark();
+        }
     }
 }

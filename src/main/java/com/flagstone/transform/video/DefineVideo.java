@@ -33,6 +33,7 @@ package com.flagstone.transform.video;
 
 import java.io.IOException;
 
+import com.flagstone.transform.Constants;
 import com.flagstone.transform.DefineTag;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
@@ -105,7 +106,8 @@ public final class DefineVideo implements DefineTag {
         deblocking = (info & 0x06) >> 1;
         smoothed = (info & 0x01) == 1;
         codec = coder.readByte();
-        coder.unmark(length);
+        coder.check(length);
+        coder.unmark();
     }
 
     /**
@@ -390,7 +392,9 @@ public final class DefineVideo implements DefineTag {
             coder.writeShort((MovieTypes.DEFINE_VIDEO
                     << Coder.LENGTH_FIELD_SIZE) | length);
         }
-        coder.mark();
+        if (Constants.DEBUG) {
+            coder.mark();
+        }
         coder.writeShort(identifier);
         coder.writeShort(frameCount);
         coder.writeShort(width);
@@ -399,6 +403,9 @@ public final class DefineVideo implements DefineTag {
         bits |= smoothed ? Coder.BIT0 : 0;
         coder.writeByte(bits);
         coder.writeByte(codec);
-        coder.unmark(length);
+        if (Constants.DEBUG) {
+            coder.check(length);
+            coder.unmark();
+        }
     }
 }

@@ -70,7 +70,8 @@ public final class SerialNumber implements MovieTag {
         coder.mark();
         number = coder.readString(length - 1);
         coder.readByte();
-        coder.unmark(length);
+        coder.check(length);
+        coder.unmark();
     }
 
     /**

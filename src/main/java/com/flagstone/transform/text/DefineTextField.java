@@ -33,6 +33,7 @@ package com.flagstone.transform.text;
 
 import java.io.IOException;
 
+import com.flagstone.transform.Constants;
 import com.flagstone.transform.DefineTag;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
@@ -345,7 +346,8 @@ public final class DefineTextField implements DefineTag {
         }
 
         context.remove(Context.TRANSPARENT);
-        coder.unmark(length);
+        coder.check(length);
+        coder.unmark();
     }
 
     /**
@@ -1034,7 +1036,9 @@ public final class DefineTextField implements DefineTag {
             coder.writeShort((MovieTypes.DEFINE_TEXT_FIELD
                     << Coder.LENGTH_FIELD_SIZE) | length);
         }
-        coder.mark();
+        if (Constants.DEBUG) {
+            coder.mark();
+        }
         context.put(Context.TRANSPARENT, 1);
 
         coder.writeShort(identifier);
@@ -1091,7 +1095,10 @@ public final class DefineTextField implements DefineTag {
             coder.writeString(initialText);
         }
         context.remove(Context.TRANSPARENT);
-        coder.unmark(length);
+        if (Constants.DEBUG) {
+            coder.check(length);
+            coder.unmark();
+        }
     }
 
     private boolean containsLayout() {

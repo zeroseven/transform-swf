@@ -104,7 +104,8 @@ public final class Protect implements MovieTag {
                 password = password.substring(0, password.length() - 1);
             }
         }
-        coder.unmark(length);
+        coder.check(length);
+        coder.unmark();
     }
 
     /**

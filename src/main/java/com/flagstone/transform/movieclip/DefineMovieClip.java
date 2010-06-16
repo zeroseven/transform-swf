@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.flagstone.transform.Constants;
 import com.flagstone.transform.DefineTag;
 import com.flagstone.transform.MovieTag;
 import com.flagstone.transform.ShowFrame;
@@ -243,7 +244,9 @@ public final class DefineMovieClip implements DefineTag {
             coder.writeShort((MovieTypes.DEFINE_MOVIE_CLIP
                     << Coder.LENGTH_FIELD_SIZE) | length);
         }
-        coder.mark();
+        if (Constants.DEBUG) {
+            coder.mark();
+        }
         coder.writeShort(identifier);
         coder.writeShort(frameCount);
 
@@ -251,6 +254,9 @@ public final class DefineMovieClip implements DefineTag {
             object.encode(coder, context);
         }
         coder.writeShort(0);
-        coder.unmark(length);
+        if (Constants.DEBUG) {
+            coder.check(length);
+            coder.unmark();
+        }
     }
 }

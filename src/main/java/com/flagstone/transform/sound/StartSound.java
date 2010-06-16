@@ -34,6 +34,7 @@ package com.flagstone.transform.sound;
 
 import java.io.IOException;
 
+import com.flagstone.transform.Constants;
 import com.flagstone.transform.MovieTag;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
@@ -83,7 +84,8 @@ public final class StartSound implements MovieTag {
         }
         coder.mark();
         sound = new SoundInfo(coder.readUnsignedShort(), coder);
-        coder.unmark(length);
+        coder.check(length);
+        coder.unmark();
     }
 
     /**
@@ -161,8 +163,13 @@ public final class StartSound implements MovieTag {
             coder.writeShort((MovieTypes.START_SOUND
                     << Coder.LENGTH_FIELD_SIZE) | length);
         }
-        coder.mark();
+        if (Constants.DEBUG) {
+            coder.mark();
+        }
         sound.encode(coder, context);
-        coder.unmark(length);
+        if (Constants.DEBUG) {
+            coder.check(length);
+            coder.unmark();
+        }
     }
 }

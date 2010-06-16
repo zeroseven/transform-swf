@@ -104,31 +104,31 @@ public final class JPGDecoder implements ImageProvider, ImageDecoder {
          int length;
 
          do {
-             marker = coder.readUI16();
+             marker = coder.readUnsignedShort();
              if (marker == JPEGInfo.SOI) {
                  copyTag(marker, 0, coder);
              } else if (marker == JPEGInfo.SOF0) {
-                 length = coder.readUI16();
+                 length = coder.readUnsignedShort();
                  copyTag(marker, length, coder);
              } else if (marker == JPEGInfo.SOF2) {
-                 length = coder.readUI16();
+                 length = coder.readUnsignedShort();
                  copyTag(marker, length, coder);
              } else if (marker == JPEGInfo.DHT) {
-                 length = coder.readUI16();
+                 length = coder.readUnsignedShort();
                  copyTag(marker, length, coder);
              } else if (marker == JPEGInfo.DQT) {
-                 length = coder.readUI16();
+                 length = coder.readUnsignedShort();
                  copyTag(marker, length, coder);
              } else if (marker == JPEGInfo.DRI) {
-                 length = coder.readUI16();
+                 length = coder.readUnsignedShort();
                  copyTag(marker, length, coder);
              } else if (marker == JPEGInfo.SOS) {
-                 length = coder.readUI16();
+                 length = coder.readUnsignedShort();
                  copyTag(marker, length, coder);
              } else if (marker == JPEGInfo.EOI) {
                  copyTag(marker, 0, coder);
              } else if ((marker & JPEGInfo.APP) == JPEGInfo.APP) {
-                 length = coder.readUI16();
+                 length = coder.readUnsignedShort();
                  copyTag(marker, length, coder);
              } else {
                  copyTag(marker, 0, coder);

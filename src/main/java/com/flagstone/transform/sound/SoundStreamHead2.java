@@ -34,6 +34,7 @@ package com.flagstone.transform.sound;
 
 import java.io.IOException;
 
+import com.flagstone.transform.Constants;
 import com.flagstone.transform.MovieTag;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
@@ -144,7 +145,8 @@ public final class SoundStreamHead2 implements MovieTag {
         if ((length == 6) && (format == 2)) {
             latency = coder.readSignedShort();
         }
-        coder.unmark(length);
+        coder.check(length);
+        coder.unmark();
     }
 
     /**
@@ -456,7 +458,9 @@ public final class SoundStreamHead2 implements MovieTag {
             coder.writeShort((MovieTypes.SOUND_STREAM_HEAD_2
                     << Coder.LENGTH_FIELD_SIZE) | length);
         }
-        coder.mark();
+        if (Constants.DEBUG) {
+            coder.mark();
+        }
         int bits = reserved << Coder.TO_UPPER_NIB;
         bits |= writeRate(playRate);
         bits |= (playSampleSize - 1) << 1;
@@ -473,7 +477,10 @@ public final class SoundStreamHead2 implements MovieTag {
         if ((format == 2) && (latency > 0)) {
             coder.writeShort(latency);
         }
-        coder.unmark(length);
+        if (Constants.DEBUG) {
+            coder.check(length);
+            coder.unmark();
+        }
     }
 
     private int readRate(final int value) {

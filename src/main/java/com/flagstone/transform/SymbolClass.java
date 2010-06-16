@@ -84,7 +84,8 @@ public final class SymbolClass implements MovieTag {
         for (int i = 0; i < count; i++) {
             objects.put(coder.readUnsignedShort(), coder.readString());
         }
-        coder.unmark(length);
+        coder.check(length);
+        coder.unmark();
     }
 
     /**
@@ -190,12 +191,17 @@ public final class SymbolClass implements MovieTag {
             coder.writeShort((MovieTypes.SYMBOL
                     << Coder.LENGTH_FIELD_SIZE) | length);
         }
-        coder.mark();
+        if (Constants.DEBUG) {
+            coder.mark();
+        }
         coder.writeShort(objects.size());
         for (final Integer identifier : objects.keySet()) {
             coder.writeShort(identifier.intValue());
             coder.writeString(objects.get(identifier));
         }
-        coder.unmark(length);
+        if (Constants.DEBUG) {
+            coder.check(length);
+            coder.unmark();
+        }
     }
 }

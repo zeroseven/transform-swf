@@ -100,7 +100,6 @@ public final class SWFDecoder {
         stringBuffer = new byte[STR_BUFFER_SIZE];
         encoding = CharacterEncoding.UTF8.getEncoding();
         locations = new Stack<Integer>();
-        pos = 0;
     }
 
     /**
@@ -115,122 +114,6 @@ public final class SWFDecoder {
         stringBuffer = new byte[BUFFER_SIZE];
         encoding = CharacterEncoding.UTF8.getEncoding();
         locations = new Stack<Integer>();
-        pos = 0;
-    }
-
-    /**
-     * Sets the character encoding scheme used when encoding or decoding
-     * strings.
-     *
-     * @param enc
-     *            the CharacterEncoding that identifies how strings are encoded.
-     */
-    public void setEncoding(final CharacterEncoding enc) {
-        encoding = enc.getEncoding();
-    }
-
-    /**
-     * Remember the current position.
-     */
-    public int mark() {
-        return locations.push(pos + index);
-    }
-
-    /**
-     * Discard the last saved position.
-     */
-    public void unmark() {
-        locations.pop();
-    }
-
-    /**
-     * Compare the number of bytes read since the last saved position. The last
-     * saved position is discarded.
-     *
-     * @param expected the expected number of bytes read.
-     *
-     * @throws IOException if the number of bytes read is different from the
-     * expected number.
-     */
-    public void unmark(final int expected) throws IOException {
-        if (bytesRead() != expected) {
-            throw new CoderException(locations.peek(), expected,
-                    bytesRead() - expected);
-        }
-        locations.pop();
-    }
-
-    /**
-     * Get the number of bytes read from the last saved position.
-     *
-     * @return the number of bytes read since the mark() method was last called.
-     */
-    public int bytesRead() {
-        int count;
-        if (pos == 0) {
-            count = index - locations.peek();
-        } else {
-            count = (pos + index) - locations.peek();
-        }
-        return count;
-    }
-
-    /**
-     * Skips over and discards n bytes of data.
-     *
-     * @param count the number of bytes to skip.
-     *
-     * @throws IOException if an error occurs reading from the underlying
-     * input stream.
-     */
-    public void skip(final int count) throws IOException {
-        final int diff = size - index;
-        if (count < diff) {
-            index += count;
-        } else {
-            final int bytesSkipped = diff;
-            stream.skip(count - bytesSkipped);
-            pos += count - bytesSkipped;
-            index = size;
-            fill();
-        }
-    }
-
-    /**
-     * Count the number of consecutive bytes from the current buffer position
-     * that match the specified value, up to the end of the buffer.
-     *
-     * This method is used when dealing with badly formed tags (DefineText,
-     * DefineText2) that often contain blocks of zeroes, but otherwise are
-     * valid.
-     *
-     * @param value the value to compare.
-     * @return the number of matching bytes.
-     *
-     * @throws IOException if an error occurs reading from the underlying
-     * input stream.
-     */
-    public int count(final int value) throws IOException {
-        int count = 0;
-        fill();
-        for (int i = index; i < size; i++) {
-            if ((buffer[index + i] & BYTE_MASK) == value) {
-                count++;
-            } else {
-                break;
-            }
-        }
-        return count;
-    }
-
-    /**
-     * Changes the location to the next byte boundary.
-     */
-    public void alignToByte() {
-        if (offset > 0) {
-            index += 1;
-            offset = 0;
-        }
     }
 
     /**
@@ -241,7 +124,7 @@ public final class SWFDecoder {
      * @throws IOException if an error occurs reading from the underlying
      * input stream.
      */
-    private void fill() throws IOException {
+    public void fill() throws IOException {
         final int diff = size - index;
         pos += index;
 
@@ -272,6 +155,112 @@ public final class SWFDecoder {
     }
 
     /**
+     * Remember the current position.
+     * @return the current position.
+     */
+    public int mark() {
+        return locations.push(pos + index);
+    }
+
+    /**
+     * Discard the last saved position.
+     */
+    public void unmark() {
+        locations.pop();
+    }
+
+    /**
+     * Reposition the decoder to the point recorded by the last call to the
+     * mark() method.
+     *
+     * @throws IOException if the internal buffer was filled after mark() was
+     * called.
+     */
+    public void reset() throws IOException {
+        int location;
+
+        if (locations.isEmpty()) {
+            location = 0;
+        } else {
+            location = locations.peek();
+        }
+        if (location - pos < 0) {
+            throw new IOException();
+        }
+        index = location - pos;
+    }
+
+    /**
+     * Compare the number of bytes read since the last saved position and
+     * throw an exception if there is a difference.
+     *
+     * @param expected the expected number of bytes read.
+     *
+     * @throws IOException if the number of bytes read is different from the
+     * expected number.
+     */
+    public void check(final int expected) throws CoderException {
+        int actual = (pos + index) - locations.peek();
+        if (actual != expected) {
+            throw new CoderException(locations.peek(), expected,
+                    actual - expected);
+        }
+    }
+
+    /**
+     * Get the number of bytes read from the last saved position.
+     *
+     * @return the number of bytes read since the mark() method was last called.
+     */
+    public int bytesRead() {
+        return (pos + index) - locations.peek();
+    }
+
+    /**
+     * Changes the location to the next byte boundary.
+     */
+    public void alignToByte() {
+        if (offset > 0) {
+            index += 1;
+            offset = 0;
+        }
+    }
+
+    /**
+     * Skips over and discards n bytes of data.
+     *
+     * @param count the number of bytes to skip.
+     *
+     * @throws IOException if an error occurs reading from the underlying
+     * input stream.
+     */
+    public void skip(final int count) throws IOException {
+        if (size - index == 0) {
+            fill();
+        }
+        if (count < size - index) {
+            index += count;
+        } else {
+            int toSkip = count;
+            int diff;
+            while (toSkip > 0) {
+                diff = size - index;
+                if (toSkip < diff) {
+                    index += toSkip;
+                    toSkip = 0;
+                } else {
+                    index += diff;
+                    toSkip -= diff;
+                    fill();
+                    if (size - index == 0) {
+                        throw new ArrayIndexOutOfBoundsException();
+                    }
+                }
+            }
+        }
+    }
+
+    /**
      * Read a bit field.
      *
      * @param numberOfBits
@@ -298,6 +287,10 @@ public final class SWFDecoder {
         int value = 0;
 
         if (numberOfBits > 0) {
+
+            if (pointer + numberOfBits > (size << BYTES_TO_BITS)) {
+                throw new ArrayIndexOutOfBoundsException();
+            }
 
             for (int i = BITS_PER_INT; (i > 0)
                     && (index < buffer.length); i -= BITS_PER_BYTE) {
@@ -332,6 +325,9 @@ public final class SWFDecoder {
         if (size - index < 1) {
             fill();
         }
+        if (index + 1 > size) {
+            throw new ArrayIndexOutOfBoundsException();
+        }
         return buffer[index] & BYTE_MASK;
     }
 
@@ -346,6 +342,9 @@ public final class SWFDecoder {
     public int readByte() throws IOException {
         if (size - index < 1) {
             fill();
+        }
+        if (index + 1 > size) {
+            throw new ArrayIndexOutOfBoundsException();
         }
         return buffer[index++] & BYTE_MASK;
     }
@@ -385,6 +384,17 @@ public final class SWFDecoder {
             }
         }
         return bytes;
+    }
+
+    /**
+     * Sets the character encoding scheme used when encoding or decoding
+     * strings.
+     *
+     * @param enc
+     *            the CharacterEncoding that identifies how strings are encoded.
+     */
+    public void setEncoding(final CharacterEncoding enc) {
+        encoding = enc.getEncoding();
     }
 
     /**
@@ -465,6 +475,9 @@ public final class SWFDecoder {
         if (size - index < 2) {
             fill();
         }
+        if (index + 2 > size) {
+            throw new ArrayIndexOutOfBoundsException();
+        }
         int value = buffer[index] & BYTE_MASK;
         value |= (buffer[index + 1] & BYTE_MASK) << TO_BYTE1;
         return value;
@@ -481,6 +494,9 @@ public final class SWFDecoder {
     public int readUnsignedShort() throws IOException {
         if (size - index < 2) {
             fill();
+        }
+        if (index + 2 > size) {
+            throw new ArrayIndexOutOfBoundsException();
         }
         int value = buffer[index++] & BYTE_MASK;
         value |= (buffer[index++] & BYTE_MASK) << TO_BYTE1;
@@ -499,6 +515,9 @@ public final class SWFDecoder {
         if (size - index < 2) {
             fill();
         }
+        if (index + 2 > size) {
+            throw new ArrayIndexOutOfBoundsException();
+        }
         int value = buffer[index++] & BYTE_MASK;
         value |= buffer[index++] << TO_BYTE1;
         return value;
@@ -515,6 +534,9 @@ public final class SWFDecoder {
     public int readInt() throws IOException {
         if (size - index < 4) {
             fill();
+        }
+        if (index + 4 > size) {
+            throw new ArrayIndexOutOfBoundsException();
         }
         int value = buffer[index++] & BYTE_MASK;
         value |= (buffer[index++] & BYTE_MASK) << TO_BYTE1;

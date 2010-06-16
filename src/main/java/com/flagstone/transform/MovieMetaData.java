@@ -72,7 +72,8 @@ public final class MovieMetaData implements MovieTag {
         coder.mark();
         metaData = coder.readString(length - 1);
         coder.readByte();
-        coder.unmark(length);
+        coder.check(length);
+        coder.unmark();
     }
 
     /**
