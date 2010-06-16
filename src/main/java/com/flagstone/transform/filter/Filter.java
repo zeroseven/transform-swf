@@ -33,6 +33,9 @@ package com.flagstone.transform.filter;
 
 import com.flagstone.transform.coder.SWFEncodeable;
 
-/** TODO(class). */
+/**
+ * The Filter interface is used to constrain the types objects that can be
+ * added to the filter lists of Place3 and ButtonShape objects.
+ */
 public interface Filter extends SWFEncodeable {
 }

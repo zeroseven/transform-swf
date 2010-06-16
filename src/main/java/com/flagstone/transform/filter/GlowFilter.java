@@ -40,12 +40,17 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.Color;
 
-/** TODO(class). */
+/**
+ * GlowFilter is used to create a glow effect around an object on the display
+ * list.
+ */
 public final class GlowFilter implements Filter {
 
-    /** TODO(class). */
+    /**
+     * Builder for creating GlowFilter objects.
+     */
     public static final class Builder {
-        /** The shadow colour. */
+        /** The glow colour. */
         private transient Color color;
         /** The horizontal blur amount. */
         private transient int blurX;
@@ -58,20 +63,34 @@ public final class GlowFilter implements Filter {
         /** The number of blur passes. */
         private transient int passes;
 
-
-       public Builder setColor(final Color aColor) {
+        /**
+         * Set the colour of the glow.
+         * @param aColor the glow colour.
+         * @return this Builder.
+         */
+        public Builder setColor(final Color aColor) {
             color = aColor;
             return this;
         }
 
-
+        /**
+         * Set the blur amounts.
+         * @param xAmount the horizontal blur amount.
+         * @param yAmount the vertical blur amount.
+         * @return this Builder.
+         */
         public Builder setBlur(final float xAmount, final float yAmount) {
             blurX = (int) (xAmount * SCALE_16);
             blurY = (int) (yAmount * SCALE_16);
             return this;
         }
 
-
+        /**
+         * Set the compositing mode for the glow.
+         * @param filterMode the compositing mode, either INNER, KNOCKOUT or
+         * TOP.
+         * @return this Builder.
+         */
         public Builder setMode(final FilterMode filterMode) {
             switch (filterMode) {
             case KNOCKOUT:
@@ -86,19 +105,31 @@ public final class GlowFilter implements Filter {
             return this;
         }
 
-
+        /**
+         * Set the glow strength.
+         * @param weight the weight of the glow.
+         * @return this Builder.
+         */
         public Builder setStrength(final float weight) {
             strength = (int) (weight * SCALE_8);
             return this;
         }
 
-
+        /**
+         * Set the number of passes for creating the blur.
+         * @param count the number of blur passes.
+         * @return this Builder.
+         */
         public Builder setPasses(final int count) {
             passes = count;
             return this;
         }
 
-
+        /**
+         * Create a GlowFilter object using the parameters defined in the
+         * Builder.
+         * @return a GlowFilter object.
+         */
         public GlowFilter build() {
             return new GlowFilter(this);
         }
@@ -114,7 +145,7 @@ public final class GlowFilter implements Filter {
      * fixed point values..
      */
     private static final float SCALE_8 = 256.0f;
-
+    /** Bit mask for encoding and decoding the filter mode. */
     private static final int MODE_MASK = 0x00E0;
 
     /** Format string used in toString() method. */
@@ -135,6 +166,11 @@ public final class GlowFilter implements Filter {
     /** The number of blur passes. */
     private final transient int passes;
 
+    /**
+     * Create a GlowFilter and initialize it wit the values defined in
+     * the Builder.
+     * @param builder a Builder object.
+     */
     public GlowFilter(final Builder builder) {
         color = builder.color;
         blurX = builder.blurX;
@@ -170,27 +206,42 @@ public final class GlowFilter implements Filter {
         mode = value & MODE_MASK;
     }
 
-
-    public Color getColor() {
+    /**
+     * Get the glow colour.
+     * @return the color of the glow.
+     */
+    public Color getShadow() {
         return color;
     }
 
-
+    /**
+     * Get the blur amount in the x-direction.
+     * @return the horizontal blur amount.
+     */
     public float getBlurX() {
         return blurX / SCALE_16;
     }
 
-
+    /**
+     * Get the blur amount in the y-direction.
+     * @return the vertical blur amount.
+     */
     public float getBlurY() {
         return blurY / SCALE_16;
     }
 
-
+    /**
+     * Get the strength of the glow.
+     * @return the glow strength.
+     */
     public float getStrength() {
         return strength / SCALE_8;
     }
 
-
+    /**
+     * Get the compositing mode.
+     * @return the mode used for compositing, either TOP, INNER or KNOCKOUT.
+     */
     public FilterMode getMode() {
         FilterMode value;
         switch (mode) {
@@ -206,7 +257,10 @@ public final class GlowFilter implements Filter {
         return value;
     }
 
-
+    /**
+     * Get the number of passes for generating the blur.
+     * @return the number of blur passes.
+     */
     public int getPasses() {
         return passes;
     }

@@ -40,7 +40,10 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
-/** TODO(class). */
+/**
+ * BlurFilter is used to apply a Box filter to the pixel of an object on the
+ * display list.
+ */
 public final class BlurFilter implements Filter {
 
     /** Scaling factor for 16.16 fixed point values. */
@@ -77,7 +80,14 @@ public final class BlurFilter implements Filter {
         passes = coder.readByte() >>> 3;
     }
 
-
+    /**
+     * Create a BlurFilter with the horizontal and vertical blur values and the
+     * number of passes.
+     *
+     * @param xBlur the blur amount in the x-direction.
+     * @param yBlur the blue amount in the y-direction.
+     * @param count the number of passes to apply.
+     */
     public BlurFilter(final float xBlur, final float yBlur, final int count) {
         blurX = (int) (xBlur * SCALE_16);
         blurY = (int) (yBlur * SCALE_16);
@@ -88,17 +98,26 @@ public final class BlurFilter implements Filter {
         passes = count;
     }
 
-
+    /**
+     * Get the blur amount in the x-direction.
+     * @return the horizontal blur amount.
+     */
     public float getBlurX() {
         return blurX / SCALE_16;
     }
 
-
+    /**
+     * Get the blur amount in the y-direction.
+     * @return the vertical blur amount.
+     */
     public float getBlurY() {
         return blurY / SCALE_16;
     }
 
-
+    /**
+     * Get the number of passes.
+     * @return the times the blurring is applied.
+     */
     public int getPasses() {
         return passes;
     }

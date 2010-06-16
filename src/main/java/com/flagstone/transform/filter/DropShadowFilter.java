@@ -40,13 +40,18 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.Color;
 
-/** TODO(class). */
+/**
+ * DropShadowFilter is used to create a drop shadow on a object on the display
+ * list.
+ */
 public final class DropShadowFilter implements Filter {
 
-    /** TODO(class). */
+    /**
+     * Builder for creating DropShadowFilter objects.
+     */
     public static final class Builder {
         /** The shadow colour. */
-        private transient Color shadow;
+        private transient Color color;
         /** The horizontal blur amount. */
         private transient int blurX;
         /** The vertical blur amount. */
@@ -62,20 +67,34 @@ public final class DropShadowFilter implements Filter {
         /** The number of blur passes. */
         private transient int passes;
 
-
-       public Builder setShadow(final Color color) {
-            shadow = color;
+        /**
+         * Set the colour of the shadow.
+         * @param aColor the shadow colour.
+         * @return this Builder.
+         */
+        public Builder setShadow(final Color aColor) {
+            color = aColor;
             return this;
         }
 
-
+        /**
+         * Set the blur amounts.
+         * @param xAmount the horizontal blur amount.
+         * @param yAmount the vertical blur amount.
+         * @return this Builder.
+         */
         public Builder setBlur(final float xAmount, final float yAmount) {
             blurX = (int) (xAmount * SCALE_16);
             blurY = (int) (yAmount * SCALE_16);
             return this;
         }
 
-
+        /**
+         * Set the compositing mode for the shadow.
+         * @param filterMode the compositing mode, either INNER, KNOCKOUT or
+         * TOP.
+         * @return this Builder.
+         */
         public Builder setMode(final FilterMode filterMode) {
             switch (filterMode) {
             case KNOCKOUT:
@@ -90,31 +109,51 @@ public final class DropShadowFilter implements Filter {
             return this;
         }
 
-
-        public Builder setAngle(final float anAngle) {
-            angle = (int) (anAngle * SCALE_16);
+        /**
+         * Set the shadow angle in radians.
+         * @param radians the angle.
+         * @return this Builder.
+         */
+        public Builder setAngle(final float radians) {
+            angle = (int) (radians * SCALE_16);
             return this;
         }
 
-
-        public Builder setDistance(final float dist) {
-            distance = (int) (dist * SCALE_16);
+        /**
+         * Set the distance from the object that the shadow is displayed.
+         * @param width the width of the shadow.
+         * @return this Builder.
+         */
+        public Builder setDistance(final float width) {
+            distance = (int) (width * SCALE_16);
             return this;
         }
 
-
+        /**
+         * Set the shadow strength.
+         * @param weight the weight of the shadow.
+         * @return this Builder.
+         */
         public Builder setStrength(final float weight) {
             strength = (int) (weight * SCALE_8);
             return this;
         }
 
-
+        /**
+         * Set the number of passes for creating the blur.
+         * @param count the number of blur passes.
+         * @return this Builder.
+         */
         public Builder setPasses(final int count) {
             passes = count;
             return this;
         }
 
-
+        /**
+         * Create a DropShadowFilter object using the parameters defined in the
+         * Builder.
+         * @return a DropShadowFilter object.
+         */
         public DropShadowFilter build() {
             return new DropShadowFilter(this);
         }
@@ -130,16 +169,16 @@ public final class DropShadowFilter implements Filter {
      * fixed point values..
      */
     private static final float SCALE_8 = 256.0f;
-
+    /** Bit mask for encoding and decoding the filter mode. */
     private static final int MODE_MASK = 0x00C0;
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "DropShadowFilter: {"
-        + " shadow=%s; blurX=%f; blurY=%f;"
+        + " color=%s; blurX=%f; blurY=%f;"
         + " angle=%f; distance=%f; strength=%f; mode=%s; passes=%d}";
 
     /** The shadow colour. */
-    private final transient Color shadow;
+    private final transient Color color;
     /** The horizontal blur amount. */
     private final transient int blurX;
     /** The vertical blur amount. */
@@ -155,8 +194,13 @@ public final class DropShadowFilter implements Filter {
     /** The number of blur passes. */
     private final transient int passes;
 
+    /**
+     * Create a DropShadowFilter and initialize it wit the values defined in
+     * the Builder.
+     * @param builder a Builder object.
+     */
     public DropShadowFilter(final Builder builder) {
-        shadow = builder.shadow;
+        color = builder.color;
         blurX = builder.blurX;
         blurY = builder.blurY;
         angle =  builder.angle;
@@ -183,7 +227,7 @@ public final class DropShadowFilter implements Filter {
      */
     public DropShadowFilter(final SWFDecoder coder, final Context context)
             throws IOException {
-        shadow = new Color(coder, context);
+        color = new Color(coder, context);
         blurX = coder.readInt();
         blurY = coder.readInt();
         angle = coder.readInt();
@@ -195,37 +239,58 @@ public final class DropShadowFilter implements Filter {
         mode = value & MODE_MASK;
     }
 
-
-    public Color getShadow() {
-        return shadow;
+    /**
+     * Get the shadow colour.
+     * @return the color of the shadow.
+     */
+    public Color getColor() {
+        return color;
     }
 
-
+    /**
+     * Get the blur amount in the x-direction.
+     * @return the horizontal blur amount.
+     */
     public float getBlurX() {
         return blurX / SCALE_16;
     }
 
-
+    /**
+     * Get the blur amount in the y-direction.
+     * @return the vertical blur amount.
+     */
     public float getBlurY() {
         return blurY / SCALE_16;
     }
 
-
+    /**
+     * Get the angle of the shadow.
+     * @return the angle of the shadow in radians.
+     */
     public float getAngle() {
         return angle / SCALE_16;
     }
 
-
+    /**
+     * Get the distance of the shadow from the object.
+     * @return the width of the shadow.
+     */
     public float getDistance() {
         return distance / SCALE_16;
     }
 
-
+    /**
+     * Get the strength of the shadow.
+     * @return the shadow strength.
+     */
     public float getStrength() {
         return strength / SCALE_8;
     }
 
-
+    /**
+     * Get the compositing mode.
+     * @return the mode used for compositing, either TOP, INNER or KNOCKOUT.
+     */
     public FilterMode getMode() {
         FilterMode value;
         switch (mode) {
@@ -241,14 +306,17 @@ public final class DropShadowFilter implements Filter {
         return value;
     }
 
-
+    /**
+     * Get the number of passes for generating the blur.
+     * @return the number of blur passes.
+     */
     public int getPasses() {
         return passes;
     }
 
     @Override
     public String toString() {
-        return String.format(FORMAT, shadow.toString(),
+        return String.format(FORMAT, color.toString(),
                 getAngle(), getDistance(), getStrength(),
                 getBlurX(), getBlurY(), mode, passes);
     }
@@ -264,7 +332,7 @@ public final class DropShadowFilter implements Filter {
             result = true;
         } else if (object instanceof DropShadowFilter) {
             filter = (DropShadowFilter) object;
-            result = shadow.equals(filter.shadow) && (blurX == filter.blurX)
+            result = color.equals(filter.color) && (blurX == filter.blurX)
                     && (blurY == filter.blurY) && (angle == filter.angle)
                     && (distance == filter.distance)
                     && (strength == filter.strength) && (mode == filter.mode)
@@ -277,7 +345,7 @@ public final class DropShadowFilter implements Filter {
 
     @Override
     public int hashCode() {
-        return ((((((shadow.hashCode() * Constants.PRIME
+        return ((((((color.hashCode() * Constants.PRIME
                 + blurX) * Constants.PRIME
                 + blurY) * Constants.PRIME
                 + angle * Constants.PRIME)
@@ -297,7 +365,7 @@ public final class DropShadowFilter implements Filter {
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
         coder.writeByte(FilterTypes.DROP_SHADOW);
-        shadow.encode(coder, context);
+        color.encode(coder, context);
         coder.writeInt(blurX);
         coder.writeInt(blurY);
         coder.writeInt(angle);

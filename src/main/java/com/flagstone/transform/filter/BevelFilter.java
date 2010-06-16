@@ -40,7 +40,10 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.Color;
 
-/** TODO(class). */
+/**
+ * BevelFilter is used to create a smooth bevel around an object on the display
+ * list.
+ */
 public final class BevelFilter implements Filter {
 
     /**
@@ -53,10 +56,12 @@ public final class BevelFilter implements Filter {
      * fixed point values..
      */
     private static final float SCALE_8 = 256.0f;
-
+    /** Bit mask for encoding and decoding the filter mode. */
     private static final int MODE_MASK = 0x00D0;
 
-    /** TODO(class). */
+    /**
+     * Builder for creating BevelFilter objects.
+     */
     public static final class Builder {
         /** The shadow colour. */
         private transient Color shadow;
@@ -77,26 +82,44 @@ public final class BevelFilter implements Filter {
         /** The number of blur passes. */
         private transient int passes;
 
-
-       public Builder setShadow(final Color color) {
+        /**
+         * Set the colour used for the shadow section of the bevel.
+         * @param color the shadow colour.
+         * @return this Builder.
+         */
+        public Builder setShadow(final Color color) {
             shadow = color;
             return this;
         }
 
-
+        /**
+         * Set the colour used for the highlight section of hte bevel.
+         * @param color the highlight colour.
+         * @return this Builder.
+         */
         public Builder setHighlight(final Color color) {
             highlight = color;
             return this;
         }
 
-
+        /**
+         * Set the blur amounts.
+         * @param xAmount the horizontal blur amount.
+         * @param yAmount the vertical blur amount.
+         * @return this Builder.
+         */
         public Builder setBlur(final float xAmount, final float yAmount) {
             blurX = (int) (xAmount * SCALE_16);
             blurY = (int) (yAmount * SCALE_16);
             return this;
         }
 
-
+        /**
+         * Set the compositing mode for the shadow.
+         * @param filterMode the compositing mode, either INNER, KNOCKOUT or
+         * TOP.
+         * @return this Builder.
+         */
         public Builder setMode(final FilterMode filterMode) {
             switch (filterMode) {
             case TOP:
@@ -114,31 +137,51 @@ public final class BevelFilter implements Filter {
             return this;
         }
 
-
-        public Builder setAngle(final float anAngle) {
-            angle = (int) (anAngle * SCALE_16);
+        /**
+         * Set the shadow angle in radians.
+         * @param radians the angle.
+         * @return this Builder.
+         */
+        public Builder setAngle(final float radians) {
+            angle = (int) (radians * SCALE_16);
             return this;
         }
 
-
-        public Builder setDistance(final float dist) {
-            distance = (int) (dist * SCALE_16);
+        /**
+         * Set the distance from the object that the shadow is displayed.
+         * @param width the width of the shadow.
+         * @return this Builder.
+         */
+        public Builder setDistance(final float width) {
+            distance = (int) (width * SCALE_16);
             return this;
         }
 
-
+        /**
+         * Set the shadow strength.
+         * @param weight the weight of the shadow.
+         * @return this Builder.
+         */
         public Builder setStrength(final float weight) {
             strength = (int) (weight * SCALE_8);
             return this;
         }
 
-
+        /**
+         * Set the number of passes for creating the blur.
+         * @param count the number of blur passes.
+         * @return this Builder.
+         */
         public Builder setPasses(final int count) {
             passes = count;
             return this;
         }
 
-
+        /**
+         * Create a BevelFilter object using the parameters defined in the
+         * Builder.
+         * @return a BevelFilter object.
+         */
         public BevelFilter build() {
             return new BevelFilter(this);
         }
@@ -168,6 +211,11 @@ public final class BevelFilter implements Filter {
     /** The number of blur passes. */
     private final transient int passes;
 
+    /**
+     * Create a BevelFilter and initialize it wit the values defined in
+     * the Builder.
+     * @param builder a Builder object.
+     */
     public BevelFilter(final Builder builder) {
         shadow = builder.shadow;
         highlight = builder.highlight;
@@ -211,42 +259,66 @@ public final class BevelFilter implements Filter {
         mode = value & MODE_MASK;
     }
 
-
+    /**
+     * Get the shadow colour.
+     * @return the color of the shadow section of the bevel.
+     */
     public Color getShadow() {
         return shadow;
     }
 
-
+    /**
+     * Get the highlight colour.
+     * @return the color of the highlight section of the bevel.
+     */
     public Color getHightlight() {
         return highlight;
     }
 
-
+    /**
+     * Get the blur amount in the x-direction.
+     * @return the horizontal blur amount.
+     */
     public float getBlurX() {
         return blurX / SCALE_16;
     }
 
-
+    /**
+     * Get the blur amount in the y-direction.
+     * @return the vertical blur amount.
+     */
     public float getBlurY() {
         return blurY / SCALE_16;
     }
 
-
+    /**
+     * Get the angle of the shadow.
+     * @return the angle of the shadow in radians.
+     */
     public float getAngle() {
         return angle / SCALE_16;
     }
 
-
+    /**
+     * Get the distance of the shadow from the object.
+     * @return the width of the shadow.
+     */
     public float getDistance() {
         return distance / SCALE_16;
     }
 
-
+    /**
+     * Get the strength of the shadow.
+     * @return the shadow strength.
+     */
     public float getStrength() {
         return strength / SCALE_8;
     }
 
-
+    /**
+     * Get the compositing mode.
+     * @return the mode used for compositing, either TOP, INNER or KNOCKOUT.
+     */
     public FilterMode getMode() {
         FilterMode value;
         switch (mode) {
@@ -265,7 +337,10 @@ public final class BevelFilter implements Filter {
         return value;
     }
 
-
+    /**
+     * Get the number of passes for generating the blur.
+     * @return the number of blur passes.
+     */
     public int getPasses() {
         return passes;
     }

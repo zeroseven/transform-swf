@@ -31,6 +31,10 @@
 
 package com.flagstone.transform.filter;
 
+/**
+ * FilterMode is used to define how the results from applying a filter to an
+ * object are composited with the background.
+ */
 public enum FilterMode {
     /** TODO(doc). */
     INNER,

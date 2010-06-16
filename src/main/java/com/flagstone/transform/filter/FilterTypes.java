@@ -2,7 +2,7 @@
  * FilterTypes.java
  * Transform
  *
- * Copyright (c) 2001-2010 Flagstone Software Ltd. All rights reserved.
+ * Copyright (c) 2009-2010 Flagstone Software Ltd. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -30,23 +30,26 @@
  */
 package com.flagstone.transform.filter;
 
-/** TODO(class). */
+/**
+ * FilterTypes defines the values that are used to identify the different types
+ * of filter when they are encoded in a Flash file.
+ */
 public final class FilterTypes {
-    /** TODO(doc). */
+    /** A DropShadowFilter. */
     public static final int DROP_SHADOW = 0;
-    /** TODO(doc). */
+    /** A BlueFilter. */
     public static final int BLUR = 1;
-    /** TODO(doc). */
+    /** A GlowFilter. */
     public static final int GLOW = 2;
-    /** TODO(doc). */
+    /** A BevelFilter. */
     public static final int BEVEL = 3;
-    /** TODO(doc). */
+    /** A GradientGlowFilter. */
     public static final int GRADIENT_GLOW = 4;
-    /** TODO(doc). */
+    /** A ConvolutionFilter. */
     public static final int CONVOLUTION = 5;
-    /** TODO(doc). */
+    /** A ColorMatrixFilter. */
     public static final int COLOR_MATRIX = 6;
-    /** TODO(doc). */
+    /** A GradientBevelFilter. */
     public static final int GRADIENT_BEVEL = 7;
 
     /** Private constructor. */

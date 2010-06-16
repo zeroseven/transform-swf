@@ -38,18 +38,20 @@ import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-/** TODO(class). */
+/**
+ * ColorMatrixFilter is used to apply a colour transform to the pixels of an
+ * object on the display list.
+ */
 public final class ColorMatrixFilter implements Filter {
 
-    private static final String ROW_FORMAT = "[%f %f %f %f %f];";
     /** Format string used in toString() method. */
     private static final String FORMAT = "ColorMatrix: { matrix=["
-            + ROW_FORMAT + ROW_FORMAT + ROW_FORMAT + ROW_FORMAT
-            + "]; }";
+            + "[%f %f %f %f %f];[%f %f %f %f %f];"
+            + "[%f %f %f %f %f];[%f %f %f %f %f];]}";
 
     /** The number of elements in the colour matrix. */
     private static final int MATRIX_SIZE = 20;
-
+    /** The colour matrix. */
     private final transient float[] matrix;
 
     /**
@@ -69,6 +71,12 @@ public final class ColorMatrixFilter implements Filter {
         }
     }
 
+    /**
+     * Create a ColorMatrixFilter with the specified matrix.
+     *
+     * @param aMatrix a matrix that will be applied to each pixel of the
+     * object.
+     */
     public ColorMatrixFilter(final float[] aMatrix) {
         if ((aMatrix == null) || (aMatrix.length != MATRIX_SIZE)) {
             throw new IllegalArgumentException("Value not set");
@@ -76,21 +84,25 @@ public final class ColorMatrixFilter implements Filter {
         matrix = Arrays.copyOf(aMatrix, aMatrix.length);
     }
 
-
+    /**
+     * Get the colour matrix.
+     *
+     * @return the 5x4 matrix that will be applied to the object.
+     */
     public float[] getMatrix() {
         return Arrays.copyOf(matrix, matrix.length);
     }
 
     @Override
     public String toString() {
-// CHECKSTYLE:OFF
+        // CHECKSTYLE:OFF
         return String.format(FORMAT,
                 matrix[0], matrix[1], matrix[2], matrix[3], matrix[4],
                 matrix[5], matrix[6], matrix[7], matrix[8], matrix[9],
                 matrix[10], matrix[11], matrix[12], matrix[13], matrix[14],
                 matrix[15], matrix[16], matrix[17], matrix[18], matrix[19]
         );
-// CHECKSTYLE:ON
+        // CHECKSTYLE:ON
     }
 
     @Override

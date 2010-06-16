@@ -39,10 +39,9 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFFactory;
 
 /**
- * Factory is the default implementation of an SWFFactory which used to create
- * instances of Transform classes.
+ * FilterDecoder is used to decode the Filter objects encoded in Place3 and
+ * ButtonShape objects.
  */
-//TODO(class)
 public final class FilterDecoder implements SWFFactory<Filter> {
     /**
      * Decode a filter.
