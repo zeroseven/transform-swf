@@ -91,7 +91,7 @@ public final class SoundStreamBlock implements MovieTag {
      * defined by a preceding SoundStreamHead or SoundStreamHead2 object.
      *
      * @param bytes
-     *            an array of bytes containing the sound data. Must not be null.
+     *            a list of bytes containing the sound data. Must not be null.
      */
     public SoundStreamBlock(final byte[] bytes) {
         setSound(bytes);
@@ -123,7 +123,7 @@ public final class SoundStreamBlock implements MovieTag {
      * Sets the sound data.
      *
      * @param bytes
-     *            an array of bytes containing the sound data. Must not be null.
+     *            a list of bytes containing the sound data. Must not be null.
      */
     public void setSound(final byte[] bytes) {
         if (bytes == null) {

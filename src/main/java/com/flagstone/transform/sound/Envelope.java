@@ -238,7 +238,7 @@ public final class Envelope implements SWFEncodeable {
     }
 
     /**
-     * Add a Envelope object to the array of envelope objects.
+     * Add a Envelope object to the list of envelope objects.
      *
      * @param level
      *            a SoundLevel object. Must not be null.
@@ -253,7 +253,7 @@ public final class Envelope implements SWFEncodeable {
     }
 
     /**
-     * Get the array of Levels that control the volume of the sound.
+     * Get the list of Levels that control the volume of the sound.
      *
      * @return the Levels that define the envelope.
      */
@@ -262,18 +262,18 @@ public final class Envelope implements SWFEncodeable {
     }
 
     /**
-     * Sets the array of SoundLevel objects that define the levels at which a
+     * Sets the list of Levels that define the levels at which a
      * sound is played over the duration of the sound. May be set to null if no
      * envelope is defined.
      *
-     * @param anArray
-     *            an array of Envelope objects. Must not be null.
+     * @param list
+     *            a list of Envelope objects. Must not be null.
      */
-    public void setLevels(final List<Level> anArray) {
-        if (anArray == null) {
+    public void setLevels(final List<Level> list) {
+        if (list == null) {
             throw new IllegalArgumentException();
         }
-        levels = anArray;
+        levels = list;
     }
 
     /** {@inheritDoc} */

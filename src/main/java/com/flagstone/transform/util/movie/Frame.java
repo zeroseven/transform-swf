@@ -60,15 +60,15 @@ import com.flagstone.transform.action.Action;
  * <em>label</em> - An optional name assigned to a frame. The GotoFrame2 object
  * can be used to move to a named frame when playing a movie or movie clip.<br/>
  *
- * <em>definitions</em> - An array containing objects that define items for
+ * <em>definitions</em> - A list containing objects that define items for
  * display in a movie. Definitions are sub-classes of the Definition class and
  * define shapes, fonts, images and sounds that are displayed or played by the
  * Flash Player.<br/>
  *
- * <em>commands</em> - An array containing objects that define commands that
+ * <em>commands</em> - A list containing objects that define commands that
  * affect the display list or the Flash Player directly.<br/>
  *
- * <em>actions</em> - An array that define actions that are executed when a
+ * <em>actions</em> - A list that define actions that are executed when a
  * frame is displayed.
  * </p>
  *
@@ -80,7 +80,7 @@ import com.flagstone.transform.action.Action;
  *
  * <p>
  * The framesFromMovie(Movie aMovie) method allows an existing movie to be
- * viewed as an array of Frame objects. Objects from the movie are copied into
+ * viewed as a list of Frame objects. Objects from the movie are copied into
  * each frame so changes made to the attributes of each object are reflected in
  * the movie. The frame objects are not synchronised with the movie, so any
  * objects added to a frame are not added to the Movie. The easiest way to do
@@ -116,7 +116,7 @@ public final class Frame {
      *
      * @param aMovie
      *            an Movie object.
-     * @return an array of Frame objects.
+     * @return a list of Frame objects.
      */
     public static List<Frame> split(final Movie aMovie) {
         final ArrayList<Frame> frames = new ArrayList<Frame>();
@@ -149,7 +149,7 @@ public final class Frame {
 
     /**
      * Creates a empty frame with no label defined and the definitions, commands
-     * and actions arrays empty.
+     * and actions lists empty.
      */
     public Frame() {
         definitions = new ArrayList<MovieTag>();
@@ -159,7 +159,7 @@ public final class Frame {
 
     /**
      * Creates a empty frame with no label defined and the definitions, commands
-     * and actions arrays empty.
+     * and actions lists empty.
      *
      * @param frame the frame number.
      */
@@ -230,18 +230,18 @@ public final class Frame {
     }
 
     /**
-     * Returns the array of definition objects contained in the frame.
+     * Returns the list of definition objects contained in the frame.
      *
-     * @return the array of definitions.
+     * @return the list of definitions.
      */
     public List<MovieTag> getDefinitions() {
         return definitions;
     }
 
     /**
-     * Returns the array of commands that update the display list.
+     * Returns the list of commands that update the display list.
      *
-     * @return the array of commands objects.
+     * @return the list of commands objects.
      */
     public List<MovieTag> getCommands() {
         return commands;
@@ -278,48 +278,48 @@ public final class Frame {
     }
 
     /**
-     * Sets the array of action objects for the frame.
+     * Sets the list of action objects for the frame.
      *
-     * @param anArray
-     *            the array of actions. Must not be null.
+     * @param list
+     *            the list of actions. Must not be null.
      */
-    public void setDefinitions(final List<MovieTag> anArray) {
-        if (anArray == null) {
+    public void setDefinitions(final List<MovieTag> list) {
+        if (list == null) {
             throw new IllegalArgumentException();
         }
-        definitions = anArray;
+        definitions = list;
     }
 
     /**
-     * Sets the array of commands that updated the display list for the frame.
+     * Sets the list of commands that updated the display list for the frame.
      * The changes are visible when the frame is displayed.
      *
-     * @param anArray
-     *            the array of command objects. Must not be null.
+     * @param list
+     *            the list of command objects. Must not be null.
      */
-    public void setCommands(final List<MovieTag> anArray) {
-        if (anArray == null) {
+    public void setCommands(final List<MovieTag> list) {
+        if (list == null) {
             throw new IllegalArgumentException();
         }
-        commands = anArray;
+        commands = list;
     }
 
     /**
-     * Sets the array of action objects for the frame.
+     * Sets the list of action objects for the frame.
      *
-     * @param anArray
-     *            the array of actions. Must not be null.
+     * @param list
+     *            the list of actions. Must not be null.
      */
-    public void setActions(final List<Action> anArray) {
-        if (anArray == null) {
+    public void setActions(final List<Action> list) {
+        if (list == null) {
             throw new IllegalArgumentException();
         }
-        actions = anArray;
+        actions = list;
     }
 
     /**
      * Add the objects in the frame to the movie. The contents of the
-     * definitions and commands arrays are added to the movie. If a label is
+     * definitions and commands lists are added to the movie. If a label is
      * assigned to the frame then an FrameLabel object is added to the movie. If
      * actions are defined then an DoAction object is added containing the
      * actions defined in the frame.

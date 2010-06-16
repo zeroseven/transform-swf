@@ -35,7 +35,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.flagstone.transform.Constants;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -132,25 +131,57 @@ public final class GradientFill implements FillStyle {
 
     /**
      * Creates a GradientFill object specifying the type, coordinate transform
-     * and array of gradient points.
+     * and list of gradient points.
      *
      * @param gradientType
      *            identifies whether the gradient is rendered linearly or
      *            radially.
-     * @param aTransform
+     * @param matrix
      *            the coordinate transform mapping the gradient square onto
      *            physical coordinates. Must not be null.
-     * @param anArray
-     *            an array of Gradient objects defining the control points for
+     * @param list
+     *            a list of Gradient objects defining the control points for
      *            the gradient. For Flash 7 and earlier versions there can be up
      *            to 8 Gradients. For Flash 8 onwards this number was increased
      *            to 15. Must not be null.
      */
     public GradientFill(final GradientType gradientType,
-            final CoordTransform aTransform, final List<Gradient> anArray) {
+            final CoordTransform matrix, final List<Gradient> list) {
         setType(gradientType);
-        setTransform(aTransform);
-        setGradients(anArray);
+        setTransform(matrix);
+        setGradients(list);
+    }
+
+    /**
+     * Creates a GradientFill object specifying the type, coordinate transform
+     * and list of gradient points.
+     *
+     * @param gradientType
+     *            identifies whether the gradient is rendered linearly or
+     *            radially.
+     * @param matrix
+     *            the coordinate transform mapping the gradient square onto
+     *            physical coordinates. Must not be null.
+     * @param spreadType
+     *            TODO
+     * @param interpolationType
+     *            how the changes in colours across the gradient are calculated.
+     * @param list
+     *            a list of Gradient objects defining the control points for
+     *            the gradient. For Flash 7 and earlier versions there can be up
+     *            to 8 Gradients. For Flash 8 onwards this number was increased
+     *            to 15. Must not be null.
+     */
+    public GradientFill(final GradientType gradientType,
+            final CoordTransform matrix,
+            final Spread spreadType,
+            final Interpolation interpolationType,
+            final List<Gradient> list) {
+        setType(gradientType);
+        setTransform(matrix);
+        setSpread(spreadType);
+        setInterpolation(interpolationType);
+        setGradients(list);
     }
 
     /**
@@ -167,7 +198,12 @@ public final class GradientFill implements FillStyle {
         gradients = new ArrayList<Gradient>(object.gradients);
     }
 
-
+    /**
+     * Get the GradientType that identifies whether the gradient is linear or
+     * radial.
+     *
+     * @return the GradientType for the fill, either LINEAR or RADIAL.
+     */
     public GradientType getType() {
         GradientType value;
         if (type == FillStyleTypes.LINEAR_GRADIENT) {
@@ -178,7 +214,13 @@ public final class GradientFill implements FillStyle {
         return value;
     }
 
-
+    /**
+     * Set the GradientType that identifies whether the gradient is linear or
+     * radial.
+     *
+     * @param gradientType
+     *            the GradientType for the fill, either LINEAR or RADIAL.
+     */
     public void setType(final GradientType gradientType) {
         if (gradientType == GradientType.LINEAR) {
             type = FillStyleTypes.LINEAR_GRADIENT;
@@ -187,24 +229,43 @@ public final class GradientFill implements FillStyle {
         }
     }
 
-
+    /**
+     * TODO
+     * Get the Spread.
+     *
+     * @return the Spread.
+     */
     public Spread getSpread() {
         return Spread.fromInt(spread);
     }
 
-
-    public void setSpread(final Spread aSpread) {
-        spread = aSpread.getValue();
+    /**
+     * TODO
+     * Set the Spread.
+     *
+     * @param spreadType the Spread.
+     */
+    public void setSpread(final Spread spreadType) {
+        spread = spreadType.getValue();
     }
 
-
+    /**
+     * Get the method used to calculate the colour changes across the gradient.
+     *
+     * @return the Interpolation that describes how colours change.
+     */
     public Interpolation getInterpolation() {
         return Interpolation.fromInt(interpolation);
     }
 
-
-    public void setInterpolation(final Interpolation anInterpolation) {
-        interpolation = anInterpolation.getValue();
+    /**
+     * Set the method used to calculate the colour changes across the gradient.
+     *
+     * @param interpolationType
+     *            the Interpolation that describes how colours change.
+     */
+    public void setInterpolation(final Interpolation interpolationType) {
+        interpolation = interpolationType.getValue();
     }
 
     /**
@@ -218,10 +279,10 @@ public final class GradientFill implements FillStyle {
     }
 
     /**
-     * Get the array of Gradient objects defining the points for the
+     * Get the list of Gradient objects defining the points for the
      * gradient fill.
      *
-     * @return the array of point defining the gradient.
+     * @return the list of points defining the gradient.
      */
     public List<Gradient> getGradients() {
         return gradients;
@@ -231,37 +292,37 @@ public final class GradientFill implements FillStyle {
      * Sets the coordinate transform mapping the gradient square onto physical
      * coordinates.
      *
-     * @param aTransform
+     * @param matrix
      *            the coordinate transform. Must not be null.
      */
-    public void setTransform(final CoordTransform aTransform) {
-        if (aTransform == null) {
+    public void setTransform(final CoordTransform matrix) {
+        if (matrix == null) {
             throw new IllegalArgumentException();
         }
-        transform = aTransform;
+        transform = matrix;
     }
 
     /**
-     * Sets the array of control points that define the gradient. For Flash 7
-     * and earlier this array can contain up to 8 Gradient objects. For Flash 8
+     * Sets the list of control points that define the gradient. For Flash 7
+     * and earlier this list can contain up to 8 Gradient objects. For Flash 8
      * onwards this limit was increased to 15.
      *
-     * @param anArray
-     *            an array of Gradient objects. Must not be null.
+     * @param list
+     *            a list of Gradient objects. Must not be null.
      */
-    public void setGradients(final List<Gradient> anArray) {
-        if (anArray == null) {
+    public void setGradients(final List<Gradient> list) {
+        if (list == null) {
             throw new IllegalArgumentException();
         }
-        if (anArray.size() > Gradient.MAX_GRADIENTS) {
+        if (list.size() > Gradient.MAX_GRADIENTS) {
             throw new IllegalStateException(
                     "Maximum number of gradients exceeded.");
         }
-        gradients = anArray;
+        gradients = list;
     }
 
     /**
-     * Add a Gradient object to the array of gradient objects. For Flash 7 and
+     * Add a Gradient object to the list of gradient objects. For Flash 7 and
      * earlier versions there can be up to 8 Gradients. For Flash 8 onwards this
      * number was increased to 15.
      *

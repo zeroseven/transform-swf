@@ -49,7 +49,7 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 /**
  * DefineMovieClip defines a movie clip that animates shapes within a movie. It
- * contains an array of movie objects that define the placement of shapes,
+ * contains an list of movie objects that define the placement of shapes,
  * buttons, text and images and the order in which they are displayed through a
  * time-line that is separate from the parent movie.
  *
@@ -120,18 +120,18 @@ public final class DefineMovieClip implements DefineTag {
     }
 
     /**
-     * Creates a DefineMovieClip object with the unique identifier and array of
+     * Creates a DefineMovieClip object with the unique identifier and list of
      * movie objects.
      *
      * @param uid
      *            a unique identifier for the movie clip. Must be in the range
      *            1..65535,
-     * @param anArray
-     *            the array of movie objects. Must not be null.
+     * @param list
+     *            the list of movie objects. Must not be null.
      */
-    public DefineMovieClip(final int uid, final List<MovieTag> anArray) {
+    public DefineMovieClip(final int uid, final List<MovieTag> list) {
         setIdentifier(uid);
-        setObjects(anArray);
+        setObjects(list);
     }
 
     /**
@@ -165,7 +165,7 @@ public final class DefineMovieClip implements DefineTag {
     }
 
     /**
-     * Adds the movie object to the array of objects that update the display
+     * Adds the movie object to the list of objects that update the display
      * list. See description above for the list of acceptable types.
      *
      * @param obj
@@ -182,7 +182,7 @@ public final class DefineMovieClip implements DefineTag {
     }
 
     /**
-     * Get the array of movie objects that describe how the movie clip is
+     * Get the list of movie objects that describe how the movie clip is
      * animated.
      *
      * @return the list of objects for the movie clip.
@@ -192,16 +192,16 @@ public final class DefineMovieClip implements DefineTag {
     }
 
     /**
-     * Sets the array of movie objects.
+     * Sets the list of movie objects.
      *
-     * @param anArray
-     *            the array of movie objects. Must not be null.
+     * @param list
+     *            the list of movie objects. Must not be null.
      */
-    public void setObjects(final List<MovieTag> anArray) {
-        if (anArray == null) {
+    public void setObjects(final List<MovieTag> list) {
+        if (list == null) {
             throw new IllegalArgumentException();
         }
-        objects = anArray;
+        objects = list;
     }
 
     /** {@inheritDoc} */

@@ -110,12 +110,12 @@ public final class ButtonColorTransform implements MovieTag {
      * @param uid
      *            the unique identifier of a button that this object applies to.
      *            Must be in the range 1..65535.
-     * @param transform
+     * @param cxform
      *            an ColorTransform object that will be applied to the button.
      */
-    public ButtonColorTransform(final int uid, final ColorTransform transform) {
+    public ButtonColorTransform(final int uid, final ColorTransform cxform) {
         setIdentifier(uid);
-        setColorTransform(transform);
+        setColorTransform(cxform);
     }
 
     /**
@@ -167,14 +167,14 @@ public final class ButtonColorTransform implements MovieTag {
     /**
      * Sets the colour transform that will be applied to the button.
      *
-     * @param transform
+     * @param cxform
      *            the colour transform object. Must not be null.
      */
-    public void setColorTransform(final ColorTransform transform) {
-        if (transform == null) {
+    public void setColorTransform(final ColorTransform cxform) {
+        if (cxform == null) {
             throw new IllegalArgumentException();
         }
-        colorTransform = transform;
+        colorTransform = cxform;
     }
 
     /** {@inheritDoc} */

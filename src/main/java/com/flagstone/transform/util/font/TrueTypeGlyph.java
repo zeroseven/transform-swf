@@ -50,11 +50,12 @@ public final class TrueTypeGlyph extends Glyph {
      * Create a TrueTypeGlyph with the specified outline, bounding box and
      * advance.
      * @param aShape the outline of the glyph.
-     * @param box the bounding box that encloses the glyph.
+     * @param rect the bounding box that encloses the glyph.
      * @param dist the advance to the next glyph.
      */
-    public TrueTypeGlyph(final Shape aShape, final Bounds box, final int dist) {
-        super(aShape, box, dist);
+    public TrueTypeGlyph(final Shape aShape, final Bounds rect,
+            final int dist) {
+        super(aShape, rect, dist);
     }
 
     /**

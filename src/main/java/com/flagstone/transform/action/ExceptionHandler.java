@@ -52,11 +52,10 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  * </p>
  *
  * <p>
- * The ExceptionHandler class contains three arrays of actions supporting the
+ * The ExceptionHandler class contains three lists of actions supporting the
  * standard syntax for an exception with try, catch and finally blocks. Both the
  * catch and finally blocks are optional when defining an exception, the
- * corresponding arguments in constructors and methods may be set to empty
- * arrays.
+ * corresponding arguments in constructors and methods may be set to empty.
  * </p>
  */
 public final class ExceptionHandler implements Action {
@@ -70,13 +69,13 @@ public final class ExceptionHandler implements Action {
         private transient int register;
         /** The name of the variable where the thrown object will be stored. */
         private transient String variable;
-        /** The array of actions that make up the try block. */
+        /** The list of actions that make up the try block. */
         private final transient List<Action> tryActions =
             new ArrayList<Action>();
-        /** The array of actions that make up the catch block. */
+        /** The list of actions that make up the catch block. */
         private final transient List<Action> catchActions =
             new ArrayList<Action>();
-        /** The array of actions that make up the finally block. */
+        /** The list of actions that make up the finally block. */
         private final transient List<Action> finalActions =
             new ArrayList<Action>();
 
@@ -293,12 +292,12 @@ public final class ExceptionHandler implements Action {
      *            exception. Must not be null.
      * @param catchArray
      *            actions that will be executed in the catch block of the
-     *            exception, if one is defined. This may be an empty array if no
+     *            exception, if one is defined. This may be empty if no
      *            catch block is required - the exception will be handled by
      *            another catch block higher in the exception tree.
      * @param finallyArray
      *            actions that will be executed in the finally block of the
-     *            exception, if one is defined. This may be an empty array if no
+     *            exception, if one is defined. This may be empty if no
      *            finally block is required.
      */
 
@@ -338,12 +337,12 @@ public final class ExceptionHandler implements Action {
      *            exception. Must not be null.
      * @param catchArray
      *            actions that will be executed in the catch block of the
-     *            exception, if one is defined. This may be an empty array if no
+     *            exception, if one is defined. This may be empty if no
      *            catch block is required - the exception will be handled by
      *            another catch block higher in the exception tree.
      * @param finallyArray
      *            actions that will be executed in the finally block of the
-     *            exception, if one is defined. This may be an empty array is no
+     *            exception, if one is defined. This may be empty is no
      *            finally block is required.
      */
     public ExceptionHandler(final int index, final List<Action> tryArray,
@@ -409,27 +408,27 @@ public final class ExceptionHandler implements Action {
     }
 
     /**
-     * Returns the array of actions executed in the try block.
+     * Returns the list of actions executed in the try block.
      *
-     * @return the array of actions for the try block.
+     * @return the list of actions for the try block.
      */
     public List<Action> getTryActions() {
         return new ArrayList<Action>(tryActions);
     }
 
     /**
-     * Returns the array of actions executed in the catch block.
+     * Returns the list of actions executed in the catch block.
      *
-     * @return the array of actions for the catch block.
+     * @return the list of actions for the catch block.
      */
     public List<Action> getCatchActions() {
         return new ArrayList<Action>(catchActions);
     }
 
     /**
-     * Returns the array of actions executed in the finally block.
+     * Returns the list of actions executed in the finally block.
      *
-     * @return the array of actions for the finally block.
+     * @return the list of actions for the finally block.
      */
     public List<Action> getFinalActions() {
         return new ArrayList<Action>(finalActions);

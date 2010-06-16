@@ -56,7 +56,7 @@ import com.flagstone.transform.coder.SWFFactory;
  * </p>
  *
  * <p>
- * IMPORTANT: The last action in the array must be BasicAction.END otherwise
+ * IMPORTANT: The last action in the list must be BasicAction.END otherwise
  * the object will not be encoded correctly.
  * </p>
  *
@@ -117,20 +117,20 @@ public final class DoAction implements MovieTag {
     }
 
     /**
-     * Creates a new DoAction class with an empty array.
+     * Creates a new DoAction class with an empty list.
      */
     public DoAction() {
         actions = new ArrayList<Action>();
     }
 
     /**
-     * Creates a DoAction object with an array of actions.
+     * Creates a DoAction object with a list of actions.
      *
-     * @param anArray
-     *            the array of action objects. Cannot be null.
+     * @param list
+     *            the list of action objects. Cannot be null.
      */
-    public DoAction(final List<Action> anArray) {
-        setActions(anArray);
+    public DoAction(final List<Action> list) {
+        setActions(list);
     }
 
     /**
@@ -145,7 +145,7 @@ public final class DoAction implements MovieTag {
     }
 
     /**
-     * Adds the action object to the array of actions. If the object already
+     * Adds the action object to the list of actions. If the object already
      * contains encoded actions then they will be deleted.
      *
      * @param anAction
@@ -163,28 +163,28 @@ public final class DoAction implements MovieTag {
     }
 
     /**
-     * Returns the array of actions that are executed when the frame is
+     * Returns the list of actions that are executed when the frame is
      * displayed.
      *
-     * @return the array of action objects.
+     * @return the list of action objects.
      */
     public List<Action> getActions() {
         return actions;
     }
 
     /**
-     * Set the array of actions that will be executed when the next ShowFrame
+     * Set the list of actions that will be executed when the next ShowFrame
      * tag is executed by the Flash Player. If the object already contains
      * encoded actions then they will be deleted.
      *
-     * @param anArray
-     *            the array of action objects. May be empty but cannot be null.
+     * @param list
+     *            the list of action objects. May be empty but cannot be null.
      */
-    public void setActions(final List<Action> anArray) {
-        if (anArray == null) {
+    public void setActions(final List<Action> list) {
+        if (list == null) {
             throw new IllegalArgumentException();
         }
-        actions = anArray;
+        actions = list;
     }
 
     /** {@inheritDoc} */

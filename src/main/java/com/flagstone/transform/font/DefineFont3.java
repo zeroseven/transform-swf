@@ -241,7 +241,7 @@ public final class DefineFont3 implements DefineTag {
      * objects.
      *
      * The font will be defined to use Unicode encoding. The flags which define
-     * the font's face will be set to false. The arrays of glyphs which define
+     * the font's face will be set to false. The lists of glyphs which define
      * the shapes and the code which map the character codes to a particular
      * glyph will remain empty since the font is loaded from the system on which
      * it is displayed.
@@ -333,8 +333,8 @@ public final class DefineFont3 implements DefineTag {
     }
 
     /**
-     * Add an advance to the array of advances. The index position of the entry
-     * in the advance array is also used to identify the corresponding glyph and
+     * Add an advance to the list of advances. The index position of the entry
+     * in the advance list is also used to identify the corresponding glyph and
      * vice-versa.
      *
      * @param anAdvance
@@ -352,24 +352,24 @@ public final class DefineFont3 implements DefineTag {
     }
 
     /**
-     * Add a bounds object to the array of bounds for each glyph. The index
-     * position of the entry in the bounds array is also used to identify the
+     * Add a bounds object to the list of bounds for each glyph. The index
+     * position of the entry in the bounds list is also used to identify the
      * corresponding glyph and vice-versa.
      *
-     * @param obj
+     * @param rect
      *            an Bounds. Must not be null.
      * @return this object.
      */
-    public DefineFont3 add(final Bounds obj) {
-        if (obj == null) {
+    public DefineFont3 add(final Bounds rect) {
+        if (rect == null) {
             throw new IllegalArgumentException();
         }
-        bounds.add(obj);
+        bounds.add(rect);
         return this;
     }
 
     /**
-     * Add a kerning object to the array of kernings for pairs of glyphs.
+     * Add a kerning object to the list of kernings for pairs of glyphs.
      *
      * @param anObject
      *            an Kerning. Must not be null.
@@ -491,21 +491,21 @@ public final class DefineFont3 implements DefineTag {
     }
 
     /**
-     * Returns the array of shapes used to define the outlines of each font
+     * Returns the list of shapes used to define the outlines of each font
      * glyph.
      *
-     * @return an array of Shape objects
+     * @return a list of Shape objects
      */
     public List<Shape> getShapes() {
         return shapes;
     }
 
     /**
-     * Returns the array of codes used to identify each glyph in the font. The
+     * Returns the list of codes used to identify each glyph in the font. The
      * ordinal position of each Integer representing a code identifies a
-     * particular glyph in the shapes array.
+     * particular glyph in the shapes list.
      *
-     * @return an array of Integer objects that contain the character codes for
+     * @return a list of Integer objects that contain the character codes for
      *         each glyph in the font.
      */
     public List<Integer> getCodes() {
@@ -540,9 +540,9 @@ public final class DefineFont3 implements DefineTag {
     }
 
     /**
-     * Returns the array of advances defined for each glyph in the font.
+     * Returns the list of advances defined for each glyph in the font.
      *
-     * @return an array of Integer objects that contain the advance for each
+     * @return a list of Integer objects that contain the advance for each
      *         glyph in the font.
      */
     public List<Integer> getAdvances() {
@@ -550,20 +550,20 @@ public final class DefineFont3 implements DefineTag {
     }
 
     /**
-     * Returns the array of bounding rectangles defined for each glyph in the
+     * Returns the list of bounding rectangles defined for each glyph in the
      * font.
      *
-     * @return an array of Bounds objects.
+     * @return a list of Bounds objects.
      */
     public List<Bounds> getBounds() {
         return bounds;
     }
 
     /**
-     * Returns the array of kerning records that define the spacing between
+     * Returns the list of kerning records that define the spacing between
      * glyph pairs.
      *
-     * @return an array of Kerning objects that define the spacing adjustment
+     * @return a list of Kerning objects that define the spacing adjustment
      *         between pairs of glyphs.
      */
     public List<Kerning> getKernings() {
@@ -630,32 +630,32 @@ public final class DefineFont3 implements DefineTag {
     }
 
     /**
-     * Set the array of shape records that define the outlines of the characters
+     * Set the list of shape records that define the outlines of the characters
      * used from the font.
      *
-     * @param anArray
-     *            an array of Shape objects that define the glyphs for the font.
+     * @param list
+     *            a list of Shape objects that define the glyphs for the font.
      *            Must not be null.
      */
-    public void setShapes(final List<Shape> anArray) {
-        if (anArray == null) {
+    public void setShapes(final List<Shape> list) {
+        if (list == null) {
             throw new IllegalArgumentException();
         }
-        shapes = anArray;
+        shapes = list;
     }
 
     /**
      * Sets the codes used to identify each glyph in the font.
      *
-     * @param anArray
+     * @param list
      *            sets the code table that maps a particular glyph to a
      *            character code. Must not be null.
      */
-    public void setCodes(final List<Integer> anArray) {
-        if (anArray == null) {
+    public void setCodes(final List<Integer> list) {
+        if (list == null) {
             throw new IllegalArgumentException();
         }
-        codes = anArray;
+        codes = list;
     }
 
     /**
@@ -704,45 +704,45 @@ public final class DefineFont3 implements DefineTag {
     }
 
     /**
-     * Sets the array of advances for each glyph in the font.
+     * Sets the list of advances for each glyph in the font.
      *
-     * @param anArray
+     * @param list
      *            of Integer objects that define the spacing between glyphs.
      *            Must not be null.
      */
-    public void setAdvances(final List<Integer> anArray) {
-        if (anArray == null) {
+    public void setAdvances(final List<Integer> list) {
+        if (list == null) {
             throw new IllegalArgumentException();
         }
-        advances = anArray;
+        advances = list;
     }
 
     /**
-     * Sets the array of bounding rectangles for each glyph in the font.
+     * Sets the list of bounding rectangles for each glyph in the font.
      *
-     * @param anArray
-     *            an array of Bounds objects that define the bounding rectangles
+     * @param list
+     *            a list of Bounds objects that define the bounding rectangles
      *            that enclose each glyph in the font. Must not be null.
      */
-    public void setBounds(final List<Bounds> anArray) {
-        if (anArray == null) {
+    public void setBounds(final List<Bounds> list) {
+        if (list == null) {
             throw new IllegalArgumentException();
         }
-        bounds = anArray;
+        bounds = list;
     }
 
     /**
-     * Sets the array of kerning records for pairs of glyphs in the font.
+     * Sets the list of kerning records for pairs of glyphs in the font.
      *
-     * @param anArray
-     *            an array of Kerning objects that define an adjustment applied
+     * @param list
+     *            a list of Kerning objects that define an adjustment applied
      *            to the spacing between pairs of glyphs. Must not be null.
      */
-    public void setKernings(final List<Kerning> anArray) {
-        if (anArray == null) {
+    public void setKernings(final List<Kerning> list) {
+        if (list == null) {
             throw new IllegalArgumentException();
         }
-        kernings = anArray;
+        kernings = list;
     }
 
     /** {@inheritDoc} */

@@ -22,19 +22,19 @@ public interface ShapeTag extends DefineTag {
     /**
      * Sets the bounding rectangle that encloses the shape.
      *
-     * @param aBounds
+     * @param rect
      *            set the bounding rectangle for the shape. Must not be null.
      */
-    void setBounds(final Bounds aBounds);
+    void setBounds(final Bounds rect);
 
     /**
-     * Get the array line styles.
+     * Get the list line styles.
      *
      * @return the list of line styles used in the shape.
      */
     List<LineStyle> getLineStyles();
     /**
-     * Sets the array of styles that will be used to draw the outline of the
+     * Sets the list of styles that will be used to draw the outline of the
      * shape.
      *
      * @param styles
@@ -42,13 +42,13 @@ public interface ShapeTag extends DefineTag {
      */
     void setLineStyles(final List<LineStyle> styles);
     /**
-     * Get the array fill styles.
+     * Get the list fill styles.
      *
      * @return the list of fill styles used in the shape.
      */
     List<FillStyle> getFillStyles();
     /**
-     * Sets the array fill styles that will be used to draw the shape.
+     * Sets the list fill styles that will be used to draw the shape.
      *
      * @param styles
      *            the fill styles for the shape. Must not be null.

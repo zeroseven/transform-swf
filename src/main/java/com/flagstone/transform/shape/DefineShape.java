@@ -55,7 +55,7 @@ import com.flagstone.transform.linestyle.LineStyle1;
  * The shape defines a path containing a mix of straight and curved edges and
  * pen move actions. A path need not be contiguous. When the shape is drawn the
  * ShapeStyle object selects the line and fill styles, from the respective
- * array, to be used. ShapeStyle objects can be defined in the shape at any time
+ * list, to be used. ShapeStyle objects can be defined in the shape at any time
  * to change the styles being used. The fill style used can either be a solid
  * colour, a bitmap image or a gradient. The line style specifies the colour and
  * thickness of the line drawn around the shape outline.
@@ -89,9 +89,9 @@ public final class DefineShape implements ShapeTag {
 
     /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
-    /** The number of bits to encode indices into the fill style array. */
+    /** The number of bits to encode indices into the fill style list. */
     private transient int fillBits;
-    /** The number of bits to encode indices into the line style array. */
+    /** The number of bits to encode indices into the line style list. */
     private transient int lineBits;
 
     /**
@@ -156,22 +156,22 @@ public final class DefineShape implements ShapeTag {
      *
      * @param uid
      *            the unique identifier for the shape in the range 1..65535.
-     * @param aBounds
+     * @param rect
      *            the bounding rectangle for the shape. Must not be null.
-     * @param fillStyleArray
-     *            the array of fill styles used in the shape. Must not be null.
-     * @param lineStyleArray
-     *            the array of line styles used in the shape. Must not be null.
+     * @param fills
+     *            the list of fill styles used in the shape. Must not be null.
+     * @param lines
+     *            the list of line styles used in the shape. Must not be null.
      * @param aShape
      *            the shape to be drawn. Must not be null.
      */
-    public DefineShape(final int uid, final Bounds aBounds,
-            final List<FillStyle> fillStyleArray,
-            final List<LineStyle> lineStyleArray, final Shape aShape) {
+    public DefineShape(final int uid, final Bounds rect,
+            final List<FillStyle> fills, final List<LineStyle> lines,
+            final Shape aShape) {
         setIdentifier(uid);
-        setBounds(aBounds);
-        setFillStyles(fillStyleArray);
-        setLineStyles(lineStyleArray);
+        setBounds(rect);
+        setFillStyles(fills);
+        setLineStyles(lines);
         setShape(aShape);
     }
 
@@ -230,7 +230,7 @@ public final class DefineShape implements ShapeTag {
     }
 
     /**
-     * Add a LineStyle to the array of line styles.
+     * Add a LineStyle to the list of line styles.
      *
      * @param style
      *            and LineStyle object. Must not be null.
@@ -246,7 +246,7 @@ public final class DefineShape implements ShapeTag {
     }
 
     /**
-     * Add the fill style to the array of fill styles.
+     * Add the fill style to the list of fill styles.
      *
      * @param style
      *            and FillStyle object. Must not be null.
@@ -271,7 +271,7 @@ public final class DefineShape implements ShapeTag {
     }
 
     /**
-     * Get the array fill styles.
+     * Get the list fill styles.
      *
      * @return the list of fill styles used in the shape.
      */
@@ -280,7 +280,7 @@ public final class DefineShape implements ShapeTag {
     }
 
     /**
-     * Get the array line styles.
+     * Get the list line styles.
      *
      * @return the list of line styles used in the shape.
      */
@@ -300,41 +300,41 @@ public final class DefineShape implements ShapeTag {
     /**
      * Sets the bounding rectangle that encloses the shape.
      *
-     * @param aBounds
+     * @param rect
      *            set the bounding rectangle for the shape. Must not be null.
      */
-    public void setBounds(final Bounds aBounds) {
-        if (aBounds == null) {
+    public void setBounds(final Bounds rect) {
+        if (rect == null) {
             throw new IllegalArgumentException();
         }
-        bounds = aBounds;
+        bounds = rect;
     }
 
     /**
-     * Sets the array fill styles that will be used to draw the shape.
+     * Sets the list fill styles that will be used to draw the shape.
      *
-     * @param anArray
+     * @param list
      *            set the fill styles for the shape. Must not be null.
      */
-    public void setFillStyles(final List<FillStyle> anArray) {
-        if (anArray == null) {
+    public void setFillStyles(final List<FillStyle> list) {
+        if (list == null) {
             throw new IllegalArgumentException();
         }
-        fillStyles = anArray;
+        fillStyles = list;
     }
 
     /**
-     * Sets the array of styles that will be used to draw the outline of the
+     * Sets the list of styles that will be used to draw the outline of the
      * shape.
      *
-     * @param anArray
+     * @param list
      *            set the line styles for the shape. Must not be null.
      */
-    public void setLineStyles(final List<LineStyle> anArray) {
-        if (anArray == null) {
+    public void setLineStyles(final List<LineStyle> list) {
+        if (list == null) {
             throw new IllegalArgumentException();
         }
-        lineStyles = anArray;
+        lineStyles = list;
     }
 
     /**

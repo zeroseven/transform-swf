@@ -121,7 +121,7 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  * may be left at its default value (0).</li>
  * <li>If a name is net assigned to an object the name attribute may be left its
  * default value (an empty string).</li>
- * <li>If no events are being defined for a movie clip then the array of
+ * <li>If no events are being defined for a movie clip then the list of
  * ClipEvent object may be left empty.</li>
  * </ul>
  *
@@ -374,7 +374,7 @@ public final class Place2 implements MovieTag {
     }
 
     /**
-     * Adds a clip event to the array of clip events.
+     * Adds a clip event to the list of clip events.
      *
      * @param aClipEvent
      *            a clip event object.
@@ -390,7 +390,7 @@ public final class Place2 implements MovieTag {
     }
 
     /**
-     * Get the array of event handlers that define the actions that will
+     * Get the list of event handlers that define the actions that will
      * be executed in response to events that occur in the movie clip being
      * placed.
      *
@@ -401,21 +401,21 @@ public final class Place2 implements MovieTag {
     }
 
     /**
-     * Set the array of Clip events. Clip Events are only valid for movie clips
+     * Set the list of Clip events. Clip Events are only valid for movie clips
      * and the argument should be set to null when placing other types of
      * object.
      *
      * If the object already contains a set of encoded clip event objects they
      * will be deleted.
      *
-     * @param anArray
-     *            an array of ClipEvent objects.
+     * @param list
+     *            a list of ClipEvent objects.
      */
-    public void setEvents(final List<EventHandler> anArray) {
-        if (anArray == null) {
+    public void setEvents(final List<EventHandler> list) {
+        if (list == null) {
             throw new IllegalArgumentException();
         }
-        events = anArray;
+        events = list;
     }
 
     /**
@@ -559,14 +559,14 @@ public final class Place2 implements MovieTag {
      * will be displayed. The argument may be null if the location of the object
      * is not being changed.
      *
-     * @param aTransform
+     * @param matrix
      *            an CoordTransform object that will be applied to the object
      *            displayed.
      *
      * @return this object.
      */
-    public Place2 setTransform(final CoordTransform aTransform) {
-        transform = aTransform;
+    public Place2 setTransform(final CoordTransform matrix) {
+        transform = matrix;
         return this;
     }
 
@@ -589,14 +589,14 @@ public final class Place2 implements MovieTag {
      * object. The argument may be null if the color of the object is not being
      * changed.
      *
-     * @param aTransform
+     * @param cxform
      *            an ColorTransform object that will be applied to the object
      *            displayed.
      *
      * @return this object.
      */
-    public Place2 setColorTransform(final ColorTransform aTransform) {
-        colorTransform = aTransform;
+    public Place2 setColorTransform(final ColorTransform cxform) {
+        colorTransform = cxform;
         return this;
     }
 

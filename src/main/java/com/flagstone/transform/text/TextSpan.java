@@ -49,7 +49,7 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  * {@link DefineText2} to display a line or block of text.
  *
  * <p>
- * TextSpan contains an array of Character objects which identify the glyphs
+ * TextSpan contains a list of Character objects which identify the glyphs
  * that will be displayed along with style information that sets the colour of
  * the text, the size of the font and the relative placement of the line within
  * a block of text.
@@ -186,18 +186,18 @@ public final class TextSpan implements SWFEncodeable {
      * @param yOffset
      *            the location of the text relative to the bottom edge of the
      *            bounding rectangle enclosing the text.
-     * @param anArray
-     *            an array of Character objects. Must not be null.
+     * @param list
+     *            a list of Character objects. Must not be null.
      */
     public TextSpan(final Integer uid, final Integer aHeight,
             final Color aColor, final Integer xOffset, final Integer yOffset,
-            final List<GlyphIndex> anArray) {
+            final List<GlyphIndex> list) {
         setIdentifier(uid);
         setHeight(aHeight);
         setColor(aColor);
         setOffsetX(xOffset);
         setOffsetY(yOffset);
-        setCharacters(anArray);
+        setCharacters(list);
     }
 
     /**
@@ -343,7 +343,7 @@ public final class TextSpan implements SWFEncodeable {
     }
 
     /**
-     * Adds an Character object to the array of characters.
+     * Adds an Character object to the list of characters.
      *
      * @param aCharacter
      *            an Character object. Must not be null.
@@ -355,25 +355,25 @@ public final class TextSpan implements SWFEncodeable {
     }
 
     /**
-     * Returns the array of characters to be displayed.
+     * Returns the list of characters to be displayed.
      *
-     * @return the array of Character objects.
+     * @return the list of Character objects.
      */
     public List<GlyphIndex> getCharacters() {
         return characters;
     }
 
     /**
-     * Sets the array of characters to be displayed.
+     * Sets the list of characters to be displayed.
      *
-     * @param anArray
-     *            an array of Character objects. Must not be null.
+     * @param list
+     *            a list of Character objects. Must not be null.
      */
-    public void setCharacters(final List<GlyphIndex> anArray) {
-        if (anArray == null) {
+    public void setCharacters(final List<GlyphIndex> list) {
+        if (list == null) {
             throw new IllegalArgumentException();
         }
-        characters = anArray;
+        characters = list;
     }
 
     /** {@inheritDoc} */

@@ -159,20 +159,20 @@ public final class DefineText2 implements StaticTextTag {
      * @param uid
      *            the unique identifier for this object. Must be in the range
      *            1..65535
-     * @param box
+     * @param rect
      *            the bounding rectangle enclosing the text. Must not be null.
-     * @param aTransform
+     * @param matrix
      *            an CoordTransform to change the size and orientation of the
      *            text. Must not be null.
      * @param spans
-     *            an array of TextSpan objects that define the text to be
+     *            a list of TextSpan objects that define the text to be
      *            displayed. Must not be null.
      */
-    public DefineText2(final int uid, final Bounds box,
-            final CoordTransform aTransform, final List<TextSpan> spans) {
+    public DefineText2(final int uid, final Bounds rect,
+            final CoordTransform matrix, final List<TextSpan> spans) {
         setIdentifier(uid);
-        setBounds(box);
-        setTransform(aTransform);
+        setBounds(rect);
+        setTransform(matrix);
         setSpans(spans);
     }
 
@@ -227,7 +227,7 @@ public final class DefineText2 implements StaticTextTag {
     }
 
     /**
-     * Add a TextSpan object to the array of text spans.
+     * Add a TextSpan object to the list of text spans.
      *
      * @param obj
      *            an TextSpan object. Must not be null.
@@ -262,7 +262,7 @@ public final class DefineText2 implements StaticTextTag {
     }
 
     /**
-     * Get the array of text spans that define the text to be displayed.
+     * Get the list of text spans that define the text to be displayed.
      *
      * @return the list of text blocks.
      */
@@ -273,43 +273,43 @@ public final class DefineText2 implements StaticTextTag {
     /**
      * Sets the bounding rectangle that encloses the text being displayed.
      *
-     * @param aBounds
+     * @param rect
      *            the bounding rectangle enclosing the text. Must not be null.
      */
-    public void setBounds(final Bounds aBounds) {
-        if (aBounds == null) {
+    public void setBounds(final Bounds rect) {
+        if (rect == null) {
             throw new IllegalArgumentException();
         }
-        bounds = aBounds;
+        bounds = rect;
     }
 
     /**
      * Sets the coordinate transform that changes the orientation and size of
      * the text displayed.
      *
-     * @param aTransform
+     * @param matrix
      *            an CoordTransform to change the size and orientation of the
      *            text. Must not be null.
      */
-    public void setTransform(final CoordTransform aTransform) {
-        if (aTransform == null) {
+    public void setTransform(final CoordTransform matrix) {
+        if (matrix == null) {
             throw new IllegalArgumentException();
         }
-        transform = aTransform;
+        transform = matrix;
     }
 
     /**
-     * Sets the array of text spans that define the text to be displayed.
+     * Sets the list of text spans that define the text to be displayed.
      *
-     * @param array
-     *            an array of TextSpan objects that define the text to be
+     * @param list
+     *            a list of TextSpan objects that define the text to be
      *            displayed. Must not be null.
      */
-    public void setSpans(final List<TextSpan> array) {
-        if (array == null) {
+    public void setSpans(final List<TextSpan> list) {
+        if (list == null) {
             throw new IllegalArgumentException();
         }
-        objects = array;
+        objects = list;
     }
 
     /** {@inheritDoc} */

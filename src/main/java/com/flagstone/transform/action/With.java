@@ -98,16 +98,16 @@ public final class With implements Action {
     }
 
     /**
-     * Creates a With object with an array of actions.
+     * Creates a With object with a list of actions.
      *
-     * @param anArray
-     *            the array of action objects. Must not be null.
+     * @param list
+     *            the list of action objects. Must not be null.
      */
-    public With(final List<Action> anArray) {
-        if (anArray == null) {
+    public With(final List<Action> list) {
+        if (list == null) {
             throw new IllegalArgumentException();
         }
-        actions = anArray;
+        actions = list;
     }
 
     /**
@@ -123,9 +123,9 @@ public final class With implements Action {
     }
 
     /**
-     * Get the array of actions that are executed for the movie clip target.
+     * Get the list of actions that are executed for the movie clip target.
      *
-     * @return a copy of the array of actions that will be executed.
+     * @return a copy of the list of actions that will be executed.
      */
     public List<Action> getActions() {
         return new ArrayList<Action>(actions);

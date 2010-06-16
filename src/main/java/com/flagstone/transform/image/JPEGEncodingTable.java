@@ -98,7 +98,7 @@ public final class JPEGEncodingTable implements MovieTag {
      * Creates a JPEGEncodingTable object with the encoding table data.
      *
      * @param bytes
-     *            an array of bytes contains the data for the encoding table.
+     *            a list of bytes contains the data for the encoding table.
      *            Must not be null.
      */
     public JPEGEncodingTable(final byte[] bytes) {
@@ -130,7 +130,7 @@ public final class JPEGEncodingTable implements MovieTag {
      * Sets the encoding table.
      *
      * @param bytes
-     *            an array of bytes contains the data for the encoding table.
+     *            a list of bytes contains the data for the encoding table.
      *            Must not be null or zero length.
      */
     public void setTable(final byte[] bytes) {

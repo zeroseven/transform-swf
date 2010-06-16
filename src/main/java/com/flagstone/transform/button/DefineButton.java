@@ -132,9 +132,9 @@ public final class DefineButton implements DefineTag {
      * @param uid
      *            the unique identifier for this button.
      * @param buttons
-     *            an array of ButtonShapes that are used to draw the button.
+     *            a list of ButtonShapes that are used to draw the button.
      * @param script
-     *            and array of actions that are executed when the button is
+     *            a list of actions that are executed when the button is
      *            clicked.
      */
     public DefineButton(final int uid, final List<ButtonShape> buttons,
@@ -176,7 +176,7 @@ public final class DefineButton implements DefineTag {
     }
 
     /**
-     * Adds the button shape to the array of button shapes.
+     * Adds the button shape to the list of button shapes.
      *
      * @param obj
      *            an ButtonShape object. Must not be null.
@@ -191,7 +191,7 @@ public final class DefineButton implements DefineTag {
     }
 
     /**
-     * Adds the action to the array of actions.
+     * Adds the action to the list of actions.
      *
      * @param obj
      *            an action object. Must not be null.
@@ -206,7 +206,7 @@ public final class DefineButton implements DefineTag {
     }
 
     /**
-     * Get the array of button shapes.
+     * Get the list of button shapes.
      *
      * @return the list of shapes used to represent the button.
      */
@@ -215,7 +215,7 @@ public final class DefineButton implements DefineTag {
     }
 
     /**
-     * Get the array of actions that will be executed when the button is
+     * Get the list of actions that will be executed when the button is
      * clicked and released.
      *
      * @return the actions executed when the button is clicked.
@@ -225,30 +225,30 @@ public final class DefineButton implements DefineTag {
     }
 
     /**
-     * Sets the array of button shapes defined for this button.
+     * Sets the list of button shapes defined for this button.
      *
-     * @param anArray
-     *            an array of Button objects. Must not be null.
+     * @param list
+     *            a list of Button objects. Must not be null.
      */
-    public void setShapes(final List<ButtonShape> anArray) {
-        if (anArray == null) {
+    public void setShapes(final List<ButtonShape> list) {
+        if (list == null) {
             throw new IllegalArgumentException();
         }
-        shapes = anArray;
+        shapes = list;
     }
 
     /**
-     * Sets the array of actions that will be executed when the button is
+     * Sets the list of actions that will be executed when the button is
      * clicked and released.
      *
-     * @param anArray
-     *            and array of action objects. Must not be null.
+     * @param list
+     *            a list of action objects. Must not be null.
      */
-    public void setActions(final List<Action> anArray) {
-        if (anArray == null) {
+    public void setActions(final List<Action> list) {
+        if (list == null) {
             throw new IllegalArgumentException();
         }
-        actions = anArray;
+        actions = list;
     }
 
     /** {@inheritDoc} */

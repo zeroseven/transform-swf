@@ -279,20 +279,19 @@ public final class Push implements Action {
     }
 
     /**
-     * Creates a Push action that will push the values in the array onto the
+     * Creates a Push action that will push the values in the list onto the
      * stack.
      *
-     * @param anArray
-     *            an array of values to be pushed onto the stack. The values in
-     *            the array must be one of the following classes: Boolean,
-     *            Integer, Double, String, RegisterIndex or TableIndex. Must not
-     *            be null.
+     * @param list
+     *            a list of values to be pushed onto the stack. The values must
+     *            be one of the following classes: Boolean, Integer, Double,
+     *            String, RegisterIndex or TableIndex. Must not be null.
      */
-    public Push(final List<Object> anArray) {
-        if (anArray == null) {
+    public Push(final List<Object> list) {
+        if (list == null) {
             throw new IllegalArgumentException();
         }
-        values = new ArrayList<Object>(anArray);
+        values = new ArrayList<Object>(list);
     }
 
     /**
@@ -309,10 +308,10 @@ public final class Push implements Action {
 
 
     /**
-     * Get the array of values that will be pushed onto the Flash Player's
+     * Get the list of values that will be pushed onto the Flash Player's
      * stack.
      *
-     * @return a copy of the array of values.
+     * @return a copy of the list of values.
      */
     public List<Object> getValues() {
         return new ArrayList<Object>(values);

@@ -179,7 +179,7 @@ public final class DoABC implements MovieTag {
      * Sets the script containing compiled Actionscript 3.0 byte-codes.
      *
      * @param bytes
-     *            an array of byte-codes. Must not be null.
+     *            a list of byte-codes. Must not be null.
      */
     public void setData(final byte[] bytes) {
         if (bytes == null) {

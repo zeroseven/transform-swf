@@ -51,12 +51,12 @@ public final class MorphFocalGradientFill implements FillStyle {
             + " interpolation=%s; startFocalPoint=%f; endFocalPoint=%f;"
             + " startTransform=%s; endTransform=%s; gradients=%s}";
 
+    private CoordTransform startTransform;
+    private CoordTransform endTransform;
     private int spread;
     private int interpolation;
     private int startFocalPoint;
     private int endFocalPoint;
-    private CoordTransform startTransform;
-    private CoordTransform endTransform;
     private List<MorphGradient> gradients;
 
     private transient int count;
@@ -94,19 +94,51 @@ public final class MorphFocalGradientFill implements FillStyle {
         endFocalPoint = coder.readSignedShort();
     }
 
-
-    public MorphFocalGradientFill(final Spread spreadType,
-            final Interpolation anInterpolation,
-            final CoordTransform start, final CoordTransform end,
-            final List<MorphGradient> anArray,
-            final float startPoint, final float endPoint) {
+    /**
+     * Creates a MorphFocalGradientFill.
+     *
+     * @param startMatrix
+     *            the coordinate transform mapping the gradient square onto
+     *            physical coordinates at the start of the morphing process.
+     *            Must not be null.
+     * @param endMatrix
+     *            the coordinate transform mapping the gradient square onto
+     *            physical coordinates at the end of the morphing process.
+     *            Must not be null.
+     * @param spreadType
+     *            TODO
+     * @param interpolationType
+     *            how the changes in colours across the gradient are calculated.
+     * @param startPoint
+     *            the position of the focal point relative to the centre of the
+     *            radial circle at the start of the morphing process. Values
+     *            range from -1.0 (close to the left edge), to 1.0 (close to
+     *            the right edge).
+     * @param endPoint
+     *            the position of the focal point relative to the centre of the
+     *            radial circle at the start of the morphing process. Values
+     *            range from -1.0 (close to the left edge), to 1.0 (close to
+     *            the right edge).
+     * @param list
+     *            a list of Gradient objects defining the control points for
+     *            the gradient. For Flash 7 and earlier versions there can be up
+     *            to 8 Gradients. For Flash 8 onwards this number was increased
+     *            to 15. Must not be null.
+     */
+    public MorphFocalGradientFill(final CoordTransform startMatrix,
+            final CoordTransform endMatrix,
+            final Spread spreadType,
+            final Interpolation interpolationType,
+            final float startPoint,
+            final float endPoint,
+            final List<MorphGradient> list) {
+        setStartTransform(startMatrix);
+        setEndTransform(endMatrix);
         setSpread(spreadType);
-        setInterpolation(anInterpolation);
-        setStartTransform(start);
-        setEndTransform(end);
-        setGradients(anArray);
+        setInterpolation(interpolationType);
         setStartFocalPoint(startPoint);
         setEndFocalPoint(endPoint);
+        setGradients(list);
     }
 
     /**
@@ -127,47 +159,78 @@ public final class MorphFocalGradientFill implements FillStyle {
         gradients = new ArrayList<MorphGradient>(object.gradients);
     }
 
-
+    /**
+     * TODO
+     * Get the Spread.
+     *
+     * @return the Spread.
+     */
     public Spread getSpread() {
         return Spread.fromInt(spread);
     }
 
-
+    /**
+     * TODO
+     * Set the Spread.
+     *
+     * @param aSpread the Spread.
+     */
     public void setSpread(final Spread aSpread) {
         spread = aSpread.getValue();
     }
 
-
+    /**
+     * Get the method used to calculate the colour changes across the gradient.
+     *
+     * @return the Interpolation that describes how colours change.
+     */
     public Interpolation getInterpolation() {
         return Interpolation.fromInt(interpolation);
     }
 
-
-    public void setInterpolation(final Interpolation anInterpolation) {
-        interpolation = anInterpolation.getValue();
+    /**
+     * Set the method used to calculate the colour changes across the gradient.
+     *
+     * @param interp the Interpolation that describes how colours change.
+     */
+    public void setInterpolation(final Interpolation interp) {
+        interpolation = interp.getValue();
     }
 
+    /**
+     * Get the focal point at the start of the morphing process.
+     * @return the focal point in the range -1.0 to 1.0.
+     */
     public float getStartFocalPoint() {
         return startFocalPoint / SCALE_8;
     }
 
-
+    /**
+     * Set the focal point at the start of the morphing process.
+     * @param point the focal point in the range -1.0 to 1.0.
+     */
     public void setStartFocalPoint(final float point) {
         startFocalPoint = (int) (point * SCALE_8);
     }
 
-
+    /**
+     * Get the focal point at the end of the morphing process.
+     * @return the focal point in the range -1.0 to 1.0.
+     */
     public float getEndFocalPoint() {
         return endFocalPoint / SCALE_8;
     }
 
-
+    /**
+     * Set the focal point at the end of the morphing process.
+     * @param point the focal point in the range -1.0 to 1.0.
+     */
     public void setEndFocalPoint(final float point) {
         endFocalPoint = (int) (point * SCALE_8);
     }
 
     /**
-     * Add a Gradient object to the array of gradient objects. For Flash 7 and
+     * Add a Gradient object to the list of gradient objects. For Flash 7 and
      * earlier versions there can be up to 8 Gradients. For Flash 8 onwards this
      * number was increased to 15.
      *
@@ -188,7 +251,7 @@ public final class MorphFocalGradientFill implements FillStyle {
     }
 
     /**
-     * Get the array of Gradient objects defining the points for the
+     * Get the list of Gradient objects defining the points for the
      * gradient fill.
      *
      * @return the set of points that define the gradient.
@@ -198,22 +261,22 @@ public final class MorphFocalGradientFill implements FillStyle {
     }
 
     /**
-     * Sets the array of control points that define the gradient. For Flash 7
-     * and earlier this array can contain up to 8 Gradient objects. For Flash 8
+     * Sets the list of control points that define the gradient. For Flash 7
+     * and earlier this list can contain up to 8 Gradient objects. For Flash 8
      * onwards this limit was increased to 15.
      *
-     * @param anArray
-     *            an array of Gradient objects. Must not be null.
+     * @param list
+     *            a list of Gradient objects. Must not be null.
      */
-    public void setGradients(final List<MorphGradient> anArray) {
-        if (anArray == null) {
+    public void setGradients(final List<MorphGradient> list) {
+        if (list == null) {
             throw new IllegalArgumentException();
         }
         if (gradients.size() > Gradient.MAX_GRADIENTS) {
             throw new IllegalStateException(
                     "Maximum number of gradients exceeded.");
         }
-        gradients = anArray;
+        gradients = list;
     }
 
 
@@ -241,28 +304,28 @@ public final class MorphFocalGradientFill implements FillStyle {
      * Sets the coordinate transform mapping the gradient square onto physical
      * coordinates at the start of the morphing process.
      *
-     * @param aTransform
+     * @param matrix
      *            the starting coordinate transform. Must not be null.
      */
-    public void setStartTransform(final CoordTransform aTransform) {
-        if (aTransform == null) {
+    public void setStartTransform(final CoordTransform matrix) {
+        if (matrix == null) {
             throw new IllegalArgumentException();
         }
-        startTransform = aTransform;
+        startTransform = matrix;
     }
 
     /**
      * Sets the coordinate transform mapping the gradient square onto physical
      * coordinates at the end of the morphing process.
      *
-     * @param aTransform
+     * @param matrix
      *            the ending coordinate transform. Must not be null.
      */
-    public void setEndTransform(final CoordTransform aTransform) {
-        if (aTransform == null) {
+    public void setEndTransform(final CoordTransform matrix) {
+        if (matrix == null) {
             throw new IllegalArgumentException();
         }
-        endTransform = aTransform;
+        endTransform = matrix;
     }
 
     /** {@inheritDoc} */
@@ -282,7 +345,7 @@ public final class MorphFocalGradientFill implements FillStyle {
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
         // CHECKSTYLE:OFF
-        // TODO(optimise) Calculate size of gradient array directly.
+        // TODO(optimise) Calculate size of gradient list directly.
         int length = 6 + startTransform.prepareToEncode(context)
             + endTransform.prepareToEncode(context);
         count = gradients.size();

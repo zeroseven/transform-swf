@@ -63,7 +63,7 @@ import com.flagstone.transform.linestyle.LineStyle1;
  *
  * <p>
  * Line and Fill styles are selected by the index position, starting at 1, of
- * the style in an array of styles. An index of zero means that no style is
+ * the style in a list of styles. An index of zero means that no style is
  * used. Using the constant VALUE_NOT_SET means that the current style is
  * unchanged. Two types of fill style are supported: fillStyle is used where a
  * shape does not contain overlapping areas and altFillStyle is used where areas
@@ -81,13 +81,13 @@ import com.flagstone.transform.linestyle.LineStyle1;
  * </p>
  *
  * <p>
- * Finally the line or fill style arrays may left empty if no new styles are
+ * Finally the line or fill style lists may left empty if no new styles are
  * being specified.
  * </p>
  *
  * <p>
  * Note that the values for the moveX and moveY attributes and the line and fill
- * styles arrays are defined in pairs and are optional only if both are set to
+ * styles lists are defined in pairs and are optional only if both are set to
  * VALUE_NOT_SET.
  * </p>
  *
@@ -241,7 +241,7 @@ public final class ShapeStyle implements ShapeRecord {
     }
 
     /**
-     * Add a LineStyle object to the array of line styles.
+     * Add a LineStyle object to the list of line styles.
      *
      * @param style
      *            and LineStyle object. Must not be null.
@@ -256,7 +256,7 @@ public final class ShapeStyle implements ShapeRecord {
     }
 
     /**
-     * Add the fill style object to the array of fill styles.
+     * Add the fill style object to the list of fill styles.
      *
      * @param style
      *            and FillStyle object. Must not be null.
@@ -322,18 +322,18 @@ public final class ShapeStyle implements ShapeRecord {
     }
 
     /**
-     * Get the array of new line styles.
+     * Get the list of new line styles.
      *
-     * @return the array of line styles.
+     * @return the list of line styles.
      */
     public List<LineStyle1> getLineStyles() {
         return lineStyles;
     }
 
     /**
-     * Returns the array of new fill styles.
+     * Returns the list of new fill styles.
      *
-     * @return the array of fill styles.
+     * @return the list of fill styles.
      */
     public List<FillStyle> getFillStyles() {
         return fillStyles;
@@ -413,7 +413,7 @@ public final class ShapeStyle implements ShapeRecord {
      * remains unchanged.
      *
      * @param anIndex
-     *            selects the fill style at anIndex in the fill styles array of
+     *            selects the fill style at anIndex in the fill styles list of
      *            the parent Shape object.
      * @return this object.
      */
@@ -429,7 +429,7 @@ public final class ShapeStyle implements ShapeRecord {
      *
      * @param anIndex
      *            selects the alternate fill style at anIndex in the fill styles
-     *            array of the parent Shape object.
+     *            list of the parent Shape object.
      * @return this object.
      */
     public ShapeStyle setAltFillStyle(final Integer anIndex) {
@@ -443,7 +443,7 @@ public final class ShapeStyle implements ShapeRecord {
      * remains unchanged.
      *
      * @param anIndex
-     *            selects the line style at anIndex in the line styles array of
+     *            selects the line style at anIndex in the line styles list of
      *            the parent Shape object.
      * @return this object.
      */
@@ -453,34 +453,34 @@ public final class ShapeStyle implements ShapeRecord {
     }
 
     /**
-     * Sets the array of new line styles. May be set to null if no styles are
+     * Sets the list of new line styles. May be set to null if no styles are
      * being defined.
      *
-     * @param anArray
-     *            an array of LineStyle objects. Must not be null.
+     * @param list
+     *            a list of LineStyle objects. Must not be null.
      * @return this object.
      */
-    public ShapeStyle setLineStyles(final List<LineStyle1> anArray) {
-        if (anArray == null) {
+    public ShapeStyle setLineStyles(final List<LineStyle1> list) {
+        if (list == null) {
             throw new IllegalArgumentException();
         }
-        lineStyles = anArray;
+        lineStyles = list;
         return this;
     }
 
     /**
-     * Sets the array of new fill styles. May be set to null if no styles are
+     * Sets the list of new fill styles. May be set to null if no styles are
      * being defined.
      *
-     * @param anArray
-     *            an array of fill style objects. Must not be null.
+     * @param list
+     *            a list of fill style objects. Must not be null.
      * @return this object.
      */
-    public ShapeStyle setFillStyles(final List<FillStyle> anArray) {
-        if (anArray == null) {
+    public ShapeStyle setFillStyles(final List<FillStyle> list) {
+        if (list == null) {
             throw new IllegalArgumentException();
         }
-        fillStyles = anArray;
+        fillStyles = list;
         return this;
     }
 

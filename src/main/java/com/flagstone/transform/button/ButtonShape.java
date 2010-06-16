@@ -300,16 +300,16 @@ public final class ButtonShape implements SWFEncodeable {
      * Sets the coordinate transform that will be applied to the shape to change
      * it's appearance.
      *
-     * @param aTransform
-     *            an CoordTransform object that will be applied to the shape.
+     * @param matrix
+     *            a CoordTransform object that will be applied to the shape.
      *            Must not be null.
      * @return this object.
      */
-    public ButtonShape setTransform(final CoordTransform aTransform) {
-        if (aTransform == null) {
+    public ButtonShape setTransform(final CoordTransform matrix) {
+        if (matrix == null) {
             throw new IllegalArgumentException();
         }
-        transform = aTransform;
+        transform = matrix;
         return this;
     }
 
@@ -331,17 +331,17 @@ public final class ButtonShape implements SWFEncodeable {
      *
      * IMPORTANT: The colour transform is only used in DefineButton2 objects.
      *
-     * @param aTransform
-     *            an ColorTransform object that will be applied to the shape.
+     * @param cxform
+     *            a ColorTransform object that will be applied to the shape.
      *            Must not be null, even if the ButtonShape will be added to a
      *            DefineButton object.
      * @return this object.
      */
-    public ButtonShape setColorTransform(final ColorTransform aTransform) {
-        if (aTransform == null) {
+    public ButtonShape setColorTransform(final ColorTransform cxform) {
+        if (cxform == null) {
             throw new IllegalArgumentException();
         }
-        colorTransform = aTransform;
+        colorTransform = cxform;
         return this;
     }
 
@@ -359,11 +359,11 @@ public final class ButtonShape implements SWFEncodeable {
     }
 
 
-    public ButtonShape setFilters(final List<Filter> array) {
-        if (array == null) {
+    public ButtonShape setFilters(final List<Filter> list) {
+        if (list == null) {
             throw new IllegalArgumentException();
         }
-        filters = array;
+        filters = list;
         return this;
     }
 

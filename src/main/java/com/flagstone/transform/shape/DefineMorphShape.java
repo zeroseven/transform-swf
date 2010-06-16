@@ -122,9 +122,9 @@ public final class DefineMorphShape implements ShapeTag {
 
     /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
-    /** The number of bits to encode indices into the fill style array. */
+    /** The number of bits to encode indices into the fill style list. */
     private transient int fillBits;
-    /** The number of bits to encode indices into the line style array. */
+    /** The number of bits to encode indices into the line style list. */
     private transient int lineBits;
     private transient int offset;
 
@@ -228,17 +228,17 @@ public final class DefineMorphShape implements ShapeTag {
      * @param uid
      *            an unique identifier for this object. Must be in the range
      *            1..65535.
-     * @param initialBounds
+     * @param startRect
      *            the bounding rectangle enclosing the start shape. Must not be
      *            null.
-     * @param finalBounds
+     * @param endRect
      *            the bounding rectangle enclosing the end shape. Must not be
      *            null.
      * @param fills
-     *            an array of MorphSolidFill, MorphBitmapFill and
+     *            a list of MorphSolidFill, MorphBitmapFill and
      *            MorphGradientFill objects. Must not be null.
      * @param lines
-     *            an array of MorphLineStyle objects. Must not be null.
+     *            a list of MorphLineStyle objects. Must not be null.
      * @param initialShape
      *            the shape at the start of the morphing process. Must not be
      *            null.
@@ -246,13 +246,13 @@ public final class DefineMorphShape implements ShapeTag {
      *            the shape at the end of the morphing process. Must not be
      *            null.
      */
-    public DefineMorphShape(final int uid, final Bounds initialBounds,
-            final Bounds finalBounds, final List<FillStyle> fills,
+    public DefineMorphShape(final int uid, final Bounds startRect,
+            final Bounds endRect, final List<FillStyle> fills,
             final List<LineStyle> lines, final Shape initialShape,
             final Shape finalShape) {
         setIdentifier(uid);
-        setBounds(initialBounds);
-        setEndBounds(finalBounds);
+        setBounds(startRect);
+        setEndBounds(endRect);
         setFillStyles(fills);
         setLineStyles(lines);
         setShape(initialShape);
@@ -316,7 +316,7 @@ public final class DefineMorphShape implements ShapeTag {
     }
 
     /**
-     * Add a LineStyle object to the array of line styles.
+     * Add a LineStyle object to the list of line styles.
      *
      * @param aLineStyle
      *            and LineStyle object. Must not be null.
@@ -329,7 +329,7 @@ public final class DefineMorphShape implements ShapeTag {
     }
 
     /**
-     * Add the fill style object to the array of fill styles.
+     * Add the fill style object to the list of fill styles.
      *
      * @param aFillStyle
      *            an FillStyle object. Must not be null.
@@ -362,7 +362,7 @@ public final class DefineMorphShape implements ShapeTag {
     }
 
     /**
-     * Get the array of fill styles (MorphSolidFill, MorphBitmapFill and
+     * Get the list of fill styles (MorphSolidFill, MorphBitmapFill and
      * MorphGradientFill objects) for the shapes.
      *
      * @return the list of fill styles used in the shape.
@@ -372,7 +372,7 @@ public final class DefineMorphShape implements ShapeTag {
     }
 
     /**
-     * Get the array of line styles (MorphLineStyle objects) for the shapes.
+     * Get the list of line styles (MorphLineStyle objects) for the shapes.
      *
      * @return the list of line styles used in the shape.
      */
@@ -401,56 +401,56 @@ public final class DefineMorphShape implements ShapeTag {
     /**
      * Sets the starting bounds of the shape.
      *
-     * @param aBounds
+     * @param rect
      *            the bounding rectangle enclosing the start shape. Must not be
      *            null.
      */
-    public void setBounds(final Bounds aBounds) {
-        if (aBounds == null) {
+    public void setBounds(final Bounds rect) {
+        if (rect == null) {
             throw new IllegalArgumentException();
         }
-        bounds = aBounds;
+        bounds = rect;
     }
 
     /**
      * Sets the ending bounds of the shape.
      *
-     * @param aBounds
+     * @param rect
      *            the bounding rectangle enclosing the end shape. Must not be
      *            null.
      */
-    public void setEndBounds(final Bounds aBounds) {
-        if (aBounds == null) {
+    public void setEndBounds(final Bounds rect) {
+        if (rect == null) {
             throw new IllegalArgumentException();
         }
-        endBounds = aBounds;
+        endBounds = rect;
     }
 
     /**
-     * Sets the array of morph fill styles.
+     * Sets the list of morph fill styles.
      *
-     * @param anArray
-     *            an array of MorphSolidFill, MorphBitmapFill and
+     * @param list
+     *            a list of MorphSolidFill, MorphBitmapFill and
      *            MorphGradientFill objects. Must not be null.
      */
-    public void setFillStyles(final List<FillStyle> anArray) {
-        if (anArray == null) {
+    public void setFillStyles(final List<FillStyle> list) {
+        if (list == null) {
             throw new IllegalArgumentException();
         }
-        fillStyles = anArray;
+        fillStyles = list;
     }
 
     /**
-     * Sets the array of morph line styles.
+     * Sets the list of morph line styles.
      *
-     * @param anArray
-     *            an array of MorphLineStyle objects. Must not be null.
+     * @param list
+     *            a list of MorphLineStyle objects. Must not be null.
      */
-    public void setLineStyles(final List<LineStyle> anArray) {
-        if (anArray == null) {
+    public void setLineStyles(final List<LineStyle> list) {
+        if (list == null) {
             throw new IllegalArgumentException();
         }
-        lineStyles = anArray;
+        lineStyles = list;
     }
 
     /**

@@ -52,7 +52,7 @@ import com.flagstone.transform.coder.SWFFactory;
  *
  * <p>
  * In the actions which form the function body all the arguments passed to the
- * function can be referenced by the name supplied in the arguments array.
+ * function can be referenced by the name supplied in the arguments list.
  * </p>
  *
  * <p>
@@ -206,16 +206,16 @@ public final class NewFunction implements Action {
 
     /**
      * Creates a NewFunction with the specified name, argument names and actions
-     * to be executed. The order of the Strings in the argument array indicate
+     * to be executed. The order of the Strings in the argument list indicate
      * the order in which the values will be popped off the stack when the
      * function is executed. The fist argument is popped from the stack first.
      *
      * @param aString
      *            the name of the function. May not be null.
      * @param argumentArray
-     *            an array of Strings listing the names of the arguments.
+     *            the list of Strings giving the names of the arguments.
      * @param actionArray
-     *            the array of actions that define the operation performed by
+     *            the list of actions that define the operation performed by
      *            the function.
      */
     public NewFunction(final String aString, final List<String> argumentArray,
@@ -241,9 +241,9 @@ public final class NewFunction implements Action {
      * will be assigned to object variables and used as methods.
      *
      * @param argumentArray
-     *            an array of Strings listing the names of the arguments.
+     *            a list of Strings giving the names of the arguments.
      * @param actionArray
-     *            the array of actions that define the operation performed by
+     *            a list of actions that define the operation performed by
      *            the function.
      */
     public NewFunction(final List<String> argumentArray,
@@ -279,7 +279,7 @@ public final class NewFunction implements Action {
     /**
      * Get the names of the function arguments.
      *
-     * @return an array of argument names in the order they appear in the
+     * @return a list of argument names in the order they appear in the
      * function definition.
      */
     public List<String> getArguments() {

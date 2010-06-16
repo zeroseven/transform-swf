@@ -49,12 +49,12 @@ public class Glyph {
     /**
      * Create a Glyph with the specified outline, bounding box and advance.
      * @param aShape the outline of the glyph.
-     * @param box the bounding box that encloses the glyph.
+     * @param rect the bounding box that encloses the glyph.
      * @param dist the advance to the next glyph.
      */
-    public Glyph(final Shape aShape, final Bounds box, final int dist) {
+    public Glyph(final Shape aShape, final Bounds rect, final int dist) {
         shape = aShape;
-        bounds = box;
+        bounds = rect;
         advance = dist;
     }
 
@@ -94,10 +94,10 @@ public class Glyph {
 
     /**
      * Set the bounding box enclosing the glyph.
-     * @param box the Bounds that encloses the outline of the glyph.
+     * @param rect the Bounds that encloses the outline of the glyph.
      */
-    public final void setBounds(final Bounds box) {
-        bounds = box;
+    public final void setBounds(final Bounds rect) {
+        bounds = rect;
     }
 
     /**

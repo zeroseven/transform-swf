@@ -240,15 +240,15 @@ public final class BitmapFill implements FillStyle {
      * the shape. Typically the transform will scale the image by a factor of 20
      * so that the image is displayed at the correct screen resolution.
      *
-     * @param aTransform
+     * @param matrix
      *            a CoordTransform object that changes the appearance and
      *            location of the image inside the shape. Must not be null.
      */
-    public void setTransform(final CoordTransform aTransform) {
-        if (aTransform == null) {
+    public void setTransform(final CoordTransform matrix) {
+        if (matrix == null) {
             throw new IllegalArgumentException();
         }
-        transform = aTransform;
+        transform = matrix;
     }
 
     /** {@inheritDoc} */

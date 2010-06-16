@@ -128,17 +128,17 @@ public final class DefineFont implements DefineTag {
 
     /**
      * Creates a DefineFont object setting the unique identifier for the object
-     * and the array of glyphs used to render the characters used from the font.
+     * and the list of glyphs used to render the characters used from the font.
      *
      * @param uid
      *            the unique identifier for this object.
-     * @param anArray
-     *            an array of Shape objects that define the outlines for each
+     * @param list
+     *            a list of Shape objects that define the outlines for each
      *            glyph in the font.
      */
-    public DefineFont(final int uid, final List<Shape> anArray) {
+    public DefineFont(final int uid, final List<Shape> list) {
         setIdentifier(uid);
-        setShapes(anArray);
+        setShapes(list);
     }
 
     /**
@@ -172,7 +172,7 @@ public final class DefineFont implements DefineTag {
     }
 
     /**
-     * Add a shape to the array of shapes that represent the glyphs for the
+     * Add a shape to the list of shapes that represent the glyphs for the
      * font.
      *
      * @param obj
@@ -188,7 +188,7 @@ public final class DefineFont implements DefineTag {
     }
 
     /**
-     * Get the array of shapes that define the outline for each glyph.
+     * Get the list of shapes that define the outline for each glyph.
      *
      * @return the glyphs for this font.
      */
@@ -197,17 +197,17 @@ public final class DefineFont implements DefineTag {
     }
 
     /**
-     * Sets the array of shapes that describe each glyph.
+     * Sets the list of shapes that describe each glyph.
      *
-     * @param anArray
-     *            an array of Shape objects that define the outlines for each
+     * @param list
+     *            a list of Shape objects that define the outlines for each
      *            glyph in the font. Must not be null.
      */
-    public void setShapes(final List<Shape> anArray) {
-        if (anArray == null) {
+    public void setShapes(final List<Shape> list) {
+        if (list == null) {
             throw new IllegalArgumentException();
         }
-        shapes = anArray;
+        shapes = list;
     }
 
     /** {@inheritDoc} */

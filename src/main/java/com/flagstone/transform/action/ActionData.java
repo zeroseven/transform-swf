@@ -61,7 +61,7 @@ public final class ActionData implements Action {
      * Creates an ActionData object initialised with a set of encoded actions.
      *
      * @param bytes
-     *            the array of encoded actions. Must not be null or empty.
+     *            the encoded actions. Must not be null or empty.
      */
     public ActionData(final byte[] bytes) {
         data = Arrays.copyOf(bytes, bytes.length);
@@ -78,7 +78,7 @@ public final class ActionData implements Action {
     }
 
     /**
-     * Creates and returns a copy of the array of encoded actions.
+     * Creates and returns a copy of the encoded actions.
      *
      * @return a copy of the encoded actions.
      */

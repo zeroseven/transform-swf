@@ -31,10 +31,9 @@
 
 package com.flagstone.transform.action;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import java.io.IOException;
 
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
@@ -106,14 +105,14 @@ public final class Table implements Action {
     }
 
     /**
-     * Creates a Table using the array of strings.
+     * Creates a Table using the list of strings.
      *
-     * @param anArray
+     * @param list
      *            of Strings that will be added to the table. Must not be null.
      */
-    public Table(final List<String> anArray) {
+    public Table(final List<String> list) {
         values = new ArrayList<String>();
-        setValues(anArray);
+        setValues(list);
     }
 
     /**
@@ -148,24 +147,24 @@ public final class Table implements Action {
     /**
      * Get the table of strings.
      *
-     * @return the array of Strings stored in the table.
+     * @return the list of Strings stored in the table.
      */
     public List<String> getValues() {
         return values;
     }
 
     /**
-     * Sets the array of Strings stored in the literal table.
+     * Sets the list of Strings stored in the literal table.
      *
-     * @param anArray
-     *            an array of Strings that will replaces the existing literal
+     * @param list
+     *            a list of Strings that will replaces the existing literal
      *            table. Must not be null.
      */
-    public void setValues(final List<String> anArray) {
-        if (anArray == null) {
+    public void setValues(final List<String> list) {
+        if (list == null) {
             throw new IllegalArgumentException();
         }
-        values = anArray;
+        values = list;
     }
 
     /** {@inheritDoc} */

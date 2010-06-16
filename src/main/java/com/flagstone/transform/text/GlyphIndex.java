@@ -51,7 +51,7 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  *
  * <p>
  * A single lines of text is displayed using an {@link TextSpan} object which
- * contains an array of Character objects. Blocks of text can be created by
+ * contains a list of Character objects. Blocks of text can be created by
  * combining one or more TextSpan objects which specify the size, colour and
  * relative position of each line.
  * </p>
@@ -99,7 +99,7 @@ public final class GlyphIndex implements SWFEncodeable {
      * the spacing to the next glyph.
      *
      * @param anIndex
-     *            the index into the array of Shapes in a font definition object
+     *            the index into the list of Shapes in a font definition object
      *            that defines the glyph that represents the character to be
      *            displayed.
      *

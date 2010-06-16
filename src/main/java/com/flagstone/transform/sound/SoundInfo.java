@@ -63,7 +63,7 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  * the mode is required. The other attributes are optional and may be added as a
  * greater degree of control is required. The inPoint and outPoint attributes
  * may be set to zero if the sound does not fade in or out respectively. The
- * loopCount may be set to zero if a sound is being stopped. The envelopes array
+ * loopCount may be set to zero if a sound is being stopped. The envelopes
  * may be left empty if no envelope is defined for the sound. The class provides
  * different constructors to specify different sets of attributes.
  * </p>

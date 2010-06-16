@@ -142,9 +142,9 @@ public final class Layer {
      * Flash Player's display list into a single group.
      *
      * @param layers
-     *            and array of Layer objects.
+     *            a list of Layer objects.
      *
-     * @return an array of all the objects contained in each layer. This array
+     * @return a list of all the objects contained in each layer. This list
      *         can then be added to the movie.
      */
     public static List<Frame> merge(final List<Layer> layers) {

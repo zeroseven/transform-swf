@@ -147,20 +147,20 @@ public final class Place implements MovieTag {
      *            display list. Must be in the range 1..65535.
      * @param level
      *            the layer in the display list where the object will be placed.
-     * @param position
+     * @param matrix
      *            an CoordTransform object that defines the orientation, size
      *            and location of the object when it is drawn. Must not be null.
-     * @param color
+     * @param cxform
      *            an ColorTransform object that defines the colour of the object
      *            when it is drawn.
      */
     public Place(final int uid, final int level,
-            final CoordTransform position,
-            final ColorTransform color) {
+            final CoordTransform matrix,
+            final ColorTransform cxform) {
         setIdentifier(uid);
         setLayer(level);
-        setTransform(position);
-        setColorTransform(color);
+        setTransform(matrix);
+        setColorTransform(cxform);
     }
 
     /**
@@ -248,16 +248,16 @@ public final class Place implements MovieTag {
      * Sets the transform that defines the position where the object is
      * displayed.
      *
-     * @param aTransform
+     * @param matrix
      *            an CoordTransform object that defines the orientation, size
      *            and location of the object when it is drawn. Must not be null.
      * @return this object.
      */
-    public Place setTransform(final CoordTransform aTransform) {
-        if (aTransform == null) {
+    public Place setTransform(final CoordTransform matrix) {
+        if (matrix == null) {
             throw new IllegalArgumentException();
         }
-        transform = aTransform;
+        transform = matrix;
         return this;
     }
 
@@ -290,13 +290,13 @@ public final class Place implements MovieTag {
      * Sets the colour transform that defines any colour effects applied when
      * the object is displayed.
      *
-     * @param aColorTransform
+     * @param cxform
      *            an ColorTransform object that defines the colour of the object
      *            when it is drawn. May be set to null.
      * @return this object.
      */
-    public Place setColorTransform(final ColorTransform aColorTransform) {
-        colorTransform = aColorTransform;
+    public Place setColorTransform(final ColorTransform cxform) {
+        colorTransform = cxform;
         return this;
     }
 

@@ -120,7 +120,7 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  *
  * <p>
  * The arguments supplied to the function can be referenced by the name supplied
- * in the arguments array.
+ * in the arguments list.
  * </p>
  *
  * <p>
@@ -392,7 +392,7 @@ public final class NewFunction2 implements Action {
 
     /**
      * Creates a NewFunction2 with the specified name, argument names and
-     * actions to be executed. The order of the Strings in the argument array
+     * actions to be executed. The order of the Strings in the argument list
      * indicate the order in which the values will be popped off the stack when
      * the function is executed. The first argument is popped from the stack
      * first.
@@ -406,10 +406,10 @@ public final class NewFunction2 implements Action {
      *            the set of optimizations that will be applied to boost
      *            function performance.
      * @param map
-     *            an array of arguments and any register numbers they will be
+     *            the arguments and any register numbers they will be
      *            assigned to (zero for no assignment).
      * @param list
-     *            the array of actions that define the operation performed by
+     *            the list of actions that define the operation performed by
      *            the function.
      */
     public NewFunction2(final String aString,
@@ -497,7 +497,7 @@ public final class NewFunction2 implements Action {
     }
 
     /**
-     * Get the array of RegisterVariables that define the function arguments
+     * Get the list of RegisterVariables that define the function arguments
      * and whether they are assigned to internal registers or to local variables
      * in memory.
      *
@@ -511,7 +511,7 @@ public final class NewFunction2 implements Action {
     /**
      * Get the actions executed by the function.
      *
-     * @return a copy of the array of actions that make up the function body.
+     * @return a copy of the list of actions that make up the function body.
      */
     public List<Action> getActions() {
         return new ArrayList<Action>(actions);

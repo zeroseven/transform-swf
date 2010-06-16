@@ -21,10 +21,10 @@ public interface StaticTextTag extends DefineTag {
     /**
      * Sets the bounding rectangle that encloses the text.
      *
-     * @param aBounds
+     * @param rect
      *            set the bounding rectangle for the text. Must not be null.
      */
-    void setBounds(final Bounds aBounds);
+    void setBounds(final Bounds rect);
 
     /**
      * Get the coordinate transform that controls the size, location and
@@ -37,24 +37,24 @@ public interface StaticTextTag extends DefineTag {
      * Sets the coordinate transform that changes the orientation and size of
      * the text displayed.
      *
-     * @param aTransform
+     * @param matrix
      *            an CoordTransform to change the size and orientation of the
      *            text. Must not be null.
      */
-    void setTransform(final CoordTransform aTransform);
+    void setTransform(final CoordTransform matrix);
 
     /**
-     * Get the array of text spans that define the text to be displayed.
+     * Get the list of text spans that define the text to be displayed.
      *
      * @return the list of text blocks.
      */
     List<TextSpan> getSpans();
     /**
-     * Sets the array of text spans that define the text to be displayed.
+     * Sets the list of text spans that define the text to be displayed.
      *
-     * @param array
-     *            an array of TextSpan objects that define the text to be
+     * @param list
+     *            a list of TextSpan objects that define the text to be
      *            displayed. Must not be null.
      */
-    void setSpans(final List<TextSpan> array);
+    void setSpans(final List<TextSpan> list);
 }

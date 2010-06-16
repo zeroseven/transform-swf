@@ -142,7 +142,7 @@ public final class DefineData implements DefineTag {
      * Sets the array of bytes that will be embedded in the Flash file.
      *
      * @param bytes
-     *            an array of bytes that contain the encoded binary data. Must
+     *            a list of bytes that contain the encoded binary data. Must
      *            not be null.
      */
     public void setData(final byte[] bytes) {

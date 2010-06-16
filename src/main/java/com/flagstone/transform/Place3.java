@@ -123,7 +123,7 @@ import com.flagstone.transform.filter.Filter;
  * may be left at its default value (0).</li>
  * <li>If a name is net assigned to an object the name attribute may be left its
  * default value (an empty string).</li>
- * <li>If no events are being defined for a movie clip then the array of
+ * <li>If no events are being defined for a movie clip then the list of
  * ClipEvent object may be left empty.</li>
  * </ul>
  *
@@ -521,14 +521,14 @@ public final class Place3 implements MovieTag {
      * will be displayed. The argument may be null if the location of the object
      * is not being changed.
      *
-     * @param aTransform
+     * @param matrix
      *            an CoordTransform object that will be applied to the object
      *            displayed.
      *
      * @return this object.
      */
-    public Place3 setTransform(final CoordTransform aTransform) {
-        transform = aTransform;
+    public Place3 setTransform(final CoordTransform matrix) {
+        transform = matrix;
         return this;
     }
 
@@ -548,14 +548,14 @@ public final class Place3 implements MovieTag {
      * object. The argument may be null if the color of the object is not being
      * changed.
      *
-     * @param aTransform
+     * @param cxform
      *            an ColorTransform object that will be applied to the object
      *            displayed.
      *
      * @return this object.
      */
-    public Place3 setColorTransform(final ColorTransform aTransform) {
-        colorTransform = aTransform;
+    public Place3 setColorTransform(final ColorTransform cxform) {
+        colorTransform = cxform;
         return this;
     }
 
@@ -689,13 +689,13 @@ public final class Place3 implements MovieTag {
     /**
      * Set the list of filters that will be applied to the object when it is
      * displayed as a bitmap.
-     * @param array the list of bitmap filters.
+     * @param list the list of bitmap filters.
      */
-    public void setFilters(final List<Filter> array) {
-        if (array == null) {
+    public void setFilters(final List<Filter> list) {
+        if (list == null) {
             throw new IllegalArgumentException();
         }
-        filters = array;
+        filters = list;
     }
 
 
@@ -709,7 +709,7 @@ public final class Place3 implements MovieTag {
     }
 
     /**
-     * Adds a clip event to the array of clip events. If the object already
+     * Adds a clip event to the list of clip events. If the object already
      * contains a set of encoded clip event objects they will be deleted.
      *
      * @param aClipEvent
@@ -728,7 +728,7 @@ public final class Place3 implements MovieTag {
     }
 
     /**
-     * Get the array of event handlers that define the actions that will
+     * Get the list of event handlers that define the actions that will
      * be executed in response to events that occur in the movie clip being
      * placed.
      *
@@ -739,21 +739,21 @@ public final class Place3 implements MovieTag {
     }
 
     /**
-     * Set the array of Clip events. Clip Events are only valid for movie clips
+     * Set the list of Clip events. Clip Events are only valid for movie clips
      * and the argument should be set to null when placing other types of
      * object.
      *
      * If the object already contains a set of encoded clip event objects they
      * will be deleted.
      *
-     * @param anArray
-     *            an array of ClipEvent objects.
+     * @param list
+     *            a list of ClipEvent objects.
      */
-    public void setEvents(final List<EventHandler> anArray) {
-        if (anArray == null) {
+    public void setEvents(final List<EventHandler> list) {
+        if (list == null) {
             throw new IllegalArgumentException();
         }
-        events = anArray;
+        events = list;
     }
 
 

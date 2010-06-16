@@ -62,7 +62,7 @@ import com.flagstone.transform.coder.SWFFactory;
  * <p>
  * Movie is the core class of the Transform package. It is used to parse and
  * generate Flash files, translating the binary format of the Flash file into an
- * array objects that can be inspected and updated.
+ * list objects that can be inspected and updated.
  * </p>
  *
  * <p>
@@ -149,7 +149,7 @@ public final class Movie {
     }
 
     /**
-     * Get the array of objects contained in the Movie.
+     * Get the list of objects contained in the Movie.
      *
      * @return the list of objects that make up the movie.
      */
@@ -158,16 +158,16 @@ public final class Movie {
     }
 
     /**
-     * Sets the array of objects contained in the Movie.
+     * Sets the list of objects contained in the Movie.
      *
-     * @param anArray
-     *            the array of objects that describe a coder. Must not be null.
+     * @param list
+     *            the list of objects that describe a coder. Must not be null.
      */
-    public void setObjects(final List<MovieTag> anArray) {
-        if (anArray == null) {
+    public void setObjects(final List<MovieTag> list) {
+        if (list == null) {
             throw new IllegalArgumentException();
         }
-        objects = anArray;
+        objects = list;
     }
 
     /**
@@ -236,7 +236,7 @@ public final class Movie {
 
     /**
      * Decodes the binary Flash data from an input stream. If an error occurs
-     * while the data is being decoded an exception is thrown. The array of
+     * while the data is being decoded an exception is thrown. The list of
      * objects in the Movie will contain the last tag successfully decoded.
      *
      * @param stream
@@ -319,7 +319,7 @@ public final class Movie {
     }
 
     /**
-     * Encodes the array of objects and writes the data to the specified file.
+     * Encodes the list of objects and writes the data to the specified file.
      * If an error occurs while encoding the file then an exception is thrown.
      *
      * @param file
@@ -337,7 +337,7 @@ public final class Movie {
     }
 
     /**
-     * Returns the encoded representation of the array of objects that this
+     * Returns the encoded representation of the list of objects that this
      * Movie contains. If an error occurs while encoding the file then an
      * exception is thrown.
      *

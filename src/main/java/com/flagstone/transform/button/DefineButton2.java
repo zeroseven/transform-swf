@@ -179,9 +179,9 @@ public final class DefineButton2 implements DefineTag {
      * @param buttonType
      *            the button is a menu button (true) or push button (false).
      * @param buttonShapes
-     *            an array of Button objects. Must not be null.
+     *            a list of Button objects. Must not be null.
      * @param handlers
-     *            an array of ButtonEvent objects. Must not be null.
+     *            a list of ButtonEvent objects. Must not be null.
      */
     public DefineButton2(final int uid, final ButtonType buttonType,
             final List<ButtonShape> buttonShapes,
@@ -228,7 +228,7 @@ public final class DefineButton2 implements DefineTag {
     }
 
     /**
-     * Adds an ButtonShape to the array of button records.
+     * Adds an ButtonShape to the list of button records.
      *
      * @param obj
      *            a button shape object. Must not be null.
@@ -243,7 +243,7 @@ public final class DefineButton2 implements DefineTag {
     }
 
     /**
-     * Adds a button event object to the array of button events.
+     * Adds a button event object to the list of button events.
      *
      * @param obj
      *            a button event. Must not be null.
@@ -273,7 +273,7 @@ public final class DefineButton2 implements DefineTag {
     }
 
     /**
-     * Get the array of button records defined for this button.
+     * Get the list of button records defined for this button.
      *
      * @return the list of shapes used to draw the button.
      */
@@ -282,7 +282,7 @@ public final class DefineButton2 implements DefineTag {
     }
 
     /**
-     * Get the array of event handlers defined for this button.
+     * Get the list of event handlers defined for this button.
      *
      * @return the event handlers for the button.
      */
@@ -305,30 +305,30 @@ public final class DefineButton2 implements DefineTag {
     }
 
     /**
-     * Sets the array of button shapes defined for this button.
+     * Sets the list of button shapes defined for this button.
      *
-     * @param anArray
-     *            an array of ButtonShape objects. Must not be null.
+     * @param list
+     *            a list of ButtonShape objects. Must not be null.
      */
-    public void setShapes(final List<ButtonShape> anArray) {
-        if (anArray == null) {
+    public void setShapes(final List<ButtonShape> list) {
+        if (list == null) {
             throw new IllegalArgumentException();
         }
-        shapes = anArray;
+        shapes = list;
     }
 
     /**
-     * Sets the array of button events defined for this button. If the object
+     * Sets the list of button events defined for this button. If the object
      * already contains encodedEvents then they will be deleted.
      *
-     * @param anArray
-     *            and array of ButtonEvent objects. Must not be null.
+     * @param list
+     *            a list of ButtonEvent objects. Must not be null.
      */
-    public void setEvents(final List<EventHandler> anArray) {
-        if (anArray == null) {
+    public void setEvents(final List<EventHandler> list) {
+        if (list == null) {
             throw new IllegalArgumentException();
         }
-        events = anArray;
+        events = list;
     }
 
     /** {@inheritDoc} */

@@ -35,7 +35,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.flagstone.transform.Constants;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -89,16 +88,37 @@ public final class FocalGradientFill implements FillStyle {
         focalPoint = coder.readSignedShort();
     }
 
-
-    public FocalGradientFill(final Spread spreadType,
-            final Interpolation anInterpolation,
-            final CoordTransform aTransform,
-            final List<Gradient> anArray, final float point) {
+    /**
+     * Creates a GradientFill object specifying the type, coordinate transform
+     * and list of gradient points.
+     *
+     * @param matrix
+     *            the coordinate transform mapping the gradient square onto
+     *            physical coordinates. Must not be null.
+     * @param spreadType
+     *            TODO
+     * @param interpolationType
+     *            how the changes in colours across the gradient are calculated.
+     * @param point
+     *            the position of the focal point relative to the centre of the
+     *            radial circle. Values range from -1.0 (close to the left
+     *            edge), to 1.0 (close to the right edge).
+     * @param list
+     *            a list of Gradient objects defining the control points for
+     *            the gradient. For Flash 7 and earlier versions there can be up
+     *            to 8 Gradients. For Flash 8 onwards this number was increased
+     *            to 15. Must not be null.
+     */
+    public FocalGradientFill(final CoordTransform matrix,
+            final Spread spreadType,
+            final Interpolation interpolationType,
+            final float point,
+            final List<Gradient> list) {
+        setTransform(matrix);
         setSpread(spreadType);
-        setInterpolation(anInterpolation);
-        setTransform(aTransform);
-        setGradients(anArray);
+        setInterpolation(interpolationType);
         setFocalPoint(point);
+        setGradients(list);
     }
 
     /**
@@ -117,84 +137,109 @@ public final class FocalGradientFill implements FillStyle {
         gradients = new ArrayList<Gradient>(object.gradients);
     }
 
-
+    /**
+     * TODO
+     * Get the Spread.
+     *
+     * @return the Spread.
+     */
     public Spread getSpread() {
         return Spread.fromInt(spread);
     }
 
-
-    public void setSpread(final Spread aSpread) {
-        spread = aSpread.getValue();
+    /**
+     * TODO
+     * Set the Spread.
+     *
+     * @param spreadType the Spread.
+     */
+    public void setSpread(final Spread spreadType) {
+        spread = spreadType.getValue();
     }
 
-
+    /**
+     * Get the method used to calculate the colour changes across the gradient.
+     *
+     * @return the Interpolation that describes how colours change.
+     */
     public Interpolation getInterpolation() {
         return Interpolation.fromInt(interpolation);
     }
 
-
-    public void setInterpolation(final Interpolation anInterpolation) {
-        interpolation = anInterpolation.getValue();
+    /**
+     * Set the method used to calculate the colour changes across the gradient.
+     *
+     * @param interpolationType
+     *            the Interpolation that describes how colours change.
+     */
+    public void setInterpolation(final Interpolation interpolationType) {
+        interpolation = interpolationType.getValue();
     }
 
-
+    /**
+     * Get the focal point for the radial gradient.
+     * @return the focal point value in the range from -1.0 to 1.0.
+     */
     public float getFocalPoint() {
         return focalPoint / SCALE_8;
     }
 
-
+    /**
+     * Set the focal point for the radial gradient.
+     * @param point the focal point value in the range from -1.0 to 1.0.
+     */
     public void setFocalPoint(final float point) {
         focalPoint = (int) (point * SCALE_8);
     }
 
     /**
-     * Add a Gradient object to the array of gradient objects. For Flash 7 and
+     * Add a Gradient object to the list of gradient objects. For Flash 7 and
      * earlier versions there can be up to 8 Gradients. For Flash 8 onwards this
      * number was increased to 15.
      *
-     * @param aGradient
+     * @param gradient
      *            an Gradient object. Must not be null.
      * @return this object.
      */
-    public FocalGradientFill add(final Gradient aGradient) {
-        if (aGradient == null) {
+    public FocalGradientFill add(final Gradient gradient) {
+        if (gradient == null) {
             throw new IllegalArgumentException();
         }
         if (gradients.size() == Gradient.MAX_GRADIENTS) {
             throw new IllegalStateException(
                     "Maximum number of gradients exceeded.");
         }
-        gradients.add(aGradient);
+        gradients.add(gradient);
         return this;
     }
 
     /**
-     * Get the array of Gradient objects defining the points for the
+     * Get the list of Gradient objects defining the points for the
      * gradient fill.
      *
-     * @return the array of points that define the gradient.
+     * @return the list of points that define the gradient.
      */
     public List<Gradient> getGradients() {
         return gradients;
     }
 
     /**
-     * Sets the array of control points that define the gradient. For Flash 7
-     * and earlier this array can contain up to 8 Gradient objects. For Flash 8
+     * Sets the list of control points that define the gradient. For Flash 7
+     * and earlier this list can contain up to 8 Gradient objects. For Flash 8
      * onwards this limit was increased to 15.
      *
-     * @param anArray
-     *            an array of Gradient objects. Must not be null.
+     * @param list
+     *            a list of Gradient objects. Must not be null.
      */
-    public void setGradients(final List<Gradient> anArray) {
-        if (anArray == null) {
+    public void setGradients(final List<Gradient> list) {
+        if (list == null) {
             throw new IllegalArgumentException();
         }
         if (gradients.size() > Gradient.MAX_GRADIENTS) {
             throw new IllegalStateException(
                     "Maximum number of gradients exceeded.");
         }
-        gradients = anArray;
+        gradients = list;
     }
 
     /**
@@ -211,14 +256,14 @@ public final class FocalGradientFill implements FillStyle {
      * Sets the coordinate transform mapping the gradient square onto physical
      * coordinates.
      *
-     * @param aTransform
+     * @param matrix
      *            the coordinate transform. Must not be null.
      */
-    public void setTransform(final CoordTransform aTransform) {
-        if (aTransform == null) {
+    public void setTransform(final CoordTransform matrix) {
+        if (matrix == null) {
             throw new IllegalArgumentException();
         }
-        transform = aTransform;
+        transform = matrix;
     }
 
     /** {@inheritDoc} */
@@ -236,7 +281,7 @@ public final class FocalGradientFill implements FillStyle {
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
         // CHECKSTYLE:OFF
-        // TODO(optimise) Calculate size of gradient array directly.
+        // TODO(optimise) Calculate size of gradient list directly.
         int length = 4 + transform.prepareToEncode(context);
         count = gradients.size();
 

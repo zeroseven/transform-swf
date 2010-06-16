@@ -189,35 +189,35 @@ public final class Canvas {
     }
 
     /**
-     * Get a copy of the array line styles.
+     * Get a copy of the list of line styles.
      *
      * @return the list of line styles.
      */
     public List<LineStyle> getLineStyles() {
-        final List<LineStyle> array = new ArrayList<LineStyle>(lineStyles
+        final List<LineStyle> list = new ArrayList<LineStyle>(lineStyles
                 .size());
 
         for (final LineStyle style : lineStyles) {
-            array.add(style.copy());
+            list.add(style.copy());
         }
 
-        return array;
+        return list;
     }
 
     /**
-     * Get a copy of the array fill styles.
+     * Get a copy of the list of fill styles.
      *
      * @return the list of fill styles.
      */
     public List<FillStyle> getFillStyles() {
-        final List<FillStyle> array = new ArrayList<FillStyle>(fillStyles
+        final List<FillStyle> list = new ArrayList<FillStyle>(fillStyles
                 .size());
 
         for (final FillStyle style : fillStyles) {
-            array.add(style.copy());
+            list.add(style.copy());
         }
 
-        return array;
+        return list;
     }
 
     /**
@@ -228,13 +228,13 @@ public final class Canvas {
      *         used to construct the current path.
      */
     public Shape getShape() {
-        final ArrayList<ShapeRecord> array = new ArrayList<ShapeRecord>(objects
+        final List<ShapeRecord> list = new ArrayList<ShapeRecord>(objects
                 .size());
 
         for (final ShapeRecord record : objects) {
-            array.add(record.copy());
+            list.add(record.copy());
         }
-        return new Shape(array);
+        return new Shape(list);
     }
 
     /**
@@ -295,8 +295,8 @@ public final class Canvas {
     /**
      * Generates a shape containing the current path and styles.
      *
-     * The shape is constructed with copies of the style arrays and the shape
-     * representing the path drawn. This allows the number of styles to be
+     * The shape is constructed with copies of the line and fill styles and the
+     * shape representing the path drawn. This allows the number of styles to be
      * changed without affecting previously created shapes.
      *
      * @param identifier
@@ -311,8 +311,8 @@ public final class Canvas {
     /**
      * Generates a transparent shape containing the current path and styles.
      *
-     * The shape is constructed with copies of the style arrays and the shape
-     * representing the path drawn. This allows the number of styles to be
+     * The shape is constructed with copies of the line and fille styles and the
+     * shape representing the path drawn. This allows the number of styles to be
      * changed without affecting previously created shapes.
      *
      * @param identifier

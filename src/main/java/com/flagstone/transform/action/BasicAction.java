@@ -71,7 +71,7 @@ import com.flagstone.transform.coder.SWFEncoder;
  * </p>
  */
 public enum BasicAction implements Action {
-    /** Signals the end of an array of actions. */
+    /** Signals the end of a list of actions. */
     END(ActionTypes.END),
     /** Move to the next frame. */
     NEXT_FRAME(ActionTypes.NEXT_FRAME),

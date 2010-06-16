@@ -79,14 +79,16 @@ public final class ScalingGrid implements DefineTag {
      * Creates and initialises a ScalingGrid with the specified object
      * identifier and bounding box for the centre section.
      *
-     * @param uid the unique identifier of the object to which the grid will be
-     * applied
-     * @param aBounds the bounding box that defines the coordinates of the
-     * centre section of the grid.
+     * @param uid
+     *            the unique identifier of the object to which the grid will be
+     *            applied
+     * @param rect
+     *            the bounding box that defines the coordinates of the centre
+     *            section of the grid.
      */
-    public ScalingGrid(final int uid, final Bounds aBounds) {
+    public ScalingGrid(final int uid, final Bounds rect) {
         setIdentifier(uid);
-        setBounds(aBounds);
+        setBounds(rect);
     }
 
     /**
@@ -136,13 +138,13 @@ public final class ScalingGrid implements DefineTag {
 
     /**
      * Set the bounding box that defined the centre section of the scaling grid.
-     * @param aBounds the box defining the centre of the grid.
+     * @param rect the box defining the centre of the grid.
      */
-    public void setBounds(final Bounds aBounds) {
-        if (aBounds == null) {
+    public void setBounds(final Bounds rect) {
+        if (rect == null) {
             throw new IllegalArgumentException();
         }
-        bounds = aBounds;
+        bounds = rect;
     }
 
     /** {@inheritDoc} */

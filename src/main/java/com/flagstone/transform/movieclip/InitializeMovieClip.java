@@ -120,17 +120,17 @@ public final class InitializeMovieClip implements MovieTag {
 
     /**
      * Creates a Initialize object that will initialise the movie clip with the
-     * specified identifier with the actions in the array.
+     * specified identifier with the actions in the list.
      *
      * @param uid
      *            the identifier of the movie clip to initialise. Must be in the
      *            range 1..65535.
-     * @param anArray
-     *            the array of action objects. Must not be null.
+     * @param list
+     *            the list of action objects. Must not be null.
      */
-    public InitializeMovieClip(final int uid, final List<Action> anArray) {
+    public InitializeMovieClip(final int uid, final List<Action> list) {
         setIdentifier(uid);
-        setActions(anArray);
+        setActions(list);
     }
 
     /**
@@ -171,7 +171,7 @@ public final class InitializeMovieClip implements MovieTag {
     }
 
     /**
-     * Adds the action object to the array of actions.
+     * Adds the action object to the list of actions.
      *
      * @param anAction
      *            an object belonging to a class derived from Action. Must not
@@ -187,7 +187,7 @@ public final class InitializeMovieClip implements MovieTag {
     }
 
     /**
-     * Get the array of actions that are used to initialise the movie clip.
+     * Get the list of actions that are used to initialise the movie clip.
      *
      * @return the actions to initialize the movie clip.
      */
@@ -196,16 +196,16 @@ public final class InitializeMovieClip implements MovieTag {
     }
 
     /**
-     * Set the array of actions of the movie clip that will be initialised.
+     * Set the list of actions of the movie clip that will be initialised.
      *
-     * @param anArray
-     *            the array of action objects. Must not be null.
+     * @param list
+     *            the list of action objects. Must not be null.
      */
-    public void setActions(final List<Action> anArray) {
-        if (anArray == null) {
+    public void setActions(final List<Action> list) {
+        if (list == null) {
             throw new IllegalArgumentException();
         }
-        actions = anArray;
+        actions = list;
     }
 
     /** {@inheritDoc} */

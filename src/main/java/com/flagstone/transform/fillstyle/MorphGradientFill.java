@@ -35,7 +35,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.flagstone.transform.Constants;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -98,7 +97,7 @@ public final class MorphGradientFill implements FillStyle {
 
     /**
      * Creates a MorphGradientFill object specifying the type of fill, starting
-     * and ending coordinate transforms and the array of gradient records.
+     * and ending coordinate transforms and the list of gradient records.
      *
      * @param gradientType
      *            identifies whether the gradient is rendered linearly or
@@ -110,7 +109,7 @@ public final class MorphGradientFill implements FillStyle {
      *            the coordinate transform mapping the gradient square onto
      *            physical coordinates at the end of the morphing process.
      * @param grads
-     *            an array of MorphGradient objects defining the control points
+     *            a list of MorphGradient objects defining the control points
      *            for the gradient.
      */
     public MorphGradientFill(final GradientType gradientType,
@@ -144,7 +143,7 @@ public final class MorphGradientFill implements FillStyle {
     }
 
     /**
-     * Add a MorphGradient object to the array of gradient objects.
+     * Add a MorphGradient object to the list of gradient objects.
      *
      * @param aGradient
      *            an MorphGradient object. Must not be null.
@@ -201,10 +200,10 @@ public final class MorphGradientFill implements FillStyle {
     }
 
     /**
-     * Get the array of MorphGradients defining the control points for the
+     * Get the list of MorphGradients defining the control points for the
      * gradient.
      *
-     * @return the array of points that define the gradient.
+     * @return the list of points that define the gradient.
      */
     public List<MorphGradient> getGradients() {
         return gradients;
@@ -214,48 +213,48 @@ public final class MorphGradientFill implements FillStyle {
      * Sets the coordinate transform mapping the gradient square onto physical
      * coordinates at the start of the morphing process.
      *
-     * @param aTransform
+     * @param matrix
      *            the starting coordinate transform. Must not be null.
      */
-    public void setStartTransform(final CoordTransform aTransform) {
-        if (aTransform == null) {
+    public void setStartTransform(final CoordTransform matrix) {
+        if (matrix == null) {
             throw new IllegalArgumentException();
         }
-        startTransform = aTransform;
+        startTransform = matrix;
     }
 
     /**
      * Sets the coordinate transform mapping the gradient square onto physical
      * coordinates at the end of the morphing process.
      *
-     * @param aTransform
+     * @param matrix
      *            the ending coordinate transform. Must not be null.
      */
-    public void setEndTransform(final CoordTransform aTransform) {
-        if (aTransform == null) {
+    public void setEndTransform(final CoordTransform matrix) {
+        if (matrix == null) {
             throw new IllegalArgumentException();
         }
-        endTransform = aTransform;
+        endTransform = matrix;
     }
 
     /**
-     * Sets the array of control points that define the gradient. The final
-     * array should contain at least two control points. Up to Flash 7 the array
+     * Sets the list of control points that define the gradient. The final
+     * list should contain at least two control points. Up to Flash 7 the list
      * can contain up to 8 control points. For Flash 8 onwards this limit was
      * increased to 15.
      *
-     * @param anArray
-     *            an array of MorphGradient objects. Must not be null.
+     * @param list
+     *            a list of MorphGradient objects. Must not be null.
      */
-    public void setGradients(final List<MorphGradient> anArray) {
-        if (anArray == null) {
+    public void setGradients(final List<MorphGradient> list) {
+        if (list == null) {
             throw new IllegalArgumentException();
         }
-        if (anArray.size() > Gradient.MAX_GRADIENTS) {
+        if (list.size() > Gradient.MAX_GRADIENTS) {
             throw new IllegalStateException(
                     "Maximum number of gradients exceeded.");
         }
-        gradients = anArray;
+        gradients = list;
     }
 
     /** {@inheritDoc} */

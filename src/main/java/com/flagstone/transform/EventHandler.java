@@ -350,22 +350,22 @@ public final class EventHandler implements SWFEncodeable {
     }
 
     /**
-     * Creates a ClipEvent object that with an array of actions that will be
+     * Creates a ClipEvent object that with a list of actions that will be
      * executed when a particular event occurs.
      *
      * @param event
      *            the set of Events that the handler will respond to.
-     * @param anArray
-     *            the array of actions that will be executed when the specified
+     * @param list
+     *            the list of actions that will be executed when the specified
      *            event occurs.
      */
-    public EventHandler(final Set<Event> event, final List<Action> anArray) {
+    public EventHandler(final Set<Event> event, final List<Action> list) {
         setEvents(event);
-        setActions(anArray);
+        setActions(list);
     }
 
     /**
-     * Creates an EventHandler object that defines the array of actions that
+     * Creates an EventHandler object that defines the list of actions that
      * will be executed when a particular event occurs or when the specified
      * key is pressed.
      *
@@ -373,15 +373,15 @@ public final class EventHandler implements SWFEncodeable {
      *            the set of Events that the handler will respond to.
      * @param character
      *            the ASCII code for the key pressed on the keyboard.
-     * @param anArray
-     *            the array of actions that will be executed when the specified
+     * @param list
+     *            the list of actions that will be executed when the specified
      *            event occurs. Must not be null.
      */
     public EventHandler(final Set<Event> event,
-            final int character, final List<Action> anArray) {
+            final int character, final List<Action> list) {
         setEvents(event);
         setKey(character);
-        setActions(anArray);
+        setActions(list);
     }
 
     /**
@@ -449,7 +449,7 @@ public final class EventHandler implements SWFEncodeable {
     }
 
     /**
-     * Get the array of actions that are executed by the movie clip.
+     * Get the list of actions that are executed by the movie clip.
      *
      * @return the actions executed by the handler.
      */
@@ -458,22 +458,22 @@ public final class EventHandler implements SWFEncodeable {
     }
 
     /**
-     * Sets the array of actions that are executed by the handler in response
+     * Sets the list of actions that are executed by the handler in response
      * to specified event(s).
      *
-     * @param array
+     * @param list
      *            the array of actions that will be executed when the specified
      *            event occurs. Must not be null.
      */
-    public void setActions(final List<Action> array) {
-        if (array == null) {
+    public void setActions(final List<Action> list) {
+        if (list == null) {
             throw new IllegalArgumentException();
         }
-        actions = array;
+        actions = list;
     }
 
     /**
-     * Adds an action to the array of actions.
+     * Adds an action to the list of actions.
      *
      * @param anAction
      *            an action object. Must not be null.

@@ -53,7 +53,7 @@ public final class ActionObject implements Action {
 
     /** The type used to identify the action. */
     private final transient int type;
-    /** An array encoded arguments, if  any, used by the action. */
+    /** The encoded arguments, if any, used by the action. */
     private final transient byte[] data;
 
     /**
@@ -129,8 +129,7 @@ public final class ActionObject implements Action {
     /**
      * Returns the encoded data for the action.
      *
-     * @return the array of bytes representing the encoded arguments of the
-     * action.
+     * @return the bytes representing the encoded arguments of the action.
      */
     public byte[] getData() {
         return Arrays.copyOf(data, data.length);

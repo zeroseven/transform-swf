@@ -165,7 +165,7 @@ public final class DefineJPEGImage2 implements ImageTag {
      * Sets the image data.
      *
      * @param bytes
-     *            an array of bytes containing the image data. Must not be null.
+     *            a list of bytes containing the image data. Must not be null.
      */
     public void setImage(final byte[] bytes) {
         if (bytes == null) {

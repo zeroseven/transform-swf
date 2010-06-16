@@ -123,11 +123,11 @@ public final class Shape implements SWFEncodeable {
      * Creates a Shape object, specifying the Objects that describe how the
      * shape is drawn.
      *
-     * @param anArray
-     *            the array of shape records. Must not be null.
+     * @param list
+     *            the list of shape records. Must not be null.
      */
-    public Shape(final List<ShapeRecord> anArray) {
-        setObjects(anArray);
+    public Shape(final List<ShapeRecord> list) {
+        setObjects(list);
     }
 
     /**
@@ -146,7 +146,7 @@ public final class Shape implements SWFEncodeable {
     }
 
     /**
-     * Adds the object to the array of shape records.
+     * Adds the object to the list of shape records.
      *
      * @param anObject
      *            an instance of ShapeStyle, Line or Curve. Must not be null.
@@ -161,7 +161,7 @@ public final class Shape implements SWFEncodeable {
     }
 
     /**
-     * Get the array of shape records that define the shape.
+     * Get the list of shape records that define the shape.
      *
      * @return the list of shape records.
      */
@@ -170,16 +170,16 @@ public final class Shape implements SWFEncodeable {
     }
 
     /**
-     * Sets the array of shape records.
+     * Sets the list of shape records.
      *
-     * @param anArray
-     *            the array of shape records. Must not be null.
+     * @param list
+     *            the list of shape records. Must not be null.
      */
-    public void setObjects(final List<ShapeRecord> anArray) {
-        if (anArray == null) {
+    public void setObjects(final List<ShapeRecord> list) {
+        if (list == null) {
             throw new IllegalArgumentException();
         }
-        objects = anArray;
+        objects = list;
     }
 
     /** {@inheritDoc} */

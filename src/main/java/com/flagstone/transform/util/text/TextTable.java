@@ -95,7 +95,7 @@ public final class TextTable {
     }
 
     /**
-     * Create an array of characters that can be added to a text span.
+     * Create a list of characters that can be added to a text span.
      *
      * @param text
      *            the string to be displayed.
@@ -168,7 +168,7 @@ public final class TextTable {
      *            field in a flash file.
      *
      * @param lines
-     *            the array of strings to be displayed.
+     *            the list of strings to be displayed.
      *
      * @param color
      *            the colour used to display the text.

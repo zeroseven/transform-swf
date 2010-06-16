@@ -181,7 +181,7 @@ public final class DefineJPEGImage implements ImageTag {
      * specify a separate table using a JPEGEncodingTable object.
      *
      * @param bytes
-     *            an array of bytes containing the image data. Must not be null
+     *            a list of bytes containing the image data. Must not be null
      *            or empty.
      */
     public void setImage(final byte[] bytes) {

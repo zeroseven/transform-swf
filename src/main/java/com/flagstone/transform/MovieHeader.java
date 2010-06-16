@@ -150,15 +150,15 @@ public final class MovieHeader implements MovieTag {
      * specified in the range 0 to 400 then the centre of the screen will be at
      * (200, 200).
      *
-     * @param aBounds
+     * @param rect
      *            the Bounds object that defines the frame size. Must not be
      *            null.
      */
-    public void setFrameSize(final Bounds aBounds) {
-        if (aBounds == null) {
+    public void setFrameSize(final Bounds rect) {
+        if (rect == null) {
             throw new IllegalArgumentException();
         }
-        frameSize = aBounds;
+        frameSize = rect;
     }
 
     /**

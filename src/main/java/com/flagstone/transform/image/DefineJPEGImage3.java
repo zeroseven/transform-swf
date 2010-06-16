@@ -189,7 +189,7 @@ public final class DefineJPEGImage3 implements ImageTag {
      * Sets the image data.
      *
      * @param bytes
-     *            an array of bytes containing the image table. Must not be
+     *            a list of bytes containing the image table. Must not be
      *            null.
      */
     public void setImage(final byte[] bytes) {

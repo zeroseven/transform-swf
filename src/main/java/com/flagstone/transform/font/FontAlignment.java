@@ -182,11 +182,11 @@ public final class FontAlignment implements MovieTag {
     }
 
 
-    public void setZones(final List<GlyphAlignment> array) {
-        if (array == null) {
+    public void setZones(final List<GlyphAlignment> list) {
+        if (list == null) {
             throw new IllegalArgumentException();
         }
-        zones = array;
+        zones = list;
     }
 
 

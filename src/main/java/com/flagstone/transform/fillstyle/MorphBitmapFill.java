@@ -243,28 +243,28 @@ public final class MorphBitmapFill implements FillStyle {
      * Sets the coordinate transform defining the appearance of the image at the
      * start of the morphing process.
      *
-     * @param aTransform
+     * @param matrix
      *            the starting coordinate transform. Must not be null.
      */
-    public void setStartTransform(final CoordTransform aTransform) {
-        if (aTransform == null) {
+    public void setStartTransform(final CoordTransform matrix) {
+        if (matrix == null) {
             throw new IllegalArgumentException();
         }
-        startTransform = aTransform;
+        startTransform = matrix;
     }
 
     /**
      * Sets the coordinate transform defining the appearance of the image at the
      * end of the morphing process.
      *
-     * @param aTransform
+     * @param matrix
      *            the ending coordinate transform. Must not be null.
      */
-    public void setEndTransform(final CoordTransform aTransform) {
-        if (aTransform == null) {
+    public void setEndTransform(final CoordTransform matrix) {
+        if (matrix == null) {
             throw new IllegalArgumentException();
         }
-        endTransform = aTransform;
+        endTransform = matrix;
     }
 
     /** {@inheritDoc} */

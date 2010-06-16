@@ -659,16 +659,16 @@ public final class DefineTextField implements DefineTag {
     /**
      * Sets the bounding rectangle of the text field.
      *
-     * @param aBounds
+     * @param rect
      *            the bounding rectangle enclosing the text field. Must not be
      *            null.
      * @return this object.
      */
-    public DefineTextField setBounds(final Bounds aBounds) {
-        if (aBounds == null) {
+    public DefineTextField setBounds(final Bounds rect) {
+        if (rect == null) {
             throw new IllegalArgumentException();
         }
-        bounds = aBounds;
+        bounds = rect;
         return this;
     }
 

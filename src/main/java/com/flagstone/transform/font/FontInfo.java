@@ -56,8 +56,8 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  * </p>
  *
  * <p>
- * The index of each entry in the codes array matches the index in the
- * corresponding glyph in the shapes array of an DefineFont object, allowing a
+ * The index of each entry in the codes list matches the index in the
+ * corresponding glyph in the shapes list of an DefineFont object, allowing a
  * given character code to be mapped to a given glyph.
  * </p>
  *
@@ -276,9 +276,9 @@ public final class FontInfo implements MovieTag {
     }
 
     /**
-     * Get the array of character codes.
+     * Get the list of character codes.
      *
-     * @return the array of character codes defined in the font.
+     * @return the list of character codes defined in the font.
      */
     public List<Integer> getCodes() {
         return codes;
@@ -361,8 +361,8 @@ public final class FontInfo implements MovieTag {
     }
 
     /**
-     * Add a code to the array of codes. The index position of a character code
-     * in the array identifies the index of the corresponding glyph in the
+     * Add a code to the list of codes. The index position of a character code
+     * in the list identifies the index of the corresponding glyph in the
      * DefineFont object.
      *
      * @param aCode
@@ -377,19 +377,19 @@ public final class FontInfo implements MovieTag {
     }
 
     /**
-     * Sets the array of character codes. The index position of a character code
-     * in the array identifies the index of the corresponding glyph in the
+     * Sets the list of character codes. The index position of a character code
+     * in the list identifies the index of the corresponding glyph in the
      * DefineFont object.
      *
-     * @param anArray
-     *            the array mapping glyphs to particular character codes. Must
+     * @param list
+     *            the list mapping glyphs to particular character codes. Must
      *            not be null.
      */
-    public void setCodes(final List<Integer> anArray) {
-        if (anArray == null) {
+    public void setCodes(final List<Integer> list) {
+        if (list == null) {
             throw new IllegalArgumentException();
         }
-        codes = anArray;
+        codes = list;
     }
 
     /** {@inheritDoc} */

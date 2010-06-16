@@ -314,7 +314,7 @@ public final class ImageFactory {
     }
 
     /**
-     * Return an image stored in a a file as an array of ImageBlock objects that
+     * Return an image stored in a a file as a list of ImageBlock objects that
      * can be used when creating ScreenVideo streams.
      *
      * The image is divided by tiling blocks of the specified width and height
@@ -323,7 +323,7 @@ public final class ImageFactory {
      * words the blocks are not padded with extra pixel information.
      *
      * @param  blocks
-     *            an array of FMImageBlock objects.
+     *            a list of FMImageBlock objects.
      * @param blockWidth
      *            the width of a block in pixels.
      * @param blockHeight
