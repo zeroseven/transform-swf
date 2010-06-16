@@ -410,17 +410,21 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
      * @throws IOException is there is an error decoding the data.
      */
     private void decodeIDX8(final LittleDecoder coder) throws IOException {
+        int bitsRead;
         int index = 0;
 
         for (int row = height - 1; row > 0; row--) {
-            coder.mark();
+            bitsRead = 0;
             index = row * width;
 
             for (int col = 0; col < width; col++) {
                 image[index++] = (byte) coder.readBits(bitDepth, false);
+                bitsRead += bitDepth;
             }
-            coder.alignToWord();
-            coder.unmark();
+
+            if (bitsRead % 32 > 0) {
+                coder.readBits(32 - (bitsRead % 32), false);
+            }
         }
     }
 
@@ -584,18 +588,21 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
      * @throws IOException is there is an error decoding the data.
      */
     private void decodeRGB8(final LittleDecoder coder) throws IOException {
+        int bytesRead;
         int index = 0;
         for (int row = height - 1; row > 0; row--) {
-            coder.mark();
+            bytesRead = 0;
             for (int col = 0; col < width; col++) {
                 image[index + RED] = (byte) coder.readByte();
                 image[index + GREEN] = (byte) coder.readByte();
                 image[index + BLUE] = (byte) coder.readByte();
                 image[index + ALPHA] = (byte) OPAQUE;
                 index += COLOUR_CHANNELS;
+                bytesRead += 3;
             }
-            coder.alignToWord();
-            coder.unmark();
+            if (bytesRead % 4 > 0) {
+                coder.readBytes(new byte[4 - (bytesRead % 4)]);
+            }
         }
     }
 
