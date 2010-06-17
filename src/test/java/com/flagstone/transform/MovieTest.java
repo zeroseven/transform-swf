@@ -42,14 +42,14 @@ public final class MovieTest {
 //    private final transient byte[] encoded = new byte[] {};
 
     @Test
-    @Ignore //TODO(implement)
+    @Ignore 
     public void checkCopy() {
         // fixture = new Movie(identifier, layer, transform, colorTransform);
         // Movie copy = fixture.copy();
     }
 
     @Test
-    @Ignore //TODO(implement)
+    @Ignore 
     public void encode() throws IOException {
         // SWFEncoder encoder = new SWFEncoder(encoded.length);
         // Context context = new Context();
@@ -58,7 +58,7 @@ public final class MovieTest {
     }
 
     @Test
-    @Ignore //TODO(implement)
+    @Ignore 
     public void decode() throws IOException {
 //        final ByteArrayInputStream stream = new ByteArrayInputStream(encoded);
 //        final SWFDecoder decoder = new SWFDecoder(stream);

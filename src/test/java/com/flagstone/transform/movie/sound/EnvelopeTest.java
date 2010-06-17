@@ -57,7 +57,7 @@ public final class EnvelopeTest {
             0x00, 0x00, 0x00, 0x01, 0x00, 0x02, 0x00, 0x06, 0x50 };
 
     @Test
-    @Ignore //TODO(implement)
+    @Ignore 
     public void encodeCoordTransform() throws IOException {
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         final SWFEncoder encoder = new SWFEncoder(stream);
@@ -71,7 +71,7 @@ public final class EnvelopeTest {
     }
 
     @Test
-    @Ignore //TODO(implement)
+    @Ignore 
     public void decode() throws IOException {
         final ByteArrayInputStream stream = new ByteArrayInputStream(encoded);
         final SWFDecoder decoder = new SWFDecoder(stream);
@@ -82,7 +82,7 @@ public final class EnvelopeTest {
     }
 
     @Test
-    @Ignore //TODO(implement)
+    @Ignore 
     public void decodeExtended() throws IOException {
         final ByteArrayInputStream stream = new ByteArrayInputStream(extended);
         final SWFDecoder decoder = new SWFDecoder(stream);

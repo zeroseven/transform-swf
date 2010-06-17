@@ -69,13 +69,13 @@ public final class Place2Test {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    @Ignore //TODO(implement)
+    @Ignore 
     public void checkAccessorForColorTransformWithNull() {
         fixture = new Place2().setColorTransform(null);
     }
 
     @Test
-    @Ignore //TODO(implement)
+    @Ignore 
     public void checkCopy() {
         // fixture = new Place2(identifier, layer, transform, colorTransform);
         final Place2 copy = fixture.copy();

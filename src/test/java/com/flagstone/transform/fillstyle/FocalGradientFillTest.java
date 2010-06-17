@@ -67,7 +67,7 @@ public final class FocalGradientFillTest {
     private final transient byte[] encoded = new byte[] {};
 
     @Test
-    @Ignore //TODO(implement)
+    @Ignore 
     public void checkCopy() {
         // fixture = new FocalGradientFill(type, transform, list);
         final FocalGradientFill copy = fixture.copy();
@@ -77,7 +77,7 @@ public final class FocalGradientFillTest {
     }
 
     @Test
-    @Ignore //TODO(implement)
+    @Ignore 
     public void encode() throws IOException {
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         final SWFEncoder encoder = new SWFEncoder(stream);
@@ -92,7 +92,7 @@ public final class FocalGradientFillTest {
     }
 
     @Test
-    @Ignore //TODO(implement)
+    @Ignore 
     public void decode() throws IOException {
         final ByteArrayInputStream stream = new ByteArrayInputStream(encoded);
         final SWFDecoder decoder = new SWFDecoder(stream);

@@ -53,7 +53,7 @@ public final class DefineFontNameTest {
     private final transient String name = "font";
     private final transient String copyright = "copyright";
 
-    private transient DefineFontName fixture;
+    private transient FontName fixture;
 
     private final transient byte[] encoded = new byte[] {(byte) 0x11, 0x16,
             0x01, 0x00, 0x66, 0x6F, 0x6E, 0x74, 0x00, 0x63, 0x6F, 0x70, 0x79,
@@ -65,28 +65,28 @@ public final class DefineFontNameTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForIdentifierWithLowerBound() {
-        fixture = new DefineFontName(0, name, copyright);
+        fixture = new FontName(0, name, copyright);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForIdentifierWithUpperBound() {
-        fixture = new DefineFontName(65536, name, copyright);
+        fixture = new FontName(65536, name, copyright);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForNameWithNull() {
-        fixture = new DefineFontName(identifier, null, copyright);
+        fixture = new FontName(identifier, null, copyright);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForCopyrightWithNull() {
-        fixture = new DefineFontName(identifier, name, null);
+        fixture = new FontName(identifier, name, null);
     }
 
     @Test
     public void checkCopy() {
-        fixture = new DefineFontName(identifier, name, copyright);
-        final DefineFontName copy = fixture.copy();
+        fixture = new FontName(identifier, name, copyright);
+        final FontName copy = fixture.copy();
 
         assertNotSame(fixture, copy);
         assertEquals(fixture.getIdentifier(), copy.getIdentifier());
@@ -101,7 +101,7 @@ public final class DefineFontNameTest {
         final SWFEncoder encoder = new SWFEncoder(stream);
         final Context context = new Context();
 
-        fixture = new DefineFontName(identifier, name, copyright);
+        fixture = new FontName(identifier, name, copyright);
         assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
         encoder.flush();
@@ -119,7 +119,7 @@ public final class DefineFontNameTest {
         final char[] chars = new char[100];
         Arrays.fill(chars, 'a');
 
-        fixture = new DefineFontName(identifier, name, new String(chars));
+        fixture = new FontName(identifier, name, new String(chars));
         assertEquals(114, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
 
@@ -131,7 +131,7 @@ public final class DefineFontNameTest {
         final ByteArrayInputStream stream = new ByteArrayInputStream(encoded);
         final SWFDecoder decoder = new SWFDecoder(stream);
 
-        fixture = new DefineFontName(decoder);
+        fixture = new FontName(decoder);
 
         assertTrue(true);
         assertEquals(identifier, fixture.getIdentifier());
@@ -144,7 +144,7 @@ public final class DefineFontNameTest {
         final ByteArrayInputStream stream = new ByteArrayInputStream(extended);
         final SWFDecoder decoder = new SWFDecoder(stream);
 
-        fixture = new DefineFontName(decoder);
+        fixture = new FontName(decoder);
 
         assertTrue(true);
         assertEquals(identifier, fixture.getIdentifier());

@@ -62,7 +62,7 @@ public final class MorphLineStyle2Test {
             0x00, 0x02, 0x03, 0x04, 0x05, 0x07, 0x08, 0x09, 0x0A };
 
     @Test
-    @Ignore //TODO(implement)
+    @Ignore 
     public void checkCopy() {
         fixture = new MorphLineStyle2(startWidth, endWidth, startColor,
                 endColor);
@@ -75,7 +75,7 @@ public final class MorphLineStyle2Test {
     }
 
     @Test
-    @Ignore //TODO(implement)
+    @Ignore 
     public void encode() throws IOException {
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         final SWFEncoder encoder = new SWFEncoder(stream);
@@ -92,7 +92,7 @@ public final class MorphLineStyle2Test {
     }
 
     @Test
-    @Ignore //TODO(implement)
+    @Ignore 
     public void decode() throws IOException {
         final ByteArrayInputStream stream = new ByteArrayInputStream(encoded);
         final SWFDecoder decoder = new SWFDecoder(stream);

@@ -60,7 +60,7 @@ public final class LineStyle2Test {
             0x03, 0x04 };
 
     @Test
-    @Ignore //TODO(implement)
+    @Ignore 
     public void checkCopy() {
         fixture = new LineStyle2(width, color);
         final LineStyle2 copy = fixture.copy();
@@ -71,7 +71,7 @@ public final class LineStyle2Test {
     }
 
     @Test
-    @Ignore //TODO(implement)
+    @Ignore 
     public void encode() throws IOException {
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         final SWFEncoder encoder = new SWFEncoder(stream);
@@ -86,7 +86,7 @@ public final class LineStyle2Test {
     }
 
     @Test
-    @Ignore //TODO(implement)
+    @Ignore 
     public void decode() throws IOException {
         final ByteArrayInputStream stream = new ByteArrayInputStream(encoded);
         final SWFDecoder decoder = new SWFDecoder(stream);

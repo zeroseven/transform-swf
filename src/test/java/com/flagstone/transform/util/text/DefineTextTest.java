@@ -64,9 +64,8 @@ public final class DefineTextTest {
             fail();
         }
 
-        font = new Font();
-        // TODO(code) font.decode(new java.awt.Font("Arial",
-        //     java.awt.Font.PLAIN, 12));
+//        font = new Font();
+//        font.decode(new java.awt.Font("Arial", java.awt.Font.PLAIN, 12));
     }
 
     @Test @Ignore
