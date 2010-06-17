@@ -90,7 +90,7 @@ public final class MorphBitmapFill implements FillStyle {
 
     /** Code used to identify the fill style when it is encoded. */
     private transient int type;
-    /** The unique identifier of hte image that will be displayed. */
+    /** The unique identifier of the image that will be displayed. */
     private int identifier;
     private CoordTransform startTransform;
     private CoordTransform endTransform;
@@ -166,12 +166,20 @@ public final class MorphBitmapFill implements FillStyle {
         endTransform = object.endTransform;
     }
 
-
+    /**
+     * Is the image tiled across the filled area.
+     * @return true if the image is tiled to completely cover the area to be
+     * filled, false otherwise.
+     */
     public boolean isTiled() {
         return (type & FillStyleDecoder.CLIPPED_MASK) != 0;
     }
 
-
+    /**
+     * Indicate whether the image tiled across the filled area.
+     * @param tiled true if the image is tiled to completely cover the area to
+     * be filled, false otherwise.
+     */
     public void setTiled(final boolean tiled) {
         if (tiled) {
             type &= ~FillStyleDecoder.CLIPPED_MASK;
@@ -180,12 +188,20 @@ public final class MorphBitmapFill implements FillStyle {
         }
     }
 
-
+    /**
+     * Is the image smoothed to improve display quality.
+     * @return true if the image will be smoothed, false if smoothing is not
+     * applied to increase performance.
+     */
     public boolean isSmoothed() {
         return (type & FillStyleDecoder.SMOOTHED_MASK) != 0;
     }
 
-
+    /**
+     * Indicate whether the image will be smoothed to improve display quality.
+     * @param smoothed true if the image will be smoothed, false if smoothing
+     * is not applied.
+     */
     public void setSmoothed(final boolean smoothed) {
         if (smoothed) {
             type &= ~FillStyleDecoder.SMOOTHED_MASK;

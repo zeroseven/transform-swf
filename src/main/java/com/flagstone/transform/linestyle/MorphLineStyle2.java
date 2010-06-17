@@ -43,7 +43,11 @@ import com.flagstone.transform.datatype.Color;
 import com.flagstone.transform.exception.IllegalArgumentRangeException;
 import com.flagstone.transform.fillstyle.FillStyle;
 
-/** TODO(class). */
+/**
+ * MorphLineStyle2 extends MorphLineStyle by supporting different styles for
+ * line joins and line ends, a fill style for the stroke and whether the stroke
+ * thickness is scaled if an object is resized.
+ */
 public final class MorphLineStyle2 implements LineStyle {
 
     /** Format string used in toString() method. */
@@ -136,7 +140,16 @@ public final class MorphLineStyle2 implements LineStyle {
         }
     }
 
-
+    /**
+     * Create a new MorphLineStyle2 object with the stroke thickness and color
+     * for the start and end of the morphing process.
+     * @param initialWidth the width of the line at the start of the process.
+     * @param finalWidth the width of the line at the end of the process.
+     * @param initialColor the colour used to draw the line at the start of
+     * the process.
+     * @param finalColor the colour used to draw the line at the end of
+     * the process.
+     */
     public MorphLineStyle2(final int initialWidth, final int finalWidth,
             final Color initialColor, final Color finalColor) {
         super();
@@ -145,6 +158,27 @@ public final class MorphLineStyle2 implements LineStyle {
         setEndWidth(finalWidth);
         setStartColor(initialColor);
         setEndColor(finalColor);
+
+        vertical = true;
+        vertical = true;
+        lineClosed = true;
+    }
+
+    /**
+     * Create a new MorphLineStyle2 object with the stroke thickness and fill
+     * style for the start and end of the morphing process.
+     * @param initialWidth the width of the line at the start of the process.
+     * @param finalWidth the width of the line at the end of the process.
+     * @param style a FillStyle (morph fill styles only) that describes the
+     * fill used to draw the line at the start and end of the process.
+     */
+    public MorphLineStyle2(final int initialWidth, final int finalWidth,
+            final FillStyle style) {
+        super();
+
+        setStartWidth(initialWidth);
+        setEndWidth(finalWidth);
+        setFillStyle(style);
 
         vertical = true;
         vertical = true;
@@ -271,7 +305,10 @@ public final class MorphLineStyle2 implements LineStyle {
         endColor = aColor;
     }
 
-
+    /**
+     * Get the CapStyle used for the start of the line.
+     * @return the CapStyle that specifies how the start of the line is drawn.
+     */
     public CapStyle getStartCap() {
         CapStyle style;
         if (startCap == 1) {
@@ -284,9 +321,14 @@ public final class MorphLineStyle2 implements LineStyle {
         return style;
     }
 
+    /**
+     * Set the CapStyle used for the start of the line.
+     * @param style the CapStyle that specifies how the start of the line
+     * is drawn.
+     */
 
-    public void setStartCap(final CapStyle capStyle) {
-        switch (capStyle) {
+    public void setStartCap(final CapStyle style) {
+        switch (style) {
         case NONE:
             startCap = 1;
             break;
@@ -299,7 +341,10 @@ public final class MorphLineStyle2 implements LineStyle {
         }
     }
 
-
+    /**
+     * Get the CapStyle used for the end of the line.
+     * @return the CapStyle that specifies how the end of the line is drawn.
+     */
     public CapStyle getEndCap() {
         CapStyle style;
         if (endCap == 1) {
@@ -312,9 +357,13 @@ public final class MorphLineStyle2 implements LineStyle {
         return style;
     }
 
-
-    public void setEndCap(final CapStyle capStyle) {
-        switch (capStyle) {
+    /**
+     * Set the CapStyle used for the end of the line.
+     * @param style the CapStyle that specifies how the end of the line
+     * is drawn.
+     */
+    public void setEndCap(final CapStyle style) {
+        switch (style) {
         case NONE:
             endCap = 1;
             break;
@@ -327,7 +376,10 @@ public final class MorphLineStyle2 implements LineStyle {
         }
     }
 
-
+    /**
+     * Get the JoinStyle used when joining with another line or curve.
+     * @return the JoinStyle used to connect with another line or curve.
+     */
     public JoinStyle getJoinStyle() {
         JoinStyle style;
         if (endCap == 1) {
@@ -340,7 +392,10 @@ public final class MorphLineStyle2 implements LineStyle {
         return style;
     }
 
-
+    /**
+     * Set the JoinStyle used when joining with another line or curve.
+     * @param style the JoinStyle used to connect with another line or curve.
+     */
     public void setJoinStyle(final JoinStyle style) {
         switch (style) {
         case BEVEL:
@@ -355,52 +410,94 @@ public final class MorphLineStyle2 implements LineStyle {
         }
     }
 
-
+    /**
+     * Is the stroke scaled horizontally if the shape is redrawn.
+     * @return true if the stroke is scaled horizontally, false if the stroke
+     * thickness does not change.
+     */
     public boolean isHorizontal() {
         return horizontal;
     }
 
-
-    public void setHorizontal(final boolean scaled) {
-        horizontal = scaled;
+    /**
+     * Indicates whether the stroke is scaled horizontally if the shape is
+     * redrawn.
+     * @param scale true if the stroke is scaled horizontally, false if the
+     * stroke thickness does not change.
+     */
+    public void setHorizontal(final boolean scale) {
+        horizontal = scale;
     }
 
-
+    /**
+     * Is the stroke scaled vertically if the shape is redrawn.
+     * @return true if the stroke is scaled vertically, false if the stroke
+     * thickness does not change.
+     */
     public boolean isVertical() {
         return vertical;
     }
 
-
-    public void setVertical(final boolean scaled) {
-        vertical = scaled;
+    /**
+     * Indicates whether the stroke is scaled vertically if the shape is
+     * redrawn.
+     * @param scale true if the stroke is scaled vertically, false if the
+     * stroke thickness does not change.
+     */
+    public void setVertical(final boolean scale) {
+        vertical = scale;
     }
 
-
+    /**
+     * Are the end points of the line aligned to pixel boundaries.
+     * @return true if the end points are aligned to full pixels, false
+     * otherwise.
+     */
     public boolean isPixelAligned() {
         return pixelAligned;
     }
 
-
-    public void setPixelAligned(final boolean aligned) {
-        pixelAligned = aligned;
+    /**
+     * Indicates whether the end points of the line aligned to pixel boundaries.
+     * @param align true if the end points are aligned to full pixels, false
+     * otherwise.
+     */
+    public void setPixelAligned(final boolean align) {
+        pixelAligned = align;
     }
 
-
+    /**
+     * Is the path closed if the end point matches the starting point. If true
+     * then the line will be joined, otherwise an end cap is drawn.
+     * @return true if the line will be closed, false if the path remains open.
+     */
     public boolean isLineClosed() {
         return lineClosed;
     }
 
-
-    public void setLineClosed(final boolean closed) {
-        lineClosed = closed;
+    /**
+     * Indicates whether the path closed if the end point matches the starting
+     * point. If true then the line will be joined, otherwise an end cap is
+     * drawn.
+     * @param close true if the line will be closed, false if the path remains
+     * open.
+     */
+    public void setLineClosed(final boolean close) {
+        lineClosed = close;
     }
 
-
+    /**
+     * Get the limit for drawing miter joins.
+     * @return the value controlling how miter joins are drawn.
+     */
     public int getMiterLimit() {
         return miterLimit;
     }
 
-
+    /**
+     * Set the limit for drawing miter joins.
+     * @param limit the value controlling how miter joins are drawn.
+     */
     public void setMiterLimit(final int limit) {
         if ((limit < 0) || (limit > Coder.UNSIGNED_SHORT_MAX)) {
             throw new IllegalArgumentRangeException(
@@ -409,12 +506,18 @@ public final class MorphLineStyle2 implements LineStyle {
         miterLimit = limit;
     }
 
-
+    /**
+     * Get the FillStyle used for the line stroke.
+     * @return the FillStyle used to draw the line.
+     */
     public FillStyle getFillStyle() {
         return fillStyle;
     }
 
-
+    /**
+     * Set the FillStyle (morphing fill styles only) used for the line stroke.
+     * @param style the FillStyle used to draw the line.
+     */
     public void setFillStyle(final FillStyle style) {
         fillStyle = style;
     }

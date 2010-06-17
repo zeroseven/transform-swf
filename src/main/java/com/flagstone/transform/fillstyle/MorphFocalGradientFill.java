@@ -106,7 +106,7 @@ public final class MorphFocalGradientFill implements FillStyle {
      *            physical coordinates at the end of the morphing process.
      *            Must not be null.
      * @param spreadType
-     *            TODO
+     *            TODO (doc)
      * @param interpolationType
      *            how the changes in colours across the gradient are calculated.
      * @param startPoint
@@ -160,7 +160,7 @@ public final class MorphFocalGradientFill implements FillStyle {
     }
 
     /**
-     * TODO
+     * TODO (doc)
      * Get the Spread.
      *
      * @return the Spread.
@@ -170,7 +170,7 @@ public final class MorphFocalGradientFill implements FillStyle {
     }
 
     /**
-     * TODO
+     * TODO (doc)
      * Set the Spread.
      *
      * @param aSpread the Spread.
@@ -345,7 +345,7 @@ public final class MorphFocalGradientFill implements FillStyle {
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
         // CHECKSTYLE:OFF
-        // TODO(optimise) Calculate size of gradient list directly.
+        // Calculate size of gradient list directly.
         int length = 6 + startTransform.prepareToEncode(context)
             + endTransform.prepareToEncode(context);
         count = gradients.size();

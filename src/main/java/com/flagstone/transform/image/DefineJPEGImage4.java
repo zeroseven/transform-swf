@@ -35,13 +35,18 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import com.flagstone.transform.Constants;
+import com.flagstone.transform.MovieTypes;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
+/**
+ * DefineJPEGImage4 extends the functionality of DefineJPEGImage3 by specifying
+ * the parameter that controls the deblocking filter that is used to decode the
+ * image data.
+ */
 public final class DefineJPEGImage4 implements ImageTag {
 
     private static final float SCALE_8 = 256.0f;
@@ -145,10 +150,18 @@ public final class DefineJPEGImage4 implements ImageTag {
         identifier = uid;
     }
 
+    /**
+     * Get the value used by the deblocking filter.
+     * @return the deblocking value.
+     */
     public float getDeblocking() {
         return deblocking / SCALE_8;
     }
 
+    /**
+     * Set the value used by the deblocking filter.
+     * @param level the deblocking value in the range 0..100.
+     */
     public void setDeblocking(final float level) {
         deblocking = (int) (level * SCALE_8);
     }

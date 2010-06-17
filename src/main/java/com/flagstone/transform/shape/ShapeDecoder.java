@@ -33,19 +33,18 @@ package com.flagstone.transform.shape;
 
 import java.io.IOException;
 
+import com.flagstone.transform.MovieTypes;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFFactory;
 
 /**
- * Factory is the default implementation of an SWFFactory which used to create
- * instances of Transform classes.
+ * ShapeDecoder is used to decode the ShapeRecords that describe how a
+ * Shape is drawn.
  */
-//TODO(class)
 public final class ShapeDecoder implements SWFFactory<ShapeRecord> {
-
+    /** {@inheritDoc} */
     public ShapeRecord getObject(final SWFDecoder coder, final Context context)
             throws IOException {
 

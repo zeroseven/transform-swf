@@ -34,9 +34,9 @@ package com.flagstone.transform.shape;
 import java.io.IOException;
 
 import com.flagstone.transform.MovieTag;
+import com.flagstone.transform.MovieTypes;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -47,7 +47,7 @@ import com.flagstone.transform.coder.SWFEncoder;
  *
  * <p>
  * The PathsArePostscript is not documented in the current Macromedia Flash
- * (SWF) File Format Specification. IT was referenced in earlier editions but
+ * (SWF) File Format Specification. It was referenced in earlier editions but
  * its exact function was not known. It is thought that is used to signal to the
  * Flash Player that the paths describing the outlines of the glyphs in a font
  * were derived from a font defined using Postscript. The information can be
@@ -55,8 +55,6 @@ import com.flagstone.transform.coder.SWFEncoder;
  * </P>
  *
  */
-// TODO(doc)
-//TODO(class)
 public final class PathsArePostscript implements MovieTag {
 
     /** Format string used in toString() method. */

@@ -37,23 +37,28 @@ import java.util.List;
 
 import com.flagstone.transform.Constants;
 import com.flagstone.transform.MovieTag;
+import com.flagstone.transform.MovieTypes;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
-/** TODO(class). */
+/**
+ * FontAlignment provides the alignment information for the glyphs in a font.
+ */
 public final class FontAlignment implements MovieTag {
 
-    /** TODO(class). */
+    /**
+     * StrokeWidth is used to provide hints about the thickness of the line
+     * used for rendering glyphs in a font.
+     */
     public enum StrokeWidth {
-        /** TODO(doc). */
+        /** Thin strokes. */
         THIN,
-        /** TODO(doc). */
+        /** Medium thick strokes. */
         MEDIUM,
-        /** TODO(doc). */
+        /** Thick strokes. */
         THICK
     };
 
@@ -97,7 +102,14 @@ public final class FontAlignment implements MovieTag {
         coder.unmark();
     }
 
-
+    /**
+     * Creates a new FontAlignment object for the referenced font along with
+     * information on the stroke width used to draw the glyphs and a list of
+     * alignment zones for each glyph.
+     * @param uid the unique identifier of the font.
+     * @param stroke the typical width used when drawing the glyphs.
+     * @param list a list of alignment boxes used for rendering the glyphs.
+     */
     public FontAlignment(final int uid, final StrokeWidth stroke,
             final List<GlyphAlignment> list) {
         setIdentifier(uid);
@@ -144,7 +156,11 @@ public final class FontAlignment implements MovieTag {
         identifier = uid;
     }
 
-
+    /**
+     * Get the StrokeWidth that describes how the glyphs in the font are
+     * typically drawn.
+     * @return a StrokeWidth defining how the font is drawn.
+     */
     public StrokeWidth getStrokeWidth() {
         StrokeWidth stroke;
         switch (hints) {
@@ -161,7 +177,11 @@ public final class FontAlignment implements MovieTag {
         return stroke;
     }
 
-
+    /**
+     * Set the StrokeWidth that describes how the glyphs in the font are
+     * typically drawn.
+     * @param stroke a StrokeWidth defining how the font is drawn.
+     */
     public void setStrokeWidth(final StrokeWidth stroke) {
         switch (stroke) {
         case MEDIUM:
@@ -176,12 +196,22 @@ public final class FontAlignment implements MovieTag {
         }
     }
 
-
+    /**
+     * Get the alignment information for each glyph in the font.
+     * @return a list of GlyphAliment objects that describe the areas in each
+     * glyph which can be snapped to the nearest pixel to improve display
+     * quality.
+     */
     public List<GlyphAlignment> getZones() {
         return zones;
     }
 
-
+    /**
+     * Set the alignment information for each glyph in the font.
+     * @param list a list of GlyphAliment objects that describe the areas in
+     * each glyph which can be snapped to the nearest pixel to improve display
+     * quality.
+     */
     public void setZones(final List<GlyphAlignment> list) {
         if (list == null) {
             throw new IllegalArgumentException();
@@ -189,7 +219,11 @@ public final class FontAlignment implements MovieTag {
         zones = list;
     }
 
-
+    /**
+     * Add the alignment information for a glyph to the list.
+     * @param zone the alignment information for a glyph.
+     * @return this object.
+     */
     public FontAlignment addZone(final GlyphAlignment zone) {
         if (zone == null) {
             throw new IllegalArgumentException();

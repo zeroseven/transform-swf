@@ -36,9 +36,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.flagstone.transform.Constants;
+import com.flagstone.transform.MovieTypes;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.coder.SWFFactory;
@@ -523,7 +523,7 @@ public final class DefineMorphShape2 implements ShapeTag {
                 lineStyles, shape, endShape);
     }
 
-    // TODO(optimise)
+    
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
         fillBits = Coder.unsignedSize(fillStyles.size());
@@ -585,7 +585,7 @@ public final class DefineMorphShape2 implements ShapeTag {
                 : Coder.SHORT_HEADER) + length;
     }
 
-    // TODO(optimise)
+    
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {

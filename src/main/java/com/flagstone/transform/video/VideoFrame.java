@@ -34,9 +34,9 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import com.flagstone.transform.MovieTag;
+import com.flagstone.transform.MovieTypes;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.exception.IllegalArgumentRangeException;
@@ -55,7 +55,6 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  *
  * @see DefineVideo
  */
-//TODO(class)
 public final class VideoFrame implements MovieTag {
 
     /** Format string used in toString() method. */
@@ -64,7 +63,9 @@ public final class VideoFrame implements MovieTag {
 
     /** The unique identifier of the video that this frame belongs to. */
     private int identifier;
+    /** The frame number in the video. */
     private int frameNumber;
+    /** The encoded video data. */
     private byte[] data;
 
     /** The length of the object, minus the header, when it is encoded. */

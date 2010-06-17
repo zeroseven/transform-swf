@@ -37,9 +37,9 @@ import java.util.List;
 
 import com.flagstone.transform.Constants;
 import com.flagstone.transform.DefineTag;
+import com.flagstone.transform.MovieTypes;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.Bounds;
@@ -113,7 +113,7 @@ public final class DefineFont2 implements DefineTag {
      * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    // TODO(optimise)
+    
     public DefineFont2(final SWFDecoder coder, final Context context)
             throws IOException {
         length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
@@ -751,7 +751,7 @@ public final class DefineFont2 implements DefineTag {
                 advances, bounds, kernings);
     }
 
-    // TODO(optimise)
+    
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
         // CHECKSTYLE:OFF
@@ -822,7 +822,7 @@ public final class DefineFont2 implements DefineTag {
         // CHECKSTYLE:ON
     }
 
-    // TODO(optimise)
+    
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {

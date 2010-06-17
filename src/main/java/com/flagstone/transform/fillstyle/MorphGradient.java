@@ -33,6 +33,7 @@ package com.flagstone.transform.fillstyle;
 
 
 import java.io.IOException;
+
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
@@ -68,8 +69,9 @@ public final class MorphGradient implements SWFEncodeable {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "MorphGradient: { start=%s; end=%s}";
-
+    /** The gradient at the start of the morphing process. */
     private Gradient start;
+    /** The gradient at the end of the morphing process. */
     private Gradient end;
 
     /**

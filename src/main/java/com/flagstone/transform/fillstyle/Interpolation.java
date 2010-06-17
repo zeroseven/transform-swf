@@ -34,8 +34,14 @@ package com.flagstone.transform.fillstyle;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * Interpolation describes how the transition between colours in a gradient are
+ * calculated.
+ */
 public enum Interpolation {
+    /** Normal RGBA interpolation. */
     NORMAL(0),
+    /** Linear RGBA interpolation. */
     LINEAR(16);
 
     /**

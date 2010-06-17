@@ -36,13 +36,12 @@ import java.io.IOException;
 
 import com.flagstone.transform.Constants;
 import com.flagstone.transform.MovieTag;
+import com.flagstone.transform.MovieTypes;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-//TODO(doc)
 /**
  * StartSound2 instructs the player to start or stop playing a sound defined
  * using the DefineSound class.
@@ -115,7 +114,10 @@ public final class StartSound2 implements MovieTag {
         sound = object.sound.copy();
     }
 
-
+    /**
+     * gets the name of Actionscript 3 class that contains the sound.
+     * @return the name of the Actionscript 3 class that provides the sound.
+     */
     public String getSoundClass() {
         return soundClass;
     }
@@ -129,8 +131,12 @@ public final class StartSound2 implements MovieTag {
         return sound;
     }
 
-
-    public void setSoundClass(final String className) {
+    /**
+     * Set the name of the Actionscript 3 class that contains the sound.
+     * @param className the name of the Actionscript 3 class that provides the
+     * sound.
+     */
+   public void setSoundClass(final String className) {
         soundClass = className;
     }
 

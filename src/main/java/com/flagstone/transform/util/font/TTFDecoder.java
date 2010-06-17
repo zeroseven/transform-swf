@@ -69,7 +69,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
 
         private byte[] data;
 
-        public int compareTo(TableEntry obj) {
+        public int compareTo(final TableEntry obj) {
             return new Integer(offset).compareTo(obj.offset);
         }
 
@@ -103,6 +103,8 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
      * 16.16 fixed-point values.
      */
     private static final float SCALE_16 = 65536.0f;
+
+    private static final int BYTES_TO_BITS = 3;
 
     private static final int SIGN_EXTEND = 24;
 
@@ -853,19 +855,19 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
 
         if (glyphOffset == ITLF_SHORT) {
             offsets[0] = (coder.readUnsignedShort() * 2
-                    << Coder.BYTES_TO_BITS);
+                    << BYTES_TO_BITS);
         } else {
             offsets[0] = (coder.readInt()
-                    << Coder.BYTES_TO_BITS);
+                    << BYTES_TO_BITS);
         }
 
         for (int i = 1; i < glyphCount; i++) {
             if (glyphOffset == ITLF_SHORT) {
                 offsets[i] = (coder.readUnsignedShort() * 2
-                        << Coder.BYTES_TO_BITS);
+                        << BYTES_TO_BITS);
             } else {
                 offsets[i] = (coder.readInt()
-                        << Coder.BYTES_TO_BITS);
+                        << BYTES_TO_BITS);
             }
 
             if (offsets[i] == offsets[i - 1]) {

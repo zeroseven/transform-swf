@@ -35,9 +35,9 @@ import java.io.IOException;
 
 import com.flagstone.transform.Constants;
 import com.flagstone.transform.DefineTag;
+import com.flagstone.transform.MovieTypes;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.Bounds;
@@ -281,7 +281,7 @@ public final class DefineTextField implements DefineTag {
      * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    // TODO(optimise)
+    
     public DefineTextField(final SWFDecoder coder, final Context context)
             throws IOException {
         length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;

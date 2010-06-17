@@ -49,8 +49,9 @@ public final class MorphSolidFill implements FillStyle {
     /** Format string used in toString() method. */
     private static final String FORMAT = "MorphSolidFill: { start=%s;"
     		+ " end=%s}";
-
+    /** The colour at the start of the morphing process. */
     private Color startColor;
+    /** The colour at the end of the morphing process. */
     private Color endColor;
 
     /**

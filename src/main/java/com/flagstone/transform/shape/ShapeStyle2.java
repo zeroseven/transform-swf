@@ -35,7 +35,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.flagstone.transform.Constants;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -46,58 +45,9 @@ import com.flagstone.transform.fillstyle.FillStyle;
 import com.flagstone.transform.linestyle.LineStyle2;
 
 /**
- * ShapeStyle2 is used to change the drawing environment when a shape is drawn.
- * It is identical to ShapeStyle except that line styles are represented by the
- * LineStyle2 class and ShapeStyle2 objects are only used in DefineShape4
- * objects.
- *
- * Three operations can be performed:
- *
- * <ul>
- * <li>Select a line style or fill style.</li>
- * <li>Move the current drawing point.</li>
- * <li>Define a new set of line and fill styles.</li>
- * </ul>
- *
- * <p>
- * An ShapeStyle object can specify one or more of the operations rather than
- * specifying them in separate ShapeStyle objects - compacting the size of the
- * binary data when the object is encoded. Conversely if an operation is not
- * defined then the values may be omitted.
- * </p>
- *
- * <p>
- * Line and Fill styles are selected by the index position, starting at 1, of
- * the style in a list of styles. An index of zero means that no style is
- * used. Using the constant VALUE_NOT_SET means that the current style is
- * unchanged. Two types of fill style are supported: fillStyle is used where a
- * shape does not contain overlapping areas and altFillStyle is used where areas
- * overlap. This differs from graphics environments that only support one fill
- * style as the overlapping area would form a hole in the shape and not be
- * filled.
- * </p>
- *
- * <p>
- * A new drawing point is specified using the absolute x and y coordinates. If
- * an ShapeStyle object is the first in a shape then the current drawing point
- * is the origin of the shape (0,0). As with the line and fill styles if no
- * drawing point is set then the x and y coordinates may be set to
- * VALUE_NOT_SET.
- * </p>
- *
- * <p>
- * Finally the line or fill style lists may left empty if no new styles are
- * being specified.
- * </p>
- *
- * <p>
- * Note that the values for the moveX and moveY attributes and the line and fill
- * styles lists are defined in pairs and are optional only if both are set to
- * VALUE_NOT_SET.
- * </p>
- *
+ * ShapeStyle2 extends the functionality of ShapeStyle by supporting lines
+ * drawn with the LineStyle2 object.
  */
-//TODO(class)
 public final class ShapeStyle2 implements ShapeRecord {
 
     /** Format string used in toString() method. */
@@ -143,7 +93,7 @@ public final class ShapeStyle2 implements ShapeRecord {
      * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    // TODO(optimise)
+
     public ShapeStyle2(final int flags, final SWFDecoder coder,
             final Context context) throws IOException {
         int numberOfFillBits = context.get(Context.FILL_SIZE);

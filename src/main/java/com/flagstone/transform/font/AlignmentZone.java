@@ -39,7 +39,10 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFEncoder;
 
-/** TODO(class). */
+/**
+ * AlignmentZone defines a bounding box that is used by the advanced text
+ * rendering engine in the Flash Player to snap glyphs to the nearest pixel.
+ */
 public final class AlignmentZone implements SWFEncodeable {
 
     /** Format string used in toString() method. */
@@ -64,18 +67,29 @@ public final class AlignmentZone implements SWFEncodeable {
         range = coder.readHalf();
     }
 
-
-    public AlignmentZone(final float coord, final float level) {
+    /**
+     * Creates a new AlignmentZone with the specified coordinate and size.
+     *
+     * @param coord the x or y coordinate of the left edge or bottom of the box.
+     * @param size the width or height of the box.
+     */
+    public AlignmentZone(final float coord, final float size) {
         coordinate = coord;
-        range = level;
+        range = size;
     }
 
-
+    /**
+     * Get the coordinate of the left or bottom edge of the alignment box.
+     * @return the x or y coordinate of the box.
+     */
     public float getCoordinate() {
         return coordinate;
     }
 
-
+    /**
+     * Get the width or height of the alignment box.
+     * @return the size of the box.
+     */
     public float getRange() {
         return range;
     }

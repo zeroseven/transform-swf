@@ -488,7 +488,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
         final int bitsPerPixel = bitDepth
                 * colorComponents;
         final int bitsPerRow = width * bitsPerPixel;
-        final int rowWidth = (bitsPerRow + 7) >> Coder.BITS_TO_BYTES;
+        final int rowWidth = (bitsPerRow + 7) >> 3;
         final int bytesPerPixel = (bitsPerPixel < 8) ? 1 : bitsPerPixel / 8;
 
         final byte[] current = new byte[rowWidth];
@@ -537,7 +537,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
                     scanBits += bitsPerPixel;
                 }
 
-                scanLength = (scanBits + 7) >> Coder.BITS_TO_BYTES;
+                scanLength = (scanBits + 7) >> 3;
                 filter = encodedImage[imageIndex++];
 
                 for (int i = 0; i < scanLength; i++, imageIndex++) {

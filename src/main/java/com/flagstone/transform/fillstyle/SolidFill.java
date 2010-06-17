@@ -33,6 +33,7 @@ package com.flagstone.transform.fillstyle;
 
 
 import java.io.IOException;
+
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -48,7 +49,7 @@ public final class SolidFill implements FillStyle {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "SolidFill: { color=%s}";
-
+    /** The colour used to fill the shape. */
     private Color color;
 
     /**
@@ -129,7 +130,7 @@ public final class SolidFill implements FillStyle {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
-        // TODO(optimise) calculate size of color directly.
+        //TODO calculate size of color directly.
         return 1 + color.prepareToEncode(context);
     }
 

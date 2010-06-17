@@ -37,9 +37,9 @@ import java.util.List;
 
 import com.flagstone.transform.Constants;
 import com.flagstone.transform.DefineTag;
+import com.flagstone.transform.MovieTypes;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.exception.IllegalArgumentRangeException;
@@ -82,7 +82,7 @@ public final class DefineFont implements DefineTag {
     private transient int length;
     private transient int[] table;
 
-    // TODO(optimise)
+    
     /**
      * Creates and initialises a DefineFont object using values encoded
      * in the Flash binary format.
@@ -220,7 +220,7 @@ public final class DefineFont implements DefineTag {
         return String.format(FORMAT, identifier, shapes);
     }
 
-    // TODO(optimise)
+    
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
         length = 2;
@@ -253,7 +253,7 @@ public final class DefineFont implements DefineTag {
                 : Coder.SHORT_HEADER) + length;
     }
 
-    // TODO(optimise)
+    
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {

@@ -41,7 +41,6 @@ import java.net.URLConnection;
 import java.util.zip.DataFormatException;
 
 import com.flagstone.transform.MovieTag;
-import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.LittleDecoder;
 import com.flagstone.transform.sound.DefineSound;
 import com.flagstone.transform.sound.SoundFormat;
@@ -210,7 +209,7 @@ public final class WAVDecoder implements SoundProvider, SoundDecoder {
         sampleRate = coder.readInt();
         coder.readInt(); // total data length
         coder.readUnsignedShort(); // total bytes per sample
-        sampleSize = coder.readUnsignedShort() >> Coder.BITS_TO_BYTES;
+        sampleSize = coder.readUnsignedShort() >> 3;
     }
 
     /**

@@ -50,7 +50,6 @@ import java.util.zip.InflaterInputStream;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.DecoderRegistry;
-import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.coder.SWFFactory;
@@ -85,10 +84,13 @@ public final class Movie {
     /** The version of Flash supported. */
     public static final int VERSION = 10;
 
+    /** Length in bytes of the magic number used to identify the file type. */
     private static final int SIGNATURE_LENGTH = 3;
+    /** Length in bytes of the signature and length fields. */
     private static final int HEADER_LENGTH = 8;
-
+    /** Signature identifying Flash (SWF) files. */
     public static final byte[] FWS = new byte[] { 0x46, 0x57, 0x53 };
+    /** Signature identifying Compressed Flash (SWF) files. */
     public static final byte[] CWS = new byte[] { 0x43, 0x57, 0x53 };
 
     /** Format string used in toString() method. */

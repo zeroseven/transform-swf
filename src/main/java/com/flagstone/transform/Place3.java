@@ -37,7 +37,6 @@ import java.util.List;
 
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.coder.SWFFactory;
@@ -220,6 +219,7 @@ public final class Place3 implements MovieTag {
     private PlaceType type;
     /** The display list layer number. */
     private int layer;
+    /** The actionscript 3 class that will render the object to be displayed. */
     private String className;
     /** Whether the displayed object will be cached as a bitmap. */
     private Integer bitmapCache;
@@ -266,7 +266,7 @@ public final class Place3 implements MovieTag {
      * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    // TODO(optimise)
+    
     public Place3(final SWFDecoder coder, final Context context)
             throws IOException {
         context.put(Context.TRANSPARENT, 1);
@@ -668,12 +668,25 @@ public final class Place3 implements MovieTag {
         return this;
     }
 
+    /**
+     * Get the name of the Actionscript 3 class which will be used to render
+     * the object to be displayed.
+     *
+     * @return the name of the Actionscript class.
+     */
     public String getClassName() {
         return className;
     }
 
-    public Place3 setClassName(final String aString) {
-        className = aString;
+    /**
+     * Set the name of the Actionscript 3 class which will be used to render
+     * the object to be displayed.
+     *
+     * @param aName the name of the Actionscript class.
+     * @return this object.
+     */
+    public Place3 setClassName(final String aName) {
+        className = aName;
         return this;
     }
 
@@ -698,24 +711,31 @@ public final class Place3 implements MovieTag {
         filters = list;
     }
 
-
+    /**
+     * Get the blend that describes how the object will be rendered in relation
+     * to the background.
+     * @return the Blend that describes how the object is composited.
+     */
     public Blend getBlend() {
         return Blend.fromInt(blend);
     }
 
-
-    public void setBlend(final Blend mode) {
+    /**
+     * Set the blend that describes how the object will be rendered in relation
+     * to the background.
+     * @param mode the Blend that describes how the object is composited.
+     * @return this object.
+     */
+    public Place3 setBlend(final Blend mode) {
         blend = mode.getValue();
+        return this;
     }
 
     /**
-     * Adds a clip event to the list of clip events. If the object already
-     * contains a set of encoded clip event objects they will be deleted.
+     * Adds a clip event to the list of clip events.
      *
      * @param aClipEvent
      *            a clip event object.
-     *
-     *            throws NullPointerException of the clip event object is null
      *
      * @return this object.
      */
@@ -756,7 +776,14 @@ public final class Place3 implements MovieTag {
         events = list;
     }
 
-
+    /**
+     * Adds a Filter to the list of filters.
+     *
+     * @param filter
+     *            a Filter object.
+     *
+     * @return this object.
+     */
     public Place3 add(final Filter filter) {
         if (filter == null) {
             throw new IllegalArgumentException();

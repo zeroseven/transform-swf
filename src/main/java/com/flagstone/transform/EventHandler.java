@@ -42,7 +42,6 @@ import java.util.Set;
 import com.flagstone.transform.action.Action;
 import com.flagstone.transform.action.ActionData;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -131,7 +130,7 @@ public final class EventHandler implements SWFEncodeable {
     private static final String FORMAT = "EventHandler: { events=%s;"
             + " key=%s; actions=%s}";
 
-    /** Version og Flash that supports the extended event model. */
+    /** Version of Flash that supports the extended event model. */
     private static final int VERSION_WITH_EXT_EVENTS = 6;
 
     /** Number of bits to shift key code for encoding with event flags. */
@@ -140,36 +139,61 @@ public final class EventHandler implements SWFEncodeable {
     private static final int KEY_MASK = 0xFE00;
     /** Bit mask for key field. */
     private static final int EVENT_MASK = 0x01FF;
-
+    /** The number of different types of event supported by buttons. */
     private static final int NUM_BUTTON_EVENTS = 9;
+    /** The number of different types of event supported by movie clips. */
     private static final int NUM_CLIP_EVENTS = 19;
-
+    /** Bit mask for accessing bit 0 of the composite event code. */
     private static final int BIT0 = 1;
+    /** Bit mask for accessing bit 1 of the composite event code. */
     private static final int BIT1 = 2;
+    /** Bit mask for accessing bit 2 of the composite event code. */
     private static final int BIT2 = 4;
+    /** Bit mask for accessing bit 3 of the composite event code. */
     private static final int BIT3 = 8;
+    /** Bit mask for accessing bit 4 of the composite event code. */
     private static final int BIT4 = 16;
+    /** Bit mask for accessing bit 5 of the composite event code. */
     private static final int BIT5 = 32;
+    /** Bit mask for accessing bit 6 of the composite event code. */
     private static final int BIT6 = 64;
+    /** Bit mask for accessing bit 7 of the composite event code. */
     private static final int BIT7 = 128;
+    /** Bit mask for accessing bit 8 of the composite event code. */
     private static final int BIT8 = 256;
+    /** Bit mask for accessing bit 9 of the composite event code. */
     private static final int BIT9 = 512;
+    /** Bit mask for accessing bit 10 of the composite event code. */
     private static final int BIT10 = 1024;
+    /** Bit mask for accessing bit 11 of the composite event code. */
     private static final int BIT11 = 2048;
+    /** Bit mask for accessing bit 12 of the composite event code. */
     private static final int BIT12 = 4096;
+    /** Bit mask for accessing bit 13 of the composite event code. */
     private static final int BIT13 = 8192;
+    /** Bit mask for accessing bit 14 of the composite event code. */
     private static final int BIT14 = 16384;
+    /** Bit mask for accessing bit 15 of the composite event code. */
     private static final int BIT15 = 32768;
+    /** Bit mask for accessing bit 16 of the composite event code. */
     private static final int BIT16 = 65536;
+    /** Bit mask for accessing bit 17 of the composite event code. */
     private static final int BIT17 = 131072;
+    /** Bit mask for accessing bit 18 of the composite event code. */
     private static final int BIT18 = 262144;
 
+    /** Table mapping a movie event to a code. */
     private static final Map<Event, Integer> CLIP_CODES;
+    /** Table mapping a push button event to a code. */
     private static final Map<Event, Integer> BUTTON_CODES;
+    /** Table mapping a menu button event to a code. */
     private static final Map<Event, Integer> MENU_CODES;
 
+    /** Table mapping a code to a movie event. */
     private static final Map<Integer, Event> CLIP_EVENTS;
+    /** Table mapping a code to a push button event. */
     private static final Map<Integer, Event> BUTTON_EVENTS;
+    /** Table mapping a code to a menu button event. */
     private static final Map<Integer, Event> MENU_EVENTS;
 
     static {
@@ -259,9 +283,12 @@ public final class EventHandler implements SWFEncodeable {
     /** The actions executed by the handler when the event occurs. */
     private List<Action> actions;
 
-    private int eventCode;
-    private int length;
-    private int offset;
+    /** The composite event code for all events this handler responds to. */
+    private transient int eventCode;
+    /** The number of bytes used to encode the handler. */
+    private transient int length;
+    /** The offset in bytes to the next handler, if any, to be decoded. */
+    private transient int offset;
 
     /**
      * Creates and initialises a EventHandler object using values

@@ -31,12 +31,15 @@
 
 package com.flagstone.transform.linestyle;
 
-/** TODO(class). */
+/**
+ * CapStyle describes the different styles that can be applied to the end of a
+ * drawn line.
+ */
 public enum CapStyle {
-    /** TODO(doc). */
+    /** Line ends are rounded. */
     ROUND,
-    /** TODO(doc). */
+    /** Line ends are left open. */
     NONE,
-    /** TODO(doc). */
+    /** Line ends are closed normally. */
     SQUARE;
 }

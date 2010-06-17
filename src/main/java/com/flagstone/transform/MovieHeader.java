@@ -33,6 +33,7 @@ package com.flagstone.transform;
 
 import java.io.IOException;
 
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -46,8 +47,6 @@ public final class MovieHeader implements MovieTag {
     private static final String FORMAT = "Header: { version=%d; compressed=%b;"
     		+ " frameSize=%s; frameRate=%f; frameCount=%d}";
 
-    private static final float SCALE_8 = 256.0f;
-
     /** The Flash version number. */
     private int version;
     /** The Flash Player screen coordinates. */
@@ -58,10 +57,6 @@ public final class MovieHeader implements MovieTag {
     private int frameCount;
     /** Flag indicating whether the movie is compressed. */
     private boolean compressed;
-
-    public MovieHeader() {
-        version = Movie.VERSION;
-    }
 
     /**
      * Creates and initialises a MovieAttributes object using values encoded
@@ -85,6 +80,15 @@ public final class MovieHeader implements MovieTag {
         frameSize = new Bounds(coder);
         frameRate = coder.readUnsignedShort();
         frameCount = coder.readUnsignedShort();
+    }
+
+    /**
+     * Construct a new MovieHeader with Flash version and compression set to
+     * the values supported in this version of Transform SWF.
+     */
+    public MovieHeader() {
+        version = Movie.VERSION;
+        compressed = true;
     }
 
     /**
@@ -168,7 +172,7 @@ public final class MovieHeader implements MovieTag {
      * @return the movie frame rate.
      */
     public float getFrameRate() {
-        return frameRate / SCALE_8;
+        return frameRate / Coder.SCALE_8;
     }
 
     /**
@@ -179,21 +183,47 @@ public final class MovieHeader implements MovieTag {
      *            the number of frames per second that the movie is played.
      */
     public void setFrameRate(final float rate) {
-        frameRate = (int) (rate * SCALE_8);
+        frameRate = (int) (rate * Coder.SCALE_8);
     }
 
-    public float getFrameCount() {
+    /**
+     * Get the number of frames in the movie. The value returned is only valid
+     * for movies that have just been decoded or encoded. The number returned
+     * will not be valid if the movie was edited.
+     *
+     * @return the number of frames.
+     */
+    public int getFrameCount() {
         return frameCount;
     }
 
+    /**
+     * Set the number of frames in the movie. This method is not usually called
+     * since the number of frames will be set automatically when the movie is
+     * encoded.
+     *
+     * @param count the number of frames in the movie.
+     */
     public void setFrameCount(final int count) {
         frameCount = count;
     }
 
+    /**
+     * Is the movie compressed.
+     *
+     * @return true if the movie contains zlib compressed data or false if it
+     * is not compressed.
+     */
     public boolean isCompressed() {
         return compressed;
     }
 
+    /**
+     * Set whether the movie should be compressed when encoded.
+     *
+     * @param compress true if the movie will be compressed, false if no
+     * compression will be applied.
+     */
     public void setCompressed(final boolean compress) {
         compressed = compress;
     }

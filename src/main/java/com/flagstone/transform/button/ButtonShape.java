@@ -37,9 +37,9 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
+import com.flagstone.transform.MovieTypes;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -192,6 +192,11 @@ public final class ButtonShape implements SWFEncodeable {
         blend = object.blend;
     }
 
+    /**
+     * Get the list of states that the shape is displayed for.
+     * @return the list of button states that define when the shape is
+     * displayed.
+     */
     public Set<ButtonState> getState() {
         final Set<ButtonState> set = EnumSet.noneOf(ButtonState.class);
 
@@ -210,7 +215,12 @@ public final class ButtonShape implements SWFEncodeable {
         return set;
     }
 
-
+    /**
+     * Set the list of states that the shape is displayed for.
+     * @param states the list of button states that define when the shape is
+     * displayed.
+     * @return this object.
+     */
     public ButtonShape setState(final Set<ButtonState> states) {
         for (final ButtonState buttonState : states) {
             switch (buttonState) {
@@ -345,6 +355,11 @@ public final class ButtonShape implements SWFEncodeable {
         return this;
     }
 
+    /**
+     * Add a Filter to the list of Filters that will be applied to the shape.
+     * @param filter a Filter to apply to the button shape.
+     * @return this object.
+     */
     public ButtonShape add(final Filter filter) {
         if (filter == null) {
             throw new IllegalArgumentException();
@@ -353,12 +368,19 @@ public final class ButtonShape implements SWFEncodeable {
         return this;
     }
 
-
+    /**
+     * Get the list of Filters that will be applied to the shape.
+     * @return the list of filters.
+     */
     public List<Filter> getFilters() {
         return filters;
     }
 
-
+    /**
+     * Set the list of Filters that will be applied to the shape.
+     * @param list a list of Filter objects.
+     * @return this object.
+     */
     public ButtonShape setFilters(final List<Filter> list) {
         if (list == null) {
             throw new IllegalArgumentException();
@@ -367,12 +389,21 @@ public final class ButtonShape implements SWFEncodeable {
         return this;
     }
 
-
+    /**
+     * Get the Blend that defines how the shape is blended with background
+     * shapes that make up the button.
+     * @return the Blend mode.
+     */
     public Blend getBlend() {
         return Blend.fromInt(blend);
     }
 
-
+    /**
+     * Set the Blend that defines how the shape is blended with background
+     * shapes that make up the button.
+     * @param mode the Blend mode for this shape.
+     * @return this object.
+     */
     public ButtonShape setBlend(final Blend mode) {
         blend = mode.getValue();
         return this;

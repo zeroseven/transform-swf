@@ -35,15 +35,15 @@ import java.io.IOException;
 
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
 /**
- * MetaData is used to add a user-defined information into a Flash file.
+ * MetaData is used to add a user-defined information into a Flash file. The
+ * information uses the Resource Description Format (RDF) and is compliant
+ * with Adobe's Extensible Metadata Platform, see
+ * http://www.adobe.com/products/xmp.
  */
-// TODO(doc)
-//TODO(class)
 public final class MovieMetaData implements MovieTag {
 
     /** Format string used in toString() method. */

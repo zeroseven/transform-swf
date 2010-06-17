@@ -37,7 +37,6 @@ import java.util.List;
 
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.ColorTransform;
@@ -207,7 +206,8 @@ public final class Place2 implements MovieTag {
         return object;
     }
 
-    private static final int EXTENDED_EVENTS = 5;
+    /** The version of Flash where standard (16-bit) event codes were used. */
+    private static final int STANDARD_EVENTS = 5;
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "Place2: { type=%s; layer=%d;"
@@ -251,7 +251,7 @@ public final class Place2 implements MovieTag {
      * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    // TODO(optimise)
+    
     public Place2(final SWFDecoder coder, final Context context)
             throws IOException {
         context.put(Context.TRANSPARENT, 1);
@@ -315,7 +315,7 @@ public final class Place2 implements MovieTag {
 
             coder.readUnsignedShort();
 
-            if (context.get(Context.VERSION) > EXTENDED_EVENTS) {
+            if (context.get(Context.VERSION) > STANDARD_EVENTS) {
                 coder.readInt();
 
                 while ((event = coder.readInt()) != 0) {
@@ -666,7 +666,7 @@ public final class Place2 implements MovieTag {
                 colorTransform, ratio, depth, name, events);
     }
 
-    // TODO(optimise)
+    
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
         // CHECKSTYLE:OFF
@@ -688,7 +688,7 @@ public final class Place2 implements MovieTag {
         if (!events.isEmpty()) {
             final int eventSize;
 
-            if (context.get(Context.VERSION) > EXTENDED_EVENTS) {
+            if (context.get(Context.VERSION) > STANDARD_EVENTS) {
                 eventSize = 4;
             } else {
                 eventSize = 2;
@@ -710,7 +710,7 @@ public final class Place2 implements MovieTag {
         // CHECKSTYLE:ON
     }
 
-    // TODO(optimise)
+    
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
@@ -778,7 +778,7 @@ public final class Place2 implements MovieTag {
 
             coder.writeShort(0);
 
-            if (context.get(Context.VERSION) > EXTENDED_EVENTS) {
+            if (context.get(Context.VERSION) > STANDARD_EVENTS) {
                 coder.writeInt(eventMask);
                 for (final EventHandler handler : events) {
                     handler.encode(coder, context);

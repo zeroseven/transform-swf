@@ -41,7 +41,9 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFEncoder;
 
-/** TODO(class). */
+/**
+ * GlyphAlignment holds the alignment zones for a font glyph.
+ */
 public final class GlyphAlignment implements SWFEncodeable {
 
     /** Format string used in toString() method. */
@@ -72,7 +74,12 @@ public final class GlyphAlignment implements SWFEncodeable {
         masks = coder.readByte();
     }
 
-
+    /**
+     * Creates a new GlyphAlignment with the alignment zones.
+     * @param list the list of alignment zones for the glyph.
+     * @param xAlign whether there is a horizontal alignment zone.
+     * @param yAlign whether there is a vertical alignment zone.
+     */
     public GlyphAlignment(final List<AlignmentZone> list, final boolean xAlign,
             final boolean yAlign) {
         setAlignments(list);
@@ -93,12 +100,20 @@ public final class GlyphAlignment implements SWFEncodeable {
         masks = object.masks;
     }
 
-
+    /**
+     * Does the list of alignment zones contain a horizontal alignment.
+     * @return true if the list contains the alignment for the width of a glyph.
+     */
     public boolean alignmentX() {
         return (masks & 0x01) != 0;
     }
 
-
+    /**
+     * Indicates that the list of alignment zones contain a horizontal
+     * alignment.
+     * @param hasAlign true if the list contains the alignment for the width
+     * of a glyph, false otherwise.
+     */
     public void setAlignmentX(final boolean hasAlign) {
         masks &= ~Coder.BIT0;
         if (hasAlign) {
@@ -106,12 +121,21 @@ public final class GlyphAlignment implements SWFEncodeable {
         }
     }
 
-
+    /**
+     * Does the list of alignment zones contain a vertical alignment.
+     * @return true if the list contains the alignment for the height of
+     * a glyph.
+     */
     public boolean alignmentY() {
         return (masks & Coder.BIT1) != 0;
     }
 
-
+    /**
+     * Indicates that the list of alignment zones contain a vertical
+     * alignment.
+     * @param hasAlign true if the list contains the alignment for the height
+     * of a glyph, false otherwise.
+     */
     public void setAlignmentY(final boolean hasAlign) {
         masks &= ~Coder.BIT1;
         if (hasAlign) {
@@ -119,14 +143,22 @@ public final class GlyphAlignment implements SWFEncodeable {
         }
     }
 
-
+    /**
+     * Get the list of alignment zones.
+     * @return a list of AlignmentZones describing the alignment areas for a
+     * glyph.
+     */
     public List<AlignmentZone> getAlignments() {
         return alignments;
     }
 
-
-    public void setAlignments(final List<AlignmentZone> aligns) {
-        alignments = aligns;
+    /**
+     * Set the list of alignment zones.
+     * @param list a list of AlignmentZones describing the alignment areas for
+     * a glyph.
+     */
+    public void setAlignments(final List<AlignmentZone> list) {
+        alignments = list;
     }
 
     /** {@inheritDoc} */

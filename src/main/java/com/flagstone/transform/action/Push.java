@@ -113,8 +113,9 @@ public final class Push implements Action {
     private static final int BITS_PER_INT = 32;
     /** Number of last internal register in the Flash Player. */
     private static final int LAST_REGISTER = 255;
-
+    /** Bit mask used for reading writing double values. */
     private static final long MASK_32 = 0x00000000FFFFFFFFL;
+    /** Shift used for reading writing double values. */
     private static final long WORD_ALIGN = 32;
 
     /**
@@ -409,8 +410,8 @@ public final class Push implements Action {
                 coder.writeByte(TYPE_REGISTER);
                 coder.writeByte(((RegisterIndex) obj).getNumber());
             } else {
-                throw new CoderException(0, "Unsupported type: " +
-                        obj.getClass().getName());
+                throw new CoderException(0, "Unsupported type: "
+                        + obj.getClass().getName());
             }
         }
     }

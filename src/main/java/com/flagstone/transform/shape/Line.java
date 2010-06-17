@@ -58,12 +58,16 @@ public final class Line implements ShapeRecord {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "Line: (%d, %d)";
-
+    /** x-coordinate of the end of the line. */
     private transient int xCoord;
+    /** y-coordinate of the end of the line. */
     private transient int yCoord;
 
+    /** Is the line vertical. */
     private transient boolean vertical;
+    /** Is the line horizontal. */
     private transient boolean general;
+    /** Number of bits used to encode the x and y coordinates. */
     private transient int size;
 
     /**
@@ -76,7 +80,7 @@ public final class Line implements ShapeRecord {
      * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    // TODO(optimise)
+    
     public Line(final SWFDecoder coder) throws IOException {
         // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
         size = coder.readBits(4, false) + 2;

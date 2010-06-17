@@ -37,19 +37,23 @@ import java.util.Map;
 
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
-/** TODO(class). */
+/**
+ * ScenesAndLabels is used to list the scenes (main timeline only) and labelled
+ * frames for movies and movie clips.
+ */
 public final class ScenesAndLabels implements MovieTag {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "ScenesAndLabels: { scenes=%s;"
             + " labels=%s}";
 
+    /** The table of scenes. */
     private Map<Integer, String> scenes;
+    /** The table of labelled frames. */
     private Map<Integer, String> labels;
 
     /** The length of the object, minus the header, when it is encoded. */
@@ -96,7 +100,14 @@ public final class ScenesAndLabels implements MovieTag {
         labels = new LinkedHashMap<Integer, String>();
     }
 
-
+    /**
+     * Create a new ScenesAndLabels object with the specified list of scenes
+     * and labelled frames.
+     * @param sceneMap a table of frame numbers and the associated name for
+     * the scenes on the main timeline of a movie.
+     * @param labelMap a table of frame numbers and the associated name for
+     * the labelled frames in a movie or movie clip.
+     */
     public ScenesAndLabels(final Map<Integer, String> sceneMap,
             final Map<Integer, String> labelMap) {
         scenes = sceneMap;
@@ -116,7 +127,13 @@ public final class ScenesAndLabels implements MovieTag {
         labels = new LinkedHashMap<Integer, String>(object.labels);
     }
 
-
+    /**
+     * Add an entry to the list of scenes with the frame number and scene
+     * name.
+     * @param offset the frame number.
+     * @param name the scene name.
+     * @return this object.
+     */
     public ScenesAndLabels addScene(final int offset, final String name) {
         if ((offset < 0) || (offset > Coder.UNSIGNED_SHORT_MAX)) {
             throw new IllegalArgumentRangeException(
@@ -129,12 +146,18 @@ public final class ScenesAndLabels implements MovieTag {
         return this;
     }
 
-
+    /**
+     * Get the table of frame numbers and associated names.
+     * @return a map associating frame numbers to scene names.
+     */
     public Map<Integer, String> getScenes() {
         return scenes;
     }
 
-
+    /**
+     * Set the table of frame numbers and associated names.
+     * @param map a table associating frame numbers to scene names.
+     */
     public void setScenes(final Map<Integer, String> map) {
         if (map == null) {
             throw new IllegalArgumentException();
@@ -142,7 +165,13 @@ public final class ScenesAndLabels implements MovieTag {
         scenes = map;
     }
 
-
+    /**
+     * Add an entry to the list of labelled frames with the frame number and
+     * frame label.
+     * @param offset the frame number.
+     * @param name the frame label.
+     * @return this object.
+     */
     public ScenesAndLabels addLabel(final int offset, final String name) {
         if ((offset < 0) || (offset > Coder.UNSIGNED_SHORT_MAX)) {
             throw new IllegalArgumentRangeException(
@@ -155,12 +184,18 @@ public final class ScenesAndLabels implements MovieTag {
         return this;
     }
 
-
+    /**
+     * Get the table of frame numbers and frame labels.
+     * @return a map associating frame numbers to frame labels.
+     */
     public Map<Integer, String> getLabels() {
         return labels;
     }
 
-
+    /**
+     * Set the table of frame numbers and associated names.
+     * @param map a table associating frame numbers to frame labels.
+     */
     public void setLabels(final Map<Integer, String> map) {
         if (map == null) {
             throw new IllegalArgumentException();

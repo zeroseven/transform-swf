@@ -68,6 +68,13 @@ public final class Shape implements SWFEncodeable {
     /** Format string used in toString() method. */
     private static final String FORMAT = "Shape: { records=%s}";
 
+    /**
+     * Decode a ShapeData object into the set of ShapeRecord objects that
+     * describe how a shape is drawn.
+     * @param shapeData a ShapeData object containing the encoded shape.
+     * @return the decoded Shape.
+     * @throws IOException if there is an error decoding the shape.
+     */
     public static Shape shapeFromData(final ShapeData shapeData)
                 throws IOException {
         byte[] data = shapeData.getData();
@@ -115,6 +122,9 @@ public final class Shape implements SWFEncodeable {
         coder.alignToByte();
     }
 
+    /**
+     * Constructs an empty Shape.
+     */
     public Shape() {
         objects = new ArrayList<ShapeRecord>();
     }
@@ -204,13 +214,13 @@ public final class Shape implements SWFEncodeable {
         } else {
             context.put(Context.SHAPE_SIZE, 0);
 
-            // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
+            // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 6 LINES
             int numberOfBits = 21; // Includes end of shape and align to byte
 
             for (final ShapeRecord record : objects) {
                 numberOfBits += record.prepareToEncode(context);
             }
-            length += (numberOfBits >>> Coder.BITS_TO_BYTES);
+            length += (numberOfBits >>> 3);
         }
         return length;
     }

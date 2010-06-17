@@ -37,9 +37,9 @@ import java.util.List;
 
 import com.flagstone.transform.Constants;
 import com.flagstone.transform.DefineTag;
+import com.flagstone.transform.MovieTypes;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.Bounds;
@@ -47,27 +47,14 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
 import com.flagstone.transform.shape.Shape;
 import com.flagstone.transform.shape.ShapeData;
 
-//TODO(code) Implement with updated doc and same changes as DefineFont2
-
 /**
- * <p>
- * DefineFont2 defines the shapes and layout of the glyphs used in a font. It
- * extends the functionality provided by DefineFont and FontInfo by:
- * </p>
+ * DefineFont3 provides the same functionality as DefineFont2 but the
+ * coordinates are expressed at 20 times the resolution, i.e. 1/20th of a twip
+ * to increase the quality of the displayed text.
  *
- * <ul>
- * <li>allowing more than 65535 glyphs in a particular font.</li>
- * <li>including the functionality provided by the FontInfo class.</li>
- * <li>specifying ascent, descent and leading for the font.</li>
- * <li>specifying advances for each glyph.</li>
- * <li>specifying bounding rectangles for each glyph.</li>
- * <li>specifying kerning pairs defining the distance between glyph pairs.</li>
- * </ul>
- *
- * @see FontInfo
- * @see DefineFont
+ * DefineFont3 is used in conjunction with FontAlignment zones to support
+ * snapping glyphs to the nearest pixel again to improve display quality.
  */
-//TODO(class)
 @SuppressWarnings({"PMD.TooManyFields", "PMD.TooManyMethods" })
 public final class DefineFont3 implements DefineTag {
     /** Format string used in toString() method. */

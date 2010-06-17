@@ -196,7 +196,7 @@ public final class SWFDecoder {
      *
      * @param expected the expected number of bytes read.
      *
-     * @throws IOException if the number of bytes read is different from the
+     * @throws CoderException if the number of bytes read is different from the
      * expected number.
      */
     public void check(final int expected) throws CoderException {

@@ -110,6 +110,7 @@ public enum ButtonKey {
      */
     ESCAPE(19);
 
+    /** Table mapping code to keys. */
     private static final Map<Integer, ButtonKey> TABLE =
         new LinkedHashMap<Integer, ButtonKey>();
 
@@ -119,16 +120,30 @@ public enum ButtonKey {
         }
     }
 
-    public static ButtonKey fromInt(final int type) {
-        return TABLE.get(type);
+    /**
+     * Get the ButtonKey for an encoded value.
+     * @param keyCode the encoded value representing a key.
+     * @return the ButtonKey for the encoded value.
+     */
+    public static ButtonKey fromInt(final int keyCode) {
+        return TABLE.get(keyCode);
     }
 
+    /** The value representing the ButtonKey when it is encoded. */
     private final int value;
 
+    /**
+     * Create a new ButtonKey.
+     * @param keyCode the value that is encoded to represent the key.
+     */
     private ButtonKey(final int keyCode) {
         value = keyCode;
     }
 
+    /**
+     * Get the value that will be encoded to represent the ButtonKey.
+     * @return the value that will be encoded.
+     */
     public int getValue() {
         return value;
     }

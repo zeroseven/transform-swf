@@ -36,9 +36,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.flagstone.transform.Constants;
+import com.flagstone.transform.MovieTypes;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.coder.SWFFactory;
@@ -49,13 +49,10 @@ import com.flagstone.transform.linestyle.LineStyle;
 import com.flagstone.transform.linestyle.LineStyle2;
 
 /**
- * DefineShape3 defines a transparent shape to be displayed. It extends the
- * DefineShape2 class by encoding the alpha channel in any Color objects
- * included in the line and fill styles.
- *
- * @see DefineShape2
+ * DefineShape4 extends DefienShape3 by specifying the bounding box for the
+ * edges of the shape (the outline without taking the stroke thickness into
+ * account) as well as hints for improving the way shapes are drawn.
  */
-//TODO(class)
 public final class DefineShape4 implements ShapeTag {
 
     /**
@@ -371,11 +368,19 @@ public final class DefineShape4 implements ShapeTag {
         shape = aShape;
     }
 
+    /**
+     * Does the shape use fill winding.
+     * @return true if fill winding is used, false otherwise.
+     */
     public boolean useWinding() {
         return winding != 0;
     }
 
-    public void setWinding(boolean use) {
+    /**
+     * Indicates whether the shape uses fill winding.
+     * @param use true if fill winding is used, false otherwise.
+     */
+    public void setWinding(final boolean use) {
         if (use) {
             winding = Coder.BIT2;
         } else {

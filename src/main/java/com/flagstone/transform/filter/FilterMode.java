@@ -36,11 +36,11 @@ package com.flagstone.transform.filter;
  * object are composited with the background.
  */
 public enum FilterMode {
-    /** TODO(doc). */
+    /** The shadow is applied to the inside of the object. */
     INNER,
-    /** TODO(doc). */
+    /** The original object is removed from the result. */
     KNOCKOUT,
-    /** TODO(doc). */
+    /** The result is applied over the existing object. */
     TOP
 };
 

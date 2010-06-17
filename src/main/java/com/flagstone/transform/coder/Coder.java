@@ -88,6 +88,9 @@ public final class Coder {
     /** Number of bits to shift when aligning bits 12-15 to positions 0-3. */
     public static final int ALIGN_NIB3 = 12;
 
+    /** Factor used to scale 8.8 fixed point numbers to floating-point. */
+    public static final float SCALE_8 = 256.0f;
+
     /** The maximum value for each byte in a variable length integer. */
     public static final int VAR_INT_MAX = 127;
     /** Shift when converting to a variable length integer. */
@@ -132,9 +135,6 @@ public final class Coder {
     private static final int BITS_PER_INT = 32;
     /** Bit mask with most significant bit of a 32-bit integer set. */
     private static final int MSB_MASK = 0x80000000;
-
-    public static final int BYTES_TO_BITS = 3;
-    public static final int BITS_TO_BYTES = 3;
 
     /**
      * Calculates the minimum number of bits required to encoded an unsigned

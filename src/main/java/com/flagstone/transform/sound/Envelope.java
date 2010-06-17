@@ -43,14 +43,16 @@ import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
-/** TODO(class). */
+/**
+ * Envelope is a container class for Level objects that describe how the volume
+ * of a sound changes over time.
+ */
 public final class Envelope implements SWFEncodeable {
     /**
-     * Envelope is used to define an envelope which controls how a particular
-     * sound is played over time.
+     * Level describes the sound levels for stereo sound.
      *
      * <p>
-     * Each Envelope object contains a sample number in the audio <b>when it is
+     * Each Level object contains a sample number in the audio <b>when it is
      * played</b> where the envelope will be applied along with the sound levels
      * for the left and right channels.
      * </p>
@@ -64,7 +66,7 @@ public final class Envelope implements SWFEncodeable {
      * </p>
      *
      * <p>
-     * The envelope defines the sample number (and hence the time) in the
+     * The Level defines the sample number (and hence the time) in the
      * playback data stream where the level information applies and <b>not</b>
      * the sample number in the original sound data. For example to set the
      * level 0.1 seconds into a sound that plays for 1 second the value for the

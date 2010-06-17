@@ -34,7 +34,6 @@ import java.io.IOException;
 
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.ColorTransform;
@@ -317,7 +316,7 @@ public final class Place implements MovieTag {
         // CHECKSTYLE:OFF
         length = 4;
         length += transform.prepareToEncode(context);
-        // TODO(optimise) replace with if statement ?
+        //TODO replace with if statement ?
         length += colorTransform == null ? 0 : colorTransform.prepareToEncode(
                 context);
 

@@ -37,9 +37,9 @@ import java.util.List;
 
 import com.flagstone.transform.Constants;
 import com.flagstone.transform.MovieTag;
+import com.flagstone.transform.MovieTypes;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.exception.IllegalArgumentRangeException;
@@ -74,7 +74,6 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  *
  * @see FontInfo
  */
-//TODO(class)
 public final class FontInfo2 implements MovieTag {
 
     /** Format string used in toString() method. */
@@ -105,7 +104,7 @@ public final class FontInfo2 implements MovieTag {
      * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    // TODO(optimise)
+
     public FontInfo2(final SWFDecoder coder) throws IOException {
         length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
         if (length == Coder.IS_EXTENDED) {
@@ -433,7 +432,7 @@ public final class FontInfo2 implements MovieTag {
         // CHECKSTYLE:ON
     }
 
-    // TODO(optimise)
+
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {

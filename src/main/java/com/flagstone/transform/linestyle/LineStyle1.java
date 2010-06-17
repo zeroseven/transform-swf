@@ -179,7 +179,7 @@ public final class LineStyle1 implements LineStyle {
         return String.format(FORMAT, width, color);
     }
 
-    // TODO(optimise)
+    
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
         // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES

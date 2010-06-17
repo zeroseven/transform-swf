@@ -43,7 +43,11 @@ import com.flagstone.transform.datatype.Color;
 import com.flagstone.transform.exception.IllegalArgumentRangeException;
 import com.flagstone.transform.fillstyle.FillStyle;
 
-/** TODO(class). */
+/**
+ * LineStyle2 extends LineStyle1 by supporting different styles for line joins
+ * and line ends, a fill style for the stroke and whether the stroke thickness
+ * is scaled if an object is resized.
+ */
 public final class LineStyle2 implements LineStyle {
 
     /** Format string used in toString() method. */
@@ -132,7 +136,11 @@ public final class LineStyle2 implements LineStyle {
         }
     }
 
-
+    /**
+     * Create a new LineStyle2 object with the stroke thickness and color.
+     * @param lineWidth the width of the line.
+     * @param lineColor the colour used to draw the line.
+     */
     public LineStyle2(final int lineWidth, final Color lineColor) {
         super();
 
@@ -144,7 +152,11 @@ public final class LineStyle2 implements LineStyle {
         lineClosed = true;
     }
 
-
+    /**
+     * Create a new LineStyle2 object with the stroke thickness and fill style.
+     * @param lineWidth the width of the line.
+     * @param style the fill style used to draw the line.
+     */
     public LineStyle2(final int lineWidth, final FillStyle style) {
         super();
 
@@ -228,7 +240,10 @@ public final class LineStyle2 implements LineStyle {
         color = aColor;
     }
 
-
+    /**
+     * Get the CapStyle used for the start of the line.
+     * @return the CapStyle that specifies how the start of the line is drawn.
+     */
     public CapStyle getStartCap() {
         CapStyle style;
         if (startCap == 1) {
@@ -241,9 +256,13 @@ public final class LineStyle2 implements LineStyle {
         return style;
     }
 
-
-    public void setStartCap(final CapStyle capStyle) {
-        switch (capStyle) {
+    /**
+     * Set the CapStyle used for the start of the line.
+     * @param style the CapStyle that specifies how the start of the line
+     * is drawn.
+     */
+    public void setStartCap(final CapStyle style) {
+        switch (style) {
         case NONE:
             startCap = 1;
             break;
@@ -256,8 +275,11 @@ public final class LineStyle2 implements LineStyle {
         }
     }
 
-
-    public CapStyle getEndCap() {
+    /**
+     * Get the CapStyle used for the end of the line.
+     * @return the CapStyle that specifies how the end of the line is drawn.
+     */
+   public CapStyle getEndCap() {
         CapStyle style;
         if (endCap == 1) {
             style = CapStyle.NONE;
@@ -269,9 +291,13 @@ public final class LineStyle2 implements LineStyle {
         return style;
     }
 
-
-    public void setEndCap(final CapStyle capStyle) {
-        switch (capStyle) {
+   /**
+    * Set the CapStyle used for the end of the line.
+    * @param style the CapStyle that specifies how the end of the line
+    * is drawn.
+    */
+    public void setEndCap(final CapStyle style) {
+        switch (style) {
         case NONE:
             endCap = 1;
             break;
@@ -284,7 +310,10 @@ public final class LineStyle2 implements LineStyle {
         }
     }
 
-
+    /**
+     * Get the JoinStyle used when joining with another line or curve.
+     * @return the JoinStyle used to connect with another line or curve.
+     */
     public JoinStyle getJoinStyle() {
         JoinStyle style;
         if (endCap == 1) {
@@ -297,7 +326,10 @@ public final class LineStyle2 implements LineStyle {
         return style;
     }
 
-
+    /**
+     * Set the JoinStyle used when joining with another line or curve.
+     * @param style the JoinStyle used to connect with another line or curve.
+     */
     public void setJoinStyle(final JoinStyle style) {
         switch (style) {
         case BEVEL:
@@ -312,52 +344,94 @@ public final class LineStyle2 implements LineStyle {
         }
     }
 
-
+    /**
+     * Is the stroke scaled horizontally if the shape is redrawn.
+     * @return true if the stroke is scaled horizontally, false if the stroke
+     * thickness does not change.
+     */
     public boolean isHorizontal() {
         return horizontal;
     }
 
-
-    public void setHorizontal(final boolean scaled) {
-        horizontal = scaled;
+    /**
+     * Indicates whether the stroke is scaled horizontally if the shape is
+     * redrawn.
+     * @param scale true if the stroke is scaled horizontally, false if the
+     * stroke thickness does not change.
+     */
+    public void setHorizontal(final boolean scale) {
+        horizontal = scale;
     }
 
-
+    /**
+     * Is the stroke scaled vertically if the shape is redrawn.
+     * @return true if the stroke is scaled vertically, false if the stroke
+     * thickness does not change.
+     */
     public boolean isVertical() {
         return vertical;
     }
 
-
-    public void setVertical(final boolean scaled) {
-        vertical = scaled;
+    /**
+     * Indicates whether the stroke is scaled vertically if the shape is
+     * redrawn.
+     * @param scale true if the stroke is scaled vertically, false if the
+     * stroke thickness does not change.
+     */
+    public void setVertical(final boolean scale) {
+        vertical = scale;
     }
 
-
+    /**
+     * Are the end points of the line aligned to pixel boundaries.
+     * @return true if the end points are aligned to full pixels, false
+     * otherwise.
+     */
     public boolean isPixelAligned() {
         return pixelAligned;
     }
 
-
-    public void setPixelAligned(final boolean aligned) {
-        pixelAligned = aligned;
+    /**
+     * Indicates whether the end points of the line aligned to pixel boundaries.
+     * @param align true if the end points are aligned to full pixels, false
+     * otherwise.
+     */
+    public void setPixelAligned(final boolean align) {
+        pixelAligned = align;
     }
 
-
+    /**
+     * Is the path closed if the end point matches the starting point. If true
+     * then the line will be joined, otherwise an end cap is drawn.
+     * @return true if the line will be closed, false if the path remains open.
+     */
     public boolean isLineClosed() {
         return lineClosed;
     }
 
-
-    public void setLineClosed(final boolean closed) {
-        lineClosed = closed;
+    /**
+     * Indicates whether the path closed if the end point matches the starting
+     * point. If true then the line will be joined, otherwise an end cap is
+     * drawn.
+     * @param close true if the line will be closed, false if the path remains
+     * open.
+     */
+    public void setLineClosed(final boolean close) {
+        lineClosed = close;
     }
 
-
+    /**
+     * Get the limit for drawing miter joins.
+     * @return the value controlling how miter joins are drawn.
+     */
     public int getMiterLimit() {
         return miterLimit;
     }
 
-
+    /**
+     * Set the limit for drawing miter joins.
+     * @param limit the value controlling how miter joins are drawn.
+     */
     public void setMiterLimit(final int limit) {
         if ((limit < 0) || (limit > Coder.UNSIGNED_SHORT_MAX)) {
             throw new IllegalArgumentRangeException(
@@ -366,12 +440,18 @@ public final class LineStyle2 implements LineStyle {
         miterLimit = limit;
     }
 
-
+    /**
+     * Get the FillStyle used for the line stroke.
+     * @return the FillStyle used to draw the line.
+     */
     public FillStyle getFillStyle() {
         return fillStyle;
     }
 
-
+    /**
+     * Set the FillStyle used for the line stroke.
+     * @param style the FillStyle used to draw the line.
+     */
     public void setFillStyle(final FillStyle style) {
         fillStyle = style;
     }

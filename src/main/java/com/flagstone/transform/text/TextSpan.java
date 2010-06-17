@@ -387,7 +387,7 @@ public final class TextSpan implements SWFEncodeable {
                 height, characters);
     }
 
-    // TODO(optimise)
+    
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
         // CHECKSTYLE:OFF
@@ -422,7 +422,7 @@ public final class TextSpan implements SWFEncodeable {
         // CHECKSTYLE:ON
     }
 
-    // TODO(optimise)
+    
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {

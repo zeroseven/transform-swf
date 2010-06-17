@@ -42,17 +42,16 @@ import com.flagstone.transform.datatype.Color;
 import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 /**
- * MorphSolidLine defines the width and colour of a line drawn for a shape is it
+ * MorphLineStyle defines the width and colour of a line drawn for a shape is it
  * is morphed.
  *
  * <p>
- * MorphSolidLine specifies the width and colour of the line at the start and
+ * MorphLineStyle specifies the width and colour of the line at the start and
  * end of the morphing process. The transparency value for the colour should
  * also be specified. The Flash Player performs the interpolation as the shape
  * is morphed.
  * </p>
  */
-//TODO(class)
 public final class MorphLineStyle implements LineStyle {
 
     /** Format string used in toString() method. */

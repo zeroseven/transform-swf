@@ -36,11 +36,15 @@ package com.flagstone.transform.sound;
  * sample rates supported by the Flash Player.
  */
 public final class SoundRate {
-
+    /** A 5 kHz sample rate. */
     public static final int KHZ_5K = 5512;
+    /** An 8 kHz sample rate. */
     public static final int KHZ_8K = 8000;
+    /** An 11 kHz sample rate. */
     public static final int KHZ_11K = 11025;
+    /** A 22 kHz sample rate. */
     public static final int KHZ_22K = 22050;
+    /** A 44 kHz sample rate. */
     public static final int KHZ_44K = 44100;
 
     /** SoundRate contains only constants. */

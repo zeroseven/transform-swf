@@ -39,9 +39,9 @@ import java.util.Map;
 import com.flagstone.transform.Constants;
 import com.flagstone.transform.Event;
 import com.flagstone.transform.MovieTag;
+import com.flagstone.transform.MovieTypes;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.exception.IllegalArgumentRangeException;
@@ -68,12 +68,14 @@ public final class ButtonSound implements MovieTag {
     private static final String FORMAT = "ButtonSound: { identifier=%d;"
             + " table=%s}";
 
+    /** The set of button events that support sounds. */
     private static final EnumSet<Event>EVENTS = EnumSet.of(
             Event.ROLL_OUT, Event.ROLL_OVER,
             Event.PRESS, Event.RELEASE);
 
     /** The unique identifier of the button. */
     private int identifier;
+    /** Table of sounds played for different button events. */
     private transient Map<Event, SoundInfo>table;
 
     /** The length of the object, minus the header, when it is encoded. */
@@ -105,6 +107,12 @@ public final class ButtonSound implements MovieTag {
         coder.unmark();
     }
 
+    /**
+     * Decoder the optional sound for each button event.
+     * @param event the button event.
+     * @param coder the SWFDecoder containing the encoded data.
+     * @throws IOException if an error occurs decoding the sound.
+     */
     private void decodeInfo(final Event event,
             final SWFDecoder coder) throws IOException {
         if (coder.bytesRead() < length) {

@@ -39,14 +39,13 @@ import com.flagstone.transform.button.DefineButton;
 import com.flagstone.transform.button.DefineButton2;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFFactory;
 import com.flagstone.transform.font.DefineFont;
 import com.flagstone.transform.font.DefineFont2;
 import com.flagstone.transform.font.DefineFont3;
 import com.flagstone.transform.font.DefineFont4;
-import com.flagstone.transform.font.DefineFontName;
+import com.flagstone.transform.font.FontName;
 import com.flagstone.transform.font.FontAlignment;
 import com.flagstone.transform.font.FontInfo;
 import com.flagstone.transform.font.FontInfo2;
@@ -282,8 +281,8 @@ public final class MovieDecoder implements SWFFactory<MovieTag> {
         case MovieTypes.DEFINE_BINARY_DATA:
             obj = new DefineData(coder);
             break;
-        case MovieTypes.DEFINE_FONT_NAME:
-            obj = new DefineFontName(coder);
+        case MovieTypes.FONT_NAME:
+            obj = new FontName(coder);
             break;
         case MovieTypes.START_SOUND_2:
             obj = new StartSound2(coder);

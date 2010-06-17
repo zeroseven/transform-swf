@@ -36,14 +36,17 @@ import java.util.Arrays;
 
 import com.flagstone.transform.Constants;
 import com.flagstone.transform.DefineTag;
+import com.flagstone.transform.MovieTypes;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
-//TODO(class)
+/**
+ * DefineFont4 is used to pass OpenType font data directly to the text rendering
+ * engine added in Flash Player 10.
+ */
 public final class DefineFont4 implements DefineTag {
 
     /** Format string used in toString() method. */
@@ -89,6 +92,15 @@ public final class DefineFont4 implements DefineTag {
         coder.unmark();
     }
 
+    /**
+     * Creates a new DefineFont4 with the specified identifier, font name and
+     * style and OpenType font data.
+     * @param uid the unique identifier for the font.
+     * @param fontName the name of the font.
+     * @param isItalic does the font use italics
+     * @param isBold is the font bold.
+     * @param font the OpenType font data.
+     */
     public DefineFont4(final int uid, final String fontName,
             final boolean isItalic, final boolean isBold, final byte[] font) {
         setIdentifier(uid);
@@ -191,11 +203,18 @@ public final class DefineFont4 implements DefineTag {
         name = aString;
     }
 
-
+    /**
+     * Get the OpenType font definition data.
+     * @return a copy of the binary data containing the definition of the font.
+     */
     public byte[] getData() {
         return Arrays.copyOf(data, data.length);
     }
 
+    /**
+     * Set the OpenType font definition data.
+     * @param bytes the binary data containing the definition of the font.
+     */
     public void setData(final byte[] bytes) {
         if (bytes == null) {
             throw new IllegalArgumentException();

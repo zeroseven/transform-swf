@@ -29,7 +29,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.flagstone.transform.coder;
+package com.flagstone.transform;
 
 /**
  * MovieTypes defines the constants that identify a MovieTag when it is encoded
@@ -165,8 +165,8 @@ public final class MovieTypes {
     public static final int SCENES_AND_LABELS = 86;
     /** Identifies DefineData objects when they are encoded. */
     public static final int DEFINE_BINARY_DATA = 87;
-    /** Identifies DefineFontName objects when they are encoded. */
-    public static final int DEFINE_FONT_NAME = 88;
+    /** Identifies FontName objects when they are encoded. */
+    public static final int FONT_NAME = 88;
     /** Identifies StartSound2 objects when they are encoded. */
     public static final int START_SOUND_2 = 89;
     /** Identifies DefineJPEGImage4 objects when they are encoded. */
@@ -174,6 +174,9 @@ public final class MovieTypes {
     /** Identifies DefineFont4 objects when they are encoded. */
     public static final int DEFINE_FONT_4 = 91;
 
+    /**
+     * Private constructor.
+     */
     private MovieTypes() {
         // Class only contains constants
     }

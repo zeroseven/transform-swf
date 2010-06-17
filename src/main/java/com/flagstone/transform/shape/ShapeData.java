@@ -37,15 +37,21 @@ import java.util.Arrays;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFEncoder;
 
-/** TODO(class). */
+/**
+ * ShapeData is a convenience class for holding a set of encoded ShapeRecords
+ * so that a Shape can be lazily decoded.
+ */
 public final class ShapeData implements ShapeRecord {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "ShapeData: byte<%d> ...";
-
+    /** The encoded ShapeRecords. */
     private final transient byte[] data;
 
-
+    /**
+     * Create a new ShapeData object with an array of encoded ShapeRecords.
+     * @param bytes the encoded ShapeRecords.
+     */
     public ShapeData(final byte[] bytes) {
         if (bytes == null) {
             throw new IllegalArgumentException();

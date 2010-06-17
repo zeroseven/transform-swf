@@ -38,9 +38,9 @@ import java.util.List;
 import com.flagstone.transform.Constants;
 import com.flagstone.transform.DefineTag;
 import com.flagstone.transform.EventHandler;
+import com.flagstone.transform.MovieTypes;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.exception.IllegalArgumentRangeException;
@@ -96,6 +96,7 @@ public final class DefineButton2 implements DefineTag {
 
     /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
+    /** Offset in bytes from the start of the shapes to the event handlers. */
     private transient int offset;
 
     /**
@@ -113,7 +114,7 @@ public final class DefineButton2 implements DefineTag {
      * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    // TODO(optimise)
+    
     public DefineButton2(final SWFDecoder coder, final Context context)
             throws IOException {
         context.put(Context.TYPE, MovieTypes.DEFINE_BUTTON_2);

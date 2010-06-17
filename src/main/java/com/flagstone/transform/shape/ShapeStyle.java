@@ -137,7 +137,7 @@ public final class ShapeStyle implements ShapeRecord {
      * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    // TODO(optimise)
+    
     public ShapeStyle(final int flags, final SWFDecoder coder,
             final Context context) throws IOException {
         int numberOfFillBits = context.get(Context.FILL_SIZE);

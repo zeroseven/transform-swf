@@ -35,16 +35,18 @@ package com.flagstone.transform.font;
 import java.io.IOException;
 
 import com.flagstone.transform.Constants;
-import com.flagstone.transform.DefineTag;
+import com.flagstone.transform.MovieTag;
+import com.flagstone.transform.MovieTypes;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.MovieTypes;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
-/** TODO(class). */
-public final class DefineFontName implements DefineTag {
+/**
+ * FontName is used to hold the name and copyright information for a font.
+ */
+public final class FontName implements MovieTag {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "DefineFontName: { identifier=%d;"
@@ -68,7 +70,7 @@ public final class DefineFontName implements DefineTag {
      * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    public DefineFontName(final SWFDecoder coder) throws IOException {
+    public FontName(final SWFDecoder coder) throws IOException {
         length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
         if (length == Coder.IS_EXTENDED) {
             length = coder.readInt();
@@ -81,8 +83,15 @@ public final class DefineFontName implements DefineTag {
         coder.unmark();
     }
 
-
-    public DefineFontName(final int uid, final String fontName,
+    /**
+     * Create a new FontName object with the name and copyright information for
+     * an existing font definition.
+     *
+     * @param uid the unique identifier of the font definition.
+     * @param fontName the name of the font.
+     * @param copyrightNotice the copyright notice for the font.
+     */
+    public FontName(final int uid, final String fontName,
             final String copyrightNotice) {
         setIdentifier(uid);
         setName(fontName);
@@ -97,18 +106,24 @@ public final class DefineFontName implements DefineTag {
      *            a DefineFontName object from which the values will be
      *            copied.
      */
-    public DefineFontName(final DefineFontName object) {
+    public FontName(final FontName object) {
         identifier = object.identifier;
         name = object.name;
         copyright = object.copyright;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Get the unique identifier of the font this object is for.
+     * @return the unique identifier of the font definition.
+     */
     public int getIdentifier() {
         return identifier;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Set the unique identifier of the font this object is for.
+     * @param uid the unique identifier of the font definition.
+     */
     public void setIdentifier(final int uid) {
         if ((uid < 1) || (uid > Coder.UNSIGNED_SHORT_MAX)) {
             throw new IllegalArgumentRangeException(
@@ -140,22 +155,28 @@ public final class DefineFontName implements DefineTag {
         name = aString;
     }
 
-
+    /**
+     * Get the copyright notice.
+     * @return a string describing the copyright information.
+     */
     public String getCopyright() {
         return copyright;
     }
 
-
-    public void setCopyright(final String aString) {
-        if (aString == null) {
+    /**
+     * Set the copyright notice.
+     * @param notice a string describing the copyright information.
+     */
+    public void setCopyright(final String notice) {
+        if (notice == null) {
             throw new IllegalArgumentException();
         }
-        copyright = aString;
+        copyright = notice;
     }
 
     /** {@inheritDoc} */
-    public DefineFontName copy() {
-        return new DefineFontName(this);
+    public FontName copy() {
+        return new FontName(this);
     }
 
     /** {@inheritDoc} */
@@ -176,11 +197,11 @@ public final class DefineFontName implements DefineTag {
             throws IOException {
 
         if (length > Coder.SHORT_HEADER_LIMIT) {
-            coder.writeShort((MovieTypes.DEFINE_FONT_NAME
+            coder.writeShort((MovieTypes.FONT_NAME
                     << Coder.LENGTH_FIELD_SIZE) | Coder.IS_EXTENDED);
             coder.writeInt(length);
         } else {
-            coder.writeShort((MovieTypes.DEFINE_FONT_NAME
+            coder.writeShort((MovieTypes.FONT_NAME
                     << Coder.LENGTH_FIELD_SIZE) | length);
         }
         if (Constants.DEBUG) {

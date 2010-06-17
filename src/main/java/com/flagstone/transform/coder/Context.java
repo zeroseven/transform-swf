@@ -44,37 +44,37 @@ import com.flagstone.transform.CharacterEncoding;
  * encoded or decoded.
  */
 public final class Context {
-    /** TODO(doc). */
+    /** Flash Version. */
     public static final int VERSION = 1;
-    /** TODO(doc). */
+    /** Type identifying the current MovieTag being decoded. */
     public static final int TYPE = 2;
-    /** TODO(doc). */
+    /** Whether the alpha channel should be encoded / decoded. */
     public static final int TRANSPARENT = 3;
-    /** TODO(doc). */
+    /** Character codes are 16-bits. */
     public static final int WIDE_CODES = 4;
-    /** TODO(doc). */
+    /** Arrays of fill or line styles can contain more than 255 entries. */
     public static final int ARRAY_EXTENDED = 8;
-    /** TODO(doc). */
+    /** The glyphs were derived from a Postscript font. */
     public static final int POSTSCRIPT = 9;
-    /** TODO(doc). */
+    /** The line styles define a scaling stroke. */
     public static final int SCALING_STROKE = 10;
-    /** TODO(doc). */
+    /** The number of bit used to encode a fill style selection. */
     public static final int FILL_SIZE = 11;
-    /** TODO(doc). */
+    /** The number of bit used to encode a line style selection. */
     public static final int LINE_SIZE = 12;
-    /** TODO(doc). */
+    /** The number of bit used to encode a glyph advance. */
     public static final int ADVANCE_SIZE = 13;
-    /** TODO(doc). */
+    /** The number of bit used to encode a glyph index. */
     public static final int GLYPH_SIZE = 14;
-    /** TODO(doc). */
+    /** The number of bits used to encode a given shape. */
     public static final int SHAPE_SIZE = 15;
-    /** TODO(doc). */
+    /** Indicates that this is the last EventHandler to be encoded/decoded. */
     public static final int LAST = 16;
-    /** TODO(doc). */
+    /** Indicates the flash file is compressed. */
     public static final int COMPRESSED = 17;
-    /** TODO(doc). */
+    /** Counts the number of frames in a movie so the header can be updated. */
     public static final int FRAMES = 18;
-    /** TODO(doc). */
+    /** Indicates a definition is for menu button. */
     public static final int MENU_BUTTON = 19;
 
     /** The character encoding used for strings. */

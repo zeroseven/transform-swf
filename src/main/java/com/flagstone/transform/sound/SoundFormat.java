@@ -76,7 +76,7 @@ public enum SoundFormat {
      */
     NELLYMOSER(6),
     /**
-     *
+     * The Open Source SPEEX sound format.
      */
     SPEEX(11);
 
@@ -89,6 +89,12 @@ public enum SoundFormat {
         }
     }
 
+    /**
+     * Get the SoundFormat represented by an encoded value.
+     * @param value that represents the SoundFormat when encoded in a Flash
+     * file.
+     * @return the corresponding SoundFormat.
+     */
     public static SoundFormat fromInt(final int value) {
         return TABLE.get(value);
     }
@@ -99,6 +105,10 @@ public enum SoundFormat {
         value = format;
     }
 
+    /**
+     * Get the value used to represent the SoundFormat when it is encoded.
+     * @return the value used to encode the SoundFormat.
+     */
     public int getValue() {
         return value;
     }

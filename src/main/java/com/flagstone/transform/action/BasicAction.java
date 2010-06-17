@@ -31,10 +31,10 @@
 
 package com.flagstone.transform.action;
 
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import java.io.IOException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -234,85 +234,7 @@ public enum BasicAction implements Action {
     /** Test whether a string is greater than another. */
     STRING_GREATER(ActionTypes.STRING_GREATER),
     /** Identifies that a class inherits from a class. */
-    EXTENDS(ActionTypes.EXTENDS),
-    /** Undocumented action. */
-    CODE1(ActionTypes.CODE_1),
-    /** Undocumented action. */
-    CODE2(ActionTypes.CODE_2),
-    /** Undocumented action. */
-    CODE22(ActionTypes.CODE_22),
-    /** Undocumented action. */
-    CODE27(ActionTypes.CODE_27),
-    /** Undocumented action. */
-    CODE3(ActionTypes.CODE_3),
-    /** Undocumented action. */
-    CODE30(ActionTypes.CODE_30),
-    /** Undocumented action. */
-    CODE45(ActionTypes.CODE_45),
-    /** Undocumented action. */
-    CODE46(ActionTypes.CODE_46),
-    /** Undocumented action. */
-    CODE47(ActionTypes.CODE_47),
-    /** Undocumented action. */
-    CODE56(ActionTypes.CODE_56),
-    /** Undocumented action. */
-    CODE57(ActionTypes.CODE_57),
-    /** Undocumented action. */
-    CODE86(ActionTypes.CODE_86),
-    /** Undocumented action. */
-    CODE87(ActionTypes.CODE_87),
-    /** Undocumented action. */
-    CODE88(ActionTypes.CODE_88),
-    /** Undocumented action. */
-    CODE89(ActionTypes.CODE_89),
-    /** Undocumented action. */
-    CODE91(ActionTypes.CODE_91),
-    /** Undocumented action. */
-    CODE92(ActionTypes.CODE_92),
-    /** Undocumented action. */
-    CODE93(ActionTypes.CODE_93),
-    /** Undocumented action. */
-    CODE95(ActionTypes.CODE_95),
-    /** Undocumented action. */
-    CODE106(ActionTypes.CODE_106),
-    /** Undocumented action. */
-    CODE107(ActionTypes.CODE_107),
-    /** Undocumented action. */
-    CODE108(ActionTypes.CODE_108),
-    /** Undocumented action. */
-    CODE109(ActionTypes.CODE_109),
-    /** Undocumented action. */
-    CODE110(ActionTypes.CODE_110),
-    /** Undocumented action. */
-    CODE111(ActionTypes.CODE_111),
-    /** Undocumented action. */
-    CODE112(ActionTypes.CODE_112),
-    /** Undocumented action. */
-    CODE113(ActionTypes.CODE_113),
-    /** Undocumented action. */
-    CODE114(ActionTypes.CODE_114),
-    /** Undocumented action. */
-    CODE115(ActionTypes.CODE_115),
-    /** Undocumented action. */
-    CODE116(ActionTypes.CODE_116),
-    /** Undocumented action. */
-    CODE117(ActionTypes.CODE_117),
-    /** Undocumented action. */
-    CODE118(ActionTypes.CODE_118),
-    /** Undocumented action. */
-    CODE119(ActionTypes.CODE_119),
-    /** Undocumented action. */
-    CODE120(ActionTypes.CODE_120),
-    /** Undocumented action. */
-    CODE121(ActionTypes.CODE_121),
-    /** Undocumented action. */
-    CODE122(ActionTypes.CODE_122),
-    /** Undocumented action. */
-    CODE125(ActionTypes.CODE_125),
-    /** Undocumented action. */
-    CODE126(ActionTypes.CODE_126),
-    /** Undocumented action. */
-    CODE127(ActionTypes.CODE_127);
+    EXTENDS(ActionTypes.EXTENDS);
 
     /**
      * Table used to store instances of Basic Actions so only one object is

@@ -163,7 +163,7 @@ public final class GradientFill implements FillStyle {
      *            the coordinate transform mapping the gradient square onto
      *            physical coordinates. Must not be null.
      * @param spreadType
-     *            TODO
+     *            TODO (doc)
      * @param interpolationType
      *            how the changes in colours across the gradient are calculated.
      * @param list
@@ -230,7 +230,7 @@ public final class GradientFill implements FillStyle {
     }
 
     /**
-     * TODO
+     * TODO (doc)
      * Get the Spread.
      *
      * @return the Spread.
@@ -240,7 +240,7 @@ public final class GradientFill implements FillStyle {
     }
 
     /**
-     * TODO
+     * TODO (doc)
      * Set the Spread.
      *
      * @param spreadType the Spread.

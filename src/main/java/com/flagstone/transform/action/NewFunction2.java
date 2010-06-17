@@ -254,7 +254,10 @@ public final class NewFunction2 implements Action {
     private static final String FORMAT = "NewFunction2: { name=%s; "
             + "registerCount=%d; optimizations=%s; arguments=%s; actions=%s}";
 
-
+    /**
+     * The set of optimisations that can be used to speed up the execution of
+     * functions.
+     */
     public enum Optimization {
         /** Create the predefined variable, <em>super</em>. */
         CREATE_SUPER(4),
@@ -356,7 +359,7 @@ public final class NewFunction2 implements Action {
      * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    // TODO(optimise)
+    
     public NewFunction2(final SWFDecoder coder, final Context context)
             throws IOException {
         final SWFFactory<Action> decoder = context.getRegistry()
@@ -529,7 +532,7 @@ public final class NewFunction2 implements Action {
                 arguments, actions);
     }
 
-    // TODO(optimise)
+    
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
         length = INITIAL_LENGTH + context.strlen(name);

@@ -31,12 +31,15 @@
 
 package com.flagstone.transform.linestyle;
 
-/** TODO(class). */
+/**
+ * JoinStyle describes the different styles that can be applied when two lines
+ * are joined.
+ */
 public enum JoinStyle {
-    /** TODO(doc). */
+    /** The join is drawn with rounded corners. */
     ROUND,
-    /** TODO(doc). */
+    /** The join is drawn with a bevel. */
     BEVEL,
-    /** TODO(doc). */
+    /** The end of each line is bevelled to smoothly join them together. */
     MITER;
 }

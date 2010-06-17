@@ -96,7 +96,7 @@ public final class FocalGradientFill implements FillStyle {
      *            the coordinate transform mapping the gradient square onto
      *            physical coordinates. Must not be null.
      * @param spreadType
-     *            TODO
+     *            TODO (doc)
      * @param interpolationType
      *            how the changes in colours across the gradient are calculated.
      * @param point
@@ -138,7 +138,7 @@ public final class FocalGradientFill implements FillStyle {
     }
 
     /**
-     * TODO
+     * TODO (doc)
      * Get the Spread.
      *
      * @return the Spread.
@@ -148,7 +148,7 @@ public final class FocalGradientFill implements FillStyle {
     }
 
     /**
-     * TODO
+     * TODO (doc)
      * Set the Spread.
      *
      * @param spreadType the Spread.
@@ -281,7 +281,7 @@ public final class FocalGradientFill implements FillStyle {
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
         // CHECKSTYLE:OFF
-        // TODO(optimise) Calculate size of gradient list directly.
+        //TODO Calculate size of gradient list directly.
         int length = 4 + transform.prepareToEncode(context);
         count = gradients.size();
 

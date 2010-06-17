@@ -39,21 +39,40 @@ import java.io.Writer;
 import com.flagstone.transform.Movie;
 import com.flagstone.transform.MovieTag;
 
+/**
+ * MovieWriter can be used to pretty print the output from the toString()
+ * method of an object or even an entire Movie.
+ */
 public final class MovieWriter {
-
+    /**
+     * Pretty print an entire Movie and write it to a file.
+     * @param movie the Movie to get the string representation of.
+     * @param file the file where the formatted output will be written.
+     * @throws IOException if there is an error writing to the file.
+     */
     public void write(final Movie movie, final File file) throws IOException {
         final PrintWriter writer = new PrintWriter(file);
         write(movie, writer);
         writer.close();
     }
-
+    /**
+     * Pretty print an entire Movie.
+     * @param movie the Movie to get the string representation of.
+     * @param writer the Writer formatted output will be written.
+     * @throws IOException if there is an error writing to the file.
+     */
     public void write(final Movie movie, final Writer writer)
             throws IOException {
         for (final MovieTag tag : movie.getObjects()) {
             write(tag, writer);
         }
     }
-
+    /**
+     * Pretty print an object from a Movie.
+     * @param tag the MovieTag object to get the string representation of.
+     * @param writer the Writer formatted output will be written.
+     * @throws IOException if there is an error writing to the file.
+     */
     public void write(final MovieTag tag, final Writer writer)
             throws IOException {
 
