@@ -40,7 +40,13 @@ import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
-/** TODO(class). */
+/**
+ * ScalingGrid is used to define a 9-slice grid that can be used to control
+ * the way an object is scaled. The Bounds defines the central square of the
+ * grid. The (two) squares above and below the Bounds are scaled horizontally;
+ * the (two) squares to the left and right are scaled vertically and the (four)
+ * corner squares are not scaled at all.
+ */
 public final class ScalingGrid implements DefineTag {
 
     /** Format string used in toString() method. */

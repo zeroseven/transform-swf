@@ -47,7 +47,6 @@ import com.flagstone.transform.coder.SWFEncoder;
  * the assigned name.
  * </p>
  */
-//TODO(class)
 public final class DoABC implements MovieTag {
 
     /** Format string used in toString() method. */

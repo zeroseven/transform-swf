@@ -49,7 +49,9 @@ import com.flagstone.transform.linestyle.LineStyle;
 import com.flagstone.transform.linestyle.MorphLineStyle2;
 
 /**
- * DefineMorphShape defines a shape that will morph from one form into another.
+ * DefineMorphShape2 defines a shape that will morph from one form into another.
+ * It extends the functionality of {@link DefineMorphShape} by using LineStyle2
+ * objects rather than LineStyle1.
  *
  * <p>
  * Only the start and end shapes are defined the Flash Player will perform the
@@ -85,9 +87,7 @@ import com.flagstone.transform.linestyle.MorphLineStyle2;
  * The edges in the shapes may change their type when a shape is morphed.
  * Straight edges can become curves and vice versa.
  * </p>
- *
  */
-//TODO(class)
 public final class DefineMorphShape2 implements ShapeTag {
 
     /**
@@ -523,7 +523,7 @@ public final class DefineMorphShape2 implements ShapeTag {
                 lineStyles, shape, endShape);
     }
 
-    
+
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
         fillBits = Coder.unsignedSize(fillStyles.size());
@@ -585,7 +585,7 @@ public final class DefineMorphShape2 implements ShapeTag {
                 : Coder.SHORT_HEADER) + length;
     }
 
-    
+
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {

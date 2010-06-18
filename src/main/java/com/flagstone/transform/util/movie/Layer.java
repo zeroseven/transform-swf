@@ -133,7 +133,6 @@ import java.util.List;
  * number are displayed in front of object placed on a lower layer number.
  *
  */
-//TODO(class)
 public final class Layer {
     /**
      * Merge layers together to create a single time-line. Each layer is assumed

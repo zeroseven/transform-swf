@@ -51,8 +51,8 @@ import com.flagstone.transform.exception.IllegalArgumentValueException;
  *
  * <p>
  * Sounds may be either mono or stereo and encoded using either NATIVE_PCM,
- * ADPCM, MP3 or NELLYMOSER formats and have sampling rates of 5512, 11025,
- * 22050 or 44100 Hertz.
+ * ADPCM, MP3 or NELLYMOSER or SPEEX formats and have sampling rates of 5512,
+ * 11025, 22050 or 44100 Hertz.
  * </p>
  *
  * <p>
@@ -81,7 +81,6 @@ import com.flagstone.transform.exception.IllegalArgumentValueException;
  * @see SoundStreamBlock
  * @see SoundStreamHead
  */
-//TODO(class)
 public final class SoundStreamHead2 implements MovieTag {
 
     /** Format string used in toString() method. */

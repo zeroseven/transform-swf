@@ -40,7 +40,10 @@ import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
-/** TODO(class). */
+/**
+ * MovieHeader contains the attributes that make up the header fields of a Flash
+ * file. Previously these were attributes of the Movie class.
+ */
 public final class MovieHeader implements MovieTag {
 
     /** Format string used in toString() method. */

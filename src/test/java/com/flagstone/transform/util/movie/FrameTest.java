@@ -179,7 +179,7 @@ public final class FrameTest {
         final List<Frame> frames = Frame.split(movie);
 
         assertNotSame(frame, frames.get(0));
-//TODO        assertEquals(frame.toString(), frames.get(0).toString());
+        assertEquals(frame.toString(), frames.get(0).toString());
     }
 
     @Test

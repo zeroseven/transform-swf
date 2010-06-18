@@ -89,7 +89,6 @@ import com.flagstone.transform.shape.Shape;
  * libraries of "pre-parsed" flash fonts is the preferred way of use fonts.
  * </p>
  */
-//TODO(class)
 public final class Font {
 
     private FontFace face;
@@ -227,8 +226,8 @@ public final class Font {
     public void setNumberOfGlyphs(final int count) {
         glyphTable = new Glyph[Coder.UNSIGNED_SHORT_MAX + 1];
         glyphToChar = new int[Coder.UNSIGNED_SHORT_MAX + 1];
-//TODO        glyphTable = new Glyph[count];
-//TODO        glyphToChar = new int[count];
+        //glyphTable = new Glyph[count];
+        //glyphToChar = new int[count];
         glyphIndex = 0;
     }
 
@@ -249,7 +248,7 @@ public final class Font {
     public void setHighestChar(final char highest) {
         highestChar = highest;
         charToGlyph = new int[Coder.UNSIGNED_SHORT_MAX + 1];
-//TODO        charToGlyph = new int[highest];
+        //charToGlyph = new int[highest];
     }
 
 

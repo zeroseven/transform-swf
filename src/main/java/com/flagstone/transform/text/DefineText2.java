@@ -49,8 +49,8 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  * DefineText2 defines one or more lines of transparent text.
  *
  * <p>
- * It extends the functionality provided by the DefineText class by encoding the
- * alpha channel of the colour objects used to set the text color.
+ * It extends the functionality provided by the {@link DefineText} class by
+ * encoding the alpha channel of the colour objects used to set the text color.
  * </p>
  *
  * <p>
@@ -65,7 +65,6 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  * @see TextSpan
  * @see DefineText
  */
-//TODO(class)
 public final class DefineText2 implements StaticTextTag {
 
     /** Format string used in toString() method. */
@@ -98,7 +97,7 @@ public final class DefineText2 implements StaticTextTag {
      * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    
+
     public DefineText2(final SWFDecoder coder, final Context context)
             throws IOException {
         length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
@@ -331,7 +330,7 @@ public final class DefineText2 implements StaticTextTag {
                 : Coder.SHORT_HEADER) + length;
     }
 
-    
+
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {

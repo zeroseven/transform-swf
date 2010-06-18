@@ -34,6 +34,9 @@ package com.flagstone.transform.shape;
 import com.flagstone.transform.coder.Copyable;
 import com.flagstone.transform.coder.SWFEncodeable;
 
-/** TODO(class). */
+/**
+ * ShapeRecord is an interface to constrain the types of object that can be
+ * added to a Shape.
+ */
 public interface ShapeRecord extends SWFEncodeable, Copyable<ShapeRecord> {
 }

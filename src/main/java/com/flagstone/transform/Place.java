@@ -316,9 +316,10 @@ public final class Place implements MovieTag {
         // CHECKSTYLE:OFF
         length = 4;
         length += transform.prepareToEncode(context);
-        //TODO replace with if statement ?
-        length += colorTransform == null ? 0 : colorTransform.prepareToEncode(
-                context);
+
+        if (colorTransform != null) {
+            length += colorTransform.prepareToEncode(context);
+        }
 
         return 2 + length;
         // CHECKSTYLE:ON

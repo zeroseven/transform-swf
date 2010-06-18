@@ -48,7 +48,6 @@ import com.flagstone.transform.datatype.CoordTransform;
  * @see MorphGradient
  * @see GradientFill
  */
-//TODO(class)
 public final class MorphGradientFill implements FillStyle {
 
     /** Format string used in toString() method. */

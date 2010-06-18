@@ -164,7 +164,6 @@ import java.util.Vector;
  *
  * @author Marco Schmidt
  */
-//TODO(class)
 @SuppressWarnings("PMD")
 public final class ImageInfo {
     /**
@@ -1013,7 +1012,6 @@ public final class ImageInfo {
                             in.close();
                         }
                     } catch (final IOException ee) {
-                        //TODO Fix
                         ee.printStackTrace();
                     }
                 }

@@ -50,8 +50,8 @@ import com.flagstone.transform.linestyle.LineStyle1;
 
 /**
  * DefineShape2 defines a shape to be displayed with an extended set of fill
- * styles. It extends the functionality of the DefineShape class by allowing
- * more than 255 fill or line styles to be specified.
+ * styles. It extends the functionality of the {@link DefineShape} class by
+ * allowing more than 255 fill or line styles to be specified.
  *
  * <p>
  * The shape defines a path containing a mix of straight and curved edges and
@@ -64,11 +64,7 @@ import com.flagstone.transform.linestyle.LineStyle1;
  * styles the selected style may be undefined, allowing the shape to be drawn
  * without an outline or left unfilled.
  * </p>
- *
- * @see DefineShape
- * @see DefineShape3
  */
-//TODO(class)
 public final class DefineShape2 implements ShapeTag {
 
     /**

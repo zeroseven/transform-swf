@@ -70,14 +70,13 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  *
  * @see DefineSound
  */
-//TODO(class)
 public final class SoundInfo implements SWFEncodeable {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "SoundInfo: { identifier=%d; mode=%s;"
             + " inPoint=%d; outPoint=%d; loopCount=%d; envelopes=%s}";
 
-    /** TODO(class). */
+    /** Mode describes how the sound is controlled. */
     public enum Mode {
         /** Start playing the sound. */
         START,

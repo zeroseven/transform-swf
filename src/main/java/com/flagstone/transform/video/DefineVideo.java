@@ -53,15 +53,8 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  * video data is ignored. The actual video data is encoded using the VideoFrame
  * class.
  * </p>
- *
- * <p>
- * The ScreenVideo format was introduced in Flash 7, only the H263 format was
- * supported in Flash 6.
- * </p>
- *
  * @see VideoFrameType
  */
-//TODO(class)
 public final class DefineVideo implements DefineTag {
 
     /** Format string used in toString() method. */

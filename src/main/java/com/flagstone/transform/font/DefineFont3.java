@@ -46,6 +46,7 @@ import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.exception.IllegalArgumentRangeException;
 import com.flagstone.transform.shape.Shape;
 import com.flagstone.transform.shape.ShapeData;
+import com.flagstone.transform.text.Language;
 
 /**
  * DefineFont3 provides the same functionality as DefineFont2 but the
@@ -439,15 +440,14 @@ public final class DefineFont3 implements DefineTag {
     // Flash 6
     /**
      * Returns the language code identifying the type of spoken language for the
-     * font either Text.Japanese, Text.Korean, Text.Latin,
-     * Text.SimplifiedChinese or Text.TraditionalChinese.
+     * font.
      *
-     * @return the language code used to determine how line-breaks are inserted
-     *         into text rendered using the font. Returns 0 if the object was
+     * @return the Language used to determine how line-breaks are inserted
+     *         into text rendered using the font. Returns NONE if the object was
      *         decoded from a movie contains Flash 5 or less.
      */
-    public int getLanguage() {
-        return language;
+    public Language getLanguage() {
+        return Language.fromInt(language);
     }
 
     /**
@@ -457,13 +457,11 @@ public final class DefineFont3 implements DefineTag {
      * NOTE: The language attribute is ignored if the object is encoded in a
      * Flash 5 movie.
      *
-     * @param code
-     *            the code identifying the spoken language either Text.Japanese,
-     *            Text.Korean, Text.Latin, Text.SimplifiedChinese or
-     *            Text.TraditionalChinese.
+     * @param lang the Language identifying the spoken language for the text
+     * rendered using the font.
      */
-    public void setLanguage(final int code) {
-        language = code;
+    public void setLanguage(final Language lang) {
+        language = lang.getValue();
     }
 
     // End Flash 6

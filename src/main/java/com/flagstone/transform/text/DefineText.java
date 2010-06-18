@@ -49,11 +49,11 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  * DefineText defines one or more lines of text.
  *
  * <p>
- * The characters, style and layout information is defined using TextSpan
- * objects. The DefineText class acts as a container for the text, defining the
- * bounding rectangle that encloses the text along with a coordinate transform
- * that can be used to change the size and orientation of the text when it is
- * displayed.
+ * The characters, style and layout information is defined using {@link
+ * TextSpan} objects. The DefineText class acts as a container for the text,
+ * defining the bounding rectangle that encloses the text along with a
+ * coordinate transform that can be used to change the size and orientation of
+ * the text when it is displayed.
  * </p>
  *
  * <p>
@@ -65,9 +65,7 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  * </p>
  *
  * @see TextSpan
- * @see DefineText2
  */
-//TODO(class)
 public final class DefineText implements StaticTextTag {
 
     /** Format string used in toString() method. */
@@ -100,7 +98,7 @@ public final class DefineText implements StaticTextTag {
      * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    
+
     public DefineText(final SWFDecoder coder, final Context context)
             throws IOException {
         length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
@@ -329,7 +327,7 @@ public final class DefineText implements StaticTextTag {
                 : Coder.SHORT_HEADER) + length;
     }
 
-    
+
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {

@@ -72,13 +72,12 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  *
  * <p>
  * An important distinction between the host device to specify the font and
- * using the glyphs in an DefineFont object is that the device is not
+ * using the glyphs in an DefineFont object is that the device font is not
  * anti-aliased and the rendering is dependent on the host device. The glyphs in
  * an DefineFont object are anti-aliased and are guaranteed to look identical on
  * every device the text is displayed.
  * </p>
  */
-//TODO(class)
 public final class FontInfo implements MovieTag {
 
     /** Format string used in toString() method. */
@@ -109,7 +108,7 @@ public final class FontInfo implements MovieTag {
      * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    
+
     public FontInfo(final SWFDecoder coder) throws IOException {
         codes = new ArrayList<Integer>();
         length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
@@ -403,7 +402,7 @@ public final class FontInfo implements MovieTag {
                 name, codes);
     }
 
-    
+
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
         // CHECKSTYLE:OFF
@@ -425,7 +424,7 @@ public final class FontInfo implements MovieTag {
         // CHECKSTYLE:ON
     }
 
-    
+
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {

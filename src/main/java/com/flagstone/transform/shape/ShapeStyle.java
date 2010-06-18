@@ -64,8 +64,7 @@ import com.flagstone.transform.linestyle.LineStyle1;
  * <p>
  * Line and Fill styles are selected by the index position, starting at 1, of
  * the style in a list of styles. An index of zero means that no style is
- * used. Using the constant VALUE_NOT_SET means that the current style is
- * unchanged. Two types of fill style are supported: fillStyle is used where a
+ * used. Two types of fill style are supported: fillStyle is used where a
  * shape does not contain overlapping areas and altFillStyle is used where areas
  * overlap. This differs from graphics environments that only support one fill
  * style as the overlapping area would form a hole in the shape and not be
@@ -75,24 +74,15 @@ import com.flagstone.transform.linestyle.LineStyle1;
  * <p>
  * A new drawing point is specified using the absolute x and y coordinates. If
  * an ShapeStyle object is the first in a shape then the current drawing point
- * is the origin of the shape (0,0). As with the line and fill styles if no
- * drawing point is set then the x and y coordinates may be set to
- * VALUE_NOT_SET.
+ * is the origin of the shape (0,0). As with the line and fill styles,
+ * specifying a move is optional.
  * </p>
  *
  * <p>
  * Finally the line or fill style lists may left empty if no new styles are
  * being specified.
  * </p>
- *
- * <p>
- * Note that the values for the moveX and moveY attributes and the line and fill
- * styles lists are defined in pairs and are optional only if both are set to
- * VALUE_NOT_SET.
- * </p>
- *
  */
-//TODO(class)
 public final class ShapeStyle implements ShapeRecord {
 
     /**
@@ -137,7 +127,7 @@ public final class ShapeStyle implements ShapeRecord {
      * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    
+
     public ShapeStyle(final int flags, final SWFDecoder coder,
             final Context context) throws IOException {
         int numberOfFillBits = context.get(Context.FILL_SIZE);

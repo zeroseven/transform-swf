@@ -34,7 +34,10 @@ package com.flagstone.transform.util.sound;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/** TODO(class). */
+/**
+ * SoundRegistry is used to provide a directory for registering SoundProviders
+ * that are used to decode different sound formats.
+ */
 public final class SoundRegistry {
 
     private static Map<String, SoundProvider> providers =
@@ -47,9 +50,7 @@ public final class SoundRegistry {
     }
 
     /**
-     * Register an SoundDecoder to handle images in the specified format. The
-     * image formats currently supported are defined in the {@link SoundInfo}
-     * class.
+     * Register an SoundDecoder to handle images in the specified format.
      *
      * @param mimeType
      *            the string identifying the image format.
@@ -61,7 +62,7 @@ public final class SoundRegistry {
         providers.put(mimeType, decoder);
     }
 
-    
+
     public static SoundDecoder getSoundProvider(final String mimeType) {
 
         if (providers.containsKey(mimeType)) {

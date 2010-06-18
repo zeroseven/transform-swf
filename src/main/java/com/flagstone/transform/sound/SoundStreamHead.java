@@ -81,7 +81,6 @@ import com.flagstone.transform.exception.IllegalArgumentValueException;
  * @see SoundStreamBlock
  * @see SoundStreamHead2
  */
-//TODO(class)
 public final class SoundStreamHead implements MovieTag {
 
     /** Format string used in toString() method. */

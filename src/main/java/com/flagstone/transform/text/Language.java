@@ -31,16 +31,63 @@
 
 package com.flagstone.transform.text;
 
-/** TODO(class). */
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+/**
+ * Language is used to identify the spoken language for text (not the character
+ * encoding). It is primarily used to select the line-breaking rules when
+ * wrapping text in dynamic text fields.
+ */
 public enum Language {
+    /** The spoken language will be defined by the Flash Player. */
+    NONE(0),
     /** The spoken language for traditional Chinese fonts. */
-    TRADITIONAL_CHINESE,
+    TRADITIONAL_CHINESE(5),
     /** The spoken language for simplified Chinese fonts. */
-    SIMPLIFIED_CHINESE,
+    SIMPLIFIED_CHINESE(4),
     /** The spoken language for Japanese fonts. */
-    KOREAN,
+    KOREAN(3),
     /** The spoken language for Korean fonts. */
-    JAPANESE,
+    JAPANESE(2),
     /** The spoken language for Latin fonts. */
-    LATIN;
+    LATIN(1);
+
+    /** Table mapping code to keys. */
+    private static final Map<Integer, Language> TABLE =
+        new LinkedHashMap<Integer, Language>();
+
+    static {
+        for (final Language type : values()) {
+            TABLE.put(type.value, type);
+        }
+    }
+
+    /**
+     * Get the Language for an encoded value.
+     * @param code the encoded value representing a spoken language.
+     * @return the Language for the encoded value.
+     */
+    public static Language fromInt(final int code) {
+        return TABLE.get(code);
+    }
+
+    /** The value representing the Language when it is encoded. */
+    private final int value;
+
+    /**
+     * Create a new Language.
+     * @param keyCode the value that is encoded to represent the key.
+     */
+    private Language(final int keyCode) {
+        value = keyCode;
+    }
+
+    /**
+     * Get the value that will be encoded to represent the Language.
+     * @return the value that will be encoded.
+     */
+    public int getValue() {
+        return value;
+    }
 }

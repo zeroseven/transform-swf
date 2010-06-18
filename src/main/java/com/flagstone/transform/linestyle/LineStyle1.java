@@ -42,14 +42,15 @@ import com.flagstone.transform.datatype.Color;
 import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 /**
- * LineStyle defines the width and colour of a line that is used when drawing
+ * LineStyle1 defines the width and colour of a line that is used when drawing
  * the outline of a shape.
  *
  * <p>
  * All lines are drawn with rounded corners and end caps. Different join and
  * line end styles can be created by drawing line segments as a sequence of
  * filled shapes. With 1 twip equal to 1/20th of a pixel this technique can
- * easily be used to draw the narrowest of visible lines.
+ * easily be used to draw the narrowest of visible lines. Note that specific
+ * join and cap styles can be specified with the {@link LineStyle2} class.
  * </p>
  *
  * <p>
@@ -67,8 +68,8 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  * </p>
  *
  * @see Line
+ * @see LineStyle2
  */
-//TODO(class)
 public final class LineStyle1 implements LineStyle {
 
     /** Format string used in toString() method. */
@@ -179,7 +180,7 @@ public final class LineStyle1 implements LineStyle {
         return String.format(FORMAT, width, color);
     }
 
-    
+
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
         // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES

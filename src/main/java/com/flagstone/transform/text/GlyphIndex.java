@@ -44,8 +44,8 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 /**
  * <p>
- * Character is used to display a text character in a span of text. Each
- * Character specifies the glyph to be displayed (rather than the character
+ * GlyphIndex is used to display a text character in a span of text. Each
+ * GlyphIndex specifies the glyph to be displayed (rather than the character
  * code) along with the distance to the next Character to be displayed, if any.
  * </p>
  *
@@ -57,11 +57,7 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  * </p>
  *
  * @see TextSpan
- * @see DefineText
- * @see DefineText2
- * @see com.flagstone.transform.factory.text.TextFactory
  */
-//TODO(class)
 public final class GlyphIndex implements SWFEncodeable {
 
     /** Format string used in toString() method. */

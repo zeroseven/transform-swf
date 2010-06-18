@@ -65,11 +65,7 @@ import com.flagstone.transform.linestyle.LineStyle1;
  * For both line and fill styles the selected style may be undefined, allowing
  * the shape to be drawn without an outline or left unfilled.
  * </p>
- *
- * @see DefineShape2
- * @see DefineShape3
  */
-//TODO(class)
 public final class DefineShape implements ShapeTag {
 
     /** Format string used in toString() method. */

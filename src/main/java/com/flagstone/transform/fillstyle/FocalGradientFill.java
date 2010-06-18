@@ -40,7 +40,16 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.CoordTransform;
 
-/** TODO(class). */
+/**
+ * FocalGradientFill extends the functionality of GradientFill by allowing the
+ * focal point for the gradient to be specified rather than defaulting to the
+ * centre of the shape.
+ *
+ * The value for the focal point ranges from -1.0 to 1.0, where negative values
+ * up to -1.0 sets the focal point closer to the left border gradient circle
+ * and positive values up to 1.0 sets the focal point closer the right border.
+ * A value of zero means the focal point is in the centre.
+ */
 public final class FocalGradientFill implements FillStyle {
     /** Scaling factor for saving floats as 8.8 fixed point numbers. */
     private static final float SCALE_8 = 256.0f;
@@ -96,7 +105,7 @@ public final class FocalGradientFill implements FillStyle {
      *            the coordinate transform mapping the gradient square onto
      *            physical coordinates. Must not be null.
      * @param spreadType
-     *            TODO (doc)
+     *            To be documented.
      * @param interpolationType
      *            how the changes in colours across the gradient are calculated.
      * @param point
@@ -138,7 +147,6 @@ public final class FocalGradientFill implements FillStyle {
     }
 
     /**
-     * TODO (doc)
      * Get the Spread.
      *
      * @return the Spread.
@@ -148,7 +156,6 @@ public final class FocalGradientFill implements FillStyle {
     }
 
     /**
-     * TODO (doc)
      * Set the Spread.
      *
      * @param spreadType the Spread.
@@ -281,14 +288,12 @@ public final class FocalGradientFill implements FillStyle {
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
         // CHECKSTYLE:OFF
-        //TODO Calculate size of gradient list directly.
-        int length = 4 + transform.prepareToEncode(context);
         count = gradients.size();
 
+        int length = 4 + transform.prepareToEncode(context);
         for (final Gradient gradient : gradients) {
             length += gradient.prepareToEncode(context);
         }
-
         return length;
         // CHECKSTYLE:ON
     }

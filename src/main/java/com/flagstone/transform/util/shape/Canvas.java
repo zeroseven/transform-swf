@@ -71,49 +71,16 @@ import com.flagstone.transform.shape.ShapeStyle;
  * <p>
  *
  * <p>
- * The Canvas class also supports a number of method to create closed paths that
- * represent different geometric shapes. Basic rectangles, ellipses and circles
- * are supported. More complex shapes can be drawn using the polygon() method
- * which uses pairs of points to specified the vertices of an arbitrary shapes.
- * </p>
- *
- * <p>
  * When drawing paths whether coordinates are specified in twips or pixels is
  * set when the Canvas object is created. When specifying coordinates in pixels
  * all coordinates are converted internally to twips to perform the actual
  * drawing.
  * </p>
- *
- * <p>
- * The following code samples illustrate how to use the Canvas class create
- * shapes.
- * </p>
- *
- *<pre>
- * Canvas path = new Canvas(true); // coordinates are in pixels.
- *
- * int width = 200;
- * int height = 100;
- *
- * newPath();
- * setLineStyle(new LineStyle(1, ColorTable.black()));
- * setFillStyle(new SolidFill(ColorTable.red()));
- * move(-width / 2, -height / 2);
- * rline(width, 0);
- * rline(0, height);
- * rline(-width, 0);
- * rline(0, -height);
- * closePath();
- *
- * DefineShape3 rect = path.defineShape(movie.newIdentifier());
- *
- *</pre>
  */
-//TODO(class)
 @SuppressWarnings({"PMD.TooManyMethods", "PMD.TooManyFields" })
 public final class Canvas {
     /**
-     * Value used in the algorithm to convert quadratio Bezier curves in to
+     * Value used in the algorithm to convert quadratic Bezier curves in to
      * a set of straight lines that approximate the curve.
      */
     private static final double FLATTEN_LIMIT = 0.25;

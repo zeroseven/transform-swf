@@ -65,7 +65,6 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  * movie clip defined in the movie.
  * </p>
  */
-//TODO(class)
 public final class InitializeMovieClip implements MovieTag {
 
     /** Format string used in toString() method. */

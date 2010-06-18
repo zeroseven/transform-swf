@@ -56,17 +56,9 @@ import com.flagstone.transform.shape.ShapeData;
  * of the font, whether the font face is bold or italics and a table that maps
  * character codes to the glyphs that is drawn to represent the character.
  * </p>
- *
- * <p>
- * When defining a font only the glyphs used from a particular font are
- * included. Unused glyphs can be omitted greatly reducing the amount of
- * information that is encoded.
- * </p>
- *
  * @see FontInfo
  * @see FontInfo2
  */
-//TODO(class)
 public final class DefineFont implements DefineTag {
 
     /** Format string used in toString() method. */
@@ -82,7 +74,7 @@ public final class DefineFont implements DefineTag {
     private transient int length;
     private transient int[] table;
 
-    
+
     /**
      * Creates and initialises a DefineFont object using values encoded
      * in the Flash binary format.
@@ -220,7 +212,7 @@ public final class DefineFont implements DefineTag {
         return String.format(FORMAT, identifier, shapes);
     }
 
-    
+
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
         length = 2;
@@ -253,7 +245,7 @@ public final class DefineFont implements DefineTag {
                 : Coder.SHORT_HEADER) + length;
     }
 
-    
+
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {

@@ -130,7 +130,6 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  *
  * @see NewFunction
  */
-//TODO(class)
 public final class NewFunction2 implements Action {
 
     /** Number of last internal register in the Flash Player. */
@@ -359,7 +358,7 @@ public final class NewFunction2 implements Action {
      * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    
+
     public NewFunction2(final SWFDecoder coder, final Context context)
             throws IOException {
         final SWFFactory<Action> decoder = context.getRegistry()
@@ -532,7 +531,7 @@ public final class NewFunction2 implements Action {
                 arguments, actions);
     }
 
-    
+
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
         length = INITIAL_LENGTH + context.strlen(name);

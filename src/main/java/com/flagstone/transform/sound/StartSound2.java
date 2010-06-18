@@ -43,20 +43,13 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
 /**
- * StartSound2 instructs the player to start or stop playing a sound defined
- * using the DefineSound class.
- *
- * <p>
- * StartSound contains a SoundInfo object that defines how the sound fades in
- * and out, whether it is repeated as well as specifying an envelope that
- * provides a finer degree of control over the levels at which the sound is
- * played.
- * </p>
+ * StartSound2 instructs the player to start or stop playing a sound. It extends
+ * the functionality of {@link StartSound} by specifying the Actionscript 3
+ * class that is used to generate the sound.
  *
  * @see DefineSound
  * @see SoundInfo
  */
-//TODO(class)
 public final class StartSound2 implements MovieTag {
 
     /** Format string used in toString() method. */

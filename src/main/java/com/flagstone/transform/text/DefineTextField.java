@@ -146,15 +146,6 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  * </table>
  *
  * <p>
- * The default values for the alignment is AlignLeft while the leftMargin,
- * rightMargin indent and leading attributes are set to the constant
- * Transform.VALUE_NOT_SET. If the attributes remain unchanged then the layout
- * information will not be encoded. If any of the values in this group are set
- * then they must all have values assigned for the field to be displayed
- * correctly otherwise default values of 0 will be used.
- * </p>
- *
- * <p>
  * <b>HTML Support</b><br/>
  * Setting the HTML flag to true allows text marked up with a limited set of
  * HTML tags to be displayed in the text field. The following tags are
@@ -219,7 +210,6 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  * </table>
  *
  */
-//TODO(class)
 @SuppressWarnings({"PMD.TooManyFields", "PMD.TooManyMethods" })
 public final class DefineTextField implements DefineTag {
 
@@ -281,7 +271,7 @@ public final class DefineTextField implements DefineTag {
      * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    
+
     public DefineTextField(final SWFDecoder coder, final Context context)
             throws IOException {
         length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;

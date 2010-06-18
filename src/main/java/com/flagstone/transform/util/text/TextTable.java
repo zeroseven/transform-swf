@@ -45,7 +45,14 @@ import com.flagstone.transform.text.DefineText2;
 import com.flagstone.transform.text.GlyphIndex;
 import com.flagstone.transform.text.TextSpan;
 
-/** TODO(class). */
+/**
+ * TextTable is used to generate test definitions for a specific (fixed) point
+ * size of a font.
+ *
+ * Each instance caches a table of GlyphIndex objects with predefined advances
+ * allowing the objects for each character used to be shared amongst the
+ * TextSpan objects that are used to display text.
+ */
 public final class TextTable {
 
     private static final float EMSQUARE = 1024.0f;

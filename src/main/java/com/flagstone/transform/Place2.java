@@ -43,13 +43,12 @@ import com.flagstone.transform.datatype.ColorTransform;
 import com.flagstone.transform.datatype.CoordTransform;
 import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
-//TOD0(doc) Review
 /**
- * PlaceObject2 is used to add and manipulate objects (shape, button, etc.) on
+ * Place2 is used to add and manipulate objects (shape, button, etc.) on
  * the Flash Player's display list.
  *
  * <p>
- * PlaceObject2 supersedes the PlaceObject class providing more functionality
+ * Place2 supersedes the Place class providing more functionality
  * and easier manipulation of objects in the display list through the following
  * operations:
  * </p>
@@ -87,14 +86,15 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  * </p>
  *
  * <p>
- * <b>Movie Clip Event Handlers</b><br/>
+ * <b>Event Handlers</b><br/>
  * With the introduction of Flash 5, movie clips (defined using the
  * DefineMovieClip class) could specify sequences of actions that would be
  * performed in response to mouse or keyboard events. The actions are specified
- * using ClipEvent objects and the PlaceObject2 class is used to register the
+ * using EventHandler objects and the Place2 class is used to register the
  * actions in response to a particular event with the Flash player. Multiple
- * events can be handled by defining an ClipEvent for each type of event. For
- * more information see the ClipEvent class.
+ * events can be handled by defining an EventHandler for each type of event. For
+ * more information see the EventHandler and Event which defines the set of
+ * events that a movie clip responds to.
  * </p>
  *
  * <p>
@@ -107,7 +107,7 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  *
  * <ul>
  * <li>If an existing object on the display list is being modified then only the
- * layer number is required. Previously in the PlaceObject class both the
+ * layer number is required. Previously in the Place class both the
  * identifier and the layer number were required.</li>
  * <li>If no coordinate transform is applied to the shape (the default is a
  * unity transform that does not change the shape) then it is not encoded.</li>
@@ -126,14 +126,13 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  *
  * <p>
  * The Layer class provides a simple API for manipulating objects on the display
- * list. While it is relatively simple to create instances of PlaceObject2
+ * list. While it is relatively simple to create instances of Place2
  * object that perform the same steps the API provided by Player is easier to
  * use and much more readable.
  * </p>
  *
  * @see com.flagstone.transform.util.movie.Layer
  */
-//TODO(class)
 @SuppressWarnings("PMD.TooManyMethods")
 public final class Place2 implements MovieTag {
 
@@ -251,7 +250,7 @@ public final class Place2 implements MovieTag {
      * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    
+
     public Place2(final SWFDecoder coder, final Context context)
             throws IOException {
         context.put(Context.TRANSPARENT, 1);
@@ -666,7 +665,7 @@ public final class Place2 implements MovieTag {
                 colorTransform, ratio, depth, name, events);
     }
 
-    
+
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
         // CHECKSTYLE:OFF
@@ -710,7 +709,7 @@ public final class Place2 implements MovieTag {
         // CHECKSTYLE:ON
     }
 
-    
+
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {

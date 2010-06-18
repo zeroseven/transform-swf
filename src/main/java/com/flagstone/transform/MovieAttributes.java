@@ -38,7 +38,14 @@ import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
-/** TODO(class). */
+/**
+ * The MovieAttributes tag defines characteristics of a Movie. It contains
+ * several flags to indicate types of objects in the movie and whether any
+ * hardware acceleration should be used if available.
+ *
+ * For Flash Version 8 and above it must be the first object after the
+ * MovieHeader.
+ */
 public final class MovieAttributes implements MovieTag {
 
     /** Format string used in toString() method. */

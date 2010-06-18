@@ -106,7 +106,6 @@ import com.flagstone.transform.action.Action;
  * </p>
  *
  */
-//TODO(class)
 public final class Frame {
     /**
      * Create a frame based view of a movie. Objects from the movie are grouped

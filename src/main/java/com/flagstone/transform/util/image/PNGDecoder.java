@@ -56,7 +56,6 @@ import com.flagstone.transform.image.ImageTag;
  * PNGDecoder decodes Portable Network Graphics (PNG) format images so they can
  * be used in a Flash file.
  */
-//TODO(class)
 @SuppressWarnings("PMD.TooManyMethods")
 public final class PNGDecoder implements ImageProvider, ImageDecoder {
 

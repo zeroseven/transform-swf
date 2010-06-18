@@ -66,15 +66,6 @@ import com.flagstone.transform.filter.Filter;
  * </p>
  *
  * <p>
- * An shape can be used more than one state. Multiple states can be defined by
- * bitwise Or-ing individual state codes together:
- * </p>
- *
- * <pre>
- * int buttonState = Button.Up | Button.Over;
- * </pre>
- *
- * <p>
  * The order in which shapes are displayed is controlled by the layer number. As
  * with the Flash Player's display list shapes on a layer with a higher number
  * are displayed in front of ones on a layer with a lower number. A coordinate
@@ -85,7 +76,6 @@ import com.flagstone.transform.filter.Filter;
  * @see DefineButton
  * @see DefineButton2
  */
-//TODO(class)
 public final class ButtonShape implements SWFEncodeable {
 
     /** Format string used in toString() method. */

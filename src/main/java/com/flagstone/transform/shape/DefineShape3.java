@@ -48,12 +48,9 @@ import com.flagstone.transform.linestyle.LineStyle1;
 
 /**
  * DefineShape3 defines a transparent shape to be displayed. It extends the
- * DefineShape2 class by encoding the alpha channel in any Color objects
+ * {@link DefineShape2} class by encoding the alpha channel in any Color objects
  * included in the line and fill styles.
- *
- * @see DefineShape2
  */
-//TODO(class)
 public final class DefineShape3 implements ShapeTag {
 
     /**

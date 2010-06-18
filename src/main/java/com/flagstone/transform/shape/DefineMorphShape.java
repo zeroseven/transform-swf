@@ -85,9 +85,7 @@ import com.flagstone.transform.linestyle.MorphLineStyle;
  * The edges in the shapes may change their type when a shape is morphed.
  * Straight edges can become curves and vice versa.
  * </p>
- *
  */
-//TODO(class)
 public final class DefineMorphShape implements ShapeTag {
 
     /**
@@ -143,7 +141,7 @@ public final class DefineMorphShape implements ShapeTag {
      * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    
+
     public DefineMorphShape(final SWFDecoder coder, final Context context)
             throws IOException {
         length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
@@ -475,7 +473,7 @@ public final class DefineMorphShape implements ShapeTag {
                 fillStyles, lineStyles, shape, endShape);
     }
 
-    
+
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
         fillBits = Coder.unsignedSize(fillStyles.size());
@@ -529,7 +527,7 @@ public final class DefineMorphShape implements ShapeTag {
                 : Coder.SHORT_HEADER) + length;
     }
 
-    
+
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {

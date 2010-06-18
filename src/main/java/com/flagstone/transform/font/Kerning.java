@@ -60,7 +60,6 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  *
  * @see DefineFont2
  */
-//TODO(class)
 public final class Kerning implements SWFEncodeable {
 
     /** Format string used in toString() method. */

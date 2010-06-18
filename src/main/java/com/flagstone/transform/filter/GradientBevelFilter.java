@@ -49,7 +49,9 @@ import com.flagstone.transform.fillstyle.Gradient;
  */
 public final class GradientBevelFilter implements Filter {
 
-    /** TODO(class). */
+    /**
+     * Builder for creating GradientBevelFilter objects.
+     */
     public static final class Builder {
         /** The list of gradients for the colour. */
         private final transient List<Gradient>gradients;

@@ -44,8 +44,8 @@ import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.coder.SWFFactory;
 
 /**
- * Shape is a container class for the shape objects (Line, Curve and ShapeStyle
- * objects) that describe how a particular shape is drawn.
+ * Shape is a container class for the shape objects (Line, Curve, ShapeStyle
+ * and ShapeStyle2 objects) that describe how a particular shape is drawn.
  *
  * <p>
  * Shapes are used in shape and font definitions. The Shape class is used to
@@ -53,7 +53,6 @@ import com.flagstone.transform.coder.SWFFactory;
  * other than acting as a container class.
  * </p>
  */
-// TODO(class)
 public final class Shape implements SWFEncodeable {
 
     /**

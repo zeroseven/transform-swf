@@ -81,7 +81,6 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  * enclosing shape.
  * </p>
  */
-//TODO(class)
 public final class MorphBitmapFill implements FillStyle {
 
     /** Format string used in toString() method. */

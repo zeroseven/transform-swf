@@ -42,16 +42,9 @@ import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 /**
- * SymbolClass is used to export one or more shapes and other objects so they
+ * SymbolClass is used to export one or more Actionscript 3 classes so they
  * can be used in another Flash file.
- *
- * <p>
- * Since the identifier for an object is only unique within a given Flash file,
- * each object exported must be given a name so it can referenced when it is
- * imported.
- * </p>
  */
-//TODO(class)
 public final class SymbolClass implements MovieTag {
 
     /** Format string used in toString() method. */

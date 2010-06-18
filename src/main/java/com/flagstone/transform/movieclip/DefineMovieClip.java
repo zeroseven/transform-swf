@@ -62,12 +62,11 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  *
  * <p>
  * When using the DefineMovieClip object can only contain objects from the
- * following classes: ShowFrame, PlaceObject, PlaceObject2, RemoveObject,
- * RemoveObject2, DoAction, StartSound, FrameLabel, SoundStreamHead,
+ * following classes: ShowFrame, Place, Place2, Place3, Remove, Remove2
+ * DoAction, StartSound, StartSound2, FrameLabel, SoundStreamHead,
  * SoundStreamHead2 or SoundStreamBlock. Other objects are not allowed.
  * </p>
  */
-//TODO(class)
 public final class DefineMovieClip implements DefineTag {
 
     /** Format string used in toString() method. */

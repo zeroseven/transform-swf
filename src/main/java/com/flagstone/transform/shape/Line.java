@@ -44,16 +44,7 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  * point to the end point specified in the Line object which is specified
  * relative to the current drawing point. Once the line is drawn, the end of the
  * line is now the current drawing point.
- *
- * <p>
- * Lines are drawn with rounded corners and line ends. Different join and line
- * end styles can be created by drawing line segments as a sequence of filled
- * shapes. With 1 twip equal to 1/20th of a pixel this technique can easily be
- * used to draw the narrowest of visible lines. In flash 8, SolidLine2 line
- * style was added that supports a range of different mitering options.
- * </p>
  */
-//TODO(class)
 public final class Line implements ShapeRecord {
 
     /** Format string used in toString() method. */
@@ -80,7 +71,7 @@ public final class Line implements ShapeRecord {
      * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    
+
     public Line(final SWFDecoder coder) throws IOException {
         // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
         size = coder.readBits(4, false) + 2;

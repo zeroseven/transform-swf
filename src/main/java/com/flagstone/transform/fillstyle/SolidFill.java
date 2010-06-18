@@ -44,7 +44,6 @@ import com.flagstone.transform.datatype.Color;
  * shape. Shapes can be filled with transparent colours but only if the fill
  * style is used in a DefineShape3 object.
  */
-//TODO(class)
 public final class SolidFill implements FillStyle {
 
     /** Format string used in toString() method. */
@@ -130,7 +129,6 @@ public final class SolidFill implements FillStyle {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
-        //TODO calculate size of color directly.
         return 1 + color.prepareToEncode(context);
     }
 

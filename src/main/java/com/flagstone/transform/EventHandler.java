@@ -49,81 +49,15 @@ import com.flagstone.transform.coder.SWFFactory;
 
 /**
  * <p>
- * ClipEvent is used to define the actions that a movie clip will execute in
- * response to a particular event. ClipEvent objects are added to an
- * Place2 object and the actions are registered with the Flash Player
- * when the movie clip is added to the display list.
+ * EventHandler is used to define the actions that a movie clip or button will
+ * execute in response to a particular event. Handlers for movie clips are
+ * defined when the movie clip is added to the display list using Place2 or
+ * Place3 objects while handlers for buttons are added when the button is
+ * created.
  * </p>
  *
- * <p>
- * The events that a movie clip responds to are:
- * </p>
- *
- * <table class="datasheet">
- * <tr>
- * <td valign="top">Load</td>
- * <td>the movie clip is finished loading.</td>
- * </tr>
- * <tr>
- * <td valign="top">Unload</td>
- * <td>the movie clip is unloaded from the parent movie.</td>
- * </tr>
- * <tr>
- * <td valign="top">EnterFrame</td>
- * <td>when the mouse enters the Flash Player window.</td>
- * </tr>
- * <tr>
- * <td valign="top">MouseMove</td>
- * <td>the mouse pointer is moved.</td>
- * </tr>
- * <tr>
- * <td valign="top">MouseDown</td>
- * <td>the left mouse button is pressed while the cursor is outside of the
- * bounding rectangle of the movie clip.</td>
- * </tr>
- * <tr>
- * <td valign="top">MouseUp</td>
- * <td>the left mouse button is pressed and released while the cursor is outside
- * of the bounding rectangle of the movie clip.</td>
- * </tr>
- * <tr>
- * <td valign="top">KeyDown</td>
- * <td>a key is pressed on the keyboard. From Flash 6 a key code can be
- * specified to identify a specific key rather than testing for the value inside
- * the actions that are executed in response to the event.</td>
- * </tr>
- * <tr>
- * <td valign="top">KeyUp</td>
- * <td>akey being pressed on the keyboard is released.</td>
- * </tr>
- * <tr>
- * <td valign="top">Data</td>
- * <td>
- * a GetUrl2 action is executed with the movie clip specified as a target.
- * </td>
- * </tr>
- * <tr>
- * <td valign="top">Construct</td>
- * <td>This event is not documented by Adobe.</td>
- * </tr>
- * </table>
- *
- * <p>
- * Starting with Flash 6 movie clips also respond to the same set of events as
- * buttons, see ButtonEventHandler
- * </p>
- *
- * <p>
- * A ClipEvent object can define the actions that will be executed in response
- * to more than one event, simply bitwise OR together the individual event
- * codes:
- * </p>
- *
- * <pre>
- * int loadAndMouseMove = ClipEvent.Load | ClipEvent.MouseMove;
- * </pre>
+ * @see Event
  */
-//TODO(class)
 public final class EventHandler implements SWFEncodeable {
 
     /** Format string used in toString() method. */

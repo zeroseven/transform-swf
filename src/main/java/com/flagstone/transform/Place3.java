@@ -47,95 +47,13 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
 import com.flagstone.transform.filter.Filter;
 
 /**
- * PlaceObject2 is used to add and manipulate objects (shape, button, etc.) on
- * the Flash Player's display list.
+ * Place3 is used to update the display list. It extends Place2 by specifying
+ * a Blend which controls how an object is composited with its background and
+ * also Filters which can be used to create special effects such as drop shadows
+ * etc.
  *
- * <p>
- * PlaceObject2 supersedes the PlaceObject class providing more functionality
- * and easier manipulation of objects in the display list through the following
- * operations:
- * </p>
- *
- * <ul>
- * <li>Place a new shape on the display list.</li>
- * <li>Change an existing shape by moving it to new location or changing its
- * appearance.</li>
- * <li>Replace an existing shape with a another.</li>
- * <li>
- * Define clipping layers to mask objects displayed in front of a shape.</li>
- * <li>Control the morphing process that changes one shape into another.</li>
- * <li>Assign names to objects rather than using their identifiers.</li>
- * <li>Define the sequence of actions that are executed when an event occurs in
- * movie clip.</li>
- * </ul>
- *
- * <p>
- * <b>Clipping Depth</b><br/>
- * With the introduction of Flash 3 the display list supported a clipping layer.
- * This allowed the outline of an object to define a clipping path that is used
- * to mask other objects placed in front of it. The clipping depth can be set to
- * mask objects between the layer containing the clipping path and a specified
- * layer.
- * </p>
- *
- * <p>
- * <b>Shape Morphing</b><br/>
- * Shapes that will be morphed are defined using the DefineMorphShape class
- * which defines a start and end shape. The Flash Player performs the
- * interpolation that transforms one shape into another. The progress of the
- * morphing process is controlled by a ratio which ranges from 0.0 to 1.0, where
- * 0 generates a shape identical to the starting shape in the DefineMorphShape
- * object and 1.0 generates the shape at the end of the morphing process.
- * </p>
- *
- * <p>
- * <b>Movie Clip Event Handlers</b><br/>
- * With the introduction of Flash 5, movie clips (defined using the
- * DefineMovieClip class) could specify sequences of actions that would be
- * performed in response to mouse or keyboard events. The actions are specified
- * using ClipEvent objects and the PlaceObject2 class is used to register the
- * actions in response to a particular event with the Flash player. Multiple
- * events can be handled by defining an ClipEvent for each type of event. For
- * more information see the ClipEvent class.
- * </p>
- *
- * <p>
- * Since only one object can be placed on a given layer an existing object on
- * the display list can be identified by the layer it is displayed on rather
- * than its identifier. Therefore Layer is the only required attribute. The
- * remaining attributes are optional according to the different operation being
- * performed:
- * </p>
- *
- * <ul>
- * <li>If an existing object on the display list is being modified then only the
- * layer number is required. Previously in the PlaceObject class both the
- * identifier and the layer number were required.</li>
- * <li>If no coordinate transform is applied to the shape (the default is a
- * unity transform that does not change the shape) then it is not encoded.</li>
- * <li>Similarly if no colour transform is applied to the shape (the default is
- * a unity transform that does not change the shape's colour) then it is not
- * encoded.</li>
- * <li>If a shape is not being morphed then the ratio attribute may be left at
- * its default value (-1.0).</li>
- * <li>If a shape is not used to define a clipping area then the depth attribute
- * may be left at its default value (0).</li>
- * <li>If a name is net assigned to an object the name attribute may be left its
- * default value (an empty string).</li>
- * <li>If no events are being defined for a movie clip then the list of
- * ClipEvent object may be left empty.</li>
- * </ul>
- *
- * <p>
- * The Layer class provides a simple API for manipulating objects on the display
- * list. While it is relatively simple to create instances of PlaceObject2
- * object that perform the same steps the API provided by Player is easier to
- * use and much more readable.
- * </p>
- *
- * @see com.flagstone.transform.util.movie.Layer
+ * @see Place2
  */
-//TODO(class)
 @SuppressWarnings({"PMD.TooManyFields", "PMD.TooManyMethods" })
 public final class Place3 implements MovieTag {
 
@@ -266,7 +184,7 @@ public final class Place3 implements MovieTag {
      * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    
+
     public Place3(final SWFDecoder coder, final Context context)
             throws IOException {
         context.put(Context.TRANSPARENT, 1);

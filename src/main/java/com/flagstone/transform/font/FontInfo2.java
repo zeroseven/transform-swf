@@ -43,6 +43,7 @@ import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.exception.IllegalArgumentRangeException;
+import com.flagstone.transform.text.Language;
 
 
 /**
@@ -266,14 +267,15 @@ public final class FontInfo2 implements MovieTag {
     }
 
     /**
-     * Get the language code identifying the type of spoken language for the
-     * font, either Constants.JAPANESE, Constants.KOREAN, Constants.LATIN,
-     * Constants.SIMPLIFIED_CHINESE or Constants.TRADITIONAL_CHINESE.
+     * Returns the language code identifying the type of spoken language for the
+     * font.
      *
-     * @return the spoken language for the text rendered by the font.
+     * @return the Language used to determine how line-breaks are inserted
+     *         into text rendered using the font. Returns NONE if the object was
+     *         decoded from a movie contains Flash 5 or less.
      */
-    public int getLanguage() {
-        return language;
+    public Language getLanguage() {
+        return Language.fromInt(language);
     }
 
     /**
@@ -365,16 +367,14 @@ public final class FontInfo2 implements MovieTag {
      * Sets the language code used to determine the position of line-breaks in
      * text rendered using the font.
      *
-     * The language attribute is ignored if the object is encoded in a Flash 5
-     * movie.
+     * NOTE: The language attribute is ignored if the object is encoded in a
+     * Flash 5 movie.
      *
-     * @param code
-     *            the code identifying the spoken language either
-     *            Constants.JAPANESE, Constants.KOREAN, Constants.LATIN,
-     *            Constants.SIMPLIFIED_CHINESE or Constants.TRADITIONAL_CHINESE.
+     * @param lang the Language identifying the spoken language for the text
+     * rendered using the font.
      */
-    public void setLanguage(final int code) {
-        language = code;
+    public void setLanguage(final Language lang) {
+        language = lang.getValue();
     }
 
     /**

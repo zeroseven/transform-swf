@@ -31,7 +31,10 @@
 
 package com.flagstone.transform.util.sound;
 
-/** TODO(class). */
+/**
+ * SoundEncoding describes the different sound formats that can be decoded and
+ * added to a Flash movie.
+ */
 enum SoundEncoding {
     /** MPEG Version 3 (MP3) format. */
     MP3("audio/mpeg", new MP3Decoder()),

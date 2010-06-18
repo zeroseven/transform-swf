@@ -73,7 +73,6 @@ import com.flagstone.transform.font.Kerning;
  *
  * @see GradientFill
  */
-//TODO(class)
 public final class Gradient implements SWFEncodeable {
 
     /** Maximum number of gradient records. */

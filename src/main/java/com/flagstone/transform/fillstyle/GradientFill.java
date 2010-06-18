@@ -80,7 +80,6 @@ import com.flagstone.transform.datatype.CoordTransform;
  *
  * @see Gradient
  */
-//TODO(class)
 public final class GradientFill implements FillStyle {
 
     /** Format string used in toString() method. */
@@ -163,7 +162,7 @@ public final class GradientFill implements FillStyle {
      *            the coordinate transform mapping the gradient square onto
      *            physical coordinates. Must not be null.
      * @param spreadType
-     *            TODO (doc)
+     *            To be documented.
      * @param interpolationType
      *            how the changes in colours across the gradient are calculated.
      * @param list
@@ -230,7 +229,6 @@ public final class GradientFill implements FillStyle {
     }
 
     /**
-     * TODO (doc)
      * Get the Spread.
      *
      * @return the Spread.
@@ -240,7 +238,6 @@ public final class GradientFill implements FillStyle {
     }
 
     /**
-     * TODO (doc)
      * Set the Spread.
      *
      * @param spreadType the Spread.

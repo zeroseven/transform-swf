@@ -78,7 +78,6 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  * @see ButtonShape
  * @see EventHandler
  */
-//TODO(class)
 public final class DefineButton2 implements DefineTag {
 
     /** Format string used in toString() method. */
@@ -114,7 +113,7 @@ public final class DefineButton2 implements DefineTag {
      * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    
+
     public DefineButton2(final SWFDecoder coder, final Context context)
             throws IOException {
         context.put(Context.TYPE, MovieTypes.DEFINE_BUTTON_2);

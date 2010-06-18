@@ -40,7 +40,17 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.CoordTransform;
 
-/** TODO(class). */
+/**
+ * MorphFocalGradientFill extends the functionality of MorphGradientFill by
+ * allowing the focal point for the gradient at the start and end of the
+ * morphing process to be specified rather than defaulting to the centre of the
+ * shape.
+ *
+ * The value for the focal point ranges from -1.0 to 1.0, where negative values
+ * up to -1.0 sets the focal point closer to the left border gradient circle and
+ * positive values up to 1.0 sets the focal point closer the right border. A
+ * value of zero means the focal point is in the centre.
+ */
 public final class MorphFocalGradientFill implements FillStyle {
 
     /** Scaling factor for saving floats as 8.8 fixed point numbers. */
@@ -106,7 +116,7 @@ public final class MorphFocalGradientFill implements FillStyle {
      *            physical coordinates at the end of the morphing process.
      *            Must not be null.
      * @param spreadType
-     *            TODO (doc)
+     *            To be documented.
      * @param interpolationType
      *            how the changes in colours across the gradient are calculated.
      * @param startPoint
@@ -160,7 +170,6 @@ public final class MorphFocalGradientFill implements FillStyle {
     }
 
     /**
-     * TODO (doc)
      * Get the Spread.
      *
      * @return the Spread.
@@ -170,7 +179,6 @@ public final class MorphFocalGradientFill implements FillStyle {
     }
 
     /**
-     * TODO (doc)
      * Set the Spread.
      *
      * @param aSpread the Spread.
