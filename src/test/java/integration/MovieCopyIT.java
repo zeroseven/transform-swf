@@ -91,11 +91,6 @@ public final class MovieCopyIT {
             final Movie sourceMovie = new Movie();
             sourceMovie.decodeFromFile(file);
 
-            final Movie destMovie = sourceMovie.copy();
-
-            assertEquals(sourceMovie.getObjects().size(),
-                    destMovie.getObjects().size());
-
             final MovieWriter writer = new MovieWriter();
             StringWriter sourceWriter = new StringWriter();
             StringWriter destWriter = new StringWriter();
@@ -105,7 +100,7 @@ public final class MovieCopyIT {
 
             for (int i = 0; i < sourceMovie.getObjects().size(); i++) {
                 sourceTag = sourceMovie.getObjects().get(i);
-                destTag = destMovie.getObjects().get(i);
+                destTag = sourceMovie.getObjects().get(i).copy();
 
                 if (!sourceTag.toString().equals(destTag.toString())) {
                     sourceWriter = new StringWriter();
