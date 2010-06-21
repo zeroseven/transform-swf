@@ -45,22 +45,16 @@ import com.flagstone.transform.MovieTag;
 import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.font.DefineFont;
 import com.flagstone.transform.font.DefineFont2;
+import com.flagstone.transform.font.DefineFont3;
 import com.flagstone.transform.font.FontInfo;
 import com.flagstone.transform.font.FontInfo2;
 import com.flagstone.transform.shape.Shape;
 
 /**
- * SWFFontDecoder decodes Flash movie Fonts so they can be re-used in a
- * Flash file.
- *
- * <p>
- * Using an existing Flash font definition is the most interesting. Fonts can
- * initially be created using AWT Font objects or TrueType files and all the
- * visible characters included. If the generated Flash definition is saved to a
- * file it can easily and quickly be loaded. Indeed the overhead of parsing an
- * AWT or TrueType font is significant (sometimes several seconds) so creating
- * libraries of "pre-parsed" flash fonts is the preferred way of use fonts.
- * </p>
+ * SWFFontDecoder decodes one or more existing font definitions from a Flash
+ * file. The definitions may be either DefineFont/FontInfo pairs, DefineFont2
+ * or DefineFont2. Files containing DefineFont4 definitions are not supported
+ * since they contain font encoded using the OpenType format.
  */
 public final class SWFFontDecoder implements FontProvider, FontDecoder {
 
@@ -75,14 +69,14 @@ public final class SWFFontDecoder implements FontProvider, FontDecoder {
 
     /** {@inheritDoc} */
     public void read(final File file) throws IOException, DataFormatException {
-        Movie movie = new Movie();
+        final Movie movie = new Movie();
         movie.decodeFromFile(file);
         decode(movie);
     }
 
     /** {@inheritDoc} */
     public void read(final URL url) throws IOException, DataFormatException {
-        Movie movie = new Movie();
+        final Movie movie = new Movie();
         movie.decodeFromUrl(url);
         decode(movie);
     }
@@ -223,6 +217,60 @@ public final class SWFFontDecoder implements FontProvider, FontDecoder {
      *            definitions.
      */
     public void decode(final DefineFont2 object) {
+
+        final Font font = new Font();
+
+        font.setFace(new FontFace(object.getName(),
+                object.isBold(), object.isItalic()));
+
+        font.setEncoding(object.getEncoding());
+        font.setAscent(object.getAscent());
+        font.setDescent(object.getDescent());
+        font.setLeading(object.getLeading());
+
+        final int glyphCount = object.getShapes().size();
+        final int highest = object.getCodes().get(glyphCount-1);
+
+        font.setMissingGlyph(0);
+        font.setNumberOfGlyphs(glyphCount);
+        font.setHighestChar((char) highest);
+
+        if (glyphCount > 0) {
+
+            Shape shape;
+            Bounds bounds = null;
+            int advance;
+            int code;
+
+            for (int i = 0; i < glyphCount; i++) {
+                shape = object.getShapes().get(i);
+
+                if (object.getBounds() != null) {
+                     bounds = object.getBounds().get(i);
+                }
+                if (object.getAdvances() == null) {
+                    advance = 0;
+                } else {
+                    advance = object.getAdvances().get(i);
+                }
+                code = object.getCodes().get(i);
+
+                font.addGlyph((char) code, new Glyph(shape, bounds, advance));
+            }
+        }
+
+        fonts.put(object.getIdentifier(), font);
+    }
+
+    /**
+     * Initialise this object with the information from a flash font definition.
+     *
+     * @param object
+     *            a DefineFont3 object that contains information on the font
+     *            name, weight, style and character codes as well as the glyph
+     *            definitions.
+     */
+    public void decode(final DefineFont3 object) {
 
         final Font font = new Font();
 
