@@ -103,11 +103,9 @@ public final class SWFFontDecoder implements FontProvider, FontDecoder {
 
         fonts.clear();
 
-        final SWFFontDecoder decoder = new SWFFontDecoder();
-
         for (MovieTag obj : movie.getObjects()) {
             if (obj instanceof DefineFont2) {
-                decoder.decode((DefineFont2) obj);
+                decode((DefineFont2) obj);
             }
         }
     }
@@ -237,7 +235,7 @@ public final class SWFFontDecoder implements FontProvider, FontDecoder {
         font.setLeading(object.getLeading());
 
         final int glyphCount = object.getShapes().size();
-        final int highest = object.getCodes().get(glyphCount);
+        final int highest = object.getCodes().get(glyphCount-1);
 
         font.setMissingGlyph(0);
         font.setNumberOfGlyphs(glyphCount);
