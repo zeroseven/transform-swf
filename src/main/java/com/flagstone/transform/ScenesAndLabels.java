@@ -135,9 +135,9 @@ public final class ScenesAndLabels implements MovieTag {
      * @return this object.
      */
     public ScenesAndLabels addScene(final int offset, final String name) {
-        if ((offset < 0) || (offset > Coder.UNSIGNED_SHORT_MAX)) {
+        if ((offset < 0) || (offset > Coder.USHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    0, Coder.UNSIGNED_SHORT_MAX, offset);
+                    0, Coder.USHORT_MAX, offset);
         }
         if (name == null || name.length() == 0) {
             throw new IllegalArgumentException();
@@ -173,9 +173,9 @@ public final class ScenesAndLabels implements MovieTag {
      * @return this object.
      */
     public ScenesAndLabels addLabel(final int offset, final String name) {
-        if ((offset < 0) || (offset > Coder.UNSIGNED_SHORT_MAX)) {
+        if ((offset < 0) || (offset > Coder.USHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    0, Coder.UNSIGNED_SHORT_MAX, offset);
+                    0, Coder.USHORT_MAX, offset);
         }
         if (name == null || name.length() == 0) {
             throw new IllegalArgumentException();
@@ -231,7 +231,7 @@ public final class ScenesAndLabels implements MovieTag {
                     + context.strlen(labels.get(offset));
         }
 
-        return (length > Coder.SHORT_HEADER_LIMIT ? Coder.LONG_HEADER
+        return (length > Coder.HEADER_LIMIT ? Coder.LONG_HEADER
                 : Coder.SHORT_HEADER) + length;
     }
 
@@ -239,7 +239,7 @@ public final class ScenesAndLabels implements MovieTag {
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
 
-        if (length > Coder.SHORT_HEADER_LIMIT) {
+        if (length > Coder.HEADER_LIMIT) {
             coder.writeShort((MovieTypes.SCENES_AND_LABELS
                     << Coder.LENGTH_FIELD_SIZE) | Coder.IS_EXTENDED);
             coder.writeInt(length);

@@ -42,6 +42,7 @@ import com.flagstone.transform.CharacterEncoding;
  * memory required to encode a movie and to improve efficiency by writing
  * data to a file or external source in blocks.
  */
+@SuppressWarnings("PMD.TooManyMethods")
 public final class SWFEncoder {
     /** The default size, in bytes, for the internal buffer. */
     public static final int BUFFER_SIZE = 4096;
@@ -144,7 +145,7 @@ public final class SWFEncoder {
      * expected number.
      */
     public void check(final int expected) throws CoderException {
-        int actual = (pos + index) - locations.peek();
+        final int actual = (pos + index) - locations.peek();
         if (actual != expected) {
             throw new CoderException(locations.peek(), expected,
                     actual - expected);
@@ -171,11 +172,11 @@ public final class SWFEncoder {
         stream.flush();
 
         int diff;
-        if (offset != 0) {
+        if (offset == 0) {
+            diff = 0;
+        } else {
             diff = 1;
             buffer[0] = buffer[index];
-        } else {
-            diff = 0;
         }
 
         for (int i = diff; i < buffer.length; i++) {
@@ -199,7 +200,7 @@ public final class SWFEncoder {
     public void writeBits(final int value, final int numberOfBits)
                 throws IOException {
 
-        int ptr = (index << BYTES_TO_BITS) + offset + numberOfBits;
+        final int ptr = (index << BYTES_TO_BITS) + offset + numberOfBits;
 
         if (ptr >= (buffer.length << BYTES_TO_BITS)) {
             flush();

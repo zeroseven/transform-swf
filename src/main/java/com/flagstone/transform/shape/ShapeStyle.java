@@ -83,6 +83,7 @@ import com.flagstone.transform.linestyle.LineStyle1;
  * being specified.
  * </p>
  */
+@SuppressWarnings("PMD.CyclomaticComplexity")
 public final class ShapeStyle implements ShapeRecord {
 
     /**
@@ -486,6 +487,7 @@ public final class ShapeStyle implements ShapeRecord {
     }
 
     /** {@inheritDoc} */
+    @SuppressWarnings({"PMD.NPathComplexity", "PMD.CyclomaticComplexity" })
     public int prepareToEncode(final Context context) {
         // CHECKSTYLE:OFF
         hasLine = lineStyle != null;
@@ -559,6 +561,7 @@ public final class ShapeStyle implements ShapeRecord {
    }
 
     /** {@inheritDoc} */
+    @SuppressWarnings({"PMD.NPathComplexity", "PMD.CyclomaticComplexity" })
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
         coder.writeBits(0, 1);

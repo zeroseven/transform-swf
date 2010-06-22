@@ -52,12 +52,13 @@ public final class MovieAttributes implements MovieTag {
     private static final String FORMAT = "MovieAttributes: {"
     		+ " metadata=%b;  as3=%b;  network=%b; gpu=%b; directBlit=%b}";
     /** The set of encoded attributes. */
-    private int attributes;
+    private transient int attributes;
 
     /**
      * Creates a new MovieAttributes object.
      */
     public MovieAttributes() {
+        // Empty
     }
 
     /**

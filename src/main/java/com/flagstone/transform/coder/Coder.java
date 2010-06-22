@@ -68,11 +68,11 @@ public final class Coder {
     public static final int TO_UPPER_NIB = 4;
 
     /** Maximum value that can be stored in a 16-bit unsigned field. */
-    public static final int UNSIGNED_SHORT_MAX = 65535;
+    public static final int USHORT_MAX = 65535;
     /** Minimum value that can be stored in a 16-bit signed field. */
-    public static final int SIGNED_SHORT_MIN = -32768;
+    public static final int SHORT_MIN = -32768;
     /** Maximum value that can be stored in a 16-bit signed field. */
-    public static final int SIGNED_SHORT_MAX = 32767;
+    public static final int SHORT_MAX = 32767;
 
     /** Number of bits to shift when aligning a value to the second byte. */
     public static final int ALIGN_BYTE1 = 8;
@@ -119,7 +119,7 @@ public final class Coder {
      * The maximum length in bytes of an encoded object before the length must
      * be encoded using a 32-bit integer.
      */
-    public static final int SHORT_HEADER_LIMIT = 62;
+    public static final int HEADER_LIMIT = 62;
     /**
      * Number of bytes occupied by the header when the size of the encoded
      * object is greater than 62 bytes.

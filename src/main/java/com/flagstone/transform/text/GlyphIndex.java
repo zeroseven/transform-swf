@@ -104,14 +104,14 @@ public final class GlyphIndex implements SWFEncodeable {
      *            representing this character to the next glyph to be displayed.
      */
     public GlyphIndex(final int anIndex, final int anAdvance) {
-        if (anIndex < 0 || anIndex > Coder.UNSIGNED_SHORT_MAX) {
+        if (anIndex < 0 || anIndex > Coder.USHORT_MAX) {
             throw new IllegalArgumentRangeException(
-                    0, Coder.UNSIGNED_SHORT_MAX, anIndex);
+                    0, Coder.USHORT_MAX, anIndex);
         }
-        if (anAdvance <  Coder.SIGNED_SHORT_MIN
-                || anAdvance > Coder.SIGNED_SHORT_MAX) {
+        if (anAdvance <  Coder.SHORT_MIN
+                || anAdvance > Coder.SHORT_MAX) {
             throw new IllegalArgumentRangeException(
-                    Coder.SIGNED_SHORT_MIN, Coder.SIGNED_SHORT_MAX, anAdvance);
+                    Coder.SHORT_MIN, Coder.SHORT_MAX, anAdvance);
         }
         index = anIndex;
         advance = anAdvance;

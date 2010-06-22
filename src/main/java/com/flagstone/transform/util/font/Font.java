@@ -153,10 +153,10 @@ public final class Font {
      *            the ascent for the font in the range -32768..32767.
      */
     public void setAscent(final int dist) {
-        if ((dist < Coder.SIGNED_SHORT_MIN)
-                || (dist > Coder.SIGNED_SHORT_MAX)) {
+        if ((dist < Coder.SHORT_MIN)
+                || (dist > Coder.SHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    Coder.SIGNED_SHORT_MIN, Coder.SIGNED_SHORT_MAX, dist);
+                    Coder.SHORT_MIN, Coder.SHORT_MAX, dist);
         }
         ascent = dist;
     }
@@ -177,10 +177,10 @@ public final class Font {
      *            the descent for the font in the range -32768..32767.
      */
     public void setDescent(final int dist) {
-        if ((dist < Coder.SIGNED_SHORT_MIN)
-                || (dist > Coder.SIGNED_SHORT_MAX)) {
+        if ((dist < Coder.SHORT_MIN)
+                || (dist > Coder.SHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    Coder.SIGNED_SHORT_MIN, Coder.SIGNED_SHORT_MAX, dist);
+                    Coder.SHORT_MIN, Coder.SHORT_MAX, dist);
         }
         descent = dist;
     }
@@ -201,10 +201,10 @@ public final class Font {
      *            the descent for the font in the range -32768..32767.
      */
     public void setLeading(final int dist) {
-        if ((dist < Coder.SIGNED_SHORT_MIN)
-                || (dist > Coder.SIGNED_SHORT_MAX)) {
+        if ((dist < Coder.SHORT_MIN)
+                || (dist > Coder.SHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    Coder.SIGNED_SHORT_MIN, Coder.SIGNED_SHORT_MAX, dist);
+                    Coder.SHORT_MIN, Coder.SHORT_MAX, dist);
         }
         leading = dist;
     }
@@ -224,8 +224,8 @@ public final class Font {
      * @param count the number of glyphs.
      */
     public void setNumberOfGlyphs(final int count) {
-        glyphTable = new Glyph[Coder.UNSIGNED_SHORT_MAX + 1];
-        glyphToChar = new int[Coder.UNSIGNED_SHORT_MAX + 1];
+        glyphTable = new Glyph[Coder.USHORT_MAX + 1];
+        glyphToChar = new int[Coder.USHORT_MAX + 1];
         //glyphTable = new Glyph[count];
         //glyphToChar = new int[count];
         glyphIndex = 0;
@@ -247,7 +247,7 @@ public final class Font {
      */
     public void setHighestChar(final char highest) {
         highestChar = highest;
-        charToGlyph = new int[Coder.UNSIGNED_SHORT_MAX + 1];
+        charToGlyph = new int[Coder.USHORT_MAX + 1];
         //charToGlyph = new int[highest];
     }
 

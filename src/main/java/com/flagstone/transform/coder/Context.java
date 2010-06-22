@@ -82,7 +82,7 @@ public final class Context {
     /** The registry containing the objects that perform the decoding. */
     private DecoderRegistry registry;
     /** A table of variables used to pass information between objects. */
-    private final Map<Integer, Integer> variables;
+    private final transient Map<Integer, Integer> variables;
 
     /**
      * Create a Context object.

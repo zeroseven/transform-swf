@@ -90,7 +90,7 @@ public final class ShowFrame implements MovieTag {
      */
     public static ShowFrame getInstance(final SWFDecoder coder,
             final Context context) throws IOException {
-        int count = context.get(Context.FRAMES);
+        final int count = context.get(Context.FRAMES);
         context.put(Context.FRAMES, count + 1);
         coder.readUnsignedShort();
         return INSTANCE;
@@ -113,7 +113,7 @@ public final class ShowFrame implements MovieTag {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
-        int count = context.get(Context.FRAMES);
+        final int count = context.get(Context.FRAMES);
         context.put(Context.FRAMES, count + 1);
         return 2;
     }

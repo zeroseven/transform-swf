@@ -150,9 +150,9 @@ public final class LineStyle1 implements LineStyle {
      *            the width of the line. Must be in the range 0..65535.
      */
     public void setWidth(final int aNumber) {
-        if ((aNumber < 0) || (aNumber > Coder.UNSIGNED_SHORT_MAX)) {
+        if ((aNumber < 0) || (aNumber > Coder.USHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    0, Coder.UNSIGNED_SHORT_MAX, aNumber);
+                    0, Coder.USHORT_MAX, aNumber);
         }
         width = aNumber;
     }

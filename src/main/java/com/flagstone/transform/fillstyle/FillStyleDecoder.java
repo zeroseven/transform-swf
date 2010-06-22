@@ -43,12 +43,13 @@ import com.flagstone.transform.coder.SWFFactory;
  * FillStyleDecoder is used to decode the different type of fill style used
  * in a Flash movie.
  */
+@SuppressWarnings("PMD.CyclomaticComplexity")
 public final class FillStyleDecoder implements SWFFactory<FillStyle> {
 
     /** Bit mask for extracting the spread field in gradient fills. */
     protected static final int SPREAD_MASK = 0x00C0;
     /** Bit mask for extracting the interpolation field in gradient fills. */
-    protected static final int INTERPOLATION_MASK = 0x0030;
+    protected static final int INTER_MASK = 0x0030;
     /** Bit mask for extracting the interpolation field in gradient fills. */
     protected static final int GRADIENT_MASK = 0x000F;
     /** Bit mask for tiled or clipped field in bitmap fills. */
@@ -60,8 +61,8 @@ public final class FillStyleDecoder implements SWFFactory<FillStyle> {
     public FillStyle getObject(final SWFDecoder coder, final Context context)
             throws IOException {
 
+        final int type = coder.readByte();
         FillStyle style;
-        int type = coder.readByte();
 
         switch (type) {
         case FillStyleTypes.SOLID_COLOR:
@@ -82,10 +83,10 @@ public final class FillStyleDecoder implements SWFFactory<FillStyle> {
         case FillStyleTypes.CLIPPED_BITMAP:
             style = new BitmapFill(type, coder);
             break;
-        case FillStyleTypes.UNSMOOTHED_TILED_BITMAP:
+        case FillStyleTypes.UNSMOOTH_TILED:
             style = new BitmapFill(type, coder);
             break;
-        case FillStyleTypes.UNSMOOTHED_CLIPPED_BITMAP:
+        case FillStyleTypes.UNSMOOTH_CLIPPED:
             style = new BitmapFill(type, coder);
             break;
         default:

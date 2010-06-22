@@ -250,9 +250,9 @@ public final class DefineImage implements ImageTag {
 
     /** {@inheritDoc} */
     public void setIdentifier(final int uid) {
-        if ((uid < 1) || (uid > Coder.UNSIGNED_SHORT_MAX)) {
+        if ((uid < 1) || (uid > Coder.USHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    1, Coder.UNSIGNED_SHORT_MAX, uid);
+                    1, Coder.USHORT_MAX, uid);
         }
         identifier = uid;
     }
@@ -313,9 +313,9 @@ public final class DefineImage implements ImageTag {
      *            the width of the image. Must be in the range 0..65535.
      */
     public void setWidth(final int aNumber) {
-        if ((aNumber < 0) || (aNumber > Coder.UNSIGNED_SHORT_MAX)) {
+        if ((aNumber < 0) || (aNumber > Coder.USHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    0, Coder.UNSIGNED_SHORT_MAX, aNumber);
+                    0, Coder.USHORT_MAX, aNumber);
         }
         width = aNumber;
     }
@@ -328,9 +328,9 @@ public final class DefineImage implements ImageTag {
      *            0..65535.
      */
     public void setHeight(final int aNumber) {
-        if ((aNumber < 0) || (aNumber > Coder.UNSIGNED_SHORT_MAX)) {
+        if ((aNumber < 0) || (aNumber > Coder.USHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    0, Coder.UNSIGNED_SHORT_MAX, aNumber);
+                    0, Coder.USHORT_MAX, aNumber);
         }
         height = aNumber;
     }

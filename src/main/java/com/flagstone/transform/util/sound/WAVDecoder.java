@@ -128,12 +128,12 @@ public final class WAVDecoder implements SoundProvider, SoundDecoder {
         SoundStreamBlock block = null;
 
         if (bytesSent < sound.length) {
-            int bytesRemaining = sound.length - bytesSent;
-            int numberOfBytes = (bytesRemaining < bytesPerBlock)
+            final int bytesRemaining = sound.length - bytesSent;
+            final int numberOfBytes = (bytesRemaining < bytesPerBlock)
                     ? bytesRemaining
                     : bytesPerBlock;
 
-            byte[] bytes = new byte[numberOfBytes];
+            final byte[] bytes = new byte[numberOfBytes];
             System.arraycopy(sound, bytesSent, bytes, 0, numberOfBytes);
 
             block = new SoundStreamBlock(bytes);

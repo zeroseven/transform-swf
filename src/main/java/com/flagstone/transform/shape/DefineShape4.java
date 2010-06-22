@@ -71,7 +71,7 @@ public final class DefineShape4 implements ShapeTag {
 
     /** The unique identifier for this object. */
     private int identifier;
-    private Bounds shapeBounds;
+    private Bounds bounds;
     private Bounds edgeBounds;
     /** The list of fill styles for the shape. */
     private List<FillStyle> fillStyles;
@@ -116,7 +116,7 @@ public final class DefineShape4 implements ShapeTag {
         context.put(Context.TRANSPARENT, 1);
         context.put(Context.TYPE, MovieTypes.DEFINE_SHAPE_4);
 
-        shapeBounds = new Bounds(coder);
+        bounds = new Bounds(coder);
         edgeBounds = new Bounds(coder);
 
         // scaling hints are implied by the line styles used
@@ -202,7 +202,7 @@ public final class DefineShape4 implements ShapeTag {
      */
     public DefineShape4(final DefineShape4 object) {
         identifier = object.identifier;
-        shapeBounds = object.shapeBounds;
+        bounds = object.bounds;
         edgeBounds = object.edgeBounds;
         fillStyles = new ArrayList<FillStyle>(object.fillStyles.size());
         for (final FillStyle style : object.fillStyles) {
@@ -222,9 +222,9 @@ public final class DefineShape4 implements ShapeTag {
 
     /** {@inheritDoc} */
     public void setIdentifier(final int uid) {
-        if ((uid < 1) || (uid > Coder.UNSIGNED_SHORT_MAX)) {
+        if ((uid < 1) || (uid > Coder.USHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    1, Coder.UNSIGNED_SHORT_MAX, uid);
+                    1, Coder.USHORT_MAX, uid);
         }
         identifier = uid;
     }
@@ -235,7 +235,7 @@ public final class DefineShape4 implements ShapeTag {
      * @return the Bounds that encloses the shape
      */
     public Bounds getBounds() {
-        return shapeBounds;
+        return bounds;
     }
 
     /**
@@ -248,7 +248,7 @@ public final class DefineShape4 implements ShapeTag {
         if (rect == null) {
             throw new IllegalArgumentException();
         }
-        shapeBounds = rect;
+        bounds = rect;
     }
 
     /**
@@ -402,11 +402,12 @@ public final class DefineShape4 implements ShapeTag {
 
     @Override
     public String toString() {
-        return String.format(FORMAT, identifier, shapeBounds, edgeBounds,
+        return String.format(FORMAT, identifier, bounds, edgeBounds,
                 fillStyles, lineStyles, useWinding(), shape);
     }
 
     /** {@inheritDoc} */
+    @SuppressWarnings("PMD.NPathComplexity")
     public int prepareToEncode(final Context context) {
         fillBits = Coder.unsignedSize(fillStyles.size());
         lineBits = Coder.unsignedSize(lineStyles.size());
@@ -424,7 +425,7 @@ public final class DefineShape4 implements ShapeTag {
         context.put(Context.TRANSPARENT, 1);
         // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
         length = 3;
-        length += shapeBounds.prepareToEncode(context);
+        length += bounds.prepareToEncode(context);
         length += edgeBounds.prepareToEncode(context);
 
         length += (fillStyles.size() >= EXTENDED) ? EXTENDED_LENGTH : 1;
@@ -455,7 +456,7 @@ public final class DefineShape4 implements ShapeTag {
         context.remove(Context.TRANSPARENT);
         context.remove(Context.SCALING_STROKE);
 
-        return (length > Coder.SHORT_HEADER_LIMIT ? Coder.LONG_HEADER
+        return (length > Coder.HEADER_LIMIT ? Coder.LONG_HEADER
                 : Coder.SHORT_HEADER) + length;
     }
 
@@ -464,7 +465,7 @@ public final class DefineShape4 implements ShapeTag {
             throws IOException {
         context.put(Context.TRANSPARENT, 1);
 
-        if (length > Coder.SHORT_HEADER_LIMIT) {
+        if (length > Coder.HEADER_LIMIT) {
             coder.writeShort((MovieTypes.DEFINE_SHAPE_4
                     << Coder.LENGTH_FIELD_SIZE) | Coder.IS_EXTENDED);
             coder.writeInt(length);
@@ -477,7 +478,7 @@ public final class DefineShape4 implements ShapeTag {
         }
         coder.writeShort(identifier);
 
-        shapeBounds.encode(coder, context);
+        bounds.encode(coder, context);
         edgeBounds.encode(coder, context);
 
         coder.writeByte(winding | scaling);

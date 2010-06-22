@@ -50,10 +50,10 @@ public final class FillStyleTypes {
     public static final int CLIPPED_BITMAP = 0x41;
     /** The type identifying a unsmoothed tiled BitmapFill object
      * when it is encoded. */
-    public static final int UNSMOOTHED_TILED_BITMAP = 0x42;
+    public static final int UNSMOOTH_TILED = 0x42;
     /** The type identifying a unsmoothed clipped BitmapFill object
      * when it is encoded. */
-    public static final int UNSMOOTHED_CLIPPED_BITMAP = 0x43;
+    public static final int UNSMOOTH_CLIPPED = 0x43;
 
     /** FillTypes contains only constants. */
     private FillStyleTypes() {

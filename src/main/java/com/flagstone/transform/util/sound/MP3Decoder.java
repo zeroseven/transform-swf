@@ -52,13 +52,14 @@ import com.flagstone.transform.sound.SoundStreamHead2;
 /**
  * Decoder for MP3 sounds so they can be added to a flash file.
  */
+@SuppressWarnings("PMD.TooManyMethods")
 public final class MP3Decoder implements SoundProvider, SoundDecoder {
 
     private static final int ID3_MASK = 0xFFFFFF00;
     private static final int ID3_V1 = 0x54414700;
     private static final int ID3_V1_LENGTH = 128;
     private static final int ID3_V2 = 0x49443300;
-    private static final int ID3_V2_FOOTER_LENGTH = 10;
+    private static final int ID3_V2_FOOTER = 10;
     private static final int MP3_SYNC = 0xFFE00000;
 
     /** The version number of the MPEG sound format. In this case 3 for MP3. */
@@ -104,12 +105,12 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
     private transient BigDecoder coder;
 
     /** The number of sound samples in each frame. */
-    private int samplesPerFrame = 0;
+    private transient int samplesPerFrame = 0;
     /** The contents of the current MP3 frame. */
-    private byte[] frame;
+    private transient byte[] frame;
 
-    private int actualSamples;
-    private int expectedSamples;
+    private transient int actualSamples;
+    private transient int expectedSamples;
 
     /** {@inheritDoc} */
     public SoundDecoder newDecoder() {
@@ -118,7 +119,7 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
 
     /** {@inheritDoc} */
     public void read(final File file) throws IOException, DataFormatException {
-        FileInputStream stream = new FileInputStream(file);
+        final FileInputStream stream = new FileInputStream(file);
         try {
             read(stream);
         } finally {
@@ -137,7 +138,7 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
             throw new FileNotFoundException(url.getFile());
         }
 
-        InputStream stream = url.openStream();
+        final InputStream stream = url.openStream();
 
         try {
             read(stream);
@@ -205,14 +206,16 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
 
     /** {@inheritDoc} */
     public MovieTag streamSound() throws IOException, DataFormatException {
-        int seek = expectedSamples > 0 ?  actualSamples - expectedSamples : 0;
+        final int seek = expectedSamples > 0
+                ?  actualSamples - expectedSamples : 0;
 
         expectedSamples += sampleRate / movieRate;
         sound = new byte[4];
         int sampleCount = 0;
         boolean hasFrames = true;
+        int length;
         do {
-            int length = sound.length;
+            length = sound.length;
             sound = Arrays.copyOf(sound, length + frame.length);
             System.arraycopy(frame, 0, sound, length, frame.length);
             sampleCount += samplesPerFrame;
@@ -237,8 +240,9 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
 
     private boolean readFrame() throws IOException, DataFormatException {
         boolean frameRead = false;
+        int header;
         while ((!coder.eof()) && !frameRead) {
-            int header = coder.scanInt();
+            header = coder.scanInt();
             if (header == -1) {
                 coder.readUnsignedShort();
             } else if ((header & ID3_MASK) == ID3_V1) {
@@ -269,12 +273,12 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
         coder.readByte(); // minor version
 
         int length;
-        int flags = coder.readByte();
+        final int flags = coder.readByte();
 
-        if ((flags & Coder.BIT4) != 0) {
-            length = ID3_V2_FOOTER_LENGTH;
-        } else  {
+        if ((flags & Coder.BIT4) == 0) {
             length = 0;
+        } else  {
+            length = ID3_V2_FOOTER;
         }
         length += coder.readByte() << 21;
         length += coder.readByte() << 14;
@@ -286,14 +290,14 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
     private void readFrame(final int header)
             throws IOException, DataFormatException {
 
-        int version = (header & 0x180000) >> 19;
-        int layer = (header & 0x060000) >> 17;
+        final int version = (header & 0x180000) >> 19;
+        final int layer = (header & 0x060000) >> 17;
         //boolean hasCRC = (header & 0x010000) != 0;
         samplesPerFrame = MP3_FRAME_SIZE[version];
-        int bitRate = BIT_RATES[version][(header & Coder.NIB3)
+        final int bitRate = BIT_RATES[version][(header & Coder.NIB3)
                                          >> Coder.ALIGN_NIB3];
         sampleRate = SAMPLE_RATES[version][(header & 0x0C00) >> 10];
-        int padding = (header & 0x0200) >> 9;
+        final int padding = (header & 0x0200) >> 9;
         //int reserved = (header & 0x0100) >> 8;
 
         if (layer != 1) {
@@ -311,7 +315,7 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
         numberOfChannels = CHANNEL_COUNT[(header & Coder.PAIR3) >> 6];
         samplesPerChannel += samplesPerFrame;
 
-        int frameSize = 4 + (((version == MPEG1) ? 144 : 72)
+        final int frameSize = 4 + (((version == MPEG1) ? 144 : 72)
                 * bitRate * 1000 / sampleRate + padding) - 4;
 
         frame = coder.readBytes(new byte[frameSize]);

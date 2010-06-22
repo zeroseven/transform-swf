@@ -58,6 +58,7 @@ import com.flagstone.transform.coder.SWFFactory;
  *
  * @see Event
  */
+@SuppressWarnings("PMD.CyclomaticComplexity")
 public final class EventHandler implements SWFEncodeable {
 
     /** Format string used in toString() method. */
@@ -65,7 +66,7 @@ public final class EventHandler implements SWFEncodeable {
             + " key=%s; actions=%s}";
 
     /** Version of Flash that supports the extended event model. */
-    private static final int VERSION_WITH_EXT_EVENTS = 6;
+    private static final int EVENTS_VERSION = 6;
 
     /** Number of bits to shift key code for encoding with event flags. */
     private static final int KEY_OFFSET = 9;
@@ -258,7 +259,7 @@ public final class EventHandler implements SWFEncodeable {
         if (context.contains(Context.TYPE)
                 && context.get(Context.TYPE) == MovieTypes.DEFINE_BUTTON_2) {
             length = value;
-            int eventKey = coder.readUnsignedShort();
+            final int eventKey = coder.readUnsignedShort();
             eventCode = eventKey & EVENT_MASK;
             key = (eventKey & KEY_MASK) >> KEY_OFFSET;
 
@@ -489,7 +490,7 @@ public final class EventHandler implements SWFEncodeable {
                 eventCode |= CLIP_CODES.get(event);
             }
 
-            if (context.get(Context.VERSION) >= VERSION_WITH_EXT_EVENTS) {
+            if (context.get(Context.VERSION) >= EVENTS_VERSION) {
                 length = 8;
             } else {
                 length = 6;
@@ -517,7 +518,7 @@ public final class EventHandler implements SWFEncodeable {
             coder.writeShort(offset + 2);
             coder.writeShort((key << KEY_OFFSET) | eventCode);
         } else {
-            if (context.get(Context.VERSION) >= VERSION_WITH_EXT_EVENTS) {
+            if (context.get(Context.VERSION) >= EVENTS_VERSION) {
                 coder.writeInt(eventCode);
             } else {
                 coder.writeShort(eventCode);

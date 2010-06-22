@@ -113,9 +113,9 @@ public final class Remove2 implements MovieTag {
      *            the range 1.65535.
      */
     public void setLayer(final int aLayer) {
-        if ((aLayer < 1) || (aLayer > Coder.UNSIGNED_SHORT_MAX)) {
+        if ((aLayer < 1) || (aLayer > Coder.USHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    1, Coder.UNSIGNED_SHORT_MAX, aLayer);
+                    1, Coder.USHORT_MAX, aLayer);
         }
         layer = aLayer;
     }

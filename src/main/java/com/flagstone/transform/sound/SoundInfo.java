@@ -255,9 +255,9 @@ public final class SoundInfo implements SWFEncodeable {
      *            range 1..65535.
      */
     public void setIdentifier(final int uid) {
-        if ((uid < 1) || (uid > Coder.UNSIGNED_SHORT_MAX)) {
+        if ((uid < 1) || (uid > Coder.USHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    1, Coder.UNSIGNED_SHORT_MAX, uid);
+                    1, Coder.USHORT_MAX, uid);
         }
         identifier = uid;
     }
@@ -295,9 +295,9 @@ public final class SoundInfo implements SWFEncodeable {
      */
     public void setInPoint(final Integer aNumber) {
         if ((aNumber != null)
-                && ((aNumber < 0) || (aNumber > Coder.UNSIGNED_SHORT_MAX))) {
+                && ((aNumber < 0) || (aNumber > Coder.USHORT_MAX))) {
             throw new IllegalArgumentRangeException(0,
-                    Coder.UNSIGNED_SHORT_MAX, aNumber);
+                    Coder.USHORT_MAX, aNumber);
         }
         inPoint = aNumber;
     }
@@ -311,9 +311,9 @@ public final class SoundInfo implements SWFEncodeable {
      */
     public void setOutPoint(final Integer aNumber) {
         if ((aNumber != null)
-                && ((aNumber < 0) || (aNumber > Coder.UNSIGNED_SHORT_MAX))) {
+                && ((aNumber < 0) || (aNumber > Coder.USHORT_MAX))) {
             throw new IllegalArgumentRangeException(0,
-                    Coder.UNSIGNED_SHORT_MAX, aNumber);
+                    Coder.USHORT_MAX, aNumber);
         }
         outPoint = aNumber;
     }
@@ -327,9 +327,9 @@ public final class SoundInfo implements SWFEncodeable {
      */
     public void setLoopCount(final Integer aNumber) {
         if ((aNumber != null)
-                && ((aNumber < 0) || (aNumber > Coder.UNSIGNED_SHORT_MAX))) {
+                && ((aNumber < 0) || (aNumber > Coder.USHORT_MAX))) {
             throw new IllegalArgumentRangeException(0,
-                    Coder.UNSIGNED_SHORT_MAX, aNumber);
+                    Coder.USHORT_MAX, aNumber);
        }
         loopCount = aNumber;
     }
@@ -377,6 +377,7 @@ public final class SoundInfo implements SWFEncodeable {
     }
 
     /** {@inheritDoc} */
+    @SuppressWarnings("PMD.NPathComplexity")
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
         coder.writeShort(identifier);

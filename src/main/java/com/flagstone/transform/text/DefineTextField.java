@@ -211,7 +211,10 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  * </table>
  *
  */
-@SuppressWarnings({"PMD.TooManyFields", "PMD.TooManyMethods" })
+@SuppressWarnings({"PMD.TooManyFields",
+    "PMD.TooManyMethods",
+    "PMD.CyclomaticComplexity",
+    "PMD.ExcessivePublicCount" })
 public final class DefineTextField implements DefineTag {
 
     private static final int MAX_SPACE = 65535;
@@ -382,9 +385,9 @@ public final class DefineTextField implements DefineTag {
 
     /** {@inheritDoc} */
     public void setIdentifier(final int uid) {
-        if ((uid < 1) || (uid > Coder.UNSIGNED_SHORT_MAX)) {
+        if ((uid < 1) || (uid > Coder.USHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    1, Coder.UNSIGNED_SHORT_MAX, uid);
+                    1, Coder.USHORT_MAX, uid);
         }
         identifier = uid;
     }
@@ -743,9 +746,9 @@ public final class DefineTextField implements DefineTag {
      * @return this object.
      */
     public DefineTextField setFontIdentifier(final int uid) {
-        if ((uid < 1) || (uid > Coder.UNSIGNED_SHORT_MAX)) {
+        if ((uid < 1) || (uid > Coder.USHORT_MAX)) {
              throw new IllegalArgumentRangeException(
-                     1, Coder.UNSIGNED_SHORT_MAX, uid);
+                     1, Coder.USHORT_MAX, uid);
         }
         fontIdentifier = uid;
         fontClass = null;  //NOPMD
@@ -767,9 +770,9 @@ public final class DefineTextField implements DefineTag {
      * @return this object.
      */
     public DefineTextField setFontHeight(final int aNumber) {
-        if ((aNumber < 0) || (aNumber > Coder.UNSIGNED_SHORT_MAX)) {
+        if ((aNumber < 0) || (aNumber > Coder.USHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    0, Coder.UNSIGNED_SHORT_MAX, aNumber);
+                    0, Coder.USHORT_MAX, aNumber);
         }
         fontHeight = aNumber;
         return this;
@@ -892,10 +895,10 @@ public final class DefineTextField implements DefineTag {
      * @return this object.
      */
     public DefineTextField setLeading(final Integer aNumber) {
-        if ((aNumber < Coder.SIGNED_SHORT_MIN)
-                || (aNumber > Coder.SIGNED_SHORT_MAX)) {
+        if ((aNumber < Coder.SHORT_MIN)
+                || (aNumber > Coder.SHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    Coder.SIGNED_SHORT_MIN, Coder.SIGNED_SHORT_MAX, aNumber);
+                    Coder.SHORT_MIN, Coder.SHORT_MAX, aNumber);
         }
         leading = aNumber;
         return this;
@@ -965,6 +968,7 @@ public final class DefineTextField implements DefineTag {
     }
 
     /** {@inheritDoc} */
+    @SuppressWarnings("PMD.NPathComplexity")
     public int prepareToEncode(final Context context) {
         // CHECKSTYLE:OFF
         context.put(Context.TRANSPARENT, 1);
@@ -981,16 +985,17 @@ public final class DefineTextField implements DefineTag {
 
         context.remove(Context.TRANSPARENT);
 
-        return (length > Coder.SHORT_HEADER_LIMIT ? Coder.LONG_HEADER
+        return (length > Coder.HEADER_LIMIT ? Coder.LONG_HEADER
                 : Coder.SHORT_HEADER) + length;
         // CHECKSTYLE:ON
     }
 
     /** {@inheritDoc} */
+    @SuppressWarnings("PMD.CyclomaticComplexity")
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
 
-        if (length > Coder.SHORT_HEADER_LIMIT) {
+        if (length > Coder.HEADER_LIMIT) {
             coder.writeShort((MovieTypes.DEFINE_TEXT_FIELD
                     << Coder.LENGTH_FIELD_SIZE) | Coder.IS_EXTENDED);
             coder.writeInt(length);
@@ -1027,7 +1032,7 @@ public final class DefineTextField implements DefineTag {
         bits |= embedded ? Coder.BIT0 : 0;
         coder.writeByte(bits);
 
-        if (fontIdentifier != 0) {
+        if (fontIdentifier > 0) {
             coder.writeShort(fontIdentifier);
             coder.writeShort(fontHeight);
         } else if (fontClass != null) {

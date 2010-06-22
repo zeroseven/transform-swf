@@ -86,7 +86,7 @@ public final class FocalGradientFill implements FillStyle {
         transform = new CoordTransform(coder);
         count = coder.readByte();
         spread = count & FillStyleDecoder.SPREAD_MASK;
-        interpolation = count & FillStyleDecoder.INTERPOLATION_MASK;
+        interpolation = count & FillStyleDecoder.INTER_MASK;
         count = count & FillStyleDecoder.GRADIENT_MASK;
         gradients = new ArrayList<Gradient>(count);
 

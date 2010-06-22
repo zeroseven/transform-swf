@@ -70,8 +70,8 @@ public final class ConvolutionFilter implements Filter {
          * @return this Builder.
          */
         public Builder setMatrix(final float[][] aMatrix) {
-            int rows = aMatrix.length;
-            int cols = aMatrix[0].length;
+            final int rows = aMatrix.length;
+            final int cols = aMatrix[0].length;
             matrix = new float[rows][cols];
             for (int i = 0; i < rows; i++) {
                 for (int j = 0; j < cols; j++) {

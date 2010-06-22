@@ -220,9 +220,9 @@ public final class DefineButton2 implements DefineTag {
 
     /** {@inheritDoc} */
     public void setIdentifier(final int uid) {
-        if ((uid < 1) || (uid > Coder.UNSIGNED_SHORT_MAX)) {
+        if ((uid < 1) || (uid > Coder.USHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    1, Coder.UNSIGNED_SHORT_MAX, uid);
+                    1, Coder.USHORT_MAX, uid);
         }
         identifier = uid;
     }
@@ -361,7 +361,7 @@ public final class DefineButton2 implements DefineTag {
         }
 
         EventHandler handler;
-        int count = events.size();
+        final int count = events.size();
 
         if (type == 1) {
             context.put(Context.MENU_BUTTON, 1);
@@ -380,7 +380,7 @@ public final class DefineButton2 implements DefineTag {
         context.remove(Context.LAST);
         context.remove(Context.MENU_BUTTON);
 
-        return (length > Coder.SHORT_HEADER_LIMIT ? Coder.LONG_HEADER
+        return (length > Coder.HEADER_LIMIT ? Coder.LONG_HEADER
                 : Coder.SHORT_HEADER) + length;
         // CHECKSTYLE:ON
     }
@@ -392,7 +392,7 @@ public final class DefineButton2 implements DefineTag {
         context.put(Context.TYPE, MovieTypes.DEFINE_BUTTON_2);
         context.put(Context.TRANSPARENT, 1);
 
-        if (length > Coder.SHORT_HEADER_LIMIT) {
+        if (length > Coder.HEADER_LIMIT) {
             coder.writeShort((MovieTypes.DEFINE_BUTTON_2
                     << Coder.LENGTH_FIELD_SIZE) | Coder.IS_EXTENDED);
             coder.writeInt(length);

@@ -156,9 +156,9 @@ public final class DefineFont implements DefineTag {
 
     /** {@inheritDoc} */
     public void setIdentifier(final int uid) {
-        if ((uid < 1) || (uid > Coder.UNSIGNED_SHORT_MAX)) {
+        if ((uid < 1) || (uid > Coder.USHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    1, Coder.UNSIGNED_SHORT_MAX, uid);
+                    1, Coder.USHORT_MAX, uid);
         }
         identifier = uid;
     }
@@ -221,8 +221,8 @@ public final class DefineFont implements DefineTag {
         context.put(Context.LINE_SIZE, context.contains(Context.POSTSCRIPT) ? 1
                 : 0);
 
+        final int count = shapes.size();
         int index = 0;
-        int count = shapes.size();
         int shapeLength;
         int tableEntry = count << 1;
         table = new int[count + 1];
@@ -241,7 +241,7 @@ public final class DefineFont implements DefineTag {
         context.put(Context.FILL_SIZE, 0);
         context.put(Context.LINE_SIZE, 0);
 
-        return (length > Coder.SHORT_HEADER_LIMIT ? Coder.LONG_HEADER
+        return (length > Coder.HEADER_LIMIT ? Coder.LONG_HEADER
                 : Coder.SHORT_HEADER) + length;
     }
 
@@ -249,7 +249,7 @@ public final class DefineFont implements DefineTag {
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
-        if (length > Coder.SHORT_HEADER_LIMIT) {
+        if (length > Coder.HEADER_LIMIT) {
             coder.writeShort((MovieTypes.DEFINE_FONT
                     << Coder.LENGTH_FIELD_SIZE) | Coder.IS_EXTENDED);
             coder.writeInt(length);

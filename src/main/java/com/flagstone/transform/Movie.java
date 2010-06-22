@@ -260,7 +260,7 @@ public final class Movie {
             context.setEncoding(encoding.toString());
             context.put(Context.FRAMES, 0);
 
-            byte[] signature = new byte[SIGNATURE_LENGTH];
+            final byte[] signature = new byte[SIGNATURE_LENGTH];
             stream.read(signature);
 
             if (Arrays.equals(CWS, signature)) {
@@ -299,7 +299,7 @@ public final class Movie {
 
             final SWFFactory<MovieTag> factory = registry.getMovieDecoder();
 
-            MovieHeader header = new MovieHeader(decoder, context);
+            final MovieHeader header = new MovieHeader(decoder, context);
             objects.add(header);
 
             while (decoder.scanUnsignedShort() >>> Coder.LENGTH_FIELD_SIZE
@@ -356,7 +356,7 @@ public final class Movie {
         OutputStream streamOut = null;
 
         try {
-            MovieHeader header = (MovieHeader) objects.get(0);
+            final MovieHeader header = (MovieHeader) objects.get(0);
 
             final Context context = new Context();
             context.setEncoding(encoding.toString());
@@ -391,7 +391,7 @@ public final class Movie {
                 streamOut = stream;
             }
 
-            SWFEncoder coder = new SWFEncoder(streamOut);
+            final SWFEncoder coder = new SWFEncoder(streamOut);
             coder.setEncoding(encoding);
 
             for (final MovieTag tag : objects) {

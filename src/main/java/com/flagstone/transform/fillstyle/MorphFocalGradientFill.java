@@ -92,7 +92,7 @@ public final class MorphFocalGradientFill implements FillStyle {
         endTransform = new CoordTransform(coder);
         count = coder.readByte() & Gradient.MAX_GRADIENTS;
         spread = count & FillStyleDecoder.SPREAD_MASK;
-        interpolation = count & FillStyleDecoder.INTERPOLATION_MASK;
+        interpolation = count & FillStyleDecoder.INTER_MASK;
         count = count & FillStyleDecoder.GRADIENT_MASK;
         gradients = new ArrayList<MorphGradient>(count);
 

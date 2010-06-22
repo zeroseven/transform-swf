@@ -41,6 +41,7 @@ import java.util.Stack;
  * reading data from a file or external source in blocks. Word values are
  * read in Big-Endian format with the most significant byte decoded first.
  */
+@SuppressWarnings("PMD.TooManyMethods")
 public final class BigDecoder {
     /** The default size, in bytes, for the internal buffer. */
     public static final int BUFFER_SIZE = 4096;

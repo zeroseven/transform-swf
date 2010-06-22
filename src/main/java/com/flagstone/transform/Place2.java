@@ -133,7 +133,7 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  *
  * @see com.flagstone.transform.util.movie.Layer
  */
-@SuppressWarnings("PMD.TooManyMethods")
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.CyclomaticComplexity"})
 public final class Place2 implements MovieTag {
 
     /**
@@ -250,7 +250,7 @@ public final class Place2 implements MovieTag {
      * @throws IOException
      *             if an error occurs while decoding the data.
      */
-
+    @SuppressWarnings("PMD.AssignmentInOperand")
     public Place2(final SWFDecoder coder, final Context context)
             throws IOException {
         context.put(Context.TRANSPARENT, 1);
@@ -259,7 +259,7 @@ public final class Place2 implements MovieTag {
             length = coder.readInt();
         }
         coder.mark();
-        int bits = coder.readByte();
+        final int bits = coder.readByte();
         final boolean hasEvents = (bits & Coder.BIT7) != 0;
         final boolean hasDepth = (bits & Coder.BIT6) != 0;
         final boolean hasName = (bits & Coder.BIT5) != 0;
@@ -527,9 +527,9 @@ public final class Place2 implements MovieTag {
      * @return this object.
      */
     public Place2 setLayer(final int aLayer) {
-        if ((aLayer < 1) || (aLayer > Coder.UNSIGNED_SHORT_MAX)) {
+        if ((aLayer < 1) || (aLayer > Coder.USHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    1, Coder.UNSIGNED_SHORT_MAX, aLayer);
+                    1, Coder.USHORT_MAX, aLayer);
         }
         layer = aLayer;
         return this;
@@ -545,9 +545,9 @@ public final class Place2 implements MovieTag {
      * @return this object.
      */
     public Place2 setIdentifier(final int uid) {
-        if ((uid < 1) || (uid > Coder.UNSIGNED_SHORT_MAX)) {
+        if ((uid < 1) || (uid > Coder.USHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    1, Coder.UNSIGNED_SHORT_MAX, uid);
+                    1, Coder.USHORT_MAX, uid);
         }
         identifier = uid;
         return this;
@@ -611,9 +611,9 @@ public final class Place2 implements MovieTag {
      */
     public Place2 setRatio(final Integer aNumber) {
         if ((aNumber != null) && ((aNumber < 0)
-                || (aNumber > Coder.UNSIGNED_SHORT_MAX))) {
+                || (aNumber > Coder.USHORT_MAX))) {
             throw new IllegalArgumentRangeException(
-                    1, Coder.UNSIGNED_SHORT_MAX, aNumber);
+                    1, Coder.USHORT_MAX, aNumber);
         }
         ratio = aNumber;
         return this;
@@ -630,9 +630,9 @@ public final class Place2 implements MovieTag {
      */
     public Place2 setDepth(final Integer aNumber) {
         if ((aNumber != null) && ((aNumber < 1)
-                || (aNumber > Coder.UNSIGNED_SHORT_MAX))) {
+                || (aNumber > Coder.USHORT_MAX))) {
              throw new IllegalArgumentRangeException(
-                     1, Coder.UNSIGNED_SHORT_MAX, aNumber);
+                     1, Coder.USHORT_MAX, aNumber);
         }
         depth = aNumber;
         return this;
@@ -667,6 +667,7 @@ public final class Place2 implements MovieTag {
 
 
     /** {@inheritDoc} */
+    @SuppressWarnings("PMD.NPathComplexity")
     public int prepareToEncode(final Context context) {
         // CHECKSTYLE:OFF
         context.put(Context.TRANSPARENT, 1);
@@ -704,16 +705,17 @@ public final class Place2 implements MovieTag {
 
         context.remove(Context.TRANSPARENT);
 
-        return (length > Coder.SHORT_HEADER_LIMIT ? Coder.LONG_HEADER
+        return (length > Coder.HEADER_LIMIT ? Coder.LONG_HEADER
                 : Coder.SHORT_HEADER) + length;
         // CHECKSTYLE:ON
     }
 
 
     /** {@inheritDoc} */
+    @SuppressWarnings("PMD.NPathComplexity")
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
-        if (length > Coder.SHORT_HEADER_LIMIT) {
+        if (length > Coder.HEADER_LIMIT) {
             coder.writeShort((MovieTypes.PLACE_2
                     << Coder.LENGTH_FIELD_SIZE) | Coder.IS_EXTENDED);
             coder.writeInt(length);

@@ -108,7 +108,7 @@ public final class DefineMorphShape2 implements ShapeTag {
     private int identifier;
     private Bounds bounds;
     private Bounds endBounds;
-    private Bounds startEdgeBounds;
+    private Bounds edgeBounds;
     private Bounds endEdgeBounds;
 
     /** The list of fill styles for the shape. */
@@ -160,7 +160,7 @@ public final class DefineMorphShape2 implements ShapeTag {
 
         bounds = new Bounds(coder);
         endBounds = new Bounds(coder);
-        startEdgeBounds = new Bounds(coder);
+        edgeBounds = new Bounds(coder);
         endEdgeBounds = new Bounds(coder);
 
         fillStyles = new ArrayList<FillStyle>();
@@ -268,7 +268,7 @@ public final class DefineMorphShape2 implements ShapeTag {
         identifier = object.identifier;
         bounds = object.bounds;
         endBounds = object.endBounds;
-        startEdgeBounds = object.startEdgeBounds;
+        edgeBounds = object.edgeBounds;
         endEdgeBounds = object.endEdgeBounds;
         fillStyles = new ArrayList<FillStyle>(object.fillStyles.size());
         for (final FillStyle style : object.fillStyles) {
@@ -289,9 +289,9 @@ public final class DefineMorphShape2 implements ShapeTag {
 
     /** {@inheritDoc} */
     public void setIdentifier(final int uid) {
-        if ((uid < 1) || (uid > Coder.UNSIGNED_SHORT_MAX)) {
+        if ((uid < 1) || (uid > Coder.USHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    1, Coder.UNSIGNED_SHORT_MAX, uid);
+                    1, Coder.USHORT_MAX, uid);
         }
         identifier = uid;
     }
@@ -306,7 +306,7 @@ public final class DefineMorphShape2 implements ShapeTag {
      * @return this object.
      */
     public DefineMorphShape2 add(final LineStyle style) {
-        if (style == null || !(style instanceof MorphLineStyle2)) {
+        if (!(style instanceof MorphLineStyle2)) {
             throw new IllegalArgumentException();
         }
         lineStyles.add(style);
@@ -353,7 +353,7 @@ public final class DefineMorphShape2 implements ShapeTag {
      * @return the bound box for the outline of the initial shape.
      */
     public Bounds getEdgeBounds() {
-        return startEdgeBounds;
+        return edgeBounds;
     }
 
     /**
@@ -442,7 +442,7 @@ public final class DefineMorphShape2 implements ShapeTag {
         if (rect == null) {
             throw new IllegalArgumentException();
         }
-        startEdgeBounds = rect;
+        edgeBounds = rect;
     }
 
     /**
@@ -523,12 +523,13 @@ public final class DefineMorphShape2 implements ShapeTag {
     @Override
     public String toString() {
         return String.format(FORMAT, identifier, bounds,
-                endBounds, startEdgeBounds, endEdgeBounds, fillStyles,
+                endBounds, edgeBounds, endEdgeBounds, fillStyles,
                 lineStyles, shape, endShape);
     }
 
 
     /** {@inheritDoc} */
+    @SuppressWarnings("PMD.NPathComplexity")
     public int prepareToEncode(final Context context) {
         fillBits = Coder.unsignedSize(fillStyles.size());
         lineBits = Coder.unsignedSize(lineStyles.size());
@@ -549,7 +550,7 @@ public final class DefineMorphShape2 implements ShapeTag {
         length = 7;
         length += bounds.prepareToEncode(context);
         length += endBounds.prepareToEncode(context);
-        length += startEdgeBounds.prepareToEncode(context);
+        length += edgeBounds.prepareToEncode(context);
         length += endEdgeBounds.prepareToEncode(context);
         offset = length;
 
@@ -585,16 +586,17 @@ public final class DefineMorphShape2 implements ShapeTag {
         context.remove(Context.TRANSPARENT);
         context.remove(Context.SCALING_STROKE);
 
-        return (length > Coder.SHORT_HEADER_LIMIT ? Coder.LONG_HEADER
+        return (length > Coder.HEADER_LIMIT ? Coder.LONG_HEADER
                 : Coder.SHORT_HEADER) + length;
     }
 
 
     /** {@inheritDoc} */
+    @SuppressWarnings("PMD.NPathComplexity")
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
 
-        if (length > Coder.SHORT_HEADER_LIMIT) {
+        if (length > Coder.HEADER_LIMIT) {
             coder.writeShort((MovieTypes.DEFINE_MORPH_SHAPE_2
                     << Coder.LENGTH_FIELD_SIZE) | Coder.IS_EXTENDED);
             coder.writeInt(length);
@@ -610,7 +612,7 @@ public final class DefineMorphShape2 implements ShapeTag {
 
         bounds.encode(coder, context);
         endBounds.encode(coder, context);
-        startEdgeBounds.encode(coder, context);
+        edgeBounds.encode(coder, context);
         endEdgeBounds.encode(coder, context);
 
         coder.writeByte(scaling ? 1 : 2);

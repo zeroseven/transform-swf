@@ -138,7 +138,7 @@ public final class AWTDecoder {
 
         font.setMissingGlyph(missingGlyph);
         font.setNumberOfGlyphs(count);
-        font.setHighestChar((char) Coder.UNSIGNED_SHORT_MAX);
+        font.setHighestChar((char) Coder.USHORT_MAX);
 
         int index = 0;
         int code = 0;
@@ -164,7 +164,7 @@ public final class AWTDecoder {
          * Run through all the unicode character codes looking for a
          * corresponding glyph.
          */
-        while ((index < count) && (code < Coder.UNSIGNED_SHORT_MAX)) {
+        while ((index < count) && (code < Coder.USHORT_MAX)) {
             if (awtFont.canDisplay(code)) {
                 character = (char) code;
             } else {

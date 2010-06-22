@@ -495,7 +495,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
 
         glyphCount = coder.readUnsignedShort();
         glyphTable = new TrueTypeGlyph[glyphCount];
-        charToGlyph = new int[Coder.UNSIGNED_SHORT_MAX + 1];
+        charToGlyph = new int[Coder.USHORT_MAX + 1];
         glyphToChar = new int[glyphCount];
 
         if (version == 1.0f) {
@@ -642,7 +642,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
             code <= endCount[index]; code++) {
                 if (range[index] == 0) {
                     glyphIndex = (delta[index] + code)
-                            % Coder.UNSIGNED_SHORT_MAX;
+                            % Coder.USHORT_MAX;
                 } else {
                     location = rangeAdr[index] + range[index]
                             + ((code - startCount[index]) << 1);
@@ -651,7 +651,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
 
                     if (glyphIndex != 0) {
                         glyphIndex = (glyphIndex + delta[index])
-                                % Coder.UNSIGNED_SHORT_MAX;
+                                % Coder.USHORT_MAX;
                     }
                 }
 

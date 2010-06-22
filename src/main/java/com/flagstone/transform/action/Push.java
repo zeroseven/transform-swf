@@ -107,6 +107,7 @@ import com.flagstone.transform.coder.SWFEncoder;
  * @see Void
  *
  */
+@SuppressWarnings("PMD.CyclomaticComplexity")
 public final class Push implements Action {
 
     /** Number of bits in an int. */
@@ -226,7 +227,7 @@ public final class Push implements Action {
 
             switch (dataType) {
             case TYPE_STRING:
-                String str = coder.readString();
+                final String str = coder.readString();
                 values.add(str);
                 valuesLength -= 1 + context.strlen(str);
                 break;

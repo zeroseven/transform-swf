@@ -76,10 +76,10 @@ public final class Shape implements SWFEncodeable {
      */
     public static Shape shapeFromData(final ShapeData shapeData)
                 throws IOException {
-        byte[] data = shapeData.getData();
-        ByteArrayInputStream stream = new ByteArrayInputStream(data);
-        SWFDecoder coder = new SWFDecoder(stream);
-        Context context = new Context();
+        final byte[] data = shapeData.getData();
+        final ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        final SWFDecoder coder = new SWFDecoder(stream);
+        final Context context = new Context();
         return new Shape(coder, context);
     }
 
@@ -102,6 +102,7 @@ public final class Shape implements SWFEncodeable {
      * @throws IOException
      *             if an error occurs while decoding the data.
      */
+    @SuppressWarnings("PMD.AssignmentInOperand")
     public Shape(final SWFDecoder coder, final Context context)
             throws IOException {
         objects = new ArrayList<ShapeRecord>();

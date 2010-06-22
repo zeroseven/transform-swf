@@ -43,13 +43,14 @@ import com.flagstone.transform.coder.SWFFactory;
  * MorphFillStyleDecoder is used to decode the different types of fill styles
  * used in morphing shapes.
  */
+@SuppressWarnings("PMD.CyclomaticComplexity")
 public final class MorphFillStyleDecoder implements SWFFactory<FillStyle> {
     /** {@inheritDoc} */
     public FillStyle getObject(final SWFDecoder coder, final Context context)
             throws IOException {
 
+        final int type = coder.readByte();
         FillStyle style;
-        int type = coder.readByte();
 
         switch (type) {
         case FillStyleTypes.SOLID_COLOR:
@@ -70,10 +71,10 @@ public final class MorphFillStyleDecoder implements SWFFactory<FillStyle> {
         case FillStyleTypes.CLIPPED_BITMAP:
             style = new MorphBitmapFill(type, coder);
             break;
-        case FillStyleTypes.UNSMOOTHED_TILED_BITMAP:
+        case FillStyleTypes.UNSMOOTH_TILED:
             style = new MorphBitmapFill(type, coder);
             break;
-        case FillStyleTypes.UNSMOOTHED_CLIPPED_BITMAP:
+        case FillStyleTypes.UNSMOOTH_CLIPPED:
             style = new MorphBitmapFill(type, coder);
             break;
         default:

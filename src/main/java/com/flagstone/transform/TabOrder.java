@@ -127,9 +127,9 @@ public final class TabOrder implements MovieTag {
      *            the layer number. Must be in the range 1..65535.
      */
     public void setLayer(final int level) {
-        if ((level < 1) || (level > Coder.UNSIGNED_SHORT_MAX)) {
+        if ((level < 1) || (level > Coder.USHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    1, Coder.UNSIGNED_SHORT_MAX, level);
+                    1, Coder.USHORT_MAX, level);
         }
         layer = level;
     }

@@ -119,15 +119,15 @@ public final class Envelope implements SWFEncodeable {
 
             mark = markValue;
 
-            if ((leftValue < 0) || (leftValue > Coder.UNSIGNED_SHORT_MAX)) {
+            if ((leftValue < 0) || (leftValue > Coder.USHORT_MAX)) {
                 throw new IllegalArgumentRangeException(0,
-                        Coder.UNSIGNED_SHORT_MAX, leftValue);
+                        Coder.USHORT_MAX, leftValue);
             }
             left = leftValue;
 
-            if ((rightValue < 0) || (rightValue > Coder.UNSIGNED_SHORT_MAX)) {
+            if ((rightValue < 0) || (rightValue > Coder.USHORT_MAX)) {
                 throw new IllegalArgumentRangeException(0,
-                        Coder.UNSIGNED_SHORT_MAX, rightValue);
+                        Coder.USHORT_MAX, rightValue);
             }
             right = rightValue;
         }

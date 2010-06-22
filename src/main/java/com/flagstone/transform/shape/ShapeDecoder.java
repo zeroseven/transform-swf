@@ -48,7 +48,7 @@ public final class ShapeDecoder implements SWFFactory<ShapeRecord> {
     public ShapeRecord getObject(final SWFDecoder coder, final Context context)
             throws IOException {
 
-        int type = coder.readBits(2, false);
+        final int type = coder.readBits(2, false);
         ShapeRecord record = null;
 
         if (type == Coder.BIT1) {
@@ -57,7 +57,8 @@ public final class ShapeDecoder implements SWFFactory<ShapeRecord> {
             record = new Line(coder);
         } else {
             // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
-            int flags = (type << Coder.TO_UPPER_NIB) + coder.readBits(4, false);
+            final int flags = (type << Coder.TO_UPPER_NIB)
+                    + coder.readBits(4, false);
 
             if (flags != 0) {
                 final int tag = context.get(Context.TYPE);

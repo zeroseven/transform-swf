@@ -76,7 +76,7 @@ public final class DefineText implements StaticTextTag {
     private int identifier;
     private Bounds bounds;
     private CoordTransform transform;
-    private List<TextSpan> objects;
+    private List<TextSpan> spans;
 
     /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
@@ -136,10 +136,10 @@ public final class DefineText implements StaticTextTag {
         context.put(Context.GLYPH_SIZE, glyphBits);
         context.put(Context.ADVANCE_SIZE, advanceBits);
 
-        objects = new ArrayList<TextSpan>();
+        spans = new ArrayList<TextSpan>();
 
         while (coder.scanByte() != 0) {
-            objects.add(new TextSpan(coder, context));
+            spans.add(new TextSpan(coder, context));
         }
 
         coder.readByte();
@@ -186,9 +186,9 @@ public final class DefineText implements StaticTextTag {
         identifier = object.identifier;
         bounds = object.bounds;
         transform = object.transform;
-        objects = new ArrayList<TextSpan>(object.objects.size());
-        for (final TextSpan span : object.objects) {
-            objects.add(span.copy());
+        spans = new ArrayList<TextSpan>(object.spans.size());
+        for (final TextSpan span : object.spans) {
+            spans.add(span.copy());
         }
     }
 
@@ -199,9 +199,9 @@ public final class DefineText implements StaticTextTag {
 
     /** {@inheritDoc} */
     public void setIdentifier(final int uid) {
-        if ((uid < 1) || (uid > Coder.UNSIGNED_SHORT_MAX)) {
+        if ((uid < 1) || (uid > Coder.USHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    1, Coder.UNSIGNED_SHORT_MAX, uid);
+                    1, Coder.USHORT_MAX, uid);
         }
         identifier = uid;
     }
@@ -217,7 +217,7 @@ public final class DefineText implements StaticTextTag {
         if (obj == null) {
             throw new IllegalArgumentException();
         }
-        objects.add(obj);
+        spans.add(obj);
         return this;
     }
 
@@ -247,7 +247,7 @@ public final class DefineText implements StaticTextTag {
      * @return the list of text blocks.
      */
     public List<TextSpan> getSpans() {
-        return objects;
+        return spans;
     }
 
     /**
@@ -289,7 +289,7 @@ public final class DefineText implements StaticTextTag {
         if (list == null) {
             throw new IllegalArgumentException();
         }
-        objects = list;
+        spans = list;
     }
 
     /** {@inheritDoc} */
@@ -299,7 +299,7 @@ public final class DefineText implements StaticTextTag {
 
     @Override
     public String toString() {
-        return String.format(FORMAT, identifier, bounds, transform, objects);
+        return String.format(FORMAT, identifier, bounds, transform, spans);
     }
 
     /** {@inheritDoc} */
@@ -314,7 +314,7 @@ public final class DefineText implements StaticTextTag {
         length += transform.prepareToEncode(context);
         length += 2;
 
-        for (final TextSpan span : objects) {
+        for (final TextSpan span : spans) {
             length += span.prepareToEncode(context);
         }
 
@@ -323,7 +323,7 @@ public final class DefineText implements StaticTextTag {
         context.put(Context.GLYPH_SIZE, 0);
         context.put(Context.ADVANCE_SIZE, 0);
 
-        return (length > Coder.SHORT_HEADER_LIMIT ? Coder.LONG_HEADER
+        return (length > Coder.HEADER_LIMIT ? Coder.LONG_HEADER
                 : Coder.SHORT_HEADER) + length;
     }
 
@@ -332,7 +332,7 @@ public final class DefineText implements StaticTextTag {
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
 
-        if (length > Coder.SHORT_HEADER_LIMIT) {
+        if (length > Coder.HEADER_LIMIT) {
             coder.writeShort((MovieTypes.DEFINE_TEXT
                     << Coder.LENGTH_FIELD_SIZE) | Coder.IS_EXTENDED);
             coder.writeInt(length);
@@ -354,7 +354,7 @@ public final class DefineText implements StaticTextTag {
         coder.writeByte(glyphBits);
         coder.writeByte(advanceBits);
 
-        for (final TextSpan span : objects) {
+        for (final TextSpan span : spans) {
             span.encode(coder, context);
         }
 
@@ -372,7 +372,7 @@ public final class DefineText implements StaticTextTag {
         int total = 0;
         int size;
 
-        for (final TextSpan span : objects) {
+        for (final TextSpan span : spans) {
             size = span.glyphBits();
 
             if (size > total) {
@@ -387,7 +387,7 @@ public final class DefineText implements StaticTextTag {
         int total = 0;
         int size;
 
-        for (final TextSpan span : objects) {
+        for (final TextSpan span : spans) {
             size = span.advanceBits();
 
             if (size > total) {

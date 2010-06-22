@@ -145,9 +145,9 @@ public final class VideoFrame implements MovieTag {
      *            the range 1..65535.
      */
     public void setIdentifier(final int uid) {
-        if ((uid < 1) || (uid > Coder.UNSIGNED_SHORT_MAX)) {
+        if ((uid < 1) || (uid > Coder.USHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    1, Coder.UNSIGNED_SHORT_MAX, uid);
+                    1, Coder.USHORT_MAX, uid);
         }
         identifier = uid;
     }
@@ -168,9 +168,9 @@ public final class VideoFrame implements MovieTag {
      *            the frame number. Must be in the range 1..65535.
      */
     public void setFrameNumber(final int number) {
-        if ((number < 1) || (number > Coder.UNSIGNED_SHORT_MAX)) {
+        if ((number < 1) || (number > Coder.USHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    1, Coder.UNSIGNED_SHORT_MAX, number);
+                    1, Coder.USHORT_MAX, number);
         }
         frameNumber = number;
     }
@@ -216,14 +216,14 @@ public final class VideoFrame implements MovieTag {
         // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
         length = 4 + data.length;
 
-        return (length > Coder.SHORT_HEADER_LIMIT
+        return (length > Coder.HEADER_LIMIT
                 ? Coder.LONG_HEADER : Coder.SHORT_HEADER) + length;
     }
 
     /** {@inheritDoc} */
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
-         if (length > Coder.SHORT_HEADER_LIMIT) {
+         if (length > Coder.HEADER_LIMIT) {
             coder.writeShort((MovieTypes.VIDEO_FRAME
                     << Coder.LENGTH_FIELD_SIZE) | Coder.IS_EXTENDED);
             coder.writeInt(length);

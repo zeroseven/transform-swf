@@ -78,6 +78,7 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  * every device the text is displayed.
  * </p>
  */
+@SuppressWarnings("PMD.CyclomaticComplexity")
 public final class FontInfo implements MovieTag {
 
     /** Format string used in toString() method. */
@@ -291,9 +292,9 @@ public final class FontInfo implements MovieTag {
      *            glyphs for the font. Must be in the range 1..65535.
      */
     public void setIdentifier(final int uid) {
-        if ((uid < 1) || (uid > Coder.UNSIGNED_SHORT_MAX)) {
+        if ((uid < 1) || (uid > Coder.USHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    1, Coder.UNSIGNED_SHORT_MAX, uid);
+                    1, Coder.USHORT_MAX, uid);
         }
         identifier = uid;
     }
@@ -368,9 +369,9 @@ public final class FontInfo implements MovieTag {
      *            a code for a glyph. Must be in the range 0..65535.
      */
     public void addCode(final int aCode) {
-        if ((aCode < 0) || (aCode > Coder.UNSIGNED_SHORT_MAX)) {
+        if ((aCode < 0) || (aCode > Coder.USHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    0, Coder.UNSIGNED_SHORT_MAX, aCode);
+                    0, Coder.USHORT_MAX, aCode);
         }
         codes.add(aCode);
     }
@@ -419,17 +420,18 @@ public final class FontInfo implements MovieTag {
 
         length += codes.size() * (wideCodes ? 2 : 1);
 
-        return (length > Coder.SHORT_HEADER_LIMIT ? Coder.LONG_HEADER
+        return (length > Coder.HEADER_LIMIT ? Coder.LONG_HEADER
                 : Coder.SHORT_HEADER) + length;
         // CHECKSTYLE:ON
     }
 
 
     /** {@inheritDoc} */
+    @SuppressWarnings({"PMD.NPathComplexity", "PMD.CyclomaticComplexity" })
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
 
-        if (length > Coder.SHORT_HEADER_LIMIT) {
+        if (length > Coder.HEADER_LIMIT) {
             coder.writeShort((MovieTypes.FONT_INFO
                     << Coder.LENGTH_FIELD_SIZE) | Coder.IS_EXTENDED);
             coder.writeInt(length);

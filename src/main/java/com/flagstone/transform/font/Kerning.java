@@ -73,9 +73,6 @@ public final class Kerning implements SWFEncodeable {
     /** The adjustment to the advance of the left glyph. */
     private final transient int adjustment;
 
-    /** The width of each index in bytes. */
-    private transient int size;
-
     /**
      * Creates and initialises a Kerning object using values encoded
      * in the Flash binary format.
@@ -119,22 +116,22 @@ public final class Kerning implements SWFEncodeable {
      */
     public Kerning(final int leftIndex, final int rightIndex,
             final int adjust) {
-        if ((leftIndex < 0) || (leftIndex >= Coder.UNSIGNED_SHORT_MAX)) {
+        if ((leftIndex < 0) || (leftIndex >= Coder.USHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    0, Coder.UNSIGNED_SHORT_MAX - 1, leftIndex);
+                    0, Coder.USHORT_MAX - 1, leftIndex);
         }
         leftGlyph = leftIndex;
 
-        if ((rightIndex < 0) || (rightIndex >= Coder.UNSIGNED_SHORT_MAX)) {
+        if ((rightIndex < 0) || (rightIndex >= Coder.USHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    0, Coder.UNSIGNED_SHORT_MAX - 1, rightIndex);
+                    0, Coder.USHORT_MAX - 1, rightIndex);
         }
         rightGlyph = rightIndex;
 
-        if ((adjust < Coder.SIGNED_SHORT_MIN)
-                || (adjust > Coder.SIGNED_SHORT_MAX)) {
+        if ((adjust < Coder.SHORT_MIN)
+                || (adjust > Coder.SHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    Coder.SIGNED_SHORT_MIN, Coder.SIGNED_SHORT_MAX, adjust);
+                    Coder.SHORT_MIN, Coder.SHORT_MAX, adjust);
         }
         adjustment = adjust;
     }
@@ -200,8 +197,7 @@ public final class Kerning implements SWFEncodeable {
 
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
-        size = context.contains(Context.WIDE_CODES) ? 2 : 1;
-        return (size << 1) + 2;
+        return context.contains(Context.WIDE_CODES) ? 6 : 4;
     }
 
     /** {@inheritDoc} */

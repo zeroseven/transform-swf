@@ -95,9 +95,9 @@ public final class JPEGInfo {
      * @param image the image data.
      */
     public void decode(final byte[] image) {
+        final int limit = image.length - 2;
         int marker;
         int length;
-        int limit = image.length - 2;
         int index = 0;
 
         while (index < limit) {

@@ -54,7 +54,8 @@ import com.flagstone.transform.filter.Filter;
  *
  * @see Place2
  */
-@SuppressWarnings({"PMD.TooManyFields", "PMD.TooManyMethods" })
+@SuppressWarnings({"PMD.TooManyFields", "PMD.TooManyMethods",
+       "PMD.CyclomaticComplexity" })
 public final class Place3 implements MovieTag {
 
     /**
@@ -184,7 +185,7 @@ public final class Place3 implements MovieTag {
      * @throws IOException
      *             if an error occurs while decoding the data.
      */
-
+    @SuppressWarnings({"PMD.AssignmentInOperand", "PMD.ExcessiveMethodLength" })
     public Place3(final SWFDecoder coder, final Context context)
             throws IOException {
         context.put(Context.TRANSPARENT, 1);
@@ -386,9 +387,9 @@ public final class Place3 implements MovieTag {
      * @return this object.
      */
     public Place3 setLayer(final int aLayer) {
-        if ((aLayer < 1) || (aLayer > Coder.UNSIGNED_SHORT_MAX)) {
+        if ((aLayer < 1) || (aLayer > Coder.USHORT_MAX)) {
             throw new IllegalArgumentRangeException(1,
-                    Coder.UNSIGNED_SHORT_MAX, aLayer);
+                    Coder.USHORT_MAX, aLayer);
         }
         layer = aLayer;
         return this;
@@ -415,9 +416,9 @@ public final class Place3 implements MovieTag {
      * @return this object.
      */
     public Place3 setIdentifier(final int uid) {
-        if ((uid < 1) || (uid > Coder.UNSIGNED_SHORT_MAX)) {
+        if ((uid < 1) || (uid > Coder.USHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    1, Coder.UNSIGNED_SHORT_MAX, uid);
+                    1, Coder.USHORT_MAX, uid);
         }
         identifier = uid;
         return this;
@@ -501,9 +502,9 @@ public final class Place3 implements MovieTag {
      */
     public Place3 setRatio(final Integer aNumber) {
         if ((aNumber != null) && ((aNumber < 0)
-                || (aNumber > Coder.UNSIGNED_SHORT_MAX))) {
+                || (aNumber > Coder.USHORT_MAX))) {
             throw new IllegalArgumentRangeException(
-                    1, Coder.UNSIGNED_SHORT_MAX, aNumber);
+                    1, Coder.USHORT_MAX, aNumber);
         }
         ratio = aNumber;
         return this;
@@ -530,9 +531,9 @@ public final class Place3 implements MovieTag {
      */
     public Place3 setDepth(final Integer aNumber) {
         if ((aNumber != null) && ((aNumber < 1)
-                || (aNumber > Coder.UNSIGNED_SHORT_MAX))) {
+                || (aNumber > Coder.USHORT_MAX))) {
              throw new IllegalArgumentRangeException(
-                     1, Coder.UNSIGNED_SHORT_MAX, aNumber);
+                     1, Coder.USHORT_MAX, aNumber);
         }
         depth = aNumber;
         return this;
@@ -724,6 +725,7 @@ public final class Place3 implements MovieTag {
     }
 
     /** {@inheritDoc} */
+    @SuppressWarnings("PMD.NPathComplexity")
     public int prepareToEncode(final Context context) {
         // CHECKSTYLE:OFF
         context.put(Context.TRANSPARENT, 1);
@@ -769,15 +771,16 @@ public final class Place3 implements MovieTag {
 
         context.remove(Context.TRANSPARENT);
 
-        return (length > Coder.SHORT_HEADER_LIMIT ? Coder.LONG_HEADER
+        return (length > Coder.HEADER_LIMIT ? Coder.LONG_HEADER
                 : Coder.SHORT_HEADER) + length;
         // CHECKSTYLE:ON
     }
 
     /** {@inheritDoc} */
+    @SuppressWarnings({"PMD.NPathComplexity", "PMD.ExcessiveMethodLength" })
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
-        if (length > Coder.SHORT_HEADER_LIMIT) {
+        if (length > Coder.HEADER_LIMIT) {
             coder.writeShort((MovieTypes.PLACE_3
                     << Coder.LENGTH_FIELD_SIZE) | Coder.IS_EXTENDED);
             coder.writeInt(length);

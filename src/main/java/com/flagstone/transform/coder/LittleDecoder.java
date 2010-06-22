@@ -42,6 +42,7 @@ import java.util.Stack;
  * and ints - are read in Little-Endian format with the least significant byte
  * decoded first.
  */
+@SuppressWarnings("PMD.TooManyMethods")
 public final class LittleDecoder {
     /** The default size, in bytes, for the internal buffer. */
     public static final int BUFFER_SIZE = 4096;
@@ -246,7 +247,7 @@ public final class LittleDecoder {
         if (size - index < BYTES_PER_INT) {
             fill();
         }
-        int diff = (pos + index) % BYTES_PER_INT;
+        final int diff = (pos + index) % BYTES_PER_INT;
 
         if (diff > 0) {
             index += BYTES_PER_INT - diff;

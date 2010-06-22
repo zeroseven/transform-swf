@@ -96,6 +96,7 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  * @see com.flagstone.transform.util.text.TextTable
  * @see com.flagstone.transform.util.font.Font
  */
+@SuppressWarnings("PMD.CyclomaticComplexity")
 public final class TextSpan implements SWFEncodeable {
 
     /** Format string used in toString() method. */
@@ -271,9 +272,9 @@ public final class TextSpan implements SWFEncodeable {
      *            Must be in the range 1..65535.
      */
     public void setIdentifier(final Integer uid) {
-        if ((uid != null) && ((uid < 1) || (uid > Coder.UNSIGNED_SHORT_MAX))) {
+        if ((uid != null) && ((uid < 1) || (uid > Coder.USHORT_MAX))) {
              throw new IllegalArgumentRangeException(
-                     1, Coder.UNSIGNED_SHORT_MAX, uid);
+                     1, Coder.USHORT_MAX, uid);
         }
         identifier = uid;
     }
@@ -299,10 +300,10 @@ public final class TextSpan implements SWFEncodeable {
      */
     public void setOffsetX(final Integer offset) {
         if ((offset != null)
-                && ((offset < Coder.SIGNED_SHORT_MIN)
-                || (offset > Coder.SIGNED_SHORT_MAX))) {
+                && ((offset < Coder.SHORT_MIN)
+                || (offset > Coder.SHORT_MAX))) {
             throw new IllegalArgumentRangeException(
-                    Coder.SIGNED_SHORT_MIN, Coder.SIGNED_SHORT_MAX, offset);
+                    Coder.SHORT_MIN, Coder.SHORT_MAX, offset);
         }
         offsetX = offset;
     }
@@ -318,10 +319,10 @@ public final class TextSpan implements SWFEncodeable {
      */
     public void setOffsetY(final Integer offset) {
         if ((offset != null)
-                && ((offset < Coder.SIGNED_SHORT_MIN)
-                || (offset > Coder.SIGNED_SHORT_MAX))) {
+                && ((offset < Coder.SHORT_MIN)
+                || (offset > Coder.SHORT_MAX))) {
             throw new IllegalArgumentRangeException(
-                    Coder.SIGNED_SHORT_MIN, Coder.SIGNED_SHORT_MAX, offset);
+                    Coder.SHORT_MIN, Coder.SHORT_MAX, offset);
         }
         offsetY = offset;
     }
@@ -334,9 +335,9 @@ public final class TextSpan implements SWFEncodeable {
      *            range 0..65535.
      */
     public void setHeight(final Integer aHeight) {
-        if ((aHeight < 0) || (aHeight > Coder.UNSIGNED_SHORT_MAX)) {
+        if ((aHeight < 0) || (aHeight > Coder.USHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    0, Coder.UNSIGNED_SHORT_MAX, aHeight);
+                    0, Coder.USHORT_MAX, aHeight);
         }
         height = aHeight;
     }
@@ -388,6 +389,7 @@ public final class TextSpan implements SWFEncodeable {
 
 
     /** {@inheritDoc} */
+    @SuppressWarnings({"PMD.NPathComplexity", "PMD.CyclomaticComplexity" })
     public int prepareToEncode(final Context context) {
         // CHECKSTYLE:OFF
         hasFont = (identifier != null) && (height != null);
@@ -423,6 +425,7 @@ public final class TextSpan implements SWFEncodeable {
 
 
     /** {@inheritDoc} */
+    @SuppressWarnings({"PMD.NPathComplexity", "PMD.CyclomaticComplexity" })
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
 

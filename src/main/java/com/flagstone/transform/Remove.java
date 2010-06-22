@@ -135,9 +135,9 @@ public final class Remove implements MovieTag {
      *            list. Must be in the range 1.65535.
      */
     public void setIdentifier(final int uid) {
-        if ((uid < 1) || (uid > Coder.UNSIGNED_SHORT_MAX)) {
+        if ((uid < 1) || (uid > Coder.USHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    1, Coder.UNSIGNED_SHORT_MAX, uid);
+                    1, Coder.USHORT_MAX, uid);
         }
         identifier = uid;
     }
@@ -159,9 +159,9 @@ public final class Remove implements MovieTag {
      *            displayed. Must be in the range 1.65535.
      */
     public void setLayer(final int aLayer) {
-        if ((aLayer < 1) || (aLayer > Coder.UNSIGNED_SHORT_MAX)) {
+        if ((aLayer < 1) || (aLayer > Coder.USHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    1, Coder.UNSIGNED_SHORT_MAX, aLayer);
+                    1, Coder.USHORT_MAX, aLayer);
         }
         layer = aLayer;
     }

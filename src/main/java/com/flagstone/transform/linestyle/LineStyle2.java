@@ -48,6 +48,7 @@ import com.flagstone.transform.fillstyle.FillStyle;
  * and line ends, a fill style for the stroke and whether the stroke thickness
  * is scaled if an object is resized.
  */
+@SuppressWarnings("PMD.CyclomaticComplexity")
 public final class LineStyle2 implements LineStyle {
 
     /** Format string used in toString() method. */
@@ -95,18 +96,18 @@ public final class LineStyle2 implements LineStyle {
         width = coder.readUnsignedShort();
 
         int bits = coder.readByte();
-        if ((bits & Coder.BIT6) != 0) {
+        if ((bits & Coder.BIT6) > 0) {
             startCap = 1;
-        } else if ((bits & Coder.BIT7) != 0) {
+        } else if ((bits & Coder.BIT7) > 0) {
             startCap = 2;
         } else {
             startCap = 0;
         }
 
-        if ((bits & Coder.BIT4) != 0) {
+        if ((bits & Coder.BIT4) > 0) {
             joinStyle = 1;
             hasMiter = false;
-        } else if ((bits & Coder.BIT5) != 0) {
+        } else if ((bits & Coder.BIT5) > 0) {
             joinStyle = 2;
             hasMiter = true;
         } else {
@@ -211,9 +212,9 @@ public final class LineStyle2 implements LineStyle {
      *            the width of the line. Must be in the range 0..65535.
      */
     public void setWidth(final int thickness) {
-        if ((thickness < 0) || (thickness > Coder.UNSIGNED_SHORT_MAX)) {
+        if ((thickness < 0) || (thickness > Coder.USHORT_MAX)) {
             throw new IllegalArgumentRangeException(0,
-                    Coder.UNSIGNED_SHORT_MAX, thickness);
+                    Coder.USHORT_MAX, thickness);
         }
         width = thickness;
     }
@@ -433,9 +434,9 @@ public final class LineStyle2 implements LineStyle {
      * @param limit the value controlling how miter joins are drawn.
      */
     public void setMiterLimit(final int limit) {
-        if ((limit < 0) || (limit > Coder.UNSIGNED_SHORT_MAX)) {
+        if ((limit < 0) || (limit > Coder.USHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    0, Coder.UNSIGNED_SHORT_MAX, limit);
+                    0, Coder.USHORT_MAX, limit);
         }
         miterLimit = limit;
     }
@@ -500,6 +501,7 @@ public final class LineStyle2 implements LineStyle {
     }
 
     /** {@inheritDoc} */
+    @SuppressWarnings({"PMD.NPathComplexity", "PMD.CyclomaticComplexity" })
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
         coder.writeShort(width);

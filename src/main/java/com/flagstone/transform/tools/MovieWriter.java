@@ -43,6 +43,7 @@ import com.flagstone.transform.MovieTag;
  * MovieWriter can be used to pretty print the output from the toString()
  * method of an object or even an entire Movie.
  */
+@SuppressWarnings("PMD.CyclomaticComplexity")
 public final class MovieWriter {
     /**
      * Pretty print an entire Movie and write it to a file.
@@ -73,6 +74,7 @@ public final class MovieWriter {
      * @param writer the Writer formatted output will be written.
      * @throws IOException if there is an error writing to the file.
      */
+    @SuppressWarnings("PMD.CyclomaticComplexity")
     public void write(final MovieTag tag, final Writer writer)
             throws IOException {
 

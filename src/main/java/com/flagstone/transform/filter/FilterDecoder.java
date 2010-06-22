@@ -42,6 +42,7 @@ import com.flagstone.transform.coder.SWFFactory;
  * FilterDecoder is used to decode the Filter objects encoded in Place3 and
  * ButtonShape objects.
  */
+@SuppressWarnings("PMD.CyclomaticComplexity")
 public final class FilterDecoder implements SWFFactory<Filter> {
     /**
      * Decode a filter.
@@ -54,8 +55,8 @@ public final class FilterDecoder implements SWFFactory<Filter> {
     public Filter getObject(final SWFDecoder coder, final Context context)
             throws IOException {
 
+        final int type = coder.readByte();
         Filter filter;
-        int type = coder.readByte();
 
         switch (type) {
         case FilterTypes.DROP_SHADOW:

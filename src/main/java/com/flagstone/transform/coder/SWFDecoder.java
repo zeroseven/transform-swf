@@ -200,7 +200,7 @@ public final class SWFDecoder {
      * expected number.
      */
     public void check(final int expected) throws CoderException {
-        int actual = (pos + index) - locations.peek();
+        final int actual = (pos + index) - locations.peek();
         if (actual != expected) {
             throw new CoderException(locations.peek(), expected,
                     actual - expected);
@@ -409,7 +409,7 @@ public final class SWFDecoder {
      * input stream.
      */
     public String readString(final int length) throws IOException {
-        byte[] bytes = new byte[length];
+        final byte[] bytes = new byte[length];
         readBytes(bytes);
         final int len;
         if (bytes[length - 1] == 0) {

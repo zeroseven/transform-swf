@@ -48,6 +48,7 @@ import com.flagstone.transform.linestyle.LineStyle2;
  * ShapeStyle2 extends the functionality of ShapeStyle by supporting lines
  * drawn with the LineStyle2 object.
  */
+@SuppressWarnings("PMD.CyclomaticComplexity")
 public final class ShapeStyle2 implements ShapeRecord {
 
     /** Format string used in toString() method. */
@@ -452,6 +453,7 @@ public final class ShapeStyle2 implements ShapeRecord {
     }
 
     /** {@inheritDoc} */
+    @SuppressWarnings({"PMD.NPathComplexity", "PMD.CyclomaticComplexity" })
     public int prepareToEncode(final Context context) {
         // CHECKSTYLE:OFF
         hasLine = lineStyle != null;
@@ -527,6 +529,7 @@ public final class ShapeStyle2 implements ShapeRecord {
     }
 
     /** {@inheritDoc} */
+    @SuppressWarnings({"PMD.NPathComplexity", "PMD.CyclomaticComplexity" })
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
         coder.writeBits(0, 1);

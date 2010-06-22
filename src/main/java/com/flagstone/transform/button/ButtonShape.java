@@ -253,9 +253,9 @@ public final class ButtonShape implements SWFEncodeable {
      * @return this object.
      */
     public ButtonShape setIdentifier(final int uid) {
-        if ((uid < 1) || (uid > Coder.UNSIGNED_SHORT_MAX)) {
+        if ((uid < 1) || (uid > Coder.USHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    1, Coder.UNSIGNED_SHORT_MAX, uid);
+                    1, Coder.USHORT_MAX, uid);
         }
         identifier = uid;
         return this;
@@ -279,9 +279,9 @@ public final class ButtonShape implements SWFEncodeable {
      * @return this object.
      */
     public ButtonShape setLayer(final int aNumber) {
-        if ((aNumber < 1) || (aNumber > Coder.UNSIGNED_SHORT_MAX)) {
+        if ((aNumber < 1) || (aNumber > Coder.USHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    1, Coder.UNSIGNED_SHORT_MAX, aNumber);
+                    1, Coder.USHORT_MAX, aNumber);
         }
         layer = aNumber;
         return this;
@@ -440,6 +440,7 @@ public final class ButtonShape implements SWFEncodeable {
     }
 
     /** {@inheritDoc} */
+    @SuppressWarnings("PMD.NPathComplexity")
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
         int bits = 0;

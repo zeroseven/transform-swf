@@ -56,7 +56,8 @@ import com.flagstone.transform.text.Language;
  * DefineFont3 is used in conjunction with FontAlignment zones to support
  * snapping glyphs to the nearest pixel again to improve display quality.
  */
-@SuppressWarnings({"PMD.TooManyFields", "PMD.TooManyMethods" })
+@SuppressWarnings({"PMD.TooManyFields", "PMD.TooManyMethods",
+    "PMD.CyclomaticComplexity"})
 public final class DefineFont3 implements DefineTag {
     /** Format string used in toString() method. */
     private static final String FORMAT = "DefineFont3: { identifier=%d;"
@@ -102,7 +103,7 @@ public final class DefineFont3 implements DefineTag {
      * @throws IOException
      *             if an error occurs while decoding the data.
      */
-    public DefineFont3(final SWFDecoder coder, final Context context)
+     public DefineFont3(final SWFDecoder coder, final Context context)
             throws IOException {
         length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
         if (length == Coder.IS_EXTENDED) {
@@ -287,9 +288,9 @@ public final class DefineFont3 implements DefineTag {
 
     /** {@inheritDoc} */
     public void setIdentifier(final int uid) {
-        if ((uid < 1) || (uid > Coder.UNSIGNED_SHORT_MAX)) {
+        if ((uid < 1) || (uid > Coder.USHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    1, Coder.UNSIGNED_SHORT_MAX, uid);
+                    1, Coder.USHORT_MAX, uid);
         }
         identifier = uid;
     }
@@ -306,9 +307,9 @@ public final class DefineFont3 implements DefineTag {
      * @return this object.
      */
     public DefineFont3 addGlyph(final int code, final Shape obj) {
-        if ((code < 0) || (code > Coder.UNSIGNED_SHORT_MAX)) {
+        if ((code < 0) || (code > Coder.USHORT_MAX)) {
             throw new IllegalArgumentRangeException(0,
-                    Coder.UNSIGNED_SHORT_MAX, code);
+                    Coder.USHORT_MAX, code);
         }
         codes.add(code);
 
@@ -330,10 +331,10 @@ public final class DefineFont3 implements DefineTag {
      * @return this object.
      */
     public DefineFont3 addAdvance(final int anAdvance) {
-        if ((anAdvance < Coder.SIGNED_SHORT_MIN)
-                || (anAdvance > Coder.SIGNED_SHORT_MAX)) {
+        if ((anAdvance < Coder.SHORT_MIN)
+                || (anAdvance > Coder.SHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    Coder.SIGNED_SHORT_MIN, Coder.SIGNED_SHORT_MAX, anAdvance);
+                    Coder.SHORT_MIN, Coder.SHORT_MAX, anAdvance);
         }
         advances.add(anAdvance);
         return this;
@@ -650,10 +651,10 @@ public final class DefineFont3 implements DefineTag {
      *            the ascent for the font in the range -32768..32767.
      */
     public void setAscent(final int aNumber) {
-        if ((aNumber < Coder.SIGNED_SHORT_MIN)
-                || (aNumber > Coder.SIGNED_SHORT_MAX)) {
+        if ((aNumber < Coder.SHORT_MIN)
+                || (aNumber > Coder.SHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    Coder.SIGNED_SHORT_MIN, Coder.SIGNED_SHORT_MAX, aNumber);
+                    Coder.SHORT_MIN, Coder.SHORT_MAX, aNumber);
         }
         ascent = aNumber;
     }
@@ -665,10 +666,10 @@ public final class DefineFont3 implements DefineTag {
      *            the descent for the font in the range -32768..32767.
      */
     public void setDescent(final int aNumber) {
-        if ((aNumber < Coder.SIGNED_SHORT_MIN)
-                || (aNumber > Coder.SIGNED_SHORT_MAX)) {
+        if ((aNumber < Coder.SHORT_MIN)
+                || (aNumber > Coder.SHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    Coder.SIGNED_SHORT_MIN, Coder.SIGNED_SHORT_MAX, aNumber);
+                    Coder.SHORT_MIN, Coder.SHORT_MAX, aNumber);
         }
         descent = aNumber;
     }
@@ -680,10 +681,10 @@ public final class DefineFont3 implements DefineTag {
      *            the descent for the font in the range -32768..32767.
      */
     public void setLeading(final int aNumber) {
-        if ((aNumber < Coder.SIGNED_SHORT_MIN)
-                || (aNumber > Coder.SIGNED_SHORT_MAX)) {
+        if ((aNumber < Coder.SHORT_MIN)
+                || (aNumber > Coder.SHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    Coder.SIGNED_SHORT_MIN, Coder.SIGNED_SHORT_MAX, aNumber);
+                    Coder.SHORT_MIN, Coder.SHORT_MAX, aNumber);
         }
         leading = aNumber;
     }
@@ -743,6 +744,7 @@ public final class DefineFont3 implements DefineTag {
     }
 
     /** {@inheritDoc} */
+    @SuppressWarnings("PMD.NPathComplexity")
     public int prepareToEncode(final Context context) {
         // CHECKSTYLE:OFF
         wideCodes = (context.get(Context.VERSION) > 5)
@@ -755,8 +757,8 @@ public final class DefineFont3 implements DefineTag {
             context.put(Context.WIDE_CODES, 1);
         }
 
+        final int count = shapes.size();
         int index = 0;
-        int count = shapes.size();
         int tableEntry;
         int shapeLength;
 
@@ -780,7 +782,7 @@ public final class DefineFont3 implements DefineTag {
         table[index++] = tableEntry;
 
         wideOffsets = (shapes.size() * 2 + glyphLength)
-                > Coder.UNSIGNED_SHORT_MAX;
+                > Coder.USHORT_MAX;
 
         length = 5;
         length += context.strlen(name);
@@ -806,12 +808,13 @@ public final class DefineFont3 implements DefineTag {
         context.put(Context.LINE_SIZE, 0);
         context.remove(Context.WIDE_CODES);
 
-        return (length > Coder.SHORT_HEADER_LIMIT ? Coder.LONG_HEADER
+        return (length > Coder.HEADER_LIMIT ? Coder.LONG_HEADER
                 : Coder.SHORT_HEADER) + length;
         // CHECKSTYLE:ON
     }
 
     /** {@inheritDoc} */
+    @SuppressWarnings("PMD.NPathComplexity")
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
         int format;
@@ -826,7 +829,7 @@ public final class DefineFont3 implements DefineTag {
             format = 0;
         }
 
-        if (length > Coder.SHORT_HEADER_LIMIT) {
+        if (length > Coder.HEADER_LIMIT) {
             coder.writeShort((MovieTypes.DEFINE_FONT_3
                     << Coder.LENGTH_FIELD_SIZE) | Coder.IS_EXTENDED);
             coder.writeInt(length);

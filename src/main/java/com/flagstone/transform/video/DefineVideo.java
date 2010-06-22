@@ -165,9 +165,9 @@ public final class DefineVideo implements DefineTag {
 
     /** {@inheritDoc} */
     public void setIdentifier(final int uid) {
-        if ((uid < 1) || (uid > Coder.UNSIGNED_SHORT_MAX)) {
+        if ((uid < 1) || (uid > Coder.USHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    1, Coder.UNSIGNED_SHORT_MAX, uid);
+                    1, Coder.USHORT_MAX, uid);
         }
         identifier = uid;
     }
@@ -188,9 +188,9 @@ public final class DefineVideo implements DefineTag {
      *            the number of video frames. Must be in the range 0..65535.
      */
     public void setFrameCount(final int count) {
-        if ((count < 0) || (count > Coder.UNSIGNED_SHORT_MAX)) {
+        if ((count < 0) || (count > Coder.USHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    0, Coder.UNSIGNED_SHORT_MAX, count);
+                    0, Coder.USHORT_MAX, count);
         }
         frameCount = count;
     }
@@ -211,9 +211,9 @@ public final class DefineVideo implements DefineTag {
      *            the width of the frame. Must be in the range 0..65535.
      */
     public void setWidth(final int size) {
-        if ((size < 0) || (size > Coder.UNSIGNED_SHORT_MAX)) {
+        if ((size < 0) || (size > Coder.USHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    0, Coder.UNSIGNED_SHORT_MAX, size);
+                    0, Coder.USHORT_MAX, size);
         }
         width = size;
     }
@@ -234,9 +234,9 @@ public final class DefineVideo implements DefineTag {
      *            the height of the frame. Must be in the range 0..65535.
      */
     public void setHeight(final int size) {
-        if ((size < 0) || (size > Coder.UNSIGNED_SHORT_MAX)) {
+        if ((size < 0) || (size > Coder.USHORT_MAX)) {
             throw new IllegalArgumentRangeException(
-                    0, Coder.UNSIGNED_SHORT_MAX, size);
+                    0, Coder.USHORT_MAX, size);
         }
         height = size;
     }
@@ -400,7 +400,7 @@ public final class DefineVideo implements DefineTag {
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
 
-        if (length > Coder.SHORT_HEADER_LIMIT) {
+        if (length > Coder.HEADER_LIMIT) {
             coder.writeShort((MovieTypes.DEFINE_VIDEO
                     << Coder.LENGTH_FIELD_SIZE) | Coder.IS_EXTENDED);
             coder.writeInt(length);
