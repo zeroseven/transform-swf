@@ -68,31 +68,19 @@ public final class TrueTypeGlyph extends Glyph {
     }
 
     public void getXCoordinates(final int[] array) {
-        final int count = xCoordinates.length;
-        for (int i = 0; i < count; i++) {
-            array[i] = xCoordinates[i];
-        }
+        System.arraycopy(xCoordinates, 0, array, 0, xCoordinates.length);
     }
 
     public void getYCoordinates(final int[] array) {
-        final int count = yCoordinates.length;
-        for (int i = 0; i < count; i++) {
-            array[i] = yCoordinates[i];
-        }
+        System.arraycopy(yCoordinates, 0, array, 0, yCoordinates.length);
     }
 
     public void getEnd(final int[] array) {
-        final int count = endPoints.length;
-        for (int i = 0; i < count; i++) {
-            array[i] = endPoints[i];
-        }
+        System.arraycopy(endPoints, 0, array, 0, endPoints.length);
     }
 
     public void getCurve(final boolean[] array) {
-        final int count = onCurve.length;
-        for (int i = 0; i < count; i++) {
-            array[i] = onCurve[i];
-        }
+        System.arraycopy(onCurve, 0, array, 0, onCurve.length);
     }
 
     public void setCoordinates(final int[] xcoords, final int[] ycoords) {
