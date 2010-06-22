@@ -39,25 +39,9 @@ import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.zip.DataFormatException;
-import java.util.zip.Deflater;
 
-import com.flagstone.transform.datatype.Bounds;
-import com.flagstone.transform.datatype.CoordTransform;
-import com.flagstone.transform.fillstyle.BitmapFill;
-import com.flagstone.transform.fillstyle.FillStyle;
 import com.flagstone.transform.image.ImageTag;
-import com.flagstone.transform.linestyle.LineStyle;
-import com.flagstone.transform.linestyle.LineStyle1;
-import com.flagstone.transform.shape.DefineShape3;
-import com.flagstone.transform.shape.Line;
-import com.flagstone.transform.shape.Shape;
-import com.flagstone.transform.shape.ShapeRecord;
-import com.flagstone.transform.shape.ShapeStyle;
-import com.flagstone.transform.video.ImageBlock;
 
 /**
  * <p>
@@ -138,11 +122,6 @@ import com.flagstone.transform.video.ImageBlock;
  * </P>
  */
 public final class ImageFactory {
-
-    private static final int TWIPS_PER_PIXEL = 20;
-
-    private static final int RGBA_CHANNELS = 4;
-    private static final int RGB_CHANNELS = 3;
 
     /** The object used to decode the image. */
     private transient ImageDecoder decoder;
@@ -239,171 +218,12 @@ public final class ImageFactory {
     }
 
     /**
-     * Generates the shape definition object that is required to display an
-     * image in a Flash movie. The shape is generated with a single fill style
-     * (BitmapFill object). The origin of the shape is specified relative to the
-     * top left corner of the image.
+     * Get the ImageDecoder used to decode the image.
      *
-     * The borderStyle argument specifies a border that will be drawn around the
-     * image. The style may be set to null is no border is drawn.
-     *
-     * @param shapeId
-     *            an unique identifier that is used to reference the shape
-     *            definition in a Flash movie.
-     *
-     * @param imageId
-     *            the unique identifier of the image generated using the
-     *            defineImage() method.
-     *
-     * @param xOrigin
-     *            the offset in pixels along the x-axis, relative to the top
-     *            left corner of the image, where the origin (0,0) of the shape
-     *            will be located.
-     *
-     * @param yOrigin
-     *            the offset in pixels along the y-axis, relative to the top
-     *            left corner of the image, where the origin (0,0) of the shape
-     *            will be located.
-     *
-     * @param borderStyle
-     *            the style drawn around the border of the image. May be null if
-     *            no border is drawn.
-     *
-     * @return the shape that is used to display the image in a Flash movie.
+     * @return the ImageDecoder instance that the factory created to decode the
+     * image.
      */
-    public DefineShape3 defineEnclosingShape(final int shapeId,
-            final int imageId, final int xOrigin, final int yOrigin,
-            final LineStyle1 borderStyle) {
-
-        int lineWidth = 0;
-
-        if (borderStyle != null) {
-            lineWidth = borderStyle.getWidth() / 2;
-        }
-
-        final Bounds bounds = new Bounds(
-                -xOrigin * TWIPS_PER_PIXEL - lineWidth,
-                -yOrigin * TWIPS_PER_PIXEL - lineWidth,
-                (decoder.getWidth() - xOrigin) * TWIPS_PER_PIXEL + lineWidth,
-                (decoder.getHeight() - yOrigin) * TWIPS_PER_PIXEL + lineWidth);
-
-        final Shape shape = new Shape(new ArrayList<ShapeRecord>());
-        final ShapeStyle style = new ShapeStyle().setLineStyle(
-                borderStyle == null ? 0 : 1).setFillStyle(1);
-        style.setMove(-xOrigin * TWIPS_PER_PIXEL, -yOrigin * TWIPS_PER_PIXEL);
-
-        shape.add(style);
-        shape.add(new Line(decoder.getWidth() * TWIPS_PER_PIXEL, 0));
-        shape.add(new Line(0, decoder.getHeight() * TWIPS_PER_PIXEL));
-        shape.add(new Line(-decoder.getWidth() * TWIPS_PER_PIXEL, 0));
-        shape.add(new Line(0, -decoder.getHeight() * TWIPS_PER_PIXEL));
-
-        final DefineShape3 definition = new DefineShape3(shapeId, bounds,
-                new ArrayList<FillStyle>(), new ArrayList<LineStyle>(), shape);
-        final CoordTransform transform = new CoordTransform(
-                TWIPS_PER_PIXEL, TWIPS_PER_PIXEL, 0, 0,
-                -xOrigin * TWIPS_PER_PIXEL, -yOrigin * TWIPS_PER_PIXEL);
-
-        if (borderStyle != null) {
-            definition.add(borderStyle);
-        }
-
-        definition.add(new BitmapFill(false, false, imageId, transform));
-
-        return definition;
-    }
-
-    /**
-     * Return an image stored in a a file as a list of ImageBlock objects that
-     * can be used when creating ScreenVideo streams.
-     *
-     * The image is divided by tiling blocks of the specified width and height
-     * across the image. For blocks at the right and bottom edges the size of
-     * the block may be reduced so that it fits the image exactly. In other
-     * words the blocks are not padded with extra pixel information.
-     *
-     * @param  blocks
-     *            a list of FMImageBlock objects.
-     * @param blockWidth
-     *            the width of a block in pixels.
-     * @param blockHeight
-     *            the height of a block in pixels
-     */
-    public void getImageAsBlocks(final List<ImageBlock> blocks,
-            final int blockWidth, final int blockHeight) {
-        int row = 0;
-        int col = 0;
-
-        int src = 0;
-        int dst = 0;
-
-        final byte[] image = decoder.getImage();
-        final int width = decoder.getWidth();
-        final int height = decoder.getHeight();
-
-        final byte[] formattedImage = new byte[width * height * RGB_CHANNELS];
-
-        for (row = height - 1; row >= 0; row--) {
-            src = row * width;
-
-            for (col = 0; col < width; col++, src += RGBA_CHANNELS) {
-                formattedImage[dst++] = image[src + 2];
-                formattedImage[dst++] = image[src + 1];
-                formattedImage[dst++] = image[src];
-            }
-        }
-
-        final int columns = (width + blockWidth - 1) / blockWidth;
-        final int rows = (height + blockHeight - 1) / blockHeight;
-
-        final byte[] blockData = new byte[blockHeight * blockWidth
-                                          * RGB_CHANNELS];
-
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                final int xOffset = j * blockWidth;
-                final int yOffset = i * blockHeight;
-
-                final int xSpan = (width - xOffset > blockWidth) ? blockWidth
-                        : width - xOffset;
-                final int ySpan = (height - yOffset > blockHeight) ? blockHeight
-                        : height - yOffset;
-                int offset = 0;
-
-                int idx;
-
-                for (int k = 0; k < ySpan; k++) {
-                    for (int l = 0; l < xSpan; l++, offset += RGB_CHANNELS) {
-                        idx = (yOffset + k) * (width * RGB_CHANNELS)
-                                + (xOffset + l) * RGB_CHANNELS;
-
-                        blockData[offset] = formattedImage[idx];
-                        blockData[offset + 1] = formattedImage[idx + 1];
-                        blockData[offset + 2] = formattedImage[idx + 2];
-                    }
-                }
-
-                blocks.add(new ImageBlock(xSpan, ySpan,
-                        zip(blockData, offset)));
-            }
-        }
-    }
-
-    /**
-     * Compress the image using the ZIP format.
-     * @param image the image data.
-     * @param length the number of bytes from the image to compress.
-     * @return the compressed image.
-     */
-    private byte[] zip(final byte[] image, final int length) {
-        final Deflater deflater = new Deflater();
-        deflater.setInput(image, 0, length);
-        deflater.finish();
-
-        final byte[] compressedData = new byte[image.length];
-        final int bytesCompressed = deflater.deflate(compressedData);
-        final byte[] newData = Arrays.copyOf(compressedData, bytesCompressed);
-
-        return newData;
+    public ImageDecoder getDecoder() {
+        return decoder;
     }
 }

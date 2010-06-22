@@ -57,8 +57,6 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
 
     /** Level used to indicate an opaque colour. */
     private static final int OPAQUE = 255;
-    /** Mask for reading unsigned 8-bit values. */
-    private static final int UNSIGNED_BYTE = 255;
     /** Message used to signal that the image cannot be decoded. */
     private static final String BAD_FORMAT = "Unsupported Format";
     /** The signature identifying BMP files. */
@@ -72,8 +70,8 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
     /** A true-colour image. */
     private static final int BI_BITFIELDS = 3;
 
-    private static final int UNCOMPRESSED_LENGTH = 12;
-    private static final int COMPRESSED_LENGTH  = 40;
+    private static final int UNZIPPED_LENGTH = 12;
+    private static final int ZIPPED_LENGTH  = 40;
 
     /** Size of each colour table entry or pixel in a true colour image. */
     private static final int COLOUR_CHANNELS = 4;
@@ -106,32 +104,30 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
     /** Byte offset to alpha channel. */
     private static final int ALPHA = 3;
 
-    /** Shift used to align the RGB555 red channel to a 8-bit pixel. */
-    private static final int RGB5_MSB_MASK = 0x00F8;
     /** Mask used to extract red channel from a 16-bit RGB555 pixel. */
-    private static final int RGB555_RED_MASK = 0x7C00;
+    private static final int R5_MASK = 0x7C00;
     /** Mask used to extract green channel from a 16-bit RGB555 pixel. */
-    private static final int RGB555_GREEN_MASK = 0x03E0;
+    private static final int G5_MASK = 0x03E0;
     /** Mask used to extract blue channel from a 16-bit RGB555 pixel. */
-    private static final int RGB555_BLUE_MASK = 0x001F;
+    private static final int B5_MASK = 0x001F;
     /** Shift used to align the RGB555 red channel to a 8-bit pixel. */
-    private static final int RGB555_RED_SHIFT = 7;
+    private static final int R5_SHIFT = 7;
     /** Shift used to align the RGB555 green channel to a 8-bit pixel. */
-    private static final int RGB555_GREEN_SHIFT = 2;
+    private static final int G5_SHIFT = 2;
     /** Shift used to align the RGB555 blue channel to a 8-bit pixel. */
-    private static final int RGB555_BLUE_SHIFT = 3;
+    private static final int B5_SHIFT = 3;
     /** Mask used to extract red channel from a 16-bit RGB565 pixel. */
-    private static final int RGB565_RED_MASK = 0x7C00;
+    private static final int R6_MASK = 0x7C00;
     /** Mask used to extract green channel from a 16-bit RGB565 pixel. */
-    private static final int RGB565_GREEN_MASK = 0x03E0;
+    private static final int G6_MASK = 0x03E0;
     /** Mask used to extract blue channel from a 16-bit RGB565 pixel. */
-    private static final int RGB565_BLUE_MASK = 0x001F;
+    private static final int B6_MASK = 0x001F;
     /** Shift used to align the RGB565 red channel to a 8-bit pixel. */
-    private static final int RGB565_RED_SHIFT = 8;
+    private static final int R6_SHIFT = 8;
     /** Shift used to align the RGB565 green channel to a 8-bit pixel. */
-    private static final int RGB565_GREEN_SHIFT = 3;
+    private static final int G6_SHIFT = 3;
     /** Shift used to align the RGB565 blue channel to a 8-bit pixel. */
-    private static final int RGB565_BLUE_SHIFT = 3;
+    private static final int B6_SHIFT = 3;
 
     /** The format of the decoded image. */
     private transient ImageFormat format;
@@ -160,7 +156,8 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
     private transient int blueMask;
     /** Shift for the blue pixel to convert to an 8-bit colour. */
     private transient int blueShift;
-
+    private transient int bitsPerPixel;
+    private transient int coloursUsed;
 
     /** {@inheritDoc} */
     public void read(final File file) throws IOException, DataFormatException {
@@ -187,29 +184,32 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
     /** {@inheritDoc} */
     public ImageTag defineImage(final int identifier) {
         ImageTag object = null;
+        final ImageFilter filter = new ImageFilter();
 
         switch (format) {
         case IDX8:
             object = new DefineImage(identifier, width, height,
                     table.length / COLOUR_CHANNELS,
-                    zip(merge(adjustScan(width, height, image), table)));
+                    zip(filter.merge(filter.adjustScan(width, height, image),
+                            table)));
             break;
         case IDXA:
             object = new DefineImage2(identifier, width, height,
                     table.length / COLOUR_CHANNELS,
-                    zip(mergeAlpha(adjustScan(width, height, image), table)));
+                    zip(filter.mergeAlpha(
+                            filter.adjustScan(width, height, image), table)));
             break;
         case RGB5:
             object = new DefineImage(identifier, width, height,
-                    zip(packColours(width, height, image)), RGB5_SIZE);
+                    zip(filter.packColors(width, height, image)), RGB5_SIZE);
             break;
         case RGB8:
-            orderAlpha(image);
+            filter.orderAlpha(image);
             object = new DefineImage(identifier, width, height, zip(image),
                     RGB8_SIZE);
             break;
         case RGBA:
-            applyAlpha(image);
+            filter.applyAlpha(image);
             object = new DefineImage2(identifier, width, height, zip(image));
             break;
         default:
@@ -257,59 +257,84 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
         final int offset = coder.readInt();
         final int headerSize = coder.readInt();
 
-        int bitsPerPixel;
-        int coloursUsed;
-
-        switch (headerSize) {
-        case UNCOMPRESSED_LENGTH:
-            width = coder.readUnsignedShort();
-            height = coder.readUnsignedShort();
-            coder.readUnsignedShort(); // bitPlanes
-            bitsPerPixel = coder.readUnsignedShort();
-            coloursUsed = 0;
-            break;
-        case COMPRESSED_LENGTH:
-            width = coder.readInt();
-            height = coder.readInt();
-            coder.readUnsignedShort(); // bitPlanes
-            bitsPerPixel = coder.readUnsignedShort();
-            compressionMethod = coder.readInt();
-            coder.readInt(); // imageSize
-            coder.readInt(); // horizontalResolution
-            coder.readInt(); // verticalResolution
-            coloursUsed = coder.readInt();
-            coder.readInt(); // importantColours
-            break;
-        default:
-            bitsPerPixel = 0;
-            coloursUsed = 0;
-            break;
+        if (headerSize == ZIPPED_LENGTH) {
+            decodeCompressedHeader(coder);
+        } else {
+            decodeHeader(coder);
         }
+
+        decodeFormat(bitsPerPixel);
+
+        if (format == ImageFormat.IDX8) {
+            coloursUsed = 1 << bitsPerPixel;
+
+            if (headerSize == UNZIPPED_LENGTH) {
+                decodeTable(coloursUsed, coder);
+            } else {
+                decodeTableWithAlpha(coloursUsed, coder);
+            }
+
+            coder.skip(offset - coder.bytesRead());
+            decodeIndexedImage(coder);
+        } else {
+            coder.skip(offset - coder.bytesRead());
+            decodeColourImage(coder);
+        }
+    }
+
+    private void decodeHeader(final LittleDecoder coder) throws IOException {
+        width = coder.readUnsignedShort();
+        height = coder.readUnsignedShort();
+        coder.readUnsignedShort(); // bitPlanes
+        bitsPerPixel = coder.readUnsignedShort();
+        coloursUsed = 0;
+    }
+
+    private void decodeCompressedHeader(final LittleDecoder coder)
+        throws IOException {
+
+        width = coder.readInt();
+        height = coder.readInt();
+        coder.readUnsignedShort(); // bitPlanes
+        bitsPerPixel = coder.readUnsignedShort();
+        compressionMethod = coder.readInt();
+        coder.readInt(); // imageSize
+        coder.readInt(); // horizontalResolution
+        coder.readInt(); // verticalResolution
+        coloursUsed = coder.readInt();
+        coder.readInt(); // importantColours
 
         if (compressionMethod == BI_BITFIELDS) {
-            redMask = coder.readInt();
-            greenMask = coder.readInt();
-            blueMask = coder.readInt();
+            decodeMasks(coder);
+        }
+}
 
-            if (redMask == RGB555_RED_MASK) {
-                redShift = RGB555_RED_SHIFT;
-            } else if (redMask == RGB565_RED_MASK) {
-                redShift = RGB565_RED_SHIFT;
-            }
+    private void decodeMasks(final LittleDecoder coder) throws IOException {
+        redMask = coder.readInt();
+        greenMask = coder.readInt();
+        blueMask = coder.readInt();
 
-            if (greenMask == RGB555_GREEN_MASK) {
-                greenShift = RGB555_GREEN_SHIFT;
-            } else if (greenMask == RGB565_GREEN_MASK) {
-                greenShift = RGB565_GREEN_SHIFT;
-            }
-
-            if (blueMask == RGB555_BLUE_MASK) {
-                blueShift = RGB555_BLUE_SHIFT;
-            } else if (blueMask == RGB565_BLUE_MASK) {
-                blueShift = RGB565_BLUE_SHIFT;
-            }
+        if (redMask == R5_MASK) {
+            redShift = R5_SHIFT;
+        } else if (redMask == R6_MASK) {
+            redShift = R6_SHIFT;
         }
 
+        if (greenMask == G5_MASK) {
+            greenShift = G5_SHIFT;
+        } else if (greenMask == G6_MASK) {
+            greenShift = G6_SHIFT;
+        }
+
+        if (blueMask == B5_MASK) {
+            blueShift = B5_SHIFT;
+        } else if (blueMask == B6_MASK) {
+            blueShift = B6_SHIFT;
+        }
+    }
+
+    private void decodeFormat(final int bitsPerPixel)
+                throws DataFormatException {
         switch (bitsPerPixel) {
         case IDX_1:
             format = ImageFormat.IDX8;
@@ -342,65 +367,73 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
         default:
             throw new DataFormatException(BAD_FORMAT);
         }
+    }
 
-        if (format == ImageFormat.IDX8) {
-            coloursUsed = 1 << bitsPerPixel;
-            table = new byte[coloursUsed * COLOUR_CHANNELS];
-            image = new byte[height * width];
+    private void decodeTable(final int coloursUsed, final LittleDecoder coder)
+            throws IOException {
+        int index = 0;
+        table = new byte[coloursUsed * COLOUR_CHANNELS];
 
-            int index = 0;
+        for (int i = 0; i < coloursUsed; i++) {
+            table[index + ALPHA] = (byte) OPAQUE;
+            table[index + BLUE] = (byte) coder.readByte();
+            table[index + GREEN] = (byte) coder.readByte();
+            table[index + RED] = (byte) coder.readByte();
+            index += COLOUR_CHANNELS;
+        }
+    }
 
-            if (headerSize == UNCOMPRESSED_LENGTH) {
-                for (int i = 0; i < coloursUsed; i++) {
-                    table[index + ALPHA] = (byte) OPAQUE;
-                    table[index + BLUE] = (byte) coder.readByte();
-                    table[index + GREEN] = (byte) coder.readByte();
-                    table[index + RED] = (byte) coder.readByte();
-                    index += COLOUR_CHANNELS;
-                }
-            } else {
-                for (int i = 0; i < coloursUsed; i++) {
-                    table[index + RED] = (byte) coder.readByte();
-                    table[index + GREEN] = (byte) coder.readByte();
-                    table[index + BLUE] = (byte) coder.readByte();
-                    table[index + ALPHA] = (byte) coder.readByte();
-                    index += COLOUR_CHANNELS;
-                }
-            }
+    private void decodeTableWithAlpha(final int coloursUsed,
+            final LittleDecoder coder) throws IOException {
+        int index = 0;
+        table = new byte[coloursUsed * COLOUR_CHANNELS];
 
-            coder.skip(offset - coder.bytesRead());
+        for (int i = 0; i < coloursUsed; i++) {
+            table[index + RED] = (byte) coder.readByte();
+            table[index + GREEN] = (byte) coder.readByte();
+            table[index + BLUE] = (byte) coder.readByte();
+            table[index + ALPHA] = (byte) coder.readByte();
+            index += COLOUR_CHANNELS;
+        }
+    }
 
-            switch (compressionMethod) {
-            case BI_RGB:
-                decodeIDX8(coder);
-                break;
-            case BI_RLE8:
-                decodeRLE8(coder);
-                break;
-            case BI_RLE4:
-                decodeRLE4(coder);
-                break;
-            default:
-                throw new DataFormatException(BAD_FORMAT);
-            }
-        } else {
-            image = new byte[height * width * COLOUR_CHANNELS];
+    private void decodeIndexedImage(final LittleDecoder coder)
+            throws IOException, DataFormatException {
 
-            coder.skip(offset - coder.bytesRead());
+        image = new byte[height * width];
 
-            switch (format) {
-            case RGB5:
-                decodeRGB5(coder);
-                break;
-            case RGB8:
-                decodeRGB8(coder);
-                break;
-            case RGBA:
-                decodeRGBA(coder);
-                break;
-            default:
-                throw new DataFormatException(BAD_FORMAT);
-            }
+        switch (compressionMethod) {
+        case BI_RGB:
+            decodeIDX8(coder);
+            break;
+        case BI_RLE8:
+            decodeRLE8(coder);
+            break;
+        case BI_RLE4:
+            decodeRLE4(coder);
+            break;
+        default:
+            throw new DataFormatException(BAD_FORMAT);
+        }
+    }
+
+    private void decodeColourImage(final LittleDecoder coder)
+            throws IOException, DataFormatException {
+
+        image = new byte[height * width * COLOUR_CHANNELS];
+
+        switch (format) {
+        case RGB5:
+            decodeRGB5(coder);
+            break;
+        case RGB8:
+            decodeRGB8(coder);
+            break;
+        case RGBA:
+            decodeRGBA(coder);
+            break;
+        default:
+            throw new DataFormatException(BAD_FORMAT);
         }
     }
 
@@ -440,12 +473,13 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
         int value;
 
         boolean hasMore = true;
+        int code;
+        int count;
 
         while (hasMore) {
-            final int count = coder.readByte();
-
+            count = coder.readByte();
             if (count == 0) {
-                final int code = coder.readByte();
+                code = coder.readByte();
 
                 switch (code) {
                 case 0:
@@ -458,28 +492,10 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
                 case 2:
                     col += coder.readUnsignedShort();
                     row -= coder.readUnsignedShort();
-                    index = row * width + col;
-                    for (int i = 0; i < code; i += 2) {
-                        value = coder.readByte();
-                        image[index++] = (byte) (value >>> Coder.TO_LOWER_NIB);
-                        image[index++] = (byte) (value & Coder.NIB0);
-                    }
-
-                    if ((code & 2) == 2) {
-                        coder.readByte();
-                    }
+                    decodeRLE4Pixels(code, coder, row, col);
                     break;
                 default:
-                    index = row * width + col;
-                    for (int i = 0; i < code; i += 2) {
-                        value = coder.readByte();
-                        image[index++] = (byte) (value >>> Coder.TO_LOWER_NIB);
-                        image[index++] = (byte) (value & Coder.NIB0);
-                    }
-
-                    if ((code & 2) == 2) {
-                        coder.readByte();
-                    }
+                    decodeRLE4Pixels(code, coder, row, col);
                     break;
                 }
             } else {
@@ -495,6 +511,22 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
         }
     }
 
+    private void decodeRLE4Pixels(final int code, final LittleDecoder coder,
+            final int row, final int col) throws IOException {
+        int index = row * width + col;
+        int value;
+        for (int i = 0; i < code; i += 2) {
+            value = coder.readByte();
+            image[index++] = (byte) (value >>> Coder.TO_LOWER_NIB);
+            image[index++] = (byte) (value & Coder.NIB0);
+        }
+
+        if ((code & 2) == 2) {
+            coder.readByte();
+        }
+    }
+
+
     /**
      * Decode the run length encoded image data block (RLE8).
      * @param coder the decoder containing the image data.
@@ -503,15 +535,16 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
     private void decodeRLE8(final LittleDecoder coder) throws IOException {
         int row = height - 1;
         int col = 0;
-        int index = 0;
 
         boolean hasMore = true;
+        int code;
+        int count;
 
         while (hasMore) {
-            final int count = coder.readByte();
+            count = coder.readByte();
 
             if (count == 0) {
-                final int code = coder.readByte();
+                code = coder.readByte();
 
                 switch (code) {
                 case 0:
@@ -524,34 +557,36 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
                 case 2:
                     col += coder.readUnsignedShort();
                     row -= coder.readUnsignedShort();
-                    index = row * width + col;
-                    for (int i = 0; i < code; i++) {
-                        image[index++] = (byte) coder.readByte();
-                    }
-
-                    if ((code & 1) == 1) {
-                        coder.readByte();
-                    }
+                    decodeRLE8Pixels(code, coder, row, col);
                     break;
                 default:
-                    index = row * width + col;
-                    for (int i = 0; i < code; i++) {
-                        image[index++] = (byte) coder.readByte();
-                    }
-
-                    if ((code & 1) == 1) {
-                        coder.readByte();
-                    }
+                    decodeRLE8Pixels(code, coder, row, col);
                     break;
                 }
             } else {
-                final byte value = (byte) coder.readByte();
-                index = row * width + col;
-
-                for (int i = 0; i < count; i++) {
-                    image[index++] = value;
-                }
+                decodeRLE8Run(count, row, col, (byte) coder.readByte());
             }
+        }
+    }
+
+    private void decodeRLE8Pixels(final int code, final LittleDecoder coder,
+            final int row, final int col) throws IOException {
+        int index = row * width + col;
+        for (int i = 0; i < code; i++) {
+            image[index++] = (byte) coder.readByte();
+        }
+
+        if ((code & 1) == 1) {
+            coder.readByte();
+        }
+    }
+
+    private void decodeRLE8Run(final int count, final int row, final int col,
+            final byte value) {
+        int index = row * width + col;
+
+        for (int i = 0; i < count; i++) {
+            image[index++] = value;
         }
     }
 
@@ -629,93 +664,6 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
     }
 
     /**
-     * Reorder the image pixels from RGBA to ARGB.
-     *
-     * @param img the image data.
-     */
-    private void orderAlpha(final byte[] img) {
-        byte alpha;
-
-        for (int i = 0; i < img.length; i += COLOUR_CHANNELS) {
-            alpha = img[i + ALPHA];
-            img[i + ALPHA] = img[i + BLUE];
-            img[i + BLUE] = img[i + GREEN];
-            img[i + GREEN] = img[i + RED];
-            img[i + RED] = alpha;
-        }
-    }
-
-    /**
-     * Apply the level for the alpha channel to the red, green and blue colour
-     * channels for encoding the image so it can be added to a Flash movie.
-     * @param img the image data.
-     */
-   private void applyAlpha(final byte[] img) {
-        int alpha;
-
-        for (int i = 0; i < img.length; i += COLOUR_CHANNELS) {
-            alpha = img[i + ALPHA] & UNSIGNED_BYTE;
-
-            img[i + RED] = (byte) (((img[i + RED] & UNSIGNED_BYTE)
-                    * alpha) / OPAQUE);
-            img[i + GREEN] = (byte) (((img[i + GREEN] & UNSIGNED_BYTE)
-                    * alpha) / OPAQUE);
-            img[i + BLUE] = (byte) (((img[i + BLUE] & UNSIGNED_BYTE)
-                    * alpha) / OPAQUE);
-        }
-    }
-
-   /**
-    * Concatenate the colour table and the image data together.
-    * @param img the image data.
-    * @param colors the colour table.
-    * @return a single array containing the red, green and blue (not alpha)
-    * entries from the colour table followed by the red, green, blue and
-    * alpha channels from the image. The alpha defaults to 255 for an opaque
-    * image.
-    */
-    private byte[] merge(final byte[] img, final byte[] colors) {
-        final int entries = colors.length / COLOUR_CHANNELS;
-        final byte[] merged = new byte[entries * (COLOUR_CHANNELS - 1)
-                                       + img.length];
-        int dst = 0;
-
-        // Remap RGBA colours from table to BGR in encoded image
-        for (int i = 0; i < colors.length; i += COLOUR_CHANNELS) {
-            merged[dst++] = colors[i + BLUE];
-            merged[dst++] = colors[i + GREEN];
-            merged[dst++] = colors[i + RED];
-        }
-
-        for (final byte element : img) {
-            merged[dst++] = element;
-        }
-
-        return merged;
-    }
-
-    /**
-     * Concatenate the colour table and the image data together.
-     * @param img the image data.
-     * @param colors the colour table.
-     * @return a single array containing entries from the colour table followed
-     * by the image.
-     */
-    private byte[] mergeAlpha(final byte[] img, final byte[] colors) {
-        final byte[] merged = new byte[colors.length + img.length];
-        int dst = 0;
-
-        for (final byte element : colors) {
-            merged[dst++] = element;
-        }
-
-        for (final byte element : img) {
-            merged[dst++] = element;
-        }
-        return merged;
-    }
-
-    /**
      * Compress the image using the ZIP format.
      * @param img the image data.
      * @return the compressed image.
@@ -731,83 +679,4 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
 
         return newData;
     }
-
-    /**
-     * Adjust the width of each row in an image so the data is aligned to a
-     * 16-bit word boundary when loaded in memory. The additional bytes are
-     * all set to zero and will not be displayed in the image.
-     *
-     * @param imgWidth the width of the image in pixels.
-     * @param imgHeight the height of the image in pixels.
-     * @param img the image data.
-     * @return the image data with each row aligned to a 16-bit boundary.
-     */
-    private byte[] adjustScan(final int imgWidth, final int imgHeight,
-            final byte[] img) {
-        int src = 0;
-        int dst = 0;
-        int row;
-        int col;
-
-        int scan = 0;
-        byte[] formattedImage = null;
-
-        scan = (imgWidth + 3) & ~3;
-        formattedImage = new byte[scan * imgHeight];
-
-        for (row = 0; row < imgHeight; row++) {
-            for (col = 0; col < imgWidth; col++) {
-                formattedImage[dst++] = img[src++];
-            }
-
-            while (col++ < scan) {
-                formattedImage[dst++] = 0;
-            }
-        }
-
-        return formattedImage;
-    }
-
-    /**
-     * Convert an image with 32-bits for the red, green, blue and alpha channels
-     * to one where the channels each take 5-bits in a 16-bit word.
-     * @param imgWidth the width of the image in pixels.
-     * @param imgHeight the height of the image in pixels.
-     * @param img the image data.
-     * @return the image data with the red, green and blue channels packed into
-     * 16-bit words. Alpha is discarded.
-     */
-    private byte[] packColours(final int imgWidth, final int imgHeight,
-            final byte[] img) {
-        int src = 0;
-        int dst = 0;
-        int row;
-        int col;
-
-        final int scan = imgWidth + (imgWidth & 1);
-        final byte[] formattedImage = new byte[scan * imgHeight * 2];
-
-        for (row = 0; row < imgHeight; row++) {
-            for (col = 0; col < imgWidth; col++, src++) {
-                final int red = (img[src++] & RGB5_MSB_MASK)
-                        << RGB555_RED_SHIFT;
-                final int green = (img[src++] & RGB5_MSB_MASK)
-                        << RGB555_GREEN_SHIFT;
-                final int blue = (img[src++] & RGB5_MSB_MASK)
-                        >> RGB555_BLUE_SHIFT;
-                final int colour = (red | green | blue) & Coder.LOWEST15;
-
-                formattedImage[dst++] = (byte) (colour >> 8);
-                formattedImage[dst++] = (byte) colour;
-            }
-
-            while (col < scan) {
-                formattedImage[dst++] = 0;
-                formattedImage[dst++] = 0;
-                col++;
-            }
-        }
-        return formattedImage;
-    }
-
 }

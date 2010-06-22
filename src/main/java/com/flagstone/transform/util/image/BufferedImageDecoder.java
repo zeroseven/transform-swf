@@ -31,8 +31,6 @@
 
 package com.flagstone.transform.util.image;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.DataBuffer;
@@ -51,7 +49,6 @@ import java.net.URLConnection;
 import java.util.Arrays;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
-import java.util.zip.Inflater;
 
 import javax.imageio.ImageIO;
 
@@ -84,8 +81,6 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
     private static final int BLUE = 2;
     /** Position in 32-bit word of alpha channel. */
     private static final int ALPHA = 3;
-    /** Mask applied to extract 5-bit values. */
-    private static final int MASK_5BIT = 0x001F;
     /** Mask applied to extract 8-bit values. */
     private static final int MASK_8BIT = 0x00FF;
     /**
@@ -217,7 +212,7 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
      *             BufferedImage image.
      */
     public ImageTag defineImage(final int identifier, final BufferedImage obj)
-            throws DataFormatException {
+            throws IOException, DataFormatException {
         ImageTag object = null;
 
         final BufferedImageDecoder decoder = new BufferedImageDecoder();
@@ -251,186 +246,6 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
         return object;
     }
 
-    /**
-     * Create a BufferedImage from a Flash image.
-     *
-     * @param definition
-     *            an image from a Flash file.
-     *
-     * @return a BufferedImage containing the image.
-     *
-     * @throws DataFormatException
-     *             if there is a problem decoding the BufferedImage.
-     */
-    public BufferedImage bufferedImage(final DefineImage definition)
-            throws DataFormatException {
-        BufferedImage bufferedImage = null;
-
-        ImageFormat fmt;
-        int imageWidth = 0;
-        int imageHeight = 0;
-
-        byte[] colourTable = null;
-        byte[] indexedImage = null;
-        byte[] colorImage = null;
-
-        imageWidth = definition.getWidth();
-        imageHeight = definition.getHeight();
-
-        final byte[] data = unzip(definition.getImage(),
-                imageWidth, imageHeight);
-
-        final int scanLength = (imageWidth + WORD_ALIGN) & ~WORD_ALIGN;
-        final int tableLength = definition.getTableSize();
-        final int pixelLength = definition.getPixelSize();
-
-        int pos = 0;
-        int index = 0;
-
-        if (tableLength > 0) {
-            fmt = ImageFormat.IDX8;
-            imageWidth = definition.getWidth();
-            imageHeight = definition.getHeight();
-            colourTable = new byte[tableLength * BYTES_PER_PIXEL];
-            indexedImage = new byte[imageHeight * imageWidth];
-
-            for (int i = 0; i < tableLength; i++, index += BYTES_PER_PIXEL) {
-                colourTable[index + ALPHA] = OPAQUE;
-                colourTable[index + BLUE] = data[pos++];
-                colourTable[index + GREEN] = data[pos++];
-                colourTable[index] = data[pos++];
-            }
-
-            index = 0;
-
-            for (int h = 0; h < imageHeight; h++) {
-                for (int w = 0; w < imageWidth; w++, index++) {
-                    indexedImage[index] = data[pos++];
-                }
-                pos += (scanLength - imageWidth);
-            }
-        } else {
-            fmt = ImageFormat.RGB8;
-            imageWidth = definition.getWidth();
-            imageHeight = definition.getHeight();
-            colorImage = new byte[imageHeight * imageWidth * BYTES_PER_PIXEL];
-            index = 0;
-
-            if (pixelLength == RGB5_SIZE) {
-                for (int h = 0; h < imageHeight; h++) {
-                    for (int w = 0; w < imageWidth; w++) {
-                        final int color = (data[pos++] << ALIGN_BYTE2
-                                | (data[pos++] & MASK_8BIT)) & Coder.LOWEST15;
-
-                        colorImage[index + ALPHA] = OPAQUE;
-                        colorImage[index + RED] = (byte) (color >> 10);
-                        colorImage[index + GREEN] = (byte) ((color >> 5)
-                                & MASK_5BIT);
-                        colorImage[index + BLUE] = (byte) (color & MASK_5BIT);
-                        index += BYTES_PER_PIXEL;
-                    }
-                    pos += (scanLength - imageWidth);
-                }
-            } else {
-                index = 0;
-
-                for (int h = 0; h < imageHeight; h++) {
-                    for (int w = 0; w < imageWidth; w++) {
-                        colorImage[index + ALPHA] = OPAQUE;
-                        colorImage[index + RED] = data[pos++];
-                        colorImage[index + GREEN] = data[pos++];
-                        colorImage[index + BLUE] = data[pos++];
-                        index += BYTES_PER_PIXEL;
-                    }
-                    pos += (scanLength - imageWidth);
-                }
-            }
-        }
-
-        switch (fmt) {
-        case IDX8:
-        case IDXA:
-            final byte[] red = new byte[colourTable.length];
-            final byte[] green = new byte[colourTable.length];
-            final byte[] blue = new byte[colourTable.length];
-            final byte[] alpha = new byte[colourTable.length];
-            index = 0;
-
-            for (int i = 0; i < colourTable.length; i++) {
-                red[i] = colourTable[index + BLUE];
-                green[i] = colourTable[index + GREEN];
-                blue[i] = colourTable[index + RED];
-                alpha[i] = colourTable[index + ALPHA];
-                index += BYTES_PER_PIXEL;
-            }
-
-            bufferedImage = new BufferedImage(imageWidth, imageHeight,
-                    BufferedImage.TYPE_INT_ARGB);
-
-            final int[] indexedBuffer = new int[imageWidth];
-            int color;
-            index = 0;
-
-            for (int i = 0; i < imageHeight; i++) {
-                for (int j = 0; j < imageWidth; j++, index++) {
-                    color = indexedImage[index] << 2;
-
-                    indexedBuffer[j] = (colourTable[color + ALPHA] & MASK_8BIT)
-                                    << ALIGN_BYTE4;
-                    indexedBuffer[j] = indexedBuffer[j]
-                            | ((colourTable[color + 2] & MASK_8BIT)
-                                    << ALIGN_BYTE3);
-                    indexedBuffer[j] = indexedBuffer[j]
-                            | ((colourTable[color + 1] & MASK_8BIT)
-                                    << ALIGN_BYTE2);
-                    indexedBuffer[j] = indexedBuffer[j]
-                            | (colourTable[color + 0] & MASK_8BIT);
-                }
-
-                bufferedImage.setRGB(0, i, imageWidth, 1, indexedBuffer,
-                        0, imageWidth);
-            }
-            break;
-        case RGB5:
-        case RGB8:
-        case RGBA:
-            bufferedImage = new BufferedImage(imageWidth, imageHeight,
-                    BufferedImage.TYPE_INT_ARGB);
-
-            final int[] directBuffer = new int[imageWidth];
-            index = 0;
-
-            for (int i = 0; i < imageHeight; i++) {
-                for (int j = 0; j < imageWidth; j++, index += BYTES_PER_PIXEL) {
-                    // int a = colorImage[i][j][3] & 0xFF;
-
-                    /*
-                     * directBuffer[j] = (colorImage[i][j][3] << 24) |
-                     * (colorImage[i][j][0] << 16) | (colorImage[i][j][1] << 8)
-                     * | colorImage[i][j][2];
-                     */
-                    directBuffer[j] = (colorImage[index + ALPHA] & MASK_8BIT)
-                                    << ALIGN_BYTE4;
-                    directBuffer[j] = directBuffer[j]
-                            | ((colorImage[index + RED] & MASK_8BIT)
-                                    << ALIGN_BYTE3);
-                    directBuffer[j] = directBuffer[j]
-                            | ((colorImage[index + GREEN] & MASK_8BIT)
-                                    << ALIGN_BYTE2);
-                    directBuffer[j] = directBuffer[j]
-                            | (colorImage[index + BLUE] & MASK_8BIT);
-                }
-                bufferedImage.setRGB(0, i, imageWidth, 1, directBuffer,
-                        0, imageWidth);
-            }
-            break;
-        default:
-            throw new DataFormatException(BAD_FORMAT);
-        }
-
-        return bufferedImage;
-    }
-
     /** {@inheritDoc} */
     public int getWidth() {
         return width;
@@ -447,220 +262,6 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
     }
 
     /**
-     * Create a BufferedImage from a Flash image.
-     *
-     * @param definition
-     *            an image from a Flash file.
-     *
-     * @return a BufferedImage containing the image.
-     *
-     * @throws DataFormatException
-     *             if there is a problem decoding the BufferedImage.
-     */
-    public BufferedImage bufferedImage(final DefineImage2 definition)
-            throws DataFormatException {
-        BufferedImage bufferedImage = null;
-
-        ImageFormat fmt;
-        int imgWidth = 0;
-        int imgHeight = 0;
-
-        byte[] colourTable = null;
-        byte[] indexedImage = null;
-        byte[] colorImage = null;
-
-        imgWidth = definition.getWidth();
-        imgHeight = definition.getHeight();
-
-        final byte[] data = unzip(definition.getImage(), imgWidth, imgHeight);
-
-        final int scanLength = (imgWidth + WORD_ALIGN) & ~WORD_ALIGN;
-        final int tableLength = definition.getTableSize();
-        // int pixelLength = image.getPixelSize();
-
-        int pos = 0;
-        int index = 0;
-
-        if (tableLength > 0) {
-            fmt = ImageFormat.IDXA;
-            imgWidth = definition.getWidth();
-            imgHeight = definition.getHeight();
-            colourTable = new byte[tableLength * BYTES_PER_PIXEL];
-            indexedImage = new byte[imgHeight * imgWidth];
-
-            for (int i = 0; i < tableLength; i++, index += BYTES_PER_PIXEL) {
-                colourTable[index + ALPHA] = data[pos++];
-                colourTable[index + BLUE] = data[pos++];
-                colourTable[index + GREEN] = data[pos++];
-                colourTable[index] = data[pos++];
-            }
-
-            index = 0;
-
-            for (int h = 0; h < imgHeight; h++) {
-                for (int w = 0; w < imgWidth; w++, index++) {
-                    indexedImage[index] = data[pos++];
-                }
-                pos += (scanLength - imgWidth);
-            }
-        } else {
-            fmt = ImageFormat.RGBA;
-            imgWidth = definition.getWidth();
-            imgHeight = definition.getHeight();
-            colorImage = new byte[imgHeight * imgWidth * BYTES_PER_PIXEL];
-
-            for (int h = 0; h < imgHeight; h++) {
-                for (int w = 0; w < imgWidth; w++, index += BYTES_PER_PIXEL) {
-                    colorImage[index + ALPHA] = data[pos++];
-                    colorImage[index + RED] = data[pos++];
-                    colorImage[index + GREEN] = data[pos++];
-                    colorImage[index + BLUE] = data[pos++];
-                }
-            }
-        }
-
-        switch (fmt) {
-        case IDX8:
-        case IDXA:
-            final byte[] red = new byte[colourTable.length];
-            final byte[] green = new byte[colourTable.length];
-            final byte[] blue = new byte[colourTable.length];
-            final byte[] alpha = new byte[colourTable.length];
-            index = 0;
-
-            for (int i = 0; i < colourTable.length; i++) {
-                red[i] = colourTable[index + BLUE];
-                green[i] = colourTable[index + GREEN];
-                blue[i] = colourTable[index + RED];
-                alpha[i] = colourTable[index + ALPHA];
-                index += BYTES_PER_PIXEL;
-            }
-
-            bufferedImage = new BufferedImage(imgWidth, imgHeight,
-                    BufferedImage.TYPE_INT_ARGB);
-
-            final int[] indexedBuffer = new int[imgWidth];
-            int color;
-            index = 0;
-
-            for (int i = 0; i < imgHeight; i++) {
-                for (int j = 0; j < imgWidth; j++, index++) {
-                    color = indexedImage[index] << 2;
-
-                    indexedBuffer[j] = (colourTable[color + ALPHA] & MASK_8BIT)
-                                    << ALIGN_BYTE4;
-                    indexedBuffer[j] = indexedBuffer[j]
-                            | ((colourTable[color + 2] & MASK_8BIT)
-                                    << ALIGN_BYTE3);
-                    indexedBuffer[j] = indexedBuffer[j]
-                            | ((colourTable[color + 1] & MASK_8BIT)
-                                    << ALIGN_BYTE2);
-                    indexedBuffer[j] = indexedBuffer[j]
-                            | (colourTable[color + 0] & MASK_8BIT);
-                }
-
-                bufferedImage.setRGB(0, i, imgWidth, 1,
-                        indexedBuffer, 0, imgWidth);
-            }
-            break;
-        case RGB5:
-        case RGB8:
-        case RGBA:
-            bufferedImage = new BufferedImage(imgWidth, imgHeight,
-                    BufferedImage.TYPE_INT_ARGB);
-
-            final int[] directBuffer = new int[imgWidth];
-            index = 0;
-
-            for (int i = 0; i < imgHeight; i++) {
-                for (int j = 0; j < imgWidth; j++, index += BYTES_PER_PIXEL) {
-                    // int a = colorImage[i][j][3] & 0xFF;
-
-                    /*
-                     * directBuffer[j] = (colorImage[i][j][3] << 24) |
-                     * (colorImage[i][j][0] << 16) | (colorImage[i][j][1] << 8)
-                     * | colorImage[i][j][2];
-                     */
-                    directBuffer[j] = (colorImage[index + ALPHA] & MASK_8BIT)
-                                    << ALIGN_BYTE4;
-                    directBuffer[j] = directBuffer[j]
-                            | ((colorImage[index + RED] & MASK_8BIT)
-                                    << ALIGN_BYTE3);
-                    directBuffer[j] = directBuffer[j]
-                            | ((colorImage[index + GREEN] & MASK_8BIT)
-                                    << ALIGN_BYTE2);
-                    directBuffer[j] = directBuffer[j]
-                            | (colorImage[index + BLUE] & MASK_8BIT);
-                }
-                bufferedImage.setRGB(0, i, imgWidth, 1,
-                        directBuffer, 0, imgWidth);
-            }
-            break;
-        default:
-            throw new DataFormatException(BAD_FORMAT);
-        }
-
-        return bufferedImage;
-    }
-
-    /**
-     * Resizes a BufferedImage to the specified width and height. The aspect
-     * ratio of the image is maintained so the area in the new image not covered
-     * by the resized original will be transparent.
-     *
-     * @param bufferedImg
-     *            the BufferedImage to resize.
-     * @param imgWidth
-     *            the width of the resized image in pixels.
-     * @param imgHeight
-     *            the height of the resized image in pixels.
-     * @return a new BufferedImage with the specified width and height.
-     */
-    public BufferedImage resizeImage(final BufferedImage bufferedImg,
-            final int imgWidth, final int imgHeight) {
-        int imageType = bufferedImg.getType();
-
-        if (imageType == BufferedImage.TYPE_CUSTOM) {
-            imageType = BufferedImage.TYPE_4BYTE_ABGR;
-        }
-
-        final BufferedImage resized = new BufferedImage(imgWidth, imgHeight,
-                BufferedImage.TYPE_4BYTE_ABGR);
-
-        final double widthRatio = (double) bufferedImg.getWidth()
-                / (double) imgWidth;
-        final double heightRatio = (double) bufferedImg.getHeight()
-                / (double) imgHeight;
-        double ratio = (widthRatio > heightRatio ? widthRatio : heightRatio);
-
-        if (ratio < 1.0) {
-            ratio = 1.0;
-        }
-
-        final int imageWidth = (int) (bufferedImg.getWidth() / ratio);
-        final int imageHeight = (int) (bufferedImg.getHeight() / ratio);
-
-        final int xCoord = (imgWidth - imageWidth) >> 1;
-        final int yCoord = (imgHeight - imageHeight) >> 1;
-
-        final Graphics2D graphics = resized.createGraphics();
-        graphics.setColor(new Color(0.0f, 0.0f, 0.0f, 0.0f));
-        graphics.fillRect(0, 0, imgWidth, imgHeight);
-
-        final java.awt.Image scaled = bufferedImg.getScaledInstance(imageWidth,
-                imageHeight, java.awt.Image.SCALE_SMOOTH);
-        new javax.swing.ImageIcon(scaled);
-
-        graphics.drawImage(scaled, xCoord, yCoord, null);
-        graphics.dispose();
-        resized.flush();
-
-        new javax.swing.ImageIcon(resized).getImage();
-
-        return resized;
-    }
-
-    /**
      * Decode a BufferedImage.
      *
      * @param obj
@@ -669,264 +270,342 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
      * @throws DataFormatException
      *             if there is a problem decoding the BufferedImage.
      */
-    public void read(final BufferedImage obj) throws DataFormatException {
+    public void read(final BufferedImage obj) throws IOException, DataFormatException {
 
         final DataBuffer buffer = obj.getData().getDataBuffer();
 
         width = obj.getWidth();
         height = obj.getHeight();
 
-        int index;
-
         if (buffer.getDataType() == DataBuffer.TYPE_INT) {
-            final int[] pixels = ((DataBufferInt) buffer).getData();
-
-            switch (obj.getType()) {
-            case BufferedImage.TYPE_INT_ARGB:
-                format = ImageFormat.RGBA;
-                image = new byte[height * width * BYTES_PER_PIXEL];
-                index = 0;
-
-                for (int y = 0; y < height; y++) {
-                    for (int x = 0; x < width; x++, index += BYTES_PER_PIXEL) {
-                        final int pixel = pixels[y * width + x];
-
-                        image[index + ALPHA] = (byte) (pixel >> ALIGN_BYTE4);
-                        image[index + BLUE] = (byte) (pixel >> ALIGN_BYTE3);
-                        image[index + GREEN] = (byte) (pixel >> ALIGN_BYTE2);
-                        image[index] = (byte) pixel;
-                    }
-                }
-                break;
-            case BufferedImage.TYPE_INT_ARGB_PRE:
-                format = ImageFormat.RGBA;
-                image = new byte[height * width * BYTES_PER_PIXEL];
-                index = 0;
-
-                for (int y = 0; y < height; y++) {
-                    for (int x = 0; x < width; x++, index += BYTES_PER_PIXEL) {
-                        final int pixel = pixels[y * width + x];
-
-                        image[index + ALPHA] = (byte) (pixel >> ALIGN_BYTE4);
-                        image[index + BLUE] = (byte) (pixel >> ALIGN_BYTE3);
-                        image[index + GREEN] = (byte) (pixel >> ALIGN_BYTE2);
-                        image[index] = (byte) pixel;
-                    }
-                }
-                break;
-            case BufferedImage.TYPE_INT_BGR:
-                format = ImageFormat.RGB8;
-                image = new byte[height * width * BYTES_PER_PIXEL];
-                index = 0;
-
-                for (int y = 0; y < height; y++) {
-                    for (int x = 0; x < width; x++, index += BYTES_PER_PIXEL) {
-                        final int pixel = pixels[y * width + x];
-
-                        image[index + ALPHA] = OPAQUE;
-                        image[index + BLUE] = (byte) (pixel >> ALIGN_BYTE3);
-                        image[index + GREEN] = (byte) (pixel >> ALIGN_BYTE2);
-                        image[index] = (byte) pixel;
-                    }
-                }
-                break;
-            case BufferedImage.TYPE_INT_RGB:
-                format = ImageFormat.RGB8;
-                image = new byte[height * width * BYTES_PER_PIXEL];
-                index = 0;
-
-                for (int y = 0; y < height; y++) {
-                    for (int x = 0; x < width; x++, index += BYTES_PER_PIXEL) {
-                        final int pixel = pixels[y * width + x];
-
-                        image[index + ALPHA] = OPAQUE;
-                        image[index] = (byte) (pixel >> ALIGN_BYTE3);
-                        image[index + GREEN] = (byte) (pixel >> ALIGN_BYTE2);
-                        image[index + BLUE] = (byte) pixel;
-                    }
-                }
-                break;
-            default:
-                throw new DataFormatException(BAD_FORMAT);
-            }
-
+            decodeIntImage(obj);
         } else if (buffer.getDataType() == DataBuffer.TYPE_BYTE) {
-            final byte[] pixels = ((DataBufferByte) buffer).getData();
-
-            switch (obj.getType()) {
-            case BufferedImage.TYPE_3BYTE_BGR:
-                format = ImageFormat.RGB8;
-                image = new byte[height * width * BYTES_PER_PIXEL];
-                index = 0;
-
-                for (int y = 0; y < height; y++) {
-                    for (int x = 0; x < width; x++, index += BYTES_PER_PIXEL) {
-                        final int offset = 3 * (y * width + x);
-
-                        image[index + ALPHA] = OPAQUE;
-                        image[index + BLUE] = pixels[offset];
-                        image[index + GREEN] = pixels[offset + 1];
-                        image[index] = pixels[offset + 2];
-                    }
-                }
-                break;
-            case BufferedImage.TYPE_CUSTOM:
-                if (width * height * RGB_CHANNELS == pixels.length) {
-                    format = ImageFormat.RGBA;
-                    image = new byte[height * width * BYTES_PER_PIXEL];
-                    index = 0;
-
-                    for (int y = 0; y < height; y++) {
-                        for (int x = 0; x < width; x++) {
-                            final int offset = 3 * (y * width + x);
-
-                            image[index] = pixels[offset];
-                            image[index + GREEN] = pixels[offset + 1];
-                            image[index + BLUE] = pixels[offset + 2];
-                            image[index + ALPHA] = OPAQUE;
-                            index += BYTES_PER_PIXEL;
-                        }
-                    }
-                }
-                if (width * height * BYTES_PER_PIXEL == pixels.length) {
-                    format = ImageFormat.RGBA;
-                    image = new byte[height * width * BYTES_PER_PIXEL];
-                    index = 0;
-                    for (int y = 0; y < height; y++) {
-                        for (int x = 0; x < width; x++) {
-                            final int offset = BYTES_PER_PIXEL
-                                    * (y * width + x);
-
-                            image[index] = pixels[offset];
-                            image[index + GREEN] = pixels[offset + 1];
-                            image[index + BLUE] = pixels[offset + 2];
-                            image[index + ALPHA] = pixels[offset + ALPHA];
-                            index += BYTES_PER_PIXEL;
-                        }
-                    }
-                }
-                break;
-            case BufferedImage.TYPE_4BYTE_ABGR:
-                format = ImageFormat.RGBA;
-                image = new byte[height * width * BYTES_PER_PIXEL];
-                index = 0;
-
-                for (int y = 0; y < height; y++) {
-                    for (int x = 0; x < width; x++, index += BYTES_PER_PIXEL) {
-                        final int offset = BYTES_PER_PIXEL * (y * width + x);
-
-                        image[index + ALPHA] = pixels[offset];
-                        image[index + BLUE] = pixels[offset + 1];
-                        image[index + GREEN] = pixels[offset + 2];
-                        image[index] = pixels[offset + ALPHA];
-                    }
-                }
-                break;
-            case BufferedImage.TYPE_4BYTE_ABGR_PRE:
-                format = ImageFormat.RGBA;
-                image = new byte[height * width * BYTES_PER_PIXEL];
-                index = 0;
-
-                for (int y = 0; y < height; y++) {
-                    for (int x = 0; x < width; x++, index += BYTES_PER_PIXEL) {
-                        final int offset = BYTES_PER_PIXEL * (y * width + x);
-
-                        image[index + ALPHA] = pixels[offset];
-                        image[index + BLUE] = pixels[offset + 1];
-                        image[index + GREEN] = pixels[offset + 2];
-                        image[index] = pixels[offset + ALPHA];
-                    }
-                }
-                break;
-            case BufferedImage.TYPE_BYTE_BINARY:
-                format = ImageFormat.IDX8;
-                image = new byte[height * width];
-                int depth = obj.getColorModel().getPixelSize();
-                decodeColorTable(obj.getColorModel());
-
-                index = 0;
-                final ByteArrayInputStream stream =
-                    new ByteArrayInputStream(pixels);
-                final LittleDecoder coder = new LittleDecoder(stream);
-
-                try {
-                    for (int y = 0; y < height; y++) {
-//                        coder.mark();
-                        for (int x = 0; x < width; x++, index++) {
-                            image[index] = (byte) coder.readBits(depth, false);
-                        }
-//                        coder.alignToWord();
-//                        coder.unmark();
-                    }
-                } catch (IOException e) {
-                    throw new DataFormatException();
-                }
-                break;
-            case BufferedImage.TYPE_BYTE_GRAY:
-                format = ImageFormat.RGB8;
-                image = new byte[height * width * BYTES_PER_PIXEL];
-                index = 0;
-
-                for (int y = 0; y < height; y++) {
-                    for (int x = 0; x < width; x++) {
-                        final int offset = (y * width + x);
-
-                        image[index + ALPHA] = OPAQUE;
-                        image[index + BLUE] = pixels[offset];
-                        image[index + GREEN] = pixels[offset];
-                        image[index] = pixels[offset];
-                        index += BYTES_PER_PIXEL;
-                    }
-                }
-                break;
-            case BufferedImage.TYPE_BYTE_INDEXED:
-                format = ImageFormat.IDX8;
-                image = new byte[height * width];
-                depth = obj.getColorModel().getPixelSize();
-                decodeColorTable(obj.getColorModel());
-
-                index = 0;
-
-                for (int y = 0; y < height; y++) {
-                    System.arraycopy(pixels, y * width, image, index, width);
-                    index += width;
-                }
-                break;
-            default:
-                throw new DataFormatException(BAD_FORMAT);
-            }
+            decodeByteImage(obj);
         } else if (buffer.getDataType() == DataBuffer.TYPE_USHORT) {
-            final short[] pixels = ((DataBufferUShort) buffer).getData();
-            // AvoidUsingShortType
-
-            switch (obj.getType()) {
-            case BufferedImage.TYPE_USHORT_555_RGB:
-                throw new DataFormatException(BAD_FORMAT);
-            case BufferedImage.TYPE_USHORT_565_RGB:
-                throw new DataFormatException(BAD_FORMAT);
-            case BufferedImage.TYPE_USHORT_GRAY:
-                format = ImageFormat.RGB8;
-                image = new byte[height * width * BYTES_PER_PIXEL];
-                index = 0;
-
-                for (int y = 0; y < height; y++) {
-                    for (int x = 0; x < width; x++) {
-                        // int row = height-y-1;
-                        final int offset = (y * width + x);
-
-                        image[index + ALPHA] = OPAQUE;
-                        image[index + BLUE] = (byte) pixels[offset];
-                        image[index + GREEN] = (byte) pixels[offset];
-                        image[index] = (byte) pixels[offset];
-                        index += BYTES_PER_PIXEL;
-                    }
-                }
-                break;
-            default:
-                throw new DataFormatException(BAD_FORMAT);
-            }
+            decodeShortImage(obj);
         } else {
             throw new DataFormatException(BAD_FORMAT);
+        }
+    }
+
+    private void decodeIntImage(final BufferedImage obj)
+                throws DataFormatException {
+
+        final DataBuffer buffer = obj.getData().getDataBuffer();
+
+        switch (obj.getType()) {
+        case BufferedImage.TYPE_INT_ARGB:
+            decodeARGB(buffer);
+            break;
+        case BufferedImage.TYPE_INT_ARGB_PRE:
+            decodeARGBPre(buffer);
+            break;
+        case BufferedImage.TYPE_INT_BGR:
+            decodeBGR(buffer);
+            break;
+        case BufferedImage.TYPE_INT_RGB:
+            decodeRGB(buffer);
+            break;
+        default:
+            throw new DataFormatException(BAD_FORMAT);
+        }
+
+    }
+
+    private void decodeARGB(final DataBuffer buffer) {
+        final int[] pixels = ((DataBufferInt) buffer).getData();
+        format = ImageFormat.RGBA;
+        image = new byte[height * width * BYTES_PER_PIXEL];
+        int index = 0;
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++, index += BYTES_PER_PIXEL) {
+                final int pixel = pixels[y * width + x];
+
+                image[index + ALPHA] = (byte) (pixel >> ALIGN_BYTE4);
+                image[index + BLUE] = (byte) (pixel >> ALIGN_BYTE3);
+                image[index + GREEN] = (byte) (pixel >> ALIGN_BYTE2);
+                image[index] = (byte) pixel;
+            }
+        }
+    }
+
+    private void decodeARGBPre(final DataBuffer buffer) {
+        final int[] pixels = ((DataBufferInt) buffer).getData();
+        format = ImageFormat.RGBA;
+        image = new byte[height * width * BYTES_PER_PIXEL];
+        int index = 0;
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++, index += BYTES_PER_PIXEL) {
+                final int pixel = pixels[y * width + x];
+
+                image[index + ALPHA] = (byte) (pixel >> ALIGN_BYTE4);
+                image[index + BLUE] = (byte) (pixel >> ALIGN_BYTE3);
+                image[index + GREEN] = (byte) (pixel >> ALIGN_BYTE2);
+                image[index] = (byte) pixel;
+            }
+        }
+    }
+
+    private void decodeBGR(final DataBuffer buffer) {
+        final int[] pixels = ((DataBufferInt) buffer).getData();
+        format = ImageFormat.RGB8;
+        image = new byte[height * width * BYTES_PER_PIXEL];
+        int index = 0;
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++, index += BYTES_PER_PIXEL) {
+                final int pixel = pixels[y * width + x];
+
+                image[index + ALPHA] = OPAQUE;
+                image[index + BLUE] = (byte) (pixel >> ALIGN_BYTE3);
+                image[index + GREEN] = (byte) (pixel >> ALIGN_BYTE2);
+                image[index] = (byte) pixel;
+            }
+        }
+    }
+
+    private void decodeRGB(final DataBuffer buffer) {
+        final int[] pixels = ((DataBufferInt) buffer).getData();
+        format = ImageFormat.RGB8;
+        image = new byte[height * width * BYTES_PER_PIXEL];
+        int index = 0;
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++, index += BYTES_PER_PIXEL) {
+                final int pixel = pixels[y * width + x];
+
+                image[index + ALPHA] = OPAQUE;
+                image[index] = (byte) (pixel >> ALIGN_BYTE3);
+                image[index + GREEN] = (byte) (pixel >> ALIGN_BYTE2);
+                image[index + BLUE] = (byte) pixel;
+            }
+        }
+    }
+
+    private void decodeByteImage(final BufferedImage obj)
+            throws IOException, DataFormatException {
+
+        final DataBuffer buffer = obj.getData().getDataBuffer();
+
+        switch (obj.getType()) {
+        case BufferedImage.TYPE_3BYTE_BGR:
+            decodeByteBGR(buffer);
+            break;
+        case BufferedImage.TYPE_CUSTOM:
+            decodeByteCustom(buffer);
+            break;
+        case BufferedImage.TYPE_4BYTE_ABGR:
+            decodeByteABGR(buffer);
+            break;
+        case BufferedImage.TYPE_4BYTE_ABGR_PRE:
+            decodeByteABGRPre(buffer);
+            break;
+        case BufferedImage.TYPE_BYTE_BINARY:
+            decodeByteBinary(buffer, obj.getColorModel());
+            break;
+        case BufferedImage.TYPE_BYTE_GRAY:
+            decodeByteGray(buffer);
+            break;
+        case BufferedImage.TYPE_BYTE_INDEXED:
+            decodeByteIndexed(buffer, obj.getColorModel());
+            break;
+        default:
+            throw new DataFormatException(BAD_FORMAT);
+        }
+    }
+
+    private void decodeByteBGR(final DataBuffer buffer) {
+        final byte[] pixels = ((DataBufferByte) buffer).getData();
+
+        format = ImageFormat.RGB8;
+        image = new byte[height * width * BYTES_PER_PIXEL];
+        int index = 0;
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++, index += BYTES_PER_PIXEL) {
+                final int offset = 3 * (y * width + x);
+
+                image[index + ALPHA] = OPAQUE;
+                image[index + BLUE] = pixels[offset];
+                image[index + GREEN] = pixels[offset + 1];
+                image[index] = pixels[offset + 2];
+            }
+        }
+    }
+
+    private void decodeByteCustom(final DataBuffer buffer) {
+        final byte[] pixels = ((DataBufferByte) buffer).getData();
+
+        if (width * height * RGB_CHANNELS == pixels.length) {
+            format = ImageFormat.RGBA;
+            image = new byte[height * width * BYTES_PER_PIXEL];
+            int index = 0;
+
+            for (int y = 0; y < height; y++) {
+                for (int x = 0; x < width; x++) {
+                    final int offset = 3 * (y * width + x);
+
+                    image[index] = pixels[offset];
+                    image[index + GREEN] = pixels[offset + 1];
+                    image[index + BLUE] = pixels[offset + 2];
+                    image[index + ALPHA] = OPAQUE;
+                    index += BYTES_PER_PIXEL;
+                }
+            }
+        } else if (width * height * BYTES_PER_PIXEL == pixels.length) {
+            format = ImageFormat.RGBA;
+            image = new byte[height * width * BYTES_PER_PIXEL];
+            int index = 0;
+            for (int y = 0; y < height; y++) {
+                for (int x = 0; x < width; x++) {
+                    final int offset = BYTES_PER_PIXEL
+                            * (y * width + x);
+
+                    image[index] = pixels[offset];
+                    image[index + GREEN] = pixels[offset + 1];
+                    image[index + BLUE] = pixels[offset + 2];
+                    image[index + ALPHA] = pixels[offset + ALPHA];
+                    index += BYTES_PER_PIXEL;
+                }
+            }
+        }
+    }
+
+    private void decodeByteABGR(final DataBuffer buffer) {
+        final byte[] pixels = ((DataBufferByte) buffer).getData();
+
+        format = ImageFormat.RGBA;
+        image = new byte[height * width * BYTES_PER_PIXEL];
+        int index = 0;
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++, index += BYTES_PER_PIXEL) {
+                final int offset = BYTES_PER_PIXEL * (y * width + x);
+
+                image[index + ALPHA] = pixels[offset];
+                image[index + BLUE] = pixels[offset + 1];
+                image[index + GREEN] = pixels[offset + 2];
+                image[index] = pixels[offset + ALPHA];
+            }
+        }
+    }
+
+    private void decodeByteABGRPre(final DataBuffer buffer) {
+        final byte[] pixels = ((DataBufferByte) buffer).getData();
+
+        format = ImageFormat.RGBA;
+        image = new byte[height * width * BYTES_PER_PIXEL];
+        int index = 0;
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++, index += BYTES_PER_PIXEL) {
+                final int offset = BYTES_PER_PIXEL * (y * width + x);
+
+                image[index + ALPHA] = pixels[offset];
+                image[index + BLUE] = pixels[offset + 1];
+                image[index + GREEN] = pixels[offset + 2];
+                image[index] = pixels[offset + ALPHA];
+            }
+        }
+    }
+
+    private void decodeByteBinary(final DataBuffer buffer,
+            final ColorModel model) throws IOException {
+
+        final byte[] pixels = ((DataBufferByte) buffer).getData();
+
+        format = ImageFormat.IDX8;
+        image = new byte[height * width];
+        final int depth = model.getPixelSize();
+        decodeColorTable(model);
+
+        int index = 0;
+        final ByteArrayInputStream stream = new ByteArrayInputStream(pixels);
+        final LittleDecoder coder = new LittleDecoder(stream);
+
+        for (int y = 0; y < height; y++) {
+//          coder.mark();
+            for (int x = 0; x < width; x++, index++) {
+                image[index] = (byte) coder.readBits(depth, false);
+            }
+//          coder.alignToWord();
+//          coder.unmark();
+        }
+    }
+
+    private void decodeByteGray(final DataBuffer buffer) {
+        final byte[] pixels = ((DataBufferByte) buffer).getData();
+
+        format = ImageFormat.RGB8;
+        image = new byte[height * width * BYTES_PER_PIXEL];
+        int index = 0;
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                final int offset = (y * width + x);
+
+                image[index + ALPHA] = OPAQUE;
+                image[index + BLUE] = pixels[offset];
+                image[index + GREEN] = pixels[offset];
+                image[index] = pixels[offset];
+                index += BYTES_PER_PIXEL;
+            }
+        }
+    }
+
+    private void decodeByteIndexed(final DataBuffer buffer,
+            final ColorModel model) {
+        final byte[] pixels = ((DataBufferByte) buffer).getData();
+
+        format = ImageFormat.IDX8;
+        image = new byte[height * width];
+        decodeColorTable(model);
+
+        int index = 0;
+
+        for (int y = 0; y < height; y++) {
+            System.arraycopy(pixels, y * width, image, index, width);
+            index += width;
+        }
+    }
+
+    private void decodeShortImage(final BufferedImage obj)
+            throws DataFormatException {
+
+        final DataBuffer buffer = obj.getData().getDataBuffer();
+
+        switch (obj.getType()) {
+        case BufferedImage.TYPE_USHORT_555_RGB:
+            throw new DataFormatException(BAD_FORMAT);
+        case BufferedImage.TYPE_USHORT_565_RGB:
+            throw new DataFormatException(BAD_FORMAT);
+        case BufferedImage.TYPE_USHORT_GRAY:
+            decodeShortGray(buffer);
+            break;
+        default:
+            throw new DataFormatException(BAD_FORMAT);
+        }
+    }
+
+    private void decodeShortGray(final DataBuffer buffer) {
+        final short[] pixels = ((DataBufferUShort) buffer).getData(); //NOPMD
+        format = ImageFormat.RGB8;
+        image = new byte[height * width * BYTES_PER_PIXEL];
+        int index = 0;
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                // int row = height-y-1;
+                final int offset = (y * width + x);
+
+                image[index + ALPHA] = OPAQUE;
+                image[index + BLUE] = (byte) pixels[offset];
+                image[index + GREEN] = (byte) pixels[offset];
+                image[index] = (byte) pixels[offset];
+                index += BYTES_PER_PIXEL;
+            }
         }
     }
 
@@ -936,13 +615,13 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
      */
     private void decodeColorTable(final ColorModel model) {
         if (model instanceof IndexColorModel) {
-            IndexColorModel indexModel = (IndexColorModel) model;
+            final IndexColorModel indexModel = (IndexColorModel) model;
 
             table = new byte[indexModel.getMapSize() * COLOUR_CHANNELS];
 
-            byte[] reds = new byte[indexModel.getMapSize()];
-            byte[] blues = new byte[indexModel.getMapSize()];
-            byte[] greens = new byte[indexModel.getMapSize()];
+            final byte[] reds = new byte[indexModel.getMapSize()];
+            final byte[] blues = new byte[indexModel.getMapSize()];
+            final byte[] greens = new byte[indexModel.getMapSize()];
 
             indexModel.getReds(reds);
             indexModel.getGreens(greens);
@@ -1140,31 +819,5 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
             }
         }
         return formattedImage;
-    }
-
-    /**
-     * Uncompress the image using the ZIP format.
-     * @param bytes the compressed image data.
-     * @param imgWidth the width of the image in pixels.
-     * @param imgHeight the height of the image in pixels.
-     * @return the uncompressed image.
-     * @throws DataFormatException if the compressed image is not in the ZIP
-     * format or cannot be uncompressed.
-     */
-    private byte[] unzip(final byte[] bytes, final int imgWidth,
-            final int imgHeight) throws DataFormatException {
-        final byte[] data = new byte[imgWidth * imgHeight * 8];
-        int count = 0;
-
-        final Inflater inflater = new Inflater();
-        inflater.setInput(bytes);
-        count = inflater.inflate(data);
-        inflater.end();
-
-        final byte[] uncompressedData = new byte[count];
-
-        System.arraycopy(data, 0, uncompressedData, 0, count);
-
-        return uncompressedData;
     }
 }

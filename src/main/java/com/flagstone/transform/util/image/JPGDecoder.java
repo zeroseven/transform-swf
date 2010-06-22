@@ -98,40 +98,35 @@ public final class JPGDecoder implements ImageProvider, ImageDecoder {
      public void read(final InputStream stream)
                  throws DataFormatException, IOException {
 
-         BigDecoder coder = new BigDecoder(stream);
+         final BigDecoder coder = new BigDecoder(stream);
 
          int marker;
          int length;
 
          do {
              marker = coder.readUnsignedShort();
-             if (marker == JPEGInfo.SOI) {
-                 copyTag(marker, 0, coder);
-             } else if (marker == JPEGInfo.SOF0) {
-                 length = coder.readUnsignedShort();
-                 copyTag(marker, length, coder);
-             } else if (marker == JPEGInfo.SOF2) {
-                 length = coder.readUnsignedShort();
-                 copyTag(marker, length, coder);
-             } else if (marker == JPEGInfo.DHT) {
-                 length = coder.readUnsignedShort();
-                 copyTag(marker, length, coder);
-             } else if (marker == JPEGInfo.DQT) {
-                 length = coder.readUnsignedShort();
-                 copyTag(marker, length, coder);
-             } else if (marker == JPEGInfo.DRI) {
-                 length = coder.readUnsignedShort();
-                 copyTag(marker, length, coder);
-             } else if (marker == JPEGInfo.SOS) {
-                 length = coder.readUnsignedShort();
-                 copyTag(marker, length, coder);
-             } else if (marker == JPEGInfo.EOI) {
-                 copyTag(marker, 0, coder);
-             } else if ((marker & JPEGInfo.APP) == JPEGInfo.APP) {
-                 length = coder.readUnsignedShort();
-                 copyTag(marker, length, coder);
-             } else {
-                 copyTag(marker, 0, coder);
+             switch (marker) {
+                 case JPEGInfo.SOI:
+                 case JPEGInfo.EOI:
+                     copyTag(marker, 0, coder);
+                     break;
+                 case JPEGInfo.SOF0:
+                 case JPEGInfo.SOF2:
+                 case JPEGInfo.DHT:
+                 case JPEGInfo.DQT:
+                 case JPEGInfo.DRI:
+                 case JPEGInfo.SOS:
+                     length = coder.readUnsignedShort();
+                     copyTag(marker, length, coder);
+                     break;
+                 default:
+                     if ((marker & JPEGInfo.APP) == JPEGInfo.APP) {
+                         length = coder.readUnsignedShort();
+                         copyTag(marker, length, coder);
+                     } else {
+                         copyTag(marker, 0, coder);
+                     }
+                     break;
              }
          } while (marker != JPEGInfo.EOI);
 
@@ -157,7 +152,7 @@ public final class JPGDecoder implements ImageProvider, ImageDecoder {
             bytes[3] = (byte) length;
             coder.readBytes(bytes, 4, length - 2);
         }
-        int imgLength = image.length;
+        final int imgLength = image.length;
         image = Arrays.copyOf(image, imgLength + bytes.length);
         System.arraycopy(bytes, 0, image, imgLength, bytes.length);
     }

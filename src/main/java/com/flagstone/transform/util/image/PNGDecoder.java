@@ -65,7 +65,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
     private static final int UNSIGNED_BYTE = 255;
 
     /** Size of each colour table entry or pixel in a true colour image. */
-    private static final int COLOUR_CHANNELS = 4;
+    private static final int RGBA_CHANNELS = 4;
     /** Size of each colour table entry or pixel in a true colour image. */
     private static final int RGB_CHANNELS = 3;
 
@@ -88,16 +88,6 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
     private static final int DEPTH_4 = 4;
     private static final int DEPTH_8 = 8;
     private static final int DEPTH_16 = 16;
-
-
-    /** Shift used to align the RGB555 red channel to a 8-bit pixel. */
-    private static final int RGB5_MSB_MASK = 0x00F8;
-    /** Shift used to align the RGB555 red channel to a 8-bit pixel. */
-    private static final int RGB5_RED_SHIFT = 7;
-    /** Shift used to align the RGB555 green channel to a 8-bit pixel. */
-    private static final int RGB5_GREEN_SHIFT = 2;
-    /** Shift used to align the RGB555 blue channel to a 8-bit pixel. */
-    private static final int RGB5_BLUE_SHIFT = 3;
 
 
     /** Message used to signal that the image cannot be decoded. */
@@ -155,8 +145,6 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
     private static final int ALPHA_GREYSCALE = 4;
     /** colorType value for true-colour images with transparency. */
     private static final int ALPHA_TRUECOLOUR = 6;
-    /** filterMethod value for images with no filtering. */
-    private static final int NO_FILTER = 0;
     /** filterMethod value for images with sub-pixel filtering. */
     private static final int SUB_FILTER = 1;
     /** filterMethod value for images with upper filtering. */
@@ -175,21 +163,21 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
     private static final int[] COLUMN_STEP = {8, 8, 4, 4, 2, 2, 1};
 
     /** The number of bits used to represent each colour component. */
-    private int bitDepth;
+    private transient int bitDepth;
     /** The number of colour components in each pixel. */
-    private int colorComponents;
+    private transient int colorComponents;
     /** The method used to compress the image. */
 //    private int compression;
     /** The method used to encode colours in the image. */
-    private int colorType;
+    private transient int colorType;
     /** Block filtering method used in the image. */
 //    private int filterMethod;
     /** Row interlacing method used in the image. */
-    private int interlaceMethod;
+    private transient int interlaceMethod;
     /** Default value for transparent grey-scale pixels. */
-    private int transparentGrey;
+    private transient int transparentGrey;
     /** Default value for transparent red pixels. */
-    private int transparentRed;
+    private transient int transparentRed;
     /** Default value for transparent green pixels. */
 //    private int transparentGreen;
     /** Default value for transparent blue pixels. */
@@ -242,24 +230,27 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
     /** {@inheritDoc} */
     public ImageTag defineImage(final int identifier) {
         ImageTag object = null;
+        final ImageFilter filter = new ImageFilter();
 
         switch (format) {
         case IDX8:
             object = new DefineImage(identifier, width, height,
-                    table.length / COLOUR_CHANNELS,
-                    zip(merge(adjustScan(width, height, image), table)));
+                    table.length / RGBA_CHANNELS,
+                    zip(filter.merge(
+                            filter.adjustScan(width, height, image), table)));
             break;
         case IDXA:
             object = new DefineImage2(identifier, width, height,
-                    table.length / COLOUR_CHANNELS,
-                    zip(mergeAlpha(adjustScan(width, height, image), table)));
+                    table.length / RGBA_CHANNELS,
+                    zip(filter.mergeAlpha(
+                            filter.adjustScan(width, height, image), table)));
             break;
         case RGB5:
             object = new DefineImage(identifier, width, height,
-                    zip(packColours(width, height, image)), RGB5_SIZE);
+                    zip(filter.packColors(width, height, image)), RGB5_SIZE);
             break;
         case RGB8:
-            orderAlpha(image);
+            filter.orderAlpha(image);
             object = new DefineImage(identifier, width, height, zip(image),
                     RGB8_SIZE);
             break;
@@ -273,6 +264,27 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
         return object;
     }
 
+    /**
+     * Apply the level for the alpha channel to the red, green and blue colour
+     * channels for encoding the image so it can be added to a Flash movie.
+     * @param img the image data.
+     */
+    private void applyAlpha(final byte[] img) {
+        int alpha;
+
+        for (int i = 0; i < img.length; i += RGBA_CHANNELS) {
+            alpha = img[i + ALPHA] & UNSIGNED_BYTE;
+
+            img[i + ALPHA] = (byte) (((img[i + BLUE] & UNSIGNED_BYTE) * alpha)
+                    / OPAQUE);
+            img[i + BLUE] = (byte) (((img[i + GREEN] & UNSIGNED_BYTE) * alpha)
+                    / OPAQUE);
+            img[i + GREEN] = (byte) (((img[i + RED] & UNSIGNED_BYTE) * alpha)
+                    / OPAQUE);
+            img[i + RED] = (byte) alpha;
+       }
+    }
+
     /** {@inheritDoc} */
     public void read(final InputStream stream)
             throws DataFormatException, IOException {
@@ -283,17 +295,9 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
         int chunkType = 0;
         boolean moreChunks = true;
 
-        bitDepth = 0;
-        colorComponents = 0;
-        colorType = 0;
-//        filterMethod = 0;
-        interlaceMethod = 0;
         chunkData = new byte[0];
-
         transparentGrey = -1;
         transparentRed = -1;
-//        transparentGreen = -1;
-//        transparentBlue = -1;
 
         for (int i = 0; i < 8; i++) {
             if (coder.readByte() != SIGNATURE[i]) {
@@ -345,18 +349,18 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
         /* compression = */ coder.readByte();
         /* filterMethod = */ coder.readByte();
         interlaceMethod = coder.readByte();
+        /* crc = */ coder.readInt();
+        decodeFormat();
+    }
 
-        coder.readInt(); // crc
-
+    private void decodeFormat() throws DataFormatException {
         switch (colorType) {
         case GREYSCALE:
-            format = (transparentGrey == -1) ? ImageFormat.RGB8
-                    : ImageFormat.RGBA;
+            format = ImageFormat.RGB8;
             colorComponents = 1;
             break;
         case TRUE_COLOUR:
-            format = (transparentRed == -1) ? ImageFormat.RGB8
-                    : ImageFormat.RGBA;
+            format = ImageFormat.RGB8;
             colorComponents = RGB_CHANNELS;
             break;
         case INDEXED_COLOUR:
@@ -369,10 +373,14 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
             break;
         case ALPHA_TRUECOLOUR:
             format = ImageFormat.RGBA;
-            colorComponents = COLOUR_CHANNELS;
+            colorComponents = RGBA_CHANNELS;
             break;
         default:
             throw new DataFormatException(BAD_FORMAT);
+        }
+
+        if (format == ImageFormat.RGB8 && bitDepth <= 5) {
+            format = ImageFormat.RGB5;
         }
     }
 
@@ -388,9 +396,9 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
             final int paletteSize = length / RGB_CHANNELS;
             int index = 0;
 
-            table = new byte[paletteSize * COLOUR_CHANNELS];
+            table = new byte[paletteSize * RGBA_CHANNELS];
 
-            for (int i = 0; i < paletteSize; i++, index += COLOUR_CHANNELS) {
+            for (int i = 0; i < paletteSize; i++, index += RGBA_CHANNELS) {
                 table[index + ALPHA] = (byte) OPAQUE;
                 table[index + BLUE] = (byte) coder.readByte();
                 table[index + GREEN] = (byte) coder.readByte();
@@ -415,15 +423,17 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
         switch (colorType) {
         case GREYSCALE:
             transparentGrey = coder.readUnsignedShort();
+            format = ImageFormat.RGBA;
             break;
         case TRUE_COLOUR:
             transparentRed = coder.readUnsignedShort();
+            format = ImageFormat.RGBA;
             /* transparentGreen = */ coder.readUnsignedShort();
             /* transparentBlue = */ coder.readUnsignedShort();
             break;
         case INDEXED_COLOUR:
             format = ImageFormat.IDXA;
-            for (int i = 0; i < length; i++, index += COLOUR_CHANNELS) {
+            for (int i = 0; i < length; i++, index += RGBA_CHANNELS) {
                 table[index + ALPHA] = (byte) coder.readByte();
 
                 if (table[index + ALPHA] == 0) {
@@ -469,23 +479,24 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
      * @throws DataFormatException if the image cannot be decoded.
      */
     private void decodeImage() throws IOException, DataFormatException {
-        if ((format == ImageFormat.RGB8) && (bitDepth <= 5)) {
-            format = ImageFormat.RGB5;
-        }
-
-        if ((format == ImageFormat.RGB5) || (format == ImageFormat.RGB8)
-                || (format == ImageFormat.RGBA)) {
-            image = new byte[height * width * COLOUR_CHANNELS];
-        }
 
         if ((format == ImageFormat.IDX8) || (format == ImageFormat.IDXA)) {
             image = new byte[height * width];
+        } else {
+            image = new byte[height * width * RGBA_CHANNELS];
         }
 
-        final byte[] encodedImage = unzip(chunkData);
+        if (interlaceMethod == 1) {
+            decodeInterlaced();
+        } else {
+            decodeProgressive();
+        }
+    }
 
-        final int bitsPerPixel = bitDepth
-                * colorComponents;
+    private void decodeInterlaced() throws IOException, DataFormatException {
+
+        final byte[] encodedImage = unzip(chunkData);
+        final int bitsPerPixel = bitDepth * colorComponents;
         final int bitsPerRow = width * bitsPerPixel;
         final int rowWidth = (bitsPerRow + 7) >> 3;
         final int bytesPerPixel = (bitsPerPixel < 8) ? 1 : bitsPerPixel / 8;
@@ -497,13 +508,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
             previous[i] = (byte) 0;
         }
 
-        int rowStart = 0;
-        int rowInc = 0;
-        int colStart = 0;
-        int colInc = 0;
-
         int imageIndex = 0;
-//        int pixelCount = 0;
 
         int row = 0;
         int col = 0;
@@ -512,27 +517,12 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
         int scanBits = 0;
         int scanLength = 0;
 
-        final int numberOfPasses = (interlaceMethod == 1) ? 7 : 1;
-
-        int cindex = 0;
-        int pindex = 0;
-
-        for (int pass = 0; pass < numberOfPasses; pass++) {
-            rowStart = (interlaceMethod == 1)
-            ? START_ROW[pass] : 0;
-            rowInc = (interlaceMethod == 1) ? ROW_STEP[pass]
-                    : 1;
-
-            colStart = (interlaceMethod == 1) ? START_COLUMN[pass]
-                    : 0;
-            colInc = (interlaceMethod == 1) ? COLUMN_STEP[pass]
-                    : 1;
-
-            for (row = rowStart; (row < height)
-                    && (imageIndex < encodedImage.length); row += rowInc) {
-                for (col = colStart, /* pixelCount = 0, */ scanBits = 0; col
-                        < width; col += colInc) {
-                    /* pixelCount++; */
+        for (int pass = 0; pass < 7; pass++) {
+            for (row = START_ROW[pass]; (row < height)
+                    && (imageIndex < encodedImage.length);
+                    row += ROW_STEP[pass]) {
+                for (col = START_COLUMN[pass], /* pixelCount = 0, */ scanBits = 0; col
+                        < width; col += COLUMN_STEP[pass]) {
                     scanBits += bitsPerPixel;
                 }
 
@@ -541,84 +531,122 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
 
                 for (int i = 0; i < scanLength; i++, imageIndex++) {
                     current[i] = (imageIndex < encodedImage.length)
-                            ? encodedImage[imageIndex]
-                            : previous[i];
+                            ? encodedImage[imageIndex] : previous[i];
                 }
 
-                switch (filter) {
-                case NO_FILTER:
-                    break;
-                case SUB_FILTER:
-                    for (cindex = bytesPerPixel, pindex = 0;
-                            cindex < scanLength; cindex++, pindex++) {
-                        current[cindex] =
-                            (byte) (current[cindex] + current[pindex]);
-                    }
-                    break;
-                case UP_FILTER:
-                    for (cindex = 0; cindex < scanLength; cindex++) {
-                        current[cindex] =
-                                (byte) (current[cindex] + previous[cindex]);
-                    }
-                    break;
-                case AVG_FILTER:
-                    for (cindex = 0; cindex < bytesPerPixel; cindex++) {
-                        current[cindex] = (byte) (current[cindex]
-                                        + (0 + (UNSIGNED_BYTE
-                                                & previous[cindex])) / 2);
-                    }
-
-                    for (cindex = bytesPerPixel, pindex = 0;
-                    cindex < scanLength; cindex++, pindex++) {
-                        current[cindex] = (byte) (current[cindex]
-                            + ((UNSIGNED_BYTE & current[pindex])
-                                    + (UNSIGNED_BYTE & previous[cindex])) / 2);
-                    }
-                    break;
-                case PAETH_FILTER:
-                    for (cindex = 0; cindex < bytesPerPixel; cindex++) {
-                        current[cindex] = (byte) (current[cindex]
-                                     + paeth((byte) 0,
-                                previous[cindex], (byte) 0));
-                    }
-
-                    for (cindex = bytesPerPixel, pindex = 0;
-                    cindex < scanLength; cindex++, pindex++) {
-                        current[cindex] = (byte) (current[cindex]
-                                                      + paeth(current[pindex],
-                                previous[cindex], previous[pindex]));
-                    }
-                    break;
-                default:
-                    throw new DataFormatException(BAD_FORMAT);
-                }
-
+                defilter(filter, bytesPerPixel, scanLength, current, previous);
+                deblock(row, current, START_COLUMN[pass], COLUMN_STEP[pass]);
                 System.arraycopy(current, 0, previous, 0, scanLength);
-                ByteArrayInputStream stream = new ByteArrayInputStream(current);
-                final BigDecoder coder = new BigDecoder(stream);
-
-                for (col = colStart; col < width; col += colInc) {
-                    switch (colorType) {
-                    case GREYSCALE:
-                        decodeGreyscale(coder, row, col);
-                        break;
-                    case TRUE_COLOUR:
-                        decodeTrueColour(coder, row, col);
-                        break;
-                    case INDEXED_COLOUR:
-                        decodeIndexedColour(coder, row, col);
-                        break;
-                    case ALPHA_GREYSCALE:
-                        decodeAlphaGreyscale(coder, row, col);
-                        break;
-                    case ALPHA_TRUECOLOUR:
-                        decodeAlphaTrueColour(coder, row, col);
-                        break;
-                    default:
-                        throw new DataFormatException(BAD_FORMAT);
-                    }
-                }
             }
+        }
+    }
+
+    private void decodeProgressive() throws IOException, DataFormatException {
+
+        final byte[] data = unzip(chunkData);
+        final int bitsPerPixel = bitDepth * colorComponents;
+        final int bitsPerRow = width * bitsPerPixel;
+        final int rowWidth = (bitsPerRow + 7) >> 3;
+        final int bytesPerPixel = (bitsPerPixel < 8) ? 1 : bitsPerPixel / 8;
+
+        final byte[] current = new byte[rowWidth];
+        final byte[] previous = new byte[rowWidth];
+
+        for (int i = 0; i < rowWidth; i++) {
+            previous[i] = (byte) 0;
+        }
+
+        int index = 0;
+        int row = 0;
+        int col = 0;
+        int filter = 0;
+        int scanBits = 0;
+        int scanLength = 0;
+
+        for (row = 0; (row < height) && (index < data.length); row++) {
+            for (col = 0, scanBits = 0; col < width; col++) {
+                 scanBits += bitsPerPixel;
+            }
+
+            scanLength = (scanBits + 7) >> 3;
+            filter = data[index++];
+
+            for (int i = 0; i < scanLength; i++, index++) {
+                current[i] = (index < data.length)
+                        ? data[index] : previous[i];
+            }
+
+            defilter(filter, bytesPerPixel, scanLength, current, previous);
+            deblock(row, current, 0, 1);
+            System.arraycopy(current, 0, previous, 0, scanLength);
+        }
+    }
+
+    private void defilter(final int filter, final int size, final int scan,
+            final byte[] current, final byte[] previous) {
+        switch (filter) {
+        case SUB_FILTER:
+            subFilter(size, scan, current);
+            break;
+        case UP_FILTER:
+            upFilter(scan, current, previous);
+            break;
+        case AVG_FILTER:
+            averageFilter(size, scan, current, previous);
+            break;
+        case PAETH_FILTER:
+            paethFilter(size, scan, current, previous);
+            break;
+        default:
+            break;
+        }
+    }
+
+    private void subFilter(final int start, final int width,
+            final byte[] current) {
+        for (int i = start, j = 0; i < width; i++, j++) {
+            current[i] = (byte) (current[i] + current[j]);
+       }
+    }
+
+    private void upFilter(final int width, final byte[] current,
+            final byte[] previous) {
+        for (int i = 0; i < width; i++) {
+            current[i] = (byte) (current[i] + previous[i]);
+        }
+    }
+
+    private void averageFilter(final int start, final int width,
+            final byte[] current, final byte[] previous) {
+
+        for (int cindex = 0; cindex < start; cindex++) {
+            current[cindex] = (byte) (current[cindex]
+                            + (0 + (UNSIGNED_BYTE
+                                    & previous[cindex])) / 2);
+        }
+
+        for (int cindex = start, pindex = 0;
+        cindex < width; cindex++, pindex++) {
+            current[cindex] = (byte) (current[cindex]
+                + ((UNSIGNED_BYTE & current[pindex])
+                        + (UNSIGNED_BYTE & previous[cindex])) / 2);
+        }
+    }
+
+    private void paethFilter(final int start, final int width,
+            final byte[] current, final byte[] previous) {
+
+        for (int cindex = 0; cindex < start; cindex++) {
+            current[cindex] = (byte) (current[cindex]
+                         + paeth((byte) 0,
+                    previous[cindex], (byte) 0));
+        }
+
+        for (int cindex = start, pindex = 0;
+        cindex < width; cindex++, pindex++) {
+            current[cindex] = (byte) (current[cindex]
+                                          + paeth(current[pindex],
+                    previous[cindex], previous[pindex]));
         }
     }
 
@@ -663,6 +691,36 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
         }
 
         return value;
+    }
+
+    private void deblock(final int row, final byte[] current,
+            final int start, final int inc)
+            throws IOException, DataFormatException {
+
+        final ByteArrayInputStream stream = new ByteArrayInputStream(current);
+        final BigDecoder coder = new BigDecoder(stream);
+
+        for (int col = start; col < width; col += inc) {
+            switch (colorType) {
+            case GREYSCALE:
+                decodeGreyscale(coder, row, col);
+                break;
+            case TRUE_COLOUR:
+                decodeTrueColour(coder, row, col);
+                break;
+            case INDEXED_COLOUR:
+                decodeIndexedColour(coder, row, col);
+                break;
+            case ALPHA_GREYSCALE:
+                decodeAlphaGreyscale(coder, row, col);
+                break;
+            case ALPHA_TRUECOLOUR:
+                decodeAlphaTrueColour(coder, row, col);
+                break;
+            default:
+                throw new DataFormatException(BAD_FORMAT);
+            }
+        }
     }
 
     /**
@@ -724,7 +782,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
         int pixel = 0;
         byte colour = 0;
 
-        int index = row * (width << 2) + (col << 2);
+        final int index = row * (width << 2) + (col << 2);
 
         for (int i = 0; i < colorComponents; i++) {
             if (bitDepth == DEPTH_8) {
@@ -841,7 +899,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
         int pixel = 0;
         byte colour = 0;
 
-        int index = row * (width << 2) + (col << 2);
+        final int index = row * (width << 2) + (col << 2);
 
         for (int i = 0; i < colorComponents; i++) {
             if (bitDepth == DEPTH_8) {
@@ -881,93 +939,6 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
     }
 
     /**
-     * Reorder the image pixels from RGBA to ARGB.
-     *
-     * @param img the image data.
-     */
-    private void orderAlpha(final byte[] img) {
-        byte alpha;
-
-        for (int i = 0; i < img.length; i += COLOUR_CHANNELS) {
-            alpha = img[i + ALPHA];
-
-            img[i + ALPHA] = img[i + BLUE];
-            img[i + BLUE] = img[i + GREEN];
-            img[i + GREEN] = img[i + RED];
-            img[i + RED] = alpha;
-        }
-    }
-
-    /**
-     * Apply the level for the alpha channel to the red, green and blue colour
-     * channels for encoding the image so it can be added to a Flash movie.
-     * @param img the image data.
-     */
-    private void applyAlpha(final byte[] img) {
-        int alpha;
-
-        for (int i = 0; i < img.length; i += COLOUR_CHANNELS) {
-            alpha = img[i + ALPHA] & UNSIGNED_BYTE;
-
-            img[i + ALPHA] = (byte) (((img[i + BLUE] & UNSIGNED_BYTE) * alpha)
-                    / OPAQUE);
-            img[i + BLUE] = (byte) (((img[i + GREEN] & UNSIGNED_BYTE) * alpha)
-                    / OPAQUE);
-            img[i + GREEN] = (byte) (((img[i + RED] & UNSIGNED_BYTE) * alpha)
-                    / OPAQUE);
-            img[i + RED] = (byte) alpha;
-       }
-    }
-
-    /**
-     * Concatenate the colour table and the image data together.
-     * @param img the image data.
-     * @param colors the colour table.
-     * @return a single array containing the red, green and blue (not alpha)
-     * entries from the colour table followed by the red, green, blue and
-     * alpha channels from the image. The alpha defaults to 255 for an opaque
-     * image.
-     */
-    private byte[] merge(final byte[] img, final byte[] colors) {
-        final byte[] merged = new byte[(colors.length / COLOUR_CHANNELS)
-                                       * RGB_CHANNELS + img.length];
-        int dst = 0;
-
-        for (int i = 0; i < colors.length; i += COLOUR_CHANNELS) {
-            merged[dst++] = colors[i + BLUE];
-            merged[dst++] = colors[i + GREEN];
-            merged[dst++] = colors[i + RED];
-        }
-
-        for (final byte element : img) {
-            merged[dst++] = element;
-        }
-
-        return merged;
-    }
-
-    /**
-     * Concatenate the colour table and the image data together.
-     * @param img the image data.
-     * @param colors the colour table.
-     * @return a single array containing entries from the colour table followed
-     * by the image.
-     */
-    private byte[] mergeAlpha(final byte[] img, final byte[] colors) {
-        final byte[] merged = new byte[colors.length + img.length];
-        int dst = 0;
-
-        for (final byte element : colors) {
-            merged[dst++] = element;
-        }
-
-        for (final byte element : img) {
-            merged[dst++] = element;
-        }
-        return merged;
-    }
-
-    /**
      * Compress the image using the ZIP format.
      * @param img the image data.
      * @return the compressed image.
@@ -983,85 +954,6 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
 
         return newData;
     }
-
-    /**
-     * Adjust the width of each row in an image so the data is aligned to a
-     * 16-bit word boundary when loaded in memory. The additional bytes are
-     * all set to zero and will not be displayed in the image.
-     *
-     * @param imgWidth the width of the image in pixels.
-     * @param imgHeight the height of the image in pixels.
-     * @param img the image data.
-     * @return the image data with each row aligned to a 16-bit boundary.
-     */
-    private byte[] adjustScan(final int imgWidth, final int imgHeight,
-            final byte[] img) {
-        int src = 0;
-        int dst = 0;
-        int row;
-        int col;
-
-        int scan = 0;
-        byte[] formattedImage = null;
-
-        scan = (imgWidth + 3) & ~3;
-        formattedImage = new byte[scan * imgHeight];
-
-        for (row = 0; row < imgHeight; row++) {
-            for (col = 0; col < imgWidth; col++) {
-                formattedImage[dst++] = img[src++];
-            }
-
-            while (col++ < scan) {
-                formattedImage[dst++] = 0;
-            }
-        }
-
-        return formattedImage;
-    }
-
-    /**
-     * Convert an image with 32-bits for the red, green, blue and alpha channels
-     * to one where the channels each take 5-bits in a 16-bit word.
-     * @param imgWidth the width of the image in pixels.
-     * @param imgHeight the height of the image in pixels.
-     * @param img the image data.
-     * @return the image data with the red, green and blue channels packed into
-     * 16-bit words. Alpha is discarded.
-     */
-    private byte[] packColours(final int imgWidth, final int imgHeight,
-            final byte[] img) {
-        int src = 0;
-        int dst = 0;
-        int row;
-        int col;
-
-        final int scan = imgWidth + (imgWidth & 1);
-        final byte[] formattedImage = new byte[scan * imgHeight * 2];
-
-        for (row = 0; row < imgHeight; row++) {
-            for (col = 0; col < imgWidth; col++, src++) {
-                final int red = (img[src++] & RGB5_MSB_MASK)
-                        << RGB5_RED_SHIFT;
-                final int green = (img[src++] & RGB5_MSB_MASK)
-                        << RGB5_GREEN_SHIFT;
-                final int blue = (img[src++] & RGB5_MSB_MASK)
-                        >> RGB5_BLUE_SHIFT;
-                final int colour = (red | green | blue) & Coder.LOWEST15;
-
-                formattedImage[dst++] = (byte) (colour >> Coder.TO_LOWER_BYTE);
-                formattedImage[dst++] = (byte) colour;
-            }
-
-            while (col < scan) {
-                formattedImage[dst++] = 0;
-                formattedImage[dst++] = 0;
-                col++;
-            }
-        }
-        return formattedImage;
-    }
-
 
     /** {@inheritDoc} */
     public int getWidth() {
