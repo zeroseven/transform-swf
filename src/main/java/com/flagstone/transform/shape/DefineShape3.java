@@ -45,6 +45,7 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
 import com.flagstone.transform.fillstyle.FillStyle;
 import com.flagstone.transform.linestyle.LineStyle;
 import com.flagstone.transform.linestyle.LineStyle1;
+import com.flagstone.transform.linestyle.LineStyle2;
 
 /**
  * DefineShape3 defines a transparent shape to be displayed. It extends the
@@ -216,12 +217,13 @@ public final class DefineShape3 implements ShapeTag {
      * Add a LineStyle1 to the list of line styles.
      *
      * @param style
-     *            and LineStyle1 object. Must not be null.
+     *            and LineStyle1 object. Must not be null or an instance of
+     *            LineStyle2.
      *
      * @return this object.
      */
-    public DefineShape3 add(final LineStyle1 style) {
-        if (style == null) {
+    public DefineShape3 add(final LineStyle style) {
+        if (style == null || style instanceof LineStyle2) {
             throw new IllegalArgumentException();
         }
         lineStyles.add(style);

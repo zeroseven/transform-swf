@@ -299,13 +299,17 @@ public final class DefineMorphShape2 implements ShapeTag {
     /**
      * Add a LineStyle object to the list of line styles.
      *
-     * @param aLineStyle
-     *            and LineStyle object. Must not be null.
+     * @param style
+     *            a MorphLineStyle2 object. Must not be null. Must be an
+     *            instance of MorphLineStyle2.
      *
      * @return this object.
      */
-    public DefineMorphShape2 add(final MorphLineStyle2 aLineStyle) {
-        lineStyles.add(aLineStyle);
+    public DefineMorphShape2 add(final LineStyle style) {
+        if (style == null || !(style instanceof MorphLineStyle2)) {
+            throw new IllegalArgumentException();
+        }
+        lineStyles.add(style);
         return this;
     }
 

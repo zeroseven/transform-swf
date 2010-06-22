@@ -46,6 +46,7 @@ import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.exception.IllegalArgumentRangeException;
 import com.flagstone.transform.fillstyle.FillStyle;
 import com.flagstone.transform.linestyle.LineStyle;
+import com.flagstone.transform.linestyle.LineStyle1;
 import com.flagstone.transform.linestyle.LineStyle2;
 
 /**
@@ -167,8 +168,12 @@ public final class DefineShape4 implements ShapeTag {
      *
      * @param uid
      *            the unique identifier for the shape in the range 1..65535.
-     * @param rect
-     *            the bounding rectangle for the shape. Must not be null.
+     * @param bounds
+     *            the bounding rectangle for the shape including the width of
+     *            the border lines. Must not be null.
+     * @param edges
+     *            the bounding rectangle for the shape excluding the line used
+     *            to draw the border. Must not be null.
      * @param fills
      *            the list of fill styles used in the shape. Must not be null.
      * @param lines
@@ -176,11 +181,12 @@ public final class DefineShape4 implements ShapeTag {
      * @param aShape
      *            the shape to be drawn. Must not be null.
      */
-    public DefineShape4(final int uid, final Bounds rect,
+    public DefineShape4(final int uid, final Bounds bounds, final Bounds edges,
             final List<FillStyle> fills, final List<LineStyle> lines,
             final Shape aShape) {
         setIdentifier(uid);
-        setBounds(rect);
+        setBounds(bounds);
+        setEdgeBounds(edges);
         setFillStyles(fills);
         setLineStyles(lines);
         setShape(aShape);
@@ -273,12 +279,13 @@ public final class DefineShape4 implements ShapeTag {
      * Add a LineStyle to the list of line styles.
      *
      * @param style
-     *            and LineStyle object. Must not be null.
+     *            a LineStyle2 object. Must not be null or an instance of
+     *            LineStyle1.
      *
      * @return this object.
      */
-    public DefineShape4 add(final LineStyle2 style) {
-        if (style == null) {
+    public DefineShape4 add(final LineStyle style) {
+        if (style == null || style instanceof LineStyle1) {
             throw new IllegalArgumentException();
         }
         lineStyles.add(style);

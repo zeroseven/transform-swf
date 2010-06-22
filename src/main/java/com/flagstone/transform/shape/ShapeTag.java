@@ -42,6 +42,13 @@ public interface ShapeTag extends DefineTag {
      */
     void setLineStyles(final List<LineStyle> styles);
     /**
+     * Add a line style.
+     *
+     * @param style
+     *            an instance of LineStyle. Must not be null.
+     */
+    ShapeTag add(final LineStyle style);
+    /**
      * Get the list fill styles.
      *
      * @return the list of fill styles used in the shape.
@@ -54,6 +61,13 @@ public interface ShapeTag extends DefineTag {
      *            the fill styles for the shape. Must not be null.
      */
     void setFillStyles(final List<FillStyle> styles);
+    /**
+     * Add a fill style.
+     *
+     * @param style
+     *            an instance of FillStyle. Must not be null.
+     */
+    ShapeTag add(final FillStyle style);
     /**
      * Get the shape.
      *
