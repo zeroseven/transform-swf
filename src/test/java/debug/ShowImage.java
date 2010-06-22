@@ -42,6 +42,7 @@ import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.datatype.WebPalette;
 import com.flagstone.transform.image.ImageTag;
 import com.flagstone.transform.util.image.ImageFactory;
+import com.flagstone.transform.util.image.ImageShape;
 
 /**
  * ShowImage displays an image in a Flash file.
@@ -81,8 +82,7 @@ public final class ShowImage {
             movie.add(header);
             movie.add(new Background(WebPalette.LIGHT_BLUE.color()));
             movie.add(image);
-            movie.add(factory.defineEnclosingShape(shapeId,
-                    image.getIdentifier(),
+            movie.add(new ImageShape().defineShape(shapeId, image,
                     imageWidth / 2, imageHeight / 2, null));
             movie.add(Place2.show(shapeId, 1, 0, 0));
             movie.add(ShowFrame.getInstance());

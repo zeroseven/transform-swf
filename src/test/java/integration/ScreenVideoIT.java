@@ -49,7 +49,7 @@ import com.flagstone.transform.Place2;
 import com.flagstone.transform.ShowFrame;
 import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.datatype.WebPalette;
-import com.flagstone.transform.image.ImageTag;
+import com.flagstone.transform.util.image.ImageDecoder;
 import com.flagstone.transform.util.image.ImageFactory;
 import com.flagstone.transform.video.Deblocking;
 import com.flagstone.transform.video.DefineVideo;
@@ -95,10 +95,10 @@ public final class ScreenVideoIT {
 
         final ImageFactory factory = new ImageFactory();
         factory.read(new File(sourceDir, files[0]));
-        final ImageTag image = factory.defineImage(uid++);
+        ImageDecoder decoder = factory.getDecoder();
 
-        int screenWidth = image.getWidth();
-        int screenHeight = image.getHeight();
+        int screenWidth = decoder.getWidth();
+        int screenHeight = decoder.getHeight();
 
         movie = new Movie();
         identifier = uid++;
@@ -118,7 +118,8 @@ public final class ScreenVideoIT {
         final List<ImageBlock> next = new ArrayList<ImageBlock>();
         List<ImageBlock> delta = new ArrayList<ImageBlock>();
 
-        factory.getImageAsBlocks(prev, blockWidth, blockHeight);
+        ImageBlock.getImageAsBlocks(prev, blockWidth, blockHeight,
+                decoder.getWidth(), decoder.getHeight(), decoder.getImage());
 
         ScreenPacket packet = new ScreenPacket(true, screenWidth, screenHeight,
                 blockWidth, blockHeight, prev);
@@ -133,7 +134,11 @@ public final class ScreenVideoIT {
             final File srcFile = new File(sourceDir, files[i]);
 
             factory.read(srcFile);
-            factory.getImageAsBlocks(next, blockWidth, blockHeight);
+            decoder = factory.getDecoder();
+
+            ImageBlock.getImageAsBlocks(next, blockWidth, blockHeight,
+                    decoder.getWidth(), decoder.getHeight(),
+                    decoder.getImage());
 
             delta = new ArrayList<ImageBlock>(prev.size());
 

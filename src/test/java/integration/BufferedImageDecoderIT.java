@@ -1,8 +1,8 @@
 /*
- * BMPImageTest.java
+ * BufferedImageTest.java
  * Transform
  *
- * Copyright (c) 2009-2010 Flagstone Software Ltd. All rights reserved.
+ * Copyright (c) 2010 Flagstone Software Ltd. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -52,17 +52,22 @@ import com.flagstone.transform.ShowFrame;
 import com.flagstone.transform.datatype.WebPalette;
 import com.flagstone.transform.image.ImageTag;
 import com.flagstone.transform.shape.ShapeTag;
+import com.flagstone.transform.util.image.BufferedImageDecoder;
+import com.flagstone.transform.util.image.ImageEncoding;
 import com.flagstone.transform.util.image.ImageFactory;
+import com.flagstone.transform.util.image.ImageRegistry;
 import com.flagstone.transform.util.image.ImageShape;
 
 @RunWith(Parameterized.class)
-public final class BMPImageIT {
+public final class BufferedImageDecoderIT {
 
     @Parameters
     public static Collection<Object[]> files() {
 
-        final File srcDir = new File("src/test/resources/bmp-reference");
-        final File destDir = new File("target/integration-results/BMPImage");
+        final File srcDir =
+            new File("src/test/resources/bmp-reference");
+        final File destDir =
+            new File("target/integration-results/BufferedImage");
 
         if (!destDir.exists() && !destDir.mkdirs()) {
             fail();
@@ -88,7 +93,7 @@ public final class BMPImageIT {
     private final File sourceFile;
     private final File destFile;
 
-    public BMPImageIT(final File src, final File dst) {
+    public BufferedImageDecoderIT(final File src, final File dst) {
         sourceFile = src;
         destFile = dst;
     }
@@ -97,6 +102,10 @@ public final class BMPImageIT {
     public void showImage() {
 
         try {
+            final BufferedImageDecoder decoder = new BufferedImageDecoder();
+            final String mimeType = ImageEncoding.PNG.getMimeType();
+            ImageRegistry.registerProvider(mimeType, decoder);
+
             final Movie movie = new Movie();
             int uid = 1;
 

@@ -1,5 +1,5 @@
 /*
- * BufferedImageTest.java
+ * BufferedImageEncoderIT.java
  * Transform
  *
  * Copyright (c) 2010 Flagstone Software Ltd. All rights reserved.
@@ -33,32 +33,29 @@ package integration;
 
 import static org.junit.Assert.fail;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.zip.DataFormatException;
 
+import javax.imageio.ImageIO;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import com.flagstone.transform.Background;
-import com.flagstone.transform.Movie;
-import com.flagstone.transform.MovieHeader;
-import com.flagstone.transform.Place2;
-import com.flagstone.transform.ShowFrame;
-import com.flagstone.transform.datatype.WebPalette;
 import com.flagstone.transform.image.ImageTag;
-import com.flagstone.transform.shape.DefineShape3;
 import com.flagstone.transform.util.image.BufferedImageDecoder;
+import com.flagstone.transform.util.image.BufferedImageEncoder;
 import com.flagstone.transform.util.image.ImageEncoding;
 import com.flagstone.transform.util.image.ImageFactory;
 import com.flagstone.transform.util.image.ImageRegistry;
 
 @RunWith(Parameterized.class)
-public final class BufferedImageIT {
+public final class BufferedImageEncoderIT {
 
     @Parameters
     public static Collection<Object[]> files() {
@@ -66,7 +63,7 @@ public final class BufferedImageIT {
         final File srcDir =
             new File("src/test/resources/bmp-reference");
         final File destDir =
-            new File("target/integration-results/BufferedImage");
+            new File("target/integration-results/BufferedImageEncoder");
 
         if (!destDir.exists() && !destDir.mkdirs()) {
             fail();
@@ -83,8 +80,7 @@ public final class BufferedImageIT {
 
         for (int i = 0; i < files.length; i++) {
             collection[i][0] = new File(srcDir, files[i]);
-            collection[i][1] = new File(destDir,
-                    files[i].substring(0, files[i].lastIndexOf('.')) + ".swf");
+            collection[i][1] = new File(destDir, files[i]);
         }
         return Arrays.asList(collection);
     }
@@ -92,7 +88,7 @@ public final class BufferedImageIT {
     private final File sourceFile;
     private final File destFile;
 
-    public BufferedImageIT(final File src, final File dst) {
+    public BufferedImageEncoderIT(final File src, final File dst) {
         sourceFile = src;
         destFile = dst;
     }
@@ -102,34 +98,19 @@ public final class BufferedImageIT {
 
         try {
             final BufferedImageDecoder decoder = new BufferedImageDecoder();
+            final BufferedImageEncoder encoder = new BufferedImageEncoder();
+
             final String mimeType = ImageEncoding.PNG.getMimeType();
             ImageRegistry.registerProvider(mimeType, decoder);
 
-            final Movie movie = new Movie();
-            int uid = 1;
-
             final ImageFactory factory = new ImageFactory();
             factory.read(sourceFile);
-            final int imageId = uid++;
-            final ImageTag image = factory.defineImage(imageId);
+            final ImageTag imgIn = factory.defineImage(1);
 
-            final int xOrigin = image.getWidth() / 2;
-            final int yOrigin = image.getHeight() / 2;
+            encoder.setImage(imgIn);
+            BufferedImage imgOut = encoder.getBufferedImage();
 
-            final DefineShape3 shape = factory.defineEnclosingShape(uid++,
-                    imageId, -xOrigin, -yOrigin, null);
-
-            MovieHeader attrs = new MovieHeader();
-            attrs.setFrameRate(1.0f);
-            attrs.setFrameSize(shape.getBounds());
-
-            movie.add(attrs);
-            movie.add(new Background(WebPalette.LIGHT_BLUE.color()));
-            movie.add(image);
-            movie.add(shape);
-            movie.add(Place2.show(shape.getIdentifier(), 1, 0, 0));
-            movie.add(ShowFrame.getInstance());
-            movie.encodeToFile(destFile);
+            ImageIO.write(imgOut, "bmp", destFile);
 
         } catch (DataFormatException e) {
             e.printStackTrace();

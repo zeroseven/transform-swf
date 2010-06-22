@@ -51,8 +51,9 @@ import com.flagstone.transform.Place2;
 import com.flagstone.transform.ShowFrame;
 import com.flagstone.transform.datatype.WebPalette;
 import com.flagstone.transform.image.ImageTag;
-import com.flagstone.transform.shape.DefineShape3;
+import com.flagstone.transform.shape.ShapeTag;
 import com.flagstone.transform.util.image.ImageFactory;
+import com.flagstone.transform.util.image.ImageShape;
 
 @RunWith(Parameterized.class)
 public final class PNGImageIT {
@@ -106,8 +107,8 @@ public final class PNGImageIT {
             final int xOrigin = image.getWidth() / 2;
             final int yOrigin = image.getHeight() / 2;
 
-            final DefineShape3 shape = factory.defineEnclosingShape(uid++,
-                    imageId, -xOrigin, -yOrigin, null);
+            final ShapeTag shape = new ImageShape().defineShape(uid++,
+                    image, -xOrigin, -yOrigin, null);
 
             MovieHeader attrs = new MovieHeader();
             attrs.setFrameRate(1.0f);

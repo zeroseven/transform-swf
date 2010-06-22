@@ -48,6 +48,7 @@ import com.flagstone.transform.MovieHeader;
 import com.flagstone.transform.Place2;
 import com.flagstone.transform.ShowFrame;
 import com.flagstone.transform.datatype.Bounds;
+import com.flagstone.transform.datatype.HorizontalAlign;
 import com.flagstone.transform.datatype.WebPalette;
 import com.flagstone.transform.font.DefineFont2;
 import com.flagstone.transform.text.DefineTextField;
@@ -145,7 +146,7 @@ public final class AWTFontIT {
             // Create a text field that uses an embedded font.
             DefineTextField nativeField = new DefineTextField(uid++);
             nativeField.setBounds(bounds);
-            nativeField.setAlignment(DefineTextField.Align.LEFT);
+            nativeField.setAlignment(HorizontalAlign.LEFT);
             nativeField.setFontIdentifier(nativeFont.getIdentifier());
             nativeField.setFontHeight(fontSize);
             nativeField.setEmbedded(false);
@@ -156,7 +157,7 @@ public final class AWTFontIT {
             // Create a text field that uses an embedded font.
             DefineTextField embeddedField = new DefineTextField(uid++);
             embeddedField.setBounds(bounds);
-            embeddedField.setAlignment(DefineTextField.Align.LEFT);
+            embeddedField.setAlignment(HorizontalAlign.LEFT);
             embeddedField.setFontIdentifier(embeddedFont.getIdentifier());
             embeddedField.setFontHeight(fontSize);
             embeddedField.setEmbedded(true);
