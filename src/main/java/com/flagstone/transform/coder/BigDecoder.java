@@ -234,7 +234,7 @@ public final class BigDecoder {
             int diff;
             while (toSkip > 0) {
                 diff = size - index;
-                if (toSkip < diff) {
+                if (toSkip <= diff) {
                     index += toSkip;
                     toSkip = 0;
                 } else {
