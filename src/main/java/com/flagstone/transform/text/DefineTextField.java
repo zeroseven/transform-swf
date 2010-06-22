@@ -42,6 +42,7 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.datatype.Color;
+import com.flagstone.transform.datatype.HorizontalAlign;
 import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 /**
@@ -214,17 +215,6 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
 public final class DefineTextField implements DefineTag {
 
     private static final int MAX_SPACE = 65535;
-
-    public enum Align {
-        /** The text displayed in a text field is left aligned. */
-        LEFT,
-        /** The text displayed in a text field is right aligned. */
-        RIGHT,
-        /** The text displayed in a text field is centre aligned. */
-        CENTER,
-        /** The text displayed in a text field is justified. */
-        JUSTIFY;
-    }
 
     /** The unique identifier for this object. */
     private int identifier;
@@ -551,20 +541,20 @@ public final class DefineTextField implements DefineTag {
      *
      * @return the alignment of the text.
      */
-    public Align getAlignment() {
-        Align value;
+    public HorizontalAlign getAlignment() {
+        HorizontalAlign value;
         switch (alignment) {
         case 0:
-            value = Align.LEFT;
+            value = HorizontalAlign.LEFT;
             break;
         case Coder.BIT0:
-            value = Align.RIGHT;
+            value = HorizontalAlign.RIGHT;
             break;
         case Coder.BIT1:
-            value = Align.CENTER;
+            value = HorizontalAlign.CENTER;
             break;
         case Coder.BIT0 | Coder.BIT1:
-            value = Align.JUSTIFY;
+            value = HorizontalAlign.JUSTIFY;
             break;
         default:
             throw new IllegalStateException();
@@ -828,7 +818,7 @@ public final class DefineTextField implements DefineTag {
      *            or ALIGN_JUSTIFY.
      * @return this object.
      */
-    public DefineTextField setAlignment(final Align align) {
+    public DefineTextField setAlignment(final HorizontalAlign align) {
         switch(align) {
         case LEFT:
             alignment = 0;
