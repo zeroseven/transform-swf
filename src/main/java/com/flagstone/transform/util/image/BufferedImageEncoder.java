@@ -270,6 +270,7 @@ public final class BufferedImageEncoder {
         int pos = 0;
         int index = 0;
 
+        format = ImageFormat.IDXA;
         table = new byte[tableLength * BYTES_PER_PIXEL];
         image = new byte[height * width];
 
