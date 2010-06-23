@@ -580,10 +580,10 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
         final DataBuffer buffer = obj.getData().getDataBuffer();
 
         switch (obj.getType()) {
-//        case BufferedImage.TYPE_USHORT_555_RGB:
-//            throw new DataFormatException(BAD_FORMAT);
-//        case BufferedImage.TYPE_USHORT_565_RGB:
-//            throw new DataFormatException(BAD_FORMAT);
+        case BufferedImage.TYPE_USHORT_555_RGB:
+            throw new DataFormatException(BAD_FORMAT);
+        case BufferedImage.TYPE_USHORT_565_RGB:
+            throw new DataFormatException(BAD_FORMAT);
         case BufferedImage.TYPE_USHORT_GRAY:
             decodeShortGray(buffer);
             break;

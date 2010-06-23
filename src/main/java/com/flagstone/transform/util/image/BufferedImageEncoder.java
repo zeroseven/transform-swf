@@ -339,7 +339,7 @@ public final class BufferedImageEncoder {
         final byte[] blue = new byte[table.length];
         final byte[] alpha = new byte[table.length];
 
-        int count = table.length / BYTES_PER_PIXEL;
+        final int count = table.length / BYTES_PER_PIXEL;
         int index = 0;
 
         for (int i = 0; i < count; i++) {
