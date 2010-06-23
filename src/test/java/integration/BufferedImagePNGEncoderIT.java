@@ -40,6 +40,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.zip.DataFormatException;
 
+import javax.imageio.IIOException;
 import javax.imageio.ImageIO;
 
 import org.junit.Test;
@@ -112,6 +113,8 @@ public final class BufferedImagePNGEncoderIT {
             imgOut.flush();
             ImageIO.write(imgOut, "png", destFile);
 
+        } catch (IIOException e) {
+            e.printStackTrace();
         } catch (DataFormatException e) {
             e.printStackTrace();
         } catch (Exception e) {
