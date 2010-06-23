@@ -1,5 +1,5 @@
 /*
- * JPGIMageTest.java
+ * BMPDecoderIT.java
  * Transform
  *
  * Copyright (c) 2009-2010 Flagstone Software Ltd. All rights reserved.
@@ -56,13 +56,13 @@ import com.flagstone.transform.util.image.ImageFactory;
 import com.flagstone.transform.util.image.ImageShape;
 
 @RunWith(Parameterized.class)
-public final class JPGImageIT {
+public final class BMPDecoderIT {
 
     @Parameters
     public static Collection<Object[]> files() {
 
-        final File srcDir = new File("src/test/resources/jpg-reference");
-        final File destDir = new File("target/integration-results/JPGImage");
+        final File srcDir = new File("src/test/resources/bmp-reference");
+        final File destDir = new File("target/integration-results/BMPImage");
 
         if (!destDir.exists() && !destDir.mkdirs()) {
             fail();
@@ -70,7 +70,7 @@ public final class JPGImageIT {
 
         final FilenameFilter filter = new FilenameFilter() {
             public boolean accept(final File directory, final String name) {
-                return name.endsWith(".jpg");
+                return name.endsWith(".bmp");
             }
         };
 
@@ -88,7 +88,7 @@ public final class JPGImageIT {
     private final File sourceFile;
     private final File destFile;
 
-    public JPGImageIT(final File src, final File dst) {
+    public BMPDecoderIT(final File src, final File dst) {
         sourceFile = src;
         destFile = dst;
     }
@@ -99,6 +99,7 @@ public final class JPGImageIT {
         try {
             final Movie movie = new Movie();
             int uid = 1;
+
             final ImageFactory factory = new ImageFactory();
             factory.read(sourceFile);
             final int imageId = uid++;

@@ -1,5 +1,5 @@
 /*
- * BMPImageTest.java
+ * PNGDecoderIT.java
  * Transform
  *
  * Copyright (c) 2009-2010 Flagstone Software Ltd. All rights reserved.
@@ -56,13 +56,13 @@ import com.flagstone.transform.util.image.ImageFactory;
 import com.flagstone.transform.util.image.ImageShape;
 
 @RunWith(Parameterized.class)
-public final class BMPImageIT {
+public final class PNGDecoderIT {
 
     @Parameters
     public static Collection<Object[]> files() {
 
-        final File srcDir = new File("src/test/resources/bmp-reference");
-        final File destDir = new File("target/integration-results/BMPImage");
+        final File srcDir = new File("src/test/resources/png-reference");
+        final File destDir = new File("target/integration-results/PNGDecoder");
 
         if (!destDir.exists() && !destDir.mkdirs()) {
             fail();
@@ -70,7 +70,7 @@ public final class BMPImageIT {
 
         final FilenameFilter filter = new FilenameFilter() {
             public boolean accept(final File directory, final String name) {
-                return name.endsWith(".bmp");
+                return name.endsWith(".png");
             }
         };
 
@@ -88,7 +88,7 @@ public final class BMPImageIT {
     private final File sourceFile;
     private final File destFile;
 
-    public BMPImageIT(final File src, final File dst) {
+    public PNGDecoderIT(final File src, final File dst) {
         sourceFile = src;
         destFile = dst;
     }
@@ -99,7 +99,6 @@ public final class BMPImageIT {
         try {
             final Movie movie = new Movie();
             int uid = 1;
-
             final ImageFactory factory = new ImageFactory();
             factory.read(sourceFile);
             final int imageId = uid++;
@@ -116,7 +115,7 @@ public final class BMPImageIT {
             attrs.setFrameSize(shape.getBounds());
 
             movie.add(attrs);
-            movie.add(new Background(WebPalette.LIGHT_BLUE.color()));
+            movie.add(new Background(WebPalette.WHITE.color()));
             movie.add(image);
             movie.add(shape);
             movie.add(Place2.show(shape.getIdentifier(), 1, 0, 0));
@@ -127,7 +126,9 @@ public final class BMPImageIT {
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
-            fail(sourceFile.getPath());
+            if (!sourceFile.getName().startsWith("x")) {
+                fail(sourceFile.getPath());
+            }
         }
     }
 }

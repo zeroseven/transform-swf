@@ -1,5 +1,5 @@
 /*
- * BufferedImageTest.java
+ * BufferedImageBMPDecoderIT.java
  * Transform
  *
  * Copyright (c) 2010 Flagstone Software Ltd. All rights reserved.
@@ -59,7 +59,7 @@ import com.flagstone.transform.util.image.ImageRegistry;
 import com.flagstone.transform.util.image.ImageShape;
 
 @RunWith(Parameterized.class)
-public final class BufferedImageDecoderIT {
+public final class BufferedImageBMPDecoderIT {
 
     @Parameters
     public static Collection<Object[]> files() {
@@ -93,7 +93,7 @@ public final class BufferedImageDecoderIT {
     private final File sourceFile;
     private final File destFile;
 
-    public BufferedImageDecoderIT(final File src, final File dst) {
+    public BufferedImageBMPDecoderIT(final File src, final File dst) {
         sourceFile = src;
         destFile = dst;
     }

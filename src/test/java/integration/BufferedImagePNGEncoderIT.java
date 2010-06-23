@@ -1,8 +1,8 @@
 /*
- * PNGImageTest.java
+ * BufferedImagePNGEncoderIT.java
  * Transform
  *
- * Copyright (c) 2009-2010 Flagstone Software Ltd. All rights reserved.
+ * Copyright (c) 2010 Flagstone Software Ltd. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -33,36 +33,37 @@ package integration;
 
 import static org.junit.Assert.fail;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.zip.DataFormatException;
 
+import javax.imageio.ImageIO;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import com.flagstone.transform.Background;
-import com.flagstone.transform.Movie;
-import com.flagstone.transform.MovieHeader;
-import com.flagstone.transform.Place2;
-import com.flagstone.transform.ShowFrame;
-import com.flagstone.transform.datatype.WebPalette;
 import com.flagstone.transform.image.ImageTag;
-import com.flagstone.transform.shape.ShapeTag;
+import com.flagstone.transform.util.image.BufferedImageDecoder;
+import com.flagstone.transform.util.image.BufferedImageEncoder;
+import com.flagstone.transform.util.image.ImageEncoding;
 import com.flagstone.transform.util.image.ImageFactory;
-import com.flagstone.transform.util.image.ImageShape;
+import com.flagstone.transform.util.image.ImageRegistry;
 
 @RunWith(Parameterized.class)
-public final class PNGImageIT {
+public final class BufferedImagePNGEncoderIT {
 
     @Parameters
     public static Collection<Object[]> files() {
 
-        final File srcDir = new File("src/test/resources/png-reference");
-        final File destDir = new File("target/integration-results/PNGImage");
+        final File srcDir =
+            new File("src/test/resources/png-reference");
+        final File destDir =
+            new File("target/integration-results/PNGEncoder");
 
         if (!destDir.exists() && !destDir.mkdirs()) {
             fail();
@@ -79,8 +80,7 @@ public final class PNGImageIT {
 
         for (int i = 0; i < files.length; i++) {
             collection[i][0] = new File(srcDir, files[i]);
-            collection[i][1] = new File(destDir,
-                    files[i].substring(0, files[i].lastIndexOf('.')) + ".swf");
+            collection[i][1] = new File(destDir, files[i]);
         }
         return Arrays.asList(collection);
     }
@@ -88,7 +88,7 @@ public final class PNGImageIT {
     private final File sourceFile;
     private final File destFile;
 
-    public PNGImageIT(final File src, final File dst) {
+    public BufferedImagePNGEncoderIT(final File src, final File dst) {
         sourceFile = src;
         destFile = dst;
     }
@@ -97,38 +97,26 @@ public final class PNGImageIT {
     public void showImage() {
 
         try {
-            final Movie movie = new Movie();
-            int uid = 1;
+            final BufferedImageDecoder decoder = new BufferedImageDecoder();
+            final BufferedImageEncoder encoder = new BufferedImageEncoder();
+
+            final String mimeType = ImageEncoding.PNG.getMimeType();
+            ImageRegistry.registerProvider(mimeType, decoder);
+
             final ImageFactory factory = new ImageFactory();
             factory.read(sourceFile);
-            final int imageId = uid++;
-            final ImageTag image = factory.defineImage(imageId);
+            final ImageTag imgIn = factory.defineImage(1);
 
-            final int xOrigin = image.getWidth() / 2;
-            final int yOrigin = image.getHeight() / 2;
-
-            final ShapeTag shape = new ImageShape().defineShape(uid++,
-                    image, -xOrigin, -yOrigin, null);
-
-            MovieHeader attrs = new MovieHeader();
-            attrs.setFrameRate(1.0f);
-            attrs.setFrameSize(shape.getBounds());
-
-            movie.add(attrs);
-            movie.add(new Background(WebPalette.WHITE.color()));
-            movie.add(image);
-            movie.add(shape);
-            movie.add(Place2.show(shape.getIdentifier(), 1, 0, 0));
-            movie.add(ShowFrame.getInstance());
-            movie.encodeToFile(destFile);
+            encoder.setImage(imgIn);
+            BufferedImage imgOut = encoder.getBufferedImage();
+            imgOut.flush();
+            ImageIO.write(imgOut, "png", destFile);
 
         } catch (DataFormatException e) {
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
-            if (!sourceFile.getName().startsWith("x")) {
-                fail(sourceFile.getPath());
-            }
+            fail(sourceFile.getPath());
         }
     }
 }
