@@ -302,7 +302,7 @@ public final class BufferedImageEncoder {
         int pos = 0;
         int index = 0;
 
-        byte[] image = new byte[height * width * BYTES_PER_PIXEL];
+        image = new byte[height * width * BYTES_PER_PIXEL];
 
         for (int h = 0; h < height; h++) {
             for (int w = 0; w < width; w++, index += BYTES_PER_PIXEL) {
@@ -337,9 +337,11 @@ public final class BufferedImageEncoder {
         final byte[] green = new byte[table.length];
         final byte[] blue = new byte[table.length];
         final byte[] alpha = new byte[table.length];
+
+        int count = table.length / BYTES_PER_PIXEL;
         int index = 0;
 
-        for (int i = 0; i < table.length; i++) {
+        for (int i = 0; i < count; i++) {
             red[i] = table[index + BLUE];
             green[i] = table[index + GREEN];
             blue[i] = table[index + RED];
@@ -356,7 +358,7 @@ public final class BufferedImageEncoder {
 
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++, index++) {
-                color = image[index] << 2;
+                color = (image[index] & MASK_8BIT) << 2;
 
                 row[j] = (table[color + ALPHA] & MASK_8BIT)
                                 << ALIGN_BYTE4;
@@ -369,11 +371,8 @@ public final class BufferedImageEncoder {
                 row[j] = row[j]
                         | (table[color + 0] & MASK_8BIT);
             }
-
-            bufferedImage.setRGB(0, i, width, 1,
-                    row, 0, width);
+            bufferedImage.setRGB(0, i, width, 1, row, 0, width);
         }
-
         return bufferedImage;
     }
 
@@ -382,26 +381,24 @@ public final class BufferedImageEncoder {
         final BufferedImage bufferedImage = new BufferedImage(width,
                 height, BufferedImage.TYPE_INT_ARGB);
 
-        final int[] directBuffer = new int[width];
+        final int[] buffer = new int[width];
         int index = 0;
 
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++, index += BYTES_PER_PIXEL) {
-                directBuffer[j] = (image[index + ALPHA] & MASK_8BIT)
+                buffer[j] = (image[index + ALPHA] & MASK_8BIT)
                                 << ALIGN_BYTE4;
-                directBuffer[j] = directBuffer[j]
+                buffer[j] = buffer[j]
                         | ((image[index + RED] & MASK_8BIT)
                                 << ALIGN_BYTE3);
-                directBuffer[j] = directBuffer[j]
+                buffer[j] = buffer[j]
                         | ((image[index + GREEN] & MASK_8BIT)
                                 << ALIGN_BYTE2);
-                directBuffer[j] = directBuffer[j]
+                buffer[j] = buffer[j]
                         | (image[index + BLUE] & MASK_8BIT);
             }
-            bufferedImage.setRGB(0, i, width, 1,
-                    directBuffer, 0, width);
+            bufferedImage.setRGB(0, i, width, 1, buffer, 0, width);
         }
-
         return bufferedImage;
     }
     /**

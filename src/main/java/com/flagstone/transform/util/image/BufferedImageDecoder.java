@@ -577,13 +577,16 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
         final DataBuffer buffer = obj.getData().getDataBuffer();
 
         switch (obj.getType()) {
-        case BufferedImage.TYPE_USHORT_555_RGB:
-            throw new DataFormatException(BAD_FORMAT);
-        case BufferedImage.TYPE_USHORT_565_RGB:
-            throw new DataFormatException(BAD_FORMAT);
+//        case BufferedImage.TYPE_USHORT_555_RGB:
+//            throw new DataFormatException(BAD_FORMAT);
+//        case BufferedImage.TYPE_USHORT_565_RGB:
+//            throw new DataFormatException(BAD_FORMAT);
         case BufferedImage.TYPE_USHORT_GRAY:
             decodeShortGray(buffer);
             break;
+//        case BufferedImage.TYPE_CUSTOM:
+//            decodeShortCustom(buffer);
+//            break;
         default:
             throw new DataFormatException(BAD_FORMAT);
         }
@@ -608,6 +611,44 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
             }
         }
     }
+
+//    private void decodeShortCustom(final DataBuffer buffer) {
+//        final short[] pixels = ((DataBufferUShort) buffer).getData();
+//
+//        if (width * height * RGB_CHANNELS == pixels.length) {
+//            format = ImageFormat.RGBA;
+//            image = new byte[height * width * BYTES_PER_PIXEL];
+//            int index = 0;
+//
+//            for (int y = 0; y < height; y++) {
+//                for (int x = 0; x < width; x++) {
+//                    final int offset = 3 * (y * width + x);
+//
+//                    image[index] = (byte) pixels[offset];
+//                    image[index + GREEN] = (byte) pixels[offset + 1];
+//                    image[index + BLUE] = (byte) pixels[offset + 2];
+//                    image[index + ALPHA] = OPAQUE;
+//                    index += BYTES_PER_PIXEL;
+//                }
+//            }
+//        } else if (width * height * BYTES_PER_PIXEL == pixels.length) {
+//            format = ImageFormat.RGBA;
+//            image = new byte[height * width * BYTES_PER_PIXEL];
+//            int index = 0;
+//            for (int y = 0; y < height; y++) {
+//                for (int x = 0; x < width; x++) {
+//                    final int offset = BYTES_PER_PIXEL
+//                            * (y * width + x);
+//
+//                    image[index] = (byte) pixels[offset];
+//                    image[index + GREEN] = (byte) pixels[offset + 1];
+//                    image[index + BLUE] = (byte) pixels[offset + 2];
+//                    image[index + ALPHA] = (byte) pixels[offset + ALPHA];
+//                    index += BYTES_PER_PIXEL;
+//                }
+//            }
+//        }
+//    }
 
     /**
      * Decode the ColourModel used for indexed images.
