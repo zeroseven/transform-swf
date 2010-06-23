@@ -33,6 +33,8 @@ package com.flagstone.transform.linestyle;
 
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
@@ -131,7 +133,9 @@ public final class LineStyle2 implements LineStyle {
         if (hasFillStyle) {
             final SWFFactory<FillStyle> decoder = context.getRegistry()
                     .getFillStyleDecoder();
-            fillStyle = decoder.getObject(coder, context);
+            final List<FillStyle> styles = new ArrayList<FillStyle>();
+            decoder.getObject(styles, coder, context);
+            fillStyle = styles.get(0);
         } else {
             color = new Color(coder, context);
         }

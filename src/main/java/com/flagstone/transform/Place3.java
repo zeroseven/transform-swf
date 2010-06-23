@@ -270,7 +270,7 @@ public final class Place3 implements MovieTag {
             final int count = coder.readByte();
 
             for (int i = 0; i < count; i++) {
-                filters.add(decoder.getObject(coder, context));
+                decoder.getObject(filters, coder, context);
             }
         }
 

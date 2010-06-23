@@ -33,6 +33,8 @@ package com.flagstone.transform.linestyle;
 
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
@@ -134,7 +136,9 @@ public final class MorphLineStyle2 implements LineStyle {
         if (hasFillStyle) {
             final SWFFactory<FillStyle> decoder = context.getRegistry()
                     .getMorphFillStyleDecoder();
-            fillStyle = decoder.getObject(coder, context);
+            final List<FillStyle> styles = new ArrayList<FillStyle>();
+            decoder.getObject(styles, coder, context);
+            fillStyle = styles.get(0);
         } else {
             startColor = new Color(coder, context);
             endColor = new Color(coder, context);

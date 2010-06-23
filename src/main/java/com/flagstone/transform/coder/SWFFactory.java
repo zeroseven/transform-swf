@@ -32,6 +32,7 @@
 package com.flagstone.transform.coder;
 
 import java.io.IOException;
+import java.util.List;
 
 
 /**
@@ -43,12 +44,12 @@ public interface SWFFactory<T> {
     /**
      * Decode and return a Flash object.
      *
+     * @param list the list where the decoded object will be added.
      * @param coder an decoder wrapping the binary encoded flash data.
      * @param context a Context object used to share information between
      * the code that decodes the different types of object.
-     * @return T the decoded Flash object.
-     * @throws IOException if an error occurs decodng the object.
+     * @throws IOException if an error occurs decoding the object.
      */
-    T getObject(final SWFDecoder coder, final Context context)
-            throws IOException;
+    void getObject(final List<T> list, final SWFDecoder coder,
+            final Context context) throws IOException;
 }

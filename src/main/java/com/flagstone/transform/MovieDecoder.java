@@ -32,12 +32,14 @@
 package com.flagstone.transform;
 
 import java.io.IOException;
+import java.util.List;
 
 import com.flagstone.transform.button.ButtonColorTransform;
 import com.flagstone.transform.button.ButtonSound;
 import com.flagstone.transform.button.DefineButton;
 import com.flagstone.transform.button.DefineButton2;
 import com.flagstone.transform.coder.Coder;
+import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFFactory;
@@ -89,8 +91,8 @@ import com.flagstone.transform.video.VideoFrame;
      "PMD.NcssMethodCount" })
 public final class MovieDecoder implements SWFFactory<MovieTag> {
     /** {@inheritDoc} */
-    public MovieTag getObject(final SWFDecoder coder, final Context context)
-            throws IOException {
+    public void getObject(final List<MovieTag> list, final SWFDecoder coder,
+            final Context context) throws IOException {
 
         MovieTag obj;
 
@@ -300,6 +302,12 @@ public final class MovieDecoder implements SWFFactory<MovieTag> {
             obj = new MovieObject(coder);
             break;
         }
-        return obj;
+
+        list.add(obj);
+
+        if (coder.getDelta() != 0) {
+            throw new CoderException(coder.getLocation(),
+                    coder.getExpected(), coder.getDelta());
+        }
     }
 }

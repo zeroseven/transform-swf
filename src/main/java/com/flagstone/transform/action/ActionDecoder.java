@@ -32,6 +32,7 @@
 package com.flagstone.transform.action;
 
 import java.io.IOException;
+import java.util.List;
 
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
@@ -44,8 +45,8 @@ import com.flagstone.transform.coder.SWFFactory;
 public final class ActionDecoder implements SWFFactory<Action> {
 
     /** {@inheritDoc} */
-    public Action getObject(final SWFDecoder coder, final Context context)
-            throws IOException {
+    public void getObject(final List<Action> list, final SWFDecoder coder,
+            final Context context) throws IOException {
 
         Action action;
 
@@ -116,7 +117,7 @@ public final class ActionDecoder implements SWFFactory<Action> {
                 break;
             }
         }
-        return action;
+        list.add(action);
     }
 
 }

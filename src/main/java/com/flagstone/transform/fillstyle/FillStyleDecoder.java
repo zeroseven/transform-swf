@@ -33,6 +33,7 @@ package com.flagstone.transform.fillstyle;
 
 
 import java.io.IOException;
+import java.util.List;
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
@@ -46,8 +47,8 @@ import com.flagstone.transform.coder.SWFFactory;
 @SuppressWarnings("PMD.CyclomaticComplexity")
 public final class FillStyleDecoder implements SWFFactory<FillStyle> {
     /** {@inheritDoc} */
-    public FillStyle getObject(final SWFDecoder coder, final Context context)
-            throws IOException {
+    public void getObject(final List<FillStyle> list, final SWFDecoder coder,
+            final Context context) throws IOException {
 
         final int type = coder.readByte();
         FillStyle style;
@@ -81,6 +82,6 @@ public final class FillStyleDecoder implements SWFFactory<FillStyle> {
             throw new CoderException(coder.mark(),
                     "Unsupported FillStyle: " + type);
         }
-        return style;
+        list.add(style);
     }
 }

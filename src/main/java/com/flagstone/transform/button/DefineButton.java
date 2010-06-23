@@ -117,7 +117,7 @@ public final class DefineButton implements DefineTag {
                             .readBytes(new byte[length - coder.bytesRead()])));
         } else {
             while (coder.bytesRead() < length) {
-                actions.add(decoder.getObject(coder, context));
+                decoder.getObject(actions, coder, context);
             }
         }
         coder.check(length);

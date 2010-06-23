@@ -127,7 +127,7 @@ public final class DefineShape implements ShapeTag {
                 .getFillStyleDecoder();
 
         for (int i = 0; i < fillStyleCount; i++) {
-            fillStyles.add(decoder.getObject(coder, context));
+            decoder.getObject(fillStyles, coder, context);
         }
 
         final int lineStyleCount = coder.readByte();

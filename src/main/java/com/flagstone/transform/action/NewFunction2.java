@@ -386,7 +386,7 @@ public final class NewFunction2 implements Action {
         actions = new ArrayList<Action>();
 
         while (coder.bytesRead() < actionsLength) {
-            actions.add(decoder.getObject(coder, context));
+            decoder.getObject(actions, coder, context);
         }
         coder.check(actionsLength);
         coder.unmark();

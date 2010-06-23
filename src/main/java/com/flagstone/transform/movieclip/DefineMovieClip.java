@@ -113,7 +113,7 @@ public final class DefineMovieClip implements DefineTag {
 
         while (coder.scanUnsignedShort() >> Coder.LENGTH_FIELD_SIZE
                 != MovieTypes.END) {
-           objects.add(decoder.getObject(coder, context));
+           decoder.getObject(objects, coder, context);
         }
         coder.readUnsignedShort(); // END
     }

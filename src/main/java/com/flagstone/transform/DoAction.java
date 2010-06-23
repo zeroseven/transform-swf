@@ -108,7 +108,7 @@ public final class DoAction implements MovieTag {
             actions.add(new ActionData(coder.readBytes(new byte[length])));
         } else {
             while (coder.bytesRead() < length) {
-                actions.add(decoder.getObject(coder, context));
+                decoder.getObject(actions, coder, context);
             }
         }
         coder.check(length);

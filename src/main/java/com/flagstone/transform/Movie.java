@@ -304,7 +304,7 @@ public final class Movie {
 
             while (decoder.scanUnsignedShort() >>> Coder.LENGTH_FIELD_SIZE
                     != MovieTypes.END) {
-                objects.add(factory.getObject(decoder, context));
+                factory.getObject(objects, decoder, context);
             }
 
             decoder.readUnsignedShort();

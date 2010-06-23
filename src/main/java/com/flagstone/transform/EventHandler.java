@@ -305,7 +305,7 @@ public final class EventHandler implements SWFEncodeable {
         } else {
             coder.mark();
             while (coder.bytesRead() < length) {
-                actions.add(decoder.getObject(coder, context));
+                decoder.getObject(actions, coder, context);
             }
             coder.unmark();
         }

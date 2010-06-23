@@ -259,14 +259,14 @@ public final class ExceptionHandler implements Action {
 
         coder.mark();
         while (coder.bytesRead() < tryLength) {
-            tryActions.add(decoder.getObject(coder, context));
+            decoder.getObject(tryActions, coder, context);
         }
         coder.unmark();
 
         if (containsCatch) {
             coder.mark();
             while (coder.bytesRead() < catchLength) {
-                catchActions.add(decoder.getObject(coder, context));
+                decoder.getObject(catchActions, coder, context);
             }
             coder.unmark();
         }
@@ -274,7 +274,7 @@ public final class ExceptionHandler implements Action {
         if (containsFinal) {
             coder.mark();
             while (coder.bytesRead() < finalLength) {
-                finalActions.add(decoder.getObject(coder, context));
+                decoder.getObject(finalActions, coder, context);
             }
             coder.unmark();
         }

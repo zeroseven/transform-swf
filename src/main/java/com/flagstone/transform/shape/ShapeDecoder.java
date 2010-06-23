@@ -32,6 +32,7 @@
 package com.flagstone.transform.shape;
 
 import java.io.IOException;
+import java.util.List;
 
 import com.flagstone.transform.MovieTypes;
 import com.flagstone.transform.coder.Coder;
@@ -45,8 +46,8 @@ import com.flagstone.transform.coder.SWFFactory;
  */
 public final class ShapeDecoder implements SWFFactory<ShapeRecord> {
     /** {@inheritDoc} */
-    public ShapeRecord getObject(final SWFDecoder coder, final Context context)
-            throws IOException {
+    public void getObject(final List<ShapeRecord> list, final SWFDecoder coder,
+            final Context context) throws IOException {
 
         final int type = coder.readBits(2, false);
         ShapeRecord record = null;
@@ -56,20 +57,18 @@ public final class ShapeDecoder implements SWFFactory<ShapeRecord> {
         } else if (type == (Coder.BIT0 | Coder.BIT1)) {
             record = new Line(coder);
         } else {
-            // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
+            // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 2 LINES
             final int flags = (type << Coder.TO_UPPER_NIB)
                     + coder.readBits(4, false);
 
-            if (flags != 0) {
-                final int tag = context.get(Context.TYPE);
-                if (tag == MovieTypes.DEFINE_SHAPE_4
-                        || tag == MovieTypes.DEFINE_MORPH_SHAPE_2) {
-                    record = new ShapeStyle2(flags, coder, context);
-                } else {
-                    record = new ShapeStyle(flags, coder, context);
-                }
+            final int tag = context.get(Context.TYPE);
+            if (tag == MovieTypes.DEFINE_SHAPE_4
+                    || tag == MovieTypes.DEFINE_MORPH_SHAPE_2) {
+                record = new ShapeStyle2(flags, coder, context);
+            } else {
+                record = new ShapeStyle(flags, coder, context);
             }
         }
-        return record;
+       list.add(record);
     }
 }

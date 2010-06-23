@@ -33,6 +33,8 @@ package com.flagstone.transform;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.DecoderRegistry;
@@ -92,7 +94,9 @@ public abstract class AbstractCodingTest {
         final Context context = new Context();
         context.put(Context.FRAMES, 0);
         context.setRegistry(registry);
-        final MovieTag object = factory.getObject(decoder, context);
+        final List<MovieTag> list = new ArrayList<MovieTag>();
+        factory.getObject(list, decoder, context);
+        final MovieTag object = list.get(0);
         return object;
     }
 }

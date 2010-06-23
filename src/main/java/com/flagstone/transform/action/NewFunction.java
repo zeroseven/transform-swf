@@ -198,7 +198,7 @@ public final class NewFunction implements Action {
         coder.mark();
 
         while (coder.bytesRead() < actionsLength) {
-            actions.add(decoder.getObject(coder, context));
+            decoder.getObject(actions, coder, context);
         }
 
         coder.unmark();

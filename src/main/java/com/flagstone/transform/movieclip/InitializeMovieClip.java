@@ -111,7 +111,7 @@ public final class InitializeMovieClip implements MovieTag {
             actions.add(new ActionData(coder.readBytes(new byte[length - 2])));
         } else {
             while (coder.bytesRead() < length) {
-                actions.add(decoder.getObject(coder, context));
+                decoder.getObject(actions, coder, context);
             }
         }
         coder.unmark();

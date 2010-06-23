@@ -114,11 +114,11 @@ public final class Shape implements SWFEncodeable {
 
         final SWFFactory<ShapeRecord> decoder = context.getRegistry()
             .getShapeDecoder();
-        ShapeRecord record = null;
 
-        while ((record = decoder.getObject(coder, context)) != null) {
-            objects.add(record);
+        while (coder.scanBits(6, false) != 0) {
+            decoder.getObject(objects, coder, context);
         }
+        coder.readBits(6, false);
         coder.alignToByte();
     }
 

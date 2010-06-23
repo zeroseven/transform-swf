@@ -141,7 +141,7 @@ public final class ButtonShape implements SWFEncodeable {
             final int count = coder.readByte();
             filters = new ArrayList<Filter>(count);
             for (int i = 0; i < count; i++) {
-               filters.add(decoder.getObject(coder, context));
+               decoder.getObject(filters, coder, context);
             }
         } else {
             filters = new ArrayList<Filter>();

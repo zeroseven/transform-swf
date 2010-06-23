@@ -32,6 +32,7 @@
 package com.flagstone.transform.filter;
 
 import java.io.IOException;
+import java.util.List;
 
 import com.flagstone.transform.coder.CoderException;
 import com.flagstone.transform.coder.Context;
@@ -44,16 +45,9 @@ import com.flagstone.transform.coder.SWFFactory;
  */
 @SuppressWarnings("PMD.CyclomaticComplexity")
 public final class FilterDecoder implements SWFFactory<Filter> {
-    /**
-     * Decode a filter.
-     *
-     * @param coder the decoder containing the encoded filter.
-     * @param context a Context used to pass information between objects.
-     * @return the Filter object.
-     * @throws IOException if an error occurs during decoding.
-     */
-    public Filter getObject(final SWFDecoder coder, final Context context)
-            throws IOException {
+    /** {@inheritDoc} */
+    public void getObject(final List<Filter> list, final SWFDecoder coder,
+            final Context context) throws IOException {
 
         final int type = coder.readByte();
         Filter filter;
@@ -87,6 +81,6 @@ public final class FilterDecoder implements SWFFactory<Filter> {
             throw new CoderException(coder.mark(),
                     "Unsupported Filter: " + type);
         }
-        return filter;
+        list.add(filter);
     }
 }

@@ -86,6 +86,12 @@ public final class SWFDecoder {
     private transient int offset;
     /** The number of bytes available in the current buffer. */
     private transient int size;
+    /** The starting location from the last check-point. */
+    private transient int location;
+    /** The expected number number of bytes to be decoded. */
+    private transient int expected;
+    /** The difference from the expected number. */
+    private transient int delta;
 
     /**
      * Create a new SWFDecoder for the underlying InputStream with the
@@ -192,19 +198,40 @@ public final class SWFDecoder {
 
     /**
      * Compare the number of bytes read since the last saved position and
-     * throw an exception if there is a difference.
+     * record any difference.
      *
-     * @param expected the expected number of bytes read.
-     *
-     * @throws CoderException if the number of bytes read is different from the
-     * expected number.
+     * @param count the expected number of bytes read.
      */
-    public void check(final int expected) throws CoderException {
-        final int actual = (pos + index) - locations.peek();
-        if (actual != expected) {
-            throw new CoderException(locations.peek(), expected,
-                    actual - expected);
-        }
+    public void check(final int count) {
+        expected = count;
+        location = locations.peek();
+        delta = count - ((pos + index) - location);
+    }
+
+    /**
+     * Get the location recorded for the last call to check().
+     * @return the position in the buffer of the call to mark() used by
+     * check().
+     */
+    public int getLocation() {
+        return location;
+    }
+
+    /**
+     * Get the expected number of bytes from the last call to check().
+     * @return the difference from the expected number of bytes decoded.
+     */
+    public int getExpected() {
+        return expected;
+    }
+
+    /**
+     * Get the difference from the expected number of bytes from the last call
+     * to check().
+     * @return the difference from the expected number of bytes decoded.
+     */
+    public int getDelta() {
+        return delta;
     }
 
     /**
@@ -306,6 +333,58 @@ public final class SWFDecoder {
             }
 
             pointer += numberOfBits;
+            index = pointer >>> BITS_TO_BYTES;
+            offset = pointer & Coder.LOWEST3;
+        }
+
+        return value;
+    }
+
+    /**
+     * Read-ahead a bit field.
+     *
+     * @param numberOfBits
+     *            the number of bits to read.
+     *
+     * @param signed
+     *            indicates whether the integer value read is signed.
+     *
+     * @return the value read.
+     *
+     * @throws IOException if an error occurs reading from the underlying
+     * input stream.
+     */
+    public int scanBits(final int numberOfBits, final boolean signed)
+            throws IOException {
+
+        int pointer = (index << BYTES_TO_BITS) + offset;
+
+        if (((size << BYTES_TO_BITS) - pointer) < numberOfBits) {
+            fill();
+            pointer = (index << BYTES_TO_BITS) + offset;
+        }
+
+        int value = 0;
+
+        if (numberOfBits > 0) {
+
+            if (pointer + numberOfBits > (size << BYTES_TO_BITS)) {
+                throw new ArrayIndexOutOfBoundsException();
+            }
+
+            for (int i = BITS_PER_INT; (i > 0)
+                    && (index < buffer.length); i -= BITS_PER_BYTE) {
+                value |= (buffer[index++] & BYTE_MASK) << (i - BITS_PER_BYTE);
+            }
+
+            value <<= offset;
+
+            if (signed) {
+                value >>= BITS_PER_INT - numberOfBits;
+            } else {
+                value >>>= BITS_PER_INT - numberOfBits;
+            }
+
             index = pointer >>> BITS_TO_BYTES;
             offset = pointer & Coder.LOWEST3;
         }
