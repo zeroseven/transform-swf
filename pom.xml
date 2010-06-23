@@ -1,10 +1,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<parent>
+		<artifactId>oss-parent</artifactId>
+		<groupId>org.sonatype.oss</groupId>
+		<version>2</version>
+	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.flagstone</groupId>
 	<artifactId>transform</artifactId>
 	<packaging>jar</packaging>
-	<version>3.0-a1</version>
+	<version>3.0-SNAPSHOT</version>
 
 	<name>transform</name>
 	<description>Transform is an Open Source framework for reading and writing Flash (.swf) files. The API gives you complete control over how files are created with access to all the features supported by the Flash Player but yet is still intuitive and easy to use.</description>
@@ -72,12 +77,6 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.6</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.yaml</groupId>
-			<artifactId>SnakeYAML</artifactId>
-			<version>1.4</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
