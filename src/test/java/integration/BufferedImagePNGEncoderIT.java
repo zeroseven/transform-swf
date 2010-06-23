@@ -49,11 +49,8 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import com.flagstone.transform.image.ImageTag;
-import com.flagstone.transform.util.image.BufferedImageDecoder;
 import com.flagstone.transform.util.image.BufferedImageEncoder;
-import com.flagstone.transform.util.image.ImageEncoding;
 import com.flagstone.transform.util.image.ImageFactory;
-import com.flagstone.transform.util.image.ImageRegistry;
 
 @RunWith(Parameterized.class)
 public final class BufferedImagePNGEncoderIT {
@@ -98,12 +95,7 @@ public final class BufferedImagePNGEncoderIT {
     public void showImage() {
 
         try {
-            final BufferedImageDecoder decoder = new BufferedImageDecoder();
             final BufferedImageEncoder encoder = new BufferedImageEncoder();
-
-            final String mimeType = ImageEncoding.PNG.getMimeType();
-            ImageRegistry.registerProvider(mimeType, decoder);
-
             final ImageFactory factory = new ImageFactory();
             factory.read(sourceFile);
             final ImageTag imgIn = factory.defineImage(1);
