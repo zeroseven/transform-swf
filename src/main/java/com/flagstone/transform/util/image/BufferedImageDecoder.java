@@ -435,7 +435,8 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
         }
     }
 
-    private void decodeByteCustom(final DataBuffer buffer) {
+    private void decodeByteCustom(final DataBuffer buffer)
+            throws DataFormatException {
         final byte[] pixels = ((DataBufferByte) buffer).getData();
 
         if (width * height * RGB_CHANNELS == pixels.length) {
@@ -470,6 +471,8 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
                     index += BYTES_PER_PIXEL;
                 }
             }
+        } else {
+            throw new DataFormatException(BAD_FORMAT);
         }
     }
 
