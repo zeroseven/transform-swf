@@ -60,7 +60,13 @@ import com.flagstone.transform.util.shape.Canvas;
  * TTFDecoder decodes TrueType or OpenType Fonts so they can be used in a
  * Flash file.
  */
-@SuppressWarnings({"PMD.TooManyFields", "PMD.TooManyMethods" })
+@SuppressWarnings({"PMD.TooManyFields",
+    "PMD.TooManyMethods",
+    "PMD.ExcessiveImports",
+    "PMD.CyclomaticComplexity",
+    "PMD.NPathComplexity",
+    "PMD.ExcessiveMethodLength",
+    "PMD.NcssMethodCount" })
 public final class TTFDecoder implements FontProvider, FontDecoder {
 
     private static final class TableEntry implements Comparable<TableEntry> {

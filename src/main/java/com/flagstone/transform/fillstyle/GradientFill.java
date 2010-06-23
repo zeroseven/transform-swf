@@ -82,6 +82,12 @@ import com.flagstone.transform.datatype.CoordTransform;
  */
 public final class GradientFill implements FillStyle {
 
+    /** Bit mask for extracting the spread field in gradient fills. */
+    private static final int SPREAD_MASK = 0x00C0;
+    /** Bit mask for extracting the interpolation field in gradient fills. */
+    private static final int INTER_MASK = 0x0030;
+    /** Bit mask for extracting the interpolation field in gradient fills. */
+    private static final int GRADIENT_MASK = 0x000F;
     /** Format string used in toString() method. */
     private static final String FORMAT = "GradientFill: { transform=%s;"
             + " gradients=%s}";
@@ -118,9 +124,9 @@ public final class GradientFill implements FillStyle {
         type = fillType;
         transform = new CoordTransform(coder);
         count = coder.readByte();
-        spread = count & FillStyleDecoder.SPREAD_MASK;
-        interpolation = count & FillStyleDecoder.INTER_MASK;
-        count = count & FillStyleDecoder.GRADIENT_MASK;
+        spread = count & SPREAD_MASK;
+        interpolation = count & INTER_MASK;
+        count = count & GRADIENT_MASK;
         gradients = new ArrayList<Gradient>(count);
 
         for (int i = 0; i < count; i++) {

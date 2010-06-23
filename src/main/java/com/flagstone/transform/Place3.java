@@ -731,7 +731,7 @@ public final class Place3 implements MovieTag {
         context.put(Context.TRANSPARENT, 1);
 
         hasBlend = blend != null;
-        hasFilters = !filters.isEmpty();
+        hasFilters = true ^ filters.isEmpty();
 
         length = 4;
         length += ((type == PlaceType.NEW) || (type == PlaceType.REPLACE)) ? 2

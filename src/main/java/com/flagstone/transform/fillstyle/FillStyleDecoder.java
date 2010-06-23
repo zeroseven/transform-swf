@@ -45,18 +45,6 @@ import com.flagstone.transform.coder.SWFFactory;
  */
 @SuppressWarnings("PMD.CyclomaticComplexity")
 public final class FillStyleDecoder implements SWFFactory<FillStyle> {
-
-    /** Bit mask for extracting the spread field in gradient fills. */
-    protected static final int SPREAD_MASK = 0x00C0;
-    /** Bit mask for extracting the interpolation field in gradient fills. */
-    protected static final int INTER_MASK = 0x0030;
-    /** Bit mask for extracting the interpolation field in gradient fills. */
-    protected static final int GRADIENT_MASK = 0x000F;
-    /** Bit mask for tiled or clipped field in bitmap fills. */
-    protected static final int CLIPPED_MASK = 1;
-    /** Bit mask for smoothed or unsmoothed field in bitmap fills. */
-    protected static final int SMOOTHED_MASK = 2;
-
     /** {@inheritDoc} */
     public FillStyle getObject(final SWFDecoder coder, final Context context)
             throws IOException {

@@ -86,6 +86,10 @@ public final class MorphBitmapFill implements FillStyle {
     /** Format string used in toString() method. */
     private static final String FORMAT = "MorphBitmapFill: { identifier=%d;"
     		+ " start=%s; end=%s}";
+    /** Bit mask for tiled or clipped field in bitmap fills. */
+    private static final int CLIPPED_MASK = 1;
+    /** Bit mask for smoothed or unsmoothed field in bitmap fills. */
+    private static final int SMOOTHED_MASK = 2;
 
     /** Code used to identify the fill style when it is encoded. */
     private transient int type;
@@ -171,7 +175,7 @@ public final class MorphBitmapFill implements FillStyle {
      * filled, false otherwise.
      */
     public boolean isTiled() {
-        return (type & FillStyleDecoder.CLIPPED_MASK) != 0;
+        return (type & CLIPPED_MASK) != 0;
     }
 
     /**
@@ -181,9 +185,9 @@ public final class MorphBitmapFill implements FillStyle {
      */
     public void setTiled(final boolean tiled) {
         if (tiled) {
-            type &= ~FillStyleDecoder.CLIPPED_MASK;
+            type &= ~CLIPPED_MASK;
         } else {
-            type |= FillStyleDecoder.CLIPPED_MASK;
+            type |= CLIPPED_MASK;
         }
     }
 
@@ -193,7 +197,7 @@ public final class MorphBitmapFill implements FillStyle {
      * applied to increase performance.
      */
     public boolean isSmoothed() {
-        return (type & FillStyleDecoder.SMOOTHED_MASK) != 0;
+        return (type & SMOOTHED_MASK) != 0;
     }
 
     /**
@@ -203,9 +207,9 @@ public final class MorphBitmapFill implements FillStyle {
      */
     public void setSmoothed(final boolean smoothed) {
         if (smoothed) {
-            type &= ~FillStyleDecoder.SMOOTHED_MASK;
+            type &= ~SMOOTHED_MASK;
         } else {
-            type |= FillStyleDecoder.SMOOTHED_MASK;
+            type |= SMOOTHED_MASK;
         }
     }
 
