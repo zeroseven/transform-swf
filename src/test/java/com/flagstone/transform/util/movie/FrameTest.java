@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.flagstone.transform.DoAction;
@@ -167,7 +168,7 @@ public final class FrameTest {
         assertEquals(frames.get(0).getActions().size(), 0);
     }
 
-    @Test
+    @Test @Ignore
     public void addFrameToMovie() throws IOException {
         final Frame frame = new Frame();
         frame.setLabel("label");
