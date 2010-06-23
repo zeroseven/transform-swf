@@ -45,10 +45,10 @@ import com.flagstone.transform.font.DefineFont;
 import com.flagstone.transform.font.DefineFont2;
 import com.flagstone.transform.font.DefineFont3;
 import com.flagstone.transform.font.DefineFont4;
-import com.flagstone.transform.font.FontName;
 import com.flagstone.transform.font.FontAlignment;
 import com.flagstone.transform.font.FontInfo;
 import com.flagstone.transform.font.FontInfo2;
+import com.flagstone.transform.font.FontName;
 import com.flagstone.transform.image.DefineImage;
 import com.flagstone.transform.image.DefineImage2;
 import com.flagstone.transform.image.DefineJPEGImage;
@@ -83,7 +83,10 @@ import com.flagstone.transform.video.VideoFrame;
  * MovieDecoder is used to decode the different types of data structure encoded
  * in a movie.
  */
-@SuppressWarnings("PMD")
+ @SuppressWarnings({"PMD.ExcessiveImports",
+     "PMD.CyclomaticComplexity",
+     "PMD.ExcessiveMethodLength",
+     "PMD.NcssMethodCount" })
 public final class MovieDecoder implements SWFFactory<MovieTag> {
     /** {@inheritDoc} */
     public MovieTag getObject(final SWFDecoder coder, final Context context)
