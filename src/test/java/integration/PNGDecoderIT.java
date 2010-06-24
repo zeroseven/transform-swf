@@ -124,9 +124,13 @@ public final class PNGDecoderIT {
             movie.encodeToFile(destFile);
 
         } catch (DataFormatException e) {
-            e.printStackTrace();
+            if (System.getProperty("test.trace") != null) {
+                e.printStackTrace();
+            }
         } catch (Exception e) {
-            e.printStackTrace();
+            if (System.getProperty("test.trace") != null) {
+                e.printStackTrace();
+            }
             if (!sourceFile.getName().startsWith("x")) {
                 fail(sourceFile.getPath());
             }

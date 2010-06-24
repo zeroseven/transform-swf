@@ -87,10 +87,11 @@ public final class MovieDecodeIT {
     @Test
     public void decode() {
         try {
-            System.err.println(file.getAbsolutePath());
             new Movie().decodeFromFile(file);
         } catch (Exception e) {
-            e.printStackTrace();
+            if (System.getProperty("test.trace") != null) {
+                e.printStackTrace();
+            }
             fail(file.getPath());
         }
     }

@@ -132,7 +132,9 @@ public final class MovieEncodeIT {
            }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            if (System.getProperty("test.trace") != null) {
+                e.printStackTrace();
+            }
             fail(sourceFile.getPath());
         }
     }

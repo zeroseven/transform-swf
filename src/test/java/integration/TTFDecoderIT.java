@@ -134,7 +134,9 @@ public final class TTFDecoderIT {
             movie.encodeToFile(destFile);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            if (System.getProperty("test.trace") != null) {
+                e.printStackTrace();
+            }
             fail(sourceFile.getName());
         }
     }

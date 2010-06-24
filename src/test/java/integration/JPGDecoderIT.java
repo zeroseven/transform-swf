@@ -125,9 +125,13 @@ public final class JPGDecoderIT {
             movie.encodeToFile(destFile);
 
         } catch (DataFormatException e) {
-            e.printStackTrace();
+            if (System.getProperty("test.trace") != null) {
+                e.printStackTrace();
+            }
         } catch (Exception e) {
-            e.printStackTrace();
+            if (System.getProperty("test.trace") != null) {
+                e.printStackTrace();
+            }
             fail(sourceFile.getPath());
         }
     }

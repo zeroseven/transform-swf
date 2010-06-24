@@ -136,7 +136,9 @@ public final class WAVDecoderEventIT {
 
             movie.encodeToFile(destFile);
         } catch (Exception e) {
-            e.printStackTrace();
+            if (System.getProperty("test.trace") != null) {
+                e.printStackTrace();
+            }
             fail(sourceFile.getPath());
         }
     }

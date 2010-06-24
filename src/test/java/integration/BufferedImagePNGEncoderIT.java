@@ -106,12 +106,20 @@ public final class BufferedImagePNGEncoderIT {
             ImageIO.write(imgOut, "png", destFile);
 
         } catch (IIOException e) {
-            e.printStackTrace();
+            if (System.getProperty("test.trace") != null) {
+                e.printStackTrace();
+            }
         } catch (DataFormatException e) {
-            e.printStackTrace();
+            if (System.getProperty("test.trace") != null) {
+                e.printStackTrace();
+            }
         } catch (Exception e) {
-            e.printStackTrace();
-            fail(sourceFile.getPath());
+            if (System.getProperty("test.trace") != null) {
+                e.printStackTrace();
+            }
+            if (!sourceFile.getName().startsWith("x")) {
+                fail(sourceFile.getPath());
+            }
         }
     }
 }
