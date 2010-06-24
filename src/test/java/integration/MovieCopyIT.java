@@ -1,5 +1,5 @@
 /*
- * MovieCopyTest.java
+ * MovieCopyIT.java
  * Transform
  *
  * Copyright (c) 2009-2010 Flagstone Software Ltd. All rights reserved.

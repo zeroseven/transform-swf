@@ -1,5 +1,5 @@
 /*
- * CanvasTest.java
+ * CanvasIT.java
  * Transform
  *
  * Copyright (c) 2009-2010 Flagstone Software Ltd. All rights reserved.
@@ -61,7 +61,7 @@ public final class CanvasIT {
     public static void initialize() {
         path = new Canvas(true);
 
-        resultDir = new File("target/integration-results/Canvas");
+        resultDir = new File("target/integration-results/CanvasIT");
 
         if (!resultDir.exists() && !resultDir.mkdirs()) {
             fail();

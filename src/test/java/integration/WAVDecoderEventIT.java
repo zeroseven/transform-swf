@@ -1,5 +1,5 @@
 /*
- * PNGDecoderIT.java
+ * WAVDecoderEventIT.java
  * Transform
  *
  * Copyright (c) 2009-2010 Flagstone Software Ltd. All rights reserved.
@@ -35,6 +35,7 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.zip.DataFormatException;
@@ -45,25 +46,27 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import com.flagstone.transform.Background;
+import com.flagstone.transform.DoAction;
 import com.flagstone.transform.Movie;
 import com.flagstone.transform.MovieHeader;
-import com.flagstone.transform.Place2;
 import com.flagstone.transform.ShowFrame;
+import com.flagstone.transform.action.BasicAction;
+import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.datatype.WebPalette;
-import com.flagstone.transform.image.ImageTag;
-import com.flagstone.transform.shape.ShapeTag;
-import com.flagstone.transform.util.image.ImageFactory;
-import com.flagstone.transform.util.image.ImageShape;
+import com.flagstone.transform.sound.DefineSound;
+import com.flagstone.transform.sound.SoundInfo;
+import com.flagstone.transform.sound.StartSound;
+import com.flagstone.transform.util.sound.SoundFactory;
 
 @RunWith(Parameterized.class)
-public final class PNGDecoderIT {
+public final class WAVDecoderEventIT {
 
     @Parameters
     public static Collection<Object[]> files() {
 
-        final File srcDir = new File("src/test/resources/png-reference");
+        final File srcDir = new File("src/test/resources/wav-reference");
         final File destDir = new File(
-                "target/integration-results/PNGDecoderIT");
+                "target/integration-results/WAVDecoderEventIT");
 
         if (!destDir.exists() && !destDir.mkdirs()) {
             fail();
@@ -71,7 +74,7 @@ public final class PNGDecoderIT {
 
         final FilenameFilter filter = new FilenameFilter() {
             public boolean accept(final File directory, final String name) {
-                return name.endsWith(".png");
+                return name.endsWith(".wav");
             }
         };
 
@@ -89,47 +92,52 @@ public final class PNGDecoderIT {
     private final File sourceFile;
     private final File destFile;
 
-    public PNGDecoderIT(final File src, final File dst) {
+    public WAVDecoderEventIT(final File src, final File dst) {
         sourceFile = src;
         destFile = dst;
     }
 
     @Test
-    public void showImage() {
+    public void playSound() throws IOException, DataFormatException {
 
         try {
+            final float framesPerSecond = 12.0f;
             final Movie movie = new Movie();
             int uid = 1;
-            final ImageFactory factory = new ImageFactory();
+
+            final SoundFactory factory = new SoundFactory();
             factory.read(sourceFile);
-            final int imageId = uid++;
-            final ImageTag image = factory.defineImage(imageId);
-
-            final int xOrigin = image.getWidth() / 2;
-            final int yOrigin = image.getHeight() / 2;
-
-            final ShapeTag shape = new ImageShape().defineShape(uid++,
-                    image, -xOrigin, -yOrigin, null);
+            final DefineSound sound = factory.defineSound(uid++);
 
             MovieHeader attrs = new MovieHeader();
-            attrs.setFrameRate(1.0f);
-            attrs.setFrameSize(shape.getBounds());
+            attrs.setFrameSize(new Bounds(0, 0, 8000, 4000));
+            attrs.setFrameRate(framesPerSecond);
 
             movie.add(attrs);
-            movie.add(new Background(WebPalette.WHITE.color()));
-            movie.add(image);
-            movie.add(shape);
-            movie.add(Place2.show(shape.getIdentifier(), 1, 0, 0));
-            movie.add(ShowFrame.getInstance());
-            movie.encodeToFile(destFile);
+            movie.add(new Background(WebPalette.LIGHT_BLUE.color()));
 
-        } catch (DataFormatException e) {
-            e.printStackTrace();
+            final float duration = ((float) sound.getSampleCount()
+                    / (float) sound.getRate());
+            final int numberOfFrames = (int) (duration * framesPerSecond);
+
+            movie.add(sound);
+            movie.add(new StartSound(new SoundInfo(sound.getIdentifier(),
+                    SoundInfo.Mode.START, 0, null)));
+
+            for (int j = 0; j < numberOfFrames; j++) {
+                movie.add(ShowFrame.getInstance());
+            }
+
+            DoAction action = new DoAction();
+            action.add(BasicAction.STOP);
+
+            movie.add(action);
+            movie.add(ShowFrame.getInstance());
+
+            movie.encodeToFile(destFile);
         } catch (Exception e) {
             e.printStackTrace();
-            if (!sourceFile.getName().startsWith("x")) {
-                fail(sourceFile.getPath());
-            }
+            fail(sourceFile.getPath());
         }
     }
 }

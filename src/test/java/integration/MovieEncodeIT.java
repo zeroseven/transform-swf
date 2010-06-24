@@ -1,5 +1,5 @@
 /*
- * MovieEncodeTest.java
+ * MovieEncodeIT.java
  * Transform
  *
  * Copyright (c) 2009-2010 Flagstone Software Ltd. All rights reserved.
@@ -52,8 +52,6 @@ import com.flagstone.transform.tools.MovieWriter;
 @RunWith(Parameterized.class)
 public final class MovieEncodeIT {
 
-    private static File destDir;
-
     @Parameters
     public static Collection<Object[]>  files() {
 
@@ -65,7 +63,8 @@ public final class MovieEncodeIT {
             srcDir = new File(System.getProperty("test.suite"));
         }
 
-        destDir = new File("target/integration-results/", "MovieEncodeTest");
+        final File destDir = new File(
+                "target/integration-results/MovieEncodeIT");
 
         if (!destDir.exists() && !destDir.mkdirs()) {
             fail();

@@ -1,5 +1,5 @@
 /*
- * PNGDecoderIT.java
+ * TTFDecoderIT.java
  * Transform
  *
  * Copyright (c) 2009-2010 Flagstone Software Ltd. All rights reserved.
@@ -37,7 +37,6 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.zip.DataFormatException;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,21 +48,24 @@ import com.flagstone.transform.Movie;
 import com.flagstone.transform.MovieHeader;
 import com.flagstone.transform.Place2;
 import com.flagstone.transform.ShowFrame;
+import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.datatype.WebPalette;
-import com.flagstone.transform.image.ImageTag;
-import com.flagstone.transform.shape.ShapeTag;
-import com.flagstone.transform.util.image.ImageFactory;
-import com.flagstone.transform.util.image.ImageShape;
+import com.flagstone.transform.font.DefineFont2;
+import com.flagstone.transform.text.DefineText2;
+import com.flagstone.transform.util.font.Font;
+import com.flagstone.transform.util.font.TTFDecoder;
+import com.flagstone.transform.util.text.CharacterSet;
+import com.flagstone.transform.util.text.TextTable;
 
 @RunWith(Parameterized.class)
-public final class PNGDecoderIT {
+public final class TTFDecoderIT {
 
     @Parameters
     public static Collection<Object[]> files() {
 
-        final File srcDir = new File("src/test/resources/png-reference");
+        final File srcDir = new File("src/test/resources/ttf-reference");
         final File destDir = new File(
-                "target/integration-results/PNGDecoderIT");
+                "target/integration-results/TTFDecoderIT");
 
         if (!destDir.exists() && !destDir.mkdirs()) {
             fail();
@@ -71,7 +73,7 @@ public final class PNGDecoderIT {
 
         final FilenameFilter filter = new FilenameFilter() {
             public boolean accept(final File directory, final String name) {
-                return name.endsWith(".png");
+                return name.endsWith(".ttf");
             }
         };
 
@@ -89,47 +91,51 @@ public final class PNGDecoderIT {
     private final File sourceFile;
     private final File destFile;
 
-    public PNGDecoderIT(final File src, final File dst) {
+    public TTFDecoderIT(final File src, final File dst) {
         sourceFile = src;
         destFile = dst;
     }
 
     @Test
-    public void showImage() {
-
+    public void showFont() {
         try {
+            final int fontSize = 720;
+            final int padding = 100;
+            String alphabet = "abcXYZɑ4ßº€éêöã";
+
+            final TTFDecoder fontDecoder = new TTFDecoder();
+            fontDecoder.read(sourceFile);
+            final Font font = fontDecoder.getFonts().get(0);
+
+            final CharacterSet set = new CharacterSet();
+            set.add(alphabet);
+
             final Movie movie = new Movie();
             int uid = 1;
-            final ImageFactory factory = new ImageFactory();
-            factory.read(sourceFile);
-            final int imageId = uid++;
-            final ImageTag image = factory.defineImage(imageId);
 
-            final int xOrigin = image.getWidth() / 2;
-            final int yOrigin = image.getHeight() / 2;
-
-            final ShapeTag shape = new ImageShape().defineShape(uid++,
-                    image, -xOrigin, -yOrigin, null);
+            final DefineFont2 definition = font.defineFont(uid++,
+                    set.getCharacters());
+            final TextTable textTable = new TextTable(definition, fontSize);
+            final Bounds bounds = Bounds.pad(
+                    textTable.boundsForText(alphabet), padding);
+            final DefineText2 text = textTable.defineText(uid++,
+                    alphabet, WebPalette.BLACK.color());
 
             MovieHeader attrs = new MovieHeader();
+            attrs.setFrameSize(bounds);
             attrs.setFrameRate(1.0f);
-            attrs.setFrameSize(shape.getBounds());
 
             movie.add(attrs);
             movie.add(new Background(WebPalette.WHITE.color()));
-            movie.add(image);
-            movie.add(shape);
-            movie.add(Place2.show(shape.getIdentifier(), 1, 0, 0));
+            movie.add(definition);
+            movie.add(text);
+            movie.add(Place2.show(text.getIdentifier(), 1, 0, 0));
             movie.add(ShowFrame.getInstance());
             movie.encodeToFile(destFile);
 
-        } catch (DataFormatException e) {
-            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
-            if (!sourceFile.getName().startsWith("x")) {
-                fail(sourceFile.getPath());
-            }
+            fail(sourceFile.getName());
         }
     }
 }

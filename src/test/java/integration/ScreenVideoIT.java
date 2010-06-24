@@ -1,5 +1,5 @@
 /*
- * ScreenVideoTest.java
+ * ScreenVideoIT.java
  * Transform
  *
  * Copyright (c) 2009-2010 Flagstone Software Ltd. All rights reserved.
@@ -65,7 +65,7 @@ public final class ScreenVideoIT {
 
         final File sourceDir = new File("src/test/resources/png-screenshots");
         final File destDir = new File(
-                "target/integration-results/ScreenVideo");
+                "target/integration-results/ScreenVideoIT");
 
         if (!destDir.exists() && !destDir.mkdirs()) {
             fail();

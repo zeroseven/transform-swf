@@ -1,5 +1,5 @@
 /*
- * MovieDecodeIT.java
+ * MP3DecoderStreamIT.java
  * Transform
  *
  * Copyright (c) 2009-2010 Flagstone Software Ltd. All rights reserved.
@@ -35,63 +35,103 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.zip.DataFormatException;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
+import com.flagstone.transform.Background;
+import com.flagstone.transform.DoAction;
 import com.flagstone.transform.Movie;
+import com.flagstone.transform.MovieHeader;
+import com.flagstone.transform.MovieTag;
+import com.flagstone.transform.ShowFrame;
+import com.flagstone.transform.action.BasicAction;
+import com.flagstone.transform.datatype.Bounds;
+import com.flagstone.transform.datatype.WebPalette;
+import com.flagstone.transform.util.sound.SoundFactory;
 
-/**
- * DecodeMovieTest is used to create Movies using all the Flash files in a given
- * directory to verify that they can be decoded correctly.
- */
 @RunWith(Parameterized.class)
-public final class MovieDecodeIT {
+public final class MP3DecoderStreamIT {
 
     @Parameters
-    public static Collection<Object[]>  files() {
+    public static Collection<Object[]> files() {
 
-        final File srcDir;
+        final File srcDir = new File("src/test/resources/mp3-reference");
+        final File destDir =
+            new File("target/integration-results/MP3DecoderStreamIT");
 
-        if (System.getProperty("test.suite") == null) {
-            srcDir = new File("src/test/resources/swf-reference");
-        } else {
-            srcDir = new File(System.getProperty("test.suite"));
+        if (!destDir.exists() && !destDir.mkdirs()) {
+            fail();
         }
 
         final FilenameFilter filter = new FilenameFilter() {
             public boolean accept(final File directory, final String name) {
-                return name.endsWith(".swf");
+                return name.endsWith(".mp3");
             }
         };
 
         String[] files = srcDir.list(filter);
-        Object[][] collection = new Object[files.length][1];
+        Object[][] collection = new Object[files.length][2];
 
         for (int i = 0; i < files.length; i++) {
             collection[i][0] = new File(srcDir, files[i]);
+            collection[i][1] = new File(destDir,
+                    files[i].substring(0, files[i].lastIndexOf('.')) + ".swf");
         }
         return Arrays.asList(collection);
     }
 
-    private final File file;
+    private final File sourceFile;
+    private final File destFile;
 
-    public MovieDecodeIT(final File movieFile) {
-        file = movieFile;
+    public MP3DecoderStreamIT(final File src, final File dst) {
+        sourceFile = src;
+        destFile = dst;
     }
 
     @Test
-    public void decode() {
+    public void playSound() throws IOException, DataFormatException {
+
         try {
-            System.err.println(file.getAbsolutePath());
-            new Movie().decodeFromFile(file);
+            final float framesPerSecond = 12.0f;
+            final Movie movie = new Movie();
+
+            final SoundFactory factory = new SoundFactory();
+            factory.read(sourceFile);
+
+            MovieHeader attrs = new MovieHeader();
+            attrs.setFrameSize(new Bounds(0, 0, 8000, 4000));
+            attrs.setFrameRate(framesPerSecond);
+
+            movie.add(attrs);
+            movie.add(new Background(WebPalette.LIGHT_BLUE.color()));
+
+            movie.add(factory.streamHeader(framesPerSecond));
+
+            MovieTag block;
+
+            while ((block = factory.streamSound()) != null) {
+                movie.add(block);
+                movie.add(ShowFrame.getInstance());
+            }
+
+            DoAction action = new DoAction();
+            action.add(BasicAction.STOP);
+
+            movie.add(action);
+            movie.add(ShowFrame.getInstance());
+
+            movie.encodeToFile(destFile);
+
         } catch (Exception e) {
             e.printStackTrace();
-            fail(file.getPath());
+            fail(sourceFile.getPath());
         }
     }
 }

@@ -1,5 +1,5 @@
 /*
- * MovieDecodeIT.java
+ * MovieWriterIT.java
  * Transform
  *
  * Copyright (c) 2009-2010 Flagstone Software Ltd. All rights reserved.
@@ -35,8 +35,10 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.zip.DataFormatException;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,13 +46,10 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import com.flagstone.transform.Movie;
+import com.flagstone.transform.tools.MovieWriter;
 
-/**
- * DecodeMovieTest is used to create Movies using all the Flash files in a given
- * directory to verify that they can be decoded correctly.
- */
 @RunWith(Parameterized.class)
-public final class MovieDecodeIT {
+public final class MovieWriterIT {
 
     @Parameters
     public static Collection<Object[]>  files() {
@@ -63,6 +62,13 @@ public final class MovieDecodeIT {
             srcDir = new File(System.getProperty("test.suite"));
         }
 
+        final File destDir = new File(
+                "target/integration-results/MovieWriterIT");
+
+        if (!destDir.exists() && !destDir.mkdirs()) {
+            fail();
+        }
+
         final FilenameFilter filter = new FilenameFilter() {
             public boolean accept(final File directory, final String name) {
                 return name.endsWith(".swf");
@@ -70,28 +76,29 @@ public final class MovieDecodeIT {
         };
 
         String[] files = srcDir.list(filter);
-        Object[][] collection = new Object[files.length][1];
+        Object[][] collection = new Object[files.length][2];
 
         for (int i = 0; i < files.length; i++) {
             collection[i][0] = new File(srcDir, files[i]);
+            collection[i][1] = new File(destDir,
+                    files[i].substring(0, files[i].lastIndexOf('.')) + ".txt");
         }
         return Arrays.asList(collection);
     }
 
-    private final File file;
+    private final File sourceFile;
+    private final File destFile;
 
-    public MovieDecodeIT(final File movieFile) {
-        file = movieFile;
+    public MovieWriterIT(final File src, final File dst) {
+        sourceFile = src;
+        destFile = dst;
     }
 
     @Test
-    public void decode() {
-        try {
-            System.err.println(file.getAbsolutePath());
-            new Movie().decodeFromFile(file);
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail(file.getPath());
-        }
+    public void write() throws DataFormatException, IOException {
+        final Movie movie = new Movie();
+        movie.decodeFromFile(sourceFile);
+        final MovieWriter writer = new MovieWriter();
+        writer.write(movie, destFile);
     }
 }

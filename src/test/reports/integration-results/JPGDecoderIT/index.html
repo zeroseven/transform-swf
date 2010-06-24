@@ -1,0 +1,36 @@
+<html>
+<head>
+<style type="text/css">
+.float { float: left; border: thin solid gray; }
+td { margin: 0px; padding: 10px; vertical-align: text-top;}
+</style>
+</head>
+<body>
+<p><a href="../../integration-reports.html">Home</a></p>
+<h1>JPGDecoderIT</h1>
+<p>Comparing JPG reference images against Flash files generated using JPGDecoder.</p>
+<table>
+<tr><td>Page:</td>
+<td><a href="index.html">1</a></td>
+</tr>
+</table>
+
+<!-- Column 1 -->
+<table class="float">
+<tr><th>filename</th><th>JPG</th><th>SWF</th></tr>
+
+<tr>
+<td>gradient-all-appx-markers.jpg</td>
+<td><img width="256" height="256" src="../../test-classes/jpg-reference/gradient-all-appx-markers.jpg"/></td>
+<td>
+<object width="256" height="256">
+<param name="movie" value="gradient-all-appx-markers.swf">
+<embed src="gradient-all-appx-markers.swf" width="256" height="256"/>
+</object>
+</td>
+</tr>
+
+</table>
+
+</body>
+</html>

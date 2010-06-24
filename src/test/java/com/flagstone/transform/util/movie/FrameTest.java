@@ -45,6 +45,7 @@ import org.junit.Test;
 import com.flagstone.transform.DoAction;
 import com.flagstone.transform.FrameLabel;
 import com.flagstone.transform.Movie;
+import com.flagstone.transform.MovieHeader;
 import com.flagstone.transform.Place2;
 import com.flagstone.transform.ShowFrame;
 import com.flagstone.transform.action.Action;
@@ -59,10 +60,10 @@ public final class FrameTest {
     @Before
     public void setUp() {
         movie = new Movie();
-//        MovieHeader header = new MovieHeader();
-//        header.setFrameSize(new Bounds(0, 0, 100, 100));
-//        header.setFrameRate(1.0f);
-//        movie.add(header);
+        MovieHeader header = new MovieHeader();
+        header.setFrameSize(new Bounds(0, 0, 100, 100));
+        header.setFrameRate(1.0f);
+        movie.add(header);
     }
 
     @Test
