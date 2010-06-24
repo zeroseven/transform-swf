@@ -223,9 +223,11 @@ public final class SWFDecoderTest {
         fixture.mark();
         fixture.readByte();
         fixture.check(1);
+
+        assertEquals(0, fixture.getDelta());
     }
 
-    @Test(expected = CoderException.class)
+    @Test
     public void checkWithUnexpectedCount() throws IOException {
         final byte[] data = new byte[] {1, 2, 3, 4 };
         ByteArrayInputStream stream = new ByteArrayInputStream(data);
@@ -233,6 +235,8 @@ public final class SWFDecoderTest {
         fixture.mark();
         fixture.readByte();
         fixture.check(2);
+
+        assertEquals(1, fixture.getDelta());
     }
 
     @Test
