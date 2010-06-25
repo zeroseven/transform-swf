@@ -70,7 +70,9 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
     /** A true-colour image. */
     private static final int BI_BITFIELDS = 3;
 
+    /** The size of the header for an uncompressed image. */
     private static final int UNZIPPED_LENGTH = 12;
+    /** The size of the header for an compressed image. */
     private static final int ZIPPED_LENGTH  = 40;
 
     /** Size of each colour table entry or pixel in a true colour image. */
@@ -333,24 +335,24 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
         }
     }
 
-    private void decodeFormat(final int bitsPerPixel)
+    private void decodeFormat(final int pixelSize)
                 throws DataFormatException {
-        switch (bitsPerPixel) {
+        switch (pixelSize) {
         case IDX_1:
             format = ImageFormat.IDX8;
-            bitDepth = bitsPerPixel;
+            bitDepth = pixelSize;
             break;
         case IDX_2:
             format = ImageFormat.IDX8;
-            bitDepth = bitsPerPixel;
+            bitDepth = pixelSize;
             break;
         case IDX_4:
             format = ImageFormat.IDX8;
-            bitDepth = bitsPerPixel;
+            bitDepth = pixelSize;
             break;
         case IDX_8:
             format = ImageFormat.IDX8;
-            bitDepth = bitsPerPixel;
+            bitDepth = pixelSize;
             break;
         case RGB5_SIZE:
             format = ImageFormat.RGB5;
@@ -369,12 +371,12 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
         }
     }
 
-    private void decodeTable(final int coloursUsed, final LittleDecoder coder)
+    private void decodeTable(final int numColours, final LittleDecoder coder)
             throws IOException {
         int index = 0;
-        table = new byte[coloursUsed * COLOUR_CHANNELS];
+        table = new byte[numColours * COLOUR_CHANNELS];
 
-        for (int i = 0; i < coloursUsed; i++) {
+        for (int i = 0; i < numColours; i++) {
             table[index + ALPHA] = (byte) OPAQUE;
             table[index + BLUE] = (byte) coder.readByte();
             table[index + GREEN] = (byte) coder.readByte();
@@ -383,12 +385,12 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
         }
     }
 
-    private void decodeTableWithAlpha(final int coloursUsed,
+    private void decodeTableWithAlpha(final int numColours,
             final LittleDecoder coder) throws IOException {
         int index = 0;
-        table = new byte[coloursUsed * COLOUR_CHANNELS];
+        table = new byte[numColours * COLOUR_CHANNELS];
 
-        for (int i = 0; i < coloursUsed; i++) {
+        for (int i = 0; i < numColours; i++) {
             table[index + RED] = (byte) coder.readByte();
             table[index + GREEN] = (byte) coder.readByte();
             table[index + BLUE] = (byte) coder.readByte();

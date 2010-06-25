@@ -54,7 +54,9 @@ public final class FontName implements MovieTag {
 
     /** The unique identifier for this object. */
     private int identifier;
+    /** The name of the font. */
     private String name;
+    /** The copyright notice. */
     private String copyright;
 
     /** The length of the object, minus the header, when it is encoded. */

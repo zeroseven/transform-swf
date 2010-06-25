@@ -125,6 +125,7 @@ public final class DefineMorphShape implements ShapeTag {
     private transient int fillBits;
     /** The number of bits to encode indices into the line style list. */
     private transient int lineBits;
+    /** Offset in bytes to the end shape. */
     private transient int offset;
 
     /**

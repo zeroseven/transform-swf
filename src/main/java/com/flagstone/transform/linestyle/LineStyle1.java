@@ -74,7 +74,9 @@ public final class LineStyle1 implements LineStyle {
     /** Format string used in toString() method. */
     private static final String FORMAT = "LineStyle : { width=%d; color=%s}";
 
+    /** Width of the line in twips. */
     private int width;
+    /** Colour used to draw the line. */
     private Color color;
 
     /**

@@ -94,11 +94,16 @@ public final class GradientFill implements FillStyle {
 
     /** Code used to identify the fill style when it is encoded. */
     private transient int type;
+    /** Code for the Spread type. */
     private int spread;
+    /** Interpolation for colour changes. */
     private int interpolation;
+    /** Maps the Gradient Square to real coordinates. */
     private CoordTransform transform;
+    /** List of gradients defining the colour changes. */
     private List<Gradient> gradients;
 
+    /** Number of gradients in list. */
     private transient int count;
 
     /**

@@ -55,9 +55,13 @@ public final class DefineFont4 implements DefineTag {
 
     /** The unique identifier for this object. */
     private int identifier;
+    /** Is the font italicized. */
     private boolean italic;
+    /** Is the font bold. */
     private boolean bold;
+    /** The font name. */
     private String name;
+    /** The OpenType font data. */
     private byte[] data;
 
     /** The length of the object, minus the header, when it is encoded. */

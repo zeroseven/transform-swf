@@ -521,8 +521,8 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
             for (row = START_ROW[pass]; (row < height)
                     && (imageIndex < encodedImage.length);
                     row += ROW_STEP[pass]) {
-                for (col = START_COLUMN[pass], /* pixelCount = 0, */ scanBits = 0; col
-                        < width; col += COLUMN_STEP[pass]) {
+                for (col = START_COLUMN[pass], scanBits = 0; col < width;
+                        col += COLUMN_STEP[pass]) {
                     scanBits += bitsPerPixel;
                 }
 
@@ -602,21 +602,21 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
         }
     }
 
-    private void subFilter(final int start, final int width,
+    private void subFilter(final int start, final int count,
             final byte[] current) {
-        for (int i = start, j = 0; i < width; i++, j++) {
+        for (int i = start, j = 0; i < count; i++, j++) {
             current[i] = (byte) (current[i] + current[j]);
        }
     }
 
-    private void upFilter(final int width, final byte[] current,
+    private void upFilter(final int count, final byte[] current,
             final byte[] previous) {
-        for (int i = 0; i < width; i++) {
+        for (int i = 0; i < count; i++) {
             current[i] = (byte) (current[i] + previous[i]);
         }
     }
 
-    private void averageFilter(final int start, final int width,
+    private void averageFilter(final int start, final int count,
             final byte[] current, final byte[] previous) {
 
         for (int cindex = 0; cindex < start; cindex++) {
@@ -626,14 +626,14 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
         }
 
         for (int cindex = start, pindex = 0;
-        cindex < width; cindex++, pindex++) {
+        cindex < count; cindex++, pindex++) {
             current[cindex] = (byte) (current[cindex]
                 + ((UNSIGNED_BYTE & current[pindex])
                         + (UNSIGNED_BYTE & previous[cindex])) / 2);
         }
     }
 
-    private void paethFilter(final int start, final int width,
+    private void paethFilter(final int start, final int count,
             final byte[] current, final byte[] previous) {
 
         for (int cindex = 0; cindex < start; cindex++) {
@@ -643,7 +643,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
         }
 
         for (int cindex = start, pindex = 0;
-        cindex < width; cindex++, pindex++) {
+        cindex < count; cindex++, pindex++) {
             current[cindex] = (byte) (current[cindex]
                                           + paeth(current[pindex],
                     previous[cindex], previous[pindex]));

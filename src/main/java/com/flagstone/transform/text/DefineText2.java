@@ -73,13 +73,18 @@ public final class DefineText2 implements StaticTextTag {
 
     /** The unique identifier for this object. */
     private int identifier;
+    /** The bounding box that encloses the text. */
     private Bounds bounds;
+    /** The position and orientation of the text. */
     private CoordTransform transform;
+    /** The segments of text. */
     private List<TextSpan> spans;
 
     /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
+    /** Number of bits used to encode each glyph index. */
     private transient int glyphBits;
+    /** Number of bits used to encode each advance. */
     private transient int advanceBits;
 
     /**
@@ -163,16 +168,16 @@ public final class DefineText2 implements StaticTextTag {
      * @param matrix
      *            an CoordTransform to change the size and orientation of the
      *            text. Must not be null.
-     * @param spans
+     * @param list
      *            a list of TextSpan objects that define the text to be
      *            displayed. Must not be null.
      */
     public DefineText2(final int uid, final Bounds rect,
-            final CoordTransform matrix, final List<TextSpan> spans) {
+            final CoordTransform matrix, final List<TextSpan> list) {
         setIdentifier(uid);
         setBounds(rect);
         setTransform(matrix);
-        setSpans(spans);
+        setSpans(list);
     }
 
     /**
@@ -372,6 +377,10 @@ public final class DefineText2 implements StaticTextTag {
         }
     }
 
+    /**
+     * The number of bits used to encode the glyph indices.
+     * @return the number of bits used to encode each glyph index.
+     */
     private int calculateSizeForGlyphs() {
         int total = 0;
         int size;
@@ -387,6 +396,10 @@ public final class DefineText2 implements StaticTextTag {
         return total;
     }
 
+    /**
+     * The number of bits used to encode the advances.
+     * @return the number of bits used to encode each advance.
+     */
     private int calculateSizeForAdvances() {
         int total = 0;
         int size;

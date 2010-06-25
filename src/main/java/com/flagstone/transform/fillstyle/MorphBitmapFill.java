@@ -95,7 +95,9 @@ public final class MorphBitmapFill implements FillStyle {
     private transient int type;
     /** The unique identifier of the image that will be displayed. */
     private int identifier;
+    /** Coordinate transform at start of morphing process. */
     private CoordTransform startTransform;
+    /** Coordinate transform at end of morphing process. */
     private CoordTransform endTransform;
 
     /**

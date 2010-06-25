@@ -255,6 +255,9 @@ public final class DefineJPEGImage3 implements ImageTag {
         }
     }
 
+    /**
+     * Decode the JPEG image to get the width and height.
+     */
     private void decodeInfo() {
         final JPEGInfo info = new JPEGInfo();
         info.decode(image);

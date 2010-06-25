@@ -62,6 +62,7 @@ public final class SWFFontDecoder implements FontProvider, FontDecoder {
     private final transient Map<Integer, Font>fonts
                 = new LinkedHashMap<Integer, Font>();
 
+    /** The list of glyphs from a DefineFont object. */
     private transient List<Shape> glyphs;
 
     /** {@inheritDoc} */
@@ -208,7 +209,7 @@ public final class SWFFontDecoder implements FontProvider, FontDecoder {
 
         final int glyphCount = object.getShapes().size();
         final int codeCount = object.getCodes().size();
-        final int highest = object.getCodes().get(codeCount-1);
+        final int highest = object.getCodes().get(codeCount - 1);
 
         font.setMissingGlyph(0);
         font.setNumberOfGlyphs(glyphCount);
@@ -262,7 +263,7 @@ public final class SWFFontDecoder implements FontProvider, FontDecoder {
         font.setLeading(object.getLeading());
 
         final int glyphCount = object.getShapes().size();
-        final int highest = object.getCodes().get(glyphCount-1);
+        final int highest = object.getCodes().get(glyphCount - 1);
 
         font.setMissingGlyph(0);
         font.setNumberOfGlyphs(glyphCount);

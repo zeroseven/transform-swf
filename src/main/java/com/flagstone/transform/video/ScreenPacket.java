@@ -47,15 +47,27 @@ import com.flagstone.transform.coder.SWFEncoder;
  */
 public final class ScreenPacket implements Copyable<ScreenPacket> {
 
+    /** Multiplier for the encoded value representing the block width. */
     private static final int PIXELS_PER_BLOCK = 16;
 
+    /** Is this frame a key frame with blocks for the entire image. */
     private boolean keyFrame;
+    /** The width of each block. */
     private int blockWidth;
+    /** The height of each block. */
     private int blockHeight;
+    /** The width of the image. */
     private int imageWidth;
+    /** The height of the image. */
     private int imageHeight;
+    /** List of blocks that make up the image. */
     private List<ImageBlock> imageBlocks;
 
+    /**
+     * Decode a screen packet from a block of data.
+     * @param data the encoded screen packet data.
+     * @throws IOException if the data cannot be decoded.
+     */
     public ScreenPacket(final byte[] data) throws IOException {
         final ByteArrayInputStream stream = new ByteArrayInputStream(data);
         final SWFDecoder coder = new SWFDecoder(stream);
@@ -108,7 +120,9 @@ public final class ScreenPacket implements Copyable<ScreenPacket> {
         }
     }
 
-
+    /**
+     * Create a ScreenPacket with no image blocks.
+     */
     public ScreenPacket() {
         imageBlocks = new ArrayList<ImageBlock>();
     }
@@ -294,6 +308,11 @@ public final class ScreenPacket implements Copyable<ScreenPacket> {
         return new ScreenPacket(this);
     }
 
+    /**
+     * Encode this ScreenPacket.
+     * @return the data representing the encoded image blocks.
+     * @throws IOException if there is an error encoding the blocks.
+     */
     public byte[] encode() throws IOException {
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         final SWFEncoder coder = new SWFEncoder(stream);

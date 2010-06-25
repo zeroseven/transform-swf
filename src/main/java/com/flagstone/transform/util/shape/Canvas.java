@@ -87,40 +87,62 @@ public final class Canvas {
     /** Number of twips in a pixel. */
     private static final int TWIPS_PER_PIXEL = 20;
 
+    /** Index of the start point in the array of cubic Bezier points. */
     private static final int START = 0;
+    /** Index of the first control point in the array of cubic points. */
     private static final int CTRLA = 1;
+    /** Index of the second control point in the array of cubic points. */
     private static final int CTRLB = 2;
+    /** Index of the anchor point in the array of cubic points. */
     private static final int ANCHOR = 3;
+    /** Divisor for averaging the distance between points. */
     private static final int MID = 2;
+    /** Number of points used to define a cubic Bezier curve. */
     private static final int CUBIC_POINTS = 4;
+    /** Factor used to calculate the control point for a quadratic curve. */
     private static final double CTRL_AVG = 2.0;
+    /** Factor used to calculate the anchor point for a quadratic curve. */
     private static final double ANCHOR_AVG = 3.0;
 
+    /** Whether coordinate used to draw a path a specified in pixels. */
     private final transient boolean arePixels;
+    /** Indicates whether a path is currently being drawn. */
     private transient boolean pathInProgress = false;
 
+    /** X coordinates of a cubic Bezier curve. */
     private final transient double[] cubicX = new double[CUBIC_POINTS];
+    /** Y coordinates of a cubic Bezier curve. */
     private final transient double[] cubicY = new double[CUBIC_POINTS];
 
+    /** The x-coordinate of the initial point on the path. */
     private transient int initialX;
+    /** The y-coordinate of the initial point on the path. */
     private transient int initialY;
 
+    /** The x-coordinate of the current point on the path. */
     private transient int currentX;
+    /** The y-coordinate of the current point on the path. */
     private transient int currentY;
     /** The x-coordinate for the last control point when drawing a curve. */
     private transient int controlX;
     /** The y-coordinate for the last control point when drawing a curve. */
     private transient int controlY;
 
+    /** The minimum x-coordinate, accounting for line width. */
     private transient int minX;
+    /** The minimum y-coordinate, accounting for line width. */
     private transient int minY;
+    /** The maximum x-coordinate, accounting for line width. */
     private transient int maxX;
+    /** The maximum y-coordinate, accounting for line width. */
     private transient int maxY;
-
+    /** The current line width. */
     private transient int lineWidth;
-
+    /** The list of ShapeRecords make make up the current path. */
     private final transient List<ShapeRecord> objects;
+    /** The list of line styles available. */
     private final transient List<LineStyle> lineStyles;
+    /** The list of fill styles available. */
     private final transient List<FillStyle> fillStyles;
 
     /**
@@ -344,6 +366,14 @@ public final class Canvas {
         setInitial(pointX, pointY);
     }
 
+    /**
+     * Move to the point (x,y). Use only when creating font definitions.
+     *
+     * @param xCoord
+     *            the x-coordinate of the point to move to.
+     * @param yCoord
+     *            the y-coordinate of the point to move to.
+     */
     public void moveForFont(final int xCoord, final int yCoord) {
         final int pointX = arePixels ? xCoord * TWIPS_PER_PIXEL : xCoord;
         final int pointY = arePixels ? yCoord * TWIPS_PER_PIXEL : yCoord;
@@ -822,11 +852,21 @@ public final class Canvas {
         close();
     }
 
+    /**
+     * Set the initial point.
+     * @param xCoord the x-coordinate of the initial point.
+     * @param yCoord the y-coordinate of the initial point.
+     */
     private void setInitial(final int xCoord, final int yCoord) {
         initialX = xCoord;
         initialY = yCoord;
     }
 
+    /**
+     * Set the current point.
+     * @param xCoord the x-coordinate of the current point.
+     * @param yCoord the y-coordinate of the current point.
+     */
     private void setCurrent(final int xCoord, final int yCoord) {
         currentX = xCoord;
         currentY = yCoord;
@@ -845,6 +885,11 @@ public final class Canvas {
         }
     }
 
+    /**
+     * Set the control point on a quadratic curve.
+     * @param xCoord the x-coordinate of the control point.
+     * @param yCoord the y-coordinate of the control point.
+     */
     private void setControl(final int xCoord, final int yCoord) {
         controlX = xCoord;
         controlY = yCoord;

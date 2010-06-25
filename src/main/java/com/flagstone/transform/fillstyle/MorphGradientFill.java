@@ -56,10 +56,14 @@ public final class MorphGradientFill implements FillStyle {
 
     /** Code used to identify the fill style when it is encoded. */
     private int type;
+    /** Maps the Gradient Square to real coordinates at the start. */
     private CoordTransform startTransform;
+    /** Maps the Gradient Square to real coordinates at the end. */
     private CoordTransform endTransform;
+    /** List of gradients defining the colour changes. */
     private List<MorphGradient> gradients;
 
+    /** Number of gradients in list. */
     private transient int count;
 
     /**

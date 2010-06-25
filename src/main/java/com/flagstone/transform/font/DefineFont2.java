@@ -69,6 +69,7 @@ import com.flagstone.transform.text.Language;
 @SuppressWarnings({"PMD.TooManyFields", "PMD.TooManyMethods",
     "PMD.CyclomaticComplexity" })
 public final class DefineFont2 implements DefineTag {
+    /** Last version of FLash which does not support Language field. */
     private static final int LANGUAGE_VERSION = 5;
     /** Format string used in toString() method. */
     private static final String FORMAT = "DefineFont2: { identifier=%d;"
@@ -78,25 +79,42 @@ public final class DefineFont2 implements DefineTag {
 
     /** The unique identifier for this object. */
     private int identifier;
+    /** Code for the character encoding used. */
     private int encoding;
+    /** Is the font small. */
     private boolean small;
+    /** Is the font italicized. */
     private boolean italic;
+    /** Is the font bold. */
     private boolean bold;
+    /** Code representing the spoken language - used for line breaking. */
     private int language;
+    /** The font name. */
     private String name;
+    /** The list of font glyphs. */
     private List<Shape> shapes;
+    /** The list of character codes that map to each glyph - ascending order. */
     private List<Integer> codes;
+    /** Height of the font above the baseline. */
     private int ascent;
+    /** Height of the font below the baseline. */
     private int descent;
+    /** Spacing between successive lines. */
     private int leading;
+    /** Advances for each glyph. */
     private List<Integer> advances;
+    /** Bounding boxes for each glyph. */
     private List<Bounds> bounds;
+    /** Kernings for selected pairs of glyphs. */
     private List<Kerning> kernings;
 
     /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
+    /** Table of offsets to each glyph when encoded. */
     private transient int[] table;
+    /** Whether offsets are 16-bit (false) or 32-bit (true). */
     private transient boolean wideOffsets;
+    /** Whether character codes are 8-bit (false) or 16-bit (true). */
     private transient boolean wideCodes;
 
     /**
@@ -926,6 +944,10 @@ public final class DefineFont2 implements DefineTag {
         }
     }
 
+    /**
+     * Does the font contain layout information for the glyphs.
+     * @return true if the font contains layout information, false otherwise.
+     */
     private boolean containsLayoutInfo() {
         final boolean layout = (ascent != 0) || (descent != 0)
                 || (leading != 0) || !advances.isEmpty() || !bounds.isEmpty()

@@ -217,6 +217,9 @@ public final class DefineJPEGImage2 implements ImageTag {
         }
     }
 
+    /**
+     * Decode the JPEG image to get the width and height.
+     */
     private void decodeInfo() {
         final JPEGInfo info = new JPEGInfo();
         info.decode(image);

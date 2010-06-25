@@ -45,7 +45,6 @@ import org.junit.Test;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.sound.DefineSound;
 
 public final class DefineSoundTest {
 
@@ -58,7 +57,7 @@ public final class DefineSoundTest {
             0x00, 0x00, 0x00, 0x01, 0x00, 0x02, 0x00, 0x06, 0x50 };
 
     @Test
-    @Ignore 
+    @Ignore
     public void checkCopy() {
         // fixture = new DefineSound(identifier, layer, transform,
         // colorTransform);
@@ -68,7 +67,7 @@ public final class DefineSoundTest {
     }
 
     @Test
-    @Ignore 
+    @Ignore
     public void encodeCoordTransform() throws IOException {
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         final SWFEncoder encoder = new SWFEncoder(stream);
@@ -82,7 +81,7 @@ public final class DefineSoundTest {
     }
 
     @Test
-    @Ignore 
+    @Ignore
     public void decode() throws IOException {
         final ByteArrayInputStream stream = new ByteArrayInputStream(encoded);
         final SWFDecoder decoder = new SWFDecoder(stream);
@@ -93,7 +92,7 @@ public final class DefineSoundTest {
     }
 
     @Test
-    @Ignore 
+    @Ignore
     public void decodeExtended() throws IOException {
         final ByteArrayInputStream stream = new ByteArrayInputStream(extended);
         final SWFDecoder decoder = new SWFDecoder(stream);

@@ -82,8 +82,11 @@ public final class Envelope implements SWFEncodeable, Copyable<Envelope> {
         private static final String FORMAT = "Envelope: { mark=%d; left=%d;"
         		+ " right=%d}";
 
+        /** The sample number (at 44KHz) where the levels apply. */
         private final transient int mark;
+        /** The sound level for the left channel. */
         private final transient int left;
+        /** The sound level for the right channel. */
         private final transient int right;
 
         /**
@@ -205,8 +208,9 @@ public final class Envelope implements SWFEncodeable, Copyable<Envelope> {
         }
     }
 
+    /** List of sound levels that define the envelope. */
     private List<Level> levels;
-
+    /** Number of levels in list. */
     private transient int count;
 
     /**

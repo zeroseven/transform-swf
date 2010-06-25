@@ -60,24 +60,38 @@ public final class MorphLineStyle2 implements LineStyle {
             + " scaledHorizontally=%b; scaledVertically=%b;"
             + " pixelAligned=%b; lineClosed=%b; miterLimit=%d}";
 
+    /** Width of the line at the start of the morph. */
     private int startWidth;
+    /** Width of the line at the end of the morph. */
     private int endWidth;
+    /** Color of the line at the start of the morph. */
     private Color startColor;
+    /** Color of the line at the end of the morph. */
     private Color endColor;
 
+    /** Code for the cap style used for the start of the line. */
     private int startCap;
+    /** Code for the cap style used for the end of the line. */
     private int endCap;
+    /** Code for the style used to join two line together. */
     private int joinStyle;
+    /** Fill style used to draw the stroke. */
     private FillStyle fillStyle;
 
+    /** Does the line allow scaling horizontally. */
     private boolean horizontal;
+    /** Does the line allow scaling vertically. */
     private boolean vertical;
+    /** Is the line drawn along pixel boundaries. */
     private boolean pixelAligned;
+    /** Should the line be closed if the start and end points coincide. */
     private boolean lineClosed;
-
+    /** Parameter controlling the mitering when joining two lines. */
     private int miterLimit;
 
+    /** Indicates the style contains a fill style. */
     private transient boolean hasFillStyle;
+    /** Indicates the style contains a mitering limit. */
     private transient boolean hasMiter;
 
     /**

@@ -102,13 +102,20 @@ public final class DefineImage implements ImageTag {
             + " pixelSize=%d; width=%d; height=%d; tableSize=%d;"
             + " image=byte<%d> ...}";
 
+    /** Identifies an indexed image. */
     private static final int IDX_FORMAT = 3;
+    /** Identifies a true-color image with 16-bit pixels. */
     private static final int RGB5_FORMAT = 4;
+    /** Identifies a true-color image with 24-bit pixels. */
     private static final int RGB8_FORMAT = 5;
 
+    /** Size of a pixel in an indexed image. */
     private static final int IDX_SIZE = 8;
+    /** Size of a pixel in an RGB5 image. */
     private static final int RGB5_SIZE = 16;
+    /** Size of a pixel in an RGB image. */
     private static final int RGB8_SIZE = 24;
+    /** Number of entries in the colour table of an indexed image. */
     private static final int TABLE_SIZE = 256;
 
     /** The unique identifier for this object. */

@@ -72,6 +72,7 @@ public final class DefineFont implements DefineTag {
 
     /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
+    /** The table of offsets to each glyph. */
     private transient int[] table;
 
 

@@ -55,7 +55,9 @@ public final class StartSound2 implements MovieTag {
     /** Format string used in toString() method. */
     private static final String FORMAT = "StartSound2: { sound=%s}";
 
+    /** The name of the Actionscript 3 class that supplies the sound. */
     private String soundClass;
+    /** Describes how the sound is played. */
     private SoundInfo sound;
 
     /** The length of the object, minus the header, when it is encoded. */

@@ -80,11 +80,16 @@ public final class DefineImage2 implements ImageTag {
             + " width=%d; height=%d; pixelSize=%d; tableSize=%d;"
             + " image=byte<%d> ...}";
 
+    /** Identifies an indexed image. */
     private static final int IDX_FORMAT = 3;
+    /** Identifies a true-color image with 32-bit pixels. */
     private static final int RGBA_FORMAT = 5;
 
+    /** Size of a pixel in an indexed image. */
     private static final int IDX_SIZE = 8;
+    /** Size of a pixel in an RGBA image. */
     private static final int RGBA_SIZE = 32;
+    /** Number of entries in the colour table of an indexed image. */
     private static final int TABLE_SIZE = 256;
 
     /** The unique identifier for this object. */
@@ -93,13 +98,15 @@ public final class DefineImage2 implements ImageTag {
     private int width;
     /** The height of the image in pixels. */
     private int height;
+    /** The number of bits in a pixel. */
     private int pixelSize;
+    /** The number of entries in the colour table. */
     private int tableSize;
+    /** The compressed colour table and image data. */
     private byte[] image;
 
     /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
-    private transient boolean extendLength;
 
     /**
      * Creates and initialises an DefineImage2 object using values encoded
@@ -159,7 +166,6 @@ public final class DefineImage2 implements ImageTag {
      */
     public DefineImage2(final int uid, final int imgWidth, final int imgHeight,
             final int size, final byte[] data) {
-        extendLength = true;
         setIdentifier(uid);
         setWidth(imgWidth);
         setHeight(imgHeight);
@@ -185,7 +191,6 @@ public final class DefineImage2 implements ImageTag {
      */
     public DefineImage2(final int uid, final int imgWidth, final int imgHeight,
             final byte[] data) {
-        extendLength = true;
         setIdentifier(uid);
         setWidth(imgWidth);
         setHeight(imgHeight);
@@ -203,7 +208,6 @@ public final class DefineImage2 implements ImageTag {
      *            copied.
      */
     public DefineImage2(final DefineImage2 object) {
-        extendLength = object.extendLength;
         identifier = object.identifier;
         width = object.width;
         height = object.height;

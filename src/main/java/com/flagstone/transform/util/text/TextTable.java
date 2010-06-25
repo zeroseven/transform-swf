@@ -55,15 +55,29 @@ import com.flagstone.transform.text.TextSpan;
  */
 public final class TextTable {
 
+    /** Size in twips of the EM Square used for glyph coordinates. */
     private static final float EMSQUARE = 1024.0f;
 
+    /** The size, in twips, of the font. */
     private final transient int size;
+    /** The height, in twips of the font above the baseline. */
     private final transient int ascent;
+    /** The height, in twips of the font below the baseline. */
     private final transient int descent;
+    /** The unique identifier of the font. */
     private final transient int identifier;
 
+    /**
+     * A table of characters and the corresponding GlyphIndex with the
+     * pre-calculated advance for the font.
+     */
     private final transient Map<Character, GlyphIndex> characters;
 
+    /**
+     * Creates a TextTable for the specified font size.
+     * @param font the font definition.
+     * @param fontSize the size of the font in twips.
+     */
     public TextTable(final DefineFont2 font, final int fontSize) {
 
         identifier = font.getIdentifier();

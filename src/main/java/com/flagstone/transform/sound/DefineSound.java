@@ -78,11 +78,17 @@ public final class DefineSound implements DefineTag {
 
     /** The unique identifier for this object. */
     private int identifier;
+    /** The code representing the sound format. */
     private int format;
+    /** The playback rate in KHz. */
     private int rate;
+    /** The number of channels: 1 = mono, 2 = stereo. */
     private int channelCount;
+    /** The number of bits in each sample. */
     private int sampleSize;
+    /** The number of samples. */
     private int sampleCount;
+    /** The sound data. */
     private byte[] sound;
 
     /** The length of the object, minus the header, when it is encoded. */

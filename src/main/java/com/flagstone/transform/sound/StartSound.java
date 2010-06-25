@@ -61,6 +61,7 @@ public final class StartSound implements MovieTag {
     /** Format string used in toString() method. */
     private static final String FORMAT = "StartSound: { sound=%s}";
 
+    /** Describes how the sound is played. */
     private SoundInfo sound;
 
     /** The length of the object, minus the header, when it is encoded. */

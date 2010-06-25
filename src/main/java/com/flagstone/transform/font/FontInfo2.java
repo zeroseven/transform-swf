@@ -84,12 +84,19 @@ public final class FontInfo2 implements MovieTag {
 
     /** The unique identifier of the font that the info applies to. */
     private int identifier;
+    /** The font name. */
     private String name;
-    private boolean small;
+    /** Code for the character encoding used. */
     private int encoding;
+    /** Is the font small. */
+    private boolean small;
+    /** Is the font italicized. */
     private boolean italic;
+    /** Is the font bold. */
     private boolean bold;
+    /** Code representing the spoken language - used for line breaking. */
     private int language;
+    /** Mapping of glyphs (index) to character codes. */
     private List<Integer> codes;
 
     /** The length of the object, minus the header, when it is encoded. */

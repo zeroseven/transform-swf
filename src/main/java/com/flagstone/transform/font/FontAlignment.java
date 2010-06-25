@@ -68,7 +68,9 @@ public final class FontAlignment implements MovieTag {
 
     /** The unique identifier of the font that the alignment applies to. */
     private int identifier;
+    /** Compound code used for drawing hints. */
     private transient int hints;
+    /** Alignment zones for snapping areas of glyphs to pixel boundaries. */
     private List<GlyphAlignment> zones;
 
     /** The length of the object, minus the header, when it is encoded. */

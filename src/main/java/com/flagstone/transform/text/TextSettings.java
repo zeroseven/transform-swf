@@ -91,9 +91,13 @@ public final class TextSettings implements MovieTag {
     private static final String FORMAT = "TextSettings: { identifier=%d;"
             + " useAdvanced=%s; grid=%s; thickness=%f; sharpness=%f}";
 
+    /** The unique identifier of the text field. */
     private transient int identifier;
+    /** Compound code for the rendering settings. */
     private transient int rendering;
+    /** Control for the thickness of the line. */
     private transient int thickness;
+    /** Control for the sharpness of the line. */
     private transient int sharpness;
 
     /**

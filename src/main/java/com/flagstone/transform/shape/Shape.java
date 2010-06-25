@@ -84,8 +84,9 @@ public final class Shape implements SWFEncodeable, Copyable<Shape> {
         return new Shape(coder, context);
     }
 
+    /** List of ShapeRecords that draws the shape. */
     private List<ShapeRecord> objects;
-
+    /** Indicates whether the ShapeRecords are already encoded. */
     private transient boolean isEncoded;
 
     /**

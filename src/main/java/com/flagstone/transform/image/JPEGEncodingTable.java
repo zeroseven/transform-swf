@@ -67,6 +67,7 @@ public final class JPEGEncodingTable implements MovieTag {
     private static final String FORMAT = "JPEGEncodingTable: {"
                 + " table=byte<%d> ...}";
 
+    /** Huffman encoding table. */
     private byte[] table;
 
     /** The length of the object, minus the header, when it is encoded. */

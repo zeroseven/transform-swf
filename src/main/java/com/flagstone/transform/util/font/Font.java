@@ -91,28 +91,47 @@ import com.flagstone.transform.shape.Shape;
  */
 public final class Font {
 
+    /** The face describing the font. */
     private FontFace face;
+    /** The encoding used for character codes. */
     private CharacterFormat encoding;
-
+    /** The height of the font above the baseline. */
     private int ascent;
+    /** The height of the font below the baseline. */
     private int descent;
+    /** The spacing between lines. */
     private int leading;
 
+    /** Table mapping character codes to glyphs. */
     private transient int[] charToGlyph;
+    /** Table mapping glyphs to character codes. */
     private transient int[] glyphToChar;
+    /** Table of glyphs. */
     private transient Glyph[] glyphTable;
 
+    /** The current glyph. */
     private transient int glyphIndex;
+    /** The number of glyphs in the font. */
     private transient int glyphCount;
+    /** The index of the glyph used to represent undisplayable characters. */
     private transient int missingGlyph;
+    /** The highest character code. */
     private transient char highestChar;
-
+    /** List of kernings for selected pairs of characters. */
     private final transient List<Kerning> kernings = new ArrayList<Kerning>();
 
+    /**
+     * Get the FontFace that contains the font name and style.
+     * @return the FontFace.
+     */
     public FontFace getFace() {
         return face;
     }
 
+    /**
+     * Set the FontFace that contains the font name and style.
+     * @param fontFace the FontFace.
+     */
     public void setFace(final FontFace fontFace) {
         face = fontFace;
     }
@@ -251,19 +270,40 @@ public final class Font {
         charToGlyph = new int[highest + 1];
     }
 
-
+    /**
+     * Get the index of the glyph used to represent characters that are not
+     * supported int the font.
+     * @return the index of the glyph for unsupported characters.
+     */
     public int getMissingGlyph() {
         return missingGlyph;
     }
 
+    /**
+     * Select the glyph used to represent characters that are not
+     * supported int the font.
+     * @param index the index of the glyph that will be used to display
+     * unsupported characters.
+     */
     public void setMissingGlyph(final int index) {
         missingGlyph = index;
     }
 
+    /**
+     * Get the glyph from the specified position in the table.
+     * @param index the index of the glyph.
+     * @return the corresponding glyph.
+     */
     public Glyph getGlyph(final int index) {
         return glyphTable[index];
     }
 
+    /**
+     * Add a character and the corresponding glyph that is displayed to the
+     * font.
+     * @param code the character
+     * @param glyph the glyph displayed for the character.
+     */
     public void addGlyph(final char code, final Glyph glyph) {
         glyphTable[glyphIndex] = glyph;
         glyphToChar[glyphIndex] = code;
@@ -271,6 +311,10 @@ public final class Font {
         glyphIndex++;
     }
 
+    /**
+     * Add a character to the font where the missing glyph will be displayed.
+     * @param code the character where there is no corresponding glyph.
+     */
     public void addMissingGlyph(final char code) {
         charToGlyph[code] = missingGlyph;
     }

@@ -61,18 +61,30 @@ public final class ShapeStyle2 implements ShapeRecord {
      */
     private static final int EXTENDED = 255;
 
+    /** Relative move along the x-axis. */
     private Integer moveX;
+    /** Relative move along the y-axis. */
     private Integer moveY;
+    /** Selected fill style. */
     private Integer fillStyle;
+    /** Selected alternate fill style. */
     private Integer altFillStyle;
+    /** Selected line style. */
     private Integer lineStyle;
+    /** List of fill styles. */
     private List<FillStyle> fillStyles;
+    /** List of line styles. */
     private List<LineStyle2> lineStyles;
 
+    /** Indicates whether new line or fill styles are specified. */
     private transient boolean hasStyles;
+    /** Indicates whether a line is specified. */
     private transient boolean hasLine;
+    /** Indicates whether an alternate fill style is specified. */
     private transient boolean hasAlt;
+    /** Indicates whether an fill style is specified. */
     private transient boolean hasFill;
+    /** Indicates whether a relative move is specified. */
     private transient boolean hasMove;
 
     /**

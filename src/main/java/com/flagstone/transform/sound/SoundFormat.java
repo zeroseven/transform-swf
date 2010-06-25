@@ -80,6 +80,7 @@ public enum SoundFormat {
      */
     SPEEX(11);
 
+    /** Table used to convert codes into SoundFormats. */
     private static final Map<Integer, SoundFormat> TABLE =
         new LinkedHashMap<Integer, SoundFormat>();
 
@@ -98,9 +99,13 @@ public enum SoundFormat {
     public static SoundFormat fromInt(final int value) {
         return TABLE.get(value);
     }
-
+    /** Code used to represent the SoundFormat. */
     private int value;
 
+    /**
+     * Private constructor for enum.
+     * @param format the code representing the SoundFormat.
+     */
     private SoundFormat(final int format) {
         value = format;
     }

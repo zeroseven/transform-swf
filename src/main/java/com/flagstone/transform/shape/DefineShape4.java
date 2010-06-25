@@ -71,7 +71,9 @@ public final class DefineShape4 implements ShapeTag {
 
     /** The unique identifier for this object. */
     private int identifier;
+    /** The bounding box for the shape at the start of the morph. */
     private Bounds bounds;
+    /** The bounding box for the shape, excluding line widths at the start. */
     private Bounds edgeBounds;
     /** The list of fill styles for the shape. */
     private List<FillStyle> fillStyles;
@@ -80,7 +82,9 @@ public final class DefineShape4 implements ShapeTag {
     /** The shape. */
     private Shape shape;
 
+    /** Indicates whether fill winding is used. */
     private transient int winding;
+    /** Indicates whether any of the line styles contain scaling strokes. */
     private transient int scaling;
 
     /** The length of the object, minus the header, when it is encoded. */
@@ -168,7 +172,7 @@ public final class DefineShape4 implements ShapeTag {
      *
      * @param uid
      *            the unique identifier for the shape in the range 1..65535.
-     * @param bounds
+     * @param rect
      *            the bounding rectangle for the shape including the width of
      *            the border lines. Must not be null.
      * @param edges
@@ -181,11 +185,11 @@ public final class DefineShape4 implements ShapeTag {
      * @param aShape
      *            the shape to be drawn. Must not be null.
      */
-    public DefineShape4(final int uid, final Bounds bounds, final Bounds edges,
+    public DefineShape4(final int uid, final Bounds rect, final Bounds edges,
             final List<FillStyle> fills, final List<LineStyle> lines,
             final Shape aShape) {
         setIdentifier(uid);
-        setBounds(bounds);
+        setBounds(rect);
         setEdgeBounds(edges);
         setFillStyles(fills);
         setLineStyles(lines);

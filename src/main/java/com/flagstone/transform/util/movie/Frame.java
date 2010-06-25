@@ -140,10 +140,15 @@ public final class Frame {
         return frames;
     }
 
+    /** The frame label. */
     private String label;
+    /** The frame number. */
     private int number;
+    /** List of definitions. */
     private List<MovieTag> definitions;
+    /** List of display list and other commands. */
     private List<MovieTag> commands;
+    /** List of actions executed when the frame is displayed. */
     private List<Action> actions;
 
     /**

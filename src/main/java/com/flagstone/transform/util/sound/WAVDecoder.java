@@ -74,7 +74,9 @@ public final class WAVDecoder implements SoundProvider, SoundDecoder {
     /** The sound samples. */
     private transient byte[] sound = null;
 
+    /** The frame rate for the movie. */
     private transient float movieRate;
+    /** The number of bytes already streamed. */
     private transient int bytesSent;
 
     /** {@inheritDoc} */

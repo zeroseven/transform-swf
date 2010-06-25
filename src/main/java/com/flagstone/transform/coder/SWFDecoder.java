@@ -183,17 +183,17 @@ public final class SWFDecoder {
      * called.
      */
     public void reset() throws IOException {
-        int location;
+        int last;
 
         if (locations.isEmpty()) {
-            location = 0;
+            last = 0;
         } else {
-            location = locations.peek();
+            last = locations.peek();
         }
-        if (location - pos < 0) {
+        if (last - pos < 0) {
             throw new IOException();
         }
-        index = location - pos;
+        index = last - pos;
     }
 
     /**

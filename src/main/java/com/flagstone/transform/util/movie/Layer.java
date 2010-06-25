@@ -182,7 +182,9 @@ public final class Layer {
         return merged;
     }
 
+    /** The layer number. */
     private final transient int layerNumber;
+    /** The list of frames for the object displayed on this layer. */
     private final transient List<Frame> frames;
 
     /**

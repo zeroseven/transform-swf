@@ -106,9 +106,13 @@ public final class DefineMorphShape2 implements ShapeTag {
 
     /** The unique identifier for this object. */
     private int identifier;
+    /** The bounding box for the shape at the start of the morph. */
     private Bounds bounds;
+    /** The bounding box for the shape at the end of the morph. */
     private Bounds endBounds;
+    /** The bounding box for the shape, excluding line widths at the start. */
     private Bounds edgeBounds;
+    /** The bounding box for the shape, excluding line widths at the end. */
     private Bounds endEdgeBounds;
 
     /** The list of fill styles for the shape. */
@@ -126,7 +130,9 @@ public final class DefineMorphShape2 implements ShapeTag {
     private transient int fillBits;
     /** The number of bits to encode indices into the line style list. */
     private transient int lineBits;
+    /** Indicates whether any of the line styles contain scaling strokes. */
     private transient boolean scaling;
+    /** Offset in bytes to the end shape. */
     private transient int offset;
 
     /**

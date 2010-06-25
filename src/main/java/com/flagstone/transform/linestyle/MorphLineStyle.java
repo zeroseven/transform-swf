@@ -58,9 +58,13 @@ public final class MorphLineStyle implements LineStyle {
     private static final String FORMAT = "MorphSolidLine: { startWidth=%d;"
     		+ " endWidth=%d; startColor=%s; endColor=%s}";
 
+    /** Width of the line at the start of the morph. */
     private int startWidth;
+    /** Width of the line at the end of the morph. */
     private int endWidth;
+    /** Color of the line at the start of the morph. */
     private Color startColor;
+    /** Color of the line at the end of the morph. */
     private Color endColor;
 
     /**

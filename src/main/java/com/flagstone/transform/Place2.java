@@ -133,7 +133,7 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  *
  * @see com.flagstone.transform.util.movie.Layer
  */
-@SuppressWarnings({"PMD.TooManyMethods", "PMD.CyclomaticComplexity"})
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.CyclomaticComplexity" })
 public final class Place2 implements MovieTag {
 
     /**

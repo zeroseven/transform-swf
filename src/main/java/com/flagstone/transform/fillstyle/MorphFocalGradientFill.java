@@ -67,14 +67,22 @@ public final class MorphFocalGradientFill implements FillStyle {
             + " interpolation=%s; startFocalPoint=%f; endFocalPoint=%f;"
             + " startTransform=%s; endTransform=%s; gradients=%s}";
 
+    /** Maps the Gradient Square to real coordinates at the start. */
     private CoordTransform startTransform;
+    /** Maps the Gradient Square to real coordinates at the end. */
     private CoordTransform endTransform;
+    /** Code for the Spread type. */
     private int spread;
+    /** Interpolation for colour changes. */
     private int interpolation;
+    /** The position of the focal point at the start of the morphing process. */
     private int startFocalPoint;
+    /** The position of the focal point at the end of the morphing process. */
     private int endFocalPoint;
+    /** List of gradients defining the colour changes. */
     private List<MorphGradient> gradients;
 
+    /** Number of gradients in list. */
     private transient int count;
 
     /**

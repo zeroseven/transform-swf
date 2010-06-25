@@ -95,6 +95,10 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         private int name;
         private int length;
         private int offset;
+
+        private NameEntry() {
+            // Private constructor
+        }
     }
 
     /**
@@ -176,7 +180,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
 
     private transient int[] offsets;
 
-    private transient final Map<Integer, TableEntry> table
+    private final transient Map<Integer, TableEntry> table
             = new LinkedHashMap<Integer, TableEntry>();
 
     private final transient List<Font>fonts = new ArrayList<Font>();
@@ -440,38 +444,39 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         final int names = coder.readUnsignedShort();
         final int tableOffset = coder.readUnsignedShort();
 
-        NameEntry[] table = new NameEntry[names];
+        NameEntry[] nameTable = new NameEntry[names];
 
         for (int i = 0; i < names; i++) {
-            table[i] = new NameEntry();
-            table[i].platform = coder.readUnsignedShort();
-            table[i].encoding = coder.readUnsignedShort();
-            table[i].language = coder.readUnsignedShort();
-            table[i].name = coder.readUnsignedShort();
-            table[i].length = coder.readUnsignedShort();
-            table[i].offset = coder.readUnsignedShort();
+            nameTable[i] = new NameEntry();
+            nameTable[i].platform = coder.readUnsignedShort();
+            nameTable[i].encoding = coder.readUnsignedShort();
+            nameTable[i].language = coder.readUnsignedShort();
+            nameTable[i].name = coder.readUnsignedShort();
+            nameTable[i].length = coder.readUnsignedShort();
+            nameTable[i].offset = coder.readUnsignedShort();
         }
 
         for (int i = 0; i < names; i++) {
             coder.reset();
-            coder.skip(tableOffset + table[i].offset);
+            coder.skip(tableOffset + nameTable[i].offset);
 
-            final byte[] bytes = new byte[table[i].length];
+            final byte[] bytes = new byte[nameTable[i].length];
             coder.readBytes(bytes);
 
             String nameEncoding = "UTF-8";
 
-            if (table[i].platform == 0) {
+            if (nameTable[i].platform == 0) {
                 // Unicode
                 nameEncoding = "UTF-16";
-            } else if (table[i].platform == 1) {
+            } else if (nameTable[i].platform == 1) {
                 // Macintosh
-                if ((table[i].encoding == 0) && (table[i].language == 0)) {
+                if ((nameTable[i].encoding == 0)
+                        && (nameTable[i].language == 0)) {
                     nameEncoding = "ISO8859-1";
                 }
-            } else if (table[i].platform == 3) {
+            } else if (nameTable[i].platform == 3) {
                 // Microsoft
-                switch (table[i].encoding) {
+                switch (nameTable[i].encoding) {
                 case 1:
                     nameEncoding = "UTF-16";
                     break;
@@ -488,7 +493,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
             }
 
             try {
-                if (table[i].name == 1) {
+                if (nameTable[i].name == 1) {
                     name = new String(bytes, nameEncoding);
                 }
             } catch (final UnsupportedEncodingException e) {

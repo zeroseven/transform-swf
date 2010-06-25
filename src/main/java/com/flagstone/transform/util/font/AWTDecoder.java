@@ -159,7 +159,6 @@ public final class AWTDecoder {
         float ascent = 0.0f;
         float descent = 0.0f;
         float leading = 0.0f;
-        Glyph glyph;
 
         /*
          * Run through all the unicode character codes looking for a

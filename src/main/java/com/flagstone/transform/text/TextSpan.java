@@ -104,18 +104,29 @@ public final class TextSpan implements SWFEncodeable, Copyable<TextSpan> {
     private static final String FORMAT = "TextSpan: { identifier=%d; color=%s;"
             + " offsetX=%d; offsetY=%d; height=%d; characters=%s}";
 
+    /** The colour used to draw the text. */
     private Color color;
+    /** The offset on the x-axis of the text span, within the text block. */
     private Integer offsetX;
+    /** The offset on the y-axis of the text span, within the text block. */
     private Integer offsetY;
+    /** The unique identifier of the font used to render the text. */
     private Integer identifier;
+    /** The height of the text in twips. */
     private Integer height;
 
+    /** The list of characters to be displayed. */
     private List<GlyphIndex> characters;
 
+    /** Indicates whether the text contains font or layout information. */
     private transient boolean hasStyle;
+    /** Indicate that a font is specified. */
     private transient boolean hasFont;
+    /** Indicate that a colour is specified. */
     private transient boolean hasColor;
+    /** Indicate that an x offset is specified. */
     private transient boolean hasX;
+    /** Indicate that an y offset is specified. */
     private transient boolean hasY;
 
     /**
@@ -468,6 +479,10 @@ public final class TextSpan implements SWFEncodeable, Copyable<TextSpan> {
         coder.alignToByte();
     }
 
+    /**
+     * The number of bits used to encode the glyph indices.
+     * @return the number of bits used to encode each glyph index.
+     */
     protected int glyphBits() {
         int numberOfBits = 0;
 
@@ -479,7 +494,11 @@ public final class TextSpan implements SWFEncodeable, Copyable<TextSpan> {
         return numberOfBits;
     }
 
-    protected int advanceBits() {
+    /**
+     * The number of bits used to encode the advances.
+     * @return the number of bits used to encode each advance.
+     */
+   protected int advanceBits() {
         int numberOfBits = 0;
 
         for (final GlyphIndex index : characters) {

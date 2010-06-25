@@ -64,12 +64,18 @@ public final class FocalGradientFill implements FillStyle {
     private static final String FORMAT = "FocalGradientFill: { spread=%s;"
             + " interpolation=%s; focalPoint=%f; transform=%s; gradients=%s}";
 
+    /** Code for the Spread type. */
     private int spread;
+    /** Interpolation for colour changes. */
     private int interpolation;
+    /** The position of the focal point. */
     private int focalPoint;
+    /** Maps the Gradient Square to real coordinates. */
     private CoordTransform transform;
+    /** List of gradients defining the colour changes. */
     private List<Gradient> gradients;
 
+    /** Number of gradients in list. */
     private transient int count;
 
     /**

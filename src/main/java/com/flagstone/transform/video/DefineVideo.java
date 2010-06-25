@@ -63,11 +63,17 @@ public final class DefineVideo implements DefineTag {
 
     /** The unique identifier for this object. */
     private int identifier;
+    /** The number of frames in the video. */
     private int frameCount;
+    /** The width of the frame. */
     private int width;
+    /** The height of the frame. */
     private int height;
+    /** Code indicating whether deblocking is applied. */
     private int deblocking;
+    /** Is smoothing applied. */
     private boolean smoothed;
+    /** Code representing the codec used. */
     private int codec;
 
     /** The length of the object, minus the header, when it is encoded. */

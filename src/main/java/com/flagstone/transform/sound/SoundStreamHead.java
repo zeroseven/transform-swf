@@ -89,14 +89,23 @@ public final class SoundStreamHead implements MovieTag {
             + " streamRate=%d; streamChannels=%d; streamSampleSize=%d;"
             + " streamSampleCount=%d; latency=%d}";
 
+    /** The code representing the sound format. */
     private int format;
+    /** The playback rate in KHz. */
     private int playRate;
+    /** The number of playback channels: 1 = mono, 2 = stereo. */
     private int playChannels;
+    /** The number of bits in each sample. */
     private int playSampleSize;
+    /** The sound rate in KHz of the stream. */
     private int streamRate;
+    /** The number of channels in the stream: 1 = mono, 2 = stereo. */
     private int streamChannels;
+    /** The number of bits in each stream sample. */
     private int streamSampleSize;
+    /** The number of samples in the stream. */
     private int streamSampleCount;
+    /** The latency for MP3 sounds. */
     private int latency;
 
     /** The length of the object, minus the header, when it is encoded. */
@@ -467,6 +476,11 @@ public final class SoundStreamHead implements MovieTag {
         }
     }
 
+    /**
+     * Convert the code representing the rate into actual KHz.
+     * @param value the code representing the sound rate.
+     * @return the actual rate in KHz.
+     */
     private int readRate(final int value) {
         final int rate;
         switch (value) {
@@ -489,6 +503,11 @@ public final class SoundStreamHead implements MovieTag {
         return rate;
     }
 
+    /**
+     * Convert the rate in KHz to the code that represents the rate.
+     * @param rate the rate in KHz.
+     * @return the code representing the sound rate.
+     */
     private int writeRate(final int rate) {
         int value;
         switch (rate) {

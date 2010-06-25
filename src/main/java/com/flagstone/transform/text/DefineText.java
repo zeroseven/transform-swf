@@ -74,13 +74,18 @@ public final class DefineText implements StaticTextTag {
 
     /** The unique identifier for this object. */
     private int identifier;
+    /** The bounding box that encloses the text. */
     private Bounds bounds;
+    /** The position and orientation of the text. */
     private CoordTransform transform;
+    /** The segments of text. */
     private List<TextSpan> spans;
 
     /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
+    /** Number of bits used to encode each glyph index. */
     private transient int glyphBits;
+    /** Number of bits used to encode each advance. */
     private transient int advanceBits;
 
     /**
@@ -368,6 +373,10 @@ public final class DefineText implements StaticTextTag {
         }
     }
 
+    /**
+     * The number of bits used to encode the glyph indices.
+     * @return the number of bits used to encode each glyph index.
+     */
     private int calculateSizeForGlyphs() {
         int total = 0;
         int size;
@@ -383,6 +392,10 @@ public final class DefineText implements StaticTextTag {
         return total;
     }
 
+    /**
+     * The number of bits used to encode the advances.
+     * @return the number of bits used to encode each advance.
+     */
     private int calculateSizeForAdvances() {
         int total = 0;
         int size;

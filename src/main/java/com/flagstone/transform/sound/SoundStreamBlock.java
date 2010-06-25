@@ -63,6 +63,7 @@ public final class SoundStreamBlock implements MovieTag {
     private static final String FORMAT = "SoundStreamBlock: {"
                 + "sound=byte<%d> ...}";
 
+    /** Encoded sound data. */
     private byte[] sound;
 
     /** The length of the object, minus the header, when it is encoded. */

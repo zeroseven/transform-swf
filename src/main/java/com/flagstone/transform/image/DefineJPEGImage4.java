@@ -57,6 +57,7 @@ public final class DefineJPEGImage4 implements ImageTag {
 
     /** The unique identifier for this object. */
     private int identifier;
+    /** Parameter passed to Flash Player deblocking filter. */
     private int deblocking;
     /** The JPEG encoded image. */
     private byte[] image;
@@ -274,6 +275,9 @@ public final class DefineJPEGImage4 implements ImageTag {
         }
     }
 
+    /**
+     * Decode the JPEG image to get the width and height.
+     */
     private void decodeInfo() {
         final JPEGInfo info = new JPEGInfo();
         info.decode(image);

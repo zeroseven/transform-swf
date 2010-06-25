@@ -39,6 +39,7 @@ import com.flagstone.transform.coder.Coder;
  */
 public final class JPEGInfo {
 
+    /** Bit mask for the least significant byte. */
     private static final int BYTE_MASK = 255;
 
     /** Marks the start of an image. */

@@ -46,6 +46,8 @@ public interface ShapeTag extends DefineTag {
      *
      * @param style
      *            an instance of LineStyle. Must not be null.
+     *
+     * @return this ShapeTag object.
      */
     ShapeTag add(final LineStyle style);
     /**
@@ -66,6 +68,8 @@ public interface ShapeTag extends DefineTag {
      *
      * @param style
      *            an instance of FillStyle. Must not be null.
+     *
+     * @return this ShapeTag object.
      */
     ShapeTag add(final FillStyle style);
     /**

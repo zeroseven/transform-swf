@@ -137,6 +137,12 @@ public final class MovieWriter {
         writer.flush();
     }
 
+    /**
+     * Indent the text by adding tabs.
+     * @param writer the Writer where the indents will be sent.
+     * @param level the number of tabs to indent.
+     * @throws IOException if an error occurs while writing.
+     */
     private void indent(final Writer writer, final int level)
             throws IOException {
         for (int i = 0; i < level; i++) {

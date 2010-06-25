@@ -207,9 +207,13 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
      *
      * @return an image definition that can be added to a Movie.
      *
-     * @throws DataFormatException
+     * @throws IOException
      *             if there is a problem extracting the image, from the
-     *             BufferedImage image.
+     *             BufferedImage.
+     *
+     * @throws DataFormatException
+     *             if the BufferedImage contains a format that is not currently
+     *             supported.
      */
     public ImageTag defineImage(final int identifier, final BufferedImage obj)
             throws IOException, DataFormatException {
@@ -267,10 +271,15 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
      * @param obj
      *            a BufferedImage.
      *
+     * @throws IOException
+     *             if there is a problem extracting the image, from the
+     *             BufferedImage.
+     *
      * @throws DataFormatException
      *             if there is a problem decoding the BufferedImage.
      */
-    public void read(final BufferedImage obj) throws IOException, DataFormatException {
+    public void read(final BufferedImage obj) throws IOException,
+            DataFormatException {
 
         final DataBuffer buffer = obj.getData().getDataBuffer();
 
@@ -288,6 +297,11 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
         }
     }
 
+    /**
+     * Decode a BufferedImage where each pixel is an integer value.
+     * @param obj a BufferedImage.
+     * @throws DataFormatException if the image cannot be decoded.
+     */
     private void decodeIntImage(final BufferedImage obj)
                 throws DataFormatException {
 
@@ -312,6 +326,11 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
 
     }
 
+    /**
+     * Decode the data from a BufferedImage where each pixel is in the format
+     * ARGB.
+     * @param buffer the DataBuffer from a BufferedImage.
+     */
     private void decodeARGB(final DataBuffer buffer) {
         final int[] pixels = ((DataBufferInt) buffer).getData();
         format = ImageFormat.RGBA;
@@ -330,6 +349,11 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
         }
     }
 
+    /**
+     * Decode the data from a BufferedImage where each pixel is in the format
+     * ARGB with the alpha level already applied.
+     * @param buffer the DataBuffer from a BufferedImage.
+     */
     private void decodeARGBPre(final DataBuffer buffer) {
         final int[] pixels = ((DataBufferInt) buffer).getData();
         format = ImageFormat.RGBA;
@@ -348,6 +372,11 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
         }
     }
 
+    /**
+     * Decode the data from a BufferedImage where each pixel is in the format
+     * RGB.
+     * @param buffer the DataBuffer from a BufferedImage.
+     */
     private void decodeBGR(final DataBuffer buffer) {
         final int[] pixels = ((DataBufferInt) buffer).getData();
         format = ImageFormat.RGB8;
@@ -366,6 +395,11 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
         }
     }
 
+    /**
+     * Decode the data from a BufferedImage where each pixel is in the format
+     * RGB.
+     * @param buffer the DataBuffer from a BufferedImage.
+     */
     private void decodeRGB(final DataBuffer buffer) {
         final int[] pixels = ((DataBufferInt) buffer).getData();
         format = ImageFormat.RGB8;
@@ -384,6 +418,12 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
         }
     }
 
+    /**
+     * Decode a BufferedImage where each pixel is an byte value.
+     * @param obj a BufferedImage.
+     * @throws IOException if there is an error decoding the pixel data.
+     * @throws DataFormatException if the image cannot be decoded.
+     */
     private void decodeByteImage(final BufferedImage obj)
             throws IOException, DataFormatException {
 
@@ -416,6 +456,11 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
         }
     }
 
+    /**
+     * Decode the data from a BufferedImage where each pixel is in the format
+     * BGR.
+     * @param buffer the DataBuffer from a BufferedImage.
+     */
     private void decodeByteBGR(final DataBuffer buffer) {
         final byte[] pixels = ((DataBufferByte) buffer).getData();
 
@@ -435,6 +480,12 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
         }
     }
 
+    /**
+     * Decode the data from a BufferedImage where each pixel is in a custom
+     * format.
+     * @param buffer the DataBuffer from a BufferedImage.
+     * @throws DataFormatException if the image cannot be decoded.
+     */
     private void decodeByteCustom(final DataBuffer buffer)
             throws DataFormatException {
         final byte[] pixels = ((DataBufferByte) buffer).getData();
@@ -476,6 +527,11 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
         }
     }
 
+    /**
+     * Decode the data from a BufferedImage where each pixel is in the format
+     * ABGR.
+     * @param buffer the DataBuffer from a BufferedImage.
+     */
     private void decodeByteABGR(final DataBuffer buffer) {
         final byte[] pixels = ((DataBufferByte) buffer).getData();
 
@@ -495,6 +551,11 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
         }
     }
 
+    /**
+     * Decode the data from a BufferedImage where each pixel is in the format
+     * ABGR with the alpha level pre-applied.
+     * @param buffer the DataBuffer from a BufferedImage.
+     */
     private void decodeByteABGRPre(final DataBuffer buffer) {
         final byte[] pixels = ((DataBufferByte) buffer).getData();
 
@@ -514,6 +575,13 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
         }
     }
 
+    /**
+     * Decode the data from a BufferedImage where each pixel is either black
+     * or white.
+     * @param buffer the DataBuffer from a BufferedImage.
+     * @param model the ColorModel from a BufferedImage.
+     * @throws IOException if there is an error decoding the pixel data.
+     */
     private void decodeByteBinary(final DataBuffer buffer,
             final ColorModel model) throws IOException {
 
@@ -538,6 +606,11 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
         }
     }
 
+    /**
+     * Decode the data from a BufferedImage where each pixel is a greyscale
+     * value.
+     * @param buffer the DataBuffer from a BufferedImage.
+     */
     private void decodeByteGray(final DataBuffer buffer) {
         final byte[] pixels = ((DataBufferByte) buffer).getData();
 
@@ -558,6 +631,12 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
         }
     }
 
+    /**
+     * Decode the data from a BufferedImage where each pixel an index into a
+     * colour table.
+     * @param buffer the DataBuffer from a BufferedImage.
+     * @param model the ColorModel from a BufferedImage.
+     */
     private void decodeByteIndexed(final DataBuffer buffer,
             final ColorModel model) {
         final byte[] pixels = ((DataBufferByte) buffer).getData();
@@ -574,6 +653,11 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
         }
     }
 
+    /**
+     * Decode a BufferedImage where each pixel is a 16-bit value.
+     * @param obj a BufferedImage.
+     * @throws DataFormatException if the image cannot be decoded.
+     */
     private void decodeShortImage(final BufferedImage obj)
             throws DataFormatException {
 
@@ -595,6 +679,11 @@ public final class BufferedImageDecoder implements ImageProvider, ImageDecoder {
         }
     }
 
+    /**
+     * Decode the data from a BufferedImage where each pixel is a greyscale
+     * value.
+     * @param buffer the DataBuffer from a BufferedImage.
+     */
     private void decodeShortGray(final DataBuffer buffer) {
         final short[] pixels = ((DataBufferUShort) buffer).getData(); //NOPMD
         format = ImageFormat.RGB8;

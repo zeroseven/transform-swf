@@ -41,9 +41,13 @@ import com.flagstone.transform.shape.Shape;
  */
 public final class TrueTypeGlyph extends Glyph {
 
+    /** The set of x coordinates representing a segment of a glyph. */
     private transient int[] xCoordinates = new int[]{};
+    /** The set of y coordinates representing a segment of a glyph. */
     private transient int[] yCoordinates = new int[]{};
+    /** Flags indicating which point in on the segment. */
     private transient boolean[] onCurve = new boolean[]{};
+    /** The set of end points for each point on the segment. */
     private transient int[] endPoints = new int[]{};
 
     /**
@@ -67,39 +71,76 @@ public final class TrueTypeGlyph extends Glyph {
         super(aShape);
     }
 
+    /**
+     * Get the set of x coordinates representing a segment of a glyph.
+     * @param array an array where the points will be stored.
+     */
     public void getXCoordinates(final int[] array) {
         System.arraycopy(xCoordinates, 0, array, 0, xCoordinates.length);
     }
 
+    /**
+     * Get the set of y coordinates representing a segment of a glyph.
+     * @param array an array where the points will be stored.
+     */
     public void getYCoordinates(final int[] array) {
         System.arraycopy(yCoordinates, 0, array, 0, yCoordinates.length);
     }
 
+    /**
+     * Get the set of end points for the segment of a glyph.
+     * @param array an array where the points will be stored.
+     */
     public void getEnd(final int[] array) {
         System.arraycopy(endPoints, 0, array, 0, endPoints.length);
     }
 
+    /**
+     * Get the set of flags which indicate which point are on the segment.
+     * @param array an array where the flags will be stored.
+     */
     public void getCurve(final boolean[] array) {
         System.arraycopy(onCurve, 0, array, 0, onCurve.length);
     }
 
+    /**
+     * Set the points for a segment of a glyph.
+     * @param xcoords the set of x-coordinates for the points.
+     * @param ycoords the set of y-coordinates for the points.
+     */
     public void setCoordinates(final int[] xcoords, final int[] ycoords) {
         xCoordinates = Arrays.copyOf(xcoords, xcoords.length);
         yCoordinates = Arrays.copyOf(ycoords, ycoords.length);
     }
 
+    /**
+     * Indicate which points are on the segment.
+     * @param array an array where the flags will be stored.
+     */
     public void setOnCurve(final boolean[] array) {
         onCurve = Arrays.copyOf(array, array.length);
     }
 
+    /**
+     * Set the end-points for a segment of a glyph.
+     * @param array the set of end points.
+     */
     public void setEnds(final int[] array) {
         endPoints = Arrays.copyOf(array, array.length);
     }
 
+    /**
+     * Get the number of points in the segment.
+     * @return the number of points.
+     */
     public int numberOfPoints() {
         return xCoordinates.length;
     }
 
+    /**
+     * Get the number of contours.
+     * @return the number of contours.
+     */
     public int numberOfContours() {
         return endPoints.length;
     }

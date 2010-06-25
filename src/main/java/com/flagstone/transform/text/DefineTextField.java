@@ -217,33 +217,58 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
     "PMD.ExcessivePublicCount" })
 public final class DefineTextField implements DefineTag {
 
+    /** The maximum size of a dimension when defining the field layout. */
     private static final int MAX_SPACE = 65535;
 
     /** The unique identifier for this object. */
     private int identifier;
+    /** The bounding box for the field. */
     private Bounds bounds;
+    /** Is the field word-wrapped. */
     private boolean wordWrapped;
+    /** Does the field contain more than one line. */
     private boolean multiline;
+    /** Are * characters displayed for each key pressed. */
     private boolean password;
+    /** Is the field read-only. */
     private boolean readOnly;
+    /** Reserved. */
     private transient int reserved1;
+    /** Can the text be selected. */
     private boolean selectable;
+    /** Is a border drawn around the field. */
     private boolean bordered;
+    /** Reserved. */
     private transient boolean reserved2;
+    /** Does the text contain HTML markup. */
     private boolean html;
+    /** Does the text use an embedded font. */
     private boolean embedded;
+    /** Does the field resize automatically to display the text. */
     private boolean autoSize;
+    /** The unique identifier for the font. */
     private int fontIdentifier;
+    /** The name of the actionscript 3 class that provides the font. */
     private String fontClass;
+    /** The height of the font in twips. */
     private int fontHeight;
+    /** The colour of the text. */
     private Color color;
+    /** The maximum number of characters than can be entered. */
     private int maxLength;
+    /** Code representing the text alignment. */
     private int alignment;
+    /** The padding between the text and the left side of the field. */
     private Integer leftMargin;
+    /** The padding between the text and the right side of the field. */
     private Integer rightMargin;
+    /** The initial indent for the first line of any paragraph. */
     private Integer indent;
+    /** The spacing between lines. */
     private Integer leading;
+    /** The name of the actionscript variable. */
     private String variableName = "";
+    /** The initial contents of the field. */
     private String initialText = "";
 
     /** The length of the object, minus the header, when it is encoded. */
@@ -506,7 +531,10 @@ public final class DefineTextField implements DefineTag {
         return fontIdentifier;
     }
 
-
+    /**
+     * Get the name of the Actionscript 3 class that provides the font.
+     * @return the name the Actionscript class.
+     */
     public String getFontClass() {
         return fontClass;
     }
@@ -756,6 +784,11 @@ public final class DefineTextField implements DefineTag {
     }
 
 
+    /**
+     * Set the name of the Actionscript 3 class that provides the font.
+     * @param name the name the Actionscript class.
+     * @return this object.
+     */
     public DefineTextField setFontClass(final String name) {
         fontClass = name;
         fontIdentifier = 0;
@@ -1068,6 +1101,10 @@ public final class DefineTextField implements DefineTag {
         }
     }
 
+    /**
+     * Indicates whether the field contains layout information.
+     * @return if the field contains values that control the layout.
+     */
     private boolean containsLayout() {
         return (leftMargin != null)
                 || (rightMargin != null) || (indent != null)

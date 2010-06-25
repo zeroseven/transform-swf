@@ -40,6 +40,7 @@ import java.util.Map;
  */
 public final class SoundRegistry {
 
+    /** Table of decoders for the different sound formats supported. */
     private static Map<String, SoundProvider> providers =
         new LinkedHashMap<String, SoundProvider>();
 
@@ -62,7 +63,12 @@ public final class SoundRegistry {
         providers.put(mimeType, decoder);
     }
 
-
+    /**
+     * Get an instance of the class that can be used to decode a sound of the
+     * specified format.
+     * @param mimeType the string representing the format.
+     * @return an decoder that can be used to decode the sound data.
+     */
     public static SoundDecoder getSoundProvider(final String mimeType) {
 
         if (providers.containsKey(mimeType)) {
@@ -72,6 +78,9 @@ public final class SoundRegistry {
         }
     }
 
+    /**
+     * Private constructor for the singleton registry.
+     */
     private SoundRegistry() {
         // Registry is shared.
     }

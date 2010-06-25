@@ -54,6 +54,7 @@ import com.flagstone.transform.util.image.ImageFilter;
  */
 public final class ImageBlock implements Copyable<ImageBlock> {
 
+    /** Number of colour channels in an RGB pixel. */
     private static final int RGB_CHANNELS = 3;
 
     /**
@@ -142,8 +143,11 @@ public final class ImageBlock implements Copyable<ImageBlock> {
         return newData;
     }
 
+    /** Width of the block in pixels. */
     private final transient int width;
+    /** Height of the block in pixels. */
     private final transient int height;
+    /** The block pixels. */
     private final transient byte[] block;
 
     /**

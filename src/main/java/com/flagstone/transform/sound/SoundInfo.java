@@ -89,10 +89,15 @@ public final class SoundInfo implements SWFEncodeable, Copyable<SoundInfo> {
 
     /** The unique identifier of the sound that this info applies to. */
     private int identifier;
+    /** Controls whether the sound starts or stops. */
     private int mode;
+    /** The number of samples to fade the sound in. */
     private Integer inPoint;
+    /** The number of samples to fade the sound out. */
     private Integer outPoint;
+    /** The number of time the sound will be repeated. */
     private Integer loopCount;
+    /** The envelope that controls how the sound is played. */
     private Envelope envelope;
 
     /**
