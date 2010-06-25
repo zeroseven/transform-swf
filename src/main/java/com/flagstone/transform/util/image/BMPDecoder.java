@@ -284,6 +284,11 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
         }
     }
 
+    /**
+     * Decode the header record for an uncompressed image.
+     * @param coder the Decoder containing the data.
+     * @throws IOException if an error occurs during decoding.
+     */
     private void decodeHeader(final LittleDecoder coder) throws IOException {
         width = coder.readUnsignedShort();
         height = coder.readUnsignedShort();
@@ -292,6 +297,11 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
         coloursUsed = 0;
     }
 
+    /**
+     * Decode the header record for an compressed image.
+     * @param coder the Decoder containing the data.
+     * @throws IOException if an error occurs during decoding.
+     */
     private void decodeCompressedHeader(final LittleDecoder coder)
         throws IOException {
 
@@ -309,8 +319,13 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
         if (compressionMethod == BI_BITFIELDS) {
             decodeMasks(coder);
         }
-}
+    }
 
+    /**
+     * Decode the bit masks to extra colour channels from a compressed image.
+     * @param coder the Decoder containing the data.
+     * @throws IOException if an error occurs during decoding.
+     */
     private void decodeMasks(final LittleDecoder coder) throws IOException {
         redMask = coder.readInt();
         greenMask = coder.readInt();
@@ -335,6 +350,11 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
         }
     }
 
+    /**
+     * Set the ImageFormat inferred from the pixel size.
+     * @param pixelSize the number of bits in each pixel.
+     * @throws DataFormatException if the pixel size is not supported.
+     */
     private void decodeFormat(final int pixelSize)
                 throws DataFormatException {
         switch (pixelSize) {
@@ -371,6 +391,13 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
         }
     }
 
+    /**
+     * Decode the colour palette with opaque colours.
+     *
+     * @param numColours the number of entries in the table.
+     * @param coder the decoder containing the table data.
+     * @throws IOException if an error occurs while decoding the table.
+     */
     private void decodeTable(final int numColours, final LittleDecoder coder)
             throws IOException {
         int index = 0;
@@ -385,6 +412,13 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
         }
     }
 
+    /**
+     * Decode the colour palette with transparent colours.
+     *
+     * @param numColours the number of entries in the table.
+     * @param coder the decoder containing the table data.
+     * @throws IOException if an error occurs while decoding the table.
+     */
     private void decodeTableWithAlpha(final int numColours,
             final LittleDecoder coder) throws IOException {
         int index = 0;

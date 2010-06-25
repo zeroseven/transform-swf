@@ -69,33 +69,57 @@ import com.flagstone.transform.util.shape.Canvas;
     "PMD.NcssMethodCount" })
 public final class TTFDecoder implements FontProvider, FontDecoder {
 
+    /**
+     * TableEntry is used to load the encoded TrueType tables so they can
+     * be decoded.
+     */
     private static final class TableEntry implements Comparable<TableEntry> {
+        /** The table name/signature. */
         private transient int type;
+        /** The offset to the start of the table. */
         private transient int offset;
+        /** The number of bytes in the table. */
         private transient int length;
+        /** The encoded table data. */
         private transient byte[] data;
 
+        /** {@inheritDoc} */
         public int compareTo(final TableEntry obj) {
             return Integer.valueOf(offset).compareTo(obj.offset);
         }
-
+        /**
+         * Set the table data.
+         * @param bytes the contents of the table.
+         */
         public void setData(final byte[] bytes) {
             data = Arrays.copyOf(bytes, bytes.length);
         }
-
+        /**
+         * Get the table contents.
+         * @return the array of bytes containing the encoded table.
+         */
         public byte[] getData() {
             return Arrays.copyOf(data, data.length);
         }
     }
 
+    /**
+     * Use to store entries from the NAME table.
+     */
     private static final class NameEntry {
+        /** platform identifier. */
         private int platform;
+        /** character encoding identifier. */
         private int encoding;
+        /** language identifier. */
         private int language;
+        /** name identifier. */
         private int name;
+        /** length of the name string. */
         private int length;
+        /** offset from the start of the table where the string is located. */
         private int offset;
-
+        /** Creates a new NameEntry. */
         private NameEntry() {
             // Private constructor
         }
@@ -105,14 +129,23 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
 
     private static final int SIGN_EXTEND = 24;
 
+    /** The name of the OS/2 table. */
     private static final int OS_2 = 0x4F532F32;
+    /** The name of the head table. */
     private static final int HEAD = 0x68656164;
+    /** The name of the hhea table. */
     private static final int HHEA = 0x68686561;
+    /** The name of the maxp table. */
     private static final int MAXP = 0x6D617870;
+    /** The name of the loca table. */
     private static final int LOCA = 0x6C6F6361;
+    /** The name of the cmap table. */
     private static final int CMAP = 0x636D6170;
+    /** The name of the hmtx table. */
     private static final int HMTX = 0x686D7478;
+    /** The name of the name table. */
     private static final int NAME = 0x6E616D65;
+    /** The name of the glyf table. */
     private static final int GLYF = 0x676C7966;
 
     private static final int ITLF_SHORT = 0;
@@ -243,6 +276,11 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         fonts.add(font);
     }
 
+    /**
+     * Load the tables from the TrueType table directory.
+     * @param stream the InputStream containing the font data.
+     * @throws IOException if there is an error loading the table data.
+     */
     private void loadTables(final InputStream stream)  throws IOException {
         final BigDecoder coder = new BigDecoder(stream);
         coder.mark();
@@ -271,6 +309,12 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         }
     }
 
+    /**
+     * Decode the data from the loaded tables. The order is important since
+     * some tables (maxp) contains values such as the number of glyphs etc.
+     * that are used to size the table used to decode the glyphs.
+     * @throws IOException if there is an error decoding the data.
+     */
     private void decodeTables() throws IOException {
         decodeMAXP(table.get(MAXP));
         decodeOS2(table.get(OS_2));
@@ -283,6 +327,12 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         decodeCMAP(table.get(CMAP));
     }
 
+    /**
+     * Decode the HEAD table.
+     *
+     * @param entry the bleEntry containing the encoded HEAD table data.
+     * @throws IOException if an error occurs while decoding the table data.
+     */
     private void decodeHEAD(final TableEntry entry) throws IOException {
         final byte[] data = entry.getData();
         final ByteArrayInputStream stream = new ByteArrayInputStream(data);
@@ -329,6 +379,12 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         coder.readShort(); // glyph data format
     }
 
+    /**
+     * Decode the HHEA table.
+     *
+     * @param entry the bleEntry containing the encoded HHEA table data.
+     * @throws IOException if an error occurs while decoding the table data.
+     */
     private void decodeHHEA(final TableEntry entry) throws IOException {
         final byte[] data = entry.getData();
         final ByteArrayInputStream stream = new ByteArrayInputStream(data);
@@ -357,6 +413,12 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         metrics = coder.readUnsignedShort();
     }
 
+    /**
+     * Decode the OS/2 table.
+     *
+     * @param entry the bleEntry containing the encoded OS/2 table data.
+     * @throws IOException if an error occurs while decoding the table data.
+     */
     private void decodeOS2(final TableEntry entry) throws IOException {
         final byte[] data = entry.getData();
         final ByteArrayInputStream stream = new ByteArrayInputStream(data);
@@ -425,6 +487,12 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         }
     }
 
+    /**
+     * Decode the NAME table.
+     *
+     * @param entry the bleEntry containing the encoded NAME table data.
+     * @throws IOException if an error occurs while decoding the table data.
+     */
     private void decodeNAME(final TableEntry entry) throws IOException {
         final byte[] data = entry.getData();
         final ByteArrayInputStream stream = new ByteArrayInputStream(data);
@@ -491,6 +559,12 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         }
     }
 
+    /**
+     * Decode the MAXP table.
+     *
+     * @param entry the bleEntry containing the encoded MAXP table data.
+     * @throws IOException if an error occurs while decoding the table data.
+     */
     private void decodeMAXP(final TableEntry entry) throws IOException {
         final byte[] data = entry.getData();
         final ByteArrayInputStream stream = new ByteArrayInputStream(data);
@@ -518,6 +592,12 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         }
     }
 
+    /**
+     * Decode the HMTX table.
+     *
+     * @param entry the bleEntry containing the encoded HMTX table data.
+     * @throws IOException if an error occurs while decoding the table data.
+     */
     private void decodeHMTX(final TableEntry entry) throws IOException {
         final byte[] data = entry.getData();
         final ByteArrayInputStream stream = new ByteArrayInputStream(data);
@@ -541,6 +621,12 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         }
     }
 
+    /**
+     * Decode the CMAP table.
+     *
+     * @param entry the bleEntry containing the encoded CMAP table data.
+     * @throws IOException if an error occurs while decoding the table data.
+     */
     private void decodeCMAP(final TableEntry entry) throws IOException {
         final byte[] data = entry.getData();
         final ByteArrayInputStream stream = new ByteArrayInputStream(data);
@@ -598,6 +684,12 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         encoding = CharacterFormat.SJIS;
     }
 
+    /**
+     * Decode a simple character table.
+     *
+     * @param coder a BigDecoder containing data for the table.
+     * @throws IOException if an error occurs while decoding the table data.
+     */
     private void decodeSimpleCMAP(final BigDecoder coder) throws IOException {
         charToGlyph = new int[256];
         maxChar = 255;
@@ -607,6 +699,12 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         }
     }
 
+    /**
+     * Decode a range (type 4) character table.
+     *
+     * @param coder a BigDecoder containing data for the table.
+     * @throws IOException if an error occurs while decoding the table data.
+     */
     private void decodeRangeCMAP(final BigDecoder coder) throws IOException {
         final int segmentCount = coder.readUnsignedShort() / 2;
         coder.readUnsignedShort(); // search range
@@ -672,6 +770,12 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         }
     }
 
+    /**
+     * Decode the LOCA table.
+     *
+     * @param entry the bleEntry containing the encoded LOCA table data.
+     * @throws IOException if an error occurs while decoding the table data.
+     */
     private void decodeLOCA(final TableEntry entry) throws IOException {
         final byte[] data = entry.getData();
         final ByteArrayInputStream stream = new ByteArrayInputStream(data);
@@ -701,6 +805,12 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         }
     }
 
+    /**
+     * Decode the GLYF table.
+     *
+     * @param entry the bleEntry containing the encoded GLYF table data.
+     * @throws IOException if an error occurs while decoding the table data.
+     */
     private void decodeGlyphs(final TableEntry entry) throws IOException {
         final byte[] data = entry.getData();
         final ByteArrayInputStream stream = new ByteArrayInputStream(data);
