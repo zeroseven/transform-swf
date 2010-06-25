@@ -33,9 +33,18 @@ package com.flagstone.transform.fillstyle;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * The Spread describes how the gradient is used to fill the available shape
+ * when the area to be filled is larger than the area covered by the gradient.
+ */
 public enum Spread {
+    /** The last colour of the gradient is used to fill the remaining area. */
     PAD(0),
+    /** The gradient is reflected (repeatedly reversing the gradient) across
+     * the area to be filled.
+     */
     REFLECT(0x40),
+    /** The gradient is repeated across the area to be filled. */
     REPEAT(0xC0);
 
     /**

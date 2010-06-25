@@ -153,18 +153,22 @@ public final class FocalGradientFill implements FillStyle {
     }
 
     /**
-     * Get the Spread.
+     * Get the Spread describing how the gradient fills the area: PAD - the
+     * last colour fills the remaining area; REPEAT - the gradient is repeated;
+     * REFLECT - the gradient is repeated but reflected (reversed) each time.
      *
-     * @return the Spread.
+     * @return the Spread, either PAD, REFLECT or REPEAT.
      */
     public Spread getSpread() {
         return Spread.fromInt(spread);
     }
 
     /**
-     * Set the Spread.
+     * Set the Spread describing how the gradient fills the area: either by
+     * using the last gradient colour to fill the area (PAD); repeating the
+     * gradient (REPEAT) or repeating but reversing it each time (REFLECT).
      *
-     * @param spreadType the Spread.
+     * @param spreadType the Spread, either PAD, REFLECT or REPEAT.
      */
     public void setSpread(final Spread spreadType) {
         spread = spreadType.getValue();

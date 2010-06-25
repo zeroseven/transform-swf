@@ -160,6 +160,10 @@ public final class MorphGradientFill implements FillStyle {
         return this;
     }
 
+    /**
+     * Get the type indicating whether the gradient is linear or radial.
+     * @return the gradient type, either LINEAR or RADIAL.
+     */
     public GradientType getType() {
         GradientType value;
         if (type == FillStyleTypes.LINEAR_GRADIENT) {
@@ -170,6 +174,10 @@ public final class MorphGradientFill implements FillStyle {
         return value;
     }
 
+    /**
+     * Set the type indicating whether the gradient is linear or radial.
+     * @param gradientType either LINEAR or RADIAL.
+     */
     public void setType(final GradientType gradientType) {
         if (gradientType == GradientType.LINEAR) {
             type = FillStyleTypes.LINEAR_GRADIENT;
