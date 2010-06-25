@@ -49,8 +49,6 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  */
 public final class DefineJPEGImage4 implements ImageTag {
 
-    private static final float SCALE_8 = 256.0f;
-
     /** Format string used in toString() method. */
     private static final String FORMAT = "DefineJPEGImage4: { identifier=%d;"
             + "deblocking=%f; image=byte<%d> ...; alpha=byte<%d> ...}";
@@ -156,7 +154,7 @@ public final class DefineJPEGImage4 implements ImageTag {
      * @return the deblocking value.
      */
     public float getDeblocking() {
-        return deblocking / SCALE_8;
+        return deblocking / Coder.SCALE_8;
     }
 
     /**
@@ -164,7 +162,7 @@ public final class DefineJPEGImage4 implements ImageTag {
      * @param level the deblocking value in the range 0..100.
      */
     public void setDeblocking(final float level) {
-        deblocking = (int) (level * SCALE_8);
+        deblocking = (int) (level * Coder.SCALE_8);
     }
 
     /**

@@ -88,8 +88,12 @@ public final class Coder {
     /** Number of bits to shift when aligning bits 12-15 to positions 0-3. */
     public static final int ALIGN_NIB3 = 12;
 
-    /** Factor used to scale 8.8 fixed point numbers to floating-point. */
+    /** Factor for converting floats to/from 8.8 fixed-point values. */
     public static final float SCALE_8 = 256.0f;
+    /** Factor for converting floats to/from 15.15 fixed-point values. */
+    public static final float SCALE_14 = 16384.0f;
+    /** Factor for converting floats to/from 16.16 fixed-point values. */
+    public static final float SCALE_16 = 65536.0f;
 
     /** The maximum value for each byte in a variable length integer. */
     public static final int VAR_INT_MAX = 127;

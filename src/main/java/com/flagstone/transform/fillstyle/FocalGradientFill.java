@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -51,8 +52,6 @@ import com.flagstone.transform.datatype.CoordTransform;
  * A value of zero means the focal point is in the centre.
  */
 public final class FocalGradientFill implements FillStyle {
-    /** Scaling factor for saving floats as 8.8 fixed point numbers. */
-    private static final float SCALE_8 = 256.0f;
     /** Bit mask for extracting the spread field in gradient fills. */
     private static final int SPREAD_MASK = 0x00C0;
     /** Bit mask for extracting the interpolation field in gradient fills. */
@@ -204,7 +203,7 @@ public final class FocalGradientFill implements FillStyle {
      * @return the focal point value in the range from -1.0 to 1.0.
      */
     public float getFocalPoint() {
-        return focalPoint / SCALE_8;
+        return focalPoint / Coder.SCALE_8;
     }
 
     /**
@@ -212,7 +211,7 @@ public final class FocalGradientFill implements FillStyle {
      * @param point the focal point value in the range from -1.0 to 1.0.
      */
     public void setFocalPoint(final float point) {
-        focalPoint = (int) (point * SCALE_8);
+        focalPoint = (int) (point * Coder.SCALE_8);
     }
 
     /**

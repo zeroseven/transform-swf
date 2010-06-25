@@ -35,6 +35,7 @@ package com.flagstone.transform.filter;
 import java.io.IOException;
 
 import com.flagstone.transform.Constants;
+import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -45,9 +46,6 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  * display list.
  */
 public final class BlurFilter implements Filter {
-
-    /** Scaling factor for 16.16 fixed point values. */
-    private static final float SCALE_16 = 65536.0f;
     /** Maximum number of passes to blur an object. */
     private static final int MAX_BLUR_COUNT = 31;
 
@@ -89,8 +87,8 @@ public final class BlurFilter implements Filter {
      * @param count the number of passes to apply.
      */
     public BlurFilter(final float xBlur, final float yBlur, final int count) {
-        blurX = (int) (xBlur * SCALE_16);
-        blurY = (int) (yBlur * SCALE_16);
+        blurX = (int) (xBlur * Coder.SCALE_16);
+        blurY = (int) (yBlur * Coder.SCALE_16);
 
         if ((count < 0) || (count > MAX_BLUR_COUNT)) {
             throw new IllegalArgumentRangeException(0, MAX_BLUR_COUNT, count);
@@ -103,7 +101,7 @@ public final class BlurFilter implements Filter {
      * @return the horizontal blur amount.
      */
     public float getBlurX() {
-        return blurX / SCALE_16;
+        return blurX / Coder.SCALE_16;
     }
 
     /**
@@ -111,7 +109,7 @@ public final class BlurFilter implements Filter {
      * @return the vertical blur amount.
      */
     public float getBlurY() {
-        return blurY / SCALE_16;
+        return blurY / Coder.SCALE_16;
     }
 
     /**

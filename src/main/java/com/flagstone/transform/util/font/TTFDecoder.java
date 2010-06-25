@@ -101,17 +101,6 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         }
     }
 
-    /**
-     * Scaling factor for converting between floating-point and
-     * 15.15 fixed-point values.
-     */
-    private static final float SCALE_14 = 16384.0f;
-    /**
-     * Scaling factor for converting between floating-point and
-     * 16.16 fixed-point values.
-     */
-    private static final float SCALE_16 = 65536.0f;
-
     private static final int BYTES_TO_BITS = 3;
 
     private static final int SIGN_EXTEND = 24;
@@ -506,7 +495,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         final byte[] data = entry.getData();
         final ByteArrayInputStream stream = new ByteArrayInputStream(data);
         final BigDecoder coder = new BigDecoder(stream, data.length);
-        final float version = coder.readInt() / SCALE_16;
+        final float version = coder.readInt() / Coder.SCALE_16;
 
         glyphCount = coder.readUnsignedShort();
         glyphTable = new TrueTypeGlyph[glyphCount];
@@ -985,19 +974,19 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
            }
 
             if ((flags & HAVE_SCALE) > 0) {
-                final float scaleXY = coder.readShort() / SCALE_14;
+                final float scaleXY = coder.readShort() / Coder.SCALE_14;
                 transform = new CoordTransform(scaleXY, scaleXY, 0, 0, xOffset,
                         yOffset);
             } else if ((flags & HAVE_XYSCALE) > 0) {
-                final float scaleX = coder.readShort() / SCALE_14;
-                final float scaleY = coder.readShort() / SCALE_14;
+                final float scaleX = coder.readShort() / Coder.SCALE_14;
+                final float scaleY = coder.readShort() / Coder.SCALE_14;
                 transform = new CoordTransform(scaleX, scaleY, 0, 0, xOffset,
                         yOffset);
             } else if ((flags & HAVE_2X2) > 0) {
-                final float scaleX = coder.readShort() / SCALE_14;
-                final float scale01 = coder.readShort() / SCALE_14;
-                final float scale10 = coder.readShort() / SCALE_14;
-                final float scaleY = coder.readShort() / SCALE_14;
+                final float scaleX = coder.readShort() / Coder.SCALE_14;
+                final float scale01 = coder.readShort() / Coder.SCALE_14;
+                final float scale10 = coder.readShort() / Coder.SCALE_14;
+                final float scaleY = coder.readShort() / Coder.SCALE_14;
 
                 transform = new CoordTransform(scaleX, scaleY, scale01,
                         scale10, xOffset, yOffset);

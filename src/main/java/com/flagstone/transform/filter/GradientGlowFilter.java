@@ -94,8 +94,8 @@ public final class GradientGlowFilter implements Filter {
          * @return this Builder.
          */
         public Builder setBlur(final float xAmount, final float yAmount) {
-            blurX = (int) (xAmount * SCALE_16);
-            blurY = (int) (yAmount * SCALE_16);
+            blurX = (int) (xAmount * Coder.SCALE_16);
+            blurY = (int) (yAmount * Coder.SCALE_16);
             return this;
         }
 
@@ -128,7 +128,7 @@ public final class GradientGlowFilter implements Filter {
          * @return this Builder.
          */
         public Builder setAngle(final float radians) {
-            angle = (int) (radians * SCALE_16);
+            angle = (int) (radians * Coder.SCALE_16);
             return this;
         }
 
@@ -138,7 +138,7 @@ public final class GradientGlowFilter implements Filter {
          * @return this Builder.
          */
         public Builder setDistance(final float width) {
-            distance = (int) (width * SCALE_16);
+            distance = (int) (width * Coder.SCALE_16);
             return this;
         }
 
@@ -148,7 +148,7 @@ public final class GradientGlowFilter implements Filter {
          * @return this Builder.
          */
         public Builder setStrength(final float weight) {
-            strength = (int) (weight * SCALE_8);
+            strength = (int) (weight * Coder.SCALE_8);
             return this;
         }
 
@@ -172,16 +172,6 @@ public final class GradientGlowFilter implements Filter {
         }
     }
 
-    /**
-     * Factor used to scale floating-point so they can be encoded as 16.16
-     * fixed point values..
-     */
-    private static final float SCALE_16 = 65536.0f;
-    /**
-     * Factor used to scale floating-point so they can be encoded as 8.8
-     * fixed point values..
-     */
-    private static final float SCALE_8 = 256.0f;
     /** Bit mask for encoding and decoding the filter mode. */
     private static final int MODE_MASK = 0x00D0;
 
@@ -281,7 +271,7 @@ public final class GradientGlowFilter implements Filter {
      * @return the horizontal blur amount.
      */
     public float getBlurX() {
-        return blurX / SCALE_16;
+        return blurX / Coder.SCALE_16;
     }
 
     /**
@@ -289,7 +279,7 @@ public final class GradientGlowFilter implements Filter {
      * @return the vertical blur amount.
      */
     public float getBlurY() {
-        return blurY / SCALE_16;
+        return blurY / Coder.SCALE_16;
     }
 
     /**
@@ -297,7 +287,7 @@ public final class GradientGlowFilter implements Filter {
      * @return the angle of the glow in radians.
      */
     public float getAngle() {
-        return angle / SCALE_16;
+        return angle / Coder.SCALE_16;
     }
 
     /**
@@ -305,7 +295,7 @@ public final class GradientGlowFilter implements Filter {
      * @return the width of the glow.
      */
     public float getDistance() {
-        return distance / SCALE_16;
+        return distance / Coder.SCALE_16;
     }
 
     /**
@@ -313,7 +303,7 @@ public final class GradientGlowFilter implements Filter {
      * @return the glow strength.
      */
     public float getStrength() {
-        return strength / SCALE_8;
+        return strength / Coder.SCALE_8;
     }
 
     /**
