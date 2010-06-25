@@ -35,6 +35,7 @@ import java.io.IOException;
 
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
+import com.flagstone.transform.coder.Copyable;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -70,7 +71,7 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  *
  * @see DefineSound
  */
-public final class SoundInfo implements SWFEncodeable {
+public final class SoundInfo implements SWFEncodeable, Copyable<SoundInfo> {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "SoundInfo: { identifier=%d; mode=%s;"

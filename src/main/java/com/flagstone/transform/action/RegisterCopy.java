@@ -62,7 +62,7 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  * was expanded in Flash 7 from 4 to 256.
  * </p>
  *
- * @see Register
+ * @see RegisterIndex
  * @see Push
  */
 public final class RegisterCopy implements Action {

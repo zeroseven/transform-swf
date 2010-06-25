@@ -67,7 +67,6 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  * draw the line segments.
  * </p>
  *
- * @see Line
  * @see LineStyle2
  */
 public final class LineStyle1 implements LineStyle {

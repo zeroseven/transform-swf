@@ -49,6 +49,7 @@ import java.util.zip.InflaterInputStream;
 
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
+import com.flagstone.transform.coder.Copyable;
 import com.flagstone.transform.coder.DecoderRegistry;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -79,7 +80,7 @@ import com.flagstone.transform.coder.SWFFactory;
  * does not conflict with an existing object.
  * </p>
  */
-public final class Movie {
+public final class Movie implements Copyable<Movie> {
 
     /** The version of Flash supported. */
     public static final int VERSION = 10;
@@ -332,7 +333,6 @@ public final class Movie {
      * @throws DataFormatException
      *             if an error occurs when compressing the flash file.
      */
-    /** {@inheritDoc} */
     public void encodeToFile(final File file) throws IOException,
             DataFormatException {
         encodeToStream(new FileOutputStream(file));

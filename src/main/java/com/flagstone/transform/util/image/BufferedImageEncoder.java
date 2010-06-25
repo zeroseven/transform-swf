@@ -160,17 +160,27 @@ public final class BufferedImageEncoder {
         }
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Get the width of the image.
+     * @return the width of the image in pixels.
+     */
     public int getWidth() {
         return width;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Get the height of the image.
+     * @return the height of the image in pixels.
+     */
     public int getHeight() {
         return height;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Get the array of bytes that make up the image.
+     *
+     * @return the array of bytes representing the image.
+     */
     public byte[] getImage() {
         return Arrays.copyOf(image, image.length);
     }

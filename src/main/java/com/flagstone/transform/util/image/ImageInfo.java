@@ -99,7 +99,7 @@ import java.util.Vector;
  * new method getMimeType() to return the MIME type associated with a particular
  * file format.</li>
  * <li><strong>2002-03-15</strong> Added support to recognize number of images
- * in file. Only works with GIF. Use {@link #setDetermineImageNumber} with
+ * in file. Only works with GIF. Use setDetermineImageNumber with
  * <code>true</code> as argument to identify animated GIFs (
  * {@link #getNumberOfImages()} will return a value larger than <code>1</code>).
  * </li>

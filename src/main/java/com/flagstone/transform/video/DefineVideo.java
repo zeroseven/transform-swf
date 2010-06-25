@@ -53,7 +53,6 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  * video data is ignored. The actual video data is encoded using the VideoFrame
  * class.
  * </p>
- * @see VideoFrameType
  */
 public final class DefineVideo implements DefineTag {
 

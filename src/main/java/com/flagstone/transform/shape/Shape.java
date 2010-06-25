@@ -38,6 +38,7 @@ import java.util.List;
 
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
+import com.flagstone.transform.coder.Copyable;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -53,7 +54,7 @@ import com.flagstone.transform.coder.SWFFactory;
  * other than acting as a container class.
  * </p>
  */
-public final class Shape implements SWFEncodeable {
+public final class Shape implements SWFEncodeable, Copyable<Shape> {
 
     /**
      * The minimum coordinate in along the x or y axes.

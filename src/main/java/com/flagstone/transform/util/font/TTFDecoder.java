@@ -223,7 +223,11 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         return fonts;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Read a font from an input stream.
+     * @param stream the stream containing the font data.
+     * @throws IOException if there is an error reading the font data.
+     */
     public void read(final InputStream stream) throws IOException {
         loadTables(stream);
         decodeTables();

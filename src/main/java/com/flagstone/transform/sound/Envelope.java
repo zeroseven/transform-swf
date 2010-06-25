@@ -38,6 +38,7 @@ import java.util.List;
 import com.flagstone.transform.Constants;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
+import com.flagstone.transform.coder.Copyable;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -47,7 +48,7 @@ import com.flagstone.transform.exception.IllegalArgumentRangeException;
  * Envelope is a container class for Level objects that describe how the volume
  * of a sound changes over time.
  */
-public final class Envelope implements SWFEncodeable {
+public final class Envelope implements SWFEncodeable, Copyable<Envelope> {
     /**
      * Level describes the sound levels for stereo sound.
      *

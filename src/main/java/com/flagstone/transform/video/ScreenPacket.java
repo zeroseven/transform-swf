@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.flagstone.transform.coder.Coder;
+import com.flagstone.transform.coder.Copyable;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
@@ -44,7 +45,7 @@ import com.flagstone.transform.coder.SWFEncoder;
  * The ScreenVideoPacket class is used to encode or decode a frame of video data
  * using Macromedia's ScreenVideo format.
  */
-public final class ScreenPacket implements Cloneable {
+public final class ScreenPacket implements Copyable<ScreenPacket> {
 
     private static final int PIXELS_PER_BLOCK = 16;
 

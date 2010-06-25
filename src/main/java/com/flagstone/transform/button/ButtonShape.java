@@ -40,6 +40,7 @@ import java.util.Set;
 import com.flagstone.transform.MovieTypes;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
+import com.flagstone.transform.coder.Copyable;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -76,7 +77,7 @@ import com.flagstone.transform.filter.Filter;
  * @see DefineButton
  * @see DefineButton2
  */
-public final class ButtonShape implements SWFEncodeable {
+public final class ButtonShape implements SWFEncodeable, Copyable<ButtonShape> {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "ButtonShape: { state=%d;"

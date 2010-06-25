@@ -42,6 +42,7 @@ import java.util.Set;
 import com.flagstone.transform.action.Action;
 import com.flagstone.transform.action.ActionData;
 import com.flagstone.transform.coder.Context;
+import com.flagstone.transform.coder.Copyable;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -59,7 +60,8 @@ import com.flagstone.transform.coder.SWFFactory;
  * @see Event
  */
 @SuppressWarnings("PMD.CyclomaticComplexity")
-public final class EventHandler implements SWFEncodeable {
+public final class EventHandler implements SWFEncodeable,
+        Copyable<EventHandler> {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "EventHandler: { events=%s;"

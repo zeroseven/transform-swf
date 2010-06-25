@@ -37,6 +37,7 @@ import java.util.List;
 
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.coder.Context;
+import com.flagstone.transform.coder.Copyable;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFEncoder;
@@ -44,7 +45,8 @@ import com.flagstone.transform.coder.SWFEncoder;
 /**
  * GlyphAlignment holds the alignment zones for a font glyph.
  */
-public final class GlyphAlignment implements SWFEncodeable {
+public final class GlyphAlignment implements SWFEncodeable,
+            Copyable<GlyphAlignment> {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "GlyphAlignment: { alignments=%s;"
