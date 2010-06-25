@@ -224,10 +224,10 @@ public final class Font {
      * @param count the number of glyphs.
      */
     public void setNumberOfGlyphs(final int count) {
-        glyphTable = new Glyph[Coder.USHORT_MAX + 1];
-        glyphToChar = new int[Coder.USHORT_MAX + 1];
-        //glyphTable = new Glyph[count];
-        //glyphToChar = new int[count];
+//        glyphTable = new Glyph[Coder.USHORT_MAX + 1];
+//        glyphToChar = new int[Coder.USHORT_MAX + 1];
+        glyphTable = new Glyph[count];
+        glyphToChar = new int[count];
         glyphIndex = 0;
     }
 
@@ -247,8 +247,8 @@ public final class Font {
      */
     public void setHighestChar(final char highest) {
         highestChar = highest;
-        charToGlyph = new int[Coder.USHORT_MAX + 1];
-        //charToGlyph = new int[highest];
+        //charToGlyph = new int[Coder.USHORT_MAX + 1];
+        charToGlyph = new int[highest + 1];
     }
 
 
@@ -269,6 +269,10 @@ public final class Font {
         glyphToChar[glyphIndex] = code;
         charToGlyph[code] = glyphIndex;
         glyphIndex++;
+    }
+
+    public void addMissingGlyph(final char code) {
+        charToGlyph[code] = missingGlyph;
     }
 
     /**

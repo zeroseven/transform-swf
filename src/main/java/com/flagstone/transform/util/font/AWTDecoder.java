@@ -159,6 +159,7 @@ public final class AWTDecoder {
         float ascent = 0.0f;
         float descent = 0.0f;
         float leading = 0.0f;
+        Glyph glyph;
 
         /*
          * Run through all the unicode character codes looking for a
@@ -167,32 +168,30 @@ public final class AWTDecoder {
         while ((index < count) && (code < Coder.USHORT_MAX)) {
             if (awtFont.canDisplay(code)) {
                 character = (char) code;
+
+                glyphVector = awtFont.createGlyphVector(fontContext,
+                        new char[] {character});
+
+                outline = glyphVector.getGlyphOutline(0);
+                advance = (int) (glyphVector.getGlyphMetrics(0).getAdvance());
+
+                font.addGlyph(character,  new Glyph(convertShape(outline),
+                        new Bounds(0, 0, 0, 0), advance));
+
+                if (!awtFont.hasUniformLineMetrics()) {
+                    final LineMetrics lineMetrics = awtFont.getLineMetrics(
+                            new char[] {character}, 0, 1, fontContext);
+
+                    ascent = Math.max(lineMetrics.getAscent(), ascent);
+                    descent = Math.max(lineMetrics.getDescent(), descent);
+                    leading = Math.max(lineMetrics.getLeading(), leading);
+                }
+                index++;
+
             } else {
                 character = (char) missingGlyph;
+                font.addMissingGlyph((char) code);
             }
-
-            glyphVector = awtFont.createGlyphVector(fontContext,
-                    new char[] {character});
-
-            outline = glyphVector.getGlyphOutline(0);
-            advance = (int) (glyphVector.getGlyphMetrics(0).getAdvance());
-
-            font.addGlyph(character,  new Glyph(convertShape(outline),
-                    new Bounds(0, 0, 0, 0), advance));
-
-            if (!awtFont.hasUniformLineMetrics()) {
-                final LineMetrics lineMetrics = awtFont.getLineMetrics(
-                        new char[] {character}, 0, 1, fontContext);
-
-                ascent = Math.max(lineMetrics.getAscent(), ascent);
-                descent = Math.max(lineMetrics.getDescent(), descent);
-                leading = Math.max(lineMetrics.getLeading(), leading);
-            }
-
-            if (character != missingGlyph) {
-                index++;
-            }
-
             code++;
         }
         font.setAscent((int) ascent);

@@ -501,7 +501,6 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
 
         glyphCount = coder.readUnsignedShort();
         glyphTable = new TrueTypeGlyph[glyphCount];
-        charToGlyph = new int[Coder.USHORT_MAX + 1];
         glyphToChar = new int[glyphCount];
 
         if (version == 1.0f) {
@@ -602,6 +601,8 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
     }
 
     private void decodeSimpleCMAP(final BigDecoder coder) throws IOException {
+        charToGlyph = new int[256];
+        maxChar = 255;
         for (int index = 0; index < 256; index++) {
             charToGlyph[index] = coder.readByte();
             glyphToChar[charToGlyph[index]] = index;
@@ -622,7 +623,13 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
 
         for (int index = 0; index < segmentCount; index++) {
             endCount[index] = coder.readUnsignedShort();
+
+            if (endCount[index] > maxChar) {
+                maxChar = (char) endCount[index];
+            }
         }
+
+        charToGlyph = new int[maxChar + 1];
 
         coder.readUnsignedShort(); // reserved padding
 
