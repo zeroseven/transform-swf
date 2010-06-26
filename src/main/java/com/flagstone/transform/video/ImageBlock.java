@@ -32,11 +32,8 @@
 package com.flagstone.transform.video;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.zip.Deflater;
 
 import com.flagstone.transform.coder.Copyable;
-import com.flagstone.transform.util.image.ImageFilter;
 
 /**
  * ImageBlock is used to sub-divide an image into a set of blocks so they can be
@@ -53,96 +50,6 @@ import com.flagstone.transform.util.image.ImageFilter;
  * @see DefineVideo
  */
 public final class ImageBlock implements Copyable<ImageBlock> {
-
-    /** Number of colour channels in an RGB pixel. */
-    private static final int RGB_CHANNELS = 3;
-
-    /**
-     * Return an image stored in a a file as a list of ImageBlock objects that
-     * can be used when creating ScreenVideo streams.
-     *
-     * The image is divided by tiling blocks of the specified width and height
-     * across the image. For blocks at the right and bottom edges the size of
-     * the block may be reduced so that it fits the image exactly. In other
-     * words the blocks are not padded with extra pixel information.
-     *
-     * @param  blocks
-     *            a list of ImageBlock objects
-     * @param blockWidth
-     *            the width of a block in pixels
-     * @param blockHeight
-     *            the height of a block in pixels
-     * @param imageWidth
-     *            the width of the image in pixels
-     * @param imageHeight
-     *            the height of the image in pixels
-     * @param image
-     *            the image data
-     */
-    public static void getImageAsBlocks(final List<ImageBlock> blocks,
-            final int blockWidth, final int blockHeight,
-            final int imageWidth, final int imageHeight,
-            final byte[] image) {
-
-        final ImageFilter filter = new ImageFilter();
-        byte[] img = filter.removeAlpha(image);
-        img = filter.invertRGB(img, imageWidth, imageHeight);
-        filter.reverseRGB(img);
-
-        final int columns = (imageWidth + blockWidth - 1) / blockWidth;
-        final int rows = (imageHeight + blockHeight - 1) / blockHeight;
-
-        final byte[] blockData = new byte[blockHeight * blockWidth
-                                          * RGB_CHANNELS];
-
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                final int xOffset = j * blockWidth;
-                final int yOffset = i * blockHeight;
-
-                final int xSpan = (imageWidth - xOffset > blockWidth)
-                        ? blockWidth : imageWidth - xOffset;
-                final int ySpan = (imageHeight - yOffset > blockHeight)
-                        ? blockHeight : imageHeight - yOffset;
-                int offset = 0;
-
-                int idx;
-
-                for (int k = 0; k < ySpan; k++) {
-                    for (int l = 0; l < xSpan; l++, offset += RGB_CHANNELS) {
-                        idx = (yOffset + k) * (imageWidth * RGB_CHANNELS)
-                                + (xOffset + l) * RGB_CHANNELS;
-
-                        blockData[offset] = img[idx];
-                        blockData[offset + 1] = img[idx + 1];
-                        blockData[offset + 2] = img[idx + 2];
-                    }
-                }
-
-                blocks.add(new ImageBlock(xSpan, ySpan,
-                        zip(blockData, offset)));
-            }
-        }
-    }
-
-    /**
-     * Compress the image using the ZIP format.
-     * @param image the image data.
-     * @param length the number of bytes from the image to compress.
-     * @return the compressed image.
-     */
-    private static byte[] zip(final byte[] image, final int length) {
-        final Deflater deflater = new Deflater();
-        deflater.setInput(image, 0, length);
-        deflater.finish();
-
-        final byte[] compressedData = new byte[image.length];
-        final int bytesCompressed = deflater.deflate(compressedData);
-        final byte[] newData = Arrays.copyOf(compressedData, bytesCompressed);
-
-        return newData;
-    }
-
     /** Width of the block in pixels. */
     private final transient int width;
     /** Height of the block in pixels. */

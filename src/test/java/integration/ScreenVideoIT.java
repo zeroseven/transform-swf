@@ -49,6 +49,7 @@ import com.flagstone.transform.Place2;
 import com.flagstone.transform.ShowFrame;
 import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.datatype.WebPalette;
+import com.flagstone.transform.util.image.ImageBlocker;
 import com.flagstone.transform.util.image.ImageDecoder;
 import com.flagstone.transform.util.image.ImageFactory;
 import com.flagstone.transform.video.Deblocking;
@@ -97,6 +98,8 @@ public final class ScreenVideoIT {
         factory.read(new File(sourceDir, files[0]));
         ImageDecoder decoder = factory.getDecoder();
 
+        ImageBlocker blocker = new ImageBlocker();
+
         int screenWidth = decoder.getWidth();
         int screenHeight = decoder.getHeight();
 
@@ -118,7 +121,7 @@ public final class ScreenVideoIT {
         final List<ImageBlock> next = new ArrayList<ImageBlock>();
         List<ImageBlock> delta = new ArrayList<ImageBlock>();
 
-        ImageBlock.getImageAsBlocks(prev, blockWidth, blockHeight,
+        blocker.getImageAsBlocks(prev, blockWidth, blockHeight,
                 decoder.getWidth(), decoder.getHeight(), decoder.getImage());
 
         ScreenPacket packet = new ScreenPacket(true, screenWidth, screenHeight,
@@ -136,7 +139,7 @@ public final class ScreenVideoIT {
             factory.read(srcFile);
             decoder = factory.getDecoder();
 
-            ImageBlock.getImageAsBlocks(next, blockWidth, blockHeight,
+            blocker.getImageAsBlocks(next, blockWidth, blockHeight,
                     decoder.getWidth(), decoder.getHeight(),
                     decoder.getImage());
 
