@@ -8,7 +8,7 @@
 	<groupId>com.flagstone</groupId>
 	<artifactId>transform</artifactId>
 	<packaging>jar</packaging>
-	<version>3.0-SNAPSHOT</version>
+	<version>3.0-b1</version>
 
 	<name>transform</name>
 	<description>Transform is an Open Source framework for reading and writing Flash (.swf) files. The API gives you complete control over how files are created with access to all the features supported by the Flash Player but yet is still intuitive and easy to use.</description>
@@ -65,9 +65,9 @@
 	</issueManagement>
 
 	<scm>
-		<connection>scm:svn:http://transform-swf.svn.sourceforge.net/svnroot/transform-swf/trunk</connection>
-		<developerConnection>scm:svn:https://transform-swf.svn.sourceforge.net/svnroot/transform-swf/trunk</developerConnection>
-		<url>http://transform-swf.svn.sourceforge.net/viewvc/transform-swf/trunk</url>
+		<connection>scm:svn:http://transform-swf.svn.sourceforge.net/svnroot/transform-swf/tags/rel-3-0-b1</connection>
+		<developerConnection>scm:svn:https://transform-swf.svn.sourceforge.net/svnroot/transform-swf/tags/rel-3-0-b1</developerConnection>
+		<url>http://transform-swf.svn.sourceforge.net/viewvc/transform-swf/tags/rel-3-0-b1</url>
 	</scm>
 
 	<dependencies>
