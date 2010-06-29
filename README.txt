@@ -2,10 +2,9 @@
   Transform SWF
 ------------------
 The Transform SWF framework is a collection of classes for each of the data
-structures and tags that make up the Flash File Format Specification from
-Macromedia. The classes provide a completely object-oriented API to encode
-and decode Flash (.swf) files. Transform SWF supports the latest published 
-version from Adobe - Flash 9.
+structures and tags that make up the Flash File Format Specification from Adobe.
+The classes provide a completely object-oriented API to encode and decode Flash 
+(.swf) files. Transform SWF supports the latest published version - Flash 10.
 
 The framework also contains classes that provide a higher level interface
 supporting the addition of shapes, images, sounds, fonts and text from

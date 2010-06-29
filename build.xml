@@ -45,7 +45,7 @@
 	<property name="package.name" value="transform" />
 	<property name="package.dir" value="com/flagstone/${package.name}" />
 
-    <property name="version" value="3.0" />
+    <property name="version" value="3.0-b1" />
 
 	<!-- **********************************************************
          Major targets for compiling and packaging the classes.
