@@ -215,8 +215,10 @@ public final class DefineMorphShape implements ShapeTag {
         context.remove(Context.TYPE);
 
         // known bug - empty objects may be added to Flash file.
-        // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
-        if (length - coder.bytesRead() != 33) {
+        // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 2 LINES
+        if (length - coder.bytesRead() == 33) {
+            coder.skip(33);
+        } else {
             coder.check(length);
         }
         coder.unmark();
