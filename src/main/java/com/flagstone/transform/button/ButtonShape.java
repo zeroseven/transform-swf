@@ -131,7 +131,7 @@ public final class ButtonShape implements SWFEncodeable, Copyable<ButtonShape> {
         layer = coder.readUnsignedShort();
         transform = new CoordTransform(coder);
 
-        if (context.get(Context.TYPE)
+        if (context.get(Context.TYPE) != null && context.get(Context.TYPE)
                 == MovieTypes.DEFINE_BUTTON_2) {
             colorTransform = new ColorTransform(coder, context);
         }
@@ -162,7 +162,10 @@ public final class ButtonShape implements SWFEncodeable, Copyable<ButtonShape> {
      * Creates am uninitialised ButtonShape object.
      */
     public ButtonShape() {
-        // Empty constructor
+        transform = CoordTransform.translate(0, 0);
+        colorTransform = new ColorTransform(0, 0, 0, 0);
+        filters = new ArrayList<Filter>();
+        blend = 0;
     }
 
     /**
@@ -219,17 +222,42 @@ public final class ButtonShape implements SWFEncodeable, Copyable<ButtonShape> {
                 state |= Coder.BIT0;
                 break;
             case OVER:
-                state |= Coder.BIT2;
+                state |= Coder.BIT1;
                 break;
             case DOWN:
-                state |= Coder.BIT3;
+                state |= Coder.BIT2;
                 break;
             case ACTIVE:
-                state |= Coder.BIT4;
+                state |= Coder.BIT3;
                 break;
             default:
                 throw new IllegalArgumentException();
             }
+        }
+        return this;
+    }
+
+    /**
+     * Add the state to the list of states that the shape is displayed for.
+     * @param buttonState the state that defines when the shape is displayed.
+     * @return this object.
+     */
+    public ButtonShape addState(final ButtonState buttonState) {
+        switch (buttonState) {
+        case UP:
+            state |= Coder.BIT0;
+            break;
+        case OVER:
+            state |= Coder.BIT1;
+            break;
+        case DOWN:
+            state |= Coder.BIT2;
+            break;
+        case ACTIVE:
+            state |= Coder.BIT3;
+            break;
+        default:
+            throw new IllegalArgumentException();
         }
         return this;
     }
@@ -415,13 +443,13 @@ public final class ButtonShape implements SWFEncodeable, Copyable<ButtonShape> {
     /** {@inheritDoc} */
     public int prepareToEncode(final Context context) {
 
-        hasBlend = blend != 0;
-        hasFilters ^= filters.isEmpty();
+        hasBlend = blend != Blend.NULL.getValue();
+        hasFilters = true ^ filters.isEmpty();
 
         // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
         int length = 5 + transform.prepareToEncode(context);
 
-        if (context.get(Context.TYPE)
+        if (context.get(Context.TYPE) != null && context.get(Context.TYPE)
                 == MovieTypes.DEFINE_BUTTON_2) {
             length += colorTransform.prepareToEncode(context);
         }
@@ -453,7 +481,7 @@ public final class ButtonShape implements SWFEncodeable, Copyable<ButtonShape> {
         coder.writeShort(layer);
         transform.encode(coder, context);
 
-        if (context.get(Context.TYPE)
+        if (context.get(Context.TYPE) != null && context.get(Context.TYPE)
                 == MovieTypes.DEFINE_BUTTON_2) {
             colorTransform.encode(coder, context);
         }

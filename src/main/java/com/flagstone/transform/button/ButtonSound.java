@@ -75,7 +75,7 @@ public final class ButtonSound implements MovieTag {
     /** The unique identifier of the button. */
     private int identifier;
     /** Table of sounds played for different button events. */
-    private transient Map<Event, SoundInfo>table;
+    private transient final Map<Event, SoundInfo>table;
 
     /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
@@ -140,6 +140,7 @@ public final class ButtonSound implements MovieTag {
      */
     public ButtonSound(final int uid, final Event eventCode,
             final SoundInfo aSound) {
+        table = new LinkedHashMap<Event, SoundInfo>();
         setIdentifier(uid);
         setSoundInfo(eventCode, aSound);
     }
