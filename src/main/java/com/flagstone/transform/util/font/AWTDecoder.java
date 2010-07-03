@@ -207,7 +207,7 @@ public final class AWTDecoder {
      */
     private Shape convertShape(final java.awt.Shape glyph) {
         final PathIterator pathIter = glyph.getPathIterator(null);
-        final Canvas path = new Canvas(false);
+        final Canvas path = new Canvas();
 
         final double[] coords = new double[SEGMENT_COUNT];
 

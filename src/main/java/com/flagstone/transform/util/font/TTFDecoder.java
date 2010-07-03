@@ -933,7 +933,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         /*
          * Convert the coordinates into a shape
          */
-        final Canvas path = new Canvas(false);
+        final Canvas path = new Canvas();
 
         boolean contourStart = true;
         boolean offPoint = false;
@@ -1114,7 +1114,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
                 yCoordinates[i] = (int) result[1][2];
             }
 
-            final Canvas path = new Canvas(false);
+            final Canvas path = new Canvas();
 
             boolean contourStart = true;
             boolean offPoint = false;

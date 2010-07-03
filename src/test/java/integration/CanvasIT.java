@@ -59,7 +59,8 @@ public final class CanvasIT {
 
     @BeforeClass
     public static void initialize() {
-        path = new Canvas(true);
+        path = new Canvas();
+        path.setPixels(true);
 
         resultDir = new File("target/integration-results/CanvasIT");
 

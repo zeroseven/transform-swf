@@ -105,7 +105,7 @@ public final class Canvas {
     private static final double ANCHOR_AVG = 3.0;
 
     /** Whether coordinate used to draw a path a specified in pixels. */
-    private final transient boolean arePixels;
+    private transient boolean pixels;
     /** Indicates whether a path is currently being drawn. */
     private transient boolean pathInProgress = false;
 
@@ -146,26 +146,38 @@ public final class Canvas {
     private final transient List<FillStyle> fillStyles;
 
     /**
-     * Creates an ShapeConstructor object with no path defined.
-     *
-     * The pixels flag controls whether the coordinates passed to methods when
-     * creating a path of predefined shape are expressed in pixels (true) or
-     * twips (false).
+     * Creates a new Canvas object with no path defined.
+     */
+    public Canvas() {
+        objects = new ArrayList<ShapeRecord>();
+        lineStyles = new ArrayList<LineStyle>();
+        fillStyles = new ArrayList<FillStyle>();
+    }
+
+    /**
+     * Are the coordinates used when drawing a path are expressed in
+     * pixels (true) or twips (false).
+     * @return true if coordinates are expressed in pixels, false if
+     * they are twips.
+     */
+    public boolean isPixels() {
+        return pixels;
+    }
+
+    /**
+     * Sets whether the coordinates used when drawing a path are expressed in
+     * pixels (true) or twips (false).
      *
      * Flash coordinates are specified in twips (1 twip equals 1/1440th of an
      * inch or 1/20th of a point). Allowing coordinates to be specified in
      * pixels simplifies the drawing process avoiding the conversion to twips by
      * multiplying each value by 20.
      *
-     * @param pixels
-     *            coordinates are specified in pixels when true and twips when
-     *            false.
+     * @param arePixels true if coordinates are expressed in pixels, false if
+     * they are twips.
      */
-    public Canvas(final boolean pixels) {
-        arePixels = pixels;
-        objects = new ArrayList<ShapeRecord>();
-        lineStyles = new ArrayList<LineStyle>();
-        fillStyles = new ArrayList<FillStyle>();
+    public void setPixels(final boolean arePixels) {
+        pixels = arePixels;
     }
 
     /**
@@ -318,16 +330,13 @@ public final class Canvas {
      */
     public void clear() {
         pathInProgress = false;
-
         setInitial(0, 0);
         setCurrent(0, 0);
         setControl(0, 0);
         setBounds(0, 0, 0, 0);
-
-        fillStyles.clear();
         lineStyles.clear();
+        fillStyles.clear();
         objects.clear();
-
         lineWidth = 0;
     }
 
@@ -356,8 +365,8 @@ public final class Canvas {
      *            the y-coordinate of the point to move to.
      */
     public void move(final int xCoord, final int yCoord) {
-        final int pointX = arePixels ? xCoord * TWIPS_PER_PIXEL : xCoord;
-        final int pointY = arePixels ? yCoord * TWIPS_PER_PIXEL : yCoord;
+        final int pointX = pixels ? xCoord * TWIPS_PER_PIXEL : xCoord;
+        final int pointY = pixels ? yCoord * TWIPS_PER_PIXEL : yCoord;
 
         objects.add(new ShapeStyle().setMove(pointX, pointY));
 
@@ -375,8 +384,8 @@ public final class Canvas {
      *            the y-coordinate of the point to move to.
      */
     public void moveForFont(final int xCoord, final int yCoord) {
-        final int pointX = arePixels ? xCoord * TWIPS_PER_PIXEL : xCoord;
-        final int pointY = arePixels ? yCoord * TWIPS_PER_PIXEL : yCoord;
+        final int pointX = pixels ? xCoord * TWIPS_PER_PIXEL : xCoord;
+        final int pointY = pixels ? yCoord * TWIPS_PER_PIXEL : yCoord;
         final ShapeStyle style = new ShapeStyle().setMove(pointX, pointY);
 
         if (objects.isEmpty()) {
@@ -399,8 +408,8 @@ public final class Canvas {
      *            the distance along the y-axis.
      */
     public void rmove(final int xCoord, final int yCoord) {
-        final int pointX = arePixels ? xCoord * TWIPS_PER_PIXEL : xCoord;
-        final int pointY = arePixels ? yCoord * TWIPS_PER_PIXEL : yCoord;
+        final int pointX = pixels ? xCoord * TWIPS_PER_PIXEL : xCoord;
+        final int pointY = pixels ? yCoord * TWIPS_PER_PIXEL : yCoord;
 
         objects.add(new ShapeStyle().setMove(pointX + currentX, pointY
                 + currentY));
@@ -418,9 +427,9 @@ public final class Canvas {
      *            the y-coordinate of the end of the line.
      */
     public void line(final int xCoord, final int yCoord) {
-        final int pointX = (arePixels ? xCoord * TWIPS_PER_PIXEL
+        final int pointX = (pixels ? xCoord * TWIPS_PER_PIXEL
                 : xCoord) - currentX;
-        final int pointY = (arePixels ? yCoord * TWIPS_PER_PIXEL
+        final int pointY = (pixels ? yCoord * TWIPS_PER_PIXEL
                 : yCoord) - currentY;
 
         objects.add(new Line(pointX, pointY));
@@ -442,8 +451,8 @@ public final class Canvas {
      *            the distance along the y-axis to the end of the line.
      */
     public void rline(final int xCoord, final int yCoord) {
-        final int pointX = arePixels ? xCoord * TWIPS_PER_PIXEL : xCoord;
-        final int pointY = arePixels ? yCoord * TWIPS_PER_PIXEL : yCoord;
+        final int pointX = pixels ? xCoord * TWIPS_PER_PIXEL : xCoord;
+        final int pointY = pixels ? yCoord * TWIPS_PER_PIXEL : yCoord;
 
         objects.add(new Line(pointX, pointY));
 
@@ -475,7 +484,7 @@ public final class Canvas {
         final int ranchorX;
         final int ranchorY;
 
-        if (arePixels) {
+        if (pixels) {
             rcontrolX = acontrolX * TWIPS_PER_PIXEL - currentX;
             rcontrolY = acontrolY * TWIPS_PER_PIXEL - currentY;
             ranchorX = aanchorX * TWIPS_PER_PIXEL - currentX - rcontrolX;
@@ -521,7 +530,7 @@ public final class Canvas {
         final int px2;
         final int py2;
 
-        if (arePixels) {
+        if (pixels) {
             px1 = rcontrolX * TWIPS_PER_PIXEL;
             py1 = rcontrolY * TWIPS_PER_PIXEL;
             px2 = ranchorX * TWIPS_PER_PIXEL;
@@ -570,7 +579,7 @@ public final class Canvas {
         cubicX[0] = currentX;
         cubicY[0] = currentY;
 
-        if (arePixels) {
+        if (pixels) {
             cubicX[CTRLA] = cax * TWIPS_PER_PIXEL;
             cubicY[CTRLA] = cay * TWIPS_PER_PIXEL;
             cubicX[CTRLB] = cbx * TWIPS_PER_PIXEL;
@@ -620,7 +629,7 @@ public final class Canvas {
         cubicX[0] = currentX;
         cubicY[0] = currentY;
 
-        if (arePixels) {
+        if (pixels) {
             cubicX[CTRLA] = currentX + controlAX * TWIPS_PER_PIXEL;
             cubicY[CTRLA] = currentY + controlAY * TWIPS_PER_PIXEL;
             cubicX[CTRLB] = currentX + controlBX * TWIPS_PER_PIXEL;
@@ -655,9 +664,9 @@ public final class Canvas {
         final int rcontrolX = currentX - controlX;
         final int rcontrolY = currentY - controlY;
 
-        final int pointX = (arePixels ? xCoord * TWIPS_PER_PIXEL
+        final int pointX = (pixels ? xCoord * TWIPS_PER_PIXEL
                 : xCoord) - currentX;
-        final int pointY = (arePixels ? yCoord * TWIPS_PER_PIXEL
+        final int pointY = (pixels ? yCoord * TWIPS_PER_PIXEL
                 : yCoord) - currentY;
 
         objects.add(new Curve(rcontrolX, rcontrolY, pointX, pointY));
@@ -689,8 +698,8 @@ public final class Canvas {
         final int rcontrolX = currentX - controlX;
         final int rcontrolY = currentY - controlY;
 
-        final int pointX = arePixels ? xCoord * TWIPS_PER_PIXEL : xCoord;
-        final int pointY = arePixels ? yCoord * TWIPS_PER_PIXEL : yCoord;
+        final int pointX = pixels ? xCoord * TWIPS_PER_PIXEL : xCoord;
+        final int pointY = pixels ? yCoord * TWIPS_PER_PIXEL : yCoord;
 
         objects.add(new Curve(rcontrolX, rcontrolY, pointX, pointY));
 
@@ -731,7 +740,7 @@ public final class Canvas {
         final int pointX;
         final int pointY;
 
-        if (arePixels) {
+        if (pixels) {
             bcontrolX = ctrlX * TWIPS_PER_PIXEL - currentX;
             bcontrolY = ctrlY * TWIPS_PER_PIXEL - currentY;
             pointX = anchorX * TWIPS_PER_PIXEL - currentX;
@@ -777,7 +786,7 @@ public final class Canvas {
         final int pointX;
         final int pointY;
 
-        if (arePixels) {
+        if (pixels) {
             bcontrolX = ctrlX * TWIPS_PER_PIXEL;
             bcontrolY = ctrlY * TWIPS_PER_PIXEL;
             pointX = anchorX * TWIPS_PER_PIXEL;
