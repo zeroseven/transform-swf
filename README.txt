@@ -48,10 +48,8 @@ To use Transform SWF you must have at least:
 --------------------------
 The ANT build file, build.xml contains the following major targets:
 
-    build   compile with optimisation all the classes in the
-            transform and transform utilities and package them
-            in transform.jar (examples and test classes are not
-            included).
+    build   compile with optimisation all the classes and package them
+            in transform.jar.
 
 Minor targets provide more control over the compiling and packaging
 of classes, allowing for example a JAR file to be created containing
