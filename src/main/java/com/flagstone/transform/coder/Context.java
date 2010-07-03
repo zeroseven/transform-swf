@@ -43,7 +43,7 @@ import com.flagstone.transform.CharacterEncoding;
  * Contexts are used to pass information between objects when they are being
  * encoded or decoded.
  */
-public final class Context {
+public class Context {
     /** Flash Version. */
     public static final int VERSION = 1;
     /** Type identifying the current MovieTag being decoded. */
@@ -72,10 +72,8 @@ public final class Context {
     public static final int LAST = 16;
     /** Indicates the flash file is compressed. */
     public static final int COMPRESSED = 17;
-    /** Counts the number of frames in a movie so the header can be updated. */
-    public static final int FRAMES = 18;
     /** Indicates a definition is for menu button. */
-    public static final int MENU_BUTTON = 19;
+    public static final int MENU_BUTTON = 18;
 
     /** The character encoding used for strings. */
     private String encoding;

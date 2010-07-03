@@ -56,7 +56,6 @@ public abstract class AbstractCodingTest {
 
     protected final int prepare(final MovieTag object) throws IOException {
         final Context context = new Context();
-        context.put(Context.FRAMES, 0);
         return object.prepareToEncode(context);
     }
 
@@ -92,7 +91,6 @@ public abstract class AbstractCodingTest {
         final ByteArrayInputStream stream = new ByteArrayInputStream(bytes);
         final SWFDecoder decoder = new SWFDecoder(stream);
         final Context context = new Context();
-        context.put(Context.FRAMES, 0);
         context.setRegistry(registry);
         final List<MovieTag> list = new ArrayList<MovieTag>();
         factory.getObject(list, decoder, context);

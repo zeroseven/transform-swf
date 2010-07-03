@@ -55,19 +55,7 @@ public final class ShowFrameCodingTest extends AbstractCodingTest {
         final byte[] binary = new byte[] {0x40, 0x00 };
 
         final Context context = new Context();
-        context.put(Context.FRAMES, 0);
 
         assertArrayEquals(NOT_ENCODED, binary, encode(object, context));
-    }
-
-    @Test
-    public void checkShowFrameIncrements() throws IOException {
-        final ShowFrame object = ShowFrame.getInstance();
-        final Context context = new Context();
-        context.put(Context.FRAMES, 0);
-
-        encode(object, context);
-
-        assertEquals(NOT_ENCODED, 1, context.get(Context.FRAMES).intValue());
     }
 }

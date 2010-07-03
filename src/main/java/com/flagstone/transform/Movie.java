@@ -259,7 +259,6 @@ public final class Movie implements Copyable<Movie> {
             final Context context = new Context();
             context.setRegistry(registry);
             context.setEncoding(encoding.toString());
-            context.put(Context.FRAMES, 0);
 
             final byte[] signature = new byte[SIGNATURE_LENGTH];
             stream.read(signature);
@@ -311,7 +310,6 @@ public final class Movie implements Copyable<Movie> {
             decoder.readUnsignedShort();
 
             header.setVersion(context.get(Context.VERSION));
-            header.setFrameCount(context.get(Context.FRAMES));
             header.setCompressed(context.get(Context.COMPRESSED) == 1);
 
         } finally {
@@ -361,17 +359,21 @@ public final class Movie implements Copyable<Movie> {
             final Context context = new Context();
             context.setEncoding(encoding.toString());
             context.put(Context.VERSION, header.getVersion());
-            context.put(Context.FRAMES, 0);
 
             // length of signature, version, length and end
             // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
             int length = 10;
+            int frameCount = 0;
 
             for (final MovieTag tag : objects) {
                 length += tag.prepareToEncode(context);
+
+                if (tag instanceof ShowFrame) {
+                    frameCount++;
+                }
             }
 
-            header.setFrameCount(context.get(Context.FRAMES));
+            header.setFrameCount(frameCount);
 
             if (header.isCompressed()) {
                 stream.write(CWS);
