@@ -70,19 +70,19 @@ public final class MovieWriter {
     }
     /**
      * Pretty print an object from a Movie.
-     * @param tag the MovieTag object to get the string representation of.
+     * @param obj the object to get the string representation of.
      * @param writer the Writer formatted output will be written.
      * @throws IOException if there is an error writing to the file.
      */
     @SuppressWarnings("PMD.CyclomaticComplexity")
-    public void write(final MovieTag tag, final Writer writer)
+    public void write(final Object obj, final Writer writer)
             throws IOException {
 
         int level = 0;
         boolean start = false;
         boolean coord = false;
 
-        final String str = tag.toString();
+        final String str = obj.toString();
 
         for (final char c : str.toCharArray()) {
 
