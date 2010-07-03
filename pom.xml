@@ -8,7 +8,7 @@
 	<groupId>com.flagstone</groupId>
 	<artifactId>transform</artifactId>
 	<packaging>jar</packaging>
-	<version>3.0-b2-SNAPSHOT</version>
+	<version>3.0-SNAPSHOT</version>
 
 	<name>transform</name>
 	<description>Transform is an Open Source framework for reading and writing Flash (.swf) files. The API gives you complete control over how files are created with access to all the features supported by the Flash Player but yet is still intuitive and easy to use.</description>
@@ -83,6 +83,7 @@
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.1</version>
 				<configuration>
 					<encoding>UTF-8</encoding>
 					<source>1.6</source>
@@ -91,13 +92,15 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.5</version>
 				<configuration>
 					<testFailureIgnore>true</testFailureIgnore>
 				</configuration>
 			</plugin>
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
-			    <configuration>
+				<version>2.2-beta-5</version>
+				<configuration>
 				    <descriptors>
 					    <descriptor>src/main/assembly/dist.xml</descriptor>
 					</descriptors>
