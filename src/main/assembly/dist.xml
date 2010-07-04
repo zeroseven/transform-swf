@@ -12,7 +12,6 @@
       <includes>
         <include>README*</include>
         <include>LICENSE*</include>
-        <include>NOTICE*</include>
         <include>build.xml</include>
       </includes>
     </fileSet>
