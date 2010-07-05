@@ -155,7 +155,7 @@ public final class DefineShape4 implements ShapeTag {
 
         if (context.getRegistry().getShapeDecoder() == null) {
             shape = new Shape();
-            shape.add(new ShapeData(new byte[length - coder.bytesRead()]));
+            shape.add(new ShapeData(length - coder.bytesRead(), coder));
         } else {
             shape = new Shape(coder, context);
         }

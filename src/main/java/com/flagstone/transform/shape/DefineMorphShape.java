@@ -191,19 +191,34 @@ public final class DefineMorphShape implements ShapeTag {
             lineStyles.add(new MorphLineStyle(coder, context));
         }
 
+        final int skipLimit;
+
         if (context.getRegistry().getShapeDecoder() == null) {
-            int size = coder.bytesRead() - offsetToEnd;
+            skipLimit = 37;
+
+            int size;
+            if (offsetToEnd == 0) {
+                size = 0;
+            } else {
+                size = offsetToEnd - coder.bytesRead();
+            }
             coder.unmark();
 
             shape = new Shape();
-            shape.add(new ShapeData(new byte[size]));
+            shape.add(new ShapeData(size, coder));
 
-            size = length - coder.bytesRead();
+            if (offsetToEnd == 0) {
+                size = 0;
+            } else {
+                size = length - coder.bytesRead();
+            }
             coder.unmark();
 
             endShape = new Shape();
-            endShape.add(new ShapeData(new byte[size]));
+            endShape.add(new ShapeData(size, coder));
         } else {
+            skipLimit = 33;
+
             shape = new Shape(coder, context);
             endShape = new Shape(coder, context);
             coder.unmark();
@@ -216,8 +231,8 @@ public final class DefineMorphShape implements ShapeTag {
 
         // known bug - empty objects may be added to Flash file.
         // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 2 LINES
-        if (length - coder.bytesRead() == 33) {
-            coder.skip(33);
+        if (length - coder.bytesRead() == skipLimit) {
+            coder.skip(skipLimit);
         } else {
             coder.check(length);
         }

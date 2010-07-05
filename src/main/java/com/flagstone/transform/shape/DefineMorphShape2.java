@@ -174,6 +174,7 @@ public final class DefineMorphShape2 implements ShapeTag {
         coder.readByte();
 
         final int offsetToEnd = coder.readInt();
+        coder.mark();
 
         int fillStyleCount = coder.readByte();
 
@@ -201,20 +202,22 @@ public final class DefineMorphShape2 implements ShapeTag {
         }
 
         if (context.getRegistry().getShapeDecoder() == null) {
-            int size = coder.bytesRead() - offsetToEnd;
+            int size = offsetToEnd - coder.bytesRead();
             coder.unmark();
 
             shape = new Shape();
-            shape.add(new ShapeData(new byte[size]));
+            shape.add(new ShapeData(size, coder));
 
             size = length - coder.bytesRead();
             coder.unmark();
 
             endShape = new Shape();
-            endShape.add(new ShapeData(new byte[size]));
+            endShape.add(new ShapeData(size, coder));
         } else {
             shape = new Shape(coder, context);
             endShape = new Shape(coder, context);
+            coder.unmark();
+            coder.unmark();
         }
 
         context.remove(Context.TRANSPARENT);

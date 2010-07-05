@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import com.flagstone.transform.coder.Context;
+import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
 /**
@@ -47,6 +48,26 @@ public final class ShapeData implements ShapeRecord {
     private static final String FORMAT = "ShapeData: byte<%d> ...";
     /** The encoded ShapeRecords. */
     private final transient byte[] data;
+
+    /**
+     * Create a new ShapeData object initialised with an array of bytes
+     * containing the encoded records for a shape.
+     *
+     * @param size
+     *            the number of bytes to read for the encoded shape data.
+     * @param coder
+     *            an SWFDecoder object that contains the encoded Flash data.
+     *
+     * @throws IOException
+     *             if an error occurs while reading the encoded shape data.
+     */
+    public ShapeData(final int size, final SWFDecoder coder)
+            throws IOException {
+        if (size < 0) {
+            throw new IllegalArgumentException();
+        }
+        data = coder.readBytes(new byte[size]);
+    }
 
     /**
      * Create a new ShapeData object with an array of encoded ShapeRecords.

@@ -107,12 +107,9 @@ public final class DefineFont implements DefineTag {
         table[count] = length - 2;
 
         Shape shape;
-        byte[] data;
-
         for (int i = 0; i < count; i++) {
             shape = new Shape();
-            data = new byte[table[i + 1] - table[i]];
-            shape.add(new ShapeData(coder.readBytes(data)));
+            shape.add(new ShapeData(table[i + 1] - table[i], coder));
             shapes.add(shape);
         }
         coder.check(length);

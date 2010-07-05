@@ -197,8 +197,7 @@ public final class DefineFont3 implements DefineTag {
 
         for (int i = 0; i < glyphCount; i++) {
             shape = new Shape();
-            data = new byte[offset[i + 1] - offset[i]];
-            shape.add(new ShapeData(coder.readBytes(data)));
+            shape.add(new ShapeData(offset[i + 1] - offset[i], coder));
             shapes.add(shape);
         }
 
