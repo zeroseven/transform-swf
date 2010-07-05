@@ -38,19 +38,42 @@ import java.io.FilenameFilter;
 import java.util.Arrays;
 import java.util.Collection;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import com.flagstone.transform.Movie;
+import com.flagstone.transform.coder.DecoderRegistry;
 
 /**
- * DecodeMovieTest is used to create Movies using all the Flash files in a given
+ * MovieDecodeIT is used to create Movies using all the Flash files in a given
  * directory to verify that they can be decoded correctly.
  */
 @RunWith(Parameterized.class)
 public final class MovieDecodeIT {
+
+    private static final String TRACE = System.getProperty("test.trace");
+    private static final String PROFILE = System.getProperty("test.profile");
+    private static final String SHAPES = System.getProperty("skip.shapes");
+
+    private static DecoderRegistry registry;
+
+    public static void main(final String[] args) {
+        initialize();
+        for (Object[] file : files()) {
+            new MovieDecodeIT((File) file[0]).decode();
+        }
+    }
+
+    @BeforeClass
+    public static void initialize() {
+        registry = DecoderRegistry.getDefault();
+        if (SHAPES != null) {
+            registry.setShapeDecoder(null);
+        }
+    }
 
     @Parameters
     public static Collection<Object[]>  files() {
@@ -87,12 +110,16 @@ public final class MovieDecodeIT {
     @Test
     public void decode() {
         try {
-            new Movie().decodeFromFile(file);
+            Movie movie = new Movie();
+            movie.setRegistry(registry);
+            movie.decodeFromFile(file);
         } catch (Exception e) {
-            if (System.getProperty("test.trace") != null) {
+            if (TRACE != null) {
                 e.printStackTrace();
             }
-            fail(file.getPath());
+            if (PROFILE == null) {
+                fail(file.getPath());
+            }
         }
     }
 }
