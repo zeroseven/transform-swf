@@ -128,14 +128,14 @@ public final class GetUrl implements Action {
      * Creates a GetUrl with the specified url and target frame.
      *
      * @param urlString
-     *            a fully qualified URL. Must not be null or an empty string.
+     *            a fully qualified URL. Must not be null.
      * @param targetString
      *            the location (in the Flash Player or web browser) where the
      *            contents of file retrieved via the url will be displayed. Must
      *            not be null.
      */
     public GetUrl(final String urlString, final String targetString) {
-        if (urlString == null || urlString.length() == 0) {
+        if (urlString == null) {
             throw new IllegalArgumentException();
         }
         url = urlString;

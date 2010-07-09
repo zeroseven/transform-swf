@@ -83,10 +83,10 @@ public final class GotoFrame implements Action {
      * Creates a GotoFrame with the specified frame number.
      *
      * @param number
-     *            the number of the frame. Must be in the range 1..65535.
+     *            the number of the frame. Must be in the range 0..65535.
      */
     public GotoFrame(final int number) {
-        if ((number < 1) || (number > MAX_FRAME_OFFSET)) {
+        if ((number < 0) || (number > MAX_FRAME_OFFSET)) {
             throw new IllegalArgumentRangeException(1,
                     MAX_FRAME_OFFSET, number);
         }

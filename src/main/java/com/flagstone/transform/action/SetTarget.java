@@ -78,11 +78,10 @@ public final class SetTarget implements Action {
      * target.
      *
      * @param aString
-     *            the name of a movie clip. Must not be null or zero length
-     *            string.
+     *            the name of a movie clip. Must not be null.
      */
     public SetTarget(final String aString) {
-        if (aString == null || aString.length() == 0) {
+        if (aString == null) {
             throw new IllegalArgumentException();
         }
         target = aString;
