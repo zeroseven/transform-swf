@@ -141,6 +141,15 @@ public final class Push implements Action {
             objects.add(value);
             return this;
         }
+		
+		/**
+		 * Clear the list of values added to the Builder.
+		 * @return this object.
+		 */
+		public Builder clear() {
+		    objects.clear();
+			return this;
+	    }
 
         /**
          * Generate a Push using the set of values defined in the Builder.
