@@ -213,36 +213,6 @@ public final class EventHandler implements SWFEncodeable,
         MENU_EVENTS.put(BIT8, Event.DRAG_OUT);
     }
 
-    /**
-     * Get the set of movie clip events represented by the compound event code.
-     * @param code the compound event code with bits set for each event.
-     * @return the set of Events representing the code.
-     */
-    public static Set<Event> getMovieClipEvents(final int code) {
-        Set<Event> set = EnumSet.noneOf(Event.class);
-        for (Map.Entry<Integer, Event> entry : CLIP_EVENTS.entrySet()) {
-            if ((entry.getKey() & code) > 0) {
-                set.add(entry.getValue());
-            }
-        }
-        return set;
-    }
-
-    /**
-     * Get the set of button events represented by the compound event code.
-     * @param code the compound event code with bits set for each event.
-     * @return the set of Events representing the code.
-     */
-    public static Set<Event> getButtonEvents(final int code) {
-        Set<Event> set = EnumSet.noneOf(Event.class);
-        for (Map.Entry<Integer, Event> entry : BUTTON_EVENTS.entrySet()) {
-            if ((entry.getKey() & code) > 0) {
-                set.add(entry.getValue());
-            }
-        }
-        return set;
-    }
-
     /** The events that the handler responds to. */
     private Set<Event> events;
     /** The code representing keyboard shortcut for the handler. */
