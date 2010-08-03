@@ -31,6 +31,10 @@
 
 package com.flagstone.transform;
 
+import java.nio.charset.Charset;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 /**
  * CharacterEncoding is used to identify the encoding used for characters in
  * strings stored in the movie.
@@ -50,9 +54,41 @@ public enum CharacterEncoding {
      * Defines that the characters in a font or string are encoded using
      * Unicode (UTF-8).
      */
-    UTF8("UTF8"),
+    UTF8("UTF-8"),
+    /**
+     * MS932 is an alias for Microsoft's extension to Shift-JIS. It is not
+     * clear whether the same set of extensions is used in CP932.
+     */
     MS932("MS932"),
+    /**
+     * Defines that the characters in a font or string are encoded using
+     * Microsoft's extensions (Code Page 932) to the SJIS standard for
+     * representing Kanji characters.
+     */
     CP932("CP932");
+
+    /** Table used to map CharSet canonical names to a CharacterEncoding */
+    private static final Map<String, CharacterEncoding> TABLE =
+        new LinkedHashMap <String, CharacterEncoding>();
+
+    static {
+        for (final CharacterEncoding set : values()) {
+            TABLE.put(set.encoding, set);
+        }
+    }
+
+    /**
+     * Get the Blend that is identified by an integer value. This method is
+     * used when decoding a Blend from a Flash file.
+     *
+     * @param type
+     *            the integer value read from a Flash file.
+     *
+     * @return the Blend identified by the integer value.
+     */
+    public static CharacterEncoding fromCharSet(Charset set) {
+    	return TABLE.get(set.name());
+    }
 
     /** Holds character set encoding name used in Java. */
     private String encoding;
