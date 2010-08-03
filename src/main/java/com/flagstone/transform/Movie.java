@@ -348,7 +348,7 @@ public final class Movie implements Copyable<Movie> {
      * @throws DataFormatException
      *             if an error occurs when compressing the flash file.
      */
-    private void encodeToStream(final OutputStream stream)
+    public void encodeToStream(final OutputStream stream)
             throws DataFormatException, IOException {
 
         OutputStream streamOut = null;
