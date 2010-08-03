@@ -50,7 +50,9 @@ public enum CharacterEncoding {
      * Defines that the characters in a font or string are encoded using
      * Unicode (UTF-8).
      */
-    UTF8("UTF8");
+    UTF8("UTF8"),
+    MS932("MS932"),
+    CP932("CP932");
 
     /** Holds character set encoding name used in Java. */
     private String encoding;
