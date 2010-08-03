@@ -111,6 +111,8 @@ public final class ActionTypes {
     public static final int CAST = 43;
     /** The type used to identify Implements action when encoded. */
     public static final int IMPLEMENTS = 44;
+    /** The type used to identify FSCommand2 action when encoded. */
+    public static final int FS_COMMAND2 = 45;
     /** The type used to identify RandomNumber action when encoded. */
     public static final int RANDOM_NUMBER = 48;
     /** The type used to identify MBStringLength action when encoded. */

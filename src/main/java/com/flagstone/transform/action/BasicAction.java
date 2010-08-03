@@ -143,6 +143,8 @@ public enum BasicAction implements Action {
     CAST(ActionTypes.CAST),
     /** Identifies a class implements a defined interface. */
     IMPLEMENTS(ActionTypes.IMPLEMENTS),
+    /** FSCommand2 function */
+    FS_COMMAND2(ActionTypes.FS_COMMAND2),
     /** Push a random number onto the stack. */
     RANDOM_NUMBER(ActionTypes.RANDOM_NUMBER),
     /** Get the length of an multi-byte string. */
