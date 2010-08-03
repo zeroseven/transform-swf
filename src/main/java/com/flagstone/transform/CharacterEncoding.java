@@ -78,13 +78,14 @@ public enum CharacterEncoding {
     }
 
     /**
-     * Get the Blend that is identified by an integer value. This method is
-     * used when decoding a Blend from a Flash file.
+     * Get the ChanrcterEncoding that is identified by the canonical name of
+     * a CharSet object.
      *
-     * @param type
-     *            the integer value read from a Flash file.
+     * @param set
+     *            the CharSet.
      *
-     * @return the Blend identified by the integer value.
+     * @return the CharacterEncoding that matches the canonical name of the
+     * CharSet.
      */
     public static CharacterEncoding fromCharSet(Charset set) {
     	return TABLE.get(set.name());
