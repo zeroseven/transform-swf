@@ -56,6 +56,11 @@ public enum CharacterEncoding {
      */
     UTF8("UTF-8"),
     /**
+     * Microsoft's extension to Shift-JIS.
+     * MS932, windows-932, and csWindows31J are all known aliases of this character set.
+     */
+    WINDOWS31J("windows-31j"),
+    /**
      * MS932 is an alias for Microsoft's extension to Shift-JIS. It is not
      * clear whether the same set of extensions is used in CP932.
      */
