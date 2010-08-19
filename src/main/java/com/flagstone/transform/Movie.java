@@ -258,7 +258,7 @@ public final class Movie implements Copyable<Movie> {
         try {
             final Context context = new Context();
             context.setRegistry(registry);
-            context.setEncoding(encoding.toString());
+            context.setEncoding(encoding.getEncoding());
 
             final byte[] signature = new byte[SIGNATURE_LENGTH];
             stream.read(signature);
@@ -357,7 +357,7 @@ public final class Movie implements Copyable<Movie> {
             final MovieHeader header = (MovieHeader) objects.get(0);
 
             final Context context = new Context();
-            context.setEncoding(encoding.toString());
+            context.setEncoding(encoding.getEncoding());
             context.put(Context.VERSION, header.getVersion());
 
             // length of signature, version, length and end
