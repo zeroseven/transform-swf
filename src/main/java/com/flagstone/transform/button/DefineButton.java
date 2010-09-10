@@ -99,7 +99,7 @@ public final class DefineButton implements DefineTag {
             length = coder.readInt();
         }
         coder.mark();
-      //  identifier = coder.readUnsignedShort();
+        identifier = coder.readUnsignedShort();
         shapes = new ArrayList<ButtonShape>();
 
         while (coder.scanByte() != 0) {
