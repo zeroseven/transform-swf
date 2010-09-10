@@ -99,6 +99,7 @@ public final class DefineButton implements DefineTag {
             length = coder.readInt();
         }
         coder.mark();
+      //  identifier = coder.readUnsignedShort();
         shapes = new ArrayList<ButtonShape>();
 
         while (coder.scanByte() != 0) {
@@ -161,12 +162,14 @@ public final class DefineButton implements DefineTag {
     }
 
     /** {@inheritDoc} */
-    public int getIdentifier() {
+    @Override
+	public int getIdentifier() {
         return identifier;
     }
 
     /** {@inheritDoc} */
-    public void setIdentifier(final int uid) {
+    @Override
+	public void setIdentifier(final int uid) {
         if ((uid < 1) || (uid > Coder.USHORT_MAX)) {
             throw new IllegalArgumentRangeException(
                     1, Coder.USHORT_MAX, uid);
@@ -251,7 +254,8 @@ public final class DefineButton implements DefineTag {
     }
 
     /** {@inheritDoc} */
-    public DefineButton copy() {
+    @Override
+	public DefineButton copy() {
         return new DefineButton(this);
     }
 
@@ -261,7 +265,8 @@ public final class DefineButton implements DefineTag {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final Context context) {
+    @Override
+	public int prepareToEncode(final Context context) {
         length = 2;
 
         for (final ButtonShape shape : shapes) {
@@ -279,7 +284,8 @@ public final class DefineButton implements DefineTag {
     }
 
     /** {@inheritDoc} */
-    public void encode(final SWFEncoder coder, final Context context)
+    @Override
+	public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
         if (length > Coder.HEADER_LIMIT) {
             coder.writeShort((MovieTypes.DEFINE_BUTTON
