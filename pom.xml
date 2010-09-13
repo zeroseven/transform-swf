@@ -51,12 +51,6 @@
             <unsubscribe>http://lists.sourceforge.net/lists/listinfo/transform-swf-updates</unsubscribe>
             <archive>http://sourceforge.net/mailarchive/forum.php?forum_name=transform-swf-updates</archive>
         </mailingList>
-        <mailingList>
-            <name>Java Updates</name>
-            <subscribe>http://flagstonesoftware.com/mailman/listinfo/java-updates_flagstonesoftware.com</subscribe>
-            <unsubscribe>http://flagstonesoftware.com/mailman/listinfo/java-updates_flagstonesoftware.com</unsubscribe>
-            <archive>http://flagstonesoftware.com/pipermail/java-updates_flagstonesoftware.com/</archive>
-        </mailingList>
     </mailingLists>
 	
 	<issueManagement>
@@ -95,15 +89,6 @@
 				<version>2.5</version>
 				<configuration>
 					<testFailureIgnore>true</testFailureIgnore>
-				</configuration>
-			</plugin>
-			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>2.2-beta-5</version>
-				<configuration>
-				    <descriptors>
-					    <descriptor>src/main/assembly/dist.xml</descriptor>
-					</descriptors>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -182,6 +167,24 @@
                   </execution>
                 </executions>
 		    </plugin>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.2-beta-5</version>
+				<configuration>
+				    <descriptors>
+					    <descriptor>src/main/assembly/dist.xml</descriptor>
+					</descriptors>
+				</configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id> <!-- this is used for inheritance merges -->
+                        <phase>verify</phase> <!-- append to the packaging phase. -->
+                        <goals>
+                            <goal>single</goal> <!-- goals == mojos -->
+                        </goals>
+                    </execution>
+                </executions>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-gpg-plugin</artifactId>
