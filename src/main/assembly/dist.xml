@@ -14,6 +14,7 @@
         <include>LICENSE*</include>
         <include>build.xml</include>
       </includes>
+      <filtered>true</filtered>
     </fileSet>
     <fileSet>
       <directory>${project.build.directory}</directory>

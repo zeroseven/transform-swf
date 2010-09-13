@@ -39,13 +39,11 @@
     </description>
 
 	<property name="src.dir" location="src" />
-	<property name="lib.dir" location="lib" />
 	<property name="build.dir" location="bin" />
 
-	<property name="package.name" value="transform" />
-	<property name="package.dir" value="com/flagstone/${package.name}" />
+	<property name="package.dir" value="com/flagstone/${project.artifactId}" />
 
-    <property name="version" value="3.0-SNAPSHOT" />
+    <property name="version" value="${project.version}" />
 
 	<!-- **********************************************************
          Major targets for compiling and packaging the classes.
@@ -60,7 +58,7 @@
 
 	<target name="clean" description="Remove all the compiled classes">
 		<delete dir="${build.dir}" failonerror="false" />
-		<delete file="${package.name}.jar" failonerror="false" />
+		<delete file="${project.artifactId}.jar" failonerror="false" />
 	</target>
 
 	<target name="debug" description="Compile debug versions of the classes">
@@ -88,7 +86,7 @@
 
 	<target name="jar" description="Package all of the classes in a JAR file">
 
-		<jar jarfile="${package.name}-${version}.jar">
+		<jar jarfile="${project.artifactId}-${version}.jar">
 			<fileset dir="${build.dir}">
 				<include name="${package.dir}/**" />
 			</fileset>
