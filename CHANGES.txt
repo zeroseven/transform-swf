@@ -1,0 +1,14 @@
+-------------------------------------------------
+  Release Notes for Transform SWF, Version ${project.version} 
+-------------------------------------------------
+
+Version 3.0 is a completely new version of the Transform SWF library that 
+supports all versions of Flash up to and including Flash 10.
+
+For the existing users of Transform SWF this version has the same approach of
+providing a low-level API which exposes all the data structures in a Flash file. 
+Files will still be generated and parsed in the same way. Although the code
+has been heavily refactored and generally cleaned up porting code from 
+Transform 2 should be very simple and extensive rewrites will not be
+necessary.
+
