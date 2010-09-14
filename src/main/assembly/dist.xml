@@ -12,6 +12,7 @@
       <includes>
         <include>README*</include>
         <include>LICENSE*</include>
+        <include>CHANGES*</include>
         <include>build.xml</include>
       </includes>
       <filtered>true</filtered>
