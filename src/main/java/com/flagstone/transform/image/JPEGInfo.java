@@ -66,6 +66,8 @@ public final class JPEGInfo {
     public static final int RST = 0xFFD0;
     /** Marks the start of an application specific block. */
     public static final int APP = 0xFFE0;
+    /** Marks the start of an comment block. */
+    public static final int COM = 0xFFFE;
 
     /** The width of the image. */
     private transient int width;

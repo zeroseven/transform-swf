@@ -63,12 +63,14 @@ public final class JPGDecoder implements ImageProvider, ImageDecoder {
     private transient byte[] image = new byte[0];
 
     /** {@inheritDoc} */
-    public void read(final File file) throws IOException, DataFormatException {
+    @Override
+	public void read(final File file) throws IOException, DataFormatException {
         read(new FileInputStream(file));
     }
 
     /** {@inheritDoc} */
-    public void read(final URL url) throws IOException, DataFormatException {
+    @Override
+	public void read(final URL url) throws IOException, DataFormatException {
         final URLConnection connection = url.openConnection();
 
         if (!connection.getContentType().equals("image/bmp")) {
@@ -85,17 +87,20 @@ public final class JPGDecoder implements ImageProvider, ImageDecoder {
     }
 
     /** {@inheritDoc} */
-    public ImageTag defineImage(final int identifier) {
+    @Override
+	public ImageTag defineImage(final int identifier) {
         return new DefineJPEGImage2(identifier, image);
     }
 
     /** {@inheritDoc} */
-    public ImageDecoder newDecoder() {
+    @Override
+	public ImageDecoder newDecoder() {
         return new JPGDecoder();
     }
 
     /** {@inheritDoc} */
-     public void read(final InputStream stream)
+     @Override
+	public void read(final InputStream stream)
                  throws DataFormatException, IOException {
 
          final BigDecoder coder = new BigDecoder(stream);
@@ -114,10 +119,18 @@ public final class JPGDecoder implements ImageProvider, ImageDecoder {
                  case JPEGInfo.SOF2:
                  case JPEGInfo.DHT:
                  case JPEGInfo.DQT:
-                 case JPEGInfo.DRI:
+                 case JPEGInfo.COM:
+                     length = coder.readUnsignedShort();
+                     copyTag(marker, length, coder);
+                     break;
                  case JPEGInfo.SOS:
                      length = coder.readUnsignedShort();
                      copyTag(marker, length, coder);
+                     readEntropyData(coder);
+                     break;
+                 case JPEGInfo.DRI:
+                     copyTag(marker, 0, coder);
+                     readEntropyData(coder);
                      break;
                  default:
                      if ((marker & JPEGInfo.APP) == JPEGInfo.APP) {
@@ -157,18 +170,67 @@ public final class JPGDecoder implements ImageProvider, ImageDecoder {
         System.arraycopy(bytes, 0, image, imgLength, bytes.length);
     }
 
-     /** {@inheritDoc} */
-    public int getWidth() {
+    private void readEntropyData(final BigDecoder coder) throws IOException {
+        byte[] bytes = new byte[2048];
+        int index = 0;
+        int current;
+        int next;
+
+        do {
+        	coder.mark();
+        	current = coder.readByte();
+
+        	if (current == 255) {
+        		next = coder.readByte();
+
+        		if (next != 0) {
+            		if (index > 0) {
+                        int imgLength = image.length;
+                        image = Arrays.copyOf(image, imgLength + index);
+                        System.arraycopy(bytes, 0, image, imgLength, index);
+                        index = 0;
+            		}
+        			coder.reset();
+        			break;
+        		} else {
+            		if (index + 2 >= bytes.length) {
+                        int imgLength = image.length;
+                        image = Arrays.copyOf(image, imgLength + index);
+                        System.arraycopy(bytes, 0, image, imgLength, index);
+                        index = 0;
+            		}
+            		bytes[index++] = (byte)current;
+            		bytes[index++] = (byte)next;
+        		}
+        	} else {
+        		if (index >= bytes.length) {
+                    int imgLength = image.length;
+                    image = Arrays.copyOf(image, imgLength + bytes.length);
+                    System.arraycopy(bytes, 0, image, imgLength, bytes.length);
+                    index = 0;
+        		}
+        		bytes[index++] = (byte)current;
+        	}
+        	coder.unmark();
+
+        } while (true);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+	public int getWidth() {
         return width;
     }
 
     /** {@inheritDoc} */
-    public int getHeight() {
+    @Override
+	public int getHeight() {
         return height;
     }
 
     /** {@inheritDoc} */
-    public byte[] getImage() {
+    @Override
+	public byte[] getImage() {
         return Arrays.copyOf(image, image.length);
     }
 }
