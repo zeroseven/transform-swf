@@ -159,7 +159,7 @@ public final class ImageShape {
 
         final ShapeTag definition;
 
-        if (border instanceof LineStyle1) {
+        if (border == null || border instanceof LineStyle1) {
             definition = new DefineShape3(uid, bounds,
                     new ArrayList<FillStyle>(), new ArrayList<LineStyle>(),
                     shape);
