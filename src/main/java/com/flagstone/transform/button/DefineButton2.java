@@ -214,12 +214,14 @@ public final class DefineButton2 implements DefineTag {
     }
 
     /** {@inheritDoc} */
-    public int getIdentifier() {
+    @Override
+	public int getIdentifier() {
         return identifier;
     }
 
     /** {@inheritDoc} */
-    public void setIdentifier(final int uid) {
+    @Override
+	public void setIdentifier(final int uid) {
         if ((uid < 1) || (uid > Coder.USHORT_MAX)) {
             throw new IllegalArgumentRangeException(
                     1, Coder.USHORT_MAX, uid);
@@ -332,7 +334,8 @@ public final class DefineButton2 implements DefineTag {
     }
 
     /** {@inheritDoc} */
-    public DefineButton2 copy() {
+    @Override
+	public DefineButton2 copy() {
         return new DefineButton2(this);
     }
 
@@ -343,7 +346,8 @@ public final class DefineButton2 implements DefineTag {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final Context context) {
+    @Override
+	public int prepareToEncode(final Context context) {
         // CHECKSTYLE:OFF - Fixed length when encoded.
         context.put(Context.TYPE, MovieTypes.DEFINE_BUTTON_2);
         context.put(Context.TRANSPARENT, 1);
@@ -357,7 +361,7 @@ public final class DefineButton2 implements DefineTag {
         if (events.isEmpty()) {
             offset = 0;
         } else {
-            offset = length - 7;
+            offset = length - 3;
         }
 
         EventHandler handler;
@@ -386,7 +390,8 @@ public final class DefineButton2 implements DefineTag {
     }
 
     /** {@inheritDoc} */
-    public void encode(final SWFEncoder coder, final Context context)
+    @Override
+	public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
 
         context.put(Context.TYPE, MovieTypes.DEFINE_BUTTON_2);
