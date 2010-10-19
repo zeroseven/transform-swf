@@ -2,13 +2,30 @@
   Release Notes for Transform SWF, Version ${project.version} 
 -------------------------------------------------
 
-Version 3.0 is a completely new version of the Transform SWF library that 
-supports all versions of Flash up to and including Flash 10.
+-------------
+  Bug Fixes
+-------------
 
-For the existing users of Transform SWF this version has the same approach of
-providing a low-level API which exposes all the data structures in a Flash file. 
-Files will still be generated and parsed in the same way. Although the code
-has been heavily refactored and generally cleaned up porting code from 
-Transform 2 should be very simple and extensive rewrites will not be
-necessary.
+3082031. JPG files throw an exception.
+
+   JPEG files where the image data contained an odd number of bytes would cause
+   a overflow exception will be thrown by the JPGDecoder.
+   
+3088088. DefineButton2 does not execute actions.
+
+   The actions in DefineButton2 are not executed. The problem is the way the 
+   object is encoded. There is an offset, in bytes, that indicates the size of 
+   the encoded button shape records. This offset was calculated incorrectly so 
+   Flash Player did not load the event handlers for the button correctly. 
+  
+--------------
+  Maven Site
+--------------
+
+1. Added content previously hosted on SourceForge using Trac into Maven site
+   files. The combination of these files (project description, feature list 
+   and code example) along with the pages generated from the Maven POM and 
+   project reporting make up the project portal which is targeted at project
+   developers with the main Flagstone web site targeting users of Transform.
+
 
