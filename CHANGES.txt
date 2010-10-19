@@ -28,4 +28,12 @@
    project reporting make up the project portal which is targeted at project
    developers with the main Flagstone web site targeting users of Transform.
 
+-----------------
+  Project Files
+-----------------
 
+1. Cleaned up checkstyle and pmd rules files.
+
+   The checkstyle rules are now in checkstyle.xml while suppressions.xml has
+   local changes for the project. The files .checkstyle and .pmd were deleted -
+   PMD is run using the default set of rules.
