@@ -246,6 +246,7 @@
                 <version>2.5</version>
 				<configuration>
 					<encoding>UTF-8</encoding>
+					<configLocation>checkstyle.xml</configLocation>					
 				</configuration>
 			</plugin>
 			<plugin>
