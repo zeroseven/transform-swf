@@ -33,8 +33,8 @@ package com.flagstone.transform.fillstyle;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -67,7 +67,7 @@ public final class FocalGradientFillTest {
     private final transient byte[] encoded = new byte[] {};
 
     @Test
-    @Ignore 
+    @Ignore
     public void checkCopy() {
         // fixture = new FocalGradientFill(type, transform, list);
         final FocalGradientFill copy = fixture.copy();
@@ -77,7 +77,7 @@ public final class FocalGradientFillTest {
     }
 
     @Test
-    @Ignore 
+    @Ignore
     public void encode() throws IOException {
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         final SWFEncoder encoder = new SWFEncoder(stream);
@@ -92,7 +92,7 @@ public final class FocalGradientFillTest {
     }
 
     @Test
-    @Ignore 
+    @Ignore
     public void decode() throws IOException {
         final ByteArrayInputStream stream = new ByteArrayInputStream(encoded);
         final SWFDecoder decoder = new SWFDecoder(stream);
@@ -101,6 +101,6 @@ public final class FocalGradientFillTest {
         decoder.readByte();
         fixture = new FocalGradientFill(decoder, context);
 
-        assertTrue(true);
+        assertNotNull(fixture);
     }
 }

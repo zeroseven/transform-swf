@@ -38,6 +38,7 @@ import org.junit.Test;
 
 import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
+@SuppressWarnings({"PMD.TooManyMethods" })
 public final class ColorTest {
 
     @Test
@@ -135,10 +136,5 @@ public final class ColorTest {
     @Test
     public void checkObjectIsNotEqual() {
         assertFalse(new Color(0, 0, 0).equals(new Object()));
-    }
-
-    @Test
-    public void checkNullIsNotEqual() {
-        assertFalse(new Color(0, 0, 0).equals(null));
     }
 }

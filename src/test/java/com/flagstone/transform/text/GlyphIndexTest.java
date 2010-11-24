@@ -32,7 +32,7 @@
 package com.flagstone.transform.text;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -78,7 +78,7 @@ public final class GlyphIndexTest {
 
         fixture = new GlyphIndex(decoder, context);
 
-        assertTrue(true);
+        assertNotNull(fixture);
     }
 
     @Test
@@ -90,6 +90,6 @@ public final class GlyphIndexTest {
 
         fixture = new GlyphIndex(decoder, context);
 
-        assertTrue(true);
+        assertNotNull(fixture);
     }
 }

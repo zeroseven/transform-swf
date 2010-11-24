@@ -78,7 +78,7 @@ public final class MovieDecodeIT {
     @Parameters
     public static Collection<Object[]>  files() {
 
-        final File srcDir;
+        File srcDir;
 
         if (System.getProperty("test.suite") == null) {
             srcDir = new File("src/test/resources/swf-reference");
@@ -87,13 +87,14 @@ public final class MovieDecodeIT {
         }
 
         final FilenameFilter filter = new FilenameFilter() {
-            public boolean accept(final File directory, final String name) {
+            @Override
+			public boolean accept(final File directory, final String name) {
                 return name.endsWith(".swf");
             }
         };
 
-        String[] files = srcDir.list(filter);
-        Object[][] collection = new Object[files.length][1];
+        final String[] files = srcDir.list(filter);
+        final Object[][] collection = new Object[files.length][1];
 
         for (int i = 0; i < files.length; i++) {
             collection[i][0] = new File(srcDir, files[i]);
@@ -101,7 +102,7 @@ public final class MovieDecodeIT {
         return Arrays.asList(collection);
     }
 
-    private final File file;
+    private final transient File file;
 
     public MovieDecodeIT(final File movieFile) {
         file = movieFile;
@@ -110,12 +111,12 @@ public final class MovieDecodeIT {
     @Test
     public void decode() {
         try {
-            Movie movie = new Movie();
+        	final Movie movie = new Movie();
             movie.setRegistry(registry);
             movie.decodeFromFile(file);
         } catch (Exception e) {
             if (TRACE != null) {
-                e.printStackTrace();
+                e.printStackTrace(); //NOPMD
             }
             if (PROFILE == null) {
                 fail(file.getPath());

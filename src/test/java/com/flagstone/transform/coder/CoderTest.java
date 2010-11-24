@@ -35,7 +35,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-
+@SuppressWarnings({"PMD.TooManyMethods" })
 public final class CoderTest {
 
     @Test

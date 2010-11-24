@@ -42,13 +42,14 @@ import com.flagstone.transform.datatype.CoordTransform;
 
 public final class Place2CodingTest extends AbstractCodingTest {
 
+	private static final int LAYER = 1;
+	private static final int IDENTIFIER = 2;
+	private static final int XCOORD = 1;
+	private static final int YCOORD = 2;
+
     @Test
     public void checkAddWithPositionLengthForEncoding() throws IOException {
-        final int layer = 1;
-        final int identifier = 2;
-        final int xcoord = 1;
-        final int ycoord = 2;
-        final Place2 object = Place2.show(identifier, layer, xcoord, ycoord);
+        final Place2 object = Place2.show(IDENTIFIER, LAYER, XCOORD, YCOORD);
 
         final byte[] binary = new byte[] {(byte) 0x87, 0x06, 0x06, 0x01, 0x00,
                 0x02, 0x00, 0x06, 0x50};
@@ -58,11 +59,7 @@ public final class Place2CodingTest extends AbstractCodingTest {
 
     @Test
     public void checkAddWithPositionIsEncoded() throws IOException {
-        final int layer = 1;
-        final int identifier = 2;
-        final int xcoord = 1;
-        final int ycoord = 2;
-        final Place2 object = Place2.show(identifier, layer, xcoord, ycoord);
+        final Place2 object = Place2.show(IDENTIFIER, LAYER, XCOORD, YCOORD);
 
         final byte[] binary = new byte[] {(byte) 0x87, 0x06, 0x06, 0x01, 0x00,
                 0x02, 0x00, 0x06, 0x50};
@@ -72,33 +69,29 @@ public final class Place2CodingTest extends AbstractCodingTest {
 
     @Test
     public void checkAddWithPositionIsDecoded() throws IOException {
-        final int layer = 1;
-        final int identifier = 2;
         final CoordTransform transform = CoordTransform.translate(1, 2);
 
         final byte[] binary = new byte[] {(byte) 0x87, 0x06, 0x06, 0x01, 0x00,
                 0x02, 0x00, 0x06, 0x50};
 
-        Place2 object = (Place2) decodeMovieTag(binary);
-        assertEquals(NOT_DECODED, identifier, object.getIdentifier());
-        assertEquals(NOT_DECODED, layer, object.getLayer());
+        final Place2 object = (Place2) decodeMovieTag(binary);
+        assertEquals(NOT_DECODED, IDENTIFIER, object.getIdentifier());
+        assertEquals(NOT_DECODED, LAYER, object.getLayer());
         assertEquals(NOT_DECODED, transform, object.getTransform());
         assertEquals(NOT_DECODED, null, object.getColorTransform());
    }
 
     @Test
     public void checkPlaceWithColorIsDecoded() throws IOException {
-        final int layer = 1;
-        final int identifier = 2;
         final CoordTransform position = CoordTransform.translate(1, 2);
         final ColorTransform color = new ColorTransform(1, 2, 3, 4);
 
         final byte[] binary = new byte[] {(byte) 0x8A, 0x06, 0x0E, 0x01, 0x00,
                 0x02, 0x00, 0x06, 0x50, (byte) 0x90, 0x48, (byte) 0xD0 };
 
-        Place2 object = (Place2) decodeMovieTag(binary);
-        assertEquals(NOT_DECODED, identifier, object.getIdentifier());
-        assertEquals(NOT_DECODED, layer, object.getLayer());
+        final Place2 object = (Place2) decodeMovieTag(binary);
+        assertEquals(NOT_DECODED, IDENTIFIER, object.getIdentifier());
+        assertEquals(NOT_DECODED, LAYER, object.getLayer());
         assertEquals(NOT_DECODED, position, object.getTransform());
         assertEquals(NOT_DECODED, color, object.getColorTransform());
    }

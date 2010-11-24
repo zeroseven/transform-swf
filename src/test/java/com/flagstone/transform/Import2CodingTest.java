@@ -41,6 +41,8 @@ import org.junit.Test;
 
 public final class Import2CodingTest extends AbstractCodingTest {
 
+	private static final String URL = "ABC";
+
     @Test
     public void checkImport2LengthForEncoding() throws IOException {
         final Map<Integer, String>map = new LinkedHashMap<Integer, String>();
@@ -48,7 +50,7 @@ public final class Import2CodingTest extends AbstractCodingTest {
         map.put(2, "B");
         map.put(3, "C");
 
-        final Import2 object = new Import2("ABC", map);
+        final Import2 object = new Import2(URL, map);
         final byte[] binary = new byte[] {(byte) 0xD4, 0x11, 0x41, 0x42, 0x43,
                 0x00, 0x01, 0x00, 0x03, 0x00, 0x01, 0x00, 0x41, 0x00, 0x02,
                 0x00, 0x42, 0x00, 0x03, 0x00, 0x43, 0x00 };
@@ -63,7 +65,7 @@ public final class Import2CodingTest extends AbstractCodingTest {
         map.put(2, "B");
         map.put(3, "C");
 
-        final Import2 object = new Import2("ABC", map);
+        final Import2 object = new Import2(URL, map);
         final byte[] binary = new byte[] {(byte) 0xD4, 0x11, 0x41, 0x42, 0x43,
                 0x00, 0x01, 0x00, 0x03, 0x00, 0x01, 0x00, 0x41, 0x00, 0x02,
                 0x00, 0x42, 0x00, 0x03, 0x00, 0x43, 0x00 };
@@ -82,8 +84,8 @@ public final class Import2CodingTest extends AbstractCodingTest {
                 0x00, 0x01, 0x00, 0x03, 0x00, 0x01, 0x00, 0x41, 0x00, 0x02,
                 0x00, 0x42, 0x00, 0x03, 0x00, 0x43, 0x00 };
 
-        Import2 object = (Import2) decodeMovieTag(binary);
-        assertEquals(NOT_DECODED, "ABC", object.getUrl());
+        final Import2 object = (Import2) decodeMovieTag(binary);
+        assertEquals(NOT_DECODED, URL, object.getUrl());
         assertEquals(NOT_DECODED, map, object.getObjects());
     }
 
@@ -99,8 +101,8 @@ public final class Import2CodingTest extends AbstractCodingTest {
                 0x00, 0x41, 0x00, 0x02, 0x00, 0x42, 0x00, 0x03, 0x00, 0x43,
                 0x00 };
 
-        Import2 object = (Import2) decodeMovieTag(binary);
-        assertEquals(NOT_DECODED, "ABC", object.getUrl());
+        final Import2 object = (Import2) decodeMovieTag(binary);
+        assertEquals(NOT_DECODED, URL, object.getUrl());
         assertEquals(NOT_DECODED, map, object.getObjects());
    }
 }

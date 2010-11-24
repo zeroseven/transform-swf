@@ -68,12 +68,13 @@ public final class BufferedImagePNGEncoderIT {
         }
 
         final FilenameFilter filter = new FilenameFilter() {
-            public boolean accept(final File directory, final String name) {
+            @Override
+			public boolean accept(final File directory, final String name) {
                 return name.endsWith(".png");
             }
         };
 
-        String[] files = srcDir.list(filter);
+        final String[] files = srcDir.list(filter);
         Object[][] collection = new Object[files.length][2];
 
         for (int i = 0; i < files.length; i++) {
@@ -83,8 +84,8 @@ public final class BufferedImagePNGEncoderIT {
         return Arrays.asList(collection);
     }
 
-    private final File sourceFile;
-    private final File destFile;
+    private final transient File sourceFile;
+    private final transient File destFile;
 
     public BufferedImagePNGEncoderIT(final File src, final File dst) {
         sourceFile = src;
@@ -101,21 +102,21 @@ public final class BufferedImagePNGEncoderIT {
             final ImageTag imgIn = factory.defineImage(1);
 
             encoder.setImage(imgIn);
-            BufferedImage imgOut = encoder.getBufferedImage();
+            final BufferedImage imgOut = encoder.getBufferedImage();
             imgOut.flush();
             ImageIO.write(imgOut, "png", destFile);
 
         } catch (IIOException e) {
             if (System.getProperty("test.trace") != null) {
-                e.printStackTrace();
+                e.printStackTrace(); //NOPMD
             }
         } catch (DataFormatException e) {
             if (System.getProperty("test.trace") != null) {
-                e.printStackTrace();
+                e.printStackTrace(); //NOPMD
             }
         } catch (Exception e) {
             if (System.getProperty("test.trace") != null) {
-                e.printStackTrace();
+                e.printStackTrace(); //NOPMD
             }
             if (!sourceFile.getName().startsWith("x")) {
                 fail(sourceFile.getPath());

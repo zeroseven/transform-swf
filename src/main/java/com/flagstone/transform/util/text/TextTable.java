@@ -202,12 +202,12 @@ public final class TextTable {
     public DefineText2 defineTextBlock(final int uid, final List<String> lines,
             final Color color, final int lineSpacing) {
         final CoordTransform transform = CoordTransform.translate(0, 0);
+
         int xMin = 0;
         int yMin = 0;
         int xMax = 0;
         int yMax = 0;
 
-        final int xOffset = 0;
         int yOffset = ascent;
 
         final ArrayList<TextSpan> spans = new ArrayList<TextSpan>();
@@ -219,7 +219,7 @@ public final class TextTable {
         yOffset += lineSpacing, lineNumber++) {
             text = i.next();
 
-            spans.add(new TextSpan(identifier, size, color, xOffset, yOffset,
+            spans.add(new TextSpan(identifier, size, color, 0, yOffset,
                     charactersForText(text)));
 
             final Bounds bounds = boundsForText(text);

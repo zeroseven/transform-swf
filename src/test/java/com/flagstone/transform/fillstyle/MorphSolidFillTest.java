@@ -35,7 +35,6 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -103,7 +102,6 @@ public final class MorphSolidFillTest {
         decoder.readByte();
         fixture = new MorphSolidFill(decoder, context);
 
-        assertTrue(true);
         assertEquals(startColor.getRed(), fixture.getStartColor().getRed());
         assertEquals(startColor.getGreen(), fixture.getStartColor().getGreen());
         assertEquals(startColor.getBlue(), fixture.getStartColor().getBlue());

@@ -57,11 +57,13 @@ import com.flagstone.transform.shape.ShapeTag;
  * display images in a Flash file.
  */
 public final class ImageShape {
-
+	/** The number of twips in a pixel. */
     private static final int TWIPS_PER_PIXEL = 20;
-
+    /** The horizontal alignment of the image. */
     private transient HorizontalAlign xAlign;
+    /** The vertical alignment of the image. */
     private transient VerticalAlign yAlign;
+    /** The style used to draw the outline, if any of the shape. */
     private transient LineStyle style;
 
     /**
@@ -157,7 +159,7 @@ public final class ImageShape {
         final Shape shape = getShape(xOrigin, yOrigin,
                 image.getWidth(), image.getHeight(), border);
 
-        final ShapeTag definition;
+        ShapeTag definition;
 
         if (border == null || border instanceof LineStyle1) {
             definition = new DefineShape3(uid, bounds,
@@ -181,10 +183,20 @@ public final class ImageShape {
         return definition;
     }
 
+    /**
+     * Get the bound box that encloses the shape taking into account the
+     * thickness of the outline.
+     * @param xOrigin the x-coordinate of the origin.
+     * @param yOrigin the y-coordinate of the origin.
+     * @param width the width of the image.
+     * @param height the height of the image.
+     * @param border the style used to draw the outline around the image.
+     * @return the bounding box that completely encloses the shape.
+     */
     private Bounds getBounds(final int xOrigin, final int yOrigin,
             final int width, final int height, final LineStyle border) {
 
-        final int lineWidth;
+        int lineWidth;
 
         if (border instanceof LineStyle1) {
             lineWidth = ((LineStyle1) border).getWidth() / 2;
@@ -203,6 +215,14 @@ public final class ImageShape {
         return bounds;
     }
 
+    /**
+     * Get the bound box that encloses the shape.
+     * @param xOrigin the x-coordinate of the origin.
+     * @param yOrigin the y-coordinate of the origin.
+     * @param width the width of the image.
+     * @param height the height of the image.
+     * @return the bounding box that encloses the shape.
+     */
     private Bounds getEdges(final int xOrigin, final int yOrigin,
             final int width, final int height) {
 
@@ -214,6 +234,15 @@ public final class ImageShape {
 
     }
 
+    /**
+     * Get the shape used to display the image.
+     * @param xOrigin the x-coordinate of the origin.
+     * @param yOrigin the y-coordinate of the origin.
+     * @param width the width of the image.
+     * @param height the height of the image.
+     * @param border the style used to draw the outline around the image.
+     * @return the shape definition size correctly to display the image.
+     */
     private Shape getShape(final int xOrigin, final int yOrigin,
             final int width, final int height, final LineStyle border) {
         final Shape shape = new Shape(new ArrayList<ShapeRecord>());
@@ -243,6 +272,14 @@ public final class ImageShape {
         return shape;
     }
 
+    /**
+     * Return the fill style that references the image and scales it to the
+     * correct size.
+     * @param uid the unique identifier of the image.
+     * @param xOrigin the x-coordinate of the image origin.
+     * @param yOrigin the y-coordinate of the image origin.
+     * @return the FillStyle used to display the image.
+     */
     private FillStyle getFillStyle(final int uid,
             final int xOrigin, final int yOrigin) {
 

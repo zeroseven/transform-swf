@@ -44,12 +44,13 @@ import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 
+@SuppressWarnings({"PMD.TooManyMethods" })
 public final class ColorTransformCodingTest extends AbstractCodingTest {
 
     @Test
     public void checkOpaqueAddTermsAreEncoded() throws IOException {
         final ColorTransform object = new ColorTransform(1, 2, 3, 0);
-        final byte[] binary = new byte[] { (byte) 0x8C, (byte) 0xA6 };
+        final byte[] binary = new byte[] {(byte) 0x8C, (byte) 0xA6 };
 
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         final SWFEncoder encoder = new SWFEncoder(stream);
@@ -67,7 +68,7 @@ public final class ColorTransformCodingTest extends AbstractCodingTest {
     @Test
     public void checkOpaqueAddTermsAreDecoded() throws IOException {
         final ColorTransform object = new ColorTransform(1, 2, 3, 0);
-        final byte[] binary = new byte[] { (byte) 0x8C, (byte) 0xA6 };
+        final byte[] binary = new byte[] {(byte) 0x8C, (byte) 0xA6 };
 
         final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
         final SWFDecoder decoder = new SWFDecoder(stream);
@@ -78,7 +79,7 @@ public final class ColorTransformCodingTest extends AbstractCodingTest {
 
     @Test
     public void checkOpaqueMultiplyTermsAreDefaults() throws IOException {
-        final byte[] binary = new byte[] { (byte) 0x8C, (byte) 0xA6 };
+        final byte[] binary = new byte[] {(byte) 0x8C, (byte) 0xA6 };
 
         final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
         final SWFDecoder decoder = new SWFDecoder(stream);
@@ -96,7 +97,7 @@ public final class ColorTransformCodingTest extends AbstractCodingTest {
         final ColorTransform object =
             new ColorTransform(1.0f, 2.0f, 3.0f, 0.0f);
         final byte[] binary =
-            new byte[] { 0x6C, (byte) 0x80, 0x20, 0x06, 0x00 };
+            new byte[] {0x6C, (byte) 0x80, 0x20, 0x06, 0x00 };
 
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         final SWFEncoder encoder = new SWFEncoder(stream);
@@ -116,7 +117,7 @@ public final class ColorTransformCodingTest extends AbstractCodingTest {
         final ColorTransform object =
             new ColorTransform(1.0f, 2.0f, 3.0f, 1.0f);
         final byte[] binary =
-            new byte[] { 0x6C, (byte) 0x80, 0x20, 0x06, 0x00 };
+            new byte[] {0x6C, (byte) 0x80, 0x20, 0x06, 0x00 };
 
         final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
         final SWFDecoder decoder = new SWFDecoder(stream);
@@ -128,7 +129,7 @@ public final class ColorTransformCodingTest extends AbstractCodingTest {
     @Test
     public void checkOpaqueAddTermsAreDefaults() throws IOException {
         final byte[] binary =
-            new byte[] { 0x6C, (byte) 0x80, 0x20, 0x06, 0x00 };
+            new byte[] {0x6C, (byte) 0x80, 0x20, 0x06, 0x00 };
 
         final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
         final SWFDecoder decoder = new SWFDecoder(stream);
@@ -198,7 +199,7 @@ public final class ColorTransformCodingTest extends AbstractCodingTest {
     @Test
     public void checkTransparentAddTermsAreDecoded() throws IOException {
         final ColorTransform object = new ColorTransform(1, 2, 3, 4);
-        final byte[] binary = new byte[] { (byte) 0x90, 0x48, (byte) 0xD0 };
+        final byte[] binary = new byte[] {(byte) 0x90, 0x48, (byte) 0xD0 };
 
         final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
         final SWFDecoder decoder = new SWFDecoder(stream);
@@ -211,7 +212,7 @@ public final class ColorTransformCodingTest extends AbstractCodingTest {
     @Test
     public void checkTransparentMultiplyTermsAreDefaults()
                 throws IOException {
-        final byte[] binary = new byte[] { (byte) 0x90, 0x48, (byte) 0xD0 };
+        final byte[] binary = new byte[] {(byte) 0x90, 0x48, (byte) 0xD0 };
 
         final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
         final SWFDecoder decoder = new SWFDecoder(stream);
@@ -230,7 +231,7 @@ public final class ColorTransformCodingTest extends AbstractCodingTest {
         final ColorTransform object =
             new ColorTransform(1.0f, 2.0f, 3.0f, 4.0f);
         final byte[] binary =
-            new byte[] { 0x70, 0x40, 0x08, 0x00, (byte) 0xC0, 0x10, 0x00 };
+            new byte[] {0x70, 0x40, 0x08, 0x00, (byte) 0xC0, 0x10, 0x00 };
 
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         final SWFEncoder encoder = new SWFEncoder(stream);
@@ -252,7 +253,7 @@ public final class ColorTransformCodingTest extends AbstractCodingTest {
         final ColorTransform object =
             new ColorTransform(1.0f, 2.0f, 3.0f, 4.0f);
         final byte[] binary =
-            new byte[] { 0x70, 0x40, 0x08, 0x00, (byte) 0xC0, 0x10, 0x00 };
+            new byte[] {0x70, 0x40, 0x08, 0x00, (byte) 0xC0, 0x10, 0x00 };
 
         final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
         final SWFDecoder decoder = new SWFDecoder(stream);
@@ -265,7 +266,7 @@ public final class ColorTransformCodingTest extends AbstractCodingTest {
     @Test
     public void checkTransparentAddTermsAreDefaults() throws IOException {
         final byte[] binary =
-            new byte[] { 0x70, 0x40, 0x08, 0x00, (byte) 0xC0, 0x10, 0x00 };
+            new byte[] {0x70, 0x40, 0x08, 0x00, (byte) 0xC0, 0x10, 0x00 };
 
         final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
         final SWFDecoder decoder = new SWFDecoder(stream);

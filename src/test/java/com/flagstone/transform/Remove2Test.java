@@ -37,7 +37,7 @@ import org.junit.Test;
 
 public final class Remove2Test {
 
-    private final transient int layer = 1;
+    private static final int LAYER = 1;
 
     private transient Remove2 fixture;
 
@@ -53,7 +53,7 @@ public final class Remove2Test {
 
     @Test
     public void checkCopy() {
-        fixture = new Remove2(layer);
+        fixture = new Remove2(LAYER);
         final Remove2 copy = fixture.copy();
 
         assertNotSame(fixture, copy);

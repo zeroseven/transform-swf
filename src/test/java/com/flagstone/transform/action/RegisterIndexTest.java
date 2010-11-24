@@ -36,13 +36,14 @@ import org.junit.Test;
 
 public final class RegisterIndexTest {
 
+	private static final int INDEX = 10;
+
     private transient RegisterIndex fixture;
 
     @Test
     public void checkConstructorSetsIndex() {
-        final int index = 10;
-        fixture = new RegisterIndex(index);
-        assertEquals(index, fixture.getNumber());
+        fixture = new RegisterIndex(INDEX);
+        assertEquals(INDEX, fixture.getNumber());
     }
 
     @Test(expected = IllegalArgumentException.class)

@@ -87,7 +87,7 @@ public final class CoordTransformCodingTest extends AbstractCodingTest {
     @Test
     public void checkShearIsEncoded() throws IOException {
         final CoordTransform object = CoordTransform.shear(1.0f, 2.0f);
-        final byte[] binary = new byte[] { 0x66, 0x40, 0x00, 0x10, 0x00,
+        final byte[] binary = new byte[] {0x66, 0x40, 0x00, 0x10, 0x00,
                 0x00, 0x40 };
 
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -106,7 +106,7 @@ public final class CoordTransformCodingTest extends AbstractCodingTest {
     @Test
     public void checkShearIsDecoded() throws IOException {
         final CoordTransform object = CoordTransform.shear(1.0f, 2.0f);
-        final byte[] binary = new byte[] { 0x66, 0x40, 0x00, 0x10, 0x00,
+        final byte[] binary = new byte[] {0x66, 0x40, 0x00, 0x10, 0x00,
                 0x00, 0x40 };
 
         final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
@@ -118,7 +118,7 @@ public final class CoordTransformCodingTest extends AbstractCodingTest {
     @Test
     public void checkTranslationIsEncoded() throws IOException {
         final CoordTransform object = CoordTransform.translate(1, 2);
-        final byte[] binary = new byte[] { 0x06, 0x50 };
+        final byte[] binary = new byte[] {0x06, 0x50 };
 
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         final SWFEncoder encoder = new SWFEncoder(stream);
@@ -136,7 +136,7 @@ public final class CoordTransformCodingTest extends AbstractCodingTest {
     @Test
     public void checkTranslationIsDecoded() throws IOException {
         final CoordTransform object = CoordTransform.translate(1, 2);
-        final byte[] binary = new byte[] { 0x06, 0x50 };
+        final byte[] binary = new byte[] {0x06, 0x50 };
 
         final ByteArrayInputStream stream = new ByteArrayInputStream(binary);
         final SWFDecoder decoder = new SWFDecoder(stream);

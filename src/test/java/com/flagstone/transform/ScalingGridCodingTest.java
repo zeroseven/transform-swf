@@ -67,7 +67,7 @@ public final class ScalingGridCodingTest extends AbstractCodingTest {
         final byte[] binary = new byte[] {(byte) 0x85, 0x13, 0x01, 0x00, 0x20,
                 (byte) 0x99, 0x20};
 
-        ScalingGrid object = (ScalingGrid) decodeMovieTag(binary);
+        final ScalingGrid object = (ScalingGrid) decodeMovieTag(binary);
         assertEquals(NOT_DECODED, 1, object.getIdentifier());
         assertEquals(NOT_DECODED, bounds, object.getBounds());
    }
@@ -78,7 +78,7 @@ public final class ScalingGridCodingTest extends AbstractCodingTest {
         final byte[] binary = new byte[] {(byte) 0xBF, 0x13, 0x05, 0x00, 0x00,
                 0x00, 0x01, 0x00, 0x20, (byte) 0x99, 0x20};
 
-        ScalingGrid object = (ScalingGrid) decodeMovieTag(binary);
+        final ScalingGrid object = (ScalingGrid) decodeMovieTag(binary);
         assertEquals(NOT_DECODED, 1, object.getIdentifier());
         assertEquals(NOT_DECODED, bounds, object.getBounds());
    }

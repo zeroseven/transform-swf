@@ -193,7 +193,6 @@ public final class DefineFont3 implements DefineTag {
         }
 
         Shape shape;
-        byte[] data;
 
         for (int i = 0; i < glyphCount; i++) {
             shape = new Shape();
@@ -298,12 +297,14 @@ public final class DefineFont3 implements DefineTag {
     }
 
     /** {@inheritDoc} */
-    public int getIdentifier() {
+    @Override
+	public int getIdentifier() {
         return identifier;
     }
 
     /** {@inheritDoc} */
-    public void setIdentifier(final int uid) {
+    @Override
+	public void setIdentifier(final int uid) {
         if ((uid < 1) || (uid > Coder.USHORT_MAX)) {
             throw new IllegalArgumentRangeException(
                     1, Coder.USHORT_MAX, uid);
@@ -748,7 +749,8 @@ public final class DefineFont3 implements DefineTag {
     }
 
     /** {@inheritDoc} */
-    public DefineFont3 copy() {
+    @Override
+	public DefineFont3 copy() {
         return new DefineFont3(this);
     }
 
@@ -760,7 +762,8 @@ public final class DefineFont3 implements DefineTag {
     }
 
     /** {@inheritDoc} */
-    @SuppressWarnings("PMD.NPathComplexity")
+    @Override
+	@SuppressWarnings("PMD.NPathComplexity")
     public int prepareToEncode(final Context context) {
         // CHECKSTYLE:OFF
         wideCodes = (context.get(Context.VERSION) > 5)
@@ -830,7 +833,8 @@ public final class DefineFont3 implements DefineTag {
     }
 
     /** {@inheritDoc} */
-    @SuppressWarnings("PMD.NPathComplexity")
+    @Override
+	@SuppressWarnings("PMD.NPathComplexity")
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
         int format;

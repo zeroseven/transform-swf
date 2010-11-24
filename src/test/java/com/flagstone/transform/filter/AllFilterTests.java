@@ -38,7 +38,6 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
     BevelFilterTest.class, BlurFilterTest.class,
     ColorMatrixFilterTest.class, ConvolutionFilterTest.class,
-    DropShadowFilterTest.class, GlowFilterTest.class,
-    GradientBevelFilterTest.class, GradientGlowFilterTest.class })
-public final class AllFilterTests {
+    GradientGlowFilterTest.class })
+public final class AllFilterTests { //NOPMD class for defining test suite
 }

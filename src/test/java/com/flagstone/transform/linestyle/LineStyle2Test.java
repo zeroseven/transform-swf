@@ -35,7 +35,6 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -51,8 +50,8 @@ import com.flagstone.transform.datatype.Color;
 
 public final class LineStyle2Test {
 
-    private final transient int width = 1;
-    private final transient Color color = new Color(2, 3, 4);
+    private static final int WIDTH = 1;
+    private static final Color COLOR = new Color(2, 3, 4);
 
     private transient LineStyle2 fixture;
 
@@ -60,9 +59,9 @@ public final class LineStyle2Test {
             0x03, 0x04 };
 
     @Test
-    @Ignore 
+    @Ignore
     public void checkCopy() {
-        fixture = new LineStyle2(width, color);
+        fixture = new LineStyle2(WIDTH, COLOR);
         final LineStyle2 copy = fixture.copy();
 
         assertNotSame(fixture, copy);
@@ -71,13 +70,13 @@ public final class LineStyle2Test {
     }
 
     @Test
-    @Ignore 
+    @Ignore
     public void encode() throws IOException {
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         final SWFEncoder encoder = new SWFEncoder(stream);
         final Context context = new Context();
 
-        fixture = new LineStyle2(width, color);
+        fixture = new LineStyle2(WIDTH, COLOR);
         assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
 
@@ -86,7 +85,7 @@ public final class LineStyle2Test {
     }
 
     @Test
-    @Ignore 
+    @Ignore
     public void decode() throws IOException {
         final ByteArrayInputStream stream = new ByteArrayInputStream(encoded);
         final SWFDecoder decoder = new SWFDecoder(stream);
@@ -94,11 +93,10 @@ public final class LineStyle2Test {
 
         fixture = new LineStyle2(decoder, context);
 
-        assertTrue(true);
-        assertEquals(width, fixture.getWidth());
-        assertEquals(color.getRed(), fixture.getColor().getRed());
-        assertEquals(color.getGreen(), fixture.getColor().getGreen());
-        assertEquals(color.getBlue(), fixture.getColor().getBlue());
-        assertEquals(color.getAlpha(), fixture.getColor().getAlpha());
+        assertEquals(WIDTH, fixture.getWidth());
+        assertEquals(COLOR.getRed(), fixture.getColor().getRed());
+        assertEquals(COLOR.getGreen(), fixture.getColor().getGreen());
+        assertEquals(COLOR.getBlue(), fixture.getColor().getBlue());
+        assertEquals(COLOR.getAlpha(), fixture.getColor().getAlpha());
     }
 }

@@ -83,10 +83,15 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
     /** Byte offset to alpha channel. */
     private static final int ALPHA = 3;
 
+    /** The image pixels occupy 1 bit. */
     private static final int DEPTH_1 = 1;
+    /** The image pixels occupy 2 bits. */
     private static final int DEPTH_2 = 2;
+    /** The image pixels occupy 4 bits. */
     private static final int DEPTH_4 = 4;
+    /** The image pixels occupy 8 bits. */
     private static final int DEPTH_8 = 8;
+    /** The image pixels occupy 16 bits. */
     private static final int DEPTH_16 = 16;
 
 
@@ -198,12 +203,14 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
     private transient byte[] image;
 
     /** {@inheritDoc} */
-    public ImageDecoder newDecoder() {
+    @Override
+	public ImageDecoder newDecoder() {
         return new PNGDecoder();
     }
 
     /** {@inheritDoc} */
-    public void read(final File file) throws IOException, DataFormatException {
+    @Override
+	public void read(final File file) throws IOException, DataFormatException {
         final ImageInfo info = new ImageInfo();
         info.setInput(new RandomAccessFile(file, "r"));
 //        info.setDetermineImageNumber(true);
@@ -216,7 +223,8 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
     }
 
     /** {@inheritDoc} */
-    public void read(final URL url) throws IOException, DataFormatException {
+    @Override
+	public void read(final URL url) throws IOException, DataFormatException {
         final URLConnection connection = url.openConnection();
         final int length = connection.getContentLength();
 
@@ -228,7 +236,8 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
     }
 
     /** {@inheritDoc} */
-    public ImageTag defineImage(final int identifier) {
+    @Override
+	public ImageTag defineImage(final int identifier) {
         ImageTag object = null;
         final ImageFilter filter = new ImageFilter();
 
@@ -286,7 +295,8 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
     }
 
     /** {@inheritDoc} */
-    public void read(final InputStream stream)
+    @Override
+	public void read(final InputStream stream)
             throws DataFormatException, IOException {
 
         final BigDecoder coder = new BigDecoder(stream);
@@ -353,6 +363,10 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
         decodeFormat();
     }
 
+    /**
+     * Decode the image format.
+     * @throws DataFormatException if the image is in an unsupported format.
+     */
     private void decodeFormat() throws DataFormatException {
         switch (colorType) {
         case GREYSCALE:
@@ -493,6 +507,11 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
         }
     }
 
+    /**
+     * Decode an interlaced image.
+     * @throws IOException if there is an error reading the image data.
+     * @throws DataFormatException if the image is in an unsupported format.
+     */
     private void decodeInterlaced() throws IOException, DataFormatException {
 
         final byte[] encodedImage = unzip(chunkData);
@@ -541,6 +560,11 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
         }
     }
 
+    /**
+     * Decode a progressive-scan image.
+     * @throws IOException if there is an error reading the image data.
+     * @throws DataFormatException if the image is in an unsupported format.
+     */
     private void decodeProgressive() throws IOException, DataFormatException {
 
         final byte[] data = unzip(chunkData);
@@ -582,6 +606,14 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
         }
     }
 
+    /**
+     * Reverse the filter applied to the pixel data.
+     * @param filter the filter type.
+     * @param size the offset in the row to the start of the encoded data.
+     * @param scan the number of bytes in the block
+     * @param current the pixel data in the encoded image row.
+     * @param previous the pixel data from the previous row.
+     */
     private void defilter(final int filter, final int size, final int scan,
             final byte[] current, final byte[] previous) {
         switch (filter) {
@@ -602,6 +634,12 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
         }
     }
 
+    /**
+     * Reverse the sub-filter applied to the pixel data.
+     * @param start the offset in the row to the start of the encoded data.
+     * @param count the number of bytes in the block
+     * @param current the pixel data in the encoded image row.
+     */
     private void subFilter(final int start, final int count,
             final byte[] current) {
         for (int i = start, j = 0; i < count; i++, j++) {
@@ -609,6 +647,12 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
        }
     }
 
+    /**
+     * Reverse the up-filter applied to the pixel data.
+     * @param count the number of bytes in the block
+     * @param current the pixel data in the encoded image row.
+     * @param previous the pixel data from the previous row.
+     */
     private void upFilter(final int count, final byte[] current,
             final byte[] previous) {
         for (int i = 0; i < count; i++) {
@@ -616,6 +660,13 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
         }
     }
 
+    /**
+     * Reverse the average filter applied to the pixel data.
+     * @param start the offset in the row to the start of the encoded data.
+     * @param count the number of bytes in the block
+     * @param current the pixel data in the encoded image row.
+     * @param previous the pixel data from the previous row.
+     */
     private void averageFilter(final int start, final int count,
             final byte[] current, final byte[] previous) {
 
@@ -633,6 +684,13 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
         }
     }
 
+    /**
+     * Reverse the Paeth filter applied to the pixel data.
+     * @param start the offset in the row to the start of the encoded data.
+     * @param count the number of bytes in the block
+     * @param current the pixel data in the encoded image row.
+     * @param previous the pixel data from the previous row.
+     */
     private void paethFilter(final int start, final int count,
             final byte[] current, final byte[] previous) {
 
@@ -680,7 +738,7 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
             distUpperLeft = -distUpperLeft;
         }
 
-        final int value;
+        int value;
 
         if ((distLeft <= distAbove) && (distLeft <= distUpperLeft)) {
             value = left;
@@ -693,6 +751,16 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
         return value;
     }
 
+    /**
+     * Decode a block of image data.
+     * @param row the current row in the decoded image.
+     * @param current the encoded block data.
+     * @param start the offset in the image row.
+     * @param inc the size of each pixel.
+     * @throws IOException if there is an error reading the data.
+     * @throws DataFormatException if the image is encoded in an unsupported
+     * format.
+     */
     private void deblock(final int row, final byte[] current,
             final int start, final int inc)
             throws IOException, DataFormatException {
@@ -956,18 +1024,21 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
     }
 
     /** {@inheritDoc} */
-    public int getWidth() {
+    @Override
+	public int getWidth() {
         return width;
     }
 
 
     /** {@inheritDoc} */
-    public int getHeight() {
+    @Override
+	public int getHeight() {
         return height;
     }
 
     /** {@inheritDoc} */
-    public byte[] getImage() {
+    @Override
+	public byte[] getImage() {
         return Arrays.copyOf(image, image.length);
     }
 }

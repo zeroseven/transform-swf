@@ -39,9 +39,11 @@ import org.junit.Test;
 
 public final class SerialNumberCodingTest extends AbstractCodingTest {
 
+	private static final String SERIAL_NUMBER = "ABC123";
+
     @Test
     public void checkSerialNumberLengthForEncoding() throws IOException {
-        final SerialNumber object = new SerialNumber("ABC123");
+        final SerialNumber object = new SerialNumber(SERIAL_NUMBER);
         final byte[] binary = new byte[] {0x47, 0x0A, 0x41, 0x42, 0x43, 0x31,
                 0x32, 0x33, 0x00  };
 
@@ -50,7 +52,7 @@ public final class SerialNumberCodingTest extends AbstractCodingTest {
 
     @Test
     public void checkSerialNumberIsEncoded() throws IOException {
-        final SerialNumber object = new SerialNumber("ABC123");
+        final SerialNumber object = new SerialNumber(SERIAL_NUMBER);
         final byte[] binary = new byte[] {0x47, 0x0A, 0x41, 0x42, 0x43, 0x31,
                 0x32, 0x33, 0x00  };
 
@@ -62,8 +64,8 @@ public final class SerialNumberCodingTest extends AbstractCodingTest {
         final byte[] binary = new byte[] {0x47, 0x0A, 0x41, 0x42, 0x43, 0x31,
                 0x32, 0x33, 0x00  };
 
-        SerialNumber object = (SerialNumber) decodeMovieTag(binary);
-        assertEquals(NOT_DECODED, "ABC123", object.getNumber());
+        final SerialNumber object = (SerialNumber) decodeMovieTag(binary);
+        assertEquals(NOT_DECODED, SERIAL_NUMBER, object.getNumber());
    }
 
     @Test
@@ -71,7 +73,7 @@ public final class SerialNumberCodingTest extends AbstractCodingTest {
         final byte[] binary = new byte[] {0x7F, 0x0A, 0x07, 0x00, 0x00, 0x00,
                 0x41, 0x42, 0x43, 0x31, 0x32, 0x33, 0x00  };
 
-        SerialNumber object = (SerialNumber) decodeMovieTag(binary);
-        assertEquals(NOT_DECODED, "ABC123", object.getNumber());
+        final SerialNumber object = (SerialNumber) decodeMovieTag(binary);
+        assertEquals(NOT_DECODED, SERIAL_NUMBER, object.getNumber());
    }
 }

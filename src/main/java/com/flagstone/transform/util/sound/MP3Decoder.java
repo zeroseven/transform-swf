@@ -54,12 +54,17 @@ import com.flagstone.transform.sound.SoundStreamHead2;
  */
 @SuppressWarnings("PMD.TooManyMethods")
 public final class MP3Decoder implements SoundProvider, SoundDecoder {
-
+	/** The bit mask to obtain the ID3 identifier. */
     private static final int ID3_MASK = 0xFFFFFF00;
+    /** Value identifying ID3 Version 1 meta-data. */
     private static final int ID3_V1 = 0x54414700;
+    /** The length of the meta-data block in ID3 Version 1. */
     private static final int ID3_V1_LENGTH = 128;
+    /** Value identifying ID3 Version 2 meta-data. */
     private static final int ID3_V2 = 0x49443300;
+    /** The number of bytes in the footer of an ID3 V2 meta-data block. */
     private static final int ID3_V2_FOOTER = 10;
+    /** Mask to identify whether the header contains MP3 sync data. */
     private static final int MP3_SYNC = 0xFFE00000;
 
     /** The version number of the MPEG sound format. In this case 3 for MP3. */
@@ -91,6 +96,7 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
     /** The number of bytes in each sample. */
     private static final int SAMPLE_SIZE = 2;
 
+    /** The frame rate of the movie where the MP3 sound will be played. */
     private transient float movieRate;
     /** The number of sound channels: 1 - mono, 2 - stereo. */
     private transient int numberOfChannels;
@@ -108,17 +114,20 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
     private transient int samplesPerFrame = 0;
     /** The contents of the current MP3 frame. */
     private transient byte[] frame;
-
+    /** Actual number of samples streamed so far. */
     private transient int actualSamples;
+    /** Expected number of samples streamed based on the movie frame rate. */
     private transient int expectedSamples;
 
     /** {@inheritDoc} */
-    public SoundDecoder newDecoder() {
+    @Override
+	public SoundDecoder newDecoder() {
         return new MP3Decoder();
     }
 
     /** {@inheritDoc} */
-    public void read(final File file) throws IOException, DataFormatException {
+    @Override
+	public void read(final File file) throws IOException, DataFormatException {
         final FileInputStream stream = new FileInputStream(file);
         try {
             read(stream);
@@ -130,7 +139,8 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
     }
 
     /** {@inheritDoc} */
-    public void read(final URL url) throws IOException, DataFormatException {
+    @Override
+	public void read(final URL url) throws IOException, DataFormatException {
         final URLConnection connection = url.openConnection();
         final int fileSize = connection.getContentLength();
 
@@ -150,7 +160,8 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
     }
 
     /** {@inheritDoc} */
-    public void read(final InputStream stream)
+    @Override
+	public void read(final InputStream stream)
             throws IOException, DataFormatException {
         coder = new BigDecoder(stream);
         readFrame();
@@ -158,7 +169,8 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
     }
 
     /** {@inheritDoc} */
-    public DefineSound defineSound(final int identifier)
+    @Override
+	public DefineSound defineSound(final int identifier)
             throws IOException, DataFormatException {
 
         int length;
@@ -175,7 +187,8 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
     }
 
     /** {@inheritDoc} */
-    public DefineSound defineSound(final int identifier, final float duration)
+    @Override
+	public DefineSound defineSound(final int identifier, final float duration)
             throws IOException, DataFormatException {
 
         sound = new byte[2];
@@ -197,7 +210,8 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
     }
 
     /** {@inheritDoc} */
-    public MovieTag streamHeader(final float frameRate) {
+    @Override
+	public MovieTag streamHeader(final float frameRate) {
         movieRate = frameRate;
         return new SoundStreamHead2(SoundFormat.MP3, sampleRate,
                 numberOfChannels, SAMPLE_SIZE, sampleRate, numberOfChannels,
@@ -205,7 +219,8 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
     }
 
     /** {@inheritDoc} */
-    public MovieTag streamSound() throws IOException, DataFormatException {
+    @Override
+	public MovieTag streamSound() throws IOException, DataFormatException {
         final int seek = expectedSamples > 0
                 ?  actualSamples - expectedSamples : 0;
 
@@ -238,6 +253,12 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
         return block;
     }
 
+    /**
+     * Read a MP3 frame.
+     * @return true if a frame was read.
+     * @throws IOException if there is an error reading the data.
+     * @throws DataFormatException if the sound is not in MP3 format.
+     */
     private boolean readFrame() throws IOException, DataFormatException {
         boolean frameRead = false;
         int header;
@@ -259,11 +280,21 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
         return !coder.eof();
     }
 
+    /**
+     * Read the ID3 V1 meta-data.
+     * @throws IOException if there is an error reading the data.
+     * @throws DataFormatException if the ID3 V1 header cannot be decoded.
+     */
     private void readID3V1()
             throws IOException, DataFormatException {
         coder.skip(ID3_V1_LENGTH);
     }
 
+    /**
+     * Read the ID3 V2 meta-data.
+     * @throws IOException if there is an error reading the data.
+     * @throws DataFormatException if the ID3 V2 header cannot be decoded.
+     */
     private void readID3V2()
             throws IOException, DataFormatException {
         coder.readByte(); // I
@@ -287,6 +318,12 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
         coder.skip(length);
     }
 
+    /**
+     * Read an MP3 sync frame.
+     * @param header the header tag containing the MP3 data.
+     * @throws IOException if there is an error reading the data.
+     * @throws DataFormatException if the header cannot be decoded.
+     */
     private void readFrame(final int header)
             throws IOException, DataFormatException {
 

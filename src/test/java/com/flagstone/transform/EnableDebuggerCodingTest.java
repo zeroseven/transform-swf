@@ -39,9 +39,11 @@ import org.junit.Test;
 
 public final class EnableDebuggerCodingTest extends AbstractCodingTest {
 
-    @Test
+	private static final String PASSWORD = "ABC123";
+
+	@Test
     public void checkEnableDebuggerLengthForEncoding() throws IOException {
-        final EnableDebugger object = new EnableDebugger("ABC123");
+        final EnableDebugger object = new EnableDebugger(PASSWORD);
         final byte[] binary = new byte[] {(byte) 0x89, 0x0E, 0x00, 0x00, 0x41,
                 0x42, 0x43, 0x31, 0x32, 0x33, 0x00 };
 
@@ -50,7 +52,7 @@ public final class EnableDebuggerCodingTest extends AbstractCodingTest {
 
     @Test
     public void checkEnableDebuggerIsEncoded() throws IOException {
-        final EnableDebugger object = new EnableDebugger("ABC123");
+        final EnableDebugger object = new EnableDebugger(PASSWORD);
         final byte[] binary = new byte[] {(byte) 0x89, 0x0E, 0x00, 0x00, 0x41,
                 0x42, 0x43, 0x31, 0x32, 0x33, 0x00 };
 
@@ -62,8 +64,8 @@ public final class EnableDebuggerCodingTest extends AbstractCodingTest {
         final byte[] binary = new byte[] {(byte) 0x89, 0x0E, 0x00, 0x00, 0x41,
                 0x42, 0x43, 0x31, 0x32, 0x33, 0x00 };
 
-        EnableDebugger object = (EnableDebugger) decodeMovieTag(binary);
-        assertEquals(NOT_DECODED, "ABC123", object.getPassword());
+        final EnableDebugger object = (EnableDebugger) decodeMovieTag(binary);
+        assertEquals(NOT_DECODED, PASSWORD, object.getPassword());
    }
 
     @Test
@@ -71,7 +73,7 @@ public final class EnableDebuggerCodingTest extends AbstractCodingTest {
         final byte[] binary = new byte[] {(byte) 0xBF, 0x0E, 0x09, 0x00, 0x00,
                 0x00, 0x00, 0x00, 0x41, 0x42, 0x43, 0x31, 0x32, 0x33, 0x00 };
 
-        EnableDebugger object = (EnableDebugger) decodeMovieTag(binary);
-        assertEquals(NOT_DECODED, "ABC123", object.getPassword());
+        final EnableDebugger object = (EnableDebugger) decodeMovieTag(binary);
+        assertEquals(NOT_DECODED, PASSWORD, object.getPassword());
    }
 }

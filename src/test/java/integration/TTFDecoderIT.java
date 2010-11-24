@@ -60,6 +60,10 @@ import com.flagstone.transform.util.text.TextTable;
 @RunWith(Parameterized.class)
 public final class TTFDecoderIT {
 
+    private static final int FONT_TWIP_SIZE = 720;
+    private static final int TEXT_PADDING = 100;
+    private static final String ALPHABET = "abcXYZɑ4ßº€éêöã";
+
     @Parameters
     public static Collection<Object[]> files() {
 
@@ -72,13 +76,14 @@ public final class TTFDecoderIT {
         }
 
         final FilenameFilter filter = new FilenameFilter() {
-            public boolean accept(final File directory, final String name) {
+            @Override
+			public boolean accept(final File directory, final String name) {
                 return name.endsWith(".ttf");
             }
         };
 
-        String[] files = srcDir.list(filter);
-        Object[][] collection = new Object[files.length][2];
+        final String[] files = srcDir.list(filter);
+        final Object[][] collection = new Object[files.length][2];
 
         for (int i = 0; i < files.length; i++) {
             collection[i][0] = new File(srcDir, files[i]);
@@ -88,8 +93,8 @@ public final class TTFDecoderIT {
         return Arrays.asList(collection);
     }
 
-    private final File sourceFile;
-    private final File destFile;
+    private final transient File sourceFile;
+    private final transient File destFile;
 
     public TTFDecoderIT(final File src, final File dst) {
         sourceFile = src;
@@ -99,29 +104,26 @@ public final class TTFDecoderIT {
     @Test
     public void showFont() {
         try {
-            final int fontSize = 720;
-            final int padding = 100;
-            String alphabet = "abcXYZɑ4ßº€éêöã";
-
             final TTFDecoder fontDecoder = new TTFDecoder();
             fontDecoder.read(sourceFile);
             final Font font = fontDecoder.getFonts().get(0);
 
             final CharacterSet set = new CharacterSet();
-            set.add(alphabet);
+            set.add(ALPHABET);
 
             final Movie movie = new Movie();
             int uid = 1;
 
             final DefineFont2 definition = font.defineFont(uid++,
                     set.getCharacters());
-            final TextTable textTable = new TextTable(definition, fontSize);
+            final TextTable textTable = new TextTable(definition,
+            		FONT_TWIP_SIZE);
             final Bounds bounds = Bounds.pad(
-                    textTable.boundsForText(alphabet), padding);
+                    textTable.boundsForText(ALPHABET), TEXT_PADDING);
             final DefineText2 text = textTable.defineText(uid++,
-                    alphabet, WebPalette.BLACK.color());
+            		ALPHABET, WebPalette.BLACK.color());
 
-            MovieHeader attrs = new MovieHeader();
+            final MovieHeader attrs = new MovieHeader();
             attrs.setFrameSize(bounds);
             attrs.setFrameRate(1.0f);
 
@@ -135,7 +137,7 @@ public final class TTFDecoderIT {
 
         } catch (Exception e) {
             if (System.getProperty("test.trace") != null) {
-                e.printStackTrace();
+                e.printStackTrace(); //NOPMD
             }
             fail(sourceFile.getName());
         }

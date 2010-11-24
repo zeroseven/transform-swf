@@ -59,7 +59,14 @@ import com.flagstone.transform.video.ScreenPacket;
 import com.flagstone.transform.video.VideoFormat;
 import com.flagstone.transform.video.VideoFrame;
 
+@SuppressWarnings({"PMD.ExcessiveMethodLength" })
 public final class ScreenVideoIT {
+
+    private static final int BLOCK_WIDTH = 64;
+    private static final int BLOCK_HEIGHT = 64;
+    private static final VideoFormat CODEC = VideoFormat.SCREEN;
+    private static final Deblocking DEBLOCKING = Deblocking.OFF;
+    private static final boolean SMOOTHING = false;
 
     @Test
     public void showPNG() throws IOException, DataFormatException {
@@ -73,7 +80,8 @@ public final class ScreenVideoIT {
         }
 
         final FilenameFilter filter = new FilenameFilter() {
-            public boolean accept(final File directory, final String name) {
+            @Override
+			public boolean accept(final File directory, final String name) {
                 return name.endsWith(".png");
             }
         };
@@ -85,28 +93,22 @@ public final class ScreenVideoIT {
 
         File destFile = null;
 
-        final int blockWidth = 64;
-        final int blockHeight = 64;
-
         final int numberOfFrames = files.length;
-        final Deblocking deblocking = Deblocking.OFF;
-        final boolean smoothing = false;
-        final VideoFormat codec = VideoFormat.SCREEN;
         int identifier;
 
         final ImageFactory factory = new ImageFactory();
         factory.read(new File(sourceDir, files[0]));
         ImageDecoder decoder = factory.getDecoder();
 
-        ImageBlocker blocker = new ImageBlocker();
+        final ImageBlocker blocker = new ImageBlocker();
 
-        int screenWidth = decoder.getWidth();
-        int screenHeight = decoder.getHeight();
+        final int screenWidth = decoder.getWidth();
+        final int screenHeight = decoder.getHeight();
 
         movie = new Movie();
         identifier = uid++;
 
-        MovieHeader attrs = new MovieHeader();
+        final MovieHeader attrs = new MovieHeader();
         attrs.setFrameSize(new Bounds(0, 0, screenWidth * 20,
                         screenHeight * 20));
         attrs.setFrameRate(4.0f);
@@ -115,17 +117,17 @@ public final class ScreenVideoIT {
         movie.add(new Background(WebPalette.ALICE_BLUE.color()));
 
         movie.add(new DefineVideo(identifier, numberOfFrames, screenWidth,
-                screenHeight, deblocking, smoothing, codec));
+                screenHeight, DEBLOCKING, SMOOTHING, CODEC));
 
         final List<ImageBlock> prev = new ArrayList<ImageBlock>();
         final List<ImageBlock> next = new ArrayList<ImageBlock>();
         List<ImageBlock> delta = new ArrayList<ImageBlock>();
 
-        blocker.getImageAsBlocks(prev, blockWidth, blockHeight,
+        blocker.getImageAsBlocks(prev, BLOCK_WIDTH, BLOCK_HEIGHT,
                 decoder.getWidth(), decoder.getHeight(), decoder.getImage());
 
         ScreenPacket packet = new ScreenPacket(true, screenWidth, screenHeight,
-                blockWidth, blockHeight, prev);
+                BLOCK_WIDTH, BLOCK_HEIGHT, prev);
 
         movie.add(Place2.show(identifier, 1, 0, 0));
         movie.add(new VideoFrame(identifier, 1, packet.encode()));
@@ -139,7 +141,7 @@ public final class ScreenVideoIT {
             factory.read(srcFile);
             decoder = factory.getDecoder();
 
-            blocker.getImageAsBlocks(next, blockWidth, blockHeight,
+            blocker.getImageAsBlocks(next, BLOCK_WIDTH, BLOCK_HEIGHT,
                     decoder.getWidth(), decoder.getHeight(),
                     decoder.getImage());
 
@@ -154,7 +156,7 @@ public final class ScreenVideoIT {
             }
 
             packet = new ScreenPacket(false, screenWidth, screenHeight,
-                    blockWidth, blockHeight, delta);
+                    BLOCK_WIDTH, BLOCK_HEIGHT, delta);
             place = Place2.move(1, 0, 0);
             place.setRatio(i);
 

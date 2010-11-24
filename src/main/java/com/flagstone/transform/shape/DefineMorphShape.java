@@ -191,7 +191,7 @@ public final class DefineMorphShape implements ShapeTag {
             lineStyles.add(new MorphLineStyle(coder, context));
         }
 
-        final int skipLimit;
+        int skipLimit;
 
         if (context.getRegistry().getShapeDecoder() == null) {
             skipLimit = 37;
@@ -301,12 +301,14 @@ public final class DefineMorphShape implements ShapeTag {
     }
 
     /** {@inheritDoc} */
-    public int getIdentifier() {
+    @Override
+	public int getIdentifier() {
         return identifier;
     }
 
     /** {@inheritDoc} */
-    public void setIdentifier(final int uid) {
+    @Override
+	public void setIdentifier(final int uid) {
         if ((uid < 1) || (uid > Coder.USHORT_MAX)) {
             throw new IllegalArgumentRangeException(
                     1, Coder.USHORT_MAX, uid);
@@ -323,7 +325,8 @@ public final class DefineMorphShape implements ShapeTag {
      *
      * @return this object.
      */
-    public DefineMorphShape add(final LineStyle style) {
+    @Override
+	public DefineMorphShape add(final LineStyle style) {
         if (!(style instanceof MorphLineStyle)) {
             throw new IllegalArgumentException();
         }
@@ -339,7 +342,8 @@ public final class DefineMorphShape implements ShapeTag {
      *
      * @return this object.
      */
-    public DefineMorphShape add(final FillStyle aFillStyle) {
+    @Override
+	public DefineMorphShape add(final FillStyle aFillStyle) {
         fillStyles.add(aFillStyle);
         return this;
     }
@@ -350,7 +354,8 @@ public final class DefineMorphShape implements ShapeTag {
      *
      * @return the bounding box for the starting shape.
      */
-    public Bounds getBounds() {
+    @Override
+	public Bounds getBounds() {
         return bounds;
     }
 
@@ -370,7 +375,8 @@ public final class DefineMorphShape implements ShapeTag {
      *
      * @return the list of fill styles used in the shape.
      */
-    public List<FillStyle> getFillStyles() {
+    @Override
+	public List<FillStyle> getFillStyles() {
         return fillStyles;
     }
 
@@ -379,7 +385,8 @@ public final class DefineMorphShape implements ShapeTag {
      *
      * @return the list of line styles used in the shape.
      */
-    public List<LineStyle> getLineStyles() {
+    @Override
+	public List<LineStyle> getLineStyles() {
         return lineStyles;
     }
 
@@ -388,7 +395,8 @@ public final class DefineMorphShape implements ShapeTag {
      *
      * @return the starting shape.
      */
-    public Shape getShape() {
+    @Override
+	public Shape getShape() {
         return shape;
     }
 
@@ -408,7 +416,8 @@ public final class DefineMorphShape implements ShapeTag {
      *            the bounding rectangle enclosing the start shape. Must not be
      *            null.
      */
-    public void setBounds(final Bounds rect) {
+    @Override
+	public void setBounds(final Bounds rect) {
         if (rect == null) {
             throw new IllegalArgumentException();
         }
@@ -436,7 +445,8 @@ public final class DefineMorphShape implements ShapeTag {
      *            a list of MorphSolidFill, MorphBitmapFill and
      *            MorphGradientFill objects. Must not be null.
      */
-    public void setFillStyles(final List<FillStyle> list) {
+    @Override
+	public void setFillStyles(final List<FillStyle> list) {
         if (list == null) {
             throw new IllegalArgumentException();
         }
@@ -449,7 +459,8 @@ public final class DefineMorphShape implements ShapeTag {
      * @param list
      *            a list of MorphLineStyle objects. Must not be null.
      */
-    public void setLineStyles(final List<LineStyle> list) {
+    @Override
+	public void setLineStyles(final List<LineStyle> list) {
         if (list == null) {
             throw new IllegalArgumentException();
         }
@@ -464,7 +475,8 @@ public final class DefineMorphShape implements ShapeTag {
      *            the shape at the start of the morphing process. Must not be
      *            null.
      */
-    public void setShape(final Shape aShape) {
+    @Override
+	public void setShape(final Shape aShape) {
         if (aShape == null) {
             throw new IllegalArgumentException();
         }
@@ -486,7 +498,8 @@ public final class DefineMorphShape implements ShapeTag {
     }
 
     /** {@inheritDoc} */
-    public DefineMorphShape copy() {
+    @Override
+	public DefineMorphShape copy() {
         return new DefineMorphShape(this);
     }
 
@@ -498,7 +511,8 @@ public final class DefineMorphShape implements ShapeTag {
 
 
     /** {@inheritDoc} */
-    @SuppressWarnings("PMD.NPathComplexity")
+    @Override
+	@SuppressWarnings("PMD.NPathComplexity")
     public int prepareToEncode(final Context context) {
         fillBits = Coder.unsignedSize(fillStyles.size());
         lineBits = Coder.unsignedSize(lineStyles.size());
@@ -553,7 +567,8 @@ public final class DefineMorphShape implements ShapeTag {
 
 
     /** {@inheritDoc} */
-    public void encode(final SWFEncoder coder, final Context context)
+    @Override
+	public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
 
         if (length > Coder.HEADER_LIMIT) {

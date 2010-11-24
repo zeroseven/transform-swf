@@ -44,7 +44,7 @@ public final class BackgroundCodingTest extends AbstractCodingTest {
     @Test
     public void checkBackgroundLengthForEncoding() throws IOException {
         final Background object = new Background(new Color(1, 2, 3));
-        final byte[] binary = new byte[] { 0x43, 0x02, 0x01, 0x02, 0x03};
+        final byte[] binary = new byte[] {0x43, 0x02, 0x01, 0x02, 0x03};
 
         assertEquals(CALCULATED_LENGTH, binary.length, prepare(object));
     }
@@ -52,7 +52,7 @@ public final class BackgroundCodingTest extends AbstractCodingTest {
     @Test
     public void checkBackgroundIsEncoded() throws IOException {
         final Background object = new Background(new Color(1, 2, 3));
-        final byte[] binary = new byte[] { 0x43, 0x02, 0x01, 0x02, 0x03};
+        final byte[] binary = new byte[] {0x43, 0x02, 0x01, 0x02, 0x03};
 
         assertArrayEquals(NOT_ENCODED, binary, encode(object));
     }
@@ -60,9 +60,9 @@ public final class BackgroundCodingTest extends AbstractCodingTest {
     @Test
     public void checkBackgroundIsDecoded() throws IOException {
         final Color color = new Color(1, 2, 3);
-        final byte[] binary = new byte[] { 0x43, 0x02, 0x01, 0x02, 0x03};
+        final byte[] binary = new byte[] {0x43, 0x02, 0x01, 0x02, 0x03};
 
-        Background object = (Background) decodeMovieTag(binary);
+        final Background object = (Background) decodeMovieTag(binary);
         assertEquals(NOT_DECODED, color, object.getColor());
    }
 
@@ -72,7 +72,7 @@ public final class BackgroundCodingTest extends AbstractCodingTest {
         final byte[] binary = new byte[] {0x7F, 0x02, 0x03, 0x00, 0x00, 0x00,
                 0x01, 0x02, 0x03};
 
-        Background object = (Background) decodeMovieTag(binary);
+        final Background object = (Background) decodeMovieTag(binary);
         assertEquals(NOT_DECODED, color, object.getColor());
    }
 }

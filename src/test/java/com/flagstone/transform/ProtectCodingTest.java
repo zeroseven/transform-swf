@@ -39,9 +39,11 @@ import org.junit.Test;
 
 public final class ProtectCodingTest extends AbstractCodingTest {
 
-    @Test
+	private static final String PASSWORD = "ABC123";
+
+	@Test
     public void checkProtectLengthForEncoding() throws IOException {
-        final Protect object = new Protect("ABC123");
+        final Protect object = new Protect(PASSWORD);
         final byte[] binary = new byte[] {0x09, 0x06, 0x00, 0x00, 0x41, 0x42,
                 0x43, 0x31, 0x32, 0x33, 0x00 };
 
@@ -50,7 +52,7 @@ public final class ProtectCodingTest extends AbstractCodingTest {
 
     @Test
     public void checkProtectIsEncoded() throws IOException {
-        final Protect object = new Protect("ABC123");
+        final Protect object = new Protect(PASSWORD);
         final byte[] binary = new byte[] {0x09, 0x06, 0x00, 0x00, 0x41, 0x42,
                 0x43, 0x31, 0x32, 0x33, 0x00 };
 
@@ -62,8 +64,8 @@ public final class ProtectCodingTest extends AbstractCodingTest {
         final byte[] binary = new byte[] {0x09, 0x06, 0x00, 0x00, 0x41, 0x42,
                 0x43, 0x31, 0x32, 0x33, 0x00 };
 
-        Protect object = (Protect) decodeMovieTag(binary);
-        assertEquals(NOT_DECODED, "ABC123", object.getPassword());
+        final Protect object = (Protect) decodeMovieTag(binary);
+        assertEquals(NOT_DECODED, PASSWORD, object.getPassword());
    }
 
     @Test
@@ -71,7 +73,7 @@ public final class ProtectCodingTest extends AbstractCodingTest {
         final byte[] binary = new byte[] {0x3F, 0x06, 0x09, 0x00, 0x00, 0x00,
                 0x00, 0x00, 0x41, 0x42, 0x43, 0x31, 0x32, 0x33, 0x00 };
 
-        Protect object = (Protect) decodeMovieTag(binary);
-        assertEquals(NOT_DECODED, "ABC123", object.getPassword());
+        final Protect object = (Protect) decodeMovieTag(binary);
+        assertEquals(NOT_DECODED, PASSWORD, object.getPassword());
    }
 }

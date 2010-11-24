@@ -79,7 +79,7 @@ public final class ExportCodingTest extends AbstractCodingTest {
         final byte[] binary = new byte[] {0x0E, 0x0E, 0x03, 0x00, 0x01, 0x00,
                 0x41, 0x00, 0x02, 0x00, 0x42, 0x00, 0x03, 0x00, 0x43, 0x00 };
 
-        Export object = (Export) decodeMovieTag(binary);
+        final Export object = (Export) decodeMovieTag(binary);
         assertEquals(NOT_DECODED, map, object.getObjects());
    }
 
@@ -94,7 +94,7 @@ public final class ExportCodingTest extends AbstractCodingTest {
                 0x03, 0x00, 0x01, 0x00, 0x41, 0x00, 0x02, 0x00, 0x42,
                 0x00, 0x03, 0x00, 0x43, 0x00 };
 
-        Export object = (Export) decodeMovieTag(binary);
+        final Export object = (Export) decodeMovieTag(binary);
         assertEquals(NOT_DECODED, map, object.getObjects());
    }
 }

@@ -33,7 +33,6 @@ package com.flagstone.transform.fillstyle;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -48,8 +47,8 @@ import com.flagstone.transform.datatype.Color;
 
 public final class GradientTest {
 
-    private final transient int ratio = 1;
-    private final transient Color color = new Color(2, 3, 4);
+    private static final int RATIO = 1;
+    private static final Color COLOR = new Color(2, 3, 4);
 
     private transient Gradient fixture;
 
@@ -58,12 +57,12 @@ public final class GradientTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForRatioWithLowerBound() {
-        fixture = new Gradient(-1, color);
+        fixture = new Gradient(-1, COLOR);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForRatioWithUpperBound() {
-        fixture = new Gradient(256, color);
+        fixture = new Gradient(256, COLOR);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -77,7 +76,7 @@ public final class GradientTest {
         final SWFEncoder encoder = new SWFEncoder(stream);
         final Context context = new Context();
 
-        fixture = new Gradient(ratio, color);
+        fixture = new Gradient(RATIO, COLOR);
         assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
         encoder.flush();
@@ -93,11 +92,10 @@ public final class GradientTest {
 
         fixture = new Gradient(decoder, context);
 
-        assertTrue(true);
-        assertEquals(ratio, fixture.getRatio());
-        assertEquals(color.getRed(), fixture.getColor().getRed());
-        assertEquals(color.getGreen(), fixture.getColor().getGreen());
-        assertEquals(color.getBlue(), fixture.getColor().getBlue());
-        assertEquals(color.getAlpha(), fixture.getColor().getAlpha());
+        assertEquals(RATIO, fixture.getRatio());
+        assertEquals(COLOR.getRed(), fixture.getColor().getRed());
+        assertEquals(COLOR.getGreen(), fixture.getColor().getGreen());
+        assertEquals(COLOR.getBlue(), fixture.getColor().getBlue());
+        assertEquals(COLOR.getAlpha(), fixture.getColor().getAlpha());
     }
 }

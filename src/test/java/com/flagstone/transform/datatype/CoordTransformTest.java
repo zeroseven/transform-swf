@@ -37,6 +37,13 @@ import org.junit.Test;
 
 public final class CoordTransformTest {
 
+    private static final float SCALEX = 2.0f;
+    private static final float SCALEY = 3.0f;
+    private static final float SHEARX = 2.0f;
+    private static final float SHEARY = 3.0f;
+    private static final int XCOORD = 2;
+    private static final int YCOORD = 3;
+
     @Test
     public void checkProduct() {
         final float[][] left = {
@@ -59,41 +66,35 @@ public final class CoordTransformTest {
 
     @Test
     public void checkScale() {
-        final float scaleX = 2.0f;
-        final float scaleY = 3.0f;
         final float[][] expected = {
-                {scaleX, 0.0f, 0.0f},
-                {0.0f, scaleY, 0.0f},
+                {SCALEX, 0.0f, 0.0f},
+                {0.0f, SCALEY, 0.0f},
                 {0.0f, 0.0f, 1.0f}};
 
         assertTrue(compare(expected,
-                CoordTransform.scale(scaleX, scaleY).getMatrix()));
+                CoordTransform.scale(SCALEX, SCALEY).getMatrix()));
     }
 
     @Test
     public void checkShear() {
-        final float shearX = 2.0f;
-        final float shearY = 3.0f;
         final float[][] expected = {
-                {1.0f, shearY, 0.0f},
-                {shearX, 1.0f, 0.0f},
+                {1.0f, SHEARY, 0.0f},
+                {SHEARX, 1.0f, 0.0f},
                 {0.0f, 0.0f, 1.0f }};
 
         assertTrue(compare(expected,
-                CoordTransform.shear(shearX, shearY).getMatrix()));
+                CoordTransform.shear(SHEARX, SHEARY).getMatrix()));
     }
 
     @Test
     public void checkTranslate() {
-        final int xCoord = 2;
-        final int yCoord = 3;
         final float[][] expected = {
-                {1.0f, 0.0f, xCoord},
-                {0.0f, 1.0f, yCoord},
+                {1.0f, 0.0f, XCOORD},
+                {0.0f, 1.0f, YCOORD},
                 {0.0f, 0.0f, 1.0f}};
 
         assertTrue(compare(expected,
-                CoordTransform.translate(xCoord, yCoord).getMatrix()));
+                CoordTransform.translate(XCOORD, YCOORD).getMatrix()));
     }
 
     @Test
@@ -102,8 +103,7 @@ public final class CoordTransformTest {
          * Values are stored as 16-bit fixed point numbers so the precision
          * of the expected result needs to be limited so the comparison passes.
          */
-        final int angle = 60;
-        final double radians = Math.toRadians(angle);
+        final double radians = Math.toRadians(60);
         final float cos = ((int) (Math.cos(radians)
                 * CoordTransform.SCALE_FACTOR)) / CoordTransform.SCALE_FACTOR;
         final float sin = ((int) (Math.sin(radians)
@@ -114,7 +114,7 @@ public final class CoordTransformTest {
                 {sin,   cos, 0.0f},
                 {0.0f, 0.0f, 1.0f}};
 
-        assertTrue(compare(expected, CoordTransform.rotate(angle).getMatrix()));
+        assertTrue(compare(expected, CoordTransform.rotate(60).getMatrix()));
     }
 
     @Test

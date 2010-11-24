@@ -36,6 +36,7 @@ import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 
+@SuppressWarnings({"PMD.TooManyMethods" })
 public final class ColorTransformTest {
 
     private static final int ARED = 1;
@@ -145,15 +146,6 @@ public final class ColorTransformTest {
         final ColorTransform color = new ColorTransform(
                 ARED, AGREEN, ABLUE, AALPHA);
         final Object other = new Object();
-
-        assertFalse(color.equals(other));
-    }
-
-    @Test
-    public void checkNullIsNotEqual() {
-        final ColorTransform color = new ColorTransform(
-                ARED, AGREEN, ABLUE, AALPHA);
-        final ColorTransform other = null;
 
         assertFalse(color.equals(other));
     }

@@ -61,10 +61,16 @@ public final class ImageFilter {
     /** Byte offset to alpha channel. */
     private static final int ALPHA = 3;
 
+    /** Number of colour channels in a 32-bit pixel. */
     private static final int RGBA_CHANNELS = 4;
+    /** Number of colour channels in a 24-bit pixel. */
     private static final int RGB_CHANNELS = 3;
 
-
+    /**
+     * Filter out the alpha channel from a 32-bit image.
+     * @param image the image containing 32-bit pixels in RGBA format.
+     * @return the image data containing only the RGB channels.
+     */
     public byte[] removeAlpha(final byte[] image) {
         final byte[] out = new byte[(image.length / RGBA_CHANNELS)
                                     * RGB_CHANNELS];
@@ -79,6 +85,14 @@ public final class ImageFilter {
         return out;
     }
 
+    /**
+     * Flip a 24-bit image along the horizontal axis so the order of the rows
+     * are reversed.
+     * @param image the image containing 24-bit pixels in RGB format.
+     * @param width the number pixels in each row.
+     * @param height the number of rows in the image.
+     * @return the image reversed vertically.
+     */
     public byte[] invertRGB(final byte[] image,
             final int width, final int height) {
 
@@ -100,6 +114,10 @@ public final class ImageFilter {
         return out;
     }
 
+    /**
+     * Remap the colour channels in a 24-bit image from RGB to BGR.
+     * @param image the image containing 24-bit pixels in RGB format.
+     */
     public void reverseRGB(final byte[] image) {
         byte swap;
         for (int i = 0; i < image.length; i += RGB_CHANNELS) {
@@ -109,6 +127,10 @@ public final class ImageFilter {
         }
     }
 
+    /**
+     * Remap the colour channels in a 32-bit image from RGBA to ABGR.
+     * @param image the image containing 32-bit pixels in RGBA format.
+     */
     public void reverseRGBA(final byte[] image) {
         byte alpha;
         for (int i = 0; i < image.length; i += RGBA_CHANNELS) {

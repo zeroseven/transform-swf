@@ -32,8 +32,8 @@ package com.flagstone.transform.action;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -88,7 +88,7 @@ public final class GetUrl2Test {
         decoder.readByte();
         fixture = new GetUrl2(decoder);
 
-        assertTrue(true);
+        assertNotNull(fixture);
         assertEquals(request, fixture.getRequest());
     }
 }

@@ -33,7 +33,6 @@ package com.flagstone.transform.action;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -116,7 +115,6 @@ public final class NewFunction2Test {
         decoder.readByte();
         fixture = new NewFunction2(decoder, context);
 
-        assertTrue(true);
         assertEquals(name, fixture.getName());
         assertEquals(args, fixture.getArguments());
         assertEquals(actions, fixture.getActions());

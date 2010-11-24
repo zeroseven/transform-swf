@@ -33,15 +33,20 @@ package com.flagstone.transform;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
+import org.junit.Before;
 import org.junit.Test;
 
 public final class ShowFrameTest {
 
     private transient ShowFrame fixture;
 
+    @Before
+    public void setUp() {
+        fixture = ShowFrame.getInstance();
+    }
+
     @Test
     public void checkCopy() {
-        fixture = ShowFrame.getInstance();
         final ShowFrame copy = fixture.copy();
 
         assertSame(fixture, fixture.copy());

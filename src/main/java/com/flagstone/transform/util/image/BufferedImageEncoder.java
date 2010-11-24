@@ -185,6 +185,11 @@ public final class BufferedImageEncoder {
         return Arrays.copyOf(image, image.length);
     }
 
+    /**
+     * Decode an indexed image from a Flash image definition.
+     * @param definition the Flash object containing the indexed image.
+     * @throws DataFormatException if the image is in an unsupported format.
+     */
     private void setIDX(final DefineImage definition)
             throws DataFormatException {
 
@@ -216,6 +221,13 @@ public final class BufferedImageEncoder {
         }
     }
 
+    /**
+     * Decode a true-colour image from a Flash image definition. The image
+     * contains 16-bit pixels.
+     *
+     * @param definition the Flash object containing the image.
+     * @throws DataFormatException if the image is in an unsupported format.
+     */
     private void setRGB5(final DefineImage definition)
             throws DataFormatException {
         final byte[] data = unzip(definition.getImage(), width, height);
@@ -243,6 +255,13 @@ public final class BufferedImageEncoder {
         }
     }
 
+    /**
+     * Decode a true-colour image from a Flash image definition. The image
+     * contains 24-bit pixels.
+     *
+     * @param definition the Flash object containing the image.
+     * @throws DataFormatException if the image is in an unsupported format.
+     */
     private void setRGB8(final DefineImage definition)
                 throws DataFormatException {
 
@@ -267,6 +286,13 @@ public final class BufferedImageEncoder {
         }
     }
 
+    /**
+     * Decode a indexed image from a Flash image definition. The colour table
+     * contains 32-bit pixels.
+     *
+     * @param definition the Flash object containing the image.
+     * @throws DataFormatException if the image is in an unsupported format.
+     */
     private void setIDXA(final DefineImage2 definition)
             throws DataFormatException {
 
@@ -301,6 +327,13 @@ public final class BufferedImageEncoder {
         }
     }
 
+    /**
+     * Decode a true-colour image from a Flash image definition. The image
+     * contains 32-bit pixels.
+     *
+     * @param definition the Flash object containing the image.
+     * @throws DataFormatException if the image is in an unsupported format.
+     */
     private void setRGBA(final DefineImage2 definition)
             throws DataFormatException {
 
@@ -331,9 +364,7 @@ public final class BufferedImageEncoder {
      * @return a BufferedImage containing the image.
      */
     public BufferedImage getBufferedImage() {
-
-        final BufferedImage bufferedImage;
-
+        BufferedImage bufferedImage;
         if (format == ImageFormat.IDX8 || format == ImageFormat.IDXA) {
             bufferedImage = getIndexedImage();
         } else {
@@ -342,6 +373,11 @@ public final class BufferedImageEncoder {
         return bufferedImage;
     }
 
+    /**
+     * Return the indexed image as a BufferedImage.
+     *
+     * @return A BufferedImage containing the image data.
+     */
     private BufferedImage getIndexedImage() {
 
         final byte[] red = new byte[table.length];
@@ -387,6 +423,11 @@ public final class BufferedImageEncoder {
         return bufferedImage;
     }
 
+    /**
+     * Return the 32-bit true-colour image as a BufferedImage.
+     *
+     * @return A BufferedImage containing the image data.
+     */
     private BufferedImage getRGBAImage() {
 
         final BufferedImage bufferedImage = new BufferedImage(width,

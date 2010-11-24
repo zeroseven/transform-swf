@@ -39,10 +39,12 @@ import org.junit.Test;
 
 public final class DoABCCodingTest extends AbstractCodingTest {
 
+	private static final String NAME = "script";
+
     @Test
     public void checkDoABCLengthForEncoding() throws IOException {
         final byte[] data = new byte[] {1, 2, 3, 4};
-        final DoABC object = new DoABC("script", true, data);
+        final DoABC object = new DoABC(NAME, true, data);
         final byte[] binary = new byte[] {(byte) 0x8F, 0x14, 0x01, 0x00, 0x00,
                 0x00, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x00, 0x01, 0x02,
                 0x03, 0x04 };
@@ -53,7 +55,7 @@ public final class DoABCCodingTest extends AbstractCodingTest {
     @Test
     public void checkDoABCIsEncoded() throws IOException {
         final byte[] data = new byte[] {1, 2, 3, 4};
-        final DoABC object = new DoABC("script", true, data);
+        final DoABC object = new DoABC(NAME, true, data);
         final byte[] binary = new byte[] {(byte) 0x8F, 0x14, 0x01, 0x00, 0x00,
                 0x00, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x00, 0x01, 0x02,
                 0x03, 0x04 };
@@ -68,8 +70,8 @@ public final class DoABCCodingTest extends AbstractCodingTest {
                 0x00, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x00, 0x01, 0x02,
                 0x03, 0x04 };
 
-        DoABC object = (DoABC) decodeMovieTag(binary);
-        assertEquals(NOT_DECODED, "script", object.getName());
+        final DoABC object = (DoABC) decodeMovieTag(binary);
+        assertEquals(NOT_DECODED, NAME, object.getName());
         assertEquals(NOT_DECODED, true, object.isDeferred());
         assertArrayEquals(NOT_DECODED, data, object.getData());
    }
@@ -81,8 +83,8 @@ public final class DoABCCodingTest extends AbstractCodingTest {
                 0x00, 0x01, 0x00, 0x00, 0x00, 0x73, 0x63, 0x72, 0x69, 0x70,
                 0x74, 0x00, 0x01, 0x02, 0x03, 0x04 };
 
-        DoABC object = (DoABC) decodeMovieTag(binary);
-        assertEquals(NOT_DECODED, "script", object.getName());
+        final DoABC object = (DoABC) decodeMovieTag(binary);
+        assertEquals(NOT_DECODED, NAME, object.getName());
         assertEquals(NOT_DECODED, true, object.isDeferred());
         assertArrayEquals(NOT_DECODED, data, object.getData());
    }

@@ -60,7 +60,8 @@ import com.flagstone.transform.util.shape.Canvas;
  * TTFDecoder decodes TrueType or OpenType Fonts so they can be used in a
  * Flash file.
  */
-@SuppressWarnings({"PMD.TooManyFields",
+@SuppressWarnings({"PMD.ExcessiveClassLength",
+	"PMD.TooManyFields",
     "PMD.TooManyMethods",
     "PMD.ExcessiveImports",
     "PMD.CyclomaticComplexity",
@@ -84,7 +85,8 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         private transient byte[] data;
 
         /** {@inheritDoc} */
-        public int compareTo(final TableEntry obj) {
+        @Override
+		public int compareTo(final TableEntry obj) {
             return Integer.valueOf(offset).compareTo(obj.offset);
         }
         /**
@@ -120,13 +122,14 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         /** offset from the start of the table where the string is located. */
         private int offset;
         /** Creates a new NameEntry. */
-        private NameEntry() {
-            // Private constructor
+        protected NameEntry() {
+        	// NOPMD
         }
     }
 
+    /** Number of bits to shift to convert bytes to bits. */
     private static final int BYTES_TO_BITS = 3;
-
+    /** The number of bits to shift a byte to sign extend to 32-bits. */
     private static final int SIGN_EXTEND = 24;
 
     /** The name of the OS/2 table. */
@@ -148,6 +151,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
     /** The name of the glyf table. */
     private static final int GLYF = 0x676C7966;
 
+    /** Indicates the offset to the glyph is encoded in 16-bits. */
     private static final int ITLF_SHORT = 0;
 //    private static final int ITLF_LONG = 1;
 
@@ -157,63 +161,114 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
 //    private static final int WEIGHT_NORMAL = 400;
 //    private static final int WEIGHT_MEDIUM = 500;
 //    private static final int WEIGHT_SEMIBOLD = 600;
+    /** Code identifying a font is bold. */
     private static final int WEIGHT_BOLD = 700;
 //    private static final int WEIGHT_EXTRABOLD = 800;
 //    private static final int WEIGHT_BLACK = 900;
-
+    /**
+     * Mask for the field that identifies whether a point is located on the
+     * outline of a glyph.
+     */
     private static final int ON_CURVE = 0x01;
+    /**
+     * Mask for the field that identifies whether the x-coordinate of a point
+     * encoded in 16-bits.
+     */
     private static final int X_SHORT = 0x02;
+    /**
+     * Mask for the field that identifies whether the y-coordinate of a point
+     * encoded in 16-bits.
+     */
     private static final int Y_SHORT = 0x04;
+    /**
+     * Mask for the field that identifies whether the coordinate of a point
+     * is repeated.
+     */
     private static final int REPEAT_FLAG = 0x08;
+    /**
+     * Mask for the field that identifies whether the x-coordinate of a point
+     * is unchanged.
+     */
     private static final int X_SAME = 0x10;
+    /**
+     * Mask for the field that identifies whether the y-coordinate of a point
+     * is unchanged.
+     */
     private static final int Y_SAME = 0x20;
+    /**
+     * Mask for the field that identifies whether the value for the relative
+     * change in the x-coordinate of a point is added to the previous value.
+     */
     private static final int X_POSITIVE = 0x10;
+    /**
+     * Mask for the field that identifies whether the value for the relative
+     * change in the y-coordinate of a point is added to the previous value.
+     */
     private static final int Y_POSITIVE = 0x20;
-
+    /** The coordinates for the encoded glyph is 32-bits. */
     private static final int ARGS_ARE_WORDS = 0x01;
+    /** X and Y coordinates are encoded. */
     private static final int ARGS_ARE_XY = 0x02;
+    /** The font contains scaling information. */
     private static final int HAVE_SCALE = 0x08;
+    /** Scaling for both the x and y axes are included. */
     private static final int HAVE_XYSCALE = 0x40;
+    /** Scaling for both the x and y axes includes an offset. */
     private static final int HAVE_2X2 = 0x80;
+    /** The outline of the glyph has more points to be decoded. */
     private static final int HAS_MORE = 0x10;
 
+    /** The name of the font. */
     private transient String name;
+    /** Indicates whether the font weight is bold. */
     private transient boolean bold;
+    /** Indicates whether the font is italicised. */
     private transient boolean italic;
-
+    /** The encoding used for characters. */
     private transient CharacterFormat encoding;
-
+    /** The ascent of the font. */
     private transient float ascent;
+    /** The descent of the font. */
     private transient float descent;
+    /** The leading of the font. */
     private transient float leading;
-
+    /** Table mapping character code to glyphs. */
     private transient int[] charToGlyph;
+    /** Table mapping glyph to character codes. */
     private transient int[] glyphToChar;
-
+    /** Glyphs. */
     private transient TrueTypeGlyph[] glyphTable;
-
+    /** The number of glyphs defined in the font. */
     private transient int glyphCount;
+    /** The index of the glyph that represents unsupported characters. */
     private transient int missingGlyph;
+    /** The highest character code represented in the font. */
     private transient char maxChar;
-
+    /** The amount to scale coordinates so the font maps to the EM-SQUARE. */
     private transient int scale = 1;
+    /** The number of entries in the table of advances for each glyph. */
     private transient int metrics;
+    /** The size of each entry in the glyph table, either 16 or 32 bits. */
     private transient int glyphOffset;
-
+    /** The offsets in bytes to each glyph in the GLYF table. */
     private transient int[] offsets;
 
+    /** Directory of tables encoded in the font. */
     private final transient Map<Integer, TableEntry> table
             = new LinkedHashMap<Integer, TableEntry>();
 
+    /** Table of fonts decoded from the font definition. */
     private final transient List<Font>fonts = new ArrayList<Font>();
 
     /** {@inheritDoc} */
-    public FontDecoder newDecoder() {
+    @Override
+	public FontDecoder newDecoder() {
         return new TTFDecoder();
     }
 
     /** {@inheritDoc} */
-    public void read(final File file) throws IOException, DataFormatException {
+    @Override
+	public void read(final File file) throws IOException, DataFormatException {
         final FileInputStream stream = new FileInputStream(file);
         try {
             read(stream);
@@ -225,7 +280,8 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
     }
 
     /** {@inheritDoc} */
-    public void read(final URL url) throws IOException, DataFormatException {
+    @Override
+	public void read(final URL url) throws IOException, DataFormatException {
         final URLConnection connection = url.openConnection();
         final int contentLength = connection.getContentLength();
 
@@ -245,7 +301,8 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
     }
 
     /** {@inheritDoc} */
-    public List<Font> getFonts() {
+    @Override
+	public List<Font> getFonts() {
         return fonts;
     }
 
@@ -840,6 +897,14 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         }
     }
 
+    /**
+     * Decode a simple glyph.
+     *
+     * @param coder the decoder containing the encoded glyph data.
+     * @param glyphIndex the position of the Glyph table to store the glyph.
+     * @param numberOfContours the number of segments in the glyph outline.
+     * @throws IOException if an error occurs reading the glyph data.
+     */
     private void decodeSimpleGlyph(final BigDecoder coder,
             final int glyphIndex, final int numberOfContours)
             throws IOException {
@@ -997,6 +1062,13 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         glyphTable[glyphIndex].setEnds(endPtsOfContours);
     }
 
+    /**
+     * Decode a glyph that contains a series of simple glyphs.
+     *
+     * @param coder the decoder containing the encoded glyph data.
+     * @param glyphIndex the position of the Glyph table to store the glyph.
+     * @throws IOException if an error occurs reading the glyph data.
+     */
     private void decodeCompositeGlyph(final BigDecoder coder,
             final int glyphIndex) throws IOException {
 
@@ -1081,7 +1153,7 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
                 xOffset = coder.readShort();
                 yOffset = coder.readShort();
                 transform = CoordTransform.translate(xOffset, yOffset);
-           }
+            }
 
             if ((flags & HAVE_SCALE) > 0) {
                 final float scaleXY = coder.readShort() / Coder.SCALE_14;

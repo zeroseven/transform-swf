@@ -158,16 +158,20 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
     private transient int blueMask;
     /** Shift for the blue pixel to convert to an 8-bit colour. */
     private transient int blueShift;
+    /** Size of a pixel in bits. */
     private transient int bitsPerPixel;
+    /** Number of colours used in each pixel. */
     private transient int coloursUsed;
 
     /** {@inheritDoc} */
-    public void read(final File file) throws IOException, DataFormatException {
+    @Override
+	public void read(final File file) throws IOException, DataFormatException {
         read(new FileInputStream(file));
     }
 
     /** {@inheritDoc} */
-    public void read(final URL url) throws IOException, DataFormatException {
+    @Override
+	public void read(final URL url) throws IOException, DataFormatException {
         final URLConnection connection = url.openConnection();
 
         if (!connection.getContentType().equals("image/bmp")) {
@@ -184,7 +188,8 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
     }
 
     /** {@inheritDoc} */
-    public ImageTag defineImage(final int identifier) {
+    @Override
+	public ImageTag defineImage(final int identifier) {
         ImageTag object = null;
         final ImageFilter filter = new ImageFilter();
 
@@ -221,27 +226,32 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
     }
 
     /** {@inheritDoc} */
-    public ImageDecoder newDecoder() {
+    @Override
+	public ImageDecoder newDecoder() {
         return new BMPDecoder();
     }
 
     /** {@inheritDoc} */
-    public int getWidth() {
+    @Override
+	public int getWidth() {
         return width;
     }
 
     /** {@inheritDoc} */
-    public int getHeight() {
+    @Override
+	public int getHeight() {
         return height;
     }
 
     /** {@inheritDoc} */
-    public byte[] getImage() {
+    @Override
+	public byte[] getImage() {
         return Arrays.copyOf(image, image.length);
     }
 
     /** {@inheritDoc} */
-    public void read(final InputStream stream)
+    @Override
+	public void read(final InputStream stream)
                     throws DataFormatException, IOException {
 
         final LittleDecoder coder = new LittleDecoder(stream);
@@ -433,6 +443,13 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
         }
     }
 
+    /**
+     * Decode an indexed image.
+     * @param coder LittleDecoder object containing the encoded image data.
+     * @throws IOException if an error occurs reading the image data.
+     * @throws DataFormatException if the image is encoded in an unsupported
+     * format.
+     */
     private void decodeIndexedImage(final LittleDecoder coder)
             throws IOException, DataFormatException {
 
@@ -453,6 +470,13 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
         }
     }
 
+    /**
+     * Decode a true-colour image.
+     * @param coder LittleDecoder object containing the encoded image data.
+     * @throws IOException if an error occurs reading the image data.
+     * @throws DataFormatException if the image is encoded in an unsupported
+     * format.
+     */
     private void decodeColourImage(final LittleDecoder coder)
             throws IOException, DataFormatException {
 
@@ -547,6 +571,15 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
         }
     }
 
+    /**
+     * Decode a block of run-length encoded pixels where each pixel occupies
+     * 4 bits.
+     * @param code the number of pixels to decode.
+     * @param coder a LittleEncoder object containing the encoded image.
+     * @param row the row number for the starting pixel.
+     * @param col the column number for the starting pixel.
+     * @throws IOException if there is an error reading the image data.
+     */
     private void decodeRLE4Pixels(final int code, final LittleDecoder coder,
             final int row, final int col) throws IOException {
         int index = row * width + col;
@@ -605,6 +638,15 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
         }
     }
 
+    /**
+     * Decode a block of run-length encoded pixels where each pixel occupies
+     * 8 bits.
+     * @param code the number of pixels to decode.
+     * @param coder a LittleEncoder object containing the encoded image.
+     * @param row the row number for the starting pixel.
+     * @param col the column number for the starting pixel.
+     * @throws IOException if there is an error reading the image data.
+     */
     private void decodeRLE8Pixels(final int code, final LittleDecoder coder,
             final int row, final int col) throws IOException {
         int index = row * width + col;
@@ -617,6 +659,14 @@ public final class BMPDecoder implements ImageProvider, ImageDecoder {
         }
     }
 
+    /**
+     * Decode a series of pixels where each pixel occupies 8 bits and has the
+     * same value.
+     * @param count the number of pixels to decode.
+     * @param row the row number for the starting pixel.
+     * @param col the column number for the starting pixel.
+     * @param value value for each pixel.
+     */
     private void decodeRLE8Run(final int count, final int row, final int col,
             final byte value) {
         int index = row * width + col;

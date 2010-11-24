@@ -33,7 +33,6 @@ package com.flagstone.transform.action;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -47,12 +46,12 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 public final class GotoFrameTest {
 
-    private final transient int type = ActionTypes.GOTO_FRAME;
-    private final transient int number = 1;
+    private static final int TYPE = ActionTypes.GOTO_FRAME;
+    private static final int NUMBER = 1;
 
     private transient GotoFrame fixture;
 
-    private final transient byte[] encoded = new byte[] {(byte) type, 0x02,
+    private final transient byte[] encoded = new byte[] {(byte) TYPE, 0x02,
             0x00, 0x01, 0x00 };
 
     @Test(expected = IllegalArgumentException.class)
@@ -67,7 +66,7 @@ public final class GotoFrameTest {
 
     @Test
     public void checkCopy() {
-        fixture = new GotoFrame(number);
+        fixture = new GotoFrame(NUMBER);
         final GotoFrame copy = fixture.copy();
 
         assertSame(fixture, copy);
@@ -80,7 +79,7 @@ public final class GotoFrameTest {
         final SWFEncoder encoder = new SWFEncoder(stream);
         final Context context = new Context();
 
-        fixture = new GotoFrame(number);
+        fixture = new GotoFrame(NUMBER);
         assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
         encoder.flush();
@@ -96,7 +95,6 @@ public final class GotoFrameTest {
         decoder.readByte();
         fixture = new GotoFrame(decoder);
 
-        assertTrue(true);
-        assertEquals(number, fixture.getFrameNumber());
+        assertEquals(NUMBER, fixture.getFrameNumber());
     }
 }

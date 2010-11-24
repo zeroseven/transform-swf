@@ -33,7 +33,6 @@ package com.flagstone.transform.action;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -110,7 +109,6 @@ public final class PushTest {
         decoder.readByte();
         fixture = new Push(decoder, context);
 
-        assertTrue(true);
         assertEquals(values.toString(), fixture.getValues().toString());
     }
 }

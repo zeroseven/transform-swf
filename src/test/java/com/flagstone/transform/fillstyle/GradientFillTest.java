@@ -42,7 +42,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.flagstone.transform.coder.Context;
@@ -98,9 +97,5 @@ public final class GradientFillTest {
         encoder.flush();
 
         assertArrayEquals(encoded, stream.toByteArray());
-    }
-
-    @Test @Ignore
-    public void decode() throws IOException {
     }
 }

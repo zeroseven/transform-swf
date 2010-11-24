@@ -29,12 +29,12 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.flagstone.transform.coder;
+package com.flagstone.transform.coder; // NOPMD - too many methods, etc.
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -43,12 +43,13 @@ import java.util.EmptyStackException;
 
 import org.junit.Test;
 
+@SuppressWarnings({"PMD.TooManyMethods" })
 public final class BigDecoderTest {
 
     @Test
     public void markReturnsLocation() throws IOException {
         final byte[] data = new byte[] {1, 2, 3, 4 };
-        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(data);
         final BigDecoder fixture = new BigDecoder(stream);
         fixture.readInt();
 
@@ -58,7 +59,7 @@ public final class BigDecoderTest {
     @Test
     public void markTracksBufferRefills() throws IOException {
         final byte[] data = new byte[] {1, 2, 3, 4 };
-        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(data);
         final BigDecoder fixture = new BigDecoder(stream, 2);
         fixture.readBytes(new byte[4]);
 
@@ -68,7 +69,7 @@ public final class BigDecoderTest {
     @Test
     public void resetRestoresLocations() throws IOException {
         final byte[] data = new byte[] {1, 2, 3, 4 };
-        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(data);
         final BigDecoder fixture = new BigDecoder(stream, 2);
 
         fixture.readByte();
@@ -81,7 +82,7 @@ public final class BigDecoderTest {
     @Test
     public void resetWithoutMarkReturnsToStart() throws IOException {
         final byte[] data = new byte[] {1, 2, 3, 4 };
-        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(data);
         final BigDecoder fixture = new BigDecoder(stream);
 
         fixture.readBytes(new byte[3]);
@@ -92,7 +93,7 @@ public final class BigDecoderTest {
     @Test(expected = IOException.class)
     public void resetWithoutMarkAfterRefill() throws IOException {
         final byte[] data = new byte[] {1, 2, 3, 4 };
-        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(data);
         final BigDecoder fixture = new BigDecoder(stream, 2);
 
         fixture.readBytes(new byte[3]);
@@ -102,7 +103,7 @@ public final class BigDecoderTest {
     @Test(expected = IOException.class)
     public void resetAfterRefill() throws IOException {
         final byte[] data = new byte[] {1, 2, 3, 4 };
-        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(data);
         final BigDecoder fixture = new BigDecoder(stream, 2);
 
         fixture.mark();
@@ -110,27 +111,21 @@ public final class BigDecoderTest {
         fixture.reset();
     }
 
-    @Test
+    @Test(expected = EmptyStackException.class)
     public void unmarkClearsLocation() throws IOException {
         final byte[] data = new byte[] {1, 2, 3, 4 };
-        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(data);
         final BigDecoder fixture = new BigDecoder(stream);
         fixture.readByte();
         fixture.mark();
         fixture.unmark();
-
-        // CHECKSTYLE IGNORE EmptyBlockCheck FOR NEXT 5 LINES
-        try {
-            fixture.unmark();
-            fail();
-        } catch (EmptyStackException e) {
-        }
+        fixture.unmark();
     }
 
     @Test
     public void move() throws IOException {
         final byte[] data = new byte[] {1, 2, 3, 4 };
-        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(data);
         final BigDecoder fixture = new BigDecoder(stream);
 
         fixture.move(2);
@@ -140,7 +135,7 @@ public final class BigDecoderTest {
     @Test(expected = ArrayIndexOutOfBoundsException.class)
     public void moveBeyondBuffer() throws IOException {
         final byte[] data = new byte[] {1, 2, 3, 4 };
-        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(data);
         final BigDecoder fixture = new BigDecoder(stream);
 
         fixture.move(5);
@@ -149,7 +144,7 @@ public final class BigDecoderTest {
     @Test
     public void skip() throws IOException {
         final byte[] data = new byte[] {1, 2, 3, 4 };
-        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(data);
         final BigDecoder fixture = new BigDecoder(stream);
 
         fixture.skip(2);
@@ -159,7 +154,7 @@ public final class BigDecoderTest {
     @Test
     public void skipWorksWithBufferRefills() throws IOException {
         final byte[] data = new byte[] {1, 2, 3, 4 };
-        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(data);
         final BigDecoder fixture = new BigDecoder(stream, 2);
 
         fixture.skip(3);
@@ -169,7 +164,7 @@ public final class BigDecoderTest {
     @Test(expected = ArrayIndexOutOfBoundsException.class)
     public void skipBeyondAvailableData() throws IOException {
         final byte[] data = new byte[] {1, 2, 3, 4 };
-        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(data);
         final BigDecoder fixture = new BigDecoder(stream);
 
         fixture.skip(6);
@@ -178,7 +173,7 @@ public final class BigDecoderTest {
     @Test
     public void endOfFileIsTrueAtEnd() throws IOException {
         final byte[] data = new byte[] {1, 2, 3, 4 };
-        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(data);
         final BigDecoder fixture = new BigDecoder(stream);
         fixture.readBytes(new byte[4]);
         assertTrue(fixture.eof());
@@ -187,7 +182,7 @@ public final class BigDecoderTest {
     @Test
     public void endOfFileAfterRefillingBuffer() throws IOException {
         final byte[] data = new byte[] {1, 2, 3, 4 };
-        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(data);
         final BigDecoder fixture = new BigDecoder(stream, 2);
         fixture.readUnsignedShort();
         fixture.readUnsignedShort();
@@ -198,16 +193,16 @@ public final class BigDecoderTest {
     @Test
     public void endOfFileIsFalseBeforeEnd() throws IOException {
         final byte[] data = new byte[] {1, 2, 3, 4 };
-        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(data);
         final BigDecoder fixture = new BigDecoder(stream);
         fixture.readBytes(new byte[2]);
-        assertTrue(!fixture.eof());
+        assertFalse(fixture.eof());
     }
 
     @Test
     public void endOfFileIsTrueWithNoData() throws IOException {
         final byte[] data = new byte[] {};
-        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(data);
         final BigDecoder fixture = new BigDecoder(stream);
         assertTrue(fixture.eof());
     }
@@ -215,7 +210,7 @@ public final class BigDecoderTest {
     @Test
     public void byteAlign() throws IOException {
         final byte[] data = new byte[] {-64 };
-        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(data);
         final BigDecoder fixture = new BigDecoder(stream);
         fixture.readBits(2, false);
         fixture.alignToByte();
@@ -226,7 +221,7 @@ public final class BigDecoderTest {
     @Test
     public void noByteAlignOnByteBoundary() throws IOException {
         final byte[] data = new byte[] {1, 2 };
-        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(data);
         final BigDecoder fixture = new BigDecoder(stream);
         fixture.readByte();
         fixture.alignToByte();
@@ -237,7 +232,7 @@ public final class BigDecoderTest {
     @Test
     public void byteRead() throws IOException {
         final byte[] data = new byte[] {1, 2, 3, 4 };
-        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(data);
         final BigDecoder fixture = new BigDecoder(stream);
         fixture.mark();
         fixture.readInt();
@@ -248,7 +243,7 @@ public final class BigDecoderTest {
     @Test
     public void bytesReadTracksBufferRefills() throws IOException {
         final byte[] data = new byte[] {1, 2, 3, 4 };
-        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(data);
         final BigDecoder fixture = new BigDecoder(stream, 2);
         fixture.mark();
         fixture.readByte();
@@ -262,7 +257,7 @@ public final class BigDecoderTest {
     @Test(expected = EmptyStackException.class)
     public void bytesReadWithMarkThrowsException() throws IOException {
         final byte[] data = new byte[] {1, 2, 3, 4 };
-        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(data);
         final BigDecoder fixture = new BigDecoder(stream, 2);
         fixture.readByte();
         fixture.readByte();
@@ -275,7 +270,7 @@ public final class BigDecoderTest {
     @Test
     public void refillBuffer() throws IOException {
         final byte[] data = new byte[] {1, 2, 3, 4 };
-        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(data);
         final BigDecoder fixture = new BigDecoder(stream, 2);
 
         assertEquals(1, fixture.readByte());
@@ -287,7 +282,7 @@ public final class BigDecoderTest {
     @Test
     public void readBitsForUnsignedNumber() throws IOException {
         final byte[] data = new byte[] {3 };
-        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(data);
         final BigDecoder fixture = new BigDecoder(stream);
 
         assertEquals(0, fixture.readBits(6, false));
@@ -297,7 +292,7 @@ public final class BigDecoderTest {
     @Test
     public void readBitsForSignedNumber() throws IOException {
         final byte[] data = new byte[] {3 };
-        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(data);
         final BigDecoder fixture = new BigDecoder(stream);
 
         assertEquals(0, fixture.readBits(6, false));
@@ -307,7 +302,7 @@ public final class BigDecoderTest {
     @Test(expected = ArrayIndexOutOfBoundsException.class)
     public void readBitsBeyondEndOfBuffer() throws IOException {
         final byte[] data = new byte[] {3 };
-        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(data);
         final BigDecoder fixture = new BigDecoder(stream, 1);
 
         fixture.readBits(6, false);
@@ -317,7 +312,7 @@ public final class BigDecoderTest {
     @Test
     public void readBitsAcrossByteBoundary() throws IOException {
         final byte[] data = new byte[] {3, (byte) 0xC0 };
-        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(data);
         final BigDecoder fixture = new BigDecoder(stream);
 
         fixture.readBits(6, false);
@@ -327,7 +322,7 @@ public final class BigDecoderTest {
     @Test
     public void readBitsAcrossIntBoundary() throws IOException {
         final byte[] data = new byte[] {0, 0, 0, 3, (byte) 0xC0 };
-        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(data);
         final BigDecoder fixture = new BigDecoder(stream);
 
         fixture.readBits(30, false);
@@ -337,7 +332,7 @@ public final class BigDecoderTest {
     @Test
     public void readZeroBits() throws IOException {
         final byte[] data = new byte[] {3, (byte) 0xC0 };
-        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(data);
         final BigDecoder fixture = new BigDecoder(stream);
 
         fixture.readBits(6, false);
@@ -347,7 +342,7 @@ public final class BigDecoderTest {
     @Test
     public void readByte() throws IOException {
         final byte[] data = new byte[] {1, 2 };
-        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(data);
         final BigDecoder fixture = new BigDecoder(stream);
 
         assertEquals(1, fixture.readByte());
@@ -357,7 +352,7 @@ public final class BigDecoderTest {
     @Test(expected = ArrayIndexOutOfBoundsException.class)
     public void readByteBeyondEndOfBuffer() throws IOException {
         final byte[] data = new byte[] {1, 2 };
-        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(data);
         final BigDecoder fixture = new BigDecoder(stream);
 
         fixture.readByte();
@@ -368,7 +363,7 @@ public final class BigDecoderTest {
     @Test
     public void readBytes() throws IOException {
         final byte[] data = new byte[] {1, 2, 3, 4, 5, 6, 7, 8 };
-        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(data);
         final BigDecoder fixture = new BigDecoder(stream);
 
         final byte[] buffer = new byte[data.length];
@@ -380,7 +375,7 @@ public final class BigDecoderTest {
     @Test
     public void readBytesSubset() throws IOException {
         final byte[] data = new byte[] {1, 2, 3, 4, 5, 6, 7, 8 };
-        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(data);
         final BigDecoder fixture = new BigDecoder(stream);
 
         final byte[] buffer = new byte[2];
@@ -392,7 +387,7 @@ public final class BigDecoderTest {
     @Test
     public void readBytesWithRefill() throws IOException {
         final byte[] data = new byte[] {1, 2, 3, 4, 5, 6, 7, 8 };
-        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(data);
         final BigDecoder fixture = new BigDecoder(stream, 4);
 
         final byte[] buffer = new byte[data.length];
@@ -404,12 +399,11 @@ public final class BigDecoderTest {
     @Test
     public void readBytesIntoArray() throws IOException {
         final byte[] data = new byte[] {1, 2, 3, 4, 5, 6, 7, 8 };
-        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(data);
         final BigDecoder fixture = new BigDecoder(stream);
 
-        final int offset = 4;
-        final byte[] buffer = new byte[data.length + offset];
-        fixture.readBytes(buffer, offset, data.length);
+        final byte[] buffer = new byte[data.length + 4];
+        fixture.readBytes(buffer, 4, data.length);
 
         final byte[] expected = new byte[] {0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8};
 
@@ -419,13 +413,11 @@ public final class BigDecoderTest {
     @Test
     public void readBytesIntoArraySubset() throws IOException {
         final byte[] data = new byte[] {1, 2, 3, 4, 5, 6, 7, 8 };
-        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(data);
         final BigDecoder fixture = new BigDecoder(stream);
 
-        final int offset = 0;
-        final int length = 4;
-        final byte[] buffer = new byte[length];
-        fixture.readBytes(buffer, offset, length);
+        final byte[] buffer = new byte[4];
+        fixture.readBytes(buffer, 0, 4);
 
         final byte[] expected = new byte[] {1, 2, 3, 4 };
 
@@ -435,7 +427,7 @@ public final class BigDecoderTest {
     @Test
     public void readUI16() throws IOException {
         final byte[] data = new byte[] {1, 2, 0, 0 };
-        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(data);
         final BigDecoder fixture = new BigDecoder(stream);
 
         assertEquals(0x0102, fixture.readUnsignedShort());
@@ -443,8 +435,8 @@ public final class BigDecoderTest {
 
     @Test
     public void testReadUI16DoesNotSignExtend() throws IOException {
-        final byte[] data = new byte[] { 0, -1, 0, 0 };
-        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        final byte[] data = new byte[] {0, -1, 0, 0 };
+        final ByteArrayInputStream stream = new ByteArrayInputStream(data);
         final BigDecoder fixture = new BigDecoder(stream);
 
         assertEquals(255, fixture.readUnsignedShort());
@@ -453,7 +445,7 @@ public final class BigDecoderTest {
     @Test(expected = ArrayIndexOutOfBoundsException.class)
     public void readUI16WithNoDataAvailable() throws IOException {
         final byte[] data = new byte[] {1, 2 };
-        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(data);
         final BigDecoder fixture = new BigDecoder(stream);
         fixture.readUnsignedShort();
         fixture.readUnsignedShort();
@@ -462,7 +454,7 @@ public final class BigDecoderTest {
     @Test
     public void readSI16() throws IOException {
         final byte[] data = new byte[] {-1, -1, 0, 0 };
-        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(data);
         final BigDecoder fixture = new BigDecoder(stream);
 
         assertEquals(-1, fixture.readShort());
@@ -471,7 +463,7 @@ public final class BigDecoderTest {
     @Test(expected = ArrayIndexOutOfBoundsException.class)
     public void readSI16WithNoDataAvailable() throws IOException {
         final byte[] data = new byte[] {1, 2 };
-        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(data);
         final BigDecoder fixture = new BigDecoder(stream);
         fixture.readShort();
         fixture.readShort();
@@ -480,7 +472,7 @@ public final class BigDecoderTest {
     @Test
     public void scanUI32() throws IOException {
         final byte[] data = new byte[] {1, 2, 3, 4, 0, 0, 0, 0 };
-        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(data);
         final BigDecoder fixture = new BigDecoder(stream);
 
         assertEquals(0x01020304, fixture.scanInt());
@@ -490,7 +482,7 @@ public final class BigDecoderTest {
     @Test(expected = ArrayIndexOutOfBoundsException.class)
     public void scanUI32WithNoDataAvailable() throws IOException {
         final byte[] data = new byte[] {1, 2, 3, 4 };
-        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(data);
         final BigDecoder fixture = new BigDecoder(stream);
         fixture.readInt();
         fixture.scanInt();
@@ -499,7 +491,7 @@ public final class BigDecoderTest {
     @Test
     public void readUI32() throws IOException {
         final byte[] data = new byte[] {1, 2, 3, 4, 0, 0, 0, 0 };
-        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(data);
         final BigDecoder fixture = new BigDecoder(stream);
 
         assertEquals(0x01020304, fixture.readInt());
@@ -508,7 +500,7 @@ public final class BigDecoderTest {
     @Test(expected = ArrayIndexOutOfBoundsException.class)
     public void readUI32WithNoDataAvailable() throws IOException {
         final byte[] data = new byte[] {1, 2, 3, 4 };
-        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(data);
         final BigDecoder fixture = new BigDecoder(stream);
         fixture.readInt();
         fixture.readInt();
@@ -516,8 +508,8 @@ public final class BigDecoderTest {
 
     @Test
     public void testReadUI32DoesNotSignExtend() throws IOException {
-        final byte[] data = new byte[] { 0, 0, 0, -1, 0, 0, 0, 0 };
-        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        final byte[] data = new byte[] {0, 0, 0, -1, 0, 0, 0, 0 };
+        final ByteArrayInputStream stream = new ByteArrayInputStream(data);
         final BigDecoder fixture = new BigDecoder(stream);
 
         assertEquals(255, fixture.readInt());

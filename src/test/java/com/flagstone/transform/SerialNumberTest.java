@@ -36,7 +36,7 @@ import org.junit.Test;
 
 public final class SerialNumberTest {
 
-    private final transient String serial = "ABC123";
+    private static final String SERIAL = "ABC123";
 
     private transient SerialNumber fixture;
 
@@ -47,7 +47,7 @@ public final class SerialNumberTest {
 
     @Test
     public void checkCopy() {
-        fixture = new SerialNumber(serial);
+        fixture = new SerialNumber(SERIAL);
         final SerialNumber copy = fixture.copy();
 
         assertEquals(fixture.getNumber(), copy.getNumber());

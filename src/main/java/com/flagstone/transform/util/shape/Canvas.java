@@ -479,10 +479,10 @@ public final class Canvas {
      */
     public void curve(final int acontrolX, final int acontrolY,
             final int aanchorX, final int aanchorY) {
-        final int rcontrolX;
-        final int rcontrolY;
-        final int ranchorX;
-        final int ranchorY;
+        int rcontrolX;
+        int rcontrolY;
+        int ranchorX;
+        int ranchorY;
 
         if (pixels) {
             rcontrolX = acontrolX * TWIPS_PER_PIXEL - currentX;
@@ -525,10 +525,10 @@ public final class Canvas {
      */
     public void rcurve(final int rcontrolX, final int rcontrolY,
             final int ranchorX, final int ranchorY) {
-        final int px1;
-        final int py1;
-        final int px2;
-        final int py2;
+        int px1;
+        int py1;
+        int px2;
+        int py2;
 
         if (pixels) {
             px1 = rcontrolX * TWIPS_PER_PIXEL;
@@ -734,11 +734,11 @@ public final class Canvas {
         final int acontrolX = currentX - controlX;
         final int acontrolY = currentY - controlY;
 
-        final int bcontrolX;
-        final int bcontrolY;
+        int bcontrolX;
+        int bcontrolY;
 
-        final int pointX;
-        final int pointY;
+        int pointX;
+        int pointY;
 
         if (pixels) {
             bcontrolX = ctrlX * TWIPS_PER_PIXEL - currentX;
@@ -781,10 +781,10 @@ public final class Canvas {
         final int acontrolX = currentX - controlX;
         final int acontrolY = currentY - controlY;
 
-        final int bcontrolX;
-        final int bcontrolY;
-        final int pointX;
-        final int pointY;
+        int bcontrolX;
+        int bcontrolY;
+        int pointX;
+        int pointY;
 
         if (pixels) {
             bcontrolX = ctrlX * TWIPS_PER_PIXEL;

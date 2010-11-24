@@ -33,7 +33,6 @@ package com.flagstone.transform.movieclip;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -47,7 +46,7 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 public final class QuicktimeMovieTest {
 
-    private final transient String path = "ABC123";
+    private static final String PATH = "ABC123";
 
     private transient QuicktimeMovie fixture;
 
@@ -64,7 +63,7 @@ public final class QuicktimeMovieTest {
 
     @Test
     public void checkCopy() {
-        fixture = new QuicktimeMovie(path);
+        fixture = new QuicktimeMovie(PATH);
         final QuicktimeMovie copy = fixture.copy();
 
         assertEquals(fixture.getPath(), copy.getPath());
@@ -77,7 +76,7 @@ public final class QuicktimeMovieTest {
         final SWFEncoder encoder = new SWFEncoder(stream);
         final Context context = new Context();
 
-        fixture = new QuicktimeMovie(path);
+        fixture = new QuicktimeMovie(PATH);
         assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
         encoder.flush();
@@ -92,8 +91,7 @@ public final class QuicktimeMovieTest {
 
         fixture = new QuicktimeMovie(decoder);
 
-        assertTrue(true);
-        assertEquals(path, fixture.getPath());
+        assertEquals(PATH, fixture.getPath());
     }
 
     @Test
@@ -103,7 +101,6 @@ public final class QuicktimeMovieTest {
 
         fixture = new QuicktimeMovie(decoder);
 
-        assertTrue(true);
-        assertEquals(path, fixture.getPath());
+        assertEquals(PATH, fixture.getPath());
     }
 }

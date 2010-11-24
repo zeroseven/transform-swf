@@ -32,8 +32,8 @@
 package com.flagstone.transform.sound;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -88,7 +88,7 @@ public final class SoundInfoTest {
 
         fixture = new SoundInfo(decoder.readUnsignedShort(), decoder);
 
-        assertTrue(true);
+        assertNotNull(fixture);
     }
 
     @Test
@@ -99,6 +99,6 @@ public final class SoundInfoTest {
 
         fixture = new SoundInfo(decoder.readUnsignedShort(), decoder);
 
-        assertTrue(true);
+        assertNotNull(fixture);
     }
 }

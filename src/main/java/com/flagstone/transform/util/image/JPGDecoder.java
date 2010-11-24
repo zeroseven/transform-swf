@@ -149,6 +149,13 @@ public final class JPGDecoder implements ImageProvider, ImageDecoder {
          height = info.getHeight();
     }
 
+    /**
+     * Copy a JPEG tag.
+     * @param marker the identifier for the tag.
+     * @param length the length of the tag data.
+     * @param coder the decoder containing the JPEG image data.
+     * @throws IOException if there is an error reading the image data.
+     */
     private void copyTag(final int marker, final int length,
             final BigDecoder coder) throws IOException {
         byte[] bytes;
@@ -170,6 +177,11 @@ public final class JPGDecoder implements ImageProvider, ImageDecoder {
         System.arraycopy(bytes, 0, image, imgLength, bytes.length);
     }
 
+    /**
+     * Read the encoded image data from a JPEG image.
+     * @param coder the decoder containing the JPEG image data.
+     * @throws IOException if there is an error reading the image data.
+     */
     private void readEntropyData(final BigDecoder coder) throws IOException {
         byte[] bytes = new byte[2048];
         int index = 0;
@@ -183,33 +195,33 @@ public final class JPGDecoder implements ImageProvider, ImageDecoder {
         	if (current == 255) {
         		next = coder.readByte();
 
-        		if (next != 0) {
+        		if (next == 0) {
+            		if (index + 2 >= bytes.length) {
+                        final int imgLength = image.length;
+                        image = Arrays.copyOf(image, imgLength + index);
+                        System.arraycopy(bytes, 0, image, imgLength, index);
+                        index = 0;
+            		}
+            		bytes[index++] = (byte) current;
+            		bytes[index++] = (byte) next;
+        		} else {
             		if (index > 0) {
-                        int imgLength = image.length;
+                        final int imgLength = image.length;
                         image = Arrays.copyOf(image, imgLength + index);
                         System.arraycopy(bytes, 0, image, imgLength, index);
                         index = 0;
             		}
         			coder.reset();
         			break;
-        		} else {
-            		if (index + 2 >= bytes.length) {
-                        int imgLength = image.length;
-                        image = Arrays.copyOf(image, imgLength + index);
-                        System.arraycopy(bytes, 0, image, imgLength, index);
-                        index = 0;
-            		}
-            		bytes[index++] = (byte)current;
-            		bytes[index++] = (byte)next;
         		}
         	} else {
         		if (index >= bytes.length) {
-                    int imgLength = image.length;
+                    final int imgLength = image.length;
                     image = Arrays.copyOf(image, imgLength + bytes.length);
                     System.arraycopy(bytes, 0, image, imgLength, bytes.length);
                     index = 0;
         		}
-        		bytes[index++] = (byte)current;
+        		bytes[index++] = (byte) current;
         	}
         	coder.unmark();
 

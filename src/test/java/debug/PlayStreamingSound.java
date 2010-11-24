@@ -47,48 +47,51 @@ import com.flagstone.transform.util.sound.SoundFactory;
  * streaming sound.
  */
 public final class PlayStreamingSound {
+
+	/** Width of screen in twips. */
+    private static final int SCREEN_WIDTH = 8000;
+	/** Height of screen in twips. */
+    private static final int SCREEN_HEIGHT = 4000;
+	/** Frame rate in frames per second. */
+    private static final float FRAME_RATE = 12.0f;
+
     /**
      * Run the test from the command line.
      * @param args array of command line arguments.
      */
     public static void main(final String[] args) {
 
-        final File sourceFile = new File(args[0]);
         final File destFile = new File(args[1]);
-
-        final int screenWidth = 8000;
-        final int screenHeight = 4000;
 
         try {
             if (!destFile.getParentFile().exists()) {
                 destFile.getParentFile().mkdirs();
             }
 
-            final float framesPerSecond = 12.0f;
-
             final Movie movie = new Movie();
 
             final SoundFactory factory = new SoundFactory();
-            factory.read(sourceFile);
+            factory.read(new File(args[0]));
 
-            MovieHeader header = new MovieHeader();
-            header.setFrameSize(new Bounds(0, 0, screenWidth, screenHeight));
-            header.setFrameRate(framesPerSecond);
+            final MovieHeader header = new MovieHeader();
+            header.setFrameSize(new Bounds(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT));
+            header.setFrameRate(FRAME_RATE);
 
             movie.add(header);
             movie.add(new Background(WebPalette.LIGHT_BLUE.color()));
-            movie.add(factory.streamHeader(framesPerSecond));
+            movie.add(factory.streamHeader(FRAME_RATE));
 
-            MovieTag block;
+            MovieTag block = factory.streamSound();
 
-            while ((block = factory.streamSound()) != null) {
+            while (block != null) {
                 movie.add(block);
                 movie.add(ShowFrame.getInstance());
+                block = factory.streamSound();
             }
 
             movie.encodeToFile(destFile);
         } catch (final Exception e) {
-            e.printStackTrace();
+            e.printStackTrace(); //NOPMD
         }
     }
 

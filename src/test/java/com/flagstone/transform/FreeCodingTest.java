@@ -59,7 +59,7 @@ public final class FreeCodingTest extends AbstractCodingTest {
     public void checkFreeIsDecoded() throws IOException {
         final byte[] binary = new byte[] {(byte) 0xC2, 0x00, 0x01, 0x00 };
 
-       Free object = (Free) decodeMovieTag(binary);
+        final Free object = (Free) decodeMovieTag(binary);
        assertEquals(NOT_DECODED, 1, object.getIdentifier());
     }
 
@@ -68,7 +68,7 @@ public final class FreeCodingTest extends AbstractCodingTest {
         final byte[] binary = new byte[] {(byte) 0xFF, 0x00, 0x02, 0x00, 0x00,
                 0x00, 0x01, 0x00 };
 
-        Free object = (Free) decodeMovieTag(binary);
+        final Free object = (Free) decodeMovieTag(binary);
         assertEquals(NOT_DECODED, 1, object.getIdentifier());
    }
 }

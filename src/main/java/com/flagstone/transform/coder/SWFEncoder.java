@@ -338,15 +338,50 @@ public final class SWFEncoder {
         buffer[index++] = (byte) (val & Coder.LOWEST7);
     }
 
+    /**
+     * Number of bits to shift to obtain the exponent in a half-precision
+     * floating-point value.
+     */
     private static final int HALF_EXP_SHIFT = 10;
+    /**
+     * The offset to apply to the exponent in a half-precision
+     * floating-point value.
+     */
     private static final int HALF_EXP_OFFSET = 15;
+    /**
+     * The maximum value of the exponent in a half-precision
+     * floating-point value.
+     */
     private static final int HALF_EXP_MAX = 31;
+    /**
+     * The bit pattern used to represent Infinity in a half-precision
+     * floating-point value.
+     */
     private static final int HALF_INF = 0x7C00;
 
+    /**
+     * Number of bits to shift to obtain the exponent in a single-precision
+     * floating-point value.
+     */
     private static final int EXP_SHIFT = 23;
+    /**
+     * The maximum value of the exponent in a single-precision
+     * floating-point value.
+     */
     private static final int EXP_MAX = 127;
+    /**
+     * Number of bits to shift to obtain the mantissa in a single-precision
+     * float-point value.
+     */
     private static final int MANT_SHIFT = 13;
+    /**
+     * Mask to obtain the mantissa in a single-precision floating-point value.
+     */
     private static final int LOWEST23 = 0x007fffff;
+    /**
+     * Mask to obtain the most significant bit of the mantissa in a
+     * single-precision floating-point value.
+     */
     private static final int BIT23 = 0x00800000;
 
     /**

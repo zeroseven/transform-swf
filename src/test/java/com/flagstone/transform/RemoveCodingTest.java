@@ -59,7 +59,7 @@ public final class RemoveCodingTest extends AbstractCodingTest {
     public void checkRemoveIsDecoded() throws IOException {
         final byte[] binary = new byte[] {0x44, 0x01, 0x01, 0x00, 0x02, 0x00};
 
-        Remove object = (Remove) decodeMovieTag(binary);
+        final Remove object = (Remove) decodeMovieTag(binary);
         assertEquals(NOT_DECODED, 1, object.getIdentifier());
         assertEquals(NOT_DECODED, 2, object.getLayer());
     }
@@ -69,7 +69,7 @@ public final class RemoveCodingTest extends AbstractCodingTest {
         final byte[] binary = new byte[] {0x7F, 0x01, 0x04, 0x00, 0x00, 0x00,
                 0x01, 0x00, 0x02, 0x00};
 
-        Remove object = (Remove) decodeMovieTag(binary);
+        final Remove object = (Remove) decodeMovieTag(binary);
         assertEquals(NOT_DECODED, 1, object.getIdentifier());
         assertEquals(NOT_DECODED, 2, object.getLayer());
     }

@@ -233,7 +233,7 @@ public final class Property {
      * @return the value the Property will be encoded as.
      */
     public int getValue(final int version) {
-        final int val;
+        int val;
         if (version < VERSION_WITH_INTS) {
             val = Float.floatToIntBits(value);
         } else {

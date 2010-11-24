@@ -48,8 +48,7 @@ import org.junit.runners.Suite;
     ImportTest.class, ImportCodingTest.class,
     Import2Test.class, Import2CodingTest.class,
     LimitScriptTest.class, LimitScriptCodingTest.class,
-    MovieTest.class,
-    MovieAttributesTest.class, MovieAttributesCodingTest.class,
+    MovieAttributesCodingTest.class,
     MovieDataTest.class, MovieDataCodingTest.class,
     MovieMetaDataTest.class, MovieMetaDataCodingTest.class,
     MovieObjectTest.class, MovieObjectCodingTest.class,
@@ -67,5 +66,5 @@ import org.junit.runners.Suite;
     SymbolClassTest.class, SymbolClassCodingTest.class,
     TabOrderTest.class, TabOrderCodingTest.class
     })
-public final class AllMovieTests {
+public final class AllMovieTests { //NOPMD class for defining test suite
 }

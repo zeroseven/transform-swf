@@ -53,7 +53,7 @@ public final class EncodeMovie {
             movie.decodeFromFile(srcFile);
             movie.encodeToFile(destFile);
         } catch (final Exception e) {
-            e.printStackTrace();
+            e.printStackTrace(); //NOPMD
         }
     }
 

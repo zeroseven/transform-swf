@@ -77,7 +77,7 @@ public final class CanvasIT {
     }
 
     @Test
-    public void rpolyline() throws DataFormatException, IOException {
+    public void rpolyline() throws DataFormatException, IOException { //NOPMD
         final File destFile = new File(resultDir, "rpolyline.swf");
 
         final int[] points = new int[] {0, -100, 10, 0, 0, 90, 90, 0, 0, 20,
@@ -89,7 +89,7 @@ public final class CanvasIT {
     }
 
     @Test
-    public void curve() throws DataFormatException, IOException {
+    public void curve() throws DataFormatException, IOException { //NOPMD
         final File destFile = new File(resultDir, "curve.swf");
         path.curve(0, -100, 150, -100, 150, 0);
         path.close();
@@ -99,7 +99,7 @@ public final class CanvasIT {
     private void showShape(final DefineShape2 shape, final File file)
             throws DataFormatException, IOException {
         final Movie movie = new Movie();
-        MovieHeader attrs = new MovieHeader();
+        final MovieHeader attrs = new MovieHeader();
         attrs.setFrameRate(1.0f);
         attrs.setFrameSize(shape.getBounds());
 

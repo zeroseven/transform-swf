@@ -37,7 +37,7 @@ import org.junit.Test;
 
 public final class DefineDataTest {
 
-    private final transient int identifier = 1;
+    private static final int IDENTIFIER = 1;
     private final transient byte[] data = new byte[] {1, 2, 3, 4 };
 
     private transient DefineData fixture;
@@ -54,12 +54,12 @@ public final class DefineDataTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForDataWithNull() {
-        fixture = new DefineData(1, null);
+        fixture = new DefineData(IDENTIFIER, null);
     }
 
     @Test
     public void checkCopy() {
-        fixture = new DefineData(identifier, data);
+        fixture = new DefineData(IDENTIFIER, data);
         final DefineData copy = fixture.copy();
 
         assertNotSame(fixture, copy);

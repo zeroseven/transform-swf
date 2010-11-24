@@ -33,7 +33,6 @@ package com.flagstone.transform.action;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -91,7 +90,7 @@ public final class WithTest {
 
     @Test
     public void decode() throws IOException {
-        ByteArrayInputStream stream = new ByteArrayInputStream(encoded);
+    	final ByteArrayInputStream stream = new ByteArrayInputStream(encoded);
         final SWFDecoder decoder = new SWFDecoder(stream);
         final Context context = new Context();
         final DecoderRegistry registry = new DecoderRegistry();
@@ -101,7 +100,6 @@ public final class WithTest {
         decoder.readByte();
         fixture = new With(decoder, context);
 
-        assertTrue(true);
         assertEquals(list, fixture.getActions());
     }
 }

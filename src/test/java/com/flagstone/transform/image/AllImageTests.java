@@ -38,7 +38,6 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
     DefineImageTest.class, DefineImage2Test.class,
     DefineJPEGImageTest.class, DefineJPEGImage2Test.class,
-    DefineJPEGImage3Test.class, ImageBlockTest.class,
-    JPEGEncodingTableTest.class })
-public final class AllImageTests {
+    DefineJPEGImage3Test.class })
+public final class AllImageTests { //NOPMD class for defining test suite
 }

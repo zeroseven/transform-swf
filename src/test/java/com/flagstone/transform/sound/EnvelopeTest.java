@@ -32,7 +32,7 @@
 package com.flagstone.transform.sound;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -77,7 +77,7 @@ public final class EnvelopeTest {
 
         fixture = new Envelope(decoder);
 
-        assertTrue(true);
+        assertNotNull(fixture);
     }
 
     @Test
@@ -88,6 +88,6 @@ public final class EnvelopeTest {
 
         fixture = new Envelope(decoder);
 
-        assertTrue(true);
+        assertNotNull(fixture);
     }
 }

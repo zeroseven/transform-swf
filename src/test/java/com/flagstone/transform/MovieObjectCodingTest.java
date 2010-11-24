@@ -62,7 +62,7 @@ public final class MovieObjectCodingTest extends AbstractCodingTest {
         final byte[] data = new byte[] {1, 2, 3, 4};
         final byte[] binary = new byte[] {0x04, 0x00, 0x01, 0x02, 0x03, 0x04};
 
-        MovieObject object = (MovieObject) decodeMovieTag(binary);
+        final MovieObject object = (MovieObject) decodeMovieTag(binary);
         assertArrayEquals(NOT_DECODED, data, object.getData());
    }
 
@@ -72,7 +72,7 @@ public final class MovieObjectCodingTest extends AbstractCodingTest {
         final byte[] binary = new byte[] {0x3F, 0x00, 0x04, 0x00, 0x00, 0x00,
                 0x01, 0x02, 0x03, 0x04};
 
-        MovieObject object = (MovieObject) decodeMovieTag(binary);
+        final MovieObject object = (MovieObject) decodeMovieTag(binary);
         assertArrayEquals(NOT_DECODED, data, object.getData());
    }
 }

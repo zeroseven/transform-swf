@@ -654,7 +654,8 @@ public final class Place2 implements MovieTag {
     }
 
     /** {@inheritDoc} */
-    public Place2 copy() {
+    @Override
+	public Place2 copy() {
         return new Place2(this);
     }
 
@@ -667,7 +668,8 @@ public final class Place2 implements MovieTag {
 
 
     /** {@inheritDoc} */
-    @SuppressWarnings("PMD.NPathComplexity")
+    @Override
+	@SuppressWarnings("PMD.NPathComplexity")
     public int prepareToEncode(final Context context) {
         // CHECKSTYLE:OFF
         context.put(Context.TRANSPARENT, 1);
@@ -686,7 +688,7 @@ public final class Place2 implements MovieTag {
         length += name == null ? 0 : context.strlen(name);
 
         if (!events.isEmpty()) {
-            final int eventSize;
+            int eventSize;
 
             if (context.get(Context.VERSION) > STANDARD_EVENTS) {
                 eventSize = 4;
@@ -712,7 +714,8 @@ public final class Place2 implements MovieTag {
 
 
     /** {@inheritDoc} */
-    @SuppressWarnings("PMD.NPathComplexity")
+    @Override
+	@SuppressWarnings("PMD.NPathComplexity")
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
         if (length > Coder.HEADER_LIMIT) {

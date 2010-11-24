@@ -55,7 +55,7 @@ public final class MovieCopyIT {
     @Parameters
     public static Collection<Object[]>  files() {
 
-        final File srcDir;
+        File srcDir;
 
         if (System.getProperty("test.suite") == null) {
             srcDir = new File("src/test/resources/swf-reference");
@@ -64,13 +64,14 @@ public final class MovieCopyIT {
         }
 
         final FilenameFilter filter = new FilenameFilter() {
-            public boolean accept(final File directory, final String name) {
+            @Override
+			public boolean accept(final File directory, final String name) {
                 return name.endsWith(".swf");
             }
         };
 
-        String[] files = srcDir.list(filter);
-        Object[][] collection = new Object[files.length][1];
+        final String[] files = srcDir.list(filter);
+        final Object[][] collection = new Object[files.length][1];
 
         for (int i = 0; i < files.length; i++) {
             collection[i][0] = new File(srcDir, files[i]);
@@ -78,7 +79,7 @@ public final class MovieCopyIT {
         return Arrays.asList(collection);
     }
 
-    private final File file;
+    private final transient File file;
 
     public MovieCopyIT(final File movieFile) {
         file = movieFile;
@@ -116,7 +117,7 @@ public final class MovieCopyIT {
 
         } catch (Exception e) {
             if (System.getProperty("test.trace") != null) {
-                e.printStackTrace();
+                e.printStackTrace(); //NOPMD
             }
             fail(file.getPath());
         }

@@ -95,7 +95,7 @@ public class Context {
      *
      * @return the character encoding used for strings.
      */
-    public String getEncoding() {
+    public final String getEncoding() {
         return encoding;
     }
 
@@ -110,7 +110,7 @@ public class Context {
      * @param charSet
      *            the name of the character set used to encode strings.
      */
-    public void setEncoding(final String charSet) {
+    public final void setEncoding(final String charSet) {
         if (!Charset.isSupported(charSet)) {
             throw new UnsupportedCharsetException(charSet);
         }
@@ -128,7 +128,7 @@ public class Context {
      *         terminating null character.
      */
 
-    public int strlen(final String string) {
+    public final int strlen(final String string) {
         try {
             return string.getBytes(encoding).length + 1;
         } catch (final UnsupportedEncodingException e) {
@@ -140,7 +140,7 @@ public class Context {
      * Get the registry containing the decoders for different types of objects.
      * @return the decoder registry.
      */
-    public DecoderRegistry getRegistry() {
+    public final DecoderRegistry getRegistry() {
         return registry;
     }
 
@@ -148,7 +148,7 @@ public class Context {
      * Set the registry containing the decoders for different types of objects.
      * @param decoderRegistry the registry containing decoder objects.
      */
-    public void setRegistry(final DecoderRegistry decoderRegistry) {
+    public final void setRegistry(final DecoderRegistry decoderRegistry) {
         registry = decoderRegistry;
     }
 
@@ -157,7 +157,7 @@ public class Context {
      * @param key the name of the variable.
      * @return true if the variable is set, false if not.
      */
-    public boolean contains(final Integer key) {
+    public final boolean contains(final Integer key) {
         return variables.containsKey(key);
     }
 
@@ -166,7 +166,7 @@ public class Context {
      *
      * @param key the identifier for the variable.
      */
-    public void remove(final Integer key) {
+    public final void remove(final Integer key) {
         variables.remove(key);
     }
 
@@ -175,7 +175,7 @@ public class Context {
      * @param key the name of the variable.
      * @return the variable value.
      */
-    public Integer get(final Integer key) {
+    public final Integer get(final Integer key) {
         return variables.get(key);
     }
 
@@ -185,7 +185,7 @@ public class Context {
      * @param value the variable value.
      * @return this object.
      */
-    public Context put(final Integer key, final Integer value) {
+    public final Context put(final Integer key, final Integer value) {
         variables.put(key, value);
         return this;
     }

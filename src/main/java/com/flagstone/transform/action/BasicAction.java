@@ -143,7 +143,7 @@ public enum BasicAction implements Action {
     CAST(ActionTypes.CAST),
     /** Identifies a class implements a defined interface. */
     IMPLEMENTS(ActionTypes.IMPLEMENTS),
-    /** FSCommand2 function */
+    /** FSCommand2 function. */
     FS_COMMAND2(ActionTypes.FS_COMMAND2),
     /** Push a random number onto the stack. */
     RANDOM_NUMBER(ActionTypes.RANDOM_NUMBER),
@@ -276,17 +276,20 @@ public enum BasicAction implements Action {
     }
 
     /** {@inheritDoc} */
-    public BasicAction copy() {
+    @Override
+	public BasicAction copy() {
         return this;
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final Context context) {
+    @Override
+	public int prepareToEncode(final Context context) {
         return 1;
     }
 
     /** {@inheritDoc} */
-    public void encode(final SWFEncoder coder, final Context context)
+    @Override
+	public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
         coder.writeByte(type);
 

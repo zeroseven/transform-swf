@@ -35,7 +35,6 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -88,14 +87,13 @@ public final class SolidFillTest {
 
     @Test
     public void decode() throws IOException {
-        ByteArrayInputStream stream = new ByteArrayInputStream(encoded);
+    	final ByteArrayInputStream stream = new ByteArrayInputStream(encoded);
         final SWFDecoder decoder = new SWFDecoder(stream);
         final Context context = new Context();
 
         decoder.readByte();
         fixture = new SolidFill(decoder, context);
 
-        assertTrue(true);
         assertEquals(color.getRed(), fixture.getColor().getRed());
         assertEquals(color.getGreen(), fixture.getColor().getGreen());
         assertEquals(color.getBlue(), fixture.getColor().getBlue());

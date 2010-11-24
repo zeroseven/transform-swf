@@ -39,30 +39,30 @@ import com.flagstone.transform.datatype.Bounds;
 
 public final class ScalingGridTest {
 
-    private final transient int identifier = 1;
-    private final transient Bounds bounds = new Bounds(1, 2, 3, 4);
+    private static final int IDENTIFIER = 1;
+    private static final Bounds BOUNDS = new Bounds(1, 2, 3, 4);
 
     private transient ScalingGrid fixture;
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForIdentifierWithLowerBound() {
-        fixture = new ScalingGrid(0, bounds);
+        fixture = new ScalingGrid(0, BOUNDS);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForIdentifierWithUpperBound() {
-        fixture = new ScalingGrid(65536, bounds);
+        fixture = new ScalingGrid(65536, BOUNDS);
         fixture.setIdentifier(65536);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForDataWithNull() {
-        fixture = new ScalingGrid(identifier, null);
+        fixture = new ScalingGrid(IDENTIFIER, null);
     }
 
     @Test
     public void checkCopy() {
-        fixture = new ScalingGrid(identifier, bounds);
+        fixture = new ScalingGrid(IDENTIFIER, BOUNDS);
         assertEquals(fixture.getIdentifier(), fixture.copy().getIdentifier());
         assertSame(fixture.getBounds(), fixture.copy().getBounds());
         assertEquals(fixture.toString(), fixture.toString());

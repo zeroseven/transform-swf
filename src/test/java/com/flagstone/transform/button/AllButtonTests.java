@@ -38,5 +38,5 @@ import org.junit.runners.Suite;
     ButtonColorTransformTest.class,
     ButtonShapeTest.class,
     ButtonSoundTest.class, DefineButtonTest.class, DefineButton2Test.class })
-public final class AllButtonTests {
+public final class AllButtonTests { //NOPMD class for defining test suite
 }

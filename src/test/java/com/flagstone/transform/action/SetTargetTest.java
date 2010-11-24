@@ -32,7 +32,6 @@ package com.flagstone.transform.action;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -46,8 +45,8 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 public final class SetTargetTest {
 
-    private static final transient int TYPE = ActionTypes.SET_TARGET;
-    private final transient String target = "ABC123";
+    private static final int TYPE = ActionTypes.SET_TARGET;
+    private static final String TARGET = "ABC123";
 
     private transient SetTarget fixture;
 
@@ -61,7 +60,7 @@ public final class SetTargetTest {
 
     @Test
     public void checkCopy() {
-        fixture = new SetTarget(target);
+        fixture = new SetTarget(TARGET);
         final SetTarget copy = fixture.copy();
 
         assertEquals(fixture.toString(), copy.toString());
@@ -73,7 +72,7 @@ public final class SetTargetTest {
         final SWFEncoder encoder = new SWFEncoder(stream);
         final Context context = new Context();
 
-        fixture = new SetTarget(target);
+        fixture = new SetTarget(TARGET);
         assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
         encoder.flush();
@@ -83,13 +82,12 @@ public final class SetTargetTest {
 
     @Test
     public void decode() throws IOException {
-        ByteArrayInputStream stream = new ByteArrayInputStream(encoded);
+    	final ByteArrayInputStream stream = new ByteArrayInputStream(encoded);
         final SWFDecoder decoder = new SWFDecoder(stream);
 
         decoder.readByte();
         fixture = new SetTarget(decoder);
 
-        assertTrue(true);
-        assertEquals(target, fixture.getTarget());
+        assertEquals(TARGET, fixture.getTarget());
     }
 }

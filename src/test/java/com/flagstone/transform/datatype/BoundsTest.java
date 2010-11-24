@@ -54,12 +54,6 @@ public final class BoundsTest {
     }
 
     @Test
-    public void checkNullIsNotEqual() {
-        final Bounds bounds = null;
-        assertFalse(new Bounds(XMIN, YMIN, XMAX, YMAX).equals(bounds));
-    }
-
-    @Test
     public void checkObjectIsNotEqual() {
         assertFalse(new Bounds(XMIN, YMIN, XMAX, YMAX).equals(new Object()));
     }

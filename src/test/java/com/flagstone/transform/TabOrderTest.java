@@ -37,34 +37,34 @@ import org.junit.Test;
 
 public final class TabOrderTest {
 
-    private final transient int layer = 1;
-    private final transient int index = 2;
+    private static final int LAYER = 1;
+    private static final int INDEX = 2;
 
     private transient TabOrder fixture;
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForLayerWithLowerBound() {
-        fixture = new TabOrder(0, index);
+        fixture = new TabOrder(0, INDEX);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForLayerWithUpperBound() {
-        fixture = new TabOrder(65536, index);
+        fixture = new TabOrder(65536, INDEX);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForIndexWithLowerBound() {
-        fixture = new TabOrder(layer, -1);
+        fixture = new TabOrder(LAYER, -1);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForIndexWithUpperBound() {
-        fixture = new TabOrder(layer, 65536);
+        fixture = new TabOrder(LAYER, 65536);
     }
 
     @Test
     public void checkCopy() {
-        fixture = new TabOrder(layer, index);
+        fixture = new TabOrder(LAYER, INDEX);
         final TabOrder copy = fixture.copy();
 
         assertNotSame(fixture, copy);

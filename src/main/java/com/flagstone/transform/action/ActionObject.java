@@ -136,7 +136,8 @@ public final class ActionObject implements Action {
     }
 
     /** {@inheritDoc} */
-    public ActionObject copy() {
+    @Override
+	public ActionObject copy() {
         return this;
     }
 
@@ -147,9 +148,9 @@ public final class ActionObject implements Action {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final Context context) {
-        final int length;
-
+    @Override
+	public int prepareToEncode(final Context context) {
+        int length;
         if (type > ActionTypes.HIGHEST_BYTE_CODE) {
             length = Coder.ACTION_HEADER + data.length;
         } else {
@@ -159,7 +160,8 @@ public final class ActionObject implements Action {
     }
 
     /** {@inheritDoc} */
-    public void encode(final SWFEncoder coder, final Context context)
+    @Override
+	public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
         coder.writeByte(type);
 

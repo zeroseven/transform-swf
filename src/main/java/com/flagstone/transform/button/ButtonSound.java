@@ -75,7 +75,7 @@ public final class ButtonSound implements MovieTag {
     /** The unique identifier of the button. */
     private int identifier;
     /** Table of sounds played for different button events. */
-    private transient final Map<Event, SoundInfo>table;
+    private final transient Map<Event, SoundInfo>table;
 
     /** The length of the object, minus the header, when it is encoded. */
     private transient int length;
@@ -220,7 +220,8 @@ public final class ButtonSound implements MovieTag {
     }
 
     /** {@inheritDoc} */
-    public ButtonSound copy() {
+    @Override
+	public ButtonSound copy() {
         return new ButtonSound(this);
     }
 
@@ -231,7 +232,8 @@ public final class ButtonSound implements MovieTag {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final Context context) {
+    @Override
+	public int prepareToEncode(final Context context) {
         length = 2;
 
         for (Event event : EVENTS) {
@@ -246,7 +248,8 @@ public final class ButtonSound implements MovieTag {
     }
 
     /** {@inheritDoc} */
-    public void encode(final SWFEncoder coder, final Context context)
+    @Override
+	public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
 
         if (length > Coder.HEADER_LIMIT) {

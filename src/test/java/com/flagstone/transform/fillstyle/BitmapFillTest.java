@@ -33,8 +33,8 @@ package com.flagstone.transform.fillstyle;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -49,10 +49,10 @@ import com.flagstone.transform.datatype.CoordTransform;
 
 public final class BitmapFillTest {
 
-    private final transient boolean tiled = false;
-    private final transient boolean smoothed = false;
-    private final transient int identifier = 1;
-    private final transient CoordTransform transform = CoordTransform
+    private static final boolean TILED = false;
+    private static final boolean SMOOTHED = false;
+    private static final int IDENTIFIER = 1;
+    private static final CoordTransform TRANSFORM = CoordTransform
             .translate(1, 2);
 
     private transient BitmapFill fixture;
@@ -62,22 +62,22 @@ public final class BitmapFillTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForIdentifierWithLowerBound() {
-        fixture = new BitmapFill(tiled, smoothed, 0, transform);
+        fixture = new BitmapFill(TILED, SMOOTHED, 0, TRANSFORM);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForIdentifierWithUpperBound() {
-        fixture = new BitmapFill(tiled, smoothed, 65536, transform);
+        fixture = new BitmapFill(TILED, SMOOTHED, 65536, TRANSFORM);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForDataWithNull() {
-        fixture = new BitmapFill(tiled, smoothed, 1, null);
+        fixture = new BitmapFill(TILED, SMOOTHED, 1, null);
     }
 
     @Test
     public void checkCopy() {
-        fixture = new BitmapFill(tiled, smoothed, identifier, transform);
+        fixture = new BitmapFill(TILED, SMOOTHED, IDENTIFIER, TRANSFORM);
         assertEquals(fixture.getIdentifier(), fixture.copy().getIdentifier());
         assertSame(fixture.getTransform(), fixture.copy().getTransform());
         assertEquals(fixture.toString(), fixture.toString());
@@ -89,7 +89,7 @@ public final class BitmapFillTest {
         final SWFEncoder encoder = new SWFEncoder(stream);
         final Context context = new Context();
 
-        fixture = new BitmapFill(tiled, smoothed, identifier, transform);
+        fixture = new BitmapFill(TILED, SMOOTHED, IDENTIFIER, TRANSFORM);
         assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
         encoder.flush();
@@ -104,11 +104,11 @@ public final class BitmapFillTest {
 
         fixture = new BitmapFill(decoder.readByte(), decoder);
 
-        assertTrue(true);
-        assertEquals(identifier, fixture.getIdentifier());
-        assertEquals(transform.getTranslateX(), fixture.getTransform()
+        assertNotNull(fixture);
+        assertEquals(IDENTIFIER, fixture.getIdentifier());
+        assertEquals(TRANSFORM.getTranslateX(), fixture.getTransform()
                 .getTranslateX());
-        assertEquals(transform.getTranslateY(), fixture.getTransform()
+        assertEquals(TRANSFORM.getTranslateY(), fixture.getTransform()
                 .getTranslateY());
     }
 }

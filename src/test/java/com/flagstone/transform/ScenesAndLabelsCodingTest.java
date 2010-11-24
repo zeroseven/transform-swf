@@ -94,7 +94,7 @@ public final class ScenesAndLabelsCodingTest extends AbstractCodingTest {
                 0x00, 0x02, 0x42, 0x00, 0x03, 0x43, 0x00, 0x03, 0x04, 0x44,
                 0x00, 0x05, 0x45, 0x00, 0x06, 0x46, 0x00 };
 
-        ScenesAndLabels object = (ScenesAndLabels) decodeMovieTag(binary);
+        final ScenesAndLabels object = (ScenesAndLabels) decodeMovieTag(binary);
         assertEquals(NOT_DECODED, scenes, object.getScenes());
         assertEquals(NOT_DECODED, labels, object.getLabels());
    }
@@ -115,7 +115,7 @@ public final class ScenesAndLabelsCodingTest extends AbstractCodingTest {
                 0x00, 0x03, 0x04, 0x44, 0x00, 0x05, 0x45, 0x00, 0x06, 0x46,
                 0x00 };
 
-        ScenesAndLabels object = (ScenesAndLabels) decodeMovieTag(binary);
+        final ScenesAndLabels object = (ScenesAndLabels) decodeMovieTag(binary);
         assertEquals(NOT_DECODED, scenes, object.getScenes());
         assertEquals(NOT_DECODED, labels, object.getLabels());
    }

@@ -250,10 +250,9 @@ public final class EventHandler implements Action {
     public EventHandler(final int value, final SWFDecoder coder,
             final Context context) throws IOException {
 
-        events = EnumSet.noneOf(Event.class);
-
-        final int mask = 1;
         int field;
+
+        events = EnumSet.noneOf(Event.class);
 
         if (context.contains(Context.TYPE)
                 && context.get(Context.TYPE) == MovieTypes.DEFINE_BUTTON_2) {
@@ -264,14 +263,14 @@ public final class EventHandler implements Action {
 
             if (context.contains(Context.MENU_BUTTON)) {
                 for (int i = 0; i < NUM_BUTTON_EVENTS; i++) {
-                    field = eventCode & (mask << i);
+                    field = eventCode & (1 << i);
                     if (MENU_EVENTS.containsKey(field)) {
                         events.add(MENU_EVENTS.get(field));
                     }
                 }
             } else {
                 for (int i = 0; i < NUM_BUTTON_EVENTS; i++) {
-                    field = eventCode & (mask << i);
+                    field = eventCode & (1 << i);
                     if (field != 0 && BUTTON_EVENTS.containsKey(field)) {
                         events.add(BUTTON_EVENTS.get(field));
                     }
@@ -285,7 +284,7 @@ public final class EventHandler implements Action {
                 length -= 1;
             }
             for (int i = 0; i < NUM_CLIP_EVENTS; i++) {
-                field = eventCode & (mask << i);
+                field = eventCode & (1 << i);
                 if (field != 0 && CLIP_EVENTS.containsKey(field)) {
                     events.add(CLIP_EVENTS.get(field));
                 }
@@ -449,7 +448,8 @@ public final class EventHandler implements Action {
     }
 
     /** {@inheritDoc} */
-    public EventHandler copy() {
+    @Override
+	public EventHandler copy() {
         return new EventHandler(this);
     }
 
@@ -459,7 +459,8 @@ public final class EventHandler implements Action {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final Context context) {
+    @Override
+	public int prepareToEncode(final Context context) {
         //CHECKSTYLE:OFF
         eventCode = 0;
 
@@ -507,7 +508,8 @@ public final class EventHandler implements Action {
     }
 
     /** {@inheritDoc} */
-    public void encode(final SWFEncoder coder, final Context context)
+    @Override
+	public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
         if (Constants.DEBUG) {
             coder.mark();

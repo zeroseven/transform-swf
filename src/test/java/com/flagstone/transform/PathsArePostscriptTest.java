@@ -33,6 +33,7 @@ package com.flagstone.transform;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import com.flagstone.transform.shape.PathsArePostscript;
@@ -41,9 +42,13 @@ public final class PathsArePostscriptTest {
 
     private transient PathsArePostscript fixture;
 
+    @Before
+    public void setUp() {
+        fixture = PathsArePostscript.getInstance();
+    }
+
     @Test
     public void checkCopy() {
-        fixture = PathsArePostscript.getInstance();
         final PathsArePostscript copy = fixture.copy();
 
         assertSame(fixture, fixture.copy());

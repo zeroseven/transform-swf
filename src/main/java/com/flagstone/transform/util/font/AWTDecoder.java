@@ -77,6 +77,8 @@ public final class AWTDecoder {
     private static final int CUBE_ANCHORX = 4;
     /** y-coordinate of the anchor point for a cubic curve. */
     private static final int CUBE_ANCHORY = 5;
+    /** Size of the EM-Square in twips. */
+    private static final float EM_SQUARE_SIZE = 1024.0f;
 
     /** The list of fonts decoded. */
     private final transient List<Font>fonts = new ArrayList<Font>();
@@ -117,21 +119,16 @@ public final class AWTDecoder {
                 awtFont.isBold(), awtFont.isItalic()));
         font.setEncoding(CharacterFormat.UCS2);
 
-        final double scaleY = 1024.0;
-        final double scaleX = scaleY;
-        final double translateX = 0;
-        final double translateY = 0;
-
         /*
          * The new font scaled to the EM Square must be derived using the size
          * as well as the transform used for the glyphs otherwise the advance
          * values are not scaled accordingly.
          */
         final AffineTransform affine = AffineTransform.getTranslateInstance(
-                translateX, translateY);
+                0, 0);
 
         awtFont = awtFont.deriveFont(affine);
-        awtFont = awtFont.deriveFont((float) scaleX);
+        awtFont = awtFont.deriveFont(EM_SQUARE_SIZE);
 
         final int missingGlyph = awtFont.getMissingGlyphCode();
         final int count = awtFont.getNumGlyphs();

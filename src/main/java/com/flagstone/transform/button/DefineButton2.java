@@ -373,7 +373,7 @@ public final class DefineButton2 implements DefineTag {
 
         for (int i = 0; i < count; i++) {
             handler = events.get(i);
-            if (i == count -1) {
+            if (i == count - 1) {
                 context.put(Context.LAST, 1);
             }
             length += handler.prepareToEncode(context);

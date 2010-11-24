@@ -34,7 +34,6 @@ package com.flagstone.transform.fillstyle;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -49,12 +48,12 @@ import com.flagstone.transform.datatype.CoordTransform;
 
 public final class MorphBitmapFillTest {
 
-    private final transient boolean tiled = false;
-    private final transient boolean smoothed = false;
-    private final transient int identifier = 1;
-    private final transient CoordTransform start = CoordTransform
+    private static final boolean TILED = false;
+    private static final boolean SMOOTHED = false;
+    private static final int IDENTIFIER = 1;
+    private static final CoordTransform START = CoordTransform
             .translate(1, 2);
-    private final transient CoordTransform end = CoordTransform
+    private static final CoordTransform END = CoordTransform
             .translate(1, 2);
 
     private transient MorphBitmapFill fixture;
@@ -64,27 +63,27 @@ public final class MorphBitmapFillTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForIdentifierWithLowerBound() {
-        fixture = new MorphBitmapFill(tiled, smoothed, 0, start, end);
+        fixture = new MorphBitmapFill(TILED, SMOOTHED, 0, START, END);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForIdentifierWithUpperBound() {
-        fixture = new MorphBitmapFill(tiled, smoothed, 65536, start, end);
+        fixture = new MorphBitmapFill(TILED, SMOOTHED, 65536, START, END);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForStartTransformWithNull() {
-        fixture = new MorphBitmapFill(tiled, smoothed, 1, null, end);
+        fixture = new MorphBitmapFill(TILED, SMOOTHED, 1, null, END);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForEndTransformWithNull() {
-        fixture = new MorphBitmapFill(tiled, smoothed, 1, start, null);
+        fixture = new MorphBitmapFill(TILED, SMOOTHED, 1, START, null);
     }
 
     @Test
     public void checkCopy() {
-        fixture = new MorphBitmapFill(tiled, smoothed, identifier, start, end);
+        fixture = new MorphBitmapFill(TILED, SMOOTHED, IDENTIFIER, START, END);
         assertEquals(fixture.getIdentifier(), fixture.copy().getIdentifier());
         assertSame(fixture.getStartTransform(), fixture.copy()
                 .getStartTransform());
@@ -99,7 +98,7 @@ public final class MorphBitmapFillTest {
         final SWFEncoder encoder = new SWFEncoder(stream);
         final Context context = new Context();
 
-        fixture = new MorphBitmapFill(tiled, smoothed, identifier, start, end);
+        fixture = new MorphBitmapFill(TILED, SMOOTHED, IDENTIFIER, START, END);
         assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
         encoder.flush();
@@ -115,15 +114,14 @@ public final class MorphBitmapFillTest {
 
         fixture = new MorphBitmapFill(decoder.readByte(), decoder);
 
-        assertTrue(true);
-        assertEquals(identifier, fixture.getIdentifier());
-        assertEquals(start.getTranslateX(), fixture.getStartTransform()
+        assertEquals(IDENTIFIER, fixture.getIdentifier());
+        assertEquals(START.getTranslateX(), fixture.getStartTransform()
                 .getTranslateX());
-        assertEquals(start.getTranslateY(), fixture.getStartTransform()
+        assertEquals(START.getTranslateY(), fixture.getStartTransform()
                 .getTranslateY());
-        assertEquals(end.getTranslateX(), fixture.getEndTransform()
+        assertEquals(END.getTranslateX(), fixture.getEndTransform()
                 .getTranslateX());
-        assertEquals(end.getTranslateY(), fixture.getEndTransform()
+        assertEquals(END.getTranslateY(), fixture.getEndTransform()
                 .getTranslateY());
     }
 }

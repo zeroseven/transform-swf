@@ -32,8 +32,8 @@
 package com.flagstone.transform.image;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -57,7 +57,7 @@ public final class DefineJPEGImage2Test {
             0x00, 0x00, 0x00, 0x01, 0x00, 0x02, 0x00, 0x06, 0x50 };
 
     @Test
-    @Ignore 
+    @Ignore
     public void checkCopy() {
         // fixture = new DefineJPEGImage2(identifier, layer, transform,
         // colorTransform);
@@ -67,7 +67,7 @@ public final class DefineJPEGImage2Test {
     }
 
     @Test
-    @Ignore 
+    @Ignore
     public void encodeCoordTransform() throws IOException {
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         final SWFEncoder encoder = new SWFEncoder(stream);
@@ -81,24 +81,24 @@ public final class DefineJPEGImage2Test {
     }
 
     @Test
-    @Ignore 
+    @Ignore
     public void decode() throws IOException {
         final ByteArrayInputStream stream = new ByteArrayInputStream(encoded);
         final SWFDecoder decoder = new SWFDecoder(stream);
 
         fixture = new DefineJPEGImage2(decoder);
 
-        assertTrue(true);
+        assertNotNull(fixture);
     }
 
     @Test
-    @Ignore 
+    @Ignore
     public void decodeExtended() throws IOException {
         final ByteArrayInputStream stream = new ByteArrayInputStream(extended);
         final SWFDecoder decoder = new SWFDecoder(stream);
 
         fixture = new DefineJPEGImage2(decoder);
 
-        assertTrue(true);
+        assertNotNull(fixture);
     }
 }

@@ -34,7 +34,6 @@ package com.flagstone.transform.movieclip;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -122,7 +121,6 @@ public final class InitializeMovieClipTest {
 
         fixture = new InitializeMovieClip(decoder, context);
 
-        assertTrue(true);
         assertEquals(identifier, fixture.getIdentifier());
         assertEquals(list, fixture.getActions());
     }
@@ -138,7 +136,6 @@ public final class InitializeMovieClipTest {
 
         fixture = new InitializeMovieClip(decoder, context);
 
-        assertTrue(true);
         assertEquals(identifier, fixture.getIdentifier());
         assertEquals(list, fixture.getActions());
     }

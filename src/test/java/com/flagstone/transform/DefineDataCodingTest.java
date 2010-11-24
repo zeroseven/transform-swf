@@ -65,7 +65,7 @@ public final class DefineDataCodingTest extends AbstractCodingTest {
         final byte[] binary = new byte[] {(byte) 0xCA, 0x15, 0x01, 0x00,
                 0x00, 0x00, 0x00, 0x00, 0x01, 0x02, 0x03, 0x04};
 
-        DefineData object = (DefineData) decodeMovieTag(binary);
+        final DefineData object = (DefineData) decodeMovieTag(binary);
         assertArrayEquals(NOT_DECODED, data, object.getData());
    }
 
@@ -76,7 +76,7 @@ public final class DefineDataCodingTest extends AbstractCodingTest {
                 0x0A, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00,
                 0x01, 0x02, 0x03, 0x04};
 
-        DefineData object = (DefineData) decodeMovieTag(binary);
+        final DefineData object = (DefineData) decodeMovieTag(binary);
         assertArrayEquals(NOT_DECODED, data, object.getData());
    }
 }

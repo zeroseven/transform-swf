@@ -36,8 +36,8 @@ import org.junit.Test;
 
 public final class FrameLabelTest {
 
-    private final transient String label = "Frame";
-    private final transient boolean anchor = true;
+    private static final String LABEL = "Frame";
+    private static final boolean ANCHOR = true;
 
     private transient FrameLabel fixture;
 
@@ -53,7 +53,7 @@ public final class FrameLabelTest {
 
     @Test
     public void checkCopy() {
-        fixture = new FrameLabel(label, anchor);
+        fixture = new FrameLabel(LABEL, ANCHOR);
         final FrameLabel copy = fixture.copy();
 
         assertEquals(fixture.getLabel(), copy.getLabel());

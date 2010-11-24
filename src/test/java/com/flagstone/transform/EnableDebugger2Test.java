@@ -36,7 +36,7 @@ import org.junit.Test;
 
 public final class EnableDebugger2Test {
 
-    private final transient String password = "ABC123";
+    private static final String PASSWORD = "ABC123";
 
     private transient EnableDebugger2 fixture;
 
@@ -52,7 +52,7 @@ public final class EnableDebugger2Test {
 
     @Test
     public void checkCopy() {
-        fixture = new EnableDebugger2(password);
+        fixture = new EnableDebugger2(PASSWORD);
         final EnableDebugger2 copy = fixture.copy();
 
         assertEquals(fixture.getPassword(), copy.getPassword());

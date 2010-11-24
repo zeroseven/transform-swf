@@ -76,7 +76,7 @@ public final class DoActionCodingTest extends AbstractCodingTest {
 
         final byte[] binary = new byte[] {0x02, 0x03, 0x04, 0x00 };
 
-        DoAction object = (DoAction) decodeMovieTag(binary);
+        final DoAction object = (DoAction) decodeMovieTag(binary);
         assertEquals(NOT_DECODED, actions, object.getActions());
    }
 
@@ -89,7 +89,7 @@ public final class DoActionCodingTest extends AbstractCodingTest {
         final byte[] binary = new byte[] {0x3F, 0x03, 0x02, 0x00, 0x00, 0x00,
                 0x04, 0x00 };
 
-        DoAction object = (DoAction) decodeMovieTag(binary);
+        final DoAction object = (DoAction) decodeMovieTag(binary);
         assertEquals(NOT_DECODED, actions, object.getActions());
    }
 }

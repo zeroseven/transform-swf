@@ -39,9 +39,11 @@ import org.junit.Test;
 
 public final class MovieMetaDataCodingTest extends AbstractCodingTest {
 
-    @Test
+	private static final String DATA = "ABC123";
+
+	@Test
     public void checkMovieMetaDataLengthForEncoding() throws IOException {
-        final MovieMetaData object = new MovieMetaData("ABC123");
+        final MovieMetaData object = new MovieMetaData(DATA);
         final byte[] binary = new byte[] {0x47, 0x13, 0x41, 0x42, 0x43, 0x31,
                 0x32, 0x33, 0x00 };
 
@@ -50,7 +52,7 @@ public final class MovieMetaDataCodingTest extends AbstractCodingTest {
 
     @Test
     public void checkMovieMetaDataIsEncoded() throws IOException {
-        final MovieMetaData object = new MovieMetaData("ABC123");
+        final MovieMetaData object = new MovieMetaData(DATA);
         final byte[] binary = new byte[] {0x47, 0x13, 0x41, 0x42, 0x43, 0x31,
                 0x32, 0x33, 0x00 };
 
@@ -62,8 +64,8 @@ public final class MovieMetaDataCodingTest extends AbstractCodingTest {
         final byte[] binary = new byte[] {0x47, 0x13, 0x41, 0x42, 0x43, 0x31,
                 0x32, 0x33, 0x00 };
 
-        MovieMetaData object = (MovieMetaData) decodeMovieTag(binary);
-        assertEquals(NOT_DECODED, "ABC123", object.getMetaData());
+        final MovieMetaData object = (MovieMetaData) decodeMovieTag(binary);
+        assertEquals(NOT_DECODED, DATA, object.getMetaData());
    }
 
     @Test
@@ -71,7 +73,7 @@ public final class MovieMetaDataCodingTest extends AbstractCodingTest {
         final byte[] binary = new byte[] {0x7F, 0x13, 0x07, 0x00, 0x00,
                 0x00, 0x41, 0x42, 0x43, 0x31, 0x32, 0x33, 0x00 };
 
-        MovieMetaData object = (MovieMetaData) decodeMovieTag(binary);
-        assertEquals(NOT_DECODED, "ABC123", object.getMetaData());
+        final MovieMetaData object = (MovieMetaData) decodeMovieTag(binary);
+        assertEquals(NOT_DECODED, DATA, object.getMetaData());
    }
 }

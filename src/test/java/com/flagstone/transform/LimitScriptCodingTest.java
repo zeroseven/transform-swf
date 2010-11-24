@@ -59,7 +59,7 @@ public final class LimitScriptCodingTest extends AbstractCodingTest {
     public void checkLimitScriptIsDecoded() throws IOException {
         final byte[] binary = new byte[] {0x44, 0x10, 0x01, 0x00, 0x1E, 0x00};
 
-        LimitScript object = (LimitScript) decodeMovieTag(binary);
+        final LimitScript object = (LimitScript) decodeMovieTag(binary);
         assertEquals(NOT_DECODED, 1, object.getDepth());
         assertEquals(NOT_DECODED, 30, object.getTimeout());
    }
@@ -69,7 +69,7 @@ public final class LimitScriptCodingTest extends AbstractCodingTest {
         final byte[] binary = new byte[] {0x7F, 0x10, 0x04, 0x00, 0x00, 0x00,
                 0x01, 0x00, 0x1E, 0x00};
 
-        LimitScript object = (LimitScript) decodeMovieTag(binary);
+        final LimitScript object = (LimitScript) decodeMovieTag(binary);
         assertEquals(NOT_DECODED, 1, object.getDepth());
         assertEquals(NOT_DECODED, 30, object.getTimeout());
    }

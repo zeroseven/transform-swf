@@ -61,6 +61,9 @@ import com.flagstone.transform.util.sound.SoundFactory;
 @RunWith(Parameterized.class)
 public final class MP3DecoderEventIT {
 
+	/** Frame rate of movie in frames per second. */
+	private static final float FRAME_RATE = 12.0f;
+
     @Parameters
     public static Collection<Object[]> files() {
 
@@ -73,13 +76,14 @@ public final class MP3DecoderEventIT {
         }
 
         final FilenameFilter filter = new FilenameFilter() {
-            public boolean accept(final File directory, final String name) {
+            @Override
+			public boolean accept(final File directory, final String name) {
                 return name.endsWith(".mp3");
             }
         };
 
-        String[] files = srcDir.list(filter);
-        Object[][] collection = new Object[files.length][2];
+        final String[] files = srcDir.list(filter);
+        final Object[][] collection = new Object[files.length][2];
 
         for (int i = 0; i < files.length; i++) {
             collection[i][0] = new File(srcDir, files[i]);
@@ -89,8 +93,8 @@ public final class MP3DecoderEventIT {
         return Arrays.asList(collection);
     }
 
-    private final File sourceFile;
-    private final File destFile;
+    private final transient File sourceFile;
+    private final transient File destFile;
 
     public MP3DecoderEventIT(final File src, final File dst) {
         sourceFile = src;
@@ -101,7 +105,6 @@ public final class MP3DecoderEventIT {
     public void playSound() throws IOException, DataFormatException {
 
         try {
-            final float framesPerSecond = 12.0f;
             final Movie movie = new Movie();
             int uid = 1;
 
@@ -109,16 +112,16 @@ public final class MP3DecoderEventIT {
             factory.read(sourceFile);
             final DefineSound sound = factory.defineSound(uid++);
 
-            MovieHeader attrs = new MovieHeader();
+            final MovieHeader attrs = new MovieHeader();
             attrs.setFrameSize(new Bounds(0, 0, 8000, 4000));
-            attrs.setFrameRate(framesPerSecond);
+            attrs.setFrameRate(FRAME_RATE);
 
             movie.add(attrs);
             movie.add(new Background(WebPalette.LIGHT_BLUE.color()));
 
             final float duration = ((float) sound.getSampleCount()
                     / (float) sound.getRate());
-            final int numberOfFrames = (int) (duration * framesPerSecond);
+            final int numberOfFrames = (int) (duration * FRAME_RATE);
 
             movie.add(sound);
             movie.add(new StartSound(new SoundInfo(sound.getIdentifier(),
@@ -128,7 +131,7 @@ public final class MP3DecoderEventIT {
                 movie.add(ShowFrame.getInstance());
             }
 
-            DoAction action = new DoAction();
+            final DoAction action = new DoAction();
             action.add(BasicAction.STOP);
 
             movie.add(action);
@@ -137,7 +140,7 @@ public final class MP3DecoderEventIT {
             movie.encodeToFile(destFile);
         } catch (Exception e) {
             if (System.getProperty("test.trace") != null) {
-                e.printStackTrace();
+                e.printStackTrace(); //NOPMD
             }
             fail(sourceFile.getPath());
         }

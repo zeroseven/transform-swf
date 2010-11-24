@@ -35,7 +35,6 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -105,7 +104,6 @@ public final class LineStyleTest {
 
         fixture = new LineStyle1(decoder, context);
 
-        assertTrue(true);
         assertEquals(WIDTH, fixture.getWidth());
         assertEquals(color.getRed(), fixture.getColor().getRed());
         assertEquals(color.getGreen(), fixture.getColor().getGreen());

@@ -42,6 +42,7 @@ import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.coder.SWFFactory;
 
+@SuppressWarnings({"PMD.AbstractClassWithoutAbstractMethod" })
 public abstract class AbstractCodingTest {
 
     protected static final String CALCULATED_LENGTH =
@@ -94,7 +95,6 @@ public abstract class AbstractCodingTest {
         context.setRegistry(registry);
         final List<MovieTag> list = new ArrayList<MovieTag>();
         factory.getObject(list, decoder, context);
-        final MovieTag object = list.get(0);
-        return object;
+        return list.get(0);
     }
 }

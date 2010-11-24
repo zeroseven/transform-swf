@@ -60,7 +60,11 @@ import com.flagstone.transform.util.text.TextTable;
 @RunWith(Parameterized.class)
 public final class AWTDecoderIT {
 
-    private static final int DEFAULT_FONT_SIZE = 12;
+    private static final int FONT_POINT_SIZE = 12;
+
+    private static final int FONT_TWIP_SIZE = 720;
+    private static final int TEXT_PADDING = 100;
+    private static final String ALPHABET = "abcXYZɑ4ßº€éêöã";
 
     @Parameters
     public static Collection<Object[]> files() {
@@ -72,25 +76,25 @@ public final class AWTDecoderIT {
             fail();
         }
 
-        java.awt.Font[] fonts = new java.awt.Font[] {
+        final java.awt.Font[] fonts = new java.awt.Font[] {
                 new java.awt.Font("Arial",
-                        java.awt.Font.PLAIN, DEFAULT_FONT_SIZE),
+                        java.awt.Font.PLAIN, FONT_POINT_SIZE),
                 new java.awt.Font("Arial",
-                        java.awt.Font.BOLD, DEFAULT_FONT_SIZE),
+                        java.awt.Font.BOLD, FONT_POINT_SIZE),
                 new java.awt.Font("Arial",
-                        java.awt.Font.ITALIC, DEFAULT_FONT_SIZE),
+                        java.awt.Font.ITALIC, FONT_POINT_SIZE),
                 new java.awt.Font("Courier New",
-                        java.awt.Font.PLAIN, DEFAULT_FONT_SIZE),
+                        java.awt.Font.PLAIN, FONT_POINT_SIZE),
                 new java.awt.Font("Courier New",
-                        java.awt.Font.BOLD, DEFAULT_FONT_SIZE),
+                        java.awt.Font.BOLD, FONT_POINT_SIZE),
                 new java.awt.Font("Courier New",
-                        java.awt.Font.ITALIC, DEFAULT_FONT_SIZE),
+                        java.awt.Font.ITALIC, FONT_POINT_SIZE),
                 new java.awt.Font("Times New Roman",
-                        java.awt.Font.PLAIN, DEFAULT_FONT_SIZE),
+                        java.awt.Font.PLAIN, FONT_POINT_SIZE),
                 new java.awt.Font("Times New Roman",
-                        java.awt.Font.BOLD, DEFAULT_FONT_SIZE),
+                        java.awt.Font.BOLD, FONT_POINT_SIZE),
                 new java.awt.Font("Times New Roman",
-                        java.awt.Font.ITALIC, DEFAULT_FONT_SIZE)
+                        java.awt.Font.ITALIC, FONT_POINT_SIZE)
         };
 
         Object[][] collection = new Object[fonts.length][2];
@@ -105,8 +109,8 @@ public final class AWTDecoderIT {
 
     }
 
-    private final java.awt.Font sourceFont;
-    private final File destFile;
+    private final transient java.awt.Font sourceFont;
+    private final transient File destFile;
 
     public AWTDecoderIT(final java.awt.Font src, final File dst) {
         sourceFont = src;
@@ -116,16 +120,12 @@ public final class AWTDecoderIT {
     @Test
     public void showFont() {
         try {
-            final int fontSize = 720;
-            final int padding = 100;
-            String alphabet = "abcXYZɑ4ßº€éêöã";
-
             final AWTDecoder fontDecoder = new AWTDecoder();
             fontDecoder.read(sourceFont);
             final Font font = fontDecoder.getFonts().get(0);
 
             final CharacterSet set = new CharacterSet();
-            set.add(alphabet);
+            set.add(ALPHABET);
 
             final Movie movie = new Movie();
             int uid = 1;
@@ -140,35 +140,37 @@ public final class AWTDecoderIT {
             // Two fonts cannot have the same name.
             embeddedFont.setName("embedded");
 
-            final TextTable textTable = new TextTable(embeddedFont, fontSize);
-            final Bounds bounds = Bounds.pad(textTable.boundsForText(alphabet),
-                    padding);
+            final TextTable textTable = new TextTable(embeddedFont,
+            		FONT_TWIP_SIZE);
+            final Bounds bounds = Bounds.pad(textTable.boundsForText(ALPHABET),
+            		TEXT_PADDING);
 
             // Create a text field that uses an embedded font.
-            DefineTextField nativeField = new DefineTextField(uid++);
+            final DefineTextField nativeField = new DefineTextField(uid++);
             nativeField.setBounds(bounds);
             nativeField.setAlignment(HorizontalAlign.LEFT);
             nativeField.setFontIdentifier(nativeFont.getIdentifier());
-            nativeField.setFontHeight(fontSize);
+            nativeField.setFontHeight(FONT_TWIP_SIZE);
             nativeField.setEmbedded(false);
             nativeField.setMultiline(true);
             nativeField.setWordWrapped(true);
-            nativeField.setInitialText(alphabet);
+            nativeField.setInitialText(ALPHABET);
 
             // Create a text field that uses an embedded font.
-            DefineTextField embeddedField = new DefineTextField(uid++);
+            final DefineTextField embeddedField = new DefineTextField(uid++);
             embeddedField.setBounds(bounds);
             embeddedField.setAlignment(HorizontalAlign.LEFT);
             embeddedField.setFontIdentifier(embeddedFont.getIdentifier());
-            embeddedField.setFontHeight(fontSize);
+            embeddedField.setFontHeight(FONT_TWIP_SIZE);
             embeddedField.setEmbedded(true);
             embeddedField.setMultiline(true);
             embeddedField.setWordWrapped(true);
-            embeddedField.setInitialText(alphabet);
+            embeddedField.setInitialText(ALPHABET);
 
-            MovieHeader attrs = new MovieHeader();
+            final MovieHeader attrs = new MovieHeader();
             attrs.setFrameSize(Bounds.pad(new Bounds(0, 0, bounds.getWidth(),
-                    bounds.getHeight() * 2), 0, padding * 2, padding * 6, 0));
+                    bounds.getHeight() * 2), 0,
+                    TEXT_PADDING * 2, TEXT_PADDING * 6, 0));
             attrs.setFrameRate(1.0f);
 
             movie.add(attrs);
@@ -180,13 +182,13 @@ public final class AWTDecoderIT {
             movie.add(embeddedFont);
             movie.add(embeddedField);
             movie.add(Place2.show(embeddedField.getIdentifier(), 2, 0,
-                    bounds.getHeight() * 2 + padding));
+                    bounds.getHeight() * 2 + TEXT_PADDING));
             movie.add(ShowFrame.getInstance());
             movie.encodeToFile(destFile);
 
         } catch (Exception e) {
             if (System.getProperty("test.trace") != null) {
-                e.printStackTrace();
+                e.printStackTrace(); //NOPMD
             }
             fail(sourceFont.getName());
         }

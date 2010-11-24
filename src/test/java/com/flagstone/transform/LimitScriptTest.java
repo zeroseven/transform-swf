@@ -37,34 +37,34 @@ import org.junit.Test;
 
 public final class LimitScriptTest {
 
-    private final transient int depth = 1;
-    private final transient int timeout = 30;
+    private static final int DEPTH = 1;
+    private static final int TIMEOUT = 30;
 
     private transient LimitScript fixture;
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForDepthWithLowerBound() {
-        fixture = new LimitScript(-1, timeout);
+        fixture = new LimitScript(-1, TIMEOUT);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForDepthWithUpperBound() {
-        fixture = new LimitScript(65536, timeout);
+        fixture = new LimitScript(65536, TIMEOUT);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForTimeoutWithLowerBound() {
-        fixture = new LimitScript(depth, -1);
+        fixture = new LimitScript(DEPTH, -1);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForTimeoutWithUpperBound() {
-        fixture = new LimitScript(depth, 65536);
+        fixture = new LimitScript(DEPTH, 65536);
     }
 
     @Test
     public void checkCopy() {
-        fixture = new LimitScript(depth, timeout);
+        fixture = new LimitScript(DEPTH, TIMEOUT);
         final LimitScript copy = fixture.copy();
 
         assertNotSame(fixture, copy);

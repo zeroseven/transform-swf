@@ -44,5 +44,5 @@ import org.junit.runners.Suite;
     RegisterIndexTest.class, SetTargetTest.class, TableTest.class,
     TableIndexTest.class, WaitForFrameTest.class, WaitForFrame2Test.class,
     WithTest.class })
-public final class AllActionTests {
+public final class AllActionTests { //NOPMD class for defining test suite
 }

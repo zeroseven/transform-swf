@@ -90,9 +90,9 @@ public final class Movie implements Copyable<Movie> {
     /** Length in bytes of the signature and length fields. */
     private static final int HEADER_LENGTH = 8;
     /** Signature identifying Flash (SWF) files. */
-    public static final byte[] FWS = new byte[] { 0x46, 0x57, 0x53 };
+    public static final byte[] FWS = new byte[] {0x46, 0x57, 0x53 };
     /** Signature identifying Compressed Flash (SWF) files. */
-    public static final byte[] CWS = new byte[] { 0x43, 0x57, 0x53 };
+    public static final byte[] CWS = new byte[] {0x43, 0x57, 0x53 };
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "Movie: { objects=%s}";
@@ -189,7 +189,8 @@ public final class Movie implements Copyable<Movie> {
     }
 
     /** {@inheritDoc} */
-    public Movie copy() {
+    @Override
+	public Movie copy() {
         return new Movie(this);
     }
 

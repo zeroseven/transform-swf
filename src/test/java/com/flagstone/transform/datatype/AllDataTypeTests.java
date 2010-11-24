@@ -45,5 +45,5 @@ import org.junit.runners.Suite;
     CoordTransformCodingTest.class
     }
 )
-public final class AllDataTypeTests {
+public final class AllDataTypeTests { //NOPMD class for defining test suite
 }

@@ -39,9 +39,11 @@ import org.junit.Test;
 
 public final class FrameLabelCodingTest extends AbstractCodingTest {
 
-    @Test
+	private static final String LABEL = "Frame";
+
+	@Test
     public void checkFrameLabelLengthForEncoding() throws IOException {
-        final FrameLabel object = new FrameLabel("Frame");
+        final FrameLabel object = new FrameLabel(LABEL);
         object.setAnchor(true);
 
         final byte[] binary = new byte[] {(byte) 0xC7, 0x0A, 0x46, 0x72, 0x61,
@@ -52,7 +54,7 @@ public final class FrameLabelCodingTest extends AbstractCodingTest {
 
     @Test
     public void checkFrameLabelIsEncoded() throws IOException {
-        final FrameLabel object = new FrameLabel("Frame");
+        final FrameLabel object = new FrameLabel(LABEL);
         object.setAnchor(true);
 
         final byte[] binary = new byte[] {(byte) 0xC7, 0x0A, 0x46, 0x72, 0x61,
@@ -66,8 +68,8 @@ public final class FrameLabelCodingTest extends AbstractCodingTest {
         final byte[] binary = new byte[] {(byte) 0xC7, 0x0A, 0x46, 0x72, 0x61,
                 0x6D, 0x65, 0x00, 0x01 };
 
-        FrameLabel object = (FrameLabel) decodeMovieTag(binary);
-        assertEquals(NOT_DECODED, "Frame", object.getLabel());
+        final FrameLabel object = (FrameLabel) decodeMovieTag(binary);
+        assertEquals(NOT_DECODED, LABEL, object.getLabel());
     }
 
     @Test
@@ -75,7 +77,7 @@ public final class FrameLabelCodingTest extends AbstractCodingTest {
         final byte[] binary = new byte[] {(byte) 0xFF, 0x0A, 0x07, 0x00, 0x00,
                 0x00, 0x46, 0x72, 0x61, 0x6D, 0x65, 0x00, 0x01 };
 
-        FrameLabel object = (FrameLabel) decodeMovieTag(binary);
-        assertEquals(NOT_DECODED, "Frame", object.getLabel());
+        final FrameLabel object = (FrameLabel) decodeMovieTag(binary);
+        assertEquals(NOT_DECODED, LABEL, object.getLabel());
    }
 }

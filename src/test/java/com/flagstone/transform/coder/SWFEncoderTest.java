@@ -41,8 +41,8 @@ import org.junit.Test;
 
 import com.flagstone.transform.CharacterEncoding;
 
+@SuppressWarnings({"PMD.TooManyMethods" })
 public final class SWFEncoderTest {
-
 
     @Test
     public void markReturnsLocation() throws IOException {
@@ -62,15 +62,6 @@ public final class SWFEncoderTest {
         assertEquals(4, fixture.mark());
     }
 
-    @Test
-    public void checkWithExpectedCount() throws IOException {
-        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        final SWFEncoder fixture = new SWFEncoder(stream, 2);
-        fixture.mark();
-        fixture.writeByte(0);
-        fixture.check(1);
-    }
-
     @Test(expected = CoderException.class)
     public void checkWithUnexpectedCount() throws IOException {
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -82,7 +73,7 @@ public final class SWFEncoderTest {
 
     @Test
     public void writeBits() throws IOException {
-        byte[] data = new byte[] {-64 };
+    	final byte[] data = new byte[] {-64 };
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         final SWFEncoder encoder = new SWFEncoder(stream);
         encoder.writeBits(3, 2);
@@ -94,7 +85,7 @@ public final class SWFEncoderTest {
 
     @Test
     public void writeBitsWithFlush() throws IOException {
-        byte[] data = new byte[] {0, 1, -128 };
+    	final byte[] data = new byte[] {0, 1, -128 };
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         final SWFEncoder encoder = new SWFEncoder(stream, 2);
         encoder.writeByte(0);
@@ -108,7 +99,7 @@ public final class SWFEncoderTest {
 
     @Test
     public void writeBitsAcrossByteBoundary() throws IOException {
-        byte[] data = new byte[] {3, -64 };
+    	final byte[] data = new byte[] {3, -64 };
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         final SWFEncoder encoder = new SWFEncoder(stream);
         encoder.writeBits(15, 10);
@@ -120,7 +111,7 @@ public final class SWFEncoderTest {
 
     @Test
     public void writeBitsAcrossByteBoundaryWithOffset() throws IOException {
-        byte[] data = new byte[] {0, -128 };
+    	final byte[] data = new byte[] {0, -128 };
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         final SWFEncoder encoder = new SWFEncoder(stream);
 
@@ -134,7 +125,7 @@ public final class SWFEncoderTest {
 
     @Test
     public void writeBitsAcrossShortBoundary() throws IOException {
-        byte[] data = new byte[] {0, 3, -64 };
+    	final byte[] data = new byte[] {0, 3, -64 };
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         final SWFEncoder encoder = new SWFEncoder(stream);
         encoder.writeBits(15, 18);
@@ -146,7 +137,7 @@ public final class SWFEncoderTest {
 
     @Test
     public void writeBitsAcrossIntBoundary() throws IOException {
-        byte[] data = new byte[] {0, 0, 0, 3, -64 };
+    	final byte[] data = new byte[] {0, 0, 0, 3, -64 };
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         final SWFEncoder encoder = new SWFEncoder(stream);
         encoder.writeBits(0, 2);
@@ -159,7 +150,7 @@ public final class SWFEncoderTest {
 
     @Test
     public void writeByte() throws IOException {
-        byte[] data = new byte[] {3 };
+    	final byte[] data = new byte[] {3 };
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         final SWFEncoder encoder = new SWFEncoder(stream);
         encoder.writeByte(3);
@@ -170,7 +161,7 @@ public final class SWFEncoderTest {
 
     @Test
     public void writeByteWithFlush() throws IOException {
-        byte[] data = new byte[] {0, 3 };
+    	final byte[] data = new byte[] {0, 3 };
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         final SWFEncoder encoder = new SWFEncoder(stream, 1);
         encoder.writeByte(0);
@@ -220,9 +211,9 @@ public final class SWFEncoderTest {
 
     @Test
     public void writeShort() throws IOException {
-        byte[] data = new byte[] { 2, 1 };
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        SWFEncoder encoder = new SWFEncoder(stream);
+    	final byte[] data = new byte[] {2, 1 };
+    	final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+    	final SWFEncoder encoder = new SWFEncoder(stream);
         encoder.writeShort(0x0102);
         encoder.flush();
 
@@ -231,9 +222,9 @@ public final class SWFEncoderTest {
 
     @Test
     public void writeShortWithFlush() throws IOException {
-        byte[] data = new byte[] { 0, 2, 1 };
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        SWFEncoder encoder = new SWFEncoder(stream, 2);
+    	final byte[] data = new byte[] {0, 2, 1 };
+    	final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+    	final SWFEncoder encoder = new SWFEncoder(stream, 2);
         encoder.writeByte(0);
         encoder.writeShort(0x0102);
         encoder.flush();
@@ -243,9 +234,9 @@ public final class SWFEncoderTest {
 
     @Test
     public void writeInt() throws IOException {
-        byte[] data = new byte[] {4, 3, 2, 1 };
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        SWFEncoder encoder = new SWFEncoder(stream);
+    	final byte[] data = new byte[] {4, 3, 2, 1 };
+    	final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+    	final SWFEncoder encoder = new SWFEncoder(stream);
         encoder.writeInt(0x01020304);
         encoder.flush();
 
@@ -254,9 +245,9 @@ public final class SWFEncoderTest {
 
     @Test
     public void writeIntWithFlush() throws IOException {
-        byte[] data = new byte[] {0, 0, 4, 3, 2, 1 };
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        SWFEncoder encoder = new SWFEncoder(stream, 4);
+    	final byte[] data = new byte[] {0, 0, 4, 3, 2, 1 };
+        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        final SWFEncoder encoder = new SWFEncoder(stream, 4);
         encoder.writeByte(0);
         encoder.writeByte(0);
         encoder.writeInt(0x01020304);
@@ -267,9 +258,9 @@ public final class SWFEncoderTest {
 
     @Test
     public void writeVarIntInOneByte() throws IOException {
-        byte[] data = new byte[] {127 };
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        SWFEncoder encoder = new SWFEncoder(stream);
+    	final byte[] data = new byte[] {127 };
+    	final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+    	final SWFEncoder encoder = new SWFEncoder(stream);
         encoder.writeVarInt(127);
         encoder.flush();
 
@@ -278,9 +269,9 @@ public final class SWFEncoderTest {
 
     @Test
     public void writeVarIntInTwoBytes() throws IOException {
-        byte[] data = new byte[] {-1, 1 };
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        SWFEncoder encoder = new SWFEncoder(stream);
+    	final byte[] data = new byte[] {-1, 1 };
+    	final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+    	final SWFEncoder encoder = new SWFEncoder(stream);
         encoder.writeVarInt(255);
         encoder.flush();
 
@@ -289,9 +280,9 @@ public final class SWFEncoderTest {
 
     @Test
     public void writeVarIntInThreeBytes() throws IOException {
-        byte[] data = new byte[] {-1, -1, 3 };
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        SWFEncoder encoder = new SWFEncoder(stream);
+    	final byte[] data = new byte[] {-1, -1, 3 };
+    	final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+    	final SWFEncoder encoder = new SWFEncoder(stream);
         encoder.writeVarInt(65535);
         encoder.flush();
 
@@ -300,9 +291,9 @@ public final class SWFEncoderTest {
 
     @Test
     public void writeVarIntInFourBytes() throws IOException {
-        byte[] data = new byte[] {-1, -1, -1, 7 };
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        SWFEncoder encoder = new SWFEncoder(stream);
+    	final byte[] data = new byte[] {-1, -1, -1, 7 };
+    	final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+    	final SWFEncoder encoder = new SWFEncoder(stream);
         encoder.writeVarInt(16777215);
         encoder.flush();
 
@@ -311,9 +302,9 @@ public final class SWFEncoderTest {
 
     @Test
     public void writeVarIntInFiveBytes() throws IOException {
-        byte[] data = new byte[] {-1, -1, -1, -1, 7 };
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        SWFEncoder encoder = new SWFEncoder(stream);
+    	final byte[] data = new byte[] {-1, -1, -1, -1, 7 };
+    	final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+    	final SWFEncoder encoder = new SWFEncoder(stream);
         encoder.writeVarInt(2147483647);
         encoder.flush();
 
@@ -322,9 +313,9 @@ public final class SWFEncoderTest {
 
     @Test
     public void writeVarIntWithFlush() throws IOException {
-        byte[] data = new byte[] {0, 0, 127 };
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        SWFEncoder encoder = new SWFEncoder(stream, 2);
+    	final byte[] data = new byte[] {0, 0, 127 };
+        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        final SWFEncoder encoder = new SWFEncoder(stream, 2);
         encoder.writeByte(0);
         encoder.writeByte(0);
         encoder.writeVarInt(127);
@@ -335,9 +326,9 @@ public final class SWFEncoderTest {
 
     @Test
     public void writeNegativeHalf() throws IOException {
-        byte[] data = new byte[] {0x00, (byte) 0xC0 };
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        SWFEncoder encoder = new SWFEncoder(stream);
+    	final byte[] data = new byte[] {0x00, (byte) 0xC0 };
+    	final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+    	final SWFEncoder encoder = new SWFEncoder(stream);
         encoder.writeHalf(-2.0f);
         encoder.flush();
 
@@ -346,9 +337,9 @@ public final class SWFEncoderTest {
 
     @Test
     public void writeHalfFraction() throws IOException {
-        byte[] data = new byte[] {0x55, (byte) 0x35 };
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        SWFEncoder encoder = new SWFEncoder(stream);
+    	final byte[] data = new byte[] {0x55, (byte) 0x35 };
+    	final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+    	final SWFEncoder encoder = new SWFEncoder(stream);
         encoder.writeHalf(0.333251953125f);
         encoder.flush();
 
@@ -357,9 +348,9 @@ public final class SWFEncoderTest {
 
     @Test
     public void writeHalfOverflow() throws IOException {
-        final byte[] data = new byte[] {0x00, 0x7C };
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        SWFEncoder encoder = new SWFEncoder(stream);
+    	final byte[] data = new byte[] {0x00, 0x7C };
+    	final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+    	final SWFEncoder encoder = new SWFEncoder(stream);
         encoder.writeHalf(100000);
         encoder.flush();
 
@@ -368,9 +359,9 @@ public final class SWFEncoderTest {
 
     @Test
     public void writeHalfPositiveMin() throws IOException {
-        final byte[] data = new byte[] {0x00, 0x00 };
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        SWFEncoder encoder = new SWFEncoder(stream);
+    	final byte[] data = new byte[] {0x00, 0x00 };
+    	final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+    	final SWFEncoder encoder = new SWFEncoder(stream);
         encoder.writeHalf(6.0E-9f);
         encoder.flush();
 
@@ -380,8 +371,8 @@ public final class SWFEncoderTest {
     @Test
     public void writeHalfPositiveInfinity() throws IOException {
         final byte[] data = new byte[] {0x00, 0x7C };
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        SWFEncoder encoder = new SWFEncoder(stream);
+        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        final SWFEncoder encoder = new SWFEncoder(stream);
         encoder.writeHalf(Float.POSITIVE_INFINITY);
         encoder.flush();
 
@@ -391,8 +382,8 @@ public final class SWFEncoderTest {
     @Test
     public void writeHalfNaN() throws IOException {
         final byte[] data = new byte[] {0x00, 0x7E };
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        SWFEncoder encoder = new SWFEncoder(stream);
+        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        final SWFEncoder encoder = new SWFEncoder(stream);
         encoder.writeHalf(Float.NaN);
         encoder.flush();
 

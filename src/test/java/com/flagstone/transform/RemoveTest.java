@@ -37,34 +37,34 @@ import org.junit.Test;
 
 public final class RemoveTest {
 
-    private final transient int identifier = 1;
-    private final transient int layer = 2;
+    private static final int IDENTIFIER = 1;
+    private static final int LAYER = 2;
 
     private transient Remove fixture;
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForIdentifierWithLowerBound() {
-        fixture = new Remove(0, layer);
+        fixture = new Remove(0, LAYER);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForIdentifierWithUpperBound() {
-        fixture = new Remove(65536, layer);
+        fixture = new Remove(65536, LAYER);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForLayerWithLowerBound() {
-        fixture = new Remove(identifier, 0);
+        fixture = new Remove(IDENTIFIER, 0);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForLayerWithUpperBound() {
-        fixture = new Remove(identifier, 65536);
+        fixture = new Remove(IDENTIFIER, 65536);
     }
 
     @Test
     public void checkCopy() {
-        fixture = new Remove(identifier, layer);
+        fixture = new Remove(IDENTIFIER, LAYER);
         final Remove copy = fixture.copy();
 
         assertNotSame(fixture, copy);

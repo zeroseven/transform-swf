@@ -74,7 +74,7 @@ public final class ShowImage {
             final int screenHeight = imageHeight * 20;
             final int shapeId = uid++;
 
-            MovieHeader header = new MovieHeader();
+            final MovieHeader header = new MovieHeader();
             header.setFrameRate(1.0f);
             header.setFrameSize(new Bounds(-screenWidth / 2, -screenHeight / 2,
                     screenWidth / 2, screenHeight / 2));
@@ -89,7 +89,7 @@ public final class ShowImage {
 
             movie.encodeToFile(new File(destFile));
         } catch (final Exception e) {
-            e.printStackTrace();
+            e.printStackTrace(); //NOPMD
         }
     }
 

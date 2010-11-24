@@ -32,8 +32,8 @@ package com.flagstone.transform.action;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -47,34 +47,34 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 public final class GetUrlTest {
 
-    private final transient int type = ActionTypes.GET_URL;
-    private final transient String url = "url";
-    private final transient String target = "_blank";
+    private static final int TYPE = ActionTypes.GET_URL;
+    private static final String URL = "url";
+    private static final String TARGET = "_blank";
 
     private transient GetUrl fixture;
 
-    private final transient byte[] encoded = new byte[] {(byte) type, 0x0B,
+    private final transient byte[] encoded = new byte[] {(byte) TYPE, 0x0B,
             0x00, 0x75, 0x72, 0x6C, 0x00, 0x5F, 0x62, 0x6C, 0x61, 0x6E, 0x6B,
             0x00 };
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForUrlWithNull() {
-        fixture = new GetUrl(null, target);
+        fixture = new GetUrl(null, TARGET);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForUrlWithEmpty() {
-        fixture = new GetUrl("", target);
+        fixture = new GetUrl("", TARGET);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForTargetWithNull() {
-        fixture = new GetUrl(url, null);
+        fixture = new GetUrl(URL, null);
     }
 
     @Test
     public void checkCopy() {
-        fixture = new GetUrl(url, target);
+        fixture = new GetUrl(URL, TARGET);
         final GetUrl copy = fixture.copy();
 
         assertSame(fixture, copy);
@@ -87,7 +87,7 @@ public final class GetUrlTest {
         final SWFEncoder encoder = new SWFEncoder(stream);
         final Context context = new Context();
 
-        fixture = new GetUrl(url, target);
+        fixture = new GetUrl(URL, TARGET);
         assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
         encoder.flush();
@@ -103,8 +103,8 @@ public final class GetUrlTest {
         decoder.readByte();
         fixture = new GetUrl(decoder);
 
-        assertTrue(true);
-        assertEquals(url, fixture.getUrl());
-        assertEquals(target, fixture.getTarget());
+        assertNotNull(fixture);
+        assertEquals(URL, fixture.getUrl());
+        assertEquals(TARGET, fixture.getTarget());
     }
 }

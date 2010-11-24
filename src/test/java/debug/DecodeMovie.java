@@ -49,7 +49,7 @@ public final class DecodeMovie {
         try {
             new Movie().decodeFromFile(srcFile);
         } catch (final Exception e) {
-            e.printStackTrace();
+            e.printStackTrace(); //NOPMD
         }
     }
 

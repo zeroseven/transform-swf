@@ -62,7 +62,7 @@ public final class MovieAttributesCodingTest extends AbstractCodingTest {
     public void checkAllAttributesAreDecoded() throws IOException {
         final byte[] binary = new byte[] {0x44, 0x11, 0x19, 0x00, 0x00, 0x00};
 
-        MovieAttributes object = (MovieAttributes) decodeMovieTag(binary);
+        final MovieAttributes object = (MovieAttributes) decodeMovieTag(binary);
         assertEquals(NOT_DECODED, true, object.useNetwork());
    }
 
@@ -71,7 +71,7 @@ public final class MovieAttributesCodingTest extends AbstractCodingTest {
         final byte[] binary = new byte[] {0x7F, 0x11, 0x04, 0x00, 0x00, 0x00,
                 0x19, 0x00, 0x00, 0x00 };
 
-        MovieAttributes object = (MovieAttributes) decodeMovieTag(binary);
+        final MovieAttributes object = (MovieAttributes) decodeMovieTag(binary);
         assertEquals(NOT_DECODED, true, object.useNetwork());
    }
 }

@@ -41,8 +41,9 @@ import com.flagstone.transform.datatype.CoordTransform;
 
 public final class PlaceTest {
 
-    private final transient int identifier = 1;
-    private final transient int layer = 2;
+    private static final int IDENTIFIER = 1;
+    private static final int LAYER = 2;
+
     private final transient CoordTransform transform = CoordTransform
             .translate(1, 2);
     private final transient ColorTransform colorTransform = new ColorTransform(
@@ -52,32 +53,32 @@ public final class PlaceTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForIdentifierWithLowerBound() {
-        fixture = new Place(0, layer, transform);
+        fixture = new Place(0, LAYER, transform);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForIdentifierWithUpperBound() {
-        fixture = new Place(65536, layer, transform);
+        fixture = new Place(65536, LAYER, transform);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForLayerWithLowerBound() {
-        fixture = new Place(identifier, 0, transform);
+        fixture = new Place(IDENTIFIER, 0, transform);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForLayerWithUpperBound() {
-        fixture = new Place(identifier, 65536, transform);
+        fixture = new Place(IDENTIFIER, 65536, transform);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForCoordTransformWithNull() {
-        fixture = new Place(identifier, layer, null);
+        fixture = new Place(IDENTIFIER, LAYER, null);
     }
 
     @Test
     public void checkCopy() {
-        fixture = new Place(identifier, layer, transform, colorTransform);
+        fixture = new Place(IDENTIFIER, LAYER, transform, colorTransform);
         final Place copy = fixture.copy();
 
         assertNotSame(fixture, copy);

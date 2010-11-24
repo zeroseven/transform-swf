@@ -54,7 +54,7 @@ public final class MovieWriterIT {
     @Parameters
     public static Collection<Object[]>  files() {
 
-        final File srcDir;
+        File srcDir;
 
         if (System.getProperty("test.suite") == null) {
             srcDir = new File("src/test/resources/swf-reference");
@@ -70,13 +70,14 @@ public final class MovieWriterIT {
         }
 
         final FilenameFilter filter = new FilenameFilter() {
-            public boolean accept(final File directory, final String name) {
+            @Override
+			public boolean accept(final File directory, final String name) {
                 return name.endsWith(".swf");
             }
         };
 
-        String[] files = srcDir.list(filter);
-        Object[][] collection = new Object[files.length][2];
+        final String[] files = srcDir.list(filter);
+        final Object[][] collection = new Object[files.length][2];
 
         for (int i = 0; i < files.length; i++) {
             collection[i][0] = new File(srcDir, files[i]);
@@ -86,8 +87,8 @@ public final class MovieWriterIT {
         return Arrays.asList(collection);
     }
 
-    private final File sourceFile;
-    private final File destFile;
+    private final transient File sourceFile;
+    private final transient File destFile;
 
     public MovieWriterIT(final File src, final File dst) {
         sourceFile = src;
@@ -95,7 +96,7 @@ public final class MovieWriterIT {
     }
 
     @Test
-    public void write() throws DataFormatException, IOException {
+    public void write() throws DataFormatException, IOException { //NOPMD
         final Movie movie = new Movie();
         movie.decodeFromFile(sourceFile);
         final MovieWriter writer = new MovieWriter();

@@ -32,44 +32,47 @@ package com.flagstone.transform;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 
 import org.junit.Test;
 
 public final class DoABCTest {
 
-    private final transient String name = "script";
-    private final transient boolean defer = true;
+    private static final String NAME = "script";
+    private static final boolean DEFER = true;
+
     private final transient byte[] data = new byte[] {1, 2, 3, 4 };
 
     private transient DoABC fixture;
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForNameWithNull() {
-        fixture = new DoABC(null, defer, data);
+        fixture = new DoABC(null, DEFER, data);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForNameWithEmpty() {
-        fixture = new DoABC("", defer, data);
+        fixture = new DoABC("", DEFER, data);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForDataWithNull() {
-        fixture = new DoABC(name, defer, null);
+        fixture = new DoABC(NAME, DEFER, null);
     }
 
     @Test
     public void checkAccessorForDataWithEmpty() {
-        fixture = new DoABC(name, defer, new byte[0]);
+        fixture = new DoABC(NAME, DEFER, new byte[0]);
+        assertNotNull(fixture);
     }
 
     @Test
     public void checkCopy() {
-        fixture = new DoABC(name, false, data);
+        fixture = new DoABC(NAME, false, data);
         final DoABC copy = fixture.copy();
 
-        assertEquals(name, copy.getName());
+        assertEquals(NAME, copy.getName());
         assertEquals(false, copy.isDeferred());
         assertNotSame(data, copy.getData());
         assertArrayEquals(data, copy.getData());

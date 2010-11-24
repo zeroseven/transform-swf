@@ -49,6 +49,13 @@ import com.flagstone.transform.util.sound.SoundFactory;
  * event sound.
  */
 public final class PlayEventSound {
+	/** Frame rate of movie in frames per second. */
+	private static final float FRAME_RATE = 12.0f;
+	/** Width of screen in twips. */
+	private static final int SCREEN_WIDTH = 8000;
+	/** Height of screen in twips. */
+	private static final int SCREEN_HEIGHT = 4000;
+
     /**
      * Run the test from the command line.
      * @param args array of command line arguments.
@@ -57,8 +64,6 @@ public final class PlayEventSound {
         final File sourceFile = new File(args[0]);
         final File destFile = new File(args[1]);
 
-        final int screenWidth = 8000;
-        final int screenHeight = 4000;
 
         try {
             if (!destFile.getParentFile().exists()) {
@@ -73,11 +78,9 @@ public final class PlayEventSound {
             final DefineSound sound =
                 factory.defineSound(uid++);
 
-            final float framesPerSecond = 12.0f;
-
-            MovieHeader header = new MovieHeader();
-            header.setFrameSize(new Bounds(0, 0, screenWidth, screenHeight));
-            header.setFrameRate(framesPerSecond);
+            final MovieHeader header = new MovieHeader();
+            header.setFrameSize(new Bounds(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT));
+            header.setFrameRate(FRAME_RATE);
 
             movie.add(header);
             movie.add(new Background(WebPalette.LIGHT_BLUE.color()));
@@ -90,7 +93,7 @@ public final class PlayEventSound {
              */
             final float duration = ((float) sound.getSampleCount())
                     / ((float) sound.getRate());
-            final int numberOfFrames = (int) (duration * framesPerSecond);
+            final int numberOfFrames = (int) (duration * FRAME_RATE);
 
             /*
              * Add the sound definition and the FSStartSound object which is
@@ -110,7 +113,7 @@ public final class PlayEventSound {
 
             movie.encodeToFile(destFile);
         } catch (final Exception e) {
-            e.printStackTrace();
+            e.printStackTrace(); //NOPMD
         }
     }
 

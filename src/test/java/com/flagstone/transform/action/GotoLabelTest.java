@@ -32,7 +32,6 @@ package com.flagstone.transform.action;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -46,12 +45,12 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 public final class GotoLabelTest {
 
-    private final transient int type = ActionTypes.GOTO_LABEL;
-    private final transient String label = "ABC123";
+    private static final int TYPE = ActionTypes.GOTO_LABEL;
+    private static final String LABEL = "ABC123";
 
     private transient GotoLabel fixture;
 
-    private final transient byte[] encoded = new byte[] {(byte) type, 0x07,
+    private final transient byte[] encoded = new byte[] {(byte) TYPE, 0x07,
             0x00, 0x41, 0x42, 0x043, 0x31, 0x32, 0x33, 0x00 };
 
     @Test(expected = IllegalArgumentException.class)
@@ -61,7 +60,7 @@ public final class GotoLabelTest {
 
     @Test
     public void checkCopy() {
-        fixture = new GotoLabel(label);
+        fixture = new GotoLabel(LABEL);
         final GotoLabel copy = fixture.copy();
 
         assertEquals(fixture.toString(), copy.toString());
@@ -73,7 +72,7 @@ public final class GotoLabelTest {
         final SWFEncoder encoder = new SWFEncoder(stream);
         final Context context = new Context();
 
-        fixture = new GotoLabel(label);
+        fixture = new GotoLabel(LABEL);
         assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
         encoder.flush();
@@ -89,7 +88,6 @@ public final class GotoLabelTest {
         decoder.readByte();
         fixture = new GotoLabel(decoder);
 
-        assertTrue(true);
-        assertEquals(label, fixture.getLabel());
+        assertEquals(LABEL, fixture.getLabel());
     }
 }

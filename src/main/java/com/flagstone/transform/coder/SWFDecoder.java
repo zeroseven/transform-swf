@@ -490,7 +490,7 @@ public final class SWFDecoder {
     public String readString(final int length) throws IOException {
         final byte[] bytes = new byte[length];
         readBytes(bytes);
-        final int len;
+        int len;
         if (bytes[length - 1] == 0) {
             len = length - 1;
         } else {
@@ -652,15 +652,51 @@ public final class SWFDecoder {
         return value;
     }
 
+    /**
+     * Number of bits to shift to obtain the sign in a half-precision
+     * float-point value.
+     */
     private static final int HALF_SIGN_SHIFT = 15;
+    /**
+     * Number of bits to shift to obtain the exponent in a half-precision
+     * floating-point value.
+     */
     private static final int HALF_EXP_SHIFT = 10;
+    /**
+     * The offset to apply to the exponent in a half-precision
+     * floating-point value.
+     */
     private static final int HALF_EXP_OFFSET = 15;
+    /**
+     * The maximum value of the exponent in a half-precision
+     * floating-point value.
+     */
     private static final int HALF_EXP_MAX = 31;
 
+    /**
+     * Number of bits to shift to obtain the sign in a single-precision
+     * float-point value.
+     */
     private static final int SIGN_SHIFT = 31;
+    /**
+     * Number of bits to shift to obtain the exponent in a singlr-precision
+     * floating-point value.
+     */
     private static final int EXP_SHIFT = 23;
+    /**
+     * The maximum value of the exponent in a single-precision
+     * floating-point value.
+     */
     private static final int EXP_MAX = 127;
+    /**
+     * Number of bits to shift to obtain the mantissa in a single-precision
+     * float-point value.
+     */
     private static final int MANT_SHIFT = 13;
+    /**
+     * The bit pattern used to represent Infinity in a single-precision
+     * floating-point value.
+     */
     private static final int INFINITY = 0x7f800000;
 
     /**

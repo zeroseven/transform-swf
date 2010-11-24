@@ -417,7 +417,8 @@ public final class SoundStreamHead implements MovieTag {
     }
 
     /** {@inheritDoc} */
-    public SoundStreamHead copy() {
+    @Override
+	public SoundStreamHead copy() {
         return new SoundStreamHead(this);
     }
 
@@ -429,7 +430,8 @@ public final class SoundStreamHead implements MovieTag {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final Context context) {
+    @Override
+	public int prepareToEncode(final Context context) {
         // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
         length = 4;
 
@@ -441,7 +443,8 @@ public final class SoundStreamHead implements MovieTag {
     }
 
     /** {@inheritDoc} */
-    public void encode(final SWFEncoder coder, final Context context)
+    @Override
+	public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
         if (length > Coder.HEADER_LIMIT) {
             coder.writeShort((MovieTypes.SOUND_STREAM_HEAD
@@ -482,7 +485,7 @@ public final class SoundStreamHead implements MovieTag {
      * @return the actual rate in KHz.
      */
     private int readRate(final int value) {
-        final int rate;
+        int rate;
         switch (value) {
         case 0:
             rate = SoundRate.KHZ_5K;

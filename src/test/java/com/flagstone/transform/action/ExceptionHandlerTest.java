@@ -32,7 +32,7 @@ package com.flagstone.transform.action;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -110,7 +110,7 @@ public final class ExceptionHandlerTest {
         decoder.readByte();
         fixture = new ExceptionHandler(decoder, context);
 
-        assertTrue(true);
+        assertNotNull(fixture);
         assertEquals(variable, fixture.getVariable());
         assertEquals(tryActions, fixture.getTryActions());
         assertEquals(catchActions, fixture.getCatchActions());

@@ -35,7 +35,6 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -50,10 +49,10 @@ import com.flagstone.transform.datatype.Color;
 
 public final class MorphGradientTest {
 
-    private final transient int startRatio = 1;
-    private final transient Color startColor = new Color(2, 3, 4, 5);
-    private final transient int endRatio = 6;
-    private final transient Color endColor = new Color(7, 8, 9, 10);
+    private static final int START_RATIO = 1;
+    private static final Color START_COLOR = new Color(2, 3, 4, 5);
+    private static final int END_RATIO = 6;
+    private static final Color END_COLOR = new Color(7, 8, 9, 10);
 
     private transient MorphGradient fixture;
 
@@ -62,26 +61,26 @@ public final class MorphGradientTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForRatioWithLowerBound() {
-        fixture = new MorphGradient(new Gradient(-1, startColor), new Gradient(
-                endRatio, endColor));
+        fixture = new MorphGradient(new Gradient(-1, START_COLOR), new Gradient(
+                END_RATIO, END_COLOR));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForRatioWithUpperBound() {
-        fixture = new MorphGradient(new Gradient(256, startColor),
-                new Gradient(endRatio, endColor));
+        fixture = new MorphGradient(new Gradient(256, START_COLOR),
+                new Gradient(END_RATIO, END_COLOR));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForColorWithNull() {
-        fixture = new MorphGradient(new Gradient(startRatio, null),
-                new Gradient(endRatio, endColor));
+        fixture = new MorphGradient(new Gradient(START_RATIO, null),
+                new Gradient(END_RATIO, END_COLOR));
     }
 
     @Test
     public void checkCopy() {
-        fixture = new MorphGradient(new Gradient(startRatio, startColor),
-                new Gradient(endRatio, endColor));
+        fixture = new MorphGradient(new Gradient(START_RATIO, START_COLOR),
+                new Gradient(END_RATIO, END_COLOR));
         final MorphGradient copy = fixture.copy();
 
         assertNotSame(fixture, copy);
@@ -96,8 +95,8 @@ public final class MorphGradientTest {
         final Context context = new Context();
         context.put(Context.TRANSPARENT, 1);
 
-        fixture = new MorphGradient(new Gradient(startRatio, startColor),
-                new Gradient(endRatio, endColor));
+        fixture = new MorphGradient(new Gradient(START_RATIO, START_COLOR),
+                new Gradient(END_RATIO, END_COLOR));
         assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
         encoder.flush();
@@ -114,15 +113,14 @@ public final class MorphGradientTest {
 
         fixture = new MorphGradient(decoder, context);
 
-        assertTrue(true);
-        assertEquals(startRatio, fixture.getStart().getRatio());
-        assertEquals(startColor.getRed(), fixture.getStart().getColor()
+        assertEquals(START_RATIO, fixture.getStart().getRatio());
+        assertEquals(START_COLOR.getRed(), fixture.getStart().getColor()
                 .getRed());
-        assertEquals(startColor.getGreen(), fixture.getStart().getColor()
+        assertEquals(START_COLOR.getGreen(), fixture.getStart().getColor()
                 .getGreen());
-        assertEquals(startColor.getBlue(), fixture.getStart().getColor()
+        assertEquals(START_COLOR.getBlue(), fixture.getStart().getColor()
                 .getBlue());
-        assertEquals(startColor.getAlpha(), fixture.getStart().getColor()
+        assertEquals(START_COLOR.getAlpha(), fixture.getStart().getColor()
                 .getAlpha());
     }
 }

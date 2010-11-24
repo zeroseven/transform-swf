@@ -32,7 +32,7 @@
 package com.flagstone.transform.video;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -56,7 +56,7 @@ public final class DefineVideoTest {
             0x00, 0x00, 0x00, 0x01, 0x00, 0x02, 0x00, 0x06, 0x50 };
 
     @Test
-    @Ignore 
+    @Ignore
     public void encodeCoordTransform() throws IOException {
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         final SWFEncoder encoder = new SWFEncoder(stream);
@@ -70,24 +70,24 @@ public final class DefineVideoTest {
     }
 
     @Test
-    @Ignore 
+    @Ignore
     public void decode() throws IOException {
         final ByteArrayInputStream stream = new ByteArrayInputStream(encoded);
         final SWFDecoder decoder = new SWFDecoder(stream);
 
         fixture = new DefineVideo(decoder);
 
-        assertTrue(true);
+        assertNotNull(fixture);
     }
 
     @Test
-    @Ignore 
+    @Ignore
     public void decodeExtended() throws IOException {
         final ByteArrayInputStream stream = new ByteArrayInputStream(extended);
         final SWFDecoder decoder = new SWFDecoder(stream);
 
         fixture = new DefineVideo(decoder);
 
-        assertTrue(true);
+        assertNotNull(fixture);
     }
 }

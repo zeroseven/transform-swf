@@ -32,8 +32,8 @@
 package com.flagstone.transform.text;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -88,7 +88,7 @@ public final class TextSpanTest {
 
          fixture = new TextSpan(decoder, context);
 
-        assertTrue(true);
+         assertNotNull(fixture);
     }
 
     @Test
@@ -100,6 +100,6 @@ public final class TextSpanTest {
 
         fixture = new TextSpan(decoder, context);
 
-        assertTrue(true);
+        assertNotNull(fixture);
     }
 }

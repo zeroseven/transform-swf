@@ -33,8 +33,8 @@ package com.flagstone.transform.font;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -49,9 +49,9 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 public final class DefineFontNameTest {
 
-    private final transient int identifier = 1;
-    private final transient String name = "font";
-    private final transient String copyright = "copyright";
+    private static final int IDENTIFIER = 1;
+    private static final String NAME = "font";
+    private static final String COPYRIGHT = "copyright";
 
     private transient FontName fixture;
 
@@ -65,27 +65,27 @@ public final class DefineFontNameTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForIdentifierWithLowerBound() {
-        fixture = new FontName(0, name, copyright);
+        fixture = new FontName(0, NAME, COPYRIGHT);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForIdentifierWithUpperBound() {
-        fixture = new FontName(65536, name, copyright);
+        fixture = new FontName(65536, NAME, COPYRIGHT);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForNameWithNull() {
-        fixture = new FontName(identifier, null, copyright);
+        fixture = new FontName(IDENTIFIER, null, COPYRIGHT);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForCopyrightWithNull() {
-        fixture = new FontName(identifier, name, null);
+        fixture = new FontName(IDENTIFIER, NAME, null);
     }
 
     @Test
     public void checkCopy() {
-        fixture = new FontName(identifier, name, copyright);
+        fixture = new FontName(IDENTIFIER, NAME, COPYRIGHT);
         final FontName copy = fixture.copy();
 
         assertNotSame(fixture, copy);
@@ -101,7 +101,7 @@ public final class DefineFontNameTest {
         final SWFEncoder encoder = new SWFEncoder(stream);
         final Context context = new Context();
 
-        fixture = new FontName(identifier, name, copyright);
+        fixture = new FontName(IDENTIFIER, NAME, COPYRIGHT);
         assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
         encoder.flush();
@@ -119,7 +119,7 @@ public final class DefineFontNameTest {
         final char[] chars = new char[100];
         Arrays.fill(chars, 'a');
 
-        fixture = new FontName(identifier, name, new String(chars));
+        fixture = new FontName(IDENTIFIER, NAME, new String(chars));
         assertEquals(114, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
 
@@ -133,10 +133,10 @@ public final class DefineFontNameTest {
 
         fixture = new FontName(decoder);
 
-        assertTrue(true);
-        assertEquals(identifier, fixture.getIdentifier());
-        assertEquals(name, fixture.getName());
-        assertEquals(copyright, fixture.getCopyright());
+        assertNotNull(fixture);
+        assertEquals(IDENTIFIER, fixture.getIdentifier());
+        assertEquals(NAME, fixture.getName());
+        assertEquals(COPYRIGHT, fixture.getCopyright());
     }
 
     @Test
@@ -146,9 +146,9 @@ public final class DefineFontNameTest {
 
         fixture = new FontName(decoder);
 
-        assertTrue(true);
-        assertEquals(identifier, fixture.getIdentifier());
-        assertEquals(name, fixture.getName());
-        assertEquals(copyright, fixture.getCopyright());
+        assertNotNull(fixture);
+        assertEquals(IDENTIFIER, fixture.getIdentifier());
+        assertEquals(NAME, fixture.getName());
+        assertEquals(COPYRIGHT, fixture.getCopyright());
     }
 }

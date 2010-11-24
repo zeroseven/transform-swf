@@ -54,7 +54,10 @@ import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.text.DefineTextField;
 
 public final class FrameTest {
-    private Movie movie;
+
+    private static final String LABEL = "label";
+
+    private transient Movie movie;
 
     @Before
     public void setUp() {
@@ -63,15 +66,13 @@ public final class FrameTest {
 
     @Test
     public void frameLabel() throws IOException {
-        final String label = "label";
-
-        movie.add(new FrameLabel(label));
+        movie.add(new FrameLabel(LABEL));
         movie.add(ShowFrame.getInstance());
 
         final List<Frame> frames = Frame.split(movie);
 
         assertEquals(frames.size(), 1);
-        assertEquals(frames.get(0).getLabel(), label);
+        assertEquals(frames.get(0).getLabel(), LABEL);
     }
 
     @Test
@@ -135,8 +136,8 @@ public final class FrameTest {
 
     @Test
     public void frameWithActions() throws IOException {
-        List<Object>values = new ArrayList<Object>();
-        values.add("label");
+    	final List<Object>values = new ArrayList<Object>();
+        values.add(LABEL);
         final Push push = new Push(values);
         final DoAction actions = new DoAction(new ArrayList<Action>());
         actions.add(push);
@@ -167,7 +168,7 @@ public final class FrameTest {
     @Test @Ignore
     public void addFrameToMovie() throws IOException {
         final Frame frame = new Frame();
-        frame.setLabel("label");
+        frame.setLabel(LABEL);
         frame.addDefinition(new DefineTextField(1).setBounds(new Bounds(0, 0,
                 100, 100)));
         frame.addCommand(Place2.show(1, 1, 0, 0));

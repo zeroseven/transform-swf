@@ -57,7 +57,8 @@ public enum CharacterEncoding {
     UTF8("UTF-8"),
     /**
      * Microsoft's extension to Shift-JIS.
-     * MS932, windows-932, and csWindows31J are all known aliases of this character set.
+     * MS932, windows-932, and csWindows31J are all known aliases of this
+     * character set.
      */
     WINDOWS31J("windows-31j"),
     /**
@@ -72,7 +73,7 @@ public enum CharacterEncoding {
      */
     CP932("CP932");
 
-    /** Table used to map CharSet canonical names to a CharacterEncoding */
+    /** Table used to map CharSet canonical names to a CharacterEncoding. */
     private static final Map<String, CharacterEncoding> TABLE =
         new LinkedHashMap <String, CharacterEncoding>();
 
@@ -92,7 +93,7 @@ public enum CharacterEncoding {
      * @return the CharacterEncoding that matches the canonical name of the
      * CharSet.
      */
-    public static CharacterEncoding fromCharSet(Charset set) {
+    public static CharacterEncoding fromCharSet(final Charset set) {
     	return TABLE.get(set.name());
     }
 

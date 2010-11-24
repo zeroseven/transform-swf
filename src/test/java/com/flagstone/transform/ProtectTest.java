@@ -36,7 +36,7 @@ import org.junit.Test;
 
 public final class ProtectTest {
 
-    private final transient String password = "ABC123";
+    private static final String PASSWORD = "ABC123";
 
     private transient Protect fixture;
 
@@ -47,7 +47,7 @@ public final class ProtectTest {
 
     @Test
     public void checkCopy() {
-        fixture = new Protect(password);
+        fixture = new Protect(PASSWORD);
         final Protect copy = fixture.copy();
 
         assertEquals(fixture.getPassword(), copy.getPassword());

@@ -33,7 +33,6 @@ package com.flagstone.transform.action;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -47,34 +46,34 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 public final class GotoFrame2Test {
 
-    private final transient int type = ActionTypes.GOTO_FRAME_2;
-    private final transient boolean play = true;
-    private final transient int offset = 1;
+    private static final int TYPE = ActionTypes.GOTO_FRAME_2;
+    private static final boolean PLAY = true;
+    private static final int OFFSET = 1;
 
     private transient GotoFrame2 fixture;
 
-    private final transient byte[] encoded = new byte[] {(byte) type, 0x03,
+    private final transient byte[] encoded = new byte[] {(byte) TYPE, 0x03,
             0x00, 0x03, 0x01, 0x00 };
 
-    private final transient byte[] stop = new byte[] {(byte) type, 0x01, 0x00,
+    private final transient byte[] stop = new byte[] {(byte) TYPE, 0x01, 0x00,
             0x00 };
 
-    private final transient byte[] noOffset = new byte[] {(byte) type, 0x01,
+    private final transient byte[] noOffset = new byte[] {(byte) TYPE, 0x01,
             0x00, 0x01 };
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForIdentifierWithLowerBound() {
-        fixture = new GotoFrame2(-1, play);
+        fixture = new GotoFrame2(-1, PLAY);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForIdentifierWithUpperBound() {
-        fixture = new GotoFrame2(65536, play);
+        fixture = new GotoFrame2(65536, PLAY);
     }
 
     @Test
     public void checkCopy() {
-        fixture = new GotoFrame2(offset, play);
+        fixture = new GotoFrame2(OFFSET, PLAY);
         final GotoFrame2 copy = fixture.copy();
 
         assertSame(fixture, copy);
@@ -87,7 +86,7 @@ public final class GotoFrame2Test {
         final SWFEncoder encoder = new SWFEncoder(stream);
         final Context context = new Context();
 
-        fixture = new GotoFrame2(offset, play);
+        fixture = new GotoFrame2(OFFSET, PLAY);
         assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
         encoder.flush();
@@ -101,7 +100,7 @@ public final class GotoFrame2Test {
         final SWFEncoder encoder = new SWFEncoder(stream);
         final Context context = new Context();
 
-        fixture = new GotoFrame2(0, play);
+        fixture = new GotoFrame2(0, PLAY);
         assertEquals(noOffset.length,
                 fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
@@ -132,9 +131,8 @@ public final class GotoFrame2Test {
         decoder.readByte();
         fixture = new GotoFrame2(decoder);
 
-        assertTrue(true);
-        assertEquals(offset, fixture.getFrameOffset());
-        assertEquals(play, fixture.isPlay());
+        assertEquals(OFFSET, fixture.getFrameOffset());
+        assertEquals(PLAY, fixture.isPlay());
     }
 
     @Test
@@ -145,9 +143,8 @@ public final class GotoFrame2Test {
         decoder.readByte();
         fixture = new GotoFrame2(decoder);
 
-        assertTrue(true);
         assertEquals(0, fixture.getFrameOffset());
-        assertEquals(play, fixture.isPlay());
+        assertEquals(PLAY, fixture.isPlay());
     }
 
     @Test
@@ -158,7 +155,6 @@ public final class GotoFrame2Test {
         decoder.readByte();
         fixture = new GotoFrame2(decoder);
 
-        assertTrue(true);
         assertEquals(0, fixture.getFrameOffset());
         assertEquals(false, fixture.isPlay());
     }

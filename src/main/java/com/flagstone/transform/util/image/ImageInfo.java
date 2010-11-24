@@ -240,14 +240,14 @@ public final class ImageInfo {
      * The names of all supported file formats. The FORMAT_xyz int constants can
      * be used as index values for this array.
      */
-    private static final String[] FORMAT_NAMES = { "JPEG", "GIF", "PNG", "BMP",
+    private static final String[] FORMAT_NAMES = {"JPEG", "GIF", "PNG", "BMP",
             "PCX", "IFF", "RAS", "PBM", "PGM", "PPM", "PSD" };
 
     /**
      * The names of the MIME types for all supported file formats. The
      * FORMAT_xyz int constants can be used as index values for this array.
      */
-    private static final String[] MIME_TYPE_STRINGS = { "image/jpeg",
+    private static final String[] MIME_TYPE_STRINGS = {"image/jpeg",
             "image/gif", "image/png", "image/bmp", "image/pcx", "image/iff",
             "image/ras", "image/x-portable-bitmap", "image/x-portable-graymap",
             "image/x-portable-pixmap", "image/psd" };
@@ -515,7 +515,7 @@ public final class ImageInfo {
                 if (read(data, 0, 12) != 12) {
                     return false;
                 }
-                final byte[] appoId = { 0x4a, 0x46, 0x49, 0x46, 0x00 };
+                final byte[] appoId = {0x4a, 0x46, 0x49, 0x46, 0x00 };
                 if (equals(appoId, 0, data, 0, 5)) {
                     // System.out.println("data 7=" + data[7]);
                     if (data[7] == 1) {
@@ -598,7 +598,7 @@ public final class ImageInfo {
 //    }
 
     private boolean checkPng() throws IOException {
-        final byte[] pngmagic = { 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a };
+        final byte[] pngmagic = {0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a };
         final byte[] a = new byte[27];
         if (read(a) != 27) {
             return false;

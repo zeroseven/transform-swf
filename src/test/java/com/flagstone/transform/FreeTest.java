@@ -37,7 +37,7 @@ import org.junit.Test;
 
 public final class FreeTest {
 
-    private final transient int identifier = 1;
+    private static final int IDENTIFIER = 1;
 
     private transient Free fixture;
 
@@ -53,7 +53,7 @@ public final class FreeTest {
 
     @Test
     public void checkCopy() {
-        fixture = new Free(identifier);
+        fixture = new Free(IDENTIFIER);
         final Free copy = fixture.copy();
 
         assertNotSame(fixture, copy);

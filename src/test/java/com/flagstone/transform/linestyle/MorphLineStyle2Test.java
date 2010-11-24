@@ -35,7 +35,6 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -51,10 +50,10 @@ import com.flagstone.transform.datatype.Color;
 
 public final class MorphLineStyle2Test {
 
-    private final transient int startWidth = 1;
-    private final transient Color startColor = new Color(2, 3, 4, 5);
-    private final transient int endWidth = 6;
-    private final transient Color endColor = new Color(7, 8, 9, 10);
+    private static final int START_WIDTH = 1;
+    private static final Color START_COLOR = new Color(2, 3, 4, 5);
+    private static final int END_WIDTH = 6;
+    private static final Color END_COLOR = new Color(7, 8, 9, 10);
 
     private transient MorphLineStyle2 fixture;
 
@@ -62,10 +61,10 @@ public final class MorphLineStyle2Test {
             0x00, 0x02, 0x03, 0x04, 0x05, 0x07, 0x08, 0x09, 0x0A };
 
     @Test
-    @Ignore 
+    @Ignore
     public void checkCopy() {
-        fixture = new MorphLineStyle2(startWidth, endWidth, startColor,
-                endColor);
+        fixture = new MorphLineStyle2(START_WIDTH, END_WIDTH, START_COLOR,
+                END_COLOR);
         final MorphLineStyle2 copy = fixture.copy();
 
         assertNotSame(fixture, copy);
@@ -75,15 +74,15 @@ public final class MorphLineStyle2Test {
     }
 
     @Test
-    @Ignore 
+    @Ignore
     public void encode() throws IOException {
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         final SWFEncoder encoder = new SWFEncoder(stream);
         final Context context = new Context();
         context.put(Context.TRANSPARENT, 1);
 
-        fixture = new MorphLineStyle2(startWidth, endWidth, startColor,
-                endColor);
+        fixture = new MorphLineStyle2(START_WIDTH, END_WIDTH, START_COLOR,
+                END_COLOR);
         assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
 
@@ -92,7 +91,7 @@ public final class MorphLineStyle2Test {
     }
 
     @Test
-    @Ignore 
+    @Ignore
     public void decode() throws IOException {
         final ByteArrayInputStream stream = new ByteArrayInputStream(encoded);
         final SWFDecoder decoder = new SWFDecoder(stream);
@@ -100,17 +99,18 @@ public final class MorphLineStyle2Test {
         context.put(Context.TRANSPARENT, 1);
 
         fixture = new MorphLineStyle2(decoder, context);
+        final Color startColor = fixture.getStartColor();
+        final Color endColor = fixture.getEndColor();
 
-        assertTrue(true);
-        assertEquals(startWidth, fixture.getStartWidth());
-        assertEquals(endWidth, fixture.getEndWidth());
-        assertEquals(startColor.getRed(), fixture.getStartColor().getRed());
-        assertEquals(startColor.getGreen(), fixture.getStartColor().getGreen());
-        assertEquals(startColor.getBlue(), fixture.getStartColor().getBlue());
-        assertEquals(startColor.getAlpha(), fixture.getStartColor().getAlpha());
-        assertEquals(endColor.getRed(), fixture.getEndColor().getRed());
-        assertEquals(endColor.getGreen(), fixture.getEndColor().getGreen());
-        assertEquals(endColor.getBlue(), fixture.getEndColor().getBlue());
-        assertEquals(endColor.getAlpha(), fixture.getEndColor().getAlpha());
+        assertEquals(START_WIDTH, fixture.getStartWidth());
+        assertEquals(END_WIDTH, fixture.getEndWidth());
+        assertEquals(START_COLOR.getRed(), startColor.getRed());
+        assertEquals(START_COLOR.getGreen(), startColor.getGreen());
+        assertEquals(START_COLOR.getBlue(), startColor.getBlue());
+        assertEquals(START_COLOR.getAlpha(), startColor.getAlpha());
+        assertEquals(END_COLOR.getRed(), endColor.getRed());
+        assertEquals(END_COLOR.getGreen(), endColor.getGreen());
+        assertEquals(END_COLOR.getBlue(), endColor.getBlue());
+        assertEquals(END_COLOR.getAlpha(), endColor.getAlpha());
     }
 }

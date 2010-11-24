@@ -32,8 +32,8 @@
 package com.flagstone.transform.shape;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -85,7 +85,7 @@ public final class CurveTest {
         final ByteArrayInputStream stream = new ByteArrayInputStream(encoded);
         final SWFDecoder decoder = new SWFDecoder(stream);
         fixture = new Curve(decoder);
-        assertTrue(true);
+        assertNotNull(fixture);
     }
 
     @Test
@@ -94,6 +94,6 @@ public final class CurveTest {
         final ByteArrayInputStream stream = new ByteArrayInputStream(extended);
         final SWFDecoder decoder = new SWFDecoder(stream);
         fixture = new Curve(decoder);
-        assertTrue(true);
+        assertNotNull(fixture);
     }
 }

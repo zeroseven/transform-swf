@@ -33,8 +33,8 @@ package com.flagstone.transform.movieclip;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -55,8 +55,8 @@ import com.flagstone.transform.coder.SWFEncoder;
 
 public final class DefineMovieClipTest {
 
-    private final int identifier = 1;
-    private final List<MovieTag> list = new ArrayList<MovieTag>();
+    private static final int IDENTIFIER = 1;
+    private static final List<MovieTag> LIST = new ArrayList<MovieTag>();
 
     private transient DefineMovieClip fixture;
 
@@ -68,28 +68,29 @@ public final class DefineMovieClipTest {
             0x00 };
 
     @Before
-    public void setup() {
-        list.add(ShowFrame.getInstance());
+    public void setUp() {
+    	LIST.clear();
+        LIST.add(ShowFrame.getInstance());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForIdentifierWithLowerBound() {
-        fixture = new DefineMovieClip(0, list);
+        fixture = new DefineMovieClip(0, LIST);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAccessorForIdentifierWithUpperBound() {
-        fixture = new DefineMovieClip(65536, list);
+        fixture = new DefineMovieClip(65536, LIST);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkAddNullTag() {
-        fixture = new DefineMovieClip(identifier, null);
+        fixture = new DefineMovieClip(IDENTIFIER, null);
     }
 
     @Test
     public void checkCopy() {
-        fixture = new DefineMovieClip(identifier, list);
+        fixture = new DefineMovieClip(IDENTIFIER, LIST);
         final DefineMovieClip copy = fixture.copy();
 
         assertEquals(fixture.getIdentifier(), copy.getIdentifier());
@@ -103,7 +104,7 @@ public final class DefineMovieClipTest {
         final SWFEncoder encoder = new SWFEncoder(stream);
         final Context context = new Context();
 
-        fixture = new DefineMovieClip(identifier, list);
+        fixture = new DefineMovieClip(IDENTIFIER, LIST);
         assertEquals(encoded.length, fixture.prepareToEncode(context));
         fixture.encode(encoder, context);
         encoder.flush();
@@ -122,9 +123,9 @@ public final class DefineMovieClipTest {
 
         fixture = new DefineMovieClip(decoder, context);
 
-        assertTrue(true);
-        assertEquals(identifier, fixture.getIdentifier());
-        assertEquals(list, fixture.getObjects());
+        assertNotNull(fixture);
+        assertEquals(IDENTIFIER, fixture.getIdentifier());
+        assertEquals(LIST, fixture.getObjects());
     }
 
     @Test
@@ -138,8 +139,8 @@ public final class DefineMovieClipTest {
 
         fixture = new DefineMovieClip(decoder, context);
 
-        assertTrue(true);
-        assertEquals(identifier, fixture.getIdentifier());
-        assertEquals(list, fixture.getObjects());
+        assertNotNull(fixture);
+        assertEquals(IDENTIFIER, fixture.getIdentifier());
+        assertEquals(LIST, fixture.getObjects());
     }
 }

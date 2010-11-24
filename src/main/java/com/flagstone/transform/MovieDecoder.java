@@ -85,13 +85,14 @@ import com.flagstone.transform.video.VideoFrame;
  * MovieDecoder is used to decode the different types of data structure encoded
  * in a movie.
  */
- @SuppressWarnings({"PMD.ExcessiveImports",
+@SuppressWarnings({"PMD.ExcessiveImports",
      "PMD.CyclomaticComplexity",
      "PMD.ExcessiveMethodLength",
      "PMD.NcssMethodCount" })
 public final class MovieDecoder implements SWFFactory<MovieTag> {
     /** {@inheritDoc} */
-    public void getObject(final List<MovieTag> list, final SWFDecoder coder,
+    @Override
+	public void getObject(final List<MovieTag> list, final SWFDecoder coder,
             final Context context) throws IOException {
 
         MovieTag obj;

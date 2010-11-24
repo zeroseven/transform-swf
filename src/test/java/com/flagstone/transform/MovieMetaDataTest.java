@@ -36,7 +36,7 @@ import org.junit.Test;
 
 public final class MovieMetaDataTest {
 
-    private final transient String metaData = "ABC123";
+    private static final String METADATA = "ABC123";
 
     private transient MovieMetaData fixture;
 
@@ -47,7 +47,7 @@ public final class MovieMetaDataTest {
 
     @Test
     public void checkCopy() {
-        fixture = new MovieMetaData(metaData);
+        fixture = new MovieMetaData(METADATA);
         final MovieMetaData copy = fixture.copy();
 
         assertEquals(fixture.getMetaData(), copy.getMetaData());
