@@ -63,11 +63,11 @@ public final class PlayEventSound {
     public static void main(final String[] args) {
         final File sourceFile = new File(args[0]);
         final File destFile = new File(args[1]);
-
+        final File destDir = destFile.getParentFile();
 
         try {
-            if (!destFile.getParentFile().exists()) {
-                destFile.getParentFile().mkdirs();
+            if (destDir != null && !destDir.exists()) {
+            	destDir.mkdirs();
             }
 
             final Movie movie = new Movie();
@@ -85,8 +85,6 @@ public final class PlayEventSound {
             movie.add(header);
             movie.add(new Background(WebPalette.LIGHT_BLUE.color()));
 
-            final int soundId = uid++;
-
             /*
              * Calculate the time it takes to play the sound and the number of
              * frames this represents.
@@ -101,7 +99,7 @@ public final class PlayEventSound {
              */
 
             movie.add(sound);
-            movie.add(new StartSound(new SoundInfo(soundId,
+            movie.add(new StartSound(new SoundInfo(sound.getIdentifier(),
                     SoundInfo.Mode.START, 1, null)));
 
             /*

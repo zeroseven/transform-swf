@@ -62,10 +62,11 @@ public final class PlayStreamingSound {
     public static void main(final String[] args) {
 
         final File destFile = new File(args[1]);
+        final File destDir = destFile.getParentFile();
 
         try {
-            if (!destFile.getParentFile().exists()) {
-                destFile.getParentFile().mkdirs();
+            if (destDir != null && !destDir.exists()) {
+            	destDir.mkdirs();
             }
 
             final Movie movie = new Movie();
