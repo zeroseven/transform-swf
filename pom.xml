@@ -28,6 +28,17 @@
 		<name>Flagstone Software Ltd.</name>
 		<url>http://www.flagstonesoftware.com</url>
 	</organization>
+	
+	<issueManagement>
+		<system>GitHb</system>
+		<url>https://github.com/StuartMacKay/transform-swf/issues</url>
+	</issueManagement>
+
+    <scm>
+        <connection>scm:git:git@github.com:StuartMacKay/transform-swf.git</connection>
+        <url>scm:git:git@github.com:StuartMacKay/transform-swf.git</url>
+        <developerConnection>scm:git:git@github.com:StuartMacKay/transform-swf.git</developerConnection>  
+    </scm>
 
 	<developers>
 		<developer>
@@ -57,26 +68,6 @@
             <timezone></timezone>
         </contributor>
     </contributors>
-	
-	<mailingLists>
-        <mailingList>
-            <name>Transform-SWF Updates</name>
-            <subscribe>http://lists.sourceforge.net/lists/listinfo/transform-swf-updates</subscribe>
-            <unsubscribe>http://lists.sourceforge.net/lists/listinfo/transform-swf-updates</unsubscribe>
-            <archive>http://sourceforge.net/mailarchive/forum.php?forum_name=transform-swf-updates</archive>
-        </mailingList>
-    </mailingLists>
-	
-	<issueManagement>
-		<system>sourceforge</system>
-		<url>https://sourceforge.net/tracker/?group_id=124182&amp;atid=698744</url>
-	</issueManagement>
-
-	<scm>
-		<connection>scm:svn:http://transform-swf.svn.sourceforge.net/svnroot/transform-swf/trunk</connection>
-		<developerConnection>scm:svn:https://transform-swf.svn.sourceforge.net/svnroot/transform-swf/trunk</developerConnection>
-		<url>http://transform-swf.svn.sourceforge.net/viewvc/transform-swf/trunk</url>
-	</scm>
 
 	<dependencies>
 		<dependency>
@@ -157,7 +148,7 @@
 	          <executions>
 	            <execution>
 	              <id>attach-sources</id>
-	              <phase>verify</phase>
+	              <phase>package</phase>
 	              <goals>
 	                <goal>jar-no-fork</goal>
 	              </goals>
@@ -174,7 +165,7 @@
                 <executions>
                   <execution>
                     <id>generate-datasheets</id>
-                    <phase>verify</phase>
+                    <phase>package</phase>
                     <goals>
                       <goal>jar</goal>
                     </goals>
@@ -183,7 +174,7 @@
 		    </plugin>
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
-				<version>2.2-beta-5</version>
+				<version>2.2</version>
 				<configuration>
 				    <descriptors>
 					    <descriptor>src/main/assembly/dist.xml</descriptor>
@@ -191,10 +182,10 @@
 				</configuration>
                 <executions>
                     <execution>
-                        <id>make-assembly</id> <!-- this is used for inheritance merges -->
-                        <phase>verify</phase> <!-- append to the packaging phase. -->
+                        <id>make-assembly</id>
+                        <phase>package</phase>
                         <goals>
-                            <goal>single</goal> <!-- goals == mojos -->
+                            <goal>single</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -213,33 +204,11 @@
 				  </execution>
 				</executions>
 			</plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-site-plugin</artifactId>
-                <version>2.1.1</version>
-            </plugin>
 		</plugins>
 	</build>
 
 	<reporting>
 		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-project-info-reports-plugin</artifactId>
-                <version>2.2</version>
-				<reportSets>
-					<reportSet>
-						<reports>
-							<report>summary</report>
-							<report>project-team</report>
-							<report>mailing-list</report>
-							<report>issue-tracking</report>
-							<report>license</report>
-							<report>scm</report>
-						</reports>
-					</reportSet>
-				</reportSets>
-			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
@@ -256,15 +225,7 @@
 				<configuration>
 					<targetJdk>1.6</targetJdk>
 					<sourceEncoding>UTF-8</sourceEncoding>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.7</version>
-				<configuration>
-					<targetJdk>1.6</targetJdk>
-					<encoding>UTF-8</encoding>
+					<ruleset>ruleset.xml</ruleset>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -274,12 +235,5 @@
 			</plugin>
 		</plugins>
 	</reporting>
-
-	<distributionManagement>
-		<site>
-			<id>transform.sourceforge.net</id>
-			<url>scp://shell.sourceforge.net/home/groups/t/tr/transform-swf/htdocs</url>
-		</site>
-	</distributionManagement>
 
 </project>
