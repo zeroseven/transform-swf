@@ -6,27 +6,38 @@
   Bug Fixes
 -------------
 
-3082031. JPG files throw an exception.
+1. JPG files throw an exception.
 
    JPEG files where the image data contained an odd number of bytes would cause
    a overflow exception will be thrown by the JPGDecoder.
    
-3088088. DefineButton2 does not execute actions.
+2. DefineButton2 does not execute actions.
 
    The actions in DefineButton2 are not executed. The problem is the way the 
    object is encoded. There is an offset, in bytes, that indicates the size of 
    the encoded button shape records. This offset was calculated incorrectly so 
    Flash Player did not load the event handlers for the button correctly. 
-  
---------------
-  Maven Site
---------------
+   
+3. BigDecoder.scanInt() throws an exception.
 
-1. Added content previously hosted on SourceForge using Trac into Maven site
-   files. The combination of these files (project description, feature list 
-   and code example) along with the pages generated from the Maven POM and 
-   project reporting make up the project portal which is targeted at project
-   developers with the main Flagstone web site targeting users of Transform.
+   If there were less than 2 or 3 bytes left in the internal buffer used by
+   BigDecoder then it was not refilled and an ArrayIndexOutOfBoundsException
+   was thrown when looking ahead at the next 32-bits.
+   
+4. Corrected errors in PlayEventSound and PlayStreamingSound.
+
+   Passing only the name of the file to be generated no longer throws an
+   exception when testing to see if the parent directory exists.
+  
+-----------------
+  Code Changes
+-----------------
+
+1. Cleaned up checkstyle and pmd warnings.
+
+   The vast majority of CheckStyle and PMD warnings were resolved. Only warnings
+   about magic numbers and data flow anomalies are left. These will be removed
+   in due course.
 
 -----------------
   Project Files
@@ -35,5 +46,36 @@
 1. Cleaned up checkstyle and pmd rules files.
 
    The checkstyle rules are now in checkstyle.xml while suppressions.xml has
-   local changes for the project. The files .checkstyle and .pmd were deleted -
-   PMD is run using the default set of rules.
+   local changes for the project. Rule for PMD are stored in ruleset.xml. Only
+   two rules have been disabled from the default ruleset:
+   
+   1. AvoidInstantiatingObjectsInLoops was disabled since loops are used to
+      decode collections of objects.
+   
+   2. JUnitAssertionsShouldIncludeMessage was disabled to keep the tests as
+      simple as possible. Also since most of the tests centre around encoding
+      or decoding object attributes little would be gained by adding messages.
+      
+   There are still a few @SuppressWarnings annotations on individual classes 
+   and these will be reviewed and fixed over time.
+   
+2. Renamed README.txt to README.md and re-formatted with markdown.
+
+3. Simplified the Maven POM and removed site files.
+
+   The simple structure of the repository on GitHub removes the need to
+   maintain a set of site files describing the project. All the relevant 
+   content was added to the new README.md file.
+   
+-------------
+  Packaging
+-------------
+
+1. Simplified and renamed the dist assembly.
+
+   The contents of the assembly, e.g. transform-3.0.1-SNAPSHOT-dist.zip was 
+   simplified renamed to transform-3.0.1-SNAPSHOT-ant.zip. This contains only
+   the source files and an ANT build file that contains targets to build the 
+   JAR file (either using debug or optimised versions of the classes) and 
+   generate the javadocs. The default target 'all' builds the jar file with 
+   optimised classes and generates the javadocs.
