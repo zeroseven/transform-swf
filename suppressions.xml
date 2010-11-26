@@ -30,7 +30,7 @@
     <suppress checks="JavadocMethodCheck"
               files=".*Tests?\.java"/>
     <suppress checks="JavadocVariableCheck"
-              files=".*Tests?\.java"/>
+              files=".*Test\.java"/>
     <suppress checks="MagicNumberCheck"
-              files=".*Tests?\.java"/>
+              files=".*Test\.java"/>
 </suppressions>
