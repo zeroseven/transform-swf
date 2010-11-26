@@ -460,7 +460,7 @@ public final class BigDecoder {
      * @return the value read.
      */
     public int scanInt() throws IOException {
-        if (size - index < 2) {
+        if (size - index < 4) {
             fill();
         }
         if (index + 4 > size) {
