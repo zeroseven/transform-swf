@@ -8,7 +8,7 @@
 	<groupId>com.flagstone</groupId>
 	<artifactId>transform</artifactId>
 	<packaging>jar</packaging>
-	<version>3.0.1-SNAPSHOT</version>
+	<version>3.0.1</version>
 
 	<name>transform</name>
 	<description>Transform is an Open Source library for reading and writing Flash (.swf) files. The API gives you complete control over how files are created with access to all the features supported by the Flash Player but yet is still intuitive and easy to use.</description>
@@ -59,13 +59,13 @@
         <contributor>
             <name>Glenn Marintes</name>
             <email>gmarintes@gmail.com</email>
-            <url></url>
+            <url />
             <organization>Glenn Marintes</organization>
-            <organizationUrl></organizationUrl>
+            <organizationUrl />
             <roles>
                 <role>developer</role>
             </roles>
-            <timezone></timezone>
+            <timezone />
         </contributor>
     </contributors>
 
