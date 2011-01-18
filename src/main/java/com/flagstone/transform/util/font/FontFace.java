@@ -139,7 +139,7 @@ public final class FontFace {
             result = true;
         } else if (object instanceof FontFace) {
             key = (FontFace) object;
-            result = name.equals(name) && bold == key.bold
+            result = name.equals(key.name) && bold == key.bold
                     && italic == key.italic;
         } else {
             result = false;
