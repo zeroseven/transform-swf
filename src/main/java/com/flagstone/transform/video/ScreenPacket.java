@@ -93,7 +93,7 @@ public final class ScreenPacket implements Copyable<ScreenPacket> {
         int height = imageHeight;
         int width = imageWidth;
 
-        imageBlocks.clear();
+        imageBlocks = new ArrayList<ImageBlock>();
         ImageBlock block;
 
         int length;
@@ -304,7 +304,8 @@ public final class ScreenPacket implements Copyable<ScreenPacket> {
     }
 
     /** {@inheritDoc} */
-    public ScreenPacket copy() {
+    @Override
+	public ScreenPacket copy() {
         return new ScreenPacket(this);
     }
 
