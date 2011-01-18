@@ -997,7 +997,7 @@ public final class DefineTextField implements DefineTag {
         builder.append("; initalText = ").append(initialText);
         builder.append(" }");
 
-        return String.format("", identifier, bounds, wordWrapped, multiline);
+        return builder.toString();
     }
 
     /** {@inheritDoc} */
