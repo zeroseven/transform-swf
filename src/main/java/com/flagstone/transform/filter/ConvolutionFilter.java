@@ -32,6 +32,7 @@
 package com.flagstone.transform.filter;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import com.flagstone.transform.Constants;
 import com.flagstone.transform.coder.Coder;
@@ -280,7 +281,7 @@ public final class ConvolutionFilter implements Filter {
             result = true;
         } else if (object instanceof ConvolutionFilter) {
             filter = (ConvolutionFilter) object;
-            result = matrix.equals(filter.matrix)
+            result = Arrays.deepEquals(matrix, filter.matrix)
                     && (divisor == filter.divisor) && (bias == filter.bias)
                     && color.equals(filter.color) && (clamp == filter.clamp)
                     && (alpha == filter.alpha);
@@ -301,7 +302,8 @@ public final class ConvolutionFilter implements Filter {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final Context context) {
+    @Override
+	public int prepareToEncode(final Context context) {
         rows = matrix.length;
         cols = matrix[0].length;
         // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
@@ -309,7 +311,8 @@ public final class ConvolutionFilter implements Filter {
     }
 
     /** {@inheritDoc} */
-    public void encode(final SWFEncoder coder, final Context context)
+    @Override
+	public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
         coder.writeByte(FilterTypes.CONVOLUTION);
         coder.writeByte(cols);
