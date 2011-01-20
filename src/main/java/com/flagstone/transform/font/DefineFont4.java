@@ -51,7 +51,7 @@ public final class DefineFont4 implements DefineTag {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "DefineFont4: { identifier=%d;"
-    		+ " italic=%d; bold=%d; name=%s; data=byte<%d> ...}";
+    		+ " italic=%b; bold=%b; name=%s; data=byte<%d> ...}";
 
     /** The unique identifier for this object. */
     private int identifier;
@@ -88,8 +88,8 @@ public final class DefineFont4 implements DefineTag {
 
         final int bits = coder.readByte();
 
-        italic = (bits & 0x00000002) == 1;
-        bold = (bits & 0x00000002) == 1;
+        bold = (bits & 0x00000001) == 1;
+        italic = (bits & 0x00000002) == 2;
         name = coder.readString();
         data = coder.readBytes(new byte[length - coder.bytesRead()]);
         coder.check(length);
@@ -131,12 +131,14 @@ public final class DefineFont4 implements DefineTag {
     }
 
     /** {@inheritDoc} */
-    public int getIdentifier() {
+    @Override
+	public int getIdentifier() {
         return identifier;
     }
 
     /** {@inheritDoc} */
-    public void setIdentifier(final int uid) {
+    @Override
+	public void setIdentifier(final int uid) {
         if ((uid < 1) || (uid > Coder.USHORT_MAX)) {
             throw new IllegalArgumentRangeException(
                     1, Coder.USHORT_MAX, uid);
@@ -227,7 +229,8 @@ public final class DefineFont4 implements DefineTag {
     }
 
     /** {@inheritDoc} */
-    public DefineFont4 copy() {
+    @Override
+	public DefineFont4 copy() {
         return new DefineFont4(this);
     }
 
@@ -238,7 +241,8 @@ public final class DefineFont4 implements DefineTag {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final Context context) {
+    @Override
+	public int prepareToEncode(final Context context) {
         // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
         length = 3 + context.strlen(name) + data.length;
         return (length > Coder.HEADER_LIMIT ? Coder.LONG_HEADER
@@ -246,7 +250,8 @@ public final class DefineFont4 implements DefineTag {
     }
 
     /** {@inheritDoc} */
-    @SuppressWarnings("PMD.NPathComplexity")
+    @Override
+	@SuppressWarnings("PMD.NPathComplexity")
     public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
 
