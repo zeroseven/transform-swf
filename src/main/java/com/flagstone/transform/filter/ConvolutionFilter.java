@@ -293,7 +293,7 @@ public final class ConvolutionFilter implements Filter {
 
     @Override
     public int hashCode() {
-        return ((((matrix.hashCode() * Constants.PRIME
+        return ((((Arrays.deepHashCode(matrix) * Constants.PRIME
                 + Float.floatToIntBits(divisor)) * Constants.PRIME
                 + Float.floatToIntBits(bias)) * Constants.PRIME
                 + color.hashCode()) * Constants.PRIME
