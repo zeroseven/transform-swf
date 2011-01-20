@@ -104,14 +104,14 @@ public final class ScreenPacket implements Copyable<ScreenPacket> {
                         + coder.readByte();
 
                 if (length == 0) {
-                    block = new ImageBlock(0, 0, null);
+                    block = new ImageBlock(0, 0, new byte[]{});
                 } else {
                     final int dataHeight = (height < blockHeight) ? height
                             : blockHeight;
                     final int dataWidth = (width < blockWidth) ? width
                             : blockWidth;
 
-                    block = new ImageBlock(dataHeight, dataWidth, coder
+                    block = new ImageBlock(dataWidth, dataHeight, coder
                             .readBytes(new byte[length]));
                 }
 
