@@ -1039,6 +1039,31 @@ public final class PNGDecoder implements ImageProvider, ImageDecoder {
     /** {@inheritDoc} */
     @Override
 	public byte[] getImage() {
-        return Arrays.copyOf(image, image.length);
+    	byte[] copy;
+
+        switch (format) {
+        case IDX8:
+        case IDXA:
+        	copy = new byte[image.length * RGBA_CHANNELS];
+
+        	int tableIndex;
+
+        	for (int i = 0, index = 0; i < image.length; i++) {
+        		tableIndex = image[i] * RGBA_CHANNELS;
+        		copy[index++] = table[tableIndex + RED];
+        		copy[index++] = table[tableIndex + GREEN];
+        		copy[index++] = table[tableIndex + BLUE];
+        		copy[index++] = table[tableIndex + ALPHA];
+        	}
+            break;
+        case RGB5:
+        case RGB8:
+        case RGBA:
+            copy = Arrays.copyOf(image, image.length);
+            break;
+        default:
+            throw new AssertionError(BAD_FORMAT);
+        }
+        return copy;
     }
 }
