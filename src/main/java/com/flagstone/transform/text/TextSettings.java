@@ -109,9 +109,9 @@ public final class TextSettings implements MovieTag {
      *             if an error occurs while decoding the data.
      */
     public TextSettings(final SWFDecoder coder) throws IOException {
-        int length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
-        if (length == Coder.IS_EXTENDED) {
-            length = coder.readInt();
+        if ((coder.readUnsignedShort() & Coder.LENGTH_FIELD)
+        		== Coder.IS_EXTENDED) {
+            coder.readInt();
         }
         identifier = coder.readUnsignedShort();
         rendering = coder.readByte();
