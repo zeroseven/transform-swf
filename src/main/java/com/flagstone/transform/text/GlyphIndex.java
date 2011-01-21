@@ -39,7 +39,6 @@ import com.flagstone.transform.coder.Context;
 import com.flagstone.transform.coder.SWFDecoder;
 import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFEncoder;
-import com.flagstone.transform.datatype.Bounds;
 import com.flagstone.transform.exception.IllegalArgumentRangeException;
 
 /**
@@ -151,7 +150,7 @@ public final class GlyphIndex implements SWFEncodeable {
             result = false;
         } else if (other == this) {
             result = true;
-        } else if (other instanceof Bounds) {
+        } else if (other instanceof GlyphIndex) {
             object = (GlyphIndex) other;
             result = (index == object.index) && (advance == object.advance);
         } else {
@@ -166,13 +165,15 @@ public final class GlyphIndex implements SWFEncodeable {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final Context context) {
+    @Override
+	public int prepareToEncode(final Context context) {
         return context.get(Context.GLYPH_SIZE)
                 + context.get(Context.ADVANCE_SIZE);
     }
 
     /** {@inheritDoc} */
-    public void encode(final SWFEncoder coder, final Context context)
+    @Override
+	public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
         coder.writeBits(index, context.get(Context.GLYPH_SIZE));
         coder.writeBits(advance, context.get(Context.ADVANCE_SIZE));
