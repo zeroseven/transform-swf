@@ -47,6 +47,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.DataFormatException;
 
+import com.flagstone.transform.Constants;
 import com.flagstone.transform.coder.BigDecoder;
 import com.flagstone.transform.coder.Coder;
 import com.flagstone.transform.datatype.Bounds;
@@ -87,8 +88,42 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         /** {@inheritDoc} */
         @Override
 		public int compareTo(final TableEntry obj) {
-            return Integer.valueOf(offset).compareTo(obj.offset);
+            int result;
+            if (offset < obj.offset) {
+            	result = -1;
+            } else if (offset == obj.offset) {
+            	result = 0;
+            } else {
+            	result = 1;
+            }
+            return result;
         }
+
+        /** {@inheritDoc} */
+        @Override
+        public boolean equals(final Object object) {
+            boolean result;
+            TableEntry entry;
+
+            if (object == null) {
+                result = false;
+            } else if (object == this) {
+                result = true;
+            } else if (object instanceof TableEntry) {
+                entry = (TableEntry) object;
+                result = offset == entry.offset;
+            } else {
+                result = false;
+            }
+            return result;
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public int hashCode() {
+            return offset * Constants.PRIME;
+        }
+
         /**
          * Set the table data.
          * @param bytes the contents of the table.
@@ -448,9 +483,9 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         final BigDecoder coder = new BigDecoder(stream, data.length);
 
         coder.readInt(); // table version, fixed 16
-        ascent = coder.readShort() / scale;
-        descent = -(coder.readShort() / scale);
-        leading = coder.readShort() / scale;
+        ascent = coder.readShort() / (float) scale;
+        descent = -(coder.readShort() / (float) scale);
+        leading = coder.readShort() / (float) scale;
 
         coder.readUnsignedShort(); // maximum advance in the htmx table
         coder.readShort(); // minimum left side bearing in the htmx table
@@ -523,9 +558,9 @@ public final class TTFDecoder implements FontProvider, FontDecoder {
         coder.readUnsignedShort(); // first unicode character code
         coder.readUnsignedShort(); // last unicode character code
 
-        ascent = coder.readUnsignedShort() / scale;
-        descent = -(coder.readUnsignedShort() / scale);
-        leading = coder.readUnsignedShort() / scale;
+        ascent = coder.readUnsignedShort() / (float) scale;
+        descent = -(coder.readUnsignedShort() / (float) scale);
+        leading = coder.readUnsignedShort() / (float) scale;
 
         coder.readUnsignedShort(); // ascent in Windows
         coder.readUnsignedShort(); // descent in Windows
