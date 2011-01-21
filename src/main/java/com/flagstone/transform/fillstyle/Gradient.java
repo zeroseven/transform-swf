@@ -41,7 +41,6 @@ import com.flagstone.transform.coder.SWFEncodeable;
 import com.flagstone.transform.coder.SWFEncoder;
 import com.flagstone.transform.datatype.Color;
 import com.flagstone.transform.exception.IllegalArgumentRangeException;
-import com.flagstone.transform.font.Kerning;
 
 /**
  * Gradient defines a control point that is used to specify how a gradient
@@ -163,7 +162,7 @@ public final class Gradient implements SWFEncodeable {
             result = false;
         } else if (object == this) {
             result = true;
-        } else if (object instanceof Kerning) {
+        } else if (object instanceof Gradient) {
             gradient = (Gradient) object;
             result = (ratio == gradient.ratio) && color.equals(gradient.color);
         } else {
@@ -178,12 +177,14 @@ public final class Gradient implements SWFEncodeable {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final Context context) {
+    @Override
+	public int prepareToEncode(final Context context) {
         return 1 + color.prepareToEncode(context);
     }
 
     /** {@inheritDoc} */
-    public void encode(final SWFEncoder coder, final Context context)
+    @Override
+	public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
         coder.writeByte(ratio);
         color.encode(coder, context);
