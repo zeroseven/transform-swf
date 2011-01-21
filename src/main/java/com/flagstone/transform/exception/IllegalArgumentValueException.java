@@ -55,7 +55,7 @@ public final class IllegalArgumentValueException
      * @param value the actual value used.
      */
     public IllegalArgumentValueException(final int[] set, final int value) {
-        super("Valid values: " + set + " Value: " + value);
+        super("Valid values: " + Arrays.toString(set) + " Value: " + value);
         expected = Arrays.copyOf(set, set.length);
         actual = value;
     }
