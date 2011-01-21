@@ -78,9 +78,9 @@ public final class LimitScript implements MovieTag {
      *             if an error occurs while decoding the data.
      */
     public LimitScript(final SWFDecoder coder) throws IOException {
-        int length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
-        if (length == Coder.IS_EXTENDED) {
-            length = coder.readInt();
+        if ((coder.readUnsignedShort() & Coder.LENGTH_FIELD)
+        		== Coder.IS_EXTENDED) {
+            coder.readInt();
         }
         depth = coder.readUnsignedShort();
         timeout = coder.readUnsignedShort();
@@ -169,7 +169,8 @@ public final class LimitScript implements MovieTag {
     }
 
     /** {@inheritDoc} */
-    public LimitScript copy() {
+    @Override
+	public LimitScript copy() {
         return new LimitScript(this);
     }
 
@@ -180,13 +181,15 @@ public final class LimitScript implements MovieTag {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final Context context) {
+    @Override
+	public int prepareToEncode(final Context context) {
         // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
         return 6;
     }
 
     /** {@inheritDoc} */
-    public void encode(final SWFEncoder coder, final Context context)
+    @Override
+	public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
         // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 2 LINES
         coder.writeShort((MovieTypes.LIMIT_SCRIPT

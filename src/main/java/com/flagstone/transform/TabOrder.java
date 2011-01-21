@@ -73,9 +73,9 @@ public final class TabOrder implements MovieTag {
      *             if an error occurs while decoding the data.
      */
     public TabOrder(final SWFDecoder coder) throws IOException {
-        int length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
-        if (length == Coder.IS_EXTENDED) {
-            length = coder.readInt();
+        if ((coder.readUnsignedShort() & Coder.LENGTH_FIELD)
+        		== Coder.IS_EXTENDED) {
+            coder.readInt();
         }
         layer = coder.readUnsignedShort();
         index = coder.readUnsignedShort();
@@ -156,7 +156,8 @@ public final class TabOrder implements MovieTag {
     }
 
     /** {@inheritDoc} */
-    public TabOrder copy() {
+    @Override
+	public TabOrder copy() {
         return new TabOrder(this);
     }
 
@@ -167,13 +168,15 @@ public final class TabOrder implements MovieTag {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final Context context) {
+    @Override
+	public int prepareToEncode(final Context context) {
         // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
         return 6;
     }
 
     /** {@inheritDoc} */
-    public void encode(final SWFEncoder coder, final Context context)
+    @Override
+	public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
         // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
         coder.writeShort((MovieTypes.TAB_ORDER << Coder.LENGTH_FIELD_SIZE) | 4);

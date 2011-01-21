@@ -62,9 +62,9 @@ public final class Free implements MovieTag {
      *             if an error occurs while decoding the data.
      */
     public Free(final SWFDecoder coder) throws IOException {
-        int length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
-        if (length == Coder.IS_EXTENDED) {
-            length = coder.readInt();
+        if ((coder.readUnsignedShort() & Coder.LENGTH_FIELD)
+        		== Coder.IS_EXTENDED) {
+            coder.readInt();
         }
         identifier = coder.readUnsignedShort();
     }
@@ -115,7 +115,8 @@ public final class Free implements MovieTag {
     }
 
     /** {@inheritDoc} */
-    public Free copy() {
+    @Override
+	public Free copy() {
         return new Free(this);
     }
 
@@ -126,14 +127,16 @@ public final class Free implements MovieTag {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final Context context) {
+    @Override
+	public int prepareToEncode(final Context context) {
         // CHECKSTYLE:OFF
         return 4;
         // CHECKSTYLE:ON
     }
 
     /** {@inheritDoc} */
-    public void encode(final SWFEncoder coder, final Context context)
+    @Override
+	public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
         coder.writeShort((MovieTypes.FREE
                 << Coder.LENGTH_FIELD_SIZE) | 2);

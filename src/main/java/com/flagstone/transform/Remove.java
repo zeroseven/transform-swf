@@ -81,9 +81,9 @@ public final class Remove implements MovieTag {
      *             if an error occurs while decoding the data.
      */
     public Remove(final SWFDecoder coder) throws IOException {
-        int length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
-        if (length == Coder.IS_EXTENDED) {
-            length = coder.readInt();
+        if ((coder.readUnsignedShort() & Coder.LENGTH_FIELD)
+        		== Coder.IS_EXTENDED) {
+            coder.readInt();
         }
         identifier = coder.readUnsignedShort();
         layer = coder.readUnsignedShort();
@@ -167,7 +167,8 @@ public final class Remove implements MovieTag {
     }
 
     /** {@inheritDoc} */
-    public Remove copy() {
+    @Override
+	public Remove copy() {
         return new Remove(this);
     }
 
@@ -178,13 +179,15 @@ public final class Remove implements MovieTag {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final Context context) {
+    @Override
+	public int prepareToEncode(final Context context) {
         // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
         return 6;
     }
 
     /** {@inheritDoc} */
-    public void encode(final SWFEncoder coder, final Context context)
+    @Override
+	public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
         // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 1 LINES
         coder.writeShort((MovieTypes.REMOVE << Coder.LENGTH_FIELD_SIZE) | 4);

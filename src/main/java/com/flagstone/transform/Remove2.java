@@ -64,9 +64,9 @@ public final class Remove2 implements MovieTag {
      *             if an error occurs while decoding the data.
      */
     public Remove2(final SWFDecoder coder) throws IOException {
-        int length = coder.readUnsignedShort() & Coder.LENGTH_FIELD;
-        if (length == Coder.IS_EXTENDED) {
-            length = coder.readInt();
+        if ((coder.readUnsignedShort() & Coder.LENGTH_FIELD)
+        		== Coder.IS_EXTENDED) {
+            coder.readInt();
         }
         layer = coder.readUnsignedShort();
     }
@@ -121,7 +121,8 @@ public final class Remove2 implements MovieTag {
     }
 
     /** {@inheritDoc} */
-    public Remove2 copy() {
+    @Override
+	public Remove2 copy() {
         return new Remove2(this);
     }
 
@@ -132,14 +133,16 @@ public final class Remove2 implements MovieTag {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final Context context) {
+    @Override
+	public int prepareToEncode(final Context context) {
         // CHECKSTYLE:OFF
         return 4;
         // CHECKSTYLE:ON
     }
 
     /** {@inheritDoc} */
-    public void encode(final SWFEncoder coder, final Context context)
+    @Override
+	public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
         coder.writeShort((MovieTypes.REMOVE_2
                 << Coder.LENGTH_FIELD_SIZE) | 2);
