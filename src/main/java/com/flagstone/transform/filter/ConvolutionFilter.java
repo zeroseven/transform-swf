@@ -146,7 +146,7 @@ public final class ConvolutionFilter implements Filter {
 
     /** Format string used in toString() method. */
     private static final String FORMAT = "ConvolutionFilter: { matrix=%s;"
-            + " divisor=%d; bias=%d; color=%s; clamp=%s; alpha=%s}";
+            + " divisor=%f; bias=%f; color=%s; clamp=%b; alpha=%b}";
 
     /** The convolution matrix. */
     private final transient float[][] matrix;
@@ -266,8 +266,15 @@ public final class ConvolutionFilter implements Filter {
 
     @Override
     public String toString() {
-        return String
-                .format(FORMAT, matrix, divisor, bias, color, clamp, alpha);
+        StringBuilder builder = new StringBuilder();
+        builder.append("[");
+        for (int i = 0; i < matrix.length; i++) {
+        	builder.append(Arrays.toString(matrix[i]));
+        }
+        builder.append("]");
+
+        return String.format(FORMAT, builder.toString(),
+        		divisor, bias, color, clamp, alpha);
     }
 
     @Override
