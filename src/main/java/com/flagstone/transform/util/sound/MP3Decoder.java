@@ -246,9 +246,7 @@ public final class MP3Decoder implements SoundProvider, SoundDecoder {
             sound[2] = (byte) seek;
             sound[3] = (byte) (seek >> Coder.TO_LOWER_BYTE);
 
-            if (sound != null) {
-                block = new SoundStreamBlock(sound);
-            }
+            block = new SoundStreamBlock(sound);
         }
         return block;
     }
