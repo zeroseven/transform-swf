@@ -93,8 +93,8 @@ public final class MovieCopyIT {
             sourceMovie.decodeFromFile(file);
 
             final MovieWriter writer = new MovieWriter();
-            StringWriter sourceWriter = new StringWriter();
-            StringWriter destWriter = new StringWriter();
+            StringWriter sourceWriter;
+            StringWriter destWriter;
 
             MovieTag sourceTag;
             MovieTag destTag;

@@ -88,13 +88,9 @@ public final class ScreenVideoIT {
 
         final String[] files = sourceDir.list(filter);
 
-        Movie movie = new Movie();
-        int uid = 1;
-
         File destFile = null;
 
         final int numberOfFrames = files.length;
-        int identifier;
 
         final ImageFactory factory = new ImageFactory();
         factory.read(new File(sourceDir, files[0]));
@@ -105,8 +101,8 @@ public final class ScreenVideoIT {
         final int screenWidth = decoder.getWidth();
         final int screenHeight = decoder.getHeight();
 
-        movie = new Movie();
-        identifier = uid++;
+        Movie movie = new Movie();
+        int identifier = 1;
 
         final MovieHeader attrs = new MovieHeader();
         attrs.setFrameSize(new Bounds(0, 0, screenWidth * 20,
@@ -121,7 +117,7 @@ public final class ScreenVideoIT {
 
         final List<ImageBlock> prev = new ArrayList<ImageBlock>();
         final List<ImageBlock> next = new ArrayList<ImageBlock>();
-        List<ImageBlock> delta = new ArrayList<ImageBlock>();
+        List<ImageBlock> delta;
 
         blocker.getImageAsBlocks(prev, BLOCK_WIDTH, BLOCK_HEIGHT,
                 decoder.getWidth(), decoder.getHeight(), decoder.getImage());
@@ -149,7 +145,7 @@ public final class ScreenVideoIT {
 
             for (int j = 0; j < prev.size(); j++) {
                 if (prev.get(j).equals(next.get(j))) {
-                    delta.add(new ImageBlock(0, 0, null));
+                    delta.add(new ImageBlock(0, 0, new byte[]{}));
                 } else {
                     delta.add(next.get(j));
                 }

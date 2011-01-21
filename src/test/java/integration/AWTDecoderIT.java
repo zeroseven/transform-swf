@@ -186,9 +186,9 @@ public final class AWTDecoderIT {
             movie.add(ShowFrame.getInstance());
             movie.encodeToFile(destFile);
 
-        } catch (Exception e) {
+        } catch (Throwable t) {
             if (System.getProperty("test.trace") != null) {
-                e.printStackTrace(); //NOPMD
+                t.printStackTrace(); //NOPMD
             }
             fail(sourceFont.getName());
         }

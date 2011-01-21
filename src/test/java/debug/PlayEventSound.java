@@ -32,6 +32,7 @@
 package debug;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 
 import com.flagstone.transform.Background;
 import com.flagstone.transform.Movie;
@@ -67,7 +68,10 @@ public final class PlayEventSound {
 
         try {
             if (destDir != null && !destDir.exists()) {
-            	destDir.mkdirs();
+            	if (!destDir.mkdirs()) {
+            		throw new FileNotFoundException(
+            				"Cannot create directory: " + destDir);
+            	}
             }
 
             final Movie movie = new Movie();

@@ -74,9 +74,10 @@ public final class PropertyTest {
         table.put(Property.XMOUSE, 20);
         table.put(Property.YMOUSE, 21);
 
-        for (final Property property : table.keySet()) {
-            assertEquals(String.format(VALUE_MISMATCH, property), table
-                    .get(property).intValue(), property.getValue(flashVersion));
+        for (Map.Entry<Property, Integer>entry : table.entrySet()) {
+            assertEquals(String.format(VALUE_MISMATCH, entry.getKey()),
+                    table.get(entry.getKey()).intValue(),
+                    entry.getKey().getValue(flashVersion), 0.0);
         }
     }
 
@@ -110,10 +111,10 @@ public final class PropertyTest {
         table.put(Property.XMOUSE, 0x41a00000);
         table.put(Property.YMOUSE, 0x41a80000);
 
-        for (final Property property : table.keySet()) {
-            assertEquals(String.format(VALUE_MISMATCH, property),
-                    table.get(property).intValue(),
-                    property.getValue(flashVersion), 0.0);
+        for (Map.Entry<Property, Integer>entry : table.entrySet()) {
+            assertEquals(String.format(VALUE_MISMATCH, entry.getKey()),
+                    table.get(entry.getKey()).intValue(),
+                    entry.getKey().getValue(flashVersion), 0.0);
         }
     }
 }

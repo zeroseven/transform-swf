@@ -31,23 +31,17 @@
 
 package com.flagstone.transform.filter;
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.flagstone.transform.coder.Context;
-import com.flagstone.transform.coder.SWFEncoder;
-
 public final class ColorMatrixFilterTest {
 
-    private transient ColorMatrixFilter fixture;
+//    private transient ColorMatrixFilter fixture;
 
-    private final transient byte[] encoded = new byte[] {0x06, 0x01, 0x01,
-            0x00, 0x02, 0x00, 0x06, 0x50 };
+//    private final transient byte[] encoded = new byte[] {0x06, 0x01, 0x01,
+//            0x00, 0x02, 0x00, 0x06, 0x50 };
 
 //    private final transient byte[] extended = new byte[] {0x7F, 0x01, 0x06,
 //            0x00, 0x00, 0x00, 0x01, 0x00, 0x02, 0x00, 0x06, 0x50 };
@@ -55,13 +49,13 @@ public final class ColorMatrixFilterTest {
     @Test
     @Ignore
     public void encodeCoordTransform() throws IOException {
-        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        final SWFEncoder encoder = new SWFEncoder(stream);
-        final Context context = new Context();
+        //final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        //final SWFEncoder encoder = new SWFEncoder(stream);
+        //final Context context = new Context();
 
         // fixture = new ColorMatrixFilter(identifier, layer, transform);
-        assertEquals(encoded.length, fixture.prepareToEncode(context));
-        fixture.encode(encoder, context);
+        //assertEquals(encoded.length, fixture.prepareToEncode(context));
+        //fixture.encode(encoder, context);
 
 
     }

@@ -110,7 +110,7 @@ public final class MP3DecoderEventIT {
 
             final SoundFactory factory = new SoundFactory();
             factory.read(sourceFile);
-            final DefineSound sound = factory.defineSound(uid++);
+            final DefineSound sound = factory.defineSound(uid);
 
             final MovieHeader attrs = new MovieHeader();
             attrs.setFrameSize(new Bounds(0, 0, 8000, 4000));
