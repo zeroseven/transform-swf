@@ -76,7 +76,7 @@ public final class Envelope implements SWFEncodeable, Copyable<Envelope> {
      *
      * @see SoundInfo
      */
-    public final class Level implements SWFEncodeable {
+    public static final class Level implements SWFEncodeable {
 
         /** Format string used in toString() method. */
         private static final String FORMAT = "Envelope: { mark=%d; left=%d;"
@@ -194,13 +194,15 @@ public final class Envelope implements SWFEncodeable, Copyable<Envelope> {
         }
 
         /** {@inheritDoc} */
-        public int prepareToEncode(final Context context) {
+        @Override
+		public int prepareToEncode(final Context context) {
             // CHECKSTYLE IGNORE MagciNumberCheck FOR NEXT 1 LINES
             return 8;
         }
 
         /** {@inheritDoc} */
-        public void encode(final SWFEncoder coder, final Context context)
+        @Override
+		public void encode(final SWFEncoder coder, final Context context)
                     throws IOException {
             coder.writeInt(mark);
             coder.writeShort(left);
@@ -284,7 +286,8 @@ public final class Envelope implements SWFEncodeable, Copyable<Envelope> {
     }
 
     /** {@inheritDoc} */
-    public Envelope copy() {
+    @Override
+	public Envelope copy() {
         return new Envelope(this);
     }
 
@@ -294,14 +297,16 @@ public final class Envelope implements SWFEncodeable, Copyable<Envelope> {
     }
 
     /** {@inheritDoc} */
-    public int prepareToEncode(final Context context) {
+    @Override
+	public int prepareToEncode(final Context context) {
         // CHECKSTYLE IGNORE MagicNumberCheck FOR NEXT 2 LINES
         count = levels.size();
         return 1 + (count << 3);
     }
 
     /** {@inheritDoc} */
-    public void encode(final SWFEncoder coder, final Context context)
+    @Override
+	public void encode(final SWFEncoder coder, final Context context)
             throws IOException {
         coder.writeByte(count);
 
