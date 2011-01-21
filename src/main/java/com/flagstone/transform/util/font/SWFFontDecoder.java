@@ -66,26 +66,30 @@ public final class SWFFontDecoder implements FontProvider, FontDecoder {
     private transient List<Shape> glyphs;
 
     /** {@inheritDoc} */
-    public FontDecoder newDecoder() {
+    @Override
+	public FontDecoder newDecoder() {
         return new SWFFontDecoder();
     }
 
     /** {@inheritDoc} */
-    public void read(final File file) throws IOException, DataFormatException {
+    @Override
+	public void read(final File file) throws IOException, DataFormatException {
         final Movie movie = new Movie();
         movie.decodeFromFile(file);
         decode(movie);
     }
 
     /** {@inheritDoc} */
-    public void read(final URL url) throws IOException, DataFormatException {
+    @Override
+	public void read(final URL url) throws IOException, DataFormatException {
         final Movie movie = new Movie();
         movie.decodeFromUrl(url);
         decode(movie);
     }
 
     /** {@inheritDoc} */
-    public List<Font> getFonts() {
+    @Override
+	public List<Font> getFonts() {
         return new ArrayList<Font>(fonts.values());
     }
 
@@ -101,10 +105,10 @@ public final class SWFFontDecoder implements FontProvider, FontDecoder {
         fonts.clear();
 
         for (MovieTag obj : movie.getObjects()) {
-            if (obj instanceof DefineFont2) {
-                decode((DefineFont2) obj);
-            } else if (obj instanceof DefineFont2) {
+            if (obj instanceof DefineFont) {
                 decode((DefineFont) obj);
+            } else if (obj instanceof DefineFont2) {
+                decode((DefineFont2) obj);
             } else if (obj instanceof FontInfo) {
                 decode((FontInfo) obj);
             } else if (obj instanceof FontInfo2) {
