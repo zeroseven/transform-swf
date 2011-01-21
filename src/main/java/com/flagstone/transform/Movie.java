@@ -262,7 +262,9 @@ public final class Movie implements Copyable<Movie> {
             context.setEncoding(encoding.getEncoding());
 
             final byte[] signature = new byte[SIGNATURE_LENGTH];
-            stream.read(signature);
+            if (stream.read(signature) != signature.length) {
+                throw new DataFormatException("Could not read file signature");
+            }
 
             if (Arrays.equals(CWS, signature)) {
                 streamIn = new InflaterInputStream(stream);
