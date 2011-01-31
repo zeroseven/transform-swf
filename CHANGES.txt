@@ -6,76 +6,96 @@
   Bug Fixes
 -------------
 
-1. JPG files throw an exception.
+1. ScreenPacket no longer throws exception in constructor.
+ 
+   The constructor was not creating the array used to store ImageBlock objects
+   so a NullPointerException would be thrown. 
 
-   JPEG files where the image data contained an odd number of bytes would cause
-   a overflow exception will be thrown by the JPGDecoder.
+2. ScreenPacket no longer mixes up width and height on ImageBlocks.
+
+   The constructor used to decode a ScreenPacket from a block of data got the 
+   order for the width and height of the decoded ImageBlock object reversed.
    
-2. DefineButton2 does not execute actions.
+3. ConvolutionFilter now compares matrices correctly.
 
-   The actions in DefineButton2 are not executed. The problem is the way the 
-   object is encoded. There is an offset, in bytes, that indicates the size of 
-   the encoded button shape records. This offset was calculated incorrectly so 
-   Flash Player did not load the event handlers for the button correctly. 
+   In the equals() method the comparison of the matrices that contain the 
+   convolution parameters was using simple object identity rather than 
+   Arrays.deepEqual().
    
-3. BigDecoder.scanInt() throws an exception.
+4. ConvolutionFilter now implements hashCode() correctly.
 
-   If there were less than 2 or 3 bytes left in the internal buffer used by
-   BigDecoder then it was not refilled and an ArrayIndexOutOfBoundsException
-   was thrown when looking ahead at the next 32-bits.
+   The hashCode() method simply called hashCode() on the matrix that stored the
+   convolution parameters. This has now been changed to Arrays.deepHashCode().
    
-4. Corrected errors in PlayEventSound and PlayStreamingSound.
+5. ConvolutionFilter toString() is not correctly formatted.
 
-   Passing only the name of the file to be generated no longer throws an
-   exception when testing to see if the parent directory exists.
-  
+   The toString() method simply calls toString() on the matrix that stores
+   the convolution parameters. This returns only the object identity and not a 
+   formatted string containing all the array parameters.
+   
+6. DefineTextField toString() now returns the correct description of the object.
+
+   A StringBuilder was used to create the (lengthy) description of the object
+   but it was not used to return the string. Instead String.format() was used
+   but the format string was empty.
+   
+7. FontFace now comparing names correctly.
+
+   In the equals() method the name attribute of the current object was being 
+   compared with itself rather than with the target object.
+   
+8. DefineFont4 correctly decodes bold and italic fields.
+
+   The constructor that decodes DefineFont4 objects did not correctly apply bit 
+   masks for the fields that identify whether a font contains bold face or 
+   italicised glyphs.
+   
+9. BMPDecoder.getImage() now returns true colour pixels for indexed images.
+
+   The getImage() method simply returned a copy of the image array. For indexed
+   images the array contained only the indices into the table rather than true 
+   colour pixels.
+    
+10. PNGDecoder.getImage() now returns true colour pixels for indexed images.
+
+   The getImage() method simply returned a copy of the image array. For indexed
+   images the array contained only the indices into the table rather than true 
+   colour pixels.
+   
+11. Gradient.equals() now compares object with correct class.
+
+   The equals() method was checking the object was a Kerning instead of a 
+   Gradient.
+   
+12. GlyphIndex.equals() now compares object with correct class.
+
+   The equals() method was checking the object was a Bounds instead of a 
+   GlyphIndex.
+   
+13. IllegalArgumentValueException.toString() formats values array correctly.
+
+   The toString() method simply called toString() on the array of values instead
+   of using Arrays.toString() to correctly format the string.
+   
+14. SWFFontDecoder no longer throws ClassCastException.
+
+   DefineFont2 objects were incorrectly cast as DefineFont objects resulting in
+   a ClassCastException being thrown.
+
 -----------------
   Code Changes
 -----------------
 
-1. Cleaned up checkstyle and pmd warnings.
-
-   The vast majority of CheckStyle and PMD warnings were resolved. Only warnings
-   about magic numbers and data flow anomalies are left. These will be removed
-   in due course.
+1. The nested class Envelope.Level is now defined as a static inner class. 
 
 -----------------
   Project Files
 -----------------
 
-1. Cleaned up checkstyle and pmd rules files.
-
-   The checkstyle rules are now in checkstyle.xml while suppressions.xml has
-   local changes for the project. Rule for PMD are stored in ruleset.xml. Only
-   two rules have been disabled from the default ruleset:
-   
-   1. AvoidInstantiatingObjectsInLoops was disabled since loops are used to
-      decode collections of objects.
-   
-   2. JUnitAssertionsShouldIncludeMessage was disabled to keep the tests as
-      simple as possible. Also since most of the tests centre around encoding
-      or decoding object attributes little would be gained by adding messages.
-      
-   There are still a few @SuppressWarnings annotations on individual classes 
-   and these will be reviewed and fixed over time.
-   
-2. Renamed README.txt to README.md and re-formatted with markdown.
-
-3. Simplified the Maven POM and removed site files.
-
-   The simple structure of the repository on GitHub removes the need to
-   maintain a set of site files describing the project. All the relevant 
-   content was added to the new README.md file.
+  No changes.
    
 -------------
   Packaging
 -------------
 
-1. Simplified and renamed the dist assembly.
-
-   The contents of the assembly, e.g. transform-3.0.1-SNAPSHOT-dist.zip was 
-   simplified renamed to transform-3.0.1-SNAPSHOT-ant.zip. This contains only
-   the source files and an ANT build file that contains targets to build the 
-   JAR file (either using debug or optimised versions of the classes) and 
-   generate the javadocs. The default target 'all' builds the jar file with 
-   optimised classes and generates the javadocs.
+  No changes.
