@@ -8,7 +8,7 @@
 	<groupId>com.flagstone</groupId>
 	<artifactId>transform</artifactId>
 	<packaging>jar</packaging>
-	<version>3.0.2</version>
+	<version>3.0.3-SNAPSHOT</version>
 
 	<name>transform</name>
 	<description>Transform is an Open Source library for reading and writing Flash (.swf) files. The API gives you complete control over how files are created with access to all the features supported by the Flash Player but yet is still intuitive and easy to use.</description>
